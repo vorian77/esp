@@ -1,0 +1,140 @@
+<script lang="ts">
+	import { FieldEmbedListConfig } from '$comps/form/fieldEmbed'
+	import {
+		State,
+		StateLayoutComponentType,
+		StateLayoutStyle,
+		StateMode,
+		StateSurfaceEmbed
+	} from '$comps/app/types.appState'
+	import {
+		TokenApiDbDataObjSource,
+		TokenApiQueryType,
+		TokenAppDoActionFieldType,
+		TokenAppDoActionConfirmType,
+		TokenAppModalReturnType
+	} from '$utils/types.token'
+	import Layout from '$comps/layout/BaseLayout.svelte'
+	import {
+		DataObj,
+		DataObjActionFieldConfirm,
+		DataObjCardinality,
+		DataObjData,
+		required
+	} from '$utils/types'
+	import { RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
+	import { error } from '@sveltejs/kit'
+	import DataViewer from '$utils/DataViewer.svelte'
+
+	const FILENAME = '$comps/form/FormElEmbeddedListConfig.svelte'
+
+	export let state: State
+	export let dataObj: DataObj
+	export let dataObjData: DataObjData
+	export let field: FieldEmbedListConfig
+	export let fieldValue: any
+
+	let stateEmbed: State
+	let recordIdCurrent: string
+	const exprFilterEmbed = `.id IN (SELECT ${dataObj.rootTable?.object} FILTER .id = <parms,uuid,listRecordIdParent>).${field.colDO.propName}.id`
+
+	$: {
+		let recordId = dataObjData.getDetailRecordValue('id') || ''
+		if (recordId.startsWith('preset_')) recordId = ''
+		if (recordIdCurrent !== recordId) {
+			recordIdCurrent = recordId
+			setStateEmbed(fieldValue)
+		}
+	}
+	$: {
+		const parentObjectSaved =
+			recordIdCurrent !== '' && state.objStatus.objValidToSave && !state.objStatus.objHasChanged
+		if (stateEmbed) {
+			if (parentObjectSaved) {
+				stateEmbed.modeAdd(StateMode.ParentObjectSaved)
+			} else {
+				stateEmbed.modeDrop(StateMode.ParentObjectSaved)
+			}
+			stateEmbed = stateEmbed
+		}
+	}
+
+	function setStateEmbed(fieldValue: any) {
+		stateEmbed = new StateSurfaceEmbed({
+			actionProxies: [
+				{ actionType: TokenAppDoActionFieldType.listEmbedConfigEdit, proxy: openModalEdit },
+				{ actionType: TokenAppDoActionFieldType.listEmbedConfigNew, proxy: openModalNew }
+			],
+			cardinality: DataObjCardinality.list,
+			dataObjSource: new TokenApiDbDataObjSource({
+				dataObjId: field.raw.dataObjEmbedId,
+				exprFilter: exprFilterEmbed
+			}),
+			layoutComponent: StateLayoutComponentType.layoutContent,
+			layoutStyle: StateLayoutStyle.embeddedField,
+			parms: { listRecordIdParent: recordIdCurrent },
+			queryType: TokenApiQueryType.retrieve,
+			storeModal: state.storeModal,
+			updateCallback
+		})
+	}
+
+	function openModalEdit(parms: any) {
+		const state = required(parms.state, 'FormElEmbedListConfig.openModalEdit', 'state')
+		openModal(state, TokenApiQueryType.retrieve)
+	}
+
+	function openModalNew(parms: any) {
+		const state = required(parms.state, 'FormElEmbedListConfig.openModalNew', 'state')
+		openModal(state, TokenApiQueryType.preset)
+	}
+
+	function openModal(state: State, queryType: TokenApiQueryType) {
+		state.openModalEmbed(
+			field.raw.actionsFieldModal,
+			DataObjCardinality.detail,
+			new TokenApiDbDataObjSource({
+				dataObjId: field.raw.dataObjEmbedId,
+				exprFilter: exprFilterEmbed
+			}),
+			new TokenApiDbDataObjSource({
+				dataObjId: field.raw.dataObjModalId,
+				parent: new RawDataObjParent({
+					_columnName: field.colDO.propName,
+					_columnIsMultiSelect: true,
+					_table: dataObj.rootTable!
+				})
+			}),
+			StateLayoutStyle.overlayModalDetail,
+			state.dataQuery.valueGetAll(),
+			queryType,
+			fUpdate
+		)
+		function fUpdate(returnType: TokenAppModalReturnType, value: any = undefined) {
+			value = value ? value.valueGetIdList() : undefined
+			setStateEmbed(value ? value : [])
+		}
+	}
+
+	async function updateCallback(obj: any) {
+		if (obj.packet.token.action === TokenAppDoActionFieldType.listSelfSave) {
+			fieldValue = obj.packet.token.data.dataRows.map((r: any) => r.record.id)
+		}
+		stateEmbed = stateEmbed.updateProperties(obj)
+	}
+</script>
+
+<div class="flex mt-6">
+	<label for={field.colDO.propName}>{field.colDO.label}</label>
+</div>
+<div>
+	{#if stateEmbed}
+		<object title="aria-embedded-column" class="-mt-4 mb-4">
+			<Layout state={stateEmbed} />
+		</object>
+	{/if}
+</div>
+
+<!-- <DataViewer header="modes (listConfig)" data={stateEmbedded.modes} /> -->
+<!-- <DataViewer header="stateDisplay" data={stateDisplay} /> -->
+<!-- <DataViewer header="stateDisplay.modes" data={stateEmbedded.modes} /> -->

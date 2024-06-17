@@ -1,0 +1,50 @@
+module sys_migr {
+  type SysMigr extending sys_core::SysObj{
+    description: str;
+    multi tablesSource: sys_migr::SysMigrSourceTable{
+      on source delete delete target;
+      on target delete allow;
+    };
+    multi tablesTarget: sys_migr::SysMigrTargetTable{
+      on source delete delete target;
+      on target delete allow;
+    };
+  }
+
+  type SysMigrSourceColumn extending sys_user::Mgmt {
+    required name: str;
+    required codeDataType: sys_core::SysCode;
+  }
+
+  type SysMigrSourceTable extending sys_user::Mgmt {
+      required codeMigrSourceType: sys_core::SysCode;
+      multi columns: sys_migr::SysMigrSourceColumn{
+      on source delete delete target;
+      on target delete allow;
+    };
+      exprSelect: str;    
+      required name: str;
+  }
+
+  type SysMigrTargetColumn extending sys_user::Mgmt {
+    required column: sys_db::SysColumn;
+    required expr: str;
+    isActive: bool;
+    required orderDefine: default::nonNegative;
+  }
+
+  type SysMigrTargetTable extending sys_user::Mgmt {
+    multi columns: sys_migr::SysMigrTargetColumn{
+      on source delete delete target;
+      on target delete allow;
+    };
+    isActive: bool;
+    isInitTable: bool;
+    required table: sys_db::SysTable;
+    required orderDefine: default::nonNegative;
+  }
+}
+
+
+
+
