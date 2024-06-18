@@ -69,7 +69,7 @@
 				break
 		}
 		classContent =
-			dataObj.raw.actionsField.length > 0 || headerDialog || headerObj || headerObjSub || rowStatus
+			dataObj.actionsField.length > 0 || headerDialog || headerObj || headerObjSub || rowStatus
 				? 'border-2 p-4'
 				: ''
 	}

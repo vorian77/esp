@@ -57,7 +57,7 @@ export async function processDataObj(token: TokenApiQuery) {
 		case TokenApiQueryType.preset:
 			scriptGroup = new ScriptGroup(token.queryType, query, queryData)
 			const processRowSelectPreset = new ProcessRowSelectPreset(
-				query.rawDataObj.propsSelect,
+				query.rawDataObj.rawPropsSelect,
 				DataRecordStatus.preset
 			)
 			return execute(
@@ -72,7 +72,7 @@ export async function processDataObj(token: TokenApiQuery) {
 		case TokenApiQueryType.retrieve:
 			scriptGroup = new ScriptGroup(token.queryType, query, queryData)
 			const processRowSelect = new ProcessRowSelect(
-				query.rawDataObj.propsSelect,
+				query.rawDataObj.rawPropsSelect,
 				DataRecordStatus.retrieved
 			)
 			return execute(query, scriptGroup, rawDataObj, returnRawData, queryData, processRowSelect)
@@ -80,7 +80,7 @@ export async function processDataObj(token: TokenApiQuery) {
 		case TokenApiQueryType.save:
 			scriptGroup = new ScriptGroup(token.queryType, query, queryData)
 			const processRowUpdate = new ProcessRowUpdate(
-				query.rawDataObj.propsSelect,
+				query.rawDataObj.rawPropsSelect,
 				queryData.dataSave
 			)
 			return execute(query, scriptGroup, rawDataObj, returnRawData, queryData, processRowUpdate)
@@ -116,7 +116,7 @@ async function execute(
 					break
 				case ScriptExePost.processRowSelectPreset:
 					const processRowListEdit = new ProcessRowSelectPreset(
-						query.rawDataObj.propsSelect,
+						query.rawDataObj.rawPropsSelect,
 						DataRecordStatus.preset
 					)
 					formatData(data, rawDataList, processRowListEdit)
@@ -216,7 +216,7 @@ function formatDataForDisplayScalar(codeDataTypeField: PropDataType, value: any)
 
 async function getRawDataObj(dataObjSource: TokenApiDbDataObjSource, queryData: TokenApiQueryData) {
 	let dbDataObj: any
-	let rawDataObj: any
+	let rawDataObj: RawDataObj
 	let returnRawData = false
 
 	if (
@@ -241,7 +241,7 @@ async function getRawDataObj(dataObjSource: TokenApiDbDataObjSource, queryData: 
 			rawDataObj.exprFilter = dataObjSource.replacements.exprFilter
 		}
 		if (Object.hasOwn(dataObjSource.replacements, 'parent')) {
-			rawDataObj._parent = dataObjSource.replacements.parent
+			rawDataObj.rawParent = dataObjSource.replacements.parent
 		}
 
 		return { rawDataObj, returnRawData }
@@ -285,7 +285,6 @@ class ProcessRow {
 				newExpr = newExpr.replace(match[0], dataRecord[key])
 			}
 		}
-		debug(clazz, 'newExpr', newExpr)
 		return eval(newExpr)
 	}
 }

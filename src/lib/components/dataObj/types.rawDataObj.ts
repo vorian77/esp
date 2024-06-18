@@ -1,6 +1,7 @@
 import {
 	arrayOfClasses,
 	booleanOrDefault,
+	booleanOrFalse,
 	booleanRequired,
 	DataObjCardinality,
 	DataObjTable,
@@ -23,12 +24,16 @@ import {
 } from '$utils/types'
 import {
 	DataObjActionField,
+	DataObjActionFieldConfirm,
+	DataObjActionFieldShow,
+	DataObjActionFieldTriggerEnable,
 	DataObjComponent,
 	DataObjListEditPresetType,
 	DataObjProcessType,
 	type DataRecord
 } from '$comps/dataObj/types.dataObj'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
+import { TokenAppDoActionFieldType } from '$utils/types.token'
 import { FieldAccess, FieldAlignment, FieldColor, FieldElement } from '$comps/form/field'
 import { FieldCustomType } from '$comps/form/fieldCustom'
 import { error } from '@sveltejs/kit'
@@ -36,8 +41,6 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
 
 export class RawDataObj {
-	_parent?: RawDataObjParent
-	actionsField: DataObjActionField[] = []
 	actionsQuery: DataObjActionQuery[] = []
 	codeCardinality: DataObjCardinality
 	codeComponent: DataObjComponent
@@ -56,19 +59,19 @@ export class RawDataObj {
 	listReorderColumn?: string
 	name: string
 	processType?: string
-	propsDisplay: RawDataObjPropDisplay[] = []
-	propsSaveInsert: RawDataObjPropDB[] = []
-	propsSaveUpdate: RawDataObjPropDB[] = []
-	propsSelect: RawDataObjPropDB[] = []
-	propsSelectPreset: RawDataObjPropDB[] = []
-	propsSort: RawDataObjPropDB[] = []
+	rawActionsField: RawDataObjActionField[] = []
+	rawParent?: RawDataObjParent
+	rawPropsDisplay: RawDataObjPropDisplay[] = []
+	rawPropsSaveInsert: RawDataObjPropDB[] = []
+	rawPropsSaveUpdate: RawDataObjPropDB[] = []
+	rawPropsSelect: RawDataObjPropDB[] = []
+	rawPropsSelectPreset: RawDataObjPropDB[] = []
+	rawPropsSort: RawDataObjPropDB[] = []
 	subHeader?: string
 	tables: DataObjTable[] = []
 	constructor(obj: any) {
 		const clazz = 'RawDataObj'
 		obj = valueOrDefault(obj, {})
-		this._parent = classOptional(RawDataObjParent, obj._parent)
-		this.actionsField = arrayOfClasses(DataObjActionField, obj._actionFieldGroup?._actionFieldItems)
 		this.actionsQuery = arrayOfClasses(DataObjActionQuery, obj._actionsQuery)
 		this.codeCardinality = memberOfEnum(
 			obj._codeCardinality,
@@ -119,16 +122,21 @@ export class RawDataObj {
 			'DataObjProcessType',
 			DataObjProcessType
 		)
-		this.propsDisplay = arrayOfClasses(RawDataObjPropDisplay, obj._propsDisplay)
+		this.rawActionsField = arrayOfClasses(
+			RawDataObjActionField,
+			obj._actionFieldGroup?._actionFieldItems
+		)
+		this.rawParent = classOptional(RawDataObjParent, obj._parent)
+		this.rawPropsDisplay = arrayOfClasses(RawDataObjPropDisplay, obj._propsDisplay)
 		this.subHeader = strOptional(obj.subHeader, clazz, 'subHeader')
 		this.tables = this.initTables(obj._tables)
 
 		/* dependent properties */
-		this.propsSaveInsert = this.initProps(obj._propsSaveInsert)
-		this.propsSaveUpdate = this.initProps(obj._propsSaveUpdate)
-		this.propsSelect = this.initProps(obj._propsSelect)
-		this.propsSelectPreset = this.initProps(obj._propsSelectPreset)
-		this.propsSort = this.initProps(obj._propsSort)
+		this.rawPropsSaveInsert = this.initProps(obj._propsSaveInsert)
+		this.rawPropsSaveUpdate = this.initProps(obj._propsSaveUpdate)
+		this.rawPropsSelect = this.initProps(obj._propsSelect)
+		this.rawPropsSelectPreset = this.initProps(obj._propsSelectPreset)
+		this.rawPropsSort = this.initProps(obj._propsSort)
 	}
 
 	initCrumbs(crumbFields: any) {
@@ -169,15 +177,50 @@ export class RawDataObj {
 	}
 }
 
+export class RawDataObjActionField {
+	actionFieldConfirms: DataObjActionFieldConfirm[]
+	actionFieldShows: DataObjActionFieldShow[]
+	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
+	codeActionFieldType: TokenAppDoActionFieldType
+	fieldColor: FieldColor
+	header: string
+	isListRowAction: boolean
+	name: string
+	constructor(obj: any) {
+		const clazz = 'RawDataObjActionField'
+		obj = valueOrDefault(obj._action, {})
+		this.actionFieldConfirms = arrayOfClasses(DataObjActionFieldConfirm, obj._actionFieldConfirms)
+		this.actionFieldShows = arrayOfClasses(DataObjActionFieldShow, obj._actionFieldShows)
+		this.codeActionFieldTriggerEnable = memberOfEnum(
+			obj._codeActionFieldTriggerEnable,
+			clazz,
+			'codeActionFieldTriggerEnable',
+			'DataObjActionFieldTriggerEnable',
+			DataObjActionFieldTriggerEnable
+		)
+		this.codeActionFieldType = memberOfEnum(
+			obj._codeActionFieldType,
+			clazz,
+			'codeDbAction',
+			'TokenAppDoActionType',
+			TokenAppDoActionFieldType
+		)
+		this.fieldColor = new FieldColor(obj._codeColor, 'blue')
+		this.header = strRequired(obj.header, clazz, 'header')
+		this.isListRowAction = booleanOrFalse(obj.isListRowAction, 'isListRowAction')
+		this.name = strRequired(obj.name, clazz, 'name')
+	}
+}
+
 export class RawDataObjDyn extends RawDataObj {
 	constructor(obj: any) {
 		super(obj)
 	}
 	addPropDisplay(rawProp: any) {
-		this.propsDisplay.push(new RawDataObjPropDisplay(valueOrDefault(rawProp, {})))
+		this.rawPropsDisplay.push(new RawDataObjPropDisplay(valueOrDefault(rawProp, {})))
 	}
 	addPropSelect(rawProp: any, tables: DataObjTable[]) {
-		this.propsSelect.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tables))
+		this.rawPropsSelect.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tables))
 	}
 	build() {
 		return this
@@ -272,8 +315,7 @@ export class RawDataObjPropDisplay {
 	fieldAccess: FieldAccess
 	fieldAlignment: FieldAlignment
 	fieldColor: FieldColor
-	fieldElement: FieldElement
-	fieldEmbedDetail?: RawDataObjPropDisplayEmbedDetail
+	fieldElement?: FieldElement
 	fieldEmbedListConfig?: RawDataObjPropDisplayEmbedListConfig
 	fieldEmbedListEdit?: RawDataObjPropDisplayEmbedListEdit
 	fieldEmbedListSelect?: RawDataObjPropDisplayEmbedListSelect
@@ -292,6 +334,7 @@ export class RawDataObjPropDisplay {
 	constructor(obj: any) {
 		const clazz = 'RawDataObjPropDisplay'
 		obj = valueOrDefault(obj, {})
+		debug('RawDataObjPropDisplay', 'obj', obj)
 		this.colDB = new RawDBColumn(obj._column)
 		this.codeSortDir = obj._codeSortDir
 			? obj._codeSortDir === 'asc'
@@ -317,14 +360,13 @@ export class RawDataObjPropDisplay {
 			FieldAlignment
 		)
 		this.fieldColor = new FieldColor(obj._codeColor, 'black')
-		this.fieldElement = memberOfEnum(
+		this.fieldElement = memberOfEnumIfExists(
 			obj._codeFieldElement,
 			clazz,
 			'element',
 			'FieldElement',
 			FieldElement
 		)
-		this.fieldEmbedDetail = classOptional(RawDataObjPropDisplayEmbedDetail, obj._fieldEmbedDetail)
 		this.fieldEmbedListConfig = classOptional(
 			RawDataObjPropDisplayEmbedListConfig,
 			obj._fieldEmbedListConfig
@@ -397,28 +439,19 @@ export class RawDataObjPropDisplayCustom {
 	}
 }
 
-export class RawDataObjPropDisplayEmbedDetail {
-	dataObjEmbedId: string
-	constructor(obj: any) {
-		obj = valueOrDefault(obj, {})
-		const clazz = 'RawDataObjPropDisplayEmbedDetail'
-		this.dataObjEmbedId = strRequired(obj._dataObjEmbedId, clazz, '_dataObjEmbedId')
-	}
-}
-
 export class RawDataObjPropDisplayEmbedListConfig {
-	actionsFieldModal: DataObjActionField[]
 	dataObjEmbedId: string
 	dataObjModalId: string
+	rawActionsFieldModal: RawDataObjActionField[]
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjPropDisplayEmbedListConfig'
-		this.actionsFieldModal = arrayOfClasses(
-			DataObjActionField,
-			obj._actionFieldGroupModal._actionFieldItems
-		)
 		this.dataObjEmbedId = strRequired(obj._dataObjEmbedId, clazz, '_dataObjIdEmbed')
 		this.dataObjModalId = strRequired(obj._dataObjModalId, clazz, '_dataObjIdModal')
+		this.rawActionsFieldModal = arrayOfClasses(
+			RawDataObjActionField,
+			obj._actionFieldGroupModal._actionFieldItems
+		)
 	}
 }
 
@@ -440,24 +473,24 @@ export class RawDataObjPropDisplayEmbedListEdit {
 }
 
 export class RawDataObjPropDisplayEmbedListSelect {
-	actionsFieldModal: DataObjActionField[]
 	btnLabelComplete?: string
 	dataObjListID: string
+	rawActionsFieldModal: RawDataObjActionField[]
 	constructor(obj: any) {
-		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjPropDisplayEmbedListSelect'
-		this.actionsFieldModal = arrayOfClasses(
-			DataObjActionField,
-			obj._actionFieldGroupModal._actionFieldItems
-		)
+		obj = valueOrDefault(obj, {})
 		this.btnLabelComplete = this.initBtnComplete(
 			clazz,
 			obj.btnLabelComplete,
-			this.actionsFieldModal
+			obj._actionFieldGroupModal._actionFieldItems
 		)
 		this.dataObjListID = strRequired(obj._dataObjListId, clazz, '_dataObjId')
+		this.rawActionsFieldModal = arrayOfClasses(
+			RawDataObjActionField,
+			obj._actionFieldGroupModal._actionFieldItems
+		)
 	}
-	initBtnComplete(clazz: string, label: string | undefined, actions: DataObjActionField[] = []) {
+	initBtnComplete(clazz: string, label: string | undefined, actions: RawDataObjActionField[] = []) {
 		const btnLabelComplete = strOptional(label, clazz, 'btnLabelComplete')
 		if (btnLabelComplete) {
 			const actionDone = actions.find((action) => {

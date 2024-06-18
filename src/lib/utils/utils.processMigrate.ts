@@ -25,11 +25,11 @@ const FILENAME = '$utils/utils.processMigrate.ts'
 
 export async function migrate(state: State, dataObj: DataObj) {
 	const migrId = dataObj.data.getDetailRecordValue('id')
-	const action = new DataObjActionField(await getActions())
+	// const action = new DataObjActionField(await getActions())
 	const process = new ProcessMigrate()
 	const token = new TokenAppProcess(process, 'data_obj_process_sys_admin_migr')
 	const stateModal = new StateSurfaceModal({
-		actionsFieldDialog: [action],
+		// actionsFieldDialog: [action],
 		cardinality: DataObjCardinality.detail,
 		layoutComponent: StateLayoutComponentType.layoutProcess,
 		layoutStyle: StateLayoutStyle.overlayModalDetail,

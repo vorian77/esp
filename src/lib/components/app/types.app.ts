@@ -137,6 +137,11 @@ export class App {
 	getCurrLevel() {
 		return this.getLevel(this.levels.length - 1)
 	}
+	getCurrLevelActions() {
+		const level = this.getCurrLevel()
+		const dataObj = level ? level.getCurrTab().dataObj : undefined
+		return dataObj ? dataObj.actionsField : []
+	}
 	getCurrTab() {
 		const level = this.getCurrLevel()
 		return level ? level.getCurrTab() : undefined

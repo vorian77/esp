@@ -350,13 +350,13 @@ export enum TokenAppDoActionFieldType {
 	dialogNext = 'dialogNext',
 	dialogPrevious = 'dialogPrevious',
 
+	embedListConfigEdit = 'embedListConfigEdit',
+	embedListConfigNew = 'embedListConfigNew',
+	embedListEditParmValue = 'embedListEditParmValue',
+	embedListSelect = 'embedListSelect',
+
 	listDetailEdit = 'listDetailEdit',
 	listDetailNew = 'listDetailNew',
-
-	listEmbedConfigEdit = 'listEmbedConfigEdit',
-	listEmbedConfigNew = 'listEmbedConfigNew',
-	listEmbedEditParmValue = 'listEmbedEditParmValue',
-	listEmbedSelectEdit = 'listEmbedSelectEdit',
 
 	listSelfDelete = 'listSelfDelete',
 	listSelfEdit = 'listSelfEdit',

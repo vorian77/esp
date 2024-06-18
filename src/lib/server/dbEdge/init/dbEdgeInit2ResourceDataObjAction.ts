@@ -82,42 +82,72 @@ export async function initPreDataObjAction() {
 		name: 'noa_edit_list',
 		owner: 'app_sys'
 	})
+
+	/* embed */
 	await addDataObjActionField({
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codeActionFieldType: 'listEmbedConfigEdit',
-		codeActionFieldTriggerEnable: 'always',
+		codeActionFieldType: 'embedListConfigEdit',
+		codeActionFieldTriggerEnable: 'parentObjectSaved',
 		header: 'Edit',
 		isListRowAction: true,
-		name: 'noa_edit_list_embed_config',
+		name: 'noa_embed_list_config_edit',
 		owner: 'app_sys'
 	})
-
+	await addDataObjActionField({
+		actionFieldConfirms: [
+			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+		],
+		actionFieldShows: [
+			{ codeTriggerShow: 'notReorder', isRequired: true },
+			{ codeTriggerShow: 'parentObjectSaved', isRequired: true }
+		],
+		codeActionFieldType: 'embedListConfigNew',
+		codeActionFieldTriggerEnable: 'parentObjectSaved',
+		header: 'New',
+		isListRowAction: false,
+		name: 'noa_embed_list_config_new',
+		owner: 'app_sys'
+	})
 	await addDataObjActionField({
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codeActionFieldType: 'listEmbedEditParmValue',
+		codeActionFieldType: 'embedListEditParmValue',
 		codeActionFieldTriggerEnable: 'parentObjectSaved',
 		header: 'Parameter Value',
 		isListRowAction: true,
-		name: 'noa_edit_list_embed_edit_parm_value',
+		name: 'noa_embed_list_edit_parm_value',
 		owner: 'app_sys'
 	})
-
 	await addDataObjActionField({
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codeActionFieldType: 'listEmbedSelectEdit',
+		codeActionFieldType: 'embedListSelect',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Edit',
 		isListRowAction: true,
-		name: 'noa_edit_list_embed_select',
+		name: 'noa_embed_list_select',
+		owner: 'app_sys'
+	})
+	await addDataObjActionField({
+		actionFieldConfirms: [
+			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+		],
+		actionFieldShows: [
+			{ codeTriggerShow: 'parentObjectSaved', isRequired: true },
+			{ codeTriggerShow: 'listReorder', isRequired: true }
+		],
+		codeActionFieldType: 'listSelfReorder',
+		codeActionFieldTriggerEnable: 'always',
+		header: 'Reorder',
+		isListRowAction: false,
+		name: 'noa_embed_reorder',
 		owner: 'app_sys'
 	})
 
@@ -146,21 +176,7 @@ export async function initPreDataObjAction() {
 		name: 'noa_new_detail_dialog_detail',
 		owner: 'app_sys'
 	})
-	await addDataObjActionField({
-		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
-		],
-		actionFieldShows: [
-			{ codeTriggerShow: 'notReorder', isRequired: true },
-			{ codeTriggerShow: 'parentObjectSaved', isRequired: true }
-		],
-		codeActionFieldType: 'listEmbedConfigNew',
-		codeActionFieldTriggerEnable: 'always',
-		header: 'New',
-		isListRowAction: false,
-		name: 'noa_new_detail_embed_config_list',
-		owner: 'app_sys'
-	})
+
 	await addDataObjActionField({
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
@@ -171,6 +187,47 @@ export async function initPreDataObjAction() {
 		header: 'New',
 		isListRowAction: false,
 		name: 'noa_new_detail_list',
+		owner: 'app_sys'
+	})
+
+	/* refresh */
+	await addDataObjActionField({
+		actionFieldConfirms: [
+			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+		],
+		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
+		codeActionFieldType: 'listSelfRefresh',
+		codeActionFieldTriggerEnable: 'always',
+		header: 'Refresh',
+		isListRowAction: false,
+		name: 'noa_refresh_list',
+		owner: 'app_sys'
+	})
+
+	/* reorder */
+	await addDataObjActionField({
+		actionFieldConfirms: [
+			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+		],
+		actionFieldShows: [{ codeTriggerShow: 'listReorder', isRequired: true }],
+		codeActionFieldType: 'listSelfReorder',
+		codeActionFieldTriggerEnable: 'always',
+		header: 'Reorder',
+		isListRowAction: false,
+		name: 'noa_reorder',
+		owner: 'app_sys'
+	})
+	await addDataObjActionField({
+		actionFieldConfirms: [
+			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+		],
+		actionFieldShows: [{ codeTriggerShow: 'listReorderCancel', isRequired: true }],
+		codeActionFieldType: 'listSelfReorderCancel',
+		codeActionFieldTriggerEnable: 'always',
+		codeColor: 'red',
+		header: 'Cancel Reorder',
+		isListRowAction: false,
+		name: 'noa_reorder_cancel',
 		owner: 'app_sys'
 	})
 
@@ -202,7 +259,9 @@ export async function initPreDataObjAction() {
 		owner: 'app_sys'
 	})
 	await addDataObjActionField({
-		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
+		actionFieldConfirms: [
+			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+		],
 		actionFieldShows: [{ codeTriggerShow: 'objectChanged', isRequired: true }],
 		codeActionFieldType: 'detailSaveCancel',
 		codeActionFieldTriggerEnable: 'always',
@@ -223,61 +282,14 @@ export async function initPreDataObjAction() {
 		owner: 'app_sys'
 	})
 
-	/* refresh */
 	await addDataObjActionField({
-		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
-		],
-		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeActionFieldType: 'listSelfRefresh',
-		codeActionFieldTriggerEnable: 'always',
-		header: 'Refresh',
-		isListRowAction: false,
-		name: 'noa_refresh_list',
-		owner: 'app_sys'
-	})
-
-	/* reorder */
-	await addDataObjActionField({
-		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
-		],
-		actionFieldShows: [{ codeTriggerShow: 'listReorder', isRequired: true }],
-		codeActionFieldType: 'listSelfReorder',
-		codeActionFieldTriggerEnable: 'always',
-		header: 'Reorder',
-		isListRowAction: false,
-		name: 'noa_reorder',
-		owner: 'app_sys'
-	})
-
-	await addDataObjActionField({
-		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
-		],
-		actionFieldShows: [
-			{ codeTriggerShow: 'parentObjectSaved', isRequired: true },
-			{ codeTriggerShow: 'listReorder', isRequired: true }
-		],
-		codeActionFieldType: 'listSelfReorder',
-		codeActionFieldTriggerEnable: 'always',
-		header: 'Reorder',
-		isListRowAction: false,
-		name: 'noa_reorder_embed_config_list',
-		owner: 'app_sys'
-	})
-
-	await addDataObjActionField({
-		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
-		],
-		actionFieldShows: [{ codeTriggerShow: 'listReorderCancel', isRequired: true }],
-		codeActionFieldType: 'listSelfReorderCancel',
-		codeActionFieldTriggerEnable: 'always',
-		codeColor: 'red',
-		header: 'Cancel Reorder',
-		isListRowAction: false,
-		name: 'noa_reorder_cancel',
+		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
+		actionFieldShows: [{ codeTriggerShow: 'objectChanged', isRequired: true }],
+		codeActionFieldType: 'listSelfSave',
+		codeActionFieldTriggerEnable: 'objectValidToSave',
+		header: 'Save',
+		isListRowAction: true,
+		name: 'noa_save_list_edit',
 		owner: 'app_sys'
 	})
 

@@ -90,12 +90,6 @@ export async function initPreDataObjFieldItem() {
 	})
 	await addDataObjFieldItems({
 		exprPropDisplay: `.name`,
-		name: 'il_sys_data_obj_field_embed_detail_order_name',
-		owner: 'app_sys',
-		table: 'SysDataObjFieldEmbedDetail'
-	})
-	await addDataObjFieldItems({
-		exprPropDisplay: `.name`,
 		name: 'il_sys_data_obj_field_embed_list_config_order_name',
 		owner: 'app_sys',
 		table: 'SysDataObjFieldEmbedListConfig'

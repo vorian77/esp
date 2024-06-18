@@ -111,9 +111,7 @@
 	}
 
 	async function onRowClick(record: DataRecord, field: Field) {
-		const actions = dataObj.raw.actionsField.filter((a) => a.isListRowAction)
-
-		// if (!action || dataObj.raw.isListEdit || state.modeActive(StateMode.ReorderOn)) return
+		const actions = dataObj.actionsField.filter((a) => a.isListRowAction)
 
 		if (state.modeActive(StateMode.ReorderOn) || !actions) return
 
@@ -125,37 +123,14 @@
 			})
 		}
 
-		const action = actions[0]
-
 		state.dataQuery.dataSave({
 			listRecordIdList: dataObj.dataRecordsDisplay.map((r: any) => r.id),
 			listRecordIdCurrent: record.id
 		})
 
-		// if (action.isDisabled) {
-		// 	alert('Please save parent record before editing a child record.')
-		// 	return
-		// }
+		console.log('FormList.onRowClick:', { action: actions[0], record, field, state })
 
-		let fProxy = required(
-			state.proxyGet(action.codeActionFieldType),
-			'FormList',
-			`state.proxy.actionType: ${action.codeActionFieldType}`
-		)
-		let confirmType = action.actionFieldConfirms
-			? action.actionFieldConfirms[0].codeConfirmType
-			: undefined
-		let confirm = action.actionFieldConfirms ? action.actionFieldConfirms[0].confirm : undefined
-
-		fProxy({
-			actionType: action.codeActionFieldType,
-			confirm,
-			confirmType,
-			dataObj,
-			field,
-			record,
-			state
-		})
+		actions[0].proxyExe({ dataObj, field, record, state })
 	}
 
 	function onSelect(id: string) {

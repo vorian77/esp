@@ -1,10 +1,4 @@
-import {
-	DataObj,
-	DataObjActionField,
-	DataObjSort,
-	DataObjSortItem,
-	type DataRecord
-} from '$utils/types'
+import { DataObj, DataObjSort, DataObjSortItem, type DataRecord } from '$utils/types'
 import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 import { Field } from '$comps/form/field'
 
@@ -12,7 +6,7 @@ export function recordsFilter(filterText: string, dataObj: DataObj, fields: Fiel
 	let records = dataObj.dataRecordsDisplay.concat(dataObj.dataRecordsHidden)
 
 	// filter - filter text
-	const visibleFields = fields.map((f) => f.colDO.propName)
+	const visibleFields = fields.filter((f) => !f.colDO.isExcludeDisplay).map((f) => f.colDO.propName)
 	dataObj.dataRecordsDisplay = records.filter((record: DataRecord) => {
 		let found = false
 		for (const key in record) {
@@ -26,15 +20,6 @@ export function recordsFilter(filterText: string, dataObj: DataObj, fields: Fiel
 		}
 		return found
 	})
-
-	// filter non-displayable records
-	const orderDisplay = 'orderDisplay'
-	const orderDisplayFieldIndex = fields.findIndex((f) => f.colDO.propName === orderDisplay)
-	if (orderDisplayFieldIndex > -1) {
-		dataObj.dataRecordsDisplay = dataObj.dataRecordsDisplay.filter(
-			(record) => typeof record[orderDisplay] === 'number' && record[orderDisplay] > -1
-		)
-	}
 
 	// set filtered list
 	dataObj.dataRecordsHidden = records.filter(

@@ -46,7 +46,7 @@ export class Query {
 		const clazz = 'Query'
 		rawDataObj = valueOrDefault(rawDataObj, {})
 		this.rawDataObj = rawDataObj
-		this.parent = classOptional(DataObjParent, rawDataObj._parent)
+		this.parent = classOptional(DataObjParent, rawDataObj.rawParent)
 	}
 	addItem(list: string, item: string, separator: string) {
 		return list ? list + separator + '\n' + item : item
@@ -435,7 +435,7 @@ export class Query {
 		if (this.rawDataObj.exprSort) return 'ORDER BY ' + this.rawDataObj.exprSort
 
 		let script = ''
-		this.rawDataObj.propsSort.forEach((prop) => {
+		this.rawDataObj.rawPropsSort.forEach((prop) => {
 			if (script) script += ' THEN '
 			script += `.${prop.link?.propDisplay ? `_${prop.propName}` : prop.propName} ${prop.codeSortDir}`
 		})

@@ -61,7 +61,7 @@
 	function setStateEmbed(ids: string[]) {
 		stateEmbed = new StateSurfaceEmbed({
 			actionProxies: [
-				{ actionType: TokenAppDoActionFieldType.listEmbedEditParmValue, proxy: parmValue }
+				{ actionType: TokenAppDoActionFieldType.embedListEditParmValue, proxy: parmValue }
 			],
 			cardinality: DataObjCardinality.list,
 			dataObjSource: new TokenApiDbDataObjSource({ dataObjId: field.raw.dataObjModalId }),

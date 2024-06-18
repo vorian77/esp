@@ -1,7 +1,6 @@
 import { nodeObjHeaders, sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities1'
 import {
 	addDataObj,
-	addDataObjFieldEmbedDetail,
 	addDataObjFieldEmbedListEdit,
 	addNodeProgramObj
 } from '$server/dbEdge/init/dbEdgeInitUtilities2'

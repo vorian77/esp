@@ -25,6 +25,7 @@ export async function dynDOListReportRender(rawDataObj: RawDataObj, queryData: T
 	const repUser = new RepUser(repUserData)
 	const rawDataObjDyn = getRawDataObj(repUser)
 
+	debug('dynDOListReportRender', 'elements', repUser.report.elements)
 	addPropsDisplay(repUser.elements)
 	addPropsSelect(repUser.report.elements, rawDataObjDyn.tables)
 	// addPropsSort()
@@ -47,6 +48,7 @@ export async function dynDOListReportRender(rawDataObj: RawDataObj, queryData: T
 				_column: gePropColumn(repE),
 				_hasItems: false,
 				_propName: repE.nameCustom || repE._column?.name,
+				isExcludeDisplayAlt: repE.isExcludeDisplayAlt,
 				nameCustom: repE.nameCustom,
 				orderDisplay: repE.orderDisplay,
 				orderSort: repE.orderSort
@@ -80,7 +82,7 @@ function gePropColumn(repEl: RepEl) {
 		_codeAlignment: repEl._column?._codeAlignment || repEl._codeAlignment,
 		_codeDataType: repEl._column?._codeDataType || repEl._codeDataType,
 		header: repEl._column?.header || repEl.header,
-		isExcludeDisplay: false,
+		isExcludeDisplay: repEl._column?.isExcludeDisplay || false,
 		isMultiSelect: false,
 		isNonData: false,
 		name: repEl._column?.name || getFieldColumnCustomName(repEl._codeDataType)

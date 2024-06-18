@@ -87,7 +87,8 @@ async function initReportTrainingCredential() {
 				codeReportElementType: 'column',
 				columnName: 'id',
 				indexTable: 0,
-				orderDefine: 10
+				orderDefine: 10,
+				isExcludeDisplayAlt: true
 			},
 			{
 				codeAlignment: 'left',
@@ -246,7 +247,7 @@ async function initReportCourseSummary() {
 		exprFilter: '.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).orgs',
 		header: 'Courses (Summary)',
 		name: 'data_obj_cm_ai_report_course_summary',
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		tables: [{ index: 0, table: 'CmCourse' }],
 		fields: [
 			{

@@ -18,9 +18,9 @@ export async function initReset() {
 	SET { fieldEmbedListConfig := {}, fieldEmbedListEdit := {},fieldEmbedListSelect := {},fieldListItems := {} }`)
 
 	reset.delTableRecords('sys_core::SysDataObjColumnItem')
+	reset.delTableRecords('sys_core::SysDataObjColumnLink')
 	reset.delTableRecords('sys_core::SysDataObjColumn')
 
-	reset.delTableRecords('sys_core::SysDataObjFieldEmbedDetail')
 	reset.delTableRecords('sys_core::SysDataObjFieldEmbedListConfig')
 	reset.delTableRecords('sys_core::SysDataObjFieldEmbedListEdit')
 	reset.delTableRecords('sys_core::SysDataObjFieldEmbedListSelect')

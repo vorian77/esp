@@ -23,7 +23,7 @@
 		TokenAppTreeNode,
 		TokenAppTreeSetParent
 	} from '$utils/types.token'
-	import { DataObj, DataObjCardinality, DataObjData } from '$utils/types'
+	import { DataObj, DataObjCardinality, DataObjData, DataRecordStatus } from '$utils/types'
 	import { NodeType } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import LayoutProcess from '$comps/layout/LayoutProcess.svelte'
@@ -105,12 +105,45 @@
 							break
 
 						case TokenAppDoActionFieldType.detailSaveCancel:
-							dataObjUpdate = new ObjUpdate(false, true)
+							currLevel = state.app.getCurrLevel()
+							if (currLevel) {
+								currTab = currLevel.getCurrTab()
+								if (currTab) {
+									if (currTab.dataObj) {
+										const dataRow = currTab.dataObj.data.getDetailRow()
+										switch (dataRow.status) {
+											case DataRecordStatus.preset:
+												await query(state, currTab, TokenApiQueryType.preset, state.app)
+												dataObjUpdate = new ObjUpdate(false, true)
+												break
+											case DataRecordStatus.retrieved:
+											case DataRecordStatus.update:
+												await query(state, currTab, TokenApiQueryType.retrieve, state.app)
+												dataObjUpdate = new ObjUpdate(false, true)
+												break
+											default:
+												error(500, {
+													file: FILENAME,
+													function: `processState.actionType: ${token.actionType}`,
+													message: `No case defined for DataRecordStatus: ${dataRow.status} `
+												})
+										}
+										console.log('detailSaveCancel.dataRow', dataRow)
+									}
+								}
+							}
+
 							break
 
 						case TokenAppDoActionFieldType.detailSaveAs:
 							await state.app.tabDuplicate(state, token)
 							dataObjUpdate = new ObjUpdate(false, true)
+							break
+
+						case TokenAppDoActionFieldType.embedListConfigNew:
+							const actionProxy = state.proxyGet(TokenAppDoActionFieldType.embedListConfigNew)
+							if (actionProxy) actionProxy({ state: token.state })
+							dataObjUpdate = new ObjUpdate(false, false)
 							break
 
 						case TokenAppDoActionFieldType.listDetailEdit:
@@ -121,12 +154,6 @@
 						case TokenAppDoActionFieldType.listDetailNew:
 							await state.app.addLevelNode(state, TokenApiQueryType.preset)
 							dataObjUpdate = new ObjUpdate(true, true)
-							break
-
-						case TokenAppDoActionFieldType.listEmbedConfigNew:
-							const actionProxy = state.proxyGet(TokenAppDoActionFieldType.listEmbedConfigNew)
-							if (actionProxy) actionProxy(token.state, TokenApiQueryType.preset)
-							dataObjUpdate = new ObjUpdate(false, false)
 							break
 
 						case TokenAppDoActionFieldType.listSelfRefresh:

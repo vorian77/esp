@@ -36,7 +36,6 @@ export async function initAdminSys() {
 	await initColumn()
 	await initDataObjActionField()
 	await initDataObjActionFieldGroup()
-	await initDataObjFielEmbedDetail()
 	await initDataObjFielEmbedListConfig()
 	await initDataObjFieldEmbedListEdit()
 	await initDataObjFieldEmbedListSelect()
@@ -256,11 +255,17 @@ async function initFieldListConfigDataObjActionFieldShows() {
 				orderDefine: 10
 			},
 			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 20,
+				orderDefine: 20
+			},
+			{
 				codeFieldElement: 'select',
 				columnName: 'codeTriggerShow',
 				orderSort: 10,
-				orderDisplay: 20,
-				orderDefine: 20,
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_action_field_trigger',
@@ -269,9 +274,15 @@ async function initFieldListConfigDataObjActionFieldShows() {
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isRequired',
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 50,
+				orderDefine: 50
 			},
 
 			/* management */
@@ -377,16 +388,28 @@ async function initFieldListConfigDataObjActionQueryParm() {
 				orderDefine: 10
 			},
 			{
-				columnName: 'key',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				orderDisplay: 20,
-				orderDefine: 20,
+				orderDefine: 20
+			},
+			{
+				columnName: 'key',
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 0
 			},
 			{
 				columnName: 'value',
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 50,
+				orderDefine: 50
 			},
 
 			/* management */
@@ -497,10 +520,16 @@ async function initFieldListConfigDataObjActionQueryTrigger() {
 				orderDefine: 10
 			},
 			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 20,
+				orderDefine: 20
+			},
+			{
 				codeFieldElement: 'select',
 				columnName: 'codeQueryType',
-				orderDisplay: 20,
-				orderDefine: 20,
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_query_type',
@@ -509,12 +538,18 @@ async function initFieldListConfigDataObjActionQueryTrigger() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeTriggerTiming',
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_action_query_trigger_timing',
 				linkTable: 'SysCode'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				orderDisplay: 50,
+				orderDefine: 50
 			},
 
 			/* management */
@@ -600,7 +635,8 @@ async function initFieldListConfigDataObjActionFieldGroupItem() {
 				columnName: 'orderDefine',
 				orderSort: 10,
 				orderDefine: 30,
-				indexTable: 0
+				indexTable: 0,
+				isExcludeDisplayAlt: true
 			}
 		]
 	})
@@ -609,7 +645,7 @@ async function initFieldListConfigDataObjActionFieldGroupItem() {
 		actionFieldGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
-		header: 'Action field Item',
+		header: 'Action Field Item',
 		name: 'doflc_sys_admin_data_obj_action_field_group_item_detail',
 		owner: 'app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjActionFieldGroupItem' }],
@@ -633,8 +669,9 @@ async function initFieldListConfigDataObjActionFieldGroupItem() {
 				columnName: 'orderDefine',
 				orderDefine: 30,
 				exprPreset: `(SELECT count((SELECT sys_core::SysDataObjActionFieldGroupItem
-					FILTER .id IN ((SELECT sys_core::SysDataObjActionFieldGroup FILTER .id = <parms,uuid,listRecordIdParent>).actions.id))) + 1)`,
-				indexTable: 0
+					FILTER .id IN ((SELECT sys_core::SysDataObjActionFieldGroup FILTER .id = <parms,uuid,listRecordIdParent>).actionFieldItems.id))) + 1)`,
+				indexTable: 0,
+				isExcludeDisplayAlt: true
 			},
 
 			/* management */
@@ -726,7 +763,8 @@ async function initFieldListConfigDataObjColumnItem() {
 				columnName: 'orderDefine',
 				orderSort: 10,
 				orderDefine: 40,
-				indexTable: 0
+				indexTable: 0,
+				isExcludeDisplayAlt: true
 			}
 		]
 	})
@@ -760,9 +798,9 @@ async function initFieldListConfigDataObjColumnItem() {
 			{
 				columnName: 'orderDefine',
 				orderDefine: 40,
-
 				exprPreset: `(SELECT 1000)`,
-				indexTable: 0
+				indexTable: 0,
+				isExcludeDisplayAlt: true
 			},
 
 			/* management */
@@ -849,7 +887,8 @@ async function initFieldListConfigDataObjColumnLink() {
 				columnName: 'orderDefine',
 				orderSort: 10,
 				orderDefine: 30,
-				indexTable: 0
+				indexTable: 0,
+				isExcludeDisplayAlt: true
 			}
 		]
 	})
@@ -879,39 +918,51 @@ async function initFieldListConfigDataObjColumnLink() {
 			{
 				columnName: 'orderDefine',
 				orderDefine: 30,
-
 				exprPreset: `(SELECT 1000)`,
-				indexTable: 0
+				indexTable: 0,
+				isExcludeDisplayAlt: true
 			},
 
 			/* management */
 			{
-				codeAccess: 'readOnly',
-				columnName: 'createdAt',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				orderDisplay: 1000,
-				orderDefine: 1000,
-				indexTable: 0
+				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'createdBy',
+				columnName: 'createdAt',
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'modifiedAt',
+				columnName: 'createdBy',
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'modifiedBy',
+				columnName: 'modifiedAt',
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				orderDisplay: 1040,
+				orderDefine: 1040,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				orderDisplay: 1050,
+				orderDefine: 1050
 			}
 		]
 	})
@@ -933,7 +984,6 @@ async function initFieldListConfigDataObjTable() {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		header: 'Data Object - Tables',
-		listReorderColumn: 'index',
 		name: 'doflc_sys_admin_data_obj_table_list',
 		owner: 'app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjTable' }],
@@ -2163,33 +2213,26 @@ async function initColumn() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
-				orderDisplay: 30,
-				orderDefine: 30
+				orderDisplay: 25,
+				orderDefine: 25
 			},
 			{
 				columnName: 'name',
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 0
 			},
 			{
 				columnName: 'header',
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'headerSide',
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDisplay: 35,
+				orderDefine: 35,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeDataType',
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_db_col_data_type',
@@ -2198,12 +2241,31 @@ async function initColumn() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeAlignment',
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 45,
+				orderDefine: 45,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_db_col_alignment',
 				linkTable: 'SysCode'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				orderDisplay: 50,
+				orderDefine: 50
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 55,
+				orderDefine: 55
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'headerSide',
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
@@ -2319,7 +2381,7 @@ async function initColumn() {
 			{
 				codeFieldElement: 'custom',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'Numeric' },
+				customElement: { _type: 'header', label: 'number' },
 				orderDisplay: 240,
 				orderDefine: 240,
 				indexTable: 0
@@ -2332,7 +2394,7 @@ async function initColumn() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'numeric',
+				codeFieldElement: 'number',
 				columnName: 'minValue',
 				orderDisplay: 260,
 				orderDefine: 260,
@@ -2340,7 +2402,7 @@ async function initColumn() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'numeric',
+				codeFieldElement: 'number',
 				columnName: 'maxValue',
 				orderDisplay: 270,
 				orderDefine: 270,
@@ -2382,7 +2444,7 @@ async function initColumn() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'numeric',
+				codeFieldElement: 'number',
 				columnName: 'minLength',
 				orderDisplay: 330,
 				orderDefine: 330,
@@ -2390,7 +2452,7 @@ async function initColumn() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'numeric',
+				codeFieldElement: 'number',
 				columnName: 'maxLength',
 				orderDisplay: 340,
 				orderDefine: 340,
@@ -3129,12 +3191,11 @@ async function initDataObjColumn() {
 				indexTable: 0
 			},
 			{
-				codeAccess: 'readOnly',
 				columnName: 'orderDefine',
-				orderDisplay: 210,
 				orderDefine: 210,
 				exprPreset: `(SELECT 1000)`,
-				indexTable: 0
+				indexTable: 0,
+				isExcludeDisplayAlt: true
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -3469,16 +3530,6 @@ async function initDataObjColumn() {
 				columnName: 'custom_row_start',
 				orderDisplay: 690,
 				orderDefine: 690
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'fieldEmbedDetail',
-				orderDisplay: 695,
-				orderDefine: 695,
-				fieldListItems: 'il_sys_data_obj_field_embed_detail_order_name',
-				indexTable: 0,
-				linkTable: 'SysDataObjFieldEmbedDetail'
 			},
 			{
 				codeAccess: 'optional',
@@ -3901,24 +3952,6 @@ async function initDataObjActionField() {
 				orderDefine: 60
 			},
 			{
-				codeFieldElement: 'embedListConfig',
-				columnName: 'actionFieldConfirms',
-				orderDisplay: 70,
-				orderDefine: 70,
-				fieldEmbedListConfig: 'flec_data_obj_action_field_confirm',
-				indexTable: 0,
-				linkTable: 'SysDataObjActionFieldConfirm'
-			},
-			{
-				codeFieldElement: 'embedListConfig',
-				columnName: 'actionFieldShows',
-				orderDisplay: 80,
-				orderDefine: 80,
-				fieldEmbedListConfig: 'flec_data_obj_action_field_show',
-				indexTable: 0,
-				linkTable: 'SysDataObjActionFieldShow'
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				orderDisplay: 90,
@@ -3967,6 +4000,24 @@ async function initDataObjActionField() {
 				columnName: 'custom_row_end',
 				orderDisplay: 140,
 				orderDefine: 140
+			},
+			{
+				codeFieldElement: 'embedListConfig',
+				columnName: 'actionFieldConfirms',
+				orderDisplay: 150,
+				orderDefine: 150,
+				fieldEmbedListConfig: 'flec_data_obj_action_field_confirm',
+				indexTable: 0,
+				linkTable: 'SysDataObjActionFieldConfirm'
+			},
+			{
+				codeFieldElement: 'embedListConfig',
+				columnName: 'actionFieldShows',
+				orderDisplay: 160,
+				orderDefine: 160,
+				fieldEmbedListConfig: 'flec_data_obj_action_field_show',
+				indexTable: 0,
+				linkTable: 'SysDataObjActionFieldShow'
 			},
 
 			/* management */
@@ -4095,11 +4146,11 @@ async function initDataObjActionFieldGroup() {
 				columnName: 'actionFieldItems',
 				orderDisplay: 40,
 				orderDefine: 40,
-
 				fieldEmbedListConfig: 'flec_data_obj_action_field_group_item',
 				indexTable: 0,
 				linkTable: 'SysDataObjActionFieldGroupItem'
 			},
+
 			/* management */
 			{
 				codeFieldElement: 'tagRow',
@@ -4162,157 +4213,6 @@ async function initDataObjActionFieldGroup() {
 		orderDefine: 10,
 		owner: 'app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_data_obj_action_field_group_list'
-	})
-}
-
-async function initDataObjFielEmbedDetail() {
-	await addDataObj({
-		actionFieldGroup: 'doag_list',
-		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
-		header: 'Embed Details',
-		name: 'data_obj_sys_admin_data_obj_field_embed_detail_list',
-		owner: 'app_sys_admin',
-		tables: [{ index: 0, table: 'SysDataObjFieldEmbedDetail' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'name',
-				orderCrumb: 10,
-				orderSort: 10,
-				orderDisplay: 15,
-				orderDefine: 15,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'dataObjEmbed',
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0,
-				linkColumns: ['name']
-			}
-		]
-	})
-
-	await addDataObj({
-		actionFieldGroup: 'doag_detail',
-		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
-		header: 'Embed Detail',
-		name: 'data_obj_sys_admin_data_obj_field_embed_detail_detail',
-		owner: 'app_sys_admin',
-		tables: [{ index: 0, table: 'SysDataObjFieldEmbedDetail' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				orderDefine: 10
-			},
-			{
-				columnName: 'owner',
-				orderDefine: 20,
-				indexTable: 0,
-				isExcludeDisplayAlt: true,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
-				linkTable: 'SysOrg'
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				orderDisplay: 30,
-				orderDefine: 30
-			},
-			{
-				columnName: 'name',
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'dataObjEmbed',
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_order_name',
-				linkTable: 'SysDataObj'
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				orderDisplay: 60,
-				orderDefine: 60
-			},
-
-			/* management */
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				orderDisplay: 1000,
-				orderDefine: 1000
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdAt',
-				orderDisplay: 1010,
-				orderDefine: 1010,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdBy',
-				orderDisplay: 1020,
-				orderDefine: 1020,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedAt',
-				orderDisplay: 1030,
-				orderDefine: 1030,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedBy',
-				orderDisplay: 1040,
-				orderDefine: 1040,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				orderDisplay: 1050,
-				orderDefine: 1050
-			}
-		]
-	})
-
-	await addNodeProgramObj({
-		codeIcon: 'application',
-		dataObj: 'data_obj_sys_admin_data_obj_field_embed_detail_list',
-		header: 'Embed Details',
-		name: 'node_obj_sys_admin_data_obj_field_embed_detail_list',
-		orderDefine: 55,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
-	})
-
-	await addNodeProgramObj({
-		codeIcon: 'application',
-		dataObj: 'data_obj_sys_admin_data_obj_field_embed_detail_detail',
-		header: 'Config',
-		name: 'node_obj_sys_admin_data_obj_field_embed_detail_detail',
-		orderDefine: 10,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_data_obj_field_embed_detail_list'
 	})
 }
 
@@ -4808,16 +4708,28 @@ async function initDataObjFieldEmbedListSelect() {
 				linkTable: 'SysDataObjActionFieldGroup'
 			},
 			{
-				columnName: 'btnLabelComplete',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
 				orderDisplay: 60,
-				orderDefine: 60,
+				orderDefine: 60
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 70,
+				orderDefine: 70
+			},
+			{
+				columnName: 'btnLabelComplete',
+				orderDisplay: 80,
+				orderDefine: 80,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'dataObjList',
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_order_name',
 				linkTable: 'SysDataObj'
@@ -4825,8 +4737,8 @@ async function initDataObjFieldEmbedListSelect() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
-				orderDisplay: 80,
-				orderDefine: 80
+				orderDisplay: 100,
+				orderDefine: 100
 			},
 
 			/* management */
@@ -4997,55 +4909,73 @@ async function initDataObjFieldListItems() {
 				linkTable: 'SysOrg'
 			},
 			{
-				columnName: 'name',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				orderDisplay: 30,
-				orderDefine: 30,
+				orderDefine: 30
+			},
+			{
+				columnName: 'name',
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'table',
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_table_order_name',
 				linkTable: 'SysTable'
 			},
 			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
 				columnName: 'exprPropDisplay',
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDisplay: 70,
+				orderDefine: 70,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'exprWith',
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'textArea',
-				columnName: 'exprFilter',
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'exprSort',
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'codeDataTypeDisplay',
+				codeFieldElement: 'textArea',
+				columnName: 'exprFilter',
 				orderDisplay: 90,
 				orderDefine: 90,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'exprSort',
+				orderDisplay: 100,
+				orderDefine: 100,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 110,
+				orderDefine: 110
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeDataTypeDisplay',
+				orderDisplay: 120,
+				orderDefine: 120,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_db_col_data_type',
@@ -5055,13 +4985,20 @@ async function initDataObjFieldListItems() {
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeMask',
-				orderDisplay: 100,
-				orderDefine: 100,
+				orderDisplay: 130,
+				orderDefine: 130,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_db_col_mask',
 				linkTable: 'SysCode'
 			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				orderDisplay: 140,
+				orderDefine: 140
+			},
+
 			/* management */
 			{
 				codeFieldElement: 'tagRow',
@@ -5204,10 +5141,16 @@ async function initDataObjNodeObj() {
 				linkTable: 'SysOrg'
 			},
 			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 30,
+				orderDefine: 30
+			},
+			{
 				codeFieldElement: 'select',
 				columnName: 'codeNavType',
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_node_obj_nav_type',
@@ -5216,8 +5159,8 @@ async function initDataObjNodeObj() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeNodeType',
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_node_obj_type',
@@ -5227,41 +5170,65 @@ async function initDataObjNodeObj() {
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'parent',
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDisplay: 60,
+				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_node_obj_order_name',
 				linkTable: 'SysNodeObj'
 			},
 			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				orderDisplay: 70,
+				orderDefine: 70
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 80,
+				orderDefine: 80
+			},
+			{
 				columnName: 'name',
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'header',
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDisplay: 100,
+				orderDefine: 100,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeIcon',
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 110,
+				orderDefine: 110,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_node_obj_icon',
 				linkTable: 'SysCode'
 			},
 			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				orderDisplay: 120,
+				orderDefine: 120
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 130,
+				orderDefine: 130
+			},
+			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'dataObj',
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 140,
+				orderDefine: 140,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_order_name',
 				linkTable: 'SysDataObj'
@@ -5269,17 +5236,24 @@ async function initDataObjNodeObj() {
 			{
 				codeAccess: 'optional',
 				columnName: 'page',
-				orderDisplay: 100,
-				orderDefine: 100,
+				orderDisplay: 150,
+				orderDefine: 150,
 				indexTable: 0
 			},
 			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				orderDisplay: 160,
+				orderDefine: 160
+			},
+			{
 				columnName: 'orderDefine',
-				orderDefine: 110,
+				orderDefine: 170,
 				exprPreset: `(SELECT (count((SELECT sys_core::SysNodeObj FILTER .owner.id = <tree,uuid,SysResource.id>)) + 1))`,
 				indexTable: 0,
 				isExcludeDisplayAlt: true
 			},
+
 			/* management */
 			{
 				codeFieldElement: 'tagRow',
@@ -5377,6 +5351,13 @@ async function initTable() {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'hasMgmt',
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
 			}
 		]
 	})
@@ -5404,32 +5385,44 @@ async function initTable() {
 				linkTable: 'SysOrg'
 			},
 			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 30,
+				orderDefine: 30
+			},
+			{
 				columnName: 'mod',
-				orderDisplay: 10,
-				orderDefine: 10,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
 			{
 				columnName: 'name',
-				orderDisplay: 20,
-				orderDefine: 20,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
-			},
-			{
-				codeFieldElement: 'embedListSelect',
-				columnName: 'columns',
-				orderDisplay: 30,
-				orderDefine: 30,
-				fieldEmbedListSelect: 'fels_sys_column',
-				indexTable: 0,
-				linkTable: 'SysColumn'
 			},
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'hasMgmt',
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 60,
+				orderDefine: 60,
 				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				orderDisplay: 70,
+				orderDefine: 70
+			},
+			{
+				codeFieldElement: 'embedListSelect',
+				columnName: 'columns',
+				orderDisplay: 80,
+				orderDefine: 80,
+				fieldEmbedListSelect: 'fels_sys_column',
+				indexTable: 0,
+				linkTable: 'SysColumn'
 			},
 
 			/* management */

@@ -13,7 +13,6 @@
 	import FormElInp from '$comps/form/FormElInp.svelte'
 	import FormElInpCheckbox from '$comps/form/FormElInpCheckbox.svelte'
 	import FormElInpRadio from '$comps/form/FormElInpRadio.svelte'
-	import FormElEmbedDetail from '$comps/form/FormElEmbedDetail.svelte'
 	import FormElEmbedListConfig from '$comps/form/FormElEmbedListConfig.svelte'
 	import FormElEmbedListEdit from '$comps/form/FormElEmbedListEdit.svelte'
 	import FormElEmbedListSelect from '$comps/form/FormElEmbedListSelect.svelte'
@@ -23,7 +22,6 @@
 	import { Field } from '$comps/form/field'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import {
-		FieldEmbedDetail,
 		FieldEmbedListConfig,
 		FieldEmbedListEdit,
 		FieldEmbedListSelect
@@ -75,8 +73,6 @@
 		<FormElInpCheckbox {dataObj} {field} {fieldValue} {setFieldVal} />
 	{:else if field instanceof FieldCustom}
 		<FormElCustom bind:field {state} {dataObj} />
-	{:else if field instanceof FieldEmbedDetail}
-		<FormElEmbedDetail {state} {dataObj} {dataObjData} {field} {fieldValue} />
 	{:else if field instanceof FieldEmbedListConfig}
 		<FormElEmbedListConfig {state} {dataObj} {dataObjData} {field} {fieldValue} />
 	{:else if field instanceof FieldEmbedListEdit}

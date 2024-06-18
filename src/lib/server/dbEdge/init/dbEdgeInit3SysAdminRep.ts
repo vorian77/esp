@@ -1,8 +1,6 @@
 import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities1'
 import {
 	addDataObj,
-	addDataObjFieldEmbedDetail,
-	addDataObjFieldEmbedListEdit,
 	addDataObjFieldEmbedListSelect,
 	addNodeProgramObj
 } from '$server/dbEdge/init/dbEdgeInitUtilities2'
@@ -122,23 +120,35 @@ async function initAnalytic() {
 				linkTable: 'SysOrg'
 			},
 			{
-				columnName: 'name',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0
+				orderDefine: 30
 			},
 			{
-				columnName: 'header',
+				columnName: 'name',
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
 			},
 			{
+				columnName: 'header',
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'description',
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDisplay: 70,
+				orderDefine: 70,
 				indexTable: 0
 			},
 
@@ -847,53 +857,60 @@ async function initRepEl() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'description',
+				columnName: 'codeDbDataSourceValue',
 				orderDisplay: 30,
 				orderDefine: 30,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'codeDbDataSourceValue',
-				orderDisplay: 40,
-				orderDefine: 40,
 				indexTable: 0,
 				linkColumns: ['name']
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeFieldElement',
+				columnName: 'isExcludeDisplayAlt',
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'description',
 				orderDisplay: 50,
 				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeFieldElement',
+				orderDisplay: 60,
+				orderDefine: 60,
 				indexTable: 0,
 				linkColumns: ['name']
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'orderDisplay',
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDisplay: 70,
+				orderDefine: 70,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'column',
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 80,
+				orderDefine: 80,
 				indexTable: 0,
 				linkColumns: ['name']
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'nameCustom',
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0
 			},
 			{
 				columnName: 'orderDefine',
 				orderSort: 10,
-				orderDefine: 90,
+				orderDefine: 100,
 				indexTable: 0,
 				isExcludeDisplayAlt: true
 			}
@@ -925,54 +942,61 @@ async function initRepEl() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
-				orderDisplay: 25,
-				orderDefine: 25
+				orderDisplay: 30,
+				orderDefine: 30
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeReportElementType',
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_rep_element_type',
 				linkTable: 'SysCode'
 			},
 			{
-				codeAccess: 'optional',
-				columnName: 'description',
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				orderDisplay: 45,
-				orderDefine: 45
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				orderDisplay: 50,
-				orderDefine: 50
-			},
-			{
 				codeFieldElement: 'select',
 				columnName: 'codeDbDataSourceValue',
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_field_source_value',
 				linkTable: 'SysCode'
 			},
 			{
+				codeFieldElement: 'toggle',
+				columnName: 'isExcludeDisplayAlt',
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				orderDisplay: 70,
+				orderDefine: 70
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 80,
+				orderDefine: 80
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'description',
+				orderDisplay: 90,
+				orderDefine: 90,
+				indexTable: 0
+			},
+			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeFieldElement',
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 100,
+				orderDefine: 100,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_field_element',
@@ -982,43 +1006,41 @@ async function initRepEl() {
 				codeAccess: 'optional',
 				codeFieldElement: 'number',
 				columnName: 'orderDisplay',
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 110,
+				orderDefine: 110,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
-				orderDisplay: 90,
-				orderDefine: 90
+				orderDisplay: 120,
+				orderDefine: 120
 			},
 			{
 				codeFieldElement: 'tagSection',
 				columnName: 'custom_section_end',
-				orderDisplay: 100,
-				orderDefine: 100
+				orderDisplay: 130,
+				orderDefine: 130
 			},
-
 			{
 				codeFieldElement: 'tagSection',
 				columnName: 'custom_section_start',
 				headerAlt: 'Column - Database',
-				orderDisplay: 110,
-				orderDefine: 110
+				orderDisplay: 140,
+				orderDefine: 140
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
-				orderDisplay: 120,
-				orderDefine: 120
+				orderDisplay: 150,
+				orderDefine: 150
 			},
-
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'column',
-				orderDisplay: 130,
-				orderDefine: 130,
+				orderDisplay: 160,
+				orderDefine: 160,
 				indexTable: 0,
 				fieldListItems: 'il_sys_rep_el_table_column_order_name',
 				linkTable: 'SysColumn'
@@ -1026,56 +1048,55 @@ async function initRepEl() {
 			{
 				codeAccess: 'optional',
 				columnName: 'indexTable',
-				orderDisplay: 140,
-				orderDefine: 140,
+				orderDisplay: 170,
+				orderDefine: 170,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
-				orderDisplay: 150,
-				orderDefine: 150
-			},
-			{
-				codeFieldElement: 'tagSection',
-				columnName: 'custom_section_end',
-				orderDisplay: 160,
-				orderDefine: 160
-			},
-
-			{
-				codeFieldElement: 'tagSection',
-				columnName: 'custom_section_start',
-				headerAlt: 'Column - Expression',
-				orderDisplay: 170,
-				orderDefine: 170
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
 				orderDisplay: 180,
 				orderDefine: 180
 			},
 			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				orderDisplay: 190,
+				orderDefine: 190
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_start',
+				headerAlt: 'Column - Expression',
+				orderDisplay: 200,
+				orderDefine: 200
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				orderDisplay: 210,
+				orderDefine: 210
+			},
+			{
 				codeAccess: 'optional',
 				columnName: 'nameCustom',
-				orderDisplay: 190,
-				orderDefine: 190,
+				orderDisplay: 220,
+				orderDefine: 220,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'header',
-				orderDisplay: 200,
-				orderDefine: 200,
+				orderDisplay: 230,
+				orderDefine: 230,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeDataType',
-				orderDisplay: 210,
-				orderDefine: 210,
+				orderDisplay: 240,
+				orderDefine: 240,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_db_col_data_type',
@@ -1085,8 +1106,8 @@ async function initRepEl() {
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeAlignment',
-				orderDisplay: 220,
-				orderDefine: 220,
+				orderDisplay: 250,
+				orderDefine: 250,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_db_col_alignment',
@@ -1095,52 +1116,49 @@ async function initRepEl() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
-				orderDisplay: 230,
-				orderDefine: 230
+				orderDisplay: 260,
+				orderDefine: 260
 			},
-
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'exprCustom',
-				orderDisplay: 240,
-				orderDefine: 240,
+				orderDisplay: 270,
+				orderDefine: 270,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagSection',
 				columnName: 'custom_section_end',
-				orderDisplay: 250,
-				orderDefine: 250
+				orderDisplay: 280,
+				orderDefine: 280
 			},
-
 			{
 				codeFieldElement: 'tagSection',
 				columnName: 'custom_section_start',
 				headerAlt: 'Sort',
-				orderDisplay: 260,
-				orderDefine: 260
+				orderDisplay: 290,
+				orderDefine: 290
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
-				orderDisplay: 270,
-				orderDefine: 270
+				orderDisplay: 300,
+				orderDefine: 300
 			},
-
 			{
 				codeAccess: 'optional',
 				columnName: 'orderSort',
-				orderDisplay: 280,
-				orderDefine: 280,
+				orderDisplay: 310,
+				orderDefine: 310,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeSortDir',
-				orderDisplay: 290,
-				orderDefine: 290,
+				orderDisplay: 320,
+				orderDefine: 320,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_field_sort_dir',
@@ -1149,19 +1167,18 @@ async function initRepEl() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
-				orderDisplay: 300,
-				orderDefine: 300
+				orderDisplay: 330,
+				orderDefine: 330
 			},
 			{
 				codeFieldElement: 'tagSection',
 				columnName: 'custom_section_end',
-				orderDisplay: 310,
-				orderDefine: 310
+				orderDisplay: 340,
+				orderDefine: 340
 			},
-
 			{
 				columnName: 'orderDefine',
-				orderDefine: 320,
+				orderDefine: 350,
 				exprPreset: `(SELECT 1000)`,
 				indexTable: 0,
 				isExcludeDisplayAlt: true

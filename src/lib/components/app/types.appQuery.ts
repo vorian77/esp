@@ -57,7 +57,7 @@ export async function query(
 
 	if (!tab.rawDataObj || tab.rawDataObj.isAlwaysRetrieveDataObject) {
 		tab.rawDataObj = result.data.rawDataObj
-		tab.dataObj = await DataObj.init(result.data.rawDataObj)
+		tab.dataObj = await DataObj.init(state, result.data.rawDataObj)
 		table = tab.getTable()
 	}
 

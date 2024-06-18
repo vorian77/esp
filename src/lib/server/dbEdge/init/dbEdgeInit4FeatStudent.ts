@@ -660,7 +660,7 @@ async function initCsf() {
 
 async function initCsfCohort() {
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_csf_cohort_list',
@@ -719,7 +719,7 @@ async function initCsfCohort() {
 	})
 
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_csf_cohort_detail',
@@ -845,7 +845,7 @@ async function initCsfCohort() {
 		header: 'Cohorts',
 		name: 'node_obj_cm_csf_cohort_list',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
@@ -854,14 +854,14 @@ async function initCsfCohort() {
 		header: 'Cohort',
 		name: 'node_obj_cm_csf_cohort_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentNodeName: 'node_obj_cm_csf_cohort_list'
 	})
 }
 
 async function initCsfCohortAttdStudent() {
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter: '.csfCohort.id = <tree,uuid,CmCsfCohort.id>',
@@ -913,7 +913,7 @@ async function initCsfCohortAttdStudent() {
 		codeComponent: 'FormDetail',
 		header: 'Attendance',
 		name: 'data_obj_cm_csf_cohort_attd_student_detail',
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		tables: [{ index: 0, table: 'CmCsfCohortAttd' }],
 		fields: [
 			{
@@ -1028,7 +1028,7 @@ async function initCsfCohortAttdStudent() {
 		header: 'Attendance Records',
 		name: 'node_obj_cm_csf_cohort_attd_student_list',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentNodeName: 'node_obj_cm_csf_cohort_detail'
 	})
 	await addNodeProgramObj({
@@ -1037,7 +1037,7 @@ async function initCsfCohortAttdStudent() {
 		header: 'Attendance',
 		name: 'node_obj_cm_csf_cohort_attd_student_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentNodeName: 'node_obj_cm_csf_cohort_attd_student_list'
 	})
 }

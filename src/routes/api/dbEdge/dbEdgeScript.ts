@@ -89,7 +89,7 @@ export class ScriptGroup {
 		const isFilterCurrentValue = query.rawDataObj.codeCardinality === DataObjCardinality.detail
 		if (isFilterCurrentValue) queryData.recordSet(returnData.getDetailRecord())
 		return this.initScript(query, queryData, ScriptExePost.formatData, [
-			['propsSelectDataItems', { props: query.rawDataObj.propsSelect, isFilterCurrentValue }],
+			['propsSelectDataItems', { props: query.rawDataObj.rawPropsSelect, isFilterCurrentValue }],
 			['script', { content: ['propsSelectDataItems'] }]
 		])
 	}
@@ -100,7 +100,7 @@ export class ScriptGroup {
 	}
 	initScriptPreset(query: Query, queryData: TokenApiQueryData) {
 		return this.initScript(query, queryData, ScriptExePost.formatData, [
-			['propsSelectPreset', { props: query.rawDataObj.propsSelectPreset }],
+			['propsSelectPreset', { props: query.rawDataObj.rawPropsSelectPreset }],
 			['script', { content: ['propsSelectPreset'] }]
 		])
 	}
@@ -128,7 +128,7 @@ export class ScriptGroup {
 		debug('listEditPresetExpr', listEditPresetExpr)
 		return this.initScript(query, queryData, ScriptExePost.processRowSelectPreset, [
 			['setValue', { key: 'expr', value: listEditPresetExpr }],
-			['propsListEditPresetInsert', { props: query.rawDataObj.propsSelectPreset }],
+			['propsListEditPresetInsert', { props: query.rawDataObj.rawPropsSelectPreset }],
 			['script', { content: ['expr', 'propsListEditPresetInsert'] }]
 		])
 	}
@@ -157,7 +157,7 @@ export class ScriptGroup {
 
 			// loop
 			['action', { type: 'INSERT', table: query.getTableObjRoot() }],
-			['propsListEditPresetSave', { props: query.rawDataObj.propsSelectPreset }],
+			['propsListEditPresetSave', { props: query.rawDataObj.rawPropsSelectPreset }],
 			['wrap',{ key: 'loop', open: 'FOR item IN data UNION (', content: ['action', 'propsListEditPresetSave'] }],
 
 			// recordsInsert
@@ -178,7 +178,7 @@ export class ScriptGroup {
 	initScriptRetrieve(query: Query, queryData: TokenApiQueryData) {
 		return this.initScript(query, queryData, ScriptExePost.formatData, [
 			['action', { type: 'SELECT', table: query.getTableObjRoot() }],
-			['propsSelect', { props: query.rawDataObj.propsSelect }],
+			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
 			['filter'],
 			['order'],
 			['script', { content: ['action', 'propsSelect', 'filter', 'order'] }]
@@ -230,7 +230,7 @@ export class ScriptGroup {
 			return [				
         // records insert
 				['action', { type: 'INSERT', table: query.getTableObjRoot() }],
-				['propsSave', { action: 'INSERT', props: query.rawDataObj.propsSaveInsert }],
+				['propsSave', { action: 'INSERT', props: query.rawDataObj.rawPropsSaveInsert }],
 				['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'propsSave'] }],
 				['data'],
 				['with', { content: ['data', 'loop'] }],
@@ -245,7 +245,7 @@ export class ScriptGroup {
 				
         // return inserted records
 				['action', { type: 'SELECT', table: recordsInsert }],
-				['propsSelect', { props: query.rawDataObj.propsSelect }],
+				['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
 				
         // script
 				['with', { content: [recordsInsert, recordUpdate] }],
@@ -254,7 +254,7 @@ export class ScriptGroup {
 		} else {
 			return [
 				['action', { type: 'INSERT', table: query.getTableObjRoot() }],
-				['propsSave', { action: 'INSERT', props: query.rawDataObj.propsSaveInsert }],
+				['propsSave', { action: 'INSERT', props: query.rawDataObj.rawPropsSaveInsert }],
 				['wrap', {key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter', 'propsSave'] }],
 				...this.initScriptSavePost(query)
 			]
@@ -265,7 +265,7 @@ export class ScriptGroup {
 		return [
 			['action', { type: 'UPDATE', table: query.getTableObjRoot() }],
 			['filter', { exprFilter: `.id = <uuid>item['id']` }],
-			['propsSave', { action: 'UPDATE', props: query.rawDataObj.propsSaveUpdate }],
+			['propsSave', { action: 'UPDATE', props: query.rawDataObj.rawPropsSaveUpdate }],
 			['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter', 'propsSave'] }],
 			...this.initScriptSavePost(query)
 		]
@@ -277,7 +277,7 @@ export class ScriptGroup {
 			['with', { content: ['data', 'records'] }],
 
 			['action', { type: 'SELECT', table: 'Records' }],
-			['propsSelect', { props: query.rawDataObj.propsSelect }],
+			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
 			['script', { content: ['with', 'action', 'propsSelect'] }]
 		]
 	}

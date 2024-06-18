@@ -217,9 +217,6 @@ export async function getDataObjById(dataObjId: string) {
 					customColSource: true,
 					customColSourceKey: true
 				})),
-				_fieldEmbedDetail: e.select(doc.fieldEmbedDetail, (fe) => ({
-					_dataObjEmbedId: fe.dataObjEmbed.id
-				})),
 				_fieldEmbedListConfig: e.select(doc.fieldEmbedListConfig, (fe) => ({
 					_actionFieldGroupModal: e.select(fe.actionFieldGroupModal, (afg) => ({
 						...shapeDataObjActionFieldGroup(afg)
@@ -404,12 +401,14 @@ export async function getReportUser(repUserId: string) {
 			_codeAlignment: c.codeAlignment.name,
 			_codeDataType: c.codeDataType.name,
 			header: c.header,
+			isExcludeDisplay: c.isExcludeDisplay,
 			name: c.name
 		})),
 		description: true,
 		exprCustom: true,
 		header: true,
 		indexTable: true,
+		isExcludeDisplayAlt: true,
 		nameCustom: true,
 		orderDefine: true,
 		orderDisplay: true,

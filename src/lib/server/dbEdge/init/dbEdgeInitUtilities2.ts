@@ -444,12 +444,6 @@ export async function addDataObj(data: any) {
 							e.json_get(e.json_get(f, 'customElement'), 'sourceKey')
 						),
 
-						fieldEmbedDetail: e.select(
-							e.sys_core.getDataObjFieldEmbedDetail(
-								e.cast(e.str, e.json_get(f, 'fieldEmbedDetail'))
-							)
-						),
-
 						fieldEmbedListConfig: e.select(
 							e.sys_core.getDataObjFieldEmbedListConfig(
 								e.cast(e.str, e.json_get(f, 'fieldEmbedListConfig'))
@@ -556,28 +550,6 @@ export async function addDataObjActionFieldGroup(data: any) {
 					)
 				),
 				createdBy: e.select(e.sys_user.getRootUser()),
-				modifiedBy: e.select(e.sys_user.getRootUser()),
-				name: p.name,
-				owner: e.select(e.sys_core.getEnt(p.owner))
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-
-export async function addDataObjFieldEmbedDetail(data: any) {
-	sectionHeader(`addDataObjFieldEmbedDetail - ${data.name}`)
-
-	const query = e.params(
-		{
-			dataObjEmbed: e.str,
-			name: e.str,
-			owner: e.str
-		},
-		(p) => {
-			return e.insert(e.sys_core.SysDataObjFieldEmbedDetail, {
-				createdBy: e.select(e.sys_user.getRootUser()),
-				dataObjEmbed: e.select(e.sys_core.getDataObj(p.dataObjEmbed)),
 				modifiedBy: e.select(e.sys_user.getRootUser()),
 				name: p.name,
 				owner: e.select(e.sys_core.getEnt(p.owner))
@@ -1023,6 +995,7 @@ export async function addReport(data: any) {
 						exprCustom: e.cast(e.str, e.json_get(el, 'exprCustom')),
 						header: e.cast(e.str, e.json_get(el, 'header')),
 						indexTable: e.cast(e.int16, e.json_get(el, 'indexTable')),
+						isExcludeDisplayAlt: e.cast(e.bool, e.json_get(el, 'isExcludeDisplayAlt')),
 						modifiedBy: e.select(e.sys_user.getRootUser()),
 						nameCustom: e.cast(e.str, e.json_get(el, 'nameCustom')),
 						orderDefine: e.cast(e.int16, e.json_get(el, 'orderDefine')),

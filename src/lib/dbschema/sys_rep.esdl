@@ -52,6 +52,7 @@ module sys_rep {
     exprCustom: str;
     header: str;
     indexTable: default::nonNegative;
+    isExcludeDisplayAlt: bool;
     nameCustom: str;
     required orderDefine: default::nonNegative;
     orderDisplay: default::nonNegative;
@@ -87,7 +88,9 @@ module sys_rep {
       on source delete delete target;
       on target delete allow;
     };
-    required report: sys_rep::SysRep;
+    required report: sys_rep::SysRep{
+      on target delete delete source;
+    };
     required user: sys_user::SysUser;
   }
 

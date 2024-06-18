@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState'
+import { State, StateActionProxy } from '$comps/app/types.appState'
 import {
 	booleanOrFalse,
 	debug,
@@ -18,6 +18,7 @@ import {
 } from '$utils/types'
 import {
 	RawDataObj,
+	RawDataObjActionField,
 	RawDataObjParent,
 	RawDataObjPropDisplay,
 	RawDataObjTable
@@ -60,6 +61,7 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$comps/dataObj/types.dataObj.ts'
 
 export class DataObj {
+	actionsField: DataObjActionField[] = []
 	actionsQueryFunctions: DataObjActionQueryFunction[] = []
 	data: DataObjData
 	dataFieldsChanged: FieldValues = new FieldValues()
@@ -76,7 +78,7 @@ export class DataObj {
 		rawDataObj = valueOrDefault(rawDataObj, {})
 		this.raw = rawDataObj
 		this.data = new DataObjData(this.raw.codeCardinality)
-		this.fields = this.initFields(rawDataObj.propsDisplay)
+		this.fields = this.initFields(rawDataObj.rawPropsDisplay)
 
 		/* dependent properties */
 		this.rootTable =
@@ -85,13 +87,14 @@ export class DataObj {
 				: undefined
 	}
 
-	static async init(rawDataObj: RawDataObj) {
+	static async init(state: State, rawDataObj: RawDataObj) {
 		const dataObj = new DataObj(rawDataObj)
-		await enhanceActionFields(dataObj.fields)
+		await enhanceCustomFields(dataObj.fields)
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
+		initActionsField()
 		return dataObj
 
-		async function enhanceActionFields(fields: Array<Field>) {
+		async function enhanceCustomFields(fields: Array<Field>) {
 			for (const field of fields) {
 				if (field instanceof FieldCustomAction) {
 					await field.initEnhancement()
@@ -105,6 +108,11 @@ export class DataObj {
 				funcs.push(new DataObjActionQueryFunction(action, await getEnhancement(action.name)))
 			}
 			return funcs
+		}
+		function initActionsField() {
+			dataObj.actionsField = rawDataObj.rawActionsField.map((rawAction) => {
+				return new DataObjActionField(rawAction, state)
+			})
 		}
 	}
 
@@ -437,35 +445,37 @@ export class DataObjActionField {
 	actionFieldShows: DataObjActionFieldShow[]
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
 	codeActionFieldType: TokenAppDoActionFieldType
+	fProxy: Function
 	fieldColor: FieldColor
 	header: string
-	name: string
 	isDisabled: boolean = false
 	isListRowAction: boolean
 	isShow: boolean = false
-	constructor(obj: any) {
+	name: string
+	constructor(rawAction: RawDataObjActionField, state: State | undefined = undefined) {
 		const clazz = 'DataObjActionField'
-		obj = valueOrDefault(obj._action, {})
-		this.actionFieldConfirms = arrayOfClasses(DataObjActionFieldConfirm, obj._actionFieldConfirms)
-		this.actionFieldShows = arrayOfClasses(DataObjActionFieldShow, obj._actionFieldShows)
-		this.codeActionFieldTriggerEnable = memberOfEnum(
-			obj._codeActionFieldTriggerEnable,
-			clazz,
-			'codeActionFieldTriggerEnable',
-			'DataObjActionFieldTriggerEnable',
-			DataObjActionFieldTriggerEnable
-		)
-		this.codeActionFieldType = memberOfEnum(
-			obj._codeActionFieldType,
-			clazz,
-			'codeDbAction',
-			'TokenAppDoActionType',
-			TokenAppDoActionFieldType
-		)
-		this.fieldColor = new FieldColor(obj._codeColor, 'blue')
-		this.header = strRequired(obj.header, clazz, 'header')
-		this.isListRowAction = booleanOrFalse(obj.isListRowAction, 'isListRowAction')
-		this.name = strRequired(obj.name, clazz, 'name')
+		this.actionFieldConfirms = rawAction.actionFieldConfirms
+		this.actionFieldShows = rawAction.actionFieldShows
+		this.codeActionFieldTriggerEnable = rawAction.codeActionFieldTriggerEnable
+		this.codeActionFieldType = rawAction.codeActionFieldType
+		this.fProxy = this.proxySet(this.codeActionFieldType, state)
+		this.fieldColor = rawAction.fieldColor
+		this.header = rawAction.header
+		this.isListRowAction = rawAction.isListRowAction
+		this.name = rawAction.name
+	}
+	proxyExe(parms: any) {
+		this.fProxy({
+			...parms,
+			actionType: this.codeActionFieldType,
+			confirm: this.actionFieldConfirms ? this.actionFieldConfirms[0].confirm : undefined,
+			confirmType: this.actionFieldConfirms
+				? this.actionFieldConfirms[0].codeConfirmType
+				: undefined
+		})
+	}
+	proxySet(actionType: TokenAppDoActionFieldType, state: State | undefined) {
+		return state ? state.proxyGet(actionType) : () => {}
 	}
 }
 

@@ -18,7 +18,7 @@ async function initCourse() {
 		exprFilter: '.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).orgs',
 		header: 'Courses',
 		name: 'data_obj_cm_course_list',
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		tables: [{ index: 0, table: 'CmCourse' }],
 		fields: [
 			{
@@ -74,7 +74,7 @@ async function initCourse() {
 		codeComponent: 'FormDetail',
 		header: 'Course',
 		name: 'data_obj_cm_course_detail',
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		tables: [{ index: 0, table: 'CmCourse' }],
 		fields: [
 			{
@@ -308,7 +308,7 @@ async function initCourse() {
 		header: 'Courses',
 		name: 'node_obj_cm_course_list',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentNodeName: 'node_pgm_cm_staff_provider'
 	})
 	await addNodeProgramObj({
@@ -317,7 +317,7 @@ async function initCourse() {
 		header: 'Course',
 		name: 'node_obj_cm_course_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentNodeName: 'node_obj_cm_course_list'
 	})
 }
@@ -330,7 +330,7 @@ async function initCohort() {
 		exprFilter: '.id in (SELECT app_cm::CmCourse FILTER .id = <tree,uuid,CmCourse.id>).cohorts.id',
 		header: 'Cohorts',
 		name: 'data_obj_cm_cohort_list',
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		tables: [{ index: 0, table: 'CmCohort' }],
 		fields: [
 			{
@@ -409,7 +409,7 @@ async function initCohort() {
 		codeComponent: 'FormDetail',
 		header: 'Cohort',
 		name: 'data_obj_cm_cohort_detail',
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentColumn: 'cohorts',
 		parentTable: 'CmCourse',
 		tables: [{ index: 0, table: 'CmCohort' }],
@@ -582,7 +582,7 @@ async function initCohort() {
 		header: 'Cohorts',
 		name: 'node_obj_cm_cohort_list',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentNodeName: 'node_obj_cm_course_detail'
 	})
 	await addNodeProgramObj({
@@ -591,7 +591,7 @@ async function initCohort() {
 		header: 'Cohort',
 		name: 'node_obj_cm_cohort_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentNodeName: 'node_obj_cm_cohort_list'
 	})
 }
@@ -604,7 +604,7 @@ async function initCohortStudentRoster() {
 		exprFilter: '.cohort.id = <tree,uuid,CmCohort.id>',
 		header: 'Student Roster',
 		name: 'data_obj_cm_student_roster_list_by_cohort',
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		tables: [
 			{ index: 0, table: 'CmCsfCohort' },
 			{ columnParent: 'csf', indexParent: 0, index: 1, table: 'CmClientServiceFlow' },
@@ -652,7 +652,7 @@ async function initCohortStudentRoster() {
 		header: 'Student Roster',
 		name: 'node_obj_cm_student_roster_list_by_cohort',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentNodeName: 'node_obj_cm_cohort_detail'
 	})
 }
@@ -665,7 +665,7 @@ async function initCohortAttd() {
 		exprFilter: '.cohortId = <tree,uuid,CmCohort.id>',
 		header: 'Attendance Days',
 		name: 'data_obj_cm_cohort_attd_list',
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		tables: [{ index: 0, table: 'CmCohortAttd' }],
 		fields: [
 			{
@@ -701,7 +701,7 @@ async function initCohortAttd() {
 	})
 
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_cohort_attd_detail',
@@ -820,7 +820,7 @@ async function initCohortAttd() {
 		header: 'Attendance Days',
 		name: 'node_obj_cm_cohort_attd_list',
 		orderDefine: 20,
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentNodeName: 'node_obj_cm_cohort_detail'
 	})
 	await addNodeProgramObj({
@@ -829,14 +829,14 @@ async function initCohortAttd() {
 		header: 'Attendance Day',
 		name: 'node_obj_cm_cohort_attd_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentNodeName: 'node_obj_cm_cohort_attd_list'
 	})
 }
 
 async function initCohortAttdSheet() {
 	await addDataObj({
-		actionFieldGroup: 'doag_list_edit',
+		actionFieldGroup: 'doag_embed_list_edit',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeListEditPresetType: 'insert',
@@ -851,7 +851,7 @@ async function initCohortAttdSheet() {
 		csfCohortsWithoutAttd := (SELECT csfCohortsInCohort EXCEPT csfCohortsWithAttd)
 		SELECT csfCohortsWithoutAttd`,
 		name: 'data_obj_cm_cohort_attd_sheet',
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		tables: [
 			{ index: 0, table: 'CmCsfCohortAttd' },
 			{ columnParent: 'csfCohort', indexParent: 0, index: 1, table: 'CmCsfCohort' },
@@ -968,7 +968,7 @@ async function initCohortAttdSheet() {
 		header: 'Attendance Records',
 		name: 'node_obj_cm_cohort_attd_sheet',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'app_cm_training',
 		parentNodeName: 'node_obj_cm_cohort_attd_detail'
 	})
 }

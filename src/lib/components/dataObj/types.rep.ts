@@ -3,6 +3,7 @@ import {
 	arrayOfEnums,
 	booleanOrDefault,
 	booleanOrFalse,
+	booleanRequired,
 	debug,
 	memberOfEnum,
 	memberOfEnumOrDefault,
@@ -113,6 +114,7 @@ export class RepEl {
 	exprCustom?: string
 	header?: string
 	indexTable?: number
+	isExcludeDisplayAlt?: boolean
 	nameCustom?: string
 	orderDefine: number
 	orderDisplay?: number
@@ -120,6 +122,7 @@ export class RepEl {
 	constructor(obj: any) {
 		const clazz = 'RepEl'
 		obj = valueOrDefault(obj, {})
+		debug('RepEl', 'obj', obj)
 		this._codeAlignment = memberOfEnumIfExists(
 			obj._codeAlignment,
 			clazz,
@@ -167,10 +170,12 @@ export class RepEl {
 		this.exprCustom = strOptional(obj.exprCustom, clazz, 'expr')
 		this.header = strOptional(obj.header, clazz, 'header')
 		this.indexTable = nbrOptional(obj.indexTable, clazz, 'indexTable')
+		this.isExcludeDisplayAlt = booleanOrDefault(obj.isExcludeDisplayAlt, false)
 		this.nameCustom = strOptional(obj.nameCustom, clazz, 'name')
 		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
 		this.orderDisplay = nbrOptional(obj.orderDisplay, clazz, 'orderDisplay')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
+		debug('RepEl', 'this', this)
 	}
 }
 
@@ -178,6 +183,7 @@ export class RepElColumn {
 	_codeAlignment: FieldAlignment
 	_codeDataType: PropDataType
 	header: string
+	isExcludeDisplay: boolean
 	name: string
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
@@ -197,6 +203,7 @@ export class RepElColumn {
 			PropDataType
 		)
 		this.header = strRequired(obj.header, clazz, 'header')
+		this.isExcludeDisplay = booleanRequired(obj.isExcludeDisplay, clazz, 'isExcludeDisplay')
 		this.name = strRequired(obj.name, clazz, 'name')
 	}
 }

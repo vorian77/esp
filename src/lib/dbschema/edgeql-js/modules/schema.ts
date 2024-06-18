@@ -739,7 +739,6 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_core::SysDataObjWith]": $.LinkDesc<_sys_core.$SysDataObjWith, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldEmbedListSelect]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListSelect, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldEmbedListConfig]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListConfig, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is sys_core::SysDataObjFieldEmbedDetail]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedDetail, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::ObjRoot]": $.LinkDesc<_sys_core.$ObjRoot, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_user::Mgmt]": $.LinkDesc<_sys_user.$Mgmt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysObj]": $.LinkDesc<_sys_core.$SysObj, $.Cardinality.Many, {}, false, false,  false, false>;

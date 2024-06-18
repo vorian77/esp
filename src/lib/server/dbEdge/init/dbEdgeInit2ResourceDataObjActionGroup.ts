@@ -38,51 +38,8 @@ async function initFeatures() {
 	})
 
 	await addDataObjActionFieldGroup({
-		actionFieldItems: [['noa_save_list', 0]],
+		actionFieldItems: [['noa_save_list_edit', 0]],
 		name: 'doag_list_edit',
-		owner: 'app_sys'
-	})
-
-	/* embed */
-	await addDataObjActionFieldGroup({
-		actionFieldItems: [
-			['noa_save_detail', 0],
-			['noa_save_cancel', 1]
-		],
-		name: 'doag_embed_detail',
-		owner: 'app_sys'
-	})
-	await addDataObjActionFieldGroup({
-		actionFieldItems: [
-			['noa_save_list', 0],
-			['noa_new_detail_embed_config_list', 1],
-			['noa_edit_list_embed_config', 2],
-			['noa_reorder_embed_config_list', 3],
-			['noa_reorder_cancel', 4]
-		],
-		name: 'doag_embed_list_config',
-		owner: 'app_sys'
-	})
-	await addDataObjActionFieldGroup({
-		actionFieldItems: [['noa_edit_list_embed_select', 0]],
-		name: 'doag_embed_list_select',
-		owner: 'app_sys'
-	})
-	await addDataObjActionFieldGroup({
-		actionFieldItems: [
-			['noa_save_list', 0],
-			['noa_reorder_embed_config_list', 1],
-			['noa_reorder_cancel', 2]
-		],
-		name: 'doag_embed_list_edit',
-		owner: 'app_sys'
-	})
-	await addDataObjActionFieldGroup({
-		actionFieldItems: [
-			['noa_save_list', 0],
-			['noa_edit_list_embed_edit_parm_value', 1]
-		],
-		name: 'doag_embed_list_edit_parm_value',
 		owner: 'app_sys'
 	})
 
@@ -108,6 +65,51 @@ async function initFeatures() {
 			['noa_delete_detail', 3]
 		],
 		name: 'doag_dialog_form_detail',
+		owner: 'app_sys'
+	})
+
+	/* embed */
+	await addDataObjActionFieldGroup({
+		actionFieldItems: [
+			['noa_save_detail', 0],
+			['noa_save_cancel', 1]
+		],
+		name: 'doag_embed_detail',
+		owner: 'app_sys'
+	})
+	await addDataObjActionFieldGroup({
+		actionFieldItems: [
+			['noa_save_list', 0],
+			['noa_embed_list_config_new', 1],
+			['noa_embed_list_config_edit', 2],
+			['noa_embed_reorder', 3],
+			['noa_reorder_cancel', 4]
+		],
+		name: 'doag_embed_list_config',
+		owner: 'app_sys'
+	})
+	await addDataObjActionFieldGroup({
+		actionFieldItems: [
+			['noa_save_list', 0],
+			['noa_embed_reorder', 1],
+			['noa_reorder_cancel', 2]
+		],
+		name: 'doag_embed_list_edit',
+		owner: 'app_sys'
+	})
+	await addDataObjActionFieldGroup({
+		actionFieldItems: [
+			['noa_save_list', 0],
+			['noa_embed_list_edit_parm_value', 1],
+			['noa_embed_reorder', 2],
+			['noa_reorder_cancel', 3]
+		],
+		name: 'doag_embed_list_edit_parm_value',
+		owner: 'app_sys'
+	})
+	await addDataObjActionFieldGroup({
+		actionFieldItems: [['noa_embed_list_select', 0]],
+		name: 'doag_embed_list_select',
 		owner: 'app_sys'
 	})
 

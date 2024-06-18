@@ -4,6 +4,7 @@
 		State,
 		StateLayoutStyle,
 		StateLayoutComponentType,
+		StateMode,
 		StateSurfaceEmbed
 	} from '$comps/app/types.appState'
 	import {
@@ -35,21 +36,18 @@
 
 	let stateEmbed: State
 	let recordIdCurrent: string
-	const exprFilterEmbed = `.id IN (SELECT ${dataObj.rootTable?.object} FILTER .id = <parms,uuid,listRecordIdParent>).${field.colDO.propName}.id`
 
 	$: {
 		let recordId = dataObjData.getDetailRecordValue('id') || ''
 		if (recordId.startsWith('preset_')) recordId = ''
-		if (recordIdCurrent !== recordId) {
-			recordIdCurrent = recordId
-			setStateEmbed(fieldValue)
-		}
+		recordIdCurrent = recordId
+		setStateEmbed(fieldValue)
 	}
 
 	function setStateEmbed(ids: string[]) {
 		stateEmbed = new StateSurfaceEmbed({
 			actionProxies: [
-				{ actionType: TokenAppDoActionFieldType.listEmbedSelectEdit, proxy: openDialogProxy }
+				{ actionType: TokenAppDoActionFieldType.embedListSelect, proxy: openDialogProxy }
 			],
 			cardinality: DataObjCardinality.list,
 			dataObjSource: new TokenApiDbDataObjSource({ dataObjId: field.raw.dataObjListID }),
@@ -59,6 +57,12 @@
 			queryType: TokenApiQueryType.retrieve
 		})
 	}
+	function openDialogIcon() {
+		const action = stateEmbed.app
+			.getCurrLevelActions()
+			.find((action) => action.codeActionFieldType === TokenAppDoActionFieldType.embedListSelect)
+		if (action) action.proxyExe({ dataObj, field, state: stateEmbed })
+	}
 
 	function openDialogProxy(parms: any) {
 		openDialog()
@@ -66,7 +70,7 @@
 
 	function openDialog() {
 		state.openModalEmbed(
-			field.raw.actionsFieldModal,
+			field.actionsFieldModal,
 			DataObjCardinality.list,
 			new TokenApiDbDataObjSource({
 				dataObjId: field.raw.dataObjListID
@@ -91,7 +95,7 @@
 
 <div class="flex mt-6">
 	<label for={field.colDO.propName}>{field.colDO.label}</label>
-	<button class="ml-1" on:click={() => openDialog()}>
+	<button class="ml-1" on:click={() => openDialogIcon()}>
 		<Icon name={'select'} width="28" height="28" fill={'#3b79e1'} />
 	</button>
 </div>

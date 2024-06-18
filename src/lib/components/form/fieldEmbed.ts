@@ -1,5 +1,6 @@
 import { Field, FieldAccess } from '$comps/form/field'
 import {
+	arrayOfClasses,
 	debug,
 	DataObj,
 	DataObjActionField,
@@ -9,7 +10,6 @@ import {
 } from '$utils/types'
 import {
 	RawDataObjPropDisplay,
-	RawDataObjPropDisplayEmbedDetail,
 	RawDataObjPropDisplayEmbedListConfig,
 	RawDataObjPropDisplayEmbedListEdit,
 	RawDataObjPropDisplayEmbedListSelect
@@ -23,22 +23,17 @@ export class FieldEmbed extends Field {
 		this.colDO.fieldAccess = FieldAccess.optional
 	}
 }
-
-export class FieldEmbedDetail extends FieldEmbed {
-	raw: RawDataObjPropDisplayEmbedDetail
-	constructor(propRaw: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
-		const clazz = 'FieldEmbedDetail'
-		super(propRaw, index, isFirstVisible)
-		this.raw = required(propRaw.fieldEmbedDetail, clazz, 'raw')
-	}
-}
-
 export class FieldEmbedListConfig extends FieldEmbed {
+	actionsFieldModal: DataObjActionField[]
 	raw: RawDataObjPropDisplayEmbedListConfig
 	constructor(propRaw: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
 		const clazz = 'FieldEmbedListConfig'
 		super(propRaw, index, isFirstVisible)
 		this.raw = required(propRaw.fieldEmbedListConfig, clazz, 'raw')
+		this.actionsFieldModal = arrayOfClasses(
+			DataObjActionField,
+			propRaw.fieldEmbedListConfig?.rawActionsFieldModal
+		)
 	}
 }
 
@@ -52,10 +47,15 @@ export class FieldEmbedListEdit extends FieldEmbed {
 }
 
 export class FieldEmbedListSelect extends FieldEmbed {
+	actionsFieldModal: DataObjActionField[]
 	raw: RawDataObjPropDisplayEmbedListSelect
 	constructor(propRaw: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
 		const clazz = 'FieldEmbedListSelect'
 		super(propRaw, index, isFirstVisible)
 		this.raw = required(propRaw.fieldEmbedListSelect, clazz, 'raw')
+		this.actionsFieldModal = arrayOfClasses(
+			DataObjActionField,
+			propRaw.fieldEmbedListSelect?.rawActionsFieldModal
+		)
 	}
 }

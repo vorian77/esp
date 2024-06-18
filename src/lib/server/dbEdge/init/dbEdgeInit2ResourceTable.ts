@@ -25,7 +25,6 @@ export async function initPreTable() {
 		['app_sys', 'sys_core', 'SysDataObjColumn', true],
 		['app_sys', 'sys_core', 'SysDataObjColumnItem', true],
 		['app_sys', 'sys_core', 'SysDataObjColumnLink', true],
-		['app_sys', 'sys_core', 'SysDataObjFieldEmbedDetail', true],
 		['app_sys', 'sys_core', 'SysDataObjFieldEmbedListConfig', true],
 		['app_sys', 'sys_core', 'SysDataObjFieldEmbedListEdit', true],
 		['app_sys', 'sys_core', 'SysDataObjFieldEmbedListSelect', true],
@@ -45,6 +44,15 @@ export async function initPreTable() {
 		['app_sys', 'sys_migr', 'SysMigrTargetColumn', true],
 		['app_sys', 'sys_migr', 'SysMigrTargetTable', true],
 
+		['app_sys', 'sys_user', 'SysStaff', true],
+		['app_sys', 'sys_user', 'SysUser', false],
+		['app_sys', 'sys_user', 'SysUserType', false],
+		['app_sys', 'sys_user', 'SysUserTypeResource', false],
+		['app_sys', 'sys_user', 'SysUserTypeTag', false],
+		['app_sys', 'sys_user', 'SysWidget', false]
+	])
+
+	await tables([
 		// report
 		['app_sys_rep', 'sys_rep', 'SysAnalytic', true],
 		['app_sys_rep', 'sys_rep', 'SysAnalyticParm', true],
@@ -56,27 +64,23 @@ export async function initPreTable() {
 		['app_sys_rep', 'sys_rep', 'SysRepUser', true],
 		['app_sys_rep', 'sys_rep', 'SysRepUserAnalytic', true],
 		['app_sys_rep', 'sys_rep', 'SysRepUserEl', true],
-		['app_sys_rep', 'sys_rep', 'SysRepUserParm', true],
-
-		['app_sys', 'sys_user', 'SysStaff', true],
-		['app_sys', 'sys_user', 'SysUser', false],
-		['app_sys', 'sys_user', 'SysUserType', false],
-		['app_sys', 'sys_user', 'SysUserTypeResource', false],
-		['app_sys', 'sys_user', 'SysUserTypeTag', false],
-		['app_sys', 'sys_user', 'SysWidget', false]
+		['app_sys_rep', 'sys_rep', 'SysRepUserParm', true]
 	])
 
 	await tables([
 		['app_cm', 'app_cm', 'CmServiceFlow', true],
 		['app_cm', 'app_cm', 'CmClient', true],
 		['app_cm', 'app_cm', 'CmClientServiceFlow', true],
-		['app_cm', 'app_cm', 'CmCourse', true],
-		['app_cm', 'app_cm', 'CmCohort', true],
-		['app_cm', 'app_cm', 'CmCohortAttd', true],
-		['app_cm', 'app_cm', 'CmCsfCohort', true],
-		['app_cm', 'app_cm', 'CmCsfCohortAttd', true],
 		['app_cm', 'app_cm', 'CmCsfDocument', true],
 		['app_cm', 'app_cm', 'CmCsfJobPlacement', true],
 		['app_cm', 'app_cm', 'CmCsfNote', true]
+	])
+
+	await tables([
+		['app_cm_training', 'app_cm', 'CmCourse', true],
+		['app_cm_training', 'app_cm', 'CmCohort', true],
+		['app_cm_training', 'app_cm', 'CmCohortAttd', true],
+		['app_cm_training', 'app_cm', 'CmCsfCohort', true],
+		['app_cm_training', 'app_cm', 'CmCsfCohortAttd', true]
 	])
 }

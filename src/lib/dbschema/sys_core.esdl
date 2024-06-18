@@ -183,7 +183,6 @@ module sys_core {
     customColSource: str;
     customColSourceKey: str;
 
-    fieldEmbedDetail: sys_core::SysDataObjFieldEmbedDetail;
     fieldEmbedListConfig: sys_core::SysDataObjFieldEmbedListConfig;
     fieldEmbedListEdit: sys_core::SysDataObjFieldEmbedListEdit;
     fieldEmbedListSelect: sys_core::SysDataObjFieldEmbedListSelect;
@@ -228,13 +227,6 @@ module sys_core {
     required orderDefine: default::nonNegative;
   }
 
-  type SysDataObjFieldEmbedDetail extending sys_core::SysObj {
-    required dataObjEmbed: sys_core::SysDataObj {
-      on source delete allow;
-    };
-    constraint exclusive on (.name);
-  }
-
   type SysDataObjFieldEmbedListConfig extending sys_core::SysObj {
     required actionFieldGroupModal: sys_core::SysDataObjActionFieldGroup {
       on target delete allow;
@@ -254,7 +246,6 @@ module sys_core {
       required dataObjEmbed: sys_core::SysDataObj {
         on source delete allow;
       };
-       
     constraint exclusive on (.name);
   }
 
@@ -262,7 +253,7 @@ module sys_core {
     required actionFieldGroupModal: sys_core::SysDataObjActionFieldGroup {
       on target delete allow;
     }
-    btnLabelComplete: str;
+    required btnLabelComplete: str;
     required dataObjList: sys_core::SysDataObj {
       on source delete allow;
     };
@@ -332,9 +323,6 @@ module sys_core {
   function getDataObjActionFieldGroup(name: str) -> optional sys_core::SysDataObjActionFieldGroup
     using (select sys_core::SysDataObjActionFieldGroup filter .name = name);        
       
-  function getDataObjFieldEmbedDetail(name: str) -> optional sys_core::SysDataObjFieldEmbedDetail
-    using (select sys_core::SysDataObjFieldEmbedDetail filter .name = name);
-
   function getDataObjFieldEmbedListConfig(name: str) -> optional sys_core::SysDataObjFieldEmbedListConfig
     using (select sys_core::SysDataObjFieldEmbedListConfig filter .name = name);
 

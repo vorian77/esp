@@ -283,7 +283,6 @@ export namespace sys_core {
     "fieldEmbedListSelect"?: SysDataObjFieldEmbedListSelect | null;
     "codeSortDir"?: SysCode | null;
     "exprPreset"?: string | null;
-    "fieldEmbedDetail"?: SysDataObjFieldEmbedDetail | null;
     "orderCrumb"?: number | null;
     "orderSort"?: number | null;
     "isExcludeInsert": boolean;
@@ -305,9 +304,6 @@ export namespace sys_core {
     "column": sys_db.SysColumn;
     "orderDefine": number;
   }
-  export interface SysDataObjFieldEmbedDetail extends SysObj {
-    "dataObjEmbed": SysDataObj;
-  }
   export interface SysDataObjFieldEmbedListConfig extends SysObj {
     "dataObjEmbed": SysDataObj;
     "dataObjModal": SysDataObj;
@@ -320,7 +316,7 @@ export namespace sys_core {
   }
   export interface SysDataObjFieldEmbedListSelect extends SysObj {
     "dataObjList": SysDataObj;
-    "btnLabelComplete"?: string | null;
+    "btnLabelComplete": string;
     "actionFieldGroupModal": SysDataObjActionFieldGroup;
   }
   export interface SysDataObjFieldListItems extends SysObj {
@@ -805,6 +801,7 @@ export namespace sys_rep {
     "codeReportElementType": sys_core.SysCode;
     "exprCustom"?: string | null;
     "nameCustom"?: string | null;
+    "isExcludeDisplayAlt"?: boolean | null;
     "orderDefine": number;
     "orderDisplay"?: number | null;
   }
@@ -821,11 +818,11 @@ export namespace sys_rep {
     "orderDefine": number;
   }
   export interface SysRepUser extends sys_user.Mgmt {
-    "report": SysRep;
     "elements": SysRepUserEl[];
     "parms": SysRepUserParm[];
     "user": sys_user.SysUser;
     "descriptionUser"?: string | null;
+    "report": SysRep;
     "analytics": SysRepUserAnalytic[];
     "orderDefine": number;
     "headerUser": string;
@@ -908,7 +905,6 @@ export interface types {
     "SysDataObjColumn": sys_core.SysDataObjColumn;
     "SysDataObjColumnItem": sys_core.SysDataObjColumnItem;
     "SysDataObjColumnLink": sys_core.SysDataObjColumnLink;
-    "SysDataObjFieldEmbedDetail": sys_core.SysDataObjFieldEmbedDetail;
     "SysDataObjFieldEmbedListConfig": sys_core.SysDataObjFieldEmbedListConfig;
     "SysDataObjFieldEmbedListEdit": sys_core.SysDataObjFieldEmbedListEdit;
     "SysDataObjFieldEmbedListSelect": sys_core.SysDataObjFieldEmbedListSelect;

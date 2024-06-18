@@ -229,7 +229,7 @@ export class State {
 
 	proxyGet(actionType: TokenAppDoActionFieldType) {
 		const idx = this.actionProxies.findIndex((p) => p.actionType === actionType)
-		return idx > -1 ? this.actionProxies[idx].proxy : undefined
+		return idx > -1 ? this.actionProxies[idx].proxy : () => {}
 	}
 
 	resetState() {
@@ -342,7 +342,7 @@ export class StateSurfaceEmbed extends State {
 			confirmType: TokenAppDoActionConfirmType.none,
 			token: new TokenApiQuery(
 				required(obj.queryType, clazz, 'queryType'),
-				required(obj.dataObjSource, clazz, 'dataObjSource'),  
+				required(obj.dataObjSource, clazz, 'dataObjSource'),
 				new TokenApiQueryData({
 					dataObjData: obj.data
 						? obj.data

@@ -41,21 +41,18 @@
 	}
 
 	function load() {
-		dataObj.raw.actionsField = dataObj.raw.actionsField.map((a: DataObjActionField) => {
-			return {
-				...a,
-				isDisabled: !isTriggeredEnable(a),
-				isShow: isTriggeredShow(a)
-			}
+		dataObj.actionsField.forEach((a) => {
+			a.isDisabled = !isTriggeredEnable(a)
+			a.isShow = isTriggeredShow(a)
 		})
-		actions = dataObj.raw.actionsField.filter((a) => a.isShow)
-		isEditing = dataObj.raw.actionsField.some(
+		actions = dataObj.actionsField.filter((a) => a.isShow)
+		isEditing = dataObj.actionsField.some(
 			(a: DataObjActionField) =>
 				[TokenAppDoActionFieldType.detailSave, TokenAppDoActionFieldType.listSelfSave].includes(
 					a.codeActionFieldType
 				) && state.objStatus.changed()
 		)
-		padding = dataObj.raw.actionsField.length > 0 ? 'mx-4' : ''
+		padding = dataObj.actionsField.length > 0 ? 'mx-4' : ''
 	}
 
 	let isTriggeredEnable = function (action: DataObjActionField) {
@@ -126,7 +123,9 @@
 					break
 				case DataObjActionFieldTriggerEnable.listReorder:
 					isTriggered =
-						dataObj.raw.listReorderColumn !== '' &&
+						dataObj.raw.listReorderColumn !== null &&
+						dataObj.raw.listReorderColumn !== undefined &&
+						dataObj.raw.listReorderColumn.length > 0 &&
 						!state.modeActive(StateMode.ReorderOn) &&
 						dataObj.data.dataRows.length > 1
 					break

@@ -62,8 +62,8 @@
 	function setStateEmbed(fieldValue: any) {
 		stateEmbed = new StateSurfaceEmbed({
 			actionProxies: [
-				{ actionType: TokenAppDoActionFieldType.listEmbedConfigEdit, proxy: openModalEdit },
-				{ actionType: TokenAppDoActionFieldType.listEmbedConfigNew, proxy: openModalNew }
+				{ actionType: TokenAppDoActionFieldType.embedListConfigEdit, proxy: openModalEdit },
+				{ actionType: TokenAppDoActionFieldType.embedListConfigNew, proxy: openModalNew }
 			],
 			cardinality: DataObjCardinality.list,
 			dataObjSource: new TokenApiDbDataObjSource({
@@ -91,7 +91,7 @@
 
 	function openModal(state: State, queryType: TokenApiQueryType) {
 		state.openModalEmbed(
-			field.raw.actionsFieldModal,
+			field.actionsFieldModal,
 			DataObjCardinality.detail,
 			new TokenApiDbDataObjSource({
 				dataObjId: field.raw.dataObjEmbedId,

@@ -71,6 +71,7 @@ export type $SysRepElλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "codeReportElementType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "exprCustom": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "nameCustom": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "isExcludeDisplayAlt": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "orderDefine": $.PropertyDesc<_default.$nonNegative, $.Cardinality.One, false, false, false, false>;
   "orderDisplay": $.PropertyDesc<_default.$nonNegative, $.Cardinality.AtMostOne, false, false, false, false>;
   "<elements[is sys_rep::SysRep]": $.LinkDesc<$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -110,11 +111,11 @@ const $SysRepParm = $.makeType<$SysRepParm>(_.spec, "16fcd7d3-1880-11ef-86b6-f5a
 const SysRepParm: $.$expr_PathNode<$.TypeSet<$SysRepParm, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysRepParm, $.Cardinality.Many), null);
 
 export type $SysRepUserλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
-  "report": $.LinkDesc<$SysRep, $.Cardinality.One, {}, false, false,  false, false>;
   "elements": $.LinkDesc<$SysRepUserEl, $.Cardinality.Many, {}, false, false,  false, false>;
   "parms": $.LinkDesc<$SysRepUserParm, $.Cardinality.Many, {}, false, false,  false, false>;
   "user": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
   "descriptionUser": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "report": $.LinkDesc<$SysRep, $.Cardinality.One, {}, false, false,  false, false>;
   "analytics": $.LinkDesc<$SysRepUserAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
   "orderDefine": $.PropertyDesc<_default.$nonNegative, $.Cardinality.One, false, false, false, false>;
   "headerUser": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
