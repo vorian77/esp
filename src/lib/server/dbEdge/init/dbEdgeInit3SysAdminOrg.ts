@@ -34,6 +34,7 @@ async function initFieldListSelectUserTypes() {
 				columnName: 'name',
 				orderCrumb: 10,
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -70,6 +71,7 @@ async function initOrg() {
 				codeAccess: 'readOnly',
 				columnName: 'name',
 				orderCrumb: 10,
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -93,6 +95,7 @@ async function initOrg() {
 			},
 			{
 				columnName: 'name',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -102,12 +105,14 @@ async function initOrg() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -115,6 +120,7 @@ async function initOrg() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -122,6 +128,7 @@ async function initOrg() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -129,6 +136,7 @@ async function initOrg() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -136,6 +144,7 @@ async function initOrg() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -185,6 +194,7 @@ async function initUser() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'owner',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
@@ -195,6 +205,7 @@ async function initUser() {
 				columnName: 'firstName',
 				orderCrumb: 20,
 				orderSort: 20,
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 1
@@ -204,6 +215,7 @@ async function initUser() {
 				columnName: 'lastName',
 				orderCrumb: 10,
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 1
@@ -212,6 +224,7 @@ async function initUser() {
 				codeAccess: 'readOnly',
 				columnName: 'userName',
 				orderCrumb: 30,
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
@@ -240,24 +253,27 @@ async function initUser() {
 				columnName: 'owner',
 				orderDefine: 20,
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				linkExprSave: `(SELECT sys_core::SysOrg FILTER .id = <tree,uuid,SysOrg.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
 				columnName: 'firstName',
+				isDisplayable: true,
 				orderDisplay: 22,
 				orderDefine: 22,
 				indexTable: 1
 			},
 			{
 				columnName: 'lastName',
+				isDisplayable: true,
 				orderDisplay: 24,
 				orderDefine: 24,
 				indexTable: 1
 			},
 			{
 				columnName: 'userName',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -265,6 +281,7 @@ async function initUser() {
 			{
 				codeFieldElement: 'password',
 				columnName: 'password',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -272,6 +289,7 @@ async function initUser() {
 			{
 				codeFieldElement: 'embedListSelect',
 				columnName: 'userTypes',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				fieldEmbedListSelect: 'fels_sys_sys_admin_resources',
@@ -283,12 +301,14 @@ async function initUser() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -296,6 +316,7 @@ async function initUser() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -303,6 +324,7 @@ async function initUser() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -310,6 +332,7 @@ async function initUser() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -317,6 +340,7 @@ async function initUser() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}

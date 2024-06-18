@@ -47,6 +47,7 @@ import {
 } from '$comps/form/fieldCustom'
 import { FieldInput } from '$comps/form/fieldInput'
 import { FieldFile } from '$comps/form/fieldFile'
+import { FieldParm } from '$comps/form/fieldParm'
 import { FieldRadio } from '$comps/form/fieldRadio'
 import { FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 import { FieldSelect } from '$comps/form/fieldSelect'
@@ -191,6 +192,10 @@ export class DataObj {
 
 				case FieldElement.file:
 					newField = new FieldFile(propRaw, index, isFirstVisible)
+					break
+
+				case FieldElement.parm:
+					newField = new FieldParm(propRaw, index, isFirstVisible)
 					break
 
 				case FieldElement.radio:

@@ -38,22 +38,23 @@ export async function dynDOListReportRender(rawDataObj: RawDataObj, queryData: T
 
 	function addPropsDisplay(elements: RepUserEl[]) {
 		const f = fName('addFieldsDisplay')
-		elements.forEach((userE) => {
-			const repE = userE.element
-			rawDataObjDyn.addPropDisplay({
-				_codeAccess: 'readOnly',
-				_codeColor: 'black',
-				_codeFieldElement: repE._codeFieldElement,
-				_codeSortDir: repE._codeSortDir,
-				_column: gePropColumn(repE),
-				_hasItems: false,
-				_propName: repE.nameCustom || repE._column?.name,
-				isExcludeDisplayAlt: repE.isExcludeDisplayAlt,
-				nameCustom: repE.nameCustom,
-				orderDisplay: repE.orderDisplay,
-				orderSort: repE.orderSort
+		elements
+			.filter((e) => e.element.isDisplayable)
+			.forEach((userE) => {
+				const repE = userE.element
+				rawDataObjDyn.addPropDisplay({
+					_codeAccess: 'readOnly',
+					_codeColor: 'black',
+					_codeFieldElement: repE._codeFieldElement,
+					_codeSortDir: repE._codeSortDir,
+					_column: gePropColumn(repE),
+					_hasItems: false,
+					_propName: repE.nameCustom || repE._column?.name,
+					nameCustom: repE.nameCustom,
+					orderDisplay: repE.orderDisplay,
+					orderSort: repE.orderSort
+				})
 			})
-		})
 	}
 	function addPropsSelect(elements: RepEl[], tables: DataObjTable[]) {
 		const f = fName('addFieldsSelect')
@@ -82,7 +83,6 @@ function gePropColumn(repEl: RepEl) {
 		_codeAlignment: repEl._column?._codeAlignment || repEl._codeAlignment,
 		_codeDataType: repEl._column?._codeDataType || repEl._codeDataType,
 		header: repEl._column?.header || repEl.header,
-		isExcludeDisplay: repEl._column?.isExcludeDisplay || false,
 		isMultiSelect: false,
 		isNonData: false,
 		name: repEl._column?.name || getFieldColumnCustomName(repEl._codeDataType)

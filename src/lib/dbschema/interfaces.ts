@@ -288,10 +288,10 @@ export namespace sys_core {
     "isExcludeInsert": boolean;
     "isExcludeSelect": boolean;
     "isExcludeUpdate": boolean;
+    "isDisplayable"?: boolean | null;
     "orderDefine": number;
     "codeDbDataSourceValue"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
-    "isExcludeDisplayAlt"?: boolean | null;
     "linkExprPreset"?: string | null;
     "customColCodeColor"?: SysCode | null;
   }
@@ -702,7 +702,6 @@ export namespace sys {
 }
 export namespace sys_db {
   export interface SysColumn extends sys_core.SysObj {
-    "isExcludeDisplay": boolean;
     "isNonData": boolean;
     "codeAlignment": sys_core.SysCode;
     "codeDataType": sys_core.SysCode;
@@ -801,7 +800,7 @@ export namespace sys_rep {
     "codeReportElementType": sys_core.SysCode;
     "exprCustom"?: string | null;
     "nameCustom"?: string | null;
-    "isExcludeDisplayAlt"?: boolean | null;
+    "isDisplayable"?: boolean | null;
     "orderDefine": number;
     "orderDisplay"?: number | null;
   }

@@ -160,7 +160,6 @@ export async function addColumn(data: any) {
 			exprStorageKey: e.optional(e.str),
 			header: e.optional(e.str),
 			headerSide: e.optional(e.str),
-			isExcludeDisplay: e.optional(e.bool),
 			isExcludeInsert: e.optional(e.bool),
 			isExcludeSelect: e.optional(e.bool),
 			isExcludeUpdate: e.optional(e.bool),
@@ -200,7 +199,6 @@ export async function addColumn(data: any) {
 				exprStorageKey: p.exprStorageKey,
 				header: p.header,
 				headerSide: p.headerSide,
-				isExcludeDisplay: booleanOrDefaultParm(p.isExcludeDisplay, false),
 				isExcludeInsert: booleanOrDefaultParm(p.isExcludeInsert, false),
 				isExcludeSelect: booleanOrDefaultParm(p.isExcludeSelect, false),
 				isExcludeUpdate: booleanOrDefaultParm(p.isExcludeUpdate, false),
@@ -340,7 +338,7 @@ export async function addDataObj(data: any) {
 
 						indexTable: e.cast(e.int16, e.json_get(f, 'indexTable')),
 
-						isExcludeDisplayAlt: e.cast(e.bool, e.json_get(f, 'isExcludeDisplayAlt')),
+						isDisplayable: e.cast(e.bool, e.json_get(f, 'isDisplayable')),
 
 						isExcludeInsert: booleanOrDefaultJSON(f, 'isExcludeInsert', false),
 
@@ -995,7 +993,7 @@ export async function addReport(data: any) {
 						exprCustom: e.cast(e.str, e.json_get(el, 'exprCustom')),
 						header: e.cast(e.str, e.json_get(el, 'header')),
 						indexTable: e.cast(e.int16, e.json_get(el, 'indexTable')),
-						isExcludeDisplayAlt: e.cast(e.bool, e.json_get(el, 'isExcludeDisplayAlt')),
+						isDisplayable: e.cast(e.bool, e.json_get(el, 'isDisplayable')),
 						modifiedBy: e.select(e.sys_user.getRootUser()),
 						nameCustom: e.cast(e.str, e.json_get(el, 'nameCustom')),
 						orderDefine: e.cast(e.int16, e.json_get(el, 'orderDefine')),

@@ -45,13 +45,14 @@ async function initFieldEmbedListEditRepUserElement() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
 				columnName: 'element',
 				exprPreset: '(SELECT sys_rep::SysRepEl FILTER .id = item.id)',
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				isExcludeUpdate: true,
 				linkTable: 'SysRepEl',
 				orderDefine: 20
@@ -60,6 +61,7 @@ async function initFieldEmbedListEditRepUserElement() {
 				codeAccess: 'readOnly',
 				columnName: 'header',
 				indexTable: 1,
+				isDisplayable: true,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
 				orderDisplay: 20,
@@ -69,6 +71,7 @@ async function initFieldEmbedListEditRepUserElement() {
 				codeAccess: 'readOnly',
 				columnName: 'description',
 				indexTable: 1,
+				isDisplayable: true,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
 				orderDisplay: 30,
@@ -79,6 +82,7 @@ async function initFieldEmbedListEditRepUserElement() {
 				columnName: 'isDisplay',
 				exprPreset: '(SELECT true)',
 				indexTable: 0,
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40
 			},
@@ -87,8 +91,7 @@ async function initFieldEmbedListEditRepUserElement() {
 				columnName: 'orderDisplay',
 				exprPreset: 'item.orderDisplay',
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
-				orderDisplay: 50,
+				isDisplayable: false,
 				orderDefine: 50,
 				orderSort: 10
 			},
@@ -98,28 +101,28 @@ async function initFieldEmbedListEditRepUserElement() {
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				orderDefine: 1010
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				orderDefine: 1020
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				orderDefine: 1030
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				orderDefine: 1040
 			}
 		]
@@ -162,13 +165,14 @@ async function initFieldEmbedListEditRepUserParm() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
 				columnName: 'parm',
 				exprPreset: '(SELECT sys_rep::SysRepParm FILTER .id = item.id)',
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				isExcludeUpdate: true,
 				linkTable: 'SysRepParm',
 				orderDefine: 20
@@ -178,6 +182,7 @@ async function initFieldEmbedListEditRepUserParm() {
 				codeFieldElement: 'toggle',
 				columnName: 'isRequired',
 				indexTable: 1,
+				isDisplayable: true,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
 				orderDisplay: 30,
@@ -187,6 +192,7 @@ async function initFieldEmbedListEditRepUserParm() {
 				codeAccess: 'readOnly',
 				columnName: 'header',
 				indexTable: 1,
+				isDisplayable: true,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
 				orderDisplay: 40,
@@ -196,14 +202,17 @@ async function initFieldEmbedListEditRepUserParm() {
 				codeAccess: 'readOnly',
 				columnName: 'description',
 				indexTable: 1,
+				isDisplayable: true,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
 				orderDisplay: 50,
 				orderDefine: 50
 			},
 			{
+				codeFieldElement: 'parm',
 				columnName: 'parmValue',
 				indexTable: 0,
+				isDisplayable: true,
 				isExcludeInsert: true,
 				orderDisplay: 60,
 				orderDefine: 60
@@ -212,9 +221,9 @@ async function initFieldEmbedListEditRepUserParm() {
 				codeAccess: 'readOnly',
 				columnName: 'codeParmType',
 				indexTable: 1,
+				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDisplay: 70,
 				orderDefine: 70,
 				linkColumns: ['name']
 			},
@@ -222,9 +231,9 @@ async function initFieldEmbedListEditRepUserParm() {
 				codeAccess: 'readOnly',
 				columnName: 'fieldListItems',
 				indexTable: 1,
+				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDisplay: 80,
 				orderDefine: 80,
 				linkColumns: ['name']
 			},
@@ -232,27 +241,27 @@ async function initFieldEmbedListEditRepUserParm() {
 				codeAccess: 'readOnly',
 				columnName: 'fieldListItemsParmName',
 				indexTable: 1,
+				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDisplay: 90,
 				orderDefine: 90
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'isMultiSelect',
 				indexTable: 1,
+				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDisplay: 100,
 				orderDefine: 100
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'linkTable',
 				indexTable: 1,
+				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDisplay: 110,
 				orderDefine: 110
 			},
 
@@ -261,28 +270,28 @@ async function initFieldEmbedListEditRepUserParm() {
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				orderDefine: 1010
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				orderDefine: 1020
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				orderDefine: 1030
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				orderDefine: 1040
 			}
 		]
@@ -316,6 +325,7 @@ async function initRepConfig() {
 				codeAccess: 'readOnly',
 				columnName: 'headerUser',
 				orderCrumb: 10,
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -323,6 +333,7 @@ async function initRepConfig() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				exprCustom: `.report.header`,
@@ -333,6 +344,7 @@ async function initRepConfig() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'descriptionUser',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
@@ -340,6 +352,7 @@ async function initRepConfig() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				exprCustom: `.report.description`,
@@ -372,7 +385,7 @@ async function initRepConfig() {
 				columnName: 'user',
 				orderDefine: 20,
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				linkExprSave: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				linkTable: 'SysUser'
 			},
@@ -380,18 +393,20 @@ async function initRepConfig() {
 				columnName: 'report',
 				orderDefine: 30,
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				linkExprSave: `(SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>).report`,
 				linkTable: 'SysRep'
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40
 			},
 			{
 				columnName: 'headerUser',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
@@ -399,6 +414,7 @@ async function initRepConfig() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				exprCustom: `.report.header`,
@@ -409,12 +425,14 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80
 			},
@@ -422,6 +440,7 @@ async function initRepConfig() {
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'descriptionUser',
+				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
 				indexTable: 0
@@ -430,6 +449,7 @@ async function initRepConfig() {
 				codeAccess: 'readOnly',
 				codeFieldElement: 'textArea',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
 				exprCustom: `.report.description`,
@@ -440,12 +460,14 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110
 			},
 			{
 				codeFieldElement: 'embedListEdit',
 				columnName: 'parms',
+				isDisplayable: true,
 				orderDisplay: 120,
 				orderDefine: 120,
 				fieldEmbedListEdit: 'fele_sys_rep_user_parm',
@@ -455,6 +477,7 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'embedListEdit',
 				columnName: 'elements',
+				isDisplayable: true,
 				orderDisplay: 130,
 				orderDefine: 130,
 				fieldEmbedListEdit: 'fele_sys_rep_user_element',
@@ -466,12 +489,14 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -479,6 +504,7 @@ async function initRepConfig() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -486,6 +512,7 @@ async function initRepConfig() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -493,6 +520,7 @@ async function initRepConfig() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -500,6 +528,7 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -540,8 +569,9 @@ async function initRepRender() {
 			{
 				columnName: 'id',
 				indexTable: 0,
-				isExcludeDisplayAlt: false,
-				orderDefine: 10
+				isDisplayable: true,
+				orderDefine: 10,
+				orderDisplay: 10
 			}
 		]
 	})

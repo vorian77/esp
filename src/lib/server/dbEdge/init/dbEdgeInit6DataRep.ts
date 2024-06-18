@@ -87,8 +87,8 @@ async function initReportTrainingCredential() {
 				codeReportElementType: 'column',
 				columnName: 'id',
 				indexTable: 0,
-				orderDefine: 10,
-				isExcludeDisplayAlt: true
+				isDisplayable: false,
+				orderDefine: 10
 			},
 			{
 				codeAlignment: 'left',
@@ -99,6 +99,7 @@ async function initReportTrainingCredential() {
 				codeSortDir: 'DESC',
 				exprCustom: `.csf.client.person.firstName`,
 				header: 'First Name',
+				isDisplayable: true,
 				nameCustom: 'firstName',
 				orderDefine: 20,
 				orderDisplay: 20,
@@ -113,6 +114,7 @@ async function initReportTrainingCredential() {
 				codeSortDir: 'DESC',
 				exprCustom: `.csf.client.person.lastName`,
 				header: 'Last Name',
+				isDisplayable: true,
 				nameCustom: 'lastName',
 				orderDefine: 30,
 				orderDisplay: 30,
@@ -126,6 +128,7 @@ async function initReportTrainingCredential() {
 				codeReportElementType: 'column',
 				exprCustom: `.cohort.course.name`,
 				header: 'Course',
+				isDisplayable: true,
 				nameCustom: 'courseName',
 				orderDefine: 40,
 				orderDisplay: 40
@@ -138,6 +141,7 @@ async function initReportTrainingCredential() {
 				codeReportElementType: 'column',
 				exprCustom: `.cohort.name`,
 				header: 'Cohort',
+				isDisplayable: true,
 				nameCustom: 'cohortName',
 				orderDefine: 50,
 				orderDisplay: 50
@@ -151,6 +155,7 @@ async function initReportTrainingCredential() {
 				description: 'The number of attendane days of the student in the cohort.',
 				exprCustom: `(SELECT count(app_cm::CmCsfCohortAttd FILTER .csfCohort.id = app_cm::CmCsfCohort.id AND .computedHours > 0))`,
 				header: 'Student Attendance Days',
+				isDisplayable: true,
 				nameCustom: 'attdDaysStudent',
 				orderDefine: 60,
 				orderDisplay: 60
@@ -164,6 +169,7 @@ async function initReportTrainingCredential() {
 				description: 'The number of attendane days that have occurred in the cohort.',
 				exprCustom: `(SELECT count(app_cm::CmCohortAttd FILTER .cohortId = app_cm::CmCsfCohort.cohort.id))`,
 				header: 'Cohort Attendance Days',
+				isDisplayable: true,
 				nameCustom: 'attdDaysCohort',
 				orderDefine: 70,
 				orderDisplay: 70
@@ -177,6 +183,7 @@ async function initReportTrainingCredential() {
 				description: 'Student Attendance Days" devided by "Cohort Attendance Days.',
 				exprCustom: `Math.round((.attdDaysCohort > 0 ? (.attdDaysStudent / .attdDaysCohort) : 0) * 100)`,
 				header: 'Attendance Rate (%)',
+				isDisplayable: true,
 				nameCustom: 'attdRate',
 				orderDefine: 80,
 				orderDisplay: 80
@@ -260,6 +267,7 @@ async function initReportCourseSummary() {
 				columnName: 'name',
 				orderCrumb: 10,
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				headerAlt: 'Course',
@@ -268,6 +276,7 @@ async function initReportCourseSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeStatus',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
@@ -277,6 +286,7 @@ async function initReportCourseSummary() {
 				codeAccess: 'readOnly',
 				codeFieldElement: 'number',
 				columnName: 'custom_select_int',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				exprCustom: `(SELECT count((SELECT app_cm::CmCohort FILTER .course.id = app_cm::CmCourse.id)))`,
@@ -288,6 +298,7 @@ async function initReportCourseSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				exprCustom: `(SELECT app_cm::CmCohort FILTER .course.id = app_cm::CmCourse.id).name`,
@@ -298,6 +309,7 @@ async function initReportCourseSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_int',
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id)))`,
@@ -308,6 +320,7 @@ async function initReportCourseSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_int',
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
 				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND NOT EXISTS .dateStart)))`,
@@ -318,6 +331,7 @@ async function initReportCourseSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_int',
+				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
 				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort {*} FILTER
@@ -331,6 +345,7 @@ async function initReportCourseSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_int',
+				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
 				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND EXISTS .dateStart AND NOT EXISTS .dateEnd AND .codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', 'Enrolled')) )))`,
@@ -341,6 +356,7 @@ async function initReportCourseSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_int',
+				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
 				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND EXISTS .dateStart AND EXISTS .dateEnd AND .codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', 'Completed')) )))`,
@@ -351,6 +367,7 @@ async function initReportCourseSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_int',
+				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
 				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND EXISTS .dateStart AND EXISTS .dateEnd AND .codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', 'Dropped Out')) )))`,
@@ -397,6 +414,7 @@ async function initReportOurWorldSummary() {
 				codeAccess: 'readOnly',
 				columnName: 'firstName',
 				orderSort: 20,
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 3
@@ -404,6 +422,7 @@ async function initReportOurWorldSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'middleName',
+				isDisplayable: true,
 				orderDisplay: 25,
 				orderDefine: 25,
 				indexTable: 3
@@ -412,6 +431,7 @@ async function initReportOurWorldSummary() {
 				codeAccess: 'readOnly',
 				columnName: 'lastName',
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 3
@@ -419,6 +439,7 @@ async function initReportOurWorldSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'birthDate',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 3
@@ -426,6 +447,7 @@ async function initReportOurWorldSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'phoneMobile',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 3
@@ -433,6 +455,7 @@ async function initReportOurWorldSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'email',
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 3
@@ -440,6 +463,7 @@ async function initReportOurWorldSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'school',
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 2
@@ -448,6 +472,7 @@ async function initReportOurWorldSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'agencyId',
+				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
 
@@ -457,6 +482,7 @@ async function initReportOurWorldSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 200,
 				orderDefine: 200,
 
@@ -468,6 +494,7 @@ async function initReportOurWorldSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 210,
 				orderDefine: 210,
 
@@ -514,6 +541,7 @@ async function initReportStudentSummary() {
 				columnName: 'agencyId',
 				orderCrumb: 10,
 				orderSort: 20,
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 
@@ -525,6 +553,7 @@ async function initReportStudentSummary() {
 				columnName: 'firstName',
 				orderCrumb: 20,
 				orderSort: 20,
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 1
@@ -534,6 +563,7 @@ async function initReportStudentSummary() {
 				columnName: 'lastName',
 				orderCrumb: 30,
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 1
@@ -541,6 +571,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 
@@ -552,6 +583,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 55,
 				orderDefine: 55,
 
@@ -563,6 +595,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 
@@ -577,6 +610,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
 
@@ -593,6 +627,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
 
@@ -608,6 +643,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 85,
 				orderDefine: 85,
 
@@ -623,6 +659,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 87,
 				orderDefine: 87,
 
@@ -634,6 +671,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
 
@@ -647,6 +685,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
 
@@ -658,6 +697,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 120,
 				orderDefine: 120,
 
@@ -673,6 +713,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 120,
 				orderDefine: 120,
 
@@ -689,6 +730,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 140,
 				orderDefine: 140,
 
@@ -704,6 +746,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 150,
 				orderDefine: 150,
 
@@ -720,6 +763,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 160,
 				orderDefine: 160,
 
@@ -736,6 +780,7 @@ async function initReportStudentSummary() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_select_str',
+				isDisplayable: true,
 				orderDisplay: 170,
 				orderDefine: 170,
 

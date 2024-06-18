@@ -16,7 +16,9 @@ export async function initAdminSysAuth() {
 // 	codeAccess: 'optional',
 // 	codeFieldElement: 'select',
 // 	columnName: 'codeRace',
-// 	orderDisplay: 42, orderDefine: 42,
+// 	isDisplayable: true,
+//orderDisplay: 42,
+//orderDefine: 42,
 // 	fieldListItems: 'il_sys_code_order_index_by_codeType_name',
 // 	fieldListItemsParmName:: 'ct_sys_person_race' ,
 // 	linkColumns: ['name'],
@@ -27,7 +29,9 @@ export async function initAdminSysAuth() {
 // 	codeAccess: 'optional',
 // 	codeFieldElement: 'checkbox',
 // 	columnName: 'favFood',
-// 	orderDisplay: 44, orderDefine: 44,
+// 	isDisplayable: true,
+//orderDisplay: 44,
+//orderDefine: 44,
 // 	items: [
 // 		{
 // 			data: '10',
@@ -82,12 +86,14 @@ async function initDataObjAccount() {
 			},
 			{
 				columnName: 'firstName',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 1
 			},
 			{
 				columnName: 'lastName',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 1
@@ -95,6 +101,7 @@ async function initDataObjAccount() {
 			{
 				codeFieldElement: 'tel',
 				columnName: 'userName',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 
@@ -105,10 +112,10 @@ async function initDataObjAccount() {
 				codeAccess: 'optional',
 				codeFieldElement: 'file',
 				columnName: 'avatar',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 1,
-
 				width: 300
 			},
 
@@ -116,12 +123,14 @@ async function initDataObjAccount() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 220,
 				orderDefine: 220,
 				indexTable: 0
@@ -129,6 +138,7 @@ async function initDataObjAccount() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 230,
 				orderDefine: 230,
 				indexTable: 0
@@ -136,6 +146,7 @@ async function initDataObjAccount() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			},
@@ -151,6 +162,7 @@ async function initDataObjAccount() {
 					},
 					label: 'Reset Password?'
 				},
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60
 			}
@@ -180,6 +192,7 @@ async function initDataObjLogin() {
 			{
 				codeFieldElement: 'tel',
 				columnName: 'userName',
+				isDisplayable: true,
 				orderDisplay: 10,
 				orderDefine: 10,
 				indexTable: 0
@@ -187,6 +200,7 @@ async function initDataObjLogin() {
 			{
 				codeFieldElement: 'password',
 				columnName: 'password',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -199,6 +213,7 @@ async function initDataObjLogin() {
 					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_login' },
 					label: 'Log in'
 				},
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -211,6 +226,7 @@ async function initDataObjLogin() {
 					action: { method: 'auth', type: 'page', value: 'data_obj_auth_reset_password_login' },
 					label: 'Forgot Password?'
 				},
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -244,6 +260,7 @@ async function initDataObjResetPasswordAccount() {
 			{
 				codeFieldElement: 'tel',
 				columnName: 'userName',
+				isDisplayable: true,
 				orderDisplay: 10,
 				orderDefine: 10,
 				indexTable: 0
@@ -251,6 +268,7 @@ async function initDataObjResetPasswordAccount() {
 			{
 				codeFieldElement: 'password',
 				columnName: 'password',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				headerAlt: 'New Password',
@@ -264,6 +282,7 @@ async function initDataObjResetPasswordAccount() {
 					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_reset_password_account' },
 					label: 'Confirm Mobile Phone Number'
 				},
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -276,6 +295,7 @@ async function initDataObjResetPasswordAccount() {
 					align: 'center',
 					label: `We'll text you to confirm your mobile phone number. Standard rates apply.`
 				},
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -309,6 +329,7 @@ async function initDataObjResetPasswordLogin() {
 			{
 				codeFieldElement: 'tel',
 				columnName: 'userName',
+				isDisplayable: true,
 				orderDisplay: 10,
 				orderDefine: 10,
 				indexTable: 0
@@ -316,6 +337,7 @@ async function initDataObjResetPasswordLogin() {
 			{
 				codeFieldElement: 'password',
 				columnName: 'password',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 
@@ -330,6 +352,7 @@ async function initDataObjResetPasswordLogin() {
 					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_reset_password_login' },
 					label: 'Confirm Mobile Phone Number'
 				},
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -342,6 +365,7 @@ async function initDataObjResetPasswordLogin() {
 					align: 'center',
 					label: `We'll text you to confirm your mobile phone number. Standard rates apply.`
 				},
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -355,6 +379,7 @@ async function initDataObjResetPasswordLogin() {
 					label: 'Log in',
 					prefix: 'Already have an account?'
 				},
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
@@ -384,12 +409,14 @@ async function initDataObjVerify() {
 					_type: 'text',
 					label: `Check your message app for the security code and enter it here.`
 				},
+				isDisplayable: true,
 				orderDisplay: 10,
 				orderDefine: 10,
 				indexTable: 0
 			},
 			{
 				columnName: 'authSecurityCode',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -402,6 +429,7 @@ async function initDataObjVerify() {
 					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_verify_phone_mobile' },
 					label: 'Verify'
 				},
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -414,6 +442,7 @@ async function initDataObjVerify() {
 					action: { method: 'auth', type: 'resend_code' },
 					label: 'Resend Security Code'
 				},
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -476,11 +505,13 @@ async function initDataObjSignup() {
 		fields: [
 			{
 				columnName: 'firstName',
+				isDisplayable: true,
 				orderDisplay: 10,
 				orderDefine: 10
 			},
 			{
 				columnName: 'lastName',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20
 			},
@@ -488,12 +519,14 @@ async function initDataObjSignup() {
 			{
 				codeFieldElement: 'tel',
 				columnName: 'userName',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
 			},
 			{
 				codeFieldElement: 'password',
 				columnName: 'password',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40
 			},
@@ -505,6 +538,7 @@ async function initDataObjSignup() {
 					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_signup' },
 					label: 'Sign up'
 				},
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50
 			},
@@ -516,6 +550,7 @@ async function initDataObjSignup() {
 					align: 'center',
 					label: `We'll text you to confirm your mobile phone number. Standard rates apply.`
 				},
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60
 			},
@@ -528,6 +563,7 @@ async function initDataObjSignup() {
 					label: 'Log in',
 					prefix: 'Already have an account?'
 				},
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70
 			}

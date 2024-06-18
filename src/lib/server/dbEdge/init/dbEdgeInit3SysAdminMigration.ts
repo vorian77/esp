@@ -33,6 +33,7 @@ async function initMigr() {
 				columnName: 'name',
 				orderCrumb: 10,
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -40,6 +41,7 @@ async function initMigr() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'description',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -65,12 +67,13 @@ async function initMigr() {
 				columnName: 'owner',
 				orderDefine: 20,
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
 				columnName: 'name',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -79,6 +82,7 @@ async function initMigr() {
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'description',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
@@ -88,12 +92,14 @@ async function initMigr() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -101,6 +107,7 @@ async function initMigr() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -108,6 +115,7 @@ async function initMigr() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -115,6 +123,7 @@ async function initMigr() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -122,6 +131,7 @@ async function initMigr() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -172,6 +182,7 @@ async function initMigrSourceTable() {
 				columnName: 'name',
 				orderCrumb: 10,
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -179,6 +190,7 @@ async function initMigrSourceTable() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeMigrSourceType',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
@@ -188,6 +200,7 @@ async function initMigrSourceTable() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'exprSelect',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -213,6 +226,7 @@ async function initMigrSourceTable() {
 			},
 			{
 				columnName: 'name',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -220,6 +234,7 @@ async function initMigrSourceTable() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeMigrSourceType',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
@@ -231,6 +246,7 @@ async function initMigrSourceTable() {
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'exprSelect',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -240,12 +256,14 @@ async function initMigrSourceTable() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -253,6 +271,7 @@ async function initMigrSourceTable() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -260,6 +279,7 @@ async function initMigrSourceTable() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -267,6 +287,7 @@ async function initMigrSourceTable() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -274,6 +295,7 @@ async function initMigrSourceTable() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -325,6 +347,7 @@ async function initMigrSourceColumn() {
 				columnName: 'name',
 				orderCrumb: 10,
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -332,6 +355,7 @@ async function initMigrSourceColumn() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeDataType',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
@@ -359,6 +383,7 @@ async function initMigrSourceColumn() {
 			},
 			{
 				columnName: 'name',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -366,6 +391,7 @@ async function initMigrSourceColumn() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeDataType',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
@@ -378,12 +404,14 @@ async function initMigrSourceColumn() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -391,6 +419,7 @@ async function initMigrSourceColumn() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -398,6 +427,7 @@ async function initMigrSourceColumn() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -405,6 +435,7 @@ async function initMigrSourceColumn() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -412,6 +443,7 @@ async function initMigrSourceColumn() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -463,6 +495,7 @@ async function initMigrTargetTable() {
 				codeAccess: 'readOnly',
 				columnName: 'table',
 				orderCrumb: 10,
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
@@ -471,6 +504,7 @@ async function initMigrTargetTable() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'isActive',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -478,6 +512,7 @@ async function initMigrTargetTable() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'isInitTable',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -510,6 +545,7 @@ async function initMigrTargetTable() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'table',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
@@ -519,6 +555,7 @@ async function initMigrTargetTable() {
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isActive',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 
@@ -528,6 +565,7 @@ async function initMigrTargetTable() {
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isInitTable',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 
@@ -538,6 +576,7 @@ async function initMigrTargetTable() {
 				codeAccess: 'readOnly',
 				codeFieldElement: 'number',
 				columnName: 'orderDefine',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 
@@ -549,12 +588,14 @@ async function initMigrTargetTable() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -562,6 +603,7 @@ async function initMigrTargetTable() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -569,6 +611,7 @@ async function initMigrTargetTable() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -576,6 +619,7 @@ async function initMigrTargetTable() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -583,6 +627,7 @@ async function initMigrTargetTable() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -633,6 +678,7 @@ async function initMigrTargetColumn() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'column',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
@@ -642,6 +688,7 @@ async function initMigrTargetColumn() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'isActive',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -649,6 +696,7 @@ async function initMigrTargetColumn() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'expr',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -681,6 +729,7 @@ async function initMigrTargetColumn() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'column',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
@@ -690,6 +739,7 @@ async function initMigrTargetColumn() {
 			{
 				codeFieldElement: 'textArea',
 				columnName: 'expr',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -697,6 +747,7 @@ async function initMigrTargetColumn() {
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isActive',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 
@@ -716,12 +767,14 @@ async function initMigrTargetColumn() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -729,6 +782,7 @@ async function initMigrTargetColumn() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -736,6 +790,7 @@ async function initMigrTargetColumn() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -743,6 +798,7 @@ async function initMigrTargetColumn() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -750,6 +806,7 @@ async function initMigrTargetColumn() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -796,6 +853,7 @@ async function initMigrProcess() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -804,6 +862,7 @@ async function initMigrProcess() {
 				codeAccess: 'readOnly',
 				codeFieldElement: 'textArea',
 				columnName: 'description',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0

@@ -71,7 +71,7 @@ export type $SysRepElλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "codeReportElementType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "exprCustom": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "nameCustom": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "isExcludeDisplayAlt": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
+  "isDisplayable": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "orderDefine": $.PropertyDesc<_default.$nonNegative, $.Cardinality.One, false, false, false, false>;
   "orderDisplay": $.PropertyDesc<_default.$nonNegative, $.Cardinality.AtMostOne, false, false, false, false>;
   "<elements[is sys_rep::SysRep]": $.LinkDesc<$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;

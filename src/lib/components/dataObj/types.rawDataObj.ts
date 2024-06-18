@@ -323,7 +323,6 @@ export class RawDataObjPropDisplay {
 	headerAlt?: string
 	height?: number
 	isDisplayBlock: boolean
-	isExcludeDisplay: boolean
 	items: RawDataObjPropDisplayItem[]
 	label: string
 	labelSide: string
@@ -383,12 +382,6 @@ export class RawDataObjPropDisplay {
 		this.headerAlt = strOptional(obj.headerAlt, clazz, 'headerAlt')
 		this.height = nbrOptional(obj.height, clazz, 'height')
 		this.isDisplayBlock = booleanOrDefault(obj.isDisplayBlock, true)
-		this.isExcludeDisplay = override(
-			obj.isExcludeDisplayAlt,
-			obj._column.isExcludeDisplay,
-			clazz,
-			'isExcludeDisplay'
-		)
 		this.items = arrayOfClasses(RawDataObjPropDisplayItem, obj._items)
 		this.orderDisplay = nbrOptional(obj.orderDisplay, clazz, 'orderDisplay')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
@@ -535,7 +528,6 @@ export class RawDBColumn {
 	exprStorageKey?: string
 	header: string
 	headerSide?: string
-	isExcludeDisplay: boolean
 	isMultiSelect: boolean
 	isNonData: boolean
 	matchColumn?: string
@@ -573,7 +565,6 @@ export class RawDBColumn {
 		this.exprStorageKey = strOptional(obj.exprStorageKey, clazz, 'exprStorageKey')
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.headerSide = strOptional(obj.headerSide, clazz, 'headerSide')
-		this.isExcludeDisplay = booleanRequired(obj.isExcludeDisplay, clazz, 'isExcludeDisplay')
 		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
 		this.isNonData = booleanRequired(obj.isNonData, clazz, 'isNonData')
 		this.matchColumn = strOptional(obj.matchColumn, clazz, 'matchColumn')

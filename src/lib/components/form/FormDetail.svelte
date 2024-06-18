@@ -108,17 +108,15 @@
 				{#each section.rows as row}
 					<div class={row.isRow ? 'w-full flex gap-x-4' : ''}>
 						{#each row.indexes as idx}
-							{#if !dataObj.fields[idx].colDO.isExcludeDisplay}
-								<div class="grow">
-									<FormElement
-										bind:state
-										{dataObj}
-										{dataObjData}
-										field={dataObj.fields[idx]}
-										row={0}
-									/>
-								</div>
-							{/if}
+							<div class="grow">
+								<FormElement
+									bind:state
+									{dataObj}
+									{dataObjData}
+									field={dataObj.fields[idx]}
+									row={0}
+								/>
+							</div>
 						{/each}
 					</div>
 				{/each}

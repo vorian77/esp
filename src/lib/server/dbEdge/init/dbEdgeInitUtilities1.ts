@@ -424,8 +424,6 @@ export class ResetDb {
 	}
 
 	delFeature(name: string) {
-		this.delDataObjMultiLinks(name)
-
 		this.delNodeObj(`node_obj_${name}_detail`)
 		this.delNodeObj(`node_obj_${name}_list`)
 		this.delDataObj(`data_obj_${name}_detail`)

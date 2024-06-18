@@ -37,6 +37,7 @@ async function initStudent() {
 				columnName: 'firstName',
 				orderCrumb: 10,
 				orderSort: 20,
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 1
@@ -46,6 +47,7 @@ async function initStudent() {
 				columnName: 'lastName',
 				orderCrumb: 20,
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 1
@@ -53,6 +55,7 @@ async function initStudent() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'email',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 1
@@ -60,6 +63,7 @@ async function initStudent() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'agencyId',
+				isDisplayable: true,
 				orderDisplay: 55,
 				orderDefine: 55,
 
@@ -91,6 +95,7 @@ async function initStudent() {
 				codeFieldElement: 'custom',
 				columnName: 'custom_element',
 				customElement: { _type: 'header', label: 'Personal' },
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -98,11 +103,13 @@ async function initStudent() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 25,
 				orderDefine: 25
 			},
 			{
 				columnName: 'firstName',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 1
@@ -110,12 +117,14 @@ async function initStudent() {
 			{
 				codeAccess: 'optional',
 				columnName: 'middleName',
+				isDisplayable: true,
 				orderDisplay: 35,
 				orderDefine: 35,
 				indexTable: 1
 			},
 			{
 				columnName: 'lastName',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 1
@@ -123,12 +132,14 @@ async function initStudent() {
 			{
 				codeFieldElement: 'date',
 				columnName: 'birthDate',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 1
 			},
 			{
 				columnName: 'agencyId',
+				isDisplayable: true,
 				orderDisplay: 55,
 				orderDefine: 55,
 				headerAlt: 'Group',
@@ -137,18 +148,21 @@ async function initStudent() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 56,
 				orderDefine: 56
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 57,
 				orderDefine: 57
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'school',
+				isDisplayable: true,
 				orderDisplay: 58,
 				orderDefine: 58,
 				indexTable: 0
@@ -157,6 +171,7 @@ async function initStudent() {
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeGender',
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 1,
@@ -168,6 +183,7 @@ async function initStudent() {
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeRace',
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 1,
@@ -179,6 +195,7 @@ async function initStudent() {
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeEthnicity',
+				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 1,
@@ -189,6 +206,7 @@ async function initStudent() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 82,
 				orderDefine: 82
 			},
@@ -196,6 +214,7 @@ async function initStudent() {
 				codeFieldElement: 'custom',
 				columnName: 'custom_element',
 				customElement: { _type: 'header', label: 'Contact' },
+				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
 				indexTable: 0
@@ -203,6 +222,7 @@ async function initStudent() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 115,
 				orderDefine: 115
 			},
@@ -210,6 +230,7 @@ async function initStudent() {
 				codeAccess: 'optional',
 				codeFieldElement: 'tel',
 				columnName: 'phoneMobile',
+				isDisplayable: true,
 				orderDisplay: 120,
 				orderDefine: 120,
 				indexTable: 1
@@ -218,6 +239,7 @@ async function initStudent() {
 				codeAccess: 'optional',
 				codeFieldElement: 'tel',
 				columnName: 'phoneAlt',
+				isDisplayable: true,
 				orderDisplay: 125,
 				orderDefine: 125,
 				indexTable: 1
@@ -226,6 +248,7 @@ async function initStudent() {
 				codeAccess: 'optional',
 				codeFieldElement: 'email',
 				columnName: 'email',
+				isDisplayable: true,
 				orderDisplay: 130,
 				orderDefine: 130,
 				indexTable: 1
@@ -233,18 +256,21 @@ async function initStudent() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 135,
 				orderDefine: 135
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 138,
 				orderDefine: 138
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'addr1',
+				isDisplayable: true,
 				orderDisplay: 140,
 				orderDefine: 140,
 				indexTable: 1
@@ -252,6 +278,7 @@ async function initStudent() {
 			{
 				codeAccess: 'optional',
 				columnName: 'addr2',
+				isDisplayable: true,
 				orderDisplay: 150,
 				orderDefine: 150,
 				indexTable: 1
@@ -259,6 +286,7 @@ async function initStudent() {
 			{
 				codeAccess: 'optional',
 				columnName: 'city',
+				isDisplayable: true,
 				orderDisplay: 160,
 				orderDefine: 160,
 				indexTable: 1
@@ -267,6 +295,7 @@ async function initStudent() {
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeState',
+				isDisplayable: true,
 				orderDisplay: 170,
 				orderDefine: 170,
 				indexTable: 1,
@@ -277,6 +306,7 @@ async function initStudent() {
 			{
 				codeAccess: 'optional',
 				columnName: 'zip',
+				isDisplayable: true,
 				orderDisplay: 180,
 				orderDefine: 180,
 				indexTable: 1
@@ -284,6 +314,7 @@ async function initStudent() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 185,
 				orderDefine: 185
 			},
@@ -291,6 +322,7 @@ async function initStudent() {
 				codeFieldElement: 'custom',
 				columnName: 'custom_element',
 				customElement: { _type: 'header', label: 'Other' },
+				isDisplayable: true,
 				orderDisplay: 190,
 				orderDefine: 190,
 				indexTable: 0
@@ -299,6 +331,7 @@ async function initStudent() {
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
+				isDisplayable: true,
 				orderDisplay: 210,
 				orderDefine: 210,
 				indexTable: 1
@@ -307,7 +340,7 @@ async function initStudent() {
 				columnName: 'owner',
 				orderDefine: 215,
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				isExcludeUpdate: true,
 				linkExprSave: '(SELECT sys_core::getOrg(<user,str,org.name>))',
 				linkTable: 'SysOrg'
@@ -317,12 +350,14 @@ async function initStudent() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -330,6 +365,7 @@ async function initStudent() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -337,6 +373,7 @@ async function initStudent() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -344,6 +381,7 @@ async function initStudent() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -351,6 +389,7 @@ async function initStudent() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -396,6 +435,7 @@ async function initCsf() {
 				codeAccess: 'readOnly',
 				columnName: 'serviceFlow',
 				orderCrumb: 10,
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
@@ -404,6 +444,7 @@ async function initCsf() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeReferralType',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
@@ -413,6 +454,7 @@ async function initCsf() {
 				codeAccess: 'readOnly',
 				columnName: 'dateReferral',
 				orderCrumb: 20,
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
@@ -425,6 +467,7 @@ async function initCsf() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'dateStart',
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 0
@@ -437,6 +480,7 @@ async function initCsf() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'dateEnd',
+				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
 				indexTable: 0
@@ -444,6 +488,7 @@ async function initCsf() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeReferralEndType',
+				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
 				indexTable: 0,
@@ -452,6 +497,7 @@ async function initCsf() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'note',
+				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
 				indexTable: 0
@@ -477,19 +523,21 @@ async function initCsf() {
 				columnName: 'client',
 				orderDefine: 20,
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				linkExprSave: '(SELECT app_cm::CmClient FILTER .id = <tree,uuid,CmClient.id>)',
 				linkTable: 'CmClient'
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'serviceFlow',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
@@ -499,6 +547,7 @@ async function initCsf() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeReferralType',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
@@ -509,6 +558,7 @@ async function initCsf() {
 			{
 				codeFieldElement: 'date',
 				columnName: 'dateReferral',
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0
@@ -516,12 +566,14 @@ async function initCsf() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80
 			},
@@ -529,6 +581,7 @@ async function initCsf() {
 				codeAccess: 'optional',
 				codeFieldElement: 'date',
 				columnName: 'dateStartEst',
+				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
 				indexTable: 0
@@ -537,6 +590,7 @@ async function initCsf() {
 				codeAccess: 'optional',
 				codeFieldElement: 'date',
 				columnName: 'dateEndEst',
+				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
 				indexTable: 0
@@ -544,12 +598,14 @@ async function initCsf() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 120,
 				orderDefine: 120
 			},
@@ -557,6 +613,7 @@ async function initCsf() {
 				codeAccess: 'optional',
 				codeFieldElement: 'date',
 				columnName: 'dateStart',
+				isDisplayable: true,
 				orderDisplay: 130,
 				orderDefine: 130,
 				indexTable: 0
@@ -565,6 +622,7 @@ async function initCsf() {
 				codeAccess: 'optional',
 				codeFieldElement: 'date',
 				columnName: 'dateEnd',
+				isDisplayable: true,
 				orderDisplay: 140,
 				orderDefine: 140,
 				indexTable: 0
@@ -573,6 +631,7 @@ async function initCsf() {
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeReferralEndType',
+				isDisplayable: true,
 				orderDisplay: 150,
 				orderDefine: 150,
 				indexTable: 0,
@@ -583,6 +642,7 @@ async function initCsf() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 160,
 				orderDefine: 160
 			},
@@ -590,6 +650,7 @@ async function initCsf() {
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
+				isDisplayable: true,
 				orderDisplay: 170,
 				orderDefine: 170,
 				indexTable: 0
@@ -599,12 +660,14 @@ async function initCsf() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -612,6 +675,7 @@ async function initCsf() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -619,6 +683,7 @@ async function initCsf() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -626,6 +691,7 @@ async function initCsf() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -633,6 +699,7 @@ async function initCsf() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -679,6 +746,7 @@ async function initCsfCohort() {
 				codeAccess: 'readOnly',
 				columnName: 'cohort',
 				orderCrumb: 10,
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
@@ -687,6 +755,7 @@ async function initCsfCohort() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeStatus',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
@@ -697,6 +766,7 @@ async function initCsfCohort() {
 				columnName: 'dateStart',
 				orderCrumb: 20,
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0
@@ -704,6 +774,7 @@ async function initCsfCohort() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'dateEnd',
+				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 0
@@ -711,6 +782,7 @@ async function initCsfCohort() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'note',
+				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
 				indexTable: 0
@@ -736,7 +808,7 @@ async function initCsfCohort() {
 				columnName: 'csf',
 				orderDefine: 20,
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				linkExprSave:
 					'(SELECT app_cm::CmClientServiceFlow filter.id = (<tree,uuid,CmClientServiceFlow.id>))',
 				linktable: 'CmClientServiceFlow'
@@ -744,12 +816,14 @@ async function initCsfCohort() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'cohort',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
@@ -759,6 +833,7 @@ async function initCsfCohort() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeStatus',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
@@ -769,6 +844,7 @@ async function initCsfCohort() {
 			{
 				codeFieldElement: 'date',
 				columnName: 'dateStart',
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0
@@ -777,6 +853,7 @@ async function initCsfCohort() {
 				codeAccess: 'optional',
 				codeFieldElement: 'date',
 				columnName: 'dateEnd',
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 0
@@ -784,6 +861,7 @@ async function initCsfCohort() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80
 			},
@@ -791,6 +869,7 @@ async function initCsfCohort() {
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
+				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
 				indexTable: 0
@@ -800,12 +879,14 @@ async function initCsfCohort() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -813,6 +894,7 @@ async function initCsfCohort() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -820,6 +902,7 @@ async function initCsfCohort() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -827,6 +910,7 @@ async function initCsfCohort() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -834,6 +918,7 @@ async function initCsfCohort() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -881,6 +966,7 @@ async function initCsfCohortAttdStudent() {
 				columnName: 'cohortAttd',
 				orderCrumb: 10,
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				headerAlt: 'Date',
@@ -892,6 +978,7 @@ async function initCsfCohortAttdStudent() {
 				codeAccess: 'readOnly',
 				codeAlignmentAlt: 'center',
 				columnName: 'codeCmCohortAttdDuration',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
@@ -900,6 +987,7 @@ async function initCsfCohortAttdStudent() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'computedHours',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -925,19 +1013,21 @@ async function initCsfCohortAttdStudent() {
 				columnName: 'csfCohort',
 				orderDefine: 20,
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				linkExprSave: '(SELECT app_cm::CmCsfCohort FILTER .id = <tree,uuid,CmCsfCohort.id>)',
 				linktable: 'CmCsfCohort'
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'cohortAttd',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				headerAlt: 'Date',
@@ -949,6 +1039,7 @@ async function initCsfCohortAttdStudent() {
 				codeFieldElement: 'radio',
 				codeAlignmentAlt: 'center',
 				columnName: 'codeCmCohortAttdDuration',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
@@ -960,6 +1051,7 @@ async function initCsfCohortAttdStudent() {
 				codeAccess: 'readOnly',
 				codeFieldElement: 'number',
 				columnName: 'computedHours',
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0
@@ -967,6 +1059,7 @@ async function initCsfCohortAttdStudent() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70
 			},
@@ -974,6 +1067,7 @@ async function initCsfCohortAttdStudent() {
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
+				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 0
@@ -983,12 +1077,14 @@ async function initCsfCohortAttdStudent() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -996,6 +1092,7 @@ async function initCsfCohortAttdStudent() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -1003,6 +1100,7 @@ async function initCsfCohortAttdStudent() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -1010,6 +1108,7 @@ async function initCsfCohortAttdStudent() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -1017,6 +1116,7 @@ async function initCsfCohortAttdStudent() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -1065,6 +1165,7 @@ async function initCsfNote() {
 				columnName: 'date',
 				orderCrumb: 10,
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -1072,6 +1173,7 @@ async function initCsfNote() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeType',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
@@ -1080,6 +1182,7 @@ async function initCsfNote() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'note',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
@@ -1105,7 +1208,7 @@ async function initCsfNote() {
 				columnName: 'csf',
 				orderDefine: 20,
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				linkExprSave:
 					'(SELECT app_cm::CmClientServiceFlow filter.id = (<tree,uuid,CmClientServiceFlow.id>))',
 				linkTable: 'CmClientServiceFlow'
@@ -1113,6 +1216,7 @@ async function initCsfNote() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
 			},
@@ -1120,6 +1224,7 @@ async function initCsfNote() {
 				codeFieldElement: 'date',
 				columnName: 'date',
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -1127,6 +1232,7 @@ async function initCsfNote() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeType',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
@@ -1137,6 +1243,7 @@ async function initCsfNote() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60
 			},
@@ -1144,6 +1251,7 @@ async function initCsfNote() {
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 0
@@ -1153,12 +1261,14 @@ async function initCsfNote() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -1166,6 +1276,7 @@ async function initCsfNote() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -1173,6 +1284,7 @@ async function initCsfNote() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -1180,6 +1292,7 @@ async function initCsfNote() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -1187,6 +1300,7 @@ async function initCsfNote() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -1233,6 +1347,7 @@ async function initCsfJobPlacement() {
 				columnName: 'dateStart',
 				orderCrumb: 10,
 				orderSort: 10,
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -1242,6 +1357,7 @@ async function initCsfJobPlacement() {
 				columnName: 'employerName',
 				orderCrumb: 20,
 				orderSort: 20,
+				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -1251,6 +1367,7 @@ async function initCsfJobPlacement() {
 				columnName: 'title',
 				orderCrumb: 30,
 				orderSort: 30,
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -1275,7 +1392,7 @@ async function initCsfJobPlacement() {
 				columnName: 'csf',
 				orderDefine: 20,
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				linkExprSave:
 					'(SELECT app_cm::CmClientServiceFlow filter.id = (<tree,uuid,CmClientServiceFlow.id>))',
 				linkTable: 'CmClientServiceFlow'
@@ -1284,6 +1401,7 @@ async function initCsfJobPlacement() {
 				codeFieldElement: 'custom',
 				columnName: 'custom_element',
 				customElement: { _type: 'header', label: 'Placement' },
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -1291,24 +1409,28 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40
 			},
 			{
 				codeFieldElement: 'date',
 				columnName: 'dateStart',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
 			},
 			{
 				columnName: 'title',
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0
 			},
 			{
 				columnName: 'employerName',
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 0
@@ -1316,18 +1438,21 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'employerContactNameFirst',
+				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
 				indexTable: 0
@@ -1335,6 +1460,7 @@ async function initCsfJobPlacement() {
 			{
 				codeAccess: 'optional',
 				columnName: 'employerContactNameLast',
+				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
 				indexTable: 0
@@ -1342,6 +1468,7 @@ async function initCsfJobPlacement() {
 			{
 				codeAccess: 'optional',
 				columnName: 'employerContactEmail',
+				isDisplayable: true,
 				orderDisplay: 120,
 				orderDefine: 120,
 				indexTable: 0
@@ -1349,18 +1476,21 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 130,
 				orderDefine: 130
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 140,
 				orderDefine: 140
 			},
 			{
 				codeFieldElement: 'number',
 				columnName: 'wage',
+				isDisplayable: true,
 				orderDisplay: 150,
 				orderDefine: 150,
 				indexTable: 0
@@ -1368,6 +1498,7 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeWageType',
+				isDisplayable: true,
 				orderDisplay: 160,
 				orderDefine: 160,
 				indexTable: 0,
@@ -1378,6 +1509,7 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'number',
 				columnName: 'hoursPerWeek',
+				isDisplayable: true,
 				orderDisplay: 170,
 				orderDefine: 170,
 				indexTable: 0
@@ -1385,6 +1517,7 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeJobType',
+				isDisplayable: true,
 				orderDisplay: 180,
 				orderDefine: 180,
 				indexTable: 0,
@@ -1395,6 +1528,7 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codePlacementRelated',
+				isDisplayable: true,
 				orderDisplay: 190,
 				orderDefine: 190,
 				indexTable: 0,
@@ -1405,6 +1539,7 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 200,
 				orderDefine: 200
 			},
@@ -1412,6 +1547,7 @@ async function initCsfJobPlacement() {
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
+				isDisplayable: true,
 				orderDisplay: 210,
 				orderDefine: 210,
 				indexTable: 0
@@ -1420,6 +1556,7 @@ async function initCsfJobPlacement() {
 				codeFieldElement: 'custom',
 				columnName: 'custom_element',
 				customElement: { _type: 'header', label: 'Submission' },
+				isDisplayable: true,
 				orderDisplay: 220,
 				orderDefine: 220,
 				indexTable: 0
@@ -1427,12 +1564,14 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 230,
 				orderDefine: 230
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'staffAgency',
+				isDisplayable: true,
 				orderDisplay: 240,
 				orderDefine: 240,
 				indexTable: 0,
@@ -1443,6 +1582,7 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'date',
 				columnName: 'dateSubmitted',
+				isDisplayable: true,
 				orderDisplay: 250,
 				orderDefine: 250,
 				indexTable: 0
@@ -1450,6 +1590,7 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 260,
 				orderDefine: 260
 			},
@@ -1458,12 +1599,14 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -1471,6 +1614,7 @@ async function initCsfJobPlacement() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -1478,6 +1622,7 @@ async function initCsfJobPlacement() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -1485,6 +1630,7 @@ async function initCsfJobPlacement() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -1492,6 +1638,7 @@ async function initCsfJobPlacement() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}
@@ -1536,6 +1683,7 @@ async function initCsfDocument() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'dateIssued',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -1543,6 +1691,7 @@ async function initCsfDocument() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeType',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
@@ -1551,6 +1700,7 @@ async function initCsfDocument() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'isShareWithClient',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
@@ -1558,12 +1708,14 @@ async function initCsfDocument() {
 			{
 				columnName: 'note',
 				orderDefine: 70,
+				isDisplayable: true,
 				orderDisplay: 70,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'staffAgency',
+				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 0,
@@ -1572,6 +1724,7 @@ async function initCsfDocument() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'dateExpires',
+				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
 				indexTable: 0
@@ -1608,7 +1761,7 @@ async function initCsfDocument() {
 				columnName: 'csf',
 				orderDefine: 20,
 				indexTable: 0,
-				isExcludeDisplayAlt: true,
+				isDisplayable: false,
 				linkExprSave:
 					'(SELECT app_cm::CmClientServiceFlow filter.id = (<tree,uuid,CmClientServiceFlow.id>))',
 				linkTable: 'CmClientServiceFlow'
@@ -1616,12 +1769,14 @@ async function initCsfDocument() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
 			},
 			{
 				codeFieldElement: 'date',
 				columnName: 'dateIssued',
+				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -1629,6 +1784,7 @@ async function initCsfDocument() {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeType',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
@@ -1639,6 +1795,7 @@ async function initCsfDocument() {
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isShareWithClient',
+				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0
@@ -1646,6 +1803,7 @@ async function initCsfDocument() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70
 			},
@@ -1653,6 +1811,7 @@ async function initCsfDocument() {
 				codeAccess: 'optional',
 				codeFieldElement: 'file',
 				columnName: 'file',
+				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 0,
@@ -1662,6 +1821,7 @@ async function initCsfDocument() {
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
+				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
 				indexTable: 0
@@ -1669,12 +1829,14 @@ async function initCsfDocument() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'staffAgency',
+				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
 				indexTable: 0,
@@ -1686,6 +1848,7 @@ async function initCsfDocument() {
 				codeAccess: 'optional',
 				codeFieldElement: 'date',
 				columnName: 'dateExpires',
+				isDisplayable: true,
 				orderDisplay: 120,
 				orderDefine: 120,
 				indexTable: 0
@@ -1693,6 +1856,7 @@ async function initCsfDocument() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 130,
 				orderDefine: 130
 			},
@@ -1701,12 +1865,14 @@ async function initCsfDocument() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
+				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
+				isDisplayable: true,
 				orderDisplay: 1010,
 				orderDefine: 1010,
 				indexTable: 0
@@ -1714,6 +1880,7 @@ async function initCsfDocument() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
+				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
 				indexTable: 0
@@ -1721,6 +1888,7 @@ async function initCsfDocument() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
+				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
 				indexTable: 0
@@ -1728,6 +1896,7 @@ async function initCsfDocument() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
+				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
@@ -1735,6 +1904,7 @@ async function initCsfDocument() {
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
+				isDisplayable: true,
 				orderDisplay: 1050,
 				orderDefine: 1050
 			}

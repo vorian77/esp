@@ -6,7 +6,9 @@ export function recordsFilter(filterText: string, dataObj: DataObj, fields: Fiel
 	let records = dataObj.dataRecordsDisplay.concat(dataObj.dataRecordsHidden)
 
 	// filter - filter text
-	const visibleFields = fields.filter((f) => !f.colDO.isExcludeDisplay).map((f) => f.colDO.propName)
+	const visibleFields = fields
+		.filter((f) => f.colDO.orderDisplay !== null && f.colDO.orderDisplay !== undefined)
+		.map((f) => f.colDO.propName)
 	dataObj.dataRecordsDisplay = records.filter((record: DataRecord) => {
 		let found = false
 		for (const key in record) {

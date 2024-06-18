@@ -1178,7 +1178,6 @@ export async function initPreColumn() {
 		owner: 'app_sys',
 		codeDataType: 'uuid',
 		header: 'System ID',
-		isExcludeDisplay: true,
 		isExcludeInsert: true,
 		isExcludeUpdate: true,
 		name: 'id'
@@ -1244,20 +1243,14 @@ export async function initPreColumn() {
 	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'bool',
+		header: 'Displayable',
+		name: 'isDisplayable'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'bool',
 		header: 'Display Block',
 		name: 'isDisplayBlock'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'bool',
-		header: 'Exclude-Display',
-		name: 'isExcludeDisplay'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'bool',
-		header: 'Exclude-Display (Alt)',
-		name: 'isExcludeDisplayAlt'
 	})
 	await addColumn({
 		owner: 'app_sys',

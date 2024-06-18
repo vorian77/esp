@@ -5,7 +5,6 @@ module sys_db {
     required codeDataType: sys_core::SysCode;
     exprStorageKey: str;
     headerSide: str;
-    required isExcludeDisplay: bool;
     required isExcludeInsert: bool;
     required isExcludeSelect: bool;
     required isExcludeUpdate: bool;

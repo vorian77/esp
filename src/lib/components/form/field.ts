@@ -160,6 +160,7 @@ export enum FieldElement {
 	email = 'email',
 	file = 'file',
 	number = 'number',
+	parm = 'parm',
 	password = 'password',
 	radio = 'radio',
 	select = 'select',

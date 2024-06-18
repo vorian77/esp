@@ -203,9 +203,7 @@
 						</th>
 					{/if}
 					{#each dataObj.fields as field}
-						{#if !field.colDO.isExcludeDisplay}
-							<th><Header {field} sortObj={listSortObj} sortField={onSort} /></th>
-						{/if}
+						<th><Header {field} sortObj={listSortObj} sortField={onSort} /></th>
 					{/each}
 				{/if}
 			</tr>
@@ -234,14 +232,12 @@
 						</td>
 					{/if}
 					{#each dataObj.fields as field}
-						{#if !field.colDO.isExcludeDisplay}
-							<td
-								on:click={async () => await onRowClick(record, field)}
-								on:keyup={async () => await onRowClick(record, field)}
-							>
-								<FormElement bind:state {dataObj} {dataObjData} {field} {row} />
-							</td>
-						{/if}
+						<td
+							on:click={async () => await onRowClick(record, field)}
+							on:keyup={async () => await onRowClick(record, field)}
+						>
+							<FormElement bind:state {dataObj} {dataObjData} {field} {row} />
+						</td>
 					{/each}
 				</tr>
 			{/each}
