@@ -60,13 +60,6 @@ export async function query(
 	if (!tab.rawDataObj || tab.rawDataObj.isAlwaysRetrieveDataObject) {
 		tab.rawDataObj = result.data.rawDataObj
 		tab.dataObj = await DataObj.init(state, result.data.rawDataObj)
-
-		console.log('types.appQuery.ts: dataObj', {
-			rawDataObj: result.data.rawDataObj,
-			dataObj: tab.dataObj,
-			test: new Test()
-		})
-
 		table = tab.getTable()
 	}
 

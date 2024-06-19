@@ -106,8 +106,9 @@ export default async function action(state: State, field: FieldCustomAction, dat
 				new TokenApiQueryData({ parms: data })
 			)
 		)
+
 		const resultRecord = result.data[0]
-		if (!result.success || !Object.hasOwn(resultRecord, 'userId')) {
+		if (!result.success || !resultRecord || !Object.hasOwn(resultRecord, 'userId')) {
 			alert(msgFail)
 			return
 		}
