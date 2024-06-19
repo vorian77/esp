@@ -450,7 +450,7 @@ export class DataObjActionField {
 	actionFieldShows: DataObjActionFieldShow[]
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
 	codeActionFieldType: TokenAppDoActionFieldType
-	fProxy: Function
+	fProxy?: Function
 	fieldColor: FieldColor
 	header: string
 	isDisabled: boolean = false
@@ -463,24 +463,23 @@ export class DataObjActionField {
 		this.actionFieldShows = rawAction.actionFieldShows
 		this.codeActionFieldTriggerEnable = rawAction.codeActionFieldTriggerEnable
 		this.codeActionFieldType = rawAction.codeActionFieldType
-		this.fProxy = this.proxySet(this.codeActionFieldType, state)
+		this.fProxy = state?.proxyGet(this.codeActionFieldType)
 		this.fieldColor = rawAction.fieldColor
 		this.header = rawAction.header
 		this.isListRowAction = rawAction.isListRowAction
 		this.name = rawAction.name
 	}
 	proxyExe(parms: any) {
-		this.fProxy({
-			...parms,
-			actionType: this.codeActionFieldType,
-			confirm: this.actionFieldConfirms ? this.actionFieldConfirms[0].confirm : undefined,
-			confirmType: this.actionFieldConfirms
-				? this.actionFieldConfirms[0].codeConfirmType
-				: undefined
-		})
-	}
-	proxySet(actionType: TokenAppDoActionFieldType, state: State | undefined) {
-		return state ? state.proxyGet(actionType) : () => {}
+		if (this.fProxy) {
+			this.fProxy({
+				...parms,
+				actionType: this.codeActionFieldType,
+				confirm: this.actionFieldConfirms ? this.actionFieldConfirms[0].confirm : undefined,
+				confirmType: this.actionFieldConfirms
+					? this.actionFieldConfirms[0].codeConfirmType
+					: undefined
+			})
+		}
 	}
 }
 

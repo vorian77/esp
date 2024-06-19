@@ -1,47 +1,46 @@
 <script lang="ts">
+	import { FieldProps } from '$comps/form/field'
 	import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 	import {
 		State,
 		StateLayoutStyle,
 		StateLayoutComponentType,
-		StateMode,
 		StateSurfaceEmbed
 	} from '$comps/app/types.appState'
 	import {
 		TokenApiDbDataObjSource,
 		TokenApiQueryType,
 		TokenAppDoActionFieldType,
-		TokenAppDoActionConfirmType,
 		TokenAppModalReturnType
 	} from '$utils/types.token'
 	import Layout from '$comps/layout/BaseLayout.svelte'
-	import {
-		DataObj,
-		DataObjActionFieldConfirm,
-		DataObjCardinality,
-		type DataObjData,
-		required
-	} from '$utils/types'
+	import { DataObj, DataObjCardinality, type DataRecord } from '$utils/types'
 	import Icon from '$comps/misc/Icon.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElEmbeddedListSelect.svelte'
 
-	export let state: State
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
-	export let field: FieldEmbedListSelect
-	export let fieldValue: any
-	export let setFieldVal: Function
+	export let fp: FieldProps
+
+	$: state = fp.state
+	$: dataObj = fp.dataObj
+	$: dataRecord = fp.dataRecord
+	$: field = fp.field as FieldEmbedListSelect
+	$: fieldValue = fp.fieldValue
+	$: setFieldVal = fp.setFieldVal
 
 	let stateEmbed: State
 	let recordIdCurrent: string
 
 	$: {
-		let recordId = dataObjData.getDetailRecordValue('id') || ''
-		if (recordId.startsWith('preset_')) recordId = ''
-		recordIdCurrent = recordId
-		setStateEmbed(fieldValue)
+		if (dataRecord) {
+			let recordId = dataRecord['id'] || ''
+			if (recordId.startsWith('preset_')) recordId = ''
+			if (recordIdCurrent !== recordId) {
+				recordIdCurrent = recordId
+				setStateEmbed(fieldValue)
+			}
+		}
 	}
 
 	function setStateEmbed(ids: string[]) {

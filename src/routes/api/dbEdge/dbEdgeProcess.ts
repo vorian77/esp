@@ -50,7 +50,7 @@ export async function processDataObj(token: TokenApiQuery) {
 			const expr = strRequired(
 				rawDataObj.exprObject,
 				`${FILENAME}.${rawDataObj.name}.processDataObj.expression`,
-				'exprObject'
+				'rawDataObj.exprObject'
 			)
 			return new ApiResult(true, await executeExpr(expr, queryData))
 

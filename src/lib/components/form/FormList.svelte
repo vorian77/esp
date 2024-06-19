@@ -113,7 +113,7 @@
 	async function onRowClick(record: DataRecord, field: Field) {
 		const actions = dataObj.actionsField.filter((a) => a.isListRowAction)
 
-		if (state.modeActive(StateMode.ReorderOn) || !actions) return
+		if (state.modeActive(StateMode.ReorderOn) || actions.length === 0) return
 
 		if (actions.length > 1) {
 			error(500, {
@@ -127,8 +127,6 @@
 			listRecordIdList: dataObj.dataRecordsDisplay.map((r: any) => r.id),
 			listRecordIdCurrent: record.id
 		})
-
-		console.log('FormList.onRowClick:', { action: actions[0], record, field, state })
 
 		actions[0].proxyExe({ dataObj, field, record, state })
 	}

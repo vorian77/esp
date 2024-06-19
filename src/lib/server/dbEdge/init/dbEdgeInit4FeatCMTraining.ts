@@ -916,7 +916,7 @@ async function initCohortAttdSheet() {
 		codeListEditPresetType: 'insert',
 		exprFilter:
 			'.csfCohort.cohort.id = <tree,uuid,CmCohort.id> AND .cohortAttd.id = <tree,uuid,CmCohortAttd.id>',
-		header: 'Attendance Records',
+		header: 'Attendance Sheet',
 		isAlwaysRetrieveData: true,
 		isListEdit: true,
 		listEditPresetExpr: `WITH
@@ -1044,7 +1044,7 @@ async function initCohortAttdSheet() {
 	await addNodeProgramObj({
 		codeIcon: 'application',
 		dataObj: 'data_obj_cm_cohort_attd_sheet',
-		header: 'Attendance Records',
+		header: 'Attendance Sheet',
 		name: 'node_obj_cm_cohort_attd_sheet',
 		orderDefine: 10,
 		owner: 'app_cm_training',

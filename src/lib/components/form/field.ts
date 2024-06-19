@@ -1,3 +1,5 @@
+import { State } from '$comps/app/types.appState'
+import { DataObj, type DataRecord } from '$utils/types'
 import { valueOrDefault } from '$utils/utils'
 import {
 	Validation,
@@ -180,5 +182,32 @@ export class FieldItem {
 		this.data = data
 		this.display = display
 		this.selected = selected
+	}
+}
+
+export class FieldProps {
+	dataObj: DataObj
+	dataRecord: DataRecord
+	field: Field
+	fieldValue: any
+	row: number
+	setFieldVal: Function
+	state: State
+	constructor(
+		dataObj: DataObj,
+		dataRecord: DataRecord,
+		field: Field,
+		fieldValue: any,
+		row: number,
+		setFieldVal: Function,
+		state: State
+	) {
+		this.dataObj = dataObj
+		this.dataRecord = dataRecord
+		this.field = field
+		this.fieldValue = fieldValue
+		this.row = row
+		this.setFieldVal = setFieldVal
+		this.state = state
 	}
 }

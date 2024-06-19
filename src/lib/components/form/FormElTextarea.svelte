@@ -1,14 +1,16 @@
 <script lang="ts">
+	import { FieldProps } from '$comps/form/field'
 	import { FieldTextarea } from '$comps/form/fieldTextarea'
-	import { ValidityErrorLevel } from '$utils/types'
 	import { FieldAccess } from '$comps/form/field'
 
-	export let field: FieldTextarea
-	export let fieldValue: any
-	export let setFieldVal: Function
+	export let fp: FieldProps
 
-	let classProps = 'rounded-lg ' + field.classProps + ' ' + field.colorBackground
-	if (field.cols === 0) classProps += ' w-full'
+	$: field = fp.field as FieldTextarea
+	$: fieldValue = fp.fieldValue
+	$: setFieldVal = fp.setFieldVal
+
+	$: classProps = 'rounded-lg ' + field.classProps + ' ' + field.colorBackground
+	$: if (field.cols === 0) classProps += ' w-full'
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement

@@ -333,7 +333,6 @@ export class RawDataObjPropDisplay {
 	constructor(obj: any) {
 		const clazz = 'RawDataObjPropDisplay'
 		obj = valueOrDefault(obj, {})
-		debug('RawDataObjPropDisplay', 'obj', obj)
 		this.colDB = new RawDBColumn(obj._column)
 		this.codeSortDir = obj._codeSortDir
 			? obj._codeSortDir === 'asc'

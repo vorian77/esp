@@ -58,14 +58,23 @@ async function initFieldEmbedListEditRepUserElement() {
 				orderDefine: 20
 			},
 			{
+				codeFieldElement: 'toggle',
+				columnName: 'isDisplay',
+				exprPreset: '(SELECT true)',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30
+			},
+			{
 				codeAccess: 'readOnly',
 				columnName: 'header',
 				indexTable: 1,
 				isDisplayable: true,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDisplay: 20,
-				orderDefine: 20
+				orderDisplay: 40,
+				orderDefine: 40
 			},
 			{
 				codeAccess: 'readOnly',
@@ -74,17 +83,8 @@ async function initFieldEmbedListEditRepUserElement() {
 				isDisplayable: true,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDisplay: 30,
-				orderDefine: 30
-			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isDisplay',
-				exprPreset: '(SELECT true)',
-				indexTable: 0,
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40
+				orderDisplay: 50,
+				orderDefine: 50
 			},
 			{
 				codeAccess: 'readOnly',
@@ -92,7 +92,7 @@ async function initFieldEmbedListEditRepUserElement() {
 				exprPreset: 'item.orderDisplay',
 				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 50,
+				orderDefine: 60,
 				orderSort: 10
 			},
 
@@ -179,7 +179,6 @@ async function initFieldEmbedListEditRepUserParm() {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeFieldElement: 'toggle',
 				columnName: 'isRequired',
 				indexTable: 1,
 				isDisplayable: true,
@@ -218,7 +217,6 @@ async function initFieldEmbedListEditRepUserParm() {
 				orderDefine: 60
 			},
 			{
-				codeAccess: 'readOnly',
 				columnName: 'codeParmType',
 				indexTable: 1,
 				isDisplayable: false,
@@ -228,7 +226,6 @@ async function initFieldEmbedListEditRepUserParm() {
 				linkColumns: ['name']
 			},
 			{
-				codeAccess: 'readOnly',
 				columnName: 'fieldListItems',
 				indexTable: 1,
 				isDisplayable: false,
@@ -238,7 +235,6 @@ async function initFieldEmbedListEditRepUserParm() {
 				linkColumns: ['name']
 			},
 			{
-				codeAccess: 'readOnly',
 				columnName: 'fieldListItemsParmName',
 				indexTable: 1,
 				isDisplayable: false,
@@ -247,7 +243,6 @@ async function initFieldEmbedListEditRepUserParm() {
 				orderDefine: 90
 			},
 			{
-				codeAccess: 'readOnly',
 				columnName: 'isMultiSelect',
 				indexTable: 1,
 				isDisplayable: false,
@@ -256,13 +251,21 @@ async function initFieldEmbedListEditRepUserParm() {
 				orderDefine: 100
 			},
 			{
-				codeAccess: 'readOnly',
 				columnName: 'linkTable',
 				indexTable: 1,
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
 				orderDefine: 110
+			},
+			{
+				columnName: 'orderDefine',
+				indexTable: 1,
+				isDisplayable: false,
+				isExcludeInsert: true,
+				isExcludeUpdate: true,
+				orderDefine: 120,
+				orderSort: 10
 			},
 
 			/* management */

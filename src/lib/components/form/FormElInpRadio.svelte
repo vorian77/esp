@@ -1,27 +1,26 @@
 <script lang="ts">
+	import { FieldProps } from '$comps/form/field'
 	import { DataObj, DataObjCardinality } from '$utils/types'
 	import { FieldRadio } from '$comps/form/fieldRadio'
 	import { FieldAccess, FieldAlignment } from '$comps/form/field'
 
-	export let dataObj: DataObj
-	export let field: FieldRadio
-	export let row: number
-	export let fieldValue: any
-	export let setFieldVal: Function
+	export let fp: FieldProps
 
-	const classPropsLabel = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
+	$: dataObj = fp.dataObj
+	$: field = fp.field as FieldRadio
+	$: fieldValue = fp.fieldValue
+	$: row = fp.row
+	$: setFieldVal = fp.setFieldVal
 
-	field.isDisplayBlock = false
-	const classFormat = field.isDisplayBlock ? 'block mb-2' : 'inline mr-7'
-
-	const classFieldSet =
+	$: classPropsLabel = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
+	$: classFormat = field.isDisplayBlock ? 'block mb-2' : 'inline mr-7'
+	$: classFieldSet =
 		dataObj.raw.codeCardinality === DataObjCardinality.list
 			? 'fieldsetList'
 			: field.colDO.fieldAccess === FieldAccess.required
 				? 'fieldsetDetailRequired'
 				: 'fieldsetDetailOptional'
-
-	const classAlignment =
+	$: classAlignment =
 		field.colDO.fieldAlignment === FieldAlignment.left
 			? ' text-left'
 			: field.colDO.fieldAlignment === FieldAlignment.center
@@ -32,10 +31,11 @@
 						? ' text-right'
 						: ' text-left'
 
+	if (field) field.isDisplayBlock = false
+
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		let newValue: string | null = target.value === fieldValue ? null : target.value
-		setFieldVal(field.colDO.propName, newValue)
+		setFieldVal(field.colDO.propName, target.value)
 	}
 </script>
 

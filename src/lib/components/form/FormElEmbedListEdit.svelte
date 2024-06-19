@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { FieldProps } from '$comps/form/field'
 	import { FieldEmbedListEdit } from '$comps/form/fieldEmbed'
 	import {
 		State,
@@ -18,7 +19,7 @@
 	import {
 		DataObj,
 		DataObjCardinality,
-		type DataObjData,
+		type DataRecord,
 		required,
 		ResponseBody
 	} from '$utils/types'
@@ -27,22 +28,27 @@
 
 	const FILENAME = '$comps/form/FormElEmbeddedListSelect.svelte'
 
-	export let state: State
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
-	export let field: FieldEmbedListEdit
-	export let fieldValue: any
+	export let fp: FieldProps
+
+	$: state = fp.state
+	$: dataObj = fp.dataObj
+	$: dataRecord = fp.dataRecord
+	$: field = fp.field as FieldEmbedListEdit
+	$: fieldValue = fp.fieldValue
+
+	$: exprFilterEmbed = `.id IN (SELECT ${dataObj.rootTable?.object} FILTER .id = <parms,uuid,listRecordIdParent>).${field.colDO.propName}.id`
 
 	let stateEmbed: State
 	let recordIdCurrent: string
-	const exprFilterEmbed = `.id IN (SELECT ${dataObj.rootTable?.object} FILTER .id = <parms,uuid,listRecordIdParent>).${field.colDO.propName}.id`
 
 	$: {
-		let recordId = dataObjData.getDetailRecordValue('id') || ''
-		if (recordId.startsWith('preset_')) recordId = ''
-		if (recordIdCurrent !== recordId) {
-			recordIdCurrent = recordId
-			setStateEmbed(fieldValue)
+		if (dataRecord) {
+			let recordId = dataRecord['id'] || ''
+			if (recordId.startsWith('preset_')) recordId = ''
+			if (recordIdCurrent !== recordId) {
+				recordIdCurrent = recordId
+				setStateEmbed(fieldValue)
+			}
 		}
 	}
 	$: {

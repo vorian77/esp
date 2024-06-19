@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { FieldProps } from '$comps/form/field'
 	import { FieldEmbedListConfig } from '$comps/form/fieldEmbed'
 	import {
 		State,
@@ -15,31 +16,28 @@
 		TokenAppModalReturnType
 	} from '$utils/types.token'
 	import Layout from '$comps/layout/BaseLayout.svelte'
-	import {
-		DataObj,
-		DataObjActionFieldConfirm,
-		DataObjCardinality,
-		DataObjData,
-		required
-	} from '$utils/types'
+	import { DataObj, DataObjCardinality, type DataRecord, required } from '$utils/types'
 	import { RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElEmbeddedListConfig.svelte'
 
-	export let state: State
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
-	export let field: FieldEmbedListConfig
-	export let fieldValue: any
+	export let fp: FieldProps
+
+	$: state = fp.state
+	$: dataObj = fp.dataObj
+	$: dataRecord = fp.dataRecord
+	$: field = fp.field as FieldEmbedListConfig
+	$: fieldValue = fp.fieldValue
+
+	$: exprFilterEmbed = `.id IN (SELECT ${dataObj.rootTable?.object} FILTER .id = <parms,uuid,listRecordIdParent>).${field.colDO.propName}.id`
 
 	let stateEmbed: State
 	let recordIdCurrent: string
-	const exprFilterEmbed = `.id IN (SELECT ${dataObj.rootTable?.object} FILTER .id = <parms,uuid,listRecordIdParent>).${field.colDO.propName}.id`
 
 	$: {
-		let recordId = dataObjData.getDetailRecordValue('id') || ''
+		let recordId = dataRecord['id'] || ''
 		if (recordId.startsWith('preset_')) recordId = ''
 		if (recordIdCurrent !== recordId) {
 			recordIdCurrent = recordId

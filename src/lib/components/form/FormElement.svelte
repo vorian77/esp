@@ -8,7 +8,10 @@
 		ValidityError
 	} from '$utils/types'
 	import { State } from '$comps/app/types.appState'
-	import FormElCustom from '$comps/form/FormElCustom.svelte'
+	import FormElCustomActionButton from './FormElCustomActionButton.svelte'
+	import FormElCustomActionLink from './FormElCustomActionLink.svelte'
+	import FormElCustomHeader from '$comps/form/FormElCustomHeader.svelte'
+	import FormElCustomText from '$comps/form/FormElCustomText.svelte'
 	import FormElFile from '$comps/form/FormElFile.svelte'
 	import FormElInp from '$comps/form/FormElInp.svelte'
 	import FormElInpCheckbox from '$comps/form/FormElInpCheckbox.svelte'
@@ -16,19 +19,27 @@
 	import FormElEmbedListConfig from '$comps/form/FormElEmbedListConfig.svelte'
 	import FormElEmbedListEdit from '$comps/form/FormElEmbedListEdit.svelte'
 	import FormElEmbedListSelect from '$comps/form/FormElEmbedListSelect.svelte'
+	import FormElParm from '$comps/form/FormElParm.svelte'
 	import FormElSelect from '$comps/form/FormElSelect.svelte'
 	import FormElTextarea from '$comps/form/FormElTextarea.svelte'
 	import FormElToggle from '$comps/form/FormElToggle.svelte'
-	import { Field } from '$comps/form/field'
+	import { Field, FieldProps } from '$comps/form/field'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import {
 		FieldEmbedListConfig,
 		FieldEmbedListEdit,
 		FieldEmbedListSelect
 	} from '$comps/form/fieldEmbed'
+	import {
+		FieldCustomActionButton,
+		FieldCustomActionLink,
+		FieldCustomHeader,
+		FieldCustomText
+	} from '$comps/form/fieldCustom'
 	import { FieldCustom } from '$comps/form/fieldCustom'
 	import { FieldFile } from '$comps/form/fieldFile'
 	import { FieldInput } from '$comps/form/fieldInput'
+	import { FieldParm } from '$comps/form/fieldParm'
 	import { FieldRadio } from '$comps/form/fieldRadio'
 	import { FieldSelect } from '$comps/form/fieldSelect'
 	import { FieldTextarea } from '$comps/form/fieldTextarea'
@@ -44,15 +55,35 @@
 	export let row: number
 
 	let classProps = dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-4' : ''
+	let currentElement: any
 
-	let fieldValue: any
-	let validity: any
+	const elements: Record<string, any> = {
+		FieldCheckbox: FormElInpCheckbox,
+		FieldCustomActionButton: FormElCustomActionButton,
+		FieldCustomActionLink: FormElCustomActionLink,
+		FieldCustomHeader: FormElCustomHeader,
+		FieldCustomText: FormElCustomText,
+		FieldEmbedListConfig: FormElEmbedListConfig,
+		FieldEmbedListEdit: FormElEmbedListEdit,
+		FieldEmbedListSelect: FormElEmbedListSelect,
+		FieldFile: FormElFile,
+		FieldInput: FormElInp,
+		FieldParm: FormElParm,
+		FieldRadio: FormElInpRadio,
+		FieldSelect: FormElSelect,
+		FieldTextarea: FormElTextarea,
+		FieldToggle: FormElToggle
+	}
 
-	$: fieldValue = dataObj.userGetFieldVal(row, field.colDO.propName)
-	$: validity = dataObj.dataFieldValidities.valueGet(
-		dataObj.userGetFieldVal(row, 'id'),
-		field.index
-	)
+	$: dataRecord = dataObj.dataRecordsDisplay[0]
+	$: fieldValue = dataRecord[field.colDO.propName]
+	$: validity = dataObj.dataFieldValidities.valueGet(fieldValue, field.index)
+	$: {
+		const fieldClass = field.constructor.name
+		if (typeof fieldClass === 'string' && fieldClass !== '')
+			currentElement = elements[field.constructor.name]
+	}
+	$: fp = new FieldProps(dataObj, dataRecord, field, fieldValue, row, setFieldVal, state)
 
 	function setFieldVal(fieldName: string, value: any) {
 		dataObj.userSetFieldVal(row, fieldName, value)
@@ -69,30 +100,7 @@
 </script>
 
 <div class={classProps}>
-	{#if field instanceof FieldCheckbox}
-		<FormElInpCheckbox {dataObj} {field} {fieldValue} {setFieldVal} />
-	{:else if field instanceof FieldCustom}
-		<FormElCustom bind:field {state} {dataObj} />
-	{:else if field instanceof FieldEmbedListConfig}
-		<FormElEmbedListConfig {state} {dataObj} {dataObjData} {field} {fieldValue} />
-	{:else if field instanceof FieldEmbedListEdit}
-		<FormElEmbedListEdit {state} {dataObj} {dataObjData} {field} {fieldValue} />
-	{:else if field instanceof FieldEmbedListSelect}
-		<FormElEmbedListSelect {state} {dataObj} {dataObjData} {field} {fieldValue} {setFieldVal} />
-	{:else if field instanceof FieldFile}
-		<FormElFile bind:field {fieldValue} onChange={setFieldVal} />
-	{:else if field instanceof FieldInput}
-		<FormElInp {dataObj} {field} {fieldValue} {setFieldVal} />
-	{:else if field instanceof FieldRadio}
-		<FormElInpRadio {dataObj} {field} {row} {fieldValue} {setFieldVal} />
-	{:else if field instanceof FieldSelect}
-		<FormElSelect {dataObj} {field} {fieldValue} {setFieldVal} />
-	{:else if field instanceof FieldTextarea}
-		<FormElTextarea {field} {fieldValue} {setFieldVal} />
-	{:else if field instanceof FieldToggle}
-		<FormElToggle {dataObj} {field} {fieldValue} {setFieldVal} />
-	{/if}
-	<!-- <DataViewer header="Field" data={{ row, field: field.colDO.propName, fieldValue }} /> -->
+	<svelte:component this={currentElement} {fp} />
 </div>
 
 {#if validity}
@@ -106,10 +114,3 @@
 		</div>
 	{/if}
 {/if}
-
-<style>
-	#root {
-		max-height: 90vh;
-		overflow-y: auto;
-	}
-</style>

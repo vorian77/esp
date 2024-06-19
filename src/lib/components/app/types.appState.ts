@@ -229,7 +229,7 @@ export class State {
 
 	proxyGet(actionType: TokenAppDoActionFieldType) {
 		const idx = this.actionProxies.findIndex((p) => p.actionType === actionType)
-		return idx > -1 ? this.actionProxies[idx].proxy : () => {}
+		return idx > -1 ? this.actionProxies[idx].proxy : undefined
 	}
 
 	resetState() {

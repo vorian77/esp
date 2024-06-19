@@ -1,22 +1,23 @@
 <script lang="ts">
-	import { DataObj } from '$utils/types'
-	import { FieldAlignment } from '$comps/form/field'
+	import { FieldAlignment, FieldProps } from '$comps/form/field'
 	import { FieldInput } from '$comps/form/fieldInput'
 	import { FieldAccess } from '$comps/form/field'
 	import { DataObjCardinality } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let dataObj: DataObj
-	export let field: FieldInput
-	export let fieldValue: any
-	export let setFieldVal: Function
+	export let fp: FieldProps
 
-	let classPropsInput =
+	$: dataObj = fp.dataObj
+	$: field = fp.field as FieldInput
+	$: fieldValue = fp.fieldValue
+	$: setFieldVal = fp.setFieldVal
+
+	$: classPropsInput =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
 			? 'input text-black ' + field.colorBackground
 			: 'w-full border-none bg-transparent text-black'
-	classPropsInput +=
+	$: classPropsInput +=
 		field.colDO.fieldAlignment === FieldAlignment.left
 			? ' text-left'
 			: field.colDO.fieldAlignment === FieldAlignment.center
@@ -26,12 +27,11 @@
 					: field.colDO.fieldAlignment === FieldAlignment.right
 						? ' text-right'
 						: ' text-left'
+	$: classPropsLabel = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
 
-	const classPropsLabel = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
-
-	const min = field.minValue ? field.minValue.toString() : ''
-	const max = field.maxValue ? field.maxValue.toString() : ''
-	const step = field.spinStep ? field.spinStep : ''
+	$: min = field.minValue ? field.minValue.toString() : ''
+	$: max = field.maxValue ? field.maxValue.toString() : ''
+	$: step = field.spinStep ? field.spinStep : ''
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement

@@ -1,15 +1,6 @@
 <script lang="ts">
-	import {
-		DataObj,
-		DataObjCardinality,
-		DataObjData,
-		FieldValue,
-		ValidityErrorLevel,
-		ValidityError
-	} from '$utils/types'
-	import { State } from '$comps/app/types.appState'
-	import FormElCustom from '$comps/form/FormElCustom.svelte'
-	import FormElFile from '$comps/form/FormElFile.svelte'
+	import { Field, FieldProps } from '$comps/form/field'
+
 	import FormElInp from '$comps/form/FormElInp.svelte'
 	import FormElInpCheckbox from '$comps/form/FormElInpCheckbox.svelte'
 	import FormElInpRadio from '$comps/form/FormElInpRadio.svelte'
@@ -19,7 +10,6 @@
 	import FormElSelect from '$comps/form/FormElSelect.svelte'
 	import FormElTextarea from '$comps/form/FormElTextarea.svelte'
 	import FormElToggle from '$comps/form/FormElToggle.svelte'
-	import { Field } from '$comps/form/field'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import {
 		FieldEmbedListConfig,
@@ -37,20 +27,33 @@
 
 	const FILENAME = '$comps/form/FormElParm.svelte'
 
-	export let dataObj: DataObj
-	export let field: Field
-	export let fieldValue: any
-	export let setFieldVal: Function
-
-	let currComp: any
-
 	const comps: Record<string, any> = {
 		text: FormElInp
 	}
 
-	currComp = comps['text']
+	export let fp: FieldProps
+
+	$: dataRecord = fp.dataRecord
+
+	$: field = fp.field as Field
+	// $: fieldListItems: dataRecord.fieldListItems
+	$: fieldListItemsParmName = dataRecord.fieldListItemsParmName
+	$: isMultiSelect = dataRecord.isMultiSelect
+	$: isRequired = dataRecord.isRequired
+	$: linkTable = dataRecord.linkTable
+	$: parmType = dataRecord.codeParmType
+
+	$: {
+		const className = field.constructor.name
+		if (typeof className === 'string' && className !== '') {
+		}
+		console.log('FormElParm.className', className)
+	}
+
+	$: currComp = comps['text']
 </script>
 
-<div class="p-4">
-	<svelte:component this={currComp} {dataObj} {field} {fieldValue} {setFieldVal} />
+<div class="text-right content-end border-4">
+	{parmType}
+	<svelte:component this={currComp} {fp} />
 </div>

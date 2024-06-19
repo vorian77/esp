@@ -62,6 +62,7 @@ module sys_core {
     required isAlwaysRetrieveData: bool;
     required isAlwaysRetrieveDataObject: bool;
     required isListEdit: bool;
+    isListHideSearch: bool;
     listEditPresetExpr: str;
     listReorderColumn: sys_db::SysColumn;
   
@@ -160,7 +161,7 @@ module sys_core {
     indexTable: default::nonNegative;
     indexWith: default::nonNegative;
 
-    isDisplayable: bool;
+    required isDisplayable: bool;
     required isExcludeInsert: bool;
     required isExcludeSelect: bool;
     required isExcludeUpdate: bool;

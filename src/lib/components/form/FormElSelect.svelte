@@ -1,20 +1,23 @@
 <script lang="ts">
-	import { DataObj, DataObjCardinality } from '$utils/types'
+	import { DataObjCardinality } from '$utils/types'
+	import { FieldProps } from '$comps/form/field'
 	import { FieldSelect } from '$comps/form/fieldSelect'
 	import { FieldAccess } from '$comps/form/field'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let dataObj: DataObj
-	export let field: FieldSelect
-	export let fieldValue: any
-	export let setFieldVal: Function
-	const fieldId = 'field' + field.index
+	export let fp: FieldProps
 
-	const classProps =
+	$: dataObj = fp.dataObj
+	$: field = fp.field as FieldSelect
+	$: fieldId = 'field' + field.index
+	$: fieldValue = fp.fieldValue
+	$: setFieldVal = fp.setFieldVal
+
+	$: classProps =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
 			? `select rounded-lg ${field.colorBackground}`
 			: `select rounded-lg bg-white`
-	const classPropsLabel =
+	$: classPropsLabel =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-1' : 'mb-1 hidden'
 
 	$: if (
@@ -27,8 +30,7 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		const newValue = target.value
-		setFieldVal(field.colDO.propName, newValue)
+		setFieldVal(field.colDO.propName, target.value)
 	}
 </script>
 
@@ -39,7 +41,6 @@
 		name={field.colDO.propName}
 		id={fieldId}
 		disabled={field.colDO.fieldAccess == FieldAccess.readonly}
-		bind:value={fieldValue}
 		on:change={onChange}
 	>
 		<option value={null}>Select an option...</option>

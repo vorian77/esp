@@ -1,16 +1,19 @@
 <script lang="ts">
+	import { FieldProps } from '$comps/form/field'
 	import { DataObj } from '$utils/types'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import { FieldAccess } from '$comps/form/field'
 	import { DataObjCardinality, getArray } from '$utils/types'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let dataObj: DataObj
-	export let field: FieldCheckbox
-	export let fieldValue: any
-	export let setFieldVal: Function
+	export let fp: FieldProps
 
-	const classFieldSet =
+	$: dataObj = fp.dataObj
+	$: field = fp.field as FieldCheckbox
+	$: fieldValue = fp.fieldValue
+	$: setFieldVal = fp.setFieldVal
+
+	$: classFieldSet =
 		dataObj.raw.codeCardinality === DataObjCardinality.list
 			? 'fieldsetList'
 			: field.colDO.fieldAccess === FieldAccess.required

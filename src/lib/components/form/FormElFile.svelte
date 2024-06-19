@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { FieldProps } from '$comps/form/field'
 	import { FieldFile } from '$comps/form/fieldFile'
 	import { getToastStore } from '@skeletonlabs/skeleton'
 	import {
@@ -13,9 +14,13 @@
 
 	const toastStore = getToastStore()
 
-	export let field: FieldFile
-	export let fieldValue: any
-	export let onChange = (fieldName: string, value: any) => {}
+	export let fp: FieldProps
+
+	$: field = fp.field as FieldFile
+	$: fieldValue = fp.fieldValue
+	$: setFieldVal = fp.setFieldVal
+
+	$: labelDelete = 'Delete ' + field.colDO.label
 
 	enum Mode {
 		unchanged = 'unchanged',
@@ -33,7 +38,6 @@
 
 	let labelSelect: string
 	let chooseBtnWidth: string
-	const labelDelete = 'Delete ' + field.colDO.label
 
 	$: chooseBtnWidth = imgFileName ? 'w-3/4' : 'w-full'
 	$: labelSelect = imgFileName ? 'Choose New ' + field.colDO.label : 'Choose ' + field.colDO.label
@@ -66,7 +70,7 @@
 		mode = Mode.changing
 		storageKeyAction = 'delete'
 		elInput.value = ''
-		onChange(
+		setFieldVal(
 			field.colDO.propName,
 			new TokenApiFileUpload(TokenApiFileUploadAction.delete, storageData?.storageKey)
 		)
@@ -75,7 +79,7 @@
 	function onNew(event: Event) {
 		mode = Mode.changing
 		storageKeyAction = storageData?.storageKey ? storageData.storageKey : field.getKey()
-		onChange(
+		setFieldVal(
 			field.colDO.propName,
 			new TokenApiFileUpload(TokenApiFileUploadAction.upload, storageKeyAction, files[0])
 		)

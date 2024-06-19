@@ -1,20 +1,23 @@
 <script lang="ts">
+	import { FieldProps } from '$comps/form/field'
 	import { DataObj, DataObjCardinality } from '$utils/types'
 	import { FieldToggle } from '$comps/form/fieldToggle'
 	import { SlideToggle } from '@skeletonlabs/skeleton'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let dataObj: DataObj
-	export let field: FieldToggle
-	export let fieldValue: any
-	export let setFieldVal: Function
+	export let fp: FieldProps
 
-	const classProps = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'text-center'
-	const classPropsLabel =
+	$: dataObj = fp.dataObj
+	$: field = fp.field as FieldToggle
+	$: fieldValue = fp.fieldValue
+	$: setFieldVal = fp.setFieldVal
+
+	$: classProps = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'text-center'
+	$: classPropsLabel =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-1' : 'mb-1 hidden'
 
-	let selections = (function () {
+	$: selections = (function () {
 		switch (field.colDO.colDB.codeDataType) {
 			case PropDataType.int16:
 				return [getValTrue(1), getValFalse(0)]

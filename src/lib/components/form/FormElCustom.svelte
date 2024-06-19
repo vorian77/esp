@@ -1,30 +1,37 @@
 <script lang="ts">
-	import type { State } from '$comps/app/types.appState'
-	import { DataObj } from '$utils/types'
+	import { FieldProps } from '$comps/form/field'
 	import {
-		FieldCustom,
 		FieldCustomAction,
 		FieldCustomActionButton,
 		FieldCustomActionLink,
 		FieldCustomHeader,
 		FieldCustomText
 	} from '$comps/form/fieldCustom'
-	import type { DataRecord } from '$utils/types'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/form/FormElCustom.svelte'
 
-	export let state: State
-	export let dataObj: DataObj
-	export let field: FieldCustom
+	export let fp: FieldProps
 
-	let data: DataRecord
+	console.log('FormElCustom.fp', fp)
 
-	$: data = dataObj.objData.getDetailRecord()
+	$: state = fp.state
+	$: dataRecord = fp.dataRecord
+	$: field = fp.field as
+		| FieldCustomAction
+		| FieldCustomActionButton
+		| FieldCustomActionLink
+		| FieldCustomHeader
+		| FieldCustomText
+
+	$: {
+		// const className = field.constructor.name
+		console.log('FormElCustom.className', field)
+	}
 
 	async function action() {
 		if (field instanceof FieldCustomAction && field.enhancement) {
-			await field.enhancement(state, field, data)
+			await field.enhancement(state, field, dataRecord)
 		}
 	}
 </script>
