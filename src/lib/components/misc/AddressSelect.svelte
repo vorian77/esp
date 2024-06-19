@@ -1,7 +1,7 @@
 <script lang="ts">
 	// import type { DataObj } from '$comps/dataObj/dataObjOld'
 	// export let formObj: DataObj
-	export let currentSite = 0
+	// export let currentSite = 0
 
 	// function onSelect(ent_id) {
 	// 	currentSite = ent_id
@@ -41,8 +41,8 @@
 	</div>
 {/each} -->
 
-<style>
+<!-- <style>
 	a {
 		color: navy;
 	}
-</style>
+</style> -->

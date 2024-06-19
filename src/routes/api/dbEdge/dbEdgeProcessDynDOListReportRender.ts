@@ -25,7 +25,6 @@ export async function dynDOListReportRender(rawDataObj: RawDataObj, queryData: T
 	const repUser = new RepUser(repUserData)
 	const rawDataObjDyn = getRawDataObj(repUser)
 
-	debug('dynDOListReportRender', 'elements', repUser.report.elements)
 	addPropsDisplay(repUser.elements)
 	addPropsSelect(repUser.report.elements, rawDataObjDyn.tables)
 	// addPropsSort()

@@ -48,9 +48,3 @@
 		</div>
 	</div>
 {/each} -->
-
-<style>
-	a {
-		color: navy;
-	}
-</style>

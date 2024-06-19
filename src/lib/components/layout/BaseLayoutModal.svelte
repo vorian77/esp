@@ -13,7 +13,7 @@
 
 	const FILENAME = '/$comps/overlay/OverlayModalItems.svelte'
 
-	export let parent: any
+	// export let parent: any
 
 	const storeModal = getModalStore()
 

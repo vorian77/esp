@@ -75,7 +75,7 @@
 		FieldToggle: FormElToggle
 	}
 
-	$: dataRecord = dataObj.dataRecordsDisplay[0]
+	$: dataRecord = dataObj.dataRecordsDisplay[row]
 	$: fieldValue = dataRecord[field.colDO.propName]
 	$: validity = dataObj.dataFieldValidities.valueGet(fieldValue, field.index)
 	$: {

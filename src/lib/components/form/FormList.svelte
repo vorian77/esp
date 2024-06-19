@@ -263,9 +263,9 @@
 	tbody tr:hover {
 		background: #f5f5f5;
 	}
-	tbody tr.active:hover {
+	/* tbody tr.active:hover {
 		background: var(--primary-lighten-2);
-	}
+	} */
 	td :global(b) {
 		font-weight: normal;
 		color: #bdbdbd;

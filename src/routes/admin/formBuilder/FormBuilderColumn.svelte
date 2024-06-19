@@ -2,7 +2,7 @@
 	// import { Form as FormClass } from '$comps/dataObj/dataObjOld'
 	import Form from '$comps/form/FormDetail.svelte'
 
-	export let data
+	// export let data
 
 	// let formCol = new FormClass(data.defnFormCol)
 </script>

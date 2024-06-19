@@ -122,7 +122,6 @@ export class RepEl {
 	constructor(obj: any) {
 		const clazz = 'RepEl'
 		obj = valueOrDefault(obj, {})
-		debug('RepEl', 'obj', obj)
 		this._codeAlignment = memberOfEnumIfExists(
 			obj._codeAlignment,
 			clazz,
@@ -175,7 +174,6 @@ export class RepEl {
 		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
 		this.orderDisplay = nbrOptional(obj.orderDisplay, clazz, 'orderDisplay')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
-		debug('RepEl', 'this', this)
 	}
 }
 

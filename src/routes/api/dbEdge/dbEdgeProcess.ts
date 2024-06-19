@@ -243,7 +243,6 @@ async function getRawDataObj(dataObjSource: TokenApiDbDataObjSource, queryData: 
 		if (Object.hasOwn(dataObjSource.replacements, 'parent')) {
 			rawDataObj.rawParent = dataObjSource.replacements.parent
 		}
-
 		return { rawDataObj, returnRawData }
 	} else {
 		error(500, {
@@ -285,7 +284,7 @@ class ProcessRow {
 				newExpr = newExpr.replace(match[0], dataRecord[key])
 			}
 		}
-		return eval(newExpr)
+		return Function('return ' + newExpr)()
 	}
 }
 
