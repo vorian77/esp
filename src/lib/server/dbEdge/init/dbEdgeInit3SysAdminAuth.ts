@@ -82,6 +82,7 @@ async function initDataObjAccount() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{

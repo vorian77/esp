@@ -165,28 +165,30 @@
 
 <!-- <DataViewer header="state.objStatus" data={state.objStatus} /> -->
 
-<div class="w-full flex mb-6 justify-between">
-	<button
-		class="btn variant-filled-primary mr-4 {listFilterText === '' ? 'hidden' : ''}"
-		on:click={() => {
-			listFilterText = ''
-			onFilter('')
-		}}
-	>
-		Reset
-	</button>
-	<input
-		class="w-full"
-		type="text"
-		id="formSearch"
-		bind:value={listFilterText}
-		on:keyup={() => onFilter(listFilterText)}
-		placeholder="Search..."
-	/>
-	{#if dataObj.dataRecordsDisplay}
-		<span class="ml-4">Rows: {dataObj.dataRecordsDisplay.length}</span>
-	{/if}
-</div>
+{#if !dataObj.raw.isListHideSearch}
+	<div class="w-full flex mb-6 justify-between">
+		<button
+			class="btn variant-filled-primary mr-4 {listFilterText === '' ? 'hidden' : ''}"
+			on:click={() => {
+				listFilterText = ''
+				onFilter('')
+			}}
+		>
+			Reset
+		</button>
+		<input
+			class="w-full"
+			type="text"
+			id="formSearch"
+			bind:value={listFilterText}
+			on:keyup={() => onFilter(listFilterText)}
+			placeholder="Search..."
+		/>
+		{#if dataObj.dataRecordsDisplay}
+			<span class="ml-4">Rows: {dataObj.dataRecordsDisplay.length}</span>
+		{/if}
+	</div>
+{/if}
 
 <div class="overflow-y-scroll" style={dataHeight}>
 	<table id="formList" class="w-full">

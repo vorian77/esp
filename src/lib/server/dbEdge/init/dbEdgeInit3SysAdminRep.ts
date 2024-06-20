@@ -32,6 +32,7 @@ async function initFieldListSelectAnalytics() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -70,6 +71,7 @@ async function initAnalytic() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -113,6 +115,7 @@ async function initAnalytic() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -248,6 +251,7 @@ async function initAnalyticParm() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -315,6 +319,7 @@ async function initAnalyticParm() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -520,6 +525,7 @@ async function initAnalyticStatus() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -565,6 +571,7 @@ async function initAnalyticStatus() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -679,6 +686,7 @@ async function initRep() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -722,6 +730,7 @@ async function initRep() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -916,6 +925,7 @@ async function initRepEl() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1010,6 +1020,7 @@ async function initRepEl() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1382,6 +1393,7 @@ async function initRepParm() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1449,6 +1461,7 @@ async function initRepParm() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1695,6 +1708,7 @@ async function initRepUser() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{

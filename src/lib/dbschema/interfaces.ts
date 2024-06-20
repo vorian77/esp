@@ -205,6 +205,7 @@ export namespace sys_core {
     "subHeader"?: string | null;
     "exprSort"?: string | null;
     "listReorderColumn"?: sys_db.SysColumn | null;
+    "isListHideSearch"?: boolean | null;
   }
   export interface SysDataObjActionField extends SysObj {
     "actionFieldConfirms": SysDataObjActionFieldConfirm[];
@@ -288,12 +289,12 @@ export namespace sys_core {
     "isExcludeInsert": boolean;
     "isExcludeSelect": boolean;
     "isExcludeUpdate": boolean;
-    "isDisplayable"?: boolean | null;
     "orderDefine": number;
     "codeDbDataSourceValue"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
     "linkExprPreset"?: string | null;
     "customColCodeColor"?: SysCode | null;
+    "isDisplayable": boolean;
   }
   export interface SysDataObjColumnItem extends sys_user.Mgmt {
     "orderDefine": number;

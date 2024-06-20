@@ -131,6 +131,7 @@ export async function getDataObjById(dataObjId: string) {
 			isAlwaysRetrieveData: true,
 			isAlwaysRetrieveDataObject: true,
 			isListEdit: true,
+			isListHideSearch: true,
 			listEditPresetExpr: true,
 			name: true,
 			subHeader: true,

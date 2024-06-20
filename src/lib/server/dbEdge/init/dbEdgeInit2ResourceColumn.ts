@@ -1272,8 +1272,15 @@ export async function initPreColumn() {
 	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'bool',
-		header: 'List Edit',
+		header: 'List - Edit',
 		name: 'isListEdit'
+	})
+
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'bool',
+		header: 'List - Hide Search',
+		name: 'isListHideSearch'
 	})
 	await addColumn({
 		owner: 'app_sys',

@@ -26,6 +26,7 @@ async function initMigr() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -61,6 +62,7 @@ async function initMigr() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -175,6 +177,7 @@ async function initMigrSourceTable() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -222,6 +225,7 @@ async function initMigrSourceTable() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -340,6 +344,7 @@ async function initMigrSourceColumn() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -379,6 +384,7 @@ async function initMigrSourceColumn() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -489,6 +495,7 @@ async function initMigrTargetTable() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -521,7 +528,8 @@ async function initMigrTargetTable() {
 				columnName: 'orderDefine',
 				orderSort: 10,
 				orderDefine: 50,
-				indexTable: 0
+				indexTable: 0,
+				isDisplayable: false
 			}
 		]
 	})
@@ -540,6 +548,7 @@ async function initMigrTargetTable() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -579,7 +588,6 @@ async function initMigrTargetTable() {
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
-
 				exprPreset: `(SELECT (count((SELECT sys_migr::SysMigr FILTER .id = <tree,uuid,SysMigr.id>).tablesTarget) + 1))`,
 				indexTable: 0
 			},
@@ -673,6 +681,7 @@ async function initMigrTargetColumn() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -705,7 +714,8 @@ async function initMigrTargetColumn() {
 				columnName: 'orderDefine',
 				orderSort: 10,
 				orderDefine: 50,
-				indexTable: 0
+				indexTable: 0,
+				isDisplayable: false
 			}
 		]
 	})
@@ -724,6 +734,7 @@ async function initMigrTargetColumn() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -750,7 +761,6 @@ async function initMigrTargetColumn() {
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
-
 				exprPreset: `(SELECT true)`,
 				indexTable: 0
 			},
@@ -758,9 +768,9 @@ async function initMigrTargetColumn() {
 				codeFieldElement: 'number',
 				columnName: 'orderDefine',
 				orderDefine: 50,
-
 				exprPreset: `(SELECT (count((SELECT sys_migr::SysMigrTargetTable FILTER .id = <tree,uuid,SysMigrTargetTable.id>).columns) + 1))`,
-				indexTable: 0
+				indexTable: 0,
+				isDisplayable: true
 			},
 
 			/* management */
@@ -848,6 +858,7 @@ async function initMigrProcess() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{

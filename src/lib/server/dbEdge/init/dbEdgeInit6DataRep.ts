@@ -260,6 +260,7 @@ async function initReportCourseSummary() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -408,6 +409,7 @@ async function initReportOurWorldSummary() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -534,6 +536,7 @@ async function initReportStudentSummary() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{

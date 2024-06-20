@@ -61,6 +61,7 @@ async function initFieldListConfigDataObjActionFieldConfirms() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -100,6 +101,7 @@ async function initFieldListConfigDataObjActionFieldConfirms() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -232,6 +234,7 @@ async function initFieldListConfigDataObjActionFieldShows() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -268,6 +271,7 @@ async function initFieldListConfigDataObjActionFieldShows() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -379,6 +383,7 @@ async function initFieldListConfigDataObjActionQueryParm() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -413,6 +418,7 @@ async function initFieldListConfigDataObjActionQueryParm() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -518,6 +524,7 @@ async function initFieldListConfigDataObjActionQueryTrigger() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -557,6 +564,7 @@ async function initFieldListConfigDataObjActionQueryTrigger() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -671,6 +679,7 @@ async function initFieldListConfigDataObjActionFieldGroupItem() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -704,6 +713,7 @@ async function initFieldListConfigDataObjActionFieldGroupItem() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -801,6 +811,7 @@ async function initFieldListConfigDataObjColumnItem() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -841,6 +852,7 @@ async function initFieldListConfigDataObjColumnItem() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -941,6 +953,7 @@ async function initFieldListConfigDataObjColumnLink() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -973,6 +986,7 @@ async function initFieldListConfigDataObjColumnLink() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1067,6 +1081,7 @@ async function initFieldListConfigDataObjTable() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1121,6 +1136,7 @@ async function initFieldListConfigDataObjTable() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1238,6 +1254,7 @@ async function initFieldListConfigUserTypeResource() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1283,6 +1300,7 @@ async function initFieldListConfigUserTypeResource() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1342,6 +1360,7 @@ async function initFieldListSelectCodes() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1391,6 +1410,7 @@ async function initFieldListSelectColumns() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1429,6 +1449,7 @@ async function initResource() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1464,6 +1485,7 @@ async function initResource() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1576,6 +1598,7 @@ async function initCodeType() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1628,6 +1651,7 @@ async function initCodeType() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1772,6 +1796,7 @@ async function initCodeTypeCode() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1848,6 +1873,7 @@ async function initCodeTypeCode() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -2055,6 +2081,7 @@ async function initCode() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -2141,6 +2168,7 @@ async function initCode() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -2347,6 +2375,7 @@ async function initColumn() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -2382,6 +2411,7 @@ async function initColumn() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -2869,6 +2899,7 @@ async function initDataObj() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -2896,6 +2927,7 @@ async function initDataObj() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -3174,10 +3206,33 @@ async function initDataObj() {
 			},
 			{
 				codeFieldElement: 'toggle',
-				columnName: 'isListEdit',
+				columnName: 'isListHideSearch',
 				isDisplayable: true,
 				orderDisplay: 270,
 				orderDefine: 270,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 275,
+				orderDefine: 275
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 280,
+				orderDefine: 280
+			},
+
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isListEdit',
+				isDisplayable: true,
+				orderDisplay: 285,
+				orderDefine: 285,
 				indexTable: 0
 			},
 			{
@@ -3185,8 +3240,8 @@ async function initDataObj() {
 				codeFieldElement: 'select',
 				columnName: 'codeListEditPresetType',
 				isDisplayable: true,
-				orderDisplay: 280,
-				orderDefine: 280,
+				orderDisplay: 290,
+				orderDefine: 290,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_list_edit_preset_type',
@@ -3196,8 +3251,8 @@ async function initDataObj() {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 290,
-				orderDefine: 290
+				orderDisplay: 295,
+				orderDefine: 295
 			},
 			{
 				codeAccess: 'optional',
@@ -3305,6 +3360,7 @@ async function initDataObjColumn() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -3353,6 +3409,7 @@ async function initDataObjColumn() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -4103,6 +4160,7 @@ async function initDataObjActionsQuery() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -4130,6 +4188,7 @@ async function initDataObjActionsQuery() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -4247,6 +4306,7 @@ async function initDataObjActionField() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -4274,6 +4334,7 @@ async function initDataObjActionField() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -4474,6 +4535,7 @@ async function initDataObjActionFieldGroup() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -4501,6 +4563,7 @@ async function initDataObjActionFieldGroup() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -4614,6 +4677,7 @@ async function initDataObjFielEmbedListConfig() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -4669,6 +4733,7 @@ async function initDataObjFielEmbedListConfig() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -4830,6 +4895,7 @@ async function initDataObjFieldEmbedListEdit() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -4884,6 +4950,7 @@ async function initDataObjFieldEmbedListEdit() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -5047,6 +5114,7 @@ async function initDataObjFieldEmbedListSelect() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -5100,6 +5168,7 @@ async function initDataObjFieldEmbedListSelect() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -5258,6 +5327,7 @@ async function initDataObjFieldListItems() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -5344,6 +5414,7 @@ async function initDataObjFieldListItems() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -5543,6 +5614,7 @@ async function initDataObjNodeObj() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -5597,6 +5669,7 @@ async function initDataObjNodeObj() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -5821,6 +5894,7 @@ async function initTable() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -5864,6 +5938,7 @@ async function initTable() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -6006,6 +6081,7 @@ async function initUserType() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -6041,6 +6117,7 @@ async function initUserType() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -6154,6 +6231,7 @@ async function initWidget() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -6189,6 +6267,7 @@ async function initWidget() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{

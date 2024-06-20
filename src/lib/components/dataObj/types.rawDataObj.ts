@@ -54,6 +54,7 @@ export class RawDataObj {
 	isAlwaysRetrieveData: boolean
 	isAlwaysRetrieveDataObject: boolean
 	isListEdit: boolean
+	isListHideSearch: boolean
 	listEditPresetExpr?: string
 	listReorderColumn?: string
 	name: string
@@ -111,6 +112,7 @@ export class RawDataObj {
 			'isAlwaysRetrieveDataObject'
 		)
 		this.isListEdit = booleanRequired(obj.isListEdit, clazz, 'isListEdit')
+		this.isListHideSearch = booleanOrDefault(obj.isListHideSearch, false)
 		this.listEditPresetExpr = strOptional(obj.listEditPresetExpr, clazz, 'listEditPresetExpr')
 		this.listReorderColumn = strOptional(obj._listReorderColumn, clazz, '_listReorderColumn')
 		this.name = strRequired(obj.name, clazz, 'name')

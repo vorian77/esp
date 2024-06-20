@@ -25,6 +25,7 @@ async function initFieldEmbedListEditRepUserElement() {
 		exprOrder: '.orderDisplay',
 		header: 'Elements',
 		isListEdit: true,
+		isListHideSearch: true,
 		listEditPresetExpr: `
 			WITH 
 			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdParent>),
@@ -146,6 +147,7 @@ async function initFieldEmbedListEditRepUserParm() {
 		exprOrder: '.parm.orderDefine',
 		header: 'Parms',
 		isListEdit: true,
+		isListHideSearch: true,
 		listEditPresetExpr: `
 			WITH 
 			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdParent>),
@@ -322,6 +324,7 @@ async function initRepConfig() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -382,6 +385,7 @@ async function initRepConfig() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{

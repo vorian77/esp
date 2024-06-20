@@ -30,6 +30,7 @@ async function initStudent() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -89,6 +90,7 @@ async function initStudent() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -429,6 +431,7 @@ async function initCsf() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -460,30 +463,36 @@ async function initCsf() {
 				indexTable: 0
 			},
 			{
+				codeAccess: 'readOnly',
 				columnName: 'dateStartEst',
-				orderDefine: 60,
-				indexTable: 0
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'dateStart',
+				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
+				orderDefine: 70
 			},
 			{
+				codeAccess: 'readOnly',
 				columnName: 'dateEndEst',
+				indexTable: 0,
+				isDisplayable: true,
 				orderDefine: 80,
-				indexTable: 0
+				orderDisplay: 80
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'dateEnd',
+				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 90,
 				orderDefine: 90,
-				indexTable: 0
+				orderDisplay: 90
 			},
 			{
 				codeAccess: 'readOnly',
@@ -517,6 +526,7 @@ async function initCsf() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -740,6 +750,7 @@ async function initCsfCohort() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -802,6 +813,7 @@ async function initCsfCohort() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -959,6 +971,7 @@ async function initCsfCohortAttdStudent() {
 				codeAccess: 'readOnly',
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1007,6 +1020,7 @@ async function initCsfCohortAttdStudent() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1156,6 +1170,7 @@ async function initCsfNote() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1202,6 +1217,7 @@ async function initCsfNote() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1340,6 +1356,7 @@ async function initCsfJobPlacement() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1386,6 +1403,7 @@ async function initCsfJobPlacement() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1678,6 +1696,7 @@ async function initCsfDocument() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
@@ -1755,6 +1774,7 @@ async function initCsfDocument() {
 			{
 				columnName: 'id',
 				indexTable: 0,
+				isDisplayable: false,
 				orderDefine: 10
 			},
 			{
