@@ -77,13 +77,22 @@
 
 	$: dataRecord = dataObj.dataRecordsDisplay[row]
 	$: fieldValue = dataRecord[field.colDO.propName]
-	$: validity = dataObj.dataFieldValidities.valueGet(fieldValue, field.index)
+	$: validity = dataObj.dataFieldValidities.valueGet(fieldValue)
 	$: {
 		const fieldClass = field.constructor.name
 		if (typeof fieldClass === 'string' && fieldClass !== '')
 			currentElement = elements[field.constructor.name]
 	}
-	$: fp = new FieldProps(dataObj, dataRecord, field, fieldValue, row, setFieldVal, state)
+	$: fp = new FieldProps(
+		dataObj,
+		dataObjData,
+		dataRecord,
+		field,
+		fieldValue,
+		row,
+		setFieldVal,
+		state
+	)
 
 	function setFieldVal(fieldName: string, value: any) {
 		dataObj.userSetFieldVal(row, fieldName, value)

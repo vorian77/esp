@@ -1,4 +1,4 @@
-import { Field, FieldAccess } from '$comps/form/field'
+import { FieldDisplay, FieldAccess } from '$comps/form/field'
 import {
 	arrayOfClasses,
 	debug,
@@ -16,11 +16,11 @@ import {
 } from '$comps/dataObj/types.rawDataObj'
 import { strOptional, strRequired } from '$utils/utils'
 
-export class FieldEmbed extends Field {
+export class FieldEmbed extends FieldDisplay {
 	constructor(propRaw: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
 		const clazz = 'FieldEmbed'
 		super(propRaw, index, isFirstVisible)
-		this.colDO.fieldAccess = FieldAccess.optional
+		this.fieldAccess = FieldAccess.optional
 	}
 }
 export class FieldEmbedListConfig extends FieldEmbed {

@@ -8,8 +8,8 @@ import type * as _default from "./default";
 import type * as _sys_migr from "./sys_migr";
 import type * as _sys_rep from "./sys_rep";
 export type $SysColumnλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
+  "codeAlignment": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "isNonData": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
-  "codeAlignment": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "codeDataType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "classProps": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprStorageKey": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;

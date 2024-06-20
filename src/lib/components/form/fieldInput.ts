@@ -7,15 +7,15 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
-import { Field, FieldAccess, FieldElement } from '$comps/form/field'
-import { valueOrDefault } from '$utils/utils'
+import { FieldDisplay, FieldAccess, FieldElement } from '$comps/form/field'
+import { nbrRequired, valueOrDefault } from '$utils/utils'
 import { type DataRecord, required } from '$utils/types'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldInput.ts'
 
-export class FieldInput extends Field {
+export class FieldInput extends FieldDisplay {
 	matchColumn?: MatchColumn
 	maxLength?: number
 	maxValue?: number
@@ -35,10 +35,10 @@ export class FieldInput extends Field {
 		super(obj, index, isFirstVisible)
 		obj = valueOrDefault(obj, {})
 		this.placeHolder =
-			this.colDO.fieldAccess !== FieldAccess.readonly
+			this.fieldAccess !== FieldAccess.readonly
 				? valueOrDefault(obj.colDB.placeHolder, this.colDO.label ? 'Enter ' + this.colDO.label : '')
 				: ''
-		if (this.colDO.fieldAccess == FieldAccess.optional) {
+		if (this.fieldAccess == FieldAccess.optional) {
 			this.placeHolder += ' (optional)'
 		}
 		this.matchColumn = initMatchColumn(obj.colDB.matchColumn, this, fields)
@@ -52,7 +52,7 @@ export class FieldInput extends Field {
 		this.spinStep = obj.colDB.spinStep
 
 		// set field type defaults
-		switch (this.colDO.fieldElement) {
+		switch (this.fieldElement) {
 			case FieldElement.email:
 				if (!this.pattern) {
 					this.pattern = '^[A-Za-z0-9+_.-]+@(.+)$'
@@ -87,15 +87,15 @@ export class FieldInput extends Field {
 			if (idxParent > -1) {
 				const field = fields[idxParent] as FieldInput
 				const message =
-					thisField.colDO.fieldAccess !== FieldAccess.hidden
+					thisField.fieldAccess !== FieldAccess.hidden
 						? `Fields "${field.colDO.label}" and "${thisField.colDO.label}" must match.`
 						: ''
 
 				// set parent
-				field.matchColumn = new MatchColumn(thisField.colDO.propName, thisField.index, message)
+				field.matchColumn = new MatchColumn(thisField.colDO.propName, message)
 
 				// return this field's match column
-				return new MatchColumn(parentMatchColumn, field.index, message)
+				return new MatchColumn(parentMatchColumn, message)
 			} else {
 				error(500, {
 					file: FILENAME,
@@ -106,13 +106,18 @@ export class FieldInput extends Field {
 		}
 
 		this.setValidatePost((dataValue: any, dataRecord: DataRecord): Validation | undefined => {
+			const orderDisplay = nbrRequired(
+				this.colDO.orderDisplay,
+				'FieldInput.setValidatePost',
+				'orderDisplay'
+			)
 			let nbrValue = Number(dataValue)
 
 			// minLength
 			if (this.minLength || this.minLength === 0) {
 				if (dataValue.length < this.minLength) {
 					return this.getValuationInvalid(
-						this.index,
+						orderDisplay,
 						ValidityError.minLength,
 						ValidityErrorLevel.error,
 						`"${this.colDO.label}" must be at least ${this.minLength} character(s). It is currently ${dataValue.length} character(s).`
@@ -123,7 +128,7 @@ export class FieldInput extends Field {
 			if (this.maxLength || this.maxLength === 0) {
 				if (dataValue.length > this.maxLength) {
 					return this.getValuationInvalid(
-						this.index,
+						orderDisplay,
 						ValidityError.maxLength,
 						ValidityErrorLevel.error,
 						`"${this.colDO.label}" cannot exceed ${this.maxLength} character(s). It is currently ${dataValue.length} character(s).`
@@ -134,7 +139,7 @@ export class FieldInput extends Field {
 			if (this.minValue || this.minValue === 0) {
 				if (nbrValue < this.minValue) {
 					return this.getValuationInvalid(
-						this.index,
+						orderDisplay,
 						ValidityError.minValue,
 						ValidityErrorLevel.error,
 						`"${this.colDO.label}" must be at least ${this.minValue}`
@@ -145,7 +150,7 @@ export class FieldInput extends Field {
 			if (this.maxValue || this.maxValue === 0) {
 				if (nbrValue > this.maxValue) {
 					return this.getValuationInvalid(
-						this.index,
+						orderDisplay,
 						ValidityError.maxValue,
 						ValidityErrorLevel.error,
 						`"${this.colDO.label}" cannot exceed ${this.maxValue}`
@@ -159,7 +164,7 @@ export class FieldInput extends Field {
 					const errorMsg =
 						this.patternMsg || `The value you entered is not a valid "${this.colDO.label}"`
 					return this.getValuationInvalid(
-						this.index,
+						orderDisplay,
 						ValidityError.pattern,
 						ValidityErrorLevel.error,
 						errorMsg
@@ -201,7 +206,7 @@ export class FieldInput extends Field {
 					}
 				}
 				// set validiities
-				let validityFields: [ValidityField] = [new ValidityField(this.index, validity)]
+				let validityFields: [ValidityField] = [new ValidityField(this.orderDisplay, validity)]
 				validityFields.push(new ValidityField(matchColumn.index, validity))
 				return new Validation(ValidationType.field, validationStatus, validityFields)
 			}
@@ -211,16 +216,11 @@ export class FieldInput extends Field {
 	}
 }
 
-export class MatchColumn {
-	name: string
-	index: number | undefined
-	message: string | undefined
-
-	constructor(name: string, index: number, message: string) {
-		this.name = valueOrDefault(name, '')
-		if (this.name) {
-			this.index = index
-			this.message = message
-		}
+class MatchColumn {
+	propName: string
+	message: string
+	constructor(propName: string, message: string) {
+		this.propName = propName
+		this.message = message
 	}
 }

@@ -1,8 +1,8 @@
-import { Field } from '$comps/form/field'
+import { FieldDisplay } from '$comps/form/field'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { valueOrDefault } from '$utils/utils'
 
-export class FieldTextarea extends Field {
+export class FieldTextarea extends FieldDisplay {
 	rows: number
 	cols: number
 	classProps: string

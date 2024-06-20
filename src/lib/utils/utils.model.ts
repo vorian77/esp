@@ -89,7 +89,7 @@ export function isInstanceOf(clazz: any, obj: any) {
 }
 
 export function memberOfEnum(
-	val: string,
+	val: string | undefined,
 	className: string,
 	fieldName: string,
 	enumName: string,
@@ -158,7 +158,7 @@ export function nbrOptional(val: any, clazz: string, name: string) {
 export function nbrOrDefault(val: any, defaultVal: number) {
 	return !isNaN(val) && typeof val === 'number' ? val : defaultVal
 }
-export function nbrRequired(val: number, clazz: string, name: string) {
+export function nbrRequired(val: number | undefined, clazz: string, name: string) {
 	if (typeof val === 'number') {
 		return val
 	} else {

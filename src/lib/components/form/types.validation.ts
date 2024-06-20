@@ -31,10 +31,10 @@ export class Validity {
 	}
 }
 export class ValidityField {
-	index: number
+	orderDisplay: number
 	validity: Validity
-	constructor(index: number, validity: Validity) {
-		this.index = index
+	constructor(orderDisplay: number, validity: Validity) {
+		this.orderDisplay = orderDisplay
 		this.validity = validity
 	}
 }

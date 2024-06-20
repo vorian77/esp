@@ -49,7 +49,7 @@ export async function addAnalytic(data: any) {
 					return e.insert(e.sys_rep.SysRepParm, {
 						codeParmType: e.select(
 							e.sys_core.getCode(
-								'ct_sys_rep_parm_type',
+								'ct_sys_do_field_parm_type',
 								e.cast(e.str, e.json_get(p, 'codeParmType'))
 							)
 						),
@@ -158,7 +158,7 @@ export async function addColumn(data: any) {
 			codeDataType: e.str,
 			exprSelect: e.optional(e.str),
 			exprStorageKey: e.optional(e.str),
-			header: e.optional(e.str),
+			header: e.str,
 			headerSide: e.optional(e.str),
 			isExcludeInsert: e.optional(e.bool),
 			isExcludeSelect: e.optional(e.bool),
@@ -187,12 +187,11 @@ export async function addColumn(data: any) {
 			return e.insert(e.sys_db.SysColumn, {
 				owner: e.select(e.sys_core.getEnt(p.owner)),
 				classProps: p.classProps,
-				codeAlignment: e.op(
-					e.sys_core.getCode('ct_db_col_alignment', p.codeAlignment),
-					'if',
-					e.op('exists', e.sys_core.getCode('ct_db_col_alignment', p.codeAlignment)),
-					'else',
-					e.sys_core.getCode('ct_db_col_alignment', 'left')
+				codeAlignment: e.select(
+					e.sys_core.getCode(
+						'ct_db_col_alignment',
+						e.op(p.codeAlignment, 'if', e.op('exists', p.codeAlignment), 'else', 'left')
+					)
 				),
 				codeDataType: e.sys_core.getCode('ct_db_col_data_type', p.codeDataType),
 				createdBy: e.select(e.sys_user.getRootUser()),
@@ -382,7 +381,19 @@ export async function addDataObj(data: any) {
 						codeAccess: e.select(
 							e.sys_core.getCode(
 								'ct_sys_do_field_access',
-								e.cast(e.str, e.json_get(f, 'codeAccess'))
+								e.op(
+									e.cast(e.str, e.json_get(f, 'codeAccess')),
+									'if',
+									e.op('exists', e.cast(e.str, e.json_get(f, 'codeAccess'))),
+									'else',
+									e.op(
+										'required',
+										'if',
+										e.op('exists', e.cast(e.int16, e.json_get(f, 'orderDisplay'))),
+										'else',
+										e.cast(e.str, e.json_get(f, 'codeAccess'))
+									)
+								)
 							)
 						),
 
@@ -403,7 +414,13 @@ export async function addDataObj(data: any) {
 									'if',
 									e.op('exists', e.cast(e.str, e.json_get(f, 'codeFieldElement'))),
 									'else',
-									'text'
+									e.op(
+										'text',
+										'if',
+										e.op('exists', e.cast(e.int16, e.json_get(f, 'orderDisplay'))),
+										'else',
+										e.cast(e.str, e.json_get(f, 'codeFieldElement'))
+									)
 								)
 							)
 						),
@@ -1008,7 +1025,7 @@ export async function addReport(data: any) {
 					return e.insert(e.sys_rep.SysRepParm, {
 						codeParmType: e.select(
 							e.sys_core.getCode(
-								'ct_sys_rep_parm_type',
+								'ct_sys_do_field_parm_type',
 								e.cast(e.str, e.json_get(p, 'codeParmType'))
 							)
 						),

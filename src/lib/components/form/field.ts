@@ -1,5 +1,5 @@
 import { State } from '$comps/app/types.appState'
-import { DataObj, type DataRecord } from '$utils/types'
+import { DataObj, DataObjData, type DataRecord, memberOfEnum, nbrRequired } from '$utils/types'
 import { valueOrDefault } from '$utils/utils'
 import {
 	Validation,
@@ -17,23 +17,57 @@ const FILENAME = '/$comps/form/field.ts/'
 
 export class Field {
 	colDO: RawDataObjPropDisplay
+	constructor(obj: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
+		const clazz = 'Field'
+		obj = valueOrDefault(obj, {})
+		this.colDO = obj
+	}
+}
+
+export class FieldDisplay extends Field {
 	colorBackground: string
+	fieldAccess: FieldAccess
+	fieldAlignment: FieldAlignment
+	fieldElement: FieldElement
 	fValidatePost?: Function
 	fValidatePre?: Function
-	index: number
 	isFirstVisible: boolean
+	orderDisplay: number
 	constructor(obj: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
+		super(obj, index, isFirstVisible)
+		const clazz = 'FieldDisplay'
 		obj = valueOrDefault(obj, {})
-		const clazz = 'Field'
-		this.colDO = obj
+		this.fieldAccess = memberOfEnum(
+			this.colDO.rawFieldAccess,
+			clazz,
+			'fieldAccess',
+			'FieldAccess',
+			FieldAccess
+		)
+		this.fieldAlignment = memberOfEnum(
+			this.colDO.rawFieldAlignmentAlt || this.colDO.colDB.rawFieldAlignment,
+			clazz,
+			'fieldAlignment',
+			'FieldAlignment',
+			FieldAlignment
+		)
+		this.fieldElement = memberOfEnum(
+			this.colDO.rawFieldElement,
+			clazz,
+			'fieldElement',
+			'FieldElement',
+			FieldElement
+		)
+		this.isFirstVisible = isFirstVisible
+		this.orderDisplay = nbrRequired(this.colDO.orderDisplay, clazz, 'orderDisplay')
+
+		/* derived */
 		this.colorBackground =
-			this.colDO.fieldAccess === FieldAccess.required
+			this.fieldAccess === FieldAccess.required
 				? 'bg-blue-100'
-				: this.colDO.fieldAccess == FieldAccess.readonly
+				: this.fieldAccess == FieldAccess.readonly
 					? 'bg-gray-200'
 					: 'bg-white'
-		this.index = index
-		this.isFirstVisible = isFirstVisible
 	}
 
 	copyValue(value: any) {
@@ -128,15 +162,6 @@ export class FieldColor {
 	}
 }
 
-export enum DataRecordStatus {
-	delete = 'delete',
-	inserted = 'inserted',
-	preset = 'preset',
-	retrieved = 'retrieved',
-	unknown = 'unknown',
-	update = 'update'
-}
-
 export interface FieldCustomRaw {
 	_codeType: string
 	actionMethod?: string
@@ -189,8 +214,17 @@ export class FieldItem {
 	}
 }
 
+export enum FieldParmType {
+	boolean = 'boolean',
+	date = 'date',
+	link = 'link',
+	number = 'number',
+	string = 'string'
+}
+
 export class FieldProps {
 	dataObj: DataObj
+	dataObjData: DataObjData
 	dataRecord: DataRecord
 	field: Field
 	fieldValue: any
@@ -199,6 +233,7 @@ export class FieldProps {
 	state: State
 	constructor(
 		dataObj: DataObj,
+		dataObjData: DataObjData,
 		dataRecord: DataRecord,
 		field: Field,
 		fieldValue: any,
@@ -207,6 +242,7 @@ export class FieldProps {
 		state: State
 	) {
 		this.dataObj = dataObj
+		this.dataObjData = dataObjData
 		this.dataRecord = dataRecord
 		this.field = field
 		this.fieldValue = fieldValue

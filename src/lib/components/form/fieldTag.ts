@@ -1,8 +1,8 @@
-import { Field } from '$comps/form/field'
+import { FieldDisplay } from '$comps/form/field'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { strOptional } from '$utils/utils'
 
-export class FieldTag extends Field {
+export class FieldTag extends FieldDisplay {
 	constructor(obj: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
 		super(obj, index, isFirstVisible)
 		this.colDO.propName = `${this.colDO.propName}_${index}`

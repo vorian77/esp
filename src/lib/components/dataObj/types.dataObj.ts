@@ -30,7 +30,7 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
-import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
+import { Field, FieldAccess, FieldColor, FieldDisplay, FieldElement } from '$comps/form/field'
 import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 import {
 	FieldEmbedListConfig,
@@ -69,7 +69,8 @@ export class DataObj {
 	dataItems: DataRecord = {}
 	dataRecordsDisplay: DataRecord[] = []
 	dataRecordsHidden: DataRecord[] = []
-	fields: Field[] = []
+	fields: Field[]
+	fieldsDisplay: FieldDisplay[]
 	raw: RawDataObj
 	rootTable?: DBTable
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
@@ -79,6 +80,8 @@ export class DataObj {
 		this.raw = rawDataObj
 		this.data = new DataObjData(this.raw.codeCardinality)
 		this.fields = this.initFields(rawDataObj.rawPropsDisplay)
+		this.fieldsDisplay = this.fields.filter((f) => f instanceof FieldDisplay) as FieldDisplay[]
+		console.log('DataObj.fields:', { fields: this.fields, fieldsDisplay: this.fieldsDisplay })
 
 		/* dependent properties */
 		this.rootTable =
@@ -89,12 +92,12 @@ export class DataObj {
 
 	static async init(state: State, rawDataObj: RawDataObj) {
 		const dataObj = new DataObj(rawDataObj)
-		await enhanceCustomFields(dataObj.fields)
+		await enhanceCustomFields(dataObj.fieldsDisplay)
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
 		return dataObj
 
-		async function enhanceCustomFields(fields: Array<Field>) {
+		async function enhanceCustomFields(fields: FieldDisplay[]) {
 			for (const field of fields) {
 				if (field instanceof FieldCustomAction) {
 					await field.initEnhancement()
@@ -118,107 +121,119 @@ export class DataObj {
 
 	initFields(propsRaw: RawDataObjPropDisplay[]) {
 		const clazz = 'DataObj.initFields'
-		let list: Field[] = []
-		let firstVisibleIndex = propsRaw.findIndex((f) => !f.colDB.isNonData)
+		let fields: Field[] = []
+		let firstVisible = propsRaw.find(
+			(f) => typeof f.orderDisplay === 'number' && !f.colDB.isNonData
+		)?.propName
 		let isFirstVisible: boolean
 
 		propsRaw.forEach((propRaw: RawDataObjPropDisplay, index: number) => {
+			console.log('propRaw:', propRaw)
 			let newField: Field
-			isFirstVisible = firstVisibleIndex === index
+			isFirstVisible = firstVisible === propRaw.propName
 
-			const element = memberOfEnumOrDefault(
-				propRaw.fieldElement,
-				'DataObj',
-				'element',
-				'FieldElement',
-				FieldElement,
-				FieldElement.text
-			)
-			switch (element) {
-				// input
-				case FieldElement.date:
-				case FieldElement.email:
-				case FieldElement.number:
-				case FieldElement.password:
-				case FieldElement.tel:
-				case FieldElement.text:
-					newField = new FieldInput(propRaw, index, isFirstVisible, list)
-					break
+			if (!propRaw.rawFieldElement) {
+				newField = new Field(propRaw, index, isFirstVisible)
+			} else {
+				console.log('propRaw.element:', {
+					propName: propRaw.propName,
+					fieldElement: propRaw.rawFieldElement,
+					fieldAccess: propRaw.rawFieldAccess
+				})
+				const element = memberOfEnumOrDefault(
+					propRaw.rawFieldElement,
+					'DataObj',
+					'element',
+					'FieldElement',
+					FieldElement,
+					FieldElement.text
+				)
+				switch (element) {
+					// input
+					case FieldElement.date:
+					case FieldElement.email:
+					case FieldElement.number:
+					case FieldElement.password:
+					case FieldElement.tel:
+					case FieldElement.text:
+						newField = new FieldInput(propRaw, index, isFirstVisible, fields)
+						break
 
-				case FieldElement.checkbox:
-					newField = new FieldCheckbox(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.checkbox:
+						newField = new FieldCheckbox(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.customActionButton:
-					newField = new FieldCustomActionButton(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.customActionButton:
+						newField = new FieldCustomActionButton(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.customActionLink:
-					newField = new FieldCustomActionLink(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.customActionLink:
+						newField = new FieldCustomActionLink(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.customHeader:
-					newField = new FieldCustomHeader(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.customHeader:
+						newField = new FieldCustomHeader(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.customText:
-					newField = new FieldCustomText(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.customText:
+						newField = new FieldCustomText(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.embedListConfig:
-					newField = new FieldEmbedListConfig(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.embedListConfig:
+						newField = new FieldEmbedListConfig(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.embedListEdit:
-					newField = new FieldEmbedListEdit(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.embedListEdit:
+						newField = new FieldEmbedListEdit(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.embedListSelect:
-					newField = new FieldEmbedListSelect(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.embedListSelect:
+						newField = new FieldEmbedListSelect(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.file:
-					newField = new FieldFile(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.file:
+						newField = new FieldFile(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.parm:
-					newField = new FieldParm(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.parm:
+						newField = new FieldParm(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.radio:
-					newField = new FieldRadio(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.radio:
+						newField = new FieldRadio(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.select:
-					newField = new FieldSelect(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.select:
+						newField = new FieldSelect(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.tagRow:
-					newField = new FieldTagRow(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.tagRow:
+						newField = new FieldTagRow(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.tagSection:
-					newField = new FieldTagSection(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.tagSection:
+						newField = new FieldTagSection(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.textArea:
-					newField = new FieldTextarea(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.textArea:
+						newField = new FieldTextarea(propRaw, index, isFirstVisible)
+						break
 
-				case FieldElement.toggle:
-					newField = new FieldToggle(propRaw, index, isFirstVisible)
-					break
+					case FieldElement.toggle:
+						newField = new FieldToggle(propRaw, index, isFirstVisible)
+						break
 
-				default:
-					error(500, {
-						file: FILENAME,
-						function: 'initFields',
-						message: `No case defined for field element: ${element} in form: ${this.raw.name}`
-					})
+					default:
+						error(500, {
+							file: FILENAME,
+							function: 'initFields',
+							message: `No case defined for field element: ${element} in form: ${this.raw.name}`
+						})
+				}
+				fields.push(newField)
 			}
-			list.push(newField)
 		})
-		return list
+		return fields
 	}
 
 	get objData() {
@@ -278,18 +293,18 @@ export class DataObj {
 		let fieldValid: boolean
 
 		this.dataRecordsDisplay.forEach((record, indexRow) => {
-			this.fields.forEach((f, indexField) => {
+			this.fieldsDisplay.forEach((f, indexField) => {
 				const fieldName = f.colDO.propName
 				if (
-					f.colDO.fieldAccess !== FieldAccess.readonly &&
-					f.colDO.orderDisplay !== undefined &&
+					f.fieldAccess !== FieldAccess.readonly &&
+					f.orderDisplay !== undefined &&
 					!f.colDO.colDB.isNonData
 				) {
 					fieldValid = true
 					const valueCurrent = record[f.colDO.propName]
 					const typeOf = typeof valueCurrent
 					if (valueCurrent === undefined || valueCurrent === null || valueCurrent === '') {
-						if (f.colDO.fieldAccess === FieldAccess.required) {
+						if (f.fieldAccess === FieldAccess.required) {
 							formStatus = ValidationStatus.invalid
 							fieldValid = false
 							this.dataFieldValidities.valueSet(
@@ -345,7 +360,7 @@ export class DataObj {
 	}
 
 	userSetValidities(rowId: string, newValidities: Array<ValidityField>) {
-		newValidities.forEach(({ index, validity }) => {
+		newValidities.forEach(({ orderDisplay: index, validity }) => {
 			this.dataFieldValidities.valueSet(rowId, index, validity)
 		})
 		this.dataFieldValidities = this.dataFieldValidities
@@ -359,7 +374,7 @@ export class DataObj {
 		return undefined
 	}
 	valueHasChanged(recordId: string, fieldIndex: number, userValue: any) {
-		const field = this.fields[fieldIndex]
+		const field = this.fieldsDisplay[fieldIndex]
 		const fieldName = field.colDO.propName
 		const valueInitial = this.data.getValue(recordId, fieldName)
 		const changed = valueHasChanged(valueInitial, userValue)
@@ -378,7 +393,7 @@ export class DataObj {
 		}
 	}
 	valueValidation(indexRow: number, indexField: number, userValue: any, dataRecord: DataRecord) {
-		const field = this.fields[indexField]
+		const field = this.fieldsDisplay[indexField]
 		let vRtn: Validation | undefined
 
 		// validate pre
@@ -407,15 +422,15 @@ export class DataObj {
 		userValue: any,
 		dataRecord: DataRecord
 	) {
-		const field = this.fields[indexField]
+		const field = this.fieldsDisplay[indexField]
 
 		// only validate access types that require validation
-		if (![FieldAccess.required, FieldAccess.optional].includes(field.colDO.fieldAccess)) {
+		if (![FieldAccess.required, FieldAccess.optional].includes(field.fieldAccess)) {
 			return field.getValuationValid(indexField)
 		}
 
 		// optional & empty
-		if (field.colDO.fieldAccess === FieldAccess.optional && !userValue) {
+		if (field.fieldAccess === FieldAccess.optional && !userValue) {
 			return field.getValuationValid(indexField)
 		}
 

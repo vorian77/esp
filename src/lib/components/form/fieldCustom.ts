@@ -1,4 +1,4 @@
-import { Field, FieldAccess, FieldColor } from '$comps/form/field'
+import { FieldDisplay, FieldAccess, FieldColor } from '$comps/form/field'
 import { memberOfEnum, required, strRequired, valueOrDefault } from '$utils/types'
 import { RawDataObjPropDisplay, RawDataObjPropDisplayCustom } from '$comps/dataObj/types.rawDataObj'
 import { getEnhancement } from '$enhance/actions/_actions'
@@ -6,12 +6,12 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/form/fieldCustom.ts'
 
-export class FieldCustom extends Field {
+export class FieldCustom extends FieldDisplay {
 	constructor(propRaw: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
 		const clazz = 'FieldCustom'
 		super(propRaw, index, isFirstVisible)
 		this.colDO.propName += '_' + index.toString()
-		this.colDO.fieldAccess = FieldAccess.readonly
+		this.fieldAccess = FieldAccess.readonly
 		const customCol = required(propRaw.customCol, clazz, 'customCol') as RawDataObjPropDisplayCustom
 		this.colDO.label = strRequired(customCol.customColLabel, clazz, 'label')
 	}

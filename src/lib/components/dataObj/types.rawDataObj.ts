@@ -18,12 +18,10 @@ import {
 	strOptional,
 	strRequired,
 	DBTable,
-	valueIfExists,
 	valueOrDefault,
 	memberOfEnumIfExists
 } from '$utils/types'
 import {
-	DataObjActionField,
 	DataObjActionFieldConfirm,
 	DataObjActionFieldShow,
 	DataObjActionFieldTriggerEnable,
@@ -34,7 +32,7 @@ import {
 } from '$comps/dataObj/types.dataObj'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
 import { TokenAppDoActionFieldType } from '$utils/types.token'
-import { FieldAccess, FieldAlignment, FieldColor, FieldElement } from '$comps/form/field'
+import { FieldColor } from '$comps/form/field'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
@@ -313,10 +311,7 @@ export class RawDataObjPropDisplay {
 	colDB: RawDBColumn
 	codeSortDir?: PropSortDir
 	customCol?: RawDataObjPropDisplayCustom
-	fieldAccess: FieldAccess
-	fieldAlignment: FieldAlignment
 	fieldColor: FieldColor
-	fieldElement?: FieldElement
 	fieldEmbedListConfig?: RawDataObjPropDisplayEmbedListConfig
 	fieldEmbedListEdit?: RawDataObjPropDisplayEmbedListEdit
 	fieldEmbedListSelect?: RawDataObjPropDisplayEmbedListSelect
@@ -330,6 +325,9 @@ export class RawDataObjPropDisplay {
 	orderDisplay?: number
 	orderSort?: number
 	propName: string
+	rawFieldAccess?: string
+	rawFieldAlignmentAlt?: string
+	rawFieldElement?: string
 	width?: number
 	constructor(obj: any) {
 		const clazz = 'RawDataObjPropDisplay'
@@ -343,29 +341,7 @@ export class RawDataObjPropDisplay {
 				? PropSortDir.asc
 				: undefined
 		this.customCol = classOptional(RawDataObjPropDisplayCustom, obj._customCol)
-		this.fieldAccess = memberOfEnumOrDefault(
-			obj._codeAccess,
-			clazz,
-			'access',
-			'FieldAccess',
-			FieldAccess,
-			FieldAccess.required
-		)
-		this.fieldAlignment = memberOfEnum(
-			override(obj._codeAlignmentAlt, obj._column._codeAlignment, clazz, 'fieldAlignment'),
-			clazz,
-			'fieldAlignment',
-			'FieldAlignment',
-			FieldAlignment
-		)
 		this.fieldColor = new FieldColor(obj._codeColor, 'black')
-		this.fieldElement = memberOfEnumIfExists(
-			obj._codeFieldElement,
-			clazz,
-			'element',
-			'FieldElement',
-			FieldElement
-		)
 		this.fieldEmbedListConfig = classOptional(
 			RawDataObjPropDisplayEmbedListConfig,
 			obj._fieldEmbedListConfig
@@ -386,6 +362,9 @@ export class RawDataObjPropDisplay {
 		this.orderDisplay = nbrOptional(obj.orderDisplay, clazz, 'orderDisplay')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
 		this.propName = strRequired(obj._propName, clazz, 'propName')
+		this.rawFieldAccess = strOptional(obj._codeAccess, clazz, 'rawFieldAccess')
+		this.rawFieldAlignmentAlt = strOptional(obj._codeAlignmentAlt, clazz, 'rawFieldAlignmentAlt')
+		this.rawFieldElement = strOptional(obj._codeFieldElement, clazz, 'rawFieldElement')
 		this.width = nbrOptional(obj.width, clazz, 'width')
 
 		/* dependent properties */
@@ -514,7 +493,6 @@ export class RawDataObjTable {
 }
 
 export class RawDBColumn {
-	codeAlignment: FieldAlignment
 	codeDataType: string
 	classProps?: string
 	exprStorageKey?: string
@@ -531,6 +509,7 @@ export class RawDBColumn {
 	patternMsg?: string
 	patternReplacement?: string
 	placeHolder?: string
+	rawFieldAlignment?: string
 	spinStep?: string
 	togglePresetTrue?: boolean
 	toggleValueFalse?: string
@@ -539,13 +518,6 @@ export class RawDBColumn {
 	constructor(obj: any) {
 		const clazz = 'RawDBColumn'
 		obj = valueOrDefault(obj, {})
-		this.codeAlignment = memberOfEnum(
-			obj._codeAlignment,
-			clazz,
-			'codeAlignment',
-			'FieldAlignment',
-			FieldAlignment
-		)
 		this.codeDataType = memberOfEnum(
 			obj._codeDataType,
 			clazz,
@@ -568,6 +540,7 @@ export class RawDBColumn {
 		this.patternMsg = strOptional(obj.patternMsg, clazz, 'patternMsg')
 		this.patternReplacement = strOptional(obj.patternReplacement, clazz, 'patternReplacement')
 		this.placeHolder = strOptional(obj.placeHolder, clazz, 'placeHolder')
+		this.rawFieldAlignment = strOptional(obj._codeAlignment, clazz, 'rawFieldAlignment')
 		this.spinStep = strOptional(obj.spinStep, clazz, 'spinStep')
 		this.togglePresetTrue = booleanOrDefault(obj.togglePresetTrue, false)
 		this.toggleValueFalse = strOptional(obj.toggleValueFalse, clazz, 'toggleValueFalse')

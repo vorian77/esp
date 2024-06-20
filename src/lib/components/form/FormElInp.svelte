@@ -18,13 +18,13 @@
 			? 'input text-black ' + field.colorBackground
 			: 'w-full border-none bg-transparent text-black'
 	$: classPropsInput +=
-		field.colDO.fieldAlignment === FieldAlignment.left
+		field.fieldAlignment === FieldAlignment.left
 			? ' text-left'
-			: field.colDO.fieldAlignment === FieldAlignment.center
+			: field.fieldAlignment === FieldAlignment.center
 				? ' text-center'
-				: field.colDO.fieldAlignment === FieldAlignment.justify
+				: field.fieldAlignment === FieldAlignment.justify
 					? ' text-justify'
-					: field.colDO.fieldAlignment === FieldAlignment.right
+					: field.fieldAlignment === FieldAlignment.right
 						? ' text-right'
 						: ' text-left'
 	$: classPropsLabel = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
@@ -55,16 +55,12 @@
 <!-- <DataViewer header="element" data={field.element} /> -->
 <!-- <DataViewer header="fieldValue" data={fieldValue} /> -->
 
-<label
-	class="label"
-	for={field.colDO.propName}
-	hidden={field.colDO.fieldAccess == FieldAccess.hidden}
->
+<label class="label" for={field.colDO.propName} hidden={field.fieldAccess == FieldAccess.hidden}>
 	<span class={classPropsLabel}>{field.colDO.label}</span>
 	<div>
 		<input
 			class={classPropsInput}
-			hidden={field.colDO.fieldAccess == FieldAccess.hidden}
+			hidden={field.fieldAccess == FieldAccess.hidden}
 			id={field.colDO.propName}
 			{max}
 			{min}
@@ -76,9 +72,9 @@
 			dataObj.raw.isListEdit
 				? field.placeHolder
 				: ''}
-			readonly={field.colDO.fieldAccess == FieldAccess.readonly}
+			readonly={field.fieldAccess == FieldAccess.readonly}
 			{step}
-			type={field.colDO.fieldElement}
+			type={field.fieldElement}
 			value={fieldValue}
 		/>
 	</div>

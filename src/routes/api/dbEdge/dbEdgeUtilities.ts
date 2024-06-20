@@ -258,7 +258,6 @@ export async function getDataObjById(dataObjId: string) {
 				orderDisplay: true,
 				orderSort: true,
 				width: true,
-				filter: e.op(doc.isDisplayable, '=', e.bool(true)),
 				order_by: doc.orderDisplay
 			})),
 

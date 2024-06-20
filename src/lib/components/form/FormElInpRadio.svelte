@@ -17,17 +17,17 @@
 	$: classFieldSet =
 		dataObj.raw.codeCardinality === DataObjCardinality.list
 			? 'fieldsetList'
-			: field.colDO.fieldAccess === FieldAccess.required
+			: field.fieldAccess === FieldAccess.required
 				? 'fieldsetDetailRequired'
 				: 'fieldsetDetailOptional'
 	$: classAlignment =
-		field.colDO.fieldAlignment === FieldAlignment.left
+		field.fieldAlignment === FieldAlignment.left
 			? ' text-left'
-			: field.colDO.fieldAlignment === FieldAlignment.center
+			: field.fieldAlignment === FieldAlignment.center
 				? ' text-center'
-				: field.colDO.fieldAlignment === FieldAlignment.justify
+				: field.fieldAlignment === FieldAlignment.justify
 					? ' text-justify'
-					: field.colDO.fieldAlignment === FieldAlignment.right
+					: field.fieldAlignment === FieldAlignment.right
 						? ' text-right'
 						: ' text-left'
 

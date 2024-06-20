@@ -251,7 +251,6 @@ export namespace sys_core {
     "codeAccess"?: SysCode | null;
     "codeColor"?: SysCode | null;
     "codeDbDataOp"?: SysCode | null;
-    "customColCodeType"?: SysCode | null;
     "column"?: sys_db.SysColumn | null;
     "fieldListItems"?: SysDataObjFieldListItems | null;
     "items": SysDataObjColumnItem[];
@@ -282,6 +281,7 @@ export namespace sys_core {
     "fieldEmbedListConfig"?: SysDataObjFieldEmbedListConfig | null;
     "fieldEmbedListEdit"?: SysDataObjFieldEmbedListEdit | null;
     "fieldEmbedListSelect"?: SysDataObjFieldEmbedListSelect | null;
+    "isDisplayable"?: boolean | null;
     "codeSortDir"?: SysCode | null;
     "exprPreset"?: string | null;
     "orderCrumb"?: number | null;
@@ -294,7 +294,6 @@ export namespace sys_core {
     "codeAlignmentAlt"?: SysCode | null;
     "linkExprPreset"?: string | null;
     "customColCodeColor"?: SysCode | null;
-    "isDisplayable": boolean;
   }
   export interface SysDataObjColumnItem extends sys_user.Mgmt {
     "orderDefine": number;
@@ -703,8 +702,8 @@ export namespace sys {
 }
 export namespace sys_db {
   export interface SysColumn extends sys_core.SysObj {
+    "codeAlignment"?: sys_core.SysCode | null;
     "isNonData": boolean;
-    "codeAlignment": sys_core.SysCode;
     "codeDataType": sys_core.SysCode;
     "classProps"?: string | null;
     "exprStorageKey"?: string | null;

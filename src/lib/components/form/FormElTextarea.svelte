@@ -25,8 +25,8 @@
 	name={field.colDO.propName}
 	rows={field.rows}
 	cols={field.cols}
-	hidden={field.colDO.fieldAccess == FieldAccess.hidden}
-	readonly={field.colDO.fieldAccess == FieldAccess.readonly}
+	hidden={field.fieldAccess == FieldAccess.hidden}
+	readonly={field.fieldAccess == FieldAccess.readonly}
 	class={classProps}
 	on:change={onChange}
 	on:keyup|preventDefault={onChange}

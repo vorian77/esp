@@ -9,7 +9,7 @@
 
 	$: dataObj = fp.dataObj
 	$: field = fp.field as FieldSelect
-	$: fieldId = 'field' + field.index
+	$: fieldId = 'field' + field.colDO.orderDisplay
 	$: fieldValue = fp.fieldValue
 	$: setFieldVal = fp.setFieldVal
 
@@ -23,7 +23,7 @@
 	$: if (
 		field?.colDO.items?.length === 1 &&
 		!fieldValue &&
-		field.colDO.fieldAccess === FieldAccess.required
+		field.fieldAccess === FieldAccess.required
 	) {
 		setFieldVal(field.colDO.propName, field.colDO.items[0].data)
 	}
@@ -40,7 +40,7 @@
 		class={classProps}
 		name={field.colDO.propName}
 		id={fieldId}
-		disabled={field.colDO.fieldAccess == FieldAccess.readonly}
+		disabled={field.fieldAccess == FieldAccess.readonly}
 		on:change={onChange}
 	>
 		<option value={null}>Select an option...</option>

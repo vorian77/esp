@@ -290,7 +290,7 @@ export async function initPreColumn() {
 	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'link',
-		header: 'List Edit Preset - Type',
+		header: 'List - Edit - Preset Type',
 		isMultiSelect: false,
 		name: 'codeListEditPresetType'
 	})
@@ -1377,14 +1377,14 @@ export async function initPreColumn() {
 	})
 	await addColumn({
 		codeDataType: 'str',
-		header: 'List Edit - Preset Expression',
+		header: 'List - Edit - Preset Expression',
 		name: 'listEditPresetExpr',
 		owner: 'app_sys'
 	})
 	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'link',
-		header: 'List Reorder Column',
+		header: 'List - Reorder Column',
 		name: 'listReorderColumn'
 	})
 	await addColumn({

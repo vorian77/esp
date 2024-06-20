@@ -16,7 +16,7 @@
 	$: classFieldSet =
 		dataObj.raw.codeCardinality === DataObjCardinality.list
 			? 'fieldsetList'
-			: field.colDO.fieldAccess === FieldAccess.required
+			: field.fieldAccess === FieldAccess.required
 				? 'fieldsetDetailRequired'
 				: 'fieldsetDetailOptional'
 

@@ -11,13 +11,12 @@ import {
 	nbrOptional,
 	nbrRequired,
 	RepElementType,
-	RepParmType,
 	strOptional,
 	strRequired,
 	valueOrDefault
 } from '$utils/utils'
 import { DataObjTable } from '$utils/types'
-import { FieldAlignment, FieldElement } from '$comps/form/field'
+import { FieldAlignment, FieldElement, FieldParmType } from '$comps/form/field'
 import {
 	PropDataSourceValue,
 	PropDataType,
@@ -205,7 +204,7 @@ export class RepElColumn {
 }
 
 export class RepParm {
-	codeParmType: RepParmType
+	codeParmType: FieldParmType
 	description?: string
 	fieldListItems?: string
 	fieldListItemsParmName?: string
@@ -220,8 +219,8 @@ export class RepParm {
 			obj._codeParmType,
 			clazz,
 			'codeParmType',
-			'RepParmType',
-			RepParmType
+			'FieldParmType',
+			FieldParmType
 		)
 		this.description = strOptional(obj.description, clazz, 'description')
 		this.fieldListItems = strOptional(obj.fieldListItems, clazz, 'fieldListItems')
