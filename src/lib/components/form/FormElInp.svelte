@@ -5,6 +5,7 @@
 	import { DataObjCardinality } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import DataViewer from '$utils/DataViewer.svelte'
+	import { input } from 'edgedb/dist/adapter.node'
 
 	export let fp: FieldProps
 
@@ -12,11 +13,21 @@
 	$: field = fp.field as FieldInput
 	$: fieldValue = fp.fieldValue
 	$: setFieldVal = fp.setFieldVal
+	$: fieldType = {
+		inputDate: 'date',
+		inputEmail: 'email',
+		inputNumber: 'number',
+		inputText: 'text',
+		inputNumber: 'number',
+		inputPassword: 'password',
+		inputText: 'text'
+	}[field.fieldElement]
 
 	$: classPropsInput =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
 			? 'input text-black ' + field.colorBackground
 			: 'w-full border-none bg-transparent text-black'
+	$: classPropsLabel = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
 	$: classPropsInput +=
 		field.fieldAlignment === FieldAlignment.left
 			? ' text-left'
@@ -27,7 +38,6 @@
 					: field.fieldAlignment === FieldAlignment.right
 						? ' text-right'
 						: ' text-left'
-	$: classPropsLabel = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
 
 	$: min = field.minValue ? field.minValue.toString() : ''
 	$: max = field.maxValue ? field.maxValue.toString() : ''
@@ -53,7 +63,7 @@
 </script>
 
 <!-- <DataViewer header="element" data={field.element} /> -->
-<!-- <DataViewer header="fieldValue" data={fieldValue} /> -->
+<!-- <DataViewer header="fieldAccess" data={field.fieldAccess} /> -->
 
 <label class="label" for={field.colDO.propName} hidden={field.fieldAccess == FieldAccess.hidden}>
 	<span class={classPropsLabel}>{field.colDO.label}</span>
@@ -74,7 +84,7 @@
 				: ''}
 			readonly={field.fieldAccess == FieldAccess.readonly}
 			{step}
-			type={field.fieldElement}
+			type={fieldType}
 			value={fieldValue}
 		/>
 	</div>
