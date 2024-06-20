@@ -31,6 +31,7 @@
 	let listFilterText = ''
 	let listSortObj: DataObjSort = new DataObjSort()
 	let scrollToTop = () => {}
+	let fieldsDisplayable: Field[] = []
 
 	let isSelect =
 		state instanceof StateSurfaceModal && state.layoutStyle === StateLayoutStyle.overlayModalSelect
@@ -40,6 +41,8 @@
 	$: loadData(dataObjData)
 
 	function loadData(data: DataObjData) {
+		fieldsDisplayable = dataObj.fields.filter((f) => f.isDisplayable)
+
 		dataObj.objData = data
 		state.objStatus.setValid(dataObj.preValidate())
 		state = state
@@ -48,7 +51,7 @@
 		if (dataObj.raw.isListEdit) {
 			const presetRows = dataObjData.dataRows.filter((row) => row.record.id.startsWith('preset_'))
 			presetRows.forEach((row) => {
-				dataObj.dataFieldsChanged.valueSet(row.record.id + '_new', -1, true)
+				dataObj.dataFieldsChanged.valueSet(row.record.id + '_new', 'id', true)
 			})
 			state.objStatus.setChanged(dataObj.getStatusChanged())
 		}
@@ -60,7 +63,7 @@
 		// sort
 		listSortObj = state.dataObjParms.parmGet(dataObj.raw.id, 'listSortObj')
 		if (!listSortObj) {
-			listSortObj = sortInit(dataObj.fields)
+			listSortObj = sortInit(fieldsDisplayable)
 			state.dataObjParms.parmSet(dataObj.raw.id, 'listSortObj', listSortObj)
 		}
 		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
@@ -82,7 +85,7 @@
 
 	function onFilter(filterText: string) {
 		dataObjData.syncFields(dataObj.dataRecordsDisplay, ['selected'])
-		recordsFilter(filterText, dataObj, dataObj.fields)
+		recordsFilter(filterText, dataObj, fieldsDisplayable)
 		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
 		isSelectMultiAll = recordsSelectAll(dataObj.dataRecordsDisplay)
 		state.dataObjParms.parmSet(dataObj.raw.id, 'listFilterText', filterText)
@@ -194,7 +197,7 @@
 	<table id="formList" class="w-full">
 		<thead>
 			<tr>
-				{#if dataObj.fields}
+				{#if fieldsDisplayable}
 					{#if isSelect}
 						<th class="selection">
 							{#if isSelectMulti}
@@ -202,7 +205,7 @@
 							{/if}
 						</th>
 					{/if}
-					{#each dataObj.fields as field}
+					{#each fieldsDisplayable as field}
 						<th><Header {field} sortObj={listSortObj} sortField={onSort} /></th>
 					{/each}
 				{/if}

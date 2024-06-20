@@ -3,13 +3,8 @@ const FILENAME = '$comps/form/types.validation.ts'
 export class Validation {
 	type: ValidationType
 	status: ValidationStatus
-	validityFields: Array<ValidityField>
-
-	constructor(
-		type: ValidationType,
-		status: ValidationStatus,
-		validityFields: Array<ValidityField>
-	) {
+	validityFields: ValidityField[]
+	constructor(type: ValidationType, status: ValidationStatus, validityFields: ValidityField[]) {
 		this.type = type
 		this.status = status
 		this.validityFields = validityFields
@@ -31,10 +26,10 @@ export class Validity {
 	}
 }
 export class ValidityField {
-	orderDisplay: number
+	fieldName: string
 	validity: Validity
-	constructor(orderDisplay: number, validity: Validity) {
-		this.orderDisplay = orderDisplay
+	constructor(fieldName: string, validity: Validity) {
+		this.fieldName = fieldName
 		this.validity = validity
 	}
 }

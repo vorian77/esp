@@ -1,14 +1,14 @@
-import { FieldDisplay } from '$comps/form/field'
+import { Field } from '$comps/form/field'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { valueOrDefault } from '$utils/utils'
 
-export class FieldTextarea extends FieldDisplay {
+export class FieldTextarea extends Field {
 	rows: number
 	cols: number
 	classProps: string
 
-	constructor(obj: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
-		super(obj, index, isFirstVisible)
+	constructor(obj: RawDataObjPropDisplay, isFirstVisible: boolean) {
+		super(obj, isFirstVisible)
 		obj = valueOrDefault(obj, {})
 		this.rows = valueOrDefault(obj.height, 3)
 		this.cols = valueOrDefault(obj.width, 0)

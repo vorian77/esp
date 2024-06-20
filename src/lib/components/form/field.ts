@@ -1,6 +1,6 @@
 import { State } from '$comps/app/types.appState'
 import { DataObj, DataObjData, type DataRecord, memberOfEnum, nbrRequired } from '$utils/types'
-import { valueOrDefault } from '$utils/utils'
+import { memberOfEnumOrDefault, nbrOptional, valueOrDefault } from '$utils/utils'
 import {
 	Validation,
 	ValidationType,
@@ -17,49 +17,46 @@ const FILENAME = '/$comps/form/field.ts/'
 
 export class Field {
 	colDO: RawDataObjPropDisplay
-	constructor(obj: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
-		const clazz = 'Field'
-		obj = valueOrDefault(obj, {})
-		this.colDO = obj
-	}
-}
-
-export class FieldDisplay extends Field {
 	colorBackground: string
 	fieldAccess: FieldAccess
 	fieldAlignment: FieldAlignment
 	fieldElement: FieldElement
 	fValidatePost?: Function
 	fValidatePre?: Function
+	isDisplayable: boolean
 	isFirstVisible: boolean
-	orderDisplay: number
-	constructor(obj: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
-		super(obj, index, isFirstVisible)
-		const clazz = 'FieldDisplay'
+	orderDisplay?: number
+	constructor(obj: RawDataObjPropDisplay, isFirstVisible: boolean) {
+		const clazz = 'Field'
 		obj = valueOrDefault(obj, {})
-		this.fieldAccess = memberOfEnum(
+		this.colDO = obj
+		this.fieldAccess = memberOfEnumOrDefault(
 			this.colDO.rawFieldAccess,
 			clazz,
 			'fieldAccess',
 			'FieldAccess',
-			FieldAccess
+			FieldAccess,
+			FieldAccess.hidden
 		)
-		this.fieldAlignment = memberOfEnum(
+		this.fieldAlignment = memberOfEnumOrDefault(
 			this.colDO.rawFieldAlignmentAlt || this.colDO.colDB.rawFieldAlignment,
 			clazz,
 			'fieldAlignment',
 			'FieldAlignment',
-			FieldAlignment
+			FieldAlignment,
+			FieldAlignment.left
 		)
-		this.fieldElement = memberOfEnum(
+		this.fieldElement = memberOfEnumOrDefault(
 			this.colDO.rawFieldElement,
 			clazz,
 			'fieldElement',
 			'FieldElement',
-			FieldElement
+			FieldElement,
+			FieldElement.inputText
 		)
+		this.isDisplayable = typeof this.colDO.orderDisplay === 'number'
 		this.isFirstVisible = isFirstVisible
-		this.orderDisplay = nbrRequired(this.colDO.orderDisplay, clazz, 'orderDisplay')
+		this.colDO.orderDisplay = nbrOptional(this.colDO.orderDisplay, clazz, 'orderDisplay')
 
 		/* derived */
 		this.colorBackground =
@@ -73,20 +70,20 @@ export class FieldDisplay extends Field {
 	copyValue(value: any) {
 		return structuredClone(value)
 	}
-	getValuationValid(index: number) {
+	getValuationValid(fieldName: string) {
 		return new Validation(ValidationType.field, ValidationStatus.valid, [
-			new ValidityField(index, new Validity())
+			new ValidityField(fieldName, new Validity())
 		])
 	}
-	getValuationNotInvalid(index: number) {
+	getValuationNotInvalid(fieldName: string) {
 		return new Validation(ValidationType.field, ValidationStatus.notInvalid, [
-			new ValidityField(index, new Validity())
+			new ValidityField(fieldName, new Validity())
 		])
 	}
-	getValuationMissingData(index: number) {
+	getValuationMissingData(fieldName: string) {
 		return new Validation(ValidationType.field, ValidationStatus.invalid, [
 			new ValidityField(
-				index,
+				fieldName,
 				new Validity(
 					ValidityError.missingData,
 					ValidityErrorLevel.warning,
@@ -96,13 +93,13 @@ export class FieldDisplay extends Field {
 		])
 	}
 	getValuationInvalid(
-		index: number,
+		fieldName: string,
 		error: ValidityError,
 		level: ValidityErrorLevel,
 		message: string
 	) {
 		return new Validation(ValidationType.field, ValidationStatus.invalid, [
-			new ValidityField(index, new Validity(error, level, message))
+			new ValidityField(fieldName, new Validity(error, level, message))
 		])
 	}
 	getValue(formData: FormData) {
@@ -183,22 +180,22 @@ export enum FieldElement {
 	customActionLink = 'customActionLink',
 	customHeader = 'customHeader',
 	customText = 'customText',
-	date = 'date',
 	embedDetail = 'embedDetail',
 	embedListConfig = 'embedListConfig',
 	embedListEdit = 'embedListEdit',
 	embedListSelect = 'embedListSelect',
-	email = 'email',
 	file = 'file',
-	number = 'number',
+	inputDate = 'inputDate',
+	inputEmail = 'inputEmail',
+	inputNumber = 'inputNumber',
+	inputPassword = 'inputPassword',
+	inputTel = 'inputTel',
+	inputText = 'inputText',
 	parm = 'parm',
-	password = 'password',
 	radio = 'radio',
 	select = 'select',
 	tagRow = 'tagRow',
 	tagSection = 'tagSection',
-	tel = 'tel',
-	text = 'text',
 	textArea = 'textArea',
 	toggle = 'toggle'
 }

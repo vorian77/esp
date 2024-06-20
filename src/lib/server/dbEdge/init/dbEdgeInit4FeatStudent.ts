@@ -132,7 +132,7 @@ async function initStudent() {
 				indexTable: 1
 			},
 			{
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'birthDate',
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -230,7 +230,7 @@ async function initStudent() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'tel',
+				codeFieldElement: 'inputTel',
 				columnName: 'phoneMobile',
 				isDisplayable: true,
 				orderDisplay: 120,
@@ -239,7 +239,7 @@ async function initStudent() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'tel',
+				codeFieldElement: 'inputTel',
 				columnName: 'phoneAlt',
 				isDisplayable: true,
 				orderDisplay: 125,
@@ -248,7 +248,7 @@ async function initStudent() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'email',
+				codeFieldElement: 'inputEmail',
 				columnName: 'email',
 				isDisplayable: true,
 				orderDisplay: 130,
@@ -566,7 +566,7 @@ async function initCsf() {
 				linkTable: 'SysCode'
 			},
 			{
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'dateReferral',
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -589,7 +589,7 @@ async function initCsf() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'dateStartEst',
 				isDisplayable: true,
 				orderDisplay: 90,
@@ -598,7 +598,7 @@ async function initCsf() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'dateEndEst',
 				isDisplayable: true,
 				orderDisplay: 100,
@@ -621,7 +621,7 @@ async function initCsf() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'dateStart',
 				isDisplayable: true,
 				orderDisplay: 130,
@@ -630,7 +630,7 @@ async function initCsf() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'dateEnd',
 				isDisplayable: true,
 				orderDisplay: 140,
@@ -854,7 +854,7 @@ async function initCsfCohort() {
 				linkTable: 'SysCode'
 			},
 			{
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'dateStart',
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -863,7 +863,7 @@ async function initCsfCohort() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'dateEnd',
 				isDisplayable: true,
 				orderDisplay: 70,
@@ -1063,7 +1063,7 @@ async function initCsfCohortAttdStudent() {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeFieldElement: 'number',
+				codeFieldElement: 'inputNumber',
 				columnName: 'computedHours',
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -1175,7 +1175,7 @@ async function initCsfNote() {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				codeSortDir: 'desc',
 				columnName: 'date',
 				orderCrumb: 10,
@@ -1237,7 +1237,7 @@ async function initCsfNote() {
 				orderDefine: 30
 			},
 			{
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'date',
 				orderSort: 10,
 				isDisplayable: true,
@@ -1432,7 +1432,7 @@ async function initCsfJobPlacement() {
 				orderDefine: 40
 			},
 			{
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'dateStart',
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -1506,7 +1506,7 @@ async function initCsfJobPlacement() {
 				orderDefine: 140
 			},
 			{
-				codeFieldElement: 'number',
+				codeFieldElement: 'inputNumber',
 				columnName: 'wage',
 				isDisplayable: true,
 				orderDisplay: 150,
@@ -1525,7 +1525,7 @@ async function initCsfJobPlacement() {
 				linkTable: 'SysCode'
 			},
 			{
-				codeFieldElement: 'number',
+				codeFieldElement: 'inputNumber',
 				columnName: 'hoursPerWeek',
 				isDisplayable: true,
 				orderDisplay: 170,
@@ -1598,7 +1598,7 @@ async function initCsfJobPlacement() {
 				linkTable: 'SysStaff'
 			},
 			{
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'dateSubmitted',
 				isDisplayable: true,
 				orderDisplay: 250,
@@ -1794,7 +1794,7 @@ async function initCsfDocument() {
 				orderDefine: 30
 			},
 			{
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'dateIssued',
 				isDisplayable: true,
 				orderDisplay: 40,
@@ -1866,7 +1866,7 @@ async function initCsfDocument() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'date',
+				codeFieldElement: 'inputDate',
 				columnName: 'dateExpires',
 				isDisplayable: true,
 				orderDisplay: 120,

@@ -77,7 +77,7 @@
 
 	$: dataRecord = dataObj.dataRecordsDisplay[row]
 	$: fieldValue = dataRecord[field.colDO.propName]
-	$: validity = dataObj.dataFieldValidities.valueGet(fieldValue)
+	$: validity = dataObj.dataFieldValidities.valueGet(dataRecord.id, field.colDO.propName)
 	$: {
 		const fieldClass = field.constructor.name
 		if (typeof fieldClass === 'string' && fieldClass !== '')
@@ -109,7 +109,9 @@
 </script>
 
 <div class={classProps}>
-	<svelte:component this={currentElement} {fp} />
+	{#if field.isDisplayable}
+		<svelte:component this={currentElement} {fp} />
+	{/if}
 </div>
 
 {#if validity}

@@ -1,4 +1,4 @@
-import { FieldDisplay, FieldAccess } from '$comps/form/field'
+import { Field, FieldAccess } from '$comps/form/field'
 import {
 	arrayOfClasses,
 	debug,
@@ -16,19 +16,19 @@ import {
 } from '$comps/dataObj/types.rawDataObj'
 import { strOptional, strRequired } from '$utils/utils'
 
-export class FieldEmbed extends FieldDisplay {
-	constructor(propRaw: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
+export class FieldEmbed extends Field {
+	constructor(propRaw: RawDataObjPropDisplay, isFirstVisible: boolean) {
 		const clazz = 'FieldEmbed'
-		super(propRaw, index, isFirstVisible)
+		super(propRaw, isFirstVisible)
 		this.fieldAccess = FieldAccess.optional
 	}
 }
 export class FieldEmbedListConfig extends FieldEmbed {
 	actionsFieldModal: DataObjActionField[]
 	raw: RawDataObjPropDisplayEmbedListConfig
-	constructor(propRaw: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
+	constructor(propRaw: RawDataObjPropDisplay, isFirstVisible: boolean) {
 		const clazz = 'FieldEmbedListConfig'
-		super(propRaw, index, isFirstVisible)
+		super(propRaw, isFirstVisible)
 		this.raw = required(propRaw.fieldEmbedListConfig, clazz, 'raw')
 		this.actionsFieldModal = arrayOfClasses(
 			DataObjActionField,
@@ -39,9 +39,9 @@ export class FieldEmbedListConfig extends FieldEmbed {
 
 export class FieldEmbedListEdit extends FieldEmbed {
 	raw: RawDataObjPropDisplayEmbedListEdit
-	constructor(propRaw: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
+	constructor(propRaw: RawDataObjPropDisplay, isFirstVisible: boolean) {
 		const clazz = 'FieldEmbedListEdit'
-		super(propRaw, index, isFirstVisible)
+		super(propRaw, isFirstVisible)
 		this.raw = required(propRaw.fieldEmbedListEdit, clazz, 'raw')
 	}
 }
@@ -49,9 +49,9 @@ export class FieldEmbedListEdit extends FieldEmbed {
 export class FieldEmbedListSelect extends FieldEmbed {
 	actionsFieldModal: DataObjActionField[]
 	raw: RawDataObjPropDisplayEmbedListSelect
-	constructor(propRaw: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
+	constructor(propRaw: RawDataObjPropDisplay, isFirstVisible: boolean) {
 		const clazz = 'FieldEmbedListSelect'
-		super(propRaw, index, isFirstVisible)
+		super(propRaw, isFirstVisible)
 		this.raw = required(propRaw.fieldEmbedListSelect, clazz, 'raw')
 		this.actionsFieldModal = arrayOfClasses(
 			DataObjActionField,

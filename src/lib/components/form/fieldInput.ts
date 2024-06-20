@@ -7,7 +7,7 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
-import { FieldDisplay, FieldAccess, FieldElement } from '$comps/form/field'
+import { Field, FieldAccess, FieldElement } from '$comps/form/field'
 import { nbrRequired, valueOrDefault } from '$utils/utils'
 import { type DataRecord, required } from '$utils/types'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
@@ -15,7 +15,7 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldInput.ts'
 
-export class FieldInput extends FieldDisplay {
+export class FieldInput extends Field {
 	matchColumn?: MatchColumn
 	maxLength?: number
 	maxValue?: number
@@ -26,13 +26,8 @@ export class FieldInput extends FieldDisplay {
 	patternReplacement?: string
 	placeHolder: string
 	spinStep?: string
-	constructor(
-		obj: RawDataObjPropDisplay,
-		index: number,
-		isFirstVisible: boolean,
-		fields: Array<Field>
-	) {
-		super(obj, index, isFirstVisible)
+	constructor(obj: RawDataObjPropDisplay, isFirstVisible: boolean, fields: Field[]) {
+		super(obj, isFirstVisible)
 		obj = valueOrDefault(obj, {})
 		this.placeHolder =
 			this.fieldAccess !== FieldAccess.readonly
@@ -53,19 +48,19 @@ export class FieldInput extends FieldDisplay {
 
 		// set field type defaults
 		switch (this.fieldElement) {
-			case FieldElement.email:
+			case FieldElement.inputEmail:
 				if (!this.pattern) {
 					this.pattern = '^[A-Za-z0-9+_.-]+@(.+)$'
 				}
 				break
-			case FieldElement.password:
+			case FieldElement.inputPassword:
 				if (!this.pattern) {
 					this.pattern = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$!%*?&])[A-Za-z\\d@#$!%*?&]{8,}$'
 					this.patternMsg =
 						'Your password must be at least 8 characters long, and must contain at least 1 uppercase character, at least 1 lowercase character, at least 1 number, and at least 1 special character (@$!%*#?&).'
 				}
 				break
-			case FieldElement.tel:
+			case FieldElement.inputTel:
 				if (!this.pattern) {
 					this.pattern = '^(1\\s?)?(\\d{3}|\\(\\d{3}\\))[\\s\\-]?\\d{3}[\\s\\-]?\\d{4}$'
 					this.patternReplacement = '($1) $2-$3'
@@ -76,7 +71,7 @@ export class FieldInput extends FieldDisplay {
 		function initMatchColumn(
 			parentMatchColumn: string | undefined,
 			thisField: FieldInput,
-			fields: Array<Field>
+			fields: Field[]
 		) {
 			if (!parentMatchColumn) {
 				return undefined
@@ -105,114 +100,120 @@ export class FieldInput extends FieldDisplay {
 			}
 		}
 
-		this.setValidatePost((dataValue: any, dataRecord: DataRecord): Validation | undefined => {
-			const orderDisplay = nbrRequired(
-				this.colDO.orderDisplay,
-				'FieldInput.setValidatePost',
-				'orderDisplay'
-			)
-			let nbrValue = Number(dataValue)
+		this.setValidatePost(
+			(fieldName: string, dataValue: any, dataRecord: DataRecord): Validation | undefined => {
+				const orderDisplay = nbrRequired(
+					this.colDO.orderDisplay,
+					'FieldInput.setValidatePost',
+					'orderDisplay'
+				)
+				let nbrValue = Number(dataValue)
 
-			// minLength
-			if (this.minLength || this.minLength === 0) {
-				if (dataValue.length < this.minLength) {
-					return this.getValuationInvalid(
-						orderDisplay,
-						ValidityError.minLength,
-						ValidityErrorLevel.error,
-						`"${this.colDO.label}" must be at least ${this.minLength} character(s). It is currently ${dataValue.length} character(s).`
-					)
-				}
-			}
-			// maxLength
-			if (this.maxLength || this.maxLength === 0) {
-				if (dataValue.length > this.maxLength) {
-					return this.getValuationInvalid(
-						orderDisplay,
-						ValidityError.maxLength,
-						ValidityErrorLevel.error,
-						`"${this.colDO.label}" cannot exceed ${this.maxLength} character(s). It is currently ${dataValue.length} character(s).`
-					)
-				}
-			}
-			// minValue
-			if (this.minValue || this.minValue === 0) {
-				if (nbrValue < this.minValue) {
-					return this.getValuationInvalid(
-						orderDisplay,
-						ValidityError.minValue,
-						ValidityErrorLevel.error,
-						`"${this.colDO.label}" must be at least ${this.minValue}`
-					)
-				}
-			}
-			// maxValue
-			if (this.maxValue || this.maxValue === 0) {
-				if (nbrValue > this.maxValue) {
-					return this.getValuationInvalid(
-						orderDisplay,
-						ValidityError.maxValue,
-						ValidityErrorLevel.error,
-						`"${this.colDO.label}" cannot exceed ${this.maxValue}`
-					)
-				}
-			}
-			// pattern
-			if (this.pattern) {
-				const regex = new RegExp(this.pattern)
-				if (!regex.test(dataValue)) {
-					const errorMsg =
-						this.patternMsg || `The value you entered is not a valid "${this.colDO.label}"`
-					return this.getValuationInvalid(
-						orderDisplay,
-						ValidityError.pattern,
-						ValidityErrorLevel.error,
-						errorMsg
-					)
-				}
-			}
-			// matchColumn
-			if (this.matchColumn) {
-				// get matchColumn value
-				const matchColumn = required(this.matchColumn, 'FieldInput.setValidatePost', 'matchColumn')
-				const matchColumnValue = dataRecord[matchColumn.name]
-
-				// compare values to set validiities
-				let validity: Validity
-				let validationStatus: ValidationStatus
-				let data = undefined
-
-				if (dataValue == matchColumnValue) {
-					//equal - fields are valid
-					validity = new Validity()
-					validationStatus = ValidationStatus.valid
-					data = dataValue
-				} else {
-					validationStatus = ValidationStatus.invalid
-					if (!dataValue || !matchColumnValue) {
-						// one blank field - warning
-						validity = new Validity(
-							ValidityError.matchColumn,
-							ValidityErrorLevel.warning,
-							matchColumn.message
-						)
-					} else {
-						// both entered and unequal - error
-						validity = new Validity(
-							ValidityError.matchColumn,
+				// minLength
+				if (this.minLength || this.minLength === 0) {
+					if (dataValue.length < this.minLength) {
+						return this.getValuationInvalid(
+							fieldName,
+							ValidityError.minLength,
 							ValidityErrorLevel.error,
-							matchColumn.message
+							`"${this.colDO.label}" must be at least ${this.minLength} character(s). It is currently ${dataValue.length} character(s).`
 						)
 					}
 				}
-				// set validiities
-				let validityFields: [ValidityField] = [new ValidityField(this.orderDisplay, validity)]
-				validityFields.push(new ValidityField(matchColumn.index, validity))
-				return new Validation(ValidationType.field, validationStatus, validityFields)
+				// maxLength
+				if (this.maxLength || this.maxLength === 0) {
+					if (dataValue.length > this.maxLength) {
+						return this.getValuationInvalid(
+							fieldName,
+							ValidityError.maxLength,
+							ValidityErrorLevel.error,
+							`"${this.colDO.label}" cannot exceed ${this.maxLength} character(s). It is currently ${dataValue.length} character(s).`
+						)
+					}
+				}
+				// minValue
+				if (this.minValue || this.minValue === 0) {
+					if (nbrValue < this.minValue) {
+						return this.getValuationInvalid(
+							fieldName,
+							ValidityError.minValue,
+							ValidityErrorLevel.error,
+							`"${this.colDO.label}" must be at least ${this.minValue}`
+						)
+					}
+				}
+				// maxValue
+				if (this.maxValue || this.maxValue === 0) {
+					if (nbrValue > this.maxValue) {
+						return this.getValuationInvalid(
+							fieldName,
+							ValidityError.maxValue,
+							ValidityErrorLevel.error,
+							`"${this.colDO.label}" cannot exceed ${this.maxValue}`
+						)
+					}
+				}
+				// pattern
+				if (this.pattern) {
+					const regex = new RegExp(this.pattern)
+					if (!regex.test(dataValue)) {
+						const errorMsg =
+							this.patternMsg || `The value you entered is not a valid "${this.colDO.label}"`
+						return this.getValuationInvalid(
+							fieldName,
+							ValidityError.pattern,
+							ValidityErrorLevel.error,
+							errorMsg
+						)
+					}
+				}
+				// matchColumn
+				if (this.matchColumn) {
+					// get matchColumn value
+					const matchColumn = required(
+						this.matchColumn,
+						'FieldInput.setValidatePost',
+						'matchColumn'
+					)
+					const matchColumnValue = dataRecord[matchColumn.name]
+
+					// compare values to set validiities
+					let validity: Validity
+					let validationStatus: ValidationStatus
+					let data = undefined
+
+					if (dataValue == matchColumnValue) {
+						//equal - fields are valid
+						validity = new Validity()
+						validationStatus = ValidationStatus.valid
+						data = dataValue
+					} else {
+						validationStatus = ValidationStatus.invalid
+						if (!dataValue || !matchColumnValue) {
+							// one blank field - warning
+							validity = new Validity(
+								ValidityError.matchColumn,
+								ValidityErrorLevel.warning,
+								matchColumn.message
+							)
+						} else {
+							// both entered and unequal - error
+							validity = new Validity(
+								ValidityError.matchColumn,
+								ValidityErrorLevel.error,
+								matchColumn.message
+							)
+						}
+					}
+					// set validiities
+					let validityFields: [ValidityField] = [new ValidityField(this.colDO.propName, validity)]
+					validityFields.push(new ValidityField(matchColumn.index, validity))
+					return new Validation(ValidationType.field, validationStatus, validityFields)
+				}
+				// default
+				return undefined
 			}
-			// default
-			return undefined
-		})
+		)
 	}
 }
 

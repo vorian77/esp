@@ -18,7 +18,7 @@
 	$: state = fp.state
 	$: dataObj = fp.dataObj
 	$: dataObjData = fp.dataObjData
-	$: field = getField(fp.field, fp.dataRecord, dataObj.fieldsDisplay)
+	$: field = getField(fp.field, fp.dataRecord, dataObj.fields)
 
 	$: row = fp.row
 	$: fieldListItems: dataRecord.fieldListItems
@@ -56,7 +56,7 @@
 					fieldAccess: 'readOnly',
 					fieldAlignment: 'left',
 					fieldColor: { color: '#000000', name: 'black' },
-					fieldElement: 'date',
+					fieldElement: 'inputDate',
 					hasItems: false,
 					items: [],
 					label: 'Birth Date',

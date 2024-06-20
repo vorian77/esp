@@ -583,7 +583,7 @@ async function initMigrTargetTable() {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeFieldElement: 'number',
+				codeFieldElement: 'inputNumber',
 				columnName: 'orderDefine',
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -765,7 +765,7 @@ async function initMigrTargetColumn() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'number',
+				codeFieldElement: 'inputNumber',
 				columnName: 'orderDefine',
 				orderDefine: 50,
 				exprPreset: `(SELECT (count((SELECT sys_migr::SysMigrTargetTable FILTER .id = <tree,uuid,SysMigrTargetTable.id>).columns) + 1))`,

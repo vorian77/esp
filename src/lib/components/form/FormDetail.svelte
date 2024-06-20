@@ -32,7 +32,7 @@
 		let isOpenRow = false
 		let isOpenSection = false
 
-		dataObj.fieldsDisplay.forEach((field, idx) => {
+		dataObj.fields.forEach((field, idx) => {
 			if (!isOpenSection) {
 				idxSection = tagGroupSection.push(new TagGroupSection(false)) - 1
 				isOpenSection = true
@@ -113,7 +113,7 @@
 									bind:state
 									{dataObj}
 									{dataObjData}
-									field={dataObj.fieldsDisplay[idx]}
+									field={dataObj.fields[idx]}
 									row={0}
 								/>
 							</div>

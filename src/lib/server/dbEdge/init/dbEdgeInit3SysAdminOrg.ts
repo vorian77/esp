@@ -284,7 +284,7 @@ async function initUser() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'password',
+				codeFieldElement: 'inputPassword',
 				columnName: 'password',
 				isDisplayable: true,
 				orderDisplay: 40,

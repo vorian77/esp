@@ -2,13 +2,11 @@ import { DataObj, DataObjSort, DataObjSortItem, type DataRecord } from '$utils/t
 import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 import { Field } from '$comps/form/field'
 
-export function recordsFilter(filterText: string, dataObj: DataObj, fields: Field[]) {
+export function recordsFilter(filterText: string, dataObj: DataObj, fieldsDisplayable: Field[]) {
 	let records = dataObj.dataRecordsDisplay.concat(dataObj.dataRecordsHidden)
 
 	// filter - filter text
-	const visibleFields = fields
-		.filter((f) => f.colDO.orderDisplay !== null && f.colDO.orderDisplay !== undefined)
-		.map((f) => f.colDO.propName)
+	const visibleFields = fieldsDisplayable.map((f) => f.colDO.propName)
 	dataObj.dataRecordsDisplay = records.filter((record: DataRecord) => {
 		let found = false
 		for (const key in record) {
@@ -33,9 +31,11 @@ export function recordsSelectAll(data: DataRecord[]) {
 	return data.length === 0 ? false : data.every((r) => r.selected)
 }
 
-export function sortInit(fields: Field[]) {
+export function sortInit(fieldsDisplayable: Field[]) {
 	let sortObj = new DataObjSort()
-	let sortFields = fields.filter((f) => f.colDO.orderSort !== undefined && f.colDO.orderSort > -1)
+	let sortFields = fieldsDisplayable.filter(
+		(f) => f.colDO.orderSort !== undefined && f.colDO.orderSort > -1
+	)
 	sortFields.sort((a, b) => a.colDO.orderSort! - b.colDO.orderSort!)
 	sortFields.forEach((f) => {
 		sortObj.addItem(f.colDO.propName, f.colDO.codeSortDir)
