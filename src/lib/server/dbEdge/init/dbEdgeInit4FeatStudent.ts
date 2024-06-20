@@ -92,9 +92,9 @@ async function initStudent() {
 				orderDefine: 10
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'Personal' },
+				customElement: { label: 'Personal' },
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
@@ -211,9 +211,9 @@ async function initStudent() {
 				orderDefine: 82
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'Contact' },
+				customElement: { label: 'Contact' },
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
@@ -319,9 +319,9 @@ async function initStudent() {
 				orderDefine: 185
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'Other' },
+				customElement: { label: 'Other' },
 				isDisplayable: true,
 				orderDisplay: 190,
 				orderDefine: 190,
@@ -1398,9 +1398,9 @@ async function initCsfJobPlacement() {
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'Placement' },
+				customElement: { label: 'Placement' },
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
@@ -1553,9 +1553,9 @@ async function initCsfJobPlacement() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'Submission' },
+				customElement: { label: 'Submission' },
 				isDisplayable: true,
 				orderDisplay: 220,
 				orderDefine: 220,

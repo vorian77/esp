@@ -151,10 +151,9 @@ async function initDataObjAccount() {
 				orderDefine: 1050
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'link',
 					action: {
 						method: 'auth',
 						type: 'page',
@@ -206,10 +205,9 @@ async function initDataObjLogin() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'button',
 					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_login' },
 					label: 'Log in'
 				},
@@ -219,10 +217,9 @@ async function initDataObjLogin() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'link',
 					action: { method: 'auth', type: 'page', value: 'data_obj_auth_reset_password_login' },
 					label: 'Forgot Password?'
 				},
@@ -275,10 +272,9 @@ async function initDataObjResetPasswordAccount() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'button',
 					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_reset_password_account' },
 					label: 'Confirm Mobile Phone Number'
 				},
@@ -288,10 +284,9 @@ async function initDataObjResetPasswordAccount() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customText',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'text',
 					align: 'center',
 					label: `We'll text you to confirm your mobile phone number. Standard rates apply.`
 				},
@@ -345,10 +340,9 @@ async function initDataObjResetPasswordLogin() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'button',
 					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_reset_password_login' },
 					label: 'Confirm Mobile Phone Number'
 				},
@@ -358,10 +352,9 @@ async function initDataObjResetPasswordLogin() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customText',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'text',
 					align: 'center',
 					label: `We'll text you to confirm your mobile phone number. Standard rates apply.`
 				},
@@ -371,10 +364,9 @@ async function initDataObjResetPasswordLogin() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'link',
 					action: { method: 'auth', type: 'page', value: 'data_obj_auth_login' },
 					label: 'Log in',
 					prefix: 'Already have an account?'
@@ -403,10 +395,9 @@ async function initDataObjVerify() {
 		],
 		fields: [
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customText',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'text',
 					label: `Check your message app for the security code and enter it here.`
 				},
 				isDisplayable: true,
@@ -415,6 +406,7 @@ async function initDataObjVerify() {
 				indexTable: 0
 			},
 			{
+				codeAlignmentAlt: 'left',
 				columnName: 'authSecurityCode',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -422,10 +414,9 @@ async function initDataObjVerify() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'button',
 					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_verify_phone_mobile' },
 					label: 'Verify'
 				},
@@ -435,10 +426,9 @@ async function initDataObjVerify() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'link',
 					action: { method: 'auth', type: 'resend_code' },
 					label: 'Resend Security Code'
 				},
@@ -531,10 +521,9 @@ async function initDataObjSignup() {
 				orderDefine: 40
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'button',
 					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_signup' },
 					label: 'Sign up'
 				},
@@ -543,10 +532,9 @@ async function initDataObjSignup() {
 				orderDefine: 50
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customText',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'text',
 					align: 'center',
 					label: `We'll text you to confirm your mobile phone number. Standard rates apply.`
 				},
@@ -555,10 +543,9 @@ async function initDataObjSignup() {
 				orderDefine: 60
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					_type: 'link',
 					action: { method: 'auth', type: 'page', value: 'data_obj_auth_login' },
 					label: 'Log in',
 					prefix: 'Already have an account?'

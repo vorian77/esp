@@ -205,7 +205,6 @@ export async function getDataObjById(dataObjId: string) {
 				_codeSortDir: doc.codeSortDir.name,
 				_customCol: e.select(doc, (c) => ({
 					_customColCodeColor: c.customColCodeColor.name,
-					_customColCodeType: c.customColCodeType.name,
 					customColActionMethod: true,
 					customColActionType: true,
 					customColActionValue: true,

@@ -42,8 +42,7 @@ import {
 	FieldCustomActionButton,
 	FieldCustomActionLink,
 	FieldCustomHeader,
-	FieldCustomText,
-	FieldCustomType
+	FieldCustomText
 } from '$comps/form/fieldCustom'
 import { FieldInput } from '$comps/form/fieldInput'
 import { FieldFile } from '$comps/form/fieldFile'
@@ -150,32 +149,20 @@ export class DataObj {
 					newField = new FieldCheckbox(propRaw, index, isFirstVisible)
 					break
 
-				case FieldElement.custom:
-					const customType = strRequired(
-						propRaw?.customCol?.customColCodeType,
-						clazz,
-						'customColCodeType'
-					)
-					switch (customType) {
-						case FieldCustomType.button:
-							newField = new FieldCustomActionButton(propRaw, index, isFirstVisible)
-							break
-						case FieldCustomType.header:
-							newField = new FieldCustomHeader(propRaw, index, isFirstVisible)
-							break
-						case FieldCustomType.link:
-							newField = new FieldCustomActionLink(propRaw, index, isFirstVisible)
-							break
-						case FieldCustomType.text:
-							newField = new FieldCustomText(propRaw, index, isFirstVisible)
-							break
-						default:
-							error(500, {
-								file: FILENAME,
-								function: 'POST',
-								message: `No case defined for custom field type: ${customType} for field: ${JSON.stringify(propRaw)}`
-							})
-					}
+				case FieldElement.customActionButton:
+					newField = new FieldCustomActionButton(propRaw, index, isFirstVisible)
+					break
+
+				case FieldElement.customActionLink:
+					newField = new FieldCustomActionLink(propRaw, index, isFirstVisible)
+					break
+
+				case FieldElement.customHeader:
+					newField = new FieldCustomHeader(propRaw, index, isFirstVisible)
+					break
+
+				case FieldElement.customText:
+					newField = new FieldCustomText(propRaw, index, isFirstVisible)
 					break
 
 				case FieldElement.embedListConfig:

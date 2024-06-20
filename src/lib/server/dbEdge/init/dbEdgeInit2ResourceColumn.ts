@@ -684,13 +684,6 @@ export async function initPreColumn() {
 	})
 	await addColumn({
 		owner: 'app_sys',
-		codeDataType: 'link',
-		header: 'Custom - Type',
-		isMultiSelect: false,
-		name: 'customColCodeType'
-	})
-	await addColumn({
-		owner: 'app_sys',
 		codeDataType: 'str',
 		header: 'Custom - Label',
 		name: 'customColLabel'

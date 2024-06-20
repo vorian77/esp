@@ -2543,9 +2543,9 @@ async function initColumn() {
 				orderDefine: 190
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'File' },
+				customElement: { label: 'File' },
 				isDisplayable: true,
 				orderDisplay: 200,
 				orderDefine: 200,
@@ -2560,9 +2560,9 @@ async function initColumn() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'Link' },
+				customElement: { label: 'Link' },
 				isDisplayable: true,
 				orderDisplay: 220,
 				orderDefine: 220,
@@ -2577,9 +2577,9 @@ async function initColumn() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'number' },
+				customElement: { label: 'number' },
 				isDisplayable: true,
 				orderDisplay: 240,
 				orderDefine: 240,
@@ -2626,9 +2626,9 @@ async function initColumn() {
 				orderDefine: 290
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'String' },
+				customElement: { label: 'String' },
 				isDisplayable: true,
 				orderDisplay: 300,
 				orderDefine: 300,
@@ -2713,9 +2713,9 @@ async function initColumn() {
 				orderDefine: 400
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'Toggle' },
+				customElement: { label: 'Toggle' },
 				isDisplayable: true,
 				orderDisplay: 410,
 				orderDefine: 410,
@@ -2768,9 +2768,9 @@ async function initColumn() {
 				orderDefine: 470
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'Text Area' },
+				customElement: { label: 'Text Area' },
 				isDisplayable: true,
 				orderDisplay: 480,
 				orderDefine: 480,
@@ -3655,9 +3655,9 @@ async function initDataObjColumn() {
 				orderDefine: 450
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'Custom' },
+				customElement: { label: 'Custom' },
 				isDisplayable: true,
 				orderDisplay: 460,
 				orderDefine: 460,
@@ -3680,19 +3680,6 @@ async function initDataObjColumn() {
 			//orderDefine: 215,
 			// 	headerAlt: 'Custom'
 			// },
-
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'customColCodeType',
-				isDisplayable: true,
-				orderDisplay: 490,
-				orderDefine: 490,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_field_element_custom_type',
-				linkTable: 'SysCode'
-			},
 			{
 				codeAccess: 'optional',
 				columnName: 'customColLabel',
@@ -3799,9 +3786,9 @@ async function initDataObjColumn() {
 				orderDefine: 610
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'List Items' },
+				customElement: { label: 'List Items' },
 				isDisplayable: true,
 				orderDisplay: 620,
 				orderDefine: 620,
@@ -3851,9 +3838,9 @@ async function initDataObjColumn() {
 				linkTable: 'SysDataObjColumnItem'
 			},
 			{
-				codeFieldElement: 'custom',
+				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
-				customElement: { _type: 'header', label: 'List Embed' },
+				customElement: { label: 'List Embed' },
 				isDisplayable: true,
 				orderDisplay: 680,
 				orderDefine: 680,

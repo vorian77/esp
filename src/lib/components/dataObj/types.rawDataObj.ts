@@ -35,7 +35,6 @@ import {
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
 import { TokenAppDoActionFieldType } from '$utils/types.token'
 import { FieldAccess, FieldAlignment, FieldColor, FieldElement } from '$comps/form/field'
-import { FieldCustomType } from '$comps/form/fieldCustom'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
@@ -398,7 +397,6 @@ export class RawDataObjPropDisplayCustom {
 	customColActionValue?: string
 	customColAlign?: string
 	customColCodeColor: FieldColor
-	customColCodeType: FieldCustomType
 	customColLabel?: string
 	customColPrefix?: string
 	customColSize?: string
@@ -416,13 +414,6 @@ export class RawDataObjPropDisplayCustom {
 		this.customColActionValue = strOptional(obj.customColActionValue, clazz, 'customColActionValue')
 		this.customColAlign = strOptional(obj.customColAlign, clazz, 'customColAlign')
 		this.customColCodeColor = new FieldColor(obj._customColCodeColor, 'blue')
-		this.customColCodeType = memberOfEnum(
-			obj._customColCodeType,
-			clazz,
-			'customColCodeType',
-			'FieldCustomType',
-			FieldCustomType
-		)
 		this.customColLabel = strOptional(obj.customColLabel, clazz, 'customColLabel')
 		this.customColPrefix = strOptional(obj.customColPrefix, clazz, 'customColPrefix')
 		this.customColSize = strOptional(obj.customColSize, clazz, 'customColSize')

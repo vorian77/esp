@@ -62,7 +62,6 @@ async function initCourse() {
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
-
 				exprCustom: `(SELECT count(app_cm::CmCsfCohort FILTER .cohort.id IN app_cm::CmCourse.cohorts.id))`,
 				headerAlt: 'Enrollments',
 				indexTable: 0,
@@ -430,7 +429,6 @@ async function initCohort() {
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
-
 				exprCustom: `(SELECT count(app_cm::CmCsfCohort FILTER .cohort.id = app_cm::CmCohort.id))`,
 				headerAlt: 'Enrollments',
 				indexTable: 0,

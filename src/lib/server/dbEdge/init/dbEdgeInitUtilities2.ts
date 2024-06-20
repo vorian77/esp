@@ -427,12 +427,6 @@ export async function addDataObj(data: any) {
 								e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'color'))
 							)
 						),
-						customColCodeType: e.select(
-							e.sys_core.getCode(
-								'ct_sys_do_field_element_custom_type',
-								e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), '_type'))
-							)
-						),
 						customColLabel: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'label')),
 						customColPrefix: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'prefix')),
 						customColSize: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'size')),

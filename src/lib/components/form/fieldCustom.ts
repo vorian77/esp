@@ -7,14 +7,12 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$comps/form/fieldCustom.ts'
 
 export class FieldCustom extends Field {
-	codeType: FieldCustomType
 	constructor(propRaw: RawDataObjPropDisplay, index: number, isFirstVisible: boolean) {
 		const clazz = 'FieldCustom'
 		super(propRaw, index, isFirstVisible)
 		this.colDO.propName += '_' + index.toString()
 		this.colDO.fieldAccess = FieldAccess.readonly
 		const customCol = required(propRaw.customCol, clazz, 'customCol') as RawDataObjPropDisplayCustom
-		this.codeType = customCol.customColCodeType
 		this.colDO.label = strRequired(customCol.customColLabel, clazz, 'label')
 	}
 }
@@ -77,12 +75,4 @@ export class FieldCustomText extends FieldCustom {
 		const customCol = required(propRaw.customCol, clazz, 'customCol') as RawDataObjPropDisplayCustom
 		this.align = customCol.customColAlign
 	}
-}
-
-export enum FieldCustomType {
-	button = 'button',
-	header = 'header',
-	link = 'link',
-	text = 'text',
-	textDynamic = 'textDynamic'
 }

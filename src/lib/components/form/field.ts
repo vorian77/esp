@@ -154,6 +154,10 @@ export interface FieldCustomRaw {
 export enum FieldElement {
 	checkbox = 'checkbox',
 	custom = 'custom',
+	customActionButton = 'customActionButton',
+	customActionLink = 'customActionLink',
+	customHeader = 'customHeader',
+	customText = 'customText',
 	date = 'date',
 	embedDetail = 'embedDetail',
 	embedListConfig = 'embedListConfig',

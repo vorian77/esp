@@ -176,7 +176,6 @@ module sys_core {
     customColActionType: str;
     customColActionValue: str;
     customColAlign: str;
-    customColCodeType: sys_core::SysCode;
     customColCodeColor: sys_core::SysCode;
     customColLabel: str;
     customColPrefix: str;
