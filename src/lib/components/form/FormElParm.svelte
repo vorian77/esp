@@ -62,7 +62,6 @@
 					rawFieldAccess: 'readOnly',
 					rawFieldElement: 'date'
 				})
-
 				return new FieldInput(propRaw, field.isFirstVisible, fields)
 			default:
 				error(500, {
