@@ -44,7 +44,7 @@ export class Field {
 			'fieldAlignment',
 			'FieldAlignment',
 			FieldAlignment,
-			FieldAlignment.left
+			FieldAlignment.hidden
 		)
 		this.fieldElement = memberOfEnumOrDefault(
 			this.colDO.rawFieldElement,
@@ -52,7 +52,7 @@ export class Field {
 			'fieldElement',
 			'FieldElement',
 			FieldElement,
-			FieldElement.inputText
+			FieldElement.hidden
 		)
 		this.isDisplayable = typeof this.colDO.orderDisplay === 'number'
 		this.isFirstVisible = isFirstVisible
@@ -124,6 +124,7 @@ export enum FieldAccess {
 
 export enum FieldAlignment {
 	center = 'center',
+	hidden = 'hidden',
 	justify = 'justify',
 	left = 'left',
 	right = 'right'
@@ -180,22 +181,23 @@ export enum FieldElement {
 	customActionLink = 'customActionLink',
 	customHeader = 'customHeader',
 	customText = 'customText',
+	date = 'date',
+	email = 'email',
 	embedDetail = 'embedDetail',
 	embedListConfig = 'embedListConfig',
 	embedListEdit = 'embedListEdit',
 	embedListSelect = 'embedListSelect',
 	file = 'file',
-	inputDate = 'inputDate',
-	inputEmail = 'inputEmail',
-	inputNumber = 'inputNumber',
-	inputPassword = 'inputPassword',
-	inputTel = 'inputTel',
-	inputText = 'inputText',
+	hidden = 'hidden',
+	number = 'number',
+	password = 'password',
 	parm = 'parm',
 	radio = 'radio',
 	select = 'select',
 	tagRow = 'tagRow',
 	tagSection = 'tagSection',
+	tel = 'tel',
+	text = 'text',
 	textArea = 'textArea',
 	toggle = 'toggle'
 }

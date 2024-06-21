@@ -58,7 +58,7 @@ async function initCourse() {
 			{
 				codeAccess: 'readOnly',
 				codeAlignmentAlt: 'right',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'custom_select_int',
 				isDisplayable: true,
 				orderDisplay: 70,
@@ -427,7 +427,7 @@ async function initCohort() {
 			{
 				codeAccess: 'readOnly',
 				codeAlignmentAlt: 'right',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'custom_select_int',
 				isDisplayable: true,
 				orderDisplay: 70,
@@ -494,7 +494,7 @@ async function initCohort() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'cost',
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -502,7 +502,7 @@ async function initCohort() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'inputDate',
+				codeFieldElement: 'date',
 				columnName: 'dateStart',
 				isDisplayable: true,
 				orderDisplay: 70,
@@ -511,7 +511,7 @@ async function initCohort() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'inputDate',
+				codeFieldElement: 'date',
 				columnName: 'dateEnd',
 				isDisplayable: true,
 				orderDisplay: 80,
@@ -748,7 +748,7 @@ async function initCohortAttd() {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'hours',
 				isDisplayable: true,
 				orderDisplay: 30,
@@ -802,7 +802,7 @@ async function initCohortAttd() {
 				orderDefine: 20
 			},
 			{
-				codeFieldElement: 'inputDate',
+				codeFieldElement: 'date',
 				columnName: 'date',
 				isDisplayable: true,
 				orderDisplay: 30,
@@ -810,7 +810,7 @@ async function initCohortAttd() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'hours',
 				isDisplayable: true,
 				orderDisplay: 40,
@@ -1000,7 +1000,7 @@ async function initCohortAttdSheet() {
 			{
 				codeAlignmentAlt: 'center',
 				codeAccess: 'readOnly',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'computedHours',
 				isDisplayable: true,
 				orderDisplay: 70,

@@ -415,7 +415,7 @@ export async function addDataObj(data: any) {
 									e.op('exists', e.cast(e.str, e.json_get(f, 'codeFieldElement'))),
 									'else',
 									e.op(
-										'inputText',
+										'text',
 										'if',
 										e.op('exists', e.cast(e.int16, e.json_get(f, 'orderDisplay'))),
 										'else',

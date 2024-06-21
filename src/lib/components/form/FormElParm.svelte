@@ -36,7 +36,7 @@
 	// }
 
 	function getField(field: Field, dataRecord: DataRecord, fields: Field[]) {
-		console.log('FormElParm.getField', { field, dataRecord })
+		// console.log('FormElParm.getField', { field, dataRecord })
 		let propRaw: RawDataObjPropDisplay
 
 		switch (dataRecord.codeParmType) {
@@ -44,32 +44,26 @@
 			case FieldParmType.link:
 				propRaw = new RawDataObjPropDisplay({
 					_column: {
-						_codeAlignment: 'left',
 						_codeDataType: 'date',
 						header: 'Birth Data',
 						isMultiSelect: false,
 						isNonData: false,
+						rawFieldAlignment: 'left',
 						togglePresetTrue: false,
 						toggleValueShow: false
 					},
 					_propName: 'birthDate',
-					fieldAccess: 'readOnly',
-					fieldAlignment: 'left',
 					fieldColor: { color: '#000000', name: 'black' },
-					fieldElement: 'inputDate',
 					hasItems: false,
 					items: [],
 					label: 'Birth Date',
 					labelSide: 'Birth Date',
-					orderDisplay: field.colDO.orderDisplay
+					orderDisplay: field.colDO.orderDisplay,
+					rawFieldAccess: 'readOnly',
+					rawFieldElement: 'date'
 				})
-				// console.log('FormElParm.getField', {
-				// 	header: field.colDO.propName,
-				// 	index: field.index,
-				// 	parmType: dataRecord.codeParmType
-				// })
-				return new FieldInput(propRaw, field.orderDisplay, field.isFirstVisible, fields)
 
+				return new FieldInput(propRaw, field.isFirstVisible, fields)
 			default:
 				error(500, {
 					file: FILENAME,

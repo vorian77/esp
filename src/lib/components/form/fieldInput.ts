@@ -48,19 +48,19 @@ export class FieldInput extends Field {
 
 		// set field type defaults
 		switch (this.fieldElement) {
-			case FieldElement.inputEmail:
+			case FieldElement.email:
 				if (!this.pattern) {
 					this.pattern = '^[A-Za-z0-9+_.-]+@(.+)$'
 				}
 				break
-			case FieldElement.inputPassword:
+			case FieldElement.password:
 				if (!this.pattern) {
 					this.pattern = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$!%*?&])[A-Za-z\\d@#$!%*?&]{8,}$'
 					this.patternMsg =
 						'Your password must be at least 8 characters long, and must contain at least 1 uppercase character, at least 1 lowercase character, at least 1 number, and at least 1 special character (@$!%*#?&).'
 				}
 				break
-			case FieldElement.inputTel:
+			case FieldElement.tel:
 				if (!this.pattern) {
 					this.pattern = '^(1\\s?)?(\\d{3}|\\(\\d{3}\\))[\\s\\-]?\\d{3}[\\s\\-]?\\d{4}$'
 					this.patternReplacement = '($1) $2-$3'

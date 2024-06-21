@@ -1103,7 +1103,7 @@ async function initRepEl() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'orderDisplay',
 				isDisplayable: true,
 				orderDisplay: 110,

@@ -13,15 +13,6 @@
 	$: field = fp.field as FieldInput
 	$: fieldValue = fp.fieldValue
 	$: setFieldVal = fp.setFieldVal
-	$: fieldType = {
-		inputDate: 'date',
-		inputEmail: 'email',
-		inputNumber: 'number',
-		inputText: 'text',
-		inputNumber: 'number',
-		inputPassword: 'password',
-		inputText: 'text'
-	}[field.fieldElement]
 
 	$: classPropsInput =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
@@ -84,7 +75,7 @@
 				: ''}
 			readonly={field.fieldAccess == FieldAccess.readonly}
 			{step}
-			type={fieldType}
+			type={field.fieldElement}
 			value={fieldValue}
 		/>
 	</div>

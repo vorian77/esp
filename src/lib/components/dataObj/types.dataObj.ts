@@ -132,6 +132,7 @@ export class DataObj {
 			if (typeof propRaw.orderDisplay !== 'number') {
 				newField = new Field(propRaw, isFirstVisible)
 			} else {
+				// console.log('types.dataObj.initFields.propRaw:', propRaw)
 				const element = memberOfEnum(
 					propRaw.rawFieldElement,
 					'DataObj',
@@ -141,12 +142,12 @@ export class DataObj {
 				)
 				switch (element) {
 					// input
-					case FieldElement.inputDate:
-					case FieldElement.inputEmail:
-					case FieldElement.inputNumber:
-					case FieldElement.inputPassword:
-					case FieldElement.inputTel:
-					case FieldElement.inputText:
+					case FieldElement.date:
+					case FieldElement.email:
+					case FieldElement.number:
+					case FieldElement.password:
+					case FieldElement.tel:
+					case FieldElement.text:
 						newField = new FieldInput(propRaw, isFirstVisible, fields)
 						break
 

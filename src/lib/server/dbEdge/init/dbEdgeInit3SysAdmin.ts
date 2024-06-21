@@ -1697,7 +1697,7 @@ async function initCodeType() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'order',
 				isDisplayable: true,
 				orderDisplay: 70,
@@ -1957,7 +1957,7 @@ async function initCodeTypeCode() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'valueDecimal',
 				isDisplayable: true,
 				orderDisplay: 120,
@@ -1965,7 +1965,7 @@ async function initCodeTypeCode() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				codeAccess: 'optional',
 				columnName: 'valueInteger',
 				isDisplayable: true,
@@ -1983,7 +1983,7 @@ async function initCodeTypeCode() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'order',
 				isDisplayable: true,
 				orderDisplay: 150,
@@ -2252,7 +2252,7 @@ async function initCode() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'valueDecimal',
 				isDisplayable: true,
 				orderDisplay: 120,
@@ -2260,7 +2260,7 @@ async function initCode() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				codeAccess: 'optional',
 				columnName: 'valueInteger',
 				isDisplayable: true,
@@ -2278,7 +2278,7 @@ async function initCode() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'order',
 				isDisplayable: true,
 				orderDisplay: 150,
@@ -2624,7 +2624,7 @@ async function initColumn() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'minValue',
 				isDisplayable: true,
 				orderDisplay: 260,
@@ -2633,7 +2633,7 @@ async function initColumn() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'maxValue',
 				isDisplayable: true,
 				orderDisplay: 270,
@@ -2681,7 +2681,7 @@ async function initColumn() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'minLength',
 				isDisplayable: true,
 				orderDisplay: 330,
@@ -2690,7 +2690,7 @@ async function initColumn() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'inputNumber',
+				codeFieldElement: 'number',
 				columnName: 'maxLength',
 				isDisplayable: true,
 				orderDisplay: 340,

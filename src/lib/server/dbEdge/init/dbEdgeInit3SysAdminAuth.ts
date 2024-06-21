@@ -100,7 +100,7 @@ async function initDataObjAccount() {
 				indexTable: 1
 			},
 			{
-				codeFieldElement: 'inputTel',
+				codeFieldElement: 'tel',
 				columnName: 'userName',
 				isDisplayable: true,
 				orderDisplay: 40,
@@ -190,7 +190,7 @@ async function initDataObjLogin() {
 		],
 		fields: [
 			{
-				codeFieldElement: 'inputTel',
+				codeFieldElement: 'tel',
 				columnName: 'userName',
 				isDisplayable: true,
 				orderDisplay: 10,
@@ -198,7 +198,7 @@ async function initDataObjLogin() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'inputPassword',
+				codeFieldElement: 'password',
 				columnName: 'password',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -256,7 +256,7 @@ async function initDataObjResetPasswordAccount() {
 		],
 		fields: [
 			{
-				codeFieldElement: 'inputTel',
+				codeFieldElement: 'tel',
 				columnName: 'userName',
 				isDisplayable: true,
 				orderDisplay: 10,
@@ -264,7 +264,7 @@ async function initDataObjResetPasswordAccount() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'inputPassword',
+				codeFieldElement: 'password',
 				columnName: 'password',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -323,7 +323,7 @@ async function initDataObjResetPasswordLogin() {
 		],
 		fields: [
 			{
-				codeFieldElement: 'inputTel',
+				codeFieldElement: 'tel',
 				columnName: 'userName',
 				isDisplayable: true,
 				orderDisplay: 10,
@@ -331,7 +331,7 @@ async function initDataObjResetPasswordLogin() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'inputPassword',
+				codeFieldElement: 'password',
 				columnName: 'password',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -508,14 +508,14 @@ async function initDataObjSignup() {
 			},
 
 			{
-				codeFieldElement: 'inputTel',
+				codeFieldElement: 'tel',
 				columnName: 'userName',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
 			},
 			{
-				codeFieldElement: 'inputPassword',
+				codeFieldElement: 'password',
 				columnName: 'password',
 				isDisplayable: true,
 				orderDisplay: 40,
