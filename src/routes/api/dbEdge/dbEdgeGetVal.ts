@@ -20,7 +20,6 @@ export function evalExpr(expr: string, queryData: TokenApiQueryData): string {
 		// special characters - EdgeDB backlink
 		newExpr = newExpr.replace('##', '<')
 	}
-
 	return newExpr
 }
 
@@ -76,6 +75,7 @@ export function getValDB(codeDataType: PropDataType, valueRaw: any) {
 		dataType = '<uuid>'
 		valueDB = `${getUUIDQuoted(valueRaw)}`
 	} else if (codeDataType === PropDataType.uuidList) {
+		dataType = '<uuid>'
 		valueDB = getArray(valueRaw)
 		valueDB =
 			valueRaw.length > 0

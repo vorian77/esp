@@ -1497,20 +1497,34 @@ async function initResource() {
 				linkTable: 'SysOrg'
 			},
 			{
-				columnName: 'name',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 30,
-				orderDefine: 30,
+				orderDefine: 30
+			},
+			{
+				columnName: 'name',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'header',
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0,
 				matchColumn: 'name'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
 			},
 
 			/* management */
@@ -3194,45 +3208,30 @@ async function initDataObj() {
 				orderDefine: 250
 			},
 			{
+				codeFieldElement: 'toggle',
+				columnName: 'isListHideSearch',
+				isDisplayable: true,
+				orderDisplay: 260,
+				orderDefine: 260,
+				indexTable: 0
+			},
+			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'listReorderColumn',
 				isDisplayable: true,
-				orderDisplay: 260,
-				orderDefine: 260,
+				orderDisplay: 270,
+				orderDefine: 270,
 				fieldListItems: 'il_sys_column_order_name',
 				indexTable: 0,
 				linkTable: 'SysColumn'
 			},
 			{
 				codeFieldElement: 'toggle',
-				columnName: 'isListHideSearch',
-				isDisplayable: true,
-				orderDisplay: 270,
-				orderDefine: 270,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 275,
-				orderDefine: 275
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 280,
-				orderDefine: 280
-			},
-
-			{
-				codeFieldElement: 'toggle',
 				columnName: 'isListEdit',
 				isDisplayable: true,
-				orderDisplay: 285,
-				orderDefine: 285,
+				orderDisplay: 280,
+				orderDefine: 280,
 				indexTable: 0
 			},
 			{
@@ -3673,8 +3672,8 @@ async function initDataObjColumn() {
 				codeFieldElement: 'select',
 				columnName: 'codeAccess',
 				isDisplayable: true,
-				orderDisplay: 420,
-				orderDefine: 420,
+				orderDisplay: 415,
+				orderDefine: 415,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_field_access',
@@ -3685,8 +3684,8 @@ async function initDataObjColumn() {
 				codeFieldElement: 'select',
 				columnName: 'codeAlignmentAlt',
 				isDisplayable: true,
-				orderDisplay: 430,
-				orderDefine: 430,
+				orderDisplay: 420,
+				orderDefine: 420,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_db_col_alignment',
@@ -3697,8 +3696,8 @@ async function initDataObjColumn() {
 				codeFieldElement: 'select',
 				columnName: 'codeFieldElement',
 				isDisplayable: true,
-				orderDisplay: 440,
-				orderDefine: 440,
+				orderDisplay: 425,
+				orderDefine: 425,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_field_element',
@@ -3708,8 +3707,66 @@ async function initDataObjColumn() {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 450,
-				orderDefine: 450
+				orderDisplay: 430,
+				orderDefine: 430
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 434,
+				orderDefine: 434
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'headerAlt',
+				isDisplayable: true,
+				orderDisplay: 436,
+				orderDefine: 436,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeColor',
+				isDisplayable: true,
+				orderDisplay: 438,
+				orderDefine: 438,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_tailwind_color',
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'height',
+				isDisplayable: true,
+				orderDisplay: 440,
+				orderDefine: 440,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'width',
+				isDisplayable: true,
+				orderDisplay: 442,
+				orderDefine: 442,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isDisplayBlock',
+				isDisplayable: true,
+				orderDisplay: 444,
+				orderDefine: 444,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 446,
+				orderDefine: 446
 			},
 			{
 				codeFieldElement: 'customHeader',
@@ -3949,64 +4006,6 @@ async function initDataObjColumn() {
 				isDisplayable: true,
 				orderDisplay: 730,
 				orderDefine: 730
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 740,
-				orderDefine: 740
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'headerAlt',
-				isDisplayable: true,
-				orderDisplay: 750,
-				orderDefine: 750,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'codeColor',
-				isDisplayable: true,
-				orderDisplay: 760,
-				orderDefine: 760,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_tailwind_color',
-				linkTable: 'SysCode'
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'height',
-				isDisplayable: true,
-				orderDisplay: 770,
-				orderDefine: 770,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isDisplayBlock',
-				isDisplayable: true,
-				orderDisplay: 780,
-				orderDefine: 780,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'width',
-				isDisplayable: true,
-				orderDisplay: 790,
-				orderDefine: 790,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 800,
-				orderDefine: 800
 			},
 			{
 				codeFieldElement: 'tagSection',

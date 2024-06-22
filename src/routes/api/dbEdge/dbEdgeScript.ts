@@ -120,12 +120,10 @@ export class ScriptGroup {
 	}
 	initScriptPresetListEditInsert(query: Query, queryData: TokenApiQueryData) {
 		const clazz = 'ScriptGroup.initScriptPresetListEditInsert'
-		const listEditPresetExpr = strRequired(
-			query.rawDataObj.listEditPresetExpr,
-			clazz,
-			'listEditPresetExpr'
+		const listEditPresetExpr = evalExpr(
+			strRequired(query.rawDataObj.listEditPresetExpr, clazz, 'listEditPresetExpr'),
+			queryData
 		)
-		debug('listEditPresetExpr', listEditPresetExpr)
 		return this.initScript(query, queryData, ScriptExePost.processRowSelectPreset, [
 			['setValue', { key: 'expr', value: listEditPresetExpr }],
 			['propsListEditPresetInsert', { props: query.rawDataObj.rawPropsSelectPreset }],
@@ -135,13 +133,11 @@ export class ScriptGroup {
 
 	initScriptPresetListEditSave(query: Query, queryData: TokenApiQueryData) {
 		const clazz = 'ScriptGroup.initScriptPresetListEditSave'
-		const listEditPresetExpr = strRequired(
-			query.rawDataObj.listEditPresetExpr,
-			clazz,
-			'listEditPresetExpr'
+		const listEditPresetExpr = evalExpr(
+			strRequired(query.rawDataObj.listEditPresetExpr, clazz, 'listEditPresetExpr'),
+			queryData
 		)
 		const recordsInsert = 'recordsInsert'
-		const recordUpdate = 'recordUpdate'
 		const parent = required(query.parent, clazz, 'query.parent')
 		const op = parent.columnIsMultiSelect ? '+=' : ':='
 		const exprFilter = parent.filterExpr
@@ -174,7 +170,6 @@ export class ScriptGroup {
 			['script', { content: [recordsInsert, 'action', 'filter', 'propInsert'] }]
 		])
 	}
-	// prettier-ignore
 	initScriptRetrieve(query: Query, queryData: TokenApiQueryData) {
 		return this.initScript(query, queryData, ScriptExePost.formatData, [
 			['action', { type: 'SELECT', table: query.getTableObjRoot() }],
@@ -335,9 +330,9 @@ export class Script {
 					element = `data := (SELECT to_json($$${JSON.stringify(this.dataRows.map((row: DataRow) => row.record))}$$))`
 					break
 
-				case 'dataRecord':
-					element = `item := (SELECT to_json($$${JSON.stringify(this.dataRows[0].record)}$$))`
-					break
+				// case 'dataRecord':
+				// 	element = `item := (SELECT to_json($$${JSON.stringify(this.dataRows[0].record)}$$))`
+				// 	break
 
 				case 'filter':
 					const exprFilter = item.getParm('exprFilter')
@@ -345,7 +340,7 @@ export class Script {
 					break
 
 				case 'order':
-					element = this.query.getSort()
+					element = this.query.getSort(this.queryData)
 					break
 
 				case 'prop':
@@ -359,11 +354,11 @@ export class Script {
 					break
 
 				case 'propsListEditPresetInsert':
-					element = this.query.getPropsListEditPresetInsert(parms, this.queryData, this.dataRows)
+					element = this.query.getPropsListEditPresetInsert(parms, this.queryData)
 					break
 
 				case 'propsListEditPresetSave':
-					element = this.query.getPropsListEditPresetSave(parms, this.queryData, this.dataRows)
+					element = this.query.getPropsListEditPresetSave(parms, this.queryData)
 					break
 
 				case 'propsSave':
@@ -439,9 +434,8 @@ export class Script {
 			}
 			if (element) values[key] = element
 		})
+
 		this.script = values.script
-		this.script = evalExpr(this.script, this.queryData)
-		return this.script
 	}
 
 	buildCombineValues(values: DataRecord, keys: string[] | undefined, separator = '') {

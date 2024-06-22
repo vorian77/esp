@@ -30,5 +30,5 @@
 	class={classProps}
 	on:change={onChange}
 	on:keyup|preventDefault={onChange}
-	bind:value={fieldValue}
+	value={fieldValue}
 />

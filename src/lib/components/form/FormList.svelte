@@ -116,7 +116,8 @@
 	async function onRowClick(record: DataRecord, field: Field) {
 		const actions = dataObj.actionsField.filter((a) => a.isListRowAction)
 
-		if (state.modeActive(StateMode.ReorderOn) || actions.length === 0) return
+		if (state.modeActive(StateMode.ReorderOn) || actions.length === 0 || dataObj.raw.isListEdit)
+			return
 
 		if (actions.length > 1) {
 			error(500, {
@@ -248,7 +249,7 @@
 	</table>
 </div>
 
-<!-- <DataViewer header="dataObjData.dataRecords" data={dataObjData?.dataRows} /> -->
+<!-- <DataViewer header="dataObj.raw.isListEdit" data={dataObj.raw.isListEdit} /> -->
 
 <style>
 	#formSearch {

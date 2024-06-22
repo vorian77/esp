@@ -29,8 +29,8 @@ import { TokenApiQueryData } from '$utils/types.token'
 import {
 	ExprToken,
 	getValDB,
-	evalExprTokens,
 	evalExpr,
+	evalExprTokens,
 	getUUID
 } from '$routes/api/dbEdge/dbEdgeGetVal'
 import { Script, ScriptExePost } from '$routes/api/dbEdge/dbEdgeScript'
@@ -58,7 +58,7 @@ export class Query {
 		const expr = strRequired(this.rawDataObj.exprObject, 'Query.getExpression', 'exprObject')
 		return evalExpr(expr, queryData)
 	}
-	getFilter(data: TokenApiQueryData) {
+	getFilter(queryData: TokenApiQueryData) {
 		let script = ''
 
 		if (!this.rawDataObj.exprFilter) {
@@ -69,19 +69,16 @@ export class Query {
 
 		const specialFilters: string[] = ['$ListSelectDisplayIds']
 		specialFilters.forEach((filter: string) => {
-			if (Object.hasOwn(data.parms, filter)) {
+			if (Object.hasOwn(queryData.parms, filter)) {
 				script = this.addItem(script, `.id in <uuid>{<parms,uuidList,${filter}>}`, 'AND')
 			}
 		})
 
+		script = evalExpr(script, queryData)
 		if (script) script = 'FILTER ' + script
 		return script
 	}
-	getPropsListEditPresetInsert(
-		parms: DataRecord,
-		queryData: TokenApiQueryData,
-		dataRows: DataRow[]
-	) {
+	getPropsListEditPresetInsert(parms: DataRecord, queryData: TokenApiQueryData) {
 		const clazz = 'getPropsListEditPresetInsert'
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		let properties = ''
@@ -104,12 +101,12 @@ export class Query {
 			properties = this.addItemComma(properties, prop)
 		})
 
+		properties = evalExpr(properties, queryData)
 		if (properties) properties = `{\n${properties}\n}`
-		debug('getPropsListEditPresetInsert', 'properties', properties)
 		return properties
 	}
 
-	getPropsListEditPresetSave(parms: DataRecord, queryData: TokenApiQueryData, dataRows: DataRow[]) {
+	getPropsListEditPresetSave(parms: DataRecord, queryData: TokenApiQueryData) {
 		const clazz = 'getPropsListEditPresetSave'
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		let properties = ''
@@ -145,7 +142,6 @@ export class Query {
 		})
 
 		if (properties) properties = `{\n${properties}\n}`
-		debug('getPropsListEditPresetSave', 'properties', properties)
 		return properties
 	}
 
@@ -264,6 +260,7 @@ export class Query {
 
 		// main
 		processProps(this)
+		properties = evalExpr(properties, queryData)
 		if (!properties) properties = `dummy:= <str>{}`
 		if (properties) properties = `{\n${properties}\n}`
 		return properties
@@ -337,6 +334,7 @@ export class Query {
 				properties = this.addItemComma(properties, `_${prop.propName} := <uuid>{}`)
 			}
 		})
+		properties = evalExpr(properties, queryData)
 		if (!properties) properties = `dummy:= <str>{}`
 		properties = `SELECT {\n${properties}\n}`
 		return properties
@@ -400,7 +398,7 @@ export class Query {
 			if (prop.codeDataType === PropDataType.link) {
 				const linkDataType = prop.isMultiSelect ? 'uuidList' : 'uuid'
 				currentValue = prop.childTableTraversal
-					? `(SELECT ${table} FILTER .id = <uuid><record,${linkDataType},${prop.propName}>)`
+					? `(SELECT ${table} FILTER .id = <record,${linkDataType},${prop.propName}>)`
 					: '{}'
 			} else {
 				error(500, {
@@ -427,18 +425,24 @@ export class Query {
 			script.addItem('script', { content: ['body'] })
 		}
 		script.build()
-		script.script = evalExpr(`${`_items_${prop.propName}`} := (${script.script})`, queryData)
+		script.script = `${`_items_${prop.propName}`} := (${script.script})`
+		script.script = evalExpr(script.script, queryData)
 		return script.script
 	}
 
-	getSort() {
-		if (this.rawDataObj.exprSort) return 'ORDER BY ' + this.rawDataObj.exprSort
-
+	getSort(queryData: TokenApiQueryData) {
 		let script = ''
-		this.rawDataObj.rawPropsSort.forEach((prop) => {
-			if (script) script += ' THEN '
-			script += `.${prop.link?.propDisplay ? `_${prop.propName}` : prop.propName} ${prop.codeSortDir}`
-		})
+
+		if (this.rawDataObj.exprSort) {
+			script = this.rawDataObj.exprSort
+		} else {
+			this.rawDataObj.rawPropsSort.forEach((prop) => {
+				if (script) script += ' THEN '
+				script += `.${prop.link?.propDisplay ? `_${prop.propName}` : prop.propName} ${prop.codeSortDir}`
+			})
+		}
+
+		script = evalExpr(script, queryData)
 		if (script) script = 'ORDER BY ' + script
 		return script
 	}
