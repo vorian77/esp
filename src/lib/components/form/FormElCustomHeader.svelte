@@ -12,5 +12,6 @@
 </script>
 
 <div class="{classMargin} {classSize}">
+	isFirstVisible: {field.isFirstVisible}
 	<p>{field.colDO.label}<span class="font-semibold">{dynamicText}</span></p>
 </div>

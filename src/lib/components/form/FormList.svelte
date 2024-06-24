@@ -235,7 +235,7 @@
 							</div>
 						</td>
 					{/if}
-					{#each dataObj.fields as field}
+					{#each fieldsDisplayable as field}
 						<td
 							on:click={async () => await onRowClick(record, field)}
 							on:keyup={async () => await onRowClick(record, field)}

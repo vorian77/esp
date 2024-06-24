@@ -1,5 +1,4 @@
-import { Field, FieldAccess } from '$comps/form/field'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
+import { Field, FieldAccess, RawFieldProps } from '$comps/form/field'
 import { valueOrDefault } from '$utils/types'
 
 export class FieldToggle extends Field {
@@ -7,8 +6,9 @@ export class FieldToggle extends Field {
 	valueFalse: string
 	valueShow: boolean
 	valueTrue: string
-	constructor(obj: RawDataObjPropDisplay, isFirstVisible: boolean) {
-		super(obj, isFirstVisible)
+	constructor(props: RawFieldProps) {
+		super(props)
+		const obj = valueOrDefault(props.propRaw, {})
 		this.fieldAccess = FieldAccess.optional
 		this.presetTrue = valueOrDefault(obj.colDB.togglePresetTrue, false)
 		this.valueFalse = valueOrDefault(obj.colDB.toggleValueFalse, undefined)

@@ -7,10 +7,9 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
-import { Field, FieldAccess, FieldElement } from '$comps/form/field'
+import { Field, FieldAccess, FieldElement, RawFieldProps } from '$comps/form/field'
 import { nbrRequired, valueOrDefault } from '$utils/utils'
 import { type DataRecord, required } from '$utils/types'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldInput.ts'
@@ -26,9 +25,9 @@ export class FieldInput extends Field {
 	patternReplacement?: string
 	placeHolder: string
 	spinStep?: string
-	constructor(obj: RawDataObjPropDisplay, isFirstVisible: boolean, fields: Field[]) {
-		super(obj, isFirstVisible)
-		obj = valueOrDefault(obj, {})
+	constructor(props: RawFieldProps) {
+		super(props)
+		const obj = valueOrDefault(props.propRaw, {})
 		this.placeHolder =
 			this.fieldAccess !== FieldAccess.readonly
 				? valueOrDefault(obj.colDB.placeHolder, this.colDO.label ? 'Enter ' + this.colDO.label : '')
@@ -36,7 +35,7 @@ export class FieldInput extends Field {
 		if (this.fieldAccess == FieldAccess.optional) {
 			this.placeHolder += ' (optional)'
 		}
-		this.matchColumn = initMatchColumn(obj.colDB.matchColumn, this, fields)
+		this.matchColumn = initMatchColumn(obj.colDB.matchColumn, this, props.fields)
 		this.maxLength = obj.colDB.maxLength
 		this.maxValue = obj.colDB.maxValue
 		this.minLength = obj.colDB.minLength

@@ -1,12 +1,11 @@
-import { Field } from '$comps/form/field'
+import { Field, RawFieldProps } from '$comps/form/field'
 import { booleanOrFalse } from '$utils/types'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 
 export class FieldRadio extends Field {
 	isDisplayBlock: boolean
-	constructor(obj: RawDataObjPropDisplay, isFirstVisible: boolean) {
+	constructor(props: RawFieldProps) {
+		super(props)
 		const clazz = 'FieldRadio'
-		super(obj, isFirstVisible)
-		this.isDisplayBlock = booleanOrFalse(obj.isDisplayBlock, clazz)
+		this.isDisplayBlock = booleanOrFalse(props.propRaw.isDisplayBlock, clazz)
 	}
 }

@@ -1,11 +1,10 @@
-import { Field } from '$comps/form/field'
+import { Field, RawFieldProps } from '$comps/form/field'
 import { Validation } from '$comps/form/types.validation'
 import { type DataRecord } from '$utils/types'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 
 export class FieldCheckbox extends Field {
-	constructor(obj: RawDataObjPropDisplay, isFirstVisible: boolean) {
-		super(obj, isFirstVisible)
+	constructor(props: RawFieldProps) {
+		super(props)
 
 		this.setValidatePre(
 			(fieldName: string, dataValue: any, dataRecord: DataRecord): Validation | undefined => {

@@ -1,8 +1,7 @@
-import { Field } from '$comps/form/field'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
+import { Field, RawFieldProps } from '$comps/form/field'
 
 export class FieldSelect extends Field {
-	constructor(obj: RawDataObjPropDisplay, isFirstVisible: boolean) {
-		super(obj, isFirstVisible)
+	constructor(props: RawFieldProps) {
+		super(props)
 	}
 }

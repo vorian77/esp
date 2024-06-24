@@ -30,7 +30,7 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
-import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
+import { Field, FieldAccess, FieldColor, FieldElement, RawFieldProps } from '$comps/form/field'
 import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 import {
 	FieldEmbedListConfig,
@@ -73,13 +73,12 @@ export class DataObj {
 	raw: RawDataObj
 	rootTable?: DBTable
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
-	constructor(rawDataObj: RawDataObj) {
+	constructor(rawDataObj: RawDataObj, data: DataObjData) {
 		const clazz = 'DataObj'
 		rawDataObj = valueOrDefault(rawDataObj, {})
 		this.raw = rawDataObj
 		this.data = new DataObjData(this.raw.codeCardinality)
-
-		this.fields = this.initFields(rawDataObj.rawPropsDisplay)
+		this.fields = this.initFields(rawDataObj.rawPropsDisplay, data)
 
 		/* dependent properties */
 		this.rootTable =
@@ -88,8 +87,8 @@ export class DataObj {
 				: undefined
 	}
 
-	static async init(state: State, rawDataObj: RawDataObj) {
-		const dataObj = new DataObj(rawDataObj)
+	static async init(state: State, rawDataObj: RawDataObj, data: DataObjData) {
+		const dataObj = new DataObj(rawDataObj, data)
 		await enhanceCustomFields(dataObj.fields)
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
@@ -117,115 +116,119 @@ export class DataObj {
 		}
 	}
 
-	initFields(propsRaw: RawDataObjPropDisplay[]) {
-		const clazz = 'DataObj.initFields'
+	initFields(propsRaw: RawDataObjPropDisplay[], data: DataObjData) {
 		let fields: Field[] = []
-		let firstVisible = propsRaw.find(
-			(f) => typeof f.orderDisplay === 'number' && !f.colDB.isNonData
-		)?.propName
-		let isFirstVisible: boolean
-
-		propsRaw.forEach((propRaw: RawDataObjPropDisplay, index: number) => {
-			let newField: Field
-			isFirstVisible = firstVisible === propRaw.propName
-
-			if (typeof propRaw.orderDisplay !== 'number') {
-				newField = new Field(propRaw, isFirstVisible)
-			} else {
-				// console.log('types.dataObj.initFields.propRaw:', propRaw)
-				const element = memberOfEnum(
-					propRaw.rawFieldElement,
-					'DataObj',
-					'element',
-					'FieldElement',
-					FieldElement
-				)
-				switch (element) {
-					// input
-					case FieldElement.date:
-					case FieldElement.email:
-					case FieldElement.number:
-					case FieldElement.password:
-					case FieldElement.tel:
-					case FieldElement.text:
-						newField = new FieldInput(propRaw, isFirstVisible, fields)
-						break
-
-					case FieldElement.checkbox:
-						newField = new FieldCheckbox(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.customActionButton:
-						newField = new FieldCustomActionButton(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.customActionLink:
-						newField = new FieldCustomActionLink(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.customHeader:
-						newField = new FieldCustomHeader(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.customText:
-						newField = new FieldCustomText(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.embedListConfig:
-						newField = new FieldEmbedListConfig(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.embedListEdit:
-						newField = new FieldEmbedListEdit(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.embedListSelect:
-						newField = new FieldEmbedListSelect(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.file:
-						newField = new FieldFile(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.parm:
-						newField = new FieldParm(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.radio:
-						newField = new FieldRadio(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.select:
-						newField = new FieldSelect(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.tagRow:
-						newField = new FieldTagRow(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.tagSection:
-						newField = new FieldTagSection(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.textArea:
-						newField = new FieldTextarea(propRaw, isFirstVisible)
-						break
-
-					case FieldElement.toggle:
-						newField = new FieldToggle(propRaw, isFirstVisible)
-						break
-
-					default:
-						error(500, {
-							file: FILENAME,
-							function: 'initFields',
-							message: `No case defined for field element: ${element} in form: ${this.raw.name}`
-						})
-				}
-				fields.push(newField)
-			}
+		let firstVisible = propsRaw.findIndex((f) => typeof f.orderDisplay === 'number')
+		propsRaw.forEach((propRaw: RawDataObjPropDisplay, idx) => {
+			fields.push(this.initField(propRaw, firstVisible === idx, fields, data))
 		})
 		return fields
+	}
+
+	initField(
+		propRaw: RawDataObjPropDisplay,
+		isFirstVisible: boolean,
+		fields: Field[],
+		data: DataObjData
+	) {
+		let newField: Field
+		const props = new RawFieldProps(propRaw, isFirstVisible, fields, data)
+
+		if (typeof propRaw.orderDisplay !== 'number') {
+			newField = new Field(props)
+		} else {
+			// console.log('types.dataObj.initFields.propRaw:', propRaw)
+			const element = memberOfEnum(
+				propRaw.rawFieldElement,
+				'DataObj',
+				'element',
+				'FieldElement',
+				FieldElement
+			)
+			switch (element) {
+				// input
+				case FieldElement.date:
+				case FieldElement.email:
+				case FieldElement.number:
+				case FieldElement.password:
+				case FieldElement.tel:
+				case FieldElement.text:
+					newField = new FieldInput(props)
+					break
+
+				case FieldElement.checkbox:
+					newField = new FieldCheckbox(props)
+					break
+
+				case FieldElement.customActionButton:
+					newField = new FieldCustomActionButton(props)
+					break
+
+				case FieldElement.customActionLink:
+					newField = new FieldCustomActionLink(props)
+					break
+
+				case FieldElement.customHeader:
+					newField = new FieldCustomHeader(props)
+					break
+
+				case FieldElement.customText:
+					newField = new FieldCustomText(props)
+					break
+
+				case FieldElement.embedListConfig:
+					newField = new FieldEmbedListConfig(props)
+					break
+
+				case FieldElement.embedListEdit:
+					newField = new FieldEmbedListEdit(props)
+					break
+
+				case FieldElement.embedListSelect:
+					newField = new FieldEmbedListSelect(props)
+					break
+
+				case FieldElement.file:
+					newField = new FieldFile(props)
+					break
+
+				case FieldElement.parm:
+					newField = new FieldParm(props)
+					break
+
+				case FieldElement.radio:
+					newField = new FieldRadio(props)
+					break
+
+				case FieldElement.select:
+					newField = new FieldSelect(props)
+					break
+
+				case FieldElement.tagRow:
+					newField = new FieldTagRow(props)
+					break
+
+				case FieldElement.tagSection:
+					newField = new FieldTagSection(props)
+					break
+
+				case FieldElement.textArea:
+					newField = new FieldTextarea(props)
+					break
+
+				case FieldElement.toggle:
+					newField = new FieldToggle(props)
+					break
+
+				default:
+					error(500, {
+						file: FILENAME,
+						function: 'initFields',
+						message: `No case defined for field element: ${element} in form: ${this.raw.name}`
+					})
+			}
+		}
+		return newField
 	}
 
 	get objData() {

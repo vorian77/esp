@@ -95,7 +95,7 @@
 	}
 </script>
 
-<div id="root" class="overflow-y-scroll" style={dataHeight}>
+<div id="root" class="overflow-y-scroll -mt-6" style={dataHeight}>
 	<form id={'form_' + dataObj.raw.name} on:submit|preventDefault>
 		{#each tagGroupSection as section}
 			<fieldset
@@ -107,13 +107,13 @@
 				{/if}
 				{#each section.rows as row}
 					<div class={row.isRow ? 'w-full flex gap-x-4' : ''}>
-						{#each row.indexes as idx}
+						{#each row.indexes as fieldIdx}
 							<div class="grow">
 								<FormElement
 									bind:state
 									{dataObj}
 									{dataObjData}
-									field={dataObj.fields[idx]}
+									field={dataObj.fields[fieldIdx]}
 									row={0}
 								/>
 							</div>

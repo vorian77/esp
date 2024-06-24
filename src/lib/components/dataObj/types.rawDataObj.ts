@@ -60,6 +60,7 @@ export class RawDataObj {
 	rawActionsField: RawDataObjActionField[] = []
 	rawParent?: RawDataObjParent
 	rawPropsDisplay: RawDataObjPropDisplay[] = []
+	rawPropsDisplayParm: RawDataObjPropDisplay[] = []
 	rawPropsSaveInsert: RawDataObjPropDB[] = []
 	rawPropsSaveUpdate: RawDataObjPropDB[] = []
 	rawPropsSelect: RawDataObjPropDB[] = []

@@ -47,11 +47,13 @@ export async function addAnalytic(data: any) {
 				owner: e.select(e.sys_core.getEnt(p.owner)),
 				parms: e.for(e.array_unpack(p.parms), (p) => {
 					return e.insert(e.sys_rep.SysRepParm, {
-						codeParmType: e.select(
-							e.sys_core.getCode(
-								'ct_sys_do_field_parm_type',
-								e.cast(e.str, e.json_get(p, 'codeParmType'))
-							)
+						codeDataType: e.sys_core.getCode(
+							'ct_db_col_data_type',
+							e.cast(e.str, e.json_get(p, 'codeDataType'))
+						),
+						codeFieldElement: e.sys_core.getCode(
+							'ct_sys_do_field_element',
+							e.cast(e.str, e.json_get(p, 'codeFieldElement'))
 						),
 						createdBy: e.select(e.sys_user.getRootUser()),
 						description: e.cast(e.str, e.json_get(p, 'description')),
@@ -1023,11 +1025,13 @@ export async function addReport(data: any) {
 				owner: e.select(e.sys_core.getEnt(p.owner)),
 				parms: e.for(e.array_unpack(p.parms), (p) => {
 					return e.insert(e.sys_rep.SysRepParm, {
-						codeParmType: e.select(
-							e.sys_core.getCode(
-								'ct_sys_do_field_parm_type',
-								e.cast(e.str, e.json_get(p, 'codeParmType'))
-							)
+						codeDataType: e.sys_core.getCode(
+							'ct_db_col_data_type',
+							e.cast(e.str, e.json_get(p, 'codeDataType'))
+						),
+						codeFieldElement: e.sys_core.getCode(
+							'ct_sys_do_field_element',
+							e.cast(e.str, e.json_get(p, 'codeFieldElement'))
 						),
 						createdBy: e.select(e.sys_user.getRootUser()),
 						description: e.cast(e.str, e.json_get(p, 'description')),

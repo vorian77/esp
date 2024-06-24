@@ -219,7 +219,7 @@ async function initFieldEmbedListEditRepUserParm() {
 				orderDefine: 60
 			},
 			{
-				columnName: 'codeParmType',
+				columnName: 'codeDataType',
 				indexTable: 1,
 				isDisplayable: false,
 				isExcludeInsert: true,
@@ -228,7 +228,7 @@ async function initFieldEmbedListEditRepUserParm() {
 				linkColumns: ['name']
 			},
 			{
-				columnName: 'fieldListItems',
+				columnName: 'codeFieldElement',
 				indexTable: 1,
 				isDisplayable: false,
 				isExcludeInsert: true,
@@ -237,15 +237,16 @@ async function initFieldEmbedListEditRepUserParm() {
 				linkColumns: ['name']
 			},
 			{
-				columnName: 'fieldListItemsParmName',
+				columnName: 'fieldListItems',
 				indexTable: 1,
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 90
+				orderDefine: 90,
+				linkColumns: ['name']
 			},
 			{
-				columnName: 'isMultiSelect',
+				columnName: 'fieldListItemsParmName',
 				indexTable: 1,
 				isDisplayable: false,
 				isExcludeInsert: true,
@@ -253,7 +254,7 @@ async function initFieldEmbedListEditRepUserParm() {
 				orderDefine: 100
 			},
 			{
-				columnName: 'linkTable',
+				columnName: 'isMultiSelect',
 				indexTable: 1,
 				isDisplayable: false,
 				isExcludeInsert: true,
@@ -261,12 +262,28 @@ async function initFieldEmbedListEditRepUserParm() {
 				orderDefine: 110
 			},
 			{
+				columnName: 'linkTable',
+				indexTable: 1,
+				isDisplayable: false,
+				isExcludeInsert: true,
+				isExcludeUpdate: true,
+				orderDefine: 120
+			},
+			{
+				columnName: 'name',
+				indexTable: 1,
+				isDisplayable: false,
+				isExcludeInsert: true,
+				isExcludeUpdate: true,
+				orderDefine: 130
+			},
+			{
 				columnName: 'orderDefine',
 				indexTable: 1,
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 120,
+				orderDefine: 140,
 				orderSort: 10
 			},
 

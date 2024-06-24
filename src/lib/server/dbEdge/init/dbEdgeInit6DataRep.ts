@@ -25,7 +25,8 @@ async function initAnalyticTrainingCredential() {
 		owner: 'app_cm_training',
 		parms: [
 			{
-				codeParmType: 'link',
+				codeDataType: 'uuid',
+				codeFieldElement: 'select',
 				description: 'Document type.',
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_cm_doc_type',
@@ -37,7 +38,8 @@ async function initAnalyticTrainingCredential() {
 				orderDefine: 10
 			},
 			{
-				codeParmType: 'number',
+				codeDataType: 'int64',
+				codeFieldElement: 'number',
 				description: 'Warning days.',
 				header: 'Days - Warning',
 				isMultiSelect: false,
@@ -46,7 +48,8 @@ async function initAnalyticTrainingCredential() {
 				orderDefine: 20
 			},
 			{
-				codeParmType: 'number',
+				codeDataType: 'int64',
+				codeFieldElement: 'number',
 				description: 'Alarm days.',
 				header: 'Days - Alarm',
 				isMultiSelect: false,
@@ -191,7 +194,8 @@ async function initReportTrainingCredential() {
 		],
 		parms: [
 			{
-				codeParmType: 'date',
+				codeDataType: 'date',
+				codeFieldElement: 'date',
 				description: 'Report start date.',
 				header: 'Start Date',
 				isMultiSelect: false,
@@ -200,7 +204,8 @@ async function initReportTrainingCredential() {
 				orderDefine: 0
 			},
 			{
-				codeParmType: 'date',
+				codeDataType: 'date',
+				codeFieldElement: 'date',
 				description: 'Report end date.',
 				header: 'End Date',
 				isMultiSelect: false,
@@ -209,7 +214,8 @@ async function initReportTrainingCredential() {
 				orderDefine: 1
 			},
 			{
-				codeParmType: 'link',
+				codeDataType: 'uuid',
+				codeFieldElement: 'select',
 				description: 'Ethnicity.',
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_person_ethnicity',

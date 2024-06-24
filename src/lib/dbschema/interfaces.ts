@@ -702,7 +702,7 @@ export namespace sys {
 }
 export namespace sys_db {
   export interface SysColumn extends sys_core.SysObj {
-    "codeAlignment"?: sys_core.SysCode | null;
+    "codeAlignment": sys_core.SysCode;
     "isNonData": boolean;
     "codeDataType": sys_core.SysCode;
     "classProps"?: string | null;
@@ -805,7 +805,6 @@ export namespace sys_rep {
     "orderDisplay"?: number | null;
   }
   export interface SysRepParm extends sys_user.Mgmt {
-    "codeParmType": sys_core.SysCode;
     "fieldListItems"?: sys_core.SysDataObjFieldListItems | null;
     "linkTable"?: sys_db.SysTable | null;
     "description"?: string | null;
@@ -814,6 +813,8 @@ export namespace sys_rep {
     "isMultiSelect": boolean;
     "name": string;
     "isRequired"?: boolean | null;
+    "codeFieldElement": sys_core.SysCode;
+    "codeDataType": sys_core.SysCode;
     "orderDefine": number;
   }
   export interface SysRepUser extends sys_user.Mgmt {

@@ -55,8 +55,8 @@
 	export let row: number
 
 	let classProps = dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-4' : ''
-	let currentElement: any
 
+	let currentElement: any
 	const elements: Record<string, any> = {
 		FieldCheckbox: FormElInpCheckbox,
 		FieldCustomActionButton: FormElCustomActionButton,

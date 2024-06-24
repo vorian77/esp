@@ -26,9 +26,9 @@ export class Field {
 	isDisplayable: boolean
 	isFirstVisible: boolean
 	orderDisplay?: number
-	constructor(obj: RawDataObjPropDisplay, isFirstVisible: boolean) {
+	constructor(props: RawFieldProps) {
 		const clazz = 'Field'
-		obj = valueOrDefault(obj, {})
+		const obj = valueOrDefault(props.propRaw, {})
 		this.colDO = obj
 		this.fieldAccess = memberOfEnumOrDefault(
 			this.colDO.rawFieldAccess,
@@ -55,7 +55,7 @@ export class Field {
 			FieldElement.hidden
 		)
 		this.isDisplayable = typeof this.colDO.orderDisplay === 'number'
-		this.isFirstVisible = isFirstVisible
+		this.isFirstVisible = props.isFirstVisible
 		this.colDO.orderDisplay = nbrOptional(this.colDO.orderDisplay, clazz, 'orderDisplay')
 
 		/* derived */
@@ -248,5 +248,23 @@ export class FieldProps {
 		this.row = row
 		this.setFieldVal = setFieldVal
 		this.state = state
+	}
+}
+
+export class RawFieldProps {
+	data: DataObjData
+	fields: Field[]
+	isFirstVisible: boolean
+	propRaw: RawDataObjPropDisplay
+	constructor(
+		propRaw: RawDataObjPropDisplay,
+		isFirstVisible: boolean,
+		fields: Field[],
+		data: DataObjData
+	) {
+		this.data = data
+		this.fields = fields
+		this.isFirstVisible = isFirstVisible
+		this.propRaw = propRaw
 	}
 }

@@ -1,5 +1,4 @@
-import { Field } from '$comps/form/field'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
+import { Field, RawFieldProps } from '$comps/form/field'
 import { valueOrDefault } from '$utils/utils'
 
 export class FieldTextarea extends Field {
@@ -7,9 +6,9 @@ export class FieldTextarea extends Field {
 	cols: number
 	classProps: string
 
-	constructor(obj: RawDataObjPropDisplay, isFirstVisible: boolean) {
-		super(obj, isFirstVisible)
-		obj = valueOrDefault(obj, {})
+	constructor(props: RawFieldProps) {
+		super(props)
+		const obj = valueOrDefault(props.propRaw, {})
 		this.rows = valueOrDefault(obj.height, 3)
 		this.cols = valueOrDefault(obj.width, 0)
 		this.classProps = valueOrDefault(obj.colDB.classProps, '')

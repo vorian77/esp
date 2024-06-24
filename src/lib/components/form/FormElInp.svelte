@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FieldAlignment, FieldProps } from '$comps/form/field'
+	import { FieldAlignment, FieldProps, FieldElement } from '$comps/form/field'
 	import { FieldInput } from '$comps/form/fieldInput'
 	import { FieldAccess } from '$comps/form/field'
 	import { DataObjCardinality } from '$utils/types'

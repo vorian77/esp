@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { DataObjCardinality } from '$utils/types'
-	import { FieldProps } from '$comps/form/field'
+	import { FieldElement, FieldProps } from '$comps/form/field'
 	import { FieldSelect } from '$comps/form/fieldSelect'
 	import { FieldAccess } from '$comps/form/field'
 	import DataViewer from '$utils/DataViewer.svelte'

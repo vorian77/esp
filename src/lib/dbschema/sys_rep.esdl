@@ -60,7 +60,8 @@ module sys_rep {
   }
   
   type SysRepParm extending sys_user::Mgmt{
-    required codeParmType: sys_core::SysCode;
+    required codeDataType: sys_core::SysCode;
+    required codeFieldElement: sys_core::SysCode;
     description: str;
     fieldListItems: sys_core::SysDataObjFieldListItems;
     fieldListItemsParmName: str;

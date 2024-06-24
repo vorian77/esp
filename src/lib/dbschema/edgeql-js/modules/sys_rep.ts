@@ -87,7 +87,6 @@ const $SysRepEl = $.makeType<$SysRepEl>(_.spec, "17071154-1880-11ef-aa59-4b0afc0
 const SysRepEl: $.$expr_PathNode<$.TypeSet<$SysRepEl, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysRepEl, $.Cardinality.Many), null);
 
 export type $SysRepParmλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
-  "codeParmType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "fieldListItems": $.LinkDesc<_sys_core.$SysDataObjFieldListItems, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "linkTable": $.LinkDesc<_sys_db.$SysTable, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -96,6 +95,8 @@ export type $SysRepParmλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "isMultiSelect": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
   "name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "isRequired": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
+  "codeFieldElement": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "codeDataType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "orderDefine": $.PropertyDesc<_default.$nonNegative, $.Cardinality.One, false, false, false, false>;
   "<parms[is sys_rep::SysAnalytic]": $.LinkDesc<$SysAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parms[is sys_rep::SysRep]": $.LinkDesc<$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;
