@@ -95,7 +95,7 @@
 	}
 </script>
 
-<div id="root" class="overflow-y-scroll -mt-6" style={dataHeight}>
+<div id="root" class="overflow-y-scroll" style={dataHeight}>
 	<form id={'form_' + dataObj.raw.name} on:submit|preventDefault>
 		{#each tagGroupSection as section}
 			<fieldset
