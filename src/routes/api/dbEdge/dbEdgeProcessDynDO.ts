@@ -6,23 +6,31 @@ import {
 	RawDataObjPropDisplay
 } from '$comps/dataObj/types.rawDataObj'
 import { DataObj } from '$utils/types'
-import { dynDOListReportRender } from '$routes/api/dbEdge/dbEdgeProcessDynDOListReportRender'
+import { dynDOReportParmItems } from '$routes/api/dbEdge/dbEdgeProcessDynDOReportParmItems'
+import { dynDOReportRender } from '$routes/api/dbEdge/dbEdgeProcessDynDOReportRender'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$routes/api/dbEdge/dbEdgeProcessDynamic.ts'
 
-export async function getRawDataObjDynamic(queryData: TokenApiQueryData, rawDataObj: RawDataObj) {
-	if (!rawDataObj.processType) return rawDataObj
+export async function getRawDataObjDynamic(
+	processType: DataObjProcessType,
+	queryData: TokenApiQueryData,
+	source: any
+) {
+	if (!processType) return source
 
-	switch (rawDataObj.processType) {
-		case DataObjProcessType.listReportRender:
-			return await dynDOListReportRender(rawDataObj, queryData)
+	switch (processType) {
+		case DataObjProcessType.reportParmItems:
+			return await dynDOReportParmItems(queryData)
+
+		case DataObjProcessType.reportRender:
+			return await dynDOReportRender(queryData, source)
 
 		default:
 			error(500, {
 				file: FILENAME,
 				function: 'processDynamicDO',
-				message: `No case defined for DataObjDynamicProcessType: ${rawDataObj.processType} for DataObj: ${rawDataObj.name}`
+				message: `No case defined for DataObjDynamicProcessType: ${processType}`
 			})
 	}
 }

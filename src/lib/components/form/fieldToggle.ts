@@ -9,7 +9,6 @@ export class FieldToggle extends Field {
 	constructor(props: RawFieldProps) {
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
-		this.fieldAccess = FieldAccess.optional
 		this.presetTrue = valueOrDefault(obj.colDB.togglePresetTrue, false)
 		this.valueFalse = valueOrDefault(obj.colDB.toggleValueFalse, undefined)
 		this.valueShow = valueOrDefault(obj.colDB.toggleValueShow, false)

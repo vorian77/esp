@@ -1,26 +1,17 @@
-import { RepEl, RepElColumn, RepUser, RepUserEl } from '$comps/dataObj/types.rep'
-import {
-	DataObj,
-	DataObjCardinality,
-	DataObjComponent,
-	DataObjTable,
-	debug,
-	RepElementType,
-	required,
-	strRequired
-} from '$utils/types'
+import { RepEl, RepUser, RepUserEl } from '$comps/dataObj/types.rep'
+import { DataObjCardinality, DataObjComponent, DataObjTable } from '$utils/types'
 import { RawDataObj, RawDataObjDyn } from '$comps/dataObj/types.rawDataObj'
 import { TokenApiQueryData } from '$utils/types.token'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 import { getReportUser } from '$routes/api/dbEdge/types.dbEdge'
 import { error } from '@sveltejs/kit'
 
-const FILENAME = '$routes/api/dbEdge/dbEdgeProcessDynDOListReportRender.ts'
+const FILENAME = '$routes/api/dbEdge/dbEdgeProcessDynDOReportRender.ts'
 let fName = (functionName: string) => {
 	return FILENAME + '.' + functionName
 }
 
-export async function dynDOListReportRender(rawDataObj: RawDataObj, queryData: TokenApiQueryData) {
+export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj: RawDataObj) {
 	const repUserData = await getReport(queryData)
 	const repUser = new RepUser(repUserData)
 	const rawDataObjDyn = getRawDataObj(repUser)

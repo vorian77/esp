@@ -19,7 +19,6 @@
 	import FormElEmbedListConfig from '$comps/form/FormElEmbedListConfig.svelte'
 	import FormElEmbedListEdit from '$comps/form/FormElEmbedListEdit.svelte'
 	import FormElEmbedListSelect from '$comps/form/FormElEmbedListSelect.svelte'
-	import FormElParm from '$comps/form/FormElParm.svelte'
 	import FormElSelect from '$comps/form/FormElSelect.svelte'
 	import FormElTextarea from '$comps/form/FormElTextarea.svelte'
 	import FormElToggle from '$comps/form/FormElToggle.svelte'
@@ -68,13 +67,16 @@
 		FieldEmbedListSelect: FormElEmbedListSelect,
 		FieldFile: FormElFile,
 		FieldInput: FormElInp,
-		FieldParm: FormElParm,
 		FieldRadio: FormElInpRadio,
 		FieldSelect: FormElSelect,
 		FieldTextarea: FormElTextarea,
 		FieldToggle: FormElToggle
 	}
 
+	$: field =
+		field.constructor.name === 'FieldParm'
+			? (field as FieldParm).fieldParmItems[row].parmField
+			: field
 	$: dataRecord = dataObj.dataRecordsDisplay[row]
 	$: fieldValue = dataRecord[field.colDO.propName]
 	$: validity = dataObj.dataFieldValidities.valueGet(dataRecord.id, field.colDO.propName)

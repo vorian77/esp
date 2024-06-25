@@ -1,4 +1,5 @@
 import { State, StateActionProxy } from '$comps/app/types.appState'
+import { apiFetch, ApiFunction } from '$routes/api/api'
 import {
 	booleanOrFalse,
 	debug,
@@ -8,6 +9,7 @@ import {
 	nbrOptional,
 	nbrRequired,
 	required,
+	ResponseBody,
 	strOptional,
 	strRequired,
 	ValidityField,
@@ -53,7 +55,11 @@ import { FieldSelect } from '$comps/form/fieldSelect'
 import { FieldTextarea } from '$comps/form/fieldTextarea'
 import { FieldToggle } from '$comps/form/fieldToggle'
 import { DataObjActionQuery, DataObjActionQueryFunction } from '$comps/app/types.appQuery'
-import { TokenAppDoActionFieldType, TokenAppDoActionConfirmType } from '$utils/types.token'
+import {
+	TokenAppDoActionFieldType,
+	TokenAppDoActionConfirmType,
+	TokenApiQueryData
+} from '$utils/types.token'
 import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 import { getEnhancement } from '$enhance/crud/_crud'
 import { error } from '@sveltejs/kit'
@@ -92,6 +98,7 @@ export class DataObj {
 		await enhanceCustomFields(dataObj.fields)
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
+		await initParmDataItems(state, dataObj)
 		return dataObj
 
 		async function enhanceCustomFields(fields: Field[]) {
@@ -114,18 +121,33 @@ export class DataObj {
 				return new DataObjActionField(rawAction, state)
 			})
 		}
+		async function initParmDataItems(state: State, dataObj: DataObj) {
+			const repUserId = state.dataQuery.valueGet('listRecordIdParent')
+			if (repUserId) {
+				const result: ResponseBody = await apiFetch(
+					ApiFunction.dbEdgeGetRepParmItems,
+					new TokenApiQueryData({ parms: { repUserId } })
+				)
+				if (result.success) {
+					const parms = dataObj.fields.filter((f) => f instanceof FieldParm) as FieldParm[]
+					for (const parm of parms) {
+						await parm.setDataItems(result.data)
+					}
+				}
+			}
+		}
 	}
 
 	initFields(propsRaw: RawDataObjPropDisplay[], data: DataObjData) {
 		let fields: Field[] = []
 		let firstVisible = propsRaw.findIndex((f) => typeof f.orderDisplay === 'number')
 		propsRaw.forEach((propRaw: RawDataObjPropDisplay, idx) => {
-			fields.push(this.initField(propRaw, firstVisible === idx, fields, data))
+			fields.push(DataObj.initField(propRaw, firstVisible === idx, fields, data))
 		})
 		return fields
 	}
 
-	initField(
+	static initField(
 		propRaw: RawDataObjPropDisplay,
 		isFirstVisible: boolean,
 		fields: Field[],
@@ -224,7 +246,7 @@ export class DataObj {
 					error(500, {
 						file: FILENAME,
 						function: 'initFields',
-						message: `No case defined for field element: ${element} in form: ${this.raw.name}`
+						message: `No case defined for field element: ${element}`
 					})
 			}
 		}
@@ -269,7 +291,7 @@ export class DataObj {
 		this.dataFieldsChanged = new FieldValues()
 		this.dataFieldValidities = new FieldValues()
 
-		// set items
+		// set data items
 		Object.entries(dataSource.items).forEach(([key, value]) => {
 			const fieldKey = key.replace('_items_', '')
 			const fieldIndex = this.fields.findIndex((f) => f.colDO.propName === fieldKey)
@@ -689,7 +711,8 @@ export class DataObjParent {
 }
 
 export enum DataObjProcessType {
-	listReportRender = 'listReportRender'
+	reportParmItems = 'reportParmItems',
+	reportRender = 'reportRender'
 }
 
 export class DataObjStatus {

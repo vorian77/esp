@@ -1,12 +1,10 @@
 import {
 	arrayOfClasses,
-	arrayOfEnums,
 	booleanOrDefault,
 	booleanOrFalse,
 	booleanRequired,
 	debug,
 	memberOfEnum,
-	memberOfEnumOrDefault,
 	memberOfEnumIfExists,
 	nbrOptional,
 	nbrRequired,
@@ -15,7 +13,6 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/utils'
-import { DataObjTable } from '$utils/types'
 import { FieldAlignment, FieldElement, FieldParmType } from '$comps/form/field'
 import {
 	PropDataSourceValue,
@@ -23,7 +20,6 @@ import {
 	PropSortDir,
 	RawDataObjTable
 } from '$comps/dataObj/types.rawDataObj'
-import { TokenApiQueryData } from '$utils/types.token'
 
 const FILENAME = '$comps/report/types.report.ts'
 
@@ -252,6 +248,7 @@ export class RepUser {
 		this.headerUser = strRequired(obj.headerUser, clazz, 'headerUser')
 		// this.parms = getArrayOfModels(RepUserParm, obj.parms)
 		this.report = new Rep(obj.report)
+		debug('RepUser:', 'obj', obj)
 	}
 }
 

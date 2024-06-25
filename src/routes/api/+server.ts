@@ -2,14 +2,17 @@ import { ApiFunction } from '$routes/api/api'
 import { TokenApiUserId } from '$utils/types.token'
 import { debug, getServerResponse } from '$utils/types'
 import {
+	getRepParmItems,
+	processDataObj,
+	processExpression
+} from '$routes/api/dbEdge/dbEdgeProcess'
+import {
 	getDataObjActionField,
 	getNodesBranch,
 	getNodesLevel,
 	getTableColumns,
-	getUserByUserId,
-	processDataObj,
-	processExpression
-} from '$routes/api/dbEdge/types.dbEdge'
+	getUserByUserId
+} from '$routes/api/dbEdge/dbEdgeUtilities'
 import { getDataObjId } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { dbEdgeInit } from '$server/dbEdge/init/dbEdgeInit'
 import { sendText } from '$routes/api/apiTwilio'
@@ -33,6 +36,9 @@ export async function POST({ request, cookies }) {
 
 		case ApiFunction.dbEdgeGetNodesLevel:
 			return getServerResponse(await getNodesLevel(token))
+
+		case ApiFunction.dbEdgeGetRepParmItems:
+			return getServerResponse(await getRepParmItems(token))
 
 		case ApiFunction.dbEdgeGetTableColumns:
 			return getServerResponse(await getTableColumns(token))

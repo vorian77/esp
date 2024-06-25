@@ -856,22 +856,36 @@ async function initFieldListConfigDataObjColumnItem() {
 				orderDefine: 10
 			},
 			{
-				columnName: 'display',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0
+				orderDefine: 20
 			},
 			{
-				columnName: 'data',
+				columnName: 'display',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
 			},
 			{
-				columnName: 'orderDefine',
+				columnName: 'data',
+				isDisplayable: true,
+				orderDisplay: 40,
 				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50
+			},
+			{
+				columnName: 'orderDefine',
+				orderDefine: 60,
 				exprPreset: `(SELECT 1000)`,
 				indexTable: 0,
 				isDisplayable: false

@@ -181,6 +181,7 @@ async function initFieldEmbedListEditRepUserParm() {
 			},
 			{
 				codeAccess: 'readOnly',
+				codeFieldElement: 'toggle',
 				columnName: 'isRequired',
 				indexTable: 1,
 				isDisplayable: true,
@@ -262,12 +263,14 @@ async function initFieldEmbedListEditRepUserParm() {
 				orderDefine: 110
 			},
 			{
-				columnName: 'linkTable',
+				columnName: 'custom_select_link',
 				indexTable: 1,
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 120
+				orderDefine: 120,
+				exprCustom: `(.parm.linkTable) { hasMgmt, mod, name }`,
+				nameCustom: '_linkTable'
 			},
 			{
 				columnName: 'name',
@@ -587,7 +590,7 @@ async function initRepRender() {
 		isAlwaysRetrieveDataObject: true,
 		name: 'data_obj_dyn_sys_rep_render',
 		owner: 'app_sys_rep',
-		processType: 'listReportRender',
+		processType: 'reportRender',
 		tables: [{ index: 0, table: 'SysRepUser' }],
 		fields: [
 			{

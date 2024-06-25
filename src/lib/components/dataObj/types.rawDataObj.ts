@@ -61,6 +61,7 @@ export class RawDataObj {
 	rawParent?: RawDataObjParent
 	rawPropsDisplay: RawDataObjPropDisplay[] = []
 	rawPropsDisplayParm: RawDataObjPropDisplay[] = []
+	rawPropsRepParmItems: RawDataObjPropDB[] = []
 	rawPropsSaveInsert: RawDataObjPropDB[] = []
 	rawPropsSaveUpdate: RawDataObjPropDB[] = []
 	rawPropsSelect: RawDataObjPropDB[] = []
@@ -137,6 +138,7 @@ export class RawDataObj {
 		this.rawPropsSelect = this.initProps(obj._propsSelect)
 		this.rawPropsSelectPreset = this.initProps(obj._propsSelectPreset)
 		this.rawPropsSort = this.initProps(obj._propsSort)
+		this.rawPropsRepParmItems = this.initProps(obj._propsRepParmItems)
 	}
 
 	initCrumbs(crumbFields: any) {
@@ -222,6 +224,9 @@ export class RawDataObjDyn extends RawDataObj {
 	addPropSelect(rawProp: any, tables: DataObjTable[]) {
 		this.rawPropsSelect.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tables))
 	}
+	addPropSelectRepParmItems(rawProp: any, tables: DataObjTable[]) {
+		this.rawPropsRepParmItems.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tables))
+	}
 	build() {
 		return this
 	}
@@ -256,7 +261,6 @@ export class RawDataObjPropDB {
 	indexTable: number
 	isMultiSelect: boolean
 	isSelfReference: boolean
-	itemsDefn?: PropLinkItemsDefn
 	link?: PropLink
 	linkItemsDefn?: PropLinkItemsDefn
 	propName: string
@@ -291,7 +295,6 @@ export class RawDataObjPropDB {
 		this.indexTable = nbrOrDefault(obj.indexTable, -1)
 		this.isMultiSelect = booleanOrDefault(obj._isMultiSelect, false)
 		this.isSelfReference = booleanOrDefault(obj._isSelfReference, false)
-		this.itemsDefn = classOptional(PropLinkItemsDefn, obj._itemsDefn)
 		this.link = classOptional(PropLink, obj._link)
 		this.linkItemsDefn = classOptional(PropLinkItemsDefn, obj._linkItemsDefn)
 		this.propName = strRequired(obj._propName, clazz, 'propName')
@@ -591,6 +594,7 @@ export class PropLink {
 				? obj._columns.map((col: any) => col._name).join('.')
 				: ''
 		this.table = obj._table ? new DBTable(obj._table) : undefined
+		debug('PropLink', 'constructor', { obj, this: this })
 	}
 }
 
@@ -612,6 +616,7 @@ export class PropLinkItemsDefn {
 		this.parms = obj._fieldListItemsParmName
 			? { fieldListItemsParmName: obj._fieldListItemsParmName }
 			: {}
+		debug('PropLinkItemsDefn', 'constructor', { obj, this: this })
 	}
 }
 

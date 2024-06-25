@@ -438,6 +438,36 @@ export async function getReportUser(repUserId: string) {
 	return await query.run(client)
 }
 
+export async function getReportUserParmItems(repUserId: string) {
+	const query = e.select(e.sys_rep.SysRepUser, (r) => ({
+		id: true,
+		_header: r.headerUser,
+		_name: r.report.name,
+		parms: e.select(r.parms, (up) => ({
+			parm: e.select(up.parm, (p) => ({
+				_codeDataType: p.codeDataType.name,
+				_fieldListItems: e.select(p.fieldListItems, (i) => ({
+					_fieldListItemsParmName: p.fieldListItemsParmName,
+					_table: e.select(i.table, (t) => ({
+						hasMgmt: true,
+						mod: true,
+						name: true
+					})),
+					exprFilter: true,
+					exprPropDisplay: true,
+					exprSort: true,
+					exprWith: true
+				})),
+				_isMultiSelect: p.isMultiSelect,
+				_propName: p.name
+			})),
+			filter: e.op('exists', up.parm.fieldListItems)
+		})),
+		filter: e.op(r.id, '=', e.cast(e.uuid, repUserId))
+	}))
+	return await query.run(client)
+}
+
 export async function getTableColumns(token: TokenApiDbTableColumns) {
 	const query = e.select(e.schema.ObjectType, (ot) => ({
 		name: true,

@@ -1,7 +1,7 @@
 import { createClient } from 'edgedb'
 import e from '$lib/dbschema/edgeql-js'
 import { EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
-import { executeQuery } from '$routes/api/dbEdge/types.dbEdge'
+import { executeQuery } from '$routes/api/dbEdge/dbEdgeProcess'
 
 const client = createClient({
 	instanceName: EDGEDB_INSTANCE,

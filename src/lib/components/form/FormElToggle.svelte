@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FieldProps } from '$comps/form/field'
+	import { FieldAccess, FieldProps } from '$comps/form/field'
 	import { DataObj, DataObjCardinality } from '$utils/types'
 	import { FieldToggle } from '$comps/form/fieldToggle'
 	import { SlideToggle } from '@skeletonlabs/skeleton'
@@ -16,6 +16,7 @@
 	$: classProps = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'text-center'
 	$: classPropsLabel =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-1' : 'mb-1 hidden'
+	$: classDisabled = field.fieldAccess === FieldAccess.readonly ? 'disabled' : ''
 
 	$: selections = (function () {
 		switch (field.colDO.colDB.codeDataType) {
@@ -65,12 +66,13 @@
 	<legend>{field.colDO.label}</legend>
 </div>
 
-<div class={classProps}>
+<div class="{classProps} disabled=">
 	<SlideToggle
 		name={field.colDO.propName}
 		bind:checked={valueToggle}
 		on:change={onChange}
 		active="bg-primary-500"
+		disabled={classDisabled}
 	>
 		{#if field.valueShow}
 			{valueDisplay}

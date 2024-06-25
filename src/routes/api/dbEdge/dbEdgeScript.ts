@@ -9,7 +9,7 @@ import {
 } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
 import { TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
-import { PropDataType } from '$comps/dataObj/types.rawDataObj'
+import { PropDataType, RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import { evalExpr } from '$routes/api/dbEdge/dbEdgeGetVal'
 import { error } from '@sveltejs/kit'
@@ -42,6 +42,12 @@ export class ScriptGroup {
 					}
 					this.scripts.push(this.initScriptRetrieve(query, queryData))
 				}
+				break
+
+			case TokenApiQueryType.retrieveRepParmItems:
+				this.scripts.push(
+					this.initScriptDataItems(query, query.rawDataObj.rawPropsRepParmItems, queryData)
+				)
 				break
 
 			case TokenApiQueryType.save:
@@ -85,11 +91,16 @@ export class ScriptGroup {
 		return script
 	}
 
-	initScriptDataItems(query: Query, queryData: TokenApiQueryData, returnData: DataObjData) {
+	initScriptDataItems(
+		query: Query,
+		props: RawDataObjPropDB[],
+		queryData: TokenApiQueryData,
+		returnData: DataObjData | undefined = undefined
+	) {
 		const isFilterCurrentValue = query.rawDataObj.codeCardinality === DataObjCardinality.detail
-		if (isFilterCurrentValue) queryData.recordSet(returnData.getDetailRecord())
+		if (isFilterCurrentValue && returnData) queryData.recordSet(returnData.getDetailRecord())
 		return this.initScript(query, queryData, ScriptExePost.formatData, [
-			['propsSelectDataItems', { props: query.rawDataObj.rawPropsSelect, isFilterCurrentValue }],
+			['propsSelectDataItems', { props, isFilterCurrentValue }],
 			['script', { content: ['propsSelectDataItems'] }]
 		])
 	}

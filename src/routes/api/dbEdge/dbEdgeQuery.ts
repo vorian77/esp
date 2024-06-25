@@ -330,7 +330,7 @@ export class Query {
 					properties,
 					(prop.link ? '_' : '') + prop.propName + ' := ' + expr
 				)
-			} else if (prop.itemsDefn) {
+			} else if (prop.linkItemsDefn) {
 				properties = this.addItemComma(properties, `_${prop.propName} := <uuid>{}`)
 			}
 		})

@@ -1,6 +1,7 @@
 import { ApiResult } from '$routes/api/api'
 import {
 	TokenApiDbDataObjSource,
+	TokenApiId,
 	TokenApiQuery,
 	TokenApiQueryData,
 	TokenApiQueryType
@@ -10,6 +11,7 @@ import {
 	debugData,
 	DataObj,
 	DataObjData,
+	DataObjProcessType,
 	DataRecordStatus,
 	DataRow,
 	formatDateTime,
@@ -26,14 +28,15 @@ import {
 } from '$comps/dataObj/types.rawDataObj'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import type { DataRecord } from '$utils/types'
-import { getDataObjById, getDataObjByName, queryMultiple } from '$routes/api/dbEdge/types.dbEdge'
+import { queryMultiple } from '$routes/api/dbEdge/dbEdgeExecute'
+import { getDataObjById, getDataObjByName } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { evalExpr } from '$routes/api/dbEdge/dbEdgeGetVal'
 import type { RawDataList } from '$routes/api/dbEdge/types.dbEdge'
 import { ScriptExePost, ScriptGroup } from '$routes/api/dbEdge/dbEdgeScript'
 import { getRawDataObjDynamic } from '$routes/api/dbEdge/dbEdgeProcessDynDO'
 import { error } from '@sveltejs/kit'
 
-const FILENAME = 'server/dbEdgeQueryProcessor.ts'
+const FILENAME = 'server/dbEdgeQueryProcess.ts'
 
 export async function processDataObj(token: TokenApiQuery) {
 	debug('processDataObj', 'queryType', token.queryType)
@@ -132,7 +135,12 @@ async function execute(
 		}
 	}
 	// Data Items
-	const scriptDataItems = scriptGroup.initScriptDataItems(query, queryData, data)
+	const scriptDataItems = scriptGroup.initScriptDataItems(
+		query,
+		query.rawDataObj.rawPropsSelect,
+		queryData,
+		data
+	)
 	if (scriptDataItems.script) {
 		const rawDataItems = await executeQuery(scriptDataItems.script)
 		data.items = rawDataItems[0]
@@ -143,7 +151,7 @@ async function execute(
 	let returnData = returnRawData ? { dataObjData: data, rawDataObj } : { dataObjData: data }
 	return new ApiResult(true, returnData)
 }
-export async function executeExpr(expr: string, queryData: TokenApiQueryData) {
+async function executeExpr(expr: string, queryData: TokenApiQueryData) {
 	const query = evalExpr(expr, queryData)
 	return await executeQuery(query)
 }
@@ -209,8 +217,25 @@ function formatDataForDisplayScalar(codeDataTypeField: PropDataType, value: any)
 			return value ? formatDateTime(value) : ''
 
 		default:
-			// return value || ['0', 0].includes(value) ? value : ''
 			return value || ['0', 0].includes(value) ? value : null
+	}
+}
+
+export async function getRepParmItems(token: TokenApiQueryData) {
+	const queryData = TokenApiQueryData.load(token)
+	const rawDataObj = await getRawDataObjDynamic(DataObjProcessType.reportParmItems, queryData, {})
+	const query = new Query(rawDataObj)
+	const scriptGroup = new ScriptGroup(TokenApiQueryType.retrieveRepParmItems, query, queryData)
+
+	if (scriptGroup.scripts.length === 1) {
+		const rawDataItems = await executeQuery(scriptGroup.scripts[0].script)
+		return new ApiResult(true, rawDataItems[0])
+	} else {
+		error(500, {
+			file: FILENAME,
+			function: 'getRepParmItems',
+			message: `Expected 1 script, found: ${scriptGroup.scripts.length}`
+		})
 	}
 }
 
@@ -233,7 +258,7 @@ async function getRawDataObj(dataObjSource: TokenApiDbDataObjSource, queryData: 
 			dbDataObj = await getDataObjByName(dataObjSource.sources.dataObjName)
 		}
 		rawDataObj = new RawDataObj(dbDataObj)
-		rawDataObj = await getRawDataObjDynamic(queryData, rawDataObj)
+		rawDataObj = await getRawDataObjDynamic(rawDataObj.processType, queryData, rawDataObj)
 	}
 
 	if (rawDataObj) {

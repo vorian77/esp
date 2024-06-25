@@ -199,7 +199,7 @@ async function initReportTrainingCredential() {
 				description: 'Report start date.',
 				header: 'Start Date',
 				isMultiSelect: false,
-				isRequired: false,
+				isRequired: true,
 				name: 'prDateStart',
 				orderDefine: 0
 			},
@@ -209,7 +209,7 @@ async function initReportTrainingCredential() {
 				description: 'Report end date.',
 				header: 'End Date',
 				isMultiSelect: false,
-				isRequired: false,
+				isRequired: true,
 				name: 'prDateEnd',
 				orderDefine: 1
 			},

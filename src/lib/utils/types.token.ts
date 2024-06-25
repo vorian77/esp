@@ -268,6 +268,7 @@ export enum TokenApiQueryType {
 	expression = 'expression',
 	preset = 'preset',
 	retrieve = 'retrieve',
+	retrieveRepParmItems = 'retrieveRepParmItems',
 	save = 'save'
 }
 
