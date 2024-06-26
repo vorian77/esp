@@ -36,7 +36,7 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		setFieldVal(field.colDO.propName, target.value)
+		setFieldVal(field, target.value)
 	}
 
 	function onDoubleClick(event: MouseEvent) {
@@ -48,7 +48,7 @@
 			const month = dateMonth < 10 ? '0' + dateMonth : dateMonth.toString()
 			const day = dateDay < 10 ? '0' + dateDay : dateDay.toString()
 			const value = year + '-' + month + '-' + day
-			setFieldVal(field.colDO.propName, value)
+			setFieldVal(field, value)
 		}
 	}
 </script>

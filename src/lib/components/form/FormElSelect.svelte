@@ -25,12 +25,12 @@
 		!fieldValue &&
 		field.fieldAccess === FieldAccess.required
 	) {
-		setFieldVal(field.colDO.propName, field.colDO.items[0].data)
+		setFieldVal(field, field.colDO.items[0].data)
 	}
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		setFieldVal(field.colDO.propName, target.value)
+		setFieldVal(field, target.value)
 	}
 </script>
 

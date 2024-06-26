@@ -42,7 +42,7 @@
 	$: {
 		if (fieldValue === undefined || fieldValue === null) {
 			fieldValue = field.presetTrue ? selections[0][0] : selections[1][0]
-			setFieldVal(field.colDO.propName, fieldValue)
+			setFieldVal(field, fieldValue)
 		}
 		setToggle(fieldValue)
 	}
@@ -53,7 +53,7 @@
 		})
 		const newValue = selections[(idx + 1) % 2][0]
 		setToggle(newValue)
-		setFieldVal(field.colDO.propName, newValue)
+		setFieldVal(field, newValue)
 	}
 
 	function setToggle(value: any) {

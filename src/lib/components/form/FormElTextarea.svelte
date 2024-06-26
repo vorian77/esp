@@ -14,7 +14,7 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		setFieldVal(field.colDO.propName, target.value)
+		setFieldVal(field, target.value)
 	}
 </script>
 

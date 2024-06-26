@@ -6,13 +6,11 @@ export class FieldCheckbox extends Field {
 	constructor(props: RawFieldProps) {
 		super(props)
 
-		this.setValidatePre(
-			(fieldName: string, dataValue: any, dataRecord: DataRecord): Validation | undefined => {
-				if (!this.colDO.colDB.isMultiSelect && [true, false].includes(dataValue)) {
-					return this.getValuationValid(fieldName)
-				}
-				return undefined
+		this.setValidatePre((dataValue: any, dataRecord: DataRecord): Validation | undefined => {
+			if (!this.colDO.colDB.isMultiSelect && [true, false].includes(dataValue)) {
+				return this.getValuationValid()
 			}
-		)
+			return undefined
+		})
 	}
 }

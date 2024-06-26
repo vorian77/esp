@@ -18,6 +18,9 @@ export class FieldParm extends Field {
 		const clazz = 'FieldParm'
 		this.fieldParmItems = this.initParmItems(props)
 	}
+	getParmField(fieldName: string) {
+		return this.fieldParmItems.find((f) => f.name === fieldName)?.parmField
+	}
 	initParmItems(props: RawFieldProps) {
 		let items: FieldParmItem[] = []
 		props.data.dataRows.forEach((dataRow: DataRecord, index: number) => {
@@ -78,6 +81,7 @@ export class FieldParmItem {
 		this.linkTable = record._linkTable ? new DBTable(record._linkTable) : undefined
 		this.name = strRequired(record.name, clazz, 'name')
 		this.parmField = this.getParmField(record, fields, data)
+		this.parmField.isParmValue = true
 		this.parmValue = record.parmValue
 	}
 	getParmField(record: DataRecord, fields: Field[], data: DataObjData) {

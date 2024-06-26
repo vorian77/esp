@@ -71,7 +71,7 @@
 		storageKeyAction = 'delete'
 		elInput.value = ''
 		setFieldVal(
-			field.colDO.propName,
+			field,
 			new TokenApiFileUpload(TokenApiFileUploadAction.delete, storageData?.storageKey)
 		)
 	}
@@ -80,7 +80,7 @@
 		mode = Mode.changing
 		storageKeyAction = storageData?.storageKey ? storageData.storageKey : field.getKey()
 		setFieldVal(
-			field.colDO.propName,
+			field,
 			new TokenApiFileUpload(TokenApiFileUploadAction.upload, storageKeyAction, files[0])
 		)
 	}

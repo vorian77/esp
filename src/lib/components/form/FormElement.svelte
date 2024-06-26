@@ -90,14 +90,14 @@
 		dataObjData,
 		dataRecord,
 		field,
-		fieldValue,
+		field.isParmValue ? dataRecord.parmValue : fieldValue,
 		row,
 		setFieldVal,
 		state
 	)
 
-	function setFieldVal(fieldName: string, value: any) {
-		dataObj.userSetFieldVal(row, fieldName, value)
+	function setFieldVal(field: Field, value: any) {
+		dataObj.userSetFieldVal(row, field, value)
 		dataObj = dataObj
 
 		state.objStatus.setValid(

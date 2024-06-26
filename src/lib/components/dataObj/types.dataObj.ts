@@ -257,6 +257,7 @@ export class DataObj {
 		const data = new DataObjData(this.raw.codeCardinality)
 		setDataRecords(this.data, data, this.dataRecordsDisplay)
 		setDataRecords(this.data, data, this.dataRecordsHidden)
+		console.log('types.dataObj.objData.data:', data)
 		return data
 
 		function setDataRecords(
@@ -311,7 +312,14 @@ export class DataObj {
 	}
 
 	getFieldDisplayByName(fieldName: string) {
-		return this.fields.find((f) => f.colDO.propName === fieldName)
+		let field = this.fields.find((f) => f.colDO.propName === fieldName)
+		if (field) return field
+
+		// check parmValue
+		field = this.fields.find((f) => f.colDO.propName === 'parmValue')
+		if (field instanceof FieldParm) return field.getParmField(fieldName)
+
+		return undefined
 	}
 	getStatusChanged() {
 		return this.dataFieldsChanged.values.length > 0
@@ -343,7 +351,7 @@ export class DataObj {
 							)
 						}
 					} else {
-						const v: Validation = this.valueValidation(f.colDO.propName, valueCurrent, record)
+						const v: Validation = this.valueValidation(f, valueCurrent, record)
 						if (v && v.status == ValidationStatus.invalid) {
 							formStatus = ValidationStatus.invalid
 							fieldValid = false
@@ -367,18 +375,13 @@ export class DataObj {
 	}
 
 	/* user data manipulation */
-	userGetFieldVal(row: number, fieldName: string) {
-		return this.dataRecordsDisplay[row][fieldName]
-	}
+	userSetFieldVal(row: number, field: Field, value: any) {
+		const recordId = this.dataRecordsDisplay[row]['id']
+		this.valueSet(recordId, field.colDO.propName, value)
+		if (field.isParmValue) this.valueSet(recordId, 'parmValue', value)
 
-	userSetFieldVal(row: number, fieldName: string, value: any) {
-		const recordId = this.userGetFieldVal(row, 'id')
-		this.valueSet(recordId, fieldName, value)
-		this.userValidateField(row, recordId, fieldName, value)
-	}
-
-	userValidateField(row: number, recordId: string, fieldName: string, value: any) {
-		const v: Validation = this.valueValidation(fieldName, value, this.dataRecordsDisplay[row])
+		// validate
+		const v: Validation = this.valueValidation(field, value, this.dataRecordsDisplay[row])
 		v.validityFields.forEach(({ fieldName, validity }) => {
 			this.dataFieldValidities.valueSet(recordId, fieldName, validity)
 		})
@@ -398,54 +401,42 @@ export class DataObj {
 			}
 		}
 	}
-	valueValidation(fieldName: string, userValue: any, dataRecord: DataRecord) {
-		const field = required(
-			this.getFieldDisplayByName(fieldName),
-			`${FILENAME}.valueValidation`,
-			'field'
-		)
+	valueValidation(field: Field, userValue: any, dataRecord: DataRecord) {
 		let vRtn: Validation | undefined
 
 		// validate pre
 		if (field.fValidatePre) {
-			vRtn = field.fValidatePre(fieldName, userValue, dataRecord)
+			vRtn = field.fValidatePre(userValue, dataRecord)
 			if (vRtn) return vRtn
 		}
 
 		// primary validate
-		vRtn = this.valueValidationValidate(fieldName, userValue)
+		vRtn = this.valueValidationValidate(field, userValue)
 		if (vRtn) return vRtn
 
 		// validate post
 		if (field.fValidatePost) {
-			vRtn = field.fValidatePost(fieldName, userValue, dataRecord)
+			vRtn = field.fValidatePost(userValue, dataRecord)
 			if (vRtn) return vRtn
 		}
 
 		// default
-		return field.getValuationValid(field.colDO.propName)
+		return field.getValuationValid()
 	}
-	valueValidationValidate(fieldName: string, userValue: any) {
-		const field = required(
-			this.getFieldDisplayByName(fieldName),
-			`${FILENAME}.valueValidationValidate`,
-			'field'
-		)
-
+	valueValidationValidate(field: Field, userValue: any) {
 		// only validate access types that require validation
 		if (![FieldAccess.required, FieldAccess.optional].includes(field.fieldAccess)) {
-			return field.getValuationValid(fieldName)
+			return field.getValuationValid()
 		}
 
 		// optional & empty
 		if (field.fieldAccess === FieldAccess.optional && !userValue) {
-			return field.getValuationValid(fieldName)
+			return field.getValuationValid()
 		}
 
 		// required
 		if (!userValue && userValue !== 0) {
 			return field.getValuationInvalid(
-				fieldName,
 				ValidityError.required,
 				ValidityErrorLevel.warning,
 				`"${field.colDO.label}" is required.`

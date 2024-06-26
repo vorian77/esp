@@ -39,14 +39,14 @@
 				field.colDO.items.forEach((i) => {
 					if (i.selected) newValues.push(i.data)
 				})
-				setFieldVal(field.colDO.propName, newValues)
+				setFieldVal(field, newValues)
 			}
 		} else {
 			const idx = field.colDO.items.findIndex((i) => i.data === value)
 			if (idx >= 0) {
 				field.colDO.items[idx].selected = !field.colDO.items[idx].selected
 				const newVal = field.colDO.items[idx].selected ? value : null
-				setFieldVal(field.colDO.propName, newVal)
+				setFieldVal(field, newVal)
 			}
 		}
 	}

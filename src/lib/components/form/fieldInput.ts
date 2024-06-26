@@ -99,120 +99,105 @@ export class FieldInput extends Field {
 			}
 		}
 
-		this.setValidatePost(
-			(fieldName: string, dataValue: any, dataRecord: DataRecord): Validation | undefined => {
-				const orderDisplay = nbrRequired(
-					this.colDO.orderDisplay,
-					'FieldInput.setValidatePost',
-					'orderDisplay'
-				)
-				let nbrValue = Number(dataValue)
+		this.setValidatePost((dataValue: any, dataRecord: DataRecord): Validation | undefined => {
+			const orderDisplay = nbrRequired(
+				this.colDO.orderDisplay,
+				'FieldInput.setValidatePost',
+				'orderDisplay'
+			)
+			let nbrValue = Number(dataValue)
 
-				// minLength
-				if (this.minLength || this.minLength === 0) {
-					if (dataValue.length < this.minLength) {
-						return this.getValuationInvalid(
-							fieldName,
-							ValidityError.minLength,
-							ValidityErrorLevel.error,
-							`"${this.colDO.label}" must be at least ${this.minLength} character(s). It is currently ${dataValue.length} character(s).`
-						)
-					}
-				}
-				// maxLength
-				if (this.maxLength || this.maxLength === 0) {
-					if (dataValue.length > this.maxLength) {
-						return this.getValuationInvalid(
-							fieldName,
-							ValidityError.maxLength,
-							ValidityErrorLevel.error,
-							`"${this.colDO.label}" cannot exceed ${this.maxLength} character(s). It is currently ${dataValue.length} character(s).`
-						)
-					}
-				}
-				// minValue
-				if (this.minValue || this.minValue === 0) {
-					if (nbrValue < this.minValue) {
-						return this.getValuationInvalid(
-							fieldName,
-							ValidityError.minValue,
-							ValidityErrorLevel.error,
-							`"${this.colDO.label}" must be at least ${this.minValue}`
-						)
-					}
-				}
-				// maxValue
-				if (this.maxValue || this.maxValue === 0) {
-					if (nbrValue > this.maxValue) {
-						return this.getValuationInvalid(
-							fieldName,
-							ValidityError.maxValue,
-							ValidityErrorLevel.error,
-							`"${this.colDO.label}" cannot exceed ${this.maxValue}`
-						)
-					}
-				}
-				// pattern
-				if (this.pattern) {
-					const regex = new RegExp(this.pattern)
-					if (!regex.test(dataValue)) {
-						const errorMsg =
-							this.patternMsg || `The value you entered is not a valid "${this.colDO.label}"`
-						return this.getValuationInvalid(
-							fieldName,
-							ValidityError.pattern,
-							ValidityErrorLevel.error,
-							errorMsg
-						)
-					}
-				}
-				// matchColumn
-				if (this.matchColumn) {
-					// get matchColumn value
-					const matchColumn = required(
-						this.matchColumn,
-						'FieldInput.setValidatePost',
-						'matchColumn'
+			// minLength
+			if (this.minLength || this.minLength === 0) {
+				if (dataValue.length < this.minLength) {
+					return this.getValuationInvalid(
+						ValidityError.minLength,
+						ValidityErrorLevel.error,
+						`"${this.colDO.label}" must be at least ${this.minLength} character(s). It is currently ${dataValue.length} character(s).`
 					)
-					const matchColumnValue = dataRecord[matchColumn.name]
-
-					// compare values to set validiities
-					let validity: Validity
-					let validationStatus: ValidationStatus
-					let data = undefined
-
-					if (dataValue == matchColumnValue) {
-						//equal - fields are valid
-						validity = new Validity()
-						validationStatus = ValidationStatus.valid
-						data = dataValue
-					} else {
-						validationStatus = ValidationStatus.invalid
-						if (!dataValue || !matchColumnValue) {
-							// one blank field - warning
-							validity = new Validity(
-								ValidityError.matchColumn,
-								ValidityErrorLevel.warning,
-								matchColumn.message
-							)
-						} else {
-							// both entered and unequal - error
-							validity = new Validity(
-								ValidityError.matchColumn,
-								ValidityErrorLevel.error,
-								matchColumn.message
-							)
-						}
-					}
-					// set validiities
-					let validityFields: [ValidityField] = [new ValidityField(this.colDO.propName, validity)]
-					validityFields.push(new ValidityField(matchColumn.index, validity))
-					return new Validation(ValidationType.field, validationStatus, validityFields)
 				}
-				// default
-				return undefined
 			}
-		)
+			// maxLength
+			if (this.maxLength || this.maxLength === 0) {
+				if (dataValue.length > this.maxLength) {
+					return this.getValuationInvalid(
+						ValidityError.maxLength,
+						ValidityErrorLevel.error,
+						`"${this.colDO.label}" cannot exceed ${this.maxLength} character(s). It is currently ${dataValue.length} character(s).`
+					)
+				}
+			}
+			// minValue
+			if (this.minValue || this.minValue === 0) {
+				if (nbrValue < this.minValue) {
+					return this.getValuationInvalid(
+						ValidityError.minValue,
+						ValidityErrorLevel.error,
+						`"${this.colDO.label}" must be at least ${this.minValue}`
+					)
+				}
+			}
+			// maxValue
+			if (this.maxValue || this.maxValue === 0) {
+				if (nbrValue > this.maxValue) {
+					return this.getValuationInvalid(
+						ValidityError.maxValue,
+						ValidityErrorLevel.error,
+						`"${this.colDO.label}" cannot exceed ${this.maxValue}`
+					)
+				}
+			}
+			// pattern
+			if (this.pattern) {
+				const regex = new RegExp(this.pattern)
+				if (!regex.test(dataValue)) {
+					const errorMsg =
+						this.patternMsg || `The value you entered is not a valid "${this.colDO.label}"`
+					return this.getValuationInvalid(ValidityError.pattern, ValidityErrorLevel.error, errorMsg)
+				}
+			}
+			// matchColumn
+			if (this.matchColumn) {
+				// get matchColumn value
+				const matchColumn = required(this.matchColumn, 'FieldInput.setValidatePost', 'matchColumn')
+				const matchColumnValue = dataRecord[matchColumn.name]
+
+				// compare values to set validiities
+				let validity: Validity
+				let validationStatus: ValidationStatus
+				let data = undefined
+
+				if (dataValue == matchColumnValue) {
+					//equal - fields are valid
+					validity = new Validity()
+					validationStatus = ValidationStatus.valid
+					data = dataValue
+				} else {
+					validationStatus = ValidationStatus.invalid
+					if (!dataValue || !matchColumnValue) {
+						// one blank field - warning
+						validity = new Validity(
+							ValidityError.matchColumn,
+							ValidityErrorLevel.warning,
+							matchColumn.message
+						)
+					} else {
+						// both entered and unequal - error
+						validity = new Validity(
+							ValidityError.matchColumn,
+							ValidityErrorLevel.error,
+							matchColumn.message
+						)
+					}
+				}
+				// set validiities
+				let validityFields: [ValidityField] = [new ValidityField(this.colDO.propName, validity)]
+				validityFields.push(new ValidityField(matchColumn.index, validity))
+				return new Validation(ValidationType.field, validationStatus, validityFields)
+			}
+			// default
+			return undefined
+		})
 	}
 }
 

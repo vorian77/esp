@@ -86,7 +86,7 @@
 			if (returnType === TokenAppModalReturnType.complete) {
 				value = value ? value.valueGetIdList() : []
 				setStateEmbed(value)
-				setFieldVal(field.colDO.propName, value)
+				setFieldVal(field, value)
 			}
 		}
 	}

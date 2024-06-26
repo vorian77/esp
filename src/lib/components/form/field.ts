@@ -25,6 +25,7 @@ export class Field {
 	fValidatePre?: Function
 	isDisplayable: boolean
 	isFirstVisible: boolean
+	isParmValue: boolean = false
 	orderDisplay?: number
 	constructor(props: RawFieldProps) {
 		const clazz = 'Field'
@@ -70,20 +71,15 @@ export class Field {
 	copyValue(value: any) {
 		return structuredClone(value)
 	}
-	getValuationValid(fieldName: string) {
-		return new Validation(ValidationType.field, ValidationStatus.valid, [
-			new ValidityField(fieldName, new Validity())
+	getValuationInvalid(error: ValidityError, level: ValidityErrorLevel, message: string) {
+		return new Validation(ValidationType.field, ValidationStatus.invalid, [
+			new ValidityField(this.colDO.propName, new Validity(error, level, message))
 		])
 	}
-	getValuationNotInvalid(fieldName: string) {
-		return new Validation(ValidationType.field, ValidationStatus.notInvalid, [
-			new ValidityField(fieldName, new Validity())
-		])
-	}
-	getValuationMissingData(fieldName: string) {
+	getValuationMissingData() {
 		return new Validation(ValidationType.field, ValidationStatus.invalid, [
 			new ValidityField(
-				fieldName,
+				this.colDO.propName,
 				new Validity(
 					ValidityError.missingData,
 					ValidityErrorLevel.warning,
@@ -92,21 +88,21 @@ export class Field {
 			)
 		])
 	}
-	getValuationInvalid(
-		fieldName: string,
-		error: ValidityError,
-		level: ValidityErrorLevel,
-		message: string
-	) {
-		return new Validation(ValidationType.field, ValidationStatus.invalid, [
-			new ValidityField(fieldName, new Validity(error, level, message))
+	getValuationNotInvalid() {
+		return new Validation(ValidationType.field, ValidationStatus.notInvalid, [
+			new ValidityField(this.colDO.propName, new Validity())
 		])
 	}
+	getValuationValid() {
+		return new Validation(ValidationType.field, ValidationStatus.valid, [
+			new ValidityField(this.colDO.propName, new Validity())
+		])
+	}
+
 	getValue(formData: FormData) {
 		// overridden for FormElInpCheckbox
 		return formData.get(this.colDO.propName)
 	}
-
 	setValidatePost(fValidate: Function) {
 		this.fValidatePost = fValidate
 	}
