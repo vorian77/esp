@@ -6,6 +6,9 @@ import { initPreDataObjFieldItem } from '$server/dbEdge/init/dbEdgeInit2Resource
 import { initPreTable } from '$server/dbEdge/init/dbEdgeInit2ResourceTable'
 import { initTableColumn } from '$server/dbEdge/init/dbEdgeInit2ResourceTableColumn'
 
+import { initAdminSysEmbedListConfig } from '$server/dbEdge/init/dbEdgeInit2ResourceEmbedListConfig'
+import { initAdminSysEmbedListSelect } from '$server/dbEdge/init/dbEdgeInit2ResourceEmbedListSelect'
+
 export async function initResources() {
 	sectionHeader('Pre')
 	await initPreColumn()
@@ -14,4 +17,6 @@ export async function initResources() {
 	await initPreDataObjAction()
 	await initPreDataObjActionGroups()
 	await initPreDataObjFieldItem()
+	await initAdminSysEmbedListConfig()
+	await initAdminSysEmbedListSelect()
 }

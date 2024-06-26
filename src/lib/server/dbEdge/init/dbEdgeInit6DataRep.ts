@@ -234,6 +234,11 @@ async function initReportTrainingCredential() {
 		report: 'report_cm_training_credential_analytic',
 		user: 'user_sys'
 	})
+	await addReportUser({
+		header: 'Credential Analytic',
+		report: 'report_cm_training_credential_analytic',
+		user: '2487985578' // Phyllip
+	})
 	// await addReportUser({
 	// 	header: 'Credential Analytic',
 	// 	report: 'report_cm_training_credential_analytic',
