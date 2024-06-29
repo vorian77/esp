@@ -90,10 +90,10 @@ export namespace app_cm {
   }
   export interface CmCohortAttd extends sys_user.Mgmt {
     "date": edgedb.LocalDate;
-    "file"?: unknown | null;
     "hours": number;
     "note"?: string | null;
     "cohortId"?: string | null;
+    "file"?: unknown | null;
   }
   export interface CmCourse extends sys_core.SysObj {
     "cohorts": CmCohort[];
@@ -136,9 +136,9 @@ export namespace app_cm {
     "staffAgency": sys_user.SysStaff;
     "dateExpires"?: edgedb.LocalDate | null;
     "dateIssued": edgedb.LocalDate;
-    "file"?: unknown | null;
     "isShareWithClient"?: string | null;
     "note"?: string | null;
+    "file"?: unknown | null;
   }
   export interface CmCsfJobPlacement extends CmCsfData {
     "codeJobType": sys_core.SysCode;
@@ -366,6 +366,11 @@ export interface Movie extends std.$Object {
 export interface Person extends std.$Object {
   "name": string;
 }
+export interface SysFile extends std.$Object {
+  "fileName": string;
+  "fileType": string;
+  "key": string;
+}
 export interface SysPerson extends std.$Object {
   "firstName": string;
   "lastName": string;
@@ -375,7 +380,6 @@ export interface SysPerson extends std.$Object {
   "codeState"?: sys_core.SysCode | null;
   "addr1"?: string | null;
   "addr2"?: string | null;
-  "avatar"?: unknown | null;
   "birthDate"?: edgedb.LocalDate | null;
   "city"?: string | null;
   "email"?: string | null;
@@ -388,6 +392,7 @@ export interface SysPerson extends std.$Object {
   "phoneMobile"?: string | null;
   "title"?: string | null;
   "zip"?: string | null;
+  "avatar"?: unknown | null;
 }
 export interface SysPersonTest extends sys_core.SysObj {
   "codeEthnicity"?: sys_core.SysCode | null;
@@ -919,6 +924,7 @@ export interface types {
   "default": {
     "Movie": Movie;
     "Person": Person;
+    "SysFile": SysFile;
     "SysPerson": SysPerson;
     "SysPersonTest": SysPersonTest;
   };

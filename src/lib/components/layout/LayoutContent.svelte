@@ -110,7 +110,7 @@
 				{/if}
 			</div>
 
-			<div class="flex flex-row gap-4">
+			<div class="flex flex-row">
 				<div class="grow border-2 p-4">
 					<svelte:component
 						this={currComponent}

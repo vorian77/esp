@@ -238,21 +238,14 @@ async function initFieldEmbedListEditRepUserParm() {
 				linkColumns: ['name']
 			},
 			{
-				columnName: 'fieldListItems',
-				indexTable: 1,
+				columnName: 'custom_select_bool',
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
 				orderDefine: 90,
-				linkColumns: ['name']
-			},
-			{
-				columnName: 'fieldListItemsParmName',
-				indexTable: 1,
-				isDisplayable: false,
-				isExcludeInsert: true,
-				isExcludeUpdate: true,
-				orderDefine: 100
+				exprCustom: '(SELECT EXISTS .parm.fieldListItems)',
+				indexTable: 0,
+				nameCustom: '_hasItems'
 			},
 			{
 				columnName: 'isMultiSelect',
@@ -260,17 +253,7 @@ async function initFieldEmbedListEditRepUserParm() {
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 110
-			},
-			{
-				columnName: 'custom_select_link',
-				indexTable: 1,
-				isDisplayable: false,
-				isExcludeInsert: true,
-				isExcludeUpdate: true,
-				orderDefine: 120,
-				exprCustom: `(.parm.linkTable) { hasMgmt, mod, name }`,
-				nameCustom: '_linkTable'
+				orderDefine: 100
 			},
 			{
 				columnName: 'name',
@@ -278,7 +261,7 @@ async function initFieldEmbedListEditRepUserParm() {
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 130
+				orderDefine: 110
 			},
 			{
 				columnName: 'orderDefine',
@@ -286,7 +269,7 @@ async function initFieldEmbedListEditRepUserParm() {
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 140,
+				orderDefine: 120,
 				orderSort: 10
 			},
 

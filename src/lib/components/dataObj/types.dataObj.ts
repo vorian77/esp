@@ -122,16 +122,18 @@ export class DataObj {
 			})
 		}
 		async function initParmDataItems(state: State, dataObj: DataObj) {
-			const repUserId = state.dataQuery.valueGet('listRecordIdParent')
-			if (repUserId) {
-				const result: ResponseBody = await apiFetch(
-					ApiFunction.dbEdgeGetRepParmItems,
-					new TokenApiQueryData({ parms: { repUserId } })
-				)
-				if (result.success) {
-					const parms = dataObj.fields.filter((f) => f instanceof FieldParm) as FieldParm[]
-					for (const parm of parms) {
-						await parm.setDataItems(result.data)
+			const parms = dataObj.fields.filter((f) => f instanceof FieldParm) as FieldParm[]
+			if (parms.length > 0) {
+				const repUserId = state.dataQuery.valueGet('listRecordIdParent')
+				if (repUserId) {
+					const result: ResponseBody = await apiFetch(
+						ApiFunction.dbEdgeGetRepParmItems,
+						new TokenApiQueryData({ parms: { repUserId } })
+					)
+					if (result.success) {
+						for (const parm of parms) {
+							await parm.setDataItems(result.data)
+						}
 					}
 				}
 			}
@@ -159,7 +161,6 @@ export class DataObj {
 		if (typeof propRaw.orderDisplay !== 'number') {
 			newField = new Field(props)
 		} else {
-			// console.log('types.dataObj.initFields.propRaw:', propRaw)
 			const element = memberOfEnum(
 				propRaw.rawFieldElement,
 				'DataObj',
@@ -257,7 +258,6 @@ export class DataObj {
 		const data = new DataObjData(this.raw.codeCardinality)
 		setDataRecords(this.data, data, this.dataRecordsDisplay)
 		setDataRecords(this.data, data, this.dataRecordsHidden)
-		console.log('types.dataObj.objData.data:', data)
 		return data
 
 		function setDataRecords(
@@ -268,7 +268,11 @@ export class DataObj {
 			dataRecords.forEach((record) => {
 				const dataRow = dataSource.getRow(record.id)
 				const status = dataRow ? dataRow.status : DataRecordStatus.preset
-				dataReturn.addRow(status, record)
+				let newRecord: DataRecord = {}
+				Object.entries(record).forEach(([key, value]) => {
+					if (![null, undefined].includes(value)) newRecord[key] = value
+				})
+				dataReturn.addRow(status, newRecord)
 			})
 		}
 	}
@@ -329,16 +333,12 @@ export class DataObj {
 		let formStatus: ValidationStatus = ValidationStatus.valid
 		let fieldValid: boolean
 
-		this.dataRecordsDisplay.forEach((record, indexRow) => {
-			this.fields.forEach((f, indexField) => {
+		this.dataRecordsDisplay.forEach((record) => {
+			this.fields.forEach((f) => {
 				const fieldName = f.colDO.propName
-				if (
-					f.fieldAccess !== FieldAccess.readonly &&
-					f.orderDisplay !== undefined &&
-					!f.colDO.colDB.isNonData
-				) {
+				if (f.fieldAccess !== FieldAccess.readonly && !f.colDO.colDB.isNonData) {
 					fieldValid = true
-					const valueCurrent = record[f.colDO.propName]
+					const valueCurrent = record[fieldName]
 					const typeOf = typeof valueCurrent
 					if (valueCurrent === undefined || valueCurrent === null || valueCurrent === '') {
 						if (f.fieldAccess === FieldAccess.required) {
@@ -346,7 +346,7 @@ export class DataObj {
 							fieldValid = false
 							this.dataFieldValidities.valueSet(
 								record.id,
-								f.colDO.propName,
+								fieldName,
 								new Validity(ValidityError.missingData, ValidityErrorLevel.silent)
 							)
 						}
@@ -355,15 +355,12 @@ export class DataObj {
 						if (v && v.status == ValidationStatus.invalid) {
 							formStatus = ValidationStatus.invalid
 							fieldValid = false
-							this.dataFieldValidities.valueSet(
-								record.id,
-								f.colDO.propName,
-								v.validityFields[0].validity
-							)
+							this.dataFieldValidities.valueSet(record.id, fieldName, v.validityFields[0].validity)
 						}
 					}
-					if (fieldValid)
-						this.dataFieldValidities.valueSet(record.id, f.colDO.propName, new Validity())
+					if (fieldValid) {
+						this.dataFieldValidities.valueSet(record.id, fieldName, new Validity())
+					}
 				}
 			})
 		})
@@ -377,8 +374,8 @@ export class DataObj {
 	/* user data manipulation */
 	userSetFieldVal(row: number, field: Field, value: any) {
 		const recordId = this.dataRecordsDisplay[row]['id']
-		this.valueSet(recordId, field.colDO.propName, value)
-		if (field.isParmValue) this.valueSet(recordId, 'parmValue', value)
+		const fieldName = field.isParmValue ? 'parmValue' : field.colDO.propName
+		this.valueSet(recordId, fieldName, value)
 
 		// validate
 		const v: Validation = this.valueValidation(field, value, this.dataRecordsDisplay[row])
@@ -435,7 +432,7 @@ export class DataObj {
 		}
 
 		// required
-		if (!userValue && userValue !== 0) {
+		if ([null, undefined].includes(userValue)) {
 			return field.getValuationInvalid(
 				ValidityError.required,
 				ValidityErrorLevel.warning,

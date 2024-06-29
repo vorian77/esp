@@ -69,7 +69,7 @@ export async function POST({ request, cookies }) {
 }
 
 async function getUser(token: TokenApiUserId, cookies: Cookies) {
-	const user = await getUserByUserId(token)
+	const user: any = await getUserByUserId(token)
 	if (user) {
 		if (Object.hasOwn(user, 'id')) setCookie(cookies, token)
 		return user

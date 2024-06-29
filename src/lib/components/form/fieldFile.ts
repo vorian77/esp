@@ -18,3 +18,14 @@ export class FieldFile extends Field {
 		return evalExpr(this.storageKeyExpr, new TokenApiQueryData({}))
 	}
 }
+
+export class FileStorage {
+	fileName: string
+	fileType: string
+	key: string
+	constructor(fileName: string, fileType: string, key: string) {
+		this.fileName = fileName
+		this.fileType = fileType
+		this.key = key
+	}
+}

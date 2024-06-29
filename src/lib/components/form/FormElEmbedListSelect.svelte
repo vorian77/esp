@@ -101,7 +101,7 @@
 
 <div>
 	{#if stateEmbed}
-		<object title="aria-embedded-column" class="mb-4">
+		<object title="aria-embedded-column">
 			<Layout state={stateEmbed} />
 		</object>
 	{/if}

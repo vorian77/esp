@@ -757,10 +757,21 @@ async function initCohortAttd() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'note',
+				codeFieldElement: 'toggle',
+				columnName: 'custom_select_bool',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
+				exprCustom: `(EXISTS .file)`,
+				headerAlt: 'Sheet Uploaded',
+				nameCustom: 'isSheetUploaded'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
 			}
 		]

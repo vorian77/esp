@@ -124,3 +124,5 @@
 		{/each}
 	</form>
 </div>
+
+<DataViewer header="state.objStatus" data={state.objStatus} />

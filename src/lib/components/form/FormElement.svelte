@@ -53,7 +53,8 @@
 	export let field: Field
 	export let row: number
 
-	let classProps = dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-4' : ''
+	let classProps =
+		dataObj.raw.codeCardinality === DataObjCardinality.detail && field.isDisplayable ? 'mb-4' : ''
 
 	let currentElement: any
 	const elements: Record<string, any> = {

@@ -44,9 +44,8 @@ export class Query {
 	scriptOrder: string = ''
 	constructor(rawDataObj: RawDataObj) {
 		const clazz = 'Query'
-		rawDataObj = valueOrDefault(rawDataObj, {})
-		this.rawDataObj = rawDataObj
-		this.parent = classOptional(DataObjParent, rawDataObj.rawParent)
+		this.rawDataObj = valueOrDefault(rawDataObj, {})
+		this.parent = classOptional(DataObjParent, this.rawDataObj.rawParent)
 	}
 	addItem(list: string, item: string, separator: string) {
 		return list ? list + separator + '\n' + item : item
@@ -184,7 +183,7 @@ export class Query {
 					propExpr = `${expr}`
 				}
 			} else {
-				let item = `item['${propObj.propName}']`
+				let item = `json_get(item, '${propObj.propName}')`
 				let { dataType } = getValDB(propObj.codeDataType, undefined)
 
 				switch (dataType) {

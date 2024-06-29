@@ -19,7 +19,6 @@ export async function qaExecuteUserUpdate(
 		dataSave.getDetailStatusRecordIs(DataRecordStatus.update) &&
 		queryTiming === DataObjActionQueryTriggerTiming.post
 	) {
-		console.log('crudUserUpdate.qaExecuteUserUpdate.resetting user...')
 		state.resetUser(false)
 	}
 	return dataSave

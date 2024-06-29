@@ -52,7 +52,7 @@
 					a.codeActionFieldType
 				) && state.objStatus.changed()
 		)
-		padding = dataObj.actionsField.length > 0 ? 'mx-4' : ''
+		padding = dataObj.actionsField.filter((a) => a.isShow).length > 0 ? 'ml-4' : ''
 	}
 
 	let isTriggeredEnable = function (action: DataObjActionField) {
@@ -190,7 +190,7 @@
 	}
 </script>
 
-<div class="flex flex-col {padding} -mr-0">
+<div class="flex flex-col {padding}">
 	{#if isEditing}
 		<div>
 			<p class="text-lg text-blue-600 mb-4">Editing...</p>

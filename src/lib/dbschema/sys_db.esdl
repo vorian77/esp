@@ -34,7 +34,7 @@ module sys_db {
     required mod: str;
     constraint exclusive on (.name);
   }
-
+      
   # FUNCTIONS
   function getColumn(columnName: str) -> optional sys_db::SysColumn
     using (select sys_db::SysColumn filter .name = columnName);

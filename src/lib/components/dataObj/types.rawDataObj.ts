@@ -594,7 +594,6 @@ export class PropLink {
 				? obj._columns.map((col: any) => col._name).join('.')
 				: ''
 		this.table = obj._table ? new DBTable(obj._table) : undefined
-		debug('PropLink', 'constructor', { obj, this: this })
 	}
 }
 
@@ -616,7 +615,6 @@ export class PropLinkItemsDefn {
 		this.parms = obj._fieldListItemsParmName
 			? { fieldListItemsParmName: obj._fieldListItemsParmName }
 			: {}
-		debug('PropLinkItemsDefn', 'constructor', { obj, this: this })
 	}
 }
 

@@ -38,6 +38,18 @@ const $Person = $.makeType<$Person>(_.spec, "0a020ae9-fbfc-11ee-87a7-9b61aa1fc99
 
 const Person: $.$expr_PathNode<$.TypeSet<$Person, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Person, $.Cardinality.Many), null);
 
+export type $SysFileλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
+  "fileName": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "fileType": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "key": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+}>;
+type $SysFile = $.ObjectType<"default::SysFile", $SysFileλShape, null, [
+  ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
+]>;
+const $SysFile = $.makeType<$SysFile>(_.spec, "30f16455-3635-11ef-850d-b9cfdaa72c38", _.syntax.literal);
+
+const SysFile: $.$expr_PathNode<$.TypeSet<$SysFile, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysFile, $.Cardinality.Many), null);
+
 export type $SysPersonλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "firstName": $.PropertyDesc<$Name, $.Cardinality.One, false, false, false, false>;
   "lastName": $.PropertyDesc<$Name, $.Cardinality.One, false, false, false, false>;
@@ -47,7 +59,6 @@ export type $SysPersonλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73
   "codeState": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "addr1": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "addr2": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "avatar": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "birthDate": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "city": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "email": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -60,6 +71,7 @@ export type $SysPersonλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73
   "phoneMobile": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "title": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "zip": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "avatar": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "<person[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is sys_user::SysStaff]": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is sys_user::UserRoot]": $.LinkDesc<_sys_user.$UserRoot, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -107,13 +119,14 @@ const SysPersonTest: $.$expr_PathNode<$.TypeSet<$SysPersonTest, $.Cardinality.Ma
 
 
 
-export { Name, nonNegative, $Movie, Movie, $Person, Person, $SysPerson, SysPerson, $SysPersonTest, SysPersonTest };
+export { Name, nonNegative, $Movie, Movie, $Person, Person, $SysFile, SysFile, $SysPerson, SysPerson, $SysPersonTest, SysPersonTest };
 
 type __defaultExports = {
   "Name": typeof Name;
   "nonNegative": typeof nonNegative;
   "Movie": typeof Movie;
   "Person": typeof Person;
+  "SysFile": typeof SysFile;
   "SysPerson": typeof SysPerson;
   "SysPersonTest": typeof SysPersonTest
 };
@@ -122,6 +135,7 @@ const __defaultExports: __defaultExports = {
   "nonNegative": nonNegative,
   "Movie": Movie,
   "Person": Person,
+  "SysFile": SysFile,
   "SysPerson": SysPerson,
   "SysPersonTest": SysPersonTest
 };

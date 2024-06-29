@@ -49,8 +49,6 @@ export async function query(
 		)
 	}
 
-	class Test {}
-
 	const result: ResponseBody = await queryExecute(tab.updateDataObjSource(), queryType, queryData)
 	if (!result.success) return false
 

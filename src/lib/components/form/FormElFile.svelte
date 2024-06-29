@@ -1,13 +1,10 @@
 <script lang="ts">
 	import { FieldProps } from '$comps/form/field'
-	import { FieldFile } from '$comps/form/fieldFile'
+	import { FieldFile, FileStorage } from '$comps/form/fieldFile'
 	import { getToastStore } from '@skeletonlabs/skeleton'
-	import {
-		TokenApiFileUpload,
-		TokenApiFileUploadAction,
-		TokenApiFileUploadData
-	} from '$utils/types.token'
+	import { TokenApiFileParm, TokenApiFileAction, TokenApiFileType } from '$utils/types.token'
 	import { getURLDownload } from '$utils/utils.aws'
+	import { isEqual } from 'lodash-es'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElFile.svelte'
@@ -16,88 +13,90 @@
 
 	export let fp: FieldProps
 
+	enum Mode {
+		delete = 'delete',
+		file = 'file',
+		none = 'none',
+		storage = 'storage'
+	}
+
+	let currStorage: FileStorage | undefined
+	let currURL = ''
+	let elInput: any
+	let files: FileList
+	let showImg = false
+	let mode: Mode = Mode.none
+
 	$: field = fp.field as FieldFile
 	$: fieldValue = fp.fieldValue
 	$: setFieldVal = fp.setFieldVal
 
 	$: labelDelete = 'Delete ' + field.colDO.label
-
-	enum Mode {
-		unchanged = 'unchanged',
-		changing = 'changing',
-		changed = 'changed'
-	}
-
-	let files: FileList
-	let elInput: any
-	let mode: Mode = Mode.unchanged
-	let storageAction: TokenApiFileUploadAction
-	let storageData: TokenApiFileUploadData | undefined
-	let storageKeyAction = 'none'
-	let imgFileName: string
-
-	let labelSelect: string
-	let chooseBtnWidth: string
-
-	$: chooseBtnWidth = imgFileName ? 'w-3/4' : 'w-full'
-	$: labelSelect = imgFileName ? 'Choose New ' + field.colDO.label : 'Choose ' + field.colDO.label
+	$: chooseBtnWidth = currURL ? 'w-3/4' : 'w-full'
+	$: labelSelect = currURL ? 'Choose New ' + field.colDO.label : 'Choose ' + field.colDO.label
 
 	$: {
 		initState(fieldValue)
 
-		// set mode
-		if (!equals(storageData?.storageKey, storageKeyAction) && mode !== Mode.changing) {
-			mode = Mode.unchanged
-		} else if (equals(storageData?.storageKey, storageKeyAction) && mode === Mode.changing) {
-			mode = Mode.changed
-		}
-
-		// render image based on mode
-		if (mode === Mode.unchanged) {
+		// render image based on source
+		if (mode === Mode.storage) {
 			;(async () => {
-				imgFileName = storageData?.storageKey ? await getURLDownload(storageData.storageKey) : ''
+				currURL = await getURLDownload(currStorage.key)
 			})()
+		} else if (mode === Mode.file) {
+			currURL = URL.createObjectURL(files[0])
 		} else {
-			imgFileName = files && files[0] ? URL.createObjectURL(files[0]) : ''
-			// this comment required to prevent bug - always shows downloaded image
-			console.log('FormElFile.source.input:', imgFileName)
+			currURL = ''
 		}
+		showImg = currURL ? true : false
 	}
 
-	$: showImg = imgFileName ? true : false
-
 	function onDelete(event: Event) {
-		mode = Mode.changing
-		storageKeyAction = 'delete'
+		mode = Mode.delete
 		elInput.value = ''
 		setFieldVal(
 			field,
-			new TokenApiFileUpload(TokenApiFileUploadAction.delete, storageData?.storageKey)
+			new TokenApiFileParm({
+				fileAction: TokenApiFileAction.delete,
+				key: currStorage?.key
+			})
 		)
 	}
 
 	function onNew(event: Event) {
-		mode = Mode.changing
-		storageKeyAction = storageData?.storageKey ? storageData.storageKey : field.getKey()
-		setFieldVal(
-			field,
-			new TokenApiFileUpload(TokenApiFileUploadAction.upload, storageKeyAction, files[0])
-		)
+		if (files.length > 0) {
+			mode = Mode.file
+			currStorage = new FileStorage(
+				files[0].name,
+				files[0].type.includes('pdf') ? TokenApiFileType.pdf : TokenApiFileType.image,
+				currStorage ? currStorage.key : field.getKey()
+			)
+			setFieldVal(
+				field,
+				new TokenApiFileParm({
+					file: files[0],
+					fileAction: TokenApiFileAction.upload,
+					fileType: currStorage.fileType,
+					key: currStorage.key
+				})
+			)
+		}
 	}
 
-	function equals(val1: any, val2: any) {
-		return JSON.stringify(val1) === JSON.stringify(val2)
-	}
-
-	function initState(valueField: TokenApiFileUploadData | undefined) {
-		storageAction = TokenApiFileUploadAction.none
-		storageData = valueField
-			? new TokenApiFileUploadData(valueField.storageKey, valueField.fileName, valueField.fileType)
-			: undefined
-	}
-
-	function isImage(fileType: string) {
-		return fileType.includes('image')
+	function initState(fieldValue: FileStorage | undefined) {
+		if (mode === Mode.delete) {
+			currStorage = undefined
+		} else if (mode === Mode.file) {
+			// no change
+		} else if (fieldValue) {
+			if (!isEqual(currStorage?.key, fieldValue.key)) {
+				mode = Mode.storage
+				currStorage = new FileStorage(fieldValue.fileName, fieldValue.fileType, fieldValue.key)
+			}
+		} else {
+			mode = Mode.none
+			currStorage = undefined
+		}
 	}
 </script>
 
@@ -105,51 +104,56 @@
 	<legend>{field.colDO.label}</legend>
 
 	<div>
-		{#if imgFileName && storageData && storageData.isImage}
-			<img
-				class="mx-auto p-2"
-				src={imgFileName}
-				alt={field.colDO.label}
-				width="80%"
-				hidden={!showImg}
-			/>
-		{:else if imgFileName && storageData && storageData.isPDF}
-			<div class="flex justify-center">
-				<iframe
-					src={imgFileName}
+		{#if currURL && currStorage}
+			{#if currStorage.fileType === TokenApiFileType.image}
+				<img
+					alt={field.colDO.label}
+					class="mx-auto p-2"
+					hidden={!showImg}
+					on:click|preventDefault={elInput.click()}
+					src={currURL}
 					width="80%"
-					height="600px"
-					title={field.colDO.label}
-					frameborder="0"
 				/>
-			</div>
+			{:else if currStorage.fileType === TokenApiFileType.pdf}
+				<div class="flex justify-center">
+					<iframe
+						frameborder="0"
+						height="600px"
+						on:click|preventDefault={elInput.click()}
+						src={currURL}
+						title={field.colDO.label}
+						width="80%"
+					/>
+				</div>
+			{/if}
 		{/if}
 
-		<div class="flex">
-			<label class="btn variant-filled-primary mt-2 {chooseBtnWidth}" for={field.colDO.propName}>
+		<div class="flex mt-2">
+			<button class="btn variant-filled-primary {chooseBtnWidth}" on:click={elInput.click()}>
 				{labelSelect}
-			</label>
-			{#if imgFileName}
-				<button class="btn variant-filled-error mt-2 ml-1 w-1/4" on:click={onDelete}>
+			</button>
+
+			{#if currURL}
+				<button class="btn variant-filled-error ml-1 w-1/4" on:click={onDelete}>
 					{labelDelete}
 				</button>
 			{/if}
 		</div>
 
 		<input
-			class="input"
-			type="file"
-			id={field.colDO.propName}
-			name={field.colDO.propName}
 			accept="image/*,application/pdf"
-			hidden={true}
 			bind:files
 			bind:this={elInput}
+			class="input"
+			hidden={true}
+			id={field.colDO.propName}
+			name={field.colDO.propName}
 			on:change={onNew}
+			type="file"
 		/>
 	</div>
-	{#if storageData?.fileName && storageData?.fileType}
-		Name: ({storageData.fileName}) Type: ({storageData.fileType})
+
+	{#if currStorage}
+		Name: {currStorage.fileName} Type: {currStorage.fileType}
 	{/if}
 </fieldset>
-<!-- <DataViewer header="fieldValue" data={fieldValue} /> -->

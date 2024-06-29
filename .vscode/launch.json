@@ -5,6 +5,12 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"command": "pnpm vavite-loader vite dev --port 3000",
+			"name": "SvelteKit Server",
+			"request": "launch",
+			"type": "node-terminal"
+		},
+		{
 			"name": "Chrome",
 			"request": "launch",
 			"skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**/*.js"],

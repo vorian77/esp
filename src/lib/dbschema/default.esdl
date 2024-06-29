@@ -52,10 +52,7 @@ module default {
   scalar type nonNegative extending int64 {
     constraint min_value(0);
   }
-}
 
-
-module default {
   type Person {
     required name: str { constraint exclusive };
   }

@@ -96,7 +96,7 @@ export class FieldParmItem {
 			},
 			_codeAccess: record.isRequired ? 'required' : 'optional',
 			_codeFieldElement: record.codeFieldElement,
-			_hasItems: record.fieldListItems && record.fieldListItems.length > 0,
+			_hasItems: record._hasItems,
 			_propName: record.name,
 			isDisplayBlock: true,
 			orderDisplay: record.orderDefine

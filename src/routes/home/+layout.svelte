@@ -99,12 +99,12 @@
 
 		launchApp = false
 	}
-	$: {
-		if (user && user.avatar && user.avatar.storageKey) {
-			;(async () => {
-				userAvatarSrc = await getURLDownload(user.avatar.storageKey)
-			})()
-		}
+	$: if (user?.avatar?.key) {
+		;(async () => {
+			userAvatarSrc = await getURLDownload(user.avatar.key)
+		})()
+	} else {
+		userAvatarSrc = ''
 	}
 
 	async function stateUpdateCallback(obj: any) {

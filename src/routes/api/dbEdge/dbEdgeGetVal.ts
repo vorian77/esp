@@ -118,12 +118,12 @@ export function getValDB(codeDataType: PropDataType, valueRaw: any) {
 
 			case PropDataType.items:
 				dataType = 'items'
-				valueDB = !valueRaw ? '{}' : valueRaw
+				valueDB = valueRaw ? valueRaw : '{}'
 				break
 
 			case PropDataType.link:
 				dataType = 'link'
-				valueDB = !valueRaw ? '{}' : valueRaw
+				valueDB = valueRaw ? valueRaw : '{}'
 				break
 
 			case PropDataType.str:

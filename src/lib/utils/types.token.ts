@@ -84,46 +84,31 @@ export class TokenApiDbTableColumns {
 	}
 }
 
-export class TokenApiFileUpload extends TokenApi {
-	file: File | undefined
-	fileAction: TokenApiFileUploadAction
-	fileName: string | undefined
-	fileType: string | undefined
-	storageKey: string | undefined
-	constructor(
-		fileAction: TokenApiFileUploadAction,
-		storageKey: string | undefined,
-		file: File | undefined = undefined
-	) {
-		const clazz = 'TokenApiFileUpload'
-		super()
-		this.file = file
-		this.fileAction = fileAction
-		this.fileName = file ? file.name : undefined
-		this.fileType = file ? file.type : undefined
-		this.storageKey = storageKey
-	}
-}
-
-export enum TokenApiFileUploadAction {
+export enum TokenApiFileAction {
 	delete = 'delete',
 	none = 'none',
 	upload = 'upload'
 }
 
-export class TokenApiFileUploadData {
-	fileName: string
-	fileType: string
-	isImage: boolean
-	isPDF: boolean
-	storageKey: string
-	constructor(storageKey: string, fileName: string, fileType: string) {
-		this.fileName = fileName
-		this.storageKey = storageKey
-		this.fileType = fileType
-		this.isImage = fileType ? fileType.includes('image') : false
-		this.isPDF = fileType ? fileType.includes('pdf') : false
+export class TokenApiFileParm extends TokenApi {
+	file?: File
+	fileAction: TokenApiFileAction
+	fileType?: TokenApiFileType
+	key?: string
+	constructor(obj: any) {
+		super()
+		const clazz = 'TokenApiFileParm'
+		obj = valueOrDefault(obj, {})
+		this.file = obj.file
+		this.fileAction = required(obj.fileAction, clazz, 'fileAction')
+		this.fileType = obj.fileType
+		this.key = obj.key
 	}
+}
+
+export enum TokenApiFileType {
+	image = 'image',
+	pdf = 'pdf'
 }
 
 export class TokenApiId extends TokenApi {

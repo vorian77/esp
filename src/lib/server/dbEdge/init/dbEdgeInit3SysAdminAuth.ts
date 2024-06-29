@@ -86,36 +86,49 @@ async function initDataObjAccount() {
 				orderDefine: 10
 			},
 			{
-				columnName: 'firstName',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 1
+				orderDefine: 20
 			},
 			{
-				columnName: 'lastName',
+				columnName: 'firstName',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 1
 			},
 			{
-				codeFieldElement: 'tel',
-				columnName: 'userName',
+				columnName: 'lastName',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
-
+				indexTable: 1
+			},
+			{
+				codeFieldElement: 'tel',
+				columnName: 'userName',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
 				headerAlt: 'Mobile Phone Number',
 				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'file',
 				columnName: 'avatar',
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDisplay: 70,
+				orderDefine: 70,
 				indexTable: 1,
 				width: 300
 			},
@@ -130,18 +143,34 @@ async function initDataObjAccount() {
 			},
 			{
 				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				isDisplayable: true,
+				orderDisplay: 1010,
+				orderDefine: 1010,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				isDisplayable: true,
+				orderDisplay: 1020,
+				orderDefine: 1020,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
 				isDisplayable: true,
-				orderDisplay: 220,
-				orderDefine: 220,
+				orderDisplay: 1030,
+				orderDefine: 1030,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
 				isDisplayable: true,
-				orderDisplay: 230,
-				orderDefine: 230,
+				orderDisplay: 1040,
+				orderDefine: 1040,
 				indexTable: 0
 			},
 			{
@@ -151,6 +180,8 @@ async function initDataObjAccount() {
 				orderDisplay: 1050,
 				orderDefine: 1050
 			},
+
+			// reset password link
 			{
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
@@ -163,8 +194,8 @@ async function initDataObjAccount() {
 					label: 'Reset Password?'
 				},
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60
+				orderDisplay: 1060,
+				orderDefine: 1060
 			}
 		]
 	})

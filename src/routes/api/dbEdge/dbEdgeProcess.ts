@@ -184,8 +184,8 @@ function formatDataForDisplay(prop: RawDataObjPropDB, propDataType: PropDataType
 
 		// complex
 		case PropDataType.json:
-			const valueSource = value
-			value = !value || Object.entries(value).length === 0 ? '' : value
+			// value = value && Object.entries(value).length > 0 ? value : undefined
+			// no change
 			break
 
 		case PropDataType.items:

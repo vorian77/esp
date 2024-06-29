@@ -76,10 +76,10 @@ const CmCohort: $.$expr_PathNode<$.TypeSet<$CmCohort, $.Cardinality.Many>, null>
 
 export type $CmCohortAttdλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "date": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
-  "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "hours": $.PropertyDesc<_std.$float32, $.Cardinality.One, false, false, false, false>;
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "cohortId": $.PropertyDesc<_std.$uuid, $.Cardinality.AtMostOne, false, true, false, false>;
+  "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "<cohortAttds[is app_cm::CmCohort]": $.LinkDesc<$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohortAttd[is app_cm::CmCsfCohortAttd]": $.LinkDesc<$CmCsfCohortAttd, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohortAttd": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -165,9 +165,9 @@ export type $CmCsfDocumentλShape = $.typeutil.flatten<$CmCsfDataλShape & {
   "staffAgency": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.One, {}, false, false,  false, false>;
   "dateExpires": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateIssued": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
-  "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "isShareWithClient": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;
 type $CmCsfDocument = $.ObjectType<"app_cm::CmCsfDocument", $CmCsfDocumentλShape, null, [
   ...$CmCsfData['__exclusives__'],
