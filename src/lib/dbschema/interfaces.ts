@@ -284,6 +284,7 @@ export namespace sys_core {
     "isDisplayable"?: boolean | null;
     "codeSortDir"?: SysCode | null;
     "exprPreset"?: string | null;
+    "customEmbedShellFields": SysDataObjColumn[];
     "orderCrumb"?: number | null;
     "orderSort"?: number | null;
     "isExcludeInsert": boolean;
@@ -365,11 +366,6 @@ export interface Movie extends std.$Object {
 }
 export interface Person extends std.$Object {
   "name": string;
-}
-export interface SysFile extends std.$Object {
-  "fileName": string;
-  "fileType": string;
-  "key": string;
 }
 export interface SysPerson extends std.$Object {
   "firstName": string;
@@ -924,7 +920,6 @@ export interface types {
   "default": {
     "Movie": Movie;
     "Person": Person;
-    "SysFile": SysFile;
     "SysPerson": SysPerson;
     "SysPersonTest": SysPersonTest;
   };

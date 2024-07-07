@@ -2,6 +2,7 @@
 	import { DataObj, DataObjData } from '$utils/types'
 	import { State } from '$comps/app/types.appState'
 	import { Field } from '$comps/form/field'
+	import { FieldEmbed } from '$comps/form/fieldEmbed'
 	import { FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 	import FormElement from '$comps/form/FormElement.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -11,21 +12,22 @@
 	const SUBMIT_BUTTON_NAME = 'SUBMIT_BUTTON_NAME'
 	let dataHeightPadding = '350' //  <todo> 240314 - calc specific padding
 	let dataHeight = `max-height: calc(100vh - ${dataHeightPadding}px);`
+	let tagGroupSection: TagGroupSection[]
 
 	export let state: State
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
-	let tagGroupSection: TagGroupSection[]
 
-	$: loadData(dataObjData)
+	$: (async () => await loadData(dataObjData))()
 
-	function loadData(data: DataObjData) {
-		dataObj.objData = data
-		state.objStatus.setValid(dataObj.preValidate())
-		state = state
-
+	async function loadData(data: DataObjData) {
 		loadTags()
+		dataObj.objData = data
+
+		state.setStatusValidPre(dataObj, false)
+		state = state
 	}
+
 	function loadTags() {
 		tagGroupSection = []
 		let idxSection = 0
@@ -95,34 +97,37 @@
 	}
 </script>
 
-<div id="root" class="overflow-y-scroll" style={dataHeight}>
-	<form id={'form_' + dataObj.raw.name} on:submit|preventDefault>
-		{#each tagGroupSection as section}
-			<fieldset
-				class={section.isVisible ? 'p-4 border-1' : 'p-0 border-0'}
-				style:border-color={section.isVisible ? section.color : 'transparent'}
-			>
-				{#if section.legend}
-					<legend class="text-xl font-bold">{section.legend}</legend>
-				{/if}
-				{#each section.rows as row}
-					<div class={row.isRow ? 'w-full flex gap-x-4' : ''}>
-						{#each row.indexes as fieldIdx}
-							<div class="grow">
-								<FormElement
-									bind:state
-									{dataObj}
-									{dataObjData}
-									field={dataObj.fields[fieldIdx]}
-									row={0}
-								/>
-							</div>
-						{/each}
-					</div>
-				{/each}
-			</fieldset>
-		{/each}
-	</form>
-</div>
+<!-- <DataViewer header="state.objStatus (detail)" data={state.objStatus} /> -->
+<!-- <DataViewer header="tagGroupSection" data={tagGroupSection} /> -->
 
-<DataViewer header="state.objStatus" data={state.objStatus} />
+{#if tagGroupSection}
+	<div id="root" class="overflow-y-scroll" style={dataHeight}>
+		<form id={'form_' + dataObj.raw.name} on:submit|preventDefault>
+			{#each tagGroupSection as section}
+				<fieldset
+					class={section.isVisible ? 'p-4 border-1' : 'p-0 border-0'}
+					style:border-color={section.isVisible ? section.color : 'transparent'}
+				>
+					{#if section.legend}
+						<legend class="text-xl font-bold">{section.legend}</legend>
+					{/if}
+					{#each section.rows as row}
+						<div class={row.isRow ? 'w-full flex gap-x-4' : ''}>
+							{#each row.indexes as fieldIdx}
+								<div class="grow">
+									<FormElement
+										bind:state
+										{dataObj}
+										{dataObjData}
+										field={dataObj.fields[fieldIdx]}
+										row={0}
+									/>
+								</div>
+							{/each}
+						</div>
+					{/each}
+				</fieldset>
+			{/each}
+		</form>
+	</div>
+{/if}

@@ -503,6 +503,7 @@ async function initMigrTargetTable() {
 				columnName: 'table',
 				orderCrumb: 10,
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
@@ -511,6 +512,7 @@ async function initMigrTargetTable() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'isActive',
+				isExcludeUpdate: true,
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
@@ -519,6 +521,7 @@ async function initMigrTargetTable() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'isInitTable',
+				isExcludeUpdate: true,
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -530,6 +533,36 @@ async function initMigrTargetTable() {
 				orderDefine: 50,
 				indexTable: 0,
 				isDisplayable: false
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1020
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1030
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1040
 			}
 		]
 	})
@@ -688,6 +721,7 @@ async function initMigrTargetColumn() {
 				codeAccess: 'readOnly',
 				columnName: 'column',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
@@ -698,6 +732,7 @@ async function initMigrTargetColumn() {
 				codeAccess: 'readOnly',
 				columnName: 'isActive',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -706,6 +741,7 @@ async function initMigrTargetColumn() {
 				codeAccess: 'readOnly',
 				columnName: 'expr',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -716,6 +752,36 @@ async function initMigrTargetColumn() {
 				orderDefine: 50,
 				indexTable: 0,
 				isDisplayable: false
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1020
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1030
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1040
 			}
 		]
 	})

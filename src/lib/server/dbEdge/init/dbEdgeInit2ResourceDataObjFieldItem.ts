@@ -24,7 +24,14 @@ export async function initPreDataObjFieldItem() {
 	await addDataObjFieldItems({
 		exprPropDisplay: `.course.name ++ ' (' ++ .name ++ ')' ++ ' (' ++ std::to_str(<cal::local_date>.dateStart) ++ ')'`,
 		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).orgs`,
-		name: 'il_cm_cohort_by_userName',
+		name: 'il_cm_cohort_long_by_userName',
+		owner: 'app_cm',
+		table: 'CmCohort'
+	})
+	await addDataObjFieldItems({
+		exprPropDisplay: `.name`,
+		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).orgs`,
+		name: 'il_cm_cohort_short_by_userName',
 		owner: 'app_cm',
 		table: 'CmCohort'
 	})
@@ -88,6 +95,15 @@ export async function initPreDataObjFieldItem() {
 		owner: 'app_sys',
 		table: 'SysDataObjActionFieldGroup'
 	})
+
+	await addDataObjFieldItems({
+		exprPropDisplay: '.column.name',
+		exprFilter: `.id IN (SELECT sys_core::SysDataObj FILTER .id = <tree,uuid,SysDataObj.id>).columns.id`,
+		name: 'il_sys_data_obj_columns_order_name',
+		owner: 'app_sys',
+		table: 'SysDataObjColumn'
+	})
+
 	await addDataObjFieldItems({
 		exprPropDisplay: `.name`,
 		name: 'il_sys_data_obj_field_embed_list_config_order_name',

@@ -3,6 +3,7 @@ import {
 	booleanOrDefault,
 	booleanOrFalse,
 	booleanRequired,
+	classOptional,
 	debug,
 	memberOfEnum,
 	memberOfEnumIfExists,
@@ -13,10 +14,12 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/utils'
-import { FieldAlignment, FieldElement, FieldParmType } from '$comps/form/field'
+import { DBTable } from '$utils/types'
+import { FieldAlignment, FieldElement } from '$comps/form/field'
 import {
 	PropDataSourceValue,
 	PropDataType,
+	PropLinkItemsDefn,
 	PropSortDir,
 	RawDataObjTable
 } from '$comps/dataObj/types.rawDataObj'
@@ -200,34 +203,36 @@ export class RepElColumn {
 }
 
 export class RepParm {
-	codeParmType: FieldParmType
+	codeDataType: PropDataType
+	codeFieldElement: FieldElement
 	description?: string
-	fieldListItems?: string
-	fieldListItemsParmName?: string
+	fieldListItems?: PropLinkItemsDefn
 	header: string
 	isMultiSelect: boolean
-	linkTable?: string
+	linkTable?: DBTable
 	name: string
 	constructor(obj: any) {
 		const clazz = 'RepParm'
 		obj = valueOrDefault(obj, {})
-		this.codeParmType = memberOfEnum(
-			obj._codeParmType,
+		this.codeDataType = memberOfEnum(
+			obj._codeDataType,
 			clazz,
-			'codeParmType',
-			'FieldParmType',
-			FieldParmType
+			'codeDataType',
+			'PropDataType',
+			PropDataType
+		)
+		this.codeFieldElement = memberOfEnum(
+			obj._codeFieldElement,
+			clazz,
+			'codeFieldElement',
+			'FieldElement',
+			FieldElement
 		)
 		this.description = strOptional(obj.description, clazz, 'description')
-		this.fieldListItems = strOptional(obj.fieldListItems, clazz, 'fieldListItems')
-		this.fieldListItemsParmName = strOptional(
-			obj.fieldListItemsParmName,
-			clazz,
-			'fieldListItemsParmName'
-		)
+		this.fieldListItems = classOptional(PropLinkItemsDefn, obj._fieldListItems)
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.isMultiSelect = booleanOrFalse(obj.isMultiSelect, 'isMultiSelect')
-		this.linkTable = strOptional(obj._linkTable, clazz, 'linkTable')
+		this.linkTable = classOptional(DBTable, obj._linkTable)
 		this.name = strRequired(obj.name, clazz, 'name')
 	}
 }
@@ -242,13 +247,13 @@ export class RepUser {
 	constructor(obj: any) {
 		const clazz = 'Rep'
 		obj = valueOrDefault(obj, {})
-		// this.analytics = getArrayOfModels(obj.analytics, RepAnalytic)
+		debug('RepUser:', 'obj.parms', obj.parms)
+		// this.analytics = arrayOfClasses(obj.analytics, RepAnalytic)
 		this.descriptionUser = strOptional(obj.descriptionUser, clazz, 'descriptionUser')
 		this.elements = arrayOfClasses(RepUserEl, obj.elements)
 		this.headerUser = strRequired(obj.headerUser, clazz, 'headerUser')
-		// this.parms = getArrayOfModels(RepUserParm, obj.parms)
+		this.parms = arrayOfClasses(RepUserParm, obj.parms)
 		this.report = new Rep(obj.report)
-		debug('RepUser:', 'obj', obj)
 	}
 }
 

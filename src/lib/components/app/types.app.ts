@@ -81,7 +81,7 @@ export class App {
 						)
 					)
 					// add children
-					rawNodes.children.forEach(async (rawNode, idx) => {
+					rawNodes.children.forEach((rawNode, idx) => {
 						tabs.push(
 							new AppLevelTab(
 								App.getTabParmsNode(newLevelIdx, idx + 1, new Node(new RawNode(rawNode)))

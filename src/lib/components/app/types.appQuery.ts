@@ -177,7 +177,7 @@ async function queryExecuteActions(
 	table: string | undefined,
 	data: DataObjData
 ) {
-	actionsQueryFunctions.forEach(async (f) => {
+	for (const f of actionsQueryFunctions) {
 		data = await f.execute(
 			f.actionsQuery.name,
 			state,
@@ -187,7 +187,7 @@ async function queryExecuteActions(
 			data,
 			f.actionsQuery.parms
 		)
-	})
+	}
 	return data
 }
 

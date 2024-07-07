@@ -839,7 +839,7 @@ async function initCsfCohort() {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_cm_cohort_by_userName',
+				fieldListItems: 'il_cm_cohort_long_by_userName',
 				linkTable: 'CmCohort'
 			},
 			{

@@ -14,6 +14,9 @@ export class FieldFile extends Field {
 		this.storageKeyExpr = strRequired(obj.colDB.exprStorageKey, 'FieldFile', 'storageKeyExpr')
 		this.width = valueOrDefault(obj.width, 300)
 	}
+	static async init(props: RawFieldProps) {
+		return new FieldFile(props)
+	}
 	getKey() {
 		return evalExpr(this.storageKeyExpr, new TokenApiQueryData({}))
 	}

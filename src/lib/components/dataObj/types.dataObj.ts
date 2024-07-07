@@ -1,5 +1,4 @@
-import { State, StateActionProxy } from '$comps/app/types.appState'
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { State } from '$comps/app/types.appState'
 import {
 	booleanOrFalse,
 	debug,
@@ -34,11 +33,13 @@ import {
 } from '$comps/form/types.validation'
 import { Field, FieldAccess, FieldColor, FieldElement, RawFieldProps } from '$comps/form/field'
 import { FieldCheckbox } from '$comps/form/fieldCheckbox'
+import { FieldChips } from '$comps/form/fieldChips'
 import {
 	FieldEmbedListConfig,
 	FieldEmbedListEdit,
 	FieldEmbedListSelect
 } from '$comps/form/fieldEmbed'
+import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import {
 	FieldCustomAction,
 	FieldCustomActionButton,
@@ -71,6 +72,7 @@ export class DataObj {
 	actionsQueryFunctions: DataObjActionQueryFunction[] = []
 	data: DataObjData
 	dataFieldsChanged: FieldValues = new FieldValues()
+	dataFieldsChangedEmbedded: FieldValues = new FieldValues()
 	dataFieldValidities: FieldValues = new FieldValues()
 	dataItems: DataRecord = {}
 	dataRecordsDisplay: DataRecord[] = []
@@ -84,7 +86,6 @@ export class DataObj {
 		rawDataObj = valueOrDefault(rawDataObj, {})
 		this.raw = rawDataObj
 		this.data = new DataObjData(this.raw.codeCardinality)
-		this.fields = this.initFields(rawDataObj.rawPropsDisplay, data)
 
 		/* dependent properties */
 		this.rootTable =
@@ -95,10 +96,10 @@ export class DataObj {
 
 	static async init(state: State, rawDataObj: RawDataObj, data: DataObjData) {
 		const dataObj = new DataObj(rawDataObj, data)
+		dataObj.fields = await dataObj.initFields(state, rawDataObj.rawPropsDisplay, data)
 		await enhanceCustomFields(dataObj.fields)
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
-		await initParmDataItems(state, dataObj)
 		return dataObj
 
 		async function enhanceCustomFields(fields: Field[]) {
@@ -121,45 +122,31 @@ export class DataObj {
 				return new DataObjActionField(rawAction, state)
 			})
 		}
-		async function initParmDataItems(state: State, dataObj: DataObj) {
-			const parms = dataObj.fields.filter((f) => f instanceof FieldParm) as FieldParm[]
-			if (parms.length > 0) {
-				const repUserId = state.dataQuery.valueGet('listRecordIdParent')
-				if (repUserId) {
-					const result: ResponseBody = await apiFetch(
-						ApiFunction.dbEdgeGetRepParmItems,
-						new TokenApiQueryData({ parms: { repUserId } })
-					)
-					if (result.success) {
-						for (const parm of parms) {
-							await parm.setDataItems(result.data)
-						}
-					}
-				}
-			}
-		}
 	}
 
-	initFields(propsRaw: RawDataObjPropDisplay[], data: DataObjData) {
+	async initFields(state: State, propsRaw: RawDataObjPropDisplay[], data: DataObjData) {
 		let fields: Field[] = []
 		let firstVisible = propsRaw.findIndex((f) => typeof f.orderDisplay === 'number')
-		propsRaw.forEach((propRaw: RawDataObjPropDisplay, idx) => {
-			fields.push(DataObj.initField(propRaw, firstVisible === idx, fields, data))
-		})
+
+		for (let i = 0; i < propsRaw.length; i++) {
+			const prop: RawDataObjPropDisplay = propsRaw[i]
+			fields.push(await DataObj.initField(state, prop, firstVisible === i, fields, data))
+		}
 		return fields
 	}
 
-	static initField(
+	static async initField(
+		state: State,
 		propRaw: RawDataObjPropDisplay,
 		isFirstVisible: boolean,
 		fields: Field[],
 		data: DataObjData
 	) {
 		let newField: Field
-		const props = new RawFieldProps(propRaw, isFirstVisible, fields, data)
+		const props = new RawFieldProps(state, propRaw, isFirstVisible, fields, data)
 
 		if (typeof propRaw.orderDisplay !== 'number') {
-			newField = new Field(props)
+			newField = await Field.init(props)
 		} else {
 			const element = memberOfEnum(
 				propRaw.rawFieldElement,
@@ -176,71 +163,79 @@ export class DataObj {
 				case FieldElement.password:
 				case FieldElement.tel:
 				case FieldElement.text:
-					newField = new FieldInput(props)
+					newField = await FieldInput.init(props)
 					break
 
 				case FieldElement.checkbox:
-					newField = new FieldCheckbox(props)
+					newField = await FieldCheckbox.init(props)
+					break
+
+				case FieldElement.chips:
+					newField = await FieldChips.init(props)
 					break
 
 				case FieldElement.customActionButton:
-					newField = new FieldCustomActionButton(props)
+					newField = await FieldCustomActionButton.init(props)
 					break
 
 				case FieldElement.customActionLink:
-					newField = new FieldCustomActionLink(props)
+					newField = await FieldCustomActionLink.init(props)
 					break
 
 				case FieldElement.customHeader:
-					newField = new FieldCustomHeader(props)
+					newField = await FieldCustomHeader.init(props)
 					break
 
 				case FieldElement.customText:
-					newField = new FieldCustomText(props)
+					newField = await FieldCustomText.init(props)
 					break
 
 				case FieldElement.embedListConfig:
-					newField = new FieldEmbedListConfig(props)
+					newField = await FieldEmbedListConfig.init(props)
 					break
 
 				case FieldElement.embedListEdit:
-					newField = new FieldEmbedListEdit(props)
+					newField = await FieldEmbedListEdit.init(props)
 					break
 
 				case FieldElement.embedListSelect:
-					newField = new FieldEmbedListSelect(props)
+					newField = await FieldEmbedListSelect.init(props)
+					break
+
+				case FieldElement.embedShell:
+					newField = await FieldEmbedShell.init(props)
 					break
 
 				case FieldElement.file:
-					newField = new FieldFile(props)
+					newField = await FieldFile.init(props)
 					break
 
 				case FieldElement.parm:
-					newField = new FieldParm(props)
+					newField = await FieldParm.init(props)
 					break
 
 				case FieldElement.radio:
-					newField = new FieldRadio(props)
+					newField = await FieldRadio.init(props)
 					break
 
 				case FieldElement.select:
-					newField = new FieldSelect(props)
+					newField = await FieldSelect.init(props)
 					break
 
 				case FieldElement.tagRow:
-					newField = new FieldTagRow(props)
+					newField = await FieldTagRow.init(props)
 					break
 
 				case FieldElement.tagSection:
-					newField = new FieldTagSection(props)
+					newField = await FieldTagSection.init(props)
 					break
 
 				case FieldElement.textArea:
-					newField = new FieldTextarea(props)
+					newField = await FieldTextarea.init(props)
 					break
 
 				case FieldElement.toggle:
-					newField = new FieldToggle(props)
+					newField = await FieldToggle.init(props)
 					break
 
 				default:
@@ -255,24 +250,34 @@ export class DataObj {
 	}
 
 	get objData() {
+		const parmValueFields = this.fields.filter((f) => f.isParmValue) as FieldParm[]
 		const data = new DataObjData(this.raw.codeCardinality)
-		setDataRecords(this.data, data, this.dataRecordsDisplay)
-		setDataRecords(this.data, data, this.dataRecordsHidden)
+		setDataRecords(data, this.data, parmValueFields, this.dataRecordsDisplay)
+		setDataRecords(data, this.data, parmValueFields, this.dataRecordsHidden)
 		return data
 
 		function setDataRecords(
-			dataSource: DataObjData,
 			dataReturn: DataObjData,
+			dataSource: DataObjData,
+			parmValueFields: FieldParm[],
 			dataRecords: DataRecord[]
 		) {
-			dataRecords.forEach((record) => {
-				const dataRow = dataSource.getRow(record.id)
-				const status = dataRow ? dataRow.status : DataRecordStatus.preset
+			dataRecords.forEach((record, row) => {
 				let newRecord: DataRecord = {}
+				// don't include null or undefined values
 				Object.entries(record).forEach(([key, value]) => {
 					if (![null, undefined].includes(value)) newRecord[key] = value
 				})
-				dataReturn.addRow(status, newRecord)
+				// set parmValue
+				parmValueFields.forEach((field) => {
+					const fieldName = field.fieldParmItems[row].parmField.colDO.propName
+					if (![null, undefined].includes(record[fieldName])) {
+						newRecord.parmValue = record[fieldName]
+						delete newRecord[fieldName]
+					}
+				})
+				const dataRow = dataSource.getRow(record.id)
+				dataReturn.addRow(dataRow ? dataRow.status : DataRecordStatus.preset, newRecord)
 			})
 		}
 	}
@@ -287,13 +292,21 @@ export class DataObj {
 
 		// set data
 		let recordsClone: DataRecord[] = []
-		dataSource.dataRows.forEach((row) => {
-			if (row.status !== DataRecordStatus.delete) {
-				recordsClone.push({ ...row.record })
+		const parmValueFields = this.fields.filter((f) => f.isParmValue) as FieldParm[]
+		dataSource.dataRows.forEach((dataRow, rowIdx) => {
+			if (dataRow.status !== DataRecordStatus.delete) {
+				const record = dataRow.record
+				// init parmValue
+				parmValueFields.forEach((field) => {
+					record[field.fieldParmItems[rowIdx].parmField.colDO.propName] = record.parmValue
+					delete record.parmValue
+				})
+				recordsClone.push({ ...record })
 			}
 		})
 		this.dataRecordsDisplay = recordsClone
 		this.dataFieldsChanged = new FieldValues()
+		this.dataFieldsChangedEmbedded = new FieldValues()
 		this.dataFieldValidities = new FieldValues()
 
 		// set data items
@@ -315,6 +328,10 @@ export class DataObj {
 		this.data = dataSource
 	}
 
+	getField(field: Field, row: number) {
+		return field.isParmValue ? (field as FieldParm).fieldParmItems[row].parmField : field
+	}
+
 	getFieldDisplayByName(fieldName: string) {
 		let field = this.fields.find((f) => f.colDO.propName === fieldName)
 		if (field) return field
@@ -328,39 +345,25 @@ export class DataObj {
 	getStatusChanged() {
 		return this.dataFieldsChanged.values.length > 0
 	}
+	getStatusChangedEmbedded() {
+		return this.dataFieldsChangedEmbedded.values.length > 0
+	}
 
-	preValidate(): boolean {
+	preValidate(isListEdit: boolean): boolean {
 		let formStatus: ValidationStatus = ValidationStatus.valid
-		let fieldValid: boolean
+		const validityErrorLevel = isListEdit ? ValidityErrorLevel.warning : ValidityErrorLevel.none
 
-		this.dataRecordsDisplay.forEach((record) => {
+		this.dataRecordsDisplay.forEach((record, row) => {
 			this.fields.forEach((f) => {
-				const fieldName = f.colDO.propName
-				if (f.fieldAccess !== FieldAccess.readonly && !f.colDO.colDB.isNonData) {
-					fieldValid = true
-					const valueCurrent = record[fieldName]
-					const typeOf = typeof valueCurrent
-					if (valueCurrent === undefined || valueCurrent === null || valueCurrent === '') {
-						if (f.fieldAccess === FieldAccess.required) {
-							formStatus = ValidationStatus.invalid
-							fieldValid = false
-							this.dataFieldValidities.valueSet(
-								record.id,
-								fieldName,
-								new Validity(ValidityError.missingData, ValidityErrorLevel.silent)
-							)
-						}
-					} else {
-						const v: Validation = this.valueValidation(f, valueCurrent, record)
-						if (v && v.status == ValidationStatus.invalid) {
-							formStatus = ValidationStatus.invalid
-							fieldValid = false
-							this.dataFieldValidities.valueSet(record.id, fieldName, v.validityFields[0].validity)
-						}
-					}
-					if (fieldValid) {
-						this.dataFieldValidities.valueSet(record.id, fieldName, new Validity())
-					}
+				const field = this.getField(f, row)
+				const v: Validation = field.validate(record, row, validityErrorLevel)
+				if (v.status === ValidationStatus.invalid) {
+					formStatus = ValidationStatus.invalid
+					this.dataFieldValidities.valueSet(
+						record.id,
+						v.validityFields[0].fieldName,
+						v.validityFields[0].validity
+					)
 				}
 			})
 		})
@@ -374,11 +377,14 @@ export class DataObj {
 	/* user data manipulation */
 	userSetFieldVal(row: number, field: Field, value: any) {
 		const recordId = this.dataRecordsDisplay[row]['id']
-		const fieldName = field.isParmValue ? 'parmValue' : field.colDO.propName
-		this.valueSet(recordId, fieldName, value)
+		this.valueSet(recordId, field.colDO.propName, value)
 
 		// validate
-		const v: Validation = this.valueValidation(field, value, this.dataRecordsDisplay[row])
+		const v: Validation = field.validate(
+			this.dataRecordsDisplay[row],
+			row,
+			ValidityErrorLevel.warning
+		)
 		v.validityFields.forEach(({ fieldName, validity }) => {
 			this.dataFieldValidities.valueSet(recordId, fieldName, validity)
 		})
@@ -397,49 +403,6 @@ export class DataObj {
 				this.dataFieldsChanged.valueDrop(recordId, fieldName)
 			}
 		}
-	}
-	valueValidation(field: Field, userValue: any, dataRecord: DataRecord) {
-		let vRtn: Validation | undefined
-
-		// validate pre
-		if (field.fValidatePre) {
-			vRtn = field.fValidatePre(userValue, dataRecord)
-			if (vRtn) return vRtn
-		}
-
-		// primary validate
-		vRtn = this.valueValidationValidate(field, userValue)
-		if (vRtn) return vRtn
-
-		// validate post
-		if (field.fValidatePost) {
-			vRtn = field.fValidatePost(userValue, dataRecord)
-			if (vRtn) return vRtn
-		}
-
-		// default
-		return field.getValuationValid()
-	}
-	valueValidationValidate(field: Field, userValue: any) {
-		// only validate access types that require validation
-		if (![FieldAccess.required, FieldAccess.optional].includes(field.fieldAccess)) {
-			return field.getValuationValid()
-		}
-
-		// optional & empty
-		if (field.fieldAccess === FieldAccess.optional && !userValue) {
-			return field.getValuationValid()
-		}
-
-		// required
-		if ([null, undefined].includes(userValue)) {
-			return field.getValuationInvalid(
-				ValidityError.required,
-				ValidityErrorLevel.warning,
-				`"${field.colDO.label}" is required.`
-			)
-		}
-		return undefined
 	}
 }
 
@@ -704,21 +667,32 @@ export enum DataObjProcessType {
 }
 
 export class DataObjStatus {
+	embeddedObjsChanged: boolean = false
 	objHasChanged: boolean = false
 	objValidToSave: boolean = true
 	constructor() {}
 	changed() {
 		return this.objHasChanged
 	}
+	changedEmbedded() {
+		return this.embeddedObjsChanged
+	}
 	reset() {
+		this.embeddedObjsChanged = false
 		this.objHasChanged = false
 		this.objValidToSave = true
 	}
 	setChanged(status: boolean) {
 		this.objHasChanged = status
+		return status
+	}
+	setChangedEmbedded(status: boolean) {
+		this.embeddedObjsChanged = status
+		return status
 	}
 	setValid(status: boolean) {
 		this.objValidToSave = status
+		return status
 	}
 	valid() {
 		return this.objValidToSave

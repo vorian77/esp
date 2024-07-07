@@ -14,4 +14,7 @@ export class FieldToggle extends Field {
 		this.valueShow = valueOrDefault(obj.colDB.toggleValueShow, false)
 		this.valueTrue = valueOrDefault(obj.colDB.toggleValueTrue, undefined)
 	}
+	static async init(props: RawFieldProps) {
+		return new FieldToggle(props)
+	}
 }

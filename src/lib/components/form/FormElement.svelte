@@ -7,7 +7,7 @@
 		ValidityErrorLevel,
 		ValidityError
 	} from '$utils/types'
-	import { State } from '$comps/app/types.appState'
+	import { State, StateSurfaceEmbed } from '$comps/app/types.appState'
 	import FormElCustomActionButton from './FormElCustomActionButton.svelte'
 	import FormElCustomActionLink from './FormElCustomActionLink.svelte'
 	import FormElCustomHeader from '$comps/form/FormElCustomHeader.svelte'
@@ -19,22 +19,26 @@
 	import FormElEmbedListConfig from '$comps/form/FormElEmbedListConfig.svelte'
 	import FormElEmbedListEdit from '$comps/form/FormElEmbedListEdit.svelte'
 	import FormElEmbedListSelect from '$comps/form/FormElEmbedListSelect.svelte'
+	import FormElEmbedShell from '$comps/form/FormElEmbedShell.svelte'
+	import FormElChips from '$comps/form/FormElChips.svelte'
 	import FormElSelect from '$comps/form/FormElSelect.svelte'
 	import FormElTextarea from '$comps/form/FormElTextarea.svelte'
 	import FormElToggle from '$comps/form/FormElToggle.svelte'
 	import { Field, FieldProps } from '$comps/form/field'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import {
-		FieldEmbedListConfig,
-		FieldEmbedListEdit,
-		FieldEmbedListSelect
-	} from '$comps/form/fieldEmbed'
-	import {
 		FieldCustomActionButton,
 		FieldCustomActionLink,
 		FieldCustomHeader,
 		FieldCustomText
 	} from '$comps/form/fieldCustom'
+	import {
+		FieldEmbedListConfig,
+		FieldEmbedListEdit,
+		FieldEmbedListSelect
+	} from '$comps/form/fieldEmbed'
+	import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
+	import { FieldChips } from '$comps/form/fieldChips'
 	import { FieldCustom } from '$comps/form/fieldCustom'
 	import { FieldFile } from '$comps/form/fieldFile'
 	import { FieldInput } from '$comps/form/fieldInput'
@@ -59,6 +63,7 @@
 	let currentElement: any
 	const elements: Record<string, any> = {
 		FieldCheckbox: FormElInpCheckbox,
+		FieldChips: FormElChips,
 		FieldCustomActionButton: FormElCustomActionButton,
 		FieldCustomActionLink: FormElCustomActionLink,
 		FieldCustomHeader: FormElCustomHeader,
@@ -66,6 +71,7 @@
 		FieldEmbedListConfig: FormElEmbedListConfig,
 		FieldEmbedListEdit: FormElEmbedListEdit,
 		FieldEmbedListSelect: FormElEmbedListSelect,
+		FieldEmbedShell: FormElEmbedShell,
 		FieldFile: FormElFile,
 		FieldInput: FormElInp,
 		FieldRadio: FormElInpRadio,
@@ -74,11 +80,10 @@
 		FieldToggle: FormElToggle
 	}
 
-	$: field =
-		field.constructor.name === 'FieldParm'
-			? (field as FieldParm).fieldParmItems[row].parmField
-			: field
+	let fieldValue: any
+
 	$: dataRecord = dataObj.dataRecordsDisplay[row]
+	$: field = dataObj.getField(field, row)
 	$: fieldValue = dataRecord[field.colDO.propName]
 	$: validity = dataObj.dataFieldValidities.valueGet(dataRecord.id, field.colDO.propName)
 	$: {
@@ -91,29 +96,27 @@
 		dataObjData,
 		dataRecord,
 		field,
-		field.isParmValue ? dataRecord.parmValue : fieldValue,
+		fieldValue,
 		row,
 		setFieldVal,
 		state
 	)
 
 	function setFieldVal(field: Field, value: any) {
+		field = dataObj.getField(field, row)
+
 		dataObj.userSetFieldVal(row, field, value)
 		dataObj = dataObj
 
-		state.objStatus.setValid(
-			dataObj.dataFieldValidities.values.every(
-				(fieldValue: FieldValue) => fieldValue.value.error === ValidityError.none
-			)
-		)
-		state.objStatus.setChanged(dataObj.getStatusChanged())
+		state.setStatusValid(dataObj)
+		state.setStatusChanged(dataObj)
 		state = state
 	}
 </script>
 
 <div class={classProps}>
 	{#if field.isDisplayable}
-		<svelte:component this={currentElement} {fp} />
+		<svelte:component this={currentElement} bind:fp />
 	{/if}
 </div>
 

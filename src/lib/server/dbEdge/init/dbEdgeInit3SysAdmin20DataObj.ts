@@ -481,6 +481,7 @@ async function initDataObjColumn() {
 				columnName: 'codeFieldElement',
 				orderCrumb: 10,
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
@@ -492,6 +493,7 @@ async function initDataObjColumn() {
 				columnName: 'column',
 				orderCrumb: 20,
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
@@ -504,6 +506,36 @@ async function initDataObjColumn() {
 				orderDefine: 40,
 				indexTable: 0,
 				isDisplayable: false
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1020
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1030
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1040
 			}
 		]
 	})
@@ -1107,12 +1139,12 @@ async function initDataObjColumn() {
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'fieldEmbedListSelect',
-				isDisplayable: true,
-				orderDisplay: 720,
-				orderDefine: 720,
 				fieldListItems: 'il_sys_data_obj_field_embed_list_select_order_name',
 				indexTable: 0,
-				linkTable: 'SysDataObjFieldEmbedListSelect'
+				isDisplayable: true,
+				linkTable: 'SysDataObjFieldEmbedListSelect',
+				orderDisplay: 720,
+				orderDefine: 720
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1120,6 +1152,26 @@ async function initDataObjColumn() {
 				isDisplayable: true,
 				orderDisplay: 730,
 				orderDefine: 730
+			},
+			{
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: { label: 'Embed Shell' },
+				isDisplayable: true,
+				orderDisplay: 740,
+				orderDefine: 740,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'chips',
+				columnName: 'customEmbedShellFields',
+				fieldListItems: 'il_sys_data_obj_columns_order_name',
+				indexTable: 0,
+				isDisplayable: true,
+				linkTable: 'SysDataObjColumn',
+				orderDisplay: 750,
+				orderDefine: 750
 			},
 			{
 				codeFieldElement: 'tagSection',
@@ -1134,16 +1186,16 @@ async function initDataObjColumn() {
 				codeFieldElement: 'tagSection',
 				columnName: 'custom_section_start',
 				isDisplayable: true,
-				orderDisplay: 820,
-				orderDefine: 830,
+				orderDisplay: 900,
+				orderDefine: 900,
 				headerAlt: 'Link'
 			},
 			{
 				codeFieldElement: 'embedListConfig',
 				columnName: 'linkColumns',
 				isDisplayable: true,
-				orderDisplay: 840,
-				orderDefine: 840,
+				orderDisplay: 910,
+				orderDefine: 910,
 				fieldEmbedListConfig: 'flec_data_obj_column_link',
 				indexTable: 0,
 				linkTable: 'SysDataObjColumnLink'
@@ -1152,16 +1204,16 @@ async function initDataObjColumn() {
 				codeAccess: 'optional',
 				columnName: 'linkExprSave',
 				isDisplayable: true,
-				orderDisplay: 890,
-				orderDefine: 890,
+				orderDisplay: 920,
+				orderDefine: 920,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'linkExprSelect',
 				isDisplayable: true,
-				orderDisplay: 900,
-				orderDefine: 900,
+				orderDisplay: 930,
+				orderDefine: 930,
 				indexTable: 0
 			},
 			{
@@ -1169,8 +1221,8 @@ async function initDataObjColumn() {
 				codeFieldElement: 'select',
 				columnName: 'linkTable',
 				isDisplayable: true,
-				orderDisplay: 910,
-				orderDefine: 910,
+				orderDisplay: 940,
+				orderDefine: 940,
 				indexTable: 0,
 				fieldListItems: 'il_sys_table_order_name',
 				linkTable: 'SysTable'
@@ -1179,8 +1231,8 @@ async function initDataObjColumn() {
 				codeFieldElement: 'tagSection',
 				columnName: 'custom_section_end',
 				isDisplayable: true,
-				orderDisplay: 920,
-				orderDefine: 920
+				orderDisplay: 950,
+				orderDefine: 950
 			},
 
 			/* management */

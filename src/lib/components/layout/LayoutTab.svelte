@@ -29,7 +29,10 @@
 	$: rowStatus = state.app.getRowStatus()
 	$: isHideChildTabs =
 		dataObjData.hasRecord() &&
-		(dataObjData.getDetailStatusRecordIs(DataRecordStatus.preset) || state.objStatus.changed())
+		(dataObjData.getDetailStatusRecordIs(DataRecordStatus.preset) ||
+			state.objStatus.changed() ||
+			state.objStatus.changedEmbedded() ||
+			!state.objStatus.valid())
 
 	async function onClickTab(event: any) {
 		state.update({

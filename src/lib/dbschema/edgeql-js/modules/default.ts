@@ -38,18 +38,6 @@ const $Person = $.makeType<$Person>(_.spec, "0a020ae9-fbfc-11ee-87a7-9b61aa1fc99
 
 const Person: $.$expr_PathNode<$.TypeSet<$Person, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Person, $.Cardinality.Many), null);
 
-export type $SysFileλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
-  "fileName": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
-  "fileType": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
-  "key": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
-}>;
-type $SysFile = $.ObjectType<"default::SysFile", $SysFileλShape, null, [
-  ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
-]>;
-const $SysFile = $.makeType<$SysFile>(_.spec, "30f16455-3635-11ef-850d-b9cfdaa72c38", _.syntax.literal);
-
-const SysFile: $.$expr_PathNode<$.TypeSet<$SysFile, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysFile, $.Cardinality.Many), null);
-
 export type $SysPersonλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "firstName": $.PropertyDesc<$Name, $.Cardinality.One, false, false, false, false>;
   "lastName": $.PropertyDesc<$Name, $.Cardinality.One, false, false, false, false>;
@@ -119,14 +107,13 @@ const SysPersonTest: $.$expr_PathNode<$.TypeSet<$SysPersonTest, $.Cardinality.Ma
 
 
 
-export { Name, nonNegative, $Movie, Movie, $Person, Person, $SysFile, SysFile, $SysPerson, SysPerson, $SysPersonTest, SysPersonTest };
+export { Name, nonNegative, $Movie, Movie, $Person, Person, $SysPerson, SysPerson, $SysPersonTest, SysPersonTest };
 
 type __defaultExports = {
   "Name": typeof Name;
   "nonNegative": typeof nonNegative;
   "Movie": typeof Movie;
   "Person": typeof Person;
-  "SysFile": typeof SysFile;
   "SysPerson": typeof SysPerson;
   "SysPersonTest": typeof SysPersonTest
 };
@@ -135,7 +122,6 @@ const __defaultExports: __defaultExports = {
   "nonNegative": nonNegative,
   "Movie": Movie,
   "Person": Person,
-  "SysFile": SysFile,
   "SysPerson": SysPerson,
   "SysPersonTest": SysPersonTest
 };

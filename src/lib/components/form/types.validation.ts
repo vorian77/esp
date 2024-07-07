@@ -14,7 +14,6 @@ export class Validity {
 	error: ValidityError
 	level: ValidityErrorLevel
 	message: string
-
 	constructor(
 		error: ValidityError = ValidityError.none,
 		level: ValidityErrorLevel = ValidityErrorLevel.none,

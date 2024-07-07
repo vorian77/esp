@@ -14,6 +14,15 @@
 		TokenApiQueryType,
 		TokenAppDoActionFieldType
 	} from '$utils/types.token'
+	import {
+		Validation,
+		ValidationStatus,
+		ValidationType,
+		Validity,
+		ValidityField,
+		ValidityError,
+		ValidityErrorLevel
+	} from '$comps/form/types.validation'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import Layout from '$comps/layout/BaseLayout.svelte'
 	import {
@@ -41,16 +50,15 @@
 	let stateEmbed: State
 	let recordIdCurrent: string
 
-	$: {
-		if (dataRecord) {
-			let recordId = dataRecord['id'] || ''
-			if (recordId.startsWith('preset_')) recordId = ''
-			if (recordIdCurrent !== recordId) {
-				recordIdCurrent = recordId
-				setStateEmbed(fieldValue)
-			}
+	$: if (dataRecord) {
+		let recordId = dataRecord['id'] || ''
+		if (recordId.startsWith('preset_')) recordId = ''
+		if (recordIdCurrent !== recordId) {
+			recordIdCurrent = recordId
+			setStateEmbed(fieldValue)
 		}
 	}
+
 	$: {
 		const parentObjectSaved =
 			recordIdCurrent !== '' && state.objStatus.objValidToSave && !state.objStatus.objHasChanged
@@ -66,43 +74,50 @@
 
 	function setStateEmbed(ids: string[]) {
 		stateEmbed = new StateSurfaceEmbed({
-			actionProxies: [
-				{ actionType: TokenAppDoActionFieldType.embedListEditParmValue, proxy: parmValue }
-			],
 			cardinality: DataObjCardinality.list,
 			dataObjSource: new TokenApiDbDataObjSource({ dataObjId: field.raw.dataObjModalId }),
 			layoutComponent: StateLayoutComponentType.layoutContent,
 			layoutStyle: StateLayoutStyle.embeddedField,
+			parentSetChangedEmbedded,
+			parentSetStatusValid,
 			parms: { listRecordIdParent: recordIdCurrent },
 			queryType: TokenApiQueryType.retrieve,
 			updateCallback
 		})
 	}
 
-	async function parmValue(parms: any) {
-		const parmValueColumnValue = field.raw.parmValueColumnValue
-		const parmValueColumnType = field.raw.parmValueColumnType
-		const record = required(parms.record, 'FormElEmbedListEdit.openModalEdit', 'record')
-		const recordField = required(parms.field, 'FormElEmbedListEdit.openModalEdit', 'field')
-
-		if (
-			parmValueColumnValue &&
-			parmValueColumnType &&
-			recordField.colDO.propName === parmValueColumnValue
-		) {
-			const parmValue = record[parmValueColumnValue]
-			const parmValueType = record[parmValueColumnType]
-			const parmName = record.header
-
-			console.log('FormElEmbedListEdit.parmValue1:', {
-				record,
-				parmValueColumnValue,
-				parmName,
-				parmValue,
-				parmValueType
-			})
+	function parentSetChangedEmbedded(status: boolean) {
+		if (status) {
+			dataObj.dataFieldsChangedEmbedded.valueSet(recordIdCurrent, field.colDO.propName, true)
+		} else {
+			dataObj.dataFieldsChangedEmbedded.valueDrop(recordIdCurrent, field.colDO.propName)
 		}
+		state.objStatus.setChangedEmbedded(status)
+		fp.state = state
 	}
+
+	function parentSetStatusValid(status: boolean) {
+		let v: Validation
+		if (status) {
+			v = field.getValuationValid()
+		} else {
+			v = field.getValuationInvalid(
+				ValidityError.required,
+				ValidityErrorLevel.silent,
+				`"${field.colDO.label}" is required.`
+			)
+		}
+		v.validityFields.forEach(({ fieldName, validity }) => {
+			dataObj.dataFieldValidities.valueSet(recordIdCurrent, fieldName, validity)
+		})
+		state.objStatus.setValid(
+			dataObj.dataFieldValidities.values.every(
+				(fieldValue: FieldValue) => fieldValue.value.error === ValidityError.none
+			)
+		)
+		fp.state = state
+	}
+
 	async function updateCallback(obj: any) {
 		stateEmbed = stateEmbed.updateProperties(obj)
 	}

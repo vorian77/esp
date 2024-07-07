@@ -1,5 +1,6 @@
-import { Field, FieldAlignment, FieldElement, FieldProps, RawFieldProps } from '$comps/form/field'
+import { Field, FieldAlignment, FieldElement, RawFieldProps } from '$comps/form/field'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
+import { ValidityErrorLevel } from '$comps/form/types.validation'
 import {
 	DataObj,
 	DataObjData,
@@ -7,55 +8,80 @@ import {
 	DBTable,
 	memberOfEnum,
 	PropDataType,
+	ResponseBody,
 	strOptional,
 	strRequired
 } from '$utils/types'
+import { State } from '$comps/app/types.appState'
+import { apiFetch, ApiFunction } from '$routes/api/api'
+import { TokenApiQueryData } from '$utils/types.token'
 
 export class FieldParm extends Field {
-	fieldParmItems: FieldParmItem[]
+	fieldParmItems: FieldParmItem[] = []
 	constructor(props: RawFieldProps) {
 		super(props)
 		const clazz = 'FieldParm'
-		this.fieldParmItems = this.initParmItems(props)
+		this.isParmValue = true
 	}
-	getParmField(fieldName: string) {
-		return this.fieldParmItems.find((f) => f.name === fieldName)?.parmField
+	static async init(props: RawFieldProps) {
+		const field = new FieldParm(props)
+		field.fieldParmItems = await field.configParmItems(props)
+		await field.configParmItemsData(props)
+		return field
 	}
-	initParmItems(props: RawFieldProps) {
+
+	async configParmItems(props: RawFieldProps) {
 		let items: FieldParmItem[] = []
-		props.data.dataRows.forEach((dataRow: DataRecord, index: number) => {
+		for (const dataRow of props.data.dataRows) {
 			items.push(
-				new FieldParmItem(
+				await FieldParmItem.init(
+					props.state,
 					dataRow.record,
 					items.map((item) => item.parmField),
 					props.data
 				)
 			)
-		})
+		}
 		return items
 	}
-	async setDataItems(items: Record<string, any>) {
-		Object.entries(items).forEach(([key, value]) => {
-			const fieldKey = key.replace('_items_', '')
-			const fieldIndex = this.fieldParmItems.findIndex((f) => f.name === fieldKey)
-			if (fieldIndex > -1) {
-				this.fieldParmItems[fieldIndex].parmField.colDO.items = value
+	async configParmItemsData(props: RawFieldProps) {
+		const repUserId = props.state.dataQuery.valueGet('listRecordIdParent')
+		if (repUserId) {
+			const result: ResponseBody = await apiFetch(
+				ApiFunction.dbEdgeGetRepParmItems,
+				new TokenApiQueryData({ parms: { repUserId } })
+			)
+			if (result.success) {
+				const items: Record<string, any> = result.data
+				Object.entries(items).forEach(([key, value]) => {
+					const fieldKey = key.replace('_items_', '')
+					const fieldIndex = this.fieldParmItems.findIndex((f) => f.name === fieldKey)
+					if (fieldIndex > -1) {
+						this.fieldParmItems[fieldIndex].parmField.colDO.items = value
+					}
+				})
 			}
-		})
+		}
+	}
+
+	getParmField(fieldName: string) {
+		return this.fieldParmItems.find((f) => f.name === fieldName)?.parmField
+	}
+	validate(record: DataRecord, row: number, missingDataErrorLevel: ValidityErrorLevel) {
+		return this.validateField(this.fieldParmItems[row].parmField, record, missingDataErrorLevel)
 	}
 }
 
 export class FieldParmItem {
-	codeDataType: string
-	codeFieldElement: string
+	codeDataType: PropDataType
+	codeFieldElement: FieldElement
 	fieldListItems?: string
 	fieldListItemsParmName?: string
 	isMultiSelect: boolean
 	linkTable?: DBTable
 	name: string
 	parmField: Field
-	parmValue: any
-	constructor(record: DataRecord, fields: Field[], data: DataObjData) {
+	private constructor(record: DataRecord, fields: Field[], data: DataObjData, parmField: Field) {
 		const clazz = 'FieldParmItem'
 		this.codeDataType = memberOfEnum(
 			record.codeDataType,
@@ -80,11 +106,9 @@ export class FieldParmItem {
 		this.isMultiSelect = record.isMultiSelect
 		this.linkTable = record._linkTable ? new DBTable(record._linkTable) : undefined
 		this.name = strRequired(record.name, clazz, 'name')
-		this.parmField = this.getParmField(record, fields, data)
-		this.parmField.isParmValue = true
-		this.parmValue = record.parmValue
+		this.parmField = parmField
 	}
-	getParmField(record: DataRecord, fields: Field[], data: DataObjData) {
+	static async init(state: State, record: DataRecord, fields: Field[], data: DataObjData) {
 		const propParm = new RawDataObjPropDisplay({
 			_column: {
 				_codeAlignment: FieldAlignment.left,
@@ -99,8 +123,10 @@ export class FieldParmItem {
 			_hasItems: record._hasItems,
 			_propName: record.name,
 			isDisplayBlock: true,
+			isParmValue: true,
 			orderDisplay: record.orderDefine
 		})
-		return DataObj.initField(propParm, false, fields, data)
+		const parmField = await DataObj.initField(state, propParm, false, fields, data)
+		return new FieldParmItem(record, fields, data, parmField)
 	}
 }

@@ -661,6 +661,7 @@ async function initFieldListConfigDataObjActionFieldGroupItem() {
 				codeAccess: 'readOnly',
 				columnName: 'action',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
@@ -672,6 +673,36 @@ async function initFieldListConfigDataObjActionFieldGroupItem() {
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1020
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1030
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1040
 			}
 		]
 	})
@@ -811,6 +842,36 @@ async function initFieldListConfigDataObjColumnItem() {
 				orderDefine: 40,
 				indexTable: 0,
 				isDisplayable: false
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1020
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1030
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1040
 			}
 		]
 	})
@@ -960,6 +1021,36 @@ async function initFieldListConfigDataObjColumnLink() {
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1020
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1030
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1040
 			}
 		]
 	})

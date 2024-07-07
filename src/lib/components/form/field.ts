@@ -1,10 +1,10 @@
 import { State } from '$comps/app/types.appState'
-import { DataObj, DataObjData, type DataRecord, memberOfEnum, nbrRequired } from '$utils/types'
+import { DataObj, DataObjData, type DataRecord } from '$utils/types'
 import { memberOfEnumOrDefault, nbrOptional, valueOrDefault } from '$utils/utils'
 import {
 	Validation,
-	ValidationType,
 	ValidationStatus,
+	ValidationType,
 	Validity,
 	ValidityField,
 	ValidityError,
@@ -21,8 +21,6 @@ export class Field {
 	fieldAccess: FieldAccess
 	fieldAlignment: FieldAlignment
 	fieldElement: FieldElement
-	fValidatePost?: Function
-	fValidatePre?: Function
 	isDisplayable: boolean
 	isFirstVisible: boolean
 	isParmValue: boolean = false
@@ -67,25 +65,18 @@ export class Field {
 					? 'bg-gray-200'
 					: 'bg-white'
 	}
-
-	copyValue(value: any) {
-		return structuredClone(value)
+	static async init(props: RawFieldProps) {
+		return new Field(props)
 	}
+
+	getValue(formData: FormData) {
+		// overridden by FormElInpCheckbox
+		return formData.get(this.colDO.propName)
+	}
+
 	getValuationInvalid(error: ValidityError, level: ValidityErrorLevel, message: string) {
 		return new Validation(ValidationType.field, ValidationStatus.invalid, [
 			new ValidityField(this.colDO.propName, new Validity(error, level, message))
-		])
-	}
-	getValuationMissingData() {
-		return new Validation(ValidationType.field, ValidationStatus.invalid, [
-			new ValidityField(
-				this.colDO.propName,
-				new Validity(
-					ValidityError.missingData,
-					ValidityErrorLevel.warning,
-					`"${this.colDO.label}" is required.`
-				)
-			)
 		])
 	}
 	getValuationNotInvalid() {
@@ -99,15 +90,43 @@ export class Field {
 		])
 	}
 
-	getValue(formData: FormData) {
-		// overridden for FormElInpCheckbox
-		return formData.get(this.colDO.propName)
+	validate(record: DataRecord, row: number, missingDataErrorLevel: ValidityErrorLevel): Validation {
+		return this.validateField(this, record, missingDataErrorLevel)
 	}
-	setValidatePost(fValidate: Function) {
-		this.fValidatePost = fValidate
-	}
-	setValidatePre(fValidate: Function) {
-		this.fValidatePre = fValidate
+
+	validateField(
+		field: Field,
+		record: DataRecord,
+		missingDataErrorLevel: ValidityErrorLevel
+	): Validation {
+		const fieldName = field.colDO.propName
+		const value = record[fieldName]
+
+		if (field.colDO.colDB.isNonData) {
+			return this.getValuationValid()
+		}
+
+		// only validate access types that require validation
+		if (![FieldAccess.required, FieldAccess.optional].includes(field.fieldAccess)) {
+			return this.getValuationValid()
+		}
+
+		// optional & null/undefined
+		if (field.fieldAccess === FieldAccess.optional && [null, undefined, ''].includes(value)) {
+			return this.getValuationValid()
+		}
+
+		// required & missing data
+		if ([null, undefined, ''].includes(value)) {
+			return this.getValuationInvalid(
+				ValidityError.required,
+				missingDataErrorLevel,
+				`"${field.colDO.label}" is required.`
+			)
+		}
+
+		// default
+		return this.getValuationNotInvalid()
 	}
 }
 
@@ -172,6 +191,7 @@ export interface FieldCustomRaw {
 
 export enum FieldElement {
 	checkbox = 'checkbox',
+	chips = 'chips',
 	custom = 'custom',
 	customActionButton = 'customActionButton',
 	customActionLink = 'customActionLink',
@@ -183,6 +203,7 @@ export enum FieldElement {
 	embedListConfig = 'embedListConfig',
 	embedListEdit = 'embedListEdit',
 	embedListSelect = 'embedListSelect',
+	embedShell = 'embedShell',
 	file = 'file',
 	hidden = 'hidden',
 	number = 'number',
@@ -252,7 +273,9 @@ export class RawFieldProps {
 	fields: Field[]
 	isFirstVisible: boolean
 	propRaw: RawDataObjPropDisplay
+	state: State
 	constructor(
+		state: State,
 		propRaw: RawDataObjPropDisplay,
 		isFirstVisible: boolean,
 		fields: Field[],
@@ -262,5 +285,6 @@ export class RawFieldProps {
 		this.fields = fields
 		this.isFirstVisible = isFirstVisible
 		this.propRaw = propRaw
+		this.state = state
 	}
 }

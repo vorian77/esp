@@ -2,19 +2,22 @@ import { App } from '$comps/app/types.app'
 import { required, valueOrDefault } from '$utils/utils'
 import {
 	debug,
+	DataObj,
 	DataObjActionField,
 	DataObjCardinality,
 	DataObjConfirm,
 	DataObjData,
 	DataObjStatus,
 	type DataRecord,
+	FieldValue,
 	getArray,
 	initNavTree,
 	MetaData,
 	NodeType,
 	type ToastType,
 	User,
-	userInit
+	userInit,
+	ValidityError
 } from '$utils/types'
 import {
 	Token,
@@ -82,7 +85,6 @@ export class State {
 	updateCallback?: Function
 	updateFunction: Function = stateUpdate
 	user: User | undefined = undefined
-
 	constructor(obj: any) {
 		const clazz = 'State'
 		obj = valueOrDefault(obj, {})
@@ -252,6 +254,24 @@ export class State {
 	set(packet: StatePacket) {
 		this.packet = packet
 	}
+
+	setStatusChanged(dataObj: DataObj) {
+		return this.objStatus.setChanged(dataObj.getStatusChanged())
+	}
+	setStatusChangedEmbedded(dataObj: DataObj) {
+		return this.objStatus.setChangedEmbedded(dataObj.getStatusChangedEmbedded())
+	}
+	setStatusValid(dataObj: DataObj) {
+		return this.objStatus.setValid(
+			dataObj.dataFieldValidities.values.every(
+				(fieldValue: FieldValue) => fieldValue.value.error === ValidityError.none
+			)
+		)
+	}
+	setStatusValidPre(dataObj: DataObj, isListEdit: boolean) {
+		this.objStatus.setValid(dataObj.preValidate(isListEdit))
+	}
+
 	setUpdateCallback(updateCallback: Function) {
 		this.updateCallback = updateCallback
 	}
@@ -332,6 +352,8 @@ export enum StatePacketComponent {
 }
 
 export class StateSurfaceEmbed extends State {
+	parentSetChangedEmbedded?: Function
+	parentSetStatusValid?: Function
 	constructor(obj: any) {
 		const clazz = 'StateSurfaceEmbed'
 		super(obj)
@@ -350,6 +372,18 @@ export class StateSurfaceEmbed extends State {
 				})
 			)
 		})
+		this.parentSetChangedEmbedded = obj.parentSetChangedEmbedded
+		this.parentSetStatusValid = obj.parentSetStatusValid
+	}
+	setStatusChanged(dataObj: DataObj): boolean {
+		const status = super.setStatusChanged(dataObj)
+		if (this.parentSetChangedEmbedded) this.parentSetChangedEmbedded(status)
+		return status
+	}
+	setStatusValid(dataObj: DataObj) {
+		const status = super.setStatusValid(dataObj)
+		if (this.parentSetStatusValid) this.parentSetStatusValid(status)
+		return status
 	}
 }
 

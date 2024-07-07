@@ -41,19 +41,20 @@
 	$: loadData(dataObjData)
 
 	function loadData(data: DataObjData) {
-		fieldsDisplayable = dataObj.fields.filter((f) => f.isDisplayable)
-
 		dataObj.objData = data
-		state.objStatus.setValid(dataObj.preValidate())
+		state.setStatusValidPre(dataObj, dataObj.raw.isListEdit)
 		state = state
 
-		// list edit status
+		fieldsDisplayable = dataObj.fields.filter((f) => f.isDisplayable)
+
+		// listEdit
 		if (dataObj.raw.isListEdit) {
 			const presetRows = dataObjData.dataRows.filter((row) => row.record.id.startsWith('preset_'))
 			presetRows.forEach((row) => {
 				dataObj.dataFieldsChanged.valueSet(row.record.id + '_new', 'id', true)
 			})
-			state.objStatus.setChanged(dataObj.getStatusChanged())
+			state.setStatusChanged(dataObj)
+			state.setStatusValid(dataObj)
 		}
 
 		// filter
@@ -105,7 +106,7 @@
 				dataObj.valueSet(record.id, listReorderColumn, order)
 			})
 
-			state.objStatus.setChanged(dataObj.getStatusChanged())
+			state.setStatusChanged(dataObj)
 			state = state
 		}
 	}
@@ -167,7 +168,7 @@
 	}
 </script>
 
-<!-- <DataViewer header="state.objStatus" data={state.objStatus} /> -->
+<!-- <DataViewer header="state.objStatus (list)" data={state.objStatus} /> -->
 
 {#if !dataObj.raw.isListHideSearch}
 	<div class="w-full flex mb-6 justify-between">
@@ -249,7 +250,7 @@
 	</table>
 </div>
 
-<!-- <DataViewer header="dataObj.raw.isListEdit" data={dataObj.raw.isListEdit} /> -->
+<!-- <DataViewer header="fieldsDisplayable" data={fieldsDisplayable.map((f) => f.colDO.propName)} /> -->
 
 <style>
 	#formSearch {

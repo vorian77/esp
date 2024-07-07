@@ -238,7 +238,7 @@ async function initFieldEmbedListEditRepUserParm() {
 				linkColumns: ['name']
 			},
 			{
-				columnName: 'custom_select_bool',
+				columnName: 'custom_element_bool',
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
@@ -341,7 +341,7 @@ async function initRepConfig() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -360,7 +360,7 @@ async function initRepConfig() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
@@ -423,7 +423,7 @@ async function initRepConfig() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
@@ -458,7 +458,7 @@ async function initRepConfig() {
 			{
 				codeAccess: 'readOnly',
 				codeFieldElement: 'textArea',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
@@ -493,6 +493,15 @@ async function initRepConfig() {
 				fieldEmbedListEdit: 'fele_sys_rep_user_element',
 				indexTable: 0,
 				linkTable: 'SysRepUserEl'
+			},
+			{
+				codeFieldElement: 'embedShell',
+				columnName: 'custom_embed_shell',
+				isDisplayable: true,
+				headerAlt: 'Report Config',
+				nameCustom: 'repUserConfig',
+				orderDisplay: 140,
+				orderDefine: 140
 			},
 
 			/* management */

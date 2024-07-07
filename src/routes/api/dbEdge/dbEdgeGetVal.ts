@@ -28,7 +28,7 @@ export function evalExprTokens(expr: string, queryData: TokenApiQueryData) {
 		exprDataItem = <[source],[dataType],[sourceKey]>
 		eg. (SELECT sys_user::getUser(<user,str,userName>))
 	*/
-	const regex = /<(.*?)>/g
+	const regex = /<([a-zA-Z].*?)>/g
 	let tokens: ExprToken[] = []
 	const clazz = 'evalExprTokens'
 
@@ -43,7 +43,7 @@ export function evalExprTokens(expr: string, queryData: TokenApiQueryData) {
 				exprDataItemElements[0],
 				clazz,
 				'codeDataSourceExpr',
-				'QueryPropDataSourceExpression',
+				'ExprSource',
 				ExprSource
 			)
 			const codeDataType = memberOfEnum(

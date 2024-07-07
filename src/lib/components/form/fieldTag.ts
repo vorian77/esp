@@ -13,6 +13,9 @@ export class FieldTagRow extends FieldTag {
 	constructor(props: RawFieldProps) {
 		super(props)
 	}
+	static async init(props: RawFieldProps) {
+		return new FieldTagRow(props)
+	}
 }
 
 export class FieldTagSection extends FieldTag {
@@ -21,5 +24,8 @@ export class FieldTagSection extends FieldTag {
 		super(props)
 		const clazz = 'FieldTagSection'
 		this.legend = strOptional(props.propRaw.headerAlt, clazz, 'headerAlt')
+	}
+	static async init(props: RawFieldProps) {
+		return new FieldTagSection(props)
 	}
 }

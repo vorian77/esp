@@ -35,6 +35,7 @@ async function initNodeObj() {
 				columnName: 'codeNavType',
 				orderSort: 10,
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 12,
 				orderDefine: 12,
 				indexTable: 0,
@@ -45,6 +46,7 @@ async function initNodeObj() {
 				codeAccess: 'readOnly',
 				columnName: 'codeNodeType',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 15,
 				orderDefine: 15,
 				indexTable: 0,
@@ -57,6 +59,7 @@ async function initNodeObj() {
 				orderCrumb: 10,
 				orderSort: 20,
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -66,6 +69,36 @@ async function initNodeObj() {
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1020
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1030
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1040
 			}
 		]
 	})

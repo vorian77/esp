@@ -1,5 +1,5 @@
 import { RepEl, RepUser, RepUserEl } from '$comps/dataObj/types.rep'
-import { DataObjCardinality, DataObjComponent, DataObjTable } from '$utils/types'
+import { DataObjCardinality, DataObjComponent, DataObjTable, debug } from '$utils/types'
 import { RawDataObj, RawDataObjDyn } from '$comps/dataObj/types.rawDataObj'
 import { TokenApiQueryData } from '$utils/types.token'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj'
@@ -19,11 +19,17 @@ export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj
 	addPropsDisplay(repUser.elements)
 	addPropsSelect(repUser.report.elements, rawDataObjDyn.tables)
 	// addPropsSort()
-	addFilter()
+	addParms(repUser, queryData)
+	addFilter(repUser)
 	return rawDataObjDyn.build()
 
-	function addFilter() {
-		rawDataObjDyn.exprFilter = 'none'
+	function addFilter(repUser: RepUser) {
+		rawDataObjDyn.exprFilter = repUser.report.exprFilter ? repUser.report.exprFilter : 'none'
+	}
+	function addParms(repUser: RepUser, queryData: TokenApiQueryData) {
+		repUser.parms.forEach((p) => {
+			queryData.parmsValueSet(p.parm.name, p.parmValue)
+		})
 	}
 
 	function addPropsDisplay(elements: RepUserEl[]) {
@@ -85,16 +91,16 @@ function getFieldColumnCustomName(dataType: string | undefined) {
 	const f = fName('buildFieldExprColName')
 	switch (dataType) {
 		case PropDataType.bool:
-			return 'custom_select_bool'
+			return 'custom_element_bool'
 
 		case PropDataType.float64:
-			return 'custom_select_float'
+			return 'custom_element_float'
 
 		case PropDataType.int64:
-			return 'custom_select_int'
+			return 'custom_element_int'
 
 		case PropDataType.str:
-			return 'custom_select_str'
+			return 'custom_element_str'
 
 		default:
 			error(500, {

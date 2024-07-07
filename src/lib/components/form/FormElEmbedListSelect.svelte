@@ -52,6 +52,10 @@
 			dataObjSource: new TokenApiDbDataObjSource({ dataObjId: field.raw.dataObjListID }),
 			layoutComponent: StateLayoutComponentType.layoutContent,
 			layoutStyle: StateLayoutStyle.embeddedField,
+			parentDataObj: dataObj,
+			parentFieldName: field.colDO.propName,
+			parentRecordId: recordIdCurrent,
+			parentState: state,
 			parms: { $ListSelectDisplayIds: ids },
 			queryType: TokenApiQueryType.retrieve
 		})

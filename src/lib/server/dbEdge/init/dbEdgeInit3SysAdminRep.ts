@@ -258,6 +258,7 @@ async function initAnalyticParm() {
 				codeAccess: 'readOnly',
 				columnName: 'isRequired',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 15,
 				orderDefine: 15,
 				indexTable: 0
@@ -266,6 +267,7 @@ async function initAnalyticParm() {
 				codeAccess: 'readOnly',
 				columnName: 'name',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -274,6 +276,7 @@ async function initAnalyticParm() {
 				codeAccess: 'readOnly',
 				columnName: 'header',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -282,6 +285,7 @@ async function initAnalyticParm() {
 				codeAccess: 'readOnly',
 				columnName: 'codeDataType',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
@@ -291,6 +295,7 @@ async function initAnalyticParm() {
 				codeAccess: 'readOnly',
 				columnName: 'codeFieldElement',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
@@ -300,6 +305,7 @@ async function initAnalyticParm() {
 				codeAccess: 'readOnly',
 				columnName: 'description',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0
@@ -310,6 +316,36 @@ async function initAnalyticParm() {
 				orderDefine: 70,
 				indexTable: 0,
 				isDisplayable: false
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1020
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1030
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1040
 			}
 		]
 	})
@@ -936,7 +972,7 @@ async function initRepEl() {
 		exprFilter: '.id IN (SELECT sys_rep::SysRep FILTER .id = <tree,uuid,SysRep.id>).elements.id',
 		header: 'Elements',
 		listReorderColumn: 'orderDefine',
-		name: 'data_obj_sys_rep_el_list',
+		name: 'data_obj_sys_rep_element_list',
 		owner: 'app_sys_rep',
 		parentColumn: 'elements',
 		parentTable: 'SysRep',
@@ -952,6 +988,7 @@ async function initRepEl() {
 				codeAccess: 'readOnly',
 				columnName: 'codeReportElementType',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
@@ -961,6 +998,7 @@ async function initRepEl() {
 				codeAccess: 'readOnly',
 				columnName: 'codeDbDataSourceValue',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
@@ -970,6 +1008,7 @@ async function initRepEl() {
 				codeAccess: 'readOnly',
 				columnName: 'isDisplayable',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
@@ -978,6 +1017,7 @@ async function initRepEl() {
 				codeAccess: 'readOnly',
 				columnName: 'description',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
@@ -986,6 +1026,7 @@ async function initRepEl() {
 				codeAccess: 'readOnly',
 				columnName: 'codeFieldElement',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
@@ -1022,6 +1063,36 @@ async function initRepEl() {
 				orderDefine: 100,
 				indexTable: 0,
 				isDisplayable: false
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1020
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1030
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1040
 			}
 		]
 	})
@@ -1378,7 +1449,7 @@ async function initRepEl() {
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',
-		dataObj: 'data_obj_sys_rep_el_list',
+		dataObj: 'data_obj_sys_rep_element_list',
 		header: 'Elements',
 		name: 'node_obj_sys_rep_el_list',
 		orderDefine: 20,
@@ -1420,6 +1491,7 @@ async function initRepParm() {
 				codeAccess: 'readOnly',
 				columnName: 'isRequired',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 15,
 				orderDefine: 15,
 				indexTable: 0
@@ -1428,6 +1500,7 @@ async function initRepParm() {
 				codeAccess: 'readOnly',
 				columnName: 'name',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -1436,6 +1509,7 @@ async function initRepParm() {
 				codeAccess: 'readOnly',
 				columnName: 'header',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -1444,6 +1518,7 @@ async function initRepParm() {
 				codeAccess: 'readOnly',
 				columnName: 'codeDataType',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
@@ -1453,6 +1528,7 @@ async function initRepParm() {
 				codeAccess: 'readOnly',
 				columnName: 'codeFieldElement',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
@@ -1462,6 +1538,7 @@ async function initRepParm() {
 				codeAccess: 'readOnly',
 				columnName: 'description',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0
@@ -1472,6 +1549,36 @@ async function initRepParm() {
 				orderDefine: 70,
 				indexTable: 0,
 				isDisplayable: false
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1020
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1030
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1040
 			}
 		]
 	})

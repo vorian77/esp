@@ -1,16 +1,19 @@
 import { Field, RawFieldProps } from '$comps/form/field'
-import { Validation } from '$comps/form/types.validation'
+import { ValidityErrorLevel } from '$comps/form/types.validation'
 import { type DataRecord } from '$utils/types'
 
 export class FieldCheckbox extends Field {
 	constructor(props: RawFieldProps) {
 		super(props)
-
-		this.setValidatePre((dataValue: any, dataRecord: DataRecord): Validation | undefined => {
-			if (!this.colDO.colDB.isMultiSelect && [true, false].includes(dataValue)) {
-				return this.getValuationValid()
-			}
-			return undefined
-		})
+	}
+	static async init(props: RawFieldProps) {
+		return new FieldCheckbox(props)
+	}
+	validate(record: DataRecord, row: number, missingDataErrorLevel: ValidityErrorLevel) {
+		const value = record[this.colDO.propName]
+		if (typeof value === 'boolean' && !this.colDO.colDB.isMultiSelect) {
+			return this.getValuationValid()
+		}
+		return super.validate(record, row, missingDataErrorLevel)
 	}
 }

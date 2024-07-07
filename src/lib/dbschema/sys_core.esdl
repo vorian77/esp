@@ -183,6 +183,8 @@ module sys_core {
     customColSource: str;
     customColSourceKey: str;
 
+    multi customEmbedShellFields: sys_core::SysDataObjColumn;
+
     fieldEmbedListConfig: sys_core::SysDataObjFieldEmbedListConfig;
     fieldEmbedListEdit: sys_core::SysDataObjFieldEmbedListEdit;
     fieldEmbedListSelect: sys_core::SysDataObjFieldEmbedListSelect;

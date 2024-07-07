@@ -36,6 +36,9 @@ export class FieldCustomAction extends FieldCustom {
 		this.type = strRequired(customCol.customColActionType, clazz, 'type').toLowerCase()
 		this.value = valueOrDefault(customCol.customColActionValue, '').toLowerCase()
 	}
+	static async init(props: RawFieldProps) {
+		return new FieldCustomAction(props)
+	}
 	async initEnhancement() {
 		this.enhancement = await getEnhancement(this.method)
 	}
@@ -52,6 +55,9 @@ export class FieldCustomActionButton extends FieldCustomAction {
 		) as RawDataObjPropDisplayCustom
 		this.colDO.fieldColor = required(customCol.customColCodeColor, clazz, 'fieldColor')
 	}
+	static async init(props: RawFieldProps) {
+		return new FieldCustomActionButton(props)
+	}
 }
 export class FieldCustomActionLink extends FieldCustomAction {
 	prefix?: string
@@ -64,6 +70,9 @@ export class FieldCustomActionLink extends FieldCustomAction {
 			'customCol'
 		) as RawDataObjPropDisplayCustom
 		this.prefix = customCol.customColPrefix
+	}
+	static async init(props: RawFieldProps) {
+		return new FieldCustomActionLink(props)
 	}
 }
 
@@ -83,6 +92,9 @@ export class FieldCustomHeader extends FieldCustom {
 		this.source = customCol.customColSource
 		this.sourceKey = customCol.customColSourceKey
 	}
+	static async init(props: RawFieldProps) {
+		return new FieldCustomHeader(props)
+	}
 }
 
 export class FieldCustomText extends FieldCustom {
@@ -96,5 +108,8 @@ export class FieldCustomText extends FieldCustom {
 			'customCol'
 		) as RawDataObjPropDisplayCustom
 		this.align = customCol.customColAlign
+	}
+	static async init(props: RawFieldProps) {
+		return new FieldCustomText(props)
 	}
 }

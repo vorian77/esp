@@ -32,7 +32,7 @@ import {
 } from '$comps/dataObj/types.dataObj'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
 import { TokenAppDoActionFieldType } from '$utils/types.token'
-import { FieldColor } from '$comps/form/field'
+import { FieldColor, FieldItem } from '$comps/form/field'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
@@ -323,7 +323,7 @@ export class RawDataObjPropDisplay {
 	headerAlt?: string
 	height?: number
 	isDisplayBlock: boolean
-	items: RawDataObjPropDisplayItem[]
+	items: FieldItem[]
 	label: string
 	labelSide: string
 	orderDisplay?: number
@@ -362,7 +362,7 @@ export class RawDataObjPropDisplay {
 		this.headerAlt = strOptional(obj.headerAlt, clazz, 'headerAlt')
 		this.height = nbrOptional(obj.height, clazz, 'height')
 		this.isDisplayBlock = booleanOrDefault(obj.isDisplayBlock, true)
-		this.items = arrayOfClasses(RawDataObjPropDisplayItem, obj._items)
+		this.items = arrayOfClasses(FieldItem, obj._items)
 		this.orderDisplay = nbrOptional(obj.orderDisplay, clazz, 'orderDisplay')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
 		this.propName = strRequired(obj._propName, clazz, 'propName')
@@ -467,17 +467,6 @@ export class RawDataObjPropDisplayEmbedListSelect {
 			if (actionDone) actionDone.header = btnLabelComplete
 		}
 		return btnLabelComplete
-	}
-}
-
-export class RawDataObjPropDisplayItem {
-	data: any
-	display: any
-	selected?: boolean
-	constructor(data: any, display: any, selected: boolean | undefined = false) {
-		this.data = data
-		this.display = display
-		this.selected = selected
 	}
 }
 

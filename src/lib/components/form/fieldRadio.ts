@@ -8,4 +8,7 @@ export class FieldRadio extends Field {
 		const clazz = 'FieldRadio'
 		this.isDisplayBlock = booleanOrFalse(props.propRaw.isDisplayBlock, clazz)
 	}
+	static async init(props: RawFieldProps) {
+		return new FieldRadio(props)
+	}
 }

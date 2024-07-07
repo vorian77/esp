@@ -50,6 +50,18 @@ const shapeDataObjTable = e.shape(e.sys_core.SysDataObjTable, (dot) => ({
 	order_by: dot.index
 }))
 
+const shapeDataObjFieldListItems = e.shape(e.sys_core.SysDataObjFieldListItems, (fli) => ({
+	_table: e.select(fli.table, (t) => ({
+		hasMgmt: true,
+		mod: true,
+		name: true
+	})),
+	exprFilter: true,
+	exprPropDisplay: true,
+	exprSort: true,
+	exprWith: true
+}))
+
 const shapeTable = e.shape(e.sys_db.SysTable, (t) => ({
 	hasMgmt: true,
 	mod: true,
@@ -414,6 +426,25 @@ export async function getReportUser(repUserId: string) {
 		})),
 		headerUser: true,
 		id: true,
+		parms: e.select(r.parms, (parm) => ({
+			parm: e.select(parm.parm, (p) => ({
+				_codeDataType: p.codeDataType.name,
+				_codeFieldElement: p.codeFieldElement.name,
+				_fieldListItems: e.select(p.fieldListItems, (i) => ({
+					...shapeDataObjFieldListItems(i),
+					_fieldListItemsParmName: p.fieldListItemsParmName
+				})),
+				_linkTable: e.select(p.linkTable, (t) => ({
+					...shapeTable(t)
+				})),
+				description: true,
+				fieldListItemsParmName: true,
+				header: true,
+				isMultiSelect: true,
+				name: true
+			})),
+			parmValue: true
+		})),
 		report: e.select(r.report, (rep) => ({
 			_actionFieldGroup: e.select(rep.actionFieldGroup, (afg) => ({
 				...shapeDataObjActionFieldGroup(afg)
@@ -447,16 +478,8 @@ export async function getReportUserParmItems(repUserId: string) {
 			parm: e.select(up.parm, (p) => ({
 				_codeDataType: p.codeDataType.name,
 				_fieldListItems: e.select(p.fieldListItems, (i) => ({
-					_fieldListItemsParmName: p.fieldListItemsParmName,
-					_table: e.select(i.table, (t) => ({
-						hasMgmt: true,
-						mod: true,
-						name: true
-					})),
-					exprFilter: true,
-					exprPropDisplay: true,
-					exprSort: true,
-					exprWith: true
+					...shapeDataObjFieldListItems(i),
+					_fieldListItemsParmName: p.fieldListItemsParmName
 				})),
 				_isMultiSelect: p.isMultiSelect,
 				_propName: p.name

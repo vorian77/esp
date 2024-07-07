@@ -654,6 +654,110 @@ export async function initPreColumn() {
 	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'str',
+		header: 'custom_element',
+		isExcludeInsert: true,
+		isExcludeSelect: true,
+		isExcludeUpdate: true,
+		isNonData: true,
+		name: 'custom_element'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'bool',
+		header: 'custom_element_bool',
+		isExcludeInsert: true,
+		isExcludeUpdate: true,
+		name: 'custom_element_bool'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeAlignment: 'right',
+		codeDataType: 'float64',
+		header: 'custom_element_float',
+		isExcludeInsert: true,
+		isExcludeUpdate: true,
+		name: 'custom_element_float'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeAlignment: 'right',
+		codeDataType: 'int64',
+		header: 'custom_element_int',
+		isExcludeInsert: true,
+		isExcludeUpdate: true,
+		name: 'custom_element_int'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'link',
+		header: 'custom_element_link',
+		isExcludeInsert: true,
+		isExcludeUpdate: true,
+		isMultiSelect: false,
+		name: 'custom_element_link'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'str',
+		header: 'custom_element_str',
+		isExcludeInsert: true,
+		isExcludeUpdate: true,
+		name: 'custom_element_str'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'none',
+		header: 'custom_embed_shell',
+		isExcludeInsert: true,
+		isExcludeSelect: true,
+		isExcludeUpdate: true,
+		isNonData: true,
+		name: 'custom_embed_shell'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'none',
+		header: 'custom_row_end',
+		isExcludeInsert: true,
+		isExcludeSelect: true,
+		isExcludeUpdate: true,
+		isNonData: true,
+		name: 'custom_row_end'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'none',
+		header: 'custom_row_start',
+		isExcludeInsert: true,
+		isExcludeSelect: true,
+		isExcludeUpdate: true,
+		isNonData: true,
+		name: 'custom_row_start'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'none',
+		header: 'custom_section_end',
+		isExcludeInsert: true,
+		isExcludeSelect: true,
+		isExcludeUpdate: true,
+		isNonData: true,
+		name: 'custom_section_end'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'none',
+		header: 'custom_section_start',
+		isExcludeInsert: true,
+		isExcludeSelect: true,
+		isExcludeUpdate: true,
+		isNonData: true,
+		name: 'custom_section_start'
+	})
+
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'str',
 		header: 'Custom - Action - Method',
 		name: 'customColActionMethod'
 	})
@@ -721,103 +825,10 @@ export async function initPreColumn() {
 	})
 	await addColumn({
 		owner: 'app_sys',
-		codeDataType: 'str',
-		header: 'custom_element',
-		isExcludeInsert: true,
-		isExcludeSelect: true,
-		isExcludeUpdate: true,
-		isNonData: true,
-		name: 'custom_element'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'none',
-		header: 'custom_row_end',
-		isExcludeInsert: true,
-		isExcludeSelect: true,
-		isExcludeUpdate: true,
-		isNonData: true,
-		name: 'custom_row_end'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'none',
-		header: 'custom_row_start',
-		isExcludeInsert: true,
-		isExcludeSelect: true,
-		isExcludeUpdate: true,
-		isNonData: true,
-		name: 'custom_row_start'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'none',
-		header: 'custom_section_end',
-		isExcludeInsert: true,
-		isExcludeSelect: true,
-		isExcludeUpdate: true,
-		isNonData: true,
-		name: 'custom_section_end'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'none',
-		header: 'custom_section_start',
-		isExcludeInsert: true,
-		isExcludeSelect: true,
-		isExcludeUpdate: true,
-		isNonData: true,
-		name: 'custom_section_start'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'bool',
-		header: 'custom_select_bool',
-		isExcludeInsert: true,
-		isExcludeUpdate: true,
-		name: 'custom_select_bool'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeAlignment: 'right',
-		codeDataType: 'float64',
-		header: 'custom_select_float',
-		isExcludeInsert: true,
-		isExcludeUpdate: true,
-		name: 'custom_select_float'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeAlignment: 'right',
-		codeDataType: 'int64',
-		header: 'custom_select_int',
-		isExcludeInsert: true,
-		isExcludeUpdate: true,
-		name: 'custom_select_int'
-	})
-	await addColumn({
-		owner: 'app_sys',
 		codeDataType: 'link',
-		header: 'custom_select_link',
-		isExcludeInsert: true,
-		isExcludeUpdate: true,
-		isMultiSelect: false,
-		name: 'custom_select_link'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'str',
-		header: 'custom_select_str',
-		isExcludeInsert: true,
-		isExcludeUpdate: true,
-		name: 'custom_select_str'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'link',
-		header: 'Custom Element',
-		isMultiSelect: false,
-		name: 'customElement'
+		header: 'Embed Shell Fields',
+		isMultiSelect: true,
+		name: 'customEmbedShellFields'
 	})
 	await addColumn({
 		owner: 'app_sys',

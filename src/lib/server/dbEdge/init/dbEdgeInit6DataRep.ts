@@ -79,6 +79,7 @@ async function initReportTrainingCredential() {
 	await addReport({
 		actionFieldGroup: 'doag_report_render',
 		description: 'Cohort attendance report with user defined Analytic (credential) columns.',
+		exprFilter: '.cohort.id IN <parms,uuidList,pvCohort>',
 		header: 'Credential Analytic',
 		name: 'report_cm_training_credential_analytic',
 		owner: 'app_cm_training',
@@ -155,11 +156,11 @@ async function initReportTrainingCredential() {
 				codeDbDataSourceValue: 'edgeDB',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				description: 'The number of attendane days of the student in the cohort.',
-				exprCustom: `(SELECT count(app_cm::CmCsfCohortAttd FILTER .csfCohort.id = app_cm::CmCsfCohort.id AND .computedHours > 0))`,
-				header: 'Student Attendance Days',
+				description: 'The number of attendane days that have occurred in the cohort.',
+				exprCustom: `(SELECT count(app_cm::CmCohortAttd FILTER .cohortId = app_cm::CmCsfCohort.cohort.id AND .date >= <parms,date,pvDateStart> AND .date <= <parms,date,pvDateEnd>))`,
+				header: 'Cohort Attendance Days',
 				isDisplayable: true,
-				nameCustom: 'attdDaysStudent',
+				nameCustom: 'attdDaysCohort',
 				orderDefine: 60,
 				orderDisplay: 60
 			},
@@ -169,11 +170,11 @@ async function initReportTrainingCredential() {
 				codeDbDataSourceValue: 'edgeDB',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				description: 'The number of attendane days that have occurred in the cohort.',
-				exprCustom: `(SELECT count(app_cm::CmCohortAttd FILTER .cohortId = app_cm::CmCsfCohort.cohort.id))`,
-				header: 'Cohort Attendance Days',
+				description: 'The number of attendane days of the student in the cohort.',
+				exprCustom: `(SELECT count(app_cm::CmCsfCohortAttd FILTER .csfCohort.id = app_cm::CmCsfCohort.id AND .cohortAttd.date >= <parms,date,pvDateStart> AND .cohortAttd.date <= <parms,date,pvDateEnd> AND .computedHours > 0))`,
+				header: 'Student Attendance Days',
 				isDisplayable: true,
-				nameCustom: 'attdDaysCohort',
+				nameCustom: 'attdDaysStudent',
 				orderDefine: 70,
 				orderDisplay: 70
 			},
@@ -200,7 +201,7 @@ async function initReportTrainingCredential() {
 				header: 'Start Date',
 				isMultiSelect: false,
 				isRequired: true,
-				name: 'prDateStart',
+				name: 'pvDateStart',
 				orderDefine: 0
 			},
 			{
@@ -210,20 +211,19 @@ async function initReportTrainingCredential() {
 				header: 'End Date',
 				isMultiSelect: false,
 				isRequired: true,
-				name: 'prDateEnd',
+				name: 'pvDateEnd',
 				orderDefine: 1
 			},
 			{
-				codeDataType: 'uuid',
-				codeFieldElement: 'select',
-				description: 'Ethnicity.',
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_person_ethnicity',
-				header: 'Ethnicity',
-				isMultiSelect: false,
-				isRequired: false,
-				linkTable: 'SysCode',
-				name: 'prCodeEthnicity',
+				codeDataType: 'uuidList',
+				codeFieldElement: 'chips',
+				description: 'Student cohort(s).',
+				fieldListItems: 'il_cm_cohort_short_by_userName',
+				header: 'Cohort(s)',
+				isMultiSelect: true,
+				isRequired: true,
+				linkTable: 'CmCohort',
+				name: 'pvCohort',
 				orderDefine: 2
 			}
 		]
@@ -234,11 +234,11 @@ async function initReportTrainingCredential() {
 		report: 'report_cm_training_credential_analytic',
 		user: 'user_sys'
 	})
-	await addReportUser({
-		header: 'Credential Analytic',
-		report: 'report_cm_training_credential_analytic',
-		user: '2487985578' // Phyllip
-	})
+	// await addReportUser({
+	// 	header: 'Credential Analytic',
+	// 	report: 'report_cm_training_credential_analytic',
+	// 	user: '2487985578' // Phyllip
+	// })
 	// await addReportUser({
 	// 	header: 'Credential Analytic',
 	// 	report: 'report_cm_training_credential_analytic',
@@ -297,7 +297,7 @@ async function initReportCourseSummary() {
 			{
 				codeAccess: 'readOnly',
 				codeFieldElement: 'number',
-				columnName: 'custom_select_int',
+				columnName: 'custom_element_int',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -309,7 +309,7 @@ async function initReportCourseSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
@@ -320,7 +320,7 @@ async function initReportCourseSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_int',
+				columnName: 'custom_element_int',
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
@@ -331,7 +331,7 @@ async function initReportCourseSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_int',
+				columnName: 'custom_element_int',
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
@@ -342,7 +342,7 @@ async function initReportCourseSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_int',
+				columnName: 'custom_element_int',
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
@@ -356,7 +356,7 @@ async function initReportCourseSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_int',
+				columnName: 'custom_element_int',
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
@@ -367,7 +367,7 @@ async function initReportCourseSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_int',
+				columnName: 'custom_element_int',
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
@@ -378,7 +378,7 @@ async function initReportCourseSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_int',
+				columnName: 'custom_element_int',
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
@@ -494,7 +494,7 @@ async function initReportOurWorldSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 200,
 				orderDefine: 200,
@@ -506,7 +506,7 @@ async function initReportOurWorldSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 210,
 				orderDefine: 210,
@@ -584,7 +584,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
@@ -596,7 +596,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 55,
 				orderDefine: 55,
@@ -608,7 +608,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
@@ -623,7 +623,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
@@ -640,7 +640,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
@@ -656,7 +656,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 85,
 				orderDefine: 85,
@@ -672,7 +672,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 87,
 				orderDefine: 87,
@@ -684,7 +684,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
@@ -698,7 +698,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
@@ -710,7 +710,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 120,
 				orderDefine: 120,
@@ -726,7 +726,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 120,
 				orderDefine: 120,
@@ -743,7 +743,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 140,
 				orderDefine: 140,
@@ -759,7 +759,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 150,
 				orderDefine: 150,
@@ -776,7 +776,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 160,
 				orderDefine: 160,
@@ -793,7 +793,7 @@ async function initReportStudentSummary() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_select_str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 170,
 				orderDefine: 170,
