@@ -6,7 +6,7 @@ import {
 	userUserType,
 	userTypeResourcesApps,
 	userTypeResourcesPrograms
-} from '$server/dbEdge/init/dbEdgeInitUtilities1'
+} from '$server/dbEdge/init/dbEdgeInitUtilities10'
 
 const FILE = 'init_MOED_cm'
 
@@ -15,7 +15,6 @@ export default async function init() {
 	console.log(`${FILE}.start...`)
 	await data()
 	await dataUserSys()
-	// await review(FILE, reviewQuery)
 	console.log(`${FILE}.end`)
 }
 

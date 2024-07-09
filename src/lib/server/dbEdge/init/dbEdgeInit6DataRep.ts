@@ -1,11 +1,8 @@
-import { nodeObjHeaders, sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities1'
-import {
-	addAnalytic,
-	addDataObj,
-	addNodeProgramObj,
-	addReport,
-	addReportUser
-} from '$server/dbEdge/init/dbEdgeInitUtilities2'
+import { nodeObjHeaders, sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { addDataObj } from '$server/dbEdge/init/dbEdgeInitUtilities20DataObj'
+import { addAnalytic, addReport, addReportUser } from '$server/dbEdge/init/dbEdgeInitUtilities40Rep'
+import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
+
 import { error } from '@sveltejs/kit'
 
 export async function initDataReports() {
@@ -197,7 +194,7 @@ async function initReportTrainingCredential() {
 			{
 				codeDataType: 'date',
 				codeFieldElement: 'date',
-				description: 'Report start date.',
+				description: 'Attendance start date.',
 				header: 'Start Date',
 				isMultiSelect: false,
 				isRequired: true,
@@ -207,7 +204,7 @@ async function initReportTrainingCredential() {
 			{
 				codeDataType: 'date',
 				codeFieldElement: 'date',
-				description: 'Report end date.',
+				description: 'Attendance end date.',
 				header: 'End Date',
 				isMultiSelect: false,
 				isRequired: true,

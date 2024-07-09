@@ -4,9 +4,27 @@
 	import { FieldSelectMulti } from '$comps/form/fieldSelect'
 	import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 	import { FieldAccess } from '$comps/form/field'
+	import { TabGroup, Tab } from '@skeletonlabs/skeleton'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	export let fp: FieldProps
+
+	let tabs: SideTab[] = []
+	let classPropsLabel = ''
+
+	$: loadData(fp.dataObjData)
+
+	function loadData(data: DataObjData) {
+		const embeds = fp.dataObj.fields.filter((f) =>
+			fp.field.colDO.fieldEmbedShellFields.includes(f.colDO.propName)
+		)
+		tabs = embeds.map((f) => {
+			return new SideTab(f)
+		})
+		console.log('FormElEmbedShell.loadData', { embeds })
+
+		classPropsLabel = fp.dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
+	}
 
 	// let engDate = ''
 	// let startDate = new Date('1966-07-07')
@@ -48,7 +66,21 @@
 		// 	setFieldVal(field, fp.fieldValue)
 		// }
 	}
+	function onClickTab(event: Event) {
+		console.log('FormElEmbedShell.onClickTab', event)
+	}
+
+	class SideTab {
+		label: string
+		constructor(field: FieldEmbedShell) {
+			this.label = field.colDO.label
+		}
+	}
 </script>
+
+<label class="label" for={fp.field.colDO.propName}>
+	{fp.field.colDO.label}
+</label>
 
 [EmbedShell]
 

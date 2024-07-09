@@ -1,8 +1,8 @@
-import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities1'
+import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
 import {
 	addDataObj,
 	addDataObjFieldEmbedListSelect
-} from '$server/dbEdge/init/dbEdgeInitUtilities2'
+} from '$server/dbEdge/init/dbEdgeInitUtilities20DataObj'
 
 export async function initAdminSysEmbedListSelect() {
 	sectionHeader('SysAdmin - Embed - ListSelect')

@@ -1,5 +1,6 @@
-import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities1'
-import { addDataObj, addNodeFooter } from '$server/dbEdge/init/dbEdgeInitUtilities2'
+import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { addDataObj } from '$server/dbEdge/init/dbEdgeInitUtilities20DataObj'
+import { addNodeFooter } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
 
 export async function initAdminSysAuth() {
 	sectionHeader('DataObject - SysAuth')

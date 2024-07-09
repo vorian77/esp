@@ -1,5 +1,5 @@
-import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities1'
-import { addColumn } from '$server/dbEdge/init/dbEdgeInitUtilities2'
+import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { addColumn } from '$server/dbEdge/init/dbEdgeInitUtilities30DB'
 
 export async function initPreColumn() {
 	sectionHeader('Column')

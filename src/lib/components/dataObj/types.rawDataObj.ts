@@ -319,6 +319,7 @@ export class RawDataObjPropDisplay {
 	fieldEmbedListConfig?: RawDataObjPropDisplayEmbedListConfig
 	fieldEmbedListEdit?: RawDataObjPropDisplayEmbedListEdit
 	fieldEmbedListSelect?: RawDataObjPropDisplayEmbedListSelect
+	fieldEmbedShellFields: string[]
 	hasItems: boolean
 	headerAlt?: string
 	height?: number
@@ -358,6 +359,9 @@ export class RawDataObjPropDisplay {
 			RawDataObjPropDisplayEmbedListSelect,
 			obj._fieldEmbedListSelect
 		)
+		this.fieldEmbedShellFields = obj._fieldEmbedShellFields
+			? obj._fieldEmbedShellFields.map((f: { _name: string }) => f._name)
+			: []
 		this.hasItems = booleanOrDefault(obj._hasItems, false)
 		this.headerAlt = strOptional(obj.headerAlt, clazz, 'headerAlt')
 		this.height = nbrOptional(obj.height, clazz, 'height')
@@ -374,6 +378,12 @@ export class RawDataObjPropDisplay {
 		/* dependent properties */
 		this.label = override(obj.headerAlt, this.colDB.header, clazz, 'label')
 		this.labelSide = valueOrDefault(this.colDB.headerSide, this.label)
+		if (this.propName === 'repUserConfig')
+			console.log('RawDataObjPropDisplay.constructor.this:', {
+				propName: this.propName,
+				fieldEmbedShellFields: this.fieldEmbedShellFields,
+				_fieldEmbedShellFields: obj._fieldEmbedShellFields
+			})
 	}
 }
 export class RawDataObjPropDisplayCustom {

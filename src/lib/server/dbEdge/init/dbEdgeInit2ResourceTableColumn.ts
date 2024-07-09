@@ -1,4 +1,5 @@
-import { sectionHeader, tableColumns } from '$server/dbEdge/init/dbEdgeInitUtilities1'
+import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { tableColumns } from '$server/dbEdge/init/dbEdgeInitUtilities30DB'
 
 export async function initTableColumn() {
 	sectionHeader('TableColumn')

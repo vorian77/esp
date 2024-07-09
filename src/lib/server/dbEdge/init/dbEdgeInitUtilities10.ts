@@ -311,21 +311,6 @@ export async function tables(data: any) {
 	return await query.run(client, { data })
 }
 
-export async function tableColumns(data: any) {
-	sectionHeader('Table Columns')
-	const query = e.params({ data: e.json }, (params) => {
-		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.update(e.sys_db.SysTable, (t) => ({
-				filter: e.op(t.name, '=', e.cast(e.str, i[0])),
-				set: {
-					columns: { '+=': e.select(e.sys_db.getColumn(e.cast(e.str, i[1]))) }
-				}
-			}))
-		})
-	})
-	return await query.run(client, { data })
-}
-
 export async function addOrgs(params: any) {
 	sectionHeader('Orgs')
 	const CREATOR = e.select(e.sys_user.getRootUser())

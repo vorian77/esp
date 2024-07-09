@@ -1,9 +1,10 @@
-import { nodeObjHeaders, sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities1'
+import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
 import {
 	addDataObj,
 	addDataObjFieldEmbedListEdit,
-	addNodeProgramObj
-} from '$server/dbEdge/init/dbEdgeInitUtilities2'
+	updateDataObjColumnCustomEmbedShellFields
+} from '$server/dbEdge/init/dbEdgeInitUtilities20DataObj'
+import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
 
 export async function initAdminSysRepUser() {
 	sectionHeader('Admin - Report-Render')
@@ -552,6 +553,12 @@ async function initRepConfig() {
 				orderDefine: 1050
 			}
 		]
+	})
+
+	await updateDataObjColumnCustomEmbedShellFields({
+		dataObjName: 'data_obj_sys_rep_my_report_detail',
+		columnName: 'custom_embed_shell',
+		customEmbedShellFields: ['parms', 'elements']
 	})
 
 	await addNodeProgramObj({

@@ -6,8 +6,8 @@ import {
 	rootObj,
 	rootUser,
 	sysUser
-} from '$server/dbEdge/init/dbEdgeInitUtilities1'
-import { addCode, addCodeType, addUserOrg } from '$server/dbEdge/init/dbEdgeInitUtilities2'
+} from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { addCode, addCodeType, addUserOrg } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
 
 const FILE = 'initCore'
 

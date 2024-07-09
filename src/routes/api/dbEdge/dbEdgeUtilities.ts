@@ -247,6 +247,10 @@ export async function getDataObjById(dataObjId: string) {
 					_dataObjListId: fe.dataObjList.id,
 					btnLabelComplete: true
 				})),
+				_fieldEmbedShellFields: e.select(doc.customEmbedShellFields, (ce) => ({
+					_name: ce.column.name,
+					order_by: ce.orderDisplay
+				})),
 				...shapeColumnHasItems(doc),
 				_items: e.select(doc.items, (i) => ({
 					data: true,

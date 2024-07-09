@@ -11,8 +11,8 @@ import {
 	userTypeResourcesWidgets,
 	userUserType,
 	widgets
-} from '$server/dbEdge/init/dbEdgeInitUtilities1'
-import { addUser, addUserOrg } from '$server/dbEdge/init/dbEdgeInitUtilities2'
+} from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { addUser, addUserOrg } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
 
 export async function initUser() {
 	await initUserResources()

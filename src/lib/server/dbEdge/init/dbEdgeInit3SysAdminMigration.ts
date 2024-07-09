@@ -1,5 +1,6 @@
-import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities1'
-import { addDataObj, addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInitUtilities2'
+import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { addDataObj } from '$server/dbEdge/init/dbEdgeInitUtilities20DataObj'
+import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
 
 export async function initAdminSysMigration() {
 	sectionHeader('DataObject - SysAdminMigration')

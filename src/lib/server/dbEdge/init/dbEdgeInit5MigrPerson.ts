@@ -1,5 +1,5 @@
-import { ResetDb, sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities1'
-import { addMigration } from '$server/dbEdge/init/dbEdgeInitUtilities2'
+import { ResetDb, sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { addMigration } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
 
 export async function initMigrationPerson() {
 	sectionHeader('Migration - SysPerson')

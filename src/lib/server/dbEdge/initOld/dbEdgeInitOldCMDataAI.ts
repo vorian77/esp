@@ -1,4 +1,4 @@
-import { execute } from '$server/dbEdge/init/dbEdgeInitUtilities2'
+import { execute } from '$server/dbEdge/init/dbEdgeInitUtilities'
 
 const FILE = 'initCMDataAI'
 
