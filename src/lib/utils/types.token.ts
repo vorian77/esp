@@ -15,6 +15,7 @@ import {
 import { State } from '$comps/app/types.appState'
 import { AppRowActionType } from '$comps/app/types.app'
 import { Node } from '$comps/app/types.node'
+import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { Process } from '$utils/utils.process'
 import { error } from '@sveltejs/kit'
 
@@ -363,16 +364,26 @@ export class TokenAppDoName extends TokenApp {
 	}
 }
 
-export class TokenAppModalEmbed extends TokenApp {
+export class TokenAppModalEmbedField extends TokenApp {
 	dataObjSourceEmbed: TokenApiDbDataObjSource
 	dataObjSourceModal: TokenApiDbDataObjSource
 	queryType: TokenApiQueryType
 	constructor(obj: any) {
-		const clazz = 'TokenAppDialog'
+		const clazz = 'TokenAppModalEmbedField'
 		super()
 		this.dataObjSourceEmbed = required(obj.dataObjSourceEmbed, clazz, 'dataObjSourceEmbed')
 		this.dataObjSourceModal = required(obj.dataObjSourceModal, clazz, 'dataObjSourceModal')
 		this.queryType = required(obj.queryType, clazz, 'queryType')
+	}
+}
+export class TokenAppModalEmbedShell extends TokenApp {
+	dataObjParent: DataObj
+	fieldEmbedShell: FieldEmbedShell
+	constructor(obj: any) {
+		const clazz = 'TokenAppModalEmbedShell'
+		super()
+		this.dataObjParent = required(obj.dataObjParent, clazz, 'dataObjParent')
+		this.fieldEmbedShell = required(obj.fieldEmbedShell, clazz, 'fieldEmbedShell')
 	}
 }
 export class TokenAppModalReturn extends TokenApp {

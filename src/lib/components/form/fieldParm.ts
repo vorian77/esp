@@ -122,9 +122,10 @@ export class FieldParmItem {
 			_codeFieldElement: record.codeFieldElement,
 			_hasItems: record._hasItems,
 			_propName: record.name,
+			isDisplayable: true,
 			isDisplayBlock: true,
 			isParmValue: true,
-			orderDisplay: record.orderDefine
+			orderDefine: record.orderDefine
 		})
 		const parmField = await DataObj.initField(state, propParm, false, fields, data)
 		return new FieldParmItem(record, fields, data, parmField)

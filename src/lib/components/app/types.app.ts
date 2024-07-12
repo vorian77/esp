@@ -19,13 +19,19 @@ import {
 	TokenApiDbDataObjSource,
 	TokenApiQueryType,
 	TokenApiQuery,
-	TokenAppModalEmbed,
+	TokenAppModalEmbedField,
+	TokenAppModalEmbedShell,
 	TokenAppDoActionFieldType,
 	TokenAppTreeNode,
 	TokenAppTreeNodeId,
 	TokenAppCrumbs,
 	TokenAppDo
 } from '$utils/types.token'
+import {
+	FieldEmbedListConfig,
+	FieldEmbedListEdit,
+	FieldEmbedListSelect
+} from '$comps/form/fieldEmbed'
 import { query } from '$comps/app/types.appQuery'
 import { State } from '$comps/app/types.appState'
 import { error } from '@sveltejs/kit'
@@ -37,7 +43,39 @@ export class App {
 	levels: Array<AppLevel> = []
 	constructor() {}
 
-	async addLevelModal(state: State, token: TokenAppModalEmbed) {
+	async addLevelEmbedShell(state: State, token: TokenAppModalEmbedShell) {
+		const embeds = token.dataObjParent.fields.filter((f) =>
+			token.fieldEmbedShell.colDO.fieldEmbedShellFields.includes(f.colDO.propName)
+		)
+
+		// build tabls
+		const levelIdx = 0
+		const tabs: AppLevelTab[] = []
+		embeds.forEach((field, tabIdx) => {
+			let dataObjId = ''
+			if (field instanceof FieldEmbedListEdit) {
+				dataObjId = field.raw.dataObjEmbedId
+			}
+			tabs.push(
+				new AppLevelTab({
+					data: undefined,
+					dataObjSource: new TokenApiDbDataObjSource({ dataObjId }),
+					label: field.colDO.label,
+					levelIdx,
+					parms: state.dataQuery.valueGetAll(),
+					tabIdx
+				})
+			)
+		})
+
+		// build level
+		this.levels.push(new AppLevel(tabs))
+		await query(state, this.getCurrTab(), TokenApiQueryType.retrieve, this)
+
+		// return
+		return this
+	}
+	async addLevelModal(state: State, token: TokenAppModalEmbedField) {
 		// current tab
 		const currTab = this.getCurrTab()
 		if (currTab) currTab.metaData.initLevel(state.dataQuery.valueGetAll())
@@ -46,8 +84,8 @@ export class App {
 		const newLevel = new AppLevel([
 			new AppLevelTab({
 				dataObjSource: token.dataObjSourceModal,
-				idx: 0,
-				levelIdx: 0
+				levelIdx: 0,
+				tabIdx: 0
 			})
 		])
 		if (newLevel) {
@@ -178,9 +216,9 @@ export class App {
 				new AppLevelTab({
 					data: token.queryData.dataObjData,
 					dataObjSource: token.dataObjSource,
-					idx: 0,
 					levelIdx: 0,
-					parms: state.dataQuery.valueGetAll()
+					parms: state.dataQuery.valueGetAll(),
+					tabIdx: 0
 				})
 			])
 		)
@@ -191,9 +229,9 @@ export class App {
 			new AppLevel([
 				new AppLevelTab({
 					dataObjSource,
-					idx: 0,
 					levelIdx: 0,
-					parms: state.dataQuery.valueGetAll()
+					parms: state.dataQuery.valueGetAll(),
+					tabIdx: 0
 				})
 			])
 		)
@@ -207,15 +245,15 @@ export class App {
 		const currTab = this.getCurrTab()
 		if (currTab) currTab.metaData.valueSetList(currTab?.data?.dataRows)
 	}
-	static getTabParmsNode(levelIdx: number, idx: number, node: Node) {
+	static getTabParmsNode(levelIdx: number, tabIdx: number, node: Node) {
 		const nodeApp = new NodeApp(node)
 		return {
 			data: undefined,
 			dataObjSource: new TokenApiDbDataObjSource({ dataObjId: nodeApp.dataObjId }),
-			idx,
 			label: nodeApp.label,
 			levelIdx,
-			nodeId: nodeApp.id
+			nodeId: nodeApp.id,
+			tabIdx
 		}
 	}
 	popLevel() {
@@ -333,9 +371,9 @@ export class App {
 
 export class AppLevel {
 	currTabIdx: number
-	tabs: Array<AppLevelTab> = []
+	tabs: AppLevelTab[] = []
 	tabSet: number = 0
-	constructor(tabs: Array<AppLevelTab>) {
+	constructor(tabs: AppLevelTab[]) {
 		this.currTabIdx = 0
 		this.tabs = tabs
 	}
@@ -405,7 +443,7 @@ export class AppLevelTab {
 		const clazz = 'AppLevelTab'
 		this.data = valueOrDefault(obj.data, undefined)
 		this.dataObjSource = required(obj.dataObjSource, clazz, 'dataObjSource')
-		this.idx = nbrRequired(obj.idx, clazz, 'idx')
+		this.idx = nbrRequired(obj.tabIdx, clazz, 'idx')
 		this.label = valueOrDefault(obj.label, '')
 		this.levelIdx = nbrRequired(obj.levelIdx, clazz, 'levelIdx')
 		this.metaData.init(obj.parms)

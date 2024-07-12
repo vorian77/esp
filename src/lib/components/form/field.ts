@@ -1,6 +1,6 @@
 import { State } from '$comps/app/types.appState'
-import { DataObj, DataObjData, type DataRecord } from '$utils/types'
-import { memberOfEnumOrDefault, nbrOptional, valueOrDefault } from '$utils/utils'
+import { DataObj, DataObjData, DataObjStatus, type DataRecord, FieldValue } from '$utils/types'
+import { booleanOrDefault, memberOfEnumOrDefault, nbrOptional, valueOrDefault } from '$utils/utils'
 import {
 	Validation,
 	ValidationStatus,
@@ -21,10 +21,8 @@ export class Field {
 	fieldAccess: FieldAccess
 	fieldAlignment: FieldAlignment
 	fieldElement: FieldElement
-	isDisplayable: boolean
 	isFirstVisible: boolean
 	isParmValue: boolean = false
-	orderDisplay?: number
 	constructor(props: RawFieldProps) {
 		const clazz = 'Field'
 		const obj = valueOrDefault(props.propRaw, {})
@@ -53,9 +51,7 @@ export class Field {
 			FieldElement,
 			FieldElement.hidden
 		)
-		this.isDisplayable = typeof this.colDO.orderDisplay === 'number'
 		this.isFirstVisible = props.isFirstVisible
-		this.colDO.orderDisplay = nbrOptional(this.colDO.orderDisplay, clazz, 'orderDisplay')
 
 		/* derived */
 		this.colorBackground =
@@ -67,6 +63,25 @@ export class Field {
 	}
 	static async init(props: RawFieldProps) {
 		return new Field(props)
+	}
+
+	getStatus(dataObjForm: DataObj, recordId: string) {
+		const status = new DataObjStatus()
+
+		// changed
+		const changed = dataObjForm.dataFieldsChanged.valueGet(recordId, this.colDO.propName) || false
+		if (changed) console.log(`Field.getStatus.changed: ${this.colDO.propName}: ${changed}`)
+		status.setChanged(changed)
+
+		// valid
+		const validity = dataObjForm.dataFieldValidities.valueGet(recordId, this.colDO.propName)
+
+		// console.log(
+		// 	`Field.getStatus.validity: ${this.colDO.propName}: ${validity ? validity.error : 'none'}`
+		// )
+		status.setValid(validity === undefined || validity.error === ValidityError.none)
+
+		return status
 	}
 
 	getValue(formData: FormData) {

@@ -4,8 +4,8 @@
 	import { FieldAccess } from '$comps/form/field'
 	import { DataObjCardinality } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
+	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
-	import { input } from 'edgedb/dist/adapter.node'
 
 	export let fp: FieldProps
 
@@ -18,7 +18,6 @@
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
 			? 'input text-black ' + field.colorBackground
 			: 'w-full border-none bg-transparent text-black'
-	$: classPropsLabel = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
 	$: classPropsInput +=
 		field.fieldAlignment === FieldAlignment.left
 			? ' text-left'
@@ -56,27 +55,23 @@
 <!-- <DataViewer header="element" data={field.element} /> -->
 <!-- <DataViewer header="fieldAccess" data={field.fieldAccess} /> -->
 
-<label class="label" for={field.colDO.propName} hidden={field.fieldAccess == FieldAccess.hidden}>
-	<span class={classPropsLabel}>{field.colDO.label}</span>
-	<div>
-		<input
-			class={classPropsInput}
-			hidden={field.fieldAccess == FieldAccess.hidden}
-			id={field.colDO.propName}
-			{max}
-			{min}
-			name={field.colDO.propName}
-			on:change={onChange}
-			on:dblclick={onDoubleClick}
-			on:keyup={onChange}
-			placeholder={dataObj.raw.codeCardinality === DataObjCardinality.detail ||
-			dataObj.raw.isListEdit
-				? field.placeHolder
-				: ''}
-			readonly={field.fieldAccess == FieldAccess.readonly}
-			{step}
-			type={field.fieldElement}
-			value={fieldValue}
-		/>
-	</div>
-</label>
+<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality}>
+	<input
+		class={classPropsInput}
+		hidden={field.fieldAccess == FieldAccess.hidden}
+		id={field.colDO.propName}
+		{max}
+		{min}
+		name={field.colDO.propName}
+		on:change={onChange}
+		on:dblclick={onDoubleClick}
+		on:keyup={onChange}
+		placeholder={dataObj.raw.codeCardinality === DataObjCardinality.detail || dataObj.raw.isListEdit
+			? field.placeHolder
+			: ''}
+		readonly={field.fieldAccess == FieldAccess.readonly}
+		{step}
+		type={field.fieldElement}
+		value={fieldValue}
+	/>
+</FormLabel>

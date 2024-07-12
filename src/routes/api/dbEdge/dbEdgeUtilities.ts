@@ -249,7 +249,7 @@ export async function getDataObjById(dataObjId: string) {
 				})),
 				_fieldEmbedShellFields: e.select(doc.customEmbedShellFields, (ce) => ({
 					_name: ce.column.name,
-					order_by: ce.orderDisplay
+					order_by: ce.orderDefine
 				})),
 				...shapeColumnHasItems(doc),
 				_items: e.select(doc.items, (i) => ({
@@ -262,10 +262,10 @@ export async function getDataObjById(dataObjId: string) {
 				height: true,
 				isDisplayable: true,
 				isDisplayBlock: true,
-				orderDisplay: true,
+				orderDefine: true,
 				orderSort: true,
 				width: true,
-				order_by: doc.orderDisplay
+				order_by: doc.orderDefine
 			})),
 
 			_propsSaveInsert: e.select(do1.columns, (doc) => ({

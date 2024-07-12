@@ -126,7 +126,7 @@ export class DataObj {
 
 	async initFields(state: State, propsRaw: RawDataObjPropDisplay[], data: DataObjData) {
 		let fields: Field[] = []
-		let firstVisible = propsRaw.findIndex((f) => typeof f.orderDisplay === 'number')
+		let firstVisible = propsRaw.findIndex((f) => f.isDisplayable)
 
 		for (let i = 0; i < propsRaw.length; i++) {
 			const prop: RawDataObjPropDisplay = propsRaw[i]
@@ -145,106 +145,103 @@ export class DataObj {
 		let newField: Field
 		const props = new RawFieldProps(state, propRaw, isFirstVisible, fields, data)
 
-		if (typeof propRaw.orderDisplay !== 'number') {
-			newField = await Field.init(props)
-		} else {
-			const element = memberOfEnum(
-				propRaw.rawFieldElement,
-				'DataObj',
-				'element',
-				'FieldElement',
-				FieldElement
-			)
-			switch (element) {
-				// input
-				case FieldElement.date:
-				case FieldElement.email:
-				case FieldElement.number:
-				case FieldElement.password:
-				case FieldElement.tel:
-				case FieldElement.text:
-					newField = await FieldInput.init(props)
-					break
+		const element = memberOfEnumOrDefault(
+			propRaw.rawFieldElement,
+			'DataObj',
+			'element',
+			'FieldElement',
+			FieldElement,
+			FieldElement.text
+		)
+		switch (element) {
+			// input
+			case FieldElement.date:
+			case FieldElement.email:
+			case FieldElement.number:
+			case FieldElement.password:
+			case FieldElement.tel:
+			case FieldElement.text:
+				newField = await FieldInput.init(props)
+				break
 
-				case FieldElement.checkbox:
-					newField = await FieldCheckbox.init(props)
-					break
+			case FieldElement.checkbox:
+				newField = await FieldCheckbox.init(props)
+				break
 
-				case FieldElement.chips:
-					newField = await FieldChips.init(props)
-					break
+			case FieldElement.chips:
+				newField = await FieldChips.init(props)
+				break
 
-				case FieldElement.customActionButton:
-					newField = await FieldCustomActionButton.init(props)
-					break
+			case FieldElement.customActionButton:
+				newField = await FieldCustomActionButton.init(props)
+				break
 
-				case FieldElement.customActionLink:
-					newField = await FieldCustomActionLink.init(props)
-					break
+			case FieldElement.customActionLink:
+				newField = await FieldCustomActionLink.init(props)
+				break
 
-				case FieldElement.customHeader:
-					newField = await FieldCustomHeader.init(props)
-					break
+			case FieldElement.customHeader:
+				newField = await FieldCustomHeader.init(props)
+				break
 
-				case FieldElement.customText:
-					newField = await FieldCustomText.init(props)
-					break
+			case FieldElement.customText:
+				newField = await FieldCustomText.init(props)
+				break
 
-				case FieldElement.embedListConfig:
-					newField = await FieldEmbedListConfig.init(props)
-					break
+			case FieldElement.embedListConfig:
+				newField = await FieldEmbedListConfig.init(props)
+				break
 
-				case FieldElement.embedListEdit:
-					newField = await FieldEmbedListEdit.init(props)
-					break
+			case FieldElement.embedListEdit:
+				newField = await FieldEmbedListEdit.init(props)
+				break
 
-				case FieldElement.embedListSelect:
-					newField = await FieldEmbedListSelect.init(props)
-					break
+			case FieldElement.embedListSelect:
+				newField = await FieldEmbedListSelect.init(props)
+				break
 
-				case FieldElement.embedShell:
-					newField = await FieldEmbedShell.init(props)
-					break
+			case FieldElement.embedShell:
+				newField = await FieldEmbedShell.init(props)
+				break
 
-				case FieldElement.file:
-					newField = await FieldFile.init(props)
-					break
+			case FieldElement.file:
+				newField = await FieldFile.init(props)
+				break
 
-				case FieldElement.parm:
-					newField = await FieldParm.init(props)
-					break
+			case FieldElement.parm:
+				newField = await FieldParm.init(props)
+				break
 
-				case FieldElement.radio:
-					newField = await FieldRadio.init(props)
-					break
+			case FieldElement.radio:
+				newField = await FieldRadio.init(props)
+				break
 
-				case FieldElement.select:
-					newField = await FieldSelect.init(props)
-					break
+			case FieldElement.select:
+				newField = await FieldSelect.init(props)
+				break
 
-				case FieldElement.tagRow:
-					newField = await FieldTagRow.init(props)
-					break
+			case FieldElement.tagRow:
+				newField = await FieldTagRow.init(props)
+				break
 
-				case FieldElement.tagSection:
-					newField = await FieldTagSection.init(props)
-					break
+			case FieldElement.tagSection:
+				newField = await FieldTagSection.init(props)
+				break
 
-				case FieldElement.textArea:
-					newField = await FieldTextarea.init(props)
-					break
+			case FieldElement.textArea:
+				newField = await FieldTextarea.init(props)
+				break
 
-				case FieldElement.toggle:
-					newField = await FieldToggle.init(props)
-					break
+			case FieldElement.toggle:
+				newField = await FieldToggle.init(props)
+				break
 
-				default:
-					error(500, {
-						file: FILENAME,
-						function: 'initFields',
-						message: `No case defined for field element: ${element}`
-					})
-			}
+			default:
+				error(500, {
+					file: FILENAME,
+					function: 'initFields',
+					message: `No case defined for field element: ${element}`
+				})
 		}
 		return newField
 	}
@@ -374,12 +371,24 @@ export class DataObj {
 		alert('Print functionality for this object has not yet been implemented.')
 	}
 
-	/* user data manipulation */
-	userSetFieldVal(row: number, field: Field, value: any) {
-		const recordId = this.dataRecordsDisplay[row]['id']
-		this.valueSet(recordId, field.colDO.propName, value)
+	setFieldVal(row: number, field: Field, value: any) {
+		const recordId = this.dataRecordsDisplay[row].id
+		this.setFieldValValue(row, recordId, field.colDO.propName, value)
+		this.setFieldValValidity(row, recordId, field)
+	}
 
-		// validate
+	setFieldValValue(row: number, recordId: string, fieldName: string, value: any) {
+		this.dataRecordsDisplay[row][fieldName] = value
+		const valueInitial = this.data.getValue(row, fieldName)
+		const changed = valueHasChanged(valueInitial, value)
+		if (changed) {
+			this.dataFieldsChanged.valueSet(recordId, fieldName, true)
+		} else {
+			this.dataFieldsChanged.valueDrop(recordId, fieldName)
+		}
+	}
+
+	setFieldValValidity(row: number, recordId: string, field: Field) {
 		const v: Validation = field.validate(
 			this.dataRecordsDisplay[row],
 			row,
@@ -389,20 +398,6 @@ export class DataObj {
 			this.dataFieldValidities.valueSet(recordId, fieldName, validity)
 		})
 		this.dataFieldValidities = this.dataFieldValidities
-	}
-
-	valueSet(recordId: string, fieldName: string, userValue: any) {
-		const recordRow = this.dataRecordsDisplay.findIndex((r) => r.id === recordId)
-		if (recordRow > -1) {
-			this.dataRecordsDisplay[recordRow][fieldName] = userValue
-			const valueInitial = this.data.getValue(recordId, fieldName)
-			const changed = valueHasChanged(valueInitial, userValue)
-			if (changed) {
-				this.dataFieldsChanged.valueSet(recordId, fieldName, true)
-			} else {
-				this.dataFieldsChanged.valueDrop(recordId, fieldName)
-			}
-		}
 	}
 }
 
@@ -592,13 +587,12 @@ export class DataObjData {
 		const row = this.dataRows.findIndex((r) => r.record.id === id)
 		return row > -1 ? this.dataRows[row] : undefined
 	}
-	getValue(recordId: string, key: string) {
-		const recordIndex = this.dataRows.findIndex((r) => r.record.id === recordId)
-		if (recordIndex > -1) return this.dataRows[recordIndex].record[key]
+	getValue(row: number, key: string) {
+		if (row < this.dataRows.length) return this.dataRows[row].record[key]
 		error(500, {
 			file: FILENAME,
 			function: 'dataObjData.getValue',
-			message: `Record id ${recordId} not found.`
+			message: `Row ${row} not found.`
 		})
 	}
 	hasRecord() {
@@ -694,6 +688,13 @@ export class DataObjStatus {
 		this.objValidToSave = status
 		return status
 	}
+	update(currentStatus: DataObjStatus) {
+		this.objHasChanged = this.objHasChanged || currentStatus.objHasChanged
+		this.embeddedObjsChanged = this.embeddedObjsChanged || currentStatus.embeddedObjsChanged
+		this.objValidToSave = this.objValidToSave && currentStatus.objValidToSave
+		return this
+	}
+
 	valid() {
 		return this.objValidToSave
 	}

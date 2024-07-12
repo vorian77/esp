@@ -22,7 +22,7 @@ async function initFieldEmbedListEditRepUserElement() {
 		codeComponent: 'FormList',
 		codeListEditPresetType: 'save',
 		exprFilter:
-			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdParent>).elements.id AND EXISTS .orderDisplay',
+			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdParent>).elements.id AND .element.isDisplayable',
 		exprOrder: '.orderDisplay',
 		header: 'Elements',
 		isListEdit: true,
@@ -91,7 +91,7 @@ async function initFieldEmbedListEditRepUserElement() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'orderDisplay',
-				exprPreset: 'item.orderDisplay',
+				exprPreset: 'item.orderDefine',
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 60,
@@ -478,8 +478,7 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'embedListEdit',
 				columnName: 'parms',
-				isDisplayable: true,
-				orderDisplay: 120,
+				isDisplayable: false,
 				orderDefine: 120,
 				fieldEmbedListEdit: 'fele_sys_rep_user_parm',
 				indexTable: 0,
@@ -488,8 +487,7 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'embedListEdit',
 				columnName: 'elements',
-				isDisplayable: true,
-				orderDisplay: 130,
+				isDisplayable: false,
 				orderDefine: 130,
 				fieldEmbedListEdit: 'fele_sys_rep_user_element',
 				indexTable: 0,

@@ -7,7 +7,7 @@
 		ValidityErrorLevel,
 		ValidityError
 	} from '$utils/types'
-	import { State, StateSurfaceEmbed } from '$comps/app/types.appState'
+	import { State } from '$comps/app/types.appState'
 	import FormElCustomActionButton from './FormElCustomActionButton.svelte'
 	import FormElCustomActionLink from './FormElCustomActionLink.svelte'
 	import FormElCustomHeader from '$comps/form/FormElCustomHeader.svelte'
@@ -58,7 +58,9 @@
 	export let row: number
 
 	let classProps =
-		dataObj.raw.codeCardinality === DataObjCardinality.detail && field.isDisplayable ? 'mb-4' : ''
+		dataObj.raw.codeCardinality === DataObjCardinality.detail && field.colDO.isDisplayable
+			? 'mb-4'
+			: ''
 
 	let currentElement: any
 	const elements: Record<string, any> = {
@@ -103,19 +105,13 @@
 	)
 
 	function setFieldVal(field: Field, value: any) {
-		field = dataObj.getField(field, row)
-
-		dataObj.userSetFieldVal(row, field, value)
+		state = state.setFieldVal(dataObj, row, dataObj.getField(field, row), value)
 		dataObj = dataObj
-
-		state.setStatusValid(dataObj)
-		state.setStatusChanged(dataObj)
-		state = state
 	}
 </script>
 
 <div class={classProps}>
-	{#if field.isDisplayable}
+	{#if field.colDO.isDisplayable}
 		<svelte:component this={currentElement} bind:fp />
 	{/if}
 </div>

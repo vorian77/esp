@@ -53,7 +53,7 @@
 					if (!tagGroupSection[idxSection].rowIsEmpty()) tagGroupSection[idxSection].rowNew()
 				} else if (field.colDO.propName.startsWith('custom_row_end')) {
 					isOpenRow = false
-				} else {
+				} else if (field.colDO.isDisplayable) {
 					tagGroupSection[idxSection].rowAddIdx(field, idx, isOpenRow)
 				}
 			}

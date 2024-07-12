@@ -4,6 +4,7 @@
 	import {
 		State,
 		StateMode,
+		StateSurfaceEmbed,
 		StateSurfaceModal,
 		StatePacket,
 		StatePacketComponent
@@ -13,10 +14,11 @@
 		TokenApiQueryType,
 		TokenAppBack,
 		TokenAppCrumbs,
-		TokenAppModalEmbed,
 		TokenAppDo,
 		TokenAppDoActionFieldType,
 		TokenAppDoActionConfirmType,
+		TokenAppModalEmbedField,
+		TokenAppModalEmbedShell,
 		TokenAppProcess,
 		TokenAppRow,
 		TokenAppTab,
@@ -27,6 +29,7 @@
 	import { NodeType } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import LayoutProcess from '$comps/layout/LayoutProcess.svelte'
+	import LayoutApp from '$comps/layout/LayoutApp.svelte'
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import { migrate } from '$utils/utils.processMigrate'
 	import { error } from '@sveltejs/kit'
@@ -45,6 +48,7 @@
 	let dataObjUpdate: ObjUpdate | undefined
 
 	const componentsLayout: Record<string, any> = {
+		layoutApp: LayoutApp,
 		layoutContent: LayoutContent,
 		layoutProcess: LayoutProcess,
 		layoutTab: LayoutTab
@@ -57,7 +61,8 @@
 		StatePacketComponent.navTab,
 		StatePacketComponent.navTree,
 		StatePacketComponent.modal,
-		StatePacketComponent.dataObjFieldEmbedded
+		StatePacketComponent.embedField,
+		StatePacketComponent.embedShell
 	]
 
 	$: if (state && state.packet) {
@@ -190,8 +195,7 @@
 				}
 				break
 
-			// embedded field
-			case StatePacketComponent.dataObjFieldEmbedded:
+			case StatePacketComponent.embedField:
 				if (token instanceof TokenApiQuery) {
 					await state.app.initEmbeddedField(state, token)
 					dataObjUpdate = new ObjUpdate(true, true)
@@ -199,9 +203,17 @@
 				}
 				break
 
+			case StatePacketComponent.embedShell:
+				if (token instanceof TokenAppModalEmbedShell) {
+					await state.app.addLevelEmbedShell(state, token)
+					dataObjUpdate = new ObjUpdate(true, true)
+					resetModes = false
+				}
+				break
+
 			case StatePacketComponent.modal:
 				if (state instanceof StateSurfaceModal) {
-					if (token instanceof TokenAppModalEmbed) {
+					if (token instanceof TokenAppModalEmbedField) {
 						await state.app.initModal(state, token.dataObjSourceEmbed)
 						// <todo> - 240428 - remove requirement to re-select the display list by using embedded list
 
@@ -333,7 +345,7 @@
 </script>
 
 {#if currLayout && dataObj && dataObjData}
-	<div class="p-4">
+	<div class={state instanceof StateSurfaceEmbed ? '' : 'p-4'}>
 		<svelte:component this={currLayout} bind:state {dataObj} {dataObjData} on:formCancelled />
 	</div>
 {/if}

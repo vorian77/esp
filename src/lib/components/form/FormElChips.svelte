@@ -4,6 +4,7 @@
 	import { FieldSelectMulti } from '$comps/form/fieldSelect'
 	import { FieldAccess } from '$comps/form/field'
 	import MultiSelect from 'svelte-multiselect'
+	import FormLabel from '$comps/form/FormLabel.svelte'
 	import type { Option, ObjectOption } from 'svelte-multiselect'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -61,14 +62,7 @@
 	}
 </script>
 
-<label
-	class="label"
-	for={fp.field.colDO.propName}
-	hidden={fp.field.fieldAccess == FieldAccess.hidden}
->
-	<span class={classPropsLabel}>{fp.field.colDO.label}</span>
-</label>
-
+<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality} />
 <MultiSelect {selected} {options} id={fp.field.colDO.propName} {maxSelect} on:change={onChange} />
 
 <!-- <DataViewer header="value" data={fieldValue} /> -->

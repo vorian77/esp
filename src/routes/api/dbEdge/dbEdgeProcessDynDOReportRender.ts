@@ -46,8 +46,9 @@ export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj
 					_column: gePropColumn(repE),
 					_hasItems: false,
 					_propName: repE.nameCustom || repE._column?.name,
+					isDisplayable: true,
 					nameCustom: repE.nameCustom,
-					orderDisplay: repE.orderDisplay,
+					orderDefine: repE.orderDisplay,
 					orderSort: repE.orderSort
 				})
 			})

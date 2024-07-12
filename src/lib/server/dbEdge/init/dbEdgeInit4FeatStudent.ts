@@ -823,8 +823,8 @@ async function initCsfCohort() {
 				indexTable: 0,
 				isDisplayable: false,
 				linkExprSave:
-					'(SELECT app_cm::CmClientServiceFlow filter.id = (<tree,uuid,CmClientServiceFlow.id>))',
-				linktable: 'CmClientServiceFlow'
+					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
+				linkTable: 'CmClientServiceFlow'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1030,7 +1030,7 @@ async function initCsfCohortAttdStudent() {
 				indexTable: 0,
 				isDisplayable: false,
 				linkExprSave: '(SELECT app_cm::CmCsfCohort FILTER .id = <tree,uuid,CmCsfCohort.id>)',
-				linktable: 'CmCsfCohort'
+				linkTable: 'CmCsfCohort'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1227,7 +1227,7 @@ async function initCsfNote() {
 				indexTable: 0,
 				isDisplayable: false,
 				linkExprSave:
-					'(SELECT app_cm::CmClientServiceFlow filter.id = (<tree,uuid,CmClientServiceFlow.id>))',
+					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1413,7 +1413,7 @@ async function initCsfJobPlacement() {
 				indexTable: 0,
 				isDisplayable: false,
 				linkExprSave:
-					'(SELECT app_cm::CmClientServiceFlow filter.id = (<tree,uuid,CmClientServiceFlow.id>))',
+					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1784,7 +1784,7 @@ async function initCsfDocument() {
 				indexTable: 0,
 				isDisplayable: false,
 				linkExprSave:
-					'(SELECT app_cm::CmClientServiceFlow filter.id = (<tree,uuid,CmClientServiceFlow.id>))',
+					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 				linkTable: 'CmClientServiceFlow'
 			},
 			{

@@ -3,13 +3,14 @@
 	import { FieldElement, FieldProps } from '$comps/form/field'
 	import { FieldSelect } from '$comps/form/fieldSelect'
 	import { FieldAccess } from '$comps/form/field'
+	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	export let fp: FieldProps
 
 	$: dataObj = fp.dataObj
 	$: field = fp.field as FieldSelect
-	$: fieldId = 'field' + field.colDO.orderDisplay
+	$: fieldId = 'field' + field.colDO.orderDefine
 	$: fieldValue = fp.fieldValue
 	$: setFieldVal = fp.setFieldVal
 
@@ -34,8 +35,7 @@
 	}
 </script>
 
-<label for={fieldId} class="label">
-	<span class={classPropsLabel}>{field.colDO.label}</span>
+<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality}>
 	<select
 		class={classProps}
 		name={field.colDO.propName}
@@ -52,7 +52,7 @@
 			{/each}
 		{/if}
 	</select>
-</label>
+</FormLabel>
 
 <!-- <DataViewer header="value" data={fieldValue} /> -->
 <!-- <DataViewer header="items" data={field.items} /> -->

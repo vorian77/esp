@@ -88,7 +88,7 @@
 				{ actionType: TokenAppDoActionFieldType.listDetailEdit, proxy: proxyEdit },
 				{ actionType: TokenAppDoActionFieldType.listSelfSave, proxy: proxySave }
 			],
-			layoutComponent: StateLayoutComponentType.layoutTab,
+			layoutComponent: StateLayoutComponentType.layoutApp,
 			layoutStyle: StateLayoutStyle.dataObjTab,
 			storeDrawer,
 			storeModal,

@@ -2,6 +2,7 @@
 	import { FieldProps } from '$comps/form/field'
 	import { FieldTextarea } from '$comps/form/fieldTextarea'
 	import { FieldAccess } from '$comps/form/field'
+	import FormLabel from '$comps/form/FormLabel.svelte'
 
 	export let fp: FieldProps
 
@@ -18,7 +19,7 @@
 	}
 </script>
 
-<label for={field.colDO.propName}>{field.colDO.label}</label>
+<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality} />
 
 <textarea
 	id={field.colDO.propName}

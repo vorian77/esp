@@ -4,8 +4,8 @@ import { strOptional, nbrRequired } from '$utils/utils'
 export class FieldTag extends Field {
 	constructor(props: RawFieldProps) {
 		super(props)
-		const orderDisplay = nbrRequired(props.propRaw.orderDisplay, 'FieldTag', 'orderDisplay')
-		this.colDO.propName = `${this.colDO.propName}_${orderDisplay}`
+		const orderDefine = nbrRequired(props.propRaw.orderDefine, 'FieldTag', 'orderDefine')
+		this.colDO.propName = `${this.colDO.propName}_${orderDefine}`
 	}
 }
 

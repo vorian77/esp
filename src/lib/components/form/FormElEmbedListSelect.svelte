@@ -5,7 +5,7 @@
 		State,
 		StateLayoutStyle,
 		StateLayoutComponentType,
-		StateSurfaceEmbed
+		StateSurfaceEmbedField
 	} from '$comps/app/types.appState'
 	import {
 		TokenApiDbDataObjSource,
@@ -14,6 +14,7 @@
 		TokenAppModalReturnType
 	} from '$utils/types.token'
 	import Layout from '$comps/layout/BaseLayout.svelte'
+	import FormLabel from '$comps/form/FormLabel.svelte'
 	import { DataObj, DataObjCardinality, type DataRecord } from '$utils/types'
 	import Icon from '$comps/misc/Icon.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -44,7 +45,7 @@
 	}
 
 	function setStateEmbed(ids: string[]) {
-		stateEmbed = new StateSurfaceEmbed({
+		stateEmbed = new StateSurfaceEmbedField({
 			actionProxies: [
 				{ actionType: TokenAppDoActionFieldType.embedListSelect, proxy: openDialogProxy }
 			],
@@ -96,19 +97,14 @@
 	}
 </script>
 
-<div class="flex mt-6">
-	<label for={field.colDO.propName}>{field.colDO.label}</label>
+<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality}>
 	<button class="ml-1" on:click={() => openDialogIcon()}>
 		<Icon name={'select'} width="28" height="28" fill={'#3b79e1'} />
 	</button>
-</div>
+</FormLabel>
 
-<div>
-	{#if stateEmbed}
-		<object title="aria-embedded-column">
-			<Layout state={stateEmbed} />
-		</object>
-	{/if}
-</div>
+{#if stateEmbed}
+	<Layout state={stateEmbed} />
+{/if}
 
 <!-- <DataViewer header="state.parms" data={stateDisplay.metaData.data} /> -->

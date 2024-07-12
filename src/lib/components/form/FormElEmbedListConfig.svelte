@@ -6,7 +6,7 @@
 		StateLayoutComponentType,
 		StateLayoutStyle,
 		StateMode,
-		StateSurfaceEmbed
+		StateSurfaceEmbedField
 	} from '$comps/app/types.appState'
 	import {
 		TokenApiDbDataObjSource,
@@ -18,6 +18,7 @@
 	import Layout from '$comps/layout/BaseLayout.svelte'
 	import { DataObj, DataObjCardinality, type DataRecord, required } from '$utils/types'
 	import { RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
+	import FormLabel from '$comps/form/FormLabel.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -58,7 +59,7 @@
 	}
 
 	function setStateEmbed(fieldValue: any) {
-		stateEmbed = new StateSurfaceEmbed({
+		stateEmbed = new StateSurfaceEmbedField({
 			actionProxies: [
 				{ actionType: TokenAppDoActionFieldType.embedListConfigEdit, proxy: openModalEdit },
 				{ actionType: TokenAppDoActionFieldType.embedListConfigNew, proxy: openModalNew }
@@ -126,16 +127,11 @@
 	}
 </script>
 
-<div class="flex mt-6">
-	<label for={field.colDO.propName}>{field.colDO.label}</label>
-</div>
-<div>
-	{#if stateEmbed}
-		<object title="aria-embedded-column">
-			<Layout state={stateEmbed} />
-		</object>
-	{/if}
-</div>
+<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality} />
+
+{#if stateEmbed}
+	<Layout state={stateEmbed} />
+{/if}
 
 <!-- <DataViewer header="modes (listConfig)" data={stateEmbedded.modes} /> -->
 <!-- <DataViewer header="stateDisplay" data={stateDisplay} /> -->

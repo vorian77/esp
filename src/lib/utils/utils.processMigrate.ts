@@ -62,5 +62,4 @@ async function updateCallback(obj: any) {
 	// 	fieldValue = obj.packet.token.data.dataRows.map((r: any) => r.record.id)
 	// }
 	// stateEmbed = stateEmbed.updateProperties(obj)
-	console.log('updateCallback:', obj)
 }

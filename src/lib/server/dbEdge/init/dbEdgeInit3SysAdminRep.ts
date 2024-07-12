@@ -1034,14 +1034,6 @@ async function initRepEl() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'orderDisplay',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'column',
 				isDisplayable: true,
 				orderDisplay: 80,
@@ -1191,15 +1183,6 @@ async function initRepEl() {
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_field_element',
 				linkTable: 'SysCode'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'number',
-				columnName: 'orderDisplay',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',

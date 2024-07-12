@@ -45,7 +45,7 @@
 		state.setStatusValidPre(dataObj, dataObj.raw.isListEdit)
 		state = state
 
-		fieldsDisplayable = dataObj.fields.filter((f) => f.isDisplayable)
+		fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
 
 		// listEdit
 		if (dataObj.raw.isListEdit) {
@@ -53,8 +53,7 @@
 			presetRows.forEach((row) => {
 				dataObj.dataFieldsChanged.valueSet(row.record.id + '_new', 'id', true)
 			})
-			state.setStatusChanged(dataObj)
-			state.setStatusValid(dataObj)
+			state.setDataObjForm(dataObj)
 		}
 
 		// filter
@@ -98,16 +97,28 @@
 	function onReorderFinalize(e: any) {
 		dataObj.dataRecordsDisplay = e.detail.items
 		const listReorderColumn = dataObj.raw.listReorderColumn
-
-		if (listReorderColumn) {
-			let order = -1
-			dataObj.dataRecordsDisplay.forEach((record: DataRecord) => {
-				order++
-				dataObj.valueSet(record.id, listReorderColumn, order)
-			})
-
-			state.setStatusChanged(dataObj)
+		if (dataObj.raw.listReorderColumn) {
+			const field = dataObj.fields.find((f) => f.colDO.propName === listReorderColumn)
+			if (field) {
+				console.log('FormList.onReorderFinalize.fieldCnt:', dataObj.dataRecordsDisplay.length)
+				// let order = -1
+				dataObj.dataRecordsDisplay.forEach((record: DataRecord, row) => {
+					// order++
+					// dataObj.valueSet(record.id, listReorderColumn, order)
+					// console.log('onReorderFinalize', { field, row })
+					state = state.setFieldVal(dataObj, row, field, row)
+				})
+			}
 			state = state
+			console.log('FormList.onReorderFinalize.state.objStatus:', state.objStatus)
+
+			// const recordId = dataObj.dataRecordsDisplay[row]['id']
+
+			// state = state.setFieldVal(dataObj, row, dataObj.getField(field, row), value)
+			// dataObj = dataObj
+
+			// state.setStatusChanged(dataObj)
+			// state = state
 		}
 	}
 	function onReorderTransformDraggedElement(draggedEl, data, index) {

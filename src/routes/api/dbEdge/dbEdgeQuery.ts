@@ -231,6 +231,10 @@ export class Query {
 		}
 
 		// 1. build props, subObjGroup
+		console.log(
+			'getPropsSave.props:',
+			props.map((prop) => prop.propName)
+		)
 		props.forEach((propObj, idx) => {
 			const prop = `${propObj.propName} := ${getPropExpr(idx, propObj)}`
 

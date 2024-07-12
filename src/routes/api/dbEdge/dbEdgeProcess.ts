@@ -41,6 +41,7 @@ const FILENAME = 'server/dbEdgeQueryProcess.ts'
 export async function processDataObj(token: TokenApiQuery) {
 	debug('processDataObj', 'queryType', token.queryType)
 	const queryData = TokenApiQueryData.load(token.queryData)
+	debug('processDataObj', 'queryData.tree', queryData.tree)
 
 	let { rawDataObj, returnRawData } = await getRawDataObj(token.dataObjSource, queryData)
 	debug('processDataObj', 'rawDataObj.name', rawDataObj.name)

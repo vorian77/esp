@@ -224,7 +224,10 @@ export function getValRaw(exprParms: ExprParms) {
 						message: `Invalid configuration of tree data token: ${sourceKey}`
 					})
 			}
-			if (record) return getValue(ExprSource.tree, record, property)
+			if (record) {
+				debug('getValRaw', 'tree', { items, record, property })
+				return getValue(ExprSource.tree, record, property)
+			}
 
 		case ExprSource.user:
 			return getValue(ExprSource.user, exprParms.queryData.user, sourceKey)

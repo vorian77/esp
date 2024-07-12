@@ -247,7 +247,6 @@ export class RepUser {
 	constructor(obj: any) {
 		const clazz = 'Rep'
 		obj = valueOrDefault(obj, {})
-		debug('RepUser:', 'obj.parms', obj.parms)
 		// this.analytics = arrayOfClasses(obj.analytics, RepAnalytic)
 		this.descriptionUser = strOptional(obj.descriptionUser, clazz, 'descriptionUser')
 		this.elements = arrayOfClasses(RepUserEl, obj.elements)

@@ -6,7 +6,7 @@
 		StateLayoutStyle,
 		StateLayoutComponentType,
 		StateMode,
-		StateSurfaceEmbed
+		StateSurfaceEmbedField
 	} from '$comps/app/types.appState'
 	import {
 		TokenApiDbDataObjSource,
@@ -25,6 +25,7 @@
 	} from '$comps/form/types.validation'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import Layout from '$comps/layout/BaseLayout.svelte'
+	import FormLabel from '$comps/form/FormLabel.svelte'
 	import {
 		DataObj,
 		DataObjCardinality,
@@ -73,49 +74,15 @@
 	}
 
 	function setStateEmbed(ids: string[]) {
-		stateEmbed = new StateSurfaceEmbed({
+		stateEmbed = new StateSurfaceEmbedField({
 			cardinality: DataObjCardinality.list,
-			dataObjSource: new TokenApiDbDataObjSource({ dataObjId: field.raw.dataObjModalId }),
+			dataObjSource: new TokenApiDbDataObjSource({ dataObjId: field.raw.dataObjEmbedId }),
 			layoutComponent: StateLayoutComponentType.layoutContent,
 			layoutStyle: StateLayoutStyle.embeddedField,
-			parentSetChangedEmbedded,
-			parentSetStatusValid,
 			parms: { listRecordIdParent: recordIdCurrent },
 			queryType: TokenApiQueryType.retrieve,
 			updateCallback
 		})
-	}
-
-	function parentSetChangedEmbedded(status: boolean) {
-		if (status) {
-			dataObj.dataFieldsChangedEmbedded.valueSet(recordIdCurrent, field.colDO.propName, true)
-		} else {
-			dataObj.dataFieldsChangedEmbedded.valueDrop(recordIdCurrent, field.colDO.propName)
-		}
-		state.objStatus.setChangedEmbedded(status)
-		fp.state = state
-	}
-
-	function parentSetStatusValid(status: boolean) {
-		let v: Validation
-		if (status) {
-			v = field.getValuationValid()
-		} else {
-			v = field.getValuationInvalid(
-				ValidityError.required,
-				ValidityErrorLevel.silent,
-				`"${field.colDO.label}" is required.`
-			)
-		}
-		v.validityFields.forEach(({ fieldName, validity }) => {
-			dataObj.dataFieldValidities.valueSet(recordIdCurrent, fieldName, validity)
-		})
-		state.objStatus.setValid(
-			dataObj.dataFieldValidities.values.every(
-				(fieldValue: FieldValue) => fieldValue.value.error === ValidityError.none
-			)
-		)
-		fp.state = state
 	}
 
 	async function updateCallback(obj: any) {
@@ -123,15 +90,9 @@
 	}
 </script>
 
-<div class="flex mt-6">
-	<label for={field.colDO.propName}>{field.colDO.label}</label>
-</div>
-<div>
-	{#if stateEmbed}
-		<object title="aria-embedded-column">
-			<Layout state={stateEmbed} />
-		</object>
-	{/if}
-</div>
+<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality} />
+{#if stateEmbed}
+	<Layout state={stateEmbed} />
+{/if}
 
 <!-- <DataViewer header="state.parms" data={stateDisplay.metaData.data} /> -->

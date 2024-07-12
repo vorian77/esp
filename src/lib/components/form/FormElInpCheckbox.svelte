@@ -4,6 +4,7 @@
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import { FieldAccess } from '$comps/form/field'
 	import { DataObjCardinality, getArray } from '$utils/types'
+	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	export let fp: FieldProps
@@ -52,26 +53,26 @@
 	}
 </script>
 
-<legend>{field.colDO.label}</legend>
+<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality} />
+
 <fieldset class={classFieldSet}>
 	{#if field.colDO.items}
 		{#each field.colDO.items as { data: id, display: label, selected }, i (id)}
 			{@const itemName = field.colDO.propName + '.' + id}
-			<div class="mt-1">
-				<label for={field.colDO.propName} class="flex items-center space-x-2">
-					<input
-						type="checkbox"
-						id={field.colDO.propName}
-						name={itemName}
-						class="rounded-sm {i === 0 ? 'mt-2' : ''}"
-						value={id}
-						bind:checked={selected}
-						on:input={onInput}
-					/>
-					<p class={i === 0 ? 'mt-2' : ''}>{label}</p>
-				</label>
+			<div class="mt-1 flex items-center space-x-2">
+				<input
+					type="checkbox"
+					id={field.colDO.propName}
+					name={itemName}
+					class="rounded-sm {i === 0 ? 'mt-2' : ''}"
+					value={id}
+					bind:checked={selected}
+					on:input={onInput}
+				/>
+				<p class={i === 0 ? 'mt-2' : ''}>{label}</p>
 			</div>
 		{/each}
 	{/if}
 </fieldset>
+
 <!-- <DataViewer header="items" data={field.items} /> -->

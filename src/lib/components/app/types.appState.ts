@@ -25,12 +25,13 @@ import {
 	TokenApiQuery,
 	TokenApiQueryData,
 	TokenApiQueryType,
-	TokenAppModalEmbed,
+	TokenAppModalEmbedField,
 	TokenAppDoActionConfirmType,
 	TokenAppDoActionFieldType,
 	TokenAppModalReturn,
 	TokenAppModalReturnType
 } from '$utils/types.token'
+import { Field } from '$comps/form/field'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { error } from '@sveltejs/kit'
 
@@ -70,6 +71,7 @@ export class DataObjParms {
 export class State {
 	actionProxies: StateActionProxy[] = []
 	app: App = new App()
+	dataObjForm?: DataObj
 	dataObjParms: DataObjParms = new DataObjParms()
 	dataQuery: MetaData = new MetaData()
 	layoutComponent: StateLayoutComponentType = StateLayoutComponentType.layoutContent
@@ -152,7 +154,7 @@ export class State {
 		queryType: TokenApiQueryType
 	) {
 		this.openDrawer(id, position, height, width, {
-			state: new StateSurfaceEmbed({
+			state: new StateSurfaceEmbedField({
 				cardinality: DataObjCardinality.detail,
 				dataObjSource,
 				layoutComponent: StateLayoutComponentType.layoutContent,
@@ -211,7 +213,7 @@ export class State {
 			layoutComponent: StateLayoutComponentType.layoutContent,
 			layoutStyle,
 			parms,
-			token: new TokenAppModalEmbed({ dataObjSourceEmbed, dataObjSourceModal, queryType })
+			token: new TokenAppModalEmbedField({ dataObjSourceEmbed, dataObjSourceModal, queryType })
 		})
 		this.openModal(state, fUpdate)
 	}
@@ -255,19 +257,41 @@ export class State {
 		this.packet = packet
 	}
 
-	setStatusChanged(dataObj: DataObj) {
-		return this.objStatus.setChanged(dataObj.getStatusChanged())
+	setDataObjForm(dataObj: DataObj) {
+		this.dataObjForm = dataObj
 	}
-	setStatusChangedEmbedded(dataObj: DataObj) {
-		return this.objStatus.setChangedEmbedded(dataObj.getStatusChangedEmbedded())
+
+	setFieldVal(dataObjForm: DataObj, row: number, field: Field, value: any) {
+		const dataObjFormCurrent = this.dataObjForm ? this.dataObjForm : dataObjForm
+
+		// set new value
+		dataObjFormCurrent.setFieldVal(row, field, value)
+		console.log('State.setFieldVal', { dataObjFormCurrent })
+
+		// set form status
+		// const recordId = dataObjFormCurrent.dataRecordsDisplay[row].id
+		// const statusField = field.getStatus(dataObjFormCurrent, recordId)
+		// this.objStatus = this.objStatus.update(statusField)
+
+		let newStatus = new DataObjStatus()
+		dataObjFormCurrent.dataRecordsDisplay.forEach((r) => {
+			const recordId = r.id
+			dataObjFormCurrent.fields.forEach((f) => {
+				if (!f.colDO.colDB.isNonData) {
+					const statusField = f.getStatus(dataObjFormCurrent, recordId)
+					newStatus = newStatus.update(statusField)
+				}
+			})
+		})
+		this.objStatus = newStatus
+
+		console.log('State.setFieldVal', {
+			status: this.objStatus,
+			dataObjFormCurrent
+		})
+		return this
 	}
-	setStatusValid(dataObj: DataObj) {
-		return this.objStatus.setValid(
-			dataObj.dataFieldValidities.values.every(
-				(fieldValue: FieldValue) => fieldValue.value.error === ValidityError.none
-			)
-		)
-	}
+
 	setStatusValidPre(dataObj: DataObj, isListEdit: boolean) {
 		this.objStatus.setValid(dataObj.preValidate(isListEdit))
 	}
@@ -306,6 +330,7 @@ export class StateActionProxy {
 }
 
 export enum StateLayoutComponentType {
+	layoutApp = 'layoutApp',
 	layoutContent = 'layoutContent',
 	layoutProcess = 'layoutProcess',
 	layoutTab = 'layoutTab'
@@ -341,7 +366,8 @@ export class StatePacket {
 }
 export enum StatePacketComponent {
 	dataObj = 'dataObj',
-	dataObjFieldEmbedded = 'dataObjFieldEmbedded',
+	embedField = 'embedField',
+	embedShell = 'embedShell',
 	modal = 'modal',
 	navBack = 'navBack',
 	navCrumbs = 'navCrumbs',
@@ -352,15 +378,20 @@ export enum StatePacketComponent {
 }
 
 export class StateSurfaceEmbed extends State {
-	parentSetChangedEmbedded?: Function
-	parentSetStatusValid?: Function
 	constructor(obj: any) {
 		const clazz = 'StateSurfaceEmbed'
+		super(obj)
+	}
+}
+
+export class StateSurfaceEmbedField extends StateSurfaceEmbed {
+	constructor(obj: any) {
+		const clazz = 'StateSurfaceEmbedField'
 		super(obj)
 		obj = valueOrDefault(obj, {})
 		this.nodeType = NodeType.object
 		this.packet = new StatePacket({
-			component: StatePacketComponent.dataObjFieldEmbedded,
+			component: StatePacketComponent.embedField,
 			confirmType: TokenAppDoActionConfirmType.none,
 			token: new TokenApiQuery(
 				required(obj.queryType, clazz, 'queryType'),
@@ -372,18 +403,20 @@ export class StateSurfaceEmbed extends State {
 				})
 			)
 		})
-		this.parentSetChangedEmbedded = obj.parentSetChangedEmbedded
-		this.parentSetStatusValid = obj.parentSetStatusValid
 	}
-	setStatusChanged(dataObj: DataObj): boolean {
-		const status = super.setStatusChanged(dataObj)
-		if (this.parentSetChangedEmbedded) this.parentSetChangedEmbedded(status)
-		return status
-	}
-	setStatusValid(dataObj: DataObj) {
-		const status = super.setStatusValid(dataObj)
-		if (this.parentSetStatusValid) this.parentSetStatusValid(status)
-		return status
+}
+
+export class StateSurfaceEmbedShell extends StateSurfaceEmbed {
+	constructor(obj: any) {
+		const clazz = 'StateSurfaceEmbedShell'
+		super(obj)
+		obj = valueOrDefault(obj, {})
+		this.nodeType = NodeType.object
+		this.packet = new StatePacket({
+			component: StatePacketComponent.embedShell,
+			confirmType: TokenAppDoActionConfirmType.none,
+			token: required(obj.token, clazz, 'token')
+		})
 	}
 }
 

@@ -267,6 +267,9 @@ export class RawDataObjPropDB {
 	constructor(obj: any, tables: DataObjTable[]) {
 		const clazz = 'RawDataObjPropDB'
 		obj = valueOrDefault(obj, {})
+
+		if (obj._propName === 'csf') debug('RawDataObjPropDB', 'obj.csf', obj)
+
 		this.codeDataSourceValue = memberOfEnum(
 			obj._codeDbDataSourceValue,
 			clazz,
@@ -323,11 +326,12 @@ export class RawDataObjPropDisplay {
 	hasItems: boolean
 	headerAlt?: string
 	height?: number
+	isDisplayable: boolean
 	isDisplayBlock: boolean
 	items: FieldItem[]
 	label: string
 	labelSide: string
-	orderDisplay?: number
+	orderDefine: number
 	orderSort?: number
 	propName: string
 	rawFieldAccess?: string
@@ -365,9 +369,10 @@ export class RawDataObjPropDisplay {
 		this.hasItems = booleanOrDefault(obj._hasItems, false)
 		this.headerAlt = strOptional(obj.headerAlt, clazz, 'headerAlt')
 		this.height = nbrOptional(obj.height, clazz, 'height')
+		this.isDisplayable = booleanOrDefault(obj.isDisplayable, false)
 		this.isDisplayBlock = booleanOrDefault(obj.isDisplayBlock, true)
 		this.items = arrayOfClasses(FieldItem, obj._items)
-		this.orderDisplay = nbrOptional(obj.orderDisplay, clazz, 'orderDisplay')
+		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
 		this.propName = strRequired(obj._propName, clazz, 'propName')
 		this.rawFieldAccess = strOptional(obj._codeAccess, clazz, 'rawFieldAccess')
@@ -378,12 +383,6 @@ export class RawDataObjPropDisplay {
 		/* dependent properties */
 		this.label = override(obj.headerAlt, this.colDB.header, clazz, 'label')
 		this.labelSide = valueOrDefault(this.colDB.headerSide, this.label)
-		if (this.propName === 'repUserConfig')
-			console.log('RawDataObjPropDisplay.constructor.this:', {
-				propName: this.propName,
-				fieldEmbedShellFields: this.fieldEmbedShellFields,
-				_fieldEmbedShellFields: obj._fieldEmbedShellFields
-			})
 	}
 }
 export class RawDataObjPropDisplayCustom {
@@ -434,13 +433,13 @@ export class RawDataObjPropDisplayEmbedListConfig {
 }
 
 export class RawDataObjPropDisplayEmbedListEdit {
-	dataObjModalId: string
+	dataObjEmbedId: string
 	parmValueColumnType?: string
 	parmValueColumnValue?: string
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjPropDisplayEmbedListEdit'
-		this.dataObjModalId = strRequired(obj._dataObjEmbedId, clazz, '_dataObjId')
+		this.dataObjEmbedId = strRequired(obj._dataObjEmbedId, clazz, 'dataObjEmbedId')
 		this.parmValueColumnType = strOptional(obj._parmValueColumnType, clazz, 'parmValueColumnType')
 		this.parmValueColumnValue = strOptional(
 			obj._parmValueColumnValue,

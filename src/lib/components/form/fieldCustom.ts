@@ -12,7 +12,7 @@ export class FieldCustom extends Field {
 		const propRaw = valueOrDefault(props.propRaw, {})
 		const clazz = 'FieldCustom'
 		this.colDO.propName +=
-			'_' + strRequired(propRaw?.orderDisplay?.toString(), clazz, 'orderDisplay')
+			'_' + strRequired(propRaw?.orderDefine?.toString(), clazz, 'orderDisplay')
 		this.fieldAccess = FieldAccess.readonly
 		const customCol = required(propRaw.customCol, clazz, 'customCol') as RawDataObjPropDisplayCustom
 		this.colDO.label = strRequired(customCol.customColLabel, clazz, 'label')
