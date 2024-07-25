@@ -243,8 +243,6 @@ module sys_core {
   }
 
   type SysDataObjFieldEmbedListEdit extending sys_core::SysObj {
-      parmValueColumnType: sys_db::SysColumn;
-      parmValueColumnValue: sys_db::SysColumn;
       required dataObjEmbed: sys_core::SysDataObj {
         on source delete allow;
       };

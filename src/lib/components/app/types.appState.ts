@@ -31,7 +31,6 @@ import {
 	TokenAppModalReturn,
 	TokenAppModalReturnType
 } from '$utils/types.token'
-import { Field } from '$comps/form/field'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { error } from '@sveltejs/kit'
 
@@ -71,8 +70,9 @@ export class DataObjParms {
 export class State {
 	actionProxies: StateActionProxy[] = []
 	app: App = new App()
-	dataObjForm?: DataObj
+	dataObjFormListEdit?: DataObj
 	dataObjParms: DataObjParms = new DataObjParms()
+	dataObjRoot?: DataObj
 	dataQuery: MetaData = new MetaData()
 	layoutComponent: StateLayoutComponentType = StateLayoutComponentType.layoutContent
 	layoutStyle: StateLayoutStyle = StateLayoutStyle.dataObjTab
@@ -100,7 +100,6 @@ export class State {
 	closeModal() {
 		this.storeModal.close()
 	}
-
 	consume(components: StatePacketComponent | Array<StatePacketComponent>) {
 		if (this.packet && this.packet.component && components.includes(this.packet.component)) {
 			const packet = this.packet
@@ -122,7 +121,6 @@ export class State {
 	modeReset() {
 		this.modes = []
 	}
-
 	newApp() {
 		this.app = new App()
 		this.dataObjParms.reset()
@@ -256,46 +254,21 @@ export class State {
 	set(packet: StatePacket) {
 		this.packet = packet
 	}
-
-	setDataObjForm(dataObj: DataObj) {
-		this.dataObjForm = dataObj
+	setDataObjRoot(dataObj: DataObj) {
+		this.dataObjRoot = dataObj
 	}
-
-	setFieldVal(dataObjForm: DataObj, row: number, field: Field, value: any) {
-		const dataObjFormCurrent = this.dataObjForm ? this.dataObjForm : dataObjForm
-
-		// set new value
-		dataObjFormCurrent.setFieldVal(row, field, value)
-		console.log('State.setFieldVal', { dataObjFormCurrent })
-
-		// set form status
-		// const recordId = dataObjFormCurrent.dataRecordsDisplay[row].id
-		// const statusField = field.getStatus(dataObjFormCurrent, recordId)
-		// this.objStatus = this.objStatus.update(statusField)
-
-		let newStatus = new DataObjStatus()
-		dataObjFormCurrent.dataRecordsDisplay.forEach((r) => {
-			const recordId = r.id
-			dataObjFormCurrent.fields.forEach((f) => {
-				if (!f.colDO.colDB.isNonData) {
-					const statusField = f.getStatus(dataObjFormCurrent, recordId)
-					newStatus = newStatus.update(statusField)
-				}
+	setStatus() {
+		if (this.dataObjRoot) {
+			this.objStatus = this.dataObjRoot.setStatus()
+			return this
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'State.setStatus',
+				message: 'No root data object defined.'
 			})
-		})
-		this.objStatus = newStatus
-
-		console.log('State.setFieldVal', {
-			status: this.objStatus,
-			dataObjFormCurrent
-		})
-		return this
+		}
 	}
-
-	setStatusValidPre(dataObj: DataObj, isListEdit: boolean) {
-		this.objStatus.setValid(dataObj.preValidate(isListEdit))
-	}
-
 	setUpdateCallback(updateCallback: Function) {
 		this.updateCallback = updateCallback
 	}
@@ -473,6 +446,7 @@ async function askB4Transition(
 	if (state instanceof StateSurfaceModal) {
 		if (confirm(confirmConfig.message)) {
 			state.resetState()
+			state.modeReset()
 			updateFunction(state, obj, updateCallback)
 		}
 	} else {

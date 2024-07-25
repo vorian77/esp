@@ -1,9 +1,9 @@
 import {
-	arrayOfEnums,
 	booleanOrFalse,
 	arrayOfClasses,
 	memberOfEnum,
 	memberOfEnumOrDefault,
+	memberOfEnumList,
 	strOptional,
 	strRequired,
 	valueOrDefault
@@ -30,9 +30,9 @@ export class FormSource {
 		// apis
 		if (obj.apis) {
 			this.actions = arrayOfClasses(FormSourceActionAPI, obj.apis)
-			this.actions.forEach((a, i) => {
-				this.actionsMap[a.dbAction] = i
-			})
+			// this.actions.forEach((a, i) => {
+			// 	this.actionsMap[a.dbAction] = i
+			// })
 		}
 
 		// db
@@ -40,9 +40,9 @@ export class FormSource {
 			const directs = arrayOfClasses(FormSourceActionDirect, obj.directs)
 			directs.forEach((d) => {
 				const i = this.actions.push(d)
-				d.dbActions.forEach((action) => {
-					this.actionsMap[action] = i - 1
-				})
+				// d.dbActions.forEach((action) => {
+				// 	this.actionsMap[action] = i - 1
+				// })
 			})
 		}
 	}
@@ -81,10 +81,8 @@ export class FormSourceActionAPI extends FormSourceAction implements FormSourceA
 	method: HTMLMETHOD
 	url: string
 	dbAction: FormSourceDBAction
-
 	constructor(obj: any) {
 		super(obj)
-
 		obj = valueOrDefault(obj, {})
 		this.method = memberOfEnum(
 			obj.method,
@@ -111,18 +109,16 @@ export class FormSourceActionDirect extends FormSourceAction implements FormSour
 	constructor(obj: any) {
 		const clazz = 'FormSourceActionDirect'
 		super(obj)
-
 		obj = valueOrDefault(obj, {})
-		this.dbActions = arrayOfEnums(
-			obj.dbActions,
-			'dbActions',
+		this.dbActions = memberOfEnumList(
 			clazz,
+			'dbActions',
+			obj.dbActions,
 			'FormSourceDBAction',
 			FormSourceDBAction
 		)
 		this.statement = strOptional(obj.statement, clazz, 'statement')
 		this.singleTable = strOptional(obj.singleTable, clazz, 'singleTable')
-		console.log('FormSourceActionDirect', this)
 	}
 }
 

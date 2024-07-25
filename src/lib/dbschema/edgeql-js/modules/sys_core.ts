@@ -471,8 +471,6 @@ const SysDataObjFieldEmbedListConfig: $.$expr_PathNode<$.TypeSet<$SysDataObjFiel
 
 export type $SysDataObjFieldEmbedListEditλShape = $.typeutil.flatten<$SysObjλShape & {
   "dataObjEmbed": $.LinkDesc<$SysDataObj, $.Cardinality.One, {}, false, false,  false, false>;
-  "parmValueColumnType": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "parmValueColumnValue": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<fieldEmbedListEdit[is sys_core::SysDataObjColumn]": $.LinkDesc<$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<fieldEmbedListEdit": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

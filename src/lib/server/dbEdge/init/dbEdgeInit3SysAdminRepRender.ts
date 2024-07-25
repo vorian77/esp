@@ -22,14 +22,14 @@ async function initFieldEmbedListEditRepUserElement() {
 		codeComponent: 'FormList',
 		codeListEditPresetType: 'save',
 		exprFilter:
-			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdParent>).elements.id AND .element.isDisplayable',
+			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdCurrent>).elements.id AND .element.isDisplayable',
 		exprOrder: '.orderDisplay',
 		header: 'Elements',
 		isListEdit: true,
 		isListHideSearch: true,
 		listEditPresetExpr: `
 			WITH 
-			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdParent>),
+			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdCurrent>),
 			repVals := repUser.report.elements,
 			userVals := repUser.elements.element, 
 			newVals := (SELECT repVals EXCEPT userVals)
@@ -144,14 +144,14 @@ async function initFieldEmbedListEditRepUserParm() {
 		codeComponent: 'FormList',
 		codeListEditPresetType: 'save',
 		exprFilter:
-			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdParent>).parms.id',
+			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdCurrent>).parms.id',
 		exprOrder: '.parm.orderDefine',
 		header: 'Parms',
 		isListEdit: true,
 		isListHideSearch: true,
 		listEditPresetExpr: `
 			WITH 
-			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdParent>),
+			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdCurrent>),
 			repVals := repUser.report.parms,
 			userVals := repUser.parms.parm, 
 			newVals := (SELECT repVals EXCEPT userVals)
@@ -308,9 +308,7 @@ async function initFieldEmbedListEditRepUserParm() {
 	await addDataObjFieldEmbedListEdit({
 		dataObjEmbed: 'dofls_sys_rep_user_parm',
 		name: 'fele_sys_rep_user_parm',
-		owner: 'app_sys_rep',
-		parmValueColumnType: 'codeParmType',
-		parmValueColumnValue: 'parmValue'
+		owner: 'app_sys_rep'
 	})
 }
 
@@ -478,8 +476,9 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'embedListEdit',
 				columnName: 'parms',
-				isDisplayable: false,
+				isDisplayable: true,
 				orderDefine: 120,
+				orderDisplay: 120,
 				fieldEmbedListEdit: 'fele_sys_rep_user_parm',
 				indexTable: 0,
 				linkTable: 'SysRepUserParm'
@@ -487,21 +486,22 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'embedListEdit',
 				columnName: 'elements',
-				isDisplayable: false,
+				isDisplayable: true,
 				orderDefine: 130,
+				orderDisplay: 130,
 				fieldEmbedListEdit: 'fele_sys_rep_user_element',
 				indexTable: 0,
 				linkTable: 'SysRepUserEl'
 			},
-			{
-				codeFieldElement: 'embedShell',
-				columnName: 'custom_embed_shell',
-				isDisplayable: true,
-				headerAlt: 'Report Config',
-				nameCustom: 'repUserConfig',
-				orderDisplay: 140,
-				orderDefine: 140
-			},
+			// {
+			// 	codeFieldElement: 'embedShell',
+			// 	columnName: 'custom_embed_shell',
+			// 	isDisplayable: true,
+			// 	headerAlt: 'Report Config',
+			// 	nameCustom: 'repUserConfig',
+			// 	orderDisplay: 140,
+			// 	orderDefine: 140
+			// },
 
 			/* management */
 			{

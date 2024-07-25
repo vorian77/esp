@@ -135,7 +135,8 @@ function queryDataPre(queryType: TokenApiQueryType, app: App | undefined = undef
 		if (levelGrandParent) {
 			const tab = levelGrandParent.getCurrTab()
 			if (tab && tab.dataObj?.raw.codeCardinality === DataObjCardinality.list) {
-				parms['listRecordIdParent'] = tab.listGetData().id
+				// parms['listRecordIdParent'] = tab.listGetData().id
+				// parms['listRecordIdCurrent'] = tab.listGetData().id
 			}
 		}
 	}

@@ -69,16 +69,11 @@ export class Field {
 		const status = new DataObjStatus()
 
 		// changed
-		const changed = dataObjForm.dataFieldsChanged.valueGet(recordId, this.colDO.propName) || false
-		if (changed) console.log(`Field.getStatus.changed: ${this.colDO.propName}: ${changed}`)
-		status.setChanged(changed)
+		const isChanged = dataObjForm.dataFieldsChanged.valueGet(recordId, this.colDO.propName) || false
+		status.setChanged(isChanged)
 
 		// valid
-		const validity = dataObjForm.dataFieldValidities.valueGet(recordId, this.colDO.propName)
-
-		// console.log(
-		// 	`Field.getStatus.validity: ${this.colDO.propName}: ${validity ? validity.error : 'none'}`
-		// )
+		const validity = dataObjForm.dataFieldsValidity.valueGet(recordId, this.colDO.propName)
 		status.setValid(validity === undefined || validity.error === ValidityError.none)
 
 		return status
@@ -105,29 +100,18 @@ export class Field {
 		])
 	}
 
-	validate(record: DataRecord, row: number, missingDataErrorLevel: ValidityErrorLevel): Validation {
-		return this.validateField(this, record, missingDataErrorLevel)
-	}
-
-	validateField(
-		field: Field,
-		record: DataRecord,
-		missingDataErrorLevel: ValidityErrorLevel
-	): Validation {
-		const fieldName = field.colDO.propName
-		const value = record[fieldName]
-
-		if (field.colDO.colDB.isNonData) {
+	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel): Validation {
+		if (this.colDO.colDB.isNonData) {
 			return this.getValuationValid()
 		}
 
 		// only validate access types that require validation
-		if (![FieldAccess.required, FieldAccess.optional].includes(field.fieldAccess)) {
+		if (![FieldAccess.required, FieldAccess.optional].includes(this.fieldAccess)) {
 			return this.getValuationValid()
 		}
 
 		// optional & null/undefined
-		if (field.fieldAccess === FieldAccess.optional && [null, undefined, ''].includes(value)) {
+		if (this.fieldAccess === FieldAccess.optional && [null, undefined, ''].includes(value)) {
 			return this.getValuationValid()
 		}
 
@@ -136,7 +120,7 @@ export class Field {
 			return this.getValuationInvalid(
 				ValidityError.required,
 				missingDataErrorLevel,
-				`"${field.colDO.label}" is required.`
+				`"${this.colDO.label}" is required.`
 			)
 		}
 
@@ -149,7 +133,8 @@ export enum FieldAccess {
 	readonly = 'readonly',
 	hidden = 'hidden',
 	optional = 'optional',
-	required = 'required'
+	required = 'required',
+	shell = 'shell'
 }
 
 export enum FieldAlignment {

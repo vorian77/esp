@@ -41,117 +41,198 @@ const FILENAME = 'server/dbEdgeQueryProcess.ts'
 export async function processDataObj(token: TokenApiQuery) {
 	debug('processDataObj', 'queryType', token.queryType)
 	const queryData = TokenApiQueryData.load(token.queryData)
-	debug('processDataObj', 'queryData.tree', queryData.tree)
 
 	let { rawDataObj, returnRawData } = await getRawDataObj(token.dataObjSource, queryData)
 	debug('processDataObj', 'rawDataObj.name', rawDataObj.name)
 
+	// expression
+	if (token.queryType === TokenApiQueryType.expression) {
+		const expr = strRequired(
+			rawDataObj.exprObject,
+			`${FILENAME}.${rawDataObj.name}.processDataObj.expression`,
+			'rawDataObj.exprObject'
+		)
+		return new ApiResult(true, await executeExpr(expr, queryData))
+	}
+
+	// queries
 	const query = new Query(rawDataObj)
-	let scriptGroup: ScriptGroup
+	let scriptGroup = new ScriptGroup()
 
-	switch (token.queryType) {
-		case TokenApiQueryType.expression:
-			const expr = strRequired(
-				rawDataObj.exprObject,
-				`${FILENAME}.${rawDataObj.name}.processDataObj.expression`,
-				'rawDataObj.exprObject'
-			)
-			return new ApiResult(true, await executeExpr(expr, queryData))
+	let returnData = new DataObjData(rawDataObj.codeCardinality)
+	// await initFields(rawDataObj, returnData)
+	// debug('processDataObj', 'returnData.fields', returnData.fields)
 
+	await processDataObjQuery(token.queryType, query, queryData, scriptGroup)
+	return processDataObjExecute(query, scriptGroup, rawDataObj, returnRawData, queryData)
+}
+
+async function processDataObjQuery(
+	queryType: TokenApiQueryType,
+	query: Query,
+	queryData: TokenApiQueryData,
+	scriptGroup: ScriptGroup
+) {
+	switch (queryType) {
 		case TokenApiQueryType.preset:
-			scriptGroup = new ScriptGroup(token.queryType, query, queryData)
-			const processRowSelectPreset = new ProcessRowSelectPreset(
-				query.rawDataObj.rawPropsSelect,
-				DataRecordStatus.preset
+			scriptGroup.setRowProcess(
+				new ProcessRowSelectPreset(query.rawDataObj.rawPropsSelect, DataRecordStatus.preset)
 			)
-			return execute(
-				query,
-				scriptGroup,
-				rawDataObj,
-				returnRawData,
-				queryData,
-				processRowSelectPreset
-			)
+			scriptGroup.addScriptPreset(query, queryData)
+			scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
+			break
 
 		case TokenApiQueryType.retrieve:
-			scriptGroup = new ScriptGroup(token.queryType, query, queryData)
-			const processRowSelect = new ProcessRowSelect(
-				query.rawDataObj.rawPropsSelect,
-				DataRecordStatus.retrieved
+			scriptGroup.setRowProcess(
+				new ProcessRowSelect(query.rawDataObj.rawPropsSelect, DataRecordStatus.retrieved)
 			)
-			return execute(query, scriptGroup, rawDataObj, returnRawData, queryData, processRowSelect)
+			scriptGroup.addScriptRetrieve(query, queryData)
+			scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
+
+			// embed fields
+			// embedFields = query.rawDataObj.rawPropsSelect.filter((prop) => {
+			// 	return prop.fieldEmbed !== undefined
+			// })
+			// for (let i = 0; i < embedFields.length; i++) {
+			// 	const fieldName = strRequired(
+			// 		embedFields[i]?.propName,
+			// 		'processDataObj.retrieve.embedFields.retrieve',
+			// 		'embedFields[i]?.propName'
+			// 	)
+			// 	const dataObjId = strRequired(
+			// 		embedFields[i]?.fieldEmbed?.id,
+			// 		'processDataObj.retrieve.embedFields.retrieve',
+			// 		'embedFields[i]?.fieldEmbed?.id'
+			// 	)
+			// 	let { rawDataObj, returnRawData } = await getRawDataObj(
+			// 		new TokenApiDbDataObjSource({ dataObjId }),
+			// 		queryData
+			// 	)
+			// 	returnData.addField(DataObjCardinality.list, fieldName, rawDataObj)
+
+			// 	const embedQuery = new Query(rawDataObj)
+			// 	scriptGroup.addScriptRetrieveItem(
+			// 		embedQuery,
+			// 		queryData,
+			// 		ScriptExePost.fieldEmbed,
+			// 		fieldName
+			// 	)
+			// 	if (embedQuery.rawDataObj.listEditPresetExpr) {
+			// 		debug('processDataObj', `embedQuery.rawDataObj.listEditPresetExpr`, fieldName)
+			// 		scriptGroup.addScriptPresetListEdit(embedQuery, queryData, fieldName)
+			// 	}
+			// }
+			break
 
 		case TokenApiQueryType.save:
-			scriptGroup = new ScriptGroup(token.queryType, query, queryData)
-			const processRowUpdate = new ProcessRowUpdate(
-				query.rawDataObj.rawPropsSelect,
-				queryData.dataSave
+			scriptGroup.setRowProcess(
+				new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataSave)
 			)
-			return execute(query, scriptGroup, rawDataObj, returnRawData, queryData, processRowUpdate)
+			scriptGroup.addScriptSave(query, queryData)
+
+			// embed fields
+			embedFields = query.rawDataObj.rawPropsSelect.filter((prop) => {
+				return prop.fieldEmbed !== undefined
+			})
+			debug('processDataObj', 'embedFields', embedFields)
+			for (let i = 0; i < embedFields.length; i++) {
+				// const fieldName = strRequired(
+				// 	embedFields[i]?.propName,
+				// 	'processDataObj.retrieve.embedFields.retrieve',
+				// 	'embedFields[i]?.propName'
+				// )
+				// const dataObjId = strRequired(
+				// 	embedFields[i]?.fieldEmbed?.id,
+				// 	'processDataObj.retrieve.embedFields.retrieve',
+				// 	'embedFields[i]?.fieldEmbed?.id'
+				// )
+				// let { rawDataObj, returnRawData } = await getRawDataObj(
+				// 	new TokenApiDbDataObjSource({ dataObjId }),
+				// 	queryData
+				// )
+				// returnData.addField(DataObjCardinality.list, fieldName, rawDataObj)
+				// const embedQuery = new Query(rawDataObj)
+				// 	scriptGroup.initScriptRetrieve(embedQuery, queryData, ScriptExePost.fieldEmbed, fieldName)
+				//
+				// if (embedQuery.rawDataObj.listEditPresetExpr) {
+				// 	debug('processDataObj', `embedQuery.rawDataObj.listEditPresetExpr`, fieldName)
+				// 		scriptGroup.initScriptPresetListEdit(embedQuery, queryData, fieldName)
+				//
+				// }
+			}
+			break
 
 		default:
 			error(500, {
 				file: FILENAME,
-				function: 'processQuery',
-				message: `No case defined for row TokenApiDbQueryType: ${token.queryType}`
+				function: 'processQuery.processDataObjQuery',
+				message: `No case defined for row TokenApiDbQueryType: ${queryType}`
 			})
 	}
 }
 
-async function execute(
+async function processDataObjExecute(
 	query: Query,
 	scriptGroup: ScriptGroup,
 	rawDataObj: RawDataObj,
 	returnRawData: boolean,
 	queryData: TokenApiQueryData,
-	process: ProcessRow
+	dataReturn: DataObjData = new DataObjData(rawDataObj.codeCardinality)
 ) {
-	const data = new DataObjData(rawDataObj.codeCardinality)
-
 	for (let i = 0; i < scriptGroup.scripts.length; i++) {
 		const script = scriptGroup.scripts[i]
 		if (script) {
+			script.evalExpr()
 			const rawDataList = await executeQuery(script.script)
 			switch (script.exePost) {
-				case ScriptExePost.formatData:
-					formatData(data, rawDataList, process)
+				case ScriptExePost.dataItems:
+					dataReturn.items = rawDataList[0]
 					break
+
+				case ScriptExePost.fieldEmbed:
+					const fieldData = dataReturn.getFieldData(script.id)
+					rawDataList.forEach((row) => {
+						fieldData.addRow(DataRecordStatus.retrieved, row)
+					})
+					break
+
+				case ScriptExePost.formatData:
+					if (scriptGroup.rowProcess) formatData(dataReturn, rawDataList, scriptGroup.rowProcess)
+					if (query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
+						queryData.recordSet(dataReturn.getDetailRecord())
+					}
+					break
+
 				case ScriptExePost.none:
 					break
+
 				case ScriptExePost.processRowSelectPreset:
 					const processRowListEdit = new ProcessRowSelectPreset(
 						query.rawDataObj.rawPropsSelect,
 						DataRecordStatus.preset
 					)
-					formatData(data, rawDataList, processRowListEdit)
+					formatData(dataReturn, rawDataList, processRowListEdit)
 					break
 
 				default:
 					error(500, {
 						file: FILENAME,
-						function: 'execute',
+						function: 'processDataObjExecute',
 						message: `No case defined for row script.exePost: ${script.exePost}`
 					})
 			}
 		}
 	}
-	// Data Items
-	const scriptDataItems = scriptGroup.initScriptDataItems(
-		query,
-		query.rawDataObj.rawPropsSelect,
-		queryData,
-		data
-	)
-	if (scriptDataItems.script) {
-		const rawDataItems = await executeQuery(scriptDataItems.script)
-		data.items = rawDataItems[0]
-	}
 
 	// return
-	debugData('execute', 'data.dataRows.formatted.records', data.dataRows)
-	let returnData = returnRawData ? { dataObjData: data, rawDataObj } : { dataObjData: data }
-	return new ApiResult(true, returnData)
+	debugData('execute', 'data.dataRows.formatted.records', dataReturn.dataRows)
+	if (dataReturn.dataRows.length > 0) {
+		debug('execute', 'data.dataRows[0]', dataReturn.dataRows[0].record)
+	}
+	dataReturn = returnRawData ? { dataObjData: dataReturn, rawDataObj } : { dataObjData: dataReturn }
+	return new ApiResult(true, dataReturn)
 }
+
 async function executeExpr(expr: string, queryData: TokenApiQueryData) {
 	const query = evalExpr(expr, queryData)
 	return await executeQuery(query)
@@ -226,7 +307,9 @@ export async function getRepParmItems(token: TokenApiQueryData) {
 	const queryData = TokenApiQueryData.load(token)
 	const rawDataObj = await getRawDataObjDynamic(DataObjProcessType.reportParmItems, queryData, {})
 	const query = new Query(rawDataObj)
-	const scriptGroup = new ScriptGroup(TokenApiQueryType.retrieveRepParmItems, query, queryData)
+	const scriptGroup = new ScriptGroup()
+
+	scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsRepParmItems)
 
 	if (scriptGroup.scripts.length === 1) {
 		const rawDataItems = await executeQuery(scriptGroup.scripts[0].script)
@@ -240,7 +323,10 @@ export async function getRepParmItems(token: TokenApiQueryData) {
 	}
 }
 
-async function getRawDataObj(dataObjSource: TokenApiDbDataObjSource, queryData: TokenApiQueryData) {
+export async function getRawDataObj(
+	dataObjSource: TokenApiDbDataObjSource,
+	queryData: TokenApiQueryData
+) {
 	let dbDataObj: any
 	let rawDataObj: RawDataObj
 	let returnRawData = false
@@ -278,13 +364,34 @@ async function getRawDataObj(dataObjSource: TokenApiDbDataObjSource, queryData: 
 		})
 	}
 }
-
+async function initFields(rawDataObj: RawDataObj, returnData: DataObjData) {
+	let embedFields = rawDataObj.rawPropsSelect.filter((prop) => {
+		return prop.fieldEmbed !== undefined
+	})
+	for (let i = 0; i < embedFields.length; i++) {
+		const fieldName = strRequired(
+			embedFields[i]?.propName,
+			'processDataObj.retrieve.embedFields.retrieve',
+			'embedFields[i]?.propName'
+		)
+		const dataObjId = strRequired(
+			embedFields[i]?.fieldEmbed?.id,
+			'processDataObj.retrieve.embedFields.retrieve',
+			'embedFields[i]?.fieldEmbed?.id'
+		)
+		let { rawDataObj, returnRawData } = await getRawDataObj(
+			new TokenApiDbDataObjSource({ dataObjId }),
+			queryData
+		)
+		returnData.addField(DataObjCardinality.list, fieldName, rawDataObj)
+	}
+}
 export async function processExpression(queryData: TokenApiQueryData) {
 	queryData = TokenApiQueryData.load(queryData)
 	return new ApiResult(true, executeExpr(queryData.parms.expr, queryData))
 }
 
-class ProcessRow {
+export class ProcessRow {
 	propNames: string[] = []
 	propsSelect: RawDataObjPropDB[]
 	constructor(propsSelect: RawDataObjPropDB[]) {
@@ -393,18 +500,19 @@ class ProcessRowUpdate extends ProcessRow {
 		this.processRowProps(dataReturn, recordRaw, newStatus)
 	}
 	processRowProps(dataReturn: DataObjData, recordReturn: DataRecord, status: DataRecordStatus) {
-		const clazz = 'ProcessRowUpdate.processRowProps'
 		this.propsSelect.forEach((prop) => {
 			if (prop.codeDataType === PropDataType.link) {
 				const recordKeyLink = '_' + prop.propName
 				recordReturn[prop.propName] = recordReturn[recordKeyLink]
 				delete recordReturn[recordKeyLink]
 			}
-			recordReturn[prop.propName] = formatDataForDisplay(
-				prop,
-				prop.codeDataType,
-				recordReturn[prop.propName]
-			)
+			if (prop.codeDataType !== PropDataType.link) {
+				recordReturn[prop.propName] = formatDataForDisplay(
+					prop,
+					prop.codeDataType,
+					recordReturn[prop.propName]
+				)
+			}
 		})
 		dataReturn.addRow(status, recordReturn)
 	}

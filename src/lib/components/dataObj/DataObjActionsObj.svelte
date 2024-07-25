@@ -27,7 +27,7 @@
 	let actions: DataObjActionField[]
 	let isEditing: boolean = false
 	let padding = ''
-	let objStatus: DataObjStatus = state.objStatus
+	let objStatus: DataObjStatus
 	let modes: StateMode[]
 
 	$: load()

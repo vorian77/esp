@@ -103,13 +103,10 @@ export class FieldInput extends Field {
 		return new FieldInput(props)
 	}
 
-	validate(record: DataRecord, row: number, missingDataErrorLevel: ValidityErrorLevel) {
+	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {
 		// base validate
-		let v = super.validate(record, row, missingDataErrorLevel)
+		let v = super.validate(row, value, missingDataErrorLevel)
 		if ([ValidationStatus.valid, ValidationStatus.invalid].includes(v.status)) return v
-
-		// input validate
-		const value = record[this.colDO.propName]
 
 		/* minLength */
 		if (this.minLength || this.minLength === 0) {

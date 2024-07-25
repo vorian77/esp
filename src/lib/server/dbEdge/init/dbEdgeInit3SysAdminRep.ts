@@ -1465,19 +1465,21 @@ async function initRepParm() {
 		tables: [{ index: 0, table: 'SysRepParm' }],
 		fields: [
 			{
+				codeAccess: 'readOnly',
 				columnName: 'id',
 				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
+				isDisplayable: true,
+				orderDefine: 10,
+				orderDisplay: 10
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'isRequired',
+				indexTable: 0,
 				isDisplayable: true,
 				isExcludeUpdate: true,
 				orderDisplay: 15,
-				orderDefine: 15,
-				indexTable: 0
+				orderDefine: 15
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1520,18 +1522,21 @@ async function initRepParm() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'description',
+				indexTable: 0,
 				isDisplayable: true,
 				isExcludeUpdate: true,
-				orderDisplay: 60,
 				orderDefine: 60,
-				indexTable: 0
+				orderDisplay: 60
 			},
 			{
+				codeAccess: 'readOnly',
+				codeFieldElement: 'number',
 				columnName: 'orderDefine',
-				orderSort: 10,
-				orderDefine: 70,
 				indexTable: 0,
-				isDisplayable: false
+				isDisplayable: true,
+				orderDefine: 70,
+				orderDisplay: 70,
+				orderSort: 10
 			},
 
 			/* management */

@@ -89,6 +89,15 @@ export async function getDataObjById(dataObjId: string) {
 		_codeDataType: doc.column.codeDataType.name,
 		_codeDbDataSourceValue: doc.codeDbDataSourceValue.name,
 		_codeSortDir: doc.codeSortDir.name,
+		_fieldEmbedListConfig: e.select(doc.fieldEmbedListConfig, (fe) => ({
+			_dataObjEmbedId: fe.dataObjEmbed.id
+		})),
+		_fieldEmbedListEdit: e.select(doc.fieldEmbedListEdit, (fe) => ({
+			_dataObjEmbedId: fe.dataObjEmbed.id
+		})),
+		_fieldEmbedListSelect: e.select(doc.fieldEmbedListSelect, (fe) => ({
+			_dataObjListId: fe.dataObjList.id
+		})),
 		...shapeColumnHasItems(doc),
 		_isMultiSelect: doc.column.isMultiSelect,
 		_isSelfReference: doc.column.isSelfReference,
@@ -236,9 +245,7 @@ export async function getDataObjById(dataObjId: string) {
 					_dataObjModalId: fe.dataObjModal.id
 				})),
 				_fieldEmbedListEdit: e.select(doc.fieldEmbedListEdit, (fe) => ({
-					_dataObjEmbedId: fe.dataObjEmbed.id,
-					_parmValueColumnType: fe.parmValueColumnType.name,
-					_parmValueColumnValue: fe.parmValueColumnValue.name
+					_dataObjEmbedId: fe.dataObjEmbed.id
 				})),
 				_fieldEmbedListSelect: e.select(doc.fieldEmbedListSelect, (fe) => ({
 					_actionFieldGroupModal: e.select(fe.actionFieldGroupModal, (afg) => ({

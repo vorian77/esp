@@ -312,8 +312,6 @@ export namespace sys_core {
   }
   export interface SysDataObjFieldEmbedListEdit extends SysObj {
     "dataObjEmbed": SysDataObj;
-    "parmValueColumnType"?: sys_db.SysColumn | null;
-    "parmValueColumnValue"?: sys_db.SysColumn | null;
   }
   export interface SysDataObjFieldEmbedListSelect extends SysObj {
     "dataObjList": SysDataObj;

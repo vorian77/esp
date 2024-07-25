@@ -1,26 +1,9 @@
-import {
-	debug,
-	getArray,
-	strOptional,
-	memberOfEnum,
-	nbrOrDefault,
-	RepElementType,
-	valueOrDefault,
-	booleanOrFalse
-} from '$lib/utils/utils'
-import {
-	DataObjCardinality,
-	DataObjParent,
-	classOptional,
-	required,
-	strRequired,
-	DBTable
-} from '$utils/types'
+import { nbrOrDefault, valueOrDefault } from '$lib/utils/utils'
+import { classOptional, DataObjParent, DBTable, debug, required, strRequired } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
 import {
 	PropDataSourceValue,
 	PropDataType,
-	PropLink,
 	PropLinkItemsDefn,
 	RawDataObj,
 	RawDataObjPropDB
@@ -73,7 +56,6 @@ export class Query {
 			}
 		})
 
-		script = evalExpr(script, queryData)
 		if (script) script = 'FILTER ' + script
 		return script
 	}
@@ -100,7 +82,6 @@ export class Query {
 			properties = this.addItemComma(properties, prop)
 		})
 
-		properties = evalExpr(properties, queryData)
 		if (properties) properties = `{\n${properties}\n}`
 		return properties
 	}
@@ -231,10 +212,6 @@ export class Query {
 		}
 
 		// 1. build props, subObjGroup
-		console.log(
-			'getPropsSave.props:',
-			props.map((prop) => prop.propName)
-		)
 		props.forEach((propObj, idx) => {
 			const prop = `${propObj.propName} := ${getPropExpr(idx, propObj)}`
 
@@ -263,7 +240,6 @@ export class Query {
 
 		// main
 		processProps(this)
-		properties = evalExpr(properties, queryData)
 		if (!properties) properties = `dummy:= <str>{}`
 		if (properties) properties = `{\n${properties}\n}`
 		return properties
@@ -337,7 +313,7 @@ export class Query {
 				properties = this.addItemComma(properties, `_${prop.propName} := <uuid>{}`)
 			}
 		})
-		properties = evalExpr(properties, queryData)
+
 		if (!properties) properties = `dummy:= <str>{}`
 		properties = `SELECT {\n${properties}\n}`
 		return properties
@@ -429,7 +405,6 @@ export class Query {
 		}
 		script.build()
 		script.script = `${`_items_${prop.propName}`} := (${script.script})`
-		script.script = evalExpr(script.script, queryData)
 		return script.script
 	}
 
@@ -445,7 +420,6 @@ export class Query {
 			})
 		}
 
-		script = evalExpr(script, queryData)
 		if (script) script = 'ORDER BY ' + script
 		return script
 	}

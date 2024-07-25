@@ -711,7 +711,6 @@ export async function initPreColumn() {
 		isExcludeInsert: true,
 		isExcludeSelect: true,
 		isExcludeUpdate: true,
-		isNonData: true,
 		name: 'custom_embed_shell'
 	})
 	await addColumn({
@@ -1571,20 +1570,6 @@ export async function initPreColumn() {
 		codeDataType: 'json',
 		header: 'Value',
 		name: 'parmValue'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'link',
-		header: 'Parm Value - Column Type',
-		isMultiSelect: false,
-		name: 'parmValueColumnType'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'link',
-		header: 'Parm Value - Column Value',
-		isMultiSelect: false,
-		name: 'parmValueColumnValue'
 	})
 	await addColumn({
 		owner: 'app_sys',

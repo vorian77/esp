@@ -8,8 +8,9 @@ import {
 	strRequired
 } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
-import { TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
-import { PropDataType, RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj'
+import { TokenApiQueryData } from '$utils/types.token'
+import { ProcessRow } from '$routes/api/dbEdge/dbEdgeProcess'
+import { RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import { evalExpr } from '$routes/api/dbEdge/dbEdgeGetVal'
 import { error } from '@sveltejs/kit'
@@ -17,212 +18,221 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$routes/api/dbEdge/dbEdgeScript.ts'
 
 export class ScriptGroup {
-	query: Query
-	queryData: TokenApiQueryData
-	queryType: TokenApiQueryType
+	rowProcess?: ProcessRow
 	scripts: Script[] = []
 	scriptSegmentLoop = 'FOR item IN json_array_unpack(data) UNION ('
-	constructor(queryType: TokenApiQueryType, query: Query, queryData: TokenApiQueryData) {
-		const clazz = 'ScriptGroup'
-		this.query = query
-		this.queryType = queryType
-		this.queryData = queryData
-
-		switch (queryType) {
-			case TokenApiQueryType.preset:
-				this.scripts.push(this.initScriptPreset(query, queryData))
-				break
-
-			case TokenApiQueryType.retrieve:
-				if (query.rawDataObj.exprObject) {
-					this.scripts.push(this.initScriptExpression(query, queryData))
-				} else {
-					if (query.rawDataObj.listEditPresetExpr) {
-						this.scripts.push(this.initScriptPresetListEdit(query, queryData))
-					}
-					this.scripts.push(this.initScriptRetrieve(query, queryData))
-				}
-				break
-
-			case TokenApiQueryType.retrieveRepParmItems:
-				this.scripts.push(
-					this.initScriptDataItems(query, query.rawDataObj.rawPropsRepParmItems, queryData)
-				)
-				break
-
-			case TokenApiQueryType.save:
-				const actions = []
-				const dataSave = required(this.queryData.dataSave, 'ScriptGroup', 'dataSave')
-				let items: [string, DataRecordStatus[]][] = [
-					['DELETE', [DataRecordStatus.delete]],
-					['INSERT', [DataRecordStatus.preset]],
-					['UPDATE', [DataRecordStatus.retrieved, DataRecordStatus.update]]
-				]
-				items.forEach((item) => {
-					const action = item[0]
-					const statuses = item[1]
-					const dataRows = dataSave.dataRows.filter((row: DataRow) => statuses.includes(row.status))
-					if (dataRows.length > 0) {
-						this.scripts.push(this.initScriptSave(query, queryData, action, dataRows))
-					}
-				})
-				break
-
-			default:
-				error(500, {
-					file: FILENAME,
-					function: 'dbEdgeTransaction.getScripts',
-					message: `No case defined for queryType: ${queryType}`
-				})
-		}
-	}
-	initScript(
+	constructor() {}
+	addScript(
 		query: Query,
 		queryData: TokenApiQueryData,
 		exePost: ScriptExePost,
 		config: [string, DataRecord?][],
-		dataRows: DataRow[] = []
+		dataRows: DataRow[] = [],
+		id: string = ''
 	) {
-		const script = new Script(query, queryData, exePost, dataRows)
+		const script = new Script(query, queryData, exePost, dataRows, id)
 		config.forEach((item) => {
 			script.addItem(item[0], item[1])
 		})
 		script.build()
+		this.scripts.push(script)
 		return script
 	}
 
-	initScriptDataItems(
-		query: Query,
-		props: RawDataObjPropDB[],
-		queryData: TokenApiQueryData,
-		returnData: DataObjData | undefined = undefined
-	) {
+	addScriptDataItems(query: Query, queryData: TokenApiQueryData, props: RawDataObjPropDB[]) {
 		const isFilterCurrentValue = query.rawDataObj.codeCardinality === DataObjCardinality.detail
-		if (isFilterCurrentValue && returnData) queryData.recordSet(returnData.getDetailRecord())
-		return this.initScript(query, queryData, ScriptExePost.formatData, [
+		return this.addScript(query, queryData, ScriptExePost.dataItems, [
 			['propsSelectDataItems', { props, isFilterCurrentValue }],
 			['script', { content: ['propsSelectDataItems'] }]
 		])
 	}
-	initScriptExpression(query: Query, queryData: TokenApiQueryData) {
+
+	addScriptExpression(query: Query, queryData: TokenApiQueryData) {
 		const script = new Script(query, queryData, ScriptExePost.formatData)
 		script.script = query.getExpression(queryData)
+		this.scripts.push(script)
 		return script
 	}
-	initScriptPreset(query: Query, queryData: TokenApiQueryData) {
-		return this.initScript(query, queryData, ScriptExePost.formatData, [
+	addScriptPreset(query: Query, queryData: TokenApiQueryData) {
+		return this.addScript(query, queryData, ScriptExePost.formatData, [
 			['propsSelectPreset', { props: query.rawDataObj.rawPropsSelectPreset }],
 			['script', { content: ['propsSelectPreset'] }]
 		])
 	}
-	initScriptPresetListEdit(query: Query, queryData: TokenApiQueryData) {
+	addScriptPresetListEdit(query: Query, queryData: TokenApiQueryData, id: string) {
 		switch (query.rawDataObj.codeListEditPresetType) {
 			case DataObjListEditPresetType.insert:
-				return this.initScriptPresetListEditInsert(query, queryData)
+				return this.addScriptPresetListEditInsert(query, queryData, id)
 			case DataObjListEditPresetType.save:
-				return this.initScriptPresetListEditSave(query, queryData)
+				return this.addScriptPresetListEditSave(query, queryData, id)
 			default:
 				error(500, {
 					file: FILENAME,
-					function: 'ScriptGroup.initScriptPresetListEdit',
+					function: 'ScriptGroup.addScriptPresetListEdit',
 					message: `No case defined for codeListEditPresetType: ${query.rawDataObj.codeListEditPresetType}`
 				})
 		}
 	}
-	initScriptPresetListEditInsert(query: Query, queryData: TokenApiQueryData) {
-		const clazz = 'ScriptGroup.initScriptPresetListEditInsert'
+	addScriptPresetListEditInsert(query: Query, queryData: TokenApiQueryData, id: string) {
+		const clazz = 'ScriptGroup.addScriptPresetListEditInsert'
 		const listEditPresetExpr = evalExpr(
 			strRequired(query.rawDataObj.listEditPresetExpr, clazz, 'listEditPresetExpr'),
 			queryData
 		)
-		return this.initScript(query, queryData, ScriptExePost.processRowSelectPreset, [
-			['setValue', { key: 'expr', value: listEditPresetExpr }],
-			['propsListEditPresetInsert', { props: query.rawDataObj.rawPropsSelectPreset }],
-			['script', { content: ['expr', 'propsListEditPresetInsert'] }]
-		])
+		return this.addScript(
+			query,
+			queryData,
+			ScriptExePost.processRowSelectPreset,
+			[
+				['setValue', { key: 'expr', value: listEditPresetExpr }],
+				['propsListEditPresetInsert', { props: query.rawDataObj.rawPropsSelectPreset }],
+				['script', { content: ['expr', 'propsListEditPresetInsert'] }]
+			],
+			[],
+			id
+		)
 	}
 
-	initScriptPresetListEditSave(query: Query, queryData: TokenApiQueryData) {
-		const clazz = 'ScriptGroup.initScriptPresetListEditSave'
-		const listEditPresetExpr = evalExpr(
-			strRequired(query.rawDataObj.listEditPresetExpr, clazz, 'listEditPresetExpr'),
-			queryData
+	addScriptPresetListEditSave(query: Query, queryData: TokenApiQueryData, id: string) {
+		const clazz = 'ScriptGroup.addScriptPresetListEditSave'
+		const listEditPresetExpr = strRequired(
+			query.rawDataObj.listEditPresetExpr,
+			clazz,
+			'listEditPresetExpr'
 		)
+		// debug('addScriptPresetListEditSave', 'listEditPresetExpr:', listEditPresetExpr)
+		debug('addScriptPresetListEditSave', 'listEditPresetExpr', listEditPresetExpr)
 		const recordsInsert = 'recordsInsert'
 		const parent = required(query.parent, clazz, 'query.parent')
 		const op = parent.columnIsMultiSelect ? '+=' : ':='
 		const exprFilter = parent.filterExpr
 			? parent.filterExpr
-			: `.id = <uuid>'${queryData.parms.listRecordIdParent}'`
+			: `.id = <uuid>'${queryData.parms.listRecordIdCurrent}'`
 
-		// prettier-ignore
-		return this.initScript(query, queryData, ScriptExePost.none, [
-			// data
-			['wrap', { key: 'data', open: `SELECT (`, value: listEditPresetExpr }],
-			['wrap', { key: 'data', open: `data := (`, content: ['data'] }],
-			['with', { key: 'data', content: ['data'] }],
+		return this.addScript(
+			query,
+			queryData,
+			ScriptExePost.none,
+			[
+				// data
+				['wrap', { key: 'data', open: `SELECT (`, value: listEditPresetExpr }],
+				['wrap', { key: 'data', open: `data := (`, content: ['data'] }],
+				['with', { key: 'data', content: ['data'] }],
 
-			// loop
-			['action', { type: 'INSERT', table: query.getTableObjRoot() }],
-			['propsListEditPresetSave', { props: query.rawDataObj.rawPropsSelectPreset }],
-			['wrap',{ key: 'loop', open: 'FOR item IN data UNION (', content: ['action', 'propsListEditPresetSave'] }],
+				// loop
+				['action', { type: 'INSERT', table: query.getTableObjRoot() }],
+				['propsListEditPresetSave', { props: query.rawDataObj.rawPropsSelectPreset }],
+				[
+					'wrap',
+					{
+						key: 'loop',
+						open: 'FOR item IN data UNION (',
+						content: ['action', 'propsListEditPresetSave']
+					}
+				],
 
-			// recordsInsert
-			['wrap', { key: recordsInsert, open: `${recordsInsert} := (`, content: ['data', 'loop'] }],
-			['with', { key: recordsInsert, content: [recordsInsert] }],
+				// recordsInsert
+				['wrap', { key: recordsInsert, open: `${recordsInsert} := (`, content: ['data', 'loop'] }],
+				['with', { key: recordsInsert, content: [recordsInsert] }],
 
-			// update
-			['action', { type: 'UPDATE', table: parent.table.object }],
-			['filter', { exprFilter }],
-			['wrap', { key: 'propInsert', open: `${parent.columnName} ${op} (`, value: recordsInsert }],
-			['wrap', { key: 'propInsert', open: 'SET {', content: ['propInsert'] }],
+				// update
+				['action', { type: 'UPDATE', table: parent.table.object }],
+				['filter', { exprFilter }],
+				['wrap', { key: 'propInsert', open: `${parent.columnName} ${op} (`, value: recordsInsert }],
+				['wrap', { key: 'propInsert', open: 'SET {', content: ['propInsert'] }],
 
-			// script
-			['script', { content: [recordsInsert, 'action', 'filter', 'propInsert'] }]
-		])
+				// script
+				['script', { content: [recordsInsert, 'action', 'filter', 'propInsert'] }]
+			],
+			[],
+			id
+		)
 	}
-	initScriptRetrieve(query: Query, queryData: TokenApiQueryData) {
-		return this.initScript(query, queryData, ScriptExePost.formatData, [
-			['action', { type: 'SELECT', table: query.getTableObjRoot() }],
-			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
-			['filter'],
-			['order'],
-			['script', { content: ['action', 'propsSelect', 'filter', 'order'] }]
-		])
+
+	addScriptRetrieve(query: Query, queryData: TokenApiQueryData) {
+		if (query.rawDataObj.exprObject) {
+			return this.addScriptExpression(query, queryData)
+		} else {
+			return this.addScriptRetrieveItem(query, queryData, ScriptExePost.formatData)
+		}
 	}
-	initScriptSave(query: Query, queryData: TokenApiQueryData, action: string, dataRows: DataRow[]) {
+	addScriptRetrieveItem(
+		query: Query,
+		queryData: TokenApiQueryData,
+		exePost: ScriptExePost,
+		id: string = ''
+	) {
+		return this.addScript(
+			query,
+			queryData,
+			exePost,
+			[
+				['action', { type: 'SELECT', table: query.getTableObjRoot() }],
+				['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
+				['filter'],
+				['order'],
+				['script', { content: ['action', 'propsSelect', 'filter', 'order'] }]
+			],
+			[],
+			id
+		)
+	}
+
+	addScriptSave(query: Query, queryData: TokenApiQueryData) {
+		const actions = []
+		const dataSave = required(queryData.dataSave, 'ScriptGroup', 'dataSave')
+		let items: [string, DataRecordStatus[]][] = [
+			['DELETE', [DataRecordStatus.delete]],
+			['INSERT', [DataRecordStatus.preset]],
+			['UPDATE', [DataRecordStatus.retrieved, DataRecordStatus.update]]
+		]
+		items.forEach((item) => {
+			const action = item[0]
+			const statuses = item[1]
+			const dataRows = dataSave.dataRows.filter((row: DataRow) => statuses.includes(row.status))
+			if (dataRows.length > 0) {
+				this.addScriptSaveItem(query, queryData, action, dataRows)
+			}
+		})
+	}
+	addScriptSaveItem(
+		query: Query,
+		queryData: TokenApiQueryData,
+		action: string,
+		dataRows: DataRow[]
+	) {
 		let config: [string, DataRecord?][] = []
 		switch (action) {
 			case 'DELETE':
-				config = this.initScriptSaveDelete(query)
+				config = this.addScriptSaveDelete(query)
 				break
 			case 'INSERT':
-				config = this.initScriptSaveInsert(query, queryData)
+				config = this.addScriptSaveInsert(query, queryData)
 				break
 			case 'UPDATE':
-				config = this.initScriptSaveUpdate(query)
+				config = this.addScriptSaveUpdate(query)
 				break
 			default:
 				error(500, {
 					file: FILENAME,
-					function: 'Script.initScriptUpdate',
+					function: 'Script.initScriptSaveItem',
 					message: `No case defined for action: ${action}`
 				})
 		}
-		return this.initScript(query, queryData, ScriptExePost.formatData, config, dataRows)
+		return this.addScript(query, queryData, ScriptExePost.formatData, config, dataRows)
 	}
 
 	// prettier-ignore
-	initScriptSaveDelete(query: Query): [string, DataRecord?][]{    
+	addScriptSaveDelete(query: Query): [string, DataRecord?][]{    
     return [
 			['action', { type: 'DELETE', table: query.getTableObjRoot() }],
 			['filter', { exprFilter: `.id = <uuid>item['id']` }],
 			['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter'] }],
-			...this.initScriptSavePost(query)
+			...this.addScriptSavePost(query)
 		]
 	}
 	// prettier-ignore
-	initScriptSaveInsert(query: Query, queryData: TokenApiQueryData): [string, DataRecord?][] {
+	addScriptSaveInsert(query: Query, queryData: TokenApiQueryData): [string, DataRecord?][] {
 		if (query.parent) {
 			// embeded form
 			const recordsInsert = 'recordsInsert'
@@ -262,21 +272,21 @@ export class ScriptGroup {
 				['action', { type: 'INSERT', table: query.getTableObjRoot() }],
 				['propsSave', { action: 'INSERT', props: query.rawDataObj.rawPropsSaveInsert }],
 				['wrap', {key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter', 'propsSave'] }],
-				...this.initScriptSavePost(query)
+				...this.addScriptSavePost(query)
 			]
 		}
 	}
 	// prettier-ignore
-	initScriptSaveUpdate(query: Query): [string, DataRecord?][] {
+	addScriptSaveUpdate(query: Query): [string, DataRecord?][] {
 		return [
 			['action', { type: 'UPDATE', table: query.getTableObjRoot() }],
 			['filter', { exprFilter: `.id = <uuid>item['id']` }],
 			['propsSave', { action: 'UPDATE', props: query.rawDataObj.rawPropsSaveUpdate }],
 			['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter', 'propsSave'] }],
-			...this.initScriptSavePost(query)
+			...this.addScriptSavePost(query)
 		]
 	}
-	initScriptSavePost(query: Query): [string, DataRecord?][] {
+	addScriptSavePost(query: Query): [string, DataRecord?][] {
 		return [
 			['data'],
 			['wrap', { key: 'records', open: 'Records := (', content: ['loop'] }],
@@ -287,11 +297,15 @@ export class ScriptGroup {
 			['script', { content: ['with', 'action', 'propsSelect'] }]
 		]
 	}
+	setRowProcess(rowProcess: ProcessRow) {
+		this.rowProcess = rowProcess
+	}
 }
 
 export class Script {
 	dataRows: DataRow[]
 	exePost: ScriptExePost
+	id: string
 	items: ScriptItem[] = []
 	query: Query
 	queryData: TokenApiQueryData
@@ -300,13 +314,15 @@ export class Script {
 		query: Query,
 		queryData: TokenApiQueryData,
 		exePost: ScriptExePost,
-		dataRows: DataRow[] = []
+		dataRows: DataRow[] = [],
+		id: string = ''
 	) {
 		const clazz = 'Script'
 		this.dataRows = dataRows
 		this.exePost = exePost
 		this.query = query
 		this.queryData = queryData
+		this.id = id
 	}
 	addItem(buildAction: string, parms: DataRecord = {}) {
 		this.items.push(new ScriptItem(buildAction, parms))
@@ -340,10 +356,6 @@ export class Script {
 				case 'data':
 					element = `data := (SELECT to_json($$${JSON.stringify(this.dataRows.map((row: DataRow) => row.record))}$$))`
 					break
-
-				// case 'dataRecord':
-				// 	element = `item := (SELECT to_json($$${JSON.stringify(this.dataRows[0].record)}$$))`
-				// 	break
 
 				case 'filter':
 					const exprFilter = item.getParm('exprFilter')
@@ -458,6 +470,10 @@ export class Script {
 		}
 		return item
 	}
+
+	evalExpr() {
+		this.script = evalExpr(this.script, this.queryData)
+	}
 }
 
 export class ScriptItem {
@@ -474,6 +490,8 @@ export class ScriptItem {
 }
 
 export enum ScriptExePost {
+	dataItems = 'dataItems',
+	fieldEmbed = 'fieldEmbed',
 	formatData = 'formatData',
 	none = 'none',
 	processRowSelectPreset = 'processRowSelectPreset'

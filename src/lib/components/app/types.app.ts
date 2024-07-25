@@ -33,7 +33,7 @@ import {
 	FieldEmbedListSelect
 } from '$comps/form/fieldEmbed'
 import { query } from '$comps/app/types.appQuery'
-import { State } from '$comps/app/types.appState'
+import { State, StateSurfaceEmbedShell } from '$comps/app/types.appState'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/nav/types.app.ts'
@@ -43,36 +43,36 @@ export class App {
 	levels: Array<AppLevel> = []
 	constructor() {}
 
-	async addLevelEmbedShell(state: State, token: TokenAppModalEmbedShell) {
+	async addLevelEmbedShell(state: StateSurfaceEmbedShell, token: TokenAppModalEmbedShell) {
+		// add level
+		this.levels.push(new AppLevel([]))
+		const currLevel = this.levels[0]
+
+		// build tabs
 		const embeds = token.dataObjParent.fields.filter((f) =>
 			token.fieldEmbedShell.colDO.fieldEmbedShellFields.includes(f.colDO.propName)
 		)
-
-		// build tabls
 		const levelIdx = 0
-		const tabs: AppLevelTab[] = []
-		embeds.forEach((field, tabIdx) => {
-			let dataObjId = ''
+		for (let tabIdx = 0; tabIdx < embeds.length; tabIdx++) {
+			const field = embeds[tabIdx]
 			if (field instanceof FieldEmbedListEdit) {
-				dataObjId = field.raw.dataObjEmbedId
+				currLevel.tabs.push(
+					new AppLevelTab({
+						data: undefined,
+						dataObjSource: new TokenApiDbDataObjSource({ dataObjId: field.raw.dataObjEmbedId }),
+						label: field.colDO.label,
+						levelIdx,
+						parms: state.dataQuery.valueGetAll(),
+						tabIdx
+					})
+				)
+				const currTab = currLevel.tabs[currLevel.tabs.length - 1]
+				await query(state, currTab, TokenApiQueryType.retrieve, this)
+				if (currTab.dataObj) token.fieldEmbedShell.addDataObjEmbed(currTab.dataObj)
 			}
-			tabs.push(
-				new AppLevelTab({
-					data: undefined,
-					dataObjSource: new TokenApiDbDataObjSource({ dataObjId }),
-					label: field.colDO.label,
-					levelIdx,
-					parms: state.dataQuery.valueGetAll(),
-					tabIdx
-				})
-			)
-		})
+		}
 
-		// build level
-		this.levels.push(new AppLevel(tabs))
-		await query(state, this.getCurrTab(), TokenApiQueryType.retrieve, this)
-
-		// return
+		currLevel.setTabIdx(0)
 		return this
 	}
 	async addLevelModal(state: State, token: TokenAppModalEmbedField) {

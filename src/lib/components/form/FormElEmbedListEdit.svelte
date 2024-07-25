@@ -25,10 +25,13 @@
 	} from '$comps/form/types.validation'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import Layout from '$comps/layout/BaseLayout.svelte'
+	import FormList from '$comps/form/FormList.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import {
 		DataObj,
 		DataObjCardinality,
+		DataObjData,
+		DataObjStatus,
 		type DataRecord,
 		required,
 		ResponseBody
@@ -38,61 +41,95 @@
 
 	const FILENAME = '$comps/form/FormElEmbeddedListSelect.svelte'
 
+	let field: FieldEmbedListEdit
+	let recordIdCurrent: string
+	let stateEmbed: State
+
 	export let fp: FieldProps
 
-	$: state = fp.state
-	$: dataObj = fp.dataObj
-	$: dataRecord = fp.dataRecord
-	$: field = fp.field as FieldEmbedListEdit
-	$: fieldValue = fp.fieldValue
+	$: load(fp)
 
-	$: exprFilterEmbed = `.id IN (SELECT ${dataObj.rootTable?.object} FILTER .id = <parms,uuid,listRecordIdParent>).${field.colDO.propName}.id`
+	function load(fp: FieldProps) {
+		field = fp.field
 
-	let stateEmbed: State
-	let recordIdCurrent: string
+		// if (fp.dataRecord) {
+		// 	let recordId = fp.dataRecord['id'] || ''
+		// 	if (recordId.startsWith('preset_')) recordId = ''
+		// 	if (recordIdCurrent !== recordId) {
+		// 		recordIdCurrent = recordId
+		// 		// setStateEmbed(fieldValue)
+		// 	}
+		// }
 
-	$: if (dataRecord) {
-		let recordId = dataRecord['id'] || ''
-		if (recordId.startsWith('preset_')) recordId = ''
-		if (recordIdCurrent !== recordId) {
-			recordIdCurrent = recordId
-			setStateEmbed(fieldValue)
-		}
+		// const parentObjectSaved =
+		// 	recordIdCurrent !== '' &&
+		// 	fp.state.objStatus.objValidToSave &&
+		// 	!fp.state.objStatus.objHasChanged
+		// if (stateEmbed) {
+		// 	if (parentObjectSaved) {
+		// 		stateEmbed.modeAdd(StateMode.ParentObjectSaved)
+		// 	} else {
+		// 		stateEmbed.modeDrop(StateMode.ParentObjectSaved)
+		// 	}
+		// 	stateEmbed = stateEmbed
+		// }
 	}
 
-	$: {
-		const parentObjectSaved =
-			recordIdCurrent !== '' && state.objStatus.objValidToSave && !state.objStatus.objHasChanged
-		if (stateEmbed) {
-			if (parentObjectSaved) {
-				stateEmbed.modeAdd(StateMode.ParentObjectSaved)
-			} else {
-				stateEmbed.modeDrop(StateMode.ParentObjectSaved)
-			}
-			stateEmbed = stateEmbed
-		}
-	}
+	// $: field = fp.field as FieldEmbedListEdit
 
-	function setStateEmbed(ids: string[]) {
-		stateEmbed = new StateSurfaceEmbedField({
-			cardinality: DataObjCardinality.list,
-			dataObjSource: new TokenApiDbDataObjSource({ dataObjId: field.raw.dataObjEmbedId }),
-			layoutComponent: StateLayoutComponentType.layoutContent,
-			layoutStyle: StateLayoutStyle.embeddedField,
-			parms: { listRecordIdParent: recordIdCurrent },
-			queryType: TokenApiQueryType.retrieve,
-			updateCallback
-		})
-	}
+	// $: exprFilterEmbed = `.id IN (SELECT ${fp.dataObj.rootTable?.object} FILTER .id = <parms,uuid,listRecordIdParent>).${field.colDO.propName}.id`
 
-	async function updateCallback(obj: any) {
-		stateEmbed = stateEmbed.updateProperties(obj)
-	}
+	// $: {
+	// 	const parentObjectSaved =
+	// 		recordIdCurrent !== '' &&
+	// 		fp.state.objStatus.objValidToSave &&
+	// 		!fp.state.objStatus.objHasChanged
+	// 	if (stateEmbed) {
+	// 		if (parentObjectSaved) {
+	// 			stateEmbed.modeAdd(StateMode.ParentObjectSaved)
+	// 		} else {
+	// 			stateEmbed.modeDrop(StateMode.ParentObjectSaved)
+	// 		}
+	// 		stateEmbed = stateEmbed
+	// 	}
+	// }
+
+	// function setStateEmbed(ids: string[]) {
+	// 	stateEmbed = new StateSurfaceEmbedField({
+	// 		cardinality: DataObjCardinality.list,
+	// 		dataObjSource: new TokenApiDbDataObjSource({ dataObjId: field.raw.dataObjEmbedId }),
+	// 		layoutComponent: StateLayoutComponentType.layoutContent,
+	// 		layoutStyle: StateLayoutStyle.embeddedField,
+	// 		parms: { listRecordIdParent: recordIdCurrent },
+	// 		queryType: TokenApiQueryType.retrieve,
+	// 		updateCallback
+	// 	})
+	// }
+
+	// async function updateCallback(obj: any) {
+	// 	stateEmbed = stateEmbed.updateProperties(obj)
+	// }
+
+	// function setStatusRoot() {
+	// 	fp.state.objStatus = fp.state.getStatus(fp.dataObj)
+	// 	fp.state = fp.state
+	// }
 </script>
 
 <FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality} />
-{#if stateEmbed}
-	<Layout state={stateEmbed} />
+
+{#if field.dataObj}
+	<!-- <Layout state={stateEmbed} /> -->
+	<div class="border-2 p-4">
+		<FormList
+			bind:state={fp.state}
+			dataObj={field.dataObj}
+			dataObjData={field.dataObj.data}
+			on:formCancelled
+			on:rowClick
+		/>
+	</div>
 {/if}
 
-<!-- <DataViewer header="state.parms" data={stateDisplay.metaData.data} /> -->
+<!-- <DataViewer header="stateEmbedListEdit.objStatus" data={stateEmbed.objStatus} /> -->
+<!-- <DataViewer header="dataObj" data={field.dataObj} /> -->

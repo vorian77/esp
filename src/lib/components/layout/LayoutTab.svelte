@@ -15,16 +15,11 @@
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
-	let currLevel: AppLevel | undefined
-	let isHideChildTabs = false
-
 	$: currLevel = state.app.getCurrLevel()
 	$: isHideChildTabs =
-		!(state instanceof StateSurfaceEmbed) &&
 		dataObjData.hasRecord() &&
 		(dataObjData.getDetailStatusRecordIs(DataRecordStatus.preset) ||
 			state.objStatus.changed() ||
-			state.objStatus.changedEmbedded() ||
 			!state.objStatus.valid())
 
 	async function onClickTab(event: any) {
@@ -38,7 +33,8 @@
 	}
 </script>
 
-<!-- <DataViewer header="objChanged" data={state?.objHasChanged} /> -->
+<DataViewer header="LayoutTab.state.objStatus" data={state.objStatus} />
+<DataViewer header="isHideChildTabs" data={isHideChildTabs} />
 
 {#if currLevel}
 	<TabGroup>

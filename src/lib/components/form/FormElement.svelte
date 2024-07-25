@@ -87,7 +87,7 @@
 	$: dataRecord = dataObj.dataRecordsDisplay[row]
 	$: field = dataObj.getField(field, row)
 	$: fieldValue = dataRecord[field.colDO.propName]
-	$: validity = dataObj.dataFieldValidities.valueGet(dataRecord.id, field.colDO.propName)
+	$: validity = dataObj.dataFieldsValidity.valueGet(dataRecord.id, field.colDO.propName)
 	$: {
 		const fieldClass = field.constructor.name
 		if (typeof fieldClass === 'string' && fieldClass !== '')
@@ -105,8 +105,8 @@
 	)
 
 	function setFieldVal(field: Field, value: any) {
-		state = state.setFieldVal(dataObj, row, dataObj.getField(field, row), value)
-		dataObj = dataObj
+		dataObj = dataObj.setFieldVal(row, field, value)
+		state = state.setStatus()
 	}
 </script>
 
@@ -117,6 +117,7 @@
 </div>
 
 {#if validity}
+	<!-- <DataViewer header="validity" data={validity} /> -->
 	{#if validity.level == ValidityErrorLevel.error}
 		<div class="text-error-500 mb-3">
 			<p>{validity.message}</p>

@@ -268,24 +268,6 @@ async function initDataObjFieldEmbedListEdit() {
 				orderDefine: 30,
 				indexTable: 0,
 				linkColumns: ['name']
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'parmValueColumnValue',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0,
-				linkColumns: ['name']
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'parmValueColumnType',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0,
-				linkColumns: ['name']
 			}
 		]
 	})
@@ -343,42 +325,6 @@ async function initDataObjFieldEmbedListEdit() {
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'parmValueColumnValue',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
-				indexTable: 0,
-				fieldListItems: 'il_sys_column_order_name',
-				linkTable: 'SysColumn'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'parmValueColumnType',
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
-				indexTable: 0,
-				fieldListItems: 'il_sys_column_order_name',
-				linkTable: 'SysColumn'
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100
 			},
 
 			/* management */

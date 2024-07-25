@@ -9,11 +9,10 @@ export class FieldCheckbox extends Field {
 	static async init(props: RawFieldProps) {
 		return new FieldCheckbox(props)
 	}
-	validate(record: DataRecord, row: number, missingDataErrorLevel: ValidityErrorLevel) {
-		const value = record[this.colDO.propName]
+	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {
 		if (typeof value === 'boolean' && !this.colDO.colDB.isMultiSelect) {
 			return this.getValuationValid()
 		}
-		return super.validate(record, row, missingDataErrorLevel)
+		return super.validate(row, value, missingDataErrorLevel)
 	}
 }

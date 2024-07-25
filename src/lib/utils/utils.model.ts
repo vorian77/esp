@@ -4,31 +4,6 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/utils/model.utils.ts'
 
-export function arrayOfEnums(
-	vals: string,
-	fieldName: string,
-	className: string,
-	enumName: string,
-	enumObj: object
-) {
-	if (!vals) {
-		error(500, {
-			file: className,
-			function: 'arrayOfEnums',
-			message: `No value(s) supplied...
-	Field: ${fieldName}
-	Enum: ${enumName}
-	Elements:${Object.values(enumObj).toString()}`
-		})
-	}
-	let arrVals = getArray(vals)
-	let enums = new Set()
-	for (let i = 0; i < arrVals.length; i++) {
-		enums.add(memberOfEnum(arrVals[i], fieldName, className, enumName, enumObj))
-	}
-	return Array.from(enums)
-}
-
 export function booleanOrDefault(val: any, valDefault: boolean) {
 	if (typeof val === 'boolean') {
 		return val

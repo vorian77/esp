@@ -58,7 +58,7 @@
 <FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality}>
 	<input
 		class={classPropsInput}
-		hidden={field.fieldAccess == FieldAccess.hidden}
+		hidden={field.fieldAccess === FieldAccess.hidden}
 		id={field.colDO.propName}
 		{max}
 		{min}
@@ -69,7 +69,7 @@
 		placeholder={dataObj.raw.codeCardinality === DataObjCardinality.detail || dataObj.raw.isListEdit
 			? field.placeHolder
 			: ''}
-		readonly={field.fieldAccess == FieldAccess.readonly}
+		readonly={field.fieldAccess === FieldAccess.readonly}
 		{step}
 		type={field.fieldElement}
 		value={fieldValue}

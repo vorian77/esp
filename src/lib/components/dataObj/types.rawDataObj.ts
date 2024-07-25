@@ -14,7 +14,6 @@ import {
 	nbrRequired,
 	classOptional,
 	override,
-	required,
 	strOptional,
 	strRequired,
 	DBTable,
@@ -257,6 +256,7 @@ export class RawDataObjPropDB {
 	codeSortDir?: string
 	exprCustom?: string
 	exprPreset?: string
+	fieldEmbed?: RawDataObjPropDBFieldEmbed
 	hasItems: boolean
 	indexTable: number
 	isMultiSelect: boolean
@@ -267,9 +267,7 @@ export class RawDataObjPropDB {
 	constructor(obj: any, tables: DataObjTable[]) {
 		const clazz = 'RawDataObjPropDB'
 		obj = valueOrDefault(obj, {})
-
 		if (obj._propName === 'csf') debug('RawDataObjPropDB', 'obj.csf', obj)
-
 		this.codeDataSourceValue = memberOfEnum(
 			obj._codeDbDataSourceValue,
 			clazz,
@@ -294,6 +292,13 @@ export class RawDataObjPropDB {
 		)
 		this.exprCustom = strOptional(obj.exprCustom, clazz, 'exprCustom')
 		this.exprPreset = strOptional(obj.exprPreset, clazz, 'exprPreset')
+		this.fieldEmbed = obj._fieldEmbedListConfig
+			? new RawDataObjPropDBFieldEmbed('listConfig', obj._fieldEmbedListConfig._dataObjEmbedId)
+			: obj._fieldEmbedListEdit
+				? new RawDataObjPropDBFieldEmbed('listEdit', obj._fieldEmbedListEdit._dataObjEmbedId)
+				: obj._fieldEmbedListSelect
+					? new RawDataObjPropDBFieldEmbed('listSelect', obj._fieldEmbedListSelect._dataObjListId)
+					: undefined
 		this.hasItems = booleanOrDefault(obj._hasItems, false)
 		this.indexTable = nbrOrDefault(obj.indexTable, -1)
 		this.isMultiSelect = booleanOrDefault(obj._isMultiSelect, false)
@@ -314,6 +319,17 @@ export class RawDataObjPropDB {
 		return value
 	}
 }
+
+export class RawDataObjPropDBFieldEmbed {
+	id: string
+	type: string
+	constructor(type: string, dataObjId: string) {
+		const clazz = 'RawDataObjPropDBFieldEmbed'
+		this.id = dataObjId
+		this.type = type
+	}
+}
+
 export class RawDataObjPropDisplay {
 	colDB: RawDBColumn
 	codeSortDir?: PropSortDir
@@ -434,18 +450,10 @@ export class RawDataObjPropDisplayEmbedListConfig {
 
 export class RawDataObjPropDisplayEmbedListEdit {
 	dataObjEmbedId: string
-	parmValueColumnType?: string
-	parmValueColumnValue?: string
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjPropDisplayEmbedListEdit'
 		this.dataObjEmbedId = strRequired(obj._dataObjEmbedId, clazz, 'dataObjEmbedId')
-		this.parmValueColumnType = strOptional(obj._parmValueColumnType, clazz, 'parmValueColumnType')
-		this.parmValueColumnValue = strOptional(
-			obj._parmValueColumnValue,
-			clazz,
-			'parmValueColumnValue'
-		)
 	}
 }
 

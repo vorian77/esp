@@ -18,14 +18,13 @@
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
-	$: (async () => await loadData(dataObjData))()
+	$: (async () => await load(dataObjData))()
 
-	async function loadData(data: DataObjData) {
+	async function load(data: DataObjData) {
 		loadTags()
 		dataObj.objData = data
-
-		state.setStatusValidPre(dataObj, false)
-		state = state
+		state.setDataObjRoot(dataObj)
+		state = state.setStatus()
 	}
 
 	function loadTags() {
@@ -97,7 +96,7 @@
 	}
 </script>
 
-<!-- <DataViewer header="state.objStatus (detail)" data={state.objStatus} /> -->
+<!-- <DataViewer header="FormDetail.state.objStatus" data={state.objStatus} /> -->
 <!-- <DataViewer header="tagGroupSection" data={tagGroupSection} /> -->
 
 {#if tagGroupSection}

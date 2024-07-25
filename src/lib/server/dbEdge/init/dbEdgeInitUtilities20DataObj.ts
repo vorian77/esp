@@ -391,9 +391,7 @@ export async function addDataObjFieldEmbedListEdit(data: any) {
 		{
 			dataObjEmbed: e.str,
 			name: e.str,
-			owner: e.str,
-			parmValueColumnType: e.optional(e.str),
-			parmValueColumnValue: e.optional(e.str)
+			owner: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObjFieldEmbedListEdit, {
@@ -401,9 +399,7 @@ export async function addDataObjFieldEmbedListEdit(data: any) {
 				dataObjEmbed: e.select(e.sys_core.getDataObj(p.dataObjEmbed)),
 				modifiedBy: e.select(e.sys_user.getRootUser()),
 				name: p.name,
-				owner: e.select(e.sys_core.getEnt(p.owner)),
-				parmValueColumnType: e.select(e.sys_db.getColumn(p.parmValueColumnType)),
-				parmValueColumnValue: e.select(e.sys_db.getColumn(p.parmValueColumnValue))
+				owner: e.select(e.sys_core.getEnt(p.owner))
 			})
 		}
 	)
