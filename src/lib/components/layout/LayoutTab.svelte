@@ -33,8 +33,8 @@
 	}
 </script>
 
-<DataViewer header="LayoutTab.state.objStatus" data={state.objStatus} />
-<DataViewer header="isHideChildTabs" data={isHideChildTabs} />
+<!-- <DataViewer header="LayoutTab.state.objStatus" data={state.objStatus} />
+<DataViewer header="isHideChildTabs" data={isHideChildTabs} /> -->
 
 {#if currLevel}
 	<TabGroup>

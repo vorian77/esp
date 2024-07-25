@@ -9,7 +9,6 @@ import {
 } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
 import { TokenApiQueryData } from '$utils/types.token'
-import { ProcessRow } from '$routes/api/dbEdge/dbEdgeProcess'
 import { RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import { evalExpr } from '$routes/api/dbEdge/dbEdgeGetVal'
@@ -18,7 +17,6 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$routes/api/dbEdge/dbEdgeScript.ts'
 
 export class ScriptGroup {
-	rowProcess?: ProcessRow
 	scripts: Script[] = []
 	scriptSegmentLoop = 'FOR item IN json_array_unpack(data) UNION ('
 	constructor() {}
@@ -296,9 +294,6 @@ export class ScriptGroup {
 			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
 			['script', { content: ['with', 'action', 'propsSelect'] }]
 		]
-	}
-	setRowProcess(rowProcess: ProcessRow) {
-		this.rowProcess = rowProcess
 	}
 }
 

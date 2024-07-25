@@ -16,6 +16,7 @@ import {
 	evalExprTokens,
 	getUUID
 } from '$routes/api/dbEdge/dbEdgeGetVal'
+import { ProcessRow } from '$routes/api/dbEdge/dbEdgeProcess'
 import { Script, ScriptExePost } from '$routes/api/dbEdge/dbEdgeScript'
 import { error } from '@sveltejs/kit'
 
@@ -24,6 +25,7 @@ const FILENAME = '/$routes/api/dbEdge/dbEdgeQuery.ts'
 export class Query {
 	parent?: DataObjParent
 	rawDataObj: RawDataObj
+	processRow?: ProcessRow
 	scriptOrder: string = ''
 	constructor(rawDataObj: RawDataObj) {
 		const clazz = 'Query'
@@ -427,6 +429,9 @@ export class Query {
 	getTableObjRoot() {
 		const rootTable = this.rawDataObj.tables.find((table) => table.isRoot)
 		return rootTable ? rootTable.table.object : ''
+	}
+	setProcessRow(processRow: ProcessRow) {
+		this.processRow = processRow
 	}
 }
 

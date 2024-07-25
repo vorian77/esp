@@ -75,7 +75,7 @@ async function processDataObjQuery(
 ) {
 	switch (queryType) {
 		case TokenApiQueryType.preset:
-			scriptGroup.setRowProcess(
+			query.setProcessRow(
 				new ProcessRowSelectPreset(query.rawDataObj.rawPropsSelect, DataRecordStatus.preset)
 			)
 			scriptGroup.addScriptPreset(query, queryData)
@@ -83,7 +83,7 @@ async function processDataObjQuery(
 			break
 
 		case TokenApiQueryType.retrieve:
-			scriptGroup.setRowProcess(
+			query.setProcessRow(
 				new ProcessRowSelect(query.rawDataObj.rawPropsSelect, DataRecordStatus.retrieved)
 			)
 			scriptGroup.addScriptRetrieve(query, queryData)
@@ -125,9 +125,7 @@ async function processDataObjQuery(
 			break
 
 		case TokenApiQueryType.save:
-			scriptGroup.setRowProcess(
-				new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataSave)
-			)
+			query.setProcessRow(new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataSave))
 			scriptGroup.addScriptSave(query, queryData)
 
 			// embed fields
@@ -197,7 +195,7 @@ async function processDataObjExecute(
 					break
 
 				case ScriptExePost.formatData:
-					if (scriptGroup.rowProcess) formatData(dataReturn, rawDataList, scriptGroup.rowProcess)
+					if (query.processRow) formatData(dataReturn, rawDataList, query.processRow)
 					if (query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
 						queryData.recordSet(dataReturn.getDetailRecord())
 					}
