@@ -122,6 +122,7 @@ export class DataObj {
 	static async init(state: State, rawDataObj: RawDataObj, data: DataObjData) {
 		const dataObj = new DataObj(rawDataObj, data)
 		dataObj.fields = await dataObj.initFields(state, rawDataObj.rawPropsDisplay, data)
+		enhanceCustomFields(dataObj.fields)
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
 		return dataObj
