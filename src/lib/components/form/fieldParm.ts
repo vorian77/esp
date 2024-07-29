@@ -34,14 +34,14 @@ export class FieldParm extends Field {
 		const propParm = new RawDataObjPropDisplay({
 			_column: {
 				_codeAlignment: FieldAlignment.left,
-				_codeDataType: record._codeDataType,
+				_codeDataType: record.codeDataType,
 				header: record.header,
 				isMultiSelect: record.isMultiSelect,
 				isNonData: false,
 				placeHolder: ''
 			},
 			_codeAccess: record.isRequired ? 'required' : 'optional',
-			_codeFieldElement: record._codeFieldElement,
+			_codeFieldElement: record.codeFieldElement,
 			_hasItems: record._hasItems,
 			_propName: record.name,
 			isDisplayable: true,
@@ -58,7 +58,6 @@ export class FieldParm extends Field {
 				ApiFunction.dbEdgeGetRepParmItems,
 				new TokenApiQueryData({ parms: { repUserId } })
 			)
-			console.log('configParmItemsData.result:', result)
 			if (result.success) {
 				const items: Record<string, any> = result.data
 				Object.entries(items).forEach(([key, value]) => {

@@ -59,8 +59,6 @@ module sys_core {
     exprFilter: str;
     exprObject: str;
     exprSort: str;
-    required isAlwaysRetrieveData: bool;
-    required isAlwaysRetrieveDataObject: bool;
     required isListEdit: bool;
     isListHideSearch: bool;
     listEditPresetExpr: str;

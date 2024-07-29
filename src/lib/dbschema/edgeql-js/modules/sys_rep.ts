@@ -74,6 +74,7 @@ export type $SysRepElλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "isDisplayable": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "orderDefine": $.PropertyDesc<_default.$nonNegative, $.Cardinality.One, false, false, false, false>;
   "orderDisplay": $.PropertyDesc<_default.$nonNegative, $.Cardinality.AtMostOne, false, false, false, false>;
+  "isDisplay": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "<elements[is sys_rep::SysRep]": $.LinkDesc<$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;
   "<element[is sys_rep::SysRepUserEl]": $.LinkDesc<$SysRepUserEl, $.Cardinality.Many, {}, false, false,  false, false>;
   "<element": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

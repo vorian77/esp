@@ -25,10 +25,9 @@ export class ScriptGroup {
 		queryData: TokenApiQueryData,
 		exePost: ScriptExePost,
 		config: [string, DataRecord?][],
-		dataRows: DataRow[] = [],
-		id: string = ''
+		dataRows: DataRow[] = []
 	) {
-		const script = new Script(query, queryData, exePost, dataRows, id)
+		const script = new Script(query, queryData, exePost, dataRows)
 		config.forEach((item) => {
 			script.addItem(item[0], item[1])
 		})
@@ -57,12 +56,14 @@ export class ScriptGroup {
 			['script', { content: ['propsSelectPreset'] }]
 		])
 	}
-	addScriptPresetListEdit(query: Query, queryData: TokenApiQueryData, id: string) {
+	addScriptPresetListEdit(query: Query, queryData: TokenApiQueryData) {
+		if (!query.rawDataObj.listEditPresetExpr) return
+
 		switch (query.rawDataObj.codeListEditPresetType) {
 			case DataObjListEditPresetType.insert:
-				return this.addScriptPresetListEditInsert(query, queryData, id)
+				return this.addScriptPresetListEditInsert(query, queryData)
 			case DataObjListEditPresetType.save:
-				return this.addScriptPresetListEditSave(query, queryData, id)
+				return this.addScriptPresetListEditSave(query, queryData)
 			default:
 				error(500, {
 					file: FILENAME,
@@ -71,35 +72,26 @@ export class ScriptGroup {
 				})
 		}
 	}
-	addScriptPresetListEditInsert(query: Query, queryData: TokenApiQueryData, id: string) {
+	addScriptPresetListEditInsert(query: Query, queryData: TokenApiQueryData) {
 		const clazz = 'ScriptGroup.addScriptPresetListEditInsert'
 		const listEditPresetExpr = evalExpr(
 			strRequired(query.rawDataObj.listEditPresetExpr, clazz, 'listEditPresetExpr'),
 			queryData
 		)
-		return this.addScript(
-			query,
-			queryData,
-			ScriptExePost.processRowSelectPreset,
-			[
-				['setValue', { key: 'expr', value: listEditPresetExpr }],
-				['propsListEditPresetInsert', { props: query.rawDataObj.rawPropsSelectPreset }],
-				['script', { content: ['expr', 'propsListEditPresetInsert'] }]
-			],
-			[],
-			id
-		)
+		debug('addScriptPresetListEditInsert', 'listEditPresetExpr', listEditPresetExpr)
+		return this.addScript(query, queryData, ScriptExePost.processRowSelectPreset, [
+			['setValue', { key: 'expr', value: listEditPresetExpr }],
+			['propsListEditPresetInsert', { props: query.rawDataObj.rawPropsSelectPreset }],
+			['script', { content: ['expr', 'propsListEditPresetInsert'] }]
+		])
 	}
-
-	addScriptPresetListEditSave(query: Query, queryData: TokenApiQueryData, id: string) {
+	addScriptPresetListEditSave(query: Query, queryData: TokenApiQueryData) {
 		const clazz = 'ScriptGroup.addScriptPresetListEditSave'
 		const listEditPresetExpr = strRequired(
 			query.rawDataObj.listEditPresetExpr,
 			clazz,
 			'listEditPresetExpr'
 		)
-		// debug('addScriptPresetListEditSave', 'listEditPresetExpr:', listEditPresetExpr)
-		debug('addScriptPresetListEditSave', 'listEditPresetExpr', listEditPresetExpr)
 		const recordsInsert = 'recordsInsert'
 		const parent = required(query.parent, clazz, 'query.parent')
 		const op = parent.columnIsMultiSelect ? '+=' : ':='
@@ -107,44 +99,37 @@ export class ScriptGroup {
 			? parent.filterExpr
 			: `.id = <uuid>'${queryData.parms.listRecordIdCurrent}'`
 
-		return this.addScript(
-			query,
-			queryData,
-			ScriptExePost.none,
+		return this.addScript(query, queryData, ScriptExePost.none, [
+			// data
+			['wrap', { key: 'data', open: `SELECT (`, value: listEditPresetExpr }],
+			['wrap', { key: 'data', open: `data := (`, content: ['data'] }],
+			['with', { key: 'data', content: ['data'] }],
+
+			// loop
+			['action', { type: 'INSERT', table: query.getTableObjRoot() }],
+			['propsListEditPresetSave', { props: query.rawDataObj.rawPropsSelectPreset }],
 			[
-				// data
-				['wrap', { key: 'data', open: `SELECT (`, value: listEditPresetExpr }],
-				['wrap', { key: 'data', open: `data := (`, content: ['data'] }],
-				['with', { key: 'data', content: ['data'] }],
-
-				// loop
-				['action', { type: 'INSERT', table: query.getTableObjRoot() }],
-				['propsListEditPresetSave', { props: query.rawDataObj.rawPropsSelectPreset }],
-				[
-					'wrap',
-					{
-						key: 'loop',
-						open: 'FOR item IN data UNION (',
-						content: ['action', 'propsListEditPresetSave']
-					}
-				],
-
-				// recordsInsert
-				['wrap', { key: recordsInsert, open: `${recordsInsert} := (`, content: ['data', 'loop'] }],
-				['with', { key: recordsInsert, content: [recordsInsert] }],
-
-				// update
-				['action', { type: 'UPDATE', table: parent.table.object }],
-				['filter', { exprFilter }],
-				['wrap', { key: 'propInsert', open: `${parent.columnName} ${op} (`, value: recordsInsert }],
-				['wrap', { key: 'propInsert', open: 'SET {', content: ['propInsert'] }],
-
-				// script
-				['script', { content: [recordsInsert, 'action', 'filter', 'propInsert'] }]
+				'wrap',
+				{
+					key: 'loop',
+					open: 'FOR item IN data UNION (',
+					content: ['action', 'propsListEditPresetSave']
+				}
 			],
-			[],
-			id
-		)
+
+			// recordsInsert
+			['wrap', { key: recordsInsert, open: `${recordsInsert} := (`, content: ['data', 'loop'] }],
+			['with', { key: recordsInsert, content: [recordsInsert] }],
+
+			// update
+			['action', { type: 'UPDATE', table: parent.table.object }],
+			['filter', { exprFilter }],
+			['wrap', { key: 'propInsert', open: `${parent.columnName} ${op} (`, value: recordsInsert }],
+			['wrap', { key: 'propInsert', open: 'SET {', content: ['propInsert'] }],
+
+			// script
+			['script', { content: [recordsInsert, 'action', 'filter', 'propInsert'] }]
+		])
 	}
 
 	addScriptRetrieve(query: Query, queryData: TokenApiQueryData) {
@@ -154,26 +139,14 @@ export class ScriptGroup {
 			return this.addScriptRetrieveItem(query, queryData, ScriptExePost.formatData)
 		}
 	}
-	addScriptRetrieveItem(
-		query: Query,
-		queryData: TokenApiQueryData,
-		exePost: ScriptExePost,
-		id: string = ''
-	) {
-		return this.addScript(
-			query,
-			queryData,
-			exePost,
-			[
-				['action', { type: 'SELECT', table: query.getTableObjRoot() }],
-				['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
-				['filter'],
-				['order'],
-				['script', { content: ['action', 'propsSelect', 'filter', 'order'] }]
-			],
-			[],
-			id
-		)
+	addScriptRetrieveItem(query: Query, queryData: TokenApiQueryData, exePost: ScriptExePost) {
+		return this.addScript(query, queryData, exePost, [
+			['action', { type: 'SELECT', table: query.getTableObjRoot() }],
+			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
+			['filter'],
+			['order'],
+			['script', { content: ['action', 'propsSelect', 'filter', 'order'] }]
+		])
 	}
 
 	addScriptSave(query: Query, queryData: TokenApiQueryData) {
@@ -300,7 +273,6 @@ export class ScriptGroup {
 export class Script {
 	dataRows: DataRow[]
 	exePost: ScriptExePost
-	id: string
 	items: ScriptItem[] = []
 	query: Query
 	queryData: TokenApiQueryData
@@ -309,15 +281,13 @@ export class Script {
 		query: Query,
 		queryData: TokenApiQueryData,
 		exePost: ScriptExePost,
-		dataRows: DataRow[] = [],
-		id: string = ''
+		dataRows: DataRow[] = []
 	) {
 		const clazz = 'Script'
 		this.dataRows = dataRows
 		this.exePost = exePost
 		this.query = query
 		this.queryData = queryData
-		this.id = id
 	}
 	addItem(buildAction: string, parms: DataRecord = {}) {
 		this.items.push(new ScriptItem(buildAction, parms))
@@ -486,7 +456,6 @@ export class ScriptItem {
 
 export enum ScriptExePost {
 	dataItems = 'dataItems',
-	fieldEmbed = 'fieldEmbed',
 	formatData = 'formatData',
 	none = 'none',
 	processRowSelectPreset = 'processRowSelectPreset'

@@ -35,7 +35,7 @@
 	}
 </script>
 
-<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality}>
+<FormLabel {fp}>
 	<select
 		class={classProps}
 		name={field.colDO.propName}

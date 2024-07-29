@@ -60,7 +60,7 @@
 
 <!-- <DataViewer header="stateEmbedShell.objStatus" data={stateEmbedShell.objStatus} /> -->
 
-<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality} />
+<FormLabel {fp} />
 <div class="border-2 px-4 pb-4">
 	{#if stateEmbedShell}
 		<!-- <Layout state={stateEmbedShell} /> -->

@@ -62,7 +62,7 @@
 	}
 </script>
 
-<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality} />
+<FormLabel {fp} />
 <MultiSelect {selected} {options} id={fp.field.colDO.propName} {maxSelect} on:change={onChange} />
 
 <!-- <DataViewer header="value" data={fieldValue} /> -->

@@ -2,13 +2,12 @@
 	import { Field, FieldAccess } from '$comps/form/field'
 	import { DataObjCardinality } from '$utils/types'
 
-	export let field: Field
-	export let cardinality: DataObjCardinality
+	export let fp: FieldProps
 </script>
 
-<label for={field.colDO.propName} class="label">
-	<span hidden={cardinality === DataObjCardinality.list ? 'hidden' : ''}>
-		{field.colDO.label}
+<label for={fp.field.colDO.propName} class="label">
+	<span hidden={fp.dataObj.raw.codeCardinality === DataObjCardinality.list ? 'hidden' : ''}>
+		{fp.field.colDO.label}
 	</span>
 	<slot />
 </label>

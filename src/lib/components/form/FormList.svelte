@@ -38,15 +38,11 @@
 	let isSelectMulti = state instanceof StateSurfaceModal
 	let isSelectMultiAll = false
 
-	let dataObjDataCurrent: DataObjData
-
+	$: dataObj = dataObj
 	$: load(dataObjData)
 
 	function load(data: DataObjData) {
-		if (data === dataObjDataCurrent) {
-			return
-		} else {
-			dataObjDataCurrent = data
+		if (!dataObj.isFieldChanged) {
 			dataObj.objData = data
 			fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
 

@@ -55,7 +55,7 @@
 <!-- <DataViewer header="element" data={field.element} /> -->
 <!-- <DataViewer header="fieldAccess" data={field.fieldAccess} /> -->
 
-<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality}>
+<FormLabel {fp}>
 	<input
 		class={classPropsInput}
 		hidden={field.fieldAccess === FieldAccess.hidden}

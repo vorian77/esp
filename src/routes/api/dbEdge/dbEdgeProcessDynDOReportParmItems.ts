@@ -40,8 +40,6 @@ function getRawDataObj(data: any) {
 		_codeComponent: DataObjComponent.FormList,
 		header: data._header,
 		id: data.id,
-		isAlwaysRetrieveData: false,
-		isAlwaysRetrieveDataObject: false,
 		isListEdit: false,
 		name: data._name
 	})

@@ -179,22 +179,6 @@ async function initDataObj() {
 				linkTable: 'SysCode'
 			},
 			{
-				codeFieldElement: 'toggle',
-				columnName: 'isAlwaysRetrieveData',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isAlwaysRetrieveDataObject',
-				isDisplayable: true,
-				orderDisplay: 115,
-				orderDefine: 115,
-				indexTable: 0
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,

@@ -23,12 +23,14 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$routes/api/dbEdge/dbEdgeQuery.ts'
 
 export class Query {
+	fieldName: string
 	parent?: DataObjParent
-	rawDataObj: RawDataObj
 	processRow?: ProcessRow
+	rawDataObj: RawDataObj
 	scriptOrder: string = ''
-	constructor(rawDataObj: RawDataObj) {
+	constructor(rawDataObj: RawDataObj, fieldName: string = '') {
 		const clazz = 'Query'
+		this.fieldName = strRequired(fieldName, clazz, 'fieldName')
 		this.rawDataObj = valueOrDefault(rawDataObj, {})
 		this.parent = classOptional(DataObjParent, this.rawDataObj.rawParent)
 	}
@@ -215,17 +217,19 @@ export class Query {
 
 		// 1. build props, subObjGroup
 		props.forEach((propObj, idx) => {
-			const prop = `${propObj.propName} := ${getPropExpr(idx, propObj)}`
+			if (!propObj.fieldEmbed) {
+				const prop = `${propObj.propName} := ${getPropExpr(idx, propObj)}`
 
-			if (propObj.indexTable === 0) {
-				properties = this.addItemComma(properties, prop)
-			} else {
-				subObjGroup.addProp(propObj.indexTable!, prop)
+				if (propObj.indexTable === 0) {
+					properties = this.addItemComma(properties, prop)
+				} else {
+					subObjGroup.addProp(propObj.indexTable!, prop)
+				}
+
+				dataRows.forEach((dataRow) => {
+					dataRow.record[propObj.propName] = fValues[idx](dataRow.record[propObj.propName])
+				})
 			}
-
-			dataRows.forEach((dataRow) => {
-				dataRow.record[propObj.propName] = fValues[idx](dataRow.record[propObj.propName])
-			})
 		})
 
 		// 2. add subObjGroup properties
@@ -351,7 +355,7 @@ export class Query {
 		const defn = required(prop.linkItemsDefn, clazz, 'prop.linkItemsDefn') as PropLinkItemsDefn
 		queryData.parmsUpsert({ ...defn.parms })
 		const shape = `{data := .id, display := ${defn.exprPropDisplay}}`
-		const filter = defn.exprFilter ? defn.exprFilter : ''
+		const filter = defn.exprFilter ? evalExpr(defn.exprFilter, queryData) : ''
 		const orderBy = defn.exprSort ? `ORDER BY ${defn.exprSort}` : 'ORDER BY .display'
 
 		// table

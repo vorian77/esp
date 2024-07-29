@@ -112,6 +112,7 @@ export class RepEl {
 	exprCustom?: string
 	header?: string
 	indexTable?: number
+	isDisplay: boolean
 	isDisplayable: boolean
 	nameCustom?: string
 	orderDefine: number

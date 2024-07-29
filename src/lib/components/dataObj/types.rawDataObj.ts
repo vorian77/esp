@@ -48,8 +48,6 @@ export class RawDataObj {
 	exprSort?: string
 	header: string
 	id: string
-	isAlwaysRetrieveData: boolean
-	isAlwaysRetrieveDataObject: boolean
 	isListEdit: boolean
 	isListHideSearch: boolean
 	listEditPresetExpr?: string
@@ -100,16 +98,6 @@ export class RawDataObj {
 		this.exprSort = strOptional(obj.exprSort, clazz, 'exprSort')
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
-		this.isAlwaysRetrieveData = booleanRequired(
-			obj.isAlwaysRetrieveData,
-			clazz,
-			'isAlwaysRetrieveData'
-		)
-		this.isAlwaysRetrieveDataObject = booleanRequired(
-			obj.isAlwaysRetrieveDataObject,
-			clazz,
-			'isAlwaysRetrieveDataObject'
-		)
 		this.isListEdit = booleanRequired(obj.isListEdit, clazz, 'isListEdit')
 		this.isListHideSearch = booleanOrDefault(obj.isListHideSearch, false)
 		this.listEditPresetExpr = strOptional(obj.listEditPresetExpr, clazz, 'listEditPresetExpr')
@@ -267,7 +255,6 @@ export class RawDataObjPropDB {
 	constructor(obj: any, tables: DataObjTable[]) {
 		const clazz = 'RawDataObjPropDB'
 		obj = valueOrDefault(obj, {})
-		if (obj._propName === 'csf') debug('RawDataObjPropDB', 'obj.csf', obj)
 		this.codeDataSourceValue = memberOfEnum(
 			obj._codeDbDataSourceValue,
 			clazz,

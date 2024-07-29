@@ -191,8 +191,6 @@ export namespace sys_core {
     "tables": SysDataObjTable[];
     "actionFieldGroup"?: SysDataObjActionFieldGroup | null;
     "listEditPresetExpr"?: string | null;
-    "isAlwaysRetrieveData": boolean;
-    "isAlwaysRetrieveDataObject": boolean;
     "isListEdit": boolean;
     "codeListEditPresetType"?: SysCode | null;
     "codeCardinality": SysCode;
@@ -802,6 +800,7 @@ export namespace sys_rep {
     "isDisplayable"?: boolean | null;
     "orderDefine": number;
     "orderDisplay"?: number | null;
+    "isDisplay"?: boolean | null;
   }
   export interface SysRepParm extends sys_user.Mgmt {
     "fieldListItems"?: sys_core.SysDataObjFieldListItems | null;

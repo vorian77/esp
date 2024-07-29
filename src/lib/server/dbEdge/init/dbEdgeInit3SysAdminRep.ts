@@ -1006,6 +1006,15 @@ async function initRepEl() {
 			},
 			{
 				codeAccess: 'readOnly',
+				columnName: 'isDisplay',
+				isDisplayable: true,
+				isExcludeUpdate: true,
+				orderDisplay: 35,
+				orderDefine: 35,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
 				columnName: 'isDisplayable',
 				isDisplayable: true,
 				isExcludeUpdate: true,
@@ -1141,6 +1150,14 @@ async function initRepEl() {
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_field_source_value',
 				linkTable: 'SysCode'
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isDisplay',
+				isDisplayable: true,
+				orderDisplay: 55,
+				orderDefine: 55,
+				indexTable: 0
 			},
 			{
 				codeFieldElement: 'toggle',

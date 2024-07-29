@@ -671,6 +671,14 @@ export async function initPreColumn() {
 	})
 	await addColumn({
 		owner: 'app_sys',
+		codeDataType: 'date',
+		header: 'custom_element_date',
+		isExcludeInsert: true,
+		isExcludeUpdate: true,
+		name: 'custom_element_date'
+	})
+	await addColumn({
+		owner: 'app_sys',
 		codeAlignment: 'right',
 		codeDataType: 'float64',
 		header: 'custom_element_float',
@@ -1224,18 +1232,6 @@ export async function initPreColumn() {
 		codeDataType: 'bool',
 		header: 'Accessible',
 		name: 'isAccessible'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'bool',
-		header: 'Always Retrieve Data',
-		name: 'isAlwaysRetrieveData'
-	})
-	await addColumn({
-		owner: 'app_sys',
-		codeDataType: 'bool',
-		header: 'Always Retrieve Data Object',
-		name: 'isAlwaysRetrieveDataObject'
 	})
 	await addColumn({
 		owner: 'app_sys',

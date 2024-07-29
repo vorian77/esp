@@ -52,6 +52,7 @@ module sys_rep {
     exprCustom: str;
     header: str;
     indexTable: default::nonNegative;
+    isDisplay: bool;
     isDisplayable: bool;
     nameCustom: str;
     required orderDefine: default::nonNegative;

@@ -151,6 +151,20 @@ export async function initPreDataObjAction() {
 		owner: 'app_sys'
 	})
 
+	/* export */
+	await addDataObjActionField({
+		actionFieldConfirms: [
+			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+		],
+		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
+		codeActionFieldType: 'export',
+		codeActionFieldTriggerEnable: 'always',
+		header: 'Export',
+		isListRowAction: false,
+		name: 'noa_export',
+		owner: 'app_sys'
+	})
+
 	/* new */
 	await addDataObjActionField({
 		actionFieldConfirms: [

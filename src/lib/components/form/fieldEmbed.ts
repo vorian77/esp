@@ -12,7 +12,6 @@ const FILENAME = '$comps/form/fieldEmbed.ts'
 
 export class FieldEmbed extends Field {
 	dataObj?: DataObj
-	dataObjData?: DataObjData
 	constructor(props: RawFieldProps) {
 		super(props)
 		const clazz = 'FieldEmbed'
@@ -22,7 +21,7 @@ export class FieldEmbed extends Field {
 		if (dataField) {
 			this.dataObj = await DataObj.init(props.state, dataField.rawDataObj, dataField.data)
 			this.dataObj.objData = dataField.data
-			this.dataObj.setListEmbedded()
+			this.dataObj.setIsListEmbedded()
 		}
 	}
 }
@@ -41,7 +40,7 @@ export class FieldEmbedListConfig extends FieldEmbed {
 	}
 	static async init(props: RawFieldProps) {
 		const embedField = new FieldEmbedListConfig(props)
-		embedField.initDataObj(props)
+		await embedField.initDataObj(props)
 		return embedField
 	}
 }
@@ -85,7 +84,7 @@ export class FieldEmbedListSelect extends FieldEmbed {
 	}
 	static async init(props: RawFieldProps) {
 		const embedField = new FieldEmbedListSelect(props)
-		embedField.initDataObj(props)
+		await embedField.initDataObj(props)
 		return embedField
 	}
 }

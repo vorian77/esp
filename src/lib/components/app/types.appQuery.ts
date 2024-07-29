@@ -50,16 +50,15 @@ export async function query(
 	}
 
 	const result: ResponseBody = await queryExecute(tab.updateDataObjSource(), queryType, queryData)
+	console.log('types.appQuery.result:', result)
 	if (!result.success) return false
 
 	// successful
 	const dataResult = DataObjData.load(result.data.dataObjData)
 
-	if (!tab.rawDataObj || tab.rawDataObj.isAlwaysRetrieveDataObject) {
-		tab.rawDataObj = result.data.rawDataObj
-		tab.dataObj = await DataObj.init(state, result.data.rawDataObj, dataResult)
-		table = tab.getTable()
-	}
+	tab.rawDataObj = result.data.rawDataObj
+	tab.dataObj = await DataObj.init(state, result.data.rawDataObj, dataResult)
+	table = tab.getTable()
 
 	if (tab.dataObj) {
 		// query actions - post
@@ -73,10 +72,7 @@ export async function query(
 		)
 
 		tab.data = dataResult
-
-		tab.isRetrieved =
-			!tab.dataObj.raw.isAlwaysRetrieveData && !tab.dataObj.raw.isAlwaysRetrieveDataObject
-
+		tab.isRetrieved = true
 		if (tab.dataObj.raw.codeCardinality === DataObjCardinality.list) {
 			tab.metaData.valueSetList(tab.data.dataRows)
 		}
@@ -102,7 +98,7 @@ function queryDataPre(queryType: TokenApiQueryType, app: App | undefined = undef
 			case TokenApiQueryType.save:
 				offset = 1
 				const currTab = app.getCurrTab()
-				if (currTab) dataSave = currTab?.data
+				if (currTab) dataSave = currTab.data
 				break
 			default:
 				error(500, {
@@ -120,7 +116,7 @@ function queryDataPre(queryType: TokenApiQueryType, app: App | undefined = undef
 				const table = dataObj.rootTable?.name
 				const record =
 					dataObj.raw.codeCardinality === DataObjCardinality.list
-						? currTab.listGetData()
+						? currTab.listGetDataRecord()
 						: currTab.detailGetData()
 				dataTree.upsertData(table, record)
 			}

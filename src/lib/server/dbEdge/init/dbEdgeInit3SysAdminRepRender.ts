@@ -62,7 +62,7 @@ async function initFieldEmbedListEditRepUserElement() {
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isDisplay',
-				exprPreset: '(SELECT true)',
+				exprPreset: 'item.isDisplay',
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 30,
@@ -584,7 +584,6 @@ async function initRepRender() {
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		header: 'Run',
-		isAlwaysRetrieveDataObject: true,
 		name: 'data_obj_dyn_sys_rep_render',
 		owner: 'app_sys_rep',
 		processType: 'reportRender',

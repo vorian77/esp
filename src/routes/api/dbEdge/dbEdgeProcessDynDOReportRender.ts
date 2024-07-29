@@ -94,6 +94,9 @@ function getFieldColumnCustomName(dataType: string | undefined) {
 		case PropDataType.bool:
 			return 'custom_element_bool'
 
+		case PropDataType.date:
+			return 'custom_element_date'
+
 		case PropDataType.float64:
 			return 'custom_element_float'
 
@@ -123,8 +126,6 @@ function getRawDataObj(repUser: RepUser) {
 		exprSort: repUser.report.exprSort,
 		header: repUser.headerUser,
 		id: repUser.report.id,
-		isAlwaysRetrieveData: true,
-		isAlwaysRetrieveDataObject: true,
 		isListEdit: false,
 		name: repUser.report.name
 	})

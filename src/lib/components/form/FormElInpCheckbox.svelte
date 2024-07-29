@@ -53,7 +53,7 @@
 	}
 </script>
 
-<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality} />
+<FormLabel {fp} />
 
 <fieldset class={classFieldSet}>
 	{#if field.colDO.items}

@@ -127,7 +127,7 @@
 	}
 </script>
 
-<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality} />
+<FormLabel {fp} />
 
 {#if stateEmbed}
 	<Layout state={stateEmbed} />

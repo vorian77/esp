@@ -97,7 +97,7 @@
 	}
 </script>
 
-<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality}>
+<FormLabel {fp}>
 	<button class="ml-1" on:click={() => openDialogIcon()}>
 		<Icon name={'select'} width="28" height="28" fill={'#3b79e1'} />
 	</button>

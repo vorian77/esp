@@ -133,13 +133,13 @@ export async function addReport(data: any) {
 							'ct_sys_do_field_sort_dir',
 							e.cast(e.str, e.json_get(el, 'codeSortDir'))
 						),
-
 						column: e.select(e.sys_db.getColumn(e.cast(e.str, e.json_get(el, 'columnName')))),
 						createdBy: e.select(e.sys_user.getRootUser()),
 						description: e.cast(e.str, e.json_get(el, 'description')),
 						exprCustom: e.cast(e.str, e.json_get(el, 'exprCustom')),
 						header: e.cast(e.str, e.json_get(el, 'header')),
 						indexTable: e.cast(e.int16, e.json_get(el, 'indexTable')),
+						isDisplay: e.cast(e.bool, e.json_get(el, 'isDisplay')),
 						isDisplayable: e.cast(e.bool, e.json_get(el, 'isDisplayable')),
 						modifiedBy: e.select(e.sys_user.getRootUser()),
 						nameCustom: e.cast(e.str, e.json_get(el, 'nameCustom')),

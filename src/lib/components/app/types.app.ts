@@ -265,7 +265,11 @@ export class App {
 			const tabParent = this.getCurrTabParentTab()
 			if (tabParent) {
 				tabParent.listSetIdByAction(rowAction)
-				await this.saveDetailRecord(state, TokenApiQueryType.retrieve, tabParent.listGetData())
+				await this.tabQueryDetailDataRecord(
+					state,
+					TokenApiQueryType.retrieve,
+					tabParent.listGetDataRecord()
+				)
 			}
 		}
 		return this
@@ -274,7 +278,6 @@ export class App {
 		const currTab = this.getCurrTab()
 		if (currTab && currTab.data) {
 			const data = token.dataObj.objData
-			const currRecord = data.getDetailRecord()
 			const tabParent = this.getCurrTabParentTab()
 
 			switch (token.actionType) {
@@ -284,14 +287,14 @@ export class App {
 							this.popLevel()
 						} else {
 							tabParent.metaData.valueSetId(tabParent.metaData.valueGetIdList()[0])
-							await this.saveDetailRecord(
+							await this.tabQueryDetailDataRecord(
 								state,
 								TokenApiQueryType.retrieve,
-								tabParent.listGetData()
+								tabParent.listGetDataRecord()
 							)
 						}
 					} else {
-						currTab.detailSetRowStatus(DataRecordStatus.delete)
+						data.setDetailRecordStatus(DataRecordStatus.delete)
 						let recordIdOld = currTab.data.getDetailRecordValue('id')
 						let recordIdNew = ''
 
@@ -302,17 +305,17 @@ export class App {
 								idx = idx === 0 ? 1 : idx - 1
 								recordIdNew = idList[idx]
 
-								if (!(await this.saveDetailRecord(state, TokenApiQueryType.save, currRecord)))
+								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, data)))
 									return this
 								await query(state, tabParent, TokenApiQueryType.retrieve, this)
 								tabParent.metaData.listUpdate(tabParent?.data?.dataRows, recordIdOld, recordIdNew)
-								await this.saveDetailRecord(
+								await this.tabQueryDetailDataRecord(
 									state,
 									TokenApiQueryType.retrieve,
-									tabParent.listGetData()
+									tabParent.listGetDataRecord()
 								)
 							} else {
-								if (!(await this.saveDetailRecord(state, TokenApiQueryType.save, currRecord)))
+								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, data)))
 									return this
 								await query(state, tabParent, TokenApiQueryType.retrieve, this)
 								this.popLevel()
@@ -322,7 +325,7 @@ export class App {
 					break
 
 				case TokenAppDoActionFieldType.detailSave:
-					if (!(await this.saveDetailRecord(state, TokenApiQueryType.save, currRecord))) return this
+					if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, data))) return this
 					if (tabParent) {
 						await query(state, tabParent, TokenApiQueryType.retrieve, this)
 						tabParent.metaData.listUpdate(
@@ -341,15 +344,6 @@ export class App {
 		}
 		return this
 	}
-	async saveDetailRecord(state: State, queryType: TokenApiQueryType, dataRecord: DataRecord) {
-		const currLevel = this.getCurrLevel()
-		if (currLevel) {
-			currLevel.resetTabs()
-			const currTab = currLevel.getCurrTab()
-			currTab.detailSetData(dataRecord)
-			return await query(state, currTab, queryType, this)
-		}
-	}
 	async saveList(state: State, token: TokenAppDo) {
 		const data = token.dataObj.objData
 		const currTab = this.getCurrTab()
@@ -366,6 +360,29 @@ export class App {
 			if (currTab.data) currTab.data.setDetailRecordStatus(DataRecordStatus.preset)
 		}
 		return this
+	}
+	async tabQueryDetailData(state: State, queryType: TokenApiQueryType, data: DataObjData) {
+		const currLevel = this.getCurrLevel()
+		if (currLevel) {
+			currLevel.resetTabs()
+			const currTab = currLevel.getCurrTab()
+			currTab.data = data
+			return await query(state, currTab, queryType, this)
+		}
+	}
+	async tabQueryDetailDataRecord(
+		state: State,
+		queryType: TokenApiQueryType,
+		dataRecord: DataRecord
+	) {
+		const currLevel = this.getCurrLevel()
+		if (currLevel) {
+			const currTab = currLevel.getCurrTab()
+			if (currTab.data) {
+				currTab.data.setDetailRecord(dataRecord)
+				return this.tabQueryDetailData(state, queryType, currTab.data)
+			}
+		}
 	}
 }
 
@@ -470,13 +487,13 @@ export class AppLevelTab {
 		const crumbFieldNames: Array<string> = this.dataObj?.raw.crumbs ? this.dataObj.raw.crumbs : []
 		const idCurrent = this.metaData.valueGetId()
 		if (crumbFieldNames.length > 0 && idCurrent) {
-			const dataRow = this.listGetData()
-			if (dataRow) {
+			const record = this.listGetDataRecord()
+			if (record) {
 				crumbFieldNames.forEach((f) => {
-					if (Object.hasOwn(dataRow, f)) {
-						if (dataRow[f]) {
+					if (Object.hasOwn(record, f)) {
+						if (record[f]) {
 							if (id) id += ' '
-							id += dataRow[f]
+							id += record[f]
 						}
 					}
 				})
@@ -485,7 +502,7 @@ export class AppLevelTab {
 		return id ? ` [${id}]` : ''
 	}
 
-	listGetData() {
+	listGetDataRecord() {
 		const idCurrent = this.metaData.valueGetId()
 		const records = this.listGetRecords()
 		return records && idCurrent

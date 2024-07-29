@@ -703,7 +703,6 @@ async function initCohortStudentRoster() {
 				isDisplayable: true,
 				orderDisplay: 55,
 				orderDefine: 55,
-
 				headerAlt: 'Group',
 				indexTable: 2
 			}
@@ -934,7 +933,6 @@ async function initCohortAttdSheet() {
 		exprFilter:
 			'.csfCohort.cohort.id = <tree,uuid,CmCohort.id> AND .cohortAttd.id = <tree,uuid,CmCohortAttd.id>',
 		header: 'Attendance Sheet',
-		isAlwaysRetrieveData: true,
 		isListEdit: true,
 		listEditPresetExpr: `WITH
 		csfCohortsInCohort := (SELECT app_cm::CmCsfCohort FILTER .cohort.id = <tree,uuid,CmCohort.id>),

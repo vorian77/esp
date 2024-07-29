@@ -220,8 +220,6 @@ export type $SysDataObjλShape = $.typeutil.flatten<$SysObjλShape & {
   "tables": $.LinkDesc<$SysDataObjTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "actionFieldGroup": $.LinkDesc<$SysDataObjActionFieldGroup, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "listEditPresetExpr": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "isAlwaysRetrieveData": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
-  "isAlwaysRetrieveDataObject": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
   "isListEdit": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
   "codeListEditPresetType": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeCardinality": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;

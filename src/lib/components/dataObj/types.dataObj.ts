@@ -61,6 +61,7 @@ export class DataObj {
 	dataRecordsDisplay: DataRecord[] = []
 	dataRecordsHidden: DataRecord[] = []
 	fields: Field[] = []
+	isFieldChanged: boolean = false
 	isListEmbedded: boolean = false
 	objStatus: DataObjStatus = new DataObjStatus()
 	raw: RawDataObj
@@ -79,10 +80,48 @@ export class DataObj {
 				: undefined
 	}
 
+	export() {
+		let data: string = ''
+		let newRow: string = ''
+
+		// get headers
+		this.fields.forEach((f) => {
+			if (f.colDO.isDisplayable && !f.colDO.colDB.isNonData) {
+				const label = f.colDO.headerAlt ? f.colDO.headerAlt : f.colDO.label
+				newRow += `${label},`
+			}
+		})
+		data += `${newRow}\n`
+
+		// get data
+		this.dataRecordsDisplay.forEach((record, row) => {
+			newRow = ''
+			this.fields.forEach((f) => {
+				if (f.colDO.isDisplayable && !f.colDO.colDB.isNonData) {
+					const columnName = f.colDO.propName
+					const value = [null, undefined].includes(record[columnName]) ? '' : record[columnName]
+					newRow += `${value},`
+				}
+			})
+			data += `${newRow}\n`
+		})
+
+		// download
+		const blob = new Blob([data], { type: 'text/csv' })
+		const url = URL.createObjectURL(blob)
+
+		const link = document.createElement('a')
+		link.href = url
+		link.download = `${this.raw.header}.csv`
+		link.click()
+
+		URL.revokeObjectURL(url)
+		alert(`"${this.raw.header}" has been downloaded!`)
+	}
+
 	static async init(state: State, rawDataObj: RawDataObj, data: DataObjData) {
 		const dataObj = new DataObj(rawDataObj, data)
 		dataObj.fields = await dataObj.initFields(state, rawDataObj.rawPropsDisplay, data)
-		await enhanceCustomFields(dataObj.fields)
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
 		return dataObj
@@ -231,35 +270,32 @@ export class DataObj {
 	}
 
 	get objData() {
-		const data = new DataObjData(this.raw.codeCardinality)
-
 		// determine embeded fields
 		const FIELDTYPES = [FieldEmbedListEdit]
 		const fieldsEmbedded = this.fields.filter((f) => FIELDTYPES.includes(f.constructor as any))
 		const fieldsEmbeddedNames = fieldsEmbedded.map((f) => f.colDO.propName)
 
 		// root data
-		setData(data, this, fieldsEmbeddedNames)
+		const data = setData(this.raw.codeCardinality, this, fieldsEmbeddedNames)
 
 		// embedded fields
 		fieldsEmbedded.forEach((field: any) => {
 			if (field.dataObj) {
-				let newField = data.addField(
-					field.dataObj.raw.codeCardinality,
-					field.colDO.propName,
-					field.dataObj.raw
+				console.log('DataObj.getObjData.field.dataRecordsDisplay', field.dataObj.dataRecordsDisplay)
+				const fieldData = setData(field.dataObj.raw.codeCardinality, field.dataObj, [])
+				data.fields.push(
+					new DataObjDataField(field.colDO.propName, field.dataObj.raw, fieldData, undefined)
 				)
-				setData(newField.data, field.dataObj, [])
 			}
 		})
-		console.log('types.dataObj.getObjData.data:', data)
 		return data
 
 		function setData(
-			dataReturn: DataObjData,
+			cardinality: DataObjCardinality,
 			dataObjSource: DataObj,
 			fieldsEmbeddedNames: string[]
 		) {
+			let data = new DataObjData(cardinality)
 			let fieldsParmValueNames: string[] = []
 			dataObjSource.fields.forEach((f) => {
 				if (f.isParmValue) {
@@ -271,19 +307,20 @@ export class DataObj {
 			})
 
 			setDataRecords(
-				dataReturn,
+				data,
 				dataObjSource.data,
 				fieldsParmValueNames,
 				fieldsEmbeddedNames,
 				dataObjSource.dataRecordsDisplay
 			)
 			setDataRecords(
-				dataReturn,
+				data,
 				dataObjSource.data,
 				fieldsParmValueNames,
 				fieldsEmbeddedNames,
 				dataObjSource.dataRecordsHidden
 			)
+			return data
 		}
 		function setDataRecords(
 			dataReturn: DataObjData,
@@ -315,6 +352,7 @@ export class DataObj {
 	}
 
 	set objData(dataSource: DataObjData) {
+		const dataObjName = this.raw.name
 		this.saveMode =
 			dataSource.cardinality === DataObjCardinality.detail && dataSource.hasRecord()
 				? dataSource.getDetailStatusRecordIs(DataRecordStatus.preset)
@@ -330,8 +368,11 @@ export class DataObj {
 				const record = dataRow.record
 				// init parmValue
 				parmValueFields.forEach((field) => {
-					record[field.parmFields[rowIdx].colDO.propName] = record.parmValue
-					delete record.parmValue
+					const parmFieldName = field.parmFields[rowIdx].colDO.propName
+					if (!Object.hasOwn(record, parmFieldName)) {
+						record[parmFieldName] = record.parmValue
+						delete record.parmValue
+					}
 				})
 				recordsClone.push({ ...record })
 			}
@@ -339,6 +380,7 @@ export class DataObj {
 		this.dataRecordsDisplay = recordsClone
 		this.dataFieldsChanged = new FieldValues()
 		this.dataFieldsValidity = new FieldValues()
+		this.setIsFieldChanged(false)
 
 		// set data items
 		Object.entries(dataSource.items).forEach(([key, value]) => {
@@ -362,17 +404,6 @@ export class DataObj {
 
 	getField(field: Field, row: number) {
 		return field.isParmValue ? (field as FieldParm).parmFields[row] : field
-	}
-
-	getFieldDisplayByName(fieldName: string) {
-		let field = this.fields.find((f) => f.colDO.propName === fieldName)
-		if (field) return field
-
-		// check parmValue
-		field = this.fields.find((f) => f.colDO.propName === 'parmValue')
-		if (field instanceof FieldParm) return field.getParmField(fieldName)
-
-		return undefined
 	}
 	preValidate() {
 		const validityErrorLevel = this.raw.isListEdit
@@ -407,6 +438,9 @@ export class DataObj {
 	setFieldValChanged(row: number, recordId: string, fieldName: string, value: any) {
 		this.dataRecordsDisplay[row][fieldName] = value
 		const valueInitial = this.data.getValue(recordId, fieldName)
+		if (fieldName === 'pvDateStart') {
+			console.log('setFieldValChanged', { valueInitial, value })
+		}
 		const hasChanged = valueHasChanged(valueInitial, value)
 		if (hasChanged) {
 			this.dataFieldsChanged.valueSet(recordId, fieldName, hasChanged)
@@ -425,7 +459,10 @@ export class DataObj {
 		})
 		this.dataFieldsValidity = this.dataFieldsValidity
 	}
-	setListEmbedded() {
+	setIsFieldChanged(status: boolean) {
+		this.isFieldChanged = status
+	}
+	setIsListEmbedded() {
 		this.isListEmbedded = true
 	}
 	setStatus() {
@@ -590,16 +627,27 @@ export class DataObjData {
 		data.items = { ...source.items }
 		data.fields = source.fields.map((field) => {
 			return new DataObjDataField(
-				field.data.cardinality,
 				field.fieldName,
 				field.rawDataObj,
-				DataObjData.load(field.data)
+				DataObjData.load(field.data),
+				undefined
 			)
 		})
 		return data
 	}
-	addField(cardinality: DataObjCardinality, fieldName: string, rawDataObj: RawDataObj) {
-		const idx = this.fields.push(new DataObjDataField(cardinality, fieldName, rawDataObj))
+	addFieldInit(fieldName: string, rawDataObj: RawDataObj) {
+		const idx = this.fields.push(
+			new DataObjDataField(
+				fieldName,
+				rawDataObj,
+				new DataObjData(DataObjCardinality.list),
+				undefined
+			)
+		)
+		return this.fields[idx - 1]
+	}
+	addFieldSave(fieldName: string, rawDataObj: RawDataObj, dataSave: DataObjData) {
+		const idx = this.fields.push(new DataObjDataField(fieldName, rawDataObj, undefined, dataSave))
 		return this.fields[idx - 1]
 	}
 	addRow(status: DataRecordStatus, record: DataRecord, items: DataRecord = {}) {
@@ -719,15 +767,17 @@ export class DataObjData {
 
 export class DataObjDataField {
 	data: DataObjData
+	dataSave: DataObjData
 	fieldName: string
 	rawDataObj: RawDataObj
 	constructor(
-		cardinality: DataObjCardinality,
 		fieldName: string,
 		rawDataObj: RawDataObj,
-		data: DataObjData | undefined = undefined
+		data: DataObjData | undefined,
+		dataSave: DataObjData | undefined
 	) {
-		this.data = data ? data : new DataObjData(cardinality)
+		this.data = data ? data : new DataObjData(dataSave!.cardinality)
+		this.dataSave = dataSave ? dataSave : new DataObjData(data!.cardinality)
 		this.fieldName = fieldName
 		this.rawDataObj = rawDataObj
 	}

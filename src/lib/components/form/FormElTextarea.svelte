@@ -19,7 +19,7 @@
 	}
 </script>
 
-<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality} />
+<FormLabel {fp} />
 
 <textarea
 	id={field.colDO.propName}

@@ -106,7 +106,7 @@
 
 						case TokenAppDoActionFieldType.detailSave:
 							await state.app.saveDetail(state, token)
-							dataObjUpdate = new ObjUpdate(false, true)
+							dataObjUpdate = new ObjUpdate(true, true)
 							break
 
 						case TokenAppDoActionFieldType.detailSaveCancel:
@@ -148,6 +148,15 @@
 						case TokenAppDoActionFieldType.embedListConfigNew:
 							const actionProxy = state.proxyGet(TokenAppDoActionFieldType.embedListConfigNew)
 							if (actionProxy) actionProxy({ state: token.state })
+							dataObjUpdate = new ObjUpdate(false, false)
+							break
+
+						case TokenAppDoActionFieldType.export:
+							currLevel = state.app.getCurrLevel()
+							if (currLevel) {
+								currTab = currLevel.getCurrTab()
+								if (currTab && currTab.dataObj) currTab.dataObj.export()
+							}
 							dataObjUpdate = new ObjUpdate(false, false)
 							break
 

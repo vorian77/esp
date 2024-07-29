@@ -31,7 +31,8 @@ async function initFeatures() {
 			['noa_new_detail_list', 1],
 			['noa_edit_list', 2],
 			['noa_reorder', 3],
-			['noa_reorder_cancel', 4]
+			['noa_reorder_cancel', 4],
+			['noa_export', 5]
 		],
 		name: 'doag_list',
 		owner: 'app_sys'
@@ -115,7 +116,10 @@ async function initFeatures() {
 
 	/* report */
 	await addDataObjActionFieldGroup({
-		actionFieldItems: [['noa_refresh_list', 0]],
+		actionFieldItems: [
+			['noa_refresh_list', 0],
+			['noa_export', 1]
+		],
 		name: 'doag_report_render',
 		owner: 'app_sys'
 	})

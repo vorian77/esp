@@ -139,8 +139,8 @@ export class TokenApiQuery extends TokenApi {
 }
 
 export class TokenApiQueryData {
-	dataObjData: DataObjData | undefined
-	dataSave: DataObjData | undefined
+	dataObjData?: DataObjData
+	dataSave?: DataObjData
 	parms: DataRecord
 	record: DataRecord
 	system: DataRecord
@@ -185,6 +185,9 @@ export class TokenApiQueryData {
 	}
 	recordSet(data: DataRecord) {
 		this.record = data
+	}
+	setDataSave(data: DataObjData) {
+		this.dataSave = data
 	}
 }
 export class TokenApiQueryDataTree {
@@ -341,6 +344,8 @@ export enum TokenAppDoActionFieldType {
 	embedListConfigNew = 'embedListConfigNew',
 	embedListEditParmValue = 'embedListEditParmValue',
 	embedListSelect = 'embedListSelect',
+
+	export = 'export',
 
 	listDetailEdit = 'listDetailEdit',
 	listDetailNew = 'listDetailNew',

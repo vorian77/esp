@@ -40,7 +40,7 @@
 	}
 </script>
 
-<FormLabel field={fp.field} cardinality={fp.dataObj.raw.codeCardinality} />
+<FormLabel {fp} />
 
 <fieldset id="input-radio-row-{row}" class={classFieldSet}>
 	<div class="mt-3 {classAlignment}">
