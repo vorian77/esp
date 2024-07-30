@@ -125,14 +125,14 @@ function queryDataPre(queryType: TokenApiQueryType, app: App | undefined = undef
 		// parms
 		parms = app.getParms()
 
-		// listRecordIdParent
+		// listRecordId's
 		const levelCount = app.levels.length
 		const levelGrandParent = levelCount - 1 > 0 ? app.levels[levelCount - 3] : undefined
 		if (levelGrandParent) {
 			const tab = levelGrandParent.getCurrTab()
 			if (tab && tab.dataObj?.raw.codeCardinality === DataObjCardinality.list) {
-				// parms['listRecordIdParent'] = tab.listGetData().id
-				// parms['listRecordIdCurrent'] = tab.listGetData().id
+				parms['listRecordIdParent'] = tab.listGetDataRecord().id
+				parms['listRecordIdCurrent'] = tab.listGetDataRecord().id
 			}
 		}
 	}
