@@ -328,8 +328,8 @@ async function initFields(
 						'embedFields[i]?.fieldEmbed?.id'
 					),
 					parent: new RawDataObjParent({
-						_columnName: this.colDO.propName,
-						_columnIsMultiSelect: true,
+						_columnName: fieldName,
+						_columnIsMultiSelect: field.isMultiSelect,
 						_table: rootTable
 					})
 				}),
