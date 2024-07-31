@@ -5,7 +5,6 @@
 		State,
 		StateLayoutStyle,
 		StateLayoutComponentType,
-		StateMode,
 		StateSurfaceEmbedField
 	} from '$comps/app/types.appState'
 	import {
@@ -24,9 +23,8 @@
 		ValidityErrorLevel
 	} from '$comps/form/types.validation'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
-	import Layout from '$comps/layout/BaseLayout.svelte'
-	import FormList from '$comps/form/FormList.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
+	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import {
 		DataObj,
 		DataObjCardinality,
@@ -54,14 +52,13 @@
 
 <FormLabel {fp} />
 
-{#if field.dataObj}
-	<div class="border-2 p-4">
-		<FormList
+{#if fp}
+	<div class="mt-4">
+		<LayoutContent
 			bind:state={fp.state}
-			dataObj={field.dataObj}
-			dataObjData={field.dataObj.data}
+			dataObj={fp.field.dataObj}
+			dataObjData={fp.field.dataObj.data}
 			on:formCancelled
-			on:rowClick
 		/>
 	</div>
 {/if}

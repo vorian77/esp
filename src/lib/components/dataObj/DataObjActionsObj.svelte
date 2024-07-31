@@ -4,10 +4,11 @@
 		DataObjActionField,
 		DataObjActionFieldConfirm,
 		DataObjActionFieldTriggerEnable,
+		DataObjMode,
 		DataObjSaveMode,
 		DataObjStatus
 	} from '$utils/types'
-	import { State, StateMode, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
+	import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
 	import {
 		TokenAppDo,
 		TokenAppDoActionConfirmType,
@@ -28,15 +29,10 @@
 	let isEditing: boolean = false
 	let padding = ''
 	let objStatus: DataObjStatus
-	let modes: StateMode[]
 
 	$: load()
 	$: {
 		objStatus = state.objStatus
-		load()
-	}
-	$: {
-		modes = state.modes
 		load()
 	}
 
@@ -50,7 +46,9 @@
 			(a: DataObjActionField) =>
 				[TokenAppDoActionFieldType.detailSave, TokenAppDoActionFieldType.listSelfSave].includes(
 					a.codeActionFieldType
-				) && state.objStatus.changed()
+				) &&
+				state.objStatus.changed() &&
+				!dataObj.isListEmbedded
 		)
 		padding = dataObj.actionsField.filter((a) => a.isShow).length > 0 ? 'ml-4' : ''
 	}
@@ -123,14 +121,14 @@
 					break
 				case DataObjActionFieldTriggerEnable.listReorder:
 					isTriggered =
-						dataObj.raw.listReorderColumn !== null &&
-						dataObj.raw.listReorderColumn !== undefined &&
-						dataObj.raw.listReorderColumn.length > 0 &&
-						!state.modeActive(StateMode.ReorderOn) &&
+						![null, undefined, ''].includes(dataObj.raw.listReorderColumn) &&
+						!dataObj.modeActive(DataObjMode.ReorderOn) &&
 						dataObj.data.dataRows.length > 1
 					break
 				case DataObjActionFieldTriggerEnable.listReorderCancel:
-					isTriggered = state.modeActive(StateMode.ReorderOn)
+					isTriggered =
+						![null, undefined, ''].includes(dataObj.raw.listReorderColumn) &&
+						dataObj.modeActive(DataObjMode.ReorderOn)
 					break
 				case DataObjActionFieldTriggerEnable.never:
 					isTriggered = false
@@ -139,7 +137,7 @@
 					isTriggered = !state.objStatus.changed()
 					break
 				case DataObjActionFieldTriggerEnable.notReorder:
-					isTriggered = !state.modeActive(StateMode.ReorderOn)
+					isTriggered = !dataObj.modeActive(DataObjMode.ReorderOn)
 					break
 				case DataObjActionFieldTriggerEnable.objectChanged:
 					isTriggered = state.objStatus.changed()
@@ -148,7 +146,10 @@
 					isTriggered = state.objStatus.valid()
 					break
 				case DataObjActionFieldTriggerEnable.parentObjectSaved:
-					isTriggered = state.modeActive(StateMode.ParentObjectSaved)
+					isTriggered = dataObj.modeActive(DataObjMode.ParentObjectSaved)
+					break
+				case DataObjActionFieldTriggerEnable.rootDataObj:
+					isTriggered = !dataObj.isListEmbedded
 					break
 				case DataObjActionFieldTriggerEnable.saveModeInsert:
 					isTriggered = dataObj.saveMode === DataObjSaveMode.insert
@@ -211,5 +212,4 @@
 </div>
 
 <!-- <DataViewer header="stateType" data={state.tempStateType} /> -->
-<!-- <DataViewer header="modes" data={state.modes} /> -->
 <!-- class="btn w-full text-white bg-{action.codeColor}" -->

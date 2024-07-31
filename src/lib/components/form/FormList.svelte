@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { State, StateMode, StateSurfaceModal, StateLayoutStyle } from '$comps/app/types.appState'
+	import { State, StateSurfaceModal, StateLayoutStyle } from '$comps/app/types.appState'
 	import {
 		DataObj,
 		DataObjData,
+		DataObjMode,
 		DataObjSort,
 		DataObjSortItem,
 		required,
@@ -38,46 +39,44 @@
 	let isSelectMulti = state instanceof StateSurfaceModal
 	let isSelectMultiAll = false
 
-	$: dataObj = dataObj
 	$: load(dataObjData)
 
 	function load(data: DataObjData) {
-		if (!dataObj.isFieldChanged) {
-			dataObj.objData = data
-			fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
+		if (!dataObj.isListEmbedded) dataObj.objData = data
 
-			// listEdit
-			if (dataObj.raw.isListEdit) {
-				const presetRows = data.dataRows.filter((row) => row.record.id.startsWith('preset_'))
-				presetRows.forEach((row) => {
-					dataObj.dataFieldsChanged.valueSet(row.record.id + '_new', 'id', true)
-				})
-			}
+		fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
 
-			// filter
-			listFilterText = state.dataObjParms.parmGet(dataObj.raw.id, 'listFilterText') || ''
-			onFilter(listFilterText)
+		// listEdit
+		if (dataObj.raw.isListEdit) {
+			const presetRows = dataObj.data.dataRows.filter((row) => row.record.id.startsWith('preset_'))
+			presetRows.forEach((row) => {
+				dataObj.dataFieldsChanged.valueSet(row.record.id + '_new', 'id', true)
+			})
+		}
 
-			// sort
-			listSortObj = state.dataObjParms.parmGet(dataObj.raw.id, 'listSortObj')
-			if (!listSortObj) {
-				listSortObj = sortInit(fieldsDisplayable)
-				state.dataObjParms.parmSet(dataObj.raw.id, 'listSortObj', listSortObj)
-			}
-			dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
+		// filter
+		listFilterText = state.dataObjParms.parmGet(dataObj.raw.id, 'listFilterText') || ''
+		onFilter(listFilterText)
 
-			if (state instanceof StateSurfaceModal) {
-				state.dataQuery.valueGetIdList().forEach((id) => onSelect(id))
-			}
+		// sort
+		listSortObj = state.dataObjParms.parmGet(dataObj.raw.id, 'listSortObj')
+		if (!listSortObj) {
+			listSortObj = sortInit(fieldsDisplayable)
+			state.dataObjParms.parmSet(dataObj.raw.id, 'listSortObj', listSortObj)
+		}
+		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
 
-			if (!dataObj.isListEmbedded) {
-				state.setDataObjRoot(dataObj)
-				state = state.setStatus()
-			}
+		if (state instanceof StateSurfaceModal) {
+			state.dataQuery.valueGetIdList().forEach((id) => onSelect(id))
+		}
+
+		if (!dataObj.isListEmbedded) {
+			state.setDataObjRoot(dataObj)
+			state = state.setStatus()
 		}
 	}
 
-	$: dragDisabled = !state.modeActive(StateMode.ReorderOn)
+	$: dragDisabled = !dataObj.modeActive(DataObjMode.ReorderOn)
 
 	$: if (state instanceof StateSurfaceModal) {
 		const selectedRecords = dataObj.dataRecordsDisplay.filter((r) => r.selected)
@@ -105,8 +104,9 @@
 			const field = dataObj.fields.find((f) => f.colDO.propName === listReorderColumn)
 			if (field) {
 				dataObj.dataRecordsDisplay.forEach((record: DataRecord, row) => {
-					state = state.setFieldVal(dataObj, row, field, row)
+					dataObj = dataObj.setFieldVal(row, field, row)
 				})
+				state = state.setStatus()
 			}
 		}
 	}
@@ -117,7 +117,7 @@
 	async function onRowClick(record: DataRecord, field: Field) {
 		const actions = dataObj.actionsField.filter((a) => a.isListRowAction)
 
-		if (state.modeActive(StateMode.ReorderOn) || actions.length === 0 || dataObj.raw.isListEdit)
+		if (dataObj.modeActive(DataObjMode.ReorderOn) || actions.length === 0 || dataObj.raw.isListEdit)
 			return
 
 		if (actions.length > 1) {

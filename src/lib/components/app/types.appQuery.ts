@@ -50,7 +50,6 @@ export async function query(
 	}
 
 	const result: ResponseBody = await queryExecute(tab.updateDataObjSource(), queryType, queryData)
-	console.log('types.appQuery.result:', result)
 	if (!result.success) return false
 
 	// successful

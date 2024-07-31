@@ -5,7 +5,6 @@
 		State,
 		StateLayoutComponentType,
 		StateLayoutStyle,
-		StateMode,
 		StateSurfaceEmbedField
 	} from '$comps/app/types.appState'
 	import {
@@ -16,9 +15,10 @@
 		TokenAppModalReturnType
 	} from '$utils/types.token'
 	import Layout from '$comps/layout/BaseLayout.svelte'
-	import { DataObj, DataObjCardinality, type DataRecord, required } from '$utils/types'
+	import { DataObj, DataObjCardinality, DataObjMode, type DataRecord, required } from '$utils/types'
 	import { RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
 	import FormLabel from '$comps/form/FormLabel.svelte'
+	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -42,19 +42,19 @@
 		if (recordId.startsWith('preset_')) recordId = ''
 		if (recordIdCurrent !== recordId) {
 			recordIdCurrent = recordId
-			setStateEmbed(fieldValue)
+			// setStateEmbed(fieldValue)
 		}
 	}
 	$: {
 		const parentObjectSaved =
 			recordIdCurrent !== '' && state.objStatus.objValidToSave && !state.objStatus.objHasChanged
-		if (stateEmbed) {
+		if (field.dataObj) {
 			if (parentObjectSaved) {
-				stateEmbed.modeAdd(StateMode.ParentObjectSaved)
+				field.dataObj.modeAdd(DataObjMode.ParentObjectSaved)
 			} else {
-				stateEmbed.modeDrop(StateMode.ParentObjectSaved)
+				field.dataObj.modeDrop(DataObjMode.ParentObjectSaved)
 			}
-			stateEmbed = stateEmbed
+			dataObj = dataObj
 		}
 	}
 
@@ -129,10 +129,15 @@
 
 <FormLabel {fp} />
 
-{#if stateEmbed}
-	<Layout state={stateEmbed} />
+{#if fp}
+	<div class="mt-4">
+		<LayoutContent
+			bind:state={fp.state}
+			dataObj={fp.field.dataObj}
+			dataObjData={fp.field.dataObj.data}
+			on:formCancelled
+		/>
+	</div>
 {/if}
 
-<!-- <DataViewer header="modes (listConfig)" data={stateEmbedded.modes} /> -->
 <!-- <DataViewer header="stateDisplay" data={stateDisplay} /> -->
-<!-- <DataViewer header="stateDisplay.modes" data={stateEmbedded.modes} /> -->

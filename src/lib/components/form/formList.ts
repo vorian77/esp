@@ -3,7 +3,7 @@ import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 import { Field } from '$comps/form/field'
 
 export function recordsFilter(filterText: string, dataObj: DataObj, fieldsDisplayable: Field[]) {
-	let records = dataObj.dataRecordsDisplay.concat(dataObj.dataRecordsHidden)
+	let records = recordsConcat(dataObj)
 
 	// filter - filter text
 	const visibleFields = fieldsDisplayable.map((f) => f.colDO.propName)
@@ -25,6 +25,18 @@ export function recordsFilter(filterText: string, dataObj: DataObj, fieldsDispla
 	dataObj.dataRecordsHidden = records.filter(
 		(record) => !dataObj.dataRecordsDisplay.includes(record)
 	)
+}
+
+function recordsConcat(dataObj: DataObj) {
+	let records = recordsConcatList([], dataObj.dataRecordsDisplay)
+	return recordsConcatList(records, dataObj.dataRecordsHidden)
+
+	function recordsConcatList(recordsNew: DataRecord[], recordsOld: DataRecord[]) {
+		recordsOld.forEach((record) => {
+			if (-1 === recordsNew.findIndex((r) => r.id === record.id)) recordsNew.push(record)
+		})
+		return recordsNew
+	}
 }
 
 export function recordsSelectAll(data: DataRecord[]) {

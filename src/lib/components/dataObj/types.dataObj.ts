@@ -61,8 +61,8 @@ export class DataObj {
 	dataRecordsDisplay: DataRecord[] = []
 	dataRecordsHidden: DataRecord[] = []
 	fields: Field[] = []
-	isFieldChanged: boolean = false
 	isListEmbedded: boolean = false
+	modes: DataObjMode[] = []
 	objStatus: DataObjStatus = new DataObjStatus()
 	raw: RawDataObj
 	rootTable?: DBTable
@@ -381,7 +381,6 @@ export class DataObj {
 		this.dataRecordsDisplay = recordsClone
 		this.dataFieldsChanged = new FieldValues()
 		this.dataFieldsValidity = new FieldValues()
-		this.setIsFieldChanged(false)
 
 		// set data items
 		Object.entries(dataSource.items).forEach(([key, value]) => {
@@ -405,6 +404,23 @@ export class DataObj {
 
 	getField(field: Field, row: number) {
 		return field.isParmValue ? (field as FieldParm).parmFields[row] : field
+	}
+
+	// if (Object.hasOwn(obj, 'modes')) this.modes = obj.modes.map((m: DataObjMode) => m)
+	modeAdd(mode: DataObjMode) {
+		if (!this.modes.includes(mode)) this.modes.push(mode)
+	}
+	modeActive(mode: DataObjMode) {
+		return this.modes.includes(mode)
+	}
+	modeDrop(mode: DataObjMode) {
+		this.modes = this.modes.filter((m) => m !== mode)
+	}
+	modeReset() {
+		this.modes = []
+		this.fields.forEach((f) => {
+			f.modeReset()
+		})
 	}
 	preValidate() {
 		const validityErrorLevel = this.raw.isListEdit
@@ -439,9 +455,6 @@ export class DataObj {
 	setFieldValChanged(row: number, recordId: string, fieldName: string, value: any) {
 		this.dataRecordsDisplay[row][fieldName] = value
 		const valueInitial = this.data.getValue(recordId, fieldName)
-		if (fieldName === 'pvDateStart') {
-			console.log('setFieldValChanged', { valueInitial, value })
-		}
 		const hasChanged = valueHasChanged(valueInitial, value)
 		if (hasChanged) {
 			this.dataFieldsChanged.valueSet(recordId, fieldName, hasChanged)
@@ -460,9 +473,6 @@ export class DataObj {
 		})
 		this.dataFieldsValidity = this.dataFieldsValidity
 	}
-	setIsFieldChanged(status: boolean) {
-		this.isFieldChanged = status
-	}
 	setIsListEmbedded() {
 		this.isListEmbedded = true
 	}
@@ -472,8 +482,9 @@ export class DataObj {
 			const recordId = r.id
 			this.fields.forEach((f) => {
 				if (
-					[FieldAccess.optional, FieldAccess.required].includes(f.fieldAccess) &&
-					!f.colDO.colDB.isNonData
+					([FieldAccess.optional, FieldAccess.required].includes(f.fieldAccess) &&
+						!f.colDO.colDB.isNonData) ||
+					f.colDO.propName === this.raw.listReorderColumn
 				) {
 					const statusField = f.getStatus(this, recordId)
 					newStatus = newStatus.update(statusField)
@@ -559,6 +570,7 @@ export enum DataObjActionFieldTriggerEnable {
 	objectValidToContinue = 'objectValidToContinue',
 	objectValidToSave = 'objectValidToSave',
 	parentObjectSaved = 'parentObjectSaved',
+	rootDataObj = 'rootDataObj',
 	saveMode = 'saveMode',
 	saveModeInsert = 'saveModeInsert',
 	saveModeUpdate = 'saveModeUpdate'
@@ -787,6 +799,11 @@ export class DataObjDataField {
 export enum DataObjListEditPresetType {
 	insert = 'insert',
 	save = 'save'
+}
+
+export enum DataObjMode {
+	ParentObjectSaved = 'ParentObjectSaved',
+	ReorderOn = 'ReorderOn'
 }
 
 export class DataObjParent {

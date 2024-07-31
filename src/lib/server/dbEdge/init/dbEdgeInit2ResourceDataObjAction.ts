@@ -139,10 +139,7 @@ export async function initPreDataObjAction() {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
-		actionFieldShows: [
-			{ codeTriggerShow: 'parentObjectSaved', isRequired: true },
-			{ codeTriggerShow: 'listReorder', isRequired: true }
-		],
+		actionFieldShows: [{ codeTriggerShow: 'listReorder', isRequired: true }],
 		codeActionFieldType: 'listSelfReorder',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Reorder',
@@ -287,7 +284,10 @@ export async function initPreDataObjAction() {
 
 	await addDataObjActionField({
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
-		actionFieldShows: [{ codeTriggerShow: 'objectChanged', isRequired: true }],
+		actionFieldShows: [
+			{ codeTriggerShow: 'objectChanged', isRequired: true },
+			{ codeTriggerShow: 'rootDataObj', isRequired: true }
+		],
 		codeActionFieldType: 'listSelfSave',
 		codeActionFieldTriggerEnable: 'objectValidToSave',
 		header: 'Save',

@@ -9,15 +9,13 @@ import {
 	DataObjData,
 	DataObjStatus,
 	type DataRecord,
-	FieldValue,
 	getArray,
 	initNavTree,
 	MetaData,
 	NodeType,
 	type ToastType,
 	User,
-	userInit,
-	ValidityError
+	userInit
 } from '$utils/types'
 import {
 	Token,
@@ -76,7 +74,6 @@ export class State {
 	dataQuery: MetaData = new MetaData()
 	layoutComponent: StateLayoutComponentType = StateLayoutComponentType.layoutContent
 	layoutStyle: StateLayoutStyle = StateLayoutStyle.dataObjTab
-	modes: StateMode[] = []
 	nodeType: NodeType = NodeType.home
 	objStatus: DataObjStatus = new DataObjStatus()
 	packet: StatePacket | undefined
@@ -109,18 +106,7 @@ export class State {
 			return undefined
 		}
 	}
-	modeAdd(mode: StateMode) {
-		if (!this.modes.includes(mode)) this.modes.push(mode)
-	}
-	modeActive(mode: StateMode) {
-		return this.modes.includes(mode)
-	}
-	modeDrop(mode: StateMode) {
-		this.modes = this.modes.filter((m) => m !== mode)
-	}
-	modeReset() {
-		this.modes = []
-	}
+
 	newApp() {
 		this.app = new App()
 		this.dataObjParms.reset()
@@ -236,7 +222,7 @@ export class State {
 
 	resetState() {
 		this.objStatus.reset()
-		this.modeReset()
+		if (this.dataObjRoot) this.dataObjRoot.modeReset()
 	}
 	async resetUser(loadHome: boolean) {
 		if (this.user) {
@@ -278,7 +264,6 @@ export class State {
 	updateProperties(obj: any) {
 		if (Object.hasOwn(obj, 'layoutComponent')) this.layoutComponent = obj.layoutComponent
 		if (Object.hasOwn(obj, 'layoutStyle')) this.layoutStyle = obj.layoutStyle
-		if (Object.hasOwn(obj, 'modes')) this.modes = obj.modes.map((m: StateMode) => m)
 		if (Object.hasOwn(obj, 'nodeType')) this.nodeType = obj.nodeType
 		if (Object.hasOwn(obj, 'packet')) this.packet = obj.packet
 		if (Object.hasOwn(obj, 'page')) this.page = obj.page
@@ -317,12 +302,6 @@ export enum StateLayoutStyle {
 	overlayModalSelect = 'overlayModalSelect',
 	overlayModalWizard = 'overlayModalWizard'
 }
-
-export enum StateMode {
-	ParentObjectSaved = 'ParentObjectSaved',
-	ReorderOn = 'ReorderOn'
-}
-
 export class StatePacket {
 	confirm: DataObjConfirm
 	confirmType: TokenAppDoActionConfirmType | undefined
@@ -446,7 +425,6 @@ async function askB4Transition(
 	if (state instanceof StateSurfaceModal) {
 		if (confirm(confirmConfig.message)) {
 			state.resetState()
-			state.modeReset()
 			updateFunction(state, obj, updateCallback)
 		}
 	} else {

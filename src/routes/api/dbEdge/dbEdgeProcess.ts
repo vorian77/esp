@@ -14,6 +14,7 @@ import {
 	DataObjProcessType,
 	DataRecordStatus,
 	DataRow,
+	DBTable,
 	formatDateTime,
 	getArray,
 	required,
@@ -24,7 +25,9 @@ import {
 	PropDataSourceValue,
 	PropDataType,
 	RawDataObj,
-	RawDataObjPropDB
+	RawDataObjParent,
+	RawDataObjPropDB,
+	RawDataObjPropDBFieldEmbedType
 } from '$comps/dataObj/types.rawDataObj'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import type { DataRecord } from '$utils/types'
@@ -311,7 +314,64 @@ async function initFields(
 				'initFields',
 				'embedFields[i]?.fieldEmbed?.id'
 			)
-			let rawDataObj = await getRawDataObj(new TokenApiDbDataObjSource({ dataObjId }), queryData)
+			debug('dbEdgeProcess.initFields: ' + fieldName, 'field', field)
+			const rootTable = field?.link?.table ? field.link.table : undefined
+			debug('dbEdgeProcess.initFields: ' + fieldName, 'rootTable', rootTable)
+
+			// dataObjSource.replacements.parent
+
+			let rawDataObj = await getRawDataObj(
+				new TokenApiDbDataObjSource({
+					dataObjId: strRequired(
+						field.fieldEmbed?.id,
+						'initFields',
+						'embedFields[i]?.fieldEmbed?.id'
+					),
+					parent: new RawDataObjParent({
+						_columnName: this.colDO.propName,
+						_columnIsMultiSelect: true,
+						_table: rootTable
+					})
+				}),
+				queryData
+			)
+
+			// new TokenApiDbDataObjSource({
+			// 	dataObjId: this.raw.dataObjEmbedId,
+			// 	exprFilter: this.exprFilterEmbed
+			// }),
+
+			// new TokenApiDbDataObjSource({
+			// 	dataObjId: this.raw.dataObjModalId,
+			// 	parent: new RawDataObjParent({
+			// 		_columnName: this.colDO.propName,
+			// 		_columnIsMultiSelect: true,
+			// 		_table: rootTable
+			// 	})
+			// }),
+
+			switch (field.fieldEmbed?.type) {
+				case RawDataObjPropDBFieldEmbedType.listConfig:
+					rawDataObj.setParent({
+						_columnName: fieldName,
+						_columnIsMultiSelect: field.isMultiSelect,
+						_filterExpr: `.id IN (SELECT ${rootTable.object} FILTER .id = <parms,uuid,listRecordIdParent>).${fieldName}.id`,
+						_table: rootTable
+					})
+					break
+				case RawDataObjPropDBFieldEmbedType.listEdit:
+					break
+				case RawDataObjPropDBFieldEmbedType.listSelect:
+					break
+				default:
+					error(500, {
+						file: FILENAME,
+						function: 'initFields',
+						message: `No dase defined for field.fieldEmbed?.type: ${field.fieldEmbed?.type}`
+					})
+			}
+			debug('dbEdgeProcess.initFields: ' + fieldName, 'rawDataObj.parent', rawDataObj.rawParent)
+
 			const dataSaveField = queryData?.dataSave?.fields.filter((f) => f.fieldName === fieldName)
 			if (dataSaveField?.length === 1) {
 				returnData.addFieldSave(fieldName, rawDataObj, dataSaveField[0].data)

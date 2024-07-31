@@ -1,11 +1,27 @@
-import { State } from '$comps/app/types.appState'
+import { State, StateLayoutStyle } from '$comps/app/types.appState'
 import { Field, RawFieldProps } from '$comps/form/field'
-import { arrayOfClasses, DataObj, DataObjActionField, DataObjData, required } from '$utils/types'
+import {
+	arrayOfClasses,
+	DataObj,
+	DataObjActionField,
+	DataObjCardinality,
+	DataObjMode,
+	type DataRecord,
+	required
+} from '$utils/types'
 import {
 	RawDataObjPropDisplayEmbedListConfig,
 	RawDataObjPropDisplayEmbedListEdit,
 	RawDataObjPropDisplayEmbedListSelect
 } from '$comps/dataObj/types.rawDataObj'
+import {
+	TokenApiDbDataObjSource,
+	TokenApiQueryType,
+	TokenAppDoActionFieldType,
+	TokenAppDoActionConfirmType,
+	TokenAppModalReturnType
+} from '$utils/types.token'
+import { RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldEmbed.ts'
@@ -24,10 +40,13 @@ export class FieldEmbed extends Field {
 			this.dataObj.setIsListEmbedded()
 		}
 	}
+	modeReset(): void {
+		if (this.dataObj) this.dataObj.modeReset()
+	}
 }
-
 export class FieldEmbedListConfig extends FieldEmbed {
 	actionsFieldModal: DataObjActionField[]
+	exprFilterEmbed: string = ''
 	raw: RawDataObjPropDisplayEmbedListConfig
 	constructor(props: RawFieldProps) {
 		const clazz = 'FieldEmbedListConfig'
@@ -41,7 +60,56 @@ export class FieldEmbedListConfig extends FieldEmbed {
 	static async init(props: RawFieldProps) {
 		const embedField = new FieldEmbedListConfig(props)
 		await embedField.initDataObj(props)
+		if (embedField.dataObj) {
+			embedField.exprFilterEmbed = `.id IN (SELECT ${embedField.dataObj.rootTable?.object} FILTER .id = <parms,uuid,listRecordIdParent>).${embedField.colDO.propName}.id`
+		}
+		console.log('FieldEmbedListConfig.init', embedField)
 		return embedField
+	}
+
+	openModalEdit(parms: any) {
+		const state = required(parms.state, 'FormElEmbedListConfig.openModalEdit', 'state')
+		this.openModal(state, TokenApiQueryType.retrieve)
+	}
+
+	openModalNew(parms: any) {
+		const state = required(parms.state, 'FormElEmbedListConfig.openModalNew', 'state')
+		this.openModal(state, TokenApiQueryType.preset)
+	}
+
+	openModal(state: State, queryType: TokenApiQueryType) {
+		const rootTable = required(this.dataObj?.rootTable, `${FILENAME}.openModal`, 'rootTable')
+		state.openModalEmbed(
+			this.actionsFieldModal,
+			DataObjCardinality.detail,
+			new TokenApiDbDataObjSource({
+				dataObjId: this.raw.dataObjEmbedId,
+				exprFilter: this.exprFilterEmbed
+			}),
+			new TokenApiDbDataObjSource({
+				dataObjId: this.raw.dataObjModalId,
+				parent: new RawDataObjParent({
+					_columnName: this.colDO.propName,
+					_columnIsMultiSelect: true,
+					_table: rootTable
+				})
+			}),
+			StateLayoutStyle.overlayModalDetail,
+			state.dataQuery.valueGetAll(),
+			queryType,
+			this.fUpdate
+		)
+	}
+	fUpdate(returnType: TokenAppModalReturnType, value: any = undefined) {
+		value = value ? value.valueGetIdList() : undefined
+		// setStateEmbed(value ? value : [])
+	}
+
+	async updateCallback(obj: any) {
+		if (obj.packet.token.action === TokenAppDoActionFieldType.listSelfSave) {
+			// fieldValue = obj.packet.token.data.dataRows.map((r: any) => r.record.id)
+		}
+		// stateEmbed = stateEmbed.updateProperties(obj)
 	}
 }
 

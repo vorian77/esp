@@ -3,7 +3,6 @@
 	import { query } from '$comps/app/types.appQuery'
 	import {
 		State,
-		StateMode,
 		StateSurfaceEmbed,
 		StateSurfaceModal,
 		StatePacket,
@@ -25,7 +24,13 @@
 		TokenAppTreeNode,
 		TokenAppTreeSetParent
 	} from '$utils/types.token'
-	import { DataObj, DataObjCardinality, DataObjData, DataRecordStatus } from '$utils/types'
+	import {
+		DataObj,
+		DataObjCardinality,
+		DataObjMode,
+		DataObjData,
+		DataRecordStatus
+	} from '$utils/types'
 	import { NodeType } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import LayoutProcess from '$comps/layout/LayoutProcess.svelte'
@@ -176,20 +181,20 @@
 							break
 
 						case TokenAppDoActionFieldType.listSelfReorder:
-							state.modeAdd(StateMode.ReorderOn)
+							dataObj.modeAdd(DataObjMode.ReorderOn)
 							dataObjUpdate = new ObjUpdate(false, false)
 							break
 
 						case TokenAppDoActionFieldType.listSelfReorderCancel:
 							await query(state, state.app.getCurrTab(), TokenApiQueryType.retrieve, state.app)
-							state.modeDrop(StateMode.ReorderOn)
+							dataObj.modeDrop(DataObjMode.ReorderOn)
 							dataObjUpdate = new ObjUpdate(false, true)
 							resetModes = false
 							break
 
 						case TokenAppDoActionFieldType.listSelfSave:
 							const rtn = await state.app.saveList(state, token)
-							state.modeDrop(StateMode.ReorderOn)
+							dataObj.modeDrop(DataObjMode.ReorderOn)
 							dataObjUpdate = new ObjUpdate(false, true)
 							resetModes = false
 							break
@@ -320,8 +325,7 @@
 			if (currTab && currTab.dataObj) {
 				if (dataObjUpdate.updateObj) newDataObj = currTab.dataObj
 				if (dataObjUpdate.updateObjData) {
-					state.objStatus.reset()
-					if (resetModes) state.modeReset()
+					state.resetState()
 					state.dataQuery.dataSave(state.app.getParms())
 					newDataObjData = currTab.data
 				}

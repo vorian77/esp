@@ -105,7 +105,6 @@
 	)
 
 	function setFieldVal(field: Field, value: any) {
-		dataObj.setIsFieldChanged(true)
 		dataObj = dataObj.setFieldVal(row, field, value)
 		state = state.setStatus()
 	}

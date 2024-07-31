@@ -3,7 +3,6 @@
 		State,
 		StateLayoutStyle,
 		StateLayoutComponentType,
-		StateMode,
 		StateSurfaceEmbedField,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState'

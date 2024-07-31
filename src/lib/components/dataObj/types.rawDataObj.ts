@@ -114,7 +114,7 @@ export class RawDataObj {
 			RawDataObjActionField,
 			obj._actionFieldGroup?._actionFieldItems
 		)
-		this.rawParent = classOptional(RawDataObjParent, obj._parent)
+		this.setParent(obj._parent)
 		this.rawPropsDisplay = arrayOfClasses(RawDataObjPropDisplay, obj._propsDisplay)
 		this.subHeader = strOptional(obj.subHeader, clazz, 'subHeader')
 		this.tables = this.initTables(obj._tables)
@@ -163,6 +163,9 @@ export class RawDataObj {
 			newTables.push(new DataObjTable(rawTable, newTables))
 		})
 		return newTables
+	}
+	setParent(obj: any) {
+		this.rawParent = classOptional(RawDataObjParent, obj)
 	}
 }
 
@@ -280,11 +283,20 @@ export class RawDataObjPropDB {
 		this.exprCustom = strOptional(obj.exprCustom, clazz, 'exprCustom')
 		this.exprPreset = strOptional(obj.exprPreset, clazz, 'exprPreset')
 		this.fieldEmbed = obj._fieldEmbedListConfig
-			? new RawDataObjPropDBFieldEmbed('listConfig', obj._fieldEmbedListConfig._dataObjEmbedId)
+			? new RawDataObjPropDBFieldEmbed(
+					RawDataObjPropDBFieldEmbedType.listConfig,
+					obj._fieldEmbedListConfig._dataObjEmbedId
+				)
 			: obj._fieldEmbedListEdit
-				? new RawDataObjPropDBFieldEmbed('listEdit', obj._fieldEmbedListEdit._dataObjEmbedId)
+				? new RawDataObjPropDBFieldEmbed(
+						RawDataObjPropDBFieldEmbedType.listEdit,
+						obj._fieldEmbedListEdit._dataObjEmbedId
+					)
 				: obj._fieldEmbedListSelect
-					? new RawDataObjPropDBFieldEmbed('listSelect', obj._fieldEmbedListSelect._dataObjListId)
+					? new RawDataObjPropDBFieldEmbed(
+							RawDataObjPropDBFieldEmbedType.listSelect,
+							obj._fieldEmbedListSelect._dataObjListId
+						)
 					: undefined
 		this.hasItems = booleanOrDefault(obj._hasItems, false)
 		this.indexTable = nbrOrDefault(obj.indexTable, -1)
@@ -309,12 +321,18 @@ export class RawDataObjPropDB {
 
 export class RawDataObjPropDBFieldEmbed {
 	id: string
-	type: string
-	constructor(type: string, dataObjId: string) {
+	type: RawDataObjPropDBFieldEmbedType
+	constructor(type: RawDataObjPropDBFieldEmbedType, dataObjId: string) {
 		const clazz = 'RawDataObjPropDBFieldEmbed'
 		this.id = dataObjId
 		this.type = type
 	}
+}
+
+export enum RawDataObjPropDBFieldEmbedType {
+	listConfig = 'listConfig',
+	listEdit = 'listEdit',
+	listSelect = 'listSelect'
 }
 
 export class RawDataObjPropDisplay {

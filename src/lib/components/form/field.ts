@@ -99,7 +99,7 @@ export class Field {
 			new ValidityField(this.colDO.propName, new Validity())
 		])
 	}
-
+	modeReset() {}
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel): Validation {
 		if (this.colDO.colDB.isNonData) {
 			return this.getValuationValid()
