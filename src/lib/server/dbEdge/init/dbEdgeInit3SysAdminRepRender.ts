@@ -403,7 +403,7 @@ async function initRepConfig() {
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>).report`,
+				linkExprSave: `(SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdCurrent>).report`,
 				linkTable: 'SysRep'
 			},
 			{
@@ -563,6 +563,7 @@ async function initRepConfig() {
 		codeIcon: 'application',
 		dataObj: 'data_obj_sys_rep_my_report_list',
 		header: 'My Reports',
+		isHideRowManager: false,
 		name: 'node_obj_sys_rep_my_report_list',
 		orderDefine: 10,
 		owner: 'app_sys_rep',
@@ -572,6 +573,7 @@ async function initRepConfig() {
 		codeIcon: 'application',
 		dataObj: 'data_obj_sys_rep_my_report_detail',
 		header: 'Config',
+		isHideRowManager: false,
 		name: 'node_obj_sys_rep_my_report_detail',
 		orderDefine: 10,
 		owner: 'app_sys_rep',
@@ -603,6 +605,7 @@ async function initRepRender() {
 		codeIcon: 'application',
 		dataObj: 'data_obj_dyn_sys_rep_render',
 		header: 'Run',
+		isHideRowManager: true,
 		name: 'node_obj_sys_rep_render',
 		orderDefine: 20,
 		owner: 'app_sys_rep',

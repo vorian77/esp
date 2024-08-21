@@ -1,96 +1,70 @@
 import { App } from '$comps/app/types.app'
-import { required, valueOrDefault } from '$utils/utils'
+import { required, strRequired, valueOrDefault } from '$utils/utils'
 import {
 	debug,
 	DataObj,
-	DataObjActionField,
 	DataObjCardinality,
 	DataObjConfirm,
-	DataObjData,
+	DataObjEmbedType,
 	DataObjStatus,
 	type DataRecord,
-	getArray,
 	initNavTree,
-	MetaData,
+	ParmsValuesState,
 	NodeType,
+	ParmsUser,
 	type ToastType,
 	User,
-	userInit
+	userInit,
+	ParmsUserParmType,
+	ParmsObjType
 } from '$utils/types'
+import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
 import {
 	Token,
 	TokenApiDbDataObjSource,
 	TokenApiQuery,
 	TokenApiQueryData,
 	TokenApiQueryType,
-	TokenAppModalEmbedField,
+	TokenAppDo,
 	TokenAppDoActionConfirmType,
 	TokenAppDoActionFieldType,
+	TokenAppModalEmbedField,
 	TokenAppModalReturn,
 	TokenAppModalReturnType
 } from '$utils/types.token'
+import {
+	FieldEmbedListConfig,
+	FieldEmbedListEdit,
+	FieldEmbedListSelect
+} from '$comps/form/fieldEmbed'
+import { query } from '$comps/app/types.appQuery'
+import { RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/app/types.appState.ts'
 
-export class DataObjParm {
-	id: string
-	parm: string
-	value: any
-	constructor(id: string, parm: string, value: any) {
-		this.id = id
-		this.parm = parm
-		this.value = value
-	}
-}
-
-export class DataObjParms {
-	parms: DataObjParm[] = []
-	constructor() {}
-	parmGet(id: string, parm: string) {
-		let idx = this.parms.findIndex((p) => p.id === id && p.parm === parm)
-		return idx > -1 ? this.parms[idx].value : undefined
-	}
-	parmSet(id: string, parm: string, value: any) {
-		let idx = this.parms.findIndex((p) => p.id === id && p.parm === parm)
-		if (idx > -1) {
-			this.parms[idx].value = value
-		} else {
-			this.parms.push(new DataObjParm(id, parm, value))
-		}
-	}
-	reset() {
-		this.parms = []
-	}
-}
-
 export class State {
-	actionProxies: StateActionProxy[] = []
 	app: App = new App()
-	dataObjFormListEdit?: DataObj
-	dataObjParms: DataObjParms = new DataObjParms()
-	dataObjRoot?: DataObj
-	dataQuery: MetaData = new MetaData()
+	data?: DataObj
+	dataObjState?: DataObj
 	layoutComponent: StateLayoutComponentType = StateLayoutComponentType.layoutContent
 	layoutStyle: StateLayoutStyle = StateLayoutStyle.dataObjTab
 	nodeType: NodeType = NodeType.home
 	objStatus: DataObjStatus = new DataObjStatus()
-	packet: StatePacket | undefined
+	packet?: StatePacket
 	page = '/home'
+	parmsState: ParmsValuesState = new ParmsValuesState()
+	parmsUser: ParmsUser = new ParmsUser()
 	storeDrawer: any
 	storeModal: any
 	storeToast: any
 	updateCallback?: Function
 	updateFunction: Function = stateUpdate
-	user: User | undefined = undefined
+	user?: User
 	constructor(obj: any) {
 		const clazz = 'State'
 		obj = valueOrDefault(obj, {})
-		this.actionProxies = (() => {
-			const proxies = getArray(obj.actionProxies)
-			return proxies.map((p) => new StateActionProxy(p.actionType, p.proxy))
-		})()
 		this.updateProperties(obj)
 	}
 
@@ -109,7 +83,7 @@ export class State {
 
 	newApp() {
 		this.app = new App()
-		this.dataObjParms.reset()
+		this.parmsUser.reset()
 	}
 
 	async openDrawer(
@@ -148,7 +122,7 @@ export class State {
 		})
 	}
 
-	async openModal(state: State, fUpdate: Function = () => {}) {
+	async openModal(state: State, fUpdate?: Function) {
 		state.updateProperties({
 			storeDrawer: this.storeDrawer,
 			storeModal: this.storeModal,
@@ -159,47 +133,100 @@ export class State {
 				type: 'component',
 				component: 'baseLayoutModal',
 				meta: { state },
-				response: (r: any) => {
+				response: async (r: any) => {
 					resolve(r)
 				}
 			}
 			state.storeModal.trigger(modalSettings)
-		}).then((response) => {
-			if (response && response !== false) {
-				const modalReturn = response as TokenAppModalReturn
-				if (
-					modalReturn.type === TokenAppModalReturnType.complete &&
-					modalReturn.data instanceof MetaData
-				) {
-					fUpdate(TokenAppModalReturnType.complete, modalReturn.data)
+		}).then(async (response) => {
+			if (fUpdate) {
+				if (response && response !== false) {
+					const modalReturn = response as TokenAppModalReturn
+					if (
+						modalReturn.type === TokenAppModalReturnType.complete &&
+						modalReturn.data instanceof ParmsValuesState
+					) {
+						fUpdate(TokenAppModalReturnType.complete, modalReturn.data)
+					} else {
+						fUpdate(TokenAppModalReturnType.cancel)
+					}
 				} else {
 					fUpdate(TokenAppModalReturnType.cancel)
 				}
-			} else {
-				fUpdate(TokenAppModalReturnType.cancel)
 			}
 		})
 	}
 
-	async openModalEmbed(
-		actionsFieldDialog: DataObjActionField[],
-		cardinality: DataObjCardinality,
-		dataObjSourceEmbed: TokenApiDbDataObjSource,
-		dataObjSourceModal: TokenApiDbDataObjSource,
-		layoutStyle: StateLayoutStyle,
-		parms: DataRecord,
+	async openModalEmbedListConfig(
+		token: TokenAppDo,
 		queryType: TokenApiQueryType,
-		fUpdate: Function
+		fModalCloseUpdate: Function
 	) {
+		const clazz = `${FILENAME}.openModalEmbedListConfig`
+		const field: FieldEmbedListConfig = required(token.fieldEmbed, clazz, 'field')
+		const fieldDataObj = required(field.dataObj, clazz, 'fieldDataObj')
+		const rootTable = required(this?.dataObjState?.rootTable, clazz, 'rootTable')
+
 		const state = new StateSurfaceModal({
-			actionsFieldDialog,
-			cardinality,
+			actionsFieldDialog: field.actionsFieldModal,
+			embedType: DataObjEmbedType.listConfig,
 			layoutComponent: StateLayoutComponentType.layoutContent,
-			layoutStyle,
-			parms,
-			token: new TokenAppModalEmbedField({ dataObjSourceEmbed, dataObjSourceModal, queryType })
+			layoutStyle: StateLayoutStyle.overlayModalDetail,
+			parmsState: new ParmsValuesState(fieldDataObj.data.getParms()),
+			rootRecordId: field.rootRecordId,
+			token: new TokenAppModalEmbedField({
+				dataObjSourceModal: new TokenApiDbDataObjSource({
+					dataObjId: field.raw.dataObjModalId,
+					parent: new RawDataObjParent({
+						_columnName: field.colDO.propName,
+						_columnIsMultiSelect: true,
+						_filterExpr: '.id = <parms,uuid,rootRecordId>',
+						_table: rootTable
+					})
+				}),
+				queryType
+			})
 		})
-		this.openModal(state, fUpdate)
+		state.app.initModal(fieldDataObj)
+		await this.openModal(state, fModalCloseUpdate)
+	}
+
+	async openModalEmbedListSelect(token: TokenAppDo, fModalCloseUpdate: Function) {
+		const clazz = `${FILENAME}.openModalEmbedListSelect`
+		const field: FieldEmbedListSelect = required(token.fieldEmbed, clazz, 'field')
+		const fieldDataObj = required(field.dataObj, clazz, 'fieldDataObj')
+		const rootTable = required(this?.dataObjState?.rootTable, clazz, 'rootTable')
+
+		// parms
+		const parmsState = new ParmsValuesState(fieldDataObj.data.getParms())
+		parmsState.dataUpdate(fieldDataObj.data.parmsState.valueGetAll())
+		parmsState.valueSet(ParmsObjType.embedFieldName, field.colDO.propName)
+		parmsState.valueSetList(
+			ParmsObjType.listRecordIdSelected,
+			token.dataObj.data.rowsRetrieved.getRows()
+		)
+
+		const state = new StateSurfaceModal({
+			actionsFieldDialog: field.actionsFieldModal,
+			embedType: DataObjEmbedType.listSelect,
+			layoutComponent: StateLayoutComponentType.layoutContent,
+			layoutStyle: StateLayoutStyle.overlayModalSelect,
+			parmsState,
+			rootRecordId: field.rootRecordId,
+			token: new TokenAppModalEmbedField({
+				dataObjSourceModal: new TokenApiDbDataObjSource({
+					dataObjId: field.raw.dataObjListID,
+					parent: new RawDataObjParent({
+						_columnName: field.colDO.propName,
+						_columnIsMultiSelect: field.colDO.colDB.isMultiSelect,
+						_filterExpr: '.id = <parms,uuid,rootRecordId>',
+						_table: rootTable
+					})
+				}),
+				queryType: TokenApiQueryType.retrieve
+			})
+		})
+		await this.openModal(state, fModalCloseUpdate)
 	}
 
 	openToast(type: ToastType, message: string) {
@@ -214,15 +241,9 @@ export class State {
 		}
 		this.storeToast.trigger(t)
 	}
-
-	proxyGet(actionType: TokenAppDoActionFieldType) {
-		const idx = this.actionProxies.findIndex((p) => p.actionType === actionType)
-		return idx > -1 ? this.actionProxies[idx].proxy : undefined
-	}
-
 	resetState() {
 		this.objStatus.reset()
-		if (this.dataObjRoot) this.dataObjRoot.modeReset()
+		if (this.dataObjState) this.dataObjState.modeReset()
 	}
 	async resetUser(loadHome: boolean) {
 		if (this.user) {
@@ -240,12 +261,13 @@ export class State {
 	set(packet: StatePacket) {
 		this.packet = packet
 	}
-	setDataObjRoot(dataObj: DataObj) {
-		this.dataObjRoot = dataObj
+
+	setDataObjState(dataObj: DataObj) {
+		this.dataObjState = dataObj
 	}
 	setStatus() {
-		if (this.dataObjRoot) {
-			this.objStatus = this.dataObjRoot.setStatus()
+		if (this.dataObjState) {
+			this.objStatus = this.dataObjState.setStatus()
 			return this
 		} else {
 			error(500, {
@@ -262,12 +284,13 @@ export class State {
 		if (this.updateFunction) this.updateFunction(this, obj, this.updateCallback)
 	}
 	updateProperties(obj: any) {
+		if (Object.hasOwn(obj, 'data')) this.data = obj.data
 		if (Object.hasOwn(obj, 'layoutComponent')) this.layoutComponent = obj.layoutComponent
 		if (Object.hasOwn(obj, 'layoutStyle')) this.layoutStyle = obj.layoutStyle
 		if (Object.hasOwn(obj, 'nodeType')) this.nodeType = obj.nodeType
 		if (Object.hasOwn(obj, 'packet')) this.packet = obj.packet
 		if (Object.hasOwn(obj, 'page')) this.page = obj.page
-		if (Object.hasOwn(obj, 'parms')) this.dataQuery.dataInit(obj.parms)
+		if (Object.hasOwn(obj, 'parmsState')) this.parmsState = obj.parmsState
 		if (Object.hasOwn(obj, 'storeDrawer')) this.storeDrawer = obj.storeDrawer
 		if (Object.hasOwn(obj, 'storeModal')) this.storeModal = obj.storeModal
 		if (Object.hasOwn(obj, 'storeToast')) this.storeToast = obj.storeToast
@@ -277,16 +300,6 @@ export class State {
 		return this
 	}
 }
-
-export class StateActionProxy {
-	actionType: TokenAppDoActionFieldType
-	proxy: Function
-	constructor(actionType: TokenAppDoActionFieldType, proxy: Function) {
-		this.actionType = actionType
-		this.proxy = proxy
-	}
-}
-
 export enum StateLayoutComponentType {
 	layoutApp = 'layoutApp',
 	layoutContent = 'layoutContent',
@@ -348,11 +361,7 @@ export class StateSurfaceEmbedField extends StateSurfaceEmbed {
 			token: new TokenApiQuery(
 				required(obj.queryType, clazz, 'queryType'),
 				required(obj.dataObjSource, clazz, 'dataObjSource'),
-				new TokenApiQueryData({
-					dataObjData: obj.data
-						? obj.data
-						: new DataObjData(required(obj.cardinality, clazz, 'cardinality'))
-				})
+				new TokenApiQueryData({ dataObjData: obj.data })
 			)
 		})
 	}
@@ -374,20 +383,22 @@ export class StateSurfaceEmbedShell extends StateSurfaceEmbed {
 
 export class StateSurfaceModal extends State {
 	actionsFieldDialog: DataObjActionField[] = []
-	cardinality: DataObjCardinality
+	embedType: DataObjEmbedType
 	headerDialog: string
+	rootRecordId: string
 	constructor(obj: any) {
 		const clazz = 'StateSurfaceModal'
 		super(obj)
 		obj = valueOrDefault(obj, {})
 		this.actionsFieldDialog = valueOrDefault(obj.actionsFieldDialog, [])
-		this.cardinality = required(obj.cardinality, clazz, 'cardinality')
+		this.embedType = required(obj.embedType, clazz, 'embedType')
 		this.headerDialog = valueOrDefault(obj.headerDialog, '')
 		this.packet = new StatePacket({
 			component: StatePacketComponent.modal,
 			confirmType: TokenAppDoActionConfirmType.none,
 			token: required(obj.token, clazz, 'token')
 		})
+		this.rootRecordId = strRequired(obj.rootRecordId, clazz, 'rootRecordId')
 	}
 }
 

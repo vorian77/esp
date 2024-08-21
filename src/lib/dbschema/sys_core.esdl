@@ -288,6 +288,7 @@ module sys_core {
     dataObj: sys_core::SysDataObj {
       on target delete allow
     };
+    required isHideRowManager: bool;
     parent: sys_core::SysNodeObj;
     required orderDefine: default::nonNegative;
     page: str;

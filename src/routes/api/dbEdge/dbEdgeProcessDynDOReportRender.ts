@@ -28,7 +28,7 @@ export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj
 	}
 	function addParms(repUser: RepUser, queryData: TokenApiQueryData) {
 		repUser.parms.forEach((p) => {
-			queryData.parmsValueSet(p.parm.name, p.parmValue)
+			queryData?.dataTab?.parmsValues.valueSet(p.parm.name, p.parmValue)
 		})
 	}
 
@@ -132,6 +132,6 @@ function getRawDataObj(repUser: RepUser) {
 }
 
 async function getReport(queryData: TokenApiQueryData) {
-	const data = await getReportUser(queryData.parmsValueGet('listRecordIdCurrent'))
+	const data = await getReportUser(queryData.dataTab?.parmsValues.valueGet('listRecordIdCurrent'))
 	return data[0]
 }

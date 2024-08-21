@@ -62,7 +62,8 @@
 	}
 </script>
 
-<FormLabel {fp} />
-<MultiSelect {selected} {options} id={fp.field.colDO.propName} {maxSelect} on:change={onChange} />
-
-<!-- <DataViewer header="value" data={fieldValue} /> -->
+{#if options.length > 0}
+	<FormLabel {fp} />
+	<MultiSelect {selected} {options} id={fp.field.colDO.propName} {maxSelect} on:change={onChange} />
+{/if}
+<!-- <DataViewer header="fieldValue" data={fieldValue} /> -->

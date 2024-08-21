@@ -1,12 +1,6 @@
 <script lang="ts">
-	import {
-		appStoreUser,
-		DataObjActionFieldConfirm,
-		initNavTree,
-		NodeType,
-		required,
-		User
-	} from '$utils/types'
+	import { appStoreUser, initNavTree, NodeType, required, User } from '$utils/types'
+	import { DataObjActionFieldConfirm } from '$comps/dataObj/types.dataObjActionField'
 	import {
 		State,
 		StateLayoutComponentType,
@@ -62,32 +56,7 @@
 		;(async () => {
 			await initNavTree(user)
 		})()
-		const proxyEdit = (parms: any) => {
-			const clazz = 'State.actionProxies.listDetailEdit'
-			const actionType = required(parms.actionType, clazz, 'actionType')
-			const confirm = required(parms.confirm, clazz, 'confirm')
-			const confirmType = required(parms.confirmType, clazz, 'confirmType')
-			const dataObj = required(parms.dataObj, clazz, 'dataObj')
-			const state = required(parms.state, clazz, 'state')
-			state.update({
-				packet: new StatePacket({
-					component: StatePacketComponent.dataObj,
-					confirm,
-					confirmType,
-					token: new TokenAppDo({
-						actionType,
-						dataObj,
-						state
-					})
-				})
-			})
-		}
-		const proxySave = (parms: any) => {}
 		state = new State({
-			actionProxies: [
-				{ actionType: TokenAppDoActionFieldType.listDetailEdit, proxy: proxyEdit },
-				{ actionType: TokenAppDoActionFieldType.listSelfSave, proxy: proxySave }
-			],
 			layoutComponent: StateLayoutComponentType.layoutApp,
 			layoutStyle: StateLayoutStyle.dataObjTab,
 			storeDrawer,

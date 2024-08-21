@@ -4,10 +4,12 @@ import {
 	booleanOrFalse,
 	booleanRequired,
 	DataObjCardinality,
+	DataObjEmbedType,
 	DataObjTable,
 	debug,
 	getArray,
 	memberOfEnum,
+	memberOfEnumIfExists,
 	memberOfEnumOrDefault,
 	nbrOrDefault,
 	nbrOptional,
@@ -17,18 +19,21 @@ import {
 	strOptional,
 	strRequired,
 	DBTable,
-	valueOrDefault,
-	memberOfEnumIfExists
+	valueOrDefault
 } from '$utils/types'
 import {
-	DataObjActionFieldConfirm,
-	DataObjActionFieldShow,
-	DataObjActionFieldTriggerEnable,
+	DataObj,
 	DataObjComponent,
 	DataObjListEditPresetType,
 	DataObjProcessType,
 	type DataRecord
 } from '$comps/dataObj/types.dataObj'
+import {
+	DataObjActionField,
+	DataObjActionFieldConfirm,
+	DataObjActionFieldShow,
+	DataObjActionFieldTriggerEnable
+} from '$comps/dataObj/types.dataObjActionField'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
 import { TokenAppDoActionFieldType } from '$utils/types.token'
 import { FieldColor, FieldItem } from '$comps/form/field'
@@ -225,6 +230,7 @@ export class RawDataObjDyn extends RawDataObj {
 export class RawDataObjParent {
 	_columnName: string
 	_columnIsMultiSelect: boolean
+	_embedType?: DataObjEmbedType
 	_filterExpr?: string
 	_table: DBTable
 	constructor(obj: RawDataObjParent) {
@@ -235,6 +241,14 @@ export class RawDataObjParent {
 			obj._columnIsMultiSelect,
 			clazz,
 			'_columnIsMultiSelect'
+		)
+		this._embedType = memberOfEnumOrDefault(
+			obj._embedType,
+			clazz,
+			'_embedType',
+			'DataObjEmbedType',
+			DataObjEmbedType,
+			DataObjEmbedType.listEdit
 		)
 		this._filterExpr = strOptional(obj._filterExpr, clazz, '_filterExpr')
 		this._table = new DBTable(obj._table)
@@ -284,17 +298,17 @@ export class RawDataObjPropDB {
 		this.exprPreset = strOptional(obj.exprPreset, clazz, 'exprPreset')
 		this.fieldEmbed = obj._fieldEmbedListConfig
 			? new RawDataObjPropDBFieldEmbed(
-					RawDataObjPropDBFieldEmbedType.listConfig,
+					DataObjEmbedType.listConfig,
 					obj._fieldEmbedListConfig._dataObjEmbedId
 				)
 			: obj._fieldEmbedListEdit
 				? new RawDataObjPropDBFieldEmbed(
-						RawDataObjPropDBFieldEmbedType.listEdit,
+						DataObjEmbedType.listEdit,
 						obj._fieldEmbedListEdit._dataObjEmbedId
 					)
 				: obj._fieldEmbedListSelect
 					? new RawDataObjPropDBFieldEmbed(
-							RawDataObjPropDBFieldEmbedType.listSelect,
+							DataObjEmbedType.listSelect,
 							obj._fieldEmbedListSelect._dataObjListId
 						)
 					: undefined
@@ -321,18 +335,12 @@ export class RawDataObjPropDB {
 
 export class RawDataObjPropDBFieldEmbed {
 	id: string
-	type: RawDataObjPropDBFieldEmbedType
-	constructor(type: RawDataObjPropDBFieldEmbedType, dataObjId: string) {
+	type: DataObjEmbedType
+	constructor(type: DataObjEmbedType, dataObjId: string) {
 		const clazz = 'RawDataObjPropDBFieldEmbed'
 		this.id = dataObjId
 		this.type = type
 	}
-}
-
-export enum RawDataObjPropDBFieldEmbedType {
-	listConfig = 'listConfig',
-	listEdit = 'listEdit',
-	listSelect = 'listSelect'
 }
 
 export class RawDataObjPropDisplay {

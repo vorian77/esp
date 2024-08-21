@@ -3,12 +3,14 @@
 	import { query } from '$comps/app/types.appQuery'
 	import {
 		State,
+		StateLayoutStyle,
 		StateSurfaceEmbed,
 		StateSurfaceModal,
 		StatePacket,
 		StatePacketComponent
 	} from '$comps/app/types.appState'
 	import {
+		TokenApiDbDataObjSource,
 		TokenApiQuery,
 		TokenApiQueryType,
 		TokenAppBack,
@@ -18,6 +20,7 @@
 		TokenAppDoActionConfirmType,
 		TokenAppModalEmbedField,
 		TokenAppModalEmbedShell,
+		TokenAppModalReturnType,
 		TokenAppProcess,
 		TokenAppRow,
 		TokenAppTab,
@@ -29,8 +32,16 @@
 		DataObjCardinality,
 		DataObjMode,
 		DataObjData,
-		DataRecordStatus
+		DataRecordStatus,
+		required,
+		ParmsValuesState,
+		ParmsObjType
 	} from '$utils/types'
+	import {
+		FieldEmbedListConfig,
+		FieldEmbedListEdit,
+		FieldEmbedListSelect
+	} from '$comps/form/fieldEmbed'
 	import { NodeType } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import LayoutProcess from '$comps/layout/LayoutProcess.svelte'
@@ -50,7 +61,6 @@
 	let currLevel: AppLevel | undefined
 	let currTab: AppLevelTab | undefined
 	let parentTab: AppLevelTab | undefined
-	let dataObjUpdate: ObjUpdate | undefined
 
 	const componentsLayout: Record<string, any> = {
 		layoutApp: LayoutApp,
@@ -71,6 +81,7 @@
 	]
 
 	$: if (state && state.packet) {
+		currLayout = componentsLayout[state.layoutComponent]
 		const packet = state.consume(componentsProcess)
 		if (packet) {
 			;(async () => await process(packet))()
@@ -78,7 +89,6 @@
 	}
 
 	async function process(packet: StatePacket) {
-		currLayout = componentsLayout[state.layoutComponent]
 		const token = packet.token
 		let resetModes = true
 
@@ -88,72 +98,89 @@
 					switch (token.actionType) {
 						case TokenAppDoActionFieldType.detailDelete:
 							await state.app.saveDetail(state, token)
-							dataObjUpdate = new ObjUpdate(true, true)
+							updateObjects(true, true)
+
 							break
 
 						case TokenAppDoActionFieldType.detailMigrate:
 							await migrate(state, token.dataObj)
-							dataObjUpdate = new ObjUpdate(false, false)
+							updateObjects(false, false)
 							break
 
 						case TokenAppDoActionFieldType.detailNew:
 							parentTab = state.app.getCurrTabParentTab()
-							if (parentTab) parentTab.metaData.valueSetId('')
+							if (parentTab)
+								parentTab.data?.parmsState.valueSet(ParmsObjType.listRecordIdCurrent, '')
 							await query(state, state.app.getCurrTab(), TokenApiQueryType.preset, state.app)
-							dataObjUpdate = new ObjUpdate(false, true)
+							updateObjects(false, true)
 							break
 
 						case TokenAppDoActionFieldType.detailProcessExecute:
 							alert('detailProcessExecute...')
 							// await migrate(state, token.dataObj)
-							dataObjUpdate = new ObjUpdate(false, false)
+							updateObjects(false, false)
 							break
 
 						case TokenAppDoActionFieldType.detailSave:
 							await state.app.saveDetail(state, token)
-							dataObjUpdate = new ObjUpdate(true, true)
+							updateObjects(true, true)
 							break
 
 						case TokenAppDoActionFieldType.detailSaveCancel:
 							currLevel = state.app.getCurrLevel()
 							if (currLevel) {
 								currTab = currLevel.getCurrTab()
-								if (currTab) {
-									if (currTab.dataObj) {
-										const dataRow = currTab.dataObj.data.getDetailRow()
-										switch (dataRow.status) {
-											case DataRecordStatus.preset:
-												await query(state, currTab, TokenApiQueryType.preset, state.app)
-												dataObjUpdate = new ObjUpdate(false, true)
-												break
-											case DataRecordStatus.retrieved:
-											case DataRecordStatus.update:
-												await query(state, currTab, TokenApiQueryType.retrieve, state.app)
-												dataObjUpdate = new ObjUpdate(false, true)
-												break
-											default:
-												error(500, {
-													file: FILENAME,
-													function: `processState.actionType: ${token.actionType}`,
-													message: `No case defined for DataRecordStatus: ${dataRow.status} `
-												})
-										}
-										console.log('detailSaveCancel.dataRow', dataRow)
+								if (currTab && currTab.dataObj) {
+									const dataRow = currTab?.data?.rowsRetrieved?.getDetailRow()
+									switch (dataRow.status) {
+										case DataRecordStatus.preset:
+											await query(state, currTab, TokenApiQueryType.preset, state.app)
+											updateObjects(false, true)
+											break
+										case DataRecordStatus.retrieved:
+										case DataRecordStatus.update:
+											await query(state, currTab, TokenApiQueryType.retrieve, state.app)
+											updateObjects(false, true)
+											break
+										default:
+											error(500, {
+												file: FILENAME,
+												function: `processState.actionType: ${token.actionType}`,
+												message: `No case defined for DataRecordStatus: ${dataRow.status} `
+											})
 									}
 								}
 							}
-
 							break
 
 						case TokenAppDoActionFieldType.detailSaveAs:
 							await state.app.tabDuplicate(state, token)
-							dataObjUpdate = new ObjUpdate(false, true)
+							updateObjects(false, true)
+							break
+
+						case TokenAppDoActionFieldType.embedListConfigEdit:
+							await state.openModalEmbedListConfig(
+								token,
+								TokenApiQueryType.retrieve,
+								fModalCloseUpdateEmbedListConfig
+							)
 							break
 
 						case TokenAppDoActionFieldType.embedListConfigNew:
-							const actionProxy = state.proxyGet(TokenAppDoActionFieldType.embedListConfigNew)
-							if (actionProxy) actionProxy({ state: token.state })
-							dataObjUpdate = new ObjUpdate(false, false)
+							await state.openModalEmbedListConfig(
+								token,
+								TokenApiQueryType.preset,
+								fModalCloseUpdateEmbedListConfig
+							)
+							break
+
+						case TokenAppDoActionFieldType.embedListSelect:
+							currLevel = state.app.getCurrLevel()
+							if (currLevel) {
+								currTab = currLevel.getCurrTab()
+								currTab.data = state.dataObjState?.objData
+							}
+							await state.openModalEmbedListSelect(token, fModalCloseUpdateEmbedListSelect)
 							break
 
 						case TokenAppDoActionFieldType.export:
@@ -162,40 +189,40 @@
 								currTab = currLevel.getCurrTab()
 								if (currTab && currTab.dataObj) currTab.dataObj.export()
 							}
-							dataObjUpdate = new ObjUpdate(false, false)
+							updateObjects(false, false)
 							break
 
 						case TokenAppDoActionFieldType.listDetailEdit:
-							await state.app.addLevelNode(state, TokenApiQueryType.retrieve)
-							dataObjUpdate = new ObjUpdate(true, true)
+							await state.app.addLevelNode(state, token, TokenApiQueryType.retrieve)
+							updateObjects(true, true)
 							break
 
 						case TokenAppDoActionFieldType.listDetailNew:
-							await state.app.addLevelNode(state, TokenApiQueryType.preset)
-							dataObjUpdate = new ObjUpdate(true, true)
+							await state.app.addLevelNode(state, token, TokenApiQueryType.preset)
+							updateObjects(true, true)
 							break
 
 						case TokenAppDoActionFieldType.listSelfRefresh:
 							await query(state, state.app.getCurrTab(), TokenApiQueryType.retrieve, state.app)
-							dataObjUpdate = new ObjUpdate(false, true)
+							updateObjects(false, true)
 							break
 
 						case TokenAppDoActionFieldType.listSelfReorder:
 							dataObj.modeAdd(DataObjMode.ReorderOn)
-							dataObjUpdate = new ObjUpdate(false, false)
+							updateObjects(false, false)
 							break
 
 						case TokenAppDoActionFieldType.listSelfReorderCancel:
 							await query(state, state.app.getCurrTab(), TokenApiQueryType.retrieve, state.app)
 							dataObj.modeDrop(DataObjMode.ReorderOn)
-							dataObjUpdate = new ObjUpdate(false, true)
+							updateObjects(false, true)
 							resetModes = false
 							break
 
 						case TokenAppDoActionFieldType.listSelfSave:
 							const rtn = await state.app.saveList(state, token)
 							dataObj.modeDrop(DataObjMode.ReorderOn)
-							dataObjUpdate = new ObjUpdate(false, true)
+							updateObjects(false, true)
 							resetModes = false
 							break
 
@@ -212,7 +239,7 @@
 			case StatePacketComponent.embedField:
 				if (token instanceof TokenApiQuery) {
 					await state.app.initEmbeddedField(state, token)
-					dataObjUpdate = new ObjUpdate(true, true)
+					updateObjects(true, true)
 					resetModes = false
 				}
 				break
@@ -220,7 +247,7 @@
 			case StatePacketComponent.embedShell:
 				if (token instanceof TokenAppModalEmbedShell) {
 					await state.app.addLevelEmbedShell(state, token)
-					dataObjUpdate = new ObjUpdate(true, true)
+					updateObjects(true, true)
 					resetModes = false
 				}
 				break
@@ -228,30 +255,8 @@
 			case StatePacketComponent.modal:
 				if (state instanceof StateSurfaceModal) {
 					if (token instanceof TokenAppModalEmbedField) {
-						await state.app.initModal(state, token.dataObjSourceEmbed)
-						// <todo> - 240428 - remove requirement to re-select the display list by using embedded list
-
-						// retrieve dialog
-						switch (state.cardinality) {
-							case DataObjCardinality.list:
-								break
-
-							case DataObjCardinality.detail:
-								await state.app.addLevelModal(state, token)
-								break
-
-							default:
-								error(500, {
-									file: FILENAME,
-									function: 'state.app.initDialog',
-									message: `No case defined for state.cardinality: ${state.cardinality}`
-								})
-						}
-						dataObjUpdate = new ObjUpdate(true, true)
-					}
-					if (token instanceof TokenAppProcess) {
-						await state.app.initModal(state, token.dataObjSource)
-						dataObjUpdate = new ObjUpdate(true, true)
+						await state.app.addLevelModal(state, token)
+						updateObjects(true, true)
 					}
 				}
 				break
@@ -263,7 +268,7 @@
 						returnHome(state)
 					} else {
 						await state.app.back(1)
-						dataObjUpdate = new ObjUpdate(true, true)
+						updateObjects(true, true)
 					}
 				}
 				break
@@ -274,15 +279,15 @@
 						returnHome(state)
 					} else {
 						await state.app.changeCrumbs(token)
-						dataObjUpdate = new ObjUpdate(true, true)
+						updateObjects(true, true)
 					}
 				}
 				break
 
 			case StatePacketComponent.navRow:
 				if (token instanceof TokenAppRow) {
-					await state.app.rowUpdate(state, token.rowAction)
-					dataObjUpdate = new ObjUpdate(true, true)
+					await state.app.rowUpdate(state, token)
+					updateObjects(true, true)
 				}
 				break
 
@@ -295,7 +300,7 @@
 						if (!currTab.isRetrieved) {
 							await query(state, currTab, TokenApiQueryType.retrieve, state.app)
 						}
-						dataObjUpdate = new ObjUpdate(true, true)
+						updateObjects(true, true)
 					}
 				}
 				break
@@ -304,7 +309,7 @@
 				if (token instanceof TokenAppTreeNode) {
 					state.newApp()
 					await state.app.initNode(state, token)
-					dataObjUpdate = new ObjUpdate(true, true)
+					updateObjects(true, true)
 				}
 				break
 
@@ -315,23 +320,32 @@
 					message: `No case defined for NavActionComponent: ${packet.component}`
 				})
 		}
-
-		// update data object
-		if (dataObjUpdate) {
-			state.app = state.app
-			let newDataObj: DataObj | undefined
-			let newDataObjData: DataObjData | undefined
-			currTab = state.app.getCurrTab()
-			if (currTab && currTab.dataObj) {
-				if (dataObjUpdate.updateObj) newDataObj = currTab.dataObj
-				if (dataObjUpdate.updateObjData) {
-					state.resetState()
-					state.dataQuery.dataSave(state.app.getParms())
-					newDataObjData = currTab.data
-				}
+	}
+	const fModalCloseUpdateEmbedListConfig = async (
+		returnType: TokenAppModalReturnType,
+		data?: ParmsValuesState
+	) => {
+		currLevel = state.app.getCurrLevel()
+		if (currLevel) {
+			currTab = currLevel.getCurrTab()
+			await query(state, currTab, TokenApiQueryType.retrieve, state.app)
+		}
+		updateObjects(true, true)
+	}
+	const fModalCloseUpdateEmbedListSelect = async (
+		returnType: TokenAppModalReturnType,
+		data?: ParmsValuesState
+	) => {
+		if (returnType === TokenAppModalReturnType.complete) {
+			currLevel = state.app.getCurrLevel()
+			if (currLevel) {
+				const embedFieldName = data?.valueGet(ParmsObjType.embedFieldName)
+				currTab = currLevel.getCurrTab()
+				const idx = currTab.data.fields.findIndex((f) => f.embedFieldName === embedFieldName)
+				if (idx > -1) currTab.data.fields[idx].data.parmsValues.dataUpdate(data?.valueGetAll())
+				await query(state, currTab, TokenApiQueryType.save, state.app)
 			}
-			if (newDataObj) dataObj = newDataObj
-			if (newDataObjData) dataObjData = newDataObjData
+			updateObjects(true, true)
 		}
 	}
 
@@ -347,12 +361,15 @@
 		})
 	}
 
-	class ObjUpdate {
-		updateObj: boolean
-		updateObjData: boolean
-		constructor(updateObj: boolean, updateObjData: boolean) {
-			this.updateObjData = updateObjData
-			this.updateObj = updateObj
+	function updateObjects(updateObj: boolean, updateObjData: boolean) {
+		state.app = state.app
+		currTab = state.app.getCurrTab()
+		if (currTab) {
+			if (updateObj) dataObj = currTab.dataObj
+			if (updateObjData) {
+				state.resetState()
+				dataObjData = currTab.data
+			}
 		}
 	}
 </script>

@@ -7,32 +7,40 @@
 		TokenAppModalReturnType
 	} from '$utils/types.token'
 	import { getModalStore } from '@skeletonlabs/skeleton'
-	import { DataObjActionField, DataObjCardinality } from '$utils/types'
+	import { DataObjCardinality, DataObjEmbedType, ParmsObjType } from '$utils/types'
+	import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '/$comps/overlay/OverlayModalItems.svelte'
+	const FILENAME = '/$comps/layout/BaseLayoutModal.svelte'
 
-	// export let parent: any
+	export let parent: any
 
 	const storeModal = getModalStore()
 
 	let state: StateSurfaceModal = $storeModal[0].meta.state
+	let modeDelete: boolean = false
 
 	state.setUpdateCallback((obj: any) => {
 		state.packet = obj.packet
+		if (
+			state.embedType === DataObjEmbedType.listConfig &&
+			obj.packet.token.actionType === TokenAppDoActionFieldType.detailDelete
+		) {
+			modeDelete = true
+		}
 	})
 
 	$: {
-		const idCurrent = state.dataQuery.valueGetId()
-		const idList = state.dataQuery.valueGetIdList()
-
-		if (state.cardinality === DataObjCardinality.detail && idCurrent && idList.length === 0) {
-			// auto close after deleting only record
-			if ($storeModal[0]?.response) {
-				$storeModal[0].response(new TokenAppModalReturn(TokenAppModalReturnType.complete, idList))
+		if (modeDelete) {
+			const currTab = state.app.getCurrTab()
+			const rowCnt = currTab?.data?.rowsRetrieved.dataRows.length
+			if (rowCnt === 0) {
+				if ($storeModal[0]?.response) {
+					$storeModal[0].response(new TokenAppModalReturn(TokenAppModalReturnType.complete, []))
+				}
+				storeModal.close()
 			}
-			storeModal.close()
 		}
 	}
 
@@ -49,7 +57,7 @@
 			case TokenAppDoActionFieldType.dialogDone:
 				if ($storeModal[0].response)
 					$storeModal[0].response(
-						new TokenAppModalReturn(TokenAppModalReturnType.complete, state.dataQuery)
+						new TokenAppModalReturn(TokenAppModalReturnType.complete, state.parmsState)
 					)
 				storeModal.close()
 				break
@@ -84,8 +92,3 @@
 		</div>
 	</div>
 {/if}
-
-<!-- <DataViewer
-	header="state.dataQuery"
-	data={{ recordIdCurrent: state.dataQuery.valueGetId(), idList: state.dataQuery.valueGetIdList() }}
-/> -->

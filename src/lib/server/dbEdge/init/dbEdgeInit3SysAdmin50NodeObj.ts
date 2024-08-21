@@ -167,40 +167,48 @@ async function initNodeObj() {
 				linkTable: 'SysNodeObj'
 			},
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
+				codeFieldElement: 'toggle',
+				columnName: 'isHideRowManager',
 				isDisplayable: true,
 				orderDisplay: 70,
-				orderDefine: 70
+				orderDefine: 70,
+				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
+				columnName: 'custom_row_end',
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80
 			},
 			{
-				columnName: 'name',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 90,
-				orderDefine: 90,
-				indexTable: 0
+				orderDefine: 90
 			},
 			{
-				codeAccess: 'optional',
-				columnName: 'header',
+				columnName: 'name',
 				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'select',
-				columnName: 'codeIcon',
+				codeAccess: 'optional',
+				columnName: 'header',
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeIcon',
+				isDisplayable: true,
+				orderDisplay: 120,
+				orderDefine: 120,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_node_obj_icon',
@@ -210,23 +218,23 @@ async function initNodeObj() {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120
+				orderDisplay: 130,
+				orderDefine: 130
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130
+				orderDisplay: 140,
+				orderDefine: 140
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'dataObj',
 				isDisplayable: true,
-				orderDisplay: 140,
-				orderDefine: 140,
+				orderDisplay: 150,
+				orderDefine: 150,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_order_name',
 				linkTable: 'SysDataObj'
@@ -235,20 +243,20 @@ async function initNodeObj() {
 				codeAccess: 'optional',
 				columnName: 'page',
 				isDisplayable: true,
-				orderDisplay: 150,
-				orderDefine: 150,
+				orderDisplay: 160,
+				orderDefine: 160,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 160,
-				orderDefine: 160
+				orderDisplay: 170,
+				orderDefine: 170
 			},
 			{
 				columnName: 'orderDefine',
-				orderDefine: 170,
+				orderDefine: 180,
 				exprPreset: `(SELECT (count((SELECT sys_core::SysNodeObj FILTER .owner.id = <tree,uuid,SysResource.id>)) + 1))`,
 				indexTable: 0,
 				isDisplayable: false
@@ -308,6 +316,7 @@ async function initNodeObj() {
 		codeIcon: 'application',
 		dataObj: 'data_obj_sys_admin_node_obj_list',
 		header: 'Node Objects',
+		isHideRowManager: false,
 		name: 'node_obj_sys_admin_node_obj_list',
 		orderDefine: 90,
 		owner: 'app_sys_admin',
@@ -318,6 +327,7 @@ async function initNodeObj() {
 		codeIcon: 'application',
 		dataObj: 'data_obj_sys_admin_node_obj_detail',
 		header: 'Node Object',
+		isHideRowManager: false,
 		name: 'node_obj_sys_admin_node_obj_detail',
 		orderDefine: 10,
 		owner: 'app_sys_admin',

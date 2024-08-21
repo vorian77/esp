@@ -11,9 +11,12 @@ import {
 	debugData,
 	DataObj,
 	DataObjData,
+	DataObjEmbedType,
+	DataObjDataField,
 	DataObjProcessType,
 	DataRecordStatus,
 	DataRow,
+	DataRows,
 	DBTable,
 	formatDateTime,
 	getArray,
@@ -25,9 +28,7 @@ import {
 	PropDataSourceValue,
 	PropDataType,
 	RawDataObj,
-	RawDataObjParent,
-	RawDataObjPropDB,
-	RawDataObjPropDBFieldEmbedType
+	RawDataObjPropDB
 } from '$comps/dataObj/types.rawDataObj'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import type { DataRecord } from '$utils/types'
@@ -42,11 +43,8 @@ import { error } from '@sveltejs/kit'
 const FILENAME = 'server/dbEdgeQueryProcess.ts'
 
 export async function processDataObj(token: TokenApiQuery) {
-	debug('processDataObj', 'queryType', token.queryType)
 	const queryData = TokenApiQueryData.load(token.queryData)
-
 	let rawDataObj = await getRawDataObj(token.dataObjSource, queryData)
-	debug('processDataObj', 'rawDataObj.name', rawDataObj.name)
 
 	// expression
 	if (token.queryType === TokenApiQueryType.expression) {
@@ -61,11 +59,10 @@ export async function processDataObj(token: TokenApiQuery) {
 	// queries
 	const query = new Query(rawDataObj)
 	let scriptGroup = new ScriptGroup()
-	let returnData = new DataObjData(rawDataObj.codeCardinality)
-	await initFields(returnData, queryData, rawDataObj)
+	let returnData = new DataObjData(rawDataObj)
 
 	await processDataObjQuery(token.queryType, query, queryData, scriptGroup, returnData)
-	return processDataObjExecute(scriptGroup, queryData, returnData, rawDataObj)
+	return processDataObjExecute(queryData, scriptGroup, returnData)
 }
 
 async function processDataObjQuery(
@@ -75,8 +72,14 @@ async function processDataObjQuery(
 	scriptGroup: ScriptGroup,
 	returnData: DataObjData
 ) {
+	debug('processDataObjQuery-Script Build', queryType, query.rawDataObj.name)
+
 	switch (queryType) {
+		case TokenApiQueryType.none:
+			break
+
 		case TokenApiQueryType.preset:
+			returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
 			query.setProcessRow(
 				new ProcessRowSelectPreset(query.rawDataObj.rawPropsSelect, DataRecordStatus.preset)
 			)
@@ -85,6 +88,7 @@ async function processDataObjQuery(
 			break
 
 		case TokenApiQueryType.retrieve:
+			returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
 			query.setProcessRow(
 				new ProcessRowSelect(query.rawDataObj.rawPropsSelect, DataRecordStatus.retrieved)
 			)
@@ -94,9 +98,23 @@ async function processDataObjQuery(
 			break
 
 		case TokenApiQueryType.save:
-			query.setProcessRow(new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataSave))
+			returnData.fields = queryData?.dataTab?.fields
+			query.setProcessRow(
+				new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataTab?.rowsSave)
+			)
 			scriptGroup.addScriptSave(query, queryData)
 			scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
+			break
+
+		case TokenApiQueryType.saveSelect:
+			returnData.fields = queryData?.dataTab?.fields
+			if (query.field) {
+				query.setProcessRow(
+					new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataTab?.rowsSave)
+				)
+				scriptGroup.addScriptSaveSelect(query, queryData)
+				scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
+			}
 			break
 
 		default:
@@ -107,34 +125,41 @@ async function processDataObjQuery(
 			})
 	}
 	// embedded fields
-	for (let i = 0; i < returnData.fields.length; i++) {
-		const field = returnData.fields[i]
-		queryData.dataSave = field.dataSave
-		await processDataObjQuery(
-			queryType,
-			new Query(field.rawDataObj, field.fieldName),
-			queryData,
-			scriptGroup,
-			field.data
-		)
+	const parms = queryData.dataTab?.getParms()
+	const EMBED_QUERY_TYPES = [TokenApiQueryType.retrieve, TokenApiQueryType.save]
+	if (EMBED_QUERY_TYPES.includes(queryType)) {
+		for (let i = 0; i < returnData.fields.length; i++) {
+			const field = returnData.fields[i]
+			const queryTypeEmbed =
+				queryType === TokenApiQueryType.save && field.embedType === DataObjEmbedType.listSelect
+					? TokenApiQueryType.saveSelect
+					: queryType
+			field.data.parmsValues.dataUpdate(parms)
+			queryData.dataTab = field.data
+			await processDataObjQuery(
+				queryTypeEmbed,
+				new Query(field.data.rawDataObj, field),
+				queryData,
+				scriptGroup,
+				field.data
+			)
+		}
 	}
 }
 
 async function processDataObjExecute(
-	scriptGroup: ScriptGroup,
 	queryData: TokenApiQueryData,
-	returnData: DataObjData,
-	rawDataObj: RawDataObj
+	scriptGroup: ScriptGroup,
+	returnData: DataObjData
 ) {
 	let scriptData: DataObjData
 	for (let i = 0; i < scriptGroup.scripts.length; i++) {
 		const script = scriptGroup.scripts[i]
-		if (script) {
-			script.evalExpr()
-			scriptData = script.query.fieldName
-				? returnData.getFieldData(script.query.fieldName)
-				: returnData
+		if (script.script) {
+			script.evalExpr(returnData)
 			const rawDataList = await executeQuery(script.script)
+			debugData('processDataObjExecute', `rawDataList: ${i}`, rawDataList)
+			scriptData = script?.query?.field ? script.query.field.data : returnData
 			switch (script.exePost) {
 				case ScriptExePost.dataItems:
 					scriptData.items = rawDataList[0]
@@ -143,7 +168,7 @@ async function processDataObjExecute(
 				case ScriptExePost.formatData:
 					if (script.query.processRow) formatData(scriptData, rawDataList, script.query.processRow)
 					if (script.query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
-						queryData.recordSet(scriptData.getDetailRecord())
+						queryData.recordSet(scriptData.rowsRetrieved.getDetailRecord())
 					}
 					break
 
@@ -169,12 +194,15 @@ async function processDataObjExecute(
 	}
 
 	// return
-	debugData('processDataObjExecute', 'data.dataRows.formatted.records', returnData.dataRows)
-	if (returnData.dataRows.length > 0) {
-		debug('processDataObjExecute', 'data.dataRows[0]', returnData.dataRows[0].record)
+	debugData('processDataObjExecute', 'executeQuery.result', returnData.rowsRetrieved.getRows())
+	if (returnData.rowsRetrieved.getRows().length > 0) {
+		debug(
+			'processDataObjExecute',
+			'executeQuery.row[0]',
+			returnData.rowsRetrieved.getRows()[0].record
+		)
 	}
-
-	return new ApiResult(true, { dataObjData: returnData, rawDataObj })
+	return new ApiResult(true, { dataObjData: returnData })
 }
 
 async function executeExpr(expr: string, queryData: TokenApiQueryData) {
@@ -188,8 +216,9 @@ export async function executeQuery(query: string): Promise<RawDataList> {
 }
 
 function formatData(returnData: DataObjData, rawDataList: RawDataList, process: ProcessRow) {
+	returnData.rowsRetrieved.reset()
 	rawDataList.forEach((row) => {
-		process.processRow(returnData, row)
+		returnData.rowsRetrieved.add(process.processRow(row))
 	})
 }
 
@@ -300,90 +329,9 @@ export async function getRawDataObj(
 	}
 }
 
-async function initFields(
-	returnData: DataObjData,
-	queryData: TokenApiQueryData,
-	rawDataObj: RawDataObj
-) {
-	for (let i = 0; i < rawDataObj.rawPropsSelect.length; i++) {
-		const field = rawDataObj.rawPropsSelect[i]
-		if (field.fieldEmbed) {
-			const fieldName = field.propName
-			const dataObjId = strRequired(
-				field.fieldEmbed?.id,
-				'initFields',
-				'embedFields[i]?.fieldEmbed?.id'
-			)
-			debug('dbEdgeProcess.initFields: ' + fieldName, 'field', field)
-			const rootTable = field?.link?.table ? field.link.table : undefined
-			debug('dbEdgeProcess.initFields: ' + fieldName, 'rootTable', rootTable)
-
-			// dataObjSource.replacements.parent
-
-			let rawDataObj = await getRawDataObj(
-				new TokenApiDbDataObjSource({
-					dataObjId: strRequired(
-						field.fieldEmbed?.id,
-						'initFields',
-						'embedFields[i]?.fieldEmbed?.id'
-					),
-					parent: new RawDataObjParent({
-						_columnName: fieldName,
-						_columnIsMultiSelect: field.isMultiSelect,
-						_table: rootTable
-					})
-				}),
-				queryData
-			)
-
-			// new TokenApiDbDataObjSource({
-			// 	dataObjId: this.raw.dataObjEmbedId,
-			// 	exprFilter: this.exprFilterEmbed
-			// }),
-
-			// new TokenApiDbDataObjSource({
-			// 	dataObjId: this.raw.dataObjModalId,
-			// 	parent: new RawDataObjParent({
-			// 		_columnName: this.colDO.propName,
-			// 		_columnIsMultiSelect: true,
-			// 		_table: rootTable
-			// 	})
-			// }),
-
-			switch (field.fieldEmbed?.type) {
-				case RawDataObjPropDBFieldEmbedType.listConfig:
-					rawDataObj.setParent({
-						_columnName: fieldName,
-						_columnIsMultiSelect: field.isMultiSelect,
-						_filterExpr: `.id IN (SELECT ${rootTable.object} FILTER .id = <parms,uuid,listRecordIdParent>).${fieldName}.id`,
-						_table: rootTable
-					})
-					break
-				case RawDataObjPropDBFieldEmbedType.listEdit:
-					break
-				case RawDataObjPropDBFieldEmbedType.listSelect:
-					break
-				default:
-					error(500, {
-						file: FILENAME,
-						function: 'initFields',
-						message: `No dase defined for field.fieldEmbed?.type: ${field.fieldEmbed?.type}`
-					})
-			}
-			debug('dbEdgeProcess.initFields: ' + fieldName, 'rawDataObj.parent', rawDataObj.rawParent)
-
-			const dataSaveField = queryData?.dataSave?.fields.filter((f) => f.fieldName === fieldName)
-			if (dataSaveField?.length === 1) {
-				returnData.addFieldSave(fieldName, rawDataObj, dataSaveField[0].data)
-			} else {
-				returnData.addFieldInit(fieldName, rawDataObj)
-			}
-		}
-	}
-}
 export async function processExpression(queryData: TokenApiQueryData) {
 	queryData = TokenApiQueryData.load(queryData)
-	return new ApiResult(true, executeExpr(queryData.parms.expr, queryData))
+	return new ApiResult(true, executeExpr(queryData.getParms().expr, queryData))
 }
 
 export class ProcessRow {
@@ -393,14 +341,6 @@ export class ProcessRow {
 		this.propNames = propsSelect.map((prop) => prop.propName)
 		this.propsSelect = propsSelect
 	}
-	processRow(dataReturn: DataObjData, recordRaw: DataRecord) {
-		this.propsSelect.forEach((prop) => {
-			if (prop.codeDataSourceValue === PropDataSourceValue.calculate && prop.exprCustom) {
-				recordRaw[prop.propName] = this.evalExpr(prop.exprCustom, recordRaw, this.propNames)
-			}
-		})
-	}
-
 	evalExpr(expr: string, dataRecord: DataRecord, propNames: string[]) {
 		const clazz = 'evalExpr'
 		const regex = /\.\w+/g
@@ -414,6 +354,14 @@ export class ProcessRow {
 		}
 		return Function('return ' + newExpr)()
 	}
+	prepRecord(recordRaw: DataRecord) {
+		this.propsSelect.forEach((prop) => {
+			if (prop.codeDataSourceValue === PropDataSourceValue.calculate && prop.exprCustom) {
+				recordRaw[prop.propName] = this.evalExpr(prop.exprCustom, recordRaw, this.propNames)
+			}
+		})
+	}
+	processRow(recordRaw: DataRecord): DataRow {}
 }
 
 class ProcessRowSelect extends ProcessRow {
@@ -422,11 +370,11 @@ class ProcessRowSelect extends ProcessRow {
 		super(propsSelect)
 		this.status = status
 	}
-	processRow(dataReturn: DataObjData, recordRaw: DataRecord) {
-		super.processRow(dataReturn, recordRaw)
-		this.processRowProps(dataReturn, recordRaw, this.status)
+	processRow(recordRaw: DataRecord) {
+		this.prepRecord(recordRaw)
+		return this.processRowProps(recordRaw, this.status)
 	}
-	processRowProps(dataReturn: DataObjData, recordRaw: DataRecord, status: DataRecordStatus) {
+	processRowProps(recordRaw: DataRecord, status: DataRecordStatus) {
 		const clazz = 'ProcessRowSelect.processRowProps'
 		let recordReturn: DataRecord = {}
 		this.propsSelect.forEach((prop) => {
@@ -444,7 +392,7 @@ class ProcessRowSelect extends ProcessRow {
 				recordReturn[propName] = formatDataForDisplay(prop, prop.codeDataType, undefined)
 			}
 		})
-		dataReturn.addRow(status, recordReturn)
+		return new DataRow(status, recordReturn)
 	}
 }
 
@@ -453,27 +401,25 @@ class ProcessRowSelectPreset extends ProcessRowSelect {
 	constructor(propsSelect: RawDataObjPropDB[], status: DataRecordStatus) {
 		super(propsSelect, status)
 	}
-	processRow(dataReturn: DataObjData, recordRaw: DataRecord) {
+	prepRecord(recordRaw: DataRecord) {
+		super.prepRecord(recordRaw)
 		recordRaw.id = `preset_${++this.rowIndex}`
-		super.processRow(dataReturn, recordRaw)
 	}
 }
 
 class ProcessRowUpdate extends ProcessRow {
-	dataSave: DataObjData
-	constructor(propsSelect: RawDataObjPropDB[], dataSave: DataObjData | undefined) {
+	rowsSave: DataRow[]
+	constructor(propsSelect: RawDataObjPropDB[], source: DataRows) {
 		const clazz = 'ProcessRowUpdate'
 		super(propsSelect)
-		this.dataSave = required(dataSave, clazz, 'dataSave')
+		this.rowsSave = source.getRows()
 	}
-	processRow(dataReturn: DataObjData, recordRaw: DataRecord) {
-		super.processRow(dataReturn, recordRaw)
+	processRow(recordRaw: DataRecord) {
+		this.prepRecord(recordRaw)
 		let newStatus: DataRecordStatus = DataRecordStatus.inserted
-		const recordIdx = this.dataSave.dataRows.findIndex(
-			(dataRow) => dataRow.record.id === recordRaw.id
-		)
+		const recordIdx = this.rowsSave.findIndex((dataRow) => dataRow.record.id === recordRaw.id)
 		if (recordIdx > -1) {
-			const oldStatus = this.dataSave.dataRows[recordIdx].status
+			const oldStatus = this.rowsSave[recordIdx].status
 			switch (oldStatus) {
 				case DataRecordStatus.delete:
 					newStatus = DataRecordStatus.delete
@@ -492,9 +438,9 @@ class ProcessRowUpdate extends ProcessRow {
 					})
 			}
 		}
-		this.processRowProps(dataReturn, recordRaw, newStatus)
+		return this.processRowProps(recordRaw, newStatus)
 	}
-	processRowProps(dataReturn: DataObjData, recordReturn: DataRecord, status: DataRecordStatus) {
+	processRowProps(recordReturn: DataRecord, status: DataRecordStatus) {
 		this.propsSelect.forEach((prop) => {
 			if (prop.codeDataType === PropDataType.link) {
 				const recordKeyLink = '_' + prop.propName
@@ -509,6 +455,6 @@ class ProcessRowUpdate extends ProcessRow {
 				)
 			}
 		})
-		dataReturn.addRow(status, recordReturn)
+		return new DataRow(status, recordReturn)
 	}
 }

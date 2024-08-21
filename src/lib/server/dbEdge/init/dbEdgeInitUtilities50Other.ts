@@ -1,11 +1,7 @@
 import { createClient } from 'edgedb'
 import e, { is } from '$lib/dbschema/edgeql-js'
 import { EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
-import {
-	booleanOrDefaultJSON,
-	booleanOrDefaultParm,
-	sectionHeader
-} from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
 
 const client = createClient({
 	instanceName: EDGEDB_INSTANCE,
@@ -170,6 +166,7 @@ export async function addNodeFooter(data: any) {
 				createdBy: e.select(e.sys_user.getRootUser()),
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
+				isHideRowManager: e.cast(e.bool, false),
 				modifiedBy: e.select(e.sys_user.getRootUser()),
 				name: p.name,
 				orderDefine: p.orderDefine,
@@ -198,6 +195,7 @@ export async function addNodeProgram(data: any) {
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'program')),
 				createdBy: e.select(e.sys_user.getRootUser()),
 				header: p.header,
+				isHideRowManager: e.cast(e.bool, false),
 				modifiedBy: e.select(e.sys_user.getRootUser()),
 				name: p.name,
 				orderDefine: p.orderDefine,
@@ -215,6 +213,7 @@ export async function addNodeProgramObj(data: any) {
 			codeIcon: e.str,
 			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
+			isHideRowManager: e.bool,
 			name: e.str,
 			orderDefine: e.int16,
 			owner: e.str,
@@ -228,6 +227,7 @@ export async function addNodeProgramObj(data: any) {
 				createdBy: e.select(e.sys_user.getRootUser()),
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
+				isHideRowManager: p.isHideRowManager,
 				modifiedBy: e.select(e.sys_user.getRootUser()),
 				name: p.name,
 				orderDefine: p.orderDefine,

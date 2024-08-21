@@ -366,6 +366,7 @@ export async function getNodesBranch(token: TokenAppTreeNodeId) {
 		dataObjId: n.dataObj.id,
 		header: true,
 		id: true,
+		isHideRowManager: false,
 		name: true,
 		orderDefine: true,
 		page: true,
@@ -383,6 +384,7 @@ export async function getNodesLevel(token: TokenAppTreeNodeId) {
 		dataObjId: n.dataObj.id,
 		header: true,
 		id: true,
+		isHideRowManager: true,
 		name: true,
 		orderDefine: true,
 		page: true,
@@ -535,27 +537,27 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			filter_single: e.op(org.id, '=', u.owner.id)
 		})),
 		resource_footer: e.select(e.sys_core.SysNodeObj, (f) => ({
-			id: true,
-			_codeNodeType: f.codeNodeType.name,
-			header: true,
 			_codeIcon: f.codeIcon.name,
-			page: true,
+			_codeNodeType: f.codeNodeType.name,
 			dataObjId: f.dataObj.id,
+			header: true,
+			id: true,
 			orderDefine: true,
+			page: true,
 			filter: e.op(f.codeNavType.name, '=', 'footer'),
 			order_by: f.orderDefine
 		})),
 		resource_programs: e.select(
 			u.userTypes.userTypeResources.userTypeResource.is(e.sys_core.SysNodeObj),
 			(ut) => ({
-				id: true,
-				_codeNodeType: ut.codeNodeType.name,
-				name: true,
-				header: true,
-				_codeIcon: ut.codeIcon.name,
-				page: true,
 				dataObjId: ut.dataObj.id,
+				header: true,
+				id: true,
+				name: true,
 				orderDefine: true,
+				page: true,
+				_codeIcon: ut.codeIcon.name,
+				_codeNodeType: ut.codeNodeType.name,
 				filter: e.op(ut.codeNavType.name, '=', 'tree'),
 				order_by: ut.orderDefine
 			})

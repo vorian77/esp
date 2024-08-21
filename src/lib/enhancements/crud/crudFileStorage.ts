@@ -32,9 +32,9 @@ export async function qaExecuteFileStorage(
 
 	switch (queryTiming) {
 		case DataObjActionQueryTriggerTiming.pre:
-			const fileParm: TokenApiFileParm = dataUpdate.getDetailRecordValue(parms.imageField)
+			const fileParm: TokenApiFileParm = dataUpdate.rowsSave.getDetailRecordValue(parms.imageField)
 			if (fileParm) {
-				fileAction = dataUpdate.getDetailStatusRecordIs(DataRecordStatus.delete)
+				fileAction = dataUpdate.rowsSave.getDetailStatusRecordIs(DataRecordStatus.delete)
 					? TokenApiFileAction.delete
 					: fileParm.fileAction
 						? fileParm.fileAction
@@ -45,7 +45,7 @@ export async function qaExecuteFileStorage(
 
 			switch (fileAction) {
 				case TokenApiFileAction.delete:
-					dataUpdate.setDetailRecordValue(parms.imageField, undefined)
+					dataUpdate.rowsSave.setDetailRecordValue(parms.imageField, undefined)
 					if (fileParm.key) {
 						key = fileParm.key
 					} else {
@@ -62,7 +62,7 @@ export async function qaExecuteFileStorage(
 					const fileType = required(fileParm.fileType, FILENAME, 'fileType')
 					key = required(fileParm.key, FILENAME, 'key')
 					uploadData = new FileStorage(fileName, fileType, key)
-					dataUpdate.setDetailRecordValue(parms.imageField, uploadData)
+					dataUpdate.rowsSave.setDetailRecordValue(parms.imageField, uploadData)
 					break
 
 				default:

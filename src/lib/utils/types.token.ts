@@ -15,6 +15,7 @@ import {
 import { State } from '$comps/app/types.appState'
 import { AppRowActionType } from '$comps/app/types.app'
 import { Node } from '$comps/app/types.node'
+import { FieldEmbed } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { Process } from '$utils/utils.process'
 import { error } from '@sveltejs/kit'
@@ -59,7 +60,7 @@ export class TokenApiDbDataObjSource {
 		obj = valueOrDefault(obj, {})
 		this.typesReplace.forEach((key: string) => {
 			if (Object.hasOwn(obj, key)) {
-				this.replacements[key] = obj[key]
+				if (obj[key]) this.replacements[key] = obj[key]
 			}
 		})
 		return this
@@ -68,7 +69,7 @@ export class TokenApiDbDataObjSource {
 		obj = valueOrDefault(obj, {})
 		this.typesSource.forEach((key: string) => {
 			if (Object.hasOwn(obj, key)) {
-				this.sources[key] = obj[key]
+				if (obj[key]) this.sources[key] = obj[key]
 			}
 		})
 		return this
@@ -139,18 +140,14 @@ export class TokenApiQuery extends TokenApi {
 }
 
 export class TokenApiQueryData {
-	dataObjData?: DataObjData
-	dataSave?: DataObjData
-	parms: DataRecord
+	dataTab?: DataObjData
 	record: DataRecord
 	system: DataRecord
 	tree: TokenApiQueryDataTree
 	user: DataRecord
 	constructor(data: any) {
 		data = valueOrDefault(data, {})
-		this.dataSave = this.dataSet(data, 'dataSave', undefined)
-		this.dataObjData = this.dataSet(data, 'dataObjData', undefined)
-		this.parms = this.dataSet(data, 'parms', {})
+		this.dataTab = this.dataSet(data, 'dataTab', undefined)
 		this.record = this.dataSet(data, 'record', {})
 		this.system = this.dataSet(data, 'system', {})
 		this.tree = this.dataSet(data, 'tree', [])
@@ -160,34 +157,18 @@ export class TokenApiQueryData {
 	}
 	static load(currData: TokenApiQueryData) {
 		const newData = new TokenApiQueryData(currData)
-		if (currData.dataSave?.cardinality) {
-			newData.dataSave = new DataObjData(currData.dataSave.cardinality)
-			newData.dataSave = DataObjData.load(currData.dataSave)
-		}
+		newData.dataTab = currData.dataTab ? DataObjData.load(currData.dataTab) : undefined
 		newData.tree = new TokenApiQueryDataTree(currData.tree.levels)
 		return newData
 	}
 	dataSet(data: any, key: string, defaultVal: any) {
 		return Object.hasOwn(data, key) && data !== undefined ? data[key] : defaultVal
 	}
-	parmsUpsert(data: any) {
-		if (!data) return
-		if (!this.parms) this.parms = {}
-		Object.entries(data).forEach(([key, value]) => {
-			this.parms[key] = value
-		})
-	}
-	parmsValueGet(key: string) {
-		return Object.hasOwn(this.parms, key) ? this.parms[key] : undefined
-	}
-	parmsValueSet(key: string, value: any) {
-		this.parms[key] = value
+	getParms() {
+		return this.dataTab ? this.dataTab.getParms() : {}
 	}
 	recordSet(data: DataRecord) {
 		this.record = data
-	}
-	setDataSave(data: DataObjData) {
-		this.dataSave = data
 	}
 }
 export class TokenApiQueryDataTree {
@@ -196,25 +177,15 @@ export class TokenApiQueryDataTree {
 		this.levels = levels
 	}
 
-	getFieldData(table: string | undefined, fieldName: string) {
-		const record = this.getRecord(table)
-		if (fieldName && record && Object.hasOwn(record, fieldName)) {
-			return record[fieldName]
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'TokenApiQueryDataTree.getFieldData',
-				message: `Field ${fieldName} not found in data tree - table: ${table}; record: ${JSON.stringify(
-					record
-				)}`
-			})
-		}
-	}
-
 	getRecord(table: string | undefined = undefined) {
 		const idx = table ? this.levels.findIndex((t) => t.table === table) : this.levels.length - 1
 		const rtn = idx > -1 ? this.levels[idx].data : {}
 		return rtn ? rtn : {}
+	}
+
+	getValue(table: string | undefined, fieldName: string) {
+		const record = this.getRecord(table)
+		return fieldName && record && Object.hasOwn(record, fieldName) ? record[fieldName] : undefined
 	}
 
 	setFieldData(table: string | undefined, fieldName: string, value: any) {
@@ -255,10 +226,12 @@ export class TokenApiQueryDataTreeLevel {
 
 export enum TokenApiQueryType {
 	expression = 'expression',
+	none = 'none',
 	preset = 'preset',
 	retrieve = 'retrieve',
 	retrieveRepParmItems = 'retrieveRepParmItems',
-	save = 'save'
+	save = 'save',
+	saveSelect = 'saveSelect'
 }
 
 export class TokenApiSendText extends Token {
@@ -307,12 +280,14 @@ export class TokenAppCrumbs extends TokenApp {
 export class TokenAppDo extends TokenApp {
 	actionType: TokenAppDoActionFieldType
 	dataObj: DataObj
+	fieldEmbed?: FieldEmbed
 	state: State
 	constructor(obj: any) {
 		const clazz = 'TokenAppDo'
 		super()
 		this.actionType = required(obj.actionType, clazz, 'actionType')
 		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
+		this.fieldEmbed = obj.fieldEmbed
 		this.state = required(obj.state, clazz, 'state')
 	}
 }
@@ -370,13 +345,11 @@ export class TokenAppDoName extends TokenApp {
 }
 
 export class TokenAppModalEmbedField extends TokenApp {
-	dataObjSourceEmbed: TokenApiDbDataObjSource
 	dataObjSourceModal: TokenApiDbDataObjSource
 	queryType: TokenApiQueryType
 	constructor(obj: any) {
 		const clazz = 'TokenAppModalEmbedField'
 		super()
-		this.dataObjSourceEmbed = required(obj.dataObjSourceEmbed, clazz, 'dataObjSourceEmbed')
 		this.dataObjSourceModal = required(obj.dataObjSourceModal, clazz, 'dataObjSourceModal')
 		this.queryType = required(obj.queryType, clazz, 'queryType')
 	}

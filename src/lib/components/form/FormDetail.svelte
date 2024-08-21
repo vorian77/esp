@@ -23,7 +23,7 @@
 	async function load(data: DataObjData) {
 		loadTags()
 		dataObj.objData = data
-		state.setDataObjRoot(dataObj)
+		state.setDataObjState(dataObj)
 		state = state.setStatus()
 	}
 

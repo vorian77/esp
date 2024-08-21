@@ -1272,6 +1272,12 @@ export async function initPreColumn() {
 	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'bool',
+		header: 'Hide Row Manager',
+		name: 'isHideRowManager'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'bool',
 		header: 'Initialize Table',
 		name: 'isInitTable'
 	})
@@ -1281,7 +1287,6 @@ export async function initPreColumn() {
 		header: 'List - Edit',
 		name: 'isListEdit'
 	})
-
 	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'bool',

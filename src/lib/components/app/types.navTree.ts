@@ -91,7 +91,7 @@ export class NavTree {
 			case NodeType.programObject:
 				state.update({
 					page: '/home',
-					parms: { programId: this.getProgramId(nodeNav) },
+					parmsValues: { programId: this.getProgramId(nodeNav) },
 					nodeType: nodeNav.type,
 					packet: new StatePacket({
 						component: StatePacketComponent.navTree,

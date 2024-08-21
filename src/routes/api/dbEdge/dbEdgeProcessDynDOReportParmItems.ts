@@ -1,4 +1,4 @@
-import { DataObjCardinality, DataObjComponent, DataObjTable } from '$utils/types'
+import { DataObjCardinality, DataObjComponent, DataObjTable, type DataRecord } from '$utils/types'
 import { PropDataSourceValue, RawDataObjDyn } from '$comps/dataObj/types.rawDataObj'
 import { TokenApiQueryData } from '$utils/types.token'
 import { getReportUserParmItems } from '$routes/api/dbEdge/dbEdgeUtilities'
@@ -46,7 +46,7 @@ function getRawDataObj(data: any) {
 }
 
 async function getData(queryData: TokenApiQueryData) {
-	const repUserId = queryData.parmsValueGet('repUserId')
-	const data = await getReportUserParmItems(repUserId)
+	const listRecordIdCurrent = queryData.dataTab?.parmsValues.valueGet('listRecordIdCurrent')
+	const data = await getReportUserParmItems(listRecordIdCurrent)
 	return data[0]
 }

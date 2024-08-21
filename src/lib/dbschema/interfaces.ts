@@ -340,6 +340,7 @@ export namespace sys_core {
   }
   export interface SysNodeObj extends SysObj {
     "orderDefine": number;
+    "isHideRowManager": boolean;
     "codeIcon": SysCode;
     "codeNavType": SysCode;
     "codeNodeType": SysCode;

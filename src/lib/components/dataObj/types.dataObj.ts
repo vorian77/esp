@@ -13,10 +13,10 @@ import {
 import {
 	RawDataObj,
 	RawDataObjActionField,
-	RawDataObjParent,
 	RawDataObjPropDisplay,
 	RawDataObjTable
 } from '$comps/dataObj/types.rawDataObj'
+import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
 import { Field, FieldAccess, FieldColor, FieldElement, RawFieldProps } from '$comps/form/field'
 import { FieldCheckbox } from '$comps/form/fieldCheckbox'
@@ -44,7 +44,12 @@ import { FieldSelect } from '$comps/form/fieldSelect'
 import { FieldTextarea } from '$comps/form/fieldTextarea'
 import { FieldToggle } from '$comps/form/fieldToggle'
 import { DataObjActionQuery, DataObjActionQueryFunction } from '$comps/app/types.appQuery'
-import { TokenAppDoActionFieldType, TokenAppDoActionConfirmType } from '$utils/types.token'
+import {
+	TokenApiDbDataObjSource,
+	TokenApiQueryData,
+	TokenAppDoActionFieldType,
+	TokenAppDoActionConfirmType
+} from '$utils/types.token'
 import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 import { getEnhancement } from '$enhance/crud/_crud'
 import { error } from '@sveltejs/kit'
@@ -53,6 +58,7 @@ const FILENAME = '/$comps/dataObj/types.dataObj.ts'
 
 export class DataObj {
 	actionsField: DataObjActionField[] = []
+	actionsFieldListRowActionIdx: number = -1
 	actionsQueryFunctions: DataObjActionQueryFunction[] = []
 	data: DataObjData
 	dataFieldsChanged: FieldValues = new FieldValues()
@@ -61,25 +67,47 @@ export class DataObj {
 	dataRecordsDisplay: DataRecord[] = []
 	dataRecordsHidden: DataRecord[] = []
 	fields: Field[] = []
-	isListEmbedded: boolean = false
+	isListEmbed: boolean = false
 	modes: DataObjMode[] = []
 	objStatus: DataObjStatus = new DataObjStatus()
 	raw: RawDataObj
 	rootTable?: DBTable
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
-	constructor(rawDataObj: RawDataObj, data: DataObjData) {
+	constructor(data: DataObjData) {
 		const clazz = 'DataObj'
-		rawDataObj = valueOrDefault(rawDataObj, {})
-		this.raw = rawDataObj
-		this.data = new DataObjData(this.raw.codeCardinality)
+		this.data = data
+		this.raw = required(data.rawDataObj, clazz, 'rawDataObj')
 
 		/* dependent properties */
 		this.rootTable =
 			this.raw.tables && this.raw.tables.length > 0
-				? new DBTable(rawDataObj.tables[0].table)
+				? new DBTable(this.raw.tables[0].table)
 				: undefined
 	}
-
+	actionsFieldEmbedSet(codeActionFieldType: TokenAppDoActionFieldType, field: FieldEmbed) {
+		const fieldAction = this.actionsField.find((f) => f.codeActionFieldType === codeActionFieldType)
+		if (fieldAction) {
+			fieldAction.setFieldEmbed(field)
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'DataObj.actionsFieldEmbedSet',
+				message: `Action field ${codeActionFieldType} not found.`
+			})
+		}
+	}
+	actionsFieldTrigger(codeActionFieldType: TokenAppDoActionFieldType, state: State) {
+		const field = this.actionsField.find((f) => f.codeActionFieldType === codeActionFieldType)
+		if (field) {
+			field.trigger(state, this)
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'DataObj.actionsFieldTrigger',
+				message: `Action field ${codeActionFieldType} not found.`
+			})
+		}
+	}
 	export() {
 		let data: string = ''
 		let newRow: string = ''
@@ -119,9 +147,11 @@ export class DataObj {
 		alert(`"${this.raw.header}" has been downloaded!`)
 	}
 
-	static async init(state: State, rawDataObj: RawDataObj, data: DataObjData) {
-		const dataObj = new DataObj(rawDataObj, data)
-		dataObj.fields = await dataObj.initFields(state, rawDataObj.rawPropsDisplay, data)
+	static async init(state: State, data: DataObjData) {
+		const clazz = 'DataObj.init'
+		const rawDataObj = required(data.rawDataObj, clazz, 'rawDataObj')
+		const dataObj = new DataObj(data)
+		dataObj.fields = await dataObj.initFields(state, data, rawDataObj)
 		enhanceCustomFields(dataObj.fields)
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
@@ -143,13 +173,17 @@ export class DataObj {
 			return funcs
 		}
 		function initActionsField() {
-			dataObj.actionsField = rawDataObj.rawActionsField.map((rawAction) => {
+			dataObj.actionsField = rawDataObj.rawActionsField.map((rawAction: RawDataObjActionField) => {
 				return new DataObjActionField(rawAction, state)
 			})
+			dataObj.actionsFieldListRowActionIdx = dataObj.actionsField.findIndex(
+				(f) => f.isListRowAction
+			)
 		}
 	}
-	async initFields(state: State, propsRaw: RawDataObjPropDisplay[], data: DataObjData) {
+	async initFields(state: State, data: DataObjData, rawDataObj: RawDataObj) {
 		let fields: Field[] = []
+		const propsRaw = rawDataObj.rawPropsDisplay
 		let firstVisible = propsRaw.findIndex((f) => f.isDisplayable)
 
 		for (let i = 0; i < propsRaw.length; i++) {
@@ -271,34 +305,22 @@ export class DataObj {
 	}
 
 	get objData() {
-		// determine embeded fields
-		const FIELDTYPES = [FieldEmbedListEdit]
-		const fieldsEmbedded = this.fields.filter((f) => FIELDTYPES.includes(f.constructor as any))
-		const fieldsEmbeddedNames = fieldsEmbedded.map((f) => f.colDO.propName)
-
 		// root data
-		const data = setData(this.raw.codeCardinality, this, fieldsEmbeddedNames)
+		this.data.rowsSave.setDataRows(setData(this))
 
 		// embedded fields
-		fieldsEmbedded.forEach((field: any) => {
-			if (field.dataObj) {
-				console.log('DataObj.getObjData.field.dataRecordsDisplay', field.dataObj.dataRecordsDisplay)
-				const fieldData = setData(field.dataObj.raw.codeCardinality, field.dataObj, [])
-				data.fields.push(
-					new DataObjDataField(field.colDO.propName, field.dataObj.raw, fieldData, undefined)
-				)
+		this.fields.forEach((field: Field) => {
+			if (field instanceof FieldEmbed && field.dataObj) {
+				const idx = this.data.fields.findIndex((f) => f.embedFieldName === field.colDO.propName)
+				if (idx > -1) this.data.fields[idx].data.rowsSave.setDataRows(setData(field.dataObj))
 			}
 		})
-		return data
 
-		function setData(
-			cardinality: DataObjCardinality,
-			dataObjSource: DataObj,
-			fieldsEmbeddedNames: string[]
-		) {
-			let data = new DataObjData(cardinality)
+		return this.data
+
+		function setData(dataObj: DataObj) {
 			let fieldsParmValueNames: string[] = []
-			dataObjSource.fields.forEach((f) => {
+			dataObj.fields.forEach((f) => {
 				if (f.isParmValue) {
 					const fieldParm: FieldParm = f as FieldParm
 					fieldParm.parmFields.forEach((f) => {
@@ -307,35 +329,28 @@ export class DataObj {
 				}
 			})
 
-			setDataRecords(
-				data,
-				dataObjSource.data,
+			let dataRows: DataRow[] = setDataRecords(
 				fieldsParmValueNames,
-				fieldsEmbeddedNames,
-				dataObjSource.dataRecordsDisplay
+				dataObj.data,
+				dataObj.dataRecordsDisplay
 			)
-			setDataRecords(
-				data,
-				dataObjSource.data,
-				fieldsParmValueNames,
-				fieldsEmbeddedNames,
-				dataObjSource.dataRecordsHidden
+			dataRows = dataRows.concat(
+				setDataRecords(fieldsParmValueNames, dataObj.data, dataObj.dataRecordsHidden)
 			)
-			return data
+			return dataRows
 		}
 		function setDataRecords(
-			dataReturn: DataObjData,
-			dataSource: DataObjData,
 			fieldsParmValueNames: string[],
-			fieldsEmbeddedNames: string[],
+			dataCurrent: DataObjData,
 			dataRecords: DataRecord[]
 		) {
+			let dataRows: DataRow[] = []
 			dataRecords.forEach((record, row) => {
 				let newRecord: DataRecord = {}
 				Object.entries(record).forEach(([key, value]) => {
 					if (![null, undefined].includes(value)) {
 						// don't included embedded fields
-						if (!fieldsEmbeddedNames.includes(key)) {
+						if (-1 === dataCurrent.fields.findIndex((f) => f.embedFieldName === key)) {
 							// don't include null or undefined values
 							if (fieldsParmValueNames.includes(key)) {
 								newRecord.parmValue = record[key]
@@ -346,17 +361,17 @@ export class DataObj {
 						}
 					}
 				})
-				const dataRow = dataSource.getRow(record.id)
-				dataReturn.addRow(dataRow ? dataRow.status : DataRecordStatus.preset, newRecord)
+				const oldRow = dataCurrent.rowsRetrieved.getRow(record.id)
+				dataRows.push(new DataRow(oldRow ? oldRow.status : DataRecordStatus.preset, newRecord))
 			})
+			return dataRows
 		}
 	}
 
 	set objData(dataSource: DataObjData) {
-		const dataObjName = this.raw.name
 		this.saveMode =
-			dataSource.cardinality === DataObjCardinality.detail && dataSource.hasRecord()
-				? dataSource.getDetailStatusRecordIs(DataRecordStatus.preset)
+			dataSource.cardinality === DataObjCardinality.detail && dataSource.rowsRetrieved.hasRecord()
+				? dataSource.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset)
 					? DataObjSaveMode.insert
 					: DataObjSaveMode.update
 				: DataObjSaveMode.any
@@ -364,7 +379,7 @@ export class DataObj {
 		// set data
 		let recordsClone: DataRecord[] = []
 		const parmValueFields = this.fields.filter((f) => f.isParmValue) as FieldParm[]
-		dataSource.dataRows.forEach((dataRow, rowIdx) => {
+		dataSource.rowsRetrieved.getRows().forEach((dataRow, rowIdx) => {
 			if (dataRow.status !== DataRecordStatus.delete) {
 				const record = dataRow.record
 				// init parmValue
@@ -392,7 +407,7 @@ export class DataObj {
 		})
 
 		// update row status
-		dataSource.dataRows.forEach((dataRow) => {
+		dataSource.rowsRetrieved.getRows().forEach((dataRow) => {
 			if (dataRow.status === DataRecordStatus.inserted) {
 				dataRow.status = DataRecordStatus.update
 			}
@@ -406,7 +421,6 @@ export class DataObj {
 		return field.isParmValue ? (field as FieldParm).parmFields[row] : field
 	}
 
-	// if (Object.hasOwn(obj, 'modes')) this.modes = obj.modes.map((m: DataObjMode) => m)
 	modeAdd(mode: DataObjMode) {
 		if (!this.modes.includes(mode)) this.modes.push(mode)
 	}
@@ -454,7 +468,7 @@ export class DataObj {
 	}
 	setFieldValChanged(row: number, recordId: string, fieldName: string, value: any) {
 		this.dataRecordsDisplay[row][fieldName] = value
-		const valueInitial = this.data.getValue(recordId, fieldName)
+		const valueInitial = this.data.rowsRetrieved.getValue(recordId, fieldName)
 		const hasChanged = valueHasChanged(valueInitial, value)
 		if (hasChanged) {
 			this.dataFieldsChanged.valueSet(recordId, fieldName, hasChanged)
@@ -473,8 +487,8 @@ export class DataObj {
 		})
 		this.dataFieldsValidity = this.dataFieldsValidity
 	}
-	setIsListEmbedded() {
-		this.isListEmbedded = true
+	setIsListEmbed() {
+		this.isListEmbed = true
 	}
 	setStatus() {
 		let newStatus = new DataObjStatus()
@@ -495,101 +509,12 @@ export class DataObj {
 	}
 }
 
-export class DataObjActionField {
-	actionFieldConfirms: DataObjActionFieldConfirm[]
-	actionFieldShows: DataObjActionFieldShow[]
-	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
-	codeActionFieldType: TokenAppDoActionFieldType
-	fProxy?: Function
-	fieldColor: FieldColor
-	header: string
-	isDisabled: boolean = false
-	isListRowAction: boolean
-	isShow: boolean = false
-	name: string
-	constructor(rawAction: RawDataObjActionField, state: State | undefined = undefined) {
-		const clazz = 'DataObjActionField'
-		this.actionFieldConfirms = rawAction.actionFieldConfirms
-		this.actionFieldShows = rawAction.actionFieldShows
-		this.codeActionFieldTriggerEnable = rawAction.codeActionFieldTriggerEnable
-		this.codeActionFieldType = rawAction.codeActionFieldType
-		this.fProxy = state?.proxyGet(this.codeActionFieldType)
-		this.fieldColor = rawAction.fieldColor
-		this.header = rawAction.header
-		this.isListRowAction = rawAction.isListRowAction
-		this.name = rawAction.name
-	}
-	proxyExe(parms: any) {
-		if (this.fProxy) {
-			this.fProxy({
-				...parms,
-				actionType: this.codeActionFieldType,
-				confirm: this.actionFieldConfirms ? this.actionFieldConfirms[0].confirm : undefined,
-				confirmType: this.actionFieldConfirms
-					? this.actionFieldConfirms[0].codeConfirmType
-					: undefined
-			})
-		}
-	}
-}
-
-export class DataObjActionFieldConfirm {
-	codeConfirmType: TokenAppDoActionConfirmType
-	codeTriggerConfirmConditional: DataObjActionFieldTriggerEnable
-	confirm: DataObjConfirm
-	constructor(obj: any) {
-		const clazz = 'DataObjActionConfirm'
-		obj = valueOrDefault(obj, {})
-		this.codeConfirmType = memberOfEnum(
-			obj._codeConfirmType,
-			clazz,
-			'codeConfirmType',
-			'TokenAppDoActionConfirmType',
-			TokenAppDoActionConfirmType
-		)
-		this.codeTriggerConfirmConditional = memberOfEnum(
-			obj._codeTriggerConfirmConditional,
-			clazz,
-			'codeTriggerConfirmConditional',
-			'DataObjActionTriggerRender',
-			DataObjActionFieldTriggerEnable
-		)
-		this.confirm = new DataObjConfirm(obj)
-	}
-}
-
-export enum DataObjActionFieldTriggerEnable {
-	always = 'always',
-	listReorder = 'listReorder',
-	listReorderCancel = 'listReorderCancel',
-	never = 'never',
-	none = 'none',
-	notObjectChanged = 'notObjectChanged',
-	notReorder = 'notReorder',
-	objectChanged = 'objectChanged',
-	objectValidToContinue = 'objectValidToContinue',
-	objectValidToSave = 'objectValidToSave',
-	parentObjectSaved = 'parentObjectSaved',
-	rootDataObj = 'rootDataObj',
-	saveMode = 'saveMode',
-	saveModeInsert = 'saveModeInsert',
-	saveModeUpdate = 'saveModeUpdate'
-}
-
-export class DataObjActionFieldShow {
-	codeTriggerShow: DataObjActionFieldTriggerEnable
-	isRequired: boolean
-	constructor(obj: any) {
-		const clazz = 'DataObjActionShow'
-		obj = valueOrDefault(obj, {})
-		this.codeTriggerShow = memberOfEnum(
-			obj._codeTriggerShow,
-			clazz,
-			'codeTriggerShow',
-			'DataObjActionTriggerRender',
-			DataObjActionFieldTriggerEnable
-		)
-		this.isRequired = valueOrDefault(obj.isRequired, false)
+export class DataObjActionProxy {
+	actionType: TokenAppDoActionFieldType
+	proxy: Function
+	constructor(actionType: TokenAppDoActionFieldType, proxy: Function) {
+		this.actionType = actionType
+		this.proxy = proxy
 	}
 }
 
@@ -624,83 +549,41 @@ export class DataObjConfirm {
 }
 
 export class DataObjData {
-	cardinality: DataObjCardinality
-	dataRows: DataRow[] = []
+	cardinality?: DataObjCardinality
 	fields: DataObjDataField[] = []
 	items: DataRecord = {}
-	constructor(cardinality: DataObjCardinality, data: any = undefined) {
+	parmsState: ParmsValuesState = new ParmsValuesState()
+	parmsValues: ParmsValues = new ParmsValues()
+	rawDataObj?: RawDataObj
+	rowsRetrieved: DataRows = new DataRows()
+	rowsSave: DataRows = new DataRows()
+	constructor(rawDataObj?: RawDataObj) {
 		const clazz = 'DataObjData'
-		this.cardinality = cardinality
+		if (rawDataObj) this.init(rawDataObj)
+	}
+	init(rawDataObj: RawDataObj) {
+		const clazz = 'DataObjData'
+		this.cardinality = memberOfEnum(
+			rawDataObj.codeCardinality,
+			clazz,
+			'cardinality',
+			'DataObjCardinality',
+			DataObjCardinality
+		)
+		this.rawDataObj = rawDataObj
 	}
 	static load(source: DataObjData) {
-		const data = new DataObjData(source.cardinality)
-		source.dataRows.forEach((row) => {
-			data.dataRows.push(new DataRow(row.status, row.record))
-		})
+		const data = new DataObjData(source.rawDataObj)
+		data.fields = DataObjDataField.load(source.fields)
 		data.items = { ...source.items }
-		data.fields = source.fields.map((field) => {
-			return new DataObjDataField(
-				field.fieldName,
-				field.rawDataObj,
-				DataObjData.load(field.data),
-				undefined
-			)
-		})
+		data.parmsState = ParmsValuesState.load(source.parmsState)
+		data.parmsValues = ParmsValues.load(source.parmsValues)
+		data.rowsRetrieved = DataRows.load(source.rowsRetrieved)
+		data.rowsSave = DataRows.load(source.rowsSave)
 		return data
 	}
-	addFieldInit(fieldName: string, rawDataObj: RawDataObj) {
-		const idx = this.fields.push(
-			new DataObjDataField(
-				fieldName,
-				rawDataObj,
-				new DataObjData(DataObjCardinality.list),
-				undefined
-			)
-		)
-		return this.fields[idx - 1]
-	}
-	addFieldSave(fieldName: string, rawDataObj: RawDataObj, dataSave: DataObjData) {
-		const idx = this.fields.push(new DataObjDataField(fieldName, rawDataObj, undefined, dataSave))
-		return this.fields[idx - 1]
-	}
-	addRow(status: DataRecordStatus, record: DataRecord, items: DataRecord = {}) {
-		this.dataRows.push(new DataRow(status, record))
-	}
-	getDetailRecord() {
-		if (this.dataRows.length > 0) return this.dataRows[0].record
-		error(500, {
-			file: FILENAME,
-			function: 'dataObjData.getDetailRecord',
-			message: `No detail record available.`
-		})
-	}
-	getDetailRecordValue(key: string) {
-		if (!this.hasRecord()) return undefined
-		return this.dataRows[0].record[key]
-	}
-	getDetailRow() {
-		if (this.dataRows.length > 0) return this.dataRows[0]
-		error(500, {
-			file: FILENAME,
-			function: 'dataObjData.getDetailRow',
-			message: `No detail record available.`
-		})
-	}
-	getDetailStatusRecord() {
-		if (this.dataRows.length > 0) return this.dataRows[0].status
-		error(500, {
-			file: FILENAME,
-			function: 'dataObjData.getDetailStatusRecord',
-			message: `No detail record available.`
-		})
-	}
-	getDetailStatusRecordIs(status: DataRecordStatus) {
-		if (this.dataRows.length < 1) return false
-		const statusRecord = this.getDetailStatusRecord()
-		return statusRecord === status
-	}
 	getField(fieldName: string) {
-		const field = this.fields.find((f) => f.fieldName === fieldName)
+		const field = this.fields.find((f) => f.embedFieldName === fieldName)
 		if (field) {
 			return field
 		} else {
@@ -711,89 +594,92 @@ export class DataObjData {
 			})
 		}
 	}
-	getFieldData(fieldName: string): DataObjData {
-		const field = this.getField(fieldName)
-		if (field) {
-			return field.data
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'dataObjData.getFieldData',
-				message: `Field ${fieldName} not found.`
-			})
-		}
-	}
-	getRecordsList() {
-		return this.dataRows.map((row) => row.record)
-	}
-	getRow(id: string) {
-		const row = this.dataRows.findIndex((r) => r.record.id === id)
-		return row > -1 ? this.dataRows[row] : undefined
-	}
-	getValue(recordId: string, key: string) {
-		const row = this.dataRows.find((dr) => dr.record.id === recordId)
-		if (row) {
-			return row.record[key]
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'dataObjData.getValue',
-				message: `Row ${row} not found.`
-			})
-		}
-	}
-	hasRecord() {
-		if (this.dataRows.length === 0) return false
-		return Object.keys(this.dataRows[0].record).length > 0
-	}
-	setDetailRecord(record: DataRecord) {
-		if (this.dataRows.length > 0) {
-			this.dataRows[0].record = record
-		}
-	}
-	setDetailRecordStatus(status: DataRecordStatus) {
-		if (this.dataRows) {
-			this.dataRows[0].status = status
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'dataObjData.setDetailRecordStatus',
-				message: `No detail record available.`
-			})
-		}
-	}
-	setDetailRecordValue(key: string, value: any) {
-		if (!this.hasRecord()) return
-		this.dataRows[0].record[key] = value
-	}
-	syncFields(source: DataRecord[], fields: string[]) {
-		source.forEach((record) => {
-			const id = record.id
-			fields.forEach((fieldName) => {
-				const val = record[fieldName]
-				const row = this.dataRows.findIndex((r) => r.record.id === id)
-				if (row > -1) this.dataRows[row].record[fieldName] = val
-			})
-		})
+	getParms() {
+		return { ...this.parmsState.valueGetAll(), ...this.parmsValues.valueGetAll() }
 	}
 }
 
 export class DataObjDataField {
 	data: DataObjData
-	dataSave: DataObjData
-	fieldName: string
-	rawDataObj: RawDataObj
-	constructor(
-		fieldName: string,
-		rawDataObj: RawDataObj,
-		data: DataObjData | undefined,
-		dataSave: DataObjData | undefined
-	) {
-		this.data = data ? data : new DataObjData(dataSave!.cardinality)
-		this.dataSave = dataSave ? dataSave : new DataObjData(data!.cardinality)
-		this.fieldName = fieldName
-		this.rawDataObj = rawDataObj
+	embedFieldName: string
+	embedRecordId?: string
+	embedTable: DBTable
+	embedType: DataObjEmbedType
+	parentTable: DBTable
+	constructor(obj: any = {}) {
+		const clazz = 'DataObjDataField'
+		this.embedFieldName = strRequired(obj.embedFieldName, clazz, 'embedFieldName')
+		this.embedRecordId = strOptional(obj.embedRecordId, clazz, 'embedRecordId')
+		this.embedTable = required(obj.embedTable, clazz, 'embedTable')
+		this.embedType = memberOfEnum(
+			obj.embedType,
+			clazz,
+			'embedType',
+			'DataObjDataField',
+			DataObjEmbedType
+		)
+		this.parentTable = new DBTable(obj.parentTable)
+
+		// derived
+		this.data = new DataObjData(
+			required(obj.rawDataObj ? obj.rawDataObj : obj?.data?.rawDataObj, clazz, 'rawDataObj')
+		)
 	}
+	static async init(
+		rawDataObjParent: RawDataObj,
+		queryData: TokenApiQueryData,
+		fGetRawDataObj: Function
+	) {
+		let fields: DataObjDataField[] = []
+		const parentTable =
+			rawDataObjParent.tables.length > 0 ? rawDataObjParent.tables[0].table : undefined
+		if (parentTable) {
+			const FIELDTYPES = [
+				DataObjEmbedType.listConfig,
+				DataObjEmbedType.listEdit,
+				DataObjEmbedType.listSelect
+			]
+			const embeds = rawDataObjParent.rawPropsSelect.filter(
+				(prop) => prop.fieldEmbed && FIELDTYPES.includes(prop.fieldEmbed.type)
+			)
+			for (let i = 0; i < embeds.length; i++) {
+				const field = embeds[i]
+				const embedDataObjId = field?.fieldEmbed?.id
+				const embedFieldName = field.propName
+				const rawDataObj = await fGetRawDataObj(
+					new TokenApiDbDataObjSource({
+						dataObjId: embedDataObjId,
+						exprFilter: `.id IN (SELECT ${parentTable.object} FILTER .id = <parms,uuid,listRecordIdCurrent>).${embedFieldName}.id`
+					}),
+					queryData
+				)
+				fields.push(
+					new DataObjDataField({
+						embedDataObjId,
+						embedFieldName,
+						embedTable: field?.link?.table,
+						embedType: field?.fieldEmbed?.type,
+						parentTable: parentTable,
+						rawDataObj
+					})
+				)
+			}
+		}
+		return fields
+	}
+	static load(fields: DataObjDataField[]) {
+		return fields.map((field) => {
+			const newField = new DataObjDataField({ ...field })
+			newField.data = DataObjData.load(field.data)
+			return newField
+		})
+	}
+}
+
+export enum DataObjEmbedType {
+	listConfig = 'listConfig',
+	listEdit = 'listEdit',
+	listSelect = 'listSelect'
 }
 
 export enum DataObjListEditPresetType {
@@ -804,25 +690,6 @@ export enum DataObjListEditPresetType {
 export enum DataObjMode {
 	ParentObjectSaved = 'ParentObjectSaved',
 	ReorderOn = 'ReorderOn'
-}
-
-export class DataObjParent {
-	columnName: string
-	columnIsMultiSelect: boolean
-	filterExpr?: string
-	table: DBTable
-	constructor(obj: RawDataObjParent) {
-		const clazz = 'DataObjParent'
-		obj = valueOrDefault(obj, {})
-		this.columnName = strRequired(obj._columnName, clazz, 'columnName')
-		this.columnIsMultiSelect = booleanRequired(
-			obj._columnIsMultiSelect,
-			clazz,
-			'columnIsMultiSelect'
-		)
-		this.filterExpr = strOptional(obj._filterExpr, clazz, 'filterExpr')
-		this.table = new DBTable(required(obj._table, clazz, 'table'))
-	}
 }
 
 export enum DataObjProcessType {
@@ -937,6 +804,103 @@ export class DataRow {
 	}
 }
 
+export class DataRows {
+	dataRows: DataRow[] = []
+	constructor() {}
+	add(newRow: DataRow) {
+		this.dataRows.push(newRow)
+	}
+	getDetailRecord() {
+		if (this.dataRows.length > 0) return this.dataRows[0].record
+		error(500, {
+			file: FILENAME,
+			function: 'DataRows.getDetailRecord',
+			message: `No detail record available.`
+		})
+	}
+	getDetailRecordValue(key: string) {
+		if (!this.hasRecord()) return undefined
+		return this.dataRows[0].record[key]
+	}
+	getDetailRow() {
+		if (this.dataRows.length > 0) return this.dataRows[0]
+		error(500, {
+			file: FILENAME,
+			function: 'DataRows.getDetailRecord',
+			message: `No detail record available.`
+		})
+	}
+	getDetailStatusRecordIs(status: DataRecordStatus) {
+		if (this.dataRows.length < 1) return false
+		return status === this.dataRows[0].status
+	}
+	getRow(id: string) {
+		const row = this.dataRows.findIndex((r) => r.record.id === id)
+		return row > -1 ? this.dataRows[row] : undefined
+	}
+	getRows() {
+		return this.dataRows
+	}
+	getValue(recordId: string, key: string) {
+		const row = this.dataRows.find((dr) => dr.record.id === recordId)
+		if (row) {
+			return row.record[key]
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'dataObjData.getValue',
+				message: `Row ${row} not found.`
+			})
+		}
+	}
+	hasRecord() {
+		return this.dataRows.length > 0 && Object.keys(this.dataRows[0].record).length > 0
+	}
+	static load(source: DataRows) {
+		const dataRows = new DataRows()
+		source.dataRows.forEach((dataRow) => {
+			dataRows.add(new DataRow(dataRow.status, dataRow.record))
+		})
+		return dataRows
+	}
+	reset() {
+		this.dataRows = []
+	}
+	setDataRows(dataRows: DataRow[]) {
+		this.dataRows = dataRows
+	}
+	setDetailRecord(record: DataRecord) {
+		if (this.dataRows.length > 0) {
+			this.dataRows[0].record = record
+		}
+	}
+	setDetailRecordStatus(status: DataRecordStatus) {
+		if (this.dataRows) {
+			this.dataRows[0].status = status
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'dataObjData.setDetailRecordStatus',
+				message: `No detail record available.`
+			})
+		}
+	}
+	setDetailRecordValue(key: string, value: any) {
+		if (!this.hasRecord()) return
+		this.dataRows[0].record[key] = value
+	}
+	syncFields(source: DataRecord[], fields: string[]) {
+		source.forEach((record) => {
+			const id = record.id
+			fields.forEach((fieldName) => {
+				const val = record[fieldName]
+				const row = this.dataRows.findIndex((r) => r.record.id === id)
+				if (row > -1) this.dataRows[row].record[fieldName] = val
+			})
+		})
+	}
+}
+
 export class DBTable {
 	hasMgmt: boolean
 	mod: string
@@ -985,88 +949,112 @@ export class FieldValues {
 	}
 }
 
-export class MetaData {
+export class ParmsUser {
+	data: ParmsUserParm[] = []
+	constructor() {}
+	parmGet(id: string, type: ParmsUserParmType) {
+		let idx = this.data.findIndex((p) => p.id === id && p.type === type)
+		return idx > -1 ? this.data[idx].value : undefined
+	}
+	parmSet(id: string, type: ParmsUserParmType, value: any) {
+		let idx = this.data.findIndex((p) => p.id === id && p.type === type)
+		if (idx > -1) {
+			this.data[idx].value = value
+		} else {
+			this.data.push(new ParmsUserParm(id, type, value))
+		}
+	}
+	reset() {
+		this.data = []
+	}
+}
+export class ParmsUserParm {
+	id: string
+	type: ParmsUserParmType
+	value: any
+	constructor(id: string, type: ParmsUserParmType, value: any) {
+		this.id = id
+		this.type = type
+		this.value = value
+	}
+}
+export enum ParmsUserParmType {
+	listFilterText = 'listFilterText',
+	listSortObj = 'listSortObj'
+}
+
+export class ParmsValues {
 	data: DataRecord = {}
-	metaParmListRecordIdCurrent = 'listRecordIdCurrent'
-	metaParmListRecordIdList = 'listRecordIdList'
-	metaParmListRecordIdParent = 'listRecordIdParent'
-	constructor(data: DataRecord = {}) {
-		this.data = data
+	constructor(data?: DataRecord) {
+		this.data = valueOrDefault(data, {})
 	}
-	dataInit(parms: DataRecord) {
-		this.data = parms
-	}
-	dataSave(parms: DataRecord) {
-		Object.entries(parms).forEach(([key, value]) => {
+	dataUpdate(data: DataRecord) {
+		data = valueOrDefault(data, {})
+		Object.entries(data).forEach(([key, value]) => {
 			this.data[key] = value
 		})
 	}
-
-	init(parms: DataRecord) {
-		parms = valueOrDefault(parms, {})
-		this.valueSet(
-			this.metaParmListRecordIdCurrent,
-			Object.hasOwn(parms, this.metaParmListRecordIdCurrent)
-				? parms[this.metaParmListRecordIdCurrent]
-				: ''
-		)
-		this.valueSet(
-			this.metaParmListRecordIdList,
-			Object.hasOwn(parms, this.metaParmListRecordIdList)
-				? parms[this.metaParmListRecordIdList]
-				: []
-		)
+	static load(parms: ParmsValues) {
+		const newParms = new ParmsValues()
+		newParms.data = parms.data
+		return newParms
 	}
-	initLevel(parms: DataRecord) {
-		parms = valueOrDefault(parms, {})
-		// idCurrent
-		let idCurrent = Object.hasOwn(parms, this.metaParmListRecordIdCurrent)
-			? parms[this.metaParmListRecordIdCurrent]
-			: ''
-		this.valueSet(this.metaParmListRecordIdCurrent, idCurrent)
-
-		// idList
-		let idList = Object.hasOwn(parms, this.metaParmListRecordIdList)
-			? parms[this.metaParmListRecordIdList]
-			: this.valueGet(this.metaParmListRecordIdList)
-		this.valueSet(this.metaParmListRecordIdList, idList)
-	}
-
-	listSetParms(parms: DataRecord) {
-		let idCurrent = this.valueGet(this.metaParmListRecordIdCurrent)
-		let idList = this.valueGet(this.metaParmListRecordIdList)
-		if (idCurrent && idList) {
-			parms[this.metaParmListRecordIdCurrent] = idCurrent
-			parms[this.metaParmListRecordIdList] = idList
-		}
-	}
-	listUpdate(records: DataRow[] | undefined, recordId: string, recordIdAlt: string = '') {
-		this.valueSetId(recordIdAlt ? recordIdAlt : recordId)
-		this.valueSetList(records)
-	}
-
 	valueGet(key: string) {
 		return this.data[key]
 	}
-	valueGetId() {
-		return this.valueGet(this.metaParmListRecordIdCurrent)
-	}
-	valueGetIdList() {
-		return getArray(this.valueGet(this.metaParmListRecordIdList))
-	}
 	valueGetAll() {
-		return this.data
+		let newParms: DataRecord = {}
+		Object.entries(this.data).forEach(([key, value]) => {
+			newParms[key] = value
+		})
+		return newParms
 	}
 	valueSet(key: string, value: any) {
 		this.data[key] = value
 	}
-	valueSetId(id: string) {
-		this.valueSet(this.metaParmListRecordIdCurrent, id)
+	valueSetDefault(key: string, parms: DataRecord, defaultValue: any) {
+		this.valueSet(key, Object.hasOwn(parms, key) ? parms[key] : defaultValue)
 	}
-	valueSetList(dataRows: DataRow[] | undefined) {
-		this.valueSet(
-			this.metaParmListRecordIdList,
-			dataRows ? dataRows.map((row) => row.record.id) : []
+	valueSetList(key: string, dataRows?: DataRow[]) {
+		this.valueSet(key, dataRows ? dataRows.map((row) => row.record.id) : [])
+	}
+}
+
+export class ParmsValuesState extends ParmsValues {
+	constructor(data?: DataRecord) {
+		super(data)
+	}
+	initLevel(parms: DataRecord) {
+		parms = valueOrDefault(parms, {})
+		this.valueSetDefault(ParmsObjType.listRecordIdCurrent, parms, '')
+		this.valueSetDefault(
+			ParmsObjType.listRecordIdList,
+			parms,
+			this.valueGet(ParmsObjType.listRecordIdList)
 		)
 	}
+	listUpdate(dataRows: DataRow[] | undefined, recordId: string, recordIdAlt: string = '') {
+		this.valueSet(ParmsObjType.listRecordIdCurrent, recordIdAlt ? recordIdAlt : recordId)
+		this.valueSetList(ParmsObjType.listRecordIdList, dataRows)
+	}
+	static load(parms: ParmsValuesState) {
+		const newParms = new ParmsValuesState()
+		newParms.data = parms.data
+		return newParms
+	}
+	parmsUpdate(parms?: ParmsValuesState) {
+		if (parms) {
+			Object.entries(parms.data).forEach(([key, value]) => {
+				this.data[key] = value
+			})
+		}
+	}
+}
+
+export enum ParmsObjType {
+	embedFieldName = 'embedFieldName',
+	listRecordIdCurrent = 'listRecordIdCurrent',
+	listRecordIdList = 'listRecordIdList',
+	listRecordIdSelected = 'listRecordIdSelected',
+	rootRecordId = 'rootRecordId'
 }

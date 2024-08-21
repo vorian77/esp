@@ -8,7 +8,10 @@ import { error } from '@sveltejs/kit'
 export async function initDataReports() {
 	sectionHeader('Reports')
 	await initAnalyticTrainingCredential()
-	await initReportTrainingCredential()
+
+	await initReportCMTrainingCohortAttendance()
+	await initReportCMTrainingCohortWages()
+
 	await initReportCourseSummary()
 	await initReportOurWorldSummary()
 	await initReportStudentSummary()
@@ -16,9 +19,9 @@ export async function initDataReports() {
 
 async function initAnalyticTrainingCredential() {
 	await addAnalytic({
-		description: 'Analytic for CM Training credential report.',
-		header: 'Credential Analytic',
-		name: 'analytic_cm_training_credential',
+		description: 'Cohort attendance report.',
+		header: 'Cohort Attendance',
+		name: 'analytic_cm_training_cohort_attendance',
 		owner: 'app_cm_training',
 		parms: [
 			{
@@ -72,16 +75,16 @@ async function initAnalyticTrainingCredential() {
 	})
 }
 
-async function initReportTrainingCredential() {
+async function initReportCMTrainingCohortAttendance() {
 	await addReport({
 		actionFieldGroup: 'doag_report_render',
-		description: 'Cohort attendance report with user defined Analytic (credential) columns.',
+		description: 'Cohort attendance report.',
 		exprFilter: '.cohort.id IN <parms,uuidList,pvCohort>',
-		header: 'Credential Analytic',
-		name: 'report_cm_training_credential_analytic',
+		header: 'Cohort Attendance',
+		name: 'report_cm_training_cohort_attendance',
 		owner: 'app_cm_training',
 		tables: [{ index: 0, table: 'CmCsfCohort' }],
-		analytics: ['analytic_cm_training_credential'],
+		analytics: ['analytic_cm_training_cohort_attendance'],
 		elements: [
 			{
 				codeDbDataSourceValue: 'edgeDB',
@@ -144,7 +147,7 @@ async function initReportTrainingCredential() {
 				codeReportElementType: 'column',
 				exprCustom: `.csf.client.person.birthDate`,
 				header: 'Birth Date',
-				isDisplay: false,
+				isDisplay: true,
 				isDisplayable: true,
 				nameCustom: 'birthdate',
 				orderDefine: 35,
@@ -186,7 +189,7 @@ async function initReportTrainingCredential() {
 				codeReportElementType: 'column',
 				exprCustom: `.csf.client.person.codeGender.name`,
 				header: 'Gender',
-				isDisplay: false,
+				isDisplay: true,
 				isDisplayable: true,
 				nameCustom: 'gender',
 				orderDefine: 50,
@@ -200,7 +203,7 @@ async function initReportTrainingCredential() {
 				codeReportElementType: 'column',
 				exprCustom: `.csf.client.person.codeRace.name`,
 				header: 'Race',
-				isDisplay: false,
+				isDisplay: true,
 				isDisplayable: true,
 				nameCustom: 'race',
 				orderDefine: 55,
@@ -458,29 +461,481 @@ async function initReportTrainingCredential() {
 	})
 
 	await addReportUser({
-		header: 'Credential Analytic',
-		report: 'report_cm_training_credential_analytic',
+		header: 'Cohort Attendance',
+		report: 'report_cm_training_cohort_attendance',
 		user: 'user_sys'
 	})
 	await addReportUser({
-		header: 'Credential Analytic',
-		report: 'report_cm_training_credential_analytic',
+		header: 'Cohort Attendance',
+		report: 'report_cm_training_cohort_attendance',
 		user: '2487985578' // Phyllip
 	})
 	await addReportUser({
-		header: 'Credential Analytic',
-		report: 'report_cm_training_credential_analytic',
+		header: 'Cohort Attendance',
+		report: 'report_cm_training_cohort_attendance',
 		user: '2482317505' // Anise
 	})
 	await addReportUser({
-		header: 'Credential Analytic',
-		report: 'report_cm_training_credential_analytic',
+		header: 'Cohort Attendance',
+		report: 'report_cm_training_cohort_attendance',
 		user: '3136276210' // Matt
 	})
 	// Erica
 	await addReportUser({
-		header: 'Credential Analytic',
-		report: 'report_cm_training_credential_analytic',
+		header: 'Cohort Attendance',
+		report: 'report_cm_training_cohort_attendance',
+		user: '3136272756' // Erica
+	})
+}
+
+async function initReportCMTrainingCohortWages() {
+	await addReport({
+		actionFieldGroup: 'doag_report_render',
+		description: 'Cohort wages report.',
+		exprFilter:
+			'.csf.client IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohort>).csf.client',
+		header: 'Wages',
+		name: 'report_cm_training_cohort_job_placement',
+		owner: 'app_cm_training',
+		tables: [{ index: 0, table: 'CmCsfJobPlacement' }],
+		elements: [
+			{
+				codeDbDataSourceValue: 'edgeDB',
+				codeReportElementType: 'column',
+				columnName: 'id',
+				indexTable: 0,
+				isDisplay: false,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.firstName`,
+				header: 'First Name',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'firstName',
+				orderDefine: 20,
+				orderDisplay: 20,
+				orderSort: 20
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.middleName`,
+				header: 'Middle Name',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'middleName',
+				orderDefine: 25,
+				orderDisplay: 25
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.lastName`,
+				header: 'Last Name',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'lastName',
+				orderDefine: 30,
+				orderDisplay: 30,
+				orderSort: 10
+			},
+			{
+				codeAlignment: 'center',
+				codeDataType: 'date',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'date',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.birthDate`,
+				header: 'Birth Date',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'birthdate',
+				orderDefine: 35,
+				orderDisplay: 35
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.agencyId`,
+				header: 'Group',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'groupName',
+				orderDefine: 40,
+				orderDisplay: 40
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.school`,
+				header: 'School',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'school',
+				orderDefine: 45,
+				orderDisplay: 45
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.codeGender.name`,
+				header: 'Gender',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'gender',
+				orderDefine: 50,
+				orderDisplay: 50
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.codeRace.name`,
+				header: 'Race',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'race',
+				orderDefine: 55,
+				orderDisplay: 55
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.codeEthnicity.name`,
+				header: 'Ethnicity',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'ethnicity',
+				orderDefine: 60,
+				orderDisplay: 60
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'tel',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.phoneMobile`,
+				header: 'Mobile Phone',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'phoneMobile',
+				orderDefine: 65,
+				orderDisplay: 65
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'tel',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.phoneAlt`,
+				header: 'Alt Phone',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'phoneAlt',
+				orderDefine: 70,
+				orderDisplay: 70
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'email',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.email`,
+				header: 'Email',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'email',
+				orderDefine: 75,
+				orderDisplay: 75
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.addr1`,
+				header: 'Address 1',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'addr1',
+				orderDefine: 80,
+				orderDisplay: 80
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.addr2`,
+				header: 'Address 2',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'addr2',
+				orderDefine: 85,
+				orderDisplay: 85
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.city`,
+				header: 'City',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'city',
+				orderDefine: 90,
+				orderDisplay: 90
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.codeState.name`,
+				header: 'State',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'state',
+				orderDefine: 95,
+				orderDisplay: 95
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.zip`,
+				header: 'Zip',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'zip',
+				orderDefine: 100,
+				orderDisplay: 100
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.csf.client.person.note`,
+				header: 'Note',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'personNote',
+				orderDefine: 105,
+				orderDisplay: 105
+			},
+
+			{
+				codeAlignment: 'center',
+				codeDataType: 'date',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'date',
+				codeReportElementType: 'column',
+				exprCustom: `.dateStart`,
+				header: 'Start Date',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'dateStart',
+				orderDefine: 200,
+				orderDisplay: 200
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.employerName`,
+				header: 'Employer',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'employer',
+				orderDefine: 205,
+				orderDisplay: 205
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.title`,
+				header: 'Title',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'jobTitle',
+				orderDefine: 210,
+				orderDisplay: 210
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.codeJobType.name`,
+				header: 'Job Type',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'jobType',
+				orderDefine: 215,
+				orderDisplay: 215
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'float64',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `.wage`,
+				header: 'Wage',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'wage',
+				orderDefine: 220,
+				orderDisplay: 220
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.codeWageType.name`,
+				header: 'Wage Type',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'wageType',
+				orderDefine: 225,
+				orderDisplay: 225
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'float64',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `.hoursPerWeek`,
+				header: 'Hours Per Week',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'hoursPerWeek',
+				orderDefine: 230,
+				orderDisplay: 230
+			},
+			{
+				codeAlignment: 'left',
+				codeDataType: 'str',
+				codeDbDataSourceValue: 'edgeDB',
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				exprCustom: `.note`,
+				header: 'Note',
+				isDisplay: false,
+				isDisplayable: true,
+				nameCustom: 'jobNote',
+				orderDefine: 240,
+				orderDisplay: 240
+			}
+		],
+		parms: [
+			{
+				codeDataType: 'date',
+				codeFieldElement: 'date',
+				description: 'Attendance start date.',
+				header: 'Start Date',
+				isMultiSelect: false,
+				isRequired: true,
+				name: 'pvDateStart',
+				orderDefine: 0
+			},
+			{
+				codeDataType: 'date',
+				codeFieldElement: 'date',
+				description: 'Attendance end date.',
+				header: 'End Date',
+				isMultiSelect: false,
+				isRequired: true,
+				name: 'pvDateEnd',
+				orderDefine: 1
+			},
+			{
+				codeDataType: 'uuidList',
+				codeFieldElement: 'chips',
+				description: 'Student cohort(s).',
+				fieldListItems: 'il_cm_cohort_short_by_userName',
+				header: 'Cohort(s)',
+				isMultiSelect: true,
+				isRequired: true,
+				linkTable: 'CmCohort',
+				name: 'pvCohort',
+				orderDefine: 2
+			}
+		]
+	})
+
+	await addReportUser({
+		header: 'Job Placement',
+		report: 'report_cm_training_cohort_job_placement',
+		user: 'user_sys'
+	})
+	await addReportUser({
+		header: 'Job Placement',
+		report: 'report_cm_training_cohort_job_placement',
+		user: '2487985578' // Phyllip
+	})
+	await addReportUser({
+		header: 'Job Placement',
+		report: 'report_cm_training_cohort_job_placement',
+		user: '2482317505' // Anise
+	})
+	await addReportUser({
+		header: 'Job Placement',
+		report: 'report_cm_training_cohort_job_placement',
+		user: '3136276210' // Matt
+	})
+	// Erica
+	await addReportUser({
+		header: 'Job Placement',
+		report: 'report_cm_training_cohort_job_placement',
 		user: '3136272756' // Erica
 	})
 }
@@ -622,6 +1077,7 @@ async function initReportCourseSummary() {
 		codeIcon: 'application',
 		dataObj: 'data_obj_cm_ai_report_course_summary',
 		header: 'Courses (Summary)',
+		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_course_summary',
 		orderDefine: 40,
 		owner: 'app_cm',
@@ -751,6 +1207,7 @@ async function initReportOurWorldSummary() {
 		codeIcon: 'application',
 		dataObj: 'data_obj_cm_ai_report_our_world_summary',
 		header: 'Our World (Summary)',
+		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_our_world_summary',
 		orderDefine: 30,
 		owner: 'app_cm',
@@ -1040,6 +1497,7 @@ async function initReportStudentSummary() {
 		codeIcon: 'application',
 		dataObj: 'data_obj_cm_ai_report_student_summary',
 		header: 'Students (Summary)',
+		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_student_summary',
 		orderDefine: 20,
 		owner: 'app_cm',

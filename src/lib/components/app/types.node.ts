@@ -1,4 +1,4 @@
-import { memberOfEnum, strRequired, valueOrDefault } from '$utils/utils'
+import { booleanOrFalse, memberOfEnum, strRequired, valueOrDefault } from '$utils/utils'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/lib/components/nav/types.node.ts'
@@ -10,6 +10,7 @@ export type DbNode = {
 	_codeNodeType: string
 	dataObjId?: string
 	header: string
+	isHideRowManager: boolean
 	id: string
 	name: string
 	orderDefine: number
@@ -21,6 +22,7 @@ export class RawNode {
 	header: string
 	icon: string
 	id: string
+	isHideRowManager: boolean
 	name: string
 	page: string
 	type: string
@@ -30,6 +32,7 @@ export class RawNode {
 		this.header = dbNode.header
 		this.icon = valueOrDefault(dbNode._codeIcon, DEFAULT_ICON)
 		this.id = dbNode.id
+		this.isHideRowManager = dbNode.isHideRowManager
 		this.name = dbNode.name
 		this.page = valueOrDefault(dbNode.page, '/home')
 		this.type = dbNode._codeNodeType
@@ -41,6 +44,7 @@ export class Node {
 	header: string
 	icon: string
 	id: string
+	isHideRowManager: boolean
 	name: string
 	page: string
 	type: NodeType
@@ -50,6 +54,7 @@ export class Node {
 		this.header = rawNode.header
 		this.icon = rawNode.icon
 		this.id = rawNode.id
+		this.isHideRowManager = booleanOrFalse(rawNode.isHideRowManager, 'isHideRowManager')
 		this.name = rawNode.name
 		this.page = rawNode.page
 		this.type = memberOfEnum(rawNode.type, clazz, 'type', 'NodeType', NodeType)
@@ -59,12 +64,14 @@ export class NodeApp {
 	dataObjId: string
 	label: string
 	id: string
+	isHideRowManager: boolean
 	constructor(obj: any) {
 		const clazz = 'NodeApp'
 		obj = valueOrDefault(obj, {})
 		this.dataObjId = strRequired(obj.dataObjId, clazz, 'dataObjId')
 		this.label = strRequired(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
+		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
 	}
 }
 export class NodeNav extends Node {

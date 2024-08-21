@@ -1,11 +1,7 @@
 import { createClient } from 'edgedb'
 import e, { is } from '$lib/dbschema/edgeql-js'
 import { EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
-import {
-	booleanOrDefaultJSON,
-	booleanOrDefaultParm,
-	sectionHeader
-} from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
 
 const client = createClient({
 	instanceName: EDGEDB_INSTANCE,

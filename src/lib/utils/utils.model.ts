@@ -176,14 +176,14 @@ export function override(valOverride: any, valBase: any, clazz: string, fieldNam
 	})
 }
 
-export function required(val: any, clazz: any, fieldName: string) {
+export function required(val: any, clazz: any, valueName: string) {
 	if (val !== undefined && val !== null) {
 		return val
 	} else {
 		error(500, {
 			file: FILENAME,
 			function: clazz,
-			message: `Field: ${fieldName} - is required but is undefined or null.`
+			message: `Value: ${valueName} - is required but is undefined or null.`
 		})
 	}
 }
@@ -205,7 +205,7 @@ export function strOptional(val: string | null | undefined, className: string, f
 	return strRequired(val, className, field)
 }
 export function strRequired(val: string | null | undefined, className: string, field: string) {
-	if (typeof val === 'string') {
+	if (typeof val === 'string' && val !== null && val !== undefined) {
 		return val
 	} else {
 		error(500, {

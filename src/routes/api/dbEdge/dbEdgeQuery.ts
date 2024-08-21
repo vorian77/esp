@@ -1,11 +1,23 @@
 import { nbrOrDefault, valueOrDefault } from '$lib/utils/utils'
-import { classOptional, DataObjParent, DBTable, debug, required, strRequired } from '$utils/types'
+import {
+	booleanRequired,
+	classOptional,
+	DataObjDataField,
+	DataObjEmbedType,
+	DBTable,
+	debug,
+	memberOfEnumOrDefault,
+	required,
+	strOptional,
+	strRequired
+} from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
 import {
 	PropDataSourceValue,
 	PropDataType,
 	PropLinkItemsDefn,
 	RawDataObj,
+	RawDataObjParent,
 	RawDataObjPropDB
 } from '$comps/dataObj/types.rawDataObj'
 import { TokenApiQueryData } from '$utils/types.token'
@@ -23,16 +35,16 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$routes/api/dbEdge/dbEdgeQuery.ts'
 
 export class Query {
-	fieldName: string
-	parent?: DataObjParent
+	field?: DataObjDataField
+	parent?: QueryParent
 	processRow?: ProcessRow
 	rawDataObj: RawDataObj
 	scriptOrder: string = ''
-	constructor(rawDataObj: RawDataObj, fieldName: string = '') {
+	constructor(rawDataObj: RawDataObj, field?: DataObjDataField) {
 		const clazz = 'Query'
-		this.fieldName = strRequired(fieldName, clazz, 'fieldName')
-		this.rawDataObj = valueOrDefault(rawDataObj, {})
-		this.parent = classOptional(DataObjParent, this.rawDataObj.rawParent)
+		this.field = field
+		this.rawDataObj = rawDataObj
+		this.parent = classOptional(QueryParent, this.rawDataObj.rawParent)
 	}
 	addItem(list: string, item: string, separator: string) {
 		return list ? list + separator + '\n' + item : item
@@ -54,8 +66,9 @@ export class Query {
 		}
 
 		const specialFilters: string[] = ['$ListSelectDisplayIds']
+		const parms = valueOrDefault(queryData.dataTab?.parmsValues.data, {})
 		specialFilters.forEach((filter: string) => {
-			if (Object.hasOwn(queryData.parms, filter)) {
+			if (Object.hasOwn(parms, filter)) {
 				script = this.addItem(script, `.id in <uuid>{<parms,uuidList,${filter}>}`, 'AND')
 			}
 		})
@@ -353,7 +366,7 @@ export class Query {
 		let script = new Script(this, queryData, ScriptExePost.formatData)
 
 		const defn = required(prop.linkItemsDefn, clazz, 'prop.linkItemsDefn') as PropLinkItemsDefn
-		queryData.parmsUpsert({ ...defn.parms })
+		queryData.dataTab?.parmsState.dataUpdate({ ...defn.parms })
 		const shape = `{data := .id, display := ${defn.exprPropDisplay}}`
 		const filter = defn.exprFilter ? evalExpr(defn.exprFilter, queryData) : ''
 		const orderBy = defn.exprSort ? `ORDER BY ${defn.exprSort}` : 'ORDER BY .display'
@@ -436,6 +449,25 @@ export class Query {
 	}
 	setProcessRow(processRow: ProcessRow) {
 		this.processRow = processRow
+	}
+}
+
+class QueryParent {
+	columnName: string
+	columnIsMultiSelect: boolean
+	filterExpr?: string
+	table: DBTable
+	constructor(obj: RawDataObjParent) {
+		const clazz = 'QueryParent'
+		obj = valueOrDefault(obj, {})
+		this.columnName = strRequired(obj._columnName, clazz, 'columnName')
+		this.columnIsMultiSelect = booleanRequired(
+			obj._columnIsMultiSelect,
+			clazz,
+			'columnIsMultiSelect'
+		)
+		this.filterExpr = strOptional(obj._filterExpr, clazz, 'filterExpr')
+		this.table = new DBTable(required(obj._table, clazz, 'table'))
 	}
 }
 

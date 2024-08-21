@@ -15,10 +15,13 @@
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
+	let isHideChildTabs = false
+
+	let currLevel: AppLevel | undefined
 	$: currLevel = state.app.getCurrLevel()
 	$: isHideChildTabs =
-		dataObjData.hasRecord() &&
-		(dataObjData.getDetailStatusRecordIs(DataRecordStatus.preset) ||
+		dataObjData.rowsRetrieved.hasRecord() &&
+		(dataObjData.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset) ||
 			state.objStatus.changed() ||
 			!state.objStatus.valid())
 
@@ -33,8 +36,8 @@
 	}
 </script>
 
-<!-- <DataViewer header="LayoutTab.state.objStatus" data={state.objStatus} />
-<DataViewer header="isHideChildTabs" data={isHideChildTabs} /> -->
+<!-- <DataViewer header="LayoutTab.state.objStatus" data={state.objStatus} /> -->
+<!-- <DataViewer header="isHideChildTabs" data={isHideChildTabs} /> -->
 
 {#if currLevel}
 	<TabGroup>

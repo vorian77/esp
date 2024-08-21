@@ -1,10 +1,12 @@
 import { required } from '$lib/utils/utils'
 import {
 	DataObjCardinality,
+	DataObjEmbedType,
 	DataObjData,
 	DataObjListEditPresetType,
 	DataRecordStatus,
 	debug,
+	ParmsObjType,
 	strRequired
 } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
@@ -43,7 +45,6 @@ export class ScriptGroup {
 			['script', { content: ['propsSelectDataItems'] }]
 		])
 	}
-
 	addScriptExpression(query: Query, queryData: TokenApiQueryData) {
 		const script = new Script(query, queryData, ScriptExePost.formatData)
 		script.script = query.getExpression(queryData)
@@ -58,7 +59,6 @@ export class ScriptGroup {
 	}
 	addScriptPresetListEdit(query: Query, queryData: TokenApiQueryData) {
 		if (!query.rawDataObj.listEditPresetExpr) return
-
 		switch (query.rawDataObj.codeListEditPresetType) {
 			case DataObjListEditPresetType.insert:
 				return this.addScriptPresetListEditInsert(query, queryData)
@@ -95,9 +95,10 @@ export class ScriptGroup {
 		const recordsInsert = 'recordsInsert'
 		const parent = required(query.parent, clazz, 'query.parent')
 		const op = parent.columnIsMultiSelect ? '+=' : ':='
+		const parms = queryData.getParms()
 		const exprFilter = parent.filterExpr
 			? parent.filterExpr
-			: `.id = <uuid>'${queryData.parms.listRecordIdCurrent}'`
+			: `.id = <tree,uuid,${parent.table.name}.id>`
 
 		return this.addScript(query, queryData, ScriptExePost.none, [
 			// data
@@ -151,7 +152,7 @@ export class ScriptGroup {
 
 	addScriptSave(query: Query, queryData: TokenApiQueryData) {
 		const actions = []
-		const dataSave = required(queryData.dataSave, 'ScriptGroup', 'dataSave')
+		const dataRowsSaved = required(queryData.dataTab?.rowsSave, 'ScriptGroup', 'dataSave')
 		let items: [string, DataRecordStatus[]][] = [
 			['DELETE', [DataRecordStatus.delete]],
 			['INSERT', [DataRecordStatus.preset]],
@@ -160,7 +161,9 @@ export class ScriptGroup {
 		items.forEach((item) => {
 			const action = item[0]
 			const statuses = item[1]
-			const dataRows = dataSave.dataRows.filter((row: DataRow) => statuses.includes(row.status))
+			const dataRows = dataRowsSaved.dataRows.filter((row: DataRow) =>
+				statuses.includes(row.status)
+			)
 			if (dataRows.length > 0) {
 				this.addScriptSaveItem(query, queryData, action, dataRows)
 			}
@@ -190,7 +193,9 @@ export class ScriptGroup {
 					message: `No case defined for action: ${action}`
 				})
 		}
-		return this.addScript(query, queryData, ScriptExePost.formatData, config, dataRows)
+		if (config.length > 0) {
+			this.addScript(query, queryData, ScriptExePost.formatData, config, dataRows)
+		}
 	}
 
 	// prettier-ignore
@@ -202,39 +207,53 @@ export class ScriptGroup {
 			...this.addScriptSavePost(query)
 		]
 	}
-	// prettier-ignore
+
 	addScriptSaveInsert(query: Query, queryData: TokenApiQueryData): [string, DataRecord?][] {
+		const clazz = 'ScriptGroup.addScriptSaveInsert'
 		if (query.parent) {
-			// embeded form
 			const recordsInsert = 'recordsInsert'
 			const recordUpdate = 'recordUpdate'
 			const op = query.parent.columnIsMultiSelect ? '+=' : ':='
-			const exprFilter = 
-				query.parent && query.parent.filterExpr ? 
-					query.parent.filterExpr : 
-					`.id = <uuid>'${queryData.parms.listRecordIdParent}'`
-						
-			return [				
-        // records insert
+
+			// query filter
+			let exprFilter = ''
+			if (query.parent.filterExpr) {
+				exprFilter = query.parent.filterExpr
+			} else {
+				exprFilter = `.id = <tree,uuid,${query.parent.table.name}.id>`
+			}
+
+			return [
+				// records insert
 				['action', { type: 'INSERT', table: query.getTableObjRoot() }],
 				['propsSave', { action: 'INSERT', props: query.rawDataObj.rawPropsSaveInsert }],
 				['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'propsSave'] }],
 				['data'],
 				['with', { content: ['data', 'loop'] }],
 				['wrap', { key: recordsInsert, open: `${recordsInsert} := (`, content: ['with'] }],
-				
-        // record update
+
+				// record update
 				['action', { type: 'UPDATE', table: query.parent.table.object }],
 				['filter', { exprFilter }],
-				['wrap', {	key: 'propInsert', open: `${query.parent.columnName} ${op} (`, value: recordsInsert }],
+				[
+					'wrap',
+					{ key: 'propInsert', open: `${query.parent.columnName} ${op} (`, value: recordsInsert }
+				],
 				['wrap', { key: 'propInsert', open: 'SET {', content: ['propInsert'] }],
-				['wrap', {	key: recordUpdate, open: `${recordUpdate} := (`,	content: ['action', 'filter', 'propInsert'] }],
-				
-        // return inserted records
+				[
+					'wrap',
+					{
+						key: recordUpdate,
+						open: `${recordUpdate} := (`,
+						content: ['action', 'filter', 'propInsert']
+					}
+				],
+
+				// return inserted records
 				['action', { type: 'SELECT', table: recordsInsert }],
 				['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
-				
-        // script
+
+				// script
 				['with', { content: [recordsInsert, recordUpdate] }],
 				['script', { content: ['with', 'action', 'propsSelect'] }]
 			]
@@ -242,21 +261,27 @@ export class ScriptGroup {
 			return [
 				['action', { type: 'INSERT', table: query.getTableObjRoot() }],
 				['propsSave', { action: 'INSERT', props: query.rawDataObj.rawPropsSaveInsert }],
-				['wrap', {key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter', 'propsSave'] }],
+				[
+					'wrap',
+					{ key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter', 'propsSave'] }
+				],
 				...this.addScriptSavePost(query)
 			]
 		}
 	}
+
 	// prettier-ignore
 	addScriptSaveUpdate(query: Query): [string, DataRecord?][] {
 		return [
 			['action', { type: 'UPDATE', table: query.getTableObjRoot() }],
 			['filter', { exprFilter: `.id = <uuid>item['id']` }],
 			['propsSave', { action: 'UPDATE', props: query.rawDataObj.rawPropsSaveUpdate }],
-			['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter', 'propsSave'] }],
+			['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter', 'propsSave'] }
+			],
 			...this.addScriptSavePost(query)
 		]
 	}
+
 	addScriptSavePost(query: Query): [string, DataRecord?][] {
 		return [
 			['data'],
@@ -267,6 +292,38 @@ export class ScriptGroup {
 			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
 			['script', { content: ['with', 'action', 'propsSelect'] }]
 		]
+	}
+
+	addScriptSaveSelect(query: Query, queryData: TokenApiQueryData) {
+		const clazz = 'ScriptGroup.addScriptSaveSelect'
+		const field = required(query.field, clazz, 'query.field')
+		const parms = queryData.getParms()
+
+		return this.addScript(query, queryData, ScriptExePost.formatData, [
+			// sub-table
+			['action', { type: 'SELECT', table: field.embedTable.object }],
+			['filter', { exprFilter: `.id IN <parms,uuidlist,listRecordIdSelected>` }],
+			['wrap', { key: 'select', open: `:= (`, content: ['action', 'filter'] }],
+
+			// embed-field
+			['setValue', { key: 'fieldName', value: `${parms.embedFieldName}` }],
+			['wrap', { key: 'set', open: `SET {`, content: ['fieldName', 'select'] }],
+
+			// primary-table
+			['action', { type: 'UPDATE', table: field.parentTable.object }],
+			['filter', { exprFilter: `.id = <parms,uuid,listRecordIdCurrent>` }],
+
+			// Records
+			['wrap', { key: 'records', open: 'WITH Records := (', content: ['action', 'filter', 'set'] }],
+
+			// select Records
+			['action', { type: 'SELECT', table: field.embedTable.object }],
+			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
+			['filter', { exprFilter: `.id IN <parms,uuidlist,listRecordIdSelected>` }],
+
+			// script
+			['script', { content: ['records', 'action', 'propsSelect', 'filter'] }]
+		])
 	}
 }
 
@@ -436,7 +493,14 @@ export class Script {
 		return item
 	}
 
-	evalExpr() {
+	evalExpr(dataRoot: DataObjData) {
+		if (this.query.field && dataRoot.cardinality === DataObjCardinality.detail) {
+			const listRecordIdCurrent = dataRoot.rowsRetrieved.getDetailRecordValue('id')
+			this.queryData?.dataTab?.parmsValues.valueSet(
+				ParmsObjType.listRecordIdCurrent,
+				listRecordIdCurrent
+			)
+		}
 		this.script = evalExpr(this.script, this.queryData)
 	}
 }

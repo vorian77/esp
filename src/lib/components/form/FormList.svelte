@@ -3,9 +3,13 @@
 	import {
 		DataObj,
 		DataObjData,
+		DataObjEmbedType,
 		DataObjMode,
 		DataObjSort,
 		DataObjSortItem,
+		ParmsObjType,
+		ParmsUser,
+		ParmsUserParmType,
 		required,
 		strRequired
 	} from '$utils/types'
@@ -42,56 +46,58 @@
 	$: load(dataObjData)
 
 	function load(data: DataObjData) {
-		if (!dataObj.isListEmbedded) dataObj.objData = data
+		if (!dataObj.isListEmbed) dataObj.objData = data
+
+		if (isSelect) {
+			const selectedRecords = state.parmsState.valueGet(ParmsObjType.listRecordIdSelected) || []
+			dataObj.dataRecordsDisplay.forEach((record) => {
+				record.selected = selectedRecords.includes(record.id)
+			})
+			isSelectMultiAll = recordsSelectAll(dataObj.dataRecordsDisplay)
+		}
 
 		fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
 
 		// listEdit
 		if (dataObj.raw.isListEdit) {
-			const presetRows = dataObj.data.dataRows.filter((row) => row.record.id.startsWith('preset_'))
+			const presetRows = dataObj.data.rowsRetrieved
+				.getRows()
+				.filter((row) => row.record.id.startsWith('preset_'))
 			presetRows.forEach((row) => {
 				dataObj.dataFieldsChanged.valueSet(row.record.id + '_new', 'id', true)
 			})
 		}
 
 		// filter
-		listFilterText = state.dataObjParms.parmGet(dataObj.raw.id, 'listFilterText') || ''
+		listFilterText = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listFilterText) || ''
 		onFilter(listFilterText)
 
 		// sort
-		listSortObj = state.dataObjParms.parmGet(dataObj.raw.id, 'listSortObj')
+		listSortObj = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listSortObj)
 		if (!listSortObj) {
 			listSortObj = sortInit(fieldsDisplayable)
-			state.dataObjParms.parmSet(dataObj.raw.id, 'listSortObj', listSortObj)
+			state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSortObj, listSortObj)
 		}
 		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
 
-		if (state instanceof StateSurfaceModal) {
-			state.dataQuery.valueGetIdList().forEach((id) => onSelect(id))
-		}
-
-		if (!dataObj.isListEmbedded) {
-			state.setDataObjRoot(dataObj)
+		if (!dataObj.isListEmbed) {
+			state.setDataObjState(dataObj)
 			state = state.setStatus()
 		}
 	}
 
 	$: dragDisabled = !dataObj.modeActive(DataObjMode.ReorderOn)
 
-	$: if (state instanceof StateSurfaceModal) {
-		const selectedRecords = dataObj.dataRecordsDisplay.filter((r) => r.selected)
-		setMetaValue(
-			'listRecordIdList',
-			selectedRecords.map((r) => r.id)
-		)
-	}
-
 	function onFilter(filterText: string) {
-		dataObjData.syncFields(dataObj.dataRecordsDisplay, ['selected'])
+		dataObjData.rowsRetrieved.syncFields(dataObj.dataRecordsDisplay, ['selected'])
 		recordsFilter(filterText, dataObj, fieldsDisplayable)
 		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
 		isSelectMultiAll = recordsSelectAll(dataObj.dataRecordsDisplay)
-		state.dataObjParms.parmSet(dataObj.raw.id, 'listFilterText', filterText)
+		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listFilterText, filterText)
+		state.app.listParmSet(
+			ParmsObjType.listRecordIdList,
+			dataObj.dataRecordsDisplay.map((r: any) => r.id)
+		)
 	}
 
 	function onReorder(e: any) {
@@ -115,32 +121,25 @@
 	}
 
 	async function onRowClick(record: DataRecord, field: Field) {
-		const actions = dataObj.actionsField.filter((a) => a.isListRowAction)
-
-		if (dataObj.modeActive(DataObjMode.ReorderOn) || actions.length === 0 || dataObj.raw.isListEdit)
+		if (
+			dataObj.actionsFieldListRowActionIdx < 0 ||
+			dataObj.modeActive(DataObjMode.ReorderOn) ||
+			dataObj.raw.isListEdit ||
+			isSelect
+		) {
 			return
-
-		if (actions.length > 1) {
-			error(500, {
-				file: FILENAME,
-				function: 'FormList.onRowClick',
-				message: `More than 1 List Row Action defined for Data Object: ${dataObj.raw.name} `
-			})
 		}
 
-		state.dataQuery.dataSave({
-			listRecordIdList: dataObj.dataRecordsDisplay.map((r: any) => r.id),
-			listRecordIdCurrent: record.id
-		})
-
-		actions[0].proxyExe({ dataObj, field, record, state })
+		const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
+		state.app.listParmSet(ParmsObjType.listRecordIdCurrent, record.id)
+		action.trigger(state, dataObj)
 	}
 
 	function onSelect(id: string) {
 		const row = dataObj.dataRecordsDisplay.findIndex((record) => record.id === id)
-		if (row !== -1)
+		if (row > -1) {
 			dataObj.dataRecordsDisplay[row].selected = !dataObj.dataRecordsDisplay[row].selected
-
+		}
 		if (!isSelectMulti) {
 			dataObj.dataRecordsDisplay = dataObj.dataRecordsDisplay.map((r) => {
 				r.selected = r.id === id ? r.selected : false
@@ -148,6 +147,10 @@
 			})
 		}
 		isSelectMultiAll = recordsSelectAll(dataObj.dataRecordsDisplay)
+		state.parmsState.valueSet(
+			ParmsObjType.listRecordIdSelected,
+			dataObj.dataRecordsDisplay.filter((r: any) => r.selected).map((r: any) => r.id)
+		)
 	}
 	function onSelectAll() {
 		isSelectMultiAll = !isSelectMultiAll
@@ -155,16 +158,15 @@
 			r.selected = isSelectMultiAll
 			return r
 		})
+		state.parmsState.valueSet(
+			ParmsObjType.listRecordIdSelected,
+			dataObj.dataRecordsDisplay.filter((r: any) => r.selected).map((r: any) => r.id)
+		)
 	}
 	function onSort(newSortObj: DataObjSortItem) {
 		listSortObj = new DataObjSort(newSortObj)
 		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
-		state.dataObjParms.parmSet(dataObj.raw.id, 'listSortObj', listSortObj)
-	}
-
-	function setMetaValue(key: string, value: any) {
-		state.dataQuery.valueSet(key, value)
-		state = state
+		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSortObj, listSortObj)
 	}
 </script>
 
@@ -189,6 +191,11 @@
 		/>
 		{#if dataObj.dataRecordsDisplay}
 			<span class="ml-4">Rows: {dataObj.dataRecordsDisplay.length}</span>
+		{/if}
+		{#if isSelect}
+			<span class="ml-0"
+				>Selected: {dataObj.dataRecordsDisplay.filter((r) => r.selected).length}</span
+			>
 		{/if}
 	</div>
 {/if}

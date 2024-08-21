@@ -170,7 +170,7 @@ export function getUUIDValues(valueRaw?: any) {
 
 export function getValRaw(exprParms: ExprParms) {
 	const sourceKey = strRequired(exprParms.key, `${FILENAME}.getValRaw`, 'sourceKey')
-	const funct = `getValSave.getValRaw: expr: ${exprParms.expr}; source: ${exprParms.codeDataSourceExpr}; sourceKey: ${sourceKey}`
+	const funct = `getValSave.getValRaw: source: ${exprParms.codeDataSourceExpr}; sourceKey: ${sourceKey}; expr: ${exprParms.expr}`
 
 	switch (exprParms.codeDataSourceExpr) {
 		case ExprSource.calc:
@@ -183,8 +183,8 @@ export function getValRaw(exprParms: ExprParms) {
 			}
 
 		case ExprSource.dataSaveDetail:
-			if (exprParms.queryData.dataSave)
-				return exprParms.queryData.dataSave.getDetailRecordValue(sourceKey)
+			if (exprParms.queryData?.dataTab?.rowsSave)
+				return exprParms.queryData.dataTab.rowsSave.getDetailRecordValue(sourceKey)
 			error(500, {
 				file: FILENAME,
 				function: funct,
@@ -195,7 +195,7 @@ export function getValRaw(exprParms: ExprParms) {
 			return sourceKey
 
 		case ExprSource.parms:
-			return getValue(ExprSource.parms, exprParms.queryData.parms, sourceKey)
+			return getValue(ExprSource.parms, exprParms.queryData.getParms(), sourceKey)
 
 		case ExprSource.record:
 			return getValue(ExprSource.record, exprParms.queryData.record, sourceKey)
@@ -255,7 +255,7 @@ export function getValRaw(exprParms: ExprParms) {
 		error(500, {
 			file: FILENAME,
 			function: funct,
-			message: `Value null or not found - source: ${source}; data: ${JSON.stringify(data)}.`
+			message: `Value null or not found - data: ${JSON.stringify(data)}`
 		})
 	}
 }

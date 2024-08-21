@@ -12,14 +12,14 @@ export async function qaExecuteUserUpdate(
 	queryType: TokenApiQueryType,
 	queryTiming: DataObjActionQueryTriggerTiming,
 	table: string | undefined,
-	dataSave: DataObjData,
+	dataTab: DataObjData,
 	parms: DataRecord
 ): Promise<DataObjData> {
 	if (
-		dataSave.getDetailStatusRecordIs(DataRecordStatus.update) &&
+		dataTab.rowsSave.getDetailStatusRecordIs(DataRecordStatus.update) &&
 		queryTiming === DataObjActionQueryTriggerTiming.post
 	) {
 		state.resetUser(false)
 	}
-	return dataSave
+	return dataTab
 }

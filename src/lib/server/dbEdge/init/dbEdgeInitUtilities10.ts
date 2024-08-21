@@ -147,6 +147,7 @@ export async function nodeObjHeaders(params: any) {
 				header: e.cast(e.str, i[3]),
 				orderDefine: e.cast(e.int64, i[4]),
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', e.cast(e.str, i[5]))),
+				isHideRowManager: e.cast(e.bool, false),
 				createdBy: CREATOR,
 				modifiedBy: CREATOR
 			})
@@ -171,7 +172,8 @@ export async function nodeObjPages(params: any) {
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', e.cast(e.str, i[5]))),
 				page: e.cast(e.str, i[6]),
 				createdBy: CREATOR,
-				modifiedBy: CREATOR
+				modifiedBy: CREATOR,
+				isHideRowManager: e.cast(e.bool, false)
 			})
 		})
 	})
@@ -192,7 +194,8 @@ export async function nodeObjPrograms(params: any) {
 				orderDefine: e.cast(e.int64, i[3]),
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', e.cast(e.str, i[4]))),
 				createdBy: CREATOR,
-				modifiedBy: CREATOR
+				modifiedBy: CREATOR,
+				isHideRowManager: e.cast(e.bool, false)
 			})
 		})
 	})

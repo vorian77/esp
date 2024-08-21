@@ -1,6 +1,7 @@
 import { App, AppLevelTab } from '$comps/app/types.app'
-import { State } from '$comps/app/types.appState'
+import { State, StateSurfaceModal } from '$comps/app/types.appState'
 import {
+	arrayOfClasses,
 	debug,
 	DataObj,
 	type DataRecord,
@@ -9,10 +10,12 @@ import {
 	DataRecordStatus,
 	getArray,
 	memberOfEnum,
+	ParmsValuesState,
+	ParmsObjType,
+	required,
 	ResponseBody,
 	strRequired,
-	valueOrDefault,
-	arrayOfClasses
+	valueOrDefault
 } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import {
@@ -30,38 +33,36 @@ export async function query(
 	state: State,
 	tab: AppLevelTab | undefined,
 	queryType: TokenApiQueryType,
-	app: App | undefined = undefined
+	app?: App
 ) {
 	if (!tab) return false
-	let { dataTree, dataSave, parms } = queryDataPre(queryType, app)
-	const queryData = new TokenApiQueryData({ dataSave, parms, tree: dataTree })
+	let { dataTab, dataTree } = queryDataPre(state, tab, queryType, app)
+	const queryData = new TokenApiQueryData({ dataTab, tree: dataTree })
 	let table = tab.getTable() // table will be undefined prior to retrieve
 
 	// query actions - pre
-	if (dataSave && tab.dataObj) {
-		dataSave = await queryExecuteActions(
+	if (tab.dataObj && dataTab.rowsSave.getRows().length > 0) {
+		dataTab = await queryExecuteActions(
 			state,
 			tab.dataObj.actionsQueryFunctions,
 			queryType,
 			DataObjActionQueryTriggerTiming.pre,
 			table,
-			dataSave
+			dataTab
 		)
 	}
 
-	const result: ResponseBody = await queryExecute(tab.updateDataObjSource(), queryType, queryData)
+	const result: ResponseBody = await queryExecute(tab.getDataObjSource(), queryType, queryData)
 	if (!result.success) return false
 
 	// successful
-	const dataResult = DataObjData.load(result.data.dataObjData)
-
-	tab.rawDataObj = result.data.rawDataObj
-	tab.dataObj = await DataObj.init(state, result.data.rawDataObj, dataResult)
+	let dataResult = DataObjData.load(result.data.dataObjData)
+	tab.dataObj = await DataObj.init(state, dataResult)
 	table = tab.getTable()
 
+	// query actions - post
 	if (tab.dataObj) {
-		// query actions - post
-		await queryExecuteActions(
+		dataResult = await queryExecuteActions(
 			state,
 			tab.dataObj.actionsQueryFunctions,
 			queryType,
@@ -69,22 +70,23 @@ export async function query(
 			table,
 			dataResult
 		)
-
 		tab.data = dataResult
 		tab.isRetrieved = true
 		if (tab.dataObj.raw.codeCardinality === DataObjCardinality.list) {
-			tab.metaData.valueSetList(tab.data.dataRows)
+			tab.data.parmsState.valueSetList(
+				ParmsObjType.listRecordIdList,
+				tab.data.rowsRetrieved.getRows()
+			)
 		}
 	}
-
 	return true
 }
 
-function queryDataPre(queryType: TokenApiQueryType, app: App | undefined = undefined) {
+function queryDataPre(state: State, tab: AppLevelTab, queryType: TokenApiQueryType, app?: App) {
 	let dataTree = new TokenApiQueryDataTree()
-	let dataSave: DataObjData | undefined = undefined
-	let parms: DataRecord = {}
+	const clazz = `${FILENAME}.queryDataPre`
 
+	// dataTree
 	if (app) {
 		let offset = 0
 		switch (queryType) {
@@ -96,13 +98,11 @@ function queryDataPre(queryType: TokenApiQueryType, app: App | undefined = undef
 				break
 			case TokenApiQueryType.save:
 				offset = 1
-				const currTab = app.getCurrTab()
-				if (currTab) dataSave = currTab.data
 				break
 			default:
 				error(500, {
 					file: FILENAME,
-					function: 'queryDataPre',
+					function: clazz,
 					message: `No case defined for queryType: ${queryType}`
 				})
 		}
@@ -110,32 +110,25 @@ function queryDataPre(queryType: TokenApiQueryType, app: App | undefined = undef
 		for (let i = 0; i < app.levels.length - offset; i++) {
 			const level = app.levels[i]
 			const currTab = level.getCurrTab()
-			const dataObj = currTab.dataObj
-			if (dataObj) {
-				const table = dataObj.rootTable?.name
-				const record =
-					dataObj.raw.codeCardinality === DataObjCardinality.list
-						? currTab.listGetDataRecord()
-						: currTab.detailGetData()
-				dataTree.upsertData(table, record)
-			}
-		}
-
-		// parms
-		parms = app.getParms()
-
-		// listRecordId's
-		const levelCount = app.levels.length
-		const levelGrandParent = levelCount - 1 > 0 ? app.levels[levelCount - 3] : undefined
-		if (levelGrandParent) {
-			const tab = levelGrandParent.getCurrTab()
-			if (tab && tab.dataObj?.raw.codeCardinality === DataObjCardinality.list) {
-				parms['listRecordIdParent'] = tab.listGetDataRecord().id
-				parms['listRecordIdCurrent'] = tab.listGetDataRecord().id
-			}
+			const dataObj = required(currTab.dataObj, clazz, 'currTab.dataObj')
+			const table = required(dataObj.rootTable?.name, 'rootTable', 'DataObj')
+			const record = currTab.listGetDataRecord()
+			dataTree.upsertData(table, record)
 		}
 	}
-	return { dataTree, dataSave, parms }
+
+	// dataTab
+	const dataTab = tab.data ? tab.data : new DataObjData()
+	dataTab.parmsValues.dataUpdate(state.parmsState.valueGetAll())
+	const parentTab = app?.getCurrTabParentTab()
+	if (parentTab && parentTab.data) dataTab.parmsValues.dataUpdate(parentTab.dataObj.data.getParms())
+
+	// rootRecordId
+	if (state instanceof StateSurfaceModal) {
+		dataTab.parmsValues.valueSet(ParmsObjType.rootRecordId, state.rootRecordId)
+	}
+
+	return { dataTree, dataTab }
 }
 
 export async function queryExecute(

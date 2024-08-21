@@ -1,7 +1,7 @@
 import { Field, FieldAlignment, RawFieldProps } from '$comps/form/field'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
-import { DataObj, DataObjData, type DataRecord, ResponseBody } from '$utils/types'
+import { DataObj, DataObjData, type DataRecord, ParmsObjType, ResponseBody } from '$utils/types'
 import { State } from '$comps/app/types.appState'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiQueryData } from '$utils/types.token'
@@ -25,7 +25,7 @@ export class FieldParm extends Field {
 
 	async configParmItems(props: RawFieldProps) {
 		let fields: Field[] = []
-		for (const dataRow of props.data.dataRows) {
+		for (const dataRow of props.data.rowsRetrieved.dataRows) {
 			fields.push(await this.configParmItemsInit(props.state, dataRow.record, fields, props.data))
 		}
 		return fields
@@ -52,11 +52,13 @@ export class FieldParm extends Field {
 		return await DataObj.initField(state, propParm, false, fields, data)
 	}
 	async configParmItemsData(props: RawFieldProps) {
-		const repUserId = props.state.dataQuery.valueGet('listRecordIdCurrent')
-		if (repUserId) {
+		const listRecordIdCurrent = props.data.parmsValues.valueGet(ParmsObjType.listRecordIdCurrent)
+		if (listRecordIdCurrent) {
+			const dataTab = new DataObjData()
+			dataTab.parmsValues.valueSet('listRecordIdCurrent', listRecordIdCurrent)
 			const result: ResponseBody = await apiFetch(
 				ApiFunction.dbEdgeGetRepParmItems,
-				new TokenApiQueryData({ parms: { repUserId } })
+				new TokenApiQueryData({ dataTab })
 			)
 			if (result.success) {
 				const items: Record<string, any> = result.data

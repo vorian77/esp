@@ -14,6 +14,7 @@
 		TokenAppModalReturnType
 	} from '$utils/types.token'
 	import Layout from '$comps/layout/BaseLayout.svelte'
+	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import { DataObj, DataObjCardinality, type DataRecord } from '$utils/types'
 	import Icon from '$comps/misc/Icon.svelte'
@@ -23,77 +24,10 @@
 
 	export let fp: FieldProps
 
-	$: state = fp.state
-	$: dataObj = fp.dataObj
-	$: dataRecord = fp.dataRecord
 	$: field = fp.field as FieldEmbedListSelect
-	$: fieldValue = fp.fieldValue
-	$: setFieldVal = fp.setFieldVal
 
-	let stateEmbed: State
-	let recordIdCurrent: string
-
-	$: {
-		if (dataRecord) {
-			let recordId = dataRecord['id'] || ''
-			if (recordId.startsWith('preset_')) recordId = ''
-			if (recordIdCurrent !== recordId) {
-				recordIdCurrent = recordId
-				setStateEmbed(fieldValue)
-			}
-		}
-	}
-
-	function setStateEmbed(ids: string[]) {
-		stateEmbed = new StateSurfaceEmbedField({
-			actionProxies: [
-				{ actionType: TokenAppDoActionFieldType.embedListSelect, proxy: openDialogProxy }
-			],
-			cardinality: DataObjCardinality.list,
-			dataObjSource: new TokenApiDbDataObjSource({ dataObjId: field.raw.dataObjListID }),
-			layoutComponent: StateLayoutComponentType.layoutContent,
-			layoutStyle: StateLayoutStyle.embeddedField,
-			parentDataObj: dataObj,
-			parentFieldName: field.colDO.propName,
-			parentRecordId: recordIdCurrent,
-			parentState: state,
-			parms: { $ListSelectDisplayIds: ids },
-			queryType: TokenApiQueryType.retrieve
-		})
-	}
 	function openDialogIcon() {
-		const action = stateEmbed.app
-			.getCurrLevelActions()
-			.find((action) => action.codeActionFieldType === TokenAppDoActionFieldType.embedListSelect)
-		if (action) action.proxyExe({ dataObj, field, state: stateEmbed })
-	}
-
-	function openDialogProxy(parms: any) {
-		openDialog()
-	}
-
-	function openDialog() {
-		state.openModalEmbed(
-			field.actionsFieldModal,
-			DataObjCardinality.list,
-			new TokenApiDbDataObjSource({
-				dataObjId: field.raw.dataObjListID
-			}),
-			new TokenApiDbDataObjSource({
-				dataObjId: field.raw.dataObjListID
-			}),
-			StateLayoutStyle.overlayModalSelect,
-			{ listRecordIdList: fieldValue },
-			TokenApiQueryType.retrieve,
-			fUpdate
-		)
-		function fUpdate(returnType: TokenAppModalReturnType, value: any = undefined) {
-			if (returnType === TokenAppModalReturnType.complete) {
-				value = value ? value.valueGetIdList() : []
-				setStateEmbed(value)
-				setFieldVal(field, value)
-			}
-		}
+		field.dataObj.actionsFieldTrigger(TokenAppDoActionFieldType.embedListSelect, fp.state)
 	}
 </script>
 
@@ -103,8 +37,13 @@
 	</button>
 </FormLabel>
 
-{#if stateEmbed}
-	<Layout state={stateEmbed} />
+{#if fp}
+	<div class="mt-4">
+		<LayoutContent
+			bind:state={fp.state}
+			dataObj={fp.field.dataObj}
+			dataObjData={fp.field.dataObj.data}
+			on:formCancelled
+		/>
+	</div>
 {/if}
-
-<!-- <DataViewer header="state.parms" data={stateDisplay.metaData.data} /> -->

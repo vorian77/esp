@@ -1,13 +1,13 @@
 <script lang="ts">
+	import { DataObj, DataObjMode, DataObjSaveMode, DataObjStatus } from '$utils/types'
 	import {
-		DataObj,
 		DataObjActionField,
 		DataObjActionFieldConfirm,
 		DataObjActionFieldTriggerEnable,
-		DataObjMode,
-		DataObjSaveMode,
-		DataObjStatus
-	} from '$utils/types'
+		DataObjActionFieldTriggerGroup,
+		DataObjActionFieldTriggerStatus,
+		DataObjActionFieldShow
+	} from '$comps/dataObj/types.dataObjActionField'
 	import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
 	import {
 		TokenAppDo,
@@ -30,7 +30,6 @@
 	let padding = ''
 	let objStatus: DataObjStatus
 
-	$: load()
 	$: {
 		objStatus = state.objStatus
 		load()
@@ -48,146 +47,26 @@
 					a.codeActionFieldType
 				) &&
 				state.objStatus.changed() &&
-				!dataObj.isListEmbedded
+				!dataObj.isListEmbed
 		)
 		padding = dataObj.actionsField.filter((a) => a.isShow).length > 0 ? 'ml-4' : ''
 	}
 
 	let isTriggeredEnable = function (action: DataObjActionField) {
-		const tg = new TriggeredGroup()
-		tg.addStatus(action.codeActionFieldTriggerEnable, true)
-		const isTriggered = tg.isTriggered()
-		return isTriggered
+		const tg = new DataObjActionFieldTriggerGroup()
+		tg.addStatus(state, dataObj, action.codeActionFieldTriggerEnable, true)
+		return tg.isTriggered()
 	}
 	let isTriggeredShow = function (action: DataObjActionField) {
-		const tg = new TriggeredGroup()
+		const tg = new DataObjActionFieldTriggerGroup()
 		action.actionFieldShows.forEach((show) => {
-			tg.addStatus(show.codeTriggerShow, show.isRequired)
+			tg.addStatus(state, dataObj, show.codeTriggerShow, show.isRequired)
 		})
 		return tg.isTriggered()
 	}
 
-	function getConfirm(confirms: DataObjActionFieldConfirm[]) {
-		switch (confirms.length) {
-			case 0:
-				return { confirmType: TokenAppDoActionConfirmType.none, confirm: undefined }
-			case 1:
-				return { confirmType: confirms[0].codeConfirmType, confirm: confirms[0].confirm }
-			default:
-				for (let i = 0; i < confirms.length; i++) {
-					const confirmAction = confirms[i]
-					const tg = new TriggeredGroup()
-					tg.addStatus(confirmAction.codeTriggerConfirmConditional, true)
-					if (tg.isTriggered()) {
-						const confirmType = confirmAction.codeConfirmType
-						const confirm = confirmAction.confirm
-						return { confirmType, confirm }
-					}
-				}
-				error(500, {
-					file: FILENAME,
-					function: 'getConfirm',
-					message: `No conditional confirm found for triggers: ${confirms.map((c) => c.codeTriggerConfirmConditional).join()}.`
-				})
-		}
-	}
-
 	async function onClick(action: DataObjActionField) {
-		const { confirmType, confirm } = getConfirm(action.actionFieldConfirms)
-		state.update({
-			packet: new StatePacket({
-				component: StatePacketComponent.dataObj,
-				confirm,
-				confirmType,
-				token: new TokenAppDo({
-					actionType: action.codeActionFieldType,
-					dataObj,
-					state
-				})
-			})
-		})
-	}
-	export class TriggeredGroup {
-		statuses: TriggeredStatus[] = []
-		constructor() {}
-
-		addStatus(trigger: DataObjActionFieldTriggerEnable, isRequired: boolean) {
-			let isTriggered = false
-			let rowCount: number
-
-			switch (trigger) {
-				case DataObjActionFieldTriggerEnable.always:
-					isTriggered = true
-					break
-				case DataObjActionFieldTriggerEnable.listReorder:
-					isTriggered =
-						![null, undefined, ''].includes(dataObj.raw.listReorderColumn) &&
-						!dataObj.modeActive(DataObjMode.ReorderOn) &&
-						dataObj.data.dataRows.length > 1
-					break
-				case DataObjActionFieldTriggerEnable.listReorderCancel:
-					isTriggered =
-						![null, undefined, ''].includes(dataObj.raw.listReorderColumn) &&
-						dataObj.modeActive(DataObjMode.ReorderOn)
-					break
-				case DataObjActionFieldTriggerEnable.never:
-					isTriggered = false
-					break
-				case DataObjActionFieldTriggerEnable.notObjectChanged:
-					isTriggered = !state.objStatus.changed()
-					break
-				case DataObjActionFieldTriggerEnable.notReorder:
-					isTriggered = !dataObj.modeActive(DataObjMode.ReorderOn)
-					break
-				case DataObjActionFieldTriggerEnable.objectChanged:
-					isTriggered = state.objStatus.changed()
-					break
-				case DataObjActionFieldTriggerEnable.objectValidToSave:
-					isTriggered = state.objStatus.valid()
-					break
-				case DataObjActionFieldTriggerEnable.parentObjectSaved:
-					isTriggered = dataObj.modeActive(DataObjMode.ParentObjectSaved)
-					break
-				case DataObjActionFieldTriggerEnable.rootDataObj:
-					isTriggered = !dataObj.isListEmbedded
-					break
-				case DataObjActionFieldTriggerEnable.saveModeInsert:
-					isTriggered = dataObj.saveMode === DataObjSaveMode.insert
-					break
-				case DataObjActionFieldTriggerEnable.saveModeUpdate:
-					isTriggered = dataObj.saveMode === DataObjSaveMode.update
-					break
-				default:
-					error(500, {
-						file: FILENAME,
-						function: 'TriggeredGroup.addStatus',
-						message: `No case definded for trigger: ${trigger}.`
-					})
-			}
-			this.statuses.push(new TriggeredStatus(trigger, isTriggered, isRequired))
-		}
-		isTriggered() {
-			const someRequiredNotTriggered = this.statuses.some((s) => s.isRequired && !s.isTriggered)
-			const notRequiredCount = this.statuses.filter((s) => !s.isRequired).length
-			const optionalIsTriggered =
-				this.statuses.filter((s) => !s.isRequired).length === 0 ||
-				this.statuses.some((s) => !s.isRequired && s.isTriggered)
-			return !someRequiredNotTriggered && optionalIsTriggered
-		}
-	}
-	class TriggeredStatus {
-		isTriggered: boolean
-		isRequired: boolean
-		trigger: DataObjActionFieldTriggerEnable
-		constructor(
-			trigger: DataObjActionFieldTriggerEnable,
-			isTriggered: boolean,
-			isRequired: boolean
-		) {
-			this.isTriggered = isTriggered
-			this.isRequired = isRequired
-			this.trigger = trigger
-		}
+		await action.trigger(state, dataObj)
 	}
 </script>
 
