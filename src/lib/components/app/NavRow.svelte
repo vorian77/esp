@@ -8,6 +8,13 @@
 	export let state: State
 	export let rowStatus: AppLevelRowStatus | undefined
 
+	let isHideRowManager
+
+	$: {
+		const currTab = state.app.getCurrTab()
+		isHideRowManager = currTab ? currTab?.isHideRowManager : false
+	}
+
 	async function onChange(rowAction: AppRowActionType) {
 		state.update({
 			packet: new StatePacket({
@@ -19,9 +26,7 @@
 	}
 </script>
 
-<!-- <DataViewer header="rowStatus" data={rowStatus} /> -->
-
-{#if rowStatus && rowStatus.show}
+{#if rowStatus && rowStatus.show && !isHideRowManager}
 	<span style:cursor="pointer">
 		<div class="flex">
 			<div class={rowStatus.rowCurrentDisplay === 1 ? 'invisible' : ''}>
