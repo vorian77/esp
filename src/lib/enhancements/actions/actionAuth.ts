@@ -103,7 +103,7 @@ export default async function action(state: State, field: FieldCustomAction, dat
 			new TokenApiQuery(
 				TokenApiQueryType.expression,
 				new TokenApiDbDataObjSource({ dataObjName }),
-				new TokenApiQueryData({ parms: data })
+				new TokenApiQueryData({ record: data })
 			)
 		)
 

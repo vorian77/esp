@@ -207,8 +207,8 @@ async function initDataObjLogin() {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		exprObject: `WITH 
-		userName := <parms,str,userName>,
-		password := <parms,str,password>,
+		userName := <record,str,userName>,
+		password := <record,str,password>,
 		SELECT sys_user::SysUser { userId := .id }
 		FILTER .userName = userName and .password = password 
 		`,
@@ -270,8 +270,8 @@ async function initDataObjResetPasswordAccount() {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		exprObject: `WITH
-		userName := <parms,str,userName>,
-		password := <parms,str,password>,
+		userName := <record,str,userName>,
+		password := <record,str,password>,
 		user := (
 			UPDATE sys_user::SysUser 
 			FILTER .userName = userName
@@ -337,7 +337,7 @@ async function initDataObjResetPasswordLogin() {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		exprObject: `WITH
-		userName := <parms,str,userName>,
+		userName := <record,str,userName>,
 		password := <parms,str,password>,
 		user := (
 			UPDATE sys_user::SysUser 
@@ -482,10 +482,10 @@ async function initDataObjSignup() {
 		exprObject: `WITH 
 		orgName := <system,str,org_name>,
 		org := (SELECT sys_core::SysOrg FILTER .name = orgName),
-		userName := <parms,str,userName>,
-		password := <parms,str,password>,
-		firstName := <parms,str,firstName>,
-		lastName := <parms,str,lastName>,
+		userName := <record,str,userName>,
+		password := <record,str,password>,
+		firstName := <record,str,firstName>,
+		lastName := <record,str,lastName>,
 		person := (SELECT sys_user::SysUser {_id := .person.id} FILTER .userName = userName),
 		user := (
 			INSERT sys_user::SysUser {

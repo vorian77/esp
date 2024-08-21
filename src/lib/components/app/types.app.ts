@@ -211,7 +211,8 @@ export class App {
 				new AppLevelTab({
 					data: token.queryData.dataTab,
 					dataObjSource: token.dataObjSource,
-					levelIdx: 0
+					levelIdx: 0,
+					tabIdx: 0
 				})
 			])
 		)
