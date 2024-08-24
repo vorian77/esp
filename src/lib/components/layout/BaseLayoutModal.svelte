@@ -39,12 +39,14 @@
 				if ($storeModal[0]?.response) {
 					$storeModal[0].response(new TokenAppModalReturn(TokenAppModalReturnType.complete, []))
 				}
+				dropEmbedResources()
 				storeModal.close()
 			}
 		}
 	}
 
 	async function onFooterActionClick(action: DataObjActionField) {
+		dropEmbedResources()
 		switch (action.codeActionFieldType) {
 			case TokenAppDoActionFieldType.dialogCancel:
 				if ($storeModal[0].response)
@@ -69,6 +71,14 @@
 					message: `No case defined for DataObjAction: ${action.codeActionFieldType} `
 				})
 		}
+	}
+	function dropEmbedResources() {
+		state.app.levels = state.app.levels.filter((level) => !level.isModal)
+		state.app.levels.forEach((level) => {
+			level.tabs = level.tabs.filter((tab) => !tab.isModal)
+		})
+		const idxLevel = state.app.levels.length - 1
+		if (idxLevel >= 0) state.app.levels[idxLevel].tabIdxRestore()
 	}
 </script>
 

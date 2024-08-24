@@ -419,7 +419,7 @@ async function initFieldListConfigDataObjActionQueryParm() {
 			},
 			{
 				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
+				columnName: 'custom_row_end',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50
@@ -723,7 +723,6 @@ async function initFieldListConfigDataObjActionFieldGroupItem() {
 				orderDefine: 10
 			},
 			{
-				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'action',
 				isDisplayable: true,
@@ -737,7 +736,7 @@ async function initFieldListConfigDataObjActionFieldGroupItem() {
 				columnName: 'orderDefine',
 				orderDefine: 30,
 				exprPreset: `(SELECT count((SELECT sys_core::SysDataObjActionFieldGroupItem
-					FILTER .id IN ((SELECT sys_core::SysDataObjActionFieldGroup FILTER .id = <parms,uuid,rootRecordId>).actionFieldItems.id))) + 1)`,
+					FILTER .id IN ((SELECT sys_core::SysDataObjActionFieldGroup FILTER .id = <parms,uuid,embedParentId>).actionFieldItems.id))) + 1)`,
 				indexTable: 0,
 				isDisplayable: false
 			},
@@ -993,7 +992,7 @@ async function initFieldListConfigDataObjColumnLink() {
 		actionFieldGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: `.id IN (SELECT sys_core::SysDataObjColumn FILTER .id = <parms,uuid,rootRecordId>).linkColumns.id`,
+		exprFilter: `.id IN (SELECT sys_core::SysDataObjColumn FILTER .id = <parms,uuid,embedParentId>).linkColumns.id`,
 		header: 'Data Object Link Columns',
 		listReorderColumn: 'orderDefine',
 		name: 'doflc_sys_admin_data_obj_column_link_list',

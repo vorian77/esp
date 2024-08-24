@@ -226,12 +226,10 @@ export class TokenApiQueryDataTreeLevel {
 
 export enum TokenApiQueryType {
 	expression = 'expression',
-	none = 'none',
 	preset = 'preset',
 	retrieve = 'retrieve',
 	retrieveRepParmItems = 'retrieveRepParmItems',
-	save = 'save',
-	saveSelect = 'saveSelect'
+	save = 'save'
 }
 
 export class TokenApiSendText extends Token {

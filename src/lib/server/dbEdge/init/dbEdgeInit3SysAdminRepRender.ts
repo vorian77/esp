@@ -22,14 +22,14 @@ async function initFieldEmbedListEditRepUserElement() {
 		codeComponent: 'FormList',
 		codeListEditPresetType: 'save',
 		exprFilter:
-			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdCurrent>).elements.id AND .element.isDisplayable',
+			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>).elements.id AND .element.isDisplayable',
 		exprOrder: '.orderDisplay',
 		header: 'Elements',
 		isListEdit: true,
 		isListHideSearch: true,
 		listEditPresetExpr: `
 			WITH 
-			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdCurrent>),
+			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>),
 			repVals := repUser.report.elements,
 			userVals := repUser.elements.element, 
 			newVals := (SELECT repVals EXCEPT userVals)
@@ -144,14 +144,14 @@ async function initFieldEmbedListEditRepUserParm() {
 		codeComponent: 'FormList',
 		codeListEditPresetType: 'save',
 		exprFilter:
-			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdCurrent>).parms.id',
+			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>).parms.id',
 		exprOrder: '.parm.orderDefine',
 		header: 'Parms',
 		isListEdit: true,
 		isListHideSearch: true,
 		listEditPresetExpr: `
 			WITH 
-			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdCurrent>),
+			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>),
 			repVals := repUser.report.parms,
 			userVals := repUser.parms.parm, 
 			newVals := (SELECT repVals EXCEPT userVals)
@@ -403,7 +403,7 @@ async function initRepConfig() {
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_rep::SysRepUser FILTER .id = <parms,uuid,listRecordIdCurrent>).report`,
+				linkExprSave: `(SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>).report`,
 				linkTable: 'SysRep'
 			},
 			{

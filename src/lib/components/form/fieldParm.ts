@@ -52,7 +52,7 @@ export class FieldParm extends Field {
 		return await DataObj.initField(state, propParm, false, fields, data)
 	}
 	async configParmItemsData(props: RawFieldProps) {
-		const listRecordIdCurrent = props.data.parmsValues.valueGet(ParmsObjType.listRecordIdCurrent)
+		const listRecordIdCurrent = props.data.parmsValues.valueGet('listRecordIdCurrent')
 		if (listRecordIdCurrent) {
 			const dataTab = new DataObjData()
 			dataTab.parmsValues.valueSet('listRecordIdCurrent', listRecordIdCurrent)

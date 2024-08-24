@@ -121,13 +121,16 @@ function queryDataPre(state: State, tab: AppLevelTab, queryType: TokenApiQueryTy
 	const dataTab = tab.data ? tab.data : new DataObjData()
 	dataTab.parmsValues.dataUpdate(state.parmsState.valueGetAll())
 	const parentTab = app?.getCurrTabParentTab()
-	if (parentTab && parentTab.data) dataTab.parmsValues.dataUpdate(parentTab.dataObj.data.getParms())
-
-	// rootRecordId
-	if (state instanceof StateSurfaceModal) {
-		dataTab.parmsValues.valueSet(ParmsObjType.rootRecordId, state.rootRecordId)
+	if (parentTab && parentTab.dataObj) {
+		dataTab.parmsValues.dataUpdate(parentTab.dataObj.data.getParms())
 	}
 
+	// embedParentId
+	if (state instanceof StateSurfaceModal) {
+		dataTab.parmsValues.valueSet(ParmsObjType.embedParentId, state.embedParentId)
+	}
+
+	console.log('appQuery.queryDataPre', { dataTree, dataTab })
 	return { dataTree, dataTab }
 }
 

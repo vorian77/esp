@@ -99,7 +99,6 @@
 						case TokenAppDoActionFieldType.detailDelete:
 							await state.app.saveDetail(state, token)
 							updateObjects(true, true)
-
 							break
 
 						case TokenAppDoActionFieldType.detailMigrate:
@@ -295,7 +294,7 @@
 				if (token instanceof TokenAppTab) {
 					currLevel = state.app.getCurrLevel()
 					if (currLevel) {
-						currLevel.setTabIdx(token.tabIdx)
+						currLevel.tabIdxSet(token.tabIdx)
 						currTab = currLevel.getCurrTab()
 						if (!currTab.isRetrieved) {
 							await query(state, currTab, TokenApiQueryType.retrieve, state.app)

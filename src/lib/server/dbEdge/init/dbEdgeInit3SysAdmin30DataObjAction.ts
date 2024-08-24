@@ -77,7 +77,6 @@ async function initDataObjActionsQuery() {
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
-
 				fieldEmbedListConfig: 'flec_data_obj_action_query_parm',
 				indexTable: 0,
 				linkTable: 'SysDataObjActionQueryParm'
@@ -88,7 +87,6 @@ async function initDataObjActionsQuery() {
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
-
 				fieldEmbedListConfig: 'flec_data_obj_action_query_trigger',
 				indexTable: 0,
 				linkTable: 'SysDataObjActionQueryTrigger'

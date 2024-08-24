@@ -72,12 +72,7 @@ async function processDataObjQuery(
 	scriptGroup: ScriptGroup,
 	returnData: DataObjData
 ) {
-	debug('processDataObjQuery-Script Build', queryType, query.rawDataObj.name)
-
 	switch (queryType) {
-		case TokenApiQueryType.none:
-			break
-
 		case TokenApiQueryType.preset:
 			returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
 			query.setProcessRow(
@@ -99,22 +94,12 @@ async function processDataObjQuery(
 
 		case TokenApiQueryType.save:
 			returnData.fields = queryData?.dataTab?.fields
+			debug('processDataObjQuery', 'save.field', query?.field?.embedFieldName || 'Parent')
 			query.setProcessRow(
 				new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataTab?.rowsSave)
 			)
 			scriptGroup.addScriptSave(query, queryData)
 			scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
-			break
-
-		case TokenApiQueryType.saveSelect:
-			returnData.fields = queryData?.dataTab?.fields
-			if (query.field) {
-				query.setProcessRow(
-					new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataTab?.rowsSave)
-				)
-				scriptGroup.addScriptSaveSelect(query, queryData)
-				scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
-			}
 			break
 
 		default:
@@ -130,14 +115,10 @@ async function processDataObjQuery(
 	if (EMBED_QUERY_TYPES.includes(queryType)) {
 		for (let i = 0; i < returnData.fields.length; i++) {
 			const field = returnData.fields[i]
-			const queryTypeEmbed =
-				queryType === TokenApiQueryType.save && field.embedType === DataObjEmbedType.listSelect
-					? TokenApiQueryType.saveSelect
-					: queryType
 			field.data.parmsValues.dataUpdate(parms)
 			queryData.dataTab = field.data
 			await processDataObjQuery(
-				queryTypeEmbed,
+				queryType,
 				new Query(field.data.rawDataObj, field),
 				queryData,
 				scriptGroup,

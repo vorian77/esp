@@ -73,18 +73,21 @@ export class App {
 			}
 		}
 
-		currLevel.setTabIdx(0)
+		currLevel.tabIdxSet(0)
 		return this
 	}
 	async addLevelModal(state: State, token: TokenAppModalEmbedField) {
 		// new level
-		const newLevel = new AppLevel([
-			new AppLevelTab({
-				dataObjSource: token.dataObjSourceModal,
-				levelIdx: 0,
-				tabIdx: 0
-			})
-		])
+		const newLevel = new AppLevel(
+			[
+				new AppLevelTab({
+					dataObjSource: token.dataObjSourceModal,
+					levelIdx: 0,
+					tabIdx: 0
+				})
+			],
+			true
+		)
 		if (newLevel) {
 			this.levels.push(newLevel)
 			await query(state, this.getCurrTab(), token.queryType, this)
@@ -93,7 +96,10 @@ export class App {
 	}
 	async addLevelNode(state: State, token: TokenAppDo, queryType: TokenApiQueryType) {
 		const currTab = this.getCurrTab()
-		if (currTab) currTab.data = token.dataObj.objData
+		if (currTab) {
+			currTab.data = token.dataObj.objData
+			currTab.data.parmsState.parmsUpdate(token.dataObj.data.parmsState)
+		}
 
 		// new level
 		const tabs: Array<AppLevelTab> = []
@@ -127,12 +133,29 @@ export class App {
 		return this
 	}
 
+	addTabModal(dataObjEmbed: DataObj) {
+		if (this.levels.length > 0) {
+			const idxLevel = this.levels.length - 1
+			const idxTab = this.levels[idxLevel].tabs.length
+			const newTab = new AppLevelTab({
+				data: dataObjEmbed.data,
+				dataObj: dataObjEmbed,
+				isModal: true,
+				levelIdx: idxTab,
+				tabIdx: idxTab
+			})
+			this.levels[idxLevel].tabIdxRestoreVal = this.levels[idxLevel].tabIdxCurrent
+			this.levels[idxLevel].tabIdxSet(idxTab)
+			this.levels[idxLevel].tabs.push(newTab)
+		}
+	}
+
 	async back(backCnt: number) {
 		for (let i = 0; i < backCnt; i++) {
 			const currLevel = this.getCurrLevel()
 			if (currLevel) {
-				if (currLevel.currTabIdx > 0) {
-					currLevel.setTabIdx(0, true)
+				if (currLevel.tabIdxCurrent > 0) {
+					currLevel.tabIdxSet(0, true)
 				} else {
 					this.levels.pop()
 				}
@@ -151,8 +174,10 @@ export class App {
 		this.levels.forEach((level, i) => {
 			const parentLevel = i > 0 ? this.levels[i - 1] : undefined
 			this.crumbs.push(new AppLevelCrumb(0, level.getCrumbLabel(0, parentLevel)))
-			if (level.currTabIdx > 0)
-				this.crumbs.push(new AppLevelCrumb(level.currTabIdx, level.getCrumbLabel(level.currTabIdx)))
+			if (level.tabIdxCurrent > 0)
+				this.crumbs.push(
+					new AppLevelCrumb(level.tabIdxCurrent, level.getCrumbLabel(level.tabIdxCurrent))
+				)
 		})
 		return this.crumbs
 	}
@@ -218,18 +243,6 @@ export class App {
 		)
 		await query(state, this.getCurrTab(), token.queryType, this)
 	}
-	initModal(dataObjEmbed: DataObj) {
-		this.levels.push(
-			new AppLevel([
-				new AppLevelTab({
-					data: dataObjEmbed.data,
-					dataObj: dataObjEmbed,
-					levelIdx: 0,
-					tabIdx: 0
-				})
-			])
-		)
-	}
 	async initNode(state: State, token: TokenAppTreeNode) {
 		const tabParms = App.getTabParmsNode(0, 0, token.node)
 		this.levels.push(new AppLevel([new AppLevelTab(tabParms)]))
@@ -242,10 +255,6 @@ export class App {
 			)
 	}
 
-	listParmSet(type: ParmsObjType, value: any) {
-		const currTab = this.getCurrTab()
-		if (currTab) currTab.data?.parmsState.valueSet(type, value)
-	}
 	popLevel() {
 		this.levels.pop()
 		return this
@@ -267,7 +276,9 @@ export class App {
 	async saveDetail(state: State, token: TokenAppDo) {
 		const currTab = this.getCurrTab()
 		if (currTab && currTab.data) {
-			const data = token.dataObj.objData
+			currTab.data = token.dataObj.objData
+			currTab.data.parmsState.parmsUpdate(token.dataObj.data.parmsState)
+
 			const tabParent = this.getCurrTabParentTab()
 			if (tabParent && tabParent.data) {
 				switch (token.actionType) {
@@ -287,7 +298,7 @@ export class App {
 								)
 							}
 						} else {
-							data.rowsSave.setDetailRecordStatus(DataRecordStatus.delete)
+							currTab.data.rowsSave.setDetailRecordStatus(DataRecordStatus.delete)
 							let recordIdOld = currTab.data.rowsRetrieved.getDetailRecordValue('id')
 							let recordIdNew = ''
 
@@ -297,7 +308,7 @@ export class App {
 								idx = idx === 0 ? 1 : idx - 1
 								recordIdNew = idList[idx]
 
-								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, data)))
+								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 									return this
 								await query(state, tabParent, TokenApiQueryType.retrieve, this)
 								tabParent.data.parmsState.listUpdate(
@@ -311,7 +322,7 @@ export class App {
 									tabParent.listGetDataRecord()
 								)
 							} else {
-								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, data)))
+								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 									return this
 								await query(state, tabParent, TokenApiQueryType.retrieve, this)
 								this.popLevel()
@@ -320,7 +331,8 @@ export class App {
 						break
 
 					case TokenAppDoActionFieldType.detailSave:
-						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, data))) return this
+						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
+							return this
 						await query(state, tabParent, TokenApiQueryType.retrieve, this)
 						tabParent.data.parmsState.listUpdate(
 							tabParent.data.rowsRetrieved.getRows(),
@@ -381,11 +393,14 @@ export class App {
 }
 
 export class AppLevel {
-	currTabIdx: number
+	isModal: boolean
+	tabIdxCurrent: number
+	tabIdxRestoreVal?: number
 	tabs: AppLevelTab[] = []
 	tabSet: number = 0
-	constructor(tabs: AppLevelTab[]) {
-		this.currTabIdx = 0
+	constructor(tabs: AppLevelTab[], isModal: boolean = false) {
+		this.isModal = isModal
+		this.tabIdxCurrent = 0
 		this.tabs = tabs
 	}
 	getCrumbLabel(tabIdx: number, parentLevel: AppLevel | undefined = undefined) {
@@ -394,7 +409,7 @@ export class AppLevel {
 		return label + labelId
 	}
 	getCurrTab() {
-		return this.tabs[this.currTabIdx]
+		return this.tabs[this.tabIdxCurrent]
 	}
 	getCurrTabRowCount() {
 		return this.getCurrTab().data?.rowsRetrieved.getRows().length || 0
@@ -405,8 +420,14 @@ export class AppLevel {
 			tab.reset()
 		})
 	}
-	setTabIdx(newIdx: number, setTabSet: boolean = false) {
-		this.currTabIdx = newIdx
+	tabIdxRestore() {
+		if (this.tabIdxRestoreVal !== undefined && this.tabIdxRestoreVal > -1) {
+			this.tabIdxSet(this.tabIdxRestoreVal)
+			this.tabIdxRestoreVal = undefined
+		}
+	}
+	tabIdxSet(newIdx: number, setTabSet: boolean = false) {
+		this.tabIdxCurrent = newIdx
 		if (setTabSet) this.tabSet = newIdx
 	}
 }
@@ -444,6 +465,7 @@ export class AppLevelTab {
 	dataObjSource: TokenApiDbDataObjSource
 	idx: number
 	isHideRowManager: boolean
+	isModal: boolean
 	isRetrieved: boolean = false
 	label: string
 	levelIdx: number
@@ -457,6 +479,7 @@ export class AppLevelTab {
 		this.dataObjSource = valueOrDefault(obj.dataObjSource, undefined)
 		this.idx = nbrRequired(obj.tabIdx, clazz, 'idx')
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
+		this.isModal = booleanOrFalse(obj.isModal, 'isModal')
 		this.label = valueOrDefault(obj.label, '')
 		this.levelIdx = nbrRequired(obj.levelIdx, clazz, 'levelIdx')
 		this.nodeId = valueOrDefault(obj.nodeId, '')

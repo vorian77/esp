@@ -94,7 +94,7 @@
 		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
 		isSelectMultiAll = recordsSelectAll(dataObj.dataRecordsDisplay)
 		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listFilterText, filterText)
-		state.app.listParmSet(
+		dataObj.data.parmsState.valueSet(
 			ParmsObjType.listRecordIdList,
 			dataObj.dataRecordsDisplay.map((r: any) => r.id)
 		)
@@ -131,7 +131,7 @@
 		}
 
 		const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
-		state.app.listParmSet(ParmsObjType.listRecordIdCurrent, record.id)
+		dataObj.data.parmsState.valueSet(ParmsObjType.listRecordIdCurrent, record.id)
 		action.trigger(state, dataObj)
 	}
 

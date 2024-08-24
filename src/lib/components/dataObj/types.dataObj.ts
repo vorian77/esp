@@ -312,7 +312,13 @@ export class DataObj {
 		this.fields.forEach((field: Field) => {
 			if (field instanceof FieldEmbed && field.dataObj) {
 				const idx = this.data.fields.findIndex((f) => f.embedFieldName === field.colDO.propName)
-				if (idx > -1) this.data.fields[idx].data.rowsSave.setDataRows(setData(field.dataObj))
+				if (idx > -1) {
+					this.data.fields[idx].data.rowsSave.setDataRows(setData(field.dataObj))
+					this.data.fields[idx].data.parmsValues.valueSet(
+						ParmsObjType.embedParentId,
+						field.embedParentId
+					)
+				}
 			}
 		})
 
@@ -649,7 +655,7 @@ export class DataObjDataField {
 				const rawDataObj = await fGetRawDataObj(
 					new TokenApiDbDataObjSource({
 						dataObjId: embedDataObjId,
-						exprFilter: `.id IN (SELECT ${parentTable.object} FILTER .id = <parms,uuid,listRecordIdCurrent>).${embedFieldName}.id`
+						exprFilter: `.id IN (SELECT ${parentTable.object} FILTER .id = <tree,uuid,${parentTable.name}.id>).${embedFieldName}.id`
 					}),
 					queryData
 				)
@@ -1053,8 +1059,8 @@ export class ParmsValuesState extends ParmsValues {
 
 export enum ParmsObjType {
 	embedFieldName = 'embedFieldName',
+	embedParentId = 'embedParentId',
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listRecordIdList = 'listRecordIdList',
-	listRecordIdSelected = 'listRecordIdSelected',
-	rootRecordId = 'rootRecordId'
+	listRecordIdSelected = 'listRecordIdSelected'
 }

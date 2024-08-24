@@ -97,10 +97,18 @@ async function initOrg() {
 				orderDefine: 10
 			},
 			{
+				columnName: 'owner',
+				indexTable: 0,
+				isDisplayable: false,
+				linkExprSave: `(SELECT assert_single((SELECT sys_core::ObjRoot FILTER .name = '*ROOTOBJ*')))`,
+				linkTable: 'SysOrg',
+				orderDefine: 20
+			},
+			{
 				columnName: 'name',
 				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 0
 			},
 

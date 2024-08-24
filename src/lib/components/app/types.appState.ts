@@ -164,30 +164,31 @@ export class State {
 	) {
 		const clazz = `${FILENAME}.openModalEmbedListConfig`
 		const field: FieldEmbedListConfig = required(token.fieldEmbed, clazz, 'field')
-		const fieldDataObj = required(field.dataObj, clazz, 'fieldDataObj')
 		const rootTable = required(this?.dataObjState?.rootTable, clazz, 'rootTable')
+		const fieldDataObj = required(field.dataObj, clazz, 'fieldDataObj')
 
 		const state = new StateSurfaceModal({
 			actionsFieldDialog: field.actionsFieldModal,
+			app: this.app,
+			embedParentId: field.embedParentId,
 			embedType: DataObjEmbedType.listConfig,
 			layoutComponent: StateLayoutComponentType.layoutContent,
 			layoutStyle: StateLayoutStyle.overlayModalDetail,
-			parmsState: new ParmsValuesState(fieldDataObj.data.getParms()),
-			rootRecordId: field.rootRecordId,
+			parmsState: new ParmsValuesState(),
 			token: new TokenAppModalEmbedField({
 				dataObjSourceModal: new TokenApiDbDataObjSource({
 					dataObjId: field.raw.dataObjModalId,
 					parent: new RawDataObjParent({
 						_columnName: field.colDO.propName,
 						_columnIsMultiSelect: true,
-						_filterExpr: '.id = <parms,uuid,rootRecordId>',
+						_filterExpr: '.id = <parms,uuid,embedParentId>',
 						_table: rootTable
 					})
 				}),
 				queryType
 			})
 		})
-		state.app.initModal(fieldDataObj)
+		state.app.addTabModal(fieldDataObj)
 		await this.openModal(state, fModalCloseUpdate)
 	}
 
@@ -208,18 +209,18 @@ export class State {
 
 		const state = new StateSurfaceModal({
 			actionsFieldDialog: field.actionsFieldModal,
+			embedParentId: field.embedParentId,
 			embedType: DataObjEmbedType.listSelect,
 			layoutComponent: StateLayoutComponentType.layoutContent,
 			layoutStyle: StateLayoutStyle.overlayModalSelect,
 			parmsState,
-			rootRecordId: field.rootRecordId,
 			token: new TokenAppModalEmbedField({
 				dataObjSourceModal: new TokenApiDbDataObjSource({
 					dataObjId: field.raw.dataObjListID,
 					parent: new RawDataObjParent({
 						_columnName: field.colDO.propName,
 						_columnIsMultiSelect: field.colDO.colDB.isMultiSelect,
-						_filterExpr: '.id = <parms,uuid,rootRecordId>',
+						_filterExpr: '.id = <parms,uuid,embedParentId>',
 						_table: rootTable
 					})
 				}),
@@ -284,6 +285,7 @@ export class State {
 		if (this.updateFunction) this.updateFunction(this, obj, this.updateCallback)
 	}
 	updateProperties(obj: any) {
+		if (Object.hasOwn(obj, 'app')) this.app = obj.app
 		if (Object.hasOwn(obj, 'data')) this.data = obj.data
 		if (Object.hasOwn(obj, 'layoutComponent')) this.layoutComponent = obj.layoutComponent
 		if (Object.hasOwn(obj, 'layoutStyle')) this.layoutStyle = obj.layoutStyle
@@ -383,14 +385,15 @@ export class StateSurfaceEmbedShell extends StateSurfaceEmbed {
 
 export class StateSurfaceModal extends State {
 	actionsFieldDialog: DataObjActionField[] = []
+	embedParentId: string
 	embedType: DataObjEmbedType
 	headerDialog: string
-	rootRecordId: string
 	constructor(obj: any) {
 		const clazz = 'StateSurfaceModal'
 		super(obj)
 		obj = valueOrDefault(obj, {})
 		this.actionsFieldDialog = valueOrDefault(obj.actionsFieldDialog, [])
+		this.embedParentId = strRequired(obj.embedParentId, clazz, 'embedParentId')
 		this.embedType = required(obj.embedType, clazz, 'embedType')
 		this.headerDialog = valueOrDefault(obj.headerDialog, '')
 		this.packet = new StatePacket({
@@ -398,7 +401,6 @@ export class StateSurfaceModal extends State {
 			confirmType: TokenAppDoActionConfirmType.none,
 			token: required(obj.token, clazz, 'token')
 		})
-		this.rootRecordId = strRequired(obj.rootRecordId, clazz, 'rootRecordId')
 	}
 }
 

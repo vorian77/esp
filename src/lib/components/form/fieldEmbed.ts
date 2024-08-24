@@ -20,13 +20,14 @@ const FILENAME = '$comps/form/fieldEmbed.ts'
 
 export class FieldEmbed extends Field {
 	dataObj?: DataObj
+	embedParentId?: string
 	embedType?: DataObjEmbedType
-	rootRecordId?: string
 	constructor(props: RawFieldProps) {
 		super(props)
 		const clazz = 'FieldEmbed'
 	}
 	async initDataObj(props: RawFieldProps, embedType: DataObjEmbedType) {
+		this.embedParentId = props.data.rowsRetrieved.getDetailRecordValue('id')
 		this.embedType = embedType
 		let dataField: DataObjDataField = props.data.getField(props.propRaw.propName)
 		if (dataField) {
@@ -40,7 +41,6 @@ export class FieldEmbed extends Field {
 				message: `No data field defined for FieldEmbed: ${props.propRaw.propName}`
 			})
 		}
-		this.rootRecordId = props.data.rowsRetrieved.getDetailRecordValue('id')
 	}
 	modeReset(): void {
 		if (this.dataObj) this.dataObj.modeReset()

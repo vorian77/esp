@@ -464,20 +464,17 @@ async function initDataObjColumn() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeFieldElement',
-				orderCrumb: 10,
+				columnName: 'isDisplayable',
 				isDisplayable: true,
 				isExcludeUpdate: true,
 				orderDisplay: 20,
 				orderDefine: 20,
-				indexTable: 0,
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'column',
-				orderCrumb: 20,
+				orderCrumb: 10,
 				isDisplayable: true,
 				isExcludeUpdate: true,
 				orderDisplay: 30,
@@ -487,9 +484,21 @@ async function initDataObjColumn() {
 				linkTable: 'SysColumn'
 			},
 			{
+				codeAccess: 'readOnly',
+				columnName: 'codeFieldElement',
+				orderCrumb: 20,
+				isDisplayable: true,
+				isExcludeUpdate: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
+			},
+			{
 				columnName: 'orderDefine',
 				orderSort: 10,
-				orderDefine: 40,
+				orderDefine: 50,
 				indexTable: 0,
 				isDisplayable: false
 			},
