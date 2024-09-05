@@ -22,7 +22,6 @@ import {
 	TokenApiQueryType,
 	TokenApiQuery,
 	TokenAppModalEmbedField,
-	TokenAppModalEmbedShell,
 	TokenAppDoActionFieldType,
 	TokenAppRow,
 	TokenAppTreeNode,
@@ -35,6 +34,7 @@ import {
 	FieldEmbedListEdit,
 	FieldEmbedListSelect
 } from '$comps/form/fieldEmbed'
+import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { query } from '$comps/app/types.appQuery'
 import { State, StateSurfaceEmbedShell } from '$comps/app/types.appState'
 import { error } from '@sveltejs/kit'
@@ -46,35 +46,35 @@ export class App {
 	levels: Array<AppLevel> = []
 	constructor() {}
 
-	async addLevelEmbedShell(state: StateSurfaceEmbedShell, token: TokenAppModalEmbedShell) {
-		// add level
+	async addLevelEmbedShell(fieldShell: FieldEmbedShell) {
+		// add root level
 		this.levels.push(new AppLevel([]))
 		const currLevel = this.levels[0]
+		currLevel.tabIdxSet(0)
 
 		// build tabs
-		const embeds = token.dataObjParent.fields.filter((f) =>
-			token.fieldEmbedShell.colDO.fieldEmbedShellFields.includes(f.colDO.propName)
-		)
 		const levelIdx = 0
-		for (let tabIdx = 0; tabIdx < embeds.length; tabIdx++) {
-			const field = embeds[tabIdx]
-			if (field instanceof FieldEmbedListEdit) {
-				currLevel.tabs.push(
-					new AppLevelTab({
-						dataObjId: field.raw.dataObjEmbedId,
-						label: field.colDO.label,
-						levelIdx,
-						tabIdx
-					})
-				)
-				const currTab = currLevel.tabs[currLevel.tabs.length - 1]
-				await query(state, currTab, TokenApiQueryType.retrieve, this)
-				if (currTab.dataObj) token.fieldEmbedShell.addDataObjEmbed(currTab.dataObj)
-			}
+		const EMBEB_FIELD_TYPES = [FieldEmbedListConfig, FieldEmbedListEdit, FieldEmbedListSelect]
+		for (let tabIdx = 0; tabIdx < fieldShell.fields.length; tabIdx++) {
+			const fieldEmbed = fieldShell.fields[tabIdx]
+			EMBEB_FIELD_TYPES.forEach((type) => {
+				if (fieldEmbed instanceof type) {
+					currLevel.tabs.push(
+						new AppLevelTab({
+							data: fieldEmbed?.dataObj?.objData,
+							dataObj: fieldEmbed?.dataObj,
+							isRetrieved: true,
+							label: fieldEmbed.colDO.label,
+							levelIdx,
+							tabIdx
+						})
+					)
+				}
+			})
 		}
 
-		currLevel.tabIdxSet(0)
-		return this
+		fieldShell.stateShell.objStatus = fieldShell.getStatusShell()
+		return fieldShell
 	}
 	async addLevelModal(state: State, token: TokenAppModalEmbedField) {
 		// new level
@@ -90,7 +90,7 @@ export class App {
 		)
 		if (newLevel) {
 			this.levels.push(newLevel)
-			await query(state, this.getCurrTab(), token.queryType, this)
+			await query(state, this.getCurrTab(), token.queryType)
 		}
 		return this
 	}
@@ -127,7 +127,7 @@ export class App {
 					)
 				})
 				this.levels.push(new AppLevel(tabs))
-				await query(state, this.getCurrTab(), queryType, this)
+				await query(state, this.getCurrTab(), queryType)
 			}
 		}
 		return this
@@ -241,12 +241,12 @@ export class App {
 				})
 			])
 		)
-		await query(state, this.getCurrTab(), token.queryType, this)
+		await query(state, this.getCurrTab(), token.queryType)
 	}
 	async initNode(state: State, token: TokenAppTreeNode) {
 		const tabParms = App.getTabParmsNode(0, 0, token.node)
 		this.levels.push(new AppLevel([new AppLevelTab(tabParms)]))
-		await query(state, this.getCurrTab(), TokenApiQueryType.retrieve, this)
+		await query(state, this.getCurrTab(), TokenApiQueryType.retrieve)
 		const currTab = this.getCurrTab()
 		if (currTab)
 			currTab.data?.parmsState.valueSetList(
@@ -310,7 +310,7 @@ export class App {
 
 								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 									return this
-								await query(state, tabParent, TokenApiQueryType.retrieve, this)
+								await query(state, tabParent, TokenApiQueryType.retrieve)
 								tabParent.data.parmsState.listUpdate(
 									tabParent.data.rowsRetrieved.getRows(),
 									recordIdOld,
@@ -324,7 +324,7 @@ export class App {
 							} else {
 								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 									return this
-								await query(state, tabParent, TokenApiQueryType.retrieve, this)
+								await query(state, tabParent, TokenApiQueryType.retrieve)
 								this.popLevel()
 							}
 						}
@@ -333,7 +333,7 @@ export class App {
 					case TokenAppDoActionFieldType.detailSave:
 						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 							return this
-						await query(state, tabParent, TokenApiQueryType.retrieve, this)
+						await query(state, tabParent, TokenApiQueryType.retrieve)
 						tabParent.data.parmsState.listUpdate(
 							tabParent.data.rowsRetrieved.getRows(),
 							currTab.data.rowsRetrieved.getDetailRecordValue('id')
@@ -355,7 +355,7 @@ export class App {
 		const currTab = this.getCurrTab()
 		if (currTab && currTab.dataObj) {
 			currTab.data = data
-			return await query(state, currTab, TokenApiQueryType.save, this)
+			return await query(state, currTab, TokenApiQueryType.save)
 		}
 	}
 	async tabDuplicate(state: State, token: TokenAppDo) {
@@ -373,7 +373,7 @@ export class App {
 			currLevel.resetTabs()
 			const currTab = currLevel.getCurrTab()
 			currTab.data = data
-			return await query(state, currTab, queryType, this)
+			return await query(state, currTab, queryType)
 		}
 	}
 	async tabQueryDetailDataRecord(
@@ -466,7 +466,7 @@ export class AppLevelTab {
 	idx: number
 	isHideRowManager: boolean
 	isModal: boolean
-	isRetrieved: boolean = false
+	isRetrieved: boolean
 	label: string
 	levelIdx: number
 	nodeId: string
@@ -479,6 +479,7 @@ export class AppLevelTab {
 		this.dataObjSource = valueOrDefault(obj.dataObjSource, undefined)
 		this.idx = nbrRequired(obj.tabIdx, clazz, 'idx')
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
+		this.isRetrieved = booleanOrFalse(obj.isRetrieved, 'isRetrieved')
 		this.isModal = booleanOrFalse(obj.isModal, 'isModal')
 		this.label = valueOrDefault(obj.label, '')
 		this.levelIdx = nbrRequired(obj.levelIdx, clazz, 'levelIdx')

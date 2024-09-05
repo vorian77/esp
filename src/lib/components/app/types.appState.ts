@@ -37,7 +37,7 @@ import {
 	FieldEmbedListEdit,
 	FieldEmbedListSelect
 } from '$comps/form/fieldEmbed'
-import { query } from '$comps/app/types.appQuery'
+import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { error } from '@sveltejs/kit'
@@ -274,7 +274,7 @@ export class State {
 			error(500, {
 				file: FILENAME,
 				function: 'State.setStatus',
-				message: 'No root data object defined.'
+				message: 'No state data object defined.'
 			})
 		}
 	}
@@ -334,13 +334,11 @@ export class StatePacket {
 export enum StatePacketComponent {
 	dataObj = 'dataObj',
 	embedField = 'embedField',
-	embedShell = 'embedShell',
 	modal = 'modal',
 	navBack = 'navBack',
 	navCrumbs = 'navCrumbs',
 	navHome = 'navHome',
 	navRow = 'navRow',
-	navTab = 'navTab',
 	navTree = 'navTree'
 }
 
@@ -370,16 +368,16 @@ export class StateSurfaceEmbedField extends StateSurfaceEmbed {
 }
 
 export class StateSurfaceEmbedShell extends StateSurfaceEmbed {
+	embedField: FieldEmbedShell
+	stateRoot: State
 	constructor(obj: any) {
 		const clazz = 'StateSurfaceEmbedShell'
 		super(obj)
 		obj = valueOrDefault(obj, {})
+		this.dataObjState = required(obj.dataObjState, clazz, 'dataObjState')
+		this.embedField = required(obj.embedField, clazz, 'embedField')
 		this.nodeType = NodeType.object
-		this.packet = new StatePacket({
-			component: StatePacketComponent.embedShell,
-			confirmType: TokenAppDoActionConfirmType.none,
-			token: required(obj.token, clazz, 'token')
-		})
+		this.stateRoot = required(obj.stateRoot, clazz, 'stateRoot')
 	}
 }
 

@@ -1,32 +1,14 @@
 import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
-import {
-	DataObj,
-	DataObjConfirm,
-	DataObjMode,
-	DataObjSaveMode,
-	DataObjStatus,
-	type DataRecord
-} from '$utils/types'
+import { DataObj, DataObjConfirm, DataObjMode, DataObjSaveMode } from '$utils/types'
 import {
 	TokenAppDo,
 	TokenAppDoActionConfirmType,
 	TokenAppDoActionFieldType
 } from '$utils/types.token'
-import {
-	arrayOfClasses,
-	getArray,
-	memberOfEnum,
-	memberOfEnumOrDefault,
-	required,
-	strOptional,
-	strRequired,
-	valueHasChanged,
-	valueOrDefault,
-	booleanRequired
-} from '$utils/types'
-import { Field, FieldAccess, FieldColor, FieldElement, RawFieldProps } from '$comps/form/field'
+import { memberOfEnum, valueOrDefault } from '$utils/types'
+import { FieldColor } from '$comps/form/field'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
-import { RawDataObj, RawDataObjActionField } from '$comps/dataObj/types.rawDataObj'
+import { RawDataObjActionField } from '$comps/dataObj/types.rawDataObj'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.dataObjActionField.ts'
@@ -161,7 +143,7 @@ export class DataObjActionFieldTriggerGroup {
 				isTriggered =
 					![null, undefined, ''].includes(dataObj.raw.listReorderColumn) &&
 					!dataObj.modeActive(DataObjMode.ReorderOn) &&
-					dataObj.data.rowsRetrieved.length > 1
+					dataObj.data.rowsRetrieved.dataRows.length > 1
 				break
 			case DataObjActionFieldTriggerEnable.listReorderCancel:
 				isTriggered =

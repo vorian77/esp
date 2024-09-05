@@ -1,22 +1,10 @@
 <script lang="ts">
 	import { FieldProps } from '$comps/form/field'
 	import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
-	import {
-		State,
-		StateLayoutStyle,
-		StateLayoutComponentType,
-		StateSurfaceEmbedField
-	} from '$comps/app/types.appState'
-	import {
-		TokenApiDbDataObjSource,
-		TokenApiQueryType,
-		TokenAppDoActionFieldType,
-		TokenAppModalReturnType
-	} from '$utils/types.token'
+	import { TokenAppDoActionFieldType } from '$utils/types.token'
 	import Layout from '$comps/layout/BaseLayout.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
-	import { DataObj, DataObjCardinality, type DataRecord } from '$utils/types'
 	import Icon from '$comps/misc/Icon.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 

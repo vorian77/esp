@@ -188,7 +188,7 @@ export class DataObj {
 
 		for (let i = 0; i < propsRaw.length; i++) {
 			const prop: RawDataObjPropDisplay = propsRaw[i]
-			fields.push(await DataObj.initField(state, prop, firstVisible === i, fields, data))
+			fields.push(await DataObj.initField(state, prop, firstVisible === i, fields, this, data))
 		}
 		return fields
 	}
@@ -198,10 +198,11 @@ export class DataObj {
 		propRaw: RawDataObjPropDisplay,
 		isFirstVisible: boolean,
 		fields: Field[],
+		dataObj: DataObj,
 		data: DataObjData
 	) {
 		let newField: Field
-		const props = new RawFieldProps(state, propRaw, isFirstVisible, fields, data)
+		const props = new RawFieldProps(state, propRaw, isFirstVisible, fields, dataObj, data)
 
 		const element = memberOfEnumOrDefault(
 			propRaw.rawFieldElement,

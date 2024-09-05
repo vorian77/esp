@@ -270,6 +270,7 @@ export class FieldProps {
 
 export class RawFieldProps {
 	data: DataObjData
+	dataObj: DataObj
 	fields: Field[]
 	isFirstVisible: boolean
 	propRaw: RawDataObjPropDisplay
@@ -279,9 +280,11 @@ export class RawFieldProps {
 		propRaw: RawDataObjPropDisplay,
 		isFirstVisible: boolean,
 		fields: Field[],
+		dataObj: DataObj,
 		data: DataObjData
 	) {
 		this.data = data
+		this.dataObj = dataObj
 		this.fields = fields
 		this.isFirstVisible = isFirstVisible
 		this.propRaw = propRaw

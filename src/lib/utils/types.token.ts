@@ -352,16 +352,7 @@ export class TokenAppModalEmbedField extends TokenApp {
 		this.queryType = required(obj.queryType, clazz, 'queryType')
 	}
 }
-export class TokenAppModalEmbedShell extends TokenApp {
-	dataObjParent: DataObj
-	fieldEmbedShell: FieldEmbedShell
-	constructor(obj: any) {
-		const clazz = 'TokenAppModalEmbedShell'
-		super()
-		this.dataObjParent = required(obj.dataObjParent, clazz, 'dataObjParent')
-		this.fieldEmbedShell = required(obj.fieldEmbedShell, clazz, 'fieldEmbedShell')
-	}
-}
+
 export class TokenAppModalReturn extends TokenApp {
 	type: TokenAppModalReturnType
 	data: any
@@ -394,13 +385,7 @@ export class TokenAppRow extends TokenApp {
 		this.rowAction = rowAction
 	}
 }
-export class TokenAppTab extends TokenApp {
-	tabIdx: number
-	constructor(tabIdx: number) {
-		super()
-		this.tabIdx = tabIdx
-	}
-}
+
 export class TokenAppTreeNode extends TokenApp {
 	node: Node
 	constructor(node: Node) {

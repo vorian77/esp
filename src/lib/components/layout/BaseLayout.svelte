@@ -7,7 +7,8 @@
 		StateSurfaceEmbed,
 		StateSurfaceModal,
 		StatePacket,
-		StatePacketComponent
+		StatePacketComponent,
+		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState'
 	import {
 		TokenApiDbDataObjSource,
@@ -19,11 +20,9 @@
 		TokenAppDoActionFieldType,
 		TokenAppDoActionConfirmType,
 		TokenAppModalEmbedField,
-		TokenAppModalEmbedShell,
 		TokenAppModalReturnType,
 		TokenAppProcess,
 		TokenAppRow,
-		TokenAppTab,
 		TokenAppTreeNode,
 		TokenAppTreeSetParent
 	} from '$utils/types.token'
@@ -73,11 +72,10 @@
 		StatePacketComponent.navCrumbs,
 		StatePacketComponent.dataObj,
 		StatePacketComponent.navRow,
-		StatePacketComponent.navTab,
+
 		StatePacketComponent.navTree,
 		StatePacketComponent.modal,
-		StatePacketComponent.embedField,
-		StatePacketComponent.embedShell
+		StatePacketComponent.embedField
 	]
 
 	$: if (state && state.packet) {
@@ -85,6 +83,11 @@
 		const packet = state.consume(componentsProcess)
 		if (packet) {
 			;(async () => await process(packet))()
+		}
+	} else if (state) {
+		if (state instanceof StateSurfaceEmbedShell) {
+			// console.log('BaseLayout.no packet:', state)
+			// updateObjects(true, true, false)
 		}
 	}
 
@@ -98,31 +101,31 @@
 					switch (token.actionType) {
 						case TokenAppDoActionFieldType.detailDelete:
 							await state.app.saveDetail(state, token)
-							updateObjects(true, true)
+							updateObjects(true, true, true)
 							break
 
 						case TokenAppDoActionFieldType.detailMigrate:
 							await migrate(state, token.dataObj)
-							updateObjects(false, false)
+							updateObjects(false, false, false)
 							break
 
 						case TokenAppDoActionFieldType.detailNew:
 							parentTab = state.app.getCurrTabParentTab()
 							if (parentTab)
 								parentTab.data?.parmsState.valueSet(ParmsObjType.listRecordIdCurrent, '')
-							await query(state, state.app.getCurrTab(), TokenApiQueryType.preset, state.app)
-							updateObjects(false, true)
+							await query(state, state.app.getCurrTab(), TokenApiQueryType.preset)
+							updateObjects(false, true, true)
 							break
 
 						case TokenAppDoActionFieldType.detailProcessExecute:
 							alert('detailProcessExecute...')
 							// await migrate(state, token.dataObj)
-							updateObjects(false, false)
+							updateObjects(false, false, false)
 							break
 
 						case TokenAppDoActionFieldType.detailSave:
 							await state.app.saveDetail(state, token)
-							updateObjects(true, true)
+							updateObjects(true, true, true)
 							break
 
 						case TokenAppDoActionFieldType.detailSaveCancel:
@@ -133,13 +136,13 @@
 									const dataRow = currTab?.data?.rowsRetrieved?.getDetailRow()
 									switch (dataRow.status) {
 										case DataRecordStatus.preset:
-											await query(state, currTab, TokenApiQueryType.preset, state.app)
-											updateObjects(false, true)
+											await query(state, currTab, TokenApiQueryType.preset)
+											updateObjects(false, true, true)
 											break
 										case DataRecordStatus.retrieved:
 										case DataRecordStatus.update:
-											await query(state, currTab, TokenApiQueryType.retrieve, state.app)
-											updateObjects(false, true)
+											await query(state, currTab, TokenApiQueryType.retrieve)
+											updateObjects(false, true, true)
 											break
 										default:
 											error(500, {
@@ -154,7 +157,7 @@
 
 						case TokenAppDoActionFieldType.detailSaveAs:
 							await state.app.tabDuplicate(state, token)
-							updateObjects(false, true)
+							updateObjects(false, true, true)
 							break
 
 						case TokenAppDoActionFieldType.embedListConfigEdit:
@@ -188,40 +191,40 @@
 								currTab = currLevel.getCurrTab()
 								if (currTab && currTab.dataObj) currTab.dataObj.export()
 							}
-							updateObjects(false, false)
+							updateObjects(false, false, false)
 							break
 
 						case TokenAppDoActionFieldType.listDetailEdit:
 							await state.app.addLevelNode(state, token, TokenApiQueryType.retrieve)
-							updateObjects(true, true)
+							updateObjects(true, true, true)
 							break
 
 						case TokenAppDoActionFieldType.listDetailNew:
 							await state.app.addLevelNode(state, token, TokenApiQueryType.preset)
-							updateObjects(true, true)
+							updateObjects(true, true, true)
 							break
 
 						case TokenAppDoActionFieldType.listSelfRefresh:
-							await query(state, state.app.getCurrTab(), TokenApiQueryType.retrieve, state.app)
-							updateObjects(false, true)
+							await query(state, state.app.getCurrTab(), TokenApiQueryType.retrieve)
+							updateObjects(false, true, true)
 							break
 
 						case TokenAppDoActionFieldType.listSelfReorder:
 							dataObj.modeAdd(DataObjMode.ReorderOn)
-							updateObjects(false, false)
+							updateObjects(false, false, false)
 							break
 
 						case TokenAppDoActionFieldType.listSelfReorderCancel:
-							await query(state, state.app.getCurrTab(), TokenApiQueryType.retrieve, state.app)
+							await query(state, state.app.getCurrTab(), TokenApiQueryType.retrieve)
 							dataObj.modeDrop(DataObjMode.ReorderOn)
-							updateObjects(false, true)
+							updateObjects(false, true, true)
 							resetModes = false
 							break
 
 						case TokenAppDoActionFieldType.listSelfSave:
 							const rtn = await state.app.saveList(state, token)
 							dataObj.modeDrop(DataObjMode.ReorderOn)
-							updateObjects(false, true)
+							updateObjects(false, true, true)
 							resetModes = false
 							break
 
@@ -238,15 +241,7 @@
 			case StatePacketComponent.embedField:
 				if (token instanceof TokenApiQuery) {
 					await state.app.initEmbeddedField(state, token)
-					updateObjects(true, true)
-					resetModes = false
-				}
-				break
-
-			case StatePacketComponent.embedShell:
-				if (token instanceof TokenAppModalEmbedShell) {
-					await state.app.addLevelEmbedShell(state, token)
-					updateObjects(true, true)
+					updateObjects(true, true, true)
 					resetModes = false
 				}
 				break
@@ -255,7 +250,7 @@
 				if (state instanceof StateSurfaceModal) {
 					if (token instanceof TokenAppModalEmbedField) {
 						await state.app.addLevelModal(state, token)
-						updateObjects(true, true)
+						updateObjects(true, true, true)
 					}
 				}
 				break
@@ -267,7 +262,7 @@
 						returnHome(state)
 					} else {
 						await state.app.back(1)
-						updateObjects(true, true)
+						updateObjects(true, true, true)
 					}
 				}
 				break
@@ -278,7 +273,7 @@
 						returnHome(state)
 					} else {
 						await state.app.changeCrumbs(token)
-						updateObjects(true, true)
+						updateObjects(true, true, true)
 					}
 				}
 				break
@@ -286,21 +281,7 @@
 			case StatePacketComponent.navRow:
 				if (token instanceof TokenAppRow) {
 					await state.app.rowUpdate(state, token)
-					updateObjects(true, true)
-				}
-				break
-
-			case StatePacketComponent.navTab:
-				if (token instanceof TokenAppTab) {
-					currLevel = state.app.getCurrLevel()
-					if (currLevel) {
-						currLevel.tabIdxSet(token.tabIdx)
-						currTab = currLevel.getCurrTab()
-						if (!currTab.isRetrieved) {
-							await query(state, currTab, TokenApiQueryType.retrieve, state.app)
-						}
-						updateObjects(true, true)
-					}
+					updateObjects(true, true, true)
 				}
 				break
 
@@ -308,7 +289,7 @@
 				if (token instanceof TokenAppTreeNode) {
 					state.newApp()
 					await state.app.initNode(state, token)
-					updateObjects(true, true)
+					updateObjects(true, true, true)
 				}
 				break
 
@@ -327,9 +308,9 @@
 		currLevel = state.app.getCurrLevel()
 		if (currLevel) {
 			currTab = currLevel.getCurrTab()
-			await query(state, currTab, TokenApiQueryType.retrieve, state.app)
+			await query(state, currTab, TokenApiQueryType.retrieve)
 		}
-		updateObjects(true, true)
+		updateObjects(true, true, true)
 	}
 	const fModalCloseUpdateEmbedListSelect = async (
 		returnType: TokenAppModalReturnType,
@@ -342,9 +323,9 @@
 				currTab = currLevel.getCurrTab()
 				const idx = currTab.data.fields.findIndex((f) => f.embedFieldName === embedFieldName)
 				if (idx > -1) currTab.data.fields[idx].data.parmsValues.dataUpdate(data?.valueGetAll())
-				await query(state, currTab, TokenApiQueryType.save, state.app)
+				await query(state, currTab, TokenApiQueryType.save)
 			}
-			updateObjects(true, true)
+			updateObjects(true, true, true)
 		}
 	}
 
@@ -360,15 +341,13 @@
 		})
 	}
 
-	function updateObjects(updateObj: boolean, updateObjData: boolean) {
+	function updateObjects(isUpdateObj: boolean, isUpdateObjData: boolean, isResetState: boolean) {
 		state.app = state.app
 		currTab = state.app.getCurrTab()
 		if (currTab) {
-			if (updateObj) dataObj = currTab.dataObj
-			if (updateObjData) {
-				state.resetState()
-				dataObjData = currTab.data
-			}
+			if (isResetState) state.resetState()
+			if (isUpdateObj) dataObj = currTab.dataObj
+			if (isUpdateObjData) dataObjData = currTab.data
 		}
 	}
 </script>

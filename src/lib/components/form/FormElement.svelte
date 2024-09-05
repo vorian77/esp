@@ -7,7 +7,7 @@
 		ValidityErrorLevel,
 		ValidityError
 	} from '$utils/types'
-	import { State } from '$comps/app/types.appState'
+	import { State, StateSurfaceEmbedShell } from '$comps/app/types.appState'
 	import FormElCustomActionButton from './FormElCustomActionButton.svelte'
 	import FormElCustomActionLink from './FormElCustomActionLink.svelte'
 	import FormElCustomHeader from '$comps/form/FormElCustomHeader.svelte'
@@ -107,6 +107,10 @@
 	function setFieldVal(field: Field, value: any) {
 		dataObj = dataObj.setFieldVal(row, field, value)
 		state = state.setStatus()
+
+		if (state instanceof StateSurfaceEmbedShell) {
+			state.stateRoot = state.stateRoot.setStatus()
+		}
 	}
 </script>
 

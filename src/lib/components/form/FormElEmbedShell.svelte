@@ -1,67 +1,49 @@
 <script lang="ts">
+	import { FieldProps } from '$comps/form/field'
+	import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 	import {
 		State,
-		StateLayoutStyle,
 		StateLayoutComponentType,
-		StateSurfaceEmbedField,
+		StateLayoutStyle,
+		StatePacket,
+		StatePacketComponent,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState'
-	import {
-		TokenApiDbDataObjSource,
-		TokenApiQueryData,
-		TokenApiQueryType,
-		TokenAppDoActionFieldType,
-		TokenAppModalEmbedShell
-	} from '$utils/types.token'
-	import Layout from '$comps/layout/BaseLayout.svelte'
+	import { TokenAppDoActionConfirmType } from '$utils/types.token'
 	import FormLabel from '$comps/form/FormLabel.svelte'
-	import { DataObjCardinality, DataObjStatus } from '$utils/types'
-	import { FieldElement, FieldItem, FieldProps } from '$comps/form/field'
-	import { FieldSelectMulti } from '$comps/form/fieldSelect'
-	import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
-	import { FieldAccess } from '$comps/form/field'
-	import { TabGroup, Tab } from '@skeletonlabs/skeleton'
+	import Layout from '$comps/layout/BaseLayout.svelte'
+	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
-	import { ConstraintViolationError } from 'edgedb'
 
 	export let fp: FieldProps
 
-	let recordIdCurrent: string
-	let stateEmbedShell: StateSurfaceEmbedShell
+	let field: FieldEmbedShell
+	let currLevel: AppLevel
+	let currTab: AppLevelTab
+	let dataObj: DataObj
+	let dataObjData: DataObjData
 
-	$: loadData(fp)
-
-	function loadData(fp: FieldProps) {
-		if (fp.dataRecord) {
-			let recordId = fp.dataRecord['id'] || ''
-			if (recordId.startsWith('preset_')) recordId = ''
-			if (recordIdCurrent !== recordId) {
-				recordIdCurrent = recordId
-				stateEmbedShell = setStateEmbed(fp)
-			}
-		}
-	}
-
-	function setStateEmbed(fp: FieldProps) {
-		return new StateSurfaceEmbedShell({
-			layoutComponent: StateLayoutComponentType.layoutTab,
-			layoutStyle: StateLayoutStyle.dataObjTab,
-			parms: { listRecordIdParent: recordIdCurrent },
-			token: new TokenAppModalEmbedShell({ dataObjParent: fp.dataObj, fieldEmbedShell: fp.field }),
-			updateCallback
+	$: {
+		field = fp.field
+		field.stateShell.setUpdateCallback((obj: any) => {
+			field.stateShell = field.stateShell.updateProperties(obj)
 		})
-	}
 
-	async function updateCallback(obj: any) {
-		stateEmbedShell = stateEmbedShell.updateProperties(obj)
+		// LayoutTab
+		currLevel = field.stateShell.app.getCurrLevel()
+		if (currLevel) {
+			currTab = currLevel.getCurrTab()
+			dataObj = currTab.dataObj
+			dataObjData = currTab.data
+		}
 	}
 </script>
 
 <!-- <DataViewer header="stateEmbedShell.objStatus" data={stateEmbedShell.objStatus} /> -->
 
-<FormLabel {fp} />
-<div class="border-2 px-4 pb-4">
-	{#if stateEmbedShell}
-		<!-- <Layout state={stateEmbedShell} /> -->
-	{/if}
-</div>
+<!-- <FormLabel {fp} /> -->
+{#if dataObj && dataObjData}
+	<div class="border-2 px-4 pb-4">
+		<LayoutTab bind:state={field.stateShell} {dataObj} {dataObjData} on:formCancelled />
+	</div>
+{/if}

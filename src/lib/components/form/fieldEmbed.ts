@@ -1,12 +1,5 @@
 import { Field, RawFieldProps } from '$comps/form/field'
-import {
-	arrayOfClasses,
-	DataObj,
-	DataObjDataField,
-	DataObjEmbedType,
-	ParmsObjType,
-	required
-} from '$utils/types'
+import { arrayOfClasses, DataObj, DataObjDataField, DataObjEmbedType, required } from '$utils/types'
 import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
 import {
 	RawDataObjPropDisplayEmbedListConfig,
@@ -14,6 +7,7 @@ import {
 	RawDataObjPropDisplayEmbedListSelect
 } from '$comps/dataObj/types.rawDataObj'
 import { TokenAppDoActionFieldType } from '$utils/types.token'
+import { State } from '$comps/app/types.appState'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldEmbed.ts'
@@ -82,12 +76,15 @@ export class FieldEmbedListEdit extends FieldEmbed {
 		return field
 	}
 	getStatus(dataObjForm: DataObj, recordId: string) {
+		return this.getStatusListEdit()
+	}
+	getStatusListEdit() {
 		if (this.dataObj) {
 			return this.dataObj.setStatus()
 		} else {
 			error(500, {
 				file: FILENAME,
-				function: 'getStatus',
+				function: 'getStatusListEdit',
 				message: `No data object defined for FieldEmbedListEdit: ${this.colDO.propName}`
 			})
 		}

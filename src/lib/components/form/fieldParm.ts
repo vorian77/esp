@@ -26,11 +26,11 @@ export class FieldParm extends Field {
 	async configParmItems(props: RawFieldProps) {
 		let fields: Field[] = []
 		for (const dataRow of props.data.rowsRetrieved.dataRows) {
-			fields.push(await this.configParmItemsInit(props.state, dataRow.record, fields, props.data))
+			fields.push(await this.configParmItemsInit(props, dataRow.record, fields))
 		}
 		return fields
 	}
-	async configParmItemsInit(state: State, record: DataRecord, fields: Field[], data: DataObjData) {
+	async configParmItemsInit(props: RawFieldProps, record: DataRecord, fields: Field[]) {
 		const propParm = new RawDataObjPropDisplay({
 			_column: {
 				_codeAlignment: FieldAlignment.left,
@@ -49,7 +49,7 @@ export class FieldParm extends Field {
 			isParmValue: true,
 			orderDefine: record.orderDefine
 		})
-		return await DataObj.initField(state, propParm, false, fields, data)
+		return await DataObj.initField(props.state, propParm, false, fields, props.dataObj, props.data)
 	}
 	async configParmItemsData(props: RawFieldProps) {
 		const listRecordIdCurrent = props.data.parmsValues.valueGet('listRecordIdCurrent')

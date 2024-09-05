@@ -1,8 +1,13 @@
 <script lang="ts">
 	import { AppLevel } from '$comps/app/types.app'
 	import { State, StateSurfaceEmbed } from '$comps/app/types.appState'
-	import { StatePacket, StatePacketComponent } from '$comps/app/types.appState'
-	import { TokenAppDoActionConfirmType, TokenAppTab } from '$utils/types.token'
+	import {
+		StatePacket,
+		StatePacketComponent,
+		StateSurfaceEmbedShell
+	} from '$comps/app/types.appState'
+	import { query } from '$comps/app/types.appQuery'
+	import { TokenApiQueryType, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import { DataObj, DataObjData } from '$utils/types'
 	import { DataRecordStatus } from '$utils/types'
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton'
@@ -16,8 +21,8 @@
 	export let dataObjData: DataObjData
 
 	let isHideChildTabs = false
-
 	let currLevel: AppLevel | undefined
+
 	$: currLevel = state.app.getCurrLevel()
 	$: isHideChildTabs =
 		dataObjData.rowsRetrieved.hasRecord() &&
@@ -26,13 +31,17 @@
 			!state.objStatus.valid())
 
 	async function onClickTab(event: any) {
-		state.update({
-			packet: new StatePacket({
-				component: StatePacketComponent.navTab,
-				confirmType: TokenAppDoActionConfirmType.objectChanged,
-				token: new TokenAppTab(parseInt(event.target.value))
-			})
-		})
+		const tabIdx = event.target.value
+		if (currLevel) {
+			currLevel.tabIdxSet(tabIdx)
+			const currTab = currLevel.getCurrTab()
+			if (!currTab.isRetrieved) {
+				await query(state, currTab, TokenApiQueryType.retrieve)
+			}
+			dataObj = currTab.dataObj
+			dataObjData = currTab.data
+			state.resetState()
+		}
 	}
 </script>
 

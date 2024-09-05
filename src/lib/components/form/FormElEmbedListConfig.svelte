@@ -1,21 +1,7 @@
 <script lang="ts">
 	import { FieldProps } from '$comps/form/field'
 	import { FieldEmbedListConfig } from '$comps/form/fieldEmbed'
-	import {
-		State,
-		StateLayoutComponentType,
-		StateLayoutStyle,
-		StateSurfaceEmbedField
-	} from '$comps/app/types.appState'
-	import {
-		TokenApiDbDataObjSource,
-		TokenApiQueryType,
-		TokenAppDoActionFieldType,
-		TokenAppDoActionConfirmType,
-		TokenAppModalReturnType
-	} from '$utils/types.token'
-	import Layout from '$comps/layout/BaseLayout.svelte'
-	import { DataObj, DataObjCardinality, DataObjMode, type DataRecord, required } from '$utils/types'
+	import { DataObjMode } from '$utils/types'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import { error } from '@sveltejs/kit'

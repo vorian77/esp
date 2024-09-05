@@ -1,5 +1,5 @@
 import { App, AppLevelTab } from '$comps/app/types.app'
-import { State, StateSurfaceModal } from '$comps/app/types.appState'
+import { State, StateSurfaceEmbedShell, StateSurfaceModal } from '$comps/app/types.appState'
 import {
 	arrayOfClasses,
 	debug,
@@ -32,11 +32,10 @@ const FILENAME = '/$comps/app/types.appQuery.ts'
 export async function query(
 	state: State,
 	tab: AppLevelTab | undefined,
-	queryType: TokenApiQueryType,
-	app?: App
+	queryType: TokenApiQueryType
 ) {
 	if (!tab) return false
-	let { dataTab, dataTree } = queryDataPre(state, tab, queryType, app)
+	let { dataTab, dataTree } = queryDataPre(state, tab, queryType)
 	const queryData = new TokenApiQueryData({ dataTab, tree: dataTree })
 	let table = tab.getTable() // table will be undefined prior to retrieve
 
@@ -82,45 +81,19 @@ export async function query(
 	return true
 }
 
-function queryDataPre(state: State, tab: AppLevelTab, queryType: TokenApiQueryType, app?: App) {
-	let dataTree = new TokenApiQueryDataTree()
+function queryDataPre(state: State, tab: AppLevelTab, queryType: TokenApiQueryType) {
 	const clazz = `${FILENAME}.queryDataPre`
 
 	// dataTree
-	if (app) {
-		let offset = 0
-		switch (queryType) {
-			case TokenApiQueryType.preset:
-				offset = 2
-				break
-			case TokenApiQueryType.retrieve:
-				offset = 1
-				break
-			case TokenApiQueryType.save:
-				offset = 1
-				break
-			default:
-				error(500, {
-					file: FILENAME,
-					function: clazz,
-					message: `No case defined for queryType: ${queryType}`
-				})
-		}
-
-		for (let i = 0; i < app.levels.length - offset; i++) {
-			const level = app.levels[i]
-			const currTab = level.getCurrTab()
-			const dataObj = required(currTab.dataObj, clazz, 'currTab.dataObj')
-			const table = required(dataObj.rootTable?.name, 'rootTable', 'DataObj')
-			const record = currTab.listGetDataRecord()
-			dataTree.upsertData(table, record)
-		}
-	}
+	const dataTree = queryDataPreTree(
+		queryType,
+		state instanceof StateSurfaceEmbedShell ? state.stateRoot.app : state.app
+	)
 
 	// dataTab
 	const dataTab = tab.data ? tab.data : new DataObjData()
 	dataTab.parmsValues.dataUpdate(state.parmsState.valueGetAll())
-	const parentTab = app?.getCurrTabParentTab()
+	const parentTab = state.app.getCurrTabParentTab()
 	if (parentTab && parentTab.dataObj) {
 		dataTab.parmsValues.dataUpdate(parentTab.dataObj.data.getParms())
 	}
@@ -130,8 +103,41 @@ function queryDataPre(state: State, tab: AppLevelTab, queryType: TokenApiQueryTy
 		dataTab.parmsValues.valueSet(ParmsObjType.embedParentId, state.embedParentId)
 	}
 
-	console.log('appQuery.queryDataPre', { dataTree, dataTab })
 	return { dataTree, dataTab }
+}
+
+function queryDataPreTree(queryType: TokenApiQueryType, app: App) {
+	const clazz = `${FILENAME}.queryDataPreTree`
+	let dataTree = new TokenApiQueryDataTree()
+	let offset = 0
+
+	switch (queryType) {
+		case TokenApiQueryType.preset:
+			offset = 2
+			break
+		case TokenApiQueryType.retrieve:
+			offset = 1
+			break
+		case TokenApiQueryType.save:
+			offset = 1
+			break
+		default:
+			error(500, {
+				file: FILENAME,
+				function: clazz,
+				message: `No case defined for queryType: ${queryType}`
+			})
+	}
+
+	for (let i = 0; i < app.levels.length - offset; i++) {
+		const level = app.levels[i]
+		const currTab = level.getCurrTab()
+		const dataObj = required(currTab.dataObj, clazz, 'currTab.dataObj')
+		const table = required(dataObj.rootTable?.name, 'rootTable', 'DataObj')
+		const record = currTab.listGetDataRecord()
+		dataTree.upsertData(table, record)
+	}
+	return dataTree
 }
 
 export async function queryExecute(

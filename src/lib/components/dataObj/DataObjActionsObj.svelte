@@ -8,7 +8,12 @@
 		DataObjActionFieldTriggerStatus,
 		DataObjActionFieldShow
 	} from '$comps/dataObj/types.dataObjActionField'
-	import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
+	import {
+		State,
+		StatePacket,
+		StatePacketComponent,
+		StateSurfaceEmbedShell
+	} from '$comps/app/types.appState'
 	import {
 		TokenAppDo,
 		TokenAppDoActionConfirmType,

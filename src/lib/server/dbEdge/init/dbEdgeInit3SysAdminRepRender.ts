@@ -332,18 +332,18 @@ async function initRepConfig() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'headerUser',
-				orderCrumb: 10,
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderCrumb: 10,
+				orderDisplay: 20,
+				orderDefine: 20,
+				orderSort: 10,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_element_str',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDefine: 30,
 				exprCustom: `.report.header`,
 				headerAlt: 'System Name',
 				indexTable: 0,
@@ -353,16 +353,14 @@ async function initRepConfig() {
 				codeAccess: 'readOnly',
 				columnName: 'descriptionUser',
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDefine: 40,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_element_str',
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDefine: 50,
 				exprCustom: `.report.description`,
 				headerAlt: 'System Description',
 				indexTable: 0,
@@ -476,7 +474,7 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'embedListEdit',
 				columnName: 'parms',
-				isDisplayable: true,
+				isDisplayable: false,
 				orderDefine: 120,
 				orderDisplay: 120,
 				fieldEmbedListEdit: 'fele_sys_rep_user_parm',
@@ -486,22 +484,22 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'embedListEdit',
 				columnName: 'elements',
-				isDisplayable: true,
+				isDisplayable: false,
 				orderDefine: 130,
 				orderDisplay: 130,
 				fieldEmbedListEdit: 'fele_sys_rep_user_element',
 				indexTable: 0,
 				linkTable: 'SysRepUserEl'
 			},
-			// {
-			// 	codeFieldElement: 'embedShell',
-			// 	columnName: 'custom_embed_shell',
-			// 	isDisplayable: true,
-			// 	headerAlt: 'Report Config',
-			// 	nameCustom: 'repUserConfig',
-			// 	orderDisplay: 140,
-			// 	orderDefine: 140
-			// },
+			{
+				codeFieldElement: 'embedShell',
+				columnName: 'custom_embed_shell',
+				isDisplayable: true,
+				headerAlt: 'Report Config',
+				nameCustom: 'repUserConfig',
+				orderDisplay: 140,
+				orderDefine: 140
+			},
 
 			/* management */
 			{
