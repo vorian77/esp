@@ -10,9 +10,10 @@
 	const FILENAME = '$comps/form/FormDetail.svelte'
 	const FORM_NAME = ''
 	const SUBMIT_BUTTON_NAME = 'SUBMIT_BUTTON_NAME'
+
 	let dataHeightPadding = '350' //  <todo> 240314 - calc specific padding
 	let dataHeight = `max-height: calc(100vh - ${dataHeightPadding}px);`
-	let tagGroupSection: TagGroupSection[]
+	let tagGroupSections: TagGroupSection[]
 
 	export let state: State
 	export let dataObj: DataObj
@@ -28,32 +29,32 @@
 	}
 
 	function loadTags() {
-		tagGroupSection = []
+		tagGroupSections = []
 		let idxSection = 0
 		let isOpenRow = false
 		let isOpenSection = false
 
 		dataObj.fields.forEach((field, idx) => {
 			if (!isOpenSection) {
-				idxSection = tagGroupSection.push(new TagGroupSection(false)) - 1
+				idxSection = tagGroupSections.push(new TagGroupSection(false)) - 1
 				isOpenSection = true
 			}
 			if (field.colDO.propName.startsWith('custom_section_start')) {
-				if (!(idxSection === 0 && tagGroupSection[idxSection].rowIsEmpty())) {
-					idxSection = tagGroupSection.push(new TagGroupSection(true)) - 1
+				if (!(idxSection === 0 && tagGroupSections[idxSection].rowIsEmpty())) {
+					idxSection = tagGroupSections.push(new TagGroupSection(true)) - 1
 					isOpenSection = true
 				}
-				tagGroupSection[idxSection].update(field)
+				tagGroupSections[idxSection].update(field)
 			} else if (field.colDO.propName.startsWith('custom_section_end')) {
 				isOpenSection = false
 			} else {
 				if (field.colDO.propName.startsWith('custom_row_start')) {
 					isOpenRow = true
-					if (!tagGroupSection[idxSection].rowIsEmpty()) tagGroupSection[idxSection].rowNew()
+					if (!tagGroupSections[idxSection].rowIsEmpty()) tagGroupSections[idxSection].rowNew()
 				} else if (field.colDO.propName.startsWith('custom_row_end')) {
 					isOpenRow = false
 				} else if (field.colDO.isDisplayable) {
-					tagGroupSection[idxSection].rowAddIdx(field, idx, isOpenRow)
+					tagGroupSections[idxSection].rowAddIdx(field, idx, isOpenRow)
 				}
 			}
 		})
@@ -99,12 +100,12 @@
 <!-- <DataViewer header="FormDetail.state.objStatus" data={state.objStatus} /> -->
 <!-- <DataViewer header="tagGroupSection" data={tagGroupSection} /> -->
 
-{#if tagGroupSection}
+{#if tagGroupSections}
 	<div id="root" class="overflow-y-scroll" style={dataHeight}>
 		<form id={'form_' + dataObj.raw.name} on:submit|preventDefault>
-			{#each tagGroupSection as section}
+			{#each tagGroupSections as section}
 				<fieldset
-					class={section.isVisible ? 'p-4 border-1' : 'p-0 border-0'}
+					class={section.isVisible ? 'p-4 border-1 mb-4' : 'p-0 border-0'}
 					style:border-color={section.isVisible ? section.color : 'transparent'}
 				>
 					{#if section.legend}
