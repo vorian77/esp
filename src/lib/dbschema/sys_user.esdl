@@ -95,7 +95,10 @@ module sys_user {
         )
       );
 
-  function getUser(userName: str) -> optional sys_user::SysUser
+  function getUserById(userId: str) -> optional sys_user::SysUser
+      using (select sys_user::SysUser filter .id = <uuid>userId);
+
+  function getUserByName(userName: str) -> optional sys_user::SysUser
       using (select sys_user::SysUser filter .userName = userName);
 
   function getUserType(userTypeName: str) -> optional sys_user::SysUserType

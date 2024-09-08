@@ -232,7 +232,7 @@ export enum TokenApiQueryType {
 	save = 'save'
 }
 
-export class TokenApiSendText extends Token {
+export class TokenApiSysSendText extends TokenApi {
 	phoneMobile: string
 	message: string
 	constructor(phoneMobile: string, message: string) {

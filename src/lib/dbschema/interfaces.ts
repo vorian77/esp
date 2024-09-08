@@ -364,6 +364,13 @@ export interface Movie extends std.$Object {
 export interface Person extends std.$Object {
   "name": string;
 }
+export interface SysError extends std.$Object {
+  "user": sys_user.SysUser;
+  "createdAt": Date;
+  "errFile"?: string | null;
+  "errFunction"?: string | null;
+  "errMsg"?: string | null;
+}
 export interface SysPerson extends std.$Object {
   "firstName": string;
   "lastName": string;
@@ -918,6 +925,7 @@ export interface types {
   "default": {
     "Movie": Movie;
     "Person": Person;
+    "SysError": SysError;
     "SysPerson": SysPerson;
     "SysPersonTest": SysPersonTest;
   };

@@ -1,6 +1,19 @@
 module default {
   scalar type Name extending str;
 
+  type SysError {
+    required createdAt: datetime {
+      default := datetime_of_transaction();
+      readonly := true;
+    };
+    errFile: str;
+    errFunction: str;
+    errMsg: str;
+    required user: sys_user::SysUser{
+      on source delete delete target if orphan;
+    };
+  }
+
   type SysPerson {
     addr1: str;
     addr2: str;

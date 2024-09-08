@@ -3,10 +3,10 @@
 import * as $ from "../reflection";
 import * as _ from "../imports";
 import type * as _std from "./std";
+import type * as _sys_user from "./sys_user";
 import type * as _sys_core from "./sys_core";
 import type * as _cal from "./cal";
 import type * as _app_cm from "./app_cm";
-import type * as _sys_user from "./sys_user";
 export type $Name = $.ScalarType<"std::str", string>;
 const Name: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "5061cd07-b3c2-11ee-b459-95308b4e5073", _.syntax.literal);
 
@@ -37,6 +37,20 @@ type $Person = $.ObjectType<"default::Person", $PersonλShape, null, [
 const $Person = $.makeType<$Person>(_.spec, "0a020ae9-fbfc-11ee-87a7-9b61aa1fc993", _.syntax.literal);
 
 const Person: $.$expr_PathNode<$.TypeSet<$Person, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Person, $.Cardinality.Many), null);
+
+export type $SysErrorλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
+  "user": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
+  "createdAt": $.PropertyDesc<_std.$datetime, $.Cardinality.One, false, false, true, true>;
+  "errFile": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "errFunction": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "errMsg": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+}>;
+type $SysError = $.ObjectType<"default::SysError", $SysErrorλShape, null, [
+  ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
+]>;
+const $SysError = $.makeType<$SysError>(_.spec, "edb1625b-6d5c-11ef-9d20-0b4826d9aa54", _.syntax.literal);
+
+const SysError: $.$expr_PathNode<$.TypeSet<$SysError, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysError, $.Cardinality.Many), null);
 
 export type $SysPersonλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "firstName": $.PropertyDesc<$Name, $.Cardinality.One, false, false, false, false>;
@@ -107,13 +121,14 @@ const SysPersonTest: $.$expr_PathNode<$.TypeSet<$SysPersonTest, $.Cardinality.Ma
 
 
 
-export { Name, nonNegative, $Movie, Movie, $Person, Person, $SysPerson, SysPerson, $SysPersonTest, SysPersonTest };
+export { Name, nonNegative, $Movie, Movie, $Person, Person, $SysError, SysError, $SysPerson, SysPerson, $SysPersonTest, SysPersonTest };
 
 type __defaultExports = {
   "Name": typeof Name;
   "nonNegative": typeof nonNegative;
   "Movie": typeof Movie;
   "Person": typeof Person;
+  "SysError": typeof SysError;
   "SysPerson": typeof SysPerson;
   "SysPersonTest": typeof SysPersonTest
 };
@@ -122,6 +137,7 @@ const __defaultExports: __defaultExports = {
   "nonNegative": nonNegative,
   "Movie": Movie,
   "Person": Person,
+  "SysError": SysError,
   "SysPerson": SysPerson,
   "SysPersonTest": SysPersonTest
 };

@@ -15,7 +15,7 @@ import {
 } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { getDataObjId } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { dbEdgeInit } from '$server/dbEdge/init/dbEdgeInit'
-import { sendText } from '$routes/api/apiTwilio'
+import { sysSendText } from '$routes/api/apiTwilio'
 import { error, type Cookies } from '@sveltejs/kit'
 
 const FILENAME = '/routes/api/dbEdge/server.ts'
@@ -56,8 +56,8 @@ export async function POST({ request, cookies }) {
 		case ApiFunction.dbEdgeProcessExpression:
 			return getServerResponse(await processExpression(token))
 
-		case ApiFunction.sendText:
-			return getServerResponse(await sendText(token))
+		case ApiFunction.sysSendText:
+			return getServerResponse(await sysSendText(token))
 
 		default:
 			error(500, {

@@ -8,7 +8,7 @@ import {
 	TokenApiQuery,
 	TokenApiQueryData,
 	TokenApiQueryType,
-	TokenApiSendText
+	TokenApiSysSendText
 } from '$utils/types.token'
 import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
@@ -130,7 +130,10 @@ async function sendCode(phoneMobile: string) {
 	authSecurityCode = Math.floor(Math.random() * (max - min + 1)) + min
 	authSecurityCodePhone = phoneMobile
 	await apiFetch(
-		ApiFunction.sendText,
-		new TokenApiSendText(phoneMobile, `Mobile phone number verification code: ${authSecurityCode}`)
+		ApiFunction.sysSendText,
+		new TokenApiSysSendText(
+			phoneMobile,
+			`Mobile phone number verification code: ${authSecurityCode}`
+		)
 	)
 }

@@ -1,12 +1,5 @@
 import { Token } from '$utils/types.token'
-import { type DataObjData, type DataRecord, required } from '$utils/types'
-import { RawDataObj } from '$comps/dataObj/types.rawDataObj'
-import {
-	TokenApiDbDataObjSource,
-	TokenApiQuery,
-	TokenApiQueryData,
-	TokenApiQueryType
-} from '$utils/types.token'
+import { type DataRecord } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$routes/api/api.ts'
@@ -22,7 +15,7 @@ export enum ApiFunction {
 	dbEdgeGetTableColumns = 'dbEdgeGetTableColumns',
 	dbEdgeGetUser = 'dbEdgeGetUser',
 	dbEdgeInit = 'dbEdgeInit',
-	sendText = 'sendText'
+	sysSendText = 'sysSendText'
 }
 
 export async function apiFetch(apiFunction: ApiFunction, token: Token) {

@@ -209,7 +209,7 @@ export async function addReportUser(data: any) {
 				modifiedBy: e.select(e.sys_user.getRootUser()),
 				orderDefine: 10,
 				report: e.select(e.sys_rep.getReport(p.report)),
-				user: e.select(e.sys_user.getUser(p.user))
+				user: e.select(e.sys_user.getUserByName(p.user))
 			})
 		}
 	)

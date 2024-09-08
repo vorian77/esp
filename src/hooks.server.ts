@@ -1,6 +1,16 @@
-import { redirect } from '@sveltejs/kit'
+import { type Handle, type HandleServerError, redirect } from '@sveltejs/kit'
+import { sequence } from '@sveltejs/kit/hooks'
+import * as Sentry from '@sentry/sveltekit'
 
 const FILENAME = 'hooks.server'
+
+Sentry.init({
+	dsn: 'https://cf41cf7f70214be6be23fa4a38cfd0e2@o4505108602945536.ingest.us.sentry.io/4505108606156800',
+
+	// We recommend adjusting this value in production, or using tracesSampler
+	// for finer control
+	tracesSampleRate: 1.0
+})
 
 const routesUnprotected = ['/about', '/auth', '/legalDisclosure']
 
@@ -11,7 +21,9 @@ const routesUnprotected = ['/about', '/auth', '/legalDisclosure']
 // 	) => void
 // ): void;
 
-export async function handle({ event, resolve }) {
+// handle - route
+const serverHandler: Handle = async ({ event, resolve }) => {
+	// async function serverHandler({ event, resolve }) {
 	status(`url.pathname: ${event.url.pathname}`)
 
 	if (event.url.pathname === '/') {
@@ -71,14 +83,20 @@ export async function handle({ event, resolve }) {
 	}
 }
 
-export const handleError = ({ error, event }) => {
+export const handle = sequence(Sentry.sentryHandle(), serverHandler)
+
+// handle - error
+const serverErrorHandler: HandleServerError = async ({ error, event }) => {
 	const message =
 		error instanceof Error
 			? error.message
 			: 'Something unexpected happend. Please try again, or report the problem.'
+
 	return {
 		file: event.route.id || 'unknown',
 		function: 'unknown',
 		message
 	}
 }
+
+export const handleError = Sentry.handleErrorWithSentry(serverErrorHandler)

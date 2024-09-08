@@ -195,6 +195,11 @@
 							break
 
 						case TokenAppDoActionFieldType.listDetailEdit:
+							// error(500, {
+							// 	file: FILENAME,
+							// 	function: 'listDetailEdit',
+							// 	message: `Test Error`
+							// })
 							await state.app.addLevelNode(state, token, TokenApiQueryType.retrieve)
 							updateObjects(true, true, true)
 							break

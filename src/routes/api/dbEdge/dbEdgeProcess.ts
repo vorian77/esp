@@ -139,7 +139,6 @@ async function processDataObjExecute(
 		if (script.script) {
 			script.evalExpr(returnData)
 			const rawDataList = await executeQuery(script.script)
-			debugData('processDataObjExecute', `rawDataList: ${i}`, rawDataList)
 			scriptData = script?.query?.field ? script.query.field.data : returnData
 			switch (script.exePost) {
 				case ScriptExePost.dataItems:
@@ -175,7 +174,6 @@ async function processDataObjExecute(
 	}
 
 	// return
-	debugData('processDataObjExecute', 'executeQuery.result', returnData.rowsRetrieved.getRows())
 	if (returnData.rowsRetrieved.getRows().length > 0) {
 		debug(
 			'processDataObjExecute',
