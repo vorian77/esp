@@ -80,21 +80,26 @@ async function initFeatures() {
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [
 			['noa_save_list', 0],
-			['noa_embed_list_config_new', 1],
-			['noa_embed_list_config_edit', 2]
+			['noa_save_cancel', 1],
+			['noa_embed_list_config_new', 2],
+			['noa_embed_list_config_edit', 3]
 		],
 		name: 'doag_embed_list_config',
 		owner: 'app_sys'
 	})
 	await addDataObjActionFieldGroup({
-		actionFieldItems: [['noa_save_list', 0]],
+		actionFieldItems: [
+			['noa_save_list', 0],
+			['noa_save_cancel', 1]
+		],
 		name: 'doag_embed_list_edit',
 		owner: 'app_sys'
 	})
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [
 			['noa_save_list', 0],
-			['noa_embed_list_edit_parm_value', 1]
+			['noa_save_cancel', 1],
+			['noa_embed_list_edit_parm_value', 2]
 		],
 		name: 'doag_embed_list_edit_parm_value',
 		owner: 'app_sys'
@@ -125,7 +130,8 @@ async function initFeatures() {
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [
 			['noa_save_list', 0],
-			['noa_edit_list', 1]
+			['noa_save_cancel', 1],
+			['noa_edit_list', 2]
 		],
 		name: 'doag_list_report',
 		owner: 'app_sys'
