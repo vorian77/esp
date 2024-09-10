@@ -326,8 +326,6 @@ export enum TokenAppDoActionFieldType {
 	listSelfDelete = 'listSelfDelete',
 	listSelfEdit = 'listSelfEdit',
 	listSelfNew = 'listSelfNew',
-	listSelfReorder = 'listSelfReorder',
-	listSelfReorderCancel = 'listSelfReorderCancel',
 	listSelfRefresh = 'listSelfRefresh',
 	listSelfSave = 'listSelfSave',
 

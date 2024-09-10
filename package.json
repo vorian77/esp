@@ -53,6 +53,7 @@
 		"@sveltejs/adapter-vercel": "^4.0.5",
 		"@sveltejs/vite-plugin-svelte-inspector": "^2.1.0",
 		"@types/pg": "^8.11.8",
+		"ag-grid-community": "^32.1.0",
 		"axios": "^1.7.7",
 		"bcryptjs": "^2.4.3",
 		"edgedb": "^1.5.11",

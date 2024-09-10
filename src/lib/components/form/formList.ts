@@ -2,17 +2,16 @@ import { DataObj, DataObjSort, DataObjSortItem, type DataRecord } from '$utils/t
 import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 import { Field } from '$comps/form/field'
 
-export function recordsFilter(filterText: string, dataObj: DataObj, fieldsDisplayable: Field[]) {
+export function recordsSearch(searchText: string, dataObj: DataObj, fieldsDisplayable: Field[]) {
 	let records = recordsConcat(dataObj)
 
-	// filter - filter text
 	const visibleFields = fieldsDisplayable.map((f) => f.colDO.propName)
 	dataObj.dataRecordsDisplay = records.filter((record: DataRecord) => {
 		let found = false
 		for (const key in record) {
 			if (visibleFields.includes(key)) {
 				const value = record[key]
-				if (value && value.toString().toLowerCase().includes(filterText.toLowerCase())) {
+				if (value && value.toString().toLowerCase().includes(searchText.toLowerCase())) {
 					found = true
 					break
 				}
@@ -21,7 +20,6 @@ export function recordsFilter(filterText: string, dataObj: DataObj, fieldsDispla
 		return found
 	})
 
-	// set filtered list
 	dataObj.dataRecordsHidden = records.filter(
 		(record) => !dataObj.dataRecordsDisplay.includes(record)
 	)
@@ -57,20 +55,14 @@ export function sortInit(fieldsDisplayable: Field[]) {
 
 export function sortUser(sortObj: DataObjSort, recordsUser: DataRecord[]) {
 	// adapted from: https://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields
-	const fieldSorter = (fields: { name: string; dir: PropSortDir }[]) => (a: any, b: any) =>
-		fields
+	const fieldSorter = (sortItems: DataObjSortItem[]) => (a: any, b: any) =>
+		sortItems
 			.map((o) => {
 				let dir = 1
-				if (o.dir === PropSortDir.desc) dir = -1
-				return a[o.name] > b[o.name] ? dir : a[o.name] < b[o.name] ? -dir : 0
+				if (o.direction === PropSortDir.desc) dir = -1
+				return a[o.fieldName] > b[o.fieldName] ? dir : a[o.fieldName] < b[o.fieldName] ? -dir : 0
 			})
 			.reduce((p, n) => (p ? p : n), 0)
 
-	return recordsUser.sort(
-		fieldSorter(
-			sortObj.sortItems.map((item: DataObjSortItem) => {
-				return { name: item.fieldName, dir: item.direction }
-			})
-		)
-	)
+	return recordsUser.sort(fieldSorter(sortObj.sortItems))
 }

@@ -101,7 +101,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [
-			{ codeTriggerShow: 'notReorder', isRequired: true },
+			{ codeTriggerShow: 'notObjectChanged', isRequired: true },
 			{ codeTriggerShow: 'parentObjectSaved', isRequired: true }
 		],
 		codeActionFieldType: 'embedListConfigNew',
@@ -133,18 +133,6 @@ export async function initPreDataObjAction() {
 		header: 'Edit',
 		isListRowAction: true,
 		name: 'noa_embed_list_select',
-		owner: 'app_sys'
-	})
-	await addDataObjActionField({
-		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
-		],
-		actionFieldShows: [{ codeTriggerShow: 'listReorder', isRequired: true }],
-		codeActionFieldType: 'listSelfReorder',
-		codeActionFieldTriggerEnable: 'always',
-		header: 'Reorder',
-		isListRowAction: false,
-		name: 'noa_embed_reorder',
 		owner: 'app_sys'
 	})
 
@@ -192,7 +180,7 @@ export async function initPreDataObjAction() {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
-		actionFieldShows: [{ codeTriggerShow: 'notReorder', isRequired: true }],
+		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
 		codeActionFieldType: 'listDetailNew',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'New',
@@ -212,33 +200,6 @@ export async function initPreDataObjAction() {
 		header: 'Refresh',
 		isListRowAction: false,
 		name: 'noa_refresh_list',
-		owner: 'app_sys'
-	})
-
-	/* reorder */
-	await addDataObjActionField({
-		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
-		],
-		actionFieldShows: [{ codeTriggerShow: 'listReorder', isRequired: true }],
-		codeActionFieldType: 'listSelfReorder',
-		codeActionFieldTriggerEnable: 'always',
-		header: 'Reorder',
-		isListRowAction: false,
-		name: 'noa_reorder',
-		owner: 'app_sys'
-	})
-	await addDataObjActionField({
-		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
-		],
-		actionFieldShows: [{ codeTriggerShow: 'listReorderCancel', isRequired: true }],
-		codeActionFieldType: 'listSelfReorderCancel',
-		codeActionFieldTriggerEnable: 'always',
-		codeColor: 'red',
-		header: 'Cancel Reorder',
-		isListRowAction: false,
-		name: 'noa_reorder_cancel',
 		owner: 'app_sys'
 	})
 

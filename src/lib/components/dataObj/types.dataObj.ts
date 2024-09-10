@@ -695,8 +695,7 @@ export enum DataObjListEditPresetType {
 }
 
 export enum DataObjMode {
-	ParentObjectSaved = 'ParentObjectSaved',
-	ReorderOn = 'ReorderOn'
+	ParentObjectSaved = 'ParentObjectSaved'
 }
 
 export enum DataObjProcessType {
@@ -986,7 +985,7 @@ export class ParmsUserParm {
 	}
 }
 export enum ParmsUserParmType {
-	listFilterText = 'listFilterText',
+	listSearchText = 'listSearchText',
 	listSortObj = 'listSortObj'
 }
 

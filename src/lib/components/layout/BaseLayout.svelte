@@ -214,21 +214,8 @@
 							updateObjects(false, true, true)
 							break
 
-						case TokenAppDoActionFieldType.listSelfReorder:
-							dataObj.modeAdd(DataObjMode.ReorderOn)
-							updateObjects(false, false, false)
-							break
-
-						case TokenAppDoActionFieldType.listSelfReorderCancel:
-							await query(state, state.app.getCurrTab(), TokenApiQueryType.retrieve)
-							dataObj.modeDrop(DataObjMode.ReorderOn)
-							updateObjects(false, true, true)
-							resetModes = false
-							break
-
 						case TokenAppDoActionFieldType.listSelfSave:
 							const rtn = await state.app.saveList(state, token)
-							dataObj.modeDrop(DataObjMode.ReorderOn)
 							updateObjects(false, true, true)
 							resetModes = false
 							break

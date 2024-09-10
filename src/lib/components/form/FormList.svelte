@@ -14,7 +14,7 @@
 		strRequired
 	} from '$utils/types'
 	import type { DataRecord } from '$utils/types'
-	import { recordsFilter, recordsSelectAll, sortInit, sortUser } from '$comps/form/formList'
+	import { recordsSearch, recordsSelectAll, sortInit, sortUser } from '$comps/form/formList'
 	import { Field } from '$comps/form/field'
 	import { dndzone } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
@@ -22,6 +22,7 @@
 	import FormElement from '$comps/form/FormElement.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
+	import AGGrid from '$comps/form/AGGridSvelte.svelte'
 
 	const FILENAME = '$comps/form/FormList.svelte'
 	const animationDurationMs = 300
@@ -32,7 +33,6 @@
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
-	let dragDisabled = false
 	let listFilterText = ''
 	let listSortObj: DataObjSort = new DataObjSort()
 	let scrollToTop = () => {}
@@ -69,8 +69,8 @@
 		}
 
 		// filter
-		listFilterText = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listFilterText) || ''
-		onFilter(listFilterText)
+		listFilterText = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listSearchText) || ''
+		// onFilter(listFilterText)
 
 		// sort
 		listSortObj = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listSortObj)
@@ -78,7 +78,7 @@
 			listSortObj = sortInit(fieldsDisplayable)
 			state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSortObj, listSortObj)
 		}
-		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
+		// dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
 
 		if (!dataObj.isListEmbed) {
 			state.setDataObjState(dataObj)
@@ -86,14 +86,12 @@
 		}
 	}
 
-	$: dragDisabled = !dataObj.modeActive(DataObjMode.ReorderOn)
-
 	function onFilter(filterText: string) {
 		dataObjData.rowsRetrieved.syncFields(dataObj.dataRecordsDisplay, ['selected'])
-		recordsFilter(filterText, dataObj, fieldsDisplayable)
+		recordsSearch(filterText, dataObj, fieldsDisplayable)
 		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
 		isSelectMultiAll = recordsSelectAll(dataObj.dataRecordsDisplay)
-		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listFilterText, filterText)
+		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSearchText, filterText)
 		dataObj.data.parmsState.valueSet(
 			ParmsObjType.listRecordIdList,
 			dataObj.dataRecordsDisplay.map((r: any) => r.id)
@@ -121,12 +119,7 @@
 	}
 
 	async function onRowClick(record: DataRecord, field: Field) {
-		if (
-			dataObj.actionsFieldListRowActionIdx < 0 ||
-			dataObj.modeActive(DataObjMode.ReorderOn) ||
-			dataObj.raw.isListEdit ||
-			isSelect
-		) {
+		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit || isSelect) {
 			return
 		}
 
@@ -169,6 +162,8 @@
 		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSortObj, listSortObj)
 	}
 </script>
+
+<!-- <AGGrid bind:state {dataObj} {dataObjData} on:formCancelled on:rowClick /> -->
 
 {#if !dataObj.raw.isListHideSearch}
 	<div class="w-full flex mb-6 justify-between">
@@ -223,7 +218,7 @@
 				items: dataObj.dataRecordsDisplay,
 				flipDurationMs: animationDurationMs,
 				transformDraggedElement: onReorderTransformDraggedElement,
-				dragDisabled
+				dragDisabled: false
 			}}
 			on:consider={onReorder}
 			on:finalize={onReorderFinalize}

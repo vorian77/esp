@@ -108,12 +108,9 @@ export class DataObjActionFieldConfirm {
 }
 export enum DataObjActionFieldTriggerEnable {
 	always = 'always',
-	listReorder = 'listReorder',
-	listReorderCancel = 'listReorderCancel',
 	never = 'never',
 	none = 'none',
 	notObjectChanged = 'notObjectChanged',
-	notReorder = 'notReorder',
 	objectChanged = 'objectChanged',
 	objectValidToContinue = 'objectValidToContinue',
 	objectValidToSave = 'objectValidToSave',
@@ -139,25 +136,11 @@ export class DataObjActionFieldTriggerGroup {
 			case DataObjActionFieldTriggerEnable.always:
 				isTriggered = true
 				break
-			case DataObjActionFieldTriggerEnable.listReorder:
-				isTriggered =
-					![null, undefined, ''].includes(dataObj.raw.listReorderColumn) &&
-					!dataObj.modeActive(DataObjMode.ReorderOn) &&
-					dataObj.data.rowsRetrieved.dataRows.length > 1
-				break
-			case DataObjActionFieldTriggerEnable.listReorderCancel:
-				isTriggered =
-					![null, undefined, ''].includes(dataObj.raw.listReorderColumn) &&
-					dataObj.modeActive(DataObjMode.ReorderOn)
-				break
 			case DataObjActionFieldTriggerEnable.never:
 				isTriggered = false
 				break
 			case DataObjActionFieldTriggerEnable.notObjectChanged:
 				isTriggered = !state.objStatus.changed()
-				break
-			case DataObjActionFieldTriggerEnable.notReorder:
-				isTriggered = !dataObj.modeActive(DataObjMode.ReorderOn)
 				break
 			case DataObjActionFieldTriggerEnable.objectChanged:
 				isTriggered = state.objStatus.changed()
