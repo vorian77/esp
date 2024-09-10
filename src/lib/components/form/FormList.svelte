@@ -22,7 +22,7 @@
 	import FormElement from '$comps/form/FormElement.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
-	import AGGrid from '$comps/form/AGGridSvelte.svelte'
+	import AGGrid from '$comps/form/AgGridSvelte.svelte'
 
 	const FILENAME = '$comps/form/FormList.svelte'
 	const animationDurationMs = 300
