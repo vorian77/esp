@@ -161,94 +161,101 @@
 		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
 		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSortObj, listSortObj)
 	}
+	const isNewList = false
 </script>
 
-<!-- <AGGrid bind:state {dataObj} {dataObjData} on:formCancelled on:rowClick /> -->
-
-{#if !dataObj.raw.isListHideSearch}
-	<div class="w-full flex mb-6 justify-between">
-		<button
-			class="btn variant-filled-primary mr-4 {listFilterText === '' ? 'hidden' : ''}"
-			on:click={() => {
-				listFilterText = ''
-				onFilter('')
-			}}
-		>
-			Reset
-		</button>
-		<input
-			class="w-full"
-			type="text"
-			id="formSearch"
-			bind:value={listFilterText}
-			on:keyup={() => onFilter(listFilterText)}
-			placeholder="Search..."
-		/>
-		{#if dataObj.dataRecordsDisplay}
-			<span class="ml-4">Rows: {dataObj.dataRecordsDisplay.length}</span>
-		{/if}
-		{#if isSelect}
-			<span class="ml-0"
-				>Selected: {dataObj.dataRecordsDisplay.filter((r) => r.selected).length}</span
+{#if isNewList}
+	<AGGrid bind:state {dataObj} {dataObjData} on:formCancelled on:rowClick />
+{:else}
+	{#if !dataObj.raw.isListHideSearch}
+		<div class="w-full flex mb-6 justify-between">
+			<button
+				class="btn variant-filled-primary mr-4 {listFilterText === '' ? 'hidden' : ''}"
+				on:click={() => {
+					listFilterText = ''
+					onFilter('')
+				}}
 			>
-		{/if}
+				Reset
+			</button>
+			<input
+				class="w-full"
+				type="text"
+				id="formSearch"
+				bind:value={listFilterText}
+				on:keyup={() => onFilter(listFilterText)}
+				placeholder="Search..."
+			/>
+			{#if dataObj.dataRecordsDisplay}
+				<span class="ml-4">Rows: {dataObj.dataRecordsDisplay.length}</span>
+			{/if}
+			{#if isSelect}
+				<span class="ml-0"
+					>Selected: {dataObj.dataRecordsDisplay.filter((r) => r.selected).length}</span
+				>
+			{/if}
+		</div>
+	{/if}
+
+	<div class="overflow-y-scroll" style={dataHeight}>
+		<table id="formList" class="w-full">
+			<thead>
+				<tr>
+					{#if fieldsDisplayable}
+						{#if isSelect}
+							<th class="selection">
+								{#if isSelectMulti}
+									<input
+										type="checkbox"
+										on:click={() => onSelectAll()}
+										checked={isSelectMultiAll}
+									/>
+								{/if}
+							</th>
+						{/if}
+						{#each fieldsDisplayable as field}
+							<th><Header {field} sortObj={listSortObj} sortField={onSort} /></th>
+						{/each}
+					{/if}
+				</tr>
+			</thead>
+			<tbody
+				use:dndzone={{
+					items: dataObj.dataRecordsDisplay,
+					flipDurationMs: animationDurationMs,
+					transformDraggedElement: onReorderTransformDraggedElement,
+					dragDisabled: false
+				}}
+				on:consider={onReorder}
+				on:finalize={onReorderFinalize}
+			>
+				{#each dataObj.dataRecordsDisplay as record, row (record.id)}
+					<tr tabindex="0" animate:flip={{ duration: animationDurationMs }}>
+						{#if isSelect}
+							<td>
+								<div class="p-2">
+									<input
+										type="checkbox"
+										on:click={() => onSelect(record.id)}
+										checked={record.selected}
+									/>
+								</div>
+							</td>
+						{/if}
+						{#each fieldsDisplayable as field}
+							<td
+								on:click={async () => await onRowClick(record, field)}
+								on:keyup={async () => await onRowClick(record, field)}
+							>
+								<FormElement bind:state {dataObj} {dataObjData} {field} {row} />
+							</td>
+						{/each}
+					</tr>
+				{/each}
+			</tbody>
+		</table>
 	</div>
 {/if}
-
-<div class="overflow-y-scroll" style={dataHeight}>
-	<table id="formList" class="w-full">
-		<thead>
-			<tr>
-				{#if fieldsDisplayable}
-					{#if isSelect}
-						<th class="selection">
-							{#if isSelectMulti}
-								<input type="checkbox" on:click={() => onSelectAll()} checked={isSelectMultiAll} />
-							{/if}
-						</th>
-					{/if}
-					{#each fieldsDisplayable as field}
-						<th><Header {field} sortObj={listSortObj} sortField={onSort} /></th>
-					{/each}
-				{/if}
-			</tr>
-		</thead>
-		<tbody
-			use:dndzone={{
-				items: dataObj.dataRecordsDisplay,
-				flipDurationMs: animationDurationMs,
-				transformDraggedElement: onReorderTransformDraggedElement,
-				dragDisabled: false
-			}}
-			on:consider={onReorder}
-			on:finalize={onReorderFinalize}
-		>
-			{#each dataObj.dataRecordsDisplay as record, row (record.id)}
-				<tr tabindex="0" animate:flip={{ duration: animationDurationMs }}>
-					{#if isSelect}
-						<td>
-							<div class="p-2">
-								<input
-									type="checkbox"
-									on:click={() => onSelect(record.id)}
-									checked={record.selected}
-								/>
-							</div>
-						</td>
-					{/if}
-					{#each fieldsDisplayable as field}
-						<td
-							on:click={async () => await onRowClick(record, field)}
-							on:keyup={async () => await onRowClick(record, field)}
-						>
-							<FormElement bind:state {dataObj} {dataObjData} {field} {row} />
-						</td>
-					{/each}
-				</tr>
-			{/each}
-		</tbody>
-	</table>
-</div>
 
 <!-- <DataViewer header="fieldsDisplayable" data={fieldsDisplayable.map((f) => f.colDO.propName)} /> -->
 

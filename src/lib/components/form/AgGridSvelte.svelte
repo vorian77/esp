@@ -2,13 +2,15 @@
 	import {
 		ComponentUtil,
 		createGrid,
-		type ColDefn,
+		type ColDef,
 		type GridApi,
 		type GridOptions,
 		type GridParams,
 		type GridReadyEvent,
 		type IRowNode,
+		type ISelectCellEditorParams,
 		type Module,
+		type NewValueParams,
 		type RowNode,
 		type RowSelectedEvent,
 		type SelectionChangedEvent
@@ -32,6 +34,7 @@
 	import { recordsSearch, sortInit, sortUser } from '$comps/form/formList'
 	import FormListSearch from '$comps/form/FormListSearch.svelte'
 	import { onMount } from 'svelte'
+	import { defineCodecGeneratorTuple } from 'edgedb/dist/reflection'
 
 	export let state: State
 	export let dataObj: DataObj
@@ -50,6 +53,8 @@
 	let listSearchText = ''
 	let listSortObj: DataObjSort
 	let style = ''
+
+	let tempIsListEdit = true
 
 	$: load(dataObjData)
 
@@ -162,7 +167,7 @@
 	}
 
 	async function onRowSelected(event: RowSelectedEvent) {
-		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit) {
+		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.is || tempIsListEdit) {
 			return
 		} else if (isSelect) {
 			const selectedNodes = event.api.getSelectedNodes()
@@ -176,8 +181,6 @@
 				const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
 				dataObj.data.parmsState.valueSet(ParmsObjType.listRecordIdCurrent, record.id)
 				action.trigger(state, dataObj)
-			} else {
-				console.log('onRowClick.event', event)
 			}
 		}
 	}
@@ -205,11 +208,30 @@
 
 	function setGridColumns() {
 		fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
-		let columnDefs = dataObj.fields.map((f) => ({
-			field: f.colDO.propName,
-			headerName: f.colDO.label,
-			hide: !f.colDO.isDisplayable
-		}))
+		let columnDefs: ColDef[] = []
+
+		dataObj.fields.forEach((f) => {
+			let defn = {}
+
+			// core
+			defn.field = f.colDO.propName
+			defn.headerName = f.colDO.label
+			defn.hide = !f.colDO.isDisplayable
+
+			// edit - select
+			if (f.colDO.propName === 'header') {
+				defn.cellEditor = 'agSelectCellEditor'
+				defn.cellEditorParams = {
+					values: ['Phyllip', 'Alonzo', 'Hall', 'Allen']
+				} as ISelectCellEditorParams
+				defn.editable = true
+				defn.headerName = '✍️ ' + defn.headerName
+				defn.onCellValueChanged = cellChanged
+			}
+
+			columnDefs.push(defn)
+		})
+
 		if (isSelect) {
 			columnDefs.unshift({
 				checkboxSelection: true,
@@ -224,7 +246,11 @@
 		grid.setGridOption('columnDefs', columnDefs)
 	}
 
-	function setGridColumnsProp(columns: ColDefn[], field: string, prop: string, value: any) {
+	function cellChanged(event: NewValueParams) {
+		console.log('cellChanged.event:', event)
+	}
+
+	function setGridColumnsProp(columns: ColDef[], field: string, prop: string, value: any) {
 		let columnIdx: number
 		if (field === '') {
 			// first visible field
@@ -274,7 +300,7 @@
 			const selectedRecords = state.parmsState.valueGet(ParmsObjType.listRecordIdSelected) || []
 			const selected: IRowNode[] = []
 			const deselected: IRowNode[] = []
-			grid.forEachNode(function (node) {
+			grid.forEachNode((node) => {
 				if (selectedRecords.includes(node.data!.id)) {
 					selected.push(node)
 				} else {
