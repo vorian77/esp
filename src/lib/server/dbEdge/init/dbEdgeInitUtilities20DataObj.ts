@@ -485,7 +485,7 @@ export async function addDataObjActionField(data: any) {
 					e.sys_core.getCode('ct_sys_do_action_field_trigger', p.codeActionFieldTriggerEnable)
 				),
 				codeActionFieldType: e.select(
-					e.sys_core.getCode('ct_sys_do_action_field_type', p.codeActionFieldType)
+					e.sys_core.getCode('ct_sys_token_action', p.codeActionFieldType)
 				),
 				codeColor: e.select(e.sys_core.getCode('ct_sys_tailwind_color', p.codeColor)),
 

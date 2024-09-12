@@ -2,7 +2,7 @@
 	import { AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app'
 	import type { State } from '$comps/app/types.appState'
 	import { StatePacket, StatePacketComponent } from '$comps/app/types.appState'
-	import { TokenAppBack, TokenAppDoActionConfirmType } from '$utils/types.token'
+	import { TokenAppAction, TokenAppBack, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import type { DataObj, DataObjData } from '$utils/types'
 	import { AppBar, AppShell } from '@skeletonlabs/skeleton'
 	import NavCrumbs from '$comps/app/NavCrumbs.svelte'
@@ -30,7 +30,9 @@
 			packet: new StatePacket({
 				component: StatePacketComponent.navBack,
 				confirmType: TokenAppDoActionConfirmType.objectChanged,
-				token: new TokenAppBack()
+				token: new TokenAppBack({
+					action: TokenAppAction.none
+				})
 			})
 		})
 	}

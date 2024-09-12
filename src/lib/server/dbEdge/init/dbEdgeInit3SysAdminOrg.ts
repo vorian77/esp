@@ -59,6 +59,7 @@ async function initOrg() {
 		codeComponent: 'FormList',
 		exprFilter: 'none',
 		header: 'Organizations',
+		isListEdit: true,
 		name: 'data_obj_sys_admin_org_list',
 		owner: 'app_sys_admin_org',
 		tables: [{ index: 0, table: 'SysOrg' }],
@@ -76,6 +77,68 @@ async function initOrg() {
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'testCode',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItemsParmName: 'ct_cm_cohort_attd_duration',
+				linkTable: 'SysCode'
+			},
+
+			// {
+			// 	codeAccess: 'optional',
+			// 	codeFieldElement: 'checkbox',
+			// 	columnName: 'codeMultiCerts',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 210,
+			// 	orderDefine: 210,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+			// 	fieldListItemsParmName: 'ct_cm_course_cert',
+			// 	linkTable: 'SysCode'
+			// },
+
+			// {
+			// 	codeAlignmentAlt: 'center',
+			// 	codeFieldElement: 'radio',
+			// 	columnName: 'codeCmCohortAttdDuration',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 60,
+			// 	orderDefine: 60,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+			// 	fieldListItemsParmName: 'ct_cm_cohort_attd_duration',
+			// 	linkTable: 'SysCode'
+			// },
+
+			{
+				codeAccess: 'optional',
+				columnName: 'testDate',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'testNumber',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'testText',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
 				indexTable: 0
 			}
 		]
@@ -302,7 +365,7 @@ async function initUser() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'embedListSelect',
+				codeFieldElement: 'doEmbedListSelect',
 				columnName: 'userTypes',
 				isDisplayable: true,
 				orderDisplay: 50,

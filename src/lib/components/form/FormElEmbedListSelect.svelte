@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { FieldProps } from '$comps/form/field'
 	import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
-	import { TokenAppDoActionFieldType } from '$utils/types.token'
+	import { TokenAppAction } from '$utils/types.token'
 	import Layout from '$comps/layout/BaseLayout.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
@@ -15,7 +15,7 @@
 	$: field = fp.field as FieldEmbedListSelect
 
 	function openDialogIcon() {
-		field.dataObj.actionsFieldTrigger(TokenAppDoActionFieldType.embedListSelect, fp.state)
+		field.dataObj.actionsFieldTrigger(TokenAppAction.doEmbedListSelect, fp.state)
 	}
 </script>
 

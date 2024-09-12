@@ -5,7 +5,7 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '$routes/api/api.ts'
 
 export enum ApiFunction {
-	dbEdgeGetDataObjActionField = 'dbEdgeGetDataObjActionField',
+	dbEdgeGetDataObjActionFieldGroup = 'dbEdgeGetDataObjActionFieldGroup',
 	dbEdgeGetDataObjId = 'dbEdgeGetDataObjId',
 	dbEdgeGetNodesBranch = 'dbEdgeGetNodesBranch',
 	dbEdgeGetNodesLevel = 'dbEdgeGetNodesLevel',

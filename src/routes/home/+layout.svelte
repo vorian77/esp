@@ -9,9 +9,9 @@
 		StatePacketComponent
 	} from '$comps/app/types.appState'
 	import {
+		TokenAppAction,
 		TokenAppDo,
 		TokenAppDoActionConfirmType,
-		TokenAppDoActionFieldType,
 		TokenAppTreeReset
 	} from '$utils/types.token'
 	import {
@@ -107,7 +107,7 @@
 			packet: new StatePacket({
 				component: StatePacketComponent.navHome,
 				confirmType: TokenAppDoActionConfirmType.objectChanged,
-				token: new TokenAppTreeReset()
+				token: new TokenAppTreeReset({ action: TokenAppAction.none })
 			})
 		})
 	}
@@ -121,7 +121,7 @@
 </script>
 
 {#if state}
-	<!-- <DataViewer header="state.objStatus-obj" data={state.objStatus} /> -->
+	<DataViewer header="state.objStatus-obj" data={state.objStatus} />
 {/if}
 <AppShell slotSidebarLeft="w-{SIDEBAR_LEFT_WIDTH}">
 	<svelte:fragment slot="header">

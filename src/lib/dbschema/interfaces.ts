@@ -349,6 +349,10 @@ export namespace sys_core {
     "page"?: string | null;
   }
   export interface SysOrg extends SysEnt {
+    "testCode": SysCode[];
+    "testDate"?: edgedb.LocalDate | null;
+    "testNumber"?: number | null;
+    "testText"?: string | null;
     "codeState"?: SysCode | null;
     "addr1"?: string | null;
     "addr2"?: string | null;

@@ -5,6 +5,7 @@ import type { DbNode, RawNode, User } from '$utils/types'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
 import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
 import {
+	TokenAppAction,
 	TokenAppDoActionConfirmType,
 	TokenAppTreeNode,
 	TokenAppTreeNodeId
@@ -34,6 +35,7 @@ export class NavTree {
 			{
 				header: 'root',
 				id: '+ROOT+',
+				isHideRowManager: false,
 				name: 'root',
 				_codeNodeType: NodeType.treeRoot,
 				orderDefine: 0
@@ -96,7 +98,7 @@ export class NavTree {
 					packet: new StatePacket({
 						component: StatePacketComponent.navTree,
 						confirmType: TokenAppDoActionConfirmType.objectChanged,
-						token: new TokenAppTreeNode(nodeNav)
+						token: new TokenAppTreeNode({ action: TokenAppAction.none, node: nodeNav })
 						// callbacks: [() => dispatch('treeChanged')]
 					})
 				})
@@ -237,7 +239,7 @@ export async function initNavTree(user: User) {
 async function getNodesBranch(nodeId: string) {
 	const result: ResponseBody = await apiFetch(
 		ApiFunction.dbEdgeGetNodesBranch,
-		new TokenAppTreeNodeId(nodeId)
+		new TokenAppTreeNodeId({ action: TokenAppAction.none, nodeId })
 	)
 	if (result.success) {
 		return result.data

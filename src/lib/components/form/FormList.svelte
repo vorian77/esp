@@ -22,7 +22,7 @@
 	import FormElement from '$comps/form/FormElement.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
-	import AGGrid from '$comps/form/AgGridSvelte.svelte'
+	import AgGrid from '$comps/form/AgGridGrid.svelte'
 
 	const FILENAME = '$comps/form/FormList.svelte'
 	const animationDurationMs = 300
@@ -165,7 +165,7 @@
 </script>
 
 {#if isNewList}
-	<AGGrid bind:state {dataObj} {dataObjData} on:formCancelled on:rowClick />
+	<AgGrid bind:state {dataObj} {dataObjData} on:formCancelled on:rowClick />
 {:else}
 	{#if !dataObj.raw.isListHideSearch}
 		<div class="w-full flex mb-6 justify-between">

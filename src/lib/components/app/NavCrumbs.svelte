@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { AppLevelCrumb } from '$comps/app/types.app'
 	import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
-	import { TokenAppCrumbs, TokenAppDoActionConfirmType } from '$utils/types.token'
+	import { TokenAppAction, TokenAppCrumbs, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/nav/NavCrumbs.svelte'
@@ -14,7 +14,10 @@
 			packet: new StatePacket({
 				component: StatePacketComponent.navCrumbs,
 				confirmType: TokenAppDoActionConfirmType.objectChanged,
-				token: new TokenAppCrumbs(crumbIdx)
+				token: new TokenAppCrumbs({
+					action: TokenAppAction.none,
+					crumbIdx
+				})
 			})
 		})
 	}

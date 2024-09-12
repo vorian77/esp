@@ -1,10 +1,6 @@
 import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
 import { DataObj, DataObjConfirm, DataObjMode, DataObjSaveMode } from '$utils/types'
-import {
-	TokenAppDo,
-	TokenAppDoActionConfirmType,
-	TokenAppDoActionFieldType
-} from '$utils/types.token'
+import { TokenAppDo, TokenAppDoActionConfirmType, TokenAppAction } from '$utils/types.token'
 import { memberOfEnum, valueOrDefault } from '$utils/types'
 import { FieldColor } from '$comps/form/field'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
@@ -17,7 +13,7 @@ export class DataObjActionField {
 	actionFieldConfirms: DataObjActionFieldConfirm[]
 	actionFieldShows: DataObjActionFieldShow[]
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
-	codeActionFieldType: TokenAppDoActionFieldType
+	codeActionFieldType: TokenAppAction
 	fieldEmbed?: FieldEmbed
 	fieldColor: FieldColor
 	header: string
@@ -72,7 +68,7 @@ export class DataObjActionField {
 				confirm,
 				confirmType,
 				token: new TokenAppDo({
-					actionType: this.codeActionFieldType,
+					action: this.codeActionFieldType,
 					dataObj,
 					fieldEmbed: this.fieldEmbed,
 					state

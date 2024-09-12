@@ -4,6 +4,33 @@ import { addColumn } from '$server/dbEdge/init/dbEdgeInitUtilities30DB'
 export async function initPreColumn() {
 	sectionHeader('Column')
 
+	// temp
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'link',
+		header: 'Test - Code',
+		isMultiSelect: true,
+		name: 'testCode'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'date',
+		header: 'Test - Date',
+		name: 'testDate'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'int64',
+		header: 'Test - Number',
+		name: 'testNumber'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'str',
+		header: 'Test - Text',
+		name: 'testText'
+	})
+
 	await addColumn({
 		codeDataType: 'link',
 		header: 'Action',

@@ -20,7 +20,7 @@
 			packet: new StatePacket({
 				component: StatePacketComponent.navRow,
 				confirmType: TokenAppDoActionConfirmType.objectChanged,
-				token: new TokenAppRow(rowAction)
+				token: new TokenAppRow({ action: rowAction })
 			})
 		})
 	}

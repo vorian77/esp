@@ -44,17 +44,14 @@ import { FieldSelect } from '$comps/form/fieldSelect'
 import { FieldTextarea } from '$comps/form/fieldTextarea'
 import { FieldToggle } from '$comps/form/fieldToggle'
 import { DataObjActionQuery, DataObjActionQueryFunction } from '$comps/app/types.appQuery'
-import {
-	TokenApiDbDataObjSource,
-	TokenApiQueryData,
-	TokenAppDoActionFieldType,
-	TokenAppDoActionConfirmType
-} from '$utils/types.token'
+import { TokenApiDbDataObjSource, TokenApiQueryData, TokenAppAction } from '$utils/types.token'
 import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 import { getEnhancement } from '$enhance/crud/_crud'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.dataObj.ts'
+
+export type DataItems = Record<string, { data: string; display: string }[]>
 
 export class DataObj {
 	actionsField: DataObjActionField[] = []
@@ -63,7 +60,7 @@ export class DataObj {
 	data: DataObjData
 	dataFieldsChanged: FieldValues = new FieldValues()
 	dataFieldsValidity: FieldValues = new FieldValues()
-	dataItems: DataRecord = {}
+	dataItems: DataItems = {}
 	dataRecordsDisplay: DataRecord[] = []
 	dataRecordsHidden: DataRecord[] = []
 	fields: Field[] = []
@@ -84,7 +81,7 @@ export class DataObj {
 				? new DBTable(this.raw.tables[0].table)
 				: undefined
 	}
-	actionsFieldEmbedSet(codeActionFieldType: TokenAppDoActionFieldType, field: FieldEmbed) {
+	actionsFieldEmbedSet(codeActionFieldType: TokenAppAction, field: FieldEmbed) {
 		const fieldAction = this.actionsField.find((f) => f.codeActionFieldType === codeActionFieldType)
 		if (fieldAction) {
 			fieldAction.setFieldEmbed(field)
@@ -96,7 +93,7 @@ export class DataObj {
 			})
 		}
 	}
-	actionsFieldTrigger(codeActionFieldType: TokenAppDoActionFieldType, state: State) {
+	actionsFieldTrigger(codeActionFieldType: TokenAppAction, state: State) {
 		const field = this.actionsField.find((f) => f.codeActionFieldType === codeActionFieldType)
 		if (field) {
 			field.trigger(state, this)
@@ -517,10 +514,10 @@ export class DataObj {
 }
 
 export class DataObjActionProxy {
-	actionType: TokenAppDoActionFieldType
+	action: TokenAppAction
 	proxy: Function
-	constructor(actionType: TokenAppDoActionFieldType, proxy: Function) {
-		this.actionType = actionType
+	constructor(action: TokenAppAction, proxy: Function) {
+		this.action = action
 		this.proxy = proxy
 	}
 }

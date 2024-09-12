@@ -6,7 +6,7 @@ import {
 	RawDataObjPropDisplayEmbedListEdit,
 	RawDataObjPropDisplayEmbedListSelect
 } from '$comps/dataObj/types.rawDataObj'
-import { TokenAppDoActionFieldType } from '$utils/types.token'
+import { TokenAppAction } from '$utils/types.token'
 import { State } from '$comps/app/types.appState'
 import { error } from '@sveltejs/kit'
 
@@ -56,8 +56,8 @@ export class FieldEmbedListConfig extends FieldEmbed {
 		const field = new FieldEmbedListConfig(props)
 		await field.initDataObj(props, DataObjEmbedType.listConfig)
 		if (field.dataObj) {
-			field.dataObj.actionsFieldEmbedSet(TokenAppDoActionFieldType.embedListConfigEdit, field)
-			field.dataObj.actionsFieldEmbedSet(TokenAppDoActionFieldType.embedListConfigNew, field)
+			field.dataObj.actionsFieldEmbedSet(TokenAppAction.doEmbedListConfigEdit, field)
+			field.dataObj.actionsFieldEmbedSet(TokenAppAction.doEmbedListConfigNew, field)
 		}
 		return field
 	}
@@ -107,7 +107,7 @@ export class FieldEmbedListSelect extends FieldEmbed {
 		const field = new FieldEmbedListSelect(props)
 		await field.initDataObj(props, DataObjEmbedType.listSelect)
 		if (field.dataObj) {
-			field.dataObj.actionsFieldEmbedSet(TokenAppDoActionFieldType.embedListSelect, field)
+			field.dataObj.actionsFieldEmbedSet(TokenAppAction.doEmbedListSelect, field)
 		}
 		return field
 	}

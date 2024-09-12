@@ -272,7 +272,7 @@ async function initDataObjActionField() {
 				orderDefine: 110,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_action_field_type',
+				fieldListItemsParmName: 'ct_sys_token_action',
 				linkTable: 'SysCode'
 			},
 			{

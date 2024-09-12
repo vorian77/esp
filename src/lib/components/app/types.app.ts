@@ -21,8 +21,8 @@ import {
 	TokenApiDbDataObjSource,
 	TokenApiQueryType,
 	TokenApiQuery,
+	TokenAppAction,
 	TokenAppModalEmbedField,
-	TokenAppDoActionFieldType,
 	TokenAppRow,
 	TokenAppTreeNode,
 	TokenAppTreeNodeId,
@@ -281,8 +281,8 @@ export class App {
 
 			const tabParent = this.getCurrTabParentTab()
 			if (tabParent && tabParent.data) {
-				switch (token.actionType) {
-					case TokenAppDoActionFieldType.detailDelete:
+				switch (token.action) {
+					case TokenAppAction.doDetailDelete:
 						if (currTab.data.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset)) {
 							if (!tabParent || !tabParent.listHasRecords()) {
 								this.popLevel()
@@ -330,7 +330,7 @@ export class App {
 						}
 						break
 
-					case TokenAppDoActionFieldType.detailSave:
+					case TokenAppAction.doDetailSave:
 						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 							return this
 						await query(state, tabParent, TokenApiQueryType.retrieve)
@@ -343,7 +343,7 @@ export class App {
 						error(500, {
 							file: FILENAME,
 							function: 'App.detailUpdate',
-							message: `No case defined for TokenAppDoAction: ${token.actionType}`
+							message: `No case defined for TokenAppDoAction: ${token.action}`
 						})
 				}
 			}
@@ -622,7 +622,7 @@ export enum AppRowActionType {
 async function getNodesLevel(nodeId: string) {
 	const result: ResponseBody = await apiFetch(
 		ApiFunction.dbEdgeGetNodesLevel,
-		new TokenAppTreeNodeId(nodeId)
+		new TokenAppTreeNodeId({ action: TokenAppAction.none, nodeId })
 	)
 	if (result.success) {
 		return result.data

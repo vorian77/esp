@@ -76,8 +76,8 @@ export async function getDataObjId(dataObjName: string) {
 	return await query.run(client)
 }
 
-export async function getDataObjActionField(actionName: string) {
-	const query = e.select(e.sys_core.SysDataObjActionField, (a) => ({
+export async function getDataObjActionFieldGroup(actionName: string) {
+	const query = e.select(e.sys_core.SysDataObjActionFieldGroup, (a) => ({
 		...shapeDataObjActionFieldGroup(a),
 		filter_single: e.op(a.name, '=', actionName)
 	}))

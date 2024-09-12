@@ -168,6 +168,7 @@ export class RepEl {
 		this.exprCustom = strOptional(obj.exprCustom, clazz, 'expr')
 		this.header = strOptional(obj.header, clazz, 'header')
 		this.indexTable = nbrOptional(obj.indexTable, clazz, 'indexTable')
+		this.isDisplay = booleanRequired(obj.isDisplay, clazz, 'isDisplay')
 		this.isDisplayable = booleanRequired(obj.isDisplayable, clazz, 'isDisplayable')
 		this.nameCustom = strOptional(obj.nameCustom, clazz, 'name')
 		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')

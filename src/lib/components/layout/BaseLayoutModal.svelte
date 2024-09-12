@@ -1,11 +1,7 @@
 <script lang="ts">
 	import BaseLayout from '$comps/layout/BaseLayout.svelte'
 	import { StateSurfaceModal } from '$comps/app/types.appState'
-	import {
-		TokenAppDoActionFieldType,
-		TokenAppModalReturn,
-		TokenAppModalReturnType
-	} from '$utils/types.token'
+	import { TokenAppAction, TokenAppModalReturn, TokenAppModalReturnType } from '$utils/types.token'
 	import { getModalStore } from '@skeletonlabs/skeleton'
 	import { DataObjCardinality, DataObjEmbedType, ParmsObjType } from '$utils/types'
 	import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
@@ -25,7 +21,7 @@
 		state.packet = obj.packet
 		if (
 			state.embedType === DataObjEmbedType.listConfig &&
-			obj.packet.token.actionType === TokenAppDoActionFieldType.detailDelete
+			obj.packet.token.actionType === TokenAppAction.doDetailDelete
 		) {
 			modeDelete = true
 		}
@@ -37,7 +33,13 @@
 			const rowCnt = currTab?.data?.rowsRetrieved.dataRows.length
 			if (rowCnt === 0) {
 				if ($storeModal[0]?.response) {
-					$storeModal[0].response(new TokenAppModalReturn(TokenAppModalReturnType.complete, []))
+					$storeModal[0].response(
+						new TokenAppModalReturn({
+							action: TokenAppAction.none,
+							data: [],
+							type: TokenAppModalReturnType.complete
+						})
+					)
 				}
 				dropEmbedResources()
 				storeModal.close()
@@ -48,18 +50,26 @@
 	async function onFooterActionClick(action: DataObjActionField) {
 		dropEmbedResources()
 		switch (action.codeActionFieldType) {
-			case TokenAppDoActionFieldType.dialogCancel:
+			case TokenAppAction.modalCancel:
 				if ($storeModal[0].response)
 					$storeModal[0].response(
-						new TokenAppModalReturn(TokenAppModalReturnType.cancel, undefined)
+						new TokenAppModalReturn({
+							action: TokenAppAction.none,
+							data: undefined,
+							type: TokenAppModalReturnType.cancel
+						})
 					)
 				storeModal.close()
 				break
 
-			case TokenAppDoActionFieldType.dialogDone:
+			case TokenAppAction.modalDone:
 				if ($storeModal[0].response)
 					$storeModal[0].response(
-						new TokenAppModalReturn(TokenAppModalReturnType.complete, state.parmsState)
+						new TokenAppModalReturn({
+							action: TokenAppAction.none,
+							data: state.parmsState,
+							type: TokenAppModalReturnType.complete
+						})
 					)
 				storeModal.close()
 				break

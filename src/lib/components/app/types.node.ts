@@ -32,7 +32,7 @@ export class RawNode {
 		this.header = dbNode.header
 		this.icon = valueOrDefault(dbNode._codeIcon, DEFAULT_ICON)
 		this.id = dbNode.id
-		this.isHideRowManager = dbNode.isHideRowManager
+		this.isHideRowManager = booleanOrFalse(dbNode.isHideRowManager, 'isHideRowManager')
 		this.name = dbNode.name
 		this.page = valueOrDefault(dbNode.page, '/home')
 		this.type = dbNode._codeNodeType

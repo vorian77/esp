@@ -14,10 +14,10 @@
 		TokenApiDbDataObjSource,
 		TokenApiQuery,
 		TokenApiQueryType,
+		TokenAppAction,
 		TokenAppBack,
 		TokenAppCrumbs,
 		TokenAppDo,
-		TokenAppDoActionFieldType,
 		TokenAppDoActionConfirmType,
 		TokenAppModalEmbedField,
 		TokenAppModalReturnType,
@@ -45,6 +45,7 @@
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import LayoutProcess from '$comps/layout/LayoutProcess.svelte'
 	import LayoutApp from '$comps/layout/LayoutApp.svelte'
+	import LayoutSelectMultiple from '$comps/layout/LayoutSelectMultiple.svelte'
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import { migrate } from '$utils/utils.processMigrate'
 	import { error } from '@sveltejs/kit'
@@ -61,18 +62,19 @@
 	let currTab: AppLevelTab | undefined
 	let parentTab: AppLevelTab | undefined
 
-	const componentsLayout: Record<string, any> = {
-		layoutApp: LayoutApp,
-		layoutContent: LayoutContent,
-		layoutProcess: LayoutProcess,
-		layoutTab: LayoutTab
+	const componentsLayout: Record<string, { component: string; propDataObj: boolean }> = {
+		layoutApp: { component: LayoutApp, propDataObj: true },
+		layoutContent: { component: LayoutContent, propDataObj: true },
+		layoutProcess: { component: LayoutProcess, propDataObj: true },
+		layoutSelectMultiple: { component: LayoutSelectMultiple, propDataObj: false },
+		layoutTab: { component: LayoutTab, propDataObj: true }
 	}
+
 	const componentsProcess = [
 		StatePacketComponent.navBack,
 		StatePacketComponent.navCrumbs,
 		StatePacketComponent.dataObj,
 		StatePacketComponent.navRow,
-
 		StatePacketComponent.navTree,
 		StatePacketComponent.modal,
 		StatePacketComponent.embedField
@@ -98,18 +100,18 @@
 		switch (packet.component) {
 			case StatePacketComponent.dataObj:
 				if (token instanceof TokenAppDo) {
-					switch (token.actionType) {
-						case TokenAppDoActionFieldType.detailDelete:
+					switch (token.action) {
+						case TokenAppAction.doDetailDelete:
 							await state.app.saveDetail(state, token)
 							updateObjects(true, true, true)
 							break
 
-						case TokenAppDoActionFieldType.detailMigrate:
+						case TokenAppAction.doDetailMigrate:
 							await migrate(state, token.dataObj)
 							updateObjects(false, false, false)
 							break
 
-						case TokenAppDoActionFieldType.detailNew:
+						case TokenAppAction.doDetailNew:
 							parentTab = state.app.getCurrTabParentTab()
 							if (parentTab)
 								parentTab.data?.parmsState.valueSet(ParmsObjType.listRecordIdCurrent, '')
@@ -117,18 +119,18 @@
 							updateObjects(false, true, true)
 							break
 
-						case TokenAppDoActionFieldType.detailProcessExecute:
+						case TokenAppAction.doDetailProcessExecute:
 							alert('detailProcessExecute...')
 							// await migrate(state, token.dataObj)
 							updateObjects(false, false, false)
 							break
 
-						case TokenAppDoActionFieldType.detailSave:
+						case TokenAppAction.doDetailSave:
 							await state.app.saveDetail(state, token)
 							updateObjects(true, true, true)
 							break
 
-						case TokenAppDoActionFieldType.detailSaveCancel:
+						case TokenAppAction.doDetailSaveCancel:
 							currLevel = state.app.getCurrLevel()
 							if (currLevel) {
 								currTab = currLevel.getCurrTab()
@@ -147,7 +149,7 @@
 										default:
 											error(500, {
 												file: FILENAME,
-												function: `processState.actionType: ${token.actionType}`,
+												function: `processState.actionType: ${token.action}`,
 												message: `No case defined for DataRecordStatus: ${dataRow.status} `
 											})
 									}
@@ -155,12 +157,12 @@
 							}
 							break
 
-						case TokenAppDoActionFieldType.detailSaveAs:
+						case TokenAppAction.doDetailSaveAs:
 							await state.app.tabDuplicate(state, token)
 							updateObjects(false, true, true)
 							break
 
-						case TokenAppDoActionFieldType.embedListConfigEdit:
+						case TokenAppAction.doEmbedListConfigEdit:
 							await state.openModalEmbedListConfig(
 								token,
 								TokenApiQueryType.retrieve,
@@ -168,7 +170,7 @@
 							)
 							break
 
-						case TokenAppDoActionFieldType.embedListConfigNew:
+						case TokenAppAction.doEmbedListConfigNew:
 							await state.openModalEmbedListConfig(
 								token,
 								TokenApiQueryType.preset,
@@ -176,7 +178,7 @@
 							)
 							break
 
-						case TokenAppDoActionFieldType.embedListSelect:
+						case TokenAppAction.doEmbedListSelect:
 							currLevel = state.app.getCurrLevel()
 							if (currLevel) {
 								currTab = currLevel.getCurrTab()
@@ -185,7 +187,7 @@
 							await state.openModalEmbedListSelect(token, fModalCloseUpdateEmbedListSelect)
 							break
 
-						case TokenAppDoActionFieldType.export:
+						case TokenAppAction.doExport:
 							currLevel = state.app.getCurrLevel()
 							if (currLevel) {
 								currTab = currLevel.getCurrTab()
@@ -194,27 +196,22 @@
 							updateObjects(false, false, false)
 							break
 
-						case TokenAppDoActionFieldType.listDetailEdit:
-							// error(500, {
-							// 	file: FILENAME,
-							// 	function: 'listDetailEdit',
-							// 	message: `Test Error`
-							// })
+						case TokenAppAction.doListDetailEdit:
 							await state.app.addLevelNode(state, token, TokenApiQueryType.retrieve)
 							updateObjects(true, true, true)
 							break
 
-						case TokenAppDoActionFieldType.listDetailNew:
+						case TokenAppAction.doListDetailNew:
 							await state.app.addLevelNode(state, token, TokenApiQueryType.preset)
 							updateObjects(true, true, true)
 							break
 
-						case TokenAppDoActionFieldType.listSelfRefresh:
+						case TokenAppAction.doListSelfRefresh:
 							await query(state, state.app.getCurrTab(), TokenApiQueryType.retrieve)
 							updateObjects(false, true, true)
 							break
 
-						case TokenAppDoActionFieldType.listSelfSave:
+						case TokenAppAction.doListSelfSave:
 							const rtn = await state.app.saveList(state, token)
 							updateObjects(false, true, true)
 							resetModes = false
@@ -224,7 +221,7 @@
 							error(500, {
 								file: FILENAME,
 								function: 'processState.objAction',
-								message: `No case defined for TokenApiDbActionType: ${token.actionType} `
+								message: `No case defined for TokenApiDbActionType: ${token.action} `
 							})
 					}
 				}
@@ -243,6 +240,8 @@
 					if (token instanceof TokenAppModalEmbedField) {
 						await state.app.addLevelModal(state, token)
 						updateObjects(true, true, true)
+					} else {
+						updateObjects(false, false, false)
 					}
 				}
 				break
@@ -328,7 +327,7 @@
 			packet: new StatePacket({
 				component: StatePacketComponent.navHome,
 				confirmType: TokenAppDoActionConfirmType.objectChanged,
-				token: new TokenAppTreeSetParent()
+				token: new TokenAppTreeSetParent({ action: TokenAppAction.none })
 			})
 		})
 	}
@@ -344,9 +343,19 @@
 	}
 </script>
 
-{#if currLayout && dataObj && dataObjData}
+{#if currLayout}
 	<div class={state instanceof StateSurfaceEmbed ? '' : 'p-4'}>
-		<svelte:component this={currLayout} bind:state {dataObj} {dataObjData} on:formCancelled />
+		{#if currLayout.propDataObj && dataObj && dataObjData}
+			<svelte:component
+				this={currLayout.component}
+				bind:state
+				{dataObj}
+				{dataObjData}
+				on:formCancelled
+			/>
+		{:else if !currLayout.propDataObj}
+			<svelte:component this={currLayout.component} bind:state on:formCancelled />
+		{/if}
 	</div>
 {/if}
 

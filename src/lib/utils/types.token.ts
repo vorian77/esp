@@ -259,31 +259,64 @@ export class TokenApiUserName extends TokenApi {
 }
 
 export class TokenApp extends Token {
-	constructor() {
+	action: TokenAppAction
+	constructor(obj: any) {
+		const clazz = 'TokenApp'
 		super()
+		this.action = required(obj.action, clazz, 'action')
 	}
 }
+
+export enum TokenAppAction {
+	// dataObj
+	doDetailDelete = 'doDetailDelete',
+	doDetailMigrate = 'doDetailMigrate',
+	doDetailNew = 'doDetailNew',
+	doDetailProcessExecute = 'doDetailProcessExecute',
+	doDetailSave = 'doDetailSave',
+	doDetailSaveAs = 'doDetailSaveAs',
+	doDetailSaveCancel = 'doDetailSaveCancel',
+
+	doEmbedListConfigEdit = 'doEmbedListConfigEdit',
+	doEmbedListConfigNew = 'doEmbedListConfigNew',
+	doEmbedListEditParmValue = 'doEmbedListEditParmValue',
+	doEmbedListSelect = 'doEmbedListSelect',
+
+	doExport = 'doExport',
+
+	doListDetailEdit = 'doListDetailEdit',
+	doListDetailNew = 'doListDetailNew',
+	doListSelfRefresh = 'doListSelfRefresh',
+	doListSelfSave = 'doListSelfSave',
+
+	// modal
+	modalCancel = 'modalCancel',
+	modalDone = 'modalDone',
+
+	none = 'none'
+}
+
 export class TokenAppBack extends TokenApp {
-	constructor() {
-		super()
+	constructor(obj: any) {
+		const clazz = 'TokenAppBack'
+		super(obj)
 	}
 }
 export class TokenAppCrumbs extends TokenApp {
 	crumbIdx: number
-	constructor(crumbIdx: number) {
-		super()
-		this.crumbIdx = crumbIdx
+	constructor(obj: any) {
+		const clazz = 'TokenAppCrumbs'
+		super(obj)
+		this.crumbIdx = required(obj.crumbIdx, clazz, 'crumbIdx')
 	}
 }
 export class TokenAppDo extends TokenApp {
-	actionType: TokenAppDoActionFieldType
 	dataObj: DataObj
 	fieldEmbed?: FieldEmbed
 	state: State
 	constructor(obj: any) {
 		const clazz = 'TokenAppDo'
-		super()
-		this.actionType = required(obj.actionType, clazz, 'actionType')
+		super(obj)
 		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
 		this.fieldEmbed = obj.fieldEmbed
 		this.state = required(obj.state, clazz, 'state')
@@ -297,55 +330,12 @@ export enum TokenAppDoActionConfirmType {
 	objectValidToContinue = 'objectValidToContinue'
 }
 
-export enum TokenAppDoActionFieldType {
-	back = 'back',
-
-	detailDelete = 'detailDelete',
-	detailMigrate = 'detailMigrate',
-	detailNew = 'detailNew',
-	detailProcessExecute = 'detailProcessExecute',
-	detailSaveAs = 'detailSaveAs',
-	detailSave = 'detailSave',
-	detailSaveCancel = 'detailSaveCancel',
-
-	dialogCancel = 'dialogCancel',
-	dialogDone = 'dialogDone',
-	dialogNext = 'dialogNext',
-	dialogPrevious = 'dialogPrevious',
-
-	embedListConfigEdit = 'embedListConfigEdit',
-	embedListConfigNew = 'embedListConfigNew',
-	embedListEditParmValue = 'embedListEditParmValue',
-	embedListSelect = 'embedListSelect',
-
-	export = 'export',
-
-	listDetailEdit = 'listDetailEdit',
-	listDetailNew = 'listDetailNew',
-
-	listSelfDelete = 'listSelfDelete',
-	listSelfEdit = 'listSelfEdit',
-	listSelfNew = 'listSelfNew',
-	listSelfRefresh = 'listSelfRefresh',
-	listSelfSave = 'listSelfSave',
-
-	none = 'none'
-}
-
-export class TokenAppDoName extends TokenApp {
-	dataObjName: string
-	constructor(dataObjName: string) {
-		super()
-		this.dataObjName = dataObjName
-	}
-}
-
 export class TokenAppModalEmbedField extends TokenApp {
 	dataObjSourceModal: TokenApiDbDataObjSource
 	queryType: TokenApiQueryType
 	constructor(obj: any) {
 		const clazz = 'TokenAppModalEmbedField'
-		super()
+		super(obj)
 		this.dataObjSourceModal = required(obj.dataObjSourceModal, clazz, 'dataObjSourceModal')
 		this.queryType = required(obj.queryType, clazz, 'queryType')
 	}
@@ -354,10 +344,11 @@ export class TokenAppModalEmbedField extends TokenApp {
 export class TokenAppModalReturn extends TokenApp {
 	type: TokenAppModalReturnType
 	data: any
-	constructor(type: TokenAppModalReturnType, data: any) {
-		super()
-		this.type = type
-		this.data = data
+	constructor(obj: any) {
+		const clazz = 'TokenAppModalReturn'
+		super(obj)
+		this.type = required(obj.type, clazz, 'type')
+		this.data = required(obj.data, clazz, 'data')
 	}
 }
 export enum TokenAppModalReturnType {
@@ -369,44 +360,52 @@ export enum TokenAppModalReturnType {
 export class TokenAppProcess extends TokenApp {
 	dataObjSource: TokenApiDbDataObjSource
 	process: Process
-	constructor(process: Process, dataObjNameProcess: string) {
-		super()
-		this.dataObjSource = new TokenApiDbDataObjSource({ dataObjName: dataObjNameProcess })
-		this.process = process
+	constructor(obj: any) {
+		const clazz = 'TokenAppProcess'
+		super(obj)
+		this.dataObjSource = new TokenApiDbDataObjSource({
+			dataObjName: strRequired(obj.dataObjNameProcess, clazz, 'dataObjNameProcess')
+		})
+		this.process = required(obj.process, clazz, 'process')
 	}
 }
 
 export class TokenAppRow extends TokenApp {
 	rowAction: AppRowActionType
-	constructor(rowAction: AppRowActionType) {
-		super()
-		this.rowAction = rowAction
+	constructor(obj: any) {
+		const clazz = 'TokenAppRow'
+		super(obj)
+		this.rowAction = required(obj.rowAction, clazz, 'rowAction')
 	}
 }
 
 export class TokenAppTreeNode extends TokenApp {
 	node: Node
-	constructor(node: Node) {
-		super()
-		this.node = node
+	constructor(obj: any) {
+		const clazz = 'TokenAppTreeNode'
+		super(obj)
+		this.node = required(obj.node, clazz, 'node')
 	}
 }
 export class TokenAppTreeNodeId extends TokenApp {
 	nodeId: string
-	constructor(nodeId: string) {
-		super()
-		this.nodeId = nodeId
+	constructor(obj: any) {
+		const clazz = 'TokenAppTreeNodeId'
+		super(obj)
+		this.nodeId = strRequired(obj.nodeId, clazz, 'nodeId')
 	}
 }
 
 export class TokenAppTreeReset extends TokenApp {
-	constructor() {
-		super()
+	constructor(obj: any) {
+		const clazz = 'TokenAppTreeReset'
+		super(obj)
 	}
 }
 
 export class TokenAppTreeSetParent extends TokenApp {
-	constructor() {
-		super()
+	constructor(obj: any) {
+		const clazz = 'TokenAppTreeSetParent'
+		super(obj)
 	}
 }

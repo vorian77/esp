@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
 	import {
+		TokenAppAction,
 		TokenAppDoActionConfirmType,
 		TokenAppTreeNode,
 		TokenAppTreeReset
@@ -67,7 +68,7 @@
 				packet = new StatePacket({
 					component: StatePacketComponent.navHome,
 					confirmType: TokenAppDoActionConfirmType.objectChanged,
-					token: new TokenAppTreeReset()
+					token: new TokenAppTreeReset({ action: TokenAppAction.none })
 				})
 				break
 
@@ -76,7 +77,7 @@
 				packet = new StatePacket({
 					component: StatePacketComponent.navTree,
 					confirmType: TokenAppDoActionConfirmType.objectChanged,
-					token: new TokenAppTreeNode(node)
+					token: new TokenAppTreeNode({ action: TokenAppAction.none, node })
 				})
 				break
 

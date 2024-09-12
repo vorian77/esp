@@ -25,7 +25,6 @@
 
 	let classContent = ''
 	let currComponent: any
-	let headerDialog: string = ''
 	let headerObj: string = ''
 	let headerObjSub: string = ''
 	let isHeaderClose: boolean = false
@@ -34,7 +33,6 @@
 	$: currComponent = comps[dataObj.raw.codeComponent]
 
 	$: {
-		headerDialog = ''
 		headerObj = ''
 		headerObjSub = ''
 		rowStatus = undefined
@@ -57,19 +55,15 @@
 				headerObjSub = valueOrDefault(dataObj.raw.subHeader, '')
 				break
 
-			case StateLayoutStyle.overlayModalWizard:
-				if (state instanceof StateSurfaceModal) {
-					headerDialog = state.headerDialog
-				}
-				headerObj = dataObj.raw.header
-				headerObjSub = valueOrDefault(dataObj.raw.subHeader, '')
+			case StateLayoutStyle.overlayModalSelectMulti:
+				headerObj = 'Select Multiple'
 				break
 
 			case StateLayoutStyle.embeddedField:
 				break
 		}
 		classContent =
-			dataObj.actionsField.length > 0 || headerDialog || headerObj || headerObjSub || rowStatus
+			dataObj.actionsField.length > 0 || headerObj || headerObjSub || rowStatus
 				? 'border-2 p-4'
 				: ''
 	}
@@ -80,11 +74,6 @@
 </script>
 
 {#if dataObj}
-	{#if headerDialog}
-		<div class="mb-4">
-			<h1 class="h1">{headerDialog}</h1>
-		</div>
-	{/if}
 	<div class={classContent}>
 		<div>
 			<div>
@@ -128,5 +117,4 @@
 	</div>
 {/if}
 
-<!-- <DataViewer header="headerDialog" data={{ headerDialog, headerObj }} /> -->
 <!-- <DataViewer header="state" data={state.test} /> -->

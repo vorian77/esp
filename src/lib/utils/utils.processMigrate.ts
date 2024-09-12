@@ -14,9 +14,9 @@ export async function migrate(state: State, dataObj: DataObj) {
 }
 
 async function getActions() {
-	const name = 'noa_dialog_done'
+	const name = 'doag_dialog_footer_detail'
 	const result: ResponseBody = await apiFetch(
-		ApiFunction.dbEdgeGetDataObjActionField,
+		ApiFunction.dbEdgeGetDataObjActionFieldGroup,
 		new TokenApiId(name)
 	)
 	if (result.success) {
@@ -25,7 +25,7 @@ async function getActions() {
 		error(500, {
 			file: FILENAME,
 			function: 'getAction',
-			message: `Error retrieving data object action field: ${name}`
+			message: `Error retrieving data object action field group: ${name}`
 		})
 	}
 }

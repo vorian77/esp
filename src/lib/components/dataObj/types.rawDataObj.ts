@@ -35,7 +35,7 @@ import {
 	DataObjActionFieldTriggerEnable
 } from '$comps/dataObj/types.dataObjActionField'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
-import { TokenAppDoActionFieldType } from '$utils/types.token'
+import { TokenAppAction } from '$utils/types.token'
 import { FieldColor, FieldItem } from '$comps/form/field'
 import { error } from '@sveltejs/kit'
 
@@ -178,7 +178,7 @@ export class RawDataObjActionField {
 	actionFieldConfirms: DataObjActionFieldConfirm[]
 	actionFieldShows: DataObjActionFieldShow[]
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
-	codeActionFieldType: TokenAppDoActionFieldType
+	codeActionFieldType: TokenAppAction
 	fieldColor: FieldColor
 	header: string
 	isListRowAction: boolean
@@ -200,7 +200,7 @@ export class RawDataObjActionField {
 			clazz,
 			'codeDbAction',
 			'TokenAppDoActionType',
-			TokenAppDoActionFieldType
+			TokenAppAction
 		)
 		this.fieldColor = new FieldColor(obj._codeColor, 'blue')
 		this.header = strRequired(obj.header, clazz, 'header')

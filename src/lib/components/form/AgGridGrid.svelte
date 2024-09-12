@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { onMount } from 'svelte'
 	import {
 		ComponentUtil,
 		createGrid,
+		type CellClickedEvent,
+		type CellEditingStartedEvent,
 		type ColDef,
 		type GridApi,
 		type GridOptions,
@@ -13,7 +16,9 @@
 		type NewValueParams,
 		type RowNode,
 		type RowSelectedEvent,
-		type SelectionChangedEvent
+		type SelectionChangedEvent,
+		type ValueGetterParams,
+		type ValueSetterParams
 	} from 'ag-grid-community'
 	import 'ag-grid-community/styles/ag-grid.css'
 	import 'ag-grid-community/styles/ag-theme-quartz.css'
@@ -30,11 +35,17 @@
 		required,
 		strRequired
 	} from '$utils/types'
+	import { TokenAppModalReturnType } from '$utils/types.token'
+	import { ParmsValuesState } from '$utils/types'
+	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
+	import { FieldAccess, FieldElement } from '$comps/form/field'
 	import { State, StateSurfaceModal, StateLayoutStyle } from '$comps/app/types.appState'
 	import { recordsSearch, sortInit, sortUser } from '$comps/form/formList'
 	import FormListSearch from '$comps/form/FormListSearch.svelte'
-	import { onMount } from 'svelte'
-	import { defineCodecGeneratorTuple } from 'edgedb/dist/reflection'
+	import { openMultiSelectModal } from '$comps/form/MultiSelect'
+	import { error } from '@sveltejs/kit'
+
+	const FILENAME = '$comps/form/AgGridSvelte.svelte'
 
 	export let state: State
 	export let dataObj: DataObj
@@ -54,7 +65,7 @@
 	let listSortObj: DataObjSort
 	let style = ''
 
-	let tempIsListEdit = true
+	let tempIsListEdit = false
 
 	$: load(dataObjData)
 
@@ -82,6 +93,46 @@
 		if (isMounted) setGrid()
 	}
 
+	async function onCellClicked(event: CellClickedEvent) {
+		const field = dataObj.fields.find((f) => f.colDO.propName === event.colDef.field)
+		if (field) {
+			// multi-select modal
+			if (field.colDO.colDB.codeDataType === PropDataType.link && field.colDO.colDB.isMultiSelect) {
+				await onCellClickedMultiSelect(event, field)
+			}
+		}
+	}
+
+	async function onCellClickedMultiSelect(event: CellClickedEvent, field: Field) {
+		const fieldName = event.colDef.field
+		const itemsKey = '_items_' + field.colDO.propName
+		if (Object.hasOwn(dataObjData.items, itemsKey)) {
+			const items = dataObjData.items[itemsKey]
+			const currVal = event.data[fieldName]
+			await openMultiSelectModal(state, items, currVal, fModalClose)
+		}
+		async function fModalClose(returnType: TokenAppModalReturnType, data?: ParmsValuesState) {
+			console.log('AgGridGrid.fModalClose', { returnType, data })
+			if (returnType === TokenAppModalReturnType.complete) {
+				const rowNode = grid.getRowNode(event.data.id)
+				const newPrice = Math.floor(Math.random() * 100000)
+				rowNode.setDataValue(fieldName, newPrice.toString())
+			}
+		}
+	}
+
+	function onCellValueChanged(event: NewValueParams) {
+		const fieldName = event.colDef.field
+		const row = dataObj.dataRecordsDisplay.findIndex((record) => record.id === event.data.id)
+		const field = dataObj.fields.find((f) => f.colDO.propName === fieldName)
+		if (row > -1 && field) {
+			const newVal = event.data[fieldName]
+			console.log('onCellValueChanged', { fieldName, row, newVal })
+			dataObj = dataObj.setFieldVal(row, field, newVal)
+			state = state.setStatus()
+		}
+	}
+
 	onMount(() => {
 		const gridOptions = {
 			columnDefs: null,
@@ -89,6 +140,7 @@
 				flex: 1
 			},
 			getRowId: (params) => params.data.id,
+			onCellClicked,
 			onFilterChanged,
 			onRowDragEnd,
 			onRowDragMove,
@@ -167,7 +219,7 @@
 	}
 
 	async function onRowSelected(event: RowSelectedEvent) {
-		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.is || tempIsListEdit) {
+		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit || tempIsListEdit) {
 			return
 		} else if (isSelect) {
 			const selectedNodes = event.api.getSelectedNodes()
@@ -209,24 +261,88 @@
 	function setGridColumns() {
 		fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
 		let columnDefs: ColDef[] = []
+		const fieldAccessEditable = [FieldAccess.optional, FieldAccess.required]
 
 		dataObj.fields.forEach((f) => {
 			let defn = {}
+			const isEditable = dataObj.raw.isListEdit && fieldAccessEditable.includes(f.fieldAccess)
 
 			// core
+			defn.cellDataType = 'text'
+			defn.onCellValueChanged = onCellValueChanged
+			defn.editable = isEditable
 			defn.field = f.colDO.propName
-			defn.headerName = f.colDO.label
+			defn.headerName = isEditable ? '✍️ ' + f.colDO.label : f.colDO.label
+			defn.headerTooltip = f.placeHolder
 			defn.hide = !f.colDO.isDisplayable
+			defn.singleClickEdit = isEditable ? true : undefined
 
-			// edit - select
-			if (f.colDO.propName === 'header') {
-				defn.cellEditor = 'agSelectCellEditor'
-				defn.cellEditorParams = {
-					values: ['Phyllip', 'Alonzo', 'Hall', 'Allen']
-				} as ISelectCellEditorParams
-				defn.editable = true
-				defn.headerName = '✍️ ' + defn.headerName
-				defn.onCellValueChanged = cellChanged
+			switch (f.colDO.colDB.codeDataType) {
+				case PropDataType.date:
+					// defn.cellDataType = 'date'
+					// defn.cellEditor = 'agDateCellEditor'
+					break
+
+				case PropDataType.float64:
+				case PropDataType.int16:
+				case PropDataType.int32:
+				case PropDataType.int64:
+					// defn.cellDataType = 'number'
+					// defn.cellEditor = 'agNumberCellEditor'
+					break
+
+				case PropDataType.link:
+					const itemsKey = '_items_' + f.colDO.propName
+					if (Object.hasOwn(dataObjData.items, itemsKey)) {
+						const items = dataObjData.items[itemsKey]
+						if (f.colDO.colDB.isMultiSelect) {
+							// defn.cellEditor = MultiSelectEditor
+							// defn.cellRenderer = MultiSelectRenderer
+							// defn.cellEditorPopup = true
+							defn.editable = false
+						} else {
+							// defn.cellDataType = 'object'
+							// defn.cellEditor = 'agSelectCellEditor'
+							// defn.cellEditorParams = {
+							// 	values: items.map((item) => item.display)
+							// } as ISelectCellEditorParams
+							// defn.valueGetter = (params: ValueGetterParams) => {
+							// 	const id = params.data[f.colDO.propName]
+							// 	const item = items.find((i) => i.data === id)
+							// 	return item ? item.display : ''
+							// }
+							// defn.valueSetter = (params: ValueSetterParams) => {
+							// 	const display = params.newValue
+							// 	const item = items.find((i) => i.display === display)
+							// 	if (item) {
+							// 		params.data[f.colDO.propName] = item.data
+							// 		return true
+							// 	} else {
+							// 		return false
+							// 	}
+							// }
+						}
+					} else {
+						// error(500, {
+						// 	file: FILENAME,
+						// 	function: 'setGridColumns',
+						// 	message: `No items found for link edit column: ${f.colDO.propName}`
+						// })
+					}
+					break
+
+				case PropDataType.str:
+					defn.cellDataType = 'text'
+					defn.cellEditor =
+						f.fieldElement === FieldElement.textArea ? 'agLargeTextCellEditor' : 'agTextCellEditor'
+					break
+
+				default:
+				// error(500, {
+				// 	file: FILENAME,
+				// 	function: 'setGridColumns',
+				// 	message: `No case defined for PropDataType: ${f.colDO.colDB.codeDataType}`
+				// })
 			}
 
 			columnDefs.push(defn)
@@ -244,10 +360,6 @@
 		}
 		if (dataObj.raw.listReorderColumn) setGridColumnsProp(columnDefs, '', 'rowDrag', true)
 		grid.setGridOption('columnDefs', columnDefs)
-	}
-
-	function cellChanged(event: NewValueParams) {
-		console.log('cellChanged.event:', event)
 	}
 
 	function setGridColumnsProp(columns: ColDef[], field: string, prop: string, value: any) {
