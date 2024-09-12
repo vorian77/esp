@@ -121,7 +121,7 @@
 </script>
 
 {#if state}
-	<DataViewer header="state.objStatus-obj" data={state.objStatus} />
+	<!-- <DataViewer header="state.objStatus-obj" data={state.objStatus} /> -->
 {/if}
 <AppShell slotSidebarLeft="w-{SIDEBAR_LEFT_WIDTH}">
 	<svelte:fragment slot="header">

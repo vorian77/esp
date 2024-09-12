@@ -266,7 +266,7 @@ async function initDataObjActionField() {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'codeActionFieldType',
+				columnName: 'codeTokenAction',
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,

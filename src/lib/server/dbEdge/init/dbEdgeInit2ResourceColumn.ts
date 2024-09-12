@@ -196,13 +196,6 @@ export async function initPreColumn() {
 		owner: 'app_sys'
 	})
 	await addColumn({
-		codeDataType: 'link',
-		header: 'Action Field - Type',
-		isMultiSelect: false,
-		name: 'codeActionFieldType',
-		owner: 'app_sys'
-	})
-	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'link',
 		header: 'Alignment',
@@ -459,6 +452,13 @@ export async function initPreColumn() {
 		header: 'Status',
 		isMultiSelect: false,
 		name: 'codeStatus',
+		owner: 'app_sys'
+	})
+	await addColumn({
+		codeDataType: 'link',
+		header: 'Token Action',
+		isMultiSelect: false,
+		name: 'codeTokenAction',
 		owner: 'app_sys'
 	})
 	await addColumn({
