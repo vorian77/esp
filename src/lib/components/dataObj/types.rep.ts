@@ -23,6 +23,7 @@ import {
 	PropSortDir,
 	RawDataObjTable
 } from '$comps/dataObj/types.rawDataObj'
+import { is } from '$lib/dbschema/edgeql-js'
 
 const FILENAME = '$comps/report/types.report.ts'
 
@@ -168,8 +169,8 @@ export class RepEl {
 		this.exprCustom = strOptional(obj.exprCustom, clazz, 'expr')
 		this.header = strOptional(obj.header, clazz, 'header')
 		this.indexTable = nbrOptional(obj.indexTable, clazz, 'indexTable')
-		this.isDisplay = booleanRequired(obj.isDisplay, clazz, 'isDisplay')
 		this.isDisplayable = booleanRequired(obj.isDisplayable, clazz, 'isDisplayable')
+		this.isDisplay = this.isDisplayable
 		this.nameCustom = strOptional(obj.nameCustom, clazz, 'name')
 		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
 		this.orderDisplay = nbrOptional(obj.orderDisplay, clazz, 'orderDisplay')

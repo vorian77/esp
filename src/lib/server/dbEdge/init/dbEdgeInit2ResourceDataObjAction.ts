@@ -144,7 +144,7 @@ export async function initPreDataObjAction() {
 		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
 		codeActionFieldType: 'doExport',
 		codeActionFieldTriggerEnable: 'always',
-		header: 'doExport',
+		header: 'Export',
 		isListRowAction: false,
 		name: 'noa_export',
 		owner: 'app_sys'
