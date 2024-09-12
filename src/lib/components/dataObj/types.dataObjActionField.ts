@@ -13,7 +13,7 @@ export class DataObjActionField {
 	actionFieldConfirms: DataObjActionFieldConfirm[]
 	actionFieldShows: DataObjActionFieldShow[]
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
-	codeActionFieldType: TokenAppAction
+	codeTokenAction: TokenAppAction
 	fieldEmbed?: FieldEmbed
 	fieldColor: FieldColor
 	header: string
@@ -26,7 +26,7 @@ export class DataObjActionField {
 		this.actionFieldConfirms = rawAction.actionFieldConfirms
 		this.actionFieldShows = rawAction.actionFieldShows
 		this.codeActionFieldTriggerEnable = rawAction.codeActionFieldTriggerEnable
-		this.codeActionFieldType = rawAction.codeActionFieldType
+		this.codeTokenAction = rawAction.codeTokenAction
 		this.fieldColor = rawAction.fieldColor
 		this.header = rawAction.header
 		this.isListRowAction = rawAction.isListRowAction
@@ -68,7 +68,7 @@ export class DataObjActionField {
 				confirm,
 				confirmType,
 				token: new TokenAppDo({
-					action: this.codeActionFieldType,
+					action: this.codeTokenAction,
 					dataObj,
 					fieldEmbed: this.fieldEmbed,
 					state

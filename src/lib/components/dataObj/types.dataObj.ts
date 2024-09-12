@@ -81,27 +81,27 @@ export class DataObj {
 				? new DBTable(this.raw.tables[0].table)
 				: undefined
 	}
-	actionsFieldEmbedSet(codeActionFieldType: TokenAppAction, field: FieldEmbed) {
-		const fieldAction = this.actionsField.find((f) => f.codeActionFieldType === codeActionFieldType)
+	actionsFieldEmbedSet(codeTokenAction: TokenAppAction, field: FieldEmbed) {
+		const fieldAction = this.actionsField.find((f) => f.codeTokenAction === codeTokenAction)
 		if (fieldAction) {
 			fieldAction.setFieldEmbed(field)
 		} else {
 			error(500, {
 				file: FILENAME,
 				function: 'DataObj.actionsFieldEmbedSet',
-				message: `Action field ${codeActionFieldType} not found.`
+				message: `Action field ${codeTokenAction} not found.`
 			})
 		}
 	}
-	actionsFieldTrigger(codeActionFieldType: TokenAppAction, state: State) {
-		const field = this.actionsField.find((f) => f.codeActionFieldType === codeActionFieldType)
+	actionsFieldTrigger(codeTokenAction: TokenAppAction, state: State) {
+		const field = this.actionsField.find((f) => f.codeTokenAction === codeTokenAction)
 		if (field) {
 			field.trigger(state, this)
 		} else {
 			error(500, {
 				file: FILENAME,
 				function: 'DataObj.actionsFieldTrigger',
-				message: `Action field ${codeActionFieldType} not found.`
+				message: `Action field ${codeTokenAction} not found.`
 			})
 		}
 	}

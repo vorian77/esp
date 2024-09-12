@@ -178,7 +178,7 @@ export class RawDataObjActionField {
 	actionFieldConfirms: DataObjActionFieldConfirm[]
 	actionFieldShows: DataObjActionFieldShow[]
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
-	codeActionFieldType: TokenAppAction
+	codeTokenAction: TokenAppAction
 	fieldColor: FieldColor
 	header: string
 	isListRowAction: boolean
@@ -195,8 +195,8 @@ export class RawDataObjActionField {
 			'DataObjActionFieldTriggerEnable',
 			DataObjActionFieldTriggerEnable
 		)
-		this.codeActionFieldType = memberOfEnum(
-			obj._codeActionFieldType,
+		this.codeTokenAction = memberOfEnum(
+			obj._codeTokenAction,
 			clazz,
 			'codeDbAction',
 			'TokenAppDoActionType',

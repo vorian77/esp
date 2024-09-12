@@ -49,7 +49,7 @@
 
 	async function onFooterActionClick(action: DataObjActionField) {
 		dropEmbedResources()
-		switch (action.codeActionFieldType) {
+		switch (action.codeTokenAction) {
 			case TokenAppAction.modalCancel:
 				if ($storeModal[0].response)
 					$storeModal[0].response(
@@ -78,7 +78,7 @@
 				error(500, {
 					file: FILENAME,
 					function: 'onClickActionDialog',
-					message: `No case defined for DataObjAction: ${action.codeActionFieldType} `
+					message: `No case defined for DataObjAction: ${action.codeTokenAction} `
 				})
 		}
 	}

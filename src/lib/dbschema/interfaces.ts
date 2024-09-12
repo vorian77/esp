@@ -209,9 +209,9 @@ export namespace sys_core {
     "actionFieldConfirms": SysDataObjActionFieldConfirm[];
     "actionFieldShows": SysDataObjActionFieldShow[];
     "codeActionFieldTriggerEnable": SysCode;
-    "codeActionFieldType": SysCode;
     "codeColor"?: SysCode | null;
     "isListRowAction": boolean;
+    "codeTokenAction": SysCode;
   }
   export interface SysDataObjActionFieldConfirm extends sys_user.Mgmt {
     "codeTriggerConfirmConditional": SysCode;
