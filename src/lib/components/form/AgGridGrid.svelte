@@ -42,7 +42,7 @@
 	import { State, StateSurfaceModal, StateLayoutStyle } from '$comps/app/types.appState'
 	import { recordsSearch, sortInit, sortUser } from '$comps/form/formList'
 	import FormListSearch from '$comps/form/FormListSearch.svelte'
-	import { openMultiSelectModal } from '$comps/form/MultiSelect'
+	import { openMultiSelectModal } from '$comps/form/multiSelect'
 	import { error } from '@sveltejs/kit'
 
 	const FILENAME = '$comps/form/AgGridSvelte.svelte'
