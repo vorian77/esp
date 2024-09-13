@@ -161,7 +161,7 @@
 		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
 		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSortObj, listSortObj)
 	}
-	const isNewList = true
+	const isNewList = false
 </script>
 
 {#if isNewList}
