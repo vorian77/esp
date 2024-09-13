@@ -92,7 +92,7 @@ module sys_core {
       on target delete allow;
     };
     required codeActionFieldTriggerEnable: sys_core::SysCode;
-    required codeTokenAction: sys_core::SysCode;
+    required codePacketAction: sys_core::SysCode;
     codeColor: sys_core::SysCode;
     required isListRowAction: bool;
     constraint exclusive on (.name);

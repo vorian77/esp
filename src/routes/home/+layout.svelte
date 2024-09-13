@@ -6,14 +6,10 @@
 		StateLayoutComponentType,
 		StateLayoutStyle,
 		StatePacket,
+		StatePacketAction,
 		StatePacketComponent
 	} from '$comps/app/types.appState'
-	import {
-		TokenAppAction,
-		TokenAppDo,
-		TokenAppDoActionConfirmType,
-		TokenAppTreeReset
-	} from '$utils/types.token'
+	import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import {
 		AppBar,
 		AppShell,
@@ -105,9 +101,9 @@
 			page: '/home',
 			nodeType: NodeType.home,
 			packet: new StatePacket({
+				action: StatePacketAction.navTreeReset,
 				component: StatePacketComponent.navHome,
-				confirmType: TokenAppDoActionConfirmType.objectChanged,
-				token: new TokenAppTreeReset({ action: TokenAppAction.none })
+				confirmType: TokenAppDoActionConfirmType.objectChanged
 			})
 		})
 	}

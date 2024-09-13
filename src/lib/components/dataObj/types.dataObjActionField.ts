@@ -1,6 +1,11 @@
-import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
+import {
+	State,
+	StatePacket,
+	StatePacketAction,
+	StatePacketComponent
+} from '$comps/app/types.appState'
 import { DataObj, DataObjConfirm, DataObjMode, DataObjSaveMode } from '$utils/types'
-import { TokenAppDo, TokenAppDoActionConfirmType, TokenAppAction } from '$utils/types.token'
+import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 import { memberOfEnum, valueOrDefault } from '$utils/types'
 import { FieldColor } from '$comps/form/field'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
@@ -13,7 +18,7 @@ export class DataObjActionField {
 	actionFieldConfirms: DataObjActionFieldConfirm[]
 	actionFieldShows: DataObjActionFieldShow[]
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
-	codeTokenAction: TokenAppAction
+	codePacketAction: StatePacketAction
 	fieldEmbed?: FieldEmbed
 	fieldColor: FieldColor
 	header: string
@@ -26,7 +31,7 @@ export class DataObjActionField {
 		this.actionFieldConfirms = rawAction.actionFieldConfirms
 		this.actionFieldShows = rawAction.actionFieldShows
 		this.codeActionFieldTriggerEnable = rawAction.codeActionFieldTriggerEnable
-		this.codeTokenAction = rawAction.codeTokenAction
+		this.codePacketAction = rawAction.codePacketAction
 		this.fieldColor = rawAction.fieldColor
 		this.header = rawAction.header
 		this.isListRowAction = rawAction.isListRowAction
@@ -64,11 +69,11 @@ export class DataObjActionField {
 		const { confirmType, confirm } = this.getConfirm(state, dataObj)
 		state.update({
 			packet: new StatePacket({
+				action: this.codePacketAction,
 				component: StatePacketComponent.dataObj,
 				confirm,
 				confirmType,
 				token: new TokenAppDo({
-					action: this.codeTokenAction,
 					dataObj,
 					fieldEmbed: this.fieldEmbed,
 					state

@@ -28,7 +28,7 @@ export async function initPreDataObjAction() {
 			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
 			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
 		],
-		codeTokenAction: 'doDetailDelete',
+		codePacketAction: 'doDetailDelete',
 		codeActionFieldTriggerEnable: 'always',
 		codeColor: 'red',
 		header: 'Delete',
@@ -49,7 +49,7 @@ export async function initPreDataObjAction() {
 			}
 		],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeTokenAction: 'modalCancel',
+		codePacketAction: 'modalCancel',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Cancel',
 		isListRowAction: false,
@@ -62,7 +62,7 @@ export async function initPreDataObjAction() {
 		],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
 		codeActionFieldTriggerEnable: 'always',
-		codeTokenAction: 'modalDone',
+		codePacketAction: 'modalDone',
 		header: 'Done',
 		isListRowAction: false,
 		name: 'noa_dialog_done',
@@ -75,7 +75,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codeTokenAction: 'doListDetailEdit',
+		codePacketAction: 'doListDetailEdit',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Edit',
 		isListRowAction: true,
@@ -89,7 +89,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codeTokenAction: 'doEmbedListConfigEdit',
+		codePacketAction: 'doEmbedListConfigEdit',
 		codeActionFieldTriggerEnable: 'parentObjectSaved',
 		header: 'Edit',
 		isListRowAction: true,
@@ -104,7 +104,7 @@ export async function initPreDataObjAction() {
 			{ codeTriggerShow: 'notObjectChanged', isRequired: true },
 			{ codeTriggerShow: 'parentObjectSaved', isRequired: true }
 		],
-		codeTokenAction: 'doEmbedListConfigNew',
+		codePacketAction: 'doEmbedListConfigNew',
 		codeActionFieldTriggerEnable: 'parentObjectSaved',
 		header: 'New',
 		isListRowAction: false,
@@ -116,7 +116,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codeTokenAction: 'doEmbedListEditParmValue',
+		codePacketAction: 'doEmbedListEditParmValue',
 		codeActionFieldTriggerEnable: 'parentObjectSaved',
 		header: 'Parameter Value',
 		isListRowAction: true,
@@ -128,7 +128,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codeTokenAction: 'doEmbedListSelect',
+		codePacketAction: 'doEmbedListSelect',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Edit',
 		isListRowAction: true,
@@ -142,7 +142,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
-		codeTokenAction: 'doExport',
+		codePacketAction: 'doExport',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Export',
 		isListRowAction: false,
@@ -156,7 +156,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
-		codeTokenAction: 'doDetailNew',
+		codePacketAction: 'doDetailNew',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'New',
 		isListRowAction: false,
@@ -168,7 +168,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
-		codeTokenAction: 'doDetailNew',
+		codePacketAction: 'doDetailNew',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'New',
 		isListRowAction: false,
@@ -181,7 +181,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
-		codeTokenAction: 'doListDetailNew',
+		codePacketAction: 'doListDetailNew',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'New',
 		isListRowAction: false,
@@ -195,7 +195,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeTokenAction: 'doListSelfRefresh',
+		codePacketAction: 'doListSelfRefresh',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Refresh',
 		isListRowAction: false,
@@ -209,7 +209,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeTokenAction: 'doDetailSaveAs',
+		codePacketAction: 'doDetailSaveAs',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Save As',
 		isListRowAction: false,
@@ -223,7 +223,7 @@ export async function initPreDataObjAction() {
 			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
 			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
 		],
-		codeTokenAction: 'doDetailSave',
+		codePacketAction: 'doDetailSave',
 		codeActionFieldTriggerEnable: 'objectValidToSave',
 		header: 'Save',
 		isListRowAction: false,
@@ -235,7 +235,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'objectChanged', isRequired: true }],
-		codeTokenAction: 'doDetailSaveCancel',
+		codePacketAction: 'doDetailSaveCancel',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Cancel Save',
 		isListRowAction: false,
@@ -249,7 +249,7 @@ export async function initPreDataObjAction() {
 			{ codeTriggerShow: 'objectChanged', isRequired: true },
 			{ codeTriggerShow: 'rootDataObj', isRequired: true }
 		],
-		codeTokenAction: 'doListSelfSave',
+		codePacketAction: 'doListSelfSave',
 		codeActionFieldTriggerEnable: 'objectValidToSave',
 		header: 'Save',
 		isListRowAction: false,
@@ -260,7 +260,7 @@ export async function initPreDataObjAction() {
 	await addDataObjActionField({
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionFieldShows: [{ codeTriggerShow: 'objectChanged', isRequired: true }],
-		codeTokenAction: 'doListSelfSave',
+		codePacketAction: 'doListSelfSave',
 		codeActionFieldTriggerEnable: 'objectValidToSave',
 		header: 'Save',
 		isListRowAction: true,
@@ -274,7 +274,7 @@ export async function initPreDataObjAction() {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
-		codeTokenAction: 'doDetailMigrate',
+		codePacketAction: 'doDetailMigrate',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Migrate',
 		isListRowAction: false,
@@ -285,7 +285,7 @@ export async function initPreDataObjAction() {
 	await addDataObjActionField({
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeTokenAction: 'doDetailProcessExecute',
+		codePacketAction: 'doDetailProcessExecute',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Execute',
 		isListRowAction: false,

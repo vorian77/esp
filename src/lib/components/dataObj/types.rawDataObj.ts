@@ -21,6 +21,7 @@ import {
 	DBTable,
 	valueOrDefault
 } from '$utils/types'
+import { StatePacketAction } from '$comps/app/types.appState'
 import {
 	DataObj,
 	DataObjComponent,
@@ -35,7 +36,6 @@ import {
 	DataObjActionFieldTriggerEnable
 } from '$comps/dataObj/types.dataObjActionField'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
-import { TokenAppAction } from '$utils/types.token'
 import { FieldColor, FieldItem } from '$comps/form/field'
 import { error } from '@sveltejs/kit'
 
@@ -178,7 +178,7 @@ export class RawDataObjActionField {
 	actionFieldConfirms: DataObjActionFieldConfirm[]
 	actionFieldShows: DataObjActionFieldShow[]
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
-	codeTokenAction: TokenAppAction
+	codePacketAction: StatePacketAction
 	fieldColor: FieldColor
 	header: string
 	isListRowAction: boolean
@@ -195,12 +195,12 @@ export class RawDataObjActionField {
 			'DataObjActionFieldTriggerEnable',
 			DataObjActionFieldTriggerEnable
 		)
-		this.codeTokenAction = memberOfEnum(
-			obj._codeTokenAction,
+		this.codePacketAction = memberOfEnum(
+			obj._codePacketAction,
 			clazz,
-			'codeDbAction',
-			'TokenAppDoActionType',
-			TokenAppAction
+			'codePacketAction',
+			'StatePacketAction',
+			StatePacketAction
 		)
 		this.fieldColor = new FieldColor(obj._codeColor, 'blue')
 		this.header = strRequired(obj.header, clazz, 'header')

@@ -30,7 +30,7 @@ const shapeDataObjActionFieldGroup = e.shape(e.sys_core.SysDataObjActionFieldGro
 				isRequired: true
 			})),
 			_codeActionFieldTriggerEnable: a.codeActionFieldTriggerEnable.name,
-			_codeTokenAction: a.codeTokenAction.name,
+			_codePacketAction: a.codePacketAction.name,
 			_codeColor: a.codeColor.name,
 			header: a.header,
 			isListRowAction: a.isListRowAction,

@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
 	import {
-		TokenAppAction,
-		TokenAppDoActionConfirmType,
-		TokenAppTreeNode,
-		TokenAppTreeReset
-	} from '$utils/types.token'
+		State,
+		StatePacket,
+		StatePacketAction,
+		StatePacketComponent
+	} from '$comps/app/types.appState'
+	import { TokenApp, TokenAppDoActionConfirmType, TokenAppTreeNode } from '$utils/types.token'
 	import { appStoreUser, Node, NodeType, RawNode, User } from '$utils/types'
 	import Icon from '$comps/misc/Icon.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -66,18 +66,19 @@
 		switch (node.type) {
 			case NodeType.home:
 				packet = new StatePacket({
+					action: StatePacketAction.navTreeReset,
 					component: StatePacketComponent.navHome,
-					confirmType: TokenAppDoActionConfirmType.objectChanged,
-					token: new TokenAppTreeReset({ action: TokenAppAction.none })
+					confirmType: TokenAppDoActionConfirmType.objectChanged
 				})
 				break
 
 			case NodeType.object:
 			case NodeType.programObject:
 				packet = new StatePacket({
+					action: StatePacketAction.navTreeNode,
 					component: StatePacketComponent.navTree,
 					confirmType: TokenAppDoActionConfirmType.objectChanged,
-					token: new TokenAppTreeNode({ action: TokenAppAction.none, node })
+					token: new TokenAppTreeNode({ node })
 				})
 				break
 

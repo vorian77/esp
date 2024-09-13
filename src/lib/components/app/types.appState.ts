@@ -25,7 +25,6 @@ import {
 	TokenApiQuery,
 	TokenApiQueryData,
 	TokenApiQueryType,
-	TokenAppAction,
 	TokenAppDo,
 	TokenAppDoActionConfirmType,
 	TokenAppModalEmbedField,
@@ -41,6 +40,7 @@ import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { error } from '@sveltejs/kit'
+import action from '$enhance/actions/actionAuth'
 
 const FILENAME = '/$comps/app/types.appState.ts'
 
@@ -71,7 +71,16 @@ export class State {
 	closeModal() {
 		this.storeModal.close()
 	}
-	consume(components: StatePacketComponent | Array<StatePacketComponent>) {
+	consume(actions: StatePacketAction | Array<StatePacketAction>) {
+		if (this.packet && actions.includes(this.packet.action)) {
+			const packet = this.packet
+			this.packet = undefined
+			return packet
+		} else {
+			return undefined
+		}
+	}
+	consumeOld(components: StatePacketComponent | Array<StatePacketComponent>) {
 		if (this.packet && this.packet.component && components.includes(this.packet.component)) {
 			const packet = this.packet
 			this.packet = undefined
@@ -175,10 +184,10 @@ export class State {
 			layoutComponent: StateLayoutComponentType.layoutContent,
 			layoutStyle: StateLayoutStyle.overlayModalDetail,
 			packet: new StatePacket({
+				action: StatePacketAction.modalEmbed,
 				component: StatePacketComponent.modal,
 				confirmType: TokenAppDoActionConfirmType.none,
 				token: new TokenAppModalEmbedField({
-					action: TokenAppAction.none,
 					dataObjSourceModal: new TokenApiDbDataObjSource({
 						dataObjId: field.raw.dataObjModalId,
 						parent: new RawDataObjParent({
@@ -219,10 +228,10 @@ export class State {
 			layoutComponent: StateLayoutComponentType.layoutContent,
 			layoutStyle: StateLayoutStyle.overlayModalSelect,
 			packet: new StatePacket({
+				action: StatePacketAction.modalEmbed,
 				component: StatePacketComponent.modal,
 				confirmType: TokenAppDoActionConfirmType.none,
 				token: new TokenAppModalEmbedField({
-					action: TokenAppAction.none,
 					dataObjSourceModal: new TokenApiDbDataObjSource({
 						dataObjId: field.raw.dataObjListID,
 						parent: new RawDataObjParent({
@@ -329,6 +338,7 @@ export enum StateLayoutStyle {
 	overlayModalSelectMulti = 'overlayModalSelectMulti'
 }
 export class StatePacket {
+	action: StatePacketAction
 	confirm: DataObjConfirm
 	confirmType: TokenAppDoActionConfirmType | undefined
 	component: StatePacketComponent
@@ -336,11 +346,53 @@ export class StatePacket {
 	constructor(obj: any) {
 		const clazz = 'StatePacket'
 		obj = valueOrDefault(obj, {})
+		this.action = required(obj.action, clazz, 'action')
 		this.component = Object.hasOwn(obj, 'component') ? obj.component : undefined
 		this.confirm = valueOrDefault(obj.confirm, new DataObjConfirm())
 		this.confirmType = required(obj.confirmType, clazz, 'confirmType')
 		this.token = valueOrDefault(obj.token, undefined)
 	}
+}
+export enum StatePacketAction {
+	// dataObj
+	doDetailDelete = 'doDetailDelete',
+	doDetailMigrate = 'doDetailMigrate',
+	doDetailNew = 'doDetailNew',
+	doDetailProcessExecute = 'doDetailProcessExecute',
+	doDetailSave = 'doDetailSave',
+	doDetailSaveAs = 'doDetailSaveAs',
+	doDetailSaveCancel = 'doDetailSaveCancel',
+
+	doEmbedListConfigEdit = 'doEmbedListConfigEdit',
+	doEmbedListConfigNew = 'doEmbedListConfigNew',
+	doEmbedListEditParmValue = 'doEmbedListEditParmValue',
+	doEmbedListSelect = 'doEmbedListSelect',
+
+	doExport = 'doExport',
+
+	doListDetailEdit = 'doListDetailEdit',
+	doListDetailNew = 'doListDetailNew',
+	doListSelfRefresh = 'doListSelfRefresh',
+	doListSelfSave = 'doListSelfSave',
+
+	embedField = 'embedField',
+	embedShell = 'embedShell',
+
+	// modal
+	modalCancel = 'modalCancel',
+	modalDone = 'modalDone',
+	modalEmbed = 'modalEmbed',
+
+	// nav
+	navBack = 'navBack',
+	navCrumbs = 'navCrumbs',
+	navRow = 'navRow',
+	navTreeNode = 'navTreeNode',
+	navTreeNodeId = 'navTreeNodeId',
+	navTreeReset = 'navTreeReset',
+	navTreeSetParent = 'navTreeSetParent',
+
+	none = 'none'
 }
 export enum StatePacketComponent {
 	dataObj = 'dataObj',
@@ -367,6 +419,7 @@ export class StateSurfaceEmbedField extends StateSurfaceEmbed {
 		obj = valueOrDefault(obj, {})
 		this.nodeType = NodeType.object
 		this.packet = new StatePacket({
+			action: StatePacketAction.embedField,
 			component: StatePacketComponent.embedField,
 			confirmType: TokenAppDoActionConfirmType.none,
 			token: new TokenApiQuery(

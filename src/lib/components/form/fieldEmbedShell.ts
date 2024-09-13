@@ -6,7 +6,8 @@ import {
 	FieldEmbedListSelect
 } from '$comps/form/fieldEmbed'
 import { DataObj, DataObjStatus } from '$utils/types'
-import { StateSurfaceEmbedShell } from '$comps/app/types.appState'
+import { StatePacketAction, StateSurfaceEmbedShell } from '$comps/app/types.appState'
+import action from '$enhance/actions/actionAuth'
 
 export class FieldEmbedShell extends Field {
 	fields: FieldEmbed[] = []
@@ -14,6 +15,7 @@ export class FieldEmbedShell extends Field {
 	constructor(props: RawFieldProps) {
 		super(props)
 		this.stateShell = new StateSurfaceEmbedShell({
+			action: StatePacketAction.embedShell,
 			dataObjState: props.dataObj,
 			embedField: this,
 			stateRoot: props.state

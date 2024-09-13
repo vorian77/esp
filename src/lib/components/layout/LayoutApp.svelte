@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app'
 	import type { State } from '$comps/app/types.appState'
-	import { StatePacket, StatePacketComponent } from '$comps/app/types.appState'
-	import { TokenAppAction, TokenAppBack, TokenAppDoActionConfirmType } from '$utils/types.token'
+	import { StatePacket, StatePacketAction, StatePacketComponent } from '$comps/app/types.appState'
+	import { TokenApp, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import type { DataObj, DataObjData } from '$utils/types'
 	import { AppBar, AppShell } from '@skeletonlabs/skeleton'
 	import NavCrumbs from '$comps/app/NavCrumbs.svelte'
@@ -10,6 +10,7 @@
 	import Icon from '$comps/misc/Icon.svelte'
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
+	import action from '$enhance/actions/actionAuth'
 
 	const FILENAME = '$comps/Surface/LayoutApp.svelte'
 
@@ -28,11 +29,9 @@
 	function back() {
 		state.update({
 			packet: new StatePacket({
+				action: StatePacketAction.navBack,
 				component: StatePacketComponent.navBack,
-				confirmType: TokenAppDoActionConfirmType.objectChanged,
-				token: new TokenAppBack({
-					action: TokenAppAction.none
-				})
+				confirmType: TokenAppDoActionConfirmType.objectChanged
 			})
 		})
 	}

@@ -3,6 +3,7 @@ import {
 	StateLayoutComponentType,
 	StateLayoutStyle,
 	StatePacket,
+	StatePacketAction,
 	StatePacketComponent,
 	StateSurfaceModal
 } from '$comps/app/types.appState'
@@ -36,6 +37,7 @@ export async function openMultiSelectModal(
 		layoutComponent: StateLayoutComponentType.layoutSelectMulti,
 		layoutStyle: StateLayoutStyle.overlayModalSelectMulti,
 		packet: new StatePacket({
+			action: StatePacketAction.none,
 			component: StatePacketComponent.modal,
 			confirmType: TokenAppDoActionConfirmType.none
 		}),

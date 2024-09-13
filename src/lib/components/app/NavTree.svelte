@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { appStoreNavTree, NavTree, NodeNav } from '$utils/types'
 	import type { State } from '$comps/app/types.appState'
-	import { StatePacketComponent } from '$comps/app/types.appState'
-	import { TokenAppTreeReset, TokenAppTreeSetParent } from '$utils/types.token'
+	import { StatePacketAction, StatePacketComponent } from '$comps/app/types.appState'
 	import { createEventDispatcher } from 'svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -17,17 +16,21 @@
 	$: if ($appStoreNavTree) navTree = new NavTree($appStoreNavTree)
 
 	$: if (state && state.packet) {
-		const packet = state.consume(StatePacketComponent.navHome)
-		if (packet?.token instanceof TokenAppTreeReset) {
+		let packet
+
+		// navTreeReset
+		packet = state.consume(StatePacketAction.navTreeReset)
+		if (packet) {
 			;(async () => {
 				await changeNode(navTree.listTree[0])
 			})()
 		}
-		if (packet?.token instanceof TokenAppTreeSetParent) {
-			;(async () => {
-				await navTree.setCurrentParent()
-			})()
-		}
+
+		// navTreeSetParent
+		packet = state.consume(StatePacketAction.navTreeSetParent)
+		;(async () => {
+			await navTree.setCurrentParent()
+		})()
 	}
 
 	async function changeNode(nodeNav: NodeNav) {

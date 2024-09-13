@@ -119,7 +119,7 @@ export type $SysCodeλShape = $.typeutil.flatten<$SysObjλShape & {
   "<processType[is sys_core::SysDataObj]": $.LinkDesc<$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeActionFieldTriggerEnable[is sys_core::SysDataObjActionField]": $.LinkDesc<$SysDataObjActionField, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeColor[is sys_core::SysDataObjActionField]": $.LinkDesc<$SysDataObjActionField, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeTokenAction[is sys_core::SysDataObjActionField]": $.LinkDesc<$SysDataObjActionField, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codePacketAction[is sys_core::SysDataObjActionField]": $.LinkDesc<$SysDataObjActionField, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeDataTypeDisplay[is sys_core::SysDataObjFieldListItems]": $.LinkDesc<$SysDataObjFieldListItems, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeMask[is sys_core::SysDataObjFieldListItems]": $.LinkDesc<$SysDataObjFieldListItems, $.Cardinality.Many, {}, false, false,  false, false>;
   "<roles[is sys_core::SysEnt]": $.LinkDesc<$SysEnt, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -166,6 +166,7 @@ export type $SysCodeλShape = $.typeutil.flatten<$SysObjλShape & {
   "<codeMultiRqmts": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeNavType": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeNodeType": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codePacketAction": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codePlacementRelated": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeQueryType": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeRace": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -176,7 +177,6 @@ export type $SysCodeλShape = $.typeutil.flatten<$SysObjλShape & {
   "<codeSortDir": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeState": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeStatus": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeTokenAction": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTriggerConfirmConditional": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTriggerShow": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTriggerTiming": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -254,12 +254,12 @@ const $SysDataObj = $.makeType<$SysDataObj>(_.spec, "503b00ed-b3c2-11ee-8d94-1fc
 const SysDataObj: $.$expr_PathNode<$.TypeSet<$SysDataObj, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysDataObj, $.Cardinality.Many), null);
 
 export type $SysDataObjActionFieldλShape = $.typeutil.flatten<$SysObjλShape & {
+  "codePacketAction": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "actionFieldConfirms": $.LinkDesc<$SysDataObjActionFieldConfirm, $.Cardinality.Many, {}, false, false,  false, false>;
   "actionFieldShows": $.LinkDesc<$SysDataObjActionFieldShow, $.Cardinality.Many, {}, false, false,  false, false>;
   "codeActionFieldTriggerEnable": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "codeColor": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "isListRowAction": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
-  "codeTokenAction": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "<action[is sys_core::SysDataObjActionFieldGroupItem]": $.LinkDesc<$SysDataObjActionFieldGroupItem, $.Cardinality.Many, {}, false, false,  false, false>;
   "<action": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

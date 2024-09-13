@@ -1,7 +1,7 @@
 <script lang="ts">
 	import BaseLayout from '$comps/layout/BaseLayout.svelte'
-	import { StateSurfaceModal } from '$comps/app/types.appState'
-	import { TokenAppAction, TokenAppModalReturn, TokenAppModalReturnType } from '$utils/types.token'
+	import { StatePacketAction, StateSurfaceModal } from '$comps/app/types.appState'
+	import { TokenAppModalReturn, TokenAppModalReturnType } from '$utils/types.token'
 	import { getModalStore } from '@skeletonlabs/skeleton'
 	import { DataObjCardinality, DataObjEmbedType, ParmsObjType } from '$utils/types'
 	import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
@@ -21,7 +21,7 @@
 		state.packet = obj.packet
 		if (
 			state.embedType === DataObjEmbedType.listConfig &&
-			obj.packet.token.actionType === TokenAppAction.doDetailDelete
+			obj.packet.action === StatePacketAction.doDetailDelete
 		) {
 			modeDelete = true
 		}
@@ -35,7 +35,6 @@
 				if ($storeModal[0]?.response) {
 					$storeModal[0].response(
 						new TokenAppModalReturn({
-							action: TokenAppAction.none,
 							data: [],
 							type: TokenAppModalReturnType.complete
 						})
@@ -49,12 +48,11 @@
 
 	async function onFooterActionClick(action: DataObjActionField) {
 		dropEmbedResources()
-		switch (action.codeTokenAction) {
-			case TokenAppAction.modalCancel:
+		switch (action.codePacketAction) {
+			case StatePackcodeStatePacketActionancel:
 				if ($storeModal[0].response)
 					$storeModal[0].response(
 						new TokenAppModalReturn({
-							action: TokenAppAction.none,
 							data: undefined,
 							type: TokenAppModalReturnType.cancel
 						})
@@ -62,11 +60,10 @@
 				storeModal.close()
 				break
 
-			case TokenAppAction.modalDone:
+			case StatePacketAction.modalDone:
 				if ($storeModal[0].response)
 					$storeModal[0].response(
 						new TokenAppModalReturn({
-							action: TokenAppAction.none,
 							data: state.parmsState,
 							type: TokenAppModalReturnType.complete
 						})
@@ -78,10 +75,11 @@
 				error(500, {
 					file: FILENAME,
 					function: 'onClickActionDialog',
-					message: `No case defined for DataObjAction: ${action.codeTokenAction} `
+					message: `No case defined for StatePacketAction: ${action.codePacketAction} `
 				})
 		}
 	}
+	codeStatePacketAction
 	function dropEmbedResources() {
 		state.app.levels = state.app.levels.filter((level) => !level.isModal)
 		state.app.levels.forEach((level) => {

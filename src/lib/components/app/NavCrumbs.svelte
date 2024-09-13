@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { AppLevelCrumb } from '$comps/app/types.app'
-	import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
-	import { TokenAppAction, TokenAppCrumbs, TokenAppDoActionConfirmType } from '$utils/types.token'
+	import {
+		State,
+		StatePacket,
+		StatePacketAction,
+		StatePacketComponent
+	} from '$comps/app/types.appState'
+	import { TokenAppCrumbs, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/nav/NavCrumbs.svelte'
@@ -12,10 +17,10 @@
 	async function onClick(crumbIdx: number) {
 		state.update({
 			packet: new StatePacket({
+				action: StatePacketAction.navCrumbs,
 				component: StatePacketComponent.navCrumbs,
 				confirmType: TokenAppDoActionConfirmType.objectChanged,
 				token: new TokenAppCrumbs({
-					action: TokenAppAction.none,
 					crumbIdx
 				})
 			})

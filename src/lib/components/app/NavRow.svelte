@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { type AppLevelRowStatus, AppRowActionType } from '$comps/app/types.app'
-	import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
+	import {
+		State,
+		StatePacket,
+		StatePacketAction,
+		StatePacketComponent
+	} from '$comps/app/types.appState'
 	import { TokenAppDoActionConfirmType, TokenAppRow } from '$utils/types.token'
 	import NavRowAction from '$comps/app/NavRowAction.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -18,9 +23,10 @@
 	async function onChange(rowAction: AppRowActionType) {
 		state.update({
 			packet: new StatePacket({
+				action: StatePacketAction.navRow,
 				component: StatePacketComponent.navRow,
 				confirmType: TokenAppDoActionConfirmType.objectChanged,
-				token: new TokenAppRow({ action: rowAction })
+				token: new TokenAppRow({ rowAction })
 			})
 		})
 	}

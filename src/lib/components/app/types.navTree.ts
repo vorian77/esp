@@ -3,9 +3,13 @@ import { ResponseBody } from '$utils/types'
 import { NodeNav, NodeType } from '$comps/app/types.node'
 import type { DbNode, RawNode, User } from '$utils/types'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
-import { State, StatePacket, StatePacketComponent } from '$comps/app/types.appState'
 import {
-	TokenAppAction,
+	State,
+	StatePacket,
+	StatePacketAction,
+	StatePacketComponent
+} from '$comps/app/types.appState'
+import {
 	TokenAppDoActionConfirmType,
 	TokenAppTreeNode,
 	TokenAppTreeNodeId
@@ -96,9 +100,10 @@ export class NavTree {
 					parmsValues: { programId: this.getProgramId(nodeNav) },
 					nodeType: nodeNav.type,
 					packet: new StatePacket({
+						action: StatePacketAction.navTreeNode,
 						component: StatePacketComponent.navTree,
 						confirmType: TokenAppDoActionConfirmType.objectChanged,
-						token: new TokenAppTreeNode({ action: TokenAppAction.none, node: nodeNav })
+						token: new TokenAppTreeNode({ node: nodeNav })
 						// callbacks: [() => dispatch('treeChanged')]
 					})
 				})
@@ -239,7 +244,7 @@ export async function initNavTree(user: User) {
 async function getNodesBranch(nodeId: string) {
 	const result: ResponseBody = await apiFetch(
 		ApiFunction.dbEdgeGetNodesBranch,
-		new TokenAppTreeNodeId({ action: TokenAppAction.none, nodeId })
+		new TokenAppTreeNodeId({ nodeId })
 	)
 	if (result.success) {
 		return result.data

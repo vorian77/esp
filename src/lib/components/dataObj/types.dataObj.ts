@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState'
+import { State, StatePacketAction } from '$comps/app/types.appState'
 import {
 	getArray,
 	memberOfEnum,
@@ -44,7 +44,7 @@ import { FieldSelect } from '$comps/form/fieldSelect'
 import { FieldTextarea } from '$comps/form/fieldTextarea'
 import { FieldToggle } from '$comps/form/fieldToggle'
 import { DataObjActionQuery, DataObjActionQueryFunction } from '$comps/app/types.appQuery'
-import { TokenApiDbDataObjSource, TokenApiQueryData, TokenAppAction } from '$utils/types.token'
+import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
 import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 import { getEnhancement } from '$enhance/crud/_crud'
 import { error } from '@sveltejs/kit'
@@ -81,27 +81,27 @@ export class DataObj {
 				? new DBTable(this.raw.tables[0].table)
 				: undefined
 	}
-	actionsFieldEmbedSet(codeTokenAction: TokenAppAction, field: FieldEmbed) {
-		const fieldAction = this.actionsField.find((f) => f.codeTokenAction === codeTokenAction)
-		if (fieldAction) {
-			fieldAction.setFieldEmbed(field)
+	actionsFieldEmbedSet(action: StatePacketAction, field: FieldEmbed) {
+		const field1 = this.actionsField.find((f) => f.codePacketAction === action)
+		if (field1) {
+			field1.setFieldEmbed(field)
 		} else {
 			error(500, {
 				file: FILENAME,
 				function: 'DataObj.actionsFieldEmbedSet',
-				message: `Action field ${codeTokenAction} not found.`
+				message: `Field for StatePacketAction: ${action} not found.`
 			})
 		}
 	}
-	actionsFieldTrigger(codeTokenAction: TokenAppAction, state: State) {
-		const field = this.actionsField.find((f) => f.codeTokenAction === codeTokenAction)
-		if (field) {
-			field.trigger(state, this)
+	actionsFieldTrigger(action: StatePacketAction, state: State) {
+		const field2 = this.actionsField.find((f) => f.codePacketAction === action)
+		if (field2) {
+			field2.trigger(state, this)
 		} else {
 			error(500, {
 				file: FILENAME,
 				function: 'DataObj.actionsFieldTrigger',
-				message: `Action field ${codeTokenAction} not found.`
+				message: `Field for StatePacketAction: ${action} not found.`
 			})
 		}
 	}
@@ -514,9 +514,9 @@ export class DataObj {
 }
 
 export class DataObjActionProxy {
-	action: TokenAppAction
+	action: StatePacketAction
 	proxy: Function
-	constructor(action: TokenAppAction, proxy: Function) {
+	constructor(action: StatePacketAction, proxy: Function) {
 		this.action = action
 		this.proxy = proxy
 	}

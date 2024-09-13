@@ -11,10 +11,11 @@
 	import {
 		State,
 		StatePacket,
+		StatePacketAction,
 		StatePacketComponent,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState'
-	import { TokenAppDo, TokenAppDoActionConfirmType, TokenAppAction } from '$utils/types.token'
+	import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import { flip } from 'svelte/animate'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -44,7 +45,9 @@
 		actions = dataObj.actionsField.filter((a) => a.isShow)
 		isEditing = dataObj.actionsField.some(
 			(a: DataObjActionField) =>
-				[TokenAppAction.doDetailSave, TokenAppAction.doListSelfSave].includes(a.codeTokenAction) &&
+				[StatePacketAction.doDetailSave, StatePacketAction.doListSelfSave].includes(
+					a.codePacketAction
+				) &&
 				state.objStatus.changed() &&
 				!dataObj.isListEmbed
 		)

@@ -259,47 +259,9 @@ export class TokenApiUserName extends TokenApi {
 }
 
 export class TokenApp extends Token {
-	action: TokenAppAction
 	constructor(obj: any) {
 		const clazz = 'TokenApp'
 		super()
-		this.action = required(obj.action, clazz, 'action')
-	}
-}
-
-export enum TokenAppAction {
-	// dataObj
-	doDetailDelete = 'doDetailDelete',
-	doDetailMigrate = 'doDetailMigrate',
-	doDetailNew = 'doDetailNew',
-	doDetailProcessExecute = 'doDetailProcessExecute',
-	doDetailSave = 'doDetailSave',
-	doDetailSaveAs = 'doDetailSaveAs',
-	doDetailSaveCancel = 'doDetailSaveCancel',
-
-	doEmbedListConfigEdit = 'doEmbedListConfigEdit',
-	doEmbedListConfigNew = 'doEmbedListConfigNew',
-	doEmbedListEditParmValue = 'doEmbedListEditParmValue',
-	doEmbedListSelect = 'doEmbedListSelect',
-
-	doExport = 'doExport',
-
-	doListDetailEdit = 'doListDetailEdit',
-	doListDetailNew = 'doListDetailNew',
-	doListSelfRefresh = 'doListSelfRefresh',
-	doListSelfSave = 'doListSelfSave',
-
-	// modal
-	modalCancel = 'modalCancel',
-	modalDone = 'modalDone',
-
-	none = 'none'
-}
-
-export class TokenAppBack extends TokenApp {
-	constructor(obj: any) {
-		const clazz = 'TokenAppBack'
-		super(obj)
 	}
 }
 export class TokenAppCrumbs extends TokenApp {
@@ -393,19 +355,5 @@ export class TokenAppTreeNodeId extends TokenApp {
 		const clazz = 'TokenAppTreeNodeId'
 		super(obj)
 		this.nodeId = strRequired(obj.nodeId, clazz, 'nodeId')
-	}
-}
-
-export class TokenAppTreeReset extends TokenApp {
-	constructor(obj: any) {
-		const clazz = 'TokenAppTreeReset'
-		super(obj)
-	}
-}
-
-export class TokenAppTreeSetParent extends TokenApp {
-	constructor(obj: any) {
-		const clazz = 'TokenAppTreeSetParent'
-		super(obj)
 	}
 }

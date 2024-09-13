@@ -206,12 +206,12 @@ export namespace sys_core {
     "isListHideSearch"?: boolean | null;
   }
   export interface SysDataObjActionField extends SysObj {
+    "codePacketAction": SysCode;
     "actionFieldConfirms": SysDataObjActionFieldConfirm[];
     "actionFieldShows": SysDataObjActionFieldShow[];
     "codeActionFieldTriggerEnable": SysCode;
     "codeColor"?: SysCode | null;
     "isListRowAction": boolean;
-    "codeTokenAction": SysCode;
   }
   export interface SysDataObjActionFieldConfirm extends sys_user.Mgmt {
     "codeTriggerConfirmConditional": SysCode;

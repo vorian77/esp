@@ -437,7 +437,7 @@ export async function addDataObjActionField(data: any) {
 			actionFieldConfirms: e.array(e.json),
 			actionFieldShows: e.array(e.json),
 			codeActionFieldTriggerEnable: e.str,
-			codeTokenAction: e.str,
+			codePacketAction: e.str,
 			codeColor: e.optional(e.str),
 			header: e.str,
 			isListRowAction: e.bool,
@@ -484,7 +484,7 @@ export async function addDataObjActionField(data: any) {
 				codeActionFieldTriggerEnable: e.select(
 					e.sys_core.getCode('ct_sys_do_action_field_trigger', p.codeActionFieldTriggerEnable)
 				),
-				codeTokenAction: e.select(e.sys_core.getCode('ct_sys_token_action', p.codeTokenAction)),
+				codePacketAction: e.select(e.sys_core.getCode('ct_sys_packet_action', p.codePacketAction)),
 				codeColor: e.select(e.sys_core.getCode('ct_sys_tailwind_color', p.codeColor)),
 
 				createdBy: e.select(e.sys_user.getRootUser()),

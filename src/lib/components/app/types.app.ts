@@ -21,7 +21,6 @@ import {
 	TokenApiDbDataObjSource,
 	TokenApiQueryType,
 	TokenApiQuery,
-	TokenAppAction,
 	TokenAppModalEmbedField,
 	TokenAppRow,
 	TokenAppTreeNode,
@@ -36,7 +35,7 @@ import {
 } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { query } from '$comps/app/types.appQuery'
-import { State, StateSurfaceEmbedShell } from '$comps/app/types.appState'
+import { State, StatePacketAction, StateSurfaceEmbedShell } from '$comps/app/types.appState'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/nav/types.app.ts'
@@ -273,7 +272,7 @@ export class App {
 		}
 		return this
 	}
-	async saveDetail(state: State, token: TokenAppDo) {
+	async saveDetail(state: State, packetAction: StatePacketAction, token: TokenAppDo) {
 		const currTab = this.getCurrTab()
 		if (currTab && currTab.data) {
 			currTab.data = token.dataObj.objData
@@ -281,8 +280,8 @@ export class App {
 
 			const tabParent = this.getCurrTabParentTab()
 			if (tabParent && tabParent.data) {
-				switch (token.action) {
-					case TokenAppAction.doDetailDelete:
+				switch (packetAction) {
+					case StatePacketAction.doDetailDelete:
 						if (currTab.data.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset)) {
 							if (!tabParent || !tabParent.listHasRecords()) {
 								this.popLevel()
@@ -330,7 +329,7 @@ export class App {
 						}
 						break
 
-					case TokenAppAction.doDetailSave:
+					case StatePacketAction.doDetailSave:
 						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 							return this
 						await query(state, tabParent, TokenApiQueryType.retrieve)
@@ -343,7 +342,7 @@ export class App {
 						error(500, {
 							file: FILENAME,
 							function: 'App.detailUpdate',
-							message: `No case defined for TokenAppDoAction: ${token.action}`
+							message: `No case defined for StatePacketAction: ${packetAction}`
 						})
 				}
 			}
@@ -622,7 +621,7 @@ export enum AppRowActionType {
 async function getNodesLevel(nodeId: string) {
 	const result: ResponseBody = await apiFetch(
 		ApiFunction.dbEdgeGetNodesLevel,
-		new TokenAppTreeNodeId({ action: TokenAppAction.none, nodeId })
+		new TokenAppTreeNodeId({ nodeId })
 	)
 	if (result.success) {
 		return result.data

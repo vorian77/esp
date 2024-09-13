@@ -266,13 +266,13 @@ async function initDataObjActionField() {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'codeTokenAction',
+				columnName: 'codePacketAction',
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_token_action',
+				fieldListItemsParmName: 'ct_sys_packet_action',
 				linkTable: 'SysCode'
 			},
 			{
