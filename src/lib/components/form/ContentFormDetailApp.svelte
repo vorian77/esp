@@ -5,6 +5,7 @@
 	import { getContext } from 'svelte'
 
 	export let state: State
+	export let component: string
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
@@ -15,5 +16,5 @@
 </script>
 
 {#if dataObj}
-	<FormDetail bind:state {dataObj} {dataObjData} on:formCancelled />
+	<FormDetail bind:state {component} {dataObj} {dataObjData} on:formCancelled />
 {/if}

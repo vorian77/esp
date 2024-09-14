@@ -20,12 +20,14 @@ import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
 import {
 	Token,
 	TokenApiDbDataObjSource,
+	TokenApiId,
 	TokenApiQuery,
 	TokenApiQueryData,
 	TokenApiQueryType,
 	TokenAppDo,
 	TokenAppDoActionConfirmType,
 	TokenAppModalEmbedField,
+	TokenAppModalMultiSelect,
 	TokenAppModalReturn,
 	TokenAppModalReturnType
 } from '$utils/types.token'
@@ -35,10 +37,11 @@ import {
 	FieldEmbedListSelect
 } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
-import { RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
+import { RawDataObjActionField, RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
+import { apiFetch, ApiFunction } from '$routes/api/api'
+import { ResponseBody } from '$utils/types'
 import { error } from '@sveltejs/kit'
-import action from '$enhance/actions/actionAuth'
 
 const FILENAME = '/$comps/app/types.appState.ts'
 
@@ -76,6 +79,26 @@ export class State {
 			return packet
 		} else {
 			return undefined
+		}
+	}
+
+	async getActions(fieldGroupName: string) {
+		const result: ResponseBody = await apiFetch(
+			ApiFunction.dbEdgeGetDataObjActionFieldGroup,
+			new TokenApiId(fieldGroupName)
+		)
+		if (result.success) {
+			const actionFieldGroup = result.data
+			return actionFieldGroup._actionFieldItems.map((action: any) => {
+				const rawAction = new RawDataObjActionField(action)
+				return new DataObjActionField(rawAction, this)
+			})
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'getActions',
+				message: `Error retrieving data object action field group: ${fieldGroupName}`
+			})
 		}
 	}
 
@@ -129,7 +152,7 @@ export class State {
 		new Promise<any>((resolve) => {
 			const modalSettings: ModalSettings = {
 				type: 'component',
-				component: 'baseLayoutModal',
+				component: 'rootLayoutModal',
 				meta: { state },
 				response: async (r: any) => {
 					resolve(r)
@@ -237,6 +260,27 @@ export class State {
 
 		await this.openModal(stateModal, fModalCloseUpdate)
 	}
+
+	async openModalSelectMulti(token: TokenAppModalMultiSelect) {
+		const parmsState = new ParmsValues({})
+		parmsState.valueSet(ParmsValuesType.modalMultiSelectItemsCurrent, token.itemsCurrent)
+		parmsState.valueSet(ParmsValuesType.modalMultiSelectItemsList, token.itemsList)
+
+		const stateModal = new StateSurfaceModal({
+			actionsFieldDialog: await this.getActions('doag_dialog_footer_list'),
+			layoutComponent: StateLayoutComponentType.layoutContent,
+			layoutStyle: StateLayoutStyle.overlayModalSelectMulti,
+			packet: new StatePacket({
+				action: StatePacketAction.selectMultiModal,
+				confirmType: TokenAppDoActionConfirmType.none,
+				token
+			}),
+			parmsState
+		})
+		await this.openModal(stateModal, token.fModalClose)
+	}
+
+	// openMultiSelectModal(this, token.itemsList, token.itemsCurrent, token.fModalClose)
 
 	openToast(type: ToastType, message: string) {
 		const background = {
@@ -374,10 +418,15 @@ export enum StatePacketAction {
 	navBack = 'navBack',
 	navCrumbs = 'navCrumbs',
 	navRow = 'navRow',
+	navTab = 'navTab',
 	navTreeNode = 'navTreeNode',
 	navTreeNodeId = 'navTreeNodeId',
 	navTreeReset = 'navTreeReset',
 	navTreeSetParent = 'navTreeSetParent',
+
+	// select-multi
+	selectMultiModal = 'selectMultiModal',
+	selectMultiOpen = 'selectMultiOpen',
 
 	none = 'none'
 }

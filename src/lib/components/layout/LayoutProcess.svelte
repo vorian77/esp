@@ -7,6 +7,7 @@
 	const FILENAME = '$comps/Surface/LayoutProcess.svelte'
 
 	export let state: State
+	export let component: string
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 </script>
@@ -14,6 +15,6 @@
 <!-- <DataViewer header="objChanged" data={state?.objHasChanged} /> -->
 {#if dataObj && dataObjData}
 	<div class="mt-4">
-		<LayoutContent bind:state {dataObj} {dataObjData} on:formCancelled />
+		<LayoutContent bind:state {component} {dataObj} {dataObjData} on:formCancelled />
 	</div>
 {/if}

@@ -8,6 +8,7 @@
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	export let state: State
+	export let component: string
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 </script>
@@ -15,5 +16,5 @@
 <!-- <DataViewer header="dataObj" data={dataObj} /> -->
 
 {#if dataObj}
-	<FormDetail bind:state {dataObj} {dataObjData} on:formCancelled />
+	<FormDetail bind:state {component} {dataObj} {dataObjData} on:formCancelled />
 {/if}

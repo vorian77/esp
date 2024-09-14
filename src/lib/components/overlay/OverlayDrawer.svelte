@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Drawer, getDrawerStore } from '@skeletonlabs/skeleton'
 	import NavTree from '$comps/app/NavTree.svelte'
-	import BaseLayout from '$comps/layout/BaseLayout.svelte'
+	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import { TokenApiUserId } from '$utils/types.token'
 	import { ResponseBody } from '$utils/types'
@@ -43,7 +43,7 @@
 		<div>
 			{#if $storeDrawer.meta.state}
 				<div class="esp-card-space-y">
-					<BaseLayout state={$storeDrawer.meta.state} on:formCancelled={onformCancelled} />
+					<RootLayoutApp state={$storeDrawer.meta.state} on:formCancelled={onformCancelled} />
 				</div>
 			{/if}
 		</div>

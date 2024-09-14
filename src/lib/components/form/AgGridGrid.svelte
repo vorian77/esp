@@ -35,14 +35,18 @@
 		required,
 		strRequired
 	} from '$utils/types'
-	import { TokenAppModalReturnType } from '$utils/types.token'
+	import { StatePacket, StatePacketAction } from '$comps/app/types.appState'
+	import {
+		TokenAppDoActionConfirmType,
+		TokenAppModalMultiSelect,
+		TokenAppModalReturnType
+	} from '$utils/types.token'
 	import { ParmsValues } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import { FieldAccess, FieldElement } from '$comps/form/field'
 	import { State, StateSurfaceModal, StateLayoutStyle } from '$comps/app/types.appState'
 	import { recordsSearch, sortInit, sortUser } from '$comps/form/formList'
 	import FormListSearch from '$comps/form/FormListSearch.svelte'
-	import { openMultiSelectModal } from '$comps/form/multiSelect'
 	import { error } from '@sveltejs/kit'
 
 	const FILENAME = '$comps/form/AgGridSvelte.svelte'
@@ -107,9 +111,19 @@
 		const fieldName = event.colDef.field
 		const itemsKey = '_items_' + field.colDO.propName
 		if (Object.hasOwn(dataObjData.items, itemsKey)) {
-			const items = dataObjData.items[itemsKey]
-			const currVal = event.data[fieldName]
-			await openMultiSelectModal(state, items, currVal, fModalClose)
+			const itemsCurrent = dataObjData.items[itemsKey]
+			const itemsList = event.data[fieldName]
+			state.update({
+				packet: new StatePacket({
+					action: StatePacketAction.selectMultiOpen,
+					confirmType: TokenAppDoActionConfirmType.none,
+					token: new TokenAppModalMultiSelect({
+						fModalClose,
+						itemsCurrent,
+						itemsList
+					})
+				})
+			})
 		}
 		async function fModalClose(returnType: TokenAppModalReturnType, data?: ParmsValues) {
 			console.log('AgGridGrid.fModalClose', { returnType, data })

@@ -7,7 +7,7 @@
 	import { AppBar, AppShell } from '@skeletonlabs/skeleton'
 	import NavCrumbs from '$comps/app/NavCrumbs.svelte'
 	import NavRow from '$comps/app/NavRow.svelte'
-	import Icon from '$comps/misc/Icon.svelte'
+	import Icon from '$comps/other/Icon.svelte'
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import action from '$enhance/actions/actionAuth'
@@ -15,6 +15,7 @@
 	const FILENAME = '$comps/Surface/LayoutApp.svelte'
 
 	export let state: State
+	export let component: string
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
@@ -64,7 +65,7 @@
 
 	{#if currLevel}
 		<div class="mt-4">
-			<LayoutTab bind:state {dataObj} {dataObjData} on:formCancelled />
+			<LayoutTab bind:state {component} {dataObj} {dataObjData} on:formCancelled />
 		</div>
 	{/if}
 </AppShell>

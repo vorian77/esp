@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { Modal } from '@skeletonlabs/skeleton'
-	import BaseLayoutModal from '$comps/layout/BaseLayoutModal.svelte'
+	import RootLayoutModal from '$comps/layout/RootLayoutModal.svelte'
 </script>
 
 <Modal
 	components={{
-		baseLayoutModal: { ref: BaseLayoutModal }
+		rootLayoutModal: { ref: RootLayoutModal }
 	}}
 />

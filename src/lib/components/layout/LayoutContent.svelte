@@ -3,9 +3,10 @@
 	import { State, StateLayoutStyle, StateSurfaceModal } from '$comps/app/types.appState'
 	import { valueOrDefault, type DataObj, type DataObjData } from '$utils/types'
 	import NavRow from '$comps/app/NavRow.svelte'
-	import FormListApp from '$comps/form/FormListApp.svelte'
-	import FormDetailApp from '$comps/form/FormDetailApp.svelte'
-	import FormDetailRepConfig from '$comps/form/FormDetailRepConfig.svelte'
+	import ContentFormDetailApp from '$comps/form/ContentFormDetailApp.svelte'
+	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
+	import ContentFormListApp from '$comps/form/ContentFormListApp.svelte'
+	import ContentSelectMulti from '$comps/selectMulti/ContentSelectMulti.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import { createEventDispatcher } from 'svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -14,12 +15,14 @@
 	const dispatch = createEventDispatcher()
 
 	const comps: Record<string, any> = {
-		FormDetail: FormDetailApp,
-		FormDetailRepConfig: FormDetailRepConfig,
-		FormList: FormListApp
+		FormDetail: ContentFormDetailApp,
+		FormDetailRepConfig: ContentFormDetailRepConfig,
+		FormList: ContentFormListApp,
+		SelectMulti: ContentSelectMulti
 	}
 
 	export let state: State
+	export let component: string
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
@@ -30,7 +33,7 @@
 	let isHeaderClose: boolean = false
 	let rowStatus: AppLevelRowStatus | undefined
 
-	$: currComponent = comps[dataObj.raw.codeComponent]
+	$: currComponent = comps[component]
 
 	$: {
 		headerObj = ''
@@ -62,8 +65,9 @@
 			case StateLayoutStyle.embeddedField:
 				break
 		}
+
 		classContent =
-			dataObj.actionsField.length > 0 || headerObj || headerObjSub || rowStatus
+			(dataObj && dataObj.actionsField.length > 0) || headerObj || headerObjSub || rowStatus
 				? 'border-2 p-4'
 				: ''
 	}
@@ -73,7 +77,7 @@
 	}
 </script>
 
-{#if dataObj}
+{#if currComponent}
 	<div class={classContent}>
 		<div>
 			<div>
@@ -103,15 +107,18 @@
 				<div class="grow border-2 p-4">
 					<svelte:component
 						this={currComponent}
+						{component}
 						bind:state
 						{dataObj}
 						{dataObjData}
 						on:formCancelled
 					/>
 				</div>
-				<div>
-					<DataObjActionsObj {state} {dataObj} on:formCancelled />
-				</div>
+				{#if dataObj && dataObjData}
+					<div>
+						<DataObjActionsObj {state} {dataObj} on:formCancelled />
+					</div>
+				{/if}
 			</div>
 		</div>
 	</div>

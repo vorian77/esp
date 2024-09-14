@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { AppRowActionType } from '$comps/app/types.app'
-	import Icon from '$comps/misc/Icon.svelte'
+	import Icon from '$comps/other/Icon.svelte'
 
 	const NAV_COLOR = '#3b79e1'
 

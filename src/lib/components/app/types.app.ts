@@ -18,11 +18,11 @@ import {
 	TokenApiDbDataObjSource,
 	TokenApiQueryType,
 	TokenApiQuery,
+	TokenAppIndex,
 	TokenAppModalEmbedField,
 	TokenAppRow,
 	TokenAppTreeNode,
 	TokenAppTreeNodeId,
-	TokenAppCrumbs,
 	TokenAppDo
 } from '$utils/types.token'
 import {
@@ -159,9 +159,8 @@ export class App {
 		}
 		return this
 	}
-	async changeCrumbs(token: TokenAppCrumbs) {
-		const crumbIdx = token.crumbIdx
-		const backCnt = this.crumbs.length - 1 - crumbIdx
+	async changeCrumbs(token: TokenAppIndex) {
+		const backCnt = this.crumbs.length - 1 - token.index
 		this.back(backCnt)
 		return this
 	}

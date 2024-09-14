@@ -3,7 +3,7 @@
 	// import { Form as FormClass } from '$comps/dataObj/dataObjOld'
 	import Form from '$comps/form/FormDetail.svelte'
 	import ElgDocsList from '$routes/home/cm/docs/ElgDocsList.svelte'
-	import AddressSelect from '$comps/misc/AddressSelect.svelte'
+	import AddressSelect from '$comps/other/AddressSelect.svelte'
 	import { getToastStore } from '@skeletonlabs/skeleton'
 
 	import { onMount } from 'svelte'

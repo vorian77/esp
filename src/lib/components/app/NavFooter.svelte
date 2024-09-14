@@ -2,7 +2,7 @@
 	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
 	import { TokenApp, TokenAppDoActionConfirmType, TokenAppTreeNode } from '$utils/types.token'
 	import { appStoreUser, Node, NodeType, RawNode, User } from '$utils/types'
-	import Icon from '$comps/misc/Icon.svelte'
+	import Icon from '$comps/other/Icon.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/NavFooter.svelte'

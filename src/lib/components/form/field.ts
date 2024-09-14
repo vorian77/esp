@@ -239,6 +239,7 @@ export enum FieldParmType {
 }
 
 export class FieldProps {
+	component: string
 	dataObj: DataObj
 	dataObjData: DataObjData
 	dataRecord: DataRecord
@@ -248,6 +249,7 @@ export class FieldProps {
 	setFieldVal: Function
 	state: State
 	constructor(
+		component: string,
 		dataObj: DataObj,
 		dataObjData: DataObjData,
 		dataRecord: DataRecord,
@@ -257,6 +259,7 @@ export class FieldProps {
 		setFieldVal: Function,
 		state: State
 	) {
+		this.component = component
 		this.dataObj = dataObj
 		this.dataObjData = dataObjData
 		this.dataRecord = dataRecord

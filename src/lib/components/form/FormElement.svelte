@@ -52,6 +52,7 @@
 	const FILENAME = '$comps/form/FormDetailElement.svelte'
 
 	export let state: State
+	export let component: string
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 	export let field: Field
@@ -94,6 +95,7 @@
 			currentElement = elements[field.constructor.name]
 	}
 	$: fp = new FieldProps(
+		component,
 		dataObj,
 		dataObjData,
 		dataRecord,

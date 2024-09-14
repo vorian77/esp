@@ -15,6 +15,7 @@ import {
 import { State } from '$comps/app/types.appState'
 import { AppRowActionType } from '$comps/app/types.app'
 import { Node } from '$comps/app/types.node'
+import { FieldItem } from '$comps/form/field'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { Process } from '$utils/utils.process'
@@ -264,14 +265,7 @@ export class TokenApp extends Token {
 		super()
 	}
 }
-export class TokenAppCrumbs extends TokenApp {
-	crumbIdx: number
-	constructor(obj: any) {
-		const clazz = 'TokenAppCrumbs'
-		super(obj)
-		this.crumbIdx = required(obj.crumbIdx, clazz, 'crumbIdx')
-	}
-}
+
 export class TokenAppDo extends TokenApp {
 	dataObj: DataObj
 	fieldEmbed?: FieldEmbed
@@ -292,6 +286,15 @@ export enum TokenAppDoActionConfirmType {
 	objectValidToContinue = 'objectValidToContinue'
 }
 
+export class TokenAppIndex extends TokenApp {
+	index: number
+	constructor(obj: any) {
+		const clazz = 'TokenAppIndex'
+		super(obj)
+		this.index = required(obj.index, clazz, 'index')
+	}
+}
+
 export class TokenAppModalEmbedField extends TokenApp {
 	dataObjSourceModal: TokenApiDbDataObjSource
 	queryType: TokenApiQueryType
@@ -300,6 +303,19 @@ export class TokenAppModalEmbedField extends TokenApp {
 		super(obj)
 		this.dataObjSourceModal = required(obj.dataObjSourceModal, clazz, 'dataObjSourceModal')
 		this.queryType = required(obj.queryType, clazz, 'queryType')
+	}
+}
+
+export class TokenAppModalMultiSelect extends TokenApp {
+	fModalClose: Function
+	itemsCurrent: FieldItem[]
+	itemsList: FieldItem[]
+	constructor(obj: any) {
+		const clazz = 'TokenAppModalMultiSelect'
+		super(obj)
+		this.fModalClose = required(obj.fModalClose, clazz, 'fModalClose')
+		this.itemsCurrent = required(obj.itemsCurrent, clazz, 'itemsCurrent')
+		this.itemsList = required(obj.itemsList, clazz, 'itemsList')
 	}
 }
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import BaseLayout from '$comps/layout/BaseLayout.svelte'
+	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import { StatePacketAction, StateSurfaceModal } from '$comps/app/types.appState'
 	import { TokenAppModalReturn, TokenAppModalReturnType } from '$utils/types.token'
 	import { getModalStore } from '@skeletonlabs/skeleton'
@@ -8,7 +8,7 @@
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '/$comps/layout/BaseLayoutModal.svelte'
+	const FILENAME = '/$comps/layout/RootLayoutModal.svelte'
 
 	export let parent: any
 
@@ -40,14 +40,12 @@
 						})
 					)
 				}
-				dropEmbedResources()
 				storeModal.close()
 			}
 		}
 	}
 
 	async function onFooterActionClick(action: DataObjActionField) {
-		dropEmbedResources()
 		switch (action.codePacketAction) {
 			case StatePacketAction.modalCancel:
 				if ($storeModal[0].response)
@@ -79,20 +77,11 @@
 				})
 		}
 	}
-
-	function dropEmbedResources() {
-		state.app.levels = state.app.levels.filter((level) => !level.isModal)
-		state.app.levels.forEach((level) => {
-			level.tabs = level.tabs.filter((tab) => !tab.isModal)
-		})
-		const idxLevel = state.app.levels.length - 1
-		if (idxLevel >= 0) state.app.levels[idxLevel].tabIdxRestore()
-	}
 </script>
 
 {#if state}
 	<div class="esp-card-space-y w-modal-wide">
-		<BaseLayout bind:state />
+		<RootLayoutApp bind:state />
 
 		<div class="flex justify-end">
 			{#each state.actionsFieldDialog as action}

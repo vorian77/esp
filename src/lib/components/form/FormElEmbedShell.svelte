@@ -10,7 +10,7 @@
 	} from '$comps/app/types.appState'
 	import { TokenAppDoActionConfirmType } from '$utils/types.token'
 	import FormLabel from '$comps/form/FormLabel.svelte'
-	import Layout from '$comps/layout/BaseLayout.svelte'
+	import Layout from '$comps/layout/RootLayoutApp.svelte'
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 

@@ -2,20 +2,18 @@
 	import { StatePacketAction } from '$comps/app/types.appState'
 	import { FieldProps } from '$comps/form/field'
 	import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
-	import Layout from '$comps/layout/BaseLayout.svelte'
+	import Layout from '$comps/layout/RootLayoutApp.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
-	import Icon from '$comps/misc/Icon.svelte'
+	import Icon from '$comps/other/Icon.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElEmbeddedListSelect.svelte'
-
+	let field: FieldEmbedListSelect
 	export let fp: FieldProps
 
-	$: field = fp.field as FieldEmbedListSelect
-
 	function openDialogIcon() {
-		field.dataObj.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, fp.state)
+		fp.field.dataObj.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, fp.state)
 	}
 </script>
 
@@ -29,6 +27,7 @@
 	<div class="mt-4">
 		<LayoutContent
 			bind:state={fp.state}
+			component={fp.field.dataObj.raw.codeComponent}
 			dataObj={fp.field.dataObj}
 			dataObjData={fp.field.dataObj.data}
 			on:formCancelled

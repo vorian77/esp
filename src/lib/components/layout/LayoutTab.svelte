@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { AppLevel } from '$comps/app/types.app'
 	import { State, StateSurfaceEmbed } from '$comps/app/types.appState'
-	import { StatePacket, StateSurfaceEmbedShell } from '$comps/app/types.appState'
+	import { StatePacket, StatePacketAction, StateSurfaceEmbedShell } from '$comps/app/types.appState'
 	import { query } from '$comps/app/types.appQuery'
-	import { TokenApiQueryType, TokenAppDoActionConfirmType } from '$utils/types.token'
+	import { TokenApiQueryType, TokenAppDoActionConfirmType, TokenAppIndex } from '$utils/types.token'
 	import { DataObj, DataObjData } from '$utils/types'
 	import { DataRecordStatus } from '$utils/types'
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton'
@@ -13,6 +13,7 @@
 	const FILENAME = '$comps/Surface/LayoutTab.svelte'
 
 	export let state: State
+	export let component: string
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
@@ -27,17 +28,15 @@
 			!state.objStatus.valid())
 
 	async function onClickTab(event: any) {
-		const tabIdx = event.target.value
-		if (currLevel) {
-			currLevel.tabIdxSet(tabIdx)
-			const currTab = currLevel.getCurrTab()
-			if (!currTab.isRetrieved) {
-				await query(state, currTab, TokenApiQueryType.retrieve)
-			}
-			dataObj = currTab.dataObj
-			dataObjData = currTab.data
-			state.resetState()
-		}
+		state.update({
+			packet: new StatePacket({
+				action: StatePacketAction.navTab,
+				confirmType: TokenAppDoActionConfirmType.objectChanged,
+				token: new TokenAppIndex({
+					index: event.target.value
+				})
+			})
+		})
 	}
 </script>
 
@@ -59,7 +58,7 @@
 		<svelte:fragment slot="panel">
 			{#if dataObj && dataObjData}
 				<div class="mt-4">
-					<LayoutContent bind:state {dataObj} {dataObjData} on:formCancelled />
+					<LayoutContent bind:state {component} {dataObj} {dataObjData} on:formCancelled />
 				</div>
 			{/if}
 		</svelte:fragment>

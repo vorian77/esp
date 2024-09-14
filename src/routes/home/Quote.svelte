@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import type { ResponseBody } from '$utils/types'
-	import Icon from '$comps/misc/Icon.svelte'
+	import Icon from '$comps/other/Icon.svelte'
 
 	let quote: any = {}
 

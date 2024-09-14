@@ -17,11 +17,11 @@
 		getModalStore,
 		getToastStore
 	} from '@skeletonlabs/skeleton'
-	import Layout from '$comps/layout/BaseLayout.svelte'
+	import Layout from '$comps/layout/RootLayoutApp.svelte'
 	import NavHome from '$comps/app/NavHome.svelte'
 	import NavFooter from '$comps/app/NavFooter.svelte'
 	import NavTree from '$comps/app/NavTree.svelte'
-	import Icon from '$comps/misc/Icon.svelte'
+	import Icon from '$comps/other/Icon.svelte'
 	import { getURLDownload } from '$utils/utils.aws'
 	import { page } from '$app/stores'
 	import { goto } from '$app/navigation'

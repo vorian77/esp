@@ -16,6 +16,7 @@
 	let tagGroupSections: TagGroupSection[]
 
 	export let state: State
+	export let component: string
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
@@ -117,6 +118,7 @@
 								<div class="grow">
 									<FormElement
 										bind:state
+										{component}
 										{dataObj}
 										{dataObjData}
 										field={dataObj.fields[fieldIdx]}

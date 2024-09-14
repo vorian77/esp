@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Icon from '$comps/misc/Icon.svelte'
+	import Icon from '$comps/other/Icon.svelte'
 	import { type Field } from '$comps/form/field'
 	import { DataObjSort, DataObjSortItem } from '$utils/types'
 	import { PropSortDir } from '$comps/dataObj/types.rawDataObj'

@@ -30,6 +30,7 @@
 	let dataHeight = `max-height: calc(100vh - ${dataHeightPadding}px);`
 
 	export let state: State
+	export let component: string
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
@@ -161,7 +162,7 @@
 		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
 		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSortObj, listSortObj)
 	}
-	const isNewList = false
+	const isNewList = true
 </script>
 
 {#if isNewList}
@@ -247,7 +248,7 @@
 								on:click={async () => await onRowClick(record, field)}
 								on:keyup={async () => await onRowClick(record, field)}
 							>
-								<FormElement bind:state {dataObj} {dataObjData} {field} {row} />
+								<FormElement bind:state {component} {dataObj} {dataObjData} {field} {row} />
 							</td>
 						{/each}
 					</tr>

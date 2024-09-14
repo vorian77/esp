@@ -81,10 +81,10 @@ export class DataObj {
 				? new DBTable(this.raw.tables[0].table)
 				: undefined
 	}
-	actionsFieldEmbedSet(action: StatePacketAction, field: FieldEmbed) {
-		const field1 = this.actionsField.find((f) => f.codePacketAction === action)
-		if (field1) {
-			field1.setFieldEmbed(field)
+	actionsFieldEmbedSet(action: StatePacketAction, fieldEmbed: FieldEmbed) {
+		const field = this.actionsField.find((f) => f.codePacketAction === action)
+		if (field) {
+			field.setFieldEmbed(fieldEmbed)
 		} else {
 			error(500, {
 				file: FILENAME,
@@ -93,15 +93,15 @@ export class DataObj {
 			})
 		}
 	}
-	actionsFieldTrigger(action: StatePacketAction, state: State) {
-		const field2 = this.actionsField.find((f) => f.codePacketAction === action)
-		if (field2) {
-			field2.trigger(state, this)
+	actionsFieldTrigger(packetAction: StatePacketAction, state: State) {
+		const action = this.actionsField.find((f) => f.codePacketAction === packetAction)
+		if (action) {
+			action.trigger(state, this)
 		} else {
 			error(500, {
 				file: FILENAME,
 				function: 'DataObj.actionsFieldTrigger',
-				message: `Field for StatePacketAction: ${action} not found.`
+				message: `Field for StatePacketAction: ${packetAction} not found.`
 			})
 		}
 	}
@@ -1029,5 +1029,7 @@ export enum ParmsValuesType {
 	embedParentId = 'embedParentId',
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listRecordIdList = 'listRecordIdList',
-	listRecordIdSelected = 'listRecordIdSelected'
+	listRecordIdSelected = 'listRecordIdSelected',
+	modalMultiSelectItemsCurrent = 'modalMultiSelectItemsCurrent',
+	modalMultiSelectItemsList = 'modalMultiSelectItemsList'
 }
