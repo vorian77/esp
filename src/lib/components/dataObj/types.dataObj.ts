@@ -182,7 +182,6 @@ export class DataObj {
 		let fields: Field[] = []
 		const propsRaw = rawDataObj.rawPropsDisplay
 		let firstVisible = propsRaw.findIndex((f) => f.isDisplayable)
-
 		for (let i = 0; i < propsRaw.length; i++) {
 			const prop: RawDataObjPropDisplay = propsRaw[i]
 			fields.push(await DataObj.initField(state, prop, firstVisible === i, fields, this, data))
@@ -312,8 +311,8 @@ export class DataObj {
 				const idx = this.data.fields.findIndex((f) => f.embedFieldName === field.colDO.propName)
 				if (idx > -1) {
 					this.data.fields[idx].data.rowsSave.setDataRows(setData(field.dataObj))
-					this.data.fields[idx].data.parmsValues.valueSet(
-						ParmsObjType.embedParentId,
+					this.data.fields[idx].data.parms.valueSet(
+						ParmsValuesType.embedParentId,
 						field.embedParentId
 					)
 				}
@@ -556,8 +555,7 @@ export class DataObjData {
 	cardinality?: DataObjCardinality
 	fields: DataObjDataField[] = []
 	items: DataRecord = {}
-	parmsState: ParmsValuesState = new ParmsValuesState()
-	parmsValues: ParmsValues = new ParmsValues()
+	parms: ParmsValues = new ParmsValues()
 	rawDataObj?: RawDataObj
 	rowsRetrieved: DataRows = new DataRows()
 	rowsSave: DataRows = new DataRows()
@@ -580,8 +578,7 @@ export class DataObjData {
 		const data = new DataObjData(source.rawDataObj)
 		data.fields = DataObjDataField.load(source.fields)
 		data.items = { ...source.items }
-		data.parmsState = ParmsValuesState.load(source.parmsState)
-		data.parmsValues = ParmsValues.load(source.parmsValues)
+		data.parms = ParmsValues.load(source.parms)
 		data.rowsRetrieved = DataRows.load(source.rowsRetrieved)
 		data.rowsSave = DataRows.load(source.rowsSave)
 		return data
@@ -599,7 +596,7 @@ export class DataObjData {
 		}
 	}
 	getParms() {
-		return { ...this.parmsState.valueGetAll(), ...this.parmsValues.valueGetAll() }
+		return this.parms.valueGetAll()
 	}
 }
 
@@ -991,16 +988,20 @@ export class ParmsValues {
 	constructor(data?: DataRecord) {
 		this.data = valueOrDefault(data, {})
 	}
-	dataUpdate(data: DataRecord) {
+	static load(parms: ParmsValues) {
+		const newParms = new ParmsValues()
+		newParms.data = parms.data
+		return newParms
+	}
+	update(data: DataRecord) {
 		data = valueOrDefault(data, {})
 		Object.entries(data).forEach(([key, value]) => {
 			this.data[key] = value
 		})
 	}
-	static load(parms: ParmsValues) {
-		const newParms = new ParmsValues()
-		newParms.data = parms.data
-		return newParms
+	updateList(dataRows: DataRow[] | undefined, recordId: string, recordIdAlt: string = '') {
+		this.valueSet(ParmsValuesType.listRecordIdCurrent, recordIdAlt ? recordIdAlt : recordId)
+		this.valueSetList(ParmsValuesType.listRecordIdList, dataRows)
 	}
 	valueGet(key: string) {
 		return this.data[key]
@@ -1023,38 +1024,7 @@ export class ParmsValues {
 	}
 }
 
-export class ParmsValuesState extends ParmsValues {
-	constructor(data?: DataRecord) {
-		super(data)
-	}
-	initLevel(parms: DataRecord) {
-		parms = valueOrDefault(parms, {})
-		this.valueSetDefault(ParmsObjType.listRecordIdCurrent, parms, '')
-		this.valueSetDefault(
-			ParmsObjType.listRecordIdList,
-			parms,
-			this.valueGet(ParmsObjType.listRecordIdList)
-		)
-	}
-	listUpdate(dataRows: DataRow[] | undefined, recordId: string, recordIdAlt: string = '') {
-		this.valueSet(ParmsObjType.listRecordIdCurrent, recordIdAlt ? recordIdAlt : recordId)
-		this.valueSetList(ParmsObjType.listRecordIdList, dataRows)
-	}
-	static load(parms: ParmsValuesState) {
-		const newParms = new ParmsValuesState()
-		newParms.data = parms.data
-		return newParms
-	}
-	parmsUpdate(parms?: ParmsValuesState) {
-		if (parms) {
-			Object.entries(parms.data).forEach(([key, value]) => {
-				this.data[key] = value
-			})
-		}
-	}
-}
-
-export enum ParmsObjType {
+export enum ParmsValuesType {
 	embedFieldName = 'embedFieldName',
 	embedParentId = 'embedParentId',
 	listRecordIdCurrent = 'listRecordIdCurrent',

@@ -1,15 +1,7 @@
 import { Field, FieldAlignment, RawFieldProps } from '$comps/form/field'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
-import {
-	DataObj,
-	type DataItems,
-	DataObjData,
-	type DataRecord,
-	ParmsObjType,
-	ResponseBody
-} from '$utils/types'
-import { State } from '$comps/app/types.appState'
+import { DataObj, type DataItems, DataObjData, type DataRecord, ResponseBody } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiQueryData } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
@@ -59,10 +51,10 @@ export class FieldParm extends Field {
 		return await DataObj.initField(props.state, propParm, false, fields, props.dataObj, props.data)
 	}
 	async configParmItemsData(props: RawFieldProps) {
-		const listRecordIdCurrent = props.data.parmsValues.valueGet('listRecordIdCurrent')
+		const listRecordIdCurrent = props.data.parms.valueGet('listRecordIdCurrent')
 		if (listRecordIdCurrent) {
 			const dataTab = new DataObjData()
-			dataTab.parmsValues.valueSet('listRecordIdCurrent', listRecordIdCurrent)
+			dataTab.parms.valueSet('listRecordIdCurrent', listRecordIdCurrent)
 			const result: ResponseBody = await apiFetch(
 				ApiFunction.dbEdgeGetRepParmItems,
 				new TokenApiQueryData({ dataTab })

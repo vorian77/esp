@@ -12,7 +12,6 @@
 		State,
 		StatePacket,
 		StatePacketAction,
-		StatePacketComponent,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState'
 	import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'

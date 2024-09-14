@@ -8,7 +8,6 @@
 		StateSurfaceModal,
 		StatePacket,
 		StatePacketAction,
-		StatePacketComponent,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState'
 	import {
@@ -32,8 +31,8 @@
 		DataObjData,
 		DataRecordStatus,
 		required,
-		ParmsValuesState,
-		ParmsObjType
+		ParmsValues,
+		ParmsValuesType
 	} from '$utils/types'
 	import {
 		FieldEmbedListConfig,
@@ -120,7 +119,7 @@
 
 			case StatePacketAction.doDetailNew:
 				parentTab = state.app.getCurrTabParentTab()
-				if (parentTab) parentTab.data?.parmsState.valueSet(ParmsObjType.listRecordIdCurrent, '')
+				if (parentTab) parentTab.data?.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
 				await query(state, state.app.getCurrTab(), TokenApiQueryType.preset)
 				updateObjects(false, true, true)
 				break
@@ -291,7 +290,7 @@
 
 	const fModalCloseUpdateEmbedListConfig = async (
 		returnType: TokenAppModalReturnType,
-		data?: ParmsValuesState
+		data?: ParmsValues
 	) => {
 		currLevel = state.app.getCurrLevel()
 		if (currLevel) {
@@ -302,15 +301,15 @@
 	}
 	const fModalCloseUpdateEmbedListSelect = async (
 		returnType: TokenAppModalReturnType,
-		data?: ParmsValuesState
+		data?: ParmsValues
 	) => {
 		if (returnType === TokenAppModalReturnType.complete) {
 			currLevel = state.app.getCurrLevel()
 			if (currLevel) {
-				const embedFieldName = data?.valueGet(ParmsObjType.embedFieldName)
+				const embedFieldName = data?.valueGet(ParmsValuesType.embedFieldName)
 				currTab = currLevel.getCurrTab()
 				const idx = currTab.data.fields.findIndex((f) => f.embedFieldName === embedFieldName)
-				if (idx > -1) currTab.data.fields[idx].data.parmsValues.dataUpdate(data?.valueGetAll())
+				if (idx > -1) currTab.data.fields[idx].data.parms.update(data?.valueGetAll())
 				await query(state, currTab, TokenApiQueryType.save)
 			}
 			updateObjects(true, true, true)
@@ -323,7 +322,6 @@
 			nodeType: NodeType.home,
 			packet: new StatePacket({
 				action: StatePacketAction.navTreeSetParent,
-				component: StatePacketComponent.navHome,
 				confirmType: TokenAppDoActionConfirmType.objectChanged
 			})
 		})

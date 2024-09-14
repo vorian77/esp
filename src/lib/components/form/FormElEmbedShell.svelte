@@ -6,7 +6,6 @@
 		StateLayoutComponentType,
 		StateLayoutStyle,
 		StatePacket,
-		StatePacketComponent,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState'
 	import { TokenAppDoActionConfirmType } from '$utils/types.token'

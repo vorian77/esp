@@ -4,12 +4,11 @@ import {
 	StateLayoutStyle,
 	StatePacket,
 	StatePacketAction,
-	StatePacketComponent,
 	StateSurfaceModal
 } from '$comps/app/types.appState'
 import { TokenAppDoActionConfirmType } from '$utils/types.token'
 import { type DataItems } from '$comps/dataObj/types.dataObj'
-import { ParmsValuesState } from '$utils/types'
+import { ParmsValues } from '$utils/types'
 
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiId } from '$utils/types.token'
@@ -28,7 +27,7 @@ export async function openMultiSelectModal(
 ) {
 	console.log('openMultiSelectModal:', { itemsList, currentItems })
 
-	const parmsState = new ParmsValuesState()
+	const parmsState = new ParmsValues()
 	// parmsState.valueSet(ParmsObjType.embedFieldName, field.colDO.propName);
 	// actionsFieldDialog: field.actionsFieldModal,
 
@@ -38,7 +37,6 @@ export async function openMultiSelectModal(
 		layoutStyle: StateLayoutStyle.overlayModalSelectMulti,
 		packet: new StatePacket({
 			action: StatePacketAction.none,
-			component: StatePacketComponent.modal,
 			confirmType: TokenAppDoActionConfirmType.none
 		}),
 		parmsState

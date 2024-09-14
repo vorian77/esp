@@ -46,7 +46,7 @@ function getRawDataObj(data: any) {
 }
 
 async function getData(queryData: TokenApiQueryData) {
-	const listRecordIdCurrent = queryData.dataTab?.parmsValues.valueGet('listRecordIdCurrent')
+	const listRecordIdCurrent = queryData.dataTab?.parms.valueGet('listRecordIdCurrent')
 	const data = await getReportUserParmItems(listRecordIdCurrent)
 	return data[0]
 }

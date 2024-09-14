@@ -3,12 +3,7 @@ import { ResponseBody } from '$utils/types'
 import { NodeNav, NodeType } from '$comps/app/types.node'
 import type { DbNode, RawNode, User } from '$utils/types'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
-import {
-	State,
-	StatePacket,
-	StatePacketAction,
-	StatePacketComponent
-} from '$comps/app/types.appState'
+import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
 import {
 	TokenAppDoActionConfirmType,
 	TokenAppTreeNode,
@@ -101,7 +96,6 @@ export class NavTree {
 					nodeType: nodeNav.type,
 					packet: new StatePacket({
 						action: StatePacketAction.navTreeNode,
-						component: StatePacketComponent.navTree,
 						confirmType: TokenAppDoActionConfirmType.objectChanged,
 						token: new TokenAppTreeNode({ node: nodeNav })
 						// callbacks: [() => dispatch('treeChanged')]

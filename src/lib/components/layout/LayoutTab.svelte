@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { AppLevel } from '$comps/app/types.app'
 	import { State, StateSurfaceEmbed } from '$comps/app/types.appState'
-	import {
-		StatePacket,
-		StatePacketComponent,
-		StateSurfaceEmbedShell
-	} from '$comps/app/types.appState'
+	import { StatePacket, StateSurfaceEmbedShell } from '$comps/app/types.appState'
 	import { query } from '$comps/app/types.appQuery'
 	import { TokenApiQueryType, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import { DataObj, DataObjData } from '$utils/types'

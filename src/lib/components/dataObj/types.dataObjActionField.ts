@@ -1,9 +1,4 @@
-import {
-	State,
-	StatePacket,
-	StatePacketAction,
-	StatePacketComponent
-} from '$comps/app/types.appState'
+import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
 import { DataObj, DataObjConfirm, DataObjMode, DataObjSaveMode } from '$utils/types'
 import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 import { memberOfEnum, valueOrDefault } from '$utils/types'
@@ -70,7 +65,6 @@ export class DataObjActionField {
 		state.update({
 			packet: new StatePacket({
 				action: this.codePacketAction,
-				component: StatePacketComponent.dataObj,
 				confirm,
 				confirmType,
 				token: new TokenAppDo({

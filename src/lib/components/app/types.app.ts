@@ -3,15 +3,12 @@ import {
 	DataObj,
 	DataObjData,
 	DataRecordStatus,
-	ParmsValuesState,
-	ParmsObjType,
 	nbrRequired,
 	Node,
 	NodeApp,
+	ParmsValuesType,
 	RawNode,
 	ResponseBody,
-	required,
-	strRequired,
 	valueOrDefault
 } from '$utils/types'
 import type { DataRecord, DbNode } from '$utils/types'
@@ -97,7 +94,7 @@ export class App {
 		const currTab = this.getCurrTab()
 		if (currTab) {
 			currTab.data = token.dataObj.objData
-			currTab.data.parmsState.parmsUpdate(token.dataObj.data.parmsState)
+			currTab.data.parms.update(token.dataObj.data.parms.data)
 		}
 
 		// new level
@@ -248,8 +245,8 @@ export class App {
 		await query(state, this.getCurrTab(), TokenApiQueryType.retrieve)
 		const currTab = this.getCurrTab()
 		if (currTab)
-			currTab.data?.parmsState.valueSetList(
-				ParmsObjType.listRecordIdList,
+			currTab.data?.parms.valueSetList(
+				ParmsValuesType.listRecordIdList,
 				currTab?.data?.rowsRetrieved.getRows()
 			)
 	}
@@ -276,7 +273,7 @@ export class App {
 		const currTab = this.getCurrTab()
 		if (currTab && currTab.data) {
 			currTab.data = token.dataObj.objData
-			currTab.data.parmsState.parmsUpdate(token.dataObj.data.parmsState)
+			currTab.data.parms.update(token.dataObj.data.parms.data)
 
 			const tabParent = this.getCurrTabParentTab()
 			if (tabParent && tabParent.data) {
@@ -286,9 +283,9 @@ export class App {
 							if (!tabParent || !tabParent.listHasRecords()) {
 								this.popLevel()
 							} else {
-								tabParent.data.parmsState.valueSet(
-									ParmsObjType.listRecordIdCurrent,
-									tabParent.data.parmsState.valueGet(ParmsObjType.listRecordIdList)[0]
+								tabParent.data.parms.valueSet(
+									ParmsValuesType.listRecordIdCurrent,
+									tabParent.data.parms.valueGet(ParmsValuesType.listRecordIdList)[0]
 								)
 								await this.tabQueryDetailDataRecord(
 									state,
@@ -301,7 +298,7 @@ export class App {
 							let recordIdOld = currTab.data.rowsRetrieved.getDetailRecordValue('id')
 							let recordIdNew = ''
 
-							let idList = tabParent.data.parmsState.valueGet(ParmsObjType.listRecordIdList)
+							let idList = tabParent.data.parms.valueGet(ParmsValuesType.listRecordIdList)
 							if (idList.length > 1) {
 								let idx = idList.findIndex((id: string) => id === recordIdOld)
 								idx = idx === 0 ? 1 : idx - 1
@@ -310,7 +307,7 @@ export class App {
 								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 									return this
 								await query(state, tabParent, TokenApiQueryType.retrieve)
-								tabParent.data.parmsState.listUpdate(
+								tabParent.data.parms.updateList(
 									tabParent.data.rowsRetrieved.getRows(),
 									recordIdOld,
 									recordIdNew
@@ -333,7 +330,7 @@ export class App {
 						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 							return this
 						await query(state, tabParent, TokenApiQueryType.retrieve)
-						tabParent.data.parmsState.listUpdate(
+						tabParent.data.parms.updateList(
 							tabParent.data.rowsRetrieved.getRows(),
 							currTab.data.rowsRetrieved.getDetailRecordValue('id')
 						)
@@ -509,7 +506,7 @@ export class AppLevelTab {
 	listCrumbLabelId() {
 		let id = ''
 		const crumbFieldNames: Array<string> = this.dataObj?.raw.crumbs ? this.dataObj.raw.crumbs : []
-		const idCurrent = this.data?.parmsState.valueGet(ParmsObjType.listRecordIdCurrent)
+		const idCurrent = this.data?.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
 		if (crumbFieldNames.length > 0 && idCurrent) {
 			const record = this.listGetDataRecord()
 			if (record) {
@@ -527,7 +524,7 @@ export class AppLevelTab {
 	}
 
 	listGetDataRecord() {
-		const idCurrent = this.data?.parmsState.valueGet(ParmsObjType.listRecordIdCurrent)
+		const idCurrent = this.data?.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
 		const records = this.listGetRecords()
 		return idCurrent && records
 			? records.find((row) => {
@@ -536,7 +533,7 @@ export class AppLevelTab {
 			: {}
 	}
 	listGetRecords(): DataRecord[] {
-		const idList: string[] = this.data?.parmsState.valueGet(ParmsObjType.listRecordIdList)
+		const idList: string[] = this.data?.parms.valueGet(ParmsValuesType.listRecordIdList)
 		return idList
 			? idList.map((id) => {
 					return (
@@ -547,7 +544,7 @@ export class AppLevelTab {
 	}
 
 	listGetRow() {
-		const idCurrent = this.data?.parmsState.valueGet(ParmsObjType.listRecordIdCurrent)
+		const idCurrent = this.data?.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
 		const records = this.listGetRecords()
 		return idCurrent && records
 			? records.findIndex((row) => {
@@ -561,7 +558,7 @@ export class AppLevelTab {
 		)
 	}
 	listRowStatus() {
-		const idCurrent = this.data?.parmsState.valueGet(ParmsObjType.listRecordIdCurrent)
+		const idCurrent = this.data?.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
 		const listRecords = this.listGetRecords()
 		if (listRecords && idCurrent) {
 			const rowIdx = listRecords.findIndex((record) => {
@@ -603,7 +600,7 @@ export class AppLevelTab {
 						message: `No case defined for AppRowActionType: ${rowAction}`
 					})
 			}
-			this.data?.parmsState.valueSet(ParmsObjType.listRecordIdCurrent, listRecords[rowIdx].id)
+			this.data?.parms.valueSet(ParmsValuesType.listRecordIdCurrent, listRecords[rowIdx].id)
 		}
 	}
 	reset() {

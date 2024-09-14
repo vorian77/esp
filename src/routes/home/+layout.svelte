@@ -6,8 +6,7 @@
 		StateLayoutComponentType,
 		StateLayoutStyle,
 		StatePacket,
-		StatePacketAction,
-		StatePacketComponent
+		StatePacketAction
 	} from '$comps/app/types.appState'
 	import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import {
@@ -102,7 +101,6 @@
 			nodeType: NodeType.home,
 			packet: new StatePacket({
 				action: StatePacketAction.navTreeReset,
-				component: StatePacketComponent.navHome,
 				confirmType: TokenAppDoActionConfirmType.objectChanged
 			})
 		})

@@ -891,7 +891,7 @@ async function initRep() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'doEmbedListSelect',
+				codeFieldElement: 'embedListSelect',
 				columnName: 'analytics',
 				isDisplayable: true,
 				orderDisplay: 130,

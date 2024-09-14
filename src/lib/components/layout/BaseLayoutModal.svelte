@@ -3,7 +3,7 @@
 	import { StatePacketAction, StateSurfaceModal } from '$comps/app/types.appState'
 	import { TokenAppModalReturn, TokenAppModalReturnType } from '$utils/types.token'
 	import { getModalStore } from '@skeletonlabs/skeleton'
-	import { DataObjCardinality, DataObjEmbedType, ParmsObjType } from '$utils/types'
+	import { DataObjCardinality, DataObjEmbedType, ParmsValuesType } from '$utils/types'
 	import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -49,7 +49,7 @@
 	async function onFooterActionClick(action: DataObjActionField) {
 		dropEmbedResources()
 		switch (action.codePacketAction) {
-			case StatePackcodeStatePacketActionancel:
+			case StatePacketAction.modalCancel:
 				if ($storeModal[0].response)
 					$storeModal[0].response(
 						new TokenAppModalReturn({
@@ -74,12 +74,12 @@
 			default:
 				error(500, {
 					file: FILENAME,
-					function: 'onClickActionDialog',
+					function: 'onFooterActionClick',
 					message: `No case defined for StatePacketAction: ${action.codePacketAction} `
 				})
 		}
 	}
-	codeStatePacketAction
+
 	function dropEmbedResources() {
 		state.app.levels = state.app.levels.filter((level) => !level.isModal)
 		state.app.levels.forEach((level) => {

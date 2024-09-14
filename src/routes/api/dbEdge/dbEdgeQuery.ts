@@ -66,7 +66,7 @@ export class Query {
 		}
 
 		const specialFilters: string[] = ['$ListSelectDisplayIds']
-		const parms = valueOrDefault(queryData.dataTab?.parmsValues.data, {})
+		const parms = valueOrDefault(queryData.dataTab?.parms.data, {})
 		specialFilters.forEach((filter: string) => {
 			if (Object.hasOwn(parms, filter)) {
 				script = this.addItem(script, `.id in <uuid>{<parms,uuidList,${filter}>}`, 'AND')
@@ -364,9 +364,8 @@ export class Query {
 	) {
 		const clazz = 'getPropsSelectDataItemsContent'
 		let script = new Script(this, queryData, ScriptExePost.formatData)
-
 		const defn = required(prop.linkItemsDefn, clazz, 'prop.linkItemsDefn') as PropLinkItemsDefn
-		queryData.dataTab?.parmsState.dataUpdate({ ...defn.parms })
+		queryData.dataTab?.parms.update(defn.parms)
 		const shape = `{data := .id, display := ${defn.exprPropDisplay}}`
 		const filter = defn.exprFilter ? evalExpr(defn.exprFilter, queryData) : ''
 		const orderBy = defn.exprSort ? `ORDER BY ${defn.exprSort}` : 'ORDER BY .display'

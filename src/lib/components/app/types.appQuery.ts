@@ -1,5 +1,5 @@
 import { App, AppLevelTab } from '$comps/app/types.app'
-import { State, StateSurfaceEmbedShell, StateSurfaceModal } from '$comps/app/types.appState'
+import { State, StateSurfaceEmbedShell, StateSurfaceModalEmbed } from '$comps/app/types.appState'
 import {
 	arrayOfClasses,
 	debug,
@@ -10,8 +10,7 @@ import {
 	DataRecordStatus,
 	getArray,
 	memberOfEnum,
-	ParmsValuesState,
-	ParmsObjType,
+	ParmsValuesType,
 	required,
 	ResponseBody,
 	strRequired,
@@ -50,7 +49,6 @@ export async function query(
 			dataTab
 		)
 	}
-
 	const result: ResponseBody = await queryExecute(tab.getDataObjSource(), queryType, queryData)
 	if (!result.success) return false
 
@@ -72,8 +70,8 @@ export async function query(
 		tab.data = dataResult
 		tab.isRetrieved = true
 		if (tab.dataObj.raw.codeCardinality === DataObjCardinality.list) {
-			tab.data.parmsState.valueSetList(
-				ParmsObjType.listRecordIdList,
+			tab.data.parms.valueSetList(
+				ParmsValuesType.listRecordIdList,
 				tab.data.rowsRetrieved.getRows()
 			)
 		}
@@ -92,15 +90,11 @@ function queryDataPre(state: State, tab: AppLevelTab, queryType: TokenApiQueryTy
 
 	// dataTab
 	const dataTab = tab.data ? tab.data : new DataObjData()
-	dataTab.parmsValues.dataUpdate(state.parmsState.valueGetAll())
-	const parentTab = state.app.getCurrTabParentTab()
-	if (parentTab && parentTab.dataObj) {
-		dataTab.parmsValues.dataUpdate(parentTab.dataObj.data.getParms())
-	}
+	dataTab.parms.update(state.parmsState.valueGetAll())
 
 	// embedParentId
-	if (state instanceof StateSurfaceModal) {
-		dataTab.parmsValues.valueSet(ParmsObjType.embedParentId, state.embedParentId)
+	if (state instanceof StateSurfaceModalEmbed) {
+		dataTab.parms.valueSet(ParmsValuesType.embedParentId, state.embedParentId)
 	}
 
 	return { dataTree, dataTab }

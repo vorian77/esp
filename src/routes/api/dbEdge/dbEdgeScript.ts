@@ -6,7 +6,6 @@ import {
 	DataObjListEditPresetType,
 	DataRecordStatus,
 	debug,
-	ParmsObjType,
 	strRequired
 } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'

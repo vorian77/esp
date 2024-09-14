@@ -7,7 +7,7 @@
 		DataObjMode,
 		DataObjSort,
 		DataObjSortItem,
-		ParmsObjType,
+		ParmsValuesType,
 		ParmsUser,
 		ParmsUserParmType,
 		required,
@@ -49,7 +49,7 @@
 		if (!dataObj.isListEmbed) dataObj.objData = data
 
 		if (isSelect) {
-			const selectedRecords = state.parmsState.valueGet(ParmsObjType.listRecordIdSelected) || []
+			const selectedRecords = state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected) || []
 			dataObj.dataRecordsDisplay.forEach((record) => {
 				record.selected = selectedRecords.includes(record.id)
 			})
@@ -92,8 +92,8 @@
 		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
 		isSelectMultiAll = recordsSelectAll(dataObj.dataRecordsDisplay)
 		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSearchText, filterText)
-		dataObj.data.parmsState.valueSet(
-			ParmsObjType.listRecordIdList,
+		dataObj.data.parms.valueSet(
+			ParmsValuesType.listRecordIdList,
 			dataObj.dataRecordsDisplay.map((r: any) => r.id)
 		)
 	}
@@ -124,7 +124,7 @@
 		}
 
 		const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
-		dataObj.data.parmsState.valueSet(ParmsObjType.listRecordIdCurrent, record.id)
+		dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, record.id)
 		action.trigger(state, dataObj)
 	}
 
@@ -141,7 +141,7 @@
 		}
 		isSelectMultiAll = recordsSelectAll(dataObj.dataRecordsDisplay)
 		state.parmsState.valueSet(
-			ParmsObjType.listRecordIdSelected,
+			ParmsValuesType.listRecordIdSelected,
 			dataObj.dataRecordsDisplay.filter((r: any) => r.selected).map((r: any) => r.id)
 		)
 	}
@@ -152,7 +152,7 @@
 			return r
 		})
 		state.parmsState.valueSet(
-			ParmsObjType.listRecordIdSelected,
+			ParmsValuesType.listRecordIdSelected,
 			dataObj.dataRecordsDisplay.filter((r: any) => r.selected).map((r: any) => r.id)
 		)
 	}

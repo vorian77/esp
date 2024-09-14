@@ -646,7 +646,7 @@ async function initTable() {
 				orderDefine: 70
 			},
 			{
-				codeFieldElement: 'doEmbedListSelect',
+				codeFieldElement: 'embedListSelect',
 				columnName: 'columns',
 				isDisplayable: true,
 				orderDisplay: 80,

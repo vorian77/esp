@@ -202,7 +202,7 @@ export enum FieldElement {
 	embedDetail = 'embedDetail',
 	embedListConfig = 'embedListConfig',
 	embedListEdit = 'embedListEdit',
-	embedListSelect = 'doEmbedListSelect',
+	embedListSelect = 'embedListSelect',
 	embedShell = 'embedShell',
 	file = 'file',
 	hidden = 'hidden',

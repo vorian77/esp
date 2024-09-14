@@ -365,7 +365,7 @@ async function initUser() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'doEmbedListSelect',
+				codeFieldElement: 'embedListSelect',
 				columnName: 'userTypes',
 				isDisplayable: true,
 				orderDisplay: 50,

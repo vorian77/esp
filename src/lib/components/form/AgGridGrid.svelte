@@ -29,14 +29,14 @@
 		DataObjMode,
 		DataObjSort,
 		DataObjSortItem,
-		ParmsObjType,
+		ParmsValuesType,
 		ParmsUser,
 		ParmsUserParmType,
 		required,
 		strRequired
 	} from '$utils/types'
 	import { TokenAppModalReturnType } from '$utils/types.token'
-	import { ParmsValuesState } from '$utils/types'
+	import { ParmsValues } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import { FieldAccess, FieldElement } from '$comps/form/field'
 	import { State, StateSurfaceModal, StateLayoutStyle } from '$comps/app/types.appState'
@@ -111,7 +111,7 @@
 			const currVal = event.data[fieldName]
 			await openMultiSelectModal(state, items, currVal, fModalClose)
 		}
-		async function fModalClose(returnType: TokenAppModalReturnType, data?: ParmsValuesState) {
+		async function fModalClose(returnType: TokenAppModalReturnType, data?: ParmsValues) {
 			console.log('AgGridGrid.fModalClose', { returnType, data })
 			if (returnType === TokenAppModalReturnType.complete) {
 				const rowNode = grid.getRowNode(event.data.id)
@@ -224,14 +224,14 @@
 		} else if (isSelect) {
 			const selectedNodes = event.api.getSelectedNodes()
 			state.parmsState.valueSet(
-				ParmsObjType.listRecordIdSelected,
+				ParmsValuesType.listRecordIdSelected,
 				selectedNodes.map((node) => node.data.id)
 			)
 		} else {
 			const record = grid.getSelectedRows()[0]
 			if (record) {
 				const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
-				dataObj.data.parmsState.valueSet(ParmsObjType.listRecordIdCurrent, record.id)
+				dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, record.id)
 				action.trigger(state, dataObj)
 			}
 		}
@@ -403,13 +403,13 @@
 		})
 		grid.setGridOption('rowData', dataRows)
 
-		dataObj.data.parmsState.valueSet(
-			ParmsObjType.listRecordIdList,
+		dataObj.data.parms.valueSet(
+			ParmsValuesType.listRecordIdList,
 			dataRows.map((r: any) => r.id)
 		)
 
 		if (isSelect) {
-			const selectedRecords = state.parmsState.valueGet(ParmsObjType.listRecordIdSelected) || []
+			const selectedRecords = state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected) || []
 			const selected: IRowNode[] = []
 			const deselected: IRowNode[] = []
 			grid.forEachNode((node) => {

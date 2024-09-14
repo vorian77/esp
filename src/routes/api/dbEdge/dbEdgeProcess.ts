@@ -44,7 +44,6 @@ const FILENAME = 'server/dbEdgeQueryProcess.ts'
 
 export async function processDataObj(token: TokenApiQuery) {
 	const queryData = TokenApiQueryData.load(token.queryData)
-	debug('processDataObj', 'queryData', queryData)
 	let rawDataObj = await getRawDataObj(token.dataObjSource, queryData)
 
 	// expression
@@ -110,12 +109,10 @@ async function processDataObjQuery(
 			})
 	}
 	// embedded fields
-	const parms = queryData.dataTab?.getParms()
 	const EMBED_QUERY_TYPES = [TokenApiQueryType.retrieve, TokenApiQueryType.save]
 	if (EMBED_QUERY_TYPES.includes(queryType)) {
 		for (let i = 0; i < returnData.fields.length; i++) {
 			const field = returnData.fields[i]
-			field.data.parmsValues.dataUpdate(parms)
 			queryData.dataTab = field.data
 			await processDataObjQuery(
 				queryType,

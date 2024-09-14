@@ -1,5 +1,12 @@
 import { Field, RawFieldProps } from '$comps/form/field'
-import { arrayOfClasses, DataObj, DataObjDataField, DataObjEmbedType, required } from '$utils/types'
+import {
+	arrayOfClasses,
+	DataObj,
+	DataObjDataField,
+	DataObjEmbedType,
+	ParmsValuesType,
+	required
+} from '$utils/types'
 import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
 import {
 	RawDataObjPropDisplayEmbedListConfig,
@@ -26,6 +33,10 @@ export class FieldEmbed extends Field {
 		if (dataField) {
 			this.dataObj = await DataObj.init(props.state, dataField.data)
 			this.dataObj.objData = dataField.data
+			this.dataObj.data.parms.valueSetList(
+				ParmsValuesType.listRecordIdList,
+				dataField.data.rowsRetrieved.dataRows
+			)
 			this.dataObj.setIsListEmbed()
 		} else {
 			error(500, {

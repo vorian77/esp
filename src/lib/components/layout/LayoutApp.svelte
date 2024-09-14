@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app'
 	import type { State } from '$comps/app/types.appState'
-	import { StatePacket, StatePacketAction, StatePacketComponent } from '$comps/app/types.appState'
+	import { StatePacket, StatePacketAction } from '$comps/app/types.appState'
 	import { TokenApp, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import type { DataObj, DataObjData } from '$utils/types'
 	import { AppBar, AppShell } from '@skeletonlabs/skeleton'
@@ -30,7 +30,6 @@
 		state.update({
 			packet: new StatePacket({
 				action: StatePacketAction.navBack,
-				component: StatePacketComponent.navBack,
 				confirmType: TokenAppDoActionConfirmType.objectChanged
 			})
 		})

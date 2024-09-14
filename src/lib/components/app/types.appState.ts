@@ -1,7 +1,6 @@
 import { App } from '$comps/app/types.app'
 import { required, strRequired, valueOrDefault } from '$utils/utils'
 import {
-	debug,
 	DataObj,
 	DataObjCardinality,
 	DataObjConfirm,
@@ -9,14 +8,13 @@ import {
 	DataObjStatus,
 	type DataRecord,
 	initNavTree,
-	ParmsValuesState,
+	ParmsValues,
 	NodeType,
 	ParmsUser,
 	type ToastType,
 	User,
 	userInit,
-	ParmsUserParmType,
-	ParmsObjType
+	ParmsValuesType
 } from '$utils/types'
 import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
 import {
@@ -54,7 +52,7 @@ export class State {
 	objStatus: DataObjStatus = new DataObjStatus()
 	packet?: StatePacket
 	page = '/home'
-	parmsState: ParmsValuesState = new ParmsValuesState()
+	parmsState: ParmsValues = new ParmsValues()
 	parmsUser: ParmsUser = new ParmsUser()
 	storeDrawer: any
 	storeModal: any
@@ -73,15 +71,6 @@ export class State {
 	}
 	consume(actions: StatePacketAction | Array<StatePacketAction>) {
 		if (this.packet && actions.includes(this.packet.action)) {
-			const packet = this.packet
-			this.packet = undefined
-			return packet
-		} else {
-			return undefined
-		}
-	}
-	consumeOld(components: StatePacketComponent | Array<StatePacketComponent>) {
-		if (this.packet && this.packet.component && components.includes(this.packet.component)) {
 			const packet = this.packet
 			this.packet = undefined
 			return packet
@@ -131,7 +120,7 @@ export class State {
 		})
 	}
 
-	async openModal(state: State, fUpdate?: Function) {
+	async openModal(state: StateSurfaceModal, fUpdate?: Function) {
 		state.updateProperties({
 			storeDrawer: this.storeDrawer,
 			storeModal: this.storeModal,
@@ -153,7 +142,7 @@ export class State {
 					const modalReturn = response as TokenAppModalReturn
 					if (
 						modalReturn.type === TokenAppModalReturnType.complete &&
-						modalReturn.data instanceof ParmsValuesState
+						modalReturn.data instanceof ParmsValues
 					) {
 						fUpdate(TokenAppModalReturnType.complete, modalReturn.data)
 					} else {
@@ -176,7 +165,7 @@ export class State {
 		const rootTable = required(this?.dataObjState?.rootTable, clazz, 'rootTable')
 		const fieldDataObj = required(field.dataObj, clazz, 'fieldDataObj')
 
-		const state = new StateSurfaceModalEmbed({
+		const stateModal = new StateSurfaceModalEmbed({
 			actionsFieldDialog: field.actionsFieldModal,
 			app: this.app,
 			embedParentId: field.embedParentId,
@@ -185,7 +174,6 @@ export class State {
 			layoutStyle: StateLayoutStyle.overlayModalDetail,
 			packet: new StatePacket({
 				action: StatePacketAction.modalEmbed,
-				component: StatePacketComponent.modal,
 				confirmType: TokenAppDoActionConfirmType.none,
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
@@ -200,10 +188,11 @@ export class State {
 					queryType
 				})
 			}),
-			parmsState: new ParmsValuesState()
+			parmsState: new ParmsValues()
 		})
-		state.app.addTabModal(fieldDataObj)
-		await this.openModal(state, fModalCloseUpdate)
+
+		stateModal.app.addTabModal(fieldDataObj)
+		await this.openModal(stateModal, fModalCloseUpdate)
 	}
 
 	async openModalEmbedListSelect(token: TokenAppDo, fModalCloseUpdate: Function) {
@@ -213,15 +202,15 @@ export class State {
 		const rootTable = required(this?.dataObjState?.rootTable, clazz, 'rootTable')
 
 		// parms
-		const parmsState = new ParmsValuesState(fieldDataObj.data.getParms())
-		parmsState.dataUpdate(fieldDataObj.data.parmsState.valueGetAll())
-		parmsState.valueSet(ParmsObjType.embedFieldName, field.colDO.propName)
+		const parmsState = new ParmsValues(fieldDataObj.data.getParms())
+		parmsState.update(fieldDataObj.data.parms.valueGetAll())
+		parmsState.valueSet(ParmsValuesType.embedFieldName, field.colDO.propName)
 		parmsState.valueSetList(
-			ParmsObjType.listRecordIdSelected,
+			ParmsValuesType.listRecordIdSelected,
 			token.dataObj.data.rowsRetrieved.getRows()
 		)
 
-		const state = new StateSurfaceModalEmbed({
+		const stateModal = new StateSurfaceModalEmbed({
 			actionsFieldDialog: field.actionsFieldModal,
 			embedParentId: field.embedParentId,
 			embedType: DataObjEmbedType.listSelect,
@@ -229,7 +218,6 @@ export class State {
 			layoutStyle: StateLayoutStyle.overlayModalSelect,
 			packet: new StatePacket({
 				action: StatePacketAction.modalEmbed,
-				component: StatePacketComponent.modal,
 				confirmType: TokenAppDoActionConfirmType.none,
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
@@ -246,7 +234,8 @@ export class State {
 			}),
 			parmsState
 		})
-		await this.openModal(state, fModalCloseUpdate)
+
+		await this.openModal(stateModal, fModalCloseUpdate)
 	}
 
 	openToast(type: ToastType, message: string) {
@@ -341,13 +330,11 @@ export class StatePacket {
 	action: StatePacketAction
 	confirm: DataObjConfirm
 	confirmType: TokenAppDoActionConfirmType | undefined
-	component: StatePacketComponent
 	token?: Token
 	constructor(obj: any) {
 		const clazz = 'StatePacket'
 		obj = valueOrDefault(obj, {})
 		this.action = required(obj.action, clazz, 'action')
-		this.component = Object.hasOwn(obj, 'component') ? obj.component : undefined
 		this.confirm = valueOrDefault(obj.confirm, new DataObjConfirm())
 		this.confirmType = required(obj.confirmType, clazz, 'confirmType')
 		this.token = valueOrDefault(obj.token, undefined)
@@ -394,16 +381,6 @@ export enum StatePacketAction {
 
 	none = 'none'
 }
-export enum StatePacketComponent {
-	dataObj = 'dataObj',
-	embedField = 'embedField',
-	modal = 'modal',
-	navBack = 'navBack',
-	navCrumbs = 'navCrumbs',
-	navHome = 'navHome',
-	navRow = 'navRow',
-	navTree = 'navTree'
-}
 
 export class StateSurfaceEmbed extends State {
 	constructor(obj: any) {
@@ -420,7 +397,6 @@ export class StateSurfaceEmbedField extends StateSurfaceEmbed {
 		this.nodeType = NodeType.object
 		this.packet = new StatePacket({
 			action: StatePacketAction.embedField,
-			component: StatePacketComponent.embedField,
 			confirmType: TokenAppDoActionConfirmType.none,
 			token: new TokenApiQuery(
 				required(obj.queryType, clazz, 'queryType'),
@@ -451,7 +427,6 @@ export class StateSurfaceModal extends State {
 		const clazz = 'StateSurfaceModal'
 		super(obj)
 		obj = valueOrDefault(obj, {})
-		console.log('StateSurfaceModal.actions:', obj.actionsFieldDialog)
 		this.actionsFieldDialog = valueOrDefault(obj.actionsFieldDialog, [])
 	}
 }
@@ -463,8 +438,6 @@ export class StateSurfaceModalEmbed extends StateSurfaceModal {
 		const clazz = 'StateSurfaceModalEmbed'
 		super(obj)
 		obj = valueOrDefault(obj, {})
-		console.log('StateSurfaceModalEmbed.actions:', obj.actionsFieldDialog)
-		this.actionsFieldDialog = valueOrDefault(obj.actionsFieldDialog, [])
 		this.embedParentId = strRequired(obj.embedParentId, clazz, 'embedParentId')
 		this.embedType = required(obj.embedType, clazz, 'embedType')
 	}

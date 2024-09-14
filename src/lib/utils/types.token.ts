@@ -310,7 +310,7 @@ export class TokenAppModalReturn extends TokenApp {
 		const clazz = 'TokenAppModalReturn'
 		super(obj)
 		this.type = required(obj.type, clazz, 'type')
-		this.data = required(obj.data, clazz, 'data')
+		this.data = obj.data
 	}
 }
 export enum TokenAppModalReturnType {
