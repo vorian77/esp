@@ -1,6 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
-import { purgeCss } from 'vite-plugin-tailwind-purgecss'
+// import { purgeCss } from 'vite-plugin-tailwind-purgecss'
 import { nodeLoaderPlugin } from '@vavite/node-loader/plugin'
 import { sentrySvelteKit } from '@sentry/sveltekit'
 
