@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import {
-		ComponentUtil,
 		createGrid,
 		type CellClickedEvent,
 		type CellEditingStartedEvent,
