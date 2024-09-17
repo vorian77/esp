@@ -78,7 +78,6 @@
 	}
 
 	onMount(() => {
-		console.log('Grid.onMount:', { options })
 		// set options
 		columnDefs = options.columnDefs
 		fCallbackFilter = options.fCallbackFilter
