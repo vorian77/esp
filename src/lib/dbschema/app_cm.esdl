@@ -129,6 +129,16 @@ module app_cm {
     wage: float32;
   }
 
+   type CmCsfSchoolPlacement extending app_cm::CmCsfData {
+    required date: cal::local_date;
+    required codeCollegeStatus: sys_core::SysCode;
+    collegeGPA: str;
+    collegeGradYear: int16;
+    collegeMajor: str;
+    collegeName: str;
+    note: str;
+  }
+
   # FUNCTIONS
   function getCMTrainingCourse(name: str) -> optional app_cm::CmCourse
       using (select assert_single((select app_cm::CmCourse filter .name = name)));

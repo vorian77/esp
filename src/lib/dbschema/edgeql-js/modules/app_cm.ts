@@ -38,6 +38,7 @@ export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_user.$MgmtλSh
   "<csf[is app_cm::CmCsfDocument]": $.LinkDesc<$CmCsfDocument, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfJobPlacement]": $.LinkDesc<$CmCsfJobPlacement, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfNote]": $.LinkDesc<$CmCsfNote, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<csf[is app_cm::CmCsfSchoolPlacement]": $.LinkDesc<$CmCsfSchoolPlacement, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $CmClientServiceFlow = $.ObjectType<"app_cm::CmClientServiceFlow", $CmClientServiceFlowλShape, null, [
@@ -211,6 +212,22 @@ const $CmCsfNote = $.makeType<$CmCsfNote>(_.spec, "50a2cd1e-b3c2-11ee-a2d3-dfa0c
 
 const CmCsfNote: $.$expr_PathNode<$.TypeSet<$CmCsfNote, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCsfNote, $.Cardinality.Many), null);
 
+export type $CmCsfSchoolPlacementλShape = $.typeutil.flatten<$CmCsfDataλShape & {
+  "codeCollegeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "collegeGPA": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "collegeGradYear": $.PropertyDesc<_std.$int16, $.Cardinality.AtMostOne, false, false, false, false>;
+  "collegeMajor": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "collegeName": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "date": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
+  "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+}>;
+type $CmCsfSchoolPlacement = $.ObjectType<"app_cm::CmCsfSchoolPlacement", $CmCsfSchoolPlacementλShape, null, [
+  ...$CmCsfData['__exclusives__'],
+]>;
+const $CmCsfSchoolPlacement = $.makeType<$CmCsfSchoolPlacement>(_.spec, "be01e4c9-74f1-11ef-96e3-ef97b7311c6e", _.syntax.literal);
+
+const CmCsfSchoolPlacement: $.$expr_PathNode<$.TypeSet<$CmCsfSchoolPlacement, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCsfSchoolPlacement, $.Cardinality.Many), null);
+
 export type $CmServiceFlowλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "<serviceFlow[is app_cm::CmClientServiceFlow]": $.LinkDesc<$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<serviceFlow": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -248,7 +265,7 @@ function getCMTrainingCourse(...args: any[]) {
 
 
 
-export { $CmClient, CmClient, $CmClientServiceFlow, CmClientServiceFlow, $CmCohort, CmCohort, $CmCohortAttd, CmCohortAttd, $CmCourse, CmCourse, $CmCsfData, CmCsfData, $CmCsfCohort, CmCsfCohort, $CmCsfCohortAttd, CmCsfCohortAttd, $CmCsfDocument, CmCsfDocument, $CmCsfJobPlacement, CmCsfJobPlacement, $CmCsfNote, CmCsfNote, $CmServiceFlow, CmServiceFlow };
+export { $CmClient, CmClient, $CmClientServiceFlow, CmClientServiceFlow, $CmCohort, CmCohort, $CmCohortAttd, CmCohortAttd, $CmCourse, CmCourse, $CmCsfData, CmCsfData, $CmCsfCohort, CmCsfCohort, $CmCsfCohortAttd, CmCsfCohortAttd, $CmCsfDocument, CmCsfDocument, $CmCsfJobPlacement, CmCsfJobPlacement, $CmCsfNote, CmCsfNote, $CmCsfSchoolPlacement, CmCsfSchoolPlacement, $CmServiceFlow, CmServiceFlow };
 
 type __defaultExports = {
   "CmClient": typeof CmClient;
@@ -262,6 +279,7 @@ type __defaultExports = {
   "CmCsfDocument": typeof CmCsfDocument;
   "CmCsfJobPlacement": typeof CmCsfJobPlacement;
   "CmCsfNote": typeof CmCsfNote;
+  "CmCsfSchoolPlacement": typeof CmCsfSchoolPlacement;
   "CmServiceFlow": typeof CmServiceFlow;
   "getCMTrainingCourse": typeof getCMTrainingCourse
 };
@@ -277,6 +295,7 @@ const __defaultExports: __defaultExports = {
   "CmCsfDocument": CmCsfDocument,
   "CmCsfJobPlacement": CmCsfJobPlacement,
   "CmCsfNote": CmCsfNote,
+  "CmCsfSchoolPlacement": CmCsfSchoolPlacement,
   "CmServiceFlow": CmServiceFlow,
   "getCMTrainingCourse": getCMTrainingCourse
 };

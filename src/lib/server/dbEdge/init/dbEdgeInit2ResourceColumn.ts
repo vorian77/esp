@@ -30,7 +30,6 @@ export async function initPreColumn() {
 		header: 'Test - Text',
 		name: 'testText'
 	})
-
 	await addColumn({
 		codeDataType: 'link',
 		header: 'Action',
@@ -222,6 +221,13 @@ export async function initPreColumn() {
 		isMultiSelect: false,
 		name: 'codeCmCohortAttdDuration',
 		owner: 'app_cm'
+	})
+	await addColumn({
+		codeDataType: 'link',
+		header: 'College Status',
+		isMultiSelect: false,
+		name: 'codeCollgeStatus',
+		owner: 'app_sys'
 	})
 	await addColumn({
 		owner: 'app_sys',
@@ -544,6 +550,30 @@ export async function initPreColumn() {
 		header: 'Cohorts',
 		isMultiSelect: true,
 		name: 'cohorts'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'str',
+		header: 'College - GPA',
+		name: 'collegeGPA'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'int16',
+		header: 'College - Grad Year',
+		name: 'collegeGradYear'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'str',
+		header: 'College - Major',
+		name: 'collegeMajor'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'str',
+		header: 'College - Name',
+		name: 'collegeName'
 	})
 	await addColumn({
 		owner: 'app_sys',

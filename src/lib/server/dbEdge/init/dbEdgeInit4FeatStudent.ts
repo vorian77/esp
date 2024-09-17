@@ -4,420 +4,15 @@ import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInitUtilities50Othe
 
 export async function initFeatCMStudent() {
 	sectionHeader('DataObject - CM-Student')
-	await initStudent()
+
 	await initCsf()
 	await initCsfCohort()
 	await initCsfCohortAttdStudent()
-	await initCsfNote()
-	await initCsfJobPlacement()
 	await initCsfDocument()
-}
-
-async function initStudent() {
-	await addDataObj({
-		actionFieldGroup: 'doag_list',
-		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		exprFilter: '.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).orgs',
-		header: 'Students',
-		name: 'data_obj_cm_student_list',
-		owner: 'app_cm',
-		subHeader: 'All students enrolled in any courses.',
-		tables: [
-			{ index: 0, table: 'CmClient' },
-			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
-		],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'firstName',
-				orderCrumb: 10,
-				orderSort: 20,
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 1
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'lastName',
-				orderCrumb: 20,
-				orderSort: 10,
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 1
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'email',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 1
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'agencyId',
-				isDisplayable: true,
-				orderDisplay: 55,
-				orderDefine: 55,
-
-				headerAlt: 'Group',
-				indexTable: 0
-			}
-		]
-	})
-
-	await addDataObj({
-		owner: 'app_cm',
-		codeComponent: 'FormDetail',
-		codeCardinality: 'detail',
-		name: 'data_obj_cm_student_detail',
-		header: 'Student',
-		table: 'CmClient',
-		tables: [
-			{ index: 0, table: 'CmClient' },
-			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
-		],
-		actionFieldGroup: 'doag_detail',
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeFieldElement: 'customHeader',
-				columnName: 'custom_element',
-				customElement: { label: 'Personal' },
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 25,
-				orderDefine: 25
-			},
-			{
-				columnName: 'firstName',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 1
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'middleName',
-				isDisplayable: true,
-				orderDisplay: 35,
-				orderDefine: 35,
-				indexTable: 1
-			},
-			{
-				columnName: 'lastName',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 1
-			},
-			{
-				codeFieldElement: 'date',
-				columnName: 'birthDate',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 1
-			},
-			{
-				columnName: 'agencyId',
-				isDisplayable: true,
-				orderDisplay: 55,
-				orderDefine: 55,
-				headerAlt: 'Group',
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 56,
-				orderDefine: 56
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 57,
-				orderDefine: 57
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'school',
-				isDisplayable: true,
-				orderDisplay: 58,
-				orderDefine: 58,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'codeGender',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_person_gender',
-				linkTable: 'SysCode'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'codeRace',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_person_race',
-				linkTable: 'SysCode'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'codeEthnicity',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
-				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_person_ethnicity',
-				linkTable: 'SysCode'
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 82,
-				orderDefine: 82
-			},
-			{
-				codeFieldElement: 'customHeader',
-				columnName: 'custom_element',
-				customElement: { label: 'Contact' },
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 115,
-				orderDefine: 115
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'tel',
-				columnName: 'phoneMobile',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
-				indexTable: 1
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'tel',
-				columnName: 'phoneAlt',
-				isDisplayable: true,
-				orderDisplay: 125,
-				orderDefine: 125,
-				indexTable: 1
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'email',
-				columnName: 'email',
-				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130,
-				indexTable: 1
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 135,
-				orderDefine: 135
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 138,
-				orderDefine: 138
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'addr1',
-				isDisplayable: true,
-				orderDisplay: 140,
-				orderDefine: 140,
-				indexTable: 1
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'addr2',
-				isDisplayable: true,
-				orderDisplay: 150,
-				orderDefine: 150,
-				indexTable: 1
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'city',
-				isDisplayable: true,
-				orderDisplay: 160,
-				orderDefine: 160,
-				indexTable: 1
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'codeState',
-				isDisplayable: true,
-				orderDisplay: 170,
-				orderDefine: 170,
-				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_state',
-				linkTable: 'SysCode'
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'zip',
-				isDisplayable: true,
-				orderDisplay: 180,
-				orderDefine: 180,
-				indexTable: 1
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 185,
-				orderDefine: 185
-			},
-			{
-				codeFieldElement: 'customHeader',
-				columnName: 'custom_element',
-				customElement: { label: 'Other' },
-				isDisplayable: true,
-				orderDisplay: 190,
-				orderDefine: 190,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'textArea',
-				columnName: 'note',
-				isDisplayable: true,
-				orderDisplay: 210,
-				orderDefine: 210,
-				indexTable: 1
-			},
-			{
-				columnName: 'owner',
-				orderDefine: 215,
-				indexTable: 0,
-				isDisplayable: false,
-				isExcludeUpdate: true,
-				linkExprSave: '(SELECT sys_core::getOrg(<user,str,org.name>))',
-				linkTable: 'SysOrg'
-			},
-
-			/* management */
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 1000,
-				orderDefine: 1000
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdAt',
-				isDisplayable: true,
-				orderDisplay: 1010,
-				orderDefine: 1010,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdBy',
-				isDisplayable: true,
-				orderDisplay: 1020,
-				orderDefine: 1020,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedAt',
-				isDisplayable: true,
-				orderDisplay: 1030,
-				orderDefine: 1030,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedBy',
-				isDisplayable: true,
-				orderDisplay: 1040,
-				orderDefine: 1040,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 1050,
-				orderDefine: 1050
-			}
-		]
-	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
-		dataObj: 'data_obj_cm_student_list',
-		header: 'Students',
-		isHideRowManager: false,
-		name: 'node_obj_cm_student_list',
-		orderDefine: 20,
-		owner: 'app_cm',
-		parentNodeName: 'node_pgm_cm_staff_provider'
-	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
-		dataObj: 'data_obj_cm_student_detail',
-		header: 'Student',
-		isHideRowManager: false,
-		name: 'node_obj_cm_student_detail',
-		orderDefine: 10,
-		owner: 'app_cm',
-		parentNodeName: 'node_obj_cm_student_list'
-	})
+	await initCsfJobPlacement()
+	await initCsfNote()
+	await initCsfSchoolPlacement()
+	await initStudent()
 }
 
 async function initCsf() {
@@ -1165,14 +760,14 @@ async function initCsfCohortAttdStudent() {
 	})
 }
 
-async function initCsfNote() {
+async function initCsfDocument() {
 	await addDataObj({
 		owner: 'app_cm',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
-		name: 'data_obj_cm_csf_note_list',
-		header: 'Case Notes',
-		tables: [{ index: 0, table: 'CmCsfNote' }],
+		name: 'data_obj_cm_csf_document_list',
+		header: 'Documents',
+		tables: [{ index: 0, table: 'CmCsfDocument' }],
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
 		actionFieldGroup: 'doag_list',
 		fields: [
@@ -1184,11 +779,7 @@ async function initCsfNote() {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeFieldElement: 'date',
-				codeSortDir: 'desc',
-				columnName: 'date',
-				orderCrumb: 10,
-				orderSort: 10,
+				columnName: 'dateIssued',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
@@ -1205,10 +796,35 @@ async function initCsfNote() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'note',
+				columnName: 'isShareWithClient',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'note',
+				orderDefine: 70,
+				isDisplayable: true,
+				orderDisplay: 70,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'staffAgency',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0,
+				linkColumns: ['person', 'fullName']
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'dateExpires',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0
 			}
 		]
@@ -1218,10 +834,21 @@ async function initCsfNote() {
 		owner: 'app_cm',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		name: 'data_obj_cm_csf_note_detail',
-		header: 'Case Note',
-		tables: [{ index: 0, table: 'CmCsfNote' }],
+		name: 'data_obj_cm_csf_document_detail',
+		header: 'Document',
+		tables: [{ index: 0, table: 'CmCsfDocument' }],
 		actionFieldGroup: 'doag_detail',
+		actionsQuery: [
+			{
+				name: 'qa_file_storage',
+				parms: [{ key: 'imageField', value: 'file' }],
+				triggers: [
+					{ codeQueryType: 'retrieve', codeTriggerTiming: 'post' },
+					{ codeQueryType: 'save', codeTriggerTiming: 'pre' },
+					{ codeQueryType: 'save', codeTriggerTiming: 'post' }
+				]
+			}
+		],
 		fields: [
 			{
 				columnName: 'id',
@@ -1247,8 +874,7 @@ async function initCsfNote() {
 			},
 			{
 				codeFieldElement: 'date',
-				columnName: 'date',
-				orderSort: 10,
+				columnName: 'dateIssued',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -1262,24 +888,76 @@ async function initCsfNote() {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_case_note_type',
+				fieldListItemsParmName: 'ct_cm_doc_type',
 				linkTable: 'SysCode'
 			},
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
+				codeFieldElement: 'toggle',
+				columnName: 'isShareWithClient',
 				isDisplayable: true,
 				orderDisplay: 60,
-				orderDefine: 60
+				orderDefine: 60,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'file',
+				columnName: 'file',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0,
+				width: 300
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'staffAgency',
+				isDisplayable: true,
+				orderDisplay: 110,
+				orderDefine: 110,
+				indexTable: 0,
+				fieldListItems: 'il_sys_role_staff_by_codeName',
+				fieldListItemsParmName: 'cm_training_role_staff_agency',
+				linkTable: 'SysStaff'
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'date',
+				columnName: 'dateExpires',
+				isDisplayable: true,
+				orderDisplay: 120,
+				orderDefine: 120,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 130,
+				orderDefine: 130
 			},
 
 			/* management */
@@ -1333,23 +1011,23 @@ async function initCsfNote() {
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',
-		dataObj: 'data_obj_cm_csf_note_list',
-		header: 'Case Notes',
+		dataObj: 'data_obj_cm_csf_document_list',
+		header: 'Documents',
 		isHideRowManager: false,
-		name: 'node_obj_cm_csf_note_list',
-		orderDefine: 20,
+		name: 'node_obj_cm_csf_document_list',
+		orderDefine: 40,
 		owner: 'app_cm',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',
-		dataObj: 'data_obj_cm_csf_note_detail',
-		header: 'Case Note',
+		dataObj: 'data_obj_cm_csf_document_detail',
+		header: 'Document',
 		isHideRowManager: false,
-		name: 'node_obj_cm_csf_note_detail',
+		name: 'node_obj_cm_csf_document_detail',
 		orderDefine: 10,
 		owner: 'app_cm',
-		parentNodeName: 'node_obj_cm_csf_note_list'
+		parentNodeName: 'node_obj_cm_csf_document_list'
 	})
 }
 
@@ -1695,14 +1373,14 @@ async function initCsfJobPlacement() {
 	})
 }
 
-async function initCsfDocument() {
+async function initCsfNote() {
 	await addDataObj({
 		owner: 'app_cm',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
-		name: 'data_obj_cm_csf_document_list',
-		header: 'Documents',
-		tables: [{ index: 0, table: 'CmCsfDocument' }],
+		name: 'data_obj_cm_csf_note_list',
+		header: 'Case Notes',
+		tables: [{ index: 0, table: 'CmCsfNote' }],
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
 		actionFieldGroup: 'doag_list',
 		fields: [
@@ -1714,7 +1392,11 @@ async function initCsfDocument() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'dateIssued',
+				codeFieldElement: 'date',
+				codeSortDir: 'desc',
+				columnName: 'date',
+				orderCrumb: 10,
+				orderSort: 10,
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
@@ -1731,35 +1413,10 @@ async function initCsfDocument() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'isShareWithClient',
+				columnName: 'note',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'note',
-				orderDefine: 70,
-				isDisplayable: true,
-				orderDisplay: 70,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'staffAgency',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
-				indexTable: 0,
-				linkColumns: ['person', 'fullName']
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'dateExpires',
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
 				indexTable: 0
 			}
 		]
@@ -1769,21 +1426,10 @@ async function initCsfDocument() {
 		owner: 'app_cm',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		name: 'data_obj_cm_csf_document_detail',
-		header: 'Document',
-		tables: [{ index: 0, table: 'CmCsfDocument' }],
+		name: 'data_obj_cm_csf_note_detail',
+		header: 'Case Note',
+		tables: [{ index: 0, table: 'CmCsfNote' }],
 		actionFieldGroup: 'doag_detail',
-		actionsQuery: [
-			{
-				name: 'qa_file_storage',
-				parms: [{ key: 'imageField', value: 'file' }],
-				triggers: [
-					{ codeQueryType: 'retrieve', codeTriggerTiming: 'post' },
-					{ codeQueryType: 'save', codeTriggerTiming: 'pre' },
-					{ codeQueryType: 'save', codeTriggerTiming: 'post' }
-				]
-			}
-		],
 		fields: [
 			{
 				columnName: 'id',
@@ -1809,7 +1455,8 @@ async function initCsfDocument() {
 			},
 			{
 				codeFieldElement: 'date',
-				columnName: 'dateIssued',
+				columnName: 'date',
+				orderSort: 10,
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -1823,76 +1470,24 @@ async function initCsfDocument() {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_doc_type',
+				fieldListItemsParmName: 'ct_cm_case_note_type',
 				linkTable: 'SysCode'
 			},
 			{
-				codeFieldElement: 'toggle',
-				columnName: 'isShareWithClient',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'file',
-				columnName: 'file',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
-				indexTable: 0,
-				width: 300
+				orderDefine: 60
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 70,
+				orderDefine: 70,
 				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'staffAgency',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0,
-				fieldListItems: 'il_sys_role_staff_by_codeName',
-				fieldListItemsParmName: 'cm_training_role_staff_agency',
-				linkTable: 'SysStaff'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'date',
-				columnName: 'dateExpires',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130
 			},
 
 			/* management */
@@ -1946,23 +1541,618 @@ async function initCsfDocument() {
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',
-		dataObj: 'data_obj_cm_csf_document_list',
-		header: 'Documents',
+		dataObj: 'data_obj_cm_csf_note_list',
+		header: 'Case Notes',
 		isHideRowManager: false,
-		name: 'node_obj_cm_csf_document_list',
-		orderDefine: 40,
+		name: 'node_obj_cm_csf_note_list',
+		orderDefine: 20,
 		owner: 'app_cm',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',
-		dataObj: 'data_obj_cm_csf_document_detail',
-		header: 'Document',
+		dataObj: 'data_obj_cm_csf_note_detail',
+		header: 'Case Note',
 		isHideRowManager: false,
-		name: 'node_obj_cm_csf_document_detail',
+		name: 'node_obj_cm_csf_note_detail',
 		orderDefine: 10,
 		owner: 'app_cm',
-		parentNodeName: 'node_obj_cm_csf_document_list'
+		parentNodeName: 'node_obj_cm_csf_note_list'
+	})
+}
+
+async function initCsfSchoolPlacement() {
+	await addDataObj({
+		owner: 'app_cm',
+		codeComponent: 'FormList',
+		codeCardinality: 'list',
+		name: 'data_obj_cm_csf_school_placement_list',
+		header: 'School Placements',
+		tables: [{ index: 0, table: 'CmCsfSchoolPlacement' }],
+		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
+		actionFieldGroup: 'doag_list',
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				codeFieldElement: 'date',
+				codeSortDir: 'desc',
+				columnName: 'date',
+				orderCrumb: 10,
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeCollegeStatus',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0,
+				linkColumns: ['name']
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			}
+		]
+	})
+
+	await addDataObj({
+		owner: 'app_cm',
+		codeComponent: 'FormDetail',
+		codeCardinality: 'detail',
+		name: 'data_obj_cm_csf_school_placement_detail',
+		header: 'School Placement',
+		tables: [{ index: 0, table: 'CmCsfSchoolPlacement' }],
+		actionFieldGroup: 'doag_detail',
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				columnName: 'csf',
+				orderDefine: 20,
+				indexTable: 0,
+				isDisplayable: false,
+				linkExprSave:
+					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
+				linkTable: 'CmClientServiceFlow'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30
+			},
+			{
+				codeFieldElement: 'date',
+				columnName: 'date',
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeCollegeStatus',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_cm_college_status',
+				linkTable: 'SysCode'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+
+			/* management */
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 1000,
+				orderDefine: 1000
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				isDisplayable: true,
+				orderDisplay: 1010,
+				orderDefine: 1010,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				isDisplayable: true,
+				orderDisplay: 1020,
+				orderDefine: 1020,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				isDisplayable: true,
+				orderDisplay: 1030,
+				orderDefine: 1030,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: true,
+				orderDisplay: 1040,
+				orderDefine: 1040,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 1050,
+				orderDefine: 1050
+			}
+		]
+	})
+	await addNodeProgramObj({
+		codeIcon: 'application',
+		dataObj: 'data_obj_cm_csf_school_placement_list',
+		header: 'School Placements',
+		isHideRowManager: false,
+		name: 'node_obj_cm_csf_school_placement_list',
+		orderDefine: 50,
+		owner: 'app_cm',
+		parentNodeName: 'node_obj_cm_service_flow_detail'
+	})
+	await addNodeProgramObj({
+		codeIcon: 'application',
+		dataObj: 'data_obj_cm_csf_school_placement_detail',
+		header: 'School Placement',
+		isHideRowManager: false,
+		name: 'node_obj_cm_csf_school_placement_detail',
+		orderDefine: 10,
+		owner: 'app_cm',
+		parentNodeName: 'node_obj_cm_csf_school_placement_list'
+	})
+}
+
+async function initStudent() {
+	await addDataObj({
+		actionFieldGroup: 'doag_list',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		exprFilter: '.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).orgs',
+		header: 'Students',
+		name: 'data_obj_cm_student_list',
+		owner: 'app_cm',
+		subHeader: 'All students enrolled in any courses.',
+		tables: [
+			{ index: 0, table: 'CmClient' },
+			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
+		],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'firstName',
+				orderCrumb: 10,
+				orderSort: 20,
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'lastName',
+				orderCrumb: 20,
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'email',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'agencyId',
+				isDisplayable: true,
+				orderDisplay: 55,
+				orderDefine: 55,
+
+				headerAlt: 'Group',
+				indexTable: 0
+			}
+		]
+	})
+
+	await addDataObj({
+		owner: 'app_cm',
+		codeComponent: 'FormDetail',
+		codeCardinality: 'detail',
+		name: 'data_obj_cm_student_detail',
+		header: 'Student',
+		table: 'CmClient',
+		tables: [
+			{ index: 0, table: 'CmClient' },
+			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
+		],
+		actionFieldGroup: 'doag_detail',
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: { label: 'Personal' },
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 25,
+				orderDefine: 25
+			},
+			{
+				columnName: 'firstName',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'middleName',
+				isDisplayable: true,
+				orderDisplay: 35,
+				orderDefine: 35,
+				indexTable: 1
+			},
+			{
+				columnName: 'lastName',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 1
+			},
+			{
+				codeFieldElement: 'date',
+				columnName: 'birthDate',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 1
+			},
+			{
+				columnName: 'agencyId',
+				isDisplayable: true,
+				orderDisplay: 55,
+				orderDefine: 55,
+				headerAlt: 'Group',
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 56,
+				orderDefine: 56
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 57,
+				orderDefine: 57
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'school',
+				isDisplayable: true,
+				orderDisplay: 58,
+				orderDefine: 58,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeGender',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 1,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_person_gender',
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeRace',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 1,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_person_race',
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeEthnicity',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 1,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_person_ethnicity',
+				linkTable: 'SysCode'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 82,
+				orderDefine: 82
+			},
+			{
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: { label: 'Contact' },
+				isDisplayable: true,
+				orderDisplay: 110,
+				orderDefine: 110,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 115,
+				orderDefine: 115
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'tel',
+				columnName: 'phoneMobile',
+				isDisplayable: true,
+				orderDisplay: 120,
+				orderDefine: 120,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'tel',
+				columnName: 'phoneAlt',
+				isDisplayable: true,
+				orderDisplay: 125,
+				orderDefine: 125,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'email',
+				columnName: 'email',
+				isDisplayable: true,
+				orderDisplay: 130,
+				orderDefine: 130,
+				indexTable: 1
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 135,
+				orderDefine: 135
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 138,
+				orderDefine: 138
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'addr1',
+				isDisplayable: true,
+				orderDisplay: 140,
+				orderDefine: 140,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'addr2',
+				isDisplayable: true,
+				orderDisplay: 150,
+				orderDefine: 150,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'city',
+				isDisplayable: true,
+				orderDisplay: 160,
+				orderDefine: 160,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeState',
+				isDisplayable: true,
+				orderDisplay: 170,
+				orderDefine: 170,
+				indexTable: 1,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_state',
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'zip',
+				isDisplayable: true,
+				orderDisplay: 180,
+				orderDefine: 180,
+				indexTable: 1
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 185,
+				orderDefine: 185
+			},
+			{
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: { label: 'Other' },
+				isDisplayable: true,
+				orderDisplay: 190,
+				orderDefine: 190,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 210,
+				orderDefine: 210,
+				indexTable: 1
+			},
+			{
+				columnName: 'owner',
+				orderDefine: 215,
+				indexTable: 0,
+				isDisplayable: false,
+				isExcludeUpdate: true,
+				linkExprSave: '(SELECT sys_core::getOrg(<user,str,org.name>))',
+				linkTable: 'SysOrg'
+			},
+
+			/* management */
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 1000,
+				orderDefine: 1000
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				isDisplayable: true,
+				orderDisplay: 1010,
+				orderDefine: 1010,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				isDisplayable: true,
+				orderDisplay: 1020,
+				orderDefine: 1020,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				isDisplayable: true,
+				orderDisplay: 1030,
+				orderDefine: 1030,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: true,
+				orderDisplay: 1040,
+				orderDefine: 1040,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 1050,
+				orderDefine: 1050
+			}
+		]
+	})
+	await addNodeProgramObj({
+		codeIcon: 'application',
+		dataObj: 'data_obj_cm_student_list',
+		header: 'Students',
+		isHideRowManager: false,
+		name: 'node_obj_cm_student_list',
+		orderDefine: 20,
+		owner: 'app_cm',
+		parentNodeName: 'node_pgm_cm_staff_provider'
+	})
+	await addNodeProgramObj({
+		codeIcon: 'application',
+		dataObj: 'data_obj_cm_student_detail',
+		header: 'Student',
+		isHideRowManager: false,
+		name: 'node_obj_cm_student_detail',
+		orderDefine: 10,
+		owner: 'app_cm',
+		parentNodeName: 'node_obj_cm_student_list'
 	})
 }
 

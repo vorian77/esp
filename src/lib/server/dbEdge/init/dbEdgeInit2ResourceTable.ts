@@ -73,6 +73,7 @@ export async function initPreTable() {
 		['app_cm', 'app_cm', 'CmClientServiceFlow', true],
 		['app_cm', 'app_cm', 'CmCsfDocument', true],
 		['app_cm', 'app_cm', 'CmCsfJobPlacement', true],
+		['app_cm', 'app_cm', 'CmCsfSchoolPlacement', true],
 		['app_cm', 'app_cm', 'CmCsfNote', true]
 	])
 

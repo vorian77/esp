@@ -107,6 +107,7 @@ export type $SysCodeλShape = $.typeutil.flatten<$SysObjλShape & {
   "<codeReportElementType[is sys_rep::SysRepEl]": $.LinkDesc<_sys_rep.$SysRepEl, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeAlignmentAlt[is sys_core::SysDataObjColumn]": $.LinkDesc<$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeListEditPresetType[is sys_core::SysDataObj]": $.LinkDesc<$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeCollegeStatus[is app_cm::CmCsfSchoolPlacement]": $.LinkDesc<_app_cm.$CmCsfSchoolPlacement, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeDataType[is sys_rep::SysRepParm]": $.LinkDesc<_sys_rep.$SysRepParm, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parent[is sys_core::SysCode]": $.LinkDesc<$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeConfirmType[is sys_core::SysDataObjActionFieldConfirm]": $.LinkDesc<$SysDataObjActionFieldConfirm, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -144,6 +145,7 @@ export type $SysCodeλShape = $.typeutil.flatten<$SysObjλShape & {
   "<codeAlignmentAlt": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeCardinality": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeCmCohortAttdDuration": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeCollegeStatus": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeColor": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeComponent": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeConfirmType": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

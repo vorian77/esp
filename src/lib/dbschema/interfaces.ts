@@ -161,6 +161,15 @@ export namespace app_cm {
     "date": edgedb.LocalDate;
     "note"?: string | null;
   }
+  export interface CmCsfSchoolPlacement extends CmCsfData {
+    "codeCollegeStatus": sys_core.SysCode;
+    "collegeGPA"?: string | null;
+    "collegeGradYear"?: number | null;
+    "collegeMajor"?: string | null;
+    "collegeName"?: string | null;
+    "date": edgedb.LocalDate;
+    "note"?: string | null;
+  }
   export interface CmServiceFlow extends sys_core.SysObj {}
 }
 export namespace sys_core {
@@ -897,6 +906,7 @@ export interface types {
     "CmCsfDocument": app_cm.CmCsfDocument;
     "CmCsfJobPlacement": app_cm.CmCsfJobPlacement;
     "CmCsfNote": app_cm.CmCsfNote;
+    "CmCsfSchoolPlacement": app_cm.CmCsfSchoolPlacement;
     "CmServiceFlow": app_cm.CmServiceFlow;
   };
   "sys_core": {
