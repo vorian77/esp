@@ -55,6 +55,8 @@
 
 	export let options: GridOptions
 
+	console.log('Grid.options:', options)
+
 	let columnDefs: ColDef[]
 	let dataObjId = ''
 	let eGui: HTMLDivElement
@@ -185,4 +187,4 @@
 <div bind:this={eGui} {style} class="ag-theme-quartz h-full" />
 <!-- style:height="100%" -->
 
-<DataViewer header="rowData" data={rowData} />
+<!-- <DataViewer header="rowData" data={rowData} /> -->

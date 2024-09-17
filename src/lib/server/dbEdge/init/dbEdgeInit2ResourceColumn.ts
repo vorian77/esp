@@ -226,7 +226,7 @@ export async function initPreColumn() {
 		codeDataType: 'link',
 		header: 'College Status',
 		isMultiSelect: false,
-		name: 'codeCollgeStatus',
+		name: 'codeCollegeStatus',
 		owner: 'app_sys'
 	})
 	await addColumn({

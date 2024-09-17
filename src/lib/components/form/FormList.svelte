@@ -68,6 +68,7 @@
 	$: load(dataObjData)
 
 	function load(data: DataObjData) {
+		console.log('FormList.load.data:', data.rowsRetrieved.dataRows)
 		if (!dataObj.isListEmbed) dataObj.objData = data
 
 		listFilterText = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listFilterText) || ''
@@ -186,8 +187,9 @@
 
 			switch (f.colDO.colDB.codeDataType) {
 				case PropDataType.date:
-					defn.cellDataType = 'date'
-					defn.cellEditor = 'agDateCellEditor'
+					defn.cellDataType = 'dateString'
+					defn.cellEditor = 'agDateStringCellEditor'
+					// defn.cellEditor = 'agDateCellEditor'
 					break
 
 				case PropDataType.float64:
@@ -332,7 +334,9 @@
 
 {#if gridOptions}
 	<div class="h-[70vh]">
-		<Grid options={gridOptions} />
+		{#key gridOptions}
+			<Grid options={gridOptions} />
+		{/key}
 		<!-- <DataViewer header="gridManager" data={gm.rowData} /> -->
 	</div>
 {/if}
