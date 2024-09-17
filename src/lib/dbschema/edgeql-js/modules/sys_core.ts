@@ -572,6 +572,7 @@ const $SysNodeObj = $.makeType<$SysNodeObj>(_.spec, "504a9d6b-b3c2-11ee-b8ef-274
 const SysNodeObj: $.$expr_PathNode<$.TypeSet<$SysNodeObj, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysNodeObj, $.Cardinality.Many), null);
 
 export type $SysOrgλShape = $.typeutil.flatten<$SysEntλShape & {
+  "orderDefine": $.PropertyDesc<_default.$nonNegative, $.Cardinality.AtMostOne, false, false, false, false>;
   "testCode": $.LinkDesc<$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
   "testDate": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "testNumber": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;

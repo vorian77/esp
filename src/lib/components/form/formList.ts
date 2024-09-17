@@ -2,29 +2,6 @@ import { DataObj, DataObjSort, DataObjSortItem, type DataRecord } from '$utils/t
 import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 import { Field } from '$comps/form/field'
 
-export function recordsSearch(searchText: string, dataObj: DataObj, fieldsDisplayable: Field[]) {
-	let records = recordsConcat(dataObj)
-
-	const visibleFields = fieldsDisplayable.map((f) => f.colDO.propName)
-	dataObj.dataRecordsDisplay = records.filter((record: DataRecord) => {
-		let found = false
-		for (const key in record) {
-			if (visibleFields.includes(key)) {
-				const value = record[key]
-				if (value && value.toString().toLowerCase().includes(searchText.toLowerCase())) {
-					found = true
-					break
-				}
-			}
-		}
-		return found
-	})
-
-	dataObj.dataRecordsHidden = records.filter(
-		(record) => !dataObj.dataRecordsDisplay.includes(record)
-	)
-}
-
 function recordsConcat(dataObj: DataObj) {
 	let records = recordsConcatList([], dataObj.dataRecordsDisplay)
 	return recordsConcatList(records, dataObj.dataRecordsHidden)
@@ -53,7 +30,7 @@ export function sortInit(fieldsDisplayable: Field[]) {
 	return sortObj
 }
 
-export function sortUser(sortObj: DataObjSort, recordsUser: DataRecord[]) {
+export function sort(sortObj: DataObjSort, recordsDisplay: DataRecord[]) {
 	// adapted from: https://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields
 	const fieldSorter = (sortItems: DataObjSortItem[]) => (a: any, b: any) =>
 		sortItems
@@ -64,5 +41,5 @@ export function sortUser(sortObj: DataObjSort, recordsUser: DataRecord[]) {
 			})
 			.reduce((p, n) => (p ? p : n), 0)
 
-	return recordsUser.sort(fieldSorter(sortObj.sortItems))
+	return recordsDisplay.sort(fieldSorter(sortObj.sortItems))
 }

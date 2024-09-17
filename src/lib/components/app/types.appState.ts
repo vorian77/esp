@@ -263,6 +263,7 @@ export class State {
 
 	async openModalSelectMulti(token: TokenAppModalMultiSelect) {
 		const parmsState = new ParmsValues({})
+		parmsState.valueSet(ParmsValuesType.modalMultiSelectFieldLabel, token.fieldLabel)
 		parmsState.valueSet(ParmsValuesType.modalMultiSelectItemsCurrent, token.itemsCurrent)
 		parmsState.valueSet(ParmsValuesType.modalMultiSelectItemsList, token.itemsList)
 

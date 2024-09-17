@@ -43,10 +43,10 @@
 	} from '$utils/types.token'
 	import { ParmsValues } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
-	import { FieldAccess, FieldElement } from '$comps/form/field'
+	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
 	import { State, StateSurfaceModal, StateLayoutStyle } from '$comps/app/types.appState'
-	import { recordsSearch, sortInit, sortUser } from '$comps/form/formList'
-	import FormListSearch from '$comps/form/FormListSearch.svelte'
+	import { sortInit, sort } from '$comps/form/formList'
+	import GridFilter from '$comps/other/GridFilter.svelte'
 	import { error } from '@sveltejs/kit'
 
 	const FILENAME = '$comps/form/AgGridSvelte.svelte'
@@ -54,6 +54,8 @@
 	export let state: State
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
+
+	console.log('AgGridGrid.dataObjData', dataObjData)
 
 	let dataRows: any[] = []
 	let fieldsDisplayable: Field[] = []
@@ -76,7 +78,7 @@
 	function load(data) {
 		if (!dataObj.isListEmbed) dataObj.objData = data
 
-		listSearchText = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listSearchText) || ''
+		listSearchText = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listFilterText) || ''
 		listSortObj =
 			state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listSortObj) || new DataObjSort()
 
@@ -110,6 +112,7 @@
 	async function onCellClickedMultiSelect(event: CellClickedEvent, field: Field) {
 		const fieldName = event.colDef.field
 		const itemsKey = '_items_' + field.colDO.propName
+		console.log('AgGridGrid.onCellClickedMultiSelect', { field })
 		if (Object.hasOwn(dataObjData.items, itemsKey)) {
 			const itemsCurrent = dataObjData.items[itemsKey]
 			const itemsList = event.data[fieldName]
@@ -118,6 +121,7 @@
 					action: StatePacketAction.selectMultiOpen,
 					confirmType: TokenAppDoActionConfirmType.none,
 					token: new TokenAppModalMultiSelect({
+						fieldLabel: field.colDO.label,
 						fModalClose,
 						itemsCurrent,
 						itemsList
@@ -242,6 +246,7 @@
 				selectedNodes.map((node) => node.data.id)
 			)
 		} else {
+			// const selectedRows = event.api.getSelectedRows()
 			const record = grid.getSelectedRows()[0]
 			if (record) {
 				const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
@@ -397,13 +402,13 @@
 
 	function setGridDataSearch(searchText: string) {
 		dataObjData.rowsRetrieved.syncFields(dataObj.dataRecordsDisplay, ['selected'])
-		recordsSearch(searchText, dataObj, fieldsDisplayable)
-		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSearchText, searchText)
+		// recordsSearch(searchText, dataObj, fieldsDisplayable)
+		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listFilterText, searchText)
 	}
 
 	function setGridDataSort() {
 		listSortObj = sortInit(fieldsDisplayable)
-		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
+		dataObj.dataRecordsDisplay = sort(listSortObj, dataObj.dataRecordsDisplay)
 		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSortObj, listSortObj)
 	}
 
@@ -439,7 +444,7 @@
 	}
 </script>
 
-<FormListSearch {dataObj} {listSearchText} {setGridData} {isSelect} />
+<GridFilter {dataObj} listFilterText={listSearchText} {setGridData} {isSelect} />
 
 <div style="height: calc(100vh - 400px);">
 	<div bind:this={eGui} style:height="100%" {style} class="ag-theme-quartz" />

@@ -21,7 +21,8 @@ module sys_core {
     city: str;
     codeState: sys_core::SysCode;
     zip: str;
-     multi testCode: sys_core::SysCode;
+    orderDefine: default::nonNegative;
+    multi testCode: sys_core::SysCode;
     testDate: cal::local_date;
     testNumber: int64;
     testText: str;

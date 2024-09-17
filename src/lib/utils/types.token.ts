@@ -307,12 +307,14 @@ export class TokenAppModalEmbedField extends TokenApp {
 }
 
 export class TokenAppModalMultiSelect extends TokenApp {
+	fieldLabel: string
 	fModalClose: Function
 	itemsCurrent: FieldItem[]
 	itemsList: FieldItem[]
 	constructor(obj: any) {
 		const clazz = 'TokenAppModalMultiSelect'
 		super(obj)
+		this.fieldLabel = strRequired(obj.fieldLabel, clazz, 'fieldLabel')
 		this.fModalClose = required(obj.fModalClose, clazz, 'fModalClose')
 		this.itemsCurrent = required(obj.itemsCurrent, clazz, 'itemsCurrent')
 		this.itemsList = required(obj.itemsList, clazz, 'itemsList')

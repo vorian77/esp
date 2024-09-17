@@ -60,6 +60,7 @@ async function initOrg() {
 		exprFilter: 'none',
 		header: 'Organizations',
 		isListEdit: true,
+		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_admin_org_list',
 		owner: 'app_sys_admin_org',
 		tables: [{ index: 0, table: 'SysOrg' }],
@@ -139,6 +140,14 @@ async function initOrg() {
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'orderDefine',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
 				indexTable: 0
 			}
 		]

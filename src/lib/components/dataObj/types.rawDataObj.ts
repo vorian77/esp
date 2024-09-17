@@ -73,6 +73,7 @@ export class RawDataObj {
 	tables: DataObjTable[] = []
 	constructor(obj: any) {
 		const clazz = 'RawDataObj'
+		debug('RawDataObj', 'obj', obj)
 		obj = valueOrDefault(obj, {})
 		this.actionsQuery = arrayOfClasses(DataObjActionQuery, obj._actionsQuery)
 		this.codeCardinality = memberOfEnum(

@@ -11,6 +11,7 @@ import {
 	booleanRequired
 } from '$utils/types'
 import {
+	PropDataType,
 	RawDataObj,
 	RawDataObjActionField,
 	RawDataObjPropDisplay,
@@ -18,7 +19,14 @@ import {
 } from '$comps/dataObj/types.rawDataObj'
 import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
-import { Field, FieldAccess, FieldColor, FieldElement, RawFieldProps } from '$comps/form/field'
+import {
+	Field,
+	FieldAccess,
+	FieldColor,
+	FieldItem,
+	FieldElement,
+	RawFieldProps
+} from '$comps/form/field'
 import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 import { FieldChips } from '$comps/form/fieldChips'
 import {
@@ -563,6 +571,17 @@ export class DataObjData {
 		const clazz = 'DataObjData'
 		if (rawDataObj) this.init(rawDataObj)
 	}
+
+	getItemDisplayValue(items: FieldItem[], ids: any) {
+		let display = ''
+		if (!Array.isArray(ids)) ids = [ids]
+		ids.forEach((id: string) => {
+			const item = items.find((i: FieldItem) => i.data === id)
+			if (item) display += display ? ',' + item.display : item.display
+		})
+		return display
+	}
+
 	init(rawDataObj: RawDataObj) {
 		const clazz = 'DataObjData'
 		this.cardinality = memberOfEnum(
@@ -574,6 +593,7 @@ export class DataObjData {
 		)
 		this.rawDataObj = rawDataObj
 	}
+
 	static load(source: DataObjData) {
 		const data = new DataObjData(source.rawDataObj)
 		data.fields = DataObjDataField.load(source.fields)
@@ -583,6 +603,27 @@ export class DataObjData {
 		data.rowsSave = DataRows.load(source.rowsSave)
 		return data
 	}
+
+	formatForGrid(fields: Field[]) {
+		let gridData: DataRecord[] = []
+		this.rowsRetrieved.getRows().forEach((row) => {
+			let record: DataRecord = {}
+			fields.forEach((field) => {
+				const fieldName = field.colDO.propName
+				const data = row.record[fieldName]
+				const codeDataType = field.colDO.colDB.codeDataType
+				const display =
+					field.colDO.items.length > 0 ? this.getItemDisplayValue(field.colDO.items, data) : data
+				record[fieldName] = { data, display }
+			})
+			gridData.push(record)
+		})
+		return gridData
+
+		function getLinkDisplay(propName: String, data: any) {}
+	}
+	formatForSave(data: any) {}
+
 	getField(fieldName: string) {
 		const field = this.fields.find((f) => f.embedFieldName === fieldName)
 		if (field) {
@@ -891,11 +932,9 @@ export class DataRows {
 	}
 	syncFields(source: DataRecord[], fields: string[]) {
 		source.forEach((record) => {
-			const id = record.id
 			fields.forEach((fieldName) => {
-				const val = record[fieldName]
-				const row = this.dataRows.findIndex((r) => r.record.id === id)
-				if (row > -1) this.dataRows[row].record[fieldName] = val
+				const row = this.dataRows.findIndex((r) => r.record.id === record.id)
+				if (row > -1) this.dataRows[row].record[fieldName] = record[fieldName]
 			})
 		})
 	}
@@ -979,7 +1018,7 @@ export class ParmsUserParm {
 	}
 }
 export enum ParmsUserParmType {
-	listSearchText = 'listSearchText',
+	listFilterText = 'listFilterText',
 	listSortObj = 'listSortObj'
 }
 
@@ -1030,6 +1069,7 @@ export enum ParmsValuesType {
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listRecordIdList = 'listRecordIdList',
 	listRecordIdSelected = 'listRecordIdSelected',
+	modalMultiSelectFieldLabel = 'modalMultiSelectFieldLabel',
 	modalMultiSelectItemsCurrent = 'modalMultiSelectItemsCurrent',
 	modalMultiSelectItemsList = 'modalMultiSelectItemsList'
 }

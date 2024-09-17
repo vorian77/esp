@@ -1,5 +1,21 @@
 <script lang="ts">
-	import { State, StateSurfaceModal, StateLayoutStyle } from '$comps/app/types.appState'
+	import {
+		State,
+		StatePacket,
+		StatePacketAction,
+		StateSurfaceModal,
+		StateLayoutStyle
+	} from '$comps/app/types.appState'
+	import {
+		TokenAppDoActionConfirmType,
+		TokenAppModalMultiSelect,
+		TokenAppModalReturnType
+	} from '$utils/types.token'
+	import {
+		type CellClickedEvent,
+		type NewValueParams,
+		type SelectionChangedEvent
+	} from 'ag-grid-community'
 	import {
 		DataObj,
 		DataObjData,
@@ -14,15 +30,20 @@
 		strRequired
 	} from '$utils/types'
 	import type { DataRecord } from '$utils/types'
-	import { recordsSearch, recordsSelectAll, sortInit, sortUser } from '$comps/form/formList'
+	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
+	import { recordsSelectAll, sortInit, sort } from '$comps/form/formList'
 	import { Field } from '$comps/form/field'
+	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
 	import { dndzone } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
 	import Header from '$comps/form/FormListHeader.svelte'
 	import FormElement from '$comps/form/FormElement.svelte'
+	import AgGrid from '$comps/form/AgGridGrid.svelte'
+	import Grid from '$comps/other/Grid.svelte'
+	import { GridManagerOptions } from '$comps/other/grid'
+	import { onMount } from 'svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
-	import AgGrid from '$comps/form/AgGridGrid.svelte'
 
 	const FILENAME = '$comps/form/FormList.svelte'
 	const animationDurationMs = 300
@@ -34,30 +55,24 @@
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
-	let listFilterText = ''
-	let listSortObj: DataObjSort = new DataObjSort()
-	let scrollToTop = () => {}
-	let fieldsDisplayable: Field[] = []
+	let gridOptions: GridManagerOptions
 
+	let fieldsDisplayable: Field[] = []
 	let isSelect =
 		state instanceof StateSurfaceModal && state.layoutStyle === StateLayoutStyle.overlayModalSelect
 	let isSelectMulti = state instanceof StateSurfaceModal
-	let isSelectMultiAll = false
+	let listFilterText = ''
+	let listSortObj: DataObjSort = new DataObjSort()
+	let scrollToTop = () => {}
 
 	$: load(dataObjData)
 
 	function load(data: DataObjData) {
 		if (!dataObj.isListEmbed) dataObj.objData = data
 
-		if (isSelect) {
-			const selectedRecords = state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected) || []
-			dataObj.dataRecordsDisplay.forEach((record) => {
-				record.selected = selectedRecords.includes(record.id)
-			})
-			isSelectMultiAll = recordsSelectAll(dataObj.dataRecordsDisplay)
-		}
-
-		fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
+		listFilterText = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listFilterText) || ''
+		listSortObj =
+			state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listSortObj) || new DataObjSort()
 
 		// listEdit
 		if (dataObj.raw.isListEdit) {
@@ -69,229 +84,255 @@
 			})
 		}
 
-		// filter
-		listFilterText = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listSearchText) || ''
-		// onFilter(listFilterText)
-
-		// sort
-		listSortObj = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listSortObj)
-		if (!listSortObj) {
-			listSortObj = sortInit(fieldsDisplayable)
-			state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSortObj, listSortObj)
-		}
-		// dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
-
 		if (!dataObj.isListEmbed) {
 			state.setDataObjState(dataObj)
 			state = state.setStatus()
 		}
+
+		gridOptions = setGridOptions()
 	}
 
-	function onFilter(filterText: string) {
+	function fGridCallbackUpdateValue(rowId: string, fieldName: string, newVal: any) {
+		const row = dataObj.dataRecordsDisplay.findIndex((record) => record.id === rowId)
+		const field = dataObj.fields.find((f) => f.colDO.propName === fieldName)
+		if (row > -1 && field) {
+			console.log('fGridCallbackUpdateValue', { fieldName, field, row, newVal })
+			dataObj = dataObj.setFieldVal(row, field, newVal)
+			state = state.setStatus()
+		}
+	}
+
+	function fGridCallbackFilter(filterText: string) {
 		dataObjData.rowsRetrieved.syncFields(dataObj.dataRecordsDisplay, ['selected'])
-		recordsSearch(filterText, dataObj, fieldsDisplayable)
-		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
-		isSelectMultiAll = recordsSelectAll(dataObj.dataRecordsDisplay)
-		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSearchText, filterText)
-		dataObj.data.parms.valueSet(
-			ParmsValuesType.listRecordIdList,
-			dataObj.dataRecordsDisplay.map((r: any) => r.id)
-		)
+		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listFilterText, filterText)
 	}
 
-	function onReorder(e: any) {
-		dataObj.dataRecordsDisplay = e.detail.items
-	}
-	function onReorderFinalize(e: any) {
-		dataObj.dataRecordsDisplay = e.detail.items
-		const listReorderColumn = dataObj.raw.listReorderColumn
-		if (dataObj.raw.listReorderColumn) {
-			const field = dataObj.fields.find((f) => f.colDO.propName === listReorderColumn)
-			if (field) {
-				dataObj.dataRecordsDisplay.forEach((record: DataRecord, row) => {
-					dataObj = dataObj.setFieldVal(row, field, row)
-				})
-				state = state.setStatus()
+	async function onCellClicked(event: CellClickedEvent) {
+		const field = dataObj.fields.find((f) => f.colDO.propName === event.colDef.field)
+		if (field) {
+			// multi-select modal
+			if (field.colDO.colDB.codeDataType === PropDataType.link && field.colDO.colDB.isMultiSelect) {
+				await onCellClickedMultiSelect(event, field)
 			}
 		}
 	}
-	function onReorderTransformDraggedElement(draggedEl, data, index) {
-		draggedEl.innerHTML = `New order: ${(index + 1) * 10}`
-	}
 
-	async function onRowClick(record: DataRecord, field: Field) {
-		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit || isSelect) {
-			return
-		}
-
-		const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
-		dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, record.id)
-		action.trigger(state, dataObj)
-	}
-
-	function onSelect(id: string) {
-		const row = dataObj.dataRecordsDisplay.findIndex((record) => record.id === id)
-		if (row > -1) {
-			dataObj.dataRecordsDisplay[row].selected = !dataObj.dataRecordsDisplay[row].selected
-		}
-		if (!isSelectMulti) {
-			dataObj.dataRecordsDisplay = dataObj.dataRecordsDisplay.map((r) => {
-				r.selected = r.id === id ? r.selected : false
-				return r
+	async function onCellClickedMultiSelect(event: CellClickedEvent, field: Field) {
+		const fieldName = event.colDef.field
+		const itemsKey = '_items_' + field.colDO.propName
+		console.log('AgGridGrid.onCellClickedMultiSelect', { field })
+		if (Object.hasOwn(dataObjData.items, itemsKey)) {
+			const itemsCurrent = dataObjData.items[itemsKey]
+			const itemsList = event.data[fieldName]
+			state.update({
+				packet: new StatePacket({
+					action: StatePacketAction.selectMultiOpen,
+					confirmType: TokenAppDoActionConfirmType.none,
+					token: new TokenAppModalMultiSelect({
+						fieldLabel: field.colDO.label,
+						fModalClose,
+						itemsCurrent,
+						itemsList
+					})
+				})
 			})
 		}
-		isSelectMultiAll = recordsSelectAll(dataObj.dataRecordsDisplay)
-		state.parmsState.valueSet(
-			ParmsValuesType.listRecordIdSelected,
-			dataObj.dataRecordsDisplay.filter((r: any) => r.selected).map((r: any) => r.id)
-		)
+		async function fModalClose(returnType: TokenAppModalReturnType, data?: ParmsValues) {
+			console.log('AgGridGrid.fModalClose', { returnType, data })
+			if (returnType === TokenAppModalReturnType.complete) {
+				const rowNode = grid.getRowNode(event.data.id)
+				const newPrice = Math.floor(Math.random() * 100000)
+				rowNode.setDataValue(fieldName, newPrice.toString())
+			}
+		}
 	}
-	function onSelectAll() {
-		isSelectMultiAll = !isSelectMultiAll
-		dataObj.dataRecordsDisplay = dataObj.dataRecordsDisplay.map((r) => {
-			r.selected = isSelectMultiAll
-			return r
+
+	async function onSelectionChanged(event: SelectionChangedEvent) {
+		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit) {
+			return
+		} else if (isSelect) {
+			const selectedNodes = event.api.getSelectedNodes()
+			state.parmsState.valueSet(
+				ParmsValuesType.listRecordIdSelected,
+				selectedNodes.map((node) => node.data.id)
+			)
+		} else {
+			const record = event.api.getSelectedRows()[0]
+			if (record) {
+				const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
+				dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, record.id)
+				action.trigger(state, dataObj)
+			}
+		}
+	}
+
+	function setGridColumns() {
+		let columnDefs: ColDef[] = []
+		fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
+		const fieldAccessEditable = [FieldAccess.optional, FieldAccess.required]
+
+		dataObj.fields.forEach((f) => {
+			let defn = {}
+			const isEditable = dataObj.raw.isListEdit && fieldAccessEditable.includes(f.fieldAccess)
+
+			// core
+			defn.cellDataType = 'text'
+			defn.editable = isEditable
+			defn.field = f.colDO.propName
+			defn.headerName = isEditable ? '✍️ ' + f.colDO.label : f.colDO.label
+			defn.headerTooltip = f.placeHolder
+			defn.hide = !f.colDO.isDisplayable
+			defn.singleClickEdit = isEditable ? true : undefined
+
+			switch (f.colDO.colDB.codeDataType) {
+				case PropDataType.date:
+					defn.cellDataType = 'date'
+					defn.cellEditor = 'agDateCellEditor'
+					break
+
+				case PropDataType.float64:
+				case PropDataType.int16:
+				case PropDataType.int32:
+				case PropDataType.int64:
+					defn.cellDataType = 'number'
+					defn.cellEditor = 'agNumberCellEditor'
+					break
+
+				case PropDataType.link:
+					const itemsKey = '_items_' + f.colDO.propName
+					if (Object.hasOwn(dataObjData.items, itemsKey)) {
+						const items = dataObjData.items[itemsKey]
+						if (f.colDO.colDB.isMultiSelect) {
+							// defn.cellEditor = MultiSelectEditor
+							// defn.cellRenderer = MultiSelectRenderer
+							// defn.cellEditorPopup = true
+							defn.editable = false
+						} else {
+							// defn.cellDataType = 'object'
+							// defn.cellEditor = 'agSelectCellEditor'
+							// defn.cellEditorParams = {
+							// 	values: items.map((item) => item.display)
+							// } as ISelectCellEditorParams
+							// defn.valueGetter = (params: ValueGetterParams) => {
+							// 	const id = params.data[f.colDO.propName]
+							// 	const item = items.find((i) => i.data === id)
+							// 	return item ? item.display : ''
+							// }
+							// defn.valueSetter = (params: ValueSetterParams) => {
+							// 	const display = params.newValue
+							// 	const item = items.find((i) => i.display === display)
+							// 	if (item) {
+							// 		params.data[f.colDO.propName] = item.data
+							// 		return true
+							// 	} else {
+							// 		return false
+							// 	}
+							// }
+						}
+					} else {
+						// error(500, {
+						// 	file: FILENAME,
+						// 	function: 'setGridColumns',
+						// 	message: `No items found for link edit column: ${f.colDO.propName}`
+						// })
+					}
+					break
+
+				case PropDataType.str:
+					defn.cellDataType = 'text'
+					defn.cellEditor =
+						f.fieldElement === FieldElement.textArea ? 'agLargeTextCellEditor' : 'agTextCellEditor'
+					break
+
+				default:
+				// error(500, {
+				// 	file: FILENAME,
+				// 	function: 'setGridColumns',
+				// 	message: `No case defined for PropDataType: ${f.colDO.colDB.codeDataType}`
+				// })
+			}
+
+			columnDefs.push(defn)
 		})
-		state.parmsState.valueSet(
-			ParmsValuesType.listRecordIdSelected,
-			dataObj.dataRecordsDisplay.filter((r: any) => r.selected).map((r: any) => r.id)
-		)
+
+		if (isSelect) {
+			columnDefs.unshift({
+				checkboxSelection: true,
+				headerCheckboxSelection: true,
+				headerName: '',
+				field: 'selected',
+				maxWidth: 50,
+				suppressMovable: true
+			})
+		}
+
+		return columnDefs
 	}
-	function onSort(newSortObj: DataObjSortItem) {
-		listSortObj = new DataObjSort(newSortObj)
-		dataObj.dataRecordsDisplay = sortUser(listSortObj, dataObj.dataRecordsDisplay)
+
+	function setGridData() {
+		setGridDataSort()
+		return setGridDataValues()
+	}
+
+	function setGridDataSort() {
+		listSortObj = sortInit(fieldsDisplayable)
+		dataObj.dataRecordsDisplay = sort(listSortObj, dataObj.dataRecordsDisplay)
 		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSortObj, listSortObj)
 	}
-	const isNewList = true
+
+	function setGridDataValues() {
+		const dataRows = dataObj.dataRecordsDisplay.map((record) => {
+			const row = {}
+			dataObj.fields.forEach((f) => {
+				row[f.colDO.propName] = record[f.colDO.propName]
+			})
+			return row
+		})
+
+		dataObj.data.parms.valueSet(
+			ParmsValuesType.listRecordIdList,
+			dataRows.map((r: any) => r.id)
+		)
+
+		// if (isSelect) {
+		// 	const selectedRecords = state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected) || []
+		// 	const selected: IRowNode[] = []
+		// 	const deselected: IRowNode[] = []
+		// 	grid.forEachNode((node) => {
+		// 		if (selectedRecords.includes(node.data!.id)) {
+		// 			selected.push(node)
+		// 		} else {
+		// 			deselected.push(node)
+		// 		}
+		// 	})
+		// 	grid.setNodesSelected({ nodes: selected, newValue: true })
+		// 	grid.setNodesSelected({ nodes: deselected, newValue: false })
+		// }
+		return dataRows
+	}
+
+	function setGridOptions() {
+		let columnDefs = setGridColumns()
+		let rowData = setGridData()
+		return new GridManagerOptions({
+			columnDefs,
+			fCallbackFilter: fGridCallbackFilter,
+			fCallbackUpdateValue: fGridCallbackUpdateValue,
+			isListHideFilter: dataObj.raw.isListHideSearch,
+			isSelect,
+			isSelectMulti,
+			listFilterText,
+			listReorderColumn: dataObj.raw.listReorderColumn,
+			onCellClicked,
+			onSelectionChanged,
+			rowData
+		})
+	}
 </script>
 
-{#if isNewList}
-	<AgGrid bind:state {dataObj} {dataObjData} on:formCancelled on:rowClick />
-{:else}
-	{#if !dataObj.raw.isListHideSearch}
-		<div class="w-full flex mb-6 justify-between">
-			<button
-				class="btn variant-filled-primary mr-4 {listFilterText === '' ? 'hidden' : ''}"
-				on:click={() => {
-					listFilterText = ''
-					onFilter('')
-				}}
-			>
-				Reset
-			</button>
-			<input
-				class="w-full"
-				type="text"
-				id="formSearch"
-				bind:value={listFilterText}
-				on:keyup={() => onFilter(listFilterText)}
-				placeholder="Search..."
-			/>
-			{#if dataObj.dataRecordsDisplay}
-				<span class="ml-4">Rows: {dataObj.dataRecordsDisplay.length}</span>
-			{/if}
-			{#if isSelect}
-				<span class="ml-0"
-					>Selected: {dataObj.dataRecordsDisplay.filter((r) => r.selected).length}</span
-				>
-			{/if}
-		</div>
-	{/if}
-
-	<div class="overflow-y-scroll" style={dataHeight}>
-		<table id="formList" class="w-full">
-			<thead>
-				<tr>
-					{#if fieldsDisplayable}
-						{#if isSelect}
-							<th class="selection">
-								{#if isSelectMulti}
-									<input
-										type="checkbox"
-										on:click={() => onSelectAll()}
-										checked={isSelectMultiAll}
-									/>
-								{/if}
-							</th>
-						{/if}
-						{#each fieldsDisplayable as field}
-							<th><Header {field} sortObj={listSortObj} sortField={onSort} /></th>
-						{/each}
-					{/if}
-				</tr>
-			</thead>
-			<tbody
-				use:dndzone={{
-					items: dataObj.dataRecordsDisplay,
-					flipDurationMs: animationDurationMs,
-					transformDraggedElement: onReorderTransformDraggedElement,
-					dragDisabled: false
-				}}
-				on:consider={onReorder}
-				on:finalize={onReorderFinalize}
-			>
-				{#each dataObj.dataRecordsDisplay as record, row (record.id)}
-					<tr tabindex="0" animate:flip={{ duration: animationDurationMs }}>
-						{#if isSelect}
-							<td>
-								<div class="p-2">
-									<input
-										type="checkbox"
-										on:click={() => onSelect(record.id)}
-										checked={record.selected}
-									/>
-								</div>
-							</td>
-						{/if}
-						{#each fieldsDisplayable as field}
-							<td
-								on:click={async () => await onRowClick(record, field)}
-								on:keyup={async () => await onRowClick(record, field)}
-							>
-								<FormElement bind:state {component} {dataObj} {dataObjData} {field} {row} />
-							</td>
-						{/each}
-					</tr>
-				{/each}
-			</tbody>
-		</table>
+{#if gridOptions}
+	<div class="h-[70vh]">
+		<Grid options={gridOptions} />
+		<!-- <DataViewer header="gridManager" data={gm.rowData} /> -->
 	</div>
 {/if}
-
-<!-- <DataViewer header="fieldsDisplayable" data={fieldsDisplayable.map((f) => f.colDO.propName)} /> -->
-
-<style>
-	#formSearch {
-		border: 1px solid #f1f1f1;
-	}
-	thead {
-		background-color: #f1f1f1;
-		border: 1px solid #f1f1f1;
-	}
-	tbody td {
-		border: 1px solid #f5f5f5;
-		padding: 0px 0px;
-	}
-	tbody tr {
-		transition: all, 0.2s;
-	}
-	tbody tr:hover {
-		background: #f5f5f5;
-	}
-	/* tbody tr.active:hover {
-		background: var(--primary-lighten-2);
-	} */
-	td :global(b) {
-		font-weight: normal;
-		color: #bdbdbd;
-		font-family: JetBrains;
-		font-size: 11px;
-	}
-	.selection {
-		width: 20px;
-		padding: 8px;
-	}
-	tr:nth-child(even) {
-		background-color: #97ed9e;
-	}
-</style>

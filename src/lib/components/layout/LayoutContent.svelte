@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { AppLevelRowStatus } from '$comps/app/types.app'
 	import { State, StateLayoutStyle, StateSurfaceModal } from '$comps/app/types.appState'
-	import { valueOrDefault, type DataObj, type DataObjData } from '$utils/types'
+	import { valueOrDefault, type DataObj, type DataObjData, ParmsValuesType } from '$utils/types'
 	import NavRow from '$comps/app/NavRow.svelte'
 	import ContentFormDetailApp from '$comps/form/ContentFormDetailApp.svelte'
 	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
@@ -59,7 +59,8 @@
 				break
 
 			case StateLayoutStyle.overlayModalSelectMulti:
-				headerObj = 'Select Multiple'
+				const fieldLabel = state.parmsState.valueGet(ParmsValuesType.modalMultiSelectFieldLabel)
+				headerObj = `Select Values For Field: ${fieldLabel}`
 				break
 
 			case StateLayoutStyle.embeddedField:
