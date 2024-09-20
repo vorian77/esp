@@ -3,7 +3,7 @@
 	import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 	import {
 		State,
-		StateLayoutComponentType,
+		StateLayoutComponent,
 		StateLayoutStyle,
 		StatePacket,
 		StateSurfaceEmbedShell

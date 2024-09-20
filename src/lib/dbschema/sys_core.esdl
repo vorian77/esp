@@ -22,9 +22,13 @@ module sys_core {
     codeState: sys_core::SysCode;
     zip: str;
     orderDefine: default::nonNegative;
-    multi testCode: sys_core::SysCode;
+    testBool: bool;
+    multi testCodeMulti: sys_core::SysCode;
+    testCodeSingle: sys_core::SysCode;
     testDate: cal::local_date;
-    testNumber: int64;
+    testDateTime: cal::local_datetime;
+    testNumberFloat: float64;
+    testNumberInt: int64;
     testText: str;
   }
 

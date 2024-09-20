@@ -3,7 +3,7 @@
 	import { DataObjActionFieldConfirm } from '$comps/dataObj/types.dataObjActionField'
 	import {
 		State,
-		StateLayoutComponentType,
+		StateLayoutComponent,
 		StateLayoutStyle,
 		StatePacket,
 		StatePacketAction
@@ -52,7 +52,7 @@
 			await initNavTree(user)
 		})()
 		state = new State({
-			layoutComponent: StateLayoutComponentType.layoutApp,
+			layoutComponent: StateLayoutComponent.layoutApp,
 			layoutStyle: StateLayoutStyle.dataObjTab,
 			storeDrawer,
 			storeModal,

@@ -7,29 +7,49 @@ export async function initPreColumn() {
 	// temp
 	await addColumn({
 		owner: 'app_sys',
+		codeDataType: 'bool',
+		header: 't.Bool',
+		name: 'testBool'
+	})
+	await addColumn({
+		owner: 'app_sys',
 		codeDataType: 'link',
-		header: 'Test - Code',
+		header: 't.CodeMultiple',
 		isMultiSelect: true,
-		name: 'testCode'
+		name: 'testCodeMulti'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'link',
+		header: 't.CodeSingle',
+		isMultiSelect: false,
+		name: 'testCodeSingle'
 	})
 	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'date',
-		header: 'Test - Date',
+		header: 't.Date',
 		name: 'testDate'
 	})
 	await addColumn({
 		owner: 'app_sys',
+		codeDataType: 'float64',
+		header: 't.NbrFloat',
+		name: 'testNumberFloat'
+	})
+	await addColumn({
+		owner: 'app_sys',
 		codeDataType: 'int64',
-		header: 'Test - Number',
-		name: 'testNumber'
+		header: 't.NbrInt',
+		name: 'testNumberInt'
 	})
 	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'str',
-		header: 'Test - Text',
+		header: 't.Text',
 		name: 'testText'
 	})
+
 	await addColumn({
 		codeDataType: 'link',
 		header: 'Action',

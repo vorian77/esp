@@ -3,6 +3,7 @@
 	import { query } from '$comps/app/types.appQuery'
 	import {
 		State,
+		StateLayoutContent,
 		StateLayoutStyle,
 		StateSurfaceEmbed,
 		StateSurfaceModal,
@@ -284,7 +285,7 @@
 				break
 
 			case StatePacketAction.selectMultiModal:
-				updateObjectsContent('SelectMulti')
+				updateObjectsContent(StateLayoutContent.SelectMulti)
 				break
 
 			case StatePacketAction.selectMultiOpen:
@@ -312,6 +313,7 @@
 		}
 		updateObjectsForm(true, true)
 	}
+
 	const fModalCloseUpdateEmbedListSelect = async (
 		returnType: TokenAppModalReturnType,
 		data?: ParmsValues

@@ -1,9 +1,8 @@
 <script lang="ts">
 	export let isListHideFilter: boolean
-	export let isSelect: boolean
 	export let listFilterText: string
 	export let rowCountFiltered: number
-	export let rowData: any[]
+	export let rowCountSelected: number
 	export let setFilter: (listFilterText: string) => void
 </script>
 
@@ -26,11 +25,11 @@
 			on:keyup={() => setFilter(listFilterText)}
 			placeholder="Search..."
 		/>
-		{#if rowData}
+		{#if !!rowCountFiltered}
 			<span class="ml-4">Rows: {rowCountFiltered}</span>
 		{/if}
-		{#if isSelect}
-			<span class="ml-0">Selected: {rowData.filter((r) => r.selected).length}</span>
+		{#if rowCountSelected > -1}
+			<span class="ml-0">Selected: {rowCountSelected}</span>
 		{/if}
 	</div>
 {/if}

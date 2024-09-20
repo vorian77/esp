@@ -32,15 +32,15 @@
 	import type { DataRecord } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import { recordsSelectAll, sortInit, sort } from '$comps/form/formList'
-	import { Field } from '$comps/form/field'
-	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
+	import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
+	import { FieldParm } from '$comps/form/fieldParm'
 	import { dndzone } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
 	import Header from '$comps/form/FormListHeader.svelte'
 	import FormElement from '$comps/form/FormElement.svelte'
-	import AgGrid from '$comps/form/AgGridGrid.svelte'
-	import Grid from '$comps/other/Grid.svelte'
-	import { GridManagerOptions } from '$comps/other/grid'
+	import AgGrid from '$comps/grid/AgGridGrid.svelte'
+	import Grid from '$comps/grid/Grid.svelte'
+	import { cellRendererParmValue, GridManagerOptions } from '$comps/grid/grid'
 	import { onMount } from 'svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -68,7 +68,6 @@
 	$: load(dataObjData)
 
 	function load(data: DataObjData) {
-		console.log('FormList.load.data:', data.rowsRetrieved.dataRows)
 		if (!dataObj.isListEmbed) dataObj.objData = data
 
 		listFilterText = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listFilterText) || ''
@@ -93,11 +92,12 @@
 		gridOptions = setGridOptions()
 	}
 
-	function fGridCallbackUpdateValue(rowId: string, fieldName: string, newVal: any) {
-		const row = dataObj.dataRecordsDisplay.findIndex((record) => record.id === rowId)
+	function fGridCallbackUpdateValue(fieldName: string, data: DataRecord) {
+		const row = dataObj.dataRecordsDisplay.findIndex((row) => row.id === data.id)
 		const field = dataObj.fields.find((f) => f.colDO.propName === fieldName)
 		if (row > -1 && field) {
-			console.log('fGridCallbackUpdateValue', { fieldName, field, row, newVal })
+			const newVal = data[fieldName]
+			console.log('fGridCallbackUpdateValue', { fieldName, row, data })
 			dataObj = dataObj.setFieldVal(row, field, newVal)
 			state = state.setStatus()
 		}
@@ -121,10 +121,11 @@
 	async function onCellClickedMultiSelect(event: CellClickedEvent, field: Field) {
 		const fieldName = event.colDef.field
 		const itemsKey = '_items_' + field.colDO.propName
-		console.log('AgGridGrid.onCellClickedMultiSelect', { field })
 		if (Object.hasOwn(dataObjData.items, itemsKey)) {
-			const itemsCurrent = dataObjData.items[itemsKey]
-			const itemsList = event.data[fieldName]
+			const itemsList = dataObjData.items[itemsKey].map((item) => {
+				return { display: item.display, id: item.data }
+			})
+			const itemsCurrent = event.data[fieldName]
 			state.update({
 				packet: new StatePacket({
 					action: StatePacketAction.selectMultiOpen,
@@ -139,11 +140,19 @@
 			})
 		}
 		async function fModalClose(returnType: TokenAppModalReturnType, data?: ParmsValues) {
-			console.log('AgGridGrid.fModalClose', { returnType, data })
 			if (returnType === TokenAppModalReturnType.complete) {
-				const rowNode = grid.getRowNode(event.data.id)
-				const newPrice = Math.floor(Math.random() * 100000)
-				rowNode.setDataValue(fieldName, newPrice.toString())
+				const parms: ParmsValues = data.data || undefined
+				if (parms) {
+					const rowId = event.data.id
+					const newValue = parms[ParmsValuesType.listRecordIdSelected]
+
+					// update dataObj
+					fGridCallbackUpdateValue(fieldName, { id: rowId, newValue })
+
+					// update grid
+					const rowNode = event.api.getRowNode(rowId)
+					rowNode.setDataValue(fieldName, newValue)
+				}
 			}
 		}
 	}
@@ -177,7 +186,6 @@
 			const isEditable = dataObj.raw.isListEdit && fieldAccessEditable.includes(f.fieldAccess)
 
 			// core
-			defn.cellDataType = 'text'
 			defn.editable = isEditable
 			defn.field = f.colDO.propName
 			defn.headerName = isEditable ? '✍️ ' + f.colDO.label : f.colDO.label
@@ -185,88 +193,90 @@
 			defn.hide = !f.colDO.isDisplayable
 			defn.singleClickEdit = isEditable ? true : undefined
 
-			switch (f.colDO.colDB.codeDataType) {
-				case PropDataType.date:
-					defn.cellDataType = 'dateString'
-					defn.cellEditor = 'agDateStringCellEditor'
-					// defn.cellEditor = 'agDateCellEditor'
-					break
+			if (f instanceof FieldParm) {
+				// defn.cellRendererSelector = cellRendererParmValue
+				defn.cellDataType = 'dateString'
+				// defn.cellDataType = 'customTextLarge'
+				// defn.cellDataType = () => {
+				// 	return 'customTextLarge'
+				// }
+			} else {
+				// data type
+				switch (f.colDO.colDB.codeDataType) {
+					case PropDataType.bool:
+						defn.cellDataType = isEditable ? 'customBoolean' : 'customText'
+						break
 
-				case PropDataType.float64:
-				case PropDataType.int16:
-				case PropDataType.int32:
-				case PropDataType.int64:
-					defn.cellDataType = 'number'
-					defn.cellEditor = 'agNumberCellEditor'
-					break
+					case PropDataType.date:
+						defn.cellDataType = 'customDateString'
+						break
 
-				case PropDataType.link:
-					const itemsKey = '_items_' + f.colDO.propName
-					if (Object.hasOwn(dataObjData.items, itemsKey)) {
-						const items = dataObjData.items[itemsKey]
-						if (f.colDO.colDB.isMultiSelect) {
-							// defn.cellEditor = MultiSelectEditor
-							// defn.cellRenderer = MultiSelectRenderer
-							// defn.cellEditorPopup = true
-							defn.editable = false
+					case PropDataType.datetime:
+						defn.cellDataType = 'text'
+						break
+
+					case PropDataType.float64:
+						defn.cellDataType =
+							f.fieldElement === FieldElement.currency
+								? 'customNumberCurrency'
+								: f.fieldElement === FieldElement.percentage
+									? 'customNumberPercentage'
+									: 'customNumber'
+						break
+
+					case PropDataType.int16:
+					case PropDataType.int32:
+					case PropDataType.int64:
+						defn.cellDataType = 'customNumberInt'
+						break
+
+					case PropDataType.json:
+						defn.cellDataType = 'object'
+						break
+
+					case PropDataType.link:
+						const itemsKey = '_items_' + f.colDO.propName
+						if (Object.hasOwn(dataObjData.items, itemsKey)) {
+							const items = dataObjData.items[itemsKey]
+							if (f.colDO.colDB.isMultiSelect) {
+								// managed by onCellClickedMultiSelect
+								// defn.cellDataType = 'customText'
+								defn.context = { items }
+								defn.type = 'ctSelectMulti'
+								defn.editable = false
+							} else {
+								defn.type = 'ctSelectSingle'
+								defn.cellEditorParams = {
+									values: ['Select an option...', ...items.map((item) => item.display)]
+								} as ISelectCellEditorParams
+								defn.context = { items }
+							}
 						} else {
-							// defn.cellDataType = 'object'
-							// defn.cellEditor = 'agSelectCellEditor'
-							// defn.cellEditorParams = {
-							// 	values: items.map((item) => item.display)
-							// } as ISelectCellEditorParams
-							// defn.valueGetter = (params: ValueGetterParams) => {
-							// 	const id = params.data[f.colDO.propName]
-							// 	const item = items.find((i) => i.data === id)
-							// 	return item ? item.display : ''
-							// }
-							// defn.valueSetter = (params: ValueSetterParams) => {
-							// 	const display = params.newValue
-							// 	const item = items.find((i) => i.display === display)
-							// 	if (item) {
-							// 		params.data[f.colDO.propName] = item.data
-							// 		return true
-							// 	} else {
-							// 		return false
-							// 	}
-							// }
+							// error(500, {
+							// 	file: FILENAME,
+							// 	function: 'setGridColumns',
+							// 	message: `No items found for link edit column: ${f.colDO.propName}`
+							// })
 						}
-					} else {
-						// error(500, {
-						// 	file: FILENAME,
-						// 	function: 'setGridColumns',
-						// 	message: `No items found for link edit column: ${f.colDO.propName}`
-						// })
-					}
-					break
+						break
 
-				case PropDataType.str:
-					defn.cellDataType = 'text'
-					defn.cellEditor =
-						f.fieldElement === FieldElement.textArea ? 'agLargeTextCellEditor' : 'agTextCellEditor'
-					break
+					case PropDataType.str:
+					case PropDataType.uuid:
+						defn.cellDataType =
+							f.fieldElement === FieldElement.textArea ? 'customTextLarge' : 'customText'
+						break
 
-				default:
-				// error(500, {
-				// 	file: FILENAME,
-				// 	function: 'setGridColumns',
-				// 	message: `No case defined for PropDataType: ${f.colDO.colDB.codeDataType}`
-				// })
+					default:
+						error(500, {
+							file: FILENAME,
+							function: 'setGridColumns',
+							message: `No case defined for PropDataType: ${f.colDO.colDB.codeDataType}`
+						})
+				}
 			}
 
 			columnDefs.push(defn)
 		})
-
-		if (isSelect) {
-			columnDefs.unshift({
-				checkboxSelection: true,
-				headerCheckboxSelection: true,
-				headerName: '',
-				field: 'selected',
-				maxWidth: 50,
-				suppressMovable: true
-			})
-		}
 
 		return columnDefs
 	}
@@ -295,21 +305,6 @@
 			ParmsValuesType.listRecordIdList,
 			dataRows.map((r: any) => r.id)
 		)
-
-		// if (isSelect) {
-		// 	const selectedRecords = state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected) || []
-		// 	const selected: IRowNode[] = []
-		// 	const deselected: IRowNode[] = []
-		// 	grid.forEachNode((node) => {
-		// 		if (selectedRecords.includes(node.data!.id)) {
-		// 			selected.push(node)
-		// 		} else {
-		// 			deselected.push(node)
-		// 		}
-		// 	})
-		// 	grid.setNodesSelected({ nodes: selected, newValue: true })
-		// 	grid.setNodesSelected({ nodes: deselected, newValue: false })
-		// }
 		return dataRows
 	}
 
@@ -324,6 +319,7 @@
 			isSelect,
 			isSelectMulti,
 			listFilterText,
+			listRecordIdSelected: state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected) || [],
 			listReorderColumn: dataObj.raw.listReorderColumn,
 			onCellClicked,
 			onSelectionChanged,

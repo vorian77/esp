@@ -11,7 +11,6 @@ import {
 	booleanRequired
 } from '$utils/types'
 import {
-	PropDataType,
 	RawDataObj,
 	RawDataObjActionField,
 	RawDataObjPropDisplay,
@@ -218,10 +217,12 @@ export class DataObj {
 		)
 		switch (element) {
 			// input
+			case FieldElement.currency:
 			case FieldElement.date:
 			case FieldElement.email:
 			case FieldElement.number:
 			case FieldElement.password:
+			case FieldElement.percentage:
 			case FieldElement.tel:
 			case FieldElement.text:
 				newField = await FieldInput.init(props)
@@ -1066,10 +1067,10 @@ export class ParmsValues {
 export enum ParmsValuesType {
 	embedFieldName = 'embedFieldName',
 	embedParentId = 'embedParentId',
+
+	listLabel = 'listLabel',
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listRecordIdList = 'listRecordIdList',
 	listRecordIdSelected = 'listRecordIdSelected',
-	modalMultiSelectFieldLabel = 'modalMultiSelectFieldLabel',
-	modalMultiSelectItemsCurrent = 'modalMultiSelectItemsCurrent',
-	modalMultiSelectItemsList = 'modalMultiSelectItemsList'
+	listRecordItems = 'listRecordItems'
 }

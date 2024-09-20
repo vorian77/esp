@@ -474,32 +474,32 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'embedListEdit',
 				columnName: 'parms',
-				isDisplayable: false,
+				isDisplayable: true,
 				orderDefine: 120,
 				orderDisplay: 120,
 				fieldEmbedListEdit: 'fele_sys_rep_user_parm',
 				indexTable: 0,
 				linkTable: 'SysRepUserParm'
 			},
-			{
-				codeFieldElement: 'embedListEdit',
-				columnName: 'elements',
-				isDisplayable: false,
-				orderDefine: 130,
-				orderDisplay: 130,
-				fieldEmbedListEdit: 'fele_sys_rep_user_element',
-				indexTable: 0,
-				linkTable: 'SysRepUserEl'
-			},
-			{
-				codeFieldElement: 'embedShell',
-				columnName: 'custom_embed_shell',
-				isDisplayable: true,
-				headerAlt: 'Report Config',
-				nameCustom: 'repUserConfig',
-				orderDisplay: 140,
-				orderDefine: 140
-			},
+			// {
+			// 	codeFieldElement: 'embedListEdit',
+			// 	columnName: 'elements',
+			// 	isDisplayable: false,
+			// 	orderDefine: 130,
+			// 	orderDisplay: 130,
+			// 	fieldEmbedListEdit: 'fele_sys_rep_user_element',
+			// 	indexTable: 0,
+			// 	linkTable: 'SysRepUserEl'
+			// },
+			// {
+			// 	codeFieldElement: 'embedShell',
+			// 	columnName: 'custom_embed_shell',
+			// 	isDisplayable: true,
+			// 	headerAlt: 'Report Config',
+			// 	nameCustom: 'repUserConfig',
+			// 	orderDisplay: 140,
+			// 	orderDefine: 140
+			// },
 
 			/* management */
 			{

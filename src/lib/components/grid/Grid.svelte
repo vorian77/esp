@@ -4,8 +4,10 @@
 		createGrid,
 		type CellClickedEvent,
 		type CellEditingStartedEvent,
+		type CellEditingStoppedEvent,
 		type ColDef,
 		type FilterChangedEvent,
+		type GetRowIdParams,
 		type GridApi,
 		type GridOptions,
 		type GridParams,
@@ -22,7 +24,7 @@
 	} from 'ag-grid-community'
 	import 'ag-grid-community/styles/ag-grid.css'
 	import 'ag-grid-community/styles/ag-theme-quartz.css'
-	import { GridManagerOptions } from '$comps/other/grid'
+	import { columnTypes, dataTypeDefinitions, GridManagerOptions } from '$comps/grid/grid'
 	import {
 		DataObj,
 		DataObjData,
@@ -47,15 +49,13 @@
 	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
 	import { State, StateSurfaceModal, StateLayoutStyle } from '$comps/app/types.appState'
 	import { sortInit, sort } from '$comps/form/formList'
-	import GridFilter from '$comps/other/GridFilter.svelte'
+	import GridFilter from '$comps/grid/GridFilter.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/other/ListBox.svelte'
 
 	export let options: GridOptions
-
-	console.log('Grid.options:', options)
 
 	let columnDefs: ColDef[]
 	let dataObjId = ''
@@ -69,14 +69,12 @@
 	let listFilterText = ''
 	let listReorderColumn: string
 	let rowCountFiltered: number
+	let rowCountSelected: number
 	let rowData: any[]
 	let style = ''
 
 	function onCellValueChanged(event: NewValueParams) {
-		const recordId = event.data.id
-		const fieldName = event.colDef.field
-		const newVal = event.data[fieldName]
-		fCallbackUpdateValue(recordId, fieldName, newVal)
+		if (fCallbackUpdateValue) fCallbackUpdateValue(event.colDef.field, event.data)
 	}
 
 	onMount(() => {
@@ -92,25 +90,58 @@
 		setGridColumnsProp(columnDefs, '', 'rowDrag', listReorderColumn ? true : false)
 		rowData = options.rowData
 
+		if (isSelect) {
+			columnDefs.unshift({
+				checkboxSelection: true,
+				headerCheckboxSelection: isSelectMulti,
+				headerName: '',
+				field: 'selected',
+				maxWidth: 50,
+				suppressMovable: true
+			})
+		}
+
 		const gridOptions = {
 			columnDefs,
+			columnTypes,
+			dataTypeDefinitions,
 			defaultColDef: {
 				flex: 1
 			},
+			getRowId: (params: GetRowIdParams) => params.data.id || '',
 			onCellClicked: options.onCellClicked,
 			onCellValueChanged,
 			onRowDragEnd,
 			onRowDragMove,
-			onSelectionChanged: options.onSelectionChanged,
+			onSelectionChanged,
 			rowData,
 			rowSelection: isSelect && isSelectMulti ? 'multiple' : 'single',
-			rowDragManaged: options.listReorderColumn ? true : false
+			rowDragManaged: listReorderColumn ? true : false
 		}
 		grid = createGrid(eGui, gridOptions)
 
 		// set data
 		grid.setGridOption('columnDefs', columnDefs)
 		grid.setGridOption('rowData', rowData)
+
+		if (isSelect) {
+			if (isSelectMulti) {
+				const selected: IRowNode[] = []
+				const deselected: IRowNode[] = []
+				grid.forEachNode((node) => {
+					if (options.listRecordIdSelected.includes(node.data!.id)) {
+						selected.push(node)
+					} else {
+						deselected.push(node)
+					}
+				})
+				grid.setNodesSelected({ nodes: selected, newValue: true })
+				grid.setNodesSelected({ nodes: deselected, newValue: false })
+			} else {
+				const selected = grid.getRowNode(options.listRecordIdSelected[0])
+				if (selected) selected.setSelected(true)
+			}
+		}
 		setFilter(listFilterText)
 
 		return () => {
@@ -120,10 +151,13 @@
 
 	function onRowDragEnd(event: RowDragEndEvent) {
 		rowData.forEach((row, idx) => {
-			row[listReorderColumn] = idx
-			fCallbackUpdateValue(row.id, listReorderColumn, idx)
+			// set node data
+			const node = grid.getRowNode(row.id)
+			node.setDataValue(listReorderColumn, idx)
+
+			// set source
+			if (fCallbackUpdateValue) fCallbackUpdateValue(listReorderColumn, { id: row.id, idx })
 		})
-		grid?.setGridOption('rowData', rowData)
 	}
 
 	function onRowDragMove(event: RowDragMoveEvent) {
@@ -152,6 +186,11 @@
 		}
 	}
 
+	function onSelectionChanged(event: SelectionChangedEvent) {
+		if (options.onSelectionChanged) options.onSelectionChanged(event)
+		updateCounters()
+	}
+
 	function setGridColumnsProp(
 		columns: Record<number | string, any>[],
 		field: string,
@@ -171,20 +210,22 @@
 	}
 	function setFilter(listFilterText: string) {
 		grid.setGridOption('quickFilterText', listFilterText)
-		rowCountFiltered = grid.getDisplayedRowCount()
+		updateCounters()
 		if (fCallbackFilter) fCallbackFilter(listFilterText)
+	}
+
+	function updateCounters() {
+		rowCountFiltered = grid.getDisplayedRowCount()
+		if (options.isSelect) rowCountSelected = grid.getSelectedRows().length
 	}
 </script>
 
-<GridFilter
-	{isListHideFilter}
-	{isSelect}
-	{listFilterText}
-	{rowCountFiltered}
-	{rowData}
-	{setFilter}
-/>
-<div bind:this={eGui} {style} class="ag-theme-quartz h-full" />
-<!-- style:height="100%" -->
+<GridFilter {isListHideFilter} {listFilterText} {rowCountFiltered} {rowCountSelected} {setFilter} />
 
+<div bind:this={eGui} style:max-height="calc(100% - 70px)" {style} class="ag-theme-quartz h-full" />
+
+<!-- <DataViewer header="rowCount" data={{ rowCountFiltered, rowCountSelected }} /> -->
+<!-- <DataViewer header="columnDefs" data={columnDefs} /> -->
 <!-- <DataViewer header="rowData" data={rowData} /> -->
+
+<!-- style:height="100%" -->

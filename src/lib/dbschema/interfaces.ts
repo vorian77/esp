@@ -358,16 +358,20 @@ export namespace sys_core {
     "page"?: string | null;
   }
   export interface SysOrg extends SysEnt {
+    "testCodeSingle"?: SysCode | null;
     "orderDefine"?: number | null;
-    "testCode": SysCode[];
+    "testBool"?: boolean | null;
+    "testDateTime"?: edgedb.LocalDateTime | null;
+    "testNumberInt"?: number | null;
+    "testNumberFloat"?: number | null;
     "testDate"?: edgedb.LocalDate | null;
-    "testNumber"?: number | null;
     "testText"?: string | null;
     "codeState"?: SysCode | null;
     "addr1"?: string | null;
     "addr2"?: string | null;
     "city"?: string | null;
     "zip"?: string | null;
+    "testCodeMulti": SysCode[];
   }
   export interface SysResource extends SysEnt {}
 }

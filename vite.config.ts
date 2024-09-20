@@ -1,16 +1,16 @@
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
-// import { purgeCss } from 'vite-plugin-tailwind-purgecss'
+import { purgeCss } from 'vite-plugin-tailwind-purgecss'
 import { nodeLoaderPlugin } from '@vavite/node-loader/plugin'
 import { sentrySvelteKit } from '@sentry/sveltekit'
 
 /** @type {import('vite').userConfig} */
 export default defineConfig(({ mode }) => {
-	// let plugins = [sentrySvelteKit(), sveltekit(), purgeCss()]
-	let plugins = [sentrySvelteKit(), sveltekit()]
-	// if (mode === 'development') {
-	// 	plugins.push(nodeLoaderPlugin())
-	// }
+	let plugins = [sentrySvelteKit(), sveltekit(), purgeCss({ safelist: { greedy: [/^ag-/] } })]
+	// let plugins = [sentrySvelteKit(), sveltekit()]
+	if (mode === 'development') {
+		plugins.push(nodeLoaderPlugin())
+	}
 	return {
 		build: {
 			minify: false
@@ -18,3 +18,14 @@ export default defineConfig(({ mode }) => {
 		plugins
 	}
 })
+
+// export default defineConfig({
+// 	plugins: [
+// 			sveltekit(),
+// 			purgeCss({
+// 					safelist: {
+// 							greedy: [/^ag-/],
+// 					},
+// 			})
+// 	]
+// });

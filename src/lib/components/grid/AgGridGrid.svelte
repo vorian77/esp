@@ -45,7 +45,7 @@
 	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
 	import { State, StateSurfaceModal, StateLayoutStyle } from '$comps/app/types.appState'
 	import { sortInit, sort } from '$comps/form/formList'
-	import GridFilter from '$comps/other/GridFilter.svelte'
+	import GridFilter from '$comps/grid/GridFilter.svelte'
 	import { error } from '@sveltejs/kit'
 
 	const FILENAME = '$comps/form/AgGridSvelte.svelte'

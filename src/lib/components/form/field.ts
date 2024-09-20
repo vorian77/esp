@@ -1,6 +1,12 @@
 import { State } from '$comps/app/types.appState'
 import { DataObj, DataObjData, DataObjStatus, type DataRecord, FieldValue } from '$utils/types'
-import { booleanOrDefault, memberOfEnumOrDefault, nbrOptional, valueOrDefault } from '$utils/utils'
+import {
+	booleanOrDefault,
+	memberOfEnum,
+	memberOfEnumOrDefault,
+	nbrOptional,
+	valueOrDefault
+} from '$utils/utils'
 import {
 	Validation,
 	ValidationStatus,
@@ -24,7 +30,7 @@ export class Field {
 	isFirstVisible: boolean
 	isParmValue: boolean = false
 	constructor(props: RawFieldProps) {
-		const clazz = 'Field'
+		const clazz = `Field: ${props.propRaw.propName}`
 		const obj = valueOrDefault(props.propRaw, {})
 		this.colDO = obj
 		this.fieldAccess = memberOfEnumOrDefault(
@@ -43,13 +49,12 @@ export class Field {
 			FieldAlignment,
 			FieldAlignment.hidden
 		)
-		this.fieldElement = memberOfEnumOrDefault(
-			this.colDO.rawFieldElement,
+		this.fieldElement = memberOfEnum(
+			this.colDO.rawFieldElement || FieldElement.text,
 			clazz,
 			'fieldElement',
 			'FieldElement',
-			FieldElement,
-			FieldElement.hidden
+			FieldElement
 		)
 		this.isFirstVisible = props.isFirstVisible
 
@@ -192,6 +197,7 @@ export interface FieldCustomRaw {
 export enum FieldElement {
 	checkbox = 'checkbox',
 	chips = 'chips',
+	currency = 'currency',
 	custom = 'custom',
 	customActionButton = 'customActionButton',
 	customActionLink = 'customActionLink',
@@ -209,6 +215,7 @@ export enum FieldElement {
 	number = 'number',
 	password = 'password',
 	parm = 'parm',
+	percentage = 'percentage',
 	radio = 'radio',
 	select = 'select',
 	tagRow = 'tagRow',
@@ -220,12 +227,12 @@ export enum FieldElement {
 }
 
 export class FieldItem {
-	data: any
+	data: string
 	display: any
 	selected?: boolean
 	constructor(data: any, display: any, selected: boolean | undefined = false) {
-		this.data = data
 		this.display = display
+		this.data = data
 		this.selected = selected
 	}
 }

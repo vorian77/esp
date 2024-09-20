@@ -65,70 +65,62 @@ async function initOrg() {
 		owner: 'app_sys_admin_org',
 		tables: [{ index: 0, table: 'SysOrg' }],
 		fields: [
+			// {
+			// 	columnName: 'id',
+			// 	indexTable: 0,
+			// 	isDisplayable: false,
+			// 	orderDefine: 10
+			// },
 			{
+				codeAccess: 'readOnly',
 				columnName: 'id',
 				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
+				isDisplayable: true,
+				orderDefine: 10,
+				orderDisplay: 10
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
-				orderCrumb: 10,
+				indexTable: 0,
 				isDisplayable: true,
+				orderCrumb: 10,
 				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0
+				orderDefine: 20
 			},
 			{
 				codeAccess: 'optional',
-				columnName: 'testCode',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				columnName: 'testBool',
 				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 30,
+				orderDisplay: 30
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'testCodeMulti',
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
 				fieldListItemsParmName: 'ct_cm_cohort_attd_duration',
-				linkTable: 'SysCode'
+				indexTable: 0,
+				isDisplayable: true,
+				linkTable: 'SysCode',
+				orderDefine: 40,
+				orderDisplay: 40
 			},
-
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'checkbox',
-			// 	columnName: 'codeMultiCerts',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 210,
-			// 	orderDefine: 210,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-			// 	fieldListItemsParmName: 'ct_cm_course_cert',
-			// 	linkTable: 'SysCode'
-			// },
-
-			// {
-			// 	codeAlignmentAlt: 'center',
-			// 	codeFieldElement: 'radio',
-			// 	columnName: 'codeCmCohortAttdDuration',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 60,
-			// 	orderDefine: 60,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-			// 	fieldListItemsParmName: 'ct_cm_cohort_attd_duration',
-			// 	linkTable: 'SysCode'
-			// },
-
+			{
+				codeAccess: 'optional',
+				columnName: 'testCodeSingle',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItemsParmName: 'ct_cm_cohort_attd_duration',
+				indexTable: 0,
+				isDisplayable: true,
+				linkTable: 'SysCode',
+				orderDefine: 50,
+				orderDisplay: 50
+			},
 			{
 				codeAccess: 'optional',
 				columnName: 'testDate',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'testNumber',
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
@@ -136,18 +128,35 @@ async function initOrg() {
 			},
 			{
 				codeAccess: 'optional',
-				columnName: 'testText',
+				codeFieldElement: 'currency',
+				columnName: 'testNumberFloat',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 80,
+				orderDefine: 80,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
+				columnName: 'testNumberInt',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'testText',
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
 				columnName: 'orderDefine',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 200,
+				orderDefine: 200,
 				indexTable: 0
 			}
 		]

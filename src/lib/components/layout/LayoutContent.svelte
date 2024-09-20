@@ -6,7 +6,7 @@
 	import ContentFormDetailApp from '$comps/form/ContentFormDetailApp.svelte'
 	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
 	import ContentFormListApp from '$comps/form/ContentFormListApp.svelte'
-	import ContentSelectMulti from '$comps/selectMulti/ContentSelectMulti.svelte'
+	import GridSelectMulti from '$comps/grid/GridSelectMulti.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import { createEventDispatcher } from 'svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -18,7 +18,7 @@
 		FormDetail: ContentFormDetailApp,
 		FormDetailRepConfig: ContentFormDetailRepConfig,
 		FormList: ContentFormListApp,
-		SelectMulti: ContentSelectMulti
+		SelectMulti: GridSelectMulti
 	}
 
 	export let state: State
@@ -59,7 +59,7 @@
 				break
 
 			case StateLayoutStyle.overlayModalSelectMulti:
-				const fieldLabel = state.parmsState.valueGet(ParmsValuesType.modalMultiSelectFieldLabel)
+				const fieldLabel = state.parmsState.valueGet(ParmsValuesType.listLabel)
 				headerObj = `Select Values For Field: ${fieldLabel}`
 				break
 

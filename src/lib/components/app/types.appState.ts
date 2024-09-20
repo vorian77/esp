@@ -49,7 +49,7 @@ export class State {
 	app: App = new App()
 	data?: DataObj
 	dataObjState?: DataObj
-	layoutComponent: StateLayoutComponentType = StateLayoutComponentType.layoutContent
+	layoutComponent: StateLayoutComponent = StateLayoutComponent.layoutContent
 	layoutStyle: StateLayoutStyle = StateLayoutStyle.dataObjTab
 	nodeType: NodeType = NodeType.home
 	objStatus: DataObjStatus = new DataObjStatus()
@@ -136,7 +136,7 @@ export class State {
 			state: new StateSurfaceEmbedField({
 				cardinality: DataObjCardinality.detail,
 				dataObjSource,
-				layoutComponent: StateLayoutComponentType.layoutContent,
+				layoutComponent: StateLayoutComponent.layoutContent,
 				layoutStyle: StateLayoutStyle.overlayDrawerDetail,
 				queryType
 			})
@@ -193,7 +193,7 @@ export class State {
 			app: this.app,
 			embedParentId: field.embedParentId,
 			embedType: DataObjEmbedType.listConfig,
-			layoutComponent: StateLayoutComponentType.layoutContent,
+			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutStyle: StateLayoutStyle.overlayModalDetail,
 			packet: new StatePacket({
 				action: StatePacketAction.modalEmbed,
@@ -237,7 +237,7 @@ export class State {
 			actionsFieldDialog: field.actionsFieldModal,
 			embedParentId: field.embedParentId,
 			embedType: DataObjEmbedType.listSelect,
-			layoutComponent: StateLayoutComponentType.layoutContent,
+			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutStyle: StateLayoutStyle.overlayModalSelect,
 			packet: new StatePacket({
 				action: StatePacketAction.modalEmbed,
@@ -263,13 +263,13 @@ export class State {
 
 	async openModalSelectMulti(token: TokenAppModalMultiSelect) {
 		const parmsState = new ParmsValues({})
-		parmsState.valueSet(ParmsValuesType.modalMultiSelectFieldLabel, token.fieldLabel)
-		parmsState.valueSet(ParmsValuesType.modalMultiSelectItemsCurrent, token.itemsCurrent)
-		parmsState.valueSet(ParmsValuesType.modalMultiSelectItemsList, token.itemsList)
+		parmsState.valueSet(ParmsValuesType.listLabel, token.fieldLabel)
+		parmsState.valueSet(ParmsValuesType.listRecordIdSelected, token.itemsCurrent)
+		parmsState.valueSet(ParmsValuesType.listRecordItems, token.itemsList)
 
 		const stateModal = new StateSurfaceModal({
 			actionsFieldDialog: await this.getActions('doag_dialog_footer_list'),
-			layoutComponent: StateLayoutComponentType.layoutContent,
+			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutStyle: StateLayoutStyle.overlayModalSelectMulti,
 			packet: new StatePacket({
 				action: StatePacketAction.selectMultiModal,
@@ -280,8 +280,6 @@ export class State {
 		})
 		await this.openModal(stateModal, token.fModalClose)
 	}
-
-	// openMultiSelectModal(this, token.itemsList, token.itemsCurrent, token.fModalClose)
 
 	openToast(type: ToastType, message: string) {
 		const background = {
@@ -355,12 +353,16 @@ export class State {
 		return this
 	}
 }
-export enum StateLayoutComponentType {
+
+export enum StateLayoutComponent {
 	layoutApp = 'layoutApp',
 	layoutContent = 'layoutContent',
 	layoutProcess = 'layoutProcess',
 	layoutSelectMulti = 'layoutSelectMulti',
 	layoutTab = 'layoutTab'
+}
+export enum StateLayoutContent {
+	SelectMulti = 'SelectMulti'
 }
 
 export enum StateLayoutStyle {
