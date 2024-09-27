@@ -1,90 +1,211 @@
 import {
 	type ColDef,
+	type GridApi,
+	type ICellEditorComp,
+	type ICellEditorParams,
 	type ICellRendererComp,
 	type ICellRendererParams,
+	type IDateComp,
+	type IDateParams,
 	type ValueGetterParams,
 	type ValueParserParams,
 	type ValueSetterParams
 } from 'ag-grid-community'
-import { FieldItem } from '$comps/form/field'
+import { Field, FieldAccess, FieldItem } from '$comps/form/field'
 import { booleanOrFalse, type DataRecord, required, valueOrDefault } from '$utils/types'
+import { PropDataType } from '$comps/dataObj/types.rawDataObj'
+import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/other/grid.ts'
 
-// defn.cellStyle = { 'text-align': 'right' ,'background-color': 'green'}
-// defn.type = ['numericColumn', 'rightAligned']
+export class CellEditorSelect implements ICellEditorComp {
+	// dummy selector for modal select fields
+	gui!: HTMLElement
+	params!: ICellEditorParams
+
+	init(params: ICellEditorParams) {
+		this.params = params
+	}
+
+	getGui() {
+		return this.gui
+	}
+
+	getValue() {
+		return this.params.value
+	}
+
+	afterGuiAttached() {}
+
+	isPopup() {
+		return false
+	}
+}
+
+export function cellEditorSelectorParmField(params: ICellEditorParams) {
+	switch (params.data.codeDataType) {
+		case PropDataType.date:
+			return {
+				component: 'agDateStringCellEditor'
+			}
+		case PropDataType.uuid:
+		case PropDataType.uuidList:
+			return {
+				component: CellEditorSelect
+			}
+		default:
+			error(500, {
+				file: FILENAME,
+				function: `${FILENAME}.cellEditorSelectorParmField`,
+				message: `No case defined for PropDataType: ${params.data.codeDataType}`
+			})
+	}
+}
+
+export class CellRendererParmField implements ICellRendererComp {
+	gui!: HTMLDivElement
+
+	init(params: ICellRendererParams) {
+		this.gui = document.createElement('div')
+
+		let style = 'width: 115%; margin-left: -7%; border: 0; font-size: 14px;'
+		const parmFields = params?.colDef?.context.parmFields
+		if (parmFields) {
+			const fieldName = params.data.name
+			const field = parmFields.find((f: Field) => f.colDO.propName === fieldName)
+			if (field && field.fieldAccess === FieldAccess.required) {
+				style += ' background-color: rgb(219,234,254);'
+			}
+		}
+
+		this.gui.innerHTML = `<input type="text" style="${style}" readonly value="${this.getDisplayValue(params)}"/>`
+	}
+
+	getDisplayValue(params: ICellRendererParams) {
+		return params.value
+	}
+
+	getGui() {
+		return this.gui
+	}
+	refresh(params: ICellRendererParams): boolean {
+		return false
+	}
+}
+
+export class CellRendererParmFieldDate extends CellRendererParmField {
+	getDisplayValue(params: ICellRendererParams) {
+		return params.value ? params.value : ''
+	}
+}
+
+export class CellRendererParmFieldSelect extends CellRendererParmField {
+	getDisplayValue(params: ICellRendererParams) {
+		let displayValue = ''
+		if (params.value) {
+			const parmFieldName = params.data.name
+			const parmFields = params?.colDef?.context.parmFields
+			const field = parmFields.find((f: Field) => f.colDO.propName === parmFieldName)
+			const fieldItems = field.colDO.items
+			const currentIds = Array.isArray(params.value) ? params.value : [params.value]
+			currentIds.forEach((id: string) => {
+				const item = fieldItems.find((i: FieldItem) => i.data === id)
+				if (item) displayValue += displayValue ? ',' + item.display : item.display
+			})
+		}
+		return displayValue
+	}
+}
+
+export function cellRendererSelectorParmField(params: ICellRendererParams) {
+	switch (params.data.codeDataType) {
+		case PropDataType.date:
+			return {
+				// component: (params: ICellRendererParams) => `${params.value || ''}`
+				component: CellRendererParmFieldDate
+			}
+		case PropDataType.uuid:
+		case PropDataType.uuidList:
+			return {
+				component: CellRendererParmFieldSelect
+			}
+		default:
+			error(500, {
+				file: FILENAME,
+				function: `${FILENAME}.cellRendererSelectorParmField`,
+				message: `No case defined for PropDataType: ${params.data.codeDataType}`
+			})
+	}
+}
 
 export const columnTypes = {
-	ctBoolean: {
-		// cellStyle: { 'background-color': 'thistle', 'vertical-align': 'middle' }
-	},
-	ctDateString: {
-		cellStyle: { 'background-color': 'orange' }
-	},
+	// cellStyle: { 'background-color': 'orange' }
+	ctBoolean: {},
+	ctDateString: {},
 	ctNumber: {
 		cellEditor: 'agNumberCellEditor'
-		// cellStyle: { 'background-color': 'lightblue' }
 	},
 	ctNumberCurrency: {
 		cellEditor: 'agNumberCellEditor',
 		precision: 2
-		// cellStyle: { 'background-color': 'lightgreen' }
 	},
 	ctNumberInt: {
 		cellEditor: 'agNumberCellEditor'
-		// cellStyle: { 'background-color': 'pink' }
 	},
 	ctNumberPercentage: {
 		cellEditor: 'agNumberCellEditor'
-		// cellStyle: { 'background-color': 'yellow' }
 	},
 	ctSelectMulti: {
-		// cellStyle: { 'background-color': 'dodgerblue' },
-		autoHeight: false,
+		cellEditor: 'agTextCellEditor',
 		valueGetter: (params: ValueGetterParams) => {
+			let display = ''
 			const fieldName = required(params.colDef.field, FILENAME, 'params.colDef.field')
 			const items = params.colDef.context.items
-			const ids = params.data[fieldName]
-			let display = ''
-			ids.forEach((id: string) => {
+			const currentValue = params.data[fieldName]
+			currentValue.forEach((id: string) => {
 				const item = items.find((i: FieldItem) => i.data === id)
 				if (item) display += display ? ',' + item.display : item.display
 			})
 			return display
-		},
-		wrapText: false
+		}
 	},
 	ctSelectSingle: {
-		cellEditor: 'agSelectCellEditor',
-		// cellStyle: { 'background-color': 'fuchsia' },
+		cellEditor: 'agTextCellEditor',
 		valueGetter: (params: ValueGetterParams) => {
-			const fieldName = required(params.colDef.field, FILENAME, 'params.colDef.field')
-			const id = params.data[fieldName]
+			const fieldName = required(
+				params.colDef.field,
+				`${FILENAME}.valueGetter`,
+				'params.colDef.field'
+			)
 			const items = params.colDef.context.items
-			const item = items.find((i: FieldItem) => i.data === id)
+			const currentValue = params.data[fieldName]
+			const item = items.find((i: FieldItem) => i.data === currentValue)
 			return item ? item.display : ''
 		},
 		valueSetter: (params: ValueSetterParams) => {
-			const display = params.newValue
-			const item = params.colDef.context.items.find((i: FieldItem) => i.display === display)
-			const fieldName = required(params.colDef.field, FILENAME, 'params.colDef.field')
-			if (item) {
-				params.data[fieldName] = item.data
-				return true
-			} else {
-				params.data[fieldName] = ''
-				return true
-			}
+			const fieldName = required(
+				params.colDef.field,
+				`${FILENAME}.valueSetter`,
+				'params.colDef.field'
+			)
+			params.data[fieldName] = params.newValue[0] || ''
+			return true
 		}
 	},
 	ctText: {
 		cellEditor: 'agTextCellEditor'
-		// cellStyle: { 'background-color': 'bisque' }
 	},
 	ctTextLarge: {
 		cellEditor: 'agLargeTextCellEditor'
-		// cellStyle: { 'background-color': 'honeydew' }
 	}
+}
+
+export const getSelectedNodeIds = (gridApi: GridApi) => {
+	let selectedNodes: string[] = []
+	gridApi.forEachNode((node) => {
+		if (node.isSelected()) selectedNodes.push(node.data.id)
+	})
+	return selectedNodes
 }
 
 const isFalsy = (value: any) => [null, '', undefined].includes(value)
@@ -179,6 +300,7 @@ export class GridManagerOptions {
 	listFilterText: string
 	listRecordIdSelected: []
 	listReorderColumn: string
+	listRowDisplayColumn: string
 	onCellClicked?: Function
 	onSelectionChanged?: Function
 	rowData: any[]
@@ -194,53 +316,9 @@ export class GridManagerOptions {
 		this.listFilterText = valueOrDefault(obj.listFilterText, '')
 		this.listRecordIdSelected = obj.listRecordIdSelected || []
 		this.listReorderColumn = obj.listReorderColumn
+		this.listRowDisplayColumn = obj.listRowDisplayColumn
 		this.onCellClicked = obj.onCellClicked
 		this.onSelectionChanged = obj.onSelectionChanged
 		this.rowData = required(obj.rowData, clazz, 'rowData')
 	}
-}
-
-export class ParmValueRendererText implements ICellRendererComp {
-	eGui!: HTMLSpanElement
-
-	init(params: ICellRendererParams) {
-		this.eGui = document.createElement('span')
-		if (params.value !== '' || params.value !== undefined) {
-			// const imgForMood =
-			// 	params.value === 'Happy'
-			// 		? 'https://www.ag-grid.com/example-assets/smileys/happy.png'
-			// 		: 'https://www.ag-grid.com/example-assets/smileys/sad.png'
-			// this.eGui.innerHTML = `<img width="20px" src="${imgForMood}" />`
-			this.eGui.innerHTML = `<input type="date" id="start" name="trip-start" value="2018-07-22" min="2018-01-01" max="2018-12-31" />`
-		}
-	}
-
-	getGui() {
-		return this.eGui
-	}
-
-	refresh(params: ICellRendererParams): boolean {
-		return false
-	}
-}
-
-export function cellRendererParmValue(params: ICellRendererParams<DataRecord>) {
-	const rendText = {
-		component: ParmValueRendererText,
-		cellEditor: 'agDateCellEditor'
-	}
-	// const moodDetails = {
-	// 		component: MoodRenderer,
-	// };
-
-	// const genderDetails = {
-	// 		component: GenderRenderer,
-	// 		params: { values: ["Male", "Female"] },
-	// };
-	if (params.data) {
-		// if (params.data.type === "gender") return genderDetails;
-		// else if (params.data.type === "mood") return moodDetails;
-		return rendText
-	}
-	return undefined
 }

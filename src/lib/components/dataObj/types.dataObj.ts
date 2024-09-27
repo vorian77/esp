@@ -357,7 +357,7 @@ export class DataObj {
 			dataRecords: DataRecord[]
 		) {
 			let dataRows: DataRow[] = []
-			dataRecords.forEach((record, row) => {
+			dataRecords.forEach((record) => {
 				let newRecord: DataRecord = {}
 				Object.entries(record).forEach(([key, value]) => {
 					if (![null, undefined].includes(value)) {
@@ -365,8 +365,9 @@ export class DataObj {
 						if (-1 === dataCurrent.fields.findIndex((f) => f.embedFieldName === key)) {
 							// don't include null or undefined values
 							if (fieldsParmValueNames.includes(key)) {
-								newRecord.parmValue = record[key]
-								delete newRecord[key]
+								// <todo> temp parmValue
+								// newRecord.parmValue = record[key]
+								// delete newRecord[key]
 							} else {
 								newRecord[key] = value
 							}
@@ -398,8 +399,9 @@ export class DataObj {
 				parmValueFields.forEach((field) => {
 					const parmFieldName = field.parmFields[rowIdx].colDO.propName
 					if (!Object.hasOwn(record, parmFieldName)) {
-						record[parmFieldName] = record.parmValue
-						delete record.parmValue
+						// <todo> temp parmValue
+						// record[parmFieldName] = record.parmValue
+						// delete record.parmValue
 					}
 				})
 				recordsClone.push({ ...record })
@@ -1067,7 +1069,7 @@ export class ParmsValues {
 export enum ParmsValuesType {
 	embedFieldName = 'embedFieldName',
 	embedParentId = 'embedParentId',
-
+	isMultiSelect = 'isMultiSelect',
 	listLabel = 'listLabel',
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listRecordIdList = 'listRecordIdList',

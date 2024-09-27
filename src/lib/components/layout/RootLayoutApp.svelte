@@ -4,7 +4,6 @@
 	import {
 		State,
 		StateLayoutContent,
-		StateLayoutStyle,
 		StateSurfaceEmbed,
 		StateSurfaceModal,
 		StatePacket,
@@ -93,8 +92,8 @@
 		StatePacketAction.navRow,
 		StatePacketAction.navTab,
 		StatePacketAction.navTreeNode,
-		StatePacketAction.selectMultiModal,
-		StatePacketAction.selectMultiOpen
+		StatePacketAction.selectModalItems,
+		StatePacketAction.selectModalItemsOpen
 	]
 
 	$: if (state && state.packet) {
@@ -284,12 +283,12 @@
 				}
 				break
 
-			case StatePacketAction.selectMultiModal:
-				updateObjectsContent(StateLayoutContent.SelectMulti)
+			case StatePacketAction.selectModalItems:
+				updateObjectsContent(StateLayoutContent.ModalSelect)
 				break
 
-			case StatePacketAction.selectMultiOpen:
-				await state.openModalSelectMulti(token)
+			case StatePacketAction.selectModalItemsOpen:
+				await state.openModalSelect(token)
 				break
 
 			default:

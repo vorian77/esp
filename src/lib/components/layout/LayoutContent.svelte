@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { AppLevelRowStatus } from '$comps/app/types.app'
-	import { State, StateLayoutStyle, StateSurfaceModal } from '$comps/app/types.appState'
+	import { State, StateSurfaceModal } from '$comps/app/types.appState'
 	import { valueOrDefault, type DataObj, type DataObjData, ParmsValuesType } from '$utils/types'
 	import NavRow from '$comps/app/NavRow.svelte'
 	import ContentFormDetailApp from '$comps/form/ContentFormDetailApp.svelte'
 	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
 	import ContentFormListApp from '$comps/form/ContentFormListApp.svelte'
-	import GridSelectMulti from '$comps/grid/GridSelectMulti.svelte'
+	import GridSelect from '$comps/grid/GridSelect.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import { createEventDispatcher } from 'svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -18,7 +18,7 @@
 		FormDetail: ContentFormDetailApp,
 		FormDetailRepConfig: ContentFormDetailRepConfig,
 		FormList: ContentFormListApp,
-		SelectMulti: GridSelectMulti
+		ModalSelect: GridSelect
 	}
 
 	export let state: State
@@ -30,43 +30,27 @@
 	let currComponent: any
 	let headerObj: string = ''
 	let headerObjSub: string = ''
-	let isHeaderClose: boolean = false
+	let isDrawerClose: boolean = false
 	let rowStatus: AppLevelRowStatus | undefined
 
 	$: currComponent = comps[component]
 
 	$: {
-		headerObj = ''
-		headerObjSub = ''
-		rowStatus = undefined
+		// header parms
+		headerObj = state.layoutHeader.headerText
+			? state.layoutHeader.headerText
+			: state.layoutHeader.isDataObj
+				? dataObj?.raw?.header
+				: ''
+		headerObjSub = state.layoutHeader.isDataObj
+			? dataObj?.raw?.subHeader
+				? dataObj?.raw?.subHeader
+				: ''
+			: ''
+		isDrawerClose = state.layoutHeader.isDrawerClose
+		rowStatus = state.layoutHeader.isRowStatus ? state.app.getRowStatus() : undefined
 
-		switch (state.layoutStyle) {
-			case StateLayoutStyle.overlayDrawerDetail:
-				headerObj = dataObj.raw.header
-				headerObjSub = valueOrDefault(dataObj.raw.subHeader, '')
-				isHeaderClose = true
-				break
-
-			case StateLayoutStyle.overlayModalDetail:
-				headerObj = dataObj.raw.header
-				headerObjSub = valueOrDefault(dataObj.raw.subHeader, '')
-				rowStatus = state.app.getRowStatus()
-				break
-
-			case StateLayoutStyle.overlayModalSelect:
-				headerObj = dataObj.raw.header
-				headerObjSub = valueOrDefault(dataObj.raw.subHeader, '')
-				break
-
-			case StateLayoutStyle.overlayModalSelectMulti:
-				const fieldLabel = state.parmsState.valueGet(ParmsValuesType.listLabel)
-				headerObj = `Select Values For Field: ${fieldLabel}`
-				break
-
-			case StateLayoutStyle.embeddedField:
-				break
-		}
-
+		// header styling
 		classContent =
 			(dataObj && dataObj.actionsField.length > 0) || headerObj || headerObjSub || rowStatus
 				? 'border-2 p-4'
@@ -89,7 +73,7 @@
 							<div class="mr-0">
 								<NavRow {state} {rowStatus} />
 							</div>
-							{#if isHeaderClose}
+							{#if isDrawerClose}
 								<button
 									type="button"
 									class="btn-icon btn-icon-sm variant-filled-error"

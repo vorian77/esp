@@ -3,16 +3,18 @@
 		State,
 		StatePacket,
 		StatePacketAction,
-		StateSurfaceModal,
-		StateLayoutStyle
+		StateSurfaceModalEmbed
 	} from '$comps/app/types.appState'
 	import {
 		TokenAppDoActionConfirmType,
-		TokenAppModalMultiSelect,
+		TokenAppModalSelect,
 		TokenAppModalReturnType
 	} from '$utils/types.token'
 	import {
+		type CellClassParams,
 		type CellClickedEvent,
+		type GridApi,
+		type ICellEditorParams,
 		type NewValueParams,
 		type SelectionChangedEvent
 	} from 'ag-grid-community'
@@ -36,11 +38,15 @@
 	import { FieldParm } from '$comps/form/fieldParm'
 	import { dndzone } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
-	import Header from '$comps/form/FormListHeader.svelte'
 	import FormElement from '$comps/form/FormElement.svelte'
-	import AgGrid from '$comps/grid/AgGridGrid.svelte'
 	import Grid from '$comps/grid/Grid.svelte'
-	import { cellRendererParmValue, GridManagerOptions } from '$comps/grid/grid'
+	import {
+		CellEditorSelect,
+		cellEditorSelectorParmField,
+		cellRendererSelectorParmField,
+		getSelectedNodeIds,
+		GridManagerOptions
+	} from '$comps/grid/grid'
 	import { onMount } from 'svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -58,9 +64,7 @@
 	let gridOptions: GridManagerOptions
 
 	let fieldsDisplayable: Field[] = []
-	let isSelect =
-		state instanceof StateSurfaceModal && state.layoutStyle === StateLayoutStyle.overlayModalSelect
-	let isSelectMulti = state instanceof StateSurfaceModal
+	let isSelect = state instanceof StateSurfaceModalEmbed
 	let listFilterText = ''
 	let listSortObj: DataObjSort = new DataObjSort()
 	let scrollToTop = () => {}
@@ -96,61 +100,80 @@
 		const row = dataObj.dataRecordsDisplay.findIndex((row) => row.id === data.id)
 		const field = dataObj.fields.find((f) => f.colDO.propName === fieldName)
 		if (row > -1 && field) {
-			const newVal = data[fieldName]
-			console.log('fGridCallbackUpdateValue', { fieldName, row, data })
-			dataObj = dataObj.setFieldVal(row, field, newVal)
+			dataObj = dataObj.setFieldVal(row, field, data[fieldName])
 			state = state.setStatus()
 		}
 	}
 
-	function fGridCallbackFilter(filterText: string) {
+	function fGridCallbackFilter(gridApi: GridApi, filterText: string) {
 		dataObjData.rowsRetrieved.syncFields(dataObj.dataRecordsDisplay, ['selected'])
+		state.parmsState.valueSet(ParmsValuesType.listRecordIdSelected, getSelectedNodeIds(gridApi))
 		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listFilterText, filterText)
 	}
 
 	async function onCellClicked(event: CellClickedEvent) {
-		const field = dataObj.fields.find((f) => f.colDO.propName === event.colDef.field)
+		let field = dataObj.fields.find((f) => f.colDO.propName === event.colDef.field)
 		if (field) {
-			// multi-select modal
-			if (field.colDO.colDB.codeDataType === PropDataType.link && field.colDO.colDB.isMultiSelect) {
-				await onCellClickedMultiSelect(event, field)
+			const fieldName = field.colDO.propName
+			field = field instanceof FieldParm ? field.parmFields[event.rowIndex] : field
+			if (field.colDO.hasItems) {
+				const fieldLabel = field.colDO.label
+				const itemsList = field.colDO.items
+				const itemsCurrent = Array.isArray(event.data[fieldName])
+					? event.data[fieldName]
+					: [event.data[fieldName]] || []
+				const isMultiSelect = field.colDO.colDB.isMultiSelect
+				const rowNode = event.api.getRowNode(event.data.id)
+				await onCellClickedSelect(
+					fieldName,
+					fieldLabel,
+					itemsList,
+					itemsCurrent,
+					isMultiSelect,
+					rowNode
+				)
 			}
 		}
 	}
 
-	async function onCellClickedMultiSelect(event: CellClickedEvent, field: Field) {
-		const fieldName = event.colDef.field
-		const itemsKey = '_items_' + field.colDO.propName
-		if (Object.hasOwn(dataObjData.items, itemsKey)) {
-			const itemsList = dataObjData.items[itemsKey].map((item) => {
-				return { display: item.display, id: item.data }
-			})
-			const itemsCurrent = event.data[fieldName]
-			state.update({
-				packet: new StatePacket({
-					action: StatePacketAction.selectMultiOpen,
-					confirmType: TokenAppDoActionConfirmType.none,
-					token: new TokenAppModalMultiSelect({
-						fieldLabel: field.colDO.label,
-						fModalClose,
-						itemsCurrent,
-						itemsList
-					})
+	async function onCellClickedSelect(
+		fieldName: string,
+		fieldLabel: string,
+		itemsList: FieldItem[],
+		itemsCurrent: string[],
+		isMultiSelect,
+		rowNode: any
+	) {
+		itemsList = itemsList.map((item) => {
+			return { display: item.display, id: item.data }
+		})
+
+		state.update({
+			packet: new StatePacket({
+				action: StatePacketAction.selectModalItemsOpen,
+				confirmType: TokenAppDoActionConfirmType.none,
+				token: new TokenAppModalSelect({
+					fieldLabel,
+					fModalClose,
+					itemsCurrent,
+					itemsList,
+					isMultiSelect
 				})
 			})
-		}
-		async function fModalClose(returnType: TokenAppModalReturnType, data?: ParmsValues) {
+		})
+
+		async function fModalClose(returnType: TokenAppModalReturnType, returnData?: ParmsValues) {
 			if (returnType === TokenAppModalReturnType.complete) {
-				const parms: ParmsValues = data.data || undefined
+				const parms: ParmsValues = returnData.data || undefined
 				if (parms) {
-					const rowId = event.data.id
 					const newValue = parms[ParmsValuesType.listRecordIdSelected]
 
 					// update dataObj
-					fGridCallbackUpdateValue(fieldName, { id: rowId, newValue })
+					let newData = { id: rowNode.data.id }
+					newData[fieldName] = newValue
+					fGridCallbackUpdateValue(fieldName, newData)
 
-					// update grid
-					const rowNode = event.api.getRowNode(rowId)
+					// update grid rowNode
 					rowNode.setDataValue(fieldName, newValue)
 				}
 			}
@@ -161,11 +184,7 @@
 		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit) {
 			return
 		} else if (isSelect) {
-			const selectedNodes = event.api.getSelectedNodes()
-			state.parmsState.valueSet(
-				ParmsValuesType.listRecordIdSelected,
-				selectedNodes.map((node) => node.data.id)
-			)
+			state.parmsState.valueSet(ParmsValuesType.listRecordIdSelected, getSelectedNodeIds(event.api))
 		} else {
 			const record = event.api.getSelectedRows()[0]
 			if (record) {
@@ -194,12 +213,9 @@
 			defn.singleClickEdit = isEditable ? true : undefined
 
 			if (f instanceof FieldParm) {
-				// defn.cellRendererSelector = cellRendererParmValue
-				defn.cellDataType = 'dateString'
-				// defn.cellDataType = 'customTextLarge'
-				// defn.cellDataType = () => {
-				// 	return 'customTextLarge'
-				// }
+				defn.cellEditorSelector = cellEditorSelectorParmField
+				defn.cellRendererSelector = cellRendererSelectorParmField
+				defn.context = { parmFields: f.parmFields, state }
 			} else {
 				// data type
 				switch (f.colDO.colDB.codeDataType) {
@@ -212,6 +228,7 @@
 						break
 
 					case PropDataType.datetime:
+						// <todo> - 240921 - text until proper custom data type is built
 						defn.cellDataType = 'text'
 						break
 
@@ -237,26 +254,14 @@
 					case PropDataType.link:
 						const itemsKey = '_items_' + f.colDO.propName
 						if (Object.hasOwn(dataObjData.items, itemsKey)) {
-							const items = dataObjData.items[itemsKey]
-							if (f.colDO.colDB.isMultiSelect) {
-								// managed by onCellClickedMultiSelect
-								// defn.cellDataType = 'customText'
-								defn.context = { items }
-								defn.type = 'ctSelectMulti'
-								defn.editable = false
-							} else {
-								defn.type = 'ctSelectSingle'
-								defn.cellEditorParams = {
-									values: ['Select an option...', ...items.map((item) => item.display)]
-								} as ISelectCellEditorParams
-								defn.context = { items }
-							}
+							defn.editable = false
+							defn.context = { items: dataObjData.items[itemsKey], state }
+							defn.type = f.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
 						} else {
-							// error(500, {
-							// 	file: FILENAME,
-							// 	function: 'setGridColumns',
-							// 	message: `No items found for link edit column: ${f.colDO.propName}`
-							// })
+							defn.cellDataType = 'customText'
+						}
+						defn.cellStyle = {
+							backgroundColor: f.fieldAccess === FieldAccess.required ? 'rgb(219,234,254)' : ''
 						}
 						break
 
@@ -300,6 +305,7 @@
 			})
 			return row
 		})
+		console.log('setGridDataValues:', { rowsDisplay: dataObj.dataRecordsDisplay, dataRows })
 
 		dataObj.data.parms.valueSet(
 			ParmsValuesType.listRecordIdList,
@@ -317,10 +323,11 @@
 			fCallbackUpdateValue: fGridCallbackUpdateValue,
 			isListHideFilter: dataObj.raw.isListHideSearch,
 			isSelect,
-			isSelectMulti,
+			isSelectMulti: isSelect,
 			listFilterText,
 			listRecordIdSelected: state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected) || [],
 			listReorderColumn: dataObj.raw.listReorderColumn,
+			listRowDisplayColumn: dataObj.raw.listRowDisplayColumn,
 			onCellClicked,
 			onSelectionChanged,
 			rowData

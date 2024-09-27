@@ -74,11 +74,11 @@
 <div class="flex flex-col {padding}">
 	{#if isEditing}
 		<div>
-			<p class="text-lg text-blue-600 mb-4">Editing...</p>
+			<p class="text-blue-600 mb-4">Editing...</p>
 		</div>
 	{/if}
 	{#each actions as action (action.name)}
-		<div class="mb-4" animate:flip={{ duration: animationDurationMs }}>
+		<div class=" mb-4" animate:flip={{ duration: animationDurationMs }}>
 			<button
 				class="w-full btn text-white"
 				style:background-color={action.fieldColor.color}

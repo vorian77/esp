@@ -1,13 +1,13 @@
-import type { CustomThemeConfig } from '@skeletonlabs/tw-plugin';
+import type { CustomThemeConfig } from '@skeletonlabs/tw-plugin'
 
 export const tailwindThemeESP: CustomThemeConfig = {
 	name: 'tailwind-theme-esp',
 	properties: {
 		/* =~= Theme Properties =~= */
 		'--theme-font-family-base':
-			"Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,\n\t\t'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',\n\t\t'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
+			"'IBM Plex Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,\n\t\t'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',\n\t\t'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
 		'--theme-font-family-heading':
-			"Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,\n\t\t'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',\n\t\t'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
+			"'IBM Plex Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,\n\t\t'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',\n\t\t'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
 		'--theme-font-color-base': '0 0 0',
 		'--theme-font-color-dark': '255 255 255',
 		'--theme-rounded-base': '6px',
@@ -103,4 +103,4 @@ export const tailwindThemeESP: CustomThemeConfig = {
 	properties_dark: {
 		// Optionally provide dark mode overrides for your CSS custom properties here
 	}
-};
+}

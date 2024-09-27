@@ -16,7 +16,7 @@
 
 	$: classPropsInput =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
-			? 'input text-black ' + field.colorBackground
+			? 'input text-sm text-black ' + field.colorBackground
 			: 'w-full border-none bg-transparent text-black'
 	$: classPropsInput +=
 		field.fieldAlignment === FieldAlignment.left

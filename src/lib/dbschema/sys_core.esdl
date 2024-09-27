@@ -72,6 +72,7 @@ module sys_core {
     isListHideSearch: bool;
     listEditPresetExpr: str;
     listReorderColumn: sys_db::SysColumn;
+    listRowDisplayColumn: sys_db::SysColumn;
   
     parentColumn: sys_db::SysColumn;
     parentFilterExpr: str;

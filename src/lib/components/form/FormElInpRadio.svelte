@@ -46,7 +46,7 @@
 	<div class="mt-3 {classAlignment}">
 		{#if field.colDO.items}
 			{#each field.colDO.items as { data: id, display: label }, index (id)}
-				<div class="{classFormat} {index === 0 ? 'mt-4' : ''}">
+				<div class="text-sm {classFormat} {index === 0 ? 'mt-4' : ''}">
 					<input
 						type="radio"
 						name={field.colDO.propName + '-' + row}

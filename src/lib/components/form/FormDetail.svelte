@@ -110,7 +110,7 @@
 					style:border-color={section.isVisible ? section.color : 'transparent'}
 				>
 					{#if section.legend}
-						<legend class="text-xl font-bold">{section.legend}</legend>
+						<legend class="text-lg font-bold">{section.legend}</legend>
 					{/if}
 					{#each section.rows as row}
 						<div class={row.isRow ? 'w-full flex gap-x-4' : ''}>

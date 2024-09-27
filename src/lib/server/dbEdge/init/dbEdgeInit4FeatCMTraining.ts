@@ -1003,6 +1003,7 @@ async function initCohortAttdSheet() {
 				isExcludeUpdate: true
 			},
 			{
+				codeAccess: 'required',
 				codeAlignmentAlt: 'center',
 				codeFieldElement: 'radio',
 				columnName: 'codeCmCohortAttdDuration',

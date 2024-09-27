@@ -18,7 +18,7 @@
 			Reset
 		</button>
 		<input
-			class="w-full"
+			class="w-full text-sm"
 			type="text"
 			id="search-text-"
 			bind:value={listFilterText}
@@ -26,10 +26,10 @@
 			placeholder="Search..."
 		/>
 		{#if !!rowCountFiltered}
-			<span class="ml-4">Rows: {rowCountFiltered}</span>
+			<span class="ml-4 text-sm">Rows: {rowCountFiltered}</span>
 		{/if}
 		{#if rowCountSelected > -1}
-			<span class="ml-0">Selected: {rowCountSelected}</span>
+			<span class="ml-0 text-sm">Selected: {rowCountSelected}</span>
 		{/if}
 	</div>
 {/if}

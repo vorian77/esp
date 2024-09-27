@@ -11,7 +11,7 @@
 	$: setFieldVal = fp.setFieldVal
 
 	$: classProps = 'rounded-lg ' + field.classProps + ' ' + field.colorBackground
-	$: if (field.cols === 0) classProps += ' w-full'
+	$: if (field.cols === 0) classProps += ' w-full text-sm'
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement

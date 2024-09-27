@@ -4,7 +4,6 @@
 	import {
 		State,
 		StateLayoutComponent,
-		StateLayoutStyle,
 		StatePacket,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState'

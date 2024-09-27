@@ -131,6 +131,7 @@ async function processDataObjExecute(
 	returnData: DataObjData
 ) {
 	let scriptData: DataObjData
+	returnData.rowsRetrieved.reset()
 	for (let i = 0; i < scriptGroup.scripts.length; i++) {
 		const script = scriptGroup.scripts[i]
 		if (script.script) {
@@ -192,7 +193,6 @@ export async function executeQuery(query: string): Promise<RawDataList> {
 }
 
 function formatData(returnData: DataObjData, rawDataList: RawDataList, process: ProcessRow) {
-	returnData.rowsRetrieved.reset()
 	rawDataList.forEach((row) => {
 		returnData.rowsRetrieved.add(process.processRow(row))
 	})

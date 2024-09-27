@@ -325,11 +325,22 @@ async function initDataObj() {
 				linkTable: 'SysColumn'
 			},
 			{
-				codeFieldElement: 'toggle',
-				columnName: 'isListEdit',
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'listRowDisplayColumn',
 				isDisplayable: true,
 				orderDisplay: 280,
 				orderDefine: 280,
+				fieldListItems: 'il_sys_column_order_name',
+				indexTable: 0,
+				linkTable: 'SysColumn'
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isListEdit',
+				isDisplayable: true,
+				orderDisplay: 290,
+				orderDefine: 290,
 				indexTable: 0
 			},
 			{
@@ -337,8 +348,8 @@ async function initDataObj() {
 				codeFieldElement: 'select',
 				columnName: 'codeListEditPresetType',
 				isDisplayable: true,
-				orderDisplay: 290,
-				orderDefine: 290,
+				orderDisplay: 300,
+				orderDefine: 300,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_list_edit_preset_type',
@@ -348,24 +359,24 @@ async function initDataObj() {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 295,
-				orderDefine: 295
+				orderDisplay: 310,
+				orderDefine: 310
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'listEditPresetExpr',
 				isDisplayable: true,
-				orderDisplay: 300,
-				orderDefine: 300,
+				orderDisplay: 320,
+				orderDefine: 320,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagSection',
 				columnName: 'custom_section_end',
 				isDisplayable: true,
-				orderDisplay: 310,
-				orderDefine: 310
+				orderDisplay: 330,
+				orderDefine: 330
 			},
 
 			/* management */

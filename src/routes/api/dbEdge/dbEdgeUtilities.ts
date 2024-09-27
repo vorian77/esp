@@ -172,6 +172,7 @@ export async function getDataObjById(dataObjId: string) {
 			_codeComponent: do1.codeComponent.name,
 			_codeListEditPresetType: do1.codeListEditPresetType.name,
 			_listReorderColumn: do1.listReorderColumn.name,
+			_listRowDisplayColumn: do1.listRowDisplayColumn.name,
 			_parent: e.select({
 				_columnName: do1.parentColumn.name,
 				_columnIsMultiSelect: do1.parentColumn.isMultiSelect,

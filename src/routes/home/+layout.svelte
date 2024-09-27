@@ -4,7 +4,6 @@
 	import {
 		State,
 		StateLayoutComponent,
-		StateLayoutStyle,
 		StatePacket,
 		StatePacketAction
 	} from '$comps/app/types.appState'
@@ -53,7 +52,6 @@
 		})()
 		state = new State({
 			layoutComponent: StateLayoutComponent.layoutApp,
-			layoutStyle: StateLayoutStyle.dataObjTab,
 			storeDrawer,
 			storeModal,
 			storeToast,

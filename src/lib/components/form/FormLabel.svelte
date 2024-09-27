@@ -5,7 +5,7 @@
 	export let fp: FieldProps
 </script>
 
-<label for={fp.field.colDO.propName} class="label">
+<label for={fp.field.colDO.propName} class="label text-sm">
 	<span hidden={fp.dataObj.raw.codeCardinality === DataObjCardinality.list ? 'hidden' : ''}>
 		{fp.field.colDO.label}
 	</span>

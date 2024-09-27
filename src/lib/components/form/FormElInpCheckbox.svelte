@@ -59,17 +59,17 @@
 	{#if field.colDO.items}
 		{#each field.colDO.items as { data: id, display: label, selected }, i (id)}
 			{@const itemName = field.colDO.propName + '.' + id}
-			<div class="mt-1 flex items-center space-x-2">
+			<div class="mt-2 flex items-center space-x-2">
 				<input
 					type="checkbox"
 					id={field.colDO.propName}
 					name={itemName}
-					class="rounded-sm {i === 0 ? 'mt-2' : ''}"
+					class="rounded-sm{i === 0 ? 'mt-2' : ''}"
 					value={id}
 					bind:checked={selected}
 					on:input={onInput}
 				/>
-				<p class={i === 0 ? 'mt-2' : ''}>{label}</p>
+				<p class="text-sm">{label}</p>
 			</div>
 		{/each}
 	{/if}

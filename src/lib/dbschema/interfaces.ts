@@ -202,6 +202,7 @@ export namespace sys_core {
     "listEditPresetExpr"?: string | null;
     "isListEdit": boolean;
     "codeListEditPresetType"?: SysCode | null;
+    "listRowDisplayColumn"?: sys_db.SysColumn | null;
     "codeCardinality": SysCode;
     "codeComponent": SysCode;
     "processType"?: SysCode | null;

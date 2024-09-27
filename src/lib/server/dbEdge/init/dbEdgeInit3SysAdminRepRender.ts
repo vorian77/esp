@@ -481,16 +481,16 @@ async function initRepConfig() {
 				indexTable: 0,
 				linkTable: 'SysRepUserParm'
 			},
-			// {
-			// 	codeFieldElement: 'embedListEdit',
-			// 	columnName: 'elements',
-			// 	isDisplayable: false,
-			// 	orderDefine: 130,
-			// 	orderDisplay: 130,
-			// 	fieldEmbedListEdit: 'fele_sys_rep_user_element',
-			// 	indexTable: 0,
-			// 	linkTable: 'SysRepUserEl'
-			// },
+			{
+				codeFieldElement: 'embedListEdit',
+				columnName: 'elements',
+				isDisplayable: true,
+				orderDefine: 130,
+				orderDisplay: 130,
+				fieldEmbedListEdit: 'fele_sys_rep_user_element',
+				indexTable: 0,
+				linkTable: 'SysRepUserEl'
+			},
 			// {
 			// 	codeFieldElement: 'embedShell',
 			// 	columnName: 'custom_embed_shell',

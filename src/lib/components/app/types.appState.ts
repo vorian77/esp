@@ -27,7 +27,7 @@ import {
 	TokenAppDo,
 	TokenAppDoActionConfirmType,
 	TokenAppModalEmbedField,
-	TokenAppModalMultiSelect,
+	TokenAppModalSelect,
 	TokenAppModalReturn,
 	TokenAppModalReturnType
 } from '$utils/types.token'
@@ -40,7 +40,7 @@ import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { RawDataObjActionField, RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { ResponseBody } from '$utils/types'
+import { booleanOrFalse, ResponseBody, strOptional } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/app/types.appState.ts'
@@ -50,7 +50,7 @@ export class State {
 	data?: DataObj
 	dataObjState?: DataObj
 	layoutComponent: StateLayoutComponent = StateLayoutComponent.layoutContent
-	layoutStyle: StateLayoutStyle = StateLayoutStyle.dataObjTab
+	layoutHeader: StateLayoutHeader = new StateLayoutHeader({})
 	nodeType: NodeType = NodeType.home
 	objStatus: DataObjStatus = new DataObjStatus()
 	packet?: StatePacket
@@ -137,7 +137,10 @@ export class State {
 				cardinality: DataObjCardinality.detail,
 				dataObjSource,
 				layoutComponent: StateLayoutComponent.layoutContent,
-				layoutStyle: StateLayoutStyle.overlayDrawerDetail,
+				layoutHeader: {
+					isDataObj: true,
+					isDrawerClose: true
+				},
 				queryType
 			})
 		})
@@ -194,7 +197,10 @@ export class State {
 			embedParentId: field.embedParentId,
 			embedType: DataObjEmbedType.listConfig,
 			layoutComponent: StateLayoutComponent.layoutContent,
-			layoutStyle: StateLayoutStyle.overlayModalDetail,
+			layoutHeader: {
+				isDataObj: true,
+				isRowStatus: true
+			},
 			packet: new StatePacket({
 				action: StatePacketAction.modalEmbed,
 				confirmType: TokenAppDoActionConfirmType.none,
@@ -238,7 +244,9 @@ export class State {
 			embedParentId: field.embedParentId,
 			embedType: DataObjEmbedType.listSelect,
 			layoutComponent: StateLayoutComponent.layoutContent,
-			layoutStyle: StateLayoutStyle.overlayModalSelect,
+			layoutHeader: {
+				isDataObj: true
+			},
 			packet: new StatePacket({
 				action: StatePacketAction.modalEmbed,
 				confirmType: TokenAppDoActionConfirmType.none,
@@ -261,8 +269,10 @@ export class State {
 		await this.openModal(stateModal, fModalCloseUpdate)
 	}
 
-	async openModalSelectMulti(token: TokenAppModalMultiSelect) {
+	async openModalSelect(token: TokenAppModalSelect) {
 		const parmsState = new ParmsValues({})
+
+		parmsState.valueSet(ParmsValuesType.isMultiSelect, token.isMultiSelect)
 		parmsState.valueSet(ParmsValuesType.listLabel, token.fieldLabel)
 		parmsState.valueSet(ParmsValuesType.listRecordIdSelected, token.itemsCurrent)
 		parmsState.valueSet(ParmsValuesType.listRecordItems, token.itemsList)
@@ -270,14 +280,17 @@ export class State {
 		const stateModal = new StateSurfaceModal({
 			actionsFieldDialog: await this.getActions('doag_dialog_footer_list'),
 			layoutComponent: StateLayoutComponent.layoutContent,
-			layoutStyle: StateLayoutStyle.overlayModalSelectMulti,
+			layoutHeader: {
+				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.fieldLabel}`
+			},
 			packet: new StatePacket({
-				action: StatePacketAction.selectMultiModal,
+				action: StatePacketAction.selectModalItems,
 				confirmType: TokenAppDoActionConfirmType.none,
 				token
 			}),
 			parmsState
 		})
+
 		await this.openModal(stateModal, token.fModalClose)
 	}
 
@@ -339,7 +352,8 @@ export class State {
 		if (Object.hasOwn(obj, 'app')) this.app = obj.app
 		if (Object.hasOwn(obj, 'data')) this.data = obj.data
 		if (Object.hasOwn(obj, 'layoutComponent')) this.layoutComponent = obj.layoutComponent
-		if (Object.hasOwn(obj, 'layoutStyle')) this.layoutStyle = obj.layoutStyle
+		if (Object.hasOwn(obj, 'layoutHeader'))
+			this.layoutHeader = new StateLayoutHeader(obj.layoutHeader)
 		if (Object.hasOwn(obj, 'nodeType')) this.nodeType = obj.nodeType
 		if (Object.hasOwn(obj, 'packet')) this.packet = obj.packet
 		if (Object.hasOwn(obj, 'page')) this.page = obj.page
@@ -362,16 +376,21 @@ export enum StateLayoutComponent {
 	layoutTab = 'layoutTab'
 }
 export enum StateLayoutContent {
-	SelectMulti = 'SelectMulti'
+	ModalSelect = 'ModalSelect'
 }
-
-export enum StateLayoutStyle {
-	dataObjTab = 'dataObjTab',
-	embeddedField = 'embeddedField',
-	overlayDrawerDetail = 'overlayDrawerDetail',
-	overlayModalDetail = 'overlayModalDetail',
-	overlayModalSelect = 'overlayModalSelect',
-	overlayModalSelectMulti = 'overlayModalSelectMulti'
+export class StateLayoutHeader {
+	headerText?: string
+	isDataObj: boolean
+	isDrawerClose: boolean
+	isRowStatus: boolean
+	constructor(obj: any) {
+		const clazz = 'StateLayoutHeader'
+		obj = valueOrDefault(obj, {})
+		this.headerText = strOptional(obj.headerText, clazz, 'headerText')
+		this.isDataObj = booleanOrFalse(obj.isDataObj, 'isDataObj')
+		this.isDrawerClose = booleanOrFalse(obj.isDrawerClose, 'isDrawerClose')
+		this.isRowStatus = booleanOrFalse(obj.isRowStatus, 'isRowStatus')
+	}
 }
 export class StatePacket {
 	action: StatePacketAction
@@ -427,9 +446,9 @@ export enum StatePacketAction {
 	navTreeReset = 'navTreeReset',
 	navTreeSetParent = 'navTreeSetParent',
 
-	// select-multi
-	selectMultiModal = 'selectMultiModal',
-	selectMultiOpen = 'selectMultiOpen',
+	// modal-select
+	selectModalItems = 'selectModalItems',
+	selectModalItemsOpen = 'selectModalItemsInit',
 
 	none = 'none'
 }

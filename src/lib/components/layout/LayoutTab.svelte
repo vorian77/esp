@@ -49,7 +49,14 @@
 			{@const name = 'tab' + idx}
 			{@const hidden = isHideChildTabs && idx > 0}
 			<div {hidden}>
-				<Tab bind:group={currLevel.tabSet} {name} value={idx} {hidden} on:click={onClickTab}>
+				<Tab
+					bind:group={currLevel.tabSet}
+					{name}
+					value={idx}
+					{hidden}
+					on:click={onClickTab}
+					class="text-base"
+				>
 					{tab.label}
 				</Tab>
 			</div>

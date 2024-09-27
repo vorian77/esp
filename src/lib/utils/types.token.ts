@@ -1,5 +1,6 @@
 import {
 	booleanOrFalse,
+	booleanRequired,
 	DataObj,
 	DataObjData,
 	type DataRecord,
@@ -306,16 +307,18 @@ export class TokenAppModalEmbedField extends TokenApp {
 	}
 }
 
-export class TokenAppModalMultiSelect extends TokenApp {
+export class TokenAppModalSelect extends TokenApp {
 	fieldLabel: string
 	fModalClose: Function
+	isMultiSelect: boolean
 	itemsCurrent: FieldItem[]
 	itemsList: FieldItem[]
 	constructor(obj: any) {
-		const clazz = 'TokenAppModalMultiSelect'
+		const clazz = 'TokenAppModalSelect'
 		super(obj)
 		this.fieldLabel = strRequired(obj.fieldLabel, clazz, 'fieldLabel')
 		this.fModalClose = required(obj.fModalClose, clazz, 'fModalClose')
+		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
 		this.itemsCurrent = required(obj.itemsCurrent, clazz, 'itemsCurrent')
 		this.itemsList = required(obj.itemsList, clazz, 'itemsList')
 	}

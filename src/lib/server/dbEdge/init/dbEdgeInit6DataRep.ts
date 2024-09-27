@@ -2,7 +2,6 @@ import { nodeObjHeaders, sectionHeader } from '$server/dbEdge/init/dbEdgeInitUti
 import { addDataObj } from '$server/dbEdge/init/dbEdgeInitUtilities20DataObj'
 import { addAnalytic, addReport, addReportUser } from '$server/dbEdge/init/dbEdgeInitUtilities40Rep'
 import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
-
 import { error } from '@sveltejs/kit'
 
 export async function initDataReports() {
@@ -446,6 +445,18 @@ async function initReportCMTrainingCohortAttendance() {
 				orderDefine: 1
 			},
 			{
+				codeDataType: 'uuid',
+				codeFieldElement: 'chips',
+				description: 'Student cohort.',
+				fieldListItems: 'il_cm_cohort_short_by_userName',
+				header: 'Cohort',
+				isMultiSelect: false,
+				isRequired: false,
+				linkTable: 'CmCohort',
+				name: 'pvCohort',
+				orderDefine: 2
+			},
+			{
 				codeDataType: 'uuidList',
 				codeFieldElement: 'chips',
 				description: 'Student cohort(s).',
@@ -454,8 +465,8 @@ async function initReportCMTrainingCohortAttendance() {
 				isMultiSelect: true,
 				isRequired: true,
 				linkTable: 'CmCohort',
-				name: 'pvCohort',
-				orderDefine: 2
+				name: 'pvCohorts',
+				orderDefine: 3
 			}
 		]
 	})

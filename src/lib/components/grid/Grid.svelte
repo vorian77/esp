@@ -41,13 +41,13 @@
 	import { StatePacket, StatePacketAction } from '$comps/app/types.appState'
 	import {
 		TokenAppDoActionConfirmType,
-		TokenAppModalMultiSelect,
+		TokenAppModalSelect,
 		TokenAppModalReturnType
 	} from '$utils/types.token'
 	import { ParmsValues } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
-	import { State, StateSurfaceModal, StateLayoutStyle } from '$comps/app/types.appState'
+	import { State, StateSurfaceModal } from '$comps/app/types.appState'
 	import { sortInit, sort } from '$comps/form/formList'
 	import GridFilter from '$comps/grid/GridFilter.svelte'
 	import { error } from '@sveltejs/kit'
@@ -68,10 +68,12 @@
 	let isSelectMulti = false
 	let listFilterText = ''
 	let listReorderColumn: string
+	let listRowDisplayColumn: string
 	let rowCountFiltered: number
 	let rowCountSelected: number
 	let rowData: any[]
 	let style = ''
+	let styleMaxHeight = ''
 
 	function onCellValueChanged(event: NewValueParams) {
 		if (fCallbackUpdateValue) fCallbackUpdateValue(event.colDef.field, event.data)
@@ -87,8 +89,12 @@
 		isSelectMulti = options.isSelectMulti
 		listFilterText = options.listFilterText
 		listReorderColumn = options.listReorderColumn
+		listRowDisplayColumn = options.listRowDisplayColumn
 		setGridColumnsProp(columnDefs, '', 'rowDrag', listReorderColumn ? true : false)
 		rowData = options.rowData
+		styleMaxHeight = isListHideFilter ? '100%' : 'calc(100% - 70px)'
+
+		console.log('Grid.onMount:', rowData)
 
 		if (isSelect) {
 			columnDefs.unshift({
@@ -116,7 +122,8 @@
 			onSelectionChanged,
 			rowData,
 			rowSelection: isSelect && isSelectMulti ? 'multiple' : 'single',
-			rowDragManaged: listReorderColumn ? true : false
+			rowDragManaged: listReorderColumn ? true : false,
+			stopEditingWhenCellsLoseFocus: false
 		}
 		grid = createGrid(eGui, gridOptions)
 
@@ -210,22 +217,30 @@
 	}
 	function setFilter(listFilterText: string) {
 		grid.setGridOption('quickFilterText', listFilterText)
+
+		// deselect rows that are not displayed
+		const deselected: IRowNode[] = []
+		grid.forEachNode((rowNode, index) => {
+			if (rowNode.selected && !rowNode.displayed) {
+				deselected.push(rowNode)
+			}
+		})
+		grid.setNodesSelected({ nodes: deselected, newValue: false })
+
 		updateCounters()
-		if (fCallbackFilter) fCallbackFilter(listFilterText)
+		if (fCallbackFilter) fCallbackFilter(grid, listFilterText)
 	}
 
 	function updateCounters() {
 		rowCountFiltered = grid.getDisplayedRowCount()
-		if (options.isSelect) rowCountSelected = grid.getSelectedRows().length
+		if (options.isSelect) rowCountSelected = grid.getSelectedNodes().length
 	}
 </script>
 
 <GridFilter {isListHideFilter} {listFilterText} {rowCountFiltered} {rowCountSelected} {setFilter} />
 
-<div bind:this={eGui} style:max-height="calc(100% - 70px)" {style} class="ag-theme-quartz h-full" />
+<div bind:this={eGui} style:max-height={styleMaxHeight} {style} class="ag-theme-quartz h-full" />
 
 <!-- <DataViewer header="rowCount" data={{ rowCountFiltered, rowCountSelected }} /> -->
 <!-- <DataViewer header="columnDefs" data={columnDefs} /> -->
 <!-- <DataViewer header="rowData" data={rowData} /> -->
-
-<!-- style:height="100%" -->

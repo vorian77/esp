@@ -57,6 +57,7 @@ export class RawDataObj {
 	isListHideSearch: boolean
 	listEditPresetExpr?: string
 	listReorderColumn?: string
+	listRowDisplayColumn?: string
 	name: string
 	processType?: string
 	rawActionsField: RawDataObjActionField[] = []
@@ -107,6 +108,11 @@ export class RawDataObj {
 		this.isListHideSearch = booleanOrDefault(obj.isListHideSearch, false)
 		this.listEditPresetExpr = strOptional(obj.listEditPresetExpr, clazz, 'listEditPresetExpr')
 		this.listReorderColumn = strOptional(obj._listReorderColumn, clazz, '_listReorderColumn')
+		this.listRowDisplayColumn = strOptional(
+			obj._listRowDisplayColumn,
+			clazz,
+			'_listRowDisplayColumn'
+		)
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.processType = memberOfEnumIfExists(
 			obj._processType,
@@ -357,6 +363,7 @@ export class RawDataObjPropDisplay {
 	height?: number
 	isDisplayable: boolean
 	isDisplayBlock: boolean
+	isParmValue: boolean
 	items: FieldItem[]
 	label: string
 	labelSide: string
@@ -400,6 +407,7 @@ export class RawDataObjPropDisplay {
 		this.height = nbrOptional(obj.height, clazz, 'height')
 		this.isDisplayable = booleanOrDefault(obj.isDisplayable, false)
 		this.isDisplayBlock = booleanOrDefault(obj.isDisplayBlock, true)
+		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
 		this.items = arrayOfClasses(FieldItem, obj._items)
 		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')

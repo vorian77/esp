@@ -2,10 +2,10 @@
 	import { State } from '$comps/app/types.appState'
 	import { DataObj, DataObjData, ParmsValuesType } from '$utils/types'
 	import Grid from '$comps/grid/Grid.svelte'
-	import { GridManagerOptions } from '$comps/grid/grid'
+	import { getSelectedNodeIds, GridManagerOptions } from '$comps/grid/grid'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '$comps/selectMulti/GridSelecttMulti.svelte'
+	const FILENAME = '$comps/selectMulti/GridSelect.svelte'
 
 	export let state: State
 	export let component: string
@@ -13,29 +13,25 @@
 	export let dataObjData: DataObjData | undefined = undefined
 
 	const columnDefs = [
-		{ field: 'id', headerName: 'ID', hide: false },
+		{ field: 'id', headerName: 'ID', hide: true },
 		{ field: 'display', headerName: 'Display' }
 	]
 
+	const isMultiSelect = state.parmsState.valueGet(ParmsValuesType.isMultiSelect)
 	const items = state.parmsState.valueGet(ParmsValuesType.listRecordItems)
 	let itemsCurrent = state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected)
 
 	const gridOptions = new GridManagerOptions({
 		columnDefs,
-		isListHideFilter: false,
 		isSelect: true,
-		isSelectMulti: true,
+		isSelectMulti: isMultiSelect,
 		listRecordIdSelected: itemsCurrent,
 		onSelectionChanged,
 		rowData: items
 	})
 
 	function onSelectionChanged(event: SelectionChangedEvent) {
-		const selectedNodes = event.api.getSelectedNodes()
-		state.parmsState.valueSet(
-			ParmsValuesType.listRecordIdSelected,
-			selectedNodes.map((node) => node.data.id)
-		)
+		state.parmsState.valueSet(ParmsValuesType.listRecordIdSelected, getSelectedNodeIds(event.api))
 	}
 </script>
 

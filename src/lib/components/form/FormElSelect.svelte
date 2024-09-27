@@ -16,8 +16,8 @@
 
 	$: classProps =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
-			? `select rounded-lg ${field.colorBackground}`
-			: `select rounded-lg bg-white`
+			? `select text-sm rounded-lg ${field.colorBackground}`
+			: `select text-sm rounded-lg bg-white`
 	$: classPropsLabel =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-1' : 'mb-1 hidden'
 
@@ -43,7 +43,7 @@
 		disabled={field.fieldAccess == FieldAccess.readonly}
 		on:change={onChange}
 	>
-		<option value={null}>Select an option...</option>
+		<option value={null} class="">Select an option...</option>
 		{#if field.colDO.items}
 			{#each field.colDO.items as { data: id, display: label }, index (id)}
 				<option value={id} selected={id === fieldValue}>

@@ -1,7 +1,14 @@
 import { Field, FieldAlignment, RawFieldProps } from '$comps/form/field'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
-import { DataObj, type DataItems, DataObjData, type DataRecord, ResponseBody } from '$utils/types'
+import {
+	DataObj,
+	type DataItems,
+	DataObjData,
+	type DataRecord,
+	ParmsValuesType,
+	ResponseBody
+} from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiQueryData } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
@@ -51,7 +58,7 @@ export class FieldParm extends Field {
 		return await DataObj.initField(props.state, propParm, false, fields, props.dataObj, props.data)
 	}
 	async configParmItemsData(props: RawFieldProps) {
-		const listRecordIdCurrent = props.data.parms.valueGet('listRecordIdCurrent')
+		const listRecordIdCurrent = props.state.parmsState.valueGet(ParmsValuesType.listRecordIdCurrent)
 		if (listRecordIdCurrent) {
 			const dataTab = new DataObjData()
 			dataTab.parms.valueSet('listRecordIdCurrent', listRecordIdCurrent)
@@ -72,9 +79,6 @@ export class FieldParm extends Field {
 		}
 	}
 
-	getParmField(fieldName: string) {
-		return this.parmFields.find((f) => f.colDO.propName === fieldName)
-	}
 	getStatus(dataObjForm: DataObj, recordId: string) {
 		const row = dataObjForm.dataRecordsDisplay.findIndex((r) => r.id === recordId)
 		if (row > -1) {

@@ -28,7 +28,7 @@ export class Field {
 	fieldAlignment: FieldAlignment
 	fieldElement: FieldElement
 	isFirstVisible: boolean
-	isParmValue: boolean = false
+	isParmValue: boolean
 	constructor(props: RawFieldProps) {
 		const clazz = `Field: ${props.propRaw.propName}`
 		const obj = valueOrDefault(props.propRaw, {})
@@ -57,6 +57,7 @@ export class Field {
 			FieldElement
 		)
 		this.isFirstVisible = props.isFirstVisible
+		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
 
 		/* derived */
 		this.colorBackground =
@@ -70,15 +71,20 @@ export class Field {
 		return new Field(props)
 	}
 
+	getPropName() {
+		return this.isParmValue ? 'parmValue' : this.colDO.propName
+	}
+
 	getStatus(dataObjForm: DataObj, recordId: string) {
 		const status = new DataObjStatus()
+		const propName = this.getPropName()
 
 		// changed
-		const isChanged = dataObjForm.dataFieldsChanged.valueGet(recordId, this.colDO.propName) || false
+		const isChanged = dataObjForm.dataFieldsChanged.valueGet(recordId, propName) || false
 		status.setChanged(isChanged)
 
 		// valid
-		const validity = dataObjForm.dataFieldsValidity.valueGet(recordId, this.colDO.propName)
+		const validity = dataObjForm.dataFieldsValidity.valueGet(recordId, propName)
 		status.setValid(validity === undefined || validity.error === ValidityError.none)
 
 		return status

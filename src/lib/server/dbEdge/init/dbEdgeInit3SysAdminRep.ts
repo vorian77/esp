@@ -980,6 +980,7 @@ async function initRepEl() {
 		exprFilter: '.id IN (SELECT sys_rep::SysRep FILTER .id = <tree,uuid,SysRep.id>).elements.id',
 		header: 'Elements',
 		listReorderColumn: 'orderDefine',
+		listRowDisplayColumn: 'isDisplay',
 		name: 'data_obj_sys_rep_element_list',
 		owner: 'app_sys_rep',
 		parentColumn: 'elements',
