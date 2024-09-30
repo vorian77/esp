@@ -10,9 +10,8 @@
 
 	$: dataObj = fp.dataObj
 	$: field = fp.field as FieldSelect
-	$: fieldId = 'field' + field.colDO.orderDefine
+	$: fieldId = 'field-input-select-' + field.colDO.orderDefine
 	$: fieldValue = fp.fieldValue
-	$: setFieldVal = fp.setFieldVal
 
 	$: classProps =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
@@ -21,17 +20,9 @@
 	$: classPropsLabel =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-1' : 'mb-1 hidden'
 
-	$: if (
-		field?.colDO.items?.length === 1 &&
-		!fieldValue &&
-		field.fieldAccess === FieldAccess.required
-	) {
-		setFieldVal(field, field.colDO.items[0].data)
-	}
-
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		setFieldVal(field, target.value)
+		fp.fSetVal(fp.row, fp.field, target.value)
 	}
 </script>
 
@@ -54,7 +45,7 @@
 	</select>
 </FormLabel>
 
-<!-- <DataViewer header="value" data={fieldValue} /> -->
+<!-- <DataViewer header="fieldValue" data={fieldValue} /> -->
 <!-- <DataViewer header="items" data={field.items} /> -->
 
 <style>

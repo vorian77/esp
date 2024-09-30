@@ -11,13 +11,10 @@
 
 	$: dataObj = fp.dataObj
 	$: field = fp.field as FieldInput
-	$: fieldValue = fp.fieldValue
-	$: setFieldVal = fp.setFieldVal
 
-	$: classPropsInput =
-		dataObj.raw.codeCardinality === DataObjCardinality.detail
-			? 'input text-sm text-black ' + field.colorBackground
-			: 'w-full border-none bg-transparent text-black'
+	$: classPropsInput = dataObj.raw.codeCarfSetVal = DataObjCardinality.detail
+		? 'input text-sm text-black ' + field.colorBackground
+		: 'w-full border-none bg-transparent text-black'
 	$: classPropsInput +=
 		field.fieldAlignment === FieldAlignment.left
 			? ' text-left'
@@ -35,7 +32,7 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		setFieldVal(field, target.value)
+		fp.fSetVal(fp.row, fp.field, target.value)
 	}
 
 	function onDoubleClick(event: MouseEvent) {
@@ -47,7 +44,7 @@
 			const month = dateMonth < 10 ? '0' + dateMonth : dateMonth.toString()
 			const day = dateDay < 10 ? '0' + dateDay : dateDay.toString()
 			const value = year + '-' + month + '-' + day
-			setFieldVal(field, value)
+			fp.fSetVal(fp.row, fp.field, value)
 		}
 	}
 </script>
@@ -72,6 +69,6 @@
 		readonly={field.fieldAccess === FieldAccess.readonly}
 		{step}
 		type={field.fieldElement}
-		value={fieldValue}
+		value={fp.fieldValue}
 	/>
 </FormLabel>

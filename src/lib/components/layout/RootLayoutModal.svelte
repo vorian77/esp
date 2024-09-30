@@ -17,7 +17,7 @@
 	let state: StateSurfaceModal = $storeModal[0].meta.state
 	let modeDelete: boolean = false
 
-	state.setUpdateCallback((obj: any) => {
+	state.setFUpdateCallback((obj: any) => {
 		state.packet = obj.packet
 		if (
 			state.embedType === DataObjEmbedType.listConfig &&

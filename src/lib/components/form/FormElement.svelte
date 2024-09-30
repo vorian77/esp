@@ -91,9 +91,11 @@
 	$: validity = dataObj.dataFieldsValidity.valueGet(dataRecord.id, field.colDO.propName)
 	$: {
 		const fieldClass = field.constructor.name
-		if (typeof fieldClass === 'string' && fieldClass !== '')
+		if (typeof fieldClass === 'string' && fieldClass !== '') {
 			currentElement = elements[field.constructor.name]
+		}
 	}
+
 	$: fp = new FieldProps(
 		component,
 		dataObj,
@@ -101,18 +103,14 @@
 		dataRecord,
 		field,
 		fieldValue,
+		closureSetVal,
 		row,
-		setFieldVal,
 		state
 	)
 
-	function setFieldVal(field: Field, value: any) {
+	function closureSetVal(row: number, field: Field, value: any) {
 		dataObj = dataObj.setFieldVal(row, field, value)
-		state = state.setStatus()
-
-		if (state instanceof StateSurfaceEmbedShell) {
-			state.stateRoot = state.stateRoot.setStatus()
-		}
+		fp.state.fClosureSetStatus()
 	}
 </script>
 
@@ -124,6 +122,7 @@
 
 {#if validity}
 	<!-- <DataViewer header="validity" data={validity} /> -->
+
 	{#if validity.level == ValidityErrorLevel.error}
 		<div class="text-error-500 mb-3 text-sm">
 			<p>{validity.message}</p>

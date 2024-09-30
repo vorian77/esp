@@ -1,16 +1,15 @@
 <script lang="ts">
 	import { AppLevel } from '$comps/app/types.app'
-	import { State, StateSurfaceEmbed } from '$comps/app/types.appState'
-	import { StatePacket, StatePacketAction, StateSurfaceEmbedShell } from '$comps/app/types.appState'
-	import { query } from '$comps/app/types.appQuery'
-	import { TokenApiQueryType, TokenAppDoActionConfirmType, TokenAppIndex } from '$utils/types.token'
+	import { State } from '$comps/app/types.appState'
+	import { StatePacket, StatePacketAction } from '$comps/app/types.appState'
+	import { TokenAppDoActionConfirmType, TokenAppTab } from '$utils/types.token'
 	import { DataObj, DataObjData } from '$utils/types'
 	import { DataRecordStatus } from '$utils/types'
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '$comps/Surface/LayoutTab.svelte'
+	const FILENAME = '$comps/layout/LayoutTab.svelte'
 
 	export let state: State
 	export let component: string
@@ -32,8 +31,9 @@
 			packet: new StatePacket({
 				action: StatePacketAction.navTab,
 				confirmType: TokenAppDoActionConfirmType.objectChanged,
-				token: new TokenAppIndex({
-					index: event.target.value
+				token: new TokenAppTab({
+					app: state.app,
+					index: parseInt(event.target.value)
 				})
 			})
 		})
@@ -47,7 +47,7 @@
 	<TabGroup>
 		{#each currLevel.tabs as tab, idx}
 			{@const name = 'tab' + idx}
-			{@const hidden = isHideChildTabs && idx > 0}
+			{@const hidden = isHideChildTabs && idx !== currLevel.tabIdxCurrent}
 			<div {hidden}>
 				<Tab
 					bind:group={currLevel.tabSet}

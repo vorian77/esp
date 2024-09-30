@@ -762,11 +762,21 @@ async function initCohortAttd() {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeFieldElement: 'toggle',
-				columnName: 'custom_element_bool',
+				columnName: 'custom_element_int',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
+				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohortAttd FILTER .cohortAttd.id = app_cm::CmCohortAttd.id)))`,
+				headerAlt: 'Attendance Records',
+				nameCustom: 'attendanceRecords'
+			},
+			{
+				codeAccess: 'readOnly',
+				codeFieldElement: 'toggle',
+				columnName: 'custom_element_bool',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
 				exprCustom: `(EXISTS .file)`,
 				headerAlt: 'Sheet Uploaded',
 				nameCustom: 'isSheetUploaded'
@@ -775,8 +785,8 @@ async function initCohortAttd() {
 				codeAccess: 'readOnly',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDisplay: 60,
+				orderDefine: 60,
 				indexTable: 0
 			}
 		]

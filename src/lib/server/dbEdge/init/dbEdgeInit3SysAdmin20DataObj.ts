@@ -325,17 +325,6 @@ async function initDataObj() {
 				linkTable: 'SysColumn'
 			},
 			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'listRowDisplayColumn',
-				isDisplayable: true,
-				orderDisplay: 280,
-				orderDefine: 280,
-				fieldListItems: 'il_sys_column_order_name',
-				indexTable: 0,
-				linkTable: 'SysColumn'
-			},
-			{
 				codeFieldElement: 'toggle',
 				columnName: 'isListEdit',
 				isDisplayable: true,
@@ -507,6 +496,7 @@ async function initDataObjColumn() {
 				linkTable: 'SysCode'
 			},
 			{
+				codeAccess: 'readOnly',
 				columnName: 'orderDefine',
 				orderSort: 10,
 				orderDefine: 50,
@@ -1094,14 +1084,15 @@ async function initDataObjColumn() {
 				orderDefine: 660
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'items',
-				isDisplayable: true,
-				orderDisplay: 670,
-				orderDefine: 670,
 				fieldEmbedListConfig: 'flec_data_obj_data_obj_column_item',
 				indexTable: 0,
-				linkTable: 'SysDataObjColumnItem'
+				isDisplayable: true,
+				linkTable: 'SysDataObjColumnItem',
+				orderDefine: 670,
+				orderDisplay: 670
 			},
 			{
 				codeFieldElement: 'customHeader',
@@ -1197,6 +1188,7 @@ async function initDataObjColumn() {
 				headerAlt: 'Link'
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'linkColumns',
 				isDisplayable: true,

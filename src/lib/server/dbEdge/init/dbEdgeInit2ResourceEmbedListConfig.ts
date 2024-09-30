@@ -22,7 +22,7 @@ export async function initAdminSysEmbedListConfig() {
 }
 
 async function initFieldListConfigDataObjActionFieldConfirms() {
-	sectionHeader('Field List Config - DataObjActionFieldConfirms')
+	sectionHeader('Field Actions - Data Obj Action Field Confirm')
 
 	await addDataObj({
 		actionFieldGroup: 'doag_embed_list_config',
@@ -195,7 +195,7 @@ async function initFieldListConfigDataObjActionFieldConfirms() {
 }
 
 async function initFieldListConfigDataObjActionFieldShows() {
-	sectionHeader('Field List Config - DataObjActionFieldShows')
+	sectionHeader('Field Actions - Data Obj Action Field Show')
 
 	await addDataObj({
 		actionFieldGroup: 'doag_embed_list_config',
@@ -639,7 +639,7 @@ async function initFieldListConfigDataObjActionQueryTrigger() {
 }
 
 async function initFieldListConfigDataObjActionFieldGroupItem() {
-	sectionHeader('Field List Config - DataObjActionFieldGroupItem')
+	sectionHeader('Field Action Group - Data Obj Action Field Group Item')
 
 	await addDataObj({
 		actionFieldGroup: 'doag_embed_list_config',
@@ -801,7 +801,7 @@ async function initFieldListConfigDataObjActionFieldGroupItem() {
 }
 
 async function initFieldListConfigDataObjColumnItem() {
-	sectionHeader('Field List Config - SysDataObjColumnItem')
+	sectionHeader('Embed List Configs - SysDataObjColumnItem')
 
 	await addDataObj({
 		actionFieldGroup: 'doag_embed_list_config',
@@ -837,10 +837,10 @@ async function initFieldListConfigDataObjColumnItem() {
 			},
 			{
 				columnName: 'orderDefine',
-				orderSort: 10,
-				orderDefine: 40,
 				indexTable: 0,
-				isDisplayable: false
+				isDisplayable: false,
+				orderDefine: 40,
+				orderSort: 10
 			},
 
 			/* management */
@@ -986,7 +986,7 @@ async function initFieldListConfigDataObjColumnItem() {
 }
 
 async function initFieldListConfigDataObjColumnLink() {
-	sectionHeader('Field List Config - DataObjColumn')
+	sectionHeader('Data Object Column - Link')
 
 	await addDataObj({
 		actionFieldGroup: 'doag_embed_list_config',

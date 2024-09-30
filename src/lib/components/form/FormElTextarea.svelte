@@ -8,14 +8,12 @@
 
 	$: field = fp.field as FieldTextarea
 	$: fieldValue = fp.fieldValue
-	$: setFieldVal = fp.setFieldVal
-
 	$: classProps = 'rounded-lg ' + field.classProps + ' ' + field.colorBackground
 	$: if (field.cols === 0) classProps += ' w-full text-sm'
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		setFieldVal(field, target.value)
+		fp.fSetVal(fp.row, fp.field, target.value)
 	}
 </script>
 

@@ -49,6 +49,9 @@ export class State {
 	app: App = new App()
 	data?: DataObj
 	dataObjState?: DataObj
+	fClosureSetStatus?: Function
+	fUpdateCallback?: Function
+	fUpdateFunction: Function = stateUpdate
 	layoutComponent: StateLayoutComponent = StateLayoutComponent.layoutContent
 	layoutHeader: StateLayoutHeader = new StateLayoutHeader({})
 	nodeType: NodeType = NodeType.home
@@ -60,8 +63,7 @@ export class State {
 	storeDrawer: any
 	storeModal: any
 	storeToast: any
-	updateCallback?: Function
-	updateFunction: Function = stateUpdate
+
 	user?: User
 	constructor(obj: any) {
 		const clazz = 'State'
@@ -330,6 +332,14 @@ export class State {
 	setDataObjState(dataObj: DataObj) {
 		this.dataObjState = dataObj
 	}
+
+	setFClosureSetStatus(f: Function) {
+		this.fClosureSetStatus = f
+	}
+	setFUpdateCallback(f: Function) {
+		this.fUpdateCallback = f
+	}
+
 	setStatus() {
 		if (this.dataObjState) {
 			this.objStatus = this.dataObjState.setStatus()
@@ -342,11 +352,9 @@ export class State {
 			})
 		}
 	}
-	setUpdateCallback(updateCallback: Function) {
-		this.updateCallback = updateCallback
-	}
+
 	update(obj: any) {
-		if (this.updateFunction) this.updateFunction(this, obj, this.updateCallback)
+		if (this.fUpdateFunction) this.fUpdateFunction(this, obj, this.fUpdateCallback)
 	}
 	updateProperties(obj: any) {
 		if (Object.hasOwn(obj, 'app')) this.app = obj.app
@@ -361,7 +369,7 @@ export class State {
 		if (Object.hasOwn(obj, 'storeDrawer')) this.storeDrawer = obj.storeDrawer
 		if (Object.hasOwn(obj, 'storeModal')) this.storeModal = obj.storeModal
 		if (Object.hasOwn(obj, 'storeToast')) this.storeToast = obj.storeToast
-		if (Object.hasOwn(obj, 'updateCallback')) this.updateCallback = obj.updateCallback
+		if (Object.hasOwn(obj, 'fUpdateCallback')) this.fUpdateCallback = obj.fUpdateCallback
 		if (Object.hasOwn(obj, 'user')) this.user = obj.user
 
 		return this
@@ -448,7 +456,7 @@ export enum StatePacketAction {
 
 	// modal-select
 	selectModalItems = 'selectModalItems',
-	selectModalItemsOpen = 'selectModalItemsInit',
+	selectModalItemsOpen = 'selectModalItemsOpen',
 
 	none = 'none'
 }
@@ -542,13 +550,13 @@ async function askB4Transition(
 	state: State,
 	obj: any,
 	confirmConfig: DataObjConfirm,
-	updateFunction: Function,
-	updateCallback?: Function
+	fUpdateFunction: Function,
+	fUpdateCallback?: Function
 ) {
 	if (state instanceof StateSurfaceModal) {
 		if (confirm(confirmConfig.message)) {
 			state.resetState()
-			updateFunction(state, obj, updateCallback)
+			fUpdateFunction(state, obj, fUpdateCallback)
 		}
 	} else {
 		const modal: ModalSettings = {
@@ -560,7 +568,7 @@ async function askB4Transition(
 			response: async (r: boolean) => {
 				if (r) {
 					state.resetState()
-					updateFunction(state, obj, updateCallback)
+					fUpdateFunction(state, obj, fUpdateCallback)
 				}
 			}
 		}

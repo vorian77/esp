@@ -51,11 +51,12 @@
 			await initNavTree(user)
 		})()
 		state = new State({
+			fUpdateCallback: stateUpdateCallback,
 			layoutComponent: StateLayoutComponent.layoutApp,
 			storeDrawer,
 			storeModal,
 			storeToast,
-			updateCallback: stateUpdateCallback,
+
 			user
 		})
 

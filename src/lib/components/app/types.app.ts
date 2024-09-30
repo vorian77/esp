@@ -21,6 +21,7 @@ import {
 	TokenAppIndex,
 	TokenAppModalEmbedField,
 	TokenAppRow,
+	TokenAppTab,
 	TokenAppTreeNode,
 	TokenAppTreeNodeId,
 	TokenAppDo
@@ -69,7 +70,10 @@ export class App {
 			})
 		}
 
-		fieldShell.stateShell.objStatus = fieldShell.getStatusShell()
+		const recordId =
+			fieldShell.stateShell.dataObjState?.data.rowsRetrieved.getDetailRecordValue('id')
+		const dataObjForm = fieldShell.stateShell.dataObjState!
+		fieldShell.stateShell.objStatus = fieldShell.getStatus(dataObjForm, recordId)
 		return fieldShell
 	}
 	async addLevelModal(state: State, token: TokenAppModalEmbedField) {
@@ -144,25 +148,6 @@ export class App {
 			this.levels[idxLevel].tabIdxSet(idxTab)
 			this.levels[idxLevel].tabs.push(newTab)
 		}
-	}
-
-	async back(backCnt: number) {
-		for (let i = 0; i < backCnt; i++) {
-			const currLevel = this.getCurrLevel()
-			if (currLevel) {
-				if (currLevel.tabIdxCurrent > 0) {
-					currLevel.tabIdxSet(0, true)
-				} else {
-					this.levels.pop()
-				}
-			}
-		}
-		return this
-	}
-	async changeCrumbs(token: TokenAppIndex) {
-		const backCnt = this.crumbs.length - 1 - token.index
-		this.back(backCnt)
-		return this
 	}
 	getCrumbsList() {
 		this.crumbs = [new AppLevelCrumb(-1, 'Home')]
@@ -248,6 +233,35 @@ export class App {
 				ParmsValuesType.listRecordIdList,
 				currTab?.data?.rowsRetrieved.getRows()
 			)
+	}
+
+	async navBack(backCnt: number) {
+		for (let i = 0; i < backCnt; i++) {
+			const currLevel = this.getCurrLevel()
+			if (currLevel) {
+				if (currLevel.tabIdxCurrent > 0) {
+					currLevel.tabIdxSet(0, true)
+				} else {
+					this.levels.pop()
+				}
+			}
+		}
+		return this
+	}
+	async navCrumbs(token: TokenAppIndex) {
+		const backCnt = this.crumbs.length - 1 - token.index
+		this.navBack(backCnt)
+		return this
+	}
+	async navTab(state: State, token: TokenAppTab) {
+		const currLevel = this.getCurrLevel()
+		if (currLevel) {
+			currLevel.tabIdxSet(token.index)
+			const currTab = currLevel.getCurrTab()
+			if (!currTab.isRetrieved) {
+				await query(state, currTab, TokenApiQueryType.retrieve)
+			}
+		}
 	}
 
 	popLevel() {

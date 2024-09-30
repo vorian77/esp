@@ -12,8 +12,6 @@
 	$: dataObj = fp.dataObj
 	$: field = fp.field as FieldCheckbox
 	$: fieldValue = fp.fieldValue
-	$: setFieldVal = fp.setFieldVal
-
 	$: classFieldSet =
 		dataObj.raw.codeCardinality === DataObjCardinality.list
 			? 'fieldsetList'
@@ -40,14 +38,14 @@
 				field.colDO.items.forEach((i) => {
 					if (i.selected) newValues.push(i.data)
 				})
-				setFieldVal(field, newValues)
+				fp.fSetVal(fp.row, fp.field, newValues)
 			}
 		} else {
 			const idx = field.colDO.items.findIndex((i) => i.data === value)
 			if (idx >= 0) {
 				field.colDO.items[idx].selected = !field.colDO.items[idx].selected
 				const newVal = field.colDO.items[idx].selected ? value : null
-				setFieldVal(field, newVal)
+				fp.fSetVal(fp.row, fp.field, newValue)
 			}
 		}
 	}

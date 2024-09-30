@@ -69,16 +69,15 @@ export class CellRendererParmField implements ICellRendererComp {
 		this.gui = document.createElement('div')
 
 		let style = 'width: 115%; margin-left: -7%; border: 0; font-size: 14px;'
+		const fieldName = params.data.name
 		const parmFields = params?.colDef?.context.parmFields
 		if (parmFields) {
-			const fieldName = params.data.name
 			const field = parmFields.find((f: Field) => f.colDO.propName === fieldName)
 			if (field && field.fieldAccess === FieldAccess.required) {
 				style += ' background-color: rgb(219,234,254);'
 			}
 		}
-
-		this.gui.innerHTML = `<input type="text" style="${style}" readonly value="${this.getDisplayValue(params)}"/>`
+		this.gui.innerHTML = `<input id="${fieldName}" name="${fieldName}" type="text" style="${style}" readonly value="${this.getDisplayValue(params)}"/>`
 	}
 
 	getDisplayValue(params: ICellRendererParams) {
@@ -300,7 +299,6 @@ export class GridManagerOptions {
 	listFilterText: string
 	listRecordIdSelected: []
 	listReorderColumn: string
-	listRowDisplayColumn: string
 	onCellClicked?: Function
 	onSelectionChanged?: Function
 	rowData: any[]
@@ -315,8 +313,7 @@ export class GridManagerOptions {
 		this.isSelectMulti = booleanOrFalse(obj.isSelectMulti, 'isSelectMulti')
 		this.listFilterText = valueOrDefault(obj.listFilterText, '')
 		this.listRecordIdSelected = obj.listRecordIdSelected || []
-		this.listReorderColumn = obj.listReorderColumn
-		this.listRowDisplayColumn = obj.listRowDisplayColumn
+		this.listReorderColumn = obj.listReorderColumn || ''
 		this.onCellClicked = obj.onCellClicked
 		this.onSelectionChanged = obj.onSelectionChanged
 		this.rowData = required(obj.rowData, clazz, 'rowData')

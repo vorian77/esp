@@ -326,7 +326,8 @@ export class ScriptGroup {
 
 			['action', { type: 'SELECT', table: 'Records' }],
 			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
-			['script', { content: ['with', 'action', 'propsSelect'] }]
+			['order'],
+			['script', { content: ['with', 'action', 'propsSelect', 'order'] }]
 		]
 	}
 }

@@ -11,7 +11,7 @@
 	import { createEventDispatcher } from 'svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '$comps/Surface/LayoutContent.svelte'
+	const FILENAME = '$comps/layout/LayoutContent.svelte'
 	const dispatch = createEventDispatcher()
 
 	const comps: Record<string, any> = {

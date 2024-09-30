@@ -11,7 +11,6 @@
 	$: dataObj = fp.dataObj
 	$: field = fp.field as FieldToggle
 	$: fieldValue = fp.fieldValue
-	$: setFieldVal = fp.setFieldVal
 
 	$: classProps = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'text-center'
 	$: classPropsLabel =
@@ -42,7 +41,7 @@
 	$: {
 		if (fieldValue === undefined || fieldValue === null) {
 			fieldValue = field.presetTrue ? selections[0][0] : selections[1][0]
-			setFieldVal(field, fieldValue)
+			fp.fSetVal(fp.row, fp.field, fieldValue)
 		}
 		setToggle(fieldValue)
 	}
@@ -53,7 +52,7 @@
 		})
 		const newValue = selections[(idx + 1) % 2][0]
 		setToggle(newValue)
-		setFieldVal(field, newValue)
+		fp.fSetVal(fp.row, fp.field, newValue)
 	}
 
 	function setToggle(value: any) {

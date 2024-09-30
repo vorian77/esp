@@ -29,7 +29,6 @@
 
 	$: field = fp.field as FieldFile
 	$: fieldValue = fp.fieldValue
-	$: setFieldVal = fp.setFieldVal
 
 	$: labelDelete = 'Delete ' + field.colDO.label
 	$: chooseBtnWidth = currURL ? 'w-3/4' : 'w-full'
@@ -54,7 +53,8 @@
 	function onDelete(event: Event) {
 		mode = Mode.delete
 		elInput.value = ''
-		setFieldVal(
+		fp.fSetVal(
+			fp.row,
 			field,
 			new TokenApiFileParm({
 				fileAction: TokenApiFileAction.delete,
@@ -71,7 +71,8 @@
 				files[0].type.includes('pdf') ? TokenApiFileType.pdf : TokenApiFileType.image,
 				currStorage ? currStorage.key : field.getKey()
 			)
-			setFieldVal(
+			fp.fSetVal(
+				fp.row,
 				field,
 				new TokenApiFileParm({
 					file: files[0],

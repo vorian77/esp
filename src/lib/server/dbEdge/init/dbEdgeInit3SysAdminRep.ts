@@ -258,15 +258,6 @@ async function initAnalyticParm() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'isRequired',
-				isDisplayable: true,
-				isExcludeUpdate: true,
-				orderDisplay: 15,
-				orderDefine: 15,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'name',
 				isDisplayable: true,
 				isExcludeUpdate: true,
@@ -375,14 +366,6 @@ async function initAnalyticParm() {
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20
-			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isRequired',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0
 			},
 			{
 				columnName: 'name',
@@ -980,7 +963,6 @@ async function initRepEl() {
 		exprFilter: '.id IN (SELECT sys_rep::SysRep FILTER .id = <tree,uuid,SysRep.id>).elements.id',
 		header: 'Elements',
 		listReorderColumn: 'orderDefine',
-		listRowDisplayColumn: 'isDisplay',
 		name: 'data_obj_sys_rep_element_list',
 		owner: 'app_sys_rep',
 		parentColumn: 'elements',
@@ -1502,15 +1484,6 @@ async function initRepParm() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'isRequired',
-				indexTable: 0,
-				isDisplayable: true,
-				isExcludeUpdate: true,
-				orderDisplay: 15,
-				orderDefine: 15
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'name',
 				isDisplayable: true,
 				isExcludeUpdate: true,
@@ -1622,14 +1595,6 @@ async function initRepParm() {
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20
-			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isRequired',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0
 			},
 			{
 				columnName: 'name',

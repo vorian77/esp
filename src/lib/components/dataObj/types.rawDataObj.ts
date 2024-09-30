@@ -57,7 +57,6 @@ export class RawDataObj {
 	isListHideSearch: boolean
 	listEditPresetExpr?: string
 	listReorderColumn?: string
-	listRowDisplayColumn?: string
 	name: string
 	processType?: string
 	rawActionsField: RawDataObjActionField[] = []
@@ -108,11 +107,6 @@ export class RawDataObj {
 		this.isListHideSearch = booleanOrDefault(obj.isListHideSearch, false)
 		this.listEditPresetExpr = strOptional(obj.listEditPresetExpr, clazz, 'listEditPresetExpr')
 		this.listReorderColumn = strOptional(obj._listReorderColumn, clazz, '_listReorderColumn')
-		this.listRowDisplayColumn = strOptional(
-			obj._listRowDisplayColumn,
-			clazz,
-			'_listRowDisplayColumn'
-		)
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.processType = memberOfEnumIfExists(
 			obj._processType,

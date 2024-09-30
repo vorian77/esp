@@ -10,9 +10,8 @@
 	import Icon from '$comps/other/Icon.svelte'
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
-	import action from '$enhance/actions/actionAuth'
 
-	const FILENAME = '$comps/Surface/LayoutApp.svelte'
+	const FILENAME = '$comps/layout/LayoutApp.svelte'
 
 	export let state: State
 	export let component: string

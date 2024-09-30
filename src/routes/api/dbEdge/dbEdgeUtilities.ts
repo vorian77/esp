@@ -172,7 +172,6 @@ export async function getDataObjById(dataObjId: string) {
 			_codeComponent: do1.codeComponent.name,
 			_codeListEditPresetType: do1.codeListEditPresetType.name,
 			_listReorderColumn: do1.listReorderColumn.name,
-			_listRowDisplayColumn: do1.listRowDisplayColumn.name,
 			_parent: e.select({
 				_columnName: do1.parentColumn.name,
 				_columnIsMultiSelect: do1.parentColumn.isMultiSelect,
@@ -433,7 +432,11 @@ export async function getReportUser(repUserId: string) {
 		elements: e.select(r.elements, (userE) => ({
 			element: shapeRepEl(userE.element),
 			isDisplay: userE.isDisplay,
-			filter: e.op(userE.isDisplay, '=', true),
+			filter: e.op(
+				e.op(userE.element.isDisplayable, '=', false),
+				'or',
+				e.op(userE.isDisplay, '=', true)
+			),
 			order_by: userE.orderDisplay
 		})),
 		headerUser: true,

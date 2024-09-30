@@ -36,6 +36,7 @@ export class FieldParm extends Field {
 		}
 		return fields
 	}
+
 	async configParmItemsInit(props: RawFieldProps, record: DataRecord, fields: Field[]) {
 		const propParm = new RawDataObjPropDisplay({
 			_column: {
@@ -46,7 +47,7 @@ export class FieldParm extends Field {
 				isNonData: false,
 				placeHolder: ''
 			},
-			_codeAccess: record.isRequired ? 'required' : 'optional',
+			_codeAccess: 'required',
 			_codeFieldElement: record.codeFieldElement,
 			_hasItems: record._hasItems,
 			_propName: record.name,
@@ -57,6 +58,7 @@ export class FieldParm extends Field {
 		})
 		return await DataObj.initField(props.state, propParm, false, fields, props.dataObj, props.data)
 	}
+
 	async configParmItemsData(props: RawFieldProps) {
 		const listRecordIdCurrent = props.state.parmsState.valueGet(ParmsValuesType.listRecordIdCurrent)
 		if (listRecordIdCurrent) {
@@ -91,6 +93,7 @@ export class FieldParm extends Field {
 			})
 		}
 	}
+
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {
 		return this.parmFields[row].validate(row, value, missingDataErrorLevel)
 	}

@@ -3,6 +3,7 @@
 		State,
 		StatePacket,
 		StatePacketAction,
+		StateSurfaceEmbedShell,
 		StateSurfaceModalEmbed
 	} from '$comps/app/types.appState'
 	import {
@@ -90,7 +91,8 @@
 
 		if (!dataObj.isListEmbed) {
 			state.setDataObjState(dataObj)
-			state = state.setStatus()
+			state.setStatus()
+			state = state
 		}
 
 		gridOptions = setGridOptions()
@@ -101,7 +103,17 @@
 		const field = dataObj.fields.find((f) => f.colDO.propName === fieldName)
 		if (row > -1 && field) {
 			dataObj = dataObj.setFieldVal(row, field, data[fieldName])
-			state = state.setStatus()
+			if (state instanceof StateSurfaceEmbedShell) {
+				state.stateRoot.fClosureSetStatus()
+			} else {
+				state.fClosureSetStatus()
+			}
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'fGridCallbackUpdateValue',
+				message: `Row not found for id: ${data.id}`
+			})
 		}
 	}
 
@@ -121,7 +133,9 @@
 				const itemsList = field.colDO.items
 				const itemsCurrent = Array.isArray(event.data[fieldName])
 					? event.data[fieldName]
-					: [event.data[fieldName]] || []
+					: ['', null, undefined].includes(event.data[fieldName])
+						? []
+						: [event.data[fieldName]]
 				const isMultiSelect = field.colDO.colDB.isMultiSelect
 				const rowNode = event.api.getRowNode(event.data.id)
 				await onCellClickedSelect(
@@ -169,9 +183,7 @@
 					const newValue = parms[ParmsValuesType.listRecordIdSelected]
 
 					// update dataObj
-					let newData = { id: rowNode.data.id }
-					newData[fieldName] = newValue
-					fGridCallbackUpdateValue(fieldName, newData)
+					fGridCallbackUpdateValue(fieldName, { id: rowNode.data.id, [fieldName]: newValue })
 
 					// update grid rowNode
 					rowNode.setDataValue(fieldName, newValue)
@@ -225,11 +237,13 @@
 
 					case PropDataType.date:
 						defn.cellDataType = 'customDateString'
+						// defn.filter = 'agDateColumnFilter'
 						break
 
 					case PropDataType.datetime:
 						// <todo> - 240921 - text until proper custom data type is built
 						defn.cellDataType = 'text'
+						// defn.filter = 'agDateColumnFilter'
 						break
 
 					case PropDataType.float64:
@@ -239,12 +253,14 @@
 								: f.fieldElement === FieldElement.percentage
 									? 'customNumberPercentage'
 									: 'customNumber'
+						// defn.filter = 'agNumberColumnFilter'
 						break
 
 					case PropDataType.int16:
 					case PropDataType.int32:
 					case PropDataType.int64:
 						defn.cellDataType = 'customNumberInt'
+						// defn.filter = 'agNumberColumnFilter'
 						break
 
 					case PropDataType.json:
@@ -269,9 +285,11 @@
 					case PropDataType.uuid:
 						defn.cellDataType =
 							f.fieldElement === FieldElement.textArea ? 'customTextLarge' : 'customText'
+						// defn.filter = 'agTextColumnFilter'
 						break
 
 					default:
+						console.log('setGridColumns.error.field:', f)
 						error(500, {
 							file: FILENAME,
 							function: 'setGridColumns',
@@ -305,12 +323,12 @@
 			})
 			return row
 		})
-		console.log('setGridDataValues:', { rowsDisplay: dataObj.dataRecordsDisplay, dataRows })
 
 		dataObj.data.parms.valueSet(
 			ParmsValuesType.listRecordIdList,
 			dataRows.map((r: any) => r.id)
 		)
+
 		return dataRows
 	}
 
@@ -327,7 +345,6 @@
 			listFilterText,
 			listRecordIdSelected: state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected) || [],
 			listReorderColumn: dataObj.raw.listReorderColumn,
-			listRowDisplayColumn: dataObj.raw.listRowDisplayColumn,
 			onCellClicked,
 			onSelectionChanged,
 			rowData
@@ -336,6 +353,7 @@
 </script>
 
 {#if gridOptions}
+	<!-- <DataViewer header="FormList.dataObj.objStatus" data={dataObj.objStatus} /> -->
 	<div class="h-[70vh]">
 		{#key gridOptions}
 			<Grid options={gridOptions} />

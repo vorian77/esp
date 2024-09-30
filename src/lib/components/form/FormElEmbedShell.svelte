@@ -5,17 +5,22 @@
 		State,
 		StateLayoutComponent,
 		StatePacket,
+		StatePacketAction,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState'
 	import { TokenAppDoActionConfirmType } from '$utils/types.token'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import Layout from '$comps/layout/RootLayoutApp.svelte'
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
+	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
+
+	const FILENAME = '$comps/Form/FormElembedShell.svelte'
 
 	export let fp: FieldProps
 
 	let field: FieldEmbedShell
+	let component: string
 	let currLevel: AppLevel
 	let currTab: AppLevelTab
 	let dataObj: DataObj
@@ -23,8 +28,9 @@
 
 	$: {
 		field = fp.field
-		field.stateShell.setUpdateCallback((obj: any) => {
-			field.stateShell = field.stateShell.updateProperties(obj)
+
+		field.stateShell.setFUpdateCallback((obj: any) => {
+			fp.state.fUpdateCallback(obj)
 		})
 
 		// LayoutTab
@@ -32,6 +38,7 @@
 		if (currLevel) {
 			currTab = currLevel.getCurrTab()
 			dataObj = currTab.dataObj
+			component = dataObj.raw.codeComponent
 			dataObjData = currTab.data
 		}
 	}
@@ -41,7 +48,7 @@
 
 <!-- <FormLabel {fp} /> -->
 {#if dataObj && dataObjData}
-	<div class="border-2 px-4 pb-4">
-		<LayoutTab bind:state={field.stateShell} {dataObj} {dataObjData} on:formCancelled />
+	<div class="border-2 px-4 pb-4 h-96">
+		<LayoutTab bind:state={field.stateShell} {component} {dataObj} {dataObjData} on:formCancelled />
 	</div>
 {/if}

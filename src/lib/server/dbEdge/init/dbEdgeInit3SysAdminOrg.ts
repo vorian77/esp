@@ -154,10 +154,11 @@ async function initOrg() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'orderDefine',
+				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 200,
 				orderDefine: 200,
-				indexTable: 0
+				orderDisplay: 200,
+				orderSort: 10
 			}
 		]
 	})

@@ -16,69 +16,11 @@ export async function initDataReports() {
 	await initReportStudentSummary()
 }
 
-async function initAnalyticTrainingCredential() {
-	await addAnalytic({
-		description: 'Cohort attendance report.',
-		header: 'Cohort Attendance',
-		name: 'analytic_cm_training_cohort_attendance',
-		owner: 'app_cm_training',
-		parms: [
-			{
-				codeDataType: 'uuid',
-				codeFieldElement: 'select',
-				description: 'Document type.',
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_doc_type',
-				header: 'Document Type',
-				isMultiSelect: false,
-				isRequired: true,
-				linkTable: 'SysCode',
-				name: 'paCodeDocType',
-				orderDefine: 10
-			},
-			{
-				codeDataType: 'int64',
-				codeFieldElement: 'number',
-				description: 'Warning days.',
-				header: 'Days - Warning',
-				isMultiSelect: false,
-				isRequired: true,
-				name: 'paDaysWarning',
-				orderDefine: 20
-			},
-			{
-				codeDataType: 'int64',
-				codeFieldElement: 'number',
-				description: 'Alarm days.',
-				header: 'Days - Alarm',
-				isMultiSelect: false,
-				isRequired: true,
-				name: 'paDaysAlarm',
-				orderDefine: 30
-			}
-		],
-		statuses: [
-			{
-				codeStatus: 'met',
-				expr: `(SELECT count((SELECT app_cm_training::CmCsfCohort FILTER .codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', 'Completed')))))`
-			},
-			{
-				codeStatus: 'high',
-				comment: 'Credential should have been within 8 days.',
-				expr: `(SELECT count((SELECT app_cm_training::CmCsfCohort FILTER .codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', 'Completed')))))`
-			},
-			{
-				codeStatus: 'pending'
-			}
-		]
-	})
-}
-
 async function initReportCMTrainingCohortAttendance() {
 	await addReport({
 		actionFieldGroup: 'doag_report_render',
 		description: 'Cohort attendance report.',
-		exprFilter: '.cohort.id IN <parms,uuidList,pvCohort>',
+		exprFilter: '.cohort.id IN <parms,uuidList,pvCohorts>',
 		header: 'Cohort Attendance',
 		name: 'report_cm_training_cohort_attendance',
 		owner: 'app_cm_training',
@@ -383,7 +325,7 @@ async function initReportCMTrainingCohortAttendance() {
 				codeDbDataSourceValue: 'edgeDB',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				description: 'The number of attendane days that have occurred in the cohort.',
+				description: 'The number of attendance days that have occurred in the cohort.',
 				exprCustom: `(SELECT count(app_cm::CmCohortAttd FILTER .cohortId = app_cm::CmCsfCohort.cohort.id AND .date >= <parms,date,pvDateStart> AND .date <= <parms,date,pvDateEnd>))`,
 				header: 'Cohort Attendance Days',
 				isDisplay: true,
@@ -398,7 +340,7 @@ async function initReportCMTrainingCohortAttendance() {
 				codeDbDataSourceValue: 'edgeDB',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				description: 'The number of attendane days of the student in the cohort.',
+				description: 'The number of attendance days of the student in the cohort.',
 				exprCustom: `(SELECT count(app_cm::CmCsfCohortAttd FILTER .csfCohort.id = app_cm::CmCsfCohort.id AND .cohortAttd.date >= <parms,date,pvDateStart> AND .cohortAttd.date <= <parms,date,pvDateEnd> AND .computedHours > 0))`,
 				header: 'Student Attendance Days',
 				isDisplay: true,
@@ -430,7 +372,6 @@ async function initReportCMTrainingCohortAttendance() {
 				description: 'Attendance start date.',
 				header: 'Start Date',
 				isMultiSelect: false,
-				isRequired: true,
 				name: 'pvDateStart',
 				orderDefine: 0
 			},
@@ -440,21 +381,8 @@ async function initReportCMTrainingCohortAttendance() {
 				description: 'Attendance end date.',
 				header: 'End Date',
 				isMultiSelect: false,
-				isRequired: true,
 				name: 'pvDateEnd',
 				orderDefine: 1
-			},
-			{
-				codeDataType: 'uuid',
-				codeFieldElement: 'chips',
-				description: 'Student cohort.',
-				fieldListItems: 'il_cm_cohort_short_by_userName',
-				header: 'Cohort',
-				isMultiSelect: false,
-				isRequired: false,
-				linkTable: 'CmCohort',
-				name: 'pvCohort',
-				orderDefine: 2
 			},
 			{
 				codeDataType: 'uuidList',
@@ -463,7 +391,6 @@ async function initReportCMTrainingCohortAttendance() {
 				fieldListItems: 'il_cm_cohort_short_by_userName',
 				header: 'Cohort(s)',
 				isMultiSelect: true,
-				isRequired: true,
 				linkTable: 'CmCohort',
 				name: 'pvCohorts',
 				orderDefine: 3
@@ -504,7 +431,7 @@ async function initReportCMTrainingCohortWages() {
 		actionFieldGroup: 'doag_report_render',
 		description: 'Cohort wages report.',
 		exprFilter:
-			'.csf.client IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohort>).csf.client',
+			'.csf.client IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf.client',
 		header: 'Wages',
 		name: 'report_cm_training_cohort_job_placement',
 		owner: 'app_cm_training',
@@ -889,36 +816,15 @@ async function initReportCMTrainingCohortWages() {
 		],
 		parms: [
 			{
-				codeDataType: 'date',
-				codeFieldElement: 'date',
-				description: 'Attendance start date.',
-				header: 'Start Date',
-				isMultiSelect: false,
-				isRequired: true,
-				name: 'pvDateStart',
-				orderDefine: 0
-			},
-			{
-				codeDataType: 'date',
-				codeFieldElement: 'date',
-				description: 'Attendance end date.',
-				header: 'End Date',
-				isMultiSelect: false,
-				isRequired: true,
-				name: 'pvDateEnd',
-				orderDefine: 1
-			},
-			{
 				codeDataType: 'uuidList',
 				codeFieldElement: 'chips',
 				description: 'Student cohort(s).',
 				fieldListItems: 'il_cm_cohort_short_by_userName',
 				header: 'Cohort(s)',
 				isMultiSelect: true,
-				isRequired: true,
 				linkTable: 'CmCohort',
-				name: 'pvCohort',
-				orderDefine: 2
+				name: 'pvCohorts',
+				orderDefine: 3
 			}
 		]
 	})
@@ -948,6 +854,62 @@ async function initReportCMTrainingCohortWages() {
 		header: 'Job Placement',
 		report: 'report_cm_training_cohort_job_placement',
 		user: '3136272756' // Erica
+	})
+}
+
+// old/static list reports
+async function initAnalyticTrainingCredential() {
+	await addAnalytic({
+		description: 'Cohort attendance report.',
+		header: 'Cohort Attendance',
+		name: 'analytic_cm_training_cohort_attendance',
+		owner: 'app_cm_training',
+		parms: [
+			{
+				codeDataType: 'uuid',
+				codeFieldElement: 'select',
+				description: 'Document type.',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_cm_doc_type',
+				header: 'Document Type',
+				isMultiSelect: false,
+				linkTable: 'SysCode',
+				name: 'paCodeDocType',
+				orderDefine: 10
+			},
+			{
+				codeDataType: 'int64',
+				codeFieldElement: 'number',
+				description: 'Warning days.',
+				header: 'Days - Warning',
+				isMultiSelect: false,
+				name: 'paDaysWarning',
+				orderDefine: 20
+			},
+			{
+				codeDataType: 'int64',
+				codeFieldElement: 'number',
+				description: 'Alarm days.',
+				header: 'Days - Alarm',
+				isMultiSelect: false,
+				name: 'paDaysAlarm',
+				orderDefine: 30
+			}
+		],
+		statuses: [
+			{
+				codeStatus: 'met',
+				expr: `(SELECT count((SELECT app_cm_training::CmCsfCohort FILTER .codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', 'Completed')))))`
+			},
+			{
+				codeStatus: 'high',
+				comment: 'Credential should have been within 8 days.',
+				expr: `(SELECT count((SELECT app_cm_training::CmCsfCohort FILTER .codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', 'Completed')))))`
+			},
+			{
+				codeStatus: 'pending'
+			}
+		]
 	})
 }
 

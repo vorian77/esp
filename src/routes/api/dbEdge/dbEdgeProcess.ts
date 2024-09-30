@@ -113,6 +113,7 @@ async function processDataObjQuery(
 	if (EMBED_QUERY_TYPES.includes(queryType)) {
 		for (let i = 0; i < returnData.fields.length; i++) {
 			const field = returnData.fields[i]
+			returnData.rowsRetrieved
 			queryData.dataTab = field.data
 			await processDataObjQuery(
 				queryType,
@@ -131,7 +132,7 @@ async function processDataObjExecute(
 	returnData: DataObjData
 ) {
 	let scriptData: DataObjData
-	returnData.rowsRetrieved.reset()
+	returnData.resetRowsRetrieved()
 	for (let i = 0; i < scriptGroup.scripts.length; i++) {
 		const script = scriptGroup.scripts[i]
 		if (script.script) {

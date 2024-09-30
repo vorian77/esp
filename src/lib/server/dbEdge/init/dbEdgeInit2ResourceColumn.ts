@@ -1477,12 +1477,6 @@ export async function initPreColumn() {
 	})
 	await addColumn({
 		owner: 'app_sys',
-		codeDataType: 'link',
-		header: 'List - Row Display Column',
-		name: 'listRowDisplayColumn'
-	})
-	await addColumn({
-		owner: 'app_sys',
 		codeDataType: 'str',
 		header: 'Match Column',
 		name: 'matchColumn'

@@ -90,27 +90,27 @@ export class Field {
 		return status
 	}
 
-	getValue(formData: FormData) {
-		// overridden by FormElInpCheckbox
-		return formData.get(this.colDO.propName)
-	}
-
 	getValuationInvalid(error: ValidityError, level: ValidityErrorLevel, message: string) {
+		const propName = this.getPropName()
 		return new Validation(ValidationType.field, ValidationStatus.invalid, [
-			new ValidityField(this.colDO.propName, new Validity(error, level, message))
+			new ValidityField(propName, new Validity(error, level, message))
 		])
 	}
 	getValuationNotInvalid() {
+		const propName = this.getPropName()
 		return new Validation(ValidationType.field, ValidationStatus.notInvalid, [
-			new ValidityField(this.colDO.propName, new Validity())
+			new ValidityField(propName, new Validity())
 		])
 	}
 	getValuationValid() {
+		const propName = this.getPropName()
 		return new Validation(ValidationType.field, ValidationStatus.valid, [
-			new ValidityField(this.colDO.propName, new Validity())
+			new ValidityField(propName, new Validity())
 		])
 	}
+
 	modeReset() {}
+
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel): Validation {
 		if (this.colDO.colDB.isNonData) {
 			return this.getValuationValid()
@@ -122,12 +122,15 @@ export class Field {
 		}
 
 		// optional & null/undefined
-		if (this.fieldAccess === FieldAccess.optional && [null, undefined, ''].includes(value)) {
+		if (
+			this.fieldAccess === FieldAccess.optional &&
+			([null, undefined, ''].includes(value) || (Array.isArray(value) && value.length === 0))
+		) {
 			return this.getValuationValid()
 		}
 
 		// required & missing data
-		if ([null, undefined, ''].includes(value)) {
+		if ([null, undefined, ''].includes(value) || (Array.isArray(value) && value.length === 0)) {
 			return this.getValuationInvalid(
 				ValidityError.required,
 				missingDataErrorLevel,
@@ -258,8 +261,8 @@ export class FieldProps {
 	dataRecord: DataRecord
 	field: Field
 	fieldValue: any
+	fSetVal: Function
 	row: number
-	setFieldVal: Function
 	state: State
 	constructor(
 		component: string,
@@ -268,8 +271,8 @@ export class FieldProps {
 		dataRecord: DataRecord,
 		field: Field,
 		fieldValue: any,
+		fSetVal: Function,
 		row: number,
-		setFieldVal: Function,
 		state: State
 	) {
 		this.component = component
@@ -279,7 +282,7 @@ export class FieldProps {
 		this.field = field
 		this.fieldValue = fieldValue
 		this.row = row
-		this.setFieldVal = setFieldVal
+		this.fSetVal = fSetVal
 		this.state = state
 	}
 }

@@ -68,7 +68,6 @@
 	let isSelectMulti = false
 	let listFilterText = ''
 	let listReorderColumn: string
-	let listRowDisplayColumn: string
 	let rowCountFiltered: number
 	let rowCountSelected: number
 	let rowData: any[]
@@ -84,17 +83,12 @@
 		columnDefs = options.columnDefs
 		fCallbackFilter = options.fCallbackFilter
 		fCallbackUpdateValue = options.fCallbackUpdateValue
-		isListHideFilter = options.isListHideFilter
+		isListHideFilter = options.isListHideFilter || options.listReorderColumn !== ''
 		isSelect = options.isSelect
 		isSelectMulti = options.isSelectMulti
 		listFilterText = options.listFilterText
 		listReorderColumn = options.listReorderColumn
-		listRowDisplayColumn = options.listRowDisplayColumn
-		setGridColumnsProp(columnDefs, '', 'rowDrag', listReorderColumn ? true : false)
 		rowData = options.rowData
-		styleMaxHeight = isListHideFilter ? '100%' : 'calc(100% - 70px)'
-
-		console.log('Grid.onMount:', rowData)
 
 		if (isSelect) {
 			columnDefs.unshift({
@@ -107,12 +101,17 @@
 			})
 		}
 
+		// derived columnDefs changes
+		setGridColumnsProp(columnDefs, '', 'rowDrag', listReorderColumn ? true : false)
+		styleMaxHeight = isListHideFilter ? '100%' : 'calc(100% - 70px)'
+
 		const gridOptions = {
 			columnDefs,
 			columnTypes,
 			dataTypeDefinitions,
 			defaultColDef: {
-				flex: 1
+				flex: 1,
+				sortable: !listReorderColumn
 			},
 			getRowId: (params: GetRowIdParams) => params.data.id || '',
 			onCellClicked: options.onCellClicked,
@@ -122,14 +121,10 @@
 			onSelectionChanged,
 			rowData,
 			rowSelection: isSelect && isSelectMulti ? 'multiple' : 'single',
-			rowDragManaged: listReorderColumn ? true : false,
-			stopEditingWhenCellsLoseFocus: false
+			rowDragManaged: listReorderColumn ? true : false
+			// stopEditingWhenCellsLoseFocus: false
 		}
 		grid = createGrid(eGui, gridOptions)
-
-		// set data
-		grid.setGridOption('columnDefs', columnDefs)
-		grid.setGridOption('rowData', rowData)
 
 		if (isSelect) {
 			if (isSelectMulti) {
@@ -149,6 +144,7 @@
 				if (selected) selected.setSelected(true)
 			}
 		}
+
 		setFilter(listFilterText)
 
 		return () => {
@@ -157,14 +153,11 @@
 	})
 
 	function onRowDragEnd(event: RowDragEndEvent) {
-		rowData.forEach((row, idx) => {
-			// set node data
-			const node = grid.getRowNode(row.id)
-			node.setDataValue(listReorderColumn, idx)
-
-			// set source
-			if (fCallbackUpdateValue) fCallbackUpdateValue(listReorderColumn, { id: row.id, idx })
-		})
+		if (fCallbackUpdateValue) {
+			rowData.forEach((row, idx) => {
+				fCallbackUpdateValue(listReorderColumn, { id: row.id, [listReorderColumn]: idx })
+			})
+		}
 	}
 
 	function onRowDragMove(event: RowDragMoveEvent) {
@@ -183,7 +176,7 @@
 			moveInArray(newStore, fromIndex, toIndex)
 
 			rowData = newStore
-			grid?.clearFocusedCell()
+			grid.clearFocusedCell()
 		}
 
 		function moveInArray(arr: any[], fromIndex: number, toIndex: number) {
@@ -205,6 +198,7 @@
 		value: any
 	) {
 		let columnIdx: number
+
 		if (field === '') {
 			// first visible field
 			columnIdx = columns.findIndex((c) => c.hide === false)
@@ -216,8 +210,12 @@
 		}
 	}
 	function setFilter(listFilterText: string) {
-		grid.setGridOption('quickFilterText', listFilterText)
-
+		setFilterQuick(listFilterText)
+		setFilterDeselect()
+		updateCounters()
+		if (fCallbackFilter) fCallbackFilter(grid, listFilterText)
+	}
+	function setFilterDeselect() {
 		// deselect rows that are not displayed
 		const deselected: IRowNode[] = []
 		grid.forEachNode((rowNode, index) => {
@@ -226,9 +224,9 @@
 			}
 		})
 		grid.setNodesSelected({ nodes: deselected, newValue: false })
-
-		updateCounters()
-		if (fCallbackFilter) fCallbackFilter(grid, listFilterText)
+	}
+	function setFilterQuick(listFilterText: string) {
+		grid.setGridOption('quickFilterText', listFilterText)
 	}
 
 	function updateCounters() {

@@ -25,15 +25,10 @@ export class FieldEmbedShell extends Field {
 		this.fields.push(field)
 	}
 	getStatus(dataObjForm: DataObj, recordId: string) {
-		return this.getStatusShell()
-	}
-	getStatusShell() {
 		let newStatus = new DataObjStatus()
 		this.fields.forEach((field) => {
-			if (field instanceof FieldEmbedListEdit) {
-				const statusField = field.getStatusListEdit()
-				newStatus = newStatus.update(statusField)
-			}
+			const statusField = field.getStatus(dataObjForm, recordId)
+			newStatus = newStatus.update(statusField)
 		})
 		return newStatus
 	}

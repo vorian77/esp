@@ -71,14 +71,6 @@ async function initFeatures() {
 	/* embed */
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [
-			['noa_save_detail', 0],
-			['noa_save_cancel', 1]
-		],
-		name: 'doag_embed_detail',
-		owner: 'app_sys'
-	})
-	await addDataObjActionFieldGroup({
-		actionFieldItems: [
 			['noa_save_list', 0],
 			['noa_save_cancel', 1],
 			['noa_embed_list_config_new', 2],

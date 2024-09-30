@@ -26,7 +26,8 @@
 		loadTags()
 		dataObj.objData = data
 		state.setDataObjState(dataObj)
-		state = state.setStatus()
+		state.setStatus()
+		state = state
 	}
 
 	function loadTags() {

@@ -202,7 +202,6 @@ export namespace sys_core {
     "listEditPresetExpr"?: string | null;
     "isListEdit": boolean;
     "codeListEditPresetType"?: SysCode | null;
-    "listRowDisplayColumn"?: sys_db.SysColumn | null;
     "codeCardinality": SysCode;
     "codeComponent": SysCode;
     "processType"?: SysCode | null;
@@ -837,7 +836,6 @@ export namespace sys_rep {
     "header": string;
     "isMultiSelect": boolean;
     "name": string;
-    "isRequired"?: boolean | null;
     "codeFieldElement": sys_core.SysCode;
     "codeDataType": sys_core.SysCode;
     "orderDefine": number;

@@ -57,7 +57,7 @@
 				fieldValue = null
 			}
 
-			fp.setFieldVal(fp.field, fieldValue)
+			fp.fSetVal(fp.row, fp.field, fieldValue)
 		}
 	}
 </script>

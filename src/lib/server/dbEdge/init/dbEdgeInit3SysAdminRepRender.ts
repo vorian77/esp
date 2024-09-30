@@ -30,7 +30,7 @@ async function initFieldEmbedListEditRepUserElement() {
 		listEditPresetExpr: `
 			WITH 
 			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>),
-			repVals := repUser.report.elements,
+			repVals := (SELECT repUser.report.elements FILTER .isDisplayable = true),
 			userVals := repUser.elements.element, 
 			newVals := (SELECT repVals EXCEPT userVals)
 			SELECT newVals`,
@@ -60,27 +60,27 @@ async function initFieldEmbedListEditRepUserElement() {
 				orderDefine: 20
 			},
 			{
+				codeAccess: 'readOnly',
+				columnName: 'isDisplayable',
+				indexTable: 1,
+				isDisplayable: false,
+				isExcludeInsert: true,
+				isExcludeUpdate: true,
+				orderDisplay: 30,
+				orderDefine: 30
+			},
+			{
 				codeFieldElement: 'toggle',
 				columnName: 'isDisplay',
 				exprPreset: 'item.isDisplay',
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'header',
-				indexTable: 1,
-				isDisplayable: true,
-				isExcludeInsert: true,
-				isExcludeUpdate: true,
 				orderDisplay: 40,
 				orderDefine: 40
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'description',
+				columnName: 'header',
 				indexTable: 1,
 				isDisplayable: true,
 				isExcludeInsert: true,
@@ -90,11 +90,21 @@ async function initFieldEmbedListEditRepUserElement() {
 			},
 			{
 				codeAccess: 'readOnly',
+				columnName: 'description',
+				indexTable: 1,
+				isDisplayable: true,
+				isExcludeInsert: true,
+				isExcludeUpdate: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				codeAccess: 'readOnly',
 				columnName: 'orderDisplay',
 				exprPreset: 'item.orderDefine',
 				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 60,
+				orderDefine: 70,
 				orderSort: 10
 			},
 
@@ -179,17 +189,6 @@ async function initFieldEmbedListEditRepUserParm() {
 				isExcludeUpdate: true,
 				linkTable: 'SysRepParm',
 				orderDefine: 20
-			},
-			{
-				codeAccess: 'readOnly',
-				codeFieldElement: 'toggle',
-				columnName: 'isRequired',
-				indexTable: 1,
-				isDisplayable: true,
-				isExcludeInsert: true,
-				isExcludeUpdate: true,
-				orderDisplay: 30,
-				orderDefine: 30
 			},
 			{
 				codeAccess: 'readOnly',
@@ -474,7 +473,7 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'embedListEdit',
 				columnName: 'parms',
-				isDisplayable: true,
+				isDisplayable: false,
 				orderDefine: 120,
 				orderDisplay: 120,
 				fieldEmbedListEdit: 'fele_sys_rep_user_parm',
@@ -484,22 +483,23 @@ async function initRepConfig() {
 			{
 				codeFieldElement: 'embedListEdit',
 				columnName: 'elements',
-				isDisplayable: true,
+				isDisplayable: false,
 				orderDefine: 130,
 				orderDisplay: 130,
 				fieldEmbedListEdit: 'fele_sys_rep_user_element',
 				indexTable: 0,
 				linkTable: 'SysRepUserEl'
 			},
-			// {
-			// 	codeFieldElement: 'embedShell',
-			// 	columnName: 'custom_embed_shell',
-			// 	isDisplayable: true,
-			// 	headerAlt: 'Report Config',
-			// 	nameCustom: 'repUserConfig',
-			// 	orderDisplay: 140,
-			// 	orderDefine: 140
-			// },
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'embedShell',
+				columnName: 'custom_embed_shell',
+				headerAlt: 'Report Config',
+				isDisplayable: true,
+				nameCustom: 'repUserConfig',
+				orderDefine: 140,
+				orderDisplay: 140
+			},
 
 			/* management */
 			{

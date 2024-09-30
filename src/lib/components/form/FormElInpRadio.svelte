@@ -9,9 +9,7 @@
 
 	$: dataObj = fp.dataObj
 	$: field = fp.field as FieldRadio
-	$: fieldValue = fp.fieldValue
 	$: row = fp.row
-	$: setFieldVal = fp.setFieldVal
 
 	$: classPropsLabel = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
 	$: classFormat = field.isDisplayBlock ? 'block mb-2' : 'inline mr-7'
@@ -36,7 +34,7 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		setFieldVal(field, target.value)
+		fp.fSetVal(fp.row, fp.field, target.value)
 	}
 </script>
 
@@ -51,7 +49,7 @@
 						type="radio"
 						name={field.colDO.propName + '-' + row}
 						value={id}
-						checked={fieldValue == id}
+						checked={fp.fieldValue == id}
 						on:click={onChange}
 					/>
 					{label}

@@ -234,7 +234,10 @@ export async function initPreDataObjAction() {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
-		actionFieldShows: [{ codeTriggerShow: 'objectChanged', isRequired: true }],
+		actionFieldShows: [
+			{ codeTriggerShow: 'objectChanged', isRequired: true },
+			{ codeTriggerShow: 'rootDataObj', isRequired: true }
+		],
 		codePacketAction: 'doDetailSaveCancel',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Cancel Save',

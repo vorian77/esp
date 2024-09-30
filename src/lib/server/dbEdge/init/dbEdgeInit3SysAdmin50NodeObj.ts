@@ -33,7 +33,6 @@ async function initNodeObj() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeNavType',
-				orderSort: 10,
 				isDisplayable: true,
 				isExcludeUpdate: true,
 				orderDisplay: 12,
@@ -57,7 +56,6 @@ async function initNodeObj() {
 				codeAccess: 'readOnly',
 				columnName: 'name',
 				orderCrumb: 10,
-				orderSort: 20,
 				isDisplayable: true,
 				isExcludeUpdate: true,
 				orderDisplay: 20,
@@ -66,9 +64,10 @@ async function initNodeObj() {
 			},
 			{
 				columnName: 'orderDefine',
-				orderDefine: 30,
 				indexTable: 0,
-				isDisplayable: false
+				isDisplayable: false,
+				orderDefine: 30,
+				orderSort: 10
 			},
 
 			/* management */

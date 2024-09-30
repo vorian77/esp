@@ -4,6 +4,7 @@ import {
 	DataObj,
 	DataObjDataField,
 	DataObjEmbedType,
+	DataObjStatus,
 	ParmsValuesType,
 	required
 } from '$utils/types'
@@ -25,6 +26,17 @@ export class FieldEmbed extends Field {
 	constructor(props: RawFieldProps) {
 		super(props)
 		const clazz = 'FieldEmbed'
+	}
+	getStatus(dataObjForm: DataObj, recordId: string) {
+		if (this.dataObj) {
+			return this.dataObj.setStatus()
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'getStatusListEdit',
+				message: `No data object defined for FieldEmbedListEdit: ${this.colDO.propName}`
+			})
+		}
 	}
 	async initDataObj(props: RawFieldProps, embedType: DataObjEmbedType) {
 		this.embedParentId = props.data.rowsRetrieved.getDetailRecordValue('id')
@@ -84,20 +96,6 @@ export class FieldEmbedListEdit extends FieldEmbed {
 		const field = new FieldEmbedListEdit(props)
 		await field.initDataObj(props, DataObjEmbedType.listEdit)
 		return field
-	}
-	getStatus(dataObjForm: DataObj, recordId: string) {
-		return this.getStatusListEdit()
-	}
-	getStatusListEdit() {
-		if (this.dataObj) {
-			return this.dataObj.setStatus()
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'getStatusListEdit',
-				message: `No data object defined for FieldEmbedListEdit: ${this.colDO.propName}`
-			})
-		}
 	}
 }
 

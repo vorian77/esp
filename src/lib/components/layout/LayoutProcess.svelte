@@ -4,7 +4,7 @@
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '$comps/Surface/LayoutProcess.svelte'
+	const FILENAME = '$comps/layout/LayoutProcess.svelte'
 
 	export let state: State
 	export let component: string

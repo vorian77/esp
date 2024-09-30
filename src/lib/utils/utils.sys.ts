@@ -33,7 +33,7 @@ export function valueHasChanged(vSource: any, vCurrent: any): boolean {
 	}
 
 	function noVal(value: any) {
-		return [undefined, null, ''].includes(value)
+		return [undefined, null, ''].includes(value) || (Array.isArray(value) && value.length === 0)
 	}
 }
 

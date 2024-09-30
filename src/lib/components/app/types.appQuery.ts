@@ -49,7 +49,10 @@ export async function query(
 			dataTab
 		)
 	}
+	document.body.style.setProperty('cursor', 'wait', 'important')
 	const result: ResponseBody = await queryExecute(tab.getDataObjSource(), queryType, queryData)
+	document.body.style.setProperty('cursor', 'default')
+
 	if (!result.success) return false
 
 	// successful

@@ -68,7 +68,6 @@ module sys_rep {
     fieldListItemsParmName: str;
     required header: str;
     required isMultiSelect: bool;
-    isRequired: bool;
     linkTable: sys_db::SysTable;
     required name: str;
     required orderDefine: default::nonNegative;

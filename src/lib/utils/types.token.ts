@@ -14,6 +14,7 @@ import {
 	valueOrDefault
 } from '$utils/types'
 import { State } from '$comps/app/types.appState'
+import { App } from '$comps/app/types.app'
 import { AppRowActionType } from '$comps/app/types.app'
 import { Node } from '$comps/app/types.node'
 import { FieldItem } from '$comps/form/field'
@@ -359,6 +360,17 @@ export class TokenAppRow extends TokenApp {
 		const clazz = 'TokenAppRow'
 		super(obj)
 		this.rowAction = required(obj.rowAction, clazz, 'rowAction')
+	}
+}
+
+export class TokenAppTab extends TokenApp {
+	app: App
+	index: number
+	constructor(obj: any) {
+		const clazz = 'TokenAppTab'
+		super(obj)
+		this.app = required(obj.app, clazz, 'app')
+		this.index = nbrRequired(obj.index, clazz, 'index')
 	}
 }
 

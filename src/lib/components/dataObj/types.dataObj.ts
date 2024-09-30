@@ -457,9 +457,13 @@ export class DataObj {
 
 		this.dataRecordsDisplay.forEach((record, row) => {
 			this.fields.forEach((f) => {
-				const field = this.getField(f, row)
-				const v: Validation = field.validate(row, record[field.colDO.propName], validityErrorLevel)
+				const v: Validation = f.validate(row, record[f.colDO.propName], validityErrorLevel)
 				if (v.status === ValidationStatus.invalid) {
+					console.log('dataObj.preValidate.invalid:', {
+						dataObj: this.raw.name,
+						field: f.colDO.propName,
+						validation: v
+					})
 					this.dataFieldsValidity.valueSet(
 						record.id,
 						v.validityFields[0].fieldName,
@@ -478,6 +482,10 @@ export class DataObj {
 		const recordId = this.dataRecordsDisplay[row].id
 		this.setFieldValChanged(row, recordId, field.colDO.propName, value)
 		this.setFieldValValidity(row, recordId, field)
+		if (this.raw.listReorderColumn && this.isListEmbed) {
+			const reorderColumn = this.raw.listReorderColumn
+			this.dataRecordsDisplay.sort((a, b) => a[reorderColumn] - b[reorderColumn])
+		}
 		return this
 	}
 	setFieldValChanged(row: number, recordId: string, fieldName: string, value: any) {
@@ -519,7 +527,8 @@ export class DataObj {
 				}
 			})
 		})
-		return newStatus
+		this.objStatus = newStatus
+		return this.objStatus
 	}
 }
 
@@ -641,6 +650,12 @@ export class DataObjData {
 	}
 	getParms() {
 		return this.parms.valueGetAll()
+	}
+	resetRowsRetrieved() {
+		this.rowsRetrieved.reset()
+		this.fields.forEach((f) => {
+			f.data.resetRowsRetrieved()
+		})
 	}
 }
 
