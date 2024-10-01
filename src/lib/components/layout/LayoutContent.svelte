@@ -53,7 +53,7 @@
 		// header styling
 		classContent =
 			(dataObj && dataObj.actionsField.length > 0) || headerObj || headerObjSub || rowStatus
-				? 'border-2 p-4'
+				? 'border-2 p-4 '
 				: ''
 	}
 

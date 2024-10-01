@@ -15,6 +15,7 @@ export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj
 	const repUserData = await getReport(queryData)
 	const repUser = new RepUser(repUserData)
 	const rawDataObjDyn = getRawDataObj(repUser)
+	debug('dynDOReportRender', 'rawDataObjDyn', rawDataObjDyn)
 
 	addPropsDisplay(repUser.elements)
 	addPropsSelect(repUser.report.elements, rawDataObjDyn.tables)
@@ -127,6 +128,7 @@ function getRawDataObj(repUser: RepUser) {
 		header: repUser.headerUser,
 		id: repUser.report.id,
 		isListEdit: false,
+		isListSuppressSelect: true,
 		name: repUser.report.name
 	})
 }

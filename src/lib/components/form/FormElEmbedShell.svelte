@@ -48,7 +48,7 @@
 
 <!-- <FormLabel {fp} /> -->
 {#if dataObj && dataObjData}
-	<div class="border-2 px-4 pb-4 h-96">
+	<div class="border-2 px-4 pb-4">
 		<LayoutTab bind:state={field.stateShell} {component} {dataObj} {dataObjData} on:formCancelled />
 	</div>
 {/if}

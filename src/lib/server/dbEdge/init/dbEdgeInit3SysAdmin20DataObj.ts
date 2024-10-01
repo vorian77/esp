@@ -314,6 +314,14 @@ async function initDataObj() {
 				indexTable: 0
 			},
 			{
+				codeFieldElement: 'toggle',
+				columnName: 'isListSuppressSelect',
+				isDisplayable: true,
+				orderDisplay: 265,
+				orderDefine: 265,
+				indexTable: 0
+			},
+			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'listReorderColumn',

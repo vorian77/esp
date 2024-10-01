@@ -124,9 +124,6 @@ devDependencies:
   svelte-check:
     specifier: ^3.8.6
     version: 3.8.6(@babel/core@7.25.2)(postcss@8.4.45)(svelte@4.2.19)
-  svelte-dnd-action:
-    specifier: ^0.9.50
-    version: 0.9.50(svelte@4.2.19)
   svelte-multiselect:
     specifier: ^10.3.0
     version: 10.3.0
@@ -5367,14 +5364,6 @@ packages:
       - sass
       - stylus
       - sugarss
-    dev: true
-
-  /svelte-dnd-action@0.9.50(svelte@4.2.19):
-    resolution: {integrity: sha512-EnUyBmiMjflGr+NKfPmPpyareKEbQkdVGRTv6YyBHIEXPOv92XHgPHubErQ1tOaXaZ2c7y4Gja85uA1/Desw/Q==}
-    peerDependencies:
-      svelte: '>=3.23.0 || ^5.0.0-next.0'
-    dependencies:
-      svelte: 4.2.19
     dev: true
 
   /svelte-hmr@0.16.0(svelte@4.2.19):

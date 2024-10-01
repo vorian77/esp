@@ -1,12 +1,12 @@
 <script lang="ts">
-	export let isListHideFilter: boolean
+	export let isHideFilter: boolean
 	export let listFilterText: string
 	export let rowCountFiltered: number
 	export let rowCountSelected: number
 	export let setFilter: (listFilterText: string) => void
 </script>
 
-{#if !isListHideFilter}
+{#if !isHideFilter}
 	<div class="w-full flex mb-6 justify-between">
 		<button
 			class="btn variant-filled-primary mr-4 {listFilterText === '' ? 'hidden' : ''}"

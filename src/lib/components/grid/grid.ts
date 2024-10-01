@@ -18,125 +18,6 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/other/grid.ts'
 
-export class CellEditorSelect implements ICellEditorComp {
-	// dummy selector for modal select fields
-	gui!: HTMLElement
-	params!: ICellEditorParams
-
-	init(params: ICellEditorParams) {
-		this.params = params
-	}
-
-	getGui() {
-		return this.gui
-	}
-
-	getValue() {
-		return this.params.value
-	}
-
-	afterGuiAttached() {}
-
-	isPopup() {
-		return false
-	}
-}
-
-export function cellEditorSelectorParmField(params: ICellEditorParams) {
-	switch (params.data.codeDataType) {
-		case PropDataType.date:
-			return {
-				component: 'agDateStringCellEditor'
-			}
-		case PropDataType.uuid:
-		case PropDataType.uuidList:
-			return {
-				component: CellEditorSelect
-			}
-		default:
-			error(500, {
-				file: FILENAME,
-				function: `${FILENAME}.cellEditorSelectorParmField`,
-				message: `No case defined for PropDataType: ${params.data.codeDataType}`
-			})
-	}
-}
-
-export class CellRendererParmField implements ICellRendererComp {
-	gui!: HTMLDivElement
-
-	init(params: ICellRendererParams) {
-		this.gui = document.createElement('div')
-
-		let style = 'width: 115%; margin-left: -7%; border: 0; font-size: 14px;'
-		const fieldName = params.data.name
-		const parmFields = params?.colDef?.context.parmFields
-		if (parmFields) {
-			const field = parmFields.find((f: Field) => f.colDO.propName === fieldName)
-			if (field && field.fieldAccess === FieldAccess.required) {
-				style += ' background-color: rgb(219,234,254);'
-			}
-		}
-		this.gui.innerHTML = `<input id="${fieldName}" name="${fieldName}" type="text" style="${style}" readonly value="${this.getDisplayValue(params)}"/>`
-	}
-
-	getDisplayValue(params: ICellRendererParams) {
-		return params.value
-	}
-
-	getGui() {
-		return this.gui
-	}
-	refresh(params: ICellRendererParams): boolean {
-		return false
-	}
-}
-
-export class CellRendererParmFieldDate extends CellRendererParmField {
-	getDisplayValue(params: ICellRendererParams) {
-		return params.value ? params.value : ''
-	}
-}
-
-export class CellRendererParmFieldSelect extends CellRendererParmField {
-	getDisplayValue(params: ICellRendererParams) {
-		let displayValue = ''
-		if (params.value) {
-			const parmFieldName = params.data.name
-			const parmFields = params?.colDef?.context.parmFields
-			const field = parmFields.find((f: Field) => f.colDO.propName === parmFieldName)
-			const fieldItems = field.colDO.items
-			const currentIds = Array.isArray(params.value) ? params.value : [params.value]
-			currentIds.forEach((id: string) => {
-				const item = fieldItems.find((i: FieldItem) => i.data === id)
-				if (item) displayValue += displayValue ? ',' + item.display : item.display
-			})
-		}
-		return displayValue
-	}
-}
-
-export function cellRendererSelectorParmField(params: ICellRendererParams) {
-	switch (params.data.codeDataType) {
-		case PropDataType.date:
-			return {
-				// component: (params: ICellRendererParams) => `${params.value || ''}`
-				component: CellRendererParmFieldDate
-			}
-		case PropDataType.uuid:
-		case PropDataType.uuidList:
-			return {
-				component: CellRendererParmFieldSelect
-			}
-		default:
-			error(500, {
-				file: FILENAME,
-				function: `${FILENAME}.cellRendererSelectorParmField`,
-				message: `No case defined for PropDataType: ${params.data.codeDataType}`
-			})
-	}
-}
-
 export const columnTypes = {
 	// cellStyle: { 'background-color': 'orange' }
 	ctBoolean: {},
@@ -197,6 +78,12 @@ export const columnTypes = {
 	ctTextLarge: {
 		cellEditor: 'agLargeTextCellEditor'
 	}
+}
+
+export const filterValueGetterDateString = (params: ValueGetterParams) => {
+	const d = new Date(1979, 10, 10)
+	// console.log('filterValueGetterDateString', { params, d })
+	return d
 }
 
 export const getSelectedNodeIds = (gridApi: GridApi) => {
@@ -293,9 +180,11 @@ export class GridManagerOptions {
 	columnDefs: ColDef[]
 	fCallbackFilter: Function
 	fCallbackUpdateValue: Function
-	isListHideFilter: boolean
+	isEmbed: boolean
+	isHideFilter: boolean
 	isSelect: boolean
 	isSelectMulti: boolean
+	isSuppressSelect: boolean
 	listFilterText: string
 	listRecordIdSelected: []
 	listReorderColumn: string
@@ -308,9 +197,11 @@ export class GridManagerOptions {
 		this.columnDefs = required(obj.columnDefs, clazz, 'columnDefs')
 		this.fCallbackFilter = obj.fCallbackFilter
 		this.fCallbackUpdateValue = obj.fCallbackUpdateValue
-		this.isListHideFilter = booleanOrFalse(obj.isListHideFilter, 'isListHideFilter')
+		this.isEmbed = booleanOrFalse(obj.isEmbed, 'isEmbed')
+		this.isHideFilter = booleanOrFalse(obj.isHideFilter, 'isHideFilter')
 		this.isSelect = booleanOrFalse(obj.isSelect, 'isSelect')
 		this.isSelectMulti = booleanOrFalse(obj.isSelectMulti, 'isSelectMulti')
+		this.isSuppressSelect = booleanOrFalse(obj.isSuppressSelect, 'isSuppressSelect')
 		this.listFilterText = valueOrDefault(obj.listFilterText, '')
 		this.listRecordIdSelected = obj.listRecordIdSelected || []
 		this.listReorderColumn = obj.listReorderColumn || ''

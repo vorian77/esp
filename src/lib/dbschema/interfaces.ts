@@ -199,6 +199,7 @@ export namespace sys_core {
     "parentTable"?: sys_db.SysTable | null;
     "tables": SysDataObjTable[];
     "actionFieldGroup"?: SysDataObjActionFieldGroup | null;
+    "isListSuppressSelect"?: boolean | null;
     "listEditPresetExpr"?: string | null;
     "isListEdit": boolean;
     "codeListEditPresetType"?: SysCode | null;

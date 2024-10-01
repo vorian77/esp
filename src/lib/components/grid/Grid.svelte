@@ -63,9 +63,12 @@
 	let fCallbackFilter: Function
 	let fCallbackUpdateValue: Function
 	let grid: GridApi
-	let isListHideFilter = false
+	let innerHeight = window.innterHeight
+	let isEmbed: boolean
+	let isHideFilter = false
 	let isSelect = false
 	let isSelectMulti = false
+	let isSuppressSelect: boolean
 	let listFilterText = ''
 	let listReorderColumn: string
 	let rowCountFiltered: number
@@ -73,6 +76,28 @@
 	let rowData: any[]
 	let style = ''
 	let styleMaxHeight = ''
+
+	$: if (eGui) {
+		const rowCount = grid.getDisplayedRowCount()
+		const { headerHeight, rowHeight } = grid.getSizesForCurrentTheme()
+		const rowsMin = 3
+		let rowsMax: number
+		let rowsDisplay: number
+
+		if (isEmbed) {
+			rowsMax = 8
+			rowsDisplay = rowCount < rowsMin ? rowsMin : rowCount > rowsMax ? rowsMax : rowCount
+		} else {
+			// const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+			const vh = innerHeight
+			const gridY = eGui.getBoundingClientRect().y
+			const footerH = 100
+			rowsMax = Math.floor(((vh - gridY - footerH) * 0.85) / rowHeight)
+			rowsDisplay = rowCount < rowsMin ? rowsMin : rowCount > rowsMax ? rowsMax : rowCount
+		}
+		const height = headerHeight + rowsDisplay * rowHeight + 9
+		eGui.style.setProperty('height', `${height}px`)
+	}
 
 	function onCellValueChanged(event: NewValueParams) {
 		if (fCallbackUpdateValue) fCallbackUpdateValue(event.colDef.field, event.data)
@@ -83,9 +108,11 @@
 		columnDefs = options.columnDefs
 		fCallbackFilter = options.fCallbackFilter
 		fCallbackUpdateValue = options.fCallbackUpdateValue
-		isListHideFilter = options.isListHideFilter || options.listReorderColumn !== ''
+		isEmbed = options.isEmbed
+		isHideFilter = options.isHideFilter || options.listReorderColumn !== ''
 		isSelect = options.isSelect
 		isSelectMulti = options.isSelectMulti
+		isSuppressSelect = options.isSuppressSelect
 		listFilterText = options.listFilterText
 		listReorderColumn = options.listReorderColumn
 		rowData = options.rowData
@@ -103,7 +130,7 @@
 
 		// derived columnDefs changes
 		setGridColumnsProp(columnDefs, '', 'rowDrag', listReorderColumn ? true : false)
-		styleMaxHeight = isListHideFilter ? '100%' : 'calc(100% - 70px)'
+		styleMaxHeight = isHideFilter ? '100%' : 'calc(100% - 70px)'
 
 		const gridOptions = {
 			columnDefs,
@@ -120,7 +147,11 @@
 			onRowDragMove,
 			onSelectionChanged,
 			rowData,
-			rowSelection: isSelect && isSelectMulti ? 'multiple' : 'single',
+			rowSelection: isSuppressSelect
+				? undefined
+				: isSelect && isSelectMulti
+					? 'multiple'
+					: 'single',
 			rowDragManaged: listReorderColumn ? true : false
 			// stopEditingWhenCellsLoseFocus: false
 		}
@@ -235,8 +266,8 @@
 	}
 </script>
 
-<GridFilter {isListHideFilter} {listFilterText} {rowCountFiltered} {rowCountSelected} {setFilter} />
-
+<svelte:window bind:innerHeight />
+<GridFilter {isHideFilter} {listFilterText} {rowCountFiltered} {rowCountSelected} {setFilter} />
 <div bind:this={eGui} style:max-height={styleMaxHeight} {style} class="ag-theme-quartz h-full" />
 
 <!-- <DataViewer header="rowCount" data={{ rowCountFiltered, rowCountSelected }} /> -->

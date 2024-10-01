@@ -70,6 +70,7 @@ module sys_core {
     exprSort: str;
     required isListEdit: bool;
     isListHideSearch: bool;
+    isListSuppressSelect: bool;
     listEditPresetExpr: str;
     listReorderColumn: sys_db::SysColumn;
   

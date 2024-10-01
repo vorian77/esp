@@ -37,22 +37,24 @@
 	import { recordsSelectAll, sortInit, sort } from '$comps/form/formList'
 	import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
 	import { FieldParm } from '$comps/form/fieldParm'
-	import { dndzone } from 'svelte-dnd-action'
-	import { flip } from 'svelte/animate'
 	import FormElement from '$comps/form/FormElement.svelte'
 	import Grid from '$comps/grid/Grid.svelte'
 	import {
-		CellEditorSelect,
-		cellEditorSelectorParmField,
-		cellRendererSelectorParmField,
+		filterValueGetterDateString,
 		getSelectedNodeIds,
 		GridManagerOptions
 	} from '$comps/grid/grid'
+	import {
+		CellEditorSelect,
+		cellEditorSelectorParmField,
+		cellRendererSelectorParmField
+	} from '$comps/grid/gridParmField'
 	import { onMount } from 'svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormList.svelte'
+
 	const animationDurationMs = 300
 	let dataHeightPadding = '400' //  <todo> 240314 - calc specific padding
 	let dataHeight = `max-height: calc(100vh - ${dataHeightPadding}px);`
@@ -238,6 +240,8 @@
 					case PropDataType.date:
 						defn.cellDataType = 'customDateString'
 						// defn.filter = 'agDateColumnFilter'
+						// defn.filterValueGetter = filterValueGetterDateString
+						// defn.cellDataType =
 						break
 
 					case PropDataType.datetime:
@@ -285,7 +289,7 @@
 					case PropDataType.uuid:
 						defn.cellDataType =
 							f.fieldElement === FieldElement.textArea ? 'customTextLarge' : 'customText'
-						// defn.filter = 'agTextColumnFilter'
+						defn.filter = 'agTextColumnFilter'
 						break
 
 					default:
@@ -339,9 +343,11 @@
 			columnDefs,
 			fCallbackFilter: fGridCallbackFilter,
 			fCallbackUpdateValue: fGridCallbackUpdateValue,
-			isListHideFilter: dataObj.raw.isListHideSearch,
+			isEmbed: dataObj.isListEmbed,
+			isHideFilter: dataObj.raw.isListHideSearch,
 			isSelect,
 			isSelectMulti: isSelect,
+			isSuppressSelect: dataObj.raw.isListSuppressSelect,
 			listFilterText,
 			listRecordIdSelected: state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected) || [],
 			listReorderColumn: dataObj.raw.listReorderColumn,
@@ -354,10 +360,8 @@
 
 {#if gridOptions}
 	<!-- <DataViewer header="FormList.dataObj.objStatus" data={dataObj.objStatus} /> -->
-	<div class="h-[70vh]">
-		{#key gridOptions}
-			<Grid options={gridOptions} />
-		{/key}
-		<!-- <DataViewer header="gridManager" data={gm.rowData} /> -->
-	</div>
+	{#key gridOptions}
+		<Grid options={gridOptions} />
+	{/key}
+	<!-- <DataViewer header="gridManager" data={gm.rowData} /> -->
 {/if}

@@ -1379,6 +1379,12 @@ export async function initPreColumn() {
 	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'bool',
+		header: 'List - Suppress Select',
+		name: 'isListSuppressSelect'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'bool',
 		header: 'Multiple Select',
 		name: 'isMultiSelect'
 	})
