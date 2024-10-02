@@ -24,14 +24,14 @@ async function initUserResources() {
 	/* programs */
 	await nodeObjPrograms([
 		['app_sys', 'node_pgm_sys_admin', 'Administration', 10, 'application'],
-		['app_cm', 'node_pgm_cm_staff_admin', 'AI-Role: Admin', 30, 'application'],
-		['app_cm', 'node_pgm_cm_staff_provider', 'AI-Role: Provider', 40, 'application'],
-		['app_cm', 'node_pgm_cm_student', 'AI-Role: Student', 50, 'application']
+		['app_cm', 'node_pgm_cm_staff_provider', 'Staff', 40, 'application']
 	])
+	// ['app_cm', 'node_pgm_cm_staff_admin', 'Administration', 30, 'application'],
+	// ['app_cm', 'node_pgm_cm_student', 'AI-Role: Student', 50, 'application']
 
 	sectionHeader('NodeObjHeader - Report')
 	await nodeObjHeaders([
-		['app_cm', 'node_pgm_cm_staff_provider', 'node_hdr_cm_ai_reports', 'Reports', 30, 'application']
+		['app_cm', 'node_pgm_cm_staff_provider', 'node_hdr_cm_ai_reports', 'Reports', 40, 'application']
 	])
 
 	/* widgets */
@@ -69,15 +69,15 @@ async function initUserType() {
 
 	/* programs */
 	await userTypeResourcesPrograms([
-		['ut_cm_staff_admin', 'node_pgm_cm_staff_admin'],
 		['ut_cm_staff_admin', 'node_pgm_cm_staff_provider'],
-		['ut_cm_staff_admin', 'node_pgm_cm_student'],
 		['ut_cm_staff_provider', 'node_pgm_cm_staff_provider'],
-		['ut_sys_admin', 'node_pgm_cm_staff_admin'],
 		['ut_sys_admin', 'node_pgm_cm_staff_provider'],
-		['ut_sys_admin', 'node_pgm_cm_student'],
 		['ut_sys_admin', 'node_pgm_sys_admin']
 	])
+	// ['ut_cm_staff_admin', 'node_pgm_cm_staff_admin'],
+	// ['ut_cm_staff_admin', 'node_pgm_cm_student'],
+	// ['ut_sys_admin', 'node_pgm_cm_staff_admin'],
+	// ['ut_sys_admin', 'node_pgm_cm_student'],
 
 	/* widgets */
 	await userTypeResourcesWidgets([

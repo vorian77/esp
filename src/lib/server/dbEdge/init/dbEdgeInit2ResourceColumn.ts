@@ -405,6 +405,13 @@ export async function initPreColumn() {
 	})
 	await addColumn({
 		codeDataType: 'link',
+		header: 'Organization Type',
+		isMultiSelect: false,
+		name: 'codeOrgType',
+		owner: 'app_sys'
+	})
+	await addColumn({
+		codeDataType: 'link',
 		header: 'Token Action',
 		isMultiSelect: false,
 		name: 'codePacketAction',
@@ -667,6 +674,13 @@ export async function initPreColumn() {
 		header: 'Contact',
 		isMultiSelect: false,
 		name: 'contact',
+		owner: 'app_sys'
+	})
+	await addColumn({
+		codeDataType: 'link',
+		header: 'Contacts',
+		isMultiSelect: true,
+		name: 'contacts',
 		owner: 'app_sys'
 	})
 	await addColumn({
@@ -1367,14 +1381,14 @@ export async function initPreColumn() {
 	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'bool',
-		header: 'List - Hide Search',
-		name: 'isListHideSearch'
+		header: 'List Row Action',
+		name: 'isListRowAction'
 	})
 	await addColumn({
 		owner: 'app_sys',
 		codeDataType: 'bool',
-		header: 'List Row Action',
-		name: 'isListRowAction'
+		header: 'List - Suppress Filter/Sort',
+		name: 'isListSuppressFilterSort'
 	})
 	await addColumn({
 		owner: 'app_sys',
@@ -1937,6 +1951,12 @@ export async function initPreColumn() {
 		codeDataType: 'float64',
 		header: 'Wage',
 		name: 'wage'
+	})
+	await addColumn({
+		owner: 'app_sys',
+		codeDataType: 'str',
+		header: 'Website',
+		name: 'website'
 	})
 	await addColumn({
 		owner: 'app_sys',

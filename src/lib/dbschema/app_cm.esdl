@@ -139,6 +139,8 @@ module app_cm {
     note: str;
   }
 
+  type CmPartner extending sys_core::SysOrg {}
+
   # FUNCTIONS
   function getCMTrainingCourse(name: str) -> optional app_cm::CmCourse
       using (select assert_single((select app_cm::CmCourse filter .name = name)));

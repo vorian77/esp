@@ -228,6 +228,15 @@ const $CmCsfSchoolPlacement = $.makeType<$CmCsfSchoolPlacement>(_.spec, "be01e4c
 
 const CmCsfSchoolPlacement: $.$expr_PathNode<$.TypeSet<$CmCsfSchoolPlacement, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCsfSchoolPlacement, $.Cardinality.Many), null);
 
+export type $CmPartnerλShape = $.typeutil.flatten<_sys_core.$SysOrgλShape & {
+}>;
+type $CmPartner = $.ObjectType<"app_cm::CmPartner", $CmPartnerλShape, null, [
+  ..._sys_core.$SysOrg['__exclusives__'],
+]>;
+const $CmPartner = $.makeType<$CmPartner>(_.spec, "1006f0cc-7fde-11ef-8412-1f8db6329386", _.syntax.literal);
+
+const CmPartner: $.$expr_PathNode<$.TypeSet<$CmPartner, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmPartner, $.Cardinality.Many), null);
+
 export type $CmServiceFlowλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "<serviceFlow[is app_cm::CmClientServiceFlow]": $.LinkDesc<$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<serviceFlow": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -265,7 +274,7 @@ function getCMTrainingCourse(...args: any[]) {
 
 
 
-export { $CmClient, CmClient, $CmClientServiceFlow, CmClientServiceFlow, $CmCohort, CmCohort, $CmCohortAttd, CmCohortAttd, $CmCourse, CmCourse, $CmCsfData, CmCsfData, $CmCsfCohort, CmCsfCohort, $CmCsfCohortAttd, CmCsfCohortAttd, $CmCsfDocument, CmCsfDocument, $CmCsfJobPlacement, CmCsfJobPlacement, $CmCsfNote, CmCsfNote, $CmCsfSchoolPlacement, CmCsfSchoolPlacement, $CmServiceFlow, CmServiceFlow };
+export { $CmClient, CmClient, $CmClientServiceFlow, CmClientServiceFlow, $CmCohort, CmCohort, $CmCohortAttd, CmCohortAttd, $CmCourse, CmCourse, $CmCsfData, CmCsfData, $CmCsfCohort, CmCsfCohort, $CmCsfCohortAttd, CmCsfCohortAttd, $CmCsfDocument, CmCsfDocument, $CmCsfJobPlacement, CmCsfJobPlacement, $CmCsfNote, CmCsfNote, $CmCsfSchoolPlacement, CmCsfSchoolPlacement, $CmPartner, CmPartner, $CmServiceFlow, CmServiceFlow };
 
 type __defaultExports = {
   "CmClient": typeof CmClient;
@@ -280,6 +289,7 @@ type __defaultExports = {
   "CmCsfJobPlacement": typeof CmCsfJobPlacement;
   "CmCsfNote": typeof CmCsfNote;
   "CmCsfSchoolPlacement": typeof CmCsfSchoolPlacement;
+  "CmPartner": typeof CmPartner;
   "CmServiceFlow": typeof CmServiceFlow;
   "getCMTrainingCourse": typeof getCMTrainingCourse
 };
@@ -296,6 +306,7 @@ const __defaultExports: __defaultExports = {
   "CmCsfJobPlacement": CmCsfJobPlacement,
   "CmCsfNote": CmCsfNote,
   "CmCsfSchoolPlacement": CmCsfSchoolPlacement,
+  "CmPartner": CmPartner,
   "CmServiceFlow": CmServiceFlow,
   "getCMTrainingCourse": getCMTrainingCourse
 };

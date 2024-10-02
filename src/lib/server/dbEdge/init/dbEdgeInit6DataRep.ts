@@ -21,7 +21,7 @@ async function initReportCMTrainingCohortAttendance() {
 		actionFieldGroup: 'doag_report_render',
 		description: 'Cohort attendance report.',
 		exprFilter: '.cohort.id IN <parms,uuidList,pvCohorts>',
-		header: 'Cohort Attendance',
+		header: 'Cohort Attendance - Summary',
 		name: 'report_cm_training_cohort_attendance',
 		owner: 'app_cm_training',
 		tables: [{ index: 0, table: 'CmCsfCohort' }],
@@ -432,7 +432,7 @@ async function initReportCMTrainingCohortWages() {
 		description: 'Cohort wages report.',
 		exprFilter:
 			'.csf.client IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf.client',
-		header: 'Wages',
+		header: 'Job Placements - Detail',
 		name: 'report_cm_training_cohort_job_placement',
 		owner: 'app_cm_training',
 		tables: [{ index: 0, table: 'CmCsfJobPlacement' }],

@@ -19,9 +19,16 @@ module sys_core {
     addr1: str;
     addr2: str;
     city: str;
+    codeOrgType: sys_core::SysCode;
     codeState: sys_core::SysCode;
+    multi contacts: default::SysPerson{
+      on target delete allow;
+    };
+    note: str;
+    website: str;
     zip: str;
-    orderDefine: default::nonNegative;
+    orderDefine: default::nonNegative;  
+    
     testBool: bool;
     multi testCodeMulti: sys_core::SysCode;
     testCodeSingle: sys_core::SysCode;
@@ -69,7 +76,7 @@ module sys_core {
     exprObject: str;
     exprSort: str;
     required isListEdit: bool;
-    isListHideSearch: bool;
+    isListSuppressFilterSort: bool;
     isListSuppressSelect: bool;
     listEditPresetExpr: str;
     listReorderColumn: sys_db::SysColumn;

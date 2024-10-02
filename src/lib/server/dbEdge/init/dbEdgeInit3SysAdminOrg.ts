@@ -20,7 +20,7 @@ async function initFieldListSelectUserTypes() {
 		codeComponent: 'FormList',
 		exprFilter: 'none',
 		header: 'Select User Types',
-		name: 'dofls_sys_sys_admin_resource',
+		name: 'dofls_sys_sys_admin_user_type',
 		owner: 'app_sys_admin_org',
 		tables: [{ index: 0, table: 'SysUserType' }],
 		fields: [
@@ -46,8 +46,8 @@ async function initFieldListSelectUserTypes() {
 	await addDataObjFieldEmbedListSelect({
 		actionFieldGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select UserType(s)',
-		dataObjList: 'dofls_sys_sys_admin_resource',
-		name: 'fels_sys_sys_admin_resources',
+		dataObjList: 'dofls_sys_sys_admin_user_type',
+		name: 'fels_sys_sys_admin_user_type',
 		owner: 'app_sys_admin_org'
 	})
 }
@@ -59,26 +59,26 @@ async function initOrg() {
 		codeComponent: 'FormList',
 		exprFilter: 'none',
 		header: 'Organizations',
-		isListEdit: true,
-		listReorderColumn: 'orderDefine',
+		isListEdit: false,
+		// listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_admin_org_list',
 		owner: 'app_sys_admin_org',
 		tables: [{ index: 0, table: 'SysOrg' }],
 		fields: [
-			// {
-			// 	columnName: 'id',
-			// 	indexTable: 0,
-			// 	isDisplayable: false,
-			// 	orderDefine: 10
-			// },
 			{
-				codeAccess: 'readOnly',
 				columnName: 'id',
 				indexTable: 0,
-				isDisplayable: true,
-				orderDefine: 10,
-				orderDisplay: 10
+				isDisplayable: false,
+				orderDefine: 10
 			},
+			// {
+			// 	codeAccess: 'readOnly',
+			// 	columnName: 'id',
+			// 	indexTable: 0,
+			// 	isDisplayable: true,
+			// 	orderDefine: 10,
+			// 	orderDisplay: 10
+			// },
 			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
@@ -389,7 +389,7 @@ async function initUser() {
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
-				fieldEmbedListSelect: 'fels_sys_sys_admin_resources',
+				fieldEmbedListSelect: 'fels_sys_sys_admin_user_type',
 				indexTable: 0,
 				linkTable: 'SysUserType'
 			},

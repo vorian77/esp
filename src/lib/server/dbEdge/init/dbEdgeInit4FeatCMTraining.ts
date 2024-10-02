@@ -1,5 +1,8 @@
 import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
-import { addDataObj } from '$server/dbEdge/init/dbEdgeInitUtilities20DataObj'
+import {
+	addDataObj,
+	addDataObjFieldEmbedListConfig
+} from '$server/dbEdge/init/dbEdgeInitUtilities20DataObj'
 import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
 
 export async function initFeatTraining() {
@@ -9,6 +12,8 @@ export async function initFeatTraining() {
 	await initCohortStudentRoster()
 	await initCohortAttd()
 	await initCohortAttdSheet()
+	await initFieldListConfigPartnerContact()
+	await initPartner()
 }
 
 async function initCourse() {
@@ -1084,5 +1089,490 @@ async function initCohortAttdSheet() {
 		orderDefine: 10,
 		owner: 'app_cm_training',
 		parentNodeName: 'node_obj_cm_cohort_attd_detail'
+	})
+}
+
+async function initPartner() {
+	await addDataObj({
+		actionFieldGroup: 'doag_list',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		exprFilter: '.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).orgs',
+		header: 'Partners',
+		name: 'data_obj_cm_partner_list',
+		owner: 'app_cm_training',
+		tables: [{ index: 0, table: 'CmPartner' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'name',
+				indexTable: 0,
+				isDisplayable: true,
+				orderCrumb: 10,
+				orderDisplay: 20,
+				orderDefine: 20
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeOrgType',
+				headerAlt: 'Partner Type',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0,
+				linkColumns: ['name']
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'addr1',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'addr2',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'city',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeState',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0,
+				linkColumns: ['name']
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'zip',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'website',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'note',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 110,
+				orderDefine: 110
+			}
+		]
+	})
+
+	await addDataObj({
+		actionFieldGroup: 'doag_detail',
+		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
+		header: 'Partner',
+		name: 'data_obj_cm_partner_detail',
+		owner: 'app_cm_training',
+		tables: [{ index: 0, table: 'CmPartner' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				columnName: 'owner',
+				orderDefine: 20,
+				indexTable: 0,
+				isDisplayable: false,
+				isExcludeUpdate: true,
+				linkExprSave: '(SELECT sys_core::getOrg(<user,str,org.name>))',
+				linkTable: 'SysOrg'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30
+			},
+			{
+				columnName: 'name',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeOrgType',
+				headerAlt: 'Partner Type',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItemsParmName: 'ct_cm_partner_type',
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'website',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70
+			},
+			{
+				codeFieldElement: 'tagSection',
+				codeColor: 'black',
+				columnName: 'custom_section_start',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				headerAlt: 'Address'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'addr1',
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'addr2',
+				isDisplayable: true,
+				orderDisplay: 110,
+				orderDefine: 110,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 120,
+				orderDefine: 120
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 130,
+				orderDefine: 130
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'city',
+				isDisplayable: true,
+				orderDisplay: 140,
+				orderDefine: 140,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeState',
+				isDisplayable: true,
+				orderDisplay: 150,
+				orderDefine: 150,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_state',
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'zip',
+				isDisplayable: true,
+				orderDisplay: 160,
+				orderDefine: 160,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 170,
+				orderDefine: 170
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				isDisplayable: true,
+				orderDisplay: 180,
+				orderDefine: 180
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'embedListConfig',
+				columnName: 'contacts',
+				fieldEmbedListConfig: 'flec_cm_partner_contact',
+				indexTable: 0,
+				isDisplayable: true,
+				linkTable: 'SysPerson',
+				orderDefine: 190,
+				orderDisplay: 190
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 300,
+				orderDefine: 300,
+				indexTable: 0
+			},
+
+			/* management */
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 1000,
+				orderDefine: 1000
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				isDisplayable: true,
+				orderDisplay: 1010,
+				orderDefine: 1010,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				isDisplayable: true,
+				orderDisplay: 1020,
+				orderDefine: 1020,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				isDisplayable: true,
+				orderDisplay: 1030,
+				orderDefine: 1030,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: true,
+				orderDisplay: 1040,
+				orderDefine: 1040,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 1050,
+				orderDefine: 1050
+			}
+		]
+	})
+
+	await addNodeProgramObj({
+		codeIcon: 'application',
+		dataObj: 'data_obj_cm_partner_list',
+		header: 'Partners',
+		isHideRowManager: false,
+		name: 'node_obj_cm_partner_list',
+		orderDefine: 20,
+		owner: 'app_cm_training',
+		parentNodeName: 'node_pgm_cm_staff_provider'
+	})
+
+	await addNodeProgramObj({
+		codeIcon: 'application',
+		dataObj: 'data_obj_cm_partner_detail',
+		header: 'Partner',
+		isHideRowManager: false,
+		name: 'node_obj_cm_partner_detail',
+		orderDefine: 10,
+		owner: 'app_cm_training',
+		parentNodeName: 'node_obj_cm_partner_list'
+	})
+}
+
+async function initFieldListConfigPartnerContact() {
+	sectionHeader('Embed List Config - Training Partner Contact')
+
+	await addDataObj({
+		actionFieldGroup: 'doag_embed_list_config',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		header: 'Contacts',
+		name: 'doflc_cm_partner_contact_list',
+		owner: 'app_cm_training',
+		tables: [{ index: 0, table: 'SysPerson' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'firstName',
+				indexTable: 0,
+				isDisplayable: true,
+				orderCrumb: 20,
+				orderDefine: 20,
+				orderDisplay: 220,
+				orderSort: 20
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'lastName',
+				indexTable: 0,
+				isDisplayable: true,
+				orderCrumb: 10,
+				orderDefine: 30,
+				orderDisplay: 30,
+				orderSort: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'phoneMobile',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 40,
+				orderDisplay: 40
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'email',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 50,
+				orderDisplay: 50
+			}
+		]
+	})
+
+	await addDataObj({
+		actionFieldGroup: 'doag_dialog_form_detail',
+		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
+		header: 'Contact',
+		name: 'doflc_cm_partner_contact_detail',
+		owner: 'app_cm_training',
+		tables: [{ index: 0, table: 'SysPerson' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20
+			},
+			{
+				columnName: 'firstName',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				columnName: 'lastName',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				codeFieldElement: 'tel',
+				columnName: 'phoneMobile',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'email',
+				columnName: 'email',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90
+			}
+		]
+	})
+
+	await addDataObjFieldEmbedListConfig({
+		actionFieldGroupModal: 'doag_dialog_footer_detail',
+		dataObjEmbed: 'doflc_cm_partner_contact_list',
+		dataObjModal: 'doflc_cm_partner_contact_detail',
+		name: 'flec_cm_partner_contact',
+		owner: 'app_cm_training'
 	})
 }

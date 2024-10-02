@@ -39,11 +39,7 @@
 	import { FieldParm } from '$comps/form/fieldParm'
 	import FormElement from '$comps/form/FormElement.svelte'
 	import Grid from '$comps/grid/Grid.svelte'
-	import {
-		filterValueGetterDateString,
-		getSelectedNodeIds,
-		GridManagerOptions
-	} from '$comps/grid/grid'
+	import { getSelectedNodeIds, GridManagerOptions } from '$comps/grid/grid'
 	import {
 		CellEditorSelect,
 		cellEditorSelectorParmField,
@@ -214,6 +210,8 @@
 		fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
 		const fieldAccessEditable = [FieldAccess.optional, FieldAccess.required]
 
+		console.log('FormList.setGridColumns.fieldsDisplayable:', fieldsDisplayable)
+
 		dataObj.fields.forEach((f) => {
 			let defn = {}
 			const isEditable = dataObj.raw.isListEdit && fieldAccessEditable.includes(f.fieldAccess)
@@ -239,15 +237,11 @@
 
 					case PropDataType.date:
 						defn.cellDataType = 'customDateString'
-						// defn.filter = 'agDateColumnFilter'
-						// defn.filterValueGetter = filterValueGetterDateString
-						// defn.cellDataType =
 						break
 
 					case PropDataType.datetime:
 						// <todo> - 240921 - text until proper custom data type is built
 						defn.cellDataType = 'text'
-						// defn.filter = 'agDateColumnFilter'
 						break
 
 					case PropDataType.float64:
@@ -257,14 +251,12 @@
 								: f.fieldElement === FieldElement.percentage
 									? 'customNumberPercentage'
 									: 'customNumber'
-						// defn.filter = 'agNumberColumnFilter'
 						break
 
 					case PropDataType.int16:
 					case PropDataType.int32:
 					case PropDataType.int64:
 						defn.cellDataType = 'customNumberInt'
-						// defn.filter = 'agNumberColumnFilter'
 						break
 
 					case PropDataType.json:
@@ -289,7 +281,6 @@
 					case PropDataType.uuid:
 						defn.cellDataType =
 							f.fieldElement === FieldElement.textArea ? 'customTextLarge' : 'customText'
-						defn.filter = 'agTextColumnFilter'
 						break
 
 					default:
@@ -344,7 +335,7 @@
 			fCallbackFilter: fGridCallbackFilter,
 			fCallbackUpdateValue: fGridCallbackUpdateValue,
 			isEmbed: dataObj.isListEmbed,
-			isHideFilter: dataObj.raw.isListHideSearch,
+			isHideFilter: dataObj.raw.isListSuppressFilterSort,
 			isSelect,
 			isSelectMulti: isSelect,
 			isSuppressSelect: dataObj.raw.isListSuppressSelect,

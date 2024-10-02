@@ -138,6 +138,7 @@
 			dataTypeDefinitions,
 			defaultColDef: {
 				flex: 1,
+				filter: !isHideFilter,
 				sortable: !listReorderColumn
 			},
 			getRowId: (params: GetRowIdParams) => params.data.id || '',
@@ -153,7 +154,6 @@
 					? 'multiple'
 					: 'single',
 			rowDragManaged: listReorderColumn ? true : false
-			// stopEditingWhenCellsLoseFocus: false
 		}
 		grid = createGrid(eGui, gridOptions)
 

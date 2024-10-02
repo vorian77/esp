@@ -170,6 +170,7 @@ export namespace app_cm {
     "date": edgedb.LocalDate;
     "note"?: string | null;
   }
+  export interface CmPartner extends sys_core.SysOrg {}
   export interface CmServiceFlow extends sys_core.SysObj {}
 }
 export namespace sys_core {
@@ -179,6 +180,29 @@ export namespace sys_core {
   }
   export interface SysObj extends ObjRoot, sys_user.Mgmt {
     "owner": ObjRoot;
+  }
+  export interface SysEnt extends SysObj {
+    "roles": SysCode[];
+  }
+  export interface SysOrg extends SysEnt {
+    "testCodeSingle"?: SysCode | null;
+    "orderDefine"?: number | null;
+    "testBool"?: boolean | null;
+    "testDateTime"?: edgedb.LocalDateTime | null;
+    "testNumberInt"?: number | null;
+    "testNumberFloat"?: number | null;
+    "codeOrgType"?: SysCode | null;
+    "note"?: string | null;
+    "website"?: string | null;
+    "testDate"?: edgedb.LocalDate | null;
+    "testText"?: string | null;
+    "contacts": SysPerson[];
+    "codeState"?: SysCode | null;
+    "addr1"?: string | null;
+    "addr2"?: string | null;
+    "city"?: string | null;
+    "zip"?: string | null;
+    "testCodeMulti": SysCode[];
   }
   export interface SysCode extends SysObj {
     "valueDecimal"?: number | null;
@@ -200,6 +224,7 @@ export namespace sys_core {
     "tables": SysDataObjTable[];
     "actionFieldGroup"?: SysDataObjActionFieldGroup | null;
     "isListSuppressSelect"?: boolean | null;
+    "isListSuppressFilterSort"?: boolean | null;
     "listEditPresetExpr"?: string | null;
     "isListEdit": boolean;
     "codeListEditPresetType"?: SysCode | null;
@@ -213,7 +238,6 @@ export namespace sys_core {
     "subHeader"?: string | null;
     "exprSort"?: string | null;
     "listReorderColumn"?: sys_db.SysColumn | null;
-    "isListHideSearch"?: boolean | null;
   }
   export interface SysDataObjActionField extends SysObj {
     "codePacketAction": SysCode;
@@ -345,9 +369,6 @@ export namespace sys_core {
     "expr": string;
     "index": number;
   }
-  export interface SysEnt extends SysObj {
-    "roles": SysCode[];
-  }
   export interface SysNodeObj extends SysObj {
     "orderDefine": number;
     "isHideRowManager": boolean;
@@ -357,22 +378,6 @@ export namespace sys_core {
     "dataObj"?: SysDataObj | null;
     "parent"?: SysNodeObj | null;
     "page"?: string | null;
-  }
-  export interface SysOrg extends SysEnt {
-    "testCodeSingle"?: SysCode | null;
-    "orderDefine"?: number | null;
-    "testBool"?: boolean | null;
-    "testDateTime"?: edgedb.LocalDateTime | null;
-    "testNumberInt"?: number | null;
-    "testNumberFloat"?: number | null;
-    "testDate"?: edgedb.LocalDate | null;
-    "testText"?: string | null;
-    "codeState"?: SysCode | null;
-    "addr1"?: string | null;
-    "addr2"?: string | null;
-    "city"?: string | null;
-    "zip"?: string | null;
-    "testCodeMulti": SysCode[];
   }
   export interface SysResource extends SysEnt {}
 }
@@ -911,11 +916,14 @@ export interface types {
     "CmCsfJobPlacement": app_cm.CmCsfJobPlacement;
     "CmCsfNote": app_cm.CmCsfNote;
     "CmCsfSchoolPlacement": app_cm.CmCsfSchoolPlacement;
+    "CmPartner": app_cm.CmPartner;
     "CmServiceFlow": app_cm.CmServiceFlow;
   };
   "sys_core": {
     "ObjRoot": sys_core.ObjRoot;
     "SysObj": sys_core.SysObj;
+    "SysEnt": sys_core.SysEnt;
+    "SysOrg": sys_core.SysOrg;
     "SysCode": sys_core.SysCode;
     "SysCodeType": sys_core.SysCodeType;
     "SysDataObj": sys_core.SysDataObj;
@@ -936,9 +944,7 @@ export interface types {
     "SysDataObjFieldListItems": sys_core.SysDataObjFieldListItems;
     "SysDataObjTable": sys_core.SysDataObjTable;
     "SysDataObjWith": sys_core.SysDataObjWith;
-    "SysEnt": sys_core.SysEnt;
     "SysNodeObj": sys_core.SysNodeObj;
-    "SysOrg": sys_core.SysOrg;
     "SysResource": sys_core.SysResource;
   };
   "default": {

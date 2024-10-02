@@ -307,7 +307,7 @@ async function initDataObj() {
 			},
 			{
 				codeFieldElement: 'toggle',
-				columnName: 'isListHideSearch',
+				columnName: 'isListSuppressFilterSort',
 				isDisplayable: true,
 				orderDisplay: 260,
 				orderDefine: 260,

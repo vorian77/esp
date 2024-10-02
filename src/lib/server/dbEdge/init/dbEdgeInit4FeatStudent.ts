@@ -405,7 +405,7 @@ async function initStudent() {
 		header: 'Students',
 		isHideRowManager: false,
 		name: 'node_obj_cm_student_list',
-		orderDefine: 20,
+		orderDefine: 30,
 		owner: 'app_cm',
 		parentNodeName: 'node_pgm_cm_staff_provider'
 	})

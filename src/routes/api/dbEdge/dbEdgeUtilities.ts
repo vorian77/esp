@@ -150,7 +150,7 @@ export async function getDataObjById(dataObjId: string) {
 			header: true,
 			id: true,
 			isListEdit: true,
-			isListHideSearch: true,
+			isListSuppressFilterSort: true,
 			isListSuppressSelect: true,
 			listEditPresetExpr: true,
 			name: true,
@@ -433,11 +433,6 @@ export async function getReportUser(repUserId: string) {
 		elements: e.select(r.elements, (userE) => ({
 			element: shapeRepEl(userE.element),
 			isDisplay: userE.isDisplay,
-			filter: e.op(
-				e.op(userE.element.isDisplayable, '=', false),
-				'or',
-				e.op(userE.isDisplay, '=', true)
-			),
 			order_by: userE.orderDisplay
 		})),
 		headerUser: true,

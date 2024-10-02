@@ -80,12 +80,6 @@ export const columnTypes = {
 	}
 }
 
-export const filterValueGetterDateString = (params: ValueGetterParams) => {
-	const d = new Date(1979, 10, 10)
-	// console.log('filterValueGetterDateString', { params, d })
-	return d
-}
-
 export const getSelectedNodeIds = (gridApi: GridApi) => {
 	let selectedNodes: string[] = []
 	gridApi.forEachNode((node) => {

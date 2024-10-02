@@ -33,6 +33,7 @@ export async function query(
 	tab: AppLevelTab | undefined,
 	queryType: TokenApiQueryType
 ) {
+	const clazz = `${FILENAME}.query`
 	if (!tab) return false
 	let { dataTab, dataTree } = queryDataPre(state, tab, queryType)
 	const queryData = new TokenApiQueryData({ dataTab, tree: dataTree })

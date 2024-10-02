@@ -15,9 +15,8 @@ export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj
 	const repUserData = await getReport(queryData)
 	const repUser = new RepUser(repUserData)
 	const rawDataObjDyn = getRawDataObj(repUser)
-	debug('dynDOReportRender', 'rawDataObjDyn', rawDataObjDyn)
 
-	addPropsDisplay(repUser.elements)
+	addPropsDisplay(repUser)
 	addPropsSelect(repUser.report.elements, rawDataObjDyn.tables)
 	// addPropsSort()
 	addParms(repUser, queryData)
@@ -33,29 +32,35 @@ export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj
 		})
 	}
 
-	function addPropsDisplay(elements: RepUserEl[]) {
-		const f = fName('addFieldsDisplay')
-		elements
-			.filter((e) => e.element.isDisplayable)
-			.forEach((userE) => {
-				const repE = userE.element
-				rawDataObjDyn.addPropDisplay({
-					_codeAccess: 'readOnly',
-					_codeColor: 'black',
-					_codeFieldElement: repE._codeFieldElement,
-					_codeSortDir: repE._codeSortDir,
-					_column: gePropColumn(repE),
-					_hasItems: false,
-					_propName: repE.nameCustom || repE._column?.name,
-					isDisplayable: true,
-					nameCustom: repE.nameCustom,
-					orderDefine: repE.orderDisplay,
-					orderSort: repE.orderSort
-				})
-			})
+	function addPropsDisplay(repUser: RepUser) {
+		addPropsDisplayList(
+			repUser.report.elements.filter((el) => !el.isDisplayable),
+			false
+		)
+		addPropsDisplayList(
+			repUser.elements.filter((el) => el.isDisplay).map((el) => el.element),
+			true
+		)
 	}
+	function addPropsDisplayList(elements: RepEl[], isDisplayable: boolean) {
+		elements.forEach((el) => {
+			rawDataObjDyn.addPropDisplay({
+				_codeAccess: 'readOnly',
+				_codeColor: 'black',
+				_codeFieldElement: el._codeFieldElement,
+				_codeSortDir: el._codeSortDir,
+				_column: gePropColumn(el),
+				_hasItems: false,
+				_propName: el.nameCustom || el._column?.name,
+				isDisplayable,
+				nameCustom: el.nameCustom,
+				orderDefine: el.orderDisplay || el.orderDefine,
+				orderSort: el.orderSort
+			})
+		})
+	}
+
 	function addPropsSelect(elements: RepEl[], tables: DataObjTable[]) {
-		const f = fName('addFieldsSelect')
 		elements.forEach((e) => {
 			rawDataObjDyn.addPropSelect(
 				{
@@ -76,7 +81,6 @@ export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj
 }
 
 function gePropColumn(repEl: RepEl) {
-	const f = fName('gePropColumn')
 	return {
 		_codeAlignment: repEl._column?._codeAlignment || repEl._codeAlignment,
 		_codeDataType: repEl._column?._codeDataType || repEl._codeDataType,
