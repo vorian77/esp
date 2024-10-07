@@ -37,6 +37,16 @@ export namespace sys_user {
     "roles": sys_core.SysCode[];
     "owner": sys_core.SysOrg;
   }
+  export interface SysUserPref extends Mgmt {
+    "user": SysUser;
+    "idFeature": string;
+    "data": unknown;
+  }
+  export interface SysUserPrefType extends Mgmt {
+    "isActive": boolean;
+    "codeType": sys_core.SysCode;
+    "user": SysUser;
+  }
   export interface SysUserType extends sys_core.SysObj {
     "userTypeResources": SysUserTypeResource[];
     "userTypeTags": SysUserTypeTag[];
@@ -317,6 +327,7 @@ export namespace sys_core {
     "codeSortDir"?: SysCode | null;
     "exprPreset"?: string | null;
     "customEmbedShellFields": SysDataObjColumn[];
+    "isDisplay"?: boolean | null;
     "orderCrumb"?: number | null;
     "orderSort"?: number | null;
     "isExcludeInsert": boolean;
@@ -897,6 +908,8 @@ export interface types {
     "SYS_USER": sys_user.SYS_USER;
     "SYS_USER_ID": sys_user.SYS_USER_ID;
     "SysStaff": sys_user.SysStaff;
+    "SysUserPref": sys_user.SysUserPref;
+    "SysUserPrefType": sys_user.SysUserPrefType;
     "SysUserType": sys_user.SysUserType;
     "SysUserTypeResource": sys_user.SysUserTypeResource;
     "SysUserTypeTag": sys_user.SysUserTypeTag;

@@ -261,6 +261,18 @@ export class TokenApiUserName extends TokenApi {
 	}
 }
 
+export class TokenApiUserPref extends TokenApi {
+	data: any
+	idFeature: string
+	idUser: string
+	constructor(idUser: string, idFeature: string, data: any | undefined = undefined) {
+		super()
+		this.data = data
+		this.idFeature = idFeature
+		this.idUser = idUser
+	}
+}
+
 export class TokenApp extends Token {
 	constructor(obj: any) {
 		const clazz = 'TokenApp'
@@ -297,6 +309,14 @@ export class TokenAppIndex extends TokenApp {
 	}
 }
 
+export class TokenAppModalDataObj extends TokenApp {
+	dataObjName: string
+	constructor(obj: any) {
+		const clazz = 'TokenAppModalDataObj'
+		super(obj)
+		this.dataObjName = strRequired(obj.dataObjName, clazz, 'dataObjName')
+	}
+}
 export class TokenAppModalEmbedField extends TokenApp {
 	dataObjSourceModal: TokenApiDbDataObjSource
 	queryType: TokenApiQueryType

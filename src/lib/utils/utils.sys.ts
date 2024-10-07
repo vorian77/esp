@@ -1,5 +1,3 @@
-// import bcrypt from 'bcryptjs'
-
 export function capitalizeFirstLetter(text: string) {
 	return text.charAt(0).toUpperCase() + text.slice(1)
 }

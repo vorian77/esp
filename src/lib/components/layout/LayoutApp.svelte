@@ -48,7 +48,6 @@
 						<button class="mr-4" on:click={back}>
 							<Icon class="mt-0.5" name={'back'} width="1.5rem" height="1.5rem" fill={'#3b79e1'} />
 						</button>
-
 						<div>
 							<NavCrumbs {state} {crumbsList} />
 						</div>

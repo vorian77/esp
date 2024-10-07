@@ -8,142 +8,9 @@ import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInitUtilities50Othe
 
 export async function initAdminSysRepUser() {
 	sectionHeader('Admin - Report-Render')
-	await initFieldEmbedListEditRepUserElement()
 	await initFieldEmbedListEditRepUserParm()
 	await initRepConfig()
 	await initRepRender()
-}
-
-async function initFieldEmbedListEditRepUserElement() {
-	sectionHeader('Field Embed Edit - Report User Element')
-	await addDataObj({
-		actionFieldGroup: 'doag_embed_list_edit',
-		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		codeListEditPresetType: 'save',
-		exprFilter:
-			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>).elements.id AND .element.isDisplayable',
-		exprOrder: '.orderDisplay',
-		header: 'Elements',
-		isListEdit: true,
-		isListSuppressFilterSort: true,
-		listEditPresetExpr: `
-			WITH 
-			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>),
-			repVals := (SELECT repUser.report.elements FILTER .isDisplayable = true),
-			userVals := repUser.elements.element, 
-			newVals := (SELECT repVals EXCEPT userVals)
-			SELECT newVals`,
-		listReorderColumn: 'orderDisplay',
-		name: 'dofls_sys_rep_user_element',
-		owner: 'app_sys_rep',
-		parentColumn: 'elements',
-		parentTable: 'SysRepUser',
-		tables: [
-			{ index: 0, table: 'SysRepUserEl' },
-			{ columnParent: 'element', indexParent: 0, index: 1, table: 'SysRepEl' }
-		],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				columnName: 'element',
-				exprPreset: '(SELECT sys_rep::SysRepEl FILTER .id = item.id)',
-				indexTable: 0,
-				isDisplayable: false,
-				isExcludeUpdate: true,
-				linkTable: 'SysRepEl',
-				orderDefine: 20
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'isDisplayable',
-				indexTable: 1,
-				isDisplayable: false,
-				isExcludeInsert: true,
-				isExcludeUpdate: true,
-				orderDisplay: 30,
-				orderDefine: 30
-			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isDisplay',
-				exprPreset: 'item.isDisplay',
-				indexTable: 0,
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'header',
-				indexTable: 1,
-				isDisplayable: true,
-				isExcludeInsert: true,
-				isExcludeUpdate: true,
-				orderDisplay: 50,
-				orderDefine: 50
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'description',
-				indexTable: 1,
-				isDisplayable: true,
-				isExcludeInsert: true,
-				isExcludeUpdate: true,
-				orderDisplay: 60,
-				orderDefine: 60
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'orderDisplay',
-				exprPreset: 'item.orderDefine',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 70,
-				orderSort: 10
-			},
-
-			/* management */
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdAt',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 1010
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdBy',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 1020
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedAt',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 1030
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedBy',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 1040
-			}
-		]
-	})
-	await addDataObjFieldEmbedListEdit({
-		dataObjEmbed: 'dofls_sys_rep_user_element',
-		name: 'fele_sys_rep_user_element',
-		owner: 'app_sys_rep'
-	})
 }
 
 async function initFieldEmbedListEditRepUserParm() {
@@ -377,8 +244,7 @@ async function initRepConfig() {
 		owner: 'app_sys_rep',
 		tables: [
 			{ index: 0, table: 'SysRepUser' },
-			{ columnParent: 'parms', indexParent: 0, index: 1, table: 'SysRepUserParm' },
-			{ columnParent: 'elements', indexParent: 0, index: 2, table: 'SysRepUserEl' }
+			{ columnParent: 'parms', indexParent: 0, index: 1, table: 'SysRepUserParm' }
 		],
 		fields: [
 			{
@@ -481,16 +347,6 @@ async function initRepConfig() {
 				linkTable: 'SysRepUserParm'
 			},
 			{
-				codeFieldElement: 'embedListEdit',
-				columnName: 'elements',
-				isDisplayable: false,
-				orderDefine: 130,
-				orderDisplay: 130,
-				fieldEmbedListEdit: 'fele_sys_rep_user_element',
-				indexTable: 0,
-				linkTable: 'SysRepUserEl'
-			},
-			{
 				codeAccess: 'optional',
 				codeFieldElement: 'embedShell',
 				columnName: 'custom_embed_shell',
@@ -554,7 +410,7 @@ async function initRepConfig() {
 	await updateDataObjColumnCustomEmbedShellFields({
 		dataObjName: 'data_obj_sys_rep_my_report_detail',
 		columnName: 'custom_embed_shell',
-		customEmbedShellFields: ['parms', 'elements']
+		customEmbedShellFields: ['parms']
 	})
 
 	await addNodeProgramObj({

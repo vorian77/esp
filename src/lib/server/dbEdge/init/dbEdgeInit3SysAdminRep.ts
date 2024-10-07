@@ -305,7 +305,6 @@ async function initAnalyticParm() {
 			},
 			{
 				columnName: 'orderDefine',
-				orderSort: 10,
 				orderDefine: 70,
 				indexTable: 0,
 				isDisplayable: false
@@ -1051,7 +1050,6 @@ async function initRepEl() {
 			},
 			{
 				columnName: 'orderDefine',
-				orderSort: 10,
 				orderDefine: 100,
 				indexTable: 0,
 				isDisplayable: false
@@ -1536,8 +1534,7 @@ async function initRepParm() {
 				indexTable: 0,
 				isDisplayable: true,
 				orderDefine: 70,
-				orderDisplay: 70,
-				orderSort: 10
+				orderDisplay: 70
 			},
 
 			/* management */

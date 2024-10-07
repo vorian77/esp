@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { State } from '$comps/app/types.appState'
-	import { DataObj, DataObjData, ParmsValuesType } from '$utils/types'
+	import { DataObj, DataObjData, DataObjSort, ParmsValuesType } from '$utils/types'
+	import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 	import Grid from '$comps/grid/Grid.svelte'
 	import { getSelectedNodeIds, GridManagerOptions } from '$comps/grid/grid'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -14,20 +15,20 @@
 
 	const columnDefs = [
 		{ field: 'id', headerName: 'ID', hide: true },
-		{ field: 'display', headerName: 'Display' }
+		{ field: 'display', headerName: 'Display', flex: 1 }
 	]
 
-	const isMultiSelect = state.parmsState.valueGet(ParmsValuesType.isMultiSelect)
-	const items = state.parmsState.valueGet(ParmsValuesType.listRecordItems)
-	let itemsCurrent = state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected)
+	const sortObj = new DataObjSort()
+	sortObj.addItem('display', PropSortDir.asc, 0)
 
 	const gridOptions = new GridManagerOptions({
 		columnDefs,
 		isSelect: true,
-		isSelectMulti: isMultiSelect,
-		listRecordIdSelected: itemsCurrent,
+		isSelectMulti: state.parmsState.valueGet(ParmsValuesType.isMultiSelect),
 		onSelectionChanged,
-		rowData: items
+		parmPrefSortModel: sortObj,
+		parmStateSelectedIds: state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected),
+		rowData: state.parmsState.valueGet(ParmsValuesType.listRecordItems)
 	})
 
 	function onSelectionChanged(event: SelectionChangedEvent) {

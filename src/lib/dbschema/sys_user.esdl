@@ -45,6 +45,20 @@ module sys_user {
     };
     constraint exclusive on (.userName);
   }
+
+  type SysUserPref extending sys_user::Mgmt {
+    required user: sys_user::SysUser;
+    required idFeature: uuid;
+    required data: json;
+    constraint exclusive on ((.user, .idFeature));
+  }
+
+   type SysUserPrefType extending sys_user::Mgmt {
+    required codeType: sys_core::SysCode;
+    required isActive: bool;
+    required user: sys_user::SysUser;
+    constraint exclusive on ((.user, .codeType));
+  }
   
   type SysUserType extending sys_core::SysObj {
     multi userTypeResources: sys_user::SysUserTypeResource {

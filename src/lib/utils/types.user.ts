@@ -1,4 +1,4 @@
-import { nbrOptional, nbrRequired, strRequired, valueOrDefault } from '$utils/utils'
+import { arrayOfEnums, nbrOptional, nbrRequired, strRequired, valueOrDefault } from '$utils/utils'
 import { FileStorage } from '$comps/form/fieldFile'
 import { error } from '@sveltejs/kit'
 
@@ -13,9 +13,10 @@ export class User {
 	initials: string = ''
 	lastName: string
 	org: { name: string; header: string } | undefined
-	resource_footer: Array<any> = []
-	resource_programs: Array<any> = []
-	resource_widgets: Array<any> = []
+	preferences: any[] = []
+	resource_footer: any[] = []
+	resource_programs: any[] = []
+	resource_widgets: any[] = []
 	userName: string
 
 	// old
@@ -26,17 +27,27 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
+		// console.log('User.constructor', obj)
+		const clazz = 'User'
 		this.user = valueOrDefault(obj, {})
 		this.avatar = obj.avatar
-		this.firstName = strRequired(obj.firstName, 'User', 'firstName')
-		this.fullName = strRequired(obj.fullName, 'User', 'fullName')
-		this.id = strRequired(obj.id, 'User', 'id')
-		this.lastName = strRequired(obj.lastName, 'User', 'lastName')
+		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
+		this.fullName = strRequired(obj.fullName, clazz, 'fullName')
+		this.id = strRequired(obj.id, clazz, 'id')
+		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
 		this.org = obj.org ? { name: obj.org.name, header: obj.org.header } : undefined
+		this.preferences = obj.preferences
+		// arrayOfEnums(
+		// 	clazz,
+		// 	obj.preferences.map((p: any) => p._codeType),
+		// 	'preferences',
+		// 	'UserPrefType',
+		// 	UserPrefType
+		// )
 		this.resource_footer = obj.resource_footer
 		this.resource_programs = obj.resource_programs
 		this.resource_widgets = obj.resource_widgets
-		this.userName = strRequired(obj.userName, 'User', 'userName')
+		this.userName = strRequired(obj.userName, clazz, 'userName')
 
 		// derived
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
@@ -59,3 +70,16 @@ export class User {
 		this.fullName = `${this.firstName} ${this.lastName}`
 	}
 }
+
+export enum UserPrefType {
+	notifications_auto_retrieve = 'notifications_auto_retrieve',
+	remember_list_settings = 'remember_list_settings'
+}
+
+// export function arrayOfEnums(
+// 	className: string,
+// 	values: string[],
+// 	fieldName: string,
+// 	enumName: string,
+// 	enumObj: object
+// ) {

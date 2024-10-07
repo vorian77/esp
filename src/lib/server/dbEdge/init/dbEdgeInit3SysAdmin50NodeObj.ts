@@ -66,8 +66,7 @@ async function initNodeObj() {
 				columnName: 'orderDefine',
 				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 30,
-				orderSort: 10
+				orderDefine: 30
 			},
 
 			/* management */

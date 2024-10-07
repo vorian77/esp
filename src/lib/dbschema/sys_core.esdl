@@ -176,6 +176,7 @@ module sys_core {
     indexTable: default::nonNegative;
     indexWith: default::nonNegative;
 
+    isDisplay: bool;
     isDisplayable: bool;
     required isExcludeInsert: bool;
     required isExcludeSelect: bool;

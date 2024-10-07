@@ -357,6 +357,7 @@ export class RawDataObjPropDisplay {
 	hasItems: boolean
 	headerAlt?: string
 	height?: number
+	isDisplay: boolean
 	isDisplayable: boolean
 	isDisplayBlock: boolean
 	isParmValue: boolean
@@ -401,6 +402,7 @@ export class RawDataObjPropDisplay {
 		this.hasItems = booleanOrDefault(obj._hasItems, false)
 		this.headerAlt = strOptional(obj.headerAlt, clazz, 'headerAlt')
 		this.height = nbrOptional(obj.height, clazz, 'height')
+		this.isDisplay = booleanOrDefault(obj.isDisplay, true)
 		this.isDisplayable = booleanOrDefault(obj.isDisplayable, false)
 		this.isDisplayBlock = booleanOrDefault(obj.isDisplayBlock, true)
 		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
@@ -416,6 +418,7 @@ export class RawDataObjPropDisplay {
 		/* dependent properties */
 		this.label = override(obj.headerAlt, this.colDB.header, clazz, 'label')
 		this.labelSide = valueOrDefault(this.colDB.headerSide, this.label)
+		debug('RawDataObjPropDisplay', 'propDisplay', { label: this.label, isDisplay: this.isDisplay })
 	}
 }
 export class RawDataObjPropDisplayCustom {
@@ -642,6 +645,6 @@ export class PropLinkItemsDefn {
 }
 
 export enum PropSortDir {
-	asc = 'ASC',
-	desc = 'DESC'
+	asc = 'asc',
+	desc = 'desc'
 }

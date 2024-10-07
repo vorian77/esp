@@ -47,6 +47,8 @@ export async function initPreTable() {
 		['app_sys', 'sys_user', 'SysStaff', true],
 		['app_sys', 'sys_user', 'SysUser', false],
 		['app_sys', 'sys_user', 'SysUserType', false],
+		['app_sys', 'sys_user', 'SysUserPref', false],
+		['app_sys', 'sys_user', 'SysUserPrefType', false],
 		['app_sys', 'sys_user', 'SysUserTypeResource', false],
 		['app_sys', 'sys_user', 'SysUserTypeTag', false],
 		['app_sys', 'sys_user', 'SysWidget', false]
@@ -63,7 +65,6 @@ export async function initPreTable() {
 		['app_sys_rep', 'sys_rep', 'SysRepParm', true],
 		['app_sys_rep', 'sys_rep', 'SysRepUser', true],
 		['app_sys_rep', 'sys_rep', 'SysRepUserAnalytic', true],
-		['app_sys_rep', 'sys_rep', 'SysRepUserEl', true],
 		['app_sys_rep', 'sys_rep', 'SysRepUserParm', true]
 	])
 

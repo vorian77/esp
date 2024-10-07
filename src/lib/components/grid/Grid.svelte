@@ -1,11 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
+	import { apiFetch, ApiFunction } from '$routes/api/api'
+	import {
+		TokenApiUserPref,
+		TokenAppDoActionConfirmType,
+		TokenAppModalSelect,
+		TokenAppModalReturnType
+	} from '$utils/types.token'
 	import {
 		createGrid,
 		type CellClickedEvent,
 		type CellEditingStartedEvent,
 		type CellEditingStoppedEvent,
 		type ColDef,
+		type ColumnEvent,
 		type FilterChangedEvent,
 		type GetRowIdParams,
 		type GridApi,
@@ -16,15 +24,23 @@
 		type ISelectCellEditorParams,
 		type Module,
 		type NewValueParams,
+		type PostSortRowsParams,
 		type RowNode,
 		type RowNodeSelectedEvent,
 		type SelectionChangedEvent,
 		type ValueGetterParams,
 		type ValueSetterParams
 	} from 'ag-grid-community'
+	import 'ag-grid-enterprise'
 	import 'ag-grid-community/styles/ag-grid.css'
 	import 'ag-grid-community/styles/ag-theme-quartz.css'
-	import { columnTypes, dataTypeDefinitions, GridManagerOptions } from '$comps/grid/grid'
+	import {
+		columnTypes,
+		dataTypeDefinitions,
+		GridManagerOptions,
+		GridSettings,
+		GridSettingsColumns
+	} from '$comps/grid/grid'
 	import {
 		DataObj,
 		DataObjData,
@@ -34,21 +50,15 @@
 		DataObjSortItem,
 		ParmsValuesType,
 		ParmsUser,
-		ParmsUserParmType,
+		ParmsUserDataType,
 		required,
 		strRequired
 	} from '$utils/types'
 	import { StatePacket, StatePacketAction } from '$comps/app/types.appState'
-	import {
-		TokenAppDoActionConfirmType,
-		TokenAppModalSelect,
-		TokenAppModalReturnType
-	} from '$utils/types.token'
 	import { ParmsValues } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
 	import { State, StateSurfaceModal } from '$comps/app/types.appState'
-	import { sortInit, sort } from '$comps/form/formList'
 	import GridFilter from '$comps/grid/GridFilter.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -57,112 +67,101 @@
 
 	export let options: GridOptions
 
-	let columnDefs: ColDef[]
-	let dataObjId = ''
 	let eGui: HTMLDivElement
-	let fCallbackFilter: Function
-	let fCallbackUpdateValue: Function
 	let grid: GridApi
 	let innerHeight = window.innterHeight
-	let isEmbed: boolean
-	let isHideFilter = false
-	let isSelect = false
-	let isSelectMulti = false
-	let isSuppressSelect: boolean
-	let listFilterText = ''
-	let listReorderColumn: string
+	let isSuppressFilterSort: boolean
 	let rowCountFiltered: number
 	let rowCountSelected: number
 	let rowData: any[]
 	let style = ''
 	let styleMaxHeight = ''
 
-	$: if (eGui) {
-		const rowCount = grid.getDisplayedRowCount()
-		const { headerHeight, rowHeight } = grid.getSizesForCurrentTheme()
-		const rowsMin = 3
-		let rowsMax: number
-		let rowsDisplay: number
-
-		if (isEmbed) {
-			rowsMax = 8
-			rowsDisplay = rowCount < rowsMin ? rowsMin : rowCount > rowsMax ? rowsMax : rowCount
-		} else {
-			// const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
-			const vh = innerHeight
-			const gridY = eGui.getBoundingClientRect().y
-			const footerH = 100
-			rowsMax = Math.floor(((vh - gridY - footerH) * 0.85) / rowHeight)
-			rowsDisplay = rowCount < rowsMin ? rowsMin : rowCount > rowsMax ? rowsMax : rowCount
-		}
-		const height = headerHeight + rowsDisplay * rowHeight + 9
-		eGui.style.setProperty('height', `${height}px`)
-	}
-
-	function onCellValueChanged(event: NewValueParams) {
-		if (fCallbackUpdateValue) fCallbackUpdateValue(event.colDef.field, event.data)
-	}
+	$: if (innerHeight) resize()
 
 	onMount(() => {
 		// set options
-		columnDefs = options.columnDefs
-		fCallbackFilter = options.fCallbackFilter
-		fCallbackUpdateValue = options.fCallbackUpdateValue
-		isEmbed = options.isEmbed
-		isHideFilter = options.isHideFilter || options.listReorderColumn !== ''
-		isSelect = options.isSelect
-		isSelectMulti = options.isSelectMulti
-		isSuppressSelect = options.isSuppressSelect
-		listFilterText = options.listFilterText
-		listReorderColumn = options.listReorderColumn
+		isSuppressFilterSort = options.isSuppressFilterSort || options.listReorderColumn !== ''
 		rowData = options.rowData
 
-		if (isSelect) {
-			columnDefs.unshift({
-				checkboxSelection: true,
-				headerCheckboxSelection: isSelectMulti,
-				headerName: '',
-				field: 'selected',
-				maxWidth: 50,
-				suppressMovable: true
-			})
+		// derived columnDefs changes
+		if (options.listReorderColumn) {
+			setGridColumnsProp(options.columnDefs, '', 'rowDrag', true)
+			// rowDrag does not work with sort - manually sort rowData
+			const reorderColumn = options.listReorderColumn
+			rowData.sort((a, b) => a[reorderColumn] - b[reorderColumn])
 		}
 
-		// derived columnDefs changes
-		setGridColumnsProp(columnDefs, '', 'rowDrag', listReorderColumn ? true : false)
-		styleMaxHeight = isHideFilter ? '100%' : 'calc(100% - 70px)'
+		const idxId = options.columnDefs.findIndex((c) => c.field === 'id')
+		if (idxId > -1) options.columnDefs[idxId].suppressColumnsToolPanel = true
+
+		styleMaxHeight = isSuppressFilterSort ? '100%' : 'calc(100% - 70px)'
 
 		const gridOptions = {
-			columnDefs,
+			columnDefs: options.columnDefs,
 			columnTypes,
 			dataTypeDefinitions,
 			defaultColDef: {
-				flex: 1,
-				filter: !isHideFilter,
-				sortable: !listReorderColumn
+				filter: !isSuppressFilterSort,
+				filterParams: {
+					buttons: ['reset']
+				},
+				sortable: !isSuppressFilterSort
 			},
 			getRowId: (params: GetRowIdParams) => params.data.id || '',
 			onCellClicked: options.onCellClicked,
 			onCellValueChanged,
+			onFilterChanged: onFilterChanged,
 			onRowDragEnd,
 			onRowDragMove,
 			onSelectionChanged,
+			postSortRows: onSort,
 			rowData,
-			rowSelection: isSuppressSelect
-				? undefined
-				: isSelect && isSelectMulti
-					? 'multiple'
-					: 'single',
-			rowDragManaged: listReorderColumn ? true : false
+			rowSelection: {
+				mode: options.isSuppressSelect
+					? undefined
+					: options.isSelect && options.isSelectMulti
+						? 'multiRow'
+						: 'singleRow',
+				checkboxes: options.isSelect,
+				enableClickSelection: !(
+					options.isSelect ||
+					options.isSelectMulti ||
+					options.isSuppressSelect
+				)
+			},
+			rowDragManaged: options.listReorderColumn ? true : false,
+			sideBar: {
+				toolPanels: [
+					{
+						id: 'columns',
+						labelDefault: 'Columns',
+						labelKey: 'columns',
+						iconKey: 'columns',
+						toolPanel: 'agColumnsToolPanel',
+						toolPanelParams: {
+							suppressRowGroups: true,
+							suppressValues: true,
+							suppressPivots: true,
+							suppressPivotMode: true,
+							suppressColumnFilter: true,
+							suppressColumnSelectAll: true,
+							suppressColumnExpandAll: true
+						}
+					}
+				]
+			},
+			suppressSetFilterByDefault: true
 		}
 		grid = createGrid(eGui, gridOptions)
 
-		if (isSelect) {
-			if (isSelectMulti) {
+		if (options.isSelect) {
+			const selectedIds = options.parmStateSelectedIds
+			if (options.isSelectMulti) {
 				const selected: IRowNode[] = []
 				const deselected: IRowNode[] = []
 				grid.forEachNode((node) => {
-					if (options.listRecordIdSelected.includes(node.data!.id)) {
+					if (selectedIds.includes(node.data!.id)) {
 						selected.push(node)
 					} else {
 						deselected.push(node)
@@ -171,22 +170,82 @@
 				grid.setNodesSelected({ nodes: selected, newValue: true })
 				grid.setNodesSelected({ nodes: deselected, newValue: false })
 			} else {
-				const selected = grid.getRowNode(options.listRecordIdSelected[0])
+				const selected = grid.getRowNode(selectedIds[0])
 				if (selected) selected.setSelected(true)
 			}
 		}
 
-		setFilter(listFilterText)
+		// apply user settings
+		console.log('Grid.onMount', {
+			settings: options.userSettings
+		})
+		settingSortSet(options.userSettings.getPref(ParmsUserDataType.listSortModel)) // sort first because it triggers filter
+		settingsFilterQuickSet(options.userSettings.getPref(ParmsUserDataType.listFilterQuick))
+		grid.setFilterModel(options.userSettings.getPref(ParmsUserDataType.listFilterModel))
+		updateCounters()
 
 		return () => {
+			saveUserSettings()
 			grid.destroy()
 		}
 	})
 
+	async function saveUserSettings() {
+		if (options?.userSettings?.idUser) {
+			// set columns state
+			options.userSettings.setPref(
+				ParmsUserDataType.listColumnsModel,
+				new GridSettingsColumns(grid.getAllGridColumns())
+			)
+			console.log('Grid.saveUserSettings', {
+				settings: options.userSettings
+			})
+			await apiFetch(
+				ApiFunction.sysSetUserPref,
+				new TokenApiUserPref(
+					options.userSettings.idUser,
+					options.userSettings.idFeature,
+					options.userSettings
+				)
+			)
+		}
+	}
+
+	function onCellValueChanged(event: NewValueParams) {
+		if (options.fCallbackUpdateValue) options.fCallbackUpdateValue(event.colDef.field, event.data)
+	}
+
+	function onFilterChanged(event: FilterChangedEvent) {
+		switch (event.source) {
+			case 'columnFilter':
+				options.userSettings.setPref(ParmsUserDataType.listFilterModel, event.api.getFilterModel())
+				break
+			case 'quickFilter':
+				options.userSettings.setPref(ParmsUserDataType.listFilterQuick, event.api.getQuickFilter())
+				break
+		}
+		onFilterChangedDeselect()
+		updateCounters()
+		if (options.fCallbackFilter) options.fCallbackFilter(event)
+	}
+	function onFilterChangedDeselect() {
+		// deselect rows that are not displayed
+		const deselected: IRowNode[] = []
+		grid.forEachNode((rowNode, index) => {
+			if (rowNode.selected && !rowNode.displayed) {
+				deselected.push(rowNode)
+			}
+		})
+		grid.setNodesSelected({ nodes: deselected, newValue: false })
+	}
+
 	function onRowDragEnd(event: RowDragEndEvent) {
-		if (fCallbackUpdateValue) {
+		if (options.fCallbackUpdateValue) {
 			rowData.forEach((row, idx) => {
-				fCallbackUpdateValue(listReorderColumn, { id: row.id, [listReorderColumn]: idx })
+				options.fCallbackUpdateValue(options.listReorderColumn, {
+					id: row.id,
+					[options.listReorderColumn]: idx
+				})
 			})
 		}
 	}
@@ -217,9 +276,36 @@
 		}
 	}
 
+	function onSort(event: PostSortRowsParams) {
+		if (grid) {
+			options.userSettings.setPref(ParmsUserDataType.listSortModel, settingSortGet())
+		}
+	}
+
 	function onSelectionChanged(event: SelectionChangedEvent) {
 		if (options.onSelectionChanged) options.onSelectionChanged(event)
 		updateCounters()
+	}
+
+	function resize() {
+		const rowCount = grid.getDisplayedRowCount()
+		const { headerHeight, rowHeight } = grid.getSizesForCurrentTheme()
+		const rowsMin = 3
+		let rowsMax: number
+		let rowsDisplay: number
+
+		if (options.isEmbed) {
+			rowsMax = 8
+			rowsDisplay = rowCount < rowsMin ? rowsMin : rowCount > rowsMax ? rowsMax : rowCount
+		} else {
+			const vh = innerHeight
+			const gridY = eGui.getBoundingClientRect().y
+			const footerH = 100
+			rowsMax = Math.floor(((vh - gridY - footerH) * 0.85) / rowHeight)
+			rowsDisplay = rowCount < rowsMin ? rowsMin : rowCount > rowsMax ? rowsMax : rowCount
+		}
+		const height = headerHeight + rowsDisplay * rowHeight + 9
+		eGui.style.setProperty('height', `${height}px`)
 	}
 
 	function setGridColumnsProp(
@@ -240,36 +326,62 @@
 			columns[columnIdx][prop] = value
 		}
 	}
-	function setFilter(listFilterText: string) {
-		setFilterQuick(listFilterText)
-		setFilterDeselect()
-		updateCounters()
-		if (fCallbackFilter) fCallbackFilter(grid, listFilterText)
+
+	function settingsFilterQuickSet(listFilterQuick: string) {
+		grid.setGridOption('quickFilterText', listFilterQuick)
 	}
-	function setFilterDeselect() {
-		// deselect rows that are not displayed
-		const deselected: IRowNode[] = []
-		grid.forEachNode((rowNode, index) => {
-			if (rowNode.selected && !rowNode.displayed) {
-				deselected.push(rowNode)
-			}
-		})
-		grid.setNodesSelected({ nodes: deselected, newValue: false })
+
+	function settingSortGet() {
+		if (grid) {
+			let sortObj = new DataObjSort()
+			grid
+				.getColumnState()
+				.filter(function (s) {
+					return s.sort !== null
+				})
+				.map(function (s) {
+					sortObj.addItem(s.colId, s.sort, s.sortIndex)
+				})
+			return sortObj
+		}
 	}
-	function setFilterQuick(listFilterText: string) {
-		grid.setGridOption('quickFilterText', listFilterText)
+
+	function settingSortSet(sort: DataObjSort) {
+		if (grid) {
+			let sortModel = []
+
+			sort.sortItems.forEach((item, i) => {
+				sortModel.push({
+					colId: item.colId,
+					sort: item.sort,
+					sortIndex: i
+				})
+			})
+
+			grid.applyColumnState({
+				state: sortModel,
+				defaultState: { sort: null }
+			})
+		}
 	}
 
 	function updateCounters() {
 		rowCountFiltered = grid.getDisplayedRowCount()
 		if (options.isSelect) rowCountSelected = grid.getSelectedNodes().length
+		resize()
 	}
 </script>
 
 <svelte:window bind:innerHeight />
-<GridFilter {isHideFilter} {listFilterText} {rowCountFiltered} {rowCountSelected} {setFilter} />
+<GridFilter
+	isHideFilter={isSuppressFilterSort}
+	listFilterQuick={options.userSettings.getPref(ParmsUserDataType.listFilterQuick)}
+	{rowCountFiltered}
+	{rowCountSelected}
+	setFilterQuick={settingsFilterQuickSet}
+/>
 <div bind:this={eGui} style:max-height={styleMaxHeight} {style} class="ag-theme-quartz h-full" />
 
 <!-- <DataViewer header="rowCount" data={{ rowCountFiltered, rowCountSelected }} /> -->
-<!-- <DataViewer header="columnDefs" data={columnDefs} /> -->
+<!-- <DataViewer header="columnDefs" data={options.columnDefs} /> -->
 <!-- <DataViewer header="rowData" data={rowData} /> -->

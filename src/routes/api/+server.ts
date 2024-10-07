@@ -11,7 +11,9 @@ import {
 	getNodesBranch,
 	getNodesLevel,
 	getTableColumns,
-	getUserByUserId
+	getUserByUserId,
+	getUserPref,
+	setUserPref
 } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { getDataObjId } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { dbEdgeInit } from '$server/dbEdge/init/dbEdgeInit'
@@ -58,6 +60,12 @@ export async function POST({ request, cookies }) {
 
 		case ApiFunction.sysSendText:
 			return getServerResponse(await sysSendText(token))
+
+		case ApiFunction.sysGetUserPref:
+			return getServerResponse(await getUserPref(token))
+
+		case ApiFunction.sysSetUserPref:
+			return getServerResponse(await setUserPref(token))
 
 		default:
 			error(500, {

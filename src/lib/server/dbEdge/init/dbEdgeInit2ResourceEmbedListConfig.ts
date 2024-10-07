@@ -669,7 +669,6 @@ async function initFieldListConfigDataObjActionFieldGroupItem() {
 			},
 			{
 				columnName: 'orderDefine',
-				orderSort: 10,
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false
@@ -839,8 +838,7 @@ async function initFieldListConfigDataObjColumnItem() {
 				columnName: 'orderDefine',
 				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 40,
-				orderSort: 10
+				orderDefine: 40
 			},
 
 			/* management */
@@ -1016,7 +1014,6 @@ async function initFieldListConfigDataObjColumnLink() {
 			},
 			{
 				columnName: 'orderDefine',
-				orderSort: 10,
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false

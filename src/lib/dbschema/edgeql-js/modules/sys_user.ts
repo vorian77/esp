@@ -153,6 +153,10 @@ export type $UserRootλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f738
   "<modifiedBy[is sys_user::currentUser]": $.LinkDesc<$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysDataObjActionFieldConfirm]": $.LinkDesc<_sys_core.$SysDataObjActionFieldConfirm, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysDataObjActionFieldConfirm]": $.LinkDesc<_sys_core.$SysDataObjActionFieldConfirm, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<createdBy[is sys_user::SysUserPref]": $.LinkDesc<$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<modifiedBy[is sys_user::SysUserPref]": $.LinkDesc<$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<createdBy[is sys_user::SysUserPrefType]": $.LinkDesc<$SysUserPrefType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<modifiedBy[is sys_user::SysUserPrefType]": $.LinkDesc<$SysUserPrefType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -170,6 +174,8 @@ export type $SysUserλShape = $.typeutil.flatten<$UserRootλShape & $MgmtλShape
   "password": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "<user[is sys_rep::SysRepUser]": $.LinkDesc<_sys_rep.$SysRepUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<user[is SysError]": $.LinkDesc<_default.$SysError, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<user[is sys_user::SysUserPref]": $.LinkDesc<$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<user[is sys_user::SysUserPrefType]": $.LinkDesc<$SysUserPrefType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<user": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysUser = $.ObjectType<"sys_user::SysUser", $SysUserλShape, null, [
@@ -219,6 +225,32 @@ type $SysStaff = $.ObjectType<"sys_user::SysStaff", $SysStaffλShape, null, [
 const $SysStaff = $.makeType<$SysStaff>(_.spec, "506d1594-b3c2-11ee-8a4e-7313d86159be", _.syntax.literal);
 
 const SysStaff: $.$expr_PathNode<$.TypeSet<$SysStaff, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysStaff, $.Cardinality.Many), null);
+
+export type $SysUserPrefλShape = $.typeutil.flatten<$MgmtλShape & {
+  "user": $.LinkDesc<$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
+  "idFeature": $.PropertyDesc<_std.$uuid, $.Cardinality.One, false, false, false, false>;
+  "data": $.PropertyDesc<_std.$json, $.Cardinality.One, false, false, false, false>;
+}>;
+type $SysUserPref = $.ObjectType<"sys_user::SysUserPref", $SysUserPrefλShape, null, [
+  ...$Mgmt['__exclusives__'],
+  {user: {__element__: $SysUser, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },idFeature: {__element__: _std.$uuid, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+]>;
+const $SysUserPref = $.makeType<$SysUserPref>(_.spec, "f2cf8725-8191-11ef-8308-1129be87a656", _.syntax.literal);
+
+const SysUserPref: $.$expr_PathNode<$.TypeSet<$SysUserPref, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserPref, $.Cardinality.Many), null);
+
+export type $SysUserPrefTypeλShape = $.typeutil.flatten<$MgmtλShape & {
+  "isActive": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
+  "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "user": $.LinkDesc<$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
+}>;
+type $SysUserPrefType = $.ObjectType<"sys_user::SysUserPrefType", $SysUserPrefTypeλShape, null, [
+  ...$Mgmt['__exclusives__'],
+  {user: {__element__: $SysUser, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },codeType: {__element__: _sys_core.$SysCode, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+]>;
+const $SysUserPrefType = $.makeType<$SysUserPrefType>(_.spec, "a122bd35-81b6-11ef-af91-1f40ff0574f6", _.syntax.literal);
+
+const SysUserPrefType: $.$expr_PathNode<$.TypeSet<$SysUserPrefType, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserPrefType, $.Cardinality.Many), null);
 
 export type $SysUserTypeλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "userTypeResources": $.LinkDesc<$SysUserTypeResource, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -454,7 +486,7 @@ const $sys_user__globals: {  SYS_USER: _.syntax.$expr_Global<
 
 
 
-export { $Mgmt, Mgmt, $UserRoot, UserRoot, $SysUser, SysUser, $SYS_USER, SYS_USER, $SYS_USER_ID, SYS_USER_ID, $SysStaff, SysStaff, $SysUserType, SysUserType, $SysUserTypeResource, SysUserTypeResource, $SysUserTypeTag, SysUserTypeTag, $SysWidget, SysWidget, $currentUser, currentUser };
+export { $Mgmt, Mgmt, $UserRoot, UserRoot, $SysUser, SysUser, $SYS_USER, SYS_USER, $SYS_USER_ID, SYS_USER_ID, $SysStaff, SysStaff, $SysUserPref, SysUserPref, $SysUserPrefType, SysUserPrefType, $SysUserType, SysUserType, $SysUserTypeResource, SysUserTypeResource, $SysUserTypeTag, SysUserTypeTag, $SysWidget, SysWidget, $currentUser, currentUser };
 
 type __defaultExports = {
   "Mgmt": typeof Mgmt;
@@ -463,6 +495,8 @@ type __defaultExports = {
   "SYS_USER": typeof SYS_USER;
   "SYS_USER_ID": typeof SYS_USER_ID;
   "SysStaff": typeof SysStaff;
+  "SysUserPref": typeof SysUserPref;
+  "SysUserPrefType": typeof SysUserPrefType;
   "SysUserType": typeof SysUserType;
   "SysUserTypeResource": typeof SysUserTypeResource;
   "SysUserTypeTag": typeof SysUserTypeTag;
@@ -483,6 +517,8 @@ const __defaultExports: __defaultExports = {
   "SYS_USER": SYS_USER,
   "SYS_USER_ID": SYS_USER_ID,
   "SysStaff": SysStaff,
+  "SysUserPref": SysUserPref,
+  "SysUserPrefType": SysUserPrefType,
   "SysUserType": SysUserType,
   "SysUserTypeResource": SysUserTypeResource,
   "SysUserTypeTag": SysUserTypeTag,

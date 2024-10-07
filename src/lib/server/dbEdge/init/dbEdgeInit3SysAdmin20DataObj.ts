@@ -481,12 +481,21 @@ async function initDataObjColumn() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'column',
-				orderCrumb: 10,
+				columnName: 'isDisplay',
 				isDisplayable: true,
 				isExcludeUpdate: true,
 				orderDisplay: 30,
 				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'column',
+				orderCrumb: 10,
+				isDisplayable: true,
+				isExcludeUpdate: true,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0,
 				linkColumns: ['name'],
 				linkTable: 'SysColumn'
@@ -497,8 +506,8 @@ async function initDataObjColumn() {
 				orderCrumb: 20,
 				isDisplayable: true,
 				isExcludeUpdate: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0,
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -506,8 +515,7 @@ async function initDataObjColumn() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'orderDefine',
-				orderSort: 10,
-				orderDefine: 50,
+				orderDefine: 60,
 				indexTable: 0,
 				isDisplayable: false
 			},
@@ -572,16 +580,24 @@ async function initDataObjColumn() {
 				codeFieldElement: 'toggle',
 				columnName: 'isDisplayable',
 				isDisplayable: true,
-				orderDisplay: 25,
-				orderDefine: 25,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isDisplay',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'column',
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 50,
+				orderDefine: 50,
 				fieldListItems: 'il_sys_column_order_name',
 				indexTable: 0,
 				linkTable: 'SysColumn'
@@ -590,17 +606,16 @@ async function initDataObjColumn() {
 				codeAccess: 'optional',
 				columnName: 'nameCustom',
 				isDisplayable: true,
-
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 60,
+				orderDefine: 60,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50
+				orderDisplay: 70,
+				orderDefine: 70
 			},
 
 			/* Database */

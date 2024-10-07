@@ -33,7 +33,7 @@ import {
 } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { query } from '$comps/app/types.appQuery'
-import { State, StatePacketAction, StateSurfaceEmbedShell } from '$comps/app/types.appState'
+import { State, StatePacketAction, StateSurfaceModalDataObj } from '$comps/app/types.appState'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/nav/types.app.ts'
@@ -76,7 +76,26 @@ export class App {
 		fieldShell.stateShell.objStatus = fieldShell.getStatus(dataObjForm, recordId)
 		return fieldShell
 	}
-	async addLevelModal(state: State, token: TokenAppModalEmbedField) {
+	async addLevelModalDataObj(state: StateSurfaceModalDataObj) {
+		const newLevel = new AppLevel(
+			[
+				new AppLevelTab({
+					dataObjSource: new TokenApiDbDataObjSource({
+						dataObjName: state.dataObjName
+					}),
+					levelIdx: 0,
+					tabIdx: 0
+				})
+			],
+			true
+		)
+		if (newLevel) {
+			this.levels.push(newLevel)
+			await query(state, this.getCurrTab(), TokenApiQueryType.retrieve)
+		}
+		return this
+	}
+	async addLevelModalEmbedField(state: State, token: TokenAppModalEmbedField) {
 		// new level
 		const newLevel = new AppLevel(
 			[

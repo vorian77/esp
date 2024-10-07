@@ -1,15 +1,17 @@
 import { State, StatePacketAction } from '$comps/app/types.appState'
 import {
+	booleanRequired,
 	getArray,
 	memberOfEnum,
 	memberOfEnumOrDefault,
 	required,
+	ResponseBody,
 	strOptional,
 	strRequired,
 	valueHasChanged,
-	valueOrDefault,
-	booleanRequired
+	valueOrDefault
 } from '$utils/types'
+import { apiFetch, ApiFunction } from '$routes/api/api'
 import {
 	RawDataObj,
 	RawDataObjActionField,
@@ -42,6 +44,7 @@ import {
 	FieldCustomHeader,
 	FieldCustomText
 } from '$comps/form/fieldCustom'
+import { GridSettings } from '$comps/grid/grid'
 import { FieldInput } from '$comps/form/fieldInput'
 import { FieldFile } from '$comps/form/fieldFile'
 import { FieldParm } from '$comps/form/fieldParm'
@@ -51,7 +54,7 @@ import { FieldSelect } from '$comps/form/fieldSelect'
 import { FieldTextarea } from '$comps/form/fieldTextarea'
 import { FieldToggle } from '$comps/form/fieldToggle'
 import { DataObjActionQuery, DataObjActionQueryFunction } from '$comps/app/types.appQuery'
-import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
+import { TokenApiDbDataObjSource, TokenApiQueryData, TokenApiUserPref } from '$utils/types.token'
 import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 import { getEnhancement } from '$enhance/crud/_crud'
 import { error } from '@sveltejs/kit'
@@ -77,12 +80,14 @@ export class DataObj {
 	raw: RawDataObj
 	rootTable?: DBTable
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
+	userSettings: GridSettings
 	constructor(data: DataObjData) {
 		const clazz = 'DataObj'
 		this.data = data
 		this.raw = required(data.rawDataObj, clazz, 'rawDataObj')
 
 		/* dependent properties */
+		this.userSettings = new GridSettings(this.raw.id)
 		this.rootTable =
 			this.raw.tables && this.raw.tables.length > 0
 				? new DBTable(this.raw.tables[0].table)
@@ -159,6 +164,7 @@ export class DataObj {
 		enhanceCustomFields(dataObj.fields)
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
+		dataObj.userSettings = await initPrefs(state, dataObj)
 		return dataObj
 
 		async function enhanceCustomFields(fields: Field[]) {
@@ -184,7 +190,21 @@ export class DataObj {
 				(f) => f.isListRowAction
 			)
 		}
+		async function initPrefs(state: State, dataObj: DataObj) {
+			let rawSettings
+			if (state.user) {
+				// attempt to retrieve user preferences from DB
+				const token = new TokenApiUserPref(state.user.id, dataObj.raw.id)
+				const result: ResponseBody = await apiFetch(ApiFunction.sysGetUserPref, token)
+				rawSettings =
+					Object.hasOwn(result, 'data') && Object.hasOwn(result.data, 'data')
+						? JSON.parse(result.data.data).data
+						: {}
+			}
+			return dataObj.userSettings.load(rawSettings, state, dataObj)
+		}
 	}
+
 	async initFields(state: State, data: DataObjData, rawDataObj: RawDataObj) {
 		let fields: Field[] = []
 		const propsRaw = rawDataObj.rawPropsDisplay
@@ -459,11 +479,6 @@ export class DataObj {
 			this.fields.forEach((f) => {
 				const v: Validation = f.validate(row, record[f.colDO.propName], validityErrorLevel)
 				if (v.status === ValidationStatus.invalid) {
-					console.log('dataObj.preValidate.invalid:', {
-						dataObj: this.raw.name,
-						field: f.colDO.propName,
-						validation: v
-					})
 					this.dataFieldsValidity.valueSet(
 						record.id,
 						v.validityFields[0].fieldName,
@@ -797,22 +812,32 @@ export class DataObjSort {
 	constructor(sortItem: DataObjSortItem | undefined = undefined) {
 		this.sortItems = sortItem ? [sortItem] : []
 	}
-	addItem(fieldName: string, direction: string | undefined) {
+	addItem(fieldName: string, direction: string | undefined, sortIndex: number) {
 		this.sortItems.push(
 			new DataObjSortItem(
 				fieldName,
-				direction?.toLowerCase() === 'asc' || !direction ? PropSortDir.asc : PropSortDir.desc
+				direction?.toLowerCase() === 'asc' || !direction ? PropSortDir.asc : PropSortDir.desc,
+				sortIndex
 			)
 		)
+	}
+	load(rawSortItems: any) {
+		rawSortItems = getArray(rawSortItems)
+		rawSortItems.forEach((item: DataObjSortItem) => {
+			this.addItem(item.colId, item.sort, item.sortIndex)
+		})
+		return this
 	}
 }
 
 export class DataObjSortItem {
-	fieldName: string
-	direction: PropSortDir
-	constructor(fieldName: string, direction: PropSortDir) {
-		this.fieldName = fieldName
-		this.direction = direction
+	colId: string
+	sort: PropSortDir
+	sortIndex: number
+	constructor(colId: string, sort: PropSortDir, sortIndex: number) {
+		this.colId = colId
+		this.sort = sort
+		this.sortIndex = sortIndex
 	}
 }
 
@@ -1007,37 +1032,39 @@ export class FieldValues {
 }
 
 export class ParmsUser {
-	data: ParmsUserParm[] = []
+	data: ParmsUserData[] = []
 	constructor() {}
-	parmGet(id: string, type: ParmsUserParmType) {
+	parmGet(id: string, type: ParmsUserDataType) {
 		let idx = this.data.findIndex((p) => p.id === id && p.type === type)
 		return idx > -1 ? this.data[idx].value : undefined
 	}
-	parmSet(id: string, type: ParmsUserParmType, value: any) {
+	parmSet(id: string, type: ParmsUserDataType, value: any) {
 		let idx = this.data.findIndex((p) => p.id === id && p.type === type)
 		if (idx > -1) {
 			this.data[idx].value = value
 		} else {
-			this.data.push(new ParmsUserParm(id, type, value))
+			this.data.push(new ParmsUserData(id, type, value))
 		}
 	}
 	reset() {
 		this.data = []
 	}
 }
-export class ParmsUserParm {
+export class ParmsUserData {
 	id: string
-	type: ParmsUserParmType
+	type: ParmsUserDataType
 	value: any
-	constructor(id: string, type: ParmsUserParmType, value: any) {
+	constructor(id: string, type: ParmsUserDataType, value: any) {
 		this.id = id
 		this.type = type
 		this.value = value
 	}
 }
-export enum ParmsUserParmType {
-	listFilterText = 'listFilterText',
-	listSortObj = 'listSortObj'
+export enum ParmsUserDataType {
+	listColumnsModel = 'listColumnsModel',
+	listFilterModel = 'listFilterModel',
+	listFilterQuick = 'listFilterQuick',
+	listSortModel = 'listSortModel'
 }
 
 export class ParmsValues {

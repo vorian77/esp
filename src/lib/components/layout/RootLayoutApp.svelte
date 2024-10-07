@@ -87,6 +87,7 @@
 		StatePacketAction.doListSelfSave,
 		StatePacketAction.embedField,
 		StatePacketAction.embedShell,
+		StatePacketAction.modalDataObj,
 		StatePacketAction.modalEmbed,
 		StatePacketAction.navBack,
 		StatePacketAction.navCrumbs,
@@ -232,8 +233,13 @@
 			case StatePacketAction.embedShell:
 				break
 
+			case StatePacketAction.modalDataObj:
+				await state.app.addLevelModalDataObj(state)
+				updateObjectsForm()
+				break
+
 			case StatePacketAction.modalEmbed:
-				await state.app.addLevelModal(state, token)
+				await state.app.addLevelModalEmbedField(state, token)
 				updateObjectsForm()
 				break
 

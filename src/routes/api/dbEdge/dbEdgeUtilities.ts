@@ -2,7 +2,7 @@ import { createClient } from 'edgedb'
 import e from '$lib/dbschema/edgeql-js'
 import { EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
 import type { TokenAppTreeNodeId } from '$utils/types.token'
-import { TokenApiDbTableColumns, TokenApiUserId } from '$utils/types.token'
+import { TokenApiDbTableColumns, TokenApiUserId, TokenApiUserPref } from '$utils/types.token'
 import { debug } from '$utils/utils.debug'
 
 const client = createClient({
@@ -266,6 +266,7 @@ export async function getDataObjById(dataObjId: string) {
 				_propName: e.op(doc.nameCustom, '??', doc.column.name),
 				headerAlt: true,
 				height: true,
+				isDisplay: true,
 				isDisplayable: true,
 				isDisplayBlock: true,
 				orderDefine: true,
@@ -421,6 +422,7 @@ export async function getReportUser(repUserId: string) {
 		exprCustom: true,
 		header: true,
 		indexTable: true,
+		isDisplay: true,
 		isDisplayable: true,
 		nameCustom: true,
 		orderDefine: true,
@@ -430,11 +432,6 @@ export async function getReportUser(repUserId: string) {
 
 	const query = e.select(e.sys_rep.SysRepUser, (r) => ({
 		descriptionUser: true,
-		elements: e.select(r.elements, (userE) => ({
-			element: shapeRepEl(userE.element),
-			isDisplay: userE.isDisplay,
-			order_by: userE.orderDisplay
-		})),
 		headerUser: true,
 		id: true,
 		parms: e.select(r.parms, (parm) => ({
@@ -534,7 +531,11 @@ export async function getUserByUserId(token: TokenApiUserId) {
 		org: e.select(e.sys_core.SysOrg, (org) => ({
 			name: true,
 			header: true,
-			filter_single: e.op(org.id, '=', u.owner.id)
+			filter_single: e.op(e.op(org.id, '=', u.owner.id), 'and', e.op(org.id, '=', u.owner.id))
+		})),
+		preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({
+			_codeType: p.codeType.name,
+			filter: e.op(e.op(p.user.id, '=', u.id), 'and', e.op(p.isActive, '=', e.bool(true)))
 		})),
 		resource_footer: e.select(e.sys_core.SysNodeObj, (f) => ({
 			_codeIcon: f.codeIcon.name,
@@ -574,7 +575,42 @@ export async function getUserByUserId(token: TokenApiUserId) {
 	return await query.run(client)
 }
 
+export async function getUserPref(token: TokenApiUserPref) {
+	const query = e.select(e.sys_user.SysUserPref, (p) => ({
+		data: true,
+		idFeature: true, // "data" returns corrupted w/o another property in the select
+		filter_single: e.op(
+			e.op(p.user, '=', e.sys_user.getUserById(token.idUser)),
+			'and',
+			e.op(p.idFeature, '=', e.cast(e.uuid, token.idFeature))
+		)
+	}))
+	return await query.run(client)
+}
+
 export async function isObjectLink(objName: string, linkName: string) {
 	const query = e.select(e.sys_core.isObjectLink(objName, linkName))
+	return await query.run(client)
+}
+
+export async function setUserPref(token: TokenApiUserPref) {
+	const CREATOR = e.sys_user.getUserById(token.idUser)
+	const query = e
+		.insert(e.sys_user.SysUserPref, {
+			data: e.cast(e.json, JSON.stringify(token.data)),
+			idFeature: e.cast(e.uuid, token.idFeature),
+			user: e.select(e.sys_user.getUserById(token.idUser)),
+			createdBy: CREATOR,
+			modifiedBy: CREATOR
+		})
+		.unlessConflict((pref) => ({
+			on: e.tuple([pref.idFeature, pref.user]),
+			else: e.update(pref, () => ({
+				set: {
+					data: e.cast(e.json, JSON.stringify(token.data)),
+					modifiedBy: CREATOR
+				}
+			}))
+		}))
 	return await query.run(client)
 }

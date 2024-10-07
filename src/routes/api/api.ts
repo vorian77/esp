@@ -15,7 +15,9 @@ export enum ApiFunction {
 	dbEdgeGetTableColumns = 'dbEdgeGetTableColumns',
 	dbEdgeGetUser = 'dbEdgeGetUser',
 	dbEdgeInit = 'dbEdgeInit',
-	sysSendText = 'sysSendText'
+	sysGetUserPref = 'sysGetUserPref',
+	sysSendText = 'sysSendText',
+	sysSetUserPref = 'sysSetUserPref'
 }
 
 export async function apiFetch(apiFunction: ApiFunction, token: Token) {

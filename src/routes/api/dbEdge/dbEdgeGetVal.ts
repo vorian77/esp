@@ -1,5 +1,5 @@
 import { TokenApiQueryData } from '$utils/types.token'
-import { PropDataSourceValue, PropDataType, PropSortDir } from '$comps/dataObj/types.rawDataObj'
+import { PropDataSourceValue, PropDataType } from '$comps/dataObj/types.rawDataObj'
 import { debug, type DataRecord, getArray, memberOfEnum, strRequired } from '$utils/types'
 import { error } from '@sveltejs/kit'
 

@@ -536,7 +536,6 @@ async function initMigrTargetTable() {
 			},
 			{
 				columnName: 'orderDefine',
-				orderSort: 10,
 				orderDefine: 50,
 				indexTable: 0,
 				isDisplayable: false
@@ -757,7 +756,6 @@ async function initMigrTargetColumn() {
 			},
 			{
 				columnName: 'orderDefine',
-				orderSort: 10,
 				orderDefine: 50,
 				indexTable: 0,
 				isDisplayable: false

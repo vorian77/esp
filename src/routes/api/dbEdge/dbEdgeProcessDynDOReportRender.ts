@@ -1,4 +1,4 @@
-import { RepEl, RepUser, RepUserEl } from '$comps/dataObj/types.rep'
+import { RepEl, RepUser } from '$comps/dataObj/types.rep'
 import { DataObjCardinality, DataObjComponent, DataObjTable, debug } from '$utils/types'
 import { RawDataObj, RawDataObjDyn } from '$comps/dataObj/types.rawDataObj'
 import { TokenApiQueryData } from '$utils/types.token'
@@ -33,17 +33,7 @@ export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj
 	}
 
 	function addPropsDisplay(repUser: RepUser) {
-		addPropsDisplayList(
-			repUser.report.elements.filter((el) => !el.isDisplayable),
-			false
-		)
-		addPropsDisplayList(
-			repUser.elements.filter((el) => el.isDisplay).map((el) => el.element),
-			true
-		)
-	}
-	function addPropsDisplayList(elements: RepEl[], isDisplayable: boolean) {
-		elements.forEach((el) => {
+		repUser.report.elements.forEach((el) => {
 			rawDataObjDyn.addPropDisplay({
 				_codeAccess: 'readOnly',
 				_codeColor: 'black',
@@ -52,7 +42,8 @@ export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj
 				_column: gePropColumn(el),
 				_hasItems: false,
 				_propName: el.nameCustom || el._column?.name,
-				isDisplayable,
+				isDisplay: el.isDisplay,
+				isDisplayable: el.isDisplayable,
 				nameCustom: el.nameCustom,
 				orderDefine: el.orderDisplay || el.orderDefine,
 				orderSort: el.orderSort

@@ -7,6 +7,7 @@
 		StateSurfaceModalEmbed
 	} from '$comps/app/types.appState'
 	import {
+		TokenApiUserPref,
 		TokenAppDoActionConfirmType,
 		TokenAppModalSelect,
 		TokenAppModalReturnType
@@ -14,9 +15,11 @@
 	import {
 		type CellClassParams,
 		type CellClickedEvent,
+		type FilterChangedEvent,
 		type GridApi,
 		type ICellEditorParams,
 		type NewValueParams,
+		type PostSortRowsParams,
 		type SelectionChangedEvent
 	} from 'ag-grid-community'
 	import {
@@ -26,20 +29,25 @@
 		DataObjMode,
 		DataObjSort,
 		DataObjSortItem,
+		type DataRecord,
 		ParmsValuesType,
 		ParmsUser,
-		ParmsUserParmType,
+		ParmsUserDataType,
 		required,
+		type ResponseBody,
 		strRequired
 	} from '$utils/types'
-	import type { DataRecord } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
-	import { recordsSelectAll, sortInit, sort } from '$comps/form/formList'
 	import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
 	import { FieldParm } from '$comps/form/fieldParm'
 	import FormElement from '$comps/form/FormElement.svelte'
 	import Grid from '$comps/grid/Grid.svelte'
-	import { getSelectedNodeIds, GridManagerOptions } from '$comps/grid/grid'
+	import {
+		getSelectedNodeIds,
+		GridManagerOptions,
+		GridSettings,
+		GridSettingsColumnItem
+	} from '$comps/grid/grid'
 	import {
 		CellEditorSelect,
 		cellEditorSelectorParmField,
@@ -48,34 +56,24 @@
 	import { onMount } from 'svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
+	import { init } from '@sentry/sveltekit'
 
 	const FILENAME = '$comps/form/FormList.svelte'
-
-	const animationDurationMs = 300
-	let dataHeightPadding = '400' //  <todo> 240314 - calc specific padding
-	let dataHeight = `max-height: calc(100vh - ${dataHeightPadding}px);`
 
 	export let state: State
 	export let component: string
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
+	let dataHeight = `max-height: calc(100vh - ${400}px);` //  <todo> 240314 - calc specific padding
 	let gridOptions: GridManagerOptions
-
-	let fieldsDisplayable: Field[] = []
 	let isSelect = state instanceof StateSurfaceModalEmbed
-	let listFilterText = ''
-	let listSortObj: DataObjSort = new DataObjSort()
 	let scrollToTop = () => {}
 
 	$: load(dataObjData)
 
 	function load(data: DataObjData) {
 		if (!dataObj.isListEmbed) dataObj.objData = data
-
-		listFilterText = state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listFilterText) || ''
-		listSortObj =
-			state.parmsUser.parmGet(dataObj.raw.id, ParmsUserParmType.listSortObj) || new DataObjSort()
 
 		// listEdit
 		if (dataObj.raw.isListEdit) {
@@ -93,7 +91,12 @@
 			state = state
 		}
 
-		gridOptions = setGridOptions()
+		gridOptions = initGrid()
+	}
+
+	function fGridCallbackFilter(event: FilterChangedEvent) {
+		dataObjData.rowsRetrieved.syncFields(dataObj.dataRecordsDisplay, ['selected'])
+		state.parmsState.valueSet(ParmsValuesType.listRecordIdSelected, getSelectedNodeIds(event.api))
 	}
 
 	function fGridCallbackUpdateValue(fieldName: string, data: DataRecord) {
@@ -115,10 +118,155 @@
 		}
 	}
 
-	function fGridCallbackFilter(gridApi: GridApi, filterText: string) {
-		dataObjData.rowsRetrieved.syncFields(dataObj.dataRecordsDisplay, ['selected'])
-		state.parmsState.valueSet(ParmsValuesType.listRecordIdSelected, getSelectedNodeIds(gridApi))
-		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listFilterText, filterText)
+	function initGrid() {
+		return new GridManagerOptions({
+			columnDefs: initGridColumns(),
+			fCallbackFilter: fGridCallbackFilter,
+			fCallbackUpdateValue: fGridCallbackUpdateValue,
+			isEmbed: dataObj.isListEmbed,
+			isSelect,
+			isSelectMulti: isSelect,
+			isSuppressFilterSort: dataObj.raw.isListSuppressFilterSort,
+			isSuppressSelect: dataObj.raw.isListSuppressSelect,
+			listReorderColumn: dataObj.raw.listReorderColumn,
+			onCellClicked,
+			onSelectionChanged,
+			parmStateSelectedIds: state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected),
+			rowData: initGridData(),
+			userSettings: dataObj.userSettings
+		})
+	}
+
+	function initGridColumns() {
+		let columnDefs: ColDef[] = []
+		const fieldsSettings =
+			dataObj.userSettings.getPref(ParmsUserDataType.listColumnsModel)?.columns || []
+		const fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
+		const fieldsDisplayableNew = fieldsDisplayable.filter((f) => {
+			return !fieldsSettings.map((fs) => fs.colId).includes(f.colDO.propName)
+		})
+
+		// config settings fields
+		fieldsSettings.forEach((fs) => {
+			const field = fieldsDisplayable.find((f) => f.colDO.propName === fs.colId)
+			if (field) {
+				let defn = initGridColumnsField(field)
+				defn.flex = fs.flex
+				defn.hide = !fs.visible
+				columnDefs.push(defn)
+			}
+		})
+
+		// config new fields
+		fieldsDisplayableNew.forEach((f) => {
+			console.log('FormList.initGridColumns', f.colDO)
+			let defn = initGridColumnsField(f)
+			defn.flex = 1
+			defn.hide = !f.colDO.isDisplayable || !f.colDO.isDisplay
+			columnDefs.push(defn)
+		})
+
+		console.log('FormList.initGridColumns', columnDefs)
+		return columnDefs
+	}
+	function initGridColumnsField(field: Field) {
+		let defn = {}
+		const isEditable =
+			dataObj.raw.isListEdit &&
+			[FieldAccess.optional, FieldAccess.required].includes(field.fieldAccess)
+
+		// core
+		defn.editable = isEditable
+		defn.field = field.colDO.propName
+		defn.headerName = isEditable ? '✍️ ' + field.colDO.label : field.colDO.label
+		defn.headerTooltip = field.placeHolder
+		defn.singleClickEdit = isEditable ? true : undefined
+
+		if (field instanceof FieldParm) {
+			defn.cellEditorSelector = cellEditorSelectorParmField
+			defn.cellRendererSelector = cellRendererSelectorParmField
+			defn.context = { parmFields: field.parmFields, state }
+		} else {
+			// data type
+			switch (field.colDO.colDB.codeDataType) {
+				case PropDataType.bool:
+					defn.cellDataType = isEditable ? 'customBoolean' : 'customText'
+					break
+
+				case PropDataType.date:
+					defn.cellDataType = 'customDateString'
+					break
+
+				case PropDataType.datetime:
+					// <todo> - 240921 - text until proper custom data type is built
+					defn.cellDataType = 'text'
+					break
+
+				case PropDataType.float64:
+					defn.cellDataType =
+						field.fieldElement === FieldElement.currency
+							? 'customNumberCurrency'
+							: field.fieldElement === FieldElement.percentage
+								? 'customNumberPercentage'
+								: 'customNumber'
+					break
+
+				case PropDataType.int16:
+				case PropDataType.int32:
+				case PropDataType.int64:
+					defn.cellDataType = 'customNumberInt'
+					break
+
+				case PropDataType.json:
+					defn.cellDataType = 'object'
+					break
+
+				case PropDataType.link:
+					const itemsKey = '_items_' + field.colDO.propName
+					if (Object.hasOwn(dataObjData.items, itemsKey)) {
+						defn.editable = false
+						defn.context = { items: dataObjData.items[itemsKey], state }
+						defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
+					} else {
+						defn.cellDataType = 'customText'
+					}
+					defn.cellStyle = {
+						backgroundColor: field.fieldAccess === FieldAccess.required ? 'rgb(219,234,254)' : ''
+					}
+					break
+
+				case PropDataType.str:
+				case PropDataType.uuid:
+					defn.cellDataType =
+						field.fieldElement === FieldElement.textArea ? 'customTextLarge' : 'customText'
+					break
+
+				default:
+					error(500, {
+						file: FILENAME,
+						function: 'initGridColumns',
+						message: `No case defined for PropDataType: ${field.colDO.colDB.codeDataType}`
+					})
+			}
+		}
+		return defn
+	}
+
+	function initGridData() {
+		const dataRows = dataObj.dataRecordsDisplay.map((record) => {
+			const row = {}
+			dataObj.fields.forEach((f) => {
+				row[f.colDO.propName] = record[f.colDO.propName]
+			})
+			return row
+		})
+
+		dataObj.data.parms.valueSet(
+			ParmsValuesType.listRecordIdList,
+			dataRows.map((r: any) => r.id)
+		)
+
+		return dataRows
 	}
 
 	async function onCellClicked(event: CellClickedEvent) {
@@ -203,149 +351,6 @@
 				action.trigger(state, dataObj)
 			}
 		}
-	}
-
-	function setGridColumns() {
-		let columnDefs: ColDef[] = []
-		fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
-		const fieldAccessEditable = [FieldAccess.optional, FieldAccess.required]
-
-		console.log('FormList.setGridColumns.fieldsDisplayable:', fieldsDisplayable)
-
-		dataObj.fields.forEach((f) => {
-			let defn = {}
-			const isEditable = dataObj.raw.isListEdit && fieldAccessEditable.includes(f.fieldAccess)
-
-			// core
-			defn.editable = isEditable
-			defn.field = f.colDO.propName
-			defn.headerName = isEditable ? '✍️ ' + f.colDO.label : f.colDO.label
-			defn.headerTooltip = f.placeHolder
-			defn.hide = !f.colDO.isDisplayable
-			defn.singleClickEdit = isEditable ? true : undefined
-
-			if (f instanceof FieldParm) {
-				defn.cellEditorSelector = cellEditorSelectorParmField
-				defn.cellRendererSelector = cellRendererSelectorParmField
-				defn.context = { parmFields: f.parmFields, state }
-			} else {
-				// data type
-				switch (f.colDO.colDB.codeDataType) {
-					case PropDataType.bool:
-						defn.cellDataType = isEditable ? 'customBoolean' : 'customText'
-						break
-
-					case PropDataType.date:
-						defn.cellDataType = 'customDateString'
-						break
-
-					case PropDataType.datetime:
-						// <todo> - 240921 - text until proper custom data type is built
-						defn.cellDataType = 'text'
-						break
-
-					case PropDataType.float64:
-						defn.cellDataType =
-							f.fieldElement === FieldElement.currency
-								? 'customNumberCurrency'
-								: f.fieldElement === FieldElement.percentage
-									? 'customNumberPercentage'
-									: 'customNumber'
-						break
-
-					case PropDataType.int16:
-					case PropDataType.int32:
-					case PropDataType.int64:
-						defn.cellDataType = 'customNumberInt'
-						break
-
-					case PropDataType.json:
-						defn.cellDataType = 'object'
-						break
-
-					case PropDataType.link:
-						const itemsKey = '_items_' + f.colDO.propName
-						if (Object.hasOwn(dataObjData.items, itemsKey)) {
-							defn.editable = false
-							defn.context = { items: dataObjData.items[itemsKey], state }
-							defn.type = f.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
-						} else {
-							defn.cellDataType = 'customText'
-						}
-						defn.cellStyle = {
-							backgroundColor: f.fieldAccess === FieldAccess.required ? 'rgb(219,234,254)' : ''
-						}
-						break
-
-					case PropDataType.str:
-					case PropDataType.uuid:
-						defn.cellDataType =
-							f.fieldElement === FieldElement.textArea ? 'customTextLarge' : 'customText'
-						break
-
-					default:
-						console.log('setGridColumns.error.field:', f)
-						error(500, {
-							file: FILENAME,
-							function: 'setGridColumns',
-							message: `No case defined for PropDataType: ${f.colDO.colDB.codeDataType}`
-						})
-				}
-			}
-
-			columnDefs.push(defn)
-		})
-
-		return columnDefs
-	}
-
-	function setGridData() {
-		setGridDataSort()
-		return setGridDataValues()
-	}
-
-	function setGridDataSort() {
-		listSortObj = sortInit(fieldsDisplayable)
-		dataObj.dataRecordsDisplay = sort(listSortObj, dataObj.dataRecordsDisplay)
-		state.parmsUser.parmSet(dataObj.raw.id, ParmsUserParmType.listSortObj, listSortObj)
-	}
-
-	function setGridDataValues() {
-		const dataRows = dataObj.dataRecordsDisplay.map((record) => {
-			const row = {}
-			dataObj.fields.forEach((f) => {
-				row[f.colDO.propName] = record[f.colDO.propName]
-			})
-			return row
-		})
-
-		dataObj.data.parms.valueSet(
-			ParmsValuesType.listRecordIdList,
-			dataRows.map((r: any) => r.id)
-		)
-
-		return dataRows
-	}
-
-	function setGridOptions() {
-		let columnDefs = setGridColumns()
-		let rowData = setGridData()
-		return new GridManagerOptions({
-			columnDefs,
-			fCallbackFilter: fGridCallbackFilter,
-			fCallbackUpdateValue: fGridCallbackUpdateValue,
-			isEmbed: dataObj.isListEmbed,
-			isHideFilter: dataObj.raw.isListSuppressFilterSort,
-			isSelect,
-			isSelectMulti: isSelect,
-			isSuppressSelect: dataObj.raw.isListSuppressSelect,
-			listFilterText,
-			listRecordIdSelected: state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected) || [],
-			listReorderColumn: dataObj.raw.listReorderColumn,
-			onCellClicked,
-			onSelectionChanged,
-			rowData
-		})
 	}
 </script>
 

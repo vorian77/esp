@@ -1,5 +1,8 @@
 import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
-import { addDataObj } from '$server/dbEdge/init/dbEdgeInitUtilities20DataObj'
+import {
+	addDataObj,
+	addDataObjFieldEmbedListSelect
+} from '$server/dbEdge/init/dbEdgeInitUtilities20DataObj'
 import { addNodeFooter } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
 
 export async function initAdminSysAuth() {
@@ -11,6 +14,7 @@ export async function initAdminSysAuth() {
 	await initDataObjVerify()
 	await initNodeObjFooter()
 	// await initDataObjSignup()
+	await initDataObjUserPrefType()
 }
 
 // {
@@ -619,5 +623,105 @@ async function initNodeObjFooter() {
 		name: 'node_obj_sys_admin_footer_auth_account',
 		orderDefine: 30,
 		owner: 'app_sys_admin'
+	})
+}
+
+async function initDataObjUserPrefType() {
+	await addDataObj({
+		actionFieldGroup: 'doag_embed_list_edit',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeListEditPresetType: 'insert',
+		exprFilter: `.user.id = <user,uuid,id>`,
+		header: 'My Preferences',
+		isListEdit: true,
+		isListSuppressFilterSort: true,
+		listEditPresetExpr: `WITH 
+			valsSys := (SELECT sys_core::SysCode FILTER .codeType.name = 'ct_sys_user_pref_type'),
+			valsUser := (SELECT sys_user::SysUserPrefType FILTER .user.id = <user,uuid,id>).codeType,
+			valsNew := (SELECT valsSys EXCEPT valsUser)
+			SELECT valsNew`,
+		name: 'data_obj_auth_user_pref_type',
+		owner: 'app_sys',
+		tables: [
+			{ index: 0, table: 'SysUserPrefType' },
+			{ columnParent: 'codeType', indexParent: 0, index: 1, table: 'SysCode' }
+		],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				columnName: 'user',
+				exprPreset: `<user,uuid,id>`,
+				orderDefine: 20,
+				indexTable: 0,
+				isDisplayable: false,
+				linkTable: 'SysUser'
+			},
+			{
+				columnName: 'codeType',
+				exprPreset: `valsNew.id`,
+				orderDefine: 30,
+				indexTable: 0,
+				isDisplayable: false,
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'header',
+				exprPreset: '.codeType.header',
+				headerAlt: 'Preference',
+				indexTable: 1,
+				isDisplayable: true,
+				isExcludeInsert: true,
+				isExcludeUpdate: true,
+				orderDisplay: 10,
+				orderDefine: 40,
+				orderSort: 10
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isActive',
+				exprPreset: '(SELECT false)',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 50
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1020
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1030
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1040
+			}
+		]
 	})
 }

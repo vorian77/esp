@@ -79,10 +79,6 @@ module sys_rep {
       on target delete allow;
     };
     descriptionUser: str;
-    multi elements: sys_rep::SysRepUserEl {
-      on source delete delete target;
-      on target delete allow;
-    };
     required headerUser: str;
     required orderDefine: default::nonNegative;
     multi parms: sys_rep::SysRepUserParm{
@@ -103,13 +99,6 @@ module sys_rep {
     };
   }
   
-  type SysRepUserEl extending sys_user::Mgmt {
-    required element: sys_rep::SysRepEl {
-      on target delete allow
-    };
-    required isDisplay: bool;
-    orderDisplay: default::nonNegative;
-  }
   type SysRepUserParm extending sys_user::Mgmt {
     required parm: sys_rep::SysRepParm;
     parmValue: json;

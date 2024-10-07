@@ -183,6 +183,24 @@ export class State {
 		})
 	}
 
+	async openModalDataObj(dataObjName: string) {
+		const clazz = `${FILENAME}.openModalDataObj`
+		const stateModal = new StateSurfaceModalDataObj({
+			actionsFieldDialog: await this.getActions('doag_dialog_footer_detail'),
+			dataObjName,
+			layoutComponent: StateLayoutComponent.layoutContent,
+			layoutHeader: {
+				isDataObj: true
+			},
+			packet: new StatePacket({
+				action: StatePacketAction.modalDataObj,
+				confirmType: TokenAppDoActionConfirmType.none
+			})
+		})
+		await stateModal.app.addLevelModalDataObj(stateModal)
+		await this.openModal(stateModal)
+	}
+
 	async openModalEmbedListConfig(
 		token: TokenAppDo,
 		queryType: TokenApiQueryType,
@@ -441,6 +459,7 @@ export enum StatePacketAction {
 
 	// modal
 	modalCancel = 'modalCancel',
+	modalDataObj = 'modalDataObj',
 	modalDone = 'modalDone',
 	modalEmbed = 'modalEmbed',
 
@@ -507,6 +526,16 @@ export class StateSurfaceModal extends State {
 		super(obj)
 		obj = valueOrDefault(obj, {})
 		this.actionsFieldDialog = valueOrDefault(obj.actionsFieldDialog, [])
+	}
+}
+
+export class StateSurfaceModalDataObj extends StateSurfaceModal {
+	dataObjName: string
+	constructor(obj: any) {
+		const clazz = 'StateSurfaceDataObj'
+		super(obj)
+		obj = valueOrDefault(obj, {})
+		this.dataObjName = strRequired(obj.dataObjName, clazz, 'dataObjName')
 	}
 }
 

@@ -36,6 +36,13 @@
 			await state.resetUser(true)
 		}
 	}
+
+	async function openMyPreferences() {
+		closeDrawer()
+		const state: State = $storeDrawer.meta.state
+		await state.openModalDataObj('data_obj_auth_user_pref_type')
+		await state.resetUser(true)
+	}
 </script>
 
 <Drawer on:backdrop={closeDrawer}>
@@ -52,13 +59,18 @@
 			<NavTree state={$storeDrawer.meta.state} on:treeChanged={closeDrawer} />
 		</div>
 	{:else if $storeDrawer.id === 'navRight'}
-		<div class="p-4">
-			<a href="/logout" on:click={() => localStorage.clear()}>Logout</a>
-		</div>
-		<div hidden={!$storeDrawer.meta.isSysAdmin} class="pl-4">
-			<btn on:click={dbInitAdmin} on:keydown={dbInitAdmin} tabindex="0" role="button"
-				>Reset Admin DB</btn
+		<div class="flex flex-col p-4 space-y-4">
+			<btn on:click={openMyPreferences} on:keydown={openMyPreferences} tabindex="0" role="button"
+				>My Preferences</btn
 			>
+
+			<a href="/logout" on:click={() => localStorage.clear()}>Logout</a>
+
+			<div hidden={!$storeDrawer.meta.isSysAdmin} class="">
+				<btn on:click={dbInitAdmin} on:keydown={dbInitAdmin} tabindex="0" role="button"
+					>Reset Admin DB</btn
+				>
+			</div>
 		</div>
 	{/if}
 </Drawer>
