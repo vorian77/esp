@@ -36,7 +36,6 @@ export async function initReset() {
 	)
 
 	reset.delTableRecords('sys_rep::SysRepUserAnalytic')
-	reset.delTableRecords('sys_rep::SysRepUserEl')
 	reset.delTableRecords('sys_rep::SysRepUserParm')
 	reset.delTableRecords('sys_rep::SysRepUser')
 

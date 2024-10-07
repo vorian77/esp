@@ -123,6 +123,8 @@ export async function addDataObj(data: any) {
 
 						indexTable: e.cast(e.int16, e.json_get(f, 'indexTable')),
 
+						isDisplay: booleanOrDefaultJSON(f, 'isDisplay', true),
+
 						isDisplayable: e.cast(e.bool, e.json_get(f, 'isDisplayable')),
 
 						isExcludeInsert: booleanOrDefaultJSON(f, 'isExcludeInsert', false),

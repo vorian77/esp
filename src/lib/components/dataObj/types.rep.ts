@@ -169,8 +169,8 @@ export class RepEl {
 		this.exprCustom = strOptional(obj.exprCustom, clazz, 'expr')
 		this.header = strOptional(obj.header, clazz, 'header')
 		this.indexTable = nbrOptional(obj.indexTable, clazz, 'indexTable')
+		this.isDisplay = booleanOrDefault(obj.isDisplay, true)
 		this.isDisplayable = booleanRequired(obj.isDisplayable, clazz, 'isDisplayable')
-		this.isDisplay = this.isDisplayable
 		this.nameCustom = strOptional(obj.nameCustom, clazz, 'name')
 		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
 		this.orderDisplay = nbrOptional(obj.orderDisplay, clazz, 'orderDisplay')
@@ -243,7 +243,6 @@ export class RepParm {
 export class RepUser {
 	analytics: RepAnalytic[] = []
 	descriptionUser?: string
-	elements: RepUserEl[] = []
 	headerUser: string
 	parms: RepUserParm[] = []
 	report: Rep
@@ -252,21 +251,9 @@ export class RepUser {
 		obj = valueOrDefault(obj, {})
 		// this.analytics = arrayOfClasses(obj.analytics, RepAnalytic)
 		this.descriptionUser = strOptional(obj.descriptionUser, clazz, 'descriptionUser')
-		this.elements = arrayOfClasses(RepUserEl, obj.elements)
 		this.headerUser = strRequired(obj.headerUser, clazz, 'headerUser')
 		this.parms = arrayOfClasses(RepUserParm, obj.parms)
 		this.report = new Rep(obj.report)
-	}
-}
-
-export class RepUserEl {
-	element: RepEl
-	isDisplay: boolean
-	constructor(obj: any) {
-		const clazz = 'RepUserEl'
-		obj = valueOrDefault(obj, {})
-		this.element = new RepEl(obj.element)
-		this.isDisplay = booleanOrDefault(obj.isDisplay, true)
 	}
 }
 
