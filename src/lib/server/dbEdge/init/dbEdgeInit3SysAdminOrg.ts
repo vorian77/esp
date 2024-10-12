@@ -21,7 +21,7 @@ async function initFieldListSelectUserTypes() {
 		exprFilter: 'none',
 		header: 'Select User Types',
 		name: 'dofls_sys_sys_admin_user_type',
-		owner: 'app_sys_admin_org',
+		owner: 'sys_app_sys_admin_org',
 		tables: [{ index: 0, table: 'SysUserType' }],
 		fields: [
 			{
@@ -48,7 +48,7 @@ async function initFieldListSelectUserTypes() {
 		btnLabelComplete: 'Select UserType(s)',
 		dataObjList: 'dofls_sys_sys_admin_user_type',
 		name: 'fels_sys_sys_admin_user_type',
-		owner: 'app_sys_admin_org'
+		owner: 'sys_app_sys_admin_org'
 	})
 }
 
@@ -61,8 +61,8 @@ async function initOrg() {
 		header: 'Organizations',
 		isListEdit: false,
 		listReorderColumn: 'orderDefine',
-		name: 'data_obj_sys_admin_org_list',
-		owner: 'app_sys_admin_org',
+		name: 'data_obj_sys_admin_org_old_list',
+		owner: 'sys_app_sys_admin_org',
 		tables: [{ index: 0, table: 'SysOrg' }],
 		fields: [
 			{
@@ -159,8 +159,8 @@ async function initOrg() {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Organization',
-		name: 'data_obj_sys_admin_org_detail',
-		owner: 'app_sys_admin_org',
+		name: 'data_obj_sys_admin_org_old_detail',
+		owner: 'sys_app_sys_admin_org',
 		tables: [{ index: 0, table: 'SysOrg' }],
 		fields: [
 			{
@@ -168,14 +168,6 @@ async function initOrg() {
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 10
-			},
-			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				linkExprSave: `(SELECT assert_single((SELECT sys_core::ObjRoot FILTER .name = '*ROOTOBJ*')))`,
-				linkTable: 'SysOrg',
-				orderDefine: 20
 			},
 			{
 				columnName: 'name',
@@ -237,12 +229,12 @@ async function initOrg() {
 
 	await addNodeProgramObj({
 		codeIcon: 'application',
-		dataObj: 'data_obj_sys_admin_org_list',
+		dataObj: 'data_obj_sys_admin_org_old_list',
 		header: 'Organizations',
 		isHideRowManager: false,
-		name: 'node_obj_sys_admin_org_list',
+		name: 'node_obj_sys_admin_org_old_list',
 		orderDefine: 15,
-		owner: 'app_sys_admin_org',
+		owner: 'sys_app_sys_admin_org',
 		parentNodeName: 'node_pgm_sys_admin'
 	})
 
@@ -251,10 +243,10 @@ async function initOrg() {
 		dataObj: 'data_obj_sys_admin_org_detail',
 		header: 'Organization',
 		isHideRowManager: false,
-		name: 'node_obj_sys_admin_org_detail',
+		name: 'node_obj_sys_admin_org_old_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin_org',
-		parentNodeName: 'node_obj_sys_admin_org_list'
+		owner: 'sys_app_sys_admin_org',
+		parentNodeName: 'node_obj_sys_admin_org_old_list'
 	})
 }
 
@@ -266,7 +258,7 @@ async function initUser() {
 		exprFilter: '.owner.id = <tree,uuid,SysOrg.id>',
 		header: 'Users',
 		name: 'data_obj_sys_admin_user_list',
-		owner: 'app_sys_admin_org',
+		owner: 'sys_app_sys_admin_org',
 		tables: [
 			{ index: 0, table: 'SysUser' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -325,7 +317,7 @@ async function initUser() {
 		codeComponent: 'FormDetail',
 		header: 'User',
 		name: 'data_obj_sys_admin_user_detail',
-		owner: 'app_sys_admin_org',
+		owner: 'sys_app_sys_admin_org',
 		tables: [
 			{ index: 0, table: 'SysUser' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -441,8 +433,8 @@ async function initUser() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_user_list',
 		orderDefine: 15,
-		owner: 'app_sys_admin_org',
-		parentNodeName: 'node_obj_sys_admin_org_detail'
+		owner: 'sys_app_sys_admin_org',
+		parentNodeName: 'node_obj_sys_admin_org_old_detail'
 	})
 
 	await addNodeProgramObj({
@@ -452,7 +444,7 @@ async function initUser() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_user_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin_org',
+		owner: 'sys_app_sys_admin_org',
 		parentNodeName: 'node_obj_sys_admin_user_list'
 	})
 }

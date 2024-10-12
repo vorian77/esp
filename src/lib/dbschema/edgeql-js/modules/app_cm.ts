@@ -54,7 +54,6 @@ export type $CmCohortλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "staffAdmin": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "staffAgency": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "staffInstructor": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "venue": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "capacity": $.PropertyDesc<_std.$int16, $.Cardinality.AtMostOne, false, false, false, false>;
   "cost": $.PropertyDesc<_std.$float32, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateEnd": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -103,7 +102,6 @@ export type $CmCourseλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "codeSector": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeTypePayment": $.LinkDesc<_sys_core.$SysCodeType, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "provider": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "staffAdmin": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "staffAgency": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;

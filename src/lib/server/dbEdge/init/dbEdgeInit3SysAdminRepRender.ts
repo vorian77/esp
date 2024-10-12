@@ -34,7 +34,7 @@ async function initFieldEmbedListEditRepUserParm() {
 			newVals := (SELECT repVals EXCEPT userVals)
 			SELECT newVals`,
 		name: 'dofls_sys_rep_user_parm',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentColumn: 'parms',
 		parentTable: 'SysRepUser',
 		tables: [
@@ -174,7 +174,7 @@ async function initFieldEmbedListEditRepUserParm() {
 	await addDataObjFieldEmbedListEdit({
 		dataObjEmbed: 'dofls_sys_rep_user_parm',
 		name: 'fele_sys_rep_user_parm',
-		owner: 'app_sys_rep'
+		owner: 'sys_app_sys_rep'
 	})
 }
 
@@ -186,7 +186,7 @@ async function initRepConfig() {
 		exprFilter: '.user.id = <user,uuid,id>',
 		header: 'My Reports',
 		name: 'data_obj_sys_rep_my_report_list',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		tables: [{ index: 0, table: 'SysRepUser' }],
 		fields: [
 			{
@@ -241,7 +241,7 @@ async function initRepConfig() {
 		codeComponent: 'FormDetailRepConfig',
 		header: 'Config',
 		name: 'data_obj_sys_rep_my_report_detail',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		tables: [
 			{ index: 0, table: 'SysRepUser' },
 			{ columnParent: 'parms', indexParent: 0, index: 1, table: 'SysRepUserParm' }
@@ -420,7 +420,7 @@ async function initRepConfig() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_rep_my_report_list',
 		orderDefine: 10,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_hdr_cm_ai_reports'
 	})
 	await addNodeProgramObj({
@@ -430,7 +430,7 @@ async function initRepConfig() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_rep_my_report_detail',
 		orderDefine: 10,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_rep_my_report_list'
 	})
 }
@@ -441,7 +441,7 @@ async function initRepRender() {
 		codeCardinality: 'list',
 		header: 'Run',
 		name: 'data_obj_dyn_sys_rep_render',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		processType: 'reportRender',
 		tables: [{ index: 0, table: 'SysRepUser' }],
 		fields: [
@@ -462,7 +462,7 @@ async function initRepRender() {
 		isHideRowManager: true,
 		name: 'node_obj_sys_rep_render',
 		orderDefine: 20,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_rep_my_report_detail'
 	})
 }

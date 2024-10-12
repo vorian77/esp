@@ -14,6 +14,7 @@ const client = createClient({
 
 export async function addColumn(data: any) {
 	sectionHeader(`addColumn - ${data.name}`)
+	const CREATOR = e.select(e.sys_user.getRootUser())
 	const query = e.params(
 		{
 			classProps: e.optional(e.str),
@@ -48,7 +49,7 @@ export async function addColumn(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_db.SysColumn, {
-				owner: e.select(e.sys_core.getEnt(p.owner)),
+				owner: e.select(e.sys_core.getSystem(p.owner)),
 				classProps: p.classProps,
 				codeAlignment: e.select(
 					e.sys_core.getCode(
@@ -57,7 +58,7 @@ export async function addColumn(data: any) {
 					)
 				),
 				codeDataType: e.sys_core.getCode('ct_db_col_data_type', p.codeDataType),
-				createdBy: e.select(e.sys_user.getRootUser()),
+				createdBy: e.select(CREATOR),
 				exprStorageKey: p.exprStorageKey,
 				header: p.header,
 				headerSide: p.headerSide,
@@ -72,7 +73,7 @@ export async function addColumn(data: any) {
 				maxValue: p.maxValue,
 				minLength: p.minLength,
 				minValue: p.minValue,
-				modifiedBy: e.select(e.sys_user.getRootUser()),
+				modifiedBy: e.select(CREATOR),
 				name: p.name,
 				pattern: p.pattern,
 				patternMsg: p.patternMsg,

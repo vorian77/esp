@@ -107,7 +107,7 @@ async function initServiceFlows() {
         ('sf_cm_ai_youth_build', 'Youth Build'),    
       }
       union (insert app_cm::CmServiceFlow {
-        owner := (select sys_core::getOrg('System')),
+        owner := (select sys_core::getOrg('org_system')),
         name := x.0,
         header := x.1,
         createdBy := myCreator,

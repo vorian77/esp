@@ -521,6 +521,7 @@ export async function getTableColumns(token: TokenApiDbTableColumns) {
 }
 
 export async function getUserByUserId(token: TokenApiUserId) {
+	console.log('dbEdgeUtilties.getUserByUserId', token)
 	const query = e.select(e.sys_user.SysUser, (u) => ({
 		avatar: u.person.avatar,
 		firstName: u.person.firstName,
@@ -549,7 +550,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			order_by: f.orderDefine
 		})),
 		resource_programs: e.select(
-			u.userTypes.userTypeResources.userTypeResource.is(e.sys_core.SysNodeObj),
+			u.userTypes.resources.userTypeResource.is(e.sys_core.SysNodeObj),
 			(ut) => ({
 				dataObjId: ut.dataObj.id,
 				header: true,
@@ -564,7 +565,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			})
 		),
 		resource_widgets: e.select(
-			u.userTypes.userTypeResources.userTypeResource.is(e.sys_user.SysWidget),
+			u.userTypes.resources.userTypeResource.is(e.sys_user.SysWidget),
 			(ut) => ({
 				id: true,
 				name: true

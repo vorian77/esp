@@ -24,7 +24,7 @@ async function initCourse() {
 		exprFilter: '.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).orgs',
 		header: 'Courses',
 		name: 'data_obj_cm_course_list',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [{ index: 0, table: 'CmCourse' }],
 		fields: [
 			{
@@ -84,7 +84,7 @@ async function initCourse() {
 		codeComponent: 'FormDetail',
 		header: 'Course',
 		name: 'data_obj_cm_course_detail',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [{ index: 0, table: 'CmCourse' }],
 		fields: [
 			{
@@ -346,7 +346,7 @@ async function initCourse() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_course_list',
 		orderDefine: 10,
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		parentNodeName: 'node_pgm_cm_staff_provider'
 	})
 	await addNodeProgramObj({
@@ -356,7 +356,7 @@ async function initCourse() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_course_detail',
 		orderDefine: 10,
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		parentNodeName: 'node_obj_cm_course_list'
 	})
 }
@@ -369,7 +369,7 @@ async function initCohort() {
 		exprFilter: '.id in (SELECT app_cm::CmCourse FILTER .id = <tree,uuid,CmCourse.id>).cohorts.id',
 		header: 'Cohorts',
 		name: 'data_obj_cm_cohort_list',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [{ index: 0, table: 'CmCohort' }],
 		fields: [
 			{
@@ -455,7 +455,7 @@ async function initCohort() {
 		codeComponent: 'FormDetail',
 		header: 'Cohort',
 		name: 'data_obj_cm_cohort_detail',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		parentColumn: 'cohorts',
 		parentTable: 'CmCourse',
 		tables: [{ index: 0, table: 'CmCohort' }],
@@ -649,7 +649,7 @@ async function initCohort() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_cohort_list',
 		orderDefine: 10,
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		parentNodeName: 'node_obj_cm_course_detail'
 	})
 	await addNodeProgramObj({
@@ -659,7 +659,7 @@ async function initCohort() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_cohort_detail',
 		orderDefine: 10,
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		parentNodeName: 'node_obj_cm_cohort_list'
 	})
 }
@@ -672,7 +672,7 @@ async function initCohortStudentRoster() {
 		exprFilter: '.cohort.id = <tree,uuid,CmCohort.id>',
 		header: 'Student Roster',
 		name: 'data_obj_cm_student_roster_list_by_cohort',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [
 			{ index: 0, table: 'CmCsfCohort' },
 			{ columnParent: 'csf', indexParent: 0, index: 1, table: 'CmClientServiceFlow' },
@@ -724,7 +724,7 @@ async function initCohortStudentRoster() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_student_roster_list_by_cohort',
 		orderDefine: 10,
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		parentNodeName: 'node_obj_cm_cohort_detail'
 	})
 }
@@ -737,7 +737,7 @@ async function initCohortAttd() {
 		exprFilter: '.cohortId = <tree,uuid,CmCohort.id>',
 		header: 'Attendance Days',
 		name: 'data_obj_cm_cohort_attd_list',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [{ index: 0, table: 'CmCohortAttd' }],
 		fields: [
 			{
@@ -798,7 +798,7 @@ async function initCohortAttd() {
 	})
 
 	await addDataObj({
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_cohort_attd_detail',
@@ -931,7 +931,7 @@ async function initCohortAttd() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_cohort_attd_list',
 		orderDefine: 20,
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		parentNodeName: 'node_obj_cm_cohort_detail'
 	})
 	await addNodeProgramObj({
@@ -941,7 +941,7 @@ async function initCohortAttd() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_cohort_attd_detail',
 		orderDefine: 10,
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		parentNodeName: 'node_obj_cm_cohort_attd_list'
 	})
 }
@@ -962,7 +962,7 @@ async function initCohortAttdSheet() {
 		csfCohortsWithoutAttd := (SELECT csfCohortsInCohort EXCEPT csfCohortsWithAttd)
 		SELECT csfCohortsWithoutAttd`,
 		name: 'data_obj_cm_cohort_attd_sheet',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [
 			{ index: 0, table: 'CmCsfCohortAttd' },
 			{ columnParent: 'csfCohort', indexParent: 0, index: 1, table: 'CmCsfCohort' },
@@ -1087,7 +1087,7 @@ async function initCohortAttdSheet() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_cohort_attd_sheet',
 		orderDefine: 10,
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		parentNodeName: 'node_obj_cm_cohort_attd_detail'
 	})
 }
@@ -1100,7 +1100,7 @@ async function initPartner() {
 		exprFilter: '.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).orgs',
 		header: 'Partners',
 		name: 'data_obj_cm_partner_list',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [{ index: 0, table: 'CmPartner' }],
 		fields: [
 			{
@@ -1194,7 +1194,7 @@ async function initPartner() {
 		codeComponent: 'FormDetail',
 		header: 'Partner',
 		name: 'data_obj_cm_partner_detail',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [{ index: 0, table: 'CmPartner' }],
 		fields: [
 			{
@@ -1419,7 +1419,7 @@ async function initPartner() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_partner_list',
 		orderDefine: 20,
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		parentNodeName: 'node_pgm_cm_staff_provider'
 	})
 
@@ -1430,7 +1430,7 @@ async function initPartner() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_partner_detail',
 		orderDefine: 10,
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		parentNodeName: 'node_obj_cm_partner_list'
 	})
 }
@@ -1444,7 +1444,7 @@ async function initFieldListConfigPartnerContact() {
 		codeComponent: 'FormList',
 		header: 'Contacts',
 		name: 'doflc_cm_partner_contact_list',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [{ index: 0, table: 'SysPerson' }],
 		fields: [
 			{
@@ -1498,7 +1498,7 @@ async function initFieldListConfigPartnerContact() {
 		codeComponent: 'FormDetail',
 		header: 'Contact',
 		name: 'doflc_cm_partner_contact_detail',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [{ index: 0, table: 'SysPerson' }],
 		fields: [
 			{
@@ -1543,6 +1543,7 @@ async function initFieldListConfigPartnerContact() {
 				orderDefine: 60
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'tel',
 				columnName: 'phoneMobile',
 				isDisplayable: true,
@@ -1551,6 +1552,7 @@ async function initFieldListConfigPartnerContact() {
 				indexTable: 0
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'email',
 				columnName: 'email',
 				isDisplayable: true,
@@ -1573,6 +1575,6 @@ async function initFieldListConfigPartnerContact() {
 		dataObjEmbed: 'doflc_cm_partner_contact_list',
 		dataObjModal: 'doflc_cm_partner_contact_detail',
 		name: 'flec_cm_partner_contact',
-		owner: 'app_cm_training'
+		owner: 'sys_app_cm_training'
 	})
 }

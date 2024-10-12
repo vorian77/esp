@@ -13,7 +13,6 @@ module app_cm {
       on target delete allow;
     };
     description: str;
-    provider: sys_core::SysOrg;
     schedule: str;
     staffAdmin: sys_user::SysStaff;
     staffAgency: sys_user::SysStaff;
@@ -35,7 +34,6 @@ module app_cm {
     staffAdmin: sys_user::SysStaff;
     staffAgency: sys_user::SysStaff;
     staffInstructor: sys_user::SysStaff;
-    venue: sys_core::SysOrg;
   }
 
   type CmCohortAttd extending sys_user::Mgmt {

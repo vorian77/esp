@@ -27,7 +27,7 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
-		// console.log('User.constructor', obj)
+		console.log('User.constructor', obj)
 		const clazz = 'User'
 		this.user = valueOrDefault(obj, {})
 		this.avatar = obj.avatar

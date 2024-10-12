@@ -18,10 +18,10 @@ async function initColumn() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Columns',
 		name: 'data_obj_sys_admin_column_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysColumn' }],
 		fields: [
 			{
@@ -57,7 +57,7 @@ async function initColumn() {
 		codeComponent: 'FormDetail',
 		header: 'Column',
 		name: 'data_obj_sys_admin_column_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysColumn' }],
 		fields: [
 			{
@@ -71,7 +71,7 @@ async function initColumn() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -523,8 +523,8 @@ async function initColumn() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_column_list',
 		orderDefine: 17,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 
 	await addNodeProgramObj({
@@ -534,7 +534,7 @@ async function initColumn() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_column_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_column_list'
 	})
 }
@@ -545,10 +545,10 @@ async function initTable() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Tables',
 		name: 'data_obj_sys_admin_table_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysTable' }],
 		fields: [
 			{
@@ -592,7 +592,7 @@ async function initTable() {
 		codeComponent: 'FormDetail',
 		header: 'Table',
 		name: 'data_obj_sys_admin_table_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysTable' }],
 		fields: [
 			{
@@ -606,7 +606,7 @@ async function initTable() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -713,8 +713,8 @@ async function initTable() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_table_list',
 		orderDefine: 110,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 
 	await addNodeProgramObj({
@@ -724,7 +724,7 @@ async function initTable() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_table_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_table_list'
 	})
 }

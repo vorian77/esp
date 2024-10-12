@@ -18,10 +18,10 @@ async function initDataObj() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Data Objects',
 		name: 'data_obj_sys_admin_data_obj_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObj' }],
 		fields: [
 			{
@@ -49,7 +49,7 @@ async function initDataObj() {
 		codeComponent: 'FormDetail',
 		header: 'Data Object',
 		name: 'data_obj_sys_admin_data_obj_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObj' }],
 		fields: [
 			{
@@ -63,7 +63,7 @@ async function initDataObj() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -433,8 +433,8 @@ async function initDataObj() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_list',
 		orderDefine: 30,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 
 	await addNodeProgramObj({
@@ -444,7 +444,7 @@ async function initDataObj() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_data_obj_list'
 	})
 }
@@ -459,7 +459,7 @@ async function initDataObjColumn() {
 		header: 'Columns',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_admin_data_obj_column_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentColumn: 'columns',
 		parentTable: 'SysDataObj',
 		tables: [{ index: 0, table: 'SysDataObjColumn' }],
@@ -558,7 +558,7 @@ async function initDataObjColumn() {
 		codeComponent: 'FormDetail',
 		header: 'Column',
 		name: 'data_obj_sys_admin_data_obj_column_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentColumn: 'columns',
 		parentTable: 'SysDataObj',
 		tables: [{ index: 0, table: 'SysDataObjColumn' }],
@@ -1313,7 +1313,7 @@ async function initDataObjColumn() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_column_list',
 		orderDefine: 20,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_data_obj_detail'
 	})
 
@@ -1324,7 +1324,7 @@ async function initDataObjColumn() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_column_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_data_obj_column_list'
 	})
 }

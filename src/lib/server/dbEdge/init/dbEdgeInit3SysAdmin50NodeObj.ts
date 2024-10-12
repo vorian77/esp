@@ -17,11 +17,11 @@ async function initNodeObj() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Node Objects',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_admin_node_obj_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysNodeObj' }],
 		fields: [
 			{
@@ -107,7 +107,7 @@ async function initNodeObj() {
 		codeComponent: 'FormDetail',
 		header: 'Node Object',
 		name: 'data_obj_sys_admin_node_obj_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysNodeObj' }],
 		fields: [
 			{
@@ -121,7 +121,7 @@ async function initNodeObj() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -255,7 +255,7 @@ async function initNodeObj() {
 			{
 				columnName: 'orderDefine',
 				orderDefine: 180,
-				exprPreset: `(SELECT (count((SELECT sys_core::SysNodeObj FILTER .owner.id = <tree,uuid,SysResource.id>)) + 1))`,
+				exprPreset: `(SELECT (count((SELECT sys_core::SysNodeObj FILTER .owner.id = <tree,uuid,SysSystem.id>)) + 1))`,
 				indexTable: 0,
 				isDisplayable: false
 			},
@@ -317,8 +317,8 @@ async function initNodeObj() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_node_obj_list',
 		orderDefine: 90,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 
 	await addNodeProgramObj({
@@ -328,7 +328,7 @@ async function initNodeObj() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_node_obj_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_node_obj_list'
 	})
 }

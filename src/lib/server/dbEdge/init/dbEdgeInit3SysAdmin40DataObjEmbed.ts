@@ -20,10 +20,10 @@ async function initDataObjFielEmbedListConfig() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Embed List Configs',
 		name: 'data_obj_sys_admin_data_obj_field_embed_list_config_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjFieldEmbedListConfig' }],
 		fields: [
 			{
@@ -79,7 +79,7 @@ async function initDataObjFielEmbedListConfig() {
 		codeComponent: 'FormDetail',
 		header: 'Embed List Config',
 		name: 'data_obj_sys_admin_data_obj_field_embed_list_config_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjFieldEmbedListConfig' }],
 		fields: [
 			{
@@ -93,7 +93,7 @@ async function initDataObjFielEmbedListConfig() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -219,8 +219,8 @@ async function initDataObjFielEmbedListConfig() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_config_list',
 		orderDefine: 60,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 
 	await addNodeProgramObj({
@@ -230,7 +230,7 @@ async function initDataObjFielEmbedListConfig() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_config_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_data_obj_field_embed_list_config_list'
 	})
 }
@@ -240,10 +240,10 @@ async function initDataObjFieldEmbedListEdit() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Embed List Edit',
 		name: 'data_obj_sys_admin_data_obj_field_embed_list_edit_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjFieldEmbedListEdit' }],
 		fields: [
 			{
@@ -280,7 +280,7 @@ async function initDataObjFieldEmbedListEdit() {
 		codeComponent: 'FormDetail',
 		header: 'Embed List Edit',
 		name: 'data_obj_sys_admin_data_obj_field_embed_list_edit_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjFieldEmbedListEdit' }],
 		fields: [
 			{
@@ -294,7 +294,7 @@ async function initDataObjFieldEmbedListEdit() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -386,8 +386,8 @@ async function initDataObjFieldEmbedListEdit() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_edit_list',
 		orderDefine: 62,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 
 	await addNodeProgramObj({
@@ -397,7 +397,7 @@ async function initDataObjFieldEmbedListEdit() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_edit_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_data_obj_field_embed_list_edit_list'
 	})
 }
@@ -407,10 +407,10 @@ async function initDataObjFieldEmbedListSelect() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Embed List Selects',
 		name: 'data_obj_sys_admin_data_obj_field_embed_list_select_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjFieldEmbedListSelect' }],
 		fields: [
 			{
@@ -464,7 +464,7 @@ async function initDataObjFieldEmbedListSelect() {
 		codeComponent: 'FormDetail',
 		header: 'Embed List Select',
 		name: 'data_obj_sys_admin_data_obj_field_embed_list_select_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjFieldEmbedListSelect' }],
 		fields: [
 			{
@@ -478,7 +478,7 @@ async function initDataObjFieldEmbedListSelect() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -601,8 +601,8 @@ async function initDataObjFieldEmbedListSelect() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_select_list',
 		orderDefine: 64,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 
 	await addNodeProgramObj({
@@ -612,7 +612,7 @@ async function initDataObjFieldEmbedListSelect() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_select_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_data_obj_field_embed_list_select_list'
 	})
 }
@@ -622,10 +622,10 @@ async function initDataObjFieldListItems() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Field List Items',
 		name: 'data_obj_sys_admin_data_obj_field_list_items_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjFieldListItems' }],
 		fields: [
 			{
@@ -712,7 +712,7 @@ async function initDataObjFieldListItems() {
 		codeComponent: 'FormDetail',
 		header: 'Field List Item',
 		name: 'data_obj_sys_admin_data_obj_field_list_items_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjFieldListItems' }],
 		fields: [
 			{
@@ -726,7 +726,7 @@ async function initDataObjFieldListItems() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -889,8 +889,8 @@ async function initDataObjFieldListItems() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_list_items_list',
 		orderDefine: 70,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 
 	await addNodeProgramObj({
@@ -900,7 +900,7 @@ async function initDataObjFieldListItems() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_list_items_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_data_obj_field_list_items_list'
 	})
 }

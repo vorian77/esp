@@ -7,7 +7,7 @@ export async function initReset() {
 	reset.addStatement('delete sys_user::SysUserTypeResource')
 	reset.addStatement('delete sys_user::SysUserType')
 
-	// reset.addStatement(`UPDATE sys_user::SysUserType SET { userTypeResources := {} }`)
+	// reset.addStatement(`UPDATE sys_user::SysUserType SET { tags := {} }`)
 
 	reset.delTableRecords(`sys_core::SysNodeObj`)
 	reset.delTableRecords('sys_user::SysWidget')
@@ -56,6 +56,9 @@ export async function initReset() {
 	reset.addStatement(`UPDATE sys_db::SysTable SET { columns := {} }`)
 	reset.delTableRecords('sys_db::SysTable')
 	reset.delTableRecords('sys_db::SysColumn')
+
+	// system
+	// reset.delTableRecords('sys_core::SysSystem')
 
 	await reset.execute()
 }

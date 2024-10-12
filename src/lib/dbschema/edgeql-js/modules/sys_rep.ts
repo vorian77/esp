@@ -76,8 +76,6 @@ export type $SysRepElλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "orderDisplay": $.PropertyDesc<_default.$nonNegative, $.Cardinality.AtMostOne, false, false, false, false>;
   "isDisplay": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "<elements[is sys_rep::SysRep]": $.LinkDesc<$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<element[is sys_rep::SysRepUserEl]": $.LinkDesc<$SysRepUserEl, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<element": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<elements": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysRepEl = $.ObjectType<"sys_rep::SysRepEl", $SysRepElλShape, null, [
@@ -112,7 +110,6 @@ const $SysRepParm = $.makeType<$SysRepParm>(_.spec, "16fcd7d3-1880-11ef-86b6-f5a
 const SysRepParm: $.$expr_PathNode<$.TypeSet<$SysRepParm, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysRepParm, $.Cardinality.Many), null);
 
 export type $SysRepUserλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
-  "elements": $.LinkDesc<$SysRepUserEl, $.Cardinality.Many, {}, false, false,  false, false>;
   "parms": $.LinkDesc<$SysRepUserParm, $.Cardinality.Many, {}, false, false,  false, false>;
   "user": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
   "descriptionUser": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -140,20 +137,6 @@ type $SysRepUserAnalytic = $.ObjectType<"sys_rep::SysRepUserAnalytic", $SysRepUs
 const $SysRepUserAnalytic = $.makeType<$SysRepUserAnalytic>(_.spec, "171564ca-1880-11ef-913e-6324019f0e9f", _.syntax.literal);
 
 const SysRepUserAnalytic: $.$expr_PathNode<$.TypeSet<$SysRepUserAnalytic, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysRepUserAnalytic, $.Cardinality.Many), null);
-
-export type $SysRepUserElλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
-  "element": $.LinkDesc<$SysRepEl, $.Cardinality.One, {}, false, false,  false, false>;
-  "orderDisplay": $.PropertyDesc<_default.$nonNegative, $.Cardinality.AtMostOne, false, false, false, false>;
-  "isDisplay": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
-  "<elements[is sys_rep::SysRepUser]": $.LinkDesc<$SysRepUser, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<elements": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-}>;
-type $SysRepUserEl = $.ObjectType<"sys_rep::SysRepUserEl", $SysRepUserElλShape, null, [
-  ..._sys_user.$Mgmt['__exclusives__'],
-]>;
-const $SysRepUserEl = $.makeType<$SysRepUserEl>(_.spec, "1718af2a-1880-11ef-9fcc-95238c58cc60", _.syntax.literal);
-
-const SysRepUserEl: $.$expr_PathNode<$.TypeSet<$SysRepUserEl, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysRepUserEl, $.Cardinality.Many), null);
 
 export type $SysRepUserParmλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "parm": $.LinkDesc<$SysRepParm, $.Cardinality.One, {}, false, false,  false, false>;
@@ -219,7 +202,7 @@ function getReport(...args: any[]) {
 
 
 
-export { $SysAnalytic, SysAnalytic, $SysAnalyticStatus, SysAnalyticStatus, $SysRep, SysRep, $SysRepEl, SysRepEl, $SysRepParm, SysRepParm, $SysRepUser, SysRepUser, $SysRepUserAnalytic, SysRepUserAnalytic, $SysRepUserEl, SysRepUserEl, $SysRepUserParm, SysRepUserParm };
+export { $SysAnalytic, SysAnalytic, $SysAnalyticStatus, SysAnalyticStatus, $SysRep, SysRep, $SysRepEl, SysRepEl, $SysRepParm, SysRepParm, $SysRepUser, SysRepUser, $SysRepUserAnalytic, SysRepUserAnalytic, $SysRepUserParm, SysRepUserParm };
 
 type __defaultExports = {
   "SysAnalytic": typeof SysAnalytic;
@@ -229,7 +212,6 @@ type __defaultExports = {
   "SysRepParm": typeof SysRepParm;
   "SysRepUser": typeof SysRepUser;
   "SysRepUserAnalytic": typeof SysRepUserAnalytic;
-  "SysRepUserEl": typeof SysRepUserEl;
   "SysRepUserParm": typeof SysRepUserParm;
   "getAnalytic": typeof getAnalytic;
   "getReport": typeof getReport
@@ -242,7 +224,6 @@ const __defaultExports: __defaultExports = {
   "SysRepParm": SysRepParm,
   "SysRepUser": SysRepUser,
   "SysRepUserAnalytic": SysRepUserAnalytic,
-  "SysRepUserEl": SysRepUserEl,
   "SysRepUserParm": SysRepUserParm,
   "getAnalytic": getAnalytic,
   "getReport": getReport

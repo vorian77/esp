@@ -34,7 +34,7 @@ export async function initPreDataObjAction() {
 		header: 'Delete',
 		isListRowAction: false,
 		name: 'noa_delete_detail',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* dialog */
@@ -54,7 +54,7 @@ export async function initPreDataObjAction() {
 		header: 'Cancel',
 		isListRowAction: false,
 		name: 'noa_dialog_cancel',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionField({
 		actionFieldConfirms: [
@@ -66,7 +66,7 @@ export async function initPreDataObjAction() {
 		header: 'Done',
 		isListRowAction: false,
 		name: 'noa_dialog_done',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* edit */
@@ -80,7 +80,7 @@ export async function initPreDataObjAction() {
 		header: 'Edit',
 		isListRowAction: true,
 		name: 'noa_edit_list',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* embed */
@@ -94,7 +94,7 @@ export async function initPreDataObjAction() {
 		header: 'Edit',
 		isListRowAction: true,
 		name: 'noa_embed_list_config_edit',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionField({
 		actionFieldConfirms: [
@@ -109,7 +109,7 @@ export async function initPreDataObjAction() {
 		header: 'New',
 		isListRowAction: false,
 		name: 'noa_embed_list_config_new',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionField({
 		actionFieldConfirms: [
@@ -121,7 +121,7 @@ export async function initPreDataObjAction() {
 		header: 'Parameter Value',
 		isListRowAction: true,
 		name: 'noa_embed_list_edit_parm_value',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionField({
 		actionFieldConfirms: [
@@ -133,7 +133,7 @@ export async function initPreDataObjAction() {
 		header: 'Edit',
 		isListRowAction: true,
 		name: 'noa_embed_list_select',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* export */
@@ -147,7 +147,7 @@ export async function initPreDataObjAction() {
 		header: 'Export',
 		isListRowAction: false,
 		name: 'noa_export',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* new */
@@ -161,7 +161,7 @@ export async function initPreDataObjAction() {
 		header: 'New',
 		isListRowAction: false,
 		name: 'noa_new_detail',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionField({
 		actionFieldConfirms: [
@@ -173,7 +173,7 @@ export async function initPreDataObjAction() {
 		header: 'New',
 		isListRowAction: false,
 		name: 'noa_new_detail_dialog_detail',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	await addDataObjActionField({
@@ -186,7 +186,7 @@ export async function initPreDataObjAction() {
 		header: 'New',
 		isListRowAction: false,
 		name: 'noa_new_detail_list',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* refresh */
@@ -200,7 +200,7 @@ export async function initPreDataObjAction() {
 		header: 'Refresh',
 		isListRowAction: false,
 		name: 'noa_refresh_list',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* save */
@@ -214,7 +214,7 @@ export async function initPreDataObjAction() {
 		header: 'Save As',
 		isListRowAction: false,
 		name: 'noa_save_as_detail',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionField({
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
@@ -228,7 +228,7 @@ export async function initPreDataObjAction() {
 		header: 'Save',
 		isListRowAction: false,
 		name: 'noa_save_detail',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionField({
 		actionFieldConfirms: [
@@ -243,7 +243,7 @@ export async function initPreDataObjAction() {
 		header: 'Cancel Save',
 		isListRowAction: false,
 		name: 'noa_save_cancel',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	await addDataObjActionField({
@@ -257,7 +257,7 @@ export async function initPreDataObjAction() {
 		header: 'Save',
 		isListRowAction: false,
 		name: 'noa_save_list',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	await addDataObjActionField({
@@ -268,7 +268,7 @@ export async function initPreDataObjAction() {
 		header: 'Save',
 		isListRowAction: true,
 		name: 'noa_save_list_edit',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* special */
@@ -282,7 +282,7 @@ export async function initPreDataObjAction() {
 		header: 'Migrate',
 		isListRowAction: false,
 		name: 'noa_migrate',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	await addDataObjActionField({
@@ -293,6 +293,6 @@ export async function initPreDataObjAction() {
 		header: 'Execute',
 		isListRowAction: false,
 		name: 'noa_process_execute',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 }

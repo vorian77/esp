@@ -25,7 +25,7 @@ async function initDataObjActionsQuery() {
 			'.id IN (SELECT sys_core::SysDataObj FILTER .id = <tree,uuid,SysDataObj.id>).actionsQuery.id',
 		header: 'Data Object - Actions Query',
 		name: 'data_obj_sys_admin_data_obj_action_query_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentColumn: 'actionsQuery',
 		parentTable: 'SysDataObj',
 		tables: [{ index: 0, table: 'SysDataObjActionQuery' }],
@@ -53,7 +53,7 @@ async function initDataObjActionsQuery() {
 		codeComponent: 'FormDetail',
 		header: 'Data Object - Action Query',
 		name: 'data_obj_sys_admin_data_obj_action_query_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentColumn: 'actionsQuery',
 		parentTable: 'SysDataObj',
 		tables: [{ index: 0, table: 'SysDataObjActionQuery' }],
@@ -149,7 +149,7 @@ async function initDataObjActionsQuery() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_query_list',
 		orderDefine: 30,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_data_obj_detail'
 	})
 
@@ -160,7 +160,7 @@ async function initDataObjActionsQuery() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_query_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_data_obj_action_query_list'
 	})
 }
@@ -170,10 +170,10 @@ async function initDataObjActionField() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Field Actions',
 		name: 'data_obj_sys_admin_data_obj_action_field_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjActionField' }],
 		fields: [
 			{
@@ -201,7 +201,7 @@ async function initDataObjActionField() {
 		codeComponent: 'FormDetail',
 		header: 'Field Action',
 		name: 'data_obj_sys_admin_data_obj_action_field_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjActionField' }],
 		fields: [
 			{
@@ -215,7 +215,7 @@ async function initDataObjActionField() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -380,8 +380,8 @@ async function initDataObjActionField() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_field_list',
 		orderDefine: 40,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 
 	await addNodeProgramObj({
@@ -391,7 +391,7 @@ async function initDataObjActionField() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_field_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_data_obj_action_field_list'
 	})
 }
@@ -401,10 +401,10 @@ async function initDataObjActionFieldGroup() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Field Action Groups',
 		name: 'data_obj_sys_admin_data_obj_action_field_group_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjActionFieldGroup' }],
 		fields: [
 			{
@@ -432,7 +432,7 @@ async function initDataObjActionFieldGroup() {
 		codeComponent: 'FormDetail',
 		header: 'Field Action Group',
 		name: 'data_obj_sys_admin_data_obj_action_field_group_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysDataObjActionFieldGroup' }],
 		fields: [
 			{
@@ -446,7 +446,7 @@ async function initDataObjActionFieldGroup() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -524,8 +524,8 @@ async function initDataObjActionFieldGroup() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_field_group_list',
 		orderDefine: 50,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 
 	await addNodeProgramObj({
@@ -535,7 +535,7 @@ async function initDataObjActionFieldGroup() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_field_group_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_data_obj_action_field_group_list'
 	})
 }

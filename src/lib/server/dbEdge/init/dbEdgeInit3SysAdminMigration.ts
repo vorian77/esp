@@ -18,10 +18,10 @@ async function initMigr() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Migrations',
 		name: 'data_obj_sys_admin_migr_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysMigr' }],
 		fields: [
 			{
@@ -57,7 +57,7 @@ async function initMigr() {
 		codeComponent: 'FormDetail',
 		header: 'Migration',
 		name: 'data_obj_sys_admin_migr_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysMigr' }],
 		fields: [
 			{
@@ -71,7 +71,7 @@ async function initMigr() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -148,8 +148,8 @@ async function initMigr() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_list',
 		orderDefine: 95,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',
@@ -158,7 +158,7 @@ async function initMigr() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_migr_list'
 	})
 }
@@ -172,7 +172,7 @@ async function initMigrSourceTable() {
 			'.id IN (SELECT sys_migr::SysMigr FILTER .id = <tree,uuid,SysMigr.id>).tablesSource.id',
 		header: 'Source Tables',
 		name: 'data_obj_sys_admin_migr_source_table_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentColumn: 'tablesSource',
 		parentTable: 'SysMigr',
 		tables: [{ index: 0, table: 'SysMigrSourceTable' }],
@@ -220,7 +220,7 @@ async function initMigrSourceTable() {
 		codeComponent: 'FormDetail',
 		header: 'Source Table',
 		name: 'data_obj_sys_admin_migr_source_table_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentColumn: 'tablesSource',
 		parentTable: 'SysMigr',
 		tables: [{ index: 0, table: 'SysMigrSourceTable' }],
@@ -316,7 +316,7 @@ async function initMigrSourceTable() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_source_table_list',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_migr_detail'
 	})
 
@@ -327,7 +327,7 @@ async function initMigrSourceTable() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_source_table_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_migr_source_table_list'
 	})
 }
@@ -341,7 +341,7 @@ async function initMigrSourceColumn() {
 			'.id IN (SELECT sys_migr::SysMigrSourceTable FILTER .id = <tree,uuid,SysMigrSourceTable.id>).columns.id',
 		header: 'Columns',
 		name: 'data_obj_sys_admin_migr_source_column_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentColumn: 'columns',
 		parentTable: 'SysMigrSourceTable',
 		tables: [{ index: 0, table: 'SysMigrSourceColumn' }],
@@ -381,7 +381,7 @@ async function initMigrSourceColumn() {
 		codeComponent: 'FormDetail',
 		header: 'Column',
 		name: 'data_obj_sys_admin_migr_source_column_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentColumn: 'columns',
 		parentTable: 'SysMigrSourceTable',
 		tables: [{ index: 0, table: 'SysMigrSourceColumn' }],
@@ -468,7 +468,7 @@ async function initMigrSourceColumn() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_source_column_list',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_migr_source_table_detail'
 	})
 
@@ -479,7 +479,7 @@ async function initMigrSourceColumn() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_source_column_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_migr_source_column_list'
 	})
 }
@@ -494,7 +494,7 @@ async function initMigrTargetTable() {
 		header: 'Target Tables',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_admin_migr_target_table_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentColumn: 'tablesTarget',
 		parentTable: 'SysMigr',
 		tables: [{ index: 0, table: 'SysMigrTargetTable' }],
@@ -579,7 +579,7 @@ async function initMigrTargetTable() {
 		codeComponent: 'FormDetail',
 		header: 'Target Table',
 		name: 'data_obj_sys_admin_migr_target_table_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentColumn: 'tablesTarget',
 		parentTable: 'SysMigr',
 		tables: [{ index: 0, table: 'SysMigrTargetTable' }],
@@ -688,7 +688,7 @@ async function initMigrTargetTable() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_target_table_list',
 		orderDefine: 20,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_migr_detail'
 	})
 
@@ -699,7 +699,7 @@ async function initMigrTargetTable() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_target_table_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_migr_target_table_list'
 	})
 }
@@ -714,7 +714,7 @@ async function initMigrTargetColumn() {
 		header: 'Columns',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_admin_migr_target_column_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentColumn: 'columns',
 		parentTable: 'SysMigrTargetTable',
 		tables: [{ index: 0, table: 'SysMigrTargetColumn' }],
@@ -799,7 +799,7 @@ async function initMigrTargetColumn() {
 		codeComponent: 'FormDetail',
 		header: 'Column',
 		name: 'data_obj_sys_admin_migr_target_column_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentColumn: 'columns',
 		parentTable: 'SysMigrTargetTable',
 		tables: [{ index: 0, table: 'SysMigrTargetColumn' }],
@@ -903,7 +903,7 @@ async function initMigrTargetColumn() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_target_column_list',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_migr_target_table_detail'
 	})
 
@@ -914,7 +914,7 @@ async function initMigrTargetColumn() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_target_column_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_migr_target_column_list'
 	})
 }
@@ -927,7 +927,7 @@ async function initMigrProcess() {
 		exprFilter: '.id = <parms,uuid,migrId>',
 		header: 'Process - Migration',
 		name: 'data_obj_process_sys_admin_migr',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysMigr' }],
 		fields: [
 			{

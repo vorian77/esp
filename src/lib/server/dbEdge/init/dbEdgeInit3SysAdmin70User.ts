@@ -18,10 +18,10 @@ async function initUserType() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'User Types',
 		name: 'data_obj_sys_admin_user_type_list',
-		owner: 'app_sys_admin_user',
+		owner: 'sys_app_sys_admin_user',
 		tables: [{ index: 0, table: 'SysUserType' }],
 		fields: [
 			{
@@ -57,7 +57,7 @@ async function initUserType() {
 		codeComponent: 'FormDetail',
 		header: 'User Type',
 		name: 'data_obj_sys_admin_user_type_detail',
-		owner: 'app_sys_admin_user',
+		owner: 'sys_app_sys_admin_user',
 		tables: [{ index: 0, table: 'SysUserType' }],
 		fields: [
 			{
@@ -71,7 +71,7 @@ async function initUserType() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -83,7 +83,7 @@ async function initUserType() {
 			},
 			{
 				codeFieldElement: 'embedListConfig',
-				columnName: 'userTypeResources',
+				columnName: 'resources',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -149,8 +149,8 @@ async function initUserType() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_user_type_list',
 		orderDefine: 120,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 
 	await addNodeProgramObj({
@@ -160,7 +160,7 @@ async function initUserType() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_user_type_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_user_type_list'
 	})
 }
@@ -170,10 +170,10 @@ async function initWidget() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Widgets',
 		name: 'data_obj_sys_admin_widget_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysWidget' }],
 		fields: [
 			{
@@ -209,7 +209,7 @@ async function initWidget() {
 		codeComponent: 'FormDetail',
 		header: 'Widget',
 		name: 'data_obj_sys_admin_widget_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysWidget' }],
 		fields: [
 			{
@@ -223,7 +223,7 @@ async function initWidget() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -298,8 +298,8 @@ async function initWidget() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_widget_list',
 		orderDefine: 130,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 
 	await addNodeProgramObj({
@@ -309,7 +309,7 @@ async function initWidget() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_widget_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_widget_list'
 	})
 }

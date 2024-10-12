@@ -26,7 +26,7 @@ async function initFieldListSelectAnalytics() {
 		exprFilter: 'none',
 		header: 'Select Analytics',
 		name: 'dofls_sys_rep_analytic',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		tables: [{ index: 0, table: 'SysAnalytic' }],
 		fields: [
 			{
@@ -53,7 +53,7 @@ async function initFieldListSelectAnalytics() {
 		btnLabelComplete: 'Select Analytic(s)',
 		dataObjList: 'dofls_sys_rep_analytic',
 		name: 'fels_sys_rep_analytic',
-		owner: 'app_sys_rep'
+		owner: 'sys_app_sys_rep'
 	})
 }
 
@@ -62,10 +62,10 @@ async function initAnalytic() {
 		actionFieldGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Analytics',
 		name: 'data_obj_sys_analytic_list',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		tables: [{ index: 0, table: 'SysAnalytic' }],
 		fields: [
 			{
@@ -109,7 +109,7 @@ async function initAnalytic() {
 		codeComponent: 'FormDetail',
 		header: 'Analytic',
 		name: 'data_obj_sys_analytic_detail',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		tables: [{ index: 0, table: 'SysAnalytic' }],
 		fields: [
 			{
@@ -123,7 +123,7 @@ async function initAnalytic() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -220,8 +220,8 @@ async function initAnalytic() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_list',
 		orderDefine: 5,
-		owner: 'app_sys_rep',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_rep',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',
@@ -230,7 +230,7 @@ async function initAnalytic() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_detail',
 		orderDefine: 10,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_analytic_list'
 	})
 }
@@ -245,7 +245,7 @@ async function initAnalyticParm() {
 		header: 'Parms',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_analytic_parm_list',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentColumn: 'parms',
 		parentTable: 'SysAnalytic',
 		tables: [{ index: 0, table: 'SysRepParm' }],
@@ -348,7 +348,7 @@ async function initAnalyticParm() {
 		codeComponent: 'FormDetail',
 		header: 'Parm',
 		name: 'data_obj_sys_analytic_parm_detail',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentColumn: 'parms',
 		parentTable: 'SysAnalytic',
 		tables: [{ index: 0, table: 'SysRepParm' }],
@@ -534,7 +534,7 @@ async function initAnalyticParm() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_parm_list',
 		orderDefine: 10,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_analytic_detail'
 	})
 	await addNodeProgramObj({
@@ -544,7 +544,7 @@ async function initAnalyticParm() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_parm_detail',
 		orderDefine: 10,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_analytic_parm_list'
 	})
 }
@@ -559,7 +559,7 @@ async function initAnalyticStatus() {
 		exprSort: '.codeStatus.order',
 		header: 'Statuses',
 		name: 'data_obj_sys_analytic_status_list',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentColumn: 'statuses',
 		parentTable: 'SysAnalytic',
 		tables: [{ index: 0, table: 'SysAnalyticStatus' }],
@@ -605,7 +605,7 @@ async function initAnalyticStatus() {
 		codeComponent: 'FormDetail',
 		header: 'Status',
 		name: 'data_obj_sys_analytic_status_detail',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentColumn: 'statuses',
 		parentTable: 'SysAnalytic',
 		tables: [{ index: 0, table: 'SysAnalyticStatus' }],
@@ -701,7 +701,7 @@ async function initAnalyticStatus() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_status_list',
 		orderDefine: 20,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_analytic_detail'
 	})
 	await addNodeProgramObj({
@@ -711,7 +711,7 @@ async function initAnalyticStatus() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_status_detail',
 		orderDefine: 10,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_analytic_status_list'
 	})
 }
@@ -721,10 +721,10 @@ async function initRep() {
 		actionFieldGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Reports',
 		name: 'data_obj_sys_rep_list',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		tables: [{ index: 0, table: 'SysRep' }],
 		fields: [
 			{
@@ -768,7 +768,7 @@ async function initRep() {
 		codeComponent: 'FormDetail',
 		header: 'Report',
 		name: 'data_obj_sys_rep_detail',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		tables: [{ index: 0, table: 'SysRep' }],
 		fields: [
 			{
@@ -782,7 +782,7 @@ async function initRep() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -939,8 +939,8 @@ async function initRep() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_rep_list',
 		orderDefine: 95,
-		owner: 'app_sys_rep',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_rep',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',
@@ -949,7 +949,7 @@ async function initRep() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_rep_detail',
 		orderDefine: 10,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_rep_list'
 	})
 }
@@ -963,7 +963,7 @@ async function initRepEl() {
 		header: 'Elements',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_rep_element_list',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentColumn: 'elements',
 		parentTable: 'SysRep',
 		tables: [{ index: 0, table: 'SysRepEl' }],
@@ -1093,7 +1093,7 @@ async function initRepEl() {
 		codeComponent: 'FormDetail',
 		header: 'Element',
 		name: 'data_obj_sys_rep_el_detail',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentColumn: 'elements',
 		parentTable: 'SysRep',
 		tables: [{ index: 0, table: 'SysRepEl' }],
@@ -1443,7 +1443,7 @@ async function initRepEl() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_rep_el_list',
 		orderDefine: 20,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_rep_detail'
 	})
 	await addNodeProgramObj({
@@ -1453,7 +1453,7 @@ async function initRepEl() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_rep_el_detail',
 		orderDefine: 10,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_rep_el_list'
 	})
 }
@@ -1467,7 +1467,7 @@ async function initRepParm() {
 		header: 'Parms',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_rep_parm_list',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentColumn: 'parms',
 		parentTable: 'SysRep',
 		tables: [{ index: 0, table: 'SysRepParm' }],
@@ -1575,7 +1575,7 @@ async function initRepParm() {
 		codeComponent: 'FormDetail',
 		header: 'Parm',
 		name: 'data_obj_sys_rep_parm_detail',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentColumn: 'parms',
 		parentTable: 'SysRep',
 		tables: [{ index: 0, table: 'SysRepParm' }],
@@ -1761,7 +1761,7 @@ async function initRepParm() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_rep_parm_list',
 		orderDefine: 10,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_rep_detail'
 	})
 	await addNodeProgramObj({
@@ -1771,7 +1771,7 @@ async function initRepParm() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_rep_parm_detail',
 		orderDefine: 10,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_rep_parm_list'
 	})
 }
@@ -1784,7 +1784,7 @@ async function initRepUser() {
 		exprFilter: '.report.id = <tree,uuid,SysRep.id>',
 		header: 'Users',
 		name: 'data_obj_sys_rep_user_list',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		tables: [{ index: 0, table: 'SysRepUser' }],
 		fields: [
 			{
@@ -1828,7 +1828,7 @@ async function initRepUser() {
 		codeComponent: 'FormDetail',
 		header: 'User',
 		name: 'data_obj_sys_rep_user_detail',
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		tables: [{ index: 0, table: 'SysRepUser' }],
 		fields: [
 			{
@@ -1950,7 +1950,7 @@ async function initRepUser() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_rep_user_list',
 		orderDefine: 30,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_rep_detail'
 	})
 	await addNodeProgramObj({
@@ -1960,7 +1960,7 @@ async function initRepUser() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_rep_user_detail',
 		orderDefine: 10,
-		owner: 'app_sys_rep',
+		owner: 'sys_app_sys_rep',
 		parentNodeName: 'node_obj_sys_rep_user_list'
 	})
 }

@@ -11,7 +11,7 @@ async function initFeatures() {
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [['noa_save_detail', 0]],
 		name: 'doag_auth_my_account',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* base */
@@ -23,7 +23,7 @@ async function initFeatures() {
 			['noa_delete_detail', 3]
 		],
 		name: 'doag_detail',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [
@@ -34,20 +34,20 @@ async function initFeatures() {
 			['noa_export', 4]
 		],
 		name: 'doag_list',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [['noa_save_list_edit', 0]],
 		name: 'doag_list_edit',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* dialog */
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [['noa_dialog_done', 0]],
 		name: 'doag_dialog_footer_detail',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [
@@ -55,7 +55,7 @@ async function initFeatures() {
 			['noa_dialog_done', 1]
 		],
 		name: 'doag_dialog_footer_list',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [
@@ -65,7 +65,7 @@ async function initFeatures() {
 			['noa_delete_detail', 3]
 		],
 		name: 'doag_dialog_form_detail',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* embed */
@@ -77,7 +77,7 @@ async function initFeatures() {
 			['noa_embed_list_config_edit', 3]
 		],
 		name: 'doag_embed_list_config',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [
@@ -85,7 +85,7 @@ async function initFeatures() {
 			['noa_save_cancel', 1]
 		],
 		name: 'doag_embed_list_edit',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [
@@ -94,12 +94,12 @@ async function initFeatures() {
 			['noa_embed_list_edit_parm_value', 2]
 		],
 		name: 'doag_embed_list_edit_parm_value',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [['noa_embed_list_select', 0]],
 		name: 'doag_embed_list_select',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* report */
@@ -109,7 +109,7 @@ async function initFeatures() {
 			['noa_export', 1]
 		],
 		name: 'doag_report_render',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [
@@ -117,7 +117,7 @@ async function initFeatures() {
 			['noa_save_cancel', 1]
 		],
 		name: 'doag_detail_report',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [
@@ -126,7 +126,7 @@ async function initFeatures() {
 			['noa_edit_list', 2]
 		],
 		name: 'doag_list_report',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 
 	/* specialty */
@@ -139,11 +139,11 @@ async function initFeatures() {
 			['noa_migrate', 4]
 		],
 		name: 'doag_detail_migrate_define',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [['noa_process_execute', 0]],
 		name: 'doag_detail_migrate_process',
-		owner: 'app_sys'
+		owner: 'sys_app_sys'
 	})
 }

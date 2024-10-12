@@ -14,7 +14,7 @@ const client = createClient({
 
 export async function addDataObj(data: any) {
 	sectionHeader(`addDataObj - ${data.name}`)
-
+	const CREATOR = e.select(e.sys_user.getRootUser())
 	const actionsQuery = data.actionsQuery && data.actionsQuery.length > 0 ? data.actionsQuery : []
 
 	const query = e.params(
@@ -51,13 +51,13 @@ export async function addDataObj(data: any) {
 				actionsQuery: e.for(e.array_unpack(p.actionsQuery), (a) => {
 					return e.insert(e.sys_core.SysDataObjActionQuery, {
 						name: e.cast(e.str, e.json_get(a, 'name')),
-						createdBy: e.select(e.sys_user.getRootUser()),
-						modifiedBy: e.select(e.sys_user.getRootUser()),
+						createdBy: e.select(CREATOR),
+						modifiedBy: e.select(CREATOR),
 						parms: e.for(e.array_unpack(e.cast(e.array(e.json), e.json_get(a, 'parms'))), (p) => {
 							return e.insert(e.sys_core.SysDataObjActionQueryParm, {
-								createdBy: e.select(e.sys_user.getRootUser()),
+								createdBy: e.select(CREATOR),
 								key: e.cast(e.str, e.json_get(p, 'key')),
-								modifiedBy: e.select(e.sys_user.getRootUser()),
+								modifiedBy: e.select(CREATOR),
 								value: e.cast(e.str, e.json_get(p, 'value'))
 							})
 						}),
@@ -77,8 +77,8 @@ export async function addDataObj(data: any) {
 											e.cast(e.str, e.json_get(t, 'codeTriggerTiming'))
 										)
 									),
-									createdBy: e.select(e.sys_user.getRootUser()),
-									modifiedBy: e.select(e.sys_user.getRootUser())
+									createdBy: e.select(CREATOR),
+									modifiedBy: e.select(CREATOR)
 								})
 							}
 						)
@@ -139,8 +139,8 @@ export async function addDataObj(data: any) {
 								return e.insert(e.sys_core.SysDataObjColumnLink, {
 									column: e.select(e.sys_db.getColumn(c[1])),
 									orderDefine: c[0],
-									createdBy: e.select(e.sys_user.getRootUser()),
-									modifiedBy: e.select(e.sys_user.getRootUser())
+									createdBy: e.select(CREATOR),
+									modifiedBy: e.select(CREATOR)
 								})
 							}
 						),
@@ -281,13 +281,13 @@ export async function addDataObj(data: any) {
 
 						width: e.cast(e.int16, e.json_get(f, 'width')),
 
-						createdBy: e.select(e.sys_user.getRootUser()),
+						createdBy: e.select(CREATOR),
 
-						modifiedBy: e.select(e.sys_user.getRootUser())
+						modifiedBy: e.select(CREATOR)
 					})
 				}),
 
-				createdBy: e.select(e.sys_user.getRootUser()),
+				createdBy: e.select(CREATOR),
 				description: p.description,
 				exprFilter: p.exprFilter,
 				exprObject: p.exprObject,
@@ -298,9 +298,9 @@ export async function addDataObj(data: any) {
 				isListSuppressSelect: booleanOrDefaultParm(p.isListSuppressSelect, false),
 				listEditPresetExpr: p.listEditPresetExpr,
 				listReorderColumn: e.select(e.sys_db.getColumn(p.listReorderColumn)),
-				modifiedBy: e.select(e.sys_user.getRootUser()),
+				modifiedBy: e.select(CREATOR),
 				name: p.name,
-				owner: e.select(e.sys_core.getEnt(p.owner)),
+				owner: e.select(e.sys_core.getSystem(p.owner)),
 				parentColumn: e.select(e.sys_db.getColumn(p.parentColumn)),
 				parentFilterExpr: p.parentFilterExpr,
 				parentTable: e.select(e.sys_db.getTable(p.parentTable)),
@@ -311,10 +311,10 @@ export async function addDataObj(data: any) {
 						columnParent: e.select(
 							e.sys_db.getColumn(e.cast(e.str, e.json_get(t, 'columnParent')))
 						),
-						createdBy: e.select(e.sys_user.getRootUser()),
+						createdBy: e.select(CREATOR),
 						index: e.cast(e.int16, e.json_get(t, 'index')),
 						indexParent: e.cast(e.int16, e.json_get(t, 'indexParent')),
-						modifiedBy: e.select(e.sys_user.getRootUser()),
+						modifiedBy: e.select(CREATOR),
 						table: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(t, 'table'))))
 					})
 				})
@@ -326,6 +326,7 @@ export async function addDataObj(data: any) {
 
 export async function addDataObjActionFieldGroup(data: any) {
 	sectionHeader(`addDataObjActionGroup - ${data.name}`)
+	const CREATOR = e.select(e.sys_user.getRootUser())
 	const query = e.params(
 		{
 			actionFieldItems: e.json,
@@ -338,18 +339,18 @@ export async function addDataObjActionFieldGroup(data: any) {
 					e.set(
 						e.for(e.json_array_unpack(p.actionFieldItems), (a) => {
 							return e.insert(e.sys_core.SysDataObjActionFieldGroupItem, {
-								createdBy: e.select(e.sys_user.getRootUser()),
+								createdBy: e.select(CREATOR),
 								action: e.select(e.sys_core.getDataObjActionField(e.cast(e.str, a[0]))),
-								modifiedBy: e.select(e.sys_user.getRootUser()),
+								modifiedBy: e.select(CREATOR),
 								orderDefine: e.cast(e.int16, a[1])
 							})
 						})
 					)
 				),
-				createdBy: e.select(e.sys_user.getRootUser()),
-				modifiedBy: e.select(e.sys_user.getRootUser()),
+				createdBy: e.select(CREATOR),
+				modifiedBy: e.select(CREATOR),
 				name: p.name,
-				owner: e.select(e.sys_core.getEnt(p.owner))
+				owner: e.select(e.sys_core.getSystem(p.owner))
 			})
 		}
 	)
@@ -358,6 +359,7 @@ export async function addDataObjActionFieldGroup(data: any) {
 
 export async function addDataObjFieldEmbedListConfig(data: any) {
 	sectionHeader(`addDataObjFieldEmbedListConfig - ${data.name}`)
+	const CREATOR = e.select(e.sys_user.getRootUser())
 
 	const query = e.params(
 		{
@@ -372,12 +374,12 @@ export async function addDataObjFieldEmbedListConfig(data: any) {
 				actionFieldGroupModal: e.select(
 					e.sys_core.getDataObjActionFieldGroup(p.actionFieldGroupModal)
 				),
-				createdBy: e.select(e.sys_user.getRootUser()),
+				createdBy: e.select(CREATOR),
 				dataObjEmbed: e.select(e.sys_core.getDataObj(p.dataObjEmbed)),
 				dataObjModal: e.select(e.sys_core.getDataObj(p.dataObjModal)),
-				modifiedBy: e.select(e.sys_user.getRootUser()),
+				modifiedBy: e.select(CREATOR),
 				name: p.name,
-				owner: e.select(e.sys_core.getEnt(p.owner))
+				owner: e.select(e.sys_core.getSystem(p.owner))
 			})
 		}
 	)
@@ -386,6 +388,7 @@ export async function addDataObjFieldEmbedListConfig(data: any) {
 
 export async function addDataObjFieldEmbedListEdit(data: any) {
 	sectionHeader(`addDataObjFieldEmbedListEdit - ${data.name}`)
+	const CREATOR = e.select(e.sys_user.getRootUser())
 
 	const query = e.params(
 		{
@@ -395,11 +398,11 @@ export async function addDataObjFieldEmbedListEdit(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObjFieldEmbedListEdit, {
-				createdBy: e.select(e.sys_user.getRootUser()),
+				createdBy: e.select(CREATOR),
 				dataObjEmbed: e.select(e.sys_core.getDataObj(p.dataObjEmbed)),
-				modifiedBy: e.select(e.sys_user.getRootUser()),
+				modifiedBy: e.select(CREATOR),
 				name: p.name,
-				owner: e.select(e.sys_core.getEnt(p.owner))
+				owner: e.select(e.sys_core.getSystem(p.owner))
 			})
 		}
 	)
@@ -408,6 +411,7 @@ export async function addDataObjFieldEmbedListEdit(data: any) {
 
 export async function addDataObjFieldEmbedListSelect(data: any) {
 	sectionHeader(`addDataObjFieldEmbedListSelect - ${data.name}`)
+	const CREATOR = e.select(e.sys_user.getRootUser())
 
 	const query = e.params(
 		{
@@ -423,11 +427,11 @@ export async function addDataObjFieldEmbedListSelect(data: any) {
 					e.sys_core.getDataObjActionFieldGroup(p.actionFieldGroupModal)
 				),
 				btnLabelComplete: p.btnLabelComplete,
-				createdBy: e.select(e.sys_user.getRootUser()),
+				createdBy: e.select(CREATOR),
 				dataObjList: e.select(e.sys_core.getDataObj(p.dataObjList)),
-				modifiedBy: e.select(e.sys_user.getRootUser()),
+				modifiedBy: e.select(CREATOR),
 				name: p.name,
-				owner: e.select(e.sys_core.getEnt(p.owner))
+				owner: e.select(e.sys_core.getSystem(p.owner))
 			})
 		}
 	)
@@ -436,6 +440,7 @@ export async function addDataObjFieldEmbedListSelect(data: any) {
 
 export async function addDataObjActionField(data: any) {
 	sectionHeader(`addDataObjActionField - ${data.name}`)
+	const CREATOR = e.select(e.sys_user.getRootUser())
 	const query = e.params(
 		{
 			actionFieldConfirms: e.array(e.json),
@@ -468,8 +473,8 @@ export async function addDataObjActionField(data: any) {
 						confirmButtonLabelConfirm: e.cast(e.str, e.json_get(a, 'confirmButtonLabelConfirm')),
 						confirmMessage: e.cast(e.str, e.json_get(a, 'confirmMessage')),
 						confirmTitle: e.cast(e.str, e.json_get(a, 'confirmTitle')),
-						createdBy: e.select(e.sys_user.getRootUser()),
-						modifiedBy: e.select(e.sys_user.getRootUser())
+						createdBy: e.select(CREATOR),
+						modifiedBy: e.select(CREATOR)
 					})
 				}),
 				actionFieldShows: e.for(e.array_unpack(p.actionFieldShows), (a) => {
@@ -480,9 +485,9 @@ export async function addDataObjActionField(data: any) {
 								e.cast(e.str, e.json_get(a, 'codeTriggerShow'))
 							)
 						),
-						createdBy: e.select(e.sys_user.getRootUser()),
+						createdBy: e.select(CREATOR),
 						isRequired: e.cast(e.bool, e.json_get(a, 'isRequired')),
-						modifiedBy: e.select(e.sys_user.getRootUser())
+						modifiedBy: e.select(CREATOR)
 					})
 				}),
 				codeActionFieldTriggerEnable: e.select(
@@ -491,12 +496,12 @@ export async function addDataObjActionField(data: any) {
 				codePacketAction: e.select(e.sys_core.getCode('ct_sys_packet_action', p.codePacketAction)),
 				codeColor: e.select(e.sys_core.getCode('ct_sys_tailwind_color', p.codeColor)),
 
-				createdBy: e.select(e.sys_user.getRootUser()),
+				createdBy: e.select(CREATOR),
 				header: p.header,
 				isListRowAction: booleanOrDefaultParm(p.isListRowAction, false),
-				modifiedBy: e.select(e.sys_user.getRootUser()),
+				modifiedBy: e.select(CREATOR),
 				name: p.name,
-				owner: e.select(e.sys_core.getEnt(p.owner))
+				owner: e.select(e.sys_core.getSystem(p.owner))
 			})
 		}
 	)
@@ -505,6 +510,7 @@ export async function addDataObjActionField(data: any) {
 
 export async function addDataObjFieldItems(data: any) {
 	sectionHeader(`addDataObjFieldItems - ${data.name}`)
+	const CREATOR = e.select(e.sys_user.getRootUser())
 	const query = e.params(
 		{
 			codeDataTypeDisplay: e.optional(e.str),
@@ -521,14 +527,14 @@ export async function addDataObjFieldItems(data: any) {
 			return e.insert(e.sys_core.SysDataObjFieldListItems, {
 				codeDataTypeDisplay: e.sys_core.getCode('ct_db_col_data_type', p.codeDataTypeDisplay),
 				codeMask: e.sys_core.getCode('ct_db_col_mask', p.codeMask),
-				createdBy: e.select(e.sys_user.getRootUser()),
+				createdBy: e.select(CREATOR),
 				exprFilter: p.exprFilter,
 				exprSort: p.exprSort,
 				exprPropDisplay: p.exprPropDisplay,
 				exprWith: p.exprWith,
-				modifiedBy: e.select(e.sys_user.getRootUser()),
+				modifiedBy: e.select(CREATOR),
 				name: p.name,
-				owner: e.select(e.sys_core.getEnt(p.owner)),
+				owner: e.select(e.sys_core.getSystem(p.owner)),
 				table: e.select(e.sys_db.getTable(p.table))
 			})
 		}

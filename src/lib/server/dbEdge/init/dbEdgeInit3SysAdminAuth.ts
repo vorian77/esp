@@ -61,7 +61,7 @@ async function initDataObjAccount() {
 		codeCardinality: 'detail',
 		header: 'My Account',
 		name: 'data_obj_auth_account',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		actionsQuery: [
 			{
 				name: 'qa_file_storage',
@@ -218,7 +218,7 @@ async function initDataObjLogin() {
 		`,
 		header: 'Log in',
 		name: 'data_obj_auth_login',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -284,7 +284,7 @@ async function initDataObjResetPasswordAccount() {
 		SELECT { userId := user.id }`,
 		header: 'Reset Password',
 		name: 'data_obj_auth_reset_password_account',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -351,7 +351,7 @@ async function initDataObjResetPasswordLogin() {
 		SELECT { userId := user.id }`,
 		header: 'Reset Password',
 		name: 'data_obj_auth_reset_password_login',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -424,7 +424,7 @@ async function initDataObjVerify() {
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_verify_phone_mobile',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -527,7 +527,7 @@ async function initDataObjSignup() {
 		}`,
 		header: 'Sign up',
 		name: 'data_obj_auth_signup',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		table: 'SysUser',
 		fields: [
 			{
@@ -604,7 +604,7 @@ async function initNodeObjFooter() {
 		header: 'Home',
 		name: 'node_obj_sys_admin_footer_home',
 		orderDefine: 10,
-		owner: 'app_sys_admin'
+		owner: 'sys_app_sys_admin'
 	})
 	await addNodeFooter({
 		codeIcon: 'application',
@@ -612,7 +612,7 @@ async function initNodeObjFooter() {
 		header: 'Contact Us',
 		name: 'node_obj_sys_admin_footer_contact_us',
 		orderDefine: 20,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		page: '/home/cm/contactUs'
 	})
 	await addNodeFooter({
@@ -622,7 +622,7 @@ async function initNodeObjFooter() {
 		header: 'My Account',
 		name: 'node_obj_sys_admin_footer_auth_account',
 		orderDefine: 30,
-		owner: 'app_sys_admin'
+		owner: 'sys_app_sys_admin'
 	})
 }
 
@@ -642,7 +642,7 @@ async function initDataObjUserPrefType() {
 			valsNew := (SELECT valsSys EXCEPT valsUser)
 			SELECT valsNew`,
 		name: 'data_obj_auth_user_pref_type',
-		owner: 'app_sys',
+		owner: 'sys_app_sys',
 		tables: [
 			{ index: 0, table: 'SysUserPrefType' },
 			{ columnParent: 'codeType', indexParent: 0, index: 1, table: 'SysCode' }

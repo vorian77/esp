@@ -22,7 +22,7 @@ async function initStudent() {
 		exprFilter: '.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).orgs',
 		header: 'Students',
 		name: 'data_obj_cm_student_list',
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		subHeader: 'All students enrolled in any courses.',
 		tables: [
 			{ index: 0, table: 'CmClient' },
@@ -77,7 +77,7 @@ async function initStudent() {
 	})
 
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_student_detail',
@@ -406,7 +406,7 @@ async function initStudent() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_student_list',
 		orderDefine: 30,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_pgm_cm_staff_provider'
 	})
 	await addNodeProgramObj({
@@ -416,14 +416,14 @@ async function initStudent() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_student_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_student_list'
 	})
 }
 
 async function initCsf() {
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_client_service_flow_list',
@@ -519,7 +519,7 @@ async function initCsf() {
 	})
 
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_client_service_flow_detail',
@@ -726,7 +726,7 @@ async function initCsf() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_service_flow_list',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_student_detail'
 	})
 	await addNodeProgramObj({
@@ -736,14 +736,14 @@ async function initCsf() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_service_flow_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_service_flow_list'
 	})
 }
 
 async function initCsfCohort() {
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_csf_cohort_list',
@@ -808,7 +808,7 @@ async function initCsfCohort() {
 	})
 
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_csf_cohort_detail',
@@ -949,7 +949,7 @@ async function initCsfCohort() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_csf_cohort_list',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
@@ -959,14 +959,14 @@ async function initCsfCohort() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_csf_cohort_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_csf_cohort_list'
 	})
 }
 
 async function initCsfCohortAttdStudent() {
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter: '.csfCohort.id = <tree,uuid,CmCsfCohort.id>',
@@ -1022,7 +1022,7 @@ async function initCsfCohortAttdStudent() {
 		codeComponent: 'FormDetail',
 		header: 'Attendance',
 		name: 'data_obj_cm_csf_cohort_attd_student_detail',
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		tables: [{ index: 0, table: 'CmCsfCohortAttd' }],
 		fields: [
 			{
@@ -1151,7 +1151,7 @@ async function initCsfCohortAttdStudent() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_csf_cohort_attd_student_list',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_csf_cohort_detail'
 	})
 	await addNodeProgramObj({
@@ -1161,14 +1161,14 @@ async function initCsfCohortAttdStudent() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_csf_cohort_attd_student_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_csf_cohort_attd_student_list'
 	})
 }
 
 async function initCsfNote() {
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_csf_note_list',
@@ -1216,7 +1216,7 @@ async function initCsfNote() {
 	})
 
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_csf_note_detail',
@@ -1339,7 +1339,7 @@ async function initCsfNote() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_csf_note_list',
 		orderDefine: 20,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
@@ -1349,7 +1349,7 @@ async function initCsfNote() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_csf_note_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_csf_note_list'
 	})
 }
@@ -1362,7 +1362,7 @@ async function initCsfJobPlacement() {
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
 		header: 'Job Placements',
 		name: 'data_obj_cm_csf_job_placement_list',
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		tables: [{ index: 0, table: 'CmCsfJobPlacement' }],
 		fields: [
 			{
@@ -1409,7 +1409,7 @@ async function initCsfJobPlacement() {
 		codeComponent: 'FormDetail',
 		header: 'Job Placement',
 		name: 'data_obj_cm_csf_job_placement_detail',
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		tables: [{ index: 0, table: 'CmCsfJobPlacement' }],
 		fields: [
 			{
@@ -1681,7 +1681,7 @@ async function initCsfJobPlacement() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_csf_job_placement_list',
 		orderDefine: 30,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
@@ -1691,7 +1691,7 @@ async function initCsfJobPlacement() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_csf_job_placement_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_csf_job_placement_list'
 	})
 }
@@ -1704,7 +1704,7 @@ async function initCsfSchoolPlacement() {
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
 		header: 'School Placements',
 		name: 'data_obj_cm_csf_school_placement_list',
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		tables: [{ index: 0, table: 'CmCsfSchoolPlacement' }],
 		fields: [
 			{
@@ -1783,7 +1783,7 @@ async function initCsfSchoolPlacement() {
 		codeComponent: 'FormDetail',
 		header: 'School Placement',
 		name: 'data_obj_cm_csf_school_placement_detail',
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		tables: [{ index: 0, table: 'CmCsfSchoolPlacement' }],
 		fields: [
 			{
@@ -1944,7 +1944,7 @@ async function initCsfSchoolPlacement() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_csf_school_placement_list',
 		orderDefine: 40,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
@@ -1954,14 +1954,14 @@ async function initCsfSchoolPlacement() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_csf_school_placement_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_csf_school_placement_list'
 	})
 }
 
 async function initCsfDocument() {
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_csf_document_list',
@@ -2030,7 +2030,7 @@ async function initCsfDocument() {
 	})
 
 	await addDataObj({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_csf_document_detail',
@@ -2215,7 +2215,7 @@ async function initCsfDocument() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_csf_document_list',
 		orderDefine: 50,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
@@ -2225,7 +2225,7 @@ async function initCsfDocument() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_csf_document_detail',
 		orderDefine: 10,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_obj_cm_csf_document_list'
 	})
 }
@@ -2237,7 +2237,7 @@ async function initCsfDocument() {
 // 	isHideRowManager: false,
 // 	name: 'node_obj_cm_csf_job_placement_list',
 // 	orderDefine: 30,
-// 	owner: 'app_cm',
+// 	owner: 'sys_app_cm',
 // 	parentNodeName: 'node_obj_cm_service_flow_detail'
 // })
 // await addNodeProgramObj({
@@ -2247,6 +2247,6 @@ async function initCsfDocument() {
 // 	isHideRowManager: false,
 // 	name: 'node_obj_cm_csf_job_placement_detail',
 // 	orderDefine: 10,
-// 	owner: 'app_cm',
+// 	owner: 'sys_app_cm',
 // 	parentNodeName: 'node_obj_cm_csf_job_placement_list'
 // })

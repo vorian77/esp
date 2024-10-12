@@ -1,8 +1,10 @@
 import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
 
 import { initReset } from '$server/dbEdge/init/dbEdgeInit0Reset'
+import { initOrganizations } from '$server/dbEdge/init/dbEdgeInit2Organizations'
+import { initSystems } from '$server/dbEdge/init/dbEdgeInit2Systems'
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
-import { initResources } from '$server/dbEdge/init/dbEdgeInit2Resource'
+import { initObjects } from '$server/dbEdge/init/dbEdgeInit2Objects'
 
 // admin
 import { initAdminSys } from '$server/dbEdge/init/dbEdgeInit3SysAdmin'
@@ -21,6 +23,7 @@ import { initDataReports } from '$server/dbEdge/init/dbEdgeInit6DataRep'
 
 // other
 import { initMigrationPerson } from '$server/dbEdge/init/dbEdgeInit5MigrPerson'
+import { init } from '@sentry/sveltekit'
 
 // export async function dbEdgeInit() {
 // 	sectionHeader('Init Start')
@@ -39,8 +42,10 @@ export async function dbEdgeInit() {
 
 async function initCore() {
 	await initReset()
+	// await initOrganizations()
+	// await initSystems()
 	await initUser()
-	await initResources()
+	await initObjects()
 }
 
 async function initAdmin() {

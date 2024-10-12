@@ -23,7 +23,7 @@ async function initReportCMTrainingCohortAttendance() {
 		exprFilter: '.cohort.id IN <parms,uuidList,pvCohorts>',
 		header: 'Cohort Attendance - Summary',
 		name: 'report_cm_training_cohort_attendance',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [{ index: 0, table: 'CmCsfCohort' }],
 		analytics: ['analytic_cm_training_cohort_attendance'],
 		elements: [
@@ -434,7 +434,7 @@ async function initReportCMTrainingCohortWages() {
 			'.csf.client IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf.client',
 		header: 'Job Placements - Detail',
 		name: 'report_cm_training_cohort_job_placement',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [{ index: 0, table: 'CmCsfJobPlacement' }],
 		elements: [
 			{
@@ -863,7 +863,7 @@ async function initAnalyticTrainingCredential() {
 		description: 'Cohort attendance report.',
 		header: 'Cohort Attendance',
 		name: 'analytic_cm_training_cohort_attendance',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		parms: [
 			{
 				codeDataType: 'uuid',
@@ -921,7 +921,7 @@ async function initReportCourseSummary() {
 		exprFilter: '.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).orgs',
 		header: 'Courses (Summary)',
 		name: 'data_obj_cm_ai_report_course_summary',
-		owner: 'app_cm_training',
+		owner: 'sys_app_cm_training',
 		tables: [{ index: 0, table: 'CmCourse' }],
 		fields: [
 			{
@@ -1053,7 +1053,7 @@ async function initReportCourseSummary() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_course_summary',
 		orderDefine: 40,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_hdr_cm_ai_reports'
 	})
 }
@@ -1066,7 +1066,7 @@ async function initReportOurWorldSummary() {
 		exprFilter: `.serviceFlow.name = 'sf_cm_ai_our_world'`,
 		header: 'Our World (Summary)',
 		name: 'data_obj_cm_ai_report_our_world_summary',
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		tables: [
 			{ index: 0, table: 'CmClientServiceFlow' },
 			{ columnParent: 'serviceFlow', indexParent: 0, index: 1, table: 'CmServiceFlow' },
@@ -1183,7 +1183,7 @@ async function initReportOurWorldSummary() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_our_world_summary',
 		orderDefine: 30,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_hdr_cm_ai_reports'
 	})
 }
@@ -1196,7 +1196,7 @@ async function initReportStudentSummary() {
 		exprFilter: '.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).orgs',
 		header: 'Students (Summary)',
 		name: 'data_obj_cm_ai_report_student_summary',
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		tables: [
 			{ index: 0, table: 'CmClient' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -1473,7 +1473,7 @@ async function initReportStudentSummary() {
 		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_student_summary',
 		orderDefine: 20,
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parentNodeName: 'node_hdr_cm_ai_reports'
 	})
 }

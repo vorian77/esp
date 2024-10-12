@@ -418,7 +418,6 @@ export class RawDataObjPropDisplay {
 		/* dependent properties */
 		this.label = override(obj.headerAlt, this.colDB.header, clazz, 'label')
 		this.labelSide = valueOrDefault(this.colDB.headerSide, this.label)
-		debug('RawDataObjPropDisplay', 'propDisplay', { label: this.label, isDisplay: this.isDisplay })
 	}
 }
 export class RawDataObjPropDisplayCustom {

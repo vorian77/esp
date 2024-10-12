@@ -4,20 +4,18 @@ module sys_user {
       default := datetime_of_transaction();
       readonly := true;
     };
-
-    required createdBy: sys_user::UserRoot {
+    required createdBy: sys_user::SysUser {
       readonly := true;
     };
-    
-    modifiedAt: datetime {
+    required modifiedAt: datetime {
       rewrite insert, update using (datetime_of_transaction())
     }
-
-    required modifiedBy: sys_user::UserRoot
+    required modifiedBy: sys_user::SysUser;
   }
   
   type SysStaff extending sys_user::Mgmt {
-    required owner: sys_core::SysOrg;
+    required ownerOld: sys_core::SysOrg;
+    owner: sys_core::SysSystem;
     required person: default::SysPerson{
        on source delete delete target if orphan;
     };
@@ -25,21 +23,17 @@ module sys_user {
         on target delete allow;
       }; 
   }
- 
-  type UserRoot {
-    required person: default::SysPerson{
-      on source delete delete target if orphan;
-    };
-    required userName: str;
-    constraint exclusive on (.userName);
-  }
 
-  type SysUser extending sys_user::UserRoot, sys_user::Mgmt {
+  type SysUser extending sys_user::Mgmt {
     required owner: sys_core::SysOrg;
     multi orgs: sys_core::SysOrg {
       on target delete allow;
     };
+    person: default::SysPerson {
+      on source delete delete target if orphan;
+    };
     required password: str;
+    userName: str;
     multi userTypes: sys_user::SysUserType {
       on target delete allow;
     };
@@ -61,24 +55,19 @@ module sys_user {
   }
   
   type SysUserType extending sys_core::SysObj {
-    multi userTypeResources: sys_user::SysUserTypeResource {
+    multi resources: sys_user::SysUserTypeResource {
       on target delete allow;
     };
-    multi userTypeTags: sys_user::SysUserTypeTag {
-      on target delete allow;
-    };
+    multi tags: sys_core::SysCode;
     constraint exclusive on ((.name));
   }
+
   type SysUserTypeResource {
     required codeUserTypeResource: sys_core::SysCode;
-    required userTypeResource: sys_core::SysObj;
+    required userTypeResource: sys_core::ObjRoot;
     required isAccessible: bool;
   }
-  type SysUserTypeTag {
-    required codeUserTypeTag: sys_core::SysCodeType;
-    required isAccessible: bool;
-  }
-
+  
   type SysWidget extending sys_core::SysObj {
     constraint exclusive on (.name);
   }
@@ -99,8 +88,8 @@ module sys_user {
   );
 
   # FUNCTIONS
-   function getRootUser() -> optional sys_user::UserRoot
-    using (select assert_single((select sys_user::UserRoot filter .userName = '*ROOTUSER*')));
+   function getRootUser() -> optional sys_user::SysUser
+    using (select assert_single((select sys_user::SysUser filter .userName = '*ROOTUSER*')));
 
   function getStaffByName(firstName: str, lastName: str) -> optional sys_user::SysStaff
       using (select assert_single(sys_user::SysStaff filter 

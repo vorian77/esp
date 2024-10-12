@@ -1,13 +1,5 @@
-import {
-	addOrgs,
-	resources,
-	codeTypes,
-	codes,
-	rootObj,
-	rootUser,
-	sysUser
-} from '$server/dbEdge/init/dbEdgeInitUtilities10'
-import { addCode, addCodeType, addUserOrg } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
+import { codeTypes, codes, sysUser } from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { addCode, addCodeType } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
 
 const FILE = 'initCore'
 
@@ -22,20 +14,9 @@ export default async function initSys() {
 }
 
 async function initSysCore() {
-	await rootObj()
-	await rootUser()
-
-	await resources([['app_cm'], ['app_db'], ['app_sys']])
-	await addOrgs([
-		['Atlantic Impact', 'Atlantic Impact Mobile'],
-		['Atlantic Impact - School Site 1', ''],
-		['Atlantic Impact - School Site 2', ''],
-		['Atlantic Impact - School Site 3', ''],
-		['System', 'System Application']
-	])
+	// await organizations([['app_cm'], ['app_db'], ['app_sys']])
 
 	await sysUser('System', 'user_sys')
-	await addUserOrg({ orgName: 'System', userName: 'user_sys' })
 }
 async function initSysCodeTypess() {
 	await codeTypes([
@@ -71,14 +52,14 @@ async function initSysCodeTypess() {
 		['app_sys', 0, 'ct_sys_status']
 	])
 	await addCodeType({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parent: 'ct_cm_payment_type',
 		header: 'Milestone 1 (Single Payment)',
 		name: 'ct_cm_payment_type_milestone1',
 		order: 0
 	})
 	await addCodeType({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		parent: 'ct_cm_payment_type',
 		header: 'Milestone 2 (Dual Payments)',
 		name: 'ct_cm_payment_type_milestone2',
@@ -297,21 +278,21 @@ async function initSysCodes() {
 	])
 
 	await addCode({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeType: 'ct_cm_payment_type_milestone1',
 		header: 'Payment 1 - 100%',
 		name: 'milestone1_payment1',
 		order: 0
 	})
 	await addCode({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeType: 'ct_cm_payment_type_milestone2',
 		header: 'Payment 1 - 50%',
 		name: 'milestone2_payment1',
 		order: 0
 	})
 	await addCode({
-		owner: 'app_cm',
+		owner: 'sys_app_cm',
 		codeType: 'ct_cm_payment_type_milestone2',
 		header: 'Payment 2 - 50%',
 		name: 'milestone2_payment2',

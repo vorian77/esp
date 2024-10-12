@@ -9,22 +9,22 @@ import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInitUtilities50Othe
 export default async function init() {
 	sectionHeader('SysAdmin - Core')
 
-	await initResource()
+	await initSysAdmin()
 	await initCodeType()
 	await initCodeTypeCode()
 	await initCode()
 }
 
-async function initResource() {
+async function initSysAdmin() {
 	await addDataObj({
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		header: 'Resources',
+		header: 'Systems (Admin)',
 		exprFilter: 'none',
-		name: 'data_obj_sys_admin_resource_list',
-		owner: 'app_sys_admin',
-		tables: [{ index: 0, table: 'SysResource' }],
+		name: 'data_obj_sys_system_admin_list',
+		owner: 'sys_app_sys_admin',
+		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -58,9 +58,9 @@ async function initResource() {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Resource',
-		name: 'data_obj_sys_admin_resource_detail',
-		owner: 'app_sys_admin',
-		tables: [{ index: 0, table: 'SysResource' }],
+		name: 'data_obj_sys_system_admin_detail',
+		owner: 'sys_app_sys_admin',
+		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -73,7 +73,7 @@ async function initResource() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::getOrg('System'))`,
+				linkExprSave: `(SELECT sys_core::getOrg('org_system'))`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -159,24 +159,24 @@ async function initResource() {
 
 	await addNodeProgramObj({
 		codeIcon: 'application',
-		dataObj: 'data_obj_sys_admin_resource_list',
-		header: 'Resources',
+		dataObj: 'data_obj_sys_system_admin_list',
+		header: 'Systems (Admin)',
 		isHideRowManager: false,
-		name: 'node_obj_sys_admin_resource_list',
-		orderDefine: 10,
-		owner: 'app_sys_admin',
+		name: 'node_obj_sys_system_admin_list',
+		orderDefine: 30,
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_pgm_sys_admin'
 	})
 
 	await addNodeProgramObj({
 		codeIcon: 'application',
-		dataObj: 'data_obj_sys_admin_resource_detail',
-		header: 'Resource',
+		dataObj: 'data_obj_sys_system_admin_detail',
+		header: 'System (Admin)',
 		isHideRowManager: false,
-		name: 'node_obj_sys_admin_resource_detail',
+		name: 'node_obj_sys_system_admin_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_list'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_list'
 	})
 }
 
@@ -185,10 +185,10 @@ async function initCodeType() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Code Types',
 		name: 'data_obj_sys_admin_code_type_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysCodeType' }],
 		fields: [
 			{
@@ -241,7 +241,7 @@ async function initCodeType() {
 		codeComponent: 'FormDetail',
 		header: 'Code Type',
 		name: 'data_obj_sys_admin_code_type_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysCodeType' }],
 		fields: [
 			{
@@ -255,7 +255,7 @@ async function initCodeType() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -365,8 +365,8 @@ async function initCodeType() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_type_list',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',
@@ -375,7 +375,7 @@ async function initCodeType() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_type_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_code_type_list'
 	})
 }
@@ -388,7 +388,7 @@ async function initCodeTypeCode() {
 		exprFilter: '.codeType.id = <tree,uuid,SysCodeType.id>',
 		header: 'Codes',
 		name: 'data_obj_sys_admin_code_list_codeType',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -465,7 +465,7 @@ async function initCodeTypeCode() {
 		codeComponent: 'FormDetail',
 		header: 'Code',
 		name: 'data_obj_sys_admin_code_detail_codeType',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -496,8 +496,8 @@ async function initCodeTypeCode() {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_sys_resource_order_name',
-				linkTable: 'SysResource'
+				fieldListItems: 'il_sys_system_order_name',
+				linkTable: 'SysSystem'
 			},
 			{
 				codeAccess: 'optional',
@@ -652,7 +652,7 @@ async function initCodeTypeCode() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_list_codeType',
 		orderDefine: 15,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_code_type_detail'
 	})
 	await addNodeProgramObj({
@@ -662,7 +662,7 @@ async function initCodeTypeCode() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_detail_codeType',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_code_list_codeType'
 	})
 }
@@ -672,10 +672,10 @@ async function initCode() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,SysResource.id>',
+		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Codes',
 		name: 'data_obj_sys_admin_code_list',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -762,7 +762,7 @@ async function initCode() {
 		codeComponent: 'FormDetail',
 		header: 'Code',
 		name: 'data_obj_sys_admin_code_detail',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -776,7 +776,7 @@ async function initCode() {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysResource FILTER .id = <tree,uuid,SysResource.id>)`,
+				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -948,8 +948,8 @@ async function initCode() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_list',
 		orderDefine: 15,
-		owner: 'app_sys_admin',
-		parentNodeName: 'node_obj_sys_admin_resource_detail'
+		owner: 'sys_app_sys_admin',
+		parentNodeName: 'node_obj_sys_system_admin_detail'
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',
@@ -958,7 +958,7 @@ async function initCode() {
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_detail',
 		orderDefine: 10,
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		parentNodeName: 'node_obj_sys_admin_code_list'
 	})
 }

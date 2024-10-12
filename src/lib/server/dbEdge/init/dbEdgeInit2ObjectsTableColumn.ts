@@ -69,28 +69,6 @@ export async function initTableColumn() {
 	])
 
 	await tableColumns([
-		['SysPersonTest', 'addr1'],
-		['SysPersonTest', 'addr2'],
-		['SysPersonTest', 'avatar'],
-		['SysPersonTest', 'birthDate'],
-		['SysPersonTest', 'city'],
-		['SysPersonTest', 'codeEthnicity'],
-		['SysPersonTest', 'codeGender'],
-		['SysPersonTest', 'codeRace'],
-		['SysPersonTest', 'codeState'],
-		['SysPersonTest', 'email'],
-		['SysPersonTest', 'favFood'],
-		['SysPersonTest', 'firstName'],
-		['SysPersonTest', 'lastName'],
-		['SysPersonTest', 'middleName'],
-		['SysPersonTest', 'note'],
-		['SysPersonTest', 'phoneAlt'],
-		['SysPersonTest', 'phoneMobile'],
-		['SysPersonTest', 'title'],
-		['SysPersonTest', 'zip']
-	])
-
-	await tableColumns([
 		['SysUser', 'avatar'],
 		['SysUser', 'favFood'],
 		['SysUser', 'id'],

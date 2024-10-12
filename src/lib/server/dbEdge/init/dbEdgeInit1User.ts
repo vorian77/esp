@@ -12,59 +12,59 @@ import {
 	userUserType,
 	widgets
 } from '$server/dbEdge/init/dbEdgeInitUtilities10'
-import { addUser, addUserOrg } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
 
 export async function initUser() {
 	await initUserResources()
 	await initUserType()
-	// await initStaff()
+	await initStaff()
 }
 
 async function initUserResources() {
 	/* programs */
 	await nodeObjPrograms([
-		['app_sys', 'node_pgm_sys_admin', 'Administration', 10, 'application'],
-		['app_cm', 'node_pgm_cm_staff_provider', 'Staff', 40, 'application']
+		['sys_app_sys', 'node_pgm_sys_admin', 'Administration', 10, 'application'],
+		['sys_app_cm', 'node_pgm_cm_staff_provider', 'Staff', 40, 'application']
 	])
-	// ['app_cm', 'node_pgm_cm_staff_admin', 'Administration', 30, 'application'],
-	// ['app_cm', 'node_pgm_cm_student', 'AI-Role: Student', 50, 'application']
+	// ['sys_app_cm', 'node_pgm_cm_staff_admin', 'Administration', 30, 'application'],
+	// ['sys_app_cm', 'node_pgm_cm_student', 'AI-Role: Student', 50, 'application']
 
 	sectionHeader('NodeObjHeader - Report')
 	await nodeObjHeaders([
-		['app_cm', 'node_pgm_cm_staff_provider', 'node_hdr_cm_ai_reports', 'Reports', 40, 'application']
+		[
+			'sys_app_cm',
+			'node_pgm_cm_staff_provider',
+			'node_hdr_cm_ai_reports',
+			'Reports',
+			40,
+			'application'
+		]
 	])
 
 	/* widgets */
 	await widgets([
-		['app_cm', 'widget_cm_user'],
-		['app_cm', 'widget_cm_quotes'],
-		['app_sys', 'widget_sys_user']
+		['sys_app_cm', 'widget_cm_user'],
+		['sys_app_cm', 'widget_cm_quotes'],
+		['sys_app_sys', 'widget_sys_user']
 	])
 }
 
 async function initUserType() {
-	// await addUserOrg({ orgName: 'Atlantic Impact', userName: 'user_sys' })
-	// await addUserOrg({ orgName: 'Atlantic Impact', userName: '2482317505' })
-	// await addUserOrg({ orgName: 'Atlantic Impact', userName: '3136276210' })
-	// await addUserOrg({ orgName: 'Atlantic Impact', userName: '2487985578' })
-	// await addUserOrg({ orgName: 'Atlantic Impact', userName: '3136272756' })
-
 	/* userType */
 	await userType([
-		['app_cm', 'ut_cm_staff_admin'],
-		['app_cm', 'ut_cm_staff_provider'],
-		['app_cm', 'ut_cm_student'],
-		['app_sys', 'ut_sys_admin']
+		['sys_app_cm', 'ut_cm_staff_admin'],
+		['sys_app_cm', 'ut_cm_staff_provider'],
+		['sys_app_cm', 'ut_cm_student'],
+		['sys_app_sys', 'ut_sys_admin']
 	])
 
 	/* apps */
 	await userTypeResourcesApps([
-		['ut_sys_admin', 'app_cm'],
-		['ut_sys_admin', 'app_db'],
-		['ut_sys_admin', 'app_sys'],
-		['ut_sys_admin', 'app_sys_admin'],
-		['ut_sys_admin', 'app_sys_admin_org'],
-		['ut_sys_admin', 'app_sys_admin_user']
+		['ut_sys_admin', 'sys_app_cm'],
+		['ut_sys_admin', 'sys_app_db'],
+		['ut_sys_admin', 'sys_app_sys'],
+		['ut_sys_admin', 'sys_app_sys_admin'],
+		['ut_sys_admin', 'sys_app_sys_admin_org'],
+		['ut_sys_admin', 'sys_app_sys_admin_user']
 	])
 
 	/* programs */
@@ -106,12 +106,6 @@ async function initStaff() {
 	// 	['Atlantic Impact', 'Erica', 'Hicks'],
 	// 	['Atlantic Impact', 'Jane', 'Instructor'],
 	// 	['Atlantic Impact', 'Joe', 'Instructor']
-	// ])
-	// await addRoleOrg([
-	// 	['Atlantic Impact', 'cm_training_role_org_agency'],
-	// 	['Atlantic Impact - School Site 1', 'cm_training_role_org_venue'],
-	// 	['Atlantic Impact - School Site 2', 'cm_training_role_org_venue'],
-	// 	['Atlantic Impact - School Site 3', 'cm_training_role_org_venue']
 	// ])
 	// await addRoleStaff([
 	// 	['Anise', 'Hayes', 'cm_training_role_staff_agency'],

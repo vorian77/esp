@@ -2,6 +2,7 @@ import { createClient } from 'edgedb'
 import e from '$lib/dbschema/edgeql-js'
 import { EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
 import { executeQuery } from '$routes/api/dbEdge/dbEdgeProcess'
+import { debug } from '$utils/types'
 
 const client = createClient({
 	instanceName: EDGEDB_INSTANCE,
@@ -16,24 +17,26 @@ export function booleanOrDefaultJSON(jsonObj: any, val: string, valDefault: bool
 	return e.cast(e.bool, e.op(e.cast(e.bool, e.json_get(jsonObj, val)), '??', valDefault))
 }
 
-const rootUserName = '*ROOTUSER*'
-
-export async function rootObj() {
-	const query = e.insert(e.sys_core.ObjRoot, {
-		name: '*ROOTOBJ*'
-	})
-	return await query.run(client)
-}
-
-export async function rootUser() {
-	const query = e.insert(e.sys_user.UserRoot, {
-		person: e.insert(e.default.SysPerson, {
-			firstName: 'Root',
-			lastName: 'User'
-		}),
-		userName: rootUserName
-	})
-	return await query.run(client)
+export async function addSystem(data: any) {
+	sectionHeader(`addSystem - ${data.name}`)
+	const CREATOR = e.select(e.sys_user.getRootUser())
+	const query = e.params(
+		{
+			name: e.str,
+			header: e.str,
+			owner: e.str
+		},
+		(p) => {
+			return e.insert(e.sys_core.SysSystem, {
+				createdBy: CREATOR,
+				header: p.header,
+				modifiedBy: CREATOR,
+				name: p.name,
+				owner: e.select(e.sys_core.getOrg(p.owner))
+			})
+		}
+	)
+	return await query.run(client, data)
 }
 
 export async function sysUser(owner: string, userName: string) {
@@ -52,26 +55,12 @@ export async function sysUser(owner: string, userName: string) {
 	return await query.run(client)
 }
 
-export async function resources(params: any) {
-	const CREATOR = e.select(e.sys_user.getRootUser())
-	const query = e.params({ data: e.json }, (params) => {
-		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.insert(e.sys_core.SysResource, {
-				owner: e.select(e.sys_core.getRootObj()),
-				name: e.cast(e.str, i[0]),
-				createdBy: CREATOR,
-				modifiedBy: CREATOR
-			})
-		})
-	})
-	return await query.run(client, { data: params })
-}
 export async function userType(params: any) {
 	const CREATOR = e.select(e.sys_user.getRootUser())
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_user.SysUserType, {
-				owner: e.select(e.sys_core.getEnt(e.cast(e.str, i[0]))),
+				owner: e.select(e.sys_core.getSystem(e.cast(e.str, i[0]))),
 				name: e.cast(e.str, i[1]),
 				createdBy: CREATOR,
 				modifiedBy: CREATOR
@@ -104,7 +93,7 @@ export async function codeTypes(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_core.SysCodeType, {
-				owner: e.select(e.sys_core.getEnt(e.cast(e.str, i[0]))),
+				owner: e.select(e.sys_core.getSystem(e.cast(e.str, i[0]))),
 				order: e.cast(e.int16, i[1]),
 				name: e.cast(e.str, i[2]),
 				createdBy: CREATOR,
@@ -122,7 +111,7 @@ export async function codes(params: any) {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_core.SysCode, {
 				codeType: e.select(e.sys_core.getCodeType(e.cast(e.str, i[0]))),
-				owner: e.select(e.sys_core.getEnt(e.cast(e.str, i[1]))),
+				owner: e.select(e.sys_core.getSystem(e.cast(e.str, i[1]))),
 				name: e.cast(e.str, i[2]),
 				order: e.cast(e.int16, i[3]),
 				createdBy: CREATOR,
@@ -139,7 +128,7 @@ export async function nodeObjHeaders(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_core.SysNodeObj, {
-				owner: e.select(e.sys_core.getEnt(e.cast(e.str, i[0]))),
+				owner: e.select(e.sys_core.getSystem(e.cast(e.str, i[0]))),
 				parent: e.select(e.sys_core.getNodeObjByName(e.cast(e.str, i[1]))),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'header')),
@@ -162,7 +151,7 @@ export async function nodeObjPages(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_core.SysNodeObj, {
-				owner: e.select(e.sys_core.getEnt(e.cast(e.str, i[0]))),
+				owner: e.select(e.sys_core.getSystem(e.cast(e.str, i[0]))),
 				parent: e.select(e.sys_core.getNodeObjByName(e.cast(e.str, i[1]))),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'page')),
@@ -186,7 +175,7 @@ export async function nodeObjPrograms(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_core.SysNodeObj, {
-				owner: e.select(e.sys_core.getEnt(e.cast(e.str, i[0]))),
+				owner: e.select(e.sys_core.getSystem(e.cast(e.str, i[0]))),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'program')),
 				name: e.cast(e.str, i[1]),
@@ -208,7 +197,7 @@ export async function widgets(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_user.SysWidget, {
-				owner: e.select(e.sys_core.getEnt(e.cast(e.str, i[0]))),
+				owner: e.select(e.sys_core.getSystem(e.cast(e.str, i[0]))),
 				name: e.cast(e.str, i[1]),
 				createdBy: CREATOR,
 				modifiedBy: CREATOR
@@ -216,6 +205,27 @@ export async function widgets(params: any) {
 		})
 	})
 	return await query.run(client, { data: params })
+}
+
+export async function updateSystem(data: any) {
+	sectionHeader(`updateSystem - ${data.name}`)
+
+	const query = e.params(
+		{
+			name: e.str,
+			header: e.str,
+			owner: e.str
+		},
+		(p) => {
+			return e.update(e.sys_core.SysSystem, (s) => ({
+				filter: e.op(s.name, '=', p.name),
+				set: {
+					owner: e.select(e.sys_core.getOrg(p.owner))
+				}
+			}))
+		}
+	)
+	return await query.run(client, data)
 }
 
 export async function userTypeResourcesApps(params: any) {
@@ -226,13 +236,13 @@ export async function userTypeResourcesApps(params: any) {
 			return e.update(e.sys_user.SysUserType, (ut) => ({
 				filter: e.op(ut.name, '=', e.cast(e.str, i[0])),
 				set: {
-					userTypeResources: {
+					resources: {
 						'+=': e.select(
 							e.insert(e.sys_user.SysUserTypeResource, {
 								codeUserTypeResource: e.select(
 									e.sys_core.getCode('ct_sys_user_type_resource_type', 'app')
 								),
-								userTypeResource: e.sys_core.getEnt(e.cast(e.str, i[1])),
+								userTypeResource: e.sys_core.getObjRoot(e.cast(e.str, i[1])),
 								isAccessible: true
 							})
 						)
@@ -252,7 +262,7 @@ export async function userTypeResourcesPrograms(params: any) {
 			return e.update(e.sys_user.SysUserType, (ut) => ({
 				filter: e.op(ut.name, '=', e.cast(e.str, i[0])),
 				set: {
-					userTypeResources: {
+					resources: {
 						'+=': e.select(
 							e.insert(e.sys_user.SysUserTypeResource, {
 								codeUserTypeResource: e.select(
@@ -278,7 +288,7 @@ export async function userTypeResourcesWidgets(params: any) {
 			return e.update(e.sys_user.SysUserType, (ut) => ({
 				filter: e.op(ut.name, '=', e.cast(e.str, i[0])),
 				set: {
-					userTypeResources: {
+					resources: {
 						'+=': e.select(
 							e.insert(e.sys_user.SysUserTypeResource, {
 								codeUserTypeResource: e.select(
@@ -302,7 +312,7 @@ export async function tables(data: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_db.SysTable, {
-				owner: e.select(e.sys_core.getEnt(e.cast(e.str, i[0]))),
+				owner: e.select(e.sys_core.getSystem(e.cast(e.str, i[0]))),
 				mod: e.cast(e.str, i[1]),
 				name: e.cast(e.str, i[2]),
 				hasMgmt: e.cast(e.bool, i[3]),
@@ -312,23 +322,6 @@ export async function tables(data: any) {
 		})
 	})
 	return await query.run(client, { data })
-}
-
-export async function addOrgs(params: any) {
-	sectionHeader('Orgs')
-	const CREATOR = e.select(e.sys_user.getRootUser())
-	const query = e.params({ data: e.json }, (params) => {
-		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.insert(e.sys_core.SysOrg, {
-				owner: e.select(e.sys_core.getRootObj()),
-				name: e.cast(e.str, i[0]),
-				header: e.cast(e.str, i[1]),
-				createdBy: CREATOR,
-				modifiedBy: CREATOR
-			})
-		})
-	})
-	return await query.run(client, { data: params })
 }
 
 export async function addRoleOrg(params: any) {
@@ -353,7 +346,7 @@ export async function addStaff(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_user.SysStaff, {
-				owner: e.select(e.sys_core.getOrg(e.cast(e.str, i[0]))),
+				owner: e.select(e.sys_core.getSystem(e.cast(e.str, i[0]))),
 				person: e.insert(e.default.SysPerson, {
 					firstName: e.cast(e.str, i[1]),
 					lastName: e.cast(e.str, i[2])

@@ -75,12 +75,11 @@ export type $SysPersonλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73
   "zip": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "avatar": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "<person[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<person[is sys_user::SysStaff]": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<person[is sys_user::UserRoot]": $.LinkDesc<_sys_user.$UserRoot, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is sys_user::SysUser]": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is sys_user::SYS_USER]": $.LinkDesc<_sys_user.$SYS_USER, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<person[is sys_user::SYS_USER_ID]": $.LinkDesc<_sys_user.$SYS_USER_ID, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is sys_user::currentUser]": $.LinkDesc<_sys_user.$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<person[is sys_user::SYS_USER_ID]": $.LinkDesc<_sys_user.$SYS_USER_ID, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<person[is sys_user::SysStaff]": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_core::SysOrg]": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -93,38 +92,9 @@ const $SysPerson = $.makeType<$SysPerson>(_.spec, "5061da6e-b3c2-11ee-bf41-01b5a
 
 const SysPerson: $.$expr_PathNode<$.TypeSet<$SysPerson, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysPerson, $.Cardinality.Many), null);
 
-export type $SysPersonTestλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
-  "codeEthnicity": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeGender": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeRace": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeState": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "addr1": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "addr2": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "avatar": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
-  "birthDate": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
-  "city": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "email": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "favFood": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "firstName": $.PropertyDesc<$Name, $.Cardinality.One, false, false, false, false>;
-  "lastName": $.PropertyDesc<$Name, $.Cardinality.One, false, false, false, false>;
-  "fullName": $.PropertyDesc<_std.$str, $.Cardinality.One, false, true, false, false>;
-  "middleName": $.PropertyDesc<$Name, $.Cardinality.AtMostOne, false, false, false, false>;
-  "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "phoneAlt": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "phoneMobile": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "title": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "zip": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-}>;
-type $SysPersonTest = $.ObjectType<"default::SysPersonTest", $SysPersonTestλShape, null, [
-  ..._sys_core.$SysObj['__exclusives__'],
-]>;
-const $SysPersonTest = $.makeType<$SysPersonTest>(_.spec, "3c1c9771-0fa5-11ef-9729-a9787d17105f", _.syntax.literal);
-
-const SysPersonTest: $.$expr_PathNode<$.TypeSet<$SysPersonTest, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysPersonTest, $.Cardinality.Many), null);
 
 
-
-export { Name, nonNegative, $Movie, Movie, $Person, Person, $SysError, SysError, $SysPerson, SysPerson, $SysPersonTest, SysPersonTest };
+export { Name, nonNegative, $Movie, Movie, $Person, Person, $SysError, SysError, $SysPerson, SysPerson };
 
 type __defaultExports = {
   "Name": typeof Name;
@@ -132,8 +102,7 @@ type __defaultExports = {
   "Movie": typeof Movie;
   "Person": typeof Person;
   "SysError": typeof SysError;
-  "SysPerson": typeof SysPerson;
-  "SysPersonTest": typeof SysPersonTest
+  "SysPerson": typeof SysPerson
 };
 const __defaultExports: __defaultExports = {
   "Name": Name,
@@ -141,7 +110,6 @@ const __defaultExports: __defaultExports = {
   "Movie": Movie,
   "Person": Person,
   "SysError": SysError,
-  "SysPerson": SysPerson,
-  "SysPersonTest": SysPersonTest
+  "SysPerson": SysPerson
 };
 export default __defaultExports;

@@ -16,26 +16,25 @@ export namespace std {
 export namespace sys_user {
   export interface Mgmt extends std.$Object {
     "createdAt": Date;
-    "modifiedAt"?: Date | null;
-    "createdBy": UserRoot;
-    "modifiedBy": UserRoot;
+    "createdBy": SysUser;
+    "modifiedBy": SysUser;
+    "modifiedAt": Date;
   }
-  export interface UserRoot extends std.$Object {
-    "userName": string;
-    "person": SysPerson;
-  }
-  export interface SysUser extends UserRoot, Mgmt {
+  export interface SysUser extends Mgmt {
     "orgs": sys_core.SysOrg[];
     "owner": sys_core.SysOrg;
     "userTypes": SysUserType[];
     "password": string;
+    "person"?: SysPerson | null;
+    "userName"?: string | null;
   }
   export interface SYS_USER extends SysUser {}
   export interface SYS_USER_ID extends SysUser {}
   export interface SysStaff extends Mgmt {
+    "owner"?: sys_core.SysSystem | null;
     "person": SysPerson;
     "roles": sys_core.SysCode[];
-    "owner": sys_core.SysOrg;
+    "ownerOld": sys_core.SysOrg;
   }
   export interface SysUserPref extends Mgmt {
     "user": SysUser;
@@ -48,16 +47,12 @@ export namespace sys_user {
     "user": SysUser;
   }
   export interface SysUserType extends sys_core.SysObj {
-    "userTypeResources": SysUserTypeResource[];
-    "userTypeTags": SysUserTypeTag[];
+    "tags": sys_core.SysCode[];
+    "resources": SysUserTypeResource[];
   }
   export interface SysUserTypeResource extends std.$Object {
+    "userTypeResource": sys_core.ObjRoot;
     "codeUserTypeResource": sys_core.SysCode;
-    "userTypeResource": sys_core.SysObj;
-    "isAccessible": boolean;
-  }
-  export interface SysUserTypeTag extends std.$Object {
-    "codeUserTypeTag": sys_core.SysCodeType;
     "isAccessible": boolean;
   }
   export interface SysWidget extends sys_core.SysObj {}
@@ -88,7 +83,6 @@ export namespace app_cm {
     "staffAdmin"?: sys_user.SysStaff | null;
     "staffAgency"?: sys_user.SysStaff | null;
     "staffInstructor"?: sys_user.SysStaff | null;
-    "venue"?: sys_core.SysOrg | null;
     "capacity"?: number | null;
     "cost"?: number | null;
     "dateEnd"?: edgedb.LocalDate | null;
@@ -115,7 +109,6 @@ export namespace app_cm {
     "codeSector"?: sys_core.SysCode | null;
     "codeStatus"?: sys_core.SysCode | null;
     "codeTypePayment"?: sys_core.SysCodeType | null;
-    "provider"?: sys_core.SysOrg | null;
     "staffAdmin"?: sys_user.SysStaff | null;
     "staffAgency"?: sys_user.SysStaff | null;
     "description"?: string | null;
@@ -191,10 +184,7 @@ export namespace sys_core {
   export interface SysObj extends ObjRoot, sys_user.Mgmt {
     "owner": ObjRoot;
   }
-  export interface SysEnt extends SysObj {
-    "roles": SysCode[];
-  }
-  export interface SysOrg extends SysEnt {
+  export interface SysOrg extends ObjRoot, sys_user.Mgmt {
     "testCodeSingle"?: SysCode | null;
     "orderDefine"?: number | null;
     "testBool"?: boolean | null;
@@ -380,6 +370,9 @@ export namespace sys_core {
     "expr": string;
     "index": number;
   }
+  export interface SysEnt extends SysObj {
+    "roles": SysCode[];
+  }
   export interface SysNodeObj extends SysObj {
     "orderDefine": number;
     "isHideRowManager": boolean;
@@ -390,7 +383,9 @@ export namespace sys_core {
     "parent"?: SysNodeObj | null;
     "page"?: string | null;
   }
-  export interface SysResource extends SysEnt {}
+  export interface SysSystem extends ObjRoot, sys_user.Mgmt {
+    "owner": SysOrg;
+  }
 }
 export interface Movie extends std.$Object {
   "character"?: Person | null;
@@ -428,28 +423,6 @@ export interface SysPerson extends std.$Object {
   "title"?: string | null;
   "zip"?: string | null;
   "avatar"?: unknown | null;
-}
-export interface SysPersonTest extends sys_core.SysObj {
-  "codeEthnicity"?: sys_core.SysCode | null;
-  "codeGender"?: sys_core.SysCode | null;
-  "codeRace"?: sys_core.SysCode | null;
-  "codeState"?: sys_core.SysCode | null;
-  "addr1"?: string | null;
-  "addr2"?: string | null;
-  "avatar"?: unknown | null;
-  "birthDate"?: edgedb.LocalDate | null;
-  "city"?: string | null;
-  "email"?: string | null;
-  "favFood"?: string | null;
-  "firstName": string;
-  "lastName": string;
-  "fullName": string;
-  "middleName"?: string | null;
-  "note"?: string | null;
-  "phoneAlt"?: string | null;
-  "phoneMobile"?: string | null;
-  "title"?: string | null;
-  "zip"?: string | null;
 }
 export namespace cfg {
   export interface ConfigObject extends std.BaseObject {}
@@ -858,7 +831,6 @@ export namespace sys_rep {
     "orderDefine": number;
   }
   export interface SysRepUser extends sys_user.Mgmt {
-    "elements": SysRepUserEl[];
     "parms": SysRepUserParm[];
     "user": sys_user.SysUser;
     "descriptionUser"?: string | null;
@@ -870,11 +842,6 @@ export namespace sys_rep {
   export interface SysRepUserAnalytic extends sys_user.Mgmt {
     "analytic": SysAnalytic;
     "parms": SysRepUserParm[];
-  }
-  export interface SysRepUserEl extends sys_user.Mgmt {
-    "element": SysRepEl;
-    "orderDisplay"?: number | null;
-    "isDisplay": boolean;
   }
   export interface SysRepUserParm extends sys_user.Mgmt {
     "parm": SysRepParm;
@@ -903,7 +870,6 @@ export interface types {
   };
   "sys_user": {
     "Mgmt": sys_user.Mgmt;
-    "UserRoot": sys_user.UserRoot;
     "SysUser": sys_user.SysUser;
     "SYS_USER": sys_user.SYS_USER;
     "SYS_USER_ID": sys_user.SYS_USER_ID;
@@ -912,7 +878,6 @@ export interface types {
     "SysUserPrefType": sys_user.SysUserPrefType;
     "SysUserType": sys_user.SysUserType;
     "SysUserTypeResource": sys_user.SysUserTypeResource;
-    "SysUserTypeTag": sys_user.SysUserTypeTag;
     "SysWidget": sys_user.SysWidget;
     "currentUser": sys_user.currentUser;
   };
@@ -935,7 +900,6 @@ export interface types {
   "sys_core": {
     "ObjRoot": sys_core.ObjRoot;
     "SysObj": sys_core.SysObj;
-    "SysEnt": sys_core.SysEnt;
     "SysOrg": sys_core.SysOrg;
     "SysCode": sys_core.SysCode;
     "SysCodeType": sys_core.SysCodeType;
@@ -957,15 +921,15 @@ export interface types {
     "SysDataObjFieldListItems": sys_core.SysDataObjFieldListItems;
     "SysDataObjTable": sys_core.SysDataObjTable;
     "SysDataObjWith": sys_core.SysDataObjWith;
+    "SysEnt": sys_core.SysEnt;
     "SysNodeObj": sys_core.SysNodeObj;
-    "SysResource": sys_core.SysResource;
+    "SysSystem": sys_core.SysSystem;
   };
   "default": {
     "Movie": Movie;
     "Person": Person;
     "SysError": SysError;
     "SysPerson": SysPerson;
-    "SysPersonTest": SysPersonTest;
   };
   "cfg": {
     "ConfigObject": cfg.ConfigObject;
@@ -1080,7 +1044,6 @@ export interface types {
     "SysRepParm": sys_rep.SysRepParm;
     "SysRepUser": sys_rep.SysRepUser;
     "SysRepUserAnalytic": sys_rep.SysRepUserAnalytic;
-    "SysRepUserEl": sys_rep.SysRepUserEl;
     "SysRepUserParm": sys_rep.SysRepUserParm;
   };
   "sys_test": {

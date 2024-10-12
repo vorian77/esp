@@ -9,6 +9,7 @@ const client = createClient({
 })
 
 export async function addCode(data: any) {
+	const CREATOR = e.select(e.sys_user.getRootUser())
 	const query = e.params(
 		{
 			owner: e.str,
@@ -23,7 +24,7 @@ export async function addCode(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysCode, {
-				owner: e.select(e.sys_core.getEnt(p.owner)),
+				owner: e.select(e.sys_core.getSystem(p.owner)),
 				codeType: e.select(e.sys_core.getCodeType(p.codeType)),
 				parent: e.select(
 					e.sys_core.getCode(
@@ -37,8 +38,8 @@ export async function addCode(data: any) {
 				valueDecimal: p.valueDecimal,
 				valueInteger: p.valueInteger,
 				valueString: p.valueString,
-				createdBy: e.select(e.sys_user.getRootUser()),
-				modifiedBy: e.select(e.sys_user.getRootUser())
+				createdBy: e.select(CREATOR),
+				modifiedBy: e.select(CREATOR)
 			})
 		}
 	)
@@ -46,6 +47,7 @@ export async function addCode(data: any) {
 }
 
 export async function addCodeType(data: any) {
+	const CREATOR = e.select(e.sys_user.getRootUser())
 	const query = e.params(
 		{
 			owner: e.str,
@@ -56,13 +58,13 @@ export async function addCodeType(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysCodeType, {
-				owner: e.select(e.sys_core.getEnt(p.owner)),
+				owner: e.select(e.sys_core.getSystem(p.owner)),
 				parent: e.select(e.sys_core.getCodeType(p.parent)),
 				header: p.header,
 				name: p.name,
 				order: p.order,
-				createdBy: e.select(e.sys_user.getRootUser()),
-				modifiedBy: e.select(e.sys_user.getRootUser())
+				createdBy: e.select(CREATOR),
+				modifiedBy: e.select(CREATOR)
 			})
 		}
 	)
@@ -71,6 +73,7 @@ export async function addCodeType(data: any) {
 
 export async function addMigration(data: any) {
 	sectionHeader(`addMigration - ${data.name}`)
+	const CREATOR = e.select(e.sys_user.getRootUser())
 	const query = e.params(
 		{
 			description: e.optional(e.str),
@@ -83,7 +86,7 @@ export async function addMigration(data: any) {
 			return e.insert(e.sys_migr.SysMigr, {
 				description: p.description,
 				name: p.name,
-				owner: e.select(e.sys_core.getEnt(p.owner)),
+				owner: e.select(e.sys_core.getSystem(p.owner)),
 				tablesSource: e.for(e.array_unpack(p.sourceTables), (t) => {
 					return e.insert(e.sys_migr.SysMigrSourceTable, {
 						codeMigrSourceType: e.select(
@@ -103,15 +106,15 @@ export async function addMigration(data: any) {
 										)
 									),
 									name: e.cast(e.str, e.json_get(c, 'name')),
-									createdBy: e.select(e.sys_user.getRootUser()),
-									modifiedBy: e.select(e.sys_user.getRootUser())
+									createdBy: e.select(CREATOR),
+									modifiedBy: e.select(CREATOR)
 								})
 							}
 						),
 						exprSelect: e.cast(e.str, e.json_get(t, 'exprSelect')),
 						name: e.cast(e.str, e.json_get(t, 'name')),
-						createdBy: e.select(e.sys_user.getRootUser()),
-						modifiedBy: e.select(e.sys_user.getRootUser())
+						createdBy: e.select(CREATOR),
+						modifiedBy: e.select(CREATOR)
 					})
 				}),
 				tablesTarget: e.for(e.array_unpack(p.targetTables), (t) => {
@@ -124,8 +127,8 @@ export async function addMigration(data: any) {
 									expr: e.cast(e.str, e.json_get(c, 'expr')),
 									isActive: e.cast(e.bool, true),
 									orderDefine: e.cast(e.int16, e.json_get(c, 'orderDefine')),
-									createdBy: e.select(e.sys_user.getRootUser()),
-									modifiedBy: e.select(e.sys_user.getRootUser())
+									createdBy: e.select(CREATOR),
+									modifiedBy: e.select(CREATOR)
 								})
 							}
 						),
@@ -133,12 +136,12 @@ export async function addMigration(data: any) {
 						isInitTable: e.cast(e.bool, e.json_get(t, 'isInitTable')),
 						orderDefine: e.cast(e.int16, e.json_get(t, 'orderDefine')),
 						table: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(t, 'name')))),
-						createdBy: e.select(e.sys_user.getRootUser()),
-						modifiedBy: e.select(e.sys_user.getRootUser())
+						createdBy: e.select(CREATOR),
+						modifiedBy: e.select(CREATOR)
 					})
 				}),
-				createdBy: e.select(e.sys_user.getRootUser()),
-				modifiedBy: e.select(e.sys_user.getRootUser())
+				createdBy: e.select(CREATOR),
+				modifiedBy: e.select(CREATOR)
 			})
 		}
 	)
@@ -147,6 +150,7 @@ export async function addMigration(data: any) {
 
 export async function addNodeFooter(data: any) {
 	sectionHeader(`addNodeFooter - ${data.name}`)
+	const CREATOR = e.select(e.sys_user.getRootUser())
 	const query = e.params(
 		{
 			codeIcon: e.str,
@@ -163,14 +167,14 @@ export async function addNodeFooter(data: any) {
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', p.codeIcon)),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'footer')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', p.codeType)),
-				createdBy: e.select(e.sys_user.getRootUser()),
+				createdBy: e.select(CREATOR),
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
 				isHideRowManager: e.cast(e.bool, false),
-				modifiedBy: e.select(e.sys_user.getRootUser()),
+				modifiedBy: e.select(CREATOR),
 				name: p.name,
 				orderDefine: p.orderDefine,
-				owner: e.select(e.sys_core.getEnt(p.owner)),
+				owner: e.select(e.sys_core.getSystem(p.owner)),
 				page: p.page
 			})
 		}
@@ -180,6 +184,7 @@ export async function addNodeFooter(data: any) {
 
 export async function addNodeProgram(data: any) {
 	sectionHeader(`addNodeProgram - ${data.name}`)
+	const CREATOR = e.select(e.sys_user.getRootUser())
 	const query = e.params(
 		{
 			codeIcon: e.str,
@@ -193,13 +198,13 @@ export async function addNodeProgram(data: any) {
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', p.codeIcon)),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'program')),
-				createdBy: e.select(e.sys_user.getRootUser()),
+				createdBy: e.select(CREATOR),
 				header: p.header,
 				isHideRowManager: e.cast(e.bool, false),
-				modifiedBy: e.select(e.sys_user.getRootUser()),
+				modifiedBy: e.select(CREATOR),
 				name: p.name,
 				orderDefine: p.orderDefine,
-				owner: e.select(e.sys_core.getEnt(p.owner))
+				owner: e.select(e.sys_core.getSystem(p.owner))
 			})
 		}
 	)
@@ -208,6 +213,7 @@ export async function addNodeProgram(data: any) {
 
 export async function addNodeProgramObj(data: any) {
 	sectionHeader(`addNodeProgramObj - ${data.name}`)
+	const CREATOR = e.select(e.sys_user.getRootUser())
 	const query = e.params(
 		{
 			codeIcon: e.str,
@@ -224,14 +230,14 @@ export async function addNodeProgramObj(data: any) {
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', p.codeIcon)),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'programObject')),
-				createdBy: e.select(e.sys_user.getRootUser()),
+				createdBy: e.select(CREATOR),
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
 				isHideRowManager: p.isHideRowManager,
-				modifiedBy: e.select(e.sys_user.getRootUser()),
+				modifiedBy: e.select(CREATOR),
 				name: p.name,
 				orderDefine: p.orderDefine,
-				owner: e.select(e.sys_core.getEnt(p.owner)),
+				owner: e.select(e.sys_core.getSystem(p.owner)),
 				parent: e.select(e.sys_core.getNodeObjByName(p.parentNodeName))
 			})
 		}
@@ -240,6 +246,7 @@ export async function addNodeProgramObj(data: any) {
 }
 
 export async function addOrg(data: any) {
+	const CREATOR = e.select(e.sys_user.getRootUser())
 	const query = e.params(
 		{
 			name: e.str,
@@ -248,11 +255,10 @@ export async function addOrg(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysOrg, {
-				owner: e.select(e.sys_core.getRootObj()),
 				name: p.name,
 				header: p.header,
-				createdBy: e.select(e.sys_user.getRootUser()),
-				modifiedBy: e.select(e.sys_user.getRootUser())
+				createdBy: e.select(CREATOR),
+				modifiedBy: e.select(CREATOR)
 			})
 		}
 	)
@@ -282,27 +288,6 @@ export async function addUser(data: any) {
 				}),
 				userName: p.userName
 			})
-		}
-	)
-	return await query.run(client, data)
-}
-
-export async function addUserOrg(data: any) {
-	sectionHeader(`addUser - ${data.userName} - org: ${data.orgName}`)
-	const query = e.params(
-		{
-			orgName: e.str,
-			userName: e.str
-		},
-		(p) => {
-			return e.update(e.sys_user.SysUser, (u) => ({
-				filter: e.op(u.userName, '=', p.userName),
-				set: {
-					orgs: {
-						'+=': e.select(e.sys_core.getOrg(p.orgName))
-					}
-				}
-			}))
 		}
 	)
 	return await query.run(client, data)

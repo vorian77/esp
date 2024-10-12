@@ -5,7 +5,7 @@ module sys_core {
   }
 
   abstract type SysObj extending sys_core::ObjRoot, sys_user::Mgmt {
-    required owner: sys_core::ObjRoot;   
+    required owner: sys_core::ObjRoot;
   } 
 
   type SysEnt extending sys_core::SysObj {
@@ -15,7 +15,7 @@ module sys_core {
     constraint exclusive on (.name);
   }
 
-  type SysOrg extending sys_core::SysEnt {
+  type SysOrg extending sys_core::ObjRoot, sys_user::Mgmt {
     addr1: str;
     addr2: str;
     city: str;
@@ -38,8 +38,6 @@ module sys_core {
     testNumberInt: int64;
     testText: str;
   }
-
-  type SysResource extending sys_core::SysEnt {}
 
   type SysCodeType extending sys_core::SysObj {
     parent: sys_core::SysCodeType;
@@ -313,13 +311,12 @@ module sys_core {
     constraint exclusive on (.name);
   }
 
+  type SysSystem extending sys_core::ObjRoot, sys_user::Mgmt  {
+    required owner: sys_core::SysOrg;
+    constraint exclusive on (.name);
+  }
+
   # FUNCTIONS
-  function getRootObj() -> optional sys_core::ObjRoot
-    using (select assert_single((select sys_core::ObjRoot filter .name = '*ROOTOBJ*')));
-
-  function getEnt(entName: str) -> optional sys_core::SysEnt
-    using (select sys_core::SysEnt filter .name = entName);
-
   function getCodeType(codeTypeName: str) -> optional sys_core::SysCodeType
     using (select sys_core::SysCodeType filter .name = codeTypeName);
 
@@ -328,6 +325,9 @@ module sys_core {
       .codeType.name = codeTypeName and 
       .name = codeName));
 
+  function getObjRoot(name: str) -> optional sys_core::ObjRoot
+    using (select assert_single((select sys_core::ObjRoot filter .name = name)));
+    
   function getOrg(name: str) -> optional sys_core::SysOrg
     using (select assert_single((select sys_core::SysOrg filter .name = name)));
 
@@ -356,7 +356,10 @@ module sys_core {
     using (select sys_core::SysNodeObj filter .name = nodeObjName);
 
   function getNodeObjById(nodeObjId: str) -> optional sys_core::SysNodeObj
-    using (select sys_core::SysNodeObj filter .id = <uuid>nodeObjId);     
+    using (select sys_core::SysNodeObj filter .id = <uuid>nodeObjId);    
+
+  function getSystem(name: str) -> optional sys_core::SysSystem
+    using (select assert_single((select sys_core::SysSystem filter .name = name))); 
     
   function isObjectLink(objName: str, linkName: str) -> optional bool
     using (select count(schema::ObjectType filter .name = objName and .links.name = linkName) > 0);     

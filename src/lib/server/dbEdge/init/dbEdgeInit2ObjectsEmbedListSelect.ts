@@ -20,7 +20,7 @@ async function initFieldListSelectCodes() {
 		exprFilter: 'none',
 		header: 'Select Codes',
 		name: 'dofls_sys_admin_sys_code',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -57,7 +57,7 @@ async function initFieldListSelectCodes() {
 		btnLabelComplete: 'Select Code(s)',
 		dataObjList: 'dofls_sys_admin_sys_code',
 		name: 'fels_sys_code',
-		owner: 'app_sys_admin'
+		owner: 'sys_app_sys_admin'
 	})
 }
 
@@ -70,7 +70,7 @@ async function initFieldListSelectColumns() {
 		exprFilter: 'none',
 		header: 'Select Columns',
 		name: 'dofls_sys_admin_sys_column',
-		owner: 'app_sys_admin',
+		owner: 'sys_app_sys_admin',
 		tables: [{ index: 0, table: 'SysColumn' }],
 		fields: [
 			{
@@ -97,6 +97,6 @@ async function initFieldListSelectColumns() {
 		btnLabelComplete: 'Select Column(s)',
 		dataObjList: 'dofls_sys_admin_sys_column',
 		name: 'fels_sys_column',
-		owner: 'app_sys_admin'
+		owner: 'sys_app_sys_admin'
 	})
 }

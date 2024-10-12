@@ -1,5 +1,5 @@
 import {
-	resources,
+	organizations,
 	nodeObjPrograms,
 	nodeObjPages,
 	userType,
@@ -23,7 +23,6 @@ const reviewQuery = ''
 async function data() {
 	// await users([['Baltimore', 'MOED', 'user_moed', '!alfjasf*!@#$$*&']])
 
-	await resources([['app_moed_cm']])
 	await nodeObjPrograms([
 		['app_moed_cm', 'node_pgm_moed_cm_staff', 'CM-Staff', 20, 'application'],
 		['app_moed_cm', 'node_node_pgm_moed_cm_student_applicant', 'CM-Applicant', 30, 'application'],
