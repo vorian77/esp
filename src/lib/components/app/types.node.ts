@@ -96,3 +96,44 @@ export enum NodeType {
 	programObject = 'programObject',
 	treeRoot = 'treeRoot'
 }
+
+export class RawMenu {
+	headers: RawMenuHeader[] = []
+	constructor(apps: any) {
+		const clazz = 'RawMenu'
+		apps = valueOrDefault(apps, [])
+		apps.forEach((app: any) => {
+			this.addApp(app)
+		})
+		this.headers = this.headers.sort((a, b) => a.orderDefine - b.orderDefine)
+	}
+	addApp(app: any) {
+		let idx = this.headers.findIndex((h) => h.id === app.id)
+		if (idx === -1) {
+			idx = this.headers.push(new RawMenuHeader(app))
+		} else {
+			this.headers[idx].addNodes(app.nodes)
+		}
+	}
+}
+
+export class RawMenuHeader {
+	header: string
+	id: string
+	name: string
+	nodes: DbNode[] = []
+	orderDefine: number
+	constructor(obj: any) {
+		const clazz = 'RawMenuHeader'
+		obj = valueOrDefault(obj, {})
+		this.header = strRequired(obj.appHeader.header, clazz, 'header')
+		this.id = strRequired(obj.appHeader.id, clazz, 'id')
+		this.name = strRequired(obj.appHeader.name, clazz, 'name')
+		this.orderDefine = obj.appHeader.orderDefine
+		this.addNodes(obj.nodes)
+	}
+	addNodes(nodes: DbNode[]) {
+		this.nodes = [...this.nodes, ...nodes]
+		this.nodes.sort((a, b) => a.orderDefine - b.orderDefine)
+	}
+}

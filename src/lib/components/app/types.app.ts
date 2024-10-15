@@ -359,6 +359,21 @@ export class App {
 						break
 
 					case StatePacketAction.doDetailSave:
+						if (
+							state.user &&
+							currTab.data.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset)
+						) {
+							const result = await state.user.setUserSelectParms(
+								state,
+								token.dataObj,
+								currTab.data.parms
+							)
+							if (!result) return false
+							// console.log('types.app.saveDetail.setUserSelectParms:', {
+							// 	parmsData: currTab.data.parms
+							// })
+						}
+
 						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 							return this
 						await query(state, tabParent, TokenApiQueryType.retrieve)
@@ -376,7 +391,7 @@ export class App {
 				}
 			}
 		}
-		return this
+		return true
 	}
 	async saveList(state: State, token: TokenAppDo) {
 		const data = token.dataObj.objData

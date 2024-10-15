@@ -205,7 +205,6 @@ export class GridSettings {
 	load(rawSettings: any, state: State, dataObj: DataObj) {
 		if (state.user) this.idUser = state.user.id
 		rawSettings = valueOrDefault(rawSettings, {})
-		console.log('GridSettings.load', { rawSettings })
 		const PREFS: [ParmsUserDataType, Function][] = [
 			[ParmsUserDataType.listColumnsModel, initPrefsColumnsModel],
 			[ParmsUserDataType.listFilterModel, initPrefsFilterModel],

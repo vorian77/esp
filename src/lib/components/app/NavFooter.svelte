@@ -14,7 +14,8 @@
 	let currNodeName = ''
 
 	$: if (!loaded && $appStoreUser) {
-		const user = Object.keys($appStoreUser).length > 0 ? new User($appStoreUser) : undefined
+		const rawUser = $appStoreUser
+		const user = Object.keys(rawUser).length > 0 ? new User(rawUser) : undefined
 		if (user) {
 			user.resource_footer.forEach((n: any) => {
 				footer.push(new Node(new RawNode(n)))

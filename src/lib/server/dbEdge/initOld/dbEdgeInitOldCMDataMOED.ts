@@ -6,7 +6,7 @@ import {
 	userUserType,
 	userTypeResourcesApps,
 	userTypeResourcesPrograms
-} from '$server/dbEdge/init/dbEdgeInitUtilities10'
+} from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 
 const FILE = 'init_MOED_cm'
 

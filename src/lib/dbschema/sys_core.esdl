@@ -1,34 +1,22 @@
 module sys_core {
+  # core objects
   type ObjRoot {
-    required name: str;
-    header: str;
-  }
-
-  abstract type SysObj extending sys_core::ObjRoot, sys_user::Mgmt {
-    required owner: sys_core::ObjRoot;
-  } 
-
-  type SysEnt extending sys_core::SysObj {
-    multi roles: sys_core::SysCode{
-      on target delete allow;
-    }; 
-    constraint exclusive on (.name);
-  }
-
-  type SysOrg extending sys_core::ObjRoot, sys_user::Mgmt {
     addr1: str;
     addr2: str;
     city: str;
-    codeOrgType: sys_core::SysCode;
+    codeObjType: sys_core::SysCode;
     codeState: sys_core::SysCode;
     multi contacts: default::SysPerson{
       on target delete allow;
     };
+    header: str;
+    required name: str;
     note: str;
+    orderDefine: default::nonNegative;
     website: str;
     zip: str;
-    orderDefine: default::nonNegative;  
     
+    # test fields
     testBool: bool;
     multi testCodeMulti: sys_core::SysCode;
     testCodeSingle: sys_core::SysCode;
@@ -39,13 +27,40 @@ module sys_core {
     testText: str;
   }
 
+  type SysObj extending sys_core::ObjRoot, sys_user::Mgmt {
+    isGlobalResource: bool;
+    required owner: sys_core::SysSystem;
+    constraint exclusive on ((.owner, .name));
+  } 
+
+  type SysOrg extending sys_core::ObjRoot, sys_user::Mgmt {
+    constraint exclusive on (.name);
+  }
+
+  type SysSystem extending sys_core::ObjRoot, sys_user::Mgmt  {
+    required owner: sys_core::SysOrg;
+    constraint exclusive on ((.owner, .name));
+  }
+
+
+  # other sys_core objects
+  type SysApp extending sys_core::SysObj {
+    required appHeader: sys_core::SysAppHeader;
+    multi nodes: sys_core::SysNodeObj;
+  }
+
+  type SysAppHeader extending sys_core::SysObj {}
+
+
+
   type SysCodeType extending sys_core::SysObj {
     parent: sys_core::SysCodeType;
     order: default::nonNegative;
     constraint exclusive on ((.name));
   }
 
-  type SysCode extending sys_core::SysObj {
+  type SysCode extending sys_core::ObjRoot, sys_user::Mgmt {
+    required owner: sys_core::SysSystem;
     parent: sys_core::SysCode;
     required codeType: sys_core::SysCodeType;
     order: default::nonNegative;
@@ -90,6 +105,7 @@ module sys_core {
       on source delete delete target;
       on target delete allow;
     };
+    userResourceSaveParmsSelect: json;
     constraint exclusive on (.name);
   } 
 
@@ -306,13 +322,7 @@ module sys_core {
     };
     required isHideRowManager: bool;
     parent: sys_core::SysNodeObj;
-    required orderDefine: default::nonNegative;
     page: str;
-    constraint exclusive on (.name);
-  }
-
-  type SysSystem extending sys_core::ObjRoot, sys_user::Mgmt  {
-    required owner: sys_core::SysOrg;
     constraint exclusive on (.name);
   }
 
@@ -358,9 +368,12 @@ module sys_core {
   function getNodeObjById(nodeObjId: str) -> optional sys_core::SysNodeObj
     using (select sys_core::SysNodeObj filter .id = <uuid>nodeObjId);    
 
-  function getSystem(name: str) -> optional sys_core::SysSystem
-    using (select assert_single((select sys_core::SysSystem filter .name = name))); 
-    
+  function getSystem(nameOwner: str, nameSystem: str) -> optional sys_core::SysSystem
+    using (select assert_single((select sys_core::SysSystem filter .owner.name = nameOwner and .name = nameOwner))); 
+   
+  function getSystemPrime(nameSystem: str) -> optional sys_core::SysSystem
+    using (select assert_single((select sys_core::SysSystem filter .name = nameSystem))); 
+ 
   function isObjectLink(objName: str, linkName: str) -> optional bool
     using (select count(schema::ObjectType filter .name = objName and .links.name = linkName) > 0);     
 

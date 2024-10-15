@@ -132,8 +132,9 @@
 				break
 
 			case StatePacketAction.doDetailSave:
-				await state.app.saveDetail(state, packet.action, token)
-				updateObjectsForm()
+				if (await state.app.saveDetail(state, packet.action, token)) {
+					updateObjectsForm()
+				}
 				break
 
 			case StatePacketAction.doDetailSaveAs:

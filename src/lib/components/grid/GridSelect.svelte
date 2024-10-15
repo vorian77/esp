@@ -32,6 +32,7 @@
 	})
 
 	function onSelectionChanged(event: SelectionChangedEvent) {
+		console.log('GridSelect.onSelectionChanged', event.api.getSelectedNodes())
 		state.parmsState.valueSet(ParmsValuesType.listRecordIdSelected, getSelectedNodeIds(event.api))
 	}
 </script>

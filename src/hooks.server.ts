@@ -92,6 +92,8 @@ const serverErrorHandler: HandleServerError = async ({ error, event }) => {
 			? error.message
 			: 'Something unexpected happend. Please try again, or report the problem.'
 
+	console.error('hooks.server.ErrorHandler:', message)
+
 	return {
 		file: event.route.id || 'unknown',
 		function: 'unknown',

@@ -1,4 +1,4 @@
-import { ResetDb, sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { ResetDb, sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 
 export async function initReset() {
 	sectionHeader('Reset')
@@ -52,13 +52,13 @@ export async function initReset() {
 	reset.delTableRecords('sys_core::SysDataObjFieldListItems')
 	reset.delTableRecords('sys_migr::SysMigr')
 
+	reset.delTableRecords('sys_core::SysApp')
+	reset.delTableRecords('sys_core::SysAppHeader')
+
 	// db
 	reset.addStatement(`UPDATE sys_db::SysTable SET { columns := {} }`)
 	reset.delTableRecords('sys_db::SysTable')
 	reset.delTableRecords('sys_db::SysColumn')
-
-	// system
-	// reset.delTableRecords('sys_core::SysSystem')
 
 	await reset.execute()
 }

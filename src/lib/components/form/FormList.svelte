@@ -30,6 +30,7 @@
 		DataObjSort,
 		DataObjSortItem,
 		type DataRecord,
+		ParmsValues,
 		ParmsValuesType,
 		ParmsUser,
 		ParmsUserDataType,
@@ -159,14 +160,11 @@
 
 		// config new fields
 		fieldsDisplayableNew.forEach((f) => {
-			console.log('FormList.initGridColumns', f.colDO)
 			let defn = initGridColumnsField(f)
 			defn.flex = 1
 			defn.hide = !f.colDO.isDisplayable || !f.colDO.isDisplay
 			columnDefs.push(defn)
 		})
-
-		console.log('FormList.initGridColumns', columnDefs)
 		return columnDefs
 	}
 	function initGridColumnsField(field: Field) {

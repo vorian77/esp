@@ -63,9 +63,9 @@ module sys_user {
   }
 
   type SysUserTypeResource {
-    required codeUserTypeResource: sys_core::SysCode;
-    required userTypeResource: sys_core::ObjRoot;
-    required isAccessible: bool;
+    required codeType: sys_core::SysCode;
+    idSubject: uuid;
+    required resource: sys_core::ObjRoot;
   }
   
   type SysWidget extending sys_core::SysObj {
@@ -73,14 +73,6 @@ module sys_user {
   }
 
   # GLOBALS
-  global SYS_USER := (
-    select sys_user::SysUser filter .userName = 'sys_user'
-  );
-  
-  global SYS_USER_ID := (
-    select sys_user::SysUser { id } filter .userName = 'sys_user'
-  );
-
   global currentUserId: uuid;
 
   global currentUser := (
@@ -90,7 +82,7 @@ module sys_user {
   # FUNCTIONS
    function getRootUser() -> optional sys_user::SysUser
     using (select assert_single((select sys_user::SysUser filter .userName = '*ROOTUSER*')));
-
+  
   function getStaffByName(firstName: str, lastName: str) -> optional sys_user::SysStaff
       using (select assert_single(sys_user::SysStaff filter 
         str_lower(.person.firstName) = str_lower(firstName) and

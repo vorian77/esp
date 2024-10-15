@@ -11,27 +11,83 @@ import {
 	userTypeResourcesWidgets,
 	userUserType,
 	widgets
-} from '$server/dbEdge/init/dbEdgeInitUtilities10'
+} from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { addApp, addAppHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initUser() {
-	await initUserResources()
+	// await initAppHeaders()
+	await initApps()
 	await initUserType()
-	await initStaff()
+	// await initStaff()
 }
 
-async function initUserResources() {
+async function initAppHeaders() {
+	await addAppHeader({
+		header: 'Administration',
+		isGlobalResource: true,
+		name: 'app_hdr_sys_admin',
+		orderDefine: 0,
+		owner: 'sys_system_old'
+	})
+	await addAppHeader({
+		header: 'Reports',
+		isGlobalResource: true,
+		name: 'app_hdr_sys_report',
+		orderDefine: 1000,
+		owner: 'sys_system_old'
+	})
+	await addAppHeader({
+		header: 'Staff',
+		isGlobalResource: false,
+		name: 'app_hdr_ai_staff',
+		orderDefine: 100,
+		owner: 'sys_ai_old'
+	})
+}
+async function initApps() {
+	await addApp({
+		appHeader: 'app_hdr_ai_staff',
+		isGlobalResource: false,
+		name: 'app_ai_staff',
+		owner: 'sys_ai_old',
+		nodes: ['node_obj_cm_course_list', 'node_obj_cm_partner_list', 'node_obj_cm_student_list']
+	})
+	await addApp({
+		appHeader: 'app_hdr_sys_admin',
+		isGlobalResource: true,
+		name: 'app_sys_admin',
+		owner: 'sys_system_old',
+		nodes: [
+			'node_obj_sys_org_list',
+			'node_obj_sys_system_config_list',
+			'node_obj_sys_system_object_list',
+			'node_obj_sys_system_meta_list'
+		]
+	})
+	await addApp({
+		appHeader: 'app_hdr_sys_report',
+		isGlobalResource: true,
+		name: 'app_sys_report',
+		owner: 'sys_system_old',
+		nodes: [
+			'node_obj_sys_rep_list',
+			'node_obj_cm_ai_report_course_summary',
+			'node_obj_cm_ai_report_student_summary'
+		]
+	})
+}
+
+async function initResources() {
 	/* programs */
 	await nodeObjPrograms([
-		['sys_app_sys', 'node_pgm_sys_admin', 'Administration', 10, 'application'],
-		['sys_app_cm', 'node_pgm_cm_staff_provider', 'Staff', 40, 'application']
+		['sys_system_old', 'node_pgm_sys_admin', 'Administration', 10, 'application'],
+		['sys_ai_old', 'node_pgm_cm_staff_provider', 'Staff', 40, 'application']
 	])
-	// ['sys_app_cm', 'node_pgm_cm_staff_admin', 'Administration', 30, 'application'],
-	// ['sys_app_cm', 'node_pgm_cm_student', 'AI-Role: Student', 50, 'application']
 
 	sectionHeader('NodeObjHeader - Report')
 	await nodeObjHeaders([
 		[
-			'sys_app_cm',
+			'sys_ai_old',
 			'node_pgm_cm_staff_provider',
 			'node_hdr_cm_ai_reports',
 			'Reports',
@@ -42,49 +98,48 @@ async function initUserResources() {
 
 	/* widgets */
 	await widgets([
-		['sys_app_cm', 'widget_cm_user'],
-		['sys_app_cm', 'widget_cm_quotes'],
-		['sys_app_sys', 'widget_sys_user']
+		['sys_ai_old', 'widget_cm_user'],
+		['sys_ai_old', 'widget_cm_quotes'],
+		['sys_system_old', 'widget_sys_user']
 	])
 }
 
 async function initUserType() {
 	/* userType */
 	await userType([
-		['sys_app_cm', 'ut_cm_staff_admin'],
-		['sys_app_cm', 'ut_cm_staff_provider'],
-		['sys_app_cm', 'ut_cm_student'],
-		['sys_app_sys', 'ut_sys_admin']
+		['sys_ai_old', 'ut_cm_staff_admin'],
+		['sys_ai_old', 'ut_cm_staff_provider'],
+		['sys_system_old', 'ut_sys_admin']
 	])
 
 	/* apps */
 	await userTypeResourcesApps([
-		['ut_sys_admin', 'sys_app_cm'],
-		['ut_sys_admin', 'sys_app_db'],
-		['ut_sys_admin', 'sys_app_sys'],
-		['ut_sys_admin', 'sys_app_sys_admin'],
-		['ut_sys_admin', 'sys_app_sys_admin_org'],
-		['ut_sys_admin', 'sys_app_sys_admin_user']
+		['ut_cm_staff_provider', 'app_ai_staff'],
+		['ut_cm_staff_provider', 'app_sys_report'],
+
+		['ut_sys_admin', 'app_ai_staff'],
+		['ut_sys_admin', 'app_sys_admin'],
+		['ut_sys_admin', 'app_sys_report']
 	])
 
 	/* programs */
-	await userTypeResourcesPrograms([
-		['ut_cm_staff_admin', 'node_pgm_cm_staff_provider'],
-		['ut_cm_staff_provider', 'node_pgm_cm_staff_provider'],
-		['ut_sys_admin', 'node_pgm_cm_staff_provider'],
-		['ut_sys_admin', 'node_pgm_sys_admin']
-	])
+	// await userTypeResourcesPrograms([
+	// 	['ut_cm_staff_admin', 'node_pgm_cm_staff_provider'],
+	// 	['ut_cm_staff_provider', 'node_pgm_cm_staff_provider'],
+	// 	['ut_sys_admin', 'node_pgm_cm_staff_provider'],
+	// 	['ut_sys_admin', 'node_pgm_sys_admin']
+	// ])
 	// ['ut_cm_staff_admin', 'node_pgm_cm_staff_admin'],
 	// ['ut_cm_staff_admin', 'node_pgm_cm_student'],
 	// ['ut_sys_admin', 'node_pgm_cm_staff_admin'],
 	// ['ut_sys_admin', 'node_pgm_cm_student'],
 
 	/* widgets */
-	await userTypeResourcesWidgets([
-		['ut_cm_staff_admin', 'widget_cm_user'],
-		['ut_cm_staff_provider', 'widget_cm_user']
-		// ['ut_sys_admin', 'widget_sys_user']
-	])
+	// await userTypeResourcesWidgets([
+	// 	['ut_cm_staff_admin', 'widget_cm_user'],
+	// 	['ut_cm_staff_provider', 'widget_cm_user']
+	// 	// ['ut_sys_admin', 'widget_sys_user']
+	// ])
 
 	/* user - userType */
 	await userUserType([

@@ -155,6 +155,7 @@ export async function getDataObjById(dataObjId: string) {
 			listEditPresetExpr: true,
 			name: true,
 			subHeader: true,
+			userResourceSaveParmsSelect: true,
 			_actionFieldGroup: e.select(do1.actionFieldGroup, (afg) => ({
 				...shapeDataObjActionFieldGroup(afg)
 			})),
@@ -521,14 +522,13 @@ export async function getTableColumns(token: TokenApiDbTableColumns) {
 }
 
 export async function getUserByUserId(token: TokenApiUserId) {
-	console.log('dbEdgeUtilties.getUserByUserId', token)
 	const query = e.select(e.sys_user.SysUser, (u) => ({
 		avatar: u.person.avatar,
 		firstName: u.person.firstName,
 		fullName: u.person.fullName,
 		id: true,
 		lastName: u.person.lastName,
-		userName: true,
+
 		org: e.select(e.sys_core.SysOrg, (org) => ({
 			name: true,
 			header: true,
@@ -537,6 +537,27 @@ export async function getUserByUserId(token: TokenApiUserId) {
 		preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({
 			_codeType: p.codeType.name,
 			filter: e.op(e.op(p.user.id, '=', u.id), 'and', e.op(p.isActive, '=', e.bool(true)))
+		})),
+		resource_apps: e.select(u.userTypes.resources.resource.is(e.sys_core.SysApp), (app) => ({
+			appHeader: e.select(app.appHeader, (ah) => ({
+				id: true,
+				header: true,
+				name: true,
+				orderDefine: true
+			})),
+			id: true,
+			nodes: e.select(app.nodes, (n) => ({
+				_codeIcon: n.codeIcon.name,
+				_codeNodeType: n.codeNodeType.name,
+				dataObjId: n.dataObj.id,
+				header: true,
+				id: true,
+				name: true,
+				orderDefine: true,
+				page: true,
+				order_by: n.orderDefine
+			})),
+			order_by: app.appHeader.orderDefine
 		})),
 		resource_footer: e.select(e.sys_core.SysNodeObj, (f) => ({
 			_codeIcon: f.codeIcon.name,
@@ -549,28 +570,36 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			filter: e.op(f.codeNavType.name, '=', 'footer'),
 			order_by: f.orderDefine
 		})),
-		resource_programs: e.select(
-			u.userTypes.resources.userTypeResource.is(e.sys_core.SysNodeObj),
-			(ut) => ({
-				dataObjId: ut.dataObj.id,
+		resource_programs: e.select(u.userTypes.resources.resource.is(e.sys_core.SysNodeObj), (ut) => ({
+			dataObjId: ut.dataObj.id,
+			header: true,
+			id: true,
+			name: true,
+			orderDefine: true,
+			page: true,
+			_codeIcon: ut.codeIcon.name,
+			_codeNodeType: ut.codeNodeType.name,
+			filter: e.op(ut.codeNavType.name, '=', 'tree'),
+			order_by: ut.orderDefine
+		})),
+		resource_widgets: e.select(u.userTypes.resources.resource.is(e.sys_user.SysWidget), (ut) => ({
+			id: true,
+			name: true
+		})),
+		resources: e.select(u.userTypes.resources, (r) => ({
+			_codeType: r.codeType.name,
+			_resource: e.select(r.resource, (res) => ({
 				header: true,
 				id: true,
-				name: true,
-				orderDefine: true,
-				page: true,
-				_codeIcon: ut.codeIcon.name,
-				_codeNodeType: ut.codeNodeType.name,
-				filter: e.op(ut.codeNavType.name, '=', 'tree'),
-				order_by: ut.orderDefine
-			})
-		),
-		resource_widgets: e.select(
-			u.userTypes.resources.userTypeResource.is(e.sys_user.SysWidget),
-			(ut) => ({
-				id: true,
 				name: true
-			})
-		),
+			}))
+		})),
+		resourcesSystem: e.select(u.userTypes.owner, (rs) => ({
+			header: true,
+			id: true,
+			name: true
+		})),
+		userName: true,
 		filter_single: e.op(u.id, '=', e.cast(e.uuid, token.userId))
 	}))
 	return await query.run(client)

@@ -1,5 +1,5 @@
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { ResponseBody } from '$utils/types'
+import { RawMenu, ResponseBody } from '$utils/types'
 import { NodeNav, NodeType } from '$comps/app/types.node'
 import type { DbNode, RawNode, User } from '$utils/types'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
@@ -28,7 +28,7 @@ export class NavTree {
 		this.currNode = navTree.currNode
 		this.listTree = navTree.listTree
 	}
-	static init(dbNodes: Array<DbNode>) {
+	static init(rawMenu: RawMenu) {
 		// root node
 		const currNode = new NodeNav(
 			{
@@ -43,7 +43,14 @@ export class NavTree {
 			-1
 		)
 		// root branch
-		let listTree: Array<NodeNav> = this.addBranchNodes(currNode, 0, [currNode], dbNodes)
+		let listTree: Array<NodeNav> = []
+		// let listTree: Array<NodeNav> = this.addBranchNodes(currNode, 0, [currNode], dbNodes)
+		rawMenu.headers.forEach((h) => {
+			if (h.name === 'app_hdr_ai_staff') {
+				console.log('NavTree.init.h.nodes: ', h.nodes)
+				listTree = this.addBranchNodes(currNode, 0, [currNode], h.nodes)
+			}
+		})
 
 		// open root branch nodes
 		listTree = listTree.map((n) => {
@@ -218,7 +225,9 @@ export class NavTree {
 }
 
 export async function initNavTree(user: User) {
-	let rawBranch: Array<DbNode> = user?.resource_programs ? user?.resource_programs : []
+	const rawMenu = new RawMenu(user.resource_apps)
+
+	// let rawBranch: Array<DbNode> = user?.resource_programs ? user?.resource_programs : []
 
 	// <todo> filter to single program for dev
 	// rawBranch = rawBranch.filter((p: any) => {
@@ -228,11 +237,11 @@ export async function initNavTree(user: User) {
 	// if user has access to only 1 program,
 	// filter down to first group of navNodes
 	// it's not necessary to display program/header node
-	while (rawBranch && rawBranch.length === 1) {
-		rawBranch = await getNodesBranch(rawBranch[0].id)
-	}
+	// while (rawBranch && rawBranch.length === 1) {
+	// 	rawBranch = await getNodesBranch(rawBranch[0].id)
+	// }
 
-	setAppStoreNavTree(NavTree.init(rawBranch))
+	setAppStoreNavTree(NavTree.init(rawMenu))
 }
 
 async function getNodesBranch(nodeId: string) {

@@ -19,8 +19,10 @@ import {
 	strOptional,
 	strRequired,
 	DBTable,
+	UserTypeResourceType,
 	valueOrDefault
 } from '$utils/types'
+
 import { StatePacketAction } from '$comps/app/types.appState'
 import {
 	DataObj,
@@ -72,6 +74,7 @@ export class RawDataObj {
 	rawPropsSort: RawDataObjPropDB[] = []
 	subHeader?: string
 	tables: DataObjTable[] = []
+	userResourceSaveParmsSelect: RawDataObjUserResourceSaveParmsSelect[] = []
 	constructor(obj: any) {
 		const clazz = 'RawDataObj'
 		obj = valueOrDefault(obj, {})
@@ -133,6 +136,10 @@ export class RawDataObj {
 		this.rawPropsSelectPreset = this.initProps(obj._propsSelectPreset)
 		this.rawPropsSort = this.initProps(obj._propsSort)
 		this.rawPropsRepParmItems = this.initProps(obj._propsRepParmItems)
+		this.userResourceSaveParmsSelect = arrayOfClasses(
+			RawDataObjUserResourceSaveParmsSelect,
+			obj.userResourceSaveParmsSelect
+		)
 	}
 
 	initCrumbs(crumbFields: any) {
@@ -364,6 +371,7 @@ export class RawDataObjPropDisplay {
 	items: FieldItem[]
 	label: string
 	labelSide: string
+	linkExprSave?: string
 	orderDefine: number
 	orderSort?: number
 	propName: string
@@ -518,6 +526,34 @@ export class RawDataObjTable {
 		this.index = nbrRequired(obj.index, clazz, 'index')
 		this.indexParent = nbrOptional(obj.indexParent, clazz, 'indexParent')
 		this._table = new DBTable(obj._table)
+	}
+}
+
+export class RawDataObjUserResourceSaveParmsSelect {
+	codeType: UserTypeResourceType
+	subject?: string
+	constructor(obj: any) {
+		const clazz = 'RawDataObjUserResourceSaveParmsSelect'
+		obj = obj || ''
+		obj = obj.split('.')
+		this.codeType = memberOfEnum(
+			obj[0],
+			clazz,
+			'resource',
+			'UserTypeResourceType',
+			UserTypeResourceType
+		)
+		if (obj.length > 1) {
+			if (obj.length === 2 && this.codeType === UserTypeResourceType.subject) {
+				this.subject = obj[1]
+			} else {
+				error(500, {
+					file: FILENAME,
+					function: `class: ${clazz}`,
+					message: `Invalid UserTypeResourceType: ${obj} - should be 1 element or 'subject.subject name'`
+				})
+			}
+		}
 	}
 }
 

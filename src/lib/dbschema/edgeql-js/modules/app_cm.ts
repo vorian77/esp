@@ -3,15 +3,15 @@
 import * as $ from "../reflection";
 import * as _ from "../imports";
 import type * as _sys_user from "./sys_user";
-import type * as _sys_core from "./sys_core";
 import type * as _default from "./default";
 import type * as _std from "./std";
+import type * as _sys_core from "./sys_core";
 import type * as _cal from "./cal";
 export type $CmClientλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
-  "owner": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.One, {}, false, false,  false, false>;
   "person": $.LinkDesc<_default.$SysPerson, $.Cardinality.One, {}, false, false,  false, false>;
   "agencyId": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "school": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "owner": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.One, {}, false, false,  false, false>;
   "<client[is app_cm::CmClientServiceFlow]": $.LinkDesc<$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<client": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -59,7 +59,6 @@ export type $CmCohortλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "dateEnd": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateStart": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "isCohortRequired": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "schedule": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "course": $.LinkDesc<$CmCourse, $.Cardinality.AtMostOne, {}, false, true,  false, false>;
   "<cohorts[is app_cm::CmCourse]": $.LinkDesc<$CmCourse, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -226,10 +225,10 @@ const $CmCsfSchoolPlacement = $.makeType<$CmCsfSchoolPlacement>(_.spec, "be01e4c
 
 const CmCsfSchoolPlacement: $.$expr_PathNode<$.TypeSet<$CmCsfSchoolPlacement, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCsfSchoolPlacement, $.Cardinality.Many), null);
 
-export type $CmPartnerλShape = $.typeutil.flatten<_sys_core.$SysOrgλShape & {
+export type $CmPartnerλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
 }>;
 type $CmPartner = $.ObjectType<"app_cm::CmPartner", $CmPartnerλShape, null, [
-  ..._sys_core.$SysOrg['__exclusives__'],
+  ..._sys_core.$SysObj['__exclusives__'],
 ]>;
 const $CmPartner = $.makeType<$CmPartner>(_.spec, "1006f0cc-7fde-11ef-8412-1f8db6329386", _.syntax.literal);
 

@@ -29,7 +29,6 @@ module app_cm {
     dateEnd: cal::local_date;
     dateStart: cal::local_date;
     isCohortRequired: str;
-    note: str;
     schedule: str;
     staffAdmin: sys_user::SysStaff;
     staffAgency: sys_user::SysStaff;
@@ -50,7 +49,7 @@ module app_cm {
 
   # Client
   type CmClient extending sys_user::Mgmt {
-    required owner: sys_core::SysOrg;
+    required owner: sys_core::SysSystem;
     required person: default::SysPerson{
       on source delete delete target if orphan;
     };
@@ -137,7 +136,7 @@ module app_cm {
     note: str;
   }
 
-  type CmPartner extending sys_core::SysOrg {}
+  type CmPartner extending sys_core::SysObj {}
 
   # FUNCTIONS
   function getCMTrainingCourse(name: str) -> optional app_cm::CmCourse

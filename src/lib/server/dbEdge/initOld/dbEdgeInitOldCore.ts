@@ -1,5 +1,5 @@
-import { codeTypes, codes, sysUser } from '$server/dbEdge/init/dbEdgeInitUtilities10'
-import { addCode, addCodeType } from '$server/dbEdge/init/dbEdgeInitUtilities50Other'
+import { codeTypes, codes, sysUser } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { addCode, addCodeType } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 const FILE = 'initCore'
 
@@ -49,17 +49,17 @@ async function initSysCodeTypess() {
 		['app_sys', 0, 'ct_sys_role_org'],
 		['app_sys', 0, 'ct_sys_role_staff'],
 		['app_sys', 0, 'ct_sys_state'],
-		['app_sys', 0, 'ct_sys_status']
+		['app_sys', 0, 'ct_sys_obj_status']
 	])
 	await addCodeType({
-		owner: 'sys_app_cm',
+		owner: 'sys_ai_old',
 		parent: 'ct_cm_payment_type',
 		header: 'Milestone 1 (Single Payment)',
 		name: 'ct_cm_payment_type_milestone1',
 		order: 0
 	})
 	await addCodeType({
-		owner: 'sys_app_cm',
+		owner: 'sys_ai_old',
 		parent: 'ct_cm_payment_type',
 		header: 'Milestone 2 (Dual Payments)',
 		name: 'ct_cm_payment_type_milestone2',
@@ -270,29 +270,29 @@ async function initSysCodes() {
 		['ct_sys_state', 'app_sys', 'Pennsylvania', 0],
 
 		// sys - status
-		['ct_sys_status', 'app_sys', 'Under development', 0],
-		['ct_sys_status', 'app_sys', 'Submitted', 1],
-		['ct_sys_status', 'app_sys', 'Under review', 2],
-		['ct_sys_status', 'app_sys', 'Approved', 3],
-		['ct_sys_status', 'app_sys', 'Rejected', 4]
+		['ct_sys_obj_status', 'app_sys', 'Under development', 0],
+		['ct_sys_obj_status', 'app_sys', 'Submitted', 1],
+		['ct_sys_obj_status', 'app_sys', 'Under review', 2],
+		['ct_sys_obj_status', 'app_sys', 'Approved', 3],
+		['ct_sys_obj_status', 'app_sys', 'Rejected', 4]
 	])
 
 	await addCode({
-		owner: 'sys_app_cm',
+		owner: 'sys_ai_old',
 		codeType: 'ct_cm_payment_type_milestone1',
 		header: 'Payment 1 - 100%',
 		name: 'milestone1_payment1',
 		order: 0
 	})
 	await addCode({
-		owner: 'sys_app_cm',
+		owner: 'sys_ai_old',
 		codeType: 'ct_cm_payment_type_milestone2',
 		header: 'Payment 1 - 50%',
 		name: 'milestone2_payment1',
 		order: 0
 	})
 	await addCode({
-		owner: 'sys_app_cm',
+		owner: 'sys_ai_old',
 		codeType: 'ct_cm_payment_type_milestone2',
 		header: 'Payment 2 - 50%',
 		name: 'milestone2_payment2',

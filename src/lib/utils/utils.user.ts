@@ -8,17 +8,16 @@ import { error } from '@sveltejs/kit'
 export let appStoreUser = localStorageStore('appStoreUser', {})
 
 export function userGet() {
-	const user = get(appStoreUser)
-	return user && Object.keys(user).length > 0 ? new User(user) : undefined
+	const rawUser = get(appStoreUser)
+	return rawUser && Object.keys(rawUser).length > 0 ? new User(rawUser) : undefined
 }
 
 export async function userInit(userId: string) {
 	const result = await apiFetch(ApiFunction.dbEdgeGetUser, new TokenApiUserId(userId))
 	if (result.success) {
-		console.log('utils.user.userInit', result.data)
-		const user = new User(result.data)
-		appStoreUser.set(user)
-		return user
+		const rawUser = result.data
+		appStoreUser.set(rawUser)
+		return new User(rawUser)
 	} else {
 		error(500, {
 			file: 'utils.user.ts',

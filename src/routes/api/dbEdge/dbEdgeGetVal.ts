@@ -28,39 +28,39 @@ export function evalExprTokens(expr: string, queryData: TokenApiQueryData) {
 		exprDataItem = <[source],[dataType],[sourceKey]>
 		eg. (SELECT sys_user::getUser(<user,str,userName>))
 	*/
-	const regex = /<([a-zA-Z].*?)>/g
-	let tokens: ExprToken[] = []
 	const clazz = 'evalExprTokens'
+	const regex = /<([a-zA-Z].*?)>/g
+	let exprItems: ExprParmsItem[] = evalExprTokensItems(expr)
+	let tokens: ExprToken[] = []
 
+	exprItems.forEach((item) => {
+		const exprParms = new ExprParms(expr, item, queryData)
+		const valueRaw = getValRaw(exprParms)
+		const { dataType, valueDB } = getValDB(exprParms.item.codeDataType, valueRaw)
+		tokens.push(new ExprToken(item.dataItem, dataType, valueRaw, valueDB))
+	})
+
+	return tokens
+}
+
+export function evalExprTokensItems(expr: string) {
+	/*
+		exprDataItem = <[source],[dataType],[sourceKey]>
+		eg. (SELECT sys_user::getUser(<user,str,userName>))
+	*/
+	const clazz = 'evalExprTokensItems'
+	const regex = /<([a-zA-Z].*?)>/g
+	let exprItems: ExprParmsItem[] = []
 	const iter = expr.matchAll(regex)
 	for (const match of iter) {
 		const exprDataItem = match[0]
 		const exprDataItemContent = match[1]
 		const exprDataItemElements = exprDataItemContent.split(',')
-
 		if (exprDataItemElements.length === 3) {
-			const codeDataSourceExpr = memberOfEnum(
-				exprDataItemElements[0],
-				clazz,
-				'codeDataSourceExpr',
-				'ExprSource',
-				ExprSource
-			)
-			const codeDataType = memberOfEnum(
-				exprDataItemElements[1],
-				clazz,
-				'codeDataType',
-				'PropDataType',
-				PropDataType
-			)
-			const key = exprDataItemElements[2]
-			const exprParms = new ExprParms(expr, codeDataType, codeDataSourceExpr, key, queryData)
-			const valueRaw = getValRaw(exprParms)
-			const { dataType, valueDB } = getValDB(exprParms.codeDataType, valueRaw)
-			tokens.push(new ExprToken(exprDataItem, dataType, valueRaw, valueDB))
+			exprItems.push(new ExprParmsItem(exprDataItem, exprDataItemElements))
 		}
 	}
-	return tokens
+	return exprItems
 }
 
 export function getValDB(codeDataType: PropDataType, valueRaw: any) {
@@ -169,10 +169,10 @@ export function getUUIDValues(valueRaw?: any) {
 }
 
 export function getValRaw(exprParms: ExprParms) {
-	const sourceKey = strRequired(exprParms.key, `${FILENAME}.getValRaw`, 'sourceKey')
-	const funct = `getValSave.getValRaw: source: ${exprParms.codeDataSourceExpr}; sourceKey: ${sourceKey}; expr: ${exprParms.expr}`
+	const sourceKey = strRequired(exprParms.item.key, `${FILENAME}.getValRaw`, 'sourceKey')
+	const funct = `getValSave.getValRaw: source: ${exprParms.item.codeDataSourceExpr}; sourceKey: ${sourceKey}; expr: ${exprParms.expr}`
 
-	switch (exprParms.codeDataSourceExpr) {
+	switch (exprParms.item.codeDataSourceExpr) {
 		case ExprSource.calc:
 			switch (sourceKey) {
 				case 'random10':
@@ -233,7 +233,7 @@ export function getValRaw(exprParms: ExprParms) {
 			error(500, {
 				file: FILENAME,
 				function: funct,
-				message: `No case defined for source: ${exprParms.codeDataSourceExpr}`
+				message: `No case defined for source: ${exprParms.item.codeDataSourceExpr}`
 			})
 	}
 	function getValue(source: ExprSource, data: DataRecord, key: string) {
@@ -261,24 +261,40 @@ export function getValRaw(exprParms: ExprParms) {
 }
 
 class ExprParms {
+	expr: string
+	item: ExprParmsItem
+	queryData: TokenApiQueryData
+	constructor(expr: string, item: ExprParmsItem, queryData: TokenApiQueryData) {
+		const clazz = 'ExprParms'
+		this.expr = expr
+		this.item = item
+		this.queryData = queryData
+	}
+}
+
+export class ExprParmsItem {
 	codeDataSourceExpr: ExprSource
 	codeDataType: PropDataType
-	expr: string
+	dataItem: string
 	key: string
-	queryData: TokenApiQueryData
-	constructor(
-		expr: string,
-		codeDataType: PropDataType,
-		codeDataSourceExpr: ExprSource,
-		key: string,
-		queryData: TokenApiQueryData
-	) {
-		const clazz = 'ExprParms'
-		this.codeDataSourceExpr = codeDataSourceExpr
-		this.codeDataType = codeDataType
-		this.expr = expr
-		this.key = key
-		this.queryData = queryData
+	constructor(dataItem: string, exprItems: string[]) {
+		const clazz = 'ExprParmsItem'
+		this.codeDataSourceExpr = memberOfEnum(
+			exprItems[0],
+			clazz,
+			'codeDataSourceExpr',
+			'ExprSource',
+			ExprSource
+		)
+		this.codeDataType = memberOfEnum(
+			exprItems[1],
+			clazz,
+			'codeDataType',
+			'PropDataType',
+			PropDataType
+		)
+		this.dataItem = dataItem
+		this.key = exprItems[2]
 	}
 }
 
@@ -292,7 +308,8 @@ enum ExprSource {
 	record = 'record',
 	system = 'system',
 	tree = 'tree',
-	user = 'user'
+	user = 'user',
+	userResource = 'userResource'
 }
 
 export class ExprToken {

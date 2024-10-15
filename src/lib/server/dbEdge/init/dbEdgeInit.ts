@@ -1,60 +1,63 @@
-import { sectionHeader } from '$server/dbEdge/init/dbEdgeInitUtilities10'
+import { nodeObjPrograms, sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 
 import { initReset } from '$server/dbEdge/init/dbEdgeInit0Reset'
-import { initOrganizations } from '$server/dbEdge/init/dbEdgeInit2Organizations'
-import { initSystems } from '$server/dbEdge/init/dbEdgeInit2Systems'
-import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
-import { initObjects } from '$server/dbEdge/init/dbEdgeInit2Objects'
+import { initCoreObjects } from '$server/dbEdge/init/dbEdgeInit20CoreObjects'
+import { initPreDataObj } from '$server/dbEdge/init/dbEdgeInit40PreDO'
 
 // admin
-import { initAdminSys } from '$server/dbEdge/init/dbEdgeInit3SysAdmin'
-import { initAdminSysAuth } from '$server/dbEdge/init/dbEdgeInit3SysAdminAuth'
-import { initAdminSysMigration } from '$server/dbEdge/init/dbEdgeInit3SysAdminMigration'
-import { initAdminSysOrg } from '$server/dbEdge/init/dbEdgeInit3SysAdminOrg'
-import { initAdminSysRep } from '$server/dbEdge/init/dbEdgeInit3SysAdminRep'
-import { initAdminSysRepUser } from '$server/dbEdge/init/dbEdgeInit3SysAdminRepRender'
+import { initSysAdmin } from '$server/dbEdge/init/dbEdgeInit60SysAdmin'
+import { initSysAuth } from '$server/dbEdge/init/dbEdgeInit60SysAdminAuth'
+import { initSysAdminMigr } from '$server/dbEdge/init/dbEdgeInit60SysAdminMigration'
+import { initSysAdminRep } from '$server/dbEdge/init/dbEdgeInit60SysAdminRep'
+import { initSysRepUser } from '$server/dbEdge/init/dbEdgeInit60SysAdminRepRender'
 
 // features
-import { initFeatCMStudent } from '$server/dbEdge/init/dbEdgeInit4FeatStudent'
-import { initFeatTraining } from '$server/dbEdge/init/dbEdgeInit4FeatCMTraining'
+import { initFeatCMStudent } from '$server/dbEdge/init/dbEdgeInit80FeatStudent'
+import { initFeatTraining } from '$server/dbEdge/init/dbEdgeInit80FeatCMTraining'
 
 // data
-import { initDataReports } from '$server/dbEdge/init/dbEdgeInit6DataRep'
+import { initDataReports } from '$server/dbEdge/init/dbEdgeInit120DataRep'
 
 // other
-import { initMigrationPerson } from '$server/dbEdge/init/dbEdgeInit5MigrPerson'
-import { init } from '@sentry/sveltekit'
-
-// export async function dbEdgeInit() {
-// 	sectionHeader('Init Start')
-// 	await initMigrationPerson()
-// 	sectionHeader('Init Complete')
-// }
+import { initMigrationPerson } from '$server/dbEdge/init/dbEdgeInit100MigrPerson'
+import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
 export async function dbEdgeInit() {
 	sectionHeader('Init Start')
-	await initCore()
-	await initAdmin()
-	await initFeatures()
-	await initData()
+	await initUser()
 	sectionHeader('Init Complete')
 }
 
-async function initCore() {
+export async function dbEdgeInit1() {
+	sectionHeader('Init Start')
 	await initReset()
-	// await initOrganizations()
-	// await initSystems()
+	await initCoreObjects()
+	await initPreDataObj()
+
+	// temp - program menu headers
+	await nodeObjPrograms([
+		['sys_system_old', 'node_pgm_sys_admin', 'Administration', 10, 'application'],
+		['sys_ai_old', 'node_pgm_cm_staff_provider', 'Staff', 40, 'application']
+	])
+
+	await initSysCore()
+	await initSysOther()
+
+	await initFeatures()
+	await initData()
+
 	await initUser()
-	await initObjects()
+	sectionHeader('Init Complete')
 }
 
-async function initAdmin() {
-	await initAdminSys()
-	await initAdminSysAuth()
-	await initAdminSysMigration()
-	await initAdminSysOrg()
-	await initAdminSysRep()
-	await initAdminSysRepUser()
+async function initSysCore() {
+	await initSysAdmin()
+	await initSysAdminMigr()
+	await initSysAdminRep()
+}
+async function initSysOther() {
+	await initSysAuth()
+	await initSysRepUser()
 }
 
 export async function initFeatures() {

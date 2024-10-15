@@ -124,11 +124,7 @@
 						? 'multiRow'
 						: 'singleRow',
 				checkboxes: options.isSelect,
-				enableClickSelection: !(
-					options.isSelect ||
-					options.isSelectMulti ||
-					options.isSuppressSelect
-				)
+				enableClickSelection: !(options.isSelect || options.isSuppressSelect)
 			},
 			rowDragManaged: options.listReorderColumn ? true : false,
 			sideBar: {
@@ -154,6 +150,7 @@
 			suppressSetFilterByDefault: true
 		}
 		grid = createGrid(eGui, gridOptions)
+		console.log('Grid.onMount:', { gridOptions })
 
 		if (options.isSelect) {
 			const selectedIds = options.parmStateSelectedIds
@@ -176,9 +173,6 @@
 		}
 
 		// apply user settings
-		console.log('Grid.onMount', {
-			settings: options.userSettings
-		})
 		settingSortSet(options.userSettings.getPref(ParmsUserDataType.listSortModel)) // sort first because it triggers filter
 		settingsFilterQuickSet(options.userSettings.getPref(ParmsUserDataType.listFilterQuick))
 		grid.setFilterModel(options.userSettings.getPref(ParmsUserDataType.listFilterModel))

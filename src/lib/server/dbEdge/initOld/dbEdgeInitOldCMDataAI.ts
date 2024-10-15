@@ -26,7 +26,7 @@ async function initCourses() {
     union (insert app_cm::CmCourse {
       owner := (select sys_core::getOrg('Atlantic Impact')),
       codeSector := (select sys_core::getCode('ct_cm_course_sector', x.0)),
-      codeStatus := (select sys_core::getCode('ct_sys_status', x.1)),
+      codeStatus := (select sys_core::getCode('ct_sys_obj_status', x.1)),
       name := x.2,
       cost := x.3,
       codeTypePayment := (select sys_core::getCodeType(x.4)),
@@ -54,7 +54,7 @@ async function initCohorts() {
       owner := (select sys_core::getOrg('Atlantic Impact')),
       course := (select app_cm::getCMTrainingCourse(x.0)),
       name := x.1,
-      codeStatus := (select sys_core::getCode('ct_sys_status', x.2)),
+      codeStatus := (select sys_core::getCode('ct_sys_obj_status', x.2)),
       createdBy := myCreator,
       modifiedBy := myCreator
     });
