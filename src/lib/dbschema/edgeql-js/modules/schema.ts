@@ -6,9 +6,9 @@ import type * as _std from "./std";
 import type * as _sys from "./sys";
 import type * as _cfg from "./cfg";
 import type * as _app_cm from "./app_cm";
+import type * as _sys_core from "./sys_core";
 import type * as _default from "./default";
 import type * as _sys_migr from "./sys_migr";
-import type * as _sys_core from "./sys_core";
 import type * as _sys_rep from "./sys_rep";
 import type * as _sys_test from "./sys_test";
 import type * as _sys_user from "./sys_user";
@@ -708,6 +708,7 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is app_cm::CmCsfNote]": $.LinkDesc<_app_cm.$CmCsfNote, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmCohortAttd]": $.LinkDesc<_app_cm.$CmCohortAttd, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmCohort]": $.LinkDesc<_app_cm.$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_core::SysObjNote]": $.LinkDesc<_sys_core.$SysObjNote, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmCsfCohortAttd]": $.LinkDesc<_app_cm.$CmCsfCohortAttd, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is Person]": $.LinkDesc<_default.$Person, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is Movie]": $.LinkDesc<_default.$Movie, $.Cardinality.Many, {}, false, false,  false, false>;

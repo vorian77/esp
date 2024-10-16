@@ -4,6 +4,7 @@ import {
 	addStaff,
 	nodeObjHeaders,
 	nodeObjPrograms,
+	ResetDb,
 	sectionHeader,
 	userType,
 	userTypeResourcesApps,
@@ -15,10 +16,28 @@ import {
 import { addApp, addAppHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initUser() {
-	// await initAppHeaders()
+	await initReset()
+	await initResources()
+	await initAppHeaders()
 	await initApps()
 	await initUserType()
 	// await initStaff()
+}
+
+export async function initReset() {
+	sectionHeader('Reset-User')
+	const reset = new ResetDb()
+	reset.addStatement('delete sys_user::SysUserTypeResource')
+	reset.addStatement('delete sys_user::SysUserType')
+	reset.delTableRecords('sys_user::SysWidget')
+	reset.delTableRecords('sys_core::SysApp')
+	reset.delTableRecords('sys_core::SysAppHeader')
+	await reset.execute()
+}
+
+async function initResources() {
+	/* widgets */
+	await widgets([['sys_system_old', 'widget_sys_report']])
 }
 
 async function initAppHeaders() {
@@ -70,14 +89,49 @@ async function initApps() {
 		name: 'app_sys_report',
 		owner: 'sys_system_old',
 		nodes: [
-			'node_obj_sys_rep_list',
+			'node_obj_sys_rep_my_report_list',
 			'node_obj_cm_ai_report_course_summary',
 			'node_obj_cm_ai_report_student_summary'
 		]
 	})
 }
 
-async function initResources() {
+async function initUserType() {
+	/* userType */
+	await userType([
+		['sys_ai_old', 'ut_cm_staff_admin'],
+		['sys_ai_old', 'ut_cm_staff_provider'],
+		['sys_system_old', 'ut_sys_admin']
+	])
+
+	/* apps */
+	await userTypeResourcesApps([
+		['ut_cm_staff_provider', 'app_ai_staff'],
+		['ut_cm_staff_provider', 'app_sys_report'],
+		['ut_sys_admin', 'app_ai_staff'],
+		['ut_sys_admin', 'app_sys_admin'],
+		['ut_sys_admin', 'app_sys_report']
+	])
+
+	/* widgets */
+	await userTypeResourcesWidgets([
+		['ut_cm_staff_provider', 'widget_sys_report'],
+		['ut_sys_admin', 'widget_sys_report']
+	])
+
+	/* user - userType */
+	await userUserType([
+		['2482317505', 'ut_cm_staff_provider'],
+		['3136276210', 'ut_cm_staff_provider'],
+		['2487985578', 'ut_cm_staff_provider'],
+		['3136272756', 'ut_cm_staff_provider'],
+		['user_sys', 'ut_cm_staff_admin'],
+		['user_sys', 'ut_cm_staff_provider'],
+		['user_sys', 'ut_sys_admin']
+	])
+}
+
+async function initResourcesOld() {
 	/* programs */
 	await nodeObjPrograms([
 		['sys_system_old', 'node_pgm_sys_admin', 'Administration', 10, 'application'],
@@ -104,7 +158,7 @@ async function initResources() {
 	])
 }
 
-async function initUserType() {
+async function initUserTypeOld() {
 	/* userType */
 	await userType([
 		['sys_ai_old', 'ut_cm_staff_admin'],
@@ -144,10 +198,11 @@ async function initUserType() {
 	/* user - userType */
 	await userUserType([
 		['2482317505', 'ut_cm_staff_provider'],
-		['3136276210', 'ut_cm_staff_admin'],
-		['2487985578', 'ut_cm_staff_admin'],
+		['3136276210', 'ut_cm_staff_provider'],
+		['2487985578', 'ut_cm_staff_provider'],
 		['3136272756', 'ut_cm_staff_provider'],
 		['user_sys', 'ut_cm_staff_admin'],
+		['user_sys', 'ut_cm_staff_provider'],
 		['user_sys', 'ut_sys_admin']
 	])
 }

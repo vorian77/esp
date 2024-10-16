@@ -147,7 +147,7 @@ async function initUserType() {
 		header: 'User Types',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_user_type_list',
-		orderDefine: 120,
+		orderDefine: 170,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})

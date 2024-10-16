@@ -1,4 +1,8 @@
-import { nodeObjHeaders, sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import {
+	resetDBItems,
+	nodeObjHeaders,
+	sectionHeader
+} from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 import { addDataObj } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
 import {
 	addAnalytic,
@@ -10,14 +14,15 @@ import { error } from '@sveltejs/kit'
 
 export async function initDataReports() {
 	sectionHeader('Reports')
-	await initAnalyticTrainingCredential()
+	// await initAnalyticTrainingCredential()
 
-	await initReportCMTrainingCohortAttendance()
-	await initReportCMTrainingCohortWages()
+	// await initReportCMTrainingCohortAttendance()
+	// await initReportCMTrainingCohortWages()
 
-	await initReportCourseSummary()
-	await initReportOurWorldSummary()
-	await initReportStudentSummary()
+	// await initReportCourseSummary()
+	// await initReportOurWorldSummary()
+	// await initReportStudentSummary()
+	await initReportWizardStudentSummary()
 }
 
 async function initReportCMTrainingCohortAttendance() {
@@ -1057,7 +1062,7 @@ async function initReportCourseSummary() {
 		header: 'Courses (Summary)',
 		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_course_summary',
-		orderDefine: 40,
+		orderDefine: 10,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_hdr_cm_ai_reports'
 	})
@@ -1187,7 +1192,7 @@ async function initReportOurWorldSummary() {
 		header: 'Our World (Summary)',
 		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_our_world_summary',
-		orderDefine: 30,
+		orderDefine: 20,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_hdr_cm_ai_reports'
 	})
@@ -1291,7 +1296,6 @@ async function initReportStudentSummary() {
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
-
 				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER 
 					.client.id = app_cm::CmClient.id AND 
 					.dateStartEst < cal::to_local_date(datetime_current(), 'US/Eastern') AND
@@ -1481,5 +1485,86 @@ async function initReportStudentSummary() {
 		orderDefine: 20,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_hdr_cm_ai_reports'
+	})
+}
+
+async function initReportWizardStudentSummary() {
+	await resetDBItems(
+		'Reset Reports',
+		`DELETE sys_core::SysDataObj FILTER .name = 'data_obj_ai_report_wizard_student_summary'`
+	)
+
+	const exprStudents = `(SELECT app_cm::CmClient FILTER .owner.id in <user,uuidlist,systemIds>)`
+	const exprRate = (expr1, expr2) => `(SELECT math::floor(${expr1} / ${expr2} * 100))`
+
+	await addDataObj({
+		actionFieldGroup: 'doag_report_render',
+		codeComponent: 'FormList',
+		codeCardinality: 'list',
+		exprFilter: 'none',
+		header: 'Students (Summary)',
+		name: 'data_obj_ai_report_wizard_student_summary',
+		owner: 'sys_ai_old',
+		tables: [],
+		fields: [
+			{
+				columnName: 'custom_element_int',
+				orderDefine: 10,
+				exprCustom: `(SELECT count(${exprStudents}))`,
+				headerAlt: 'Students (Count)',
+				nameCustom: 'customStudentsCount'
+			},
+			{
+				columnName: 'custom_element_int',
+				orderDefine: 20,
+				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort.csf.client.id IN ${exprStudents}.id)))`,
+				headerAlt: 'Students In Cohort (Count)',
+				nameCustom: 'customStudentsWithCohortCount'
+			},
+			{
+				columnName: 'custom_element_float',
+				orderDefine: 30,
+				exprCustom: exprRate(
+					`(SELECT count((SELECT app_cm::CmCsfCohort.csf.client.id IN ${exprStudents}.id)))`,
+					`(SELECT count(${exprStudents}))`
+				),
+				headerAlt: 'Students In Cohort Rate (%)',
+				nameCustom: 'customStudentsWithCohortRate'
+			},
+			{
+				columnName: 'custom_element_int',
+				orderDefine: 40,
+				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohortAttd)))`,
+				headerAlt: 'Attendance Days Offered (Count)',
+				nameCustom: 'customAttendanceDaysOfferedCount'
+			},
+			{
+				columnName: 'custom_element_float',
+				orderDefine: 50,
+				exprCustom: exprRate(
+					`(SELECT count((SELECT app_cm::CmCsfCohortAttd FILTER .computedHours > 0)))`,
+					`(SELECT count((SELECT app_cm::CmCsfCohortAttd)))`
+				),
+				headerAlt: 'Attendance Days Attended Rate (%)',
+				nameCustom: 'customAttendanceDaysAttendedRate'
+			},
+			{
+				columnName: 'custom_element_int',
+				orderDefine: 60,
+				exprCustom: `(SELECT count((SELECT app_cm::CmCsfJobPlacement.csf.client.id IN ${exprStudents}.id)))`,
+				headerAlt: 'Students Placed In Job (Count)',
+				nameCustom: 'customJobPlacementCount'
+			},
+			{
+				columnName: 'custom_element_float',
+				orderDefine: 70,
+				exprCustom: exprRate(
+					`(SELECT count((SELECT app_cm::CmCsfJobPlacement.csf.client.id IN ${exprStudents}.id)))`,
+					`(SELECT count((SELECT app_cm::CmCsfCohort.csf.client.id IN ${exprStudents}.id)))`
+				),
+				headerAlt: 'Students Placed In Job Rate (%)',
+				nameCustom: 'customJobPlacementRate'
+			}
+		]
 	})
 }

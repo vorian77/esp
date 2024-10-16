@@ -379,7 +379,7 @@ async function initDataObjActionField() {
 		header: 'Field Actions',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_field_list',
-		orderDefine: 40,
+		orderDefine: 70,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
@@ -523,7 +523,7 @@ async function initDataObjActionFieldGroup() {
 		header: 'Field Action Groups',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_field_group_list',
-		orderDefine: 50,
+		orderDefine: 80,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})

@@ -191,7 +191,7 @@ async function initSysAdminAppHeader() {
 		header: 'App Headers',
 		isHideRowManager: false,
 		name: 'node_obj_sys_app_header_list',
-		orderDefine: 7,
+		orderDefine: 20,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})

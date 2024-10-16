@@ -2,7 +2,7 @@ import { createClient } from 'edgedb'
 import e from '$lib/dbschema/edgeql-js'
 import { EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
 import { executeQuery } from '$routes/api/dbEdge/dbEdgeProcess'
-import { debug } from '$utils/types'
+import { debug, getArray } from '$utils/types'
 
 const client = createClient({
 	instanceName: EDGEDB_INSTANCE,
@@ -393,4 +393,15 @@ export class ResetDb {
 		if (this.query) await executeQuery(this.query)
 		this.query = ''
 	}
+}
+
+export async function resetDBItems(section: string, statements: string[]) {
+	sectionHeader(section)
+	statements = getArray(statements)
+	const reset = new ResetDb()
+	statements.forEach((s) => {
+		sectionHeader(s)
+		reset.addStatement(s)
+	})
+	await reset.execute()
 }

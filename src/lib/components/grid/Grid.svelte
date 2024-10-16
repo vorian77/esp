@@ -150,7 +150,6 @@
 			suppressSetFilterByDefault: true
 		}
 		grid = createGrid(eGui, gridOptions)
-		console.log('Grid.onMount:', { gridOptions })
 
 		if (options.isSelect) {
 			const selectedIds = options.parmStateSelectedIds
@@ -191,9 +190,6 @@
 				ParmsUserDataType.listColumnsModel,
 				new GridSettingsColumns(grid.getAllGridColumns())
 			)
-			console.log('Grid.saveUserSettings', {
-				settings: options.userSettings
-			})
 			await apiFetch(
 				ApiFunction.sysSetUserPref,
 				new TokenApiUserPref(

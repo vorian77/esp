@@ -521,7 +521,7 @@ async function initColumn() {
 		header: 'Columns',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_column_list',
-		orderDefine: 17,
+		orderDefine: 50,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
@@ -711,7 +711,7 @@ async function initTable() {
 		header: 'Tables',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_table_list',
-		orderDefine: 110,
+		orderDefine: 160,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})

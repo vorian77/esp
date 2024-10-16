@@ -37,6 +37,7 @@ export async function initPreTable() {
 		['sys_system_old', 'sys_core', 'SysDataObjTable', true],
 		['sys_system_old', 'sys_core', 'SysNodeObj', true],
 		['sys_system_old', 'sys_core', 'SysObj', true],
+		['sys_system_old', 'sys_core', 'SysObjNote', true],
 		['sys_system_old', 'sys_core', 'SysOrg', true],
 		['sys_system_old', 'sys_core', 'SysSystem', true],
 

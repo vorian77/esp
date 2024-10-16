@@ -218,7 +218,7 @@ async function initDataObjFielEmbedListConfig() {
 		header: 'Embed List Configs',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_config_list',
-		orderDefine: 60,
+		orderDefine: 90,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
@@ -385,7 +385,7 @@ async function initDataObjFieldEmbedListEdit() {
 		header: 'Embed List Edits',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_edit_list',
-		orderDefine: 62,
+		orderDefine: 100,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
@@ -600,7 +600,7 @@ async function initDataObjFieldEmbedListSelect() {
 		header: 'Embed List Selects',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_select_list',
-		orderDefine: 64,
+		orderDefine: 110,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
@@ -888,7 +888,7 @@ async function initDataObjFieldListItems() {
 		header: 'Field List Items',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_list_items_list',
-		orderDefine: 70,
+		orderDefine: 120,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})

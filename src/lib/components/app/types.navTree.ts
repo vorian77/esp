@@ -1,7 +1,7 @@
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { RawMenu, ResponseBody } from '$utils/types'
-import { NodeNav, NodeType } from '$comps/app/types.node'
-import type { DbNode, RawNode, User } from '$utils/types'
+import { type DbNode, DbNodeProgram, NodeNav, NodeType } from '$comps/app/types.node'
+import { RawMenu, required, ResponseBody, valueOrDefault } from '$utils/types'
+import type { RawNode, User } from '$utils/types'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
 import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
 import {
@@ -14,6 +14,7 @@ import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/lib/components/nav/types.nav.ts'
+const ROOT_NODE_ID = '+ROOT+'
 
 export let appStoreNavTree = localStorageStore('appStoreNavTree', {})
 
@@ -23,65 +24,99 @@ export function setAppStoreNavTree(navTree: NavTree) {
 
 export class NavTree {
 	currNode: NodeNav
-	listTree: Array<NodeNav> = []
-	constructor(navTree: any) {
-		this.currNode = navTree.currNode
-		this.listTree = navTree.listTree
+	listTree: NodeNav[] = []
+	constructor(obj: any) {
+		const clazz = 'NavTree'
+		obj = valueOrDefault(obj, {})
+		this.currNode = required(obj.currNode, clazz, 'currNode')
+		this.listTree = required(obj.listTree, clazz, 'listTree')
 	}
 	static init(rawMenu: RawMenu) {
-		// root node
-		const currNode = new NodeNav(
+		// init tree
+		const nodeNavRoot = new NodeNav(
 			{
-				header: 'root',
-				id: '+ROOT+',
+				header: ROOT_NODE_ID,
+				id: ROOT_NODE_ID,
 				isHideRowManager: false,
-				name: 'root',
+				name: ROOT_NODE_ID,
 				_codeNodeType: NodeType.treeRoot,
 				orderDefine: 0
 			},
-			'root',
+			undefined,
+			-1,
 			-1
 		)
-		// root branch
-		let listTree: Array<NodeNav> = []
-		// let listTree: Array<NodeNav> = this.addBranchNodes(currNode, 0, [currNode], dbNodes)
-		rawMenu.headers.forEach((h) => {
-			if (h.name === 'app_hdr_ai_staff') {
-				console.log('NavTree.init.h.nodes: ', h.nodes)
-				listTree = this.addBranchNodes(currNode, 0, [currNode], h.nodes)
-			}
-		})
+		let listTree: NodeNav[] = [nodeNavRoot]
+
+		// add apps
+		if (rawMenu.headers.length === 1) {
+			listTree = this.addBranchNodes(listTree, nodeNavRoot, rawMenu.headers[0].nodes)
+		} else {
+			rawMenu.headers.forEach((h, idx) => {
+				const nodeDbProgram = new DbNodeProgram({
+					header: h.header,
+					id: h.id,
+					name: h.name,
+					orderDefine: idx
+				})
+				let nodeNavProgram = new NodeNav(nodeDbProgram, nodeNavRoot.id, idx, 0)
+				listTree.push(nodeNavProgram)
+				listTree = this.addBranchNodes(listTree, nodeNavProgram, h.nodes)
+			})
+		}
 
 		// open root branch nodes
 		listTree = listTree.map((n) => {
-			n.isOpen = n.id !== currNode.id
+			const nodeParent = listTree.find((p) => p.id === n.parentId)
+			n.isOpen =
+				n.parentId === ROOT_NODE_ID ||
+				(nodeParent?.parentId === ROOT_NODE_ID && nodeParent?.idxLeaf === 0)
+
 			return n
 		})
-
-		return new NavTree({ currNode, listTree })
+		return new NavTree({ currNode: nodeNavRoot, listTree })
+	}
+	static getNodeIdx(listTree: NodeNav[], node: NodeNav) {
+		for (let i = 0; i < listTree.length; i++) {
+			if (listTree[i].id === node.id) return i
+		}
+		return -1
 	}
 	async addBranch(node: NodeNav) {
-		this.listTree = NavTree.addBranchNodes(
-			node,
-			this.getNodeIdx(node),
-			this.listTree,
-			await getNodesBranch(node.id)
-		)
+		this.listTree = NavTree.addBranchNodes(this.listTree, node, await getNodesBranch(node.id))
 	}
-	static addBranchNodes(
-		node: NodeNav,
-		nodeIdx: number,
-		listTree: Array<NodeNav>,
-		dbNodes: Array<DbNode>
-	) {
-		const nodeId = node.id
-		const nodeIndent = node.indent + 1
-		node.isRetrieved = true
+	static addBranchNodes(listTree: NodeNav[], nodeBranchParent: NodeNav, nodesBranch: DbNode[]) {
+		const nodeId = nodeBranchParent.id
+		const nodeIndent = nodeBranchParent.indent + 1
+		nodeBranchParent.isRetrieved = true
 
-		dbNodes.forEach((n, i) => {
-			listTree.splice(nodeIdx + i + 1, 0, new NodeNav(n, nodeId, nodeIndent))
+		// get insert index
+		const nodeBranchParentIdx = NavTree.getNodeIdx(listTree, nodeBranchParent)
+		let nodeIdxInsert = getNodeIdxLastChild(listTree, nodeBranchParent)
+		if (nodeIdxInsert !== nodeBranchParentIdx) {
+			nodeIdxInsert = getNodeIdxLastChild(listTree, listTree[nodeIdxInsert])
+		}
+
+		// insert nodes
+		nodesBranch.forEach((n, i) => {
+			let newNode = new NodeNav(n, nodeId, i, nodeIndent)
+			listTree.splice(nodeIdxInsert + i + 1, 0, newNode)
 		})
 		return listTree
+
+		function getNodeIdxLastChild(listTree: NodeNav[], node: NodeNav) {
+			let nodeIdx = NavTree.getNodeIdx(listTree, node)
+			let i = listTree.length - 1
+			while (i > nodeIdx) {
+				if (listTree[i].parentId === node.id) {
+					nodeIdx = i
+					break
+				} else {
+					i--
+				}
+			}
+			return nodeIdx
+		}
 	}
 
 	async changeNode(nodeNav: NodeNav, state: State, dispatch: Function) {
@@ -137,12 +172,6 @@ export class NavTree {
 		})
 		return branch
 	}
-	getNodeIdx(node: NodeNav) {
-		for (let i = 0; i < this.listTree.length; i++) {
-			if (this.listTree[i].id === node.id) return i
-		}
-		return -1
-	}
 	getParentNode(node: NodeNav) {
 		return this.listTree.find((n) => n.id === node.parentId)
 	}
@@ -155,11 +184,11 @@ export class NavTree {
 		return node.id === this.currNode.id
 	}
 	isRoot(node: NodeNav) {
-		return node.id === '+ROOT+'
+		return node.id === ROOT_NODE_ID
 	}
 
 	isRootLevel(node: NodeNav) {
-		return node.parentId === '+ROOT+'
+		return node.parentId === ROOT_NODE_ID
 	}
 	async setCurrentNode(currNode: NodeNav) {
 		this.currNode = currNode
@@ -182,7 +211,7 @@ export class NavTree {
 			}
 		})
 
-		const nodeIdx = this.getNodeIdx(currNode)
+		const nodeIdx = NavTree.getNodeIdx(this.listTree, currNode)
 		if (nodeIdx > -1) {
 			// set open - current node - up & crumbs
 			let status = true
@@ -226,21 +255,6 @@ export class NavTree {
 
 export async function initNavTree(user: User) {
 	const rawMenu = new RawMenu(user.resource_apps)
-
-	// let rawBranch: Array<DbNode> = user?.resource_programs ? user?.resource_programs : []
-
-	// <todo> filter to single program for dev
-	// rawBranch = rawBranch.filter((p: any) => {
-	// 	return p.name === 'node_pgm_cm_staff_provider'
-	// })
-
-	// if user has access to only 1 program,
-	// filter down to first group of navNodes
-	// it's not necessary to display program/header node
-	// while (rawBranch && rawBranch.length === 1) {
-	// 	rawBranch = await getNodesBranch(rawBranch[0].id)
-	// }
-
 	setAppStoreNavTree(NavTree.init(rawMenu))
 }
 

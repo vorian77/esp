@@ -419,6 +419,12 @@ export namespace sys_core {
     "parent"?: SysNodeObj | null;
     "page"?: string | null;
   }
+  export interface SysObjNote extends sys_user.Mgmt {
+    "codeType": SysCode;
+    "date": edgedb.LocalDate;
+    "note"?: string | null;
+    "owner": SysObj;
+  }
   export interface SysOrg extends ObjRoot, sys_user.Mgmt {}
   export interface SysSystem extends ObjRoot, sys_user.Mgmt {
     "owner": SysOrg;
@@ -927,6 +933,7 @@ export interface types {
     "SysDataObjTable": sys_core.SysDataObjTable;
     "SysDataObjWith": sys_core.SysDataObjWith;
     "SysNodeObj": sys_core.SysNodeObj;
+    "SysObjNote": sys_core.SysObjNote;
     "SysOrg": sys_core.SysOrg;
     "SysSystem": sys_core.SysSystem;
   };

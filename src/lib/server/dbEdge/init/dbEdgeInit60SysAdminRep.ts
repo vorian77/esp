@@ -219,7 +219,7 @@ async function initAnalytic() {
 		header: 'Analytics',
 		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_list',
-		orderDefine: 5,
+		orderDefine: 10,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
@@ -938,7 +938,7 @@ async function initRep() {
 		header: 'Reports',
 		isHideRowManager: false,
 		name: 'node_obj_sys_rep_list',
-		orderDefine: 95,
+		orderDefine: 150,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})

@@ -33,6 +33,14 @@ module sys_core {
     constraint exclusive on ((.owner, .name));
   } 
 
+  type SysObjNote extending sys_user::Mgmt {
+    required date: cal::local_date;
+    required codeType: sys_core::SysCode;
+    required owner: sys_core::SysObj;
+    note: str;
+  }
+
+
   type SysOrg extending sys_core::ObjRoot, sys_user::Mgmt {
     constraint exclusive on (.name);
   }
@@ -46,12 +54,12 @@ module sys_core {
   # other sys_core objects
   type SysApp extending sys_core::SysObj {
     required appHeader: sys_core::SysAppHeader;
-    multi nodes: sys_core::SysNodeObj;
+    multi nodes: sys_core::SysNodeObj {
+       on target delete allow;
+    };
   }
 
   type SysAppHeader extending sys_core::SysObj {}
-
-
 
   type SysCodeType extending sys_core::SysObj {
     parent: sys_core::SysCodeType;

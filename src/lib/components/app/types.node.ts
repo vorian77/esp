@@ -1,4 +1,10 @@
-import { booleanOrFalse, memberOfEnum, strRequired, valueOrDefault } from '$utils/utils'
+import {
+	booleanOrFalse,
+	memberOfEnum,
+	nbrRequired,
+	strRequired,
+	valueOrDefault
+} from '$utils/utils'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/lib/components/nav/types.node.ts'
@@ -10,11 +16,30 @@ export type DbNode = {
 	_codeNodeType: string
 	dataObjId?: string
 	header: string
-	isHideRowManager: boolean
 	id: string
+	isHideRowManager: boolean
 	name: string
 	orderDefine: number
 	page?: string
+}
+
+export class DbNodeProgram {
+	_codeIcon?: string
+	_codeNodeType = NodeType.program
+	header: string
+	id: string
+	isHideRowManager = false
+	name: string
+	orderDefine: number
+	constructor(obj: any) {
+		const clazz = 'DbNodeProgram'
+		obj = valueOrDefault(obj, {})
+		this._codeIcon = valueOrDefault(obj._codeIcon, DEFAULT_ICON)
+		this.header = strRequired(obj.header, clazz, 'header')
+		this.id = strRequired(obj.id, clazz, 'id')
+		this.name = strRequired(obj.name, clazz, 'name')
+		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
+	}
 }
 
 export class RawNode {
@@ -75,18 +100,21 @@ export class NodeApp {
 	}
 }
 export class NodeNav extends Node {
+	idxLeaf: number
 	indent: number
 	isCrumb: boolean = false
 	isCurrent: boolean = false
 	isOpen: boolean = false
 	isRetrieved: boolean = false
-	parentId: string
-	constructor(dbNode: DbNode, parentId: string, indent: number) {
+	parentId?: string
+	constructor(dbNode: DbNode, parentId: string | undefined, idxLeaf: number, indent: number) {
 		super(new RawNode(dbNode))
+		this.idxLeaf = idxLeaf
 		this.indent = indent
 		this.parentId = parentId
 	}
 }
+
 export enum NodeType {
 	header = 'header',
 	home = 'home',

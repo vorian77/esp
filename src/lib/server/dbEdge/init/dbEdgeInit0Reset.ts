@@ -7,8 +7,6 @@ export async function initReset() {
 	reset.addStatement('delete sys_user::SysUserTypeResource')
 	reset.addStatement('delete sys_user::SysUserType')
 
-	// reset.addStatement(`UPDATE sys_user::SysUserType SET { tags := {} }`)
-
 	reset.delTableRecords(`sys_core::SysNodeObj`)
 	reset.delTableRecords('sys_user::SysWidget')
 

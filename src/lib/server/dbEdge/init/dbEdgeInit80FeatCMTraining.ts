@@ -14,6 +14,7 @@ export async function initFeatTraining() {
 	await initCohortAttdSheet()
 	await initFieldListConfigPartnerContact()
 	await initPartner()
+	await initPartnerNote()
 }
 
 async function initCourse() {
@@ -1097,6 +1098,149 @@ async function initCohortAttdSheet() {
 	})
 }
 
+async function initFieldListConfigPartnerContact() {
+	sectionHeader('Embed List Config - Training Partner Contact')
+
+	await addDataObj({
+		actionFieldGroup: 'doag_embed_list_config',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		header: 'Contacts',
+		name: 'doflc_cm_partner_contact_list',
+		owner: 'sys_ai_old',
+		tables: [{ index: 0, table: 'SysPerson' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'firstName',
+				indexTable: 0,
+				isDisplayable: true,
+				orderCrumb: 20,
+				orderDefine: 20,
+				orderDisplay: 220,
+				orderSort: 20
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'lastName',
+				indexTable: 0,
+				isDisplayable: true,
+				orderCrumb: 10,
+				orderDefine: 30,
+				orderDisplay: 30,
+				orderSort: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'phoneMobile',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 40,
+				orderDisplay: 40
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'email',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 50,
+				orderDisplay: 50
+			}
+		]
+	})
+
+	await addDataObj({
+		actionFieldGroup: 'doag_dialog_form_detail',
+		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
+		header: 'Contact',
+		name: 'doflc_cm_partner_contact_detail',
+		owner: 'sys_ai_old',
+		tables: [{ index: 0, table: 'SysPerson' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20
+			},
+			{
+				columnName: 'firstName',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				columnName: 'lastName',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'tel',
+				columnName: 'phoneMobile',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'email',
+				columnName: 'email',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90
+			}
+		]
+	})
+
+	await addDataObjFieldEmbedListConfig({
+		actionFieldGroupModal: 'doag_dialog_footer_detail',
+		dataObjEmbed: 'doflc_cm_partner_contact_list',
+		dataObjModal: 'doflc_cm_partner_contact_detail',
+		name: 'flec_cm_partner_contact',
+		owner: 'sys_ai_old'
+	})
+}
 async function initPartner() {
 	await addDataObj({
 		actionFieldGroup: 'doag_list',
@@ -1443,17 +1587,16 @@ async function initPartner() {
 	})
 }
 
-async function initFieldListConfigPartnerContact() {
-	sectionHeader('Embed List Config - Training Partner Contact')
-
+async function initPartnerNote() {
 	await addDataObj({
-		actionFieldGroup: 'doag_embed_list_config',
-		codeCardinality: 'list',
+		owner: 'sys_ai_old',
 		codeComponent: 'FormList',
-		header: 'Contacts',
-		name: 'doflc_cm_partner_contact_list',
-		owner: 'sys_ai_old',
-		tables: [{ index: 0, table: 'SysPerson' }],
+		codeCardinality: 'list',
+		name: 'data_obj_cm_partner_note_list',
+		header: 'Notes',
+		tables: [{ index: 0, table: 'SysObjNote' }],
+		exprFilter: '.owner.id = <tree,uuid,CmPartner.id>',
+		actionFieldGroup: 'doag_list',
 		fields: [
 			{
 				columnName: 'id',
@@ -1463,126 +1606,171 @@ async function initFieldListConfigPartnerContact() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'firstName',
-				indexTable: 0,
-				isDisplayable: true,
-				orderCrumb: 20,
-				orderDefine: 20,
-				orderDisplay: 220,
-				orderSort: 20
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'lastName',
-				indexTable: 0,
-				isDisplayable: true,
+				codeFieldElement: 'date',
+				codeSortDir: 'desc',
+				columnName: 'date',
 				orderCrumb: 10,
-				orderDefine: 30,
-				orderDisplay: 30,
-				orderSort: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'phoneMobile',
-				indexTable: 0,
-				isDisplayable: true,
-				orderDefine: 40,
-				orderDisplay: 40
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'email',
-				indexTable: 0,
-				isDisplayable: true,
-				orderDefine: 50,
-				orderDisplay: 50
-			}
-		]
-	})
-
-	await addDataObj({
-		actionFieldGroup: 'doag_dialog_form_detail',
-		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
-		header: 'Contact',
-		name: 'doflc_cm_partner_contact_detail',
-		owner: 'sys_ai_old',
-		tables: [{ index: 0, table: 'SysPerson' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20
-			},
-			{
-				columnName: 'firstName',
+				orderSort: 10,
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
 			},
 			{
-				columnName: 'lastName',
+				codeAccess: 'readOnly',
+				columnName: 'codeType',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0,
+				linkColumns: ['name']
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			}
+		]
+	})
+
+	await addDataObj({
+		owner: 'sys_ai_old',
+		codeComponent: 'FormDetail',
+		codeCardinality: 'detail',
+		name: 'data_obj_cm_partner_note_detail',
+		header: 'Note',
+		tables: [{ index: 0, table: 'SysObjNote' }],
+		actionFieldGroup: 'doag_detail',
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				columnName: 'owner',
+				orderDefine: 20,
+				indexTable: 0,
+				isDisplayable: false,
+				isExcludeUpdate: true,
+				linkExprSave: '(SELECT sys_core::SysObj Filter .id = (<tree,uuid,CmPartner.id>))',
+				linkTable: 'SysObj'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30
+			},
+			{
+				codeFieldElement: 'date',
+				columnName: 'date',
+				orderSort: 10,
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
+				codeFieldElement: 'select',
+				columnName: 'codeType',
 				isDisplayable: true,
 				orderDisplay: 50,
-				orderDefine: 50
+				orderDefine: 50,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_obj_note_type',
+				linkTable: 'SysCode'
 			},
 			{
 				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
+				columnName: 'custom_row_end',
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'tel',
-				columnName: 'phoneMobile',
+				codeFieldElement: 'textArea',
+				columnName: 'note',
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 0
 			},
+
+			/* management */
 			{
-				codeAccess: 'optional',
-				codeFieldElement: 'email',
-				columnName: 'email',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 1000,
+				orderDefine: 1000
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				isDisplayable: true,
+				orderDisplay: 1010,
+				orderDefine: 1010,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				isDisplayable: true,
+				orderDisplay: 1020,
+				orderDefine: 1020,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				isDisplayable: true,
+				orderDisplay: 1030,
+				orderDefine: 1030,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: true,
+				orderDisplay: 1040,
+				orderDefine: 1040,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90
+				orderDisplay: 1050,
+				orderDefine: 1050
 			}
 		]
 	})
-
-	await addDataObjFieldEmbedListConfig({
-		actionFieldGroupModal: 'doag_dialog_footer_detail',
-		dataObjEmbed: 'doflc_cm_partner_contact_list',
-		dataObjModal: 'doflc_cm_partner_contact_detail',
-		name: 'flec_cm_partner_contact',
-		owner: 'sys_ai_old'
+	await addNodeProgramObj({
+		codeIcon: 'application',
+		dataObj: 'data_obj_cm_partner_note_list',
+		header: 'Notes',
+		isHideRowManager: false,
+		name: 'node_obj_cm_partner_note_list',
+		orderDefine: 10,
+		owner: 'sys_ai_old',
+		parentNodeName: 'node_obj_cm_partner_detail'
+	})
+	await addNodeProgramObj({
+		codeIcon: 'application',
+		dataObj: 'data_obj_cm_partner_note_detail',
+		header: 'Note',
+		isHideRowManager: false,
+		name: 'node_obj_cm_partner_note_detail',
+		orderDefine: 10,
+		owner: 'sys_ai_old',
+		parentNodeName: 'node_obj_cm_partner_note_list'
 	})
 }

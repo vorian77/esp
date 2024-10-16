@@ -29,7 +29,7 @@
 		// navTreeSetParent
 		packet = state.consume(StatePacketAction.navTreeSetParent)
 		;(async () => {
-			await navTree.setCurrentParent()
+			if (packet) await navTree.setCurrentParent()
 		})()
 	}
 
@@ -41,7 +41,7 @@
 <div class="mx-2 mb-2">
 	<div class="bg-slate-200 rounded-lg p-1 mb-1">Features:</div>
 	<div>
-		{#if navTree && navTree.listTree && navTree.listTree.length > 0}
+		{#if navTree?.listTree?.length > 0}
 			{#each navTree.listTree as nodeNav, i}
 				{#if i > 0 && nodeNav.isOpen}
 					<div

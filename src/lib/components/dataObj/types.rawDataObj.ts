@@ -334,7 +334,7 @@ export class RawDataObjPropDB {
 	}
 	getChildTableTraversal(propName: string, indexTable: number, tables: DataObjTable[]) {
 		let value = ''
-		if (propName && indexTable > -1) {
+		if (propName && tables.length > 0 && indexTable > -1) {
 			if (tables[indexTable].traversalFromRoot) value = tables[indexTable].traversalFromRoot + '.'
 			value += propName
 		}

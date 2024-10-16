@@ -34,6 +34,7 @@ export class User {
 	resource_programs: any[] = []
 	resource_widgets: any[] = []
 	resources: UserTypeResource[] = []
+	systemIds: string[] = []
 	userName: string
 
 	// old
@@ -75,11 +76,6 @@ export class User {
 
 	getResources(codeResourceType: UserTypeResourceType): UserTypeResource[] {
 		return this.resources.filter((r) => r.codeType === codeResourceType) || []
-	}
-
-	hasResourceWidget(resource: string): boolean {
-		if (!this.resource_widgets) return false
-		return undefined !== this.resource_widgets.find((r: any) => r.name === resource)
 	}
 
 	async setUserSelectParms(state: State, dataObj: DataObj, parmData: ParmsValues) {
@@ -163,6 +159,7 @@ export class User {
 					_resource: { header: sys.header, id: sys.id, name: sys.name }
 				})
 			)
+			this.systemIds.push(sys.id)
 		})
 	}
 }

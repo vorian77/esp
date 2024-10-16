@@ -197,7 +197,7 @@ async function initCodeType() {
 		header: 'Code Types',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_type_list',
-		orderDefine: 10,
+		orderDefine: 30,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
@@ -780,7 +780,7 @@ async function initCode() {
 		header: 'Codes',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_list',
-		orderDefine: 15,
+		orderDefine: 40,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})

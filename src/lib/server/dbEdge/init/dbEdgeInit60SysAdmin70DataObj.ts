@@ -441,7 +441,7 @@ async function initDataObj() {
 		header: 'Data Objects',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_list',
-		orderDefine: 30,
+		orderDefine: 60,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
