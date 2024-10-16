@@ -74,7 +74,7 @@
 
 <div class=" p-2 border-4 bg-gray-300 min-h-60 flex flex-col items-center">
 	<h1 class="text-center1 text-blue-400">Atlantic Impact - Quick Data Widget</h1>
-	<div class="grid grid-cols-4 gap-4 p-4 border-2 border-gray-400 my-4 w-[90%]">
+	<div class="grid grid-cols-4 gap-4 p-4 border-2 border-gray-400 my-4 w-[90%] text-xs">
 		{#await promise}
 			<p>Loading report...</p>
 		{:then}
