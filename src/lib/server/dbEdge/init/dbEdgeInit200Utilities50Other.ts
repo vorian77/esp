@@ -10,6 +10,7 @@ const client = createClient({
 
 export async function addApp(data: any) {
 	sectionHeader(`addApp - ${data.name}`)
+
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
@@ -24,15 +25,15 @@ export async function addApp(data: any) {
 				appHeader: e.select(e.sys_core.SysAppHeader, (sah) => ({
 					filter_single: e.op(sah.name, '=', p.appHeader)
 				})),
+				createdBy: e.select(CREATOR),
 				isGlobalResource: p.isGlobalResource,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
-				createdBy: e.select(CREATOR),
 				modifiedBy: e.select(CREATOR),
 				nodes: e.assert_distinct(
 					e.set(
 						e.for(e.array_unpack(p.nodes), (nodeName) => {
-							return e.select(e.sys_core.getNodeObjByName(nodeName))
+							return e.sys_core.getNodeObjByName(nodeName)
 						})
 					)
 				)
@@ -43,7 +44,6 @@ export async function addApp(data: any) {
 }
 
 export async function addAppHeader(data: any) {
-	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
 			header: e.optional(e.str),
@@ -59,8 +59,8 @@ export async function addAppHeader(data: any) {
 				name: p.name,
 				orderDefine: p.orderDefine,
 				owner: e.sys_core.getSystemPrime(p.owner),
-				createdBy: e.select(CREATOR),
-				modifiedBy: e.select(CREATOR)
+				createdBy: e.sys_user.getRootUser(),
+				modifiedBy: e.sys_user.getRootUser()
 			})
 		}
 	)
@@ -351,3 +351,56 @@ export async function addUser(data: any) {
 	)
 	return await query.run(client, data)
 }
+
+export async function addUserType(data: any) {
+	sectionHeader(`addUserType - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			header: e.str,
+			name: e.str,
+			owner: e.str,
+			resources_sys_app: e.array(e.str),
+			resources_sys_widget: e.array(e.str)
+		},
+		(p) => {
+			return e.insert(e.sys_user.SysUserType, {
+				createdBy: e.select(CREATOR),
+				header: p.header,
+				name: p.name,
+				owner: e.sys_core.getSystemPrime(p.owner),
+				modifiedBy: e.select(CREATOR),
+				resources_sys_app: e.assert_distinct(
+					e.set(
+						e.for(e.array_unpack(p.resources_sys_app), (res) => {
+							return e.sys_core.getApp(res)
+						})
+					)
+				),
+				resources_sys_widget: e.assert_distinct(
+					e.set(
+						e.for(e.array_unpack(p.resources_sys_widget), (res) => {
+							return e.sys_user.getWidget(res)
+						})
+					)
+				)
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
+// export async function userType(params: any) {
+// 	const CREATOR = e.sys_user.getRootUser()
+// 	const query = e.params({ data: e.json }, (params) => {
+// 		return e.for(e.json_array_unpack(params.data), (i) => {
+// 			return e.insert(e.sys_user.SysUserType, {
+// 				owner: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[0]))),
+// 				name: e.cast(e.str, i[1]),
+// 				createdBy: CREATOR,
+// 				modifiedBy: CREATOR
+// 			})
+// 		})
+// 	})
+// 	return await query.run(client, { data: params })
+// }

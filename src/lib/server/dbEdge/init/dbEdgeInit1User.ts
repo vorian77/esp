@@ -13,7 +13,11 @@ import {
 	userUserType,
 	widgets
 } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
-import { addApp, addAppHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import {
+	addApp,
+	addAppHeader,
+	addUserType
+} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initUser() {
 	await initReset()
@@ -91,42 +95,68 @@ async function initApps() {
 		nodes: [
 			'node_obj_sys_rep_my_report_list',
 			'node_obj_cm_ai_report_course_summary',
+			'node_obj_cm_ai_report_our_world_summary',
 			'node_obj_cm_ai_report_student_summary'
 		]
 	})
 }
 
 async function initUserType() {
-	/* userType */
-	await userType([
-		['sys_ai_old', 'ut_cm_staff_admin'],
-		['sys_ai_old', 'ut_cm_staff_provider'],
-		['sys_system_old', 'ut_sys_admin']
+	await addUserType({
+		header: 'Sys Admin - Global',
+		name: 'ut_sys_admin',
+		owner: 'sys_system_old',
+		resources_sys_app: ['app_ai_staff', 'app_sys_admin', 'app_sys_report'],
+		resources_sys_widget: ['widget_sys_report']
+	})
+	await addUserType({
+		header: 'AI-Staff Provider',
+		name: 'ut_ai_staff_provider',
+		owner: 'sys_ai_old',
+		resources_sys_app: ['app_ai_staff', 'app_sys_report'],
+		resources_sys_widget: ['widget_sys_report']
+	})
+
+	await userUserType([
+		['2482317505', 'ut_ai_staff_provider'],
+		['3136276210', 'ut_ai_staff_provider'],
+		['2487985578', 'ut_ai_staff_provider'],
+		['3136272756', 'ut_ai_staff_provider'],
+		['user_sys', 'ut_ai_staff_provider'],
+		['user_sys', 'ut_sys_admin']
 	])
+}
+
+async function initUserTypeOld2() {
+	/* userType */
+	// await userType([
+	// 	['sys_ai_old', 'ut_ai_staff_admin'],
+	// 	['sys_ai_old', 'ut_ai_staff_provider'],
+	// 	['sys_system_old', 'ut_sys_admin']
+	// ])
 
 	/* apps */
-	await userTypeResourcesApps([
-		['ut_cm_staff_provider', 'app_ai_staff'],
-		['ut_cm_staff_provider', 'app_sys_report'],
-		['ut_sys_admin', 'app_ai_staff'],
-		['ut_sys_admin', 'app_sys_admin'],
-		['ut_sys_admin', 'app_sys_report']
-	])
+	// await userTypeResourcesApps([
+	// 	['ut_ai_staff_provider', 'app_ai_staff'],
+	// 	['ut_ai_staff_provider', 'app_sys_report'],
+	// 	['ut_sys_admin', 'app_ai_staff'],
+	// 	['ut_sys_admin', 'app_sys_admin'],
+	// 	['ut_sys_admin', 'app_sys_report']
+	// ])
 
 	/* widgets */
-	await userTypeResourcesWidgets([
-		['ut_cm_staff_provider', 'widget_sys_report'],
-		['ut_sys_admin', 'widget_sys_report']
-	])
+	// await userTypeResourcesWidgets([
+	// 	['ut_ai_staff_provider', 'widget_sys_report'],
+	// 	['ut_sys_admin', 'widget_sys_report']
+	// ])
 
 	/* user - userType */
 	await userUserType([
-		['2482317505', 'ut_cm_staff_provider'],
-		['3136276210', 'ut_cm_staff_provider'],
-		['2487985578', 'ut_cm_staff_provider'],
-		['3136272756', 'ut_cm_staff_provider'],
-		['user_sys', 'ut_cm_staff_admin'],
-		['user_sys', 'ut_cm_staff_provider'],
+		['2482317505', 'ut_ai_staff_provider'],
+		['3136276210', 'ut_ai_staff_provider'],
+		['2487985578', 'ut_ai_staff_provider'],
+		['3136272756', 'ut_ai_staff_provider'],
+		['user_sys', 'ut_ai_staff_provider'],
 		['user_sys', 'ut_sys_admin']
 	])
 }
@@ -158,18 +188,18 @@ async function initResourcesOld() {
 	])
 }
 
-async function initUserTypeOld() {
+async function initUserTypeOld1() {
 	/* userType */
 	await userType([
-		['sys_ai_old', 'ut_cm_staff_admin'],
-		['sys_ai_old', 'ut_cm_staff_provider'],
+		['sys_ai_old', 'ut_ai_staff_admin'],
+		['sys_ai_old', 'ut_ai_staff_provider'],
 		['sys_system_old', 'ut_sys_admin']
 	])
 
 	/* apps */
 	await userTypeResourcesApps([
-		['ut_cm_staff_provider', 'app_ai_staff'],
-		['ut_cm_staff_provider', 'app_sys_report'],
+		['ut_ai_staff_provider', 'app_ai_staff'],
+		['ut_ai_staff_provider', 'app_sys_report'],
 
 		['ut_sys_admin', 'app_ai_staff'],
 		['ut_sys_admin', 'app_sys_admin'],
@@ -178,31 +208,31 @@ async function initUserTypeOld() {
 
 	/* programs */
 	// await userTypeResourcesPrograms([
-	// 	['ut_cm_staff_admin', 'node_pgm_cm_staff_provider'],
-	// 	['ut_cm_staff_provider', 'node_pgm_cm_staff_provider'],
+	// 	['ut_ai_staff_admin', 'node_pgm_cm_staff_provider'],
+	// 	['ut_ai_staff_provider', 'node_pgm_cm_staff_provider'],
 	// 	['ut_sys_admin', 'node_pgm_cm_staff_provider'],
 	// 	['ut_sys_admin', 'node_pgm_sys_admin']
 	// ])
-	// ['ut_cm_staff_admin', 'node_pgm_cm_staff_admin'],
-	// ['ut_cm_staff_admin', 'node_pgm_cm_student'],
+	// ['ut_ai_staff_admin', 'node_pgm_cm_staff_admin'],
+	// ['ut_ai_staff_admin', 'node_pgm_cm_student'],
 	// ['ut_sys_admin', 'node_pgm_cm_staff_admin'],
 	// ['ut_sys_admin', 'node_pgm_cm_student'],
 
 	/* widgets */
 	// await userTypeResourcesWidgets([
-	// 	['ut_cm_staff_admin', 'widget_cm_user'],
-	// 	['ut_cm_staff_provider', 'widget_cm_user']
+	// 	['ut_ai_staff_admin', 'widget_cm_user'],
+	// 	['ut_ai_staff_provider', 'widget_cm_user']
 	// 	// ['ut_sys_admin', 'widget_sys_user']
 	// ])
 
 	/* user - userType */
 	await userUserType([
-		['2482317505', 'ut_cm_staff_provider'],
-		['3136276210', 'ut_cm_staff_provider'],
-		['2487985578', 'ut_cm_staff_provider'],
-		['3136272756', 'ut_cm_staff_provider'],
-		['user_sys', 'ut_cm_staff_admin'],
-		['user_sys', 'ut_cm_staff_provider'],
+		['2482317505', 'ut_ai_staff_provider'],
+		['3136276210', 'ut_ai_staff_provider'],
+		['2487985578', 'ut_ai_staff_provider'],
+		['3136272756', 'ut_ai_staff_provider'],
+		['user_sys', 'ut_ai_staff_admin'],
+		['user_sys', 'ut_ai_staff_provider'],
 		['user_sys', 'ut_sys_admin']
 	])
 }

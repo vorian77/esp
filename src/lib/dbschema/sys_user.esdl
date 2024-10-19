@@ -7,7 +7,7 @@ module sys_user {
     required createdBy: sys_user::SysUser {
       readonly := true;
     };
-    required modifiedAt: datetime {
+    modifiedAt: datetime {
       rewrite insert, update using (datetime_of_transaction())
     }
     required modifiedBy: sys_user::SysUser;
@@ -55,9 +55,12 @@ module sys_user {
   }
   
   type SysUserType extending sys_core::SysObj {
-    multi resources: sys_user::SysUserTypeResource {
+    multi resources_subject: sys_user::SysUserTypeResource {
       on target delete allow;
     };
+    multi resources_sys_app: sys_core::SysApp;
+    multi resources_sys_footer: sys_core::SysNodeObj;
+    multi resources_sys_widget: sys_user::SysWidget;
     multi tags: sys_core::SysCode;
     constraint exclusive on ((.name));
   }

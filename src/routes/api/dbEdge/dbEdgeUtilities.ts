@@ -155,7 +155,7 @@ export async function getDataObjById(dataObjId: string) {
 			listEditPresetExpr: true,
 			name: true,
 			subHeader: true,
-			userResourceSaveParmsSelect: true,
+			userResourceSaveParmsSelected: true,
 			_actionFieldGroup: e.select(do1.actionFieldGroup, (afg) => ({
 				...shapeDataObjActionFieldGroup(afg)
 			})),
@@ -528,7 +528,6 @@ export async function getUserByUserId(token: TokenApiUserId) {
 		fullName: u.person.fullName,
 		id: true,
 		lastName: u.person.lastName,
-
 		org: e.select(e.sys_core.SysOrg, (org) => ({
 			name: true,
 			header: true,
@@ -536,17 +535,26 @@ export async function getUserByUserId(token: TokenApiUserId) {
 		})),
 		preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({
 			_codeType: p.codeType.name,
-			filter: e.op(e.op(p.user.id, '=', u.id), 'and', e.op(p.isActive, '=', e.bool(true)))
+			isActive: true,
+			filter: e.op(p.user.id, '=', u.id)
 		})),
-		resource_apps: e.select(u.userTypes.resources.resource.is(e.sys_core.SysApp), (app) => ({
-			appHeader: e.select(app.appHeader, (ah) => ({
+		resources_subject: e.select(u.userTypes.resources_subject, (subj) => ({
+			_codeType: subj.codeType.name,
+			_resource: e.select(subj.resource, (res) => ({
+				header: true,
+				id: true,
+				name: true
+			}))
+		})),
+		resources_sys_app: e.select(u.userTypes.resources_sys_app, (res) => ({
+			appHeader: e.select(res.appHeader, (ah) => ({
 				id: true,
 				header: true,
 				name: true,
 				orderDefine: true
 			})),
 			id: true,
-			nodes: e.select(app.nodes, (n) => ({
+			nodes: e.select(res.nodes, (n) => ({
 				_codeIcon: n.codeIcon.name,
 				_codeNodeType: n.codeNodeType.name,
 				dataObjId: n.dataObj.id,
@@ -557,9 +565,9 @@ export async function getUserByUserId(token: TokenApiUserId) {
 				page: true,
 				order_by: n.orderDefine
 			})),
-			order_by: app.appHeader.orderDefine
+			order_by: res.appHeader.orderDefine
 		})),
-		resource_footer: e.select(e.sys_core.SysNodeObj, (f) => ({
+		resources_sys_footer: e.select(e.sys_core.SysNodeObj, (f) => ({
 			_codeIcon: f.codeIcon.name,
 			_codeNodeType: f.codeNodeType.name,
 			dataObjId: f.dataObj.id,
@@ -570,31 +578,11 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			filter: e.op(f.codeNavType.name, '=', 'footer'),
 			order_by: f.orderDefine
 		})),
-		resource_programs: e.select(u.userTypes.resources.resource.is(e.sys_core.SysNodeObj), (ut) => ({
-			dataObjId: ut.dataObj.id,
-			header: true,
-			id: true,
-			name: true,
-			orderDefine: true,
-			page: true,
-			_codeIcon: ut.codeIcon.name,
-			_codeNodeType: ut.codeNodeType.name,
-			filter: e.op(ut.codeNavType.name, '=', 'tree'),
-			order_by: ut.orderDefine
-		})),
-		resource_widgets: e.select(u.userTypes.resources.resource.is(e.sys_user.SysWidget), (ut) => ({
+		resources_sys_widget: e.select(u.userTypes.resources_sys_widget, (res) => ({
 			id: true,
 			name: true
 		})),
-		resources: e.select(u.userTypes.resources, (r) => ({
-			_codeType: r.codeType.name,
-			_resource: e.select(r.resource, (res) => ({
-				header: true,
-				id: true,
-				name: true
-			}))
-		})),
-		resourcesSystem: e.select(u.userTypes.owner, (rs) => ({
+		resources_sys_system: e.select(u.userTypes.owner, (res) => ({
 			header: true,
 			id: true,
 			name: true

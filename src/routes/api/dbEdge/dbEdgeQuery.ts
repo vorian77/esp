@@ -451,7 +451,7 @@ export class Query {
 	}
 }
 
-class QueryParent {
+export class QueryParent {
 	columnName: string
 	columnIsMultiSelect: boolean
 	filterExpr?: string

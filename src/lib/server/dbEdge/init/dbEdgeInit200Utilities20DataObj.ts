@@ -42,7 +42,7 @@ export async function addDataObj(data: any) {
 			processType: e.optional(e.str),
 			subHeader: e.optional(e.str),
 			tables: e.optional(e.array(e.json)),
-			userResourceSaveParmsSelect: e.optional(e.json)
+			userResourceSaveParmsSelected: e.optional(e.json)
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObj, {
@@ -317,7 +317,7 @@ export async function addDataObj(data: any) {
 						table: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(t, 'table'))))
 					})
 				}),
-				userResourceSaveParmsSelect: p.userResourceSaveParmsSelect
+				userResourceSaveParmsSelected: p.userResourceSaveParmsSelected
 			})
 		}
 	)

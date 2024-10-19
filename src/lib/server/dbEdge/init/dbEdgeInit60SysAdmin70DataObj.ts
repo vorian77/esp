@@ -215,7 +215,7 @@ async function initDataObj() {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
-				columnName: 'userResourceSaveParmsSelect',
+				columnName: 'userResourceSaveParmsSelected',
 				isDisplayable: true,
 				orderDisplay: 150,
 				orderDefine: 150,

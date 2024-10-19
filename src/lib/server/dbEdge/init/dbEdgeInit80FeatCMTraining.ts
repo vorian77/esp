@@ -88,7 +88,7 @@ async function initCourse() {
 		name: 'data_obj_cm_course_detail',
 		owner: 'sys_ai_old',
 		tables: [{ index: 0, table: 'CmCourse' }],
-		userResourceSaveParmsSelect: ['system'],
+		userResourceSaveParmsSelected: ['system'],
 		fields: [
 			{
 				columnName: 'id',
@@ -463,7 +463,7 @@ async function initCohort() {
 		parentColumn: 'cohorts',
 		parentTable: 'CmCourse',
 		tables: [{ index: 0, table: 'CmCohort' }],
-		userResourceSaveParmsSelect: ['system'],
+		userResourceSaveParmsSelected: ['system'],
 		fields: [
 			{
 				columnName: 'id',
@@ -965,8 +965,8 @@ async function initCohortAttdSheet() {
 		listEditPresetExpr: `WITH
 		csfCohortsInCohort := (SELECT app_cm::CmCsfCohort FILTER .cohort.id = <tree,uuid,CmCohort.id>),
 		csfCohortsWithAttd := (SELECT app_cm::CmCsfCohortAttd FILTER .cohortAttd.id = <tree,uuid,CmCohortAttd.id>).csfCohort,
-		csfCohortsWithoutAttd := (SELECT csfCohortsInCohort EXCEPT csfCohortsWithAttd)
-		SELECT csfCohortsWithoutAttd`,
+		newVals := (SELECT csfCohortsInCohort EXCEPT csfCohortsWithAttd)
+		SELECT newVals`,
 		name: 'data_obj_cm_cohort_attd_sheet',
 		owner: 'sys_ai_old',
 		tables: [
@@ -993,7 +993,7 @@ async function initCohortAttdSheet() {
 			},
 			{
 				columnName: 'csfCohort',
-				exprPreset: 'csfCohortsWithoutAttd.id',
+				exprPreset: 'newVals.id',
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false,
@@ -1346,7 +1346,7 @@ async function initPartner() {
 		name: 'data_obj_cm_partner_detail',
 		owner: 'sys_ai_old',
 		tables: [{ index: 0, table: 'CmPartner' }],
-		userResourceSaveParmsSelect: ['system'],
+		userResourceSaveParmsSelected: ['system'],
 		fields: [
 			{
 				columnName: 'id',

@@ -88,7 +88,7 @@ async function initStudent() {
 			{ index: 0, table: 'CmClient' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
 		],
-		userResourceSaveParmsSelect: ['system'],
+		userResourceSaveParmsSelected: ['system'],
 		fields: [
 			{
 				columnName: 'id',

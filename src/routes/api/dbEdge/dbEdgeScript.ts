@@ -11,7 +11,7 @@ import {
 import type { DataRecord, DataRow } from '$utils/types'
 import { TokenApiQueryData } from '$utils/types.token'
 import { RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj'
-import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
+import { Query, QueryParent } from '$routes/api/dbEdge/dbEdgeQuery'
 import { evalExpr } from '$routes/api/dbEdge/dbEdgeGetVal'
 import { error } from '@sveltejs/kit'
 
@@ -77,22 +77,30 @@ export class ScriptGroup {
 			strRequired(query.rawDataObj.listEditPresetExpr, clazz, 'listEditPresetExpr'),
 			queryData
 		)
-		debug('addScriptPresetListEditInsert', 'listEditPresetExpr', listEditPresetExpr)
 		return this.addScript(query, queryData, ScriptExePost.processRowSelectPreset, [
 			['setValue', { key: 'expr', value: listEditPresetExpr }],
 			['propsListEditPresetInsert', { props: query.rawDataObj.rawPropsSelectPreset }],
 			['script', { content: ['expr', 'propsListEditPresetInsert'] }]
 		])
 	}
+
 	addScriptPresetListEditSave(query: Query, queryData: TokenApiQueryData) {
-		const clazz = 'ScriptGroup.addScriptPresetListEditSave'
+		return query.parent
+			? this.addScriptPresetListEditSaveParentWith(query, queryData, query.parent)
+			: this.addScriptPresetListEditSaveParentWithOut(query, queryData)
+	}
+	addScriptPresetListEditSaveParentWith(
+		query: Query,
+		queryData: TokenApiQueryData,
+		parent: QueryParent
+	) {
+		const clazz = 'ScriptGroup.addScriptPresetListEditSaveParentWith'
 		const listEditPresetExpr = strRequired(
 			query.rawDataObj.listEditPresetExpr,
 			clazz,
 			'listEditPresetExpr'
 		)
 		const recordsInsert = 'recordsInsert'
-		const parent = required(query.parent, clazz, 'query.parent')
 		const op = parent.columnIsMultiSelect ? '+=' : ':='
 		const parms = queryData.getParms()
 		const exprFilter = parent.filterExpr
@@ -129,6 +137,44 @@ export class ScriptGroup {
 
 			// script
 			['script', { content: [recordsInsert, 'action', 'filter', 'propInsert'] }]
+		])
+	}
+	addScriptPresetListEditSaveParentWithOut(query: Query, queryData: TokenApiQueryData) {
+		const clazz = 'ScriptGroup.addScriptPresetListEditSaveParentWithOut'
+		const listEditPresetExpr = strRequired(
+			query.rawDataObj.listEditPresetExpr,
+			clazz,
+			'listEditPresetExpr'
+		)
+		const recordsInsert = 'recordsInsert'
+		const parms = queryData.getParms()
+
+		debug(
+			'addScriptPresetListEditSaveParentWithOut',
+			'rawDataObj.rawPropsSelectPreset',
+			query.rawDataObj.rawPropsSelectPreset
+		)
+
+		return this.addScript(query, queryData, ScriptExePost.none, [
+			// data
+			['wrap', { key: 'data', open: `SELECT (`, value: listEditPresetExpr }],
+			['wrap', { key: 'data', open: `data := (`, content: ['data'] }],
+			['with', { key: 'data', content: ['data'] }],
+
+			// loop
+			['action', { type: 'INSERT', table: query.getTableObjRoot() }],
+			['propsListEditPresetSave', { props: query.rawDataObj.rawPropsSelectPreset }],
+			[
+				'wrap',
+				{
+					key: 'loop',
+					open: 'FOR item IN data UNION (',
+					content: ['action', 'propsListEditPresetSave']
+				}
+			],
+
+			// script
+			['script', { content: ['data', 'loop'] }]
 		])
 	}
 

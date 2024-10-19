@@ -40,8 +40,9 @@
 	async function openMyPreferences() {
 		closeDrawer()
 		const state: State = $storeDrawer.meta.state
-		await state.openModalDataObj('data_obj_auth_user_pref_type')
-		await state.resetUser(true)
+		await state.openModalDataObj('data_obj_auth_user_pref_type', async () => {
+			await state.resetUser(true)
+		})
 	}
 </script>
 

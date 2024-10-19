@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { AppShell } from '@skeletonlabs/skeleton'
-	import { appStoreUser, User } from '$utils/types'
+	import { appStoreUser, User, UserPrefType } from '$utils/types'
 	import SysWizReport from '$comps/wizard/WizardSysReport.svelte'
 	import SysUser from '$routes/home/User.svelte'
 	import CMUser from '$routes/home/UserCM.svelte'
@@ -25,7 +25,9 @@
 			showSysUser = hasResourceWidget('widget_sys_user')
 			showCMUser = hasResourceWidget('widget_cm_user')
 			showCMQuote = hasResourceWidget('widget_cm_quotes')
-			showSysReport = hasResourceWidget('widget_sys_report')
+			showSysReport =
+				hasResourceWidget('widget_sys_report') &&
+				user.prefIsActive(UserPrefType.widget_quick_report)
 		}
 	}
 </script>
@@ -33,10 +35,6 @@
 <!-- <DataViewer header="Resources" data={user?.resource_widgets} /> -->
 
 <AppShell>
-	{#if showSysReport}
-		<SysWizReport {user} />
-	{/if}
-
 	{#if showSysUser}
 		<SysUser {user} />
 	{/if}
@@ -44,8 +42,10 @@
 	{#if showCMUser}
 		<CMUser {user} />
 	{/if}
-
 	{#if showCMQuote}
 		<Quote />
+	{/if}
+	{#if showSysReport}
+		<SysWizReport {user} />
 	{/if}
 </AppShell>

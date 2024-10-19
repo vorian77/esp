@@ -254,7 +254,7 @@ export class NavTree {
 }
 
 export async function initNavTree(user: User) {
-	const rawMenu = new RawMenu(user.resource_apps)
+	const rawMenu = new RawMenu(user.resources_sys_app)
 	setAppStoreNavTree(NavTree.init(rawMenu))
 }
 

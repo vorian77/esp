@@ -113,7 +113,7 @@ module sys_core {
       on source delete delete target;
       on target delete allow;
     };
-    userResourceSaveParmsSelect: json;
+    userResourceSaveParmsSelected: json;
     constraint exclusive on (.name);
   } 
 
@@ -335,6 +335,9 @@ module sys_core {
   }
 
   # FUNCTIONS
+  function getApp(name: str) -> optional sys_core::SysApp
+     using (select assert_single((select sys_core::SysApp filter .name = name)));
+
   function getCodeType(codeTypeName: str) -> optional sys_core::SysCodeType
     using (select sys_core::SysCodeType filter .name = codeTypeName);
 

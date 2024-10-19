@@ -395,7 +395,7 @@ export class ResetDb {
 	}
 }
 
-export async function resetDBItems(section: string, statements: string[]) {
+export async function resetDBItems(section: string, statements: any) {
 	sectionHeader(section)
 	statements = getArray(statements)
 	const reset = new ResetDb()

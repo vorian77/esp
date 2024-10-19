@@ -12,7 +12,7 @@ import {
 	valueOrDefault
 } from '$utils/utils'
 import { DataObj, ParmsValuesType } from '$utils/types'
-import { RawDataObjUserResourceSaveParmsSelect } from '$comps/dataObj/types.rawDataObj'
+import { RawDataObjUserResourceSaveParmsSelected } from '$comps/dataObj/types.rawDataObj'
 import { TokenAppModalReturnType, TokenAppModalSelect } from '$utils/types.token'
 import { FieldItem } from '$comps/form/field'
 import { FileStorage } from '$comps/form/fieldFile'
@@ -28,13 +28,12 @@ export class User {
 	initials: string = ''
 	lastName: string
 	org: { name: string; header: string } | undefined
-	preferences: any[] = []
-	resource_apps: any[] = []
-	resource_footer: any[] = []
-	resource_programs: any[] = []
-	resource_widgets: any[] = []
-	resources: UserTypeResource[] = []
-	systemIds: string[] = []
+	preferences: UserPrefs
+	resources_subject: UserTypeResource[] = []
+	resources_sys_app: any[] = []
+	resources_sys_footer: any[] = []
+	resources_sys_system: UserTypeResource[] = []
+	resources_sys_widgets: any[] = []
 	userName: string
 
 	// old
@@ -45,7 +44,7 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
-		// console.log('User.constructor.resource_apps: ', obj.resource_apps)
+		console.log('User.constructor.obj: ', obj)
 		const clazz = 'User'
 		this.avatar = obj.avatar
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
@@ -53,17 +52,19 @@ export class User {
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
 		this.org = obj.org ? { name: obj.org.name, header: obj.org.header } : undefined
-		this.preferences = obj.preferences
-		this.resource_apps = obj.resource_apps
-		this.resource_footer = obj.resource_footer
-		this.resource_programs = obj.resource_programs
-		this.resource_widgets = obj.resource_widgets
-		this.resources = arrayOfClasses(UserTypeResource, obj.resources)
+		this.preferences = new UserPrefs(obj.preferences)
+
+		this.resources_subject = arrayOfClasses(UserTypeResource, obj.resources_subject)
+		this.resources_sys_app = obj.resources_sys_app
+		this.resources_sys_footer = obj.resources_sys_footer
+		this.resources_sys_system = this.setResourcesSystem(obj.resources_sys_system)
+		this.resources_sys_widgets = obj.resources_sys_widgets
+
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 
 		// derived
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
-		this.setResourcesSystems(obj.resourcesSystem)
+
 		// console.log('User.constructor.resources', this.resources)
 
 		// old
@@ -74,34 +75,40 @@ export class User {
 		// this.user_id = nbrOptional(obj.user_id, 'User')
 	}
 
-	getResources(codeResourceType: UserTypeResourceType): UserTypeResource[] {
-		return this.resources.filter((r) => r.codeType === codeResourceType) || []
-	}
+	async getUserParmsSelected(state: State, dataObj: DataObj, parmData: ParmsValues) {
+		console.log('User.getUserParmsSelected', {
+			dataObj,
+			parmData,
+			resource: dataObj.raw.userResourceSaveParmsSelected
+		})
 
-	async setUserSelectParms(state: State, dataObj: DataObj, parmData: ParmsValues) {
-		// for (let i = 0; i < dataObj.raw.userResourceSaveParmsSelect.length; i++) {
-		// 	const parmItem = dataObj.raw.userResourceSaveParmsSelect[i]
-		// 	if (!(await this.setUserSelectParmsItem(state, parmItem, parmData))) return false
-		// }
-
-		for await (const parmItem of dataObj.raw.userResourceSaveParmsSelect) {
-			const result = await this.setUserSelectParmsItem(state, parmItem, parmData)
-			if (!result) return false
+		for await (const parmItem of dataObj.raw.userResourceSaveParmsSelected) {
+			if (!(await this.setUserSelectParmsItem(state, parmItem, parmData))) return false
 		}
 		return true
 	}
+
+	getResourcesSubject(
+		resourceType: UserTypeResourceType,
+		subjectType?: string
+	): UserTypeResource[] {
+		return this.resources_subject.filter((r) => r.codeType === resourceType) || []
+	}
+
+	prefIsActive(prefType: UserPrefType): boolean {
+		return this.preferences.isActive(prefType)
+	}
+
 	async setUserSelectParmsItem(
 		state: State,
-		parmItem: RawDataObjUserResourceSaveParmsSelect,
+		parmItem: RawDataObjUserResourceSaveParmsSelected,
 		parmData: ParmsValues
 	) {
-		const codeResourceType =
-			parmItem.codeType === UserTypeResourceType.subject ? parmItem.subject : parmItem.codeType
-		const parmName = `user_resource_${codeResourceType}`
-		const resources = this.getResources(codeResourceType)
+		const parmName = `user_resource_${parmItem.codeType === UserTypeResourceType.subject ? parmItem.subject : parmItem.codeType}`
+		const resources = this.getResourcesSubject(parmItem.codeType, parmItem.subject)
 		switch (resources.length) {
 			case 0:
-				alert(`Cannnot proceed. You do not have access to resource type: ${codeResourceType}`)
+				alert(`Cannnot proceed. You do not have access to resource type: ${parmName}`)
 				return false
 			case 1:
 				parmData.data[parmName] = resources[0].idResource
@@ -118,21 +125,20 @@ export class User {
 					new TokenAppModalSelect({
 						fieldLabel: `System Record`,
 						fModalClose: (returnType: TokenAppModalReturnType, returnData?: ParmsValues) => {
-							if (returnType === TokenAppModalReturnType.complete) {
-								const parms: ParmsValues = returnData.data || undefined
-								if (parms) {
-									const selectedIds = parms[ParmsValuesType.listRecordIdSelected]
-									console.log('User.setUserSelectParms.fModalClose', {
-										returnData: returnData.data,
-										selectedIds
-									})
-
-									// parmData.data[parmName] = resources[0].idResource
-								}
-								return false
-							} else {
-								return false
-							}
+							// if (returnType === TokenAppModalReturnType.complete) {
+							// 	const parms: ParmsValues = returnData.data || undefined
+							// 	if (parms) {
+							// 		const selectedIds = parms[ParmsValuesType.listRecordIdSelected]
+							// 		console.log('User.setUserSelectParms.fModalClose', {
+							// 			returnData: returnData.data,
+							// 			selectedIds
+							// 		})
+							// 		// parmData.data[parmName] = resources[0].idResource
+							// 	}
+							// 	return false
+							// } else {
+							// 	return false
+							// }
 						},
 						isMultiSelect: false,
 						itemsCurrent: [],
@@ -150,23 +156,45 @@ export class User {
 		this.fullName = `${this.firstName} ${this.lastName}`
 	}
 
-	setResourcesSystems(obj: any) {
-		const systems = getArray(obj)
-		systems.forEach((sys: { header: string; id: string; name: string }) => {
-			this.resources.push(
+	setResourcesSystem(obj: any) {
+		let resources: UserTypeResource[] = []
+		getArray(obj).forEach((sys: { header: string; id: string; name: string }) => {
+			resources.push(
 				new UserTypeResource({
 					_codeType: UserTypeResourceType.system,
 					_resource: { header: sys.header, id: sys.id, name: sys.name }
 				})
 			)
-			this.systemIds.push(sys.id)
 		})
+		return resources
+	}
+}
+
+export class UserPrefs {
+	items: UserPrefItem[] = []
+	constructor(obj: any) {
+		this.items = arrayOfClasses(UserPrefItem, obj)
+	}
+	isActive(prefType: UserPrefType): boolean {
+		const pref = this.items.find((i) => i.codeType === prefType)
+		return pref ? pref.isActive : false
+	}
+}
+
+class UserPrefItem {
+	codeType: UserPrefType
+	isActive: boolean
+	constructor(obj: any) {
+		const clazz = 'UserPref'
+		this.codeType = memberOfEnum(obj._codeType, clazz, 'codeType', 'UserPrefType', UserPrefType)
+		this.isActive = booleanRequired(obj.isActive, clazz, 'isActive')
 	}
 }
 
 export enum UserPrefType {
 	notifications_auto_retrieve = 'notifications_auto_retrieve',
-	remember_list_settings = 'remember_list_settings'
+	remember_list_settings = 'remember_list_settings',
+	widget_quick_report = 'widget_quick_report'
 }
 
 export class UserTypeResource {

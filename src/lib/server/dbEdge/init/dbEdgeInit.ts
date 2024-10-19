@@ -24,7 +24,8 @@ import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
 export async function dbEdgeInit() {
 	sectionHeader('Init Start')
-	await initDataReports()
+	// await initDataReports()
+	await initUser()
 	sectionHeader('Init Complete')
 }
 

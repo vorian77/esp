@@ -13,7 +13,7 @@ export type $MgmtλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c2
   "createdAt": $.PropertyDesc<_std.$datetime, $.Cardinality.One, false, false, true, true>;
   "createdBy": $.LinkDesc<$SysUser, $.Cardinality.One, {}, false, false,  true, false>;
   "modifiedBy": $.LinkDesc<$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
-  "modifiedAt": $.PropertyDesc<_std.$datetime, $.Cardinality.One, false, false, false, false>;
+  "modifiedAt": $.PropertyDesc<_std.$datetime, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;
 type $Mgmt = $.ObjectType<"sys_user::Mgmt", $MgmtλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
@@ -223,7 +223,10 @@ const SysUserPrefType: $.$expr_PathNode<$.TypeSet<$SysUserPrefType, $.Cardinalit
 
 export type $SysUserTypeλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "tags": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
-  "resources": $.LinkDesc<$SysUserTypeResource, $.Cardinality.Many, {}, false, false,  false, false>;
+  "resources_subject": $.LinkDesc<$SysUserTypeResource, $.Cardinality.Many, {}, false, false,  false, false>;
+  "resources_sys_app": $.LinkDesc<_sys_core.$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
+  "resources_sys_footer": $.LinkDesc<_sys_core.$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
+  "resources_sys_widget": $.LinkDesc<$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
   "<userTypes[is sys_user::SysUser]": $.LinkDesc<$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<userTypes[is sys_user::currentUser]": $.LinkDesc<$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<userTypes": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -239,8 +242,8 @@ export type $SysUserTypeResourceλShape = $.typeutil.flatten<_std.$Object_8ce8c7
   "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "resource": $.LinkDesc<_sys_core.$ObjRoot, $.Cardinality.One, {}, false, false,  false, false>;
   "idSubject": $.PropertyDesc<_std.$uuid, $.Cardinality.AtMostOne, false, false, false, false>;
-  "<resources[is sys_user::SysUserType]": $.LinkDesc<$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<resources": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<resources_subject[is sys_user::SysUserType]": $.LinkDesc<$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<resources_subject": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysUserTypeResource = $.ObjectType<"sys_user::SysUserTypeResource", $SysUserTypeResourceλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
@@ -250,6 +253,8 @@ const $SysUserTypeResource = $.makeType<$SysUserTypeResource>(_.spec, "4a602ca1-
 const SysUserTypeResource: $.$expr_PathNode<$.TypeSet<$SysUserTypeResource, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserTypeResource, $.Cardinality.Many), null);
 
 export type $SysWidgetλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
+  "<resources_sys_widget[is sys_user::SysUserType]": $.LinkDesc<$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<resources_sys_widget": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysWidget = $.ObjectType<"sys_user::SysWidget", $SysWidgetλShape, null, [
   ..._sys_core.$SysObj['__exclusives__'],

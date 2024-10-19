@@ -1896,7 +1896,7 @@ export async function initPreColumn() {
 		codeDataType: 'json',
 		header: 'User Resource Save Parms Select',
 		isMultiSelect: false,
-		name: 'userResourceSaveParmsSelect'
+		name: 'userResourceSaveParmsSelected'
 	})
 	await addColumn({
 		owner: 'sys_system_old',

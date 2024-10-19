@@ -8,6 +8,7 @@ import {
 	ResponseBody,
 	strOptional,
 	strRequired,
+	UserPrefType,
 	valueHasChanged,
 	valueOrDefault
 } from '$utils/types'
@@ -81,14 +82,14 @@ export class DataObj {
 	raw: RawDataObj
 	rootTable?: DBTable
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
-	userSettings: GridSettings
+	userGridSettings: GridSettings
 	constructor(data: DataObjData) {
 		const clazz = 'DataObj'
 		this.data = data
 		this.raw = required(data.rawDataObj, clazz, 'rawDataObj')
 
 		/* dependent properties */
-		this.userSettings = new GridSettings(this.raw.id)
+		this.userGridSettings = new GridSettings(this.raw.id)
 		this.rootTable =
 			this.raw.tables && this.raw.tables.length > 0
 				? new DBTable(this.raw.tables[0].table)
@@ -165,7 +166,7 @@ export class DataObj {
 		enhanceCustomFields(dataObj.fields)
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
-		dataObj.userSettings = await initPrefs(state, dataObj)
+		dataObj.userGridSettings = await initPrefs(state, dataObj)
 		return dataObj
 
 		async function enhanceCustomFields(fields: Field[]) {
@@ -192,8 +193,8 @@ export class DataObj {
 			)
 		}
 		async function initPrefs(state: State, dataObj: DataObj) {
-			let rawSettings
-			if (state.user) {
+			let rawSettings = {}
+			if (state?.user?.prefIsActive(UserPrefType.remember_list_settings)) {
 				// attempt to retrieve user preferences from DB
 				const token = new TokenApiUserPref(state.user.id, dataObj.raw.id)
 				const result: ResponseBody = await apiFetch(ApiFunction.sysGetUserPref, token)
@@ -202,7 +203,7 @@ export class DataObj {
 						? JSON.parse(result.data.data).data
 						: {}
 			}
-			return dataObj.userSettings.load(rawSettings, state, dataObj)
+			return dataObj.userGridSettings.load(rawSettings, state, dataObj)
 		}
 	}
 

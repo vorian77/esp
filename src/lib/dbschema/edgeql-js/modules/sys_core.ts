@@ -58,6 +58,8 @@ const SysObj: $.$expr_PathNode<$.TypeSet<$SysObj, $.Cardinality.Many>, null> = _
 export type $SysAppλShape = $.typeutil.flatten<$SysObjλShape & {
   "appHeader": $.LinkDesc<$SysAppHeader, $.Cardinality.One, {}, false, false,  false, false>;
   "nodes": $.LinkDesc<$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<resources_sys_app[is sys_user::SysUserType]": $.LinkDesc<_sys_user.$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<resources_sys_app": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysApp = $.ObjectType<"sys_core::SysApp", $SysAppλShape, null, [
   ...$SysObj['__exclusives__'],
@@ -360,7 +362,7 @@ export type $SysDataObjλShape = $.typeutil.flatten<$SysObjλShape & {
   "subHeader": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprSort": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "listReorderColumn": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "userResourceSaveParmsSelect": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
+  "userResourceSaveParmsSelected": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "<dataObjEmbed[is sys_core::SysDataObjFieldEmbedListConfig]": $.LinkDesc<$SysDataObjFieldEmbedListConfig, $.Cardinality.Many, {}, false, false,  false, false>;
   "<dataObjModal[is sys_core::SysDataObjFieldEmbedListConfig]": $.LinkDesc<$SysDataObjFieldEmbedListConfig, $.Cardinality.Many, {}, false, false,  false, false>;
   "<dataObjEmbed[is sys_core::SysDataObjFieldEmbedListEdit]": $.LinkDesc<$SysDataObjFieldEmbedListEdit, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -676,10 +678,12 @@ export type $SysNodeObjλShape = $.typeutil.flatten<$SysObjλShape & {
   "dataObj": $.LinkDesc<$SysDataObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "parent": $.LinkDesc<$SysNodeObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "page": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "<resources_sys_footer[is sys_user::SysUserType]": $.LinkDesc<_sys_user.$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parent[is sys_core::SysNodeObj]": $.LinkDesc<$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<nodes[is sys_core::SysApp]": $.LinkDesc<$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
   "<nodes": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parent": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<resources_sys_footer": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysNodeObj = $.ObjectType<"sys_core::SysNodeObj", $SysNodeObjλShape, null, [
   ...$SysObj['__exclusives__'],
@@ -1151,6 +1155,30 @@ function isObjectLink(...args: any[]) {
   }) as any;
 };
 
+type getAppλFuncExpr<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+> = $.$expr_Function<
+  $SysApp, $.cardutil.overrideLowerBound<$.cardutil.paramCardinality<P1>, 'Zero'>
+>;
+function getApp<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+>(
+  name: P1,
+): getAppλFuncExpr<P1>;
+function getApp(...args: any[]) {
+  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('sys_core::getApp', args, _.spec, [
+    {args: [{typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}], returnTypeId: "c13ac393-896a-11ef-a379-bb28bc97db53", returnTypemod: "OptionalType"},
+  ]);
+  return _.syntax.$expressionify({
+    __kind__: $.ExpressionKind.Function,
+    __element__: returnType,
+    __cardinality__: cardinality,
+    __name__: "sys_core::getApp",
+    __args__: positionalArgs,
+    __namedargs__: namedArgs,
+  }) as any;
+};
+
 
 
 export { $ObjRoot, ObjRoot, $SysObj, SysObj, $SysApp, SysApp, $SysAppHeader, SysAppHeader, $SysCode, SysCode, $SysCodeType, SysCodeType, $SysDataObj, SysDataObj, $SysDataObjActionField, SysDataObjActionField, $SysDataObjActionFieldConfirm, SysDataObjActionFieldConfirm, $SysDataObjActionFieldGroup, SysDataObjActionFieldGroup, $SysDataObjActionFieldGroupItem, SysDataObjActionFieldGroupItem, $SysDataObjActionFieldShow, SysDataObjActionFieldShow, $SysDataObjActionQuery, SysDataObjActionQuery, $SysDataObjActionQueryParm, SysDataObjActionQueryParm, $SysDataObjActionQueryTrigger, SysDataObjActionQueryTrigger, $SysDataObjColumn, SysDataObjColumn, $SysDataObjColumnItem, SysDataObjColumnItem, $SysDataObjColumnLink, SysDataObjColumnLink, $SysDataObjFieldEmbedListConfig, SysDataObjFieldEmbedListConfig, $SysDataObjFieldEmbedListEdit, SysDataObjFieldEmbedListEdit, $SysDataObjFieldEmbedListSelect, SysDataObjFieldEmbedListSelect, $SysDataObjFieldListItems, SysDataObjFieldListItems, $SysDataObjTable, SysDataObjTable, $SysDataObjWith, SysDataObjWith, $SysNodeObj, SysNodeObj, $SysObjNote, SysObjNote, $SysOrg, SysOrg, $SysSystem, SysSystem };
@@ -1199,7 +1227,8 @@ type __defaultExports = {
   "getOrg": typeof getOrg;
   "getSystem": typeof getSystem;
   "getSystemPrime": typeof getSystemPrime;
-  "isObjectLink": typeof isObjectLink
+  "isObjectLink": typeof isObjectLink;
+  "getApp": typeof getApp
 };
 const __defaultExports: __defaultExports = {
   "ObjRoot": ObjRoot,
@@ -1245,6 +1274,7 @@ const __defaultExports: __defaultExports = {
   "getOrg": getOrg,
   "getSystem": getSystem,
   "getSystemPrime": getSystemPrime,
-  "isObjectLink": isObjectLink
+  "isObjectLink": isObjectLink,
+  "getApp": getApp
 };
 export default __defaultExports;

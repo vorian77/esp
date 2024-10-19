@@ -631,16 +631,16 @@ async function initDataObjUserPrefType() {
 		actionFieldGroup: 'doag_embed_list_edit',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		codeListEditPresetType: 'insert',
+		codeListEditPresetType: 'save',
 		exprFilter: `.user.id = <user,uuid,id>`,
 		header: 'My Preferences',
 		isListEdit: true,
 		isListSuppressFilterSort: true,
 		listEditPresetExpr: `WITH 
-			valsSys := (SELECT sys_core::SysCode FILTER .codeType.name = 'ct_sys_user_pref_type'),
-			valsUser := (SELECT sys_user::SysUserPrefType FILTER .user.id = <user,uuid,id>).codeType,
-			valsNew := (SELECT valsSys EXCEPT valsUser)
-			SELECT valsNew`,
+			allPrefs := (SELECT sys_core::SysCode FILTER .codeType.name = 'ct_sys_user_pref_type'),
+			userPrefs := (SELECT sys_user::SysUserPrefType FILTER .user.id = <uuid>'0b3ba76c-c0f4-11ee-9b77-8f017aab6306').codeType,
+			newVals := (SELECT allPrefs EXCEPT userPrefs)
+			SELECT newVals`,
 		name: 'data_obj_auth_user_pref_type',
 		owner: 'sys_system_old',
 		tables: [
@@ -656,7 +656,7 @@ async function initDataObjUserPrefType() {
 			},
 			{
 				columnName: 'user',
-				exprPreset: `<user,uuid,id>`,
+				exprPreset: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -664,7 +664,7 @@ async function initDataObjUserPrefType() {
 			},
 			{
 				columnName: 'codeType',
-				exprPreset: `valsNew.id`,
+				exprPreset: `item`,
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false,
@@ -673,13 +673,11 @@ async function initDataObjUserPrefType() {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'header',
-				exprPreset: '.codeType.header',
-				headerAlt: 'Preference',
 				indexTable: 1,
 				isDisplayable: true,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDisplay: 10,
+				orderDisplay: 40,
 				orderDefine: 40,
 				orderSort: 10
 			},

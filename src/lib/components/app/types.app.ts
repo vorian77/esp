@@ -363,15 +363,10 @@ export class App {
 							state.user &&
 							currTab.data.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset)
 						) {
-							const result = await state.user.setUserSelectParms(
-								state,
-								token.dataObj,
-								currTab.data.parms
+							if (
+								!(await state.user.getUserParmsSelected(state, token.dataObj, currTab.data.parms))
 							)
-							if (!result) return false
-							// console.log('types.app.saveDetail.setUserSelectParms:', {
-							// 	parmsData: currTab.data.parms
-							// })
+								return false
 						}
 
 						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))

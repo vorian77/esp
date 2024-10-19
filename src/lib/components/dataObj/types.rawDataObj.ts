@@ -74,7 +74,7 @@ export class RawDataObj {
 	rawPropsSort: RawDataObjPropDB[] = []
 	subHeader?: string
 	tables: DataObjTable[] = []
-	userResourceSaveParmsSelect: RawDataObjUserResourceSaveParmsSelect[] = []
+	userResourceSaveParmsSelected: RawDataObjUserResourceSaveParmsSelected[] = []
 	constructor(obj: any) {
 		const clazz = 'RawDataObj'
 		obj = valueOrDefault(obj, {})
@@ -136,9 +136,9 @@ export class RawDataObj {
 		this.rawPropsSelectPreset = this.initProps(obj._propsSelectPreset)
 		this.rawPropsSort = this.initProps(obj._propsSort)
 		this.rawPropsRepParmItems = this.initProps(obj._propsRepParmItems)
-		this.userResourceSaveParmsSelect = arrayOfClasses(
-			RawDataObjUserResourceSaveParmsSelect,
-			obj.userResourceSaveParmsSelect
+		this.userResourceSaveParmsSelected = arrayOfClasses(
+			RawDataObjUserResourceSaveParmsSelected,
+			obj.userResourceSaveParmsSelected
 		)
 	}
 
@@ -529,11 +529,11 @@ export class RawDataObjTable {
 	}
 }
 
-export class RawDataObjUserResourceSaveParmsSelect {
+export class RawDataObjUserResourceSaveParmsSelected {
 	codeType: UserTypeResourceType
 	subject?: string
 	constructor(obj: any) {
-		const clazz = 'RawDataObjUserResourceSaveParmsSelect'
+		const clazz = 'RawDataObjUserResourceSaveParmsSelected'
 		obj = obj || ''
 		obj = obj.split('.')
 		this.codeType = memberOfEnum(

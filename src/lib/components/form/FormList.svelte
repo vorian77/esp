@@ -134,14 +134,14 @@
 			onSelectionChanged,
 			parmStateSelectedIds: state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected),
 			rowData: initGridData(),
-			userSettings: dataObj.userSettings
+			userSettings: dataObj.userGridSettings
 		})
 	}
 
 	function initGridColumns() {
 		let columnDefs: ColDef[] = []
 		const fieldsSettings =
-			dataObj.userSettings.getPref(ParmsUserDataType.listColumnsModel)?.columns || []
+			dataObj.userGridSettings.getPref(ParmsUserDataType.listColumnsModel)?.columns || []
 		const fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
 		const fieldsDisplayableNew = fieldsDisplayable.filter((f) => {
 			return !fieldsSettings.map((fs) => fs.colId).includes(f.colDO.propName)

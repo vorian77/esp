@@ -17,7 +17,7 @@
 		const rawUser = $appStoreUser
 		const user = Object.keys(rawUser).length > 0 ? new User(rawUser) : undefined
 		if (user) {
-			user.resource_footer.forEach((n: any) => {
+			user.resources_sys_footer.forEach((n: any) => {
 				footer.push(new Node(new RawNode(n)))
 			})
 			currNodeName = footer.length > 0 ? footer[0].name : ''

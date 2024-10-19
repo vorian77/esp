@@ -14,14 +14,14 @@ import { error } from '@sveltejs/kit'
 
 export async function initDataReports() {
 	sectionHeader('Reports')
-	// await initAnalyticTrainingCredential()
+	await initAnalyticTrainingCredential()
 
-	// await initReportCMTrainingCohortAttendance()
-	// await initReportCMTrainingCohortWages()
+	await initReportCMTrainingCohortAttendance()
+	await initReportCMTrainingCohortWages()
 
-	// await initReportCourseSummary()
-	// await initReportOurWorldSummary()
-	// await initReportStudentSummary()
+	await initReportCourseSummary()
+	await initReportOurWorldSummary()
+	await initReportStudentSummary()
 	await initReportWizardStudentSummary()
 }
 
@@ -1062,7 +1062,7 @@ async function initReportCourseSummary() {
 		header: 'Courses (Summary)',
 		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_course_summary',
-		orderDefine: 10,
+		orderDefine: 100,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_hdr_cm_ai_reports'
 	})
@@ -1192,7 +1192,7 @@ async function initReportOurWorldSummary() {
 		header: 'Our World (Summary)',
 		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_our_world_summary',
-		orderDefine: 20,
+		orderDefine: 110,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_hdr_cm_ai_reports'
 	})
@@ -1482,20 +1482,21 @@ async function initReportStudentSummary() {
 		header: 'Students (Summary)',
 		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_student_summary',
-		orderDefine: 20,
+		orderDefine: 120,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_hdr_cm_ai_reports'
 	})
 }
 
 async function initReportWizardStudentSummary() {
-	await resetDBItems(
-		'Reset Reports',
-		`DELETE sys_core::SysDataObj FILTER .name = 'data_obj_ai_report_wizard_student_summary'`
-	)
+	// await resetDBItems(
+	// 	'Reset Reports',
+	// 	`DELETE sys_core::SysDataObj FILTER .name = 'data_obj_ai_report_wizard_student_summary'`
+	// )
 
 	const exprStudents = `(SELECT app_cm::CmClient FILTER .owner.id in <user,uuidlist,systemIds>)`
-	const exprRate = (expr1, expr2) => `(SELECT math::floor(${expr1} / ${expr2} * 100))`
+	const exprRate = (expr1: string, expr2: string) =>
+		`(SELECT math::floor(${expr1} / ${expr2} * 100))`
 
 	await addDataObj({
 		actionFieldGroup: 'doag_report_render',

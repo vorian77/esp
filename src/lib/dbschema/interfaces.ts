@@ -18,7 +18,7 @@ export namespace sys_user {
     "createdAt": Date;
     "createdBy": SysUser;
     "modifiedBy": SysUser;
-    "modifiedAt": Date;
+    "modifiedAt"?: Date | null;
   }
   export interface SysStaff extends Mgmt {
     "owner"?: sys_core.SysSystem | null;
@@ -46,7 +46,10 @@ export namespace sys_user {
   }
   export interface SysUserType extends sys_core.SysObj {
     "tags": sys_core.SysCode[];
-    "resources": SysUserTypeResource[];
+    "resources_subject": SysUserTypeResource[];
+    "resources_sys_app": sys_core.SysApp[];
+    "resources_sys_footer": sys_core.SysNodeObj[];
+    "resources_sys_widget": SysWidget[];
   }
   export interface SysUserTypeResource extends std.$Object {
     "codeType": sys_core.SysCode;
@@ -277,7 +280,7 @@ export namespace sys_core {
     "subHeader"?: string | null;
     "exprSort"?: string | null;
     "listReorderColumn"?: sys_db.SysColumn | null;
-    "userResourceSaveParmsSelect"?: unknown | null;
+    "userResourceSaveParmsSelected"?: unknown | null;
   }
   export interface SysDataObjActionField extends SysObj {
     "codePacketAction": SysCode;

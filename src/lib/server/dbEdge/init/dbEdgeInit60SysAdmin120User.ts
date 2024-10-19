@@ -9,7 +9,7 @@ import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50O
 export async function initAdminUser() {
 	sectionHeader('SysAdmin - User')
 	await initUserType()
-	// await initWidget()
+	await initWidget()
 }
 
 async function initUserType() {
@@ -86,7 +86,6 @@ async function initUserType() {
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
-
 				fieldEmbedListConfig: 'flec_user_type_resource',
 				indexTable: 0,
 				linkTable: 'SysOrg'
@@ -226,20 +225,35 @@ async function initWidget() {
 				linkTable: 'SysSystem'
 			},
 			{
-				columnName: 'name',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 30,
-				orderDefine: 30,
+				orderDefine: 30
+			},
+			{
+				columnName: 'name',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'header',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
 			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+
 			/* management */
 			{
 				codeFieldElement: 'tagRow',
@@ -296,7 +310,7 @@ async function initWidget() {
 		header: 'Widgets',
 		isHideRowManager: false,
 		name: 'node_obj_sys_admin_widget_list',
-		orderDefine: 130,
+		orderDefine: 180,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})

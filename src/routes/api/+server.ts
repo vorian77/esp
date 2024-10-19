@@ -89,20 +89,6 @@ async function getUser(token: TokenApiUserId, cookies: Cookies) {
 		})
 	}
 
-	// const parms = [
-	// 	'id',
-	// 	'lastName',
-	// 	'firstName',
-	// 	'fullName',
-	// 	'userName',
-	// 	'resource_programs',
-	// 	'resource_widgets'
-	// ]
-	// parms.forEach((p) => {
-	// 	user[p] = userEdge[p]
-	// })
-	// user['organization'] = 'Atlantic Impact'
-
 	// return getServerResponse(user)
 
 	/*  

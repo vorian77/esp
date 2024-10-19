@@ -183,7 +183,7 @@ export class State {
 		})
 	}
 
-	async openModalDataObj(dataObjName: string) {
+	async openModalDataObj(dataObjName: string, fUpdate?: Function) {
 		const clazz = `${FILENAME}.openModalDataObj`
 		const stateModal = new StateSurfaceModalDataObj({
 			actionsFieldDialog: await this.getActions('doag_dialog_footer_detail'),
@@ -198,7 +198,7 @@ export class State {
 			})
 		})
 		await stateModal.app.addLevelModalDataObj(stateModal)
-		await this.openModal(stateModal)
+		await this.openModal(stateModal, fUpdate)
 	}
 
 	async openModalEmbedListConfig(
