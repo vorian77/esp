@@ -22,10 +22,10 @@ export async function addAnalytic(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_rep.SysAnalytic, {
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				description: p.description,
 				header: p.header,
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
 				parms: e.for(e.array_unpack(p.parms), (p) => {
@@ -38,7 +38,7 @@ export async function addAnalytic(data: any) {
 							'ct_sys_do_field_element',
 							e.cast(e.str, e.json_get(p, 'codeFieldElement'))
 						),
-						createdBy: e.select(CREATOR),
+						createdBy: CREATOR,
 						description: e.cast(e.str, e.json_get(p, 'description')),
 						fieldListItems: e.select(
 							e.sys_core.getDataObjFieldListItems(e.cast(e.str, e.json_get(p, 'fieldListItems')))
@@ -47,7 +47,7 @@ export async function addAnalytic(data: any) {
 						header: e.cast(e.str, e.json_get(p, 'header')),
 						isMultiSelect: e.cast(e.bool, e.json_get(p, 'isMultiSelect')),
 						linkTable: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(p, 'linkTable')))),
-						modifiedBy: e.select(CREATOR),
+						modifiedBy: CREATOR,
 						name: e.cast(e.str, e.json_get(p, 'name')),
 						orderDefine: e.cast(e.int16, e.json_get(p, 'orderDefine'))
 					})
@@ -61,9 +61,9 @@ export async function addAnalytic(data: any) {
 							)
 						),
 						comment: e.cast(e.str, e.json_get(s, 'comment')),
-						createdBy: e.select(CREATOR),
+						createdBy: CREATOR,
 						expr: e.cast(e.str, e.json_get(s, 'expr')),
-						modifiedBy: e.select(CREATOR)
+						modifiedBy: CREATOR
 					})
 				})
 			})
@@ -100,7 +100,7 @@ export async function addReport(data: any) {
 						})
 					)
 				),
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				description: p.description,
 				elements: e.for(e.array_unpack(p.elements), (el) => {
 					return e.insert(e.sys_rep.SysRepEl, {
@@ -131,14 +131,14 @@ export async function addReport(data: any) {
 							e.cast(e.str, e.json_get(el, 'codeSortDir'))
 						),
 						column: e.select(e.sys_db.getColumn(e.cast(e.str, e.json_get(el, 'columnName')))),
-						createdBy: e.select(CREATOR),
+						createdBy: CREATOR,
 						description: e.cast(e.str, e.json_get(el, 'description')),
 						exprCustom: e.cast(e.str, e.json_get(el, 'exprCustom')),
 						header: e.cast(e.str, e.json_get(el, 'header')),
 						indexTable: e.cast(e.int16, e.json_get(el, 'indexTable')),
 						isDisplay: e.cast(e.bool, e.json_get(el, 'isDisplay')),
 						isDisplayable: e.cast(e.bool, e.json_get(el, 'isDisplayable')),
-						modifiedBy: e.select(CREATOR),
+						modifiedBy: CREATOR,
 						nameCustom: e.cast(e.str, e.json_get(el, 'nameCustom')),
 						orderDefine: e.cast(e.int16, e.json_get(el, 'orderDefine')),
 						orderDisplay: e.cast(e.int16, e.json_get(el, 'orderDisplay')),
@@ -149,7 +149,7 @@ export async function addReport(data: any) {
 				exprObject: p.exprObject,
 				exprSort: p.exprSort,
 				header: p.header,
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
 				parms: e.for(e.array_unpack(p.parms), (p) => {
@@ -162,7 +162,7 @@ export async function addReport(data: any) {
 							'ct_sys_do_field_element',
 							e.cast(e.str, e.json_get(p, 'codeFieldElement'))
 						),
-						createdBy: e.select(CREATOR),
+						createdBy: CREATOR,
 						description: e.cast(e.str, e.json_get(p, 'description')),
 						fieldListItems: e.select(
 							e.sys_core.getDataObjFieldListItems(e.cast(e.str, e.json_get(p, 'fieldListItems')))
@@ -171,7 +171,7 @@ export async function addReport(data: any) {
 						header: e.cast(e.str, e.json_get(p, 'header')),
 						isMultiSelect: e.cast(e.bool, e.json_get(p, 'isMultiSelect')),
 						linkTable: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(p, 'linkTable')))),
-						modifiedBy: e.select(CREATOR),
+						modifiedBy: CREATOR,
 						name: e.cast(e.str, e.json_get(p, 'name')),
 						orderDefine: e.cast(e.int16, e.json_get(p, 'orderDefine'))
 					})
@@ -181,10 +181,10 @@ export async function addReport(data: any) {
 						columnParent: e.select(
 							e.sys_db.getColumn(e.cast(e.str, e.json_get(t, 'columnParent')))
 						),
-						createdBy: e.select(CREATOR),
+						createdBy: CREATOR,
 						index: e.cast(e.int16, e.json_get(t, 'index')),
 						indexParent: e.cast(e.int16, e.json_get(t, 'indexParent')),
-						modifiedBy: e.select(CREATOR),
+						modifiedBy: CREATOR,
 						table: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(t, 'table'))))
 					})
 				})
@@ -205,9 +205,9 @@ export async function addReportUser(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_rep.SysRepUser, {
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				headerUser: p.header,
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				orderDefine: 10,
 				report: e.select(e.sys_rep.getReport(p.report)),
 				user: e.select(e.sys_user.getUserByName(p.user))

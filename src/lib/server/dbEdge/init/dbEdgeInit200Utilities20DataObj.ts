@@ -50,13 +50,13 @@ export async function addDataObj(data: any) {
 				actionsQuery: e.for(e.array_unpack(p.actionsQuery), (a) => {
 					return e.insert(e.sys_core.SysDataObjActionQuery, {
 						name: e.cast(e.str, e.json_get(a, 'name')),
-						createdBy: e.select(CREATOR),
-						modifiedBy: e.select(CREATOR),
+						createdBy: CREATOR,
+						modifiedBy: CREATOR,
 						parms: e.for(e.array_unpack(e.cast(e.array(e.json), e.json_get(a, 'parms'))), (p) => {
 							return e.insert(e.sys_core.SysDataObjActionQueryParm, {
-								createdBy: e.select(CREATOR),
+								createdBy: CREATOR,
 								key: e.cast(e.str, e.json_get(p, 'key')),
-								modifiedBy: e.select(CREATOR),
+								modifiedBy: CREATOR,
 								value: e.cast(e.str, e.json_get(p, 'value'))
 							})
 						}),
@@ -76,8 +76,8 @@ export async function addDataObj(data: any) {
 											e.cast(e.str, e.json_get(t, 'codeTriggerTiming'))
 										)
 									),
-									createdBy: e.select(CREATOR),
-									modifiedBy: e.select(CREATOR)
+									createdBy: CREATOR,
+									modifiedBy: CREATOR
 								})
 							}
 						)
@@ -138,8 +138,8 @@ export async function addDataObj(data: any) {
 								return e.insert(e.sys_core.SysDataObjColumnLink, {
 									column: e.select(e.sys_db.getColumn(c[1])),
 									orderDefine: c[0],
-									createdBy: e.select(CREATOR),
-									modifiedBy: e.select(CREATOR)
+									createdBy: CREATOR,
+									modifiedBy: CREATOR
 								})
 							}
 						),
@@ -280,13 +280,13 @@ export async function addDataObj(data: any) {
 
 						width: e.cast(e.int16, e.json_get(f, 'width')),
 
-						createdBy: e.select(CREATOR),
+						createdBy: CREATOR,
 
-						modifiedBy: e.select(CREATOR)
+						modifiedBy: CREATOR
 					})
 				}),
 
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				description: p.description,
 				exprFilter: p.exprFilter,
 				exprObject: p.exprObject,
@@ -297,7 +297,7 @@ export async function addDataObj(data: any) {
 				isListSuppressSelect: booleanOrDefaultParm(p.isListSuppressSelect, false),
 				listEditPresetExpr: p.listEditPresetExpr,
 				listReorderColumn: e.select(e.sys_db.getColumn(p.listReorderColumn)),
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
 				parentColumn: e.select(e.sys_db.getColumn(p.parentColumn)),
@@ -310,10 +310,10 @@ export async function addDataObj(data: any) {
 						columnParent: e.select(
 							e.sys_db.getColumn(e.cast(e.str, e.json_get(t, 'columnParent')))
 						),
-						createdBy: e.select(CREATOR),
+						createdBy: CREATOR,
 						index: e.cast(e.int16, e.json_get(t, 'index')),
 						indexParent: e.cast(e.int16, e.json_get(t, 'indexParent')),
-						modifiedBy: e.select(CREATOR),
+						modifiedBy: CREATOR,
 						table: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(t, 'table'))))
 					})
 				}),
@@ -339,16 +339,16 @@ export async function addDataObjActionFieldGroup(data: any) {
 					e.set(
 						e.for(e.json_array_unpack(p.actionFieldItems), (a) => {
 							return e.insert(e.sys_core.SysDataObjActionFieldGroupItem, {
-								createdBy: e.select(CREATOR),
+								createdBy: CREATOR,
 								action: e.select(e.sys_core.getDataObjActionField(e.cast(e.str, a[0]))),
-								modifiedBy: e.select(CREATOR),
+								modifiedBy: CREATOR,
 								orderDefine: e.cast(e.int16, a[1])
 							})
 						})
 					)
 				),
-				createdBy: e.select(CREATOR),
-				modifiedBy: e.select(CREATOR),
+				createdBy: CREATOR,
+				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner)
 			})
@@ -374,10 +374,10 @@ export async function addDataObjFieldEmbedListConfig(data: any) {
 				actionFieldGroupModal: e.select(
 					e.sys_core.getDataObjActionFieldGroup(p.actionFieldGroupModal)
 				),
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				dataObjEmbed: e.select(e.sys_core.getDataObj(p.dataObjEmbed)),
 				dataObjModal: e.select(e.sys_core.getDataObj(p.dataObjModal)),
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner)
 			})
@@ -398,9 +398,9 @@ export async function addDataObjFieldEmbedListEdit(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObjFieldEmbedListEdit, {
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				dataObjEmbed: e.select(e.sys_core.getDataObj(p.dataObjEmbed)),
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner)
 			})
@@ -427,9 +427,9 @@ export async function addDataObjFieldEmbedListSelect(data: any) {
 					e.sys_core.getDataObjActionFieldGroup(p.actionFieldGroupModal)
 				),
 				btnLabelComplete: p.btnLabelComplete,
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				dataObjList: e.select(e.sys_core.getDataObj(p.dataObjList)),
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner)
 			})
@@ -473,8 +473,8 @@ export async function addDataObjActionField(data: any) {
 						confirmButtonLabelConfirm: e.cast(e.str, e.json_get(a, 'confirmButtonLabelConfirm')),
 						confirmMessage: e.cast(e.str, e.json_get(a, 'confirmMessage')),
 						confirmTitle: e.cast(e.str, e.json_get(a, 'confirmTitle')),
-						createdBy: e.select(CREATOR),
-						modifiedBy: e.select(CREATOR)
+						createdBy: CREATOR,
+						modifiedBy: CREATOR
 					})
 				}),
 				actionFieldShows: e.for(e.array_unpack(p.actionFieldShows), (a) => {
@@ -485,9 +485,9 @@ export async function addDataObjActionField(data: any) {
 								e.cast(e.str, e.json_get(a, 'codeTriggerShow'))
 							)
 						),
-						createdBy: e.select(CREATOR),
+						createdBy: CREATOR,
 						isRequired: e.cast(e.bool, e.json_get(a, 'isRequired')),
-						modifiedBy: e.select(CREATOR)
+						modifiedBy: CREATOR
 					})
 				}),
 				codeActionFieldTriggerEnable: e.select(
@@ -496,10 +496,10 @@ export async function addDataObjActionField(data: any) {
 				codePacketAction: e.select(e.sys_core.getCode('ct_sys_packet_action', p.codePacketAction)),
 				codeColor: e.select(e.sys_core.getCode('ct_sys_tailwind_color', p.codeColor)),
 
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				header: p.header,
 				isListRowAction: booleanOrDefaultParm(p.isListRowAction, false),
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner)
 			})
@@ -527,12 +527,12 @@ export async function addDataObjFieldItems(data: any) {
 			return e.insert(e.sys_core.SysDataObjFieldListItems, {
 				codeDataTypeDisplay: e.sys_core.getCode('ct_db_col_data_type', p.codeDataTypeDisplay),
 				codeMask: e.sys_core.getCode('ct_db_col_mask', p.codeMask),
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				exprFilter: p.exprFilter,
 				exprSort: p.exprSort,
 				exprPropDisplay: p.exprPropDisplay,
 				exprWith: p.exprWith,
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
 				table: e.select(e.sys_db.getTable(p.table))

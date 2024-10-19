@@ -1,15 +1,14 @@
-import {
-	resetDBItems,
-	nodeObjHeaders,
-	sectionHeader
-} from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { resetDBItems, sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 import { addDataObj } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
 import {
 	addAnalytic,
 	addReport,
 	addReportUser
 } from '$server/dbEdge/init/dbEdgeInit200Utilities40Rep'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import {
+	addNodeProgram,
+	addNodeProgramObj
+} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 import { error } from '@sveltejs/kit'
 
 export async function initDataReports() {
@@ -1056,15 +1055,14 @@ async function initReportCourseSummary() {
 		]
 	})
 
-	await addNodeProgramObj({
+	await addNodeProgram({
 		codeIcon: 'application',
 		dataObj: 'data_obj_cm_ai_report_course_summary',
 		header: 'Courses (Summary)',
 		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_course_summary',
 		orderDefine: 100,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_hdr_cm_ai_reports'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -1186,15 +1184,14 @@ async function initReportOurWorldSummary() {
 		]
 	})
 
-	await addNodeProgramObj({
+	await addNodeProgram({
 		codeIcon: 'application',
 		dataObj: 'data_obj_cm_ai_report_our_world_summary',
 		header: 'Our World (Summary)',
 		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_our_world_summary',
 		orderDefine: 110,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_hdr_cm_ai_reports'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -1476,15 +1473,14 @@ async function initReportStudentSummary() {
 		]
 	})
 
-	await addNodeProgramObj({
+	await addNodeProgram({
 		codeIcon: 'application',
 		dataObj: 'data_obj_cm_ai_report_student_summary',
 		header: 'Students (Summary)',
 		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_student_summary',
 		orderDefine: 120,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_hdr_cm_ai_reports'
+		owner: 'sys_ai_old'
 	})
 }
 

@@ -10,7 +10,6 @@ const client = createClient({
 
 export async function addApp(data: any) {
 	sectionHeader(`addApp - ${data.name}`)
-
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
@@ -25,11 +24,11 @@ export async function addApp(data: any) {
 				appHeader: e.select(e.sys_core.SysAppHeader, (sah) => ({
 					filter_single: e.op(sah.name, '=', p.appHeader)
 				})),
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				isGlobalResource: p.isGlobalResource,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				nodes: e.assert_distinct(
 					e.set(
 						e.for(e.array_unpack(p.nodes), (nodeName) => {
@@ -44,6 +43,8 @@ export async function addApp(data: any) {
 }
 
 export async function addAppHeader(data: any) {
+	sectionHeader(`addAppHeader - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
 			header: e.optional(e.str),
@@ -59,8 +60,8 @@ export async function addAppHeader(data: any) {
 				name: p.name,
 				orderDefine: p.orderDefine,
 				owner: e.sys_core.getSystemPrime(p.owner),
-				createdBy: e.sys_user.getRootUser(),
-				modifiedBy: e.sys_user.getRootUser()
+				createdBy: CREATOR,
+				modifiedBy: CREATOR
 			})
 		}
 	)
@@ -97,8 +98,8 @@ export async function addCode(data: any) {
 				valueDecimal: p.valueDecimal,
 				valueInteger: p.valueInteger,
 				valueString: p.valueString,
-				createdBy: e.select(CREATOR),
-				modifiedBy: e.select(CREATOR)
+				createdBy: CREATOR,
+				modifiedBy: CREATOR
 			})
 		}
 	)
@@ -122,8 +123,8 @@ export async function addCodeType(data: any) {
 				header: p.header,
 				name: p.name,
 				order: p.order,
-				createdBy: e.select(CREATOR),
-				modifiedBy: e.select(CREATOR)
+				createdBy: CREATOR,
+				modifiedBy: CREATOR
 			})
 		}
 	)
@@ -165,15 +166,15 @@ export async function addMigration(data: any) {
 										)
 									),
 									name: e.cast(e.str, e.json_get(c, 'name')),
-									createdBy: e.select(CREATOR),
-									modifiedBy: e.select(CREATOR)
+									createdBy: CREATOR,
+									modifiedBy: CREATOR
 								})
 							}
 						),
 						exprSelect: e.cast(e.str, e.json_get(t, 'exprSelect')),
 						name: e.cast(e.str, e.json_get(t, 'name')),
-						createdBy: e.select(CREATOR),
-						modifiedBy: e.select(CREATOR)
+						createdBy: CREATOR,
+						modifiedBy: CREATOR
 					})
 				}),
 				tablesTarget: e.for(e.array_unpack(p.targetTables), (t) => {
@@ -186,8 +187,8 @@ export async function addMigration(data: any) {
 									expr: e.cast(e.str, e.json_get(c, 'expr')),
 									isActive: e.cast(e.bool, true),
 									orderDefine: e.cast(e.int16, e.json_get(c, 'orderDefine')),
-									createdBy: e.select(CREATOR),
-									modifiedBy: e.select(CREATOR)
+									createdBy: CREATOR,
+									modifiedBy: CREATOR
 								})
 							}
 						),
@@ -195,12 +196,12 @@ export async function addMigration(data: any) {
 						isInitTable: e.cast(e.bool, e.json_get(t, 'isInitTable')),
 						orderDefine: e.cast(e.int16, e.json_get(t, 'orderDefine')),
 						table: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(t, 'name')))),
-						createdBy: e.select(CREATOR),
-						modifiedBy: e.select(CREATOR)
+						createdBy: CREATOR,
+						modifiedBy: CREATOR
 					})
 				}),
-				createdBy: e.select(CREATOR),
-				modifiedBy: e.select(CREATOR)
+				createdBy: CREATOR,
+				modifiedBy: CREATOR
 			})
 		}
 	)
@@ -216,6 +217,7 @@ export async function addNodeFooter(data: any) {
 			codeType: e.str,
 			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
+			isGlobalResource: e.bool,
 			name: e.str,
 			orderDefine: e.int16,
 			owner: e.str,
@@ -226,11 +228,12 @@ export async function addNodeFooter(data: any) {
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', p.codeIcon)),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'footer')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', p.codeType)),
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
+				isGlobalResource: p.isGlobalResource,
 				isHideRowManager: e.cast(e.bool, false),
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				name: p.name,
 				orderDefine: p.orderDefine,
 				owner: e.sys_core.getSystemPrime(p.owner),
@@ -247,7 +250,9 @@ export async function addNodeProgram(data: any) {
 	const query = e.params(
 		{
 			codeIcon: e.str,
+			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
+			isHideRowManager: e.bool,
 			name: e.str,
 			orderDefine: e.int16,
 			owner: e.str
@@ -257,10 +262,11 @@ export async function addNodeProgram(data: any) {
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', p.codeIcon)),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'program')),
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
+				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
-				isHideRowManager: e.cast(e.bool, false),
-				modifiedBy: e.select(CREATOR),
+				isHideRowManager: p.isHideRowManager,
+				modifiedBy: CREATOR,
 				name: p.name,
 				orderDefine: p.orderDefine,
 				owner: e.sys_core.getSystemPrime(p.owner)
@@ -289,11 +295,11 @@ export async function addNodeProgramObj(data: any) {
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', p.codeIcon)),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'programObject')),
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
 				isHideRowManager: p.isHideRowManager,
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				name: p.name,
 				orderDefine: p.orderDefine,
 				owner: e.sys_core.getSystemPrime(p.owner),
@@ -360,28 +366,42 @@ export async function addUserType(data: any) {
 			header: e.str,
 			name: e.str,
 			owner: e.str,
-			resources_sys_app: e.array(e.str),
-			resources_sys_widget: e.array(e.str)
+			resources_sys_app: e.optional(e.array(e.str)),
+			resources_sys_footer: e.optional(e.array(e.str)),
+			resources_sys_widget: e.optional(e.array(e.str))
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysUserType, {
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				header: p.header,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				resources_sys_app: e.assert_distinct(
 					e.set(
-						e.for(e.array_unpack(p.resources_sys_app), (res) => {
+						e.for(e.array_unpack(p.resources_sys_app || e.cast(e.array(e.str), e.set())), (res) => {
 							return e.sys_core.getApp(res)
 						})
 					)
 				),
+				resources_sys_footer: e.assert_distinct(
+					e.set(
+						e.for(
+							e.array_unpack(p.resources_sys_footer || e.cast(e.array(e.str), e.set())),
+							(res) => {
+								return e.sys_core.getNodeObjByName(res)
+							}
+						)
+					)
+				),
 				resources_sys_widget: e.assert_distinct(
 					e.set(
-						e.for(e.array_unpack(p.resources_sys_widget), (res) => {
-							return e.sys_user.getWidget(res)
-						})
+						e.for(
+							e.array_unpack(p.resources_sys_widget || e.cast(e.array(e.str), e.set())),
+							(res) => {
+								return e.sys_user.getWidget(res)
+							}
+						)
 					)
 				)
 			})

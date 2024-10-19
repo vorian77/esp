@@ -42,6 +42,15 @@ export async function initPreDataObjFieldItem() {
 		owner: 'sys_ai_old',
 		table: 'CmCsfCohort'
 	})
+
+	await addDataObjFieldItems({
+		exprPropDisplay: '.name',
+		exprFilter: `.owner.id in <user,uuidlist,systemIds> OR .isGlobalResource = true`,
+		name: 'il_sys_app_header_order_name',
+		owner: 'sys_system_old',
+		table: 'SysAppHeader'
+	})
+
 	await addDataObjFieldItems({
 		exprPropDisplay: '.name',
 		exprFilter: '.codeType.id = <tree,uuid,SysCodeType.id>',

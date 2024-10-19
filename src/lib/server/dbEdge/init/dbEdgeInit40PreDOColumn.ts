@@ -1569,6 +1569,13 @@ export async function initPreColumn() {
 		name: 'nameCustom'
 	})
 	await addColumn({
+		codeDataType: 'link',
+		header: 'Nodes',
+		isMultiSelect: true,
+		name: 'nodes',
+		owner: 'sys_system_old'
+	})
+	await addColumn({
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Note',

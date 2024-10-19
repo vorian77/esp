@@ -10,7 +10,7 @@
 	const FILENAME = '$comps/app/NavPageHome.svelte'
 
 	const hasResourceWidget = (widgetName: string) => {
-		return user?.resource_widgets?.findIndex((w) => w.name === widgetName) > -1
+		return user?.resources_sys_widget?.findIndex((w) => w.name === widgetName) > -1
 	}
 	let user: User | undefined
 	let showSysReport = false
@@ -32,7 +32,8 @@
 	}
 </script>
 
-<!-- <DataViewer header="Resources" data={user?.resource_widgets} /> -->
+<!-- <DataViewer header="showSysReport" data={showSysReport} />
+<DataViewer header="resources_sys_widget" data={user?.resources_sys_widget} /> -->
 
 <AppShell>
 	{#if showSysUser}

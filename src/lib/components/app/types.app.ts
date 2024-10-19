@@ -243,7 +243,17 @@ export class App {
 		await query(state, this.getCurrTab(), token.queryType)
 	}
 	async initNode(state: State, token: TokenAppTreeNode) {
-		const tabParms = App.getTabParmsNode(0, 0, token.node)
+		const tabParms = token.node.dataObjId
+			? App.getTabParmsNode(0, 0, token.node)
+			: {
+					dataObjSource: new TokenApiDbDataObjSource({
+						dataObjName: token.node.dataObjName
+					}),
+					isHideRowManager: token.node.isHideRowManager,
+					label: token.node.header,
+					levelIdx: 0,
+					tabIdx: 0
+				}
 		this.levels.push(new AppLevel([new AppLevelTab(tabParms)]))
 		await query(state, this.getCurrTab(), TokenApiQueryType.retrieve)
 		const currTab = this.getCurrTab()
@@ -376,6 +386,29 @@ export class App {
 							tabParent.data.rowsRetrieved.getRows(),
 							currTab.data.rowsRetrieved.getDetailRecordValue('id')
 						)
+						break
+					default:
+						error(500, {
+							file: FILENAME,
+							function: 'App.detailUpdate',
+							message: `No case defined for StatePacketAction: ${packetAction}`
+						})
+				}
+			} else {
+				// no parent tab (orphan detail record)
+				switch (packetAction) {
+					case StatePacketAction.doDetailDelete:
+						// <todo> - 241019 - this path must be tested - only example "My Account" which doesn't have Delete option
+						if (!currTab.data.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset)) {
+							if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
+								return this
+						}
+						this.popLevel()
+						break
+
+					case StatePacketAction.doDetailSave:
+						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
+							return this
 						break
 					default:
 						error(500, {

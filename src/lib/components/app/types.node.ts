@@ -15,6 +15,7 @@ export type DbNode = {
 	_codeIcon?: string
 	_codeNodeType: string
 	dataObjId?: string
+	dataObjName?: string
 	header: string
 	id: string
 	isHideRowManager: boolean
@@ -44,6 +45,7 @@ export class DbNodeProgram {
 
 export class RawNode {
 	dataObjId?: string
+	dataObjName?: string
 	header: string
 	icon: string
 	id: string
@@ -54,6 +56,7 @@ export class RawNode {
 	constructor(dbNode: DbNode) {
 		const clazz = 'RawNode'
 		this.dataObjId = dbNode.dataObjId
+		this.dataObjName = dbNode.dataObjName
 		this.header = dbNode.header
 		this.icon = valueOrDefault(dbNode._codeIcon, DEFAULT_ICON)
 		this.id = dbNode.id
@@ -66,6 +69,7 @@ export class RawNode {
 
 export class Node {
 	dataObjId?: string
+	dataObjName?: string
 	header: string
 	icon: string
 	id: string
@@ -76,6 +80,7 @@ export class Node {
 	constructor(rawNode: RawNode) {
 		const clazz = 'Node'
 		this.dataObjId = rawNode.dataObjId
+		this.dataObjName = rawNode.dataObjName
 		this.header = rawNode.header
 		this.icon = rawNode.icon
 		this.id = rawNode.id

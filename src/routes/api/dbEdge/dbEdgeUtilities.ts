@@ -575,7 +575,11 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			id: true,
 			orderDefine: true,
 			page: true,
-			filter: e.op(f.codeNavType.name, '=', 'footer'),
+			filter: e.op(
+				e.op(e.op(f.codeNavType.name, '=', 'footer'), 'and', e.op(f.isGlobalResource, '=', true)),
+				'or',
+				e.op(f.id, 'in', u.userTypes.resources_sys_footer.id)
+			),
 			order_by: f.orderDefine
 		})),
 		resources_sys_widget: e.select(u.userTypes.resources_sys_widget, (res) => ({

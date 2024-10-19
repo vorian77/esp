@@ -58,7 +58,7 @@ export async function addColumn(data: any) {
 					)
 				),
 				codeDataType: e.sys_core.getCode('ct_db_col_data_type', p.codeDataType),
-				createdBy: e.select(CREATOR),
+				createdBy: CREATOR,
 				exprStorageKey: p.exprStorageKey,
 				header: p.header,
 				headerSide: p.headerSide,
@@ -73,7 +73,7 @@ export async function addColumn(data: any) {
 				maxValue: p.maxValue,
 				minLength: p.minLength,
 				minValue: p.minValue,
-				modifiedBy: e.select(CREATOR),
+				modifiedBy: CREATOR,
 				name: p.name,
 				pattern: p.pattern,
 				patternMsg: p.patternMsg,

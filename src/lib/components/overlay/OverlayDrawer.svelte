@@ -3,9 +3,9 @@
 	import NavTree from '$comps/app/NavTree.svelte'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
-	import { TokenApiUserId } from '$utils/types.token'
-	import { ResponseBody } from '$utils/types'
-	import { State } from '$comps/app/types.appState'
+	import { TokenApiUserId, TokenAppDoActionConfirmType, TokenAppTreeNode } from '$utils/types.token'
+	import { Node, ResponseBody } from '$utils/types'
+	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
 
 	const storeDrawer = getDrawerStore()
 
@@ -37,6 +37,28 @@
 		}
 	}
 
+	async function openMyAccount() {
+		closeDrawer()
+		const state: State = $storeDrawer.meta.state
+		const dataObjName = 'data_obj_auth_account'
+		const node = new Node({
+			dataObjName,
+			header: 'My Account',
+			icon: 'application',
+			id: dataObjName,
+			isHideRowManager: true,
+			name: dataObjName,
+			page: '/home',
+			type: 'object'
+		})
+		const packet = new StatePacket({
+			action: StatePacketAction.navTreeNode,
+			confirmType: TokenAppDoActionConfirmType.objectChanged,
+			token: new TokenAppTreeNode({ node })
+		})
+		state.update({ page: node.page, nodeType: node.type, packet })
+	}
+
 	async function openMyPreferences() {
 		closeDrawer()
 		const state: State = $storeDrawer.meta.state
@@ -61,6 +83,9 @@
 		</div>
 	{:else if $storeDrawer.id === 'navRight'}
 		<div class="flex flex-col p-4 space-y-4">
+			<btn on:click={openMyAccount} on:keydown={openMyAccount} tabindex="0" role="button"
+				>My Account</btn
+			>
 			<btn on:click={openMyPreferences} on:keydown={openMyPreferences} tabindex="0" role="button"
 				>My Preferences</btn
 			>

@@ -1,30 +1,23 @@
 import {
-	addRoleOrg,
-	addRoleStaff,
-	addStaff,
-	nodeObjHeaders,
-	nodeObjPrograms,
 	ResetDb,
 	sectionHeader,
-	userType,
-	userTypeResourcesApps,
-	userTypeResourcesPrograms,
-	userTypeResourcesWidgets,
 	userUserType,
 	widgets
 } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 import {
 	addApp,
 	addAppHeader,
+	addNodeFooter,
 	addUserType
 } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initUser() {
 	await initReset()
-	await initResources()
 	await initAppHeaders()
 	await initApps()
+	await initResources()
 	await initUserType()
+	await initUserUserType()
 	// await initStaff()
 }
 
@@ -39,11 +32,6 @@ export async function initReset() {
 	await reset.execute()
 }
 
-async function initResources() {
-	/* widgets */
-	await widgets([['sys_system_old', 'widget_sys_report']])
-}
-
 async function initAppHeaders() {
 	await addAppHeader({
 		header: 'Administration',
@@ -55,7 +43,7 @@ async function initAppHeaders() {
 	await addAppHeader({
 		header: 'Reports',
 		isGlobalResource: true,
-		name: 'app_hdr_sys_report',
+		name: 'app_hdr_sys_reporting',
 		orderDefine: 1000,
 		owner: 'sys_system_old'
 	})
@@ -68,6 +56,45 @@ async function initAppHeaders() {
 	})
 }
 async function initApps() {
+	/* system */
+	await addApp({
+		appHeader: 'app_hdr_sys_admin',
+		isGlobalResource: false,
+		name: 'app_sys_admin_global',
+		owner: 'sys_system_old',
+		nodes: [
+			'node_obj_sys_org_list',
+			'node_obj_sys_system_config_list',
+			'node_obj_sys_system_object_list'
+		]
+	})
+	await addApp({
+		appHeader: 'app_hdr_sys_admin',
+		isGlobalResource: true,
+		name: 'app_sys_admin_meta',
+		owner: 'sys_system_old',
+		nodes: ['node_obj_sys_system_meta_list']
+	})
+	await addApp({
+		appHeader: 'app_hdr_sys_reporting',
+		isGlobalResource: true,
+		name: 'app_sys_reporting',
+		owner: 'sys_system_old',
+		nodes: ['node_obj_sys_rep_my_report_list']
+	})
+
+	/* Atlantic Impact */
+	await addApp({
+		appHeader: 'app_hdr_sys_reporting',
+		isGlobalResource: true,
+		name: 'app_ai_reporting',
+		owner: 'sys_ai_old',
+		nodes: [
+			'node_obj_cm_ai_report_course_summary',
+			'node_obj_cm_ai_report_our_world_summary',
+			'node_obj_cm_ai_report_student_summary'
+		]
+	})
 	await addApp({
 		appHeader: 'app_hdr_ai_staff',
 		isGlobalResource: false,
@@ -75,165 +102,63 @@ async function initApps() {
 		owner: 'sys_ai_old',
 		nodes: ['node_obj_cm_course_list', 'node_obj_cm_partner_list', 'node_obj_cm_student_list']
 	})
-	await addApp({
-		appHeader: 'app_hdr_sys_admin',
-		isGlobalResource: true,
-		name: 'app_sys_admin',
-		owner: 'sys_system_old',
-		nodes: [
-			'node_obj_sys_org_list',
-			'node_obj_sys_system_config_list',
-			'node_obj_sys_system_object_list',
-			'node_obj_sys_system_meta_list'
-		]
-	})
-	await addApp({
-		appHeader: 'app_hdr_sys_report',
-		isGlobalResource: true,
-		name: 'app_sys_report',
-		owner: 'sys_system_old',
-		nodes: [
-			'node_obj_sys_rep_my_report_list',
-			'node_obj_cm_ai_report_course_summary',
-			'node_obj_cm_ai_report_our_world_summary',
-			'node_obj_cm_ai_report_student_summary'
-		]
-	})
+}
+
+async function initResources() {
+	/* widgets */
+	await widgets([
+		['sys_system_old', 'widget_sys_report'],
+		['sys_system_old', 'widget_sys_quotes'],
+		['sys_system_old', 'widget_sys_user'],
+		['sys_ai_old', 'widget_ai_user']
+	])
+
+	/* footers */
 }
 
 async function initUserType() {
+	/* system */
 	await addUserType({
-		header: 'Sys Admin - Global',
-		name: 'ut_sys_admin',
+		header: 'Admin - Global',
+		name: 'ut_sys_admin_global',
 		owner: 'sys_system_old',
-		resources_sys_app: ['app_ai_staff', 'app_sys_admin', 'app_sys_report'],
+		resources_sys_app: ['app_sys_admin_global', 'app_sys_admin_meta', 'app_sys_reporting'],
+		resources_sys_widget: ['widget_sys_report']
+	})
+
+	/* Atlantic Impact */
+	await addUserType({
+		header: 'AI-Admin',
+		name: 'ut_ai_admin',
+		owner: 'sys_ai_old',
+		resources_sys_app: ['app_sys_admin_meta', 'app_sys_reporting'],
 		resources_sys_widget: ['widget_sys_report']
 	})
 	await addUserType({
-		header: 'AI-Staff Provider',
-		name: 'ut_ai_staff_provider',
+		header: 'AI-Staff',
+		name: 'ut_ai_staff',
 		owner: 'sys_ai_old',
-		resources_sys_app: ['app_ai_staff', 'app_sys_report'],
+		resources_sys_app: ['app_ai_staff', 'app_sys_reporting', 'app_ai_reporting'],
 		resources_sys_widget: ['widget_sys_report']
 	})
-
-	await userUserType([
-		['2482317505', 'ut_ai_staff_provider'],
-		['3136276210', 'ut_ai_staff_provider'],
-		['2487985578', 'ut_ai_staff_provider'],
-		['3136272756', 'ut_ai_staff_provider'],
-		['user_sys', 'ut_ai_staff_provider'],
-		['user_sys', 'ut_sys_admin']
-	])
 }
 
-async function initUserTypeOld2() {
-	/* userType */
-	// await userType([
-	// 	['sys_ai_old', 'ut_ai_staff_admin'],
-	// 	['sys_ai_old', 'ut_ai_staff_provider'],
-	// 	['sys_system_old', 'ut_sys_admin']
-	// ])
-
-	/* apps */
-	// await userTypeResourcesApps([
-	// 	['ut_ai_staff_provider', 'app_ai_staff'],
-	// 	['ut_ai_staff_provider', 'app_sys_report'],
-	// 	['ut_sys_admin', 'app_ai_staff'],
-	// 	['ut_sys_admin', 'app_sys_admin'],
-	// 	['ut_sys_admin', 'app_sys_report']
-	// ])
-
-	/* widgets */
-	// await userTypeResourcesWidgets([
-	// 	['ut_ai_staff_provider', 'widget_sys_report'],
-	// 	['ut_sys_admin', 'widget_sys_report']
-	// ])
-
-	/* user - userType */
+async function initUserUserType() {
+	// user_sys
 	await userUserType([
-		['2482317505', 'ut_ai_staff_provider'],
-		['3136276210', 'ut_ai_staff_provider'],
-		['2487985578', 'ut_ai_staff_provider'],
-		['3136272756', 'ut_ai_staff_provider'],
-		['user_sys', 'ut_ai_staff_provider'],
-		['user_sys', 'ut_sys_admin']
+		['user_sys', 'ut_sys_admin_global'],
+		['user_sys', 'ut_ai_staff']
 	])
-}
-
-async function initResourcesOld() {
-	/* programs */
-	await nodeObjPrograms([
-		['sys_system_old', 'node_pgm_sys_admin', 'Administration', 10, 'application'],
-		['sys_ai_old', 'node_pgm_cm_staff_provider', 'Staff', 40, 'application']
-	])
-
-	sectionHeader('NodeObjHeader - Report')
-	await nodeObjHeaders([
-		[
-			'sys_ai_old',
-			'node_pgm_cm_staff_provider',
-			'node_hdr_cm_ai_reports',
-			'Reports',
-			40,
-			'application'
-		]
-	])
-
-	/* widgets */
-	await widgets([
-		['sys_ai_old', 'widget_cm_user'],
-		['sys_ai_old', 'widget_cm_quotes'],
-		['sys_system_old', 'widget_sys_user']
-	])
-}
-
-async function initUserTypeOld1() {
-	/* userType */
-	await userType([
-		['sys_ai_old', 'ut_ai_staff_admin'],
-		['sys_ai_old', 'ut_ai_staff_provider'],
-		['sys_system_old', 'ut_sys_admin']
-	])
-
-	/* apps */
-	await userTypeResourcesApps([
-		['ut_ai_staff_provider', 'app_ai_staff'],
-		['ut_ai_staff_provider', 'app_sys_report'],
-
-		['ut_sys_admin', 'app_ai_staff'],
-		['ut_sys_admin', 'app_sys_admin'],
-		['ut_sys_admin', 'app_sys_report']
-	])
-
-	/* programs */
-	// await userTypeResourcesPrograms([
-	// 	['ut_ai_staff_admin', 'node_pgm_cm_staff_provider'],
-	// 	['ut_ai_staff_provider', 'node_pgm_cm_staff_provider'],
-	// 	['ut_sys_admin', 'node_pgm_cm_staff_provider'],
-	// 	['ut_sys_admin', 'node_pgm_sys_admin']
-	// ])
-	// ['ut_ai_staff_admin', 'node_pgm_cm_staff_admin'],
-	// ['ut_ai_staff_admin', 'node_pgm_cm_student'],
-	// ['ut_sys_admin', 'node_pgm_cm_staff_admin'],
-	// ['ut_sys_admin', 'node_pgm_cm_student'],
-
-	/* widgets */
-	// await userTypeResourcesWidgets([
-	// 	['ut_ai_staff_admin', 'widget_cm_user'],
-	// 	['ut_ai_staff_provider', 'widget_cm_user']
-	// 	// ['ut_sys_admin', 'widget_sys_user']
-	// ])
-
-	/* user - userType */
+	// AI-Admin (Matt)
 	await userUserType([
-		['2482317505', 'ut_ai_staff_provider'],
-		['3136276210', 'ut_ai_staff_provider'],
-		['2487985578', 'ut_ai_staff_provider'],
-		['3136272756', 'ut_ai_staff_provider'],
-		['user_sys', 'ut_ai_staff_admin'],
-		['user_sys', 'ut_ai_staff_provider'],
-		['user_sys', 'ut_sys_admin']
+		['3136276210', 'ut_ai_admin'],
+		['3136276210', 'ut_ai_staff']
+	])
+	// AI-Staff (Anise, Phyllip, Erica)
+	await userUserType([
+		['2482317505', 'ut_ai_staff'],
+		['2487985578', 'ut_ai_staff'],
+		['3136272756', 'ut_ai_staff']
 	])
 }
 

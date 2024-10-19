@@ -4,7 +4,10 @@ import {
 	addDataObjFieldEmbedListConfig,
 	addDataObjFieldEmbedListSelect
 } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import {
+	addNodeProgram,
+	addNodeProgramObj
+} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initAdminConfig() {
 	sectionHeader('SysAdmin - Config')
@@ -184,15 +187,14 @@ async function initConfig() {
 		]
 	})
 
-	await addNodeProgramObj({
+	await addNodeProgram({
 		codeIcon: 'application',
 		dataObj: 'data_obj_sys_system_config_list',
 		header: 'Systems (Config)',
 		isHideRowManager: false,
 		name: 'node_obj_sys_system_config_list',
 		orderDefine: 20,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_pgm_sys_admin'
+		owner: 'sys_system_old'
 	})
 
 	await addNodeProgramObj({

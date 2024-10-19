@@ -3,7 +3,10 @@ import {
 	addDataObj,
 	addDataObjFieldEmbedListSelect
 } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import {
+	addNodeProgram,
+	addNodeProgramObj
+} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initSysAdminSystemMeta() {
 	sectionHeader('User Administration')
@@ -156,15 +159,14 @@ async function initSystemMeta() {
 		]
 	})
 
-	await addNodeProgramObj({
+	await addNodeProgram({
 		codeIcon: 'application',
 		dataObj: 'data_obj_sys_system_meta_list',
 		header: 'Systems (Meta)',
 		isHideRowManager: false,
 		name: 'node_obj_sys_system_meta_list',
 		orderDefine: 40,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_pgm_sys_admin'
+		owner: 'sys_system_old'
 	})
 
 	await addNodeProgramObj({

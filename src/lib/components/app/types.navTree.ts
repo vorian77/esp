@@ -46,21 +46,26 @@ export class NavTree {
 			-1,
 			-1
 		)
+
+		// build tree
 		let listTree: NodeNav[] = [nodeNavRoot]
 
-		// add apps
 		if (rawMenu.headers.length === 1) {
 			listTree = this.addBranchNodes(listTree, nodeNavRoot, rawMenu.headers[0].nodes)
 		} else {
 			rawMenu.headers.forEach((h, idx) => {
-				const nodeDbProgram = new DbNodeProgram({
-					header: h.header,
-					id: h.id,
-					name: h.name,
-					orderDefine: idx
-				})
-				let nodeNavProgram = new NodeNav(nodeDbProgram, nodeNavRoot.id, idx, 0)
-				listTree.push(nodeNavProgram)
+				// console.log('navTree.init:: ', h)
+				let nodeNavProgram = listTree.find((n) => n.id === h.id)
+				if (!nodeNavProgram) {
+					const nodeDbProgram = new DbNodeProgram({
+						header: h.header,
+						id: h.id,
+						name: h.name,
+						orderDefine: idx
+					})
+					nodeNavProgram = new NodeNav(nodeDbProgram, nodeNavRoot.id, idx, 0)
+					listTree.push(nodeNavProgram)
+				}
 				listTree = this.addBranchNodes(listTree, nodeNavProgram, h.nodes)
 			})
 		}
@@ -76,6 +81,7 @@ export class NavTree {
 		})
 		return new NavTree({ currNode: nodeNavRoot, listTree })
 	}
+
 	static getNodeIdx(listTree: NodeNav[], node: NodeNav) {
 		for (let i = 0; i < listTree.length; i++) {
 			if (listTree[i].id === node.id) return i
@@ -126,11 +132,11 @@ export class NavTree {
 
 		switch (nodeNav.type) {
 			case NodeType.header:
-			case NodeType.program:
 				state.update({ page: '/home', nodeType: NodeType.home })
 				break
 
 			case NodeType.object:
+			case NodeType.program:
 			case NodeType.programObject:
 				state.update({
 					page: '/home',
@@ -193,7 +199,7 @@ export class NavTree {
 	async setCurrentNode(currNode: NodeNav) {
 		this.currNode = currNode
 
-		if ([NodeType.header, NodeType.program].includes(currNode.type) && !currNode.isRetrieved) {
+		if ([NodeType.header].includes(currNode.type) && !currNode.isRetrieved) {
 			await this.addBranch(this.currNode)
 		}
 

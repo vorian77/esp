@@ -33,7 +33,8 @@ export class User {
 	resources_sys_app: any[] = []
 	resources_sys_footer: any[] = []
 	resources_sys_system: UserTypeResource[] = []
-	resources_sys_widgets: any[] = []
+	resources_sys_widget: any[] = []
+	systemIds: string[] = []
 	userName: string
 
 	// old
@@ -44,7 +45,7 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
-		console.log('User.constructor.obj: ', obj)
+		// console.log('User.constructor.obj: ', obj)
 		const clazz = 'User'
 		this.avatar = obj.avatar
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
@@ -58,14 +59,14 @@ export class User {
 		this.resources_sys_app = obj.resources_sys_app
 		this.resources_sys_footer = obj.resources_sys_footer
 		this.resources_sys_system = this.setResourcesSystem(obj.resources_sys_system)
-		this.resources_sys_widgets = obj.resources_sys_widgets
+		this.resources_sys_widget = obj.resources_sys_widget
 
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 
 		// derived
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
-
-		// console.log('User.constructor.resources', this.resources)
+		this.systemIds = this.resources_sys_system.map((r) => r.idResource)
+		// console.log('User.constructor', this)
 
 		// old
 		// this.cm_ssr_disclosure = nbrOptional(obj.cm_ssr_disclosure, 'cm_ssr_disclosure')

@@ -283,7 +283,8 @@ export class State {
 					queryType: TokenApiQueryType.retrieve
 				})
 			}),
-			parmsState
+			parmsState,
+			stateRoot: token.state
 		})
 
 		await this.openModal(stateModal, fModalCloseUpdate)
@@ -542,12 +543,14 @@ export class StateSurfaceModalDataObj extends StateSurfaceModal {
 export class StateSurfaceModalEmbed extends StateSurfaceModal {
 	embedParentId: string
 	embedType: DataObjEmbedType
+	stateRoot?: State
 	constructor(obj: any) {
 		const clazz = 'StateSurfaceModalEmbed'
 		super(obj)
 		obj = valueOrDefault(obj, {})
 		this.embedParentId = strRequired(obj.embedParentId, clazz, 'embedParentId')
 		this.embedType = required(obj.embedType, clazz, 'embedType')
+		this.stateRoot = obj.stateRoot
 	}
 }
 

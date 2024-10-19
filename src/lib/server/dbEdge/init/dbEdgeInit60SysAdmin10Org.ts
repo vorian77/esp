@@ -4,7 +4,10 @@ import {
 	addDataObjFieldEmbedListConfig,
 	addDataObjFieldEmbedListSelect
 } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import {
+	addNodeProgram,
+	addNodeProgramObj
+} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initAdminOrg() {
 	sectionHeader('SysAdmin - Organization')
@@ -145,17 +148,15 @@ async function initOrg() {
 		]
 	})
 
-	await addNodeProgramObj({
+	await addNodeProgram({
 		codeIcon: 'application',
 		dataObj: 'data_obj_sys_org_list',
 		header: 'Organizations',
 		isHideRowManager: false,
 		name: 'node_obj_sys_org_list',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_pgm_sys_admin'
+		owner: 'sys_system_old'
 	})
-
 	await addNodeProgramObj({
 		codeIcon: 'application',
 		dataObj: 'data_obj_sys_org_detail',

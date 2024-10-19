@@ -602,26 +602,9 @@ async function initNodeObjFooter() {
 		codeIcon: 'application',
 		codeType: 'home',
 		header: 'Home',
+		isGlobalResource: true,
 		name: 'node_obj_sys_admin_footer_home',
-		orderDefine: 10,
-		owner: 'sys_system_old'
-	})
-	await addNodeFooter({
-		codeIcon: 'application',
-		codeType: 'page',
-		header: 'Contact Us',
-		name: 'node_obj_sys_admin_footer_contact_us',
-		orderDefine: 20,
-		owner: 'sys_system_old',
-		page: '/home/cm/contactUs'
-	})
-	await addNodeFooter({
-		codeIcon: 'application',
-		codeType: 'object',
-		dataObj: 'data_obj_auth_account',
-		header: 'My Account',
-		name: 'node_obj_sys_admin_footer_auth_account',
-		orderDefine: 30,
+		orderDefine: 0,
 		owner: 'sys_system_old'
 	})
 }

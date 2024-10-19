@@ -22,24 +22,18 @@ import { initDataReports } from '$server/dbEdge/init/dbEdgeInit120DataRep'
 import { initMigrationPerson } from '$server/dbEdge/init/dbEdgeInit100MigrPerson'
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
-export async function dbEdgeInit() {
-	sectionHeader('Init Start')
-	// await initDataReports()
-	await initUser()
-	sectionHeader('Init Complete')
-}
+// export async function dbEdgeInit() {
+// 	sectionHeader('Init Start')
+// 	// await initDataReports()
+// 	await initUser()
+// 	sectionHeader('Init Complete')
+// }
 
-export async function dbEdgeInit1() {
+export async function dbEdgeInit() {
 	sectionHeader('Init Start')
 	await initReset()
 	await initCoreObjects()
 	await initPreDataObj()
-
-	// temp - program menu headers
-	await nodeObjPrograms([
-		['sys_system_old', 'node_pgm_sys_admin', 'Administration', 10, 'application'],
-		['sys_ai_old', 'node_pgm_cm_staff_provider', 'Staff', 40, 'application']
-	])
 
 	await initSysCore()
 	await initSysOther()

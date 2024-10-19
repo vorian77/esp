@@ -3,7 +3,10 @@ import {
 	addDataObj,
 	addDataObjFieldEmbedListConfig
 } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import {
+	addNodeProgram,
+	addNodeProgramObj
+} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initFeatTraining() {
 	sectionHeader('DataObject - CM-Training')
@@ -343,15 +346,14 @@ async function initCourse() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	await addNodeProgram({
 		codeIcon: 'application',
 		dataObj: 'data_obj_cm_course_list',
 		header: 'Courses',
 		isHideRowManager: false,
 		name: 'node_obj_cm_course_list',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_pgm_cm_staff_provider'
+		owner: 'sys_ai_old'
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',
@@ -1564,15 +1566,14 @@ async function initPartner() {
 		]
 	})
 
-	await addNodeProgramObj({
+	await addNodeProgram({
 		codeIcon: 'application',
 		dataObj: 'data_obj_cm_partner_list',
 		header: 'Partners',
 		isHideRowManager: false,
 		name: 'node_obj_cm_partner_list',
 		orderDefine: 20,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_pgm_cm_staff_provider'
+		owner: 'sys_ai_old'
 	})
 
 	await addNodeProgramObj({

@@ -4,7 +4,10 @@ import {
 	addDataObjFieldEmbedListEdit,
 	updateDataObjColumnCustomEmbedShellFields
 } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import {
+	addNodeProgram,
+	addNodeProgramObj
+} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initSysRepUser() {
 	sectionHeader('Admin - Report-Render')
@@ -413,15 +416,14 @@ async function initRepConfig() {
 		customEmbedShellFields: ['parms']
 	})
 
-	await addNodeProgramObj({
+	await addNodeProgram({
 		codeIcon: 'application',
 		dataObj: 'data_obj_sys_rep_my_report_list',
 		header: 'My Reports',
 		isHideRowManager: false,
 		name: 'node_obj_sys_rep_my_report_list',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_hdr_cm_ai_reports'
+		owner: 'sys_system_old'
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',

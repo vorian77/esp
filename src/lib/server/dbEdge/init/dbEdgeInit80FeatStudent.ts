@@ -1,6 +1,9 @@
 import { sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 import { addDataObj } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import {
+	addNodeProgram,
+	addNodeProgramObj
+} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initFeatCMStudent() {
 	sectionHeader('DataObject - CM-Student')
@@ -401,15 +404,14 @@ async function initStudent() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	await addNodeProgram({
 		codeIcon: 'application',
 		dataObj: 'data_obj_cm_student_list',
 		header: 'Students',
 		isHideRowManager: false,
 		name: 'node_obj_cm_student_list',
 		orderDefine: 30,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_pgm_cm_staff_provider'
+		owner: 'sys_ai_old'
 	})
 	await addNodeProgramObj({
 		codeIcon: 'application',

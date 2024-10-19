@@ -89,7 +89,10 @@ function queryDataPre(state: State, tab: AppLevelTab, queryType: TokenApiQueryTy
 	// dataTree
 	const dataTree = queryDataPreTree(
 		queryType,
-		state instanceof StateSurfaceEmbedShell ? state.stateRoot.app : state.app
+		(state instanceof StateSurfaceEmbedShell || state instanceof StateSurfaceModalEmbed) &&
+			state?.stateRoot?.app
+			? state.stateRoot.app
+			: state.app
 	)
 
 	// dataTab

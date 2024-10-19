@@ -3,9 +3,7 @@ import {
 	nodeObjPrograms,
 	nodeObjPages,
 	userType,
-	userUserType,
-	userTypeResourcesApps,
-	userTypeResourcesPrograms
+	userUserType
 } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 
 const FILE = 'init_MOED_cm'
@@ -14,7 +12,6 @@ export default async function init() {
 	console.log()
 	console.log(`${FILE}.start...`)
 	await data()
-	await dataUserSys()
 	console.log(`${FILE}.end`)
 }
 
@@ -23,11 +20,6 @@ const reviewQuery = ''
 async function data() {
 	// await users([['Baltimore', 'MOED', 'user_moed', '!alfjasf*!@#$$*&']])
 
-	await nodeObjPrograms([
-		['app_moed_cm', 'node_pgm_moed_cm_staff', 'CM-Staff', 20, 'application'],
-		['app_moed_cm', 'node_node_pgm_moed_cm_student_applicant', 'CM-Applicant', 30, 'application'],
-		['app_moed_cm', 'node_pgm_moed_cm_student', 'CM-Student', 40, 'application']
-	])
 	await nodeObjPages([
 		[
 			'app_moed_cm',
@@ -88,25 +80,5 @@ async function data() {
 		['app_moed_cm', 'ut_moed_cm_staff'],
 		['app_moed_cm', 'ut_moed_cm_student_applicant'],
 		['app_moed_cm', 'ut_moed_cm_student']
-	])
-	await userTypeResourcesPrograms([
-		['ut_moed_cm_staff', 'node_pgm_moed_cm_staff'],
-		['ut_moed_cm_student_applicant', 'node_node_pgm_moed_cm_student_applicant'],
-		['ut_moed_cm_student', 'node_pgm_moed_cm_student']
-	])
-}
-
-async function dataUserSys() {
-	/* sys user */
-	await userTypeResourcesApps([['ut_sys_admin', 'app_moed_cm']])
-	await userTypeResourcesPrograms([
-		['ut_sys_admin', 'node_pgm_moed_cm_staff'],
-		['ut_sys_admin', 'node_node_pgm_moed_cm_student_applicant'],
-		['ut_sys_admin', 'node_pgm_moed_cm_student']
-	])
-	await userUserType([
-		['user_sys', 'ut_moed_cm_staff'],
-		['user_sys', 'ut_moed_cm_student_applicant'],
-		['user_sys', 'ut_moed_cm_student']
 	])
 }
