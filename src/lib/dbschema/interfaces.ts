@@ -282,7 +282,7 @@ export namespace sys_core {
     "subHeader"?: string | null;
     "exprSort"?: string | null;
     "listReorderColumn"?: sys_db.SysColumn | null;
-    "userResourceSaveParmsSelected"?: unknown | null;
+    "isUserSelectedSystem"?: boolean | null;
   }
   export interface SysDataObjActionField extends SysObj {
     "codePacketAction": SysCode;

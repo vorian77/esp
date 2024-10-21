@@ -94,6 +94,11 @@ async function processDataObjQuery(
 
 		case TokenApiQueryType.save:
 			returnData.fields = queryData?.dataTab?.fields
+			debug(
+				'dbEdgeProcess.processDataObjQuery',
+				'save.fields: ' + returnData.rawDataObj.name,
+				returnData.fields.map((field) => field.embedFieldName)
+			)
 			query.setProcessRow(
 				new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataTab?.rowsSave)
 			)
@@ -113,6 +118,8 @@ async function processDataObjQuery(
 	if (EMBED_QUERY_TYPES.includes(queryType)) {
 		for (let i = 0; i < returnData.fields.length; i++) {
 			const field = returnData.fields[i]
+			debug('dbEdgeProcess.processDataObjQuery.embeddedField', 'field: ' + field.embedFieldName)
+
 			returnData.rowsRetrieved
 			queryData.dataTab = field.data
 			await processDataObjQuery(
@@ -135,6 +142,10 @@ async function processDataObjExecute(
 	returnData.resetRowsRetrieved()
 	for (let i = 0; i < scriptGroup.scripts.length; i++) {
 		const script = scriptGroup.scripts[i]
+		if (script.exePost === 'formatData') {
+			debug('dbEdgeProcess.processDataObjExecute', 'script: ' + i, script.query.rawDataObj.name)
+		}
+
 		if (script.script) {
 			script.evalExpr(returnData)
 			const rawDataList = await executeQuery(script.script)

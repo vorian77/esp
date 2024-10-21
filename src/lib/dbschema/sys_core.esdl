@@ -99,6 +99,7 @@ module sys_core {
     required isListEdit: bool;
     isListSuppressFilterSort: bool;
     isListSuppressSelect: bool;
+    isUserSelectedSystem: bool;
     listEditPresetExpr: str;
     listReorderColumn: sys_db::SysColumn;
   
@@ -113,7 +114,6 @@ module sys_core {
       on source delete delete target;
       on target delete allow;
     };
-    userResourceSaveParmsSelected: json;
     constraint exclusive on (.name);
   } 
 

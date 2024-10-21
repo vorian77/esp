@@ -212,15 +212,6 @@ async function initDataObj() {
 				orderDefine: 140,
 				indexTable: 0
 			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'textArea',
-				columnName: 'userResourceSaveParmsSelected',
-				isDisplayable: true,
-				orderDisplay: 150,
-				orderDefine: 150,
-				indexTable: 0
-			},
 
 			/* parent */
 			{
@@ -328,6 +319,14 @@ async function initDataObj() {
 				isDisplayable: true,
 				orderDisplay: 265,
 				orderDefine: 265,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isUserSelectedSystem',
+				isDisplayable: true,
+				orderDisplay: 267,
+				orderDefine: 267,
 				indexTable: 0
 			},
 			{

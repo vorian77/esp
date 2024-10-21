@@ -88,10 +88,10 @@ async function initCourse() {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Course',
+		isUserSelectedSystem: true,
 		name: 'data_obj_cm_course_detail',
 		owner: 'sys_ai_old',
 		tables: [{ index: 0, table: 'CmCourse' }],
-		userResourceSaveParmsSelected: ['system'],
 		fields: [
 			{
 				columnName: 'id',
@@ -106,7 +106,7 @@ async function initCourse() {
 				isDisplayable: false,
 				isExcludeUpdate: true,
 				linkExprSave:
-					'(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,user_resource_system>))',
+					'(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,user_selected_system>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -460,12 +460,12 @@ async function initCohort() {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Cohort',
+		isUserSelectedSystem: true,
 		name: 'data_obj_cm_cohort_detail',
 		owner: 'sys_ai_old',
 		parentColumn: 'cohorts',
 		parentTable: 'CmCourse',
 		tables: [{ index: 0, table: 'CmCohort' }],
-		userResourceSaveParmsSelected: ['system'],
 		fields: [
 			{
 				columnName: 'id',
@@ -480,7 +480,7 @@ async function initCohort() {
 				isDisplayable: false,
 				isExcludeUpdate: true,
 				linkExprSave:
-					'(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,user_resource_system>))',
+					'(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,user_selected_system>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -1345,10 +1345,10 @@ async function initPartner() {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Partner',
+		isUserSelectedSystem: true,
 		name: 'data_obj_cm_partner_detail',
 		owner: 'sys_ai_old',
 		tables: [{ index: 0, table: 'CmPartner' }],
-		userResourceSaveParmsSelected: ['system'],
 		fields: [
 			{
 				columnName: 'id',
@@ -1363,7 +1363,7 @@ async function initPartner() {
 				isDisplayable: false,
 				isExcludeUpdate: true,
 				linkExprSave:
-					'(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,user_resource_system>))',
+					'(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,user_selected_system>))',
 				linkTable: 'SysSystem'
 			},
 			{

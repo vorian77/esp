@@ -152,10 +152,10 @@ export async function getDataObjById(dataObjId: string) {
 			isListEdit: true,
 			isListSuppressFilterSort: true,
 			isListSuppressSelect: true,
+			isUserSelectedSystem: true,
 			listEditPresetExpr: true,
 			name: true,
 			subHeader: true,
-			userResourceSaveParmsSelected: true,
 			_actionFieldGroup: e.select(do1.actionFieldGroup, (afg) => ({
 				...shapeDataObjActionFieldGroup(afg)
 			})),

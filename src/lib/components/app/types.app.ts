@@ -371,10 +371,11 @@ export class App {
 					case StatePacketAction.doDetailSave:
 						if (
 							state.user &&
-							currTab.data.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset)
+							currTab.data.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset) &&
+							token.dataObj.raw.isUserSelectedSystem
 						) {
 							if (
-								!(await state.user.getUserParmsSelected(state, token.dataObj, currTab.data.parms))
+								!(await state.user.getUserSelectedSystem(state, token.dataObj, currTab.data.parms))
 							)
 								return false
 						}

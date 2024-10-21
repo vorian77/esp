@@ -32,6 +32,7 @@ export async function addDataObj(data: any) {
 			isListEdit: e.optional(e.bool),
 			isListSuppressFilterSort: e.optional(e.bool),
 			isListSuppressSelect: e.optional(e.bool),
+			isUserSelectedSystem: e.optional(e.bool),
 			listEditPresetExpr: e.optional(e.str),
 			listReorderColumn: e.optional(e.str),
 			name: e.str,
@@ -41,8 +42,7 @@ export async function addDataObj(data: any) {
 			parentTable: e.optional(e.str),
 			processType: e.optional(e.str),
 			subHeader: e.optional(e.str),
-			tables: e.optional(e.array(e.json)),
-			userResourceSaveParmsSelected: e.optional(e.json)
+			tables: e.optional(e.array(e.json))
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObj, {
@@ -295,6 +295,7 @@ export async function addDataObj(data: any) {
 				isListEdit: booleanOrDefaultParm(p.isListEdit, false),
 				isListSuppressFilterSort: booleanOrDefaultParm(p.isListSuppressFilterSort, false),
 				isListSuppressSelect: booleanOrDefaultParm(p.isListSuppressSelect, false),
+				isUserSelectedSystem: booleanOrDefaultParm(p.isUserSelectedSystem, false),
 				listEditPresetExpr: p.listEditPresetExpr,
 				listReorderColumn: e.select(e.sys_db.getColumn(p.listReorderColumn)),
 				modifiedBy: CREATOR,
@@ -316,8 +317,7 @@ export async function addDataObj(data: any) {
 						modifiedBy: CREATOR,
 						table: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(t, 'table'))))
 					})
-				}),
-				userResourceSaveParmsSelected: p.userResourceSaveParmsSelected
+				})
 			})
 		}
 	)

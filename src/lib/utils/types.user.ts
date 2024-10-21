@@ -12,7 +12,6 @@ import {
 	valueOrDefault
 } from '$utils/utils'
 import { DataObj, ParmsValuesType } from '$utils/types'
-import { RawDataObjUserResourceSaveParmsSelected } from '$comps/dataObj/types.rawDataObj'
 import { TokenAppModalReturnType, TokenAppModalSelect } from '$utils/types.token'
 import { FieldItem } from '$comps/form/field'
 import { FileStorage } from '$comps/form/fieldFile'
@@ -33,6 +32,7 @@ export class User {
 	resources_sys_app: any[] = []
 	resources_sys_footer: any[] = []
 	resources_sys_widget: any[] = []
+	resources_systems: any[] = []
 	systemIds: string[] = []
 	userName: string
 
@@ -57,7 +57,14 @@ export class User {
 		this.resources_sys_app = obj.resources_sys_app
 		this.resources_sys_footer = obj.resources_sys_footer
 		this.resources_sys_widget = obj.resources_sys_widget
+		// this.resources_systems = arrayOfClasses(UserTypeResource, obj.systems)
+		this.resources_systems = obj.systems
 		this.systemIds = getArray(obj.systems).map((s) => s.id)
+		console.log('User.constructor.resources_systems', {
+			resource_systems: this.resources_systems,
+			systemIds: this.systemIds
+		})
+
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 
 		// derived
@@ -72,52 +79,31 @@ export class User {
 		// this.user_id = nbrOptional(obj.user_id, 'User')
 	}
 
-	async getUserParmsSelected(state: State, dataObj: DataObj, parmData: ParmsValues) {
+	async getUserSelectedSystem(state: State, dataObj: DataObj, parmData: ParmsValues) {
 		console.log('User.getUserParmsSelected', {
 			dataObj,
-			parmData,
-			resource: dataObj.raw.userResourceSaveParmsSelected
+			parmData
 		})
+		const parmName = `user_selected_system`
 
-		for await (const parmItem of dataObj.raw.userResourceSaveParmsSelected) {
-			if (!(await this.setUserSelectParmsItem(state, parmItem, parmData))) return false
-		}
-		return true
-	}
-
-	getResourcesSubject(
-		resourceType: UserTypeResourceType,
-		subjectType?: string
-	): UserTypeResource[] {
-		return this.resources_subject.filter((r) => r.codeType === resourceType) || []
-	}
-
-	prefIsActive(prefType: UserPrefType): boolean {
-		return this.preferences.isActive(prefType)
-	}
-
-	async setUserSelectParmsItem(
-		state: State,
-		parmItem: RawDataObjUserResourceSaveParmsSelected,
-		parmData: ParmsValues
-	) {
-		const parmName = `user_resource_${parmItem.codeType === UserTypeResourceType.subject ? parmItem.subject : parmItem.codeType}`
-		const resources = this.getResourcesSubject(parmItem.codeType, parmItem.subject)
-		switch (resources.length) {
+		switch (this.resources_systems.length) {
 			case 0:
-				alert(`Cannnot proceed. You do not have access to resource type: ${parmName}`)
+				alert(
+					`Cannot proceed. You have not been assigned system resources. Please see your administrator.`
+				)
 				return false
 			case 1:
-				parmData.data[parmName] = resources[0].idResource
+				parmData.data[parmName] = this.systemIds[0]
 				return true
-				break
 			default:
-				const itemsList = resources.map((r) => {
-					return new FieldItem(r.idResource, r.header)
-				})
-				parmData.data[parmName] = resources[0].idResource
+				parmData.data[parmName] = this.systemIds[0]
 				return true
-				console.log('User.setUserSelectParms.parmSelect.multi', { parmName, resources, itemsList })
+
+				// const itemsList = resources.map((r) => {
+				// 	return new FieldItem(r.idResource, r.header)
+				// })
+				// parmData.data[parmName] = resources[0].idResource
+				// console.log('User.setUserSelectParms.parmSelect.multi', { parmName, resources, itemsList })
 				await state.openModalSelect(
 					new TokenAppModalSelect({
 						fieldLabel: `System Record`,
@@ -138,15 +124,28 @@ export class User {
 							// }
 						},
 						isMultiSelect: false,
-						itemsCurrent: [],
-						itemsList: resources.map((r) => {
-							return new FieldItem(r.idResource, r.header)
-						})
+						itemsCurrent: []
+						// itemsList: resources.map((r) => {
+						// 	return new FieldItem(r.idResource, r.header)
+						// })
 					})
 				)
-				parmData.data[parmName] = resources[0].idResource
+				// parmData.data[parmName] = resources[0].idResource
 				return true
 		}
+
+		return true
+	}
+
+	getResourcesSubject(
+		resourceType: UserTypeResourceType,
+		subjectType?: string
+	): UserTypeResource[] {
+		return this.resources_subject.filter((r) => r.codeType === resourceType) || []
+	}
+
+	prefIsActive(prefType: UserPrefType): boolean {
+		return this.preferences.isActive(prefType)
 	}
 
 	setName() {

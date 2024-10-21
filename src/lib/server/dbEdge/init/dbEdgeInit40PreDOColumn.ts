@@ -1428,6 +1428,12 @@ export async function initPreColumn() {
 		name: 'isShareWithClient'
 	})
 	await addColumn({
+		codeDataType: 'bool',
+		header: 'User Selected - System',
+		name: 'isUserSelectedSystem',
+		owner: 'sys_system_old'
+	})
+	await addColumn({
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Items',
@@ -1925,13 +1931,6 @@ export async function initPreColumn() {
 		codeDataType: 'str',
 		header: 'User Name',
 		name: 'userName'
-	})
-	await addColumn({
-		owner: 'sys_system_old',
-		codeDataType: 'json',
-		header: 'User Resource Save Parms Select',
-		isMultiSelect: false,
-		name: 'userResourceSaveParmsSelected'
 	})
 	await addColumn({
 		owner: 'sys_system_old',

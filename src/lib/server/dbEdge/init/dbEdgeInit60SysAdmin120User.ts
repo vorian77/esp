@@ -8,54 +8,16 @@ import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50O
 
 export async function initAdminUser() {
 	sectionHeader('SysAdmin - User')
+	await initFieldListSelectResources()
 	await initFieldListSelectSystem()
 	await initFieldListSelectUser()
 	await initFieldListSelectUserType()
-	await initFieldListSelectResource()
 	await initUserOrg()
 	await initUserType()
 	await initWidget()
 }
 
-async function initFieldListSelectSystem() {
-	await addDataObj({
-		actionFieldGroup: 'doag_embed_list_select',
-		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		exprFilter: `.owner.id in <user,uuidlist,systemIds>`,
-		header: 'Select System(s)',
-		name: 'dofls_sys_admin_org_user_system',
-		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysSystem' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'name',
-				orderSort: 20,
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0
-			}
-		]
-	})
-
-	await addDataObjFieldEmbedListSelect({
-		actionFieldGroupModal: 'doag_dialog_footer_list',
-		btnLabelComplete: 'Select System(s)',
-		dataObjList: 'dofls_sys_admin_org_user_system',
-		name: 'fels_sys_admin_org_user_system',
-		owner: 'sys_system_old'
-	})
-}
-
-async function initFieldListSelectResource() {
+async function initFieldListSelectResources() {
 	sectionHeader('Field List Select - User Type - Resources')
 	// resources_sys_app
 	await addDataObj({
@@ -131,7 +93,7 @@ async function initFieldListSelectResource() {
 		owner: 'sys_system_old'
 	})
 
-	// resources_sys_fwidget
+	// resources_sys_widget
 	await addDataObj({
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
@@ -165,6 +127,44 @@ async function initFieldListSelectResource() {
 		btnLabelComplete: 'Select Widget(s)',
 		dataObjList: 'dofls_sys_admin_sys_user_type_widget',
 		name: 'fels_sys_admin_sys_user_type_widget',
+		owner: 'sys_system_old'
+	})
+}
+
+async function initFieldListSelectSystem() {
+	await addDataObj({
+		actionFieldGroup: 'doag_embed_list_select',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		exprFilter: `.id in <user,uuidlist,systemIds>`,
+		header: 'Select System(s)',
+		name: 'dofls_sys_admin_org_user_system',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysSystem' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'name',
+				orderSort: 20,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			}
+		]
+	})
+
+	await addDataObjFieldEmbedListSelect({
+		actionFieldGroupModal: 'doag_dialog_footer_list',
+		btnLabelComplete: 'Select System(s)',
+		dataObjList: 'dofls_sys_admin_org_user_system',
+		name: 'fels_sys_admin_org_user_system',
 		owner: 'sys_system_old'
 	})
 }

@@ -106,6 +106,7 @@ function queryDataPre(state: State, tab: AppLevelTab, queryType: TokenApiQueryTy
 
 	state.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
 
+	console.log('appQuery.queryDataPre', { dataTree, dataTab })
 	return { dataTree, dataTab }
 }
 

@@ -58,6 +58,7 @@ export class RawDataObj {
 	isListEdit: boolean
 	isListSuppressFilterSort: boolean
 	isListSuppressSelect: boolean
+	isUserSelectedSystem: boolean
 	listEditPresetExpr?: string
 	listReorderColumn?: string
 	name: string
@@ -74,7 +75,6 @@ export class RawDataObj {
 	rawPropsSort: RawDataObjPropDB[] = []
 	subHeader?: string
 	tables: DataObjTable[] = []
-	userResourceSaveParmsSelected: RawDataObjUserResourceSaveParmsSelected[] = []
 	constructor(obj: any) {
 		const clazz = 'RawDataObj'
 		obj = valueOrDefault(obj, {})
@@ -110,6 +110,7 @@ export class RawDataObj {
 		this.isListEdit = booleanRequired(obj.isListEdit, clazz, 'isListEdit')
 		this.isListSuppressFilterSort = booleanOrDefault(obj.isListSuppressFilterSort, false)
 		this.isListSuppressSelect = booleanOrDefault(obj.isListSuppressSelect, false)
+		this.isUserSelectedSystem = booleanOrDefault(obj.isUserSelectedSystem, false)
 		this.listEditPresetExpr = strOptional(obj.listEditPresetExpr, clazz, 'listEditPresetExpr')
 		this.listReorderColumn = strOptional(obj._listReorderColumn, clazz, '_listReorderColumn')
 		this.name = strRequired(obj.name, clazz, 'name')
@@ -136,10 +137,6 @@ export class RawDataObj {
 		this.rawPropsSelectPreset = this.initProps(obj._propsSelectPreset)
 		this.rawPropsSort = this.initProps(obj._propsSort)
 		this.rawPropsRepParmItems = this.initProps(obj._propsRepParmItems)
-		this.userResourceSaveParmsSelected = arrayOfClasses(
-			RawDataObjUserResourceSaveParmsSelected,
-			obj.userResourceSaveParmsSelected
-		)
 	}
 
 	initCrumbs(crumbFields: any) {
@@ -526,34 +523,6 @@ export class RawDataObjTable {
 		this.index = nbrRequired(obj.index, clazz, 'index')
 		this.indexParent = nbrOptional(obj.indexParent, clazz, 'indexParent')
 		this._table = new DBTable(obj._table)
-	}
-}
-
-export class RawDataObjUserResourceSaveParmsSelected {
-	codeType: UserTypeResourceType
-	subject?: string
-	constructor(obj: any) {
-		const clazz = 'RawDataObjUserResourceSaveParmsSelected'
-		obj = obj || ''
-		obj = obj.split('.')
-		this.codeType = memberOfEnum(
-			obj[0],
-			clazz,
-			'resource',
-			'UserTypeResourceType',
-			UserTypeResourceType
-		)
-		if (obj.length > 1) {
-			if (obj.length === 2 && this.codeType === UserTypeResourceType.subject) {
-				this.subject = obj[1]
-			} else {
-				error(500, {
-					file: FILENAME,
-					function: `class: ${clazz}`,
-					message: `Invalid UserTypeResourceType: ${obj} - should be 1 element or 'subject.subject name'`
-				})
-			}
-		}
 	}
 }
 

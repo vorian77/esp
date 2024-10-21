@@ -85,19 +85,29 @@ async function initStudent() {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Student',
+		isUserSelectedSystem: true,
 		name: 'data_obj_cm_student_detail',
 		owner: 'sys_ai_old',
 		tables: [
 			{ index: 0, table: 'CmClient' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
 		],
-		userResourceSaveParmsSelected: ['system'],
 		fields: [
 			{
 				columnName: 'id',
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 10
+			},
+			{
+				columnName: 'owner',
+				orderDefine: 15,
+				indexTable: 0,
+				isDisplayable: false,
+				isExcludeUpdate: true,
+				linkExprSave:
+					'(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,user_selected_system>))',
+				linkTable: 'SysSystem'
 			},
 			{
 				codeFieldElement: 'customHeader',
@@ -343,16 +353,6 @@ async function initStudent() {
 				orderDisplay: 210,
 				orderDefine: 210,
 				indexTable: 1
-			},
-			{
-				columnName: 'owner',
-				orderDefine: 215,
-				indexTable: 0,
-				isDisplayable: false,
-				isExcludeUpdate: true,
-				linkExprSave:
-					'(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,user_resource_system>))',
-				linkTable: 'SysSystem'
 			},
 
 			/* management */
