@@ -149,12 +149,6 @@ export class ScriptGroup {
 		const recordsInsert = 'recordsInsert'
 		const parms = queryData.getParms()
 
-		debug(
-			'addScriptPresetListEditSaveParentWithOut',
-			'rawDataObj.rawPropsSelectPreset',
-			query.rawDataObj.rawPropsSelectPreset
-		)
-
 		return this.addScript(query, queryData, ScriptExePost.none, [
 			// data
 			['wrap', { key: 'data', open: `SELECT (`, value: listEditPresetExpr }],

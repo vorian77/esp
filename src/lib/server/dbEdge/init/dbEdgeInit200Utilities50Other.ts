@@ -244,6 +244,38 @@ export async function addNodeFooter(data: any) {
 	return await query.run(client, data)
 }
 
+export async function addNodeManuApp(data: any) {
+	sectionHeader(`addNodeManuApp - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			codeIcon: e.str,
+			dataObj: e.optional(e.str),
+			header: e.optional(e.str),
+			isHideRowManager: e.bool,
+			name: e.str,
+			orderDefine: e.int16,
+			owner: e.str
+		},
+		(p) => {
+			return e.insert(e.sys_core.SysNodeObj, {
+				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', p.codeIcon)),
+				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
+				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'menu_app')),
+				createdBy: CREATOR,
+				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
+				header: p.header,
+				isHideRowManager: p.isHideRowManager,
+				modifiedBy: CREATOR,
+				name: p.name,
+				orderDefine: p.orderDefine,
+				owner: e.sys_core.getSystemPrime(p.owner)
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
 export async function addNodeProgram(data: any) {
 	sectionHeader(`addNodeProgram - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
@@ -294,7 +326,7 @@ export async function addNodeProgramObj(data: any) {
 			return e.insert(e.sys_core.SysNodeObj, {
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', p.codeIcon)),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
-				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'programObject')),
+				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'program_object')),
 				createdBy: CREATOR,
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,

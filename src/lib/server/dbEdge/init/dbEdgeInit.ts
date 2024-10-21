@@ -1,4 +1,4 @@
-import { nodeObjPrograms, sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 
 import { initReset } from '$server/dbEdge/init/dbEdgeInit0Reset'
 import { initCoreObjects } from '$server/dbEdge/init/dbEdgeInit20CoreObjects'

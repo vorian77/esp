@@ -55,6 +55,25 @@ export async function sysUser(owner: string, userName: string) {
 	return await query.run(client)
 }
 
+export async function userSystems(params: any) {
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params({ data: e.json }, (params) => {
+		return e.for(e.json_array_unpack(params.data), (i) => {
+			return e.update(e.sys_user.SysUser, (u) => ({
+				filter: e.op(u.userName, '=', e.cast(e.str, i[0])),
+				set: {
+					systems: e.assert_distinct(
+						e.for(e.array_unpack(e.cast(e.array(e.str), i[1])), (s) => {
+							return e.sys_core.getSystemPrime(s)
+						})
+					)
+				}
+			}))
+		})
+	})
+	return await query.run(client, { data: params })
+}
+
 export async function userType(params: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
@@ -154,6 +173,7 @@ export async function widgets(params: any) {
 			return e.insert(e.sys_user.SysWidget, {
 				owner: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[0]))),
 				name: e.cast(e.str, i[1]),
+				isGlobalResource: e.cast(e.bool, i[2]),
 				createdBy: CREATOR,
 				modifiedBy: CREATOR
 			})

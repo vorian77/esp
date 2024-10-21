@@ -1,10 +1,4 @@
-import {
-	organizations,
-	nodeObjPrograms,
-	nodeObjPages,
-	userType,
-	userUserType
-} from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { nodeObjPages, userType, userUserType } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 
 const FILE = 'init_MOED_cm'
 

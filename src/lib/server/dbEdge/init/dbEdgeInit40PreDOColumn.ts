@@ -1736,6 +1736,13 @@ export async function initPreColumn() {
 	await addColumn({
 		owner: 'sys_system_old',
 		codeDataType: 'link',
+		header: 'Report',
+		isMultiSelect: false,
+		name: 'report'
+	})
+	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'link',
 		header: 'Resource',
 		isMultiSelect: false,
 		name: 'resource'
@@ -1750,9 +1757,23 @@ export async function initPreColumn() {
 	await addColumn({
 		owner: 'sys_system_old',
 		codeDataType: 'link',
-		header: 'Report',
-		isMultiSelect: false,
-		name: 'report'
+		header: 'Resources - App',
+		isMultiSelect: true,
+		name: 'resources_sys_app'
+	})
+	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Resources - Footer',
+		isMultiSelect: true,
+		name: 'resources_sys_footer'
+	})
+	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Resources - Widget',
+		isMultiSelect: true,
+		name: 'resources_sys_widget'
 	})
 	await addColumn({
 		owner: 'sys_system_old',
@@ -1811,6 +1832,13 @@ export async function initPreColumn() {
 		codeDataType: 'str',
 		header: 'Sub-Header',
 		name: 'subHeader',
+		owner: 'sys_system_old'
+	})
+	await addColumn({
+		codeDataType: 'link',
+		header: 'Systems',
+		isMultiSelect: true,
+		name: 'systems',
 		owner: 'sys_system_old'
 	})
 	await addColumn({
@@ -1911,6 +1939,13 @@ export async function initPreColumn() {
 		header: 'UserTypes',
 		isMultiSelect: true,
 		name: 'userTypes'
+	})
+	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Users',
+		isMultiSelect: true,
+		name: 'users'
 	})
 	await addColumn({
 		owner: 'sys_system_old',

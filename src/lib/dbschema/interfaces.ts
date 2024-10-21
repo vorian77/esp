@@ -33,6 +33,7 @@ export namespace sys_user {
     "password": string;
     "person"?: SysPerson | null;
     "userName"?: string | null;
+    "systems": sys_core.SysSystem[];
   }
   export interface SysUserPref extends Mgmt {
     "user": SysUser;
@@ -50,6 +51,7 @@ export namespace sys_user {
     "resources_sys_app": sys_core.SysApp[];
     "resources_sys_footer": sys_core.SysNodeObj[];
     "resources_sys_widget": SysWidget[];
+    "users": SysUser[];
   }
   export interface SysUserTypeResource extends std.$Object {
     "codeType": sys_core.SysCode;

@@ -34,8 +34,8 @@ async function initNodeObj() {
 				columnName: 'codeNavType',
 				isDisplayable: true,
 				isExcludeUpdate: true,
-				orderDisplay: 12,
-				orderDefine: 12,
+				orderDisplay: 20,
+				orderDefine: 20,
 				indexTable: 0,
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -45,8 +45,8 @@ async function initNodeObj() {
 				columnName: 'codeNodeType',
 				isDisplayable: true,
 				isExcludeUpdate: true,
-				orderDisplay: 15,
-				orderDefine: 15,
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 0,
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -57,15 +57,24 @@ async function initNodeObj() {
 				orderCrumb: 10,
 				isDisplayable: true,
 				isExcludeUpdate: true,
-				orderDisplay: 20,
-				orderDefine: 20,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'isGlobalResource',
+				isDisplayable: true,
+				isExcludeUpdate: true,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
 			},
 			{
 				columnName: 'orderDefine',
 				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 30
+				orderDefine: 60
 			},
 
 			/* management */
@@ -170,6 +179,15 @@ async function initNodeObj() {
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isGlobalResource',
+				exprPreset: '(SELECT false)',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 75,
+				orderDefine: 75
 			},
 			{
 				codeFieldElement: 'tagRow',

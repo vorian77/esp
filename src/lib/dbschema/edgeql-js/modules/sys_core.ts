@@ -727,6 +727,8 @@ const SysOrg: $.$expr_PathNode<$.TypeSet<$SysOrg, $.Cardinality.Many>, null> = _
 export type $SysSystemλShape = $.typeutil.flatten<$ObjRootλShape & _sys_user.$MgmtλShape & {
   "owner": $.LinkDesc<$SysOrg, $.Cardinality.One, {}, false, false,  false, false>;
   "<owner[is sys_user::SysStaff]": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<systems[is sys_user::SysUser]": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<systems[is sys_user::currentUser]": $.LinkDesc<_sys_user.$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_core::SysCode]": $.LinkDesc<$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_db::SysTable]": $.LinkDesc<_sys_db.$SysTable, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -753,6 +755,7 @@ export type $SysSystemλShape = $.typeutil.flatten<$ObjRootλShape & _sys_user.$
   "<owner[is sys_core::SysApp]": $.LinkDesc<$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_db::SysColumn]": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<systems": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysSystem = $.ObjectType<"sys_core::SysSystem", $SysSystemλShape, null, [
   ...$ObjRoot['__exclusives__'],

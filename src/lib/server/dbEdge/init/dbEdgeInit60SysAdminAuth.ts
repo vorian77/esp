@@ -621,7 +621,7 @@ async function initDataObjUserPrefType() {
 		isListSuppressFilterSort: true,
 		listEditPresetExpr: `WITH 
 			allPrefs := (SELECT sys_core::SysCode FILTER .codeType.name = 'ct_sys_user_pref_type'),
-			userPrefs := (SELECT sys_user::SysUserPrefType FILTER .user.id = <uuid>'0b3ba76c-c0f4-11ee-9b77-8f017aab6306').codeType,
+			userPrefs := (SELECT sys_user::SysUserPrefType FILTER .user.id = <user,uuid,id>).codeType,
 			newVals := (SELECT allPrefs EXCEPT userPrefs)
 			SELECT newVals`,
 		name: 'data_obj_auth_user_pref_type',

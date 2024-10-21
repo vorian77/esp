@@ -586,7 +586,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			id: true,
 			name: true
 		})),
-		resources_sys_system: e.select(u.userTypes.owner, (res) => ({
+		systems: e.select(u.systems, (s) => ({
 			header: true,
 			id: true,
 			name: true

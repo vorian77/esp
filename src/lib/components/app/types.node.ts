@@ -24,9 +24,9 @@ export type DbNode = {
 	page?: string
 }
 
-export class DbNodeProgram {
+export class DbNodeMenuApp {
 	_codeIcon?: string
-	_codeNodeType = NodeType.program
+	_codeNodeType = NodeType.menu_app
 	header: string
 	id: string
 	isHideRowManager = false
@@ -111,23 +111,26 @@ export class NodeNav extends Node {
 	isCurrent: boolean = false
 	isOpen: boolean = false
 	isRetrieved: boolean = false
+	orderDefine: number
 	parentId?: string
 	constructor(dbNode: DbNode, parentId: string | undefined, idxLeaf: number, indent: number) {
 		super(new RawNode(dbNode))
 		this.idxLeaf = idxLeaf
 		this.indent = indent
+		this.orderDefine = dbNode.orderDefine
 		this.parentId = parentId
 	}
 }
 
 export enum NodeType {
-	header = 'header',
 	home = 'home',
+	menu_app = 'menu_app',
+	menu_header = 'menu_header',
+	menu_root = 'menu_root',
 	object = 'object',
 	page = 'page',
 	program = 'program',
-	programObject = 'programObject',
-	treeRoot = 'treeRoot'
+	program_object = 'program_object'
 }
 
 export class RawMenu {

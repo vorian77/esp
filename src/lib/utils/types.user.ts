@@ -32,7 +32,6 @@ export class User {
 	resources_subject: UserTypeResource[] = []
 	resources_sys_app: any[] = []
 	resources_sys_footer: any[] = []
-	resources_sys_system: UserTypeResource[] = []
 	resources_sys_widget: any[] = []
 	systemIds: string[] = []
 	userName: string
@@ -54,18 +53,15 @@ export class User {
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
 		this.org = obj.org ? { name: obj.org.name, header: obj.org.header } : undefined
 		this.preferences = new UserPrefs(obj.preferences)
-
 		this.resources_subject = arrayOfClasses(UserTypeResource, obj.resources_subject)
 		this.resources_sys_app = obj.resources_sys_app
 		this.resources_sys_footer = obj.resources_sys_footer
-		this.resources_sys_system = this.setResourcesSystem(obj.resources_sys_system)
 		this.resources_sys_widget = obj.resources_sys_widget
-
+		this.systemIds = getArray(obj.systems).map((s) => s.id)
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 
 		// derived
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
-		this.systemIds = this.resources_sys_system.map((r) => r.idResource)
 		// console.log('User.constructor', this)
 
 		// old

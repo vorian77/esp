@@ -33,6 +33,7 @@ module sys_user {
       on source delete delete target if orphan;
     };
     required password: str;
+    multi systems: sys_core::SysSystem;
     userName: str;
     multi userTypes: sys_user::SysUserType {
       on target delete allow;
@@ -62,6 +63,7 @@ module sys_user {
     multi resources_sys_footer: sys_core::SysNodeObj;
     multi resources_sys_widget: sys_user::SysWidget;
     multi tags: sys_core::SysCode;
+    users := .<userTypes[is sys_user::SysUser];
     constraint exclusive on ((.name));
   }
 

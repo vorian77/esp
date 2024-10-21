@@ -68,7 +68,7 @@
 				break
 
 			case NodeType.object:
-			case NodeType.programObject:
+			case NodeType.program_object:
 				packet = new StatePacket({
 					action: StatePacketAction.navTreeNode,
 					confirmType: TokenAppDoActionConfirmType.objectChanged,

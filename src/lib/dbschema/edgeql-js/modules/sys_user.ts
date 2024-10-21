@@ -52,6 +52,7 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "password": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "person": $.LinkDesc<_default.$SysPerson, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "userName": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "systems": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_user::currentUser]": $.LinkDesc<$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysObjNote]": $.LinkDesc<_sys_core.$SysObjNote, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is app_cm::CmCohortAttd]": $.LinkDesc<_app_cm.$CmCohortAttd, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -59,6 +60,7 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<createdBy[is sys_core::SysObj]": $.LinkDesc<_sys_core.$SysObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysObjNote]": $.LinkDesc<_sys_core.$SysObjNote, $.Cardinality.Many, {}, false, false,  false, false>;
   "<user[is sys_rep::SysRepUser]": $.LinkDesc<_sys_rep.$SysRepUser, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<users[is sys_user::SysUserType]": $.LinkDesc<$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<user[is SysError]": $.LinkDesc<_default.$SysError, $.Cardinality.Many, {}, false, false,  false, false>;
   "<user[is sys_user::SysUserPref]": $.LinkDesc<$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
   "<user[is sys_user::SysUserPrefType]": $.LinkDesc<$SysUserPrefType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -187,6 +189,7 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<createdBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<user": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<users": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysUser = $.ObjectType<"sys_user::SysUser", $SysUserλShape, null, [
   ...$Mgmt['__exclusives__'],
@@ -227,6 +230,7 @@ export type $SysUserTypeλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & 
   "resources_sys_app": $.LinkDesc<_sys_core.$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
   "resources_sys_footer": $.LinkDesc<_sys_core.$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "resources_sys_widget": $.LinkDesc<$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
+  "users": $.LinkDesc<$SysUser, $.Cardinality.Many, {}, false, true,  false, false>;
   "<userTypes[is sys_user::SysUser]": $.LinkDesc<$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<userTypes[is sys_user::currentUser]": $.LinkDesc<$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<userTypes": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
