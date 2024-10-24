@@ -40,6 +40,10 @@ module sys_core {
     note: str;
   }
 
+  type SysObjSubject extending sys_core::SysObj {
+    required codeType: sys_core::SysCode;
+  }
+
 
   type SysOrg extending sys_core::ObjRoot, sys_user::Mgmt {
     constraint exclusive on (.name);
@@ -346,6 +350,9 @@ module sys_core {
     using (select assert_single(sys_core::SysCode filter 
       .codeType.name = codeTypeName and 
       .name = codeName));
+
+  function getObj(name: str) -> optional sys_core::SysObj
+    using (select assert_single((select sys_core::SysObj filter .name = name)));
 
   function getObjRoot(name: str) -> optional sys_core::ObjRoot
     using (select assert_single((select sys_core::ObjRoot filter .name = name)));

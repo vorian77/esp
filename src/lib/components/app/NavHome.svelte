@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { AppShell } from '@skeletonlabs/skeleton'
-	import { appStoreUser, User, UserPrefType } from '$utils/types'
+	import { appStoreUser, User, UserPrefType, UserTypeResourceType } from '$utils/types'
 	import SysWizReport from '$comps/wizard/WizardSysReport.svelte'
 	import SysUser from '$routes/home/User.svelte'
 	import CMUser from '$routes/home/UserCM.svelte'
@@ -10,7 +10,7 @@
 	const FILENAME = '$comps/app/NavPageHome.svelte'
 
 	const hasResourceWidget = (widgetName: string) => {
-		return user?.resources_sys_widget?.findIndex((w) => w.name === widgetName) > -1
+		return user?.resources.hasResources(UserTypeResourceType.widget, widgetName)
 	}
 	let user: User | undefined
 	let showSysReport = false
@@ -32,8 +32,7 @@
 	}
 </script>
 
-<!-- <DataViewer header="showSysReport" data={showSysReport} />
-<DataViewer header="resources_sys_widget" data={user?.resources_sys_widget} /> -->
+<!-- <DataViewer header="showSysReport" data={showSysReport} /> -->
 
 <AppShell>
 	{#if showSysUser}

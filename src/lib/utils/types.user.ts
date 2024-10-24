@@ -28,11 +28,11 @@ export class User {
 	lastName: string
 	org: { name: string; header: string } | undefined
 	preferences: UserPrefs
-	resources: UserTypeResource[] = []
+	resources = new UserTypeResourceList()
+
 	resources_sys_app: any[] = []
 	resources_sys_footer: any[] = []
-	resources_sys_widget: any[] = []
-	resources_sys_system: any[] = []
+
 	systemIds: string[] = []
 	userName: string
 
@@ -53,17 +53,26 @@ export class User {
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
 		this.org = obj.org ? { name: obj.org.name, header: obj.org.header } : undefined
 		this.preferences = new UserPrefs(obj.preferences)
-		// this.resources = arrayOfClasses(UserTypeResource, obj.resources)
 		this.resources_sys_app = obj.resources_sys_app
 		this.resources_sys_footer = obj.resources_sys_footer
-		this.resources_sys_system = arrayOfClasses(UserTypeResourceItem, obj.systems)
-		this.resources_sys_widget = obj.resources_sys_widget
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 
 		// derived
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
-		this.systemIds = this.resources_sys_system.map((s) => s.id)
-		// console.log('User.constructor', this)
+		// this.resources.addResources(obj.resources_core)
+		// this.resources.addResources(obj.resources_subject)
+		// this.resources.addResources(
+		// 	obj.systems.map((s: any) => {
+		// 		return {
+		// 			_codeType: UserTypeResourceType.system,
+		// 			_resource: s
+		// 		}
+		// 	})
+		// )
+		// this.systemIds = this.resources
+		// 	.getResources(UserTypeResourceType.system)
+		// 	.map((s) => s.resource.id)
+		console.log('User.constructor', this)
 
 		// old
 		// this.cm_ssr_disclosure = nbrOptional(obj.cm_ssr_disclosure, 'cm_ssr_disclosure')
@@ -74,13 +83,15 @@ export class User {
 	}
 
 	async getUserSelectedSystem(state: State, dataObj: DataObj, parmData: ParmsValues) {
+		const systems = this.resources.getResources(UserTypeResourceType.system)
 		console.log('User.getUserParmsSelected', {
 			dataObj,
-			parmData
+			parmData,
+			systems
 		})
 		const parmName = `user_selected_system`
 
-		switch (this.resources_sys_system.length) {
+		switch (this.systems.length) {
 			case 0:
 				alert(
 					`Cannot proceed. You have not been assigned system resources. Please see your administrator.`
@@ -171,25 +182,58 @@ export enum UserPrefType {
 	widget_quick_report = 'widget_quick_report'
 }
 
+export class UserTypeResourceList {
+	resources: UserTypeResource[] = []
+	constructor() {}
+	addResources(obj: any) {
+		obj = getArray(obj)
+		obj.forEach((r) => {
+			this.resources.push(new UserTypeResource(r))
+		})
+	}
+	getResources(type: UserTypeResourceType): UserTypeResource[] {
+		return this.resources.filter((r) => r.codeType === type)
+	}
+	hasResources(type: UserTypeResourceType, name: string): boolean {
+		return this.resources.some((r) => r.codeType === type && r.resource.name === name)
+	}
+}
+
 export class UserTypeResource {
+	codeType: UserTypeResourceType
 	resource: UserTypeResourceItem
-	// typeResource: string
-	typeSubject?: string
 	constructor(obj: any) {
 		const clazz = 'UserTypeResource'
+		this.codeType = memberOfEnum(
+			obj._codeType,
+			clazz,
+			'_codeType',
+			'UserTypeResourceType',
+			UserTypeResourceType
+		)
 		this.resource = new UserTypeResourceItem(obj._resource)
-		// this.typeSubject = strOptional(obj._codeType, clazz, 'type')
 	}
 }
 
 export class UserTypeResourceItem {
+	codeTypeSubject?: string
 	header?: string
 	id: string
 	name: string
 	constructor(obj: any) {
 		const clazz = 'UserTypeResourceItem'
+		this.codeTypeSubject = obj?._codeType
 		this.header = obj.header
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.name = strRequired(obj.name, clazz, 'name')
 	}
+}
+
+export enum UserTypeResourceType {
+	app = 'app',
+	footer = 'footer',
+	report = 'report',
+	subject = 'subject',
+	system = 'system',
+	widget = 'widget'
 }

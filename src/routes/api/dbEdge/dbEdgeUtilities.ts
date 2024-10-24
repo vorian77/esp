@@ -539,17 +539,24 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			isActive: true,
 			filter: e.op(p.user.id, '=', u.id)
 		})),
-		resources: e.select(u.userTypes.resources, (res) => ({
-			_codeType: res.codeType.name,
-			_resource: e.select(res.resource, (res) => ({
+		resources_core: e.select(u.userTypes.resources, (r) => ({
+			_codeType: r.codeType.name,
+			_resource: e.select(r.resource, (obj) => ({
 				header: true,
 				id: true,
 				name: true
-			}))
+			})),
+			filter: e.op(r.codeType.name, '!=', 'subject')
 		})),
-		resources_sys_widget: e.select(u.userTypes.resources_sys_widget, (res) => ({
-			id: true,
-			name: true
+		resources_subject: e.select(u.userTypes.resources, (r) => ({
+			_codeType: r.codeType.name,
+			_resource: e.select(r.resource.is(e.sys_core.SysObjSubject), (obj) => ({
+				_codeType: obj.codeType.name,
+				header: true,
+				id: true,
+				name: true
+			})),
+			filter: e.op(r.codeType.name, '=', 'subject')
 		})),
 		systems: e.select(u.systems, (s) => ({
 			header: true,

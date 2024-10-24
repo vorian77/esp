@@ -1783,13 +1783,6 @@ export async function initPreColumn() {
 	})
 	await addColumn({
 		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Resources - Widget',
-		isMultiSelect: true,
-		name: 'resources_sys_widget'
-	})
-	await addColumn({
-		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Schedule',
 		name: 'schedule'

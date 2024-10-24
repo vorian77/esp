@@ -85,7 +85,7 @@ export async function addCode(data: any) {
 		(p) => {
 			return e.insert(e.sys_core.SysCode, {
 				owner: e.sys_core.getSystemPrime(p.owner),
-				codeType: e.select(e.sys_core.getCodeType(p.codeType)),
+				codeType: e.sys_core.getCodeType(p.codeType),
 				parent: e.select(
 					e.sys_core.getCode(
 						e.cast(e.str, e.json_get(p.parent, 'codeType')),
@@ -398,9 +398,7 @@ export async function addUserType(data: any) {
 			header: e.str,
 			name: e.str,
 			owner: e.str,
-			resources_sys_app: e.optional(e.array(e.str)),
-			resources_sys_footer: e.optional(e.array(e.str)),
-			resources_sys_widget: e.optional(e.array(e.str))
+			resources: e.optional(e.array(e.json))
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysUserType, {
@@ -409,50 +407,42 @@ export async function addUserType(data: any) {
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
 				modifiedBy: CREATOR,
-				resources_sys_app: e.assert_distinct(
-					e.set(
-						e.for(e.array_unpack(p.resources_sys_app || e.cast(e.array(e.str), e.set())), (res) => {
-							return e.sys_core.getApp(res)
-						})
-					)
-				),
-				resources_sys_footer: e.assert_distinct(
-					e.set(
-						e.for(
-							e.array_unpack(p.resources_sys_footer || e.cast(e.array(e.str), e.set())),
-							(res) => {
-								return e.sys_core.getNodeObjByName(res)
-							}
-						)
-					)
-				),
-				resources_sys_widget: e.assert_distinct(
-					e.set(
-						e.for(
-							e.array_unpack(p.resources_sys_widget || e.cast(e.array(e.str), e.set())),
-							(res) => {
-								return e.sys_user.getWidget(res)
-							}
-						)
-					)
-				)
+				resources: e.for(e.array_unpack(p.resources || e.cast(e.array(e.str), e.set())), (res) => {
+					const codeType = e.cast(e.str, e.json_get(res, 'codeType'))
+					const resource = e.cast(e.str, e.json_get(res, 'resource'))
+					return e.insert(e.sys_user.SysUserTypeResource, {
+						codeType: e.sys_core.getCode('ct_sys_user_type_resource_type', codeType),
+						resource: e.sys_core.getObj(resource)
+					})
+				})
 			})
 		}
 	)
 	return await query.run(client, data)
 }
 
-// export async function userType(params: any) {
-// 	const CREATOR = e.sys_user.getRootUser()
-// 	const query = e.params({ data: e.json }, (params) => {
-// 		return e.for(e.json_array_unpack(params.data), (i) => {
-// 			return e.insert(e.sys_user.SysUserType, {
-// 				owner: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[0]))),
-// 				name: e.cast(e.str, i[1]),
-// 				createdBy: CREATOR,
-// 				modifiedBy: CREATOR
-// 			})
-// 		})
-// 	})
-// 	return await query.run(client, { data: params })
-// }
+export async function addUserTypeResourceSubject(data: any) {
+	sectionHeader(`addUserTypeResourceSubject - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			codeType: e.str,
+			header: e.optional(e.str),
+			isGlobalResource: e.bool,
+			name: e.str,
+			owner: e.str
+		},
+		(p) => {
+			return e.insert(e.sys_core.SysObjSubject, {
+				codeType: e.sys_core.getCode('ct_sys_config_subject_type', p.codeType),
+				createdBy: CREATOR,
+				header: p.header,
+				isGlobalResource: p.isGlobalResource,
+				name: p.name,
+				owner: e.sys_core.getSystemPrime(p.owner),
+				modifiedBy: CREATOR
+			})
+		}
+	)
+	return await query.run(client, data)
+}

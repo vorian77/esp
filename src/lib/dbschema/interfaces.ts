@@ -54,8 +54,8 @@ export namespace sys_user {
     "resources": SysUserTypeResource[];
   }
   export interface SysUserTypeResource extends std.$Object {
-    "codeType": sys_core.SysCode;
     "resource": sys_core.SysObj;
+    "codeType": sys_core.SysCode;
   }
   export interface SysWidget extends sys_core.SysObj {}
   export interface currentUser extends SysUser {}
@@ -429,6 +429,9 @@ export namespace sys_core {
     "date": edgedb.LocalDate;
     "note"?: string | null;
     "owner": SysObj;
+  }
+  export interface SysObjSubject extends SysObj {
+    "codeType": SysCode;
   }
   export interface SysOrg extends ObjRoot, sys_user.Mgmt {}
   export interface SysSystem extends ObjRoot, sys_user.Mgmt {
@@ -939,6 +942,7 @@ export interface types {
     "SysDataObjWith": sys_core.SysDataObjWith;
     "SysNodeObj": sys_core.SysNodeObj;
     "SysObjNote": sys_core.SysObjNote;
+    "SysObjSubject": sys_core.SysObjSubject;
     "SysOrg": sys_core.SysOrg;
     "SysSystem": sys_core.SysSystem;
   };

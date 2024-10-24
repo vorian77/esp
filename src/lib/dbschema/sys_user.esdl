@@ -61,7 +61,6 @@ module sys_user {
     };
     multi resources_sys_app: sys_core::SysApp;
     multi resources_sys_footer: sys_core::SysNodeObj;
-    multi resources_sys_widget: sys_user::SysWidget;
     multi tags: sys_core::SysCode;
     users := .<userTypes[is sys_user::SysUser];
     constraint exclusive on ((.name));

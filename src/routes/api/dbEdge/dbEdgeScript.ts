@@ -19,6 +19,8 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$routes/api/dbEdge/dbEdgeScript.ts'
 
+type Config = [string, DataRecord?][]
+
 export class ScriptGroup {
 	scripts: Script[] = []
 	scriptSegmentLoop = 'FOR item IN json_array_unpack(data) UNION ('
@@ -27,7 +29,7 @@ export class ScriptGroup {
 		query: Query,
 		queryData: TokenApiQueryData,
 		exePost: ScriptExePost,
-		config: [string, DataRecord?][],
+		config: Config,
 		dataRows: DataRow[] = []
 	) {
 		const script = new Script(query, queryData, exePost, dataRows)
@@ -219,7 +221,7 @@ export class ScriptGroup {
 		action: string,
 		dataRows: DataRow[]
 	) {
-		let config: [string, DataRecord?][] = []
+		let config: Config = []
 		switch (action) {
 			case 'DELETE':
 				config = this.addScriptSaveDelete(query)
@@ -243,7 +245,7 @@ export class ScriptGroup {
 	}
 
 	// prettier-ignore
-	addScriptSaveDelete(query: Query): [string, DataRecord?][]{    
+	addScriptSaveDelete(query: Query): Config {    
     return [
 			['action', { type: 'DELETE', table: query.getTableObjRoot() }],
 			['filter', { exprFilter: `.id = <uuid>item['id']` }],
@@ -252,7 +254,7 @@ export class ScriptGroup {
 		]
 	}
 
-	addScriptSaveInsert(query: Query, queryData: TokenApiQueryData): [string, DataRecord?][] {
+	addScriptSaveInsert(query: Query, queryData: TokenApiQueryData): Config {
 		const clazz = 'ScriptGroup.addScriptSaveInsert'
 		if (query.parent) {
 			const recordsInsert = 'recordsInsert'
@@ -317,7 +319,6 @@ export class ScriptGroup {
 	addScriptSaveListSelect(query: Query, queryData: TokenApiQueryData) {
 		const clazz = 'ScriptGroup.addScriptSaveListSelect'
 		const field = required(query.field, clazz, 'query.field')
-
 		return field.columnBacklink
 			? this.addScriptSaveListSelectLinkBack(query, queryData, field)
 			: this.addScriptSaveListSelectLinkForward(query, queryData, field)
@@ -334,7 +335,7 @@ export class ScriptGroup {
 			field: DataObjDataField,
 			targetIds: string[],
 			filterType: 'UNION' | 'EXCEPT'
-		) => {
+		): Config => {
 			const setValue = `assert_distinct(.${field.columnBacklink} ${filterType} (SELECT ${field.parentTable.object} FILTER .id = <tree,uuid,${field.parentTable.name}.id>))`
 			const ids = `'[${targetIds.map((id: string) => `"${id}"`).toString()}]'`
 			const scriptLoop = `FOR item IN json_array_unpack(to_json(${ids}))`
@@ -411,7 +412,7 @@ export class ScriptGroup {
 	}
 
 	// prettier-ignore
-	addScriptSaveUpdate(query: Query): [string, DataRecord?][] {
+	addScriptSaveUpdate(query: Query): Config {
 		return [
 			['action', { type: 'UPDATE', table: query.getTableObjRoot() }],
 			['filter', { exprFilter: `.id = <uuid>item['id']` }],
@@ -422,7 +423,7 @@ export class ScriptGroup {
 		]
 	}
 
-	addScriptSavePost(query: Query): [string, DataRecord?][] {
+	addScriptSavePost(query: Query): Config {
 		return [
 			['data'],
 			['wrap', { key: 'records', open: 'Records := (', content: ['loop'] }],

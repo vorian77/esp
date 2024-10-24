@@ -9,7 +9,8 @@ import {
 	addApp,
 	addAppHeader,
 	addNodeFooter,
-	addUserType
+	addUserType,
+	addUserTypeResourceSubject
 } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initUser() {
@@ -34,6 +35,8 @@ export async function initReset() {
 	reset.delTableRecords('sys_user::SysWidget')
 	reset.delTableRecords('sys_core::SysApp')
 	reset.delTableRecords('sys_core::SysAppHeader')
+
+	reset.delTableRecords('sys_core::SysObjSubject')
 	await reset.execute()
 }
 
@@ -112,14 +115,6 @@ async function initApps() {
 }
 
 async function initResources() {
-	/* widgets */
-	await widgets([
-		['sys_system_old', 'widget_sys_report', true],
-		['sys_system_old', 'widget_sys_quotes', true],
-		['sys_system_old', 'widget_sys_user', true],
-		['sys_ai_old', 'widget_ai_user', false]
-	])
-
 	/* footers */
 	await addNodeFooter({
 		codeIcon: 'application',
@@ -130,6 +125,30 @@ async function initResources() {
 		orderDefine: 0,
 		owner: 'sys_ai_old'
 	})
+
+	/* subjects */
+	await addUserTypeResourceSubject({
+		codeType: 'cst_moed_office',
+		header: 'MOED Westside',
+		isGlobalResource: false,
+		name: 'moedOfficeWestside',
+		owner: 'sys_moed_old'
+	})
+	await addUserTypeResourceSubject({
+		codeType: 'cst_moed_office',
+		header: 'MOED Eastside',
+		isGlobalResource: false,
+		name: 'moedOfficeEastside',
+		owner: 'sys_moed_old'
+	})
+
+	/* widgets */
+	await widgets([
+		['sys_system_old', 'widget_sys_report', true],
+		['sys_system_old', 'widget_sys_quotes', true],
+		['sys_system_old', 'widget_sys_user', true],
+		['sys_ai_old', 'widget_ai_user', false]
+	])
 }
 
 async function initUserType() {
@@ -138,8 +157,11 @@ async function initUserType() {
 		header: 'Admin - Global',
 		name: 'ut_sys_admin_global',
 		owner: 'sys_system_old',
-		resources_sys_app: ['app_sys_admin_global', 'app_sys_reporting'],
-		resources_sys_widget: ['widget_sys_report']
+		resources: [
+			{ codeType: 'app', resource: 'app_sys_admin_global' },
+			{ codeType: 'app', resource: 'app_sys_reporting' },
+			{ codeType: 'widget', resource: 'widget_sys_report' }
+		]
 	})
 
 	/* Atlantic Impact */
@@ -147,15 +169,36 @@ async function initUserType() {
 		header: 'AI-Admin',
 		name: 'ut_ai_admin',
 		owner: 'sys_ai_old',
-		resources_sys_app: ['app_sys_admin_user', 'app_sys_reporting'],
-		resources_sys_widget: ['widget_sys_report']
+		resources: [
+			{ codeType: 'app', resource: 'app_sys_admin_user' },
+			{ codeType: 'app', resource: 'app_sys_reporting' },
+			{ codeType: 'widget', resource: 'widget_sys_report' }
+		]
 	})
 	await addUserType({
 		header: 'AI-Staff',
 		name: 'ut_ai_staff',
 		owner: 'sys_ai_old',
-		resources_sys_app: ['app_ai_staff', 'app_sys_reporting', 'app_ai_reporting'],
-		resources_sys_widget: ['widget_sys_report']
+		resources: [
+			{ codeType: 'app', resource: 'app_ai_reporting' },
+			{ codeType: 'app', resource: 'app_ai_staff' },
+			{ codeType: 'app', resource: 'app_sys_reporting' },
+			{ codeType: 'report', resource: 'report_cm_training_cohort_attendance' },
+			{ codeType: 'report', resource: 'report_cm_training_cohort_job_placement' },
+			{ codeType: 'widget', resource: 'widget_sys_report' }
+		]
+	})
+
+	/* MOED */
+	await addUserType({
+		header: 'MOED-Staff',
+		name: 'ut_moed_staff',
+		owner: 'sys_moed_old',
+		resources: [
+			{ codeType: 'app', resource: 'app_sys_reporting' },
+			{ codeType: 'subject', resource: 'moedOfficeEastside' },
+			{ codeType: 'subject', resource: 'moedOfficeWestside' }
+		]
 	})
 }
 
@@ -174,7 +217,8 @@ async function initUserUserType() {
 	await userUserType([
 		['user_sys', 'ut_sys_admin_global'],
 		['user_sys', 'ut_ai_admin'],
-		['user_sys', 'ut_ai_staff']
+		['user_sys', 'ut_ai_staff'],
+		['user_sys', 'ut_moed_staff']
 	])
 	// AI-Admin (Matt)
 	await userUserType([
