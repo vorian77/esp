@@ -346,6 +346,10 @@ export class DataObj {
 						ParmsValuesType.embedParentId,
 						field.embedParentId
 					)
+					this.data.fields[idx].data.parms.valueSet(
+						ParmsValuesType.embedListSave,
+						field.embedType === DataObjEmbedType.listEdit
+					)
 				}
 			}
 		})
@@ -677,16 +681,16 @@ export class DataObjData {
 }
 
 export class DataObjDataField {
+	columnBacklink?: string
 	data: DataObjData
 	embedFieldName: string
-	embedRecordId?: string
 	embedTable: DBTable
 	embedType: DataObjEmbedType
 	parentTable: DBTable
 	constructor(obj: any = {}) {
 		const clazz = 'DataObjDataField'
+		this.columnBacklink = strOptional(obj.columnBacklink, clazz, 'columnBacklink')
 		this.embedFieldName = strRequired(obj.embedFieldName, clazz, 'embedFieldName')
-		this.embedRecordId = strOptional(obj.embedRecordId, clazz, 'embedRecordId')
 		this.embedTable = required(obj.embedTable, clazz, 'embedTable')
 		this.embedType = memberOfEnum(
 			obj.embedType,
@@ -732,6 +736,7 @@ export class DataObjDataField {
 				)
 				fields.push(
 					new DataObjDataField({
+						columnBacklink: field.columnBacklink,
 						embedDataObjId,
 						embedFieldName,
 						embedTable: field?.link?.table,
@@ -745,6 +750,7 @@ export class DataObjDataField {
 		return fields
 	}
 	static load(fields: DataObjDataField[]) {
+		fields = getArray(fields)
 		return fields.map((field) => {
 			const newField = new DataObjDataField({ ...field })
 			newField.data = DataObjData.load(field.data)
@@ -944,9 +950,11 @@ export class DataRows {
 	}
 	static load(source: DataRows) {
 		const dataRows = new DataRows()
-		source.dataRows.forEach((dataRow) => {
-			dataRows.add(new DataRow(dataRow.status, dataRow.record))
-		})
+		if (source) {
+			source.dataRows.forEach((dataRow) => {
+				dataRows.add(new DataRow(dataRow.status, dataRow.record))
+			})
+		}
 		return dataRows
 	}
 	reset() {
@@ -1076,7 +1084,7 @@ export class ParmsValues {
 	}
 	static load(parms: ParmsValues) {
 		const newParms = new ParmsValues()
-		newParms.data = parms.data
+		if (parms) newParms.data = parms.data
 		return newParms
 	}
 	update(data: DataRecord) {
@@ -1112,6 +1120,7 @@ export class ParmsValues {
 
 export enum ParmsValuesType {
 	embedFieldName = 'embedFieldName',
+	embedListSave = 'embedListSave',
 	embedParentId = 'embedParentId',
 	isMultiSelect = 'isMultiSelect',
 	listLabel = 'listLabel',

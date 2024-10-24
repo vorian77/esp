@@ -252,11 +252,13 @@ export function getValRaw(exprParms: ExprParms) {
 		return [true, currentData[tokens[idx]]]
 	}
 	function valueNotFound(source: ExprSource, data: DataRecord) {
-		error(500, {
+		const err = {
 			file: FILENAME,
 			function: funct,
 			message: `Value null or not found - data: ${JSON.stringify(data)}`
-		})
+		}
+		debug('dbEdgeGetVal.valueNotFound', 'error', err)
+		error(500, err)
 	}
 }
 

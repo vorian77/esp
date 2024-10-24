@@ -17,7 +17,7 @@
 	}
 </script>
 
-<FormLabel {fp}>
+<FormLabel {fp} bold={true}>
 	<button class="ml-1" on:click={() => openDialogIcon()}>
 		<Icon name={'select'} width="28" height="28" fill={'#3b79e1'} />
 	</button>

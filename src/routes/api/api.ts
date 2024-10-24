@@ -16,6 +16,8 @@ export enum ApiFunction {
 	dbEdgeGetUser = 'dbEdgeGetUser',
 	dbEdgeInit = 'dbEdgeInit',
 	sysGetUserPref = 'sysGetUserPref',
+	sysGetUserResourcesApp = 'sysGetUserResourcesApp',
+	sysGetUserResourcesFooter = 'sysGetUserResourcesFooter',
 	sysSendText = 'sysSendText',
 	sysSetUserPref = 'sysSetUserPref'
 }

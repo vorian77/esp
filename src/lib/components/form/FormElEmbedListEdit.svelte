@@ -9,7 +9,7 @@
 	export let fp: FieldProps
 </script>
 
-<FormLabel {fp} />
+<FormLabel {fp} bold={true} />
 
 {#if fp}
 	<div class="mt-4">

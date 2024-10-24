@@ -184,7 +184,7 @@ module sys_core {
 
   # SysDataObjColumn
   type SysDataObjColumn extending sys_user::Mgmt {
-    column: sys_db::SysColumn;
+    required column: sys_db::SysColumn;
     
     nameCustom: str;
 
@@ -192,6 +192,7 @@ module sys_core {
     codeDbDataOp: sys_core::SysCode;
     codeDbDataSourceValue: sys_core::SysCode;
     codeSortDir: sys_core::SysCode;
+    columnBacklink: sys_db::SysColumn;
     exprCustom: str;
     exprPreset: str;
 

@@ -3,9 +3,11 @@ import {
 	DataObjCardinality,
 	DataObjEmbedType,
 	DataObjData,
+	DataObjDataField,
 	DataObjListEditPresetType,
 	DataRecordStatus,
 	debug,
+	getArray,
 	strRequired
 } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
@@ -315,10 +317,72 @@ export class ScriptGroup {
 	addScriptSaveListSelect(query: Query, queryData: TokenApiQueryData) {
 		const clazz = 'ScriptGroup.addScriptSaveListSelect'
 		const field = required(query.field, clazz, 'query.field')
+
+		return field.columnBacklink
+			? this.addScriptSaveListSelectLinkBack(query, queryData, field)
+			: this.addScriptSaveListSelectLinkForward(query, queryData, field)
+	}
+
+	addScriptSaveListSelectLinkBack(
+		query: Query,
+		queryData: TokenApiQueryData,
+		field: DataObjDataField
+	) {
 		const parms = queryData.getParms()
+		const getScriptBacklink = (
+			clause: string,
+			field: DataObjDataField,
+			targetIds: string[],
+			filterType: 'UNION' | 'EXCEPT'
+		) => {
+			const setValue = `assert_distinct(.${field.columnBacklink} ${filterType} (SELECT ${field.parentTable.object} FILTER .id = <tree,uuid,${field.parentTable.name}.id>))`
+			const ids = `'[${targetIds.map((id: string) => `"${id}"`).toString()}]'`
+			const scriptLoop = `FOR item IN json_array_unpack(to_json(${ids}))`
+			return [
+				// loop
+				['setValue', { key: 'loop', value: scriptLoop }],
+				['action', { type: 'UPDATE', table: field.embedTable.object }],
+				['filter', { exprFilter: `.id = <uuid>item` }],
 
-		if (!parms.listRecordIdSelected) return
+				// set clause
+				['setValue', { key: 'setValue', value: setValue }],
+				['wrap', { key: 'setProp', open: `${field.columnBacklink} := (`, content: ['setValue'] }],
+				['wrap', { key: 'set', open: `SET {`, content: ['setProp'] }],
 
+				// clause
+				['setValue', { key: 'semicolon', value: ';' }],
+				['combine', { key: clause, content: ['loop', 'action', 'filter', 'set', 'semicolon'] }]
+			]
+		}
+
+		const idsAdd = parms.listRecordIdSelected.filter(
+			(id: string) => !parms.listRecordIdList.includes(id)
+		)
+		const idsRemove = parms.listRecordIdList.filter(
+			(id: string) => !parms.listRecordIdSelected.includes(id)
+		)
+		const parentFilter = `.${field.columnBacklink}.id = <tree,uuid,${field.parentTable.name}.id>`
+		return this.addScript(query, queryData, ScriptExePost.formatData, [
+			// add/remove clauses
+			...getScriptBacklink('add', field, idsAdd, 'UNION'),
+			...getScriptBacklink('remove', field, idsRemove, 'EXCEPT'),
+
+			// return data
+			['action', { type: 'SELECT', table: field.embedTable.object }],
+			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
+			['filter', { exprFilter: parentFilter }],
+			['order'],
+
+			//	script
+			['script', { content: ['add', 'remove', 'action', 'propsSelect', 'filter', 'order'] }]
+		])
+	}
+
+	addScriptSaveListSelectLinkForward(
+		query: Query,
+		queryData: TokenApiQueryData,
+		field: DataObjDataField
+	) {
 		return this.addScript(query, queryData, ScriptExePost.formatData, [
 			// sub-table
 			['action', { type: 'SELECT', table: field.embedTable.object }],
@@ -326,7 +390,7 @@ export class ScriptGroup {
 			['wrap', { key: 'select', open: `:= (`, content: ['action', 'filter'] }],
 
 			// embed-field
-			['setValue', { key: 'fieldName', value: `${parms.embedFieldName}` }],
+			['setValue', { key: 'fieldName', value: `${field.embedFieldName}` }],
 			['wrap', { key: 'set', open: `SET {`, content: ['fieldName', 'select'] }],
 
 			// primary-table
@@ -370,6 +434,16 @@ export class ScriptGroup {
 			['script', { content: ['with', 'action', 'propsSelect', 'order'] }]
 		]
 	}
+	setDataItemsRecord(dataObjName: string, record: any) {
+		this.scripts.forEach((script: Script) => {
+			if (
+				script.exePost === ScriptExePost.dataItems &&
+				script.query.rawDataObj.name === dataObjName
+			) {
+				script.queryData.recordSet(record)
+			}
+		})
+	}
 }
 
 export class Script {
@@ -389,8 +463,9 @@ export class Script {
 		this.dataRows = dataRows
 		this.exePost = exePost
 		this.query = query
-		this.queryData = queryData
+		this.queryData = TokenApiQueryData.load(queryData)
 	}
+
 	addItem(buildAction: string, parms: DataRecord = {}) {
 		this.items.push(new ScriptItem(buildAction, parms))
 	}

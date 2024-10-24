@@ -28,11 +28,11 @@ export class User {
 	lastName: string
 	org: { name: string; header: string } | undefined
 	preferences: UserPrefs
-	resources_subject: UserTypeResource[] = []
+	resources: UserTypeResource[] = []
 	resources_sys_app: any[] = []
 	resources_sys_footer: any[] = []
 	resources_sys_widget: any[] = []
-	resources_systems: any[] = []
+	resources_sys_system: any[] = []
 	systemIds: string[] = []
 	userName: string
 
@@ -53,22 +53,16 @@ export class User {
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
 		this.org = obj.org ? { name: obj.org.name, header: obj.org.header } : undefined
 		this.preferences = new UserPrefs(obj.preferences)
-		this.resources_subject = arrayOfClasses(UserTypeResource, obj.resources_subject)
+		// this.resources = arrayOfClasses(UserTypeResource, obj.resources)
 		this.resources_sys_app = obj.resources_sys_app
 		this.resources_sys_footer = obj.resources_sys_footer
+		this.resources_sys_system = arrayOfClasses(UserTypeResourceItem, obj.systems)
 		this.resources_sys_widget = obj.resources_sys_widget
-		// this.resources_systems = arrayOfClasses(UserTypeResource, obj.systems)
-		this.resources_systems = obj.systems
-		this.systemIds = getArray(obj.systems).map((s) => s.id)
-		console.log('User.constructor.resources_systems', {
-			resource_systems: this.resources_systems,
-			systemIds: this.systemIds
-		})
-
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 
 		// derived
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
+		this.systemIds = this.resources_sys_system.map((s) => s.id)
 		// console.log('User.constructor', this)
 
 		// old
@@ -86,7 +80,7 @@ export class User {
 		})
 		const parmName = `user_selected_system`
 
-		switch (this.resources_systems.length) {
+		switch (this.resources_sys_system.length) {
 			case 0:
 				alert(
 					`Cannot proceed. You have not been assigned system resources. Please see your administrator.`
@@ -137,11 +131,8 @@ export class User {
 		return true
 	}
 
-	getResourcesSubject(
-		resourceType: UserTypeResourceType,
-		subjectType?: string
-	): UserTypeResource[] {
-		return this.resources_subject.filter((r) => r.codeType === resourceType) || []
+	getResourcesSubject(type: string): UserTypeResource[] {
+		return this.resources.filter((r) => r.typeSubject === type) || []
 	}
 
 	prefIsActive(prefType: UserPrefType): boolean {
@@ -150,19 +141,6 @@ export class User {
 
 	setName() {
 		this.fullName = `${this.firstName} ${this.lastName}`
-	}
-
-	setResourcesSystem(obj: any) {
-		let resources: UserTypeResource[] = []
-		getArray(obj).forEach((sys: { header: string; id: string; name: string }) => {
-			resources.push(
-				new UserTypeResource({
-					_codeType: UserTypeResourceType.system,
-					_resource: { header: sys.header, id: sys.id, name: sys.name }
-				})
-			)
-		})
-		return resources
 	}
 }
 
@@ -194,35 +172,24 @@ export enum UserPrefType {
 }
 
 export class UserTypeResource {
-	codeType: UserTypeResourceType
-	header?: string
-	idResource: string
-	idSubject?: string
-	name: string
+	resource: UserTypeResourceItem
+	// typeResource: string
+	typeSubject?: string
 	constructor(obj: any) {
-		const clazz = 'UserTypeResourceItem'
-		this.codeType = memberOfEnum(
-			obj._codeType,
-			clazz,
-			'codeType',
-			'UserTypeResourceType',
-			UserTypeResourceType
-		)
-		this.header = obj._resource.header
-		this.idResource = strRequired(obj._resource.id, clazz, 'idResource')
-		this.idSubject =
-			this.codeType === UserTypeResourceType.subject
-				? strRequired(obj.idSubject, clazz, 'idSubject')
-				: undefined
-		this.name = strRequired(obj._resource.name, clazz, 'name')
+		const clazz = 'UserTypeResource'
+		this.resource = new UserTypeResourceItem(obj._resource)
+		// this.typeSubject = strOptional(obj._codeType, clazz, 'type')
 	}
 }
 
-export enum UserTypeResourceType {
-	'app' = 'app',
-	'intervention' = 'intervention',
-	'report' = 'report',
-	'subject' = 'subject',
-	'system' = 'system',
-	'widget' = 'widget'
+export class UserTypeResourceItem {
+	header?: string
+	id: string
+	name: string
+	constructor(obj: any) {
+		const clazz = 'UserTypeResourceItem'
+		this.header = obj.header
+		this.id = strRequired(obj.id, clazz, 'id')
+		this.name = strRequired(obj.name, clazz, 'name')
+	}
 }

@@ -13,6 +13,8 @@ import {
 	getTableColumns,
 	getUserByUserId,
 	getUserPref,
+	getUserResourcesApp,
+	getUserResourcesFooter,
 	setUserPref
 } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { getDataObjId } from '$routes/api/dbEdge/dbEdgeUtilities'
@@ -63,6 +65,12 @@ export async function POST({ request, cookies }) {
 
 		case ApiFunction.sysGetUserPref:
 			return getServerResponse(await getUserPref(token))
+
+		case ApiFunction.sysGetUserResourcesApp:
+			return getServerResponse(await getUserResourcesApp(token))
+
+		case ApiFunction.sysGetUserResourcesFooter:
+			return getServerResponse(await getUserResourcesFooter(token))
 
 		case ApiFunction.sysSetUserPref:
 			return getServerResponse(await setUserPref(token))

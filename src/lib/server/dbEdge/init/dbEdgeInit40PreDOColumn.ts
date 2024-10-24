@@ -611,6 +611,13 @@ export async function initPreColumn() {
 		name: 'column'
 	})
 	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Column - Backlink',
+		isMultiSelect: false,
+		name: 'columnBacklink'
+	})
+	await addColumn({
 		codeDataType: 'link',
 		header: 'Parent Column',
 		isMultiSelect: false,

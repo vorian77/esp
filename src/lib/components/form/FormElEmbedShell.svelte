@@ -46,7 +46,7 @@
 
 <!-- <DataViewer header="stateEmbedShell.objStatus" data={stateEmbedShell.objStatus} /> -->
 
-<!-- <FormLabel {fp} /> -->
+<!-- <FormLabel {fp} bold={true}/> -->
 {#if dataObj && dataObjData}
 	<div class="border-2 px-4 pb-4">
 		<LayoutTab bind:state={field.stateShell} {component} {dataObj} {dataObjData} on:formCancelled />

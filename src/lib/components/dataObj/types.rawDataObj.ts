@@ -19,7 +19,6 @@ import {
 	strOptional,
 	strRequired,
 	DBTable,
-	UserTypeResourceType,
 	valueOrDefault
 } from '$utils/types'
 
@@ -265,6 +264,7 @@ export class RawDataObjPropDB {
 	codeDataSourceValue: PropDataSourceValue
 	codeDataType: PropDataType
 	codeSortDir?: string
+	columnBacklink?: string
 	exprCustom?: string
 	exprPreset?: string
 	fieldEmbed?: RawDataObjPropDBFieldEmbed
@@ -300,6 +300,7 @@ export class RawDataObjPropDB {
 			PropSortDir,
 			PropSortDir.asc
 		)
+		this.columnBacklink = strOptional(obj._columnBacklink, clazz, '_columnBacklink')
 		this.exprCustom = strOptional(obj.exprCustom, clazz, 'exprCustom')
 		this.exprPreset = strOptional(obj.exprPreset, clazz, 'exprPreset')
 		this.fieldEmbed = obj._fieldEmbedListConfig

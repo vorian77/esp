@@ -89,6 +89,7 @@ export async function getDataObjById(dataObjId: string) {
 		_codeDataType: doc.column.codeDataType.name,
 		_codeDbDataSourceValue: doc.codeDbDataSourceValue.name,
 		_codeSortDir: doc.codeSortDir.name,
+		_columnBacklink: doc.columnBacklink.name,
 		_fieldEmbedListConfig: e.select(doc.fieldEmbedListConfig, (fe) => ({
 			_dataObjEmbedId: fe.dataObjEmbed.id
 		})),
@@ -538,49 +539,13 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			isActive: true,
 			filter: e.op(p.user.id, '=', u.id)
 		})),
-		resources_subject: e.select(u.userTypes.resources_subject, (subj) => ({
-			_codeType: subj.codeType.name,
-			_resource: e.select(subj.resource, (res) => ({
+		resources: e.select(u.userTypes.resources, (res) => ({
+			_codeType: res.codeType.name,
+			_resource: e.select(res.resource, (res) => ({
 				header: true,
 				id: true,
 				name: true
 			}))
-		})),
-		resources_sys_app: e.select(u.userTypes.resources_sys_app, (res) => ({
-			appHeader: e.select(res.appHeader, (ah) => ({
-				id: true,
-				header: true,
-				name: true,
-				orderDefine: true
-			})),
-			id: true,
-			nodes: e.select(res.nodes, (n) => ({
-				_codeIcon: n.codeIcon.name,
-				_codeNodeType: n.codeNodeType.name,
-				dataObjId: n.dataObj.id,
-				header: true,
-				id: true,
-				name: true,
-				orderDefine: true,
-				page: true,
-				order_by: n.orderDefine
-			})),
-			order_by: res.appHeader.orderDefine
-		})),
-		resources_sys_footer: e.select(e.sys_core.SysNodeObj, (f) => ({
-			_codeIcon: f.codeIcon.name,
-			_codeNodeType: f.codeNodeType.name,
-			dataObjId: f.dataObj.id,
-			header: true,
-			id: true,
-			orderDefine: true,
-			page: true,
-			filter: e.op(
-				e.op(e.op(f.codeNavType.name, '=', 'footer'), 'and', e.op(f.isGlobalResource, '=', true)),
-				'or',
-				e.op(f.id, 'in', u.userTypes.resources_sys_footer.id)
-			),
-			order_by: f.orderDefine
 		})),
 		resources_sys_widget: e.select(u.userTypes.resources_sys_widget, (res) => ({
 			id: true,
@@ -606,6 +571,63 @@ export async function getUserPref(token: TokenApiUserPref) {
 			'and',
 			e.op(p.idFeature, '=', e.cast(e.uuid, token.idFeature))
 		)
+	}))
+	return await query.run(client)
+}
+
+export async function getUserResourcesApp(token: TokenApiUserId) {
+	const query = e.select(e.sys_core.SysApp, (res) => ({
+		appHeader: e.select(res.appHeader, (ah) => ({
+			id: true,
+			header: true,
+			name: true,
+			orderDefine: true
+		})),
+		id: true,
+		nodes: e.select(res.nodes, (n) => ({
+			_codeIcon: n.codeIcon.name,
+			_codeNodeType: n.codeNodeType.name,
+			dataObjId: n.dataObj.id,
+			header: true,
+			id: true,
+			name: true,
+			orderDefine: true,
+			page: true,
+			order_by: n.orderDefine
+		})),
+		filter: e.op(
+			res.id,
+			'in',
+			e.select(e.sys_user.SysUser, (user) => ({
+				filter: e.op(user.id, '=', e.cast(e.uuid, token.userId))
+			})).userTypes.resources_sys_app.id
+		),
+		order_by: res.appHeader.orderDefine
+	}))
+	return await query.run(client)
+}
+
+export async function getUserResourcesFooter(token: TokenApiUserId) {
+	const query = e.select(e.sys_core.SysNodeObj, (res) => ({
+		_codeIcon: res.codeIcon.name,
+		_codeNodeType: res.codeNodeType.name,
+		dataObjId: res.dataObj.id,
+		header: true,
+		id: true,
+		orderDefine: true,
+		page: true,
+		filter: e.op(
+			e.op(e.op(res.codeNavType.name, '=', 'footer'), 'and', e.op(res.isGlobalResource, '=', true)),
+			'or',
+			e.op(
+				res.id,
+				'in',
+				e.select(e.sys_user.SysUser, (user) => ({
+					filter: e.op(user.id, '=', e.cast(e.uuid, token.userId))
+				})).userTypes.resources_sys_footer.id
+			)
+		),
+		order_by: res.orderDefine
 	}))
 	return await query.run(client)
 }

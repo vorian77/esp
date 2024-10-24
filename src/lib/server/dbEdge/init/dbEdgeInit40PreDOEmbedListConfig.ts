@@ -18,7 +18,6 @@ export async function initPreEmbedListConfig() {
 	await initFieldListConfigDataObjColumnItem()
 	await initFieldListConfigDataObjColumnLink()
 	await initFieldListConfigDataObjTable()
-	await initFieldListConfigUserTypeResource()
 }
 
 async function initFieldListConfigDataObjActionFieldConfirms() {
@@ -1311,96 +1310,6 @@ async function initFieldListConfigDataObjTable() {
 		dataObjEmbed: 'doflc_sys_admin_data_obj_table_list',
 		dataObjModal: 'doflc_sys_admin_data_obj_table_detail',
 		name: 'flec_data_obj_table',
-		owner: 'sys_system_old'
-	})
-}
-
-async function initFieldListConfigUserTypeResource() {
-	sectionHeader('Field List Config - UserTypeResources')
-
-	await addDataObj({
-		actionFieldGroup: 'doag_embed_list_config',
-		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		header: 'User Type Resources',
-		name: 'doflc_sys_admin_user_type_resource_list',
-		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysUserTypeResource' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'codeType',
-				orderSort: 10,
-				isDisplayable: true,
-				orderDisplay: 10,
-				orderDefine: 10,
-				indexTable: 0,
-				linkColumns: ['name']
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'resource',
-				orderSort: 20,
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0,
-				linkColumns: ['name']
-			}
-		]
-	})
-
-	await addDataObj({
-		actionFieldGroup: 'doag_dialog_form_detail',
-		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
-		header: 'User Type Resource',
-		name: 'doflc_sys_admin_user_type_resource_detail',
-		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysUserTypeResource' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'codeType',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_user_type_resource_type',
-				linkTable: 'SysCode'
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'resource',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-
-				fieldListItems: 'il_sys_user_type_resource',
-				indexTable: 0,
-				linkTable: 'SysObj'
-			}
-		]
-	})
-
-	await addDataObjFieldEmbedListConfig({
-		actionFieldGroupModal: 'doag_dialog_footer_detail',
-		dataObjEmbed: 'doflc_sys_admin_user_type_resource_list',
-		dataObjModal: 'doflc_sys_admin_user_type_resource_detail',
-		name: 'flec_user_type_resource',
 		owner: 'sys_system_old'
 	})
 }

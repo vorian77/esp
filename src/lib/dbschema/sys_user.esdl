@@ -56,7 +56,7 @@ module sys_user {
   }
   
   type SysUserType extending sys_core::SysObj {
-    multi resources_subject: sys_user::SysUserTypeResource {
+    multi resources: sys_user::SysUserTypeResource {
       on target delete allow;
     };
     multi resources_sys_app: sys_core::SysApp;
@@ -69,8 +69,7 @@ module sys_user {
 
   type SysUserTypeResource {
     required codeType: sys_core::SysCode;
-    idSubject: uuid;
-    required resource: sys_core::ObjRoot;
+    required resource: sys_core::SysObj;
   }
   
   type SysWidget extending sys_core::SysObj {

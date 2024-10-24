@@ -13,11 +13,11 @@ import { error } from '@sveltejs/kit'
 
 export async function initDataReports() {
 	sectionHeader('Reports')
-	await initAnalyticTrainingCredential()
-
 	await initReportCMTrainingCohortAttendance()
 	await initReportCMTrainingCohortWages()
 
+	// old - static
+	await initAnalyticTrainingCredential()
 	await initReportCourseSummary()
 	await initReportOurWorldSummary()
 	await initReportStudentSummary()
@@ -33,7 +33,6 @@ async function initReportCMTrainingCohortAttendance() {
 		name: 'report_cm_training_cohort_attendance',
 		owner: 'sys_ai_old',
 		tables: [{ index: 0, table: 'CmCsfCohort' }],
-		analytics: ['analytic_cm_training_cohort_attendance'],
 		elements: [
 			{
 				codeDbDataSourceValue: 'edgeDB',

@@ -19,6 +19,64 @@ export async function initAdminUser() {
 
 async function initFieldListSelectResources() {
 	sectionHeader('Field List Select - User Type - Resources')
+	// resources
+	await addDataObj({
+		actionFieldGroup: 'doag_embed_list_select',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		exprFilter: `.resource.owner.id in <user,uuidlist,systemIds> OR .resource.isGlobalResource = true`,
+		header: 'Select Resource(s)',
+		name: 'dofls_sys_admin_sys_user_type_resource',
+		owner: 'sys_system_old',
+		tables: [
+			{ index: 0, table: 'SysUserTypeResource' },
+			{ columnParent: 'resource', indexParent: 0, index: 1, table: 'SysObj' }
+		],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeType',
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'name',
+				orderSort: 20,
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'header',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 1
+			}
+		]
+	})
+	await addDataObjFieldEmbedListSelect({
+		actionFieldGroupModal: 'doag_dialog_footer_list',
+		btnLabelComplete: 'Select Resource(s)',
+		dataObjList: 'dofls_sys_admin_sys_user_type_resource',
+		name: 'fels_sys_admin_sys_user_type_resource',
+		owner: 'sys_system_old'
+	})
+
 	// resources_sys_app
 	await addDataObj({
 		actionFieldGroup: 'doag_embed_list_select',
@@ -563,20 +621,31 @@ async function initUserType() {
 			},
 			{
 				codeFieldElement: 'embedListSelect',
+				columnBacklink: 'userTypes',
 				columnName: 'users',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
 				fieldEmbedListSelect: 'fels_sys_sys_admin_user',
 				indexTable: 0,
-				linkTable: 'SysUser'
+				isDisplayable: true,
+				linkTable: 'SysUser',
+				orderDisplay: 80,
+				orderDefine: 80
+			},
+			{
+				codeFieldElement: 'embedListSelect',
+				columnName: 'resources',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90,
+				fieldEmbedListSelect: 'fels_sys_admin_sys_user_type_resource',
+				indexTable: 0,
+				linkTable: 'SysUserTypeResource'
 			},
 			{
 				codeFieldElement: 'embedListSelect',
 				columnName: 'resources_sys_app',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 95,
+				orderDefine: 95,
 				fieldEmbedListSelect: 'fels_sys_admin_sys_user_type_app',
 				indexTable: 0,
 				linkTable: 'SysApp'
@@ -595,8 +664,8 @@ async function initUserType() {
 				codeFieldElement: 'embedListSelect',
 				columnName: 'resources_sys_widget',
 				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
+				orderDisplay: 120,
+				orderDefine: 120,
 				fieldEmbedListSelect: 'fels_sys_admin_sys_user_type_widget',
 				indexTable: 0,
 				linkTable: 'SysWidget'

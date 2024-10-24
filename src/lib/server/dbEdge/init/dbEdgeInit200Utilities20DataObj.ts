@@ -90,7 +90,7 @@ export async function addDataObj(data: any) {
 				),
 				columns: e.for(e.array_unpack(p.fields), (f) => {
 					return e.insert(e.sys_core.SysDataObjColumn, {
-						column: e.select(e.sys_db.getColumn(e.cast(e.str, e.json_get(f, 'columnName')))),
+						column: e.sys_db.getColumn(e.cast(e.str, e.json_get(f, 'columnName'))),
 
 						/* DB */
 						codeDbDataOp: e.sys_core.getCode(
@@ -114,6 +114,14 @@ export async function addDataObj(data: any) {
 								'ct_sys_do_field_sort_dir',
 								e.cast(e.str, e.json_get(f, 'codeSortDir'))
 							)
+						),
+
+						columnBacklink: e.op(
+							e.sys_db.getColumn(e.cast(e.str, e.json_get(f, 'columnBacklink'))),
+							'if',
+							e.op('exists', e.cast(e.str, e.json_get(f, 'columnBacklink'))),
+							'else',
+							e.cast(e.sys_db.SysColumn, e.set())
 						),
 
 						exprCustom: e.cast(e.str, e.json_get(f, 'exprCustom')),

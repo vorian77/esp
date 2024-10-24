@@ -785,6 +785,17 @@ async function initDataObjColumn() {
 				orderDefine: 300
 			},
 			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'columnBacklink',
+				isDisplayable: true,
+				orderDisplay: 305,
+				orderDefine: 305,
+				indexTable: 0,
+				fieldListItems: 'il_sys_column_order_name',
+				linkTable: 'SysColumn'
+			},
+			{
 				codeFieldElement: 'toggle',
 				columnName: 'isExcludeInsert',
 				isDisplayable: true,

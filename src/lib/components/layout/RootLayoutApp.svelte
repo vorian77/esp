@@ -325,8 +325,11 @@
 				const embedFieldName = data?.valueGet(ParmsValuesType.embedFieldName)
 				currTab = currLevel.getCurrTab()
 				const idx = currTab.data.fields.findIndex((f) => f.embedFieldName === embedFieldName)
-				if (idx > -1) currTab.data.fields[idx].data.parms.update(data?.valueGetAll())
-				await query(state, currTab, TokenApiQueryType.save)
+				if (idx > -1) {
+					currTab.data.fields[idx].data.parms.update(data?.valueGetAll())
+					currTab.data.fields[idx].data.parms.valueSet(ParmsValuesType.embedListSave, true)
+					await query(state, currTab, TokenApiQueryType.save)
+				}
 			}
 			updateObjectsForm()
 		}

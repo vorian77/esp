@@ -13,16 +13,26 @@ export function userGet() {
 }
 
 export async function userInit(userId: string) {
-	const result = await apiFetch(ApiFunction.dbEdgeGetUser, new TokenApiUserId(userId))
+	const token = new TokenApiUserId(userId)
+	const rawUser = await userInitData(token, ApiFunction.dbEdgeGetUser)
+	rawUser.resources_sys_app = await userInitData(token, ApiFunction.sysGetUserResourcesApp)
+	rawUser.resources_sys_footer = await userInitData(token, ApiFunction.sysGetUserResourcesFooter)
+
+	console.log('utils.user.userInit.rawUser:', rawUser)
+
+	appStoreUser.set(rawUser)
+	return new User(rawUser)
+}
+
+async function userInitData(token: TokenApiUserId, api: ApiFunction) {
+	const result = await apiFetch(api, token)
 	if (result.success) {
-		const rawUser = result.data
-		appStoreUser.set(rawUser)
-		return new User(rawUser)
+		return result.data
 	} else {
 		error(500, {
 			file: 'utils.user.ts',
-			function: 'userInit',
-			message: `Unable to initialize user: ${userId}`
+			function: 'userInitData',
+			message: `Unable to retrieve data for user: ${token.userId} - api: ${api}`
 		})
 	}
 }

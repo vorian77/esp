@@ -20,6 +20,7 @@ import {
 	DBTable,
 	formatDateTime,
 	getArray,
+	ParmsValuesType,
 	required,
 	strRequired,
 	DataObjCardinality
@@ -94,11 +95,6 @@ async function processDataObjQuery(
 
 		case TokenApiQueryType.save:
 			returnData.fields = queryData?.dataTab?.fields
-			debug(
-				'dbEdgeProcess.processDataObjQuery',
-				'save.fields: ' + returnData.rawDataObj.name,
-				returnData.fields.map((field) => field.embedFieldName)
-			)
 			query.setProcessRow(
 				new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataTab?.rowsSave)
 			)
@@ -118,12 +114,16 @@ async function processDataObjQuery(
 	if (EMBED_QUERY_TYPES.includes(queryType)) {
 		for (let i = 0; i < returnData.fields.length; i++) {
 			const field = returnData.fields[i]
-			debug('dbEdgeProcess.processDataObjQuery.embeddedField', 'field: ' + field.embedFieldName)
-
-			returnData.rowsRetrieved
 			queryData.dataTab = field.data
+			const queryTypeEmbed =
+				queryType === TokenApiQueryType.retrieve
+					? queryType
+					: queryType === TokenApiQueryType.save &&
+						  field.data.parms.valueGet(ParmsValuesType.embedListSave)
+						? TokenApiQueryType.save
+						: TokenApiQueryType.retrieve
 			await processDataObjQuery(
-				queryType,
+				queryTypeEmbed,
 				new Query(field.data.rawDataObj, field),
 				queryData,
 				scriptGroup,
@@ -142,44 +142,42 @@ async function processDataObjExecute(
 	returnData.resetRowsRetrieved()
 	for (let i = 0; i < scriptGroup.scripts.length; i++) {
 		const script = scriptGroup.scripts[i]
-		if (script.exePost === 'formatData') {
-			debug('dbEdgeProcess.processDataObjExecute', 'script: ' + i, script.query.rawDataObj.name)
-		}
+		script.evalExpr(returnData)
+		const rawDataList = await executeQuery(script.script)
+		scriptData = script?.query?.field ? script.query.field.data : returnData
+		switch (script.exePost) {
+			case ScriptExePost.dataItems:
+				scriptData.items = rawDataList[0]
+				break
 
-		if (script.script) {
-			script.evalExpr(returnData)
-			const rawDataList = await executeQuery(script.script)
-			scriptData = script?.query?.field ? script.query.field.data : returnData
-			switch (script.exePost) {
-				case ScriptExePost.dataItems:
-					scriptData.items = rawDataList[0]
-					break
+			case ScriptExePost.formatData:
+				if (script.query.processRow) formatData(scriptData, rawDataList, script.query.processRow)
 
-				case ScriptExePost.formatData:
-					if (script.query.processRow) formatData(scriptData, rawDataList, script.query.processRow)
-					if (script.query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
-						queryData.recordSet(scriptData.rowsRetrieved.getDetailRecord())
-					}
-					break
-
-				case ScriptExePost.none:
-					break
-
-				case ScriptExePost.processRowSelectPreset:
-					const processRowListEdit = new ProcessRowSelectPreset(
-						script.query.rawDataObj.rawPropsSelect,
-						DataRecordStatus.preset
+				if (script.query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
+					scriptGroup.setDataItemsRecord(
+						script.query.rawDataObj.name,
+						scriptData.rowsRetrieved.getDetailRecord()
 					)
-					formatData(scriptData, rawDataList, processRowListEdit)
-					break
+				}
+				break
 
-				default:
-					error(500, {
-						file: FILENAME,
-						function: 'processDataObjExecute',
-						message: `No case defined for row script.exePost: ${script.exePost}`
-					})
-			}
+			case ScriptExePost.none:
+				break
+
+			case ScriptExePost.processRowSelectPreset:
+				const processRowListEdit = new ProcessRowSelectPreset(
+					script.query.rawDataObj.rawPropsSelect,
+					DataRecordStatus.preset
+				)
+				formatData(scriptData, rawDataList, processRowListEdit)
+				break
+
+			default:
+				error(500, {
+					file: FILENAME,
+					function: 'processDataObjExecute',
+					message: `No case defined for row script.exePost: ${script.exePost}`
+				})
 		}
 	}
 
@@ -187,7 +185,7 @@ async function processDataObjExecute(
 	if (returnData.rowsRetrieved.getRows().length > 0) {
 		debug(
 			'processDataObjExecute',
-			'executeQuery.row[0]',
+			`executeQuery.length: ${returnData.rowsRetrieved.getRows().length} - row[0]`,
 			returnData.rowsRetrieved.getRows()[0].record
 		)
 	}

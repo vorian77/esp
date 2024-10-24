@@ -47,16 +47,15 @@ export namespace sys_user {
   }
   export interface SysUserType extends sys_core.SysObj {
     "tags": sys_core.SysCode[];
-    "resources_subject": SysUserTypeResource[];
     "resources_sys_app": sys_core.SysApp[];
     "resources_sys_footer": sys_core.SysNodeObj[];
     "resources_sys_widget": SysWidget[];
     "users": SysUser[];
+    "resources": SysUserTypeResource[];
   }
   export interface SysUserTypeResource extends std.$Object {
     "codeType": sys_core.SysCode;
-    "resource": sys_core.ObjRoot;
-    "idSubject"?: string | null;
+    "resource": sys_core.SysObj;
   }
   export interface SysWidget extends sys_core.SysObj {}
   export interface currentUser extends SysUser {}
@@ -328,7 +327,6 @@ export namespace sys_core {
     "codeAccess"?: SysCode | null;
     "codeColor"?: SysCode | null;
     "codeDbDataOp"?: SysCode | null;
-    "column"?: sys_db.SysColumn | null;
     "fieldListItems"?: SysDataObjFieldListItems | null;
     "items": SysDataObjColumnItem[];
     "linkColumns": SysDataObjColumnLink[];
@@ -373,6 +371,8 @@ export namespace sys_core {
     "codeAlignmentAlt"?: SysCode | null;
     "linkExprPreset"?: string | null;
     "customColCodeColor"?: SysCode | null;
+    "column": sys_db.SysColumn;
+    "columnBacklink"?: sys_db.SysColumn | null;
   }
   export interface SysDataObjColumnItem extends sys_user.Mgmt {
     "orderDefine": number;
