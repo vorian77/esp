@@ -44,7 +44,7 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
-		// console.log('User.constructor.obj: ', obj)
+		console.log('User.constructor.obj: ', obj)
 		const clazz = 'User'
 		this.avatar = obj.avatar
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
@@ -59,19 +59,19 @@ export class User {
 
 		// derived
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
-		// this.resources.addResources(obj.resources_core)
-		// this.resources.addResources(obj.resources_subject)
-		// this.resources.addResources(
-		// 	obj.systems.map((s: any) => {
-		// 		return {
-		// 			_codeType: UserTypeResourceType.system,
-		// 			_resource: s
-		// 		}
-		// 	})
-		// )
-		// this.systemIds = this.resources
-		// 	.getResources(UserTypeResourceType.system)
-		// 	.map((s) => s.resource.id)
+		this.resources.addResources(obj.resources_core)
+		this.resources.addResources(obj.resources_subject)
+		this.resources.addResources(
+			obj.systems.map((s: any) => {
+				return {
+					_codeType: UserTypeResourceType.system,
+					_resource: s
+				}
+			})
+		)
+		this.systemIds = this.resources
+			.getResources(UserTypeResourceType.system)
+			.map((s) => s.resource.id)
 		console.log('User.constructor', this)
 
 		// old

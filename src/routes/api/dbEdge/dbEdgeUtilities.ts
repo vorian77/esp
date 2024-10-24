@@ -606,8 +606,12 @@ export async function getUserResourcesApp(token: TokenApiUserId) {
 			res.id,
 			'in',
 			e.select(e.sys_user.SysUser, (user) => ({
-				filter: e.op(user.id, '=', e.cast(e.uuid, token.userId))
-			})).userTypes.resources_sys_app.id
+				filter: e.op(
+					e.op(user.id, '=', e.cast(e.uuid, token.userId)),
+					'and',
+					e.op(user.userTypes.resources.codeType.name, '=', 'app')
+				)
+			})).userTypes.resources.resource.id
 		),
 		order_by: res.appHeader.orderDefine
 	}))
@@ -630,8 +634,12 @@ export async function getUserResourcesFooter(token: TokenApiUserId) {
 				res.id,
 				'in',
 				e.select(e.sys_user.SysUser, (user) => ({
-					filter: e.op(user.id, '=', e.cast(e.uuid, token.userId))
-				})).userTypes.resources_sys_footer.id
+					filter: e.op(
+						e.op(user.id, '=', e.cast(e.uuid, token.userId)),
+						'and',
+						e.op(user.userTypes.resources.codeType.name, '=', 'footer')
+					)
+				})).userTypes.resources.resource.id
 			)
 		),
 		order_by: res.orderDefine
