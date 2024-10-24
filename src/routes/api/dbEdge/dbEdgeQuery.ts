@@ -149,7 +149,7 @@ export class Query {
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		const isDelete = parms.isDelete ? parms.isDelete : false
 		const isSet = action.toLowerCase() === 'update'
-		const subObjGroup = new LinkSave(action, this.getTableObjRoot())
+		const subObjGroup = new LinkSave(action, this.getTableRootObj())
 
 		let fValues: Function[] = []
 		function setValueFunction(idx: number, f: Function) {
@@ -187,7 +187,7 @@ export class Query {
 				switch (dataType) {
 					case 'link':
 						let propTable = strRequired(propObj.link?.table?.object, clazzProp, 'propTable')
-						propTable = propTable === this.getTableObjRoot() ? `DETACHED ${propTable}` : propTable
+						propTable = propTable === this.getTableRootObj() ? `DETACHED ${propTable}` : propTable
 						let filter = ''
 
 						if (propObj.isMultiSelect) {
@@ -371,7 +371,7 @@ export class Query {
 		const orderBy = defn.exprSort ? `ORDER BY ${defn.exprSort}` : 'ORDER BY .display'
 
 		// table
-		const dataObjTable = this.getTableObjRoot()
+		const dataObjTable = this.getTableRootObj()
 		let table = defn.table?.object
 		table = table === dataObjTable ? `DETACHED ${table}` : table
 
@@ -442,7 +442,11 @@ export class Query {
 		return script
 	}
 
-	getTableObjRoot() {
+	getTableRootName() {
+		const rootTable = this.rawDataObj.tables.find((table) => table.isRoot)
+		return rootTable ? rootTable.table.name : ''
+	}
+	getTableRootObj() {
 		const rootTable = this.rawDataObj.tables.find((table) => table.isRoot)
 		return rootTable ? rootTable.table.object : ''
 	}

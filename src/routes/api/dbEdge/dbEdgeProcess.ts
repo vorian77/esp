@@ -152,10 +152,10 @@ async function processDataObjExecute(
 
 			case ScriptExePost.formatData:
 				if (script.query.processRow) formatData(scriptData, rawDataList, script.query.processRow)
-
 				if (script.query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
-					scriptGroup.setDataItemsRecord(
+					scriptGroup.updateTableData(
 						script.query.rawDataObj.name,
+						script.query.getTableRootName(),
 						scriptData.rowsRetrieved.getDetailRecord()
 					)
 				}

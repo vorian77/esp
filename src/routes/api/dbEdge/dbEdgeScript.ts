@@ -118,7 +118,7 @@ export class ScriptGroup {
 			['with', { key: 'data', content: ['data'] }],
 
 			// loop
-			['action', { type: 'INSERT', table: query.getTableObjRoot() }],
+			['action', { type: 'INSERT', table: query.getTableRootObj() }],
 			['propsListEditPresetSave', { props: query.rawDataObj.rawPropsSelectPreset }],
 			[
 				'wrap',
@@ -160,7 +160,7 @@ export class ScriptGroup {
 			['with', { key: 'data', content: ['data'] }],
 
 			// loop
-			['action', { type: 'INSERT', table: query.getTableObjRoot() }],
+			['action', { type: 'INSERT', table: query.getTableRootObj() }],
 			['propsListEditPresetSave', { props: query.rawDataObj.rawPropsSelectPreset }],
 			[
 				'wrap',
@@ -185,7 +185,7 @@ export class ScriptGroup {
 	}
 	addScriptRetrieveItem(query: Query, queryData: TokenApiQueryData, exePost: ScriptExePost) {
 		return this.addScript(query, queryData, exePost, [
-			['action', { type: 'SELECT', table: query.getTableObjRoot() }],
+			['action', { type: 'SELECT', table: query.getTableRootObj() }],
 			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
 			['filter'],
 			['order'],
@@ -247,7 +247,7 @@ export class ScriptGroup {
 	// prettier-ignore
 	addScriptSaveDelete(query: Query): Config {    
     return [
-			['action', { type: 'DELETE', table: query.getTableObjRoot() }],
+			['action', { type: 'DELETE', table: query.getTableRootObj() }],
 			['filter', { exprFilter: `.id = <uuid>item['id']` }],
 			['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter'] }],
 			...this.addScriptSavePost(query)
@@ -271,7 +271,7 @@ export class ScriptGroup {
 
 			return [
 				// records insert
-				['action', { type: 'INSERT', table: query.getTableObjRoot() }],
+				['action', { type: 'INSERT', table: query.getTableRootObj() }],
 				['propsSave', { action: 'INSERT', props: query.rawDataObj.rawPropsSaveInsert }],
 				['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'propsSave'] }],
 				['data'],
@@ -305,7 +305,7 @@ export class ScriptGroup {
 			]
 		} else {
 			return [
-				['action', { type: 'INSERT', table: query.getTableObjRoot() }],
+				['action', { type: 'INSERT', table: query.getTableRootObj() }],
 				['propsSave', { action: 'INSERT', props: query.rawDataObj.rawPropsSaveInsert }],
 				[
 					'wrap',
@@ -414,7 +414,7 @@ export class ScriptGroup {
 	// prettier-ignore
 	addScriptSaveUpdate(query: Query): Config {
 		return [
-			['action', { type: 'UPDATE', table: query.getTableObjRoot() }],
+			['action', { type: 'UPDATE', table: query.getTableRootObj() }],
 			['filter', { exprFilter: `.id = <uuid>item['id']` }],
 			['propsSave', { action: 'UPDATE', props: query.rawDataObj.rawPropsSaveUpdate }],
 			['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter', 'propsSave'] }
@@ -435,13 +435,10 @@ export class ScriptGroup {
 			['script', { content: ['with', 'action', 'propsSelect', 'order'] }]
 		]
 	}
-	setDataItemsRecord(dataObjName: string, record: any) {
+	updateTableData(dataObjName: string, tableName: string, record: any) {
 		this.scripts.forEach((script: Script) => {
-			if (
-				script.exePost === ScriptExePost.dataItems &&
-				script.query.rawDataObj.name === dataObjName
-			) {
-				script.queryData.recordSet(record)
+			if (script.query.rawDataObj.name === dataObjName) {
+				script.queryData.updateTableData(tableName, record)
 			}
 		})
 	}

@@ -170,8 +170,9 @@ export class TokenApiQueryData {
 	getParms() {
 		return this.dataTab ? this.dataTab.getParms() : {}
 	}
-	recordSet(data: DataRecord) {
+	updateTableData(table: string, data: DataRecord) {
 		this.record = data
+		this.tree.upsertData(table, data)
 	}
 }
 export class TokenApiQueryDataTree {

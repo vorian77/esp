@@ -9,9 +9,9 @@ import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50O
 export async function initAdminUser() {
 	sectionHeader('SysAdmin - User')
 	await initFieldListSelectResources()
-	// await initFieldListSelectSystem()
-	// await initFieldListSelectUser()
-	// await initFieldListSelectUserType()
+	await initFieldListSelectSystem()
+	await initFieldListSelectUser()
+	await initFieldListSelectUserType()
 	await initUserOrg()
 	await initUserType()
 	await initWidget()
@@ -19,7 +19,6 @@ export async function initAdminUser() {
 
 async function initFieldListSelectResources() {
 	sectionHeader('Field List Select - User Type - Resources')
-	// resources
 	await addDataObj({
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
@@ -76,123 +75,123 @@ async function initFieldListSelectResources() {
 		name: 'fels_sys_admin_sys_user_type_resource',
 		owner: 'sys_system_old'
 	})
+}
 
-	async function initFieldListSelectSystem() {
-		await addDataObj({
-			actionFieldGroup: 'doag_embed_list_select',
-			codeCardinality: 'list',
-			codeComponent: 'FormList',
-			exprFilter: `.id in <user,uuidlist,systemIds>`,
-			header: 'Select System(s)',
-			name: 'dofls_sys_admin_org_user_system',
-			owner: 'sys_system_old',
-			tables: [{ index: 0, table: 'SysSystem' }],
-			fields: [
-				{
-					columnName: 'id',
-					indexTable: 0,
-					isDisplayable: false,
-					orderDefine: 10
-				},
-				{
-					codeAccess: 'readOnly',
-					columnName: 'name',
-					orderSort: 20,
-					isDisplayable: true,
-					orderDisplay: 20,
-					orderDefine: 20,
-					indexTable: 0
-				}
-			]
-		})
+async function initFieldListSelectSystem() {
+	await addDataObj({
+		actionFieldGroup: 'doag_embed_list_select',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		exprFilter: `.id in <user,uuidlist,systemIds>`,
+		header: 'Select System(s)',
+		name: 'dofls_sys_admin_org_user_system',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysSystem' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'name',
+				orderSort: 20,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			}
+		]
+	})
 
-		await addDataObjFieldEmbedListSelect({
-			actionFieldGroupModal: 'doag_dialog_footer_list',
-			btnLabelComplete: 'Select System(s)',
-			dataObjList: 'dofls_sys_admin_org_user_system',
-			name: 'fels_sys_admin_org_user_system',
-			owner: 'sys_system_old'
-		})
-	}
+	await addDataObjFieldEmbedListSelect({
+		actionFieldGroupModal: 'doag_dialog_footer_list',
+		btnLabelComplete: 'Select System(s)',
+		dataObjList: 'dofls_sys_admin_org_user_system',
+		name: 'fels_sys_admin_system',
+		owner: 'sys_system_old'
+	})
+}
 
-	async function initFieldListSelectUser() {
-		sectionHeader('Field List Select - Users')
-		await addDataObj({
-			actionFieldGroup: 'doag_embed_list_select',
-			codeCardinality: 'list',
-			codeComponent: 'FormList',
-			exprFilter: '<tree,uuid,SysSystem.id> IN .systems.id',
-			header: 'Select Users',
-			name: 'dofls_sys_sys_admin_user',
-			owner: 'sys_system_old',
-			tables: [{ index: 0, table: 'SysUser' }],
-			fields: [
-				{
-					columnName: 'id',
-					indexTable: 0,
-					isDisplayable: false,
-					orderDefine: 10
-				},
-				{
-					codeAccess: 'readOnly',
-					columnName: 'userName',
-					orderCrumb: 10,
-					orderSort: 10,
-					isDisplayable: true,
-					orderDisplay: 20,
-					orderDefine: 20,
-					indexTable: 0
-				}
-			]
-		})
-		await addDataObjFieldEmbedListSelect({
-			actionFieldGroupModal: 'doag_dialog_footer_list',
-			btnLabelComplete: 'Select User(s)',
-			dataObjList: 'dofls_sys_sys_admin_user',
-			name: 'fels_sys_sys_admin_user',
-			owner: 'sys_system_old'
-		})
-	}
+async function initFieldListSelectUser() {
+	sectionHeader('Field List Select - Users')
+	await addDataObj({
+		actionFieldGroup: 'doag_embed_list_select',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		exprFilter: '<tree,uuid,SysSystem.id> IN .systems.id',
+		header: 'Select Users',
+		name: 'dofls_sys_sys_admin_user',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysUser' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'userName',
+				orderCrumb: 10,
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			}
+		]
+	})
+	await addDataObjFieldEmbedListSelect({
+		actionFieldGroupModal: 'doag_dialog_footer_list',
+		btnLabelComplete: 'Select User(s)',
+		dataObjList: 'dofls_sys_sys_admin_user',
+		name: 'fels_sys_sys_admin_user',
+		owner: 'sys_system_old'
+	})
+}
 
-	async function initFieldListSelectUserType() {
-		sectionHeader('Field List Select - UserTypes')
-		await addDataObj({
-			actionFieldGroup: 'doag_embed_list_select',
-			codeCardinality: 'list',
-			codeComponent: 'FormList',
-			exprFilter: 'none',
-			header: 'Select User Types',
-			name: 'dofls_sys_sys_admin_user_type',
-			owner: 'sys_system_old',
-			tables: [{ index: 0, table: 'SysUserType' }],
-			fields: [
-				{
-					columnName: 'id',
-					indexTable: 0,
-					isDisplayable: false,
-					orderDefine: 10
-				},
-				{
-					codeAccess: 'readOnly',
-					columnName: 'name',
-					orderCrumb: 10,
-					orderSort: 10,
-					isDisplayable: true,
-					orderDisplay: 20,
-					orderDefine: 20,
-					indexTable: 0
-				}
-			]
-		})
+async function initFieldListSelectUserType() {
+	sectionHeader('Field List Select - UserTypes')
+	await addDataObj({
+		actionFieldGroup: 'doag_embed_list_select',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		exprFilter: 'none',
+		header: 'Select User Types',
+		name: 'dofls_sys_sys_admin_user_type',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysUserType' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'name',
+				orderCrumb: 10,
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			}
+		]
+	})
 
-		await addDataObjFieldEmbedListSelect({
-			actionFieldGroupModal: 'doag_dialog_footer_list',
-			btnLabelComplete: 'Select UserType(s)',
-			dataObjList: 'dofls_sys_sys_admin_user_type',
-			name: 'fels_sys_sys_admin_user_type',
-			owner: 'sys_system_old'
-		})
-	}
+	await addDataObjFieldEmbedListSelect({
+		actionFieldGroupModal: 'doag_dialog_footer_list',
+		btnLabelComplete: 'Select UserType(s)',
+		dataObjList: 'dofls_sys_sys_admin_user_type',
+		name: 'fels_sys_sys_admin_user_type',
+		owner: 'sys_system_old'
+	})
 }
 
 async function initUserOrg() {
@@ -273,6 +272,14 @@ async function initUserOrg() {
 				linkTable: 'SysOrg'
 			},
 			{
+				columnName: 'password',
+				orderDefine: 25,
+				indexTable: 0,
+				isDisplayable: false,
+				linkExprSave: `(SELECT 'abc*$789!+_)')`,
+				linkTable: 'SysOrg'
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
@@ -307,26 +314,16 @@ async function initUserOrg() {
 				orderDisplay: 70,
 				orderDefine: 70
 			},
-			// {
-			// 	codeFieldElement: 'embedListSelect',
-			// 	columnName: 'systems',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 80,
-			// 	orderDefine: 80,
-			// 	fieldEmbedListSelect: 'fels_sys_admin_org_user_system',
-			// 	indexTable: 0,
-			// 	linkTable: 'SysSystem'
-			// },
-			// {
-			// 	codeFieldElement: 'embedListSelect',
-			// 	columnName: 'userTypes',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 90,
-			// 	orderDefine: 90,
-			// 	fieldEmbedListSelect: 'fels_sys_sys_admin_user_type',
-			// 	indexTable: 0,
-			// 	linkTable: 'SysUserType'
-			// },
+			{
+				codeFieldElement: 'embedListSelect',
+				columnName: 'systems',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				fieldEmbedListSelect: 'fels_sys_admin_system',
+				indexTable: 0,
+				linkTable: 'SysSystem'
+			},
 
 			/* management */
 			{
@@ -508,27 +505,27 @@ async function initUserType() {
 				orderDisplay: 70,
 				orderDefine: 70
 			},
-			// {
-			// 	codeFieldElement: 'embedListSelect',
-			// 	columnBacklink: 'userTypes',
-			// 	columnName: 'users',
-			// 	fieldEmbedListSelect: 'fels_sys_sys_admin_user',
-			// 	indexTable: 0,
-			// 	isDisplayable: true,
-			// 	linkTable: 'SysUser',
-			// 	orderDisplay: 80,
-			// 	orderDefine: 80
-			// },
-			// {
-			// 	codeFieldElement: 'embedListSelect',
-			// 	columnName: 'resources',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 90,
-			// 	orderDefine: 90,
-			// 	fieldEmbedListSelect: 'fels_sys_admin_sys_user_type_resource',
-			// 	indexTable: 0,
-			// 	linkTable: 'SysUserTypeResource'
-			// },
+			{
+				codeFieldElement: 'embedListSelect',
+				columnBacklink: 'userTypes',
+				columnName: 'users',
+				fieldEmbedListSelect: 'fels_sys_sys_admin_user',
+				indexTable: 0,
+				isDisplayable: true,
+				linkTable: 'SysUser',
+				orderDisplay: 80,
+				orderDefine: 80
+			},
+			{
+				codeFieldElement: 'embedListSelect',
+				columnName: 'resources',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90,
+				fieldEmbedListSelect: 'fels_sys_admin_sys_user_type_resource',
+				indexTable: 0,
+				linkTable: 'SysUserTypeResource'
+			},
 
 			/* management */
 			{

@@ -29,10 +29,8 @@ export class User {
 	org: { name: string; header: string } | undefined
 	preferences: UserPrefs
 	resources = new UserTypeResourceList()
-
 	resources_sys_app: any[] = []
 	resources_sys_footer: any[] = []
-
 	systemIds: string[] = []
 	userName: string
 
@@ -44,7 +42,7 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
-		console.log('User.constructor.obj: ', obj)
+		// console.log('User.constructor.obj: ', obj)
 		const clazz = 'User'
 		this.avatar = obj.avatar
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
@@ -72,7 +70,7 @@ export class User {
 		this.systemIds = this.resources
 			.getResources(UserTypeResourceType.system)
 			.map((s) => s.resource.id)
-		console.log('User.constructor', this)
+		// console.log('User.constructor', this)
 
 		// old
 		// this.cm_ssr_disclosure = nbrOptional(obj.cm_ssr_disclosure, 'cm_ssr_disclosure')
@@ -84,14 +82,9 @@ export class User {
 
 	async getUserSelectedSystem(state: State, dataObj: DataObj, parmData: ParmsValues) {
 		const systems = this.resources.getResources(UserTypeResourceType.system)
-		console.log('User.getUserParmsSelected', {
-			dataObj,
-			parmData,
-			systems
-		})
 		const parmName = `user_selected_system`
 
-		switch (this.systems.length) {
+		switch (systems.length) {
 			case 0:
 				alert(
 					`Cannot proceed. You have not been assigned system resources. Please see your administrator.`
@@ -142,9 +135,9 @@ export class User {
 		return true
 	}
 
-	getResourcesSubject(type: string): UserTypeResource[] {
-		return this.resources.filter((r) => r.typeSubject === type) || []
-	}
+	// getResourcesSubject(type: string): UserTypeResource[] {
+	// 	return this.resources.filter((r) => r.typeSubject === type) || []
+	// }
 
 	prefIsActive(prefType: UserPrefType): boolean {
 		return this.preferences.isActive(prefType)
@@ -187,7 +180,7 @@ export class UserTypeResourceList {
 	constructor() {}
 	addResources(obj: any) {
 		obj = getArray(obj)
-		obj.forEach((r) => {
+		obj.forEach((r: any) => {
 			this.resources.push(new UserTypeResource(r))
 		})
 	}

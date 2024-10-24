@@ -22,14 +22,14 @@ import { initDataReports } from '$server/dbEdge/init/dbEdgeInit120DataRep'
 import { initMigrationPerson } from '$server/dbEdge/init/dbEdgeInit100MigrPerson'
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
-export async function dbEdgeInit() {
-	sectionHeader('Init Start')
-	// await initDataReports()
-	await initUser()
-	sectionHeader('Init Complete')
-}
+// export async function dbEdgeInit() {
+// 	sectionHeader('Init Start')
+// 	// await initDataReports()
+// 	await initUser()
+// 	sectionHeader('Init Complete')
+// }
 
-export async function dbEdgeInit1() {
+export async function dbEdgeInit() {
 	sectionHeader('Init Start')
 	await initReset()
 	await initCoreObjects()
