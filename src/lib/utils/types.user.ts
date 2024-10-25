@@ -2,12 +2,9 @@ import { State } from '$comps/app/types.appState'
 import { ParmsValues } from '$utils/types'
 import {
 	arrayOfClasses,
-	arrayOfEnums,
 	booleanRequired,
 	getArray,
 	memberOfEnum,
-	nbrOptional,
-	nbrRequired,
 	strRequired,
 	valueOrDefault
 } from '$utils/utils'
