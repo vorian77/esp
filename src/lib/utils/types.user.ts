@@ -56,16 +56,19 @@ export class User {
 
 		// derived
 		if (obj.org) {
-			console.log('User.constructor.obj.org', obj.org)
 			let logo = obj.org?.logoFileName
-			// const logo = obj.org?.logoFileName.split('.')
+				? obj.org.logoFileName.trim().toLowerCase().split('.')
+				: undefined
+			if (!logo || logo.length !== 2) logo = undefined
+
 			this.org = {
 				appName: obj?.org?.appName,
-				logoFileExt: logo.length === 2 ? logo[1].toLowerCase() : '',
-				logoFileName: logo.length === 2 ? logo[0] : '',
+				logoFileExt: logo ? logo[1] : '',
+				logoFileName: logo ? logo[0] : '',
 				name: obj?.org?.name
 			}
 		}
+
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
 		this.resources.addResources(obj.resources_core)
 		this.resources.addResources(obj.resources_subject)
