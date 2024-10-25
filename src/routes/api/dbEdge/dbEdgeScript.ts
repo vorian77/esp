@@ -24,6 +24,7 @@ type Config = [string, DataRecord?][]
 
 export class ScriptGroup {
 	scripts: Script[] = []
+	scriptsStack: Script[] = []
 	scriptSegmentLoop = 'FOR item IN json_array_unpack(data) UNION ('
 	constructor() {}
 	addScript(
@@ -39,10 +40,20 @@ export class ScriptGroup {
 		})
 		script.build()
 		this.scripts.push(script)
+		this.scriptsStack.push(script)
 		return script
 	}
 
-	addScriptDataItems(query: Query, queryData: TokenApiQueryData, props: RawDataObjPropDB[]) {
+	// addScriptDataItems(query: Query, queryData: TokenApiQueryData, props: RawDataObjPropDB[]) {
+	addScriptDataItems(scriptParent: Script, scriptData: DataObjData, record: DataRecord) {
+		const query = scriptParent.query
+		let queryData = scriptParent.queryData
+		queryData?.dataTab?.parms.update(scriptData.parms.data)
+		queryData.record = record
+		// const queryData = TokenApiQueryData.load(token.queryData)
+
+		const props = query.rawDataObj.rawPropsSelect
+
 		const isFilterCurrentValue = query.rawDataObj.codeCardinality === DataObjCardinality.detail
 		return this.addScript(query, queryData, ScriptExePost.dataItems, [
 			['propsSelectDataItems', { props, isFilterCurrentValue }],
@@ -436,19 +447,19 @@ export class ScriptGroup {
 			['script', { content: ['with', 'action', 'propsSelect', 'order'] }]
 		]
 	}
-	updateTableData(dataObjName: string, tableName: string, record: any) {
-		this.scripts.forEach((script: Script) => {
-			if (script.query.rawDataObj.name === dataObjName) {
-				script.queryData.updateTableData(tableName, record)
-				if (
-					script.queryData.dataTab?.parms.valueGet(ParmsValuesType.isProgramNode) &&
-					record.owner
-				) {
-					script.queryData.dataTab?.parms.valueSet(ParmsValuesType.userSystemId, record.owner)
-				}
-			}
-		})
-	}
+	// updateTableData(dataObjName: string, tableName: string, record: any) {
+	// 	this.scripts.forEach((script: Script) => {
+	// 		if (script.query.rawDataObj.name === dataObjName) {
+	// 			script.queryData.updateTableData(tableName, record)
+	// 			if (
+	// 				script.queryData.dataTab?.parms.valueGet(ParmsValuesType.isProgramNode) &&
+	// 				record.owner
+	// 			) {
+	// 				script.queryData.dataTab?.parms.valueSet(ParmsValuesType.userSystemId, record.owner)
+	// 			}
+	// 		}
+	// 	})
+	// }
 }
 
 export class Script {
@@ -616,10 +627,6 @@ export class Script {
 			})
 		}
 		return item
-	}
-
-	evalExpr(dataRoot: DataObjData) {
-		this.script = evalExpr(this.script, this.queryData)
 	}
 }
 

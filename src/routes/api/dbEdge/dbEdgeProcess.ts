@@ -35,9 +35,9 @@ import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import type { DataRecord } from '$utils/types'
 import { queryMultiple } from '$routes/api/dbEdge/dbEdgeExecute'
 import { getDataObjById, getDataObjByName } from '$routes/api/dbEdge/dbEdgeUtilities'
-import { evalExpr } from '$routes/api/dbEdge/dbEdgeGetVal'
+import { evalExpr, evalExprTokens } from '$routes/api/dbEdge/dbEdgeGetVal'
 import type { RawDataList } from '$routes/api/dbEdge/types.dbEdge'
-import { ScriptExePost, ScriptGroup } from '$routes/api/dbEdge/dbEdgeScript'
+import { Script, ScriptExePost, ScriptGroup } from '$routes/api/dbEdge/dbEdgeScript'
 import { getRawDataObjDynamic } from '$routes/api/dbEdge/dbEdgeProcessDynDO'
 import { error } from '@sveltejs/kit'
 
@@ -80,7 +80,7 @@ async function processDataObjQuery(
 				new ProcessRowSelectPreset(query.rawDataObj.rawPropsSelect, DataRecordStatus.preset)
 			)
 			scriptGroup.addScriptPreset(query, queryData)
-			scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
+			// scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
 			break
 
 		case TokenApiQueryType.retrieve:
@@ -90,7 +90,7 @@ async function processDataObjQuery(
 			)
 			scriptGroup.addScriptPresetListEdit(query, queryData)
 			scriptGroup.addScriptRetrieve(query, queryData)
-			scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
+			// scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
 			break
 
 		case TokenApiQueryType.save:
@@ -99,7 +99,7 @@ async function processDataObjQuery(
 				new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataTab?.rowsSave)
 			)
 			scriptGroup.addScriptSave(query, queryData)
-			scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
+			// scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
 			break
 
 		default:
@@ -140,10 +140,10 @@ async function processDataObjExecute(
 ) {
 	let scriptData: DataObjData
 	returnData.resetRowsRetrieved()
-	for (let i = 0; i < scriptGroup.scripts.length; i++) {
-		const script = scriptGroup.scripts[i]
-		script.evalExpr(returnData)
-		const rawDataList = await executeQuery(script.script)
+	while (scriptGroup.scriptsStack.length > 0) {
+		const script: Script = scriptGroup.scriptsStack.shift()
+		const expr = evalExpr(script.script, script.queryData)
+		const rawDataList = await executeQuery(expr)
 		scriptData = script?.query?.field ? script.query.field.data : returnData
 		switch (script.exePost) {
 			case ScriptExePost.dataItems:
@@ -152,13 +152,34 @@ async function processDataObjExecute(
 
 			case ScriptExePost.formatData:
 				if (script.query.processRow) formatData(scriptData, rawDataList, script.query.processRow)
+
 				if (script.query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
-					scriptGroup.updateTableData(
-						script.query.rawDataObj.name,
-						script.query.getTableRootName(),
-						scriptData.rowsRetrieved.getDetailRecord()
-					)
+					const record = scriptData.rowsRetrieved.getDetailRecord()
+
+					// set embedded parent tree records
+					const rootTableName = script.query.getTableRootName()
+					scriptGroup.scripts.forEach((script: Script) => {
+						script.queryData.updateTableData(rootTableName, record)
+					})
+
+					// set
+					if (script.queryData?.dataTab.parms.valueGet(ParmsValuesType.isProgramNode)) {
+						if (record.owner) {
+							const rootTableName = script.query.getTableRootName()
+							scriptData.parms.valueSet(ParmsValuesType.userSystemId, record.owner)
+							returnData.parms.valueSet(ParmsValuesType.userSystemId, record.owner)
+						}
+					}
+					scriptGroup.addScriptDataItems(script, scriptData, record)
 				}
+				// if (script.query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
+				// 	scriptGroup.updateTableData(
+				// 		script.query.rawDataObj.name,
+				// 		script.query.getTableRootName(),
+				// 		scriptData.rowsRetrieved.getDetailRecord()
+				// 	)
+				// }
+
 				break
 
 			case ScriptExePost.none:
