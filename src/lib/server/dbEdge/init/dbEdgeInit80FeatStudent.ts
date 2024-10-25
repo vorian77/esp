@@ -1,4 +1,4 @@
-import { sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import { addDataObj } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
 import {
 	addNodeProgram,
@@ -38,12 +38,6 @@ async function initStudent() {
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 10
-			},
-			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 15
 			},
 			{
 				codeAccess: 'readOnly',

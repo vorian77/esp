@@ -1,4 +1,4 @@
-import { sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import { addDataObjFieldItems } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
 
 // backlink

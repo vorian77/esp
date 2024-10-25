@@ -1,4 +1,4 @@
-import { sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import {
 	addDataObj,
 	addDataObjFieldEmbedListConfig,
@@ -418,16 +418,6 @@ async function initDataObjFieldEmbedListSelect() {
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'name',
-				orderCrumb: 10,
-				orderSort: 10,
-				isDisplayable: true,
-				orderDisplay: 15,
-				orderDefine: 15,
-				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',

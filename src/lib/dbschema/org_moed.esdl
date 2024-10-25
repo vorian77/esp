@@ -5,9 +5,9 @@ module org_moed {
     ssn: str;
   }
 
-  # type MoedPartData extending sys_core::SysObj {
-  #   required participant: org_moed::MoedParticipant;
-  # }
+  type MoedPartData extending sys_core::SysObj {
+    participant: org_moed::MoedParticipant;
+  }
 
   # type MoedPartDoc extending org_moed::MoedPartData {
   #   required codeType: sys_core::SysCode;

@@ -511,6 +511,9 @@ export namespace fts {
   export type Weight = "A" | "B" | "C" | "D";
 }
 export namespace org_moed {
+  export interface MoedPartData extends sys_core.SysObj {
+    "participant"?: MoedParticipant | null;
+  }
   export interface MoedParticipant extends app_cm.CmClient {
     "office"?: sys_core.SysObj | null;
     "consentDisclaimer"?: boolean | null;
@@ -986,6 +989,7 @@ export interface types {
     "Weight": fts.Weight;
   };
   "org_moed": {
+    "MoedPartData": org_moed.MoedPartData;
     "MoedParticipant": org_moed.MoedParticipant;
   };
   "schema": {

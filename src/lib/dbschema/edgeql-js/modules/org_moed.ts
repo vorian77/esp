@@ -2,13 +2,25 @@
 
 import * as $ from "../reflection";
 import * as _ from "../imports";
-import type * as _app_cm from "./app_cm";
 import type * as _sys_core from "./sys_core";
+import type * as _app_cm from "./app_cm";
 import type * as _std from "./std";
+export type $MoedPartDataλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
+  "participant": $.LinkDesc<$MoedParticipant, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+}>;
+type $MoedPartData = $.ObjectType<"org_moed::MoedPartData", $MoedPartDataλShape, null, [
+  ..._sys_core.$SysObj['__exclusives__'],
+]>;
+const $MoedPartData = $.makeType<$MoedPartData>(_.spec, "a5d1ce7c-9310-11ef-9ac6-d1ffae443067", _.syntax.literal);
+
+const MoedPartData: $.$expr_PathNode<$.TypeSet<$MoedPartData, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($MoedPartData, $.Cardinality.Many), null);
+
 export type $MoedParticipantλShape = $.typeutil.flatten<_app_cm.$CmClientλShape & {
   "office": $.LinkDesc<_sys_core.$SysObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "consentDisclaimer": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "ssn": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "<participant[is org_moed::MoedPartData]": $.LinkDesc<$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<participant": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $MoedParticipant = $.ObjectType<"org_moed::MoedParticipant", $MoedParticipantλShape, null, [
   ..._app_cm.$CmClient['__exclusives__'],
@@ -19,12 +31,14 @@ const MoedParticipant: $.$expr_PathNode<$.TypeSet<$MoedParticipant, $.Cardinalit
 
 
 
-export { $MoedParticipant, MoedParticipant };
+export { $MoedPartData, MoedPartData, $MoedParticipant, MoedParticipant };
 
 type __defaultExports = {
+  "MoedPartData": typeof MoedPartData;
   "MoedParticipant": typeof MoedParticipant
 };
 const __defaultExports: __defaultExports = {
+  "MoedPartData": MoedPartData,
   "MoedParticipant": MoedParticipant
 };
 export default __defaultExports;
