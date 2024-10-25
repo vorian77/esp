@@ -1,4 +1,4 @@
-import { sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import { addColumn } from '$server/dbEdge/init/dbEdgeInit200Utilities30DB'
 
 export async function initPreColumn() {

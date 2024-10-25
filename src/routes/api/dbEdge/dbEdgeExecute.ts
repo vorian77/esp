@@ -1,13 +1,8 @@
-import * as edgedb from 'edgedb'
-import { EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
+import e from '$lib/dbschema/edgeql-js'
+import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = 'server/dbEdge.ts'
-
-let client = edgedb.createClient({
-	instanceName: EDGEDB_INSTANCE,
-	secretKey: EDGEDB_SECRET_KEY
-})
 
 export type RawDataRow = Record<string, any>
 export type RawDataList = Array<RawDataRow>

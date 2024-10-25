@@ -1,18 +1,8 @@
-import { createClient } from 'edgedb'
 import e from '$lib/dbschema/edgeql-js'
-import { EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
+import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import type { TokenAppTreeNodeId } from '$utils/types.token'
 import { TokenApiDbTableColumns, TokenApiUserId, TokenApiUserPref } from '$utils/types.token'
 import { debug } from '$utils/utils.debug'
-
-const client = createClient({
-	instanceName: EDGEDB_INSTANCE,
-	secretKey: EDGEDB_SECRET_KEY
-})
-
-export async function execute(query: string) {
-	await client.execute(query)
-}
 
 const shapeDataObjActionFieldGroup = e.shape(e.sys_core.SysDataObjActionFieldGroup, (g) => ({
 	_actionFieldItems: e.select(g.actionFieldItems, (i) => ({

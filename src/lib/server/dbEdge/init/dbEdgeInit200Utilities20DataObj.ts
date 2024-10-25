@@ -1,16 +1,10 @@
-import { createClient } from 'edgedb'
-import e, { is } from '$lib/dbschema/edgeql-js'
-import { EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
+import e from '$lib/dbschema/edgeql-js'
 import {
+	client,
 	booleanOrDefaultJSON,
 	booleanOrDefaultParm,
 	sectionHeader
-} from '$server/dbEdge/init/dbEdgeInit200Utilities10'
-
-const client = createClient({
-	instanceName: EDGEDB_INSTANCE,
-	secretKey: EDGEDB_SECRET_KEY
-})
+} from '$routes/api/dbEdge/dbEdge'
 
 export async function addDataObj(data: any) {
 	sectionHeader(`addDataObj - ${data.name}`)

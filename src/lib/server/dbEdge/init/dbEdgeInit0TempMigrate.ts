@@ -1,15 +1,7 @@
-import { sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
-
-import { createClient } from 'edgedb'
 import e from '$lib/dbschema/edgeql-js'
-import { EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
+import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import type { TokenAppTreeNodeId } from '$utils/types.token'
 import { TokenApiDbTableColumns, TokenApiUserId } from '$utils/types.token'
-
-const client = createClient({
-	instanceName: EDGEDB_INSTANCE,
-	secretKey: EDGEDB_SECRET_KEY
-})
 
 export async function migrateCmCohort() {
 	// const data = await migrateCohorts()

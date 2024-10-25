@@ -1,4 +1,4 @@
-import { sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 
 import { initReset } from '$server/dbEdge/init/dbEdgeInit0Reset'
 import { initCoreObjects } from '$server/dbEdge/init/dbEdgeInit20CoreObjects'
@@ -24,13 +24,14 @@ import { initMigrationPerson } from '$server/dbEdge/init/dbEdgeInit100MigrPerson
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
 export async function dbEdgeInit() {
-	// await dbEdgeInitFeature()
-	await dbEdgeInitSystem()
+	await dbEdgeInitFeature()
+	// await dbEdgeInitSystem()
 }
 
 async function dbEdgeInitFeature() {
 	sectionHeader('Init Start')
-	await initUser()
+	// await initUser()
+	await initFeatMOED()
 	sectionHeader('Init Complete')
 }
 

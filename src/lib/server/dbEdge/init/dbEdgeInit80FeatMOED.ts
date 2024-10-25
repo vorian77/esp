@@ -1,6 +1,6 @@
+import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import {
 	ResetDb,
-	sectionHeader,
 	userSystems,
 	userUserType,
 	widgets
@@ -10,14 +10,30 @@ import {
 	addNodeProgram,
 	addNodeProgramObj
 } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
-import { addMOEDParticipant } from '$server/dbEdge/init/dbEdgeInit200Utilities60OrgMOED'
+import {
+	addMOEDParticipant,
+	addMOEDPartDataTest
+} from '$server/dbEdge/init/dbEdgeInit200Utilities60OrgMOED'
 
 export async function initFeatMOED() {
-	sectionHeader('DataObject - MOED - Self-Service - Registration')
-	await initReset()
-	await initStudent()
+	sectionHeader('Init - MOED - Self-Service - Registration')
+	await initTest()
+	// await initReset()
+	// await initStudent()
 	// await initDocument()
 	// await initParticipants()
+}
+
+export async function initTest() {
+	sectionHeader('Reset-MOED')
+	const reset = new ResetDb()
+	reset.addStatement('delete org_moed::MoedPartData')
+	await reset.execute()
+
+	await addMOEDPartDataTest({
+		header: 'header0',
+		name: 'name0'
+	})
 }
 
 export async function initReset() {

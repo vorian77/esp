@@ -1,21 +1,7 @@
-import { createClient } from 'edgedb'
 import e from '$lib/dbschema/edgeql-js'
-import { EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
+import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import { executeQuery } from '$routes/api/dbEdge/dbEdgeProcess'
 import { debug, getArray } from '$utils/types'
-
-const client = createClient({
-	instanceName: EDGEDB_INSTANCE,
-	secretKey: EDGEDB_SECRET_KEY
-})
-
-export function booleanOrDefaultParm(val: any, valDefault: boolean) {
-	return e.op(val, 'if', e.op('exists', val), 'else', valDefault)
-}
-
-export function booleanOrDefaultJSON(jsonObj: any, val: string, valDefault: boolean) {
-	return e.cast(e.bool, e.op(e.cast(e.bool, e.json_get(jsonObj, val)), '??', valDefault))
-}
 
 export async function addSystem(data: any) {
 	sectionHeader(`addSystem - ${data.name}`)
@@ -232,11 +218,6 @@ export async function addRoleStaff(params: any) {
 		})
 	})
 	return await query.run(client, { data: params })
-}
-
-export function sectionHeader(section: string) {
-	console.log()
-	console.log(`--- ${section} ---`)
 }
 
 export class ResetDb {

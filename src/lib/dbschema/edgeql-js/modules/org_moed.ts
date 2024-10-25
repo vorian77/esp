@@ -6,7 +6,7 @@ import type * as _sys_core from "./sys_core";
 import type * as _app_cm from "./app_cm";
 import type * as _std from "./std";
 export type $MoedPartDataλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
-  "participant": $.LinkDesc<$MoedParticipant, $.Cardinality.One, {}, false, false,  false, false>;
+  "participant": $.LinkDesc<$MoedParticipant, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
 }>;
 type $MoedPartData = $.ObjectType<"org_moed::MoedPartData", $MoedPartDataλShape, null, [
   ..._sys_core.$SysObj['__exclusives__'],

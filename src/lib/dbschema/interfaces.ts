@@ -512,7 +512,7 @@ export namespace fts {
 }
 export namespace org_moed {
   export interface MoedPartData extends sys_core.SysObj {
-    "participant": MoedParticipant;
+    "participant"?: MoedParticipant | null;
   }
   export interface MoedParticipant extends app_cm.CmClient {
     "office"?: sys_core.SysObj | null;

@@ -6,7 +6,7 @@ module org_moed {
   }
 
   type MoedPartData extending sys_core::SysObj {
-    required participant: org_moed::MoedParticipant;
+    participant: org_moed::MoedParticipant;
   }
 
   # type MoedPartDoc extending org_moed::MoedPartData {
