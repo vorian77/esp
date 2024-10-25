@@ -1,6 +1,6 @@
+import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import {
 	ResetDb,
-	sectionHeader,
 	userSystems,
 	userUserType,
 	widgets
@@ -125,13 +125,13 @@ async function initApps() {
 	})
 
 	/* MOED */
-	await addApp({
-		appHeader: 'app_hdr_moed_staff',
-		isGlobalResource: false,
-		name: 'app_moed_staff',
-		owner: 'sys_moed_old',
-		nodes: ['node_obj_moed_part_list']
-	})
+	// await addApp({
+	// 	appHeader: 'app_hdr_moed_staff',
+	// 	isGlobalResource: false,
+	// 	name: 'app_moed_staff',
+	// 	owner: 'sys_moed_old',
+	// 	nodes: ['node_obj_moed_part_list']
+	// })
 }
 
 async function initResources() {
@@ -215,7 +215,7 @@ async function initUserType() {
 		name: 'ut_moed_staff',
 		owner: 'sys_moed_old',
 		resources: [
-			{ codeType: 'app', resource: 'app_moed_staff' },
+			// { codeType: 'app', resource: 'app_moed_staff' },
 			{ codeType: 'app', resource: 'app_sys_reporting' },
 			{ codeType: 'subject', resource: 'moedOfficeEastside' },
 			{ codeType: 'subject', resource: 'moedOfficeWestside' }

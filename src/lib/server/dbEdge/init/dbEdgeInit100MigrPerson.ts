@@ -1,4 +1,5 @@
-import { ResetDb, sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
+import { ResetDb } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 import { addMigration } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initMigrationPerson() {

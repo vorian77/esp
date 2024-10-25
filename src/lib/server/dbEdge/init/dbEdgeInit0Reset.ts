@@ -1,4 +1,5 @@
-import { ResetDb, sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
+import { ResetDb } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 
 export async function initReset() {
 	sectionHeader('Reset')

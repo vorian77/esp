@@ -1,4 +1,5 @@
-import { sectionHeader, tables } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
+import { tables } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 
 export async function initPreTable() {
 	sectionHeader('Table')

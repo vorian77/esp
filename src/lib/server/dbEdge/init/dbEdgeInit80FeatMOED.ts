@@ -17,7 +17,7 @@ import {
 
 export async function initFeatMOED() {
 	sectionHeader('Init - MOED - Self-Service - Registration')
-	await initTest()
+	// await initTest()
 	// await initReset()
 	// await initStudent()
 	// await initDocument()

@@ -1,4 +1,5 @@
-import { resetDBItems, sectionHeader } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
+import { resetDBItems } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 import { addDataObj } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
 import {
 	addAnalytic,

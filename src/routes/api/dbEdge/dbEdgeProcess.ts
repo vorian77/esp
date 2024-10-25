@@ -1,3 +1,4 @@
+import { queryMultiple } from '$routes/api/dbEdge/dbEdge'
 import { ApiResult } from '$routes/api/api'
 import {
 	TokenApiDbDataObjSource,
@@ -33,7 +34,6 @@ import {
 } from '$comps/dataObj/types.rawDataObj'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import type { DataRecord } from '$utils/types'
-import { queryMultiple } from '$routes/api/dbEdge/dbEdgeExecute'
 import { getDataObjById, getDataObjByName } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { evalExpr, evalExprTokens } from '$routes/api/dbEdge/dbEdgeGetVal'
 import type { RawDataList } from '$routes/api/dbEdge/types.dbEdge'

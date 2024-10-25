@@ -1,7 +1,6 @@
 import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 
 import { initReset } from '$server/dbEdge/init/dbEdgeInit0Reset'
-import { initCoreObjects } from '$server/dbEdge/init/dbEdgeInit20CoreObjects'
 import { initPreDataObj } from '$server/dbEdge/init/dbEdgeInit40PreDO'
 
 // admin
@@ -24,21 +23,20 @@ import { initMigrationPerson } from '$server/dbEdge/init/dbEdgeInit100MigrPerson
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
 export async function dbEdgeInit() {
-	await dbEdgeInitFeature()
-	// await dbEdgeInitSystem()
+	// await dbEdgeInitFeature()
+	await dbEdgeInitSystem()
 }
 
 async function dbEdgeInitFeature() {
-	sectionHeader('Init Start')
-	// await initUser()
-	await initFeatMOED()
+	sectionHeader('Init Start - Feature')
+	await initUser()
+	// await initFeatMOED()
 	sectionHeader('Init Complete')
 }
 
 async function dbEdgeInitSystem() {
-	sectionHeader('Init Start')
+	sectionHeader('Init Start - System')
 	await initReset()
-	await initCoreObjects()
 	await initPreDataObj()
 
 	await initSysCore()
