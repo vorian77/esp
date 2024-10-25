@@ -29,12 +29,6 @@ async function initOrgSys() {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 20
-			},
-			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
 				orderCrumb: 10,
@@ -157,12 +151,6 @@ async function initOrgUser() {
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 10
-			},
-			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 20
 			},
 			{
 				codeAccess: 'readOnly',
