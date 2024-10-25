@@ -5,6 +5,43 @@ import { addDataObjFieldItems } from '$server/dbEdge/init/dbEdgeInit200Utilities
 // .##csfCohort[is app_cm::CmCsfCohortAttd].cohortAttd.id`,
 
 export async function initPreDataObjFieldItem() {
+	/* code - general */
+	await addDataObjFieldItems({
+		exprPropDisplay: '.name',
+		exprFilter: '.codeType.name = <parms,str,fieldListItemsParmName>',
+		exprSort: '.order',
+		name: 'il_sys_code_order_index_by_codeType_name',
+		owner: 'sys_system_old',
+		table: 'SysCode'
+	})
+	await addDataObjFieldItems({
+		exprPropDisplay: '.name',
+		exprFilter: '.codeType.name = <parms,str,fieldListItemsParmName>',
+		name: 'il_sys_code_order_name_by_codeType_name',
+		owner: 'sys_system_old',
+		table: 'SysCode'
+	})
+
+	/* code - system */
+	await addDataObjFieldItems({
+		exprPropDisplay: '.name',
+		exprFilter:
+			'.codeType.name = <parms,str,fieldListItemsParmName> AND .owner.id = <parms,uuid,userSystemId>',
+		exprSort: '.order',
+		name: 'il_sys_code_order_index_by_codeType_name_system',
+		owner: 'sys_system_old',
+		table: 'SysCode'
+	})
+	await addDataObjFieldItems({
+		exprPropDisplay: '.name',
+		exprFilter:
+			'.codeType.name = <parms,str,fieldListItemsParmName> AND .owner.id = <parms,uuid,userSystemId>',
+		name: 'il_sys_code_order_name_by_codeType_name_system',
+		owner: 'sys_system_old',
+		table: 'SysCode'
+	})
+
+	/* other */
 	sectionHeader('DataObjFieldItem')
 	await addDataObjFieldItems({
 		exprFilter: `.cohortId = (SELECT app_cm::CmCsfCohort FILTER .id = <tree,uuid,CmCsfCohort.id>).cohort.id AND .id NOT IN (SELECT app_cm::CmCsfCohortAttd FILTER .csfCohort.id = <tree,uuid,CmCsfCohort.id>).cohortAttd.id`,
@@ -50,26 +87,10 @@ export async function initPreDataObjFieldItem() {
 		owner: 'sys_system_old',
 		table: 'SysAppHeader'
 	})
-
 	await addDataObjFieldItems({
 		exprPropDisplay: '.name',
 		exprFilter: '.codeType.id = <tree,uuid,SysCodeType.id>',
 		name: 'il_sys_code_order_name_by_codeType_id',
-		owner: 'sys_system_old',
-		table: 'SysCode'
-	})
-	await addDataObjFieldItems({
-		exprPropDisplay: '.name',
-		exprFilter: '.codeType.name = <parms,str,fieldListItemsParmName>',
-		exprSort: '.order',
-		name: 'il_sys_code_order_index_by_codeType_name',
-		owner: 'sys_system_old',
-		table: 'SysCode'
-	})
-	await addDataObjFieldItems({
-		exprPropDisplay: '.name',
-		exprFilter: '.codeType.name = <parms,str,fieldListItemsParmName>',
-		name: 'il_sys_code_order_name_by_codeType_name',
 		owner: 'sys_system_old',
 		table: 'SysCode'
 	})
@@ -156,6 +177,12 @@ export async function initPreDataObjFieldItem() {
 		name: 'il_sys_node_obj_order_name',
 		owner: 'sys_system_old',
 		table: 'SysNodeObj'
+	})
+	await addDataObjFieldItems({
+		exprPropDisplay: '.header',
+		name: 'il_sys_obj_subject_order_name',
+		owner: 'sys_system_old',
+		table: 'SysObjSubject'
 	})
 	await addDataObjFieldItems({
 		exprPropDisplay: '.name',

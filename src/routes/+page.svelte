@@ -1,6 +1,4 @@
 <script lang="ts">
-	// import logo from '$assets/YO-Baltimore-logo.png'
-	import logo from '$assets/clientLogo-AtlanticImpact.png'
 	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
 	import { goto } from '$app/navigation'
 	import { userInit } from '$utils/types.js'
@@ -27,8 +25,6 @@
 
 <div id="full-screen">
 	<div class="content">
-		<img class="mx-auto" src={logo} width="230" alt="Organization logo" />
-
 		<div class="flex-box">
 			<button
 				type="button"
@@ -70,7 +66,7 @@
 
 	.content {
 		position: fixed;
-		top: 80%;
+		top: 85%;
 		left: 50%;
 		transform: translate(-50%, -50%);
 		width: 90%;

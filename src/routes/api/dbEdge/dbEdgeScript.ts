@@ -8,6 +8,7 @@ import {
 	DataRecordStatus,
 	debug,
 	getArray,
+	ParmsValuesType,
 	strRequired
 } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
@@ -439,6 +440,12 @@ export class ScriptGroup {
 		this.scripts.forEach((script: Script) => {
 			if (script.query.rawDataObj.name === dataObjName) {
 				script.queryData.updateTableData(tableName, record)
+				if (
+					script.queryData.dataTab?.parms.valueGet(ParmsValuesType.isProgramNode) &&
+					record.owner
+				) {
+					script.queryData.dataTab?.parms.valueSet(ParmsValuesType.userSystemId, record.owner)
+				}
 			}
 		})
 	}

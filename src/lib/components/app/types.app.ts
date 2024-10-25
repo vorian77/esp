@@ -6,6 +6,7 @@ import {
 	nbrRequired,
 	Node,
 	NodeApp,
+	NodeType,
 	ParmsValuesType,
 	RawNode,
 	ResponseBody,
@@ -41,6 +42,7 @@ const FILENAME = '/$comps/nav/types.app.ts'
 export class App {
 	crumbs: Array<any> = []
 	levels: Array<AppLevel> = []
+	userSystemId?: string
 	constructor() {}
 
 	async addLevelEmbedShell(fieldShell: FieldEmbedShell) {
@@ -113,43 +115,47 @@ export class App {
 		}
 		return this
 	}
+
 	async addLevelNode(state: State, token: TokenAppDo, queryType: TokenApiQueryType) {
 		const currTab = this.getCurrTab()
 		if (currTab) {
 			currTab.data = token.dataObj.objData
 			currTab.data.parms.update(token.dataObj.data.parms.data)
-		}
 
-		// new level
-		const tabs: Array<AppLevelTab> = []
-		const newLevelIdx = this.levels.length
-		const currLevel = this.getCurrLevel()
-		if (currLevel) {
-			const rawNodes: {
-				root: Array<DbNode>
-				children: Array<DbNode>
-			} = await getNodesLevel(currLevel.getCurrTab().nodeId)
+			// new level
+			const tabs: Array<AppLevelTab> = []
+			const newLevelIdx = this.levels.length
+			const currLevel = this.getCurrLevel()
+			if (currLevel) {
+				const rawNodes: {
+					root: Array<DbNode>
+					children: Array<DbNode>
+				} = await getNodesLevel(currLevel.getCurrTab().nodeId)
 
-			if (rawNodes.root.length === 1) {
-				// add root
-				tabs.push(
-					new AppLevelTab(
-						App.getTabParmsNode(newLevelIdx, 0, new Node(new RawNode(rawNodes.root[0])))
+				if (rawNodes.root.length === 1) {
+					// add root
+					let nodeParms: DataRecord = App.getTabParmsNode(
+						newLevelIdx,
+						0,
+						new Node(new RawNode(rawNodes.root[0]))
 					)
-				)
-				// add children
-				rawNodes.children.forEach((rawNode, idx) => {
-					tabs.push(
-						new AppLevelTab(
-							App.getTabParmsNode(newLevelIdx, idx + 1, new Node(new RawNode(rawNode)))
+					nodeParms['nodeIsProgramDetail'] = currTab.nodeIsProgramList
+					tabs.push(new AppLevelTab(nodeParms))
+
+					// add children
+					rawNodes.children.forEach((rawNode, idx) => {
+						tabs.push(
+							new AppLevelTab(
+								App.getTabParmsNode(newLevelIdx, idx + 1, new Node(new RawNode(rawNode)))
+							)
 						)
-					)
-				})
-				this.levels.push(new AppLevel(tabs))
-				await query(state, this.getCurrTab(), queryType)
+					})
+					this.levels.push(new AppLevel(tabs))
+					await query(state, this.getCurrTab(), queryType)
+				}
 			}
+			return this
 		}
-		return this
 	}
 
 	addTabModal(dataObjEmbed: DataObj) {
@@ -228,6 +234,7 @@ export class App {
 			tabIdx
 		}
 	}
+
 	async initEmbeddedField(state: State, token: TokenApiQuery) {
 		// get new level
 		this.levels.push(
@@ -243,7 +250,7 @@ export class App {
 		await query(state, this.getCurrTab(), token.queryType)
 	}
 	async initNode(state: State, token: TokenAppTreeNode) {
-		const tabParms = token.node.dataObjId
+		let tabParms: DataRecord = token.node.dataObjId
 			? App.getTabParmsNode(0, 0, token.node)
 			: {
 					dataObjSource: new TokenApiDbDataObjSource({
@@ -254,6 +261,7 @@ export class App {
 					levelIdx: 0,
 					tabIdx: 0
 				}
+		tabParms['nodeIsProgramList'] = token.node.type === NodeType.program
 		this.levels.push(new AppLevel([new AppLevelTab(tabParms)]))
 		await query(state, this.getCurrTab(), TokenApiQueryType.retrieve)
 		const currTab = this.getCurrTab()
@@ -369,17 +377,6 @@ export class App {
 						break
 
 					case StatePacketAction.doDetailSave:
-						if (
-							state.user &&
-							currTab.data.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset) &&
-							token.dataObj.raw.isUserSelectedSystem
-						) {
-							if (
-								!(await state.user.getUserSelectedSystem(state, token.dataObj, currTab.data.parms))
-							)
-								return false
-						}
-
 						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 							return this
 						await query(state, tabParent, TokenApiQueryType.retrieve)
@@ -462,6 +459,23 @@ export class App {
 			}
 		}
 	}
+
+	userSystemIdGet() {
+		return this.userSystemId
+	}
+
+	async userSystemIdSelect(state: State) {
+		if (state.user) {
+			this.userSystemId = await state.user.getUserSelectedSystem(state)
+			return this.userSystemId !== undefined
+		} else {
+			this.userSystemId = undefined
+			return true
+		}
+	}
+	userSystemIdSet(systemId: string) {
+		this.userSystemId = systemId
+	}
 }
 
 export class AppLevel {
@@ -542,6 +556,8 @@ export class AppLevelTab {
 	label: string
 	levelIdx: number
 	nodeId: string
+	nodeIsProgramList: boolean
+	nodeIsProgramDetail: boolean
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'AppLevelTab'
@@ -556,6 +572,8 @@ export class AppLevelTab {
 		this.label = valueOrDefault(obj.label, '')
 		this.levelIdx = nbrRequired(obj.levelIdx, clazz, 'levelIdx')
 		this.nodeId = valueOrDefault(obj.nodeId, '')
+		this.nodeIsProgramDetail = booleanOrFalse(obj.nodeIsProgramDetail, 'nodeIsProgramDetail')
+		this.nodeIsProgramList = booleanOrFalse(obj.nodeIsProgramList, 'nodeIsProgramList')
 
 		// derived
 		if (this.dataObj) this.dataObjId = this.dataObj.raw.id

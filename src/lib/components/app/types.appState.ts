@@ -9,12 +9,12 @@ import {
 	type DataRecord,
 	initNavTree,
 	ParmsValues,
+	ParmsValuesType,
 	NodeType,
 	ParmsUser,
 	type ToastType,
 	User,
-	userInit,
-	ParmsValuesType
+	userInit
 } from '$utils/types'
 import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
 import {
@@ -384,7 +384,7 @@ export class State {
 		if (Object.hasOwn(obj, 'nodeType')) this.nodeType = obj.nodeType
 		if (Object.hasOwn(obj, 'packet')) this.packet = obj.packet
 		if (Object.hasOwn(obj, 'page')) this.page = obj.page
-		if (Object.hasOwn(obj, 'parmsState')) this.parmsState = obj.parmsState
+		if (Object.hasOwn(obj, 'parmsState')) this.parmsState.update(obj.parmsState)
 		if (Object.hasOwn(obj, 'storeDrawer')) this.storeDrawer = obj.storeDrawer
 		if (Object.hasOwn(obj, 'storeModal')) this.storeModal = obj.storeModal
 		if (Object.hasOwn(obj, 'storeToast')) this.storeToast = obj.storeToast

@@ -153,7 +153,7 @@ export async function getDataObjById(dataObjId: string) {
 			isListEdit: true,
 			isListSuppressFilterSort: true,
 			isListSuppressSelect: true,
-			isUserSelectedSystem: true,
+			isSystemRootNode: true,
 			listEditPresetExpr: true,
 			name: true,
 			subHeader: true,
@@ -529,10 +529,11 @@ export async function getUserByUserId(token: TokenApiUserId) {
 		fullName: u.person.fullName,
 		id: true,
 		lastName: u.person.lastName,
-		org: e.select(e.sys_core.SysOrg, (org) => ({
+		org: e.select(e.sys_core.SysOrg, (o) => ({
+			appName: true,
 			name: true,
-			header: true,
-			filter_single: e.op(e.op(org.id, '=', u.owner.id), 'and', e.op(org.id, '=', u.owner.id))
+			logoFileName: true,
+			filter_single: e.op(o.id, '=', u.owner.id)
 		})),
 		preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({
 			_codeType: p.codeType.name,

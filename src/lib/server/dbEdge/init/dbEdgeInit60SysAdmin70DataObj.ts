@@ -323,7 +323,7 @@ async function initDataObj() {
 			},
 			{
 				codeFieldElement: 'toggle',
-				columnName: 'isUserSelectedSystem',
+				columnName: 'isSystemRootNode',
 				isDisplayable: true,
 				orderDisplay: 267,
 				orderDefine: 267,

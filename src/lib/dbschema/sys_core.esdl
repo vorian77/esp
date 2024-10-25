@@ -3,12 +3,14 @@ module sys_core {
   type ObjRoot {
     addr1: str;
     addr2: str;
+    avatar: json;
     city: str;
     codeObjType: sys_core::SysCode;
     codeState: sys_core::SysCode;
     multi contacts: default::SysPerson{
       on target delete allow;
     };
+    email: str;
     header: str;
     required name: str;
     note: str;
@@ -46,6 +48,8 @@ module sys_core {
 
 
   type SysOrg extending sys_core::ObjRoot, sys_user::Mgmt {
+    appName: str;
+    logoFileName: str;
     constraint exclusive on (.name);
   }
 
@@ -79,7 +83,7 @@ module sys_core {
     valueDecimal: float64;
     valueInteger: int64;
     valueString: str;
-    constraint exclusive on ((.codeType, .name));
+    constraint exclusive on ((.owner, .codeType, .name));
   }
 
   # SysDataObj
@@ -103,7 +107,7 @@ module sys_core {
     required isListEdit: bool;
     isListSuppressFilterSort: bool;
     isListSuppressSelect: bool;
-    isUserSelectedSystem: bool;
+    required isSystemRootNode: bool;
     listEditPresetExpr: str;
     listReorderColumn: sys_db::SysColumn;
   

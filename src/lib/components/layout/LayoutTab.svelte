@@ -10,6 +10,7 @@
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/layout/LayoutTab.svelte'
+	const navColor = '#3b79e1'
 
 	export let state: State
 	export let component: string
@@ -44,7 +45,7 @@
 <!-- <DataViewer header="isHideChildTabs" data={isHideChildTabs} /> -->
 
 {#if currLevel}
-	<TabGroup>
+	<TabGroup active="underline underline-offset-8 border-1">
 		{#each currLevel.tabs as tab, idx}
 			{@const name = 'tab' + idx}
 			{@const hidden = isHideChildTabs && idx !== currLevel.tabIdxCurrent}
@@ -55,7 +56,7 @@
 					value={idx}
 					{hidden}
 					on:click={onClickTab}
-					class="text-base"
+					class="text-base {idx === currLevel.tabSet ? 'text-blue-600' : 'text-black'}"
 				>
 					{tab.label}
 				</Tab>

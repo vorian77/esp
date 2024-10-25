@@ -49,7 +49,6 @@ export namespace sys_user {
     "tags": sys_core.SysCode[];
     "resources_sys_app": sys_core.SysApp[];
     "resources_sys_footer": sys_core.SysNodeObj[];
-    "resources_sys_widget": SysWidget[];
     "users": SysUser[];
     "resources": SysUserTypeResource[];
   }
@@ -213,6 +212,8 @@ export interface SysPerson extends std.$Object {
   "title"?: string | null;
   "zip"?: string | null;
   "avatar"?: unknown | null;
+  "codeDisabilityStatus"?: sys_core.SysCode | null;
+  "ssn"?: string | null;
 }
 export namespace sys_core {
   export interface ObjRoot extends std.$Object {
@@ -236,6 +237,8 @@ export namespace sys_core {
     "testDate"?: edgedb.LocalDate | null;
     "testDateTime"?: edgedb.LocalDateTime | null;
     "testNumberFloat"?: number | null;
+    "avatar"?: unknown | null;
+    "email"?: string | null;
   }
   export interface SysObj extends ObjRoot, sys_user.Mgmt {
     "isGlobalResource"?: boolean | null;
@@ -281,7 +284,7 @@ export namespace sys_core {
     "subHeader"?: string | null;
     "exprSort"?: string | null;
     "listReorderColumn"?: sys_db.SysColumn | null;
-    "isUserSelectedSystem"?: boolean | null;
+    "isSystemRootNode": boolean;
   }
   export interface SysDataObjActionField extends SysObj {
     "codePacketAction": SysCode;
@@ -433,7 +436,10 @@ export namespace sys_core {
   export interface SysObjSubject extends SysObj {
     "codeType": SysCode;
   }
-  export interface SysOrg extends ObjRoot, sys_user.Mgmt {}
+  export interface SysOrg extends ObjRoot, sys_user.Mgmt {
+    "appName"?: string | null;
+    "logoFileName"?: string | null;
+  }
   export interface SysSystem extends ObjRoot, sys_user.Mgmt {
     "owner": SysOrg;
   }
@@ -503,6 +509,13 @@ export namespace fts {
   export type LuceneLanguage = "ara" | "ben" | "bul" | "cat" | "ces" | "ckb" | "dan" | "deu" | "ell" | "eng" | "est" | "eus" | "fas" | "fin" | "fra" | "gle" | "glg" | "hin" | "hun" | "hye" | "ind" | "ita" | "lav" | "lit" | "nld" | "nor" | "por" | "ron" | "rus" | "spa" | "srp" | "swe" | "tha" | "tur" | "edb_Brazilian" | "edb_ChineseJapaneseKorean" | "edb_Indian";
   export type PGLanguage = "xxx_simple" | "ara" | "hye" | "eus" | "cat" | "dan" | "nld" | "eng" | "fin" | "fra" | "deu" | "ell" | "hin" | "hun" | "ind" | "gle" | "ita" | "lit" | "npi" | "nor" | "por" | "ron" | "rus" | "srp" | "spa" | "swe" | "tam" | "tur" | "yid";
   export type Weight = "A" | "B" | "C" | "D";
+}
+export namespace org_moed {
+  export interface MoedParticipant extends app_cm.CmClient {
+    "office"?: sys_core.SysObj | null;
+    "consentDisclaimer"?: boolean | null;
+    "ssn"?: string | null;
+  }
 }
 export namespace schema {
   export type AccessKind = "Select" | "UpdateRead" | "UpdateWrite" | "Delete" | "Insert";
@@ -971,6 +984,9 @@ export interface types {
     "LuceneLanguage": fts.LuceneLanguage;
     "PGLanguage": fts.PGLanguage;
     "Weight": fts.Weight;
+  };
+  "org_moed": {
+    "MoedParticipant": org_moed.MoedParticipant;
   };
   "schema": {
     "AccessKind": schema.AccessKind;

@@ -1123,9 +1123,11 @@ export enum ParmsValuesType {
 	embedListSave = 'embedListSave',
 	embedParentId = 'embedParentId',
 	isMultiSelect = 'isMultiSelect',
+	isProgramNode = 'isProgramNode',
 	listLabel = 'listLabel',
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listRecordIdList = 'listRecordIdList',
 	listRecordIdSelected = 'listRecordIdSelected',
-	listRecordItems = 'listRecordItems'
+	listRecordItems = 'listRecordItems',
+	userSystemId = 'userSystemId'
 }

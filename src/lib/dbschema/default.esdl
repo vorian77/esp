@@ -20,20 +20,22 @@ module default {
     avatar: json;
     birthDate: cal::local_date;
     city: str;
+    codeDisabilityStatus: sys_core::SysCode;
     codeEthnicity: sys_core::SysCode;
     codeGender: sys_core::SysCode;
     codeRace: sys_core::SysCode;
     codeState: sys_core::SysCode;
     email: str;
     favFood: str;
-    required firstName: Name;
+    required firstName: default::Name;
     property fullName := .firstName ++ ' ' ++ .lastName;
     idMigration: uuid;
-    required lastName: Name;
-    middleName: Name;
+    required lastName: default::Name;
+    middleName: default::Name;
     note: str;
     phoneAlt: str;
     phoneMobile: str;
+    ssn: str;
     title: str;
     zip: str;
   }

@@ -34,8 +34,20 @@ export async function query(
 	queryType: TokenApiQueryType
 ) {
 	const clazz = `${FILENAME}.query`
+	let userSystemId: string | undefined
+
 	if (!tab) return false
 	let { dataTab, dataTree } = queryDataPre(state, tab, queryType)
+
+	// set parm - userSystemId
+	if (tab.nodeIsProgramDetail) {
+		dataTab.parms.valueSet(ParmsValuesType.isProgramNode, true)
+		if (queryType === TokenApiQueryType.preset) {
+			await state.app.userSystemIdSelect(state)
+		}
+	}
+	dataTab.parms.valueSet(ParmsValuesType.userSystemId, state.app.userSystemIdGet())
+
 	const queryData = new TokenApiQueryData({ dataTab, tree: dataTree })
 	let table = tab.getTable() // table will be undefined prior to retrieve
 
@@ -50,6 +62,7 @@ export async function query(
 			dataTab
 		)
 	}
+
 	document.body.style.setProperty('cursor', 'wait', 'important')
 	const result: ResponseBody = await queryExecute(tab.getDataObjSource(), queryType, queryData)
 	document.body.style.setProperty('cursor', 'default')
@@ -58,6 +71,10 @@ export async function query(
 
 	// successful
 	let dataResult = DataObjData.load(result.data.dataObjData)
+	if (tab.nodeIsProgramDetail) {
+		const userSystemId = dataResult.parms.valueGet(ParmsValuesType.userSystemId)
+		if (userSystemId) state.app.userSystemIdSet(userSystemId)
+	}
 	tab.dataObj = await DataObj.init(state, dataResult)
 	table = tab.getTable()
 

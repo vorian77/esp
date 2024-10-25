@@ -26,7 +26,7 @@ export class User {
 	id: string
 	initials: string = ''
 	lastName: string
-	org: { name: string; header: string } | undefined
+	org: { appName: string; logoFileExt: string; logoFileName: string; name: string } | undefined
 	preferences: UserPrefs
 	resources = new UserTypeResourceList()
 	resources_sys_app: any[] = []
@@ -49,13 +49,21 @@ export class User {
 		this.fullName = strRequired(obj.fullName, clazz, 'fullName')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
-		this.org = obj.org ? { name: obj.org.name, header: obj.org.header } : undefined
 		this.preferences = new UserPrefs(obj.preferences)
 		this.resources_sys_app = obj.resources_sys_app
 		this.resources_sys_footer = obj.resources_sys_footer
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 
 		// derived
+		if (obj.org) {
+			const logo = obj.org?.logoFileName.split('.')
+			this.org = {
+				appName: obj?.org?.appName,
+				logoFileExt: logo.length === 2 ? logo[1].toLowerCase() : '',
+				logoFileName: logo.length === 2 ? logo[0] : '',
+				name: obj?.org?.name
+			}
+		}
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
 		this.resources.addResources(obj.resources_core)
 		this.resources.addResources(obj.resources_subject)
@@ -80,22 +88,22 @@ export class User {
 		// this.user_id = nbrOptional(obj.user_id, 'User')
 	}
 
-	async getUserSelectedSystem(state: State, dataObj: DataObj, parmData: ParmsValues) {
+	async getUserSelectedSystem(state: State) {
 		const systems = this.resources.getResources(UserTypeResourceType.system)
-		const parmName = `user_selected_system`
 
 		switch (systems.length) {
 			case 0:
 				alert(
 					`Cannot proceed. You have not been assigned system resources. Please see your administrator.`
 				)
-				return false
+				return undefined
 			case 1:
-				parmData.data[parmName] = this.systemIds[0]
-				return true
+				return this.systemIds[0]
+
 			default:
-				parmData.data[parmName] = this.systemIds[0]
-				return true
+				const defaultSystemName = 'sys_ai_old'
+				const defaultSystem = systems.find((s) => s.resource.name === defaultSystemName)
+				return defaultSystem ? defaultSystem.resource.id : undefined
 
 				// const itemsList = resources.map((r) => {
 				// 	return new FieldItem(r.idResource, r.header)
@@ -129,10 +137,10 @@ export class User {
 					})
 				)
 				// parmData.data[parmName] = resources[0].idResource
-				return true
+				return undefined
 		}
 
-		return true
+		return undefined
 	}
 
 	// getResourcesSubject(type: string): UserTypeResource[] {

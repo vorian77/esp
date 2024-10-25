@@ -367,7 +367,8 @@ export class Query {
 		const defn = required(prop.linkItemsDefn, clazz, 'prop.linkItemsDefn') as PropLinkItemsDefn
 		queryData.dataTab?.parms.update(defn.parms)
 		const shape = `{data := .id, display := ${defn.exprPropDisplay}}`
-		const filter = defn.exprFilter ? evalExpr(defn.exprFilter, queryData) : ''
+		// const filter = defn.exprFilter ? evalExpr(defn.exprFilter, queryData) : ''
+		const filter = defn.exprFilter ? defn.exprFilter : ''
 		const orderBy = defn.exprSort ? `ORDER BY ${defn.exprSort}` : 'ORDER BY .display'
 
 		// table

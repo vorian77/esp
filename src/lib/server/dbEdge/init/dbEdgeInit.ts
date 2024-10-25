@@ -14,6 +14,7 @@ import { initSysRepUser } from '$server/dbEdge/init/dbEdgeInit60SysAdminRepRende
 // features
 import { initFeatCMStudent } from '$server/dbEdge/init/dbEdgeInit80FeatStudent'
 import { initFeatTraining } from '$server/dbEdge/init/dbEdgeInit80FeatCMTraining'
+import { initFeatMOED } from '$server/dbEdge/init/dbEdgeInit80FeatMOED'
 
 // data
 import { initDataReports } from '$server/dbEdge/init/dbEdgeInit120DataRep'
@@ -22,14 +23,18 @@ import { initDataReports } from '$server/dbEdge/init/dbEdgeInit120DataRep'
 import { initMigrationPerson } from '$server/dbEdge/init/dbEdgeInit100MigrPerson'
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
-// export async function dbEdgeInit() {
-// 	sectionHeader('Init Start')
-// 	// await initDataReports()
-// 	await initUser()
-// 	sectionHeader('Init Complete')
-// }
-
 export async function dbEdgeInit() {
+	// await dbEdgeInitFeature()
+	await dbEdgeInitSystem()
+}
+
+async function dbEdgeInitFeature() {
+	sectionHeader('Init Start')
+	await initUser()
+	sectionHeader('Init Complete')
+}
+
+async function dbEdgeInitSystem() {
 	sectionHeader('Init Start')
 	await initReset()
 	await initCoreObjects()
@@ -58,6 +63,7 @@ async function initSysOther() {
 export async function initFeatures() {
 	await initFeatCMStudent()
 	await initFeatTraining()
+	await initFeatMOED()
 	// await initMigrationPerson()
 }
 

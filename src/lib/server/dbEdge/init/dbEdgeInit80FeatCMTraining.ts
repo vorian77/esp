@@ -39,6 +39,12 @@ async function initCourse() {
 				orderDefine: 10
 			},
 			{
+				columnName: 'owner',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 15
+			},
+			{
 				codeAccess: 'readOnly',
 				columnName: 'codeStatus',
 				isDisplayable: true,
@@ -88,7 +94,7 @@ async function initCourse() {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Course',
-		isUserSelectedSystem: true,
+		isSystemRootNode: true,
 		name: 'data_obj_cm_course_detail',
 		owner: 'sys_ai_old',
 		tables: [{ index: 0, table: 'CmCourse' }],
@@ -105,8 +111,7 @@ async function initCourse() {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave:
-					'(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,user_selected_system>))',
+				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,userSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -460,7 +465,7 @@ async function initCohort() {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Cohort',
-		isUserSelectedSystem: true,
+		isSystemRootNode: true,
 		name: 'data_obj_cm_cohort_detail',
 		owner: 'sys_ai_old',
 		parentColumn: 'cohorts',
@@ -479,8 +484,7 @@ async function initCohort() {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave:
-					'(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,user_selected_system>))',
+				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,userSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -1262,6 +1266,12 @@ async function initPartner() {
 				orderDefine: 10
 			},
 			{
+				columnName: 'owner',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 15
+			},
+			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
 				indexTable: 0,
@@ -1345,7 +1355,7 @@ async function initPartner() {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Partner',
-		isUserSelectedSystem: true,
+		isSystemRootNode: true,
 		name: 'data_obj_cm_partner_detail',
 		owner: 'sys_ai_old',
 		tables: [{ index: 0, table: 'CmPartner' }],
@@ -1362,8 +1372,7 @@ async function initPartner() {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave:
-					'(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,user_selected_system>))',
+				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,userSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{

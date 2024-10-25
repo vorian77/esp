@@ -37,6 +37,7 @@ export async function initPreTable() {
 		['sys_system_old', 'sys_core', 'SysDataObjTable', true],
 		['sys_system_old', 'sys_core', 'SysNodeObj', true],
 		['sys_system_old', 'sys_core', 'SysObj', true],
+		['sys_system_old', 'sys_core', 'SysObjSubject', true],
 		['sys_system_old', 'sys_core', 'SysObjNote', true],
 		['sys_system_old', 'sys_core', 'SysOrg', true],
 		['sys_system_old', 'sys_core', 'SysSystem', true],
@@ -71,7 +72,7 @@ export async function initPreTable() {
 	])
 
 	await tables([
-		// app_cm
+		// Atlantic Impact
 		['sys_ai_old', 'app_cm', 'CmClient', true],
 		['sys_ai_old', 'app_cm', 'CmClientServiceFlow', true],
 		['sys_ai_old', 'app_cm', 'CmCohort', true],
@@ -85,5 +86,14 @@ export async function initPreTable() {
 		['sys_ai_old', 'app_cm', 'CmCsfSchoolPlacement', true],
 		['sys_ai_old', 'app_cm', 'CmPartner', true],
 		['sys_ai_old', 'app_cm', 'CmServiceFlow', true]
+	])
+
+	await tables([
+		// MOED
+		['sys_moed_old', 'org_moed', 'MoedDoc', true],
+		['sys_moed_old', 'org_moed', 'MoedMessage', true],
+		['sys_moed_old', 'org_moed', 'MoedPartDoc', true],
+		['sys_moed_old', 'org_moed', 'MoedPartNote', true],
+		['sys_moed_old', 'org_moed', 'MoedParticipant', true]
 	])
 }

@@ -12,6 +12,7 @@ import {
 	addUserType,
 	addUserTypeResourceSubject
 } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { initFeatMOED } from '$server/dbEdge/init/dbEdgeInit80FeatMOED'
 
 export async function initUser() {
 	await initReset()
@@ -36,8 +37,11 @@ export async function initReset() {
 	reset.delTableRecords('sys_core::SysApp')
 	reset.delTableRecords('sys_core::SysAppHeader')
 
+	reset.delTableRecords('org_moed::MoedParticipant')
 	reset.delTableRecords('sys_core::SysObjSubject')
 	await reset.execute()
+
+	await initFeatMOED()
 }
 
 async function initAppHeaders() {
@@ -61,7 +65,14 @@ async function initAppHeaders() {
 		name: 'app_hdr_ai_staff',
 		orderDefine: 100,
 		owner: 'sys_ai_old'
-	})
+	}),
+		await addAppHeader({
+			header: 'Staff (MOED)',
+			isGlobalResource: false,
+			name: 'app_hdr_moed_staff',
+			orderDefine: 110,
+			owner: 'sys_moed_old'
+		})
 }
 async function initApps() {
 	/* system */
@@ -111,6 +122,15 @@ async function initApps() {
 		name: 'app_ai_staff',
 		owner: 'sys_ai_old',
 		nodes: ['node_obj_cm_course_list', 'node_obj_cm_partner_list', 'node_obj_cm_student_list']
+	})
+
+	/* MOED */
+	await addApp({
+		appHeader: 'app_hdr_moed_staff',
+		isGlobalResource: false,
+		name: 'app_moed_staff',
+		owner: 'sys_moed_old',
+		nodes: ['node_obj_moed_part_list']
 	})
 }
 
@@ -195,6 +215,7 @@ async function initUserType() {
 		name: 'ut_moed_staff',
 		owner: 'sys_moed_old',
 		resources: [
+			{ codeType: 'app', resource: 'app_moed_staff' },
 			{ codeType: 'app', resource: 'app_sys_reporting' },
 			{ codeType: 'subject', resource: 'moedOfficeEastside' },
 			{ codeType: 'subject', resource: 'moedOfficeWestside' }
@@ -204,7 +225,7 @@ async function initUserType() {
 
 async function initUserSystems() {
 	await userSystems([
-		['user_sys', ['sys_system_old', 'sys_ai_old']],
+		['user_sys', ['sys_system_old', 'sys_ai_old', 'sys_moed_old']],
 		['3136276210', ['sys_ai_old']],
 		['2482317505', ['sys_ai_old']],
 		['2487985578', ['sys_ai_old']],

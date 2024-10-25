@@ -17,6 +17,7 @@
 		getToastStore
 	} from '@skeletonlabs/skeleton'
 	import Layout from '$comps/layout/RootLayoutApp.svelte'
+	import NavLogo from '$comps/app/NavLogo.svelte'
 	import NavHome from '$comps/app/NavHome.svelte'
 	import NavFooter from '$comps/app/NavFooter.svelte'
 	import NavTree from '$comps/app/NavTree.svelte'
@@ -41,10 +42,13 @@
 	let statePackets: Array<StatePacket> = []
 	let user: User | undefined
 	let userAvatarSrc = ''
+	let appName = ''
+	let logoFileName = ''
 
 	$: {
 		const rawUser = $appStoreUser
 		user = rawUser && Object.keys(rawUser).length > 0 ? new User(rawUser) : undefined
+		appName = user?.org?.appName ? user.org.appName : DEFAULT_APP_NAME
 	}
 	$: if (launchApp && user) {
 		;(async () => {
@@ -131,11 +135,11 @@
 						<Icon name="hamburger-menu" width="1.5rem" height="1.5rem" fill={NAV_COLOR} />
 					</div>
 
+					<NavLogo {user} />
+
 					<div role="button" tabindex="0" class="text-black" on:click={goHome} on:keyup={goHome}>
-						{#if user?.org?.header}
-							{user.org.header}
-						{:else}
-							{DEFAULT_APP_NAME}
+						{#if appName}
+							{appName}
 						{/if}
 					</div>
 				</svelte:fragment>

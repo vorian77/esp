@@ -155,6 +155,12 @@ export async function initPreColumn() {
 		owner: 'sys_system_old'
 	})
 	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Application Name',
+		name: 'appName'
+	})
+	await addColumn({
 		codeDataType: 'link',
 		header: 'Attendance Records',
 		isMultiSelect: true,
@@ -305,6 +311,13 @@ export async function initPreColumn() {
 		header: 'Data Source - Value',
 		isMultiSelect: false,
 		name: 'codeDbDataSourceValue'
+	})
+	await addColumn({
+		codeDataType: 'link',
+		header: 'Disability Status',
+		isMultiSelect: false,
+		name: 'codeDisabilityStatus',
+		owner: 'sys_system_old'
 	})
 	await addColumn({
 		owner: 'sys_system_old',
@@ -1437,7 +1450,7 @@ export async function initPreColumn() {
 	await addColumn({
 		codeDataType: 'bool',
 		header: 'User Selected - System',
-		name: 'isUserSelectedSystem',
+		name: 'isSystemRootNode',
 		owner: 'sys_system_old'
 	})
 	await addColumn({
@@ -1508,6 +1521,12 @@ export async function initPreColumn() {
 		codeDataType: 'link',
 		header: 'List - Reorder Column',
 		name: 'listReorderColumn'
+	})
+	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Logo File Name',
+		name: 'logoFileName'
 	})
 	await addColumn({
 		owner: 'sys_system_old',
@@ -1594,6 +1613,14 @@ export async function initPreColumn() {
 		header: 'Note',
 		name: 'note'
 	})
+	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Office',
+		isMultiSelect: false,
+		name: 'office'
+	})
+
 	await addColumn({
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
@@ -1689,6 +1716,13 @@ export async function initPreColumn() {
 		codeDataType: 'json',
 		header: 'Value',
 		name: 'parmValue'
+	})
+	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Participant',
+		isMultiSelect: false,
+		name: 'participant'
 	})
 	await addColumn({
 		owner: 'sys_system_old',

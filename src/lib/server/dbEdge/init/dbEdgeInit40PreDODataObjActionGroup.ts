@@ -102,6 +102,24 @@ async function initFeatures() {
 		owner: 'sys_system_old'
 	})
 
+	/* organizations-user */
+	await addDataObjActionFieldGroup({
+		actionFieldItems: [
+			['noa_save_detail', 0],
+			['noa_save_cancel', 1]
+		],
+		name: 'doag_detail_org_user',
+		owner: 'sys_system_old'
+	})
+	await addDataObjActionFieldGroup({
+		actionFieldItems: [
+			['noa_edit_list', 0],
+			['noa_export', 1]
+		],
+		name: 'doag_list_org_user',
+		owner: 'sys_system_old'
+	})
+
 	/* report */
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [

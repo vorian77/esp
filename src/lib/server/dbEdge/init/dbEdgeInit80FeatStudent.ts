@@ -40,6 +40,12 @@ async function initStudent() {
 				orderDefine: 10
 			},
 			{
+				columnName: 'owner',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 15
+			},
+			{
 				codeAccess: 'readOnly',
 				columnName: 'firstName',
 				orderCrumb: 10,
@@ -85,7 +91,7 @@ async function initStudent() {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Student',
-		isUserSelectedSystem: true,
+		isSystemRootNode: true,
 		name: 'data_obj_cm_student_detail',
 		owner: 'sys_ai_old',
 		tables: [
@@ -105,8 +111,7 @@ async function initStudent() {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave:
-					'(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,user_selected_system>))',
+				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,userSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -193,7 +198,7 @@ async function initStudent() {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmName: 'ct_sys_person_gender',
 				linkTable: 'SysCode'
 			},
@@ -205,7 +210,7 @@ async function initStudent() {
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmName: 'ct_sys_person_race',
 				linkTable: 'SysCode'
 			},
@@ -217,7 +222,7 @@ async function initStudent() {
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmName: 'ct_sys_person_ethnicity',
 				linkTable: 'SysCode'
 			},
@@ -2090,7 +2095,7 @@ async function initCsfDocument() {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
 				fieldListItemsParmName: 'ct_cm_doc_type',
 				linkTable: 'SysCode'
 			},

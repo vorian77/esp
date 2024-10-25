@@ -97,7 +97,7 @@ export class NavTree {
 		const nodeBranchParentIdx = NavTree.getNodeIdx(listTree, nodeBranchParent)
 		nodeBranchParent.isRetrieved = true
 
-		const getInsertIdx = (listTree: NodeNav[], nodeBranchParentIdx: number, newNode: NodeNav) => {
+		const getInsertIdx = (listTree: NodeNav[], nodeBranchParentIdx: number, newNode: DbNode) => {
 			let insertIdx = nodeBranchParentIdx + 1
 			while (insertIdx < listTree.length) {
 				if (listTree[insertIdx].orderDefine > newNode.orderDefine) {
@@ -137,7 +137,7 @@ export class NavTree {
 			case NodeType.program_object:
 				state.update({
 					page: '/home',
-					parmsValues: { programId: this.getProgramId(nodeNav) },
+					parmsState: { programId: this.getProgramId(nodeNav) },
 					nodeType: nodeNav.type,
 					packet: new StatePacket({
 						action: StatePacketAction.navTreeNode,
