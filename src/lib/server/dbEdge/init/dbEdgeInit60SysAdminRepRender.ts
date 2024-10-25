@@ -199,12 +199,6 @@ async function initRepConfig() {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 15
-			},
-			{
 				codeAccess: 'readOnly',
 				columnName: 'headerUser',
 				isDisplayable: true,

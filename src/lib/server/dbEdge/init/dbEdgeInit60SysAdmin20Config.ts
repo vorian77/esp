@@ -32,12 +32,6 @@ async function initConfig() {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 15
-			},
-			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
 				indexTable: 0,

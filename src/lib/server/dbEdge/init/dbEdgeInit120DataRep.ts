@@ -939,12 +939,6 @@ async function initReportCourseSummary() {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 15
-			},
-			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
 				orderCrumb: 10,
@@ -1094,12 +1088,6 @@ async function initReportOurWorldSummary() {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 15
-			},
-			{
 				codeAccess: 'readOnly',
 				columnName: 'firstName',
 				orderSort: 20,
@@ -1226,12 +1214,6 @@ async function initReportStudentSummary() {
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 10
-			},
-			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 15
 			},
 			{
 				codeAccess: 'readOnly',

@@ -421,16 +421,6 @@ async function initDataObjFieldEmbedListSelect() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'name',
-				orderCrumb: 10,
-				orderSort: 10,
-				isDisplayable: true,
-				orderDisplay: 15,
-				orderDefine: 15,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'actionFieldGroupModal',
 				isDisplayable: true,
 				orderDisplay: 20,

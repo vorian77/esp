@@ -39,12 +39,11 @@ export class ScriptGroup {
 			script.addItem(item[0], item[1])
 		})
 		script.build()
-		this.scripts.push(script)
+		// this.scripts.push(script)
 		this.scriptsStack.push(script)
 		return script
 	}
 
-	// addScriptDataItems(query: Query, queryData: TokenApiQueryData, props: RawDataObjPropDB[]) {
 	addScriptDataItems(scriptParent: Script, scriptData: DataObjData, record: DataRecord) {
 		const query = scriptParent.query
 		let queryData = scriptParent.queryData
@@ -447,19 +446,6 @@ export class ScriptGroup {
 			['script', { content: ['with', 'action', 'propsSelect', 'order'] }]
 		]
 	}
-	// updateTableData(dataObjName: string, tableName: string, record: any) {
-	// 	this.scripts.forEach((script: Script) => {
-	// 		if (script.query.rawDataObj.name === dataObjName) {
-	// 			script.queryData.updateTableData(tableName, record)
-	// 			if (
-	// 				script.queryData.dataTab?.parms.valueGet(ParmsValuesType.isProgramNode) &&
-	// 				record.owner
-	// 			) {
-	// 				script.queryData.dataTab?.parms.valueSet(ParmsValuesType.userSystemId, record.owner)
-	// 			}
-	// 		}
-	// 	})
-	// }
 }
 
 export class Script {

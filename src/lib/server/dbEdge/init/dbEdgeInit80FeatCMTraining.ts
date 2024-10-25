@@ -39,12 +39,6 @@ async function initCourse() {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 15
-			},
-			{
 				codeAccess: 'readOnly',
 				columnName: 'codeStatus',
 				isDisplayable: true,
@@ -1264,12 +1258,6 @@ async function initPartner() {
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 10
-			},
-			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 15
 			},
 			{
 				codeAccess: 'readOnly',

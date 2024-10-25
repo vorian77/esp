@@ -80,7 +80,6 @@ async function processDataObjQuery(
 				new ProcessRowSelectPreset(query.rawDataObj.rawPropsSelect, DataRecordStatus.preset)
 			)
 			scriptGroup.addScriptPreset(query, queryData)
-			// scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
 			break
 
 		case TokenApiQueryType.retrieve:
@@ -90,7 +89,6 @@ async function processDataObjQuery(
 			)
 			scriptGroup.addScriptPresetListEdit(query, queryData)
 			scriptGroup.addScriptRetrieve(query, queryData)
-			// scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
 			break
 
 		case TokenApiQueryType.save:
@@ -99,7 +97,6 @@ async function processDataObjQuery(
 				new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataTab?.rowsSave)
 			)
 			scriptGroup.addScriptSave(query, queryData)
-			// scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsSelect)
 			break
 
 		default:
@@ -158,7 +155,7 @@ async function processDataObjExecute(
 
 					// set embedded parent tree records
 					const rootTableName = script.query.getTableRootName()
-					scriptGroup.scripts.forEach((script: Script) => {
+					scriptGroup.scriptsStack.forEach((script: Script) => {
 						script.queryData.updateTableData(rootTableName, record)
 					})
 
@@ -172,14 +169,6 @@ async function processDataObjExecute(
 					}
 					scriptGroup.addScriptDataItems(script, scriptData, record)
 				}
-				// if (script.query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
-				// 	scriptGroup.updateTableData(
-				// 		script.query.rawDataObj.name,
-				// 		script.query.getTableRootName(),
-				// 		scriptData.rowsRetrieved.getDetailRecord()
-				// 	)
-				// }
-
 				break
 
 			case ScriptExePost.none:

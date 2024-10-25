@@ -40,12 +40,6 @@ async function initStudent() {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 15
-			},
-			{
 				codeAccess: 'readOnly',
 				columnName: 'firstName',
 				orderCrumb: 10,
