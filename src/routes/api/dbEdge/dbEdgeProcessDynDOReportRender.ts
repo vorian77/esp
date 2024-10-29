@@ -124,6 +124,7 @@ function getRawDataObj(repUser: RepUser) {
 		id: repUser.report.id,
 		isListEdit: false,
 		isListSuppressSelect: true,
+		isSystemRootNode: false,
 		name: repUser.report.name
 	})
 }

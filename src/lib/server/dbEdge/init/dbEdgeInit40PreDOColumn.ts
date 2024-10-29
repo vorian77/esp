@@ -1443,6 +1443,12 @@ export async function initPreColumn() {
 	})
 	await addColumn({
 		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Self Signup',
+		name: 'isSelfSignup'
+	})
+	await addColumn({
+		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Share With Student',
 		name: 'isShareWithClient'

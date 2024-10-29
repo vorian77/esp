@@ -41,6 +41,7 @@ function getRawDataObj(data: any) {
 		header: data._header,
 		id: data.id,
 		isListEdit: false,
+		isSystemRootNode: false,
 		name: data._name
 	})
 }

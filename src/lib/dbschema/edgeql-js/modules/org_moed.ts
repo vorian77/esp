@@ -11,7 +11,7 @@ export type $MoedPartDataλShape = $.typeutil.flatten<_sys_core.$SysObjλShape &
 type $MoedPartData = $.ObjectType<"org_moed::MoedPartData", $MoedPartDataλShape, null, [
   ..._sys_core.$SysObj['__exclusives__'],
 ]>;
-const $MoedPartData = $.makeType<$MoedPartData>(_.spec, "a5d1ce7c-9310-11ef-9ac6-d1ffae443067", _.syntax.literal);
+const $MoedPartData = $.makeType<$MoedPartData>(_.spec, "2d502525-9382-11ef-9018-9556ec6c7c0b", _.syntax.literal);
 
 const MoedPartData: $.$expr_PathNode<$.TypeSet<$MoedPartData, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($MoedPartData, $.Cardinality.Many), null);
 

@@ -51,6 +51,7 @@ export namespace sys_user {
     "resources_sys_footer": sys_core.SysNodeObj[];
     "users": SysUser[];
     "resources": SysUserTypeResource[];
+    "isSelfSignup"?: boolean | null;
   }
   export interface SysUserTypeResource extends std.$Object {
     "resource": sys_core.SysObj;

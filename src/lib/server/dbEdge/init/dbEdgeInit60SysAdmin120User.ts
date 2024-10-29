@@ -499,6 +499,15 @@ async function initUserType() {
 				orderDefine: 60
 			},
 			{
+				codeFieldElement: 'toggle',
+				columnName: 'isSelfSignup',
+				exprPreset: '(SELECT false)',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 65,
+				orderDefine: 65
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,

@@ -56,6 +56,7 @@ module sys_user {
   }
   
   type SysUserType extending sys_core::SysObj {
+    isSelfSignup: bool;
     multi resources: sys_user::SysUserTypeResource {
       on target delete allow;
     };
