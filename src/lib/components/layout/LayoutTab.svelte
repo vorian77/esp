@@ -20,6 +20,8 @@
 	let isHideChildTabs = false
 	let currLevel: AppLevel | undefined
 
+	let classContent = state.app.isMobileMode ? '-mt-4' : 'mt-4'
+
 	$: currLevel = state.app.getCurrLevel()
 	$: isHideChildTabs =
 		dataObjData.rowsRetrieved.hasRecord() &&
@@ -46,26 +48,28 @@
 
 {#if currLevel}
 	<TabGroup active="underline underline-offset-8 border-1">
-		{#each currLevel.tabs as tab, idx}
-			{@const name = 'tab' + idx}
-			{@const hidden = isHideChildTabs && idx !== currLevel.tabIdxCurrent}
-			<div {hidden}>
-				<Tab
-					bind:group={currLevel.tabSet}
-					{name}
-					value={idx}
-					{hidden}
-					on:click={onClickTab}
-					class="text-base {idx === currLevel.tabSet ? 'text-blue-600' : 'text-black'}"
-				>
-					{tab.label}
-				</Tab>
-			</div>
-		{/each}
+		{#if currLevel.tabs.length > 1}
+			{#each currLevel.tabs as tab, idx}
+				{@const name = 'tab' + idx}
+				{@const hidden = isHideChildTabs && idx !== currLevel.tabIdxCurrent}
+				<div {hidden}>
+					<Tab
+						bind:group={currLevel.tabSet}
+						{name}
+						value={idx}
+						{hidden}
+						on:click={onClickTab}
+						class="text-base {idx === currLevel.tabSet ? 'text-blue-600' : 'text-black'}"
+					>
+						{tab.label}
+					</Tab>
+				</div>
+			{/each}
+		{/if}
 
 		<svelte:fragment slot="panel">
 			{#if dataObj && dataObjData}
-				<div class="mt-4">
+				<div class={classContent}>
 					<LayoutContent bind:state {component} {dataObj} {dataObjData} on:formCancelled />
 				</div>
 			{/if}

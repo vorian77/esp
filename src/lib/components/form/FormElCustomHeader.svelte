@@ -6,15 +6,17 @@
 	export let fp: FieldProps
 
 	$: field = fp.field as FieldCustomHeader
-	$: classMargin = field.isFirstVisible ? '' : 'mt-4 -mb-2'
-	$: classSize = field.size ? 'h' + field.size : 'h3'
+	$: classMargin = field.isFirstVisible ? '' : field.isSubHeader ? '-mt-3' : 'mt-4 -mb-2'
+	$: classSize = field.isSubHeader ? 'h4' : field.size ? 'h' + field.size : 'h3'
+	$: classColor = field.isSubHeader ? 'text-zinc-400' : ''
+	$: classWeight = field.isSubHeader ? 'font-normal' : 'font-bold'
 	$: dynamicText = field.source && field.sourceKey ? ': ' + field.sourceKey : ''
 </script>
 
-<div class="{classMargin} {classSize}">
+<div class="{classMargin} {classSize} {classColor}">
 	<p>
 		{field.colDO.label}
-		<span class="font-semibold">
+		<span class={classWeight}>
 			{dynamicText}
 		</span>
 	</p>

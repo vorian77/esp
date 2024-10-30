@@ -23,7 +23,7 @@
 	$: (async () => await load(dataObjData))()
 
 	async function load(data: DataObjData) {
-		loadTags()
+		if (!state.app.isMobileMode) loadTags()
 		dataObj.objData = data
 		state.setDataObjState(dataObj)
 		state.setStatus()
@@ -102,7 +102,20 @@
 <!-- <DataViewer header="FormDetail.state.objStatus" data={state.objStatus} /> -->
 <!-- <DataViewer header="tagGroupSection" data={tagGroupSection} /> -->
 
-{#if tagGroupSections}
+{#if state.app.isMobileMode}
+	<div class="flex flex-col gap-y-4">
+		{#each dataObj.fields as field, fieldIdx}
+			<FormElement
+				bind:state
+				{component}
+				{dataObj}
+				{dataObjData}
+				field={dataObj.fields[fieldIdx]}
+				row={0}
+			/>
+		{/each}
+	</div>
+{:else if tagGroupSections}
 	<div id="root" class="overflow-y-scroll" style={dataHeight}>
 		<form id={'form_' + dataObj.raw.name} on:submit|preventDefault>
 			{#each tagGroupSections as section}

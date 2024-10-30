@@ -120,6 +120,26 @@ async function initFeatures() {
 		owner: 'sys_system_old'
 	})
 
+	/* mobile */
+	await addDataObjActionFieldGroup({
+		actionFieldItems: [
+			['noa_save_detail_retrieve_preset', 0],
+			['noa_save_cancel', 1]
+		],
+		name: 'doag_detail_retrieve_preset',
+		owner: 'sys_system_old'
+	})
+	await addDataObjActionFieldGroup({
+		actionFieldItems: [
+			['noa_save_list', 0],
+			['noa_save_cancel', 1],
+			['noa_new_detail_list', 2],
+			['noa_edit_list', 3]
+		],
+		name: 'doag_list_mobile',
+		owner: 'sys_system_old'
+	})
+
 	/* report */
 	await addDataObjActionFieldGroup({
 		actionFieldItems: [

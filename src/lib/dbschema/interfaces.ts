@@ -66,6 +66,8 @@ export namespace app_cm {
     "agencyId"?: string | null;
     "school"?: string | null;
     "owner": sys_core.SysSystem;
+    "office"?: sys_core.SysObjSubject | null;
+    "ssn"?: string | null;
   }
   export interface CmClientServiceFlow extends sys_user.Mgmt {
     "client": CmClient;
@@ -78,6 +80,8 @@ export namespace app_cm {
     "dateStart"?: edgedb.LocalDate | null;
     "dateStartEst"?: edgedb.LocalDate | null;
     "note"?: string | null;
+    "codeStatus"?: sys_core.SysCode | null;
+    "user"?: sys_user.SysUser | null;
   }
   export interface CmCohort extends sys_core.SysObj {
     "codeStatus"?: sys_core.SysCode | null;
@@ -137,12 +141,12 @@ export namespace app_cm {
   }
   export interface CmCsfDocument extends CmCsfData {
     "codeType": sys_core.SysCode;
-    "staffAgency": sys_user.SysStaff;
     "dateExpires"?: edgedb.LocalDate | null;
     "dateIssued": edgedb.LocalDate;
     "isShareWithClient"?: string | null;
     "note"?: string | null;
     "file"?: unknown | null;
+    "staffAgency"?: sys_user.SysStaff | null;
   }
   export interface CmCsfJobPlacement extends CmCsfData {
     "codeJobType": sys_core.SysCode;
@@ -159,6 +163,16 @@ export namespace app_cm {
     "note"?: string | null;
     "title": string;
     "wage"?: number | null;
+  }
+  export interface CmCsfMsg extends CmCsfData {
+    "office"?: sys_core.SysObjSubject | null;
+    "parent"?: CmCsfMsg | null;
+    "recipients": sys_user.SysUser[];
+    "date": edgedb.LocalDate;
+    "msg"?: string | null;
+    "subject"?: string | null;
+    "codeStatus": sys_core.SysCode;
+    "sender": sys_user.SysStaff;
   }
   export interface CmCsfNote extends CmCsfData {
     "codeType": sys_core.SysCode;
@@ -377,6 +391,7 @@ export namespace sys_core {
     "customColCodeColor"?: SysCode | null;
     "column": sys_db.SysColumn;
     "columnBacklink"?: sys_db.SysColumn | null;
+    "customColIsSubHeader"?: boolean | null;
   }
   export interface SysDataObjColumnItem extends sys_user.Mgmt {
     "orderDefine": number;
@@ -516,9 +531,7 @@ export namespace org_moed {
     "participant"?: MoedParticipant | null;
   }
   export interface MoedParticipant extends app_cm.CmClient {
-    "office"?: sys_core.SysObj | null;
     "consentDisclaimer"?: boolean | null;
-    "ssn"?: string | null;
   }
 }
 export namespace schema {
@@ -921,6 +934,7 @@ export interface types {
     "CmCsfCohortAttd": app_cm.CmCsfCohortAttd;
     "CmCsfDocument": app_cm.CmCsfDocument;
     "CmCsfJobPlacement": app_cm.CmCsfJobPlacement;
+    "CmCsfMsg": app_cm.CmCsfMsg;
     "CmCsfNote": app_cm.CmCsfNote;
     "CmCsfSchoolPlacement": app_cm.CmCsfSchoolPlacement;
     "CmPartner": app_cm.CmPartner;

@@ -224,6 +224,7 @@ module sys_core {
     customColActionValue: str;
     customColAlign: str;
     customColCodeColor: sys_core::SysCode;
+    customColIsSubHeader: bool;
     customColLabel: str;
     customColPrefix: str;
     customColSize: str;
@@ -329,7 +330,7 @@ module sys_core {
     required index: default::nonNegative;
     required expr: str;
   }
-
+  
   type SysNodeObj extending sys_core::SysObj {
     required codeIcon: sys_core::SysCode;
     required codeNavType: sys_core::SysCode;
@@ -352,6 +353,12 @@ module sys_core {
 
   function getCode(codeTypeName: str,  codeName: str) -> optional sys_core::SysCode
     using (select assert_single(sys_core::SysCode filter 
+      .codeType.name = codeTypeName and 
+      .name = codeName));
+
+  function getCodeSystem(sysName: str, codeTypeName: str,  codeName: str) -> optional sys_core::SysCode
+    using (select assert_single(sys_core::SysCode filter 
+      .owner.name = sysName and
       .codeType.name = codeTypeName and 
       .name = codeName));
 

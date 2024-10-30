@@ -1601,17 +1601,17 @@ async function initCsfJobPlacement() {
 				orderDisplay: 230,
 				orderDefine: 230
 			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'staffAgency',
-				isDisplayable: true,
-				orderDisplay: 240,
-				orderDefine: 240,
-				indexTable: 0,
-				fieldListItems: 'il_sys_role_staff_by_codeName',
-				fieldListItemsParmName: 'cm_training_role_staff_agency',
-				linkTable: 'SysStaff'
-			},
+			// {
+			// 	codeFieldElement: 'select',
+			// 	columnName: 'staffAgency',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 240,
+			// 	orderDefine: 240,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
+			// 	fieldListItemsParmName: 'cm_training_role_staff_agency',
+			// 	linkTable: 'SysStaff'
+			// },
 			{
 				codeFieldElement: 'date',
 				columnName: 'dateSubmitted',
@@ -1996,14 +1996,14 @@ async function initCsfDocument() {
 				indexTable: 0,
 				linkColumns: ['name']
 			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'isShareWithClient',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
-			},
+			// {
+			// 	codeAccess: 'readOnly',
+			// 	columnName: 'isShareWithClient',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 50,
+			// 	orderDefine: 50,
+			// 	indexTable: 0
+			// },
 			{
 				codeAccess: 'readOnly',
 				columnName: 'note',
@@ -2093,14 +2093,14 @@ async function initCsfDocument() {
 				fieldListItemsParmName: 'ct_cm_doc_type',
 				linkTable: 'SysCode'
 			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isShareWithClient',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
-			},
+			// {
+			// 	codeFieldElement: 'toggle',
+			// 	columnName: 'isShareWithClient',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 60,
+			// 	orderDefine: 60,
+			// 	indexTable: 0
+			// },
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
@@ -2134,17 +2134,17 @@ async function initCsfDocument() {
 				orderDisplay: 100,
 				orderDefine: 100
 			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'staffAgency',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0,
-				fieldListItems: 'il_sys_role_staff_by_codeName',
-				fieldListItemsParmName: 'cm_training_role_staff_agency',
-				linkTable: 'SysStaff'
-			},
+			// {
+			// 	codeFieldElement: 'select',
+			// 	columnName: 'staffAgency',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 110,
+			// 	orderDefine: 110,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
+			// 	fieldListItemsParmName: 'cm_training_role_staff_agency',
+			// 	linkTable: 'SysStaff'
+			// },
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'date',

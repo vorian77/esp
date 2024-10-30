@@ -16,7 +16,7 @@
 		getModalStore,
 		getToastStore
 	} from '@skeletonlabs/skeleton'
-	import Layout from '$comps/layout/RootLayoutApp.svelte'
+	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import NavLogo from '$comps/app/NavLogo.svelte'
 	import NavHome from '$comps/app/NavHome.svelte'
 	import NavFooter from '$comps/app/NavFooter.svelte'
@@ -60,10 +60,8 @@
 			storeDrawer,
 			storeModal,
 			storeToast,
-
 			user
 		})
-
 		launchApp = false
 	}
 	$: if (user?.avatar?.key) {
@@ -76,7 +74,7 @@
 
 	async function stateUpdateCallback(obj: any) {
 		state = state.updateProperties(obj)
-		if (obj.packet) await statePacketAdd(obj.packet)
+		// if (obj.packet) await statePacketAdd(obj.packet)
 		if (state.page !== $page.route.id) goto(state.page)
 	}
 
@@ -176,13 +174,14 @@
 		{#if $page.route.id === '/home'}
 			{#if state?.nodeType === NodeType.home}
 				<div class="m-4">
-					<NavHome />
+					<NavHome {state} />
 				</div>
 			{:else}
-				<Layout bind:state />
+				<RootLayoutApp bind:state />
 			{/if}
 		{:else}
 			<slot />
+			<NavHome {state} />
 		{/if}
 	</div>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { appStoreNavTree, NavTree, NodeNav } from '$utils/types'
-	import type { State } from '$comps/app/types.appState'
+	import { State } from '$comps/app/types.appState'
 	import { StatePacketAction } from '$comps/app/types.appState'
 	import { createEventDispatcher } from 'svelte'
 	import { error } from '@sveltejs/kit'

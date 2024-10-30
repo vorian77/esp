@@ -41,6 +41,7 @@ const FILENAME = '/$comps/nav/types.app.ts'
 
 export class App {
 	crumbs: Array<any> = []
+	isMobileMode: boolean = false
 	levels: Array<AppLevel> = []
 	userSystemId?: string
 	constructor() {}
@@ -250,6 +251,10 @@ export class App {
 		await query(state, this.getCurrTab(), token.queryType)
 	}
 	async initNode(state: State, token: TokenAppTreeNode) {
+		this.isMobileMode = token.node.isMobileMode || false
+		if (this.isMobileMode && token.node.nodeObjName) {
+			token.node = await getNodeObj(token.node.nodeObjName)
+		}
 		let tabParms: DataRecord = token.node.dataObjId
 			? App.getTabParmsNode(0, 0, token.node)
 			: {
@@ -261,9 +266,13 @@ export class App {
 					levelIdx: 0,
 					tabIdx: 0
 				}
-		tabParms['nodeIsProgramList'] = token.node.type === NodeType.program
+		tabParms['nodeIsProgramList'] = token.node.type === NodeType.program || this.isMobileMode
 		this.levels.push(new AppLevel([new AppLevelTab(tabParms)]))
-		await query(state, this.getCurrTab(), TokenApiQueryType.retrieve)
+		await query(
+			state,
+			this.getCurrTab(),
+			token.node.isRetrievePreset ? TokenApiQueryType.retrievePreset : TokenApiQueryType.retrieve
+		)
 		const currTab = this.getCurrTab()
 		if (currTab)
 			currTab.data?.parms.valueSetList(
@@ -405,9 +414,24 @@ export class App {
 						break
 
 					case StatePacketAction.doDetailSave:
+					case StatePacketAction.doDetailSaveRetrievePreset:
 						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 							return this
 						break
+
+					// case StatePacketAction.doDetailSaveRetrievePreset:
+					// 	if (currTab.data.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset)) {
+					// 		console.log('types.app...doDetailSaveRetrievePreset')
+					// 	}
+					// 	// if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
+					// 	// 	return this
+					// 	// await query(state, tabParent, TokenApiQueryType.retrieve)
+					// 	// tabParent.data.parms.updateList(
+					// 	// 	tabParent.data.rowsRetrieved.getRows(),
+					// 	// 	currTab.data.rowsRetrieved.getDetailRecordValue('id')
+					// 	// )
+					// 	break
+
 					default:
 						error(500, {
 							file: FILENAME,
@@ -709,6 +733,22 @@ export enum AppRowActionType {
 	last = 'last'
 }
 
+async function getNodeObj(nodeObjName: string) {
+	const result: ResponseBody = await apiFetch(
+		ApiFunction.dbEdgeGetNodeObjByName,
+		new TokenAppTreeNodeId({ nodeId: nodeObjName })
+	)
+	if (result.success) {
+		return result.data
+	} else {
+		error(500, {
+			file: FILENAME,
+			function: 'getNodeObj',
+			message: `Error retrieving nodes for nodeId: ${nodeObjName}`
+		})
+	}
+}
+
 async function getNodesLevel(nodeId: string) {
 	const result: ResponseBody = await apiFetch(
 		ApiFunction.dbEdgeGetNodesLevel,
@@ -719,7 +759,7 @@ async function getNodesLevel(nodeId: string) {
 	} else {
 		error(500, {
 			file: FILENAME,
-			function: 'getNodes',
+			function: 'getNodesLevel',
 			message: `Error retrieving nodes for nodeId: ${nodeId}`
 		})
 	}

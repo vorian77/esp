@@ -1,8 +1,7 @@
 module org_moed {
   type MoedParticipant extending app_cm::CmClient {    
     consentDisclaimer: bool;
-    office: sys_core::SysObj;
-    ssn: str;
+    required idxDemo: int64;
   }
 
   type MoedPartData extending sys_core::SysObj {

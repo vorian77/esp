@@ -19,7 +19,10 @@ export type DbNode = {
 	header: string
 	id: string
 	isHideRowManager: boolean
+	isMobileMode?: boolean
+	isRetrievePreset?: boolean
 	name: string
+	nodeObjName?: string
 	orderDefine: number
 	page?: string
 }
@@ -50,7 +53,10 @@ export class RawNode {
 	icon: string
 	id: string
 	isHideRowManager: boolean
+	isMobileMode: boolean
+	isRetrievePreset: boolean
 	name: string
+	nodeObjName?: string
 	page: string
 	type: string
 	constructor(dbNode: DbNode) {
@@ -61,7 +67,10 @@ export class RawNode {
 		this.icon = valueOrDefault(dbNode._codeIcon, DEFAULT_ICON)
 		this.id = dbNode.id
 		this.isHideRowManager = booleanOrFalse(dbNode.isHideRowManager, 'isHideRowManager')
+		this.isMobileMode = booleanOrFalse(dbNode.isMobileMode, 'isMobileMode')
+		this.isRetrievePreset = booleanOrFalse(dbNode.isRetrievePreset, 'isRetrievePreset')
 		this.name = dbNode.name
+		this.nodeObjName = dbNode.nodeObjName
 		this.page = valueOrDefault(dbNode.page, '/home')
 		this.type = dbNode._codeNodeType
 	}
@@ -70,10 +79,13 @@ export class RawNode {
 export class Node {
 	dataObjId?: string
 	dataObjName?: string
+	nodeObjName?: string
 	header: string
 	icon: string
 	id: string
 	isHideRowManager: boolean
+	isMobileMode: boolean
+	isRetrievePreset: boolean
 	name: string
 	page: string
 	type: NodeType
@@ -85,7 +97,10 @@ export class Node {
 		this.icon = rawNode.icon
 		this.id = rawNode.id
 		this.isHideRowManager = booleanOrFalse(rawNode.isHideRowManager, 'isHideRowManager')
+		this.isMobileMode = booleanOrFalse(rawNode.isMobileMode, 'isHideRowManager')
+		this.isRetrievePreset = booleanOrFalse(rawNode.isRetrievePreset, 'isRetrievePreset')
 		this.name = rawNode.name
+		this.nodeObjName = rawNode.nodeObjName
 		this.page = rawNode.page
 		this.type = memberOfEnum(rawNode.type, clazz, 'type', 'NodeType', NodeType)
 	}

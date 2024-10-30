@@ -46,6 +46,11 @@ export async function query(
 			await state.app.userSystemIdSelect(state)
 		}
 	}
+
+	if (state.app.isMobileMode) {
+		await state.app.userSystemIdSelect(state)
+	}
+
 	dataTab.parms.valueSet(ParmsValuesType.userSystemId, state.app.userSystemIdGet())
 
 	const queryData = new TokenApiQueryData({ dataTab, tree: dataTree })
@@ -133,6 +138,7 @@ function queryDataPreTree(queryType: TokenApiQueryType, app: App) {
 
 	switch (queryType) {
 		case TokenApiQueryType.preset:
+		case TokenApiQueryType.retrievePreset:
 			offset = 2
 			break
 		case TokenApiQueryType.retrieve:

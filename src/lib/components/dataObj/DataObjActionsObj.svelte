@@ -28,6 +28,7 @@
 
 	let actions: DataObjActionField[]
 	let isEditing: boolean = false
+	let marginTop = ''
 	let padding = ''
 	let objStatus: DataObjStatus
 
@@ -44,13 +45,19 @@
 		actions = dataObj.actionsField.filter((a) => a.isShow)
 		isEditing = dataObj.actionsField.some(
 			(a: DataObjActionField) =>
-				[StatePacketAction.doDetailSave, StatePacketAction.doListSelfSave].includes(
-					a.codePacketAction
-				) &&
+				[
+					StatePacketAction.doDetailSave,
+					StatePacketAction.doDetailSaveRetrievePreset,
+					StatePacketAction.doListSelfSave
+				].includes(a.codePacketAction) &&
 				state.objStatus.changed() &&
 				!dataObj.isListEmbed
 		)
-		padding = dataObj.actionsField.filter((a) => a.isShow).length > 0 ? 'ml-4' : ''
+		marginTop = state.app.isMobileMode ? 'mt-6' : ''
+		padding =
+			dataObj.actionsField.filter((a) => a.isShow).length > 0 && !state.app.isMobileMode
+				? 'ml-4'
+				: ''
 	}
 
 	let isTriggeredEnable = function (action: DataObjActionField) {
@@ -71,14 +78,14 @@
 	}
 </script>
 
-<div class="flex flex-col {padding}">
+<div class="flex flex-col mt-4 {marginTop} {padding}">
 	{#if isEditing}
 		<div>
 			<p class="text-blue-600 mb-4">Editing...</p>
 		</div>
 	{/if}
 	{#each actions as action (action.name)}
-		<div class=" mb-4" animate:flip={{ duration: animationDurationMs }}>
+		<div class="mb-4" animate:flip={{ duration: animationDurationMs }}>
 			<button
 				class="w-full btn text-white"
 				style:background-color={action.fieldColor.color}

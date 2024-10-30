@@ -52,6 +52,19 @@ const shapeDataObjFieldListItems = e.shape(e.sys_core.SysDataObjFieldListItems, 
 	exprWith: true
 }))
 
+const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
+	_codeIcon: n.codeIcon.name,
+	_codeNodeType: n.codeNodeType.name,
+	dataObjId: n.dataObj.id,
+	header: true,
+	id: true,
+	isHideRowManager: true,
+	name: true,
+	orderDefine: true,
+	page: true,
+	order_by: n.orderDefine
+}))
+
 const shapeTable = e.shape(e.sys_db.SysTable, (t) => ({
 	hasMgmt: true,
 	mod: true,
@@ -222,6 +235,7 @@ export async function getDataObjById(dataObjId: string) {
 					customColActionType: true,
 					customColActionValue: true,
 					customColAlign: true,
+					customColIsSubHeader: true,
 					customColLabel: true,
 					customColPrefix: true,
 					customColSize: true,
@@ -344,12 +358,21 @@ export async function getDataObjById(dataObjId: string) {
 			filter_single: e.op(do1.id, '=', e.cast(e.uuid, dataObjId))
 		}
 	})
+
 	return await query.run(client)
 }
 
 export async function getDataObjByName(dataObjName: string) {
 	const result = await getDataObjId(dataObjName)
 	return result?.id ? await getDataObjById(result.id) : undefined
+}
+
+export async function getNodeObjByName(nodeObjName: string) {
+	const query = e.select(e.sys_core.SysNodeObj, (n) => ({
+		...shapeNodeObj(n),
+		filter_single: e.op(n.name, '=', nodeObjName)
+	}))
+	return await query.run(client)
 }
 
 export async function getNodesBranch(token: TokenAppTreeNodeId) {
@@ -372,24 +395,12 @@ export async function getNodesBranch(token: TokenAppTreeNodeId) {
 
 export async function getNodesLevel(token: TokenAppTreeNodeId) {
 	const parentNodeId = token.nodeId
-	const baseShape = e.shape(e.sys_core.SysNodeObj, (n) => ({
-		_codeIcon: n.codeIcon.name,
-		_codeNodeType: n.codeNodeType.name,
-		dataObjId: n.dataObj.id,
-		header: true,
-		id: true,
-		isHideRowManager: true,
-		name: true,
-		orderDefine: true,
-		page: true,
-		order_by: n.orderDefine
-	}))
 	const root = e.select(e.sys_core.SysNodeObj, (n: any) => ({
-		...baseShape(n),
+		...shapeNodeObj(n),
 		filter: e.op(n.parent.id, '=', e.cast(e.uuid, parentNodeId))
 	}))
 	const children = e.select(e.sys_core.SysNodeObj, (n: any) => ({
-		...baseShape(n),
+		...shapeNodeObj(n),
 		filter: e.op(n.parent.parent.id, '=', e.cast(e.uuid, parentNodeId))
 	}))
 	const query = e.select({ root, children })

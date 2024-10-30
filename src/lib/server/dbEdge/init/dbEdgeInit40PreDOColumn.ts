@@ -907,6 +907,12 @@ export async function initPreColumn() {
 	})
 	await addColumn({
 		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Custom - Sub-Header',
+		name: 'customColIsSubHeader'
+	})
+	await addColumn({
+		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Custom - Label',
 		name: 'customColLabel'
@@ -1449,7 +1455,7 @@ export async function initPreColumn() {
 	})
 	await addColumn({
 		owner: 'sys_system_old',
-		codeDataType: 'str',
+		codeDataType: 'bool',
 		header: 'Share With Student',
 		name: 'isShareWithClient'
 	})
@@ -1593,6 +1599,12 @@ export async function initPreColumn() {
 		isMultiSelect: false,
 		name: 'modifiedBy',
 		owner: 'sys_system_old'
+	})
+	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Message',
+		name: 'msg'
 	})
 	await addColumn({
 		owner: 'sys_system_old',
@@ -1789,6 +1801,13 @@ export async function initPreColumn() {
 	await addColumn({
 		owner: 'sys_system_old',
 		codeDataType: 'link',
+		header: 'Recipients',
+		isMultiSelect: true,
+		name: 'recipients'
+	})
+	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'link',
 		header: 'Report',
 		isMultiSelect: false,
 		name: 'report'
@@ -1834,6 +1853,13 @@ export async function initPreColumn() {
 		name: 'school'
 	})
 	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Sender',
+		isMultiSelect: false,
+		name: 'sender'
+	})
+	await addColumn({
 		codeDataType: 'link',
 		header: 'Service Flow',
 		isMultiSelect: false,
@@ -1845,6 +1871,12 @@ export async function initPreColumn() {
 		codeDataType: 'str',
 		header: 'Spin Step',
 		name: 'spinStep'
+	})
+	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Social Security Number',
+		name: 'ssn'
 	})
 	await addColumn({
 		owner: 'sys_system_old',
@@ -1879,6 +1911,12 @@ export async function initPreColumn() {
 		header: 'Sub-Header',
 		name: 'subHeader',
 		owner: 'sys_system_old'
+	})
+	await addColumn({
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Subject',
+		name: 'subject'
 	})
 	await addColumn({
 		codeDataType: 'link',

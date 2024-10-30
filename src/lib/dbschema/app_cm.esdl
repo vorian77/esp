@@ -54,6 +54,7 @@ module app_cm {
       on source delete delete target if orphan;
     };
     agencyId: str;
+    office: sys_core::SysObjSubject;
     school: str;
   }
 
@@ -61,6 +62,7 @@ module app_cm {
     required client: app_cm::CmClient;
     required serviceFlow: app_cm::CmServiceFlow;
     codeReferralType: sys_core::SysCode;
+    codeStatus: sys_core::SysCode;
     codeReferralEndType: sys_core::SysCode;
     required dateReferral: cal::local_date;
     dateStartEst: cal::local_date;
@@ -68,6 +70,7 @@ module app_cm {
     dateEndEst: cal::local_date;
     dateEnd: cal::local_date;
     note: str;
+    user: sys_user::SysUser;
   }
 
   type CmCsfData extending sys_user::Mgmt {
@@ -100,7 +103,21 @@ module app_cm {
     file: json;
     isShareWithClient: str;
     note: str;
-    required staffAgency: sys_user::SysStaff;
+    staffAgency: sys_user::SysStaff;
+  }
+
+  type CmCsfMsg extending app_cm::CmCsfData {
+    required codeStatus: sys_core::SysCode;
+    # {
+    #   default := (SELECT assert_single(sys_core::SysCode FILTER .codeType.name = 'ct_cm_msg_status' AND .name = 'Sent'));
+    # };
+    required date: cal::local_date;
+    msg: str;
+    office: sys_core::SysObjSubject;
+    parent: app_cm::CmCsfMsg;
+    multi recipients: sys_user::SysUser;
+    required sender: sys_user::SysStaff;
+    subject: str;
   }
 
   type CmCsfNote extending app_cm::CmCsfData {

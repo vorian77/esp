@@ -77,6 +77,7 @@ export class FieldCustomActionLink extends FieldCustomAction {
 }
 
 export class FieldCustomHeader extends FieldCustom {
+	isSubHeader?: boolean
 	size?: string
 	source?: string
 	sourceKey?: string
@@ -88,6 +89,7 @@ export class FieldCustomHeader extends FieldCustom {
 			clazz,
 			'customCol'
 		) as RawDataObjPropDisplayCustom
+		this.isSubHeader = customCol.customColIsSubHeader
 		this.size = customCol.customColSize
 		this.source = customCol.customColSource
 		this.sourceKey = customCol.customColSourceKey

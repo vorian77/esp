@@ -16,9 +16,7 @@ const $MoedPartData = $.makeType<$MoedPartData>(_.spec, "2d502525-9382-11ef-9018
 const MoedPartData: $.$expr_PathNode<$.TypeSet<$MoedPartData, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($MoedPartData, $.Cardinality.Many), null);
 
 export type $MoedParticipantλShape = $.typeutil.flatten<_app_cm.$CmClientλShape & {
-  "office": $.LinkDesc<_sys_core.$SysObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "consentDisclaimer": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
-  "ssn": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "<participant[is org_moed::MoedPartData]": $.LinkDesc<$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<participant": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

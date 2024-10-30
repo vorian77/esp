@@ -26,7 +26,9 @@
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
-	let classContent = ''
+	let classComponent = state.app.isMobileMode ? 'grow' : 'grow border-2 p-4'
+	let classContent = state.app.isMobileMode ? '' : 'flex flex-row'
+	let classHeader = ''
 	let currComponent: any
 	let headerObj: string = ''
 	let headerObjSub: string = ''
@@ -51,8 +53,11 @@
 		rowStatus = state.layoutHeader.isRowStatus ? state.app.getRowStatus() : undefined
 
 		// header styling
-		classContent =
-			(dataObj && dataObj.actionsField.length > 0) || headerObj || headerObjSub || rowStatus
+		classHeader =
+			(!state.app.isMobileMode && dataObj && dataObj.actionsField.length > 0) ||
+			headerObj ||
+			headerObjSub ||
+			rowStatus
 				? 'border-2 p-4 '
 				: ''
 	}
@@ -63,7 +68,7 @@
 </script>
 
 {#if currComponent}
-	<div class={classContent}>
+	<div class={classHeader}>
 		<div>
 			<div>
 				{#if headerObj}
@@ -88,8 +93,8 @@
 				{/if}
 			</div>
 
-			<div class="flex flex-row">
-				<div class="grow border-2 p-4">
+			<div class={classContent}>
+				<div class={classComponent}>
 					<svelte:component
 						this={currComponent}
 						{component}

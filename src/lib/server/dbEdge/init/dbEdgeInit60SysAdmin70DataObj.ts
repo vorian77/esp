@@ -1045,6 +1045,14 @@ async function initDataObjColumn() {
 				linkTable: 'SysCode'
 			},
 			{
+				codeFieldElement: 'toggle',
+				columnName: 'customColIsSubHeader',
+				isDisplayable: true,
+				orderDisplay: 567,
+				orderDefine: 567,
+				indexTable: 0
+			},
+			{
 				codeAccess: 'optional',
 				columnName: 'customColPrefix',
 				isDisplayable: true,

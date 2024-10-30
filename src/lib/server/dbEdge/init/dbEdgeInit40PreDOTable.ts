@@ -83,6 +83,7 @@ export async function initPreTable() {
 		['sys_ai_old', 'app_cm', 'CmCsfCohortAttd', true],
 		['sys_ai_old', 'app_cm', 'CmCsfDocument', true],
 		['sys_ai_old', 'app_cm', 'CmCsfJobPlacement', true],
+		['sys_ai_old', 'app_cm', 'CmCsfMsg', true],
 		['sys_ai_old', 'app_cm', 'CmCsfNote', true],
 		['sys_ai_old', 'app_cm', 'CmCsfSchoolPlacement', true],
 		['sys_ai_old', 'app_cm', 'CmPartner', true],

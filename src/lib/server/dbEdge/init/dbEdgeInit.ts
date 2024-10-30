@@ -23,14 +23,13 @@ import { initMigrationPerson } from '$server/dbEdge/init/dbEdgeInit100MigrPerson
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
 export async function dbEdgeInit() {
-	// await dbEdgeInitFeature()
-	await dbEdgeInitSystem()
+	await dbEdgeInitFeature()
+	// await dbEdgeInitSystem()
 }
 
 async function dbEdgeInitFeature() {
 	sectionHeader('Init Start - Feature')
 	await initUser()
-	// await initFeatMOED()
 	sectionHeader('Init Complete')
 }
 

@@ -12,10 +12,9 @@
 		TokenAppModalSelect,
 		TokenAppModalReturnType
 	} from '$utils/types.token'
-
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '$comps/wizard/WizardSysRep.svelte'
+	const FILENAME = '$comps/widgets/WidgetReport.svelte'
 
 	export let user: User
 

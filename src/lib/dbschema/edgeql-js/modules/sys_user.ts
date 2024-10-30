@@ -35,6 +35,8 @@ export type $SysStaffλShape = $.typeutil.flatten<$MgmtλShape & {
   "<staffInstructor[is app_cm::CmCohort]": $.LinkDesc<_app_cm.$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<staffAdmin[is app_cm::CmCourse]": $.LinkDesc<_app_cm.$CmCourse, $.Cardinality.Many, {}, false, false,  false, false>;
   "<staffAgency[is app_cm::CmCourse]": $.LinkDesc<_app_cm.$CmCourse, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<sender[is app_cm::CmCsfMsg]": $.LinkDesc<_app_cm.$CmCsfMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<sender": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<staffAdmin": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<staffAgency": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<staffInstructor": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -77,6 +79,10 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<createdBy[is org_moed::MoedPartData]": $.LinkDesc<_org_moed.$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is org_moed::MoedParticipant]": $.LinkDesc<_org_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is org_moed::MoedParticipant]": $.LinkDesc<_org_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<modifiedBy[is app_cm::CmCsfMsg]": $.LinkDesc<_app_cm.$CmCsfMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<createdBy[is app_cm::CmCsfMsg]": $.LinkDesc<_app_cm.$CmCsfMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<recipients[is app_cm::CmCsfMsg]": $.LinkDesc<_app_cm.$CmCsfMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<user[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_user::SysWidget]": $.LinkDesc<$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysDataObjActionFieldConfirm]": $.LinkDesc<_sys_core.$SysDataObjActionFieldConfirm, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_migr::SysMigrTargetTable]": $.LinkDesc<_sys_migr.$SysMigrTargetTable, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -195,6 +201,7 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<modifiedBy[is sys_core::SysDataObjActionQueryTrigger]": $.LinkDesc<_sys_core.$SysDataObjActionQueryTrigger, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<recipients": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<user": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<users": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

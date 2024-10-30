@@ -17,6 +17,14 @@
 			"type": "chrome",
 			"url": "http://localhost:5173",
 			"webRoot": "${workspaceFolder}"
+		},
+		{
+			"name": "Edge",
+			"request": "launch",
+			"skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**/*.js"],
+			"type": "msedge",
+			"url": "http://localhost:5173",
+			"webRoot": "${workspaceFolder}"
 		}
 	]
 }

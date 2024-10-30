@@ -176,30 +176,30 @@ async function initCourse() {
 				orderDisplay: 100,
 				orderDefine: 100
 			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'staffAdmin',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0,
-				fieldListItems: 'il_sys_role_staff_by_codeName',
-				fieldListItemsParmName: 'cm_training_role_staff_admin',
-				linkTable: 'SysStaff'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'staffAgency',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
-				indexTable: 0,
-				fieldListItems: 'il_sys_role_staff_by_codeName',
-				fieldListItemsParmName: 'cm_training_role_staff_agency',
-				linkTable: 'SysStaff'
-			},
+			// {
+			// 	codeAccess: 'optional',
+			// 	codeFieldElement: 'select',
+			// 	columnName: 'staffAdmin',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 110,
+			// 	orderDefine: 110,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
+			// 	fieldListItemsParmName: 'cm_training_role_staff_admin',
+			// 	linkTable: 'SysStaff'
+			// },
+			// {
+			// 	codeAccess: 'optional',
+			// 	codeFieldElement: 'select',
+			// 	columnName: 'staffAgency',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 120,
+			// 	orderDefine: 120,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
+			// 	fieldListItemsParmName: 'cm_training_role_staff_agency',
+			// 	linkTable: 'SysStaff'
+			// },
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
@@ -546,42 +546,42 @@ async function initCohort() {
 				orderDisplay: 100,
 				orderDefine: 100
 			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'staffAdmin',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
-				indexTable: 0,
-				fieldListItems: 'il_sys_role_staff_by_codeName',
-				fieldListItemsParmName: 'cm_training_role_staff_admin',
-				linkTable: 'SysStaff'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'staffAgency',
-				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130,
-				indexTable: 0,
-				fieldListItems: 'il_sys_role_staff_by_codeName',
-				fieldListItemsParmName: 'cm_training_role_staff_agency',
-				linkTable: 'SysStaff'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'staffInstructor',
-				isDisplayable: true,
-				orderDisplay: 140,
-				orderDefine: 140,
-				indexTable: 0,
-				fieldListItems: 'il_sys_role_staff_by_codeName',
-				fieldListItemsParmName: 'cm_training_role_staff_instructor',
-				linkTable: 'SysStaff'
-			},
+			// {
+			// 	codeAccess: 'optional',
+			// 	codeFieldElement: 'select',
+			// 	columnName: 'staffAdmin',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 120,
+			// 	orderDefine: 120,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
+			// 	fieldListItemsParmName: 'cm_training_role_staff_admin',
+			// 	linkTable: 'SysStaff'
+			// },
+			// {
+			// 	codeAccess: 'optional',
+			// 	codeFieldElement: 'select',
+			// 	columnName: 'staffAgency',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 130,
+			// 	orderDefine: 130,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
+			// 	fieldListItemsParmName: 'cm_training_role_staff_agency',
+			// 	linkTable: 'SysStaff'
+			// },
+			// {
+			// 	codeAccess: 'optional',
+			// 	codeFieldElement: 'select',
+			// 	columnName: 'staffInstructor',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 140,
+			// 	orderDefine: 140,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
+			// 	fieldListItemsParmName: 'cm_training_role_staff_instructor',
+			// 	linkTable: 'SysStaff'
+			// },
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',

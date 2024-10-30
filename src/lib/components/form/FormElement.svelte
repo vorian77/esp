@@ -59,7 +59,9 @@
 	export let row: number
 
 	let classProps =
-		dataObj.raw.codeCardinality === DataObjCardinality.detail && field.colDO.isDisplayable
+		!state.app.isMobileMode &&
+		dataObj.raw.codeCardinality === DataObjCardinality.detail &&
+		field.colDO.isDisplayable
 			? 'mb-4'
 			: ''
 

@@ -77,6 +77,7 @@ export class DataObj {
 	dataRecordsHidden: DataRecord[] = []
 	fields: Field[] = []
 	isListEmbed: boolean = false
+	isMobileMode: boolean = false
 	modes: DataObjMode[] = []
 	objStatus: DataObjStatus = new DataObjStatus()
 	raw: RawDataObj
@@ -209,7 +210,19 @@ export class DataObj {
 
 	async initFields(state: State, data: DataObjData, rawDataObj: RawDataObj) {
 		let fields: Field[] = []
-		const propsRaw = rawDataObj.rawPropsDisplay
+		let propsRaw = rawDataObj.rawPropsDisplay
+
+		if (state.app.isMobileMode) {
+			const mobileModeFilterElements = ['tagRow', 'tagSection']
+			const mobileModeFilterProps = ['createdAt', 'createdBy', 'modifiedAt', 'modifiedBy']
+			propsRaw = propsRaw.filter((f) => {
+				return (
+					!mobileModeFilterElements.includes(f.rawFieldElement || '') &&
+					!mobileModeFilterProps.includes(f.propName)
+				)
+			})
+		}
+
 		let firstVisible = propsRaw.findIndex((f) => f.isDisplayable)
 		for (let i = 0; i < propsRaw.length; i++) {
 			const prop: RawDataObjPropDisplay = propsRaw[i]

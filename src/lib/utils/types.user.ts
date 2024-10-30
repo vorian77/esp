@@ -103,7 +103,7 @@ export class User {
 				return this.systemIds[0]
 
 			default:
-				const defaultSystemName = 'sys_ai_old'
+				const defaultSystemName = 'sys_moed_old'
 				const defaultSystem = systems.find((s) => s.resource.name === defaultSystemName)
 				return defaultSystem ? defaultSystem.resource.id : undefined
 
@@ -197,8 +197,9 @@ export class UserTypeResourceList {
 	getResources(type: UserTypeResourceType): UserTypeResource[] {
 		return this.resources.filter((r) => r.codeType === type)
 	}
-	hasResources(type: UserTypeResourceType, name: string): boolean {
-		return this.resources.some((r) => r.codeType === type && r.resource.name === name)
+	hasResources(type: UserTypeResourceType, names: string | string[]): boolean {
+		names = getArray(names)
+		return this.resources.some((r) => r.codeType === type && names.includes(r.resource.name))
 	}
 }
 

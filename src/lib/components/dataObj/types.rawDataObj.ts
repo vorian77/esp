@@ -432,6 +432,7 @@ export class RawDataObjPropDisplayCustom {
 	customColActionValue?: string
 	customColAlign?: string
 	customColCodeColor: FieldColor
+	customColIsSubHeader?: boolean
 	customColLabel?: string
 	customColPrefix?: string
 	customColSize?: string
@@ -449,6 +450,7 @@ export class RawDataObjPropDisplayCustom {
 		this.customColActionValue = strOptional(obj.customColActionValue, clazz, 'customColActionValue')
 		this.customColAlign = strOptional(obj.customColAlign, clazz, 'customColAlign')
 		this.customColCodeColor = new FieldColor(obj._customColCodeColor, 'blue')
+		this.customColIsSubHeader = obj.customColIsSubHeader
 		this.customColLabel = strOptional(obj.customColLabel, clazz, 'customColLabel')
 		this.customColPrefix = strOptional(obj.customColPrefix, clazz, 'customColPrefix')
 		this.customColSize = strOptional(obj.customColSize, clazz, 'customColSize')

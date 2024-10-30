@@ -17,7 +17,7 @@ import {
 	getUserResourcesFooter,
 	setUserPref
 } from '$routes/api/dbEdge/dbEdgeUtilities'
-import { getDataObjId } from '$routes/api/dbEdge/dbEdgeUtilities'
+import { getDataObjId, getNodeObjByName } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { dbEdgeInit } from '$server/dbEdge/init/dbEdgeInit'
 import { sysSendText } from '$routes/api/apiTwilio'
 import { error, type Cookies } from '@sveltejs/kit'
@@ -34,6 +34,9 @@ export async function POST({ request, cookies }) {
 
 		case ApiFunction.dbEdgeGetDataObjId:
 			return getServerResponse(await getDataObjId(token.dataObjName))
+
+		case ApiFunction.dbEdgeGetNodeObjByName:
+			return getServerResponse(await getNodeObjByName(token.nodeId))
 
 		case ApiFunction.dbEdgeGetNodesBranch:
 			return getServerResponse(await getNodesBranch(token))
