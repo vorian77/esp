@@ -266,7 +266,7 @@ export class Query {
 					{
 						_codeDataType: PropDataType.uuid,
 						_codeDbDataSourceValue: 'edgeDB',
-						_propName: `_${ParmsValuesType.appTabSystemId}_`,
+						_propName: `_${ParmsValuesType.appSystemId}_`,
 						exprCustom: '.owner.id'
 					},
 					this.rawDataObj.tables

@@ -362,9 +362,9 @@ export async function getDataObjById(token: TokenApiId) {
 	return await query.run(client)
 }
 
-export async function getDataObjByName(dataObjName: string) {
-	const result = await getDataObjId(dataObjName)
-	return result?.id ? await getDataObjById(result.id) : undefined
+export async function getDataObjByName(token: TokenApiId) {
+	const result = await getDataObjId(token)
+	return result?.id ? await getDataObjById(new TokenApiId(result.id)) : undefined
 }
 
 export async function getNodeObjByName(token: TokenApiId) {

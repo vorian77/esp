@@ -50,8 +50,7 @@ async function dbEdgeInitSystem() {
 
 	await initFeatures()
 	await initData()
-
-	// await initUser()
+	sectionHeader('Init End - System')
 }
 
 async function initSysCore() {

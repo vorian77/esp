@@ -82,7 +82,7 @@ export async function initPreDataObjFieldItem() {
 
 	await addDataObjFieldItems({
 		exprPropDisplay: '.name',
-		exprFilter: `.owner.id in <user,uuidlist,systemIds> OR .isGlobalResource = true`,
+		exprFilter: `.owner.id in <user,uuidlist,systemIdList> OR .isGlobalResource = true`,
 		name: 'il_sys_app_header_order_name',
 		owner: 'sys_system_old',
 		table: 'SysAppHeader'

@@ -94,7 +94,7 @@ async function initStudent() {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: `.owner.id in <user,uuidList,systemIds>`,
+		exprFilter: `.owner.id in <user,uuidlist,systemIdList>`,
 		header: 'Participants',
 		name: 'data_obj_moed_part_list',
 		owner: 'sys_moed_old',

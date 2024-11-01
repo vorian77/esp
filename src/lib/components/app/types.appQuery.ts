@@ -40,7 +40,7 @@ export async function query(
 	if (!tab) return false
 	let { dataTab, dataTree } = queryDataPre(state, tab, queryType)
 
-	/* set parm - appTabSystemId */
+	/* set parm - appSystemId */
 	if (tab.isProgramRootList && state.user) {
 		dataTab.parms.valueSet(ParmsValuesType.isProgramRoot, true)
 	}
@@ -54,14 +54,14 @@ export async function query(
 			)
 			if (userSystemResource) state.app.appSystemIdSet(userSystemResource.resource.id)
 		}
-		dataTab.parms.valueSet(ParmsValuesType.appTabSystemId, state.app.appSystemIdGet())
+		dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.app.appSystemIdGet())
 	}
 
 	if (tab.isProgramRootDetail && queryType === TokenApiQueryType.retrieve) {
 		const parentTab = required(state.app.getCurrTabParentTab(), clazz, 'parentTab')
 		state.app.appSystemIdSet(
 			strRequired(
-				parentTab.listGetDataRecordValue(`_${ParmsValuesType.appTabSystemId}_`),
+				parentTab.listGetDataRecordValue(`_${ParmsValuesType.appSystemId}_`),
 				clazz,
 				'userSystemId'
 			)
@@ -69,7 +69,7 @@ export async function query(
 	}
 
 	if (queryType === TokenApiQueryType.retrieve && tab.isProgramObject) {
-		dataTab.parms.valueSet(ParmsValuesType.appTabSystemId, state.app.appSystemIdGet())
+		dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.app.appSystemIdGet())
 	}
 
 	// set other parms

@@ -22,7 +22,7 @@ export async function initDataReports() {
 	await initReportCourseSummary()
 	await initReportOurWorldSummary()
 	await initReportStudentSummary()
-	await initReportWizardStudentSummary()
+	// await initReportWizardStudentSummary()
 }
 
 async function initReportCMTrainingCohortAttendance() {
@@ -1490,7 +1490,7 @@ async function initReportWizardStudentSummary() {
 	// 	`DELETE sys_core::SysDataObj FILTER .name = 'data_obj_ai_report_wizard_student_summary'`
 	// )
 
-	const exprStudents = `(SELECT app_cm::CmClient FILTER .owner.id in <user,uuidlist,systemIds>)`
+	const exprStudents = `(SELECT app_cm::CmClient FILTER .owner.id in <user,uuidlist,systemIdList>)`
 	const exprRate = (expr1: string, expr2: string) =>
 		`(SELECT math::floor(${expr1} / ${expr2} * 100))`
 
@@ -1510,58 +1510,58 @@ async function initReportWizardStudentSummary() {
 				exprCustom: `(SELECT count(${exprStudents}))`,
 				headerAlt: 'Students (Count)',
 				nameCustom: 'customStudentsCount'
-			},
-			{
-				columnName: 'custom_element_int',
-				orderDefine: 20,
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort.csf.client.id IN ${exprStudents}.id)))`,
-				headerAlt: 'Students In Cohort (Count)',
-				nameCustom: 'customStudentsWithCohortCount'
-			},
-			{
-				columnName: 'custom_element_float',
-				orderDefine: 30,
-				exprCustom: exprRate(
-					`(SELECT count((SELECT app_cm::CmCsfCohort.csf.client.id IN ${exprStudents}.id)))`,
-					`(SELECT count(${exprStudents}))`
-				),
-				headerAlt: 'Students In Cohort Rate (%)',
-				nameCustom: 'customStudentsWithCohortRate'
-			},
-			{
-				columnName: 'custom_element_int',
-				orderDefine: 40,
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohortAttd)))`,
-				headerAlt: 'Attendance Days Offered (Count)',
-				nameCustom: 'customAttendanceDaysOfferedCount'
-			},
-			{
-				columnName: 'custom_element_float',
-				orderDefine: 50,
-				exprCustom: exprRate(
-					`(SELECT count((SELECT app_cm::CmCsfCohortAttd FILTER .computedHours > 0)))`,
-					`(SELECT count((SELECT app_cm::CmCsfCohortAttd)))`
-				),
-				headerAlt: 'Attendance Days Attended Rate (%)',
-				nameCustom: 'customAttendanceDaysAttendedRate'
-			},
-			{
-				columnName: 'custom_element_int',
-				orderDefine: 60,
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfJobPlacement.csf.client.id IN ${exprStudents}.id)))`,
-				headerAlt: 'Students Placed In Job (Count)',
-				nameCustom: 'customJobPlacementCount'
-			},
-			{
-				columnName: 'custom_element_float',
-				orderDefine: 70,
-				exprCustom: exprRate(
-					`(SELECT count((SELECT app_cm::CmCsfJobPlacement.csf.client.id IN ${exprStudents}.id)))`,
-					`(SELECT count((SELECT app_cm::CmCsfCohort.csf.client.id IN ${exprStudents}.id)))`
-				),
-				headerAlt: 'Students Placed In Job Rate (%)',
-				nameCustom: 'customJobPlacementRate'
 			}
+			// {
+			// 	columnName: 'custom_element_int',
+			// 	orderDefine: 20,
+			// 	exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort.csf.client.id IN ${exprStudents}.id)))`,
+			// 	headerAlt: 'Students In Cohort (Count)',
+			// 	nameCustom: 'customStudentsWithCohortCount'
+			// },
+			// {
+			// 	columnName: 'custom_element_float',
+			// 	orderDefine: 30,
+			// 	exprCustom: exprRate(
+			// 		`(SELECT count((SELECT app_cm::CmCsfCohort.csf.client.id IN ${exprStudents}.id)))`,
+			// 		`(SELECT count(${exprStudents}))`
+			// 	),
+			// 	headerAlt: 'Students In Cohort Rate (%)',
+			// 	nameCustom: 'customStudentsWithCohortRate'
+			// },
+			// {
+			// 	columnName: 'custom_element_int',
+			// 	orderDefine: 40,
+			// 	exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohortAttd)))`,
+			// 	headerAlt: 'Attendance Days Offered (Count)',
+			// 	nameCustom: 'customAttendanceDaysOfferedCount'
+			// },
+			// {
+			// 	columnName: 'custom_element_float',
+			// 	orderDefine: 50,
+			// 	exprCustom: exprRate(
+			// 		`(SELECT count((SELECT app_cm::CmCsfCohortAttd FILTER .computedHours > 0)))`,
+			// 		`(SELECT count((SELECT app_cm::CmCsfCohortAttd)))`
+			// 	),
+			// 	headerAlt: 'Attendance Days Attended Rate (%)',
+			// 	nameCustom: 'customAttendanceDaysAttendedRate'
+			// },
+			// {
+			// 	columnName: 'custom_element_int',
+			// 	orderDefine: 60,
+			// 	exprCustom: `(SELECT count((SELECT app_cm::CmCsfJobPlacement.csf.client.id IN ${exprStudents}.id)))`,
+			// 	headerAlt: 'Students Placed In Job (Count)',
+			// 	nameCustom: 'customJobPlacementCount'
+			// },
+			// {
+			// 	columnName: 'custom_element_float',
+			// 	orderDefine: 70,
+			// 	exprCustom: exprRate(
+			// 		`(SELECT count((SELECT app_cm::CmCsfJobPlacement.csf.client.id IN ${exprStudents}.id)))`,
+			// 		`(SELECT count((SELECT app_cm::CmCsfCohort.csf.client.id IN ${exprStudents}.id)))`
+			// 	),
+			// 	headerAlt: 'Students Placed In Job Rate (%)',
+			// 	nameCustom: 'customJobPlacementRate'
+			// }
 		]
 	})
 }

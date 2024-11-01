@@ -189,13 +189,13 @@ async function processDataObjExecute(
 
 					// set
 					if (script.queryData?.dataTab?.parms.valueGet(ParmsValuesType.isProgramRoot)) {
-						const appTabSystemId = strRequired(
-							record[`_${ParmsValuesType.appTabSystemId}_`],
+						const appSystemId = strRequired(
+							record[`_${ParmsValuesType.appSystemId}_`],
 							clazz,
-							ParmsValuesType.appTabSystemId
+							ParmsValuesType.appSystemId
 						)
-						scriptData.parms.valueSet(ParmsValuesType.appTabSystemId, appTabSystemId)
-						returnData.parms.valueSet(ParmsValuesType.appTabSystemId, appTabSystemId)
+						scriptData.parms.valueSet(ParmsValuesType.appSystemId, appSystemId)
+						returnData.parms.valueSet(ParmsValuesType.appSystemId, appSystemId)
 					}
 					scriptGroup.addScriptDataItems(script, scriptData, record)
 				}
