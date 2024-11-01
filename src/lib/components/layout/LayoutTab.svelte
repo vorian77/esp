@@ -61,7 +61,7 @@
 						on:click={onClickTab}
 						class="text-base {idx === currLevel.tabSet ? 'text-blue-600' : 'text-black'}"
 					>
-						{tab.label}
+						{tab?.label || tab?.dataObj?.raw.header}
 					</Tab>
 				</div>
 			{/each}

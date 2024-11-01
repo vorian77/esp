@@ -1,3 +1,4 @@
+import { InitDbObj } from '$server/dbEdge/init/types.init'
 import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import {
 	ResetDb,
@@ -18,83 +19,74 @@ import {
 } from '$server/dbEdge/init/dbEdgeInit200Utilities60OrgMOED'
 import { moedDataParticipant } from '$utils/utils.randomDataGenerator'
 
-export async function initFeatMOED() {
-	sectionHeader('Init - MOED - Self-Service - Registration')
-	// await initTest()
-	console.log(moedDataParticipant.data)
-	await initReset()
-	// await initStudent()
-	// await initCsf()
-	// await initCsfMsg()
-	// await initCsfNote()
-	// await initCsfDocument()
-	// // await initStaff()
-	// await initSSRmyApp()
-	// await initSSRmyDoc()
-	// await initSSRmyMsg()
-	await initParticipants()
-	// await initReferrals()
+export function initFeatMOED() {
+	const init = new InitDbObj('MOED - Self-Service - Registration', initObjects)
+	initReset(init)
+	return init
 }
 
-// export async function initTest() {
-// 	sectionHeader('Reset-MOED')
-// 	const reset = new ResetDb()
-// 	reset.addStatement('delete org_moed::MoedPartData')
-// 	await reset.execute()
-
-// 	await addMOEDPartDataTest({
-// 		header: 'header0',
-// 		name: 'name0'
-// 	})
-// }
-
-export async function initReset() {
-	sectionHeader('Reset-User')
-	const reset = new ResetDb()
+function initReset(init: InitDbObj) {
 	// records
-	reset.addStatement('delete app_cm::CmCsfData filter .csf.client in org_moed::MoedParticipant')
-	reset.addStatement(
+	// init.reset.delTableRecords('sys_core::SysObjSubject')
+
+	init.reset.addStatement(
+		'delete app_cm::CmCsfData filter .csf.client in org_moed::MoedParticipant'
+	)
+	init.reset.addStatement(
 		'delete app_cm::CmClientServiceFlow filter .client in org_moed::MoedParticipant'
 	)
-	reset.addStatement('delete org_moed::MoedParticipant')
-	reset.addStatement(`delete sys_user::SysStaff filter 'moed_advocate' in .roles.name`)
+	init.reset.addStatement('delete org_moed::MoedParticipant')
+	init.reset.addStatement(`delete sys_user::SysStaff filter 'moed_advocate' in .roles.name`)
 
-	// // nodes
-	// reset.delNodeObj('node_obj_moed_ssr_msg_detail')
-	// reset.delNodeObj('node_obj_moed_ssr_msg_list')
+	// nodes
+	init.reset.delNodeObj('node_obj_moed_ssr_msg_detail')
+	init.reset.delNodeObj('node_obj_moed_ssr_msg_list')
 
-	// reset.delNodeObj('node_obj_moed_ssr_doc_detail')
-	// reset.delNodeObj('node_obj_moed_ssr_doc_list')
+	init.reset.delNodeObj('node_obj_moed_ssr_doc_detail')
+	init.reset.delNodeObj('node_obj_moed_ssr_doc_list')
 
-	// reset.delNodeObj('node_obj_moed_csf_doc_detail')
-	// reset.delNodeObj('node_obj_moed_csf_doc_list')
-	// reset.delNodeObj('node_obj_moed_csf_note_detail')
-	// reset.delNodeObj('node_obj_moed_csf_note_list')
-	// reset.delNodeObj('node_obj_moed_csf_msg_detail')
-	// reset.delNodeObj('node_obj_moed_csf_msg_list')
-	// reset.delNodeObj('node_obj_moed_csf_detail')
-	// reset.delNodeObj('node_obj_moed_csf_list')
-	// reset.delNodeObj('node_obj_moed_part_detail')
-	// reset.delNodeObj('node_obj_moed_part_list')
+	init.reset.delNodeObj('node_obj_moed_csf_doc_detail')
+	init.reset.delNodeObj('node_obj_moed_csf_doc_list')
+	init.reset.delNodeObj('node_obj_moed_csf_note_detail')
+	init.reset.delNodeObj('node_obj_moed_csf_note_list')
+	init.reset.delNodeObj('node_obj_moed_csf_msg_detail')
+	init.reset.delNodeObj('node_obj_moed_csf_msg_list')
+	init.reset.delNodeObj('node_obj_moed_csf_detail')
+	init.reset.delNodeObj('node_obj_moed_csf_list')
+	init.reset.delNodeObj('node_obj_moed_part_detail')
+	init.reset.delNodeObj('node_obj_moed_part_list')
 
-	// // data objects
-	// reset.delDataObj('data_obj_moed_ssr_msg_detail')
-	// reset.delDataObj('data_obj_moed_ssr_msg_list')
-	// reset.delDataObj('data_obj_moed_ssr_doc_detail')
-	// reset.delDataObj('data_obj_moed_ssr_doc_list')
-	// reset.delDataObj('data_obj_moed_ssr_app')
+	// data objects
+	init.reset.delDataObj('data_obj_moed_ssr_msg_detail')
+	init.reset.delDataObj('data_obj_moed_ssr_msg_list')
+	init.reset.delDataObj('data_obj_moed_ssr_doc_detail')
+	init.reset.delDataObj('data_obj_moed_ssr_doc_list')
+	init.reset.delDataObj('data_obj_moed_ssr_app')
 
-	// reset.delDataObj('data_obj_moed_csf_doc_detail')
-	// reset.delDataObj('data_obj_moed_csf_doc_list')
-	// reset.delDataObj('data_obj_moed_csf_note_detail')
-	// reset.delDataObj('data_obj_moed_csf_note_list')
-	// reset.delDataObj('data_obj_moed_csf_msg_detail')
-	// reset.delDataObj('data_obj_moed_csf_msg_list')
-	// reset.delDataObj('data_obj_moed_csf_detail')
-	// reset.delDataObj('data_obj_moed_csf_list')
-	// reset.delDataObj('data_obj_moed_part_detail')
-	// reset.delDataObj('data_obj_moed_part_list')
-	await reset.execute()
+	init.reset.delDataObj('data_obj_moed_csf_doc_detail')
+	init.reset.delDataObj('data_obj_moed_csf_doc_list')
+	init.reset.delDataObj('data_obj_moed_csf_note_detail')
+	init.reset.delDataObj('data_obj_moed_csf_note_list')
+	init.reset.delDataObj('data_obj_moed_csf_msg_detail')
+	init.reset.delDataObj('data_obj_moed_csf_msg_list')
+	init.reset.delDataObj('data_obj_moed_csf_detail')
+	init.reset.delDataObj('data_obj_moed_csf_list')
+	init.reset.delDataObj('data_obj_moed_part_detail')
+	init.reset.delDataObj('data_obj_moed_part_list')
+}
+
+async function initObjects() {
+	await initStudent()
+	await initCsf()
+	await initCsfMsg()
+	await initCsfNote()
+	await initCsfDocument()
+	await initStaff()
+	await initSSRmyApp()
+	await initSSRmyDoc()
+	await initSSRmyMsg()
+	// await initParticipants()
+	// await initReferrals()
 }
 
 async function initStudent() {
@@ -172,7 +164,7 @@ async function initStudent() {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,userSystemId>))',
+				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -211,7 +203,7 @@ async function initStudent() {
 				isDisplayable: true,
 				orderDisplay: 75,
 				orderDefine: 75,
-				indexTable: 0
+				indexTable: 1
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -2183,12 +2175,30 @@ async function initSSRmyMsg() {
 	})
 }
 
+/* subjects */
+// await addUserTypeResourceSubject({
+// 	codeType: 'cst_moed_office',
+// 	header: 'MOED Westside',
+// 	isGlobalResource: false,
+// 	name: 'moedOfficeWestside',
+// 	owner: 'sys_moed_old'
+// })
+// await addUserTypeResourceSubject({
+// 	codeType: 'cst_moed_office',
+// 	header: 'MOED Eastside',
+// 	isGlobalResource: false,
+// 	name: 'moedOfficeEastside',
+// 	owner: 'sys_moed_old'
+// })
+
 async function initParticipants() {
 	sectionHeader('Participants')
-	const data = moedDataParticipant.data
+
+	const data = moedDataParticipant.data['students']
 	await addMOEDParticipants(data)
 }
 
 async function initReferrals() {
-	await addMOEDCSF([['John', 'Doey', '2020-06-01', 'Application submitted']])
+	console.log(moedDataParticipant.data['referrals'])
+	await addMOEDCSF(moedDataParticipant.data['referrals'])
 }

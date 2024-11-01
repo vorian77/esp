@@ -1,5 +1,6 @@
 import {
 	booleanOrFalse,
+	getArray,
 	memberOfEnum,
 	nbrRequired,
 	strRequired,
@@ -9,7 +10,7 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/lib/components/nav/types.node.ts'
 
-const DEFAULT_ICON = 'hamburger-menu'
+const DEFAULT_ICON = 'application'
 
 export type DbNode = {
 	_codeIcon?: string
@@ -25,25 +26,6 @@ export type DbNode = {
 	nodeObjName?: string
 	orderDefine: number
 	page?: string
-}
-
-export class DbNodeMenuApp {
-	_codeIcon?: string
-	_codeNodeType = NodeType.menu_app
-	header: string
-	id: string
-	isHideRowManager = false
-	name: string
-	orderDefine: number
-	constructor(obj: any) {
-		const clazz = 'DbNodeProgram'
-		obj = valueOrDefault(obj, {})
-		this._codeIcon = valueOrDefault(obj._codeIcon, DEFAULT_ICON)
-		this.header = strRequired(obj.header, clazz, 'header')
-		this.id = strRequired(obj.id, clazz, 'id')
-		this.name = strRequired(obj.name, clazz, 'name')
-		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
-	}
 }
 
 export class RawNode {
@@ -76,63 +58,69 @@ export class RawNode {
 	}
 }
 
-export class Node {
-	dataObjId?: string
-	dataObjName?: string
-	nodeObjName?: string
-	header: string
+export class NodeHeader {
 	icon: string
 	id: string
+	label: string
+	name: string
+	orderDefine: number
+	type: NodeType
+	constructor(obj: any) {
+		const clazz = 'NodeHeader'
+		if (!(obj.header || obj.label)) {
+			console.log('obj', obj)
+		}
+		if (!obj.name) {
+			console.log('obj', obj)
+		}
+		obj = valueOrDefault(obj, {})
+		this.icon = valueOrDefault(obj._codeIcon, DEFAULT_ICON)
+		this.id = strRequired(obj.id, clazz, 'id')
+		this.label = strRequired(obj.header || obj.label, clazz, 'label')
+		this.name = strRequired(obj.name, clazz, 'name')
+		this.orderDefine = valueOrDefault(obj.orderDefine, 0)
+		this.type = memberOfEnum(obj._codeNodeType, clazz, 'type', 'NodeType', NodeType)
+	}
+}
+
+export class Node extends NodeHeader {
+	dataObjId?: string
+	dataObjIdChild?: string
+	dataObjName?: string
 	isHideRowManager: boolean
 	isMobileMode: boolean
 	isRetrievePreset: boolean
-	name: string
+	nodeObjName?: string
 	page: string
-	type: NodeType
-	constructor(rawNode: RawNode) {
-		const clazz = 'Node'
-		this.dataObjId = rawNode.dataObjId
-		this.dataObjName = rawNode.dataObjName
-		this.header = rawNode.header
-		this.icon = rawNode.icon
-		this.id = rawNode.id
-		this.isHideRowManager = booleanOrFalse(rawNode.isHideRowManager, 'isHideRowManager')
-		this.isMobileMode = booleanOrFalse(rawNode.isMobileMode, 'isHideRowManager')
-		this.isRetrievePreset = booleanOrFalse(rawNode.isRetrievePreset, 'isRetrievePreset')
-		this.name = rawNode.name
-		this.nodeObjName = rawNode.nodeObjName
-		this.page = rawNode.page
-		this.type = memberOfEnum(rawNode.type, clazz, 'type', 'NodeType', NodeType)
-	}
-}
-export class NodeApp {
-	dataObjId: string
-	label: string
-	id: string
-	isHideRowManager: boolean
 	constructor(obj: any) {
-		const clazz = 'NodeApp'
+		const clazz = 'Node'
 		obj = valueOrDefault(obj, {})
-		this.dataObjId = strRequired(obj.dataObjId, clazz, 'dataObjId')
-		this.label = strRequired(obj.header, clazz, 'header')
-		this.id = strRequired(obj.id, clazz, 'id')
+		super(obj)
+		this.dataObjId = obj.dataObjId
+		this.dataObjIdChild = obj.dataObjIdChild
+		this.dataObjName = obj.dataObjName
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
+		this.isMobileMode = booleanOrFalse(obj.isMobileMode, 'isHideRowManager')
+		this.isRetrievePreset = booleanOrFalse(obj.isRetrievePreset, 'isRetrievePreset')
+		this.nodeObjName = obj.nodeObjName
+		this.page = valueOrDefault(obj.page, '/home')
 	}
 }
-export class NodeNav extends Node {
+
+export class NodeNav {
 	idxLeaf: number
 	indent: number
 	isCrumb: boolean = false
 	isCurrent: boolean = false
 	isOpen: boolean = false
 	isRetrieved: boolean = false
-	orderDefine: number
+	node: Node
 	parentId?: string
-	constructor(dbNode: DbNode, parentId: string | undefined, idxLeaf: number, indent: number) {
-		super(new RawNode(dbNode))
+	constructor(node: Node, parentId: string | undefined, idxLeaf: number, indent: number) {
+		const clazz = 'NodeNav'
 		this.idxLeaf = idxLeaf
 		this.indent = indent
-		this.orderDefine = dbNode.orderDefine
+		this.node = node
 		this.parentId = parentId
 	}
 }
@@ -156,10 +144,10 @@ export class RawMenu {
 		apps.forEach((app: any) => {
 			this.addApp(app)
 		})
-		this.headers = this.headers.sort((a, b) => a.orderDefine - b.orderDefine)
+		this.headers = this.headers.sort((a, b) => a.header.orderDefine - b.header.orderDefine)
 	}
 	addApp(app: any) {
-		let idx = this.headers.findIndex((h) => h.id === app.id)
+		let idx = this.headers.findIndex((h) => h.header.id === app.appHeader.id)
 		if (idx === -1) {
 			idx = this.headers.push(new RawMenuHeader(app))
 		} else {
@@ -169,22 +157,19 @@ export class RawMenu {
 }
 
 export class RawMenuHeader {
-	header: string
-	id: string
-	name: string
-	nodes: DbNode[] = []
-	orderDefine: number
+	header: NodeHeader
+	nodes: Node[] = []
 	constructor(obj: any) {
 		const clazz = 'RawMenuHeader'
 		obj = valueOrDefault(obj, {})
-		this.header = strRequired(obj.appHeader.header, clazz, 'header')
-		this.id = strRequired(obj.appHeader.id, clazz, 'id')
-		this.name = strRequired(obj.appHeader.name, clazz, 'name')
-		this.orderDefine = obj.appHeader.orderDefine
+		this.header = new NodeHeader({ ...obj.appHeader, _codeNodeType: NodeType.menu_app })
 		this.addNodes(obj.nodes)
 	}
-	addNodes(nodes: DbNode[]) {
-		this.nodes = [...this.nodes, ...nodes]
+	addNodes(nodes: Node[]) {
+		nodes = getArray(nodes)
+		nodes.forEach((n) => {
+			this.nodes.push(new Node(n))
+		})
 		this.nodes.sort((a, b) => a.orderDefine - b.orderDefine)
 	}
 }

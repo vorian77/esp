@@ -26,7 +26,7 @@ export async function initPreDataObjFieldItem() {
 	await addDataObjFieldItems({
 		exprPropDisplay: '.name',
 		exprFilter:
-			'.codeType.name = <parms,str,fieldListItemsParmName> AND .owner.id = <parms,uuid,userSystemId>',
+			'.codeType.name = <parms,str,fieldListItemsParmName> AND .owner.id = <parms,uuid,appSystemId>',
 		exprSort: '.order',
 		name: 'il_sys_code_order_index_by_codeType_name_system',
 		owner: 'sys_system_old',
@@ -35,7 +35,7 @@ export async function initPreDataObjFieldItem() {
 	await addDataObjFieldItems({
 		exprPropDisplay: '.name',
 		exprFilter:
-			'.codeType.name = <parms,str,fieldListItemsParmName> AND .owner.id = <parms,uuid,userSystemId>',
+			'.codeType.name = <parms,str,fieldListItemsParmName> AND .owner.id = <parms,uuid,appSystemId>',
 		name: 'il_sys_code_order_name_by_codeType_name_system',
 		owner: 'sys_system_old',
 		table: 'SysCode'

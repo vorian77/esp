@@ -1,14 +1,10 @@
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { type DbNode, DbNodeMenuApp, NodeNav, NodeType } from '$comps/app/types.node'
+import { Node, NodeNav, NodeType } from '$comps/app/types.node'
 import { RawMenu, required, ResponseBody, valueOrDefault } from '$utils/types'
-import type { RawNode, User } from '$utils/types'
+import { User } from '$utils/types'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
 import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
-import {
-	TokenAppDoActionConfirmType,
-	TokenAppTreeNode,
-	TokenAppTreeNodeId
-} from '$utils/types.token'
+import { TokenApiId, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 import { localStorageStore } from '@skeletonlabs/skeleton'
 import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
@@ -32,16 +28,15 @@ export class NavTree {
 		this.listTree = required(obj.listTree, clazz, 'listTree')
 	}
 	static init(rawMenu: RawMenu) {
-		// init tree
 		const nodeNavRoot = new NodeNav(
-			{
-				header: ROOT_NODE_ID,
+			new Node({
+				_codeNodeType: NodeType.menu_root,
 				id: ROOT_NODE_ID,
 				isHideRowManager: false,
+				label: ROOT_NODE_ID,
 				name: ROOT_NODE_ID,
-				_codeNodeType: NodeType.menu_root,
 				orderDefine: 0
-			},
+			}),
 			undefined,
 			-1,
 			-1
@@ -54,16 +49,14 @@ export class NavTree {
 			listTree = this.addBranchNodes(listTree, nodeNavRoot, rawMenu.headers[0].nodes)
 		} else {
 			rawMenu.headers.forEach((h, idx) => {
-				// console.log('navTree.init:: ', h)
-				let nodeNavProgram = listTree.find((n) => n.id === h.id)
+				let nodeNavProgram = listTree.find((n) => n.node.id === h.header.id)
 				if (!nodeNavProgram) {
-					const nodeDbProgram = new DbNodeMenuApp({
-						header: h.header,
-						id: h.id,
-						name: h.name,
-						orderDefine: idx
-					})
-					nodeNavProgram = new NodeNav(nodeDbProgram, nodeNavRoot.id, idx, 0)
+					nodeNavProgram = new NodeNav(
+						new Node({ ...h.header, _codeNodeType: h.header.type }),
+						nodeNavRoot.node.id,
+						idx,
+						0
+					)
 					listTree.push(nodeNavProgram)
 				}
 				listTree = this.addBranchNodes(listTree, nodeNavProgram, h.nodes)
@@ -72,35 +65,38 @@ export class NavTree {
 
 		// open root branch nodes
 		listTree = listTree.map((n) => {
-			const nodeParent = listTree.find((p) => p.id === n.parentId)
+			const nodeParent = listTree.find((p) => p.node.id === n.parentId)
 			n.isOpen =
 				n.parentId === ROOT_NODE_ID ||
 				(nodeParent?.parentId === ROOT_NODE_ID && nodeParent?.idxLeaf === 0)
-
 			return n
 		})
 		return new NavTree({ currNode: nodeNavRoot, listTree })
 	}
 
-	static getNodeIdx(listTree: NodeNav[], node: NodeNav) {
+	static getNodeIdx(listTree: NodeNav[], nodeNav: NodeNav) {
 		for (let i = 0; i < listTree.length; i++) {
-			if (listTree[i].id === node.id) return i
+			if (listTree[i].node.id === nodeNav.node.id) return i
 		}
 		return -1
 	}
-	async addBranch(node: NodeNav) {
-		this.listTree = NavTree.addBranchNodes(this.listTree, node, await getNodesBranch(node.id))
+	async addBranch(nodeNav: NodeNav) {
+		this.listTree = NavTree.addBranchNodes(
+			this.listTree,
+			nodeNav,
+			await getNodesBranch(nodeNav.node.id)
+		)
 	}
-	static addBranchNodes(listTree: NodeNav[], nodeBranchParent: NodeNav, nodesBranch: DbNode[]) {
-		const nodeId = nodeBranchParent.id
+	static addBranchNodes(listTree: NodeNav[], nodeBranchParent: NodeNav, nodesBranch: Node[]) {
+		const nodeId = nodeBranchParent.node.id
 		const nodeIndent = nodeBranchParent.indent + 1
 		const nodeBranchParentIdx = NavTree.getNodeIdx(listTree, nodeBranchParent)
 		nodeBranchParent.isRetrieved = true
 
-		const getInsertIdx = (listTree: NodeNav[], nodeBranchParentIdx: number, newNode: DbNode) => {
+		const getInsertIdx = (listTree: NodeNav[], nodeBranchParentIdx: number, newNode: Node) => {
 			let insertIdx = nodeBranchParentIdx + 1
 			while (insertIdx < listTree.length) {
-				if (listTree[insertIdx].orderDefine > newNode.orderDefine) {
+				if (listTree[insertIdx].node.orderDefine > newNode.orderDefine) {
 					break
 				} else {
 					insertIdx++
@@ -111,7 +107,7 @@ export class NavTree {
 
 		// insert nodes
 		nodesBranch.forEach((n) => {
-			if (-1 === listTree.findIndex((l) => l.id === n.id)) {
+			if (-1 === listTree.findIndex((l) => l.node.id === n.id)) {
 				const insertIdx = getInsertIdx(listTree, nodeBranchParentIdx, n)
 				let newNode = new NodeNav(n, nodeId, insertIdx, nodeIndent)
 				listTree.splice(insertIdx, 0, newNode)
@@ -126,7 +122,7 @@ export class NavTree {
 
 		await this.setCurrentNode(nodeNav)
 
-		switch (nodeNav.type) {
+		switch (nodeNav.node.type) {
 			case NodeType.menu_app:
 			case NodeType.menu_header:
 				state.update({ page: '/home', nodeType: NodeType.home })
@@ -138,11 +134,11 @@ export class NavTree {
 				state.update({
 					page: '/home',
 					parmsState: { programId: this.getProgramId(nodeNav) },
-					nodeType: nodeNav.type,
+					nodeType: nodeNav.node.type,
 					packet: new StatePacket({
-						action: StatePacketAction.navTreeNode,
+						action: StatePacketAction.openNode,
 						confirmType: TokenAppDoActionConfirmType.objectChanged,
-						token: new TokenAppTreeNode({ node: nodeNav })
+						token: new TokenAppNode({ node: nodeNav.node })
 						// callbacks: [() => dispatch('treeChanged')]
 					})
 				})
@@ -150,7 +146,7 @@ export class NavTree {
 
 			case NodeType.page:
 				if (Object.hasOwn(nodeNav, 'page')) {
-					state.update({ page: nodeNav.page })
+					state.update({ page: nodeNav.node.page })
 					dispatch('treeChanged')
 				}
 				break
@@ -162,41 +158,41 @@ export class NavTree {
 				error(500, {
 					file: FILENAME,
 					function: 'NavTree.changeNode',
-					message: `No case defined for NodeType: ${nodeNav.type}`
+					message: `No case defined for NodeType: ${nodeNav.node.type}`
 				})
 		}
 		setAppStoreNavTree(this)
 	}
 
 	getCurrentBranch() {
-		let branch: Array<NodeNav> = []
+		let branch: NodeNav[] = []
 		this.listTree.forEach((n) => {
-			if (n.parentId === this.currNode.id) branch.push(n)
+			if (n.parentId === this.currNode.node.id) branch.push(n)
 		})
 		return branch
 	}
-	getParentNode(node: NodeNav) {
-		return this.listTree.find((n) => n.id === node.parentId)
+	getParentNode(nodeNav: NodeNav) {
+		return this.listTree.find((n) => n.node.id === nodeNav.parentId)
 	}
-	getProgramId(node: NodeNav | undefined): string | undefined {
-		if (!node) return undefined
-		if (node.type === NodeType.program) return node.id
-		return this.getProgramId(this.getParentNode(node))
+	getProgramId(nodeNav: NodeNav | undefined): string | undefined {
+		if (!nodeNav) return undefined
+		if (nodeNav.node.type === NodeType.program) return nodeNav.node.id
+		return this.getProgramId(this.getParentNode(nodeNav))
 	}
-	isCurrentNode(node: NodeNav) {
-		return node.id === this.currNode.id
+	isCurrentNode(nodeNav: NodeNav) {
+		return nodeNav.node.id === this.currNode.node.id
 	}
-	isRoot(node: NodeNav) {
-		return node.id === ROOT_NODE_ID
+	isRoot(nodeNav: NodeNav) {
+		return nodeNav.node.id === ROOT_NODE_ID
 	}
 
-	isRootLevel(node: NodeNav) {
-		return node.parentId === ROOT_NODE_ID
+	isRootLevel(nodeNav: NodeNav) {
+		return nodeNav.parentId === ROOT_NODE_ID
 	}
-	async setCurrentNode(currNode: NodeNav) {
-		this.currNode = currNode
+	async setCurrentNode(currNodeNav: NodeNav) {
+		this.currNode = currNodeNav
 
-		if ([NodeType.menu_header].includes(currNode.type) && !currNode.isRetrieved) {
+		if ([NodeType.menu_header].includes(currNodeNav.node.type) && !currNodeNav.isRetrieved) {
 			await this.addBranch(this.currNode)
 		}
 
@@ -205,7 +201,7 @@ export class NavTree {
 		this.listTree.forEach((n, i) => {
 			n.isCrumb = false
 			n.isOpen = this.isRootLevel(n) ? true : false
-			if (n.id === currNode.id) {
+			if (n.node.id === currNodeNav.node.id) {
 				crumbIndentIdx = n.indent - 1
 				n.isCrumb = true
 				n.isCurrent = true
@@ -214,7 +210,7 @@ export class NavTree {
 			}
 		})
 
-		const nodeIdx = NavTree.getNodeIdx(this.listTree, currNode)
+		const nodeIdx = NavTree.getNodeIdx(this.listTree, currNodeNav)
 		if (nodeIdx > -1) {
 			// set open - current node - up & crumbs
 			let status = true
@@ -247,7 +243,7 @@ export class NavTree {
 	async setCurrentParent() {
 		const currNode = this.currNode
 		for (let i = 0; i < this.listTree.length; i++) {
-			if (this.listTree[i].id === currNode.parentId) {
+			if (this.listTree[i].node.id === currNode.parentId) {
 				await this.setCurrentNode(this.listTree[i])
 				setAppStoreNavTree(this)
 				break
@@ -264,7 +260,7 @@ export async function initNavTree(user: User) {
 async function getNodesBranch(nodeId: string) {
 	const result: ResponseBody = await apiFetch(
 		ApiFunction.dbEdgeGetNodesBranch,
-		new TokenAppTreeNodeId({ nodeId })
+		new TokenApiId(nodeId)
 	)
 	if (result.success) {
 		return result.data

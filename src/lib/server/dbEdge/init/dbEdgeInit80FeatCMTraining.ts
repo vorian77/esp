@@ -105,7 +105,7 @@ async function initCourse() {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,userSystemId>))',
+				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -478,7 +478,7 @@ async function initCohort() {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,userSystemId>))',
+				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -1360,7 +1360,7 @@ async function initPartner() {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,userSystemId>))',
+				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{

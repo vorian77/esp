@@ -1132,15 +1132,16 @@ export class ParmsValues {
 }
 
 export enum ParmsValuesType {
+	appTabSystemId = 'appTabSystemId',
+	customProgramOwnerId = 'customProgramOwnerId',
 	embedFieldName = 'embedFieldName',
 	embedListSave = 'embedListSave',
 	embedParentId = 'embedParentId',
 	isMultiSelect = 'isMultiSelect',
-	isProgramNode = 'isProgramNode',
+	isProgramRoot = 'isProgramRoot',
 	listLabel = 'listLabel',
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listRecordIdList = 'listRecordIdList',
 	listRecordIdSelected = 'listRecordIdSelected',
-	listRecordItems = 'listRecordItems',
-	userSystemId = 'userSystemId'
+	listRecordItems = 'listRecordItems'
 }

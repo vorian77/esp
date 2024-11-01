@@ -7,6 +7,7 @@ import {
 	DBTable,
 	debug,
 	memberOfEnumOrDefault,
+	ParmsValuesType,
 	required,
 	strOptional,
 	strRequired
@@ -255,7 +256,23 @@ export class Query {
 	getPropsSelect(parms: DataRecord, queryData: TokenApiQueryData) {
 		const clazz = 'getPropsSelect'
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
+		const isProgramRoot = queryData?.dataTab?.parms.valueGet(ParmsValuesType.isProgramRoot) || false
 		let properties = ''
+
+		// pre-processing
+		if (isProgramRoot) {
+			props.push(
+				new RawDataObjPropDB(
+					{
+						_codeDataType: PropDataType.uuid,
+						_codeDbDataSourceValue: 'edgeDB',
+						_propName: `_${ParmsValuesType.appTabSystemId}_`,
+						exprCustom: '.owner.id'
+					},
+					this.rawDataObj.tables
+				)
+			)
+		}
 
 		// main
 		processProps(this)

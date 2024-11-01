@@ -5,11 +5,12 @@ import {
 	DataRecordStatus,
 	nbrRequired,
 	Node,
-	NodeApp,
 	NodeType,
 	ParmsValuesType,
 	RawNode,
 	ResponseBody,
+	strRequired,
+	UserTypeResourceType,
 	valueOrDefault
 } from '$utils/types'
 import type { DataRecord, DbNode } from '$utils/types'
@@ -17,15 +18,15 @@ import { RawDataObj } from '$comps/dataObj/types.rawDataObj'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import {
 	TokenApiDbDataObjSource,
+	TokenApiId,
 	TokenApiQueryType,
 	TokenApiQuery,
 	TokenAppIndex,
+	TokenAppDo,
 	TokenAppModalEmbedField,
+	TokenAppNode,
 	TokenAppRow,
-	TokenAppTab,
-	TokenAppTreeNode,
-	TokenAppTreeNodeId,
-	TokenAppDo
+	TokenAppTab
 } from '$utils/types.token'
 import {
 	FieldEmbedListConfig,
@@ -40,11 +41,25 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$comps/nav/types.app.ts'
 
 export class App {
+	appSystemId?: string
 	crumbs: Array<any> = []
 	isMobileMode: boolean = false
 	levels: Array<AppLevel> = []
-	userSystemId?: string
 	constructor() {}
+
+	async addLevelEmbedField(state: State, token: TokenApiQuery) {
+		this.levels.push(
+			new AppLevel([
+				new AppLevelTab({
+					data: token.queryData.dataTab,
+					dataObjSource: token.dataObjSource,
+					levelIdx: 0,
+					tabIdx: 0
+				})
+			])
+		)
+		await query(state, this.getCurrTab(), token.queryType)
+	}
 
 	async addLevelEmbedShell(fieldShell: FieldEmbedShell) {
 		// add root level
@@ -83,9 +98,7 @@ export class App {
 		const newLevel = new AppLevel(
 			[
 				new AppLevelTab({
-					dataObjSource: new TokenApiDbDataObjSource({
-						dataObjName: state.dataObjName
-					}),
+					dataObjId: await getDataObjId(state.dataObjName),
 					levelIdx: 0,
 					tabIdx: 0
 				})
@@ -117,45 +130,85 @@ export class App {
 		return this
 	}
 
-	async addLevelNode(state: State, token: TokenAppDo, queryType: TokenApiQueryType) {
+	async addLevelNode(state: State, token: TokenAppNode) {
+		let isProgramRootList = true
+		this.isMobileMode = token.node.isMobileMode || false
+
+		if (token.node.dataObjName) {
+			isProgramRootList = false
+			token.node.dataObjId = await getDataObjId(token.node.dataObjName)
+		}
+
+		if (token.node.nodeObjName) {
+			token.node = await getNodeObj(token.node.nodeObjName)
+		}
+
+		if (token.node.type === NodeType.program && state?.user?.systemId) {
+			this.appSystemIdSet(state.user.systemId)
+		}
+
+		// create root level
+		this.levels.push(
+			new AppLevel([new AppLevelTab(App.addLevelNodeParmsList(token.node, isProgramRootList))])
+		)
+		const currTab = this.getCurrTab()
+		if (currTab) {
+			await query(
+				state,
+				currTab,
+				token.node.isRetrievePreset ? TokenApiQueryType.retrievePreset : TokenApiQueryType.retrieve
+			)
+		}
+	}
+
+	async addLevelNodeChildren(state: State, token: TokenAppDo, queryType: TokenApiQueryType) {
+		const clazz = 'addLevelNodeChildren'
 		const currTab = this.getCurrTab()
 		if (currTab) {
 			currTab.data = token.dataObj.objData
 			currTab.data.parms.update(token.dataObj.data.parms.data)
 
 			// new level
-			const tabs: Array<AppLevelTab> = []
-			const newLevelIdx = this.levels.length
+			const tabs: AppLevelTab[] = []
 			const currLevel = this.getCurrLevel()
 			if (currLevel) {
+				const nodeIdParent = strRequired(currLevel.getCurrTab().nodeIdParent, clazz, 'nodeIdParent')
 				const rawNodes: {
-					root: Array<DbNode>
-					children: Array<DbNode>
-				} = await getNodesLevel(currLevel.getCurrTab().nodeId)
+					root: any[]
+					children: any[]
+				} = await getNodesLevel(nodeIdParent)
 
 				if (rawNodes.root.length === 1) {
-					// add root
-					let nodeParms: DataRecord = App.getTabParmsNode(
-						newLevelIdx,
-						0,
-						new Node(new RawNode(rawNodes.root[0]))
-					)
-					nodeParms['nodeIsProgramDetail'] = currTab.nodeIsProgramList
+					// add root - detail
+					const nodeLevelRootDetail = new Node(rawNodes.root[0])
+					let nodeParms: DataRecord = {
+						dataObjId: nodeLevelRootDetail.dataObjId,
+						// dataObjId: currTab.dataObjIdChild,
+						isProgramObject: nodeLevelRootDetail.type === NodeType.program_object,
+						isProgramRootDetail: currTab.isProgramRootList
+					}
 					tabs.push(new AppLevelTab(nodeParms))
 
-					// add children
-					rawNodes.children.forEach((rawNode, idx) => {
-						tabs.push(
-							new AppLevelTab(
-								App.getTabParmsNode(newLevelIdx, idx + 1, new Node(new RawNode(rawNode)))
-							)
-						)
+					// add children - lists
+					rawNodes.children.forEach((n) => {
+						tabs.push(new AppLevelTab(App.addLevelNodeParmsList(new Node(n), false)))
 					})
 					this.levels.push(new AppLevel(tabs))
 					await query(state, this.getCurrTab(), queryType)
 				}
 			}
 			return this
+		}
+	}
+
+	static addLevelNodeParmsList(node: Node, isProgramRootList: boolean) {
+		return {
+			dataObjId: node.dataObjId,
+			dataObjIdChild: node.dataObjIdChild,
+			isHideRowManager: node.isHideRowManager,
+			isProgramRootList,
+			label: node.label,
+			nodeIdParent: node.id
 		}
 	}
 
@@ -174,6 +227,12 @@ export class App {
 			this.levels[idxLevel].tabIdxSet(idxTab)
 			this.levels[idxLevel].tabs.push(newTab)
 		}
+	}
+	appSystemIdGet() {
+		return this.appSystemId
+	}
+	appSystemIdSet(systemId: string) {
+		this.appSystemId = systemId
 	}
 	getCrumbsList() {
 		this.crumbs = [new AppLevelCrumb(-1, 'Home')]
@@ -223,62 +282,6 @@ export class App {
 	getRowStatus() {
 		const parentLevel = this.getCurrTabParentLevel()
 		if (parentLevel) return parentLevel.getCurrTab().listRowStatus()
-	}
-	static getTabParmsNode(levelIdx: number, tabIdx: number, node: Node) {
-		const nodeApp = new NodeApp(node)
-		return {
-			dataObjId: nodeApp.dataObjId,
-			isHideRowManager: nodeApp.isHideRowManager,
-			label: nodeApp.label,
-			levelIdx,
-			nodeId: nodeApp.id,
-			tabIdx
-		}
-	}
-
-	async initEmbeddedField(state: State, token: TokenApiQuery) {
-		// get new level
-		this.levels.push(
-			new AppLevel([
-				new AppLevelTab({
-					data: token.queryData.dataTab,
-					dataObjSource: token.dataObjSource,
-					levelIdx: 0,
-					tabIdx: 0
-				})
-			])
-		)
-		await query(state, this.getCurrTab(), token.queryType)
-	}
-	async initNode(state: State, token: TokenAppTreeNode) {
-		this.isMobileMode = token.node.isMobileMode || false
-		if (this.isMobileMode && token.node.nodeObjName) {
-			token.node = await getNodeObj(token.node.nodeObjName)
-		}
-		let tabParms: DataRecord = token.node.dataObjId
-			? App.getTabParmsNode(0, 0, token.node)
-			: {
-					dataObjSource: new TokenApiDbDataObjSource({
-						dataObjName: token.node.dataObjName
-					}),
-					isHideRowManager: token.node.isHideRowManager,
-					label: token.node.header,
-					levelIdx: 0,
-					tabIdx: 0
-				}
-		tabParms['nodeIsProgramList'] = token.node.type === NodeType.program || this.isMobileMode
-		this.levels.push(new AppLevel([new AppLevelTab(tabParms)]))
-		await query(
-			state,
-			this.getCurrTab(),
-			token.node.isRetrievePreset ? TokenApiQueryType.retrievePreset : TokenApiQueryType.retrieve
-		)
-		const currTab = this.getCurrTab()
-		if (currTab)
-			currTab.data?.parms.valueSetList(
-				ParmsValuesType.listRecordIdList,
-				currTab?.data?.rowsRetrieved.getRows()
-			)
 	}
 
 	async navBack(backCnt: number) {
@@ -483,23 +486,6 @@ export class App {
 			}
 		}
 	}
-
-	userSystemIdGet() {
-		return this.userSystemId
-	}
-
-	async userSystemIdSelect(state: State) {
-		if (state.user) {
-			this.userSystemId = await state.user.getUserSelectedSystem(state)
-			return this.userSystemId !== undefined
-		} else {
-			this.userSystemId = undefined
-			return true
-		}
-	}
-	userSystemIdSet(systemId: string) {
-		this.userSystemId = systemId
-	}
 }
 
 export class AppLevel {
@@ -514,7 +500,12 @@ export class AppLevel {
 		this.tabs = tabs
 	}
 	getCrumbLabel(tabIdx: number, parentLevel: AppLevel | undefined = undefined) {
-		const label = this.tabs[tabIdx].label
+		const clazz = 'AppLevel.getCrumbLabel'
+		const label = strRequired(
+			this.tabs[tabIdx]?.dataObj?.raw?.header || this.tabs[tabIdx].label,
+			clazz,
+			'label'
+		)
 		const labelId = parentLevel ? parentLevel.getCurrTab().listCrumbLabelId() : ''
 		return label + labelId
 	}
@@ -572,52 +563,51 @@ export class AppLevelTab {
 	data?: DataObjData
 	dataObj?: DataObj
 	dataObjId?: string
+	dataObjIdChild?: string
 	dataObjSource: TokenApiDbDataObjSource
-	idx: number
 	isHideRowManager: boolean
 	isModal: boolean
+	isProgramObject: boolean
+	isProgramRootDetail: boolean
+	isProgramRootList: boolean
 	isRetrieved: boolean
-	label: string
-	levelIdx: number
-	nodeId: string
-	nodeIsProgramList: boolean
-	nodeIsProgramDetail: boolean
+	label?: string
+	nodeIdParent?: string
+
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'AppLevelTab'
-		this.data = valueOrDefault(obj.data, undefined)
-		this.dataObj = valueOrDefault(obj.dataObj, undefined)
-		this.dataObjId = valueOrDefault(obj.dataObjId, undefined)
-		this.dataObjSource = valueOrDefault(obj.dataObjSource, undefined)
-		this.idx = nbrRequired(obj.tabIdx, clazz, 'idx')
+		this.data = obj.data
+		this.dataObj = obj.dataObj
+		this.dataObjId = obj.dataObjId
+		this.dataObjIdChild = obj.dataObjIdChild
+		this.dataObjSource = obj.dataObjSource
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
+		this.isProgramObject = booleanOrFalse(obj.isProgramObject, 'isProgramObject')
+		this.isProgramRootDetail = booleanOrFalse(obj.isProgramRootDetail, 'isProgramRootDetail')
+		this.isProgramRootList = booleanOrFalse(obj.isProgramRootList, 'isProgramRootList')
 		this.isRetrieved = booleanOrFalse(obj.isRetrieved, 'isRetrieved')
 		this.isModal = booleanOrFalse(obj.isModal, 'isModal')
-		this.label = valueOrDefault(obj.label, '')
-		this.levelIdx = nbrRequired(obj.levelIdx, clazz, 'levelIdx')
-		this.nodeId = valueOrDefault(obj.nodeId, '')
-		this.nodeIsProgramDetail = booleanOrFalse(obj.nodeIsProgramDetail, 'nodeIsProgramDetail')
-		this.nodeIsProgramList = booleanOrFalse(obj.nodeIsProgramList, 'nodeIsProgramList')
-
-		// derived
-		if (this.dataObj) this.dataObjId = this.dataObj.raw.id
+		this.label = obj.label
+		this.nodeIdParent = obj.nodeIdParent
 	}
 	getDataObjSource() {
-		const dataObjSource = this.dataObjSource
-			? this.dataObjSource
-			: this.dataObjId
-				? new TokenApiDbDataObjSource({ dataObjId: this.dataObjId })
-				: error(500, {
-						file: FILENAME,
-						function: 'AppLevelTab.getDataObjSource - ' + this.dataObj?.raw?.name,
-						message: `No dataObjSource or dataObjId defined`
-					})
-
-		dataObjSource.updateReplacements({
-			exprFilter: this?.dataObj?.raw?.exprFilter
-		})
-		return dataObjSource
+		if (this.dataObjSource) {
+			return this.dataObjSource
+		} else {
+			let sourceParms: DataRecord = {}
+			if (this.dataObjId) sourceParms['dataObjId'] = this.dataObjId
+			if (this.dataObj) sourceParms['dataObjId'] = this.dataObj.raw.id
+			let dataObjSource = new TokenApiDbDataObjSource(sourceParms)
+			if (this.dataObj) {
+				dataObjSource.updateReplacements({
+					exprFilter: this?.dataObj?.raw?.exprFilter
+				})
+			}
+			return dataObjSource
+		}
 	}
+
 	getTable() {
 		return this.dataObj?.rootTable?.name
 	}
@@ -649,6 +639,10 @@ export class AppLevelTab {
 					return row.id === idCurrent
 				}) || {}
 			: {}
+	}
+	listGetDataRecordValue(propName: string) {
+		const record = this.listGetDataRecord()
+		return record[propName]
 	}
 	listGetRecords(): DataRecord[] {
 		const idList: string[] = this.data?.parms.valueGet(ParmsValuesType.listRecordIdList)
@@ -733,10 +727,26 @@ export enum AppRowActionType {
 	last = 'last'
 }
 
+async function getDataObjId(dataObjName: string) {
+	const result: ResponseBody = await apiFetch(
+		ApiFunction.dbEdgeGetDataObjId,
+		new TokenApiId(dataObjName)
+	)
+	if (result.success) {
+		return result.data.id
+	} else {
+		error(500, {
+			file: FILENAME,
+			function: 'getDataObjId',
+			message: `Error retrieving dataObj for dataObjName: ${dataObjName}`
+		})
+	}
+}
+
 async function getNodeObj(nodeObjName: string) {
 	const result: ResponseBody = await apiFetch(
 		ApiFunction.dbEdgeGetNodeObjByName,
-		new TokenAppTreeNodeId({ nodeId: nodeObjName })
+		new TokenApiId(nodeObjName)
 	)
 	if (result.success) {
 		return result.data
@@ -744,7 +754,7 @@ async function getNodeObj(nodeObjName: string) {
 		error(500, {
 			file: FILENAME,
 			function: 'getNodeObj',
-			message: `Error retrieving nodes for nodeId: ${nodeObjName}`
+			message: `Error retrieving node for nodeObjName: ${nodeObjName}`
 		})
 	}
 }
@@ -752,7 +762,7 @@ async function getNodeObj(nodeObjName: string) {
 async function getNodesLevel(nodeId: string) {
 	const result: ResponseBody = await apiFetch(
 		ApiFunction.dbEdgeGetNodesLevel,
-		new TokenAppTreeNodeId({ nodeId })
+		new TokenApiId(nodeId)
 	)
 	if (result.success) {
 		return result.data

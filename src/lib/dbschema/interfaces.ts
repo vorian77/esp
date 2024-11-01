@@ -67,7 +67,6 @@ export namespace app_cm {
     "school"?: string | null;
     "owner": sys_core.SysSystem;
     "office"?: sys_core.SysObjSubject | null;
-    "ssn"?: string | null;
   }
   export interface CmClientServiceFlow extends sys_user.Mgmt {
     "client": CmClient;
@@ -82,6 +81,7 @@ export namespace app_cm {
     "note"?: string | null;
     "codeStatus"?: sys_core.SysCode | null;
     "user"?: sys_user.SysUser | null;
+    "idxDemo"?: number | null;
   }
   export interface CmCohort extends sys_core.SysObj {
     "codeStatus"?: sys_core.SysCode | null;
@@ -532,6 +532,7 @@ export namespace org_moed {
   }
   export interface MoedParticipant extends app_cm.CmClient {
     "consentDisclaimer"?: boolean | null;
+    "idxDemo": number;
   }
 }
 export namespace schema {

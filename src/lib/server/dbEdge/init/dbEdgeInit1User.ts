@@ -1,3 +1,4 @@
+import { InitDbObj } from '$server/dbEdge/init/types.init'
 import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import {
 	ResetDb,
@@ -12,38 +13,27 @@ import {
 	addUserType,
 	addUserTypeResourceSubject
 } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
-import { initFeatMOED } from '$server/dbEdge/init/dbEdgeInit80FeatMOED'
 
-export async function initUser() {
-	await initFeatMOED()
+export function initUser() {
+	const init = new InitDbObj('System - User', initObjects)
+	initReset(init)
+	return init
+}
 
-	// await initReset()
-	// await initAppHeaders()
-	// await initApps()
-	// await initResources()
-	// await initUserType()
-	// await initUserSystems()
-	// await initUserUserType()
-
+async function initObjects() {
+	await initAppHeaders()
+	await initApps()
+	await initUserType()
+	await initUserSystems()
+	await initUserUserType()
 	// await initStaff()
 }
 
-export async function initReset() {
-	sectionHeader('Reset-User')
-	const reset = new ResetDb()
-	reset.addStatement('delete sys_user::SysUserTypeResource')
-	reset.addStatement('delete sys_user::SysUserType')
-	reset.addStatement(
-		`delete sys_core::SysNodeObj filter .name = 'node_obj_sys_admin_footer_home_test'`
-	)
-	reset.delTableRecords('sys_user::SysWidget')
-	reset.delTableRecords('sys_core::SysApp')
-	reset.delTableRecords('sys_core::SysAppHeader')
-
-	// reset.delTableRecords('sys_core::SysObjSubject')
-	await reset.execute()
-
-	await initFeatMOED()
+function initReset(init: InitDbObj) {
+	init.reset.addStatement('delete sys_user::SysUserTypeResource')
+	init.reset.addStatement('delete sys_user::SysUserType')
+	init.reset.delTableRecords('sys_core::SysApp')
+	init.reset.delTableRecords('sys_core::SysAppHeader')
 }
 
 async function initAppHeaders() {
@@ -155,46 +145,6 @@ async function initApps() {
 	})
 }
 
-async function initResources() {
-	/* footers */
-	await addNodeFooter({
-		codeIcon: 'application',
-		codeType: 'home',
-		header: 'Home',
-		isGlobalResource: false,
-		name: 'node_obj_sys_admin_footer_home_test',
-		orderDefine: 0,
-		owner: 'sys_ai_old'
-	})
-
-	/* subjects */
-	// await addUserTypeResourceSubject({
-	// 	codeType: 'cst_moed_office',
-	// 	header: 'MOED Westside',
-	// 	isGlobalResource: false,
-	// 	name: 'moedOfficeWestside',
-	// 	owner: 'sys_moed_old'
-	// })
-	// await addUserTypeResourceSubject({
-	// 	codeType: 'cst_moed_office',
-	// 	header: 'MOED Eastside',
-	// 	isGlobalResource: false,
-	// 	name: 'moedOfficeEastside',
-	// 	owner: 'sys_moed_old'
-	// })
-
-	/* widgets */
-	await widgets([
-		['sys_system_old', 'widget_sys_report', true],
-		['sys_system_old', 'widget_sys_quotes', true],
-		['sys_system_old', 'widget_sys_user', true],
-		['sys_ai_old', 'widget_ai_user', false],
-		['sys_moed_old', 'wf_moed_student_ssr_app', false],
-		['sys_moed_old', 'wf_moed_student_ssr_doc', false],
-		['sys_moed_old', 'wf_moed_student_ssr_msg', false]
-	])
-}
-
 async function initUserType() {
 	/* system */
 	await addUserType({
@@ -295,21 +245,4 @@ async function initUserUserType() {
 		['2482317505', 'ut_ai_staff'],
 		['3136272756', 'ut_ai_staff']
 	])
-}
-
-async function initStaff() {
-	// await addStaff([
-	// 	['Atlantic Impact', 'Stacy', 'Administrator'],
-	// 	['Atlantic Impact', 'Stan', 'Administrator'],
-	// 	['Atlantic Impact', 'Anise', 'Hayes'],
-	// 	['Atlantic Impact', 'Matthew', 'Clayton'],
-	// 	['Atlantic Impact', 'Erica', 'Hicks'],
-	// 	['Atlantic Impact', 'Jane', 'Instructor'],
-	// 	['Atlantic Impact', 'Joe', 'Instructor']
-	// ])
-	// await addRoleStaff([
-	// 	['Anise', 'Hayes', 'cm_training_role_staff_agency'],
-	// 	['Matthew', 'Clayton', 'cm_training_role_staff_agency'],
-	// 	['Erica', 'Hicks', 'cm_training_role_staff_agency']
-	// ])
 }

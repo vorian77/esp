@@ -1,8 +1,8 @@
 import { queryMultiple } from '$routes/api/dbEdge/dbEdge'
 import { ApiResult } from '$routes/api/api'
 import {
-	TokenApiDbDataObjSource,
 	TokenApiId,
+	TokenApiDbDataObjSource,
 	TokenApiQuery,
 	TokenApiQueryData,
 	TokenApiQueryType
@@ -73,33 +73,32 @@ async function processDataObjQuery(
 	scriptGroup: ScriptGroup,
 	returnData: DataObjData
 ) {
-	const setParmsPreset = async () => {
-		returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
-		query.setProcessRow(
-			new ProcessRowSelectPreset(query.rawDataObj.rawPropsSelect, DataRecordStatus.preset)
-		)
-		scriptGroup.addScriptPreset(query, queryData)
-	}
-	const setParmsRetrive = async () => {
-		returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
-		query.setProcessRow(
-			new ProcessRowSelect(query.rawDataObj.rawPropsSelect, DataRecordStatus.retrieved)
-		)
-		scriptGroup.addScriptPresetListEdit(query, queryData)
-		scriptGroup.addScriptRetrieve(query, queryData)
-	}
-
 	switch (queryType) {
 		case TokenApiQueryType.preset:
-			setParmsPreset()
+			returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
+			query.setProcessRow(
+				new ProcessRowSelectPreset(query.rawDataObj.rawPropsSelect, DataRecordStatus.preset)
+			)
+			scriptGroup.addScriptPreset(query, queryData)
 			break
 
 		case TokenApiQueryType.retrieve:
-			setParmsRetrive()
+			returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
+			query.setProcessRow(
+				new ProcessRowSelect(query.rawDataObj.rawPropsSelect, DataRecordStatus.retrieved)
+			)
+			scriptGroup.addScriptPresetListEdit(query, queryData)
+			scriptGroup.addScriptRetrieve(query, queryData)
 			break
 
 		case TokenApiQueryType.retrievePreset:
-			setParmsRetrive()
+			// retrieve
+			returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
+			query.setProcessRow(
+				new ProcessRowSelect(query.rawDataObj.rawPropsSelect, DataRecordStatus.retrieved)
+			)
+			scriptGroup.addScriptPresetListEdit(query, queryData)
+			scriptGroup.addScriptRetrieve(query, queryData)
 			break
 
 		case TokenApiQueryType.save:
@@ -147,6 +146,7 @@ async function processDataObjExecute(
 	scriptGroup: ScriptGroup,
 	returnData: DataObjData
 ) {
+	const clazz = 'processDataObjExecute'
 	let scriptData: DataObjData
 	returnData.resetRowsRetrieved()
 	while (scriptGroup.scriptsStack.length > 0) {
@@ -175,7 +175,11 @@ async function processDataObjExecute(
 				if (script.query.processRow) formatData(scriptData, rawDataList, script.query.processRow)
 
 				if (script.query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
-					const record = scriptData.rowsRetrieved.getDetailRecord()
+					const record: DataRecord = required(
+						scriptData.rowsRetrieved.getDetailRecord(),
+						clazz,
+						'record'
+					)
 
 					// set embedded parent tree records
 					const rootTableName = script.query.getTableRootName()
@@ -184,12 +188,14 @@ async function processDataObjExecute(
 					})
 
 					// set
-					if (script.queryData?.dataTab.parms.valueGet(ParmsValuesType.isProgramNode)) {
-						if (record.owner) {
-							const rootTableName = script.query.getTableRootName()
-							scriptData.parms.valueSet(ParmsValuesType.userSystemId, record.owner)
-							returnData.parms.valueSet(ParmsValuesType.userSystemId, record.owner)
-						}
+					if (script.queryData?.dataTab?.parms.valueGet(ParmsValuesType.isProgramRoot)) {
+						const appTabSystemId = strRequired(
+							record[`_${ParmsValuesType.appTabSystemId}_`],
+							clazz,
+							ParmsValuesType.appTabSystemId
+						)
+						scriptData.parms.valueSet(ParmsValuesType.appTabSystemId, appTabSystemId)
+						returnData.parms.valueSet(ParmsValuesType.appTabSystemId, appTabSystemId)
 					}
 					scriptGroup.addScriptDataItems(script, scriptData, record)
 				}
@@ -324,9 +330,9 @@ export async function getRawDataObj(
 	let rawDataObj: RawDataObj
 
 	if (Object.hasOwn(dataObjSource.sources, 'dataObjId')) {
-		dbDataObj = await getDataObjById(dataObjSource.sources.dataObjId)
+		dbDataObj = await getDataObjById(new TokenApiId(dataObjSource.sources.dataObjId))
 	} else if (Object.hasOwn(dataObjSource.sources, 'dataObjName')) {
-		dbDataObj = await getDataObjByName(dataObjSource.sources.dataObjName)
+		dbDataObj = await getDataObjByName(new TokenApiId(dataObjSource.sources.dataObjName))
 	}
 	rawDataObj = new RawDataObj(dbDataObj)
 	rawDataObj = await getRawDataObjDynamic(rawDataObj.processType, queryData, rawDataObj)

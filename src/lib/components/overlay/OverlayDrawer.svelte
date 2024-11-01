@@ -3,7 +3,7 @@
 	import NavTree from '$comps/app/NavTree.svelte'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
-	import { TokenApiUserId, TokenAppDoActionConfirmType, TokenAppTreeNode } from '$utils/types.token'
+	import { TokenApiUserId, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 	import { Node, ResponseBody } from '$utils/types'
 	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
 
@@ -42,19 +42,19 @@
 		const state: State = $storeDrawer.meta.state
 		const dataObjName = 'data_obj_auth_account'
 		const node = new Node({
+			_codeNodeType: 'object',
 			dataObjName,
 			header: 'My Account',
 			icon: 'application',
 			id: dataObjName,
 			isHideRowManager: true,
 			name: dataObjName,
-			page: '/home',
-			type: 'object'
+			page: '/home'
 		})
 		const packet = new StatePacket({
-			action: StatePacketAction.navTreeNode,
+			action: StatePacketAction.openNode,
 			confirmType: TokenAppDoActionConfirmType.objectChanged,
-			token: new TokenAppTreeNode({ node })
+			token: new TokenAppNode({ node })
 		})
 		state.update({ page: node.page, nodeType: node.type, packet })
 	}

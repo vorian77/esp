@@ -22,6 +22,7 @@ export async function addMOEDPartDataTest(data: any) {
 	return await query.run(client, data)
 }
 // const record = [
+//  'idxDemo',
 // 	'addr1',
 // 	'addr2',
 // 	'birthDate',
@@ -35,7 +36,7 @@ export async function addMOEDPartDataTest(data: any) {
 // 	'firstName',
 // 	'lastName',
 // 	'office',
-// 	'phoneMobile',
+// 	'phoneMobile',14
 // 	'ssn',
 // 	'zip'
 // ]
@@ -46,98 +47,50 @@ export async function addMOEDParticipants(params: any) {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.org_moed.MoedParticipant, {
 				createdBy: CREATOR,
+				idxDemo: e.cast(e.int64, i[0]),
 				modifiedBy: CREATOR,
+				office: e.assert_single(
+					e.select(e.sys_core.SysObjSubject, (o) => ({
+						filter_single: e.op(o.name, '=', e.cast(e.str, i[13]))
+					}))
+				),
 				person: e.insert(e.default.SysPerson, {
 					addr1: e.cast(e.str, i[1]),
 					birthDate: e.cal.to_local_date(e.cast(e.str, i[3])),
-					firstName: e.cast(e.str, i[11]),
-					lastName: e.cast(e.str, i[12])
-				}),
-				owner: e.sys_core.getSystemPrime('sys_moed_old')
-
-				// codeReferralType: e.sys_core.getCodeSystem(
-				// 	'sys_moed_old',
-				// 	'ct_cm_service_flow_type',
-				// 	'Walk in'
-				// ),
-
-				// serviceFlow: e.assert_single(
-				// 	e.select(e.app_cm.CmServiceFlow, (flow) => ({
-				// 		filter_single: e.op(flow.name, '=', 'sf_moed_self_service_reg')
-				// 	}))
-				// )
-			})
-		})
-	})
-	return await query.run(client, { data: params })
-}
-
-export async function addMOEDParticipants1(data: any) {
-	sectionHeader(`addMOEDParticipant - ${data.firstName} ${data.lastName}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			addr1: e.optional(e.str),
-			addr2: e.optional(e.str),
-			birthDate: e.str,
-			city: e.optional(e.str),
-			codeDisabilityStatus: e.optional(e.str),
-			codeEthnicity: e.optional(e.str),
-			codeGender: e.optional(e.str),
-			codeRace: e.optional(e.str),
-			codeState: e.optional(e.str),
-			email: e.optional(e.str),
-			firstName: e.str,
-			lastName: e.str,
-			office: e.optional(e.str),
-			phoneMobile: e.optional(e.str),
-			ssn: e.optional(e.str),
-			zip: e.optional(e.str)
-		},
-		(p) => {
-			return e.insert(e.org_moed.MoedParticipant, {
-				createdBy: CREATOR,
-				modifiedBy: CREATOR,
-				office: e.assert_single(
-					e.select(e.sys_core.SysObjSubject, (subj) => ({
-						filter_single: e.op(subj.name, '=', p.office)
-					}))
-				),
-
-				owner: e.sys_core.getSystemPrime('sys_moed_old'),
-				person: e.insert(e.default.SysPerson, {
-					addr1: p.addr1,
-					addr2: p.addr2,
-					birthDate: e.cal.to_local_date(p.birthDate),
-					city: p.city,
+					city: e.cast(e.str, i[4]),
 					codeDisabilityStatus: e.sys_core.getCodeSystem(
 						'sys_moed_old',
 						'ct_sys_person_disability_status',
-						p.codeDisabilityStatus
+						e.cast(e.str, i[5])
 					),
 					codeEthnicity: e.sys_core.getCodeSystem(
 						'sys_moed_old',
 						'ct_sys_person_ethnicity',
-						p.codeEthnicity
+						e.cast(e.str, i[6])
 					),
 					codeGender: e.sys_core.getCodeSystem(
 						'sys_moed_old',
 						'ct_sys_person_gender',
-						p.codeGender
+						e.cast(e.str, i[7])
 					),
-					codeRace: e.sys_core.getCodeSystem('sys_moed_old', 'ct_sys_person_race', p.codeRace),
-					codeState: e.sys_core.getCodeSystem('sys_moed_old', 'ct_sys_state', p.codeState),
-					email: p.email,
-					firstName: p.firstName,
-					lastName: p.lastName,
-					phoneMobile: p.phoneMobile,
-					zip: p.zip
+					codeRace: e.sys_core.getCodeSystem(
+						'sys_moed_old',
+						'ct_sys_person_race',
+						e.cast(e.str, i[8])
+					),
+					codeState: e.sys_core.getCodeSystem('sys_moed_old', 'ct_sys_state', e.cast(e.str, i[9])),
+					email: e.cast(e.str, i[10]),
+					firstName: e.cast(e.str, i[11]),
+					lastName: e.cast(e.str, i[12]),
+					phoneMobile: e.cast(e.str, i[14]),
+					ssn: e.cast(e.str, i[15]),
+					zip: e.cast(e.str, i[16])
 				}),
-				ssn: p.ssn
+				owner: e.sys_core.getSystemPrime('sys_moed_old')
 			})
-		}
-	)
-	return await query.run(client, data)
+		})
+	})
+	return await query.run(client, { data: params })
 }
 
 export async function addMOEDCSF(params: any) {
@@ -150,11 +103,7 @@ export async function addMOEDCSF(params: any) {
 				modifiedBy: CREATOR,
 				client: e.assert_single(
 					e.select(e.org_moed.MoedParticipant, (part) => ({
-						filter_single: e.op(
-							e.op(part.person.firstName, '=', e.cast(e.str, i[0])),
-							'and',
-							e.op(part.person.lastName, '=', e.cast(e.str, i[1]))
-						)
+						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
 					}))
 				),
 				codeReferralType: e.sys_core.getCodeSystem(
@@ -165,9 +114,9 @@ export async function addMOEDCSF(params: any) {
 				codeStatus: e.sys_core.getCodeSystem(
 					'sys_moed_old',
 					'ct_cm_service_flow_status',
-					e.cast(e.str, i[3])
+					e.cast(e.str, i[2])
 				),
-				dateReferral: e.cal.to_local_date(e.cast(e.str, i[2])),
+				dateReferral: e.cal.to_local_date(e.cast(e.str, i[1])),
 				serviceFlow: e.assert_single(
 					e.select(e.app_cm.CmServiceFlow, (flow) => ({
 						filter_single: e.op(flow.name, '=', 'sf_moed_self_service_reg')

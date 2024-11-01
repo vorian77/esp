@@ -14,6 +14,8 @@ import {
 	required,
 	ResponseBody,
 	strRequired,
+	UserTypeResource,
+	UserTypeResourceType,
 	valueOrDefault
 } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
@@ -34,25 +36,43 @@ export async function query(
 	queryType: TokenApiQueryType
 ) {
 	const clazz = `${FILENAME}.query`
-	let userSystemId: string | undefined
 
 	if (!tab) return false
 	let { dataTab, dataTree } = queryDataPre(state, tab, queryType)
 
-	// set parm - userSystemId
-	if (tab.nodeIsProgramDetail) {
-		dataTab.parms.valueSet(ParmsValuesType.isProgramNode, true)
-		if (queryType === TokenApiQueryType.preset) {
-			await state.app.userSystemIdSelect(state)
+	/* set parm - appTabSystemId */
+	if (tab.isProgramRootList && state.user) {
+		dataTab.parms.valueSet(ParmsValuesType.isProgramRoot, true)
+	}
+
+	if (tab.isProgramRootDetail && queryType === TokenApiQueryType.preset && state.user) {
+		const appSystemId = state.app.appSystemIdGet()
+		if (!appSystemId) {
+			const userSystemResource: UserTypeResource | undefined = await state.user.selectResource(
+				state,
+				UserTypeResourceType.system
+			)
+			if (userSystemResource) state.app.appSystemIdSet(userSystemResource.resource.id)
 		}
+		dataTab.parms.valueSet(ParmsValuesType.appTabSystemId, state.app.appSystemIdGet())
 	}
 
-	if (state.app.isMobileMode) {
-		await state.app.userSystemIdSelect(state)
+	if (tab.isProgramRootDetail && queryType === TokenApiQueryType.retrieve) {
+		const parentTab = required(state.app.getCurrTabParentTab(), clazz, 'parentTab')
+		state.app.appSystemIdSet(
+			strRequired(
+				parentTab.listGetDataRecordValue(`_${ParmsValuesType.appTabSystemId}_`),
+				clazz,
+				'userSystemId'
+			)
+		)
 	}
 
-	dataTab.parms.valueSet(ParmsValuesType.userSystemId, state.app.userSystemIdGet())
+	if (queryType === TokenApiQueryType.retrieve && tab.isProgramObject) {
+		dataTab.parms.valueSet(ParmsValuesType.appTabSystemId, state.app.appSystemIdGet())
+	}
 
+	// set other parms
 	const queryData = new TokenApiQueryData({ dataTab, tree: dataTree })
 	let table = tab.getTable() // table will be undefined prior to retrieve
 
@@ -72,14 +92,12 @@ export async function query(
 	const result: ResponseBody = await queryExecute(tab.getDataObjSource(), queryType, queryData)
 	document.body.style.setProperty('cursor', 'default')
 
-	if (!result.success) return false
-
+	if (!result.success) {
+		console.error('types.appQuery.query failed', result)
+		return false
+	}
 	// successful
 	let dataResult = DataObjData.load(result.data.dataObjData)
-	if (tab.nodeIsProgramDetail) {
-		const userSystemId = dataResult.parms.valueGet(ParmsValuesType.userSystemId)
-		if (userSystemId) state.app.userSystemIdSet(userSystemId)
-	}
 	tab.dataObj = await DataObj.init(state, dataResult)
 	table = tab.getTable()
 

@@ -1,6 +1,6 @@
 import e from '$lib/dbschema/edgeql-js'
 import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import type { TokenAppTreeNodeId } from '$utils/types.token'
+import { TokenApiId } from '$utils/types.token'
 import { TokenApiDbTableColumns, TokenApiUserId, TokenApiUserPref } from '$utils/types.token'
 import { debug } from '$utils/utils.debug'
 
@@ -71,23 +71,23 @@ const shapeTable = e.shape(e.sys_db.SysTable, (t) => ({
 	name: true
 }))
 
-export async function getDataObjId(dataObjName: string) {
+export async function getDataObjId(token: TokenApiId) {
 	const query = e.select(e.sys_core.SysDataObj, (do1) => ({
 		id: true,
-		filter_single: e.op(do1.name, '=', dataObjName)
+		filter_single: e.op(do1.name, '=', token.id)
 	}))
 	return await query.run(client)
 }
 
-export async function getDataObjActionFieldGroup(actionName: string) {
+export async function getDataObjActionFieldGroup(token: TokenApiId) {
 	const query = e.select(e.sys_core.SysDataObjActionFieldGroup, (a) => ({
 		...shapeDataObjActionFieldGroup(a),
-		filter_single: e.op(a.name, '=', actionName)
+		filter_single: e.op(a.name, '=', token.id)
 	}))
 	return await query.run(client)
 }
 
-export async function getDataObjById(dataObjId: string) {
+export async function getDataObjById(token: TokenApiId) {
 	const shapePropDB = e.shape(e.sys_core.SysDataObjColumn, (doc) => ({
 		_codeDataType: doc.column.codeDataType.name,
 		_codeDbDataSourceValue: doc.codeDbDataSourceValue.name,
@@ -355,7 +355,7 @@ export async function getDataObjById(dataObjId: string) {
 				order_by: doc.orderSort
 			})),
 
-			filter_single: e.op(do1.id, '=', e.cast(e.uuid, dataObjId))
+			filter_single: e.op(do1.id, '=', e.cast(e.uuid, token.id))
 		}
 	})
 
@@ -367,16 +367,16 @@ export async function getDataObjByName(dataObjName: string) {
 	return result?.id ? await getDataObjById(result.id) : undefined
 }
 
-export async function getNodeObjByName(nodeObjName: string) {
+export async function getNodeObjByName(token: TokenApiId) {
 	const query = e.select(e.sys_core.SysNodeObj, (n) => ({
 		...shapeNodeObj(n),
-		filter_single: e.op(n.name, '=', nodeObjName)
+		filter_single: e.op(n.name, '=', token.id)
 	}))
 	return await query.run(client)
 }
 
-export async function getNodesBranch(token: TokenAppTreeNodeId) {
-	const parentNodeId = token.nodeId
+export async function getNodesBranch(token: TokenApiId) {
+	const parentNodeId = token.id
 	const query = e.select(e.sys_core.SysNodeObj, (n) => ({
 		_codeIcon: n.codeIcon.name,
 		_codeNodeType: n.codeNodeType.name,
@@ -393,8 +393,8 @@ export async function getNodesBranch(token: TokenAppTreeNodeId) {
 	return await query.run(client)
 }
 
-export async function getNodesLevel(token: TokenAppTreeNodeId) {
-	const parentNodeId = token.nodeId
+export async function getNodesLevel(token: TokenApId) {
+	const parentNodeId = token.id
 	const root = e.select(e.sys_core.SysNodeObj, (n: any) => ({
 		...shapeNodeObj(n),
 		filter: e.op(n.parent.id, '=', e.cast(e.uuid, parentNodeId))
@@ -627,6 +627,7 @@ export async function getUserResourcesFooter(token: TokenApiUserId) {
 		dataObjId: res.dataObj.id,
 		header: true,
 		id: true,
+		name: true,
 		orderDefine: true,
 		page: true,
 		filter: e.op(

@@ -23,7 +23,7 @@
 		TokenAppProcess,
 		TokenAppRow,
 		TokenAppTab,
-		TokenAppTreeNode,
+		TokenAppNode,
 		TokenAppWidget
 	} from '$utils/types.token'
 	import {
@@ -95,7 +95,7 @@
 		StatePacketAction.navCrumbs,
 		StatePacketAction.navRow,
 		StatePacketAction.navTab,
-		StatePacketAction.navTreeNode,
+		StatePacketAction.openNode,
 		StatePacketAction.selectModalItems,
 		StatePacketAction.selectModalItemsOpen
 	]
@@ -206,12 +206,12 @@
 				break
 
 			case StatePacketAction.doListDetailEdit:
-				await state.app.addLevelNode(state, token, TokenApiQueryType.retrieve)
+				await state.app.addLevelNodeChildren(state, token, TokenApiQueryType.retrieve)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doListDetailNew:
-				await state.app.addLevelNode(state, token, TokenApiQueryType.preset)
+				await state.app.addLevelNodeChildren(state, token, TokenApiQueryType.preset)
 				updateObjectsForm()
 				break
 
@@ -228,7 +228,7 @@
 
 			case StatePacketAction.embedField:
 				if (token instanceof TokenApiQuery) {
-					await state.app.initEmbeddedField(state, token)
+					await state.app.addLevelEmbedField(state, token)
 					updateObjectsForm()
 					resetModes = false
 				}
@@ -279,10 +279,10 @@
 				updateObjectsForm()
 				break
 
-			case StatePacketAction.navTreeNode:
-				if (token instanceof TokenAppTreeNode) {
+			case StatePacketAction.openNode:
+				if (token instanceof TokenAppNode) {
 					state.newApp()
-					await state.app.initNode(state, token)
+					await state.app.addLevelNode(state, token)
 					updateObjectsForm()
 				}
 				break

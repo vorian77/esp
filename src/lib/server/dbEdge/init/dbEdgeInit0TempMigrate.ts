@@ -1,6 +1,5 @@
 import e from '$lib/dbschema/edgeql-js'
 import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import type { TokenAppTreeNodeId } from '$utils/types.token'
 import { TokenApiDbTableColumns, TokenApiUserId } from '$utils/types.token'
 
 export async function migrateCmCohort() {

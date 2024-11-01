@@ -1,4 +1,6 @@
-const dataItems = {
+import type { DataRecord } from '$utils/types'
+
+const dataItemsStudents = {
 	addr1: { type: 'list', values: ['123 Main St', '456 Elm St', '789 Oak St'] },
 	addr2: { type: 'list', values: ['Apt 1', 'Apt 2', ''] },
 	birthDate: {
@@ -71,12 +73,12 @@ const dataItems = {
 		values: ['Adams', 'Conley', 'Garcia', 'Lawson', 'Lyons', 'Oatis', 'Turner']
 	},
 	office: { type: 'list', values: ['moedOfficeEastside', 'moedOfficeWestside'] },
-	phone: { type: 'number', length: 10 },
+	phoneMobile: { type: 'number', length: 10 },
 	ssn: { type: 'number', length: 9 },
 	zip: { type: 'list', values: ['21202', '21201', '21205', '21206', '21207', '21208'] }
 }
 
-const record = [
+const recordStudents = [
 	'addr1',
 	'addr2',
 	'birthDate',
@@ -95,9 +97,36 @@ const record = [
 	'zip'
 ]
 
+const dataItemsReferrals = {
+	dateReferral: {
+		type: 'date',
+		dateStart: '2024-01-01',
+		dateEnd: '2024-1-30'
+	},
+	codeStatus: {
+		type: 'list',
+		values: [
+			'Application submitted',
+			'Application under review',
+			'Pending eligibility documentation',
+			'Pending eligibility determination',
+			'Pending enrollment',
+			'Enrolled',
+			'Rejected'
+		]
+	}
+}
+const recordReferrals = ['dateReferral', 'codeStatus']
+
 export class RandomDataGenerator {
-	data: any = []
-	constructor(record: string[], dataItems: Partial<Record<string, any>>, recCnt: number) {
+	data: DataRecord = {}
+	constroctor() {}
+	addData(
+		label: string,
+		record: string[],
+		dataItems: Partial<Record<string, any>>,
+		recCnt: number
+	) {
 		let newData: any[] = []
 		for (let i = 0; i < recCnt; i++) {
 			let newRow: any[] = []
@@ -109,7 +138,7 @@ export class RandomDataGenerator {
 			})
 			newData.push(newRow)
 		}
-		this.data = newData
+		this.data[label] = newData
 	}
 
 	getValue(type: any) {
@@ -134,4 +163,7 @@ export class RandomDataGenerator {
 	}
 }
 
-export const moedDataParticipant = new RandomDataGenerator(record, dataItems, 3)
+const data = new RandomDataGenerator()
+data.addData('students', recordStudents, dataItemsStudents, 50)
+data.addData('referrals', recordReferrals, dataItemsReferrals, 50)
+export const moedDataParticipant = data

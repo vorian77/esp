@@ -30,13 +30,13 @@ export async function POST({ request, cookies }) {
 
 	switch (apiFunction) {
 		case ApiFunction.dbEdgeGetDataObjActionFieldGroup:
-			return getServerResponse(await getDataObjActionFieldGroup(token.id))
+			return getServerResponse(await getDataObjActionFieldGroup(token))
 
 		case ApiFunction.dbEdgeGetDataObjId:
-			return getServerResponse(await getDataObjId(token.dataObjName))
+			return getServerResponse(await getDataObjId(token))
 
 		case ApiFunction.dbEdgeGetNodeObjByName:
-			return getServerResponse(await getNodeObjByName(token.nodeId))
+			return getServerResponse(await getNodeObjByName(token))
 
 		case ApiFunction.dbEdgeGetNodesBranch:
 			return getServerResponse(await getNodesBranch(token))

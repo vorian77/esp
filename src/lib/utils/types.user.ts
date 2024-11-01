@@ -28,7 +28,8 @@ export class User {
 	resources = new UserTypeResourceList()
 	resources_sys_app: any[] = []
 	resources_sys_footer: any[] = []
-	systemIds: string[] = []
+	systemId?: string
+	systemIdList: string[] = []
 	userName: string
 
 	// old
@@ -77,9 +78,11 @@ export class User {
 				}
 			})
 		)
-		this.systemIds = this.resources
+		this.systemIdList = this.resources
 			.getResources(UserTypeResourceType.system)
 			.map((s) => s.resource.id)
+
+		this.systemId = this.systemIdList.length === 1 ? this.systemIdList[0] : undefined
 		// console.log('User.constructor', this)
 
 		// old
@@ -90,23 +93,26 @@ export class User {
 		// this.user_id = nbrOptional(obj.user_id, 'User')
 	}
 
-	async getUserSelectedSystem(state: State) {
-		const systems = this.resources.getResources(UserTypeResourceType.system)
+	getResourceSystemId() {
+		return this.systemId
+	}
 
-		switch (systems.length) {
+	async selectResource(state: State, resourceType: UserTypeResourceType) {
+		const resources = this.resources.getResources(resourceType)
+		switch (resources.length) {
 			case 0:
 				alert(
-					`Cannot proceed. You have not been assigned system resources. Please see your administrator.`
+					`Cannot proceed. You have not been assigned any resources of type: ${resourceType}. Please see your administrator.`
 				)
 				return undefined
 			case 1:
-				return this.systemIds[0]
+				return resources[0]
 
 			default:
-				const defaultSystemName = 'sys_moed_old'
-				const defaultSystem = systems.find((s) => s.resource.name === defaultSystemName)
-				return defaultSystem ? defaultSystem.resource.id : undefined
-
+				if (resourceType === UserTypeResourceType.system) {
+					const defaultSystemName = 'sys_moed_old'
+					return resources.find((s) => s.resource.name === defaultSystemName)
+				}
 				// const itemsList = resources.map((r) => {
 				// 	return new FieldItem(r.idResource, r.header)
 				// })
@@ -145,10 +151,6 @@ export class User {
 		return undefined
 	}
 
-	// getResourcesSubject(type: string): UserTypeResource[] {
-	// 	return this.resources.filter((r) => r.typeSubject === type) || []
-	// }
-
 	prefIsActive(prefType: UserPrefType): boolean {
 		return this.preferences.isActive(prefType)
 	}
@@ -182,7 +184,8 @@ class UserPrefItem {
 export enum UserPrefType {
 	notifications_auto_retrieve = 'notifications_auto_retrieve',
 	remember_list_settings = 'remember_list_settings',
-	widget_quick_report = 'widget_quick_report'
+	widget_quick_report = 'widget_quick_report',
+	widget_quick_report_moed = 'widget_quick_report_moed'
 }
 
 export class UserTypeResourceList {

@@ -6,7 +6,8 @@ import {
 	DataObjEmbedType,
 	DataObjStatus,
 	ParmsValuesType,
-	required
+	required,
+	strRequired
 } from '$utils/types'
 import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
 import {
@@ -25,7 +26,6 @@ export class FieldEmbed extends Field {
 	embedType?: DataObjEmbedType
 	constructor(props: RawFieldProps) {
 		super(props)
-		const clazz = 'FieldEmbed'
 	}
 	getStatus(dataObjForm: DataObj, recordId: string) {
 		if (this.dataObj) {
@@ -39,7 +39,12 @@ export class FieldEmbed extends Field {
 		}
 	}
 	async initDataObj(props: RawFieldProps, embedType: DataObjEmbedType) {
-		this.embedParentId = props.data.rowsRetrieved.getDetailRecordValue('id')
+		const clazz = `${FILENAME}.FieldEmbed`
+		this.embedParentId = strRequired(
+			props.data.rowsRetrieved.getDetailRecordValue('id'),
+			clazz,
+			'embedParentId'
+		)
 		this.embedType = embedType
 		let dataField: DataObjDataField = props.data.getField(props.propRaw.propName)
 		if (dataField) {

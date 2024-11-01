@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
-	import { TokenAppDoActionConfirmType, TokenAppTreeNode } from '$utils/types.token'
+	import { TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 	import { Node, NodeNav, ResponseBody } from '$utils/types'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -20,15 +20,15 @@
 			name: token.dataObjName,
 			nodeObjName: token.nodeObjName,
 			page: '/home',
-			type: token.nodeObjName ? 'program' : 'object'
+			_codeNodeType: token.nodeObjName ? 'program' : 'object'
 		})
 		state.update({
 			page: node.page,
 			nodeType: node.type,
 			packet: new StatePacket({
-				action: StatePacketAction.navTreeNode,
+				action: StatePacketAction.openNode,
 				confirmType: TokenAppDoActionConfirmType.objectChanged,
-				token: new TokenAppTreeNode({ node })
+				token: new TokenAppNode({ node })
 			})
 		})
 	}

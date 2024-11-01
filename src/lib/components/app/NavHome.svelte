@@ -8,6 +8,7 @@
 	import DataViewer from '$utils/DataViewer.svelte'
 	import SysWigFeature from '$comps/widgets/WidgetFeature.svelte'
 	import SysWigReport from '$comps/widgets/WidgetReport.svelte'
+	import SysWigReportMoed from '$comps/widgets/WizardReportMoed.svelte'
 
 	const FILENAME = '$comps/app/NavPageHome.svelte'
 
@@ -18,6 +19,7 @@
 	}
 	let user: User | undefined
 	let showSysReport = false
+	let showSysReportMoed = false
 	let showSysFeature = false
 	let showSysUser: boolean
 	let showCMUser: boolean
@@ -37,6 +39,9 @@
 			])
 			showSysReport =
 				hasResourceWidget('widget_sys_report') &&
+				user.prefIsActive(UserPrefType.widget_quick_report)
+			showSysReportMoed =
+				hasResourceWidget('widget_sys_report_moed') &&
 				user.prefIsActive(UserPrefType.widget_quick_report)
 		}
 	}

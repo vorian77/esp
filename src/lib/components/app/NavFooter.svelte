@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
-	import { TokenApp, TokenAppDoActionConfirmType, TokenAppTreeNode } from '$utils/types.token'
-	import { appStoreUser, Node, NodeType, RawNode, User } from '$utils/types'
+	import { TokenApp, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
+	import { appStoreUser, Node, NodeType, User } from '$utils/types'
 	import Icon from '$comps/other/Icon.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import SysWigFeature from '$comps/widgets/WidgetFeature.svelte'
@@ -9,7 +9,7 @@
 
 	export let state: State
 
-	let footer: Array<Node> = []
+	let footer: Node[] = []
 	let loaded = false
 	let currNodeName = ''
 
@@ -18,7 +18,7 @@
 		const user = Object.keys(rawUser).length > 0 ? new User(rawUser) : undefined
 		if (user) {
 			user.resources_sys_footer.forEach((n: any) => {
-				footer.push(new Node(new RawNode(n)))
+				footer.push(new Node(n))
 			})
 			currNodeName = footer.length > 0 ? footer[0].name : ''
 			loaded = true
@@ -70,9 +70,9 @@
 			case NodeType.object:
 			case NodeType.program_object:
 				packet = new StatePacket({
-					action: StatePacketAction.navTreeNode,
+					action: StatePacketAction.openNode,
 					confirmType: TokenAppDoActionConfirmType.objectChanged,
-					token: new TokenAppTreeNode({ node })
+					token: new TokenAppNode({ node })
 				})
 				break
 
@@ -102,7 +102,7 @@
 				<Icon name={node.icon} width="1.0rem" height="1.0rem" fill={navColor} />
 			</div>
 			<div class={marginTopheader}>
-				{node.header}
+				{node.label}
 			</div>
 		</div>
 	{/each}

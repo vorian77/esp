@@ -362,7 +362,14 @@ export enum TokenAppModalReturnType {
 	complete = 'complete',
 	delete = 'delete'
 }
-
+export class TokenAppNode extends TokenApp {
+	node: Node
+	constructor(obj: any) {
+		const clazz = 'TokenAppNode'
+		super(obj)
+		this.node = required(obj.node, clazz, 'node')
+	}
+}
 export class TokenAppProcess extends TokenApp {
 	dataObjSource: TokenApiDbDataObjSource
 	process: Process
@@ -393,23 +400,6 @@ export class TokenAppTab extends TokenApp {
 		super(obj)
 		this.app = required(obj.app, clazz, 'app')
 		this.index = nbrRequired(obj.index, clazz, 'index')
-	}
-}
-
-export class TokenAppTreeNode extends TokenApp {
-	node: Node
-	constructor(obj: any) {
-		const clazz = 'TokenAppTreeNode'
-		super(obj)
-		this.node = required(obj.node, clazz, 'node')
-	}
-}
-export class TokenAppTreeNodeId extends TokenApp {
-	nodeId: string
-	constructor(obj: any) {
-		const clazz = 'TokenAppTreeNodeId'
-		super(obj)
-		this.nodeId = strRequired(obj.nodeId, clazz, 'nodeId')
 	}
 }
 

@@ -71,6 +71,7 @@ module app_cm {
     dateEnd: cal::local_date;
     note: str;
     user: sys_user::SysUser;
+    idxDemo: int64;
   }
 
   type CmCsfData extending sys_user::Mgmt {

@@ -13,7 +13,6 @@ export type $CmClientλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "school": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "owner": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.One, {}, false, false,  false, false>;
   "office": $.LinkDesc<_sys_core.$SysObjSubject, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "ssn": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "<client[is app_cm::CmClientServiceFlow]": $.LinkDesc<$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<client": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -37,6 +36,7 @@ export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_user.$MgmtλSh
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "user": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "idxDemo": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
   "<csf[is app_cm::CmCsfData]": $.LinkDesc<$CmCsfData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfCohort]": $.LinkDesc<$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfDocument]": $.LinkDesc<$CmCsfDocument, $.Cardinality.Many, {}, false, false,  false, false>;

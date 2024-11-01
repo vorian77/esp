@@ -73,7 +73,6 @@ async function initStudent() {
 				isDisplayable: true,
 				orderDisplay: 55,
 				orderDefine: 55,
-
 				headerAlt: 'Group',
 				indexTable: 0
 			}
@@ -105,7 +104,7 @@ async function initStudent() {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,userSystemId>))',
+				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -147,6 +146,7 @@ async function initStudent() {
 				indexTable: 1
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'date',
 				columnName: 'birthDate',
 				isDisplayable: true,

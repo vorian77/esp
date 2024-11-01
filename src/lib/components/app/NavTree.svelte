@@ -54,7 +54,7 @@
 						on:keyup={async () => await changeNode(nodeNav)}
 					>
 						{@html '&nbsp;'.repeat(nodeNav.indent * 3)}
-						{nodeNav.header}
+						{nodeNav.node.label}
 					</div>
 				{/if}
 			{/each}
@@ -62,4 +62,4 @@
 	</div>
 </div>
 
-<!-- <DataViewer header="navTree" data={navTree} /> -->
+<!-- <DataViewer header="navTree" data={navTree.listTree} /> -->

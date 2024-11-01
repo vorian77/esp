@@ -197,7 +197,6 @@ export class State {
 				confirmType: TokenAppDoActionConfirmType.none
 			})
 		})
-		await stateModal.app.addLevelModalDataObj(stateModal)
 		await this.openModal(stateModal, fUpdate)
 	}
 
@@ -470,10 +469,9 @@ export enum StatePacketAction {
 	navCrumbs = 'navCrumbs',
 	navRow = 'navRow',
 	navTab = 'navTab',
-	navTreeNode = 'navTreeNode',
-	navTreeNodeId = 'navTreeNodeId',
 	navTreeReset = 'navTreeReset',
 	navTreeSetParent = 'navTreeSetParent',
+	openNode = 'openNode',
 
 	// modal-select
 	selectModalItems = 'selectModalItems',

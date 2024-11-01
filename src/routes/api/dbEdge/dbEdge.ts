@@ -64,7 +64,7 @@ export async function querySingle(script: string): Promise<RawDataRow> {
 }
 
 type RawDataRow = Record<string, any>
-type RawDataList = Array<RawDataRow>
+export type RawDataList = RawDataRow[]
 
 function scrubScript(script: string) {
 	script = script.replace(/(\r\n|\n|\r)/gm, ' ')
