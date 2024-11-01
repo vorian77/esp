@@ -68,7 +68,7 @@ export async function query(
 		)
 	}
 
-	if (queryType === TokenApiQueryType.retrieve && tab.isProgramObject) {
+	if (tab.isProgramObject) {
 		dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.app.appSystemIdGet())
 	}
 
