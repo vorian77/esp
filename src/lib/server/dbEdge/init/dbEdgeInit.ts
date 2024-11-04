@@ -33,7 +33,7 @@ export async function dbEdgeInit() {
 }
 
 async function dbEdgeInitFeature(initDb: InitDB) {
-	// initFeatMOED(initDb)
+	initFeatMOED(initDb)
 	initUserResource(initDb)
 	initUser(initDb)
 }
