@@ -599,7 +599,7 @@ async function initNodeObjFooter() {
 	sectionHeader('NodeObj-Footer')
 
 	await addNodeFooter({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		codeType: 'home',
 		header: 'Home',
 		isGlobalResource: true,

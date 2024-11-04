@@ -45,7 +45,7 @@
 			_codeNodeType: 'object',
 			dataObjName,
 			header: 'My Account',
-			icon: 'application',
+			icon: 'Settings',
 			id: dataObjName,
 			isHideRowManager: true,
 			name: dataObjName,

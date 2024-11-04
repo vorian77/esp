@@ -32,7 +32,6 @@ export class NavTree {
 			new Node({
 				_codeNodeType: NodeType.menu_root,
 				id: ROOT_NODE_ID,
-				isHideRowManager: false,
 				label: ROOT_NODE_ID,
 				name: ROOT_NODE_ID,
 				orderDefine: 0
@@ -45,10 +44,10 @@ export class NavTree {
 		// build tree
 		let listTree: NodeNav[] = [nodeNavRoot]
 
-		if (rawMenu.headers.length === 1) {
-			listTree = this.addBranchNodes(listTree, nodeNavRoot, rawMenu.headers[0].nodes)
+		if (rawMenu.apps.length === 1) {
+			listTree = this.addBranchNodes(listTree, nodeNavRoot, rawMenu.apps[0].nodes)
 		} else {
-			rawMenu.headers.forEach((h, idx) => {
+			rawMenu.apps.forEach((h, idx) => {
 				let nodeNavProgram = listTree.find((n) => n.node.id === h.header.id)
 				if (!nodeNavProgram) {
 					nodeNavProgram = new NodeNav(

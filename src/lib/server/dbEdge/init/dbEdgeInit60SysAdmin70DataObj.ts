@@ -322,14 +322,6 @@ async function initDataObj() {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'toggle',
-				columnName: 'isSystemRootNode',
-				isDisplayable: true,
-				orderDisplay: 267,
-				orderDefine: 267,
-				indexTable: 0
-			},
-			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'listReorderColumn',
@@ -435,10 +427,9 @@ async function initDataObj() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_list',
 		header: 'Data Objects',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_list',
 		orderDefine: 60,
 		owner: 'sys_system_old',
@@ -446,10 +437,9 @@ async function initDataObj() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_detail',
 		header: 'Data Object',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -1334,10 +1324,9 @@ async function initDataObjColumn() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_column_list',
 		header: 'Columns',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_column_list',
 		orderDefine: 20,
 		owner: 'sys_system_old',
@@ -1345,10 +1334,9 @@ async function initDataObjColumn() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_column_detail',
 		header: 'Column',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_column_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

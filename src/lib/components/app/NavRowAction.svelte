@@ -15,5 +15,5 @@
 	on:click={async () => await onChange(action)}
 	on:keyup={async () => await onChange(action)}
 >
-	<Icon class="mt-0.5" name={icon} width="1.5rem" height="1.5rem" fill={NAV_COLOR} />
+	<Icon name={icon} color={NAV_COLOR} size="28" strokeWidth="2" />
 </div>

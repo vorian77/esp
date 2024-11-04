@@ -119,20 +119,18 @@ async function initSystemObjects() {
 	})
 
 	await addNodeProgram({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_system_object_list',
 		header: 'Systems (Objects)',
-		isHideRowManager: false,
 		name: 'node_obj_sys_system_object_list',
 		orderDefine: 30,
 		owner: 'sys_system_old'
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_system_object_detail',
 		header: 'System (Object)',
-		isHideRowManager: false,
 		name: 'node_obj_sys_system_object_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

@@ -1,50 +1,25 @@
-import { InitDbObj } from '$server/dbEdge/init/types.init'
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	ResetDb,
-	userSystems,
-	userUserType,
-	widgets
-} from '$server/dbEdge/init/dbEdgeInit200Utilities10'
-import {
-	addApp,
-	addAppHeader,
-	addNodeFooter,
-	addUserType,
-	addUserTypeResourceSubject
-} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDB } from '$server/dbEdge/init/types.init'
 
-export function initUser() {
-	const init = new InitDbObj('System - User', initObjects)
-	initReset(init)
-	return init
+export function initUser(init: InitDB) {
+	// initAppHeaders(init)
+	initApps(init)
+	initUserType(init)
+	initUserSystems(init)
+	initUserUserType(init)
+	// initStaff()
 }
 
-async function initObjects() {
-	await initAppHeaders()
-	await initApps()
-	await initUserType()
-	await initUserSystems()
-	await initUserUserType()
-	// await initStaff()
-}
-
-function initReset(init: InitDbObj) {
-	init.reset.addStatement('delete sys_user::SysUserTypeResource')
-	init.reset.addStatement('delete sys_user::SysUserType')
-	init.reset.delTableRecords('sys_core::SysApp')
-	init.reset.delTableRecords('sys_core::SysAppHeader')
-}
-
-async function initAppHeaders() {
-	await addAppHeader({
+async function initAppHeaders(init: InitDB) {
+	init.addTrans('sysAppHeader', {
+		codeIcon: 'ShieldEllipsis',
 		header: 'Administration',
 		isGlobalResource: true,
 		name: 'app_hdr_sys_admin',
 		orderDefine: 0,
 		owner: 'sys_system_old'
 	})
-	await addAppHeader({
+	init.addTrans('sysAppHeader', {
+		codeIcon: 'FileStack',
 		header: 'Reports',
 		isGlobalResource: true,
 		name: 'app_hdr_sys_reporting',
@@ -53,7 +28,8 @@ async function initAppHeaders() {
 	})
 
 	/* Atlantic Impact */
-	await addAppHeader({
+	init.addTrans('sysAppHeader', {
+		codeIcon: 'UsersRound',
 		header: 'Staff',
 		isGlobalResource: false,
 		name: 'app_hdr_ai_staff',
@@ -62,14 +38,16 @@ async function initAppHeaders() {
 	})
 
 	/* MOED */
-	await addAppHeader({
+	init.addTrans('sysAppHeader', {
+		codeIcon: 'UsersRound',
 		header: 'Staff (MOED)',
 		isGlobalResource: false,
 		name: 'app_hdr_moed_advocate',
 		orderDefine: 200,
 		owner: 'sys_moed_old'
 	})
-	await addAppHeader({
+	init.addTrans('sysAppHeader', {
+		codeIcon: 'UserRoundCog',
 		header: 'Student (MOED)',
 		isGlobalResource: false,
 		name: 'app_hdr_moed_student',
@@ -77,9 +55,10 @@ async function initAppHeaders() {
 		owner: 'sys_moed_old'
 	})
 }
-async function initApps() {
+
+async function initApps(init: InitDB) {
 	/* system */
-	await addApp({
+	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_sys_admin',
 		isGlobalResource: false,
 		name: 'app_sys_admin_global',
@@ -92,14 +71,14 @@ async function initApps() {
 			'node_obj_sys_system_meta_list'
 		]
 	})
-	await addApp({
+	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_sys_admin',
 		isGlobalResource: true,
 		name: 'app_sys_admin_user',
 		owner: 'sys_system_old',
 		nodes: ['node_obj_sys_org_list_user', 'node_obj_sys_system_meta_list']
 	})
-	await addApp({
+	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_sys_reporting',
 		isGlobalResource: true,
 		name: 'app_sys_reporting',
@@ -108,7 +87,7 @@ async function initApps() {
 	})
 
 	/* Atlantic Impact */
-	await addApp({
+	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_sys_reporting',
 		isGlobalResource: false,
 		name: 'app_ai_reporting',
@@ -119,7 +98,7 @@ async function initApps() {
 			'node_obj_cm_ai_report_student_summary'
 		]
 	})
-	await addApp({
+	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_ai_staff',
 		isGlobalResource: false,
 		name: 'app_ai_staff',
@@ -128,15 +107,14 @@ async function initApps() {
 	})
 
 	/* MOED */
-	await addApp({
+	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_moed_advocate',
 		isGlobalResource: false,
 		name: 'app_moed_advocate',
 		owner: 'sys_moed_old',
 		nodes: ['node_obj_moed_part_list']
 	})
-
-	await addApp({
+	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_moed_student',
 		isGlobalResource: false,
 		name: 'app_moed_student',
@@ -145,31 +123,31 @@ async function initApps() {
 	})
 }
 
-async function initUserType() {
+async function initUserType(init: InitDB) {
 	/* system */
-	await addUserType({
+	init.addTrans('sysUserType', {
 		header: 'Admin - Global',
 		name: 'ut_sys_admin_global',
 		owner: 'sys_system_old',
 		resources: [
 			{ codeType: 'app', resource: 'app_sys_admin_global' },
-			{ codeType: 'app', resource: 'app_sys_reporting' },
-			{ codeType: 'widget', resource: 'widget_sys_report' }
+			{ codeType: 'app', resource: 'app_sys_reporting' }
+			// { codeType: 'widget', resource: 'widget_sys_report' }
 		]
 	})
 
 	/* Atlantic Impact */
-	await addUserType({
+	init.addTrans('sysUserType', {
 		header: 'AI-Admin',
 		name: 'ut_ai_admin',
 		owner: 'sys_ai_old',
 		resources: [
 			{ codeType: 'app', resource: 'app_sys_admin_user' },
-			{ codeType: 'app', resource: 'app_sys_reporting' },
-			{ codeType: 'widget', resource: 'widget_sys_report' }
+			{ codeType: 'app', resource: 'app_sys_reporting' }
+			// { codeType: 'widget', resource: 'widget_sys_report' }
 		]
 	})
-	await addUserType({
+	init.addTrans('sysUserType', {
 		header: 'AI-Staff',
 		name: 'ut_ai_staff',
 		owner: 'sys_ai_old',
@@ -178,13 +156,13 @@ async function initUserType() {
 			{ codeType: 'app', resource: 'app_ai_staff' },
 			{ codeType: 'app', resource: 'app_sys_reporting' },
 			{ codeType: 'report', resource: 'report_cm_training_cohort_attendance' },
-			{ codeType: 'report', resource: 'report_cm_training_cohort_job_placement' },
-			{ codeType: 'widget', resource: 'widget_sys_report' }
+			{ codeType: 'report', resource: 'report_cm_training_cohort_job_placement' }
+			// { codeType: 'widget', resource: 'widget_sys_report' }
 		]
 	})
 
 	/* MOED */
-	await addUserType({
+	init.addTrans('sysUserType', {
 		header: 'MOED-Staff',
 		name: 'ut_moed_advocate',
 		owner: 'sys_moed_old',
@@ -195,20 +173,20 @@ async function initUserType() {
 			{ codeType: 'subject', resource: 'moedOfficeWestside' }
 		]
 	})
-	await addUserType({
+	init.addTrans('sysUserType', {
 		header: 'MOED-Student',
 		name: 'ut_moed_student',
 		owner: 'sys_moed_old',
 		resources: [
-			{ codeType: 'widget', resource: 'wf_moed_student_ssr_app' },
-			{ codeType: 'widget', resource: 'wf_moed_student_ssr_doc' },
-			{ codeType: 'widget', resource: 'wf_moed_student_ssr_msg' }
+			// { codeType: 'widget', resource: 'wf_moed_student_ssr_app' },
+			// { codeType: 'widget', resource: 'wf_moed_student_ssr_doc' },
+			// { codeType: 'widget', resource: 'wf_moed_student_ssr_msg' }
 		]
 	})
 }
 
-async function initUserSystems() {
-	await userSystems([
+async function initUserSystems(init: InitDB) {
+	init.addTrans('userSystemsBulk', [
 		['user_sys', ['sys_system_old', 'sys_ai_old', 'sys_moed_old']],
 		['2487985578', ['sys_system_old', 'sys_ai_old', 'sys_moed_old']],
 		['3136276210', ['sys_ai_old']],
@@ -218,9 +196,9 @@ async function initUserSystems() {
 	])
 }
 
-async function initUserUserType() {
+async function initUserUserType(init: InitDB) {
 	// user_sys
-	await userUserType([
+	init.addTrans('userUserTypeBulk', [
 		['user_sys', 'ut_sys_admin_global'],
 		['user_sys', 'ut_ai_admin'],
 		['user_sys', 'ut_ai_staff'],
@@ -228,7 +206,7 @@ async function initUserUserType() {
 		['user_sys', 'ut_moed_student']
 	])
 	// phyllip
-	await userUserType([
+	init.addTrans('userUserTypeBulk', [
 		['2487985578', 'ut_sys_admin_global'],
 		['2487985578', 'ut_ai_admin'],
 		['2487985578', 'ut_ai_staff'],
@@ -236,12 +214,12 @@ async function initUserUserType() {
 	])
 
 	// AI-Admin (Matt)
-	await userUserType([
+	init.addTrans('userUserTypeBulk', [
 		['3136276210', 'ut_ai_admin'],
 		['3136276210', 'ut_ai_staff']
 	])
 	// AI-Staff (Anise, Phyllip, Erica)
-	await userUserType([
+	init.addTrans('userUserTypeBulk', [
 		['2482317505', 'ut_ai_staff'],
 		['3136272756', 'ut_ai_staff']
 	])

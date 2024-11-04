@@ -1,4 +1,4 @@
-import { nodeObjPages, userType, userUserType } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { nodeObjPagesBulk, userTypeBulk, userUserTypeBulk } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 
 const FILE = 'init_MOED_cm'
 
@@ -14,14 +14,14 @@ const reviewQuery = ''
 async function data() {
 	// await users([['Baltimore', 'MOED', 'user_moed', '!alfjasf*!@#$$*&']])
 
-	await nodeObjPages([
+	await nodeObjPagesBulk([
 		[
 			'app_moed_cm',
 			'node_node_pgm_moed_cm_student_applicant',
 			'node_page_cm_sa_app',
 			'Application',
 			10,
-			'application',
+			'AppWindow',
 			'/home/cm/application'
 		],
 		[
@@ -30,7 +30,7 @@ async function data() {
 			'node_page_cm_student_app',
 			'Application',
 			10,
-			'application',
+			'AppWindow',
 			'/home/cm/application'
 		],
 		[
@@ -39,7 +39,7 @@ async function data() {
 			'node_page_cm_student_goals',
 			'Goals',
 			20,
-			'application',
+			'Goal',
 			'/home/cm/goals'
 		],
 		[
@@ -48,7 +48,7 @@ async function data() {
 			'node_page_cm_student_messages',
 			'Messages',
 			30,
-			'application',
+			'Message',
 			'/home/cm/messages'
 		],
 		[
@@ -57,7 +57,7 @@ async function data() {
 			'node_page_cm_student_activities',
 			'Activities',
 			40,
-			'application',
+			'Activity',
 			'/home/cm/activities'
 		],
 		[
@@ -66,11 +66,11 @@ async function data() {
 			'node_page_cm_student_quotes',
 			'Quotes',
 			50,
-			'application',
+			'Quote',
 			'/home/cm/quotes'
 		]
 	])
-	await userType([
+	await userTypeBulk([
 		['app_moed_cm', 'ut_moed_cm_staff'],
 		['app_moed_cm', 'ut_moed_cm_student_applicant'],
 		['app_moed_cm', 'ut_moed_cm_student']

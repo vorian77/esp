@@ -115,19 +115,17 @@ async function initOrgSys() {
 	})
 
 	await addNodeProgram({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_org_list_sys',
 		header: 'Organizations (System)',
-		isHideRowManager: false,
 		name: 'node_obj_sys_org_list_sys',
 		orderDefine: 10,
 		owner: 'sys_system_old'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_org_detail_sys',
 		header: 'Organization (System)',
-		isHideRowManager: false,
 		name: 'node_obj_sys_org_detail_sys',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -288,19 +286,17 @@ async function initOrgUser() {
 	})
 
 	await addNodeProgram({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_org_list_user',
 		header: 'Organizations (User)',
-		isHideRowManager: false,
 		name: 'node_obj_sys_org_list_user',
 		orderDefine: 10,
 		owner: 'sys_system_old'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_org_detail_user',
 		header: 'Organization (User)',
-		isHideRowManager: false,
 		name: 'node_obj_sys_org_detail_user',
 		orderDefine: 10,
 		owner: 'sys_system_old',

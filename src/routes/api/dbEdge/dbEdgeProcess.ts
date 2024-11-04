@@ -1,4 +1,4 @@
-import { queryMultiple } from '$routes/api/dbEdge/dbEdge'
+import { queryExecute,queryMultiple } from '$routes/api/dbEdge/dbEdge'
 import { ApiResult } from '$routes/api/api'
 import {
 	TokenApiId,
@@ -149,23 +149,24 @@ async function processDataObjExecute(
 	const clazz = 'processDataObjExecute'
 	let scriptData: DataObjData
 	returnData.resetRowsRetrieved()
-	while (scriptGroup.scriptsStack.length > 0) {
-		const script: Script = scriptGroup.scriptsStack.shift()
+	while (scriptGroup.scripts.length > 0) {
+		const script: Script = scriptGroup.scripts.shift()
 		const expr = evalExpr(script.script, script.queryData)
-		const rawDataList = await executeQuery(expr)
+		const rawDataList = await executeQueryMultiple(expr)
 
-		if (rawDataList.length === 0 && queryType === TokenApiQueryType.retrievePreset) {
-			debug('processDataObjExecute', 'redirecting - retrievePreset to preset')
-			queryType = TokenApiQueryType.preset
-			// returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
-			script.query.setProcessRow(
-				new ProcessRowSelectPreset(script.query.rawDataObj.rawPropsSelect, DataRecordStatus.preset)
-			)
-			scriptGroup.addScriptPreset(script.query, queryData)
-			continue
-		}
+		// if (rawDataList.length === 0 && queryType === TokenApiQueryType.retrievePreset) {
+		// 	debug('processDataObjExecute', 'redirecting - retrievePreset to preset')
+		// 	queryType = TokenApiQueryType.preset
+		// 	// returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
+		// 	script.query.setProcessRow(
+		// 		new ProcessRowSelectPreset(script.query.rawDataObj.rawPropsSelect, DataRecordStatus.preset)
+		// 	)
+		// 	scriptGroup.addScriptPreset(script.query, queryData)
+		// 	continue
+		// }
 
 		scriptData = script?.query?.field ? script.query.field.data : returnData
+		scriptData.parms.update(script.queryData.dataTab.parms.valueGetAll())
 		switch (script.exePost) {
 			case ScriptExePost.dataItems:
 				scriptData.items = rawDataList[0]
@@ -183,21 +184,30 @@ async function processDataObjExecute(
 
 					// set embedded parent tree records
 					const rootTableName = script.query.getTableRootName()
-					scriptGroup.scriptsStack.forEach((script: Script) => {
+					scriptGroup.scripts.forEach((script: Script) => {
 						script.queryData.updateTableData(rootTableName, record)
 					})
 
-					// set
-					if (script.queryData?.dataTab?.parms.valueGet(ParmsValuesType.isProgramRoot)) {
-						const appSystemId = strRequired(
-							record[`_${ParmsValuesType.appSystemId}_`],
-							clazz,
-							ParmsValuesType.appSystemId
-						)
+					// set appSystemId
+					if (script.queryData?.dataTab?.parms.valueGet(ParmsValuesType.isSystemRoot)) {
+						const appSystemId =
+							queryType === TokenApiQueryType.preset
+								? script.queryData?.dataTab?.parms.valueGet(ParmsValuesType.appSystemId)
+								: strRequired(
+										record[`_${ParmsValuesType.appSystemId}_`],
+										clazz,
+										ParmsValuesType.appSystemId
+									)
 						scriptData.parms.valueSet(ParmsValuesType.appSystemId, appSystemId)
-						returnData.parms.valueSet(ParmsValuesType.appSystemId, appSystemId)
 					}
-					scriptGroup.addScriptDataItems(script, scriptData, record)
+					// add dataItems
+					script.queryData?.dataTab?.parms.update(scriptData.parms.valueGetAll())
+					script.queryData.record = record
+					scriptGroup.addScriptDataItems(
+						script.query,
+						script.queryData,
+						script.query.rawDataObj.rawPropsSelect
+					)
 				}
 				break
 
@@ -234,11 +244,15 @@ async function processDataObjExecute(
 
 async function executeExpr(expr: string, queryData: TokenApiQueryData) {
 	const query = evalExpr(expr, queryData)
-	return await executeQuery(query)
+	return await executeQueryMultiple(query)
 }
-
 export async function executeQuery(query: string): Promise<RawDataList> {
 	debug('executeQuery', 'query', query)
+	return await queryExecute(query)
+}
+
+export async function executeQueryMultiple(query: string): Promise<RawDataList> {
+	debug('executeQueryMultiple', 'query', query)
 	return await queryMultiple(query)
 }
 
@@ -306,9 +320,9 @@ export async function getRepParmItems(token: TokenApiQueryData) {
 	const queryData = TokenApiQueryData.load(token)
 	const rawDataObj = await getRawDataObjDynamic(DataObjProcessType.reportParmItems, queryData, {})
 	const query = new Query(rawDataObj)
-
 	const scriptGroup = new ScriptGroup()
-	scriptGroup.addScriptDataItems(query, queryData, query.rawDataObj.rawPropsRepParmItems)
+
+	scriptGroup.addScriptDataItems(query, queryData, rawDataObj.rawPropsRepParmItems)
 
 	if (scriptGroup.scripts.length === 1) {
 		const rawDataItems = await executeExpr(scriptGroup.scripts[0].script, queryData)

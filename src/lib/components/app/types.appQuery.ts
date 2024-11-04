@@ -41,11 +41,7 @@ export async function query(
 	let { dataTab, dataTree } = queryDataPre(state, tab, queryType)
 
 	/* set parm - appSystemId */
-	if (tab.isProgramRootList && state.user) {
-		dataTab.parms.valueSet(ParmsValuesType.isProgramRoot, true)
-	}
-
-	if (tab.isProgramRootDetail && queryType === TokenApiQueryType.preset && state.user) {
+	if (tab.isSystemRoot && queryType === TokenApiQueryType.preset && state.user) {
 		const appSystemId = state.app.appSystemIdGet()
 		if (!appSystemId) {
 			const userSystemResource: UserTypeResource | undefined = await state.user.selectResource(
@@ -57,15 +53,8 @@ export async function query(
 		dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.app.appSystemIdGet())
 	}
 
-	if (tab.isProgramRootDetail && queryType === TokenApiQueryType.retrieve) {
-		const parentTab = required(state.app.getCurrTabParentTab(), clazz, 'parentTab')
-		state.app.appSystemIdSet(
-			strRequired(
-				parentTab.listGetDataRecordValue(`_${ParmsValuesType.appSystemId}_`),
-				clazz,
-				'userSystemId'
-			)
-		)
+	if (tab.isSystemRoot && queryType === TokenApiQueryType.retrieve) {
+		dataTab.parms.valueSet(ParmsValuesType.isSystemRoot, true)
 	}
 
 	if (tab.isProgramObject) {
@@ -113,6 +102,19 @@ export async function query(
 		)
 		tab.data = dataResult
 		tab.isRetrieved = true
+		if (
+			tab.isSystemRoot &&
+			tab.dataObj.raw.codeCardinality === DataObjCardinality.detail &&
+			queryType === TokenApiQueryType.retrieve
+		) {
+			state.app.appSystemIdSet(
+				strRequired(
+					tab.data.rowsRetrieved.getDetailRecordValue(`_${ParmsValuesType.appSystemId}_`),
+					clazz,
+					'appSystemId'
+				)
+			)
+		}
 		if (tab.dataObj.raw.codeCardinality === DataObjCardinality.list) {
 			tab.data.parms.valueSetList(
 				ParmsValuesType.listRecordIdList,

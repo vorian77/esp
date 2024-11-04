@@ -213,10 +213,9 @@ async function initDataObjFielEmbedListConfig() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_config_list',
 		header: 'Embed List Configs',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_config_list',
 		orderDefine: 90,
 		owner: 'sys_system_old',
@@ -224,10 +223,9 @@ async function initDataObjFielEmbedListConfig() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_config_detail',
 		header: 'Config',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_config_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -380,10 +378,9 @@ async function initDataObjFieldEmbedListEdit() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_edit_list',
 		header: 'Embed List Edits',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_edit_list',
 		orderDefine: 100,
 		owner: 'sys_system_old',
@@ -391,10 +388,9 @@ async function initDataObjFieldEmbedListEdit() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_edit_detail',
 		header: 'Config',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_edit_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -585,10 +581,9 @@ async function initDataObjFieldEmbedListSelect() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_select_list',
 		header: 'Embed List Selects',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_select_list',
 		orderDefine: 110,
 		owner: 'sys_system_old',
@@ -596,10 +591,9 @@ async function initDataObjFieldEmbedListSelect() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_select_detail',
 		header: 'Config',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_select_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -873,10 +867,9 @@ async function initDataObjFieldListItems() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_list_items_list',
 		header: 'Field List Items',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_list_items_list',
 		orderDefine: 120,
 		owner: 'sys_system_old',
@@ -884,10 +877,9 @@ async function initDataObjFieldListItems() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_list_items_detail',
 		header: 'Item',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_field_list_items_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

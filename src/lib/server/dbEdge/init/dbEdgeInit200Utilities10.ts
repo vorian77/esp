@@ -41,7 +41,7 @@ export async function sysUser(owner: string, userName: string) {
 	return await query.run(client)
 }
 
-export async function userSystems(params: any) {
+export async function userSystemsBulk(params: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
@@ -60,7 +60,7 @@ export async function userSystems(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function userType(params: any) {
+export async function userTypeBulk(params: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
@@ -75,7 +75,7 @@ export async function userType(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function userUserType(params: any) {
+export async function userUserTypeBulk(params: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
@@ -92,7 +92,7 @@ export async function userUserType(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function codeTypes(params: any) {
+export async function codeTypesBulk(params: any) {
 	sectionHeader('Code Types')
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
@@ -109,7 +109,7 @@ export async function codeTypes(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function codes(params: any) {
+export async function codesBulk(params: any) {
 	sectionHeader('Codes')
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
@@ -127,7 +127,7 @@ export async function codes(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function nodeObjPages(params: any) {
+export async function nodeObjPagesBulk(params: any) {
 	sectionHeader('Node Pages')
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
@@ -140,7 +140,7 @@ export async function nodeObjPages(params: any) {
 				name: e.cast(e.str, i[2]),
 				header: e.cast(e.str, i[3]),
 				orderDefine: e.cast(e.int64, i[4]),
-				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', e.cast(e.str, i[5]))),
+				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', e.cast(e.str, i[5]))),
 				page: e.cast(e.str, i[6]),
 				createdBy: CREATOR,
 				modifiedBy: CREATOR,
@@ -151,7 +151,7 @@ export async function nodeObjPages(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function widgets(params: any) {
+export async function widgetsBulk(params: any) {
 	sectionHeader('Widgets')
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
@@ -168,7 +168,7 @@ export async function widgets(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function tables(data: any) {
+export async function tablesBulk(data: any) {
 	sectionHeader('Tables')
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
@@ -186,7 +186,7 @@ export async function tables(data: any) {
 	return await query.run(client, { data })
 }
 
-// export async function addStaff(params: any) {
+// export async function addStaffBulk(params: any) {
 // 	sectionHeader('Staff')
 // 	// const CREATOR = e.sys_user.getRootUser()
 // 	const CREATOR = e.sys_user.getRootUser()
@@ -206,7 +206,7 @@ export async function tables(data: any) {
 // 	return await query.run(client, { data: params })
 // }
 
-export async function addRoleStaff(params: any) {
+export async function addRoleStaffBulk(params: any) {
 	sectionHeader('Staff - Roles')
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
@@ -227,6 +227,7 @@ export class ResetDb {
 	}
 	addStatement(statement: string) {
 		this.query += statement + ';\n'
+		return this.query
 	}
 	delCodeType(codeTypeName: string) {
 		this.addStatement(`DELETE sys_core::SysCode FILTER .codeType.name = '${codeTypeName}'`)

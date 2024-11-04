@@ -84,7 +84,6 @@ async function initStudent() {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Student',
-		isSystemRootNode: true,
 		name: 'data_obj_cm_student_detail',
 		owner: 'sys_ai_old',
 		tables: [
@@ -404,19 +403,18 @@ async function initStudent() {
 		]
 	})
 	await addNodeProgram({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_student_list',
 		header: 'Students',
-		isHideRowManager: false,
 		name: 'node_obj_cm_student_list',
 		orderDefine: 30,
 		owner: 'sys_ai_old'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_student_detail',
 		header: 'Student',
-		isHideRowManager: false,
+		isSystemRoot: true,
 		name: 'node_obj_cm_student_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -723,20 +721,18 @@ async function initCsf() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_client_service_flow_list',
 		header: 'Service Flows',
-		isHideRowManager: false,
 		name: 'node_obj_cm_service_flow_list',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_student_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_client_service_flow_detail',
 		header: 'Service Flow',
-		isHideRowManager: false,
 		name: 'node_obj_cm_service_flow_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -946,20 +942,18 @@ async function initCsfCohort() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_cohort_list',
 		header: 'Cohorts',
-		isHideRowManager: false,
 		name: 'node_obj_cm_csf_cohort_list',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_cohort_detail',
 		header: 'Cohort',
-		isHideRowManager: false,
 		name: 'node_obj_cm_csf_cohort_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -1148,20 +1142,18 @@ async function initCsfCohortAttdStudent() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_cohort_attd_student_list',
 		header: 'Attendance Records',
-		isHideRowManager: false,
 		name: 'node_obj_cm_csf_cohort_attd_student_list',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_csf_cohort_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_cohort_attd_student_detail',
 		header: 'Attendance',
-		isHideRowManager: false,
 		name: 'node_obj_cm_csf_cohort_attd_student_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -1336,20 +1328,18 @@ async function initCsfNote() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_note_list',
 		header: 'Case Notes',
-		isHideRowManager: false,
 		name: 'node_obj_cm_csf_note_list',
 		orderDefine: 20,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_note_detail',
 		header: 'Case Note',
-		isHideRowManager: false,
 		name: 'node_obj_cm_csf_note_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -1678,20 +1668,18 @@ async function initCsfJobPlacement() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_job_placement_list',
 		header: 'Job Placements',
-		isHideRowManager: false,
 		name: 'node_obj_cm_csf_job_placement_list',
 		orderDefine: 30,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_job_placement_detail',
 		header: 'Job Placement',
-		isHideRowManager: false,
 		name: 'node_obj_cm_csf_job_placement_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -1941,20 +1929,18 @@ async function initCsfSchoolPlacement() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_school_placement_list',
 		header: 'School Placements',
-		isHideRowManager: false,
 		name: 'node_obj_cm_csf_school_placement_list',
 		orderDefine: 40,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_school_placement_detail',
 		header: 'School Placement',
-		isHideRowManager: false,
 		name: 'node_obj_cm_csf_school_placement_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -2212,20 +2198,18 @@ async function initCsfDocument() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_document_list',
 		header: 'Documents',
-		isHideRowManager: false,
 		name: 'node_obj_cm_csf_document_list',
 		orderDefine: 50,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_document_detail',
 		header: 'Document',
-		isHideRowManager: false,
 		name: 'node_obj_cm_csf_document_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -2234,7 +2218,7 @@ async function initCsfDocument() {
 }
 
 // await addNodeProgramObj({
-// 	codeIcon: 'application',
+// 	codeIcon: 'AppWindow',
 // 	dataObj: 'data_obj_cm_csf_job_placement_list',
 // 	header: 'Job Placements',
 // 	isHideRowManager: false,
@@ -2244,7 +2228,7 @@ async function initCsfDocument() {
 // 	parentNodeName: 'node_obj_cm_service_flow_detail'
 // })
 // await addNodeProgramObj({
-// 	codeIcon: 'application',
+// 	codeIcon: 'AppWindow',
 // 	dataObj: 'data_obj_cm_csf_job_placement_detail',
 // 	header: 'Job Placement',
 // 	isHideRowManager: false,

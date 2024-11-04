@@ -1,29 +1,13 @@
-import { InitDbObj } from '$server/dbEdge/init/types.init'
-import { widgets } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
-import { addNodeFooter } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDB } from '$server/dbEdge/init/types.init'
 
-export function initUserResource() {
-	const init = new InitDbObj('System - User Resource', initObjects)
-	initReset(init)
-	return init
+export function initUserResource(init: InitDB) {
+	initResources(init)
 }
 
-async function initObjects() {
-	await initResources()
-	// await initStaff()
-}
-
-function initReset(init: InitDbObj) {
-	init.reset.addStatement(
-		`delete sys_core::SysNodeObj filter .name = 'node_obj_sys_admin_footer_home_test'`
-	)
-	init.reset.delTableRecords('sys_user::SysWidget')
-}
-
-async function initResources() {
+function initResources(init: InitDB) {
 	/* footers */
-	await addNodeFooter({
-		codeIcon: 'application',
+	init.addTrans('sysNodeFooter', {
+		codeIcon: 'AppWindow',
 		codeType: 'home',
 		header: 'Home',
 		isGlobalResource: false,
@@ -33,7 +17,7 @@ async function initResources() {
 	})
 
 	/* widgets */
-	await widgets([
+	init.addTrans('widgetsBulk', [
 		['sys_system_old', 'widget_sys_report', true],
 		['sys_system_old', 'widget_sys_quotes', true],
 		['sys_system_old', 'widget_sys_user', true],

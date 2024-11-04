@@ -1,4 +1,4 @@
-import { InitDB, InitDbObj } from '$server/dbEdge/init/types.init'
+import { InitDB } from '$server/dbEdge/init/types.init'
 import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 
 import { initReset } from '$server/dbEdge/init/dbEdgeInit0Reset'
@@ -24,24 +24,21 @@ import { initMigrationPerson } from '$server/dbEdge/init/dbEdgeInit100MigrPerson
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 import { initUserResource } from '$server/dbEdge/init/dbEdgeInit1UserResources'
 
-let initDb = new InitDB()
-
 export async function dbEdgeInit() {
-	await dbEdgeInitFeature()
+	let initDb = new InitDB()
+
 	// await dbEdgeInitSystem()
+	await dbEdgeInitFeature(initDb)
+	await initDb.execute()
 }
 
-async function dbEdgeInitFeature() {
-	sectionHeader('INIT START - Feature')
-	initDb.add(initFeatMOED())
-	initDb.add(initUserResource())
-	initDb.add(initUser())
-	await initDb.execute()
-	sectionHeader('INIT COMPLETE - Feature')
+async function dbEdgeInitFeature(initDb: InitDB) {
+	// initFeatMOED(initDb)
+	initUserResource(initDb)
+	initUser(initDb)
 }
 
 async function dbEdgeInitSystem() {
-	sectionHeader('Init Start - System')
 	await initReset()
 	await initPreDataObj()
 
@@ -50,7 +47,6 @@ async function dbEdgeInitSystem() {
 
 	await initFeatures()
 	await initData()
-	sectionHeader('Init End - System')
 }
 
 async function initSysCore() {

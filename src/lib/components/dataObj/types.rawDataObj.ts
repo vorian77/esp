@@ -57,7 +57,6 @@ export class RawDataObj {
 	isListEdit: boolean
 	isListSuppressFilterSort: boolean
 	isListSuppressSelect: boolean
-	isSystemRootNode: boolean
 	listEditPresetExpr?: string
 	listReorderColumn?: string
 	name: string
@@ -109,7 +108,6 @@ export class RawDataObj {
 		this.isListEdit = booleanRequired(obj.isListEdit, clazz, 'isListEdit')
 		this.isListSuppressFilterSort = booleanOrDefault(obj.isListSuppressFilterSort, false)
 		this.isListSuppressSelect = booleanOrDefault(obj.isListSuppressSelect, false)
-		this.isSystemRootNode = booleanRequired(obj.isSystemRootNode, clazz, 'isSystemRootNode')
 		this.listEditPresetExpr = strOptional(obj.listEditPresetExpr, clazz, 'listEditPresetExpr')
 		this.listReorderColumn = strOptional(obj._listReorderColumn, clazz, '_listReorderColumn')
 		this.name = strRequired(obj.name, clazz, 'name')

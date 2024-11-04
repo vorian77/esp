@@ -1,46 +1,7 @@
 import e from '$lib/dbschema/edgeql-js'
 import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
 
-export async function addMOEDPartDataTest(data: any) {
-	sectionHeader(`addMOEDPartDataTest - ${data.Name}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			header: e.str,
-			name: e.str
-		},
-		(p) => {
-			return e.insert(e.org_moed.MoedPartData, {
-				createdBy: CREATOR,
-				header: p.header,
-				modifiedBy: CREATOR,
-				name: p.name,
-				owner: e.sys_core.getSystemPrime('sys_moed_old')
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-// const record = [
-//  'idxDemo',
-// 	'addr1',
-// 	'addr2',
-// 	'birthDate',
-// 	'city',
-// 	'codeDisabilityStatus',
-// 	'codeEthnicity',
-// 	'codeGender',
-// 	'codeRace',
-// 	'codeState',
-// 	'email',
-// 	'firstName',
-// 	'lastName',
-// 	'office',
-// 	'phoneMobile',14
-// 	'ssn',
-// 	'zip'
-// ]
-export async function addMOEDParticipants(params: any) {
+export async function MOEDParticipantsBulk(params: any) {
 	sectionHeader(`MOED Participants`)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
@@ -93,7 +54,7 @@ export async function addMOEDParticipants(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function addMOEDCSF(params: any) {
+export async function MOEDCSFBulk(params: any) {
 	sectionHeader(`MOED Referrals`)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
@@ -128,7 +89,7 @@ export async function addMOEDCSF(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function addMOEDStaff(params: any) {
+export async function MOEDStaffBulk(params: any) {
 	sectionHeader('MOED Staff')
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {

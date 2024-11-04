@@ -88,7 +88,6 @@ async function initCourse() {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Course',
-		isSystemRootNode: true,
 		name: 'data_obj_cm_course_detail',
 		owner: 'sys_ai_old',
 		tables: [{ index: 0, table: 'CmCourse' }],
@@ -346,19 +345,18 @@ async function initCourse() {
 		]
 	})
 	await addNodeProgram({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_course_list',
 		header: 'Courses',
-		isHideRowManager: false,
 		name: 'node_obj_cm_course_list',
 		orderDefine: 10,
 		owner: 'sys_ai_old'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_course_detail',
 		header: 'Course',
-		isHideRowManager: false,
+		isSystemRoot: true,
 		name: 'node_obj_cm_course_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -459,7 +457,6 @@ async function initCohort() {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Cohort',
-		isSystemRootNode: true,
 		name: 'data_obj_cm_cohort_detail',
 		owner: 'sys_ai_old',
 		parentColumn: 'cohorts',
@@ -649,20 +646,19 @@ async function initCohort() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_cohort_list',
 		header: 'Cohorts',
-		isHideRowManager: false,
 		name: 'node_obj_cm_cohort_list',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_course_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_cohort_detail',
 		header: 'Cohort',
-		isHideRowManager: false,
+		isSystemRoot: true,
 		name: 'node_obj_cm_cohort_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -724,10 +720,9 @@ async function initCohortStudentRoster() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_student_roster_list_by_cohort',
 		header: 'Student Roster',
-		isHideRowManager: false,
 		name: 'node_obj_cm_student_roster_list_by_cohort',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -931,20 +926,18 @@ async function initCohortAttd() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_cohort_attd_list',
 		header: 'Attendance Days',
-		isHideRowManager: false,
 		name: 'node_obj_cm_cohort_attd_list',
 		orderDefine: 20,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_cohort_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_cohort_attd_detail',
 		header: 'Attendance Day',
-		isHideRowManager: false,
 		name: 'node_obj_cm_cohort_attd_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -1087,10 +1080,9 @@ async function initCohortAttdSheet() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_cohort_attd_sheet',
 		header: 'Attendance Sheet',
-		isHideRowManager: false,
 		name: 'node_obj_cm_cohort_attd_sheet',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -1343,7 +1335,6 @@ async function initPartner() {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Partner',
-		isSystemRootNode: true,
 		name: 'data_obj_cm_partner_detail',
 		owner: 'sys_ai_old',
 		tables: [{ index: 0, table: 'CmPartner' }],
@@ -1564,20 +1555,19 @@ async function initPartner() {
 	})
 
 	await addNodeProgram({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_partner_list',
 		header: 'Partners',
-		isHideRowManager: false,
 		name: 'node_obj_cm_partner_list',
 		orderDefine: 20,
 		owner: 'sys_ai_old'
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_partner_detail',
 		header: 'Partner',
-		isHideRowManager: false,
+		isSystemRoot: true,
 		name: 'node_obj_cm_partner_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -1752,20 +1742,18 @@ async function initPartnerNote() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_partner_note_list',
 		header: 'Notes',
-		isHideRowManager: false,
 		name: 'node_obj_cm_partner_note_list',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_partner_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_partner_note_detail',
 		header: 'Note',
-		isHideRowManager: false,
 		name: 'node_obj_cm_partner_note_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',

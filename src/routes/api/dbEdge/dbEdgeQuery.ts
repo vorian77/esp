@@ -256,11 +256,11 @@ export class Query {
 	getPropsSelect(parms: DataRecord, queryData: TokenApiQueryData) {
 		const clazz = 'getPropsSelect'
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
-		const isProgramRoot = queryData?.dataTab?.parms.valueGet(ParmsValuesType.isProgramRoot) || false
+		const isSystemRoot = queryData?.dataTab?.parms.valueGet(ParmsValuesType.isSystemRoot) || false
 		let properties = ''
 
 		// pre-processing
-		if (isProgramRoot) {
+		if (isSystemRoot) {
 			props.push(
 				new RawDataObjPropDB(
 					{

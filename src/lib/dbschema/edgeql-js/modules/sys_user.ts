@@ -73,8 +73,6 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<createdBy[is sys_core::SysObjSubject]": $.LinkDesc<_sys_core.$SysObjSubject, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysCode]": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysCode]": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<modifiedBy[is sys_core::SysApp]": $.LinkDesc<_sys_core.$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<createdBy[is sys_core::SysApp]": $.LinkDesc<_sys_core.$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is org_moed::MoedPartData]": $.LinkDesc<_org_moed.$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is org_moed::MoedPartData]": $.LinkDesc<_org_moed.$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is org_moed::MoedParticipant]": $.LinkDesc<_org_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -82,6 +80,8 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<modifiedBy[is app_cm::CmCsfMsg]": $.LinkDesc<_app_cm.$CmCsfMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is app_cm::CmCsfMsg]": $.LinkDesc<_app_cm.$CmCsfMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<recipients[is app_cm::CmCsfMsg]": $.LinkDesc<_app_cm.$CmCsfMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<modifiedBy[is sys_core::SysApp]": $.LinkDesc<_sys_core.$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<createdBy[is sys_core::SysApp]": $.LinkDesc<_sys_core.$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
   "<user[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_user::SysWidget]": $.LinkDesc<$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysDataObjActionFieldConfirm]": $.LinkDesc<_sys_core.$SysDataObjActionFieldConfirm, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -240,11 +240,11 @@ const SysUserPrefType: $.$expr_PathNode<$.TypeSet<$SysUserPrefType, $.Cardinalit
 
 export type $SysUserTypeλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "tags": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
-  "resources_sys_app": $.LinkDesc<_sys_core.$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
   "resources_sys_footer": $.LinkDesc<_sys_core.$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "users": $.LinkDesc<$SysUser, $.Cardinality.Many, {}, false, true,  false, false>;
-  "resources": $.LinkDesc<$SysUserTypeResource, $.Cardinality.Many, {}, false, false,  false, false>;
   "isSelfSignup": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
+  "resources": $.LinkDesc<$SysUserTypeResource, $.Cardinality.Many, {}, false, false,  false, false>;
+  "resources_sys_app": $.LinkDesc<_sys_core.$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
   "<userTypes[is sys_user::SysUser]": $.LinkDesc<$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<userTypes[is sys_user::currentUser]": $.LinkDesc<$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<userTypes": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -257,15 +257,15 @@ const $SysUserType = $.makeType<$SysUserType>(_.spec, "5071c13e-b3c2-11ee-b22f-f
 const SysUserType: $.$expr_PathNode<$.TypeSet<$SysUserType, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserType, $.Cardinality.Many), null);
 
 export type $SysUserTypeResourceλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
-  "resource": $.LinkDesc<_sys_core.$SysObj, $.Cardinality.One, {}, false, false,  false, false>;
   "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "resource": $.LinkDesc<_sys_core.$SysObj, $.Cardinality.One, {}, false, false,  false, false>;
   "<resources[is sys_user::SysUserType]": $.LinkDesc<$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<resources": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysUserTypeResource = $.ObjectType<"sys_user::SysUserTypeResource", $SysUserTypeResourceλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
 ]>;
-const $SysUserTypeResource = $.makeType<$SysUserTypeResource>(_.spec, "27592827-9218-11ef-9e37-af139b5b239e", _.syntax.literal);
+const $SysUserTypeResource = $.makeType<$SysUserTypeResource>(_.spec, "25ff3cec-9a94-11ef-95ee-55a3f8ec377d", _.syntax.literal);
 
 const SysUserTypeResource: $.$expr_PathNode<$.TypeSet<$SysUserTypeResource, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserTypeResource, $.Cardinality.Many), null);
 

@@ -1056,10 +1056,9 @@ async function initReportCourseSummary() {
 	})
 
 	await addNodeProgram({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_ai_report_course_summary',
 		header: 'Courses (Summary)',
-		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_course_summary',
 		orderDefine: 100,
 		owner: 'sys_ai_old'
@@ -1185,10 +1184,9 @@ async function initReportOurWorldSummary() {
 	})
 
 	await addNodeProgram({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_ai_report_our_world_summary',
 		header: 'Our World (Summary)',
-		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_our_world_summary',
 		orderDefine: 110,
 		owner: 'sys_ai_old'
@@ -1474,10 +1472,9 @@ async function initReportStudentSummary() {
 	})
 
 	await addNodeProgram({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_ai_report_student_summary',
 		header: 'Students (Summary)',
-		isHideRowManager: false,
 		name: 'node_obj_cm_ai_report_student_summary',
 		orderDefine: 120,
 		owner: 'sys_ai_old'

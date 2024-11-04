@@ -214,20 +214,18 @@ async function initAnalytic() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_analytic_list',
 		header: 'Analytics',
-		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_list',
 		orderDefine: 10,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_analytic_detail',
 		header: 'Analytic',
-		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -528,20 +526,18 @@ async function initAnalyticParm() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_analytic_parm_list',
 		header: 'Parms',
-		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_parm_list',
 		orderDefine: 10,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_analytic_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_analytic_parm_detail',
 		header: 'Parm',
-		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_parm_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -695,20 +691,18 @@ async function initAnalyticStatus() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_analytic_status_list',
 		header: 'Statuses',
-		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_status_list',
 		orderDefine: 20,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_analytic_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_analytic_status_detail',
 		header: 'Status',
-		isHideRowManager: false,
 		name: 'node_obj_sys_analytic_status_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -933,20 +927,18 @@ async function initRep() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_list',
 		header: 'Reports',
-		isHideRowManager: false,
 		name: 'node_obj_sys_rep_list',
 		orderDefine: 150,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_detail',
 		header: 'Report',
-		isHideRowManager: false,
 		name: 'node_obj_sys_rep_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -1437,20 +1429,18 @@ async function initRepEl() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_element_list',
 		header: 'Elements',
-		isHideRowManager: false,
 		name: 'node_obj_sys_rep_el_list',
 		orderDefine: 20,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_rep_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_el_detail',
 		header: 'Element',
-		isHideRowManager: false,
 		name: 'node_obj_sys_rep_el_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -1755,20 +1745,18 @@ async function initRepParm() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_parm_list',
 		header: 'Parms',
-		isHideRowManager: false,
 		name: 'node_obj_sys_rep_parm_list',
 		orderDefine: 10,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_rep_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_parm_detail',
 		header: 'Parm',
-		isHideRowManager: false,
 		name: 'node_obj_sys_rep_parm_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -1944,20 +1932,18 @@ async function initRepUser() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_user_list',
 		header: 'Users',
-		isHideRowManager: false,
 		name: 'node_obj_sys_rep_user_list',
 		orderDefine: 30,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_rep_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_user_detail',
 		header: 'User',
-		isHideRowManager: false,
 		name: 'node_obj_sys_rep_user_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

@@ -13,7 +13,7 @@
 		let node = new Node({
 			dataObjName: token.dataObjName,
 			header: token.title,
-			icon: 'application',
+			icon: 'AppWindow',
 			id: token.dataObjName,
 			isRetrievePreset: token.isRetrievePreset,
 			isMobileMode: true,

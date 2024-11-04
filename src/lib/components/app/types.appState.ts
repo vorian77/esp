@@ -304,7 +304,33 @@ export class State {
 				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.fieldLabel}`
 			},
 			packet: new StatePacket({
-				action: StatePacketAction.selectModalItems,
+				action: StatePacketAction.selectModalFieldItems,
+				confirmType: TokenAppDoActionConfirmType.none,
+				token
+			}),
+			parmsState
+		})
+
+		await this.openModal(stateModal, token.fModalClose)
+	}
+
+	async openModalSelectDataItems(token: TokenAppModalSelect) {
+		const parmsState = new ParmsValues({})
+
+		parmsState.valueSet(ParmsValuesType.isMultiSelect, token.isMultiSelect)
+		parmsState.valueSet(ParmsValuesType.listLabel, token.fieldLabel)
+		parmsState.valueSet(ParmsValuesType.listRecordIdSelected, token.itemsCurrent)
+		parmsState.valueSet(ParmsValuesType.listRecordItems, token.itemsList)
+		parmsState.valueSet(ParmsValuesType.modalSelectIdField, 'data')
+
+		const stateModal = new StateSurfaceModal({
+			actionsFieldDialog: await this.getActions('doag_dialog_footer_list'),
+			layoutComponent: StateLayoutComponent.layoutContent,
+			layoutHeader: {
+				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.fieldLabel}`
+			},
+			packet: new StatePacket({
+				action: StatePacketAction.selectModalFieldItems,
 				confirmType: TokenAppDoActionConfirmType.none,
 				token
 			}),
@@ -474,8 +500,8 @@ export enum StatePacketAction {
 	openNode = 'openNode',
 
 	// modal-select
-	selectModalItems = 'selectModalItems',
-	selectModalItemsOpen = 'selectModalItemsOpen',
+	selectModalFieldItems = 'selectModalItems',
+	selectModalFieldItemsOpen = 'selectModalItemsOpen',
 
 	none = 'none'
 }

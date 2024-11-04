@@ -99,7 +99,7 @@
 			on:keyup={() => onChange(node)}
 		>
 			<div class="mt-2">
-				<Icon name={node.icon} width="1.0rem" height="1.0rem" fill={navColor} />
+				<Icon name={node.icon} size="16" color={navColor} />
 			</div>
 			<div class={marginTopheader}>
 				{node.label}

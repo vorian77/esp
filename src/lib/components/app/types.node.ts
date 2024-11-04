@@ -10,53 +10,7 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/lib/components/nav/types.node.ts'
 
-const DEFAULT_ICON = 'application'
-
-export type DbNode = {
-	_codeIcon?: string
-	_codeNodeType: string
-	dataObjId?: string
-	dataObjName?: string
-	header: string
-	id: string
-	isHideRowManager: boolean
-	isMobileMode?: boolean
-	isRetrievePreset?: boolean
-	name: string
-	nodeObjName?: string
-	orderDefine: number
-	page?: string
-}
-
-export class RawNode {
-	dataObjId?: string
-	dataObjName?: string
-	header: string
-	icon: string
-	id: string
-	isHideRowManager: boolean
-	isMobileMode: boolean
-	isRetrievePreset: boolean
-	name: string
-	nodeObjName?: string
-	page: string
-	type: string
-	constructor(dbNode: DbNode) {
-		const clazz = 'RawNode'
-		this.dataObjId = dbNode.dataObjId
-		this.dataObjName = dbNode.dataObjName
-		this.header = dbNode.header
-		this.icon = valueOrDefault(dbNode._codeIcon, DEFAULT_ICON)
-		this.id = dbNode.id
-		this.isHideRowManager = booleanOrFalse(dbNode.isHideRowManager, 'isHideRowManager')
-		this.isMobileMode = booleanOrFalse(dbNode.isMobileMode, 'isMobileMode')
-		this.isRetrievePreset = booleanOrFalse(dbNode.isRetrievePreset, 'isRetrievePreset')
-		this.name = dbNode.name
-		this.nodeObjName = dbNode.nodeObjName
-		this.page = valueOrDefault(dbNode.page, '/home')
-		this.type = dbNode._codeNodeType
-	}
-}
+const DEFAULT_ICON = 'AppWindow'
 
 export class NodeHeader {
 	icon: string
@@ -88,6 +42,7 @@ export class Node extends NodeHeader {
 	dataObjIdChild?: string
 	dataObjName?: string
 	isHideRowManager: boolean
+	isSystemRoot: boolean
 	isMobileMode: boolean
 	isRetrievePreset: boolean
 	nodeObjName?: string
@@ -102,6 +57,7 @@ export class Node extends NodeHeader {
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
 		this.isMobileMode = booleanOrFalse(obj.isMobileMode, 'isHideRowManager')
 		this.isRetrievePreset = booleanOrFalse(obj.isRetrievePreset, 'isRetrievePreset')
+		this.isSystemRoot = booleanOrFalse(obj.isSystemRoot, 'isSystemRoot')
 		this.nodeObjName = obj.nodeObjName
 		this.page = valueOrDefault(obj.page, '/home')
 	}
@@ -137,30 +93,29 @@ export enum NodeType {
 }
 
 export class RawMenu {
-	headers: RawMenuHeader[] = []
+	apps: RawMenuApp[] = []
 	constructor(apps: any) {
 		const clazz = 'RawMenu'
-		apps = valueOrDefault(apps, [])
-		apps.forEach((app: any) => {
+		getArray(apps).forEach((app: any) => {
 			this.addApp(app)
 		})
-		this.headers = this.headers.sort((a, b) => a.header.orderDefine - b.header.orderDefine)
+		this.apps = this.apps.sort((a, b) => a.header.orderDefine - b.header.orderDefine)
 	}
 	addApp(app: any) {
-		let idx = this.headers.findIndex((h) => h.header.id === app.appHeader.id)
+		let idx = this.apps.findIndex((h) => h.header.id === app.appHeader.id)
 		if (idx === -1) {
-			idx = this.headers.push(new RawMenuHeader(app))
+			idx = this.apps.push(new RawMenuApp(app))
 		} else {
-			this.headers[idx].addNodes(app.nodes)
+			this.apps[idx].addNodes(app.nodes)
 		}
 	}
 }
 
-export class RawMenuHeader {
+export class RawMenuApp {
 	header: NodeHeader
 	nodes: Node[] = []
 	constructor(obj: any) {
-		const clazz = 'RawMenuHeader'
+		const clazz = 'RawMenuApp'
 		obj = valueOrDefault(obj, {})
 		this.header = new NodeHeader({ ...obj.appHeader, _codeNodeType: NodeType.menu_app })
 		this.addNodes(obj.nodes)
@@ -168,7 +123,7 @@ export class RawMenuHeader {
 	addNodes(nodes: Node[]) {
 		nodes = getArray(nodes)
 		nodes.forEach((n) => {
-			this.nodes.push(new Node(n))
+			if (!this.nodes.find((e) => e.id === n.id)) this.nodes.push(new Node(n))
 		})
 		this.nodes.sort((a, b) => a.orderDefine - b.orderDefine)
 	}

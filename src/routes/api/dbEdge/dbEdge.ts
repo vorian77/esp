@@ -5,8 +5,6 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = 'routes/api/dbEdge/dbEdge.ts'
 
-console.log('EDGEDB', { EDGEDB_BRANCH, EDGEDB_INSTANCE })
-
 export const client = createClient({
 	branch: EDGEDB_BRANCH,
 	instanceName: EDGEDB_INSTANCE,

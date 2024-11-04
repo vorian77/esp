@@ -1,5 +1,5 @@
 import e from '$lib/dbschema/edgeql-js'
-import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
+import { booleanOrDefaultParm, client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
 
 export async function addApp(data: any) {
 	sectionHeader(`addApp - ${data.name}`)
@@ -40,6 +40,7 @@ export async function addAppHeader(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
+			codeIcon: e.str,
 			header: e.optional(e.str),
 			isGlobalResource: e.bool,
 			name: e.str,
@@ -48,6 +49,7 @@ export async function addAppHeader(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysAppHeader, {
+				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', p.codeIcon)),
 				header: p.header,
 				isGlobalResource: p.isGlobalResource,
 				name: p.name,
@@ -218,7 +220,7 @@ export async function addNodeFooter(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysNodeObj, {
-				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', p.codeIcon)),
+				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', p.codeIcon)),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'footer')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', p.codeType)),
 				createdBy: CREATOR,
@@ -252,7 +254,7 @@ export async function addNodeManuApp(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysNodeObj, {
-				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', p.codeIcon)),
+				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', p.codeIcon)),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'menu_app')),
 				createdBy: CREATOR,
@@ -277,20 +279,20 @@ export async function addNodeProgram(data: any) {
 			codeIcon: e.str,
 			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
-			isHideRowManager: e.bool,
+			isHideRowManager: e.optional(e.bool),
 			name: e.str,
 			orderDefine: e.int16,
 			owner: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysNodeObj, {
-				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', p.codeIcon)),
+				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', p.codeIcon)),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'program')),
 				createdBy: CREATOR,
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
-				isHideRowManager: p.isHideRowManager,
+				isHideRowManager: booleanOrDefaultParm(p.isHideRowManager, false),
 				modifiedBy: CREATOR,
 				name: p.name,
 				orderDefine: p.orderDefine,
@@ -309,7 +311,8 @@ export async function addNodeProgramObj(data: any) {
 			codeIcon: e.str,
 			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
-			isHideRowManager: e.bool,
+			isHideRowManager: e.optional(e.bool),
+			isSystemRoot: e.optional(e.bool),
 			name: e.str,
 			orderDefine: e.int16,
 			owner: e.str,
@@ -317,13 +320,14 @@ export async function addNodeProgramObj(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysNodeObj, {
-				codeIcon: e.select(e.sys_core.getCode('ct_sys_node_obj_icon', p.codeIcon)),
+				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', p.codeIcon)),
 				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'program_object')),
 				createdBy: CREATOR,
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
-				isHideRowManager: p.isHideRowManager,
+				isHideRowManager: booleanOrDefaultParm(p.isHideRowManager, false),
+				isSystemRoot: booleanOrDefaultParm(p.isSystemRoot, false),
 				modifiedBy: CREATOR,
 				name: p.name,
 				orderDefine: p.orderDefine,
@@ -348,6 +352,32 @@ export async function addOrg(data: any) {
 				name: p.name,
 				header: p.header,
 				createdBy: CREATOR,
+				modifiedBy: CREATOR
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
+export async function addSubjectObj(data: any) {
+	sectionHeader(`addSubjectObj - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			codeType: e.str,
+			header: e.optional(e.str),
+			isGlobalResource: e.bool,
+			name: e.str,
+			owner: e.str
+		},
+		(p) => {
+			return e.insert(e.sys_core.SysObjSubject, {
+				codeType: e.sys_core.getCode('ct_sys_config_subject_type', p.codeType),
+				createdBy: CREATOR,
+				header: p.header,
+				isGlobalResource: p.isGlobalResource,
+				name: p.name,
+				owner: e.sys_core.getSystemPrime(p.owner),
 				modifiedBy: CREATOR
 			})
 		}
@@ -408,32 +438,6 @@ export async function addUserType(data: any) {
 						resource: e.sys_core.getObj(resource)
 					})
 				})
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-
-export async function addUserTypeResourceSubject(data: any) {
-	sectionHeader(`addUserTypeResourceSubject - ${data.name}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			codeType: e.str,
-			header: e.optional(e.str),
-			isGlobalResource: e.bool,
-			name: e.str,
-			owner: e.str
-		},
-		(p) => {
-			return e.insert(e.sys_core.SysObjSubject, {
-				codeType: e.sys_core.getCode('ct_sys_config_subject_type', p.codeType),
-				createdBy: CREATOR,
-				header: p.header,
-				isGlobalResource: p.isGlobalResource,
-				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner),
-				modifiedBy: CREATOR
 			})
 		}
 	)

@@ -7,13 +7,12 @@ import {
 	Node,
 	NodeType,
 	ParmsValuesType,
-	RawNode,
 	ResponseBody,
 	strRequired,
 	UserTypeResourceType,
 	valueOrDefault
 } from '$utils/types'
-import type { DataRecord, DbNode } from '$utils/types'
+import type { DataRecord } from '$utils/types'
 import { RawDataObj } from '$comps/dataObj/types.rawDataObj'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import {
@@ -131,11 +130,9 @@ export class App {
 	}
 
 	async addLevelNode(state: State, token: TokenAppNode) {
-		let isProgramRootList = true
 		this.isMobileMode = token.node.isMobileMode || false
 
 		if (token.node.dataObjName) {
-			isProgramRootList = false
 			token.node.dataObjId = await getDataObjId(token.node.dataObjName)
 		}
 
@@ -148,9 +145,7 @@ export class App {
 		}
 
 		// create root level
-		this.levels.push(
-			new AppLevel([new AppLevelTab(App.addLevelNodeParmsList(token.node, isProgramRootList))])
-		)
+		this.levels.push(new AppLevel([new AppLevelTab(App.addLevelNodeParmsList(token.node))]))
 		const currTab = this.getCurrTab()
 		if (currTab) {
 			await query(
@@ -185,13 +180,13 @@ export class App {
 						dataObjId: nodeLevelRootDetail.dataObjId,
 						// dataObjId: currTab.dataObjIdChild,
 						isProgramObject: nodeLevelRootDetail.type === NodeType.program_object,
-						isProgramRootDetail: currTab.isProgramRootList
+						isSystemRoot: nodeLevelRootDetail.isSystemRoot
 					}
 					tabs.push(new AppLevelTab(nodeParms))
 
 					// add children - lists
 					rawNodes.children.forEach((n) => {
-						tabs.push(new AppLevelTab(App.addLevelNodeParmsList(new Node(n), false)))
+						tabs.push(new AppLevelTab(App.addLevelNodeParmsList(new Node(n))))
 					})
 					this.levels.push(new AppLevel(tabs))
 					await query(state, this.getCurrTab(), queryType)
@@ -201,12 +196,11 @@ export class App {
 		}
 	}
 
-	static addLevelNodeParmsList(node: Node, isProgramRootList: boolean) {
+	static addLevelNodeParmsList(node: Node) {
 		return {
 			dataObjId: node.dataObjId,
 			dataObjIdChild: node.dataObjIdChild,
 			isHideRowManager: node.isHideRowManager,
-			isProgramRootList,
 			label: node.label,
 			nodeIdParent: node.id
 		}
@@ -568,9 +562,8 @@ export class AppLevelTab {
 	isHideRowManager: boolean
 	isModal: boolean
 	isProgramObject: boolean
-	isProgramRootDetail: boolean
-	isProgramRootList: boolean
 	isRetrieved: boolean
+	isSystemRoot: boolean
 	label?: string
 	nodeIdParent?: string
 
@@ -584,9 +577,8 @@ export class AppLevelTab {
 		this.dataObjSource = obj.dataObjSource
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
 		this.isProgramObject = booleanOrFalse(obj.isProgramObject, 'isProgramObject')
-		this.isProgramRootDetail = booleanOrFalse(obj.isProgramRootDetail, 'isProgramRootDetail')
-		this.isProgramRootList = booleanOrFalse(obj.isProgramRootList, 'isProgramRootList')
 		this.isRetrieved = booleanOrFalse(obj.isRetrieved, 'isRetrieved')
+		this.isSystemRoot = booleanOrFalse(obj.isSystemRoot, 'isSystemRoot')
 		this.isModal = booleanOrFalse(obj.isModal, 'isModal')
 		this.label = obj.label
 		this.nodeIdParent = obj.nodeIdParent

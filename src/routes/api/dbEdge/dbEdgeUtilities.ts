@@ -59,6 +59,7 @@ const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 	header: true,
 	id: true,
 	isHideRowManager: true,
+	isSystemRoot: true,
 	name: true,
 	orderDefine: true,
 	page: true,
@@ -156,7 +157,6 @@ export async function getDataObjById(token: TokenApiId) {
 			isListEdit: true,
 			isListSuppressFilterSort: true,
 			isListSuppressSelect: true,
-			isSystemRootNode: true,
 			listEditPresetExpr: true,
 			name: true,
 			subHeader: true,
@@ -383,7 +383,6 @@ export async function getNodesBranch(token: TokenApiId) {
 		dataObjId: n.dataObj.id,
 		header: true,
 		id: true,
-		isHideRowManager: false,
 		name: true,
 		orderDefine: true,
 		page: true,
@@ -587,6 +586,7 @@ export async function getUserPref(token: TokenApiUserPref) {
 export async function getUserResourcesApp(token: TokenApiUserId) {
 	const query = e.select(e.sys_core.SysApp, (res) => ({
 		appHeader: e.select(res.appHeader, (ah) => ({
+			_codeIcon: ah.codeIcon.name,
 			id: true,
 			header: true,
 			name: true,

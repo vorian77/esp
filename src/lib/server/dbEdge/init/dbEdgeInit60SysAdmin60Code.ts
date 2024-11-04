@@ -192,20 +192,18 @@ async function initCodeType() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_code_type_list',
 		header: 'Code Types',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_type_list',
 		orderDefine: 30,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_code_type_detail',
 		header: 'Code Type',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_type_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -479,20 +477,18 @@ async function initCodeTypeCode() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_code_list_codeType',
 		header: 'Codes',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_list_codeType',
 		orderDefine: 15,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_admin_code_type_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_code_detail_codeType',
 		header: 'Code',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_detail_codeType',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -775,20 +771,18 @@ async function initCode() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_code_list',
 		header: 'Codes',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_list',
 		orderDefine: 40,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_code_detail',
 		header: 'Code',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_code_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

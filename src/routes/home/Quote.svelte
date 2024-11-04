@@ -18,7 +18,7 @@
 <div class="bg-neutral-100 rounded-lg p-3 mb-3">
 	<div class="flex flex-col items-center">
 		<div>
-			<Icon name="quote-enclosed" width="4rem" height="4rem" fill={quote.color} />
+			<Icon name="quote" size="32" color={quote.color} />
 		</div>
 
 		<div>

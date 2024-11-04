@@ -1,62 +1,26 @@
-<!-- <h2 class="h2 ml-6 mb-8">Sticky Table Header & Footer</h2>
+<script>
+	import Menu from './Menu.svelte'
 
-<article>
-	<table>
-		<thead>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-		</thead>
+	let name = 'world'
+</script>
 
-		<tbody>
-			{#each Array(100) as row, i}
-				<tr>
-					<td>{i + 1}</td>
-					<td>John</td>
-					<td>Doe</td>
-				</tr>
-			{/each}
-		</tbody>
+<main>
+	<Menu />
+	<section class="content">
+		<h1>Hello {name}!</h1>
+	</section>
+</main>
 
-		<tfoot>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-		</tfoot>
-	</table>
-</article> -->
-
-<!-- <style>
-	article {
-		color: #212121;
-		background: #fff;
-		width: 90%;
-		height: 60%;
-		overflow-y: auto;
-		margin-left: 24px;
-		border-left: 2px solid #eee;
-		border-right: 2px solid #eee;
+<style>
+	:global(body) {
+		margin: 0;
+		padding: 0;
 	}
-	table {
-		text-align: center;
-		width: 100%;
-		border-collapse: separate;
-		border-spacing: 0;
+	main {
+		display: grid;
+		grid-template: 'nav content' min-content;
 	}
-	thead {
-		background: #fff;
-		height: 32px;
-		position: sticky;
-		inset-block-start: 0;
+	.content {
+		grid-area: content;
 	}
-	tfoot {
-		height: 32px;
-		position: sticky;
-		background: #fff;
-		inset-block-end: 0;
-	}
-	th {
-		border-bottom: 1px solid #e0e0e0;
-		border-top: 1px solid #e0e0e0;
-	}
-</style> -->
+</style>

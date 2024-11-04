@@ -118,20 +118,18 @@ async function initSystemMeta() {
 	})
 
 	await addNodeProgram({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_system_meta_list',
 		header: 'Systems (Meta)',
-		isHideRowManager: false,
 		name: 'node_obj_sys_system_meta_list',
 		orderDefine: 40,
 		owner: 'sys_system_old'
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_system_meta_detail',
 		header: 'System (Meta)',
-		isHideRowManager: false,
 		name: 'node_obj_sys_system_meta_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

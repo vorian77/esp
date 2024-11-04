@@ -143,10 +143,9 @@ async function initDataObjActionsQuery() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_action_query_list',
 		header: 'Query Actions',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_query_list',
 		orderDefine: 30,
 		owner: 'sys_system_old',
@@ -154,10 +153,9 @@ async function initDataObjActionsQuery() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_action_query_detail',
 		header: 'Query Action',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_query_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -374,10 +372,9 @@ async function initDataObjActionField() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_action_field_list',
 		header: 'Field Actions',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_field_list',
 		orderDefine: 70,
 		owner: 'sys_system_old',
@@ -385,10 +382,9 @@ async function initDataObjActionField() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_action_field_detail',
 		header: 'Config',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_field_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -518,10 +514,9 @@ async function initDataObjActionFieldGroup() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_action_field_group_list',
 		header: 'Field Action Groups',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_field_group_list',
 		orderDefine: 80,
 		owner: 'sys_system_old',
@@ -529,10 +524,9 @@ async function initDataObjActionFieldGroup() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_action_field_group_detail',
 		header: 'Config',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_data_obj_action_field_group_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

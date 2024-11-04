@@ -375,10 +375,9 @@ async function initUserOrg() {
 		]
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_meta_user_list_org_user',
 		header: 'Users',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_meta_user_list_org_user',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -386,10 +385,9 @@ async function initUserOrg() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_meta_user_detail_org_user',
 		header: 'User',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_meta_user_detail_org_user',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -587,10 +585,9 @@ async function initUserType() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_user_type_list',
 		header: 'User Types',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_user_type_list',
 		orderDefine: 20,
 		owner: 'sys_system_old',
@@ -598,10 +595,9 @@ async function initUserType() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_user_type_detail',
 		header: 'User Type',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_user_type_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -769,10 +765,9 @@ async function initWidget() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_widget_list',
 		header: 'Widgets',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_widget_list',
 		orderDefine: 180,
 		owner: 'sys_system_old',
@@ -780,10 +775,9 @@ async function initWidget() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_widget_detail',
 		header: 'Widget',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_widget_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

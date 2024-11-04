@@ -1138,10 +1138,11 @@ export enum ParmsValuesType {
 	embedListSave = 'embedListSave',
 	embedParentId = 'embedParentId',
 	isMultiSelect = 'isMultiSelect',
-	isProgramRoot = 'isProgramRoot',
+	isSystemRoot = 'isSystemRoot',
 	listLabel = 'listLabel',
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listRecordIdList = 'listRecordIdList',
 	listRecordIdSelected = 'listRecordIdSelected',
-	listRecordItems = 'listRecordItems'
+	listRecordItems = 'listRecordItems',
+	modalSelectIdField = 'modalSelectIdField'
 }

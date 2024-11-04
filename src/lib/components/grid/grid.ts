@@ -290,6 +290,7 @@ export class GridManagerOptions {
 	columnDefs: ColDef[]
 	fCallbackFilter: Function
 	fCallbackUpdateValue: Function
+	idColumn: string
 	isEmbed: boolean
 	isSelect: boolean
 	isSelectMulti: boolean
@@ -307,6 +308,7 @@ export class GridManagerOptions {
 		this.columnDefs = required(obj.columnDefs, clazz, 'columnDefs')
 		this.fCallbackFilter = obj.fCallbackFilter
 		this.fCallbackUpdateValue = obj.fCallbackUpdateValue
+		this.idColumn = valueOrDefault(obj.idColumn, 'id')
 		this.isEmbed = booleanOrFalse(obj.isEmbed, 'isEmbed')
 		this.isSelect = booleanOrFalse(obj.isSelect, 'isSelect')
 		this.isSelectMulti = booleanOrFalse(obj.isSelectMulti, 'isSelectMulti')

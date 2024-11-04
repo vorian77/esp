@@ -20,6 +20,7 @@
 	import NavLogo from '$comps/app/NavLogo.svelte'
 	import NavHome from '$comps/app/NavHome.svelte'
 	import NavFooter from '$comps/app/NavFooter.svelte'
+	import NavBar from '$comps/app/navBar/NavBar.svelte'
 	import NavTree from '$comps/app/NavTree.svelte'
 	import Icon from '$comps/other/Icon.svelte'
 	import { getURLDownload } from '$utils/utils.aws'
@@ -44,6 +45,11 @@
 	let userAvatarSrc = ''
 	let appName = ''
 	let logoFileName = ''
+
+	// 241001 - navBar experiment
+	export let data
+	const DEV_MODE = data.system.server_mode === 'development'
+	let clazzNavBar = DEV_MODE ? 'border-0 border-red-400' : 'hidden'
 
 	$: {
 		const rawUser = $appStoreUser
@@ -130,11 +136,11 @@
 						on:click={navLeft}
 						on:keyup={navLeft}
 					>
-						<Icon name="hamburger-menu" width="1.5rem" height="1.5rem" fill={NAV_COLOR} />
+						<Icon name="menu" strokeWidth="2" color={NAV_COLOR} />
 					</div>
-
-					<NavLogo {user} />
-
+					{#if user}
+						<NavLogo {user} />
+					{/if}
 					<div role="button" tabindex="0" class="text-black" on:click={goHome} on:keyup={goHome}>
 						{#if appName}
 							{appName}
@@ -161,12 +167,17 @@
 	</svelte:fragment>
 
 	<svelte:fragment slot="sidebarLeft">
-		<div class="hidden md:block">
-			{#if user && state?.nodeType === NodeType.home}
-				<div class="my-4">
-					<NavTree {state} on:treeChanged />
-				</div>
-			{/if}
+		<div class="flex">
+			<div class={clazzNavBar}>
+				<!-- <NavBar {user} /> -->
+			</div>
+			<div class="hidden md:block">
+				{#if user && state?.nodeType === NodeType.home}
+					<div class="my-4">
+						<NavTree {state} on:treeChanged />
+					</div>
+				{/if}
+			</div>
 		</div>
 	</svelte:fragment>
 

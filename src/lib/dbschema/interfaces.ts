@@ -47,15 +47,15 @@ export namespace sys_user {
   }
   export interface SysUserType extends sys_core.SysObj {
     "tags": sys_core.SysCode[];
-    "resources_sys_app": sys_core.SysApp[];
     "resources_sys_footer": sys_core.SysNodeObj[];
     "users": SysUser[];
-    "resources": SysUserTypeResource[];
     "isSelfSignup"?: boolean | null;
+    "resources": SysUserTypeResource[];
+    "resources_sys_app": sys_core.SysApp[];
   }
   export interface SysUserTypeResource extends std.$Object {
-    "resource": sys_core.SysObj;
     "codeType": sys_core.SysCode;
+    "resource": sys_core.SysObj;
   }
   export interface SysWidget extends sys_core.SysObj {}
   export interface currentUser extends SysUser {}
@@ -263,7 +263,9 @@ export namespace sys_core {
     "appHeader": SysAppHeader;
     "nodes": SysNodeObj[];
   }
-  export interface SysAppHeader extends SysObj {}
+  export interface SysAppHeader extends SysObj {
+    "codeIcon"?: SysCode | null;
+  }
   export interface SysCode extends ObjRoot, sys_user.Mgmt {
     "valueDecimal"?: number | null;
     "parent"?: SysCode | null;
@@ -299,7 +301,6 @@ export namespace sys_core {
     "subHeader"?: string | null;
     "exprSort"?: string | null;
     "listReorderColumn"?: sys_db.SysColumn | null;
-    "isSystemRootNode": boolean;
   }
   export interface SysDataObjActionField extends SysObj {
     "codePacketAction": SysCode;
@@ -442,6 +443,7 @@ export namespace sys_core {
     "dataObj"?: SysDataObj | null;
     "parent"?: SysNodeObj | null;
     "page"?: string | null;
+    "isSystemRoot"?: boolean | null;
   }
   export interface SysObjNote extends sys_user.Mgmt {
     "codeType": SysCode;

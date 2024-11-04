@@ -67,7 +67,9 @@ module sys_core {
     };
   }
 
-  type SysAppHeader extending sys_core::SysObj {}
+  type SysAppHeader extending sys_core::SysObj {
+    codeIcon: sys_core::SysCode;
+  }
 
   type SysCodeType extending sys_core::SysObj {
     parent: sys_core::SysCodeType;
@@ -107,7 +109,6 @@ module sys_core {
     required isListEdit: bool;
     isListSuppressFilterSort: bool;
     isListSuppressSelect: bool;
-    required isSystemRootNode: bool;
     listEditPresetExpr: str;
     listReorderColumn: sys_db::SysColumn;
   
@@ -339,6 +340,7 @@ module sys_core {
       on target delete allow
     };
     required isHideRowManager: bool;
+    isSystemRoot: bool;
     parent: sys_core::SysNodeObj;
     page: str;
     constraint exclusive on (.name);

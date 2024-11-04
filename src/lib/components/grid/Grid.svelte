@@ -88,6 +88,7 @@
 		// set options
 		isSuppressFilterSort = options.isSuppressFilterSort || options.listReorderColumn !== ''
 		rowData = options.rowData
+		console.log('Grid.options:', { rowData, columnsDefs: options.columnDefs })
 
 		// derived columnDefs changes
 		if (options.listReorderColumn) {
@@ -113,7 +114,7 @@
 				},
 				sortable: !isSuppressFilterSort
 			},
-			getRowId: (params: GetRowIdParams) => params.data.id || '',
+			getRowId: (params: GetRowIdParams) => params.data[options.idColumn] || 'id',
 			onCellClicked: options.onCellClicked,
 			onCellValueChanged,
 			onFilterChanged: onFilterChanged,

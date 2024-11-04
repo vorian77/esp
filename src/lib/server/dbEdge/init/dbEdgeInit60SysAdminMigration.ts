@@ -142,20 +142,18 @@ async function initMigr() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_list',
 		header: 'Migrations',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_list',
 		orderDefine: 140,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_detail',
 		header: 'Migration',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -310,10 +308,9 @@ async function initMigrSourceTable() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_source_table_list',
 		header: 'Source Tables',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_source_table_list',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -321,10 +318,9 @@ async function initMigrSourceTable() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_source_table_detail',
 		header: 'Source Table',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_source_table_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -462,10 +458,9 @@ async function initMigrSourceColumn() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_source_column_list',
 		header: 'Columns',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_source_column_list',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -473,10 +468,9 @@ async function initMigrSourceColumn() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_source_column_detail',
 		header: 'Column',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_source_column_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -682,10 +676,9 @@ async function initMigrTargetTable() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_target_table_list',
 		header: 'Target Tables',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_target_table_list',
 		orderDefine: 20,
 		owner: 'sys_system_old',
@@ -693,10 +686,9 @@ async function initMigrTargetTable() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_target_table_detail',
 		header: 'Target Table',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_target_table_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -897,10 +889,9 @@ async function initMigrTargetColumn() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_target_column_list',
 		header: 'Columns',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_target_column_list',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -908,10 +899,9 @@ async function initMigrTargetColumn() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_target_column_detail',
 		header: 'Column',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_migr_target_column_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

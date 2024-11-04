@@ -23,9 +23,8 @@ const FILENAME = '/$routes/api/dbEdge/dbEdgeScript.ts'
 type Config = [string, DataRecord?][]
 
 export class ScriptGroup {
-	scripts: Script[] = []
-	scriptsStack: Script[] = []
 	scriptSegmentLoop = 'FOR item IN json_array_unpack(data) UNION ('
+	scripts: Script[] = []
 	constructor() {}
 	addScript(
 		query: Query,
@@ -39,20 +38,11 @@ export class ScriptGroup {
 			script.addItem(item[0], item[1])
 		})
 		script.build()
-		// this.scripts.push(script)
-		this.scriptsStack.push(script)
+		this.scripts.push(script)
 		return script
 	}
 
-	addScriptDataItems(scriptParent: Script, scriptData: DataObjData, record: DataRecord) {
-		const query = scriptParent.query
-		let queryData = scriptParent.queryData
-		queryData?.dataTab?.parms.update(scriptData.parms.data)
-		queryData.record = record
-		// const queryData = TokenApiQueryData.load(token.queryData)
-
-		const props = query.rawDataObj.rawPropsSelect
-
+	addScriptDataItems(query: Query, queryData: TokenApiQueryData, props: RawDataObjPropDB) {
 		const isFilterCurrentValue = query.rawDataObj.codeCardinality === DataObjCardinality.detail
 		return this.addScript(query, queryData, ScriptExePost.dataItems, [
 			['propsSelectDataItems', { props, isFilterCurrentValue }],

@@ -30,17 +30,17 @@
 	<span style:cursor="pointer">
 		<div class="flex">
 			<div class={rowStatus.rowCurrentDisplay === 1 ? 'invisible' : ''}>
-				<NavRowAction action={AppRowActionType.first} icon={'double-arrow-left'} {onChange} />
+				<NavRowAction action={AppRowActionType.first} icon={'ChevronFirst'} {onChange} />
 			</div>
 			<div class={rowStatus.rowCurrentDisplay === 1 ? 'invisible' : ''}>
-				<NavRowAction action={AppRowActionType.left} icon={'arrow-left'} {onChange} />
+				<NavRowAction action={AppRowActionType.left} icon={'ChevronLeft'} {onChange} />
 			</div>
 			<div class="ml-1">{rowStatus.status}</div>
 			<div class={rowStatus.rowCurrentDisplay === rowStatus.rowCount ? 'invisible' : ''}>
-				<NavRowAction action={AppRowActionType.right} icon={'arrow-right'} {onChange} />
+				<NavRowAction action={AppRowActionType.right} icon={'ChevronRight'} {onChange} />
 			</div>
 			<div class={rowStatus.rowCurrentDisplay === rowStatus.rowCount ? 'invisible' : ''}>
-				<NavRowAction action={AppRowActionType.last} icon={'double-arrow-right'} {onChange} />
+				<NavRowAction action={AppRowActionType.last} icon={'ChevronLast'} {onChange} />
 			</div>
 		</div>
 	</span>

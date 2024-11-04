@@ -96,8 +96,8 @@
 		StatePacketAction.navRow,
 		StatePacketAction.navTab,
 		StatePacketAction.openNode,
-		StatePacketAction.selectModalItems,
-		StatePacketAction.selectModalItemsOpen
+		StatePacketAction.selectModalFieldItems,
+		StatePacketAction.selectModalFieldItemsOpen
 	]
 
 	$: if (state && state.packet) {
@@ -287,12 +287,12 @@
 				}
 				break
 
-			case StatePacketAction.selectModalItems:
+			case StatePacketAction.selectModalFieldItems:
 				updateObjectsContent(StateLayoutContent.ModalSelect)
 				break
 
-			case StatePacketAction.selectModalItemsOpen:
-				await state.openModalSelect(token)
+			case StatePacketAction.selectModalFieldItemsOpen:
+				await state.openModalSelectDataItems(token)
 				break
 
 			default:

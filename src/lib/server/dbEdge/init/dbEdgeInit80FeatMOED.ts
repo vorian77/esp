@@ -1,96 +1,28 @@
-import { InitDbObj } from '$server/dbEdge/init/types.init'
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	ResetDb,
-	userSystems,
-	userUserType,
-	widgets
-} from '$server/dbEdge/init/dbEdgeInit200Utilities10'
-import { addDataObj } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import {
-	addNodeProgram,
-	addNodeProgramObj
-} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
-import {
-	addMOEDCSF,
-	addMOEDParticipants,
-	addMOEDPartDataTest,
-	addMOEDStaff
-} from '$server/dbEdge/init/dbEdgeInit200Utilities60OrgMOED'
+import { InitDB } from '$server/dbEdge/init/types.init'
 import { moedDataParticipant } from '$utils/utils.randomDataGenerator'
 
-export function initFeatMOED() {
-	const init = new InitDbObj('MOED - Self-Service - Registration', initObjects)
-	initReset(init)
-	return init
+export function initFeatMOED(init: InitDB) {
+	// staff
+	initStudent(init)
+	initCsf(init)
+	initCsfMsg(init)
+	initCsfNote(init)
+	initCsfDocument(init)
+	initStaff(init)
+	initSubjects(init)
+
+	// participant
+	initSSRmyApp(init)
+	initSSRmyDoc(init)
+	initSSRmyMsg(init)
+
+	// demo data
+	initParticipants(init)
+	initParticipantServiceFlows(init)
 }
 
-function initReset(init: InitDbObj) {
-	// records
-	// init.reset.delTableRecords('sys_core::SysObjSubject')
-
-	init.reset.addStatement(
-		'delete app_cm::CmCsfData filter .csf.client in org_moed::MoedParticipant'
-	)
-	init.reset.addStatement(
-		'delete app_cm::CmClientServiceFlow filter .client in org_moed::MoedParticipant'
-	)
-	init.reset.addStatement('delete org_moed::MoedParticipant')
-	init.reset.addStatement(`delete sys_user::SysStaff filter 'moed_advocate' in .roles.name`)
-
-	// nodes
-	init.reset.delNodeObj('node_obj_moed_ssr_msg_detail')
-	init.reset.delNodeObj('node_obj_moed_ssr_msg_list')
-
-	init.reset.delNodeObj('node_obj_moed_ssr_doc_detail')
-	init.reset.delNodeObj('node_obj_moed_ssr_doc_list')
-
-	init.reset.delNodeObj('node_obj_moed_csf_doc_detail')
-	init.reset.delNodeObj('node_obj_moed_csf_doc_list')
-	init.reset.delNodeObj('node_obj_moed_csf_note_detail')
-	init.reset.delNodeObj('node_obj_moed_csf_note_list')
-	init.reset.delNodeObj('node_obj_moed_csf_msg_detail')
-	init.reset.delNodeObj('node_obj_moed_csf_msg_list')
-	init.reset.delNodeObj('node_obj_moed_csf_detail')
-	init.reset.delNodeObj('node_obj_moed_csf_list')
-	init.reset.delNodeObj('node_obj_moed_part_detail')
-	init.reset.delNodeObj('node_obj_moed_part_list')
-
-	// data objects
-	init.reset.delDataObj('data_obj_moed_ssr_msg_detail')
-	init.reset.delDataObj('data_obj_moed_ssr_msg_list')
-	init.reset.delDataObj('data_obj_moed_ssr_doc_detail')
-	init.reset.delDataObj('data_obj_moed_ssr_doc_list')
-	init.reset.delDataObj('data_obj_moed_ssr_app')
-
-	init.reset.delDataObj('data_obj_moed_csf_doc_detail')
-	init.reset.delDataObj('data_obj_moed_csf_doc_list')
-	init.reset.delDataObj('data_obj_moed_csf_note_detail')
-	init.reset.delDataObj('data_obj_moed_csf_note_list')
-	init.reset.delDataObj('data_obj_moed_csf_msg_detail')
-	init.reset.delDataObj('data_obj_moed_csf_msg_list')
-	init.reset.delDataObj('data_obj_moed_csf_detail')
-	init.reset.delDataObj('data_obj_moed_csf_list')
-	init.reset.delDataObj('data_obj_moed_part_detail')
-	init.reset.delDataObj('data_obj_moed_part_list')
-}
-
-async function initObjects() {
-	await initStudent()
-	await initCsf()
-	await initCsfMsg()
-	await initCsfNote()
-	await initCsfDocument()
-	await initStaff()
-	await initSSRmyApp()
-	await initSSRmyDoc()
-	await initSSRmyMsg()
-	// await initParticipants()
-	// await initReferrals()
-}
-
-async function initStudent() {
-	await addDataObj({
+async function initStudent(init: InitDB) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -139,12 +71,11 @@ async function initStudent() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Participant',
-		isSystemRootNode: true,
 		name: 'data_obj_moed_part_detail',
 		owner: 'sys_moed_old',
 		tables: [
@@ -440,20 +371,19 @@ async function initStudent() {
 			}
 		]
 	})
-	await addNodeProgram({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_part_list',
 		header: 'Participants',
-		isHideRowManager: false,
 		name: 'node_obj_moed_part_list',
 		orderDefine: 10,
 		owner: 'sys_moed_old'
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_part_detail',
 		header: 'Participant',
-		isHideRowManager: false,
+		isSystemRoot: true,
 		name: 'node_obj_moed_part_detail',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
@@ -461,8 +391,8 @@ async function initStudent() {
 	})
 }
 
-async function initCsf() {
-	await addDataObj({
+async function initCsf(init: InitDB) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -567,7 +497,7 @@ async function initCsf() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -780,21 +710,19 @@ async function initCsf() {
 			}
 		]
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_csf_list',
 		header: 'Service Flows',
-		isHideRowManager: false,
 		name: 'node_obj_moed_csf_list',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
 		parentNodeName: 'node_obj_moed_part_detail'
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_csf_detail',
 		header: 'Service Flow',
-		isHideRowManager: false,
 		name: 'node_obj_moed_csf_detail',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
@@ -802,8 +730,8 @@ async function initCsf() {
 	})
 }
 
-async function initCsfMsg() {
-	await addDataObj({
+async function initCsfMsg(init: InitDB) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -884,7 +812,7 @@ async function initCsfMsg() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -1046,21 +974,19 @@ async function initCsfMsg() {
 			}
 		]
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_csf_msg_list',
 		header: 'Messages',
-		isHideRowManager: false,
 		name: 'node_obj_moed_csf_msg_list',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
 		parentNodeName: 'node_obj_moed_csf_detail'
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_csf_msg_detail',
 		header: 'Message',
-		isHideRowManager: false,
 		name: 'node_obj_moed_csf_msg_detail',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
@@ -1068,8 +994,8 @@ async function initCsfMsg() {
 	})
 }
 
-async function initCsfNote() {
-	await addDataObj({
+async function initCsfNote(init: InitDB) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1117,7 +1043,7 @@ async function initCsfNote() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -1234,21 +1160,19 @@ async function initCsfNote() {
 			}
 		]
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_csf_note_list',
 		header: 'Case Notes',
-		isHideRowManager: false,
 		name: 'node_obj_moed_csf_note_list',
 		orderDefine: 20,
 		owner: 'sys_moed_old',
 		parentNodeName: 'node_obj_moed_csf_detail'
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_csf_note_detail',
 		header: 'Case Note',
-		isHideRowManager: false,
 		name: 'node_obj_moed_csf_note_detail',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
@@ -1256,8 +1180,8 @@ async function initCsfNote() {
 	})
 }
 
-async function initCsfDocument() {
-	await addDataObj({
+async function initCsfDocument(init: InitDB) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1302,7 +1226,7 @@ async function initCsfDocument() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -1440,21 +1364,19 @@ async function initCsfDocument() {
 			}
 		]
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_csf_doc_list',
 		header: 'Documents',
-		isHideRowManager: false,
 		name: 'node_obj_moed_csf_doc_list',
 		orderDefine: 30,
 		owner: 'sys_moed_old',
 		parentNodeName: 'node_obj_moed_csf_detail'
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_csf_doc_detail',
 		header: 'Document',
-		isHideRowManager: false,
 		name: 'node_obj_moed_csf_doc_detail',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
@@ -1462,8 +1384,8 @@ async function initCsfDocument() {
 	})
 }
 
-async function initStaff() {
-	await addMOEDStaff([
+async function initStaff(init: InitDB) {
+	init.addTrans('MOEDStaffBulk', [
 		['Tyshell', 'Oliver'],
 		['Travis', 'Williams'],
 		['Tynesha', 'Wilson'],
@@ -1471,8 +1393,8 @@ async function initStaff() {
 	])
 }
 
-async function initSSRmyApp() {
-	await addDataObj({
+async function initSSRmyApp(init: InitDB) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -1780,8 +1702,8 @@ async function initSSRmyApp() {
 	})
 }
 
-async function initSSRmyDoc() {
-	await addDataObj({
+async function initSSRmyDoc(init: InitDB) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1826,7 +1748,7 @@ async function initSSRmyDoc() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -1950,20 +1872,18 @@ async function initSSRmyDoc() {
 			}
 		]
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_ssr_doc_list',
 		header: 'Documents',
-		isHideRowManager: false,
 		name: 'node_obj_moed_ssr_doc_list',
 		orderDefine: 30,
 		owner: 'sys_moed_old'
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_ssr_doc_detail',
 		header: 'Document',
-		isHideRowManager: false,
 		name: 'node_obj_moed_ssr_doc_detail',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
@@ -1971,8 +1891,8 @@ async function initSSRmyDoc() {
 	})
 }
 
-async function initSSRmyMsg() {
-	await addDataObj({
+async function initSSRmyMsg(init: InitDB) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -2019,7 +1939,7 @@ async function initSSRmyMsg() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -2154,20 +2074,18 @@ async function initSSRmyMsg() {
 			}
 		]
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_ssr_msg_list',
 		header: 'My Messages',
-		isHideRowManager: false,
 		name: 'node_obj_moed_ssr_msg_list',
 		orderDefine: 10,
 		owner: 'sys_moed_old'
 	})
-	await addNodeProgramObj({
-		codeIcon: 'application',
+	init.addTrans('sysNodeProgramObj', {
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_ssr_msg_detail',
 		header: 'Message',
-		isHideRowManager: false,
 		name: 'node_obj_moed_ssr_msg_detail',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
@@ -2175,30 +2093,27 @@ async function initSSRmyMsg() {
 	})
 }
 
-/* subjects */
-// await addUserTypeResourceSubject({
-// 	codeType: 'cst_moed_office',
-// 	header: 'MOED Westside',
-// 	isGlobalResource: false,
-// 	name: 'moedOfficeWestside',
-// 	owner: 'sys_moed_old'
-// })
-// await addUserTypeResourceSubject({
-// 	codeType: 'cst_moed_office',
-// 	header: 'MOED Eastside',
-// 	isGlobalResource: false,
-// 	name: 'moedOfficeEastside',
-// 	owner: 'sys_moed_old'
-// })
-
-async function initParticipants() {
-	sectionHeader('Participants')
-
-	const data = moedDataParticipant.data['students']
-	await addMOEDParticipants(data)
+function initSubjects(init: InitDB) {
+	init.addTrans('sysObjSubject', {
+		codeType: 'cst_moed_office',
+		header: 'MOED Westside',
+		isGlobalResource: false,
+		name: 'moedOfficeWestside',
+		owner: 'sys_moed_old'
+	})
+	init.addTrans('sysObjSubject', {
+		codeType: 'cst_moed_office',
+		header: 'MOED Eastside',
+		isGlobalResource: false,
+		name: 'moedOfficeEastside',
+		owner: 'sys_moed_old'
+	})
 }
 
-async function initReferrals() {
-	console.log(moedDataParticipant.data['referrals'])
-	await addMOEDCSF(moedDataParticipant.data['referrals'])
+async function initParticipants(init: InitDB) {
+	init.addTrans('MOEDParticipantsBulk', moedDataParticipant.data['students'])
+}
+
+async function initParticipantServiceFlows(init: InitDB) {
+	init.addTrans('MOEDCSFBulk', moedDataParticipant.data['referrals'])
 }

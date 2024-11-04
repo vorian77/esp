@@ -226,7 +226,7 @@ async function initNodeObj() {
 				orderDefine: 120,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_node_obj_icon',
+				fieldListItemsParmName: 'ct_sys_icon',
 				linkTable: 'SysCode'
 			},
 			{
@@ -328,10 +328,9 @@ async function initNodeObj() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_node_obj_list',
 		header: 'Node Objects',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_node_obj_list',
 		orderDefine: 130,
 		owner: 'sys_system_old',
@@ -339,10 +338,9 @@ async function initNodeObj() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_node_obj_detail',
 		header: 'Node Object',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_node_obj_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

@@ -516,10 +516,9 @@ async function initColumn() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_column_list',
 		header: 'Columns',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_column_list',
 		orderDefine: 50,
 		owner: 'sys_system_old',
@@ -527,10 +526,9 @@ async function initColumn() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_column_detail',
 		header: 'Column',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_column_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -706,10 +704,9 @@ async function initTable() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_table_list',
 		header: 'Tables',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_table_list',
 		orderDefine: 160,
 		owner: 'sys_system_old',
@@ -717,10 +714,9 @@ async function initTable() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_table_detail',
 		header: 'Table',
-		isHideRowManager: false,
 		name: 'node_obj_sys_admin_table_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

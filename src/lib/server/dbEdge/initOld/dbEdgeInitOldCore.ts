@@ -1,4 +1,4 @@
-import { codeTypes, codes, sysUser } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { codeTypesBulk, codesBulk, sysUser } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 import { addCode, addCodeType } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 const FILE = 'initCore'
@@ -19,7 +19,7 @@ async function initSysCore() {
 	await sysUser('System', 'user_sys')
 }
 async function initSysCodeTypess() {
-	await codeTypes([
+	await codeTypesBulk([
 		['app_cm', 0, 'ct_cm_case_note_type'],
 		['app_cm', 0, 'ct_cm_service_flow_status'],
 		['app_cm', 0, 'ct_cm_course_exam'],
@@ -40,7 +40,7 @@ async function initSysCodeTypess() {
 		['app_sys', 0, 'ct_sys_do_field_op'],
 		['app_sys', 0, 'ct_sys_do_field_source'],
 		['app_sys', 0, 'ct_sys_do_render_type'],
-		['app_sys', 0, 'ct_sys_node_obj_icon'],
+		['app_sys', 0, 'ct_sys_icon'],
 		['app_sys', 0, 'ct_sys_node_obj_nav_type'],
 		['app_sys', 0, 'ct_sys_node_obj_type'],
 		['app_sys', 0, 'ct_sys_person_ethnicity'],
@@ -68,7 +68,7 @@ async function initSysCodeTypess() {
 }
 
 async function initSysCodes() {
-	await codes([
+	await codesBulk([
 		// ct_cm_case_note_type
 		['ct_cm_case_note_type', 'app_cm', 'Assessment', 0],
 		['ct_cm_case_note_type', 'app_cm', 'Case Assignment', 0],
@@ -209,15 +209,15 @@ async function initSysCodes() {
 		['ct_sys_do_render_type', 'app_sys', 'form', 0],
 
 		// node obj - icons
-		['ct_sys_node_obj_icon', 'app_cm', 'activities', 0],
-		['ct_sys_node_obj_icon', 'app_cm', 'goals', 0],
-		['ct_sys_node_obj_icon', 'app_cm', 'message', 0],
-		['ct_sys_node_obj_icon', 'app_cm', 'quote-enclosed', 0],
+		['ct_sys_icon', 'app_cm', 'activities', 0],
+		['ct_sys_icon', 'app_cm', 'goals', 0],
+		['ct_sys_icon', 'app_cm', 'message', 0],
+		['ct_sys_icon', 'app_cm', 'quote-enclosed', 0],
 
-		['ct_sys_node_obj_icon', 'app_sys', 'application', 0],
-		['ct_sys_node_obj_icon', 'app_sys', 'root', 0],
-		['ct_sys_node_obj_icon', 'app_sys', 'sort-down', 0],
-		['ct_sys_node_obj_icon', 'app_sys', 'sort-up', 0],
+		['ct_sys_icon', 'app_sys', 'application', 0],
+		['ct_sys_icon', 'app_sys', 'root', 0],
+		['ct_sys_icon', 'app_sys', 'sort-down', 0],
+		['ct_sys_icon', 'app_sys', 'sort-up', 0],
 
 		// ct_sys_node_obj_nav_type
 		['ct_sys_node_obj_nav_type', 'app_cm', 'footer', 0],

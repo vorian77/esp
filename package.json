@@ -51,6 +51,8 @@
 		"axios": "^1.7.7",
 		"edgedb": "^1.5.12",
 		"lodash-es": "^4.17.21",
+		"lucide": "^0.454.0",
+		"lucide-svelte": "^0.454.0",
 		"mongodb": "^6.9.0",
 		"svelte-language-server": "^0.16.14",
 		"twilio": "^4.23.0"

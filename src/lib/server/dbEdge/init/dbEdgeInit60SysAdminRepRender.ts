@@ -417,19 +417,17 @@ async function initRepConfig() {
 	})
 
 	await addNodeProgram({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_my_report_list',
 		header: 'My Reports',
-		isHideRowManager: false,
 		name: 'node_obj_sys_rep_my_report_list',
 		orderDefine: 10,
 		owner: 'sys_system_old'
 	})
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_my_report_detail',
 		header: 'Config',
-		isHideRowManager: false,
 		name: 'node_obj_sys_rep_my_report_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -458,7 +456,7 @@ async function initRepRender() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_dyn_sys_rep_render',
 		header: 'Run',
 		isHideRowManager: true,

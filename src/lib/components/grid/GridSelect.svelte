@@ -14,7 +14,7 @@
 	export let dataObjData: DataObjData | undefined = undefined
 
 	const columnDefs = [
-		{ field: 'id', headerName: 'ID', hide: true },
+		{ field: 'data', headerName: 'Data', hide: false },
 		{ field: 'display', headerName: 'Display', flex: 1 }
 	]
 
@@ -23,6 +23,7 @@
 
 	const gridOptions = new GridManagerOptions({
 		columnDefs,
+		idColumn: state.parmsState.valueGet(ParmsValuesType.modalSelectIdField),
 		isSelect: true,
 		isSelectMulti: state.parmsState.valueGet(ParmsValuesType.isMultiSelect),
 		onSelectionChanged,
@@ -32,7 +33,6 @@
 	})
 
 	function onSelectionChanged(event: SelectionChangedEvent) {
-		console.log('GridSelect.onSelectionChanged', event.api.getSelectedNodes())
 		state.parmsState.valueSet(ParmsValuesType.listRecordIdSelected, getSelectedNodeIds(event.api))
 	}
 </script>

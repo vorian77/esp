@@ -188,20 +188,18 @@ async function initConfig() {
 	})
 
 	await addNodeProgram({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_system_config_list',
 		header: 'Systems (Config)',
-		isHideRowManager: false,
 		name: 'node_obj_sys_system_config_list',
 		orderDefine: 20,
 		owner: 'sys_system_old'
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_system_config_detail',
 		header: 'Organization',
-		isHideRowManager: false,
 		name: 'node_obj_sys_system_config_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

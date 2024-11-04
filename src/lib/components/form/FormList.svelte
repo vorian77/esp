@@ -147,14 +147,16 @@
 		let columnDefs: ColDef[] = []
 		const fieldsSettings =
 			dataObj.userGridSettings.getPref(ParmsUserDataType.listColumnsModel)?.columns || []
-		const fieldsDisplayable = dataObj.fields.filter((f) => f.colDO.isDisplayable)
-		const fieldsDisplayableNew = fieldsDisplayable.filter((f) => {
+		const fieldsCore = dataObj.fields.filter(
+			(f) => f.colDO.isDisplayable || f.colDO.propName === 'id'
+		)
+		const fieldsGrid = fieldsCore.filter((f) => {
 			return !fieldsSettings.map((fs) => fs.colId).includes(f.colDO.propName)
 		})
 
 		// config settings fields
 		fieldsSettings.forEach((fs) => {
-			const field = fieldsDisplayable.find((f) => f.colDO.propName === fs.colId)
+			const field = fieldsCore.find((f) => f.colDO.propName === fs.colId)
 			if (field) {
 				let defn = initGridColumnsField(field)
 				defn.flex = fs.flex
@@ -164,12 +166,13 @@
 		})
 
 		// config new fields
-		fieldsDisplayableNew.forEach((f) => {
+		fieldsGrid.forEach((f) => {
 			let defn = initGridColumnsField(f)
 			defn.flex = 1
 			defn.hide = !f.colDO.isDisplayable || !f.colDO.isDisplay
 			columnDefs.push(defn)
 		})
+		console.log('FormList.columnDefs', columnDefs)
 		return columnDefs
 	}
 	function initGridColumnsField(field: Field) {
@@ -313,7 +316,7 @@
 
 		state.update({
 			packet: new StatePacket({
-				action: StatePacketAction.selectModalItemsOpen,
+				action: StatePacketAction.selectModalFieldItemsOpen,
 				confirmType: TokenAppDoActionConfirmType.none,
 				token: new TokenAppModalSelect({
 					fieldLabel,

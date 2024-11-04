@@ -214,10 +214,9 @@ async function initSysAdminApp() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_app_list',
 		header: 'Apps',
-		isHideRowManager: false,
 		name: 'node_obj_sys_app_list',
 		orderDefine: 25,
 		owner: 'sys_system_old',
@@ -225,10 +224,9 @@ async function initSysAdminApp() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_app_detail',
 		header: 'App',
-		isHideRowManager: false,
 		name: 'node_obj_sys_app_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',
@@ -270,6 +268,16 @@ async function initSysAdminAppHeader() {
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeIcon',
+				isDisplayable: true,
+				orderDisplay: 35,
+				orderDefine: 35,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -334,6 +342,17 @@ async function initSysAdminAppHeader() {
 				orderDefine: 50,
 				indexTable: 0,
 				matchColumn: 'name'
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeIcon',
+				isDisplayable: true,
+				orderDisplay: 55,
+				orderDefine: 55,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_icon',
+				linkTable: 'SysCode'
 			},
 			{
 				codeFieldElement: 'toggle',
@@ -411,10 +430,9 @@ async function initSysAdminAppHeader() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_app_header_list',
 		header: 'App Headers',
-		isHideRowManager: false,
 		name: 'node_obj_sys_app_header_list',
 		orderDefine: 20,
 		owner: 'sys_system_old',
@@ -422,10 +440,9 @@ async function initSysAdminAppHeader() {
 	})
 
 	await addNodeProgramObj({
-		codeIcon: 'application',
+		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_app_header_detail',
 		header: 'App Header',
-		isHideRowManager: false,
 		name: 'node_obj_sys_app_header_detail',
 		orderDefine: 10,
 		owner: 'sys_system_old',

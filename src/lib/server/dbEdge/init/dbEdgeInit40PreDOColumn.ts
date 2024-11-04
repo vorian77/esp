@@ -1461,8 +1461,8 @@ export async function initPreColumn() {
 	})
 	await addColumn({
 		codeDataType: 'bool',
-		header: 'User Selected - System',
-		name: 'isSystemRootNode',
+		header: 'System Root',
+		name: 'isSystemRoot',
 		owner: 'sys_system_old'
 	})
 	await addColumn({
