@@ -237,9 +237,9 @@ export enum FieldElement {
 
 export class FieldItem {
 	data: string
-	display: any
+	display: string
 	selected?: boolean
-	constructor(data: any, display: any, selected: boolean | undefined = false) {
+	constructor(data: any, display: string, selected: boolean | undefined = false) {
 		this.display = display
 		this.data = data
 		this.selected = selected

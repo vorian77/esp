@@ -292,7 +292,7 @@
 				break
 
 			case StatePacketAction.selectModalFieldItemsOpen:
-				await state.openModalSelectDataItems(token)
+				await state.openModalSelect(token)
 				break
 
 			default:

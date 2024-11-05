@@ -138,7 +138,7 @@ export class User {
 							// }
 						},
 						isMultiSelect: false,
-						itemsCurrent: []
+						idsSelected: []
 						// itemsList: resources.map((r) => {
 						// 	return new FieldItem(r.idResource, r.header)
 						// })

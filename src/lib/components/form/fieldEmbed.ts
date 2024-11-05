@@ -51,7 +51,7 @@ export class FieldEmbed extends Field {
 			this.dataObj = await DataObj.init(props.state, dataField.data)
 			this.dataObj.objData = dataField.data
 			this.dataObj.data.parms.valueSetList(
-				ParmsValuesType.listRecordIdList,
+				ParmsValuesType.listIds,
 				dataField.data.rowsRetrieved.dataRows
 			)
 			this.dataObj.setIsListEmbed()

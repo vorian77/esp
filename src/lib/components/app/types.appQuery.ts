@@ -79,6 +79,7 @@ export async function query(
 
 	document.body.style.setProperty('cursor', 'wait', 'important')
 	const result: ResponseBody = await queryExecute(tab.getDataObjSource(), queryType, queryData)
+	console.log('appQuery.result', result)
 	document.body.style.setProperty('cursor', 'default')
 
 	if (!result.success) {
@@ -116,10 +117,7 @@ export async function query(
 			)
 		}
 		if (tab.dataObj.raw.codeCardinality === DataObjCardinality.list) {
-			tab.data.parms.valueSetList(
-				ParmsValuesType.listRecordIdList,
-				tab.data.rowsRetrieved.getRows()
-			)
+			tab.data.parms.valueSetList(ParmsValuesType.listIds, tab.data.rowsRetrieved.getRows())
 		}
 	}
 	return true

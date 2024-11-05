@@ -102,7 +102,7 @@
 
 	function fGridCallbackFilter(event: FilterChangedEvent) {
 		dataObjData.rowsRetrieved.syncFields(dataObj.dataRecordsDisplay, ['selected'])
-		state.parmsState.valueSet(ParmsValuesType.listRecordIdSelected, getSelectedNodeIds(event.api))
+		state.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api))
 	}
 
 	function fGridCallbackUpdateValue(fieldName: string, data: DataRecord) {
@@ -137,7 +137,7 @@
 			listReorderColumn: dataObj.raw.listReorderColumn,
 			onCellClicked,
 			onSelectionChanged,
-			parmStateSelectedIds: state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected),
+			parmStateSelectedIds: state.parmsState.valueGet(ParmsValuesType.listIdsSelected),
 			rowData: initGridData(),
 			userSettings: dataObj.userGridSettings
 		})
@@ -267,7 +267,7 @@
 		})
 
 		dataObj.data.parms.valueSet(
-			ParmsValuesType.listRecordIdList,
+			ParmsValuesType.listIds,
 			dataRows.map((r: any) => r.id)
 		)
 
@@ -282,7 +282,7 @@
 			if (field.colDO.hasItems) {
 				const fieldLabel = field.colDO.label
 				const itemsList = field.colDO.items
-				const itemsCurrent = Array.isArray(event.data[fieldName])
+				const idsSelected = Array.isArray(event.data[fieldName])
 					? event.data[fieldName]
 					: ['', null, undefined].includes(event.data[fieldName])
 						? []
@@ -293,7 +293,7 @@
 					fieldName,
 					fieldLabel,
 					itemsList,
-					itemsCurrent,
+					idsSelected,
 					isMultiSelect,
 					rowNode
 				)
@@ -305,7 +305,7 @@
 		fieldName: string,
 		fieldLabel: string,
 		itemsList: FieldItem[],
-		itemsCurrent: string[],
+		idsSelected: string[],
 		isMultiSelect,
 		rowNode: any
 	) {
@@ -320,7 +320,7 @@
 				token: new TokenAppModalSelect({
 					fieldLabel,
 					fModalClose,
-					itemsCurrent,
+					idsSelected,
 					itemsList,
 					isMultiSelect
 				})
@@ -331,7 +331,7 @@
 			if (returnType === TokenAppModalReturnType.complete) {
 				const parms: ParmsValues = returnData.data || undefined
 				if (parms) {
-					const newValue = parms[ParmsValuesType.listRecordIdSelected]
+					const newValue = parms[ParmsValuesType.listIdsSelected]
 
 					// update dataObj
 					fGridCallbackUpdateValue(fieldName, { id: rowNode.data.id, [fieldName]: newValue })
@@ -347,7 +347,7 @@
 		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit) {
 			return
 		} else if (isSelect) {
-			state.parmsState.valueSet(ParmsValuesType.listRecordIdSelected, getSelectedNodeIds(event.api))
+			state.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api))
 		} else {
 			const record = event.api.getSelectedRows()[0]
 			if (record) {

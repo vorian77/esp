@@ -254,7 +254,7 @@ export class State {
 		parmsState.update(fieldDataObj.data.parms.valueGetAll())
 		parmsState.valueSet(ParmsValuesType.embedFieldName, field.colDO.propName)
 		parmsState.valueSetList(
-			ParmsValuesType.listRecordIdSelected,
+			ParmsValuesType.listIdsSelected,
 			token.dataObj.data.rowsRetrieved.getRows()
 		)
 
@@ -294,34 +294,10 @@ export class State {
 
 		parmsState.valueSet(ParmsValuesType.isMultiSelect, token.isMultiSelect)
 		parmsState.valueSet(ParmsValuesType.listLabel, token.fieldLabel)
-		parmsState.valueSet(ParmsValuesType.listRecordIdSelected, token.itemsCurrent)
-		parmsState.valueSet(ParmsValuesType.listRecordItems, token.itemsList)
-
-		const stateModal = new StateSurfaceModal({
-			actionsFieldDialog: await this.getActions('doag_dialog_footer_list'),
-			layoutComponent: StateLayoutComponent.layoutContent,
-			layoutHeader: {
-				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.fieldLabel}`
-			},
-			packet: new StatePacket({
-				action: StatePacketAction.selectModalFieldItems,
-				confirmType: TokenAppDoActionConfirmType.none,
-				token
-			}),
-			parmsState
-		})
-
-		await this.openModal(stateModal, token.fModalClose)
-	}
-
-	async openModalSelectDataItems(token: TokenAppModalSelect) {
-		const parmsState = new ParmsValues({})
-
-		parmsState.valueSet(ParmsValuesType.isMultiSelect, token.isMultiSelect)
-		parmsState.valueSet(ParmsValuesType.listLabel, token.fieldLabel)
-		parmsState.valueSet(ParmsValuesType.listRecordIdSelected, token.itemsCurrent)
-		parmsState.valueSet(ParmsValuesType.listRecordItems, token.itemsList)
-		parmsState.valueSet(ParmsValuesType.modalSelectIdField, 'data')
+		parmsState.valueSet(ParmsValuesType.listIdsSelected, token.idsSelected)
+		parmsState.valueSet(ParmsValuesType.listItems, token.itemsList)
+		parmsState.valueSet(ParmsValuesType.listItemsFieldDisplay, 'display')
+		parmsState.valueSet(ParmsValuesType.listItemsFieldId, 'id')
 
 		const stateModal = new StateSurfaceModal({
 			actionsFieldDialog: await this.getActions('doag_dialog_footer_list'),

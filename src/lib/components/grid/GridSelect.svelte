@@ -13,9 +13,13 @@
 	export let dataObj: DataObj | undefined = undefined
 	export let dataObjData: DataObjData | undefined = undefined
 
+	const fieldId = state.parmsState.valueGet(ParmsValuesType.listItemsFieldId)
+	const fieldDisplayName = state.parmsState.valueGet(ParmsValuesType.listItemsFieldDisplay)
+	const fieldDisplayHeader = state.parmsState.valueGet(ParmsValuesType.listLabel)
+
 	const columnDefs = [
-		{ field: 'data', headerName: 'Data', hide: false },
-		{ field: 'display', headerName: 'Display', flex: 1 }
+		{ field: fieldId, headerName: 'Data', hide: true },
+		{ field: fieldDisplayName, headerName: fieldDisplayHeader, flex: 1 }
 	]
 
 	const sortObj = new DataObjSort()
@@ -23,17 +27,17 @@
 
 	const gridOptions = new GridManagerOptions({
 		columnDefs,
-		idColumn: state.parmsState.valueGet(ParmsValuesType.modalSelectIdField),
+		idColumn: fieldId,
 		isSelect: true,
 		isSelectMulti: state.parmsState.valueGet(ParmsValuesType.isMultiSelect),
 		onSelectionChanged,
 		parmPrefSortModel: sortObj,
-		parmStateSelectedIds: state.parmsState.valueGet(ParmsValuesType.listRecordIdSelected),
-		rowData: state.parmsState.valueGet(ParmsValuesType.listRecordItems)
+		parmStateSelectedIds: state.parmsState.valueGet(ParmsValuesType.listIdsSelected),
+		rowData: state.parmsState.valueGet(ParmsValuesType.listItems)
 	})
 
 	function onSelectionChanged(event: SelectionChangedEvent) {
-		state.parmsState.valueSet(ParmsValuesType.listRecordIdSelected, getSelectedNodeIds(event.api))
+		state.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api))
 	}
 </script>
 

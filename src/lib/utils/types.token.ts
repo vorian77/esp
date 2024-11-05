@@ -334,7 +334,7 @@ export class TokenAppModalSelect extends TokenApp {
 	fieldLabel: string
 	fModalClose: Function
 	isMultiSelect: boolean
-	itemsCurrent: FieldItem[]
+	idsSelected: FieldItem[]
 	itemsList: FieldItem[]
 	constructor(obj: any) {
 		const clazz = 'TokenAppModalSelect'
@@ -342,7 +342,7 @@ export class TokenAppModalSelect extends TokenApp {
 		this.fieldLabel = strRequired(obj.fieldLabel, clazz, 'fieldLabel')
 		this.fModalClose = required(obj.fModalClose, clazz, 'fModalClose')
 		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
-		this.itemsCurrent = required(obj.itemsCurrent, clazz, 'itemsCurrent')
+		this.idsSelected = required(obj.idsSelected, clazz, 'idsSelected')
 		this.itemsList = required(obj.itemsList, clazz, 'itemsList')
 	}
 }

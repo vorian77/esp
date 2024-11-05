@@ -22,7 +22,6 @@ export async function initDataReports() {
 	await initReportCourseSummary()
 	await initReportOurWorldSummary()
 	await initReportStudentSummary()
-	// await initReportWizardStudentSummary()
 }
 
 async function initReportCMTrainingCohortAttendance() {
@@ -1011,10 +1010,7 @@ async function initReportCourseSummary() {
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort {*} FILTER
-          .cohort.course.id = app_cm::CmCourse.id AND
-					NOT EXISTS .dateStart AND
-          .dateStartEst < cal::to_local_date(datetime_current(), 'US/Eastern') )))`,
+				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort {*} FILTER .cohort.course.id = app_cm::CmCourse.id AND NOT EXISTS .dateStart AND .dateStartEst < cal::to_local_date(datetime_current(), 'US/Eastern') )))`,
 				headerAlt: 'Students - Missed Est. Enrollment',
 				indexTable: 0,
 				nameCustom: 'customStudentsEnrollMissed'
@@ -1025,7 +1021,7 @@ async function initReportCourseSummary() {
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND EXISTS .dateStart AND NOT EXISTS .dateEnd AND .codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', 'Enrolled')) )))`,
+				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND EXISTS .dateStart AND NOT EXISTS .dateEnd AND .codeStatus.name = 'Enrolled')))`,
 				headerAlt: 'Students - Enrolled',
 				indexTable: 0,
 				nameCustom: 'customStudentsEnrolled'
@@ -1036,7 +1032,7 @@ async function initReportCourseSummary() {
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND EXISTS .dateStart AND EXISTS .dateEnd AND .codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', 'Completed')) )))`,
+				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND EXISTS .dateStart AND EXISTS .dateEnd AND .codeStatus.name = 'Completed' )))`,
 				headerAlt: 'Students - Completed',
 				indexTable: 0,
 				nameCustom: 'customStudentsCompleted'
@@ -1047,7 +1043,7 @@ async function initReportCourseSummary() {
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND EXISTS .dateStart AND EXISTS .dateEnd AND .codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', 'Dropped Out')) )))`,
+				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND EXISTS .dateStart AND EXISTS .dateEnd AND .codeStatus.name = 'Dropped Out' )))`,
 				headerAlt: 'Students - Dropped Out',
 				indexTable: 0,
 				nameCustom: 'customStudentsDroppedOut'
@@ -1478,87 +1474,5 @@ async function initReportStudentSummary() {
 		name: 'node_obj_cm_ai_report_student_summary',
 		orderDefine: 120,
 		owner: 'sys_ai_old'
-	})
-}
-
-async function initReportWizardStudentSummary() {
-	// await resetDBItems(
-	// 	'Reset Reports',
-	// 	`DELETE sys_core::SysDataObj FILTER .name = 'data_obj_ai_report_wizard_student_summary'`
-	// )
-
-	const exprStudents = `(SELECT app_cm::CmClient FILTER .owner.id in <user,uuidlist,systemIdList>)`
-	const exprRate = (expr1: string, expr2: string) =>
-		`(SELECT math::floor(${expr1} / ${expr2} * 100))`
-
-	await addDataObj({
-		actionFieldGroup: 'doag_report_render',
-		codeComponent: 'FormList',
-		codeCardinality: 'list',
-		exprFilter: 'none',
-		header: 'Students (Summary)',
-		name: 'data_obj_ai_report_wizard_student_summary',
-		owner: 'sys_ai_old',
-		tables: [],
-		fields: [
-			{
-				columnName: 'custom_element_int',
-				orderDefine: 10,
-				exprCustom: `(SELECT count(${exprStudents}))`,
-				headerAlt: 'Students (Count)',
-				nameCustom: 'customStudentsCount'
-			}
-			// {
-			// 	columnName: 'custom_element_int',
-			// 	orderDefine: 20,
-			// 	exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort.csf.client.id IN ${exprStudents}.id)))`,
-			// 	headerAlt: 'Students In Cohort (Count)',
-			// 	nameCustom: 'customStudentsWithCohortCount'
-			// },
-			// {
-			// 	columnName: 'custom_element_float',
-			// 	orderDefine: 30,
-			// 	exprCustom: exprRate(
-			// 		`(SELECT count((SELECT app_cm::CmCsfCohort.csf.client.id IN ${exprStudents}.id)))`,
-			// 		`(SELECT count(${exprStudents}))`
-			// 	),
-			// 	headerAlt: 'Students In Cohort Rate (%)',
-			// 	nameCustom: 'customStudentsWithCohortRate'
-			// },
-			// {
-			// 	columnName: 'custom_element_int',
-			// 	orderDefine: 40,
-			// 	exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohortAttd)))`,
-			// 	headerAlt: 'Attendance Days Offered (Count)',
-			// 	nameCustom: 'customAttendanceDaysOfferedCount'
-			// },
-			// {
-			// 	columnName: 'custom_element_float',
-			// 	orderDefine: 50,
-			// 	exprCustom: exprRate(
-			// 		`(SELECT count((SELECT app_cm::CmCsfCohortAttd FILTER .computedHours > 0)))`,
-			// 		`(SELECT count((SELECT app_cm::CmCsfCohortAttd)))`
-			// 	),
-			// 	headerAlt: 'Attendance Days Attended Rate (%)',
-			// 	nameCustom: 'customAttendanceDaysAttendedRate'
-			// },
-			// {
-			// 	columnName: 'custom_element_int',
-			// 	orderDefine: 60,
-			// 	exprCustom: `(SELECT count((SELECT app_cm::CmCsfJobPlacement.csf.client.id IN ${exprStudents}.id)))`,
-			// 	headerAlt: 'Students Placed In Job (Count)',
-			// 	nameCustom: 'customJobPlacementCount'
-			// },
-			// {
-			// 	columnName: 'custom_element_float',
-			// 	orderDefine: 70,
-			// 	exprCustom: exprRate(
-			// 		`(SELECT count((SELECT app_cm::CmCsfJobPlacement.csf.client.id IN ${exprStudents}.id)))`,
-			// 		`(SELECT count((SELECT app_cm::CmCsfCohort.csf.client.id IN ${exprStudents}.id)))`
-			// 	),
-			// 	headerAlt: 'Students Placed In Job Rate (%)',
-			// 	nameCustom: 'customJobPlacementRate'
-			// }
-		]
 	})
 }

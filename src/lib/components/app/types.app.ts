@@ -341,7 +341,7 @@ export class App {
 							} else {
 								tabParent.data.parms.valueSet(
 									ParmsValuesType.listRecordIdCurrent,
-									tabParent.data.parms.valueGet(ParmsValuesType.listRecordIdList)[0]
+									tabParent.data.parms.valueGet(ParmsValuesType.listIds)[0]
 								)
 								await this.tabQueryDetailDataRecord(
 									state,
@@ -354,7 +354,7 @@ export class App {
 							let recordIdOld = currTab.data.rowsRetrieved.getDetailRecordValue('id')
 							let recordIdNew = ''
 
-							let idList = tabParent.data.parms.valueGet(ParmsValuesType.listRecordIdList)
+							let idList = tabParent.data.parms.valueGet(ParmsValuesType.listIds)
 							if (idList.length > 1) {
 								let idx = idList.findIndex((id: string) => id === recordIdOld)
 								idx = idx === 0 ? 1 : idx - 1
@@ -637,7 +637,7 @@ export class AppLevelTab {
 		return record[propName]
 	}
 	listGetRecords(): DataRecord[] {
-		const idList: string[] = this.data?.parms.valueGet(ParmsValuesType.listRecordIdList)
+		const idList: string[] = this.data?.parms.valueGet(ParmsValuesType.listIds)
 		return idList
 			? idList.map((id) => {
 					return (

@@ -1101,14 +1101,14 @@ export class ParmsValues {
 		return newParms
 	}
 	update(data: DataRecord | undefined) {
-		data = valueOrDefault(data, {})
+		data = data ? data : {}
 		Object.entries(data).forEach(([key, value]) => {
 			this.data[key] = value
 		})
 	}
 	updateList(dataRows: DataRow[] | undefined, recordId: string, recordIdAlt: string = '') {
 		this.valueSet(ParmsValuesType.listRecordIdCurrent, recordIdAlt ? recordIdAlt : recordId)
-		this.valueSetList(ParmsValuesType.listRecordIdList, dataRows)
+		this.valueSetList(ParmsValuesType.listIds, dataRows)
 	}
 	valueGet(key: string) {
 		return this.data[key]
@@ -1139,10 +1139,11 @@ export enum ParmsValuesType {
 	embedParentId = 'embedParentId',
 	isMultiSelect = 'isMultiSelect',
 	isSystemRoot = 'isSystemRoot',
+	listIds = 'listIds',
+	listIdsSelected = 'listIdsSelected',
+	listItems = 'listItems',
+	listItemsFieldDisplay = 'listItemsFieldDisplay',
+	listItemsFieldId = 'listItemsFieldId',
 	listLabel = 'listLabel',
-	listRecordIdCurrent = 'listRecordIdCurrent',
-	listRecordIdList = 'listRecordIdList',
-	listRecordIdSelected = 'listRecordIdSelected',
-	listRecordItems = 'listRecordItems',
-	modalSelectIdField = 'modalSelectIdField'
+	listRecordIdCurrent = 'listRecordIdCurrent'
 }
