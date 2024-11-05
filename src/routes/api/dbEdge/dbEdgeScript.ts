@@ -42,7 +42,7 @@ export class ScriptGroup {
 		return script
 	}
 
-	addScriptDataItems(query: Query, queryData: TokenApiQueryData, props: RawDataObjPropDB) {
+	addScriptDataItems(query: Query, queryData: TokenApiQueryData, props: RawDataObjPropDB[]) {
 		const isFilterCurrentValue = query.rawDataObj.codeCardinality === DataObjCardinality.detail
 		return this.addScript(query, queryData, ScriptExePost.dataItems, [
 			['propsSelectDataItems', { props, isFilterCurrentValue }],

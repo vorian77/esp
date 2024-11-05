@@ -1,7 +1,7 @@
-import { InitDB } from '$server/dbEdge/init/types.init'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initUser(init: InitDB) {
-	// initAppHeaders(init)
+export function initUser(init: InitDb) {
+	initAppHeaders(init)
 	initApps(init)
 	initUserType(init)
 	initUserSystems(init)
@@ -9,7 +9,7 @@ export function initUser(init: InitDB) {
 	// initStaff()
 }
 
-async function initAppHeaders(init: InitDB) {
+async function initAppHeaders(init: InitDb) {
 	init.addTrans('sysAppHeader', {
 		codeIcon: 'ShieldEllipsis',
 		header: 'Administration',
@@ -56,7 +56,7 @@ async function initAppHeaders(init: InitDB) {
 	})
 }
 
-async function initApps(init: InitDB) {
+async function initApps(init: InitDb) {
 	/* system */
 	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_sys_admin',
@@ -123,7 +123,7 @@ async function initApps(init: InitDB) {
 	})
 }
 
-async function initUserType(init: InitDB) {
+async function initUserType(init: InitDb) {
 	/* system */
 	init.addTrans('sysUserType', {
 		header: 'Admin - Global',
@@ -131,8 +131,8 @@ async function initUserType(init: InitDB) {
 		owner: 'sys_system_old',
 		resources: [
 			{ codeType: 'app', resource: 'app_sys_admin_global' },
-			{ codeType: 'app', resource: 'app_sys_reporting' }
-			// { codeType: 'widget', resource: 'widget_sys_report' }
+			{ codeType: 'app', resource: 'app_sys_reporting' },
+			{ codeType: 'widget', resource: 'widget_sys_report' }
 		]
 	})
 
@@ -143,8 +143,8 @@ async function initUserType(init: InitDB) {
 		owner: 'sys_ai_old',
 		resources: [
 			{ codeType: 'app', resource: 'app_sys_admin_user' },
-			{ codeType: 'app', resource: 'app_sys_reporting' }
-			// { codeType: 'widget', resource: 'widget_sys_report' }
+			{ codeType: 'app', resource: 'app_sys_reporting' },
+			{ codeType: 'widget', resource: 'widget_sys_report' }
 		]
 	})
 	init.addTrans('sysUserType', {
@@ -156,8 +156,8 @@ async function initUserType(init: InitDB) {
 			{ codeType: 'app', resource: 'app_ai_staff' },
 			{ codeType: 'app', resource: 'app_sys_reporting' },
 			{ codeType: 'report', resource: 'report_cm_training_cohort_attendance' },
-			{ codeType: 'report', resource: 'report_cm_training_cohort_job_placement' }
-			// { codeType: 'widget', resource: 'widget_sys_report' }
+			{ codeType: 'report', resource: 'report_cm_training_cohort_job_placement' },
+			{ codeType: 'widget', resource: 'widget_sys_report' }
 		]
 	})
 
@@ -178,25 +178,33 @@ async function initUserType(init: InitDB) {
 		name: 'ut_moed_student',
 		owner: 'sys_moed_old',
 		resources: [
-			// { codeType: 'widget', resource: 'wf_moed_student_ssr_app' },
-			// { codeType: 'widget', resource: 'wf_moed_student_ssr_doc' },
-			// { codeType: 'widget', resource: 'wf_moed_student_ssr_msg' }
+			{ codeType: 'widget', resource: 'wf_moed_student_ssr_app' },
+			{ codeType: 'widget', resource: 'wf_moed_student_ssr_doc' },
+			{ codeType: 'widget', resource: 'wf_moed_student_ssr_msg' }
 		]
 	})
 }
 
-async function initUserSystems(init: InitDB) {
+async function initUserSystems(init: InitDb) {
 	init.addTrans('userSystemsBulk', [
-		['user_sys', ['sys_system_old', 'sys_ai_old', 'sys_moed_old']],
-		['2487985578', ['sys_system_old', 'sys_ai_old', 'sys_moed_old']],
-		['3136276210', ['sys_ai_old']],
-		['2482317505', ['sys_ai_old']],
-		['2487985578', ['sys_ai_old']],
-		['3136272756', ['sys_ai_old']]
+		['user_sys', 'sys_system_old'],
+		['user_sys', 'sys_ai_old'],
+		['user_sys', 'sys_moed_old']
+	])
+	init.addTrans('userSystemsBulk', [
+		['2487985578', 'sys_system_old'],
+		['2487985578', 'sys_ai_old'],
+		['2487985578', 'sys_moed_old']
+	])
+	init.addTrans('userSystemsBulk', [
+		['3136276210', 'sys_ai_old'],
+		['2482317505', 'sys_ai_old'],
+		['2487985578', 'sys_ai_old'],
+		['3136272756', 'sys_ai_old']
 	])
 }
 
-async function initUserUserType(init: InitDB) {
+async function initUserUserType(init: InitDb) {
 	// user_sys
 	init.addTrans('userUserTypeBulk', [
 		['user_sys', 'ut_sys_admin_global'],

@@ -224,5 +224,5 @@ export function valueIfExists(val: any) {
 	return val !== undefined ? val : undefined
 }
 export function valueOrDefault(val: any, defaultVal: any) {
-	return val != null ? val : defaultVal
+	return [null, undefined].includes(val) ? defaultVal : val
 }

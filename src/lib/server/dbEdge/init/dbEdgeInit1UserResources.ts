@@ -1,12 +1,12 @@
-import { InitDB } from '$server/dbEdge/init/types.init'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initUserResource(init: InitDB) {
+export function initUserResource(init: InitDb) {
 	initResources(init)
 }
 
-function initResources(init: InitDB) {
+function initResources(init: InitDb) {
 	/* footers */
-	init.addTrans('sysNodeFooter', {
+	init.addTrans('sysNodeObjFooter', {
 		codeIcon: 'AppWindow',
 		codeType: 'home',
 		header: 'Home',

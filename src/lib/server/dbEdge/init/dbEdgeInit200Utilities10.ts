@@ -48,11 +48,7 @@ export async function userSystemsBulk(params: any) {
 			return e.update(e.sys_user.SysUser, (u) => ({
 				filter: e.op(u.userName, '=', e.cast(e.str, i[0])),
 				set: {
-					systems: e.assert_distinct(
-						e.for(e.array_unpack(e.cast(e.array(e.str), i[1])), (s) => {
-							return e.sys_core.getSystemPrime(s)
-						})
-					)
+					systems: { '+=': e.sys_core.getSystemPrime(e.cast(e.str, i[1])) }
 				}
 			}))
 		})

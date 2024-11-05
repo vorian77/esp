@@ -1100,7 +1100,7 @@ export class ParmsValues {
 		if (parms) newParms.data = parms.data
 		return newParms
 	}
-	update(data: DataRecord) {
+	update(data: DataRecord | undefined) {
 		data = valueOrDefault(data, {})
 		Object.entries(data).forEach(([key, value]) => {
 			this.data[key] = value

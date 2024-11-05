@@ -1,4 +1,4 @@
-import { queryExecute,queryMultiple } from '$routes/api/dbEdge/dbEdge'
+import { queryExecute, queryMultiple } from '$routes/api/dbEdge/dbEdge'
 import { ApiResult } from '$routes/api/api'
 import {
 	TokenApiId,
@@ -73,6 +73,7 @@ async function processDataObjQuery(
 	scriptGroup: ScriptGroup,
 	returnData: DataObjData
 ) {
+	const clazz = 'processDataObjQuery'
 	switch (queryType) {
 		case TokenApiQueryType.preset:
 			returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
@@ -102,7 +103,7 @@ async function processDataObjQuery(
 			break
 
 		case TokenApiQueryType.save:
-			returnData.fields = queryData?.dataTab?.fields
+			returnData.fields = getArray(queryData?.dataTab?.fields)
 			query.setProcessRow(
 				new ProcessRowUpdate(query.rawDataObj.rawPropsSelect, queryData.dataTab?.rowsSave)
 			)
@@ -131,7 +132,7 @@ async function processDataObjQuery(
 						: TokenApiQueryType.retrieve
 			await processDataObjQuery(
 				queryTypeEmbed,
-				new Query(field.data.rawDataObj, field),
+				new Query(required(field.data.rawDataObj, clazz, 'field.data.rawDataObj'), field),
 				queryData,
 				scriptGroup,
 				field.data
@@ -150,7 +151,11 @@ async function processDataObjExecute(
 	let scriptData: DataObjData
 	returnData.resetRowsRetrieved()
 	while (scriptGroup.scripts.length > 0) {
-		const script: Script = scriptGroup.scripts.shift()
+		const script: Script = required(
+			scriptGroup.scripts.shift(),
+			clazz,
+			'criptGroup.scripts.shift()'
+		)
 		const expr = evalExpr(script.script, script.queryData)
 		const rawDataList = await executeQueryMultiple(expr)
 
@@ -166,21 +171,18 @@ async function processDataObjExecute(
 		// }
 
 		scriptData = script?.query?.field ? script.query.field.data : returnData
-		scriptData.parms.update(script.queryData.dataTab.parms.valueGetAll())
+		scriptData.parms.update(script.queryData.dataTab?.parms.valueGetAll())
 		switch (script.exePost) {
 			case ScriptExePost.dataItems:
 				scriptData.items = rawDataList[0]
 				break
 
 			case ScriptExePost.formatData:
+				let record: DataRecord = {}
 				if (script.query.processRow) formatData(scriptData, rawDataList, script.query.processRow)
 
 				if (script.query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
-					const record: DataRecord = required(
-						scriptData.rowsRetrieved.getDetailRecord(),
-						clazz,
-						'record'
-					)
+					record = required(scriptData.rowsRetrieved.getDetailRecord(), clazz, 'record')
 
 					// set embedded parent tree records
 					const rootTableName = script.query.getTableRootName()
@@ -200,15 +202,15 @@ async function processDataObjExecute(
 									)
 						scriptData.parms.valueSet(ParmsValuesType.appSystemId, appSystemId)
 					}
-					// add dataItems
-					script.queryData?.dataTab?.parms.update(scriptData.parms.valueGetAll())
-					script.queryData.record = record
-					scriptGroup.addScriptDataItems(
-						script.query,
-						script.queryData,
-						script.query.rawDataObj.rawPropsSelect
-					)
 				}
+				// add dataItems
+				script.queryData?.dataTab?.parms.update(scriptData.parms.valueGetAll())
+				script.queryData.record = record
+				scriptGroup.addScriptDataItems(
+					script.query,
+					script.queryData,
+					script.query.rawDataObj.rawPropsSelect
+				)
 				break
 
 			case ScriptExePost.none:
@@ -449,7 +451,7 @@ class ProcessRowSelectPreset extends ProcessRowSelect {
 
 class ProcessRowUpdate extends ProcessRow {
 	rowsSave: DataRow[]
-	constructor(propsSelect: RawDataObjPropDB[], source: DataRows) {
+	constructor(propsSelect: RawDataObjPropDB[], source: DataRows | undefined = new DataRows()) {
 		const clazz = 'ProcessRowUpdate'
 		super(propsSelect)
 		this.rowsSave = source.getRows()

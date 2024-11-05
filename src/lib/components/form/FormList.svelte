@@ -172,7 +172,6 @@
 			defn.hide = !f.colDO.isDisplayable || !f.colDO.isDisplay
 			columnDefs.push(defn)
 		})
-		console.log('FormList.columnDefs', columnDefs)
 		return columnDefs
 	}
 	function initGridColumnsField(field: Field) {

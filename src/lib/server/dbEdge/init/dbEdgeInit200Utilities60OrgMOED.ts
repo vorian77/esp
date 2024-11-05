@@ -1,7 +1,7 @@
 import e from '$lib/dbschema/edgeql-js'
 import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
 
-export async function MOEDParticipantsBulk(params: any) {
+export async function MoedParticipantsBulk(params: any) {
 	sectionHeader(`MOED Participants`)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
@@ -54,7 +54,7 @@ export async function MOEDParticipantsBulk(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function MOEDCSFBulk(params: any) {
+export async function MoedCsfBulk(params: any) {
 	sectionHeader(`MOED Referrals`)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
@@ -89,7 +89,7 @@ export async function MOEDCSFBulk(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function MOEDStaffBulk(params: any) {
+export async function MoedStaffBulk(params: any) {
 	sectionHeader('MOED Staff')
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {

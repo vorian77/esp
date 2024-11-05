@@ -1,4 +1,4 @@
-import { InitDB } from '$server/dbEdge/init/types.init'
+import { InitDb } from '$server/dbEdge/init/types.init'
 import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 
 import { initReset } from '$server/dbEdge/init/dbEdgeInit0Reset'
@@ -20,19 +20,18 @@ import { initFeatMOED } from '$server/dbEdge/init/dbEdgeInit80FeatMOED'
 import { initDataReports } from '$server/dbEdge/init/dbEdgeInit120DataRep'
 
 // other
-import { initMigrationPerson } from '$server/dbEdge/init/dbEdgeInit100MigrPerson'
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 import { initUserResource } from '$server/dbEdge/init/dbEdgeInit1UserResources'
 
 export async function dbEdgeInit() {
-	let initDb = new InitDB()
+	let initDb = new InitDb()
 
-	// await dbEdgeInitSystem()
+	await dbEdgeInitSystem()
 	await dbEdgeInitFeature(initDb)
 	await initDb.execute()
 }
 
-async function dbEdgeInitFeature(initDb: InitDB) {
+async function dbEdgeInitFeature(initDb: InitDb) {
 	initFeatMOED(initDb)
 	initUserResource(initDb)
 	initUser(initDb)
@@ -44,7 +43,6 @@ async function dbEdgeInitSystem() {
 
 	await initSysCore()
 	await initSysOther()
-
 	await initFeatures()
 	await initData()
 }
@@ -62,8 +60,6 @@ async function initSysOther() {
 export async function initFeatures() {
 	await initFeatCMStudent()
 	await initFeatTraining()
-	// await initFeatMOED()
-	// await initMigrationPerson()
 }
 
 export async function initData() {
