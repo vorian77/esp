@@ -1,10 +1,7 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { tablesBulk } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initPreTable() {
-	sectionHeader('Table')
-
-	await tablesBulk([
+export function initPreTable(init: InitDb) {
+	init.addTrans('tablesBulk', [
 		// default
 		['sys_system_old', 'default', 'SysPerson', false],
 
@@ -72,7 +69,7 @@ export async function initPreTable() {
 		['sys_system_old', 'sys_user', 'SysWidget', false]
 	])
 
-	await tablesBulk([
+	init.addTrans('tablesBulk', [
 		// Atlantic Impact
 		['sys_ai_old', 'app_cm', 'CmClient', true],
 		['sys_ai_old', 'app_cm', 'CmClientServiceFlow', true],
@@ -90,7 +87,7 @@ export async function initPreTable() {
 		['sys_ai_old', 'app_cm', 'CmServiceFlow', true]
 	])
 
-	await tablesBulk([
+	init.addTrans('tablesBulk', [
 		// MOED
 		['sys_moed_old', 'org_moed', 'MoedDoc', true],
 		['sys_moed_old', 'org_moed', 'MoedMessage', true],

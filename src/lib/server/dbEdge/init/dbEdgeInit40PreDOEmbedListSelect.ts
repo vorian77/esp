@@ -1,19 +1,12 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListSelect
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initPreEmbedListSelect() {
-	sectionHeader('SysAdmin - Embed - ListSelect')
-
-	await initFieldListSelectCodes()
-	await initFieldListSelectColumns()
+export function initPreEmbedListSelect(init: InitDb) {
+	initFieldListSelectCodes(init)
+	initFieldListSelectColumns(init)
 }
 
-async function initFieldListSelectCodes() {
-	sectionHeader('Field List Select - Codes')
-	await addDataObj({
+function initFieldListSelectCodes(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -52,7 +45,7 @@ async function initFieldListSelectCodes() {
 		]
 	})
 
-	await addDataObjFieldEmbedListSelect({
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
 		actionFieldGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select Code(s)',
 		dataObjList: 'dofls_sys_admin_sys_code',
@@ -61,9 +54,8 @@ async function initFieldListSelectCodes() {
 	})
 }
 
-async function initFieldListSelectColumns() {
-	sectionHeader('Field List Select - Columns')
-	await addDataObj({
+function initFieldListSelectColumns(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -92,7 +84,7 @@ async function initFieldListSelectColumns() {
 		]
 	})
 
-	await addDataObjFieldEmbedListSelect({
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
 		actionFieldGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select Column(s)',
 		dataObjList: 'dofls_sys_admin_sys_column',

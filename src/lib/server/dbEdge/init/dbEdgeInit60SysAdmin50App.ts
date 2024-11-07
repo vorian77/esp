@@ -1,20 +1,13 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListSelect
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initAdminApp() {
-	sectionHeader('SysAdmin - App')
-	await initFieldListSelectNodes()
-	await initSysAdminApp()
-	await initSysAdminAppHeader()
+export function initAdminApp(init: InitDb) {
+	initFieldListSelectNodes(init)
+	initSysAdminApp(init)
+	initSysAdminAppHeader(init)
 }
 
-async function initFieldListSelectNodes() {
-	sectionHeader('Field List Select - App - Nodes')
-	await addDataObj({
+function initFieldListSelectNodes(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -42,7 +35,7 @@ async function initFieldListSelectNodes() {
 		]
 	})
 
-	await addDataObjFieldEmbedListSelect({
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
 		actionFieldGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select Node(s)',
 		dataObjList: 'dofls_sys_admin_sys_node',
@@ -51,8 +44,8 @@ async function initFieldListSelectNodes() {
 	})
 }
 
-async function initSysAdminApp() {
-	await addDataObj({
+function initSysAdminApp(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -89,7 +82,7 @@ async function initSysAdminApp() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -213,7 +206,7 @@ async function initSysAdminApp() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_app_list',
 		header: 'Apps',
@@ -223,7 +216,7 @@ async function initSysAdminApp() {
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_app_detail',
 		header: 'App',
@@ -234,8 +227,8 @@ async function initSysAdminApp() {
 	})
 }
 
-async function initSysAdminAppHeader() {
-	await addDataObj({
+function initSysAdminAppHeader(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -298,7 +291,7 @@ async function initSysAdminAppHeader() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -429,7 +422,7 @@ async function initSysAdminAppHeader() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_app_header_list',
 		header: 'App Headers',
@@ -439,7 +432,7 @@ async function initSysAdminAppHeader() {
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_app_header_detail',
 		header: 'App Header',

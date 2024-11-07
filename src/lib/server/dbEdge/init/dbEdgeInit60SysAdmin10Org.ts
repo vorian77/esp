@@ -1,18 +1,12 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { addDataObj } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import {
-	addNodeProgram,
-	addNodeProgramObj
-} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initAdminOrg() {
-	sectionHeader('SysAdmin - Organization')
-	await initOrgSys()
-	await initOrgUser()
+export function initAdminOrg(init: InitDb) {
+	initOrgSys(init)
+	initOrgUser(init)
 }
 
-async function initOrgSys() {
-	await addDataObj({
+function initOrgSys(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -41,7 +35,7 @@ async function initOrgSys() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -114,7 +108,7 @@ async function initOrgSys() {
 		]
 	})
 
-	await addNodeProgram({
+	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_org_list_sys',
 		header: 'Organizations (System)',
@@ -122,7 +116,7 @@ async function initOrgSys() {
 		orderDefine: 10,
 		owner: 'sys_system_old'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_org_detail_sys',
 		header: 'Organization (System)',
@@ -133,8 +127,8 @@ async function initOrgSys() {
 	})
 }
 
-async function initOrgUser() {
-	await addDataObj({
+function initOrgUser(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list_org_user',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -179,7 +173,7 @@ async function initOrgUser() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail_org_user',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -285,7 +279,7 @@ async function initOrgUser() {
 		]
 	})
 
-	await addNodeProgram({
+	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_org_list_user',
 		header: 'Organizations (User)',
@@ -293,7 +287,7 @@ async function initOrgUser() {
 		orderDefine: 10,
 		owner: 'sys_system_old'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_org_detail_user',
 		header: 'Organization (User)',

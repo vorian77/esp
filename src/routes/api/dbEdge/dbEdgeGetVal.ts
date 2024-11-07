@@ -5,12 +5,16 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '$routes/api/dbEdge/dbEdgeGetVal.ts'
 
-export function evalExpr(expr: string, queryData: TokenApiQueryData): string {
+export function evalExpr(
+	expr: string,
+	queryData: TokenApiQueryData,
+	context: EvalExprContext | undefined = undefined
+): string {
 	const clazz = 'evalExpr'
 	let newExpr = expr
 
 	if (newExpr) {
-		const tokens = evalExprTokens(expr, queryData)
+		const tokens = evalExprTokens(expr, queryData, context)
 
 		// replace
 		tokens.forEach((token) => {
@@ -23,7 +27,20 @@ export function evalExpr(expr: string, queryData: TokenApiQueryData): string {
 	return newExpr
 }
 
-export function evalExprTokens(expr: string, queryData: TokenApiQueryData) {
+export class EvalExprContext {
+	object: string
+	task: string
+	constructor(object: string, task: string) {
+		this.object = object
+		this.task = task
+	}
+}
+
+export function evalExprTokens(
+	expr: string,
+	queryData: TokenApiQueryData,
+	context: EvalExprContext | undefined = undefined
+) {
 	/*
 		exprDataItem = <[source],[dataType],[sourceKey]>
 		eg. (SELECT sys_user::getUser(<user,str,userName>))
@@ -34,7 +51,7 @@ export function evalExprTokens(expr: string, queryData: TokenApiQueryData) {
 	let tokens: ExprToken[] = []
 
 	exprItems.forEach((item) => {
-		const exprParms = new ExprParms(expr, item, queryData)
+		const exprParms = new ExprParms(expr, item, queryData, context)
 		const valueRaw = getValRaw(exprParms)
 		const { dataType, valueDB } = getValDB(exprParms.item.codeDataType, valueRaw)
 		tokens.push(new ExprToken(item.dataItem, dataType, valueRaw, valueDB))
@@ -169,8 +186,23 @@ export function getUUIDValues(valueRaw?: any) {
 }
 
 export function getValRaw(exprParms: ExprParms) {
+	const clazz = `${FILENAME}.getValRaw`
 	const sourceKey = strRequired(exprParms.item.key, `${FILENAME}.getValRaw`, 'sourceKey')
-	const funct = `getValSave.getValRaw: source: ${exprParms.item.codeDataSourceExpr}; sourceKey: ${sourceKey}; expr: ${exprParms.expr}`
+	const fError = (errMsg: string, data?: any) => {
+		const errContent = {
+			errMsg,
+			context: exprParms.context,
+			item: exprParms.item,
+			expr: exprParms.expr,
+			data
+		}
+		debug(clazz, 'error: evalParms', errContent)
+		error(500, {
+			file: FILENAME,
+			function: clazz,
+			message: JSON.stringify(errContent, null, ' ')
+		})
+	}
 
 	switch (exprParms.item.codeDataSourceExpr) {
 		case ExprSource.calc:
@@ -179,29 +211,25 @@ export function getValRaw(exprParms: ExprParms) {
 					return parseInt(Math.random().toFixed(10).replace('0.', ''))
 
 				default:
-					valueNotFound(ExprSource.calc, {})
+					valueNotFound({})
 			}
 
 		case ExprSource.dataSaveDetail:
 			if (exprParms.queryData?.dataTab?.rowsSave)
 				return exprParms.queryData.dataTab.rowsSave.getDetailRecordValue(sourceKey)
-			error(500, {
-				file: FILENAME,
-				function: funct,
-				message: `QueryData.dataSave not defined for sourceKey: ${sourceKey}`
-			})
+			fError(`QueryData.dataSave not defined for sourceKey: ${sourceKey}`)
 
 		case ExprSource.literal:
 			return sourceKey
 
 		case ExprSource.parms:
-			return getValue(ExprSource.parms, exprParms.queryData.getParms(), sourceKey)
+			return getValue(exprParms.queryData.getParms(), sourceKey)
 
 		case ExprSource.record:
-			return getValue(ExprSource.record, exprParms.queryData.record, sourceKey)
+			return getValue(exprParms.queryData.record, sourceKey)
 
 		case ExprSource.system:
-			return getValue(ExprSource.system, exprParms.queryData.system, sourceKey)
+			return getValue(exprParms.queryData.system, sourceKey)
 
 		case ExprSource.tree:
 			const items = sourceKey.split('.')
@@ -218,27 +246,19 @@ export function getValRaw(exprParms: ExprParms) {
 					property = items[1]
 					break
 				default:
-					error(500, {
-						file: FILENAME,
-						function: funct,
-						message: `Invalid configuration of tree data token: ${sourceKey}`
-					})
+					fError(`Invalid configuration of tree data token: ${sourceKey}`)
 			}
-			if (record) return getValue(ExprSource.tree, record, property)
+			if (record) return getValue(record, property)
 
 		case ExprSource.user:
-			return getValue(ExprSource.user, exprParms.queryData.user, sourceKey)
+			return getValue(exprParms.queryData.user, sourceKey)
 
 		default:
-			error(500, {
-				file: FILENAME,
-				function: funct,
-				message: `No case defined for source: ${exprParms.item.codeDataSourceExpr}`
-			})
+			fError(`No case defined for source: ${exprParms.item.codeDataSourceExpr}`)
 	}
-	function getValue(source: ExprSource, data: DataRecord, key: string) {
+	function getValue(data: DataRecord, key: string) {
 		const result = getValueNested(data, key)
-		return result ? result[1] : valueNotFound(source, data)
+		return result ? result[1] : valueNotFound(data)
 	}
 	function getValueNested(data: DataRecord, key: string) {
 		const tokens = key.split('.')
@@ -251,23 +271,24 @@ export function getValRaw(exprParms: ExprParms) {
 		if (!currentData || !Object.hasOwn(currentData, tokens[idx])) return false
 		return [true, currentData[tokens[idx]]]
 	}
-	function valueNotFound(source: ExprSource, data: DataRecord) {
-		const err = {
-			file: FILENAME,
-			function: funct,
-			message: `Value null or not found - data: ${JSON.stringify(data)}`
-		}
-		debug('dbEdgeGetVal.valueNotFound', 'error', err)
-		error(500, err)
+	function valueNotFound(data: DataRecord) {
+		fError(`Value null or not found.`, data)
 	}
 }
 
 class ExprParms {
+	context?: EvalExprContext
 	expr: string
 	item: ExprParmsItem
 	queryData: TokenApiQueryData
-	constructor(expr: string, item: ExprParmsItem, queryData: TokenApiQueryData) {
+	constructor(
+		expr: string,
+		item: ExprParmsItem,
+		queryData: TokenApiQueryData,
+		context?: EvalExprContext
+	) {
 		const clazz = 'ExprParms'
+		this.context = context
 		this.expr = expr
 		this.item = item
 		this.queryData = queryData

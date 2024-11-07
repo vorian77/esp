@@ -1,20 +1,10 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListConfig,
-	addDataObjFieldEmbedListSelect
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import {
-	addNodeProgram,
-	addNodeProgramObj
-} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initAdminConfig() {
-	sectionHeader('SysAdmin - Config')
-	await initConfig()
+export function initAdminConfig(init: InitDb) {
+	initConfig(init)
 }
-async function initConfig() {
-	await addDataObj({
+async function initConfig(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -114,7 +104,7 @@ async function initConfig() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -187,7 +177,7 @@ async function initConfig() {
 		]
 	})
 
-	await addNodeProgram({
+	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_system_config_list',
 		header: 'Systems (Config)',
@@ -196,7 +186,7 @@ async function initConfig() {
 		owner: 'sys_system_old'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_system_config_detail',
 		header: 'Organization',

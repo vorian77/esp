@@ -279,7 +279,6 @@
 
 	function onSelectionChanged(event: SelectionChangedEvent) {
 		if (options.onSelectionChanged) options.onSelectionChanged(event)
-		console.log('Grid.onSelectionChanged', event.api.getState())
 		updateCounters()
 	}
 

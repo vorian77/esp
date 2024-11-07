@@ -1,4 +1,4 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
 import { initAdminOrg } from '$server/dbEdge/init/dbEdgeInit60SysAdmin10Org'
 import { initAdminConfig } from '$server/dbEdge/init/dbEdgeInit60SysAdmin20Config'
@@ -13,18 +13,17 @@ import { initAdminNodeObj } from '$server/dbEdge/init/dbEdgeInit60SysAdmin100Nod
 import { initAdminDB } from '$server/dbEdge/init/dbEdgeInit60SysAdmin110DB'
 import { initAdminUser } from '$server/dbEdge/init/dbEdgeInit60SysAdmin120User'
 
-export async function initSysAdmin() {
-	sectionHeader('SysAdmin')
-	await initAdminOrg()
-	await initAdminConfig()
-	await initAdminObjs()
-	await initSysAdminSystemMeta()
-	await initAdminApp()
-	await initAdminCode()
-	await initAdminDataObj()
-	await initAdminDataObjAction()
-	await initAdminDataObjEmbed()
-	await initAdminNodeObj()
-	await initAdminDB()
-	await initAdminUser()
+export function initSysAdmin(init: InitDb) {
+	initAdminOrg(init)
+	initAdminConfig(init)
+	initAdminObjs(init)
+	initSysAdminSystemMeta(init)
+	initAdminApp(init)
+	initAdminCode(init)
+	initAdminDataObj(init)
+	initAdminDataObjAction(init)
+	initAdminDataObjEmbed(init)
+	initAdminNodeObj(init)
+	initAdminDB(init)
+	initAdminUser(init)
 }

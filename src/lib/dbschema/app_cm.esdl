@@ -1,17 +1,17 @@
 module app_cm {
   #  Training
   type CmCourse extending sys_core::SysObj {
-    multi codeMultiCerts: sys_core::SysCode;
-    multi codeMultiExams: sys_core::SysCode;
-    multi codeMultiItemsIncluded: sys_core::SysCode;
-    multi codeMultiItemsNotIncluded: sys_core::SysCode;
-    multi codeMultiRqmts: sys_core::SysCode;
     codeSector: sys_core::SysCode;
     codeStatus: sys_core::SysCode;
     codeTypePayment: sys_core::SysCodeType;
     multi cohorts: app_cm::CmCohort {
       on target delete allow;
     };
+    courseCertifications: str;
+    courseExams: str;
+    courseItemsIncluded: str;
+    courseItemsNotIncluded: str;
+    courseRequirements: str;  
     description: str;
     schedule: str;
     staffAdmin: sys_user::SysStaff;
@@ -81,11 +81,6 @@ module app_cm {
   type CmCsfCohort extending app_cm::CmCsfData {
     required codeStatus: sys_core::SysCode;
     required cohort: app_cm::CmCohort;
-    dateEnd: cal::local_date;
-    dateEndEst: cal::local_date;
-    dateReferral: cal::local_date;
-    dateStart: cal::local_date;
-    dateStartEst: cal::local_date;  
     note: str;
   }
 

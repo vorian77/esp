@@ -5,14 +5,14 @@ export async function initReset() {
 	sectionHeader('Reset')
 	const reset = new ResetDb()
 
-	reset.addStatement('delete sys_user::SysUserTypeResource')
-	reset.addStatement('delete sys_user::SysUserType')
+	reset.addStatementOld('delete sys_user::SysUserTypeResource')
+	reset.addStatementOld('delete sys_user::SysUserType')
 
 	reset.delTableRecords(`sys_core::SysNodeObj`)
 	reset.delTableRecords('sys_user::SysWidget')
 
 	// data object
-	reset.addStatement(`UPDATE sys_core::SysDataObjColumn
+	reset.addStatementOld(`UPDATE sys_core::SysDataObjColumn
 	FILTER .id IN (SELECT sys_core::SysDataObj).columns.id
 	SET { fieldEmbedListConfig := {}, fieldEmbedListEdit := {},fieldEmbedListSelect := {},fieldListItems := {} }`)
 
@@ -24,13 +24,13 @@ export async function initReset() {
 	reset.delTableRecords('sys_core::SysDataObjFieldEmbedListEdit')
 	reset.delTableRecords('sys_core::SysDataObjFieldEmbedListSelect')
 
-	reset.addStatement(`UPDATE sys_core::SysDataObj SET { tables := {} }`)
+	reset.addStatementOld(`UPDATE sys_core::SysDataObj SET { tables := {} }`)
 	reset.delTableRecords('sys_core::SysDataObjTable')
 	reset.delTableRecords('sys_core::SysDataObj')
 
 	// report
-	reset.addStatement(`UPDATE sys_rep::SysRepParm SET { fieldListItems := {}, linkTable := {} }`)
-	reset.addStatement(
+	reset.addStatementOld(`UPDATE sys_rep::SysRepParm SET { fieldListItems := {}, linkTable := {} }`)
+	reset.addStatementOld(
 		`UPDATE sys_rep::SysRep SET { analytics := {},  elements := {},  parms := {} }`
 	)
 
@@ -55,7 +55,7 @@ export async function initReset() {
 	reset.delTableRecords('sys_core::SysAppHeader')
 
 	// db
-	reset.addStatement(`UPDATE sys_db::SysTable SET { columns := {} }`)
+	reset.addStatementOld(`UPDATE sys_db::SysTable SET { columns := {} }`)
 	reset.delTableRecords('sys_db::SysTable')
 	reset.delTableRecords('sys_db::SysColumn')
 

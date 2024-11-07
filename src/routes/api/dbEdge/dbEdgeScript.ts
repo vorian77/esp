@@ -330,7 +330,6 @@ export class ScriptGroup {
 		queryData: TokenApiQueryData,
 		field: DataObjDataField
 	) {
-		const parms = queryData.getParms()
 		const getScriptBacklink = (
 			clause: string,
 			field: DataObjDataField,
@@ -357,12 +356,13 @@ export class ScriptGroup {
 			]
 		}
 
-		const idsAdd = parms.listRecordIdSelected.filter(
-			(id: string) => !parms.listRecordIdList.includes(id)
-		)
-		const idsRemove = parms.listRecordIdList.filter(
-			(id: string) => !parms.listRecordIdSelected.includes(id)
-		)
+		const clazz = 'ScriptGroup.addScriptSaveListSelectLinkBack'
+		const parms = required(queryData?.dataTab?.parms, clazz, 'queryData.dataTab.parms')
+		const listIds = parms.valueGet(ParmsValuesType.listIds)
+		const listIdsSelected = parms.valueGet(ParmsValuesType.listIdsSelected)
+		const idsAdd = listIdsSelected.filter((id: string) => !listIds.includes(id))
+		const idsRemove = listIds.filter((id: string) => !listIdsSelected.includes(id))
+
 		const parentFilter = `.${field.columnBacklink}.id = <tree,uuid,${field.parentTable.name}.id>`
 		return this.addScript(query, queryData, ScriptExePost.formatData, [
 			// add/remove clauses
@@ -388,7 +388,7 @@ export class ScriptGroup {
 		return this.addScript(query, queryData, ScriptExePost.formatData, [
 			// sub-table
 			['action', { type: 'SELECT', table: field.embedTable.object }],
-			['filter', { exprFilter: `.id IN <parms,uuidlist,listRecordIdSelected>` }],
+			['filter', { exprFilter: `.id IN <parms,uuidlist,listIdsSelected>` }],
 			['wrap', { key: 'select', open: `:= (`, content: ['action', 'filter'] }],
 
 			// embed-field
@@ -405,7 +405,7 @@ export class ScriptGroup {
 			// select Records
 			['action', { type: 'SELECT', table: field.embedTable.object }],
 			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
-			['filter', { exprFilter: `.id IN <parms,uuidlist,listRecordIdSelected>` }],
+			['filter', { exprFilter: `.id IN <parms,uuidlist,listIdsSelected>` }],
 
 			// script
 			['script', { content: ['records', 'action', 'propsSelect', 'filter'] }]

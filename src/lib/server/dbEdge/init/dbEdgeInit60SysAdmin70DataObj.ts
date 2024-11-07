@@ -1,20 +1,12 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListConfig,
-	addDataObjFieldEmbedListSelect
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initAdminDataObj() {
-	sectionHeader('SysAdmin - Data Object')
-
-	await initDataObj()
-	await initDataObjColumn()
+export function initAdminDataObj(init: InitDb) {
+	initDataObj(init)
+	initDataObjColumn(init)
 }
 
-async function initDataObj() {
-	await addDataObj({
+function initDataObj(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -43,7 +35,7 @@ async function initDataObj() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -426,7 +418,7 @@ async function initDataObj() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_list',
 		header: 'Data Objects',
@@ -436,7 +428,7 @@ async function initDataObj() {
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_detail',
 		header: 'Data Object',
@@ -447,8 +439,8 @@ async function initDataObj() {
 	})
 }
 
-async function initDataObjColumn() {
-	await addDataObj({
+function initDataObjColumn(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -550,7 +542,7 @@ async function initDataObjColumn() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -1323,7 +1315,7 @@ async function initDataObjColumn() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_column_list',
 		header: 'Columns',
@@ -1333,7 +1325,7 @@ async function initDataObjColumn() {
 		parentNodeName: 'node_obj_sys_admin_data_obj_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_column_detail',
 		header: 'Column',

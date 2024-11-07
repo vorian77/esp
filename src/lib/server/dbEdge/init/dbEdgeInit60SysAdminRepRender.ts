@@ -1,24 +1,13 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListEdit,
-	updateDataObjColumnCustomEmbedShellFields
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import {
-	addNodeProgram,
-	addNodeProgramObj
-} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initSysRepUser() {
-	sectionHeader('Admin - Report-Render')
-	await initFieldEmbedListEditRepUserParm()
-	await initRepConfig()
-	await initRepRender()
+export function initSysRepUser(init: InitDb) {
+	initFieldEmbedListEditRepUserParm(init)
+	initRepConfig(init)
+	initRepRender(init)
 }
 
-async function initFieldEmbedListEditRepUserParm() {
-	sectionHeader('Field Embed Edit - Report User Parm')
-	await addDataObj({
+function initFieldEmbedListEditRepUserParm(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_embed_list_edit_parm_value',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -174,15 +163,15 @@ async function initFieldEmbedListEditRepUserParm() {
 			}
 		]
 	})
-	await addDataObjFieldEmbedListEdit({
+	init.addTrans('sysDataObjFieldEmbedListEdit', {
 		dataObjEmbed: 'dofls_sys_rep_user_parm',
 		name: 'fele_sys_rep_user_parm',
 		owner: 'sys_system_old'
 	})
 }
 
-async function initRepConfig() {
-	await addDataObj({
+function initRepConfig(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list_report',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -238,7 +227,7 @@ async function initRepConfig() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail_report',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetailRepConfig',
@@ -410,13 +399,12 @@ async function initRepConfig() {
 		]
 	})
 
-	await updateDataObjColumnCustomEmbedShellFields({
+	init.addTrans('updateDataObjColumnCustomEmbedShellFields', {
 		dataObjName: 'data_obj_sys_rep_my_report_detail',
 		columnName: 'custom_embed_shell',
 		customEmbedShellFields: ['parms']
 	})
-
-	await addNodeProgram({
+	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_my_report_list',
 		header: 'My Reports',
@@ -424,7 +412,7 @@ async function initRepConfig() {
 		orderDefine: 10,
 		owner: 'sys_system_old'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_my_report_detail',
 		header: 'Config',
@@ -435,8 +423,8 @@ async function initRepConfig() {
 	})
 }
 
-async function initRepRender() {
-	await addDataObj({
+function initRepRender(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		header: 'Run',
@@ -455,7 +443,7 @@ async function initRepRender() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_dyn_sys_rep_render',
 		header: 'Run',

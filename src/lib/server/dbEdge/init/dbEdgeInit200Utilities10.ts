@@ -218,26 +218,33 @@ export async function addRoleStaffBulk(params: any) {
 
 export class ResetDb {
 	query: string = ''
+	statements: string[] = []
 	constructor() {
 		this.query = ''
 	}
 	addStatement(statement: string) {
+		if (-1 === this.statements.findIndex((s: string) => s === statement)) {
+			this.statements.push(statement)
+		}
+	}
+
+	addStatementOld(statement: string) {
 		this.query += statement + ';\n'
 		return this.query
 	}
 	delCodeType(codeTypeName: string) {
-		this.addStatement(`DELETE sys_core::SysCode FILTER .codeType.name = '${codeTypeName}'`)
-		this.addStatement(`DELETE sys_core::SysCodeType FILTER .name = '${codeTypeName}'`)
+		this.addStatementOld(`DELETE sys_core::SysCode FILTER .codeType.name = '${codeTypeName}'`)
+		this.addStatementOld(`DELETE sys_core::SysCodeType FILTER .name = '${codeTypeName}'`)
 	}
 	delColumn(name: string) {
-		this.addStatement(`DELETE sys_db::SysColumn FILTER .name = '${name}'`)
+		this.addStatementOld(`DELETE sys_db::SysColumn FILTER .name = '${name}'`)
 	}
 	delDataObj(name: string) {
-		this.addStatement(`DELETE sys_core::SysDataObj FILTER .name = '${name}'`)
+		this.addStatementOld(`DELETE sys_core::SysDataObj FILTER .name = '${name}'`)
 	}
 
 	delDataObjColumnMultiLinks(name: string) {
-		this.addStatement(`UPDATE sys_core::SysDataObjColumn
+		this.addStatementOld(`UPDATE sys_core::SysDataObjColumn
 			FILTER .id IN (SELECT sys_core::SysDataObj FILTER .name = 'data_obj_${name}_detail').columns.id
 				SET { fieldListConfig := {}, fieldListItems := {}, fieldListSelect := {} }`)
 	}
@@ -249,20 +256,32 @@ export class ResetDb {
 		this.delDataObj(`data_obj_${name}_list`)
 	}
 	delMigration(name: string) {
-		this.addStatement(`DELETE sys_migr::SysMigration FILTER .name = ${name}`)
+		this.addStatementOld(`DELETE sys_migr::SysMigration FILTER .name = ${name}`)
 	}
 	delNodeObj(name: string) {
-		this.addStatement(`DELETE sys_core::SysNodeObj FILTER .name = '${name}'`)
+		this.addStatementOld(`DELETE sys_core::SysNodeObj FILTER .name = '${name}'`)
 	}
 	delTable(name: string) {
-		this.addStatement(`DELETE sys_db::SysTable FILTER .name = '${name}'`)
+		this.addStatementOld(`DELETE sys_db::SysTable FILTER .name = '${name}'`)
 	}
 	delTableRecords(table: string) {
-		this.addStatement(`DELETE ${table}`)
+		this.addStatementOld(`DELETE ${table}`)
 	}
 	async execute() {
-		sectionHeader('Execute DB Transaction')
+		sectionHeader('Execute DB Reset Transaction')
+
+		// old
+		if (this.statements.length === 0) {
+			if (this.query) await executeQuery(this.query)
+			this.query = ''
+		}
+
+		// new
+		this.statements.forEach((s: string) => {
+			this.query += s + ';\n'
+		})
 		if (this.query) await executeQuery(this.query)
+		this.statements = []
 		this.query = ''
 	}
 }
@@ -273,7 +292,7 @@ export async function resetDBItems(section: string, statements: any) {
 	const reset = new ResetDb()
 	statements.forEach((s: string) => {
 		sectionHeader(s)
-		reset.addStatement(s)
+		reset.addStatementOld(s)
 	})
 	await reset.execute()
 }

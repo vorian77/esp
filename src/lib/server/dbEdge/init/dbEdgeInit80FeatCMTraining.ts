@@ -1,27 +1,19 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListConfig
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import {
-	addNodeProgram,
-	addNodeProgramObj
-} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initFeatTraining() {
-	sectionHeader('DataObject - CM-Training')
-	await initCourse()
-	await initCohort()
-	await initCohortStudentRoster()
-	await initCohortAttd()
-	await initCohortAttdSheet()
-	await initFieldListConfigPartnerContact()
-	await initPartner()
-	await initPartnerNote()
+export function initFeatTraining(init: InitDb) {
+	initCourse(init)
+	initCohort(init)
+	initCohortStudentRoster(init)
+	initCohortAttd(init)
+	initCohortAttdSheet(init)
+	initFieldListConfigPartnerContact(init)
+	initPartner(init)
+	initPartnerNote(init)
+	//  initStaff(init)
 }
 
-async function initCourse() {
-	await addDataObj({
+function initCourse(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -83,7 +75,7 @@ async function initCourse() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -215,39 +207,30 @@ async function initCourse() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'checkbox',
-				columnName: 'codeMultiRqmts',
+				codeFieldElement: 'textArea',
+				columnName: 'courseRequirements',
 				isDisplayable: true,
 				orderDisplay: 150,
 				orderDefine: 150,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_course_rqmt',
-				linkTable: 'SysCode'
+				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'checkbox',
-				columnName: 'codeMultiItemsIncluded',
+				codeFieldElement: 'textArea',
+				columnName: 'courseItemsIncluded',
 				isDisplayable: true,
 				orderDisplay: 160,
 				orderDefine: 160,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_course_items_included',
-				linkTable: 'SysCode'
+				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'checkbox',
-				columnName: 'codeMultiItemsNotIncluded',
+				codeFieldElement: 'textArea',
+				columnName: 'courseItemsNotIncluded',
 				isDisplayable: true,
 				orderDisplay: 170,
 				orderDefine: 170,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_course_items_not_included',
-				linkTable: 'SysCode'
+				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -265,27 +248,21 @@ async function initCourse() {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'checkbox',
-				columnName: 'codeMultiExams',
+				codeFieldElement: 'textArea',
+				columnName: 'courseExams',
 				isDisplayable: true,
 				orderDisplay: 200,
 				orderDefine: 200,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_course_exam',
-				linkTable: 'SysCode'
+				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'checkbox',
-				columnName: 'codeMultiCerts',
+				codeFieldElement: 'textArea',
+				columnName: 'courseCertifications',
 				isDisplayable: true,
 				orderDisplay: 210,
 				orderDefine: 210,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_course_cert',
-				linkTable: 'SysCode'
+				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -344,7 +321,7 @@ async function initCourse() {
 			}
 		]
 	})
-	await addNodeProgram({
+	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_course_list',
 		header: 'Courses',
@@ -352,7 +329,7 @@ async function initCourse() {
 		orderDefine: 10,
 		owner: 'sys_ai_old'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_course_detail',
 		header: 'Course',
@@ -364,8 +341,8 @@ async function initCourse() {
 	})
 }
 
-async function initCohort() {
-	await addDataObj({
+function initCohort(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -452,7 +429,7 @@ async function initCohort() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -645,7 +622,7 @@ async function initCohort() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_cohort_list',
 		header: 'Cohorts',
@@ -654,7 +631,7 @@ async function initCohort() {
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_course_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_cohort_detail',
 		header: 'Cohort',
@@ -666,8 +643,8 @@ async function initCohort() {
 	})
 }
 
-async function initCohortStudentRoster() {
-	await addDataObj({
+function initCohortStudentRoster(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_report_render',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -719,7 +696,7 @@ async function initCohortStudentRoster() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_student_roster_list_by_cohort',
 		header: 'Student Roster',
@@ -730,8 +707,8 @@ async function initCohortStudentRoster() {
 	})
 }
 
-async function initCohortAttd() {
-	await addDataObj({
+function initCohortAttd(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -798,7 +775,7 @@ async function initCohortAttd() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		owner: 'sys_ai_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -925,7 +902,7 @@ async function initCohortAttd() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_cohort_attd_list',
 		header: 'Attendance Days',
@@ -934,7 +911,7 @@ async function initCohortAttd() {
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_cohort_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_cohort_attd_detail',
 		header: 'Attendance Day',
@@ -945,8 +922,8 @@ async function initCohortAttd() {
 	})
 }
 
-async function initCohortAttdSheet() {
-	await addDataObj({
+function initCohortAttdSheet(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_embed_list_edit',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -1079,7 +1056,7 @@ async function initCohortAttdSheet() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_cohort_attd_sheet',
 		header: 'Attendance Sheet',
@@ -1090,10 +1067,8 @@ async function initCohortAttdSheet() {
 	})
 }
 
-async function initFieldListConfigPartnerContact() {
-	sectionHeader('Embed List Config - Training Partner Contact')
-
-	await addDataObj({
+function initFieldListConfigPartnerContact(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -1147,7 +1122,7 @@ async function initFieldListConfigPartnerContact() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -1225,7 +1200,7 @@ async function initFieldListConfigPartnerContact() {
 		]
 	})
 
-	await addDataObjFieldEmbedListConfig({
+	init.addTrans('sysDataObjFieldEmbedListConfig', {
 		actionFieldGroupModal: 'doag_dialog_footer_detail',
 		dataObjEmbed: 'doflc_cm_partner_contact_list',
 		dataObjModal: 'doflc_cm_partner_contact_detail',
@@ -1233,8 +1208,9 @@ async function initFieldListConfigPartnerContact() {
 		owner: 'sys_ai_old'
 	})
 }
-async function initPartner() {
-	await addDataObj({
+
+function initPartner(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -1330,7 +1306,7 @@ async function initPartner() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -1554,7 +1530,7 @@ async function initPartner() {
 		]
 	})
 
-	await addNodeProgram({
+	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_partner_list',
 		header: 'Partners',
@@ -1563,7 +1539,7 @@ async function initPartner() {
 		owner: 'sys_ai_old'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_partner_detail',
 		header: 'Partner',
@@ -1575,8 +1551,8 @@ async function initPartner() {
 	})
 }
 
-async function initPartnerNote() {
-	await addDataObj({
+function initPartnerNote(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_ai_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1624,7 +1600,7 @@ async function initPartnerNote() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		owner: 'sys_ai_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -1741,7 +1717,7 @@ async function initPartnerNote() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_partner_note_list',
 		header: 'Notes',
@@ -1750,7 +1726,7 @@ async function initPartnerNote() {
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_partner_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_partner_note_detail',
 		header: 'Note',
@@ -1759,4 +1735,21 @@ async function initPartnerNote() {
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_partner_note_list'
 	})
+}
+
+function initStaff(init: InitDb) {
+	//  addStaff([
+	// 	['Atlantic Impact', 'Stacy', 'Administrator'],
+	// 	['Atlantic Impact', 'Stan', 'Administrator'],
+	// 	['Atlantic Impact', 'Anise', 'Hayes'],
+	// 	['Atlantic Impact', 'Matthew', 'Clayton'],
+	// 	['Atlantic Impact', 'Erica', 'Hicks'],
+	// 	['Atlantic Impact', 'Jane', 'Instructor'],
+	// 	['Atlantic Impact', 'Joe', 'Instructor']
+	// ])
+	//  addRoleStaff([
+	// 	['Anise', 'Hayes', 'cm_training_role_staff_agency'],
+	// 	['Matthew', 'Clayton', 'cm_training_role_staff_agency'],
+	// 	['Erica', 'Hicks', 'cm_training_role_staff_agency']
+	// ])
 }

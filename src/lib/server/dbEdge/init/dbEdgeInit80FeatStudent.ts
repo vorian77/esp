@@ -1,24 +1,18 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { addDataObj } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import {
-	addNodeProgram,
-	addNodeProgramObj
-} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initFeatCMStudent() {
-	sectionHeader('DataObject - CM-Student')
-	await initStudent()
-	await initCsf()
-	await initCsfCohort()
-	await initCsfCohortAttdStudent()
-	await initCsfDocument()
-	await initCsfJobPlacement()
-	await initCsfNote()
-	await initCsfSchoolPlacement()
+export function initFeatCMStudent(init: InitDb) {
+	initStudent(init)
+	initCsf(init)
+	initCsfCohort(init)
+	initCsfCohortAttdStudent(init)
+	initCsfDocument(init)
+	initCsfJobPlacement(init)
+	initCsfNote(init)
+	initCsfSchoolPlacement(init)
 }
 
-async function initStudent() {
-	await addDataObj({
+function initStudent(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -79,7 +73,7 @@ async function initStudent() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -402,7 +396,7 @@ async function initStudent() {
 			}
 		]
 	})
-	await addNodeProgram({
+	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_student_list',
 		header: 'Students',
@@ -410,7 +404,7 @@ async function initStudent() {
 		orderDefine: 30,
 		owner: 'sys_ai_old'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_student_detail',
 		header: 'Student',
@@ -422,8 +416,8 @@ async function initStudent() {
 	})
 }
 
-async function initCsf() {
-	await addDataObj({
+function initCsf(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_ai_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -519,7 +513,7 @@ async function initCsf() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		owner: 'sys_ai_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -720,7 +714,7 @@ async function initCsf() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_client_service_flow_list',
 		header: 'Service Flows',
@@ -729,7 +723,7 @@ async function initCsf() {
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_student_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_client_service_flow_detail',
 		header: 'Service Flow',
@@ -740,8 +734,8 @@ async function initCsf() {
 	})
 }
 
-async function initCsfCohort() {
-	await addDataObj({
+function initCsfCohort(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_ai_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -779,24 +773,6 @@ async function initCsfCohort() {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'dateStart',
-				orderCrumb: 20,
-				orderSort: 10,
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'dateEnd',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'note',
 				isDisplayable: true,
 				orderDisplay: 100,
@@ -806,7 +782,7 @@ async function initCsfCohort() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		owner: 'sys_ai_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -857,23 +833,6 @@ async function initCsfCohort() {
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
 				fieldListItemsParmName: 'ct_cm_service_flow_status',
 				linkTable: 'SysCode'
-			},
-			{
-				codeFieldElement: 'date',
-				columnName: 'dateStart',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'date',
-				columnName: 'dateEnd',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -941,7 +900,7 @@ async function initCsfCohort() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_cohort_list',
 		header: 'Cohorts',
@@ -950,7 +909,7 @@ async function initCsfCohort() {
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_cohort_detail',
 		header: 'Cohort',
@@ -961,8 +920,8 @@ async function initCsfCohort() {
 	})
 }
 
-async function initCsfCohortAttdStudent() {
-	await addDataObj({
+function initCsfCohortAttdStudent(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_ai_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1013,7 +972,7 @@ async function initCsfCohortAttdStudent() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -1141,7 +1100,7 @@ async function initCsfCohortAttdStudent() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_cohort_attd_student_list',
 		header: 'Attendance Records',
@@ -1150,7 +1109,7 @@ async function initCsfCohortAttdStudent() {
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_csf_cohort_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_cohort_attd_student_detail',
 		header: 'Attendance',
@@ -1161,8 +1120,8 @@ async function initCsfCohortAttdStudent() {
 	})
 }
 
-async function initCsfNote() {
-	await addDataObj({
+function initCsfNote(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_ai_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1210,7 +1169,7 @@ async function initCsfNote() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		owner: 'sys_ai_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -1327,7 +1286,7 @@ async function initCsfNote() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_note_list',
 		header: 'Case Notes',
@@ -1336,7 +1295,7 @@ async function initCsfNote() {
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_note_detail',
 		header: 'Case Note',
@@ -1347,8 +1306,8 @@ async function initCsfNote() {
 	})
 }
 
-async function initCsfJobPlacement() {
-	await addDataObj({
+function initCsfJobPlacement(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1396,7 +1355,7 @@ async function initCsfJobPlacement() {
 			}
 		]
 	})
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -1667,7 +1626,7 @@ async function initCsfJobPlacement() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_job_placement_list',
 		header: 'Job Placements',
@@ -1676,7 +1635,7 @@ async function initCsfJobPlacement() {
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_job_placement_detail',
 		header: 'Job Placement',
@@ -1687,8 +1646,8 @@ async function initCsfJobPlacement() {
 	})
 }
 
-async function initCsfSchoolPlacement() {
-	await addDataObj({
+function initCsfSchoolPlacement(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1768,7 +1727,7 @@ async function initCsfSchoolPlacement() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -1928,7 +1887,7 @@ async function initCsfSchoolPlacement() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_school_placement_list',
 		header: 'School Placements',
@@ -1937,7 +1896,7 @@ async function initCsfSchoolPlacement() {
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_school_placement_detail',
 		header: 'School Placement',
@@ -1948,8 +1907,8 @@ async function initCsfSchoolPlacement() {
 	})
 }
 
-async function initCsfDocument() {
-	await addDataObj({
+function initCsfDocument(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_ai_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -2018,7 +1977,7 @@ async function initCsfDocument() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		owner: 'sys_ai_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -2197,7 +2156,7 @@ async function initCsfDocument() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_document_list',
 		header: 'Documents',
@@ -2206,7 +2165,7 @@ async function initCsfDocument() {
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_csf_document_detail',
 		header: 'Document',
@@ -2217,7 +2176,7 @@ async function initCsfDocument() {
 	})
 }
 
-// await addNodeProgramObj({
+// init.addTrans('sysNodeObjProgramObj', {
 // 	codeIcon: 'AppWindow',
 // 	dataObj: 'data_obj_cm_csf_job_placement_list',
 // 	header: 'Job Placements',
@@ -2227,7 +2186,7 @@ async function initCsfDocument() {
 // 	owner: 'sys_ai_old',
 // 	parentNodeName: 'node_obj_cm_service_flow_detail'
 // })
-// await addNodeProgramObj({
+// init.addTrans('sysNodeObjProgramObj', {
 // 	codeIcon: 'AppWindow',
 // 	dataObj: 'data_obj_cm_csf_job_placement_detail',
 // 	header: 'Job Placement',

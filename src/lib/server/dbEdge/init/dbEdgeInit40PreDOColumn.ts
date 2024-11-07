@@ -1,49 +1,46 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { addColumn } from '$server/dbEdge/init/dbEdgeInit200Utilities30DB'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initPreColumn() {
-	sectionHeader('Column')
-
+export function initPreColumn(init: InitDb) {
 	// temp
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 't.Bool',
 		name: 'testBool'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 't.CodeMultiple',
 		isMultiSelect: true,
 		name: 'testCodeMulti'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 't.CodeSingle',
 		isMultiSelect: false,
 		name: 'testCodeSingle'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'date',
 		header: 't.Date',
 		name: 'testDate'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'float64',
 		header: 't.NbrFloat',
 		name: 'testNumberFloat'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'int64',
 		header: 't.NbrInt',
 		name: 'testNumberInt'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 't.Text',
@@ -51,130 +48,130 @@ export async function initPreColumn() {
 	})
 
 	// real
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Action',
 		isMultiSelect: false,
 		name: 'action',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Action Field - Confirms',
 		isMultiSelect: true,
 		name: 'actionFieldConfirms',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Action Field - Items',
 		isMultiSelect: true,
 		name: 'actionFieldItems',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Action Field - Shows',
 		isMultiSelect: true,
 		name: 'actionFieldShows',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Action - Submits',
 		isMultiSelect: true,
 		name: 'actionSubmits',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Actions - Field',
 		isMultiSelect: true,
 		name: 'actionsField',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Action Field Group',
 		isMultiSelect: false,
 		name: 'actionFieldGroup',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Action Field Group Modal',
 		isMultiSelect: false,
 		name: 'actionFieldGroupModal',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Actions - Query',
 		isMultiSelect: true,
 		name: 'actionsQuery',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Address 1',
 		name: 'addr1'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Address 2',
 		name: 'addr2'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Agency ID',
 		name: 'agencyId',
 		owner: 'sys_ai_old',
 		placeHolder: 'Enter agency ID'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Analytic',
 		isMultiSelect: false,
 		name: 'analytic'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Analytics',
 		isMultiSelect: true,
 		name: 'analytics'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Application Header',
 		isMultiSelect: false,
 		name: 'appHeader',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Application Name',
 		name: 'appName'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Attendance Records',
 		isMultiSelect: true,
 		name: 'attds',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'json',
 		exprStorageKey: 'avatar_<calc,int64,random10>',
 		header: 'Avatar',
 		name: 'avatar'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int64',
@@ -183,474 +180,440 @@ export async function initPreColumn() {
 		pattern: '^\\d{6}$',
 		patternMsg: 'Security Code should be exactly 6 digits.'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'date',
 		header: 'Birth Date',
 		name: 'birthDate'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Complete Button Label',
 		name: 'btnLabelComplete'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'City',
 		name: 'city'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Class Props',
 		name: 'classProps'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Client',
 		isMultiSelect: false,
 		name: 'client',
 		owner: 'sys_ai_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		isMultiSelect: false,
 		header: 'Access',
 		name: 'codeAccess'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Action Field - Trigger Enable',
 		isMultiSelect: false,
 		name: 'codeActionFieldTriggerEnable',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Alignment',
 		isMultiSelect: false,
 		name: 'codeAlignment'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Alignment (Alt)',
 		isMultiSelect: false,
 		name: 'codeAlignmentAlt'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Cardinality',
 		isMultiSelect: false,
 		name: 'codeCardinality',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Duration',
 		isMultiSelect: false,
 		name: 'codeCmCohortAttdDuration',
 		owner: 'sys_ai_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'College Status',
 		isMultiSelect: false,
 		name: 'codeCollegeStatus',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Color',
 		isMultiSelect: false,
 		name: 'codeColor'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Component',
 		isMultiSelect: false,
 		name: 'codeComponent',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Confirm Type',
 		isMultiSelect: false,
 		name: 'codeConfirmType',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Data Type',
 		isMultiSelect: false,
 		name: 'codeDataType'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Data Type - Display',
 		isMultiSelect: false,
 		name: 'codeDataTypeDisplay'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Operation',
 		isMultiSelect: false,
 		name: 'codeDbDataOp'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Data Source - Value',
 		isMultiSelect: false,
 		name: 'codeDbDataSourceValue'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Disability Status',
 		isMultiSelect: false,
 		name: 'codeDisabilityStatus',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Field Element',
 		isMultiSelect: false,
 		name: 'codeFieldElement'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Ethnicity',
 		isMultiSelect: false,
 		name: 'codeEthnicity',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Gender',
 		isMultiSelect: false,
 		name: 'codeGender',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Icon',
 		isMultiSelect: false,
 		name: 'codeIcon'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Job Type',
 		isMultiSelect: false,
 		name: 'codeJobType'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'List - Edit - Preset Type',
 		isMultiSelect: false,
 		name: 'codeListEditPresetType'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Mask',
 		isMultiSelect: false,
 		name: 'codeMask'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Source Type',
 		isMultiSelect: false,
 		name: 'codeMigrSourceType'
 	})
-	await addColumn({
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Certifications',
-		isMultiSelect: true,
-		name: 'codeMultiCerts'
-	})
-	await addColumn({
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Exams',
-		isMultiSelect: true,
-		name: 'codeMultiExams'
-	})
-	await addColumn({
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Items - Included',
-		isMultiSelect: true,
-		name: 'codeMultiItemsIncluded'
-	})
-	await addColumn({
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Items - Not Included',
-		isMultiSelect: true,
-		name: 'codeMultiItemsNotIncluded'
-	})
-	await addColumn({
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Requirements',
-		isMultiSelect: true,
-		name: 'codeMultiRqmts'
-	})
-	await addColumn({
+
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Navigation Type',
 		isMultiSelect: false,
 		name: 'codeNavType',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Node Type',
 		isMultiSelect: false,
 		name: 'codeNodeType',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Object Type',
 		isMultiSelect: false,
 		name: 'codeObjType',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Token Action',
 		isMultiSelect: false,
 		name: 'codePacketAction',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Parm Type',
 		isMultiSelect: false,
 		name: 'codeParmType'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Placement Related To Training',
 		isMultiSelect: false,
 		name: 'codePlacementRelated'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Query Type',
 		isMultiSelect: false,
 		name: 'codeQueryType',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Race',
 		isMultiSelect: false,
 		name: 'codeRace',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Referral End Type',
 		isMultiSelect: false,
 		name: 'codeReferralEndType',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Referral Type',
 		isMultiSelect: false,
 		name: 'codeReferralType',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Report Element Type',
 		isMultiSelect: false,
 		name: 'codeReportElementType'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Sector',
 		isMultiSelect: false,
 		name: 'codeSector'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'List Direction',
 		isMultiSelect: false,
 		name: 'codeSortDir'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'State',
 		isMultiSelect: false,
 		name: 'codeState',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Status',
 		isMultiSelect: false,
 		name: 'codeStatus',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Trigger - Conditional Confirm',
 		isMultiSelect: false,
 		name: 'codeTriggerConfirmConditional',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Trigger - Show',
 		isMultiSelect: false,
 		name: 'codeTriggerShow',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Trigger - Timing',
 		isMultiSelect: false,
 		name: 'codeTriggerTiming',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Type',
 		isMultiSelect: false,
 		name: 'codeType',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Payment Type',
 		isMultiSelect: false,
 		name: 'codeTypePayment',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Tags',
 		isMultiSelect: false,
 		name: 'codeUserTypeTags'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Wage Type',
 		isMultiSelect: false,
 		name: 'codeWageType'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Cohort',
 		isMultiSelect: false,
 		name: 'cohort'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Cohort Attendance',
 		isMultiSelect: false,
 		name: 'cohortAttd'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Attendance Records',
 		isMultiSelect: true,
 		name: 'cohortAttds'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Cohorts',
 		isMultiSelect: true,
 		name: 'cohorts'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'College - GPA',
 		name: 'collegeGPA'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'int16',
 		header: 'College - Grad Year',
 		name: 'collegeGradYear'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'College - Major',
 		name: 'collegeMajor'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'College - Name',
 		name: 'collegeName'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Column',
 		isMultiSelect: false,
 		name: 'column'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Column - Backlink',
 		isMultiSelect: false,
 		name: 'columnBacklink'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Parent Column',
 		isMultiSelect: false,
 		name: 'columnParent',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Columns',
 		isMultiSelect: true,
 		name: 'columns'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Comment',
 		name: 'comment'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'float64',
@@ -659,52 +622,52 @@ export async function initPreColumn() {
 		isExcludeUpdate: true,
 		name: 'computedHours'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Confirm',
 		isMultiSelect: false,
 		name: 'confirm',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Button Label - Cancel',
 		name: 'confirmButtonLabelCancel'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Button Label - Confirm',
 		name: 'confirmButtonLabelConfirm'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Confirm Message',
 		name: 'confirmMessage'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Confirm Title',
 		name: 'confirmTitle'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Contact',
 		isMultiSelect: false,
 		name: 'contact',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Contacts',
 		isMultiSelect: true,
 		name: 'contacts',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'float64',
@@ -712,14 +675,44 @@ export async function initPreColumn() {
 		minValue: 0,
 		name: 'cost'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Course',
 		isMultiSelect: false,
 		name: 'course',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Certifications',
+		name: 'courseCertifications'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Exams',
+		name: 'courseExams'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Items - Included',
+		name: 'courseItemsIncluded'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Items - Not Included',
+		name: 'courseItemsNotIncluded'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Requirements',
+		name: 'courseRequirements'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'datetime',
 		header: 'Created At',
@@ -727,7 +720,7 @@ export async function initPreColumn() {
 		isExcludeUpdate: true,
 		name: 'createdAt'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Created By',
 		isMultiSelect: false,
@@ -735,35 +728,35 @@ export async function initPreColumn() {
 		name: 'createdBy',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Service Flow',
 		isMultiSelect: false,
 		name: 'csf'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Cohort',
 		isMultiSelect: false,
 		name: 'csfCohort'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Attendance Records',
 		isMultiSelect: true,
 		name: 'csfCohortAttds'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Cohorts',
 		isMultiSelect: true,
 		name: 'csfCohorts'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'custom_element',
@@ -773,7 +766,7 @@ export async function initPreColumn() {
 		isNonData: true,
 		name: 'custom_element'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'custom_element_bool',
@@ -781,7 +774,7 @@ export async function initPreColumn() {
 		isExcludeUpdate: true,
 		name: 'custom_element_bool'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'date',
 		header: 'custom_element_date',
@@ -789,7 +782,7 @@ export async function initPreColumn() {
 		isExcludeUpdate: true,
 		name: 'custom_element_date'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'float64',
@@ -798,7 +791,7 @@ export async function initPreColumn() {
 		isExcludeUpdate: true,
 		name: 'custom_element_float'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int64',
@@ -807,7 +800,7 @@ export async function initPreColumn() {
 		isExcludeUpdate: true,
 		name: 'custom_element_int'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'custom_element_link',
@@ -816,7 +809,7 @@ export async function initPreColumn() {
 		isMultiSelect: false,
 		name: 'custom_element_link'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'custom_element_str',
@@ -824,7 +817,7 @@ export async function initPreColumn() {
 		isExcludeUpdate: true,
 		name: 'custom_element_str'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'none',
 		header: 'custom_embed_shell',
@@ -833,7 +826,7 @@ export async function initPreColumn() {
 		isExcludeUpdate: true,
 		name: 'custom_embed_shell'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'none',
 		header: 'custom_row_end',
@@ -843,7 +836,7 @@ export async function initPreColumn() {
 		isNonData: true,
 		name: 'custom_row_end'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'none',
 		header: 'custom_row_start',
@@ -853,7 +846,7 @@ export async function initPreColumn() {
 		isNonData: true,
 		name: 'custom_row_start'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'none',
 		header: 'custom_section_end',
@@ -863,7 +856,7 @@ export async function initPreColumn() {
 		isNonData: true,
 		name: 'custom_section_end'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'none',
 		header: 'custom_section_start',
@@ -874,115 +867,115 @@ export async function initPreColumn() {
 		name: 'custom_section_start'
 	})
 
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Custom - Action - Method',
 		name: 'customColActionMethod'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Custom Action - Type',
 		name: 'customColActionType'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Custom - Action - Value',
 		name: 'customColActionValue'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Custom - Align',
 		name: 'customColAlign'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Custom - Color',
 		isMultiSelect: false,
 		name: 'customColCodeColor'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Custom - Sub-Header',
 		name: 'customColIsSubHeader'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Custom - Label',
 		name: 'customColLabel'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Custom - Prefix',
 		name: 'customColPrefix'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Custom - Size',
 		name: 'customColSize'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Custom - Source',
 		name: 'customColSource'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Custom - Source Key',
 		name: 'customColSourceKey'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Custom - Type',
 		isMultiSelect: false,
 		name: 'customColType',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Embed Shell Fields',
 		isMultiSelect: true,
 		name: 'customEmbedShellFields'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Data',
 		name: 'data'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Data Object',
 		isMultiSelect: false,
 		name: 'dataObj'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Data Object - Embed',
 		isMultiSelect: false,
 		name: 'dataObjEmbed'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Data Object - List',
 		isMultiSelect: false,
 		name: 'dataObjList'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Data Object - Modal',
@@ -990,256 +983,256 @@ export async function initPreColumn() {
 		name: 'dataObjModal'
 	})
 
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'date',
 		header: 'Date',
 		name: 'date'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'date',
 		header: 'End Date',
 		name: 'dateEnd'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'date',
 		header: 'Estimated End Date',
 		name: 'dateEndEst'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'date',
 		header: 'Expiration Date',
 		name: 'dateExpires'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'date',
 		header: 'Issued Date',
 		name: 'dateIssued'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'date',
 		header: 'Referral Date',
 		name: 'dateReferral'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'date',
 		header: 'Start Date',
 		name: 'dateStart'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'date',
 		header: 'Estimated Start Date',
 		name: 'dateStartEst'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'date',
 		header: 'Date Submitted',
 		name: 'dateSubmitted'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Description',
 		name: 'description'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'My Description',
 		name: 'descriptionUser'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Display',
 		name: 'display'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Element',
 		isMultiSelect: false,
 		name: 'element'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Elements',
 		isMultiSelect: true,
 		name: 'elements'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Email',
 		name: 'email'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Employer - Contact Email',
 		name: 'employerContactEmail',
 		owner: 'sys_ai_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Employer - Contact First Name',
 		name: 'employerContactNameFirst',
 		owner: 'sys_ai_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Employer - Contact Last Name',
 		name: 'employerContactNameLast',
 		owner: 'sys_ai_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Employer',
 		name: 'employerName',
 		owner: 'sys_ai_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Expression',
 		name: 'expr',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Expression - Auto Select',
 		name: 'exprAutoSelect',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Expression - Custom',
 		name: 'exprCustom',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Expression - Filter',
 		name: 'exprFilter',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Expression - Object',
 		name: 'exprObject',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Expression - Preset',
 		name: 'exprPreset',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Expression - Property Display',
 		name: 'exprPropDisplay'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Expression - Select',
 		name: 'exprSelect'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Expression - Sort',
 		name: 'exprSort',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Storage Key Expression',
 		name: 'exprStorageKey'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Expression - With',
 		name: 'exprWith',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Favorite Food',
 		isMultiSelect: true,
 		name: 'favFood'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Embed Detail',
 		isMultiSelect: false,
 		name: 'fieldEmbedDetail',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Embed List Config',
 		isMultiSelect: false,
 		name: 'fieldEmbedListConfig',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Embed List Edit',
 		isMultiSelect: false,
 		name: 'fieldEmbedListEdit',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Embed List Select',
 		isMultiSelect: false,
 		name: 'fieldEmbedListSelect',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'List-Items',
 		isMultiSelect: false,
 		name: 'fieldListItems',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Field List Parm - Name',
 		name: 'fieldListItemsParmName'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'json',
 		exprStorageKey: 'file_<calc,int64,random10>',
 		header: 'File',
 		name: 'file'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'First Name',
 		name: 'firstName'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Full Name',
 		name: 'fullName'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Has Management Columns',
@@ -1248,38 +1241,38 @@ export async function initPreColumn() {
 		toggleValueFalse: 'No',
 		toggleValueTrue: 'Yes'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Header',
 		name: 'header'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Header (Alternate)',
 		name: 'headerAlt'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Header (Side)',
 		name: 'headerSide'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'My Name',
 		name: 'headerUser'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
 		header: 'Height',
 		name: 'height'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'float64',
@@ -1289,7 +1282,7 @@ export async function initPreColumn() {
 		name: 'hours',
 		spinStep: '0.25'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'float64',
@@ -1297,13 +1290,13 @@ export async function initPreColumn() {
 		minValue: 0,
 		name: 'hoursPerWeek'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Icon',
 		name: 'icon'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'uuid',
 		header: 'System ID',
@@ -1311,281 +1304,281 @@ export async function initPreColumn() {
 		isExcludeUpdate: true,
 		name: 'id'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
 		header: 'Index',
 		name: 'index'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
 		header: 'Parent Index',
 		name: 'indexParent'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
 		header: 'Table Index',
 		name: 'indexTable'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
 		header: 'With Index',
 		name: 'indexWith'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Active',
 		name: 'isActive'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Display',
 		name: 'isDisplay'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Displayable',
 		name: 'isDisplayable'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Display Block',
 		name: 'isDisplayBlock'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Exclude-Insert',
 		name: 'isExcludeInsert'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Exclude-Select',
 		name: 'isExcludeSelect'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Exclude-Update',
 		name: 'isExcludeUpdate'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Global Resource',
 		name: 'isGlobalResource'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Hide Row Manager',
 		name: 'isHideRowManager'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Initialize Table',
 		name: 'isInitTable'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'List - Edit',
 		name: 'isListEdit'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'List Row Action',
 		name: 'isListRowAction'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'List - Suppress Filter/Sort',
 		name: 'isListSuppressFilterSort'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'List - Suppress Select',
 		name: 'isListSuppressSelect'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Multiple Select',
 		name: 'isMultiSelect'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Non-Data',
 		name: 'isNonData'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Required',
 		name: 'isRequired'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Self Reference',
 		name: 'isSelfReference'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Self Signup',
 		name: 'isSelfSignup'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Share With Student',
 		name: 'isShareWithClient'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'bool',
 		header: 'System Root',
 		name: 'isSystemRoot',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Items',
 		isMultiSelect: true,
 		name: 'items'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Key',
 		name: 'key'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Last Name',
 		name: 'lastName'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'json',
 		header: 'Link',
 		name: 'link'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Link-Columns',
 		isMultiSelect: true,
 		name: 'linkColumns'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Link - Expression - Preset',
 		name: 'linkExprPreset'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Link - Expression - Save',
 		name: 'linkExprSave'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Link - Expression - Select',
 		name: 'linkExprSelect'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Link-Table',
 		isMultiSelect: false,
 		name: 'linkTable'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'List - Edit - Preset Expression',
 		name: 'listEditPresetExpr',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'List - Reorder Column',
 		name: 'listReorderColumn'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Logo File Name',
 		name: 'logoFileName'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Match Column',
 		name: 'matchColumn'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'int16',
 		header: 'Maximum Length',
 		name: 'maxLength'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
 		header: 'Minimum Length',
 		name: 'minLength'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'float64',
 		header: 'Maximum Value',
 		name: 'maxValue'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Middle Name',
 		name: 'middleName'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'float64',
 		header: 'Minimum Value',
 		name: 'minValue'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Module',
 		name: 'mod'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'datetime',
 		header: 'Modified At',
@@ -1593,45 +1586,45 @@ export async function initPreColumn() {
 		isExcludeUpdate: true,
 		name: 'modifiedAt'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Modified By',
 		isMultiSelect: false,
 		name: 'modifiedBy',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Message',
 		name: 'msg'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Name',
 		name: 'name'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Custom Name',
 		name: 'nameCustom'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Nodes',
 		isMultiSelect: true,
 		name: 'nodes',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Note',
 		name: 'note'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Office',
@@ -1639,55 +1632,55 @@ export async function initPreColumn() {
 		name: 'office'
 	})
 
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
 		header: 'Order',
 		name: 'order'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
 		header: 'Order - Crumb',
 		name: 'orderCrumb'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
 		header: 'Order - Define',
 		name: 'orderDefine'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
 		header: 'Order - Display',
 		name: 'orderDisplay'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
 		header: 'List Sort Order',
 		name: 'orderSort'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Owner',
 		isMultiSelect: false,
 		name: 'owner',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Page',
 		name: 'page'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Parent',
@@ -1695,389 +1688,389 @@ export async function initPreColumn() {
 		isSelfReference: true,
 		name: 'parent'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Parent Column',
 		isMultiSelect: false,
 		name: 'parentColumn'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Parent - Filter Expression',
 		name: 'parentFilterExpr'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Parent Table',
 		isMultiSelect: false,
 		name: 'parentTable'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Parm',
 		isMultiSelect: false,
 		name: 'parm'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Parms',
 		isMultiSelect: true,
 		name: 'parms'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'json',
 		header: 'Value',
 		name: 'parmValue'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Participant',
 		isMultiSelect: false,
 		name: 'participant'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Password',
 		name: 'password'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Pattern',
 		name: 'pattern'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Pattern Message',
 		name: 'patternMsg'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Pattern Replacement',
 		name: 'patternReplacement'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Person',
 		isMultiSelect: false,
 		name: 'person',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Alternate Phone',
 		name: 'phoneAlt'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Mobile Phone',
 		name: 'phoneMobile'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Placeholder',
 		name: 'placeHolder'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Process - Type',
 		isMultiSelect: false,
 		name: 'processType'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Recipients',
 		isMultiSelect: true,
 		name: 'recipients'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Report',
 		isMultiSelect: false,
 		name: 'report'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Resource',
 		isMultiSelect: false,
 		name: 'resource'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Resources',
 		isMultiSelect: true,
 		name: 'resources'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Resources - App',
 		isMultiSelect: true,
 		name: 'resources_sys_app'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Resources - Footer',
 		isMultiSelect: true,
 		name: 'resources_sys_footer'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Schedule',
 		name: 'schedule'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'School',
 		name: 'school'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Sender',
 		isMultiSelect: false,
 		name: 'sender'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Service Flow',
 		isMultiSelect: false,
 		name: 'serviceFlow',
 		owner: 'sys_ai_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Spin Step',
 		name: 'spinStep'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Social Security Number',
 		name: 'ssn'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Staff - Administrator',
 		isMultiSelect: false,
 		name: 'staffAdmin'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Staff - Agency',
 		isMultiSelect: false,
 		name: 'staffAgency'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Staff - Instructor',
 		isMultiSelect: false,
 		name: 'staffInstructor'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Statuses',
 		isMultiSelect: true,
 		name: 'statuses'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Sub-Header',
 		name: 'subHeader',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Subject',
 		name: 'subject'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Systems',
 		isMultiSelect: true,
 		name: 'systems',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Table',
 		isMultiSelect: false,
 		name: 'table'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Tables',
 		isMultiSelect: true,
 		name: 'tables',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Source Tables',
 		isMultiSelect: true,
 		name: 'tablesSource',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Target Tables',
 		isMultiSelect: true,
 		name: 'tablesTarget',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'json',
 		header: 'Test',
 		isMultiSelect: true,
 		name: 'test'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Title',
 		name: 'title'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Toggle Preset True',
 		name: 'togglePresetTrue'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Toggle Value-False',
 		name: 'toggleValueFalse'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Toggle Value-True',
 		name: 'toggleValueTrue'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		codeDataType: 'bool',
 		header: 'Toggle Value-Show',
 		name: 'toggleValueShow',
 		owner: 'sys_system_old'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Triggers',
 		isMultiSelect: true,
 		name: 'triggers'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'User',
 		isMultiSelect: false,
 		name: 'user'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'User Name',
 		name: 'userName'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'UserTypes',
 		isMultiSelect: true,
 		name: 'userTypes'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Users',
 		isMultiSelect: true,
 		name: 'users'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Value',
 		name: 'value'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'float64',
 		header: 'Value-Decimal',
 		name: 'valueDecimal'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int64',
 		header: 'Value-Integer',
 		name: 'valueInteger'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Value-String',
 		name: 'valueString'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'float64',
 		header: 'Wage',
 		name: 'wage'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Website',
 		name: 'website'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
 		header: 'Width',
 		name: 'width'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'With Expressions',
 		isMultiSelect: true,
 		name: 'withs'
 	})
-	await addColumn({
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Zip',

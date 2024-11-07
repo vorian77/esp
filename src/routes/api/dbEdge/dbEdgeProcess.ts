@@ -35,7 +35,7 @@ import {
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import type { DataRecord } from '$utils/types'
 import { getDataObjById, getDataObjByName } from '$routes/api/dbEdge/dbEdgeUtilities'
-import { evalExpr, evalExprTokens } from '$routes/api/dbEdge/dbEdgeGetVal'
+import { evalExpr, EvalExprContext, evalExprTokens } from '$routes/api/dbEdge/dbEdgeGetVal'
 import type { RawDataList } from '$routes/api/dbEdge/types.dbEdge'
 import { Script, ScriptExePost, ScriptGroup } from '$routes/api/dbEdge/dbEdgeScript'
 import { getRawDataObjDynamic } from '$routes/api/dbEdge/dbEdgeProcessDynDO'
@@ -154,9 +154,13 @@ async function processDataObjExecute(
 		const script: Script = required(
 			scriptGroup.scripts.shift(),
 			clazz,
-			'criptGroup.scripts.shift()'
+			'scriptGroup.scripts.shift()'
 		)
-		const expr = evalExpr(script.script, script.queryData)
+		const expr = evalExpr(
+			script.script,
+			script.queryData,
+			new EvalExprContext('processDataObjExecute', script.query.rawDataObj.name)
+		)
 		const rawDataList = await executeQueryMultiple(expr)
 
 		// if (rawDataList.length === 0 && queryType === TokenApiQueryType.retrievePreset) {

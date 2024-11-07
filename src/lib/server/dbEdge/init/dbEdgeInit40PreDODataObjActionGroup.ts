@@ -1,21 +1,14 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { addDataObjActionFieldGroup } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initPreDataObjActionGroups() {
-	sectionHeader('initPreDataObjActionGroups')
-	await initFeatures()
-}
-
-/* auth */
-async function initFeatures() {
-	await addDataObjActionFieldGroup({
+export function initPreDataObjActionGroups(init: InitDb) {
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [['noa_save_detail', 0]],
 		name: 'doag_auth_my_account',
 		owner: 'sys_system_old'
 	})
 
 	/* base */
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_save_detail', 0],
 			['noa_save_cancel', 1],
@@ -25,7 +18,7 @@ async function initFeatures() {
 		name: 'doag_detail',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_save_list', 0],
 			['noa_save_cancel', 1],
@@ -37,19 +30,19 @@ async function initFeatures() {
 		owner: 'sys_system_old'
 	})
 
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [['noa_save_list_edit', 0]],
 		name: 'doag_list_edit',
 		owner: 'sys_system_old'
 	})
 
 	/* dialog */
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [['noa_dialog_done', 0]],
 		name: 'doag_dialog_footer_detail',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_dialog_cancel', 0],
 			['noa_dialog_done', 1]
@@ -57,7 +50,7 @@ async function initFeatures() {
 		name: 'doag_dialog_footer_list',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_save_detail', 0],
 			['noa_save_cancel', 1],
@@ -69,7 +62,7 @@ async function initFeatures() {
 	})
 
 	/* embed */
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_save_list', 0],
 			['noa_save_cancel', 1],
@@ -79,7 +72,7 @@ async function initFeatures() {
 		name: 'doag_embed_list_config',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_save_list', 0],
 			['noa_save_cancel', 1]
@@ -87,7 +80,7 @@ async function initFeatures() {
 		name: 'doag_embed_list_edit',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_save_list', 0],
 			['noa_save_cancel', 1],
@@ -96,14 +89,14 @@ async function initFeatures() {
 		name: 'doag_embed_list_edit_parm_value',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [['noa_embed_list_select', 0]],
 		name: 'doag_embed_list_select',
 		owner: 'sys_system_old'
 	})
 
 	/* organizations-user */
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_save_detail', 0],
 			['noa_save_cancel', 1]
@@ -111,7 +104,7 @@ async function initFeatures() {
 		name: 'doag_detail_org_user',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_edit_list', 0],
 			['noa_export', 1]
@@ -121,7 +114,7 @@ async function initFeatures() {
 	})
 
 	/* mobile */
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_save_detail_retrieve_preset', 0],
 			['noa_save_cancel', 1]
@@ -129,7 +122,7 @@ async function initFeatures() {
 		name: 'doag_detail_retrieve_preset',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_save_list', 0],
 			['noa_save_cancel', 1],
@@ -141,7 +134,7 @@ async function initFeatures() {
 	})
 
 	/* report */
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_refresh_list', 0],
 			['noa_export', 1]
@@ -149,7 +142,7 @@ async function initFeatures() {
 		name: 'doag_report_render',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_save_detail', 0],
 			['noa_save_cancel', 1]
@@ -157,7 +150,7 @@ async function initFeatures() {
 		name: 'doag_detail_report',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_save_list', 0],
 			['noa_save_cancel', 1],
@@ -168,7 +161,7 @@ async function initFeatures() {
 	})
 
 	/* specialty */
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_save_detail', 0],
 			['noa_save_cancel', 1],
@@ -179,7 +172,7 @@ async function initFeatures() {
 		name: 'doag_detail_migrate_define',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionFieldGroup({
+	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [['noa_process_execute', 0]],
 		name: 'doag_detail_migrate_process',
 		owner: 'sys_system_old'

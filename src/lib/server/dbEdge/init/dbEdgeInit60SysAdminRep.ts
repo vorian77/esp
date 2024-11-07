@@ -1,25 +1,18 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListSelect
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initSysAdminRep() {
-	sectionHeader('Admin - Report')
-	await initFieldListSelectAnalytics()
-	await initAnalytic()
-	await initAnalyticParm()
-	await initAnalyticStatus()
-	await initRep()
-	await initRepParm()
-	await initRepEl()
-	await initRepUser()
+export function initSysAdminRep(init: InitDb) {
+	initFieldListSelectAnalytics(init)
+	initAnalytic(init)
+	initAnalyticParm(init)
+	initAnalyticStatus(init)
+	initRep(init)
+	initRepParm(init)
+	initRepEl(init)
+	initRepUser(init)
 }
 
-async function initFieldListSelectAnalytics() {
-	sectionHeader('Field List Select - Analytics')
-	await addDataObj({
+function initFieldListSelectAnalytics(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -48,7 +41,7 @@ async function initFieldListSelectAnalytics() {
 		]
 	})
 
-	await addDataObjFieldEmbedListSelect({
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
 		actionFieldGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select Analytic(s)',
 		dataObjList: 'dofls_sys_rep_analytic',
@@ -57,8 +50,8 @@ async function initFieldListSelectAnalytics() {
 	})
 }
 
-async function initAnalytic() {
-	await addDataObj({
+function initAnalytic(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -103,7 +96,7 @@ async function initAnalytic() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -213,7 +206,7 @@ async function initAnalytic() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_analytic_list',
 		header: 'Analytics',
@@ -222,7 +215,7 @@ async function initAnalytic() {
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_analytic_detail',
 		header: 'Analytic',
@@ -233,8 +226,8 @@ async function initAnalytic() {
 	})
 }
 
-async function initAnalyticParm() {
-	await addDataObj({
+function initAnalyticParm(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -340,7 +333,7 @@ async function initAnalyticParm() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -525,7 +518,7 @@ async function initAnalyticParm() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_analytic_parm_list',
 		header: 'Parms',
@@ -534,7 +527,7 @@ async function initAnalyticParm() {
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_analytic_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_analytic_parm_detail',
 		header: 'Parm',
@@ -545,8 +538,8 @@ async function initAnalyticParm() {
 	})
 }
 
-async function initAnalyticStatus() {
-	await addDataObj({
+function initAnalyticStatus(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -595,7 +588,7 @@ async function initAnalyticStatus() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -690,7 +683,7 @@ async function initAnalyticStatus() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_analytic_status_list',
 		header: 'Statuses',
@@ -699,7 +692,7 @@ async function initAnalyticStatus() {
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_analytic_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_analytic_status_detail',
 		header: 'Status',
@@ -710,8 +703,8 @@ async function initAnalyticStatus() {
 	})
 }
 
-async function initRep() {
-	await addDataObj({
+function initRep(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -756,7 +749,7 @@ async function initRep() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -926,7 +919,7 @@ async function initRep() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_list',
 		header: 'Reports',
@@ -935,7 +928,7 @@ async function initRep() {
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_detail',
 		header: 'Report',
@@ -946,8 +939,8 @@ async function initRep() {
 	})
 }
 
-async function initRepEl() {
-	await addDataObj({
+function initRepEl(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1079,7 +1072,7 @@ async function initRepEl() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -1428,7 +1421,7 @@ async function initRepEl() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_element_list',
 		header: 'Elements',
@@ -1437,7 +1430,7 @@ async function initRepEl() {
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_rep_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_el_detail',
 		header: 'Element',
@@ -1448,8 +1441,8 @@ async function initRepEl() {
 	})
 }
 
-async function initRepParm() {
-	await addDataObj({
+function initRepParm(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1559,7 +1552,7 @@ async function initRepParm() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -1744,7 +1737,7 @@ async function initRepParm() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_parm_list',
 		header: 'Parms',
@@ -1753,7 +1746,7 @@ async function initRepParm() {
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_rep_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_parm_detail',
 		header: 'Parm',
@@ -1764,8 +1757,8 @@ async function initRepParm() {
 	})
 }
 
-async function initRepUser() {
-	await addDataObj({
+function initRepUser(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1810,7 +1803,7 @@ async function initRepUser() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -1931,7 +1924,7 @@ async function initRepUser() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_user_list',
 		header: 'Users',
@@ -1940,7 +1933,7 @@ async function initRepUser() {
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_rep_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_user_detail',
 		header: 'User',

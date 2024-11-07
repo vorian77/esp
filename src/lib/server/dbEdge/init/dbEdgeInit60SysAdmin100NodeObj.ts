@@ -1,18 +1,11 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListConfig,
-	addDataObjFieldEmbedListSelect
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initAdminNodeObj() {
-	sectionHeader('SysAdmin - Node Object')
-	await initNodeObj()
+export function initAdminNodeObj(init: InitDb) {
+	initNodeObj(init)
 }
 
-async function initNodeObj() {
-	await addDataObj({
+function initNodeObj(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -109,7 +102,7 @@ async function initNodeObj() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -327,7 +320,7 @@ async function initNodeObj() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_node_obj_list',
 		header: 'Node Objects',
@@ -337,7 +330,7 @@ async function initNodeObj() {
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_node_obj_detail',
 		header: 'Node Object',

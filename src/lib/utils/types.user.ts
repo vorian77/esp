@@ -125,7 +125,7 @@ export class User {
 							// if (returnType === TokenAppModalReturnType.complete) {
 							// 	const parms: ParmsValues = returnData.data || undefined
 							// 	if (parms) {
-							// 		const selectedIds = parms[ParmsValuesType.listRecordIdSelected]
+							// 		const selectedIds = parms[ParmsValuesType.listIdsSelected]
 							// 		console.log('User.setUserSelectParms.fModalClose', {
 							// 			returnData: returnData.data,
 							// 			selectedIds

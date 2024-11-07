@@ -79,7 +79,6 @@ export async function query(
 
 	document.body.style.setProperty('cursor', 'wait', 'important')
 	const result: ResponseBody = await queryExecute(tab.getDataObjSource(), queryType, queryData)
-	console.log('appQuery.result', result)
 	document.body.style.setProperty('cursor', 'default')
 
 	if (!result.success) {

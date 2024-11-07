@@ -1,6 +1,7 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
 export function initUser(init: InitDb) {
+	initResources(init)
 	initAppHeaders(init)
 	initApps(init)
 	initUserType(init)
@@ -9,7 +10,31 @@ export function initUser(init: InitDb) {
 	// initStaff()
 }
 
-async function initAppHeaders(init: InitDb) {
+function initResources(init: InitDb) {
+	/* footers */
+	init.addTrans('sysNodeObjFooter', {
+		codeIcon: 'AppWindow',
+		codeType: 'home',
+		header: 'Home',
+		isGlobalResource: false,
+		name: 'node_obj_sys_admin_footer_home_test',
+		orderDefine: 0,
+		owner: 'sys_ai_old'
+	})
+
+	/* widgets */
+	init.addTrans('widgetsBulk', [
+		['sys_system_old', 'widget_sys_report', true],
+		['sys_system_old', 'widget_sys_quotes', true],
+		['sys_system_old', 'widget_sys_user', true],
+		['sys_ai_old', 'widget_ai_user', false],
+		['sys_moed_old', 'wf_moed_student_ssr_app', false],
+		['sys_moed_old', 'wf_moed_student_ssr_doc', false],
+		['sys_moed_old', 'wf_moed_student_ssr_msg', false]
+	])
+}
+
+function initAppHeaders(init: InitDb) {
 	init.addTrans('sysAppHeader', {
 		codeIcon: 'ShieldEllipsis',
 		header: 'Administration',
@@ -56,7 +81,7 @@ async function initAppHeaders(init: InitDb) {
 	})
 }
 
-async function initApps(init: InitDb) {
+function initApps(init: InitDb) {
 	/* system */
 	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_sys_admin',
@@ -123,7 +148,7 @@ async function initApps(init: InitDb) {
 	})
 }
 
-async function initUserType(init: InitDb) {
+function initUserType(init: InitDb) {
 	/* system */
 	init.addTrans('sysUserType', {
 		header: 'Admin - Global',
@@ -185,7 +210,7 @@ async function initUserType(init: InitDb) {
 	})
 }
 
-async function initUserSystems(init: InitDb) {
+function initUserSystems(init: InitDb) {
 	init.addTrans('userSystemsBulk', [
 		['user_sys', 'sys_system_old'],
 		['user_sys', 'sys_ai_old'],
@@ -204,7 +229,7 @@ async function initUserSystems(init: InitDb) {
 	])
 }
 
-async function initUserUserType(init: InitDb) {
+function initUserUserType(init: InitDb) {
 	// user_sys
 	init.addTrans('userUserTypeBulk', [
 		['user_sys', 'ut_sys_admin_global'],

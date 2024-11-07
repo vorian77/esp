@@ -1,11 +1,8 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { addDataObjActionField } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initPreDataObjAction() {
-	sectionHeader('DataObjAction')
-
+export function initPreDataObjAction(init: InitDb) {
 	/* delete */
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{
 				codeTriggerConfirmConditional: 'saveModeInsert',
@@ -38,7 +35,7 @@ export async function initPreDataObjAction() {
 	})
 
 	/* dialog */
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{
 				codeConfirmType: 'objectChanged',
@@ -56,7 +53,7 @@ export async function initPreDataObjAction() {
 		name: 'noa_dialog_cancel',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -70,7 +67,7 @@ export async function initPreDataObjAction() {
 	})
 
 	/* edit */
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -84,7 +81,7 @@ export async function initPreDataObjAction() {
 	})
 
 	/* embed */
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -96,7 +93,7 @@ export async function initPreDataObjAction() {
 		name: 'noa_embed_list_config_edit',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -111,7 +108,7 @@ export async function initPreDataObjAction() {
 		name: 'noa_embed_list_config_new',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -123,7 +120,7 @@ export async function initPreDataObjAction() {
 		name: 'noa_embed_list_edit_parm_value',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -137,7 +134,7 @@ export async function initPreDataObjAction() {
 	})
 
 	/* export */
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -151,7 +148,7 @@ export async function initPreDataObjAction() {
 	})
 
 	/* new */
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -163,7 +160,7 @@ export async function initPreDataObjAction() {
 		name: 'noa_new_detail',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -176,7 +173,7 @@ export async function initPreDataObjAction() {
 		owner: 'sys_system_old'
 	})
 
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -190,7 +187,7 @@ export async function initPreDataObjAction() {
 	})
 
 	/* refresh */
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -204,7 +201,7 @@ export async function initPreDataObjAction() {
 	})
 
 	/* save */
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -216,7 +213,7 @@ export async function initPreDataObjAction() {
 		name: 'noa_save_as_detail',
 		owner: 'sys_system_old'
 	})
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionFieldShows: [
 			{ codeTriggerShow: 'objectChanged', isRequired: true },
@@ -231,7 +228,7 @@ export async function initPreDataObjAction() {
 		owner: 'sys_system_old'
 	})
 
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionFieldShows: [
 			{ codeTriggerShow: 'objectChanged', isRequired: true },
@@ -246,7 +243,7 @@ export async function initPreDataObjAction() {
 		owner: 'sys_system_old'
 	})
 
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -262,7 +259,7 @@ export async function initPreDataObjAction() {
 		owner: 'sys_system_old'
 	})
 
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionFieldShows: [
 			{ codeTriggerShow: 'objectChanged', isRequired: true },
@@ -276,7 +273,7 @@ export async function initPreDataObjAction() {
 		owner: 'sys_system_old'
 	})
 
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionFieldShows: [{ codeTriggerShow: 'objectChanged', isRequired: true }],
 		codePacketAction: 'doListSelfSave',
@@ -288,7 +285,7 @@ export async function initPreDataObjAction() {
 	})
 
 	/* special */
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
@@ -301,7 +298,7 @@ export async function initPreDataObjAction() {
 		owner: 'sys_system_old'
 	})
 
-	await addDataObjActionField({
+	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
 		codePacketAction: 'doDetailProcessExecute',

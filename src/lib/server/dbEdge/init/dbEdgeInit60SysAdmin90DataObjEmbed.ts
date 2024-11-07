@@ -1,22 +1,13 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListConfig,
-	addDataObjFieldEmbedListSelect
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
-
-export async function initAdminDataObjEmbed() {
-	sectionHeader('SysAdmin - Data Object - Embed')
-
-	await initDataObjFielEmbedListConfig()
-	await initDataObjFieldEmbedListEdit()
-	await initDataObjFieldEmbedListSelect()
-	await initDataObjFieldListItems()
+import { InitDb } from '$server/dbEdge/init/types.init'
+export function initAdminDataObjEmbed(init: InitDb) {
+	initDataObjFielEmbedListConfig(init)
+	initDataObjFieldEmbedListEdit(init)
+	initDataObjFieldEmbedListSelect(init)
+	initDataObjFieldListItems(init)
 }
 
-async function initDataObjFielEmbedListConfig() {
-	await addDataObj({
+function initDataObjFielEmbedListConfig(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -73,7 +64,7 @@ async function initDataObjFielEmbedListConfig() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -212,7 +203,7 @@ async function initDataObjFielEmbedListConfig() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_config_list',
 		header: 'Embed List Configs',
@@ -222,7 +213,7 @@ async function initDataObjFielEmbedListConfig() {
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_config_detail',
 		header: 'Config',
@@ -233,8 +224,8 @@ async function initDataObjFielEmbedListConfig() {
 	})
 }
 
-async function initDataObjFieldEmbedListEdit() {
-	await addDataObj({
+function initDataObjFieldEmbedListEdit(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -272,7 +263,7 @@ async function initDataObjFieldEmbedListEdit() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -377,7 +368,7 @@ async function initDataObjFieldEmbedListEdit() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_edit_list',
 		header: 'Embed List Edits',
@@ -387,7 +378,7 @@ async function initDataObjFieldEmbedListEdit() {
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_edit_detail',
 		header: 'Config',
@@ -398,8 +389,8 @@ async function initDataObjFieldEmbedListEdit() {
 	})
 }
 
-async function initDataObjFieldEmbedListSelect() {
-	await addDataObj({
+function initDataObjFieldEmbedListSelect(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -444,7 +435,7 @@ async function initDataObjFieldEmbedListSelect() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -580,7 +571,7 @@ async function initDataObjFieldEmbedListSelect() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_select_list',
 		header: 'Embed List Selects',
@@ -590,7 +581,7 @@ async function initDataObjFieldEmbedListSelect() {
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_select_detail',
 		header: 'Config',
@@ -601,8 +592,8 @@ async function initDataObjFieldEmbedListSelect() {
 	})
 }
 
-async function initDataObjFieldListItems() {
-	await addDataObj({
+function initDataObjFieldListItems(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -690,7 +681,7 @@ async function initDataObjFieldListItems() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -866,7 +857,7 @@ async function initDataObjFieldListItems() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_list_items_list',
 		header: 'Field List Items',
@@ -876,7 +867,7 @@ async function initDataObjFieldListItems() {
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_data_obj_field_list_items_detail',
 		header: 'Item',

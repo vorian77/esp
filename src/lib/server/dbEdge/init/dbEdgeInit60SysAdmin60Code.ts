@@ -1,20 +1,13 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListConfig,
-	addDataObjFieldEmbedListSelect
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initAdminCode() {
-	sectionHeader('SysAdmin - Code')
-	await initCodeType()
-	await initCodeTypeCode()
-	await initCode()
+export function initAdminCode(init: InitDb) {
+	initCodeType(init)
+	initCodeTypeCode(init)
+	initCode(init)
 }
 
-async function initCodeType() {
-	await addDataObj({
+function initCodeType(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -68,7 +61,7 @@ async function initCodeType() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -191,7 +184,7 @@ async function initCodeType() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_code_type_list',
 		header: 'Code Types',
@@ -200,7 +193,7 @@ async function initCodeType() {
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_code_type_detail',
 		header: 'Code Type',
@@ -211,8 +204,8 @@ async function initCodeType() {
 	})
 }
 
-async function initCodeTypeCode() {
-	await addDataObj({
+function initCodeTypeCode(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -290,7 +283,7 @@ async function initCodeTypeCode() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -476,7 +469,7 @@ async function initCodeTypeCode() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_code_list_codeType',
 		header: 'Codes',
@@ -485,7 +478,7 @@ async function initCodeTypeCode() {
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_admin_code_type_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_code_detail_codeType',
 		header: 'Code',
@@ -496,8 +489,8 @@ async function initCodeTypeCode() {
 	})
 }
 
-async function initCode() {
-	await addDataObj({
+function initCode(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -585,7 +578,7 @@ async function initCode() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -770,7 +763,7 @@ async function initCode() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_code_list',
 		header: 'Codes',
@@ -779,7 +772,7 @@ async function initCode() {
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_code_detail',
 		header: 'Code',

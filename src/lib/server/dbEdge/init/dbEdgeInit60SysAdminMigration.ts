@@ -1,20 +1,16 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { addDataObj } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initSysAdminMigr() {
-	sectionHeader('DataObject - SysAdminMigration')
-
-	await initMigr()
-	await initMigrSourceTable()
-	await initMigrSourceColumn()
-	await initMigrTargetTable()
-	await initMigrTargetColumn()
-	await initMigrProcess()
+export function initSysAdminMigr(init: InitDb) {
+	initMigr(init)
+	initMigrSourceTable(init)
+	initMigrSourceColumn(init)
+	initMigrTargetTable(init)
+	initMigrTargetColumn(init)
+	initMigrProcess(init)
 }
 
-async function initMigr() {
-	await addDataObj({
+function initMigr(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -51,7 +47,7 @@ async function initMigr() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail_migrate_define',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -141,7 +137,7 @@ async function initMigr() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_list',
 		header: 'Migrations',
@@ -150,7 +146,7 @@ async function initMigr() {
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_detail',
 		header: 'Migration',
@@ -161,8 +157,8 @@ async function initMigr() {
 	})
 }
 
-async function initMigrSourceTable() {
-	await addDataObj({
+function initMigrSourceTable(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -212,7 +208,7 @@ async function initMigrSourceTable() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -307,7 +303,7 @@ async function initMigrSourceTable() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_source_table_list',
 		header: 'Source Tables',
@@ -317,7 +313,7 @@ async function initMigrSourceTable() {
 		parentNodeName: 'node_obj_sys_admin_migr_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_source_table_detail',
 		header: 'Source Table',
@@ -328,8 +324,8 @@ async function initMigrSourceTable() {
 	})
 }
 
-async function initMigrSourceColumn() {
-	await addDataObj({
+function initMigrSourceColumn(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -371,7 +367,7 @@ async function initMigrSourceColumn() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -457,7 +453,7 @@ async function initMigrSourceColumn() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_source_column_list',
 		header: 'Columns',
@@ -467,7 +463,7 @@ async function initMigrSourceColumn() {
 		parentNodeName: 'node_obj_sys_admin_migr_source_table_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_source_column_detail',
 		header: 'Column',
@@ -478,8 +474,8 @@ async function initMigrSourceColumn() {
 	})
 }
 
-async function initMigrTargetTable() {
-	await addDataObj({
+function initMigrTargetTable(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -567,7 +563,7 @@ async function initMigrTargetTable() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -675,7 +671,7 @@ async function initMigrTargetTable() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_target_table_list',
 		header: 'Target Tables',
@@ -685,7 +681,7 @@ async function initMigrTargetTable() {
 		parentNodeName: 'node_obj_sys_admin_migr_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_target_table_detail',
 		header: 'Target Table',
@@ -696,8 +692,8 @@ async function initMigrTargetTable() {
 	})
 }
 
-async function initMigrTargetColumn() {
-	await addDataObj({
+function initMigrTargetColumn(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -785,7 +781,7 @@ async function initMigrTargetColumn() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -888,7 +884,7 @@ async function initMigrTargetColumn() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_target_column_list',
 		header: 'Columns',
@@ -898,7 +894,7 @@ async function initMigrTargetColumn() {
 		parentNodeName: 'node_obj_sys_admin_migr_target_table_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_migr_target_column_detail',
 		header: 'Column',
@@ -909,8 +905,8 @@ async function initMigrTargetColumn() {
 	})
 }
 
-async function initMigrProcess() {
-	await addDataObj({
+function initMigrProcess(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail_migrate_process',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',

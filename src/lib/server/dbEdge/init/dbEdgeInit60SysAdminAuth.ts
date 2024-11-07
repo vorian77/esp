@@ -1,61 +1,18 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListSelect
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeFooter } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initSysAuth() {
-	sectionHeader('DataObject - SysAuth')
-	await initDataObjAccount()
-	await initDataObjLogin()
-	await initDataObjResetPasswordAccount()
-	await initDataObjResetPasswordLogin()
-	await initDataObjVerify()
-	await initNodeObjFooter()
-	// await initDataObjSignup()
-	await initDataObjUserPrefType()
+export function initSysAuth(init: InitDb) {
+	initDataObjAccount(init)
+	initDataObjLogin(init)
+	initDataObjResetPasswordAccount(init)
+	initDataObjResetPasswordLogin(init)
+	initDataObjVerify(init)
+	initNodeObjFooter(init)
+	//  initDataObjSignup(init)
+	initDataObjUserPrefType(init)
 }
 
-// {
-// 	codeAccess: 'optional',
-// 	codeFieldElement: 'select',
-// 	columnName: 'codeRace',
-// 	isDisplayable: true,
-//orderDisplay: 42,
-//orderDefine: 42,
-// 	fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-// 	fieldListItemsParmName:: 'ct_sys_person_race' ,
-// 	linkColumns: ['name'],
-// 	linkTable: 'SysCode',
-// 	indexTable: 1
-// },
-// {
-// 	codeAccess: 'optional',
-// 	codeFieldElement: 'checkbox',
-// 	columnName: 'favFood',
-// 	isDisplayable: true,
-//orderDisplay: 44,
-//orderDefine: 44,
-// 	items: [
-// 		{
-// 			data: '10',
-// 			display: 'Apple'
-// 		},
-// 		{
-// 			data: '20',
-// 			display: 'Pizza'
-// 		},
-// 		{
-// 			data: '30',
-// 			display: 'Spaghetti'
-// 		}
-// 	],
-// 	indexTable: 1
-// },
-
-async function initDataObjAccount() {
-	await addDataObj({
+function initDataObjAccount(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_auth_my_account',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -206,8 +163,8 @@ async function initDataObjAccount() {
 	})
 }
 
-async function initDataObjLogin() {
-	await addDataObj({
+function initDataObjLogin(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		exprObject: `WITH 
@@ -269,8 +226,8 @@ async function initDataObjLogin() {
 	})
 }
 
-async function initDataObjResetPasswordAccount() {
-	await addDataObj({
+function initDataObjResetPasswordAccount(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		exprObject: `WITH
@@ -336,8 +293,8 @@ async function initDataObjResetPasswordAccount() {
 	})
 }
 
-async function initDataObjResetPasswordLogin() {
-	await addDataObj({
+function initDataObjResetPasswordLogin(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		exprObject: `WITH
@@ -417,9 +374,9 @@ async function initDataObjResetPasswordLogin() {
 	})
 }
 
-async function initDataObjVerify() {
+function initDataObjVerify(init: InitDb) {
 	/* data_obj_auth_verify_phone_mobile */
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
@@ -478,9 +435,9 @@ async function initDataObjVerify() {
 	})
 }
 
-async function initDataObjSignup() {
+function initDataObjSignup(init: InitDb) {
 	/* data_obj_auth_signup */
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		exprObject: `WITH 
@@ -595,10 +552,8 @@ async function initDataObjSignup() {
 	})
 }
 
-async function initNodeObjFooter() {
-	sectionHeader('NodeObj-Footer')
-
-	await addNodeFooter({
+function initNodeObjFooter(init: InitDb) {
+	init.addTrans('sysNodeObjFooter', {
 		codeIcon: 'AppWindow',
 		codeType: 'home',
 		header: 'Home',
@@ -609,8 +564,8 @@ async function initNodeObjFooter() {
 	})
 }
 
-async function initDataObjUserPrefType() {
-	await addDataObj({
+function initDataObjUserPrefType(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_embed_list_edit',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',

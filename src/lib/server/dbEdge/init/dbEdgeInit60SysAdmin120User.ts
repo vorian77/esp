@@ -1,25 +1,17 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListConfig,
-	addDataObjFieldEmbedListSelect
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { addNodeProgramObj } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initAdminUser() {
-	sectionHeader('SysAdmin - User')
-	await initFieldListSelectResources()
-	await initFieldListSelectSystem()
-	await initFieldListSelectUser()
-	await initFieldListSelectUserType()
-	await initUserOrg()
-	await initUserType()
-	await initWidget()
+export function initAdminUser(init: InitDb) {
+	initFieldListSelectResources(init)
+	initFieldListSelectSystem(init)
+	initFieldListSelectUser(init)
+	initFieldListSelectUserType(init)
+	initUserOrg(init)
+	initUserType(init)
+	initWidget(init)
 }
 
-async function initFieldListSelectResources() {
-	sectionHeader('Field List Select - User Type - Resources')
-	await addDataObj({
+function initFieldListSelectResources(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -68,7 +60,7 @@ async function initFieldListSelectResources() {
 			}
 		]
 	})
-	await addDataObjFieldEmbedListSelect({
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
 		actionFieldGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select Resource(s)',
 		dataObjList: 'dofls_sys_admin_sys_user_type_resource',
@@ -77,8 +69,8 @@ async function initFieldListSelectResources() {
 	})
 }
 
-async function initFieldListSelectSystem() {
-	await addDataObj({
+function initFieldListSelectSystem(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -106,7 +98,7 @@ async function initFieldListSelectSystem() {
 		]
 	})
 
-	await addDataObjFieldEmbedListSelect({
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
 		actionFieldGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select System(s)',
 		dataObjList: 'dofls_sys_admin_org_user_system',
@@ -115,9 +107,8 @@ async function initFieldListSelectSystem() {
 	})
 }
 
-async function initFieldListSelectUser() {
-	sectionHeader('Field List Select - Users')
-	await addDataObj({
+function initFieldListSelectUser(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -145,7 +136,7 @@ async function initFieldListSelectUser() {
 			}
 		]
 	})
-	await addDataObjFieldEmbedListSelect({
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
 		actionFieldGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select User(s)',
 		dataObjList: 'dofls_sys_sys_admin_user',
@@ -154,9 +145,8 @@ async function initFieldListSelectUser() {
 	})
 }
 
-async function initFieldListSelectUserType() {
-	sectionHeader('Field List Select - UserTypes')
-	await addDataObj({
+function initFieldListSelectUserType(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -185,7 +175,7 @@ async function initFieldListSelectUserType() {
 		]
 	})
 
-	await addDataObjFieldEmbedListSelect({
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
 		actionFieldGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select UserType(s)',
 		dataObjList: 'dofls_sys_sys_admin_user_type',
@@ -194,8 +184,8 @@ async function initFieldListSelectUserType() {
 	})
 }
 
-async function initUserOrg() {
-	await addDataObj({
+function initUserOrg(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -245,7 +235,7 @@ async function initUserOrg() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -374,7 +364,7 @@ async function initUserOrg() {
 			}
 		]
 	})
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_meta_user_list_org_user',
 		header: 'Users',
@@ -384,7 +374,7 @@ async function initUserOrg() {
 		parentNodeName: 'node_obj_sys_org_detail_user'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_meta_user_detail_org_user',
 		header: 'User',
@@ -395,8 +385,8 @@ async function initUserOrg() {
 	})
 }
 
-async function initUserType() {
-	await addDataObj({
+function initUserType(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -441,7 +431,7 @@ async function initUserType() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -584,7 +574,7 @@ async function initUserType() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_user_type_list',
 		header: 'User Types',
@@ -594,7 +584,7 @@ async function initUserType() {
 		parentNodeName: 'node_obj_sys_system_meta_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_user_type_detail',
 		header: 'User Type',
@@ -605,8 +595,8 @@ async function initUserType() {
 	})
 }
 
-async function initWidget() {
-	await addDataObj({
+function initWidget(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -652,7 +642,7 @@ async function initWidget() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -764,7 +754,7 @@ async function initWidget() {
 		]
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_widget_list',
 		header: 'Widgets',
@@ -774,7 +764,7 @@ async function initWidget() {
 		parentNodeName: 'node_obj_sys_system_object_detail'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_admin_widget_detail',
 		header: 'Widget',

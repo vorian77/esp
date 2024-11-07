@@ -1,31 +1,18 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { resetDBItems } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
-import { addDataObj } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import {
-	addAnalytic,
-	addReport,
-	addReportUser
-} from '$server/dbEdge/init/dbEdgeInit200Utilities40Rep'
-import {
-	addNodeProgram,
-	addNodeProgramObj
-} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
-import { error } from '@sveltejs/kit'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initDataReports() {
-	sectionHeader('Reports')
-	await initReportCMTrainingCohortAttendance()
-	await initReportCMTrainingCohortWages()
+export function initDataReports(init: InitDb) {
+	initReportCMTrainingCohortAttendance(init)
+	initReportCMTrainingCohortWages(init)
 
 	// old - static
-	await initAnalyticTrainingCredential()
-	await initReportCourseSummary()
-	await initReportOurWorldSummary()
-	await initReportStudentSummary()
+	initAnalyticTrainingCredential(init)
+	initReportCourseSummary(init)
+	initReportOurWorldSummary(init)
+	initReportStudentSummary(init)
 }
 
-async function initReportCMTrainingCohortAttendance() {
-	await addReport({
+function initReportCMTrainingCohortAttendance(init: InitDb) {
+	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: 'Cohort attendance report.',
 		exprFilter: '.cohort.id IN <parms,uuidList,pvCohorts>',
@@ -405,36 +392,36 @@ async function initReportCMTrainingCohortAttendance() {
 		]
 	})
 
-	await addReportUser({
+	init.addTrans('sysRepUser', {
 		header: 'Cohort Attendance',
 		report: 'report_cm_training_cohort_attendance',
 		user: 'user_sys'
 	})
-	await addReportUser({
+	init.addTrans('sysRepUser', {
 		header: 'Cohort Attendance',
 		report: 'report_cm_training_cohort_attendance',
 		user: '2487985578' // Phyllip
 	})
-	await addReportUser({
+	init.addTrans('sysRepUser', {
 		header: 'Cohort Attendance',
 		report: 'report_cm_training_cohort_attendance',
 		user: '2482317505' // Anise
 	})
-	await addReportUser({
+	init.addTrans('sysRepUser', {
 		header: 'Cohort Attendance',
 		report: 'report_cm_training_cohort_attendance',
 		user: '3136276210' // Matt
 	})
 	// Erica
-	await addReportUser({
+	init.addTrans('sysRepUser', {
 		header: 'Cohort Attendance',
 		report: 'report_cm_training_cohort_attendance',
 		user: '3136272756' // Erica
 	})
 }
 
-async function initReportCMTrainingCohortWages() {
-	await addReport({
+function initReportCMTrainingCohortWages(init: InitDb) {
+	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: 'Cohort wages report.',
 		exprFilter:
@@ -836,28 +823,28 @@ async function initReportCMTrainingCohortWages() {
 		]
 	})
 
-	await addReportUser({
+	init.addTrans('sysRepUser', {
 		header: 'Job Placement',
 		report: 'report_cm_training_cohort_job_placement',
 		user: 'user_sys'
 	})
-	await addReportUser({
+	init.addTrans('sysRepUser', {
 		header: 'Job Placement',
 		report: 'report_cm_training_cohort_job_placement',
 		user: '2487985578' // Phyllip
 	})
-	await addReportUser({
+	init.addTrans('sysRepUser', {
 		header: 'Job Placement',
 		report: 'report_cm_training_cohort_job_placement',
 		user: '2482317505' // Anise
 	})
-	await addReportUser({
+	init.addTrans('sysRepUser', {
 		header: 'Job Placement',
 		report: 'report_cm_training_cohort_job_placement',
 		user: '3136276210' // Matt
 	})
 	// Erica
-	await addReportUser({
+	init.addTrans('sysRepUser', {
 		header: 'Job Placement',
 		report: 'report_cm_training_cohort_job_placement',
 		user: '3136272756' // Erica
@@ -865,8 +852,8 @@ async function initReportCMTrainingCohortWages() {
 }
 
 // old/static list reports
-async function initAnalyticTrainingCredential() {
-	await addAnalytic({
+function initAnalyticTrainingCredential(init: InitDb) {
+	init.addTrans('sysAnalytic', {
 		description: 'Cohort attendance report.',
 		header: 'Cohort Attendance',
 		name: 'analytic_cm_training_cohort_attendance',
@@ -920,8 +907,8 @@ async function initAnalyticTrainingCredential() {
 	})
 }
 
-async function initReportCourseSummary() {
-	await addDataObj({
+function initReportCourseSummary(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_report_render',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1051,7 +1038,7 @@ async function initReportCourseSummary() {
 		]
 	})
 
-	await addNodeProgram({
+	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_ai_report_course_summary',
 		header: 'Courses (Summary)',
@@ -1061,8 +1048,8 @@ async function initReportCourseSummary() {
 	})
 }
 
-async function initReportOurWorldSummary() {
-	await addDataObj({
+function initReportOurWorldSummary(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_report_render',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1179,7 +1166,7 @@ async function initReportOurWorldSummary() {
 		]
 	})
 
-	await addNodeProgram({
+	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_ai_report_our_world_summary',
 		header: 'Our World (Summary)',
@@ -1189,8 +1176,8 @@ async function initReportOurWorldSummary() {
 	})
 }
 
-async function initReportStudentSummary() {
-	await addDataObj({
+function initReportStudentSummary(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_report_render',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -1467,7 +1454,7 @@ async function initReportStudentSummary() {
 		]
 	})
 
-	await addNodeProgram({
+	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_cm_ai_report_student_summary',
 		header: 'Students (Summary)',

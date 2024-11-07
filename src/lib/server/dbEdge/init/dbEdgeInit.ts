@@ -1,5 +1,6 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
+
+import { addDataObjActionField } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
 
 import { initReset } from '$server/dbEdge/init/dbEdgeInit0Reset'
 import { initPreDataObj } from '$server/dbEdge/init/dbEdgeInit40PreDO'
@@ -21,47 +22,39 @@ import { initDataReports } from '$server/dbEdge/init/dbEdgeInit120DataRep'
 
 // other
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
-import { initUserResource } from '$server/dbEdge/init/dbEdgeInit1UserResources'
 
 export async function dbEdgeInit() {
 	let initDb = new InitDb()
-
-	await dbEdgeInitSystem()
-	await dbEdgeInitFeature(initDb)
+	// dbEdgeInitAll(initDb)
+	initFeatures(initDb)
+	initUser(initDb)
 	await initDb.execute()
 }
 
-async function dbEdgeInitFeature(initDb: InitDb) {
+function dbEdgeInitAll(initDb: InitDb) {
+	initPreDataObj(initDb)
+	initSysCore(initDb)
+	initSysOther(initDb)
+	initFeatures(initDb)
+	initData(initDb)
+}
+
+function initSysCore(initDb: InitDb) {
+	initSysAdmin(initDb)
+	initSysAdminMigr(initDb)
+	initSysAdminRep(initDb)
+}
+function initSysOther(initDb: InitDb) {
+	initSysAuth(initDb)
+	initSysRepUser(initDb)
+}
+
+export function initFeatures(initDb: InitDb) {
 	initFeatMOED(initDb)
-	initUserResource(initDb)
-	initUser(initDb)
+	initFeatCMStudent(initDb)
+	initFeatTraining(initDb)
 }
 
-async function dbEdgeInitSystem() {
-	await initReset()
-	await initPreDataObj()
-
-	await initSysCore()
-	await initSysOther()
-	await initFeatures()
-	await initData()
-}
-
-async function initSysCore() {
-	await initSysAdmin()
-	await initSysAdminMigr()
-	await initSysAdminRep()
-}
-async function initSysOther() {
-	await initSysAuth()
-	await initSysRepUser()
-}
-
-export async function initFeatures() {
-	await initFeatCMStudent()
-	await initFeatTraining()
-}
-
-export async function initData() {
-	await initDataReports()
+export function initData(initDb: InitDb) {
+	initDataReports(initDb)
 }

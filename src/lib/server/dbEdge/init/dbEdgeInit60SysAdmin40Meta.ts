@@ -1,20 +1,11 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import {
-	addDataObj,
-	addDataObjFieldEmbedListSelect
-} from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import {
-	addNodeProgram,
-	addNodeProgramObj
-} from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initSysAdminSystemMeta() {
-	sectionHeader('Admin - System Meta')
-	await initSystemMeta()
+export function initSysAdminSystemMeta(init: InitDb) {
+	initSystemMeta(init)
 }
 
-async function initSystemMeta() {
-	await addDataObj({
+function initSystemMeta(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -43,7 +34,7 @@ async function initSystemMeta() {
 		]
 	})
 
-	await addDataObj({
+	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -117,7 +108,7 @@ async function initSystemMeta() {
 		]
 	})
 
-	await addNodeProgram({
+	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_system_meta_list',
 		header: 'Systems (Meta)',
@@ -126,7 +117,7 @@ async function initSystemMeta() {
 		owner: 'sys_system_old'
 	})
 
-	await addNodeProgramObj({
+	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_system_meta_detail',
 		header: 'System (Meta)',

@@ -84,7 +84,7 @@ export async function addColumn(data: any) {
 	return await query.run(client, data)
 }
 
-export async function tableColumns(data: any) {
+export async function tableColumnsBulk(data: any) {
 	sectionHeader('Table Columns')
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {

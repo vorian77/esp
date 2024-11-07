@@ -1,10 +1,7 @@
-import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { tableColumns } from '$server/dbEdge/init/dbEdgeInit200Utilities30DB'
+import { InitDb } from '$server/dbEdge/init/types.init'
 
-export async function initTableColumn() {
-	sectionHeader('TableColumn')
-
-	await tableColumns([
+export function initTableColumn(init: InitDb) {
+	init.addTrans('tableColumnsBulk', [
 		['CmClient', 'agencyId'],
 		['CmClient', 'createdAt'],
 		['CmClient', 'createdBy'],
@@ -18,7 +15,7 @@ export async function initTableColumn() {
 		['CmClient', 'note']
 	])
 
-	await tableColumns([
+	init.addTrans('tableColumnsBulk', [
 		['CmCsfCohort', 'csf'],
 		['CmCsfCohort', 'codeStatus'],
 		['CmCsfCohort', 'cohort'],
@@ -30,7 +27,7 @@ export async function initTableColumn() {
 		['CmCsfCohort', 'note']
 	])
 
-	await tableColumns([
+	init.addTrans('tableColumnsBulk', [
 		['SysCode', 'codeType'],
 		['SysCode', 'createdAt'],
 		['SysCode', 'createdBy'],
@@ -46,7 +43,7 @@ export async function initTableColumn() {
 		['SysCode', 'valueString']
 	])
 
-	await tableColumns([
+	init.addTrans('tableColumnsBulk', [
 		['SysPerson', 'addr1'],
 		['SysPerson', 'addr2'],
 		['SysPerson', 'avatar'],
@@ -68,7 +65,7 @@ export async function initTableColumn() {
 		['SysPerson', 'zip']
 	])
 
-	await tableColumns([
+	init.addTrans('tableColumnsBulk', [
 		['SysUser', 'avatar'],
 		['SysUser', 'favFood'],
 		['SysUser', 'id'],
