@@ -1,5 +1,5 @@
-CREATE MIGRATION m13kiqle3vsapangzhtwugielxhaquu37vpvepfcvlueo52mzccrsa
-    ONTO m1f6co2vjegeyhssbn5rkpdriloe4ica3x2dzpkryliheaxxkewrwq
+CREATE MIGRATION m1ljegcawx7ltnzldrokmbyxfuv34mzuatungg4576zm6cw75rqdyq
+    ONTO m1ar24wfotwl6dtbyp7pvobmepodzb3yckowxi2sltdtuaibqnvhva
 {
   ALTER TYPE app_cm::CmCourse {
       DROP LINK codeMultiCerts;
@@ -17,19 +17,19 @@ CREATE MIGRATION m13kiqle3vsapangzhtwugielxhaquu37vpvepfcvlueo52mzccrsa
       DROP LINK codeMultiRqmts;
   };
   ALTER TYPE app_cm::CmCourse {
-      CREATE PROPERTY certifications: std::str;
+      CREATE PROPERTY courseCertifications: std::str;
   };
   ALTER TYPE app_cm::CmCourse {
-      CREATE PROPERTY exams: std::str;
+      CREATE PROPERTY courseExams: std::str;
   };
   ALTER TYPE app_cm::CmCourse {
-      CREATE PROPERTY itemsIncluded: std::str;
+      CREATE PROPERTY courseItemsIncluded: std::str;
   };
   ALTER TYPE app_cm::CmCourse {
-      CREATE PROPERTY itemsNotIncluded: std::str;
+      CREATE PROPERTY courseItemsNotIncluded: std::str;
   };
   ALTER TYPE app_cm::CmCourse {
-      CREATE PROPERTY requirements: std::str;
+      CREATE PROPERTY courseRequirements: std::str;
   };
   ALTER TYPE app_cm::CmCsfCohort {
       DROP PROPERTY dateEnd;
@@ -37,5 +37,10 @@ CREATE MIGRATION m13kiqle3vsapangzhtwugielxhaquu37vpvepfcvlueo52mzccrsa
       DROP PROPERTY dateReferral;
       DROP PROPERTY dateStart;
       DROP PROPERTY dateStartEst;
+  };
+  ALTER TYPE sys_core::SysDataObjColumn {
+      ALTER LINK customEmbedShellFields {
+          ON TARGET DELETE ALLOW;
+      };
   };
 };

@@ -25,8 +25,8 @@ import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
 export async function dbEdgeInit() {
 	let initDb = new InitDb()
-	// dbEdgeInitAll(initDb)
-	initFeatures(initDb)
+	dbEdgeInitAll(initDb)
+	// initFeatures(initDb)
 	initUser(initDb)
 	await initDb.execute()
 }

@@ -694,7 +694,6 @@ function initReportCMTrainingCohortWages(init: InitDb) {
 				orderDefine: 105,
 				orderDisplay: 105
 			},
-
 			{
 				codeAlignment: 'center',
 				codeDataType: 'date',
@@ -979,61 +978,6 @@ function initReportCourseSummary(init: InitDb) {
 				headerAlt: 'Students - Total',
 				indexTable: 0,
 				nameCustom: 'customStudentsTotal'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'custom_element_int',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND NOT EXISTS .dateStart)))`,
-				headerAlt: 'Students - Pending Enrollment',
-				indexTable: 0,
-				nameCustom: 'customStudentsEnrollPending'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'custom_element_int',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort {*} FILTER .cohort.course.id = app_cm::CmCourse.id AND NOT EXISTS .dateStart AND .dateStartEst < cal::to_local_date(datetime_current(), 'US/Eastern') )))`,
-				headerAlt: 'Students - Missed Est. Enrollment',
-				indexTable: 0,
-				nameCustom: 'customStudentsEnrollMissed'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'custom_element_int',
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND EXISTS .dateStart AND NOT EXISTS .dateEnd AND .codeStatus.name = 'Enrolled')))`,
-				headerAlt: 'Students - Enrolled',
-				indexTable: 0,
-				nameCustom: 'customStudentsEnrolled'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'custom_element_int',
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND EXISTS .dateStart AND EXISTS .dateEnd AND .codeStatus.name = 'Completed' )))`,
-				headerAlt: 'Students - Completed',
-				indexTable: 0,
-				nameCustom: 'customStudentsCompleted'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'custom_element_int',
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort.course.id = app_cm::CmCourse.id AND EXISTS .dateStart AND EXISTS .dateEnd AND .codeStatus.name = 'Dropped Out' )))`,
-				headerAlt: 'Students - Dropped Out',
-				indexTable: 0,
-				nameCustom: 'customStudentsDroppedOut'
 			}
 		]
 	})
@@ -1353,89 +1297,6 @@ function initReportStudentSummary(init: InitDb) {
 				headerAlt: 'Courses',
 				indexTable: 0,
 				nameCustom: 'customSFCourses'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
-
-				exprCustom: `(SELECT app_cm::CmCsfCohort FILTER 
-					.csf.client.id = app_cm::CmClient.id AND 
-					NOT EXISTS .dateStart AND
-					NOT EXISTS .dateEnd 
-					).dateReferral`,
-				headerAlt: 'Cohorts - Pending (Referral Data)',
-				indexTable: 0,
-				nameCustom: 'customCohortsPending'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
-
-				exprCustom: `(SELECT app_cm::CmCsfCohort FILTER 
-					.csf.client.id = app_cm::CmClient.id AND 
-					.dateStartEst < cal::to_local_date(datetime_current(), 'US/Eastern') AND
-					NOT EXISTS .dateStart AND
-					NOT EXISTS .dateEnd 
-					).dateReferral`,
-				headerAlt: 'Cohorts - Missed Enrollments (Est. Start Date)',
-				indexTable: 0,
-				nameCustom: 'customCohortsMissedEnrollment'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDisplay: 140,
-				orderDefine: 140,
-
-				exprCustom: `(SELECT app_cm::CmCsfCohort FILTER 
-					.csf.client.id = app_cm::CmClient.id AND 
-					EXISTS .dateStart AND
-					NOT EXISTS .dateEnd 
-					).dateStart`,
-				headerAlt: 'Cohorts - Enrollments (Start Date)',
-				indexTable: 0,
-				nameCustom: 'customCohortsEnrollments'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDisplay: 150,
-				orderDefine: 150,
-
-				exprCustom: `(SELECT app_cm::CmCsfCohort FILTER 
-					.csf.client.id = app_cm::CmClient.id AND 
-					EXISTS .dateStart AND
-					EXISTS .dateEnd AND
-					.codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', 'Completed')) 
-					).dateEnd`,
-				headerAlt: 'Cohorts - Completions (End Date)',
-				indexTable: 0,
-				nameCustom: 'customCohortsCompletions'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDisplay: 160,
-				orderDefine: 160,
-
-				exprCustom: `(SELECT app_cm::CmCsfCohort FILTER 
-					.csf.client.id = app_cm::CmClient.id AND 
-					EXISTS .dateStart AND
-					EXISTS .dateEnd AND
-					.codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', 'Dropped Out')) 
-					).dateEnd`,
-				headerAlt: 'Cohorts - Drop Outs (End Date)',
-				indexTable: 0,
-				nameCustom: 'customCohortsDropOuts'
 			},
 			{
 				codeAccess: 'readOnly',

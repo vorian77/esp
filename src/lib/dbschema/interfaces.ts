@@ -106,11 +106,6 @@ export namespace app_cm {
   }
   export interface CmCourse extends sys_core.SysObj {
     "cohorts": CmCohort[];
-    "codeMultiCerts": sys_core.SysCode[];
-    "codeMultiExams": sys_core.SysCode[];
-    "codeMultiItemsIncluded": sys_core.SysCode[];
-    "codeMultiItemsNotIncluded": sys_core.SysCode[];
-    "codeMultiRqmts": sys_core.SysCode[];
     "codeSector"?: sys_core.SysCode | null;
     "codeStatus"?: sys_core.SysCode | null;
     "codeTypePayment"?: sys_core.SysCodeType | null;
@@ -118,17 +113,17 @@ export namespace app_cm {
     "staffAgency"?: sys_user.SysStaff | null;
     "description"?: string | null;
     "schedule"?: string | null;
+    "courseCertifications"?: string | null;
+    "courseExams"?: string | null;
+    "courseItemsIncluded"?: string | null;
+    "courseItemsNotIncluded"?: string | null;
+    "courseRequirements"?: string | null;
   }
   export interface CmCsfData extends sys_user.Mgmt {
     "csf": CmClientServiceFlow;
   }
   export interface CmCsfCohort extends CmCsfData {
     "codeStatus": sys_core.SysCode;
-    "dateEnd"?: edgedb.LocalDate | null;
-    "dateEndEst"?: edgedb.LocalDate | null;
-    "dateReferral"?: edgedb.LocalDate | null;
-    "dateStart"?: edgedb.LocalDate | null;
-    "dateStartEst"?: edgedb.LocalDate | null;
     "note"?: string | null;
     "cohort": CmCohort;
   }
@@ -378,7 +373,6 @@ export namespace sys_core {
     "isDisplayable"?: boolean | null;
     "codeSortDir"?: SysCode | null;
     "exprPreset"?: string | null;
-    "customEmbedShellFields": SysDataObjColumn[];
     "isDisplay"?: boolean | null;
     "orderCrumb"?: number | null;
     "orderSort"?: number | null;
@@ -393,6 +387,7 @@ export namespace sys_core {
     "column": sys_db.SysColumn;
     "columnBacklink"?: sys_db.SysColumn | null;
     "customColIsSubHeader"?: boolean | null;
+    "customEmbedShellFields": SysDataObjColumn[];
   }
   export interface SysDataObjColumnItem extends sys_user.Mgmt {
     "orderDefine": number;
