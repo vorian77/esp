@@ -125,6 +125,15 @@ export class TokenApiId extends TokenApi {
 	}
 }
 
+export class TokenApiIds extends TokenApi {
+	ids: string[]
+	constructor(ids: string[]) {
+		const clazz = 'TokenApiIds'
+		super()
+		this.ids = ids
+	}
+}
+
 export class TokenApiQuery extends TokenApi {
 	dataObjSource: TokenApiDbDataObjSource
 	queryData: TokenApiQueryData

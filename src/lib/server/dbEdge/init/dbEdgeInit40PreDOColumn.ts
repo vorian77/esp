@@ -1821,20 +1821,6 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Resources - App',
-		isMultiSelect: true,
-		name: 'resources_sys_app'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Resources - Footer',
-		isMultiSelect: true,
-		name: 'resources_sys_footer'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Schedule',
 		name: 'schedule'

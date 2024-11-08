@@ -11,7 +11,7 @@ export function initAdminUser(init: InitDb) {
 }
 
 function initFieldListSelectResources(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -70,7 +70,7 @@ function initFieldListSelectResources(init: InitDb) {
 }
 
 function initFieldListSelectSystem(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -108,7 +108,7 @@ function initFieldListSelectSystem(init: InitDb) {
 }
 
 function initFieldListSelectUser(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -146,7 +146,7 @@ function initFieldListSelectUser(init: InitDb) {
 }
 
 function initFieldListSelectUserType(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',

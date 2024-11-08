@@ -12,7 +12,7 @@ export function initSysAdminRep(init: InitDb) {
 }
 
 function initFieldListSelectAnalytics(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',

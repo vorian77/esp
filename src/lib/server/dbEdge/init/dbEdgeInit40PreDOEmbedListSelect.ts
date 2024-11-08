@@ -6,7 +6,7 @@ export function initPreEmbedListSelect(init: InitDb) {
 }
 
 function initFieldListSelectCodes(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -55,7 +55,7 @@ function initFieldListSelectCodes(init: InitDb) {
 }
 
 function initFieldListSelectColumns(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',

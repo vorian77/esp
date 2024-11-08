@@ -29,9 +29,12 @@ module sys_db {
   }
 
   type SysTable extending sys_core::SysObj {
-    multi columns: sys_db::SysColumn;
+    multi columns: sys_db::SysColumn {
+      on source delete allow;
+    };
     required hasMgmt: bool;
     required mod: str;
+    property table := .mod ++ '::' ++ .name;
     constraint exclusive on (.name);
   }
       

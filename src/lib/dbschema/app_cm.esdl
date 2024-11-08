@@ -4,9 +4,7 @@ module app_cm {
     codeSector: sys_core::SysCode;
     codeStatus: sys_core::SysCode;
     codeTypePayment: sys_core::SysCodeType;
-    multi cohorts: app_cm::CmCohort {
-      on target delete allow;
-    };
+    multi cohorts: app_cm::CmCohort;
     courseCertifications: str;
     courseExams: str;
     courseItemsIncluded: str;

@@ -58,14 +58,10 @@ module sys_user {
   type SysUserType extending sys_core::SysObj {
     isSelfSignup: bool;
     multi resources: sys_user::SysUserTypeResource {
-      on target delete allow;
+      on source delete delete target;
     };
     multi tags: sys_core::SysCode;
     users := .<userTypes[is sys_user::SysUser];
-
-    # remove
-    multi resources_sys_app: sys_core::SysApp;
-    multi resources_sys_footer: sys_core::SysNodeObj;
     constraint exclusive on ((.name));
   }
 

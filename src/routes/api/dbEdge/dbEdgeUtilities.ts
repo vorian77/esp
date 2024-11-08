@@ -1,6 +1,6 @@
 import e from '$lib/dbschema/edgeql-js'
 import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { TokenApiId } from '$utils/types.token'
+import { TokenApiId, TokenApiIds } from '$utils/types.token'
 import { TokenApiDbTableColumns, TokenApiUserId, TokenApiUserPref } from '$utils/types.token'
 import { debug } from '$utils/utils.debug'
 
@@ -71,14 +71,6 @@ const shapeTable = e.shape(e.sys_db.SysTable, (t) => ({
 	mod: true,
 	name: true
 }))
-
-export async function getDataObjId(token: TokenApiId) {
-	const query = e.select(e.sys_core.SysDataObj, (do1) => ({
-		id: true,
-		filter_single: e.op(do1.name, '=', token.id)
-	}))
-	return await query.run(client)
-}
 
 export async function getDataObjActionFieldGroup(token: TokenApiId) {
 	const query = e.select(e.sys_core.SysDataObjActionFieldGroup, (a) => ({
@@ -365,6 +357,35 @@ export async function getDataObjById(token: TokenApiId) {
 export async function getDataObjByName(token: TokenApiId) {
 	const result = await getDataObjId(token)
 	return result?.id ? await getDataObjById(new TokenApiId(result.id)) : undefined
+}
+
+export async function getDataObjId(token: TokenApiId) {
+	const query = e.select(e.sys_core.SysDataObj, (do1) => ({
+		id: true,
+		filter_single: e.op(do1.name, '=', token.id)
+	}))
+	return await query.run(client)
+}
+
+export async function getDBObjectLinks(token: TokenApiId) {
+	const query = e.select(e.schema.Link, (link) => ({
+		id: true,
+		linkObject: link.source.name,
+		linkProp: link.name,
+		linkPropType: link.target.name,
+		cardinality: true,
+		required: true,
+		filter: e.op(
+			e.op(link.target.name, '=', token.id),
+			'or',
+			e.op(
+				link.target,
+				'in',
+				e.select(e.schema.ObjectType, (ot) => ({ filter: e.op(ot.name, '=', token.id) })).ancestors
+			)
+		)
+	}))
+	return await query.run(client)
 }
 
 export async function getNodeObjByName(token: TokenApiId) {

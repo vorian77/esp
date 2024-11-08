@@ -1,4 +1,6 @@
 import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
+import { getDBObjectLinks } from '$routes/api/dbEdge/dbEdgeUtilities'
+import { TokenApiId, TokenApiIds } from '$utils/types.token'
 import {
 	addDataObj,
 	updateDataObjColumnCustomEmbedShellFields
@@ -38,36 +40,22 @@ import {
 	addReport,
 	addReportUser
 } from '$server/dbEdge/init/dbEdgeInit200Utilities40Rep'
-import { required, strRequired, valueOrDefault } from '$utils/utils.model'
-import { booleanOrFalse, type DataRecord, debug, getArray } from '$utils/types'
+import { required, valueOrDefault } from '$utils/utils.model'
+import {
+	arrayOfClasses,
+	booleanOrFalse,
+	booleanRequired,
+	type DataRecord,
+	debug,
+	getArray,
+	strRequired
+} from '$utils/types'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/server/dbEdge/init/types.init.ts'
 
 type Link = [string, string]
 type Reset = [Function, Link]
-
-const objects = [
-	'sys_db::SysColumn',
-	'sys_db::SysTable',
-	'sys_core::SysApp',
-	'sys_core::SysAppHeader',
-	'sys_core::SysDataObj',
-	'sys_core::SysDataObjActionField',
-	'sys_core::SysDataObjActionFieldGroup',
-	'sys_core::SysDataObjFieldEmbedListConfig',
-	'sys_core::SysDataObjFieldEmbedListEdit',
-	'sys_core::SysDataObjFieldEmbedListSelect',
-	'sys_core::SysDataObjFieldListItems',
-	'sys_core::SysNodeObj',
-	'sys_core::SysObjSubject',
-	'sys_rep::SysAnalytic',
-	'sys_rep::SysRep',
-	'sys_user::SysStaff',
-	'sys_user::SysUser',
-	'sys_user::SysUserType',
-	'sys_user::SysWidget'
-]
 
 const getArrayOfArray = (data: any[]) => {
 	data = getArray(data)
@@ -115,7 +103,7 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_core::SysObjSubject',
 				fCreate: addSubjectObj,
-				fResets: [
+				fLinks: [
 					[exprLinkScalarOptional, ['app_cm::CmClient', 'office']],
 					[exprLinkScalarOptional, ['app_cm::CmCsfMsg', 'office']],
 					[exprLinkScalarRqd, ['sys_user::SysUserTypeResource', 'resource']]
@@ -128,7 +116,7 @@ export class InitDb {
 				dataMap: ['name', 1],
 				dbObject: 'sys_user::SysWidget',
 				fCreate: widgetsBulk,
-				fResets: [[exprLinkScalarRqd, ['sys_user::SysUserTypeResource', 'resource']]]
+				fLinks: [[exprLinkScalarRqd, ['sys_user::SysUserTypeResource', 'resource']]]
 			})
 		)
 		this.items.push(
@@ -149,7 +137,7 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_db::SysColumn',
 				fCreate: addColumn,
-				fResets: [
+				fLinks: [
 					[exprLinkMulti, ['sys_db::SysTable', 'columns']],
 					[exprLinkScalarOptional, ['sys_core::SysDataObj', 'listReorderColumn']],
 					[exprLinkScalarOptional, ['sys_core::SysDataObj', 'parentColumn']],
@@ -168,7 +156,7 @@ export class InitDb {
 				dataMap: ['name', 2],
 				dbObject: 'sys_db::SysTable',
 				fCreate: tablesBulk,
-				fResets: [
+				fLinks: [
 					[exprLinkScalarOptional, ['sys_core::SysDataObj', 'parentTable']],
 					[exprLinkScalarOptional, ['sys_core::SysDataObjColumn', 'linkTable']],
 					[exprLinkScalarOptional, ['sys_core::SysDataObjFieldListItems', 'table']],
@@ -184,7 +172,7 @@ export class InitDb {
 				dataMap: ['name', 0],
 				dbObject: 'sys_db::SysTable',
 				fCreate: tableColumnsBulk,
-				fResets: [
+				fLinks: [
 					[exprLinkScalarOptional, ['sys_core::SysDataObj', 'parentTable']],
 					[exprLinkScalarOptional, ['sys_core::SysDataObjColumn', 'linkTable']],
 					[exprLinkScalarOptional, ['sys_core::SysDataObjFieldListItems', 'table']],
@@ -200,7 +188,7 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_core::SysDataObjActionField',
 				fCreate: addDataObjActionField,
-				fResets: [[exprLinkScalarRqd, ['sys_core::SysDataObjActionFieldGroupItem', 'action']]]
+				fLinks: [[exprLinkScalarRqd, ['sys_core::SysDataObjActionFieldGroupItem', 'action']]]
 			})
 		)
 		this.items.push(
@@ -209,7 +197,7 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_core::SysDataObjActionFieldGroup',
 				fCreate: addDataObjActionFieldGroup,
-				fResets: [
+				fLinks: [
 					[exprLinkScalarOptional, ['sys_core::SysDataObj', 'actionFieldGroup']],
 					[
 						exprLinkScalarRqd,
@@ -230,7 +218,50 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_core::SysDataObjFieldListItems',
 				fCreate: addDataObjFieldItems,
-				fResets: [[exprLinkScalarOptional, ['sys_core::SysDataObjColumn', 'fieldListItems']]]
+				fLinks: [[exprLinkScalarOptional, ['sys_core::SysDataObjColumn', 'fieldListItems']]]
+			})
+		)
+
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysDataObjEmbed',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysDataObj',
+				fCreate: addDataObj,
+				fLinks: [
+					[exprLinkScalarOptional, ['sys_core::SysNodeObj', 'dataObj']],
+					[exprLinkScalarRqd, ['sys_core::SysDataObjFieldEmbedListConfig', 'dataObjEmbed']],
+					[exprLinkScalarRqd, ['sys_core::SysDataObjFieldEmbedListConfig', 'dataObjModal']],
+					[exprLinkScalarRqd, ['sys_core::SysDataObjFieldEmbedListEdit', 'dataObjEmbed']],
+					[exprLinkScalarRqd, ['sys_core::SysDataObjFieldEmbedListSelect', 'dataObjList']]
+				]
+			})
+		)
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysDataObjFieldEmbedListConfig',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysDataObjFieldEmbedListConfig',
+				fCreate: addDataObjFieldEmbedListConfig,
+				fLinks: [[exprLinkScalarOptional, ['sys_core::SysDataObjColumn', 'fieldEmbedListConfig']]]
+			})
+		)
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysDataObjFieldEmbedListEdit',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysDataObjFieldEmbedListEdit',
+				fCreate: addDataObjFieldEmbedListEdit,
+				fLinks: [[exprLinkScalarOptional, ['sys_core::SysDataObjColumn', 'fieldEmbedListEdit']]]
+			})
+		)
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysDataObjFieldEmbedListSelect',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysDataObjFieldEmbedListSelect',
+				fCreate: addDataObjFieldEmbedListSelect,
+				fLinks: [[exprLinkScalarOptional, ['sys_core::SysDataObjColumn', 'fieldEmbedListSelect']]]
 			})
 		)
 
@@ -240,7 +271,7 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_core::SysDataObj',
 				fCreate: addDataObj,
-				fResets: [
+				fLinks: [
 					[exprLinkScalarOptional, ['sys_core::SysNodeObj', 'dataObj']],
 					[exprLinkScalarRqd, ['sys_core::SysDataObjFieldEmbedListConfig', 'dataObjEmbed']],
 					[exprLinkScalarRqd, ['sys_core::SysDataObjFieldEmbedListConfig', 'dataObjModal']],
@@ -258,40 +289,14 @@ export class InitDb {
 				isExcludeDelete: true
 			})
 		)
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysDataObjFieldEmbedListConfig',
-				dataMap: 'name',
-				dbObject: 'sys_core::SysDataObjFieldEmbedListConfig',
-				fCreate: addDataObjFieldEmbedListConfig,
-				fResets: [[exprLinkScalarOptional, ['sys_core::SysDataObjColumn', 'fieldEmbedListConfig']]]
-			})
-		)
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysDataObjFieldEmbedListEdit',
-				dataMap: 'name',
-				dbObject: 'sys_core::SysDataObjFieldEmbedListEdit',
-				fCreate: addDataObjFieldEmbedListEdit,
-				fResets: [[exprLinkScalarOptional, ['sys_core::SysDataObjColumn', 'fieldEmbedListEdit']]]
-			})
-		)
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysDataObjFieldEmbedListSelect',
-				dataMap: 'name',
-				dbObject: 'sys_core::SysDataObjFieldEmbedListSelect',
-				fCreate: addDataObjFieldEmbedListSelect,
-				fResets: [[exprLinkScalarOptional, ['sys_core::SysDataObjColumn', 'fieldEmbedListSelect']]]
-			})
-		)
+
 		this.items.push(
 			new InitDbItemObject({
 				name: 'sysAnalytic',
 				dataMap: 'name',
 				dbObject: 'sys_rep::SysAnalytic',
 				fCreate: addAnalytic,
-				fResets: [
+				fLinks: [
 					[exprLinkMulti, ['sys_rep::SysRep', 'analytics']],
 					[exprLinkScalarRqd, ['sys_rep::SysRepUserAnalytic', 'analytic']]
 				]
@@ -303,7 +308,7 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_rep::SysRep',
 				fCreate: addReport,
-				fResets: [
+				fLinks: [
 					[exprLinkScalarRqd, ['sys_rep::SysRepUser', 'report']],
 					[exprLinkScalarRqd, ['sys_user::SysUserTypeResource', 'resource']]
 				]
@@ -318,7 +323,7 @@ export class InitDb {
 				],
 				dbObject: 'sys_rep::SysRepUser',
 				fCreate: addReportUser,
-				fResets: []
+				fLinks: []
 			})
 		)
 
@@ -328,10 +333,7 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_core::SysNodeObj',
 				fCreate: addNodeFooter,
-				fResets: [
-					[exprLinkMulti, ['sys_user::SysUserType', 'resources_sys_footer']],
-					[exprLinkScalarRqd, ['sys_user::SysUserTypeResource', 'resource']]
-				]
+				fLinks: [[exprLinkScalarRqd, ['sys_user::SysUserTypeResource', 'resource']]]
 			})
 		)
 		this.items.push(
@@ -340,7 +342,7 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_core::SysNodeObj',
 				fCreate: addNodeProgram,
-				fResets: [
+				fLinks: [
 					[exprLinkMulti, ['sys_core::SysApp', 'nodes']],
 					[exprLinkScalarOptional, ['sys_core::SysNodeObj', 'parent']]
 				]
@@ -352,7 +354,7 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_core::SysNodeObj',
 				fCreate: addNodeProgramObj,
-				fResets: [[exprLinkScalarOptional, ['sys_core::SysNodeObj', 'parent']]]
+				fLinks: [[exprLinkScalarOptional, ['sys_core::SysNodeObj', 'parent']]]
 			})
 		)
 		this.items.push(
@@ -361,7 +363,7 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_core::SysAppHeader',
 				fCreate: addAppHeader,
-				fResets: []
+				fLinks: []
 			})
 		)
 		this.items.push(
@@ -370,10 +372,7 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_core::SysApp',
 				fCreate: addApp,
-				fResets: [
-					[exprLinkMulti, ['sys_user::SysUserType', 'resources_sys_app']],
-					[exprLinkScalarRqd, ['sys_user::SysUserTypeResource', 'resource']]
-				]
+				fLinks: [[exprLinkScalarRqd, ['sys_user::SysUserTypeResource', 'resource']]]
 			})
 		)
 
@@ -383,7 +382,7 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_user::SysUserType',
 				fCreate: addUserType,
-				fResets: [[exprLinkMulti, ['sys_user::SysUser', 'userTypes']]]
+				fLinks: [[exprLinkMulti, ['sys_user::SysUser', 'userTypes']]]
 			})
 		)
 		this.items.push(
@@ -392,7 +391,7 @@ export class InitDb {
 				dataMap: ['name', 1],
 				dbObject: 'sys_core::SysSystem',
 				fCreate: userSystemsBulk,
-				fResets: [exprLinkMulti, ['sys_user::SysUser', 'systems']],
+				fLinks: [exprLinkMulti, ['sys_user::SysUser', 'systems']],
 				isExcludeDelete: true
 			})
 		)
@@ -402,7 +401,7 @@ export class InitDb {
 				dataMap: ['name', 1],
 				dbObject: 'sys_user::SysUserType',
 				fCreate: userUserTypeBulk,
-				fResets: [exprLinkMulti, ['sys_user::SysUser', 'userTypes']]
+				fLinks: [exprLinkMulti, ['sys_user::SysUser', 'userTypes']]
 			})
 		)
 
@@ -434,7 +433,6 @@ export class InitDb {
 		const item = this.items.find((i) => i.name === name)
 		if (item) {
 			item.addTrans(name, data)
-			debug('InitDB.addTrans:', 'name', name)
 		} else {
 			error(500, {
 				file: FILENAME,
@@ -445,6 +443,46 @@ export class InitDb {
 	}
 
 	async execute() {
+		// await this.executeLinks()
+		await this.executeReset()
+		await this.executeCreate()
+	}
+
+	async executeCreate() {
+		// create
+		sectionHeader(`InitDB.create...`)
+		for (let i: number = 0; i < this.items.length; i++) {
+			const item = this.items[i]
+			if (item.fCreate) {
+				for (let j: number = 0; j < item.trans.length; j++) {
+					const trans = item.trans[j]
+					const data = trans[1]
+					await item.fCreate(data)
+				}
+			}
+		}
+		sectionHeader(`InitDB.reset.complete.`)
+	}
+
+	async executeLinks() {
+		sectionHeader(`InitDB.links...`)
+		this.items = this.items.filter((item) => item.name === 'sysObjSubject')
+		for (let i: number = 0; i < this.items.length; i++) {
+			const item = this.items[i]
+			if (item instanceof InitDbItemObject && item.dbObject) {
+				let links = arrayOfClasses(
+					ObjectLink,
+					await getDBObjectLinks(new TokenApiId(item.dbObject))
+				)
+				debug('executeLinks: ' + item.name, 'links', links)
+			}
+		}
+
+		// const ids: string[] = this.items.filter((item) => item.dbObject).map((item) => item.dbObject)
+		// const token = new TokenApiIds(['sys_core::SysDataObj', 'sys_core::SysDataObjColumn'])
+	}
+
+	async executeReset() {
 		sectionHeader(`InitDB.reset...`)
 		// reset
 		for (let i: number = this.items.length - 1; i > -1; i--) {
@@ -458,7 +496,7 @@ export class InitDb {
 				for (let j: number = item.trans.length - 1; j > -1; j--) {
 					const trans = item.trans[j]
 					const data = getArray(trans[1])
-					item.fResets.forEach((reset) => {
+					item.fLinks.forEach((reset) => {
 						const resetF = reset[0]
 						const link = reset[1]
 						resetF(this.reset, item, link, data)
@@ -480,28 +518,13 @@ export class InitDb {
 		}
 
 		sectionHeader(`InitDB.reset.complete.`)
-
-		// create
-		sectionHeader(`InitDB.create...`)
-		for (let i: number = 0; i < this.items.length; i++) {
-			const item = this.items[i]
-			if (item.fCreate) {
-				for (let j: number = 0; j < item.trans.length; j++) {
-					const trans = item.trans[j]
-					const data = trans[1]
-					await item.fCreate(data)
-				}
-			}
-		}
-		sectionHeader(`InitDB.reset.complete.`)
 	}
 }
-
 export class InitDbItem {
 	dbObject?: string
 	fCreate?: Function
-	fResets: Reset[] = []
 	isExcludeDelete: boolean = false
+	fLinks: Reset[] = []
 	name: string
 	resetStatements: string[] = []
 	trans: [string, any][] = []
@@ -510,7 +533,6 @@ export class InitDbItem {
 		obj = valueOrDefault(obj, clazz)
 		this.dbObject = obj.dbObject
 		this.fCreate = obj.fCreate
-		this.fResets = getArrayOfArray(getArray(obj.fResets))
 		this.isExcludeDelete = booleanOrFalse(obj.isExcludeDelete, 'isExcludeDelete')
 		this.name = obj.name
 		this.resetStatements = getArray(obj.resetStatements)
@@ -521,7 +543,7 @@ export class InitDbItem {
 	exprSourceFilter(data: any, prefix: string = '') {}
 }
 
-export class InitDbItemBulk extends InitDbItem {
+class InitDbItemBulk extends InitDbItem {
 	dataMap: [string, number][] // [dBObjKey, dataKey]
 	constructor(obj: any) {
 		const clazz = 'InitDbItemBulk'
@@ -545,7 +567,7 @@ export class InitDbItemBulk extends InitDbItem {
 	}
 }
 
-export class InitDbItemObject extends InitDbItem {
+class InitDbItemObject extends InitDbItem {
 	dataMap: [string, string][] // [dBObjKey, dataKey]
 	constructor(obj: any) {
 		const clazz = 'InitDbItemObject'
@@ -561,5 +583,24 @@ export class InitDbItemObject extends InitDbItem {
 			filter += `.${prefix}${map[0]} = '${data[map[1]]}'`
 		})
 		return `FILTER ${filter}`
+	}
+}
+
+class ObjectLink {
+	cardinality: 'One' | 'Many'
+	id: string
+	linkObject: string
+	linkProp: string
+	linkPropType: string
+	required: boolean
+	constructor(obj: any) {
+		const clazz = 'ObjectLink'
+		obj = valueOrDefault(obj, {})
+		this.cardinality = strRequired(obj.cardinality, clazz, 'cardinality')
+		this.id = strRequired(obj.id, clazz, 'id')
+		this.linkObject = strRequired(obj.linkObject, clazz, 'linkObject')
+		this.linkProp = strRequired(obj.linkProp, clazz, 'linkProp')
+		this.linkPropType = strRequired(obj.linkPropType, clazz, 'linkPropType')
+		this.required = booleanRequired(obj.required, clazz, 'required')
 	}
 }

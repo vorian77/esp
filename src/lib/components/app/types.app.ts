@@ -495,11 +495,8 @@ export class AppLevel {
 	}
 	getCrumbLabel(tabIdx: number, parentLevel: AppLevel | undefined = undefined) {
 		const clazz = 'AppLevel.getCrumbLabel'
-		const label = strRequired(
-			this.tabs[tabIdx]?.dataObj?.raw?.header || this.tabs[tabIdx].label,
-			clazz,
-			'label'
-		)
+		const label = this.tabs[tabIdx]?.dataObj?.raw?.header || this.tabs[tabIdx].label || 'unknown'
+		if (!label) return ''
 		const labelId = parentLevel ? parentLevel.getCurrTab().listCrumbLabelId() : ''
 		return label + labelId
 	}

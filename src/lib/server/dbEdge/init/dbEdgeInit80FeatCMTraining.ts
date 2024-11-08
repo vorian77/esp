@@ -1068,7 +1068,7 @@ function initCohortAttdSheet(init: InitDb) {
 }
 
 function initFieldListConfigPartnerContact(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -1122,7 +1122,7 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',

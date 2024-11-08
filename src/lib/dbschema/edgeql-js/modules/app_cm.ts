@@ -55,7 +55,6 @@ const CmClientServiceFlow: $.$expr_PathNode<$.TypeSet<$CmClientServiceFlow, $.Ca
 
 export type $CmCohortλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "cohortAttds": $.LinkDesc<$CmCohortAttd, $.Cardinality.Many, {}, false, false,  false, false>;
   "staffAdmin": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "staffAgency": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "staffInstructor": $.LinkDesc<_sys_user.$SysStaff, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
@@ -66,8 +65,9 @@ export type $CmCohortλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "isCohortRequired": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "schedule": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "course": $.LinkDesc<$CmCourse, $.Cardinality.AtMostOne, {}, false, true,  false, false>;
-  "<cohorts[is app_cm::CmCourse]": $.LinkDesc<$CmCourse, $.Cardinality.Many, {}, false, false,  false, false>;
+  "cohortAttds": $.LinkDesc<$CmCohortAttd, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohort[is app_cm::CmCsfCohort]": $.LinkDesc<$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<cohorts[is app_cm::CmCourse]": $.LinkDesc<$CmCourse, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohort": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohorts": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -84,8 +84,8 @@ export type $CmCohortAttdλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "cohortId": $.PropertyDesc<_std.$uuid, $.Cardinality.AtMostOne, false, true, false, false>;
   "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
-  "<cohortAttds[is app_cm::CmCohort]": $.LinkDesc<$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohortAttd[is app_cm::CmCsfCohortAttd]": $.LinkDesc<$CmCsfCohortAttd, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<cohortAttds[is app_cm::CmCohort]": $.LinkDesc<$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohortAttd": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohortAttds": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

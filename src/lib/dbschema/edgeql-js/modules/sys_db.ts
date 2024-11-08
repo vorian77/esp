@@ -37,8 +37,8 @@ export type $SysColumnλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "<column[is sys_core::SysDataObjColumnLink]": $.LinkDesc<_sys_core.$SysDataObjColumnLink, $.Cardinality.Many, {}, false, false,  false, false>;
   "<column[is sys_core::SysDataObjColumn]": $.LinkDesc<_sys_core.$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<column[is sys_rep::SysRepEl]": $.LinkDesc<_sys_rep.$SysRepEl, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<listReorderColumn[is sys_core::SysDataObj]": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parentColumn[is sys_core::SysDataObj]": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<listReorderColumn[is sys_core::SysDataObj]": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<columnBacklink[is sys_core::SysDataObjColumn]": $.LinkDesc<_sys_core.$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<columns[is sys_db::SysTable]": $.LinkDesc<$SysTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "<columnParent[is sys_core::SysDataObjTable]": $.LinkDesc<_sys_core.$SysDataObjTable, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -60,6 +60,7 @@ export type $SysTableλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "columns": $.LinkDesc<$SysColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "hasMgmt": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
   "mod": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "table": $.PropertyDesc<_std.$str, $.Cardinality.One, false, true, false, false>;
   "<table[is sys_migr::SysMigrTargetTable]": $.LinkDesc<_sys_migr.$SysMigrTargetTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "<linkTable[is sys_core::SysDataObjColumn]": $.LinkDesc<_sys_core.$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<linkTable[is sys_rep::SysRepParm]": $.LinkDesc<_sys_rep.$SysRepParm, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -76,30 +77,6 @@ type $SysTable = $.ObjectType<"sys_db::SysTable", $SysTableλShape, null, [
 const $SysTable = $.makeType<$SysTable>(_.spec, "505b5fa3-b3c2-11ee-8d9a-c1d6ad5b51e4", _.syntax.literal);
 
 const SysTable: $.$expr_PathNode<$.TypeSet<$SysTable, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysTable, $.Cardinality.Many), null);
-
-type getColumnλFuncExpr<
-  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
-> = $.$expr_Function<
-  $SysColumn, $.cardutil.overrideLowerBound<$.cardutil.paramCardinality<P1>, 'Zero'>
->;
-function getColumn<
-  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
->(
-  columnName: P1,
-): getColumnλFuncExpr<P1>;
-function getColumn(...args: any[]) {
-  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('sys_db::getColumn', args, _.spec, [
-    {args: [{typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}], returnTypeId: "5055903f-b3c2-11ee-8113-93f3d17dc30d", returnTypemod: "OptionalType"},
-  ]);
-  return _.syntax.$expressionify({
-    __kind__: $.ExpressionKind.Function,
-    __element__: returnType,
-    __cardinality__: cardinality,
-    __name__: "sys_db::getColumn",
-    __args__: positionalArgs,
-    __namedargs__: namedArgs,
-  }) as any;
-};
 
 type getTableλFuncExpr<
   P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
@@ -125,6 +102,30 @@ function getTable(...args: any[]) {
   }) as any;
 };
 
+type getColumnλFuncExpr<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+> = $.$expr_Function<
+  $SysColumn, $.cardutil.overrideLowerBound<$.cardutil.paramCardinality<P1>, 'Zero'>
+>;
+function getColumn<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+>(
+  columnName: P1,
+): getColumnλFuncExpr<P1>;
+function getColumn(...args: any[]) {
+  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('sys_db::getColumn', args, _.spec, [
+    {args: [{typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}], returnTypeId: "5055903f-b3c2-11ee-8113-93f3d17dc30d", returnTypemod: "OptionalType"},
+  ]);
+  return _.syntax.$expressionify({
+    __kind__: $.ExpressionKind.Function,
+    __element__: returnType,
+    __cardinality__: cardinality,
+    __name__: "sys_db::getColumn",
+    __args__: positionalArgs,
+    __namedargs__: namedArgs,
+  }) as any;
+};
+
 
 
 export { $SysColumn, SysColumn, $SysTable, SysTable };
@@ -132,13 +133,13 @@ export { $SysColumn, SysColumn, $SysTable, SysTable };
 type __defaultExports = {
   "SysColumn": typeof SysColumn;
   "SysTable": typeof SysTable;
-  "getColumn": typeof getColumn;
-  "getTable": typeof getTable
+  "getTable": typeof getTable;
+  "getColumn": typeof getColumn
 };
 const __defaultExports: __defaultExports = {
   "SysColumn": SysColumn,
   "SysTable": SysTable,
-  "getColumn": getColumn,
-  "getTable": getTable
+  "getTable": getTable,
+  "getColumn": getColumn
 };
 export default __defaultExports;

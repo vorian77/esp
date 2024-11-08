@@ -7,7 +7,7 @@ export function initAdminApp(init: InitDb) {
 }
 
 function initFieldListSelectNodes(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',

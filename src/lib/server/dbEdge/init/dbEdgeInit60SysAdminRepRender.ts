@@ -7,7 +7,7 @@ export function initSysRepUser(init: InitDb) {
 }
 
 function initFieldEmbedListEditRepUserParm(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_edit_parm_value',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',

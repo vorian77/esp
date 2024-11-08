@@ -47,11 +47,9 @@ export namespace sys_user {
   }
   export interface SysUserType extends sys_core.SysObj {
     "tags": sys_core.SysCode[];
-    "resources_sys_footer": sys_core.SysNodeObj[];
     "users": SysUser[];
     "isSelfSignup"?: boolean | null;
     "resources": SysUserTypeResource[];
-    "resources_sys_app": sys_core.SysApp[];
   }
   export interface SysUserTypeResource extends std.$Object {
     "codeType": sys_core.SysCode;
@@ -85,7 +83,6 @@ export namespace app_cm {
   }
   export interface CmCohort extends sys_core.SysObj {
     "codeStatus"?: sys_core.SysCode | null;
-    "cohortAttds": CmCohortAttd[];
     "staffAdmin"?: sys_user.SysStaff | null;
     "staffAgency"?: sys_user.SysStaff | null;
     "staffInstructor"?: sys_user.SysStaff | null;
@@ -96,6 +93,7 @@ export namespace app_cm {
     "isCohortRequired"?: string | null;
     "schedule"?: string | null;
     "course"?: CmCourse | null;
+    "cohortAttds": CmCohortAttd[];
   }
   export interface CmCohortAttd extends sys_user.Mgmt {
     "date": edgedb.LocalDate;
@@ -787,6 +785,7 @@ export namespace sys_db {
     "columns": SysColumn[];
     "hasMgmt": boolean;
     "mod": string;
+    "table": string;
   }
 }
 export namespace sys_migr {

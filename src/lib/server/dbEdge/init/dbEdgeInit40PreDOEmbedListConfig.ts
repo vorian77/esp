@@ -15,7 +15,7 @@ export function initPreEmbedListConfig(init: InitDb) {
 }
 
 async function initFieldListConfigDataObjActionFieldConfirms(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -55,7 +55,7 @@ async function initFieldListConfigDataObjActionFieldConfirms(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -186,7 +186,7 @@ async function initFieldListConfigDataObjActionFieldConfirms(init: InitDb) {
 }
 
 async function initFieldListConfigDataObjActionFieldShows(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -223,7 +223,7 @@ async function initFieldListConfigDataObjActionFieldShows(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -333,7 +333,7 @@ async function initFieldListConfigDataObjActionFieldShows(init: InitDb) {
 }
 
 async function initFieldListConfigDataObjActionQueryParm(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -368,7 +368,7 @@ async function initFieldListConfigDataObjActionQueryParm(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -472,7 +472,7 @@ async function initFieldListConfigDataObjActionQueryParm(init: InitDb) {
 }
 
 async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -512,7 +512,7 @@ async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -624,7 +624,7 @@ async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 }
 
 async function initFieldListConfigDataObjActionFieldGroupItem(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -689,7 +689,7 @@ async function initFieldListConfigDataObjActionFieldGroupItem(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -783,7 +783,7 @@ async function initFieldListConfigDataObjActionFieldGroupItem(init: InitDb) {
 }
 
 async function initFieldListConfigDataObjColumnItem(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -854,7 +854,7 @@ async function initFieldListConfigDataObjColumnItem(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -965,7 +965,7 @@ async function initFieldListConfigDataObjColumnItem(init: InitDb) {
 }
 
 async function initFieldListConfigDataObjColumnLink(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -1029,7 +1029,7 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
@@ -1122,7 +1122,7 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 }
 
 async function initFieldListConfigDataObjTable(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
@@ -1177,7 +1177,7 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
