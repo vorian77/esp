@@ -29,7 +29,8 @@ async function initSystemObjects(init: InitDb) {
 				isDisplayable: true,
 				orderCrumb: 10,
 				orderDisplay: 20,
-				orderDefine: 20
+				orderDefine: 20,
+				orderSort: 20
 			}
 		]
 	})

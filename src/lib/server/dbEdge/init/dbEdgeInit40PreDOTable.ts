@@ -59,7 +59,6 @@ export function initPreTable(init: InitDb) {
 		['sys_system_old', 'sys_rep', 'SysRepUserParm', true],
 
 		// sys_user
-		['sys_system_old', 'sys_user', 'SysStaff', true],
 		['sys_system_old', 'sys_user', 'SysUser', false],
 		['sys_system_old', 'sys_user', 'SysUserType', false],
 		['sys_system_old', 'sys_user', 'SysUserPref', false],

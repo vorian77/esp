@@ -179,6 +179,7 @@ export class App {
 					let nodeParms: DataRecord = {
 						dataObjId: nodeLevelRootDetail.dataObjId,
 						// dataObjId: currTab.dataObjIdChild,
+						isAlwaysRetrieveData: nodeLevelRootDetail.isAlwaysRetrieveData,
 						isProgramObject: nodeLevelRootDetail.type === NodeType.program_object,
 						isSystemRoot: nodeLevelRootDetail.isSystemRoot
 					}
@@ -200,6 +201,7 @@ export class App {
 		return {
 			dataObjId: node.dataObjId,
 			dataObjIdChild: node.dataObjIdChild,
+			isAlwaysRetrieveData: node.isAlwaysRetrieveData,
 			isHideRowManager: node.isHideRowManager,
 			label: node.label,
 			nodeIdParent: node.id
@@ -335,7 +337,7 @@ export class App {
 			if (tabParent && tabParent.data) {
 				switch (packetAction) {
 					case StatePacketAction.doDetailDelete:
-						if (currTab.data.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset)) {
+						if (currTab.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)) {
 							if (!tabParent || !tabParent.listHasRecords()) {
 								this.popLevel()
 							} else {
@@ -354,17 +356,17 @@ export class App {
 							let recordIdOld = currTab.data.rowsRetrieved.getDetailRecordValue('id')
 							let recordIdNew = ''
 
-							let idList = tabParent.data.parms.valueGet(ParmsValuesType.listIds)
-							if (idList.length > 1) {
-								let idx = idList.findIndex((id: string) => id === recordIdOld)
+							let listIds: string[] = tabParent.data.parms.valueGet(ParmsValuesType.listIds)
+							if (listIds.length > 1) {
+								let idx = listIds.findIndex((id: string) => id === recordIdOld)
 								idx = idx === 0 ? 1 : idx - 1
-								recordIdNew = idList[idx]
+								recordIdNew = listIds[idx]
 
 								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 									return this
 								await query(state, tabParent, TokenApiQueryType.retrieve)
 								tabParent.data.parms.updateList(
-									tabParent.data.rowsRetrieved.getRows(),
+									listIds.filter((id) => id !== recordIdOld),
 									recordIdOld,
 									recordIdNew
 								)
@@ -385,9 +387,17 @@ export class App {
 					case StatePacketAction.doDetailSave:
 						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 							return this
+
+						// parent list
+						const detailIdCurrent = currTab.data.rowsRetrieved.getDetailRecordValue('id')
+						let listIdsPre: string[] = tabParent.data.parms.valueGet(ParmsValuesType.listIds)
 						await query(state, tabParent, TokenApiQueryType.retrieve)
+						let listIdsPost: string[] = []
+						tabParent.data.parms.valueGet(ParmsValuesType.listIds).forEach((id: string) => {
+							if (listIdsPre.includes(id) || id === detailIdCurrent) listIdsPost.push(id)
+						})
 						tabParent.data.parms.updateList(
-							tabParent.data.rowsRetrieved.getRows(),
+							listIdsPost,
 							currTab.data.rowsRetrieved.getDetailRecordValue('id')
 						)
 						break
@@ -403,7 +413,7 @@ export class App {
 				switch (packetAction) {
 					case StatePacketAction.doDetailDelete:
 						// <todo> - 241019 - this path must be tested - only example "My Account" which doesn't have Delete option
-						if (!currTab.data.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset)) {
+						if (!currTab.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)) {
 							if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 								return this
 						}
@@ -417,7 +427,7 @@ export class App {
 						break
 
 					// case StatePacketAction.doDetailSaveRetrievePreset:
-					// 	if (currTab.data.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset)) {
+					// 	if (currTab.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)) {
 					// 		console.log('types.app...doDetailSaveRetrievePreset')
 					// 	}
 					// 	// if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
@@ -556,6 +566,7 @@ export class AppLevelTab {
 	dataObjId?: string
 	dataObjIdChild?: string
 	dataObjSource: TokenApiDbDataObjSource
+	isAlwaysRetrieveData: boolean
 	isHideRowManager: boolean
 	isModal: boolean
 	isProgramObject: boolean
@@ -563,7 +574,6 @@ export class AppLevelTab {
 	isSystemRoot: boolean
 	label?: string
 	nodeIdParent?: string
-
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'AppLevelTab'
@@ -572,6 +582,7 @@ export class AppLevelTab {
 		this.dataObjId = obj.dataObjId
 		this.dataObjIdChild = obj.dataObjIdChild
 		this.dataObjSource = obj.dataObjSource
+		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData, 'isAlwaysRetrieveData')
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
 		this.isProgramObject = booleanOrFalse(obj.isProgramObject, 'isProgramObject')
 		this.isRetrieved = booleanOrFalse(obj.isRetrieved, 'isRetrieved')
@@ -585,8 +596,11 @@ export class AppLevelTab {
 			return this.dataObjSource
 		} else {
 			let sourceParms: DataRecord = {}
-			if (this.dataObjId) sourceParms['dataObjId'] = this.dataObjId
-			if (this.dataObj) sourceParms['dataObjId'] = this.dataObj.raw.id
+			sourceParms['dataObjId'] = strRequired(
+				this.dataObjId ? this.dataObjId : this.dataObj?.raw?.id,
+				'AppLevelTab.getDataObjSource',
+				'dataObjId'
+			)
 			let dataObjSource = new TokenApiDbDataObjSource(sourceParms)
 			if (this.dataObj) {
 				dataObjSource.updateReplacements({

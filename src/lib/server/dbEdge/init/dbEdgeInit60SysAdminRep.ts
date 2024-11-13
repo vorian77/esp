@@ -1212,7 +1212,7 @@ function initRepEl(init: InitDb) {
 				orderDisplay: 160,
 				orderDefine: 160,
 				indexTable: 0,
-				fieldListItems: 'il_sys_rep_el_table_column_order_name',
+				fieldListItems: 'il_sys_column_order_name',
 				linkTable: 'SysColumn'
 			},
 			{
@@ -1236,6 +1236,17 @@ function initRepEl(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 190,
 				orderDefine: 190
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'embedListConfig',
+				columnName: 'linkColumns',
+				isDisplayable: true,
+				orderDisplay: 195,
+				orderDefine: 195,
+				fieldEmbedListConfig: 'flec_data_obj_column_link',
+				indexTable: 0,
+				linkTable: 'SysDataObjColumnLink'
 			},
 			{
 				codeFieldElement: 'tagSection',

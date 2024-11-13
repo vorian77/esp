@@ -263,11 +263,10 @@ function initUserOrg(init: InitDb) {
 			},
 			{
 				columnName: 'password',
-				orderDefine: 25,
+				exprPreset: `(SELECT 'abc*$789!+_)')`,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT 'abc*$789!+_)')`,
-				linkTable: 'SysOrg'
+				orderDefine: 25
 			},
 			{
 				codeFieldElement: 'tagRow',

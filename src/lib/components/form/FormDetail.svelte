@@ -41,19 +41,19 @@
 				idxSection = tagGroupSections.push(new TagGroupSection(false)) - 1
 				isOpenSection = true
 			}
-			if (field.colDO.propName.startsWith('custom_section_start')) {
+			if (field.colDO.propNameRaw.startsWith('custom_section_start')) {
 				if (!(idxSection === 0 && tagGroupSections[idxSection].rowIsEmpty())) {
 					idxSection = tagGroupSections.push(new TagGroupSection(true)) - 1
 					isOpenSection = true
 				}
 				tagGroupSections[idxSection].update(field)
-			} else if (field.colDO.propName.startsWith('custom_section_end')) {
+			} else if (field.colDO.propNameRaw.startsWith('custom_section_end')) {
 				isOpenSection = false
 			} else {
-				if (field.colDO.propName.startsWith('custom_row_start')) {
+				if (field.colDO.propNameRaw.startsWith('custom_row_start')) {
 					isOpenRow = true
 					if (!tagGroupSections[idxSection].rowIsEmpty()) tagGroupSections[idxSection].rowNew()
-				} else if (field.colDO.propName.startsWith('custom_row_end')) {
+				} else if (field.colDO.propNameRaw.startsWith('custom_row_end')) {
 					isOpenRow = false
 				} else if (field.colDO.isDisplayable) {
 					tagGroupSections[idxSection].rowAddIdx(field, idx, isOpenRow)

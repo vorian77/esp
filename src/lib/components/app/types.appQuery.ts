@@ -87,6 +87,10 @@ export async function query(
 	}
 	// successful
 	let dataResult = DataObjData.load(result.data.dataObjData)
+	// console.log('types.appQuery.dataResult:', {
+	// 	dataResult,
+	// 	rawDataObj: dataResult.rawDataObj
+	// })
 	tab.dataObj = await DataObj.init(state, dataResult)
 	table = tab.getTable()
 
@@ -101,7 +105,7 @@ export async function query(
 			dataResult
 		)
 		tab.data = dataResult
-		tab.isRetrieved = true
+		tab.isRetrieved = !tab.isAlwaysRetrieveData
 		if (
 			tab.isSystemRoot &&
 			tab.dataObj.raw.codeCardinality === DataObjCardinality.detail &&
@@ -195,7 +199,7 @@ export async function queryExecute(
 	if (!result.success) {
 		let errMsg = result.message
 		if (result.message.toLowerCase().includes('invalid query')) {
-			if (result.data && result.data.getDetailStatusRecordIs(DataRecordStatus.delete)) {
+			if (result.data && result.data.getDetailRowStatusIs(DataRecordStatus.delete)) {
 				errMsg = 'Unable to delete this record.'
 				if (result.message.toLowerCase().includes('still referenced in link')) {
 					let parts = result.message.split('::')

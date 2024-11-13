@@ -204,14 +204,6 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysOrg'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
-		exprPropDisplay: '.person.fullName',
-		exprFilter: '.roles.name = <parms,str,fieldListItemsParmName>',
-		exprSort: 'str_lower(.person.lastName) then str_lower(.person.firstName)',
-		name: 'il_sys_role_staff_by_codeName',
-		owner: 'sys_system_old',
-		table: 'SysStaff'
-	})
-	init.addTrans('sysDataObjFieldListItems', {
 		exprPropDisplay: '.name',
 		name: 'il_sys_system_order_name',
 		owner: 'sys_system_old',
@@ -229,7 +221,13 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		owner: 'sys_system_old',
 		table: 'SysUser'
 	})
-
+	init.addTrans('sysDataObjFieldListItems', {
+		exprPropDisplay: '.person.fullName',
+		exprFilter: '.userTypes.tags.name = <parms,str,fieldListItemsParmName>',
+		name: 'il_sys_user_by_tag_type',
+		owner: 'sys_system_old',
+		table: 'SysUser'
+	})
 	init.addTrans('sysDataObjFieldListItems', {
 		exprPropDisplay: '.name',
 		exprFilter: `sys_core::SysObj IN (SELECT 

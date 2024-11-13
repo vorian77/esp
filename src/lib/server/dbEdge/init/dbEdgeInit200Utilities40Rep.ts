@@ -105,9 +105,15 @@ export async function addReport(data: any) {
 							'ct_db_col_data_type',
 							e.cast(e.str, e.json_get(el, 'codeDataType'))
 						),
-						codeDbDataSourceValue: e.sys_core.getCode(
-							'ct_sys_do_field_source_value',
-							e.cast(e.str, e.json_get(el, 'codeDbDataSourceValue'))
+						codeDbDataSourceValue: e.op(
+							e.sys_core.getCode(
+								'ct_sys_do_field_source_value',
+								e.cast(e.str, e.json_get(el, 'codeDbDataSourceValue'))
+							),
+							'if',
+							e.op('exists', e.cast(e.str, e.json_get(el, 'codeDbDataSourceValue'))),
+							'else',
+							e.sys_core.getCode('ct_sys_do_field_source_value', 'edgeDB')
 						),
 						codeFieldElement: e.sys_core.getCode(
 							'ct_sys_do_field_element',
@@ -131,6 +137,17 @@ export async function addReport(data: any) {
 						indexTable: e.cast(e.int16, e.json_get(el, 'indexTable')),
 						isDisplay: e.cast(e.bool, e.json_get(el, 'isDisplay')),
 						isDisplayable: e.cast(e.bool, e.json_get(el, 'isDisplayable')),
+						linkColumns: e.for(
+							e.enumerate(e.array_unpack(e.cast(e.array(e.str), e.json_get(el, 'linkColumns')))),
+							(c) => {
+								return e.insert(e.sys_core.SysDataObjColumnLink, {
+									column: e.select(e.sys_db.getColumn(c[1])),
+									orderDefine: c[0],
+									createdBy: CREATOR,
+									modifiedBy: CREATOR
+								})
+							}
+						),
 						modifiedBy: CREATOR,
 						nameCustom: e.cast(e.str, e.json_get(el, 'nameCustom')),
 						orderDefine: e.cast(e.int16, e.json_get(el, 'orderDefine')),
@@ -181,29 +198,6 @@ export async function addReport(data: any) {
 						table: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(t, 'table'))))
 					})
 				})
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-
-export async function addReportUser(data: any) {
-	sectionHeader(`addReportUser - ${data.report} - ${data.user}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			header: e.str,
-			report: e.str,
-			user: e.str
-		},
-		(p) => {
-			return e.insert(e.sys_rep.SysRepUser, {
-				createdBy: CREATOR,
-				headerUser: p.header,
-				modifiedBy: CREATOR,
-				orderDefine: 10,
-				report: e.select(e.sys_rep.getReport(p.report)),
-				user: e.select(e.sys_user.getUserByName(p.user))
 			})
 		}
 	)

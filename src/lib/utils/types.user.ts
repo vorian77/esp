@@ -110,7 +110,7 @@ export class User {
 
 			default:
 				if (resourceType === UserTypeResourceType.system) {
-					const defaultSystemName = 'sys_moed_old'
+					const defaultSystemName = 'sys_ai_old'
 					return resources.find((s) => s.resource.name === defaultSystemName)
 				}
 				// const itemsList = resources.map((r) => {

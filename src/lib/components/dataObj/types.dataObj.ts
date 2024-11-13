@@ -27,7 +27,8 @@ import {
 	FieldColor,
 	FieldItem,
 	FieldElement,
-	RawFieldProps
+	PropsField,
+	PropsFieldRaw
 } from '$comps/form/field'
 import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 import { FieldChips } from '$comps/form/fieldChips'
@@ -138,8 +139,9 @@ export class DataObj {
 			newRow = ''
 			this.fields.forEach((f) => {
 				if (f.colDO.isDisplayable && !f.colDO.colDB.isNonData) {
-					const columnName = f.colDO.propName
-					const value = [null, undefined].includes(record[columnName]) ? '' : record[columnName]
+					const value = [null, undefined].includes(record[f.colDO.propName])
+						? ''
+						: record[f.colDO.propName]
 					newRow += `${value},`
 				}
 			})
@@ -159,15 +161,38 @@ export class DataObj {
 		alert(`"${this.raw.header}" has been downloaded!`)
 	}
 
+	getDataVal(record: DataRecord, propNameRaw: string, indexTable: number = 0) {
+		const field = this.fields.find((f) => f.colDO.propNameRaw === propNameRaw)
+		if (field) {
+			return record[field.colDO.propName]
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'getDataVal',
+				message: `Field for propNameRaw: ${propNameRaw} not found.`
+			})
+		}
+	}
+
 	static async init(state: State, data: DataObjData) {
 		const clazz = 'DataObj.init'
 		const rawDataObj = required(data.rawDataObj, clazz, 'rawDataObj')
 		const dataObj = new DataObj(data)
-		dataObj.fields = await dataObj.initFields(state, data, rawDataObj)
+		dataObj.userGridSettings = await initPrefs(state, dataObj)
+
+		// embedded fields
+		for (let i = 0; i < data.fields.length; i++) {
+			data.fields[i].dataObj = await DataObj.init(state, data.fields[i].data)
+		}
+
+		// actions
+		dataObj.fields = dataObj.fieldsCreate(state, data, rawDataObj)
+		await dataObj.fieldsInit(state, dataObj)
+
 		enhanceCustomFields(dataObj.fields)
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
-		dataObj.userGridSettings = await initPrefs(state, dataObj)
+
 		return dataObj
 
 		async function enhanceCustomFields(fields: Field[]) {
@@ -208,7 +233,7 @@ export class DataObj {
 		}
 	}
 
-	async initFields(state: State, data: DataObjData, rawDataObj: RawDataObj) {
+	fieldsCreate(state: State, data: DataObjData, rawDataObj: RawDataObj) {
 		let fields: Field[] = []
 		let propsRaw = rawDataObj.rawPropsDisplay
 
@@ -223,15 +248,16 @@ export class DataObj {
 			})
 		}
 
-		let firstVisible = propsRaw.findIndex((f) => f.isDisplayable)
-		for (let i = 0; i < propsRaw.length; i++) {
-			const prop: RawDataObjPropDisplay = propsRaw[i]
-			fields.push(await DataObj.initField(state, prop, firstVisible === i, fields, this, data))
-		}
+		let firstVisibleIdx = propsRaw.findIndex((f) => f.isDisplayable)
+
+		// create fields
+		propsRaw.forEach((p, idx) => {
+			fields.push(DataObj.fieldsCreateItem(state, p, firstVisibleIdx === idx, fields, this, data))
+		})
 		return fields
 	}
 
-	static async initField(
+	static fieldsCreateItem(
 		state: State,
 		propRaw: RawDataObjPropDisplay,
 		isFirstVisible: boolean,
@@ -240,7 +266,7 @@ export class DataObj {
 		data: DataObjData
 	) {
 		let newField: Field
-		const props = new RawFieldProps(state, propRaw, isFirstVisible, fields, dataObj, data)
+		const props = new PropsFieldRaw({ data, dataObj, fields, isFirstVisible, propRaw, state })
 
 		const element = memberOfEnumOrDefault(
 			propRaw.rawFieldElement,
@@ -260,79 +286,79 @@ export class DataObj {
 			case FieldElement.percentage:
 			case FieldElement.tel:
 			case FieldElement.text:
-				newField = await FieldInput.init(props)
+				newField = new FieldInput(props)
 				break
 
 			case FieldElement.checkbox:
-				newField = await FieldCheckbox.init(props)
+				newField = new FieldCheckbox(props)
 				break
 
 			case FieldElement.chips:
-				newField = await FieldChips.init(props)
+				newField = new FieldChips(props)
 				break
 
 			case FieldElement.customActionButton:
-				newField = await FieldCustomActionButton.init(props)
+				newField = new FieldCustomActionButton(props)
 				break
 
 			case FieldElement.customActionLink:
-				newField = await FieldCustomActionLink.init(props)
+				newField = new FieldCustomActionLink(props)
 				break
 
 			case FieldElement.customHeader:
-				newField = await FieldCustomHeader.init(props)
+				newField = new FieldCustomHeader(props)
 				break
 
 			case FieldElement.customText:
-				newField = await FieldCustomText.init(props)
+				newField = new FieldCustomText(props)
 				break
 
 			case FieldElement.embedListConfig:
-				newField = await FieldEmbedListConfig.init(props)
+				newField = new FieldEmbedListConfig(props)
 				break
 
 			case FieldElement.embedListEdit:
-				newField = await FieldEmbedListEdit.init(props)
+				newField = new FieldEmbedListEdit(props)
 				break
 
 			case FieldElement.embedListSelect:
-				newField = await FieldEmbedListSelect.init(props)
+				newField = new FieldEmbedListSelect(props)
 				break
 
 			case FieldElement.embedShell:
-				newField = await FieldEmbedShell.init(props)
+				newField = new FieldEmbedShell(props)
 				break
 
 			case FieldElement.file:
-				newField = await FieldFile.init(props)
+				newField = new FieldFile(props)
 				break
 
 			case FieldElement.parm:
-				newField = await FieldParm.init(props)
+				newField = new FieldParm(props)
 				break
 
 			case FieldElement.radio:
-				newField = await FieldRadio.init(props)
+				newField = new FieldRadio(props)
 				break
 
 			case FieldElement.select:
-				newField = await FieldSelect.init(props)
+				newField = new FieldSelect(props)
 				break
 
 			case FieldElement.tagRow:
-				newField = await FieldTagRow.init(props)
+				newField = new FieldTagRow(props)
 				break
 
 			case FieldElement.tagSection:
-				newField = await FieldTagSection.init(props)
+				newField = new FieldTagSection(props)
 				break
 
 			case FieldElement.textArea:
-				newField = await FieldTextarea.init(props)
+				newField = new FieldTextarea(props)
 				break
 
 			case FieldElement.toggle:
-				newField = await FieldToggle.init(props)
+				newField = new FieldToggle(props)
 				break
 
 			default:
@@ -343,6 +369,14 @@ export class DataObj {
 				})
 		}
 		return newField
+	}
+
+	async fieldsInit(state: State, dataObj: DataObj) {
+		const props = new PropsField({ dataObj, state })
+		for (let i = 0; i < dataObj.fields.length; i++) {
+			const field: Field = dataObj.fields[i]
+			await field.init(props)
+		}
 	}
 
 	get objData() {
@@ -413,8 +447,8 @@ export class DataObj {
 						}
 					}
 				})
-				const oldRow = dataCurrent.rowsRetrieved.getRow(record.id)
-				dataRows.push(new DataRow(oldRow ? oldRow.status : DataRecordStatus.preset, newRecord))
+				const oldStatus = dataCurrent.rowsRetrieved.getRowStatusById(record.id)
+				dataRows.push(new DataRow(oldStatus ? oldStatus : DataRecordStatus.preset, newRecord))
 			})
 			return dataRows
 		}
@@ -423,7 +457,7 @@ export class DataObj {
 	set objData(dataSource: DataObjData) {
 		this.saveMode =
 			dataSource.cardinality === DataObjCardinality.detail && dataSource.rowsRetrieved.hasRecord()
-				? dataSource.rowsRetrieved.getDetailStatusRecordIs(DataRecordStatus.preset)
+				? dataSource.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)
 					? DataObjSaveMode.insert
 					: DataObjSaveMode.update
 				: DataObjSaveMode.any
@@ -490,9 +524,11 @@ export class DataObj {
 		})
 	}
 	preValidate() {
-		const validityErrorLevel = this.raw.isListEdit
-			? ValidityErrorLevel.warning
-			: ValidityErrorLevel.none
+		const validityErrorLevel =
+			this.raw.isListEdit ||
+			this.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.retrieved)
+				? ValidityErrorLevel.warning
+				: ValidityErrorLevel.none
 
 		this.dataRecordsDisplay.forEach((record, row) => {
 			this.fields.forEach((f) => {
@@ -524,7 +560,7 @@ export class DataObj {
 	}
 	setFieldValChanged(row: number, recordId: string, fieldName: string, value: any) {
 		this.dataRecordsDisplay[row][fieldName] = value
-		const valueInitial = this.data.rowsRetrieved.getValue(recordId, fieldName)
+		const valueInitial = this.data.rowsRetrieved.getRowValueById(recordId, fieldName)
 		const hasChanged = valueHasChanged(valueInitial, value)
 		if (hasChanged) {
 			this.dataFieldsChanged.valueSet(recordId, fieldName, hasChanged)
@@ -652,11 +688,11 @@ export class DataObjData {
 
 	formatForGrid(fields: Field[]) {
 		let gridData: DataRecord[] = []
-		this.rowsRetrieved.getRows().forEach((row) => {
+		this.rowsRetrieved.getRows().forEach((dataRow) => {
 			let record: DataRecord = {}
 			fields.forEach((field) => {
 				const fieldName = field.colDO.propName
-				const data = row.record[fieldName]
+				const data = dataRow.record.getValue(fieldName)
 				const codeDataType = field.colDO.colDB.codeDataType
 				const display =
 					field.colDO.items.length > 0 ? this.getItemDisplayValue(field.colDO.items, data) : data
@@ -696,6 +732,7 @@ export class DataObjData {
 export class DataObjDataField {
 	columnBacklink?: string
 	data: DataObjData
+	dataObj?: DataObj
 	embedFieldName: string
 	embedTable: DBTable
 	embedType: DataObjEmbedType
@@ -743,7 +780,7 @@ export class DataObjDataField {
 				const rawDataObj = await fGetRawDataObj(
 					new TokenApiDbDataObjSource({
 						dataObjId: embedDataObjId,
-						exprFilter: `.id IN (SELECT ${parentTable.object} FILTER .id = <tree,uuid,${parentTable.name}.id>).${embedFieldName}.id`
+						exprFilter: `.id IN (SELECT ${parentTable.object} FILTER .id = <tree,uuid,${parentTable.name}.id>).${field.propNameRaw}.id`
 					}),
 					queryData
 				)
@@ -907,6 +944,9 @@ export class DataRow {
 		this.record = record
 		this.status = status
 	}
+	getValue(key: string) {
+		return getRecordValue(this.record, key)
+	}
 }
 
 export class DataRows {
@@ -915,48 +955,48 @@ export class DataRows {
 	add(newRow: DataRow) {
 		this.dataRows.push(newRow)
 	}
-	getDetailRecord() {
-		if (this.dataRows.length > 0) return this.dataRows[0].record
-		error(500, {
-			file: FILENAME,
-			function: 'DataRows.getDetailRecord',
-			message: `No detail record available.`
-		})
-	}
 	getDetailRecordValue(key: string) {
-		if (!this.hasRecord()) return undefined
-		return this.dataRows[0].record[key]
+		return this.getRowValue(0, key)
 	}
 	getDetailRow() {
-		if (this.dataRows.length > 0) return this.dataRows[0]
+		if (this.dataRows.length === 1) return this.dataRows[0]
 		error(500, {
 			file: FILENAME,
-			function: 'DataRows.getDetailRecord',
-			message: `No detail record available.`
+			function: 'DataRows.getDetailRow',
+			message: `No detail row available.`
 		})
 	}
-	getDetailStatusRecordIs(status: DataRecordStatus) {
-		if (this.dataRows.length < 1) return false
-		return status === this.dataRows[0].status
+	getDetailRowStatusIs(status: DataRecordStatus) {
+		return status === this.getRowStatus(0)
 	}
-	getRow(id: string) {
-		const row = this.dataRows.findIndex((r) => r.record.id === id)
-		return row > -1 ? this.dataRows[row] : undefined
+	getRowById(id: string) {
+		return this.dataRows.findIndex((dr) => dr.record.id === id)
 	}
-	getRows() {
-		return this.dataRows
+	getRowValue(row: number, key: string) {
+		if (this.dataRows.length <= row) return undefined
+		return this.dataRows[row].getValue(key)
 	}
-	getValue(recordId: string, key: string) {
-		const row = this.dataRows.find((dr) => dr.record.id === recordId)
-		if (row) {
-			return row.record[key]
+	getRowValueById(id: string, key: string) {
+		const row = this.getRowById(id)
+		if (row > -1) {
+			return this.getRowValue(row, key)
 		} else {
 			error(500, {
 				file: FILENAME,
-				function: 'dataObjData.getValue',
-				message: `Row ${row} not found.`
+				function: 'dataObjData.getRowValueById',
+				message: `Cannot find row for recordId: ${id}`
 			})
 		}
+	}
+	getRowStatus(row: number) {
+		return this.dataRows.length > row ? this.dataRows[row].status : undefined
+	}
+	getRowStatusById(id: string) {
+		const row = this.getRowById(id)
+		return row > -1 ? this.dataRows[row].status : undefined
+	}
+	getRows() {
+		return this.dataRows
 	}
 	hasRecord() {
 		return this.dataRows.length > 0 && Object.keys(this.dataRows[0].record).length > 0
@@ -1054,6 +1094,19 @@ export class FieldValues {
 	}
 }
 
+export function getRecordValue(record: DataRecord, key: string) {
+	for (const [k, v] of Object.entries(record)) {
+		if (k.endsWith(key)) {
+			return v
+		}
+	}
+	error(500, {
+		file: FILENAME,
+		function: 'getRecordValue',
+		message: `Unable to find key: ${key} in record: ${record}`
+	})
+}
+
 export class ParmsUser {
 	data: ParmsUserData[] = []
 	constructor() {}
@@ -1106,9 +1159,9 @@ export class ParmsValues {
 			this.data[key] = value
 		})
 	}
-	updateList(dataRows: DataRow[] | undefined, recordId: string, recordIdAlt: string = '') {
+	updateList(listIds: string[], recordId: string, recordIdAlt: string = '') {
+		this.valueSet(ParmsValuesType.listIds, listIds)
 		this.valueSet(ParmsValuesType.listRecordIdCurrent, recordIdAlt ? recordIdAlt : recordId)
-		this.valueSetList(ParmsValuesType.listIds, dataRows)
 	}
 	valueGet(key: string) {
 		return this.data[key]

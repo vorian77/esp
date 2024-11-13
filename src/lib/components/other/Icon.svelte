@@ -29,6 +29,7 @@
 		LogOut,
 		Mail,
 		Menu,
+		Quote,
 		Settings,
 		ShieldEllipsis,
 		SquareMousePointer,
@@ -37,15 +38,15 @@
 		UsersRound
 	} from 'lucide-svelte'
 
+	/* icons source -  https://lucide.dev/icons/ */
+
 	export let absoluteStrokeWidth = false
+	export let clazz = ''
 	export let color = '#000000'
-	export let marginRight = '0'
 	export let name = ''
 	export let onClick = () => {}
 	export let size = '24'
 	export let strokeWidth = '1'
-
-	const clazz = `mr-${marginRight} `
 
 	const Icon = {
 		activity: Activity,
@@ -77,6 +78,7 @@
 		logout: LogOut,
 		mail: Mail,
 		menu: Menu,
+		quote: Quote,
 		settings: Settings,
 		shieldellipsis: ShieldEllipsis,
 		squaremousepointer: SquareMousePointer,
@@ -87,9 +89,9 @@
 </script>
 
 {#if Icon}
-	<button class="" on:click={onClick}>
-		<span class={clazz}>
+	<div class={clazz}>
+		<button class="" on:click={onClick}>
 			<svelte:component this={Icon} {absoluteStrokeWidth} {color} {size} {strokeWidth} />
-		</span>
-	</button>
+		</button>
+	</div>
 {/if}

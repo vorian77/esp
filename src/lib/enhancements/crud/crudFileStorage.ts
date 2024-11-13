@@ -34,7 +34,7 @@ export async function qaExecuteFileStorage(
 		case DataObjActionQueryTriggerTiming.pre:
 			const fileParm: TokenApiFileParm = dataUpdate.rowsSave.getDetailRecordValue(parms.imageField)
 			if (fileParm) {
-				fileAction = dataUpdate.rowsSave.getDetailStatusRecordIs(DataRecordStatus.delete)
+				fileAction = dataUpdate.rowsSave.getDetailRowStatusIs(DataRecordStatus.delete)
 					? TokenApiFileAction.delete
 					: fileParm.fileAction
 						? fileParm.fileAction

@@ -99,6 +99,14 @@ export const columnTypes = {
 	}
 }
 
+export const getFilteredNodeIds = (gridApi: GridApi) => {
+	let selectedNodes: string[] = []
+	gridApi.forEachNodeAfterFilterAndSort((node) => {
+		if (node.displayed) selectedNodes.push(node.data.id)
+	})
+	return selectedNodes
+}
+
 export const getSelectedNodeIds = (gridApi: GridApi) => {
 	let selectedNodes: string[] = []
 	gridApi.forEachNode((node) => {
@@ -186,6 +194,14 @@ export const dataTypeDefinitions = {
 		extendsDataType: 'text',
 		valueFormatter: (params: any) => getValueFormatter(params, isFalsy),
 		valueParser: (params: any) => getValueParser(params, isFalsy)
+	}
+}
+
+export class GridCellStyle {
+	cellStyle: DataRecord = {}
+	constructor() {}
+	addStyle(property: string, value: string) {
+		this.cellStyle[property] = value
 	}
 }
 

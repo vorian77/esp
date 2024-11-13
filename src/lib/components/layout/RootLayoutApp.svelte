@@ -150,8 +150,8 @@
 				if (currLevel) {
 					currTab = currLevel.getCurrTab()
 					if (currTab && currTab.dataObj) {
-						const dataRow = currTab?.data?.rowsRetrieved?.getDetailRow()
-						switch (dataRow.status) {
+						const status = currTab?.data?.rowsRetrieved?.getDetailRowStatus()
+						switch (status) {
 							case DataRecordStatus.preset:
 								await query(state, currTab, TokenApiQueryType.preset)
 								updateObjectsForm()
@@ -165,7 +165,7 @@
 								error(500, {
 									file: FILENAME,
 									function: `processState.actionType: ${token.action}`,
-									message: `No case defined for DataRecordStatus: ${dataRow.status} `
+									message: `No case defined for DataRecordStatus: ${status} `
 								})
 						}
 					}

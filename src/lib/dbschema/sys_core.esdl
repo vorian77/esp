@@ -97,11 +97,13 @@ module sys_core {
     };
     required codeCardinality: sys_core::SysCode;
     required codeComponent: sys_core::SysCode;
+    codeListEditPresetType: sys_core::SysCode;
+    
     multi columns: sys_core::SysDataObjColumn {
       on source delete delete target;
       on target delete allow;
     };
-    codeListEditPresetType: sys_core::SysCode;
+
     description: str;
     exprFilter: str;
     exprObject: str;
@@ -341,6 +343,7 @@ module sys_core {
     dataObj: sys_core::SysDataObj {
       on target delete allow
     };
+    required isAlwaysRetrieveData: bool;
     required isHideRowManager: bool;
     isSystemRoot: bool;
     parent: sys_core::SysNodeObj;

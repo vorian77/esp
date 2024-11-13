@@ -12,49 +12,46 @@ import { initSysAdminMigr } from '$server/dbEdge/init/dbEdgeInit60SysAdminMigrat
 import { initSysAdminRep } from '$server/dbEdge/init/dbEdgeInit60SysAdminRep'
 import { initSysRepUser } from '$server/dbEdge/init/dbEdgeInit60SysAdminRepRender'
 
-// features
-import { initFeatCMStudent } from '$server/dbEdge/init/dbEdgeInit80FeatStudent'
-import { initFeatTraining } from '$server/dbEdge/init/dbEdgeInit80FeatCMTraining'
-import { initFeatMOED } from '$server/dbEdge/init/dbEdgeInit80FeatMOED'
+// content
+import { initContentAITraining } from '$server/dbEdge/init/dbEdgeInit80ContentAITraining'
+import { initContentAIStudent } from '$server/dbEdge/init/dbEdgeInit80ContentAIStudent'
+import { initContentAIRep } from '$server/dbEdge/init/dbEdgeInit80ContentAIRep'
+import { initContentMOEDStudent } from '$server/dbEdge/init/dbEdgeInit80ContentMOED'
+import { initContentMOEDRep } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDRep'
 
-// data
-import { initDataReports } from '$server/dbEdge/init/dbEdgeInit120DataRep'
-
-// other
+// user
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
+const isResetFullDB = false
+
 export async function dbEdgeInit() {
-	let initDb = new InitDb()
-	dbEdgeInitAll(initDb)
-	// initFeatures(initDb)
+	let initDb = new InitDb(isResetFullDB)
+	if (isResetFullDB) dbEdgeInitAll(initDb)
+	if (!isResetFullDB) initFeature(initDb)
 	initUser(initDb)
 	await initDb.execute()
 }
 
 function dbEdgeInitAll(initDb: InitDb) {
 	initPreDataObj(initDb)
-	initSysCore(initDb)
-	initSysOther(initDb)
-	initFeatures(initDb)
-	initData(initDb)
-}
-
-function initSysCore(initDb: InitDb) {
 	initSysAdmin(initDb)
 	initSysAdminMigr(initDb)
 	initSysAdminRep(initDb)
-}
-function initSysOther(initDb: InitDb) {
 	initSysAuth(initDb)
 	initSysRepUser(initDb)
+
+	// content - Atlantic Impact
+	initContentAITraining(initDb)
+	initContentAIStudent(initDb)
+	initContentAIRep(initDb)
+
+	// content - MOED
+	initContentMOEDStudent(initDb)
+	initContentMOEDRep(initDb)
 }
 
-export function initFeatures(initDb: InitDb) {
-	initFeatMOED(initDb)
-	initFeatCMStudent(initDb)
-	initFeatTraining(initDb)
-}
-
-export function initData(initDb: InitDb) {
-	initDataReports(initDb)
+export function initFeature(initDb: InitDb) {
+	// current feature
+	initContentAIRep(initDb)
+	// initSysRepUser(initDb)
 }

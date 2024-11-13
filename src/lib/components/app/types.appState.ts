@@ -252,7 +252,7 @@ export class State {
 		// parms
 		const parmsState = new ParmsValues(fieldDataObj.data.getParms())
 		parmsState.update(fieldDataObj.data.parms.valueGetAll())
-		parmsState.valueSet(ParmsValuesType.embedFieldName, field.colDO.propName)
+		parmsState.valueSet(ParmsValuesType.embedFieldName, field.colDO.propNameRaw)
 		parmsState.valueSetList(
 			ParmsValuesType.listIdsSelected,
 			token.dataObj.data.rowsRetrieved.getRows()
@@ -273,7 +273,7 @@ export class State {
 					dataObjSourceModal: new TokenApiDbDataObjSource({
 						dataObjId: field.raw.dataObjListID,
 						parent: new RawDataObjParent({
-							_columnName: field.colDO.propName,
+							_columnName: field.colDO.propNameRaw,
 							_columnIsMultiSelect: field.colDO.colDB.isMultiSelect,
 							_filterExpr: '.id = <parms,uuid,embedParentId>',
 							_table: rootTable

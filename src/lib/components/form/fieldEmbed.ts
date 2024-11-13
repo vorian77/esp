@@ -1,4 +1,4 @@
-import { Field, RawFieldProps } from '$comps/form/field'
+import { Field, PropsField, PropsFieldRaw } from '$comps/form/field'
 import {
 	arrayOfClasses,
 	DataObj,
@@ -24,7 +24,7 @@ export class FieldEmbed extends Field {
 	dataObj?: DataObj
 	embedParentId?: string
 	embedType?: DataObjEmbedType
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		super(props)
 	}
 	getStatus(dataObjForm: DataObj, recordId: string) {
@@ -38,15 +38,15 @@ export class FieldEmbed extends Field {
 			})
 		}
 	}
-	async initDataObj(props: RawFieldProps, embedType: DataObjEmbedType) {
+	async initDataObj(props: PropsField, embedType: DataObjEmbedType) {
 		const clazz = `${FILENAME}.FieldEmbed`
 		this.embedParentId = strRequired(
-			props.data.rowsRetrieved.getDetailRecordValue('id'),
+			props.dataObj.data.rowsRetrieved.getDetailRecordValue('id'),
 			clazz,
 			'embedParentId'
 		)
 		this.embedType = embedType
-		let dataField: DataObjDataField = props.data.getField(props.propRaw.propName)
+		let dataField: DataObjDataField = props.dataObj.data.getField(this.colDO.propName)
 		if (dataField) {
 			this.dataObj = await DataObj.init(props.state, dataField.data)
 			this.dataObj.objData = dataField.data
@@ -59,7 +59,7 @@ export class FieldEmbed extends Field {
 			error(500, {
 				file: FILENAME,
 				function: 'initDataObj',
-				message: `No data field defined for FieldEmbed: ${props.propRaw.propName}`
+				message: `No data field defined for FieldEmbed: ${this.colDO.propName}`
 			})
 		}
 	}
@@ -70,7 +70,7 @@ export class FieldEmbed extends Field {
 export class FieldEmbedListConfig extends FieldEmbed {
 	actionsFieldModal: DataObjActionField[]
 	raw: RawDataObjPropDisplayEmbedListConfig
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		const clazz = 'FieldEmbedListConfig'
 		super(props)
 		this.raw = required(props.propRaw.fieldEmbedListConfig, clazz, 'raw')
@@ -79,35 +79,31 @@ export class FieldEmbedListConfig extends FieldEmbed {
 			props.propRaw.fieldEmbedListConfig?.rawActionsFieldModal
 		)
 	}
-	static async init(props: RawFieldProps) {
-		const field = new FieldEmbedListConfig(props)
-		await field.initDataObj(props, DataObjEmbedType.listConfig)
-		if (field.dataObj) {
-			field.dataObj.actionsFieldEmbedSet(StatePacketAction.doEmbedListConfigEdit, field)
-			field.dataObj.actionsFieldEmbedSet(StatePacketAction.doEmbedListConfigNew, field)
+	async init(props: PropsField) {
+		await this.initDataObj(props, DataObjEmbedType.listConfig)
+		if (this.dataObj) {
+			this.dataObj.actionsFieldEmbedSet(StatePacketAction.doEmbedListConfigEdit, this)
+			this.dataObj.actionsFieldEmbedSet(StatePacketAction.doEmbedListConfigNew, this)
 		}
-		return field
 	}
 }
 
 export class FieldEmbedListEdit extends FieldEmbed {
 	raw: RawDataObjPropDisplayEmbedListEdit
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		const clazz = 'FieldEmbedListEdit'
 		super(props)
 		this.raw = required(props.propRaw.fieldEmbedListEdit, clazz, 'raw')
 	}
-	static async init(props: RawFieldProps) {
-		const field = new FieldEmbedListEdit(props)
-		await field.initDataObj(props, DataObjEmbedType.listEdit)
-		return field
+	async init(props: PropsField) {
+		await this.initDataObj(props, DataObjEmbedType.listEdit)
 	}
 }
 
 export class FieldEmbedListSelect extends FieldEmbed {
 	actionsFieldModal: DataObjActionField[]
 	raw: RawDataObjPropDisplayEmbedListSelect
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		const clazz = 'FieldEmbedListSelect'
 		super(props)
 		this.raw = required(props.propRaw.fieldEmbedListSelect, clazz, 'raw')
@@ -116,12 +112,10 @@ export class FieldEmbedListSelect extends FieldEmbed {
 			props.propRaw.fieldEmbedListSelect?.rawActionsFieldModal
 		)
 	}
-	static async init(props: RawFieldProps) {
-		const field = new FieldEmbedListSelect(props)
-		await field.initDataObj(props, DataObjEmbedType.listSelect)
-		if (field.dataObj) {
-			field.dataObj.actionsFieldEmbedSet(StatePacketAction.doEmbedListSelect, field)
+	async init(props: PropsField) {
+		await this.initDataObj(props, DataObjEmbedType.listSelect)
+		if (this.dataObj) {
+			this.dataObj.actionsFieldEmbedSet(StatePacketAction.doEmbedListSelect, this)
 		}
-		return field
 	}
 }

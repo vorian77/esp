@@ -41,6 +41,7 @@ export class Node extends NodeHeader {
 	dataObjId?: string
 	dataObjIdChild?: string
 	dataObjName?: string
+	isAlwaysRetrieveData: boolean
 	isHideRowManager: boolean
 	isSystemRoot: boolean
 	isMobileMode: boolean
@@ -54,6 +55,7 @@ export class Node extends NodeHeader {
 		this.dataObjId = obj.dataObjId
 		this.dataObjIdChild = obj.dataObjIdChild
 		this.dataObjName = obj.dataObjName
+		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData, 'isAlwaysRetrieveData')
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
 		this.isMobileMode = booleanOrFalse(obj.isMobileMode, 'isHideRowManager')
 		this.isRetrievePreset = booleanOrFalse(obj.isRetrievePreset, 'isRetrievePreset')

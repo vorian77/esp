@@ -21,6 +21,7 @@ import {
 	DBTable,
 	formatDateTime,
 	getArray,
+	getRecordValue,
 	ParmsValuesType,
 	required,
 	strRequired,
@@ -29,6 +30,7 @@ import {
 import {
 	PropDataSourceValue,
 	PropDataType,
+	PropNamePrefixType,
 	RawDataObj,
 	RawDataObjPropDB
 } from '$comps/dataObj/types.rawDataObj'
@@ -178,20 +180,20 @@ async function processDataObjExecute(
 		scriptData.parms.update(script.queryData.dataTab?.parms.valueGetAll())
 		switch (script.exePost) {
 			case ScriptExePost.dataItems:
-				scriptData.items = rawDataList[0]
+				scriptData.items = rawDataList.length > 0 ? rawDataList[0] : []
 				break
 
 			case ScriptExePost.formatData:
-				let record: DataRecord = {}
+				let dataRow: DataRow = new DataRow(DataRecordStatus.unknown, {})
 				if (script.query.processRow) formatData(scriptData, rawDataList, script.query.processRow)
 
 				if (script.query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
-					record = required(scriptData.rowsRetrieved.getDetailRecord(), clazz, 'record')
+					dataRow = required(scriptData.rowsRetrieved.getDetailRow(), clazz, 'dataRow')
 
 					// set embedded parent tree records
 					const rootTableName = script.query.getTableRootName()
 					scriptGroup.scripts.forEach((script: Script) => {
-						script.queryData.updateTableData(rootTableName, record)
+						script.queryData.updateTableData(rootTableName, dataRow)
 					})
 
 					// set appSystemId
@@ -200,7 +202,7 @@ async function processDataObjExecute(
 							queryType === TokenApiQueryType.preset
 								? script.queryData?.dataTab?.parms.valueGet(ParmsValuesType.appSystemId)
 								: strRequired(
-										record[`_${ParmsValuesType.appSystemId}_`],
+										dataRow.getValue(`_${ParmsValuesType.appSystemId}_`),
 										clazz,
 										ParmsValuesType.appSystemId
 									)
@@ -209,7 +211,7 @@ async function processDataObjExecute(
 				}
 				// add dataItems
 				script.queryData?.dataTab?.parms.update(scriptData.parms.valueGetAll())
-				script.queryData.record = record
+				script.queryData.record = dataRow.record
 				scriptGroup.addScriptDataItems(
 					script.query,
 					script.queryData,
@@ -249,12 +251,12 @@ async function processDataObjExecute(
 }
 
 async function executeExpr(expr: string, queryData: TokenApiQueryData) {
-	const query = evalExpr(expr, queryData)
+	const query = evalExpr(expr, queryData, new EvalExprContext('executeExpr', ''))
 	return await executeQueryMultiple(query)
 }
 export async function executeQuery(query: string): Promise<RawDataList> {
 	debug('executeQuery', 'query', query)
-	return await queryExecute(query)
+	return (await queryExecute(query)) || []
 }
 
 export async function executeQueryMultiple(query: string): Promise<RawDataList> {
@@ -303,7 +305,7 @@ function formatDataForDisplay(prop: RawDataObjPropDB, propDataType: PropDataType
 			error(500, {
 				file: FILENAME,
 				function: `formatDataForDisplay`,
-				message: `No case defined for field: ${prop.propName} - propDataType: ${propDataType}`
+				message: `No case defined for prop: ${prop.propName} - propDataType: ${propDataType}`
 			})
 	}
 	return value
@@ -394,12 +396,14 @@ export class ProcessRow {
 		const iter = expr.matchAll(regex)
 		for (const match of iter) {
 			const key = match[0].substring(1)
-			if (propNames.includes(key)) {
-				newExpr = newExpr.replace(match[0], dataRecord[key])
+			const propName = propNames.find((prop) => prop.endsWith(key))
+			if (propName) {
+				newExpr = newExpr.replace(`.${key}`, dataRecord[propName])
 			}
 		}
 		return Function('return ' + newExpr)()
 	}
+
 	prepRecord(recordRaw: DataRecord) {
 		this.propsSelect.forEach((prop) => {
 			if (prop.codeDataSourceValue === PropDataSourceValue.calculate && prop.exprCustom) {
@@ -407,7 +411,9 @@ export class ProcessRow {
 			}
 		})
 	}
-	processRow(recordRaw: DataRecord): DataRow {}
+	processRow(recordRaw: DataRecord): DataRow {
+		return new DataRow(DataRecordStatus.retrieved, recordRaw)
+	}
 }
 
 class ProcessRowSelect extends ProcessRow {
@@ -424,18 +430,14 @@ class ProcessRowSelect extends ProcessRow {
 		const clazz = 'ProcessRowSelect.processRowProps'
 		let recordReturn: DataRecord = {}
 		this.propsSelect.forEach((prop) => {
-			const propName = prop.propName
-			const recordKey = prop.codeDataType === PropDataType.link ? '_' + propName : propName
-			if (Object.hasOwn(recordRaw, recordKey)) {
-				recordReturn[propName] = formatDataForDisplay(prop, prop.codeDataType, recordRaw[recordKey])
-				if (prop.hasItems) {
-					const recordKeyItems = '_items' + recordKey
-					if (Object.hasOwn(recordRaw, recordKeyItems)) {
-						dataReturn.items[recordKeyItems] = getArray(recordRaw[recordKeyItems])
-					}
-				}
+			if (Object.hasOwn(recordRaw, prop.propName)) {
+				recordReturn[prop.propName] = formatDataForDisplay(
+					prop,
+					prop.codeDataType,
+					recordRaw[prop.propName]
+				)
 			} else {
-				recordReturn[propName] = formatDataForDisplay(prop, prop.codeDataType, undefined)
+				recordReturn[prop.propName] = formatDataForDisplay(prop, prop.codeDataType, undefined)
 			}
 		})
 		return new DataRow(status, recordReturn)
@@ -488,12 +490,11 @@ class ProcessRowUpdate extends ProcessRow {
 	}
 	processRowProps(recordReturn: DataRecord, status: DataRecordStatus) {
 		this.propsSelect.forEach((prop) => {
-			if (prop.codeDataType === PropDataType.link) {
+			if (prop.propNamePrefixType === PropNamePrefixType.linkItems) {
 				const recordKeyLink = '_' + prop.propName
-				recordReturn[prop.propName] = recordReturn[recordKeyLink]
-				delete recordReturn[recordKeyLink]
-			}
-			if (prop.codeDataType !== PropDataType.link) {
+				// recordReturn[prop.propName] = recordReturn[recordKeyLink]
+				// delete recordReturn[recordKeyLink]
+			} else {
 				recordReturn[prop.propName] = formatDataForDisplay(
 					prop,
 					prop.codeDataType,

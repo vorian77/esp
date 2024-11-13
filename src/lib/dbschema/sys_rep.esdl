@@ -54,6 +54,10 @@ module sys_rep {
     indexTable: default::nonNegative;
     isDisplay: bool;
     isDisplayable: bool;
+    multi linkColumns: sys_core::SysDataObjColumnLink{
+      on source delete delete target;
+      on target delete allow;
+    };
     nameCustom: str;
     required orderDefine: default::nonNegative;
     orderDisplay: default::nonNegative;
@@ -92,7 +96,9 @@ module sys_rep {
   }
 
   type SysRepUserAnalytic extending sys_user::Mgmt {
-    required analytic: sys_rep::SysAnalytic;
+    required analytic: sys_rep::SysAnalytic {
+      on target delete delete source;
+    };
     multi parms: sys_rep::SysRepUserParm {
       on source delete delete target;
       on target delete allow;
@@ -100,7 +106,9 @@ module sys_rep {
   }
   
   type SysRepUserParm extending sys_user::Mgmt {
-    required parm: sys_rep::SysRepParm;
+    required parm: sys_rep::SysRepParm {
+      on target delete delete source;
+    };
     parmValue: json;
   }
 

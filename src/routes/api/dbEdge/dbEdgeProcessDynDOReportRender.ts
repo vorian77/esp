@@ -5,6 +5,7 @@ import { TokenApiQueryData } from '$utils/types.token'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 import { getReportUser } from '$routes/api/dbEdge/types.dbEdge'
 import { error } from '@sveltejs/kit'
+import { get } from 'http'
 
 const FILENAME = '$routes/api/dbEdge/dbEdgeProcessDynDOReportRender.ts'
 let fName = (functionName: string) => {
@@ -16,7 +17,7 @@ export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj
 	const repUser = new RepUser(repUserData)
 	const rawDataObjDyn = getRawDataObj(repUser)
 
-	addPropsDisplay(repUser)
+	addPropsDisplay(repUser, rawDataObjDyn.tables)
 	addPropsSelect(repUser.report.elements, rawDataObjDyn.tables)
 	// addPropsSort()
 	addParms(repUser, queryData)
@@ -32,53 +33,61 @@ export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj
 		})
 	}
 
-	function addPropsDisplay(repUser: RepUser) {
+	function addPropsCommon(el: RepEl) {
+		return {
+			_hasItems: false,
+			_link: el._link,
+			_linkItemsDefn: undefined,
+			_propName: el.nameCustom || el._column?.name,
+			exprCustom: el.exprCustom,
+			indexTable: el.indexTable,
+			orderDefine: el.orderDisplay || el.orderDefine
+		}
+	}
+
+	function addPropsDisplay(repUser: RepUser, tables: DataObjTable[]) {
 		repUser.report.elements.forEach((el) => {
-			rawDataObjDyn.addPropDisplay({
-				_codeAccess: 'readOnly',
-				_codeColor: 'black',
-				_codeFieldElement: el._codeFieldElement,
-				_codeSortDir: el._codeSortDir,
-				_column: gePropColumn(el),
-				_hasItems: false,
-				_propName: el.nameCustom || el._column?.name,
-				isDisplay: el.isDisplay,
-				isDisplayable: el.isDisplayable,
-				nameCustom: el.nameCustom,
-				orderDefine: el.orderDisplay || el.orderDefine,
-				orderSort: el.orderSort
-			})
+			rawDataObjDyn.addPropDisplay(
+				{
+					...addPropsCommon(el),
+					_codeAccess: 'readOnly',
+					_codeColor: 'black',
+					_codeFieldElement: el._codeFieldElement,
+					_codeSortDir: el._codeSortDir,
+					_column: addPropsDisplayColumn(el),
+					isDisplay: el.isDisplay,
+					isDisplayable: el.isDisplayable,
+					nameCustom: el.nameCustom,
+					orderSort: el.orderSort
+				},
+				tables
+			)
 		})
+	}
+	function addPropsDisplayColumn(repEl: RepEl) {
+		return {
+			_codeAlignment: repEl._codeAlignment || repEl._column?._codeAlignment,
+			_codeDataType: repEl._codeDataType || repEl._column?._codeDataType,
+			header: repEl.header || repEl._column?.header,
+			indexTable: repEl.indexTable,
+			isMultiSelect: false,
+			isNonData: false,
+			name: repEl._column?.name || getFieldColumnCustomName(repEl._codeDataType)
+		}
 	}
 
 	function addPropsSelect(elements: RepEl[], tables: DataObjTable[]) {
 		elements.forEach((e) => {
 			rawDataObjDyn.addPropSelect(
 				{
+					...addPropsCommon(e),
 					_codeDataType: e._column?._codeDataType || e._codeDataType,
 					_codeDbDataSourceValue: e._codeDbDataSourceValue,
-					_codeSortDir: e._codeSortDir,
-					_hasItems: false,
-					_link: undefined,
-					_linkItemsDefn: undefined,
-					_propName: e.nameCustom || e._column?.name,
-					exprCustom: e.exprCustom,
-					indexTable: e.indexTable
+					_codeSortDir: e._codeSortDir
 				},
 				tables
 			)
 		})
-	}
-}
-
-function gePropColumn(repEl: RepEl) {
-	return {
-		_codeAlignment: repEl._column?._codeAlignment || repEl._codeAlignment,
-		_codeDataType: repEl._column?._codeDataType || repEl._codeDataType,
-		header: repEl._column?.header || repEl.header,
-		isMultiSelect: false,
-		isNonData: false,
-		name: repEl._column?.name || getFieldColumnCustomName(repEl._codeDataType)
 	}
 }
 
@@ -96,10 +105,13 @@ function getFieldColumnCustomName(dataType: string | undefined) {
 		case PropDataType.float64:
 			return 'custom_element_float'
 
+		case PropDataType.int16:
+		case PropDataType.int32:
 		case PropDataType.int64:
 			return 'custom_element_int'
 
 		case PropDataType.str:
+		case PropDataType.uuid:
 			return 'custom_element_str'
 
 		default:

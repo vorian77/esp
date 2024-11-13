@@ -58,6 +58,7 @@ const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 	dataObjId: n.dataObj.id,
 	header: true,
 	id: true,
+	isAlwaysRetrieveData: true,
 	isHideRowManager: true,
 	isSystemRoot: true,
 	name: true,
@@ -81,23 +82,9 @@ export async function getDataObjActionFieldGroup(token: TokenApiId) {
 }
 
 export async function getDataObjById(token: TokenApiId) {
-	const shapePropDB = e.shape(e.sys_core.SysDataObjColumn, (doc) => ({
-		_codeDataType: doc.column.codeDataType.name,
-		_codeDbDataSourceValue: doc.codeDbDataSourceValue.name,
-		_codeSortDir: doc.codeSortDir.name,
-		_columnBacklink: doc.columnBacklink.name,
-		_fieldEmbedListConfig: e.select(doc.fieldEmbedListConfig, (fe) => ({
-			_dataObjEmbedId: fe.dataObjEmbed.id
-		})),
-		_fieldEmbedListEdit: e.select(doc.fieldEmbedListEdit, (fe) => ({
-			_dataObjEmbedId: fe.dataObjEmbed.id
-		})),
-		_fieldEmbedListSelect: e.select(doc.fieldEmbedListSelect, (fe) => ({
-			_dataObjListId: fe.dataObjList.id
-		})),
+	const shapeProp = e.shape(e.sys_core.SysDataObjColumn, (doc) => ({
 		...shapeColumnHasItems(doc),
-		_isMultiSelect: doc.column.isMultiSelect,
-		_isSelfReference: doc.column.isSelfReference,
+		_codeSortDir: doc.codeSortDir.name,
 		_link: e.select(doc, (l) => ({
 			_columns: e.select(l.linkColumns, (c) => ({
 				_name: c.column.name,
@@ -128,6 +115,24 @@ export async function getDataObjById(token: TokenApiId) {
 		exprCustom: true,
 		exprPreset: true,
 		indexTable: true
+	}))
+
+	const shapePropDB = e.shape(e.sys_core.SysDataObjColumn, (doc) => ({
+		...shapeProp(doc),
+		_codeDataType: doc.column.codeDataType.name,
+		_codeDbDataSourceValue: doc.codeDbDataSourceValue.name,
+		_columnBacklink: doc.columnBacklink.name,
+		_fieldEmbedListConfig: e.select(doc.fieldEmbedListConfig, (fe) => ({
+			_dataObjEmbedId: fe.dataObjEmbed.id
+		})),
+		_fieldEmbedListEdit: e.select(doc.fieldEmbedListEdit, (fe) => ({
+			_dataObjEmbedId: fe.dataObjEmbed.id
+		})),
+		_fieldEmbedListSelect: e.select(doc.fieldEmbedListSelect, (fe) => ({
+			_dataObjListId: fe.dataObjList.id
+		})),
+		_isMultiSelect: doc.column.isMultiSelect,
+		_isSelfReference: doc.column.isSelfReference
 	}))
 
 	const shapeColumnHasItems = e.shape(e.sys_core.SysDataObjColumn, (doc) => ({
@@ -216,11 +221,11 @@ export async function getDataObjById(token: TokenApiId) {
 					toggleValueShow: true,
 					toggleValueTrue: true
 				})),
+				...shapeProp(doc),
 				_codeAccess: doc.codeAccess.name,
 				_codeAlignmentAlt: doc.codeAlignmentAlt.name,
 				_codeColor: doc.codeColor.name,
 				_codeFieldElement: doc.codeFieldElement.name,
-				_codeSortDir: doc.codeSortDir.name,
 				_customCol: e.select(doc, (c) => ({
 					_customColCodeColor: c.customColCodeColor.name,
 					customColActionMethod: true,
@@ -255,13 +260,13 @@ export async function getDataObjById(token: TokenApiId) {
 					_name: ce.column.name,
 					order_by: ce.orderDefine
 				})),
-				...shapeColumnHasItems(doc),
+
 				_items: e.select(doc.items, (i) => ({
 					data: true,
 					display: true,
 					order_by: i.orderDefine
 				})),
-				_propName: e.op(doc.nameCustom, '??', doc.column.name),
+
 				headerAlt: true,
 				height: true,
 				isDisplay: true,
@@ -413,7 +418,7 @@ export async function getNodesBranch(token: TokenApiId) {
 	return await query.run(client)
 }
 
-export async function getNodesLevel(token: TokenApId) {
+export async function getNodesLevel(token: TokenApiId) {
 	const parentNodeId = token.id
 	const root = e.select(e.sys_core.SysNodeObj, (n: any) => ({
 		...shapeNodeObj(n),
@@ -440,6 +445,12 @@ export async function getReportUser(repUserId: string) {
 			_codeDataType: c.codeDataType.name,
 			header: c.header,
 			name: c.name
+		})),
+		_link: e.select(re, (el) => ({
+			_columns: e.select(el.linkColumns, (lc) => ({
+				_name: lc.column.name,
+				order_by: lc.orderDefine
+			}))
 		})),
 		description: true,
 		exprCustom: true,

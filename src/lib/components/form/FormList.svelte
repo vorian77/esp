@@ -46,7 +46,9 @@
 	import FormElement from '$comps/form/FormElement.svelte'
 	import Grid from '$comps/grid/Grid.svelte'
 	import {
+		getFilteredNodeIds,
 		getSelectedNodeIds,
+		GridCellStyle,
 		GridManagerOptions,
 		GridSettings,
 		GridSettingsColumnItem
@@ -176,6 +178,7 @@
 	}
 	function initGridColumnsField(field: Field) {
 		let defn = {}
+		let defnCellStyle = new GridCellStyle()
 		const isEditable =
 			dataObj.raw.isListEdit &&
 			[FieldAccess.optional, FieldAccess.required].includes(field.fieldAccess)
@@ -186,6 +189,7 @@
 		defn.headerName = isEditable ? '✍️ ' + field.colDO.label : field.colDO.label
 		defn.headerTooltip = field.placeHolder
 		defn.singleClickEdit = isEditable ? true : undefined
+		defnCellStyle.addStyle('text-align', field.fieldAlignment)
 
 		if (field instanceof FieldParm) {
 			defn.cellEditorSelector = cellEditorSelectorParmField
@@ -235,9 +239,10 @@
 					} else {
 						defn.cellDataType = 'customText'
 					}
-					defn.cellStyle = {
-						backgroundColor: field.fieldAccess === FieldAccess.required ? 'rgb(219,234,254)' : ''
-					}
+					defnCellStyle.addStyle(
+						'backgroundColor',
+						field.fieldAccess === FieldAccess.required ? 'rgb(219,234,254)' : ''
+					)
 					break
 
 				case PropDataType.str:
@@ -254,10 +259,14 @@
 					})
 			}
 		}
+		defn.cellStyle = defnCellStyle.cellStyle
 		return defn
 	}
 
 	function initGridData() {
+		const fields = dataObj.fields.map((f) => {
+			return f.colDO.propName
+		})
 		const dataRows = dataObj.dataRecordsDisplay.map((record) => {
 			const row = {}
 			dataObj.fields.forEach((f) => {
@@ -352,6 +361,7 @@
 			const record = event.api.getSelectedRows()[0]
 			if (record) {
 				const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
+				dataObj.data.parms.valueSet(ParmsValuesType.listIds, getFilteredNodeIds(event.api))
 				dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, record.id)
 				action.trigger(state, dataObj)
 			}

@@ -1,6 +1,6 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initFeatTraining(init: InitDb) {
+export function initContentAITraining(init: InitDb) {
 	initCourse(init)
 	initCohort(init)
 	initCohortStudentRoster(init)
@@ -9,7 +9,6 @@ export function initFeatTraining(init: InitDb) {
 	initFieldListConfigPartnerContact(init)
 	initPartner(init)
 	initPartnerNote(init)
-	//  initStaff(init)
 }
 
 function initCourse(init: InitDb) {
@@ -167,30 +166,6 @@ function initCourse(init: InitDb) {
 				orderDisplay: 100,
 				orderDefine: 100
 			},
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'staffAdmin',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 110,
-			// 	orderDefine: 110,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
-			// 	fieldListItemsParmName: 'cm_training_role_staff_admin',
-			// 	linkTable: 'SysStaff'
-			// },
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'staffAgency',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 120,
-			// 	orderDefine: 120,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
-			// 	fieldListItemsParmName: 'cm_training_role_staff_agency',
-			// 	linkTable: 'SysStaff'
-			// },
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
@@ -490,11 +465,25 @@ function initCohort(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80
+			},
+			{
 				codeFieldElement: 'date',
 				columnName: 'dateStart',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0
 			},
 			{
@@ -502,74 +491,36 @@ function initCohort(init: InitDb) {
 				codeFieldElement: 'date',
 				columnName: 'dateEnd',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 100,
+				orderDefine: 100,
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'staffInstructor',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90
+				orderDisplay: 110,
+				orderDefine: 110,
+				indexTable: 0,
+				fieldListItems: 'il_sys_user_by_tag_type',
+				fieldListItemsParmName: 'utt_role_ai_instructor',
+				linkTable: 'SysUser'
 			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100
-			},
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'staffAdmin',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 120,
-			// 	orderDefine: 120,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
-			// 	fieldListItemsParmName: 'cm_training_role_staff_admin',
-			// 	linkTable: 'SysStaff'
-			// },
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'staffAgency',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 130,
-			// 	orderDefine: 130,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
-			// 	fieldListItemsParmName: 'cm_training_role_staff_agency',
-			// 	linkTable: 'SysStaff'
-			// },
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'staffInstructor',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 140,
-			// 	orderDefine: 140,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
-			// 	fieldListItemsParmName: 'cm_training_role_staff_instructor',
-			// 	linkTable: 'SysStaff'
-			// },
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 150,
-				orderDefine: 150
+				orderDisplay: 120,
+				orderDefine: 130
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 160,
-				orderDefine: 160,
+				orderDisplay: 130,
+				orderDefine: 130,
 				indexTable: 0
 			},
 
@@ -1234,7 +1185,8 @@ function initPartner(init: InitDb) {
 				isDisplayable: true,
 				orderCrumb: 10,
 				orderDisplay: 20,
-				orderDefine: 20
+				orderDefine: 20,
+				orderSort: 10
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1735,21 +1687,4 @@ function initPartnerNote(init: InitDb) {
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_partner_note_list'
 	})
-}
-
-function initStaff(init: InitDb) {
-	//  addStaff([
-	// 	['Atlantic Impact', 'Stacy', 'Administrator'],
-	// 	['Atlantic Impact', 'Stan', 'Administrator'],
-	// 	['Atlantic Impact', 'Anise', 'Hayes'],
-	// 	['Atlantic Impact', 'Matthew', 'Clayton'],
-	// 	['Atlantic Impact', 'Erica', 'Hicks'],
-	// 	['Atlantic Impact', 'Jane', 'Instructor'],
-	// 	['Atlantic Impact', 'Joe', 'Instructor']
-	// ])
-	//  addRoleStaff([
-	// 	['Anise', 'Hayes', 'cm_training_role_staff_agency'],
-	// 	['Matthew', 'Clayton', 'cm_training_role_staff_agency'],
-	// 	['Erica', 'Hicks', 'cm_training_role_staff_agency']
-	// ])
 }

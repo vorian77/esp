@@ -1,6 +1,6 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initFeatCMStudent(init: InitDb) {
+export function initContentAIStudent(init: InitDb) {
 	initStudent(init)
 	initCsf(init)
 	initCsfCohort(init)
@@ -1449,6 +1449,15 @@ function initCsfJobPlacement(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
+				codeFieldElement: 'tel',
+				columnName: 'employerContactPhone',
+				isDisplayable: true,
+				orderDisplay: 115,
+				orderDefine: 115,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
 				columnName: 'employerContactEmail',
 				isDisplayable: true,
 				orderDisplay: 120,
@@ -1533,48 +1542,6 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDisplay: 210,
 				orderDefine: 210,
 				indexTable: 0
-			},
-			{
-				codeFieldElement: 'customHeader',
-				columnName: 'custom_element',
-				customElement: { label: 'Submission' },
-				isDisplayable: true,
-				orderDisplay: 220,
-				orderDefine: 220,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 230,
-				orderDefine: 230
-			},
-			// {
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'staffAgency',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 240,
-			// 	orderDefine: 240,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
-			// 	fieldListItemsParmName: 'cm_training_role_staff_agency',
-			// 	linkTable: 'SysStaff'
-			// },
-			{
-				codeFieldElement: 'date',
-				columnName: 'dateSubmitted',
-				isDisplayable: true,
-				orderDisplay: 250,
-				orderDefine: 250,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 260,
-				orderDefine: 260
 			},
 
 			/* management */
@@ -1775,29 +1742,29 @@ function initCsfSchoolPlacement(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
+				codeFieldElement: 'select',
+				columnName: 'codeCollegeStatus',
 				isDisplayable: true,
 				orderDisplay: 60,
-				orderDefine: 60
+				orderDefine: 60,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_cm_college_status',
+				linkTable: 'SysCode'
 			},
 			{
 				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
+				columnName: 'custom_row_end',
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70
 			},
 			{
-				codeFieldElement: 'select',
-				columnName: 'codeCollegeStatus',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 80,
-				orderDefine: 80,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_college_status',
-				linkTable: 'SysCode'
+				orderDefine: 80
 			},
 			{
 				columnName: 'collegeMajor',
@@ -1959,15 +1926,6 @@ function initCsfDocument(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'staffAgency',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
-				indexTable: 0,
-				linkColumns: ['person', 'fullName']
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'dateExpires',
 				isDisplayable: true,
 				orderDisplay: 90,
@@ -2079,17 +2037,6 @@ function initCsfDocument(init: InitDb) {
 				orderDisplay: 100,
 				orderDefine: 100
 			},
-			// {
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'staffAgency',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 110,
-			// 	orderDefine: 110,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
-			// 	fieldListItemsParmName: 'cm_training_role_staff_agency',
-			// 	linkTable: 'SysStaff'
-			// },
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'date',

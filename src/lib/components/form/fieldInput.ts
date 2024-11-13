@@ -7,7 +7,7 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
-import { Field, FieldAccess, FieldElement, RawFieldProps } from '$comps/form/field'
+import { Field, FieldAccess, FieldElement, PropsFieldRaw } from '$comps/form/field'
 import { nbrRequired, valueOrDefault } from '$utils/utils'
 import { type DataRecord, required } from '$utils/types'
 import { error } from '@sveltejs/kit'
@@ -25,7 +25,7 @@ export class FieldInput extends Field {
 	patternReplacement?: string
 	placeHolder: string
 	spinStep?: string
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
 		this.placeHolder =
@@ -98,9 +98,6 @@ export class FieldInput extends Field {
 				})
 			}
 		}
-	}
-	static async init(props: RawFieldProps) {
-		return new FieldInput(props)
 	}
 
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {

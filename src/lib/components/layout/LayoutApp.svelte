@@ -46,7 +46,7 @@
 				<div class="grid items-end">
 					<div class="flex">
 						<button class="mr-4" on:click={back}>
-							<Icon class="mt-0.5" name="ArrowLeft" color={'#3b79e1'} strokeWidth="2" />
+							<Icon name="ArrowLeft" clazz="mt-0.5" color={'#3b79e1'} strokeWidth="2" />
 						</button>
 						<div>
 							<NavCrumbs {state} {crumbsList} />

@@ -1,18 +1,26 @@
-import { Field, FieldAccess, FieldColor, RawFieldProps } from '$comps/form/field'
+import { Field, FieldAccess, FieldColor, PropsFieldRaw } from '$comps/form/field'
 import { memberOfEnum, required, strRequired, valueOrDefault } from '$utils/types'
-import { RawDataObjPropDisplay, RawDataObjPropDisplayCustom } from '$comps/dataObj/types.rawDataObj'
+import {
+	PropNamePrefixType,
+	RawDataObjPropDisplay,
+	RawDataObjPropDisplayCustom
+} from '$comps/dataObj/types.rawDataObj'
 import { getEnhancement } from '$enhance/actions/_actions'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/form/fieldCustom.ts'
 
 export class FieldCustom extends Field {
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		super(props)
 		const propRaw = valueOrDefault(props.propRaw, {})
 		const clazz = 'FieldCustom'
-		this.colDO.propName +=
-			'_' + strRequired(propRaw?.orderDefine?.toString(), clazz, 'orderDisplay')
+		this.colDO.propNamePrefixType = PropNamePrefixType.custom
+		this.colDO.propNamePrefixTypeId = strRequired(
+			propRaw?.orderDefine?.toString(),
+			clazz,
+			'orderDefine'
+		)
 		this.fieldAccess = FieldAccess.readonly
 		const customCol = required(propRaw.customCol, clazz, 'customCol') as RawDataObjPropDisplayCustom
 		this.colDO.label = strRequired(customCol.customColLabel, clazz, 'label')
@@ -24,7 +32,7 @@ export class FieldCustomAction extends FieldCustom {
 	method: string
 	type: string
 	value: string
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		const clazz = 'FieldCustomAction'
 		super(props)
 		const customCol = required(
@@ -36,16 +44,13 @@ export class FieldCustomAction extends FieldCustom {
 		this.type = strRequired(customCol.customColActionType, clazz, 'type').toLowerCase()
 		this.value = valueOrDefault(customCol.customColActionValue, '').toLowerCase()
 	}
-	static async init(props: RawFieldProps) {
-		return new FieldCustomAction(props)
-	}
 	async initEnhancement() {
 		this.enhancement = await getEnhancement(this.method)
 	}
 }
 
 export class FieldCustomActionButton extends FieldCustomAction {
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		const clazz = 'FieldCustomActionButton'
 		super(props)
 		const customCol = required(
@@ -55,13 +60,10 @@ export class FieldCustomActionButton extends FieldCustomAction {
 		) as RawDataObjPropDisplayCustom
 		this.colDO.fieldColor = required(customCol.customColCodeColor, clazz, 'fieldColor')
 	}
-	static async init(props: RawFieldProps) {
-		return new FieldCustomActionButton(props)
-	}
 }
 export class FieldCustomActionLink extends FieldCustomAction {
 	prefix?: string
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		const clazz = 'FieldCustomActionLink'
 		super(props)
 		const customCol = required(
@@ -71,9 +73,6 @@ export class FieldCustomActionLink extends FieldCustomAction {
 		) as RawDataObjPropDisplayCustom
 		this.prefix = customCol.customColPrefix
 	}
-	static async init(props: RawFieldProps) {
-		return new FieldCustomActionLink(props)
-	}
 }
 
 export class FieldCustomHeader extends FieldCustom {
@@ -81,7 +80,7 @@ export class FieldCustomHeader extends FieldCustom {
 	size?: string
 	source?: string
 	sourceKey?: string
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		const clazz = 'FieldCustomHeader'
 		super(props)
 		const customCol = required(
@@ -94,14 +93,11 @@ export class FieldCustomHeader extends FieldCustom {
 		this.source = customCol.customColSource
 		this.sourceKey = customCol.customColSourceKey
 	}
-	static async init(props: RawFieldProps) {
-		return new FieldCustomHeader(props)
-	}
 }
 
 export class FieldCustomText extends FieldCustom {
 	align?: string
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		const clazz = 'FieldCustomText'
 		super(props)
 		const customCol = required(
@@ -110,8 +106,5 @@ export class FieldCustomText extends FieldCustom {
 			'customCol'
 		) as RawDataObjPropDisplayCustom
 		this.align = customCol.customColAlign
-	}
-	static async init(props: RawFieldProps) {
-		return new FieldCustomText(props)
 	}
 }

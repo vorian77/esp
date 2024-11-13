@@ -4,6 +4,7 @@ import {
 	DataObj,
 	DataObjData,
 	type DataRecord,
+	DataRow,
 	memberOfEnum,
 	nbrRequired,
 	required,
@@ -179,9 +180,9 @@ export class TokenApiQueryData {
 	getParms() {
 		return this.dataTab ? this.dataTab.getParms() : {}
 	}
-	updateTableData(table: string, data: DataRecord) {
-		this.record = data
-		this.tree.upsertData(table, data)
+	updateTableData(table: string, dataRecord: DataRow) {
+		this.record = dataRecord.record
+		this.tree.upsertData(table, dataRecord.record)
 	}
 }
 export class TokenApiQueryDataTree {

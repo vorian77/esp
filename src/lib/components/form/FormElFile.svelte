@@ -147,7 +147,7 @@
 			bind:this={elInput}
 			class="input"
 			hidden={true}
-			id={field.colDO.propName}
+			id={field.colDO.propNamDBe}
 			name={field.colDO.propName}
 			on:change={onNew}
 			type="file"

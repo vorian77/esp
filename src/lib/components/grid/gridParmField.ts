@@ -6,6 +6,7 @@ import {
 } from 'ag-grid-community'
 import { Field, FieldAccess, FieldItem } from '$comps/form/field'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj'
+import { getRecordValue } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/other/gridParmField.ts'
@@ -35,7 +36,8 @@ export class CellEditorSelect implements ICellEditorComp {
 }
 
 export function cellEditorSelectorParmField(params: ICellEditorParams) {
-	switch (params.data.codeDataType) {
+	const codeDataType = getRecordValue(params.data, 'codeDataType')
+	switch (codeDataType) {
 		case PropDataType.date:
 			return {
 				component: 'agDateStringCellEditor'
@@ -49,7 +51,7 @@ export function cellEditorSelectorParmField(params: ICellEditorParams) {
 			error(500, {
 				file: FILENAME,
 				function: `${FILENAME}.cellEditorSelectorParmField`,
-				message: `No case defined for PropDataType: ${params.data.codeDataType}`
+				message: `No case defined for PropDataType: ${codeDataType}`
 			})
 	}
 }
@@ -61,7 +63,7 @@ export class CellRendererParmField implements ICellRendererComp {
 		this.gui = document.createElement('div')
 
 		let style = 'width: 100%; border: 0; font-size: 14px;'
-		const fieldName = params.data.name
+		const fieldName = getRecordValue(params.data, 'name')
 		const parmFields = params?.colDef?.context.parmFields
 		if (parmFields) {
 			const field = parmFields.find((f: Field) => f.colDO.propName === fieldName)
@@ -94,7 +96,7 @@ export class CellRendererParmFieldSelect extends CellRendererParmField {
 	getDisplayValue(params: ICellRendererParams) {
 		let displayValue = ''
 		if (params.value) {
-			const parmFieldName = params.data.name
+			const parmFieldName = getRecordValue(params.data, 'name')
 			const parmFields = params?.colDef?.context.parmFields
 			const field = parmFields.find((f: Field) => f.colDO.propName === parmFieldName)
 			const fieldItems = field.colDO.items
@@ -109,10 +111,10 @@ export class CellRendererParmFieldSelect extends CellRendererParmField {
 }
 
 export function cellRendererSelectorParmField(params: ICellRendererParams) {
-	switch (params.data.codeDataType) {
+	const codeDataType = getRecordValue(params.data, 'codeDataType')
+	switch (codeDataType) {
 		case PropDataType.date:
 			return {
-				// component: (params: ICellRendererParams) => `${params.value || ''}`
 				component: CellRendererParmFieldDate
 			}
 		case PropDataType.uuid:
@@ -124,7 +126,7 @@ export function cellRendererSelectorParmField(params: ICellRendererParams) {
 			error(500, {
 				file: FILENAME,
 				function: `${FILENAME}.cellRendererSelectorParmField`,
-				message: `No case defined for PropDataType: ${params.data.codeDataType}`
+				message: `No case defined for PropDataType: ${codeDataType}`
 			})
 	}
 }

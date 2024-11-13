@@ -28,7 +28,8 @@ async function initConfig(init: InitDb) {
 				isDisplayable: true,
 				orderCrumb: 10,
 				orderDisplay: 20,
-				orderDefine: 20
+				orderDefine: 20,
+				orderSort: 20
 			},
 			{
 				codeAccess: 'optional',

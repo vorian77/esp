@@ -253,15 +253,6 @@ async function initSysCodes() {
 		['ct_sys_person_race', 'app_sys', 'Other', 6],
 		['ct_sys_person_race', 'app_sys', 'Prefer Not To Say', 7],
 
-		// sys - role - organization
-		['ct_sys_role_org', 'app_sys', 'cm_training_role_org_agency', 0],
-		['ct_sys_role_org', 'app_sys', 'cm_training_role_org_venue', 0],
-
-		// sys - role - staff
-		['ct_sys_role_staff', 'app_sys', 'cm_training_role_staff_admin', 0],
-		['ct_sys_role_staff', 'app_sys', 'cm_training_role_staff_agency', 0],
-		['ct_sys_role_staff', 'app_sys', 'cm_training_role_staff_instructor', 0],
-
 		// sys - state
 		['ct_sys_state', 'app_sys', 'Illinois', 0],
 		['ct_sys_state', 'app_sys', 'Maryland', 0],

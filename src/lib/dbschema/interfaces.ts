@@ -20,12 +20,6 @@ export namespace sys_user {
     "modifiedBy": SysUser;
     "modifiedAt"?: Date | null;
   }
-  export interface SysStaff extends Mgmt {
-    "owner"?: sys_core.SysSystem | null;
-    "person": SysPerson;
-    "roles": sys_core.SysCode[];
-    "ownerOld": sys_core.SysOrg;
-  }
   export interface SysUser extends Mgmt {
     "orgs": sys_core.SysOrg[];
     "owner": sys_core.SysOrg;
@@ -83,9 +77,7 @@ export namespace app_cm {
   }
   export interface CmCohort extends sys_core.SysObj {
     "codeStatus"?: sys_core.SysCode | null;
-    "staffAdmin"?: sys_user.SysStaff | null;
-    "staffAgency"?: sys_user.SysStaff | null;
-    "staffInstructor"?: sys_user.SysStaff | null;
+    "cohortAttds": CmCohortAttd[];
     "capacity"?: number | null;
     "cost"?: number | null;
     "dateEnd"?: edgedb.LocalDate | null;
@@ -93,7 +85,7 @@ export namespace app_cm {
     "isCohortRequired"?: string | null;
     "schedule"?: string | null;
     "course"?: CmCourse | null;
-    "cohortAttds": CmCohortAttd[];
+    "staffInstructor"?: sys_user.SysUser | null;
   }
   export interface CmCohortAttd extends sys_user.Mgmt {
     "date": edgedb.LocalDate;
@@ -107,8 +99,6 @@ export namespace app_cm {
     "codeSector"?: sys_core.SysCode | null;
     "codeStatus"?: sys_core.SysCode | null;
     "codeTypePayment"?: sys_core.SysCodeType | null;
-    "staffAdmin"?: sys_user.SysStaff | null;
-    "staffAgency"?: sys_user.SysStaff | null;
     "description"?: string | null;
     "schedule"?: string | null;
     "courseCertifications"?: string | null;
@@ -139,15 +129,12 @@ export namespace app_cm {
     "isShareWithClient"?: string | null;
     "note"?: string | null;
     "file"?: unknown | null;
-    "staffAgency"?: sys_user.SysStaff | null;
   }
   export interface CmCsfJobPlacement extends CmCsfData {
     "codeJobType": sys_core.SysCode;
     "codePlacementRelated": sys_core.SysCode;
     "codeWageType": sys_core.SysCode;
-    "staffAgency": sys_user.SysStaff;
     "dateStart": edgedb.LocalDate;
-    "dateSubmitted": edgedb.LocalDate;
     "employerContactEmail"?: string | null;
     "employerContactNameFirst"?: string | null;
     "employerContactNameLast"?: string | null;
@@ -156,6 +143,7 @@ export namespace app_cm {
     "note"?: string | null;
     "title": string;
     "wage"?: number | null;
+    "employerContactPhone"?: string | null;
   }
   export interface CmCsfMsg extends CmCsfData {
     "office"?: sys_core.SysObjSubject | null;
@@ -165,7 +153,7 @@ export namespace app_cm {
     "msg"?: string | null;
     "subject"?: string | null;
     "codeStatus": sys_core.SysCode;
-    "sender": sys_user.SysStaff;
+    "sender": sys_user.SysUser;
   }
   export interface CmCsfNote extends CmCsfData {
     "codeType": sys_core.SysCode;
@@ -437,6 +425,7 @@ export namespace sys_core {
     "parent"?: SysNodeObj | null;
     "page"?: string | null;
     "isSystemRoot"?: boolean | null;
+    "isAlwaysRetrieveData": boolean;
   }
   export interface SysObjNote extends sys_user.Mgmt {
     "codeType": SysCode;
@@ -858,6 +847,7 @@ export namespace sys_rep {
     "orderDefine": number;
     "orderDisplay"?: number | null;
     "isDisplay"?: boolean | null;
+    "linkColumns": sys_core.SysDataObjColumnLink[];
   }
   export interface SysRepParm extends sys_user.Mgmt {
     "fieldListItems"?: sys_core.SysDataObjFieldListItems | null;
@@ -872,21 +862,21 @@ export namespace sys_rep {
     "orderDefine": number;
   }
   export interface SysRepUser extends sys_user.Mgmt {
-    "parms": SysRepUserParm[];
     "user": sys_user.SysUser;
     "descriptionUser"?: string | null;
-    "report": SysRep;
-    "analytics": SysRepUserAnalytic[];
     "orderDefine": number;
     "headerUser": string;
+    "analytics": SysRepUserAnalytic[];
+    "parms": SysRepUserParm[];
+    "report": SysRep;
   }
   export interface SysRepUserAnalytic extends sys_user.Mgmt {
-    "analytic": SysAnalytic;
     "parms": SysRepUserParm[];
+    "analytic": SysAnalytic;
   }
   export interface SysRepUserParm extends sys_user.Mgmt {
-    "parm": SysRepParm;
     "parmValue"?: unknown | null;
+    "parm": SysRepParm;
   }
 }
 export namespace sys_test {
@@ -911,7 +901,6 @@ export interface types {
   };
   "sys_user": {
     "Mgmt": sys_user.Mgmt;
-    "SysStaff": sys_user.SysStaff;
     "SysUser": sys_user.SysUser;
     "SysUserPref": sys_user.SysUserPref;
     "SysUserPrefType": sys_user.SysUserPrefType;

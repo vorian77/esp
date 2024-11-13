@@ -16,7 +16,7 @@ export async function qaExecuteUserUpdate(
 	parms: DataRecord
 ): Promise<DataObjData> {
 	if (
-		dataTab.rowsSave.getDetailStatusRecordIs(DataRecordStatus.update) &&
+		dataTab.rowsSave.getDetailRowStatusIs(DataRecordStatus.update) &&
 		queryTiming === DataObjActionQueryTriggerTiming.post
 	) {
 		state.resetUser(false)

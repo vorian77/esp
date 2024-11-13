@@ -17,6 +17,7 @@ import {
 	PropDataSourceValue,
 	PropDataType,
 	PropLinkItemsDefn,
+	PropNamePrefixType,
 	RawDataObj,
 	RawDataObjParent,
 	RawDataObjPropDB
@@ -85,7 +86,8 @@ export class Query {
 		props.forEach((propObj) => {
 			const clazzProp = `${clazz}.${propObj.propName}`
 			let propName = propObj.propName
-			if (propObj.codeDataType === PropDataType.link) propName = '_' + propName
+			let propNamePrefix =
+				propObj.codeDataType === PropDataType.link ? PropNamePrefixType.link + '_' : ''
 
 			const propExpr = strRequired(
 				propObj?.exprPreset
@@ -96,7 +98,7 @@ export class Query {
 				clazzProp,
 				'expr'
 			)
-			const prop = `${propName} := ${propExpr}`
+			const prop = `${propNamePrefix + propName} := ${propExpr}`
 			properties = this.addItemComma(properties, prop)
 		})
 
@@ -135,7 +137,7 @@ export class Query {
 				}
 			}
 
-			const prop = `${propObj.propName} := ${propExpr}`
+			const prop = `${propObj.propNameRaw} := ${propExpr}`
 			properties = this.addItemComma(properties, prop)
 		})
 
@@ -232,7 +234,7 @@ export class Query {
 		// 1. build props, subObjGroup
 		props.forEach((propObj, idx) => {
 			if (!propObj.fieldEmbed) {
-				const prop = `${propObj.propName} := ${getPropExpr(idx, propObj)}`
+				const prop = `${propObj.propNameRaw} := ${getPropExpr(idx, propObj)}`
 
 				if (propObj.indexTable === 0) {
 					properties = this.addItemComma(properties, prop)
@@ -241,7 +243,7 @@ export class Query {
 				}
 
 				dataRows.forEach((dataRow) => {
-					dataRow.record[propObj.propName] = fValues[idx](dataRow.record[propObj.propName])
+					dataRow.record[propObj.propNameRaw] = fValues[idx](dataRow.record[propObj.propNameRaw])
 				})
 			}
 		})
@@ -255,9 +257,17 @@ export class Query {
 
 	getPropsSelect(parms: DataRecord, queryData: TokenApiQueryData) {
 		const clazz = 'getPropsSelect'
+		let properties = ''
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		const isSystemRoot = queryData?.dataTab?.parms.valueGet(ParmsValuesType.isSystemRoot) || false
-		let properties = ''
+		const processProps = (query: Query) => {
+			props.forEach((prop) => {
+				if (prop.codeDataSourceValue === PropDataSourceValue.edgeDB) {
+					const newProperty = processPropsSelectItem(prop, query)
+					properties = query.addItemComma(properties, newProperty)
+				}
+			})
+		}
 
 		// pre-processing
 		if (isSystemRoot) {
@@ -265,7 +275,6 @@ export class Query {
 				new RawDataObjPropDB(
 					{
 						_codeDataType: PropDataType.uuid,
-						_codeDbDataSourceValue: 'edgeDB',
 						_propName: `_${ParmsValuesType.appSystemId}_`,
 						exprCustom: '.owner.id'
 					},
@@ -280,25 +289,16 @@ export class Query {
 		if (properties) properties = `{\n${properties}\n}`
 		return properties
 
-		// helper functions
-		function processProps(query: Query) {
-			props.forEach((prop) => {
-				if (prop.codeDataSourceValue === PropDataSourceValue.edgeDB) {
-					const newProperty = processPropsItemAdd(prop, query)
-					properties = query.addItemComma(properties, newProperty)
-				}
-			})
-		}
-		function processPropsItemAdd(prop: RawDataObjPropDB, query: Query) {
+		function processPropsSelectItem(prop: RawDataObjPropDB, query: Query) {
 			const propChildTableTraversal = prop.childTableTraversal
 			const propDisplay = prop?.link?.propDisplay ? prop.link.propDisplay : ''
+			if (propDisplay) {
+				debug('processPropsSelectItem', 'propDisplay', propDisplay)
+			}
 			const indexTable = nbrOrDefault(prop.indexTable, -1)
-			let propLabel = ''
 			let propValue = ''
 
 			if (prop.codeDataType === PropDataType.link) {
-				propLabel = `_${prop.propName}`
-
 				if (prop.exprCustom) {
 					propValue = prop.exprCustom
 				} else if (prop.link && prop.link.exprSelect) {
@@ -312,19 +312,17 @@ export class Query {
 					}
 				}
 			} else if (prop.exprCustom) {
-				propLabel = prop.propName
 				propValue = prop.exprCustom
 			} else if (indexTable > 0) {
 				// scalar - sub-table
-				propLabel = prop.propName
 				propValue = `(.${propChildTableTraversal})`
 			} else {
 				// scalar - root
-				propLabel = prop.propName
 			}
 
 			propValue = propValue ? ` := ${propValue}` : ''
-			return propLabel + propValue
+			const item = prop.propName + propValue
+			return item
 		}
 	}
 
@@ -339,14 +337,14 @@ export class Query {
 				: prop.exprPreset
 					? prop.exprPreset
 					: ''
-
+			let value = ''
 			if (expr) {
-				properties = this.addItemComma(
-					properties,
-					(prop.link ? '_' : '') + prop.propName + ' := ' + expr
-				)
+				value = expr
 			} else if (prop.linkItemsDefn) {
-				properties = this.addItemComma(properties, `_${prop.propName} := <uuid>{}`)
+				value = '<uuid>{}'
+			}
+			if (value) {
+				properties = this.addItemComma(properties, `${prop.propName} := ${value}`)
 			}
 		})
 
@@ -451,7 +449,7 @@ export class Query {
 		} else {
 			this.rawDataObj.rawPropsSort.forEach((prop) => {
 				if (script) script += ' THEN '
-				script += `.${prop.link?.propDisplay ? `_${prop.propName}` : prop.propName} ${prop.codeSortDir}`
+				script += `.${prop.propName} ${prop.codeSortDir}`
 			})
 		}
 

@@ -299,7 +299,7 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 		codeCardinality: 'detail',
 		exprObject: `WITH
 		userName := <record,str,userName>,
-		password := <parms,str,password>,
+		password := <record,str,password>,
 		user := (
 			UPDATE sys_user::SysUser 
 			FILTER .userName = userName

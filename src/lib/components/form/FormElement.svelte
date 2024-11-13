@@ -39,7 +39,6 @@
 	} from '$comps/form/fieldEmbed'
 	import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 	import { FieldChips } from '$comps/form/fieldChips'
-	import { FieldCustom } from '$comps/form/fieldCustom'
 	import { FieldFile } from '$comps/form/fieldFile'
 	import { FieldInput } from '$comps/form/fieldInput'
 	import { FieldParm } from '$comps/form/fieldParm'

@@ -88,23 +88,3 @@ export async function MoedCsfBulk(params: any) {
 	})
 	return await query.run(client, { data: params })
 }
-
-export async function MoedStaffBulk(params: any) {
-	sectionHeader('MOED Staff')
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params({ data: e.json }, (params) => {
-		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.insert(e.sys_user.SysStaff, {
-				ownerOld: e.sys_core.getOrg('org_moed_old'),
-				person: e.insert(e.default.SysPerson, {
-					firstName: e.cast(e.str, i[0]),
-					lastName: e.cast(e.str, i[1])
-				}),
-				roles: e.set(e.select(e.sys_core.getCode('ct_sys_role_staff', 'moed_advocate'))),
-				createdBy: CREATOR,
-				modifiedBy: CREATOR
-			})
-		})
-	})
-	return await query.run(client, { data: params })
-}

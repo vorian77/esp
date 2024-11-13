@@ -173,10 +173,16 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 function initRepConfig(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list_report',
-		codeComponent: 'FormList',
 		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeListEditPresetType: 'save',
 		exprFilter: '.user.id = <user,uuid,id>',
 		header: 'My Reports',
+		listEditPresetExpr: `WITH
+		userTypeReps := (SELECT (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).userTypes.resources.resource[IS sys_rep::SysRep]),
+		userReps := (SELECT sys_rep::SysRepUser FILTER .user.id = <user,uuid,id>).report,
+		newVals := (SELECT userTypeReps EXCEPT userReps)
+		SELECT newVals`,
 		name: 'data_obj_sys_rep_my_report_list',
 		owner: 'sys_system_old',
 		tables: [{ index: 0, table: 'SysRepUser' }],
@@ -188,12 +194,29 @@ function initRepConfig(init: InitDb) {
 				orderDefine: 10
 			},
 			{
+				columnName: 'user',
+				exprPreset: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
+				orderDefine: 20,
+				indexTable: 0,
+				isDisplayable: false,
+				linkTable: 'SysUser'
+			},
+			{
+				columnName: 'report',
+				exprPreset: `item`,
+				orderDefine: 30,
+				indexTable: 0,
+				isDisplayable: false,
+				linkTable: 'SysRep'
+			},
+			{
 				codeAccess: 'readOnly',
 				columnName: 'headerUser',
+				exprPreset: `item.header`,
 				isDisplayable: true,
 				orderCrumb: 10,
-				orderDisplay: 20,
-				orderDefine: 20,
+				orderDisplay: 40,
+				orderDefine: 40,
 				orderSort: 10,
 				indexTable: 0
 			},
@@ -201,7 +224,7 @@ function initRepConfig(init: InitDb) {
 				codeAccess: 'readOnly',
 				columnName: 'custom_element_str',
 				isDisplayable: true,
-				orderDefine: 30,
+				orderDefine: 50,
 				exprCustom: `.report.header`,
 				headerAlt: 'System Name',
 				indexTable: 0,
@@ -211,18 +234,55 @@ function initRepConfig(init: InitDb) {
 				codeAccess: 'readOnly',
 				columnName: 'descriptionUser',
 				isDisplayable: true,
-				orderDefine: 40,
+				orderDefine: 60,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_element_str',
 				isDisplayable: true,
-				orderDefine: 50,
+				orderDefine: 70,
 				exprCustom: `.report.description`,
 				headerAlt: 'System Description',
 				indexTable: 0,
 				nameCustom: 'sysDescription'
+			},
+			{
+				columnName: 'orderDefine',
+				orderDefine: 80,
+				exprPreset: `(SELECT max((SELECT (SELECT detached sys_rep::SysRepUser FILTER .user.id = <user,uuid,id>).orderDefine ??  0)) + 1)`,
+				indexTable: 0,
+				isDisplayable: false
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				orderDefine: 1010,
+				indexTable: 0,
+				isDisplayable: false
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				orderDefine: 1020,
+				indexTable: 0,
+				isDisplayable: false
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				orderDefine: 1030,
+				indexTable: 0,
+				isDisplayable: false
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				orderDefine: 1040,
+				indexTable: 0,
+				isDisplayable: false
 			}
 		]
 	})
@@ -407,9 +467,9 @@ function initRepConfig(init: InitDb) {
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_sys_rep_my_report_list',
-		header: 'My Reports',
+		header: 'Reports',
 		name: 'node_obj_sys_rep_my_report_list',
-		orderDefine: 10,
+		orderDefine: 40,
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
@@ -447,6 +507,7 @@ function initRepRender(init: InitDb) {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_dyn_sys_rep_render',
 		header: 'Run',
+		isAlwaysRetrieveData: true,
 		isHideRowManager: true,
 		name: 'node_obj_sys_rep_render',
 		orderDefine: 20,

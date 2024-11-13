@@ -1,4 +1,4 @@
-import { Field, RawFieldProps } from '$comps/form/field'
+import { Field, PropsField, PropsFieldRaw } from '$comps/form/field'
 import {
 	FieldEmbed,
 	FieldEmbedListConfig,
@@ -12,7 +12,7 @@ import action from '$enhance/actions/actionAuth'
 export class FieldEmbedShell extends Field {
 	fields: FieldEmbed[] = []
 	stateShell: StateSurfaceEmbedShell
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		super(props)
 		this.stateShell = new StateSurfaceEmbedShell({
 			action: StatePacketAction.embedShell,
@@ -32,16 +32,15 @@ export class FieldEmbedShell extends Field {
 		})
 		return newStatus
 	}
-	static async init(props: RawFieldProps) {
+	async init(props: PropsField) {
 		const EMBED_FIELD_TYPES = [FieldEmbedListConfig, FieldEmbedListEdit, FieldEmbedListSelect]
-		const fieldShell = new FieldEmbedShell(props)
-		props.fields.forEach((field) => {
+		props.dataObj.fields.forEach((field) => {
 			EMBED_FIELD_TYPES.forEach((type) => {
 				if (field instanceof type) {
-					fieldShell.addField(field)
+					this.addField(field)
 				}
 			})
 		})
-		return await fieldShell.stateShell.app.addLevelEmbedShell(fieldShell)
+		await this.stateShell.app.addLevelEmbedShell(this)
 	}
 }

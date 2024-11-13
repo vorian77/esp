@@ -1,4 +1,4 @@
-import { Field, FieldAlignment, RawFieldProps } from '$comps/form/field'
+import { Field, FieldAlignment, PropsField, PropsFieldRaw } from '$comps/form/field'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
 import {
@@ -17,49 +17,55 @@ const FILENAME = '$comps/form/fieldParm.ts/'
 
 export class FieldParm extends Field {
 	parmFields: Field[] = []
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		super(props)
 		const clazz = 'FieldParm'
 		this.isParmValue = true
 	}
-	static async init(props: RawFieldProps) {
-		const field = new FieldParm(props)
-		field.parmFields = await field.configParmItems(props)
-		await field.configParmItemsData(props)
-		return field
+	async init(props: PropsField) {
+		this.parmFields = await this.configParmItems(props)
+		await this.configParmItemsData(props)
 	}
 
-	async configParmItems(props: RawFieldProps) {
+	async configParmItems(props: PropsField) {
 		let fields: Field[] = []
-		for (const dataRow of props.data.rowsRetrieved.dataRows) {
+		for (const dataRow of props.dataObj.data.rowsRetrieved.dataRows) {
 			fields.push(await this.configParmItemsInit(props, dataRow.record, fields))
 		}
 		return fields
 	}
 
-	async configParmItemsInit(props: RawFieldProps, record: DataRecord, fields: Field[]) {
-		const propParm = new RawDataObjPropDisplay({
+	async configParmItemsInit(props: PropsField, record: DataRecord, fields: Field[]) {
+		const propParmObj = {
 			_column: {
 				_codeAlignment: FieldAlignment.left,
-				_codeDataType: record.codeDataType,
-				header: record.header,
-				isMultiSelect: record.isMultiSelect,
+				_codeDataType: props.dataObj.getDataVal(record, 'codeDataType'),
+				header: props.dataObj.getDataVal(record, 'header'),
+				isMultiSelect: props.dataObj.getDataVal(record, 'isMultiSelect'),
 				isNonData: false,
 				placeHolder: ''
 			},
 			_codeAccess: 'required',
-			_codeFieldElement: record.codeFieldElement,
-			_hasItems: record._hasItems,
-			_propName: record.name,
+			_codeFieldElement: props.dataObj.getDataVal(record, 'codeFieldElement'),
+			_hasItems: props.dataObj.getDataVal(record, '_hasItems'),
+			_propName: props.dataObj.getDataVal(record, 'name'),
 			isDisplayable: true,
 			isDisplayBlock: true,
 			isParmValue: true,
-			orderDefine: record.orderDefine
-		})
-		return await DataObj.initField(props.state, propParm, false, fields, props.dataObj, props.data)
+			orderDefine: props.dataObj.getDataVal(record, 'orderDefine')
+		}
+		const propParm = new RawDataObjPropDisplay(propParmObj, [])
+		return DataObj.fieldsCreateItem(
+			props.state,
+			propParm,
+			false,
+			fields,
+			props.dataObj,
+			props.dataObj.data
+		)
 	}
 
-	async configParmItemsData(props: RawFieldProps) {
+	async configParmItemsData(props: PropsField) {
 		const listRecordIdCurrent = props.state.parmsState.valueGet(ParmsValuesType.listRecordIdCurrent)
 		if (listRecordIdCurrent) {
 			const dataTab = new DataObjData()

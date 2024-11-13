@@ -146,6 +146,7 @@ function initSysAdminApp(init: InitDb) {
 				orderDefine: 70
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'nodes',
 				isDisplayable: true,

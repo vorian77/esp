@@ -12,8 +12,6 @@ module app_cm {
     courseRequirements: str;  
     description: str;
     schedule: str;
-    staffAdmin: sys_user::SysStaff;
-    staffAgency: sys_user::SysStaff;
   }
 
   type CmCohort extending sys_core::SysObj {
@@ -28,9 +26,7 @@ module app_cm {
     dateStart: cal::local_date;
     isCohortRequired: str;
     schedule: str;
-    staffAdmin: sys_user::SysStaff;
-    staffAgency: sys_user::SysStaff;
-    staffInstructor: sys_user::SysStaff;
+    staffInstructor: sys_user::SysUser;
   }
 
   type CmCohortAttd extending sys_user::Mgmt {
@@ -97,7 +93,6 @@ module app_cm {
     file: json;
     isShareWithClient: str;
     note: str;
-    staffAgency: sys_user::SysStaff;
   }
 
   type CmCsfMsg extending app_cm::CmCsfData {
@@ -110,7 +105,7 @@ module app_cm {
     office: sys_core::SysObjSubject;
     parent: app_cm::CmCsfMsg;
     multi recipients: sys_user::SysUser;
-    required sender: sys_user::SysStaff;
+    required sender: sys_user::SysUser;
     subject: str;
   }
 
@@ -125,14 +120,13 @@ module app_cm {
     required codePlacementRelated: sys_core::SysCode;
     required codeWageType: sys_core::SysCode;
     required dateStart: cal::local_date;
-    required dateSubmitted: cal::local_date;
     employerContactEmail: str;
     employerContactNameFirst: str;
     employerContactNameLast: str;
+    employerContactPhone: str;
     required employerName: str;
     required hoursPerWeek: float32;
     note: str;
-    required staffAgency: sys_user::SysStaff;
     required title: str;
     wage: float32;
   }

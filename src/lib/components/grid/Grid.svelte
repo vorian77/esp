@@ -79,7 +79,9 @@
 	let rowCountFiltered: number
 	let rowCountSelected: number
 	let rowData: any[]
-	let style = ''
+	let style = `.ag-header-cell-text {
+		color: blue;
+	}`
 	let styleMaxHeight = ''
 
 	$: if (innerHeight) resize()
@@ -349,7 +351,7 @@
 				sortModel.push({
 					colId: item.colId,
 					sort: item.sort,
-					sortIndex: i
+					sortIndex: item.sortIndex
 				})
 			})
 
@@ -380,3 +382,8 @@
 <!-- <DataViewer header="rowCount" data={{ rowCountFiltered, rowCountSelected }} /> -->
 <!-- <DataViewer header="columnDefs" data={options.columnDefs} /> -->
 <!-- <DataViewer header="rowData" data={rowData} /> -->
+<style>
+	.ag-header-cell-label {
+		text-align: center;
+	}
+</style>

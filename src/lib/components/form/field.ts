@@ -1,5 +1,13 @@
 import { State } from '$comps/app/types.appState'
-import { DataObj, DataObjData, DataObjStatus, type DataRecord, FieldValue } from '$utils/types'
+import {
+	booleanRequired,
+	DataObj,
+	DataObjData,
+	DataObjStatus,
+	type DataRecord,
+	FieldValue,
+	required
+} from '$utils/types'
 import {
 	booleanOrDefault,
 	memberOfEnum,
@@ -29,7 +37,7 @@ export class Field {
 	fieldElement: FieldElement
 	isFirstVisible: boolean
 	isParmValue: boolean
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		const clazz = `Field: ${props.propRaw.propName}`
 		const obj = valueOrDefault(props.propRaw, {})
 		this.colDO = obj
@@ -67,10 +75,6 @@ export class Field {
 					? 'bg-gray-200'
 					: 'bg-white'
 	}
-	static async init(props: RawFieldProps) {
-		return new Field(props)
-	}
-
 	getPropName() {
 		return this.isParmValue ? 'parmValue' : this.colDO.propName
 	}
@@ -108,6 +112,8 @@ export class Field {
 			new ValidityField(propName, new Validity())
 		])
 	}
+
+	async init(props: PropsField) {}
 
 	modeReset() {}
 
@@ -287,26 +293,29 @@ export class FieldProps {
 	}
 }
 
-export class RawFieldProps {
-	data: DataObjData
+export class PropsField {
 	dataObj: DataObj
+	state: State
+	constructor(obj: any) {
+		obj = valueOrDefault(obj, {})
+		const clazz = 'PropsField'
+		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
+		this.state = required(obj.state, clazz, 'state')
+	}
+}
+
+export class PropsFieldRaw extends PropsField {
+	data: DataObjData
 	fields: Field[]
 	isFirstVisible: boolean
 	propRaw: RawDataObjPropDisplay
-	state: State
-	constructor(
-		state: State,
-		propRaw: RawDataObjPropDisplay,
-		isFirstVisible: boolean,
-		fields: Field[],
-		dataObj: DataObj,
-		data: DataObjData
-	) {
-		this.data = data
-		this.dataObj = dataObj
-		this.fields = fields
-		this.isFirstVisible = isFirstVisible
-		this.propRaw = propRaw
-		this.state = state
+	constructor(obj: any) {
+		obj = valueOrDefault(obj, {})
+		super(obj)
+		const clazz = 'PropsFieldRaw'
+		this.data = required(obj.data, clazz, 'data')
+		this.fields = required(obj.fields, clazz, 'fields')
+		this.isFirstVisible = booleanRequired(obj.isFirstVisible, clazz, 'isFirstVisible')
+		this.propRaw = required(obj.propRaw, clazz, 'propRaw')
 	}
 }

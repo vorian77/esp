@@ -1,4 +1,4 @@
-import { Field, FieldAccess, RawFieldProps } from '$comps/form/field'
+import { Field, FieldAccess, PropsFieldRaw } from '$comps/form/field'
 import { valueOrDefault } from '$utils/types'
 
 export class FieldToggle extends Field {
@@ -6,15 +6,12 @@ export class FieldToggle extends Field {
 	valueFalse: string
 	valueShow: boolean
 	valueTrue: string
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
 		this.presetTrue = valueOrDefault(obj.colDB.togglePresetTrue, false)
 		this.valueFalse = valueOrDefault(obj.colDB.toggleValueFalse, undefined)
 		this.valueShow = valueOrDefault(obj.colDB.toggleValueShow, false)
 		this.valueTrue = valueOrDefault(obj.colDB.toggleValueTrue, undefined)
-	}
-	static async init(props: RawFieldProps) {
-		return new FieldToggle(props)
 	}
 }

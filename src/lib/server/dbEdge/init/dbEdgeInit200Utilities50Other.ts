@@ -1,5 +1,6 @@
 import e from '$lib/dbschema/edgeql-js'
 import { booleanOrDefaultParm, client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
+import { debug } from '$utils/types'
 
 export async function addApp(data: any) {
 	sectionHeader(`addApp - ${data.name}`)
@@ -212,6 +213,7 @@ export async function addNodeFooter(data: any) {
 			codeType: e.str,
 			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
+			isAlwaysRetrieveData: e.optional(e.bool),
 			isGlobalResource: e.bool,
 			name: e.str,
 			orderDefine: e.int16,
@@ -226,6 +228,7 @@ export async function addNodeFooter(data: any) {
 				createdBy: CREATOR,
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
+				isAlwaysRetrieveData: booleanOrDefaultParm(p.isAlwaysRetrieveData, false),
 				isGlobalResource: p.isGlobalResource,
 				isHideRowManager: e.cast(e.bool, false),
 				modifiedBy: CREATOR,
@@ -233,38 +236,6 @@ export async function addNodeFooter(data: any) {
 				orderDefine: p.orderDefine,
 				owner: e.sys_core.getSystemPrime(p.owner),
 				page: p.page
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-
-export async function addNodeManuApp(data: any) {
-	sectionHeader(`addNodeManuApp - ${data.name}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			codeIcon: e.str,
-			dataObj: e.optional(e.str),
-			header: e.optional(e.str),
-			isHideRowManager: e.bool,
-			name: e.str,
-			orderDefine: e.int16,
-			owner: e.str
-		},
-		(p) => {
-			return e.insert(e.sys_core.SysNodeObj, {
-				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', p.codeIcon)),
-				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
-				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'menu_app')),
-				createdBy: CREATOR,
-				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
-				header: p.header,
-				isHideRowManager: p.isHideRowManager,
-				modifiedBy: CREATOR,
-				name: p.name,
-				orderDefine: p.orderDefine,
-				owner: e.sys_core.getSystemPrime(p.owner)
 			})
 		}
 	)
@@ -279,6 +250,7 @@ export async function addNodeProgram(data: any) {
 			codeIcon: e.str,
 			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
+			isAlwaysRetrieveData: e.optional(e.bool),
 			isHideRowManager: e.optional(e.bool),
 			name: e.str,
 			orderDefine: e.int16,
@@ -292,6 +264,7 @@ export async function addNodeProgram(data: any) {
 				createdBy: CREATOR,
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
+				isAlwaysRetrieveData: booleanOrDefaultParm(p.isAlwaysRetrieveData, false),
 				isHideRowManager: booleanOrDefaultParm(p.isHideRowManager, false),
 				modifiedBy: CREATOR,
 				name: p.name,
@@ -311,6 +284,7 @@ export async function addNodeProgramObj(data: any) {
 			codeIcon: e.str,
 			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
+			isAlwaysRetrieveData: e.optional(e.bool),
 			isHideRowManager: e.optional(e.bool),
 			isSystemRoot: e.optional(e.bool),
 			name: e.str,
@@ -326,6 +300,7 @@ export async function addNodeProgramObj(data: any) {
 				createdBy: CREATOR,
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
+				isAlwaysRetrieveData: booleanOrDefaultParm(p.isAlwaysRetrieveData, false),
 				isHideRowManager: booleanOrDefaultParm(p.isHideRowManager, false),
 				isSystemRoot: booleanOrDefaultParm(p.isSystemRoot, false),
 				modifiedBy: CREATOR,
@@ -421,7 +396,8 @@ export async function addUserType(data: any) {
 			header: e.str,
 			name: e.str,
 			owner: e.str,
-			resources: e.optional(e.array(e.json))
+			resources: e.optional(e.array(e.json)),
+			tags: e.optional(e.array(e.json))
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysUserType, {
@@ -437,7 +413,14 @@ export async function addUserType(data: any) {
 						codeType: e.sys_core.getCode('ct_sys_user_type_resource_type', codeType),
 						resource: e.sys_core.getObj(resource)
 					})
-				})
+				}),
+				tags: e.assert_distinct(
+					e.for(e.array_unpack(p.tags || e.cast(e.array(e.str), e.set())), (tag) => {
+						const codeType = e.cast(e.str, e.json_get(tag, 'codeType'))
+						const code = e.cast(e.str, e.json_get(tag, 'code'))
+						return e.sys_core.getCode(codeType, code)
+					})
+				)
 			})
 		}
 	)

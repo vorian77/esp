@@ -7,6 +7,7 @@ import {
 	debug,
 	memberOfEnum,
 	memberOfEnumIfExists,
+	memberOfEnumOrDefault,
 	nbrOptional,
 	nbrRequired,
 	RepElementType,
@@ -23,7 +24,6 @@ import {
 	PropSortDir,
 	RawDataObjTable
 } from '$comps/dataObj/types.rawDataObj'
-import { is } from '$lib/dbschema/edgeql-js'
 
 const FILENAME = '$comps/report/types.report.ts'
 
@@ -109,6 +109,7 @@ export class RepEl {
 	_codeReportElementType?: RepElementType
 	_codeSortDir?: PropSortDir
 	_column?: RepElColumn
+	_link?: RawPropLink
 	description?: string
 	exprCustom?: string
 	header?: string
@@ -136,12 +137,13 @@ export class RepEl {
 			'PropDataType',
 			PropDataType
 		)
-		this._codeDbDataSourceValue = memberOfEnum(
+		this._codeDbDataSourceValue = memberOfEnumOrDefault(
 			obj._codeDbDataSourceValue,
 			clazz,
 			'_codeDbDataSourceValue',
 			'PropDataSourceValue',
-			PropDataSourceValue
+			PropDataSourceValue,
+			PropDataSourceValue.edgeDB
 		)
 		this._codeFieldElement = memberOfEnumIfExists(
 			obj._codeFieldElement,
@@ -165,6 +167,7 @@ export class RepEl {
 			RepElementType
 		)
 		this._column = obj._column ? new RepElColumn(obj._column) : undefined
+		this._link = classOptional(RawPropLink, obj._link)
 		this.description = strOptional(obj.description, clazz, 'description')
 		this.exprCustom = strOptional(obj.exprCustom, clazz, 'expr')
 		this.header = strOptional(obj.header, clazz, 'header')
@@ -265,5 +268,14 @@ export class RepUserParm {
 		obj = valueOrDefault(obj, {})
 		this.parm = new RepParm(obj.parm)
 		this.parmValue = obj.parmValue
+	}
+}
+
+export class RawPropLink {
+	_columns: { _name: string }[]
+	constructor(obj: any) {
+		const clazz = 'RawPropLink'
+		obj = valueOrDefault(obj, {})
+		this._columns = obj._columns
 	}
 }

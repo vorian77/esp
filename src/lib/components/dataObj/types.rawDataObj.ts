@@ -123,11 +123,11 @@ export class RawDataObj {
 			obj._actionFieldGroup?._actionFieldItems
 		)
 		this.setParent(obj._parent)
-		this.rawPropsDisplay = arrayOfClasses(RawDataObjPropDisplay, obj._propsDisplay)
 		this.subHeader = strOptional(obj.subHeader, clazz, 'subHeader')
 		this.tables = this.initTables(obj._tables)
 
 		/* dependent properties */
+		this.rawPropsDisplay = arrayOfClasses(RawDataObjPropDisplay, obj._propsDisplay, this.tables)
 		this.rawPropsSaveInsert = this.initProps(obj._propsSaveInsert)
 		this.rawPropsSaveUpdate = this.initProps(obj._propsSaveUpdate)
 		this.rawPropsSelect = this.initProps(obj._propsSelect)
@@ -144,25 +144,24 @@ export class RawDataObj {
 		})
 		return list
 	}
-	initProps(source: any) {
-		source = getArray(source)
-		let newProps = arrayOfClasses(RawDataObjPropDB, source, this.tables)
-		newProps = this.initPropsSignatureLink(newProps, 'createdBy')
-		newProps = this.initPropsSignatureLink(newProps, 'modifiedBy')
-		return newProps
+	initProps(rawProps: any[]) {
+		rawProps = getArray(rawProps)
+		rawProps = this.initPropsSignatureLink(rawProps, 'createdBy')
+		rawProps = this.initPropsSignatureLink(rawProps, 'modifiedBy')
+		return arrayOfClasses(RawDataObjPropDB, rawProps, this.tables)
 	}
-	initPropsSignatureLink(props: RawDataObjPropDB[], propName: string) {
-		const idx = props.findIndex((f: any) => f.propName === propName)
+	initPropsSignatureLink(rawProps: any[], propName: string) {
+		const idx = rawProps.findIndex((p: any) => p._propName === propName)
 		if (idx > -1) {
-			props[idx].link = new PropLink({
+			rawProps[idx]._link = {
 				_columns: [{ _name: 'person' }, { _name: 'fullName' }],
 				_table: { hasMgmt: false, mod: 'sys_user', name: 'SysUser' },
 				exprPreset: `(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>).person.fullName`,
 				exprSave: '(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>)',
 				exprSelect: `(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>).person.fullName`
-			})
+			}
 		}
-		return props
+		return rawProps
 	}
 	initTables(obj: any) {
 		let newTables: DataObjTable[] = []
@@ -216,10 +215,11 @@ export class RawDataObjDyn extends RawDataObj {
 	constructor(obj: any) {
 		super(obj)
 	}
-	addPropDisplay(rawProp: any) {
-		this.rawPropsDisplay.push(new RawDataObjPropDisplay(valueOrDefault(rawProp, {})))
+	addPropDisplay(rawProp: any, tables: DataObjTable[]) {
+		this.rawPropsDisplay.push(new RawDataObjPropDisplay(valueOrDefault(rawProp, {}), tables))
 	}
 	addPropSelect(rawProp: any, tables: DataObjTable[]) {
+		debug('RawDataObjDyn.addPropSelect', rawProp)
 		this.rawPropsSelect.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tables))
 	}
 	addPropSelectRepParmItems(rawProp: any, tables: DataObjTable[]) {
@@ -257,39 +257,21 @@ export class RawDataObjParent {
 		this._table = new DBTable(obj._table)
 	}
 }
-export class RawDataObjPropDB {
-	childTableTraversal: string
-	codeDataSourceValue: PropDataSourceValue
-	codeDataType: PropDataType
-	codeSortDir?: string
-	columnBacklink?: string
+
+export class RawDataObjProp {
+	codeSortDir?: PropSortDir
 	exprCustom?: string
 	exprPreset?: string
-	fieldEmbed?: RawDataObjPropDBFieldEmbed
 	hasItems: boolean
 	indexTable: number
-	isMultiSelect: boolean
-	isSelfReference: boolean
 	link?: PropLink
 	linkItemsDefn?: PropLinkItemsDefn
 	propName: string
+	propNamePrefixType?: PropNamePrefixType
+	propNamePrefixTypeId: string = ''
+	propNameRaw: string
 	constructor(obj: any, tables: DataObjTable[]) {
-		const clazz = 'RawDataObjPropDB'
-		obj = valueOrDefault(obj, {})
-		this.codeDataSourceValue = memberOfEnum(
-			obj._codeDbDataSourceValue,
-			clazz,
-			'codeDbDataSourceValue',
-			'PropDataSourceValue',
-			PropDataSourceValue
-		)
-		this.codeDataType = memberOfEnum(
-			obj._codeDataType,
-			clazz,
-			'codeDataType',
-			'PropDataType',
-			PropDataType
-		)
+		const clazz = 'RawDataObjProp'
 		this.codeSortDir = memberOfEnumOrDefault(
 			obj._codeSortDir,
 			clazz,
@@ -298,9 +280,89 @@ export class RawDataObjPropDB {
 			PropSortDir,
 			PropSortDir.asc
 		)
-		this.columnBacklink = strOptional(obj._columnBacklink, clazz, '_columnBacklink')
-		this.exprCustom = strOptional(obj.exprCustom, clazz, 'exprCustom')
-		this.exprPreset = strOptional(obj.exprPreset, clazz, 'exprPreset')
+		this.exprCustom = obj.exprCustom
+		this.exprPreset = obj.exprPreset
+		this.hasItems = booleanOrDefault(obj._hasItems, false)
+		this.indexTable = nbrOrDefault(obj.indexTable, -1)
+		this.link = classOptional(PropLink, obj._link)
+		this.linkItemsDefn = classOptional(PropLinkItemsDefn, obj._linkItemsDefn)
+		this.propNameRaw = strRequired(obj._propName, clazz, 'propName')
+
+		/* derived properties */
+		if (Array.isArray(tables) && tables.length > 0 && this.indexTable > 0) {
+			this.propNamePrefixType = PropNamePrefixType.table
+			this.propNamePrefixTypeId = tables[this.indexTable].table.name
+		} else if (this.exprCustom) {
+			this.propNamePrefixType = PropNamePrefixType.exprCustom
+		} else if (this.link) {
+			this.propNamePrefixType = PropNamePrefixType.link
+		} else if (this.linkItemsDefn) {
+			this.propNamePrefixType = PropNamePrefixType.linkItems
+		}
+		this.propName = this.getPropNameDB()
+	}
+
+	// } else if (this.exprPreset || this?.link?.exprPreset) {
+	// 	this.propNamePrefixType = PropNamePrefixType.expr
+	setPropNamePrefixType(type: PropNamePrefixType, id: string = '') {
+		this.propNamePrefixType = type
+		this.propNamePrefixTypeId = id
+	}
+	getPropNameDB() {
+		const propNameDB = this.propNamePrefixType
+			? this.propNamePrefixType +
+				(this.propNamePrefixTypeId ? '_' + this.propNamePrefixTypeId : '') +
+				'_' +
+				this.propNameRaw
+			: this.propNameRaw
+		if (this.propNameRaw === 'sysName')
+			debug('RawDataObjPropDB', 'createdBy', {
+				propName: this.propNameRaw,
+				propNamePrefixType: this.propNamePrefixType,
+				propNamePrefixTypeId: this.propNamePrefixTypeId,
+				propNameDB
+			})
+		return propNameDB
+	}
+}
+
+export enum PropNamePrefixType {
+	custom = 'custom',
+	expr = 'expr',
+	exprCustom = 'exprCustom',
+	link = 'link',
+	linkItems = 'linkItems',
+	table = 'table'
+}
+
+export class RawDataObjPropDB extends RawDataObjProp {
+	childTableTraversal: string
+	codeDataSourceValue: PropDataSourceValue
+	codeDataType: PropDataType
+	columnBacklink?: string
+	fieldEmbed?: RawDataObjPropDBFieldEmbed
+	isMultiSelect: boolean
+	isSelfReference: boolean
+	constructor(obj: any, tables: DataObjTable[]) {
+		super(obj, tables)
+		const clazz = 'RawDataObjPropDB'
+		obj = valueOrDefault(obj, {})
+		this.codeDataSourceValue = memberOfEnumOrDefault(
+			obj._codeDbDataSourceValue,
+			clazz,
+			'codeDbDataSourceValue',
+			'PropDataSourceValue',
+			PropDataSourceValue,
+			PropDataSourceValue.edgeDB
+		)
+		this.codeDataType = memberOfEnum(
+			obj._codeDataType,
+			clazz,
+			'codeDataType',
+			'PropDataType',
+			PropDataType
+		)
+		this.columnBacklink = obj._columnBacklink
 		this.fieldEmbed = obj._fieldEmbedListConfig
 			? new RawDataObjPropDBFieldEmbed(
 					DataObjEmbedType.listConfig,
@@ -317,16 +379,15 @@ export class RawDataObjPropDB {
 							obj._fieldEmbedListSelect._dataObjListId
 						)
 					: undefined
-		this.hasItems = booleanOrDefault(obj._hasItems, false)
-		this.indexTable = nbrOrDefault(obj.indexTable, -1)
 		this.isMultiSelect = booleanOrDefault(obj._isMultiSelect, false)
 		this.isSelfReference = booleanOrDefault(obj._isSelfReference, false)
-		this.link = classOptional(PropLink, obj._link)
-		this.linkItemsDefn = classOptional(PropLinkItemsDefn, obj._linkItemsDefn)
-		this.propName = strRequired(obj._propName, clazz, 'propName')
 
 		/* dependent properties */
-		this.childTableTraversal = this.getChildTableTraversal(this.propName, this.indexTable, tables)
+		this.childTableTraversal = this.getChildTableTraversal(
+			this.propNameRaw,
+			this.indexTable,
+			tables
+		)
 	}
 	getChildTableTraversal(propName: string, indexTable: number, tables: DataObjTable[]) {
 		let value = ''
@@ -348,16 +409,14 @@ export class RawDataObjPropDBFieldEmbed {
 	}
 }
 
-export class RawDataObjPropDisplay {
+export class RawDataObjPropDisplay extends RawDataObjProp {
 	colDB: RawDBColumn
-	codeSortDir?: PropSortDir
 	customCol?: RawDataObjPropDisplayCustom
 	fieldColor: FieldColor
 	fieldEmbedListConfig?: RawDataObjPropDisplayEmbedListConfig
 	fieldEmbedListEdit?: RawDataObjPropDisplayEmbedListEdit
 	fieldEmbedListSelect?: RawDataObjPropDisplayEmbedListSelect
 	fieldEmbedShellFields: string[]
-	hasItems: boolean
 	headerAlt?: string
 	height?: number
 	isDisplay: boolean
@@ -370,22 +429,15 @@ export class RawDataObjPropDisplay {
 	linkExprSave?: string
 	orderDefine: number
 	orderSort?: number
-	propName: string
 	rawFieldAccess?: string
 	rawFieldAlignmentAlt?: string
 	rawFieldElement?: string
 	width?: number
-	constructor(obj: any) {
+	constructor(obj: any, tables: DataObjTable[]) {
+		super(obj, tables)
 		const clazz = 'RawDataObjPropDisplay'
 		obj = valueOrDefault(obj, {})
 		this.colDB = new RawDBColumn(obj._column)
-		this.codeSortDir = obj._codeSortDir
-			? obj._codeSortDir === 'asc'
-				? PropSortDir.asc
-				: PropSortDir.desc
-			: obj.orderSort
-				? PropSortDir.asc
-				: undefined
 		this.customCol = classOptional(RawDataObjPropDisplayCustom, obj._customCol)
 		this.fieldColor = new FieldColor(obj._codeColor, 'black')
 		this.fieldEmbedListConfig = classOptional(
@@ -403,7 +455,6 @@ export class RawDataObjPropDisplay {
 		this.fieldEmbedShellFields = obj._fieldEmbedShellFields
 			? obj._fieldEmbedShellFields.map((f: { _name: string }) => f._name)
 			: []
-		this.hasItems = booleanOrDefault(obj._hasItems, false)
 		this.headerAlt = strOptional(obj.headerAlt, clazz, 'headerAlt')
 		this.height = nbrOptional(obj.height, clazz, 'height')
 		this.isDisplay = booleanOrDefault(obj.isDisplay, true)
@@ -413,7 +464,6 @@ export class RawDataObjPropDisplay {
 		this.items = arrayOfClasses(FieldItem, obj._items)
 		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
-		this.propName = strRequired(obj._propName, clazz, 'propName')
 		this.rawFieldAccess = strOptional(obj._codeAccess, clazz, 'rawFieldAccess')
 		this.rawFieldAlignmentAlt = strOptional(obj._codeAlignmentAlt, clazz, 'rawFieldAlignmentAlt')
 		this.rawFieldElement = strOptional(obj._codeFieldElement, clazz, 'rawFieldElement')

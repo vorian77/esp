@@ -1,14 +1,13 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 import { moedDataParticipant } from '$utils/utils.randomDataGenerator'
 
-export function initFeatMOED(init: InitDb) {
+export function initContentMOEDStudent(init: InitDb) {
 	// staff
 	initStudent(init)
 	initCsf(init)
 	initCsfMsg(init)
 	initCsfNote(init)
 	initCsfDocument(init)
-	initStaff(init)
 	initSubjects(init)
 
 	// participant
@@ -860,9 +859,9 @@ function initCsfMsg(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_role_staff_by_codeName',
-				fieldListItemsParmName: 'moed_advocate',
-				linkTable: 'SysStaff'
+				fieldListItems: 'il_sys_user_by_tag_type',
+				fieldListItemsParmName: 'utt_role_moed_staff',
+				linkTable: 'SysUser'
 			},
 			{
 				columnName: 'subject',
@@ -1383,15 +1382,6 @@ function initCsfDocument(init: InitDb) {
 		owner: 'sys_moed_old',
 		parentNodeName: 'node_obj_moed_csf_doc_list'
 	})
-}
-
-function initStaff(init: InitDb) {
-	init.addTrans('MoedStaffBulk', [
-		['Tyshell', 'Oliver'],
-		['Travis', 'Williams'],
-		['Tynesha', 'Wilson'],
-		['Burlington', 'Stone']
-	])
 }
 
 function initSSRmyApp(init: InitDb) {
@@ -1980,9 +1970,9 @@ function initSSRmyMsg(init: InitDb) {
 			// 	orderDisplay: 50,
 			// 	orderDefine: 50,
 			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_role_staff_by_codeName',
-			// 	fieldListItemsParmName: 'moed_advocate',
-			// 	linkTable: 'SysStaff'
+			// 	fieldListItems: 'il_sys_user_by_tag_type',
+			// 	fieldListItemsParmName: 'utt_role_moed_staff',
+			// 	linkTable: 'SysUser'
 			// },
 			{
 				columnName: 'subject',
@@ -2120,5 +2110,5 @@ function initParticipantServiceFlows(init: InitDb) {
 }
 
 function initParticipantData(init: InitDb) {
-	init.addTrans('MoedCmCsfData', [])
+	init.addTrans('MoedCmCsfDataBulk', [])
 }

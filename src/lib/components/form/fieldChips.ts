@@ -1,10 +1,7 @@
-import { Field, RawFieldProps } from '$comps/form/field'
+import { Field, PropsFieldRaw } from '$comps/form/field'
 
 export class FieldChips extends Field {
-	constructor(props: RawFieldProps) {
+	constructor(props: PropsFieldRaw) {
 		super(props)
-	}
-	static async init(props: RawFieldProps) {
-		return new FieldChips(props)
 	}
 }

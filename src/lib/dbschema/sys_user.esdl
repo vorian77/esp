@@ -13,17 +13,6 @@ module sys_user {
     required modifiedBy: sys_user::SysUser;
   }
   
-  type SysStaff extending sys_user::Mgmt {
-    required ownerOld: sys_core::SysOrg;
-    owner: sys_core::SysSystem;
-    required person: default::SysPerson{
-       on source delete delete target if orphan;
-    };
-    multi roles: sys_core::SysCode{
-        on target delete allow;
-      }; 
-  }
-
   type SysUser extending sys_user::Mgmt {
     required owner: sys_core::SysOrg;
     multi orgs: sys_core::SysOrg {
@@ -85,13 +74,6 @@ module sys_user {
    function getRootUser() -> optional sys_user::SysUser
     using (select assert_single((select sys_user::SysUser filter .userName = '*ROOTUSER*')));
   
-  function getStaffByName(firstName: str, lastName: str) -> optional sys_user::SysStaff
-      using (select assert_single(sys_user::SysStaff filter 
-        str_lower(.person.firstName) = str_lower(firstName) and
-        str_lower(.person.lastName) = str_lower(lastName)
-        )
-      );
-
   function getUserById(userId: str) -> optional sys_user::SysUser
       using (select sys_user::SysUser filter .id = <uuid>userId);
 

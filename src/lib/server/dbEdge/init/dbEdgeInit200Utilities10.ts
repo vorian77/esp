@@ -135,6 +135,7 @@ export async function nodeObjPagesBulk(params: any) {
 				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'page')),
 				name: e.cast(e.str, i[2]),
 				header: e.cast(e.str, i[3]),
+				isAlwaysRetrieveData: false,
 				orderDefine: e.cast(e.int64, i[4]),
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', e.cast(e.str, i[5]))),
 				page: e.cast(e.str, i[6]),
@@ -180,40 +181,6 @@ export async function tablesBulk(data: any) {
 		})
 	})
 	return await query.run(client, { data })
-}
-
-// export async function addStaffBulk(params: any) {
-// 	sectionHeader('Staff')
-// 	// const CREATOR = e.sys_user.getRootUser()
-// 	const CREATOR = e.sys_user.getRootUser()
-// 	const query = e.params({ data: e.json }, (params) => {
-// 		return e.for(e.json_array_unpack(params.data), (i) => {
-// 			return e.insert(e.sys_user.SysStaff, {
-// 				owner: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[0]))),
-// 				person: e.insert(e.default.SysPerson, {
-// 					firstName: e.cast(e.str, i[1]),
-// 					lastName: e.cast(e.str, i[2])
-// 				}),
-// 				createdBy: CREATOR,
-// 				modifiedBy: CREATOR
-// 			})
-// 		})
-// 	})
-// 	return await query.run(client, { data: params })
-// }
-
-export async function addRoleStaffBulk(params: any) {
-	sectionHeader('Staff - Roles')
-	const query = e.params({ data: e.json }, (params) => {
-		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.update(e.sys_user.getStaffByName(e.cast(e.str, i[0]), e.cast(e.str, i[1])), (o) => ({
-				set: {
-					roles: { '+=': e.select(e.sys_core.getCode('ct_sys_role_staff', e.cast(e.str, i[2]))) }
-				}
-			}))
-		})
-	})
-	return await query.run(client, { data: params })
 }
 
 export class ResetDb {

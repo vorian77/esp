@@ -181,10 +181,11 @@ export function initPreColumn(init: InitDb) {
 		patternMsg: 'Security Code should be exactly 6 digits.'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
+		codeAlignment: 'center',
 		codeDataType: 'date',
 		header: 'Birth Date',
-		name: 'birthDate'
+		name: 'birthDate',
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -984,10 +985,11 @@ export function initPreColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
+		codeAlignment: 'center',
 		codeDataType: 'date',
 		header: 'Date',
-		name: 'date'
+		name: 'date',
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1030,12 +1032,6 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'date',
 		header: 'Estimated Start Date',
 		name: 'dateStartEst'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'date',
-		header: 'Date Submitted',
-		name: 'dateSubmitted'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1092,6 +1088,12 @@ export function initPreColumn(init: InitDb) {
 		header: 'Employer - Contact Last Name',
 		name: 'employerContactNameLast',
 		owner: 'sys_ai_old'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_ai_old',
+		codeDataType: 'str',
+		header: 'Employer - Contact Phone',
+		name: 'employerContactPhone'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'str',
@@ -1337,6 +1339,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'bool',
 		header: 'Active',
 		name: 'isActive'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Always Retrieve Data',
+		name: 'isAlwaysRetrieveData'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1856,20 +1864,6 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Social Security Number',
 		name: 'ssn'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Staff - Administrator',
-		isMultiSelect: false,
-		name: 'staffAdmin'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Staff - Agency',
-		isMultiSelect: false,
-		name: 'staffAgency'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
