@@ -19,7 +19,7 @@ export function booleanOrDefaultJSON(jsonObj: any, val: string, valDefault: bool
 	return e.cast(e.bool, e.op(e.cast(e.bool, e.json_get(jsonObj, val)), '??', valDefault))
 }
 
-export async function queryExecute(script: string) {
+export async function dbEdgeQuery(script: string) {
 	if (!script) return {}
 	script = scrubScript(script)
 	try {
@@ -27,13 +27,13 @@ export async function queryExecute(script: string) {
 	} catch (e: any) {
 		error(500, {
 			file: FILENAME,
-			function: 'queryExecute',
-			message: `Invalid query: ${script} ${e.message}`
+			function: 'query',
+			message: `Unable to execute query: ${script} ${e.message}`
 		})
 	}
 }
 
-export async function queryMultiple(script: string): Promise<RawDataList> {
+export async function queryJsonMultiple(script: string): Promise<RawDataList> {
 	if (!script) return []
 	script = scrubScript(script)
 	try {
@@ -41,13 +41,13 @@ export async function queryMultiple(script: string): Promise<RawDataList> {
 	} catch (e: any) {
 		error(500, {
 			file: FILENAME,
-			function: 'queryMultiple',
-			message: `Invalid query: ${script} ${e.message}`
+			function: 'queryJsonMultiple',
+			message: `Unable to execute query: ${script} ${e.message}`
 		})
 	}
 }
 
-export async function querySingle(script: string): Promise<RawDataRow> {
+export async function queryJsonSingle(script: string): Promise<RawDataRow> {
 	if (!script) return {}
 	script = scrubScript(script)
 	try {
@@ -55,8 +55,8 @@ export async function querySingle(script: string): Promise<RawDataRow> {
 	} catch (e: any) {
 		error(500, {
 			file: FILENAME,
-			function: 'querySingle',
-			message: `Invalid query: ${script} ${e.message}`
+			function: 'queryJsonSingle',
+			message: `Unable to execute query: ${script} ${e.message}`
 		})
 	}
 }

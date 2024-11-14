@@ -1,3 +1,4 @@
+import { dbEdgeQuery } from '$routes/api/dbEdge/dbEdge'
 import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import { getDBObjectLinks } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { TokenApiId, TokenApiIds } from '$utils/types.token'
@@ -7,7 +8,6 @@ import {
 } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
 import { addColumn, tableColumnsBulk } from '$server/dbEdge/init/dbEdgeInit200Utilities30DB'
 import {
-	ResetDb,
 	tablesBulk,
 	userSystemsBulk,
 	userUserTypeBulk,
@@ -474,4 +474,29 @@ class ObjectLink {
 enum PropCardinality {
 	One = 'One',
 	Many = 'Many'
+}
+
+export class ResetDb {
+	query: string = ''
+	statements: string[] = []
+	constructor() {
+		this.query = ''
+	}
+	addStatement(statement: string) {
+		if (-1 === this.statements.findIndex((s: string) => s === statement)) {
+			this.statements.push(statement)
+		}
+	}
+
+	async execute() {
+		sectionHeader('Execute DB Reset Transaction')
+
+		this.statements.forEach((s: string) => {
+			this.query += s + ';\n'
+		})
+
+		if (this.query) await dbEdgeQuery(this.query)
+		this.statements = []
+		this.query = ''
+	}
 }

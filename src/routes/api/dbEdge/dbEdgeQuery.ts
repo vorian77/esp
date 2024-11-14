@@ -85,10 +85,6 @@ export class Query {
 
 		props.forEach((propObj) => {
 			const clazzProp = `${clazz}.${propObj.propName}`
-			let propName = propObj.propName
-			let propNamePrefix =
-				propObj.codeDataType === PropDataType.link ? PropNamePrefixType.link + '_' : ''
-
 			const propExpr = strRequired(
 				propObj?.exprPreset
 					? propObj.exprPreset
@@ -98,7 +94,7 @@ export class Query {
 				clazzProp,
 				'expr'
 			)
-			const prop = `${propNamePrefix + propName} := ${propExpr}`
+			const prop = `${propObj.propName} := ${propExpr}`
 			properties = this.addItemComma(properties, prop)
 		})
 
@@ -155,7 +151,7 @@ export class Query {
 		const subObjGroup = new LinkSave(action, this.getTableRootObj())
 
 		let fValues: Function[] = []
-		function setValueFunction(idx: number, f: Function) {
+		const setValueFunction = (idx: number, f: Function) => {
 			fValues[idx] = f
 		}
 
@@ -243,7 +239,8 @@ export class Query {
 				}
 
 				dataRows.forEach((dataRow) => {
-					dataRow.record[propObj.propNameRaw] = fValues[idx](dataRow.record[propObj.propNameRaw])
+					// format values
+					dataRow.record[propObj.propName] = fValues[idx](dataRow.getValue(propObj.propName))
 				})
 			}
 		})
@@ -252,6 +249,7 @@ export class Query {
 		const set = isSet ? 'SET ' : ''
 		if (properties)
 			properties = `${set}{\n${this.addItemComma(properties, subObjGroup.getPropsUpdate(isSet, this.rawDataObj.tables))}}`
+		debug('getPropsSave', 'properties', properties)
 		return properties
 	}
 

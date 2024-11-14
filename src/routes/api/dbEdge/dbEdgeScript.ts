@@ -392,7 +392,7 @@ export class ScriptGroup {
 			['wrap', { key: 'select', open: `:= (`, content: ['action', 'filter'] }],
 
 			// embed-field
-			['setValue', { key: 'fieldName', value: `${field.embedFieldName}` }],
+			['setValue', { key: 'fieldName', value: `${field.embedFieldNameRaw}` }],
 			['wrap', { key: 'set', open: `SET {`, content: ['fieldName', 'select'] }],
 
 			// primary-table

@@ -122,11 +122,11 @@ export class RawDataObj {
 			RawDataObjActionField,
 			obj._actionFieldGroup?._actionFieldItems
 		)
-		this.setParent(obj._parent)
 		this.subHeader = strOptional(obj.subHeader, clazz, 'subHeader')
 		this.tables = this.initTables(obj._tables)
 
 		/* dependent properties */
+		// this.rawParent = classOptional(RawDataObjParent, obj._parent)
 		this.rawPropsDisplay = arrayOfClasses(RawDataObjPropDisplay, obj._propsDisplay, this.tables)
 		this.rawPropsSaveInsert = this.initProps(obj._propsSaveInsert)
 		this.rawPropsSaveUpdate = this.initProps(obj._propsSaveUpdate)
@@ -170,9 +170,6 @@ export class RawDataObj {
 			newTables.push(new DataObjTable(rawTable, newTables))
 		})
 		return newTables
-	}
-	setParent(obj: any) {
-		this.rawParent = classOptional(RawDataObjParent, obj)
 	}
 }
 
@@ -219,7 +216,6 @@ export class RawDataObjDyn extends RawDataObj {
 		this.rawPropsDisplay.push(new RawDataObjPropDisplay(valueOrDefault(rawProp, {}), tables))
 	}
 	addPropSelect(rawProp: any, tables: DataObjTable[]) {
-		debug('RawDataObjDyn.addPropSelect', rawProp)
 		this.rawPropsSelect.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tables))
 	}
 	addPropSelectRepParmItems(rawProp: any, tables: DataObjTable[]) {

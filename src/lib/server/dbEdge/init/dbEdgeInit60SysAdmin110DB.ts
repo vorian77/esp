@@ -636,6 +636,7 @@ function initTable(init: InitDb) {
 				orderDefine: 70
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'columns',
 				isDisplayable: true,

@@ -1,19 +1,10 @@
 import { sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { ResetDb } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 import { addMigration } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 export async function initMigrationPerson() {
-	sectionHeader('Migration - SysPerson')
-	await initReset()
 	await initMigration()
 }
 
-async function initReset() {
-	sectionHeader('Reset')
-	const reset = new ResetDb()
-	reset.delTableRecords('sys_migr::SysMigr')
-	await reset.execute()
-}
 
 async function initMigration() {
 	await addMigration({

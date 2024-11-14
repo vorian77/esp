@@ -304,6 +304,7 @@ function initUserOrg(init: InitDb) {
 				orderDefine: 70
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'systems',
 				isDisplayable: true,
@@ -502,6 +503,7 @@ function initUserType(init: InitDb) {
 				orderDefine: 70
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnBacklink: 'userTypes',
 				columnName: 'users',
@@ -513,6 +515,7 @@ function initUserType(init: InitDb) {
 				orderDefine: 80
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'resources',
 				isDisplayable: true,

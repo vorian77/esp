@@ -1,8 +1,5 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
-
 import { addDataObjActionField } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-
-import { initReset } from '$server/dbEdge/init/dbEdgeInit0Reset'
 import { initPreDataObj } from '$server/dbEdge/init/dbEdgeInit40PreDO'
 
 // admin
@@ -22,7 +19,7 @@ import { initContentMOEDRep } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDR
 // user
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
-const isResetFullDB = false
+const isResetFullDB = true
 
 export async function dbEdgeInit() {
 	let initDb = new InitDb(isResetFullDB)

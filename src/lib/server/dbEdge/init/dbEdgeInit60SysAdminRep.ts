@@ -820,6 +820,7 @@ function initRep(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'tables',
 				isDisplayable: true,
@@ -860,6 +861,7 @@ function initRep(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'analytics',
 				isDisplayable: true,

@@ -270,6 +270,7 @@ function initDataObj(init: InitDb) {
 
 			/* tables */
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'tables',
 				isDisplayable: true,

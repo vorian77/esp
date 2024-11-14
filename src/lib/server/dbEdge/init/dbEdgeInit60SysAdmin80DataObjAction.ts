@@ -62,6 +62,7 @@ function initDataObjActionsQuery(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'parms',
 				isDisplayable: true,
@@ -72,6 +73,7 @@ function initDataObjActionsQuery(init: InitDb) {
 				linkTable: 'SysDataObjActionQueryParm'
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'triggers',
 				isDisplayable: true,
@@ -291,6 +293,7 @@ function initDataObjActionField(init: InitDb) {
 				orderDefine: 140
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'actionFieldConfirms',
 				isDisplayable: true,
@@ -301,6 +304,7 @@ function initDataObjActionField(init: InitDb) {
 				linkTable: 'SysDataObjActionFieldConfirm'
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'actionFieldShows',
 				isDisplayable: true,
@@ -443,6 +447,7 @@ function initDataObjActionFieldGroup(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'actionFieldItems',
 				isDisplayable: true,

@@ -1,4 +1,4 @@
-import { queryExecute, queryMultiple } from '$routes/api/dbEdge/dbEdge'
+import { queryJsonMultiple } from '$routes/api/dbEdge/dbEdge'
 import { ApiResult } from '$routes/api/api'
 import {
 	TokenApiId,
@@ -56,7 +56,14 @@ export async function processDataObj(token: TokenApiQuery) {
 			`${FILENAME}.${rawDataObj.name}.processDataObj.expression`,
 			'rawDataObj.exprObject'
 		)
-		return new ApiResult(true, await executeExpr(expr, queryData))
+		return new ApiResult(
+			true,
+			await exeQueryMultiData(
+				expr,
+				queryData,
+				new EvalExprContext('processDataObj-expression', rawDataObj.name)
+			)
+		)
 	}
 
 	// queries
@@ -163,7 +170,7 @@ async function processDataObjExecute(
 			script.queryData,
 			new EvalExprContext('processDataObjExecute', script.query.rawDataObj.name)
 		)
-		const rawDataList = await executeQueryMultiple(expr)
+		const rawDataList = await exeQueryMulti(expr)
 
 		// if (rawDataList.length === 0 && queryType === TokenApiQueryType.retrievePreset) {
 		// 	debug('processDataObjExecute', 'redirecting - retrievePreset to preset')
@@ -250,18 +257,18 @@ async function processDataObjExecute(
 	return new ApiResult(true, { dataObjData: returnData })
 }
 
-async function executeExpr(expr: string, queryData: TokenApiQueryData) {
-	const query = evalExpr(expr, queryData, new EvalExprContext('executeExpr', ''))
-	return await executeQueryMultiple(query)
-}
-export async function executeQuery(query: string): Promise<RawDataList> {
-	debug('executeQuery', 'query', query)
-	return (await queryExecute(query)) || []
+async function exeQueryMulti(script: string): Promise<RawDataList> {
+	debug('exeQueryMulti', 'query', script)
+	return await queryJsonMultiple(script)
 }
 
-export async function executeQueryMultiple(query: string): Promise<RawDataList> {
-	debug('executeQueryMultiple', 'query', query)
-	return await queryMultiple(query)
+async function exeQueryMultiData(
+	expr: string,
+	queryData: TokenApiQueryData,
+	context: EvalExprContext
+) {
+	const script = evalExpr(expr, queryData, context)
+	return await exeQueryMulti(script)
 }
 
 function formatData(returnData: DataObjData, rawDataList: RawDataList, process: ProcessRow) {
@@ -333,7 +340,11 @@ export async function getRepParmItems(token: TokenApiQueryData) {
 	scriptGroup.addScriptDataItems(query, queryData, rawDataObj.rawPropsRepParmItems)
 
 	if (scriptGroup.scripts.length === 1) {
-		const rawDataItems = await executeExpr(scriptGroup.scripts[0].script, queryData)
+		const rawDataItems = await exeQueryMultiData(
+			scriptGroup.scripts[0].script,
+			queryData,
+			new EvalExprContext('getRepParmItems-expression', rawDataObj.name)
+		)
 		return new ApiResult(true, rawDataItems[0])
 	} else {
 		error(500, {
@@ -379,7 +390,7 @@ export async function getRawDataObj(
 
 export async function processExpression(queryData: TokenApiQueryData) {
 	queryData = TokenApiQueryData.load(queryData)
-	return new ApiResult(true, executeExpr(queryData.getParms().expr, queryData))
+	return new ApiResult(true, exeQueryMultiData(queryData.getParms().expr, queryData))
 }
 
 export class ProcessRow {

@@ -127,7 +127,7 @@ export class DataObj {
 
 		// get headers
 		this.fields.forEach((f) => {
-			if (f.colDO.isDisplayable && !f.colDO.colDB.isNonData) {
+			if (f.colDO.isDisplayable && f.colDO.isDisplay && !f.colDO.colDB.isNonData) {
 				const label = f.colDO.headerAlt ? f.colDO.headerAlt : f.colDO.label
 				newRow += `${label},`
 			}
@@ -138,7 +138,7 @@ export class DataObj {
 		this.dataRecordsDisplay.forEach((record, row) => {
 			newRow = ''
 			this.fields.forEach((f) => {
-				if (f.colDO.isDisplayable && !f.colDO.colDB.isNonData) {
+				if (f.colDO.isDisplayable && f.colDO.isDisplay && !f.colDO.colDB.isNonData) {
 					const value = [null, undefined].includes(record[f.colDO.propName])
 						? ''
 						: record[f.colDO.propName]
@@ -734,6 +734,7 @@ export class DataObjDataField {
 	data: DataObjData
 	dataObj?: DataObj
 	embedFieldName: string
+	embedFieldNameRaw: string
 	embedTable: DBTable
 	embedType: DataObjEmbedType
 	parentTable: DBTable
@@ -741,6 +742,7 @@ export class DataObjDataField {
 		const clazz = 'DataObjDataField'
 		this.columnBacklink = strOptional(obj.columnBacklink, clazz, 'columnBacklink')
 		this.embedFieldName = strRequired(obj.embedFieldName, clazz, 'embedFieldName')
+		this.embedFieldNameRaw = strRequired(obj.embedFieldNameRaw, clazz, 'embedFieldNameRaw')
 		this.embedTable = required(obj.embedTable, clazz, 'embedTable')
 		this.embedType = memberOfEnum(
 			obj.embedType,
@@ -788,7 +790,8 @@ export class DataObjDataField {
 					new DataObjDataField({
 						columnBacklink: field.columnBacklink,
 						embedDataObjId,
-						embedFieldName,
+						embedFieldName: field.propName,
+						embedFieldNameRaw: field.propNameRaw,
 						embedTable: field?.link?.table,
 						embedType: field?.fieldEmbed?.type,
 						parentTable: parentTable,
@@ -1100,11 +1103,12 @@ export function getRecordValue(record: DataRecord, key: string) {
 			return v
 		}
 	}
-	error(500, {
-		file: FILENAME,
-		function: 'getRecordValue',
-		message: `Unable to find key: ${key} in record: ${record}`
-	})
+	return undefined
+	// error(500, {
+	// 	file: FILENAME,
+	// 	function: 'getRecordValue',
+	// 	message: `Unable to find key: ${key} in record: ${record}`
+	// })
 }
 
 export class ParmsUser {

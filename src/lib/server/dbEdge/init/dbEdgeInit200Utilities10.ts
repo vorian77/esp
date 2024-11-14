@@ -1,6 +1,5 @@
 import e from '$lib/dbschema/edgeql-js'
 import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { executeQuery } from '$routes/api/dbEdge/dbEdgeProcess'
 import { debug, getArray } from '$utils/types'
 
 export async function addSystem(data: any) {
@@ -181,85 +180,4 @@ export async function tablesBulk(data: any) {
 		})
 	})
 	return await query.run(client, { data })
-}
-
-export class ResetDb {
-	query: string = ''
-	statements: string[] = []
-	constructor() {
-		this.query = ''
-	}
-	addStatement(statement: string) {
-		if (-1 === this.statements.findIndex((s: string) => s === statement)) {
-			this.statements.push(statement)
-		}
-	}
-
-	addStatementOld(statement: string) {
-		this.query += statement + ';\n'
-		return this.query
-	}
-	delCodeType(codeTypeName: string) {
-		this.addStatementOld(`DELETE sys_core::SysCode FILTER .codeType.name = '${codeTypeName}'`)
-		this.addStatementOld(`DELETE sys_core::SysCodeType FILTER .name = '${codeTypeName}'`)
-	}
-	delColumn(name: string) {
-		this.addStatementOld(`DELETE sys_db::SysColumn FILTER .name = '${name}'`)
-	}
-	delDataObj(name: string) {
-		this.addStatementOld(`DELETE sys_core::SysDataObj FILTER .name = '${name}'`)
-	}
-
-	delDataObjColumnMultiLinks(name: string) {
-		this.addStatementOld(`UPDATE sys_core::SysDataObjColumn
-			FILTER .id IN (SELECT sys_core::SysDataObj FILTER .name = 'data_obj_${name}_detail').columns.id
-				SET { fieldListConfig := {}, fieldListItems := {}, fieldListSelect := {} }`)
-	}
-
-	delFeature(name: string) {
-		this.delNodeObj(`node_obj_${name}_detail`)
-		this.delNodeObj(`node_obj_${name}_list`)
-		this.delDataObj(`data_obj_${name}_detail`)
-		this.delDataObj(`data_obj_${name}_list`)
-	}
-	delMigration(name: string) {
-		this.addStatementOld(`DELETE sys_migr::SysMigration FILTER .name = ${name}`)
-	}
-	delNodeObj(name: string) {
-		this.addStatementOld(`DELETE sys_core::SysNodeObj FILTER .name = '${name}'`)
-	}
-	delTable(name: string) {
-		this.addStatementOld(`DELETE sys_db::SysTable FILTER .name = '${name}'`)
-	}
-	delTableRecords(table: string) {
-		this.addStatementOld(`DELETE ${table}`)
-	}
-	async execute() {
-		sectionHeader('Execute DB Reset Transaction')
-
-		// old
-		if (this.statements.length === 0) {
-			if (this.query) await executeQuery(this.query)
-			this.query = ''
-		}
-
-		// new
-		this.statements.forEach((s: string) => {
-			this.query += s + ';\n'
-		})
-		if (this.query) await executeQuery(this.query)
-		this.statements = []
-		this.query = ''
-	}
-}
-
-export async function resetDBItems(section: string, statements: any) {
-	sectionHeader(section)
-	statements = getArray(statements)
-	const reset = new ResetDb()
-	statements.forEach((s: string) => {
-		sectionHeader(s)
-		reset.addStatementOld(s)
-	})
-	await reset.execute()
 }

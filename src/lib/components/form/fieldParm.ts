@@ -77,8 +77,7 @@ export class FieldParm extends Field {
 			if (result.success) {
 				const items: DataItems = result.data
 				Object.entries(items).forEach(([key, value]) => {
-					const fieldKey = key.replace('_items_', '')
-					const fieldIndex = this.parmFields.findIndex((f) => f.colDO.propName === fieldKey)
+					const fieldIndex = this.parmFields.findIndex((f) => key.endsWith(f.colDO.propNameRaw))
 					if (fieldIndex > -1) {
 						this.parmFields[fieldIndex].colDO.items = value
 					}
