@@ -11,7 +11,7 @@ function initFieldListSelectNodes(init: InitDb) {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: `.codeNodeType = (SELECT sys_core::getCode('ct_sys_node_obj_type', 'program')) AND .owner.id = <tree,uuid,SysSystem.id>`,
+		exprFilter: `.codeNodeType = (SELECT sys_core::getCode('ct_sys_node_obj_type', 'program')) AND (.owner.id = <tree,uuid,SysSystem.id> UNION .isGlobalResource)`,
 		header: 'Select Node(s)',
 		name: 'dofls_sys_admin_sys_node',
 		owner: 'sys_system_old',

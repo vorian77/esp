@@ -126,7 +126,7 @@ export class RawDataObj {
 		this.tables = this.initTables(obj._tables)
 
 		/* dependent properties */
-		// this.rawParent = classOptional(RawDataObjParent, obj._parent)
+		this.rawParent = classOptional(RawDataObjParent, obj._parent)
 		this.rawPropsDisplay = arrayOfClasses(RawDataObjPropDisplay, obj._propsDisplay, this.tables)
 		this.rawPropsSaveInsert = this.initProps(obj._propsSaveInsert)
 		this.rawPropsSaveUpdate = this.initProps(obj._propsSaveUpdate)

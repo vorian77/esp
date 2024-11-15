@@ -1104,11 +1104,6 @@ export function getRecordValue(record: DataRecord, key: string) {
 		}
 	}
 	return undefined
-	// error(500, {
-	// 	file: FILENAME,
-	// 	function: 'getRecordValue',
-	// 	message: `Unable to find key: ${key} in record: ${record}`
-	// })
 }
 
 export class ParmsUser {

@@ -167,7 +167,17 @@ function initNodeObj(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'toggle',
+				columnName: 'isAlwaysRetrieveData',
+				exprPreset: '(SELECT false)',
+				isDisplayable: true,
+				orderDisplay: 65,
+				orderDefine: 65,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
 				columnName: 'isHideRowManager',
+				exprPreset: '(SELECT false)',
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,

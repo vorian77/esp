@@ -29,15 +29,7 @@ function initCourse(init: InitDb) {
 				isDisplayable: false,
 				orderDefine: 10
 			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'codeStatus',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0,
-				linkColumns: ['name']
-			},
+
 			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
@@ -104,17 +96,6 @@ function initCourse(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'codeStatus',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_obj_status',
-				linkTable: 'SysCode'
 			},
 			{
 				columnName: 'name',
@@ -335,16 +316,6 @@ function initCohort(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeStatus',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0,
-				linkColumns: ['name'],
-				linkTable: 'SysOrg'
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'name',
 				orderCrumb: 10,
 				orderSort: 10,
@@ -436,17 +407,6 @@ function initCohort(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'codeStatus',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_obj_status',
-				linkTable: 'SysCode'
 			},
 			{
 				columnName: 'name',

@@ -371,7 +371,7 @@ function initStudent(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		dataObj: 'data_obj_moed_part_list',
 		header: 'Participants',

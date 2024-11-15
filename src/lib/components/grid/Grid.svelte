@@ -109,11 +109,13 @@
 			columnTypes,
 			dataTypeDefinitions,
 			defaultColDef: {
+				autoHeaderHeight: true,
 				filter: !isSuppressFilterSort,
 				filterParams: {
 					buttons: ['reset']
 				},
-				sortable: !isSuppressFilterSort
+				sortable: !isSuppressFilterSort,
+				wrapHeaderText: true
 			},
 			getRowId: (params: GetRowIdParams) => params.data[options.idColumn] || 'id',
 			onCellClicked: options.onCellClicked,

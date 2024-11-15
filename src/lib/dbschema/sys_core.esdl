@@ -38,7 +38,9 @@ module sys_core {
   type SysObjNote extending sys_user::Mgmt {
     required date: cal::local_date;
     required codeType: sys_core::SysCode;
-    required owner: sys_core::SysObj;
+    required owner: sys_core::SysObj {
+      on target delete delete source;
+    };
     note: str;
   }
 

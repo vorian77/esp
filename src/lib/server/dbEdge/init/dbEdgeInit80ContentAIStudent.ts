@@ -1893,43 +1893,56 @@ function initCsfDocument(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				columnName: 'codeType',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0,
+				linkColumns: ['name']
+			},
+			{
+				codeAccess: 'readOnly',
 				columnName: 'dateIssued',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'codeType',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0,
-				linkColumns: ['name']
-			},
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	columnName: 'isShareWithClient',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 50,
-			// 	orderDefine: 50,
-			// 	indexTable: 0
-			// },
-			{
-				codeAccess: 'readOnly',
-				columnName: 'note',
-				orderDefine: 70,
-				isDisplayable: true,
-				orderDisplay: 70,
+				orderSort: 10,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'dateExpires',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'isShareWithClient',
+				exprCustom: `'Yes' IF .isShareWithClient ELSE 'No'`,
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				codeFieldElement: 'toggle',
+				columnName: 'custom_element_bool',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				exprCustom: `'Yes' IF EXISTS .file ELSE 'No'`,
+				headerAlt: 'Document Uploaded',
+				nameCustom: 'hasFile'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'note',
+				orderDefine: 70,
+				isDisplayable: true,
+				orderDisplay: 70,
 				indexTable: 0
 			}
 		]
@@ -1986,38 +1999,47 @@ function initCsfDocument(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'select',
-				columnName: 'codeType',
+				codeAccess: 'optional',
+				codeFieldElement: 'date',
+				columnName: 'dateExpires',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeType',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
 				fieldListItemsParmName: 'ct_cm_doc_type',
 				linkTable: 'SysCode'
 			},
-			// {
-			// 	codeFieldElement: 'toggle',
-			// 	columnName: 'isShareWithClient',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 60,
-			// 	orderDefine: 60,
-			// 	indexTable: 0
-			// },
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isShareWithClient',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70
+				orderDisplay: 80,
+				orderDefine: 80
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'file',
 				columnName: 'file',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0,
 				width: 300
 			},
@@ -2026,32 +2048,9 @@ function initCsfDocument(init: InitDb) {
 				codeFieldElement: 'textArea',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
 				orderDisplay: 100,
-				orderDefine: 100
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'date',
-				columnName: 'dateExpires',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
+				orderDefine: 100,
 				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130
 			},
 
 			/* management */

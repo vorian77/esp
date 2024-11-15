@@ -131,7 +131,7 @@ function initApps(init: InitDb) {
 		isGlobalResource: false,
 		name: 'app_moed_student',
 		owner: 'sys_moed_old',
-		nodes: ['node_obj_moed_part_list']
+		nodes: []
 	})
 }
 

@@ -95,7 +95,6 @@ export namespace app_cm {
     "file"?: unknown | null;
   }
   export interface CmCourse extends sys_core.SysObj {
-    "cohorts": CmCohort[];
     "codeSector"?: sys_core.SysCode | null;
     "codeStatus"?: sys_core.SysCode | null;
     "codeTypePayment"?: sys_core.SysCodeType | null;
@@ -106,6 +105,7 @@ export namespace app_cm {
     "courseItemsIncluded"?: string | null;
     "courseItemsNotIncluded"?: string | null;
     "courseRequirements"?: string | null;
+    "cohorts": CmCohort[];
   }
   export interface CmCsfData extends sys_user.Mgmt {
     "csf": CmClientServiceFlow;
@@ -126,9 +126,9 @@ export namespace app_cm {
     "codeType": sys_core.SysCode;
     "dateExpires"?: edgedb.LocalDate | null;
     "dateIssued": edgedb.LocalDate;
-    "isShareWithClient"?: string | null;
     "note"?: string | null;
     "file"?: unknown | null;
+    "isShareWithClient"?: boolean | null;
   }
   export interface CmCsfJobPlacement extends CmCsfData {
     "codeJobType": sys_core.SysCode;

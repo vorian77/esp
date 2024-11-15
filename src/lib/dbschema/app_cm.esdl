@@ -4,7 +4,9 @@ module app_cm {
     codeSector: sys_core::SysCode;
     codeStatus: sys_core::SysCode;
     codeTypePayment: sys_core::SysCodeType;
-    multi cohorts: app_cm::CmCohort;
+    multi cohorts: app_cm::CmCohort {
+      on target delete allow;
+    };
     courseCertifications: str;
     courseExams: str;
     courseItemsIncluded: str;
@@ -91,7 +93,7 @@ module app_cm {
     dateExpires: cal::local_date;
     required dateIssued: cal::local_date;
     file: json;
-    isShareWithClient: str;
+    isShareWithClient: bool;
     note: str;
   }
 

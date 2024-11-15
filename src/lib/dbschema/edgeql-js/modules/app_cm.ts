@@ -95,7 +95,6 @@ const $CmCohortAttd = $.makeType<$CmCohortAttd>(_.spec, "29d03147-eaec-11ee-80d4
 const CmCohortAttd: $.$expr_PathNode<$.TypeSet<$CmCohortAttd, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCohortAttd, $.Cardinality.Many), null);
 
 export type $CmCourseλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
-  "cohorts": $.LinkDesc<$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "codeSector": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeTypePayment": $.LinkDesc<_sys_core.$SysCodeType, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
@@ -106,6 +105,7 @@ export type $CmCourseλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "courseItemsIncluded": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "courseItemsNotIncluded": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "courseRequirements": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "cohorts": $.LinkDesc<$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<course[is app_cm::CmCohort]": $.LinkDesc<$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<course": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -158,9 +158,9 @@ export type $CmCsfDocumentλShape = $.typeutil.flatten<$CmCsfDataλShape & {
   "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "dateExpires": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateIssued": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
-  "isShareWithClient": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
+  "isShareWithClient": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;
 type $CmCsfDocument = $.ObjectType<"app_cm::CmCsfDocument", $CmCsfDocumentλShape, null, [
   ...$CmCsfData['__exclusives__'],

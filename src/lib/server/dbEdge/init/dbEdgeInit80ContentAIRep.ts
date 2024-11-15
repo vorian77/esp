@@ -349,18 +349,6 @@ function initContentAIRepCoursesDetail(init: InitDb) {
 				orderSort: 200
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'codeStatus',
-				indexTable: 0,
-				isDisplay: true,
-				isDisplayable: true,
-				linkColumns: ['name'],
-				orderDefine: 210,
-				orderDisplay: 210,
-				orderSort: 200
-			},
-			{
 				codeAlignment: 'right',
 				codeDataType: 'int64',
 				codeFieldElement: 'number',
@@ -771,6 +759,18 @@ function initContentAIRepStudentDocsDetail(init: InitDb) {
 				},
 				{
 					codeAlignment: 'center',
+					codeFieldElement: 'toggle',
+					codeReportElementType: 'column',
+					columnName: 'isShareWithClient',
+					exprCustom: `'Yes' IF .isShareWithClient ELSE 'No'`,
+					indexTable: 0,
+					isDisplay: true,
+					isDisplayable: true,
+					orderDefine: 230,
+					orderDisplay: 230
+				},
+				{
+					codeAlignment: 'center',
 					codeDataType: 'str',
 					codeFieldElement: 'text',
 					codeReportElementType: 'column',
@@ -778,17 +778,7 @@ function initContentAIRepStudentDocsDetail(init: InitDb) {
 					header: 'File Uploaded',
 					isDisplay: true,
 					isDisplayable: true,
-					nameCustom: 'existsfile',
-					orderDefine: 230,
-					orderDisplay: 230
-				},
-				{
-					codeFieldElement: 'text',
-					codeReportElementType: 'column',
-					columnName: 'isShareWithClient',
-					indexTable: 0,
-					isDisplay: true,
-					isDisplayable: true,
+					nameCustom: 'hasFile',
 					orderDefine: 240,
 					orderDisplay: 240
 				},
