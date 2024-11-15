@@ -82,7 +82,6 @@
 		StatePacketAction.doEmbedListConfigEdit,
 		StatePacketAction.doEmbedListConfigNew,
 		StatePacketAction.doEmbedListSelect,
-		StatePacketAction.doExport,
 		StatePacketAction.doListDetailEdit,
 		StatePacketAction.doListDetailNew,
 		StatePacketAction.doListSelfRefresh,
@@ -195,14 +194,6 @@
 					currTab.data = state.dataObjState?.objData
 				}
 				await state.openModalEmbedListSelect(token, fModalCloseUpdateEmbedListSelect)
-				break
-
-			case StatePacketAction.doExport:
-				currLevel = state.app.getCurrLevel()
-				if (currLevel) {
-					currTab = currLevel.getCurrTab()
-					if (currTab && currTab.dataObj) currTab.dataObj.export()
-				}
 				break
 
 			case StatePacketAction.doListDetailEdit:

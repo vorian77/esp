@@ -450,8 +450,6 @@ export enum StatePacketAction {
 	doEmbedListEditParmValue = 'doEmbedListEditParmValue',
 	doEmbedListSelect = 'doEmbedListSelect',
 
-	doExport = 'doExport',
-
 	doListDetailEdit = 'doListDetailEdit',
 	doListDetailNew = 'doListDetailNew',
 	doListSelfRefresh = 'doListSelfRefresh',
@@ -459,6 +457,8 @@ export enum StatePacketAction {
 
 	embedField = 'embedField',
 	embedShell = 'embedShell',
+
+	gridExport = 'gridExport',
 
 	// modal
 	modalCancel = 'modalCancel',

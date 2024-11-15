@@ -28,6 +28,7 @@
 		(dataObjData.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset) ||
 			state.objStatus.changed() ||
 			!state.objStatus.valid())
+
 	async function onClickTab(event: any) {
 		state.update({
 			packet: new StatePacket({

@@ -80,6 +80,22 @@
 
 	$: load(dataObjData)
 
+	$: if (state && state.packet) {
+		let packet
+
+		// gridExport
+		packet = state.consume(StatePacketAction.gridExport)
+		if (packet) {
+			;(async () => {
+				await gridExport()
+			})()
+		}
+	}
+
+	async function gridExport() {
+		console.log('Form.gridExport...')
+	}
+
 	function load(data: DataObjData) {
 		if (!dataObj.isListEmbed) dataObj.objData = data
 

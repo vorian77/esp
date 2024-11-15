@@ -401,6 +401,7 @@ function initDataObjVerify(init: InitDb) {
 			},
 			{
 				codeAlignmentAlt: 'left',
+				codeFieldElement: 'textHide',
 				columnName: 'authSecurityCode',
 				isDisplayable: true,
 				orderDisplay: 20,

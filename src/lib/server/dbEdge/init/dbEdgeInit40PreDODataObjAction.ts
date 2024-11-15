@@ -139,7 +139,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
-		codePacketAction: 'doExport',
+		codePacketAction: 'gridExport',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Export',
 		isListRowAction: false,
