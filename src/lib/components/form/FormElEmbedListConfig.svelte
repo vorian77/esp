@@ -20,6 +20,7 @@
 
 		const field = fp.field as FieldEmbedListConfig
 		const rows = field.dataObj?.data.rowsRetrieved.length
+		fp.setIsLabelBold(true)
 
 		const parentObjectSaved =
 			recordIdCurrent !== '' &&
@@ -35,7 +36,7 @@
 	}
 </script>
 
-<FormLabel {fp} bold={true} />
+<FormLabel {fp} />
 
 {#if fp}
 	<div class="mt-4">

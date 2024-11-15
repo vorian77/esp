@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { AppRowActionType } from '$comps/app/types.app'
-	import Icon from '$comps/other/Icon.svelte'
+	import Icon from '$comps/icon/Icon.svelte'
+	import { IconProps } from '$comps/icon/types.icon'
 
 	const NAV_COLOR = '#3b79e1'
 
@@ -15,5 +16,5 @@
 	on:click={async () => await onChange(action)}
 	on:keyup={async () => await onChange(action)}
 >
-	<Icon name={icon} color={NAV_COLOR} size="28" strokeWidth="2" />
+	<Icon props={new IconProps({ name: icon, color: NAV_COLOR, size: 28, strokeWidth: 2 })} />
 </div>

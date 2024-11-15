@@ -27,8 +27,9 @@
 	let dataObjData: DataObjData
 
 	$: {
-		field = fp.field
+		fp.setIsLabelBold(true)
 
+		field = fp.field
 		field.stateShell.setFUpdateCallback((obj: any) => {
 			fp.state.fUpdateCallback(obj)
 		})
@@ -46,7 +47,7 @@
 
 <!-- <DataViewer header="stateEmbedShell.objStatus" data={stateEmbedShell.objStatus} /> -->
 
-<!-- <FormLabel {fp} bold={true}/> -->
+<!-- <FormLabel {fp} /> -->
 {#if dataObj && dataObjData}
 	<div class="border-2 px-4 pb-4">
 		<LayoutTab bind:state={field.stateShell} {component} {dataObj} {dataObjData} on:formCancelled />

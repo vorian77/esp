@@ -6,7 +6,8 @@ import {
 	DataObjStatus,
 	type DataRecord,
 	FieldValue,
-	required
+	required,
+	strRequired
 } from '$utils/types'
 import {
 	booleanOrDefault,
@@ -25,6 +26,7 @@ import {
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
+import { IconProps } from '$comps/icon/types.icon'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/form/field.ts/'
@@ -35,6 +37,7 @@ export class Field {
 	fieldAccess: FieldAccess
 	fieldAlignment: FieldAlignment
 	fieldElement: FieldElement
+	iconProps?: IconProps
 	isFirstVisible: boolean
 	isParmValue: boolean
 	constructor(props: PropsFieldRaw) {
@@ -116,6 +119,10 @@ export class Field {
 	async init(props: PropsField) {}
 
 	modeReset() {}
+
+	setIconProps(obj: any) {
+		this.iconProps = new IconProps(obj)
+	}
 
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel): Validation {
 		if (this.colDO.colDB.isNonData) {
@@ -228,7 +235,6 @@ export enum FieldElement {
 	file = 'file',
 	hidden = 'hidden',
 	number = 'number',
-	password = 'password',
 	parm = 'parm',
 	percentage = 'percentage',
 	radio = 'radio',
@@ -238,6 +244,7 @@ export enum FieldElement {
 	tel = 'tel',
 	text = 'text',
 	textArea = 'textArea',
+	textHide = 'textHide',
 	toggle = 'toggle'
 }
 
@@ -268,28 +275,27 @@ export class FieldProps {
 	field: Field
 	fieldValue: any
 	fSetVal: Function
+	iconProps?: IconProps
+	isLabelBold: boolean = false
 	row: number
 	state: State
-	constructor(
-		component: string,
-		dataObj: DataObj,
-		dataObjData: DataObjData,
-		dataRecord: DataRecord,
-		field: Field,
-		fieldValue: any,
-		fSetVal: Function,
-		row: number,
-		state: State
-	) {
-		this.component = component
-		this.dataObj = dataObj
-		this.dataObjData = dataObjData
-		this.dataRecord = dataRecord
-		this.field = field
-		this.fieldValue = fieldValue
-		this.row = row
-		this.fSetVal = fSetVal
-		this.state = state
+	constructor(obj: any) {
+		obj = valueOrDefault(obj, {})
+		const clazz = 'FieldProps'
+		this.component = strRequired(obj.component, clazz, 'component')
+		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
+		this.dataObjData = required(obj.dataObjData, clazz, 'dataObjData')
+		this.dataRecord = required(obj.dataRecord, clazz, 'dataRecord')
+		this.field = required(obj.field, clazz, 'field')
+		this.fieldValue = obj.fieldValue
+		this.iconProps = obj.iconProps
+		this.row = required(obj.row, clazz, 'row')
+		this.fSetVal = required(obj.fSetVal, clazz, 'fSetVal')
+		this.state = required(obj.state, clazz, 'state')
+	}
+
+	setIsLabelBold(isLabelBold: boolean) {
+		this.isLabelBold = isLabelBold
 	}
 }
 

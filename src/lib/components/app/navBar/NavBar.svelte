@@ -1,7 +1,8 @@
 <script lang="ts">
 	import NavBarList from '$comps/app/navBar/NavBarList.svelte'
 	import { NavBarData, NavBarDataItem } from '$comps/app/navBar/types.navBar'
-	import Icon from '$comps/other/Icon.svelte'
+	import Icon from '$comps/icon/Icon.svelte'
+	import { IconProps } from '$comps/icon/types.icon'
 	import { NodeType, User } from '$utils/types'
 	import { fade } from 'svelte/transition'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -55,10 +56,13 @@
 		</div>
 		<div class="justify-self-end content-center border-2 border-blue-300">
 			<Icon
-				name={'ChevronsLeft'}
-				size={iconSizeChevron}
-				strokeWidth={iconStrokeWidth}
-				onClick={onClickToggleExpand}
+				props={new IconProps({
+					name: 'ChevronsLeft',
+					color: navColor,
+					onClick: onClickToggleExpand,
+					size: iconSizeChevron,
+					strokeWidth: iconStrokeWidth
+				})}
 			/>
 		</div>
 	</div>

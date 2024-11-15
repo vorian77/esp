@@ -8,13 +8,14 @@ import {
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
 import { Field, FieldAccess, FieldElement, PropsFieldRaw } from '$comps/form/field'
-import { nbrRequired, valueOrDefault } from '$utils/utils'
-import { type DataRecord, required } from '$utils/types'
+import { valueOrDefault } from '$utils/utils'
+import { required } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldInput.ts'
 
 export class FieldInput extends Field {
+	inputTypeCurrent: string = ''
 	matchColumn?: MatchColumn
 	maxLength?: number
 	maxValue?: number
@@ -28,13 +29,7 @@ export class FieldInput extends Field {
 	constructor(props: PropsFieldRaw) {
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
-		this.placeHolder =
-			this.fieldAccess !== FieldAccess.readonly
-				? valueOrDefault(obj.colDB.placeHolder, this.colDO.label ? 'Enter ' + this.colDO.label : '')
-				: ''
-		if (this.fieldAccess == FieldAccess.optional) {
-			this.placeHolder += ' (optional)'
-		}
+		this.inputTypeCurrent = this.fieldElement === FieldElement.textHide ? 'password' : 'text'
 		this.matchColumn = initMatchColumn(obj.colDB.matchColumn, this, props.fields)
 		this.maxLength = obj.colDB.maxLength
 		this.maxValue = obj.colDB.maxValue
@@ -43,6 +38,13 @@ export class FieldInput extends Field {
 		this.pattern = obj.colDB.pattern
 		this.patternMsg = obj.colDB.patternMsg
 		this.patternReplacement = obj.colDB.patternReplacement
+		this.placeHolder =
+			this.fieldAccess !== FieldAccess.readonly
+				? valueOrDefault(obj.colDB.placeHolder, this.colDO.label ? 'Enter ' + this.colDO.label : '')
+				: ''
+		if (this.fieldAccess == FieldAccess.optional) {
+			this.placeHolder += ' (optional)'
+		}
 		this.spinStep = obj.colDB.spinStep
 
 		// set field type defaults
@@ -50,13 +52,6 @@ export class FieldInput extends Field {
 			case FieldElement.email:
 				if (!this.pattern) {
 					this.pattern = '^[A-Za-z0-9+_.-]+@(.+)$'
-				}
-				break
-			case FieldElement.password:
-				if (!this.pattern) {
-					this.pattern = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$!%*?&])[A-Za-z\\d@#$!%*?&]{8,}$'
-					this.patternMsg =
-						'Your password must be at least 8 characters long, and must contain at least 1 uppercase character, at least 1 lowercase character, at least 1 number, and at least 1 special character (@$!%*#?&).'
 				}
 				break
 			case FieldElement.tel:

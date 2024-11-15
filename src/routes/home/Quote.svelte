@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import type { ResponseBody } from '$utils/types'
-	import Icon from '$comps/other/Icon.svelte'
+	import Icon from '$comps/icon/Icon.svelte'
+	import { IconProps } from '$comps/icon/types.icon'
 
 	let quote: any = {}
 
@@ -18,7 +19,13 @@
 <div class="bg-neutral-100 rounded-lg p-3 mb-3">
 	<div class="flex flex-col items-center">
 		<div>
-			<Icon name="quote" size="32" color={quote.color} />
+			<Icon
+				props={new IconProps({
+					name: 'quote',
+					color: quote.color,
+					size: 32
+				})}
+			/>
 		</div>
 
 		<div>

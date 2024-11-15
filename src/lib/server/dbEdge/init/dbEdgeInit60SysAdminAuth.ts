@@ -191,7 +191,7 @@ function initDataObjLogin(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'password',
+				codeFieldElement: 'textHide',
 				columnName: 'password',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -257,7 +257,7 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'password',
+				codeFieldElement: 'textHide',
 				columnName: 'password',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -324,7 +324,7 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'password',
+				codeFieldElement: 'textHide',
 				columnName: 'password',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -508,7 +508,7 @@ function initDataObjSignup(init: InitDb) {
 				orderDefine: 30
 			},
 			{
-				codeFieldElement: 'password',
+				codeFieldElement: 'textHide',
 				columnName: 'password',
 				isDisplayable: true,
 				orderDisplay: 40,

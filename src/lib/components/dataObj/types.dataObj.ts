@@ -282,10 +282,10 @@ export class DataObj {
 			case FieldElement.date:
 			case FieldElement.email:
 			case FieldElement.number:
-			case FieldElement.password:
 			case FieldElement.percentage:
 			case FieldElement.tel:
 			case FieldElement.text:
+			case FieldElement.textHide:
 				newField = new FieldInput(props)
 				break
 

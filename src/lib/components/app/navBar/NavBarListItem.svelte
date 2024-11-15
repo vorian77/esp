@@ -2,7 +2,8 @@
 	import { NavBarDataItem } from '$comps/app/navBar/types.navBar'
 	import NavBarList from '$comps/app/navBar/NavBarList.svelte'
 	import { NodeType } from '$utils/types'
-	import Icon from '$comps/other/Icon.svelte'
+	import Icon from '$comps/icon/Icon.svelte'
+	import { IconProps } from '$comps/icon/types.icon'
 	import { fade } from 'svelte/transition'
 
 	const FILENAME = '/$comps/app/NavBarItem.svelte'
@@ -54,12 +55,24 @@
 			<div class="">
 				<div class="flex gap-x-2">
 					{#if [NodeType.page, NodeType.program].includes(item.codeType)}
-						<Icon name={item.codeIcon} size={iconSize} strokeWidth={iconStrokeWidth} />
+						<Icon
+							props={new IconProps({
+								name: item.codeIcon,
+								size: iconSize,
+								strokeWidth: iconStrokeWidth
+							})}
+						/>
 					{/if}
 					{item.label}
 				</div>
 				{#if item.children.length > 0}
-					<Icon name={'ChevronRight'} size={iconSizeChevron} strokeWidth={iconStrokeWidth} />
+					<Icon
+						props={new IconProps({
+							name: 'ChevronRight',
+							size: iconSizeChevron,
+							strokeWidth: iconStrokeWidth
+						})}
+					/>
 				{/if}
 			</div>
 			{#if item.children.length > 0}

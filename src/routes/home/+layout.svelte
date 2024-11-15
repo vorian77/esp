@@ -22,7 +22,8 @@
 	import NavFooter from '$comps/app/NavFooter.svelte'
 	import NavBar from '$comps/app/navBar/NavBar.svelte'
 	import NavTree from '$comps/app/NavTree.svelte'
-	import Icon from '$comps/other/Icon.svelte'
+	import Icon from '$comps/icon/Icon.svelte'
+	import { IconProps } from '$comps/icon/types.icon'
 	import { getURLDownload } from '$utils/utils.aws'
 	import { page } from '$app/stores'
 	import { goto } from '$app/navigation'
@@ -136,7 +137,13 @@
 						on:click={navLeft}
 						on:keyup={navLeft}
 					>
-						<Icon name="menu" strokeWidth="2" color={NAV_COLOR} />
+						<Icon
+							props={new IconProps({
+								name: 'menu',
+								color: NAV_COLOR,
+								strokeWidth: 2
+							})}
+						/>
 					</div>
 					{#if user}
 						<NavLogo {user} />

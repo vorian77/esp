@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { IconProps } from '$comps/icon/types.icon'
 	import {
 		Activity,
 		AppWindow,
@@ -18,6 +19,8 @@
 		ChevronsUp,
 		CircleUserRound,
 		ClipboardPlus,
+		Eye,
+		EyeOff,
 		Files,
 		FileStack,
 		FolderClosed,
@@ -37,18 +40,13 @@
 		UserRoundCog,
 		UsersRound
 	} from 'lucide-svelte'
+	import DataViewer from '$utils/DataViewer.svelte'
 
 	/* icons source -  https://lucide.dev/icons/ */
 
-	export let absoluteStrokeWidth = false
-	export let clazz = ''
-	export let color = '#000000'
-	export let name = ''
-	export let onClick = () => {}
-	export let size = '24'
-	export let strokeWidth = '1'
+	export let props: IconProps
 
-	const Icon = {
+	$: IconType = {
 		activity: Activity,
 		appwindow: AppWindow,
 		arrowleft: ArrowLeft,
@@ -67,6 +65,8 @@
 		chevronsup: ChevronsUp,
 		circleuserround: CircleUserRound,
 		clipboardplus: ClipboardPlus,
+		eye: Eye,
+		eyeoff: EyeOff,
 		files: Files,
 		filestack: FileStack,
 		folderclosed: FolderClosed,
@@ -85,13 +85,19 @@
 		tenttree: TentTree,
 		userroundcog: UserRoundCog,
 		usersround: UsersRound
-	}[name.toLowerCase()]
+	}[props.name.toLowerCase()]
 </script>
 
-{#if Icon}
-	<div class={clazz}>
-		<button class="" on:click={onClick}>
-			<svelte:component this={Icon} {absoluteStrokeWidth} {color} {size} {strokeWidth} />
+{#if props && IconType}
+	<div class={props.clazz}>
+		<button on:click={props.onClick}>
+			<svelte:component
+				this={IconType}
+				absoluteStrokeWidth={props.absoluteStrokeWidth}
+				color={props.color}
+				size={props.size}
+				strokeWidth={props.strokeWidth}
+			/>
 		</button>
 	</div>
 {/if}

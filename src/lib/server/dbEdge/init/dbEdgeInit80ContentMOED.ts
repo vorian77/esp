@@ -129,7 +129,7 @@ function initStudent(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'ssn',
+				codeFieldElement: 'textHide',
 				columnName: 'ssn',
 				isDisplayable: true,
 				orderDisplay: 75,
@@ -1479,7 +1479,7 @@ function initSSRmyApp(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'ssn',
+				codeFieldElement: 'textHide',
 				columnName: 'ssn',
 				isDisplayable: true,
 				orderDisplay: 140,

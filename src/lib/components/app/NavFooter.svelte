@@ -2,7 +2,8 @@
 	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
 	import { TokenApp, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 	import { appStoreUser, Node, NodeType, User } from '$utils/types'
-	import Icon from '$comps/other/Icon.svelte'
+	import Icon from '$comps/icon/Icon.svelte'
+	import { IconProps } from '$comps/icon/types.icon'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import SysWigFeature from '$comps/widgets/WidgetFeature.svelte'
 	const FILENAME = '/$comps/NavFooter.svelte'
@@ -99,7 +100,7 @@
 			on:keyup={() => onChange(node)}
 		>
 			<div class="mt-2">
-				<Icon name={node.icon} size="16" color={navColor} />
+				<Icon props={new IconProps({ name: node.icon, color: navColor, size: 16 })} />
 			</div>
 			<div class={marginTopheader}>
 				{node.label}

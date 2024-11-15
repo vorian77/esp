@@ -5,12 +5,30 @@
 	import { DataObjCardinality } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import FormLabel from '$comps/form/FormLabel.svelte'
+	import { IconProps } from '$comps/icon/types.icon'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	export let fp: FieldProps
 
+	const setHidTextIcon = () => {
+		field.iconProps = new IconProps({
+			name: field.inputTypeCurrent === 'password' ? 'Eye' : 'EyeOff',
+			clazz: 'ml-1',
+			onClick: onClickToggleHideText,
+			size: 20
+		})
+	}
+	const onClickToggleHideText = () => {
+		field.inputTypeCurrent = field.inputTypeCurrent === 'password' ? 'text' : 'password'
+		setHidTextIcon()
+		field = field
+	}
+
 	$: dataObj = fp.dataObj
 	$: field = fp.field as FieldInput
+	$: if (field.fieldElement === FieldElement.textHide) {
+		setHidTextIcon()
+	}
 
 	$: classPropsInput = dataObj.raw.codeCarfSetVal = DataObjCardinality.detail
 		? 'input text-sm text-black ' + field.colorBackground
@@ -68,7 +86,7 @@
 			: ''}
 		readonly={field.fieldAccess === FieldAccess.readonly}
 		{step}
-		type={field.fieldElement}
+		type={field.inputTypeCurrent ? field.inputTypeCurrent : field.FieldElement}
 		value={fp.fieldValue}
 	/>
 </FormLabel>

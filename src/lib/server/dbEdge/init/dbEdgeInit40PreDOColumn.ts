@@ -1747,7 +1747,10 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Password',
-		name: 'password'
+		name: 'password',
+		pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$!%*?&])[A-Za-z\\d@#$!%*?&]{8,}$',
+		patternMsg:
+			'Your password must be at least 8 characters long, and must contain at least 1 uppercase character, at least 1 lowercase character, at least 1 number, and at least 1 special character (@$!%*#?&).'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

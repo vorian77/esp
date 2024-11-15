@@ -7,7 +7,8 @@
 	import { AppBar, AppShell } from '@skeletonlabs/skeleton'
 	import NavCrumbs from '$comps/app/NavCrumbs.svelte'
 	import NavRow from '$comps/app/NavRow.svelte'
-	import Icon from '$comps/other/Icon.svelte'
+	import Icon from '$comps/icon/Icon.svelte'
+	import { IconProps } from '$comps/icon/types.icon'
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -46,7 +47,14 @@
 				<div class="grid items-end">
 					<div class="flex">
 						<button class="mr-4" on:click={back}>
-							<Icon name="ArrowLeft" clazz="mt-0.5" color={'#3b79e1'} strokeWidth="2" />
+							<Icon
+								props={new IconProps({
+									name: 'ArrowLeft',
+									clazz: 'mt-0.5',
+									color: '#3b79e1',
+									strokeWidth: 2
+								})}
+							/>
 						</button>
 						<div>
 							<NavCrumbs {state} {crumbsList} />

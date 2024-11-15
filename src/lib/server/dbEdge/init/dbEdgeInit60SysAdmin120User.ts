@@ -262,6 +262,7 @@ function initUserOrg(init: InitDb) {
 				linkTable: 'SysOrg'
 			},
 			{
+				codeFieldElement: 'textHide',
 				columnName: 'password',
 				exprPreset: `(SELECT 'abc*$789!+_)')`,
 				indexTable: 0,

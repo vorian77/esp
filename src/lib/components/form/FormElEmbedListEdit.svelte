@@ -7,9 +7,13 @@
 	const FILENAME = '$comps/form/FormElEmbeddedListSelect.svelte'
 
 	export let fp: FieldProps
+
+	$: {
+		fp.setIsLabelBold(true)
+	}
 </script>
 
-<FormLabel {fp} bold={true} />
+<FormLabel {fp} />
 
 {#if fp}
 	<div class="mt-4">

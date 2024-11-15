@@ -97,17 +97,17 @@
 		}
 	}
 
-	$: fp = new FieldProps(
+	$: fp = new FieldProps({
 		component,
 		dataObj,
 		dataObjData,
 		dataRecord,
 		field,
 		fieldValue,
-		closureSetVal,
+		fSetVal: closureSetVal,
 		row,
 		state
-	)
+	})
 
 	function closureSetVal(row: number, field: Field, value: any) {
 		dataObj = dataObj.setFieldVal(row, field, value)
