@@ -70,10 +70,10 @@
 
 	const FILENAME = '$comps/other/ListBox.svelte'
 
-	export let options: GridOptions
+	export let api: GridApi
+	export let options: GridManagerOptions
 
 	let eGui: HTMLDivElement
-	let grid: GridApi
 	let innerHeight = window.innterHeight
 	let isSuppressFilterSort: boolean
 	let rowCountFiltered: number
@@ -158,37 +158,39 @@
 			},
 			suppressSetFilterByDefault: true
 		}
-		grid = createGrid(eGui, gridOptions)
+		// <todo> 241115 - bug - createGrid makes options.userSettings.listSortModel undefined
+		const rawSort = options.userSettings.getPref(ParmsUserDataType.listSortModel)
+		api = createGrid(eGui, gridOptions)
 
 		if (options.isSelect) {
 			const selectedIds = options.parmStateSelectedIds
 			if (options.isSelectMulti) {
 				const selected: IRowNode[] = []
 				const deselected: IRowNode[] = []
-				grid.forEachNode((node) => {
+				api.forEachNode((node) => {
 					if (selectedIds.includes(node.data!.id)) {
 						selected.push(node)
 					} else {
 						deselected.push(node)
 					}
 				})
-				grid.setNodesSelected({ nodes: selected, newValue: true })
-				grid.setNodesSelected({ nodes: deselected, newValue: false })
+				api.setNodesSelected({ nodes: selected, newValue: true })
+				api.setNodesSelected({ nodes: deselected, newValue: false })
 			} else {
-				const selected = grid.getRowNode(selectedIds[0])
+				const selected = api.getRowNode(selectedIds[0])
 				if (selected) selected.setSelected(true)
 			}
 		}
 
-		// apply user settings
-		settingSortSet(options.userSettings.getPref(ParmsUserDataType.listSortModel)) // sort first because it triggers filter
+		// apply user settings - sort first because it triggers filter
+		settingSortSet(rawSort)
 		settingsFilterQuickSet(options.userSettings.getPref(ParmsUserDataType.listFilterQuick))
-		grid.setFilterModel(options.userSettings.getPref(ParmsUserDataType.listFilterModel))
+		api.setFilterModel(options.userSettings.getPref(ParmsUserDataType.listFilterModel))
 		updateCounters()
 
 		return () => {
 			saveUserSettings()
-			grid.destroy()
+			api.destroy()
 		}
 	})
 
@@ -197,7 +199,7 @@
 			// set columns state
 			options.userSettings.setPref(
 				ParmsUserDataType.listColumnsModel,
-				new GridSettingsColumns(grid.getAllGridColumns())
+				new GridSettingsColumns(api.getAllGridColumns())
 			)
 			await apiFetch(
 				ApiFunction.sysSetUserPref,
@@ -230,12 +232,12 @@
 	function onFilterChangedDeselect() {
 		// deselect rows that are not displayed
 		const deselected: IRowNode[] = []
-		grid.forEachNode((rowNode, index) => {
+		api.forEachNode((rowNode, index) => {
 			if (rowNode.selected && !rowNode.displayed) {
 				deselected.push(rowNode)
 			}
 		})
-		grid.setNodesSelected({ nodes: deselected, newValue: false })
+		api.setNodesSelected({ nodes: deselected, newValue: false })
 	}
 
 	function onRowDragEnd(event: RowDragEndEvent) {
@@ -265,7 +267,7 @@
 			moveInArray(newStore, fromIndex, toIndex)
 
 			rowData = newStore
-			grid.clearFocusedCell()
+			api.clearFocusedCell()
 		}
 
 		function moveInArray(arr: any[], fromIndex: number, toIndex: number) {
@@ -276,9 +278,7 @@
 	}
 
 	function onSort(event: PostSortRowsParams) {
-		if (grid) {
-			options.userSettings.setPref(ParmsUserDataType.listSortModel, settingSortGet())
-		}
+		options.userSettings.setPref(ParmsUserDataType.listSortModel, settingSortGet())
 	}
 
 	function onSelectionChanged(event: SelectionChangedEvent) {
@@ -287,8 +287,8 @@
 	}
 
 	function resize() {
-		const rowCount = grid.getDisplayedRowCount()
-		const { headerHeight, rowHeight } = grid.getSizesForCurrentTheme()
+		const rowCount = api.getDisplayedRowCount()
+		const { headerHeight, rowHeight } = api.getSizesForCurrentTheme()
 		const rowsMin = 3
 		let rowsMax: number
 		let rowsDisplay: number
@@ -327,18 +327,18 @@
 	}
 
 	function settingsFilterQuickSet(listFilterQuick: string) {
-		grid.setGridOption('quickFilterText', listFilterQuick)
+		api.setGridOption('quickFilterText', listFilterQuick)
 	}
 
 	function settingSortGet() {
-		if (grid) {
+		if (api && !api.isDestroyed()) {
 			let sortObj = new DataObjSort()
-			grid
+			api
 				.getColumnState()
-				.filter(function (s) {
+				.filter((s) => {
 					return s.sort !== null
 				})
-				.map(function (s) {
+				.forEach((s) => {
 					sortObj.addItem(s.colId, s.sort, s.sortIndex)
 				})
 			return sortObj
@@ -346,18 +346,19 @@
 	}
 
 	function settingSortSet(sort: DataObjSort) {
-		if (grid) {
+		if (api) {
 			let sortModel = []
 
-			sort.sortItems.forEach((item, i) => {
-				sortModel.push({
-					colId: item.colId,
-					sort: item.sort,
-					sortIndex: item.sortIndex
+			if (sort)
+				sort.sortItems.forEach((item, i) => {
+					sortModel.push({
+						colId: item.colId,
+						sort: item.sort,
+						sortIndex: item.sortIndex
+					})
 				})
-			})
 
-			grid.applyColumnState({
+			api.applyColumnState({
 				state: sortModel,
 				defaultState: { sort: null }
 			})
@@ -365,8 +366,8 @@
 	}
 
 	function updateCounters() {
-		rowCountFiltered = grid.getDisplayedRowCount()
-		if (options.isSelect) rowCountSelected = grid.getSelectedNodes().length
+		rowCountFiltered = api.getDisplayedRowCount()
+		if (options.isSelect) rowCountSelected = api.getSelectedNodes().length
 		resize()
 	}
 </script>

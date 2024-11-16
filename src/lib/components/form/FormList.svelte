@@ -74,6 +74,7 @@
 	export let dataObjData: DataObjData
 
 	let dataHeight = `max-height: calc(100vh - ${400}px);` //  <todo> 240314 - calc specific padding
+	let gridApi: GridApi
 	let gridOptions: GridManagerOptions
 	let isSelect = state instanceof StateSurfaceModalEmbed
 	let scrollToTop = () => {}
@@ -93,7 +94,44 @@
 	}
 
 	async function gridExport() {
-		console.log('Form.gridExport...')
+		let data: string = ''
+		let fields: Field[] = []
+		let newRow: string = ''
+
+		const columnState = gridApi.getColumnState()
+
+		// get headers
+		columnState.forEach((c) => {
+			if (c.hide === false) {
+				const field = dataObj.fields.find((f) => f.colDO.propName === c.colId)
+				if (field) {
+					fields.push(field)
+					const label = field.colDO.headerAlt ? field.colDO.headerAlt : field.colDO.label
+					newRow += `${label},`
+				}
+			}
+		})
+		if (fields.length === 0) {
+			alert('Export cancelled. No data to export.')
+			return
+		}
+		data += `${newRow}\n`
+
+		// get data
+		gridApi.forEachNodeAfterFilterAndSort((node) => {
+			if (node.displayed) {
+				newRow = ''
+				fields.forEach((f) => {
+					const value = [null, undefined].includes(node.data[f.colDO.propName])
+						? ''
+						: node.data[f.colDO.propName]
+					newRow += `${value},`
+				})
+				data += `${newRow}\n`
+			}
+		})
+
+		state.export(dataObj.raw.header, 'text/csv', 'csv', data)
 	}
 
 	function load(data: DataObjData) {
@@ -386,9 +424,7 @@
 </script>
 
 {#if gridOptions}
-	<!-- <DataViewer header="FormList.dataObj.objStatus" data={dataObj.objStatus} /> -->
 	{#key gridOptions}
-		<Grid options={gridOptions} />
+		<Grid bind:api={gridApi} options={gridOptions} />
 	{/key}
-	<!-- <DataViewer header="gridManager" data={gm.rowData} /> -->
 {/if}

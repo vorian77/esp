@@ -6,7 +6,7 @@
 
 	export let fp: FieldProps
 
-	$: classProps = `label flex text-sm ${fp.isLabelBold ? 'font-bold mt-6' : ''} `
+	$: classProps = `label flex text-sm ${fp.isLabelBold ? 'font-bold mt-2' : ''} `
 </script>
 
 <label for={fp.field.colDO.propName}>

@@ -11,7 +11,7 @@
 	export let fp: FieldProps
 
 	const setHidTextIcon = () => {
-		field.iconProps = new IconProps({
+		field.setIconProps({
 			name: field.inputTypeCurrent === 'password' ? 'Eye' : 'EyeOff',
 			clazz: 'ml-1',
 			onClick: onClickToggleHideText,

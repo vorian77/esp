@@ -121,45 +121,6 @@ export class DataObj {
 			})
 		}
 	}
-	export() {
-		let data: string = ''
-		let newRow: string = ''
-
-		// get headers
-		this.fields.forEach((f) => {
-			if (f.colDO.isDisplayable && f.colDO.isDisplay && !f.colDO.colDB.isNonData) {
-				const label = f.colDO.headerAlt ? f.colDO.headerAlt : f.colDO.label
-				newRow += `${label},`
-			}
-		})
-		data += `${newRow}\n`
-
-		// get data
-		this.dataRecordsDisplay.forEach((record, row) => {
-			newRow = ''
-			this.fields.forEach((f) => {
-				if (f.colDO.isDisplayable && f.colDO.isDisplay && !f.colDO.colDB.isNonData) {
-					const value = [null, undefined].includes(record[f.colDO.propName])
-						? ''
-						: record[f.colDO.propName]
-					newRow += `${value},`
-				}
-			})
-			data += `${newRow}\n`
-		})
-
-		// download
-		const blob = new Blob([data], { type: 'text/csv' })
-		const url = URL.createObjectURL(blob)
-
-		const link = document.createElement('a')
-		link.href = url
-		link.download = `${this.raw.header}.csv`
-		link.click()
-
-		URL.revokeObjectURL(url)
-		alert(`"${this.raw.header}" has been downloaded!`)
-	}
 
 	getDataVal(record: DataRecord, propNameRaw: string, indexTable: number = 0) {
 		const field = this.fields.find((f) => f.colDO.propNameRaw === propNameRaw)

@@ -13,6 +13,9 @@
 	export let dataObj: DataObj | undefined = undefined
 	export let dataObjData: DataObjData | undefined = undefined
 
+	let gridApi: GridApi
+	let gridOptions: GridManagerOptions
+
 	const fieldId = state.parmsState.valueGet(ParmsValuesType.listItemsFieldId)
 	const fieldDisplayName = state.parmsState.valueGet(ParmsValuesType.listItemsFieldDisplay)
 	const fieldDisplayHeader = state.parmsState.valueGet(ParmsValuesType.listLabel)
@@ -25,7 +28,7 @@
 	const sortObj = new DataObjSort()
 	sortObj.addItem('display', PropSortDir.asc, 0)
 
-	const gridOptions = new GridManagerOptions({
+	gridOptions = new GridManagerOptions({
 		columnDefs,
 		idColumn: fieldId,
 		isSelect: true,
@@ -43,7 +46,7 @@
 
 <div class="h-[60vh]">
 	{#if gridOptions}
-		<Grid options={gridOptions} />
+		<!-- <Grid bind:api={gridApi} options={gridOptions} /> -->
 	{/if}
 </div>
 

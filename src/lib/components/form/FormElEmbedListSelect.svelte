@@ -15,7 +15,7 @@
 
 	$: {
 		fp.setIsLabelBold(true)
-		fp.setIconProps({
+		fp.field.setIconProps({
 			name: 'SquareMousePointer',
 			clazz: 'ml-1.5 mt-0.5',
 			color: '#3b79e1',

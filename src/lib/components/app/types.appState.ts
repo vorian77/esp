@@ -84,6 +84,19 @@ export class State {
 		}
 	}
 
+	export(title: string, mimeType: string, fileType: string, data: string) {
+		const blob = new Blob([data], { type: mimeType })
+		const url = URL.createObjectURL(blob)
+
+		const link = document.createElement('a')
+		link.href = url
+		link.download = `${title}.${fileType}`
+		link.click()
+
+		URL.revokeObjectURL(url)
+		alert(`"${title}" has been exported!`)
+	}
+
 	async getActions(fieldGroupName: string) {
 		const result: ResponseBody = await apiFetch(
 			ApiFunction.dbEdgeGetDataObjActionFieldGroup,
