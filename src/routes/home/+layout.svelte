@@ -20,7 +20,7 @@
 	import NavLogo from '$comps/app/NavLogo.svelte'
 	import NavHome from '$comps/app/NavHome.svelte'
 	import NavFooter from '$comps/app/NavFooter.svelte'
-	import NavBar from '$comps/app/navBar/NavBar.svelte'
+	import NavBar from '$comps/navBar/NavBar.svelte'
 	import NavTree from '$comps/app/NavTree.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'

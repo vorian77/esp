@@ -1,6 +1,6 @@
 <script lang="ts">
-	import NavBarListItem from '$comps/app/navBar/NavBarListItem.svelte'
-	import { NavBarData, NavBarDataItem } from '$comps/app/navBar/types.navBar'
+	import NavBarListItem from '$comps/navBar/NavBarListItem.svelte'
+	import { NavBarData, NavBarDataItem } from '$comps/navBar/types.navBar'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/app/navBar/NavBarList.svelte'
