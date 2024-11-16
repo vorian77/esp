@@ -12,7 +12,7 @@ import {
 	ParmsValuesType,
 	NodeType,
 	ParmsUser,
-	type ToastType,
+	ToastType,
 	User,
 	userInit
 } from '$utils/types'
@@ -84,7 +84,7 @@ export class State {
 		}
 	}
 
-	export(title: string, mimeType: string, fileType: string, data: string) {
+	download(title: string, mimeType: string, fileType: string, data: string) {
 		const blob = new Blob([data], { type: mimeType })
 		const url = URL.createObjectURL(blob)
 
@@ -94,7 +94,7 @@ export class State {
 		link.click()
 
 		URL.revokeObjectURL(url)
-		alert(`"${title}" has been exported!`)
+		this.openToast(ToastType.success, `"${title}" has been downloaded.`)
 	}
 
 	async getActions(fieldGroupName: string) {
@@ -471,7 +471,7 @@ export enum StatePacketAction {
 	embedField = 'embedField',
 	embedShell = 'embedShell',
 
-	gridExport = 'gridExport',
+	gridDownload = 'gridDownload',
 
 	// modal
 	modalCancel = 'modalCancel',

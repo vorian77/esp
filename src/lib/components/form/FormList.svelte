@@ -84,16 +84,16 @@
 	$: if (state && state.packet) {
 		let packet
 
-		// gridExport
-		packet = state.consume(StatePacketAction.gridExport)
+		// gridDownload
+		packet = state.consume(StatePacketAction.gridDownload)
 		if (packet) {
 			;(async () => {
-				await gridExport()
+				await gridDownload()
 			})()
 		}
 	}
 
-	async function gridExport() {
+	async function gridDownload() {
 		let data: string = ''
 		let fields: Field[] = []
 		let newRow: string = ''
@@ -112,7 +112,7 @@
 			}
 		})
 		if (fields.length === 0) {
-			alert('Export cancelled. No data to export.')
+			alert('Download cancelled. No data to export.')
 			return
 		}
 		data += `${newRow}\n`
@@ -131,7 +131,7 @@
 			}
 		})
 
-		state.export(dataObj.raw.header, 'text/csv', 'csv', data)
+		state.download(dataObj.raw.header, 'text/csv', 'csv', data)
 	}
 
 	function load(data: DataObjData) {

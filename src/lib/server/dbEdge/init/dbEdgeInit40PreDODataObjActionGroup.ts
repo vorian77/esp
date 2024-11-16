@@ -24,7 +24,7 @@ export function initPreDataObjActionGroups(init: InitDb) {
 			['noa_save_cancel', 1],
 			['noa_new_detail_list', 2],
 			['noa_edit_list', 3],
-			['noa_export', 4]
+			['noa_download_grid', 4]
 		],
 		name: 'doag_list',
 		owner: 'sys_system_old'
@@ -107,7 +107,7 @@ export function initPreDataObjActionGroups(init: InitDb) {
 	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_edit_list', 0],
-			['noa_export', 1]
+			['noa_download_grid', 1]
 		],
 		name: 'doag_list_org_user',
 		owner: 'sys_system_old'
@@ -137,7 +137,7 @@ export function initPreDataObjActionGroups(init: InitDb) {
 	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
 			['noa_refresh_list', 0],
-			['noa_export', 1]
+			['noa_download_grid', 1]
 		],
 		name: 'doag_report_render',
 		owner: 'sys_system_old'

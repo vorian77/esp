@@ -139,11 +139,11 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
-		codePacketAction: 'gridExport',
+		codePacketAction: 'gridDownload',
 		codeActionFieldTriggerEnable: 'always',
-		header: 'Export',
+		header: 'Download',
 		isListRowAction: false,
-		name: 'noa_export',
+		name: 'noa_download_grid',
 		owner: 'sys_system_old'
 	})
 
