@@ -1,15 +1,25 @@
 import { DataObjActionQueryTriggerTiming } from '$comps/app/types.appQuery'
 import { State } from '$comps/app/types.appState'
-import { objDelete, objUpload } from '$utils/utils.aws'
+import { objDeleteAws, objUploadAws } from '$utils/utils.aws'
 import type { ResponseBody } from '$utils/types'
-import { DataObjData, type DataRecord, DataRecordStatus, required, ToastType } from '$utils/types'
 import {
-	TokenApiFileParm,
+	DataObjData,
+	type DataRecord,
+	DataRecordStatus,
+	debug,
+	required,
+	strRequired,
+	ToastType
+} from '$utils/types'
+import {
+	TokenApiFileParmDelete,
+	TokenApiFileParmUpload,
 	TokenApiFileAction,
 	TokenApiFileType,
 	TokenApiQueryType
 } from '$utils/types.token'
 import { FileStorage } from '$comps/form/fieldFile'
+import { apiFetch, ApiFunction } from '$routes/api/api'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/crud/crudFileUpload.ts'
@@ -28,100 +38,100 @@ export async function qaExecuteFileStorage(
 	dataUpdate: DataObjData,
 	parms: DataRecord
 ): Promise<DataObjData> {
-	if (queryType !== TokenApiQueryType.save) return dataUpdate
+	const fileParm: DataRecord | TokenApiFileParmDelete | TokenApiFileParmUpload | undefined =
+		dataUpdate.rowsSave.getDetailRecordValue(parms.imageField)
+	if (!fileParm || queryType !== TokenApiQueryType.save) return dataUpdate
 
-	switch (queryTiming) {
-		case DataObjActionQueryTriggerTiming.pre:
-			const fileParm: TokenApiFileParm = dataUpdate.rowsSave.getDetailRecordValue(parms.imageField)
-			if (fileParm) {
-				fileAction = dataUpdate.rowsSave.getDetailRowStatusIs(DataRecordStatus.delete)
-					? TokenApiFileAction.delete
-					: fileParm.fileAction
-						? fileParm.fileAction
-						: TokenApiFileAction.none
-			} else {
-				fileAction = TokenApiFileAction.none
-			}
+	if (queryTiming === DataObjActionQueryTriggerTiming.pre) {
+		fileAction = dataUpdate.rowsSave.getDetailRowStatusIs(DataRecordStatus.delete)
+			? TokenApiFileAction.delete
+			: fileParm instanceof TokenApiFileParmDelete
+				? TokenApiFileAction.delete
+				: fileParm instanceof TokenApiFileParmUpload
+					? TokenApiFileAction.upload
+					: TokenApiFileAction.none
 
-			switch (fileAction) {
-				case TokenApiFileAction.delete:
+		switch (fileAction) {
+			case TokenApiFileAction.delete:
+				let url = ''
+				if (fileParm instanceof TokenApiFileParmDelete) {
+					url = fileParm.urlOld
+				} else if (fileParm instanceof TokenApiFileParmUpload) {
+					if (fileParm.urlOld) url = fileParm.urlOld
+				} else {
+					url = fileParm.url
+				}
+				if (url) {
+					await blobDelete(state, url)
 					dataUpdate.rowsSave.setDetailRecordValue(parms.imageField, undefined)
-					if (fileParm.key) {
-						key = fileParm.key
-					} else {
-						fileAction = TokenApiFileAction.none
-					}
-					break
+				}
+				break
 
-				case TokenApiFileAction.none:
-					break
+			case TokenApiFileAction.none:
+				// no change
+				break
 
-				case TokenApiFileAction.upload:
-					file = required(fileParm.file, FILENAME, 'file')
-					const fileName = required(file?.name, FILENAME, 'file.name')
-					const fileType = required(fileParm.fileType, FILENAME, 'fileType')
-					key = required(fileParm.key, FILENAME, 'key')
-					uploadData = new FileStorage(fileName, fileType, key)
-					dataUpdate.rowsSave.setDetailRecordValue(parms.imageField, uploadData)
-					break
+			case TokenApiFileAction.upload:
+				if (fileParm instanceof TokenApiFileParmUpload) {
+					if (fileParm.urlOld) await blobDelete(state, fileParm.urlOld)
+					await blobUpload(state, fileParm, dataUpdate, parms)
+				}
+				break
 
-				default:
-					error(500, {
-						file: FILENAME,
-						function: 'qaExecuteFileStorage',
-						message: `No case defined for TriggerTiming: pre, fileAction: ${fileAction}`
-					})
-			}
-			break
-
-		case DataObjActionQueryTriggerTiming.post:
-			switch (fileAction) {
-				case TokenApiFileAction.delete:
-					await fileDelete(state, key)
-					break
-
-				case TokenApiFileAction.none:
-					break
-
-				case TokenApiFileAction.upload:
-					await fileUpload(state, uploadData, file)
-					break
-
-				default:
-					error(500, {
-						file: FILENAME,
-						function: 'qaExecuteFileStorage',
-						message: `No case defined for TriggerTiming: post, fileAction: ${fileAction}`
-					})
-			}
-			break
-
-		default:
-			error(500, {
-				file: FILENAME,
-				function: 'qaExecuteFileStorage',
-				message: `No case defined for queryTiming: ${queryTiming}`
-			})
+			default:
+				error(500, {
+					file: FILENAME,
+					function: 'qaExecuteFileStorage',
+					message: `No case defined for TriggerTiming: pre, fileAction: ${fileAction}`
+				})
+		}
 	}
 	return dataUpdate
 }
 
-const fileDelete = async function (state: State, key: string) {
-	const result: ResponseBody = await objDelete(key)
-	if (!result.success) {
-		alert(`Unabled to delete avatar. Processing cancelled.`)
-		return
-	}
-	state.openToast(ToastType.success, 'Avatar deleted successfully!')
+const blobDelete = async function (state: State, url: string) {
+	const formData = new FormData()
+	formData.set('fileAction', TokenApiFileAction.delete)
+	formData.set('url', url)
+
+	const responsePromise: Response = await fetch('/api/vercel', {
+		method: 'POST',
+		body: formData
+	})
+	const result = await responsePromise.json()
+	debug('crudFileStorage.fileDelete', 'result', result)
 }
 
-const fileUpload = async function (state: State, uploadData: FileStorage, file: File) {
-	const key =
-		uploadData.fileType === TokenApiFileType.image ? 'raw/' + uploadData.key : uploadData.key
-	const result: ResponseBody = await objUpload(key, file)
-	if (!result.success) {
-		alert(`Unabled to upload ${file.name}. Processing cancelled.`)
-		return
-	}
-	state.openToast(ToastType.success, 'Avatar uploaded successfully!')
+const blobUpload = async function (
+	state: State,
+	fileParm: TokenApiFileParmUpload,
+	dataUpdate: DataObjData,
+	parms: DataRecord
+) {
+	const file = required(fileParm.file, FILENAME, 'file')
+	const fileName = required(file.name, FILENAME, 'file.name')
+
+	const formData = new FormData()
+	formData.set('fileAction', TokenApiFileAction.upload)
+	formData.set('file', file)
+	formData.set('key', fileParm.key)
+
+	const responsePromise: Response = await fetch('/api/vercel', {
+		method: 'POST',
+		body: formData
+	})
+	const result = await responsePromise.json()
+	debug('crudFileStorage.fileUpload', 'result', result)
+
+	dataUpdate.rowsSave.setDetailRecordValue(
+		parms.imageField,
+		new FileStorage({
+			downloadUrl: result.data.downloadUrl,
+			fileName,
+			fileType: fileParm.fileType,
+			key: fileParm.key,
+			url: result.data.url
+		})
+	)
+	state.openToast(ToastType.success, `File '${fileName}' uploaded successfully!`)
 }

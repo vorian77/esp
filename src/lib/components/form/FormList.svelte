@@ -131,7 +131,7 @@
 			}
 		})
 
-		state.download(dataObj.raw.header, 'text/csv', 'csv', data)
+		state.downloadContent(`${dataObj.raw.header}.csv`, 'text/csv', data)
 	}
 
 	function load(data: DataObjData) {

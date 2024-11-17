@@ -39,6 +39,14 @@ module app_cm {
     note: str;
   }
 
+  type CmCohortDoc extending sys_user::Mgmt {
+    required codeType: sys_core::SysCode;
+    required cohort: app_cm::CmCohort;
+    required date: cal::local_date;
+    file: json;
+    note: str;
+  }
+
   # Service Flow
   type CmServiceFlow extending sys_core::SysObj {}
 
@@ -95,6 +103,8 @@ module app_cm {
     file: json;
     isShareWithClient: bool;
     note: str;
+    fileNew: json;
+    fileOld: json;
   }
 
   type CmCsfMsg extending app_cm::CmCsfData {

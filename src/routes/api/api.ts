@@ -16,6 +16,7 @@ export enum ApiFunction {
 	dbEdgeGetTableColumns = 'dbEdgeGetTableColumns',
 	dbEdgeGetUser = 'dbEdgeGetUser',
 	dbEdgeInit = 'dbEdgeInit',
+	sysBlobUpload = 'sysBlobUpload',
 	sysGetUserPref = 'sysGetUserPref',
 	sysGetUserResourcesApp = 'sysGetUserResourcesApp',
 	sysGetUserResourcesFooter = 'sysGetUserResourcesFooter',

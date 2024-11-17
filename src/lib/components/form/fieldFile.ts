@@ -20,12 +20,18 @@ export class FieldFile extends Field {
 }
 
 export class FileStorage {
+	downloadUrl: string
 	fileName: string
 	fileType: string
 	key: string
-	constructor(fileName: string, fileType: string, key: string) {
-		this.fileName = fileName
-		this.fileType = fileType
-		this.key = key
+	url: string
+	constructor(obj: any) {
+		const clazz = 'FileStorage'
+		obj = valueOrDefault(obj, {})
+		this.downloadUrl = strRequired(obj.downloadUrl, clazz, 'downloadUrl')
+		this.fileName = strRequired(obj.fileName, clazz, 'fileName')
+		this.fileType = strRequired(obj.fileType, clazz, 'fileType')
+		this.key = strRequired(obj.key, clazz, 'key')
+		this.url = strRequired(obj.url, clazz, 'url')
 	}
 }

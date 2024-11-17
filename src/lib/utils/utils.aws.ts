@@ -8,7 +8,7 @@ export async function getURLDownload(fileStorageKey: string | undefined) {
 	return await getURL('getURLDownLoad', fileStorageKey)
 }
 
-export async function objDelete(fileStorageKey: string) {
+export async function objDeleteAws(fileStorageKey: string) {
 	const responsePromise: Response = await fetch('/api/aws', {
 		method: 'POST',
 		body: JSON.stringify({ action: 'objDelete', parms: { fileStorageKey } })
@@ -16,7 +16,7 @@ export async function objDelete(fileStorageKey: string) {
 	return await responsePromise.json()
 }
 
-export async function objUpload(fileStorageKey: string, file: File): Promise<ResponseBody> {
+export async function objUploadAws(fileStorageKey: string, file: File): Promise<ResponseBody> {
 	const fileType = file.type
 	fileStorageKey = fileStorageKey
 

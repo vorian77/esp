@@ -290,9 +290,6 @@ export class Query {
 		function processPropsSelectItem(prop: RawDataObjPropDB, query: Query) {
 			const propChildTableTraversal = prop.childTableTraversal
 			const propDisplay = prop?.link?.propDisplay ? prop.link.propDisplay : ''
-			if (propDisplay) {
-				debug('processPropsSelectItem', 'propDisplay', propDisplay)
-			}
 			const indexTable = nbrOrDefault(prop.indexTable, -1)
 			let propValue = ''
 

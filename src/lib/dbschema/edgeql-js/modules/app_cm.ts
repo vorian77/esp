@@ -66,6 +66,7 @@ export type $CmCohortλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "staffInstructor": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<cohorts[is app_cm::CmCourse]": $.LinkDesc<$CmCourse, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohort[is app_cm::CmCsfCohort]": $.LinkDesc<$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<cohort[is app_cm::CmCohortDoc]": $.LinkDesc<$CmCohortDoc, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohort": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohorts": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -93,6 +94,20 @@ type $CmCohortAttd = $.ObjectType<"app_cm::CmCohortAttd", $CmCohortAttdλShape, 
 const $CmCohortAttd = $.makeType<$CmCohortAttd>(_.spec, "29d03147-eaec-11ee-80d4-f7601635462c", _.syntax.literal);
 
 const CmCohortAttd: $.$expr_PathNode<$.TypeSet<$CmCohortAttd, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCohortAttd, $.Cardinality.Many), null);
+
+export type $CmCohortDocλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
+  "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "cohort": $.LinkDesc<$CmCohort, $.Cardinality.One, {}, false, false,  false, false>;
+  "date": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
+  "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
+  "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+}>;
+type $CmCohortDoc = $.ObjectType<"app_cm::CmCohortDoc", $CmCohortDocλShape, null, [
+  ..._sys_user.$Mgmt['__exclusives__'],
+]>;
+const $CmCohortDoc = $.makeType<$CmCohortDoc>(_.spec, "b4d7d74a-a42b-11ef-a294-9fa0fbcb479d", _.syntax.literal);
+
+const CmCohortDoc: $.$expr_PathNode<$.TypeSet<$CmCohortDoc, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCohortDoc, $.Cardinality.Many), null);
 
 export type $CmCourseλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "codeSector": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
@@ -161,6 +176,8 @@ export type $CmCsfDocumentλShape = $.typeutil.flatten<$CmCsfDataλShape & {
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "isShareWithClient": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
+  "fileNew": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
+  "fileOld": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;
 type $CmCsfDocument = $.ObjectType<"app_cm::CmCsfDocument", $CmCsfDocumentλShape, null, [
   ...$CmCsfData['__exclusives__'],
@@ -284,13 +301,14 @@ function getCMTrainingCourse(...args: any[]) {
 
 
 
-export { $CmClient, CmClient, $CmClientServiceFlow, CmClientServiceFlow, $CmCohort, CmCohort, $CmCohortAttd, CmCohortAttd, $CmCourse, CmCourse, $CmCsfData, CmCsfData, $CmCsfCohort, CmCsfCohort, $CmCsfCohortAttd, CmCsfCohortAttd, $CmCsfDocument, CmCsfDocument, $CmCsfJobPlacement, CmCsfJobPlacement, $CmCsfMsg, CmCsfMsg, $CmCsfNote, CmCsfNote, $CmCsfSchoolPlacement, CmCsfSchoolPlacement, $CmPartner, CmPartner, $CmServiceFlow, CmServiceFlow };
+export { $CmClient, CmClient, $CmClientServiceFlow, CmClientServiceFlow, $CmCohort, CmCohort, $CmCohortAttd, CmCohortAttd, $CmCohortDoc, CmCohortDoc, $CmCourse, CmCourse, $CmCsfData, CmCsfData, $CmCsfCohort, CmCsfCohort, $CmCsfCohortAttd, CmCsfCohortAttd, $CmCsfDocument, CmCsfDocument, $CmCsfJobPlacement, CmCsfJobPlacement, $CmCsfMsg, CmCsfMsg, $CmCsfNote, CmCsfNote, $CmCsfSchoolPlacement, CmCsfSchoolPlacement, $CmPartner, CmPartner, $CmServiceFlow, CmServiceFlow };
 
 type __defaultExports = {
   "CmClient": typeof CmClient;
   "CmClientServiceFlow": typeof CmClientServiceFlow;
   "CmCohort": typeof CmCohort;
   "CmCohortAttd": typeof CmCohortAttd;
+  "CmCohortDoc": typeof CmCohortDoc;
   "CmCourse": typeof CmCourse;
   "CmCsfData": typeof CmCsfData;
   "CmCsfCohort": typeof CmCsfCohort;
@@ -309,6 +327,7 @@ const __defaultExports: __defaultExports = {
   "CmClientServiceFlow": CmClientServiceFlow,
   "CmCohort": CmCohort,
   "CmCohortAttd": CmCohortAttd,
+  "CmCohortDoc": CmCohortDoc,
   "CmCourse": CmCourse,
   "CmCsfData": CmCsfData,
   "CmCsfCohort": CmCsfCohort,

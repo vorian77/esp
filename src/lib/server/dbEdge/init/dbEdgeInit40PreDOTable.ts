@@ -74,6 +74,7 @@ export function initPreTable(init: InitDb) {
 		['sys_ai_old', 'app_cm', 'CmClientServiceFlow', true],
 		['sys_ai_old', 'app_cm', 'CmCohort', true],
 		['sys_ai_old', 'app_cm', 'CmCohortAttd', true],
+		['sys_ai_old', 'app_cm', 'CmCohortDoc', true],
 		['sys_ai_old', 'app_cm', 'CmCourse', true],
 		['sys_ai_old', 'app_cm', 'CmCsfCohort', true],
 		['sys_ai_old', 'app_cm', 'CmCsfCohortAttd', true],

@@ -46,6 +46,7 @@
 		"@skeletonlabs/skeleton": "2.3.0",
 		"@sveltejs/adapter-vercel": "^4.0.5",
 		"@sveltejs/vite-plugin-svelte-inspector": "^2.1.0",
+		"@vercel/blob": "^0.26.0",
 		"ag-grid-charts-enterprise": "~32.3.0",
 		"ag-grid-community": "^32.3.0",
 		"axios": "^1.7.7",

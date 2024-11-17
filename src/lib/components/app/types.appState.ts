@@ -84,17 +84,26 @@ export class State {
 		}
 	}
 
-	download(title: string, mimeType: string, fileType: string, data: string) {
-		const blob = new Blob([data], { type: mimeType })
+	downloadContent(title: string, mimeType: string, content: string) {
+		const blob = new Blob([content], { type: mimeType })
 		const url = URL.createObjectURL(blob)
+		this.downloadUrl(url, title)
 
+		// const link = document.createElement('a')
+		// link.href = url
+		// link.download =
+		// link.click()
+		// URL.revokeObjectURL(url)
+
+		this.openToast(ToastType.success, `"${title}" has been downloaded.`)
+	}
+
+	downloadUrl(url: string, title: string = '') {
 		const link = document.createElement('a')
 		link.href = url
-		link.download = `${title}.${fileType}`
+		if (title) link.download = title
 		link.click()
-
 		URL.revokeObjectURL(url)
-		this.openToast(ToastType.success, `"${title}" has been downloaded.`)
 	}
 
 	async getActions(fieldGroupName: string) {

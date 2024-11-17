@@ -92,23 +92,38 @@ export class TokenApiDbTableColumns {
 
 export enum TokenApiFileAction {
 	delete = 'delete',
+	list = 'list',
 	none = 'none',
 	upload = 'upload'
 }
 
-export class TokenApiFileParm extends TokenApi {
-	file?: File
-	fileAction: TokenApiFileAction
-	fileType?: TokenApiFileType
-	key?: string
+export class TokenApiFileParmDelete extends TokenApi {
+	urlOld: string
 	constructor(obj: any) {
 		super()
-		const clazz = 'TokenApiFileParm'
+		const clazz = 'TokenApiFileParmDelete'
 		obj = valueOrDefault(obj, {})
-		this.file = obj.file
-		this.fileAction = required(obj.fileAction, clazz, 'fileAction')
-		this.fileType = obj.fileType
-		this.key = obj.key
+		this.urlOld = strRequired(obj.urlOld, clazz, 'oldUrl')
+	}
+}
+export class TokenApiFileParmUpload {
+	file: File
+	fileType: TokenApiFileType
+	key: string
+	urlOld?: string
+	constructor(obj: any) {
+		const clazz = 'TokenApiFileParmUpload'
+		obj = valueOrDefault(obj, {})
+		this.file = required(obj.file, clazz, 'file')
+		this.fileType = memberOfEnum(
+			obj.fileType,
+			clazz,
+			'fileType',
+			'TokenApiFileType',
+			TokenApiFileType
+		)
+		this.key = strRequired(obj.key, clazz, 'key')
+		this.urlOld = obj.urlOld
 	}
 }
 

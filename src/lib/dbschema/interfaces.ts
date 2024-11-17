@@ -94,6 +94,13 @@ export namespace app_cm {
     "cohortId"?: string | null;
     "file"?: unknown | null;
   }
+  export interface CmCohortDoc extends sys_user.Mgmt {
+    "codeType": sys_core.SysCode;
+    "cohort": CmCohort;
+    "date": edgedb.LocalDate;
+    "file"?: unknown | null;
+    "note"?: string | null;
+  }
   export interface CmCourse extends sys_core.SysObj {
     "codeSector"?: sys_core.SysCode | null;
     "codeStatus"?: sys_core.SysCode | null;
@@ -129,6 +136,8 @@ export namespace app_cm {
     "note"?: string | null;
     "file"?: unknown | null;
     "isShareWithClient"?: boolean | null;
+    "fileNew"?: unknown | null;
+    "fileOld"?: unknown | null;
   }
   export interface CmCsfJobPlacement extends CmCsfData {
     "codeJobType": sys_core.SysCode;
@@ -914,6 +923,7 @@ export interface types {
     "CmClientServiceFlow": app_cm.CmClientServiceFlow;
     "CmCohort": app_cm.CmCohort;
     "CmCohortAttd": app_cm.CmCohortAttd;
+    "CmCohortDoc": app_cm.CmCohortDoc;
     "CmCourse": app_cm.CmCourse;
     "CmCsfData": app_cm.CmCsfData;
     "CmCsfCohort": app_cm.CmCsfCohort;

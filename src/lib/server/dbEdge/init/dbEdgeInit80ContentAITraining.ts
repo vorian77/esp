@@ -6,6 +6,7 @@ export function initContentAITraining(init: InitDb) {
 	initCohortStudentRoster(init)
 	initCohortAttd(init)
 	initCohortAttdSheet(init)
+	initCohortDoc(init)
 	initFieldListConfigPartnerContact(init)
 	initPartner(init)
 	initPartnerNote(init)
@@ -975,6 +976,220 @@ function initCohortAttdSheet(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_ai_old',
 		parentNodeName: 'node_obj_cm_cohort_attd_detail'
+	})
+}
+
+function initCohortDoc(init: InitDb) {
+	init.addTrans('sysDataObj', {
+		actionFieldGroup: 'doag_list',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		exprFilter: '.cohort.id = <tree,uuid,CmCohort.id>',
+		header: 'Documents',
+		name: 'data_obj_cm_cohort_doc_list',
+		owner: 'sys_ai_old',
+		tables: [{ index: 0, table: 'CmCohortDoc' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'date',
+				indexTable: 0,
+				isDisplayable: true,
+				orderCrumb: 20,
+				orderDefine: 20,
+				orderDisplay: 20,
+				orderSort: 20
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeType',
+				indexTable: 0,
+				isDisplayable: true,
+				linkColumns: ['name'],
+				orderDefine: 30,
+				orderDisplay: 30
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_bool',
+				exprCustom: `(EXISTS .file)`,
+				headerAlt: 'Has Upload',
+				isDisplayable: true,
+				nameCustom: 'hasUpload',
+				orderDisplay: 40,
+				orderDefine: 40
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'note',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 50,
+				orderDisplay: 50
+			}
+		]
+	})
+
+	init.addTrans('sysDataObj', {
+		owner: 'sys_ai_old',
+		codeComponent: 'FormDetail',
+		codeCardinality: 'detail',
+		name: 'data_obj_cm_cohort_doc_detail',
+		header: 'Document',
+		tables: [{ index: 0, table: 'CmCohortDoc' }],
+		actionFieldGroup: 'doag_detail',
+		actionsQuery: [
+			{
+				name: 'qa_file_storage',
+				parms: [{ key: 'imageField', value: 'file' }],
+				triggers: [
+					{ codeQueryType: 'retrieve', codeTriggerTiming: 'post' },
+					{ codeQueryType: 'save', codeTriggerTiming: 'pre' },
+					{ codeQueryType: 'save', codeTriggerTiming: 'post' }
+				]
+			}
+		],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				columnName: 'cohort',
+				orderDefine: 20,
+				indexTable: 0,
+				isDisplayable: false,
+				isExcludeUpdate: true,
+				linkExprSave: '(SELECT app_cm::CmCohort Filter .id = <tree,uuid,CmCohort.id>)',
+				linkTable: 'CmCohort'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30
+			},
+			{
+				codeFieldElement: 'date',
+				columnName: 'date',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeType',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItemsParmName: 'ct_cm_cohort_doc_type',
+				linkTable: 'SysCode'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'file',
+				columnName: 'file',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0,
+				width: 300
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0
+			},
+
+			/* management */
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 1000,
+				orderDefine: 1000
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				isDisplayable: true,
+				orderDisplay: 1010,
+				orderDefine: 1010,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				isDisplayable: true,
+				orderDisplay: 1020,
+				orderDefine: 1020,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				isDisplayable: true,
+				orderDisplay: 1030,
+				orderDefine: 1030,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: true,
+				orderDisplay: 1040,
+				orderDefine: 1040,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 1050,
+				orderDefine: 1050
+			}
+		]
+	})
+	init.addTrans('sysNodeObjProgramObj', {
+		codeIcon: 'AppWindow',
+		dataObj: 'data_obj_cm_cohort_doc_list',
+		header: 'Documents',
+		name: 'node_obj_cm_cohort_doc_list',
+		orderDefine: 40,
+		owner: 'sys_ai_old',
+		parentNodeName: 'node_obj_cm_cohort_detail'
+	})
+	init.addTrans('sysNodeObjProgramObj', {
+		codeIcon: 'AppWindow',
+		dataObj: 'data_obj_cm_cohort_doc_detail',
+		header: 'Document',
+		name: 'node_obj_cm_cohort_doc_detail',
+		orderDefine: 10,
+		owner: 'sys_ai_old',
+		parentNodeName: 'node_obj_cm_cohort_doc_list'
 	})
 }
 

@@ -258,7 +258,7 @@ async function processDataObjExecute(
 }
 
 async function exeQueryMulti(script: string): Promise<RawDataList> {
-	debug('exeQueryMulti', 'query', script)
+	debug('exeQueryMulti', 'query', script ? script : 'null/undefined script')
 	return await queryJsonMultiple(script)
 }
 
