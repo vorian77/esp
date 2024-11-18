@@ -170,6 +170,7 @@ export class UserOrg {
 		this.logoMarginRight = required(obj.logoMarginRight, clazz, 'logoMarginRight')
 		this.logoWidth = required(obj.logoWidth, clazz, 'logoWidth')
 		this.name = strRequired(obj.name, clazz, 'name')
+		console.log('UserOrg.constructor', this)
 	}
 }
 
