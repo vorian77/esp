@@ -4,7 +4,7 @@
 
 	export let user: User | undefined
 
-	const FILENAME = '$comps/app/NavLogo.svelte'
+	const FILENAME = '$comps/app/NavLogo.svelte1'
 
 	$: userOrg = user?.org as UserOrg
 	$: classImg = userOrg ? ` mr-${userOrg.logoMarginRight}` : ''
