@@ -13,7 +13,7 @@
 {#if userOrg}
 	<div class={classImg}>
 		{#await import(`$lib/assets/${userOrg.logoFileName}.${userOrg.codeLogoFileType}`) then { default: src }}
-			<img {src} width={userOrg.logoWidth} alt="Image" />
+			<img {src} width={userOrg.logoWidth} />
 		{/await}
 	</div>
 {/if}

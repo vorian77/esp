@@ -20,6 +20,7 @@ const config = {
 			'$actions/*': 'src/actions/*',
 			'$assets/*': 'src/lib/assets/*',
 			'$comps/*': 'src/lib/components/*',
+			$db: 'src/db/*',
 			'$dev/*': 'src/dev/*',
 			'$enhance/*': 'src/lib/enhancements/*',
 			'$routes/*': 'src/routes/*',

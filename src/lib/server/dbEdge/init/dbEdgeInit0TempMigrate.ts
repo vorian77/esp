@@ -1,4 +1,4 @@
-import e from '$lib/dbschema/edgeql-js'
+import e from '$db/dbschema/edgeql-js'
 import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import { TokenApiDbTableColumns, TokenApiUserId } from '$utils/types.token'
 
