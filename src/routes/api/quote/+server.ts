@@ -3,8 +3,8 @@ import { getServerResponse } from '$utils/types'
 
 const CATEGORIES = ['inspirational', 'courage']
 // const CATEGORIES = [
-// 	'amazing',
-// 	'art',
+// 'amazing',
+// 'art',
 // 	'beauty',
 // 	'best',
 // 	'change',
