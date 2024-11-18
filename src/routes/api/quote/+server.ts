@@ -1,5 +1,4 @@
 import { API_NINJAS_SECRET } from '$env/static/private'
-import { processForm } from '$server/dbForm'
 import { getServerResponse } from '$utils/types'
 
 const CATEGORIES = ['inspirational', 'courage']

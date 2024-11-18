@@ -24,7 +24,6 @@
 	import NavTree from '$comps/app/NavTree.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
-	import { getURLDownload } from '$utils/utils.aws'
 	import { page } from '$app/stores'
 	import { goto } from '$app/navigation'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -70,17 +69,16 @@
 		})
 		launchApp = false
 	}
-	$: if (user?.avatar?.key) {
-		;(async () => {
-			userAvatarSrc = await getURLDownload(user.avatar.key)
-		})()
-	} else {
-		userAvatarSrc = ''
-	}
+	// $: if (user?.avatar?.key) {
+	// 	;(async () => {
+	// 		userAvatarSrc = await getURLDownload(user.avatar.key)
+	// 	})()
+	// } else {
+	// 	userAvatarSrc = ''
+	// }
 
 	async function stateUpdateCallback(obj: any) {
 		state = state.updateProperties(obj)
-		// if (obj.packet) await statePacketAdd(obj.packet)
 		if (state.page !== $page.route.id) goto(state.page)
 	}
 

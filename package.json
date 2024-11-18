@@ -38,8 +38,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@aws-sdk/client-s3": "^3.665.0",
-		"@aws-sdk/s3-request-presigner": "^3.665.0",
 		"@floating-ui/dom": "^1.6.11",
 		"@sendgrid/mail": "^7.7.0",
 		"@sentry/sveltekit": "^8.33.1",
@@ -54,7 +52,6 @@
 		"lodash-es": "^4.17.21",
 		"lucide": "^0.454.0",
 		"lucide-svelte": "^0.454.0",
-		"mongodb": "^6.9.0",
 		"svelte-language-server": "^0.16.14",
 		"twilio": "^4.23.0"
 	}

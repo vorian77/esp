@@ -1,5 +1,3 @@
-import { getForm } from '$server/dbForm'
-import { getURLDownload } from '$utils/utils.aws'
 import { dbESPAPI } from '$server/dbESP'
 import { HTMLMETHOD } from '$utils/types'
 import { getEnvVar } from '$server/env'
@@ -11,33 +9,34 @@ export const POST = async ({ request, locals }) => {
 	const { elgId } = await request.json()
 
 	// get doc form
-	let formDefn = await getForm('cm_elg_doc_rec', { ...locals.user, elgId })
+	// let formDefn = await getForm('cm_elg_doc_rec', { ...locals.user, elgId })
 
-	// get doc image download
-	const imgStorageKey = formDefn.values.imgStorageKey
-	if (imgStorageKey) {
-		const responsePromise = await getURLDownload(imgStorageKey)
-		const responData = await responsePromise.json()
+	// 	// get doc image download
+	// 	const imgStorageKey = formDefn.values.imgStorageKey
+	// 	if (imgStorageKey) {
+	// 		// const responsePromise = await getURLDownload(imgStorageKey)
+	// 		const responData = await responsePromise.json()
 
-		const pictEl = 'docImage'
-		const idx = formDefn.fields.findIndex((f) => f.name == pictEl)
-		if (idx >= 0) {
-			formDefn.fields[idx].value = responData.data.url
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'POST',
-				message: `Required field element missing: (${pictEl}).`
-			})
-		}
-	}
-	return new Response(JSON.stringify({ formDefn }))
-}
+	// 		const pictEl = 'docImage'
+	// 		const idx = formDefn.fields.findIndex((f) => f.name == pictEl)
+	// 		if (idx >= 0) {
+	// 			formDefn.fields[idx].value = responData.data.url
+	// 		} else {
+	// 			error(500, {
+	// 				file: FILENAME,
+	// 				function: 'POST',
+	// 				message: `Required field element missing: (${pictEl}).`
+	// 			})
+	// 		}
+	// 	}
+	// 	return new Response(JSON.stringify({ formDefn }))
+	// }
 
-export const GET = async ({ locals }) => {
-	const responsePromise = await dbESPAPI(HTMLMETHOD.GET, 'ws_cm_ssr_elg_list', {
-		referralId: locals.user.referral_id
-	})
-	const response = await responsePromise.json()
-	return new Response(JSON.stringify(response.data))
+	// export const GET = async ({ locals }) => {
+	// 	// const responsePromise = await dbESPAPI(HTMLMETHOD.GET, 'ws_cm_ssr_elg_list', {
+	// 	// 	referralId: locals.user.referral_id
+	// 	// })
+	// 	const response = await responsePromise.json()
+	// 	return new Response(JSON.stringify(response.data))
+	return new Response(JSON.stringify({}))
 }

@@ -51,10 +51,10 @@
 		modalStore.close()
 
 		async function getURL(action: string, parms: {}) {
-			const responsePromise: Response = await fetch('/api/aws', {
-				method: 'POST',
-				body: JSON.stringify({ action, parms })
-			})
+			// const responsePromise: Response = await fetch('/api/aws', {
+			// 	method: 'POST',
+			// 	body: JSON.stringify({ action, parms })
+			// })
 			const response: ResponseBody = await responsePromise.json()
 
 			if (!response.data.url) {

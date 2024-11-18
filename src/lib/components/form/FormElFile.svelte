@@ -8,7 +8,6 @@
 		TokenApiBlobAction,
 		TokenApiBlobType
 	} from '$utils/types.token'
-	import { getURLDownload } from '$utils/utils.aws'
 	import { isEqual } from 'lodash-es'
 	import DataViewer from '$utils/DataViewer.svelte'
 

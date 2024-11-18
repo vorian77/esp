@@ -1,5 +1,3 @@
-import { getForm } from '$server/dbForm'
-
 export async function load({ locals }) {
 	// return {
 	// 	auth_account: await getForm('form_auth_account', locals.user),

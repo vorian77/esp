@@ -1,6 +1,5 @@
 import { DataObjActionQueryTriggerTiming } from '$comps/app/types.appQuery'
 import { State } from '$comps/app/types.appState'
-import { objDeleteAws, objUploadAws } from '$utils/utils.aws'
 import type { ResponseBody } from '$utils/types'
 import {
 	DataObjData,
