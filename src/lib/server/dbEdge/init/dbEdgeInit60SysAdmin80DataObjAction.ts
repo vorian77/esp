@@ -372,7 +372,7 @@ function initDataObjActionField(init: InitDb) {
 		name: 'node_obj_sys_admin_data_obj_action_field_list',
 		orderDefine: 70,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -515,7 +515,7 @@ function initDataObjActionFieldGroup(init: InitDb) {
 		name: 'node_obj_sys_admin_data_obj_action_field_group_list',
 		orderDefine: 80,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {

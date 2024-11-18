@@ -1,20 +1,19 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initAdminSysObj(init: InitDb) {
-	initSystemObjects(init)
+export function initAdminOrgSys(init: InitDb) {
+	initOrg(init)
 }
 
-async function initSystemObjects(init: InitDb) {
+function initOrg(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
+		header: 'Organizations (System)',
 		exprFilter: 'none',
-		header: 'Systems (Objects)',
-		isListEdit: false,
-		name: 'data_obj_sys_admin_system_list_obj',
+		name: 'data_obj_sys_admin_org_list_sys',
 		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysSystem' }],
+		tables: [{ index: 0, table: 'SysOrg' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -28,9 +27,9 @@ async function initSystemObjects(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: true,
 				orderCrumb: 10,
-				orderDisplay: 20,
-				orderDefine: 20,
-				orderSort: 20
+				orderDisplay: 30,
+				orderDefine: 30,
+				orderSort: 10
 			}
 		]
 	})
@@ -39,10 +38,10 @@ async function initSystemObjects(init: InitDb) {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
-		header: 'System (Object)',
-		name: 'data_obj_sys_admin_system_detail_obj',
+		header: 'Organization (System)',
+		name: 'data_obj_sys_admin_org_detail_sys',
 		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysSystem' }],
+		tables: [{ index: 0, table: 'SysOrg' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -51,11 +50,10 @@ async function initSystemObjects(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				codeAccess: 'readOnly',
 				columnName: 'name',
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 20,
+				orderDefine: 20,
 				indexTable: 0
 			},
 
@@ -111,20 +109,19 @@ async function initSystemObjects(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_sys_admin_system_list_obj',
-		header: 'Systems (Objects)',
-		name: 'node_obj_sys_admin_system_list_obj',
-		orderDefine: 30,
+		dataObj: 'data_obj_sys_admin_org_list_sys',
+		header: 'Organizations (System)',
+		name: 'node_obj_sys_admin_org_list_sys',
+		orderDefine: 10,
 		owner: 'sys_system_old'
 	})
-
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_sys_admin_system_detail_obj',
-		header: 'System (Object)',
-		name: 'node_obj_sys_admin_system_detail_obj',
+		dataObj: 'data_obj_sys_admin_org_detail_sys',
+		header: 'Organization (System)',
+		name: 'node_obj_sys_admin_org_detail_sys',
 		orderDefine: 10,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_list_obj'
+		parentNodeName: 'node_obj_sys_admin_org_list_sys'
 	})
 }

@@ -515,7 +515,7 @@ function initColumn(init: InitDb) {
 		name: 'node_obj_sys_admin_column_list',
 		orderDefine: 50,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -704,7 +704,7 @@ function initTable(init: InitDb) {
 		name: 'node_obj_sys_admin_table_list',
 		orderDefine: 160,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {

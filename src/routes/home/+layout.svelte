@@ -45,11 +45,10 @@
 	let user: User | undefined
 	let userAvatarSrc = ''
 	let appName = ''
-	let logoFileName = ''
 
 	// 241001 - navBar experiment
 	export let data
-	const DEV_MODE = data.system.server_mode === 'development'
+	const DEV_MODE = data.environ === 'dev'
 	let clazzNavBar = DEV_MODE ? 'border-0 border-red-400' : 'hidden'
 
 	$: {
@@ -122,9 +121,6 @@
 	}
 </script>
 
-{#if state}
-	<!-- <DataViewer header="state.objStatus-obj" data={state.objStatus} /> -->
-{/if}
 <AppShell slotSidebarLeft="w-{SIDEBAR_LEFT_WIDTH}">
 	<svelte:fragment slot="header">
 		<div>
@@ -204,10 +200,20 @@
 	</div>
 
 	<svelte:fragment slot="footer">
-		<div style="border-top: 1px solid #f5f5f5;">
-			<NavFooter {state} />
+		<div class="border-t-2 border-gray-200">
+			{#if DEV_MODE}
+				<div class="grid grid-cols-5 gap-4 border-t-2 border-gray-200">
+					<div class="col-span-1 text-gray-400 text-sm border-2 border-green-400">Dev Footer</div>
+					<div class="col-span-4 content-center border-2 border-blue-400">
+						<NavFooter {state} />
+					</div>
+				</div>
+			{:else}
+				<NavFooter {state} />
+			{/if}
 		</div>
 	</svelte:fragment>
+	<!-- <DataViewer header="user" data={user} /> -->
 </AppShell>
 
 <div class="card p-4 variant-filled-primary z-10" data-popup="popupClick">

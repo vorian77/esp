@@ -30,7 +30,7 @@ export async function sysUser(owner: string, userName: string) {
 		createdBy: CREATOR,
 		modifiedBy: CREATOR,
 		owner: e.select(e.sys_core.getOrg(owner)),
-		password: '!8394812kalsdjfa*!@#$$*&',
+		password: '***123ABC###QWE***',
 		person: e.insert(e.default.SysPerson, {
 			firstName: 'System',
 			lastName: 'User'

@@ -562,10 +562,13 @@ export async function getUserByUserId(token: TokenApiUserId) {
 		id: true,
 		lastName: u.person.lastName,
 		org: e.select(e.sys_core.SysOrg, (o) => ({
+			_codeLogoFileType: o.codeLogoFileType.name,
 			appName: true,
 			name: true,
 			logoFileName: true,
-			filter_single: e.op(o.id, '=', u.owner.id)
+			logoMarginRight: true,
+			logoWidth: true,
+			filter_single: e.op(o, '=', u.defaultOrg)
 		})),
 		preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({
 			_codeType: p.codeType.name,

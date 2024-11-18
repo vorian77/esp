@@ -28,6 +28,7 @@ export namespace sys_user {
     "person"?: SysPerson | null;
     "userName"?: string | null;
     "systems": sys_core.SysSystem[];
+    "defaultOrg"?: sys_core.SysOrg | null;
   }
   export interface SysUserPref extends Mgmt {
     "user": SysUser;
@@ -448,6 +449,9 @@ export namespace sys_core {
   export interface SysOrg extends ObjRoot, sys_user.Mgmt {
     "appName"?: string | null;
     "logoFileName"?: string | null;
+    "codeLogoFileType"?: SysCode | null;
+    "logoMarginRight"?: number | null;
+    "logoWidth"?: number | null;
   }
   export interface SysSystem extends ObjRoot, sys_user.Mgmt {
     "owner": SysOrg;

@@ -362,6 +362,13 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
+		header: 'Logo File Type',
+		isMultiSelect: false,
+		name: 'codeLogoFileType'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
 		header: 'Mask',
 		isMultiSelect: false,
 		name: 'codeMask'
@@ -1035,6 +1042,12 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Default Organization',
+		name: 'defaultOrg'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Description',
 		name: 'description'
@@ -1538,8 +1551,20 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
-		header: 'Logo File Name',
+		header: 'Logo File Name (without extension)',
 		name: 'logoFileName'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'int16',
+		header: 'Logo File Width',
+		name: 'logoWidth'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'float64',
+		header: 'Logo Margin Right',
+		name: 'logoMarginRight'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1639,7 +1664,6 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'office'
 	})
-
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
@@ -1674,6 +1698,13 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'int16',
 		header: 'List Sort Order',
 		name: 'orderSort'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Organizations',
+		isMultiSelect: true,
+		name: 'orgs'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',

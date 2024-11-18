@@ -3,6 +3,7 @@ import {
 	DataObj,
 	DataObjData,
 	DataRecordStatus,
+	debug,
 	nbrRequired,
 	Node,
 	NodeType,
@@ -17,6 +18,7 @@ import { RawDataObj } from '$comps/dataObj/types.rawDataObj'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import {
 	TokenApiDbDataObjSource,
+	TokenApiBlobAction,
 	TokenApiId,
 	TokenApiQueryType,
 	TokenApiQuery,
@@ -776,4 +778,14 @@ async function getNodesLevel(nodeId: string) {
 			message: `Error retrieving nodes for nodeId: ${nodeId}`
 		})
 	}
+}
+
+async function getBlobList() {
+	const formData = new FormData()
+	formData.set('fileAction', TokenApiBlobAction.list)
+	const responsePromise: Response = await fetch('/api/vercel', {
+		method: 'POST',
+		body: formData
+	})
+	return await responsePromise.json()
 }

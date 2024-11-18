@@ -13,9 +13,9 @@ import {
 } from '$utils/types'
 import {
 	TokenApiFileParmDelete,
-	TokenApiFileParmUpload,
-	TokenApiFileAction,
-	TokenApiFileType,
+	TokenApiBlobParmUpload,
+	TokenApiBlobAction,
+	TokenApiBlobType,
 	TokenApiQueryType
 } from '$utils/types.token'
 import { FileStorage } from '$comps/form/fieldFile'
@@ -25,7 +25,7 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$enhance/crud/crudFileUpload.ts'
 
 let file: File
-let fileAction: TokenApiFileAction | undefined
+let fileAction: TokenApiBlobAction | undefined
 let key: string
 let uploadData: FileStorage
 
@@ -38,25 +38,25 @@ export async function qaExecuteFileStorage(
 	dataUpdate: DataObjData,
 	parms: DataRecord
 ): Promise<DataObjData> {
-	const fileParm: DataRecord | TokenApiFileParmDelete | TokenApiFileParmUpload | undefined =
+	const fileParm: DataRecord | TokenApiFileParmDelete | TokenApiBlobParmUpload | undefined =
 		dataUpdate.rowsSave.getDetailRecordValue(parms.imageField)
 	if (!fileParm || queryType !== TokenApiQueryType.save) return dataUpdate
 
 	if (queryTiming === DataObjActionQueryTriggerTiming.pre) {
 		fileAction = dataUpdate.rowsSave.getDetailRowStatusIs(DataRecordStatus.delete)
-			? TokenApiFileAction.delete
+			? TokenApiBlobAction.delete
 			: fileParm instanceof TokenApiFileParmDelete
-				? TokenApiFileAction.delete
-				: fileParm instanceof TokenApiFileParmUpload
-					? TokenApiFileAction.upload
-					: TokenApiFileAction.none
+				? TokenApiBlobAction.delete
+				: fileParm instanceof TokenApiBlobParmUpload
+					? TokenApiBlobAction.upload
+					: TokenApiBlobAction.none
 
 		switch (fileAction) {
-			case TokenApiFileAction.delete:
+			case TokenApiBlobAction.delete:
 				let url = ''
 				if (fileParm instanceof TokenApiFileParmDelete) {
 					url = fileParm.urlOld
-				} else if (fileParm instanceof TokenApiFileParmUpload) {
+				} else if (fileParm instanceof TokenApiBlobParmUpload) {
 					if (fileParm.urlOld) url = fileParm.urlOld
 				} else {
 					url = fileParm.url
@@ -67,12 +67,12 @@ export async function qaExecuteFileStorage(
 				}
 				break
 
-			case TokenApiFileAction.none:
+			case TokenApiBlobAction.none:
 				// no change
 				break
 
-			case TokenApiFileAction.upload:
-				if (fileParm instanceof TokenApiFileParmUpload) {
+			case TokenApiBlobAction.upload:
+				if (fileParm instanceof TokenApiBlobParmUpload) {
 					if (fileParm.urlOld) await blobDelete(state, fileParm.urlOld)
 					await blobUpload(state, fileParm, dataUpdate, parms)
 				}
@@ -91,7 +91,7 @@ export async function qaExecuteFileStorage(
 
 const blobDelete = async function (state: State, url: string) {
 	const formData = new FormData()
-	formData.set('fileAction', TokenApiFileAction.delete)
+	formData.set('fileAction', TokenApiBlobAction.delete)
 	formData.set('url', url)
 
 	const responsePromise: Response = await fetch('/api/vercel', {
@@ -99,12 +99,11 @@ const blobDelete = async function (state: State, url: string) {
 		body: formData
 	})
 	const result = await responsePromise.json()
-	debug('crudFileStorage.fileDelete', 'result', result)
 }
 
 const blobUpload = async function (
 	state: State,
-	fileParm: TokenApiFileParmUpload,
+	fileParm: TokenApiBlobParmUpload,
 	dataUpdate: DataObjData,
 	parms: DataRecord
 ) {
@@ -112,7 +111,7 @@ const blobUpload = async function (
 	const fileName = required(file.name, FILENAME, 'file.name')
 
 	const formData = new FormData()
-	formData.set('fileAction', TokenApiFileAction.upload)
+	formData.set('fileAction', TokenApiBlobAction.upload)
 	formData.set('file', file)
 	formData.set('key', fileParm.key)
 
@@ -121,7 +120,6 @@ const blobUpload = async function (
 		body: formData
 	})
 	const result = await responsePromise.json()
-	debug('crudFileStorage.fileUpload', 'result', result)
 
 	dataUpdate.rowsSave.setDetailRecordValue(
 		parms.imageField,

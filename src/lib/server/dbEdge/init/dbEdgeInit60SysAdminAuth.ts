@@ -442,7 +442,7 @@ function initDataObjSignup(init: InitDb) {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		exprObject: `WITH 
-		orgName := <system,str,org_name>,
+		orgName := <system,str,xxx>,
 		org := (SELECT sys_core::SysOrg FILTER .name = orgName),
 		userName := <record,str,userName>,
 		password := <record,str,password>,

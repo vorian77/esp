@@ -337,7 +337,7 @@ function initNodeObj(init: InitDb) {
 		name: 'node_obj_sys_admin_node_obj_list',
 		orderDefine: 130,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {

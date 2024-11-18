@@ -213,7 +213,7 @@ function initAnalytic(init: InitDb) {
 		name: 'node_obj_sys_analytic_list',
 		orderDefine: 10,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -928,7 +928,7 @@ function initRep(init: InitDb) {
 		name: 'node_obj_sys_rep_list',
 		orderDefine: 150,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',

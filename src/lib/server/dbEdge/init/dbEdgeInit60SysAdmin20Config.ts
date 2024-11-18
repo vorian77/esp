@@ -1,6 +1,6 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initAdminConfig(init: InitDb) {
+export function initAdminSysConfig(init: InitDb) {
 	initConfig(init)
 }
 async function initConfig(init: InitDb) {
@@ -11,7 +11,7 @@ async function initConfig(init: InitDb) {
 		exprFilter: 'none',
 		header: 'Systems (Config)',
 		isListEdit: true,
-		name: 'data_obj_sys_system_config_list',
+		name: 'data_obj_sys_admin_system_list_config',
 		owner: 'sys_system_old',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
@@ -110,7 +110,7 @@ async function initConfig(init: InitDb) {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'System (Config)',
-		name: 'data_obj_sys_system_config_detail',
+		name: 'data_obj_sys_admin_system_list_detail',
 		owner: 'sys_system_old',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
@@ -180,20 +180,20 @@ async function initConfig(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_sys_system_config_list',
+		dataObj: 'data_obj_sys_admin_system_list_config',
 		header: 'Systems (Config)',
-		name: 'node_obj_sys_system_config_list',
+		name: 'node_obj_sys_admin_system_list_config',
 		orderDefine: 20,
 		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_sys_system_config_detail',
+		dataObj: 'data_obj_sys_admin_system_detail_config',
 		header: 'Organization',
-		name: 'node_obj_sys_system_config_detail',
+		name: 'node_obj_sys_admin_system_detail_config',
 		orderDefine: 10,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_config_list'
+		parentNodeName: 'node_obj_sys_admin_system_list_config'
 	})
 }

@@ -51,7 +51,10 @@ module sys_core {
 
   type SysOrg extending sys_core::ObjRoot, sys_user::Mgmt {
     appName: str;
+    codeLogoFileType: sys_core::SysCode;
     logoFileName: str;
+    logoMarginRight: float64;
+    logoWidth: int16;
     constraint exclusive on (.name);
   }
 

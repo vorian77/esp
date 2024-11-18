@@ -49,6 +49,6 @@ function dbEdgeInitAll(initDb: InitDb) {
 
 export function initFeature(initDb: InitDb) {
 	// current feature
-	initContentAIRep(initDb)
+	// initContentAIRep(initDb)
 	// initSysRepUser(initDb)
 }

@@ -4,9 +4,9 @@
 	import { getToastStore } from '@skeletonlabs/skeleton'
 	import {
 		TokenApiFileParmDelete,
-		TokenApiFileParmUpload,
-		TokenApiFileAction,
-		TokenApiFileType
+		TokenApiBlobParmUpload,
+		TokenApiBlobAction,
+		TokenApiBlobType
 	} from '$utils/types.token'
 	import { getURLDownload } from '$utils/utils.aws'
 	import { isEqual } from 'lodash-es'
@@ -53,7 +53,7 @@
 				urlOld = undefined
 			}
 		} else if (mode === Mode.upload) {
-			if (!(fieldValue instanceof TokenApiFileParmUpload) && fieldValue && fieldValue.url) {
+			if (!(fieldValue instanceof TokenApiBlobParmUpload) && fieldValue && fieldValue.url) {
 				mode = Mode.storage
 				urlCurrent = fieldValue.url
 				urlOld = fieldValue.url
@@ -68,7 +68,6 @@
 				urlOld = undefined
 			}
 		}
-		console.log('FormElFile.init:', { fieldValue, urlCurrent, urlOld, mode })
 
 		// render image based on source
 		if (mode === Mode.storage) {
@@ -108,9 +107,9 @@
 			fp.fSetVal(
 				fp.row,
 				field,
-				new TokenApiFileParmUpload({
+				new TokenApiBlobParmUpload({
 					file: files[0],
-					fileType: files[0].type.includes('pdf') ? TokenApiFileType.pdf : TokenApiFileType.image,
+					fileType: files[0].type.includes('pdf') ? TokenApiBlobType.pdf : TokenApiBlobType.image,
 					key: field.getKey(),
 					urlOld
 				})
@@ -130,7 +129,7 @@
 
 	<div>
 		{#if fieldValue && urlCurrent}
-			{#if fieldValue.fileType === TokenApiFileType.image}
+			{#if fieldValue.fileType === TokenApiBlobType.image}
 				<img
 					alt={field.colDO.label}
 					class="mx-auto p-2"
@@ -139,7 +138,7 @@
 					src={urlCurrent}
 					width="80%"
 				/>
-			{:else if fieldValue.fileType === TokenApiFileType.pdf}
+			{:else if fieldValue.fileType === TokenApiBlobType.pdf}
 				<div class="flex justify-center">
 					<iframe
 						frameborder="0"

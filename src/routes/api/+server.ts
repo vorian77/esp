@@ -20,7 +20,6 @@ import {
 import { getDataObjId, getNodeObjByName } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { dbEdgeInit } from '$server/dbEdge/init/dbEdgeInit'
 import { sysSendText } from '$routes/api/apiTwilio'
-import { vercelBlobUpload } from '$lib/server/apiVercelBlob'
 import { error, type Cookies } from '@sveltejs/kit'
 
 const FILENAME = '/routes/api/dbEdge/server.ts'

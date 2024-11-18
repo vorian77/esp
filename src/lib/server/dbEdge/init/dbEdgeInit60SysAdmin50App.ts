@@ -214,7 +214,7 @@ function initSysAdminApp(init: InitDb) {
 		name: 'node_obj_sys_app_list',
 		orderDefine: 25,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -430,7 +430,7 @@ function initSysAdminAppHeader(init: InitDb) {
 		name: 'node_obj_sys_app_header_list',
 		orderDefine: 20,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {

@@ -1,10 +1,10 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initSysAdminSystemMeta(init: InitDb) {
-	initSystemMeta(init)
+export function initAdminSysMeta(init: InitDb) {
+	initSystem(init)
 }
 
-function initSystemMeta(init: InitDb) {
+function initSystem(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
@@ -12,7 +12,7 @@ function initSystemMeta(init: InitDb) {
 		exprFilter: 'none',
 		header: 'Systems (Meta)',
 		isListEdit: false,
-		name: 'data_obj_sys_system_meta_list',
+		name: 'data_obj_sys_admin_system_list_meta',
 		owner: 'sys_system_old',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
@@ -40,7 +40,7 @@ function initSystemMeta(init: InitDb) {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'System (Meta)',
-		name: 'data_obj_sys_system_meta_detail',
+		name: 'data_obj_sys_admin_system_detail_meta',
 		owner: 'sys_system_old',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
@@ -111,20 +111,20 @@ function initSystemMeta(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_sys_system_meta_list',
+		dataObj: 'data_obj_sys_admin_system_list_meta',
 		header: 'Systems (Meta)',
-		name: 'node_obj_sys_system_meta_list',
+		name: 'node_obj_sys_admin_system_list_meta',
 		orderDefine: 40,
 		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_sys_system_meta_detail',
+		dataObj: 'data_obj_sys_admin_system_detail_meta',
 		header: 'System (Meta)',
-		name: 'node_obj_sys_system_meta_detail',
+		name: 'node_obj_sys_admin_system_detail_meta',
 		orderDefine: 10,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_meta_list'
+		parentNodeName: 'node_obj_sys_admin_system_list_meta'
 	})
 }

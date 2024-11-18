@@ -89,11 +89,11 @@ function initApps(init: InitDb) {
 		name: 'app_sys_admin_global',
 		owner: 'sys_system_old',
 		nodes: [
-			'node_obj_sys_org_list_sys',
-			'node_obj_sys_org_list_user',
-			'node_obj_sys_system_config_list',
-			'node_obj_sys_system_object_list',
-			'node_obj_sys_system_meta_list'
+			'node_obj_sys_admin_org_list_sys',
+			'node_obj_sys_admin_org_list_user',
+			'node_obj_sys_admin_system_list_config',
+			'node_obj_sys_admin_system_list_obj',
+			'node_obj_sys_admin_system_list_meta'
 		]
 	})
 	init.addTrans('sysApp', {
@@ -101,7 +101,7 @@ function initApps(init: InitDb) {
 		isGlobalResource: true,
 		name: 'app_sys_admin_user',
 		owner: 'sys_system_old',
-		nodes: ['node_obj_sys_org_list_user', 'node_obj_sys_system_meta_list']
+		nodes: ['node_obj_sys_admin_org_list_user', 'node_obj_sys_admin_system_list_meta']
 	})
 
 	/* Atlantic Impact */

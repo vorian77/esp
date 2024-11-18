@@ -426,7 +426,7 @@ function initDataObj(init: InitDb) {
 		name: 'node_obj_sys_admin_data_obj_list',
 		orderDefine: 60,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {

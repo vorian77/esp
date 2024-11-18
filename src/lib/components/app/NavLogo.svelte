@@ -1,36 +1,19 @@
 <script lang="ts">
-	import { User } from '$utils/types'
+	import { User, UserOrg, UserOrgLogoFileType } from '$utils/types'
+	import DataViewer from '$utils/DataViewer.svelte'
 
 	export let user: User | undefined
 
 	const FILENAME = '$comps/app/NavLogo.svelte'
 
-	let fileName = ''
-	let fileExt = ''
-
-	$: {
-		fileName = user?.org?.logoFileName ? user.org.logoFileName : ''
-		fileExt = user?.org?.logoFileExt ? user.org.logoFileExt : ''
-	}
+	$: userOrg = user?.org as UserOrg
+	$: classImg = userOrg ? ` mr-${userOrg.logoMarginRight}` : ''
 </script>
 
-<!-- <DataViewer header="showSysReport" data={showSysReport} /> -->
-
-{#if fileName && fileExt === 'jpg'}
-	{#await import(`$lib/assets/${fileName}.jpg`) then { default: src }}
-		<img {src} alt="Image" />
-	{/await}
+{#if userOrg}
+	<div class={classImg}>
+		{#await import(`$lib/assets/${userOrg.logoFileName}.${userOrg.codeLogoFileType}`) then { default: src }}
+			<img {src} width={userOrg.logoWidth} alt="Image" />
+		{/await}
+	</div>
 {/if}
-
-{#if fileName && fileExt === 'png'}
-	{#await import(`$lib/assets/${fileName}.png`) then { default: src }}
-		<img {src} alt="Image" />
-	{/await}
-{/if}
-
-<style>
-	img {
-		width: 60px;
-		margin-right: 10px;
-	}
-</style>

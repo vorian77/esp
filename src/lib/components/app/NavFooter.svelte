@@ -39,7 +39,7 @@
 	const styleItem = `
 				display: flex;
 				align-items: top;		
-				font-size: 10px;
+				font-size: 14px;
 				color: ${navColor};
 				flex-direction: row;
 				justify-content: center;
@@ -100,7 +100,7 @@
 			on:keyup={() => onChange(node)}
 		>
 			<div class="mt-2">
-				<Icon props={new IconProps({ name: node.icon, color: navColor, size: 16 })} />
+				<Icon props={new IconProps({ name: node.icon, color: navColor, size: 18 })} />
 			</div>
 			<div class={marginTopheader}>
 				{node.label}

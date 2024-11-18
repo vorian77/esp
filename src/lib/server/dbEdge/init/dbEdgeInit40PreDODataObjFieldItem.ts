@@ -229,6 +229,13 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysUser'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter: `.id IN (SELECT sys_user::SysUser FILTER .id = <tree,uuid,SysUser.id>).orgs.id`,
+		exprPropDisplay: '.name',
+		name: 'il_sys_user_org',
+		owner: 'sys_system_old',
+		table: 'SysOrg'
+	})
+	init.addTrans('sysDataObjFieldListItems', {
 		exprPropDisplay: '.name',
 		exprFilter: `sys_core::SysObj IN (SELECT 
 			(sys_core::SysObj[is sys_core::SysOrg]) UNION

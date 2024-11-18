@@ -1,6 +1,6 @@
 import { del, list, put } from '@vercel/blob'
 import { BLOB_READ_WRITE_TOKEN } from '$env/static/private'
-import { TokenApiFileAction } from '$utils/types.token'
+import { TokenApiBlobAction } from '$utils/types.token'
 import { debug, getServerResponse, required, type DataRecord } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
@@ -11,21 +11,22 @@ export async function POST({ request }) {
 	const fileAction = formData.get('fileAction')
 
 	switch (fileAction) {
-		case TokenApiFileAction.delete:
+		case TokenApiBlobAction.delete:
 			const url = required(formData.get('url'), FILENAME, 'url')
 			await del(url, {
 				token: BLOB_READ_WRITE_TOKEN
 			})
-			debug('apiVercelBlog.blobDelete', 'complete')
+			debug('api.vercelBlob', 'delete.url', url)
 			return getServerResponse({ success: true })
 
-		case TokenApiFileAction.list:
+		case TokenApiBlobAction.list:
 			const { blobs } = await list({
 				token: BLOB_READ_WRITE_TOKEN
 			})
+			debug('api.vercelBlob', 'blob.list', blobs)
 			return getServerResponse({ success: true, data: blobs })
 
-		case TokenApiFileAction.upload:
+		case TokenApiBlobAction.upload:
 			const file = required(formData.get('file'), FILENAME, 'file')
 			const fileName = required(file.name, FILENAME, 'file.name')
 			const key = required(formData.get('key'), FILENAME, 'key')
@@ -33,7 +34,7 @@ export async function POST({ request }) {
 				access: 'public',
 				token: BLOB_READ_WRITE_TOKEN
 			})
-			debug('apiVercelBlog.blobUpload', 'result', result)
+			debug('api.vercelBlob', 'blob.upload', result)
 			return getServerResponse({ success: true, data: result })
 
 		default:
@@ -44,13 +45,3 @@ export async function POST({ request }) {
 			})
 	}
 }
-
-// const fileList = async function (state: State) {
-// 	const formData = new FormData()
-// 	formData.set('fileAction', TokenApiFileAction.list)
-// 	const responsePromise: Response = await fetch('/api/vercel', {
-// 		method: 'POST',
-// 		body: formData
-// 	})
-// 	return await responsePromise.json()
-// }

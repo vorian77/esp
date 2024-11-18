@@ -369,7 +369,8 @@ export async function addUser(data: any) {
 			lastName: e.str,
 			owner: e.str,
 			password: e.str,
-			userName: e.str
+			userName: e.str,
+			userTypes: e.optional(e.array(e.str))
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysUser, {
@@ -381,7 +382,14 @@ export async function addUser(data: any) {
 					firstName: p.firstName,
 					lastName: p.lastName
 				}),
-				userName: p.userName
+				userName: p.userName,
+				userTypes: e.assert_distinct(
+					e.set(
+						e.for(e.array_unpack(p.userTypes || e.cast(e.array(e.str), e.set())), (ut_parm) => {
+							return e.sys_user.getUserType(ut_parm)
+						})
+					)
+				)
 			})
 		}
 	)

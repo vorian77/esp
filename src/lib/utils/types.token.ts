@@ -36,6 +36,48 @@ export class TokenApi extends Token {
 	}
 }
 
+export enum TokenApiBlobAction {
+	delete = 'delete',
+	list = 'list',
+	none = 'none',
+	upload = 'upload'
+}
+
+export class TokenApiFileParmDelete extends TokenApi {
+	urlOld: string
+	constructor(obj: any) {
+		super()
+		const clazz = 'TokenApiFileParmDelete'
+		obj = valueOrDefault(obj, {})
+		this.urlOld = strRequired(obj.urlOld, clazz, 'oldUrl')
+	}
+}
+export class TokenApiBlobParmUpload {
+	file: File
+	fileType: TokenApiBlobType
+	key: string
+	urlOld?: string
+	constructor(obj: any) {
+		const clazz = 'TokenApiFileParmUpload'
+		obj = valueOrDefault(obj, {})
+		this.file = required(obj.file, clazz, 'file')
+		this.fileType = memberOfEnum(
+			obj.fileType,
+			clazz,
+			'fileType',
+			'TokenApiFileType',
+			TokenApiBlobType
+		)
+		this.key = strRequired(obj.key, clazz, 'key')
+		this.urlOld = obj.urlOld
+	}
+}
+
+export enum TokenApiBlobType {
+	image = 'image',
+	pdf = 'pdf'
+}
+
 export class TokenApiDataObjId extends TokenApi {
 	dataObjName: string
 	constructor(dataObjName: string) {
@@ -88,48 +130,6 @@ export class TokenApiDbTableColumns {
 		this.tableModule = tableModule
 		this.tableName = tableName
 	}
-}
-
-export enum TokenApiFileAction {
-	delete = 'delete',
-	list = 'list',
-	none = 'none',
-	upload = 'upload'
-}
-
-export class TokenApiFileParmDelete extends TokenApi {
-	urlOld: string
-	constructor(obj: any) {
-		super()
-		const clazz = 'TokenApiFileParmDelete'
-		obj = valueOrDefault(obj, {})
-		this.urlOld = strRequired(obj.urlOld, clazz, 'oldUrl')
-	}
-}
-export class TokenApiFileParmUpload {
-	file: File
-	fileType: TokenApiFileType
-	key: string
-	urlOld?: string
-	constructor(obj: any) {
-		const clazz = 'TokenApiFileParmUpload'
-		obj = valueOrDefault(obj, {})
-		this.file = required(obj.file, clazz, 'file')
-		this.fileType = memberOfEnum(
-			obj.fileType,
-			clazz,
-			'fileType',
-			'TokenApiFileType',
-			TokenApiFileType
-		)
-		this.key = strRequired(obj.key, clazz, 'key')
-		this.urlOld = obj.urlOld
-	}
-}
-
-export enum TokenApiFileType {
-	image = 'image',
-	pdf = 'pdf'
 }
 
 export class TokenApiId extends TokenApi {

@@ -11,7 +11,7 @@
 
 	const storeDrawer = getDrawerStore()
 	const storeToast = getToastStore()
-	const DEV_MODE = data.system.server_mode === 'development'
+	const DEV_MODE = data.environ === 'dev'
 	const state = new State({ storeDrawer, storeToast })
 	let pageCurrent = ''
 

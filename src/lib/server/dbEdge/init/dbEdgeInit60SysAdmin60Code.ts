@@ -191,7 +191,7 @@ function initCodeType(init: InitDb) {
 		name: 'node_obj_sys_admin_code_type_list',
 		orderDefine: 30,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -770,7 +770,7 @@ function initCode(init: InitDb) {
 		name: 'node_obj_sys_admin_code_list',
 		orderDefine: 40,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',

@@ -144,7 +144,7 @@ function initMigr(init: InitDb) {
 		name: 'node_obj_sys_admin_migr_list',
 		orderDefine: 140,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_system_object_detail'
+		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',

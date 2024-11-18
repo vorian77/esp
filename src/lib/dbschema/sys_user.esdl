@@ -14,10 +14,11 @@ module sys_user {
   }
   
   type SysUser extending sys_user::Mgmt {
-    required owner: sys_core::SysOrg;
+    defaultOrg: sys_core::SysOrg;
     multi orgs: sys_core::SysOrg {
       on target delete allow;
     };
+    required owner: sys_core::SysOrg;
     person: default::SysPerson {
       on source delete delete target if orphan;
     };

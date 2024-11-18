@@ -3,8 +3,10 @@ import { ParmsValues } from '$utils/types'
 import {
 	arrayOfClasses,
 	booleanRequired,
+	classOptional,
 	getArray,
 	memberOfEnum,
+	required,
 	strRequired,
 	valueOrDefault
 } from '$utils/utils'
@@ -23,7 +25,7 @@ export class User {
 	id: string
 	initials: string = ''
 	lastName: string
-	org: { appName: string; logoFileExt: string; logoFileName: string; name: string } | undefined
+	org?: UserOrg
 	preferences: UserPrefs
 	resources = new UserTypeResourceList()
 	resources_sys_app: any[] = []
@@ -47,26 +49,13 @@ export class User {
 		this.fullName = strRequired(obj.fullName, clazz, 'fullName')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
+		this.org = classOptional(UserOrg, obj.org)
 		this.preferences = new UserPrefs(obj.preferences)
 		this.resources_sys_app = obj.resources_sys_app
 		this.resources_sys_footer = obj.resources_sys_footer
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 
-		// derived
-		if (obj.org) {
-			let logo = obj.org?.logoFileName
-				? obj.org.logoFileName.trim().toLowerCase().split('.')
-				: undefined
-			if (!logo || logo.length !== 2) logo = undefined
-
-			this.org = {
-				appName: obj?.org?.appName,
-				logoFileExt: logo ? logo[1] : '',
-				logoFileName: logo ? logo[0] : '',
-				name: obj?.org?.name
-			}
-		}
-
+		/* derived */
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
 		this.resources.addResources(obj.resources_core)
 		this.resources.addResources(obj.resources_subject)
@@ -158,6 +147,36 @@ export class User {
 	setName() {
 		this.fullName = `${this.firstName} ${this.lastName}`
 	}
+}
+
+export class UserOrg {
+	appName: string
+	codeLogoFileType: UserOrgLogoFileType
+	logoFileName: string
+	logoMarginRight: number
+	logoWidth: number
+	name: string
+	constructor(obj: any) {
+		const clazz = 'UserOrg'
+		this.appName = strRequired(obj.appName, clazz, 'appName')
+		this.codeLogoFileType = memberOfEnum(
+			obj._codeLogoFileType,
+			clazz,
+			'codeLogoFileType',
+			'UserOrgLogoFileType',
+			UserOrgLogoFileType
+		)
+		this.logoFileName = strRequired(obj.logoFileName, clazz, 'logoFileName').trim()
+		this.logoMarginRight = required(obj.logoMarginRight, clazz, 'logoMarginRight')
+		this.logoWidth = required(obj.logoWidth, clazz, 'logoWidth')
+		this.name = strRequired(obj.name, clazz, 'name')
+	}
+}
+
+export enum UserOrgLogoFileType {
+	jpeg = 'jpeg',
+	jpg = 'jpg',
+	png = 'png'
 }
 
 export class UserPrefs {
