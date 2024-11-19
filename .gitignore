@@ -22,7 +22,7 @@ vite.config.ts.timestamp-*
 
 # dbSchema
 src/db/backup
-src/db/dbschema
+# src/db/dbschema
 src/db/esdl/migrations
 src/db/esdl/migrations-bu
 
