@@ -23,11 +23,7 @@ function initDataObjAccount(init: InitDb) {
 			{
 				name: 'qa_file_storage',
 				parms: [{ key: 'imageField', value: 'avatar' }],
-				triggers: [
-					{ codeQueryType: 'retrieve', codeTriggerTiming: 'post' },
-					{ codeQueryType: 'save', codeTriggerTiming: 'pre' },
-					{ codeQueryType: 'save', codeTriggerTiming: 'post' }
-				]
+				triggers: [{ codeQueryType: 'save', codeTriggerTiming: 'pre' }]
 			},
 			{
 				name: 'qa_user_update',
@@ -69,12 +65,10 @@ function initDataObjAccount(init: InitDb) {
 				indexTable: 1
 			},
 			{
-				codeFieldElement: 'tel',
 				columnName: 'userName',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
-				headerAlt: 'Mobile Phone Number',
 				indexTable: 0
 			},
 			{

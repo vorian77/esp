@@ -25,4 +25,3 @@ src/db/backup
 src/db/esdl/migrations
 src/db/esdl/migrations-bu
 
-.env*.local

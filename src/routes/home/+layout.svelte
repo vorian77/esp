@@ -42,7 +42,6 @@
 	let state: State
 	let statePackets: Array<StatePacket> = []
 	let user: User | undefined
-	let userAvatarSrc = ''
 	let appName = ''
 
 	// 241001 - navBar experiment
@@ -69,13 +68,7 @@
 		})
 		launchApp = false
 	}
-	// $: if (user?.avatar?.key) {
-	// 	;(async () => {
-	// 		userAvatarSrc = await getURLDownload(user.avatar.key)
-	// 	})()
-	// } else {
-	// 	userAvatarSrc = ''
-	// }
+	$: userAvatarSrc = user && user.avatar ? user.avatar.url : ''
 
 	async function stateUpdateCallback(obj: any) {
 		state = state.updateProperties(obj)

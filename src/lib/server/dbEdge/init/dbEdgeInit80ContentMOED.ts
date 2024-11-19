@@ -1238,11 +1238,7 @@ function initCsfDocument(init: InitDb) {
 			{
 				name: 'qa_file_storage',
 				parms: [{ key: 'imageField', value: 'file' }],
-				triggers: [
-					{ codeQueryType: 'retrieve', codeTriggerTiming: 'post' },
-					{ codeQueryType: 'save', codeTriggerTiming: 'pre' },
-					{ codeQueryType: 'save', codeTriggerTiming: 'post' }
-				]
+				triggers: [{ codeQueryType: 'save', codeTriggerTiming: 'pre' }]
 			}
 		],
 		fields: [
@@ -1751,11 +1747,7 @@ function initSSRmyDoc(init: InitDb) {
 			{
 				name: 'qa_file_storage',
 				parms: [{ key: 'imageField', value: 'file' }],
-				triggers: [
-					{ codeQueryType: 'retrieve', codeTriggerTiming: 'post' },
-					{ codeQueryType: 'save', codeTriggerTiming: 'pre' },
-					{ codeQueryType: 'save', codeTriggerTiming: 'post' }
-				]
+				triggers: [{ codeQueryType: 'save', codeTriggerTiming: 'pre' }]
 			}
 		],
 		fields: [

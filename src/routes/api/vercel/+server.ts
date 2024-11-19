@@ -28,7 +28,6 @@ export async function POST({ request }) {
 
 		case TokenApiBlobAction.upload:
 			const file = required(formData.get('file'), FILENAME, 'file')
-			const fileName = required(file.name, FILENAME, 'file.name')
 			const key = required(formData.get('key'), FILENAME, 'key')
 			const result: DataRecord = await put(key, file, {
 				access: 'public',

@@ -911,6 +911,9 @@ export class DataRow {
 	getValue(key: string) {
 		return getRecordValue(this.record, key)
 	}
+	setValue(key: string, value: any) {
+		setRecordValue(this.record, key, value)
+	}
 }
 
 export class DataRows {
@@ -997,8 +1000,11 @@ export class DataRows {
 		}
 	}
 	setDetailRecordValue(key: string, value: any) {
-		if (!this.hasRecord()) return
-		this.dataRows[0].record[key] = value
+		this.setRecordValue(0, key, value)
+	}
+	setRecordValue(row: number, key: string, value: any) {
+		if (this.dataRows.length <= row) return
+		return this.dataRows[row].setValue(key, value)
 	}
 	syncFields(source: DataRecord[], fields: string[]) {
 		source.forEach((record) => {
@@ -1065,6 +1071,15 @@ export function getRecordValue(record: DataRecord, key: string) {
 		}
 	}
 	return undefined
+}
+
+export function setRecordValue(record: DataRecord, key: string, value: any) {
+	for (const [k, v] of Object.entries(record)) {
+		if (k.endsWith(key)) {
+			record[k] = value
+			return
+		}
+	}
 }
 
 export class ParmsUser {
