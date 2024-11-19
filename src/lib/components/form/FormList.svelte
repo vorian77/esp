@@ -58,7 +58,6 @@
 		cellEditorSelectorParmField,
 		cellRendererSelectorParmField
 	} from '$comps/grid/gridParmField'
-	import { onMount } from 'svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 

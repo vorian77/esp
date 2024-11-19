@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { appStoreUser, initNavTree, NodeType, required, User } from '$utils/types'
+	import { appStoreUser, initNavTree, NodeType, required, User, userLogout } from '$utils/types'
 	import { DataObjActionFieldConfirm } from '$comps/dataObj/types.dataObjActionField'
 	import {
 		State,
@@ -26,6 +26,7 @@
 	import { IconProps } from '$comps/icon/types.icon'
 	import { page } from '$app/stores'
 	import { goto } from '$app/navigation'
+	import { onMount } from 'svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$routes/home/+layout.svelte'
@@ -69,6 +70,12 @@
 		launchApp = false
 	}
 	$: userAvatarSrc = user && user.avatar ? user.avatar.url : ''
+
+	onMount(() => {
+		return () => {
+			userLogout()
+		}
+	})
 
 	async function stateUpdateCallback(obj: any) {
 		state = state.updateProperties(obj)

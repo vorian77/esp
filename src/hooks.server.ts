@@ -23,9 +23,6 @@ const routesUnprotected = ['/about', '/auth', '/legalDisclosure']
 
 // handle - route
 const serverHandler: Handle = async ({ event, resolve }) => {
-	// async function serverHandler({ event, resolve }) {
-	status(`url.pathname: ${event.url.pathname}`)
-
 	if (event.url.pathname === '/') {
 		if (event.cookies.get('session_id')) {
 			status('root path - deleting cookie...')
@@ -50,8 +47,8 @@ const serverHandler: Handle = async ({ event, resolve }) => {
 	// remaining routes require sessionId
 	const sessionId = event.cookies.get('session_id')
 	if (!sessionId) {
-		// status('redirect - no sessionId...')
-		// redirect(303, '/')
+		status('redirect - no sessionId...')
+		redirect(303, '/')
 	}
 
 	// get user info
