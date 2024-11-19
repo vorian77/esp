@@ -26,6 +26,7 @@ export class FileStorage {
 	key: string
 	url: string
 	constructor(obj: any) {
+		console.log('FileStorage.constructor.obj: ', obj)
 		const clazz = 'FileStorage'
 		obj = valueOrDefault(obj, {})
 		this.downloadUrl = strRequired(obj.downloadUrl, clazz, 'downloadUrl')
