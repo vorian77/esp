@@ -206,8 +206,3 @@
 	</svelte:fragment>
 	<!-- <DataViewer header="user" data={user} /> -->
 </AppShell>
-
-<div class="card p-4 variant-filled-primary z-10" data-popup="popupClick">
-	<a href="/logout">Logout</a>
-	<div class="arrow variant-filled-primary" />
-</div>

@@ -33,3 +33,8 @@ async function userInitData(token: TokenApiUserId, api: ApiFunction) {
 		})
 	}
 }
+
+export function userLogout() {
+	appStoreUser.set({})
+	localStorage.clear()
+}

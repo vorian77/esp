@@ -42,7 +42,7 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
-		// console.log('User.constructor.obj: ', obj)
+		console.log('User.constructor.obj: ', obj)
 		const clazz = 'User'
 		this.avatar = classOptional(FileStorage, obj.avatar)
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
@@ -72,7 +72,7 @@ export class User {
 			.map((s) => s.resource.id)
 
 		this.systemId = this.systemIdList.length === 1 ? this.systemIdList[0] : undefined
-		console.log('User.constructor', this)
+		// console.log('User.constructor', this)
 
 		// old
 		// this.cm_ssr_disclosure = nbrOptional(obj.cm_ssr_disclosure, 'cm_ssr_disclosure')

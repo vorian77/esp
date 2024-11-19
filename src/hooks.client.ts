@@ -14,7 +14,7 @@ Sentry.init({
 })
 
 const myErrorHandler = ({ error, event }) => {
-	console.error('An error occurred on the client side:', error, event)
+	console.error('An error occurred on the client side:', { error, event })
 }
 
 export const handleError = Sentry.handleErrorWithSentry(myErrorHandler)

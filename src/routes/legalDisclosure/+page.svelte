@@ -31,7 +31,7 @@
 	}
 
 	function decline() {
-		goto('/logout')
+		goto('/')
 	}
 
 	function goBack() {

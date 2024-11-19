@@ -6,6 +6,7 @@
 	import { TokenApiUserId, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 	import { Node, ResponseBody } from '$utils/types'
 	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
+	import { userLogout } from '$utils/types'
 
 	const storeDrawer = getDrawerStore()
 
@@ -35,6 +36,11 @@
 			closeDrawer()
 			await state.resetUser(true)
 		}
+	}
+
+	async function logout() {
+		userLogout()
+		closeDrawer()
 	}
 
 	async function openMyAccount() {
@@ -90,7 +96,7 @@
 				>My Preferences</btn
 			>
 
-			<a href="/logout" on:click={() => localStorage.clear()}>Logout</a>
+			<a href="/" on:click={logout}>Logout</a>
 
 			<div hidden={!$storeDrawer.meta.isSysAdmin} class="">
 				<btn on:click={dbInitAdmin} on:keydown={dbInitAdmin} tabindex="0" role="button"

@@ -35,11 +35,6 @@ const serverHandler: Handle = async ({ event, resolve }) => {
 		return await resolve(event)
 	}
 
-	if (event.url.pathname.startsWith('/logout')) {
-		status('logout...')
-		redirect(303, '/')
-	}
-
 	if (event.url.pathname.toLowerCase().startsWith('/api')) {
 		status('api endpoint...')
 		return await resolve(event)
@@ -55,8 +50,8 @@ const serverHandler: Handle = async ({ event, resolve }) => {
 	// remaining routes require sessionId
 	const sessionId = event.cookies.get('session_id')
 	if (!sessionId) {
-		status('redirect - no sessionId...')
-		redirect(303, '/')
+		// status('redirect - no sessionId...')
+		// redirect(303, '/')
 	}
 
 	// get user info
@@ -78,8 +73,8 @@ const serverHandler: Handle = async ({ event, resolve }) => {
 	return await resolve(event)
 
 	function status(msg: string) {
-		// console.log()
-		// console.log(`${FILENAME}: ${msg}`)
+		console.log()
+		console.log(`${FILENAME}: ${msg}`)
 	}
 }
 
