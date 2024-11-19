@@ -42,7 +42,7 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
-		// console.log('User.constructor.obj: ', obj)
+		console.log('User.constructor.obj: ', obj)
 		const clazz = 'User'
 		this.avatar = obj.avatar
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
