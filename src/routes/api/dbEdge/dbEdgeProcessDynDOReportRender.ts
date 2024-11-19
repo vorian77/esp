@@ -1,5 +1,5 @@
 import { RepEl, RepUser } from '$comps/dataObj/types.rep'
-import { DataObjCardinality, DataObjComponent, DataObjTable, debug } from '$utils/types'
+import { DataObjCardinality, DataObjComponent, DataObjTable, DataObjType } from '$utils/types'
 import { RawDataObj, RawDataObjDyn } from '$comps/dataObj/types.rawDataObj'
 import { TokenApiQueryData } from '$utils/types.token'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj'
@@ -128,6 +128,7 @@ function getRawDataObj(repUser: RepUser) {
 		_actionFieldGroup: repUser.report.actionFieldGroup,
 		_codeCardinality: DataObjCardinality.list,
 		_codeComponent: DataObjComponent.FormList,
+		_codeDataObjType: DataObjType.report,
 		_tables: repUser.report.tables,
 		description: repUser.descriptionUser || repUser.report.description,
 		exprFilter: repUser.report.exprFilter,

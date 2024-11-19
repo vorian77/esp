@@ -15,7 +15,6 @@
 			header: token.title,
 			icon: 'AppWindow',
 			id: token.dataObjName,
-			isRetrievePreset: token.isRetrievePreset,
 			isMobileMode: true,
 			name: token.dataObjName,
 			nodeObjName: token.nodeObjName,

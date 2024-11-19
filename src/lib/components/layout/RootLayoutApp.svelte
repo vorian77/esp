@@ -78,7 +78,6 @@
 		StatePacketAction.doDetailSave,
 		StatePacketAction.doDetailSaveAs,
 		StatePacketAction.doDetailSaveCancel,
-		StatePacketAction.doDetailSaveRetrievePreset,
 		StatePacketAction.doEmbedListConfigEdit,
 		StatePacketAction.doEmbedListConfigNew,
 		StatePacketAction.doEmbedListSelect,
@@ -133,7 +132,6 @@
 				break
 
 			case StatePacketAction.doDetailSave:
-			case StatePacketAction.doDetailSaveRetrievePreset:
 				if (await state.app.saveDetail(state, packet.action, token)) {
 					updateObjectsForm()
 				}

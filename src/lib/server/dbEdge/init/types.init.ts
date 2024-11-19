@@ -115,6 +115,7 @@ export class InitDb {
 				name: 'sysDataObjEmbed',
 				dataMap: 'name',
 				dbObject: 'sys_core::SysDataObj',
+				exprResetFull: `DELETE sys_core::SysDataObj FILTER .codeDataObjType.name = 'embed'`,
 				fCreate: addDataObj
 			})
 		)
@@ -148,11 +149,7 @@ export class InitDb {
 				name: 'sysDataObj',
 				dataMap: 'name',
 				dbObject: 'sys_core::SysDataObj',
-				exprResetFull: `DELETE sys_core::SysDataObj FILTER .id NOT IN (
-  (SELECT sys_core::SysDataObjFieldEmbedListConfig.dataObjEmbed.id) UNION
-  (SELECT sys_core::SysDataObjFieldEmbedListConfig.dataObjModal.id) UNION
-  (SELECT sys_core::SysDataObjFieldEmbedListEdit.dataObjEmbed.id) UNION
-  (SELECT sys_core::SysDataObjFieldEmbedListSelect.dataObjList.id))`,
+				exprResetFull: `DELETE sys_core::SysDataObj FILTER .codeDataObjType.name IN {'default'}`,
 				fCreate: addDataObj
 			})
 		)

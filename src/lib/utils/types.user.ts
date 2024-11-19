@@ -2,6 +2,7 @@ import { State } from '$comps/app/types.appState'
 import { ParmsValues } from '$utils/types'
 import {
 	arrayOfClasses,
+	booleanOrFalse,
 	booleanRequired,
 	classOptional,
 	getArray,
@@ -24,6 +25,7 @@ export class User {
 	fullName: string = ''
 	id: string
 	initials: string = ''
+	isMobileOnly: boolean
 	lastName: string
 	org?: UserOrg
 	preferences: UserPrefs
@@ -48,6 +50,7 @@ export class User {
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
 		this.fullName = strRequired(obj.fullName, clazz, 'fullName')
 		this.id = strRequired(obj.id, clazz, 'id')
+		this.isMobileOnly = booleanOrFalse(obj.isMobileOnly, 'isMobileOnly')
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
 		this.org = classOptional(UserOrg, obj.org)
 		this.preferences = new UserPrefs(obj.preferences)

@@ -151,6 +151,7 @@ export async function getDataObjById(token: TokenApiId) {
 			exprSort: true,
 			header: true,
 			id: true,
+			isDetailRetrievePreset: true,
 			isListEdit: true,
 			isListSuppressFilterSort: true,
 			isListSuppressSelect: true,
@@ -173,6 +174,7 @@ export async function getDataObjById(token: TokenApiId) {
 			})),
 			_codeCardinality: do1.codeCardinality.name,
 			_codeComponent: do1.codeComponent.name,
+			_codeDataObjType: do1.codeDataObjType.name,
 			_codeListEditPresetType: do1.codeListEditPresetType.name,
 			_listReorderColumn: do1.listReorderColumn.name,
 			_parent: e.select({
@@ -560,6 +562,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 		firstName: u.person.firstName,
 		fullName: u.person.fullName,
 		id: true,
+		isMobileOnly: true,
 		lastName: u.person.lastName,
 		org: e.select(e.sys_core.SysOrg, (o) => ({
 			_codeLogoFileType: o.codeLogoFileType.name,

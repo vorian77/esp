@@ -1190,6 +1190,7 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 		actionFieldGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
+		codeDataObjType: 'embed',
 		header: 'Contacts',
 		name: 'doflc_cm_partner_contact_list',
 		owner: 'sys_ai_old',
@@ -1244,6 +1245,7 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 		actionFieldGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
+		codeDataObjType: 'embed',
 		header: 'Contact',
 		name: 'doflc_cm_partner_contact_detail',
 		owner: 'sys_ai_old',
@@ -1672,14 +1674,14 @@ function initPartner(init: InitDb) {
 
 function initPartnerNote(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
-		codeComponent: 'FormList',
-		codeCardinality: 'list',
-		name: 'data_obj_cm_partner_note_list',
-		header: 'Notes',
-		tables: [{ index: 0, table: 'SysObjNote' }],
-		exprFilter: '.owner.id = <tree,uuid,CmPartner.id>',
 		actionFieldGroup: 'doag_list',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		exprFilter: '.owner.id = <tree,uuid,CmPartner.id>',
+		header: 'Notes',
+		name: 'data_obj_cm_partner_note_list',
+		owner: 'sys_ai_old',
+		tables: [{ index: 0, table: 'SysObjNote' }],
 		fields: [
 			{
 				columnName: 'id',

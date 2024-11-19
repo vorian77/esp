@@ -73,7 +73,7 @@ export function evalExprTokensItems(expr: string) {
 		const exprDataItem = match[0]
 		const exprDataItemContent = match[1]
 		const exprDataItemElements = exprDataItemContent.split(',')
-		if (exprDataItemElements.length === 3) {
+		if ([3, 4].includes(exprDataItemElements.length)) {
 			exprItems.push(new ExprParmsItem(exprDataItem, exprDataItemElements))
 		}
 	}
@@ -211,7 +211,7 @@ export function getValRaw(exprParms: ExprParms) {
 					return parseInt(Math.random().toFixed(10).replace('0.', ''))
 
 				default:
-					valueNotFound({})
+					return valueNotFound({})
 			}
 
 		case ExprSource.dataSaveDetail:
@@ -272,8 +272,24 @@ export function getValRaw(exprParms: ExprParms) {
 		return [true, currentData[tokens[idx]]]
 	}
 	function valueNotFound(data: DataRecord) {
-		fError(`Value null or not found.`, data)
+		switch (exprParms.item.codeDefault) {
+			case ExprDefault.error:
+				fError(`Value null or not found.`, data)
+			case ExprDefault.undefined:
+				return undefined
+			default:
+				error(500, {
+					file: FILENAME,
+					function: clazz,
+					message: `No case defined for exprParms itemDefault: ${exprParms.item.codeDefault}`
+				})
+		}
 	}
+}
+
+export enum ExprDefault {
+	error = 'error',
+	undefined = 'undefined'
 }
 
 class ExprParms {
@@ -298,6 +314,7 @@ class ExprParms {
 export class ExprParmsItem {
 	codeDataSourceExpr: ExprSource
 	codeDataType: PropDataType
+	codeDefault: ExprDefault
 	dataItem: string
 	key: string
 	constructor(dataItem: string, exprItems: string[]) {
@@ -316,6 +333,10 @@ export class ExprParmsItem {
 			'PropDataType',
 			PropDataType
 		)
+		this.codeDefault =
+			exprItems.length === 4
+				? memberOfEnum(exprItems[3], clazz, 'codeDefault', 'ExprDefault', ExprDefault)
+				: ExprDefault.error
 		this.dataItem = dataItem
 		this.key = exprItems[2]
 	}

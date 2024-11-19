@@ -465,7 +465,6 @@ export enum StatePacketAction {
 	doDetailSave = 'doDetailSave',
 	doDetailSaveAs = 'doDetailSaveAs',
 	doDetailSaveCancel = 'doDetailSaveCancel',
-	doDetailSaveRetrievePreset = 'doDetailSaveRetrievePreset',
 
 	doEmbedListConfigEdit = 'doEmbedListConfigEdit',
 	doEmbedListConfigNew = 'doEmbedListConfigNew',

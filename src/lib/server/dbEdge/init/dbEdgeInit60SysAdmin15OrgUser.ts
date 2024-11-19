@@ -393,6 +393,14 @@ function initUser(init: InitDb) {
 				orderDefine: 10
 			},
 			{
+				codeFieldElement: 'toggle',
+				columnName: 'isMobileOnly',
+				isDisplayable: true,
+				orderDisplay: 15,
+				orderDefine: 15,
+				indexTable: 0
+			},
+			{
 				codeAccess: 'readOnly',
 				columnName: 'firstName',
 				orderCrumb: 20,
@@ -454,11 +462,11 @@ function initUser(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
 				linkExprSave: `(SELECT sys_core::SysOrg FILTER .id = <tree,uuid,SysOrg.id>)`,
-				linkTable: 'SysOrg'
+				linkTable: 'SysOrg',
+				orderDefine: 20
 			},
 			{
 				codeFieldElement: 'textHide',
@@ -466,43 +474,50 @@ function initUser(init: InitDb) {
 				exprPreset: `(SELECT 'abc*$789!+_)')`,
 				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 25
+				orderDefine: 30
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30
+				orderDisplay: 40,
+				orderDefine: 40
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isMobileOnly',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
 			},
 			{
 				columnName: 'firstName',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 60,
+				orderDefine: 60,
 				indexTable: 1
 			},
 			{
 				columnName: 'lastName',
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDisplay: 70,
+				orderDefine: 70,
 				indexTable: 1
 			},
 			{
 				columnName: 'userName',
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDisplay: 80,
+				orderDefine: 80,
 				indexTable: 0
 			},
 			{
-				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'defaultOrg',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0,
 				fieldListItems: 'il_sys_user_org',
 				linkTable: 'SysOrg'
@@ -511,16 +526,16 @@ function initUser(init: InitDb) {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80
+				orderDisplay: 100,
+				orderDefine: 100
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'orgs',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 110,
+				orderDefine: 110,
 				fieldEmbedListSelect: 'fels_sys_admin_org',
 				indexTable: 0,
 				linkTable: 'SysOrg'
@@ -530,8 +545,8 @@ function initUser(init: InitDb) {
 				codeFieldElement: 'embedListSelect',
 				columnName: 'systems',
 				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100,
+				orderDisplay: 120,
+				orderDefine: 120,
 				fieldEmbedListSelect: 'fels_sys_admin_system',
 				indexTable: 0,
 				linkTable: 'SysSystem'
@@ -541,8 +556,8 @@ function initUser(init: InitDb) {
 				codeFieldElement: 'embedListSelect',
 				columnName: 'userTypes',
 				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
+				orderDisplay: 130,
+				orderDefine: 130,
 				fieldEmbedListSelect: 'fels_sys_sys_admin_user_type',
 				indexTable: 0,
 				linkTable: 'SysUserType'

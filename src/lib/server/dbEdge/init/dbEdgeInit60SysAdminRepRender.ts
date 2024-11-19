@@ -11,6 +11,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 		actionFieldGroup: 'doag_embed_list_edit_parm_value',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
+		codeDataObjType: 'embed',
 		codeListEditPresetType: 'save',
 		exprFilter:
 			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>).parms.id',

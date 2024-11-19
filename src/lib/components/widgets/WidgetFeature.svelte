@@ -15,7 +15,6 @@
 		action: 'moed_ssr_app',
 		clazz: 'bg-gradient-to-b from-green-300 hover:from-pink-500 active:bg-violet-700',
 		dataObjName: 'data_obj_moed_ssr_app',
-		isRetrievePreset: true,
 		status: '<Status Placeholder>',
 		statusHeader: 'Status',
 		title: 'My Application'
@@ -24,7 +23,6 @@
 		action: 'moed_ssr_doc',
 		clazz: 'bg-gradient-to-b from-blue-300 hover:from-pink-500 active:bg-violet-700 ',
 		nodeObjName: 'node_obj_moed_ssr_doc_list',
-		isRetrievePreset: false,
 		status: '<Status Placeholder>',
 		statusHeader: 'Status',
 		title: 'My Eligibility Documents'
@@ -33,7 +31,6 @@
 		action: 'moed_ssr_msg',
 		clazz: 'bg-gradient-to-b from-amber-300 hover:from-pink-500 active:bg-violet-700 ',
 		nodeObjName: 'node_obj_moed_ssr_msg_list',
-		isRetrievePreset: false,
 		status: '<Status Placeholder>',
 		statusHeader: 'Status',
 		title: 'My Messages'

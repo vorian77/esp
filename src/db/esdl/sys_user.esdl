@@ -12,9 +12,23 @@ module sys_user {
     }
     required modifiedBy: sys_user::SysUser;
   }
+
+   type SysTask extending sys_core::SysObj {
+    codeColorFrom: sys_core::SysCode;
+    codeColorTo: sys_core::SysCode;
+    required codeIcon: sys_core::SysCode;
+    codeTaskStatusObj: sys_core::SysCode;
+    required codeTaskType: sys_core::SysCode;
+    description: str;
+    isAlwaysPinToDash: bool;
+    required objectTask: sys_core::SysObj;
+    required orderDefined: int16;
+    constraint exclusive on (.name);
+  }
   
   type SysUser extending sys_user::Mgmt {
-    defaultOrg: sys_core::SysOrg;
+    required defaultOrg: sys_core::SysOrg;
+    isMobileOnly: bool;
     multi orgs: sys_core::SysOrg {
       on target delete allow;
     };

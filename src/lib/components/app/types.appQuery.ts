@@ -159,7 +159,6 @@ function queryDataPreTree(queryType: TokenApiQueryType, app: App) {
 
 	switch (queryType) {
 		case TokenApiQueryType.preset:
-		case TokenApiQueryType.retrievePreset:
 			offset = 2
 			break
 		case TokenApiQueryType.retrieve:

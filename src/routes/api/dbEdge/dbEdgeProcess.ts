@@ -66,6 +66,11 @@ export async function processDataObj(token: TokenApiQuery) {
 		)
 	}
 
+	// retreivePreset
+	if (rawDataObj.isDetailRetrievePreset) {
+		debug('processDataObj', 'isDetailRetrievePreset', rawDataObj.name)
+	}
+
 	// queries
 	const query = new Query(rawDataObj)
 	let scriptGroup = new ScriptGroup()
@@ -93,16 +98,6 @@ async function processDataObjQuery(
 			break
 
 		case TokenApiQueryType.retrieve:
-			returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
-			query.setProcessRow(
-				new ProcessRowSelect(query.rawDataObj.rawPropsSelect, DataRecordStatus.retrieved)
-			)
-			scriptGroup.addScriptPresetListEdit(query, queryData)
-			scriptGroup.addScriptRetrieve(query, queryData)
-			break
-
-		case TokenApiQueryType.retrievePreset:
-			// retrieve
 			returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
 			query.setProcessRow(
 				new ProcessRowSelect(query.rawDataObj.rawPropsSelect, DataRecordStatus.retrieved)
@@ -171,17 +166,6 @@ async function processDataObjExecute(
 			new EvalExprContext('processDataObjExecute', script.query.rawDataObj.name)
 		)
 		const rawDataList = await exeQueryMulti(expr)
-
-		// if (rawDataList.length === 0 && queryType === TokenApiQueryType.retrievePreset) {
-		// 	debug('processDataObjExecute', 'redirecting - retrievePreset to preset')
-		// 	queryType = TokenApiQueryType.preset
-		// 	// returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
-		// 	script.query.setProcessRow(
-		// 		new ProcessRowSelectPreset(script.query.rawDataObj.rawPropsSelect, DataRecordStatus.preset)
-		// 	)
-		// 	scriptGroup.addScriptPreset(script.query, queryData)
-		// 	continue
-		// }
 
 		scriptData = script?.query?.field ? script.query.field.data : returnData
 		scriptData.parms.update(script.queryData.dataTab?.parms.valueGetAll())

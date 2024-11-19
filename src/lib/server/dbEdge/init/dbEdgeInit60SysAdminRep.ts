@@ -16,6 +16,7 @@ function initFieldListSelectAnalytics(init: InitDb) {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
+		codeDataObjType: 'embed',
 		exprFilter: 'none',
 		header: 'Select Analytics',
 		name: 'dofls_sys_rep_analytic',

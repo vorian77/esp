@@ -102,6 +102,7 @@ module sys_core {
     };
     required codeCardinality: sys_core::SysCode;
     required codeComponent: sys_core::SysCode;
+    codeDataObjType: sys_core::SysCode;
     codeListEditPresetType: sys_core::SysCode;
     
     multi columns: sys_core::SysDataObjColumn {
@@ -113,9 +114,12 @@ module sys_core {
     exprFilter: str;
     exprObject: str;
     exprSort: str;
+
+    isDetailRetrievePreset: bool;
     required isListEdit: bool;
     isListSuppressFilterSort: bool;
     isListSuppressSelect: bool;
+    
     listEditPresetExpr: str;
     listReorderColumn: sys_db::SysColumn;
   

@@ -6,6 +6,7 @@ import {
 	DataObjCardinality,
 	DataObjEmbedType,
 	DataObjTable,
+	DataObjType,
 	debug,
 	getArray,
 	memberOfEnum,
@@ -46,6 +47,7 @@ export class RawDataObj {
 	actionsQuery: DataObjActionQuery[] = []
 	codeCardinality: DataObjCardinality
 	codeComponent: DataObjComponent
+	codeDataObjType: DataObjType
 	codeListEditPresetType?: DataObjListEditPresetType
 	crumbs: string[] = []
 	description?: string
@@ -54,6 +56,7 @@ export class RawDataObj {
 	exprSort?: string
 	header: string
 	id: string
+	isDetailRetrievePreset: boolean
 	isListEdit: boolean
 	isListSuppressFilterSort: boolean
 	isListSuppressSelect: boolean
@@ -91,6 +94,13 @@ export class RawDataObj {
 			'DataObjComponent',
 			DataObjComponent
 		)
+		this.codeDataObjType = memberOfEnum(
+			obj._codeDataObjType,
+			clazz,
+			'codeDataObjType',
+			'DataObjType',
+			DataObjType
+		)
 		this.codeListEditPresetType = memberOfEnumIfExists(
 			obj._codeListEditPresetType,
 			clazz,
@@ -105,6 +115,7 @@ export class RawDataObj {
 		this.exprSort = strOptional(obj.exprSort, clazz, 'exprSort')
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
+		this.isDetailRetrievePreset = booleanOrDefault(obj.isDetailRetrievePreset, false)
 		this.isListEdit = booleanRequired(obj.isListEdit, clazz, 'isListEdit')
 		this.isListSuppressFilterSort = booleanOrDefault(obj.isListSuppressFilterSort, false)
 		this.isListSuppressSelect = booleanOrDefault(obj.isListSuppressSelect, false)

@@ -45,11 +45,9 @@
 		actions = dataObj.actionsField.filter((a) => a.isShow)
 		isEditing = dataObj.actionsField.some(
 			(a: DataObjActionField) =>
-				[
-					StatePacketAction.doDetailSave,
-					StatePacketAction.doDetailSaveRetrievePreset,
-					StatePacketAction.doListSelfSave
-				].includes(a.codePacketAction) &&
+				[StatePacketAction.doDetailSave, StatePacketAction.doListSelfSave].includes(
+					a.codePacketAction
+				) &&
 				state.objStatus.changed() &&
 				!dataObj.isListEmbed
 		)

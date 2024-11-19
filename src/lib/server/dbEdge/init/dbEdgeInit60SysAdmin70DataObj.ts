@@ -95,6 +95,17 @@ function initDataObj(init: InitDb) {
 				linkTable: 'SysCode'
 			},
 			{
+				codeFieldElement: 'select',
+				columnName: 'codeDataObjType',
+				isDisplayable: true,
+				orderDisplay: 52,
+				orderDefine: 52,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_do_type',
+				linkTable: 'SysCode'
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
@@ -125,11 +136,19 @@ function initDataObj(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeFieldElement: 'toggle',
+				columnName: 'isDetailRetrievePreset',
+				isDisplayable: true,
+				orderDisplay: 72,
+				orderDefine: 72,
+				indexTable: 0
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 75,
-				orderDefine: 75
+				orderDisplay: 74,
+				orderDefine: 74
 			},
 			{
 				codeAccess: 'optional',

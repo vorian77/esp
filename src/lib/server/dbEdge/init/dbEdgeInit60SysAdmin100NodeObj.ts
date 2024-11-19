@@ -254,7 +254,8 @@ function initNodeObj(init: InitDb) {
 				orderDisplay: 150,
 				orderDefine: 150,
 				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_order_name',
+				fieldListItems: 'il_sys_data_obj_order_name_by_dataObjtype',
+				fieldListItemsParmName: 'default',
 				linkTable: 'SysDataObj'
 			},
 			{

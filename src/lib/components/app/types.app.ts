@@ -150,11 +150,7 @@ export class App {
 		this.levels.push(new AppLevel([new AppLevelTab(App.addLevelNodeParmsList(token.node))]))
 		const currTab = this.getCurrTab()
 		if (currTab) {
-			await query(
-				state,
-				currTab,
-				token.node.isRetrievePreset ? TokenApiQueryType.retrievePreset : TokenApiQueryType.retrieve
-			)
+			await query(state, currTab, TokenApiQueryType.retrieve)
 		}
 	}
 
@@ -423,23 +419,9 @@ export class App {
 						break
 
 					case StatePacketAction.doDetailSave:
-					case StatePacketAction.doDetailSaveRetrievePreset:
 						if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 							return this
 						break
-
-					// case StatePacketAction.doDetailSaveRetrievePreset:
-					// 	if (currTab.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)) {
-					// 		console.log('types.app...doDetailSaveRetrievePreset')
-					// 	}
-					// 	// if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
-					// 	// 	return this
-					// 	// await query(state, tabParent, TokenApiQueryType.retrieve)
-					// 	// tabParent.data.parms.updateList(
-					// 	// 	tabParent.data.rowsRetrieved.getRows(),
-					// 	// 	currTab.data.rowsRetrieved.getDetailRecordValue('id')
-					// 	// )
-					// 	break
 
 					default:
 						error(500, {

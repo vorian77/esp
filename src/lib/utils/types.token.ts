@@ -257,7 +257,6 @@ export enum TokenApiQueryType {
 	expression = 'expression',
 	preset = 'preset',
 	retrieve = 'retrieve',
-	retrievePreset = 'retrievePreset',
 	retrieveRepParmItems = 'retrieveRepParmItems',
 	save = 'save'
 }
@@ -432,7 +431,6 @@ export class TokenAppWidget extends TokenApp {
 	action: string
 	clazz: string
 	dataObjName?: string
-	isRetrievePreset: boolean
 	nodeObjName?: string
 	statusHeader?: string
 	status?: string
@@ -443,7 +441,6 @@ export class TokenAppWidget extends TokenApp {
 		this.action = required(obj.action, clazz, 'action')
 		this.clazz = required(obj.clazz, clazz, 'clazz')
 		this.dataObjName = strOptional(obj.dataObjName, clazz, 'dataObjName')
-		this.isRetrievePreset = booleanOrFalse(obj.isRetrievePreset, 'isRetrievePreset')
 		this.nodeObjName = strOptional(obj.nodeObjName, clazz, 'nodeObjName')
 		this.statusHeader = obj.statusHeader
 		this.status = obj.status

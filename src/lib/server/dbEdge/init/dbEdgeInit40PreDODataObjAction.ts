@@ -229,21 +229,6 @@ export function initPreDataObjAction(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjActionField', {
-		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
-		actionFieldShows: [
-			{ codeTriggerShow: 'objectChanged', isRequired: true },
-			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
-			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
-		],
-		codePacketAction: 'doDetailSaveRetrievePreset',
-		codeActionFieldTriggerEnable: 'objectValidToSave',
-		header: 'Save',
-		isListRowAction: false,
-		name: 'noa_save_detail_retrieve_preset',
-		owner: 'sys_system_old'
-	})
-
-	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
 		],

@@ -1,4 +1,4 @@
-import { DataObjCardinality, DataObjComponent, DataObjTable, type DataRecord } from '$utils/types'
+import { DataObjCardinality, DataObjComponent, DataObjTable, DataObjType } from '$utils/types'
 import { PropDataSourceValue, RawDataObjDyn } from '$comps/dataObj/types.rawDataObj'
 import { TokenApiQueryData } from '$utils/types.token'
 import { getReportUserParmItems } from '$routes/api/dbEdge/dbEdgeUtilities'
@@ -38,6 +38,7 @@ function getRawDataObj(data: any) {
 	return new RawDataObjDyn({
 		_codeCardinality: DataObjCardinality.list,
 		_codeComponent: DataObjComponent.FormList,
+		_codeDataObjType: DataObjType.report,
 		header: data._header,
 		id: data.id,
 		isListEdit: false,

@@ -269,6 +269,20 @@ export function initPreColumn(init: InitDb) {
 		name: 'codeColor'
 	})
 	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Color - From',
+		isMultiSelect: false,
+		name: 'codeColorFrom'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Color - To',
+		isMultiSelect: false,
+		name: 'codeColorto'
+	})
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Component',
 		isMultiSelect: false,
@@ -280,6 +294,13 @@ export function initPreColumn(init: InitDb) {
 		header: 'Confirm Type',
 		isMultiSelect: false,
 		name: 'codeConfirmType',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Data Object Type',
+		isMultiSelect: false,
+		name: 'codeDataObjType',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
@@ -484,6 +505,18 @@ export function initPreColumn(init: InitDb) {
 		header: 'Status',
 		isMultiSelect: false,
 		name: 'codeStatus',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Task - Status Object',
+		name: 'codeTaskStatusObj',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Task - Type',
+		name: 'codeTaskType',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
@@ -1356,8 +1389,20 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
+		header: 'Always Pin To Dashboard',
+		name: 'isAlwaysPinToDash'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
 		header: 'Always Retrieve Data',
 		name: 'isAlwaysRetrieveData'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Is Detail Retrieve-Preset',
+		name: 'isDetailRetrievePreset'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1436,6 +1481,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'bool',
 		header: 'List - Suppress Select',
 		name: 'isListSuppressSelect'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Mobile Only',
+		name: 'isMobileOnly'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1656,6 +1707,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Note',
 		name: 'note'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Task - Object',
+		name: 'objectTask'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

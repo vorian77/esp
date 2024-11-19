@@ -67,7 +67,6 @@ export function initTableColumn(init: InitDb) {
 
 	init.addTrans('tableColumnsBulk', [
 		['SysUser', 'avatar'],
-		['SysUser', 'favFood'],
 		['SysUser', 'id'],
 		['SysUser', 'createdAt'],
 		['SysUser', 'createdBy'],

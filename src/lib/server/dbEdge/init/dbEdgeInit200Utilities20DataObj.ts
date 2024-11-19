@@ -16,6 +16,7 @@ export async function addDataObj(data: any) {
 			actionsQuery: e.optional(e.array(e.json)),
 			codeCardinality: e.str,
 			codeComponent: e.str,
+			codeDataObjType: e.optional(e.str),
 			codeListEditPresetType: e.optional(e.str),
 			description: e.optional(e.str),
 			exprFilter: e.optional(e.str),
@@ -23,6 +24,7 @@ export async function addDataObj(data: any) {
 			exprSort: e.optional(e.str),
 			fields: e.optional(e.array(e.json)),
 			header: e.optional(e.str),
+			isDetailRetrievePreset: e.optional(e.bool),
 			isListEdit: e.optional(e.bool),
 			isListSuppressFilterSort: e.optional(e.bool),
 			isListSuppressSelect: e.optional(e.bool),
@@ -78,6 +80,13 @@ export async function addDataObj(data: any) {
 				}),
 				codeCardinality: e.select(e.sys_core.getCode('ct_sys_do_cardinality', p.codeCardinality)),
 				codeComponent: e.select(e.sys_core.getCode('ct_sys_do_component', p.codeComponent)),
+				codeDataObjType: e.op(
+					e.sys_core.getCode('ct_sys_do_type', p.codeDataObjType),
+					'if',
+					e.op('exists', p.codeDataObjType),
+					'else',
+					e.sys_core.getCode('ct_sys_do_type', 'default')
+				),
 				codeListEditPresetType: e.select(
 					e.sys_core.getCode('ct_sys_do_list_edit_preset_type', p.codeListEditPresetType)
 				),
@@ -298,6 +307,7 @@ export async function addDataObj(data: any) {
 				exprObject: p.exprObject,
 				exprSort: p.exprSort,
 				header: p.header,
+				isDetailRetrievePreset: booleanOrDefaultParm(p.isDetailRetrievePreset, false),
 				isListEdit: booleanOrDefaultParm(p.isListEdit, false),
 				isListSuppressFilterSort: booleanOrDefaultParm(p.isListSuppressFilterSort, false),
 				isListSuppressSelect: booleanOrDefaultParm(p.isListSuppressSelect, false),

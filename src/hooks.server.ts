@@ -70,8 +70,8 @@ const serverHandler: Handle = async ({ event, resolve }) => {
 	return await resolve(event)
 
 	function status(msg: string) {
-		console.log()
-		console.log(`${FILENAME}: ${msg}`)
+		// console.log()
+		// console.log(`${FILENAME}: ${msg}`)
 	}
 }
 

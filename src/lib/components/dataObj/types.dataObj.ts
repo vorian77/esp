@@ -890,6 +890,13 @@ export class DataObjTable {
 	}
 }
 
+export enum DataObjType {
+	default = 'default',
+	embed = 'embed',
+	report = 'report',
+	task = 'task'
+}
+
 export type DataRecord = Record<string, any>
 
 export enum DataRecordStatus {

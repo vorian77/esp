@@ -1387,8 +1387,10 @@ function initSSRmyApp(init: InitDb) {
 		codeCardinality: 'detail',
 		exprFilter: '.id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90"',
 		// exprFilter: '.user.id = <user,uuid,id>',
+		isDetailRetrievePreset: true,
 		name: 'data_obj_moed_ssr_app',
 		header: 'My Application',
+
 		tables: [
 			{ index: 0, table: 'CmClientServiceFlow' },
 			{ columnParent: 'client', indexParent: 0, index: 1, table: 'MoedParticipant' },

@@ -3,16 +3,16 @@
 import * as $ from "../reflection";
 import * as _ from "../imports";
 import type * as _sys_user from "./sys_user";
-import type * as _default from "./default";
-import type * as _std from "./std";
 import type * as _sys_core from "./sys_core";
+import type * as _std from "./std";
+import type * as _default from "./default";
 import type * as _cal from "./cal";
 export type $CmClientλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
-  "person": $.LinkDesc<_default.$SysPerson, $.Cardinality.One, {}, false, false,  false, false>;
+  "owner": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.One, {}, false, false,  false, false>;
   "agencyId": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "school": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "owner": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.One, {}, false, false,  false, false>;
   "office": $.LinkDesc<_sys_core.$SysObjSubject, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "person": $.LinkDesc<_default.$SysPerson, $.Cardinality.One, {}, false, false,  false, false>;
   "<client[is app_cm::CmClientServiceFlow]": $.LinkDesc<$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<client": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -27,16 +27,16 @@ export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_user.$MgmtλSh
   "client": $.LinkDesc<$CmClient, $.Cardinality.One, {}, false, false,  false, false>;
   "codeReferralEndType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeReferralType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "serviceFlow": $.LinkDesc<$CmServiceFlow, $.Cardinality.One, {}, false, false,  false, false>;
+  "user": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "dateEnd": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateEndEst": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateReferral": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
   "dateStart": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateStartEst": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
-  "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "user": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "idxDemo": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
+  "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "<csf[is app_cm::CmCsfData]": $.LinkDesc<$CmCsfData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfCohort]": $.LinkDesc<$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfDocument]": $.LinkDesc<$CmCsfDocument, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -55,18 +55,18 @@ const CmClientServiceFlow: $.$expr_PathNode<$.TypeSet<$CmClientServiceFlow, $.Ca
 
 export type $CmCohortλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "cohortAttds": $.LinkDesc<$CmCohortAttd, $.Cardinality.Many, {}, false, false,  false, false>;
+  "staffInstructor": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "capacity": $.PropertyDesc<_std.$int16, $.Cardinality.AtMostOne, false, false, false, false>;
   "cost": $.PropertyDesc<_std.$float32, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateEnd": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateStart": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "isCohortRequired": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "schedule": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "cohortAttds": $.LinkDesc<$CmCohortAttd, $.Cardinality.Many, {}, false, false,  false, false>;
   "course": $.LinkDesc<$CmCourse, $.Cardinality.AtMostOne, {}, false, true,  false, false>;
-  "staffInstructor": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<cohorts[is app_cm::CmCourse]": $.LinkDesc<$CmCourse, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<cohort[is app_cm::CmCsfCohort]": $.LinkDesc<$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohort[is app_cm::CmCohortDoc]": $.LinkDesc<$CmCohortDoc, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<cohort[is app_cm::CmCsfCohort]": $.LinkDesc<$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohort": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohorts": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -79,10 +79,10 @@ const CmCohort: $.$expr_PathNode<$.TypeSet<$CmCohort, $.Cardinality.Many>, null>
 
 export type $CmCohortAttdλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "date": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
+  "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "hours": $.PropertyDesc<_std.$float32, $.Cardinality.One, false, false, false, false>;
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "cohortId": $.PropertyDesc<_std.$uuid, $.Cardinality.AtMostOne, false, true, false, false>;
-  "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "<cohortAttds[is app_cm::CmCohort]": $.LinkDesc<$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohortAttd[is app_cm::CmCsfCohortAttd]": $.LinkDesc<$CmCsfCohortAttd, $.Cardinality.Many, {}, false, false,  false, false>;
   "<cohortAttd": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -96,8 +96,8 @@ const $CmCohortAttd = $.makeType<$CmCohortAttd>(_.spec, "29d03147-eaec-11ee-80d4
 const CmCohortAttd: $.$expr_PathNode<$.TypeSet<$CmCohortAttd, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCohortAttd, $.Cardinality.Many), null);
 
 export type $CmCohortDocλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
-  "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "cohort": $.LinkDesc<$CmCohort, $.Cardinality.One, {}, false, false,  false, false>;
+  "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "date": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
   "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -110,17 +110,17 @@ const $CmCohortDoc = $.makeType<$CmCohortDoc>(_.spec, "b4d7d74a-a42b-11ef-a294-9
 const CmCohortDoc: $.$expr_PathNode<$.TypeSet<$CmCohortDoc, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCohortDoc, $.Cardinality.Many), null);
 
 export type $CmCourseλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
-  "codeSector": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeTypePayment": $.LinkDesc<_sys_core.$SysCodeType, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "schedule": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "courseCertifications": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "courseExams": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "courseItemsIncluded": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "courseItemsNotIncluded": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "courseRequirements": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "schedule": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "cohorts": $.LinkDesc<$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
+  "codeSector": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "codeTypePayment": $.LinkDesc<_sys_core.$SysCodeType, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<course[is app_cm::CmCohort]": $.LinkDesc<$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<course": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -173,11 +173,11 @@ export type $CmCsfDocumentλShape = $.typeutil.flatten<$CmCsfDataλShape & {
   "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "dateExpires": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateIssued": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
-  "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
-  "isShareWithClient": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "fileNew": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "fileOld": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
+  "isShareWithClient": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
+  "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;
 type $CmCsfDocument = $.ObjectType<"app_cm::CmCsfDocument", $CmCsfDocumentλShape, null, [
   ...$CmCsfData['__exclusives__'],
@@ -194,12 +194,12 @@ export type $CmCsfJobPlacementλShape = $.typeutil.flatten<$CmCsfDataλShape & {
   "employerContactEmail": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "employerContactNameFirst": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "employerContactNameLast": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "employerContactPhone": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "employerName": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "hoursPerWeek": $.PropertyDesc<_std.$float32, $.Cardinality.One, false, false, false, false>;
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "title": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "wage": $.PropertyDesc<_std.$float32, $.Cardinality.AtMostOne, false, false, false, false>;
-  "employerContactPhone": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;
 type $CmCsfJobPlacement = $.ObjectType<"app_cm::CmCsfJobPlacement", $CmCsfJobPlacementλShape, null, [
   ...$CmCsfData['__exclusives__'],
@@ -209,14 +209,14 @@ const $CmCsfJobPlacement = $.makeType<$CmCsfJobPlacement>(_.spec, "c00e457a-c4ef
 const CmCsfJobPlacement: $.$expr_PathNode<$.TypeSet<$CmCsfJobPlacement, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCsfJobPlacement, $.Cardinality.Many), null);
 
 export type $CmCsfMsgλShape = $.typeutil.flatten<$CmCsfDataλShape & {
+  "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "office": $.LinkDesc<_sys_core.$SysObjSubject, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "parent": $.LinkDesc<$CmCsfMsg, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "recipients": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
+  "sender": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
   "date": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
   "msg": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "subject": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
-  "sender": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
   "<parent[is app_cm::CmCsfMsg]": $.LinkDesc<$CmCsfMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parent": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

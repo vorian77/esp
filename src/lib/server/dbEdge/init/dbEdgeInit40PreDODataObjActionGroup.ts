@@ -116,7 +116,7 @@ export function initPreDataObjActionGroups(init: InitDb) {
 	/* mobile */
 	init.addTrans('sysDataObjActionFieldGroup', {
 		actionFieldItems: [
-			['noa_save_detail_retrieve_preset', 0],
+			['noa_save_detail', 0],
 			['noa_save_cancel', 1]
 		],
 		name: 'doag_detail_retrieve_preset',

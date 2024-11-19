@@ -157,8 +157,9 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysDataObjFieldListItems'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter: '.codeDataObjType.name = <parms,str,fieldListItemsParmName> ',
 		exprPropDisplay: '.name',
-		name: 'il_sys_data_obj_order_name',
+		name: 'il_sys_data_obj_order_name_by_dataObjtype',
 		owner: 'sys_system_old',
 		table: 'SysDataObj'
 	})
@@ -229,7 +230,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysUser'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
-		exprFilter: `.id IN (SELECT sys_user::SysUser FILTER .id = <tree,uuid,SysUser.id>).orgs.id`,
+		exprFilter: `.id IN (<tree,uuid,SysOrg.id> UNION (SELECT DETACHED sys_user::SysUser FILTER .id = <tree,uuid,SysUser.id,undefined>).orgs.id)`,
 		exprPropDisplay: '.name',
 		name: 'il_sys_user_org',
 		owner: 'sys_system_old',
