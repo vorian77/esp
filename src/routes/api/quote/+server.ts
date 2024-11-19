@@ -1,7 +1,7 @@
 import { API_NINJAS_SECRET } from '$env/static/private'
 import { getServerResponse } from '$utils/types'
 
-const test = false
+const test = true
 
 const CATEGORIES = ['inspirational', 'courage']
 // const CATEGORIES = [
