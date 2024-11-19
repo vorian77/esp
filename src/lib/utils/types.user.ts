@@ -49,7 +49,7 @@ export class User {
 		this.fullName = strRequired(obj.fullName, clazz, 'fullName')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
-		this.org = classOptional(UserOrg, obj.org)
+		// this.org = classOptional(UserOrg, obj.org)
 		this.preferences = new UserPrefs(obj.preferences)
 		this.resources_sys_app = obj.resources_sys_app
 		this.resources_sys_footer = obj.resources_sys_footer
