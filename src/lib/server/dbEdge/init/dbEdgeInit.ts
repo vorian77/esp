@@ -1,13 +1,10 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
-import { addDataObjActionField } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
-import { initPreDataObj } from '$server/dbEdge/init/dbEdgeInit40PreDO'
 
-// admin
+// system
+import { initPreDataObj } from '$server/dbEdge/init/dbEdgeInit40PreDO'
 import { initSysAdmin } from '$server/dbEdge/init/dbEdgeInit60SysAdmin'
 import { initSysAuth } from '$server/dbEdge/init/dbEdgeInit60SysAdminAuth'
-import { initSysAdminMigr } from '$server/dbEdge/init/dbEdgeInit60SysAdminMigration'
-import { initSysAdminRep } from '$server/dbEdge/init/dbEdgeInit60SysAdminRep'
-import { initSysRepUser } from '$server/dbEdge/init/dbEdgeInit60SysAdminRepRender'
+import { initSysRepUser } from '$server/dbEdge/init/dbEdgeInit60SysAdminRepUser'
 
 // content
 import { initContentAITraining } from '$server/dbEdge/init/dbEdgeInit80ContentAITraining'
@@ -32,8 +29,6 @@ export async function dbEdgeInit() {
 function dbEdgeInitAll(initDb: InitDb) {
 	initPreDataObj(initDb)
 	initSysAdmin(initDb)
-	initSysAdminMigr(initDb)
-	initSysAdminRep(initDb)
 	initSysAuth(initDb)
 	initSysRepUser(initDb)
 
@@ -48,7 +43,7 @@ function dbEdgeInitAll(initDb: InitDb) {
 }
 
 export function initFeature(initDb: InitDb) {
-	// current feature
-	// initContentAIRep(initDb)
 	// initSysRepUser(initDb)
+	initContentAIRep(initDb)
+	// initContentMOEDStudent(initDb)
 }

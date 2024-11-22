@@ -24,69 +24,6 @@ export async function addSystem(data: any) {
 	return await query.run(client, data)
 }
 
-export async function sysUser(owner: string, userName: string) {
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.insert(e.sys_user.SysUser, {
-		createdBy: CREATOR,
-		modifiedBy: CREATOR,
-		owner: e.select(e.sys_core.getOrg(owner)),
-		password: '***123ABC###QWE***',
-		person: e.insert(e.default.SysPerson, {
-			firstName: 'System',
-			lastName: 'User'
-		}),
-		userName
-	})
-	return await query.run(client)
-}
-
-export async function userSystemsBulk(params: any) {
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params({ data: e.json }, (params) => {
-		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.update(e.sys_user.SysUser, (u) => ({
-				filter: e.op(u.userName, '=', e.cast(e.str, i[0])),
-				set: {
-					systems: { '+=': e.sys_core.getSystemPrime(e.cast(e.str, i[1])) }
-				}
-			}))
-		})
-	})
-	return await query.run(client, { data: params })
-}
-
-export async function userTypeBulk(params: any) {
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params({ data: e.json }, (params) => {
-		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.insert(e.sys_user.SysUserType, {
-				owner: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[0]))),
-				name: e.cast(e.str, i[1]),
-				createdBy: CREATOR,
-				modifiedBy: CREATOR
-			})
-		})
-	})
-	return await query.run(client, { data: params })
-}
-
-export async function userUserTypeBulk(params: any) {
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params({ data: e.json }, (params) => {
-		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.update(e.sys_user.SysUser, (u) => ({
-				filter: e.op(u.userName, '=', e.cast(e.str, i[0])),
-				set: {
-					userTypes: {
-						'+=': e.select(e.sys_user.getUserType(e.cast(e.str, i[1])))
-					}
-				}
-			}))
-		})
-	})
-	return await query.run(client, { data: params })
-}
-
 export async function codeTypesBulk(params: any) {
 	sectionHeader('Code Types')
 	const CREATOR = e.sys_user.getRootUser()

@@ -16,7 +16,7 @@ import type { DataRecord, DataRow } from '$utils/types'
 import {
 	PropDataSourceValue,
 	PropDataType,
-	PropLinkItemsDefn,
+	PropLinkItemsSource,
 	PropNamePrefixType,
 	RawDataObj,
 	RawDataObjParent,
@@ -374,7 +374,7 @@ export class Query {
 	) {
 		const clazz = 'getPropsSelectDataItemsContent'
 		let script = new Script(this, queryData, ScriptExePost.formatData)
-		const defn = required(prop.linkItemsDefn, clazz, 'prop.linkItemsDefn') as PropLinkItemsDefn
+		const defn = required(prop.linkItemsDefn, clazz, 'prop.linkItemsDefn') as PropLinkItemsSource
 		queryData.dataTab?.parms.update(defn.parms)
 		const shape = `{data := .id, display := ${defn.exprPropDisplay}}`
 		const filter = defn.exprFilter ? evalExpr(defn.exprFilter, queryData) : ''

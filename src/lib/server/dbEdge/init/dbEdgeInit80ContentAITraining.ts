@@ -280,6 +280,7 @@ function initCourse(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program',
 		dataObj: 'data_obj_cm_course_list',
 		header: 'Courses',
 		name: 'node_obj_cm_course_list',
@@ -288,6 +289,7 @@ function initCourse(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_course_detail',
 		header: 'Course',
 		isSystemRoot: true,
@@ -536,6 +538,7 @@ function initCohort(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_list',
 		header: 'Cohorts',
 		name: 'node_obj_cm_cohort_list',
@@ -545,6 +548,7 @@ function initCohort(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_detail',
 		header: 'Cohort',
 		isSystemRoot: true,
@@ -610,6 +614,7 @@ function initCohortStudentRoster(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_student_roster_list_by_cohort',
 		header: 'Student Roster',
 		name: 'node_obj_cm_student_roster_list_by_cohort',
@@ -812,6 +817,7 @@ function initCohortAttd(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_attd_list',
 		header: 'Attendance Days',
 		name: 'node_obj_cm_cohort_attd_list',
@@ -821,6 +827,7 @@ function initCohortAttd(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_attd_detail',
 		header: 'Attendance Day',
 		name: 'node_obj_cm_cohort_attd_detail',
@@ -966,6 +973,7 @@ function initCohortAttdSheet(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_attd_sheet',
 		header: 'Attendance Sheet',
 		name: 'node_obj_cm_cohort_attd_sheet',
@@ -1167,6 +1175,7 @@ function initCohortDoc(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_doc_list',
 		header: 'Documents',
 		name: 'node_obj_cm_cohort_doc_list',
@@ -1176,6 +1185,7 @@ function initCohortDoc(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_doc_detail',
 		header: 'Document',
 		name: 'node_obj_cm_cohort_doc_detail',
@@ -1653,6 +1663,7 @@ function initPartner(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program',
 		dataObj: 'data_obj_cm_partner_list',
 		header: 'Partners',
 		name: 'node_obj_cm_partner_list',
@@ -1662,6 +1673,7 @@ function initPartner(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_partner_detail',
 		header: 'Partner',
 		isSystemRoot: true,
@@ -1840,6 +1852,7 @@ function initPartnerNote(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_partner_note_list',
 		header: 'Notes',
 		name: 'node_obj_cm_partner_note_list',
@@ -1849,6 +1862,7 @@ function initPartnerNote(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_partner_note_detail',
 		header: 'Note',
 		name: 'node_obj_cm_partner_note_detail',

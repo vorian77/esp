@@ -1,6 +1,6 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initSysAdminMigr(init: InitDb) {
+export function initAdminSysObjMigration(init: InitDb) {
 	initMigr(init)
 	initMigrSourceTable(init)
 	initMigrSourceColumn(init)
@@ -139,6 +139,7 @@ function initMigr(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_migr_list',
 		header: 'Migrations',
 		name: 'node_obj_sys_admin_migr_list',
@@ -148,6 +149,7 @@ function initMigr(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_migr_detail',
 		header: 'Migration',
 		name: 'node_obj_sys_admin_migr_detail',
@@ -305,6 +307,7 @@ function initMigrSourceTable(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_migr_source_table_list',
 		header: 'Source Tables',
 		name: 'node_obj_sys_admin_migr_source_table_list',
@@ -315,6 +318,7 @@ function initMigrSourceTable(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_migr_source_table_detail',
 		header: 'Source Table',
 		name: 'node_obj_sys_admin_migr_source_table_detail',
@@ -455,6 +459,7 @@ function initMigrSourceColumn(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_migr_source_column_list',
 		header: 'Columns',
 		name: 'node_obj_sys_admin_migr_source_column_list',
@@ -465,6 +470,7 @@ function initMigrSourceColumn(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_migr_source_column_detail',
 		header: 'Column',
 		name: 'node_obj_sys_admin_migr_source_column_detail',
@@ -673,6 +679,7 @@ function initMigrTargetTable(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_migr_target_table_list',
 		header: 'Target Tables',
 		name: 'node_obj_sys_admin_migr_target_table_list',
@@ -683,6 +690,7 @@ function initMigrTargetTable(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_migr_target_table_detail',
 		header: 'Target Table',
 		name: 'node_obj_sys_admin_migr_target_table_detail',
@@ -886,6 +894,7 @@ function initMigrTargetColumn(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_migr_target_column_list',
 		header: 'Columns',
 		name: 'node_obj_sys_admin_migr_target_column_list',
@@ -896,6 +905,7 @@ function initMigrTargetColumn(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_migr_target_column_detail',
 		header: 'Column',
 		name: 'node_obj_sys_admin_migr_target_column_detail',

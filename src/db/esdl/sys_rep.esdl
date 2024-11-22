@@ -67,9 +67,8 @@ module sys_rep {
   type SysRepParm extending sys_user::Mgmt{
     required codeDataType: sys_core::SysCode;
     required codeFieldElement: sys_core::SysCode;
+    dataObjSelect: sys_core::SysDataObj;
     description: str;
-    fieldListItems: sys_core::SysDataObjFieldListItems;
-    fieldListItemsParmName: str;
     required header: str;
     required isMultiSelect: bool;
     linkTable: sys_db::SysTable;

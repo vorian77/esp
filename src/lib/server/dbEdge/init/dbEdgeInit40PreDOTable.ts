@@ -59,13 +59,13 @@ export function initPreTable(init: InitDb) {
 		['sys_system_old', 'sys_rep', 'SysRepUserParm', true],
 
 		// sys_user
-		['sys_system_old', 'sys_user', 'SysUser', false],
-		['sys_system_old', 'sys_user', 'SysUserType', false],
-		['sys_system_old', 'sys_user', 'SysUserPref', false],
-		['sys_system_old', 'sys_user', 'SysUserPrefType', false],
+		['sys_system_old', 'sys_user', 'SysTask', true],
+		['sys_system_old', 'sys_user', 'SysUser', true],
+		['sys_system_old', 'sys_user', 'SysUserType', true],
+		['sys_system_old', 'sys_user', 'SysUserPref', true],
+		['sys_system_old', 'sys_user', 'SysUserPrefType', true],
 		['sys_system_old', 'sys_user', 'SysUserTypeResource', false],
-		['sys_system_old', 'sys_user', 'SysUserTypeTag', false],
-		['sys_system_old', 'sys_user', 'SysWidget', false]
+		['sys_system_old', 'sys_user', 'SysWidget', true]
 	])
 
 	init.addTrans('tablesBulk', [

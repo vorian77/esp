@@ -1,9 +1,131 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
 export function initAdminOrgUser(init: InitDb) {
+	initFieldListSelectOrg(init)
+	initFieldListSelectSystem(init)
+	initFieldListSelectUserType(init)
+
 	initOrg(init)
 	initSystem(init)
 	initUser(init)
+}
+
+function initFieldListSelectOrg(init: InitDb) {
+	init.addTrans('sysDataObjEmbed', {
+		actionFieldGroup: 'doag_embed_list_select',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeDataObjType: 'embed',
+		exprFilter: `.id IN (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).orgs.id`,
+		header: 'Select Organization(s)',
+		name: 'dofls_sys_admin_org_user_org',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysOrg' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'name',
+				orderSort: 20,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			}
+		]
+	})
+
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
+		actionFieldGroupModal: 'doag_dialog_footer_list',
+		btnLabelComplete: 'Select Organization(s)',
+		dataObjList: 'dofls_sys_admin_org_user_org',
+		name: 'fels_sys_admin_org',
+		owner: 'sys_system_old'
+	})
+}
+
+function initFieldListSelectSystem(init: InitDb) {
+	init.addTrans('sysDataObjEmbed', {
+		actionFieldGroup: 'doag_embed_list_select',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeDataObjType: 'embed',
+		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).orgs`,
+		header: 'Select System(s)',
+		name: 'dofls_sys_admin_org_user_system',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysSystem' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'name',
+				orderSort: 20,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			}
+		]
+	})
+
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
+		actionFieldGroupModal: 'doag_dialog_footer_list',
+		btnLabelComplete: 'Select System(s)',
+		dataObjList: 'dofls_sys_admin_org_user_system',
+		name: 'fels_sys_admin_system',
+		owner: 'sys_system_old'
+	})
+}
+
+function initFieldListSelectUserType(init: InitDb) {
+	init.addTrans('sysDataObjEmbed', {
+		actionFieldGroup: 'doag_embed_list_select',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeDataObjType: 'embed',
+		exprFilter: `.isGlobalResource UNION .owner.owner IN (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).orgs`,
+		header: 'Select User Types',
+		name: 'dofls_sys_sys_admin_user_type',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysUserType' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'name',
+				orderCrumb: 10,
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			}
+		]
+	})
+
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
+		actionFieldGroupModal: 'doag_dialog_footer_list',
+		btnLabelComplete: 'Select UserType(s)',
+		dataObjList: 'dofls_sys_sys_admin_user_type',
+		name: 'fels_sys_sys_admin_user_type',
+		owner: 'sys_system_old'
+	})
 }
 
 function initOrg(init: InitDb) {
@@ -222,6 +344,7 @@ function initOrg(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program',
 		dataObj: 'data_obj_sys_admin_org_list_user',
 		header: 'Organizations (User)',
 		name: 'node_obj_sys_admin_org_list_user',
@@ -230,6 +353,7 @@ function initOrg(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_org_detail_user',
 		header: 'Organization (User)',
 		name: 'node_obj_sys_admin_org_detail_user',
@@ -354,6 +478,7 @@ function initSystem(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_system_list_user',
 		header: 'Systems',
 		name: 'node_obj_sys_admin_system_list_user',
@@ -363,6 +488,7 @@ function initSystem(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_system_detail_user',
 		header: 'System',
 		name: 'node_obj_sys_admin_system_detail_user',
@@ -614,6 +740,7 @@ function initUser(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_user_list_user',
 		header: 'Users',
 		name: 'node_obj_sys_admin_user_list_user',
@@ -624,6 +751,7 @@ function initUser(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_user_detail_user',
 		header: 'User',
 		name: 'node_obj_sys_admin_user_detail_user',

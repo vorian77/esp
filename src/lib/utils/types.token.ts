@@ -195,60 +195,63 @@ export class TokenApiQueryData {
 	getParms() {
 		return this.dataTab ? this.dataTab.getParms() : {}
 	}
-	updateTableData(table: string, dataRecord: DataRow) {
-		this.record = dataRecord.record
-		this.tree.upsertData(table, dataRecord.record)
+	updateTableData(table: string, dataRow: DataRow) {
+		this.record = dataRow.record
+		this.tree.upsertData(table, dataRow)
 	}
 }
 export class TokenApiQueryDataTree {
 	levels: TokenApiQueryDataTreeLevel[] = []
-	constructor(levels: Array<TokenApiQueryDataTreeLevel> = []) {
+	constructor(levels: TokenApiQueryDataTreeLevel[] = []) {
 		this.levels = levels
 	}
 
-	getRecord(table: string | undefined = undefined) {
+	getDataRow(table: string | undefined = undefined) {
 		const idx = table ? this.levels.findIndex((t) => t.table === table) : this.levels.length - 1
-		const rtn = idx > -1 ? this.levels[idx].data : {}
-		return rtn ? rtn : {}
+		return idx > -1 ? this.levels[idx].dataRow : undefined
 	}
 
 	getValue(table: string | undefined, fieldName: string) {
-		const record = this.getRecord(table)
-		return fieldName && record && Object.hasOwn(record, fieldName) ? record[fieldName] : undefined
+		const dataRow = this.getDataRow(table)
+		return fieldName && dataRow ? dataRow.getValue(fieldName) : undefined
 	}
 
-	setFieldData(table: string | undefined, fieldName: string, value: any) {
-		const record = this.getRecord(table)
-		if (fieldName && record && Object.hasOwn(record, fieldName)) {
-			record[fieldName] = value
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'TokenApiQueryDataTree.setFieldData',
-				message: `Field ${fieldName} not found in data tree - table: ${table}; record: ${JSON.stringify(
-					record
-				)}`
-			})
+	setValue(table: string | undefined, fieldName: string, value: any) {
+		const dataRow = this.getDataRow(table)
+		if (fieldName && dataRow && Object.hasOwn(dataRow.record, fieldName)) {
+			if (!dataRow.setValue(fieldName, value)) {
+				error(500, {
+					file: FILENAME,
+					function: 'TokenApiQueryDataTree.setValue',
+					message: `Field ${fieldName} not found in data tree - table: ${table}; record: ${JSON.stringify(
+						dataRow?.record
+					)}`
+				})
+			}
 		}
 	}
 
-	upsertData(table: string | undefined, data: any) {
+	setDataRow(level: number, dataRow: DataRow) {
+		this.levels[level].dataRow = dataRow
+	}
+
+	upsertData(table: string | undefined, dataRow: DataRow) {
 		if (table) {
 			const idx = this.levels.findIndex((t) => t.table === table)
 			if (idx >= 0) {
-				this.levels[idx].data = data
+				this.setDataRow(idx, dataRow)
 			} else {
-				this.levels.push(new TokenApiQueryDataTreeLevel(table, data))
+				this.levels.push(new TokenApiQueryDataTreeLevel(table, dataRow))
 			}
 		}
 	}
 }
 
 export class TokenApiQueryDataTreeLevel {
-	data: DataRecord
+	dataRow: DataRow
 	table: string
-	constructor(table: string, data: DataRecord) {
-		this.data = data
+	constructor(table: string, dataRow: DataRow) {
+		this.dataRow = dataRow
 		this.table = table
 	}
 }
@@ -359,7 +362,7 @@ export class TokenAppModalSelect extends TokenApp {
 	fModalClose: Function
 	isMultiSelect: boolean
 	idsSelected: FieldItem[]
-	itemsList: FieldItem[]
+	rowData: DataRecord[]
 	constructor(obj: any) {
 		const clazz = 'TokenAppModalSelect'
 		super(obj)
@@ -367,7 +370,16 @@ export class TokenAppModalSelect extends TokenApp {
 		this.fModalClose = required(obj.fModalClose, clazz, 'fModalClose')
 		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
 		this.idsSelected = required(obj.idsSelected, clazz, 'idsSelected')
-		this.itemsList = required(obj.itemsList, clazz, 'itemsList')
+		this.rowData = required(obj.rowData, clazz, 'rowData')
+	}
+}
+
+export class TokenAppModalSelectDataObj extends TokenAppModalSelect {
+	dataObjSelectId: string
+	constructor(obj: any) {
+		const clazz = 'TokenAppModalSelectDataObj'
+		super(obj)
+		this.dataObjSelectId = strRequired(obj.dataObjSelectId, clazz, 'dataObjSelectId')
 	}
 }
 

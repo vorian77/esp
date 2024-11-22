@@ -1,10 +1,6 @@
 import { ApiFunction } from '$routes/api/api'
 import { debug, getServerResponse, userRetrieve } from '$utils/types'
-import {
-	getRepParmItems,
-	processDataObj,
-	processExpression
-} from '$routes/api/dbEdge/dbEdgeProcess'
+import { processDataObj, processExpression } from '$routes/api/dbEdge/dbEdgeProcess'
 import {
 	getDataObjActionFieldGroup,
 	getNodesBranch,
@@ -16,7 +12,11 @@ import {
 	getUserResourcesFooter,
 	setUserPref
 } from '$routes/api/dbEdge/dbEdgeUtilities'
-import { getDataObjId, getNodeObjByName } from '$routes/api/dbEdge/dbEdgeUtilities'
+import {
+	getDataObjId,
+	getFieldEmbedListSelect,
+	getNodeObjByName
+} from '$routes/api/dbEdge/dbEdgeUtilities'
 import { dbEdgeInit } from '$server/dbEdge/init/dbEdgeInit'
 import { sysSendText } from '$routes/api/apiTwilio'
 import { error } from '@sveltejs/kit'
@@ -34,6 +34,9 @@ export async function POST({ request, cookies }) {
 		case ApiFunction.dbEdgeGetDataObjId:
 			return getServerResponse(await getDataObjId(token))
 
+		case ApiFunction.dbEdgeGetFieldEmbedListSelect:
+			return getServerResponse(await getFieldEmbedListSelect(token))
+
 		case ApiFunction.dbEdgeGetNodeObjByName:
 			return getServerResponse(await getNodeObjByName(token))
 
@@ -42,9 +45,6 @@ export async function POST({ request, cookies }) {
 
 		case ApiFunction.dbEdgeGetNodesLevel:
 			return getServerResponse(await getNodesLevel(token))
-
-		case ApiFunction.dbEdgeGetRepParmItems:
-			return getServerResponse(await getRepParmItems(token))
 
 		case ApiFunction.dbEdgeGetTableColumns:
 			return getServerResponse(await getTableColumns(token))

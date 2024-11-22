@@ -122,19 +122,6 @@ export class DataObj {
 		}
 	}
 
-	getDataVal(record: DataRecord, propNameRaw: string, indexTable: number = 0) {
-		const field = this.fields.find((f) => f.colDO.propNameRaw === propNameRaw)
-		if (field) {
-			return record[field.colDO.propName]
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'getDataVal',
-				message: `Field for propNameRaw: ${propNameRaw} not found.`
-			})
-		}
-	}
-
 	static async init(state: State, data: DataObjData) {
 		const clazz = 'DataObj.init'
 		const rawDataObj = required(data.rawDataObj, clazz, 'rawDataObj')
@@ -789,7 +776,6 @@ export enum DataObjMode {
 }
 
 export enum DataObjProcessType {
-	reportParmItems = 'reportParmItems',
 	reportRender = 'reportRender'
 }
 
@@ -919,7 +905,7 @@ export class DataRow {
 		return getRecordValue(this.record, key)
 	}
 	setValue(key: string, value: any) {
-		setRecordValue(this.record, key, value)
+		return setRecordValue(this.record, key, value)
 	}
 }
 
@@ -991,9 +977,7 @@ export class DataRows {
 		this.dataRows = dataRows
 	}
 	setDetailRecord(record: DataRecord) {
-		if (this.dataRows.length > 0) {
-			this.dataRows[0].record = record
-		}
+		if (this.dataRows.length > 0) this.dataRows[0].record = record
 	}
 	setDetailRecordStatus(status: DataRecordStatus) {
 		if (this.dataRows) {
@@ -1008,6 +992,9 @@ export class DataRows {
 	}
 	setDetailRecordValue(key: string, value: any) {
 		this.setRecordValue(0, key, value)
+	}
+	setDetailDataRow(dataRow: DataRow) {
+		if (this.dataRows.length > 0) this.dataRows[0] = dataRow
 	}
 	setRecordValue(row: number, key: string, value: any) {
 		if (this.dataRows.length <= row) return
@@ -1071,22 +1058,22 @@ export class FieldValues {
 	}
 }
 
-export function getRecordValue(record: DataRecord, key: string) {
+export function getRecordKey(record: DataRecord, key: string) {
 	for (const [k, v] of Object.entries(record)) {
-		if (k.endsWith(key)) {
-			return v
-		}
+		if (k.endsWith(key)) return k
 	}
 	return undefined
 }
 
+export function getRecordValue(record: DataRecord, key: string) {
+	const recordKey = getRecordKey(record, key)
+	return recordKey ? record[recordKey] : undefined
+}
+
 export function setRecordValue(record: DataRecord, key: string, value: any) {
-	for (const [k, v] of Object.entries(record)) {
-		if (k.endsWith(key)) {
-			record[k] = value
-			return
-		}
-	}
+	const recordKey = getRecordKey(record, key)
+	if (recordKey) record[recordKey] = value
+	return recordKey
 }
 
 export class ParmsUser {
@@ -1176,9 +1163,9 @@ export enum ParmsValuesType {
 	isSystemRoot = 'isSystemRoot',
 	listIds = 'listIds',
 	listIdsSelected = 'listIdsSelected',
-	listItems = 'listItems',
 	listItemsFieldDisplay = 'listItemsFieldDisplay',
 	listItemsFieldId = 'listItemsFieldId',
 	listLabel = 'listLabel',
-	listRecordIdCurrent = 'listRecordIdCurrent'
+	listRecordIdCurrent = 'listRecordIdCurrent',
+	rowData = 'rowData'
 }

@@ -1,7 +1,7 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
 export function initSysAuth(init: InitDb) {
-	initDataObjAccount(init)
+	initTaskMyAccount(init)
 	initDataObjLogin(init)
 	initDataObjResetPasswordAccount(init)
 	initDataObjResetPasswordLogin(init)
@@ -11,13 +11,14 @@ export function initSysAuth(init: InitDb) {
 	initDataObjUserPrefType(init)
 }
 
-function initDataObjAccount(init: InitDb) {
-	init.addTrans('sysDataObj', {
+function initTaskMyAccount(init: InitDb) {
+	init.addTrans('sysDataObjTask', {
 		actionFieldGroup: 'doag_auth_my_account',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
+		codeDataObjType: 'task',
 		header: 'My Account',
-		name: 'data_obj_auth_account',
+		name: 'data_obj_task_sys_auth_my_account',
 		owner: 'sys_system_old',
 		actionsQuery: [
 			{
@@ -154,6 +155,18 @@ function initDataObjAccount(init: InitDb) {
 				orderDefine: 1060
 			}
 		]
+	})
+
+	init.addTrans('sysTask', {
+		codeIcon: 'Settings',
+		codeTaskType: 'dataObj',
+		header: 'My Account',
+		isAlwaysPinToDash: false,
+		isGlobalResource: true,
+		name: 'task_sys_auth_my_account',
+		objectTask: 'data_obj_task_sys_auth_my_account',
+		orderDefine: 0,
+		owner: 'sys_system_old'
 	})
 }
 

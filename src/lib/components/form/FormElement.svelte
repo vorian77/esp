@@ -111,7 +111,7 @@
 
 	function closureSetVal(row: number, field: Field, value: any) {
 		dataObj = dataObj.setFieldVal(row, field, value)
-		fp.state.fClosureSetStatus()
+		fp.state.fClosureSetStatus() // <todo> - 241121 - this causes screen to flicker - should be fixed with Svelte 5 state management
 	}
 </script>
 

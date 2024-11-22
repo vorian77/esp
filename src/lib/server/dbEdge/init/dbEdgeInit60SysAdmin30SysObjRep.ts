@@ -1,6 +1,6 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initSysAdminRep(init: InitDb) {
+export function initAdminSysObjRep(init: InitDb) {
 	initFieldListSelectAnalytics(init)
 	initAnalytic(init)
 	initAnalyticParm(init)
@@ -209,6 +209,7 @@ function initAnalytic(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_analytic_list',
 		header: 'Analytics',
 		name: 'node_obj_sys_analytic_list',
@@ -218,6 +219,7 @@ function initAnalytic(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_analytic_detail',
 		header: 'Analytic',
 		name: 'node_obj_sys_analytic_detail',
@@ -420,21 +422,14 @@ function initAnalyticParm(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'fieldListItems',
+				columnName: 'dataObjSelect',
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
-				fieldListItems: 'il_sys_data_obj_field_list_items_order_name',
 				indexTable: 0,
-				linkTable: 'SysDataObjFieldListItems'
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'fieldListItemsParmName',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
-				indexTable: 0
+				fieldListItems: 'il_sys_data_obj_order_name_by_dataObjtype',
+				fieldListItemsParmName: 'select',
+				linkTable: 'SysDataObj'
 			},
 			{
 				codeAccess: 'optional',
@@ -521,6 +516,7 @@ function initAnalyticParm(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_analytic_parm_list',
 		header: 'Parms',
 		name: 'node_obj_sys_analytic_parm_list',
@@ -530,6 +526,7 @@ function initAnalyticParm(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_analytic_parm_detail',
 		header: 'Parm',
 		name: 'node_obj_sys_analytic_parm_detail',
@@ -686,6 +683,7 @@ function initAnalyticStatus(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_analytic_status_list',
 		header: 'Statuses',
 		name: 'node_obj_sys_analytic_status_list',
@@ -695,6 +693,7 @@ function initAnalyticStatus(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_analytic_status_detail',
 		header: 'Status',
 		name: 'node_obj_sys_analytic_status_detail',
@@ -924,6 +923,7 @@ function initRep(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_list',
 		header: 'Reports',
 		name: 'node_obj_sys_rep_list',
@@ -933,6 +933,7 @@ function initRep(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_detail',
 		header: 'Report',
 		name: 'node_obj_sys_rep_detail',
@@ -1437,6 +1438,7 @@ function initRepEl(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_element_list',
 		header: 'Elements',
 		name: 'node_obj_sys_rep_el_list',
@@ -1446,6 +1448,7 @@ function initRepEl(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_el_detail',
 		header: 'Element',
 		name: 'node_obj_sys_rep_el_detail',
@@ -1652,21 +1655,14 @@ function initRepParm(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'fieldListItems',
+				columnName: 'dataObjSelect',
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
-				fieldListItems: 'il_sys_data_obj_field_list_items_order_name',
 				indexTable: 0,
-				linkTable: 'SysDataObjFieldListItems'
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'fieldListItemsParmName',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
-				indexTable: 0
+				fieldListItems: 'il_sys_data_obj_order_name_by_dataObjtype',
+				fieldListItemsParmName: 'select',
+				linkTable: 'SysDataObj'
 			},
 			{
 				codeAccess: 'optional',
@@ -1753,6 +1749,7 @@ function initRepParm(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_parm_list',
 		header: 'Parms',
 		name: 'node_obj_sys_rep_parm_list',
@@ -1762,6 +1759,7 @@ function initRepParm(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_parm_detail',
 		header: 'Parm',
 		name: 'node_obj_sys_rep_parm_detail',
@@ -1940,6 +1938,7 @@ function initRepUser(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_user_list',
 		header: 'Users',
 		name: 'node_obj_sys_rep_user_list',
@@ -1949,6 +1948,7 @@ function initRepUser(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_user_detail',
 		header: 'User',
 		name: 'node_obj_sys_rep_user_detail',

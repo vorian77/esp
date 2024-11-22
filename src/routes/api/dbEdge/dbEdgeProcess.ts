@@ -315,30 +315,6 @@ function formatDataForDisplayScalar(codeDataTypeField: PropDataType, value: any)
 	}
 }
 
-export async function getRepParmItems(token: TokenApiQueryData) {
-	const queryData = TokenApiQueryData.load(token)
-	const rawDataObj = await getRawDataObjDynamic(DataObjProcessType.reportParmItems, queryData, {})
-	const query = new Query(rawDataObj)
-	const scriptGroup = new ScriptGroup()
-
-	scriptGroup.addScriptDataItems(query, queryData, rawDataObj.rawPropsRepParmItems)
-
-	if (scriptGroup.scripts.length === 1) {
-		const rawDataItems = await exeQueryMultiData(
-			scriptGroup.scripts[0].script,
-			queryData,
-			new EvalExprContext('getRepParmItems-expression', rawDataObj.name)
-		)
-		return new ApiResult(true, rawDataItems[0])
-	} else {
-		error(500, {
-			file: FILENAME,
-			function: 'getRepParmItems',
-			message: `Expected 1 script, found: ${scriptGroup.scripts.length}`
-		})
-	}
-}
-
 export async function getRawDataObj(
 	dataObjSource: TokenApiDbDataObjSource,
 	queryData: TokenApiQueryData
@@ -352,7 +328,12 @@ export async function getRawDataObj(
 		dbDataObj = await getDataObjByName(new TokenApiId(dataObjSource.sources.dataObjName))
 	}
 	rawDataObj = new RawDataObj(dbDataObj)
-	rawDataObj = await getRawDataObjDynamic(rawDataObj.processType, queryData, rawDataObj)
+	rawDataObj = await getRawDataObjDynamic(
+		rawDataObj.processType,
+		queryData,
+		rawDataObj,
+		dataObjSource
+	)
 
 	if (rawDataObj) {
 		if (Object.hasOwn(dataObjSource.replacements, 'exprFilter')) {

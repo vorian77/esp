@@ -19,6 +19,10 @@ export function booleanOrDefaultJSON(jsonObj: any, val: string, valDefault: bool
 	return e.cast(e.bool, e.op(e.cast(e.bool, e.json_get(jsonObj, val)), '??', valDefault))
 }
 
+export function valueOrDefaultParm(val: any, valDefault: any) {
+	return e.op(val, 'if', e.op('exists', val), 'else', valDefault)
+}
+
 export async function dbEdgeQuery(script: string) {
 	if (!script) return {}
 	script = scrubScript(script)

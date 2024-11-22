@@ -42,7 +42,7 @@ export async function query(
 
 	/* set parm - appSystemId */
 	if (tab.isSystemRoot && queryType === TokenApiQueryType.preset && state.user) {
-		const appSystemId = state.app.appSystemIdGet()
+		const appSystemId = state.app.appSystemIdGet(state)
 		if (!appSystemId) {
 			const userSystemResource: UserTypeResource | undefined = await state.user.selectResource(
 				state,
@@ -50,7 +50,7 @@ export async function query(
 			)
 			if (userSystemResource) state.app.appSystemIdSet(userSystemResource.resource.id)
 		}
-		dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.app.appSystemIdGet())
+		dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.app.appSystemIdGet(state))
 	}
 
 	if (tab.isSystemRoot && queryType === TokenApiQueryType.retrieve) {
@@ -58,7 +58,7 @@ export async function query(
 	}
 
 	if (tab.isProgramObject) {
-		dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.app.appSystemIdGet())
+		dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.app.appSystemIdGet(state))
 	}
 
 	// set other parms
@@ -180,8 +180,8 @@ function queryDataPreTree(queryType: TokenApiQueryType, app: App) {
 		const currTab = level.getCurrTab()
 		const dataObj = required(currTab.dataObj, clazz, 'currTab.dataObj')
 		const table = required(dataObj.rootTable?.name, 'rootTable', 'DataObj')
-		const record = currTab.listGetDataRecord()
-		dataTree.upsertData(table, record)
+		const dataRow = currTab.listGetDataRow()
+		if (dataRow) dataTree.upsertData(table, dataRow)
 	}
 	return dataTree
 }

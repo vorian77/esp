@@ -7,10 +7,10 @@ const FILENAME = '$routes/api/api.ts'
 export enum ApiFunction {
 	dbEdgeGetDataObjActionFieldGroup = 'dbEdgeGetDataObjActionFieldGroup',
 	dbEdgeGetDataObjId = 'dbEdgeGetDataObjId',
+	dbEdgeGetFieldEmbedListSelect = 'dbEdgeGetFieldEmbedListSelect',
 	dbEdgeGetNodeObjByName = 'dbEdgeGetNodeObjByName',
 	dbEdgeGetNodesBranch = 'dbEdgeGetNodesBranch',
 	dbEdgeGetNodesLevel = 'dbEdgeGetNodesLevel',
-	dbEdgeGetRepParmItems = 'dbEdgeGetRepParmItems',
 	dbEdgeProcessDataObj = 'dbEdgeProcessDataObj',
 	dbEdgeProcessExpression = 'dbEdgeProcessExpression',
 	dbEdgeGetTableColumns = 'dbEdgeGetTableColumns',

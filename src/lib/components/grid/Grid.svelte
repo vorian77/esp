@@ -4,7 +4,6 @@
 	import {
 		TokenApiUserPref,
 		TokenAppDoActionConfirmType,
-		TokenAppModalSelect,
 		TokenAppModalReturnType
 	} from '$utils/types.token'
 	import {

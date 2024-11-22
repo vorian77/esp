@@ -1,12 +1,5 @@
-import { TokenApiQuery, TokenApiQueryType, TokenApiQueryData } from '$utils/types.token'
-import { DataObjProcessType, DataObjTable, debug, valueOrDefault } from '$utils/types'
-import {
-	RawDataObj,
-	RawDataObjPropDB,
-	RawDataObjPropDisplay
-} from '$comps/dataObj/types.rawDataObj'
-import { DataObj } from '$utils/types'
-import { dynDOReportParmItems } from '$routes/api/dbEdge/dbEdgeProcessDynDOReportParmItems'
+import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
+import { DataObjProcessType } from '$utils/types'
 import { dynDOReportRender } from '$routes/api/dbEdge/dbEdgeProcessDynDOReportRender'
 import { error } from '@sveltejs/kit'
 
@@ -15,16 +8,14 @@ const FILENAME = '$routes/api/dbEdge/dbEdgeProcessDynamic.ts'
 export async function getRawDataObjDynamic(
 	processType: DataObjProcessType,
 	queryData: TokenApiQueryData,
-	source: any
+	source: any,
+	dataObjSource: TokenApiDbDataObjSource
 ) {
 	if (!processType) return source
 
 	switch (processType) {
-		case DataObjProcessType.reportParmItems:
-			return await dynDOReportParmItems(queryData)
-
 		case DataObjProcessType.reportRender:
-			return await dynDOReportRender(queryData, source)
+			return await dynDOReportRender(queryData, dataObjSource)
 
 		default:
 			error(500, {

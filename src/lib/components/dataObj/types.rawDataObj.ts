@@ -67,7 +67,6 @@ export class RawDataObj {
 	rawActionsField: RawDataObjActionField[] = []
 	rawParent?: RawDataObjParent
 	rawPropsDisplay: RawDataObjPropDisplay[] = []
-	rawPropsDisplayParm: RawDataObjPropDisplay[] = []
 	rawPropsRepParmItems: RawDataObjPropDB[] = []
 	rawPropsSaveInsert: RawDataObjPropDB[] = []
 	rawPropsSaveUpdate: RawDataObjPropDB[] = []
@@ -144,7 +143,6 @@ export class RawDataObj {
 		this.rawPropsSelect = this.initProps(obj._propsSelect)
 		this.rawPropsSelectPreset = this.initProps(obj._propsSelectPreset)
 		this.rawPropsSort = this.initProps(obj._propsSort)
-		this.rawPropsRepParmItems = this.initProps(obj._propsRepParmItems)
 	}
 
 	initCrumbs(crumbFields: any) {
@@ -229,9 +227,6 @@ export class RawDataObjDyn extends RawDataObj {
 	addPropSelect(rawProp: any, tables: DataObjTable[]) {
 		this.rawPropsSelect.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tables))
 	}
-	addPropSelectRepParmItems(rawProp: any, tables: DataObjTable[]) {
-		this.rawPropsRepParmItems.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tables))
-	}
 	build() {
 		return this
 	}
@@ -272,12 +267,13 @@ export class RawDataObjProp {
 	hasItems: boolean
 	indexTable: number
 	link?: PropLink
-	linkItemsDefn?: PropLinkItemsDefn
+	linkItemsDefn?: PropLinkItemsSource
 	propName: string
 	propNamePrefixType?: PropNamePrefixType
 	propNamePrefixTypeId: string = ''
 	propNameRaw: string
 	constructor(obj: any, tables: DataObjTable[]) {
+		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjProp'
 		this.codeSortDir = memberOfEnumOrDefault(
 			obj._codeSortDir,
@@ -292,7 +288,7 @@ export class RawDataObjProp {
 		this.hasItems = booleanOrDefault(obj._hasItems, false)
 		this.indexTable = nbrOrDefault(obj.indexTable, -1)
 		this.link = classOptional(PropLink, obj._link)
-		this.linkItemsDefn = classOptional(PropLinkItemsDefn, obj._linkItemsDefn)
+		this.linkItemsDefn = classOptional(PropLinkItemsSource, obj._linkItemsDefn)
 		this.propNameRaw = strRequired(obj._propName, clazz, 'propName')
 
 		/* derived properties */
@@ -308,9 +304,6 @@ export class RawDataObjProp {
 		}
 		this.propName = this.getPropNameDB()
 	}
-
-	// } else if (this.exprPreset || this?.link?.exprPreset) {
-	// 	this.propNamePrefixType = PropNamePrefixType.expr
 	setPropNamePrefixType(type: PropNamePrefixType, id: string = '') {
 		this.propNamePrefixType = type
 		this.propNamePrefixTypeId = id
@@ -322,13 +315,6 @@ export class RawDataObjProp {
 				'_' +
 				this.propNameRaw
 			: this.propNameRaw
-		if (this.propNameRaw === 'sysName')
-			debug('RawDataObjPropDB', 'createdBy', {
-				propName: this.propNameRaw,
-				propNamePrefixType: this.propNamePrefixType,
-				propNamePrefixTypeId: this.propNamePrefixTypeId,
-				propNameDB
-			})
 		return propNameDB
 	}
 }
@@ -419,6 +405,7 @@ export class RawDataObjPropDBFieldEmbed {
 export class RawDataObjPropDisplay extends RawDataObjProp {
 	colDB: RawDBColumn
 	customCol?: RawDataObjPropDisplayCustom
+	dataObjSelectId?: string
 	fieldColor: FieldColor
 	fieldEmbedListConfig?: RawDataObjPropDisplayEmbedListConfig
 	fieldEmbedListEdit?: RawDataObjPropDisplayEmbedListEdit
@@ -446,6 +433,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		obj = valueOrDefault(obj, {})
 		this.colDB = new RawDBColumn(obj._column)
 		this.customCol = classOptional(RawDataObjPropDisplayCustom, obj._customCol)
+		this.dataObjSelectId = obj._dataObjSelectId
 		this.fieldColor = new FieldColor(obj._codeColor, 'black')
 		this.fieldEmbedListConfig = classOptional(
 			RawDataObjPropDisplayEmbedListConfig,
@@ -685,7 +673,7 @@ export class PropLink {
 	}
 }
 
-export class PropLinkItemsDefn {
+export class PropLinkItemsSource {
 	exprFilter: string
 	exprPropDisplay: string
 	exprSort: string
@@ -693,16 +681,14 @@ export class PropLinkItemsDefn {
 	parms: DataRecord
 	table?: DBTable
 	constructor(obj: any) {
-		const clazz = 'PropLinkItemsDefn'
+		const clazz = 'PropLinkItemsSource'
 		obj = valueOrDefault(obj, {})
 		this.exprFilter = valueOrDefault(obj.exprFilter, '')
 		this.exprPropDisplay = strRequired(obj.exprPropDisplay, clazz, 'expProprDisplay')
 		this.exprSort = valueOrDefault(obj.exprSort, '')
 		this.exprWith = valueOrDefault(obj.exprWith, '')
 		this.table = classOptional(DBTable, obj._table)
-		this.parms = obj._fieldListItemsParmName
-			? { fieldListItemsParmName: obj._fieldListItemsParmName }
-			: {}
+		this.parms = obj._parmName ? { itemsParmName: obj._parmName } : {}
 	}
 }
 

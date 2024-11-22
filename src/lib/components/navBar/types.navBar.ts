@@ -66,3 +66,14 @@ export class NavBarDataItem {
 		})
 	}
 }
+
+export class NavBarListItemData {
+	codeIcon: string
+	label: string
+	constructor(obj: any) {
+		const clazz = 'NavBarDataItem'
+		obj = valueOrDefault(obj, {})
+		this.codeIcon = strRequired(obj.codeIcon, clazz, 'codeIcon')
+		this.label = strRequired(obj.label, clazz, 'label')
+	}
+}

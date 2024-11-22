@@ -1,97 +1,95 @@
 <script lang="ts">
-	import NavBarList from '$comps/navBar/NavBarList.svelte'
-	import { NavBarData, NavBarDataItem } from '$comps/navBar/types.navBar'
-	import Icon from '$comps/icon/Icon.svelte'
-	import { IconProps } from '$comps/icon/types.icon'
-	import { NodeType, User } from '$utils/types'
 	import { fade } from 'svelte/transition'
-	import DataViewer from '$utils/DataViewer.svelte'
+	import NavBarListItem from '$comps/navBar/NavBarIListItem.svelte'
+	import { NavBarListItemData } from '$comps/navBar/types.navBar'
+	import type { stringify } from 'querystring'
 
-	const FILENAME = '/$comps/app/navBar/NavBar.svelte'
-
-	export let user: User | undefined
-
-	let navBarData: NavBarData
-	let iconSize = '22'
-	let iconSizeChevron = '20'
-	let iconStrokeWidth = '1'
-	let isExpanded = true
-
-	$: {
-		navBarData = new NavBarData()
-		navBarData.addPage('home', 'Home', 'house', true)
-		navBarData.addApps(user?.resources_sys_app)
-		navBarData.addPage('settings', 'Settings', 'settings', false)
+	const eRoot = document.querySelector(':root')
+	const setCssVar = (cssVar: string, value: string) => {
+		eRoot.style.setProperty(`--${cssVar}`, value)
 	}
-
-	function onClickToggleExpand() {
-		isExpanded = !isExpanded
-		console.log('NavBar.onClickToggleWidth', isExpanded)
-	}
+	setCssVar('nav-width-open', '200px')
+	setCssVar('nav-width-closed', '60px')
 
 	const fadeIn = {
-		delay: 100,
+		delay: 300,
 		duration: 200
 	}
-
 	const fadeOut = {
 		delay: 0,
-		duration: 100
+		duration: 200
 	}
+	let isOpen = false
 
-	// <div class="flex justify-between items-center px-2 border-2">
+	let items: NavBarListItemData[] = []
+	items.push(new NavBarListItemData({ codeIcon: 'Settings', label: 'My Account' }))
+	items.push(new NavBarListItemData({ codeIcon: 'Mail', label: 'Messages' }))
+	items.push(new NavBarListItemData({ codeIcon: 'Activity', label: 'Activities' }))
+	console.log('NavBar.items', items)
 </script>
 
-<div class="sideBar" class:expanded={!isExpanded}>
-	<div class="grid grid-cols-7 my-2 px-2 border-2">
-		<div class="col-span-2 border-2 border-red-200">
-			<div class="logo w-14">
-				{#await import(`$lib/assets/org_logo_ai.png`) then { default: src }}
-					<img {src} alt="Image" />
-				{/await}
-			</div>
-		</div>
-		<div class="col-span-4 content-center ml-1 border-2 border-amber-400 text-xs text-gray-700">
-			<span in:fade={fadeIn} out:fade={fadeOut}> MOED Self-Service Registration App </span>
-		</div>
-		<div class="justify-self-end content-center border-2 border-blue-300">
-			<Icon
-				props={new IconProps({
-					name: 'ChevronsLeft',
-					color: navColor,
-					onClick: onClickToggleExpand,
-					size: iconSizeChevron,
-					strokeWidth: iconStrokeWidth
-				})}
-			/>
-		</div>
-	</div>
-
-	{#if navBarData}
-		<nav>
-			<NavBarList items={navBarData.items} {isExpanded} />
-		</nav>
+<nav class:expanded={isOpen}>
+	<button on:click={() => (isOpen = !isOpen)}>
+		{#if isOpen}
+			Open
+		{:else}
+			Closed
+		{/if}
+	</button>
+	<ul>
+		{#each items as item}
+			<NavBarListItem isExpanded={isOpen} data={item} />
+		{/each}
+	</ul>
+	{#if isOpen}
+		<section in:fade={fadeIn} out:fade={fadeOut}>
+			<hr />
+			<ul>
+				<h3>Folders</h3>
+				<li>🧾 Receipts</li>
+				<li>🤖 Autofilter</li>
+			</ul>
+		</section>
 	{/if}
-</div>
+</nav>
 
 <style>
-	.sideBar {
-		background-color: linen;
+	:root {
+		--nav-width-open: 200px;
+		--nav-width-closed: 60px;
+	}
+	nav {
+		grid-area: nav;
+		height: 100vw;
+		background-color: whitesmoke;
+		color: #a2b7c4;
 		transition: ease-out 300ms;
-		width: 250px;
+		/* width: 60px; */
+		width: var(--nav-width-closed);
 		overflow: hidden;
 	}
 
 	.expanded {
-		transition: ease-out 300ms;
-		width: 60px;
+		transition: ease-out 200ms;
+		/* width: 200px; */
+		width: var(--nav-width-open);
 	}
 
-	.expanded .logo {
-		transition: ease-out 300ms;
-		width: 120px;
+	ul {
+		list-style: none;
+		padding: 20px;
+		margin: 0;
 	}
 
+	li {
+		width: 200px;
+	}
+
+	h3 {
+		text-transform: uppercase;
+		margin: 0;
+		padding: 10px 0px;
+	}
 	hr {
 		color: white;
 		width: 80%;

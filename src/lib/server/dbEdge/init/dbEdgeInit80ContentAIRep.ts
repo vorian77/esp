@@ -1,11 +1,8 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 import { type DataRecord, valueOrDefault } from '$utils/types'
 
-import { initDataReportsAIStatic as initContentAIRepStatic } from '$server/dbEdge/init/dbEdgeInit80ContentAIRepStatic'
-
 export function initContentAIRep(init: InitDb) {
-	// old
-	initContentAIRepStatic(init)
+	initFieldListSelectCohorts(init)
 
 	initContentAIRepCohortsDetail(init)
 	initContentAIRepCoursesDetail(init)
@@ -232,6 +229,54 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 	return elements
 }
 
+function initFieldListSelectCohorts(init: InitDb) {
+	init.addTrans('sysDataObjSelect', {
+		actionFieldGroup: 'doag_embed_list_select',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeDataObjType: 'embed',
+		exprFilter: `.owner.id IN <user,uuid,systemIdList>)`,
+		header: 'Select Cohort(s)',
+		name: 'dos_cm_cohort',
+		owner: 'sys_ai_old',
+		tables: [
+			{ index: 0, table: 'CmCohort' },
+			{ columnParent: 'course', indexParent: 0, index: 1, table: 'CmCourse' }
+		],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'course',
+				indexTable: 1,
+				isDisplayable: true,
+				linkColumns: ['name'],
+				linkTable: 'CmCourse',
+				orderCrumb: 20,
+				orderDefine: 20,
+				orderDisplay: 20,
+				orderSort: 20
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'name',
+				headerAlt: 'Cohort',
+				indexTable: 0,
+				isDisplayable: true,
+				orderCrumb: 30,
+				orderDisplay: 30,
+				orderDefine: 30,
+				orderSort: 30
+			}
+		]
+	})
+}
+
 const getParms = (parms: string[], dateDataType: string = '') => {
 	const parmsList = [
 		{
@@ -255,8 +300,8 @@ const getParms = (parms: string[], dateDataType: string = '') => {
 		{
 			codeDataType: 'uuidList',
 			codeFieldElement: 'chips',
+			dataObjSelect: 'dos_cm_cohort',
 			description: 'Course cohort(s)',
-			fieldListItems: 'il_cm_cohort_short_by_userName',
 			header: 'Cohort(s)',
 			isMultiSelect: true,
 			linkTable: 'CmCohort',
@@ -650,7 +695,7 @@ function initContentAIRepStudentAttdDetail(init: InitDb) {
 				}
 			]
 		],
-		parms: getParms(['pvDateStart', 'pvDateEnd'], 'Cohort Attendance: Date')
+		parms: getParms(['pvDateStart', 'pvDateEnd', 'pvCohorts'], 'Cohort Attendance: Date')
 	})
 }
 
@@ -802,7 +847,7 @@ function initContentAIRepStudentJobPlacementDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: `.csf.client.owner.id IN <user,uuidlist,systemIdList> AND .dateStart >= <parms,date,pvDateStart> AND .dateStart <= <parms,date,pvDateEnd>`,
+		exprFilter: `.csf IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf AND .dateStart >= <parms,date,pvDateStart> AND .dateStart <= <parms,date,pvDateEnd>`,
 		header: 'Student - Job Placements - Detail',
 		name: 'report_ai_student_job_placement_detail',
 		owner: 'sys_ai_old',
@@ -820,7 +865,7 @@ function initContentAIRepStudentJobPlacementDetail(init: InitDb) {
 					codeReportElementType: 'column',
 					columnName: 'dateStart',
 					indexTable: 0,
-					isDisplay: true,
+					isDisplay: false,
 					isDisplayable: true,
 					orderDefine: 200,
 					orderDisplay: 200,
@@ -959,7 +1004,7 @@ function initContentAIRepStudentSchoolPlacementDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: `.csf.client.owner.id IN <user,uuidlist,systemIdList> AND .date >= <parms,date,pvDateStart> AND .date <= <parms,date,pvDateEnd>`,
+		exprFilter: `.csf IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf AND .date >= <parms,date,pvDateStart> AND .date <= <parms,date,pvDateEnd>`,
 		header: 'Student - School Placements - Detail',
 		name: 'report_ai_student_school_placement_detail',
 		owner: 'sys_ai_old',
@@ -1046,7 +1091,7 @@ function initContentAIRepStudentSchoolPlacementDetail(init: InitDb) {
 				}
 			]
 		],
-		parms: getParms(['pvDateStart', 'pvDateEnd'], 'School Placement: Date')
+		parms: getParms(['pvDateStart', 'pvDateEnd', 'pvCohorts'], 'School Placement: Date')
 	})
 }
 
@@ -1055,7 +1100,8 @@ function initContentAIRepStudentCohortAttdSummary(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: 'Student cohort attendance summary report.',
-		exprFilter: `.csf.client.owner.id IN <user,uuidlist,systemIdList> `,
+		// exprFilter: `.cohort.id IN <parms,uuidList,pvCohorts>`,
+		exprFilter: 'none',
 		header: 'Student - Cohort Attendance - Summary',
 		name: 'report_ai_student_cohort_attd_summary',
 		owner: 'sys_ai_old',
@@ -1143,7 +1189,7 @@ function initContentAIRepStudentCohortAttdSummary(init: InitDb) {
 					description: `The student's document count.`,
 					exprCustom: `(SELECT count(app_cm::CmCsfDocument FILTER .csf.id = app_cm::CmCsfCohort.csf.id AND .dateIssued >= <parms,date,pvDateStart> AND .dateIssued <= <parms,date,pvDateEnd>))`,
 					header: 'Student Documents',
-					isDisplay: true,
+					isDisplay: false,
 					isDisplayable: true,
 					nameCustom: 'docCnt',
 					orderDefine: 250,

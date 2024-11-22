@@ -1,6 +1,6 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initAdminDB(init: InitDb) {
+export function initAdminSysObjDB(init: InitDb) {
 	initColumn(init)
 	initTable(init)
 }
@@ -510,6 +510,7 @@ function initColumn(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_column_list',
 		header: 'Columns',
 		name: 'node_obj_sys_admin_column_list',
@@ -520,6 +521,7 @@ function initColumn(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_column_detail',
 		header: 'Column',
 		name: 'node_obj_sys_admin_column_detail',
@@ -699,6 +701,7 @@ function initTable(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_table_list',
 		header: 'Tables',
 		name: 'node_obj_sys_admin_table_list',
@@ -709,6 +712,7 @@ function initTable(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_table_detail',
 		header: 'Table',
 		name: 'node_obj_sys_admin_table_detail',

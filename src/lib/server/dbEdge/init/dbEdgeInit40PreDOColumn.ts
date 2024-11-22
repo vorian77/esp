@@ -280,7 +280,7 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'link',
 		header: 'Color - To',
 		isMultiSelect: false,
-		name: 'codeColorto'
+		name: 'codeColorTo'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
@@ -1023,7 +1023,13 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'dataObjModal'
 	})
-
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Data Object - Select',
+		isMultiSelect: false,
+		name: 'dataObjSelect'
+	})
 	init.addTrans('sysColumn', {
 		codeAlignment: 'center',
 		codeDataType: 'date',

@@ -7,12 +7,7 @@ import {
 	updateDataObjColumnCustomEmbedShellFields
 } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
 import { addColumn, tableColumnsBulk } from '$server/dbEdge/init/dbEdgeInit200Utilities30DB'
-import {
-	tablesBulk,
-	userSystemsBulk,
-	userUserTypeBulk,
-	widgetsBulk
-} from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { tablesBulk, widgetsBulk } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 import {
 	addDataObjActionField,
 	addDataObjActionFieldGroup,
@@ -24,9 +19,10 @@ import {
 import {
 	addApp,
 	addAppHeader,
+	addNode,
 	addNodeFooter,
-	addNodeProgram,
-	addNodeProgramObj,
+	addTask,
+	addUser,
 	addUserType,
 	addSubjectObj
 } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
@@ -110,6 +106,7 @@ export class InitDb {
 			})
 		)
 
+		// embed
 		this.items.push(
 			new InitDbItemObject({
 				name: 'sysDataObjEmbed',
@@ -144,6 +141,46 @@ export class InitDb {
 			})
 		)
 
+		// select
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysDataObjSelect',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysDataObj',
+				exprResetFull: `DELETE sys_core::SysDataObj FILTER .codeDataObjType.name = 'select'`,
+				fCreate: addDataObj
+			})
+		)
+
+		// task
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysDataObjTask',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysDataObj',
+				exprResetFull: `DELETE sys_core::SysDataObj FILTER .codeDataObjType.name = 'task'`,
+				fCreate: addDataObj
+			})
+		)
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysNodeObjTask',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysNodeObj',
+				exprResetFull: `DELETE sys_core::SysNodeObj FILTER .codeNavType.name = 'task'`,
+				fCreate: addNode
+			})
+		)
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysTask',
+				dataMap: 'name',
+				dbObject: 'sys_user::SysTask',
+				fCreate: addTask
+			})
+		)
+
+		// dataobj - default
 		this.items.push(
 			new InitDbItemObject({
 				name: 'sysDataObj',
@@ -182,6 +219,7 @@ export class InitDb {
 				name: 'sysNodeObjFooter',
 				dataMap: 'name',
 				dbObject: 'sys_core::SysNodeObj',
+				exprResetFull: `DELETE sys_core::SysNodeObj FILTER .codeNavType.name = 'footer'`,
 				fCreate: addNodeFooter
 			})
 		)
@@ -190,7 +228,8 @@ export class InitDb {
 				name: 'sysNodeObjProgram',
 				dataMap: 'name',
 				dbObject: 'sys_core::SysNodeObj',
-				fCreate: addNodeProgram
+				exprResetFull: `DELETE sys_core::SysNodeObj FILTER .codeNodeType.name = 'program' AND .codeNavType.name = 'tree'`,
+				fCreate: addNode
 			})
 		)
 		this.items.push(
@@ -198,7 +237,8 @@ export class InitDb {
 				name: 'sysNodeObjProgramObj',
 				dataMap: 'name',
 				dbObject: 'sys_core::SysNodeObj',
-				fCreate: addNodeProgramObj
+				exprResetFull: `DELETE sys_core::SysNodeObj FILTER .codeNodeType.name = 'program_object' AND .codeNavType.name = 'tree'`,
+				fCreate: addNode
 			})
 		)
 		this.items.push(
@@ -243,19 +283,12 @@ export class InitDb {
 			})
 		)
 		this.items.push(
-			new InitDbItemBulk({
-				name: 'userSystemsBulk',
-				dataMap: ['name', 1],
-				fCreate: userSystemsBulk,
+			new InitDbItemObject({
+				name: 'sysUser',
+				dataMap: 'userName',
+				dbObject: 'sys_user::SysUser',
+				fCreate: addUser,
 				isExcludeResetByObj: true
-			})
-		)
-		this.items.push(
-			new InitDbItemBulk({
-				name: 'userUserTypeBulk',
-				dataMap: ['name', 1],
-				dbObject: 'sys_user::SysUserType',
-				fCreate: userUserTypeBulk
 			})
 		)
 
@@ -489,6 +522,7 @@ export class ResetDb {
 		sectionHeader('Execute DB Reset Transaction')
 
 		this.statements.forEach((s: string) => {
+			console.log(s)
 			this.query += s + ';\n'
 		})
 

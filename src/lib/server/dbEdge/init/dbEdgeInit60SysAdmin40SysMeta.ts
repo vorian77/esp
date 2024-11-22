@@ -1,18 +1,20 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
+import { initAdminSysMetaUserType } from '$server/dbEdge/init/dbEdgeInit60SysAdmin40SysMetaUserType'
 
-export function initAdminSysObj(init: InitDb) {
-	initSystemObjects(init)
+export function initAdminSysMeta(init: InitDb) {
+	initSystem(init)
+	initAdminSysMetaUserType(init)
 }
 
-async function initSystemObjects(init: InitDb) {
+function initSystem(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: 'none',
-		header: 'Systems (Objects)',
+		header: 'Systems (Meta)',
 		isListEdit: false,
-		name: 'data_obj_sys_admin_system_list_obj',
+		name: 'data_obj_sys_admin_system_list_meta',
 		owner: 'sys_system_old',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
@@ -39,8 +41,8 @@ async function initSystemObjects(init: InitDb) {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
-		header: 'System (Object)',
-		name: 'data_obj_sys_admin_system_detail_obj',
+		header: 'System (Meta)',
+		name: 'data_obj_sys_admin_system_detail_meta',
 		owner: 'sys_system_old',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
@@ -111,20 +113,22 @@ async function initSystemObjects(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_sys_admin_system_list_obj',
-		header: 'Systems (Objects)',
-		name: 'node_obj_sys_admin_system_list_obj',
-		orderDefine: 30,
+		codeNodeType: 'program',
+		dataObj: 'data_obj_sys_admin_system_list_meta',
+		header: 'Systems (Meta)',
+		name: 'node_obj_sys_admin_system_list_meta',
+		orderDefine: 40,
 		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_sys_admin_system_detail_obj',
-		header: 'System (Object)',
-		name: 'node_obj_sys_admin_system_detail_obj',
+		codeNodeType: 'program_object',
+		dataObj: 'data_obj_sys_admin_system_detail_meta',
+		header: 'System (Meta)',
+		name: 'node_obj_sys_admin_system_detail_meta',
 		orderDefine: 10,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_list_obj'
+		parentNodeName: 'node_obj_sys_admin_system_list_meta'
 	})
 }

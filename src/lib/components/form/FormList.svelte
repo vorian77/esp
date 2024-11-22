@@ -8,8 +8,10 @@
 	} from '$comps/app/types.appState'
 	import {
 		TokenApiUserPref,
+		TokenAppDo,
 		TokenAppDoActionConfirmType,
 		TokenAppModalSelect,
+		TokenAppModalSelectDataObj,
 		TokenAppModalReturnType
 	} from '$utils/types.token'
 	import {
@@ -54,7 +56,6 @@
 		GridSettingsColumnItem
 	} from '$comps/grid/grid'
 	import {
-		CellEditorSelect,
 		cellEditorSelectorParmField,
 		cellRendererSelectorParmField
 	} from '$comps/grid/gridParmField'
@@ -160,8 +161,25 @@
 		state.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api))
 	}
 
-	function fGridCallbackUpdateValue(fieldName: string, data: DataRecord) {
+	function fGridCallbackUpdateValue(
+		fieldName: string,
+		data: DataRecord,
+		fieldNameParm: string = ''
+	) {
 		const row = dataObj.dataRecordsDisplay.findIndex((row) => row.id === data.id)
+		console.log('fGridCallbackUpdateValue', {
+			row,
+			fieldName,
+			data,
+			fields: dataObj.fields.map((f) => {
+				return {
+					propName: f.colDO.propName,
+					propNameRaw: f.colDO.propNameRaw,
+					fieldElement: f.fieldElement
+				}
+			}),
+			dataRecordsDisplay: dataObj.dataRecordsDisplay
+		})
 		const field = dataObj.fields.find((f) => f.colDO.propName === fieldName)
 		if (row > -1 && field) {
 			dataObj = dataObj.setFieldVal(row, field, data[fieldName])
@@ -247,7 +265,21 @@
 		if (field instanceof FieldParm) {
 			defn.cellEditorSelector = cellEditorSelectorParmField
 			defn.cellRendererSelector = cellRendererSelectorParmField
+
+			// field.parmFields[2].colDO.items = [
+			// 	{ display: 'Item 1', id: '1' },
+			// 	{ display: 'Item 2', id: '2' },
+			// 	{ display: 'Item 3', id: '3' },
+			// 	{ display: 'Item 4', id: '4' },
+			// 	{ display: 'Item 5', id: '5' }
+			// ]
+			// field.parmFields[2].hasItems = true
+
 			defn.context = { parmFields: field.parmFields, state }
+
+			// defn.editable = false
+			// defn.context = { items: dataObjData.items[itemsKey], state }
+			// defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
 		} else {
 			// data type
 			switch (field.colDO.colDB.codeDataType) {
@@ -337,57 +369,82 @@
 	}
 
 	async function onCellClicked(event: CellClickedEvent) {
+		const rowNode = event.api.getRowNode(event.data.id)
 		let field = dataObj.fields.find((f) => f.colDO.propName === event.colDef.field)
-		if (field) {
-			const fieldName = field.colDO.propName
-			field = field instanceof FieldParm ? field.parmFields[event.rowIndex] : field
-			if (field.colDO.hasItems) {
-				const fieldLabel = field.colDO.label
-				const itemsList = field.colDO.items
-				const idsSelected = Array.isArray(event.data[fieldName])
-					? event.data[fieldName]
-					: ['', null, undefined].includes(event.data[fieldName])
-						? []
-						: [event.data[fieldName]]
-				const isMultiSelect = field.colDO.colDB.isMultiSelect
-				const rowNode = event.api.getRowNode(event.data.id)
-				await onCellClickedSelect(
-					fieldName,
-					fieldLabel,
-					itemsList,
-					idsSelected,
-					isMultiSelect,
-					rowNode
-				)
+		let fieldParm = field instanceof FieldParm ? field.parmFields[event.rowIndex] : undefined
+		let fieldProcess = fieldParm || field
+		if (fieldProcess) {
+			if (fieldProcess.colDO.dataObjSelectId) {
+				await onCellClickedSelectDataObj()
+			} else if (fieldProcess.colDO.hasItems) {
+				await onCellClickedSelectItems()
 			}
 		}
-	}
 
-	async function onCellClickedSelect(
-		fieldName: string,
-		fieldLabel: string,
-		itemsList: FieldItem[],
-		idsSelected: string[],
-		isMultiSelect,
-		rowNode: any
-	) {
-		itemsList = itemsList.map((item) => {
-			return { display: item.display, id: item.data }
-		})
+		async function onCellClickedSelectDataObj() {
+			const fieldName = fieldProcess.colDO.propName
+			const idsSelected = Array.isArray(event.data[fieldName])
+				? event.data[fieldName]
+				: ['', null, undefined].includes(event.data[fieldName])
+					? []
+					: [event.data[fieldName]]
 
-		state.update({
-			packet: new StatePacket({
-				action: StatePacketAction.selectModalFieldItemsOpen,
-				confirmType: TokenAppDoActionConfirmType.none,
-				token: new TokenAppModalSelect({
-					fieldLabel,
-					fModalClose,
-					idsSelected,
-					itemsList,
-					isMultiSelect
+			const rowData = fieldProcess.colDO.items
+
+			state.update({
+				packet: new StatePacket({
+					action: StatePacketAction.modalSelectOpen,
+					confirmType: TokenAppDoActionConfirmType.none,
+					token: new TokenAppModalSelect({
+						fieldLabel: fieldProcess.colDO.label,
+						fModalClose,
+						idsSelected,
+						isMultiSelect: fieldProcess.colDO.colDB.isMultiSelect,
+						rowData
+					})
 				})
 			})
-		})
+
+			// state.update({
+			// 	packet: new StatePacket({
+			// 		action: StatePacketAction.modalSelectOpen,
+			// 		confirmType: TokenAppDoActionConfirmType.none,
+			// 		token: new TokenAppModalSelectDataObj({
+			// 			dataObjSelectId: fieldProcess.colDO.dataObjSelectId,
+			// 			fieldLabel: fieldProcess.colDO.label,
+			// 			fModalClose,
+			// 			isMultiSelect: fieldProcess.colDO.colDB.isMultiSelect
+			// 		})
+			// 	})
+			// })
+		}
+
+		async function onCellClickedSelectItems() {
+			const rowData = field.colDO.items.map((item) => {
+				return { display: item.display, id: item.data }
+			})
+
+			const fieldName = fieldProcess.colDO.propName
+			const idsSelected = Array.isArray(event.data[fieldName])
+				? event.data[fieldName]
+				: ['', null, undefined].includes(event.data[fieldName])
+					? []
+					: [event.data[fieldName]]
+
+			state.update({
+				packet: new StatePacket({
+					action: StatePacketAction.modalSelectOpen,
+					confirmType: TokenAppDoActionConfirmType.none,
+					token: new TokenAppModalSelect({
+						fieldLabel: fieldProcess.colDO.label,
+						fModalClose,
+						idsSelected,
+						isMultiSelect: fieldProcess.colDO.colDB.isMultiSelect,
+						rowData
+					})
+				})
+			})
+		}
 
 		async function fModalClose(returnType: TokenAppModalReturnType, returnData?: ParmsValues) {
 			if (returnType === TokenAppModalReturnType.complete) {
@@ -395,8 +452,12 @@
 				if (parms) {
 					const newValue = parms[ParmsValuesType.listIdsSelected]
 
+					const fieldName = field.colDO.propName
+					const fieldNameParm = fieldParm ? fieldParm.colDO.propName : ''
+					const multiLinkValue = { id: rowNode.data.id, [fieldName]: newValue }
+
 					// update dataObj
-					fGridCallbackUpdateValue(fieldName, { id: rowNode.data.id, [fieldName]: newValue })
+					fGridCallbackUpdateValue(fieldName, multiLinkValue, fieldNameParm)
 
 					// update grid rowNode
 					rowNode.setDataValue(fieldName, newValue)

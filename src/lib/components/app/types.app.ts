@@ -3,6 +3,7 @@ import {
 	DataObj,
 	DataObjData,
 	DataRecordStatus,
+	DataRow,
 	debug,
 	nbrRequired,
 	Node,
@@ -222,8 +223,17 @@ export class App {
 			this.levels[idxLevel].tabs.push(newTab)
 		}
 	}
-	appSystemIdGet() {
-		return this.appSystemId
+	appSystemIdGet(state: State) {
+		if (this.appSystemId) return this.appSystemId
+		if (state.user && state.user.systemIdList.length > 0) {
+			return state.user.systemIdList[0]
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'App.appSystemIdGet',
+				message: 'User does not have a system id'
+			})
+		}
 	}
 	appSystemIdSet(systemId: string) {
 		this.appSystemId = systemId
@@ -316,10 +326,10 @@ export class App {
 			const tabParent = this.getCurrTabParentTab()
 			if (tabParent) {
 				tabParent.listSetIdByAction(token.rowAction)
-				await this.tabQueryDetailDataRecord(
+				await this.tabQueryDetailDataRow(
 					state,
 					TokenApiQueryType.retrieve,
-					tabParent.listGetDataRecord()
+					tabParent.listGetDataRow()
 				)
 			}
 		}
@@ -336,17 +346,17 @@ export class App {
 				switch (packetAction) {
 					case StatePacketAction.doDetailDelete:
 						if (currTab.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)) {
-							if (!tabParent || !tabParent.listHasRecords()) {
+							if (!tabParent || !tabParent.listHasData()) {
 								this.popLevel()
 							} else {
 								tabParent.data.parms.valueSet(
 									ParmsValuesType.listRecordIdCurrent,
 									tabParent.data.parms.valueGet(ParmsValuesType.listIds)[0]
 								)
-								await this.tabQueryDetailDataRecord(
+								await this.tabQueryDetailDataRow(
 									state,
 									TokenApiQueryType.retrieve,
-									tabParent.listGetDataRecord()
+									tabParent.listGetDataRow()
 								)
 							}
 						} else {
@@ -368,10 +378,10 @@ export class App {
 									recordIdOld,
 									recordIdNew
 								)
-								await this.tabQueryDetailDataRecord(
+								await this.tabQueryDetailDataRow(
 									state,
 									TokenApiQueryType.retrieve,
-									tabParent.listGetDataRecord()
+									tabParent.listGetDataRow()
 								)
 							} else {
 								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
@@ -460,16 +470,12 @@ export class App {
 			return await query(state, currTab, queryType)
 		}
 	}
-	async tabQueryDetailDataRecord(
-		state: State,
-		queryType: TokenApiQueryType,
-		dataRecord: DataRecord
-	) {
+	async tabQueryDetailDataRow(state: State, queryType: TokenApiQueryType, dataRow?: DataRow) {
 		const currLevel = this.getCurrLevel()
 		if (currLevel) {
 			const currTab = currLevel.getCurrTab()
-			if (currTab.data) {
-				currTab.data.rowsRetrieved.setDetailRecord(dataRecord)
+			if (currTab.data && dataRow) {
+				currTab.data.rowsRetrieved.setDetailDataRow(dataRow)
 				return this.tabQueryDetailData(state, queryType, currTab.data)
 			}
 		}
@@ -603,14 +609,13 @@ export class AppLevelTab {
 		const crumbFieldNames: Array<string> = this.dataObj?.raw.crumbs ? this.dataObj.raw.crumbs : []
 		const idCurrent = this.data?.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
 		if (crumbFieldNames.length > 0 && idCurrent) {
-			const record = this.listGetDataRecord()
-			if (record) {
+			const dataRow = this.listGetDataRow()
+			if (dataRow) {
 				crumbFieldNames.forEach((f) => {
-					if (Object.hasOwn(record, f)) {
-						if (record[f]) {
-							if (id) id += ' '
-							id += record[f]
-						}
+					const value = dataRow.getValue(f)
+					if (value) {
+						if (id) id += ' '
+						id += value
 					}
 				})
 			}
@@ -618,61 +623,56 @@ export class AppLevelTab {
 		return id ? ` [${id}]` : ''
 	}
 
-	listGetDataRecord() {
+	listGetDataRow() {
 		const idCurrent = this.data?.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
-		const records = this.listGetRecords()
-		return idCurrent && records
-			? records.find((row) => {
-					return row.id === idCurrent
-				}) || {}
-			: {}
-	}
-	listGetDataRecordValue(propName: string) {
-		const record = this.listGetDataRecord()
-		return record[propName]
-	}
-	listGetRecords(): DataRecord[] {
-		const idList: string[] = this.data?.parms.valueGet(ParmsValuesType.listIds)
-		return idList
-			? idList.map((id) => {
-					return (
-						this?.data?.rowsRetrieved.getRows().find((row) => row.record.id === id)?.record || []
-					)
+		const dataRows = this.listGetDataRows()
+		return idCurrent && dataRows
+			? dataRows.find((dataRow) => {
+					return dataRow.record.id === idCurrent
 				})
-			: []
+			: undefined
+	}
+	listGetDataRows(): DataRow[] | [] {
+		const idList: string[] = this.data?.parms.valueGet(ParmsValuesType.listIds)
+		let dataRows: DataRow[] = []
+		idList.forEach((id) => {
+			const dataRow = this.data?.rowsRetrieved.getRows().find((row) => row.record.id === id)
+			if (dataRow) dataRows.push(dataRow)
+		})
+		return dataRows
 	}
 
-	listGetRow() {
+	listGetRowIdx() {
 		const idCurrent = this.data?.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
-		const records = this.listGetRecords()
-		return idCurrent && records
-			? records.findIndex((row) => {
-					return row.id === idCurrent
+		const dataRows = this.listGetDataRows()
+		return idCurrent && dataRows
+			? dataRows.findIndex((dataRow) => {
+					return dataRow.record.id === idCurrent
 				})
 			: -1
 	}
-	listHasRecords() {
+	listHasData() {
 		return (
 			this.data?.rowsRetrieved.getRows().length && this.data?.rowsRetrieved.getRows().length > 0
 		)
 	}
 	listRowStatus() {
 		const idCurrent = this.data?.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
-		const listRecords = this.listGetRecords()
-		if (listRecords && idCurrent) {
-			const rowIdx = listRecords.findIndex((record) => {
-				return record.id === idCurrent
+		const listDataRows = this.listGetDataRows()
+		if (listDataRows && idCurrent) {
+			const rowIdx = listDataRows.findIndex((dataRow) => {
+				return dataRow.record.id === idCurrent
 			})
 			if (rowIdx > -1) {
-				return new AppLevelRowStatus(listRecords.length, rowIdx)
+				return new AppLevelRowStatus(listDataRows.length, rowIdx)
 			}
 		}
 	}
 	listSetIdByAction(rowAction: AppRowActionType) {
-		const listRecords = this.listGetRecords()
-		if (listRecords) {
-			const rowCount = listRecords.length
-			let rowIdx = this.listGetRow()
+		const listDataRows = this.listGetDataRows()
+		if (listDataRows) {
+			const rowCount = listDataRows.length
+			let rowIdx = this.listGetRowIdx()
 			if (!rowCount || rowIdx < 0) return
 
 			switch (rowAction) {
@@ -699,7 +699,7 @@ export class AppLevelTab {
 						message: `No case defined for AppRowActionType: ${rowAction}`
 					})
 			}
-			this.data?.parms.valueSet(ParmsValuesType.listRecordIdCurrent, listRecords[rowIdx].id)
+			this.data?.parms.valueSet(ParmsValuesType.listRecordIdCurrent, listDataRows[rowIdx].record.id)
 		}
 	}
 	reset() {

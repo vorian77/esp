@@ -20,7 +20,7 @@ import { FieldAlignment, FieldElement } from '$comps/form/field'
 import {
 	PropDataSourceValue,
 	PropDataType,
-	PropLinkItemsDefn,
+	PropLinkItemsSource,
 	PropSortDir,
 	RawDataObjTable
 } from '$comps/dataObj/types.rawDataObj'
@@ -109,7 +109,7 @@ export class RepEl {
 	_codeReportElementType?: RepElementType
 	_codeSortDir?: PropSortDir
 	_column?: RepElColumn
-	_link?: RawPropLink
+	// _link?: RawPropLink
 	description?: string
 	exprCustom?: string
 	header?: string
@@ -167,7 +167,7 @@ export class RepEl {
 			RepElementType
 		)
 		this._column = obj._column ? new RepElColumn(obj._column) : undefined
-		this._link = classOptional(RawPropLink, obj._link)
+		// this._link = classOptional(RawPropLink, obj._link)
 		this.description = strOptional(obj.description, clazz, 'description')
 		this.exprCustom = strOptional(obj.exprCustom, clazz, 'expr')
 		this.header = strOptional(obj.header, clazz, 'header')
@@ -212,7 +212,7 @@ export class RepParm {
 	codeDataType: PropDataType
 	codeFieldElement: FieldElement
 	description?: string
-	fieldListItems?: PropLinkItemsDefn
+	fieldListItems?: PropLinkItemsSource
 	header: string
 	isMultiSelect: boolean
 	linkTable?: DBTable
@@ -235,7 +235,7 @@ export class RepParm {
 			FieldElement
 		)
 		this.description = strOptional(obj.description, clazz, 'description')
-		this.fieldListItems = classOptional(PropLinkItemsDefn, obj._fieldListItems)
+		this.fieldListItems = classOptional(PropLinkItemsSource, obj._fieldListItems)
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.isMultiSelect = booleanOrFalse(obj.isMultiSelect, 'isMultiSelect')
 		this.linkTable = classOptional(DBTable, obj._linkTable)

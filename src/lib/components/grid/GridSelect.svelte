@@ -36,7 +36,7 @@
 		onSelectionChanged,
 		parmPrefSortModel: sortObj,
 		parmStateSelectedIds: state.parmsState.valueGet(ParmsValuesType.listIdsSelected),
-		rowData: state.parmsState.valueGet(ParmsValuesType.listItems)
+		rowData: state.parmsState.valueGet(ParmsValuesType.rowData)
 	})
 
 	function onSelectionChanged(event: SelectionChangedEvent) {
@@ -46,7 +46,7 @@
 
 <div class="h-[60vh]">
 	{#if gridOptions}
-		<!-- <Grid bind:api={gridApi} options={gridOptions} /> -->
+		<Grid bind:api={gridApi} options={gridOptions} />
 	{/if}
 </div>
 

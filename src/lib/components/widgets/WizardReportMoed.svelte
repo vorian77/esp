@@ -9,7 +9,6 @@
 		TokenApiUserPref,
 		TokenApiDbDataObjSource,
 		TokenAppDoActionConfirmType,
-		TokenAppModalSelect,
 		TokenAppModalReturnType
 	} from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'

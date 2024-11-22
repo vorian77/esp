@@ -1,5 +1,5 @@
 <script lang="ts">
-	import NavBarListItem from '$comps/navBar/NavBarListItem.svelte'
+	import NavBarListItem from '$comps/navBar/NavBarListItemOld.svelte'
 	import { NavBarData, NavBarDataItem } from '$comps/navBar/types.navBar'
 	import DataViewer from '$utils/DataViewer.svelte'
 

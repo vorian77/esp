@@ -7,7 +7,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	/* code - general */
 	init.addTrans('sysDataObjFieldListItems', {
 		exprPropDisplay: '.name',
-		exprFilter: '.codeType.name = <parms,str,fieldListItemsParmName>',
+		exprFilter: '.codeType.name = <parms,str,itemsParmName>',
 		exprSort: '.order',
 		name: 'il_sys_code_order_index_by_codeType_name',
 		owner: 'sys_system_old',
@@ -15,7 +15,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		exprPropDisplay: '.name',
-		exprFilter: '.codeType.name = <parms,str,fieldListItemsParmName>',
+		exprFilter: '.codeType.name = <parms,str,itemsParmName>',
 		name: 'il_sys_code_order_name_by_codeType_name',
 		owner: 'sys_system_old',
 		table: 'SysCode'
@@ -25,7 +25,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		exprPropDisplay: '.name',
 		exprFilter:
-			'.codeType.name = <parms,str,fieldListItemsParmName> AND .owner.id = <parms,uuid,appSystemId>',
+			'.codeType.name = <parms,str,itemsParmName> AND .owner.id = <parms,uuid,appSystemId>',
 		exprSort: '.order',
 		name: 'il_sys_code_order_index_by_codeType_name_system',
 		owner: 'sys_system_old',
@@ -34,7 +34,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		exprPropDisplay: '.name',
 		exprFilter:
-			'.codeType.name = <parms,str,fieldListItemsParmName> AND .owner.id = <parms,uuid,appSystemId>',
+			'.codeType.name = <parms,str,itemsParmName> AND .owner.id = <parms,uuid,appSystemId>',
 		name: 'il_sys_code_order_name_by_codeType_name_system',
 		owner: 'sys_system_old',
 		table: 'SysCode'
@@ -65,7 +65,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		exprPropDisplay: `.name`,
-		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).userTypes.owner`,
+		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).systems`,
 		name: 'il_cm_cohort_short_by_userName',
 		owner: 'sys_ai_old',
 		table: 'CmCohort'
@@ -157,7 +157,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysDataObjFieldListItems'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
-		exprFilter: '.codeDataObjType.name = <parms,str,fieldListItemsParmName> ',
+		exprFilter: '.codeDataObjType.name = <parms,str,itemsParmName> ',
 		exprPropDisplay: '.name',
 		name: 'il_sys_data_obj_order_name_by_dataObjtype',
 		owner: 'sys_system_old',
@@ -199,7 +199,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		exprPropDisplay: '.name',
-		exprFilter: '.roles.name = <parms,str,fieldListItemsParmName>',
+		exprFilter: '.roles.name = <parms,str,itemsParmName>',
 		name: 'il_sys_role_org_by_codeName',
 		owner: 'sys_system_old',
 		table: 'SysOrg'
@@ -216,6 +216,15 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		owner: 'sys_system_old',
 		table: 'SysTable'
 	})
+
+	init.addTrans('sysDataObjFieldListItems', {
+		exprPropDisplay: '.name',
+		exprFilter: `.id IN ((SELECT sys_core::SysObj [IS sys_core::SysNodeObj] FILTER .codeNodeType.name = 'task') UNION (SELECT sys_core::SysObj [IS sys_core::SysDataObj] FILTER .codeDataObjType.name = 'task')).id`,
+		name: 'il_sys_task_obj',
+		owner: 'sys_system_old',
+		table: 'SysObj'
+	})
+
 	init.addTrans('sysDataObjFieldListItems', {
 		exprPropDisplay: '.person.fullName',
 		name: 'il_sys_user',
@@ -224,7 +233,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		exprPropDisplay: '.person.fullName',
-		exprFilter: '.userTypes.tags.name = <parms,str,fieldListItemsParmName>',
+		exprFilter: '.userTypes.tags.name = <parms,str,itemsParmName>',
 		name: 'il_sys_user_by_tag_type',
 		owner: 'sys_system_old',
 		table: 'SysUser'

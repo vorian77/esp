@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { NavBarDataItem } from '$comps/navBar/types.navBar'
-	import NavBarList from '$comps/navBar/NavBarList.svelte'
+	import NavBarList from '$comps/navBar/NavBarListOld.svelte'
 	import { NodeType } from '$utils/types'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'

@@ -102,7 +102,7 @@ export class CellRendererParmFieldSelect extends CellRendererParmField {
 			const fieldItems = field.colDO.items
 			const currentIds = Array.isArray(params.value) ? params.value : [params.value]
 			currentIds.forEach((id: string) => {
-				const item = fieldItems.find((i: FieldItem) => i.data === id)
+				const item = fieldItems.find((i: FieldItem) => i.id === id)
 				if (item) displayValue += displayValue ? ',' + item.display : item.display
 			})
 		}

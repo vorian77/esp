@@ -17,7 +17,6 @@
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
-	let isHideChildTabs = false
 	let currLevel: AppLevel | undefined
 
 	let classContent = state.app.isMobileMode ? '-mt-4' : 'mt-4'
@@ -47,11 +46,16 @@
 <!-- <DataViewer header="isHideChildTabs" data={isHideChildTabs} /> -->
 
 {#if currLevel}
-	<TabGroup active="underline underline-offset-8 border-1">
+	<TabGroup
+		active=""
+		border={currLevel.tabs.length > 1 ? 'border-b-2' : ''}
+		class={currLevel.tabs.length > 1 ? '' : '-mt-6'}
+	>
 		{#if currLevel.tabs.length > 1}
 			{#each currLevel.tabs as tab, idx}
 				{@const name = 'tab' + idx}
 				{@const hidden = isHideChildTabs && idx !== currLevel.tabIdxCurrent}
+
 				<div {hidden}>
 					<Tab
 						bind:group={currLevel.tabSet}
@@ -59,7 +63,9 @@
 						value={idx}
 						{hidden}
 						on:click={onClickTab}
-						class="text-base {idx === currLevel.tabSet ? 'text-blue-600' : 'text-black'}"
+						class="text-base {idx === currLevel.tabSet
+							? 'text-blue-600 underline underline-offset-8'
+							: 'text-black'}"
 					>
 						{tab?.label || tab?.dataObj?.raw.header}
 					</Tab>

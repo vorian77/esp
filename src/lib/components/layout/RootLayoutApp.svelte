@@ -36,11 +36,6 @@
 		ParmsValues,
 		ParmsValuesType
 	} from '$utils/types'
-	import {
-		FieldEmbedListConfig,
-		FieldEmbedListEdit,
-		FieldEmbedListSelect
-	} from '$comps/form/fieldEmbed'
 	import { NodeType } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import LayoutProcess from '$comps/layout/LayoutProcess.svelte'
@@ -94,8 +89,8 @@
 		StatePacketAction.navRow,
 		StatePacketAction.navTab,
 		StatePacketAction.openNode,
-		StatePacketAction.selectModalFieldItems,
-		StatePacketAction.selectModalFieldItemsOpen
+		StatePacketAction.modalSelectSurface,
+		StatePacketAction.modalSelectOpen
 	]
 
 	$: if (state && state.packet) {
@@ -276,12 +271,12 @@
 				}
 				break
 
-			case StatePacketAction.selectModalFieldItems:
-				updateObjectsContent(StateLayoutContent.ModalSelect)
+			case StatePacketAction.modalSelectOpen:
+				await state.openModalSelect(token)
 				break
 
-			case StatePacketAction.selectModalFieldItemsOpen:
-				await state.openModalSelect(token)
+			case StatePacketAction.modalSelectSurface:
+				updateObjectsContent(StateLayoutContent.ModalSelect)
 				break
 
 			default:

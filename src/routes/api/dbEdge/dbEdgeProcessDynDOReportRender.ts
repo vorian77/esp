@@ -1,7 +1,7 @@
 import { RepEl, RepUser } from '$comps/dataObj/types.rep'
 import { DataObjCardinality, DataObjComponent, DataObjTable, DataObjType } from '$utils/types'
 import { RawDataObj, RawDataObjDyn } from '$comps/dataObj/types.rawDataObj'
-import { TokenApiQueryData } from '$utils/types.token'
+import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 import { getReportUser } from '$routes/api/dbEdge/types.dbEdge'
 import { error } from '@sveltejs/kit'
@@ -12,7 +12,10 @@ let fName = (functionName: string) => {
 	return FILENAME + '.' + functionName
 }
 
-export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj: RawDataObj) {
+export async function dynDOReportRender(
+	queryData: TokenApiQueryData,
+	dataObjSource: TokenApiDbDataObjSource
+) {
 	const repUserData = await getReport(queryData)
 	const repUser = new RepUser(repUserData)
 	const rawDataObjDyn = getRawDataObj(repUser)
@@ -25,7 +28,9 @@ export async function dynDOReportRender(queryData: TokenApiQueryData, rawDataObj
 	return rawDataObjDyn.build()
 
 	function addFilter(repUser: RepUser) {
-		rawDataObjDyn.exprFilter = repUser.report.exprFilter ? repUser.report.exprFilter : 'none'
+		dataObjSource.replacements.exprFilter
+
+		dataObjSource.replacements['exprFilter'] = rawDataObjDyn.exprFilter
 	}
 	function addParms(repUser: RepUser, queryData: TokenApiQueryData) {
 		repUser.parms.forEach((p) => {

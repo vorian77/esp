@@ -398,6 +398,7 @@ function initStudent(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program',
 		dataObj: 'data_obj_cm_student_list',
 		header: 'Students',
 		name: 'node_obj_cm_student_list',
@@ -406,6 +407,7 @@ function initStudent(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_student_detail',
 		header: 'Student',
 		isSystemRoot: true,
@@ -716,6 +718,7 @@ function initCsf(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_client_service_flow_list',
 		header: 'Service Flows',
 		name: 'node_obj_cm_service_flow_list',
@@ -725,6 +728,7 @@ function initCsf(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_client_service_flow_detail',
 		header: 'Service Flow',
 		name: 'node_obj_cm_service_flow_detail',
@@ -902,6 +906,7 @@ function initCsfCohort(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_csf_cohort_list',
 		header: 'Cohorts',
 		name: 'node_obj_cm_csf_cohort_list',
@@ -911,6 +916,7 @@ function initCsfCohort(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_csf_cohort_detail',
 		header: 'Cohort',
 		name: 'node_obj_cm_csf_cohort_detail',
@@ -1102,6 +1108,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_csf_cohort_attd_student_list',
 		header: 'Attendance Records',
 		name: 'node_obj_cm_csf_cohort_attd_student_list',
@@ -1111,6 +1118,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_csf_cohort_attd_student_detail',
 		header: 'Attendance',
 		name: 'node_obj_cm_csf_cohort_attd_student_detail',
@@ -1288,6 +1296,7 @@ function initCsfNote(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_csf_note_list',
 		header: 'Case Notes',
 		name: 'node_obj_cm_csf_note_list',
@@ -1297,6 +1306,7 @@ function initCsfNote(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_csf_note_detail',
 		header: 'Case Note',
 		name: 'node_obj_cm_csf_note_detail',
@@ -1595,6 +1605,7 @@ function initCsfJobPlacement(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_csf_job_placement_list',
 		header: 'Job Placements',
 		name: 'node_obj_cm_csf_job_placement_list',
@@ -1604,6 +1615,7 @@ function initCsfJobPlacement(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_csf_job_placement_detail',
 		header: 'Job Placement',
 		name: 'node_obj_cm_csf_job_placement_detail',
@@ -1856,6 +1868,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_csf_school_placement_list',
 		header: 'School Placements',
 		name: 'node_obj_cm_csf_school_placement_list',
@@ -1865,6 +1878,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_csf_school_placement_detail',
 		header: 'School Placement',
 		name: 'node_obj_cm_csf_school_placement_detail',
@@ -2100,6 +2114,7 @@ function initCsfDocument(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_csf_document_list',
 		header: 'Documents',
 		name: 'node_obj_cm_csf_document_list',
@@ -2109,6 +2124,7 @@ function initCsfDocument(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_csf_document_detail',
 		header: 'Document',
 		name: 'node_obj_cm_csf_document_detail',

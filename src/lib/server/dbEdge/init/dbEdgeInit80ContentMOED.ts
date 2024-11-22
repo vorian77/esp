@@ -11,9 +11,9 @@ export function initContentMOEDStudent(init: InitDb) {
 	initSubjects(init)
 
 	// participant
-	initSSRmyApp(init)
-	initSSRmyDoc(init)
-	initSSRmyMsg(init)
+	initTaskSsrApp(init)
+	initTaskSsrDoc(init)
+	initTaskSsrMsg(init)
 
 	// demo data
 	initParticipants(init)
@@ -373,6 +373,7 @@ function initStudent(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program',
 		dataObj: 'data_obj_moed_part_list',
 		header: 'Participants',
 		name: 'node_obj_moed_part_list',
@@ -381,6 +382,7 @@ function initStudent(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_moed_part_detail',
 		header: 'Participant',
 		isSystemRoot: true,
@@ -712,6 +714,7 @@ function initCsf(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_moed_csf_list',
 		header: 'Service Flows',
 		name: 'node_obj_moed_csf_list',
@@ -721,6 +724,7 @@ function initCsf(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_moed_csf_detail',
 		header: 'Service Flow',
 		name: 'node_obj_moed_csf_detail',
@@ -976,6 +980,7 @@ function initCsfMsg(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_moed_csf_msg_list',
 		header: 'Messages',
 		name: 'node_obj_moed_csf_msg_list',
@@ -985,6 +990,7 @@ function initCsfMsg(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_moed_csf_msg_detail',
 		header: 'Message',
 		name: 'node_obj_moed_csf_msg_detail',
@@ -1162,6 +1168,7 @@ function initCsfNote(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_moed_csf_note_list',
 		header: 'Case Notes',
 		name: 'node_obj_moed_csf_note_list',
@@ -1171,6 +1178,7 @@ function initCsfNote(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_moed_csf_note_detail',
 		header: 'Case Note',
 		name: 'node_obj_moed_csf_note_detail',
@@ -1362,6 +1370,7 @@ function initCsfDocument(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_moed_csf_doc_list',
 		header: 'Documents',
 		name: 'node_obj_moed_csf_doc_list',
@@ -1371,6 +1380,7 @@ function initCsfDocument(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_moed_csf_doc_detail',
 		header: 'Document',
 		name: 'node_obj_moed_csf_doc_detail',
@@ -1380,15 +1390,16 @@ function initCsfDocument(init: InitDb) {
 	})
 }
 
-function initSSRmyApp(init: InitDb) {
-	init.addTrans('sysDataObj', {
+function initTaskSsrApp(init: InitDb) {
+	init.addTrans('sysDataObjTask', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
+		codeDataObjType: 'task',
 		exprFilter: '.id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90"',
 		// exprFilter: '.user.id = <user,uuid,id>',
 		isDetailRetrievePreset: true,
-		name: 'data_obj_moed_ssr_app',
+		name: 'data_obj_task_moed_ssr_app',
 		header: 'My Application',
 
 		tables: [
@@ -1689,14 +1700,29 @@ function initSSRmyApp(init: InitDb) {
 			}
 		]
 	})
+
+	init.addTrans('sysTask', {
+		codeIcon: 'ClipboardPen',
+		codeTaskType: 'dataObj',
+		codeColorFrom: 'green',
+		codeTaskStatusObj: 'tso_moed_app',
+		description: 'First step to my future.',
+		header: 'My Application',
+		isAlwaysPinToDash: true,
+		isGlobalResource: false,
+		name: 'task_moed_ssr_app',
+		objectTask: 'data_obj_task_moed_ssr_app',
+		orderDefine: 10,
+		owner: 'sys_moed_old'
+	})
 }
 
-function initSSRmyDoc(init: InitDb) {
+function initTaskSsrDoc(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
-		name: 'data_obj_moed_ssr_doc_list',
+		name: 'data_obj_task_moed_ssr_doc_list',
 		header: 'My Documents',
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
 		exprFilter: '.csf.id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90"',
@@ -1741,7 +1767,7 @@ function initSSRmyDoc(init: InitDb) {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		name: 'data_obj_moed_ssr_doc_detail',
+		name: 'data_obj_task_moed_ssr_doc_detail',
 		header: 'My Document',
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
 		actionFieldGroup: 'doag_detail',
@@ -1857,31 +1883,50 @@ function initSSRmyDoc(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjTask', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_moed_ssr_doc_list',
+		codeNavType: 'task',
+		codeNodeType: 'program',
+		dataObj: 'data_obj_task_moed_ssr_doc_list',
 		header: 'Documents',
-		name: 'node_obj_moed_ssr_doc_list',
+		name: 'node_obj_task_moed_ssr_doc_list',
 		orderDefine: 30,
 		owner: 'sys_moed_old'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjTask', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_moed_ssr_doc_detail',
+		codeNavType: 'task',
+		codeNodeType: 'program_object',
+		dataObj: 'data_obj_task_moed_ssr_doc_detail',
 		header: 'Document',
-		name: 'node_obj_moed_ssr_doc_detail',
+		name: 'node_obj_task_moed_ssr_doc_detail',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_moed_ssr_doc_list'
+		parentNodeName: 'node_obj_task_moed_ssr_doc_list'
+	})
+
+	init.addTrans('sysTask', {
+		codeIcon: 'ImageUp',
+		codeTaskType: 'nodeObj',
+		codeColorFrom: 'blue',
+		codeTaskStatusObj: 'tso_moed_app_doc',
+		description: 'Step 2: to help speed up my application processing.',
+		header: 'My Eligibility Documents',
+		isAlwaysPinToDash: true,
+		isGlobalResource: false,
+		name: 'task_moed_ssr_app_doc',
+		objectTask: 'node_obj_task_moed_ssr_doc_list',
+		orderDefine: 20,
+		owner: 'sys_moed_old'
 	})
 }
 
-function initSSRmyMsg(init: InitDb) {
+function initTaskSsrMsg(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
-		name: 'data_obj_moed_ssr_msg_list',
+		name: 'data_obj_task_moed_ssr_msg_list',
 		header: 'My Messages',
 		tables: [{ index: 0, table: 'CmCsfMsg' }],
 		exprFilter: '.csf.id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90"',
@@ -1928,7 +1973,7 @@ function initSSRmyMsg(init: InitDb) {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		name: 'data_obj_moed_ssr_msg_detail',
+		name: 'data_obj_task_moed_ssr_msg_detail',
 		header: 'My Message',
 		tables: [{ index: 0, table: 'CmCsfMsg' }],
 		actionFieldGroup: 'doag_detail',
@@ -2059,22 +2104,41 @@ function initSSRmyMsg(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjTask', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_moed_ssr_msg_list',
+		codeNavType: 'task',
+		codeNodeType: 'program',
+		dataObj: 'data_obj_task_moed_ssr_msg_list',
 		header: 'My Messages',
-		name: 'node_obj_moed_ssr_msg_list',
+		name: 'node_obj_task_moed_ssr_msg_list',
 		orderDefine: 10,
 		owner: 'sys_moed_old'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjTask', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_moed_ssr_msg_detail',
+		codeNavType: 'task',
+		codeNodeType: 'program_object',
+		dataObj: 'data_obj_task_moed_ssr_msg_detail',
 		header: 'Message',
-		name: 'node_obj_moed_ssr_msg_detail',
+		name: 'node_obj_task_moed_ssr_msg_detail',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_moed_ssr_msg_list'
+		parentNodeName: 'node_obj_task_moed_ssr_msg_list'
+	})
+
+	init.addTrans('sysTask', {
+		codeIcon: 'Mail',
+		codeTaskType: 'nodeObj',
+		codeColorFrom: 'amber',
+		codeTaskStatusObj: 'tso_moed_app_msg',
+		description: 'Have questions? Send messages to program staff.',
+		header: 'My Messages',
+		isAlwaysPinToDash: true,
+		isGlobalResource: false,
+		name: 'task_moed_ssr_app_msg',
+		objectTask: 'node_obj_task_moed_ssr_msg_list',
+		orderDefine: 30,
+		owner: 'sys_moed_old'
 	})
 }
 

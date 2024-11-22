@@ -1,4 +1,4 @@
-import { codeTypesBulk, codesBulk, sysUser } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { codeTypesBulk, codesBulk } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 import { addCode, addCodeType } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 
 const FILE = 'initCore'
@@ -15,8 +15,6 @@ export default async function initSys() {
 
 async function initSysCore() {
 	// await organizations([['app_cm'], ['app_db'], ['app_sys']])
-
-	await sysUser('System', 'user_sys')
 }
 async function initSysCodeTypess() {
 	await codeTypesBulk([

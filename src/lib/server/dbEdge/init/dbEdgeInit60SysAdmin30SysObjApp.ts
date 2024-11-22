@@ -1,9 +1,9 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initAdminApp(init: InitDb) {
+export function initAdminSysObjApp(init: InitDb) {
 	initFieldListSelectNodes(init)
-	initSysAdminApp(init)
-	initSysAdminAppHeader(init)
+	initApp(init)
+	initAppHeader(init)
 }
 
 function initFieldListSelectNodes(init: InitDb) {
@@ -45,7 +45,7 @@ function initFieldListSelectNodes(init: InitDb) {
 	})
 }
 
-function initSysAdminApp(init: InitDb) {
+function initApp(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
@@ -150,6 +150,7 @@ function initSysAdminApp(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'nodes',
+				headerAlt: 'Program Nodes',
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
@@ -210,6 +211,7 @@ function initSysAdminApp(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_app_list',
 		header: 'Apps',
 		name: 'node_obj_sys_app_list',
@@ -220,6 +222,7 @@ function initSysAdminApp(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_app_detail',
 		header: 'App',
 		name: 'node_obj_sys_app_detail',
@@ -229,7 +232,7 @@ function initSysAdminApp(init: InitDb) {
 	})
 }
 
-function initSysAdminAppHeader(init: InitDb) {
+function initAppHeader(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
@@ -426,6 +429,7 @@ function initSysAdminAppHeader(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_app_header_list',
 		header: 'App Headers',
 		name: 'node_obj_sys_app_header_list',
@@ -436,6 +440,7 @@ function initSysAdminAppHeader(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_app_header_detail',
 		header: 'App Header',
 		name: 'node_obj_sys_app_header_detail',

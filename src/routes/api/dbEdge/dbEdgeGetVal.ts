@@ -1,6 +1,15 @@
 import { TokenApiQueryData } from '$utils/types.token'
 import { PropDataSourceValue, PropDataType } from '$comps/dataObj/types.rawDataObj'
-import { debug, type DataRecord, getArray, memberOfEnum, strRequired } from '$utils/types'
+import {
+	debug,
+	type DataRecord,
+	DataRow,
+	getArray,
+	getRecordKey,
+	getRecordValue,
+	memberOfEnum,
+	strRequired
+} from '$utils/types'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$routes/api/dbEdge/dbEdgeGetVal.ts'
@@ -233,22 +242,22 @@ export function getValRaw(exprParms: ExprParms) {
 
 		case ExprSource.tree:
 			const items = sourceKey.split('.')
-			let record: DataRecord | undefined = undefined
+			let dataRow: DataRow | undefined = undefined
 			let property = ''
 
 			switch (items.length) {
 				case 1:
 					property = items[0]
-					record = exprParms.queryData.tree.getRecord()
+					dataRow = exprParms.queryData.tree.getDataRow()
 					break
 				case 2:
-					record = exprParms.queryData.tree.getRecord(items[0])
+					dataRow = exprParms.queryData.tree.getDataRow(items[0])
 					property = items[1]
 					break
 				default:
 					fError(`Invalid configuration of tree data token: ${sourceKey}`)
 			}
-			if (record) return getValue(record, property)
+			return getValue(dataRow?.record, property)
 
 		case ExprSource.user:
 			return getValue(exprParms.queryData.user, sourceKey)
@@ -256,21 +265,24 @@ export function getValRaw(exprParms: ExprParms) {
 		default:
 			fError(`No case defined for source: ${exprParms.item.codeDataSourceExpr}`)
 	}
-	function getValue(data: DataRecord, key: string) {
+	function getValue(data: DataRecord | undefined, key: string) {
+		if (!data) return valueNotFound({})
 		const result = getValueNested(data, key)
 		return result ? result[1] : valueNotFound(data)
 	}
+
 	function getValueNested(data: DataRecord, key: string) {
 		const tokens = key.split('.')
 		let currentData = data
 		for (let i = 0; i < tokens.length - 1; i++) {
-			if (!currentData || !Object.hasOwn(currentData, tokens[i])) return false
+			if (!currentData || !getRecordKey(currentData, tokens[i])) return false
 			currentData = currentData[tokens[i]]
 		}
 		const idx = tokens.length - 1
-		if (!currentData || !Object.hasOwn(currentData, tokens[idx])) return false
+		if (!currentData || !getRecordKey(currentData, tokens[idx])) return false
 		return [true, currentData[tokens[idx]]]
 	}
+
 	function valueNotFound(data: DataRecord) {
 		switch (exprParms.item.codeDefault) {
 			case ExprDefault.error:

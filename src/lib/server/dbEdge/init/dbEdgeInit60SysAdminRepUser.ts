@@ -98,14 +98,12 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				linkColumns: ['name']
 			},
 			{
-				columnName: 'custom_element_bool',
+				columnName: 'dataObjSelect',
+				indexTable: 1,
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 90,
-				exprCustom: '(SELECT EXISTS .parm.fieldListItems)',
-				indexTable: 0,
-				nameCustom: '_hasItems'
+				orderDefine: 90
 			},
 			{
 				columnName: 'isMultiSelect',
@@ -113,7 +111,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 100
+				orderDefine: 110
 			},
 			{
 				columnName: 'name',
@@ -121,7 +119,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 110
+				orderDefine: 120
 			},
 			{
 				columnName: 'orderDefine',
@@ -129,7 +127,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 120,
+				orderDefine: 130,
 				orderSort: 10
 			},
 
@@ -467,6 +465,7 @@ function initRepConfig(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program',
 		dataObj: 'data_obj_sys_rep_my_report_list',
 		header: 'Reports',
 		name: 'node_obj_sys_rep_my_report_list',
@@ -475,6 +474,7 @@ function initRepConfig(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_my_report_detail',
 		header: 'Config',
 		name: 'node_obj_sys_rep_my_report_detail',
@@ -506,6 +506,7 @@ function initRepRender(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_dyn_sys_rep_render',
 		header: 'Run',
 		isAlwaysRetrieveData: true,

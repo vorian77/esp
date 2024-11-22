@@ -45,7 +45,6 @@
 	$: labelSelect = urlCurrent ? 'Choose New ' + field.colDO.label : 'Choose ' + field.colDO.label
 
 	$: {
-		console.log('FormFile.fieldValue', fieldValue)
 		if (mode === Mode.delete) {
 			if (!fieldValue) {
 				mode = Mode.none

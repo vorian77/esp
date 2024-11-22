@@ -1,16 +1,9 @@
 import { Field, FieldAlignment, PropsField, PropsFieldRaw } from '$comps/form/field'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
-import {
-	DataObj,
-	type DataItems,
-	DataObjData,
-	type DataRecord,
-	ParmsValuesType,
-	ResponseBody
-} from '$utils/types'
+import { DataObj, type DataRecord, getRecordValue, ResponseBody } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { TokenApiQueryData } from '$utils/types.token'
+import { TokenApiId } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldParm.ts/'
@@ -24,7 +17,6 @@ export class FieldParm extends Field {
 	}
 	async init(props: PropsField) {
 		this.parmFields = await this.configParmItems(props)
-		await this.configParmItemsData(props)
 	}
 
 	async configParmItems(props: PropsField) {
@@ -37,22 +29,23 @@ export class FieldParm extends Field {
 
 	async configParmItemsInit(props: PropsField, record: DataRecord, fields: Field[]) {
 		const propParmObj = {
+			_codeAccess: 'required',
+			_codeFieldElement: getRecordValue(record, 'codeFieldElement'),
 			_column: {
 				_codeAlignment: FieldAlignment.left,
-				_codeDataType: props.dataObj.getDataVal(record, 'codeDataType'),
-				header: props.dataObj.getDataVal(record, 'header'),
-				isMultiSelect: props.dataObj.getDataVal(record, 'isMultiSelect'),
+				_codeDataType: getRecordValue(record, 'codeDataType'),
+				header: getRecordValue(record, 'header'),
+				isMultiSelect: getRecordValue(record, 'isMultiSelect'),
 				isNonData: false,
 				placeHolder: ''
 			},
-			_codeAccess: 'required',
-			_codeFieldElement: props.dataObj.getDataVal(record, 'codeFieldElement'),
-			_hasItems: props.dataObj.getDataVal(record, '_hasItems'),
-			_propName: props.dataObj.getDataVal(record, 'name'),
+			_dataObjSelectId: getRecordValue(record, 'dataObjSelect'),
+			_hasItems: getRecordValue(record, '_hasItems'),
+			_propName: getRecordValue(record, 'name'),
 			isDisplayable: true,
 			isDisplayBlock: true,
 			isParmValue: true,
-			orderDefine: props.dataObj.getDataVal(record, 'orderDefine')
+			orderDefine: getRecordValue(record, 'orderDefine')
 		}
 		const propParm = new RawDataObjPropDisplay(propParmObj, [])
 		return DataObj.fieldsCreateItem(
@@ -63,27 +56,6 @@ export class FieldParm extends Field {
 			props.dataObj,
 			props.dataObj.data
 		)
-	}
-
-	async configParmItemsData(props: PropsField) {
-		const listRecordIdCurrent = props.state.parmsState.valueGet(ParmsValuesType.listRecordIdCurrent)
-		if (listRecordIdCurrent) {
-			const dataTab = new DataObjData()
-			dataTab.parms.valueSet('listRecordIdCurrent', listRecordIdCurrent)
-			const result: ResponseBody = await apiFetch(
-				ApiFunction.dbEdgeGetRepParmItems,
-				new TokenApiQueryData({ dataTab })
-			)
-			if (result.success) {
-				const items: DataItems = result.data
-				Object.entries(items).forEach(([key, value]) => {
-					const fieldIndex = this.parmFields.findIndex((f) => key.endsWith(f.colDO.propNameRaw))
-					if (fieldIndex > -1) {
-						this.parmFields[fieldIndex].colDO.items = value
-					}
-				})
-			}
-		}
 	}
 
 	getStatus(dataObjForm: DataObj, recordId: string) {

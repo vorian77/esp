@@ -5,9 +5,7 @@ export function initUser(init: InitDb) {
 	initAppHeaders(init)
 	initApps(init)
 	initUserType(init)
-	initUserSystems(init)
-	initUserUserType(init)
-	// initStaff()
+	initUsers(init)
 }
 
 function initResources(init: InitDb) {
@@ -169,16 +167,16 @@ function initUserType(init: InitDb) {
 		owner: 'sys_ai_old',
 		resources: [
 			{ codeType: 'app', resource: 'app_ai_staff' },
-			{ codeType: 'report', resource: 'report_ai_cohorts_detail' },
-			{ codeType: 'report', resource: 'report_ai_courses_detail' },
-			{ codeType: 'report', resource: 'report_ai_partners_detail' },
-			{ codeType: 'report', resource: 'report_ai_student_attd_detail' },
-			{ codeType: 'report', resource: 'report_ai_student_docs_detail' },
-			{ codeType: 'report', resource: 'report_ai_student_notes_detail' },
+			// { codeType: 'report', resource: 'report_ai_cohorts_detail' },
+			// { codeType: 'report', resource: 'report_ai_courses_detail' },
+			// { codeType: 'report', resource: 'report_ai_partners_detail' },
+			// { codeType: 'report', resource: 'report_ai_student_attd_detail' },
+			// { codeType: 'report', resource: 'report_ai_student_docs_detail' },
+			// { codeType: 'report', resource: 'report_ai_student_notes_detail' },
 			{ codeType: 'report', resource: 'report_ai_student_cohort_attd_summary' },
 			{ codeType: 'report', resource: 'report_ai_student_job_placement_detail' },
 			{ codeType: 'report', resource: 'report_ai_student_school_placement_detail' },
-			{ codeType: 'report', resource: 'report_ai_student_service_flow_summary' },
+			// { codeType: 'report', resource: 'report_ai_student_service_flow_summary' },
 			{ codeType: 'widget', resource: 'widget_sys_report' }
 		]
 	})
@@ -207,54 +205,154 @@ function initUserType(init: InitDb) {
 	})
 }
 
-function initUserSystems(init: InitDb) {
-	init.addTrans('userSystemsBulk', [
-		['user_sys', 'sys_system_old'],
-		['user_sys', 'sys_ai_old'],
-		['user_sys', 'sys_moed_old']
-	])
-	init.addTrans('userSystemsBulk', [
-		['2487985578', 'sys_ai_old'],
-		['3136276210', 'sys_ai_old'],
-		['2482317505', 'sys_ai_old'],
-		['3136272756', 'sys_ai_old']
-	])
-}
+function initUsers(init: InitDb) {
+	/* system */
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_system',
+		firstName: 'Root',
+		isMobileOnly: false,
+		lastName: 'User',
+		orgs: ['org_system'],
+		owner: 'org_system',
+		systems: ['sys_system_old'],
+		userName: '*ROOTUSER*',
+		userTypes: []
+	})
 
-function initUserUserType(init: InitDb) {
-	// user_sys
-	init.addTrans('userUserTypeBulk', [
-		['user_sys', 'ut_sys_admin_global'],
-		['user_sys', 'ut_ai_admin'],
-		['user_sys', 'ut_ai_staff']
-		// ['user_sys', 'ut_moed_advocate'],
-		// ['user_sys', 'ut_moed_student']
-	])
-	// phyllip
-	init.addTrans('userUserTypeBulk', [
-		['2487985578', 'ut_ai_staff'],
-		['2487985578', 'ut_ai_instructor']
-	])
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_system',
+		firstName: 'User',
+		isMobileOnly: false,
+		lastName: 'System',
+		orgs: ['org_ai', 'org_moed', 'org_system'],
+		owner: 'org_system',
+		systems: ['sys_ai_old', 'sys_moed_old', 'sys_system_old'],
+		userName: 'user_sys',
+		userTypes: [
+			'ut_sys_admin_global',
+			'ut_ai_admin',
+			'ut_ai_staff',
+			'ut_moed_advocate',
+			'ut_moed_student'
+		]
+	})
 
-	// AI-Admin (Matt)
-	init.addTrans('userUserTypeBulk', [
-		['3136276210', 'ut_ai_admin'],
-		['3136276210', 'ut_ai_staff']
-	])
-	// AI-Staff (Anise, Phyllip, Erica)
-	init.addTrans('userUserTypeBulk', [
-		['2482317505', 'ut_ai_staff'],
-		['3136272756', 'ut_ai_staff']
-	])
+	/* Atlantic Impact */
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_ai',
+		firstName: 'Anise',
+		isMobileOnly: false,
+		lastName: 'Hayes',
+		orgs: ['org_ai'],
+		owner: 'org_ai',
+		systems: ['sys_ai_old'],
+		userName: '2482317505',
+		userTypes: ['ut_ai_staff']
+	})
 
-	// AI-Instructor (Nino)
-	init.addTrans('userUserTypeBulk', [['ntanzini', 'ut_ai_instructor']])
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_ai',
+		firstName: 'Phyllip',
+		isMobileOnly: false,
+		lastName: 'Hall',
+		orgs: ['org_ai'],
+		owner: 'org_ai',
+		systems: ['sys_ai_old'],
+		userName: '2487985578',
+		userTypes: ['ut_ai_staff']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_ai',
+		firstName: 'Erica',
+		isMobileOnly: false,
+		lastName: 'Hicks',
+		orgs: ['org_ai'],
+		owner: 'org_ai',
+		systems: ['sys_ai_old'],
+		userName: '3136272756',
+		userTypes: ['ut_ai_staff']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_ai',
+		firstName: 'Matthew',
+		isMobileOnly: false,
+		lastName: 'Clayton',
+		orgs: ['org_ai'],
+		owner: 'org_ai',
+		systems: ['sys_ai_old'],
+		userName: '3136276210',
+		userTypes: ['ut_ai_admin', 'ut_ai_staff']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_ai',
+		firstName: 'Nico',
+		isMobileOnly: false,
+		lastName: 'Tanzini',
+		orgs: ['org_ai'],
+		owner: 'org_ai',
+		systems: ['sys_ai_old'],
+		userName: 'ntanzini',
+		userTypes: ['ut_ai_instructor']
+	})
 
-	// MOED
-	init.addTrans('userUserTypeBulk', [
-		['bstone', 'ut_moed_advocate'],
-		['toliver', 'ut_moed_advocate'],
-		['twilliams', 'ut_moed_advocate'],
-		['twilson', 'ut_moed_advocate']
-	])
+	/* MOED */
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		firstName: 'Burlinton',
+		isMobileOnly: false,
+		lastName: 'Stone',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: 'bsonte',
+		userTypes: ['ut_moed_advocate']
+	})
+
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		firstName: 'Omari',
+		isMobileOnly: true,
+		lastName: 'Jackson',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: 'ojackson1',
+		userTypes: ['ut_moed_student']
+	})
+
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		firstName: 'Tyshell',
+		isMobileOnly: false,
+		lastName: 'Oliver',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: 'toliver',
+		userTypes: ['ut_moed_advocate']
+	})
+
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		firstName: 'Travis',
+		isMobileOnly: false,
+		lastName: 'Williams',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: 'twilliams',
+		userTypes: ['ut_moed_advocate']
+	})
+
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		firstName: 'Tynesha',
+		isMobileOnly: false,
+		lastName: 'Wilson',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: 'twilson',
+		userTypes: ['ut_moed_advocate']
+	})
 }

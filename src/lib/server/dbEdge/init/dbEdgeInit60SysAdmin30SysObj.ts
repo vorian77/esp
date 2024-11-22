@@ -1,18 +1,42 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
+import { initAdminSysObjApp } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjApp'
+import { initAdminSysObjCode } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjCode'
+import { initAdminSysObjDataObj } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObj'
+import { initAdminSysObjDataObjAction } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObjAction'
+import { initAdminSysObjDataObjEmbed } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObjEmbed'
+import { initAdminSysObjDB } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDB'
+import { initAdminSysObjFieldItems } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObjFieldItmes'
+import { initAdminSysObjMigration } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjMigration'
+import { initAdminSysObjNodeObj } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjNodeObj'
+import { initAdminSysObjRep } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjRep'
+import { initAdminSysObjTask } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjTask'
+import { initAdminSysObjWidget } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjWidget'
 
-export function initAdminSysMeta(init: InitDb) {
-	initSystem(init)
+export function initAdminSysObj(init: InitDb) {
+	initSystemObject(init)
+	initAdminSysObjApp(init)
+	initAdminSysObjCode(init)
+	initAdminSysObjDataObj(init)
+	initAdminSysObjDataObjAction(init)
+	initAdminSysObjDataObjEmbed(init)
+	initAdminSysObjDB(init)
+	initAdminSysObjFieldItems(init)
+	initAdminSysObjMigration(init)
+	initAdminSysObjNodeObj(init)
+	initAdminSysObjRep(init)
+	initAdminSysObjTask(init)
+	initAdminSysObjWidget(init)
 }
 
-function initSystem(init: InitDb) {
+async function initSystemObject(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: 'none',
-		header: 'Systems (Meta)',
+		header: 'Systems (Objects)',
 		isListEdit: false,
-		name: 'data_obj_sys_admin_system_list_meta',
+		name: 'data_obj_sys_admin_system_list_obj',
 		owner: 'sys_system_old',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
@@ -39,8 +63,8 @@ function initSystem(init: InitDb) {
 		actionFieldGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
-		header: 'System (Meta)',
-		name: 'data_obj_sys_admin_system_detail_meta',
+		header: 'System (Object)',
+		name: 'data_obj_sys_admin_system_detail_obj',
 		owner: 'sys_system_old',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
@@ -111,20 +135,22 @@ function initSystem(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_sys_admin_system_list_meta',
-		header: 'Systems (Meta)',
-		name: 'node_obj_sys_admin_system_list_meta',
-		orderDefine: 40,
+		codeNodeType: 'program',
+		dataObj: 'data_obj_sys_admin_system_list_obj',
+		header: 'Systems (Objects)',
+		name: 'node_obj_sys_admin_system_list_obj',
+		orderDefine: 30,
 		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
-		dataObj: 'data_obj_sys_admin_system_detail_meta',
-		header: 'System (Meta)',
-		name: 'node_obj_sys_admin_system_detail_meta',
+		codeNodeType: 'program_object',
+		dataObj: 'data_obj_sys_admin_system_detail_obj',
+		header: 'System (Object)',
+		name: 'node_obj_sys_admin_system_detail_obj',
 		orderDefine: 10,
 		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_list_meta'
+		parentNodeName: 'node_obj_sys_admin_system_list_obj'
 	})
 }

@@ -1,21 +1,19 @@
-<script>
-	import Menu from './Menu.svelte'
+<script lang="ts">
+	import { appStoreUser, User } from '$utils/types'
+	import NavBar from '$comps/navBar/NavBar.svelte'
 
-	let name = 'world'
+	const rawUser = $appStoreUser
+	let user: User = rawUser && Object.keys(rawUser).length > 0 ? new User(rawUser) : undefined
 </script>
 
 <main>
-	<Menu />
+	<NavBar {user} />
 	<section class="content">
-		<h1>Hello {name}!</h1>
+		<h1>New NavBar!</h1>
 	</section>
 </main>
 
 <style>
-	:global(body) {
-		margin: 0;
-		padding: 0;
-	}
 	main {
 		display: grid;
 		grid-template: 'nav content' min-content;

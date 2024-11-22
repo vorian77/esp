@@ -52,6 +52,14 @@ const shapeDataObjFieldListItems = e.shape(e.sys_core.SysDataObjFieldListItems, 
 	exprWith: true
 }))
 
+const shapeFieldEmbedListSelect = e.shape(e.sys_core.SysDataObjFieldEmbedListSelect, (fels) => ({
+	_actionFieldGroupModal: e.select(fels.actionFieldGroupModal, (afg) => ({
+		...shapeDataObjActionFieldGroup(afg)
+	})),
+	_dataObjListId: fels.dataObjList.id,
+	btnLabelComplete: true
+}))
+
 const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 	_codeIcon: n.codeIcon.name,
 	_codeNodeType: n.codeNodeType.name,
@@ -100,7 +108,7 @@ export async function getDataObjById(token: TokenApiId) {
 			exprSelect: l.linkExprSelect
 		})),
 		_linkItemsDefn: e.select(doc.fieldListItems, (fli) => ({
-			_fieldListItemsParmName: doc.fieldListItemsParmName,
+			_parmName: doc.fieldListItemsParmName,
 			_table: e.select(fli.table, (t) => ({
 				hasMgmt: true,
 				mod: true,
@@ -252,11 +260,7 @@ export async function getDataObjById(token: TokenApiId) {
 					_dataObjEmbedId: fe.dataObjEmbed.id
 				})),
 				_fieldEmbedListSelect: e.select(doc.fieldEmbedListSelect, (fe) => ({
-					_actionFieldGroupModal: e.select(fe.actionFieldGroupModal, (afg) => ({
-						...shapeDataObjActionFieldGroup(afg)
-					})),
-					_dataObjListId: fe.dataObjList.id,
-					btnLabelComplete: true
+					...shapeFieldEmbedListSelect(fe)
 				})),
 				_fieldEmbedShellFields: e.select(doc.customEmbedShellFields, (ce) => ({
 					_name: ce.column.name,
@@ -395,6 +399,14 @@ export async function getDBObjectLinks(token: TokenApiId) {
 	return await query.run(client)
 }
 
+export async function getFieldEmbedListSelect(token: TokenApiId) {
+	const query = e.select(e.sys_core.SysDataObjFieldEmbedListSelect, (fels) => ({
+		...shapeFieldEmbedListSelect(fels),
+		filter_single: e.op(fels.name, '=', token.id)
+	}))
+	return await query.run(client)
+}
+
 export async function getNodeObjByName(token: TokenApiId) {
 	const query = e.select(e.sys_core.SysNodeObj, (n) => ({
 		...shapeNodeObj(n),
@@ -474,15 +486,10 @@ export async function getReportUser(repUserId: string) {
 			parm: e.select(parm.parm, (p) => ({
 				_codeDataType: p.codeDataType.name,
 				_codeFieldElement: p.codeFieldElement.name,
-				_fieldListItems: e.select(p.fieldListItems, (i) => ({
-					...shapeDataObjFieldListItems(i),
-					_fieldListItemsParmName: p.fieldListItemsParmName
-				})),
 				_linkTable: e.select(p.linkTable, (t) => ({
 					...shapeTable(t)
 				})),
 				description: true,
-				fieldListItemsParmName: true,
 				header: true,
 				isMultiSelect: true,
 				name: true
@@ -507,28 +514,6 @@ export async function getReportUser(repUserId: string) {
 			tables: e.select(rep.tables, (t) => ({
 				...shapeDataObjTable(t)
 			}))
-		})),
-		filter: e.op(r.id, '=', e.cast(e.uuid, repUserId))
-	}))
-	return await query.run(client)
-}
-
-export async function getReportUserParmItems(repUserId: string) {
-	const query = e.select(e.sys_rep.SysRepUser, (r) => ({
-		id: true,
-		_header: r.headerUser,
-		_name: r.report.name,
-		parms: e.select(r.parms, (up) => ({
-			parm: e.select(up.parm, (p) => ({
-				_codeDataType: p.codeDataType.name,
-				_fieldListItems: e.select(p.fieldListItems, (i) => ({
-					...shapeDataObjFieldListItems(i),
-					_fieldListItemsParmName: p.fieldListItemsParmName
-				})),
-				_isMultiSelect: p.isMultiSelect,
-				_propName: p.name
-			})),
-			filter: e.op('exists', up.parm.fieldListItems)
 		})),
 		filter: e.op(r.id, '=', e.cast(e.uuid, repUserId))
 	}))

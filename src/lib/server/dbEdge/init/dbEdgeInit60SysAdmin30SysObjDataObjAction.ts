@@ -1,6 +1,6 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initAdminDataObjAction(init: InitDb) {
+export function initAdminSysObjDataObjAction(init: InitDb) {
 	initDataObjActionsQuery(init)
 	initDataObjActionField(init)
 	initDataObjActionFieldGroup(init)
@@ -136,6 +136,7 @@ function initDataObjActionsQuery(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_action_query_list',
 		header: 'Query Actions',
 		name: 'node_obj_sys_admin_data_obj_action_query_list',
@@ -146,6 +147,7 @@ function initDataObjActionsQuery(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_action_query_detail',
 		header: 'Query Action',
 		name: 'node_obj_sys_admin_data_obj_action_query_detail',
@@ -367,6 +369,7 @@ function initDataObjActionField(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_action_field_list',
 		header: 'Field Actions',
 		name: 'node_obj_sys_admin_data_obj_action_field_list',
@@ -377,6 +380,7 @@ function initDataObjActionField(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_action_field_detail',
 		header: 'Config',
 		name: 'node_obj_sys_admin_data_obj_action_field_detail',
@@ -510,6 +514,7 @@ function initDataObjActionFieldGroup(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_action_field_group_list',
 		header: 'Field Action Groups',
 		name: 'node_obj_sys_admin_data_obj_action_field_group_list',
@@ -520,6 +525,7 @@ function initDataObjActionFieldGroup(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_action_field_group_detail',
 		header: 'Config',
 		name: 'node_obj_sys_admin_data_obj_action_field_group_detail',

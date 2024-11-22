@@ -3,6 +3,7 @@ import { InitDb } from '$server/dbEdge/init/types.init'
 export function initAdminSysConfig(init: InitDb) {
 	initConfig(init)
 }
+
 async function initConfig(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_list',
@@ -180,6 +181,7 @@ async function initConfig(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program',
 		dataObj: 'data_obj_sys_admin_system_list_config',
 		header: 'Systems (Config)',
 		name: 'node_obj_sys_admin_system_list_config',
@@ -189,6 +191,7 @@ async function initConfig(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_system_detail_config',
 		header: 'Organization',
 		name: 'node_obj_sys_admin_system_detail_config',

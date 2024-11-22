@@ -1,6 +1,6 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initAdminDataObj(init: InitDb) {
+export function initAdminSysObjDataObj(init: InitDb) {
 	initDataObj(init)
 	initDataObjColumn(init)
 }
@@ -440,6 +440,7 @@ function initDataObj(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_list',
 		header: 'Data Objects',
 		name: 'node_obj_sys_admin_data_obj_list',
@@ -450,6 +451,7 @@ function initDataObj(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_detail',
 		header: 'Data Object',
 		name: 'node_obj_sys_admin_data_obj_detail',
@@ -1337,6 +1339,7 @@ function initDataObjColumn(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_column_list',
 		header: 'Columns',
 		name: 'node_obj_sys_admin_data_obj_column_list',
@@ -1347,6 +1350,7 @@ function initDataObjColumn(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_column_detail',
 		header: 'Column',
 		name: 'node_obj_sys_admin_data_obj_column_detail',

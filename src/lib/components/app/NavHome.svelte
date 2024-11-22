@@ -50,7 +50,7 @@
 <!-- <DataViewer header="showSysReport" data={showSysReport} /> -->
 
 <AppShell>
-	{#if showSysUser}
+	<!-- {#if showSysUser}
 		<SysUser {user} />
 	{/if}
 
@@ -65,5 +65,5 @@
 	{/if}
 	{#if showSysReport}
 		<SysWigReport {user} />
-	{/if}
+	{/if} -->
 </AppShell>

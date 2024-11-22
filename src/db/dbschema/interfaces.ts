@@ -26,7 +26,6 @@ export namespace sys_user {
     "codeTaskType": sys_core.SysCode;
     "description"?: string | null;
     "isAlwaysPinToDash"?: boolean | null;
-    "orderDefined": number;
     "codeColorFrom"?: sys_core.SysCode | null;
     "codeColorTo"?: sys_core.SysCode | null;
     "objectTask": sys_core.SysObj;
@@ -35,12 +34,12 @@ export namespace sys_user {
     "userName"?: string | null;
     "orgs": sys_core.SysOrg[];
     "systems": sys_core.SysSystem[];
-    "password": string;
     "userTypes": SysUserType[];
     "person"?: SysPerson | null;
     "isMobileOnly"?: boolean | null;
     "defaultOrg": sys_core.SysOrg;
     "owner": sys_core.SysOrg;
+    "password": string;
   }
   export interface SysUserPref extends Mgmt {
     "user": SysUser;
@@ -880,14 +879,13 @@ export namespace sys_rep {
   export interface SysRepParm extends sys_user.Mgmt {
     "codeDataType": sys_core.SysCode;
     "codeFieldElement": sys_core.SysCode;
-    "fieldListItems"?: sys_core.SysDataObjFieldListItems | null;
     "linkTable"?: sys_db.SysTable | null;
     "description"?: string | null;
-    "fieldListItemsParmName"?: string | null;
     "header": string;
     "isMultiSelect": boolean;
     "name": string;
     "orderDefine": number;
+    "dataObjSelect"?: sys_core.SysDataObj | null;
   }
   export interface SysRepUser extends sys_user.Mgmt {
     "report": SysRep;

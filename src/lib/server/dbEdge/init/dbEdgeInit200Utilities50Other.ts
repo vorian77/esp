@@ -1,5 +1,10 @@
 import e from '$db/dbschema/edgeql-js'
-import { booleanOrDefaultParm, client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
+import {
+	booleanOrDefaultParm,
+	client,
+	sectionHeader,
+	valueOrDefaultParm
+} from '$routes/api/dbEdge/dbEdge'
 import { debug } from '$utils/types'
 
 export async function addApp(data: any) {
@@ -204,6 +209,51 @@ export async function addMigration(data: any) {
 	return await query.run(client, data)
 }
 
+export async function addNode(data: any) {
+	sectionHeader(`addNode - ${data.name}`)
+	console.log(JSON.stringify(data))
+
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			codeIcon: e.str,
+			codeNavType: e.optional(e.str) || 'tree',
+			codeNodeType: e.str,
+			dataObj: e.optional(e.str),
+			header: e.optional(e.str),
+			isAlwaysRetrieveData: e.optional(e.bool),
+			isHideRowManager: e.optional(e.bool),
+			name: e.str,
+			orderDefine: e.int16,
+			owner: e.str,
+			page: e.optional(e.str),
+			parentNodeName: e.optional(e.str)
+		},
+		(p) => {
+			return e.insert(e.sys_core.SysNodeObj, {
+				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
+				codeNavType: e.sys_core.getCode(
+					'ct_sys_node_obj_nav_type',
+					valueOrDefaultParm(p.codeNavType, 'tree')
+				),
+				codeNodeType: e.sys_core.getCode('ct_sys_node_obj_type', p.codeNodeType),
+				createdBy: CREATOR,
+				dataObj: e.sys_core.getDataObj(p.dataObj),
+				header: p.header,
+				isAlwaysRetrieveData: booleanOrDefaultParm(p.isAlwaysRetrieveData, false),
+				isHideRowManager: booleanOrDefaultParm(p.isHideRowManager, false),
+				modifiedBy: CREATOR,
+				name: p.name,
+				orderDefine: p.orderDefine,
+				owner: e.sys_core.getSystemPrime(p.owner),
+				page: p.page,
+				parent: e.sys_core.getNodeObjByName(p.parentNodeName)
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
 export async function addNodeFooter(data: any) {
 	sectionHeader(`addNodeFooter - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
@@ -236,78 +286,6 @@ export async function addNodeFooter(data: any) {
 				orderDefine: p.orderDefine,
 				owner: e.sys_core.getSystemPrime(p.owner),
 				page: p.page
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-
-export async function addNodeProgram(data: any) {
-	sectionHeader(`addNodeProgram - ${data.name}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			codeIcon: e.str,
-			dataObj: e.optional(e.str),
-			header: e.optional(e.str),
-			isAlwaysRetrieveData: e.optional(e.bool),
-			isHideRowManager: e.optional(e.bool),
-			name: e.str,
-			orderDefine: e.int16,
-			owner: e.str
-		},
-		(p) => {
-			return e.insert(e.sys_core.SysNodeObj, {
-				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', p.codeIcon)),
-				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
-				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'program')),
-				createdBy: CREATOR,
-				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
-				header: p.header,
-				isAlwaysRetrieveData: booleanOrDefaultParm(p.isAlwaysRetrieveData, false),
-				isHideRowManager: booleanOrDefaultParm(p.isHideRowManager, false),
-				modifiedBy: CREATOR,
-				name: p.name,
-				orderDefine: p.orderDefine,
-				owner: e.sys_core.getSystemPrime(p.owner)
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-
-export async function addNodeProgramObj(data: any) {
-	sectionHeader(`addNodeProgramObj - ${data.name}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			codeIcon: e.str,
-			dataObj: e.optional(e.str),
-			header: e.optional(e.str),
-			isAlwaysRetrieveData: e.optional(e.bool),
-			isHideRowManager: e.optional(e.bool),
-			isSystemRoot: e.optional(e.bool),
-			name: e.str,
-			orderDefine: e.int16,
-			owner: e.str,
-			parentNodeName: e.optional(e.str)
-		},
-		(p) => {
-			return e.insert(e.sys_core.SysNodeObj, {
-				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', p.codeIcon)),
-				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
-				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'program_object')),
-				createdBy: CREATOR,
-				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
-				header: p.header,
-				isAlwaysRetrieveData: booleanOrDefaultParm(p.isAlwaysRetrieveData, false),
-				isHideRowManager: booleanOrDefaultParm(p.isHideRowManager, false),
-				isSystemRoot: booleanOrDefaultParm(p.isSystemRoot, false),
-				modifiedBy: CREATOR,
-				name: p.name,
-				orderDefine: p.orderDefine,
-				owner: e.sys_core.getSystemPrime(p.owner),
-				parent: e.select(e.sys_core.getNodeObjByName(p.parentNodeName))
 			})
 		}
 	)
@@ -360,37 +338,135 @@ export async function addSubjectObj(data: any) {
 	return await query.run(client, data)
 }
 
+export async function addTask(data: any) {
+	sectionHeader(`addTask - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			codeColorFrom: e.optional(e.str),
+			codeColorTo: e.optional(e.str),
+			codeIcon: e.str,
+			codeTaskStatusObj: e.optional(e.str),
+			codeTaskType: e.str,
+			description: e.optional(e.str),
+			header: e.optional(e.str),
+			isAlwaysPinToDash: e.optional(e.bool),
+			isGlobalResource: e.bool,
+			name: e.str,
+			objectTask: e.str,
+			orderDefine: e.int16,
+			owner: e.str
+		},
+		(p) => {
+			return e.insert(e.sys_user.SysTask, {
+				codeColorFrom: e.sys_core.getCode('ct_sys_tailwind_color', p.codeColorFrom),
+				codeColorTo: e.sys_core.getCode('ct_sys_tailwind_color', p.codeColorTo),
+				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
+				codeTaskStatusObj: e.sys_core.getCode('ct_sys_task_status_obj', p.codeTaskStatusObj),
+				codeTaskType: e.select(e.sys_core.getCode('ct_sys_task_type', p.codeTaskType)),
+				createdBy: CREATOR,
+				header: p.header,
+				isAlwaysPinToDash: booleanOrDefaultParm(p.isAlwaysPinToDash, false),
+				isGlobalResource: p.isGlobalResource,
+				modifiedBy: CREATOR,
+				name: p.name,
+				objectTask: e.sys_core.getObj(p.objectTask),
+				orderDefine: p.orderDefine,
+				owner: e.sys_core.getSystemPrime(p.owner)
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
 export async function addUser(data: any) {
 	sectionHeader(`addUser - ${data.userName}`)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
+			defaultOrg: e.str,
 			firstName: e.str,
+			isMobileOnly: e.optional(e.bool),
 			lastName: e.str,
+			orgs: e.optional(e.array(e.str)),
 			owner: e.str,
-			password: e.str,
+			systems: e.optional(e.array(e.str)),
 			userName: e.str,
 			userTypes: e.optional(e.array(e.str))
 		},
 		(p) => {
-			return e.insert(e.sys_user.SysUser, {
-				createdBy: CREATOR,
-				modifiedBy: CREATOR,
-				owner: e.select(e.sys_core.getOrg(p.owner)),
-				password: p.password,
-				person: e.insert(e.default.SysPerson, {
-					firstName: p.firstName,
-					lastName: p.lastName
-				}),
-				userName: p.userName,
-				userTypes: e.assert_distinct(
-					e.set(
-						e.for(e.array_unpack(p.userTypes || e.cast(e.array(e.str), e.set())), (ut_parm) => {
-							return e.sys_user.getUserType(ut_parm)
-						})
+			return e
+				.insert(e.sys_user.SysUser, {
+					createdBy: CREATOR,
+					defaultOrg: e.select(e.sys_core.getOrg(p.defaultOrg)),
+					isMobileOnly: booleanOrDefaultParm(p.isMobileOnly, false),
+					modifiedBy: CREATOR,
+					orgs: e.assert_distinct(
+						e.set(
+							e.for(e.array_unpack(p.orgs || e.cast(e.array(e.str), e.set())), (org) => {
+								return e.sys_core.getOrg(org)
+							})
+						)
+					),
+					owner: e.select(e.sys_core.getOrg(p.owner)),
+					person: e.insert(e.default.SysPerson, {
+						firstName: p.firstName,
+						lastName: p.lastName
+					}),
+					systems: e.assert_distinct(
+						e.set(
+							e.for(e.array_unpack(p.systems || e.cast(e.array(e.str), e.set())), (sys) => {
+								return e.sys_core.getSystemPrime(sys)
+							})
+						)
+					),
+					userName: p.userName,
+					userTypes: e.assert_distinct(
+						e.set(
+							e.for(e.array_unpack(p.userTypes || e.cast(e.array(e.str), e.set())), (ut_parm) => {
+								return e.sys_user.getUserType(ut_parm)
+							})
+						)
 					)
-				)
-			})
+				})
+				.unlessConflict((user) => ({
+					on: user.userName,
+					else: e.update(user, () => ({
+						set: {
+							defaultOrg: e.select(e.sys_core.getOrg(p.defaultOrg)),
+							isMobileOnly: booleanOrDefaultParm(p.isMobileOnly, false),
+							orgs: e.assert_distinct(
+								e.set(
+									e.for(e.array_unpack(p.orgs || e.cast(e.array(e.str), e.set())), (org) => {
+										return e.sys_core.getOrg(org)
+									})
+								)
+							),
+							owner: e.select(e.sys_core.getOrg(p.owner)),
+							person: e.insert(e.default.SysPerson, {
+								firstName: p.firstName,
+								lastName: p.lastName
+							}),
+							systems: e.assert_distinct(
+								e.set(
+									e.for(e.array_unpack(p.systems || e.cast(e.array(e.str), e.set())), (sys) => {
+										return e.sys_core.getSystemPrime(sys)
+									})
+								)
+							),
+							userTypes: e.assert_distinct(
+								e.set(
+									e.for(
+										e.array_unpack(p.userTypes || e.cast(e.array(e.str), e.set())),
+										(ut_parm) => {
+											return e.sys_user.getUserType(ut_parm)
+										}
+									)
+								)
+							)
+						}
+					}))
+				}))
 		}
 	)
 	return await query.run(client, data)

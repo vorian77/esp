@@ -1,4 +1,4 @@
-import { nodeObjPagesBulk, userTypeBulk, userUserTypeBulk } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
+import { nodeObjPagesBulk } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 
 const FILE = 'init_MOED_cm'
 
@@ -69,10 +69,5 @@ async function data() {
 			'Quote',
 			'/home/cm/quotes'
 		]
-	])
-	await userTypeBulk([
-		['app_moed_cm', 'ut_moed_cm_staff'],
-		['app_moed_cm', 'ut_moed_cm_student_applicant'],
-		['app_moed_cm', 'ut_moed_cm_student']
 	])
 }

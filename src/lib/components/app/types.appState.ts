@@ -28,14 +28,11 @@ import {
 	TokenAppDoActionConfirmType,
 	TokenAppModalEmbedField,
 	TokenAppModalSelect,
+	TokenAppModalSelectDataObj,
 	TokenAppModalReturn,
 	TokenAppModalReturnType
 } from '$utils/types.token'
-import {
-	FieldEmbedListConfig,
-	FieldEmbedListEdit,
-	FieldEmbedListSelect
-} from '$comps/form/fieldEmbed'
+import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { RawDataObjActionField, RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
@@ -317,9 +314,16 @@ export class State {
 		parmsState.valueSet(ParmsValuesType.isMultiSelect, token.isMultiSelect)
 		parmsState.valueSet(ParmsValuesType.listLabel, token.fieldLabel)
 		parmsState.valueSet(ParmsValuesType.listIdsSelected, token.idsSelected)
-		parmsState.valueSet(ParmsValuesType.listItems, token.itemsList)
-		parmsState.valueSet(ParmsValuesType.listItemsFieldDisplay, 'display')
 		parmsState.valueSet(ParmsValuesType.listItemsFieldId, 'id')
+
+		if (token instanceof TokenAppModalSelect) {
+			parmsState.valueSet(ParmsValuesType.listItemsFieldDisplay, 'display')
+			parmsState.valueSet(ParmsValuesType.rowData, token.rowData)
+		}
+		if (token instanceof TokenAppModalSelectDataObj) {
+			// parmsState.valueSet(ParmsValuesType.listItemsFieldDisplay, 'display')
+			// parmsState.valueSet(ParmsValuesType.rowData, token.rowData)
+		}
 
 		const stateModal = new StateSurfaceModal({
 			actionsFieldDialog: await this.getActions('doag_dialog_footer_list'),
@@ -328,7 +332,7 @@ export class State {
 				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.fieldLabel}`
 			},
 			packet: new StatePacket({
-				action: StatePacketAction.selectModalFieldItems,
+				action: StatePacketAction.modalSelectSurface,
 				confirmType: TokenAppDoActionConfirmType.none,
 				token
 			}),
@@ -486,6 +490,8 @@ export enum StatePacketAction {
 	modalDataObj = 'modalDataObj',
 	modalDone = 'modalDone',
 	modalEmbed = 'modalEmbed',
+	modalSelectOpen = 'modalSelectOpen',
+	modalSelectSurface = 'modalSelectSurface',
 
 	// nav
 	navBack = 'navBack',
@@ -495,10 +501,6 @@ export enum StatePacketAction {
 	navTreeReset = 'navTreeReset',
 	navTreeSetParent = 'navTreeSetParent',
 	openNode = 'openNode',
-
-	// modal-select
-	selectModalFieldItems = 'selectModalItems',
-	selectModalFieldItemsOpen = 'selectModalItemsOpen',
 
 	none = 'none'
 }

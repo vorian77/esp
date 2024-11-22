@@ -22,7 +22,6 @@ module sys_user {
     description: str;
     isAlwaysPinToDash: bool;
     required objectTask: sys_core::SysObj;
-    required orderDefined: int16;
     constraint exclusive on (.name);
   }
   
@@ -36,7 +35,9 @@ module sys_user {
     person: default::SysPerson {
       on source delete delete target if orphan;
     };
-    required password: str;
+    required password: str {
+      default := (SELECT <str>uuid_generate_v4());
+    };
     multi systems: sys_core::SysSystem;
     userName: str;
     multi userTypes: sys_user::SysUserType {

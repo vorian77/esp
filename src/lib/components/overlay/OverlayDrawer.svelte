@@ -40,7 +40,7 @@
 	async function openMyAccount() {
 		closeDrawer()
 		const state: State = $storeDrawer.meta.state
-		const dataObjName = 'data_obj_auth_account'
+		const dataObjName = 'data_obj_task_sys_auth_my_account'
 		const node = new Node({
 			_codeNodeType: 'object',
 			dataObjName,
