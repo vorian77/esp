@@ -11,6 +11,7 @@ import {
 	debug,
 	getArray,
 	getRecordValue,
+	isNumber,
 	memberOfEnum,
 	memberOfEnumIfExists,
 	memberOfEnumOrDefault,
@@ -24,7 +25,6 @@ import {
 	DBTable,
 	valueOrDefault
 } from '$utils/types'
-import { isNumber } from 'lodash-es'
 import { StatePacketAction } from '$comps/app/types.appState'
 import {
 	DataObj,

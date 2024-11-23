@@ -9,6 +9,11 @@ export async function encrypt(text: string) {
 	return text
 }
 
+export const isNumber = (value: any) => {
+	if ([null, undefined, ''].includes(value)) return false
+	return typeof value === 'number' || !isNaN(value)
+}
+
 export function valueHasChanged(vSource: any, vCurrent: any): boolean {
 	if (typeof vSource == 'boolean' || typeof vCurrent === 'boolean') {
 		return noVal(vSource) ? true : vSource !== vCurrent

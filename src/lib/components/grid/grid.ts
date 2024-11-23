@@ -64,15 +64,10 @@ export const columnTypes = {
 	ctSelectMulti: {
 		cellEditor: 'agTextCellEditor',
 		valueGetter: (params: ValueGetterParams) => {
-			let display = ''
 			const fieldName = required(params.colDef.field, FILENAME, 'params.colDef.field')
-			const items = params.colDef.context.items
 			const currentValue = params.data[fieldName]
-			currentValue.forEach((id: string) => {
-				const item = items.find((i: FieldColumnItem) => i.data === id)
-				if (item) display += display ? ',' + item.display : item.display
-			})
-			return display
+			const linkItemsSource = params.colDef.context.linkItemsSource
+			return linkItemsSource.getDisplayValueList(currentValue)
 		}
 	},
 	ctSelectSingle: {
@@ -83,10 +78,9 @@ export const columnTypes = {
 				`${FILENAME}.valueGetter`,
 				'params.colDef.field'
 			)
-			const items = params.colDef.context.items
 			const currentValue = params.data[fieldName]
-			const item = items.find((i: FieldColumnItem) => i.data === currentValue)
-			return item ? item.display : ''
+			const linkItemsSource = params.colDef.context.linkItemsSource
+			return linkItemsSource.getDisplayValueList(currentValue)
 		},
 		valueSetter: (params: ValueSetterParams) => {
 			const fieldName = required(
@@ -256,14 +250,8 @@ export class GridSettings {
 			return rawPref ? rawPref : ''
 		}
 		function initPrefsSortModel(rawPref: any) {
-			if (dataObj.raw.listReorderColumn) return initSort()
-			if (rawPref || rawPref?.sortItems.length > 0) {
-				let sortObj = new DataObjSort()
-				return sortObj.load(rawPref.sortItems)
-			}
-			return undefined
-
-			function initSort() {
+			let sortObj = new DataObjSort()
+			if (dataObj.raw.listReorderColumn) {
 				let sortFields = dataObj.fields.filter(
 					(f) => f.colDO.isDisplayable && f.colDO.orderSort !== undefined
 				)
@@ -273,6 +261,10 @@ export class GridSettings {
 				})
 				return sortObj
 			}
+			if (rawPref || rawPref?.sortItems.length > 0) {
+				return sortObj.load(rawPref.sortItems)
+			}
+			return undefined
 		}
 		return this
 	}

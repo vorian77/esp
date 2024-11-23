@@ -73,6 +73,12 @@ module sys_rep {
     linkTable: sys_db::SysTable;
     required name: str;
     required orderDefine: default::nonNegative;
+
+
+    # fieldListItems: sys_core::SysDataObjFieldListItems;
+    # fieldListItemsParmName: str;
+    # exprFilter: str;
+    # isRequired: bool;
   }
 
   type SysRepUser extending sys_user::Mgmt {

@@ -314,9 +314,9 @@
 
 				case PropDataType.link:
 					const itemsKey = '_items_' + field.colDO.propName
-					if (Object.hasOwn(dataObjData.items, itemsKey)) {
+					if (field.linkItemsSource) {
 						defn.editable = false
-						defn.context = { items: dataObjData.items[itemsKey], state }
+						defn.context = { linkItemsSource: field.linkItemsSource, state }
 						defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
 					} else {
 						defn.cellDataType = 'customText'

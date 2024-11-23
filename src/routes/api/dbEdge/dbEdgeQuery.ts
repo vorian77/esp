@@ -6,6 +6,7 @@ import {
 	DataObjEmbedType,
 	DBTable,
 	debug,
+	isNumber,
 	memberOfEnumOrDefault,
 	ParmsValuesType,
 	required,
@@ -13,7 +14,6 @@ import {
 	strRequired
 } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
-import { isNumber } from 'lodash-es'
 import {
 	PropDataSourceValue,
 	PropDataType,
