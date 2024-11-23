@@ -95,7 +95,6 @@ export type $SysRepParmλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "isMultiSelect": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
   "name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "orderDefine": $.PropertyDesc<_default.$nonNegative, $.Cardinality.One, false, false, false, false>;
-  "dataObjSelect": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<parms[is sys_rep::SysRep]": $.LinkDesc<$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parms[is sys_rep::SysAnalytic]": $.LinkDesc<$SysAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parm[is sys_rep::SysRepUserParm]": $.LinkDesc<$SysRepUserParm, $.Cardinality.Many, {}, false, false,  false, false>;

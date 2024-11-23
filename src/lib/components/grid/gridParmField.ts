@@ -4,7 +4,7 @@ import {
 	type ICellRendererComp,
 	type ICellRendererParams
 } from 'ag-grid-community'
-import { Field, FieldAccess, FieldItem } from '$comps/form/field'
+import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 import { getRecordValue } from '$utils/types'
 import { error } from '@sveltejs/kit'
@@ -102,7 +102,7 @@ export class CellRendererParmFieldSelect extends CellRendererParmField {
 			const fieldItems = field.colDO.items
 			const currentIds = Array.isArray(params.value) ? params.value : [params.value]
 			currentIds.forEach((id: string) => {
-				const item = fieldItems.find((i: FieldItem) => i.id === id)
+				const item = fieldItems.find((i: FieldColumnItem) => i.data === id)
 				if (item) displayValue += displayValue ? ',' + item.display : item.display
 			})
 		}

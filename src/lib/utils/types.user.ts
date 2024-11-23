@@ -13,7 +13,6 @@ import {
 } from '$utils/utils'
 import { DataObj, ParmsValuesType } from '$utils/types'
 import { TokenAppModalReturnType, TokenAppModalSelect } from '$utils/types.token'
-import { FieldItem } from '$comps/form/field'
 import { FileStorage } from '$comps/form/fieldFile'
 import { error } from '@sveltejs/kit'
 
@@ -112,7 +111,7 @@ export class User {
 				// console.log('User.setUserSelectParms.parmSelect.multi', { parmName, resources, itemsList })
 				await state.openModalSelect(
 					new TokenAppModalSelect({
-						fieldLabel: `System Record`,
+						columnsDefs: undefined,
 						fModalClose: (returnType: TokenAppModalReturnType, returnData?: ParmsValues) => {
 							// if (returnType === TokenAppModalReturnType.complete) {
 							// 	const parms: ParmsValues = returnData.data || undefined
@@ -129,11 +128,11 @@ export class User {
 							// 	return false
 							// }
 						},
+						gridColumnId: '',
 						isMultiSelect: false,
-						idsSelected: []
-						// itemsList: resources.map((r) => {
-						// 	return new FieldItem(r.idResource, r.header)
-						// })
+						listIdsSelected: [],
+						rowData: undefined,
+						selectLabel: `System Record`
 					})
 				)
 				// parmData.data[parmName] = resources[0].idResource

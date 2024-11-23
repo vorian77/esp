@@ -67,7 +67,6 @@ module sys_rep {
   type SysRepParm extending sys_user::Mgmt{
     required codeDataType: sys_core::SysCode;
     required codeFieldElement: sys_core::SysCode;
-    dataObjSelect: sys_core::SysDataObj;
     description: str;
     required header: str;
     required isMultiSelect: bool;

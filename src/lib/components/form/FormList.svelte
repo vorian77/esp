@@ -11,7 +11,6 @@
 		TokenAppDo,
 		TokenAppDoActionConfirmType,
 		TokenAppModalSelect,
-		TokenAppModalSelectDataObj,
 		TokenAppModalReturnType
 	} from '$utils/types.token'
 	import {
@@ -31,8 +30,6 @@
 		DataObjData,
 		DataObjEmbedType,
 		DataObjMode,
-		DataObjSort,
-		DataObjSortItem,
 		type DataRecord,
 		ParmsValues,
 		ParmsValuesType,
@@ -158,7 +155,7 @@
 
 	function fGridCallbackFilter(event: FilterChangedEvent) {
 		dataObjData.rowsRetrieved.syncFields(dataObj.dataRecordsDisplay, ['selected'])
-		state.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api))
+		state.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, 'id'))
 	}
 
 	function fGridCallbackUpdateValue(
@@ -373,59 +370,12 @@
 		let field = dataObj.fields.find((f) => f.colDO.propName === event.colDef.field)
 		let fieldParm = field instanceof FieldParm ? field.parmFields[event.rowIndex] : undefined
 		let fieldProcess = fieldParm || field
-		if (fieldProcess) {
-			if (fieldProcess.colDO.dataObjSelectId) {
-				await onCellClickedSelectDataObj()
-			} else if (fieldProcess.colDO.hasItems) {
-				await onCellClickedSelectItems()
-			}
-		}
-
-		async function onCellClickedSelectDataObj() {
-			const fieldName = fieldProcess.colDO.propName
-			const idsSelected = Array.isArray(event.data[fieldName])
-				? event.data[fieldName]
-				: ['', null, undefined].includes(event.data[fieldName])
-					? []
-					: [event.data[fieldName]]
-
-			const rowData = fieldProcess.colDO.items
-
-			state.update({
-				packet: new StatePacket({
-					action: StatePacketAction.modalSelectOpen,
-					confirmType: TokenAppDoActionConfirmType.none,
-					token: new TokenAppModalSelect({
-						fieldLabel: fieldProcess.colDO.label,
-						fModalClose,
-						idsSelected,
-						isMultiSelect: fieldProcess.colDO.colDB.isMultiSelect,
-						rowData
-					})
-				})
-			})
-
-			// state.update({
-			// 	packet: new StatePacket({
-			// 		action: StatePacketAction.modalSelectOpen,
-			// 		confirmType: TokenAppDoActionConfirmType.none,
-			// 		token: new TokenAppModalSelectDataObj({
-			// 			dataObjSelectId: fieldProcess.colDO.dataObjSelectId,
-			// 			fieldLabel: fieldProcess.colDO.label,
-			// 			fModalClose,
-			// 			isMultiSelect: fieldProcess.colDO.colDB.isMultiSelect
-			// 		})
-			// 	})
-			// })
-		}
+		if (fieldProcess && fieldProcess.linkItemsSource) await onCellClickedSelectItems()
 
 		async function onCellClickedSelectItems() {
-			const rowData = field.colDO.items.map((item) => {
-				return { display: item.display, id: item.data }
-			})
-
 			const fieldName = fieldProcess.colDO.propName
-			const idsSelected = Array.isArray(event.data[fieldName])
+			const parms = field.linkItemsSource.getGridParms()
+			const listIdsSelected = Array.isArray(event.data[fieldName])
 				? event.data[fieldName]
 				: ['', null, undefined].includes(event.data[fieldName])
 					? []
@@ -436,11 +386,14 @@
 					action: StatePacketAction.modalSelectOpen,
 					confirmType: TokenAppDoActionConfirmType.none,
 					token: new TokenAppModalSelect({
-						fieldLabel: fieldProcess.colDO.label,
+						columnDefs: parms.columnDefs,
 						fModalClose,
-						idsSelected,
+						gridColumnId: 'data',
 						isMultiSelect: fieldProcess.colDO.colDB.isMultiSelect,
-						rowData
+						listIdsSelected,
+						rowData: parms.rowData,
+						selectLabel: fieldProcess.colDO.label,
+						sortModel: parms.sortModel
 					})
 				})
 			})
@@ -470,7 +423,10 @@
 		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit) {
 			return
 		} else if (isSelect) {
-			state.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api))
+			state.parmsState.valueSet(
+				ParmsValuesType.listIdsSelected,
+				getSelectedNodeIds(event.api, 'id')
+			)
 		} else {
 			const record = event.api.getSelectedRows()[0]
 			if (record) {

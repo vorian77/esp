@@ -9,6 +9,10 @@
 
 	$: dataObj = fp.dataObj
 	$: field = fp.field as FieldRadio
+	$: fieldValue = fp.fieldValue
+	$: dataItems = field.linkItemsSource
+		? field.linkItemsSource.formatDataFieldColumnItem(fieldValue)
+		: []
 	$: row = fp.row
 
 	$: classPropsLabel = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
@@ -42,17 +46,17 @@
 
 <fieldset id="input-radio-row-{row}" class={classFieldSet}>
 	<div class="mt-3 {classAlignment}">
-		{#if field.colDO.items}
-			{#each field.colDO.items as { data: id, display: label }, index (id)}
+		{#if dataItems}
+			{#each dataItems as { data, display }, index (data)}
 				<div class="text-sm {classFormat} {index === 0 ? 'mt-4' : ''}">
 					<input
 						type="radio"
 						name={field.colDO.propName + '-' + row}
-						value={id}
-						checked={fp.fieldValue == id}
+						value={data}
+						checked={fp.fieldValue == data}
 						on:click={onChange}
 					/>
-					{label}
+					{display}
 				</div>
 			{/each}
 		{/if}

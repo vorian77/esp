@@ -3,6 +3,7 @@ import {
 	booleanRequired,
 	DataObj,
 	DataObjData,
+	DataObjSort,
 	type DataRecord,
 	DataRow,
 	memberOfEnum,
@@ -18,9 +19,10 @@ import { State } from '$comps/app/types.appState'
 import { App } from '$comps/app/types.app'
 import { AppRowActionType } from '$comps/app/types.app'
 import { Node } from '$comps/app/types.node'
-import { FieldItem } from '$comps/form/field'
+import { FieldColumnItem } from '$comps/form/field'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
+import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { Process } from '$utils/utils.process'
 import { error } from '@sveltejs/kit'
 
@@ -358,28 +360,25 @@ export class TokenAppModalEmbedField extends TokenApp {
 }
 
 export class TokenAppModalSelect extends TokenApp {
-	fieldLabel: string
+	columnDefs: ColumnsDefsSelect
 	fModalClose: Function
+	gridColumnId: string
 	isMultiSelect: boolean
-	idsSelected: FieldItem[]
+	listIdsSelected: FieldColumnItem[]
 	rowData: DataRecord[]
+	selectLabel: string
+	sortModel: DataObjSort
 	constructor(obj: any) {
 		const clazz = 'TokenAppModalSelect'
 		super(obj)
-		this.fieldLabel = strRequired(obj.fieldLabel, clazz, 'fieldLabel')
+		this.columnDefs = required(obj.columnDefs, clazz, 'columnDefs')
 		this.fModalClose = required(obj.fModalClose, clazz, 'fModalClose')
+		this.gridColumnId = strRequired(obj.gridColumnId, clazz, 'gridColumnId')
 		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
-		this.idsSelected = required(obj.idsSelected, clazz, 'idsSelected')
+		this.listIdsSelected = required(obj.listIdsSelected, clazz, 'listIdsSelected')
 		this.rowData = required(obj.rowData, clazz, 'rowData')
-	}
-}
-
-export class TokenAppModalSelectDataObj extends TokenAppModalSelect {
-	dataObjSelectId: string
-	constructor(obj: any) {
-		const clazz = 'TokenAppModalSelectDataObj'
-		super(obj)
-		this.dataObjSelectId = strRequired(obj.dataObjSelectId, clazz, 'dataObjSelectId')
+		this.selectLabel = strRequired(obj.selectLabel, clazz, 'selectLabel')
+		this.sortModel = required(obj.sortModel, clazz, 'sortModel')
 	}
 }
 

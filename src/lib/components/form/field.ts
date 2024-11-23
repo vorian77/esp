@@ -1,6 +1,7 @@
 import { State } from '$comps/app/types.appState'
 import {
 	booleanRequired,
+	classOptional,
 	DataObj,
 	DataObjData,
 	DataObjStatus,
@@ -25,7 +26,7 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
+import { PropLinkItemsSource, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { IconProps } from '$comps/icon/types.icon'
 import { error } from '@sveltejs/kit'
 
@@ -40,6 +41,7 @@ export class Field {
 	iconProps?: IconProps
 	isFirstVisible: boolean
 	isParmValue: boolean
+	linkItemsSource?: PropLinkItemsSource
 	constructor(props: PropsFieldRaw) {
 		const clazz = `Field: ${props.propRaw.propName}`
 		const obj = valueOrDefault(props.propRaw, {})
@@ -69,6 +71,7 @@ export class Field {
 		)
 		this.isFirstVisible = props.isFirstVisible
 		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
+		this.linkItemsSource = classOptional(PropLinkItemsSource, obj._linkItemsSource)
 
 		/* derived */
 		this.colorBackground =
@@ -202,6 +205,17 @@ export class FieldColor {
 	}
 }
 
+export class FieldColumnItem {
+	data: string
+	display: string
+	selected?: boolean
+	constructor(data: string, display: string, selected: boolean | undefined = false) {
+		this.data = data
+		this.display = display
+		this.selected = selected
+	}
+}
+
 export interface FieldCustomRaw {
 	_codeType: string
 	actionMethod?: string
@@ -246,17 +260,6 @@ export enum FieldElement {
 	textArea = 'textArea',
 	textHide = 'textHide',
 	toggle = 'toggle'
-}
-
-export class FieldItem {
-	data: string
-	display: string
-	selected?: boolean
-	constructor(data: any, display: string, selected: boolean | undefined = false) {
-		this.display = display
-		this.data = data
-		this.selected = selected
-	}
 }
 
 export enum FieldParmType {

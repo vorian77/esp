@@ -13,6 +13,7 @@ import {
 	strRequired
 } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
+import { isNumber } from 'lodash-es'
 import {
 	PropDataSourceValue,
 	PropDataType,
@@ -335,7 +336,7 @@ export class Query {
 			let value = ''
 			if (expr) {
 				value = expr
-			} else if (prop.linkItemsDefn) {
+			} else if (prop._linkItemsSource) {
 				value = '<uuid>{}'
 			}
 			if (value) {
@@ -356,7 +357,7 @@ export class Query {
 		let properties = ''
 
 		props.forEach((prop) => {
-			if (prop.linkItemsDefn) {
+			if (prop._linkItemsSource) {
 				properties = this.addItemComma(
 					properties,
 					this.getPropsSelectDataItemsContent(prop, queryData, isFilterCurrentValue)
@@ -374,11 +375,24 @@ export class Query {
 	) {
 		const clazz = 'getPropsSelectDataItemsContent'
 		let script = new Script(this, queryData, ScriptExePost.formatData)
-		const defn = required(prop.linkItemsDefn, clazz, 'prop.linkItemsDefn') as PropLinkItemsSource
-		queryData.dataTab?.parms.update(defn.parms)
-		const shape = `{data := .id, display := ${defn.exprPropDisplay}}`
+		const defn = new PropLinkItemsSource(prop._linkItemsSource)
+		if (defn.parmName) queryData.dataTab?.parms.update({ itemsParmName: defn.parmName })
+
+		// shape
+		let shape = 'data := .id'
+		defn.props.forEach((prop) => {
+			shape += `, ${prop.key} := ${prop.expr}`
+		})
+		shape = `{${shape}}`
+
+		// sort
+		const sort = defn.getSortProps().reduce((sort, prop) => {
+			if (sort) sort += ' THEN '
+			return (sort += `.${prop.key}`)
+		}, '')
+
 		const filter = defn.exprFilter ? evalExpr(defn.exprFilter, queryData) : ''
-		const orderBy = defn.exprSort ? `ORDER BY ${defn.exprSort}` : 'ORDER BY .display'
+		const orderBy = defn.exprSort ? `ORDER BY ${defn.exprSort}` : sort ? `ORDER BY ${sort}` : ''
 
 		// table
 		const dataObjTable = this.getTableRootObj()

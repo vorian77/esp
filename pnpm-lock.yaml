@@ -103,9 +103,6 @@ devDependencies:
   svelte-check:
     specifier: ^3.8.6
     version: 3.8.6(@babel/core@7.25.2)(postcss@8.4.47)(svelte@4.2.19)
-  svelte-multiselect:
-    specifier: ^10.3.0
-    version: 10.3.0
   svelte-preprocess:
     specifier: ^5.1.4
     version: 5.1.4(@babel/core@7.25.2)(postcss@8.4.47)(svelte@4.2.19)(typescript@5.6.2)
@@ -3896,12 +3893,6 @@ packages:
       - sugarss
     dev: false
 
-  /svelte-multiselect@10.3.0:
-    resolution: {integrity: sha512-Pyvlcn4TK3dB2WWo6hDEeNH+x2O/DP82UuUf61PQFX8KMB3cm1Cam+zTKrcrOoRRVI2SwH/8dPF8hSTfJFaMmA==}
-    dependencies:
-      svelte: 4.2.12
-    dev: true
-
   /svelte-preprocess@5.1.4(@babel/core@7.25.2)(postcss@8.4.47)(svelte@3.59.2)(typescript@5.6.2):
     resolution: {integrity: sha512-IvnbQ6D6Ao3Gg6ftiM5tdbR6aAETwjhHV+UKGf5bHGYR69RQvF1ho0JKPcbUON4vy4R7zom13jPjgdOWCQ5hDA==}
     engines: {node: '>= 16.0.0'}
@@ -4016,26 +4007,6 @@ packages:
     resolution: {integrity: sha512-vzSyuGr3eEoAtT/A6bmajosJZIUWySzY2CzB3w2pgPvnkUjGqlDnsNnA0PMO+mMAhuyMul6C2uuZzY6ELSkzyA==}
     engines: {node: '>= 8'}
     dev: false
-
-  /svelte@4.2.12:
-    resolution: {integrity: sha512-d8+wsh5TfPwqVzbm4/HCXC783/KPHV60NvwitJnyTA5lWn1elhXMNWhXGCJ7PwPa8qFUnyJNIyuIRt2mT0WMug==}
-    engines: {node: '>=16'}
-    dependencies:
-      '@ampproject/remapping': 2.3.0
-      '@jridgewell/sourcemap-codec': 1.5.0
-      '@jridgewell/trace-mapping': 0.3.25
-      '@types/estree': 1.0.5
-      acorn: 8.12.1
-      aria-query: 5.3.0
-      axobject-query: 4.1.0
-      code-red: 1.0.4
-      css-tree: 2.3.1
-      estree-walker: 3.0.3
-      is-reference: 3.0.2
-      locate-character: 3.0.0
-      magic-string: 0.30.11
-      periscopic: 3.1.0
-    dev: true
 
   /svelte@4.2.19:
     resolution: {integrity: sha512-IY1rnGr6izd10B0A8LqsBfmlT5OILVuZ7XsI0vdGPEvuonFV7NYEUK4dAkm9Zg2q0Um92kYjTpS1CAP3Nh/KWw==}

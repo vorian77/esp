@@ -11,6 +11,8 @@ export function initPreEmbedListConfig(init: InitDb) {
 
 	initFieldListConfigDataObjColumnItem(init)
 	initFieldListConfigDataObjColumnLink(init)
+
+	initFieldListConfigDataObjFieldListItemsProp(init)
 	initFieldListConfigDataObjTable(init)
 }
 
@@ -1131,6 +1133,161 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 		dataObjEmbed: 'doflc_sys_admin_data_obj_column_link_list',
 		dataObjModal: 'doflc_sys_admin_data_obj_column_link_detail',
 		name: 'flec_data_obj_column_link',
+		owner: 'sys_system_old'
+	})
+}
+
+async function initFieldListConfigDataObjFieldListItemsProp(init: InitDb) {
+	init.addTrans('sysDataObjEmbed', {
+		actionFieldGroup: 'doag_embed_list_config',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeDataObjType: 'embed',
+		header: 'Props',
+		name: 'doflc_sys_admin_data_obj_field_list_items_prop_list',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysDataObjFieldListItemsProp' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'orderDefine',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 20,
+				orderDisplay: 20,
+				orderSort: 20
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'key',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 30,
+				orderDisplay: 30
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'header',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 40,
+				orderDisplay: 40
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'orderSort',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 50,
+				orderDisplay: 50
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'isDisplayId',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 60,
+				orderDisplay: 60
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'expr',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 70,
+				orderDisplay: 70
+			}
+		]
+	})
+
+	init.addTrans('sysDataObjEmbed', {
+		actionFieldGroup: 'doag_dialog_form_detail',
+		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
+		codeDataObjType: 'embed',
+		header: 'Prop',
+		name: 'doflc_sys_admin_data_obj_field_list_items_prop_detail',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysDataObjFieldListItemsProp' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20
+			},
+			{
+				columnName: 'orderDefine',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 30,
+				orderDisplay: 30
+			},
+			{
+				columnName: 'key',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				columnName: 'header',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'orderSort',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 60,
+				orderDisplay: 60
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isDisplayId',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80
+			},
+			{
+				columnName: 'expr',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90,
+				indexTable: 0
+			}
+		]
+	})
+
+	init.addTrans('sysDataObjFieldEmbedListConfig', {
+		actionFieldGroupModal: 'doag_dialog_footer_detail',
+		dataObjEmbed: 'doflc_sys_admin_data_obj_field_list_items_prop_list',
+		dataObjModal: 'doflc_sys_admin_data_obj_field_list_items_prop_detail',
+		name: 'flec_data_obj_field_list_items_prop',
 		owner: 'sys_system_old'
 	})
 }

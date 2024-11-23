@@ -141,17 +141,6 @@ export class InitDb {
 			})
 		)
 
-		// select
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysDataObjSelect',
-				dataMap: 'name',
-				dbObject: 'sys_core::SysDataObj',
-				exprResetFull: `DELETE sys_core::SysDataObj FILTER .codeDataObjType.name = 'select'`,
-				fCreate: addDataObj
-			})
-		)
-
 		// task
 		this.items.push(
 			new InitDbItemObject({

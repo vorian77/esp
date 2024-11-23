@@ -41,7 +41,7 @@ function initDataObjFieldListItems(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'exprPropDisplay',
+				columnName: 'displayIdSeparator',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -49,18 +49,10 @@ function initDataObjFieldListItems(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'exprWith',
-				isDisplayable: true,
-				orderDisplay: 55,
-				orderDefine: 55,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'exprFilter',
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
 			},
 			{
@@ -73,10 +65,18 @@ function initDataObjFieldListItems(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeDataTypeDisplay',
+				columnName: 'exprWith',
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeDataTypeDisplay',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0,
 				linkColumns: ['name']
 			},
@@ -84,8 +84,8 @@ function initDataObjFieldListItems(init: InitDb) {
 				codeAccess: 'readOnly',
 				columnName: 'codeMask',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 100,
+				orderDefine: 100,
 				indexTable: 0,
 				linkColumns: ['name']
 			}
@@ -140,23 +140,25 @@ function initDataObjFieldListItems(init: InitDb) {
 				linkTable: 'SysTable'
 			},
 			{
+				codeAccess: 'optional',
+				columnName: 'displayIdSeparator',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0
+			},
+
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60
-			},
-			{
-				columnName: 'exprPropDisplay',
-				isDisplayable: true,
 				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
+				orderDefine: 70
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
-				columnName: 'exprWith',
+				columnName: 'exprFilter',
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
@@ -164,35 +166,46 @@ function initDataObjFieldListItems(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'textArea',
-				columnName: 'exprFilter',
+				codeFieldElement: 'embedListConfig',
+				columnName: 'props',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
-				indexTable: 0
+				orderDisplay: 100,
+				orderDefine: 100,
+				fieldEmbedListConfig: 'flec_data_obj_field_list_items_prop',
+				indexTable: 0,
+				linkTable: 'SysDataObjFieldListItemsProp'
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'exprSort',
 				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100,
+				orderDisplay: 110,
+				orderDefine: 110,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'exprWith',
+				isDisplayable: true,
+				orderDisplay: 120,
+				orderDefine: 120,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110
+				orderDisplay: 130,
+				orderDefine: 130
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeDataTypeDisplay',
 				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
+				orderDisplay: 140,
+				orderDefine: 140,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_db_col_data_type',
@@ -203,8 +216,8 @@ function initDataObjFieldListItems(init: InitDb) {
 				codeFieldElement: 'select',
 				columnName: 'codeMask',
 				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130,
+				orderDisplay: 150,
+				orderDefine: 150,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_db_col_mask',
@@ -214,8 +227,8 @@ function initDataObjFieldListItems(init: InitDb) {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 140,
-				orderDefine: 140
+				orderDisplay: 160,
+				orderDefine: 160
 			},
 
 			/* management */

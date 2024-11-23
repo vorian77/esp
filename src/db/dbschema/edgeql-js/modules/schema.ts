@@ -713,7 +713,6 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_core::SysDataObjFieldEmbedListConfig]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListConfig, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldEmbedListEdit]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListEdit, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldEmbedListSelect]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListSelect, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is sys_core::SysDataObjFieldListItems]": $.LinkDesc<_sys_core.$SysDataObjFieldListItems, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysNodeObj]": $.LinkDesc<_sys_core.$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysOrg]": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_db::SysColumn]": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -776,6 +775,8 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_test::Movie]": $.LinkDesc<_sys_test.$Movie, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_user::SysUserPref]": $.LinkDesc<_sys_user.$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_core::SysDataObjFieldListItems]": $.LinkDesc<_sys_core.$SysDataObjFieldListItems, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_core::SysDataObjFieldListItemsProp]": $.LinkDesc<_sys_core.$SysDataObjFieldListItemsProp, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<intersection_of": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<subject": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

@@ -27,8 +27,6 @@ import {
 	TokenAppDo,
 	TokenAppDoActionConfirmType,
 	TokenAppModalEmbedField,
-	TokenAppModalSelect,
-	TokenAppModalSelectDataObj,
 	TokenAppModalReturn,
 	TokenAppModalReturnType
 } from '$utils/types.token'
@@ -311,25 +309,19 @@ export class State {
 	async openModalSelect(token: TokenAppModalSelect) {
 		const parmsState = new ParmsValues({})
 
+		parmsState.valueSet(ParmsValuesType.columnDefs, token.columnDefs)
+		parmsState.valueSet(ParmsValuesType.gridColumnId, token.gridColumnId)
+		parmsState.valueSet(ParmsValuesType.selectLabel, token.selectLabel)
+		parmsState.valueSet(ParmsValuesType.listIdsSelected, token.listIdsSelected)
+		parmsState.valueSet(ParmsValuesType.listSortModel, token.sortModel)
 		parmsState.valueSet(ParmsValuesType.isMultiSelect, token.isMultiSelect)
-		parmsState.valueSet(ParmsValuesType.listLabel, token.fieldLabel)
-		parmsState.valueSet(ParmsValuesType.listIdsSelected, token.idsSelected)
-		parmsState.valueSet(ParmsValuesType.listItemsFieldId, 'id')
-
-		if (token instanceof TokenAppModalSelect) {
-			parmsState.valueSet(ParmsValuesType.listItemsFieldDisplay, 'display')
-			parmsState.valueSet(ParmsValuesType.rowData, token.rowData)
-		}
-		if (token instanceof TokenAppModalSelectDataObj) {
-			// parmsState.valueSet(ParmsValuesType.listItemsFieldDisplay, 'display')
-			// parmsState.valueSet(ParmsValuesType.rowData, token.rowData)
-		}
+		parmsState.valueSet(ParmsValuesType.rowData, token.rowData)
 
 		const stateModal = new StateSurfaceModal({
 			actionsFieldDialog: await this.getActions('doag_dialog_footer_list'),
 			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutHeader: {
-				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.fieldLabel}`
+				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.selectLabel}`
 			},
 			packet: new StatePacket({
 				action: StatePacketAction.modalSelectSurface,

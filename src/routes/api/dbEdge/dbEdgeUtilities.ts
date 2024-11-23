@@ -40,14 +40,22 @@ const shapeDataObjTable = e.shape(e.sys_core.SysDataObjTable, (dot) => ({
 	order_by: dot.index
 }))
 
-const shapeDataObjFieldListItems = e.shape(e.sys_core.SysDataObjFieldListItems, (fli) => ({
+const shapeLinkItemsSource = e.shape(e.sys_core.SysDataObjFieldListItems, (fli) => ({
+	_props: e.select(fli.props, (prop) => ({
+		expr: true,
+		header: true,
+		isDisplayId: true,
+		key: true,
+		orderSort: true,
+		order_by: prop.orderDefine
+	})),
 	_table: e.select(fli.table, (t) => ({
 		hasMgmt: true,
 		mod: true,
 		name: true
 	})),
+	displayIdSeparator: true,
 	exprFilter: true,
-	exprPropDisplay: true,
 	exprSort: true,
 	exprWith: true
 }))
@@ -107,17 +115,9 @@ export async function getDataObjById(token: TokenApiId) {
 			exprSave: l.linkExprSave,
 			exprSelect: l.linkExprSelect
 		})),
-		_linkItemsDefn: e.select(doc.fieldListItems, (fli) => ({
+		_linkItemsSource: e.select(doc.fieldListItems, (fli) => ({
 			_parmName: doc.fieldListItemsParmName,
-			_table: e.select(fli.table, (t) => ({
-				hasMgmt: true,
-				mod: true,
-				name: true
-			})),
-			exprFilter: true,
-			exprPropDisplay: true,
-			exprSort: true,
-			exprWith: true
+			...shapeLinkItemsSource(fli)
 		})),
 		_propName: e.op(doc.nameCustom, '??', doc.column.name),
 		exprCustom: true,

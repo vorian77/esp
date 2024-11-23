@@ -5,10 +5,12 @@ import {
 	booleanRequired,
 	DataObjCardinality,
 	DataObjEmbedType,
+	DataObjSort,
 	DataObjTable,
 	DataObjType,
 	debug,
 	getArray,
+	getRecordValue,
 	memberOfEnum,
 	memberOfEnumIfExists,
 	memberOfEnumOrDefault,
@@ -22,7 +24,7 @@ import {
 	DBTable,
 	valueOrDefault
 } from '$utils/types'
-
+import { isNumber } from 'lodash-es'
 import { StatePacketAction } from '$comps/app/types.appState'
 import {
 	DataObj,
@@ -38,7 +40,8 @@ import {
 	DataObjActionFieldTriggerEnable
 } from '$comps/dataObj/types.dataObjActionField'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
-import { FieldColor, FieldItem } from '$comps/form/field'
+import { FieldColor, FieldColumnItem } from '$comps/form/field'
+import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
@@ -261,13 +264,13 @@ export class RawDataObjParent {
 }
 
 export class RawDataObjProp {
+	_linkItemsSource?: PropLinkItemsSource
 	codeSortDir?: PropSortDir
 	exprCustom?: string
 	exprPreset?: string
 	hasItems: boolean
 	indexTable: number
 	link?: PropLink
-	linkItemsDefn?: PropLinkItemsSource
 	propName: string
 	propNamePrefixType?: PropNamePrefixType
 	propNamePrefixTypeId: string = ''
@@ -275,6 +278,7 @@ export class RawDataObjProp {
 	constructor(obj: any, tables: DataObjTable[]) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjProp'
+		this._linkItemsSource = obj._linkItemsSource
 		this.codeSortDir = memberOfEnumOrDefault(
 			obj._codeSortDir,
 			clazz,
@@ -288,7 +292,6 @@ export class RawDataObjProp {
 		this.hasItems = booleanOrDefault(obj._hasItems, false)
 		this.indexTable = nbrOrDefault(obj.indexTable, -1)
 		this.link = classOptional(PropLink, obj._link)
-		this.linkItemsDefn = classOptional(PropLinkItemsSource, obj._linkItemsDefn)
 		this.propNameRaw = strRequired(obj._propName, clazz, 'propName')
 
 		/* derived properties */
@@ -299,7 +302,7 @@ export class RawDataObjProp {
 			this.propNamePrefixType = PropNamePrefixType.exprCustom
 		} else if (this.link) {
 			this.propNamePrefixType = PropNamePrefixType.link
-		} else if (this.linkItemsDefn) {
+		} else if (this._linkItemsSource) {
 			this.propNamePrefixType = PropNamePrefixType.linkItems
 		}
 		this.propName = this.getPropNameDB()
@@ -405,7 +408,6 @@ export class RawDataObjPropDBFieldEmbed {
 export class RawDataObjPropDisplay extends RawDataObjProp {
 	colDB: RawDBColumn
 	customCol?: RawDataObjPropDisplayCustom
-	dataObjSelectId?: string
 	fieldColor: FieldColor
 	fieldEmbedListConfig?: RawDataObjPropDisplayEmbedListConfig
 	fieldEmbedListEdit?: RawDataObjPropDisplayEmbedListEdit
@@ -417,7 +419,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 	isDisplayable: boolean
 	isDisplayBlock: boolean
 	isParmValue: boolean
-	items: FieldItem[]
+	items: FieldColumnItem[]
 	label: string
 	labelSide: string
 	linkExprSave?: string
@@ -433,7 +435,6 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		obj = valueOrDefault(obj, {})
 		this.colDB = new RawDBColumn(obj._column)
 		this.customCol = classOptional(RawDataObjPropDisplayCustom, obj._customCol)
-		this.dataObjSelectId = obj._dataObjSelectId
 		this.fieldColor = new FieldColor(obj._codeColor, 'black')
 		this.fieldEmbedListConfig = classOptional(
 			RawDataObjPropDisplayEmbedListConfig,
@@ -456,7 +457,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		this.isDisplayable = booleanOrDefault(obj.isDisplayable, false)
 		this.isDisplayBlock = booleanOrDefault(obj.isDisplayBlock, true)
 		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
-		this.items = arrayOfClasses(FieldItem, obj._items)
+		this.items = arrayOfClasses(FieldColumnItem, obj._items)
 		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
 		this.rawFieldAccess = strOptional(obj._codeAccess, clazz, 'rawFieldAccess')
@@ -674,21 +675,123 @@ export class PropLink {
 }
 
 export class PropLinkItemsSource {
+	displayIdSeparator: string
 	exprFilter: string
-	exprPropDisplay: string
 	exprSort: string
 	exprWith?: string
-	parms: DataRecord
+	parmName?: string
+	props: PropLinkItemsSourceProp[] = []
+	rawItems: DataRecord[] = []
 	table?: DBTable
 	constructor(obj: any) {
 		const clazz = 'PropLinkItemsSource'
 		obj = valueOrDefault(obj, {})
+		this.displayIdSeparator = valueOrDefault(obj.displayIdSeparator, ' ')
 		this.exprFilter = valueOrDefault(obj.exprFilter, '')
-		this.exprPropDisplay = strRequired(obj.exprPropDisplay, clazz, 'expProprDisplay')
 		this.exprSort = valueOrDefault(obj.exprSort, '')
 		this.exprWith = valueOrDefault(obj.exprWith, '')
+		this.parmName = obj._parmName
+		this.props = arrayOfClasses(PropLinkItemsSourceProp, obj._props)
 		this.table = classOptional(DBTable, obj._table)
-		this.parms = obj._parmName ? { itemsParmName: obj._parmName } : {}
+	}
+	formatDataFieldColumnItem(idsCurrent: string | string[]) {
+		const ids = getArray(idsCurrent)
+		let fieldItems: FieldColumnItem[] = []
+		this.rawItems.forEach((item) => {
+			const fi = new FieldColumnItem(
+				item.data,
+				this.getDisplayValueItem(item),
+				ids.includes(item.data)
+			)
+			fieldItems.push(fi)
+		})
+		return fieldItems
+	}
+
+	getDisplayValueItem(record: DataRecord) {
+		let value = ''
+		this.props.forEach((prop) => {
+			if (prop.isDisplayId) {
+				if (value) value += this.displayIdSeparator
+				value += getRecordValue(record, prop.key)
+			}
+		})
+		return value
+	}
+
+	getDisplayValueList(idsCurrent: string | string[]) {
+		const ids = getArray(idsCurrent)
+		let values = ''
+		this.rawItems.forEach((item) => {
+			if (ids.includes(item.data)) {
+				if (values) values += ', '
+				values += this.getDisplayValueItem(item)
+			}
+		})
+		return values
+	}
+
+	getGridParms() {
+		// columnDefs
+		let columnDefs: ColumnsDefsSelect = [
+			{
+				field: 'data',
+				headerName: 'ID',
+				hide: true
+			}
+		]
+		this.props.forEach((prop) => {
+			columnDefs.push({
+				field: prop.key,
+				flex: 1,
+				headerName: prop.header
+			})
+		})
+
+		// rowData
+		let rowData: DataRecord[] = []
+		this.rawItems.forEach((item) => {
+			let row: DataRecord = { data: item.data }
+			this.props.forEach((prop) => {
+				row[prop.key] = getRecordValue(item, prop.key)
+			})
+			rowData.push(row)
+		})
+
+		// rawSortObj
+		let sortModel = new DataObjSort()
+		this.getSortProps().forEach((prop, i) => {
+			sortModel.addItem(prop.key, 'asc', i)
+		})
+
+		return { columnDefs, rowData, sortModel }
+	}
+
+	getSortProps() {
+		return this.props
+			.filter((prop) => isNumber(prop.orderSort))
+			.sort((a, b) => a.orderSort! - b.orderSort!)
+	}
+
+	setRawItems(rawItems: DataRecord[]) {
+		this.rawItems = rawItems
+	}
+}
+
+export class PropLinkItemsSourceProp {
+	expr: string
+	header: string
+	isDisplayId: boolean
+	key: string
+	orderSort?: number
+	constructor(obj: any) {
+		const clazz = 'PropLinkItemsSourceProp'
+		obj = valueOrDefault(obj, {})
+		this.expr = strRequired(obj.expr, clazz, 'expr')
+		this.header = strRequired(obj.header, clazz, 'header')
+		this.isDisplayId = booleanRequired(obj.isDisplayId, clazz, 'isDisplayId')
+		this.key = strRequired(obj.key, clazz, 'key')
+		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
 	}
 }
 

@@ -230,50 +230,14 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 }
 
 function initFieldListSelectCohorts(init: InitDb) {
-	init.addTrans('sysDataObjSelect', {
-		actionFieldGroup: 'doag_embed_list_select',
-		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		codeDataObjType: 'embed',
-		exprFilter: `.owner.id IN <user,uuid,systemIdList>)`,
-		header: 'Select Cohort(s)',
-		name: 'dos_cm_cohort',
-		owner: 'sys_ai_old',
-		tables: [
-			{ index: 0, table: 'CmCohort' },
-			{ columnParent: 'course', indexParent: 0, index: 1, table: 'CmCourse' }
-		],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'course',
-				indexTable: 1,
-				isDisplayable: true,
-				linkColumns: ['name'],
-				linkTable: 'CmCourse',
-				orderCrumb: 20,
-				orderDefine: 20,
-				orderDisplay: 20,
-				orderSort: 20
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'name',
-				headerAlt: 'Cohort',
-				indexTable: 0,
-				isDisplayable: true,
-				orderCrumb: 30,
-				orderDisplay: 30,
-				orderDefine: 30,
-				orderSort: 30
-			}
-		]
+	// todo...
+	init.addTrans('sysDataObjFieldListItems', {
+		props: [[0, 'name', 'Name', '.name', true, 0]],
+		exprFilter: '.codeType.name = <parms,str,itemsParmName>',
+		exprSort: '.order',
+		name: 'il_rep_cm_cohort',
+		owner: 'sys_system_old',
+		table: 'SysCode'
 	})
 }
 
@@ -296,18 +260,17 @@ const getParms = (parms: string[], dateDataType: string = '') => {
 			isMultiSelect: false,
 			name: 'pvDateEnd',
 			orderDefine: 1
-		},
-		{
-			codeDataType: 'uuidList',
-			codeFieldElement: 'chips',
-			dataObjSelect: 'dos_cm_cohort',
-			description: 'Course cohort(s)',
-			header: 'Cohort(s)',
-			isMultiSelect: true,
-			linkTable: 'CmCohort',
-			name: 'pvCohorts',
-			orderDefine: 3
 		}
+		// {
+		// 	codeDataType: 'uuidList',
+		// 	codeFieldElement: 'chips',
+		// 	description: 'Course cohort(s)',
+		// 	header: 'Cohort(s)',
+		// 	isMultiSelect: true,
+		// 	linkTable: 'CmCohort',
+		// 	name: 'pvCohorts',
+		// 	orderDefine: 3
+		// }
 	]
 	// return []
 	return parmsList.filter((p) => {
@@ -847,7 +810,8 @@ function initContentAIRepStudentJobPlacementDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: `.csf IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf AND .dateStart >= <parms,date,pvDateStart> AND .dateStart <= <parms,date,pvDateEnd>`,
+		exprFilter: `.csf IN (SELECT app_cm::CmCsfCohort).csf AND .dateStart >= <parms,date,pvDateStart> AND .dateStart <= <parms,date,pvDateEnd>`,
+		// exprFilter: `.csf IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf AND .dateStart >= <parms,date,pvDateStart> AND .dateStart <= <parms,date,pvDateEnd>`,
 		header: 'Student - Job Placements - Detail',
 		name: 'report_ai_student_job_placement_detail',
 		owner: 'sys_ai_old',
@@ -1004,7 +968,8 @@ function initContentAIRepStudentSchoolPlacementDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: `.csf IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf AND .date >= <parms,date,pvDateStart> AND .date <= <parms,date,pvDateEnd>`,
+		exprFilter: `.csf IN (SELECT app_cm::CmCsfCohort).csf AND .date >= <parms,date,pvDateStart> AND .date <= <parms,date,pvDateEnd>`,
+		// exprFilter: `.csf IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf AND .date >= <parms,date,pvDateStart> AND .date <= <parms,date,pvDateEnd>`,
 		header: 'Student - School Placements - Detail',
 		name: 'report_ai_student_school_placement_detail',
 		owner: 'sys_ai_old',
@@ -1091,7 +1056,7 @@ function initContentAIRepStudentSchoolPlacementDetail(init: InitDb) {
 				}
 			]
 		],
-		parms: getParms(['pvDateStart', 'pvDateEnd', 'pvCohorts'], 'School Placement: Date')
+		parms: getParms(['pvDateStart', 'pvDateEnd'], 'School Placement: Date')
 	})
 }
 

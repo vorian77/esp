@@ -30,6 +30,7 @@ export function initPreTable(init: InitDb) {
 		['sys_system_old', 'sys_core', 'SysDataObjFieldEmbedListEdit', true],
 		['sys_system_old', 'sys_core', 'SysDataObjFieldEmbedListSelect', true],
 		['sys_system_old', 'sys_core', 'SysDataObjFieldListItems', true],
+		['sys_system_old', 'sys_core', 'SysDataObjFieldListItemsProp', false],
 		['sys_system_old', 'sys_core', 'SysDataObjFieldLink', true],
 		['sys_system_old', 'sys_core', 'SysDataObjFieldLinkJoin', true],
 		['sys_system_old', 'sys_core', 'SysDataObjTable', true],

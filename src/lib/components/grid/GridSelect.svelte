@@ -15,32 +15,24 @@
 
 	let gridApi: GridApi
 	let gridOptions: GridManagerOptions
-
-	const fieldId = state.parmsState.valueGet(ParmsValuesType.listItemsFieldId)
-	const fieldDisplayName = state.parmsState.valueGet(ParmsValuesType.listItemsFieldDisplay)
-	const fieldDisplayHeader = state.parmsState.valueGet(ParmsValuesType.listLabel)
-
-	const columnDefs = [
-		{ field: fieldId, headerName: 'Data', hide: true },
-		{ field: fieldDisplayName, headerName: fieldDisplayHeader, flex: 1 }
-	]
-
-	const sortObj = new DataObjSort()
-	sortObj.addItem('display', PropSortDir.asc, 0)
+	let idColumn = state.parmsState.valueGet(ParmsValuesType.gridColumnId)
 
 	gridOptions = new GridManagerOptions({
-		columnDefs,
-		idColumn: fieldId,
+		columnDefs: state.parmsState.valueGet(ParmsValuesType.columnDefs),
+		idColumn,
 		isSelect: true,
 		isSelectMulti: state.parmsState.valueGet(ParmsValuesType.isMultiSelect),
 		onSelectionChanged,
-		parmPrefSortModel: sortObj,
 		parmStateSelectedIds: state.parmsState.valueGet(ParmsValuesType.listIdsSelected),
-		rowData: state.parmsState.valueGet(ParmsValuesType.rowData)
+		rowData: state.parmsState.valueGet(ParmsValuesType.rowData),
+		sortModel: state.parmsState.valueGet(ParmsValuesType.listSortModel)
 	})
 
 	function onSelectionChanged(event: SelectionChangedEvent) {
-		state.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api))
+		state.parmsState.valueSet(
+			ParmsValuesType.listIdsSelected,
+			getSelectedNodeIds(event.api, idColumn)
+		)
 	}
 </script>
 

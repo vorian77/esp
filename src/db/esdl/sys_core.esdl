@@ -325,12 +325,25 @@ module sys_core {
   type SysDataObjFieldListItems extending sys_core::SysObj {
     codeDataTypeDisplay: sys_core::SysCode;
     codeMask: sys_core::SysCode;
+    displayIdSeparator: str;
     exprFilter: str;
-    exprPropDisplay: str;
     exprSort: str;
     exprWith: str;
+    multi props: sys_core::SysDataObjFieldListItemsProp {
+      on source delete delete target;
+      on target delete allow;
+    };
     table: sys_db::SysTable;
     constraint exclusive on (.name);
+  }
+
+  type SysDataObjFieldListItemsProp  {
+    required expr: str;
+    required header: str;
+    required isDisplayId: bool;
+    required key: str;
+    required orderDefine: default::nonNegative;
+    orderSort: default::nonNegative;
   }
  
   type SysDataObjTable extending sys_user::Mgmt {

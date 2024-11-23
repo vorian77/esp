@@ -39,7 +39,6 @@ export class FieldParm extends Field {
 				isNonData: false,
 				placeHolder: ''
 			},
-			_dataObjSelectId: getRecordValue(record, 'dataObjSelect'),
 			_hasItems: getRecordValue(record, '_hasItems'),
 			_propName: getRecordValue(record, 'name'),
 			isDisplayable: true,

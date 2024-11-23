@@ -148,6 +148,7 @@ function initStudent(init: InitDb) {
 				indexTable: 1
 			},
 			{
+				codeAccess: 'optional',
 				columnName: 'agencyId',
 				isDisplayable: true,
 				orderDisplay: 55,

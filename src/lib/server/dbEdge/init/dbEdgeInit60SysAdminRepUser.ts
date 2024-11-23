@@ -98,14 +98,6 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				linkColumns: ['name']
 			},
 			{
-				columnName: 'dataObjSelect',
-				indexTable: 1,
-				isDisplayable: false,
-				isExcludeInsert: true,
-				isExcludeUpdate: true,
-				orderDefine: 90
-			},
-			{
 				columnName: 'isMultiSelect',
 				indexTable: 1,
 				isDisplayable: false,

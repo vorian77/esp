@@ -12,6 +12,10 @@
 	$: dataObj = fp.dataObj
 	$: field = fp.field as FieldCheckbox
 	$: fieldValue = fp.fieldValue
+	$: dataItems = field.linkItemsSource
+		? field.linkItemsSource.formatDataFieldColumnItem(fieldValue)
+		: []
+
 	$: classFieldSet =
 		dataObj.raw.codeCardinality === DataObjCardinality.list
 			? 'fieldsetList'
@@ -19,33 +23,26 @@
 				? 'fieldsetDetailRequired'
 				: 'fieldsetDetailOptional'
 
-	$: if (field.colDO.colDB.isMultiSelect) {
-		const vals = getArray(fieldValue)
-		field.colDO.items.forEach((i) => (i.selected = vals.includes(i.data)))
-	} else {
-		field.colDO.items.forEach((i) => (i.selected = i.data === fieldValue))
-	}
-
 	function onInput(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
 		const value = target.value
 
 		if (field.colDO.colDB.isMultiSelect) {
-			const idx = field.colDO.items.findIndex((i) => i.data === value)
+			const idx = dataItems.findIndex((i) => i.data === value)
 			if (idx >= 0) {
 				let newValues: string[] = []
-				field.colDO.items[idx].selected = !field.colDO.items[idx].selected
-				field.colDO.items.forEach((i) => {
+				dataItems[idx].selected = !dataItems[idx].selected
+				dataItems.forEach((i) => {
 					if (i.selected) newValues.push(i.data)
 				})
 				fp.fSetVal(fp.row, fp.field, newValues)
 			}
 		} else {
-			const idx = field.colDO.items.findIndex((i) => i.data === value)
+			const idx = dataItems.findIndex((i) => i.data === value)
 			if (idx >= 0) {
-				field.colDO.items[idx].selected = !field.colDO.items[idx].selected
-				const newVal = field.colDO.items[idx].selected ? value : null
-				fp.fSetVal(fp.row, fp.field, newValue)
+				dataItems[idx].selected = !dataItems[idx].selected
+				const newVal = dataItems[idx].selected ? value : null
+				fp.fSetVal(fp.row, fp.field, newVal)
 			}
 		}
 	}
@@ -54,20 +51,20 @@
 <FormLabel {fp} />
 
 <fieldset class={classFieldSet}>
-	{#if field.colDO.items}
-		{#each field.colDO.items as { data: id, display: label, selected }, i (id)}
-			{@const itemName = field.colDO.propName + '.' + id}
+	{#if dataItems}
+		{#each dataItems as { data, display, selected }, i (data)}
+			{@const itemName = field.colDO.propName + '.' + data}
 			<div class="mt-2 flex items-center space-x-2">
 				<input
 					type="checkbox"
 					id={field.colDO.propName}
 					name={itemName}
 					class="rounded-sm{i === 0 ? 'mt-2' : ''}"
-					value={id}
+					value={data}
 					bind:checked={selected}
 					on:input={onInput}
 				/>
-				<p class="text-sm">{label}</p>
+				<p class="text-sm">{display}</p>
 			</div>
 		{/each}
 	{/if}

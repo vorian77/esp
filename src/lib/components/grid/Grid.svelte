@@ -158,7 +158,9 @@
 			suppressSetFilterByDefault: true
 		}
 		// <todo> 241115 - bug - createGrid makes options.userSettings.listSortModel undefined
-		const rawSort = options.userSettings.getPref(ParmsUserDataType.listSortModel)
+		const rawSort =
+			options.userSettings.getPref(ParmsUserDataType.listSortModel) || options.sortModel
+
 		api = createGrid(eGui, gridOptions)
 
 		if (options.isSelect) {
@@ -167,7 +169,7 @@
 				const selected: IRowNode[] = []
 				const deselected: IRowNode[] = []
 				api.forEachNode((node) => {
-					if (selectedIds.includes(node.data!.id)) {
+					if (selectedIds.includes(node.data![options.idColumn])) {
 						selected.push(node)
 					} else {
 						deselected.push(node)

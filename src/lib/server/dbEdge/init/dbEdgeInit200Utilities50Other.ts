@@ -1,10 +1,5 @@
 import e from '$db/dbschema/edgeql-js'
-import {
-	booleanOrDefaultParm,
-	client,
-	sectionHeader,
-	valueOrDefaultParm
-} from '$routes/api/dbEdge/dbEdge'
+import { client, sectionHeader, valueOrDefaultParm } from '$routes/api/dbEdge/dbEdge'
 import { debug } from '$utils/types'
 
 export async function addApp(data: any) {
@@ -211,7 +206,6 @@ export async function addMigration(data: any) {
 
 export async function addNode(data: any) {
 	sectionHeader(`addNode - ${data.name}`)
-	console.log(JSON.stringify(data))
 
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
@@ -240,8 +234,8 @@ export async function addNode(data: any) {
 				createdBy: CREATOR,
 				dataObj: e.sys_core.getDataObj(p.dataObj),
 				header: p.header,
-				isAlwaysRetrieveData: booleanOrDefaultParm(p.isAlwaysRetrieveData, false),
-				isHideRowManager: booleanOrDefaultParm(p.isHideRowManager, false),
+				isAlwaysRetrieveData: valueOrDefaultParm(p.isAlwaysRetrieveData, false),
+				isHideRowManager: valueOrDefaultParm(p.isHideRowManager, false),
 				modifiedBy: CREATOR,
 				name: p.name,
 				orderDefine: p.orderDefine,
@@ -278,7 +272,7 @@ export async function addNodeFooter(data: any) {
 				createdBy: CREATOR,
 				dataObj: e.select(e.sys_core.getDataObj(p.dataObj)),
 				header: p.header,
-				isAlwaysRetrieveData: booleanOrDefaultParm(p.isAlwaysRetrieveData, false),
+				isAlwaysRetrieveData: valueOrDefaultParm(p.isAlwaysRetrieveData, false),
 				isGlobalResource: p.isGlobalResource,
 				isHideRowManager: e.cast(e.bool, false),
 				modifiedBy: CREATOR,
@@ -366,7 +360,7 @@ export async function addTask(data: any) {
 				codeTaskType: e.select(e.sys_core.getCode('ct_sys_task_type', p.codeTaskType)),
 				createdBy: CREATOR,
 				header: p.header,
-				isAlwaysPinToDash: booleanOrDefaultParm(p.isAlwaysPinToDash, false),
+				isAlwaysPinToDash: valueOrDefaultParm(p.isAlwaysPinToDash, false),
 				isGlobalResource: p.isGlobalResource,
 				modifiedBy: CREATOR,
 				name: p.name,
@@ -399,7 +393,7 @@ export async function addUser(data: any) {
 				.insert(e.sys_user.SysUser, {
 					createdBy: CREATOR,
 					defaultOrg: e.select(e.sys_core.getOrg(p.defaultOrg)),
-					isMobileOnly: booleanOrDefaultParm(p.isMobileOnly, false),
+					isMobileOnly: valueOrDefaultParm(p.isMobileOnly, false),
 					modifiedBy: CREATOR,
 					orgs: e.assert_distinct(
 						e.set(
@@ -434,7 +428,7 @@ export async function addUser(data: any) {
 					else: e.update(user, () => ({
 						set: {
 							defaultOrg: e.select(e.sys_core.getOrg(p.defaultOrg)),
-							isMobileOnly: booleanOrDefaultParm(p.isMobileOnly, false),
+							isMobileOnly: valueOrDefaultParm(p.isMobileOnly, false),
 							orgs: e.assert_distinct(
 								e.set(
 									e.for(e.array_unpack(p.orgs || e.cast(e.array(e.str), e.set())), (org) => {

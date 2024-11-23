@@ -422,18 +422,6 @@ function initAnalyticParm(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'dataObjSelect',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_order_name_by_dataObjtype',
-				fieldListItemsParmName: 'select',
-				linkTable: 'SysDataObj'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
 				columnName: 'linkTable',
 				isDisplayable: true,
 				orderDisplay: 130,
@@ -1651,18 +1639,6 @@ function initRepParm(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'dataObjSelect',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_order_name_by_dataObjtype',
-				fieldListItemsParmName: 'select',
-				linkTable: 'SysDataObj'
 			},
 			{
 				codeAccess: 'optional',

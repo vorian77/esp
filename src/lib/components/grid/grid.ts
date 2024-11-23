@@ -13,7 +13,7 @@ import {
 	type ValueSetterParams
 } from 'ag-grid-community'
 import { LicenseManager } from 'ag-grid-charts-enterprise'
-import { Field, FieldAccess, FieldItem } from '$comps/form/field'
+import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field'
 import {
 	arrayOfClasses,
 	booleanOrFalse,
@@ -36,6 +36,13 @@ LicenseManager.setLicenseKey(
 )
 
 const FILENAME = '$comps/other/grid.ts'
+
+export type ColumnsDefsSelect = {
+	field: string
+	flex?: number
+	headerName: string
+	hide?: boolean
+}[]
 
 export const columnTypes = {
 	// cellStyle: { 'background-color': 'orange' }
@@ -62,7 +69,7 @@ export const columnTypes = {
 			const items = params.colDef.context.items
 			const currentValue = params.data[fieldName]
 			currentValue.forEach((id: string) => {
-				const item = items.find((i: FieldItem) => i.data === id)
+				const item = items.find((i: FieldColumnItem) => i.data === id)
 				if (item) display += display ? ',' + item.display : item.display
 			})
 			return display
@@ -78,7 +85,7 @@ export const columnTypes = {
 			)
 			const items = params.colDef.context.items
 			const currentValue = params.data[fieldName]
-			const item = items.find((i: FieldItem) => i.data === currentValue)
+			const item = items.find((i: FieldColumnItem) => i.data === currentValue)
 			return item ? item.display : ''
 		},
 		valueSetter: (params: ValueSetterParams) => {
@@ -107,10 +114,10 @@ export const getFilteredNodeIds = (gridApi: GridApi) => {
 	return selectedNodes
 }
 
-export const getSelectedNodeIds = (gridApi: GridApi) => {
+export const getSelectedNodeIds = (gridApi: GridApi, idKey: string) => {
 	let selectedNodes: string[] = []
 	gridApi.forEachNode((node) => {
-		if (node.isSelected()) selectedNodes.push(node.data.id)
+		if (node.isSelected()) selectedNodes.push(node.data[idKey])
 	})
 	return selectedNodes
 }
@@ -215,7 +222,7 @@ export class GridSettings {
 		this.data[ParmsUserDataType.listColumnsModel] = new GridSettingsColumns()
 		this.data[ParmsUserDataType.listFilterModel] = {}
 		this.data[ParmsUserDataType.listFilterQuick] = ''
-		this.data[ParmsUserDataType.listSortModel] = new DataObjSort()
+		this.data[ParmsUserDataType.listSortModel] = undefined
 	}
 	getPref(type: ParmsUserDataType) {
 		return this.data[type]
@@ -249,11 +256,12 @@ export class GridSettings {
 			return rawPref ? rawPref : ''
 		}
 		function initPrefsSortModel(rawPref: any) {
-			let sortObj = new DataObjSort()
-
 			if (dataObj.raw.listReorderColumn) return initSort()
-			if (rawPref || rawPref?.sortItems.length > 0) return sortObj.load(rawPref.sortItems)
-			return initSort()
+			if (rawPref || rawPref?.sortItems.length > 0) {
+				let sortObj = new DataObjSort()
+				return sortObj.load(rawPref.sortItems)
+			}
+			return undefined
 
 			function initSort() {
 				let sortFields = dataObj.fields.filter(
@@ -317,6 +325,7 @@ export class GridManagerOptions {
 	onSelectionChanged?: Function
 	parmStateSelectedIds: []
 	rowData: any[]
+	sortModel: DataObjSort
 	userSettings: GridSettings
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
@@ -335,6 +344,7 @@ export class GridManagerOptions {
 		this.onSelectionChanged = obj.onSelectionChanged
 		this.parmStateSelectedIds = obj.parmStateSelectedIds || []
 		this.rowData = required(obj.rowData, clazz, 'rowData')
+		this.sortModel = valueOrDefault(obj.sortModel, new DataObjSort())
 		this.userSettings = valueOrDefault(obj.userSettings, new GridSettings(''))
 	}
 }

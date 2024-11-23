@@ -322,7 +322,6 @@ export namespace sys_core {
     "fieldEmbedListConfig"?: SysDataObjFieldEmbedListConfig | null;
     "fieldEmbedListEdit"?: SysDataObjFieldEmbedListEdit | null;
     "fieldEmbedListSelect"?: SysDataObjFieldEmbedListSelect | null;
-    "fieldListItems"?: SysDataObjFieldListItems | null;
     "items": SysDataObjColumnItem[];
     "linkColumns": SysDataObjColumnLink[];
     "linkTable"?: sys_db.SysTable | null;
@@ -358,6 +357,7 @@ export namespace sys_core {
     "orderDisplay"?: number | null;
     "orderSort"?: number | null;
     "width"?: number | null;
+    "fieldListItems"?: SysDataObjFieldListItems | null;
   }
   export interface SysDataObjColumnItem extends sys_user.Mgmt {
     "data": string;
@@ -384,11 +384,20 @@ export namespace sys_core {
   export interface SysDataObjFieldListItems extends SysObj {
     "codeDataTypeDisplay"?: SysCode | null;
     "codeMask"?: SysCode | null;
+    "table"?: sys_db.SysTable | null;
     "exprFilter"?: string | null;
-    "exprPropDisplay"?: string | null;
     "exprSort"?: string | null;
     "exprWith"?: string | null;
-    "table"?: sys_db.SysTable | null;
+    "props": SysDataObjFieldListItemsProp[];
+    "displayIdSeparator"?: string | null;
+  }
+  export interface SysDataObjFieldListItemsProp extends std.$Object {
+    "expr": string;
+    "header": string;
+    "orderDefine": number;
+    "key": string;
+    "isDisplayId": boolean;
+    "orderSort"?: number | null;
   }
   export interface SysDataObjTable extends sys_user.Mgmt {
     "columnParent"?: sys_db.SysColumn | null;
@@ -885,7 +894,6 @@ export namespace sys_rep {
     "isMultiSelect": boolean;
     "name": string;
     "orderDefine": number;
-    "dataObjSelect"?: sys_core.SysDataObj | null;
   }
   export interface SysRepUser extends sys_user.Mgmt {
     "report": SysRep;
@@ -977,6 +985,7 @@ export interface types {
     "SysDataObjFieldEmbedListEdit": sys_core.SysDataObjFieldEmbedListEdit;
     "SysDataObjFieldEmbedListSelect": sys_core.SysDataObjFieldEmbedListSelect;
     "SysDataObjFieldListItems": sys_core.SysDataObjFieldListItems;
+    "SysDataObjFieldListItemsProp": sys_core.SysDataObjFieldListItemsProp;
     "SysDataObjTable": sys_core.SysDataObjTable;
     "SysDataObjWith": sys_core.SysDataObjWith;
     "SysNodeObj": sys_core.SysNodeObj;

@@ -12,6 +12,9 @@
 	$: field = fp.field as FieldSelect
 	$: fieldId = 'field-input-select-' + field.colDO.orderDefine
 	$: fieldValue = fp.fieldValue
+	$: dataItems = field.linkItemsSource
+		? field.linkItemsSource.formatDataFieldColumnItem(fieldValue)
+		: []
 
 	$: classProps =
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
@@ -35,10 +38,10 @@
 		on:change={onChange}
 	>
 		<option value={null} class="">Select an option...</option>
-		{#if field.colDO.items}
-			{#each field.colDO.items as { data: id, display: label }, index (id)}
-				<option value={id} selected={id === fieldValue}>
-					{label}
+		{#if dataItems}
+			{#each dataItems as { data, display }, index (data)}
+				<option value={data} selected={data === fieldValue}>
+					{display}
 				</option>
 			{/each}
 		{/if}

@@ -94,7 +94,6 @@ export type $SysPersonλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73
   "<contacts[is sys_core::SysNodeObj]": $.LinkDesc<_sys_core.$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_user::SysWidget]": $.LinkDesc<_sys_user.$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_core::SysObjSubject]": $.LinkDesc<_sys_core.$SysObjSubject, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<contacts[is sys_core::SysDataObjFieldListItems]": $.LinkDesc<_sys_core.$SysDataObjFieldListItems, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_core::SysDataObj]": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_db::SysTable]": $.LinkDesc<_sys_db.$SysTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_core::SysDataObjActionField]": $.LinkDesc<_sys_core.$SysDataObjActionField, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -114,6 +113,7 @@ export type $SysPersonλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73
   "<person[is sys_user::SysUser]": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is sys_user::currentUser]": $.LinkDesc<_sys_user.$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<contacts[is sys_core::SysDataObjFieldListItems]": $.LinkDesc<_sys_core.$SysDataObjFieldListItems, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

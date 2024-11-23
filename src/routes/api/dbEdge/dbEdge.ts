@@ -11,10 +11,6 @@ export const client = createClient({
 	secretKey: EDGEDB_SECRET_KEY
 })
 
-export function booleanOrDefaultParm(val: any, valDefault: boolean) {
-	return e.op(val, 'if', e.op('exists', val), 'else', valDefault)
-}
-
 export function booleanOrDefaultJSON(jsonObj: any, val: string, valDefault: boolean) {
 	return e.cast(e.bool, e.op(e.cast(e.bool, e.json_get(jsonObj, val)), '??', valDefault))
 }

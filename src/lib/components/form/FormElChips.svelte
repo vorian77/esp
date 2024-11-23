@@ -1,69 +1,103 @@
 <script lang="ts">
-	import { DataObj, DataObjCardinality } from '$utils/types'
-	import { FieldElement, FieldItem, FieldProps } from '$comps/form/field'
+	import {
+		DataObj,
+		DataObjCardinality,
+		type DataRecord,
+		ParmsValues,
+		ParmsValuesType
+	} from '$utils/types'
+	import {
+		State,
+		StatePacket,
+		StatePacketAction,
+		StateSurfaceEmbedShell,
+		StateSurfaceModalEmbed
+	} from '$comps/app/types.appState'
+	import {
+		TokenApiUserPref,
+		TokenAppDo,
+		TokenAppDoActionConfirmType,
+		TokenAppModalSelect,
+		TokenAppModalReturnType
+	} from '$utils/types.token'
+	import { FieldElement, FieldProps } from '$comps/form/field'
 	import { FieldSelectMulti } from '$comps/form/fieldSelect'
 	import { FieldAccess } from '$comps/form/field'
-	import MultiSelect from 'svelte-multiselect'
 	import FormLabel from '$comps/form/FormLabel.svelte'
-	import type { Option, ObjectOption } from 'svelte-multiselect'
+	import Icon from '$comps/icon/Icon.svelte'
+	import { IconProps } from '$comps/icon/types.icon'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	export let fp: FieldProps
 
-	let classPropsLabel = ''
-	let fieldValue: string[] = []
-	let maxSelect: 1 | null = null
-	let options: ObjectOption[] = []
-	let selected: Option[] = []
+	let columnDefs: DataRecord
+	let displayValue: string
+	let field: FieldCheckbox
+	let rowData: DataRecord[]
+	let sortModel: DataObjSort[]
 
-	$: loadData(fp.dataObjData)
+	$: dataObj = fp.dataObj
 
-	function loadData(data: DataObjData) {
-		classPropsLabel = fp.dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
-		maxSelect = fp.field.colDO.colDB.isMultiSelect ? null : 1
-		fieldValue = fp.fieldValue && Array.isArray(fp.fieldValue) ? fp.fieldValue : []
-		options = fp.field.colDO.items.map((item) => {
-			return {
-				label: item.display,
-				preselected:
-					fieldValue && Array.isArray(fieldValue) ? fieldValue.includes(item.data) : false,
-				value: item.data
-			}
+	$: {
+		field = fp.field as FieldCheckbox
+		field.setIconProps({
+			name: 'SquareMousePointer',
+			clazz: 'ml-1.5 mt-0.5',
+			color: '#3b79e1',
+			onClick: onChange,
+			size: 18,
+			strokeWidth: 2
 		})
-		selected = options.filter((i) => i.preselected)
+	}
+	$: fieldValue = fp.fieldValue
+	$: if (field.linkItemsSource) {
+		displayValue = field.linkItemsSource.getDisplayValueList(fieldValue)
+		const parms = field.linkItemsSource.getGridParms()
+		columnDefs = parms.columnDefs
+		rowData = parms.rowData
+		sortModel = parms.sortModel
 	}
 
 	function onChange(event: Event) {
-		if (event.detail) {
-			if (event.detail?.option) {
-				const id = event.detail.option.value
-				if (maxSelect === 1) {
-					fieldValue = [id]
-				} else {
-					switch (event.detail.type) {
-						case 'add':
-							fieldValue = [...fieldValue, id]
-							break
+		fp.state.update({
+			packet: new StatePacket({
+				action: StatePacketAction.modalSelectOpen,
+				confirmType: TokenAppDoActionConfirmType.none,
+				token: new TokenAppModalSelect({
+					columnDefs,
+					fModalClose,
+					gridColumnId: 'data',
+					isMultiSelect: field.colDO.colDB.isMultiSelect,
+					listIdsSelected: fieldValue,
+					rowData,
+					selectLabel: field.colDO.label,
+					sortModel
+				})
+			})
+		})
 
-						case 'remove':
-							fieldValue = fieldValue.filter((i) => i !== id)
-							if (fieldValue.length === 0) {
-								fieldValue = null
-							}
-							break
-					}
+		async function fModalClose(returnType: TokenAppModalReturnType, returnData?: ParmsValues) {
+			if (returnType === TokenAppModalReturnType.complete) {
+				if (returnData.data) {
+					const parms = new ParmsValues(returnData.data)
+					fp.fSetVal(fp.row, fp.field, parms.valueGet(ParmsValuesType.listIdsSelected))
 				}
-			} else {
-				fieldValue = null
 			}
-
-			fp.fSetVal(fp.row, fp.field, fieldValue)
 		}
 	}
 </script>
 
-{#if options.length > 0}
+{#if field}
 	<FormLabel {fp} />
-	<MultiSelect {selected} {options} id={fp.field.colDO.propName} {maxSelect} on:change={onChange} />
+	<textarea
+		class={'w-full text-sm rounded-lg'}
+		cols={field.cols}
+		id={field.colDO.propName}
+		name={field.colDO.propName}
+		on:click={onChange}
+		readonly={true}
+		rows={field.rows}
+		value={displayValue}
+	/>
 {/if}
 <!-- <DataViewer header="fieldValue" data={fieldValue} /> -->

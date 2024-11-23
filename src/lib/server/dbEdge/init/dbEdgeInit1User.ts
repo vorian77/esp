@@ -304,7 +304,7 @@ function initUsers(init: InitDb) {
 		orgs: ['org_moed'],
 		owner: 'org_moed',
 		systems: ['sys_moed_old'],
-		userName: 'bsonte',
+		userName: 'bstone',
 		userTypes: ['ut_moed_advocate']
 	})
 

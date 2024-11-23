@@ -2,8 +2,8 @@ import e from '$db/dbschema/edgeql-js'
 import {
 	client,
 	booleanOrDefaultJSON,
-	booleanOrDefaultParm,
-	sectionHeader
+	sectionHeader,
+	valueOrDefaultParm
 } from '$routes/api/dbEdge/dbEdge'
 
 export async function addDataObj(data: any) {
@@ -307,10 +307,10 @@ export async function addDataObj(data: any) {
 				exprObject: p.exprObject,
 				exprSort: p.exprSort,
 				header: p.header,
-				isDetailRetrievePreset: booleanOrDefaultParm(p.isDetailRetrievePreset, false),
-				isListEdit: booleanOrDefaultParm(p.isListEdit, false),
-				isListSuppressFilterSort: booleanOrDefaultParm(p.isListSuppressFilterSort, false),
-				isListSuppressSelect: booleanOrDefaultParm(p.isListSuppressSelect, false),
+				isDetailRetrievePreset: valueOrDefaultParm(p.isDetailRetrievePreset, false),
+				isListEdit: valueOrDefaultParm(p.isListEdit, false),
+				isListSuppressFilterSort: valueOrDefaultParm(p.isListSuppressFilterSort, false),
+				isListSuppressSelect: valueOrDefaultParm(p.isListSuppressSelect, false),
 				listEditPresetExpr: p.listEditPresetExpr,
 				listReorderColumn: e.select(e.sys_db.getColumn(p.listReorderColumn)),
 				modifiedBy: CREATOR,
@@ -513,7 +513,7 @@ export async function addDataObjActionField(data: any) {
 
 				createdBy: CREATOR,
 				header: p.header,
-				isListRowAction: booleanOrDefaultParm(p.isListRowAction, false),
+				isListRowAction: valueOrDefaultParm(p.isListRowAction, false),
 				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner)
@@ -530,11 +530,12 @@ export async function addDataObjFieldItems(data: any) {
 		{
 			codeDataTypeDisplay: e.optional(e.str),
 			codeMask: e.optional(e.str),
+			displayIdSeparator: e.optional(e.str),
 			exprFilter: e.optional(e.str),
 			exprSort: e.optional(e.str),
-			exprPropDisplay: e.optional(e.str),
 			exprWith: e.optional(e.str),
 			name: e.str,
+			props: e.array(e.json),
 			owner: e.str,
 			table: e.optional(e.str)
 		},
@@ -543,13 +544,23 @@ export async function addDataObjFieldItems(data: any) {
 				codeDataTypeDisplay: e.sys_core.getCode('ct_db_col_data_type', p.codeDataTypeDisplay),
 				codeMask: e.sys_core.getCode('ct_db_col_mask', p.codeMask),
 				createdBy: CREATOR,
+				displayIdSeparator: p.displayIdSeparator,
 				exprFilter: p.exprFilter,
 				exprSort: p.exprSort,
-				exprPropDisplay: p.exprPropDisplay,
 				exprWith: p.exprWith,
 				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
+				props: e.for(e.array_unpack(p.props), (p) => {
+					return e.insert(e.sys_core.SysDataObjFieldListItemsProp, {
+						orderDefine: e.cast(e.int16, p[0]),
+						key: e.cast(e.str, p[1]),
+						header: e.cast(e.str, p[2]),
+						expr: e.cast(e.str, p[3]),
+						isDisplayId: e.cast(e.bool, p[4]),
+						orderSort: e.cast(e.int16, p[5])
+					})
+				}),
 				table: e.select(e.sys_db.getTable(p.table))
 			})
 		}

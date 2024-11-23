@@ -25,7 +25,7 @@ import {
 	Field,
 	FieldAccess,
 	FieldColor,
-	FieldItem,
+	FieldColumnItem,
 	FieldElement,
 	PropsField,
 	PropsFieldRaw
@@ -437,7 +437,9 @@ export class DataObj {
 			const fieldKey = key.replace('_items_', '')
 			const fieldIndex = this.fields.findIndex((f) => f.colDO.propName === fieldKey)
 			if (fieldIndex > -1) {
-				this.fields[fieldIndex].colDO.items = value
+				if (this.fields[fieldIndex].linkItemsSource) {
+					this.fields[fieldIndex].linkItemsSource.setRawItems(value)
+				}
 			}
 		})
 
@@ -602,11 +604,11 @@ export class DataObjData {
 		if (rawDataObj) this.init(rawDataObj)
 	}
 
-	getItemDisplayValue(items: FieldItem[], ids: any) {
+	getItemDisplayValue(items: FieldColumnItem[], ids: any) {
 		let display = ''
 		if (!Array.isArray(ids)) ids = [ids]
 		ids.forEach((id: string) => {
-			const item = items.find((i: FieldItem) => i.data === id)
+			const item = items.find((i: FieldColumnItem) => i.data === id)
 			if (item) display += display ? ',' + item.display : item.display
 		})
 		return display
@@ -633,26 +635,6 @@ export class DataObjData {
 		data.rowsSave = DataRows.load(source.rowsSave)
 		return data
 	}
-
-	formatForGrid(fields: Field[]) {
-		let gridData: DataRecord[] = []
-		this.rowsRetrieved.getRows().forEach((dataRow) => {
-			let record: DataRecord = {}
-			fields.forEach((field) => {
-				const fieldName = field.colDO.propName
-				const data = dataRow.record.getValue(fieldName)
-				const codeDataType = field.colDO.colDB.codeDataType
-				const display =
-					field.colDO.items.length > 0 ? this.getItemDisplayValue(field.colDO.items, data) : data
-				record[fieldName] = { data, display }
-			})
-			gridData.push(record)
-		})
-		return gridData
-
-		function getLinkDisplay(propName: String, data: any) {}
-	}
-	formatForSave(data: any) {}
 
 	getField(fieldName: string) {
 		const field = this.fields.find((f) => f.embedFieldName === fieldName)
@@ -816,10 +798,8 @@ export enum DataObjSaveMode {
 }
 
 export class DataObjSort {
-	sortItems: DataObjSortItem[]
-	constructor(sortItem: DataObjSortItem | undefined = undefined) {
-		this.sortItems = sortItem ? [sortItem] : []
-	}
+	sortItems: DataObjSortItem[] = []
+	constructor() {}
 	addItem(fieldName: string, direction: string | undefined, sortIndex: number) {
 		this.sortItems.push(
 			new DataObjSortItem(
@@ -1155,17 +1135,18 @@ export class ParmsValues {
 
 export enum ParmsValuesType {
 	appSystemId = 'appSystemId',
+	columnDefs = 'columnDefs',
 	customProgramOwnerId = 'customProgramOwnerId',
 	embedFieldName = 'embedFieldName',
 	embedListSave = 'embedListSave',
 	embedParentId = 'embedParentId',
+	gridColumnId = 'gridColumnId',
 	isMultiSelect = 'isMultiSelect',
 	isSystemRoot = 'isSystemRoot',
 	listIds = 'listIds',
 	listIdsSelected = 'listIdsSelected',
-	listItemsFieldDisplay = 'listItemsFieldDisplay',
-	listItemsFieldId = 'listItemsFieldId',
-	listLabel = 'listLabel',
 	listRecordIdCurrent = 'listRecordIdCurrent',
-	rowData = 'rowData'
+	listSortModel = 'listSortModel',
+	rowData = 'rowData',
+	selectLabel = 'selectLabel'
 }

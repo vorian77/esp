@@ -2,8 +2,8 @@ import e from '$db/dbschema/edgeql-js'
 import {
 	client,
 	booleanOrDefaultJSON,
-	booleanOrDefaultParm,
-	sectionHeader
+	sectionHeader,
+	valueOrDefaultParm
 } from '$routes/api/dbEdge/dbEdge'
 
 export async function addColumn(data: any) {
@@ -56,12 +56,12 @@ export async function addColumn(data: any) {
 				exprStorageKey: p.exprStorageKey,
 				header: p.header,
 				headerSide: p.headerSide,
-				isExcludeInsert: booleanOrDefaultParm(p.isExcludeInsert, false),
-				isExcludeSelect: booleanOrDefaultParm(p.isExcludeSelect, false),
-				isExcludeUpdate: booleanOrDefaultParm(p.isExcludeUpdate, false),
-				isMultiSelect: booleanOrDefaultParm(p.isMultiSelect, false),
-				isNonData: booleanOrDefaultParm(p.isNonData, false),
-				isSelfReference: booleanOrDefaultParm(p.isSelfReference, false),
+				isExcludeInsert: valueOrDefaultParm(p.isExcludeInsert, false),
+				isExcludeSelect: valueOrDefaultParm(p.isExcludeSelect, false),
+				isExcludeUpdate: valueOrDefaultParm(p.isExcludeUpdate, false),
+				isMultiSelect: valueOrDefaultParm(p.isMultiSelect, false),
+				isNonData: valueOrDefaultParm(p.isNonData, false),
+				isSelfReference: valueOrDefaultParm(p.isSelfReference, false),
 				matchColumn: p.matchColumn,
 				maxLength: p.maxLength,
 				maxValue: p.maxValue,

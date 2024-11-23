@@ -1023,13 +1023,7 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'dataObjModal'
 	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Data Object - Select',
-		isMultiSelect: false,
-		name: 'dataObjSelect'
-	})
+
 	init.addTrans('sysColumn', {
 		codeAlignment: 'center',
 		codeDataType: 'date',
@@ -1102,6 +1096,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Display',
 		name: 'display'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Display ID Separator',
+		name: 'displayIdSeparator'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1188,12 +1188,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Expression - Preset',
 		name: 'exprPreset',
 		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'str',
-		header: 'Expression - Property Display',
-		name: 'exprPropDisplay'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1427,6 +1421,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'bool',
 		header: 'Display Block',
 		name: 'isDisplayBlock'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Display ID',
+		name: 'isDisplayId'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1759,7 +1759,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'int16',
-		header: 'List Sort Order',
+		header: 'Order - Sort',
 		name: 'orderSort'
 	})
 	init.addTrans('sysColumn', {
@@ -1895,6 +1895,13 @@ export function initPreColumn(init: InitDb) {
 		header: 'Process - Type',
 		isMultiSelect: false,
 		name: 'processType'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Props',
+		isMultiSelect: true,
+		name: 'props'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
