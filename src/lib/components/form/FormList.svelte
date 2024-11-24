@@ -158,25 +158,8 @@
 		state.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, 'id'))
 	}
 
-	function fGridCallbackUpdateValue(
-		fieldName: string,
-		data: DataRecord,
-		fieldNameParm: string = ''
-	) {
+	function fGridCallbackUpdateValue(fieldName: string, data: DataRecord) {
 		const row = dataObj.dataRecordsDisplay.findIndex((row) => row.id === data.id)
-		console.log('fGridCallbackUpdateValue', {
-			row,
-			fieldName,
-			data,
-			fields: dataObj.fields.map((f) => {
-				return {
-					propName: f.colDO.propName,
-					propNameRaw: f.colDO.propNameRaw,
-					fieldElement: f.fieldElement
-				}
-			}),
-			dataRecordsDisplay: dataObj.dataRecordsDisplay
-		})
 		const field = dataObj.fields.find((f) => f.colDO.propName === fieldName)
 		if (row > -1 && field) {
 			dataObj = dataObj.setFieldVal(row, field, data[fieldName])
@@ -262,6 +245,14 @@
 		if (field instanceof FieldParm) {
 			defn.cellEditorSelector = cellEditorSelectorParmField
 			defn.cellRendererSelector = cellRendererSelectorParmField
+			defn.context = { parmFields: field.parmFields, state }
+
+			// if (field.linkItemsSource) {
+			// 	defn.editable = false
+			// 	defn.context = { linkItemsSource: field.linkItemsSource, state }
+			// 	defn.context = { parmFields: field.parmFields, state }
+			// 	defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
+			// }
 
 			// field.parmFields[2].colDO.items = [
 			// 	{ display: 'Item 1', id: '1' },
@@ -271,11 +262,9 @@
 			// 	{ display: 'Item 5', id: '5' }
 			// ]
 			// field.parmFields[2].hasItems = true
-
-			defn.context = { parmFields: field.parmFields, state }
+			// defn.context = { items: dataObjData.items[itemsKey], state }
 
 			// defn.editable = false
-			// defn.context = { items: dataObjData.items[itemsKey], state }
 			// defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
 		} else {
 			// data type
@@ -373,13 +362,13 @@
 		if (fieldProcess && fieldProcess.linkItemsSource) await onCellClickedSelectItems()
 
 		async function onCellClickedSelectItems() {
-			const fieldName = fieldProcess.colDO.propName
-			const parms = field.linkItemsSource.getGridParms()
+			const fieldName = field.colDO.propName
 			const listIdsSelected = Array.isArray(event.data[fieldName])
 				? event.data[fieldName]
 				: ['', null, undefined].includes(event.data[fieldName])
 					? []
 					: [event.data[fieldName]]
+			const parms = fieldProcess.linkItemsSource.getGridParms()
 
 			state.update({
 				packet: new StatePacket({
@@ -406,11 +395,10 @@
 					const newValue = parms[ParmsValuesType.listIdsSelected]
 
 					const fieldName = field.colDO.propName
-					const fieldNameParm = fieldParm ? fieldParm.colDO.propName : ''
 					const multiLinkValue = { id: rowNode.data.id, [fieldName]: newValue }
 
 					// update dataObj
-					fGridCallbackUpdateValue(fieldName, multiLinkValue, fieldNameParm)
+					fGridCallbackUpdateValue(fieldName, multiLinkValue)
 
 					// update grid rowNode
 					rowNode.setDataValue(fieldName, newValue)

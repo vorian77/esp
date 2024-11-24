@@ -376,7 +376,8 @@ export class Query {
 		const clazz = 'getPropsSelectDataItemsContent'
 		let script = new Script(this, queryData, ScriptExePost.formatData)
 		const defn = new PropLinkItemsSource(prop._linkItemsSource)
-		if (defn.parmName) queryData.dataTab?.parms.update({ itemsParmName: defn.parmName })
+		if (defn.parmName)
+			queryData.dataTab?.parms.update({ [ParmsValuesType.itemsParmName]: defn.parmName })
 
 		// shape
 		let shape = 'data := .id'

@@ -42,12 +42,11 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'parm',
-				exprPreset: '(SELECT sys_rep::SysRepParm FILTER .id = item.id)',
-				indexTable: 0,
-				isDisplayable: false,
+				columnName: 'isRequired',
+				indexTable: 1,
+				isDisplayable: true,
+				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				linkTable: 'SysRepParm',
 				orderDefine: 20
 			},
 			{
@@ -57,8 +56,8 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				isDisplayable: true,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDisplay: 40,
-				orderDefine: 40
+				orderDisplay: 30,
+				orderDefine: 30
 			},
 			{
 				codeAccess: 'readOnly',
@@ -67,8 +66,8 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				isDisplayable: true,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDisplay: 50,
-				orderDefine: 50
+				orderDisplay: 40,
+				orderDefine: 40
 			},
 			{
 				codeFieldElement: 'parm',
@@ -76,16 +75,17 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: true,
 				isExcludeInsert: true,
-				orderDisplay: 60,
-				orderDefine: 60
+				orderDisplay: 50,
+				orderDefine: 50
 			},
+
 			{
 				columnName: 'codeDataType',
 				indexTable: 1,
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 70,
+				orderDefine: 60,
 				linkColumns: ['name']
 			},
 			{
@@ -94,8 +94,25 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
+				orderDefine: 70,
+				linkColumns: ['name']
+			},
+			{
+				columnName: 'fieldListItems',
+				indexTable: 1,
+				isDisplayable: false,
+				isExcludeInsert: true,
+				isExcludeUpdate: true,
 				orderDefine: 80,
 				linkColumns: ['name']
+			},
+			{
+				columnName: 'fieldListItemsParmName',
+				indexTable: 1,
+				isDisplayable: false,
+				isExcludeInsert: true,
+				isExcludeUpdate: true,
+				orderDefine: 90
 			},
 			{
 				columnName: 'isMultiSelect',
@@ -103,7 +120,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 110
+				orderDefine: 100
 			},
 			{
 				columnName: 'name',
@@ -111,7 +128,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 120
+				orderDefine: 110
 			},
 			{
 				columnName: 'orderDefine',
@@ -119,8 +136,17 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				isDisplayable: false,
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
-				orderDefine: 130,
+				orderDefine: 120,
 				orderSort: 10
+			},
+			{
+				columnName: 'parm',
+				exprPreset: '(SELECT sys_rep::SysRepParm FILTER .id = item.id)',
+				indexTable: 0,
+				isDisplayable: false,
+				isExcludeUpdate: true,
+				linkTable: 'SysRepParm',
+				orderDefine: 130
 			},
 
 			/* management */

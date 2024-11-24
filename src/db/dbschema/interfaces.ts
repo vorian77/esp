@@ -888,12 +888,15 @@ export namespace sys_rep {
   export interface SysRepParm extends sys_user.Mgmt {
     "codeDataType": sys_core.SysCode;
     "codeFieldElement": sys_core.SysCode;
-    "linkTable"?: sys_db.SysTable | null;
     "description"?: string | null;
     "header": string;
     "isMultiSelect": boolean;
     "name": string;
     "orderDefine": number;
+    "fieldListItems"?: sys_core.SysDataObjFieldListItems | null;
+    "exprFilter"?: string | null;
+    "fieldListItemsParmName"?: string | null;
+    "isRequired": boolean;
   }
   export interface SysRepUser extends sys_user.Mgmt {
     "report": SysRep;

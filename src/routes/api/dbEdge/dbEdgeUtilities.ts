@@ -407,6 +407,14 @@ export async function getFieldEmbedListSelect(token: TokenApiId) {
 	return await query.run(client)
 }
 
+export async function getLinkItemsSource(token: TokenApiId) {
+	const query = e.select(e.sys_core.SysDataObjFieldListItems, (fli) => ({
+		...shapeLinkItemsSource(fli),
+		filter_single: e.op(fli.name, '=', token.id)
+	}))
+	return await query.run(client)
+}
+
 export async function getNodeObjByName(token: TokenApiId) {
 	const query = e.select(e.sys_core.SysNodeObj, (n) => ({
 		...shapeNodeObj(n),
@@ -486,16 +494,20 @@ export async function getReportUser(repUserId: string) {
 			parm: e.select(parm.parm, (p) => ({
 				_codeDataType: p.codeDataType.name,
 				_codeFieldElement: p.codeFieldElement.name,
-				_linkTable: e.select(p.linkTable, (t) => ({
-					...shapeTable(t)
+				_linkItemsSource: e.select(p.fieldListItems, (fli) => ({
+					_parmName: p.fieldListItemsParmName,
+					...shapeLinkItemsSource(fli)
 				})),
 				description: true,
+				exprFilter: true,
 				header: true,
 				isMultiSelect: true,
+				isRequired: true,
 				name: true
 			})),
 			parmValue: true
 		})),
+
 		report: e.select(r.report, (rep) => ({
 			_actionFieldGroup: e.select(rep.actionFieldGroup, (afg) => ({
 				...shapeDataObjActionFieldGroup(afg)
@@ -504,6 +516,11 @@ export async function getReportUser(repUserId: string) {
 			elements: e.select(rep.elements, (repE) => ({
 				...shapeRepEl(repE),
 				order_by: repE.orderDefine
+			})),
+			elementsSort: e.select(rep.elements, (repE) => ({
+				...shapeRepEl(repE),
+				filter: e.op('exists', repE.orderSort),
+				order_by: repE.orderSort
 			})),
 			exprFilter: true,
 			exprObject: true,

@@ -1,6 +1,8 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 import { type DataRecord, valueOrDefault } from '$utils/types'
 
+const FILENAME = '$server/dbEdge/init/dbEdgeInit80ContentAIRep.ts'
+
 export function initContentAIRep(init: InitDb) {
 	initFieldListSelectCohorts(init)
 
@@ -41,7 +43,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			isDisplayable: true,
 			orderDefine: 10,
 			orderDisplay: 10,
-			orderSort: 10
+			orderSort: 20
 		},
 		{
 			codeFieldElement: 'text',
@@ -62,7 +64,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			isDisplayable: true,
 			orderDefine: 20,
 			orderDisplay: 20,
-			orderSort: 5
+			orderSort: 10
 		},
 		{
 			codeFieldElement: 'text',
@@ -230,25 +232,42 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 }
 
 function initFieldListSelectCohorts(init: InitDb) {
-	// todo...
 	init.addTrans('sysDataObjFieldListItems', {
-		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter: '.codeType.name = <parms,str,itemsParmName>',
-		exprSort: '.order',
-		name: 'il_rep_cm_cohort',
-		owner: 'sys_system_old',
-		table: 'SysCode'
+		props: [
+			[0, '_course', 'Course', `.course.name`, false, 0],
+			[1, '_cohort', 'Cohort', `.name`, true, 1],
+			[
+				2,
+				'_dateStart',
+				'Cohort Start Date',
+				`'(' ++ std::to_str(<cal::local_date>.dateStart) ++ ')'`,
+				false,
+				undefined
+			]
+		],
+		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).userTypes.owner`,
+		name: 'ilr_cm_cohort',
+		owner: 'sys_ai_old',
+		table: 'CmCohort'
 	})
 }
 
-const getParms = (parms: string[], dateDataType: string = '') => {
+const getParms = (obj: any) => {
+	obj = valueOrDefault(obj, {})
+	const clazz = `${FILENAME}.getParms`
+	const parms: [string, string | undefined][] = valueOrDefault(obj.parms, [])
+	const dateDataType: string = valueOrDefault(obj.dateDataType, '')
+	const exprFilterCohorts: string | undefined = valueOrDefault(obj.exprFilterCohorts, undefined)
+
 	const parmsList = [
 		{
 			codeDataType: 'date',
 			codeFieldElement: 'date',
 			description: `Reporting range start date (${dateDataType})`,
+			exprFilter: parms.find((p) => p[0] === 'pvDateStart')?.[1],
 			header: 'Start Date',
 			isMultiSelect: false,
+			isRequired: true,
 			name: 'pvDateStart',
 			orderDefine: 0
 		},
@@ -256,25 +275,28 @@ const getParms = (parms: string[], dateDataType: string = '') => {
 			codeDataType: 'date',
 			codeFieldElement: 'date',
 			description: `Reporting range end date (${dateDataType})`,
+			exprFilter: parms.find((p) => p[0] === 'pvDateEnd')?.[1],
 			header: 'End Date',
 			isMultiSelect: false,
+			isRequired: true,
 			name: 'pvDateEnd',
 			orderDefine: 1
+		},
+		{
+			codeDataType: 'uuidList',
+			codeFieldElement: 'chips',
+			description: 'Course cohort(s)',
+			exprFilter: parms.find((p) => p[0] === 'pvCohorts')?.[1],
+			fieldListItems: 'ilr_cm_cohort',
+			header: 'Cohort(s)',
+			isMultiSelect: true,
+			isRequired: false,
+			name: 'pvCohorts',
+			orderDefine: 2
 		}
-		// {
-		// 	codeDataType: 'uuidList',
-		// 	codeFieldElement: 'chips',
-		// 	description: 'Course cohort(s)',
-		// 	header: 'Cohort(s)',
-		// 	isMultiSelect: true,
-		// 	linkTable: 'CmCohort',
-		// 	name: 'pvCohorts',
-		// 	orderDefine: 3
-		// }
 	]
-	// return []
 	return parmsList.filter((p) => {
-		return parms.includes(p.name)
+		return parms.map((p) => p[0]).includes(p.name)
 	})
 }
 
@@ -282,7 +304,7 @@ function initContentAIRepCohortsDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: `.owner.id IN <user,uuidlist,systemIdList>`,
+		exprFilter: '.owner.id IN <user,uuidlist,systemIdList>',
 		header: 'Cohorts - Detail',
 		name: 'report_ai_cohorts_detail',
 		owner: 'sys_ai_old',
@@ -323,7 +345,7 @@ function initContentAIRepCohortsDetail(init: InitDb) {
 				orderSort: 210
 			}
 		],
-		parms: getParms([])
+		parms: getParms({})
 	})
 }
 
@@ -331,7 +353,7 @@ function initContentAIRepCoursesDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: `.owner.id IN <user,uuidlist,systemIdList>`,
+		exprFilter: '.owner.id IN <user,uuidlist,systemIdList>',
 		header: 'Courses - Detail',
 		name: 'report_ai_courses_detail',
 		owner: 'sys_ai_old',
@@ -396,7 +418,7 @@ function initContentAIRepCoursesDetail(init: InitDb) {
 				orderDisplay: 240
 			}
 		],
-		parms: getParms([])
+		parms: getParms({})
 	})
 }
 
@@ -404,7 +426,7 @@ function initContentAIRepPartnersDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: `.owner.id IN <user,uuidlist,systemIdList>`,
+		exprFilter: '.owner.id IN <user,uuidlist,systemIdList>',
 		header: 'Partners - Detail',
 		name: 'report_ai_partners_detail',
 		owner: 'sys_ai_old',
@@ -536,7 +558,7 @@ function initContentAIRepPartnersDetail(init: InitDb) {
 				orderDisplay: 270
 			}
 		],
-		parms: getParms([])
+		parms: getParms({})
 	})
 }
 
@@ -544,7 +566,7 @@ function initContentAIRepStudentAttdDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: 'Cohort attendance detail.',
-		exprFilter: `.csfCohort.cohort.course.owner.id IN <user,uuidlist,systemIdList> AND .cohortAttd.date >= <parms,date,pvDateStart> AND .cohortAttd.date <= <parms,date,pvDateEnd>`,
+		exprFilter: '.csfCohort.csf.client.owner.id IN <user,uuidlist,systemIdList>',
 		header: 'Student - Attendance - Detail',
 		name: 'report_ai_student_attd_detail',
 		owner: 'sys_ai_old',
@@ -658,7 +680,14 @@ function initContentAIRepStudentAttdDetail(init: InitDb) {
 				}
 			]
 		],
-		parms: getParms(['pvDateStart', 'pvDateEnd', 'pvCohorts'], 'Cohort Attendance: Date')
+		parms: getParms({
+			parms: [
+				['pvDateStart', '.cohortAttd.date >= <parms,date,pvDateStart>'],
+				['pvDateEnd', '.cohortAttd.date <= <parms,date,pvDateEnd>'],
+				['pvCohorts', '.csfCohort.cohort.id IN <parms,uuidList,pvCohorts>']
+			],
+			dateDataType: 'Cohort Attendance: Date'
+		})
 	})
 }
 
@@ -666,7 +695,7 @@ function initContentAIRepStudentCaseNotesDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: `.csf.client.owner.id IN <user,uuidlist,systemIdList> AND .date >= <parms,date,pvDateStart> AND .date <= <parms,date,pvDateEnd>`,
+		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIdList>',
 		header: 'Student - Case Notes - Detail',
 		name: 'report_ai_student_notes_detail',
 		owner: 'sys_ai_old',
@@ -712,7 +741,13 @@ function initContentAIRepStudentCaseNotesDetail(init: InitDb) {
 				}
 			]
 		],
-		parms: getParms(['pvDateStart', 'pvDateEnd'], 'Case Note: Date')
+		parms: getParms({
+			parms: [
+				['pvDateStart', '.date >= <parms,date,pvDateStart> '],
+				['pvDateEnd', '.date <= <parms,date,pvDateEnd>']
+			],
+			dateDataType: 'Case Note: Date'
+		})
 	})
 }
 
@@ -720,7 +755,7 @@ function initContentAIRepStudentDocsDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: `.csf.client.owner.id IN <user,uuidlist,systemIdList> AND .dateIssued >= <parms,date,pvDateStart> AND .dateIssued <= <parms,date,pvDateEnd>`,
+		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIdList>',
 		header: 'Student - Documents - Detail',
 		name: 'report_ai_student_docs_detail',
 		owner: 'sys_ai_old',
@@ -802,7 +837,13 @@ function initContentAIRepStudentDocsDetail(init: InitDb) {
 				}
 			]
 		],
-		parms: getParms(['pvDateStart', 'pvDateEnd'], 'Document: Date Issued')
+		parms: getParms({
+			parms: [
+				['pvDateStart', '.dateIssued >= <parms,date,pvDateStart>'],
+				['pvDateEnd', '.dateIssued <= <parms,date,pvDateEnd>']
+			],
+			dateDataType: 'Document: Date Issued'
+		})
 	})
 }
 
@@ -810,8 +851,7 @@ function initContentAIRepStudentJobPlacementDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: `.csf IN (SELECT app_cm::CmCsfCohort).csf AND .dateStart >= <parms,date,pvDateStart> AND .dateStart <= <parms,date,pvDateEnd>`,
-		// exprFilter: `.csf IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf AND .dateStart >= <parms,date,pvDateStart> AND .dateStart <= <parms,date,pvDateEnd>`,
+		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIdList>',
 		header: 'Student - Job Placements - Detail',
 		name: 'report_ai_student_job_placement_detail',
 		owner: 'sys_ai_old',
@@ -829,7 +869,7 @@ function initContentAIRepStudentJobPlacementDetail(init: InitDb) {
 					codeReportElementType: 'column',
 					columnName: 'dateStart',
 					indexTable: 0,
-					isDisplay: false,
+					isDisplay: true,
 					isDisplayable: true,
 					orderDefine: 200,
 					orderDisplay: 200,
@@ -960,7 +1000,17 @@ function initContentAIRepStudentJobPlacementDetail(init: InitDb) {
 				}
 			]
 		],
-		parms: getParms(['pvDateStart', 'pvDateEnd'], 'Job Placement: Start Date')
+		parms: getParms({
+			parms: [
+				['pvDateStart', '.dateStart >= <parms,date,pvDateStart>'],
+				['pvDateEnd', '.dateStart <= <parms,date,pvDateEnd>'],
+				[
+					'pvCohorts',
+					'.csf IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf'
+				]
+			],
+			dateDataType: 'Job Placement: Start Date'
+		})
 	})
 }
 
@@ -968,8 +1018,7 @@ function initContentAIRepStudentSchoolPlacementDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: `.csf IN (SELECT app_cm::CmCsfCohort).csf AND .date >= <parms,date,pvDateStart> AND .date <= <parms,date,pvDateEnd>`,
-		// exprFilter: `.csf IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf AND .date >= <parms,date,pvDateStart> AND .date <= <parms,date,pvDateEnd>`,
+		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIdList>',
 		header: 'Student - School Placements - Detail',
 		name: 'report_ai_student_school_placement_detail',
 		owner: 'sys_ai_old',
@@ -1056,7 +1105,17 @@ function initContentAIRepStudentSchoolPlacementDetail(init: InitDb) {
 				}
 			]
 		],
-		parms: getParms(['pvDateStart', 'pvDateEnd'], 'School Placement: Date')
+		parms: getParms({
+			parms: [
+				['pvDateStart', '.date >= <parms,date,pvDateStart>'],
+				['pvDateEnd', '.date <= <parms,date,pvDateEnd>'],
+				[
+					'pvCohorts',
+					'.csf IN (SELECT app_cm::CmCsfCohort FILTER .cohort.id IN <parms,uuidList,pvCohorts>).csf'
+				]
+			],
+			dateDataType: 'School Placement: Date'
+		})
 	})
 }
 
@@ -1065,8 +1124,7 @@ function initContentAIRepStudentCohortAttdSummary(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: 'Student cohort attendance summary report.',
-		// exprFilter: `.cohort.id IN <parms,uuidList,pvCohorts>`,
-		exprFilter: 'none',
+		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIdList>',
 		header: 'Student - Cohort Attendance - Summary',
 		name: 'report_ai_student_cohort_attd_summary',
 		owner: 'sys_ai_old',
@@ -1162,7 +1220,14 @@ function initContentAIRepStudentCohortAttdSummary(init: InitDb) {
 				}
 			]
 		],
-		parms: getParms(['pvDateStart', 'pvDateEnd'], 'Data Value Dates')
+		parms: getParms({
+			parms: [
+				['pvDateStart', undefined],
+				['pvDateEnd', undefined],
+				['pvCohorts', `.cohort.id IN <parms,uuidList,pvCohorts>`]
+			],
+			dateDataType: 'Data Value Dates'
+		})
 	})
 }
 
@@ -1170,7 +1235,7 @@ function initContentAIRepStudentServiceFlowSummary(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: 'Student service flow summary.',
-		exprFilter: `.client.owner.id IN <user,uuidlist,systemIdList> `,
+		exprFilter: '.client.owner.id IN <user,uuidlist,systemIdList> ',
 		header: 'Student - Service Flow - Summary',
 		name: 'report_ai_student_service_flow_summary',
 		owner: 'sys_ai_old',
@@ -1235,6 +1300,6 @@ function initContentAIRepStudentServiceFlowSummary(init: InitDb) {
 				}
 			]
 		],
-		parms: getParms([], '')
+		parms: getParms({})
 	})
 }

@@ -16,7 +16,7 @@ import { initContentMOEDRep } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDR
 // user
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
-const isResetFullDB = true
+const isResetFullDB = false
 
 export async function dbEdgeInit() {
 	let initDb = new InitDb(isResetFullDB)
@@ -43,7 +43,7 @@ function dbEdgeInitAll(initDb: InitDb) {
 }
 
 export function initFeature(initDb: InitDb) {
-	// initSysRepUser(initDb)
+	initSysRepUser(initDb)
 	initContentAIRep(initDb)
 	// initContentMOEDStudent(initDb)
 }

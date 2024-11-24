@@ -77,6 +77,7 @@ export class Rep {
 	analytics: RepAnalytic[] = []
 	description?: string
 	elements: RepEl[]
+	elementsSort: RepEl[]
 	exprFilter?: string
 	exprObject?: string
 	exprSort?: string
@@ -91,6 +92,7 @@ export class Rep {
 		// this.analytics = getArrayOfModels(RepAnalytic, obj.analytics)
 		this.description = strOptional(obj.description, clazz, 'description')
 		this.elements = arrayOfClasses(RepEl, obj.elements)
+		this.elementsSort = arrayOfClasses(RepEl, obj.elementsSort)
 		this.exprFilter = strOptional(obj.exprFilter, clazz, 'exprFilter')
 		this.exprObject = strOptional(obj.exprObject, clazz, 'exprObject')
 		this.exprSort = strOptional(obj.exprSort, clazz, 'exprSort')
@@ -109,7 +111,7 @@ export class RepEl {
 	_codeReportElementType?: RepElementType
 	_codeSortDir?: PropSortDir
 	_column?: RepElColumn
-	// _link?: RawPropLink
+	_link?: string
 	description?: string
 	exprCustom?: string
 	header?: string
@@ -167,7 +169,7 @@ export class RepEl {
 			RepElementType
 		)
 		this._column = obj._column ? new RepElColumn(obj._column) : undefined
-		// this._link = classOptional(RawPropLink, obj._link)
+		this._link = obj._link
 		this.description = strOptional(obj.description, clazz, 'description')
 		this.exprCustom = strOptional(obj.exprCustom, clazz, 'expr')
 		this.header = strOptional(obj.header, clazz, 'header')
@@ -212,10 +214,10 @@ export class RepParm {
 	codeDataType: PropDataType
 	codeFieldElement: FieldElement
 	description?: string
-	fieldListItems?: PropLinkItemsSource
+	exprFilter?: string
 	header: string
 	isMultiSelect: boolean
-	linkTable?: DBTable
+	isRequired: boolean
 	name: string
 	constructor(obj: any) {
 		const clazz = 'RepParm'
@@ -235,10 +237,10 @@ export class RepParm {
 			FieldElement
 		)
 		this.description = strOptional(obj.description, clazz, 'description')
-		this.fieldListItems = classOptional(PropLinkItemsSource, obj._fieldListItems)
+		this.exprFilter = strOptional(obj.exprFilter, clazz, 'exprFilter')
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.isMultiSelect = booleanOrFalse(obj.isMultiSelect, 'isMultiSelect')
-		this.linkTable = classOptional(DBTable, obj._linkTable)
+		this.isRequired = booleanRequired(obj.isRequired, clazz, 'isRequired')
 		this.name = strRequired(obj.name, clazz, 'name')
 	}
 }

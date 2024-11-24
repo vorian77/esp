@@ -66,7 +66,7 @@ export class CellRendererParmField implements ICellRendererComp {
 		const fieldName = getRecordValue(params.data, 'name')
 		const parmFields = params?.colDef?.context.parmFields
 		if (parmFields) {
-			const field = parmFields.find((f: Field) => f.colDO.propName === fieldName)
+			const field = parmFields.find((f: Field) => f.colDO.propNameRaw === fieldName)
 			if (field && field.fieldAccess === FieldAccess.required) {
 				style += ' background-color: rgb(219,234,254);'
 			}
@@ -94,19 +94,14 @@ export class CellRendererParmFieldDate extends CellRendererParmField {
 
 export class CellRendererParmFieldSelect extends CellRendererParmField {
 	getDisplayValue(params: ICellRendererParams) {
-		let displayValue = ''
 		if (params.value) {
 			const parmFieldName = getRecordValue(params.data, 'name')
 			const parmFields = params?.colDef?.context.parmFields
-			const field = parmFields.find((f: Field) => f.colDO.propName === parmFieldName)
-			const fieldItems = field.colDO.items
-			const currentIds = Array.isArray(params.value) ? params.value : [params.value]
-			currentIds.forEach((id: string) => {
-				const item = fieldItems.find((i: FieldColumnItem) => i.data === id)
-				if (item) displayValue += displayValue ? ',' + item.display : item.display
-			})
+			const field = parmFields.find((f: Field) => f.colDO.propNameRaw === parmFieldName)
+			const linkItemsSource = field.linkItemsSource
+			return linkItemsSource.getDisplayValueList(params.value)
 		}
-		return displayValue
+		return ''
 	}
 }
 

@@ -230,6 +230,9 @@ export class RawDataObjDyn extends RawDataObj {
 	addPropSelect(rawProp: any, tables: DataObjTable[]) {
 		this.rawPropsSelect.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tables))
 	}
+	addPropSort(rawProp: any, tables: DataObjTable[]) {
+		this.rawPropsSort.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tables))
+	}
 	build() {
 		return this
 	}
@@ -692,6 +695,7 @@ export class PropLinkItemsSource {
 		this.exprWith = valueOrDefault(obj.exprWith, '')
 		this.parmName = obj._parmName
 		this.props = arrayOfClasses(PropLinkItemsSourceProp, obj._props)
+		this.rawItems = obj.rawItems
 		this.table = classOptional(DBTable, obj._table)
 	}
 	formatDataFieldColumnItem(idsCurrent: string | string[]) {

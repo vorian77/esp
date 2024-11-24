@@ -8,6 +8,7 @@ export enum ApiFunction {
 	dbEdgeGetDataObjActionFieldGroup = 'dbEdgeGetDataObjActionFieldGroup',
 	dbEdgeGetDataObjId = 'dbEdgeGetDataObjId',
 	dbEdgeGetFieldEmbedListSelect = 'dbEdgeGetFieldEmbedListSelect',
+	dbEdgeGetFieldListItems = 'dbEdgeGetFieldListItems',
 	dbEdgeGetNodeObjByName = 'dbEdgeGetNodeObjByName',
 	dbEdgeGetNodesBranch = 'dbEdgeGetNodesBranch',
 	dbEdgeGetNodesLevel = 'dbEdgeGetNodesLevel',

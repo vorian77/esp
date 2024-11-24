@@ -1,9 +1,17 @@
 import { Field, FieldAlignment, PropsField, PropsFieldRaw } from '$comps/form/field'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
+import { PropLinkItemsSource, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
-import { DataObj, type DataRecord, getRecordValue, ResponseBody } from '$utils/types'
+import {
+	DataObj,
+	DataObjData,
+	type DataRecord,
+	getRecordValue,
+	ParmsValuesType,
+	ResponseBody,
+	valueOrDefault
+} from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { TokenApiId } from '$utils/types.token'
+import { TokenApiQueryData } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldParm.ts/'
@@ -16,20 +24,14 @@ export class FieldParm extends Field {
 		this.isParmValue = true
 	}
 	async init(props: PropsField) {
-		this.parmFields = await this.configParmItems(props)
-	}
-
-	async configParmItems(props: PropsField) {
-		let fields: Field[] = []
 		for (const dataRow of props.dataObj.data.rowsRetrieved.dataRows) {
-			fields.push(await this.configParmItemsInit(props, dataRow.record, fields))
+			this.parmFields.push(await this.configParmItemsInit(props, dataRow.record, this.parmFields))
 		}
-		return fields
 	}
 
 	async configParmItemsInit(props: PropsField, record: DataRecord, fields: Field[]) {
 		const propParmObj = {
-			_codeAccess: 'required',
+			_codeAccess: getRecordValue(record, 'isRequired') ? 'required' : 'optional',
 			_codeFieldElement: getRecordValue(record, 'codeFieldElement'),
 			_column: {
 				_codeAlignment: FieldAlignment.left,
@@ -40,6 +42,10 @@ export class FieldParm extends Field {
 				placeHolder: ''
 			},
 			_hasItems: getRecordValue(record, '_hasItems'),
+			_linkItemsSource: await getFieldListItems({
+				fieldListItems: getRecordValue(record, 'fieldListItems'),
+				fieldListItemsParmName: getRecordValue(record, 'fieldListItemsParmName')
+			}),
 			_propName: getRecordValue(record, 'name'),
 			isDisplayable: true,
 			isDisplayBlock: true,
@@ -72,5 +78,29 @@ export class FieldParm extends Field {
 
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {
 		return this.parmFields[row].validate(row, value, missingDataErrorLevel)
+	}
+}
+
+async function getFieldListItems(obj: any) {
+	obj = valueOrDefault(obj, {})
+	if (!obj.fieldListItems) return undefined
+
+	// parms
+	const dataTab = new DataObjData()
+	dataTab.parms.valueSet(ParmsValuesType.fieldListItems, obj.fieldListItems)
+	dataTab.parms.valueSet(ParmsValuesType.itemsParmName, obj.fieldListItemsParmName)
+
+	const result: ResponseBody = await apiFetch(
+		ApiFunction.dbEdgeGetFieldListItems,
+		new TokenApiQueryData({ dataTab })
+	)
+	if (result.success) {
+		return result.data.data
+	} else {
+		error(500, {
+			file: FILENAME,
+			function: 'getLinkItemsSource',
+			message: `Error retrieving LinkItemsSource: ${obj.fieldListItems}`
+		})
 	}
 }

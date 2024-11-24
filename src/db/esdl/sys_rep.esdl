@@ -68,17 +68,14 @@ module sys_rep {
     required codeDataType: sys_core::SysCode;
     required codeFieldElement: sys_core::SysCode;
     description: str;
+    exprFilter: str;
+    fieldListItems: sys_core::SysDataObjFieldListItems;
+    fieldListItemsParmName: str;
     required header: str;
     required isMultiSelect: bool;
-    linkTable: sys_db::SysTable;
+    required isRequired: bool;
     required name: str;
     required orderDefine: default::nonNegative;
-
-
-    # fieldListItems: sys_core::SysDataObjFieldListItems;
-    # fieldListItemsParmName: str;
-    # exprFilter: str;
-    # isRequired: bool;
   }
 
   type SysRepUser extending sys_user::Mgmt {

@@ -420,22 +420,19 @@ function initAnalyticParm(init: InitDb) {
 				orderDefine: 100
 			},
 			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'linkTable',
-				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130,
-				indexTable: 0,
-				fieldListItems: 'il_sys_table_order_name',
-				linkTable: 'SysTable'
-			},
-			{
 				codeFieldElement: 'toggle',
 				columnName: 'isMultiSelect',
 				isDisplayable: true,
 				orderDisplay: 140,
 				orderDefine: 140,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isRequired',
+				isDisplayable: true,
+				orderDisplay: 145,
+				orderDefine: 145,
 				indexTable: 0
 			},
 			{
@@ -1461,18 +1458,15 @@ function initRepParm(init: InitDb) {
 		tables: [{ index: 0, table: 'SysRepParm' }],
 		fields: [
 			{
-				codeAccess: 'readOnly',
 				columnName: 'id',
 				indexTable: 0,
-				isDisplayable: true,
-				orderDefine: 10,
-				orderDisplay: 10
+				isDisplayable: false,
+				orderDefine: 10
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
 				isDisplayable: true,
-				isExcludeUpdate: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
@@ -1481,7 +1475,6 @@ function initRepParm(init: InitDb) {
 				codeAccess: 'readOnly',
 				columnName: 'header',
 				isDisplayable: true,
-				isExcludeUpdate: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
@@ -1490,7 +1483,6 @@ function initRepParm(init: InitDb) {
 				codeAccess: 'readOnly',
 				columnName: 'codeDataType',
 				isDisplayable: true,
-				isExcludeUpdate: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
@@ -1500,7 +1492,6 @@ function initRepParm(init: InitDb) {
 				codeAccess: 'readOnly',
 				columnName: 'codeFieldElement',
 				isDisplayable: true,
-				isExcludeUpdate: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
@@ -1508,12 +1499,19 @@ function initRepParm(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				columnName: 'isRequired',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
 				columnName: 'description',
 				indexTable: 0,
 				isDisplayable: true,
-				isExcludeUpdate: true,
-				orderDefine: 60,
-				orderDisplay: 60
+				orderDefine: 70,
+				orderDisplay: 70
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1521,8 +1519,8 @@ function initRepParm(init: InitDb) {
 				columnName: 'orderDefine',
 				indexTable: 0,
 				isDisplayable: true,
-				orderDefine: 70,
-				orderDisplay: 70
+				orderDefine: 80,
+				orderDisplay: 80
 			},
 
 			/* management */
@@ -1584,23 +1582,23 @@ function initRepParm(init: InitDb) {
 			{
 				columnName: 'name',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 0
 			},
 			{
 				columnName: 'header',
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeDataType',
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_db_col_data_type',
@@ -1610,12 +1608,20 @@ function initRepParm(init: InitDb) {
 				codeFieldElement: 'select',
 				columnName: 'codeFieldElement',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 60,
+				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_field_element',
 				linkTable: 'SysCode'
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isRequired',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1627,48 +1633,81 @@ function initRepParm(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
-				columnName: 'description',
+				columnName: 'exprFilter',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 110,
+				orderDefine: 110,
 				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagSection',
+				codeColor: 'blue',
+				columnName: 'custom_section_start',
+				isDisplayable: true,
+				orderDisplay: 120,
+				orderDefine: 120,
+				headerAlt: 'Select Data Items'
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100
+				orderDisplay: 130,
+				orderDefine: 130
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'linkTable',
+				columnName: 'fieldListItems',
 				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130,
+				orderDisplay: 140,
+				orderDefine: 140,
+				fieldListItems: 'il_sys_data_obj_field_list_items_order_name',
 				indexTable: 0,
-				fieldListItems: 'il_sys_table_order_name',
-				linkTable: 'SysTable'
+				linkTable: 'SysDataObjFieldListItems'
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'fieldListItemsParmName',
+				isDisplayable: true,
+				orderDisplay: 150,
+				orderDefine: 150,
+				indexTable: 0
 			},
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isMultiSelect',
 				isDisplayable: true,
-				orderDisplay: 140,
-				orderDefine: 140,
+				orderDisplay: 160,
+				orderDefine: 160,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 150,
-				orderDefine: 150
+				orderDisplay: 170,
+				orderDefine: 170
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				isDisplayable: true,
+				orderDisplay: 180,
+				orderDefine: 180
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'description',
+				isDisplayable: true,
+				orderDisplay: 200,
+				orderDefine: 200,
+				indexTable: 0
 			},
 			{
 				columnName: 'orderDefine',
-				orderDefine: 160,
+				orderDefine: 210,
 				exprPreset: `(SELECT 1000)`,
 				indexTable: 0,
 				isDisplayable: false

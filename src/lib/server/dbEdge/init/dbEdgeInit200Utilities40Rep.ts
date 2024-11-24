@@ -33,8 +33,14 @@ export async function addAnalytic(data: any) {
 						),
 						createdBy: CREATOR,
 						description: e.cast(e.str, e.json_get(p, 'description')),
+						exprFilter: e.cast(e.str, e.json_get(p, 'exprFilter')),
+						fieldListItems: e.select(
+							e.sys_core.getDataObjFieldListItems(e.cast(e.str, e.json_get(p, 'fieldListItems')))
+						),
+						fieldListItemsParmName: e.cast(e.str, e.json_get(p, 'fieldListItemsParmName')),
 						header: e.cast(e.str, e.json_get(p, 'header')),
 						isMultiSelect: e.cast(e.bool, e.json_get(p, 'isMultiSelect')),
+						isRequired: e.cast(e.bool, e.json_get(p, 'isRequired')),
 						linkTable: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(p, 'linkTable')))),
 						modifiedBy: CREATOR,
 						name: e.cast(e.str, e.json_get(p, 'name')),
@@ -170,9 +176,14 @@ export async function addReport(data: any) {
 						),
 						createdBy: CREATOR,
 						description: e.cast(e.str, e.json_get(p, 'description')),
+						exprFilter: e.cast(e.str, e.json_get(p, 'exprFilter')),
+						fieldListItems: e.select(
+							e.sys_core.getDataObjFieldListItems(e.cast(e.str, e.json_get(p, 'fieldListItems')))
+						),
+						fieldListItemsParmName: e.cast(e.str, e.json_get(p, 'fieldListItemsParmName')),
 						header: e.cast(e.str, e.json_get(p, 'header')),
 						isMultiSelect: e.cast(e.bool, e.json_get(p, 'isMultiSelect')),
-						linkTable: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(p, 'linkTable')))),
+						isRequired: e.cast(e.bool, e.json_get(p, 'isRequired')),
 						modifiedBy: CREATOR,
 						name: e.cast(e.str, e.json_get(p, 'name')),
 						orderDefine: e.cast(e.int16, e.json_get(p, 'orderDefine'))

@@ -30,13 +30,18 @@ import {
 import {
 	PropDataSourceValue,
 	PropDataType,
+	PropLinkItemsSource,
 	PropNamePrefixType,
 	RawDataObj,
 	RawDataObjPropDB
 } from '$comps/dataObj/types.rawDataObj'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import type { DataRecord } from '$utils/types'
-import { getDataObjById, getDataObjByName } from '$routes/api/dbEdge/dbEdgeUtilities'
+import {
+	getDataObjById,
+	getDataObjByName,
+	getLinkItemsSource
+} from '$routes/api/dbEdge/dbEdgeUtilities'
 import { evalExpr, EvalExprContext, evalExprTokens } from '$routes/api/dbEdge/dbEdgeGetVal'
 import type { RawDataList } from '$routes/api/dbEdge/types.dbEdge'
 import { Script, ScriptExePost, ScriptGroup } from '$routes/api/dbEdge/dbEdgeScript'
@@ -45,6 +50,35 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = 'server/dbEdgeQueryProcess.ts'
 
+export async function getFieldListItems(queryData: TokenApiQueryData) {
+	queryData = TokenApiQueryData.load(queryData)
+	const fieldListItems = queryData?.dataTab?.parms.valueGet(ParmsValuesType.fieldListItems)
+
+	const rawSource: any = await getLinkItemsSource(new TokenApiId(fieldListItems))
+	if (rawSource) {
+		const source = new PropLinkItemsSource(rawSource)
+		if (source.table) {
+			const props = source.props.reduce((acc, prop) => {
+				if (acc) acc += ', '
+				acc += `${prop.key} := ${prop.expr}`
+				return acc
+			}, 'data := .id')
+			const expr = `SELECT ${source.table.object} {${props}} FILTER ${source.exprFilter}`
+			rawSource.rawItems = await exeQueryMultiData(
+				expr,
+				queryData,
+				new EvalExprContext('getFieldListItems', fieldListItems)
+			)
+			return new ApiResult(true, { data: rawSource })
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'getFieldListItems',
+				message: `No table defined for FieldListItems: ${fieldListItems.table}`
+			})
+		}
+	}
+}
 export async function processDataObj(token: TokenApiQuery) {
 	const queryData = TokenApiQueryData.load(token.queryData)
 	let rawDataObj = await getRawDataObj(token.dataObjSource, queryData)

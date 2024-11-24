@@ -63,7 +63,6 @@ export type $SysTableλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "table": $.PropertyDesc<_std.$str, $.Cardinality.One, false, true, false, false>;
   "<table[is sys_migr::SysMigrTargetTable]": $.LinkDesc<_sys_migr.$SysMigrTargetTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "<linkTable[is sys_core::SysDataObjColumn]": $.LinkDesc<_sys_core.$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<linkTable[is sys_rep::SysRepParm]": $.LinkDesc<_sys_rep.$SysRepParm, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parentTable[is sys_core::SysDataObj]": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<table[is sys_core::SysDataObjTable]": $.LinkDesc<_sys_core.$SysDataObjTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "<table[is sys_core::SysDataObjFieldListItems]": $.LinkDesc<_sys_core.$SysDataObjFieldListItems, $.Cardinality.Many, {}, false, false,  false, false>;

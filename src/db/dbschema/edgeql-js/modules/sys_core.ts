@@ -662,6 +662,7 @@ export type $SysDataObjFieldListItemsλShape = $.typeutil.flatten<$SysObjλShape
   "props": $.LinkDesc<$SysDataObjFieldListItemsProp, $.Cardinality.Many, {}, false, false,  false, false>;
   "displayIdSeparator": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "<fieldListItems[is sys_core::SysDataObjColumn]": $.LinkDesc<$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<fieldListItems[is sys_rep::SysRepParm]": $.LinkDesc<_sys_rep.$SysRepParm, $.Cardinality.Many, {}, false, false,  false, false>;
   "<fieldListItems": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysDataObjFieldListItems = $.ObjectType<"sys_core::SysDataObjFieldListItems", $SysDataObjFieldListItemsλShape, null, [

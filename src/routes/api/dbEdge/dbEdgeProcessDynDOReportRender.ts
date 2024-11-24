@@ -1,11 +1,16 @@
 import { RepEl, RepUser } from '$comps/dataObj/types.rep'
-import { DataObjCardinality, DataObjComponent, DataObjTable, DataObjType } from '$utils/types'
+import {
+	debug,
+	DataObjCardinality,
+	DataObjComponent,
+	DataObjTable,
+	DataObjType
+} from '$utils/types'
 import { RawDataObj, RawDataObjDyn } from '$comps/dataObj/types.rawDataObj'
 import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 import { getReportUser } from '$routes/api/dbEdge/types.dbEdge'
 import { error } from '@sveltejs/kit'
-import { get } from 'http'
 
 const FILENAME = '$routes/api/dbEdge/dbEdgeProcessDynDOReportRender.ts'
 let fName = (functionName: string) => {
@@ -22,27 +27,27 @@ export async function dynDOReportRender(
 
 	addPropsDisplay(repUser, rawDataObjDyn.tables)
 	addPropsSelect(repUser.report.elements, rawDataObjDyn.tables)
-	// addPropsSort()
-	addParms(repUser, queryData)
-	addFilter(repUser)
+	addPropsSort(repUser.report.elementsSort, rawDataObjDyn.tables)
+	addFilter(repUser, queryData)
 	return rawDataObjDyn.build()
 
-	function addFilter(repUser: RepUser) {
-		dataObjSource.replacements.exprFilter
-
-		dataObjSource.replacements['exprFilter'] = rawDataObjDyn.exprFilter
-	}
-	function addParms(repUser: RepUser, queryData: TokenApiQueryData) {
+	function addFilter(repUser: RepUser, queryData: TokenApiQueryData) {
+		let exprFilter = rawDataObjDyn.exprFilter
 		repUser.parms.forEach((p) => {
-			queryData?.dataTab?.parms.valueSet(p.parm.name, p.parmValue)
+			if (Array.isArray(p.parmValue) ? p.parmValue.length > 0 : p.parmValue) {
+				queryData?.dataTab?.parms.valueSet(p.parm.name, p.parmValue)
+				if (p.parm.exprFilter) {
+					if (exprFilter) exprFilter = exprFilter + ' AND '
+					exprFilter += p.parm.exprFilter
+				}
+			}
 		})
+		dataObjSource.replacements['exprFilter'] = exprFilter
 	}
 
 	function addPropsCommon(el: RepEl) {
 		return {
-			_hasItems: false,
 			_link: el._link,
-			_linkItemsDefn: undefined,
 			_propName: el.nameCustom || el._column?.name,
 			exprCustom: el.exprCustom,
 			indexTable: el.indexTable,
@@ -84,6 +89,19 @@ export async function dynDOReportRender(
 	function addPropsSelect(elements: RepEl[], tables: DataObjTable[]) {
 		elements.forEach((e) => {
 			rawDataObjDyn.addPropSelect(
+				{
+					...addPropsCommon(e),
+					_codeDataType: e._column?._codeDataType || e._codeDataType,
+					_codeDbDataSourceValue: e._codeDbDataSourceValue,
+					_codeSortDir: e._codeSortDir
+				},
+				tables
+			)
+		})
+	}
+	function addPropsSort(elementsSort: RepEl[], tables: DataObjTable[]) {
+		elementsSort.forEach((e) => {
+			rawDataObjDyn.addPropSort(
 				{
 					...addPropsCommon(e),
 					_codeDataType: e._column?._codeDataType || e._codeDataType,
