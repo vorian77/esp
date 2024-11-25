@@ -43,12 +43,6 @@ function initStudent(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 20
-			},
-			{
 				codeAccess: 'readOnly',
 				columnName: 'firstName',
 				orderCrumb: 10,
@@ -760,14 +754,6 @@ function initCsfMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'parent',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
 				indexTable: 0
 			},
 			{

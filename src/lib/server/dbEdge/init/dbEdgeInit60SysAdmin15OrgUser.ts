@@ -148,8 +148,24 @@ function initOrg(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
+				indexTable: 0,
+				isDisplayable: true,
 				orderCrumb: 10,
-				orderSort: 10,
+				orderDisplay: 10,
+				orderDefine: 10,
+				orderSort: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'appName',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'logoWidth',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
@@ -157,7 +173,7 @@ function initOrg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'appName',
+				columnName: 'logoMarginRight',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -165,44 +181,27 @@ function initOrg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'logoFileName',
+				codeFieldElement: 'toggle',
+				columnName: 'custom_element_bool',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'codeLogoFileType',
-				isDisplayable: true,
-				isExcludeUpdate: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0,
-				linkColumns: ['name'],
-				linkTable: 'SysOrg'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'logoWidth',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'logoMarginRight',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
-				indexTable: 0
+				exprCustom: `'Yes' IF EXISTS .file ELSE 'No'`,
+				headerAlt: 'Document Uploaded',
+				nameCustom: 'hasFile'
 			}
 		]
 	})
 
 	init.addTrans('sysDataObj', {
 		actionFieldGroup: 'doag_detail',
+		actionsQuery: [
+			{
+				name: 'qa_file_storage',
+				parms: [{ key: 'imageField', value: 'file' }],
+				triggers: [{ codeQueryType: 'save', codeTriggerTiming: 'pre' }]
+			}
+		],
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Organization (User)',
@@ -220,76 +219,55 @@ function initOrg(init: InitDb) {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30
+				orderDisplay: 20,
+				orderDefine: 20
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'appName',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
 			},
 			{
-				columnName: 'appName',
+				columnName: 'logoWidth',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
+				columnName: 'logoMarginRight',
 				isDisplayable: true,
 				orderDisplay: 60,
-				orderDefine: 60
+				orderDefine: 60,
+				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
+				columnName: 'custom_row_end',
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70
 			},
 			{
-				columnName: 'logoFileName',
+				codeAccess: 'optional',
+				codeFieldElement: 'file',
+				columnName: 'file',
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'codeLogoFileType',
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_org_logo_file_type',
-				linkTable: 'SysCode'
-			},
-			{
-				columnName: 'logoWidth',
-				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100,
-				indexTable: 0
-			},
-			{
-				columnName: 'logoMarginRight',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120
+				width: 300
 			},
 
 			/* management */

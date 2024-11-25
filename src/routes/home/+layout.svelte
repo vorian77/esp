@@ -17,7 +17,6 @@
 		getToastStore
 	} from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
-	import NavLogo from '$comps/app/NavLogo.svelte'
 	import NavHome from '$comps/app/NavHome.svelte'
 	import NavFooter from '$comps/app/NavFooter.svelte'
 	import NavBar from '$comps/navBar/NavBar.svelte'
@@ -139,9 +138,6 @@
 							})}
 						/>
 					</div>
-					{#if user}
-						<NavLogo {user} />
-					{/if}
 					<div role="button" tabindex="0" class="text-black" on:click={goHome} on:keyup={goHome}>
 						{#if appName}
 							{appName}
@@ -169,14 +165,17 @@
 
 	<svelte:fragment slot="sidebarLeft">
 		<div class="flex">
-			<div class={clazzNavBar}>
-				<!-- <NavBar {user} /> -->
-			</div>
 			<div class="hidden md:block">
 				{#if user && state?.nodeType === NodeType.home}
-					<div class="my-4">
-						<NavTree {state} on:treeChanged />
-					</div>
+					{#if DEV_MODE}
+						<div class={clazzNavBar}>
+							<NavBar {state} />
+						</div>
+					{:else}
+						<div class="my-4">
+							<NavTree {state} on:treeChanged />
+						</div>
+					{/if}
 				{/if}
 			</div>
 		</div>
@@ -198,7 +197,8 @@
 	</div>
 
 	<svelte:fragment slot="footer">
-		<div class="border-t-2 border-gray-200">
+		<NavFooter {state} />
+		<!-- <div class="border-t-2 border-gray-200">
 			{#if DEV_MODE}
 				<div class="grid grid-cols-5 gap-4 border-t-2 border-gray-200">
 					<div class="col-span-1 text-gray-400 text-sm border-2 border-green-400">Dev Footer</div>
@@ -209,7 +209,7 @@
 			{:else}
 				<NavFooter {state} />
 			{/if}
-		</div>
+		</div> -->
 	</svelte:fragment>
 	<!-- <DataViewer header="user" data={user} /> -->
 </AppShell>

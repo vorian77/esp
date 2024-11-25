@@ -567,10 +567,9 @@ export async function getUserByUserId(token: TokenApiUserId) {
 		isMobileOnly: true,
 		lastName: u.person.lastName,
 		org: e.select(e.sys_core.SysOrg, (o) => ({
-			_codeLogoFileType: o.codeLogoFileType.name,
 			appName: true,
+			file: true,
 			name: true,
-			logoFileName: true,
 			logoMarginRight: true,
 			logoWidth: true,
 			filter_single: e.op(o, '=', u.defaultOrg)

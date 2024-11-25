@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { NavBarDataItem } from '$comps/navBar/types.navBar'
-	import NavBarList from '$comps/navBar/NavBarListOld.svelte'
+	import { NavBarDataCompAppsItem } from '$comps/navBar/types.navBar'
+	import NavBarList from '$comps/navBar/NavBarList.svelte'
 	import { NodeType } from '$utils/types'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
@@ -8,7 +8,7 @@
 
 	const FILENAME = '/$comps/app/NavBarItem.svelte'
 
-	export let item: NavBarDataItem
+	export let item: NavBarDataCompAppsItem
 	export let isExpanded: boolean
 
 	let fOnClick: Function
@@ -65,7 +65,7 @@
 					{/if}
 					{item.label}
 				</div>
-				{#if item.children.length > 0}
+				{#if item.items.length > 0}
 					<Icon
 						props={new IconProps({
 							name: 'ChevronRight',
@@ -75,8 +75,8 @@
 					/>
 				{/if}
 			</div>
-			{#if item.children.length > 0}
-				{#each item.children as child}
+			{#if item.items.length > 0}
+				{#each item.items as child}
 					<!-- <svelte:self item={child} {isExpanded} /> -->
 				{/each}
 			{/if}

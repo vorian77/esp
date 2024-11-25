@@ -43,7 +43,7 @@ function dbEdgeInitAll(initDb: InitDb) {
 }
 
 export function initFeature(initDb: InitDb) {
-	initSysRepUser(initDb)
-	initContentAIRep(initDb)
-	// initContentMOEDStudent(initDb)
+	// initSysRepUser(initDb)
+	// initContentAIRep(initDb)
+	initContentMOEDStudent(initDb)
 }

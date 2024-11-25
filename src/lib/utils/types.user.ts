@@ -152,33 +152,19 @@ export class User {
 }
 
 export class UserOrg {
-	appName: string
-	codeLogoFileType: UserOrgLogoFileType
-	logoFileName: string
+	appName?: string
 	logoMarginRight: number
 	logoWidth: number
 	name: string
+	urlLogo?: string
 	constructor(obj: any) {
 		const clazz = 'UserOrg'
-		this.appName = strRequired(obj.appName, clazz, 'appName')
-		this.codeLogoFileType = memberOfEnum(
-			obj._codeLogoFileType,
-			clazz,
-			'codeLogoFileType',
-			'UserOrgLogoFileType',
-			UserOrgLogoFileType
-		)
-		this.logoFileName = strRequired(obj.logoFileName, clazz, 'logoFileName').trim()
+		this.appName = obj.appName
 		this.logoMarginRight = required(obj.logoMarginRight, clazz, 'logoMarginRight')
 		this.logoWidth = required(obj.logoWidth, clazz, 'logoWidth')
 		this.name = strRequired(obj.name, clazz, 'name')
+		this.urlLogo = strRequired(obj.file.url, clazz, 'file.url')
 	}
-}
-
-export enum UserOrgLogoFileType {
-	jpeg = 'jpeg',
-	jpg = 'jpg',
-	png = 'png'
 }
 
 export class UserPrefs {

@@ -174,8 +174,6 @@ export type $CmCsfDocumentλShape = $.typeutil.flatten<$CmCsfDataλShape & {
   "dateExpires": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateIssued": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
   "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
-  "fileNew": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
-  "fileOld": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "isShareWithClient": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;

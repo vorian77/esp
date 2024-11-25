@@ -103,8 +103,6 @@ module app_cm {
     file: json;
     isShareWithClient: bool;
     note: str;
-    fileNew: json;
-    fileOld: json;
   }
 
   type CmCsfMsg extending app_cm::CmCsfData {

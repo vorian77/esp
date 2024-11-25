@@ -1,97 +1,89 @@
 <script lang="ts">
+	import { User } from '$utils/types'
 	import { fade } from 'svelte/transition'
-	import NavBarListItem from '$comps/navBar/NavBarIListItem.svelte'
-	import { NavBarListItemData } from '$comps/navBar/types.navBar'
-	import type { stringify } from 'querystring'
+	import {
+		State,
+		StateLayoutComponent,
+		StatePacket,
+		StatePacketAction
+	} from '$comps/app/types.appState'
+	import NavBarApps from '$comps/navBar/NavBarApps.svelte'
+	import NavBarList from '$comps/navBar/NavBarList.svelte'
+	import NavBarListItem from '$comps/navBar/NavBarListItem.svelte'
+	import NavBarListGroup from '$comps/navBar/NavBarListGroup.svelte'
+	import NavBarOrg from '$comps/navBar/NavBarOrg.svelte'
+	import {
+		NavBarData,
+		NavBarDataCompList,
+		NavBarDataCompListGroup,
+		NavBarDataCompItem,
+		NavBarDataCompOrg
+	} from '$comps/navBar/types.navBar'
 
-	const eRoot = document.querySelector(':root')
-	const setCssVar = (cssVar: string, value: string) => {
-		eRoot.style.setProperty(`--${cssVar}`, value)
-	}
-	setCssVar('nav-width-open', '200px')
-	setCssVar('nav-width-closed', '60px')
+	export let state: State
 
-	const fadeIn = {
-		delay: 300,
-		duration: 200
+	const toggleOpen = () => {
+		console.log('NavBar.toggleOpen')
+		navBar.isOpen = !navBar.isOpen
+		updateNav()
 	}
-	const fadeOut = {
-		delay: 0,
-		duration: 200
+	const updateNav = () => {
+		navBar = navBar
 	}
-	let isOpen = false
 
-	let items: NavBarListItemData[] = []
-	items.push(new NavBarListItemData({ codeIcon: 'Settings', label: 'My Account' }))
-	items.push(new NavBarListItemData({ codeIcon: 'Mail', label: 'Messages' }))
-	items.push(new NavBarListItemData({ codeIcon: 'Activity', label: 'Activities' }))
-	console.log('NavBar.items', items)
+	let navBar = new NavBarData({ toggleOpen, updateNav, state })
+
+	// const eRoot = document.querySelector(':root')
+	// const setCssVar = (cssVar: string, value: string) => {
+	// 	eRoot.style.setProperty(`--${cssVar}`, value)
+	// }
+	// setCssVar('nav-width-open', '200px')
+	// setCssVar('nav-width-closed', '60px')
 </script>
 
-<nav class:expanded={isOpen}>
-	<button on:click={() => (isOpen = !isOpen)}>
-		{#if isOpen}
-			Open
-		{:else}
-			Closed
-		{/if}
-	</button>
-	<ul>
-		{#each items as item}
-			<NavBarListItem isExpanded={isOpen} data={item} />
-		{/each}
-	</ul>
-	{#if isOpen}
-		<section in:fade={fadeIn} out:fade={fadeOut}>
-			<hr />
+<nav
+	class="text-sm p-3 border-0 flex flex-col {navBar.isOpen
+		? 'open border-red-400'
+		: 'items-center border-green-400'}"
+>
+	{#if navBar}
+		{#each navBar.items as item}
 			<ul>
-				<h3>Folders</h3>
-				<li>🧾 Receipts</li>
-				<li>🤖 Autofilter</li>
+				<div class="mb-7">
+					{#if navBar.getItemClassName(item) === 'NavBarDataCompApps'}
+						<NavBarApps data={item} />
+					{:else if navBar.getItemClassName(item) === 'NavBarDataCompItem'}
+						<NavBarListItem {item} />
+					{:else if navBar.getItemClassName(item) === 'NavBarDataCompList'}
+						<NavBarList data={item} />
+					{:else if navBar.getItemClassName(item) === 'NavBarDataCompListGroup'}
+						<NavBarListGroup data={item} />
+					{:else if navBar.getItemClassName(item) === 'NavBarDataCompOrg'}
+						<NavBarOrg data={item} />
+					{/if}
+				</div>
 			</ul>
-		</section>
+		{/each}
 	{/if}
 </nav>
 
 <style>
 	:root {
-		--nav-width-open: 200px;
-		--nav-width-closed: 60px;
+		--nav-width-open: 250px;
+		--nav-width-closed: 70px;
 	}
 	nav {
-		grid-area: nav;
+		/* grid-area: nav; */
 		height: 100vw;
-		background-color: whitesmoke;
-		color: #a2b7c4;
+		background-color: gainsboro;
+		color: black;
 		transition: ease-out 300ms;
-		/* width: 60px; */
 		width: var(--nav-width-closed);
 		overflow: hidden;
 	}
 
-	.expanded {
+	.open {
 		transition: ease-out 200ms;
-		/* width: 200px; */
 		width: var(--nav-width-open);
-	}
-
-	ul {
-		list-style: none;
-		padding: 20px;
-		margin: 0;
-	}
-
-	li {
-		width: 200px;
-	}
-
-	h3 {
-		text-transform: uppercase;
-		margin: 0;
-		padding: 10px 0px;
-	}
-	hr {
-		color: white;
-		width: 80%;
 	}
 </style>

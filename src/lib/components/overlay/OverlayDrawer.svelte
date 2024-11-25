@@ -6,6 +6,7 @@
 	import { TokenApiUserId, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 	import { Node, ResponseBody } from '$utils/types'
 	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
+	import { adminDbReset } from '$utils/utils.sys'
 
 	const storeDrawer = getDrawerStore()
 
@@ -27,13 +28,10 @@
 	}
 
 	async function dbInitAdmin(event: MouseEvent) {
-		// <todo> - 240125
-		const state: State = $storeDrawer.meta.state
-		const userId = state.user!.id
-		const result: ResponseBody = await apiFetch(ApiFunction.dbEdgeInit, new TokenApiUserId(userId))
+		const result: ResponseBody = await adminDbReset($storeDrawer.meta.state)
 		if (result.success) {
 			closeDrawer()
-			await state.resetUser(true)
+			await $storeDrawer.meta.state.resetUser(true)
 		}
 	}
 

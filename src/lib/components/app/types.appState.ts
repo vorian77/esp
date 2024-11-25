@@ -28,7 +28,8 @@ import {
 	TokenAppDoActionConfirmType,
 	TokenAppModalEmbedField,
 	TokenAppModalReturn,
-	TokenAppModalReturnType
+	TokenAppModalReturnType,
+	TokenAppModalSelect
 } from '$utils/types.token'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'

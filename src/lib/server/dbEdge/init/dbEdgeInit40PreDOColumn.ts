@@ -383,13 +383,6 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
-		header: 'Logo File Type',
-		isMultiSelect: false,
-		name: 'codeLogoFileType'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'link',
 		header: 'Mask',
 		isMultiSelect: false,
 		name: 'codeMask'
@@ -1604,12 +1597,6 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'link',
 		header: 'List - Reorder Column',
 		name: 'listReorderColumn'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'str',
-		header: 'Logo File Name (without extension)',
-		name: 'logoFileName'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

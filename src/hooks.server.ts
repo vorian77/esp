@@ -12,7 +12,7 @@ Sentry.init({
 	tracesSampleRate: 1.0
 })
 
-const routesUnprotected = ['/about', '/auth', '/legalDisclosure']
+const routesUnprotected = ['/about', '/auth', '/legalDisclosure', '/test', '/test1']
 
 // <todo> - 240206 - possible way to control user reload of a page
 // function beforeNavigate(

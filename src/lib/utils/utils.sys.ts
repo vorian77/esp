@@ -1,3 +1,13 @@
+import { State } from '$comps/app/types.appState'
+import { apiFetch, ApiFunction } from '$routes/api/api'
+import { TokenApiUserId } from '$utils/types.token'
+
+export async function adminDbReset(state: State) {
+	// <todo> - 240125
+	const userId = state.user!.id
+	return await apiFetch(ApiFunction.dbEdgeInit, new TokenApiUserId(userId))
+}
+
 export function capitalizeFirstLetter(text: string) {
 	return text.charAt(0).toUpperCase() + text.slice(1)
 }

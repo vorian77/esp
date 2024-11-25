@@ -146,8 +146,6 @@ export namespace app_cm {
     "dateExpires"?: edgedb.LocalDate | null;
     "dateIssued": edgedb.LocalDate;
     "file"?: unknown | null;
-    "fileNew"?: unknown | null;
-    "fileOld"?: unknown | null;
     "isShareWithClient"?: boolean | null;
     "note"?: string | null;
   }
@@ -435,6 +433,7 @@ export namespace sys_core {
     "logoFileName"?: string | null;
     "logoMarginRight"?: number | null;
     "logoWidth"?: number | null;
+    "file"?: unknown | null;
   }
   export interface SysSystem extends ObjRoot, sys_user.Mgmt {
     "owner": SysOrg;
