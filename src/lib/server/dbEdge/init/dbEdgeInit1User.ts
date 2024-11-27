@@ -198,9 +198,9 @@ function initUserType(init: InitDb) {
 		name: 'ut_moed_student',
 		owner: 'sys_moed_old',
 		resources: [
-			{ codeType: 'widget', resource: 'wf_moed_student_ssr_app' },
-			{ codeType: 'widget', resource: 'wf_moed_student_ssr_doc' },
-			{ codeType: 'widget', resource: 'wf_moed_student_ssr_msg' }
+			{ codeType: 'task', resource: 'task_moed_ssr_app' },
+			{ codeType: 'task', resource: 'task_moed_ssr_app_doc' },
+			{ codeType: 'task', resource: 'task_moed_ssr_app_msg' }
 		]
 	})
 }
@@ -209,6 +209,7 @@ function initUsers(init: InitDb) {
 	/* system */
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_system',
+		defaultSystem: 'sys_system_old',
 		firstName: 'Root',
 		isMobileOnly: false,
 		lastName: 'User',
@@ -221,6 +222,7 @@ function initUsers(init: InitDb) {
 
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_system',
+		defaultSystem: 'sys_system_old',
 		firstName: 'User',
 		isMobileOnly: false,
 		lastName: 'System',
@@ -240,6 +242,7 @@ function initUsers(init: InitDb) {
 	/* Atlantic Impact */
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_ai',
+		defaultSystem: 'sys_ai_old',
 		firstName: 'Anise',
 		isMobileOnly: false,
 		lastName: 'Hayes',
@@ -252,6 +255,7 @@ function initUsers(init: InitDb) {
 
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_ai',
+		defaultSystem: 'sys_ai_old',
 		firstName: 'Phyllip',
 		isMobileOnly: false,
 		lastName: 'Hall',
@@ -263,6 +267,7 @@ function initUsers(init: InitDb) {
 	})
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_ai',
+		defaultSystem: 'sys_ai_old',
 		firstName: 'Erica',
 		isMobileOnly: false,
 		lastName: 'Hicks',
@@ -274,6 +279,7 @@ function initUsers(init: InitDb) {
 	})
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_ai',
+		defaultSystem: 'sys_ai_old',
 		firstName: 'Matthew',
 		isMobileOnly: false,
 		lastName: 'Clayton',
@@ -285,6 +291,7 @@ function initUsers(init: InitDb) {
 	})
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_ai',
+		defaultSystem: 'sys_ai_old',
 		firstName: 'Nico',
 		isMobileOnly: false,
 		lastName: 'Tanzini',
@@ -298,6 +305,7 @@ function initUsers(init: InitDb) {
 	/* MOED */
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
 		firstName: 'Burlinton',
 		isMobileOnly: false,
 		lastName: 'Stone',
@@ -310,6 +318,7 @@ function initUsers(init: InitDb) {
 
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
 		firstName: 'Omari',
 		isMobileOnly: true,
 		lastName: 'Jackson',
@@ -322,6 +331,7 @@ function initUsers(init: InitDb) {
 
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
 		firstName: 'Tyshell',
 		isMobileOnly: false,
 		lastName: 'Oliver',
@@ -334,6 +344,7 @@ function initUsers(init: InitDb) {
 
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
 		firstName: 'Travis',
 		isMobileOnly: false,
 		lastName: 'Williams',
@@ -346,6 +357,7 @@ function initUsers(init: InitDb) {
 
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
 		firstName: 'Tynesha',
 		isMobileOnly: false,
 		lastName: 'Wilson',

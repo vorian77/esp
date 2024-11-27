@@ -80,14 +80,48 @@ function initTaskMyAccount(init: InitDb) {
 				orderDefine: 60
 			},
 			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'defaultOrg',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0,
+				fieldListItems: 'il_sys_org_by_user',
+				linkTable: 'SysOrg'
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'defaultSystem',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0,
+				fieldListItems: 'il_sys_system_by_user',
+				linkTable: 'SysSystem'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90
+			},
+			{
 				codeAccess: 'optional',
 				codeFieldElement: 'file',
 				columnName: 'avatar',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 100,
+				orderDefine: 100,
 				indexTable: 1,
-				width: 300
+				width: 200
 			},
 
 			/* management */
@@ -158,13 +192,13 @@ function initTaskMyAccount(init: InitDb) {
 	})
 
 	init.addTrans('sysTask', {
+		codeCategory: 'setting',
 		codeIcon: 'Settings',
-		codeTaskType: 'dataObj',
 		header: 'My Account',
-		isAlwaysPinToDash: false,
+		isPinToDash: false,
 		isGlobalResource: true,
 		name: 'task_sys_auth_my_account',
-		objectTask: 'data_obj_task_sys_auth_my_account',
+		sourceDataObj: 'data_obj_task_sys_auth_my_account',
 		orderDefine: 0,
 		owner: 'sys_system_old'
 	})

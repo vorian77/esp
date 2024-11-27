@@ -1,5 +1,5 @@
 import {
-	arrayOfClasses,
+	arrayOfClass,
 	booleanOrDefault,
 	booleanOrFalse,
 	booleanRequired,
@@ -39,8 +39,8 @@ export class RepAnalytic {
 		this.description = strOptional(obj.description, clazz, 'description')
 		this.header = strOptional(obj.header, clazz, 'header')
 		this.name = strRequired(obj.name, clazz, 'name')
-		this.parms = arrayOfClasses(RepParm, obj.parms)
-		this.statuses = arrayOfClasses(RepAnalyticStatus, obj.statuses)
+		this.parms = arrayOfClass(RepParm, obj.parms)
+		this.statuses = arrayOfClass(RepAnalyticStatus, obj.statuses)
 	}
 }
 
@@ -91,15 +91,15 @@ export class Rep {
 		this.actionFieldGroup = obj._actionFieldGroup
 		// this.analytics = getArrayOfModels(RepAnalytic, obj.analytics)
 		this.description = strOptional(obj.description, clazz, 'description')
-		this.elements = arrayOfClasses(RepEl, obj.elements)
-		this.elementsSort = arrayOfClasses(RepEl, obj.elementsSort)
+		this.elements = arrayOfClass(RepEl, obj.elements)
+		this.elementsSort = arrayOfClass(RepEl, obj.elementsSort)
 		this.exprFilter = strOptional(obj.exprFilter, clazz, 'exprFilter')
 		this.exprObject = strOptional(obj.exprObject, clazz, 'exprObject')
 		this.exprSort = strOptional(obj.exprSort, clazz, 'exprSort')
 		this.header = strOptional(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.name = strRequired(obj.name, clazz, 'name')
-		this.tables = arrayOfClasses(RawDataObjTable, obj.tables)
+		this.tables = arrayOfClass(RawDataObjTable, obj.tables)
 	}
 }
 
@@ -254,10 +254,10 @@ export class RepUser {
 	constructor(obj: any) {
 		const clazz = 'Rep'
 		obj = valueOrDefault(obj, {})
-		// this.analytics = arrayOfClasses(obj.analytics, RepAnalytic)
+		// this.analytics = arrayOfClass(obj.analytics, RepAnalytic)
 		this.descriptionUser = strOptional(obj.descriptionUser, clazz, 'descriptionUser')
 		this.headerUser = strRequired(obj.headerUser, clazz, 'headerUser')
-		this.parms = arrayOfClasses(RepUserParm, obj.parms)
+		this.parms = arrayOfClass(RepUserParm, obj.parms)
 		this.report = new Rep(obj.report)
 	}
 }

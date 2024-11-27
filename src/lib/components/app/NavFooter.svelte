@@ -5,7 +5,6 @@
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
 	import DataViewer from '$utils/DataViewer.svelte'
-	import SysWigFeature from '$comps/widgets/WidgetFeature.svelte'
 	const FILENAME = '/$comps/NavFooter.svelte'
 
 	export let state: State

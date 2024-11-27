@@ -101,8 +101,23 @@ export async function processDataObj(token: TokenApiQuery) {
 	}
 
 	// retreivePreset
-	if (rawDataObj.isDetailRetrievePreset) {
-		debug('processDataObj', 'isDetailRetrievePreset', rawDataObj.name)
+	if (rawDataObj.isDetailRetrievePreset && token.queryType === TokenApiQueryType.retrieve) {
+		const exprFilter = rawDataObj.exprFilter
+		const type = rawDataObj.tables[0].table.object
+		const expr = `SELECT ${type} FILTER ${exprFilter}`
+
+		const currentData = await exeQueryMultiData(
+			expr,
+			queryData,
+			new EvalExprContext('processDataObj.retrievePreset', '')
+		)
+
+		token.queryType = currentData.length > 0 ? TokenApiQueryType.retrieve : TokenApiQueryType.preset
+		debug('processDataObj', 'isDetailRetrievePreset', {
+			dataObjName: rawDataObj.name,
+			currentData,
+			queryType: token.queryType
+		})
 	}
 
 	// queries
@@ -220,19 +235,6 @@ async function processDataObjExecute(
 					scriptGroup.scripts.forEach((script: Script) => {
 						script.queryData.updateTableData(rootTableName, dataRow)
 					})
-
-					// set appSystemId
-					if (script.queryData?.dataTab?.parms.valueGet(ParmsValuesType.isSystemRoot)) {
-						const appSystemId =
-							queryType === TokenApiQueryType.preset
-								? script.queryData?.dataTab?.parms.valueGet(ParmsValuesType.appSystemId)
-								: strRequired(
-										dataRow.getValue(`_${ParmsValuesType.appSystemId}_`),
-										clazz,
-										ParmsValuesType.appSystemId
-									)
-						scriptData.parms.valueSet(ParmsValuesType.appSystemId, appSystemId)
-					}
 				}
 				// add dataItems
 				script.queryData?.dataTab?.parms.update(scriptData.parms.valueGetAll())
@@ -389,7 +391,10 @@ export async function getRawDataObj(
 
 export async function processExpression(queryData: TokenApiQueryData) {
 	queryData = TokenApiQueryData.load(queryData)
-	return new ApiResult(true, exeQueryMultiData(queryData.getParms().expr, queryData))
+	const expr = queryData.dataTab.parms.valueGet(ParmsValuesType.dbExpr)
+	const result = await exeQueryMultiData(expr, queryData)
+	debug('processExpression', 'expr', { expr, result })
+	return new ApiResult(true, { data: result })
 }
 
 export class ProcessRow {

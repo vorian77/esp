@@ -13,7 +13,7 @@ export function getArray(obj: any) {
 	return arr
 }
 
-export function arrayOfClasses(clazz: any, objs: any, parm: any = undefined) {
+export function arrayOfClass(clazz: any, objs: any, parm: any = undefined) {
 	objs = getArray(objs)
 	const arr = []
 	for (const obj of objs) {

@@ -33,7 +33,7 @@ import {
 import { addAnalytic, addReport } from '$server/dbEdge/init/dbEdgeInit200Utilities40Rep'
 import { required, valueOrDefault } from '$utils/utils.model'
 import {
-	arrayOfClasses,
+	arrayOfClass,
 	booleanOrFalse,
 	booleanRequired,
 	type DataRecord,
@@ -349,10 +349,7 @@ export class InitDb {
 		for (let i: number = 0; i < this.items.length; i++) {
 			const item = this.items[i]
 			if (item instanceof InitDbItemObject && item.dbObject) {
-				let links = arrayOfClasses(
-					ObjectLink,
-					await getDBObjectLinks(new TokenApiId(item.dbObject))
-				)
+				let links = arrayOfClass(ObjectLink, await getDBObjectLinks(new TokenApiId(item.dbObject)))
 				debug('executeLinks: ' + item.name, 'links', links)
 			}
 		}

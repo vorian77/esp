@@ -1,11 +1,12 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
 export function initPreEmbedListSelect(init: InitDb) {
-	initFieldListSelectCodes(init)
-	initFieldListSelectColumns(init)
+	initFieldListSelectCode(init)
+	initFieldListSelectCodeTypeFamily(init)
+	initFieldListSelectColumn(init)
 }
 
-function initFieldListSelectCodes(init: InitDb) {
+function initFieldListSelectCode(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
@@ -55,7 +56,47 @@ function initFieldListSelectCodes(init: InitDb) {
 	})
 }
 
-function initFieldListSelectColumns(init: InitDb) {
+function initFieldListSelectCodeTypeFamily(init: InitDb) {
+	init.addTrans('sysDataObjEmbed', {
+		actionFieldGroup: 'doag_embed_list_select',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeDataObjType: 'embed',
+		exprFilter:
+			'.parent = (SELECT sys_core::SysCode FILTER .id = <tree,uuid,SysCode.id,undefined>).codeType',
+		header: 'Select Code Types',
+		name: 'dofls_sys_admin_sys_code_type_family',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysCodeType' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'name',
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			}
+		]
+	})
+
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
+		actionFieldGroupModal: 'doag_dialog_footer_list',
+		btnLabelComplete: 'Select Code Type(s)',
+		dataObjList: 'dofls_sys_admin_sys_code_type_family',
+		name: 'fels_sys_code_type_family',
+		owner: 'sys_system_old'
+	})
+}
+
+function initFieldListSelectColumn(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionFieldGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',

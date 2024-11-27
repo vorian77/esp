@@ -15,7 +15,7 @@ import {
 import { LicenseManager } from 'ag-grid-charts-enterprise'
 import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field'
 import {
-	arrayOfClasses,
+	arrayOfClass,
 	booleanOrFalse,
 	DataObj,
 	DataObjSort,
@@ -275,7 +275,7 @@ export class GridSettingsColumns {
 	constructor(rawColumns: any | undefined = []) {
 		const clazz = 'GridSettingsColumns'
 		rawColumns = getArray(rawColumns)
-		this.columns = arrayOfClasses(GridSettingsColumnItem, rawColumns)
+		this.columns = arrayOfClass(GridSettingsColumnItem, rawColumns)
 		this.setColumnFlex()
 	}
 	setColumnFlex() {

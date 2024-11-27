@@ -13,6 +13,8 @@ export type $CmClientλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "school": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "office": $.LinkDesc<_sys_core.$SysObjSubject, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "person": $.LinkDesc<_default.$SysPerson, $.Cardinality.One, {}, false, false,  false, false>;
+  "hasDriversLicense": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
+  "codeHighestEducation": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<client[is app_cm::CmClientServiceFlow]": $.LinkDesc<$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<client": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -198,6 +200,7 @@ export type $CmCsfJobPlacementλShape = $.typeutil.flatten<$CmCsfDataλShape & {
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "title": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "wage": $.PropertyDesc<_std.$float32, $.Cardinality.AtMostOne, false, false, false, false>;
+  "codeRetention": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
 }>;
 type $CmCsfJobPlacement = $.ObjectType<"app_cm::CmCsfJobPlacement", $CmCsfJobPlacementλShape, null, [
   ...$CmCsfData['__exclusives__'],

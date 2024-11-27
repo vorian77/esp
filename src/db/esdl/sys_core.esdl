@@ -5,6 +5,7 @@ module sys_core {
     addr2: str;
     avatar: json;
     city: str;
+    codeIcon: sys_core::SysCode;
     codeObjType: sys_core::SysCode;
     codeState: sys_core::SysCode;
     multi contacts: default::SysPerson{
@@ -71,13 +72,14 @@ module sys_core {
     };
   }
 
-  type SysAppHeader extending sys_core::SysObj {
-    codeIcon: sys_core::SysCode;
-  }
+  type SysAppHeader extending sys_core::SysObj {}
 
   type SysCodeType extending sys_core::SysObj {
     parent: sys_core::SysCodeType;
     order: default::nonNegative;
+    valueDecimal: float64;
+    valueInteger: int64;
+    valueString: str;
     constraint exclusive on ((.name));
   }
 
@@ -85,6 +87,7 @@ module sys_core {
     required owner: sys_core::SysSystem;
     parent: sys_core::SysCode;
     required codeType: sys_core::SysCodeType;
+    multi codeTypeFamily: sys_core::SysCodeType;
     order: default::nonNegative;
     valueDecimal: float64;
     valueInteger: int64;
@@ -358,7 +361,6 @@ module sys_core {
   }
   
   type SysNodeObj extending sys_core::SysObj {
-    required codeIcon: sys_core::SysCode;
     required codeNavType: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
     dataObj: sys_core::SysDataObj {
@@ -366,7 +368,6 @@ module sys_core {
     };
     required isAlwaysRetrieveData: bool;
     required isHideRowManager: bool;
-    isSystemRoot: bool;
     parent: sys_core::SysNodeObj;
     page: str;
     constraint exclusive on (.name);

@@ -16,10 +16,6 @@
 <div>
 	{#if data}
 		{#if data.header && data.navBar.isOpen}
-			{#if !data.isTop}
-				<hr class="mb-2" />
-			{/if}
-
 			<h2 class="mb-1 text-gray-500" in:fade={data.navBar.fadeIn} out:fade={data.navBar.fadeOut}>
 				{data.header}
 			</h2>
@@ -30,5 +26,7 @@
 				<NavBarListItem {item} />
 			{/each}
 		</ul>
+
+		<hr class="my-2" />
 	{/if}
 </div>

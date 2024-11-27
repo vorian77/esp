@@ -24,14 +24,15 @@ const $Mgmt = $.makeType<$Mgmt>(_.spec, "5029d127-b3c2-11ee-a4fe-a73f30dac3e0", 
 const Mgmt: $.$expr_PathNode<$.TypeSet<$Mgmt, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Mgmt, $.Cardinality.Many), null);
 
 export type $SysTaskλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
-  "codeIcon": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
-  "codeTaskStatusObj": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeTaskType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "isAlwaysPinToDash": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
-  "codeColorFrom": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeColorTo": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "objectTask": $.LinkDesc<_sys_core.$SysObj, $.Cardinality.One, {}, false, false,  false, false>;
+  "exprStatus": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "btnStyle": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "hasAltOpen": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
+  "codeStatusObj": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "codeCategory": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "sourceDataObj": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "sourceNodeObj": $.LinkDesc<_sys_core.$SysNodeObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "isPinToDash": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;
 type $SysTask = $.ObjectType<"sys_user::SysTask", $SysTaskλShape, null, [
   ..._sys_core.$SysObj['__exclusives__'],
@@ -50,6 +51,7 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "defaultOrg": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.One, {}, false, false,  false, false>;
   "owner": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.One, {}, false, false,  false, false>;
   "password": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, true>;
+  "defaultSystem": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.One, {}, false, false,  false, false>;
   "<createdBy[is sys_user::Mgmt]": $.LinkDesc<$Mgmt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysCode]": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysObj]": $.LinkDesc<_sys_core.$SysObj, $.Cardinality.Many, {}, false, false,  false, false>;

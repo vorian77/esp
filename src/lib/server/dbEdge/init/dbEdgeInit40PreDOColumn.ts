@@ -196,6 +196,12 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
+		header: 'Button Style',
+		name: 'btnStyle'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
 		header: 'City',
 		name: 'city'
 	})
@@ -249,6 +255,13 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
+		header: 'Category',
+		isMultiSelect: false,
+		name: 'codeCategory',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
 		header: 'Duration',
 		isMultiSelect: false,
 		name: 'codeCmCohortAttdDuration',
@@ -267,20 +280,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Color',
 		isMultiSelect: false,
 		name: 'codeColor'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Color - From',
-		isMultiSelect: false,
-		name: 'codeColorFrom'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Color - To',
-		isMultiSelect: false,
-		name: 'codeColorTo'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
@@ -358,6 +357,13 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'codeGender',
 		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_ai_old',
+		codeDataType: 'link',
+		header: 'Highest Education',
+		isMultiSelect: false,
+		name: 'codeHighestEducation'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -473,6 +479,13 @@ export function initPreColumn(init: InitDb) {
 		name: 'codeReportElementType'
 	})
 	init.addTrans('sysColumn', {
+		owner: 'sys_ai_old',
+		codeDataType: 'link',
+		header: 'Retention',
+		isMultiSelect: false,
+		name: 'codeRetention'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Sector',
@@ -502,14 +515,8 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
-		header: 'Task - Status Object',
-		name: 'codeTaskStatusObj',
-		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Task - Type',
-		name: 'codeTaskType',
+		header: 'Status Object',
+		name: 'codeStatusObj',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
@@ -538,6 +545,13 @@ export function initPreColumn(init: InitDb) {
 		header: 'Type',
 		isMultiSelect: false,
 		name: 'codeType',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Code Type Family',
+		isMultiSelect: true,
+		name: 'codeTypeFamily',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
@@ -1074,6 +1088,12 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Default System',
+		name: 'defaultSystem'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Description',
 		name: 'description'
@@ -1197,6 +1217,12 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
+		header: 'Status Expression',
+		name: 'exprStatus'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
 		header: 'Storage Key Expression',
 		name: 'exprStorageKey'
 	})
@@ -1272,6 +1298,24 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Full Name',
 		name: 'fullName'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Has Alternate Open',
+		name: 'hasAltOpen',
+		togglePresetTrue: false,
+		toggleValueFalse: 'No',
+		toggleValueTrue: 'Yes'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_ai_old',
+		codeDataType: 'bool',
+		header: 'Has Drivers License',
+		name: 'hasDriversLicense',
+		togglePresetTrue: false,
+		toggleValueFalse: 'No',
+		toggleValueTrue: 'Yes'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1383,7 +1427,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Always Pin To Dashboard',
-		name: 'isAlwaysPinToDash'
+		name: 'isPinToDash'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1522,12 +1566,6 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'bool',
 		header: 'Share With Student',
 		name: 'isShareWithClient'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'bool',
-		header: 'System Root',
-		name: 'isSystemRoot',
-		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1704,8 +1742,14 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
-		header: 'Task - Object',
-		name: 'objectTask'
+		header: 'Task Object - Data Object',
+		name: 'objectDataObj'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Task Object - Node',
+		name: 'objectNodeObj'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1943,6 +1987,20 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'serviceFlow',
 		owner: 'sys_ai_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Source - Data Object',
+		isMultiSelect: false,
+		name: 'sourceDataObj',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Source - Node Object',
+		isMultiSelect: false,
+		name: 'sourceNodeObj',
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

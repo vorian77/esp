@@ -379,7 +379,6 @@ function initStudent(init: InitDb) {
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_moed_part_detail',
 		header: 'Participant',
-		isSystemRoot: true,
 		name: 'node_obj_moed_part_detail',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
@@ -1274,7 +1273,7 @@ function initCsfDocument(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_family_order_name_by_codeType_name_system',
 				fieldListItemsParmName: 'ct_cm_doc_type',
 				linkTable: 'SysCode'
 			},
@@ -1688,16 +1687,23 @@ function initTaskSsrApp(init: InitDb) {
 	})
 
 	init.addTrans('sysTask', {
+		btnStyle: 'bg-gradient-to-b from-green-300 hover:from-pink-500 active:bg-violet-700',
+		codeCategory: 'default',
 		codeIcon: 'ClipboardPen',
-		codeTaskType: 'dataObj',
-		codeColorFrom: 'green',
-		codeTaskStatusObj: 'tso_moed_app',
+		codeStatusObj: 'tso_moed_app',
 		description: 'First step to my future.',
+		// 		exprStatus: `select app_cm::CmClientServiceFlow
+		// { _codeStatus := .codeStatus.name, dateReferral, modifiedAt, _modifiedBy := .modifiedBy.person.fullName }
+		// filter .client = (SELECT org_moed::MoedParticipant FILTER .person.id = <user,uuid,id>) ORDER BY .modifiedAt DESC`,
+
+		exprStatus: `SELECT app_cm::CmClientServiceFlow
+{ _codeStatus := .codeStatus.name, dateReferral, modifiedAt, _modifiedBy := .modifiedBy.person.fullName }
+FILTER .id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90" ORDER BY .modifiedAt DESC`,
 		header: 'My Application',
-		isAlwaysPinToDash: true,
+		isPinToDash: true,
 		isGlobalResource: false,
 		name: 'task_moed_ssr_app',
-		objectTask: 'data_obj_task_moed_ssr_app',
+		sourceDataObj: 'data_obj_task_moed_ssr_app',
 		orderDefine: 10,
 		owner: 'sys_moed_old'
 	})
@@ -1749,12 +1755,16 @@ function initTaskSsrDoc(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjTask', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
+		codeDataObjType: 'task',
+		exprFilter:
+			'.csf.id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90" AND .codeType.name = "cm_moed_doc_type_age"',
 		name: 'data_obj_task_moed_ssr_doc_detail',
 		header: 'My Document',
+		isDetailRetrievePreset: true,
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
 		actionFieldGroup: 'doag_detail',
 		actionsQuery: [
@@ -1796,8 +1806,7 @@ function initTaskSsrDoc(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
-				fieldListItemsParmName: 'ct_cm_doc_type',
+				fieldListItems: 'il_sys_code_family_order_name_by_codeType_name_system',
 				linkTable: 'SysCode'
 			},
 			{
@@ -1892,16 +1901,20 @@ function initTaskSsrDoc(init: InitDb) {
 	})
 
 	init.addTrans('sysTask', {
+		btnStyle: 'bg-gradient-to-b from-blue-300 hover:from-pink-500 active:bg-violet-700 ',
+		codeCategory: 'default',
 		codeIcon: 'ImageUp',
-		codeTaskType: 'nodeObj',
-		codeColorFrom: 'blue',
-		codeTaskStatusObj: 'tso_moed_app_doc',
+		codeStatusObj: 'tso_moed_app_doc',
 		description: 'Step 2: to help speed up my application processing.',
+		exprStatus: `SELECT sys_core::SysCodeType
+{ id, name, header,_uploaded := (SELECT true IF (SELECT count((SELECT app_cm::CmCsfDocument FILTER .csf.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person AND .codeType.id = .id))) > 0 ELSE false)}
+FILTER .parent.name = 'ct_cm_doc_type' ORDER BY .order asc`,
+		hasAltOpen: true,
 		header: 'My Eligibility Documents',
-		isAlwaysPinToDash: true,
+		isPinToDash: true,
 		isGlobalResource: false,
 		name: 'task_moed_ssr_app_doc',
-		objectTask: 'node_obj_task_moed_ssr_doc_list',
+		sourceDataObj: 'data_obj_task_moed_ssr_doc_detail',
 		orderDefine: 20,
 		owner: 'sys_moed_old'
 	})
@@ -2113,16 +2126,16 @@ function initTaskSsrMsg(init: InitDb) {
 	})
 
 	init.addTrans('sysTask', {
+		btnStyle: 'bg-gradient-to-b from-amber-300 hover:from-pink-500 active:bg-violet-700 ',
+		codeCategory: 'default',
 		codeIcon: 'Mail',
-		codeTaskType: 'nodeObj',
-		codeColorFrom: 'amber',
-		codeTaskStatusObj: 'tso_moed_app_msg',
+		codeStatusObj: 'tso_moed_app_msg',
 		description: 'Have questions? Send messages to program staff.',
 		header: 'My Messages',
-		isAlwaysPinToDash: true,
+		isPinToDash: true,
 		isGlobalResource: false,
 		name: 'task_moed_ssr_app_msg',
-		objectTask: 'node_obj_task_moed_ssr_msg_list',
+		sourceDataObj: 'node_obj_task_moed_ssr_msg_list',
 		orderDefine: 30,
 		owner: 'sys_moed_old'
 	})

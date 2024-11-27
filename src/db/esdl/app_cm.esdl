@@ -53,12 +53,14 @@ module app_cm {
 
   # Client
   type CmClient extending sys_user::Mgmt {
+    agencyId: str;
+    codeHighestEducation: sys_core::SysCode;
+    hasDriversLicense: bool;
+    office: sys_core::SysObjSubject;
     required owner: sys_core::SysSystem;
     required person: default::SysPerson{
       on source delete delete target if orphan;
     };
-    agencyId: str;
-    office: sys_core::SysObjSubject;
     school: str;
   }
 
@@ -128,6 +130,7 @@ module app_cm {
   type CmCsfJobPlacement extending app_cm::CmCsfData {
     required codeJobType: sys_core::SysCode;
     required codePlacementRelated: sys_core::SysCode;
+    codeRetention: sys_core::SysCode;
     required codeWageType: sys_core::SysCode;
     required dateStart: cal::local_date;
     employerContactEmail: str;

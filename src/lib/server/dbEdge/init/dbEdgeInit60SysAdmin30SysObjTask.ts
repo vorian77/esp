@@ -41,7 +41,7 @@ function initTask(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeTaskType',
+				columnName: 'codeCategory',
 				isDisplayable: true,
 				isExcludeUpdate: true,
 				orderDisplay: 40,
@@ -64,8 +64,8 @@ function initTask(init: InitDb) {
 				columnName: 'orderDefine',
 				indexTable: 0,
 				isDisplayable: true,
-				orderDefine: 200,
-				orderDisplay: 200
+				orderDefine: 60,
+				orderDisplay: 60
 			}
 		]
 	})
@@ -116,13 +116,13 @@ function initTask(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'codeTaskType',
+				columnName: 'codeCategory',
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_task_type',
+				fieldListItemsParmName: 'ct_sys_task_category',
 				linkTable: 'SysCode'
 			},
 			{
@@ -131,70 +131,53 @@ function initTask(init: InitDb) {
 				exprPreset: '(SELECT false)',
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60
+				orderDisplay: 70,
+				orderDefine: 70
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70
+				orderDisplay: 80,
+				orderDefine: 80
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'textArea',
 				columnName: 'description',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90
+				orderDisplay: 100,
+				orderDefine: 100
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeIcon',
 				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100,
+				orderDisplay: 110,
+				orderDefine: 110,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_icon',
 				linkTable: 'SysCode'
 			},
 			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'codeColorFrom',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_tailwind_color',
-				linkTable: 'SysCode'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'codeColorTo',
+				codeFieldElement: 'number',
+				columnName: 'orderDefine',
 				isDisplayable: true,
 				orderDisplay: 120,
 				orderDefine: 120,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_tailwind_color',
-				linkTable: 'SysCode'
+				indexTable: 0
 			},
 			{
 				codeFieldElement: 'toggle',
-				columnName: 'isAlwaysPinToDash',
+				columnName: 'isPinToDash',
 				exprPreset: '(SELECT false)',
 				indexTable: 0,
 				isDisplayable: true,
@@ -202,55 +185,88 @@ function initTask(init: InitDb) {
 				orderDefine: 130
 			},
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
+				codeFieldElement: 'toggle',
+				columnName: 'hasAltOpen',
+				exprPreset: '(SELECT false)',
+				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 140,
 				orderDefine: 140
 			},
 			{
 				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
+				columnName: 'custom_row_end',
 				isDisplayable: true,
 				orderDisplay: 150,
 				orderDefine: 150
 			},
 			{
-				codeFieldElement: 'select',
-				columnName: 'objectTask',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 160,
-				orderDefine: 160,
-				indexTable: 0,
-				fieldListItems: 'il_sys_task_obj',
-				linkTable: 'SysObj'
+				orderDefine: 160
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'codeTaskStatusObj',
+				columnName: 'sourceDataObj',
 				isDisplayable: true,
 				orderDisplay: 170,
 				orderDefine: 170,
+				indexTable: 0,
+				fieldListItems: 'il_sys_data_obj_by_type',
+				fieldListItemsParmName: 'task',
+				linkTable: 'SysDataObj'
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'sourceNodeObj',
+				isDisplayable: true,
+				orderDisplay: 180,
+				orderDefine: 180,
+				indexTable: 0,
+				fieldListItems: 'il_sys_node_obj_by_nav_type',
+				fieldListItemsParmName: 'task',
+				linkTable: 'SysNodeObj'
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeStatusObj',
+				isDisplayable: true,
+				orderDisplay: 190,
+				orderDefine: 190,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_task_status_obj',
 				linkTable: 'SysCode'
 			},
 			{
-				codeFieldElement: 'number',
-				columnName: 'orderDefine',
-				isDisplayable: true,
-				orderDisplay: 180,
-				orderDefine: 180,
-				indexTable: 0
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 190,
-				orderDefine: 190
+				orderDisplay: 200,
+				orderDefine: 200
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'btnStyle',
+				isDisplayable: true,
+				orderDisplay: 210,
+				orderDefine: 210,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'exprStatus',
+				isDisplayable: true,
+				orderDisplay: 220,
+				orderDefine: 220,
+				indexTable: 0
 			},
 
 			/* management */

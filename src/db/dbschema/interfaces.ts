@@ -21,14 +21,15 @@ export namespace sys_user {
     "modifiedBy": SysUser;
   }
   export interface SysTask extends sys_core.SysObj {
-    "codeIcon": sys_core.SysCode;
-    "codeTaskStatusObj"?: sys_core.SysCode | null;
-    "codeTaskType": sys_core.SysCode;
     "description"?: string | null;
-    "isAlwaysPinToDash"?: boolean | null;
-    "codeColorFrom"?: sys_core.SysCode | null;
-    "codeColorTo"?: sys_core.SysCode | null;
-    "objectTask": sys_core.SysObj;
+    "exprStatus"?: string | null;
+    "btnStyle"?: string | null;
+    "hasAltOpen"?: boolean | null;
+    "codeStatusObj"?: sys_core.SysCode | null;
+    "codeCategory": sys_core.SysCode;
+    "sourceDataObj"?: sys_core.SysDataObj | null;
+    "sourceNodeObj"?: sys_core.SysNodeObj | null;
+    "isPinToDash"?: boolean | null;
   }
   export interface SysUser extends Mgmt {
     "userName"?: string | null;
@@ -40,6 +41,7 @@ export namespace sys_user {
     "defaultOrg": sys_core.SysOrg;
     "owner": sys_core.SysOrg;
     "password": string;
+    "defaultSystem": sys_core.SysSystem;
   }
   export interface SysUserPref extends Mgmt {
     "user": SysUser;
@@ -71,6 +73,8 @@ export namespace app_cm {
     "school"?: string | null;
     "office"?: sys_core.SysObjSubject | null;
     "person": SysPerson;
+    "hasDriversLicense"?: boolean | null;
+    "codeHighestEducation"?: sys_core.SysCode | null;
   }
   export interface CmClientServiceFlow extends sys_user.Mgmt {
     "client": CmClient;
@@ -163,6 +167,7 @@ export namespace app_cm {
     "note"?: string | null;
     "title": string;
     "wage"?: number | null;
+    "codeRetention"?: sys_core.SysCode | null;
   }
   export interface CmCsfMsg extends CmCsfData {
     "codeStatus": sys_core.SysCode;
@@ -215,6 +220,7 @@ export namespace sys_core {
     "testCodeMulti": SysCode[];
     "testCodeSingle"?: SysCode | null;
     "contacts": SysPerson[];
+    "codeIcon"?: SysCode | null;
   }
   export interface SysObj extends ObjRoot, sys_user.Mgmt {
     "isGlobalResource"?: boolean | null;
@@ -224,9 +230,7 @@ export namespace sys_core {
     "appHeader": SysAppHeader;
     "nodes": SysNodeObj[];
   }
-  export interface SysAppHeader extends SysObj {
-    "codeIcon"?: SysCode | null;
-  }
+  export interface SysAppHeader extends SysObj {}
   export interface SysCode extends ObjRoot, sys_user.Mgmt {
     "valueDecimal"?: number | null;
     "parent"?: SysCode | null;
@@ -235,10 +239,14 @@ export namespace sys_core {
     "valueString"?: string | null;
     "codeType": SysCodeType;
     "owner": SysSystem;
+    "codeTypeFamily": SysCodeType[];
   }
   export interface SysCodeType extends SysObj {
     "parent"?: SysCodeType | null;
     "order"?: number | null;
+    "valueDecimal"?: number | null;
+    "valueInteger"?: number | null;
+    "valueString"?: string | null;
   }
   export interface SysDataObj extends SysObj {
     "codeCardinality": SysCode;
@@ -408,14 +416,12 @@ export namespace sys_core {
     "index": number;
   }
   export interface SysNodeObj extends SysObj {
-    "codeIcon": SysCode;
     "codeNavType": SysCode;
     "codeNodeType": SysCode;
     "dataObj"?: SysDataObj | null;
     "parent"?: SysNodeObj | null;
     "isAlwaysRetrieveData": boolean;
     "isHideRowManager": boolean;
-    "isSystemRoot"?: boolean | null;
     "page"?: string | null;
   }
   export interface SysObjNote extends sys_user.Mgmt {
@@ -428,9 +434,7 @@ export namespace sys_core {
     "codeType": SysCode;
   }
   export interface SysOrg extends ObjRoot, sys_user.Mgmt {
-    "codeLogoFileType"?: SysCode | null;
     "appName"?: string | null;
-    "logoFileName"?: string | null;
     "logoMarginRight"?: number | null;
     "logoWidth"?: number | null;
     "file"?: unknown | null;

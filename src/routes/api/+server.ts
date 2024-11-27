@@ -7,19 +7,15 @@ import {
 } from '$routes/api/dbEdge/dbEdgeProcess'
 import {
 	getDataObjActionFieldGroup,
+	getDataObjId,
+	getFieldEmbedListSelect,
 	getNodesBranch,
 	getNodesLevel,
+	getNodeObjByName,
 	getTableColumns,
 	getUserByUserId,
 	getUserPref,
-	getUserResourcesApp,
-	getUserResourcesFooter,
 	setUserPref
-} from '$routes/api/dbEdge/dbEdgeUtilities'
-import {
-	getDataObjId,
-	getFieldEmbedListSelect,
-	getNodeObjByName
 } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { dbEdgeInit } from '$server/dbEdge/init/dbEdgeInit'
 import { sysSendText } from '$routes/api/apiTwilio'
@@ -74,12 +70,6 @@ export async function POST({ request, cookies }) {
 
 		case ApiFunction.sysGetUserPref:
 			return getServerResponse(await getUserPref(token))
-
-		case ApiFunction.sysGetUserResourcesApp:
-			return getServerResponse(await getUserResourcesApp(token))
-
-		case ApiFunction.sysGetUserResourcesFooter:
-			return getServerResponse(await getUserResourcesFooter(token))
 
 		case ApiFunction.sysSetUserPref:
 			return getServerResponse(await setUserPref(token))

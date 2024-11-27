@@ -1,6 +1,6 @@
 import { Field, PropsField, PropsFieldRaw } from '$comps/form/field'
 import {
-	arrayOfClasses,
+	arrayOfClass,
 	DataObj,
 	DataObjDataField,
 	DataObjEmbedType,
@@ -74,7 +74,7 @@ export class FieldEmbedListConfig extends FieldEmbed {
 		const clazz = 'FieldEmbedListConfig'
 		super(props)
 		this.raw = required(props.propRaw.fieldEmbedListConfig, clazz, 'raw')
-		this.actionsFieldModal = arrayOfClasses(
+		this.actionsFieldModal = arrayOfClass(
 			DataObjActionField,
 			props.propRaw.fieldEmbedListConfig?.rawActionsFieldModal
 		)
@@ -107,7 +107,7 @@ export class FieldEmbedListSelect extends FieldEmbed {
 		const clazz = 'FieldEmbedListSelect'
 		super(props)
 		this.raw = required(props.propRaw.fieldEmbedListSelect, clazz, 'raw')
-		this.actionsFieldModal = arrayOfClasses(
+		this.actionsFieldModal = arrayOfClass(
 			DataObjActionField,
 			props.propRaw.fieldEmbedListSelect?.rawActionsFieldModal
 		)

@@ -23,7 +23,6 @@
 	export let state: State
 
 	const toggleOpen = () => {
-		console.log('NavBar.toggleOpen')
 		navBar.isOpen = !navBar.isOpen
 		updateNav()
 	}

@@ -59,7 +59,6 @@ export class State {
 	storeDrawer: any
 	storeModal: any
 	storeToast: any
-
 	user?: User
 	constructor(obj: any) {
 		const clazz = 'State'

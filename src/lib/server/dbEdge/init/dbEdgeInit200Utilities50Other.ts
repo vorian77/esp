@@ -334,37 +334,42 @@ export async function addSubjectObj(data: any) {
 
 export async function addTask(data: any) {
 	sectionHeader(`addTask - ${data.name}`)
+	debug('addTask', 'data', data)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			codeColorFrom: e.optional(e.str),
-			codeColorTo: e.optional(e.str),
+			btnStyle: e.optional(e.str),
+			codeCategory: e.str,
 			codeIcon: e.str,
-			codeTaskStatusObj: e.optional(e.str),
-			codeTaskType: e.str,
+			codeStatusObj: e.optional(e.str),
 			description: e.optional(e.str),
+			exprStatus: e.optional(e.str),
+			hasAltOpen: e.optional(e.bool),
 			header: e.optional(e.str),
-			isAlwaysPinToDash: e.optional(e.bool),
+			isPinToDash: e.optional(e.bool),
 			isGlobalResource: e.bool,
 			name: e.str,
-			objectTask: e.str,
+			sourceDataObj: e.optional(e.str),
+			sourceNodeObj: e.optional(e.str),
 			orderDefine: e.int16,
 			owner: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysTask, {
-				codeColorFrom: e.sys_core.getCode('ct_sys_tailwind_color', p.codeColorFrom),
-				codeColorTo: e.sys_core.getCode('ct_sys_tailwind_color', p.codeColorTo),
+				btnStyle: p.btnStyle,
+				codeCategory: e.select(e.sys_core.getCode('ct_sys_task_category', p.codeCategory)),
 				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
-				codeTaskStatusObj: e.sys_core.getCode('ct_sys_task_status_obj', p.codeTaskStatusObj),
-				codeTaskType: e.select(e.sys_core.getCode('ct_sys_task_type', p.codeTaskType)),
+				codeStatusObj: e.sys_core.getCode('ct_sys_task_status_obj', p.codeStatusObj),
 				createdBy: CREATOR,
+				exprStatus: p.exprStatus,
+				hasAltOpen: valueOrDefaultParm(p.hasAltOpen, false),
 				header: p.header,
-				isAlwaysPinToDash: valueOrDefaultParm(p.isAlwaysPinToDash, false),
+				isPinToDash: valueOrDefaultParm(p.isPinToDash, false),
 				isGlobalResource: p.isGlobalResource,
 				modifiedBy: CREATOR,
 				name: p.name,
-				objectTask: e.sys_core.getObj(p.objectTask),
+				sourceDataObj: e.sys_core.getDataObj(p.sourceDataObj),
+				sourceNodeObj: e.sys_core.getNodeObjByName(p.sourceNodeObj),
 				orderDefine: p.orderDefine,
 				owner: e.sys_core.getSystemPrime(p.owner)
 			})
@@ -379,6 +384,7 @@ export async function addUser(data: any) {
 	const query = e.params(
 		{
 			defaultOrg: e.str,
+			defaultSystem: e.str,
 			firstName: e.str,
 			isMobileOnly: e.optional(e.bool),
 			lastName: e.str,
@@ -393,6 +399,7 @@ export async function addUser(data: any) {
 				.insert(e.sys_user.SysUser, {
 					createdBy: CREATOR,
 					defaultOrg: e.select(e.sys_core.getOrg(p.defaultOrg)),
+					defaultSystem: e.select(e.sys_core.getSystemPrime(p.defaultSystem)),
 					isMobileOnly: valueOrDefaultParm(p.isMobileOnly, false),
 					modifiedBy: CREATOR,
 					orgs: e.assert_distinct(
@@ -428,6 +435,7 @@ export async function addUser(data: any) {
 					else: e.update(user, () => ({
 						set: {
 							defaultOrg: e.select(e.sys_core.getOrg(p.defaultOrg)),
+							defaultSystem: e.select(e.sys_core.getSystemPrime(p.defaultSystem)),
 							isMobileOnly: valueOrDefaultParm(p.isMobileOnly, false),
 							orgs: e.assert_distinct(
 								e.set(

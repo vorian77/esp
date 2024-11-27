@@ -46,16 +46,40 @@ function initCodeType(init: InitDb) {
 				codeAccess: 'readOnly',
 				columnName: 'header',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 20,
+				orderDefine: 20,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'order',
 				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'valueDecimal',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'valueInteger',
+				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'valueString',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
 				indexTable: 0
 			}
 		]
@@ -132,6 +156,46 @@ function initCodeType(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 110,
+				orderDefine: 110
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'number',
+				columnName: 'valueDecimal',
+				isDisplayable: true,
+				orderDisplay: 120,
+				orderDefine: 120,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'number',
+				codeAccess: 'optional',
+				columnName: 'valueInteger',
+				isDisplayable: true,
+				orderDisplay: 130,
+				orderDefine: 130,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'valueString',
+				isDisplayable: true,
+				orderDisplay: 140,
+				orderDefine: 140,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 160,
+				orderDefine: 160
 			},
 
 			/* management */
@@ -252,7 +316,7 @@ function initCodeTypeCode(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'valueDecimal',
+				columnName: 'order',
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
@@ -260,7 +324,7 @@ function initCodeTypeCode(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'valueInteger',
+				columnName: 'valueDecimal',
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
@@ -268,7 +332,7 @@ function initCodeTypeCode(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'valueString',
+				columnName: 'valueInteger',
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
@@ -276,7 +340,7 @@ function initCodeTypeCode(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'order',
+				columnName: 'valueString',
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
@@ -322,7 +386,7 @@ function initCodeTypeCode(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_sys_system_order_name',
+				fieldListItems: 'il_sys_system',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -366,6 +430,15 @@ function initCodeTypeCode(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeAccess: 'optional',
+				codeFieldElement: 'number',
+				columnName: 'order',
+				isDisplayable: true,
+				orderDisplay: 95,
+				orderDefine: 95,
+				indexTable: 0
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
@@ -406,20 +479,22 @@ function initCodeTypeCode(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeAccess: 'optional',
-				codeFieldElement: 'number',
-				columnName: 'order',
-				isDisplayable: true,
-				orderDisplay: 150,
-				orderDefine: 150,
-				indexTable: 0
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
 				orderDisplay: 160,
 				orderDefine: 160
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'embedListSelect',
+				columnName: 'codeTypeFamily',
+				isDisplayable: true,
+				orderDisplay: 170,
+				orderDefine: 170,
+				fieldEmbedListSelect: 'fels_sys_code_type_family',
+				indexTable: 0,
+				linkTable: 'SysCodeType'
 			},
 
 			/* management */
@@ -549,6 +624,14 @@ function initCode(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				columnName: 'order',
+				isDisplayable: true,
+				orderDisplay: 55,
+				orderDefine: 55,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
 				columnName: 'valueDecimal',
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -569,14 +652,6 @@ function initCode(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'order',
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
 				indexTable: 0
 			}
 		]
@@ -663,6 +738,15 @@ function initCode(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeAccess: 'optional',
+				codeFieldElement: 'number',
+				columnName: 'order',
+				isDisplayable: true,
+				orderDisplay: 95,
+				orderDefine: 95,
+				indexTable: 0
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
@@ -703,21 +787,24 @@ function initCode(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeAccess: 'optional',
-				codeFieldElement: 'number',
-				columnName: 'order',
-				isDisplayable: true,
-				orderDisplay: 150,
-				orderDefine: 150,
-				indexTable: 0
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
 				orderDisplay: 160,
 				orderDefine: 160
 			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'embedListSelect',
+				columnName: 'codeTypeFamily',
+				isDisplayable: true,
+				orderDisplay: 170,
+				orderDefine: 170,
+				fieldEmbedListSelect: 'fels_sys_code_type_family',
+				indexTable: 0,
+				linkTable: 'SysCodeType'
+			},
+
 			/* management */
 			{
 				codeFieldElement: 'tagRow',

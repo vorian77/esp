@@ -14,19 +14,21 @@ module sys_user {
   }
 
    type SysTask extending sys_core::SysObj {
-    codeColorFrom: sys_core::SysCode;
-    codeColorTo: sys_core::SysCode;
-    required codeIcon: sys_core::SysCode;
-    codeTaskStatusObj: sys_core::SysCode;
-    required codeTaskType: sys_core::SysCode;
+    btnStyle: str;
+    required codeCategory: sys_core::SysCode;
+    codeStatusObj: sys_core::SysCode;
     description: str;
-    isAlwaysPinToDash: bool;
-    required objectTask: sys_core::SysObj;
+    exprStatus: str;
+    hasAltOpen: bool;
+    isPinToDash: bool;
+    sourceDataObj: sys_core::SysDataObj;
+    sourceNodeObj: sys_core::SysNodeObj;
     constraint exclusive on (.name);
   }
   
   type SysUser extending sys_user::Mgmt {
     required defaultOrg: sys_core::SysOrg;
+    required defaultSystem: sys_core::SysSystem;
     isMobileOnly: bool;
     multi orgs: sys_core::SysOrg {
       on target delete allow;

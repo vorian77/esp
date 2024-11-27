@@ -1,6 +1,6 @@
 import {
 	booleanOrFalse,
-	arrayOfClasses,
+	arrayOfClass,
 	memberOfEnum,
 	memberOfEnumOrDefault,
 	memberOfEnumList,
@@ -29,7 +29,7 @@ export class FormSource {
 
 		// apis
 		if (obj.apis) {
-			this.actions = arrayOfClasses(FormSourceActionAPI, obj.apis)
+			this.actions = arrayOfClass(FormSourceActionAPI, obj.apis)
 			// this.actions.forEach((a, i) => {
 			// 	this.actionsMap[a.dbAction] = i
 			// })
@@ -37,7 +37,7 @@ export class FormSource {
 
 		// db
 		if (obj.directs) {
-			const directs = arrayOfClasses(FormSourceActionDirect, obj.directs)
+			const directs = arrayOfClass(FormSourceActionDirect, obj.directs)
 			directs.forEach((d) => {
 				const i = this.actions.push(d)
 				// d.dbActions.forEach((action) => {
@@ -71,7 +71,7 @@ export class FormSourceAction {
 			'FormSourceActionType',
 			FormSourceActionType
 		)
-		this.items = arrayOfClasses(FormSourceItem, obj.items)
+		this.items = arrayOfClass(FormSourceItem, obj.items)
 		this.msgSuccess = strOptional(obj.msgSuccess, 'FormSourceAction', 'msgSuccess')
 		this.msgFail = strOptional(obj.msgFail, 'FormSourceAction', 'msgFail')
 	}

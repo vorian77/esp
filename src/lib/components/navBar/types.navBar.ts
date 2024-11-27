@@ -1,5 +1,5 @@
 import {
-	arrayOfClasses,
+	arrayOfClass,
 	booleanOrDefault,
 	getArray,
 	memberOfEnum,
@@ -10,6 +10,8 @@ import {
 	required,
 	strRequired,
 	User,
+	UserResourceTask,
+	UserTypeResourceType,
 	valueOrDefault
 } from '$utils/types'
 import {
@@ -18,7 +20,12 @@ import {
 	StatePacket,
 	StatePacketAction
 } from '$comps/app/types.appState'
-import { TokenAppDo, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
+import {
+	TokenApiId,
+	TokenAppDo,
+	TokenAppDoActionConfirmType,
+	TokenAppNode
+} from '$utils/types.token'
 import { goto } from '$app/navigation'
 import { adminDbReset } from '$utils/utils.sys'
 import { error } from '@sveltejs/kit'
@@ -55,29 +62,44 @@ export class NavBarData {
 			// apps
 			this.items.push(new NavBarDataCompApps(this, this.state.user.resources_sys_app))
 
-			// group - tasks
+			// group - tasks - default
 			const groupTasks = new NavBarDataCompListGroup(this, {
 				header: 'My Tasks'
 			})
+			this.state.user.resources_sys_task_default.forEach((r) => {
+				groupTasks.addItem({
+					codeType: 'task',
+					content: r,
+					icon: r.codeIconName,
+					label: new NavBarLabel(r.header!)
+				})
+			})
 			this.items.push(groupTasks)
 
-			// group - settings
+			// group - tasks - setting
 			const groupSettings = new NavBarDataCompListGroup(this, {
 				header: 'My Settings'
 			})
-
+			this.state.user.resources_sys_task_setting.forEach((r) => {
+				groupSettings.addItem({
+					codeType: 'task',
+					content: r,
+					icon: r.codeIconName,
+					label: new NavBarLabel(r.header!)
+				})
+			})
 			groupSettings.addItem({
 				codeType: 'functionAsync',
-				contentFunction: fMyPreferences,
-				icon: 'RotateCcw',
+				content: fMyPreferences,
+				icon: 'Settings2',
 				label: new NavBarLabel('My Preferences')
 			})
 
 			if (['user_sys', '2487985578'].includes(this.state.user.userName)) {
 				groupSettings.addItem({
 					codeType: 'functionAsync',
-					contentFunction: fAdminResetDb,
-					icon: 'Settings2',
+					content: fAdminResetDb,
+					icon: 'RotateCcw',
 					label: new NavBarLabel('Admin - Reset DB')
 				})
 			}
@@ -93,17 +115,18 @@ export class NavBarData {
 			this.items.push(
 				new NavBarDataCompItem(this, {
 					codeType: 'page',
-					contentPage: '/',
+					content: '/',
 					icon: 'LogOut',
 					label: new NavBarLabel('Logout')
 				})
 			)
 
-			console.log('NavBarData.constructor', this)
+			// console.log('NavBarData.constructor', this)
 		}
 	}
 
 	async activateLink(item: NavBarDataCompItem) {
+		let node
 		if (item.codeType === NavBarDataCompItemType.appHeader) {
 			const apps = this.getAncestor(item, NavBarDataCompApps) as NavBarDataCompApps | undefined
 			if (apps) {
@@ -112,15 +135,20 @@ export class NavBarData {
 				this.fUpdateNav()
 			}
 		} else {
-			if (this.isOpen) this.fToggleOpen()
+			if (!this.isOpen) {
+				this.fToggleOpen()
+				return
+			}
+
+			this.fToggleOpen()
 			switch (item.codeType) {
 				case NavBarDataCompItemType.functionAsync:
-					if (item.contentFunction) await item.contentFunction(this)
+					if (item.content) await item.content(this)
 					break
 
 				case NavBarDataCompItemType.page:
 					this.state.update({
-						page: item.contentPage,
+						page: item.content,
 						packet: new StatePacket({
 							action: StatePacketAction.navCrumbs,
 							confirmType: TokenAppDoActionConfirmType.objectChanged
@@ -128,8 +156,7 @@ export class NavBarData {
 					})
 					break
 				case NavBarDataCompItemType.node:
-					const node = required(item.contentNode, FILENAME, 'item.contentNode')
-					console.log('NavBarData.activateLink', item)
+					node = required(item.content, FILENAME, 'item.content')
 					this.state.update({
 						page: '/home',
 						// parmsState: { programId: this.getProgramId(node) },
@@ -143,7 +170,15 @@ export class NavBarData {
 					})
 					break
 				case NavBarDataCompItemType.task:
-					console.log('NavBarData.activateLink', item)
+					const task: UserResourceTask = required(item.content, FILENAME, 'item.content')
+					this.state.update({
+						nodeType: '', // todo - 241125 - when this is removed the packet doesn't get to RootLayoutApp
+						packet: new StatePacket({
+							action: StatePacketAction.openNode,
+							confirmType: TokenAppDoActionConfirmType.objectChanged,
+							token: task.getTokenNode(this.state.user)
+						})
+					})
 					break
 				default:
 					error(500, {
@@ -152,7 +187,6 @@ export class NavBarData {
 						message: `No case defined for item type: ${item.codeType}`
 					})
 			}
-			console.log('NavBarData.activateLink', item)
 		}
 	}
 
@@ -187,6 +221,7 @@ export class NavBarData {
 }
 const fAdminResetDb = async (navBar: NavBarData) => {
 	await adminDbReset(navBar.state)
+	await navBar.state.resetUser(true)
 }
 
 const fMyPreferences = async (navBar: NavBarData) => {
@@ -214,9 +249,7 @@ export class NavBarLabel {
 }
 
 export class NavBarDataComp {
-	contentFunction?: Function
-	contentNode?: Node
-	contentPage?: string
+	content?: any
 	id: number
 	isActive: boolean
 	isTop: boolean
@@ -224,9 +257,7 @@ export class NavBarDataComp {
 	parent?: NavBarDataComp
 	constructor(navBar: NavBarData, obj: any) {
 		obj = valueOrDefault(obj, {})
-		this.contentFunction = obj.contentFunction
-		this.contentNode = obj.contentNode
-		this.contentPage = obj.contentPage
+		this.content = obj.content
 		this.id = navBar.getId()
 		this.isActive = booleanOrDefault(obj.isActive, false)
 		this.isTop = booleanOrDefault(obj.isTop, false)
@@ -268,7 +299,7 @@ export class NavBarDataCompAppsItem extends NavBarDataComp {
 		this.header = new NavBarDataCompItem(navBar, {
 			...obj,
 			codeType: 'appHeader',
-			contentNode: obj.header,
+			content: obj.header,
 			icon: obj.header.icon,
 			parent: this,
 			label: new NavBarLabel(obj.header.label),
@@ -280,7 +311,7 @@ export class NavBarDataCompAppsItem extends NavBarDataComp {
 			this.list.addItem({
 				...obj,
 				codeType: 'node',
-				contentNode: n,
+				content: n,
 				parent: this.list,
 				label: new NavBarLabel(n.label),
 				indent: 1

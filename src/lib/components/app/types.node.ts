@@ -40,12 +40,9 @@ export class NodeHeader {
 export class Node extends NodeHeader {
 	dataObjId?: string
 	dataObjIdChild?: string
-	dataObjName?: string
 	isAlwaysRetrieveData: boolean
 	isHideRowManager: boolean
-	isSystemRoot: boolean
 	isMobileMode: boolean
-	nodeObjName?: string
 	page: string
 	constructor(obj: any) {
 		const clazz = 'Node'
@@ -53,12 +50,9 @@ export class Node extends NodeHeader {
 		super(obj)
 		this.dataObjId = obj.dataObjId
 		this.dataObjIdChild = obj.dataObjIdChild
-		this.dataObjName = obj.dataObjName
 		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData, 'isAlwaysRetrieveData')
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
 		this.isMobileMode = booleanOrFalse(obj.isMobileMode, 'isHideRowManager')
-		this.isSystemRoot = booleanOrFalse(obj.isSystemRoot, 'isSystemRoot')
-		this.nodeObjName = obj.nodeObjName
 		this.page = valueOrDefault(obj.page, '/home')
 	}
 }

@@ -1,5 +1,5 @@
 import {
-	arrayOfClasses,
+	arrayOfClass,
 	booleanOrDefault,
 	booleanOrFalse,
 	booleanRequired,
@@ -81,7 +81,7 @@ export class RawDataObj {
 	constructor(obj: any) {
 		const clazz = `${obj.name}.RawDataObj`
 		obj = valueOrDefault(obj, {})
-		this.actionsQuery = arrayOfClasses(DataObjActionQuery, obj._actionsQuery)
+		this.actionsQuery = arrayOfClass(DataObjActionQuery, obj._actionsQuery)
 		this.codeCardinality = memberOfEnum(
 			obj._codeCardinality,
 			clazz,
@@ -131,7 +131,7 @@ export class RawDataObj {
 			'DataObjProcessType',
 			DataObjProcessType
 		)
-		this.rawActionsField = arrayOfClasses(
+		this.rawActionsField = arrayOfClass(
 			RawDataObjActionField,
 			obj._actionFieldGroup?._actionFieldItems
 		)
@@ -140,7 +140,7 @@ export class RawDataObj {
 
 		/* dependent properties */
 		this.rawParent = classOptional(RawDataObjParent, obj._parent)
-		this.rawPropsDisplay = arrayOfClasses(RawDataObjPropDisplay, obj._propsDisplay, this.tables)
+		this.rawPropsDisplay = arrayOfClass(RawDataObjPropDisplay, obj._propsDisplay, this.tables)
 		this.rawPropsSaveInsert = this.initProps(obj._propsSaveInsert)
 		this.rawPropsSaveUpdate = this.initProps(obj._propsSaveUpdate)
 		this.rawPropsSelect = this.initProps(obj._propsSelect)
@@ -160,7 +160,7 @@ export class RawDataObj {
 		rawProps = getArray(rawProps)
 		rawProps = this.initPropsSignatureLink(rawProps, 'createdBy')
 		rawProps = this.initPropsSignatureLink(rawProps, 'modifiedBy')
-		return arrayOfClasses(RawDataObjPropDB, rawProps, this.tables)
+		return arrayOfClass(RawDataObjPropDB, rawProps, this.tables)
 	}
 	initPropsSignatureLink(rawProps: any[], propName: string) {
 		const idx = rawProps.findIndex((p: any) => p._propName === propName)
@@ -197,8 +197,8 @@ export class RawDataObjActionField {
 	constructor(obj: any) {
 		const clazz = 'RawDataObjActionField'
 		obj = valueOrDefault(obj._action, {})
-		this.actionFieldConfirms = arrayOfClasses(DataObjActionFieldConfirm, obj._actionFieldConfirms)
-		this.actionFieldShows = arrayOfClasses(DataObjActionFieldShow, obj._actionFieldShows)
+		this.actionFieldConfirms = arrayOfClass(DataObjActionFieldConfirm, obj._actionFieldConfirms)
+		this.actionFieldShows = arrayOfClass(DataObjActionFieldShow, obj._actionFieldShows)
 		this.codeActionFieldTriggerEnable = memberOfEnum(
 			obj._codeActionFieldTriggerEnable,
 			clazz,
@@ -460,7 +460,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		this.isDisplayable = booleanOrDefault(obj.isDisplayable, false)
 		this.isDisplayBlock = booleanOrDefault(obj.isDisplayBlock, true)
 		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
-		this.items = arrayOfClasses(FieldColumnItem, obj._items)
+		this.items = arrayOfClass(FieldColumnItem, obj._items)
 		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
 		this.rawFieldAccess = strOptional(obj._codeAccess, clazz, 'rawFieldAccess')
@@ -515,7 +515,7 @@ export class RawDataObjPropDisplayEmbedListConfig {
 		const clazz = 'RawDataObjPropDisplayEmbedListConfig'
 		this.dataObjEmbedId = strRequired(obj._dataObjEmbedId, clazz, '_dataObjIdEmbed')
 		this.dataObjModalId = strRequired(obj._dataObjModalId, clazz, '_dataObjIdModal')
-		this.rawActionsFieldModal = arrayOfClasses(
+		this.rawActionsFieldModal = arrayOfClass(
 			RawDataObjActionField,
 			obj._actionFieldGroupModal._actionFieldItems
 		)
@@ -544,7 +544,7 @@ export class RawDataObjPropDisplayEmbedListSelect {
 			obj._actionFieldGroupModal._actionFieldItems
 		)
 		this.dataObjListID = strRequired(obj._dataObjListId, clazz, '_dataObjId')
-		this.rawActionsFieldModal = arrayOfClasses(
+		this.rawActionsFieldModal = arrayOfClass(
 			RawDataObjActionField,
 			obj._actionFieldGroupModal._actionFieldItems
 		)
@@ -694,7 +694,7 @@ export class PropLinkItemsSource {
 		this.exprSort = valueOrDefault(obj.exprSort, '')
 		this.exprWith = valueOrDefault(obj.exprWith, '')
 		this.parmName = obj._parmName
-		this.props = arrayOfClasses(PropLinkItemsSourceProp, obj._props)
+		this.props = arrayOfClass(PropLinkItemsSourceProp, obj._props)
 		this.rawItems = obj.rawItems
 		this.table = classOptional(DBTable, obj._table)
 	}

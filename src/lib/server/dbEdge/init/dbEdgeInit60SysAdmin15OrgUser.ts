@@ -542,6 +542,17 @@ function initUser(init: InitDb) {
 				indexTable: 0,
 				linkColumns: ['name'],
 				linkTable: 'SysOrg'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'defaultSystem',
+				isDisplayable: true,
+				isExcludeUpdate: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysSystem'
 			}
 		]
 	})
@@ -617,29 +628,53 @@ function initUser(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100
+			},
+			{
 				codeFieldElement: 'select',
 				columnName: 'defaultOrg',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 110,
+				orderDefine: 110,
 				indexTable: 0,
 				fieldListItems: 'il_sys_user_org',
 				linkTable: 'SysOrg'
 			},
 			{
+				codeFieldElement: 'select',
+				columnName: 'defaultSystem',
+				isDisplayable: true,
+				orderDisplay: 120,
+				orderDefine: 120,
+				indexTable: 0,
+				fieldListItems: 'il_sys_user_system',
+				linkTable: 'SysSystem'
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100
+				orderDisplay: 130,
+				orderDefine: 130
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'orgs',
 				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
+				orderDisplay: 140,
+				orderDefine: 140,
 				fieldEmbedListSelect: 'fels_sys_admin_org',
 				indexTable: 0,
 				linkTable: 'SysOrg'
@@ -649,8 +684,8 @@ function initUser(init: InitDb) {
 				codeFieldElement: 'embedListSelect',
 				columnName: 'systems',
 				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
+				orderDisplay: 150,
+				orderDefine: 150,
 				fieldEmbedListSelect: 'fels_sys_admin_system',
 				indexTable: 0,
 				linkTable: 'SysSystem'
@@ -660,8 +695,8 @@ function initUser(init: InitDb) {
 				codeFieldElement: 'embedListSelect',
 				columnName: 'userTypes',
 				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130,
+				orderDisplay: 160,
+				orderDefine: 160,
 				fieldEmbedListSelect: 'fels_sys_sys_admin_user_type',
 				indexTable: 0,
 				linkTable: 'SysUserType'

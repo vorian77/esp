@@ -181,6 +181,18 @@ function initStudent(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
+				columnName: 'codeHighestEducation',
+				isDisplayable: true,
+				orderDisplay: 59,
+				orderDefine: 59,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItemsParmName: 'ct_cm_highest_education',
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
 				columnName: 'codeGender',
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -213,6 +225,15 @@ function initStudent(init: InitDb) {
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmName: 'ct_sys_person_ethnicity',
 				linkTable: 'SysCode'
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'hasDriversLicense',
+				exprPreset: '(SELECT false)',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 81,
+				orderDefine: 81
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -411,7 +432,6 @@ function initStudent(init: InitDb) {
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_student_detail',
 		header: 'Student',
-		isSystemRoot: true,
 		name: 'node_obj_cm_student_detail',
 		orderDefine: 10,
 		owner: 'sys_ai_old',
@@ -1427,6 +1447,17 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 0
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeRetention',
+				isDisplayable: true,
+				orderDisplay: 75,
+				orderDefine: 75,
+				indexTable: 1,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItemsParmName: 'ct_cm_job_retention',
+				linkTable: 'SysCode'
 			},
 			{
 				codeFieldElement: 'tagRow',

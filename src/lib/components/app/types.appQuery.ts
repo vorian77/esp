@@ -1,7 +1,7 @@
 import { App, AppLevelTab } from '$comps/app/types.app'
 import { State, StateSurfaceEmbedShell, StateSurfaceModalEmbed } from '$comps/app/types.appState'
 import {
-	arrayOfClasses,
+	arrayOfClass,
 	debug,
 	DataObj,
 	type DataRecord,
@@ -40,25 +40,8 @@ export async function query(
 	if (!tab) return false
 	let { dataTab, dataTree } = queryDataPre(state, tab, queryType)
 
-	/* set parm - appSystemId */
-	if (tab.isSystemRoot && queryType === TokenApiQueryType.preset && state.user) {
-		const appSystemId = state.app.appSystemIdGet(state)
-		if (!appSystemId) {
-			const userSystemResource: UserTypeResource | undefined = await state.user.selectResource(
-				state,
-				UserTypeResourceType.system
-			)
-			if (userSystemResource) state.app.appSystemIdSet(userSystemResource.resource.id)
-		}
-		dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.app.appSystemIdGet(state))
-	}
-
-	if (tab.isSystemRoot && queryType === TokenApiQueryType.retrieve) {
-		dataTab.parms.valueSet(ParmsValuesType.isSystemRoot, true)
-	}
-
-	if (tab.isProgramObject) {
-		dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.app.appSystemIdGet(state))
+	if (state.user) {
+		dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.user.system.id)
 	}
 
 	// set other parms
@@ -106,19 +89,6 @@ export async function query(
 		)
 		tab.data = dataResult
 		tab.isRetrieved = !tab.isAlwaysRetrieveData
-		if (
-			tab.isSystemRoot &&
-			tab.dataObj.raw.codeCardinality === DataObjCardinality.detail &&
-			queryType === TokenApiQueryType.retrieve
-		) {
-			state.app.appSystemIdSet(
-				strRequired(
-					tab.data.rowsRetrieved.getDetailRecordValue(`_${ParmsValuesType.appSystemId}_`),
-					clazz,
-					'appSystemId'
-				)
-			)
-		}
 		if (tab.dataObj.raw.codeCardinality === DataObjCardinality.list) {
 			tab.data.parms.valueSetList(ParmsValuesType.listIds, tab.data.rowsRetrieved.getRows())
 		}
@@ -244,7 +214,7 @@ export class DataObjActionQuery {
 		obj = valueOrDefault(obj, {})
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.parms = this.initParms(obj._parms)
-		this.triggers = arrayOfClasses(DataObjActionQueryTrigger, obj._triggers)
+		this.triggers = arrayOfClass(DataObjActionQueryTrigger, obj._triggers)
 	}
 	initParms(parms: DataRecord[]) {
 		let newParms: DataRecord = {}

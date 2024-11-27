@@ -258,7 +258,6 @@ export class Query {
 		const clazz = 'getPropsSelect'
 		let properties = ''
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
-		const isSystemRoot = queryData?.dataTab?.parms.valueGet(ParmsValuesType.isSystemRoot) || false
 		const processProps = (query: Query) => {
 			props.forEach((prop) => {
 				if (prop.codeDataSourceValue === PropDataSourceValue.edgeDB) {
@@ -266,20 +265,6 @@ export class Query {
 					properties = query.addItemComma(properties, newProperty)
 				}
 			})
-		}
-
-		// pre-processing
-		if (isSystemRoot) {
-			props.push(
-				new RawDataObjPropDB(
-					{
-						_codeDataType: PropDataType.uuid,
-						_propName: `_${ParmsValuesType.appSystemId}_`,
-						exprCustom: '.owner.id'
-					},
-					this.rawDataObj.tables
-				)
-			)
 		}
 
 		// main

@@ -6,7 +6,6 @@
 	import CMUser from '$routes/home/UserCM.svelte'
 	import Quote from '$routes/home/Quote.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
-	import SysWigFeature from '$comps/widgets/WidgetFeature.svelte'
 	import SysWigReport from '$comps/widgets/WidgetReport.svelte'
 	import SysWigReportMoed from '$comps/widgets/WizardReportMoed.svelte'
 
@@ -50,20 +49,17 @@
 <!-- <DataViewer header="showSysReport" data={showSysReport} /> -->
 
 <AppShell>
-	{#if showSysUser}
+	<!-- {#if showSysUser}
 		<SysUser {user} />
-	{/if}
-
-	{#if showCMUser}
+	{/if} -->
+	<!-- {#if showCMQuote}
+	<Quote />
+{/if} -->
+	<!-- {#if showCMUser}
 		<CMUser {user} />
-	{/if}
-	{#if showCMQuote}
-		<Quote />
-	{/if}
-	{#if showSysFeature}
-		<SysWigFeature {state} {user} />
-	{/if}
-	{#if showSysReport}
+	{/if} -->
+
+	<!-- {#if showSysReport}
 		<SysWigReport {user} />
-	{/if}
+	{/if} -->
 </AppShell>

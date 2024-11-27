@@ -135,18 +135,6 @@ export class App {
 	async addLevelNode(state: State, token: TokenAppNode) {
 		this.isMobileMode = token.node.isMobileMode || false
 
-		if (token.node.dataObjName) {
-			token.node.dataObjId = await getDataObjId(token.node.dataObjName)
-		}
-
-		if (token.node.nodeObjName) {
-			token.node = await getNodeObj(token.node.nodeObjName)
-		}
-
-		if (token.node.type === NodeType.program && state?.user?.systemId) {
-			this.appSystemIdSet(state.user.systemId)
-		}
-
 		// create root level
 		this.levels.push(new AppLevel([new AppLevelTab(App.addLevelNodeParmsList(token.node))]))
 		const currTab = this.getCurrTab()
@@ -179,8 +167,7 @@ export class App {
 						dataObjId: nodeLevelRootDetail.dataObjId,
 						// dataObjId: currTab.dataObjIdChild,
 						isAlwaysRetrieveData: nodeLevelRootDetail.isAlwaysRetrieveData,
-						isProgramObject: nodeLevelRootDetail.type === NodeType.program_object,
-						isSystemRoot: nodeLevelRootDetail.isSystemRoot
+						isProgramObject: nodeLevelRootDetail.type === NodeType.program_object
 					}
 					tabs.push(new AppLevelTab(nodeParms))
 
@@ -223,21 +210,7 @@ export class App {
 			this.levels[idxLevel].tabs.push(newTab)
 		}
 	}
-	appSystemIdGet(state: State) {
-		if (this.appSystemId) return this.appSystemId
-		if (state.user && state.user.systemIdList.length > 0) {
-			return state.user.systemIdList[0]
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'App.appSystemIdGet',
-				message: 'User does not have a system id'
-			})
-		}
-	}
-	appSystemIdSet(systemId: string) {
-		this.appSystemId = systemId
-	}
+
 	getCrumbsList() {
 		this.crumbs = [new AppLevelCrumb(-1, 'Home')]
 		this.levels.forEach((level, i) => {
@@ -561,7 +534,6 @@ export class AppLevelTab {
 	isModal: boolean
 	isProgramObject: boolean
 	isRetrieved: boolean
-	isSystemRoot: boolean
 	label?: string
 	nodeIdParent?: string
 	constructor(obj: any) {
@@ -576,7 +548,6 @@ export class AppLevelTab {
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
 		this.isProgramObject = booleanOrFalse(obj.isProgramObject, 'isProgramObject')
 		this.isRetrieved = booleanOrFalse(obj.isRetrieved, 'isRetrieved')
-		this.isSystemRoot = booleanOrFalse(obj.isSystemRoot, 'isSystemRoot')
 		this.isModal = booleanOrFalse(obj.isModal, 'isModal')
 		this.label = obj.label
 		this.nodeIdParent = obj.nodeIdParent

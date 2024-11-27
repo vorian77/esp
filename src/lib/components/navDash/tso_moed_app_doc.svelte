@@ -1,0 +1,36 @@
+<script lang="ts">
+	import { getArray, ParmsValuesType, UserResourceTask } from '$utils/types'
+	import DataViewer from '$utils/DataViewer.svelte'
+	import { error } from '@sveltejs/kit'
+
+	const FILENAME = '$comps/navDash/tso_moed_app_doc.svelte'
+	const classButton = 'rounded-md bg-red-700 text-base p-2 text-white text-right'
+	const classData = '-ml-2 text-base text-gray-700'
+
+	export let task: UserResourceTask
+	export let onClick: Function
+	export let data: any
+
+	let docTypes = getArray(data)
+
+	const onClickLocal = async (doc: any) => {
+		await onClick(task, { [ParmsValuesType.itemsParmName]: doc.name })
+	}
+</script>
+
+{#if docTypes}
+	<div class="grid grid-cols-[2fr_1fr] gap-5 items-center">
+		{#each docTypes as doc (doc.id)}
+			{@const btnLabel = doc._uploaded
+				? `Proof of ${doc.header} uploaded`
+				: `Upload proof of ${doc.header}`}
+			{@const btnStyle = doc._uploaded ? 'bg-green-500' : 'bg-red-500'}
+			{@const statusStyle = doc._uploaded ? 'text-green-500' : 'text-red-500'}
+			{@const statusLabel = doc._uploaded ? `Uploaded` : `Not uploaded`}
+			<button class={`${classButton} ${btnStyle}`} on:click={() => onClickLocal(doc)}>
+				{btnLabel}:
+			</button>
+			<span class={`${classData} ${statusStyle}`}>{statusLabel}</span>
+		{/each}
+	</div>
+{/if}

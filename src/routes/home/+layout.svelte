@@ -17,6 +17,7 @@
 		getToastStore
 	} from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
+	import NavDash from '$comps/navDash/NavDash.svelte'
 	import NavHome from '$comps/app/NavHome.svelte'
 	import NavFooter from '$comps/app/NavFooter.svelte'
 	import NavBar from '$comps/navBar/NavBar.svelte'
@@ -145,19 +146,19 @@
 					</div>
 				</svelte:fragment>
 				<svelte:fragment slot="trail">
-					<div role="button" tabindex="0" class="mr-2" on:click={navRight} on:keyup={navRight}>
-						<!-- <div role="button" tabindex="0" class="mr-2" use:popup={popupClick}> -->
-						<!-- <button class="btn variant-filled" use:popup={popupClick}>Click</button> -->
-						<!-- src={avatarSrc} -->
-						<!-- src="https://images.unsplash.com/photo-1617296538902-887900d9b592?ixid=M3w0Njc5ODF8MHwxfGFsbHx8fHx8fHx8fDE2ODc5NzExMDB8&ixlib=rb-4.0.3&w=128&h=128&auto=format&fit=crop" -->
-						<Avatar
-							initials={user ? user.initials : undefined}
-							background="bg-primary-400"
-							rounded="rounded-full"
-							src={userAvatarSrc}
-							width="w-9"
-						/>
-					</div>
+					<!-- <div role="button" tabindex="0" class="mr-2" on:click={navRight} on:keyup={navRight}> -->
+					<!-- <div role="button" tabindex="0" class="mr-2" use:popup={popupClick}> -->
+					<!-- <button class="btn variant-filled" use:popup={popupClick}>Click</button> -->
+					<!-- src={avatarSrc} -->
+					<!-- src="https://images.unsplash.com/photo-1617296538902-887900d9b592?ixid=M3w0Njc5ODF8MHwxfGFsbHx8fHx8fHx8fDE2ODc5NzExMDB8&ixlib=rb-4.0.3&w=128&h=128&auto=format&fit=crop" -->
+					<Avatar
+						initials={user ? user.initials : undefined}
+						background="bg-primary-400"
+						rounded="rounded-full"
+						src={userAvatarSrc}
+						width="w-9"
+					/>
+					<!-- </div> -->
 				</svelte:fragment>
 			</AppBar>
 		</div>
@@ -185,14 +186,16 @@
 		{#if $page.route.id === '/home'}
 			{#if state?.nodeType === NodeType.home}
 				<div class="m-4">
-					<NavHome {state} />
+					<!-- <NavHome {state} /> -->
+					<NavDash {state} />
 				</div>
 			{:else}
 				<RootLayoutApp bind:state />
 			{/if}
 		{:else}
 			<slot />
-			<NavHome {state} />
+			<!-- <NavHome {state} /> -->
+			<NavDash {state} />
 		{/if}
 	</div>
 

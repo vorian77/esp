@@ -1,7 +1,7 @@
 import { State } from '$comps/app/types.appState'
-import { ParmsValues } from '$utils/types'
+import { type DataRecord, Node, ParmsValues } from '$utils/types'
 import {
-	arrayOfClasses,
+	arrayOfClass,
 	booleanOrFalse,
 	booleanRequired,
 	classOptional,
@@ -12,7 +12,7 @@ import {
 	valueOrDefault
 } from '$utils/utils'
 import { DataObj, ParmsValuesType } from '$utils/types'
-import { TokenAppModalReturnType, TokenAppModalSelect } from '$utils/types.token'
+import { TokenAppModalReturnType, TokenAppModalSelect, TokenAppNode } from '$utils/types.token'
 import { FileStorage } from '$comps/form/fieldFile'
 import { error } from '@sveltejs/kit'
 
@@ -31,7 +31,9 @@ export class User {
 	resources = new UserTypeResourceList()
 	resources_sys_app: any[] = []
 	resources_sys_footer: any[] = []
-	systemId?: string
+	resources_sys_task_default: UserResourceTask[] = []
+	resources_sys_task_setting: UserResourceTask[] = []
+	system: UserResource
 	systemIdList: string[] = []
 	userName: string
 
@@ -43,7 +45,7 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
-		// console.log('User.constructor.obj: ', obj)
+		console.log('User.constructor.obj: ', obj)
 		const clazz = 'User'
 		this.avatar = classOptional(FileStorage, obj.avatar)
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
@@ -51,30 +53,21 @@ export class User {
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.isMobileOnly = booleanOrFalse(obj.isMobileOnly, 'isMobileOnly')
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
-		this.org = classOptional(UserOrg, obj.org)
+		this.org = new UserOrg(obj.org)
 		this.preferences = new UserPrefs(obj.preferences)
-		this.resources_sys_app = obj.resources_sys_app
-		this.resources_sys_footer = obj.resources_sys_footer
+		this.resources_sys_app = obj.resources_app
+		this.resources_sys_footer = obj.resources_footer
+		this.resources_sys_task_default = arrayOfClass(UserResourceTask, obj.resources_task_default)
+		this.resources_sys_task_setting = arrayOfClass(UserResourceTask, obj.resources_task_setting)
+		this.system = new UserResource(obj.system)
+		this.systemIdList = obj.systems.map((s: any) => s.id)
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 
 		/* derived */
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
 		this.resources.addResources(obj.resources_core)
 		this.resources.addResources(obj.resources_subject)
-		this.resources.addResources(
-			obj.systems.map((s: any) => {
-				return {
-					_codeType: UserTypeResourceType.system,
-					_resource: s
-				}
-			})
-		)
-		this.systemIdList = this.resources
-			.getResources(UserTypeResourceType.system)
-			.map((s) => s.resource.id)
-
-		this.systemId = this.systemIdList.length === 1 ? this.systemIdList[0] : undefined
-		// console.log('User.constructor', this)
+		console.log('User.constructor', this)
 
 		// old
 		// this.cm_ssr_disclosure = nbrOptional(obj.cm_ssr_disclosure, 'cm_ssr_disclosure')
@@ -82,10 +75,6 @@ export class User {
 		// this.site = strRequired(obj.site, 'User', 'site')
 		// this.status = strRequired(obj.status, 'User', 'status')
 		// this.user_id = nbrOptional(obj.user_id, 'User')
-	}
-
-	getResourceSystemId() {
-		return this.systemId
 	}
 
 	async selectResource(state: State, resourceType: UserTypeResourceType) {
@@ -100,10 +89,6 @@ export class User {
 				return resources[0]
 
 			default:
-				if (resourceType === UserTypeResourceType.system) {
-					const defaultSystemName = 'sys_ai_old'
-					return resources.find((s) => s.resource.name === defaultSystemName)
-				}
 				// const itemsList = resources.map((r) => {
 				// 	return new FieldItem(r.idResource, r.header)
 				// })
@@ -170,7 +155,7 @@ export class UserOrg {
 export class UserPrefs {
 	items: UserPrefItem[] = []
 	constructor(obj: any) {
-		this.items = arrayOfClasses(UserPrefItem, obj)
+		this.items = arrayOfClass(UserPrefItem, obj)
 	}
 	isActive(prefType: UserPrefType): boolean {
 		const pref = this.items.find((i) => i.codeType === prefType)
@@ -193,6 +178,73 @@ export enum UserPrefType {
 	remember_list_settings = 'remember_list_settings',
 	widget_quick_report = 'widget_quick_report',
 	widget_quick_report_moed = 'widget_quick_report_moed'
+}
+
+export class UserResource {
+	codeIconName?: string
+	id: string
+	isGlobalResource: boolean
+	header: string
+	name: string
+	constructor(obj: any) {
+		const clazz = 'UserResource'
+		this.codeIconName = obj._codeIconName
+		this.id = strRequired(obj.id, clazz, 'id')
+		this.isGlobalResource = booleanOrFalse(obj.isGlobalResource, 'isGlobalResource')
+		this.header = strRequired(obj.header, clazz, 'header')
+		this.name = strRequired(obj.name, clazz, 'name')
+	}
+}
+
+export class UserResourceTask extends UserResource {
+	btnStyle?: string
+	codeCategory: UserResourceTaskCategory
+	codeStatusObjName?: string
+	description?: string
+	exprStatus?: string
+	hasAltOpen: boolean
+	isPinToDash: boolean
+	sourceDataObjId?: string
+	sourceNodeObjId?: string
+	constructor(obj: any) {
+		super(obj)
+		const clazz = 'UserResourceTask'
+		this.btnStyle = obj.btnStyle
+		this.codeCategory = memberOfEnum(
+			obj._codeCategory,
+			clazz,
+			'codeCategory',
+			'UserResourceTaskCategory',
+			UserResourceTaskCategory
+		)
+		this.codeStatusObjName = obj._codeStatusObjName
+		this.description = obj.description
+		this.exprStatus = obj.exprStatus
+		this.hasAltOpen = booleanOrFalse(obj.hasAltOpen, 'hasAltOpen')
+		this.isPinToDash = booleanOrFalse(obj.isPinToDash, 'isPinToDash')
+		this.sourceDataObjId = obj._sourceDataObjId
+		this.sourceNodeObjId = obj._sourceNodeObjId
+	}
+
+	getTokenNode(user: User | undefined) {
+		return new TokenAppNode({
+			node: new Node({
+				_codeNodeType: this.sourceDataObjId
+					? 'program'
+					: this.sourceNodeObjId
+						? 'object'
+						: undefined,
+				dataObjId: this.sourceDataObjId,
+				header: this.header,
+				icon: this.codeIconName,
+				id: this.id,
+				isMobileMode: valueOrDefault(user?.isMobileOnly, false),
+				name: this.name,
+				nodeObjId: this.sourceNodeObjId,
+				page: '/home'
+			})
+		})
+	}
 }
 
 export class UserTypeResourceList {
@@ -232,15 +284,24 @@ export class UserTypeResource {
 export class UserTypeResourceItem {
 	codeTypeSubject?: string
 	header?: string
+	icon?: string
 	id: string
 	name: string
 	constructor(obj: any) {
 		const clazz = 'UserTypeResourceItem'
 		this.codeTypeSubject = obj?._codeType
 		this.header = obj.header
+		this.icon = obj._icon
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.name = strRequired(obj.name, clazz, 'name')
 	}
+}
+
+export enum UserResourceTaskCategory {
+	default = 'default',
+	record = 'record',
+	setting = 'setting',
+	tab = 'tab'
 }
 
 export enum UserTypeResourceType {
@@ -249,5 +310,6 @@ export enum UserTypeResourceType {
 	report = 'report',
 	subject = 'subject',
 	system = 'system',
+	task = 'task',
 	widget = 'widget'
 }

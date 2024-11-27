@@ -76,7 +76,6 @@ const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 	id: true,
 	isAlwaysRetrieveData: true,
 	isHideRowManager: true,
-	isSystemRoot: true,
 	name: true,
 	orderDefine: true,
 	page: true,
@@ -86,6 +85,22 @@ const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 const shapeTable = e.shape(e.sys_db.SysTable, (t) => ({
 	hasMgmt: true,
 	mod: true,
+	name: true
+}))
+
+const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
+	_codeCategory: t.codeCategory.name,
+	_codeIconName: t.codeIcon.name,
+	_codeStatusObjName: t.codeStatusObj.name,
+	_sourceDataObjId: t.sourceDataObj.id,
+	_sourceNodeObjId: t.sourceNodeObj.id,
+	btnStyle: true,
+	description: true,
+	exprStatus: true,
+	hasAltOpen: true,
+	header: true,
+	id: true,
+	isPinToDash: true,
 	name: true
 }))
 
@@ -582,27 +597,95 @@ export async function getUserByUserId(token: TokenApiUserId) {
 		resources_core: e.select(u.userTypes.resources, (r) => ({
 			_codeType: r.codeType.name,
 			_resource: e.select(r.resource, (obj) => ({
+				_icon: obj.codeIcon.name,
 				header: true,
 				id: true,
-				name: true
+				name: true,
+				order_by: obj.orderDefine
 			})),
 			filter: e.op(r.codeType.name, '!=', 'subject')
 		})),
-		resources_subject: e.select(u.userTypes.resources, (r) => ({
-			_codeType: r.codeType.name,
-			_resource: e.select(r.resource.is(e.sys_core.SysObjSubject), (obj) => ({
+		resources_app: e.select(e.sys_core.SysApp, (res) => ({
+			appHeader: e.select(res.appHeader, (ah) => ({
+				_codeIcon: ah.codeIcon.name,
+				id: true,
+				header: true,
+				name: true,
+				orderDefine: true
+			})),
+			id: true,
+			name: true,
+			nodes: e.select(res.nodes, (n) => ({
+				_codeIcon: n.codeIcon.name,
+				_codeNodeType: n.codeNodeType.name,
+				dataObjId: n.dataObj.id,
+				header: true,
+				id: true,
+				name: true,
+				orderDefine: true,
+				page: true,
+				order_by: n.orderDefine
+			})),
+			filter: e.op(res.id, 'in', u.userTypes.resources.resource.id),
+			order_by: res.appHeader.orderDefine
+		})),
+		resources_footer: e.select(e.sys_core.SysNodeObj, (res) => ({
+			_codeIcon: res.codeIcon.name,
+			_codeNodeType: res.codeNodeType.name,
+			dataObjId: res.dataObj.id,
+			header: true,
+			id: true,
+			name: true,
+			orderDefine: true,
+			page: true,
+			filter: e.op(
+				e.op(res.isGlobalResource, '=', true),
+				'or',
+				e.op(res.id, 'in', u.userTypes.resources.resource.id)
+			),
+			order_by: res.orderDefine
+		})),
+		resources_subject: e.select(u.userTypes.resources, (res) => ({
+			_codeType: res.codeType.name,
+			_resource: e.select(res.resource.is(e.sys_core.SysObjSubject), (obj) => ({
 				_codeType: obj.codeType.name,
 				header: true,
 				id: true,
 				name: true
 			})),
-			filter: e.op(r.codeType.name, '=', 'subject')
+			filter: e.op(res.codeType.name, '=', 'subject')
 		})),
-		systems: e.select(u.systems, (s) => ({
+		resources_task_default: e.select(e.sys_user.SysTask, (res) => ({
+			...shapeTask(res),
+			filter: e.op(
+				e.op(res.codeCategory.name, '=', 'default'),
+				'and',
+				e.op(
+					e.op(res.isGlobalResource, '=', true),
+					'or',
+					e.op(res.id, 'in', u.userTypes.resources.resource.id)
+				)
+			)
+		})),
+		resources_task_setting: e.select(e.sys_user.SysTask, (res) => ({
+			...shapeTask(res),
+			filter: e.op(
+				e.op(res.codeCategory.name, '=', 'setting'),
+				'and',
+				e.op(
+					e.op(res.isGlobalResource, '=', true),
+					'or',
+					e.op(res.id, 'in', u.userTypes.resources.resource.id)
+				)
+			)
+		})),
+		system: e.select(e.sys_core.SysSystem, (s) => ({
 			header: true,
 			id: true,
-			name: true
+			name: true,
+			filter_single: e.op(s, '=', u.defaultSystem)
 		})),
+		systems:true,
 		userName: true,
 		filter_single: e.op(u.id, '=', e.cast(e.uuid, token.userId))
 	}))
@@ -618,73 +701,6 @@ export async function getUserPref(token: TokenApiUserPref) {
 			'and',
 			e.op(p.idFeature, '=', e.cast(e.uuid, token.idFeature))
 		)
-	}))
-	return await query.run(client)
-}
-
-export async function getUserResourcesApp(token: TokenApiUserId) {
-	const query = e.select(e.sys_core.SysApp, (res) => ({
-		appHeader: e.select(res.appHeader, (ah) => ({
-			_codeIcon: ah.codeIcon.name,
-			id: true,
-			header: true,
-			name: true,
-			orderDefine: true
-		})),
-		id: true,
-		nodes: e.select(res.nodes, (n) => ({
-			_codeIcon: n.codeIcon.name,
-			_codeNodeType: n.codeNodeType.name,
-			dataObjId: n.dataObj.id,
-			header: true,
-			id: true,
-			name: true,
-			orderDefine: true,
-			page: true,
-			order_by: n.orderDefine
-		})),
-		filter: e.op(
-			res.id,
-			'in',
-			e.select(e.sys_user.SysUser, (user) => ({
-				filter: e.op(
-					e.op(user.id, '=', e.cast(e.uuid, token.userId)),
-					'and',
-					e.op(user.userTypes.resources.codeType.name, '=', 'app')
-				)
-			})).userTypes.resources.resource.id
-		),
-		order_by: res.appHeader.orderDefine
-	}))
-	return await query.run(client)
-}
-
-export async function getUserResourcesFooter(token: TokenApiUserId) {
-	const query = e.select(e.sys_core.SysNodeObj, (res) => ({
-		_codeIcon: res.codeIcon.name,
-		_codeNodeType: res.codeNodeType.name,
-		dataObjId: res.dataObj.id,
-		header: true,
-		id: true,
-		name: true,
-		orderDefine: true,
-		page: true,
-		filter: e.op(
-			e.op(e.op(res.codeNavType.name, '=', 'footer'), 'and', e.op(res.isGlobalResource, '=', true)),
-			'or',
-			e.op(
-				res.id,
-				'in',
-				e.select(e.sys_user.SysUser, (user) => ({
-					filter: e.op(
-						e.op(user.id, '=', e.cast(e.uuid, token.userId)),
-						'and',
-						e.op(user.userTypes.resources.codeType.name, '=', 'footer')
-					)
-				})).userTypes.resources.resource.id
-			)
-		),
-		order_by: res.orderDefine
 	}))
 	return await query.run(client)
 }
