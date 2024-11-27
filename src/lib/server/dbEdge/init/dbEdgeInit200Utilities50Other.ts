@@ -434,8 +434,6 @@ export async function addUser(data: any) {
 					on: user.userName,
 					else: e.update(user, () => ({
 						set: {
-							defaultOrg: e.select(e.sys_core.getOrg(p.defaultOrg)),
-							defaultSystem: e.select(e.sys_core.getSystemPrime(p.defaultSystem)),
 							isMobileOnly: valueOrDefaultParm(p.isMobileOnly, false),
 							orgs: e.assert_distinct(
 								e.set(

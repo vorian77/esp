@@ -16,8 +16,10 @@ export function initContentAIRep(init: InitDb) {
 	initContentAIRepStudentDocsDetail(init)
 	initContentAIRepStudentJobPlacementDetail(init)
 	initContentAIRepStudentSchoolPlacementDetail(init)
+	initContentAIRepStudentRoster(init)
 
 	// summary
+	initContentAIRepCohortPerformance(init)
 	initContentAIRepStudentCohortAttdSummary(init)
 	initContentAIRepStudentServiceFlowSummary(init)
 }
@@ -100,6 +102,17 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 		{
 			codeFieldElement: 'text',
 			codeReportElementType: 'column',
+			columnName: 'codeHighestEducation',
+			indexTable: 2,
+			isDisplay: false,
+			isDisplayable: true,
+			linkColumns: ['name'],
+			orderDefine: 47,
+			orderDisplay: 47
+		},
+		{
+			codeFieldElement: 'text',
+			codeReportElementType: 'column',
 			columnName: 'codeGender',
 			indexTable: 3,
 			isDisplay: false,
@@ -129,6 +142,16 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			linkColumns: ['name'],
 			orderDefine: 60,
 			orderDisplay: 60
+		},
+		{
+			codeFieldElement: 'text',
+			codeReportElementType: 'column',
+			columnName: 'hasDriversLicense',
+			indexTable: 2,
+			isDisplay: false,
+			isDisplayable: true,
+			orderDefine: 62,
+			orderDisplay: 62
 		},
 		{
 			codeFieldElement: 'text',
@@ -220,6 +243,70 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			isDisplayable: true,
 			orderDefine: 105,
 			orderDisplay: 105
+		},
+		{
+			codeFieldElement: 'text',
+			codeReportElementType: 'column',
+			columnName: 'serviceFlow',
+			indexTable: 1,
+			isDisplay: false,
+			isDisplayable: true,
+			linkColumns: ['header'],
+			orderDefine: 115,
+			orderDisplay: 115
+		},
+		{
+			codeFieldElement: 'text',
+			codeReportElementType: 'column',
+			columnName: 'codeReferralType',
+			indexTable: 1,
+			isDisplay: false,
+			isDisplayable: true,
+			linkColumns: ['name'],
+			orderDefine: 120,
+			orderDisplay: 120
+		},
+		{
+			codeFieldElement: 'date',
+			codeReportElementType: 'column',
+			columnName: 'dateReferral',
+			indexTable: 1,
+			isDisplay: false,
+			isDisplayable: true,
+			orderDefine: 125,
+			orderDisplay: 125
+		},
+		{
+			codeFieldElement: 'date',
+			codeReportElementType: 'column',
+			columnName: 'dateEnd',
+			indexTable: 1,
+			isDisplay: false,
+			isDisplayable: true,
+			orderDefine: 130,
+			orderDisplay: 130
+		},
+		{
+			codeFieldElement: 'text',
+			codeReportElementType: 'column',
+			columnName: 'codeReferralEndType',
+			indexTable: 1,
+			isDisplay: false,
+			isDisplayable: true,
+			linkColumns: ['name'],
+			orderDefine: 135,
+			orderDisplay: 135
+		},
+		{
+			codeFieldElement: 'date',
+			codeReportElementType: 'column',
+			columnName: 'note',
+			header: 'Service Flow Note',
+			indexTable: 1,
+			isDisplay: false,
+			isDisplayable: true,
+			orderDefine: 140,
+			orderDisplay: 140
 		}
 	]
 	elements = elements.map((e) => {
@@ -898,6 +985,17 @@ function initContentAIRepStudentJobPlacementDetail(init: InitDb) {
 				{
 					codeFieldElement: 'text',
 					codeReportElementType: 'column',
+					columnName: `codeRetention`,
+					indexTable: 0,
+					isDisplay: true,
+					isDisplayable: true,
+					linkColumns: ['name'],
+					orderDefine: 225,
+					orderDisplay: 225
+				},
+				{
+					codeFieldElement: 'text',
+					codeReportElementType: 'column',
 					columnName: `employerContactNameFirst`,
 					indexTable: 0,
 					isDisplay: false,
@@ -1119,7 +1217,167 @@ function initContentAIRepStudentSchoolPlacementDetail(init: InitDb) {
 	})
 }
 
+function initContentAIRepStudentRoster(init: InitDb) {
+	init.addTrans('sysRep', {
+		actionFieldGroup: 'doag_report_render',
+		exprFilter: '.client.owner.id IN <user,uuidlist,systemIdList> ',
+		header: 'Student - Roster',
+		name: 'report_ai_student_roster',
+		owner: 'sys_ai_old',
+		tables: [
+			{ index: 0, table: 'CmClientServiceFlow' },
+			{ columnParent: 'client', indexParent: 0, index: 1, table: 'CmClient' },
+			{ columnParent: 'person', indexParent: 1, index: 2, table: 'SysPerson' }
+		],
+		elements: [...getElementsStudent({ indexTableOffset: -1 }), ...[]],
+		parms: getParms({})
+	})
+}
+
 /* summaries */
+function initContentAIRepCohortPerformance(init: InitDb) {
+	init.addTrans('sysRep', {
+		actionFieldGroup: 'doag_report_render',
+		exprFilter: '.owner.id IN <user,uuidlist,systemIdList>',
+		header: 'Cohort Performance',
+		name: 'report_ai_cohort_performance',
+		owner: 'sys_ai_old',
+		tables: [
+			{ index: 0, table: 'CmCohort' },
+			{ columnParent: 'course', indexParent: 0, index: 1, table: 'CmCourse' }
+		],
+		elements: [
+			{
+				codeReportElementType: 'column',
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 0
+			},
+			{
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				columnName: 'name',
+				header: 'Course',
+				indexTable: 1,
+				isDisplay: true,
+				isDisplayable: true,
+				orderDefine: 200,
+				orderDisplay: 200,
+				orderSort: 200
+			},
+			{
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				columnName: 'name',
+				header: 'Cohort',
+				indexTable: 0,
+				isDisplay: true,
+				isDisplayable: true,
+				orderDefine: 210,
+				orderDisplay: 210,
+				orderSort: 210
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'int16',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom:
+					'(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort = app_cm::CmCohort)))',
+				header: 'Students Enrolled (Count)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'studentsEnrolledCount',
+				orderDefine: 230,
+				orderDisplay: 230
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'int16',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort = app_cm::CmCohort AND .csf.codeReferralEndType.name = 'Completed')))`,
+				header: 'Students Completed (Count)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'studentsCompletedCount',
+				orderDefine: 250,
+				orderDisplay: 250
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'float64',
+				codeDbDataSourceValue: 'calculate',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `Math.round((.studentsEnrolledCount > 0 ? (.studentsCompletedCount / .studentsEnrolledCount) : 0) * 100)`,
+				header: 'Students Completed (%)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'studentsCompletedRate',
+				orderDefine: 260,
+				orderDisplay: 260
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'int16',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort = app_cm::CmCohort AND .csf.codeReferralEndType.name = 'Completed' AND .csf IN app_cm::CmCsfJobPlacement.csf)))`,
+				header: 'Students Completed & Placed (Count)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'studentsCompletedJobPlacement',
+				orderDefine: 270,
+				orderDisplay: 270
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'float64',
+				codeDbDataSourceValue: 'calculate',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `Math.round((.studentsCompletedCount > 0 ? (.studentsCompletedJobPlacement / .studentsCompletedCount) : 0) * 100)`,
+				header: 'Student Placement (Completeted) (%)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'studentsCompletedJobPlacementRate',
+				orderDefine: 280,
+				orderDisplay: 280
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'int16',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort = app_cm::CmCohort AND .csf.codeReferralEndType.name = 'Completed' AND .csf IN (SELECT app_cm::CmCsfJobPlacement FILTER str_lower(.codePlacementRelated.name) = 'yes').csf)))`,
+				header: 'Students Completed & Placed Related To Training (Count)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'studentsCompletedJobPlacementTrainingRelated',
+				orderDefine: 290,
+				orderDisplay: 290
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'float64',
+				codeDbDataSourceValue: 'calculate',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `Math.round((.studentsCompletedCount > 0 ? (.studentsCompletedJobPlacementTrainingRelated / .studentsCompletedCount) : 0) * 100)`,
+				header: 'Student Placement (Completeted) (%)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'studentsCompletedJobPlacementTrainingRelatedRate',
+				orderDefine: 300,
+				orderDisplay: 300
+			}
+		],
+		parms: getParms({})
+	})
+}
+
 function initContentAIRepStudentCohortAttdSummary(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
@@ -1167,7 +1425,7 @@ function initContentAIRepStudentCohortAttdSummary(init: InitDb) {
 					codeFieldElement: 'number',
 					codeReportElementType: 'column',
 					description: 'The number of attendance days that have occurred in the cohort.',
-					exprCustom: `(SELECT count(app_cm::CmCohortAttd FILTER .cohortId = app_cm::CmCsfCohort.cohort.id AND .date >= <parms,date,pvDateStart> AND .date <= <parms,date,pvDateEnd>))`,
+					exprCustom: `(SELECT count(app_cm::CmCohortAttd FILTER .cohortId = app_cm::CmCsfCohort.cohort.id))`,
 					header: 'Cohort Attendance Days',
 					isDisplay: true,
 					isDisplayable: true,
@@ -1181,7 +1439,7 @@ function initContentAIRepStudentCohortAttdSummary(init: InitDb) {
 					codeFieldElement: 'number',
 					codeReportElementType: 'column',
 					description: 'The number of attendance days of the student in the cohort.',
-					exprCustom: `(SELECT count(app_cm::CmCsfCohortAttd FILTER .csfCohort.id = app_cm::CmCsfCohort.id AND .cohortAttd.date >= <parms,date,pvDateStart> AND .cohortAttd.date <= <parms,date,pvDateEnd> AND .computedHours > 0))`,
+					exprCustom: `(SELECT count(app_cm::CmCsfCohortAttd FILTER .csfCohort.id = app_cm::CmCsfCohort.id))`,
 					header: 'Student Attendance Days',
 					isDisplay: true,
 					isDisplayable: true,
@@ -1203,29 +1461,11 @@ function initContentAIRepStudentCohortAttdSummary(init: InitDb) {
 					nameCustom: 'attdRate',
 					orderDefine: 240,
 					orderDisplay: 240
-				},
-				{
-					codeAlignment: 'right',
-					codeDataType: 'int64',
-					codeFieldElement: 'number',
-					codeReportElementType: 'column',
-					description: `The student's document count.`,
-					exprCustom: `(SELECT count(app_cm::CmCsfDocument FILTER .csf.id = app_cm::CmCsfCohort.csf.id AND .dateIssued >= <parms,date,pvDateStart> AND .dateIssued <= <parms,date,pvDateEnd>))`,
-					header: 'Student Documents',
-					isDisplay: false,
-					isDisplayable: true,
-					nameCustom: 'docCnt',
-					orderDefine: 250,
-					orderDisplay: 250
 				}
 			]
 		],
 		parms: getParms({
-			parms: [
-				['pvDateStart', undefined],
-				['pvDateEnd', undefined],
-				['pvCohorts', `.cohort.id IN <parms,uuidList,pvCohorts>`]
-			],
+			parms: [['pvCohorts', `.cohort.id IN <parms,uuidList,pvCohorts>`]],
 			dateDataType: 'Data Value Dates'
 		})
 	})

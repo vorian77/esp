@@ -430,14 +430,6 @@ export async function getLinkItemsSource(token: TokenApiId) {
 	return await query.run(client)
 }
 
-export async function getNodeObjByName(token: TokenApiId) {
-	const query = e.select(e.sys_core.SysNodeObj, (n) => ({
-		...shapeNodeObj(n),
-		filter_single: e.op(n.name, '=', token.id)
-	}))
-	return await query.run(client)
-}
-
 export async function getNodesBranch(token: TokenApiId) {
 	const parentNodeId = token.id
 	const query = e.select(e.sys_core.SysNodeObj, (n) => ({
@@ -685,7 +677,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			name: true,
 			filter_single: e.op(s, '=', u.defaultSystem)
 		})),
-		systems:true,
+		systems: true,
 		userName: true,
 		filter_single: e.op(u.id, '=', e.cast(e.uuid, token.userId))
 	}))

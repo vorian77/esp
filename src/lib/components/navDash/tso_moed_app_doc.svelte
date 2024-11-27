@@ -4,7 +4,7 @@
 	import { error } from '@sveltejs/kit'
 
 	const FILENAME = '$comps/navDash/tso_moed_app_doc.svelte'
-	const classButton = 'rounded-md bg-red-700 text-base p-2 text-white text-right'
+	const classButton = 'rounded-md text-base p-2 text-white text-right'
 	const classData = '-ml-2 text-base text-gray-700'
 
 	export let task: UserResourceTask

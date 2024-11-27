@@ -167,6 +167,7 @@ function initUserType(init: InitDb) {
 		owner: 'sys_ai_old',
 		resources: [
 			{ codeType: 'app', resource: 'app_ai_staff' },
+			{ codeType: 'report', resource: 'report_ai_cohort_performance' },
 			// { codeType: 'report', resource: 'report_ai_cohorts_detail' },
 			// { codeType: 'report', resource: 'report_ai_courses_detail' },
 			// { codeType: 'report', resource: 'report_ai_partners_detail' },
@@ -176,6 +177,7 @@ function initUserType(init: InitDb) {
 			{ codeType: 'report', resource: 'report_ai_student_cohort_attd_summary' },
 			{ codeType: 'report', resource: 'report_ai_student_job_placement_detail' },
 			{ codeType: 'report', resource: 'report_ai_student_school_placement_detail' },
+			{ codeType: 'report', resource: 'report_ai_student_roster' },
 			// { codeType: 'report', resource: 'report_ai_student_service_flow_summary' },
 			{ codeType: 'widget', resource: 'widget_sys_report' }
 		]

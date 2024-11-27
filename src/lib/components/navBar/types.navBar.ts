@@ -121,6 +121,9 @@ export class NavBarData {
 				})
 			)
 
+			// user
+			this.items.push(new NavBarDataCompUser(this, { user: this.state.user }))
+
 			// console.log('NavBarData.constructor', this)
 		}
 	}
@@ -382,6 +385,15 @@ export class NavBarDataCompOrg extends NavBarDataComp {
 	constructor(navBar: NavBarData, obj: any) {
 		super(navBar, obj)
 		const clazz = 'NavBarDataCompOrg'
+		obj = valueOrDefault(obj, {})
+		this.user = required(obj.user, clazz, 'user')
+	}
+}
+export class NavBarDataCompUser extends NavBarDataComp {
+	user: User
+	constructor(navBar: NavBarData, obj: any) {
+		super(navBar, obj)
+		const clazz = 'NavBarDataCompUser'
 		obj = valueOrDefault(obj, {})
 		this.user = required(obj.user, clazz, 'user')
 	}

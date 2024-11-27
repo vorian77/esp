@@ -486,27 +486,11 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'dateStartEst',
-				indexTable: 0,
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'dateStart',
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'dateEndEst',
-				indexTable: 0,
-				isDisplayable: true,
-				orderDefine: 80,
-				orderDisplay: 80
 			},
 			{
 				codeAccess: 'readOnly',
@@ -601,38 +585,6 @@ function initCsf(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'date',
-				columnName: 'dateStartEst',
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'date',
-				columnName: 'dateEndEst',
-				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1454,7 +1406,7 @@ function initCsfJobPlacement(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 75,
 				orderDefine: 75,
-				indexTable: 1,
+				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmName: 'ct_cm_job_retention',
 				linkTable: 'SysCode'

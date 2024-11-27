@@ -701,22 +701,6 @@ async function getDataObjId(dataObjName: string) {
 	}
 }
 
-async function getNodeObj(nodeObjName: string) {
-	const result: ResponseBody = await apiFetch(
-		ApiFunction.dbEdgeGetNodeObjByName,
-		new TokenApiId(nodeObjName)
-	)
-	if (result.success) {
-		return result.data
-	} else {
-		error(500, {
-			file: FILENAME,
-			function: 'getNodeObj',
-			message: `Error retrieving node for nodeObjName: ${nodeObjName}`
-		})
-	}
-}
-
 async function getNodesLevel(nodeId: string) {
 	const result: ResponseBody = await apiFetch(
 		ApiFunction.dbEdgeGetNodesLevel,

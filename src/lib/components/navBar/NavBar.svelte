@@ -12,12 +12,14 @@
 	import NavBarListItem from '$comps/navBar/NavBarListItem.svelte'
 	import NavBarListGroup from '$comps/navBar/NavBarListGroup.svelte'
 	import NavBarOrg from '$comps/navBar/NavBarOrg.svelte'
+	import NavBarUser from '$comps/navBar/NavBarUser.svelte'
 	import {
 		NavBarData,
 		NavBarDataCompList,
 		NavBarDataCompListGroup,
 		NavBarDataCompItem,
-		NavBarDataCompOrg
+		NavBarDataCompOrg,
+		NavBarDataCompUser
 	} from '$comps/navBar/types.navBar'
 
 	export let state: State
@@ -59,6 +61,8 @@
 						<NavBarListGroup data={item} />
 					{:else if navBar.getItemClassName(item) === 'NavBarDataCompOrg'}
 						<NavBarOrg data={item} />
+					{:else if navBar.getItemClassName(item) === 'NavBarDataCompUser'}
+						<NavBarUser data={item} />
 					{/if}
 				</div>
 			</ul>

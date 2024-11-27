@@ -40,9 +40,6 @@ export async function POST({ request, cookies }) {
 		case ApiFunction.dbEdgeGetFieldListItems:
 			return getServerResponse(await getFieldListItems(token))
 
-		case ApiFunction.dbEdgeGetNodeObjByName:
-			return getServerResponse(await getNodeObjByName(token))
-
 		case ApiFunction.dbEdgeGetNodesBranch:
 			return getServerResponse(await getNodesBranch(token))
 
