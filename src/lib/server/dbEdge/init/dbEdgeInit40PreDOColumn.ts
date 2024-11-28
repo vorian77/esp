@@ -167,7 +167,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'json',
-		exprStorageKey: 'avatar_<calc,int64,random10>',
+		exprStorageKey: 'avatar_<random10>',
 		header: 'Avatar',
 		name: 'avatar'
 	})
@@ -1283,7 +1283,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'json',
-		exprStorageKey: 'file_<calc,int64,random10>',
+		exprStorageKey: 'file_<random10>',
 		header: 'File',
 		name: 'file'
 	})

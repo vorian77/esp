@@ -7,6 +7,7 @@ import {
 	getArray,
 	getRecordKey,
 	getRecordValue,
+	isNumber,
 	memberOfEnum,
 	strRequired
 } from '$utils/types'
@@ -56,16 +57,19 @@ export function evalExprTokens(
 	*/
 	const clazz = 'evalExprTokens'
 	const regex = /<([a-zA-Z].*?)>/g
-	let exprItems: ExprParmsItem[] = evalExprTokensItems(expr)
+	let exprItems = evalExprTokensItems(expr)
 	let tokens: ExprToken[] = []
 
 	exprItems.forEach((item) => {
 		const exprParms = new ExprParms(expr, item, queryData, context)
 		const valueRaw = getValRaw(exprParms)
-		const { dataType, valueDB } = getValDB(exprParms.item.codeDataType, valueRaw)
-		tokens.push(new ExprToken(item.dataItem, dataType, valueRaw, valueDB))
+		if (item.itemData) {
+			const { dataType, valueDB } = getValDB(item.itemData.codeDataType, valueRaw)
+			tokens.push(new ExprToken(item.dataItem, dataType, valueRaw, valueDB))
+		} else if (item.itemFunction) {
+			tokens.push(new ExprToken(item.dataItem, PropDataType.none, valueRaw, valueRaw.toString()))
+		}
 	})
-
 	return tokens
 }
 
@@ -76,13 +80,14 @@ export function evalExprTokensItems(expr: string) {
 	*/
 	const clazz = 'evalExprTokensItems'
 	const regex = /<([a-zA-Z].*?)>/g
+
 	let exprItems: ExprParmsItem[] = []
 	const iter = expr.matchAll(regex)
 	for (const match of iter) {
 		const exprDataItem = match[0]
 		const exprDataItemContent = match[1]
 		const exprDataItemElements = exprDataItemContent.split(',')
-		if ([3, 4].includes(exprDataItemElements.length)) {
+		if (exprDataItemElements[0] in ExprSource || exprDataItemElements[0] in ExprSourceFunction) {
 			exprItems.push(new ExprParmsItem(exprDataItem, exprDataItemElements))
 		}
 	}
@@ -196,7 +201,6 @@ export function getUUIDValues(valueRaw?: any) {
 
 export function getValRaw(exprParms: ExprParms) {
 	const clazz = `${FILENAME}.getValRaw`
-	const sourceKey = strRequired(exprParms.item.key, `${FILENAME}.getValRaw`, 'sourceKey')
 	const fError = (errMsg: string, data?: any) => {
 		const errContent = {
 			errMsg,
@@ -213,58 +217,59 @@ export function getValRaw(exprParms: ExprParms) {
 		})
 	}
 
-	switch (exprParms.item.codeDataSourceExpr) {
-		case ExprSource.calc:
-			switch (sourceKey) {
-				case 'random10':
-					return parseInt(Math.random().toFixed(10).replace('0.', ''))
-
-				default:
-					return valueNotFound({})
-			}
-
-		case ExprSource.dataSaveDetail:
-			if (exprParms.queryData?.dataTab?.rowsSave)
-				return exprParms.queryData.dataTab.rowsSave.getDetailRecordValue(sourceKey)
-			fError(`QueryData.dataSave not defined for sourceKey: ${sourceKey}`)
-
-		case ExprSource.literal:
-			return sourceKey
-
-		case ExprSource.parms:
-			return getValue(exprParms.queryData.getParms(), sourceKey)
-
-		case ExprSource.record:
-			return getValue(exprParms.queryData.record, sourceKey)
-
-		case ExprSource.system:
-			return getValue(exprParms.queryData.system, sourceKey)
-
-		case ExprSource.tree:
-			const items = sourceKey.split('.')
-			let dataRow: DataRow | undefined = undefined
-			let property = ''
-
-			switch (items.length) {
-				case 1:
-					property = items[0]
-					dataRow = exprParms.queryData.tree.getDataRow()
-					break
-				case 2:
-					dataRow = exprParms.queryData.tree.getDataRow(items[0])
-					property = items[1]
-					break
-				default:
-					fError(`Invalid configuration of tree data token: ${sourceKey}`)
-			}
-			return getValue(dataRow?.record, property)
-
-		case ExprSource.user:
-			return getValue(exprParms.queryData.user, sourceKey)
-
-		default:
-			fError(`No case defined for source: ${exprParms.item.codeDataSourceExpr}`)
+	if (exprParms.item.itemData) {
+		const sourceKey = strRequired(exprParms.item.itemData.key, `${FILENAME}.getValRaw`, 'sourceKey')
+		switch (exprParms.item.codeDataSourceExpr) {
+			case ExprSource.dataSaveDetail:
+				if (exprParms.queryData?.dataTab?.rowsSave)
+					return exprParms.queryData.dataTab.rowsSave.getDetailRecordValue(sourceKey)
+				fError(`QueryData.dataSave not defined for sourceKey: ${sourceKey}`)
+			case ExprSource.literal:
+				return sourceKey
+			case ExprSource.parms:
+				return getValue(exprParms.queryData.getParms(), sourceKey)
+			case ExprSource.record:
+				return getValue(exprParms.queryData.record, sourceKey)
+			case ExprSource.system:
+				return getValue(exprParms.queryData.system, sourceKey)
+			case ExprSource.tree:
+				const items = sourceKey.split('.')
+				let dataRow: DataRow | undefined = undefined
+				let property = ''
+				switch (items.length) {
+					case 1:
+						property = items[0]
+						dataRow = exprParms.queryData.tree.getDataRow()
+						break
+					case 2:
+						dataRow = exprParms.queryData.tree.getDataRow(items[0])
+						property = items[1]
+						break
+					default:
+						fError(`Invalid configuration of tree data token: ${sourceKey}`)
+				}
+				return getValue(dataRow?.record, property)
+			case ExprSource.user:
+				return getValue(exprParms.queryData.user, sourceKey)
+			default:
+				fError(`No case defined for source: ${exprParms.item.codeDataSourceExpr}`)
+		}
+	} else if (exprParms.item.itemFunction) {
+		const itemF = exprParms.item.itemFunction
+		let value
+		switch (itemF.type) {
+			case ExprSourceFunction.random10:
+				return parseInt(Math.random().toFixed(10).replace('0.', ''))
+			case ExprSourceFunction.rate:
+				if (itemF.parms.length === 2) {
+					const denom = parseFloat(itemF.parms[1])
+					value = Math.round((denom !== 0 ? parseFloat(itemF.parms[0]) / denom : 0) * 100)
+				}
+				return value
+		}
+		return valueNotFound({})
 	}
+
 	function getValue(data: DataRecord | undefined, key: string) {
 		if (!data) return valueNotFound({})
 		const result = getValueNested(data, key)
@@ -325,39 +330,70 @@ class ExprParms {
 
 export class ExprParmsItem {
 	codeDataSourceExpr: ExprSource
-	codeDataType: PropDataType
 	codeDefault: ExprDefault
 	dataItem: string
-	key: string
+	itemData?: ExprParmsItemData
+	itemFunction?: ExprParmsItemFunction
 	constructor(dataItem: string, exprItems: string[]) {
 		const clazz = 'ExprParmsItem'
-		this.codeDataSourceExpr = memberOfEnum(
-			exprItems[0],
-			clazz,
-			'codeDataSourceExpr',
-			'ExprSource',
-			ExprSource
-		)
+		if (exprItems[0] in ExprSource) {
+			this.codeDataSourceExpr = memberOfEnum(
+				exprItems[0],
+				clazz,
+				'codeDataSourceExpr',
+				'ExprSource',
+				ExprSource
+			)
+			this.codeDefault =
+				exprItems.length === 4
+					? memberOfEnum(exprItems[3], clazz, 'codeDefault', 'ExprDefault', ExprDefault)
+					: ExprDefault.error
+			this.dataItem = dataItem
+			this.itemData = new ExprParmsItemData(exprItems[1], exprItems[2])
+		} else if (exprItems[0] in ExprSourceFunction) {
+			this.codeDataSourceExpr = ExprSource.function
+			this.dataItem = dataItem
+			this.codeDefault = ExprDefault.error
+			this.itemFunction = new ExprParmsItemFunction(exprItems[0], exprItems.slice(1))
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: clazz,
+				message: `No case defined for expr item soource expr: ${exprItems[0]}`
+			})
+		}
+	}
+}
+
+export class ExprParmsItemData {
+	codeDataType: PropDataType
+	key: string
+	constructor(codeDataType: string, key: string) {
+		const clazz = 'ExprParmsItemData'
 		this.codeDataType = memberOfEnum(
-			exprItems[1],
+			codeDataType,
 			clazz,
 			'codeDataType',
 			'PropDataType',
 			PropDataType
 		)
-		this.codeDefault =
-			exprItems.length === 4
-				? memberOfEnum(exprItems[3], clazz, 'codeDefault', 'ExprDefault', ExprDefault)
-				: ExprDefault.error
-		this.dataItem = dataItem
-		this.key = exprItems[2]
+		this.key = strRequired(key, clazz, 'key')
+	}
+}
+export class ExprParmsItemFunction {
+	parms: string[]
+	type: ExprSourceFunction
+	constructor(type: string, parms: string[]) {
+		const clazz = 'ExprParmsItemFunction'
+		this.parms = parms
+		this.type = memberOfEnum(type, clazz, 'type', 'ExprSourceFunction', ExprSourceFunction)
 	}
 }
 
 enum ExprSource {
-	calc = 'calc',
 	dataSaveDetail = 'dataSaveDetail',
 	env = 'env',
+	function = 'function',
 	literal = 'literal',
 	parms = 'parms',
 	preset = 'preset',
@@ -366,6 +402,11 @@ enum ExprSource {
 	tree = 'tree',
 	user = 'user',
 	userResource = 'userResource'
+}
+
+enum ExprSourceFunction {
+	random10 = 'random10',
+	rate = 'rate'
 }
 
 export class ExprToken {
@@ -379,6 +420,6 @@ export class ExprToken {
 		this.dataType = dataType
 		this.valueRaw = valueRaw
 		this.valueDB = valueDB
-		this.valueFormatted = `${dataType}${valueDB}`
+		this.valueFormatted = dataType === PropDataType.none ? valueRaw : `${dataType}${valueDB}`
 	}
 }

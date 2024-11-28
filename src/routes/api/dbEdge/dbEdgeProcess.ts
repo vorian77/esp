@@ -391,21 +391,28 @@ export async function getRawDataObj(
 
 export async function processExpression(queryData: TokenApiQueryData) {
 	queryData = TokenApiQueryData.load(queryData)
-	const expr = queryData.dataTab.parms.valueGet(ParmsValuesType.dbExpr)
-	const result = await exeQueryMultiData(expr, queryData)
-	debug('processExpression', 'expr', { expr, result })
+	let result: RawDataList = []
+	if (queryData?.dataTab) {
+		const expr = queryData.dataTab.parms.valueGet(ParmsValuesType.dbExpr)
+		result = await exeQueryMultiData(
+			expr,
+			queryData,
+			new EvalExprContext('processExpression', 'exeQueryMultiData')
+		)
+	}
 	return new ApiResult(true, { data: result })
 }
 
 export class ProcessRow {
 	propNames: string[] = []
 	propsSelect: RawDataObjPropDB[]
+	dummyQueryData: TokenApiQueryData = new TokenApiQueryData()
 	constructor(propsSelect: RawDataObjPropDB[]) {
 		this.propNames = propsSelect.map((prop) => prop.propName)
 		this.propsSelect = propsSelect
 	}
-	evalExpr(expr: string, dataRecord: DataRecord, propNames: string[]) {
-		const clazz = 'evalExpr'
+	evalExprCalc(expr: string, dataRecord: DataRecord, propNames: string[]) {
+		const clazz = 'evalExprCalc'
 		const regex = /\.\w+/g
 		let newExpr = expr
 		const iter = expr.matchAll(regex)
@@ -416,13 +423,14 @@ export class ProcessRow {
 				newExpr = newExpr.replace(`.${key}`, dataRecord[propName])
 			}
 		}
+		newExpr = evalExpr(newExpr, this.dummyQueryData, new EvalExprContext('ProcessRow', clazz))
 		return Function('return ' + newExpr)()
 	}
 
 	prepRecord(recordRaw: DataRecord) {
 		this.propsSelect.forEach((prop) => {
 			if (prop.codeDataSourceValue === PropDataSourceValue.calculate && prop.exprCustom) {
-				recordRaw[prop.propName] = this.evalExpr(prop.exprCustom, recordRaw, this.propNames)
+				recordRaw[prop.propName] = this.evalExprCalc(prop.exprCustom, recordRaw, this.propNames)
 			}
 		})
 	}
