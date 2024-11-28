@@ -20,6 +20,7 @@ export function initContentAIRep(init: InitDb) {
 
 	// summary
 	initContentAIRepCohortPerformance(init)
+	initContentAIRepCoursePerformance(init)
 	initContentAIRepStudentCohortAttdSummary(init)
 	initContentAIRepStudentServiceFlowSummary(init)
 }
@@ -1239,6 +1240,11 @@ function initContentAIRepCohortPerformance(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		exprFilter: '.owner.id IN <user,uuidlist,systemIdList>',
+		exprWith: `enrolled := (SELECT app_cm::CmCsfCohort),
+completed := (SELECT enrolled FILTER .csf.codeReferralEndType.name = 'Completed'),
+completedPlaced := (SELECT completed FILTER .csf IN app_cm::CmCsfJobPlacement.csf),
+completedPlacedRelated := (SELECT completed FILTER .csf IN (SELECT app_cm::CmCsfJobPlacement FILTER str_lower(.codePlacementRelated.name) = 'yes').csf),
+cohortWages := (SELECT completed {cohort, wages := (SELECT app_cm::CmCsfJobPlacement FILTER .csf = completed.csf).wage})`,
 		header: 'Cohort Performance',
 		name: 'report_ai_cohort_performance',
 		owner: 'sys_ai_old',
@@ -1283,12 +1289,11 @@ function initContentAIRepCohortPerformance(init: InitDb) {
 				codeDataType: 'int16',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				exprCustom:
-					'(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort = app_cm::CmCohort)))',
+				exprCustom: '(SELECT count((SELECT enrolled FILTER .cohort = app_cm::CmCohort)))',
 				header: 'Students Enrolled (Count)',
 				isDisplay: true,
 				isDisplayable: true,
-				nameCustom: 'studentsEnrolledCount',
+				nameCustom: 'enrolledCnt',
 				orderDefine: 230,
 				orderDisplay: 230
 			},
@@ -1297,11 +1302,11 @@ function initContentAIRepCohortPerformance(init: InitDb) {
 				codeDataType: 'int16',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort = app_cm::CmCohort AND .csf.codeReferralEndType.name = 'Completed')))`,
+				exprCustom: `(SELECT count((SELECT completed FILTER .cohort = app_cm::CmCohort)))`,
 				header: 'Students Completed (Count)',
 				isDisplay: true,
 				isDisplayable: true,
-				nameCustom: 'studentsCompletedCount',
+				nameCustom: 'completedCnt',
 				orderDefine: 250,
 				orderDisplay: 250
 			},
@@ -1311,11 +1316,11 @@ function initContentAIRepCohortPerformance(init: InitDb) {
 				codeDbDataSourceValue: 'calculate',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				exprCustom: `Math.round((.studentsEnrolledCount > 0 ? (.studentsCompletedCount / .studentsEnrolledCount) : 0) * 100)`,
-				header: 'Students Completed (%)',
+				exprCustom: `Math.round((.enrolledCnt > 0 ? (.completedCnt / .enrolledCnt) : 0) * 100)`,
+				header: 'Students Completed Rate (%)',
 				isDisplay: true,
 				isDisplayable: true,
-				nameCustom: 'studentsCompletedRate',
+				nameCustom: 'completedRate',
 				orderDefine: 260,
 				orderDisplay: 260
 			},
@@ -1324,11 +1329,11 @@ function initContentAIRepCohortPerformance(init: InitDb) {
 				codeDataType: 'int16',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort = app_cm::CmCohort AND .csf.codeReferralEndType.name = 'Completed' AND .csf IN app_cm::CmCsfJobPlacement.csf)))`,
+				exprCustom: `(SELECT count((SELECT completedPlaced FILTER .cohort = app_cm::CmCohort)))`,
 				header: 'Students Completed & Placed (Count)',
 				isDisplay: true,
 				isDisplayable: true,
-				nameCustom: 'studentsCompletedJobPlacement',
+				nameCustom: 'completedPlacedCnt',
 				orderDefine: 270,
 				orderDisplay: 270
 			},
@@ -1338,11 +1343,11 @@ function initContentAIRepCohortPerformance(init: InitDb) {
 				codeDbDataSourceValue: 'calculate',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				exprCustom: `Math.round((.studentsCompletedCount > 0 ? (.studentsCompletedJobPlacement / .studentsCompletedCount) : 0) * 100)`,
-				header: 'Student Placement (Completeted) (%)',
+				exprCustom: `Math.round((.completedCnt > 0 ? (.completedPlacedCnt / .completedCnt) : 0) * 100)`,
+				header: 'Students Completed & Placed (Rate) (%)',
 				isDisplay: true,
 				isDisplayable: true,
-				nameCustom: 'studentsCompletedJobPlacementRate',
+				nameCustom: 'completedPlacedRate',
 				orderDefine: 280,
 				orderDisplay: 280
 			},
@@ -1351,11 +1356,11 @@ function initContentAIRepCohortPerformance(init: InitDb) {
 				codeDataType: 'int16',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfCohort FILTER .cohort = app_cm::CmCohort AND .csf.codeReferralEndType.name = 'Completed' AND .csf IN (SELECT app_cm::CmCsfJobPlacement FILTER str_lower(.codePlacementRelated.name) = 'yes').csf)))`,
+				exprCustom: `(SELECT count((SELECT completedPlacedRelated FILTER .cohort = app_cm::CmCohort)))`,
 				header: 'Students Completed & Placed Related To Training (Count)',
 				isDisplay: true,
 				isDisplayable: true,
-				nameCustom: 'studentsCompletedJobPlacementTrainingRelated',
+				nameCustom: 'completedPlacedRelatedCnt',
 				orderDefine: 290,
 				orderDisplay: 290
 			},
@@ -1365,13 +1370,173 @@ function initContentAIRepCohortPerformance(init: InitDb) {
 				codeDbDataSourceValue: 'calculate',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				exprCustom: `Math.round((.studentsCompletedCount > 0 ? (.studentsCompletedJobPlacementTrainingRelated / .studentsCompletedCount) : 0) * 100)`,
-				header: 'Student Placement (Completeted) (%)',
+				exprCustom: `Math.round((.completedCnt > 0 ? (.completedPlacedRelatedCnt / .completedCnt) : 0) * 100)`,
+				header: 'Students Completed & Placed Related To Training (Rate)',
 				isDisplay: true,
 				isDisplayable: true,
-				nameCustom: 'studentsCompletedJobPlacementTrainingRelatedRate',
+				nameCustom: 'completedPlacedRelatedRate',
 				orderDefine: 300,
 				orderDisplay: 300
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'float64',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `average(array_agg((SELECT cohortWages FILTER .cohort = app_cm::CmCohort).wages))`,
+				header: 'Students Completed & Placed Average Wage ($)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'wageAverage',
+				orderDefine: 310,
+				orderDisplay: 310
+			}
+		],
+		parms: getParms({
+			parms: [['pvCohorts', `.id IN <parms,uuidList,pvCohorts>`]]
+		})
+	})
+}
+
+function initContentAIRepCoursePerformance(init: InitDb) {
+	init.addTrans('sysRep', {
+		actionFieldGroup: 'doag_report_render',
+		exprFilter: '.owner.id IN <user,uuidlist,systemIdList>',
+		exprWith: `enrolled := (SELECT app_cm::CmCsfCohort {course := .cohort.course}),
+completed := (SELECT enrolled FILTER .csf.codeReferralEndType.name = 'Completed'),
+completedPlaced := (SELECT completed FILTER .csf IN app_cm::CmCsfJobPlacement.csf),
+completedPlacedRelated := (SELECT completed FILTER .csf IN (SELECT app_cm::CmCsfJobPlacement FILTER str_lower(.codePlacementRelated.name) = 'yes').csf),
+cohortWages := (SELECT completed {cohort, wages := (SELECT app_cm::CmCsfJobPlacement FILTER .csf = completed.csf).wage})`,
+		header: 'Course Performance',
+		name: 'report_ai_course_performance',
+		owner: 'sys_ai_old',
+		tables: [{ index: 0, table: 'CmCourse' }],
+		elements: [
+			{
+				codeReportElementType: 'column',
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 0
+			},
+			{
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				columnName: 'name',
+				header: 'Course',
+				indexTable: 0,
+				isDisplay: true,
+				isDisplayable: true,
+				orderDefine: 210,
+				orderDisplay: 210,
+				orderSort: 210
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'int16',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: '(SELECT count((SELECT enrolled FILTER .course = app_cm::CmCourse)))',
+				header: 'Students Enrolled (Count)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'enrolledCnt',
+				orderDefine: 230,
+				orderDisplay: 230
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'int16',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `(SELECT count((SELECT completed FILTER .course = app_cm::CmCourse)))`,
+				header: 'Students Completed (Count)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'completedCnt',
+				orderDefine: 250,
+				orderDisplay: 250
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'float64',
+				codeDbDataSourceValue: 'calculate',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `Math.round((.enrolledCnt > 0 ? (.completedCnt / .enrolledCnt) : 0) * 100)`,
+				header: 'Students Completed Rate (%)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'completedRate',
+				orderDefine: 260,
+				orderDisplay: 260
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'int16',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `(SELECT count((SELECT completedPlaced FILTER .course = app_cm::CmCourse)))`,
+				header: 'Students Completed & Placed (Count)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'completedPlacedCnt',
+				orderDefine: 270,
+				orderDisplay: 270
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'float64',
+				codeDbDataSourceValue: 'calculate',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `Math.round((.completedCnt > 0 ? (.completedPlacedCnt / .completedCnt) : 0) * 100)`,
+				header: 'Students Completed & Placed (Rate) (%)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'completedPlacedRate',
+				orderDefine: 280,
+				orderDisplay: 280
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'int16',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `(SELECT count((SELECT completedPlacedRelated FILTER .course = app_cm::CmCourse)))`,
+				header: 'Students Completed & Placed Related To Training (Count)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'completedPlacedRelatedCnt',
+				orderDefine: 290,
+				orderDisplay: 290
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'float64',
+				codeDbDataSourceValue: 'calculate',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `Math.round((.completedCnt > 0 ? (.completedPlacedRelatedCnt / .completedCnt) : 0) * 100)`,
+				header: 'Students Completed & Placed Related To Training (Rate)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'completedPlacedRelatedRate',
+				orderDefine: 300,
+				orderDisplay: 300
+			},
+			{
+				codeAlignment: 'right',
+				codeDataType: 'float64',
+				codeFieldElement: 'number',
+				codeReportElementType: 'column',
+				exprCustom: `average(array_agg((SELECT cohortWages FILTER .course = app_cm::CmCourse).wages))`,
+				header: 'Students Completed & Placed Average Wage ($)',
+				isDisplay: true,
+				isDisplayable: true,
+				nameCustom: 'wageAverage',
+				orderDefine: 310,
+				orderDisplay: 310
 			}
 		],
 		parms: getParms({})

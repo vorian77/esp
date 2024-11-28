@@ -847,6 +847,16 @@ function initRep(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'exprWith',
+				isDisplayable: true,
+				orderDisplay: 125,
+				orderDefine: 125,
+				height: 2,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'analytics',
 				isDisplayable: true,

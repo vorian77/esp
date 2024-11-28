@@ -29,6 +29,7 @@ module sys_rep {
     exprFilter: str;
     exprObject: str;
     exprSort: str;
+    exprWith: str;
     multi parms: sys_rep::SysRepParm {
       on source delete delete target;
       on target delete allow;

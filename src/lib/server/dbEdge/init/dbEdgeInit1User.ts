@@ -168,6 +168,7 @@ function initUserType(init: InitDb) {
 		resources: [
 			{ codeType: 'app', resource: 'app_ai_staff' },
 			{ codeType: 'report', resource: 'report_ai_cohort_performance' },
+			{ codeType: 'report', resource: 'report_ai_course_performance' },
 			// { codeType: 'report', resource: 'report_ai_cohorts_detail' },
 			// { codeType: 'report', resource: 'report_ai_courses_detail' },
 			// { codeType: 'report', resource: 'report_ai_partners_detail' },

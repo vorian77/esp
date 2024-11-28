@@ -186,11 +186,12 @@ export class ScriptGroup {
 	}
 	addScriptRetrieveItem(query: Query, queryData: TokenApiQueryData, exePost: ScriptExePost) {
 		return this.addScript(query, queryData, exePost, [
+			['with', { exprWith: query.rawDataObj.exprWith }],
 			['action', { type: 'SELECT', table: query.getTableRootObj() }],
 			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
 			['filter'],
 			['order'],
-			['script', { content: ['action', 'propsSelect', 'filter', 'order'] }]
+			['script', { content: ['with', 'action', 'propsSelect', 'filter', 'order'] }]
 		])
 	}
 
@@ -547,8 +548,11 @@ export class Script {
 					break
 
 				case 'with':
-					element = this.buildCombineValues(values, item.getParm('content'), ',')
-					element = this.addComponent(element, item.getParm('value'))
+					element = item.getParm('exprWith')
+					if (!element) {
+						element = this.buildCombineValues(values, item.getParm('content'), ',')
+						element = this.addComponent(element, item.getParm('value'))
+					}
 					if (element) element = `WITH\n${element}`
 					break
 

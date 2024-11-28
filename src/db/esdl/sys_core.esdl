@@ -116,6 +116,7 @@ module sys_core {
     exprFilter: str;
     exprObject: str;
     exprSort: str;
+    exprWith: str;
 
     isDetailRetrievePreset: bool;
     required isListEdit: bool;

@@ -272,6 +272,7 @@ export namespace sys_core {
     "tables": SysDataObjTable[];
     "isDetailRetrievePreset"?: boolean | null;
     "codeDataObjType"?: SysCode | null;
+    "exprWith"?: string | null;
   }
   export interface SysDataObjActionField extends SysObj {
     "codeActionFieldTriggerEnable": SysCode;
@@ -867,6 +868,7 @@ export namespace sys_rep {
     "tables": sys_core.SysDataObjTable[];
     "elements": SysRepEl[];
     "parms": SysRepParm[];
+    "exprWith"?: string | null;
   }
   export interface SysRepEl extends sys_user.Mgmt {
     "codeAlignment"?: sys_core.SysCode | null;

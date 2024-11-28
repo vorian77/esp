@@ -41,7 +41,6 @@ export async function addAnalytic(data: any) {
 						header: e.cast(e.str, e.json_get(p, 'header')),
 						isMultiSelect: e.cast(e.bool, e.json_get(p, 'isMultiSelect')),
 						isRequired: e.cast(e.bool, e.json_get(p, 'isRequired')),
-						linkTable: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(p, 'linkTable')))),
 						modifiedBy: CREATOR,
 						name: e.cast(e.str, e.json_get(p, 'name')),
 						orderDefine: e.cast(e.int16, e.json_get(p, 'orderDefine'))
@@ -79,6 +78,7 @@ export async function addReport(data: any) {
 			exprFilter: e.optional(e.str),
 			exprObject: e.optional(e.str),
 			exprSort: e.optional(e.str),
+			exprWith: e.optional(e.str),
 			header: e.optional(e.str),
 			name: e.str,
 			owner: e.str,
@@ -160,6 +160,7 @@ export async function addReport(data: any) {
 				exprFilter: p.exprFilter,
 				exprObject: p.exprObject,
 				exprSort: p.exprSort,
+				exprWith: p.exprWith,
 				header: p.header,
 				modifiedBy: CREATOR,
 				name: p.name,

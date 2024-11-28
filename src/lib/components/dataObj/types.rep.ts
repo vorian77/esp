@@ -81,6 +81,7 @@ export class Rep {
 	exprFilter?: string
 	exprObject?: string
 	exprSort?: string
+	exprWith?: string
 	header?: string
 	id: string
 	name: string
@@ -96,6 +97,7 @@ export class Rep {
 		this.exprFilter = strOptional(obj.exprFilter, clazz, 'exprFilter')
 		this.exprObject = strOptional(obj.exprObject, clazz, 'exprObject')
 		this.exprSort = strOptional(obj.exprSort, clazz, 'exprSort')
+		this.exprWith = strOptional(obj.exprWith, clazz, 'exprWith')
 		this.header = strOptional(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.name = strRequired(obj.name, clazz, 'name')

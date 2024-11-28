@@ -52,4 +52,11 @@ module default {
     required title: str { constraint exclusive };
     character: Person;
   }
+
+  # FUNCTIONS
+  function average(values: array<float64>) -> float64
+     using (select (IF len(values) = 0 THEN 0 ELSE rate(sum(array_unpack(values)), len(values))));
+
+  function rate(num: float64, denom: float64) -> float64
+    using (select (IF denom = 0 THEN 0 ELSE round(num / denom * 100) / 100));
 }

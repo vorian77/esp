@@ -124,6 +124,57 @@ const $SysPerson = $.makeType<$SysPerson>(_.spec, "5061da6e-b3c2-11ee-bf41-01b5a
 
 const SysPerson: $.$expr_PathNode<$.TypeSet<$SysPerson, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysPerson, $.Cardinality.Many), null);
 
+type rateλFuncExpr<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$number>>,
+  P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$number>>,
+> = $.$expr_Function<
+  _std.$number, $.cardutil.multiplyCardinalities<$.cardutil.paramCardinality<P1>, $.cardutil.paramCardinality<P2>>
+>;
+function rate<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$number>>,
+  P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$number>>,
+>(
+  num: P1,
+  denom: P2,
+): rateλFuncExpr<P1, P2>;
+function rate(...args: any[]) {
+  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('default::rate', args, _.spec, [
+    {args: [{typeId: "00000000-0000-0000-0000-0000000001ff", optional: false, setoftype: false, variadic: false}, {typeId: "00000000-0000-0000-0000-0000000001ff", optional: false, setoftype: false, variadic: false}], returnTypeId: "00000000-0000-0000-0000-0000000001ff"},
+  ]);
+  return _.syntax.$expressionify({
+    __kind__: $.ExpressionKind.Function,
+    __element__: returnType,
+    __cardinality__: cardinality,
+    __name__: "default::rate",
+    __args__: positionalArgs,
+    __namedargs__: namedArgs,
+  }) as any;
+};
+
+type averageλFuncExpr<
+  P1 extends $.TypeSet<$.ArrayType<_std.$float64>>,
+> = $.$expr_Function<
+  _std.$number, $.cardutil.paramCardinality<P1>
+>;
+function average<
+  P1 extends $.TypeSet<$.ArrayType<_std.$float64>>,
+>(
+  values: P1,
+): averageλFuncExpr<P1>;
+function average(...args: any[]) {
+  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('default::average', args, _.spec, [
+    {args: [{typeId: "2b65df4c-4942-59b1-8819-061ca68b2f4e", optional: false, setoftype: false, variadic: false}], returnTypeId: "00000000-0000-0000-0000-0000000001ff"},
+  ]);
+  return _.syntax.$expressionify({
+    __kind__: $.ExpressionKind.Function,
+    __element__: returnType,
+    __cardinality__: cardinality,
+    __name__: "default::average",
+    __args__: positionalArgs,
+    __namedargs__: namedArgs,
+  }) as any;
+};
+
 
 
 export { Name, nonNegative, $Movie, Movie, $Person, Person, $SysError, SysError, $SysPerson, SysPerson };
@@ -134,7 +185,9 @@ type __defaultExports = {
   "Movie": typeof Movie;
   "Person": typeof Person;
   "SysError": typeof SysError;
-  "SysPerson": typeof SysPerson
+  "SysPerson": typeof SysPerson;
+  "rate": typeof rate;
+  "average": typeof average
 };
 const __defaultExports: __defaultExports = {
   "Name": Name,
@@ -142,6 +195,8 @@ const __defaultExports: __defaultExports = {
   "Movie": Movie,
   "Person": Person,
   "SysError": SysError,
-  "SysPerson": SysPerson
+  "SysPerson": SysPerson,
+  "rate": rate,
+  "average": average
 };
 export default __defaultExports;

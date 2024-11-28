@@ -57,6 +57,7 @@ export class RawDataObj {
 	exprFilter?: string
 	exprObject?: string
 	exprSort?: string
+	exprWith?: string
 	header: string
 	id: string
 	isDetailRetrievePreset: boolean
@@ -115,6 +116,7 @@ export class RawDataObj {
 		this.exprFilter = strOptional(obj.exprFilter, clazz, 'exprFilter')
 		this.exprObject = strOptional(obj.exprObject, clazz, 'exprObject')
 		this.exprSort = strOptional(obj.exprSort, clazz, 'exprSort')
+		this.exprWith = strOptional(obj.exprWith, clazz, 'exprWith')
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.isDetailRetrievePreset = booleanOrDefault(obj.isDetailRetrievePreset, false)

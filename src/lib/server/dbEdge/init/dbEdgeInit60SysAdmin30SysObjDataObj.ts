@@ -223,6 +223,15 @@ function initDataObj(init: InitDb) {
 				orderDefine: 140,
 				indexTable: 0
 			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'exprWith',
+				isDisplayable: true,
+				orderDisplay: 140,
+				orderDefine: 140,
+				indexTable: 0
+			},
 
 			/* parent */
 			{

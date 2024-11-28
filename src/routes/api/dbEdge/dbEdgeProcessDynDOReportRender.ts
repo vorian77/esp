@@ -156,6 +156,7 @@ function getRawDataObj(repUser: RepUser) {
 		description: repUser.descriptionUser || repUser.report.description,
 		exprFilter: repUser.report.exprFilter,
 		exprSort: repUser.report.exprSort,
+		exprWith: repUser.report.exprWith,
 		header: repUser.headerUser,
 		id: repUser.report.id,
 		isListEdit: false,

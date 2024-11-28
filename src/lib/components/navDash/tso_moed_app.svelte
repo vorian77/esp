@@ -13,11 +13,13 @@
 
 	let record = getArray(data)[0]
 
-	const status = [
-		{ label: 'Current Status', data: record._codeStatus },
-		{ label: 'Referral Date', data: record.dateReferral },
-		{ label: 'Last Update By', data: record._modifiedBy }
-	]
+	const status = record
+		? [
+				{ label: 'Current Status', data: record._codeStatus },
+				{ label: 'Referral Date', data: record.dateReferral },
+				{ label: 'Last Update By', data: record._modifiedBy }
+			]
+		: []
 </script>
 
 {#if record}
@@ -29,5 +31,7 @@
 			</span>
 		{/each}
 	</div>
+{:else}
+	Click to start application
 	<!-- <DataViewer header="record" data={record} /> -->
 {/if}
