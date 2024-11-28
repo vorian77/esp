@@ -42,11 +42,7 @@
 	// setCssVar('nav-width-closed', '60px')
 </script>
 
-<nav
-	class="text-sm p-3 border-0 flex flex-col {navBar.isOpen
-		? 'open border-red-400'
-		: 'items-center border-green-400'}"
->
+<nav class="text-sm p-3 border-0 flex flex-col {navBar.isOpen ? 'open ' : 'items-center '}">
 	{#if navBar}
 		{#each navBar.items as item}
 			<ul>
