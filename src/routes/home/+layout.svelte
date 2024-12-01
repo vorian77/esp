@@ -178,13 +178,14 @@
 		{/if}
 		<div class="hidden md:block">
 			{#if user && navBar}
-				{#if DEV_MODE}
+				<NavBar bind:navBar />
+				<!-- {#if DEV_MODE}
 					<NavBar bind:navBar />
 				{:else}
 					<div class="my-4">
 						<NavTree {state} on:treeChanged />
 					</div>
-				{/if}
+				{/if} -->
 			{/if}
 		</div>
 	</svelte:fragment>
