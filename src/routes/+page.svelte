@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
 	import { goto } from '$app/navigation'
-	import { userInit } from '$utils/types.js'
+	import { userInit } from '$utils/types'
 	import { State } from '$comps/app/types.appState'
-	import { TokenApiDbDataObjSource, TokenApiQueryType } from '$utils/types.token.js'
+	import { TokenApiDbDataObjSource, TokenApiQueryType } from '$utils/types.token'
 
 	const FILENAME = 'routes/+page.svelte'
 

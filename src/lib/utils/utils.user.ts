@@ -18,6 +18,7 @@ export function userGet() {
 export async function userInit(userId: string) {
 	const token = new TokenApiUserId(userId)
 	const rawUser = await userInitData(token, ApiFunction.dbEdgeGetUser)
+	userLogout()
 	appStoreUser.set(rawUser)
 	return new User(rawUser)
 }
