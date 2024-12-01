@@ -488,6 +488,7 @@ export enum StatePacketAction {
 	// nav
 	navBack = 'navBack',
 	navCrumbs = 'navCrumbs',
+	navBarOpen = 'navBarOpen',
 	navRow = 'navRow',
 	navTab = 'navTab',
 	navTreeReset = 'navTreeReset',

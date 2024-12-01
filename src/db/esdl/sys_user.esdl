@@ -30,7 +30,7 @@ module sys_user {
     required defaultOrg: sys_core::SysOrg;
     required defaultSystem: sys_core::SysSystem;
     isMobileOnly: bool;
-    multi orgs: sys_core::SysOrg {
+    required multi orgs: sys_core::SysOrg {
       on target delete allow;
     };
     required owner: sys_core::SysOrg;
@@ -40,7 +40,7 @@ module sys_user {
     required password: str {
       default := (SELECT <str>uuid_generate_v4());
     };
-    multi systems: sys_core::SysSystem;
+    required multi systems: sys_core::SysSystem;
     userName: str;
     multi userTypes: sys_user::SysUserType {
       on target delete allow;

@@ -33,8 +33,6 @@ export namespace sys_user {
   }
   export interface SysUser extends Mgmt {
     "userName"?: string | null;
-    "orgs": sys_core.SysOrg[];
-    "systems": sys_core.SysSystem[];
     "userTypes": SysUserType[];
     "person"?: SysPerson | null;
     "isMobileOnly"?: boolean | null;
@@ -42,6 +40,8 @@ export namespace sys_user {
     "owner": sys_core.SysOrg;
     "password": string;
     "defaultSystem": sys_core.SysSystem;
+    "orgs": sys_core.SysOrg[];
+    "systems": sys_core.SysSystem[];
   }
   export interface SysUserPref extends Mgmt {
     "user": SysUser;

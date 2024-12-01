@@ -337,7 +337,7 @@
 			page: '/home',
 			nodeType: NodeType.home,
 			packet: new StatePacket({
-				action: StatePacketAction.navTreeSetParent,
+				action: StatePacketAction.navBarOpen,
 				confirmType: TokenAppDoActionConfirmType.objectChanged
 			})
 		})

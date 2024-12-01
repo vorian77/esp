@@ -24,9 +24,8 @@
 	$: tasks = [
 		...state.user.resources_sys_task_default,
 		...state.user?.resources_sys_task_setting
-	].filter((task: UserResourceTask) => task.isPinToDash)
+	].filter((task: UserResourceTask) => task.codeStatusObjName || state.user?.isMobileOnly)
 
-	$: console.log('tasks', state.user)
 	const StatusType = { tso_moed_app: TsoMoedApp, tso_moed_app_doc: TsoMoedAppDoc }
 
 	const getStatusData = async (task: UserResourceTask) => {

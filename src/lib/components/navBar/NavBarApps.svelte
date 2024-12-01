@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { NavBarDataCompApps, NavBarDataCompItem } from '$comps/navBar/types.navBar'
-	import NavBarList from '$comps/navBar/NavBarList.svelte'
-	import NavBarListItem from '$comps/navBar/NavBarListItem.svelte'
+	import NavBarGroup from '$comps/navBar/NavBarGroup.svelte'
+	import NavBarItem from '$comps/navBar/NavBarItem.svelte'
+	import NavBarHeader from '$comps/navBar/NavBarHeader.svelte'
 	import { fade } from 'svelte/transition'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -12,20 +13,12 @@
 
 <div>
 	{#if data}
-		{#if data.navBar.isOpen}
-			<h2 class="mb-1 text-gray-500" in:fade={data.navBar.fadeIn} out:fade={data.navBar.fadeOut}>
-				My Apps
-			</h2>
-		{/if}
+		<NavBarHeader navBar={data.navBar} header={'My Apps'} />
 
 		{#each data.apps as app}
 			<div class={app.isOpen ? 'mb-5' : ''}>
-				<NavBarListItem item={app.header} />
-				{#if app.isOpen}
-					<NavBarList data={app.list} />
-				{/if}
+				<NavBarGroup data={app.group} />
 			</div>
 		{/each}
-		<hr class="my-2" />
 	{/if}
 </div>

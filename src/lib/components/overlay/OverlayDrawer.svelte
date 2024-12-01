@@ -2,15 +2,12 @@
 	import { Drawer, getDrawerStore } from '@skeletonlabs/skeleton'
 	import NavTree from '$comps/app/NavTree.svelte'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
-	import { apiFetch, ApiFunction } from '$routes/api/api'
-	import { TokenApiUserId, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
-	import { Node, ResponseBody } from '$utils/types'
-	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
-	import { adminDbReset } from '$utils/utils.sys'
-
-	const storeDrawer = getDrawerStore()
+	import { State } from '$comps/app/types.appState'
+	import NavBar from '$comps/navBar/NavBar.svelte'
+	import { NavBarData, NavBarDataCompItem } from '$comps/navBar/types.navBar'
 
 	const FILENAME = 'OverlayDrawer.svelte'
+	const storeDrawer = getDrawerStore()
 
 	function closeDrawer() {
 		if ($storeDrawer.meta && Object.hasOwn($storeDrawer.meta, 'onCloseDrawer')) {
@@ -19,20 +16,14 @@
 		storeDrawer.close()
 		$storeDrawer.id = undefined
 	}
+
 	function onformCancelled() {
 		closeDrawer()
 	}
+
 	function onKeyDown(event: KeyboardEvent) {
 		if (!$storeDrawer.id) return
 		if (event.key === 'Escape') closeDrawer()
-	}
-
-	async function dbInitAdmin(event: MouseEvent) {
-		const result: ResponseBody = await adminDbReset($storeDrawer.meta.state)
-		if (result.success) {
-			closeDrawer()
-			await $storeDrawer.meta.state.resetUser(true)
-		}
 	}
 </script>
 

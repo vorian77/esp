@@ -18,37 +18,41 @@
 	} from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import NavDash from '$comps/navDash/NavDash.svelte'
-	import NavHome from '$comps/app/NavHome.svelte'
 	import NavFooter from '$comps/app/NavFooter.svelte'
 	import NavBar from '$comps/navBar/NavBar.svelte'
 	import NavTree from '$comps/app/NavTree.svelte'
+	import { NavBarData, NavBarDataCompItem } from '$comps/navBar/types.navBar'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
 	import { page } from '$app/stores'
 	import { goto } from '$app/navigation'
 	import { onMount } from 'svelte'
+	import { fly } from 'svelte/transition'
+	import { tweened } from 'svelte/motion'
+	import { cubicOut } from 'svelte/easing'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$routes/home/+layout.svelte'
 
+	const DEFAULT_APP_NAME = 'The App Factory'
+	const NAV_COLOR = '#3b79e1'
+	const SIDEBAR_LEFT_WIDTH = '80'
 	const storeDrawer = getDrawerStore()
 	const storeModal = getModalStore()
 	const storeToast = getToastStore()
 
-	const DEFAULT_APP_NAME = 'The App Factory'
-	const NAV_COLOR = '#3b79e1'
-	const SIDEBAR_LEFT_WIDTH = '80'
-
+	let appName = ''
+	let isNavBarDrawerOpen = false
 	let launchApp = true
+	let navBar: NavBarData
 	let state: State
 	let statePackets: Array<StatePacket> = []
 	let user: User | undefined
-	let appName = ''
+	let navBarWidth: any
 
 	// 241001 - navBar experiment
 	export let data
 	const DEV_MODE = data.environ === 'dev'
-	let clazzNavBar = DEV_MODE ? 'border-0 border-red-400' : 'hidden'
 
 	$: {
 		const rawUser = $appStoreUser
@@ -67,9 +71,19 @@
 			storeToast,
 			user
 		})
+		navBar = new NavBarData({ navBarUpdate, state })
 		launchApp = false
 	}
 	$: userAvatarSrc = user && user.avatar ? user.avatar.url : ''
+	$: if (state && state.packet) {
+		let packet
+
+		// navBarOpen
+		packet = state.consume(StatePacketAction.navBarOpen)
+		;(async () => {
+			if (packet) if (!navBar.isOpen) navBar.toggleOpen()
+		})()
+	}
 
 	onMount(() => {
 		return () => {
@@ -105,30 +119,32 @@
 			page: '/home',
 			nodeType: NodeType.home,
 			packet: new StatePacket({
-				action: StatePacketAction.navTreeReset,
+				action: StatePacketAction.navBarOpen,
 				confirmType: TokenAppDoActionConfirmType.objectChanged
 			})
 		})
 	}
-	function navLeft(): void {
-		state.openDrawer('navLeft', 'left', undefined, 'w-[50%]', { state })
+	const navBarUpdate = (isItemActivate: boolean) => {
+		if (isItemActivate) isNavBarDrawerOpen = false
+		navBar = navBar
 	}
-	function navRight(): void {
-		const isSysAdmin = user ? ['user_sys', '2487985578'].includes(user.userName) : false
-		state.openDrawer('navRight', 'right', undefined, 'w-[20%]', { state, isSysAdmin })
+	function navLeft(): void {
+		state.openDrawer('navLeft', 'left', undefined, 'w-250px', { state })
 	}
 </script>
 
 <AppShell slotSidebarLeft="w-{SIDEBAR_LEFT_WIDTH}">
 	<svelte:fragment slot="header">
-		<div>
+		<div class="md:hidden">
 			<AppBar background="bg-neutral-200" padding="p-3">
 				<svelte:fragment slot="lead">
 					<div
 						class="md:hidden mr-2"
 						role="button"
 						tabindex="0"
-						on:click={navLeft}
+						on:click={() => {
+							isNavBarDrawerOpen = !isNavBarDrawerOpen
+						}}
 						on:keyup={navLeft}
 					>
 						<Icon
@@ -151,20 +167,25 @@
 	</svelte:fragment>
 
 	<svelte:fragment slot="sidebarLeft">
-		<div class="flex">
-			<div class="hidden md:block">
-				{#if user && state?.nodeType === NodeType.home}
-					{#if DEV_MODE}
-						<div class={clazzNavBar}>
-							<NavBar {state} />
-						</div>
-					{:else}
-						<div class="my-4">
-							<NavTree {state} on:treeChanged />
-						</div>
-					{/if}
-				{/if}
+		{#if navBar && isNavBarDrawerOpen}
+			<div
+				class="w-screen h-screen fixed top-15 left-0 border-0 border-red-500 bg-transparent/80 z-50"
+				in:fly={{ x: -200, duration: 500 }}
+				out:fly={{ x: -200, duration: 500 }}
+			>
+				<NavBar bind:navBar />
 			</div>
+		{/if}
+		<div class="hidden md:block">
+			{#if user && navBar}
+				{#if DEV_MODE}
+					<NavBar bind:navBar />
+				{:else}
+					<div class="my-4">
+						<NavTree {state} on:treeChanged />
+					</div>
+				{/if}
+			{/if}
 		</div>
 	</svelte:fragment>
 
@@ -172,7 +193,6 @@
 		{#if $page.route.id === '/home'}
 			{#if state?.nodeType === NodeType.home}
 				<div class="m-4">
-					<!-- <NavHome {state} /> -->
 					<NavDash {state} />
 				</div>
 			{:else}
@@ -180,25 +200,11 @@
 			{/if}
 		{:else}
 			<slot />
-			<!-- <NavHome {state} /> -->
 			<NavDash {state} />
 		{/if}
 	</div>
 
 	<svelte:fragment slot="footer">
-		<NavFooter {state} />
-		<!-- <div class="border-t-2 border-gray-200">
-			{#if DEV_MODE}
-				<div class="grid grid-cols-5 gap-4 border-t-2 border-gray-200">
-					<div class="col-span-1 text-gray-400 text-sm border-2 border-green-400">Dev Footer</div>
-					<div class="col-span-4 content-center border-2 border-blue-400">
-						<NavFooter {state} />
-					</div>
-				</div>
-			{:else}
-				<NavFooter {state} />
-			{/if}
-		</div> -->
+		<!-- <NavFooter {state} /> -->
 	</svelte:fragment>
-	<!-- <DataViewer header="user" data={user} /> -->
 </AppShell>

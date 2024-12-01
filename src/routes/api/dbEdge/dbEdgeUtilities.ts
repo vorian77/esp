@@ -583,6 +583,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			logoWidth: true,
 			filter_single: e.op(o, '=', u.defaultOrg)
 		})),
+		orgs: true,
 		preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({
 			_codeType: p.codeType.name,
 			isActive: true,

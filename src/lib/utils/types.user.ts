@@ -26,7 +26,8 @@ export class User {
 	initials: string = ''
 	isMobileOnly: boolean
 	lastName: string
-	org?: UserOrg
+	org: UserOrg
+	orgIds: string[] = []
 	preferences: UserPrefs
 	resources = new UserTypeResourceList()
 	resources_sys_app: any[] = []
@@ -34,7 +35,7 @@ export class User {
 	resources_sys_task_default: UserResourceTask[] = []
 	resources_sys_task_setting: UserResourceTask[] = []
 	system: UserResource
-	systemIdList: string[] = []
+	systemIds: string[] = []
 	userName: string
 
 	// old
@@ -54,13 +55,14 @@ export class User {
 		this.isMobileOnly = booleanOrFalse(obj.isMobileOnly, 'isMobileOnly')
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
 		this.org = new UserOrg(obj.org)
+		this.orgIds = obj.orgs.map((o: any) => o.id)
 		this.preferences = new UserPrefs(obj.preferences)
 		this.resources_sys_app = obj.resources_app
 		this.resources_sys_footer = obj.resources_footer
 		this.resources_sys_task_default = arrayOfClass(UserResourceTask, obj.resources_task_default)
 		this.resources_sys_task_setting = arrayOfClass(UserResourceTask, obj.resources_task_setting)
 		this.system = new UserResource(obj.system)
-		this.systemIdList = obj.systems.map((s: any) => s.id)
+		this.systemIds = obj.systems.map((s: any) => s.id)
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 
 		/* derived */

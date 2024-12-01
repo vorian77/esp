@@ -43,8 +43,6 @@ const SysTask: $.$expr_PathNode<$.TypeSet<$SysTask, $.Cardinality.Many>, null> =
 
 export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "userName": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "orgs": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.Many, {}, false, false,  false, false>;
-  "systems": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
   "userTypes": $.LinkDesc<$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
   "person": $.LinkDesc<_default.$SysPerson, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "isMobileOnly": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -52,6 +50,8 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "owner": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.One, {}, false, false,  false, false>;
   "password": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, true>;
   "defaultSystem": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.One, {}, false, false,  false, false>;
+  "orgs": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.AtLeastOne, {}, false, false,  false, false>;
+  "systems": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.AtLeastOne, {}, false, false,  false, false>;
   "<createdBy[is sys_user::Mgmt]": $.LinkDesc<$Mgmt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysCode]": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysObj]": $.LinkDesc<_sys_core.$SysObj, $.Cardinality.Many, {}, false, false,  false, false>;

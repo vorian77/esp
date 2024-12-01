@@ -1,32 +1,15 @@
 import {
-	arrayOfClass,
 	booleanOrDefault,
-	getArray,
 	memberOfEnum,
 	Node,
-	NodeHeader,
-	NodeType,
 	RawMenu,
 	required,
-	strRequired,
 	User,
 	UserResourceTask,
-	UserTypeResourceType,
 	valueOrDefault
 } from '$utils/types'
-import {
-	State,
-	StateLayoutComponent,
-	StatePacket,
-	StatePacketAction
-} from '$comps/app/types.appState'
-import {
-	TokenApiId,
-	TokenAppDo,
-	TokenAppDoActionConfirmType,
-	TokenAppNode
-} from '$utils/types.token'
-import { goto } from '$app/navigation'
+import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
+import { TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 import { adminDbReset } from '$utils/utils.sys'
 import { error } from '@sveltejs/kit'
 
@@ -41,19 +24,21 @@ export class NavBarData {
 		delay: 0,
 		duration: 200
 	}
-	fToggleOpen: Function
-	fUpdateNav: Function
+	fUpdateNav: Function = (isItemActivate: boolean) => {}
 	iconColor = '#daa520'
 	idIndex = -1
 	isOpen = true
 	items: NavBarDataComp[] = []
 	state: State
+	width: any
+	widthClosed = 60
+	widthOpen = 250
 	constructor(obj: any) {
 		const clazz = 'NavBarData'
 		obj = valueOrDefault(obj, {})
-		this.fToggleOpen = required(obj.toggleOpen, clazz, 'fToggleOpen')
-		this.fUpdateNav = required(obj.updateNav, clazz, 'fUpdateNav')
+		this.fUpdateNav = required(obj.navBarUpdate, clazz, 'fUpdateNav')
 		this.state = obj.state
+		this.width = this.widthOpen
 
 		if (this.state && this.state.user) {
 			// org
@@ -62,104 +47,58 @@ export class NavBarData {
 			// apps
 			this.items.push(new NavBarDataCompApps(this, this.state.user.resources_sys_app))
 
-			// group - tasks - default
-			const groupTasks = new NavBarDataCompListGroup(this, {
-				header: 'My Tasks'
-			})
-			this.state.user.resources_sys_task_default.forEach((r) => {
-				groupTasks.addItem({
-					codeType: 'task',
-					content: r,
-					icon: r.codeIconName,
-					label: new NavBarLabel(r.header!)
+			// item - group - tasks - default
+			const itemGroupTasks = new NavBarDataCompGroup(this, { header: 'My Tasks' })
+			this.state.user.resources_sys_task_default
+				.filter((r) => !this.state.user?.isMobileOnly && !r.codeStatusObjName)
+				.forEach((r) => {
+					itemGroupTasks.addItem({
+						content: new NavBarContent('task', r),
+						icon: r.codeIconName,
+						label: new NavBarLabel(r.header!)
+					})
 				})
-			})
-			this.items.push(groupTasks)
-
-			// group - tasks - setting
-			const groupSettings = new NavBarDataCompListGroup(this, {
-				header: 'My Settings'
-			})
-			this.state.user.resources_sys_task_setting.forEach((r) => {
-				groupSettings.addItem({
-					codeType: 'task',
-					content: r,
-					icon: r.codeIconName,
-					label: new NavBarLabel(r.header!)
-				})
-			})
-			groupSettings.addItem({
-				codeType: 'functionAsync',
-				content: fMyPreferences,
-				icon: 'Settings2',
-				label: new NavBarLabel('My Preferences')
-			})
-
-			if (['user_sys', '2487985578'].includes(this.state.user.userName)) {
-				groupSettings.addItem({
-					codeType: 'functionAsync',
-					content: fAdminResetDb,
-					icon: 'RotateCcw',
-					label: new NavBarLabel('Admin - Reset DB')
-				})
-			}
-			this.items.push(groupSettings)
-
-			// // list
-			// const list = new NavBarDataCompList(this, {})
-			// list.addItem({ codeType: 'node', icon: 'Activity', label: new NavBarLabel('Activity') })
-			// list.addItem({ codeType: 'node', icon: 'Goal', label: new NavBarLabel('Goal') })
-			// this.items.push(list)
-
-			// link
-			this.items.push(
-				new NavBarDataCompItem(this, {
-					codeType: 'page',
-					content: '/',
-					icon: 'LogOut',
-					label: new NavBarLabel('Logout')
-				})
-			)
+			this.items.push(itemGroupTasks)
 
 			// user
 			this.items.push(new NavBarDataCompUser(this, { user: this.state.user }))
 
+			// item - group - default items
+			const itemDefault = new NavBarDataCompGroup(this, {})
+			// logout
+			itemDefault.addItem(
+				new NavBarDataCompItem(this, {
+					content: new NavBarContent('page', '/'),
+					icon: 'LogOut',
+					isRoot: true,
+					label: new NavBarLabel('Logout')
+				})
+			)
+			this.items.push(itemDefault)
 			// console.log('NavBarData.constructor', this)
 		}
 	}
 
 	async activateLink(item: NavBarDataCompItem) {
+		const content = item.content
 		let node
-		if (item.codeType === NavBarDataCompItemType.appHeader) {
-			const apps = this.getAncestor(item, NavBarDataCompApps) as NavBarDataCompApps | undefined
-			if (apps) {
-				if (!this.isOpen) this.fToggleOpen()
-				apps.toggleHeader(item)
-				this.fUpdateNav()
-			}
-		} else {
-			if (!this.isOpen) {
-				this.fToggleOpen()
-				return
-			}
-
-			this.fToggleOpen()
-			switch (item.codeType) {
-				case NavBarDataCompItemType.functionAsync:
-					if (item.content) await item.content(this)
+		if (content) {
+			switch (content.codeType) {
+				case NavBarContentType.functionAsync:
+					await content.value(this)
 					break
 
-				case NavBarDataCompItemType.page:
+				case NavBarContentType.page:
 					this.state.update({
-						page: item.content,
+						page: content.value,
 						packet: new StatePacket({
 							action: StatePacketAction.navCrumbs,
 							confirmType: TokenAppDoActionConfirmType.objectChanged
 						})
 					})
 					break
-				case NavBarDataCompItemType.node:
-					node = required(item.content, FILENAME, 'item.content')
+				case NavBarContentType.node:
+					node = content.value as Node
 					this.state.update({
 						page: '/home',
 						// parmsState: { programId: this.getProgramId(node) },
@@ -168,12 +107,11 @@ export class NavBarData {
 							action: StatePacketAction.openNode,
 							confirmType: TokenAppDoActionConfirmType.objectChanged,
 							token: new TokenAppNode({ node })
-							// callbacks: [() => dispatch('treeChanged')]
 						})
 					})
 					break
-				case NavBarDataCompItemType.task:
-					const task: UserResourceTask = required(item.content, FILENAME, 'item.content')
+				case NavBarContentType.task:
+					const task: UserResourceTask = content.value as UserResourceTask
 					this.state.update({
 						nodeType: '', // todo - 241125 - when this is removed the packet doesn't get to RootLayoutApp
 						packet: new StatePacket({
@@ -187,9 +125,10 @@ export class NavBarData {
 					error(500, {
 						file: FILENAME,
 						function: 'activateLink',
-						message: `No case defined for item type: ${item.codeType}`
+						message: `No case defined for item type: ${content.codeType}`
 					})
 			}
+			if (this.isOpen) this.toggleOpen(true)
 		}
 	}
 
@@ -221,16 +160,12 @@ export class NavBarData {
 			}
 		}
 	}
-}
-const fAdminResetDb = async (navBar: NavBarData) => {
-	await adminDbReset(navBar.state)
-	await navBar.state.resetUser(true)
-}
 
-const fMyPreferences = async (navBar: NavBarData) => {
-	await navBar.state.openModalDataObj('data_obj_auth_user_pref_type', async () => {
-		await navBar.state.resetUser(true)
-	})
+	toggleOpen = (isItemActivate: boolean) => {
+		this.isOpen = !this.isOpen
+		this.width = this.isOpen ? this.widthOpen : this.widthClosed
+		this.fUpdateNav(isItemActivate)
+	}
 }
 
 // getParentNode(nodeNav: NodeNav) {
@@ -242,28 +177,40 @@ const fMyPreferences = async (navBar: NavBarData) => {
 // 	return this.getProgramId(this.getParentNode(nodeNav))
 // }
 
-export class NavBarLabel {
-	text: string
-	tooltip?: string
-	constructor(text: string, tooltip?: string) {
-		this.text = text
-		this.tooltip = tooltip
+export class NavBarContent {
+	codeType: NavBarContentType
+	value: any
+	constructor(codeType: string, value: any) {
+		const clazz = 'NavBarContent'
+		this.codeType = memberOfEnum(
+			codeType,
+			clazz,
+			'codeType',
+			'NavBarDataCompItemType',
+			NavBarContentType
+		)
+		this.value = value
 	}
+}
+export enum NavBarContentType {
+	functionAsync = 'functionAsync',
+	functionNormal = 'functionNormal',
+	info = 'info',
+	page = 'page',
+	node = 'node',
+	nodeHeader = 'nodeHeader',
+	task = 'task'
 }
 
 export class NavBarDataComp {
-	content?: any
+	content?: NavBarContent
 	id: number
-	isActive: boolean
-	isTop: boolean
 	navBar: NavBarData
 	parent?: NavBarDataComp
 	constructor(navBar: NavBarData, obj: any) {
 		obj = valueOrDefault(obj, {})
 		this.content = obj.content
 		this.id = navBar.getId()
-		this.isActive = booleanOrDefault(obj.isActive, false)
-		this.isTop = booleanOrDefault(obj.isTop, false)
 		this.navBar = navBar
 		this.parent = obj.parent
 	}
@@ -283,39 +230,34 @@ export class NavBarDataCompApps extends NavBarDataComp {
 			this.apps.push(new NavBarDataCompAppsItem(navBar, { ...a, parent: this }))
 		})
 	}
-	toggleHeader(item: NavBarDataCompItem) {
-		const currApp = this.apps.find((a) => item.id === a.header.id)
-		if (currApp) {
-			currApp.isOpen = !this.navBar.isOpen ? true : !currApp.isOpen
-		}
-	}
 }
 
 export class NavBarDataCompAppsItem extends NavBarDataComp {
-	header: NavBarDataCompItem
-	isOpen: boolean
-	list: NavBarDataCompList
+	group: NavBarDataCompGroup
 	constructor(navBar: NavBarData, obj: any) {
 		super(navBar, obj)
 		const clazz = 'NavBarDataCompAppsItem'
 		obj = valueOrDefault(obj, {})
-		this.header = new NavBarDataCompItem(navBar, {
+		this.group = new NavBarDataCompGroup(navBar, { ...obj, header: '', hideHr: true, parent: this })
+
+		// header
+		const header = this.group.addItem({
 			...obj,
-			codeType: 'appHeader',
-			content: obj.header,
+			content: new NavBarContent('nodeHeader', obj.header),
+			hasChildren: true,
 			icon: obj.header.icon,
+			isRoot: true,
 			parent: this,
 			label: new NavBarLabel(obj.header.label),
 			indent: 0
 		})
-		this.isOpen = booleanOrDefault(obj.isOpen, false)
-		this.list = new NavBarDataCompList(navBar, { ...obj, parent: this })
+
+		// children
 		obj.nodes.forEach((n: any) =>
-			this.list.addItem({
+			this.group.addItem({
 				...obj,
-				codeType: 'node',
-				content: n,
-				parent: this.list,
+				content: new NavBarContent('node', n),
+				parent: header,
 				label: new NavBarLabel(n.label),
 				indent: 1
 			})
@@ -323,42 +265,16 @@ export class NavBarDataCompAppsItem extends NavBarDataComp {
 	}
 }
 
-export class NavBarDataCompItem extends NavBarDataComp {
-	codeType: NavBarDataCompItemType
-	icon?: string
-	indent: number
-	label: NavBarLabel
-	constructor(navBar: NavBarData, obj: any) {
-		super(navBar, obj)
-		const clazz = 'NavBarDataCompItem'
-		obj = valueOrDefault(obj, {})
-		this.codeType = memberOfEnum(
-			obj.codeType,
-			clazz,
-			'codeType',
-			'NavBarDataCompItemType',
-			NavBarDataCompItemType
-		)
-		this.icon = obj.icon
-		this.indent = valueOrDefault(obj.indent, 0)
-		this.label = required(obj.label, clazz, 'label')
-	}
-}
-export enum NavBarDataCompItemType {
-	appHeader = 'appHeader',
-	functionAsync = 'functionAsync',
-	functionNormal = 'functionNormal',
-	page = 'page',
-	node = 'node',
-	task = 'task'
-}
-
-export class NavBarDataCompList extends NavBarDataComp {
+export class NavBarDataCompGroup extends NavBarDataComp {
+	header?: string
+	hideHr: boolean
 	items: NavBarDataCompItem[] = []
 	constructor(navBar: NavBarData, obj: any) {
 		super(navBar, obj)
-		const clazz = 'NavBarDataCompList'
+		const clazz = 'NavBarDataCompGroup'
 		obj = valueOrDefault(obj, {})
+		this.header = obj.header
+		this.hideHr = booleanOrDefault(obj.hideHr, false)
 	}
 	addItem(obj: any) {
 		this.items.push(
@@ -367,16 +283,52 @@ export class NavBarDataCompList extends NavBarDataComp {
 				parent: obj.parent || this
 			})
 		)
+		return this.items[this.items.length - 1]
+	}
+	activateLinkByLabel(labelText: string) {
+		const item = this.items.find((i) => i.label.text === labelText)
+		if (item) {
+			this.navBar.activateLink(item)
+		} else {
+			error(500, {
+				file: `${FILENAME}.NavBarDataCompGroup`,
+				function: 'activateLink',
+				message: `Item not found: ${labelText}`
+			})
+		}
 	}
 }
 
-export class NavBarDataCompListGroup extends NavBarDataCompList {
-	header: string
+export class NavBarDataCompItem extends NavBarDataComp {
+	hasChildren: boolean
+	icon?: string
+	indent: number
+	isOpen: boolean
+	isRoot: boolean
+	label: NavBarLabel
 	constructor(navBar: NavBarData, obj: any) {
 		super(navBar, obj)
-		const clazz = 'NavBarDataCompListGroup'
+		const clazz = 'NavBarDataCompItem'
 		obj = valueOrDefault(obj, {})
-		this.header = strRequired(obj.header, clazz, 'header')
+		this.hasChildren = booleanOrDefault(obj.hasChildren, false)
+		this.icon = obj.icon
+		this.indent = valueOrDefault(obj.indent, 0)
+		this.isOpen = booleanOrDefault(obj.isOpen, false)
+		this.isRoot = booleanOrDefault(obj.isRoot, false)
+		this.label = required(obj.label, clazz, 'label')
+	}
+	async click() {
+		if (this.hasChildren) {
+			if (this.navBar.isOpen) {
+				this.isOpen = !this.isOpen
+				this.navBar.fUpdateNav()
+			} else {
+				if (!this.isOpen) this.isOpen = !this.isOpen
+				this.navBar.toggleOpen(false)
+			}
+		} else {
+			await this.navBar.activateLink(this)
+		}
 	}
 }
 
@@ -390,24 +342,77 @@ export class NavBarDataCompOrg extends NavBarDataComp {
 	}
 }
 export class NavBarDataCompUser extends NavBarDataComp {
+	info: NavBarInfo[] = []
+	items: NavBarDataCompGroup
 	user: User
 	constructor(navBar: NavBarData, obj: any) {
 		super(navBar, obj)
 		const clazz = 'NavBarDataCompUser'
 		obj = valueOrDefault(obj, {})
 		this.user = required(obj.user, clazz, 'user')
+
+		// info
+		if (this.user.orgIds.length > 0) {
+			this.info.push(new NavBarInfo('Default Organization', this.user.org.name))
+		}
+		if (this.user.systemIds.length > 0) {
+			this.info.push(new NavBarInfo('Default System', this.user.system.name))
+		}
+
+		// group - items
+		this.items = new NavBarDataCompGroup(navBar, { hideHr: true })
+		this.user.resources_sys_task_setting.forEach((r) => {
+			this.addItem({
+				content: new NavBarContent('task', r),
+				icon: r.codeIconName,
+				isRoot: true,
+				label: new NavBarLabel(r.header!)
+			})
+		})
+		this.addItem({
+			content: new NavBarContent('functionAsync', this.myPreferences),
+			icon: 'Settings2',
+			isRoot: true,
+			label: new NavBarLabel('My Preferences')
+		})
+		if (['user_sys', '2487985578'].includes(this.user.userName)) {
+			this.addItem({
+				content: new NavBarContent('functionAsync', this.adminResetDb),
+				icon: 'RotateCcw',
+				isRoot: true,
+				label: new NavBarLabel('Admin - Reset DB')
+			})
+		}
+	}
+	addItem(obj: any) {
+		this.items.addItem(obj)
+	}
+	async adminResetDb(navBar: NavBarData) {
+		await adminDbReset(navBar.state)
+		await navBar.state.resetUser(true)
+	}
+
+	async myPreferences(navBar: NavBarData) {
+		await navBar.state.openModalDataObj('data_obj_auth_user_pref_type', async () => {
+			await navBar.state.resetUser(true)
+		})
 	}
 }
 
-// unused
-export class NavBarDataCompLink extends NavBarDataComp {
-	codeObjType: 'dataObject' | 'nodeObject' | 'wizard' | 'page'
-	name: string
-	constructor(navBar: NavBarData, obj: any) {
-		super(navBar, obj)
-		const clazz = 'NavBarDataCompLink'
-		obj = valueOrDefault(obj, {})
-		this.codeObjType = required(obj.codeObjType, clazz, 'codeObjType')
-		this.name = strRequired(obj.name, clazz, 'name')
+export class NavBarInfo {
+	label: string
+	value: string
+	constructor(label: string, value: string) {
+		this.label = label
+		this.value = value
+	}
+}
+
+export class NavBarLabel {
+	text: string
+	tooltip?: string
+	constructor(text: string, tooltip?: string) {
+		this.text = text
+		this.tooltip = tooltip
 	}
 }

@@ -10,36 +10,34 @@
 	const FILENAME = '/$comps/app/navBar/NavBarOrg.svelte'
 
 	export let data: NavBarDataCompOrg
-
-	const iconName = 'ChevronLeft'
-	const iconSize = 20
-	const iconStrokeWidth = 2
 </script>
 
-{#if data.user.org}
-	<div class="flex">
-		<button class="flex-none w-14 border-0 border-red-700" on:click={data.navBar.fToggleOpen()}>
+{#if data.user}
+	<div class="flex items-center">
+		<button
+			class="flex-none w-14 border-0 border-red-700 hover:-translate-y-0.5 transition-transform"
+			on:click={data.navBar.toggleOpen()}
+		>
 			<img src={data.user.org.urlLogo} />
 		</button>
+
 		{#if data.navBar.isOpen}
-			<div class="grow border-0 border-green-700">
-				<div class="flex-1 ml-1 text-sm">
-					<span in:fade={data.navBar.fadeIn} out:fade={data.navBar.fadeOut}>
-						{data.user.org.appName}
-					</span>
-				</div>
+			<div class="text-sm ml-1 border-0 border-green-700">
+				<span in:fade={data.navBar.fadeIn} out:fade={data.navBar.fadeOut}>
+					{data.user.org.appName}
+				</span>
 			</div>
 
-			<div class="flex-none w-6 text-end content-center border-0 border-blue-700">
-				<button class="" on:click={data.navBar.fToggleOpen()}>
+			<div class="flex-none w-6 text-end border-0 border-blue-700">
+				<button on:click={data.navBar.toggleOpen()}>
 					<div class={data.navBar.isOpen ? '' : 'rotate-180'}>
 						<Icon
 							props={new IconProps({
 								clazz: 'mt-0.5 border-0 border-red-400',
 								color: data.navBar.iconColor,
-								name: iconName,
-								size: iconSize,
-								strokeWidth: iconStrokeWidth
+								name: 'ChevronLeft',
+								size: 20,
+								strokeWidth: 2
 							})}
 						/>
 					</div>
@@ -48,19 +46,4 @@
 		{/if}
 	</div>
 	<hr class="my-2" />
-{:else}
-	<!-- no org -->
-	<button class="w-full text-right border-0 border-blue-400" on:click={data.navBar.fToggleOpen()}>
-		<div class={data.navBar.isOpen ? '' : 'rotate-180'}>
-			<Icon
-				props={new IconProps({
-					clazz: 'mt-0.5 border-0 border-red-400',
-					color: data.navBar.iconColor,
-					name: iconName,
-					size: iconSize,
-					strokeWidth: iconStrokeWidth
-				})}
-			/>
-		</div>
-	</button>
 {/if}

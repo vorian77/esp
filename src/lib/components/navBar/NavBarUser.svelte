@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { NavBarDataCompOrg } from '$comps/navBar/types.navBar'
+	import { NavBarDataCompUser } from '$comps/navBar/types.navBar'
+	import NavBarGroup from '$comps/navBar/NavBarGroup.svelte'
+	import NavBarHeader from '$comps/navBar/NavBarHeader.svelte'
+	import NavBarInfo from '$comps/navBar/NavBarInfo.svelte'
+	import NavBarHr from '$comps/navBar/NavBarHr.svelte'
 	import { User } from '$utils/types'
 	import { Avatar } from '@skeletonlabs/skeleton'
 	import { fade } from 'svelte/transition'
@@ -9,27 +13,35 @@
 
 	const FILENAME = '/$comps/app/navBar/NavBarOrg.svelte'
 
-	export let data: NavBarDataCompOrg
-
-	const iconName = 'ChevronLeft'
-	const iconSize = 20
-	const iconStrokeWidth = 2
+	export let data: NavBarDataCompUser
 </script>
 
 {#if data.user}
-	{#if data.user.avatar}
-		<button class="flex-none w-14 border-0 border-red-700" on:click={data.navBar.fToggleOpen()}>
-			<Avatar
-				initials={data.user ? data.user.initials : undefined}
-				background="bg-primary-400"
-				rounded="rounded-full"
-				src={data.user.avatar.url}
-				width="w-9"
-			/>
-		</button>
-	{/if}
-	<div>
-		Default Organization: {data.user.org.name}
-		Default System: {data.user.system.name}
+	<hr class="mt-8 my-2" />
+	<button
+		class="flex items-center hover:-translate-y-0.5 transition-transform"
+		on:click={() => data.items.activateLinkByLabel('My Account')}
+	>
+		<div class="h-9 w-9 rounded-full place-content-center bg-stone-100 text-center">
+			{#if data.user.avatar}
+				<img class="rounded-full" src={data.user.avatar?.url} />
+			{:else}
+				{data.user.initials}
+			{/if}
+		</div>
+
+		{#if data.navBar.isOpen}
+			<span class="ml-1" in:fade={data.navBar.fadeIn} out:fade={data.navBar.fadeOut}>
+				{data.user.fullName}
+			</span>
+		{/if}
+	</button>
+
+	<div class="mt-3 {data.navBar.isOpen ? '' : 'justify-items-center'} ">
+		<NavBarGroup data={data.items} />
 	</div>
+
+	{#each data.info as info}
+		<NavBarInfo navBar={data.navBar} {info} />
+	{/each}
 {/if}

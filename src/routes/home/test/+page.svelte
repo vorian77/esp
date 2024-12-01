@@ -6,6 +6,7 @@
 		StatePacket,
 		StatePacketAction
 	} from '$comps/app/types.appState'
+	import { TokenAppDoActionConfirmType } from '$utils/types.token'
 	import { getDrawerStore, getModalStore, getToastStore } from '@skeletonlabs/skeleton'
 	import NavBar from '$comps/navBar/NavBar.svelte'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
@@ -85,7 +86,7 @@
 			page: '/home',
 			nodeType: NodeType.home,
 			packet: new StatePacket({
-				action: StatePacketAction.navTreeReset,
+				action: StatePacketAction.navBarOpen,
 				confirmType: TokenAppDoActionConfirmType.objectChanged
 			})
 		})

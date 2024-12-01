@@ -97,7 +97,7 @@
 </script>
 
 {#if props && IconType}
-	<div class={props.clazz}>
+	<div class="hover:-translate-y-0.5 transition-transform {props.clazz}">
 		<button on:click={props.onClick}>
 			<svelte:component
 				this={IconType}
