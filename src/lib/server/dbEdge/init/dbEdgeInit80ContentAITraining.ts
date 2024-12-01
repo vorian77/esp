@@ -279,7 +279,7 @@ function initCourse(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgram', {
-		codeIcon: 'AppWindow',
+		codeIcon: 'BookOpen',
 		codeNodeType: 'program',
 		dataObj: 'data_obj_cm_course_list',
 		header: 'Courses',
@@ -288,7 +288,7 @@ function initCourse(init: InitDb) {
 		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		codeIcon: 'AppWindow',
+		codeIcon: 'BookOpen',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_course_detail',
 		header: 'Course',
@@ -1660,7 +1660,7 @@ function initPartner(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgram', {
-		codeIcon: 'AppWindow',
+		codeIcon: 'Handshake',
 		codeNodeType: 'program',
 		dataObj: 'data_obj_cm_partner_list',
 		header: 'Partners',
@@ -1670,7 +1670,7 @@ function initPartner(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		codeIcon: 'AppWindow',
+		codeIcon: 'Handshake',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_partner_detail',
 		header: 'Partner',

@@ -419,7 +419,7 @@ function initStudent(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgram', {
-		codeIcon: 'AppWindow',
+		codeIcon: 'UsersRound',
 		codeNodeType: 'program',
 		dataObj: 'data_obj_cm_student_list',
 		header: 'Students',
@@ -428,7 +428,7 @@ function initStudent(init: InitDb) {
 		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		codeIcon: 'AppWindow',
+		codeIcon: 'UsersRound',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_student_detail',
 		header: 'Student',

@@ -26,7 +26,7 @@ function initStudent(init: InitDb) {
 		actionFieldGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: `.owner.id in <user,uuidlist,systemIdList>`,
+		exprFilter: `.owner.id in <user,uuidlist,systemIds>`,
 		header: 'Participants',
 		name: 'data_obj_moed_part_list',
 		owner: 'sys_moed_old',

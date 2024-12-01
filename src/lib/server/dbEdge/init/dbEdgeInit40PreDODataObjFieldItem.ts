@@ -108,7 +108,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter: `.owner.id in <user,uuidlist,systemIdList> OR .isGlobalResource = true`,
+		exprFilter: `.owner.id in <user,uuidlist,systemIds> OR .isGlobalResource = true`,
 		name: 'il_sys_app_header_order_name',
 		owner: 'sys_system_old',
 		table: 'SysAppHeader'

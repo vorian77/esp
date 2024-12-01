@@ -43,7 +43,7 @@
 				</div>
 
 				{#if item.navBar.isOpen && showItem}
-					<div class="grow text-left ml-1 border-0 border-cyan-400">
+					<div class="grow text-left {showIcon ? 'ml-1' : ''} border-0 border-cyan-400">
 						<span in:fade={item.navBar.fadeIn} out:fade={item.navBar.fadeOut}>
 							{item.label.text}
 						</span>

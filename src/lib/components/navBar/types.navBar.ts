@@ -31,7 +31,7 @@ export class NavBarData {
 	items: NavBarDataComp[] = []
 	state: State
 	width: any
-	widthClosed = 60
+	widthClosed = 70
 	widthOpen = 250
 	constructor(obj: any) {
 		const clazz = 'NavBarData'
@@ -45,7 +45,24 @@ export class NavBarData {
 			this.items.push(new NavBarDataCompOrg(this, { user: this.state.user }))
 
 			// apps
-			this.items.push(new NavBarDataCompApps(this, this.state.user.resources_sys_app))
+			const rawMenu = new RawMenu(this.state.user.resources_sys_app)
+			if (rawMenu.apps.length === 1) {
+				const itemGroupSingleProgram = new NavBarDataCompGroup(this, {
+					header: 'My Apps',
+					hideHr: true
+				})
+				rawMenu.apps[0].nodes.forEach((n) => {
+					itemGroupSingleProgram.addItem({
+						content: new NavBarContent('node', n),
+						icon: n.icon,
+						isRoot: true,
+						label: new NavBarLabel(n.label)
+					})
+				})
+				this.items.push(itemGroupSingleProgram)
+			} else {
+				this.items.push(new NavBarDataCompApps(this, { rawMenu }))
+			}
 
 			// item - group - tasks - default
 			const itemGroupTasks = new NavBarDataCompGroup(this, { header: 'My Tasks' })
@@ -225,7 +242,7 @@ export class NavBarDataCompApps extends NavBarDataComp {
 		super(navBar, obj)
 		const clazz = 'NavBarDataCompApps'
 		obj = valueOrDefault(obj, {})
-		const rawMenu = new RawMenu(obj)
+		const rawMenu: RawMenu = required(obj.rawMenu, clazz, 'rawMenu')
 		rawMenu.apps.forEach((a) => {
 			this.apps.push(new NavBarDataCompAppsItem(navBar, { ...a, parent: this }))
 		})
@@ -275,6 +292,7 @@ export class NavBarDataCompGroup extends NavBarDataComp {
 		obj = valueOrDefault(obj, {})
 		this.header = obj.header
 		this.hideHr = booleanOrDefault(obj.hideHr, false)
+		console.log('NavBarDataCompGroup.constructor', this)
 	}
 	addItem(obj: any) {
 		this.items.push(
@@ -352,10 +370,10 @@ export class NavBarDataCompUser extends NavBarDataComp {
 		this.user = required(obj.user, clazz, 'user')
 
 		// info
-		if (this.user.orgIds.length > 0) {
+		if (this.user.orgIds.length > 1) {
 			this.info.push(new NavBarInfo('Default Organization', this.user.org.name))
 		}
-		if (this.user.systemIds.length > 0) {
+		if (this.user.systemIds.length > 1) {
 			this.info.push(new NavBarInfo('Default System', this.user.system.name))
 		}
 

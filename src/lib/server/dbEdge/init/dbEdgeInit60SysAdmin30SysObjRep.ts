@@ -917,7 +917,7 @@ function initRep(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		codeIcon: 'AppWindow',
+		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_list',
 		header: 'Reports',
@@ -927,7 +927,7 @@ function initRep(init: InitDb) {
 		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		codeIcon: 'AppWindow',
+		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_detail',
 		header: 'Report',

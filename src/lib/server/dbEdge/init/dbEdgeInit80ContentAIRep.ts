@@ -392,7 +392,7 @@ function initContentAIRepCohortsDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.owner.id IN <user,uuidlist,systemIdList>',
+		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Cohorts - Detail',
 		name: 'report_ai_cohorts_detail',
 		owner: 'sys_ai_old',
@@ -441,7 +441,7 @@ function initContentAIRepCoursesDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.owner.id IN <user,uuidlist,systemIdList>',
+		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Courses - Detail',
 		name: 'report_ai_courses_detail',
 		owner: 'sys_ai_old',
@@ -514,7 +514,7 @@ function initContentAIRepPartnersDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.owner.id IN <user,uuidlist,systemIdList>',
+		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Partners - Detail',
 		name: 'report_ai_partners_detail',
 		owner: 'sys_ai_old',
@@ -654,7 +654,7 @@ function initContentAIRepStudentAttdDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: 'Cohort attendance detail.',
-		exprFilter: '.csfCohort.csf.client.owner.id IN <user,uuidlist,systemIdList>',
+		exprFilter: '.csfCohort.csf.client.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Attendance - Detail',
 		name: 'report_ai_student_attd_detail',
 		owner: 'sys_ai_old',
@@ -783,7 +783,7 @@ function initContentAIRepStudentCaseNotesDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIdList>',
+		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Case Notes - Detail',
 		name: 'report_ai_student_notes_detail',
 		owner: 'sys_ai_old',
@@ -843,7 +843,7 @@ function initContentAIRepStudentDocsDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIdList>',
+		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Documents - Detail',
 		name: 'report_ai_student_docs_detail',
 		owner: 'sys_ai_old',
@@ -939,7 +939,7 @@ function initContentAIRepStudentJobPlacementDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIdList>',
+		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Job Placements - Detail',
 		name: 'report_ai_student_job_placement_detail',
 		owner: 'sys_ai_old',
@@ -1117,7 +1117,7 @@ function initContentAIRepStudentSchoolPlacementDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIdList>',
+		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Student - School Placements - Detail',
 		name: 'report_ai_student_school_placement_detail',
 		owner: 'sys_ai_old',
@@ -1221,7 +1221,7 @@ function initContentAIRepStudentSchoolPlacementDetail(init: InitDb) {
 function initContentAIRepStudentRoster(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
-		exprFilter: '.client.owner.id IN <user,uuidlist,systemIdList> ',
+		exprFilter: '.client.owner.id IN <user,uuidlist,systemIds> ',
 		header: 'Student - Roster',
 		name: 'report_ai_student_roster',
 		owner: 'sys_ai_old',
@@ -1239,7 +1239,7 @@ function initContentAIRepStudentRoster(init: InitDb) {
 function initContentAIRepCohortPerformance(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
-		exprFilter: '.owner.id IN <user,uuidlist,systemIdList>',
+		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
 		exprWith: `enrolled := (SELECT app_cm::CmCsfCohort),
 completed := (SELECT enrolled FILTER .csf.codeReferralEndType.name = 'Completed'),
 completedPlaced := (SELECT completed FILTER .csf IN app_cm::CmCsfJobPlacement.csf),
@@ -1401,7 +1401,7 @@ cohortWages := (SELECT completed {cohort, wages := (SELECT app_cm::CmCsfJobPlace
 function initContentAIRepCoursePerformance(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
-		exprFilter: '.owner.id IN <user,uuidlist,systemIdList>',
+		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
 		exprWith: `enrolled := (SELECT app_cm::CmCsfCohort {course := .cohort.course}),
 completed := (SELECT enrolled FILTER .csf.codeReferralEndType.name = 'Completed'),
 completedPlaced := (SELECT completed FILTER .csf IN app_cm::CmCsfJobPlacement.csf),
@@ -1547,7 +1547,7 @@ function initContentAIRepStudentCohortAttdSummary(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: 'Student cohort attendance summary report.',
-		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIdList>',
+		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Cohort Attendance - Summary',
 		name: 'report_ai_student_cohort_attd_summary',
 		owner: 'sys_ai_old',
@@ -1640,7 +1640,7 @@ function initContentAIRepStudentServiceFlowSummary(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionFieldGroup: 'doag_report_render',
 		description: 'Student service flow summary.',
-		exprFilter: '.client.owner.id IN <user,uuidlist,systemIdList> ',
+		exprFilter: '.client.owner.id IN <user,uuidlist,systemIds> ',
 		header: 'Student - Service Flow - Summary',
 		name: 'report_ai_student_service_flow_summary',
 		owner: 'sys_ai_old',
