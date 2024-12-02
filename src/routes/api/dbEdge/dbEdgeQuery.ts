@@ -148,7 +148,7 @@ export class Query {
 		const action = strRequired(parms.action, clazz, 'action') as LinkSaveAction
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		const isDelete = parms.isDelete ? parms.isDelete : false
-		const isSet = action.toLowerCase() === 'update'
+		const isUpdate = action.toLowerCase() === 'update'
 		const subObjGroup = new LinkSave(action, this.getTableRootObj())
 
 		let fValues: Function[] = []
@@ -247,9 +247,9 @@ export class Query {
 		})
 
 		// 2. add subObjGroup properties
-		const set = isSet ? 'SET ' : ''
+		const set = isUpdate ? 'SET ' : ''
 		if (properties)
-			properties = `${set}{\n${this.addItemComma(properties, subObjGroup.getPropsUpdate(isSet, this.rawDataObj.tables))}}`
+			properties = `${set}{\n${this.addItemComma(properties, subObjGroup.getPropsUpdate(isUpdate, this.rawDataObj.tables))}}`
 		debug('getPropsSave', 'properties', properties)
 		return properties
 	}

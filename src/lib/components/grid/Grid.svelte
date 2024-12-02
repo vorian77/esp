@@ -203,7 +203,7 @@
 				new GridSettingsColumns(api.getAllGridColumns())
 			)
 			await apiFetch(
-				ApiFunction.sysSetUserPref,
+				ApiFunction.sysUserPrefSet,
 				new TokenApiUserPref(
 					options.userSettings.idUser,
 					options.userSettings.idFeature,

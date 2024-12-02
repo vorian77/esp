@@ -17,9 +17,10 @@ export enum ApiFunction {
 	dbEdgeGetUser = 'dbEdgeGetUser',
 	dbEdgeInit = 'dbEdgeInit',
 	sysBlobUpload = 'sysBlobUpload',
-	sysGetUserPref = 'sysGetUserPref',
+	sysGetEnvDbBranch = 'sysGetEnvDbBranch',
 	sysSendText = 'sysSendText',
-	sysSetUserPref = 'sysSetUserPref'
+	sysUserPrefGet = 'sysUserPrefGet',
+	sysUserPrefSet = 'sysUserPrefSet'
 }
 
 export async function apiFetch(apiFunction: ApiFunction, token: Token) {

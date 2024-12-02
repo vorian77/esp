@@ -214,6 +214,7 @@ async function processDataObjExecute(
 			script.queryData,
 			new EvalExprContext('processDataObjExecute', script.query.rawDataObj.name)
 		)
+
 		const rawDataList = await exeQueryMulti(expr)
 
 		scriptData = script?.query?.field ? script.query.field.data : returnData

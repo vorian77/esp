@@ -20,6 +20,7 @@ const FILENAME = '$utils/utils.user.ts'
 
 export class User {
 	avatar?: FileStorage
+	dbBranch: string
 	firstName: string
 	fullName: string = ''
 	id: string
@@ -46,9 +47,10 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
-		// console.log('User.constructor.obj: ', obj)
+		console.log('User.constructor.obj: ', obj)
 		const clazz = 'User'
 		this.avatar = classOptional(FileStorage, obj.avatar)
+		this.dbBranch = required(obj.dbBranch, clazz, 'dbBranch')
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
 		this.fullName = strRequired(obj.fullName, clazz, 'fullName')
 		this.id = strRequired(obj.id, clazz, 'id')
@@ -140,6 +142,7 @@ export class User {
 
 export class UserOrg {
 	appName?: string
+	id: string
 	logoMarginRight: number
 	logoWidth: number
 	name: string
@@ -147,6 +150,7 @@ export class UserOrg {
 	constructor(obj: any) {
 		const clazz = 'UserOrg'
 		this.appName = obj.appName
+		this.id = strRequired(obj.id, clazz, 'id')
 		this.logoMarginRight = required(obj.logoMarginRight, clazz, 'logoMarginRight')
 		this.logoWidth = required(obj.logoWidth, clazz, 'logoWidth')
 		this.name = strRequired(obj.name, clazz, 'name')

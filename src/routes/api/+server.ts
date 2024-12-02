@@ -1,5 +1,6 @@
 import { ApiFunction } from '$routes/api/api'
 import { debug, getServerResponse, userRetrieve } from '$utils/types'
+import { getEnvVar } from '$server/env'
 import {
 	getFieldListItems,
 	processDataObj,
@@ -11,7 +12,6 @@ import {
 	getFieldEmbedListSelect,
 	getNodesBranch,
 	getNodesLevel,
-	getNodeObjByName,
 	getTableColumns,
 	getUserByUserId,
 	getUserPref,
@@ -62,13 +62,16 @@ export async function POST({ request, cookies }) {
 		case ApiFunction.dbEdgeProcessExpression:
 			return getServerResponse(await processExpression(token))
 
+		case ApiFunction.sysGetEnvDbBranch:
+			return getServerResponse({ success: true, data: { dbBranch: getEnvVar('EDGEDB_BRANCH') } })
+
 		case ApiFunction.sysSendText:
 			return getServerResponse(await sysSendText(token))
 
-		case ApiFunction.sysGetUserPref:
+		case ApiFunction.sysUserPrefGet:
 			return getServerResponse(await getUserPref(token))
 
-		case ApiFunction.sysSetUserPref:
+		case ApiFunction.sysUserPrefSet:
 			return getServerResponse(await setUserPref(token))
 
 		default:

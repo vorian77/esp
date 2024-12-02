@@ -2,8 +2,7 @@ import { get } from 'svelte/store'
 import { localStorageStore } from '@skeletonlabs/skeleton'
 import { User } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { TokenApiUserId } from '$utils/types.token'
-import { writable } from 'svelte/store'
+import { TokenApi, TokenApiUserId } from '$utils/types.token'
 import { error, type Cookies } from '@sveltejs/kit'
 
 const FILENAME = '$utils/utils.user.ts'
@@ -16,9 +15,11 @@ export function userGet() {
 }
 
 export async function userInit(userId: string) {
-	const token = new TokenApiUserId(userId)
-	const rawUser = await userInitData(token, ApiFunction.dbEdgeGetUser)
 	userLogout()
+	const rawUser = {
+		...(await userInitData(new TokenApiUserId(userId), ApiFunction.dbEdgeGetUser)),
+		dbBranch: await getDbBranch()
+	}
 	appStoreUser.set(rawUser)
 	return new User(rawUser)
 }
@@ -63,6 +64,19 @@ export async function userRetrieve(token: TokenApiUserId, cookies: Cookies, fGet
 			httpOnly: true,
 			sameSite: 'strict',
 			secure: true
+		})
+	}
+}
+
+async function getDbBranch() {
+	const result = await apiFetch(ApiFunction.sysGetEnvDbBranch, new TokenApi())
+	if (result.success) {
+		return result.data.dbBranch
+	} else {
+		error(500, {
+			file: 'utils.user.ts',
+			function: 'getDbBranch',
+			message: `Unable to retrieve DB branch - api: ${ApiFunction.sysGetEnvDbBranch}`
 		})
 	}
 }

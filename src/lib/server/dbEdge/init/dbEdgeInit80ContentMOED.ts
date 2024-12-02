@@ -1381,8 +1381,7 @@ function initTaskSsrApp(init: InitDb) {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		codeDataObjType: 'task',
-		exprFilter: '.id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90"',
-		// exprFilter: '.user.id = <user,uuid,id>',
+		exprFilter: '.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
 		isDetailRetrievePreset: true,
 		name: 'data_obj_task_moed_ssr_app',
 		header: 'My Application',
@@ -1401,14 +1400,13 @@ function initTaskSsrApp(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'user',
+				columnName: 'owner',
 				orderDefine: 20,
-				indexTable: 0,
+				indexTable: 1,
 				isDisplayable: false,
-				linkExprSave: `(select sys_user::SysUser filter .id = <user,uuid,id>)`,
-				linkTable: 'SysUser'
+				linkExprSave: `(SELECT sys_core::SysOrg FILTER .id = <user,uuid,system.id>)`,
+				linkTable: 'SysOrg'
 			},
-
 			{
 				codeFieldElement: 'customHeader',
 				columnName: 'custom_element',
@@ -1426,31 +1424,33 @@ function initTaskSsrApp(init: InitDb) {
 					isSubHeader: true
 				},
 				isDisplayable: true,
-				orderDisplay: 35,
-				orderDefine: 35,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
-
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeStatus',
+				orderDefine: 100,
+				orderDisplay: 100,
+				indexTable: 0,
+				isDisplayable: true,
+				linkColumns: ['name'],
+				linkExprSave: `(SELECT sys_core::SysCode FILTER .name = 'Application submitted')`,
+				linkTable: 'SysCode'
+			},
 			{
 				codeFieldElement: 'date',
 				columnName: 'dateReferral',
 				headerAlt: 'Application Date',
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'codeStatus',
-				orderDefine: 105,
 				orderDisplay: 105,
-				indexTable: 0,
-				isDisplayable: true,
-				linkColumns: ['name']
+				orderDefine: 105
 			},
 			{
 				columnName: 'firstName',
+				exprPreset: `<user,str,firstName>`,
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
@@ -1458,9 +1458,10 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				columnName: 'lastName',
+				exprPreset: `<user,str,lastName>`,
 				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
+				orderDisplay: 115,
+				orderDefine: 115,
 				indexTable: 2
 			},
 			{
@@ -1497,85 +1498,53 @@ function initTaskSsrApp(init: InitDb) {
 				orderDefine: 160,
 				orderDisplay: 160
 			},
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'codeGender',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 170,
-			// 	orderDefine: 170,
-			// 	indexTable: 2,
-			// 	fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
-			// 	fieldListItemsParmName: 'ct_sys_person_gender',
-			// 	linkTable: 'SysCode'
-			// },
 			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
 				columnName: 'codeGender',
-				orderDefine: 170,
+				isDisplayable: true,
 				orderDisplay: 170,
+				orderDefine: 170,
 				indexTable: 2,
-				isDisplayable: true,
-				linkColumns: ['name']
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItemsParmName: 'ct_sys_person_gender',
+				linkTable: 'SysCode'
 			},
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'codeRace',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 180,
-			// 	orderDefine: 180,
-			// 	indexTable: 2,
-			// 	fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
-			// 	fieldListItemsParmName: 'ct_sys_person_race',
-			// 	linkTable: 'SysCode'
-			// },
 			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
 				columnName: 'codeRace',
-				orderDefine: 180,
+				isDisplayable: true,
 				orderDisplay: 180,
-				indexTable: 2,
-				isDisplayable: true,
-				linkColumns: ['name']
-			},
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'codeEthnicity',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 190,
-			// 	orderDefine: 190,
-			// 	indexTable: 2,
-			// 	fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
-			// 	fieldListItemsParmName: 'ct_sys_person_ethnicity',
-			// 	linkTable: 'SysCode'
-			// },
-			{
-				columnName: 'codeEthnicity',
 				orderDefine: 180,
-				orderDisplay: 190,
 				indexTable: 2,
-				isDisplayable: true,
-				linkColumns: ['name']
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItemsParmName: 'ct_sys_person_race',
+				linkTable: 'SysCode'
 			},
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'codeDisabilityStatus',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 200,
-			// 	orderDefine: 200,
-			// 	indexTable: 2,
-			// 	fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
-			// 	fieldListItemsParmName: 'ct_sys_person_disability_status',
-			// 	linkTable: 'SysCode'
-			// },
 			{
-				columnName: 'codeDisabilityStatus',
-				orderDefine: 200,
-				orderDisplay: 200,
-				indexTable: 2,
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeEthnicity',
 				isDisplayable: true,
-				linkColumns: ['name']
+				orderDisplay: 190,
+				orderDefine: 190,
+				indexTable: 2,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItemsParmName: 'ct_sys_person_ethnicity',
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeDisabilityStatus',
+				isDisplayable: true,
+				orderDisplay: 200,
+				orderDefine: 200,
+				indexTable: 2,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItemsParmName: 'ct_sys_person_disability_status',
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'optional',
@@ -1601,25 +1570,17 @@ function initTaskSsrApp(init: InitDb) {
 				orderDefine: 320,
 				orderDisplay: 320
 			},
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'codeState',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 330,
-			// 	orderDefine: 330,
-			// 	indexTable: 2,
-			// 	fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
-			// 	fieldListItemsParmName: 'ct_sys_state',
-			// 	linkTable: 'SysCode'
-			// },
 			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
 				columnName: 'codeState',
-				orderDefine: 330,
-				orderDisplay: 330,
-				indexTable: 2,
 				isDisplayable: true,
-				linkColumns: ['name']
+				orderDisplay: 330,
+				orderDefine: 330,
+				indexTable: 2,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItemsParmName: 'ct_sys_state',
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'optional',
@@ -1629,25 +1590,17 @@ function initTaskSsrApp(init: InitDb) {
 				orderDefine: 340,
 				orderDisplay: 340
 			},
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeAlignmentAlt: 'center',
-			// 	codeFieldElement: 'radio',
-			// 	columnName: 'office',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 350,
-			// 	orderDefine: 350,
-			// 	indexTable: 1,
-			// 	fieldListItems: 'il_sys_obj_subject_order_name',
-			// 	linkTable: 'SysObjSubject'
-			// },
 			{
+				codeAccess: 'optional',
+				codeAlignmentAlt: 'center',
+				codeFieldElement: 'radio',
 				columnName: 'office',
-				orderDefine: 350,
-				orderDisplay: 350,
-				indexTable: 1,
 				isDisplayable: true,
-				linkColumns: ['header']
+				orderDisplay: 350,
+				orderDefine: 350,
+				indexTable: 1,
+				fieldListItems: 'il_sys_obj_subject_order_name',
+				linkTable: 'SysObjSubject'
 			},
 
 			/* management */

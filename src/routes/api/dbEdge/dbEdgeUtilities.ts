@@ -578,6 +578,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 		org: e.select(e.sys_core.SysOrg, (o) => ({
 			appName: true,
 			file: true,
+			id: true,
 			name: true,
 			logoMarginRight: true,
 			logoWidth: true,
@@ -660,7 +661,8 @@ export async function getUserByUserId(token: TokenApiUserId) {
 					'or',
 					e.op(res.id, 'in', u.userTypes.resources.resource.id)
 				)
-			)
+			),
+			order_by: res.orderDefine
 		})),
 		resources_task_setting: e.select(e.sys_user.SysTask, (res) => ({
 			...shapeTask(res),
@@ -672,7 +674,8 @@ export async function getUserByUserId(token: TokenApiUserId) {
 					'or',
 					e.op(res.id, 'in', u.userTypes.resources.resource.id)
 				)
-			)
+			),
+			order_by: res.orderDefine
 		})),
 		system: e.select(e.sys_core.SysSystem, (s) => ({
 			header: true,

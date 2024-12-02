@@ -292,7 +292,6 @@ export class NavBarDataCompGroup extends NavBarDataComp {
 		obj = valueOrDefault(obj, {})
 		this.header = obj.header
 		this.hideHr = booleanOrDefault(obj.hideHr, false)
-		console.log('NavBarDataCompGroup.constructor', this)
 	}
 	addItem(obj: any) {
 		this.items.push(
@@ -370,10 +369,9 @@ export class NavBarDataCompUser extends NavBarDataComp {
 		this.user = required(obj.user, clazz, 'user')
 
 		// info
-		if (this.user.orgIds.length > 1) {
+		if (['user_sys', '2487985578'].includes(this.user.userName)) {
+			this.info.push(new NavBarInfo('dbBranch', this.user.dbBranch))
 			this.info.push(new NavBarInfo('Default Organization', this.user.org.name))
-		}
-		if (this.user.systemIds.length > 1) {
 			this.info.push(new NavBarInfo('Default System', this.user.system.name))
 		}
 

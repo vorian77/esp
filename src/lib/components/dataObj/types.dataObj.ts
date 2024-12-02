@@ -171,7 +171,7 @@ export class DataObj {
 			if (state?.user?.prefIsActive(UserPrefType.remember_list_settings)) {
 				// attempt to retrieve user preferences from DB
 				const token = new TokenApiUserPref(state.user.id, dataObj.raw.id)
-				const result: ResponseBody = await apiFetch(ApiFunction.sysGetUserPref, token)
+				const result: ResponseBody = await apiFetch(ApiFunction.sysUserPrefGet, token)
 				rawSettings =
 					Object.hasOwn(result, 'data') && Object.hasOwn(result.data, 'data')
 						? JSON.parse(result.data.data).data

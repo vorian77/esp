@@ -24,6 +24,7 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeAlignment: 'center',
 		codeDataType: 'date',
 		header: 't.Date',
 		name: 'testDate'
@@ -824,6 +825,7 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeAlignment: 'center',
 		codeDataType: 'date',
 		header: 'custom_element_date',
 		isExcludeInsert: true,
@@ -1040,42 +1042,49 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeAlignment: 'center',
 		codeDataType: 'date',
 		header: 'End Date',
 		name: 'dateEnd'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeAlignment: 'center',
 		codeDataType: 'date',
 		header: 'Estimated End Date',
 		name: 'dateEndEst'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeAlignment: 'center',
 		codeDataType: 'date',
 		header: 'Expiration Date',
 		name: 'dateExpires'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeAlignment: 'center',
 		codeDataType: 'date',
 		header: 'Issued Date',
 		name: 'dateIssued'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeAlignment: 'center',
 		codeDataType: 'date',
 		header: 'Referral Date',
 		name: 'dateReferral'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeAlignment: 'center',
 		codeDataType: 'date',
 		header: 'Start Date',
 		name: 'dateStart'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeAlignment: 'center',
 		codeDataType: 'date',
 		header: 'Estimated Start Date',
 		name: 'dateStartEst'
