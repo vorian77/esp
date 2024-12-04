@@ -7,7 +7,9 @@ export function initSysAuth(init: InitDb) {
 	initDataObjResetPasswordLogin(init)
 	initDataObjVerify(init)
 	initNodeObjFooter(init)
-	//  initDataObjSignup(init)
+	initDataObjSignup(init)
+	initDataObjSignupInsert(init)
+	initDataObjSignupUpdate(init)
 	initDataObjUserPrefType(init)
 }
 
@@ -212,7 +214,7 @@ function initDataObjLogin(init: InitDb) {
 		userName := <record,str,userName>,
 		password := <record,str,password>,
 		SELECT sys_user::SysUser { userId := .id }
-		FILTER .userName = userName and .password = password 
+		FILTER .userName = userName AND .password = password 
 		`,
 		header: 'Log in',
 		name: 'data_obj_auth_login',
@@ -262,6 +264,18 @@ function initDataObjLogin(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
+			},
+			{
+				codeFieldElement: 'customActionLink',
+				columnName: 'custom_element',
+				customElement: {
+					action: { method: 'auth', type: 'page', value: 'data_obj_auth_signup' },
+					label: 'Sign up',
+					prefix: 'Need an account?'
+				},
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50
 			}
 		]
 	})
@@ -416,7 +430,6 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 }
 
 function initDataObjVerify(init: InitDb) {
-	/* data_obj_auth_verify_phone_mobile */
 	init.addTrans('sysDataObj', {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -478,52 +491,10 @@ function initDataObjVerify(init: InitDb) {
 }
 
 function initDataObjSignup(init: InitDb) {
-	/* data_obj_auth_signup */
 	init.addTrans('sysDataObj', {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		exprObject: `WITH 
-		orgName := <system,str,xxx>,
-		org := (SELECT sys_core::SysOrg FILTER .name = orgName),
-		userName := <record,str,userName>,
-		password := <record,str,password>,
-		firstName := <record,str,firstName>,
-		lastName := <record,str,lastName>,
-		person := (SELECT sys_user::SysUser {_id := .person.id} FILTER .userName = userName),
-		user := (
-			INSERT sys_user::SysUser {
-				owner := org,
-				userName := userName,
-				password := password,
-				person := (
-					INSERT default::SysPerson {
-						firstName := firstName,
-						lastName := lastName
-					}
-				),
-				userTypes := userType
-			}
-			UNLESS CONFLICT ON .userName
-			ELSE (
-				UPDATE sys_user::SysUser
-				SET {
-					userName := userName,
-					password := password,
-					person := (
-						UPDATE default::SysPerson 
-						FILTER .id = <uuid>person._id
-						SET { 
-							firstName := firstName,
-							lastName := lastName
-						}
-					)
-				}
-			)
-		)
-		SELECT {
-			userId := user.id,
-			isNew := user NOT IN sys_user::SysUser
-		}`,
+		exprObject: `SELECT { isNew := NOT EXISTS (SELECT sys_user::SysUser FILTER .userName = <record,str,userName>) }`,
 		header: 'Sign up',
 		name: 'data_obj_auth_signup',
 		owner: 'sys_system_old',
@@ -532,29 +503,39 @@ function initDataObjSignup(init: InitDb) {
 			{
 				columnName: 'firstName',
 				isDisplayable: true,
-				orderDisplay: 10,
-				orderDefine: 10
-			},
-			{
-				columnName: 'lastName',
-				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20
 			},
-
 			{
-				codeFieldElement: 'tel',
-				columnName: 'userName',
+				columnName: 'lastName',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
 			},
 			{
+				codeFieldElement: 'tel',
+				columnName: 'userName',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
 				codeFieldElement: 'textHide',
 				columnName: 'password',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40
+				orderDisplay: 70,
+				orderDefine: 70
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'userType',
+				headerAlt: 'System',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0,
+				fieldListItems: 'il_sys_user_type_self_signup',
+				linkTable: 'SysUserType'
 			},
 			{
 				codeFieldElement: 'customActionButton',
@@ -564,8 +545,8 @@ function initDataObjSignup(init: InitDb) {
 					label: 'Sign up'
 				},
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50
+				orderDisplay: 90,
+				orderDefine: 90
 			},
 			{
 				codeFieldElement: 'customText',
@@ -575,8 +556,8 @@ function initDataObjSignup(init: InitDb) {
 					label: `We'll text you to confirm your mobile phone number. Standard rates apply.`
 				},
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60
+				orderDisplay: 100,
+				orderDefine: 100
 			},
 			{
 				codeFieldElement: 'customActionLink',
@@ -587,10 +568,94 @@ function initDataObjSignup(init: InitDb) {
 					prefix: 'Already have an account?'
 				},
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70
+				orderDisplay: 110,
+				orderDefine: 110
 			}
 		]
+	})
+}
+
+function initDataObjSignupInsert(init: InitDb) {
+	init.addTrans('sysDataObj', {
+		codeComponent: 'FormDetail',
+		codeCardinality: 'detail',
+		exprObject: `
+WITH
+firstName := <record,str,firstName>,
+lastName := <record,str,lastName>,
+userName := <record,str,userName>,
+userType := <record,str,link_userType>,
+password := <record,str,password>,
+
+_user := (SELECT sys_user::SysUser FILTER .userName = userName),
+_userType := (SELECT sys_user::SysUserType FILTER .id = <uuid>userType),
+
+user := (
+  INSERT sys_user::SysUser {
+    createdBy := 	sys_user::getRootUser(),
+    defaultOrg := _userType.owner.owner,
+    defaultSystem := _userType.owner,
+    isMobileOnly := true,
+    modifiedBy := 	sys_user::getRootUser(),
+    orgs := _userType.owner.owner,
+    owner := _userType.owner.owner,
+    password := password,
+    person := (
+      INSERT default::SysPerson {
+        firstName := firstName,
+        lastName := lastName
+      }
+    ),
+    systems := _userType.owner,
+    userName := userName,
+    userTypes := _userType,
+  }
+)
+SELECT { userId := user.id }`,
+		header: 'temp',
+		name: 'data_obj_auth_signup_insert',
+		owner: 'sys_system_old',
+		table: 'SysUser',
+		fields: []
+	})
+}
+
+function initDataObjSignupUpdate(init: InitDb) {
+	init.addTrans('sysDataObj', {
+		codeComponent: 'FormDetail',
+		codeCardinality: 'detail',
+		exprObject: `
+WITH
+firstName := <record,str,firstName>,
+lastName := <record,str,lastName>,
+userName := <record,str,userName>,
+password := <record,str,password>,
+_user := (SELECT sys_user::SysUser FILTER .userName = userName),
+user := (
+  UPDATE sys_user::SysUser 
+  FILTER .userName = userName
+  SET {
+    password := password,
+    person := (
+      UPDATE default::SysPerson 
+      FILTER .id = _user.person.id
+      SET {
+        firstName := firstName,
+        lastName := lastName
+      }
+    ),
+  }
+)
+SELECT { userId := user.id }`,
+		header: 'temp',
+		name: 'data_obj_auth_signup_update',
+		owner: 'sys_system_old',
+		table: 'SysUser',
+		tables: [
+			{ index: 0, table: 'SysUser' },
+			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
+		],
+		fields: []
 	})
 }
 

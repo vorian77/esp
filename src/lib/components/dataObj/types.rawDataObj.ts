@@ -165,16 +165,17 @@ export class RawDataObj {
 		return arrayOfClass(RawDataObjPropDB, rawProps, this.tables)
 	}
 	initPropsSignatureLink(rawProps: any[], propName: string) {
-		const idx = rawProps.findIndex((p: any) => p._propName === propName)
-		if (idx > -1) {
-			rawProps[idx]._link = {
-				_columns: [{ _name: 'person' }, { _name: 'fullName' }],
-				_table: { hasMgmt: false, mod: 'sys_user', name: 'SysUser' },
-				exprPreset: `(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>).person.fullName`,
-				exprSave: '(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>)',
-				exprSelect: `(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>).person.fullName`
+		rawProps.forEach((p: any) => {
+			if (p._propName === propName) {
+				p._link = {
+					_columns: [{ _name: 'person' }, { _name: 'fullName' }],
+					_table: { hasMgmt: false, mod: 'sys_user', name: 'SysUser' },
+					exprPreset: `(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>).person.fullName`,
+					exprSave: '(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>)',
+					exprSelect: `(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>).person.fullName`
+				}
 			}
-		}
+		})
 		return rawProps
 	}
 	initTables(obj: any) {
@@ -182,6 +183,9 @@ export class RawDataObj {
 		const rawTables = getArray(obj)
 		rawTables.forEach((rawTable: any, index: number) => {
 			newTables.push(new DataObjTable(rawTable, newTables))
+		})
+		newTables.forEach((t) => {
+			t.setChildren(newTables)
 		})
 		return newTables
 	}
@@ -393,7 +397,9 @@ export class RawDataObjPropDB extends RawDataObjProp {
 	getChildTableTraversal(propName: string, indexTable: number, tables: DataObjTable[]) {
 		let value = ''
 		if (propName && tables.length > 0 && indexTable > -1) {
-			if (tables[indexTable].traversalFromRoot) value = tables[indexTable].traversalFromRoot + '.'
+			if (tables[indexTable].traversalFromRoot) value = tables[indexTable].traversalFromRoot
+			if (tables[indexTable].isTableExtension) value += `[IS ${tables[indexTable].table.object}]`
+			if (value) value += '.'
 			value += propName
 		}
 		return value
@@ -565,15 +571,21 @@ export class RawDataObjPropDisplayEmbedListSelect {
 
 export class RawDataObjTable {
 	_columnParent?: string
+	_columnsId: string[] = []
+	exprFilterUpdate?: string
 	index: number
 	indexParent?: number
+	isTableExtension: boolean
 	_table: DBTable
 	constructor(obj: any) {
 		const clazz = 'RawDataObjTable'
 		obj = valueOrDefault(obj, {})
 		this._columnParent = strOptional(obj._columnParent, clazz, '_columnParent')
+		this._columnsId = obj._columnsId
+		this.exprFilterUpdate = obj.exprFilterUpdate
 		this.index = nbrRequired(obj.index, clazz, 'index')
 		this.indexParent = nbrOptional(obj.indexParent, clazz, 'indexParent')
+		this.isTableExtension = booleanOrDefault(obj.isTableExtension, false)
 		this._table = new DBTable(obj._table)
 	}
 }

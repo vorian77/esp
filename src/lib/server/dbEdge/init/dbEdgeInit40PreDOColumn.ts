@@ -657,6 +657,13 @@ export function initPreColumn(init: InitDb) {
 		name: 'columns'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Columns Id',
+		isMultiSelect: true,
+		name: 'columnsId',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Comment',
@@ -1201,6 +1208,12 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'str',
+		header: 'Expression - Filter Update',
+		name: 'exprFilterUpdate',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'str',
 		header: 'Expression - Object',
 		name: 'exprObject',
 		owner: 'sys_system_old'
@@ -1219,6 +1232,12 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'str',
+		header: 'Expression - Show',
+		name: 'exprShow',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'str',
 		header: 'Expression - Sort',
 		name: 'exprSort',
 		owner: 'sys_system_old'
@@ -1226,13 +1245,13 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
-		header: 'Status Expression',
+		header: 'Expression - Status',
 		name: 'exprStatus'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
-		header: 'Storage Key Expression',
+		header: 'Expression - Storage Key',
 		name: 'exprStorageKey'
 	})
 	init.addTrans('sysColumn', {
@@ -1397,6 +1416,13 @@ export function initPreColumn(init: InitDb) {
 		isExcludeInsert: true,
 		isExcludeUpdate: true,
 		name: 'id'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeAlignment: 'right',
+		codeDataType: 'int64',
+		header: 'Demo Index',
+		name: 'idxDemo'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1575,6 +1601,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'bool',
 		header: 'Share With Student',
 		name: 'isShareWithClient'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Is Table Extension',
+		name: 'isTableExtension'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -2138,8 +2170,14 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
-		header: 'User Name',
+		header: 'Mobile Phone Number',
 		name: 'userName'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'User Type',
+		name: 'userType'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

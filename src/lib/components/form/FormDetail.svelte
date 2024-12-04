@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { DataObj, DataObjData } from '$utils/types'
 	import { State } from '$comps/app/types.appState'
-	import { Field } from '$comps/form/field'
+	import { Field, FieldAccess } from '$comps/form/field'
 	import { FieldEmbed } from '$comps/form/fieldEmbed'
 	import { FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 	import FormElement from '$comps/form/FormElement.svelte'
@@ -103,16 +103,19 @@
 <!-- <DataViewer header="tagGroupSection" data={tagGroupSection} /> -->
 
 {#if state.app.isMobileMode}
-	<div class="flex flex-col gap-y-4">
+	<div class="flex flex-col mt-10 gap-y-4">
 		{#each dataObj.fields as field, fieldIdx}
-			<FormElement
-				bind:state
-				{component}
-				{dataObj}
-				{dataObjData}
-				field={dataObj.fields[fieldIdx]}
-				row={0}
-			/>
+			{@const display = field.fieldAccess !== FieldAccess.hidden}
+			{#if display}
+				<FormElement
+					bind:state
+					{component}
+					{dataObj}
+					{dataObjData}
+					field={dataObj.fields[fieldIdx]}
+					row={0}
+				/>
+			{/if}
 		{/each}
 	</div>
 {:else if tagGroupSections}

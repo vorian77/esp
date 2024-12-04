@@ -32,8 +32,11 @@ const shapeDataObjActionFieldGroup = e.shape(e.sys_core.SysDataObjActionFieldGro
 
 const shapeDataObjTable = e.shape(e.sys_core.SysDataObjTable, (dot) => ({
 	_columnParent: dot.columnParent.name,
+	_columnsId: dot.columnsId.name,
+	exprFilterUpdate: true,
 	index: true,
 	indexParent: true,
+	isTableExtension: true,
 	_table: e.select(dot.table, (tbl) => ({
 		...shapeTable(dot.table)
 	})),
@@ -96,6 +99,7 @@ const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	_sourceNodeObjId: t.sourceNodeObj.id,
 	btnStyle: true,
 	description: true,
+	exprShow: true,
 	exprStatus: true,
 	hasAltOpen: true,
 	header: true,

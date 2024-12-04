@@ -334,7 +334,6 @@ export async function addSubjectObj(data: any) {
 
 export async function addTask(data: any) {
 	sectionHeader(`addTask - ${data.name}`)
-	debug('addTask', 'data', data)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
@@ -343,6 +342,7 @@ export async function addTask(data: any) {
 			codeIcon: e.str,
 			codeStatusObj: e.optional(e.str),
 			description: e.optional(e.str),
+			exprShow: e.optional(e.str),
 			exprStatus: e.optional(e.str),
 			hasAltOpen: e.optional(e.bool),
 			header: e.optional(e.str),
@@ -361,6 +361,7 @@ export async function addTask(data: any) {
 				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
 				codeStatusObj: e.sys_core.getCode('ct_sys_task_status_obj', p.codeStatusObj),
 				createdBy: CREATOR,
+				exprShow: p.exprShow,
 				exprStatus: p.exprStatus,
 				hasAltOpen: valueOrDefaultParm(p.hasAltOpen, false),
 				header: p.header,
@@ -478,6 +479,7 @@ export async function addUserType(data: any) {
 	const query = e.params(
 		{
 			header: e.str,
+			isSelfSignup: e.optional(e.bool),
 			name: e.str,
 			owner: e.str,
 			resources: e.optional(e.array(e.json)),
@@ -487,6 +489,7 @@ export async function addUserType(data: any) {
 			return e.insert(e.sys_user.SysUserType, {
 				createdBy: CREATOR,
 				header: p.header,
+				isSelfSignup: valueOrDefaultParm(p.isSelfSignup, false),
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
 				modifiedBy: CREATOR,

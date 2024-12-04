@@ -24,15 +24,32 @@
 	$: tasks = [
 		...state.user.resources_sys_task_default,
 		...state.user?.resources_sys_task_setting
-	].filter((task: UserResourceTask) => task.codeStatusObjName || state.user?.isMobileOnly)
+	].filter((task: UserResourceTask) => task.codeStatusObjName)
 
 	const StatusType = { tso_moed_app: TsoMoedApp, tso_moed_app_doc: TsoMoedAppDoc }
 
-	const getStatusData = async (task: UserResourceTask) => {
-		if (!task.exprStatus) return undefined
+	const getData = async (task: UserResourceTask) => {
+		let taskData: DataRecord = {}
+		task.setShow(await getDataShow(task))
+		if (task.isShow) taskData.data = await getDataStatus(task)
+		return taskData
+	}
 
+	const getDataShow = async (task: UserResourceTask) => {
+		if (!task.exprShow) return true
+		const show = await getDataDB(task, task.exprShow)
+		return show.data[0]
+	}
+
+	const getDataStatus = async (task: UserResourceTask) => {
+		if (!task.exprStatus) return undefined
+		const status = await getDataDB(task, task.exprStatus)
+		return status.data
+	}
+
+	const getDataDB = async (task: UserResourceTask, expr: string) => {
 		const dataTab = new DataObjData()
-		dataTab.parms.valueSet(ParmsValuesType.dbExpr, task.exprStatus)
+		dataTab.parms.valueSet(ParmsValuesType.dbExpr, expr)
 
 		const result: ResponseBody = await apiFetch(
 			ApiFunction.dbEdgeProcessExpression,
@@ -43,12 +60,11 @@
 		} else {
 			error(500, {
 				file: FILENAME,
-				function: 'getStatusData',
-				message: `Error retrieving status data for task: ${task.name}`
+				function: 'getDataDB',
+				message: `Error retrieving data for task: ${task.name}`
 			})
 		}
 	}
-
 	async function onClick(task: UserResourceTask, parms: DataRecord | undefined = undefined) {
 		state.parmsState.update(parms)
 		const token = task.getTokenNode(state.user)
@@ -65,26 +81,28 @@
 </script>
 
 {#each tasks as task}
-	{#await getStatusData(task)}
-		<p>...loading task status</p>
+	{#await getData(task)}
+		<p>...loading task data</p>
 	{:then statusData}
-		<div
-			on:click={task.hasAltOpen ? undefined : onClick(task)}
-			class="container rounded-lg mt-2 p-6 border-4 bg-gray-100 min-h-40 flex flex-col items-center"
-		>
-			<div class="text-center font-bold text-4xl text-blue-400">{task.header}</div>
+		{#if task.isShow}
+			<div
+				on:click={task.hasAltOpen ? undefined : onClick(task)}
+				class="container rounded-lg mt-2 p-6 border-4 bg-gray-100 min-h-40 flex flex-col items-center"
+			>
+				<div class="text-center font-bold text-4xl text-blue-400">{task.header}</div>
 
-			{#if statusData && statusData.data && StatusType[task.codeStatusObjName]}
-				<p class="mt-6 mb-2 text-center text-3xl text-blue-300">Status</p>
-				<svelte:component
-					this={StatusType[task.codeStatusObjName]}
-					{task}
-					{onClick}
-					data={statusData.data}
-				/>
-			{/if}
-		</div>
+				{#if statusData && statusData.data && StatusType[task.codeStatusObjName]}
+					<p class="mt-6 mb-2 text-center text-3xl text-blue-300">Status</p>
+					<svelte:component
+						this={StatusType[task.codeStatusObjName]}
+						{task}
+						{onClick}
+						data={statusData.data}
+					/>
+				{/if}
+			</div>
+		{/if}
 	{:catch error}
-		<p>Error: {error.message}</p>
+		<p>Task Status Data Error: {error.message}</p>
 	{/await}
 {/each}

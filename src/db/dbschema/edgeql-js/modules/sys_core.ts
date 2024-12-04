@@ -727,6 +727,9 @@ export type $SysDataObjTableλShape = $.typeutil.flatten<_sys_user.$MgmtλShape 
   "table": $.LinkDesc<_sys_db.$SysTable, $.Cardinality.One, {}, false, false,  false, false>;
   "index": $.PropertyDesc<_default.$nonNegative, $.Cardinality.One, false, false, false, false>;
   "indexParent": $.PropertyDesc<_default.$nonNegative, $.Cardinality.AtMostOne, false, false, false, false>;
+  "columnsId": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.Many, {}, false, false,  false, false>;
+  "isTableExtension": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
+  "exprFilterUpdate": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "<tables[is sys_core::SysDataObj]": $.LinkDesc<$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<tables[is sys_rep::SysRep]": $.LinkDesc<_sys_rep.$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;
   "<tables": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

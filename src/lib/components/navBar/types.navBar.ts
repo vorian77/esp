@@ -60,14 +60,14 @@ export class NavBarData {
 					})
 				})
 				this.items.push(itemGroupSingleProgram)
-			} else {
+			} else if (rawMenu.apps.length > 1) {
 				this.items.push(new NavBarDataCompApps(this, { rawMenu }))
 			}
 
 			// item - group - tasks - default
 			const itemGroupTasks = new NavBarDataCompGroup(this, { header: 'My Tasks' })
 			this.state.user.resources_sys_task_default
-				.filter((r) => !this.state.user?.isMobileOnly && !r.codeStatusObjName)
+				.filter((r) => r.isShow && !this.state.user?.isMobileOnly && !r.codeStatusObjName)
 				.forEach((r) => {
 					itemGroupTasks.addItem({
 						content: new NavBarContent('task', r),

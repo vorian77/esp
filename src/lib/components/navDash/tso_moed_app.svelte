@@ -11,7 +11,7 @@
 	export let onClick: Function
 	export let data: any
 
-	let record = getArray(data)[0]
+	let record = data[0]
 
 	const status = record
 		? [
@@ -33,5 +33,5 @@
 	</div>
 {:else}
 	Click to start application
-	<!-- <DataViewer header="record" data={record} /> -->
 {/if}
+<!-- <DataViewer header="record" {data} /> -->

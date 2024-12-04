@@ -236,7 +236,7 @@
 				if (state.app.levels.length === 1) {
 					returnHome(state)
 				} else {
-					await state.app.navBack(1)
+					await state.app.navBack(state, 1)
 					updateObjectsForm()
 				}
 				break
@@ -246,7 +246,7 @@
 					if (token.index === 0) {
 						returnHome(state)
 					} else {
-						await state.app.navCrumbs(token)
+						await state.app.navCrumbs(state, token)
 						updateObjectsForm()
 					}
 				}

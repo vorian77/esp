@@ -350,9 +350,14 @@ module sys_core {
   }
  
   type SysDataObjTable extending sys_user::Mgmt {
-    columnParent: sys_db::SysColumn;   
+    multi columnsId: sys_db::SysColumn{
+      on target delete allow;
+    };  
+    columnParent: sys_db::SysColumn;
+    exprFilterUpdate: str;
     required index: default::nonNegative;
     indexParent: default::nonNegative;
+    isTableExtension: bool;
     required table: sys_db::SysTable;
   }
 

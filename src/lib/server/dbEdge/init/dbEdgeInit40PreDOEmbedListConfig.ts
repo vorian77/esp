@@ -1329,10 +1329,18 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'indexParent',
+				columnName: 'isTableExtension',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'indexParent',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
 				headerAlt: 'Parent Table Index',
 				indexTable: 0
 			},
@@ -1340,11 +1348,19 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 				codeAccess: 'readOnly',
 				columnName: 'columnParent',
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDisplay: 60,
+				orderDefine: 60,
 				headerAlt: 'Parent Table Column',
 				indexTable: 0,
 				linkColumns: ['name']
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'exprFilterUpdate',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
 			}
 		]
 	})
@@ -1366,29 +1382,57 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'index',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 20,
-				orderDefine: 20,
+				orderDefine: 20
+			},
+			{
+				columnName: 'index',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'table',
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_table_order_name',
 				linkTable: 'SysTable'
 			},
 			{
+				codeFieldElement: 'toggle',
+				columnName: 'isTableExtension',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70
+			},
+			{
 				codeAccess: 'optional',
 				columnName: 'indexParent',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-
+				orderDisplay: 80,
+				orderDefine: 80,
 				headerAlt: 'Parent Table Index',
 				indexTable: 0
 			},
@@ -1397,14 +1441,39 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 				codeFieldElement: 'select',
 				columnName: 'columnParent',
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-
+				orderDisplay: 90,
+				orderDefine: 90,
 				fieldListItems: 'il_sys_column_order_name',
 				headerAlt: 'Parent Table Column',
 				indexTable: 0,
 				linkTable: 'SysColumn'
 			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'exprFilterUpdate',
+				isDisplayable: true,
+				orderDisplay: 110,
+				orderDefine: 110,
+				indexTable: 0
+			},
+			// {
+			// 	codeAccess: 'optional',
+			// 	codeFieldElement: 'embedListSelect',
+			// 	columnName: 'columnsId',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 110,
+			// 	orderDefine: 110,
+			// 	fieldEmbedListSelect: 'fels_sys_column',
+			// 	indexTable: 0,
+			// 	linkTable: 'SysColumn'
+			// },
 
 			/* management */
 			{

@@ -1,6 +1,8 @@
 import type { DataRecord } from '$utils/types'
 
-const dataItemsStudents = {
+const recordCount = 100
+
+const dataItemsPart = {
 	addr1: { type: 'list', values: ['123 Main St', '456 Elm St', '789 Oak St'] },
 	addr2: { type: 'list', values: ['Apt 1', 'Apt 2', ''] },
 	birthDate: {
@@ -70,7 +72,18 @@ const dataItemsStudents = {
 	},
 	lastName: {
 		type: 'list',
-		values: ['Adams', 'Conley', 'Garcia', 'Lawson', 'Lyons', 'Oatis', 'Turner']
+		values: [
+			'Adams',
+			'Conley',
+			'Garcia',
+			'Harris',
+			'Johnson',
+			'Lawson',
+			'Lyons',
+			'Oatis',
+			'Smith',
+			'Turner'
+		]
 	},
 	office: { type: 'list', values: ['moedOfficeEastside', 'moedOfficeWestside'] },
 	phoneMobile: { type: 'number', length: 10 },
@@ -78,7 +91,7 @@ const dataItemsStudents = {
 	zip: { type: 'list', values: ['21202', '21201', '21205', '21206', '21207', '21208'] }
 }
 
-const recordStudents = [
+const recordPart = [
 	'addr1',
 	'addr2',
 	'birthDate',
@@ -97,11 +110,24 @@ const recordStudents = [
 	'zip'
 ]
 
-const dataItemsReferrals = {
+const dataItemsServiceFlow = {
 	dateReferral: {
 		type: 'date',
-		dateStart: '2024-01-01',
-		dateEnd: '2024-1-30'
+		dateStart: '2024-10-01',
+		dateEnd: '2024-12-4'
+	},
+	dateStart: {
+		type: 'date',
+		dateStart: '2024-10-01',
+		dateEnd: '2024-12-4'
+	},
+	optionalDates: {
+		rate: 0.7,
+		type: 'optional',
+		values: [
+			['dateStart', { type: 'date', dateStart: '2024-10-01', dateEnd: '2024-12-4' }],
+			['dateEnd', { type: 'date', dateStart: '2024-10-01', dateEnd: '2024-12-4' }]
+		]
 	},
 	codeStatus: {
 		type: 'list',
@@ -116,7 +142,47 @@ const dataItemsReferrals = {
 		]
 	}
 }
-const recordReferrals = ['dateReferral', 'codeStatus']
+const recordServiceFlow = ['dateReferral', 'optionalDates', 'codeStatus']
+
+const dataItemsDataDoc = {
+	dateIssued: {
+		type: 'date',
+		dateStart: '2024-10-01',
+		dateEnd: '2024-12-4'
+	},
+	codeType: {
+		type: 'list',
+		values: [
+			'Acknowledgement Letter',
+			'Applicant Statement',
+			'Birth Certificate',
+			'Drivers License',
+			'Hospital Record of Birth',
+			'Lease',
+			'MVA Identification',
+			'School Transcript',
+			'Selective Service Registration Card',
+			'Social Security Card'
+		]
+	}
+}
+
+const recordDataDoc = ['dateIssued', 'codeType']
+
+const dataItemsDataMsg = {
+	codeStatus: {
+		type: 'list',
+		values: ['Closed', 'Responded', 'Sent', 'Under review']
+	},
+	date: {
+		type: 'date',
+		dateStart: '2024-10-01',
+		dateEnd: '2024-12-4'
+	},
+	office: { type: 'list', values: ['moedOfficeEastside', 'moedOfficeWestside'] }
+}
+
+const recordDataMsg = ['date', 'codeStatus', 'office']
 
 export class RandomDataGenerator {
 	data: DataRecord = {}
@@ -125,15 +191,40 @@ export class RandomDataGenerator {
 		label: string,
 		record: string[],
 		dataItems: Partial<Record<string, any>>,
-		recCnt: number
+		recCnt: number,
+		isData: boolean
 	) {
 		let newData: any[] = []
-		for (let i = 0; i < recCnt; i++) {
+		const totalRecords = isData ? Math.ceil(this.getRandomValue(5) * recCnt) : recCnt
+		for (let i = 0; i < totalRecords; i++) {
 			let newRow: any[] = []
-			newRow.push(i)
+			const recIdx = isData ? Math.ceil(this.getRandomValue(recCnt)) : i
+			newRow.push(recIdx)
 			record.forEach((key, idx) => {
 				if (dataItems[key]) {
-					newRow.push(this.getValue(dataItems[key]))
+					const dataItem = dataItems[key]
+					if (dataItem.type === 'optional') {
+						let rate = dataItem.rate
+						let values = dataItem.values
+						let random = this.getRandomValue(100) / 100
+
+						if (rate < random) {
+							values.forEach((v: any) => {
+								newRow.push(this.getValue({ type: 'undefined' }))
+							})
+						} else {
+							const idxData = this.getRandomValue(values.length)
+							values.forEach((v: any, i: number) => {
+								let type = v[0]
+								let config = v[1]
+								if (i === idxData) {
+									newRow.push(this.getValue({ type, ...config }))
+								} else {
+									newRow.push(this.getValue({ type: 'undefined' }))
+								}
+							})
+						}
+					} else newRow.push(this.getValue(dataItem))
 				}
 			})
 			newData.push(newRow)
@@ -146,24 +237,33 @@ export class RandomDataGenerator {
 			case 'date':
 				let dateStart = new Date(type.dateStart).getTime()
 				let dateEnd = new Date(type.dateEnd).getTime()
-				return new Date(dateStart + Math.random() * (dateEnd - dateStart))
+				return new Date(dateStart + this.getRandomValue(dateEnd - dateStart))
 					.toISOString()
 					.slice(0, 10)
 
 			case 'list':
-				return type.values[Math.floor(Math.random() * type.values.length)]
+				return type.values[this.getRandomValue(type.values.length)]
 
 			case 'number':
 				let value = ''
 				for (var i = 0; i < type.length; i++) {
-					value += Math.floor(Math.random() * 10).toString()
+					value += this.getRandomValue(10).toString()
 				}
 				return value
+
+			case 'undefined':
+				return undefined
 		}
+	}
+	getRandomValue(max: number) {
+		return Math.floor(Math.random() * max)
+	}
+	setData() {
+		this.addData('participant', recordPart, dataItemsPart, recordCount, false)
+		this.addData('serviceFlow', recordServiceFlow, dataItemsServiceFlow, recordCount, false)
+		this.addData('dataDoc', recordDataDoc, dataItemsDataDoc, recordCount, true)
+		this.addData('dataMsg', recordDataMsg, dataItemsDataMsg, recordCount, true)
 	}
 }
 
-const data = new RandomDataGenerator()
-data.addData('students', recordStudents, dataItemsStudents, 50)
-data.addData('referrals', recordReferrals, dataItemsReferrals, 50)
-export const moedDataParticipant = data
+export const moedDataParticipant = new RandomDataGenerator()

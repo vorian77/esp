@@ -25,10 +25,10 @@
 
 <div id="full-screen">
 	<div class="content">
-		<div class="flex-box">
+		<div class="flex gap-4">
 			<button
 				type="button"
-				class="btn variant-filled-primary w-full mt-10"
+				class="btn variant-filled-primary w-full"
 				on:click={async () =>
 					await state.openDrawerDataObj(
 						'auth',
@@ -42,13 +42,25 @@
 				Log in
 			</button>
 
+			<button
+				type="button"
+				class="btn variant-filled-primary w-full"
+				on:click={async () =>
+					await state.openDrawerDataObj(
+						'auth',
+						'bottom',
+						'h-[50%]',
+						undefined,
+						new TokenApiDbDataObjSource({ dataObjName: 'data_obj_auth_signup' }),
+						TokenApiQueryType.preset
+					)}
+			>
+				Sign up
+			</button>
+
 			{#if DEV_MODE}
-				<button
-					type="button"
-					class="btn variant-filled-secondary w-full mt-2"
-					on:click={expressLogin}
-				>
-					Express Login
+				<button type="button" class="btn variant-filled-secondary w-full" on:click={expressLogin}>
+					Dev Login
 				</button>
 			{/if}
 		</div>

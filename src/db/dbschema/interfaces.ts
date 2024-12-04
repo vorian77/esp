@@ -30,11 +30,11 @@ export namespace sys_user {
     "sourceDataObj"?: sys_core.SysDataObj | null;
     "sourceNodeObj"?: sys_core.SysNodeObj | null;
     "isPinToDash"?: boolean | null;
+    "exprShow"?: string | null;
   }
   export interface SysUser extends Mgmt {
     "userName"?: string | null;
     "userTypes": SysUserType[];
-    "person"?: SysPerson | null;
     "isMobileOnly"?: boolean | null;
     "defaultOrg": sys_core.SysOrg;
     "owner": sys_core.SysOrg;
@@ -42,6 +42,7 @@ export namespace sys_user {
     "defaultSystem": sys_core.SysSystem;
     "orgs": sys_core.SysOrg[];
     "systems": sys_core.SysSystem[];
+    "person": SysPerson;
   }
   export interface SysUserPref extends Mgmt {
     "user": SysUser;
@@ -72,9 +73,9 @@ export namespace app_cm {
     "agencyId"?: string | null;
     "school"?: string | null;
     "office"?: sys_core.SysObjSubject | null;
-    "person": SysPerson;
     "hasDriversLicense"?: boolean | null;
     "codeHighestEducation"?: sys_core.SysCode | null;
+    "person": SysPerson;
   }
   export interface CmClientServiceFlow extends sys_user.Mgmt {
     "client": CmClient;
@@ -411,6 +412,9 @@ export namespace sys_core {
     "table": sys_db.SysTable;
     "index": number;
     "indexParent"?: number | null;
+    "columnsId": sys_db.SysColumn[];
+    "isTableExtension"?: boolean | null;
+    "exprFilterUpdate"?: string | null;
   }
   export interface SysDataObjWith extends sys_user.Mgmt {
     "expr": string;

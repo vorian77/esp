@@ -1,8 +1,9 @@
 import e from '$db/dbschema/edgeql-js'
 import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
+import { debug } from '$utils/types'
 
-export async function MoedParticipantsBulk(params: any) {
-	sectionHeader(`MOED Participants`)
+export async function MoedPBulkPart(params: any) {
+	sectionHeader(`MOED Bulk - Participant`)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
@@ -54,8 +55,8 @@ export async function MoedParticipantsBulk(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function MoedCsfBulk(params: any) {
-	sectionHeader(`MOED Referrals`)
+export async function MoedBulkCsf(params: any) {
+	sectionHeader(`MOED Bulk - Service Flow`)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
@@ -75,14 +76,73 @@ export async function MoedCsfBulk(params: any) {
 				codeStatus: e.sys_core.getCodeSystem(
 					'sys_moed_old',
 					'ct_cm_service_flow_status',
-					e.cast(e.str, i[2])
+					e.cast(e.str, i[4])
 				),
 				dateReferral: e.cal.to_local_date(e.cast(e.str, i[1])),
+				dateStart: e.cal.to_local_date(e.cast(e.str, i[2])),
+				dateEnd: e.cal.to_local_date(e.cast(e.str, i[3])),
 				serviceFlow: e.assert_single(
 					e.select(e.app_cm.CmServiceFlow, (flow) => ({
 						filter_single: e.op(flow.name, '=', 'sf_moed_self_service_reg')
 					}))
 				)
+			})
+		})
+	})
+	return await query.run(client, { data: params })
+}
+
+export async function MoedBulkDataDoc(params: any) {
+	sectionHeader(`MOED Bulk Data - Document`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params({ data: e.json }, (params) => {
+		return e.for(e.json_array_unpack(params.data), (i) => {
+			return e.insert(e.app_cm.CmCsfDocument, {
+				createdBy: CREATOR,
+				modifiedBy: CREATOR,
+				csf: e.assert_single(
+					e.select(e.app_cm.CmClientServiceFlow, (sf) => ({
+						filter_single: e.op(
+							sf.client.is(e.org_moed.MoedParticipant).idxDemo,
+							'=',
+							e.cast(e.int64, i[0])
+						)
+					}))
+				),
+				codeType: e.sys_core.getCodeSystem('sys_moed_old', 'ct_cm_doc_type', e.cast(e.str, i[2])),
+				dateIssued: e.cal.to_local_date(e.cast(e.str, i[1]))
+			})
+		})
+	})
+	return await query.run(client, { data: params })
+}
+
+export async function MoedBulkDataMsg(params: any) {
+	sectionHeader(`MOED Bulk Data - Message`)
+	debug('MOED Bulk Data - Documents', 'params', params)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params({ data: e.json }, (params) => {
+		return e.for(e.json_array_unpack(params.data), (i) => {
+			return e.insert(e.app_cm.CmCsfMsg, {
+				createdBy: CREATOR,
+				modifiedBy: CREATOR,
+				csf: e.assert_single(
+					e.select(e.app_cm.CmClientServiceFlow, (sf) => ({
+						filter_single: e.op(
+							sf.client.is(e.org_moed.MoedParticipant).idxDemo,
+							'=',
+							e.cast(e.int64, i[0])
+						)
+					}))
+				),
+				codeStatus: e.sys_core.getCode('ct_cm_msg_status', e.cast(e.str, i[2])),
+				date: e.cal.to_local_date(e.cast(e.str, i[1])),
+				office: e.assert_single(
+					e.select(e.sys_core.SysObjSubject, (o) => ({
+						filter_single: e.op(o.name, '=', e.cast(e.str, i[3]))
+					}))
+				),
+				sender: CREATOR
 			})
 		})
 	})

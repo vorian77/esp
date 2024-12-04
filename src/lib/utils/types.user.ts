@@ -47,7 +47,7 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
-		console.log('User.constructor.obj: ', obj)
+		// console.log('User.constructor.obj: ', obj)
 		const clazz = 'User'
 		this.avatar = classOptional(FileStorage, obj.avatar)
 		this.dbBranch = required(obj.dbBranch, clazz, 'dbBranch')
@@ -207,9 +207,11 @@ export class UserResourceTask extends UserResource {
 	codeCategory: UserResourceTaskCategory
 	codeStatusObjName?: string
 	description?: string
+	exprShow?: string
 	exprStatus?: string
 	hasAltOpen: boolean
 	isPinToDash: boolean
+	isShow: boolean = true
 	sourceDataObjId?: string
 	sourceNodeObjId?: string
 	constructor(obj: any) {
@@ -225,6 +227,7 @@ export class UserResourceTask extends UserResource {
 		)
 		this.codeStatusObjName = obj._codeStatusObjName
 		this.description = obj.description
+		this.exprShow = obj.exprShow
 		this.exprStatus = obj.exprStatus
 		this.hasAltOpen = booleanOrFalse(obj.hasAltOpen, 'hasAltOpen')
 		this.isPinToDash = booleanOrFalse(obj.isPinToDash, 'isPinToDash')
@@ -250,6 +253,9 @@ export class UserResourceTask extends UserResource {
 				page: '/home'
 			})
 		})
+	}
+	setShow(isShow: boolean) {
+		this.isShow = isShow
 	}
 }
 

@@ -11,7 +11,7 @@
 	export let onClick: Function
 	export let data: any
 
-	let docTypes = getArray(data)
+	let docTypes = data
 
 	const onClickLocal = async (doc: any) => {
 		await onClick(task, { [ParmsValuesType.itemsParmName]: doc.name })

@@ -27,8 +27,10 @@ import {
 	addSubjectObj
 } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 import {
-	MoedCsfBulk,
-	MoedParticipantsBulk
+	MoedBulkCsf,
+	MoedBulkDataDoc,
+	MoedBulkDataMsg,
+	MoedPBulkPart
 } from '$server/dbEdge/init/dbEdgeInit200Utilities60OrgMOED'
 import { addAnalytic, addReport } from '$server/dbEdge/init/dbEdgeInit200Utilities40Rep'
 import { required, valueOrDefault } from '$utils/utils.model'
@@ -286,17 +288,33 @@ export class InitDb {
 		/* MOED demo */
 		this.items.push(
 			new InitDbItem({
-				name: 'MoedParticipantsBulk',
+				name: 'MoedPBulkPart',
 				exprResets: `DELETE org_moed::MoedParticipant`,
-				fCreate: MoedParticipantsBulk,
+				fCreate: MoedPBulkPart,
 				isExcludeResetByObj: true
 			})
 		)
 		this.items.push(
 			new InitDbItem({
-				name: 'MoedCsfBulk',
+				name: 'MoedBulkCsf',
 				exprResets: `DELETE app_cm::CmClientServiceFlow FILTER .client IN org_moed::MoedParticipant`,
-				fCreate: MoedCsfBulk,
+				fCreate: MoedBulkCsf,
+				isExcludeResetByObj: true
+			})
+		)
+		this.items.push(
+			new InitDbItem({
+				name: 'MoedBulkDataDoc',
+				exprResets: `DELETE app_cm::CmCsfDocument FILTER .csf.client IN org_moed::MoedParticipant`,
+				fCreate: MoedBulkDataDoc,
+				isExcludeResetByObj: true
+			})
+		)
+		this.items.push(
+			new InitDbItem({
+				name: 'MoedBulkDataMsg',
+				exprResets: `DELETE app_cm::CmCsfMsg FILTER .csf.client IN org_moed::MoedParticipant`,
+				fCreate: MoedBulkDataMsg,
 				isExcludeResetByObj: true
 			})
 		)

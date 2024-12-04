@@ -328,9 +328,21 @@ export async function addDataObj(data: any) {
 						columnParent: e.select(
 							e.sys_db.getColumn(e.cast(e.str, e.json_get(t, 'columnParent')))
 						),
+						columnsId: e.assert_distinct(
+							e.set(
+								e.for(e.array_unpack(e.cast(e.array(e.str), e.json_get(t, 'columnsId'))), (c) => {
+									return e.select(e.sys_db.getColumn(c))
+								})
+							)
+						),
 						createdBy: CREATOR,
+						exprFilterUpdate: e.cast(e.str, e.json_get(t, 'exprFilterUpdate')),
 						index: e.cast(e.int16, e.json_get(t, 'index')),
 						indexParent: e.cast(e.int16, e.json_get(t, 'indexParent')),
+						isTableExtension: valueOrDefaultParm(
+							e.cast(e.bool, e.json_get(t, 'isTableExtension')),
+							false
+						),
 						modifiedBy: CREATOR,
 						table: e.select(e.sys_db.getTable(e.cast(e.str, e.json_get(t, 'table'))))
 					})

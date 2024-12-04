@@ -18,6 +18,7 @@ module sys_user {
     required codeCategory: sys_core::SysCode;
     codeStatusObj: sys_core::SysCode;
     description: str;
+    exprShow: str;
     exprStatus: str;
     hasAltOpen: bool;
     isPinToDash: bool;
@@ -34,7 +35,7 @@ module sys_user {
       on target delete allow;
     };
     required owner: sys_core::SysOrg;
-    person: default::SysPerson {
+    required person: default::SysPerson {
       on source delete delete target if orphan;
     };
     required password: str {

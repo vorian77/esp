@@ -1,6 +1,7 @@
 import { State, StatePacketAction } from '$comps/app/types.appState'
 import {
 	booleanRequired,
+	classOptional,
 	getArray,
 	memberOfEnum,
 	memberOfEnumOrDefault,
@@ -831,17 +832,27 @@ export class DataObjSortItem {
 
 export class DataObjTable {
 	columnParent?: string
+	columnsId: string[]
+	exprFilterUpdate?: string
 	index: number
+	indexParent?: number
+	indexesChildren: number[] = []
+	isTableExtension: boolean
 	isRoot: boolean
 	parentObjTable?: DataObjTable
+	script: string = ''
 	table: DBTable
 	traversalFromRoot: string
 	constructor(obj: RawDataObjTable, tables: DataObjTable[]) {
 		const clazz = 'DataObjTable'
 		obj = valueOrDefault(obj, {})
 		this.columnParent = obj._columnParent
+		this.columnsId = getArray(obj._columnsId)
+		this.exprFilterUpdate = obj.exprFilterUpdate
 		this.index = required(obj.index, clazz, 'index')
+		this.indexParent = obj.indexParent
 		this.isRoot = this.index === 0
+		this.isTableExtension = obj.isTableExtension
 		this.parentObjTable =
 			typeof obj.indexParent === 'number' && obj.indexParent > -1
 				? tables.find((table) => table.index === obj.indexParent)
@@ -853,6 +864,11 @@ export class DataObjTable {
 					? this.parentObjTable.traversalFromRoot + '.' + this.columnParent
 					: this.columnParent
 				: ''
+	}
+	setChildren(tables: DataObjTable[]) {
+		this.indexesChildren = tables
+			.filter((table) => table.indexParent === this.index)
+			.map((t) => t.index)
 	}
 }
 

@@ -122,7 +122,7 @@ function initApps(init: InitDb) {
 		isGlobalResource: false,
 		name: 'app_moed_advocate',
 		owner: 'sys_moed_old',
-		nodes: ['node_obj_moed_part_list']
+		nodes: ['node_obj_moed_part_list', 'node_obj_sys_rep_my_report_list']
 	})
 	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_moed_student',
@@ -191,19 +191,21 @@ function initUserType(init: InitDb) {
 		owner: 'sys_moed_old',
 		resources: [
 			{ codeType: 'app', resource: 'app_moed_advocate' },
+			{ codeType: 'report', resource: 'report_moed_self_serv_student_status' },
 			{ codeType: 'subject', resource: 'moedOfficeEastside' },
 			{ codeType: 'subject', resource: 'moedOfficeWestside' }
 		],
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
 	})
 	init.addTrans('sysUserType', {
-		header: 'MOED-Student',
+		header: `Baltimore - Mayor's Office of Employment Development`,
+		isSelfSignup: true,
 		name: 'ut_moed_student',
 		owner: 'sys_moed_old',
 		resources: [
 			{ codeType: 'task', resource: 'task_moed_ssr_app' },
-			{ codeType: 'task', resource: 'task_moed_ssr_app_doc' },
-			{ codeType: 'task', resource: 'task_moed_ssr_app_msg' }
+			{ codeType: 'task', resource: 'task_moed_ssr_app_doc' }
+			// { codeType: 'task', resource: 'task_moed_ssr_app_msg' }
 		]
 	})
 }
@@ -328,7 +330,7 @@ function initUsers(init: InitDb) {
 		orgs: ['org_moed'],
 		owner: 'org_moed',
 		systems: ['sys_moed_old'],
-		userName: 'ojackson1',
+		userName: '1111111111',
 		userTypes: ['ut_moed_student']
 	})
 

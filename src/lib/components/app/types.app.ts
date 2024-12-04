@@ -25,6 +25,7 @@ import {
 	TokenApiQuery,
 	TokenAppIndex,
 	TokenAppDo,
+	TokenAppDoActionConfirmType,
 	TokenAppModalEmbedField,
 	TokenAppNode,
 	TokenAppRow,
@@ -37,7 +38,12 @@ import {
 } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { query } from '$comps/app/types.appQuery'
-import { State, StatePacketAction, StateSurfaceModalDataObj } from '$comps/app/types.appState'
+import {
+	State,
+	StatePacket,
+	StatePacketAction,
+	StateSurfaceModalDataObj
+} from '$comps/app/types.appState'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/nav/types.app.ts'
@@ -261,22 +267,22 @@ export class App {
 		if (parentLevel) return parentLevel.getCurrTab().listRowStatus()
 	}
 
-	async navBack(backCnt: number) {
+	async navBack(state: State, backCnt: number) {
 		for (let i = 0; i < backCnt; i++) {
 			const currLevel = this.getCurrLevel()
 			if (currLevel) {
 				if (currLevel.tabIdxCurrent > 0) {
 					currLevel.tabIdxSet(0, true)
 				} else {
-					this.levels.pop()
+					this.popLevel(state)
 				}
 			}
 		}
 		return this
 	}
-	async navCrumbs(token: TokenAppIndex) {
+	async navCrumbs(state: State, token: TokenAppIndex) {
 		const backCnt = this.crumbs.length - 1 - token.index
-		this.navBack(backCnt)
+		this.navBack(state, backCnt)
 		return this
 	}
 	async navTab(state: State, token: TokenAppTab) {
@@ -290,8 +296,18 @@ export class App {
 		}
 	}
 
-	popLevel() {
+	popLevel(state: State) {
 		this.levels.pop()
+		if (this.levels.length === 0) {
+			state.update({
+				page: '/home',
+				nodeType: NodeType.home,
+				packet: new StatePacket({
+					action: StatePacketAction.navBarOpen,
+					confirmType: TokenAppDoActionConfirmType.objectChanged
+				})
+			})
+		}
 		return this
 	}
 	async rowUpdate(state: State, token: TokenAppRow) {
@@ -320,7 +336,7 @@ export class App {
 					case StatePacketAction.doDetailDelete:
 						if (currTab.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)) {
 							if (!tabParent || !tabParent.listHasData()) {
-								this.popLevel()
+								this.popLevel(state)
 							} else {
 								tabParent.data.parms.valueSet(
 									ParmsValuesType.listRecordIdCurrent,
@@ -360,7 +376,7 @@ export class App {
 								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 									return this
 								await query(state, tabParent, TokenApiQueryType.retrieve)
-								this.popLevel()
+								this.popLevel(state)
 							}
 						}
 						break
@@ -395,10 +411,11 @@ export class App {
 					case StatePacketAction.doDetailDelete:
 						// <todo> - 241019 - this path must be tested - only example "My Account" which doesn't have Delete option
 						if (!currTab.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)) {
+							currTab.data.rowsSave.setDetailRecordStatus(DataRecordStatus.delete)
 							if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 								return this
 						}
-						this.popLevel()
+						this.popLevel(state)
 						break
 
 					case StatePacketAction.doDetailSave:

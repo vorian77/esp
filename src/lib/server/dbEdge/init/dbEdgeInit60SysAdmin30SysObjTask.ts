@@ -268,6 +268,15 @@ function initTask(init: InitDb) {
 				orderDefine: 220,
 				indexTable: 0
 			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'exprShow',
+				isDisplayable: true,
+				orderDisplay: 230,
+				orderDefine: 230,
+				indexTable: 0
+			},
 
 			/* management */
 			{

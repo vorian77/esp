@@ -119,7 +119,16 @@ export function initPreDataObjActionGroups(init: InitDb) {
 			['noa_save_detail', 0],
 			['noa_save_cancel', 1]
 		],
-		name: 'doag_detail_retrieve_preset',
+		name: 'doag_detail_mobile_save',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysDataObjActionFieldGroup', {
+		actionFieldItems: [
+			['noa_save_detail', 0],
+			['noa_save_cancel', 1],
+			['noa_delete_detail', 2]
+		],
+		name: 'doag_detail_mobile_save_delete',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysDataObjActionFieldGroup', {

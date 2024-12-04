@@ -4,6 +4,7 @@ import {
 	classOptional,
 	DataObjDataField,
 	DataObjEmbedType,
+	DataObjTable,
 	DBTable,
 	debug,
 	isNumber,
@@ -144,6 +145,7 @@ export class Query {
 
 	getPropsSave(parms: DataRecord, queryData: TokenApiQueryData, dataRows: DataRow[]) {
 		let properties = ''
+		let fValues: Function[] = []
 		const clazz = 'getPropsSave'
 		const action = strRequired(parms.action, clazz, 'action') as LinkSaveAction
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
@@ -151,87 +153,12 @@ export class Query {
 		const isUpdate = action.toLowerCase() === 'update'
 		const subObjGroup = new LinkSave(action, this.getTableRootObj())
 
-		let fValues: Function[] = []
-		const setValueFunction = (idx: number, f: Function) => {
-			fValues[idx] = f
-		}
-
 		if (isDelete) return properties
-
-		const getPropExpr = (propIdx: number, propObj: RawDataObjPropDB) => {
-			let propExpr = ''
-			const clazzProp = `${clazz}.${propObj.propName}`
-			const expr = propObj?.link?.exprSave ? propObj.link.exprSave : ''
-
-			if (expr) {
-				const expressions: ExprToken[] = evalExprTokens(expr, queryData)
-				if (expressions.length === 1) {
-					const exprToken = expressions[0].dataItem
-					const exprType = expressions[0].dataType
-					const exprValue = expressions[0].valueFormatted
-
-					setValueFunction(propIdx, (rawValue: any) => {
-						return exprValue && propObj.isSelfReference ? 'DETACHED ' + exprValue : exprValue
-					})
-					propExpr = `${expr.replace(exprToken, exprValue)}`
-				} else {
-					setValueFunction(propIdx, (rawValue: any) => {
-						return rawValue
-					})
-					propExpr = `${expr}`
-				}
-			} else {
-				let item = `json_get(item, '${propObj.propName}')`
-				let { dataType } = getValDB(propObj.codeDataType, undefined)
-
-				switch (dataType) {
-					case 'link':
-						let propTable = strRequired(propObj.link?.table?.object, clazzProp, 'propTable')
-						propTable = propTable === this.getTableRootObj() ? `DETACHED ${propTable}` : propTable
-						let filter = ''
-
-						if (propObj.isMultiSelect) {
-							filter = `IN (<uuid>json_array_unpack(${item}))`
-							setValueFunction(propIdx, (rawValue: any) => {
-								const newVal =
-									Array.isArray(rawValue) && rawValue.length > 0 ? rawValue : [getUUID()]
-								return newVal
-							})
-						} else {
-							filter = `= <uuid>${item}`
-							setValueFunction(propIdx, (rawValue: any) => {
-								return rawValue ? rawValue : getUUID()
-							})
-						}
-						propExpr = `(SELECT ${propTable} FILTER .id ${filter})`
-						break
-
-					case '<cal::local_date>':
-					case '<datetime>':
-					case '<float64>':
-					case '<int16>':
-					case '<int32>':
-					case '<int64>':
-						setValueFunction(propIdx, (rawValue: any) => {
-							return rawValue === undefined || rawValue === null ? '' : rawValue.toString()
-						})
-						propExpr = `(SELECT ${dataType}{} IF <str>${item} = '' ELSE ${dataType}<str>${item})`
-						break
-
-					default:
-						setValueFunction(propIdx, (rawValue: any) => {
-							return rawValue
-						})
-						propExpr = `${dataType}${item}`
-				}
-			}
-			return propExpr
-		}
 
 		// 1. build props, subObjGroup
 		props.forEach((propObj, idx) => {
 			if (!propObj.fieldEmbed) {
-				const prop = `${propObj.propNameRaw} := ${getPropExpr(idx, propObj)}`
+				const prop = `${propObj.propNameRaw} := ${this.getPropsSavePropExpr(action, idx, propObj, queryData, fValues)}`
 
 				if (propObj.indexTable === 0) {
 					properties = this.addItemComma(properties, prop)
@@ -252,6 +179,131 @@ export class Query {
 			properties = `${set}{\n${this.addItemComma(properties, subObjGroup.getPropsUpdate(isUpdate, this.rawDataObj.tables))}}`
 		debug('getPropsSave', 'properties', properties)
 		return properties
+	}
+
+	getPropsSaveScalar(parms: DataRecord, queryData: TokenApiQueryData, dataRows: DataRow[]) {
+		let properties = ''
+		let fValues: Function[] = []
+		const clazz = 'getPropsSaveScalar'
+		const indexTable = required(parms.indexTable, clazz, 'indexTable')
+		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
+		const action = strRequired(parms.action, clazz, 'action') as LinkSaveAction
+		// const isDelete = parms.isDelete ? parms.isDelete : false
+		// const isUpdate = action.toLowerCase() === 'update'
+		// const subObjGroup = new LinkSave(action, this.getTableRootObj())
+
+		// 1. build props, subObjGroup
+		props
+			.filter((propObj) => propObj.indexTable === indexTable)
+			.forEach((propObj, idx) => {
+				if (!propObj.fieldEmbed) {
+					const prop = `${propObj.propNameRaw} := ${this.getPropsSavePropExpr(action, idx, propObj, queryData, fValues)}`
+					properties = this.addItemComma(properties, prop)
+
+					// if (propObj.indexTable === 0) {
+					// 	properties = this.addItemComma(properties, prop)
+					// } else {
+					// 	subObjGroup.addProp(propObj.indexTable!, prop)
+					// }
+
+					// format values
+					dataRows.forEach((dataRow) => {
+						dataRow.record[propObj.propName] = fValues[idx](dataRow.getValue(propObj.propName))
+					})
+				}
+			})
+
+		// 2. add subObjGroup properties
+		// if (properties) {
+		// 	subObjGroup.getPropsUpdate(isUpdate, this.rawDataObj.tables)
+		// 	properties = `{\n${this.addItemComma(properties)}}`
+		// }
+		debug('getPropsSaveScalar', 'properties', properties)
+		return properties
+	}
+
+	getPropsSavePropExpr(
+		action: LinkSaveAction,
+		propIdx: number,
+		propObj: RawDataObjPropDB,
+		queryData: TokenApiQueryData,
+		fValues: Function[]
+	) {
+		const clazz = 'getPropsSavePropExpr'
+		let propExpr = ''
+		const clazzProp = `${clazz}.${propObj.propName}`
+
+		let expr = propObj?.link?.exprSave || propObj.exprCustom || ''
+		if (!expr && action === LinkSaveAction.INSERT) {
+			expr = propObj?.link?.exprPreset || propObj.exprPreset || ''
+		}
+
+		const setValueFunction = (idx: number, f: Function) => {
+			fValues[idx] = f
+		}
+
+		if (expr) {
+			const expressions: ExprToken[] = evalExprTokens(expr, queryData)
+			if (expressions.length === 1) {
+				const exprToken = expressions[0].dataItem
+				const exprType = expressions[0].dataType
+				const exprValue = expressions[0].valueFormatted
+
+				setValueFunction(propIdx, (rawValue: any) => {
+					return exprValue && propObj.isSelfReference ? 'DETACHED ' + exprValue : exprValue
+				})
+				propExpr = `${expr.replace(exprToken, exprValue)}`
+			} else {
+				setValueFunction(propIdx, (rawValue: any) => {
+					return rawValue
+				})
+				propExpr = `${expr}`
+			}
+		} else {
+			let item = `json_get(item, '${propObj.propName}')`
+			let { dataType } = getValDB(propObj.codeDataType, undefined)
+
+			switch (dataType) {
+				case 'link':
+					let propTable = strRequired(propObj.link?.table?.object, clazzProp, 'propTable')
+					propTable = propTable === this.getTableRootObj() ? `DETACHED ${propTable}` : propTable
+					let filter = ''
+
+					if (propObj.isMultiSelect) {
+						filter = `IN (<uuid>json_array_unpack(${item}))`
+						setValueFunction(propIdx, (rawValue: any) => {
+							const newVal = Array.isArray(rawValue) && rawValue.length > 0 ? rawValue : [getUUID()]
+							return newVal
+						})
+					} else {
+						filter = `= <uuid>${item}`
+						setValueFunction(propIdx, (rawValue: any) => {
+							return rawValue ? rawValue : getUUID()
+						})
+					}
+					propExpr = `(SELECT ${propTable} FILTER .id ${filter})`
+					break
+
+				case '<cal::local_date>':
+				case '<datetime>':
+				case '<float64>':
+				case '<int16>':
+				case '<int32>':
+				case '<int64>':
+					setValueFunction(propIdx, (rawValue: any) => {
+						return rawValue === undefined || rawValue === null ? '' : rawValue.toString()
+					})
+					propExpr = `(SELECT ${dataType}{} IF <str>${item} = '' ELSE ${dataType}<str>${item})`
+					break
+
+				default:
+					setValueFunction(propIdx, (rawValue: any) => {
+						return rawValue
+					})
+					propExpr = `${dataType}${item}`
+			}
+		}
+		return propExpr
 	}
 
 	getPropsSelect(parms: DataRecord, queryData: TokenApiQueryData) {
