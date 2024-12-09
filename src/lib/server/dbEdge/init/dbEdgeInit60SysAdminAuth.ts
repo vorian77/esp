@@ -6,7 +6,6 @@ export function initSysAuth(init: InitDb) {
 	initDataObjResetPasswordAccount(init)
 	initDataObjResetPasswordLogin(init)
 	initDataObjVerify(init)
-	initNodeObjFooter(init)
 	initDataObjSignup(init)
 	initDataObjSignupInsert(init)
 	initDataObjSignupUpdate(init)
@@ -656,18 +655,6 @@ SELECT { userId := user.id }`,
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
 		],
 		fields: []
-	})
-}
-
-function initNodeObjFooter(init: InitDb) {
-	init.addTrans('sysNodeObjFooter', {
-		codeIcon: 'AppWindow',
-		codeType: 'home',
-		header: 'Home',
-		isGlobalResource: true,
-		name: 'node_obj_sys_admin_footer_home',
-		orderDefine: 0,
-		owner: 'sys_system_old'
 	})
 }
 

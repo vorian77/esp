@@ -24,7 +24,8 @@
 		<li
 			class="{classIndent} {classMB} border-0 border-yellow-400 hover:-translate-y-0.5 transition-transform"
 		>
-			<button
+			<a
+				href="#"
 				class="flex {item.navBar.isOpen ? 'w-full' : 'content-center'} "
 				on:click={item.click()}
 			>
@@ -64,7 +65,7 @@
 						{/if}
 					</div>
 				{/if}
-			</button>
+			</a>
 		</li>
 	{/if}
 {/if}

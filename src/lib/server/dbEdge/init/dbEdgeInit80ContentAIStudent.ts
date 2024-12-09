@@ -1,4 +1,5 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
+import { ListOrdered } from 'lucide-svelte'
 
 export function initContentAIStudent(init: InitDb) {
 	initStudent(init)
@@ -21,7 +22,7 @@ function initStudent(init: InitDb) {
 		header: 'Students',
 		name: 'data_obj_cm_student_list',
 		owner: 'sys_ai_old',
-		subHeader: 'All students enrolled in any courses.',
+		subHeader: 'All students.',
 		tables: [
 			{ index: 0, table: 'CmClient' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -63,13 +64,24 @@ function initStudent(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'agencyId',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
-				orderDisplay: 55,
-				orderDefine: 55,
-				headerAlt: 'Group',
-				indexTable: 0
+				orderDefine: 60,
+				orderDisplay: 60,
+				exprCustom: `(SELECT app_cm::CmCsfCohort FILTER .csf.client = app_cm::CmClient).cohort.name`,
+				headerAlt: 'Cohorts',
+				indexTable: 0,
+				nameCustom: '_cohorts'
 			}
+			// {
+			// 	codeAccess: 'readOnly',
+			// 	columnName: 'agencyId',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 70,
+			// 	orderDefine: 70,
+			// 	headerAlt: 'Group',
+			// 	indexTable: 0
+			// }
 		]
 	})
 
@@ -468,7 +480,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeReferralType',
+				columnName: 'codeServiceFlowType',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -477,7 +489,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'dateReferral',
+				columnName: 'dateCreated',
 				orderCrumb: 20,
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -502,7 +514,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeReferralEndType',
+				columnName: 'codeServiceFlowOutcome',
 				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
@@ -562,7 +574,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'codeReferralType',
+				columnName: 'codeServiceFlowType',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
@@ -573,7 +585,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'date',
-				columnName: 'dateReferral',
+				columnName: 'dateCreated',
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
@@ -614,13 +626,13 @@ function initCsf(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'codeReferralEndType',
+				columnName: 'codeServiceFlowOutcome',
 				isDisplayable: true,
 				orderDisplay: 150,
 				orderDefine: 150,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_service_flow_end_type',
+				fieldListItemsParmName: 'ct_cm_service_flow_outcome',
 				linkTable: 'SysCode'
 			},
 			{

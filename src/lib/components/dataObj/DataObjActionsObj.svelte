@@ -49,7 +49,7 @@
 					a.codePacketAction
 				) &&
 				state.objStatus.changed() &&
-				!dataObj.isListEmbed
+				!dataObj.fieldEmbed
 		)
 		marginTop = state.app.isMobileMode ? 'mt-6' : ''
 		padding =
@@ -76,7 +76,7 @@
 	}
 </script>
 
-<div class="flex flex-col mt-4 {marginTop} {padding}">
+<div class="flex flex-col {marginTop} {padding}">
 	{#if isEditing}
 		<div>
 			<p class="text-blue-600 mb-4">Editing...</p>
@@ -85,7 +85,7 @@
 	{#each actions as action (action.name)}
 		<div class="mb-4" animate:flip={{ duration: animationDurationMs }}>
 			<button
-				class="w-full btn text-white"
+				class="w-full btn text-sm text-white"
 				style:background-color={action.fieldColor.color}
 				disabled={action.isDisabled}
 				on:click={() => onClick(action)}

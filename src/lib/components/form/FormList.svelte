@@ -132,7 +132,7 @@
 	}
 
 	function load(data: DataObjData) {
-		if (!dataObj.isListEmbed) dataObj.objData = data
+		if (!dataObj.fieldEmbed) dataObj.objData = data
 
 		// listEdit
 		if (dataObj.raw.isListEdit) {
@@ -144,7 +144,7 @@
 			})
 		}
 
-		if (!dataObj.isListEmbed) {
+		if (!dataObj.fieldEmbed) {
 			state.setDataObjState(dataObj)
 			state.setStatus()
 			state = state
@@ -182,7 +182,7 @@
 			columnDefs: initGridColumns(),
 			fCallbackFilter: fGridCallbackFilter,
 			fCallbackUpdateValue: fGridCallbackUpdateValue,
-			isEmbed: dataObj.isListEmbed,
+			isEmbed: !!dataObj.fieldEmbed,
 			isSelect,
 			isSelectMulti: isSelect,
 			isSuppressFilterSort: dataObj.raw.isListSuppressFilterSort,

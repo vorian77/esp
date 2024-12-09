@@ -1,7 +1,6 @@
 import { State, StatePacketAction } from '$comps/app/types.appState'
 import {
 	booleanRequired,
-	classOptional,
 	getArray,
 	memberOfEnum,
 	memberOfEnumOrDefault,
@@ -47,7 +46,6 @@ import {
 	FieldCustomHeader,
 	FieldCustomText
 } from '$comps/form/fieldCustom'
-import { evalExprTokensItems, ExprParmsItem } from '$routes/api/dbEdge/dbEdgeGetVal'
 import { GridSettings } from '$comps/grid/grid'
 import { FieldInput } from '$comps/form/fieldInput'
 import { FieldFile } from '$comps/form/fieldFile'
@@ -77,8 +75,8 @@ export class DataObj {
 	dataItems: DataItems = {}
 	dataRecordsDisplay: DataRecord[] = []
 	dataRecordsHidden: DataRecord[] = []
+	fieldEmbed?: FieldEmbed
 	fields: Field[] = []
-	isListEmbed: boolean = false
 	isMobileMode: boolean = false
 	modes: DataObjMode[] = []
 	objStatus: DataObjStatus = new DataObjStatus()
@@ -98,18 +96,7 @@ export class DataObj {
 				? new DBTable(this.raw.tables[0].table)
 				: undefined
 	}
-	actionsFieldEmbedSet(action: StatePacketAction, fieldEmbed: FieldEmbed) {
-		const field = this.actionsField.find((f) => f.codePacketAction === action)
-		if (field) {
-			field.setFieldEmbed(fieldEmbed)
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'DataObj.actionsFieldEmbedSet',
-				message: `Field for StatePacketAction: ${action} not found.`
-			})
-		}
-	}
+
 	actionsFieldTrigger(packetAction: StatePacketAction, state: State) {
 		const action = this.actionsField.find((f) => f.codePacketAction === packetAction)
 		if (action) {
@@ -180,6 +167,11 @@ export class DataObj {
 			}
 			return dataObj.userGridSettings.load(rawSettings, state, dataObj)
 		}
+	}
+
+	async initEmbed(state: State, data: DataObjData, fieldEmbed: FieldEmbed) {
+		this.fieldEmbed = fieldEmbed
+		return await DataObj.init(state, data)
 	}
 
 	fieldsCreate(state: State, data: DataObjData, rawDataObj: RawDataObj) {
@@ -503,7 +495,7 @@ export class DataObj {
 		const recordId = this.dataRecordsDisplay[row].id
 		this.setFieldValChanged(row, recordId, field.colDO.propName, value)
 		this.setFieldValValidity(row, recordId, field)
-		if (this.raw.listReorderColumn && this.isListEmbed) {
+		if (this.raw.listReorderColumn && this.fieldEmbed) {
 			const reorderColumn = this.raw.listReorderColumn
 			this.dataRecordsDisplay.sort((a, b) => a[reorderColumn] - b[reorderColumn])
 		}
@@ -529,9 +521,6 @@ export class DataObj {
 			this.dataFieldsValidity.valueSet(recordId, fieldName, validity)
 		})
 		this.dataFieldsValidity = this.dataFieldsValidity
-	}
-	setIsListEmbed() {
-		this.isListEmbed = true
 	}
 	setStatus() {
 		let newStatus = new DataObjStatus()

@@ -16,7 +16,7 @@
 	const status = record
 		? [
 				{ label: 'Current Status', data: record._codeStatus },
-				{ label: 'Referral Date', data: record.dateReferral },
+				{ label: 'Referral Date', data: record.dateCreated },
 				{ label: 'Last Update By', data: record._modifiedBy }
 			]
 		: []

@@ -22,7 +22,7 @@
 	}
 </script>
 
-<nav class="flex border-b border-gray-200 bg-white" aria-label="Breadcrumb">
+<nav class="flex border border-gray-200 bg-white" aria-label="Breadcrumb">
 	<ol
 		role="list"
 		class="mx-auto flex w-full max-w-(--breakpoint-xl) space-x-4 px-4 sm:px-6 lg:px-8"
@@ -30,12 +30,11 @@
 		{#each crumbsList as item, i}
 			{@const label = item.label}
 			{#if i === 0}
-				<!-- first -->
-				<li class="flex">
+				<li id="li-crumb-first" class="flex">
 					<div class="flex items-center">
 						<a
 							href="#"
-							class="text-gray-400 hover:text-gray-500"
+							class="text-nav hover:text-nav-hover"
 							on:click={() => onClick(i)}
 							on:keyup={() => onClick(i)}
 						>
@@ -57,8 +56,7 @@
 					</div>
 				</li>
 			{:else if i === crumbsList.length - 1}
-				<!-- last -->
-				<li class="flex">
+				<li id="li-crumb-last" class="flex">
 					<div class="flex items-center">
 						<svg
 							class="h-full w-6 shrink-0 text-gray-200"
@@ -71,7 +69,7 @@
 						</svg>
 						<a
 							href="#"
-							class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+							class="ml-4 text-sm font-medium text-nav hover:text-nav-hover"
 							aria-current="page"
 							on:click={() => onClick(i)}
 							on:keyup={() => onClick(i)}
@@ -81,8 +79,7 @@
 					</div>
 				</li>
 			{:else}
-				<!-- default -->
-				<li class="flex">
+				<li id="li-crumb-default" class="hidden md:flex">
 					<div class="flex items-center">
 						<svg
 							class="h-full w-6 shrink-0 text-gray-200"
@@ -95,7 +92,7 @@
 						</svg>
 						<a
 							href="#"
-							class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+							class="ml-4 text-sm font-medium text-nav hover:text-nav-hover"
 							on:click={() => onClick(i)}
 							on:keyup={() => onClick(i)}
 						>

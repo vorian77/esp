@@ -6,17 +6,10 @@ import {
 	DataObjData,
 	DataObjStatus,
 	type DataRecord,
-	FieldValue,
 	required,
 	strRequired
 } from '$utils/types'
-import {
-	booleanOrDefault,
-	memberOfEnum,
-	memberOfEnumOrDefault,
-	nbrOptional,
-	valueOrDefault
-} from '$utils/utils'
+import { booleanOrDefault, memberOfEnum, memberOfEnumOrDefault, valueOrDefault } from '$utils/utils'
 import {
 	Validation,
 	ValidationStatus,

@@ -9,17 +9,6 @@ export function initUser(init: InitDb) {
 }
 
 function initResources(init: InitDb) {
-	/* footers */
-	init.addTrans('sysNodeObjFooter', {
-		codeIcon: 'AppWindow',
-		codeType: 'home',
-		header: 'Home',
-		isGlobalResource: false,
-		name: 'node_obj_sys_admin_footer_home_test',
-		orderDefine: 0,
-		owner: 'sys_ai_old'
-	})
-
 	/* widgets */
 	init.addTrans('widgetsBulk', [
 		['sys_system_old', 'widget_sys_report', true],

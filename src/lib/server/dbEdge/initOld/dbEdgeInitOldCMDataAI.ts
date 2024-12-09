@@ -130,7 +130,7 @@ async function initClientServiceFlows() {
         client := (select assert_single((select app_cm::CmClient filter .agencyId = x.0))),
         serviceFlow := (select assert_single((select app_cm::CmServiceFlow filter .name = x.1))),
         codeStatus := (select assert_single((select sys_core::SysCode filter .codeType.name = 'ct_cm_service_flow_status' and .name = 'Pending'))),
-        dateReferral := <cal::local_date>x.2,
+        dateCreated := <cal::local_date>x.2,
         note := x.3,
         createdBy := myCreator,
         modifiedBy := myCreator
@@ -150,12 +150,12 @@ async function initCsfCohort() {
     csf := (select assert_single((select app_cm::CmClientServiceFlow filter
       .client = (select assert_single((select app_cm::CmClient filter .agencyId = x.0))) and
       .serviceFlow = (select assert_single((select app_cm::CmServiceFlow filter .name = x.1))) and
-      .dateReferral = <cal::local_date>x.2))), 
+      .dateCreated = <cal::local_date>x.2))), 
     cohort := (select assert_single((select app_cm::CmCohort filter
       .course = (select app_cm::getCMTrainingCourse(x.3)) and
       .name = x.4))),
     codeStatus := (select assert_single((select sys_core::SysCode filter .codeType.name = "ct_cm_service_flow_status" and .name = x.5))),
-    dateReferral := <cal::local_date>x.6,
+    dateCreated := <cal::local_date>x.6,
     createdBy := myCreator,
     modifiedBy := myCreator                         
   });

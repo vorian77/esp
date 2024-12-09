@@ -218,7 +218,6 @@ async function initSysCodes() {
 		['ct_sys_icon', 'app_sys', 'sort-up', 0],
 
 		// ct_sys_node_obj_nav_type
-		['ct_sys_node_obj_nav_type', 'app_cm', 'footer', 0],
 		['ct_sys_node_obj_nav_type', 'app_cm', 'tree', 0],
 
 		// node obj - types

@@ -104,6 +104,9 @@
 		styleMaxHeight = isSuppressFilterSort ? '100%' : 'calc(100% - 70px)'
 
 		const gridOptions = {
+			autoSizeStrategy: {
+				type: 'fitCellContents'
+			},
 			columnDefs: options.columnDefs,
 			columnTypes,
 			dataTypeDefinitions,

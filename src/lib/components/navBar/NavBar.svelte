@@ -4,43 +4,47 @@
 	import NavBarItem from '$comps/navBar/NavBarItem.svelte'
 	import NavBarOrg from '$comps/navBar/NavBarOrg.svelte'
 	import NavBarUser from '$comps/navBar/NavBarUser.svelte'
+	import NavCopyright from '$comps/navBar/NavCopyright.svelte'
 	import { NavBarData } from '$comps/navBar/types.navBar'
 	import { tweened } from 'svelte/motion'
 	import { cubicOut } from 'svelte/easing'
+
 	const FILENAME = '/$comps/navBar/NavBar.svelte'
 
 	export let navBar: NavBarData
 
-	const widthValue = tweened(navBar.width, {
+	const widthValue = tweened(navBar?.width ? navBar.width : 0, {
 		duration: 500,
 		easing: cubicOut
 	})
-	$: $widthValue = navBar.width
+	$: $widthValue = navBar?.width ? navBar.width : 0
 </script>
 
 <nav
-	class="h-screen text-sm p-3 bg-stone-200 border-0 border-amber-400 flex flex-col {navBar.isOpen
-		? ''
-		: 'items-center '}"
+	class="h-full flex flex-col justify-between text-sm p-3 bg-neutral-50 border-r"
 	style="width: {$widthValue}px;"
 >
-	{#if navBar}
-		{#each navBar.items as item}
-			<ul>
-				<div class="mb-6">
-					{#if navBar.getItemClassName(item) === 'NavBarDataCompApps'}
-						<NavBarApps data={item} />
-					{:else if navBar.getItemClassName(item) === 'NavBarDataCompItem'}
-						<NavBarItem {item} />
-					{:else if navBar.getItemClassName(item) === 'NavBarDataCompGroup'}
-						<NavBarGroup data={item} />
-					{:else if navBar.getItemClassName(item) === 'NavBarDataCompOrg'}
-						<NavBarOrg data={item} />
-					{:else if navBar.getItemClassName(item) === 'NavBarDataCompUser'}
-						<NavBarUser data={item} />
-					{/if}
-				</div>
-			</ul>
-		{/each}
-	{/if}
+	<div>
+		{#if navBar}
+			{#each navBar?.items as item}
+				<ul>
+					<div class="mb-6 flex flex-col {navBar?.isOpen ? '' : 'items-center '}">
+						{#if navBar.getItemClassName(item) === 'NavBarDataCompApps'}
+							<NavBarApps data={item} />
+						{:else if navBar.getItemClassName(item) === 'NavBarDataCompItem'}
+							<NavBarItem {item} />
+						{:else if navBar.getItemClassName(item) === 'NavBarDataCompGroup'}
+							<NavBarGroup data={item} />
+						{:else if navBar.getItemClassName(item) === 'NavBarDataCompOrg'}
+							<NavBarOrg data={item} />
+						{:else if navBar.getItemClassName(item) === 'NavBarDataCompUser'}
+							<NavBarUser data={item} />
+						{/if}
+					</div>
+				</ul>
+			{/each}
+		{/if}
+	</div>
+
+	<NavCopyright {navBar} />
 </nav>

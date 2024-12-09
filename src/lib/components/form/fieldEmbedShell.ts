@@ -7,7 +7,6 @@ import {
 } from '$comps/form/fieldEmbed'
 import { DataObj, DataObjStatus } from '$utils/types'
 import { StatePacketAction, StateSurfaceEmbedShell } from '$comps/app/types.appState'
-import action from '$enhance/actions/actionAuth'
 
 export class FieldEmbedShell extends Field {
 	fields: FieldEmbed[] = []

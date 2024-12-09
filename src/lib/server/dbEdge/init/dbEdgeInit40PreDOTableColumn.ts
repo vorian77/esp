@@ -19,9 +19,9 @@ export function initTableColumn(init: InitDb) {
 		['CmCsfCohort', 'csf'],
 		['CmCsfCohort', 'codeStatus'],
 		['CmCsfCohort', 'cohort'],
+		['CmCsfCohort', 'dateCreated'],
 		['CmCsfCohort', 'dateEnd'],
 		['CmCsfCohort', 'dateEndEst'],
-		['CmCsfCohort', 'dateReferral'],
 		['CmCsfCohort', 'dateStart'],
 		['CmCsfCohort', 'dateStartEst'],
 		['CmCsfCohort', 'note']

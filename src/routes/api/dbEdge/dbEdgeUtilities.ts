@@ -629,22 +629,6 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			filter: e.op(res.id, 'in', u.userTypes.resources.resource.id),
 			order_by: res.appHeader.orderDefine
 		})),
-		resources_footer: e.select(e.sys_core.SysNodeObj, (res) => ({
-			_codeIcon: res.codeIcon.name,
-			_codeNodeType: res.codeNodeType.name,
-			dataObjId: res.dataObj.id,
-			header: true,
-			id: true,
-			name: true,
-			orderDefine: true,
-			page: true,
-			filter: e.op(
-				e.op(res.isGlobalResource, '=', true),
-				'or',
-				e.op(res.id, 'in', u.userTypes.resources.resource.id)
-			),
-			order_by: res.orderDefine
-		})),
 		resources_subject: e.select(u.userTypes.resources, (res) => ({
 			_codeType: res.codeType.name,
 			_resource: e.select(res.resource.is(e.sys_core.SysObjSubject), (obj) => ({

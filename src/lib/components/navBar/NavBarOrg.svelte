@@ -14,12 +14,13 @@
 
 {#if data.user}
 	<div class="flex items-center">
-		<button
+		<a
+			href="#"
 			class="flex-none w-14 border-0 border-red-700 hover:-translate-y-0.5 transition-transform"
 			on:click={data.navBar.toggleOpen()}
 		>
 			<img src={data.user.org.urlLogo} />
-		</button>
+		</a>
 
 		{#if data.navBar.isOpen}
 			<div class="text-sm ml-1 border-0 border-green-700">
@@ -29,7 +30,7 @@
 			</div>
 
 			<div class="flex-none w-6 text-end border-0 border-blue-700">
-				<button on:click={data.navBar.toggleOpen()}>
+				<a href="#" on:click={data.navBar.toggleOpen()}>
 					<div class={data.navBar.isOpen ? '' : 'rotate-180'}>
 						<Icon
 							props={new IconProps({
@@ -41,7 +42,7 @@
 							})}
 						/>
 					</div>
-				</button>
+				</a>
 			</div>
 		{/if}
 	</div>

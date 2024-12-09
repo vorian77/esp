@@ -13,32 +13,36 @@
 
 	let recordIdCurrent: string
 
-	$: {
-		let recordId = fp.dataRecord['id'] || ''
-		if (recordId.startsWith('preset_')) recordId = ''
-		if (recordIdCurrent !== recordId) recordIdCurrent = recordId
+	// $: {
+	// 	let recordId = fp.dataRecord['id'] || ''
+	// 	console.log('FormElEmbedListConfig.recordId', recordId)
+	// 	if (recordId.startsWith('preset_')) recordId = ''
+	// 	if (recordIdCurrent !== recordId) recordIdCurrent = recordId
 
-		const field = fp.field as FieldEmbedListConfig
-		const rows = field.dataObj?.data.rowsRetrieved.length
-		fp.setIsLabelBold(true)
+	// 	const field = fp.field as FieldEmbedListConfig
+	// 	const rows = field.dataObj?.data.rowsRetrieved.length
+	// 	fp.setIsLabelBold(true)
 
-		const parentObjectSaved =
-			recordIdCurrent !== '' &&
-			fp.state.objStatus.objValidToSave &&
-			!fp.state.objStatus.objHasChanged
-		if (field.dataObj) {
-			if (parentObjectSaved) {
-				field.dataObj.modeAdd(DataObjMode.ParentObjectSaved)
-			} else {
-				field.dataObj.modeDrop(DataObjMode.ParentObjectSaved)
-			}
-		}
-	}
+	// 	const parentObjectSaved =
+	// 		recordIdCurrent !== '' &&
+	// 		fp.state.objStatus.objValidToSave &&
+	// 		!fp.state.objStatus.objHasChanged
+	// 	if (field.dataObj) {
+	// 		if (parentObjectSaved) {
+	// 			field.dataObj.modeAdd(DataObjMode.ParentObjectSaved)
+	// 		} else {
+	// 			field.dataObj.modeDrop(DataObjMode.ParentObjectSaved)
+	// 		}
+	// 	}
+	// }
 </script>
 
 <FormLabel {fp} />
+FormElEmbedListConfig
 
 {#if fp}
+	<!-- {#key recordIdCurrent}
+		{recordIdCurrent} -->
 	<div class="mt-4">
 		<LayoutContent
 			bind:state={fp.state}
@@ -48,6 +52,7 @@
 			on:formCancelled
 		/>
 	</div>
+	<!-- {/key} -->
 {/if}
 
 <!-- <DataViewer header="stateDisplay" data={stateDisplay} /> -->

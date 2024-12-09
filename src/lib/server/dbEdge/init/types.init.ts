@@ -20,7 +20,6 @@ import {
 	addApp,
 	addAppHeader,
 	addNode,
-	addNodeFooter,
 	addTask,
 	addUser,
 	addUserType,
@@ -205,15 +204,6 @@ export class InitDb {
 				dataMap: 'name',
 				dbObject: 'sys_rep::SysRep',
 				fCreate: addReport
-			})
-		)
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysNodeObjFooter',
-				dataMap: 'name',
-				dbObject: 'sys_core::SysNodeObj',
-				exprResetFull: `DELETE sys_core::SysNodeObj FILTER .codeNavType.name = 'footer'`,
-				fCreate: addNodeFooter
 			})
 		)
 		this.items.push(

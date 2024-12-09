@@ -87,7 +87,7 @@
 		{#if task.isShow}
 			<div
 				on:click={task.hasAltOpen ? undefined : onClick(task)}
-				class="container rounded-lg mt-2 p-6 border-4 bg-gray-100 min-h-40 flex flex-col items-center"
+				class="rounded-lg p-6 border-4 bg-gray-100 min-h-40 flex flex-col items-center"
 			>
 				<div class="text-center font-bold text-4xl text-blue-400">{task.header}</div>
 

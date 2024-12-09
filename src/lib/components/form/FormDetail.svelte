@@ -2,7 +2,6 @@
 	import { DataObj, DataObjData } from '$utils/types'
 	import { State } from '$comps/app/types.appState'
 	import { Field, FieldAccess } from '$comps/form/field'
-	import { FieldEmbed } from '$comps/form/fieldEmbed'
 	import { FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 	import FormElement from '$comps/form/FormElement.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'

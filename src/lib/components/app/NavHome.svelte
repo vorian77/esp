@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
-	import { AppShell } from '@skeletonlabs/skeleton'
 	import { appStoreUser, getArray, User, UserPrefType, UserTypeResourceType } from '$utils/types'
 	import SysUser from '$routes/home/User.svelte'
 	import CMUser from '$routes/home/UserCM.svelte'
@@ -47,19 +46,3 @@
 </script>
 
 <!-- <DataViewer header="showSysReport" data={showSysReport} /> -->
-
-<AppShell>
-	<!-- {#if showSysUser}
-		<SysUser {user} />
-	{/if} -->
-	<!-- {#if showCMQuote}
-	<Quote />
-{/if} -->
-	<!-- {#if showCMUser}
-		<CMUser {user} />
-	{/if} -->
-
-	<!-- {#if showSysReport}
-		<SysWigReport {user} />
-	{/if} -->
-</AppShell>

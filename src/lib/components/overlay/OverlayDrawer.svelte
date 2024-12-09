@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { Drawer, getDrawerStore } from '@skeletonlabs/skeleton'
-	import NavTree from '$comps/app/NavTree.svelte'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import { State } from '$comps/app/types.appState'
-	import NavBar from '$comps/navBar/NavBar.svelte'
-	import { NavBarData, NavBarDataCompItem } from '$comps/navBar/types.navBar'
 
 	const FILENAME = 'OverlayDrawer.svelte'
 	const storeDrawer = getDrawerStore()
@@ -35,10 +32,6 @@
 					<RootLayoutApp state={$storeDrawer.meta.state} on:formCancelled={onformCancelled} />
 				</div>
 			{/if}
-		</div>
-	{:else if $storeDrawer.id === 'navLeft'}
-		<div class="p-2">
-			<NavTree state={$storeDrawer.meta.state} on:treeChanged={closeDrawer} />
 		</div>
 	{/if}
 </Drawer>

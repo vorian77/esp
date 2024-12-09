@@ -425,7 +425,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeReferralType',
+				columnName: 'codeServiceFlowType',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -434,7 +434,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'dateReferral',
+				columnName: 'dateCreated',
 				orderCrumb: 20,
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -484,7 +484,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeReferralEndType',
+				columnName: 'codeServiceFlowOutcome',
 				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
@@ -545,7 +545,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'codeReferralType',
+				columnName: 'codeServiceFlowType',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
@@ -556,7 +556,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'date',
-				columnName: 'dateReferral',
+				columnName: 'dateCreated',
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
@@ -640,13 +640,13 @@ function initCsf(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'codeReferralEndType',
+				columnName: 'codeServiceFlowOutcome',
 				isDisplayable: true,
 				orderDisplay: 150,
 				orderDefine: 150,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
-				fieldListItemsParmName: 'ct_cm_service_flow_end_type',
+				fieldListItemsParmName: 'ct_cm_service_flow_outcome',
 				linkTable: 'SysCode'
 			},
 			{
@@ -1458,7 +1458,7 @@ function initTaskSsrApp(init: InitDb) {
 				linkTable: 'CmServiceFlow'
 			},
 			{
-				columnName: 'codeReferralType',
+				columnName: 'codeServiceFlowType',
 				orderDefine: 45,
 				indexTable: 0,
 				isDisplayable: false,
@@ -1517,7 +1517,7 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'date',
-				columnName: 'dateReferral',
+				columnName: 'dateCreated',
 				headerAlt: 'Application Date',
 				indexTable: 0,
 				isDisplayable: true,
@@ -1702,7 +1702,7 @@ function initTaskSsrApp(init: InitDb) {
 		codeStatusObj: 'tso_moed_app',
 		description: 'First step to my future.',
 		exprStatus: `SELECT app_cm::CmClientServiceFlow
-{ _codeStatus := .codeStatus.name, dateReferral, modifiedAt, _modifiedBy := .modifiedBy.person.fullName }
+{ _codeStatus := .codeStatus.name, dateCreated, modifiedAt, _modifiedBy := .modifiedBy.person.fullName }
 FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person ORDER BY .modifiedAt DESC`,
 		header: 'My Application',
 		isPinToDash: true,
@@ -2399,7 +2399,7 @@ function initReport(init: InitDb) {
 			{
 				codeFieldElement: 'date',
 				codeReportElementType: 'column',
-				columnName: 'dateReferral',
+				columnName: 'dateCreated',
 				indexTable: 0,
 				isDisplay: true,
 				isDisplayable: true,

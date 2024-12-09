@@ -365,7 +365,7 @@
 </script>
 
 {#if currLayout && componentContentName}
-	<div class={state instanceof StateSurfaceEmbed ? '' : 'p-4'}>
+	<div class={state instanceof StateSurfaceEmbed ? '' : 'px-4'}>
 		<svelte:component
 			this={currLayout}
 			bind:state

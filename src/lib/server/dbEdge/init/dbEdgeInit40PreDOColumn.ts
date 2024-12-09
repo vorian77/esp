@@ -459,20 +459,6 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Referral End Type',
-		isMultiSelect: false,
-		name: 'codeReferralEndType',
-		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Referral Type',
-		isMultiSelect: false,
-		name: 'codeReferralType',
-		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Report Element Type',
@@ -492,6 +478,20 @@ export function initPreColumn(init: InitDb) {
 		header: 'Sector',
 		isMultiSelect: false,
 		name: 'codeSector'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Service Flow Outcome',
+		isMultiSelect: false,
+		name: 'codeServiceFlowOutcome',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Service Flow Type',
+		isMultiSelect: false,
+		name: 'codeServiceFlowType',
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1051,6 +1051,13 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
+		header: 'Creation Date',
+		name: 'dateCreated'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeAlignment: 'center',
+		codeDataType: 'date',
 		header: 'End Date',
 		name: 'dateEnd'
 	})
@@ -1074,13 +1081,6 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'date',
 		header: 'Issued Date',
 		name: 'dateIssued'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeAlignment: 'center',
-		codeDataType: 'date',
-		header: 'Referral Date',
-		name: 'dateReferral'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

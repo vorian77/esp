@@ -17,12 +17,13 @@
 </script>
 
 {#if data.user}
-	<hr class="mt-8 my-2" />
-	<button
+	<hr class="lg:mt-32 my-2" />
+	<a
+		href="#"
 		class="flex items-center hover:-translate-y-0.5 transition-transform"
 		on:click={() => data.items.activateLinkByLabel('My Account')}
 	>
-		<div class="h-9 w-9 rounded-full place-content-center bg-stone-100 text-center">
+		<div class="h-9 w-9 rounded-full place-content-center bg-neutral-200 text-center">
 			{#if data.user.avatar}
 				<img class="rounded-full" src={data.user.avatar?.url} />
 			{:else}
@@ -35,7 +36,7 @@
 				{data.user.fullName}
 			</span>
 		{/if}
-	</button>
+	</a>
 
 	<div class="mt-3 {data.navBar.isOpen ? '' : 'justify-items-center'} ">
 		<NavBarGroup data={data.items} />

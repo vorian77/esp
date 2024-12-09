@@ -313,13 +313,11 @@ export class TokenApp extends Token {
 
 export class TokenAppDo extends TokenApp {
 	dataObj: DataObj
-	fieldEmbed?: FieldEmbed
 	state: State
 	constructor(obj: any) {
 		const clazz = 'TokenAppDo'
 		super(obj)
 		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
-		this.fieldEmbed = obj.fieldEmbed
 		this.state = required(obj.state, clazz, 'state')
 	}
 }

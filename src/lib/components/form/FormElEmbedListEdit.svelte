@@ -17,13 +17,13 @@
 
 {#if fp}
 	<div class="mt-4">
-		<LayoutContent
+		<!-- <LayoutContent
 			bind:state={fp.state}
 			component={fp.field.dataObj.raw.codeComponent}
 			dataObj={fp.field.dataObj}
 			dataObjData={fp.field.dataObj.data}
 			on:formCancelled
-		/>
+		/> -->
 	</div>
 {/if}
 

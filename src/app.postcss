@@ -3,36 +3,28 @@
 @tailwind utilities;
 @tailwind variants;
 
-html,
-body {
-	@apply h-full overflow-hidden;
+html {
+	@apply h-full bg-white;
 }
 
 body {
-	background: white;
-	@apply dark:bg-surface-700;
+	@apply h-full overflow-hidden dark:bg-surface-700;
 }
 
 button {
 	@apply hover:-translate-y-0.5 transition-transform;
 }
 
-fieldset {
-	@apply border border-surface-400-500-token focus:border-surface-400-500-token rounded-lg px-3 pb-2;
-}
-
-h1 {
-	@apply font-semibold;
-}
-
 .esp-card {
 	@apply bg-white;
 }
 .esp-card-space-y {
-	@apply bg-white;
-	@apply space-y-5;
+	@apply bg-white space-y-5;
 }
 
+fieldset {
+	@apply border border-surface-400-500-token focus:border-surface-400-500-token rounded-lg px-3 pb-2;
+}
 .fieldsetDetailOptional {
 	@apply bg-white;
 }
@@ -41,4 +33,8 @@ h1 {
 }
 .fieldsetList {
 	@apply bg-transparent border-0;
+}
+
+h1 {
+	@apply font-semibold;
 }

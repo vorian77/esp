@@ -7,7 +7,6 @@ import {
 	DataObjEmbedType,
 	DataObjStatus,
 	type DataRecord,
-	initNavTree,
 	ParmsValues,
 	ParmsValuesType,
 	NodeType,
@@ -223,7 +222,7 @@ export class State {
 		fModalCloseUpdate: Function
 	) {
 		const clazz = `${FILENAME}.openModalEmbedListConfig`
-		const field: FieldEmbedListConfig = required(token.fieldEmbed, clazz, 'field')
+		const field: FieldEmbedListConfig = required(token.dataObj.fieldEmbed, clazz, 'field')
 		const rootTable = required(this?.dataObjState?.rootTable, clazz, 'rootTable')
 		const fieldDataObj = required(field.dataObj, clazz, 'fieldDataObj')
 
@@ -262,7 +261,7 @@ export class State {
 
 	async openModalEmbedListSelect(token: TokenAppDo, fModalCloseUpdate: Function) {
 		const clazz = `${FILENAME}.openModalEmbedListSelect`
-		const field: FieldEmbedListSelect = required(token.fieldEmbed, clazz, 'field')
+		const field: FieldEmbedListSelect = required(token.dataObj.fieldEmbed, clazz, 'field')
 		const fieldDataObj = required(field.dataObj, clazz, 'fieldDataObj')
 		const rootTable = required(this?.dataObjState?.rootTable, clazz, 'rootTable')
 
@@ -353,7 +352,6 @@ export class State {
 	async resetUser(loadHome: boolean) {
 		if (this.user) {
 			this.user = await userInit(this.user.id)
-			await initNavTree(this.user)
 			if (loadHome) {
 				this.update({
 					page: '/home',
@@ -491,10 +489,7 @@ export enum StatePacketAction {
 	navBarOpen = 'navBarOpen',
 	navRow = 'navRow',
 	navTab = 'navTab',
-	navTreeReset = 'navTreeReset',
-	navTreeSetParent = 'navTreeSetParent',
 	openNode = 'openNode',
-
 	none = 'none'
 }
 

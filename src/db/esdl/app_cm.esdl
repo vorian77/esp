@@ -67,18 +67,18 @@ module app_cm {
 
   type CmClientServiceFlow extending sys_user::Mgmt {
     required client: app_cm::CmClient;
-    required serviceFlow: app_cm::CmServiceFlow;
-    codeReferralType: sys_core::SysCode;
+    codeServiceFlowOutcome: sys_core::SysCode;
+    codeServiceFlowType: sys_core::SysCode;
     codeStatus: sys_core::SysCode;
-    codeReferralEndType: sys_core::SysCode;
-    required dateReferral: cal::local_date;
-    dateStartEst: cal::local_date;
-    dateStart: cal::local_date;
-    dateEndEst: cal::local_date;
+    required dateCreated: cal::local_date;
     dateEnd: cal::local_date;
-    note: str;
-    user: sys_user::SysUser;
+    dateEndEst: cal::local_date;
+    dateStart: cal::local_date;
+    dateStartEst: cal::local_date;
     idxDemo: int64;
+    note: str;
+    required serviceFlow: app_cm::CmServiceFlow;
+    user: sys_user::SysUser;
   }
 
   type CmCsfData extending sys_user::Mgmt {

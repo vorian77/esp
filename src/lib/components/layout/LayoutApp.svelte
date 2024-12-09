@@ -2,9 +2,8 @@
 	import { AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app'
 	import type { State } from '$comps/app/types.appState'
 	import { StatePacket, StatePacketAction } from '$comps/app/types.appState'
-	import { TokenApp, TokenAppDoActionConfirmType } from '$utils/types.token'
+	import { TokenAppDoActionConfirmType } from '$utils/types.token'
 	import type { DataObj, DataObjData } from '$utils/types'
-	import { AppBar, AppShell } from '@skeletonlabs/skeleton'
 	import NavCrumbs from '$comps/app/NavCrumbs.svelte'
 	import NavRow from '$comps/app/NavRow.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
@@ -37,41 +36,34 @@
 	}
 </script>
 
-<!-- <DataViewer header="objChanged" data={state?.objHasChanged} /> -->
-
-<AppShell slotSidebarLeft="w-0 md:w-52 h-full">
-	<svelte:fragment slot="header">
-		{@const hidden = crumbsList.length < 2 ? 'hidden' : ''}
-		<AppBar background="bg-neutral-200 {hidden}" padding="p-3">
-			<svelte:fragment slot="lead">
-				<div class="grid items-end">
-					<div class="flex">
-						<button class="mr-4" on:click={back}>
-							<Icon
-								props={new IconProps({
-									name: 'ArrowLeft',
-									clazz: 'mt-0.5',
-									color: '#3b79e1',
-									strokeWidth: 2
-								})}
-							/>
-						</button>
-						<div>
-							<NavCrumbs {state} {crumbsList} />
-						</div>
-					</div>
+<div class="flex justify-between p-2 bg-neutral-50 border-2 border-gray-300 rounded-md">
+	<div id="lead">
+		<div class="grid items-end">
+			<div class="flex items-center">
+				<a href="#" class="mr-4" on:click={back}>
+					<Icon
+						props={new IconProps({
+							name: 'ArrowLeft',
+							clazz: 'mt-1.5',
+							isNav: true,
+							strokeWidth: 2
+						})}
+					/>
+				</a>
+				<div>
+					<NavCrumbs {state} {crumbsList} />
 				</div>
-			</svelte:fragment>
-
-			<svelte:fragment slot="trail">
-				<NavRow {state} {rowStatus} />
-			</svelte:fragment>
-		</AppBar>
-	</svelte:fragment>
-
-	{#if currLevel}
-		<div class="mt-4">
-			<LayoutTab bind:state {component} {dataObj} {dataObjData} on:formCancelled />
+			</div>
 		</div>
-	{/if}
-</AppShell>
+	</div>
+
+	<div id="trail" class="flex items-center">
+		<NavRow {state} {rowStatus} />
+	</div>
+</div>
+
+{#if currLevel}
+	<div class="mt-4">
+		<LayoutTab bind:state {component} {dataObj} {dataObjData} on:formCancelled />
+	</div>
+{/if}

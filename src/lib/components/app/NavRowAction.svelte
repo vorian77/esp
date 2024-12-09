@@ -3,8 +3,6 @@
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
 
-	const NAV_COLOR = '#3b79e1'
-
 	export let action: AppRowActionType
 	export let icon: string
 	export let onChange = async (action: AppRowActionType) => {}
@@ -16,5 +14,5 @@
 	on:click={async () => await onChange(action)}
 	on:keyup={async () => await onChange(action)}
 >
-	<Icon props={new IconProps({ name: icon, color: NAV_COLOR, size: 28, strokeWidth: 2 })} />
+	<Icon props={new IconProps({ isNav: true, name: icon, size: 28, strokeWidth: 2 })} />
 </div>

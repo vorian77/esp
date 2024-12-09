@@ -68,7 +68,7 @@ export async function MoedBulkCsf(params: any) {
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
 					}))
 				),
-				codeReferralType: e.sys_core.getCodeSystem(
+				codeServiceFlowType: e.sys_core.getCodeSystem(
 					'sys_moed_old',
 					'ct_cm_service_flow_type',
 					'Walk in'
@@ -78,7 +78,7 @@ export async function MoedBulkCsf(params: any) {
 					'ct_cm_service_flow_status',
 					e.cast(e.str, i[4])
 				),
-				dateReferral: e.cal.to_local_date(e.cast(e.str, i[1])),
+				dateCreated: e.cal.to_local_date(e.cast(e.str, i[1])),
 				dateStart: e.cal.to_local_date(e.cast(e.str, i[2])),
 				dateEnd: e.cal.to_local_date(e.cast(e.str, i[3])),
 				serviceFlow: e.assert_single(

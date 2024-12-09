@@ -3,7 +3,7 @@ import { DataObj, DataObjConfirm, DataObjMode, DataObjSaveMode } from '$utils/ty
 import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 import { memberOfEnum, valueOrDefault } from '$utils/types'
 import { FieldColor } from '$comps/form/field'
-import { FieldEmbed } from '$comps/form/fieldEmbed'
+// import { FieldEmbed } from '$comps/form/fieldEmbed'
 import { RawDataObjActionField } from '$comps/dataObj/types.rawDataObj'
 import { error } from '@sveltejs/kit'
 
@@ -14,7 +14,7 @@ export class DataObjActionField {
 	actionFieldShows: DataObjActionFieldShow[]
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
 	codePacketAction: StatePacketAction
-	fieldEmbed?: FieldEmbed
+	// fieldEmbed?: FieldEmbed
 	fieldColor: FieldColor
 	header: string
 	isDisabled: boolean = false
@@ -57,9 +57,9 @@ export class DataObjActionField {
 				})
 		}
 	}
-	setFieldEmbed(fieldEmbed: FieldEmbed) {
-		this.fieldEmbed = fieldEmbed
-	}
+	// setFieldEmbed(fieldEmbed: FieldEmbed) {
+	// 	this.fieldEmbed = fieldEmbed
+	// }
 	async trigger(state: State, dataObj: DataObj) {
 		const { confirmType, confirm } = this.getConfirm(state, dataObj)
 		state.update({
@@ -69,7 +69,7 @@ export class DataObjActionField {
 				confirmType,
 				token: new TokenAppDo({
 					dataObj,
-					fieldEmbed: this.fieldEmbed,
+					// fieldEmbed: this.fieldEmbed,
 					state
 				})
 			})
@@ -147,7 +147,7 @@ export class DataObjActionFieldTriggerGroup {
 				isTriggered = dataObj.modeActive(DataObjMode.ParentObjectSaved)
 				break
 			case DataObjActionFieldTriggerEnable.rootDataObj:
-				isTriggered = !dataObj.isListEmbed
+				isTriggered = !dataObj.fieldEmbed
 				break
 			case DataObjActionFieldTriggerEnable.saveModeInsert:
 				isTriggered = dataObj.saveMode === DataObjSaveMode.insert

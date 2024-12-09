@@ -9,7 +9,7 @@
 {#if !isHideFilter}
 	<div class="w-full flex mb-6 justify-between">
 		<button
-			class="btn variant-filled-primary mr-4 {listFilterQuick === '' ? 'hidden' : ''}"
+			class="btn variant-soft-primary mr-4 {listFilterQuick === '' ? 'hidden' : ''}"
 			on:click={() => {
 				listFilterQuick = ''
 				setFilterQuick('')
@@ -17,19 +17,25 @@
 		>
 			Reset
 		</button>
+
 		<input
-			class="w-full text-sm"
+			class="w-full text-sm border-neutral-300 rounded-md p-2"
 			type="text"
 			id="search-text-"
 			bind:value={listFilterQuick}
 			on:keyup={() => setFilterQuick(listFilterQuick)}
 			placeholder="Search..."
 		/>
+
 		{#if !!rowCountFiltered}
-			<span class="ml-4 text-sm">Rows: {rowCountFiltered}</span>
+			<span class="ml-4 text-sm text-nav">
+				Rows: <span class="text-black">{rowCountFiltered}</span>
+			</span>
 		{/if}
 		{#if rowCountSelected > -1}
-			<span class="ml-0 text-sm">Selected: {rowCountSelected}</span>
+			<span class="ml-0 text-sm text-nav">
+				Selected: <span class="text-black">{rowCountSelected}</span>
+			</span>
 		{/if}
 	</div>
 {/if}

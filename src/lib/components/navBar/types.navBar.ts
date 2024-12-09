@@ -92,7 +92,6 @@ export class NavBarData {
 				})
 			)
 			this.items.push(itemDefault)
-			// console.log('NavBarData.constructor', this)
 		}
 	}
 
@@ -338,7 +337,7 @@ export class NavBarDataCompItem extends NavBarDataComp {
 		if (this.hasChildren) {
 			if (this.navBar.isOpen) {
 				this.isOpen = !this.isOpen
-				this.navBar.fUpdateNav()
+				this.navBar.fUpdateNav(false)
 			} else {
 				if (!this.isOpen) this.isOpen = !this.isOpen
 				this.navBar.toggleOpen(false)

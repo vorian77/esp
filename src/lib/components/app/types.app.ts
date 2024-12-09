@@ -4,18 +4,14 @@ import {
 	DataObjData,
 	DataRecordStatus,
 	DataRow,
-	debug,
-	nbrRequired,
 	Node,
 	NodeType,
 	ParmsValuesType,
 	ResponseBody,
 	strRequired,
-	UserTypeResourceType,
 	valueOrDefault
 } from '$utils/types'
 import type { DataRecord } from '$utils/types'
-import { RawDataObj } from '$comps/dataObj/types.rawDataObj'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import {
 	TokenApiDbDataObjSource,
@@ -477,7 +473,6 @@ export class AppLevel {
 	tabIdxCurrent: number
 	tabIdxRestoreVal?: number
 	tabs: AppLevelTab[] = []
-	tabSet: number = 0
 	constructor(tabs: AppLevelTab[], isModal: boolean = false) {
 		this.isModal = isModal
 		this.tabIdxCurrent = 0
@@ -488,7 +483,8 @@ export class AppLevel {
 		const label = this.tabs[tabIdx]?.dataObj?.raw?.header || this.tabs[tabIdx].label || 'unknown'
 		if (!label) return ''
 		const labelId = parentLevel ? parentLevel.getCurrTab().listCrumbLabelId() : ''
-		return label + labelId
+		// return label + labelId
+		return labelId ? labelId : label
 	}
 	getCurrTab() {
 		return this.tabs[this.tabIdxCurrent]
@@ -510,7 +506,6 @@ export class AppLevel {
 	}
 	tabIdxSet(newIdx: number, setTabSet: boolean = false) {
 		this.tabIdxCurrent = newIdx
-		if (setTabSet) this.tabSet = newIdx
 	}
 }
 
@@ -608,7 +603,7 @@ export class AppLevelTab {
 				})
 			}
 		}
-		return id ? ` [${id}]` : ''
+		return id ? `[${id}]` : ''
 	}
 
 	listGetDataRow() {

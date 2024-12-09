@@ -79,18 +79,18 @@ export namespace app_cm {
   }
   export interface CmClientServiceFlow extends sys_user.Mgmt {
     "client": CmClient;
-    "codeReferralEndType"?: sys_core.SysCode | null;
-    "codeReferralType"?: sys_core.SysCode | null;
     "codeStatus"?: sys_core.SysCode | null;
     "serviceFlow": CmServiceFlow;
     "user"?: sys_user.SysUser | null;
     "dateEnd"?: edgedb.LocalDate | null;
     "dateEndEst"?: edgedb.LocalDate | null;
-    "dateReferral": edgedb.LocalDate;
     "dateStart"?: edgedb.LocalDate | null;
     "dateStartEst"?: edgedb.LocalDate | null;
     "idxDemo"?: number | null;
     "note"?: string | null;
+    "codeServiceFlowOutcome"?: sys_core.SysCode | null;
+    "codeServiceFlowType"?: sys_core.SysCode | null;
+    "dateCreated": edgedb.LocalDate;
   }
   export interface CmCohort extends sys_core.SysObj {
     "codeStatus"?: sys_core.SysCode | null;

@@ -48,10 +48,21 @@
 		UsersRound
 	} from 'lucide-svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
+	import { type DataRecord, PropSortDir } from '$utils/types'
 
 	/* icons source -  https://lucide.dev/icons/ */
 
 	export let props: IconProps
+	let iconProps: DataRecord
+
+	$: {
+		iconProps = {
+			absoluteStrokeWidth: props.absoluteStrokeWidth,
+			size: props.size,
+			strokeWidth: props.strokeWidth
+		}
+		if (props.color) iconProps.color = props.color
+	}
 
 	$: IconType = {
 		activity: Activity,
@@ -103,15 +114,7 @@
 </script>
 
 {#if props && IconType}
-	<div class="hover:-translate-y-0.5 transition-transform {props.clazz}">
-		<button on:click={props.onClick}>
-			<svelte:component
-				this={IconType}
-				absoluteStrokeWidth={props.absoluteStrokeWidth}
-				color={props.color}
-				size={props.size}
-				strokeWidth={props.strokeWidth}
-			/>
-		</button>
-	</div>
+	<a href="#" class={props.clazz} on:click={props.onClick}>
+		<svelte:component this={IconType} {...iconProps} />
+	</a>
 {/if}

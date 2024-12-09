@@ -1,6 +1,6 @@
 import type { DataRecord } from '$utils/types'
 
-const recordCount = 100
+const recordCount = 0
 
 const dataItemsPart = {
 	addr1: { type: 'list', values: ['123 Main St', '456 Elm St', '789 Oak St'] },
@@ -111,7 +111,7 @@ const recordPart = [
 ]
 
 const dataItemsServiceFlow = {
-	dateReferral: {
+	dateCreated: {
 		type: 'date',
 		dateStart: '2024-10-01',
 		dateEnd: '2024-12-4'
@@ -142,7 +142,7 @@ const dataItemsServiceFlow = {
 		]
 	}
 }
-const recordServiceFlow = ['dateReferral', 'optionalDates', 'codeStatus']
+const recordServiceFlow = ['dateCreated', 'optionalDates', 'codeStatus']
 
 const dataItemsDataDoc = {
 	dateIssued: {

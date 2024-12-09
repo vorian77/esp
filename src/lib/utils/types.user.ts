@@ -32,7 +32,6 @@ export class User {
 	preferences: UserPrefs
 	resources = new UserTypeResourceList()
 	resources_sys_app: any[] = []
-	resources_sys_footer: any[] = []
 	resources_sys_task_default: UserResourceTask[] = []
 	resources_sys_task_setting: UserResourceTask[] = []
 	system: UserResource
@@ -60,7 +59,6 @@ export class User {
 		this.orgIds = obj.orgs.map((o: any) => o.id)
 		this.preferences = new UserPrefs(obj.preferences)
 		this.resources_sys_app = obj.resources_app
-		this.resources_sys_footer = obj.resources_footer
 		this.resources_sys_task_default = arrayOfClass(UserResourceTask, obj.resources_task_default)
 		this.resources_sys_task_setting = arrayOfClass(UserResourceTask, obj.resources_task_setting)
 		this.system = new UserResource(obj.system)
@@ -318,7 +316,6 @@ export enum UserResourceTaskCategory {
 
 export enum UserTypeResourceType {
 	app = 'app',
-	footer = 'footer',
 	report = 'report',
 	subject = 'subject',
 	system = 'system',
