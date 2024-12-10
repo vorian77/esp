@@ -122,15 +122,15 @@
 </div>
 
 {#if validity}
-	<!-- <DataViewer header="validity" data={validity} /> -->
-
-	{#if validity.level == ValidityErrorLevel.error}
-		<div class="text-error-500 mb-3 text-sm">
-			<p>{validity.message}</p>
-		</div>
-	{:else if validity.level == ValidityErrorLevel.warning}
-		<div class="text-warning-500 mb-3 text-sm">
-			<p>{validity.message}</p>
-		</div>
-	{/if}
+	<div class="mb-3 text-sm">
+		{#if validity.level == ValidityErrorLevel.error}
+			<div class="text-error-500">
+				<p>{validity.message}</p>
+			</div>
+		{:else if validity.level == ValidityErrorLevel.warning}
+			<div class="text-warning-500">
+				<p>{validity.message}</p>
+			</div>
+		{/if}
+	</div>
 {/if}

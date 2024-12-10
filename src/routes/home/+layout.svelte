@@ -9,10 +9,10 @@
 	import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import { getDrawerStore, getModalStore, getToastStore } from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
-	import NavDash from '$comps/navDash/NavDash.svelte'
-	import NavBar from '$comps/navBar/NavBar.svelte'
-	import { NavBarData } from '$comps/navBar/types.navBar'
-	import NavBarTop from '$comps/app/NavBarTop.svelte'
+	import NavDash from '$comps/nav/navDash/NavDash.svelte'
+	import NavBar from '$comps/nav/navBar/NavBar.svelte'
+	import { NavBarData } from '$comps/nav/navBar/types.navBar'
+	import NavBarMobile from '$comps/nav/NavBarMobile.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
 	import { page } from '$app/stores'
@@ -31,9 +31,11 @@
 	const storeModal = getModalStore()
 	const storeToast = getToastStore()
 
+	let innerWidth = 0
 	let isNavBarDrawerOpen = false
 	let launchApp = true
 	let navBar: NavBarData
+	let navBarWidth = 0
 	let state: State
 	let statePackets: Array<StatePacket> = []
 	let user: User | undefined
@@ -102,40 +104,47 @@
 			})
 		})
 	}
+
+	// NavBar
+	const getNavBarWidth = () => {
+		return isNavBarDrawerOpen ? `${innerWidth - navBar?.width}px` : '0'
+	}
+
 	const navBarUpdate = (isItemActivate: boolean) => {
 		if (isItemActivate && isNavBarDrawerOpen) toggleNavBarDrawer()
-		navBarDrawerWidth = isNavBarDrawerOpen ? `${navBar?.width}px` : '0'
+		navBarWidth = getNavBarWidth()
 		navBar = navBar
 	}
 
-	let navBarDrawerWidth = 0
 	const toggleNavBarDrawer = () => {
 		isNavBarDrawerOpen = !isNavBarDrawerOpen
-		navBarDrawerWidth = isNavBarDrawerOpen ? `${navBar?.width}px` : '0'
+		navBarWidth = getNavBarWidth()
 	}
 </script>
 
-<div id="layout-screen" class="h-screen flex flex-col bg-white">
+<svelte:window bind:innerWidth />
+
+<div id="layout" class="h-screen flex flex-col bg-white">
+	<header id="layout-nav-bar-mobile" class="md:hidden">
+		<NavBarMobile {state} {goHome} {toggleNavBarDrawer} />
+	</header>
+
 	<div
-		id="nav-menu-mobile"
-		class="h-[calc(100vh-50px)] grow fixed top-12 left-0 md:hidden overflow-hidden z-10 transition-all duration-500"
-		style="width: {navBarDrawerWidth}"
+		id="layout-menu-mobile"
+		class="h-[calc(100vh-54px)] grow fixed top-12 right-0 md:hidden overflow-hidden z-10 transition-all duration-500"
+		style="width: {navBarWidth}"
 		on:click={() => toggleNavBarDrawer()}
 	>
-		<div class="h-full" style="width: {navBarDrawerWidth}" on:click|stopPropagation>
+		<aside class="h-full" style="width: {navBarWidth}" on:click|stopPropagation>
 			<NavBar bind:navBar />
-		</div>
+		</aside>
 	</div>
 
-	<div id="nav-bar-mobile" class="header h-12 mb-0 md:hidden">
-		<NavBarTop appName={user?.org?.appName} {goHome} {toggleNavBarDrawer} />
-	</div>
-
-	<div id="main" class="h-full flex z-0">
-		<div id="nav-menu-desktop" class="hidden md:flex">
+	<div id="layout-main" class="h-12 grow flex flex-row">
+		<div id="layout-main-menu-desktop" class="h-full hidden md:flex">
 			<NavBar bind:navBar />
 		</div>
-		<div id="nav-content" class="content grow mt-2 md:mt-0 md:p-0">
+		<div id="layout-main-content" class="grow md:px-3 pb-3">
 			{#if $page.route.id === '/home'}
 				{#if state?.nodeType === NodeType.home}
 					<NavDash {state} />

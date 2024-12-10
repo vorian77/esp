@@ -3,7 +3,7 @@
 	import DataViewer from '$utils/DataViewer.svelte'
 	import { error } from '@sveltejs/kit'
 
-	const FILENAME = '$comps/navDash/tso_moed_app_doc.svelte'
+	const FILENAME = '$comps/nav/navDash/tso_moed_app_doc.svelte'
 	const classButton = 'rounded-md text-base p-2 text-white text-right'
 	const classData = '-ml-2 text-base text-gray-700'
 

@@ -1,15 +1,15 @@
 <script lang="ts">
-	import NavBarApps from '$comps/navBar/NavBarApps.svelte'
-	import NavBarGroup from '$comps/navBar/NavBarGroup.svelte'
-	import NavBarItem from '$comps/navBar/NavBarItem.svelte'
-	import NavBarOrg from '$comps/navBar/NavBarOrg.svelte'
-	import NavBarUser from '$comps/navBar/NavBarUser.svelte'
-	import NavCopyright from '$comps/navBar/NavCopyright.svelte'
-	import { NavBarData } from '$comps/navBar/types.navBar'
+	import NavBarApps from '$comps/nav/navBar/NavBarApps.svelte'
+	import NavBarGroup from '$comps/nav/navBar/NavBarGroup.svelte'
+	import NavBarItem from '$comps/nav/navBar/NavBarItem.svelte'
+	import NavBarOrg from '$comps/nav/navBar/NavBarOrg.svelte'
+	import NavBarUser from '$comps/nav/navBar/NavBarUser.svelte'
+	import NavCopyright from '$comps/nav/navBar/NavCopyright.svelte'
+	import { NavBarData } from '$comps/nav/navBar/types.navBar'
 	import { tweened } from 'svelte/motion'
 	import { cubicOut } from 'svelte/easing'
 
-	const FILENAME = '/$comps/navBar/NavBar.svelte'
+	const FILENAME = '/$comps/nav/navBar/NavBar.svelte'
 
 	export let navBar: NavBarData
 

@@ -56,6 +56,7 @@
 		cellEditorSelectorParmField,
 		cellRendererSelectorParmField
 	} from '$comps/grid/gridParmField'
+	import { onMount } from 'svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -70,11 +71,17 @@
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
-	let dataHeight = `max-height: calc(100vh - ${400}px);` //  <todo> 240314 - calc specific padding
+	let elContent: HTMLDivElement
+	let elContentTopY: number
 	let gridApi: GridApi
 	let gridOptions: GridManagerOptions
+	let innerHeight: number
 	let isSelect = state instanceof StateSurfaceModalEmbed
 	let scrollToTop = () => {}
+
+	onMount(() => {
+		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
+	})
 
 	$: load(dataObjData)
 
@@ -427,8 +434,17 @@
 	}
 </script>
 
-{#if gridOptions}
-	{#key gridOptions}
-		<Grid bind:api={gridApi} options={gridOptions} />
-	{/key}
-{/if}
+<svelte:window bind:innerHeight />
+
+<div
+	id="form-list"
+	class="h-full max-h-full"
+	style={`max-height: ${innerHeight - elContentTopY - 0}px;`}
+	bind:this={elContent}
+>
+	{#if gridOptions}
+		{#key gridOptions}
+			<Grid bind:api={gridApi} options={gridOptions} />
+		{/key}
+	{/if}
+</div>

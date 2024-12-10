@@ -8,7 +8,7 @@
 	import SysWigReport from '$comps/widgets/WidgetReport.svelte'
 	import SysWigReportMoed from '$comps/widgets/WizardReportMoed.svelte'
 
-	const FILENAME = '$comps/app/NavPageHome.svelte'
+	const FILENAME = '$comps/nav/NavPageHome.svelte'
 
 	export let state: State
 

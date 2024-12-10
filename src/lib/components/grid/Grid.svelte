@@ -73,17 +73,17 @@
 	export let options: GridManagerOptions
 
 	let eGui: HTMLDivElement
-	let innerHeight = window.innterHeight
+	let innerHeight = window.innerHeight
 	let isSuppressFilterSort: boolean
 	let rowCountFiltered: number
 	let rowCountSelected: number
 	let rowData: any[]
-	let style = `.ag-header-cell-text {
-		color: blue;
-	}`
+	// let style = `.ag-header-cell-text {
+	// 	color: blue;
+	// }`
 	let styleMaxHeight = ''
 
-	$: if (innerHeight) resize()
+	// $: if (innerHeight) resize()
 
 	onMount(() => {
 		// set options
@@ -117,7 +117,7 @@
 					buttons: ['reset']
 				},
 				sortable: !isSuppressFilterSort,
-				wrapHeaderText: true
+				wrapHeaderText: false
 			},
 			getRowId: (params: GetRowIdParams) => params.data[options.idColumn] || 'id',
 			onCellClicked: options.onCellClicked,
@@ -377,20 +377,15 @@
 </script>
 
 <svelte:window bind:innerHeight />
-<GridFilter
-	isHideFilter={isSuppressFilterSort}
-	listFilterQuick={options.userSettings.getPref(ParmsUserDataType.listFilterQuick)}
-	{rowCountFiltered}
-	{rowCountSelected}
-	setFilterQuick={settingsFilterQuickSet}
-/>
-<div bind:this={eGui} style:max-height={styleMaxHeight} {style} class="ag-theme-quartz h-full" />
 
-<!-- <DataViewer header="rowCount" data={{ rowCountFiltered, rowCountSelected }} /> -->
-<!-- <DataViewer header="columnDefs" data={options.columnDefs} /> -->
-<!-- <DataViewer header="rowData" data={rowData} /> -->
-<style>
-	.ag-header-cell-label {
-		text-align: center;
-	}
-</style>
+<div id="grid" class="h-full flex flex-col md:p-4 md:border-2 rounded-md">
+	<GridFilter
+		isHideFilter={isSuppressFilterSort}
+		listFilterQuick={options.userSettings.getPref(ParmsUserDataType.listFilterQuick)}
+		{rowCountFiltered}
+		{rowCountSelected}
+		setFilterQuick={settingsFilterQuickSet}
+	/>
+
+	<div bind:this={eGui} style="height: 100%; width:100%;" class="grow max-h-full ag-theme-quartz" />
+</div>

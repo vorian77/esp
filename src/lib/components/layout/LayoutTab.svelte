@@ -1,12 +1,10 @@
 <script lang="ts">
-	import { AppLevel } from '$comps/app/types.app'
-	import { State } from '$comps/app/types.appState'
-	import { StatePacket, StatePacketAction } from '$comps/app/types.appState'
+	import { AppLevel, AppLevelRowStatus } from '$comps/app/types.app'
+	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
 	import { TokenAppDoActionConfirmType, TokenAppTab } from '$utils/types.token'
-	import { DataObj, DataObjData } from '$utils/types'
-	import { DataRecordStatus } from '$utils/types'
-	import { TabGroup, Tab } from '@skeletonlabs/skeleton'
+	import { DataObj, DataObjData, DataRecordStatus } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
+	import NavRow from '$comps/nav/NavRow.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/layout/LayoutTab.svelte'
@@ -17,8 +15,7 @@
 	export let dataObjData: DataObjData
 
 	let currLevel: AppLevel | undefined
-
-	let classContent = state.app.isMobileMode ? '-mt-4' : 'mt-4'
+	let rowStatus: AppLevelRowStatus | undefined
 
 	$: currLevel = state.app.getCurrLevel()
 	$: isHideChildTabs =
@@ -26,6 +23,7 @@
 		(dataObjData.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset) ||
 			state.objStatus.changed() ||
 			!state.objStatus.valid())
+	$: if (state) rowStatus = state?.app.getRowStatus()
 
 	async function onClick(index: number) {
 		state.update({
@@ -46,44 +44,45 @@
 <!-- <DataViewer header="isHideChildTabs" data={isHideChildTabs} /> -->
 
 {#if currLevel}
-	{#if currLevel.tabs.length > 1}
-		<div class="p-2 bg-neutral-50 border-2 border-gray-300 rounded-md hidden md:block">
-			{#each currLevel.tabs as tab, idx}
-				{@const name = 'tab' + idx}
-				{@const isCurrent = idx === currLevel.tabIdxCurrent}
-				{@const hidden = isHideChildTabs && !isCurrent}
-				{@const label = tab?.label || tab?.dataObj?.raw.header}
-				{@const classItem = isCurrent ? classItemCurrent : classItemNotCurrent}
+	<div id="layout-tab" class="h-full max-h-full flex flex-col">
+		{#if currLevel.tabs.length > 1}
+			<div class="p-3 bg-neutral-50 hidden md:block rounded-md mb-4">
+				{#each currLevel.tabs as tab, idx}
+					{@const name = 'tab' + idx}
+					{@const isCurrent = idx === currLevel.tabIdxCurrent}
+					{@const hidden = isHideChildTabs && !isCurrent}
+					{@const label = tab?.label || tab?.dataObj?.raw.header}
+					{@const classItem = isCurrent ? classItemCurrent : classItemNotCurrent}
 
-				<a href="#" {name} {hidden} class={classItem} on:click={() => onClick(idx)}>
-					{label}
-				</a>
-			{/each}
-		</div>
-		<div class="md:hidden">
-			Select a tab
-			<div class="grid grid-cols-1">
-				<select
-					aria-label="Select a tab"
-					class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-					name="select-tabs"
-					id="select-tabs"
-					on:change={(event) => onClick(Number(event.currentTarget.value))}
-				>
-					{#each currLevel.tabs as tab, idx}
-						{@const label = tab?.label || tab?.dataObj?.raw.header}
-						<option value={idx} selected={idx === currLevel?.tabIdxCurrent}>
-							{label}
-						</option>
-					{/each}
-				</select>
+					<a href="#" {name} {hidden} class={classItem} on:click={() => onClick(idx)}>
+						{label}
+					</a>
+				{/each}
 			</div>
-		</div>
-	{/if}
 
-	{#if dataObj && dataObjData}
-		<div class={classContent}>
+			<div class="md:hidden flex items-center justify-between gap-4 px-2 mb-4">
+				<div class="grow">
+					<select
+						aria-label="Select a tab"
+						class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-sm text-nav outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2"
+						name="select-tabs"
+						id="select-tabs"
+						on:change={(event) => onClick(Number(event.currentTarget.value))}
+					>
+						{#each currLevel.tabs as tab, idx}
+							{@const label = tab?.label || tab?.dataObj?.raw.header}
+							<option value={idx} selected={idx === currLevel?.tabIdxCurrent}>
+								{label}
+							</option>
+						{/each}
+					</select>
+				</div>
+				<NavRow {state} {rowStatus} />
+			</div>
+		{/if}
+
+		{#if dataObj && dataObjData}
 			<LayoutContent bind:state {component} {dataObj} {dataObjData} on:formCancelled />
-		</div>
-	{/if}
+		{/if}
+	</div>
 {/if}

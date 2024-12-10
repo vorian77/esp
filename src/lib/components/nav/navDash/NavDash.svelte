@@ -12,12 +12,12 @@
 		UserResourceTask,
 		UserResourceTaskCategory
 	} from '$utils/types'
-	import TsoMoedApp from '$comps/navDash/tso_moed_app.svelte'
-	import TsoMoedAppDoc from '$comps/navDash/tso_moed_app_doc.svelte'
+	import TsoMoedApp from '$comps/nav/navDash/tso_moed_app.svelte'
+	import TsoMoedAppDoc from '$comps/nav/navDash/tso_moed_app_doc.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import { error } from '@sveltejs/kit'
 
-	const FILENAME = '$comps/navDash/NavDash.svelte'
+	const FILENAME = '$comps/nav/navDash/NavDash.svelte'
 
 	export let state: State
 

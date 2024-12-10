@@ -4,20 +4,26 @@
 	import { Field, FieldAccess } from '$comps/form/field'
 	import { FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 	import FormElement from '$comps/form/FormElement.svelte'
+	import { onMount } from 'svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormDetail.svelte'
 	const FORM_NAME = ''
 	const SUBMIT_BUTTON_NAME = 'SUBMIT_BUTTON_NAME'
 
-	let dataHeightPadding = '350' //  <todo> 240314 - calc specific padding
-	let dataHeight = `max-height: calc(100vh - ${dataHeightPadding}px);`
-	let tagGroupSections: TagGroupSection[]
-
 	export let state: State
 	export let component: string
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
+
+	let elContent: HTMLDivElement
+	let elContentTopY: number
+	let innerHeight: number
+	let tagGroupSections: TagGroupSection[]
+
+	onMount(() => {
+		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
+	})
 
 	$: (async () => await load(dataObjData))()
 
@@ -98,13 +104,22 @@
 	}
 </script>
 
-<!-- <DataViewer header="FormDetail.state.objStatus" data={state.objStatus} /> -->
 <!-- <DataViewer header="tagGroupSection" data={tagGroupSection} /> -->
 
-{#if state.app.isMobileMode}
-	<div class="flex flex-col mt-10 gap-y-4">
+<svelte:window bind:innerHeight />
+
+<form
+	id={'form_' + dataObj.raw.name}
+	class="h-full max-h-full overflow-y-auto md:p-4 md:border-2 rounded-md"
+	style={`max-height: ${innerHeight - elContentTopY - 30}px;`}
+	bind:this={elContent}
+>
+	<div class="md:hidden max-h-full">
 		{#each dataObj.fields as field, fieldIdx}
-			{@const display = field.fieldAccess !== FieldAccess.hidden}
+			{@const display =
+				!field.colDO.colDB.isNonData &&
+				field.colDO.isDisplayable &&
+				field.fieldAccess !== FieldAccess.hidden}
 			{#if display}
 				<FormElement
 					bind:state
@@ -117,35 +132,34 @@
 			{/if}
 		{/each}
 	</div>
-{:else if tagGroupSections}
-	<div id="root" class="overflow-y-scroll" style={dataHeight}>
-		<form id={'form_' + dataObj.raw.name} on:submit|preventDefault>
-			{#each tagGroupSections as section}
-				<fieldset
-					class={section.isVisible ? 'p-4 border-1 mb-4' : 'p-0 border-0'}
-					style:border-color={section.isVisible ? section.color : 'transparent'}
-				>
-					{#if section.legend}
-						<legend class="text-lg font-bold">{section.legend}</legend>
-					{/if}
-					{#each section.rows as row}
-						<div class={row.isRow ? 'w-full flex gap-x-4' : ''}>
-							{#each row.indexes as fieldIdx}
-								<div class="grow">
-									<FormElement
-										bind:state
-										{component}
-										{dataObj}
-										{dataObjData}
-										field={dataObj.fields[fieldIdx]}
-										row={0}
-									/>
-								</div>
-							{/each}
-						</div>
-					{/each}
-				</fieldset>
-			{/each}
-		</form>
+
+	<div class="hidden md:block">
+		{#each tagGroupSections as section}
+			<fieldset
+				class={section.isVisible ? 'p-4 border-1 mb-4' : 'p-0 border-0'}
+				style:border-color={section.isVisible ? section.color : 'transparent'}
+			>
+				{#if section.legend}
+					<legend class="text-lg font-bold">{section.legend}</legend>
+				{/if}
+
+				{#each section.rows as row}
+					<div class={row.isRow ? 'w-full flex flex-row gap-x-4' : ''}>
+						{#each row.indexes as fieldIdx}
+							<div class="grow">
+								<FormElement
+									bind:state
+									{component}
+									{dataObj}
+									{dataObjData}
+									field={dataObj.fields[fieldIdx]}
+									row={0}
+								/>
+							</div>
+						{/each}
+					</div>
+				{/each}
+			</fieldset>
+		{/each}
 	</div>
-{/if}
+</form>

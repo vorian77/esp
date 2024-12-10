@@ -4,7 +4,7 @@
 		NavBarDataCompAppsItem,
 		NavBarDataCompItem,
 		NavBarContentType
-	} from '$comps/navBar/types.navBar'
+	} from '$comps/nav/navBar/types.navBar'
 	import { fade } from 'svelte/transition'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
@@ -21,9 +21,7 @@
 	{@const classMB = showToggle ? 'mb-1' : 'mb-3'}
 
 	{#if showItem}
-		<li
-			class="{classIndent} {classMB} border-0 border-yellow-400 hover:-translate-y-0.5 transition-transform"
-		>
+		<li class="{classIndent} {classMB}  hover:-translate-y-0.5 transition-transform">
 			<a
 				href="#"
 				class="flex {item.navBar.isOpen ? 'w-full' : 'content-center'} "

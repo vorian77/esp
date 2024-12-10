@@ -79,7 +79,7 @@
 					</div>
 				</li>
 			{:else}
-				<li id="li-crumb-default" class="hidden md:flex">
+				<li id="li-crumb-default">
 					<div class="flex items-center">
 						<svg
 							class="h-full w-6 shrink-0 text-gray-200"

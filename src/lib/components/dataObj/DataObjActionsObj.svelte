@@ -28,8 +28,6 @@
 
 	let actions: DataObjActionField[]
 	let isEditing: boolean = false
-	let marginTop = ''
-	let padding = ''
 	let objStatus: DataObjStatus
 
 	$: {
@@ -51,11 +49,6 @@
 				state.objStatus.changed() &&
 				!dataObj.fieldEmbed
 		)
-		marginTop = state.app.isMobileMode ? 'mt-6' : ''
-		padding =
-			dataObj.actionsField.filter((a) => a.isShow).length > 0 && !state.app.isMobileMode
-				? 'ml-4'
-				: ''
 	}
 
 	let isTriggeredEnable = function (action: DataObjActionField) {
@@ -76,14 +69,16 @@
 	}
 </script>
 
-<div class="flex flex-col {marginTop} {padding}">
+<hr class="my-4 md:hidden" />
+
+<div class="flex flex-row gap-2 justify-end md:flex-col md:justify-start md:px-3">
 	{#if isEditing}
 		<div>
 			<p class="text-blue-600 mb-4">Editing...</p>
 		</div>
 	{/if}
 	{#each actions as action (action.name)}
-		<div class="mb-4" animate:flip={{ duration: animationDurationMs }}>
+		<div class="">
 			<button
 				class="w-full btn text-sm text-white"
 				style:background-color={action.fieldColor.color}

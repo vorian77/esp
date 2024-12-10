@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { NavBarData, NavBarInfo } from '$comps/navBar/types.navBar'
+	import { NavBarData, NavBarInfo } from '$comps/nav/navBar/types.navBar'
 	import { fade } from 'svelte/transition'
 
 	export let navBar: NavBarData

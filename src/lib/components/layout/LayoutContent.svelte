@@ -2,7 +2,7 @@
 	import { AppLevelRowStatus } from '$comps/app/types.app'
 	import { State, StateSurfaceModal } from '$comps/app/types.appState'
 	import { valueOrDefault, type DataObj, type DataObjData, ParmsValuesType } from '$utils/types'
-	import NavRow from '$comps/app/NavRow.svelte'
+	import NavRow from '$comps/nav/NavRow.svelte'
 	import ContentFormDetailApp from '$comps/form/ContentFormDetailApp.svelte'
 	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
 	import ContentFormListApp from '$comps/form/ContentFormListApp.svelte'
@@ -26,8 +26,6 @@
 	export let dataObj: DataObj
 	export let dataObjData: DataObjData
 
-	let classComponent = state.app.isMobileMode ? 'grow' : 'grow border-2 p-4'
-	let classContent = state.app.isMobileMode ? '' : 'flex flex-row'
 	let classHeader = ''
 	let currComponent: any
 	let headerObj: string = ''
@@ -68,49 +66,24 @@
 </script>
 
 {#if currComponent}
-	<div class={classHeader}>
-		<div>
-			<div>
-				{#if headerObj}
-					<div class="mb-4">
-						<div class="flex justify-between items-start">
-							<h2 class="h2">{headerObj}</h2>
-							<div class="mr-0">
-								<NavRow {state} {rowStatus} />
-							</div>
-							{#if isDrawerClose}
-								<button
-									type="button"
-									class="btn-icon btn-icon-sm variant-filled-error"
-									on:click={cancel}>X</button
-								>
-							{/if}
-						</div>
-						{#if headerObjSub}
-							<h4 class="mt-1 h4 text-gray-500">{headerObjSub}</h4>
-						{/if}
-					</div>
-				{/if}
-			</div>
-
-			<div class={classContent}>
-				<div class={classComponent}>
-					<svelte:component
-						this={currComponent}
-						{component}
-						bind:state
-						{dataObj}
-						{dataObjData}
-						on:formCancelled
-					/>
-				</div>
-				{#if dataObj && dataObjData}
-					<div>
-						<DataObjActionsObj {state} {dataObj} on:formCancelled />
-					</div>
-				{/if}
-			</div>
+	<div
+		id="layout-content"
+		class="h-full max-h-full flex flex-col md:flex-row border-2 p-4 rounded-md"
+	>
+		<div class="grow">
+			<svelte:component
+				this={currComponent}
+				{component}
+				bind:state
+				{dataObj}
+				{dataObjData}
+				on:formCancelled
+			/>
 		</div>
+
+		{#if dataObj && dataObjData}
+			<DataObjActionsObj {state} {dataObj} on:formCancelled />
+		{/if}
 	</div>
 {/if}
 

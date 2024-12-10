@@ -7,7 +7,7 @@
 </script>
 
 {#if !isHideFilter}
-	<div class="w-full flex mb-6 justify-between">
+	<div class="w-full flex mb-4 justify-between">
 		<button
 			class="btn variant-soft-primary mr-4 {listFilterQuick === '' ? 'hidden' : ''}"
 			on:click={() => {
@@ -19,7 +19,7 @@
 		</button>
 
 		<input
-			class="w-full text-sm border-neutral-300 rounded-md p-2"
+			class="w-full text-sm border-neutral-300 rounded-md p-4"
 			type="text"
 			id="search-text-"
 			bind:value={listFilterQuick}

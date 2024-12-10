@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { NavBarDataCompApps, NavBarDataCompItem } from '$comps/navBar/types.navBar'
-	import NavBarGroup from '$comps/navBar/NavBarGroup.svelte'
-	import NavBarItem from '$comps/navBar/NavBarItem.svelte'
-	import NavBarHeader from '$comps/navBar/NavBarHeader.svelte'
+	import { NavBarDataCompApps, NavBarDataCompItem } from '$comps/nav/navBar/types.navBar'
+	import NavBarGroup from '$comps/nav/navBar/NavBarGroup.svelte'
+	import NavBarItem from '$comps/nav/navBar/NavBarItem.svelte'
+	import NavBarHeader from '$comps/nav/navBar/NavBarHeader.svelte'
 	import { fade } from 'svelte/transition'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '/$comps/app/navBar/NavBarApps.svelte'
+	const FILENAME = '/$comps/nav/navBar/NavBarApps.svelte'
 
 	export let data: NavBarDataCompApps[]
 </script>

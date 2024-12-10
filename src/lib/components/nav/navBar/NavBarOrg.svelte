@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { NavBarDataCompOrg } from '$comps/navBar/types.navBar'
+	import { NavBarDataCompOrg } from '$comps/nav/navBar/types.navBar'
 	import { User } from '$utils/types'
 	import { Avatar } from '@skeletonlabs/skeleton'
 	import { fade } from 'svelte/transition'

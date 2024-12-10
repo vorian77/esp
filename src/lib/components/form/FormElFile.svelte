@@ -131,7 +131,7 @@
 			{#if fieldValue.fileType === TokenApiBlobType.image}
 				<img
 					alt={field.colDO.label}
-					class="mx-auto p-2"
+					class="mx-auto p-4"
 					hidden={!showImg}
 					on:click|preventDefault={elInput.click()}
 					src={urlCurrent}
