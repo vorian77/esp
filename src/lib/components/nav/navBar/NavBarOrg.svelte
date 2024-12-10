@@ -30,7 +30,7 @@
 			</div>
 
 			<div class="flex-none w-6 text-end border-0 border-blue-700">
-				<a href="#" on:click={data.navBar.toggleOpen()}>
+				<button on:click={data.navBar.toggleOpen()}>
 					<div class={data.navBar.isOpen ? '' : 'rotate-180'}>
 						<Icon
 							props={new IconProps({
@@ -42,7 +42,7 @@
 							})}
 						/>
 					</div>
-				</a>
+				</button>
 			</div>
 		{/if}
 	</div>

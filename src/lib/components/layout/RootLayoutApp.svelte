@@ -8,6 +8,7 @@
 		StateSurfaceModal,
 		StatePacket,
 		StatePacketAction,
+		StateProps,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState'
 	import {
@@ -58,6 +59,7 @@
 	let dataObj: DataObj | undefined
 	let dataObjData: DataObjData | undefined
 	let parentTab: AppLevelTab | undefined
+	let stateProps: StateProps | undefined
 
 	const componentsLayout: Record<string, any> = {
 		layoutApp: LayoutApp,
@@ -360,6 +362,13 @@
 			dataObjData = currTab.data
 			state.resetState()
 			state.setFClosureSetStatus(() => (state = state.setStatus()))
+
+			stateProps = new StateProps({
+				dataObj,
+				dataObjData,
+				state,
+				fClosureSetStatus: () => (state = state.setStatus())
+			})
 		}
 	}
 </script>

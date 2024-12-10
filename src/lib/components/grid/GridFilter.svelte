@@ -9,7 +9,7 @@
 {#if !isHideFilter}
 	<div class="w-full flex mb-4 justify-between">
 		<button
-			class="btn variant-soft-primary mr-4 {listFilterQuick === '' ? 'hidden' : ''}"
+			class="btn btn-action variant-soft-primary mr-4 {listFilterQuick === '' ? 'hidden' : ''}"
 			on:click={() => {
 				listFilterQuick = ''
 				setFilterQuick('')

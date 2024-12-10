@@ -20,7 +20,7 @@
 </script>
 
 <button
-	class="w-full btn text-white"
+	class="w-full btn btn-action text-white"
 	style:background-color={field.colDO.fieldColor.color}
 	{disabled}
 	on:click={async () => await action()}

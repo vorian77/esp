@@ -78,11 +78,11 @@
 		</div>
 		<div class="self-center my-4">
 			{#if uploaded}
-				<button class="btn variant-soft-secondary" on:click={() => setDocModal(id)}
+				<button class="btn btn-action variant-soft-secondary" on:click={() => setDocModal(id)}
 					>Update...</button
 				>
 			{:else}
-				<button class="btn variant-filled-secondary" on:click={() => setDocModal(id)}
+				<button class="btn btn-action variant-filled-secondary" on:click={() => setDocModal(id)}
 					>Upload...</button
 				>
 			{/if}

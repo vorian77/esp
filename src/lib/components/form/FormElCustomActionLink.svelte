@@ -19,6 +19,6 @@
 	}
 </script>
 
-<button class="btn w-full text-sm" on:click={async () => await action()}>
+<button class="btn btn-action w-full text-sm" on:click={async () => await action()}>
 	<p>{prefix}<span class="text-blue-500">{field.colDO.label}</span></p>
 </button>

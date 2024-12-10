@@ -35,17 +35,17 @@
 	<div id="lead">
 		<div class="grid items-end">
 			<div class="flex items-center">
-				<a href="#" class="mr-4" on:click={back}>
+				<button class="mr-4" on:click={back}>
 					<Icon
 						props={new IconProps({
 							name: 'ArrowLeft',
-							clazz: '-mt-0.5',
+							clazz: 'mt-1',
 							isNav: true,
 							size: 20,
 							strokeWidth: 2
 						})}
 					/>
-				</a>
+				</button>
 				<div class="hidden md:block">
 					<NavCrumbs {state} {crumbsList} />
 				</div>

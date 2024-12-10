@@ -53,12 +53,12 @@
 
 	{#if !legalDisclosure}
 		<div class="flex gap-3">
-			<button class="btn variant-filled-primary w-1/2" on:click={accept}>Accept</button>
-			<button class="btn variant-filled-error w-1/2" on:click={decline}>Decline</button>
+			<button class="btn btn-action variant-filled-primary w-1/2" on:click={accept}>Accept</button>
+			<button class="btn btn-action variant-filled-error w-1/2" on:click={decline}>Decline</button>
 		</div>
 	{:else}
 		<div class="flex gap-3">
-			<button class="btn variant-filled-primary w-full" on:click={goBack}>Ok</button>
+			<button class="btn btn-action variant-filled-primary w-full" on:click={goBack}>Ok</button>
 		</div>
 	{/if}
 </div>

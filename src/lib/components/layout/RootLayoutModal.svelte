@@ -88,7 +88,7 @@
 				<div class="pb-4 mr-2">
 					<button
 						disabled={action.isDisabled}
-						class="w-full btn text-white"
+						class="w-full btn btn-action text-white"
 						style:background-color={action.fieldColor.color}
 						on:click={async () => await onFooterActionClick(action)}
 					>

@@ -114,9 +114,9 @@
 </script>
 
 {#if props && IconType}
-	<div class={props.clazz}>
-		<a href="#" on:click={props.onClick}>
+	<div class="hover:bg-gray-200 hover:rounded-full {props.clazz}">
+		<button on:click={props.onClick}>
 			<svelte:component this={IconType} {...iconProps} />
-		</a>
+		</button>
 	</div>
 {/if}

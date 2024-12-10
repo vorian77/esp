@@ -131,7 +131,7 @@
 
 	<div
 		id="layout-menu-mobile"
-		class="h-[calc(100vh-54px)] grow fixed top-12 right-0 md:hidden overflow-hidden z-10 transition-all duration-500"
+		class="h-[calc(100vh-54px)] grow fixed top-12 left-0 md:hidden overflow-hidden z-10 transition-all duration-500"
 		style="width: {navBarWidth}"
 		on:click={() => toggleNavBarDrawer()}
 	>

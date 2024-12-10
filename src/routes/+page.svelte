@@ -28,7 +28,7 @@
 		<div class="flex gap-4">
 			<button
 				type="button"
-				class="btn variant-filled-primary w-full"
+				class="btn btn-action variant-filled-primary w-full"
 				on:click={async () =>
 					await state.openDrawerDataObj(
 						'auth',
@@ -44,7 +44,7 @@
 
 			<button
 				type="button"
-				class="btn variant-filled-primary w-full"
+				class="btn btn-action variant-filled-primary w-full"
 				on:click={async () =>
 					await state.openDrawerDataObj(
 						'auth',
@@ -59,7 +59,11 @@
 			</button>
 
 			{#if DEV_MODE}
-				<button type="button" class="btn variant-filled-secondary w-full" on:click={expressLogin}>
+				<button
+					type="button"
+					class="btn btn-action variant-filled-secondary w-full"
+					on:click={expressLogin}
+				>
 					Dev Login
 				</button>
 			{/if}

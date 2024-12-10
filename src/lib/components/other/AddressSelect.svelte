@@ -31,9 +31,9 @@
 
 		<div class="mt-2">
 			{#if v.ent_id == currentSite}
-				<button class="btn variant-filled-primary w-full">Selected</button>
+				<button class="btn btn-action variant-filled-primary w-full">Selected</button>
 			{:else}
-				<button class="btn variant-filled-secondary w-full" on:click={() => onSelect(v.ent_id)}
+				<button class="btn btn-action variant-filled-secondary w-full" on:click={() => onSelect(v.ent_id)}
 					>Select {v.rec_id}</button
 				>
 			{/if}
