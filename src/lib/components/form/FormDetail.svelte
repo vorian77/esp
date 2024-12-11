@@ -12,25 +12,24 @@
 	const SUBMIT_BUTTON_NAME = 'SUBMIT_BUTTON_NAME'
 
 	export let state: State
-	export let component: string
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
 
 	let elContent: HTMLDivElement
 	let elContentTopY: number
 	let innerHeight: number
 	let tagGroupSections: TagGroupSection[]
 
+	state.props?.fClosureSetVal(0, state.props.dataObj.fields[2], 'John')
+
 	onMount(() => {
 		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
 	})
 
-	$: (async () => await load(dataObjData))()
+	$: (async () => await load(state.props.dataObjData))()
 
 	async function load(data: DataObjData) {
 		if (!state.app.isMobileMode) loadTags()
-		dataObj.objData = data
-		state.setDataObjState(dataObj)
+		state.props.dataObj.objData = data
+		state.setDataObjState(state.props.dataObj)
 		state.setStatus()
 		state = state
 	}
@@ -41,7 +40,7 @@
 		let isOpenRow = false
 		let isOpenSection = false
 
-		dataObj.fields.forEach((field, idx) => {
+		state.props.dataObj.fields.forEach((field, idx) => {
 			if (!isOpenSection) {
 				idxSection = tagGroupSections.push(new TagGroupSection(false)) - 1
 				isOpenSection = true
@@ -104,31 +103,25 @@
 	}
 </script>
 
-<!-- <DataViewer header="tagGroupSection" data={tagGroupSection} /> -->
-
 <svelte:window bind:innerHeight />
 
+<DataViewer header="dataFieldsChanged" data={state.props?.dataObj?.dataFieldsChanged} />
+<DataViewer header="objStatus" data={state.objStatus} />
+
 <form
-	id={'form_' + dataObj.raw.name}
+	id={'form_' + state.props.dataObj.raw.name}
 	class="h-full max-h-full overflow-y-auto md:p-4 md:border-2 rounded-md"
 	style={`max-height: ${innerHeight - elContentTopY - 30}px;`}
 	bind:this={elContent}
 >
 	<div class="md:hidden max-h-full">
-		{#each dataObj.fields as field, fieldIdx}
+		{#each state.props.dataObj.fields as field, fieldIdx}
 			{@const display =
 				!field.colDO.colDB.isNonData &&
 				field.colDO.isDisplayable &&
 				field.fieldAccess !== FieldAccess.hidden}
 			{#if display}
-				<FormElement
-					bind:state
-					{component}
-					{dataObj}
-					{dataObjData}
-					field={dataObj.fields[fieldIdx]}
-					row={0}
-				/>
+				<FormElement bind:state field={state.props.dataObj.fields[fieldIdx]} row={0} />
 			{/if}
 		{/each}
 	</div>
@@ -147,14 +140,7 @@
 					<div class={row.isRow ? 'w-full flex flex-row gap-x-4' : ''}>
 						{#each row.indexes as fieldIdx}
 							<div class="grow">
-								<FormElement
-									bind:state
-									{component}
-									{dataObj}
-									{dataObjData}
-									field={dataObj.fields[fieldIdx]}
-									row={0}
-								/>
+								<FormElement bind:state field={state.props.dataObj.fields[fieldIdx]} row={0} />
 							</div>
 						{/each}
 					</div>

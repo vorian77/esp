@@ -22,9 +22,6 @@
 	}
 
 	export let state: State
-	export let component: string
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
 
 	let classHeader = ''
 	let currComponent: any
@@ -33,7 +30,8 @@
 	let isDrawerClose: boolean = false
 	let rowStatus: AppLevelRowStatus | undefined
 
-	$: currComponent = comps[component]
+	$: currComponent = comps[state?.props?.component]
+	$: dataObj = state.props?.dataObj
 
 	$: {
 		// header parms
@@ -71,18 +69,11 @@
 		class="h-full max-h-full flex flex-col md:flex-row border-2 p-4 rounded-md"
 	>
 		<div class="grow">
-			<svelte:component
-				this={currComponent}
-				{component}
-				bind:state
-				{dataObj}
-				{dataObjData}
-				on:formCancelled
-			/>
+			<svelte:component this={currComponent} bind:state on:formCancelled />
 		</div>
 
-		{#if dataObj && dataObjData}
-			<DataObjActionsObj {state} {dataObj} on:formCancelled />
+		{#if dataObj && state?.props?.dataObjData}
+			<DataObjActionsObj {state} on:formCancelled />
 		{/if}
 	</div>
 {/if}

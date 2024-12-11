@@ -24,12 +24,12 @@
 	const animationDurationMs = 500
 
 	export let state: State
-	export let dataObj: DataObj
 
 	let actions: DataObjActionField[]
 	let isEditing: boolean = false
 	let objStatus: DataObjStatus
 
+	$: dataObj = state.props?.dataObj
 	$: {
 		objStatus = state.objStatus
 		load()

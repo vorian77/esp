@@ -46,7 +46,6 @@ export class State {
 	app: App = new App()
 	data?: DataObj
 	dataObjState?: DataObj
-	fClosureSetStatus?: Function
 	fUpdateCallback?: Function
 	fUpdateFunction: Function = stateUpdate
 	layoutComponent: StateLayoutComponent = StateLayoutComponent.layoutContent
@@ -57,6 +56,7 @@ export class State {
 	page = '/home'
 	parmsState: ParmsValues = new ParmsValues()
 	parmsUser: ParmsUser = new ParmsUser()
+	props?: StateProps
 	storeDrawer: any
 	storeModal: any
 	storeToast: any
@@ -347,10 +347,12 @@ export class State {
 		}
 		this.storeToast.trigger(t)
 	}
-	resetState() {
+	resetState(obj: any) {
 		this.objStatus.reset()
 		if (this.dataObjState) this.dataObjState.modeReset()
+		this.props = new StateProps(obj)
 	}
+
 	async resetUser(loadHome: boolean) {
 		if (this.user) {
 			this.user = await userInit(this.user.id)
@@ -371,9 +373,6 @@ export class State {
 		this.dataObjState = dataObj
 	}
 
-	setFClosureSetStatus(f: Function) {
-		this.fClosureSetStatus = f ? f : () => {}
-	}
 	setFUpdateCallback(f: Function) {
 		this.fUpdateCallback = f
 	}
@@ -498,26 +497,29 @@ export enum StatePacketAction {
 export class StateProps {
 	changedData: StatPropsData[] = []
 	changedElements: FieldElement[] = []
+	component?: string
 	dataObj?: DataObj
 	dataObjData?: DataObjData
-	state: State
+	fClosureSetStatus: Function
+	fClosureSetVal: Function
 	constructor(obj: any) {
 		const clazz = 'StateProps'
 		obj = valueOrDefault(obj, {})
+		this.component = obj.component
 		this.dataObj = obj.dataObj
 		this.dataObjData = obj.dataObjData
-		this.state = required(obj.state, clazz, 'state')
+		this.fClosureSetStatus = required(obj.fClosureSetStatus, clazz, 'fClosureSetStatus')
+		this.fClosureSetVal = required(obj.fClosureSetVal, clazz, 'fClosureSetVal')
 
 		// derived
+		if (this.component) this.changedData.push(StatPropsData.component)
 		if (this.dataObj) this.changedData.push(StatPropsData.dataObj)
 		if (this.dataObjData) this.changedData.push(StatPropsData.dataObjData)
-		this.state.resetState()
-		this.state.setFClosureSetStatus(obj.fClosureSetStatus)
-		console.log('StateProps', this)
 	}
 }
 
 export enum StatPropsData {
+	component = 'component',
 	dataObj = 'dataObj',
 	dataObjData = 'dataObjData'
 }
@@ -628,7 +630,7 @@ async function askB4Transition(
 ) {
 	if (state instanceof StateSurfaceModal) {
 		if (confirm(confirmConfig.message)) {
-			state.resetState()
+			state.resetState(state.props)
 			fUpdateFunction(state, obj, fUpdateCallback)
 		}
 	} else {
@@ -640,7 +642,7 @@ async function askB4Transition(
 			buttonTextConfirm: confirmConfig.buttonLabelConfirm,
 			response: async (r: boolean) => {
 				if (r) {
-					state.resetState()
+					state.resetState(state.props)
 					fUpdateFunction(state, obj, fUpdateCallback)
 				}
 			}

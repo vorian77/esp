@@ -24,15 +24,15 @@
 		field = field
 	}
 
-	$: dataObj = fp.dataObj
-	$: field = fp.field as FieldInput
+	let field = fp.field as FieldInput
 	$: if (field.fieldElement === FieldElement.textHide) {
 		setHidTextIcon()
 	}
 
-	$: classPropsInput = dataObj.raw.codeCarfSetVal = DataObjCardinality.detail
-		? 'input text-sm text-black ' + field.colorBackground
-		: 'w-full border-none bg-transparent text-black'
+	$: classPropsInput =
+		fp.state.props.dataObj.raw.codeCardinality === DataObjCardinality.detail
+			? 'input text-sm text-black ' + field.colorBackground
+			: 'w-full border-none bg-transparent text-black'
 	$: classPropsInput +=
 		field.fieldAlignment === FieldAlignment.left
 			? ' text-left'
@@ -50,7 +50,7 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		fp.fSetVal(fp.row, fp.field, target.value)
+		fp.state.props?.fClosureSetVal(fp.row, fp.field, target.value)
 	}
 
 	function onDoubleClick(event: MouseEvent) {
@@ -62,7 +62,7 @@
 			const month = dateMonth < 10 ? '0' + dateMonth : dateMonth.toString()
 			const day = dateDay < 10 ? '0' + dateDay : dateDay.toString()
 			const value = year + '-' + month + '-' + day
-			fp.fSetVal(fp.row, fp.field, value)
+			fp.state.props?.fClosureSetVal(fp.row, fp.field, value)
 		}
 	}
 </script>
@@ -81,7 +81,8 @@
 		on:change={onChange}
 		on:dblclick={onDoubleClick}
 		on:keyup={onChange}
-		placeholder={dataObj.raw.codeCardinality === DataObjCardinality.detail || dataObj.raw.isListEdit
+		placeholder={fp.state.props.dataObj.raw.codeCardinality === DataObjCardinality.detail ||
+		fp.state.props.dataObj.raw.isListEdit
 			? field.placeHolder
 			: ''}
 		readonly={field.fieldAccess === FieldAccess.readonly}

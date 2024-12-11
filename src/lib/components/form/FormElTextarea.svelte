@@ -13,7 +13,7 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		fp.fSetVal(fp.row, fp.field, target.value)
+		fp.state.props?.fClosureSetVal(fp.row, fp.field, target.value)
 	}
 </script>
 

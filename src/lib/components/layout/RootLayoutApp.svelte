@@ -345,12 +345,27 @@
 		})
 	}
 
+	const closureSetStatus = () => {
+		state = state.setStatus()
+		// console.log('closureSetStatus.objStatus', state.objStatus)
+	}
+	const closureSetVal = (row: number, field: Field, value: any) => {
+		state.props.dataObj = state.props.dataObj.setFieldVal(row, field, value)
+		console.log('closureSetVal.dataFieldsChanged', state.props.dataObj.dataFieldsChanged)
+	}
+
 	function updateObjectsContent(componentName: string) {
-		state.resetState()
 		state.app = state.app
 		componentContentName = componentName
 		dataObj = undefined
 		dataObjData = undefined
+		state.resetState({
+			component: componentContentName,
+			dataObj,
+			dataObjData,
+			fClosureSetStatus: closureSetStatus,
+			fClosureSetVal: closureSetVal
+		})
 	}
 
 	function updateObjectsForm() {
@@ -360,14 +375,12 @@
 			dataObj = currTab.dataObj
 			componentContentName = dataObj.raw.codeComponent
 			dataObjData = currTab.data
-			state.resetState()
-			state.setFClosureSetStatus(() => (state = state.setStatus()))
-
-			stateProps = new StateProps({
+			state.resetState({
+				component: componentContentName,
 				dataObj,
 				dataObjData,
-				state,
-				fClosureSetStatus: () => (state = state.setStatus())
+				fClosureSetStatus: closureSetStatus,
+				fClosureSetVal: closureSetVal
 			})
 		}
 	}
@@ -375,14 +388,7 @@
 
 {#if currLayout && componentContentName}
 	<div class="h-full max-h-full">
-		<svelte:component
-			this={currLayout}
-			bind:state
-			component={componentContentName}
-			{dataObj}
-			{dataObjData}
-			on:formCancelled
-		/>
+		<svelte:component this={currLayout} bind:state on:formCancelled />
 	</div>
 {/if}
 

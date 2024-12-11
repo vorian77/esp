@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { State } from '$comps/app/types.appState'
-	import { DataObj, DataObjData, DataObjSort, ParmsValuesType } from '$utils/types'
+	import { ParmsValuesType } from '$utils/types'
 	import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 	import Grid from '$comps/grid/Grid.svelte'
 	import { getSelectedNodeIds, GridManagerOptions } from '$comps/grid/grid'
@@ -9,9 +9,6 @@
 	const FILENAME = '$comps/selectMulti/GridSelect.svelte'
 
 	export let state: State
-	export let component: string
-	export let dataObj: DataObj | undefined = undefined
-	export let dataObjData: DataObjData | undefined = undefined
 
 	let gridApi: GridApi
 	let gridOptions: GridManagerOptions

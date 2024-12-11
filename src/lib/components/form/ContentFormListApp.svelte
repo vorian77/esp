@@ -6,9 +6,6 @@
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	export let state: State
-	export let component: string
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
 
 	const scrollToTop: any = getContext('scrollToTop')
 
@@ -17,4 +14,4 @@
 
 <!-- <DataViewer header="state" data={state} /> -->
 
-<FormList bind:state {component} {dataObj} {dataObjData} on:formCancelled on:rowClick />
+<FormList bind:state on:formCancelled on:rowClick />

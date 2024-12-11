@@ -8,7 +8,7 @@
 
 	export let fp: FieldProps
 
-	$: dataObj = fp.dataObj
+	$: dataObj = fp.state.props.dataObj
 	$: field = fp.field as FieldToggle
 	$: fieldValue = fp.fieldValue
 
@@ -41,7 +41,7 @@
 	$: {
 		if (fieldValue === undefined || fieldValue === null) {
 			fieldValue = field.presetTrue ? selections[0][0] : selections[1][0]
-			fp.fSetVal(fp.row, fp.field, fieldValue)
+			fp.state.props?.fClosureSetVal(fp.row, fp.field, fieldValue)
 		}
 		setToggle(fieldValue)
 	}
@@ -52,7 +52,7 @@
 		})
 		const newValue = selections[(idx + 1) % 2][0]
 		setToggle(newValue)
-		fp.fSetVal(fp.row, fp.field, newValue)
+		fp.state.props?.fClosureSetVal(fp.row, fp.field, newValue)
 	}
 
 	function setToggle(value: any) {
@@ -61,6 +61,7 @@
 	}
 </script>
 
+{dataObj.raw.codeCardinality}
 <div class={classPropsLabel}>
 	<legend>{field.colDO.label}</legend>
 </div>

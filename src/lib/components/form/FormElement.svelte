@@ -51,15 +51,12 @@
 	const FILENAME = '$comps/form/FormDetailElement.svelte'
 
 	export let state: State
-	export let component: string
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
 	export let field: Field
 	export let row: number
 
 	let classProps =
 		!state.app.isMobileMode &&
-		dataObj.raw.codeCardinality === DataObjCardinality.detail &&
+		state.props.dataObj.raw.codeCardinality === DataObjCardinality.detail &&
 		field.colDO.isDisplayable
 			? 'mb-4'
 			: ''
@@ -86,10 +83,10 @@
 
 	let fieldValue: any
 
-	$: dataRecord = dataObj.dataRecordsDisplay[row]
-	$: field = dataObj.getField(field, row)
+	$: dataRecord = state.props.dataObj.dataRecordsDisplay[row]
+	$: field = state.props.dataObj.getField(field, row)
 	$: fieldValue = dataRecord[field.colDO.propName]
-	$: validity = dataObj.dataFieldsValidity.valueGet(dataRecord.id, field.colDO.propName)
+	$: validity = state.props.dataObj.dataFieldsValidity.valueGet(dataRecord.id, field.colDO.propName)
 	$: {
 		const fieldClass = field.constructor.name
 		if (typeof fieldClass === 'string' && fieldClass !== '') {
@@ -98,21 +95,12 @@
 	}
 
 	$: fp = new FieldProps({
-		component,
-		dataObj,
-		dataObjData,
 		dataRecord,
 		field,
 		fieldValue,
-		fSetVal: closureSetVal,
 		row,
 		state
 	})
-
-	function closureSetVal(row: number, field: Field, value: any) {
-		dataObj = dataObj.setFieldVal(row, field, value)
-		fp.state.fClosureSetStatus() // <todo> - 241121 - this causes screen to flicker - should be fixed with Svelte 5 state management
-	}
 </script>
 
 <div class={classProps}>

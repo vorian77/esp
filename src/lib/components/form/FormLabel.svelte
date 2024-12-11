@@ -12,7 +12,7 @@
 <label for={fp.field.colDO.propName}>
 	<div
 		class={classProps}
-		hidden={fp.dataObj.raw.codeCardinality === DataObjCardinality.list ? 'hidden' : ''}
+		hidden={fp.state.props.dataObj.raw.codeCardinality === DataObjCardinality.list ? 'hidden' : ''}
 	>
 		{fp.field.colDO.label}
 		{#if fp?.field?.iconProps}

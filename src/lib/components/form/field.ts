@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState'
+import { State, StateProps } from '$comps/app/types.appState'
 import {
 	booleanRequired,
 	classOptional,
@@ -264,13 +264,9 @@ export enum FieldParmType {
 }
 
 export class FieldProps {
-	component: string
-	dataObj: DataObj
-	dataObjData: DataObjData
 	dataRecord: DataRecord
 	field: Field
 	fieldValue: any
-	fSetVal: Function
 	iconProps?: IconProps
 	isLabelBold: boolean = false
 	row: number
@@ -278,15 +274,11 @@ export class FieldProps {
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'FieldProps'
-		this.component = strRequired(obj.component, clazz, 'component')
-		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
-		this.dataObjData = required(obj.dataObjData, clazz, 'dataObjData')
 		this.dataRecord = required(obj.dataRecord, clazz, 'dataRecord')
 		this.field = required(obj.field, clazz, 'field')
 		this.fieldValue = obj.fieldValue
 		this.iconProps = obj.iconProps
 		this.row = required(obj.row, clazz, 'row')
-		this.fSetVal = required(obj.fSetVal, clazz, 'fSetVal')
 		this.state = required(obj.state, clazz, 'state')
 	}
 

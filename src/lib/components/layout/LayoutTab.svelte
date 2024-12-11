@@ -2,7 +2,7 @@
 	import { AppLevel, AppLevelRowStatus } from '$comps/app/types.app'
 	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
 	import { TokenAppDoActionConfirmType, TokenAppTab } from '$utils/types.token'
-	import { DataObj, DataObjData, DataRecordStatus } from '$utils/types'
+	import { DataRecordStatus } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import NavRow from '$comps/nav/NavRow.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -10,17 +10,14 @@
 	const FILENAME = '$comps/layout/LayoutTab.svelte'
 
 	export let state: State
-	export let component: string
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
 
 	let currLevel: AppLevel | undefined
 	let rowStatus: AppLevelRowStatus | undefined
 
 	$: currLevel = state.app.getCurrLevel()
 	$: isHideChildTabs =
-		dataObjData.rowsRetrieved.hasRecord() &&
-		(dataObjData.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset) ||
+		state?.props?.dataObjData.rowsRetrieved.hasRecord() &&
+		(state?.props?.dataObjData.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset) ||
 			state.objStatus.changed() ||
 			!state.objStatus.valid())
 	$: if (state) rowStatus = state?.app.getRowStatus()
@@ -81,8 +78,8 @@
 			</div>
 		{/if}
 
-		{#if dataObj && dataObjData}
-			<LayoutContent bind:state {component} {dataObj} {dataObjData} on:formCancelled />
+		{#if state?.props?.dataObj && state?.props?.dataObjData}
+			<LayoutContent bind:state on:formCancelled />
 		{/if}
 	</div>
 {/if}

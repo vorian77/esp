@@ -86,7 +86,7 @@
 
 		if (urlOld) {
 			mode = Mode.delete
-			fp.fSetVal(
+			fp.state.props?.fClosureSetVal(
 				fp.row,
 				field,
 				new TokenApiFileParmDelete({
@@ -103,7 +103,7 @@
 		if (files.length > 0) {
 			mode = Mode.upload
 			fieldValue = undefined
-			fp.fSetVal(
+			fp.state.props?.fClosureSetVal(
 				fp.row,
 				field,
 				new TokenApiBlobParmUpload({

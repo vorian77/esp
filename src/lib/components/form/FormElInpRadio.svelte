@@ -7,7 +7,7 @@
 
 	export let fp: FieldProps
 
-	$: dataObj = fp.dataObj
+	$: dataObj = fp.state.props.dataObj
 	$: field = fp.field as FieldRadio
 	$: fieldValue = fp.fieldValue
 	$: dataItems = field.linkItemsSource
@@ -38,7 +38,7 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		fp.fSetVal(fp.row, fp.field, target.value)
+		fp.state.props?.fClosureSetVal(fp.row, fp.field, target.value)
 	}
 </script>
 

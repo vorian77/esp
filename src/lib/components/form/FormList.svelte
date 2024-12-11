@@ -67,9 +67,6 @@
 	const FILENAME = '$comps/form/FormList.svelte'
 
 	export let state: State
-	export let component: string
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
 
 	let elContent: HTMLDivElement
 	let elContentTopY: number
@@ -83,8 +80,9 @@
 		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
 	})
 
+	$: dataObj = state.props?.dataObj
+	$: dataObjData = state.props?.dataObjData
 	$: load(dataObjData)
-
 	$: if (state && state.packet) {
 		let packet
 
@@ -171,9 +169,9 @@
 		if (row > -1 && field) {
 			dataObj = dataObj.setFieldVal(row, field, data[fieldName])
 			if (state instanceof StateSurfaceEmbedShell) {
-				state.stateRoot.fClosureSetStatus()
+				state.props.fClosureSetStatus()
 			} else {
-				state.fClosureSetStatus()
+				state.props.fClosureSetStatus()
 			}
 		} else {
 			error(500, {

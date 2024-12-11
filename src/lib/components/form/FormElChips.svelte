@@ -36,7 +36,7 @@
 	let rowData: DataRecord[]
 	let sortModel: DataObjSort[]
 
-	$: dataObj = fp.dataObj
+	$: dataObj = fp.state.props.dataObj
 
 	$: {
 		field = fp.field as FieldCheckbox
@@ -80,7 +80,11 @@
 			if (returnType === TokenAppModalReturnType.complete) {
 				if (returnData.data) {
 					const parms = new ParmsValues(returnData.data)
-					fp.fSetVal(fp.row, fp.field, parms.valueGet(ParmsValuesType.listIdsSelected))
+					fp.state.props?.fClosureSetVal(
+						fp.row,
+						fp.field,
+						parms.valueGet(ParmsValuesType.listIdsSelected)
+					)
 				}
 			}
 		}

@@ -8,7 +8,7 @@
 
 	export let fp: FieldProps
 
-	$: dataObj = fp.dataObj
+	$: dataObj = fp.state.props.dataObj
 	$: field = fp.field as FieldSelect
 	$: fieldId = 'field-input-select-' + field.colDO.orderDefine
 	$: fieldValue = fp.fieldValue
@@ -25,7 +25,7 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		fp.fSetVal(fp.row, fp.field, target.value)
+		fp.state.props?.fClosureSetVal(fp.row, fp.field, target.value)
 	}
 </script>
 
