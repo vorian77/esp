@@ -152,18 +152,21 @@
 		{/if}
 
 		<div class="flex mt-2">
-			<button class="btn variant-filled-primary {chooseBtnWidth}" on:click={elInput.click()}>
+			<button
+				class="btn btn-action variant-filled-primary {chooseBtnWidth}"
+				on:click={elInput.click()}
+			>
 				{labelSelect}
 			</button>
 
 			{#if urlCurrent}
-				<button class="btn variant-filled-error ml-2 w-1/4" on:click={onDelete}>
+				<button class="btn btn-action variant-filled-error ml-2 w-1/4" on:click={onDelete}>
 					{labelDelete}
 				</button>
 			{/if}
 
 			{#if mode === Mode.storage}
-				<button class="btn variant-filled-primary ml-2 w-1/4" on:click={onDownload}>
+				<button class="btn btn-action variant-filled-primary ml-2 w-1/4" on:click={onDownload}>
 					Download
 				</button>
 			{/if}

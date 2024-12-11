@@ -73,17 +73,11 @@
 	export let options: GridManagerOptions
 
 	let eGui: HTMLDivElement
-	let innerHeight = window.innerHeight
 	let isSuppressFilterSort: boolean
 	let rowCountFiltered: number
 	let rowCountSelected: number
 	let rowData: any[]
-	// let style = `.ag-header-cell-text {
-	// 	color: blue;
-	// }`
 	let styleMaxHeight = ''
-
-	// $: if (innerHeight) resize()
 
 	onMount(() => {
 		// set options
@@ -104,9 +98,6 @@
 		styleMaxHeight = isSuppressFilterSort ? '100%' : 'calc(100% - 70px)'
 
 		const gridOptions = {
-			autoSizeStrategy: {
-				type: 'fitCellContents'
-			},
 			columnDefs: options.columnDefs,
 			columnTypes,
 			dataTypeDefinitions,
@@ -165,6 +156,17 @@
 			options.userSettings.getPref(ParmsUserDataType.listSortModel) || options.sortModel
 
 		api = createGrid(eGui, gridOptions)
+
+		// update column sizing strategy
+		let columnsWidth = 0
+		api.getAllGridColumns().forEach((columnTypes) => {
+			columnsWidth += columnTypes.visible ? columnTypes.actualWidth : 0
+		})
+		if (columnsWidth > 1.25 * eGui.offsetWidth) {
+			api.setGridOption('autoSizeStrategy', {
+				type: 'fitCellContents'
+			})
+		}
 
 		if (options.isSelect) {
 			const selectedIds = options.parmStateSelectedIds
@@ -290,27 +292,6 @@
 		updateCounters()
 	}
 
-	function resize() {
-		const rowCount = api.getDisplayedRowCount()
-		const { headerHeight, rowHeight } = api.getSizesForCurrentTheme()
-		const rowsMin = 3
-		let rowsMax: number
-		let rowsDisplay: number
-
-		if (options.isEmbed) {
-			rowsMax = 8
-			rowsDisplay = rowCount < rowsMin ? rowsMin : rowCount > rowsMax ? rowsMax : rowCount
-		} else {
-			const vh = innerHeight
-			const gridY = eGui.getBoundingClientRect().y
-			const footerH = 100
-			rowsMax = Math.floor(((vh - gridY - footerH) * 0.85) / rowHeight)
-			rowsDisplay = rowCount < rowsMin ? rowsMin : rowCount > rowsMax ? rowsMax : rowCount
-		}
-		const height = headerHeight + rowsDisplay * rowHeight + 9
-		eGui.style.setProperty('height', `${height}px`)
-	}
-
 	function setGridColumnsProp(
 		columns: Record<number | string, any>[],
 		field: string,
@@ -372,11 +353,8 @@
 	function updateCounters() {
 		rowCountFiltered = api.getDisplayedRowCount()
 		if (options.isSelect) rowCountSelected = api.getSelectedNodes().length
-		resize()
 	}
 </script>
-
-<svelte:window bind:innerHeight />
 
 <div id="grid" class="h-full flex flex-col md:p-4 md:border-2 rounded-md">
 	<GridFilter

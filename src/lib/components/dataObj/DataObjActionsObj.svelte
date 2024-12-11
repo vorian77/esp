@@ -80,7 +80,7 @@
 	{#each actions as action (action.name)}
 		<div class="">
 			<button
-				class="w-full btn text-sm text-white"
+				class="w-full btn btn-action text-sm text-white"
 				style:background-color={action.fieldColor.color}
 				disabled={action.isDisabled}
 				on:click={() => onClick(action)}
@@ -92,4 +92,4 @@
 </div>
 
 <!-- <DataViewer header="stateType" data={state.tempStateType} /> -->
-<!-- class="btn w-full text-white bg-{action.codeColor}" -->
+<!-- class="btn btn-action w-full text-white bg-{action.codeColor}" -->

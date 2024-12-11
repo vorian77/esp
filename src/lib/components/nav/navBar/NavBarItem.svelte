@@ -21,7 +21,7 @@
 	{@const classMB = showToggle ? 'mb-1' : 'mb-3'}
 
 	{#if showItem}
-		<li class="{classIndent} {classMB}  hover:-translate-y-0.5 transition-transform">
+		<li class="{classIndent} {classMB}  ">
 			<a
 				href="#"
 				class="flex {item.navBar.isOpen ? 'w-full' : 'content-center'} "
@@ -42,7 +42,11 @@
 				</div>
 
 				{#if item.navBar.isOpen && showItem}
-					<div class="grow text-left {showIcon ? 'ml-1' : ''} border-0 border-cyan-400">
+					<div
+						class="grow text-left {showIcon
+							? 'ml-1'
+							: ''} hover:-translate-y-0.5 transition-transform"
+					>
 						<span in:fade={item.navBar.fadeIn} out:fade={item.navBar.fadeOut}>
 							{item.label.text}
 						</span>

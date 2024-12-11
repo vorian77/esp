@@ -28,17 +28,17 @@
 
 <nav class="h-12 flex flex-row justify-between bg-white border-b p-3 mb-2">
 	<div class={state?.nodeType === NodeType.home ? 'hidden' : ''}>
-		<a href="#" class="mr-4" on:click={back}>
+		<button class="mr-4" on:click={back}>
 			<Icon
 				props={new IconProps({
 					name: 'ArrowLeft',
-					clazz: '-mt-0.5',
+					clazz: 'mt-0.5',
 					isNav: true,
 					size: 20,
 					strokeWidth: 2
 				})}
 			/>
-		</a>
+		</button>
 	</div>
 
 	<p class="mr-3 text-black" on:click={goHome}>

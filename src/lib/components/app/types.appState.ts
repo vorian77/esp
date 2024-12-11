@@ -4,6 +4,7 @@ import {
 	DataObj,
 	DataObjCardinality,
 	DataObjConfirm,
+	DataObjData,
 	DataObjEmbedType,
 	DataObjStatus,
 	type DataRecord,
@@ -30,6 +31,7 @@ import {
 	TokenAppModalReturnType,
 	TokenAppModalSelect
 } from '$utils/types.token'
+import { FieldElement } from '$comps/form/field'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { RawDataObjActionField, RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
@@ -370,7 +372,7 @@ export class State {
 	}
 
 	setFClosureSetStatus(f: Function) {
-		this.fClosureSetStatus = f
+		this.fClosureSetStatus = f ? f : () => {}
 	}
 	setFUpdateCallback(f: Function) {
 		this.fUpdateCallback = f
@@ -491,6 +493,33 @@ export enum StatePacketAction {
 	navTab = 'navTab',
 	openNode = 'openNode',
 	none = 'none'
+}
+
+export class StateProps {
+	changedData: StatPropsData[] = []
+	changedElements: FieldElement[] = []
+	dataObj?: DataObj
+	dataObjData?: DataObjData
+	state: State
+	constructor(obj: any) {
+		const clazz = 'StateProps'
+		obj = valueOrDefault(obj, {})
+		this.dataObj = obj.dataObj
+		this.dataObjData = obj.dataObjData
+		this.state = required(obj.state, clazz, 'state')
+
+		// derived
+		if (this.dataObj) this.changedData.push(StatPropsData.dataObj)
+		if (this.dataObjData) this.changedData.push(StatPropsData.dataObjData)
+		this.state.resetState()
+		this.state.setFClosureSetStatus(obj.fClosureSetStatus)
+		console.log('StateProps', this)
+	}
+}
+
+export enum StatPropsData {
+	dataObj = 'dataObj',
+	dataObjData = 'dataObjData'
 }
 
 export class StateSurfaceEmbed extends State {

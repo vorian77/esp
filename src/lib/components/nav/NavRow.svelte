@@ -29,7 +29,7 @@
 {#if rowStatus && rowStatus.show && !isHideRowManager}
 	<span style:cursor="pointer">
 		<div
-			class="flex flex-row p-2 h-[46px] justify-start items-center border-2 bg-white rounded-md md:rounded-none"
+			class="flex flex-row p-2 h-[46px] items-center border-2 bg-white rounded-md md:rounded-none"
 		>
 			<div class="flex flex-row">
 				<div class={rowStatus.rowCurrentDisplay === 1 ? 'invisible' : ''}>
@@ -39,7 +39,7 @@
 					<NavRowAction action={AppRowActionType.left} icon={'ChevronLeft'} {onChange} />
 				</div>
 			</div>
-			<div class="-mt-0.5 text-sm font-medium text-nav">
+			<div class="-mt-1.5 text-sm font-medium text-nav">
 				{rowStatus.status}
 			</div>
 			<div class="flex flex-row">

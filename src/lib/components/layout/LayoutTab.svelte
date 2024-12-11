@@ -36,9 +36,9 @@
 	}
 
 	const classItemCurrent =
-		'inline-flex items-center rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-900'
+		'inline-flex items-center rounded-md bg-gray-200 px-4 py-2 text-sm font-normal text-gray-900'
 	const classItemNotCurrent =
-		'inline-flex items-center rounded-md px-4 py-2 text-sm font-normal text-gray-900 hover:bg-gray-200 hover:text-gray-900'
+		'inline-flex items-center rounded-md px-4 py-2 text-sm font-normal text-gray-900 hover:bg-gray-200'
 </script>
 
 <!-- <DataViewer header="isHideChildTabs" data={isHideChildTabs} /> -->
@@ -54,9 +54,9 @@
 					{@const label = tab?.label || tab?.dataObj?.raw.header}
 					{@const classItem = isCurrent ? classItemCurrent : classItemNotCurrent}
 
-					<a href="#" {name} {hidden} class={classItem} on:click={() => onClick(idx)}>
+					<button {name} {hidden} class={classItem} on:click={() => onClick(idx)}>
 						{label}
-					</a>
+					</button>
 				{/each}
 			</div>
 

@@ -28,8 +28,10 @@
 	</div>
 {/each}
 
-<button type="button" class="btn variant-filled-primary w-full mt-2" on:click={onFormSubmitted}
-	>Build Form Definition</button
+<button
+	type="button"
+	class="btn btn-action variant-filled-primary w-full mt-2"
+	on:click={onFormSubmitted}>Build Form Definition</button
 >
 
 <textarea id="formDefn" name="formDefn" rows="10" cols="50" class="mt-8">
