@@ -18,8 +18,6 @@
 	let innerHeight: number
 	let tagGroupSections: TagGroupSection[]
 
-	state.props?.fClosureSetVal(0, state.props.dataObj.fields[2], 'John')
-
 	onMount(() => {
 		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
 	})
