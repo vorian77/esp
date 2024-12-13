@@ -4,15 +4,15 @@
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
 
-	export let fp: FieldProps
+	let { fp }: FieldProps = $props()
 
-	$: classProps = `label flex text-sm ${fp.isLabelBold ? 'font-bold mt-2' : ''} `
+	let classProps = $derived(`label flex text-sm ${fp.isLabelBold ? 'font-bold mt-2' : ''} `)
 </script>
 
 <label for={fp.field.colDO.propName}>
 	<div
 		class={classProps}
-		hidden={fp.state.props.dataObj.raw.codeCardinality === DataObjCardinality.list ? 'hidden' : ''}
+		hidden={fp.stateProps.dataObj.raw.codeCardinality === DataObjCardinality.list ? 'hidden' : ''}
 	>
 		{fp.field.colDO.label}
 		{#if fp?.field?.iconProps}

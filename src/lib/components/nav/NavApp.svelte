@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
+	import {
+		State,
+		StatePacket,
+		StatePacketAction,
+		StateProps,
+		StateTarget
+	} from '$comps/app/types.appState.svelte'
 	import { TokenAppDoActionConfirmType } from '$utils/types.token'
 	import { AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app'
 	import Icon from '$comps/icon/Icon.svelte'
@@ -8,22 +14,20 @@
 	import NavRow from '$comps/nav/NavRow.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let state: State
+	let { stateProps = $bindable() }: StateProps = $props()
 
 	const FILENAME = '$comps/nav/NavApp.svelte'
 
-	let crumbsList: Array<AppLevelCrumb> = []
-	let rowStatus: AppLevelRowStatus | undefined
-
-	$: crumbsList = state.app.getCrumbsList()
-	$: rowStatus = state.app.getRowStatus()
+	let crumbsList = $derived(stateProps.state.app.getCrumbsList()) as AppLevelCrumb[]
+	let rowStatus = $derived(stateProps.state.app.getRowStatus()) as AppLevelRowStatus
 
 	function back() {
-		state.update({
+		stateProps.change({
+			confirmType: TokenAppDoActionConfirmType.objectChanged,
 			packet: new StatePacket({
-				action: StatePacketAction.navBack,
-				confirmType: TokenAppDoActionConfirmType.objectChanged
-			})
+				action: StatePacketAction.navBack
+			}),
+			target: StateTarget.feature
 		})
 	}
 </script>
@@ -47,11 +51,11 @@
 					/>
 				</button>
 				<div class="hidden md:block">
-					<NavCrumbs {state} {crumbsList} />
+					<NavCrumbs bind:stateProps {crumbsList} />
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<NavRow {state} {rowStatus} />
+	<NavRow bind:stateProps {rowStatus} />
 </div>

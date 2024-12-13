@@ -9,8 +9,9 @@
 		StatePacket,
 		StatePacketAction,
 		StateProps,
-		StateSurfaceEmbedShell
-	} from '$comps/app/types.appState'
+		StateSurfaceEmbedShell,
+		StateTarget
+	} from '$comps/app/types.appState.svelte'
 	import {
 		TokenApiDbDataObjSource,
 		TokenApiId,
@@ -45,21 +46,27 @@
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import { migrate } from '$utils/utils.processMigrate'
 	import action from '$enhance/actions/actionAuth'
+	import { getContext, setContext } from 'svelte'
+	import { ContextKey } from '$utils/utils.sys.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/dataObj/DataObj.svelte'
 
-	export let state: State
+	let stateApp = getContext(ContextKey.stateApp) as State
+	let currLayout = $derived(componentsLayout[stateApp.layoutComponent])
+	$effect(() => {
+		const packet = stateApp.consume(actionsPacket)
+		if (packet) process(packet)
+	})
 
 	let componentContentName: string | undefined
-	let currLayout: any
 	let currLevel: AppLevel | undefined
 	let currTab: AppLevelTab | undefined
 	let dataObj: DataObj | undefined
 	let dataObjData: DataObjData | undefined
 	let parentTab: AppLevelTab | undefined
-	let stateProps: StateProps | undefined
+	let stateProps: StateProps = $state()
 
 	const componentsLayout: Record<string, any> = {
 		layoutApp: LayoutApp,
@@ -96,32 +103,24 @@
 		StatePacketAction.modalSelectOpen
 	]
 
-	$: if (state && state.packet) {
-		currLayout = componentsLayout[state.layoutComponent]
-		const packet = state.consume(actionsPacket)
-		if (packet) {
-			;(async () => await process(packet))()
-		}
-	}
-
 	async function process(packet: StatePacket) {
 		const token: TokenApp = packet.token
 		let resetModes = true
 
 		switch (packet.action) {
 			case StatePacketAction.doDetailDelete:
-				await state.app.saveDetail(state, packet.action, token)
+				await stateApp.app.saveDetail(stateApp, packet.action, token)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doDetailMigrate:
-				await migrate(state, token.dataObj)
+				await migrate(stateApp, token.dataObj)
 				break
 
 			case StatePacketAction.doDetailNew:
-				parentTab = state.app.getCurrTabParentTab()
+				parentTab = stateApp.app.getCurrTabParentTab()
 				if (parentTab) parentTab.data?.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
-				await query(state, state.app.getCurrTab(), TokenApiQueryType.preset)
+				await query(stateApp, stateApp.app.getCurrTab(), TokenApiQueryType.preset)
 				updateObjectsForm()
 				break
 
@@ -130,30 +129,30 @@
 				break
 
 			case StatePacketAction.doDetailSave:
-				if (await state.app.saveDetail(state, packet.action, token)) {
+				if (await stateApp.app.saveDetail(stateApp, packet.action, token)) {
 					updateObjectsForm()
 				}
 				break
 
 			case StatePacketAction.doDetailSaveAs:
-				await state.app.tabDuplicate(state, token)
+				await stateApp.app.tabDuplicate(stateApp, token)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doDetailSaveCancel:
-				currLevel = state.app.getCurrLevel()
+				currLevel = stateApp.app.getCurrLevel()
 				if (currLevel) {
 					currTab = currLevel.getCurrTab()
 					if (currTab && currTab.dataObj) {
 						const status = currTab?.data?.rowsRetrieved?.getDetailRowStatus()
 						switch (status) {
 							case DataRecordStatus.preset:
-								await query(state, currTab, TokenApiQueryType.preset)
+								await query(stateApp, currTab, TokenApiQueryType.preset)
 								updateObjectsForm()
 								break
 							case DataRecordStatus.retrieved:
 							case DataRecordStatus.update:
-								await query(state, currTab, TokenApiQueryType.retrieve)
+								await query(stateApp, currTab, TokenApiQueryType.retrieve)
 								updateObjectsForm()
 								break
 							default:
@@ -168,7 +167,7 @@
 				break
 
 			case StatePacketAction.doEmbedListConfigEdit:
-				await state.openModalEmbedListConfig(
+				await stateApp.openModalEmbedListConfig(
 					token,
 					TokenApiQueryType.retrieve,
 					fModalCloseUpdateEmbedListConfig
@@ -176,7 +175,7 @@
 				break
 
 			case StatePacketAction.doEmbedListConfigNew:
-				await state.openModalEmbedListConfig(
+				await stateApp.openModalEmbedListConfig(
 					token,
 					TokenApiQueryType.preset,
 					fModalCloseUpdateEmbedListConfig
@@ -184,38 +183,38 @@
 				break
 
 			case StatePacketAction.doEmbedListSelect:
-				currLevel = state.app.getCurrLevel()
+				currLevel = stateApp.app.getCurrLevel()
 				if (currLevel) {
 					currTab = currLevel.getCurrTab()
-					currTab.data = state.dataObjState?.objData
+					currTab.data = stateApp.dataObjState?.objData
 				}
-				await state.openModalEmbedListSelect(token, fModalCloseUpdateEmbedListSelect)
+				await stateApp.openModalEmbedListSelect(token, fModalCloseUpdateEmbedListSelect)
 				break
 
 			case StatePacketAction.doListDetailEdit:
-				await state.app.addLevelNodeChildren(state, token, TokenApiQueryType.retrieve)
+				await stateApp.app.addLevelNodeChildren(stateApp, token, TokenApiQueryType.retrieve)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doListDetailNew:
-				await state.app.addLevelNodeChildren(state, token, TokenApiQueryType.preset)
+				await stateApp.app.addLevelNodeChildren(stateApp, token, TokenApiQueryType.preset)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doListSelfRefresh:
-				await query(state, state.app.getCurrTab(), TokenApiQueryType.retrieve)
+				await query(stateApp, stateApp.app.getCurrTab(), TokenApiQueryType.retrieve)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doListSelfSave:
-				const rtn = await state.app.saveList(state, token)
+				const rtn = await stateApp.app.saveList(stateApp, token)
 				updateObjectsForm()
 				resetModes = false
 				break
 
 			case StatePacketAction.embedField:
 				if (token instanceof TokenApiQuery) {
-					await state.app.addLevelEmbedField(state, token)
+					await stateApp.app.addLevelEmbedField(stateApp, token)
 					updateObjectsForm()
 					resetModes = false
 				}
@@ -225,20 +224,20 @@
 				break
 
 			case StatePacketAction.modalDataObj:
-				await state.app.addLevelModalDataObj(state)
+				await stateApp.app.addLevelModalDataObj(stateApp)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.modalEmbed:
-				await state.app.addLevelModalEmbedField(state, token)
+				await stateApp.app.addLevelModalEmbedField(stateApp, token)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.navBack:
-				if (state.app.levels.length === 1) {
-					returnHome(state)
+				if (stateApp.app.levels.length === 1) {
+					returnHome(stateApp)
 				} else {
-					await state.app.navBack(state, 1)
+					await stateApp.app.navBack(stateApp, 1)
 					updateObjectsForm()
 				}
 				break
@@ -246,9 +245,9 @@
 			case StatePacketAction.navCrumbs:
 				if (token instanceof TokenAppIndex) {
 					if (token.index === 0) {
-						returnHome(state)
+						returnHome(stateApp)
 					} else {
-						await state.app.navCrumbs(state, token)
+						await stateApp.app.navCrumbs(stateApp, token)
 						updateObjectsForm()
 					}
 				}
@@ -256,26 +255,26 @@
 
 			case StatePacketAction.navRow:
 				if (token instanceof TokenAppRow) {
-					await state.app.rowUpdate(state, token)
+					await stateApp.app.rowUpdate(stateApp, token)
 					updateObjectsForm()
 				}
 				break
 
 			case StatePacketAction.navTab:
-				await token.app.navTab(state, token)
+				await token.app.navTab(stateApp, token)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.openNode:
 				if (token instanceof TokenAppNode) {
-					state.newApp()
-					await state.app.addLevelNode(state, token)
+					stateApp.newApp()
+					await stateApp.app.addLevelNode(stateApp, token)
 					updateObjectsForm()
 				}
 				break
 
 			case StatePacketAction.modalSelectOpen:
-				await state.openModalSelect(token)
+				await stateApp.openModalSelect(token)
 				break
 
 			case StatePacketAction.modalSelectSurface:
@@ -296,10 +295,10 @@
 		data?: ParmsValues
 	) => {
 		fModalCloseUpdateEmbedListDropResources()
-		currLevel = state.app.getCurrLevel()
+		currLevel = stateApp.app.getCurrLevel()
 		if (currLevel) {
 			currTab = currLevel.getCurrTab()
-			await query(state, currTab, TokenApiQueryType.retrieve)
+			await query(stateApp, currTab, TokenApiQueryType.retrieve)
 		}
 		updateObjectsForm()
 	}
@@ -310,7 +309,7 @@
 	) => {
 		fModalCloseUpdateEmbedListDropResources()
 		if (returnType === TokenAppModalReturnType.complete) {
-			currLevel = state.app.getCurrLevel()
+			currLevel = stateApp.app.getCurrLevel()
 			if (currLevel) {
 				const embedFieldName = data?.valueGet(ParmsValuesType.embedFieldName)
 				currTab = currLevel.getCurrTab()
@@ -318,7 +317,7 @@
 				if (idx > -1) {
 					currTab.data.fields[idx].data.parms.update(data?.valueGetAll())
 					currTab.data.fields[idx].data.parms.valueSet(ParmsValuesType.embedListSave, true)
-					await query(state, currTab, TokenApiQueryType.save)
+					await query(stateApp, currTab, TokenApiQueryType.save)
 				}
 			}
 			updateObjectsForm()
@@ -326,69 +325,60 @@
 	}
 
 	function fModalCloseUpdateEmbedListDropResources() {
-		state.app.levels = state.app.levels.filter((level) => !level.isModal)
-		state.app.levels.forEach((level) => {
+		stateApp.app.levels = stateApp.app.levels.filter((level) => !level.isModal)
+		stateApp.app.levels.forEach((level) => {
 			level.tabs = level.tabs.filter((tab) => !tab.isModal)
 		})
-		const idxLevel = state.app.levels.length - 1
-		if (idxLevel >= 0) state.app.levels[idxLevel].tabIdxRestore()
+		const idxLevel = stateApp.app.levels.length - 1
+		if (idxLevel >= 0) stateApp.app.levels[idxLevel].tabIdxRestore()
 	}
 
 	function returnHome(state: State) {
-		state.update({
-			page: '/home',
-			nodeType: NodeType.home,
-			packet: new StatePacket({
-				action: StatePacketAction.navBarOpen,
-				confirmType: TokenAppDoActionConfirmType.objectChanged
-			})
+		state.change({
+			confirmType: TokenAppDoActionConfirmType.objectChanged,
+			target: StateTarget.dashboard
 		})
 	}
 
 	const closureSetStatus = () => {
-		state = state.setStatus()
+		stateApp = stateApp.setStatus()
 		// console.log('closureSetStatus.objStatus', state.objStatus)
 	}
 	const closureSetVal = (row: number, field: Field, value: any) => {
-		state.props.dataObj = state.props.dataObj.setFieldVal(row, field, value)
-		console.log('closureSetVal.dataFieldsChanged', state.props.dataObj.dataFieldsChanged)
+		stateApp.props.dataObj = stateApp.props.dataObj.setFieldVal(row, field, value)
+		console.log('closureSetVal.dataFieldsChanged', stateApp.props.dataObj.dataFieldsChanged)
 	}
 
 	function updateObjectsContent(componentName: string) {
-		state.app = state.app
-		componentContentName = componentName
-		dataObj = undefined
-		dataObjData = undefined
-		state.resetState({
-			component: componentContentName,
-			dataObj,
-			dataObjData,
-			fClosureSetStatus: closureSetStatus,
-			fClosureSetVal: closureSetVal
-		})
+		// componentContentName = componentName
+		// dataObj = undefined
+		// dataObjData = undefined
+		// stateApp.resetState({
+		// 	component: componentContentName,
+		// 	dataObj,
+		// 	dataObjData,
+		// 	fClosureSetStatus: closureSetStatus,
+		// 	fClosureSetVal: closureSetVal
+		// })
 	}
 
 	function updateObjectsForm() {
-		state.app = state.app
-		currTab = state.app.getCurrTab()
+		currTab = stateApp.app.getCurrTab()
 		if (currTab) {
-			dataObj = currTab.dataObj
-			componentContentName = dataObj.raw.codeComponent
-			dataObjData = currTab.data
-			state.resetState({
-				component: componentContentName,
-				dataObj,
-				dataObjData,
-				fClosureSetStatus: closureSetStatus,
-				fClosureSetVal: closureSetVal
+			stateProps = new StateProps({
+				component: currTab.dataObj.raw.codeComponent,
+				dataObj: currTab.dataObj,
+				dataObjData: currTab.data,
+				state: stateApp
 			})
+			console.log('updateObjectsForm.stateProps:', { currTab, stateProps, currLayout })
 		}
 	}
 </script>
 
-{#if currLayout && componentContentName}
+{#if currLayout && stateProps}
 	<div class="h-full max-h-full">
-		<svelte:component this={currLayout} bind:state on:formCancelled />
+		<svelte:component this={currLayout} bind:stateProps on:formCancelled />
 	</div>
 {/if}
 

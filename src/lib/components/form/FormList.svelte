@@ -3,9 +3,11 @@
 		State,
 		StatePacket,
 		StatePacketAction,
+		StateProps,
 		StateSurfaceEmbedShell,
-		StateSurfaceModalEmbed
-	} from '$comps/app/types.appState'
+		StateSurfaceModalEmbed,
+		StateTarget
+	} from '$comps/app/types.appState.svelte'
 	import {
 		TokenApiUserPref,
 		TokenAppDo,
@@ -39,6 +41,7 @@
 		type ResponseBody,
 		strRequired
 	} from '$utils/types'
+	import { innerHeight } from 'svelte/reactivity/window'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
 	import { FieldParm } from '$comps/form/fieldParm'
@@ -66,33 +69,31 @@
 
 	const FILENAME = '$comps/form/FormList.svelte'
 
-	export let state: State
+	let { stateProps = $bindable() }: StateProps = $props()
 
 	let elContent: HTMLDivElement
 	let elContentTopY: number
 	let gridApi: GridApi
 	let gridOptions: GridManagerOptions
-	let innerHeight: number
-	let isSelect = state instanceof StateSurfaceModalEmbed
+	let isSelect = stateProps.state instanceof StateSurfaceModalEmbed
 	let scrollToTop = () => {}
 
-	onMount(() => {
+	$effect(() => {
 		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
 	})
 
-	$: dataObj = state.props?.dataObj
-	$: dataObjData = state.props?.dataObjData
-	$: load(dataObjData)
-	$: if (state && state.packet) {
-		let packet
-
-		// gridDownload
-		packet = state.consume(StatePacketAction.gridDownload)
-		if (packet) {
-			;(async () => {
-				await gridDownload()
-			})()
-		}
+	let dataObj = $state(stateProps.dataObj)
+	let dataObjData = $state(stateProps.dataObjData)
+	load(dataObjData)
+	if (stateProps.state && stateProps.state.packet) {
+		// let packet
+		// // gridDownload
+		// packet = state.consume(StatePacketAction.gridDownload)
+		// if (packet) {
+		// 	;(async () => {
+		// 		await gridDownload()
+		// 	})()
+		// }
 	}
 
 	async function gridDownload() {
@@ -133,7 +134,7 @@
 			}
 		})
 
-		state.downloadContent(`${dataObj.raw.header}.csv`, 'text/csv', data)
+		stateProps.state.downloadContent(`${dataObj.raw.header}.csv`, 'text/csv', data)
 	}
 
 	function load(data: DataObjData) {
@@ -150,9 +151,8 @@
 		}
 
 		if (!dataObj.fieldEmbed) {
-			state.setDataObjState(dataObj)
-			state.setStatus()
-			state = state
+			stateProps.state.setDataObjState(dataObj)
+			stateProps.state.setStatus()
 		}
 
 		gridOptions = initGrid()
@@ -160,7 +160,10 @@
 
 	function fGridCallbackFilter(event: FilterChangedEvent) {
 		dataObjData.rowsRetrieved.syncFields(dataObj.dataRecordsDisplay, ['selected'])
-		state.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, 'id'))
+		stateProps.state.parmsState.valueSet(
+			ParmsValuesType.listIdsSelected,
+			getSelectedNodeIds(event.api, 'id')
+		)
 	}
 
 	function fGridCallbackUpdateValue(fieldName: string, data: DataRecord) {
@@ -168,10 +171,10 @@
 		const field = dataObj.fields.find((f) => f.colDO.propName === fieldName)
 		if (row > -1 && field) {
 			dataObj = dataObj.setFieldVal(row, field, data[fieldName])
-			if (state instanceof StateSurfaceEmbedShell) {
-				state.props.fClosureSetStatus()
+			if (stateProps.state instanceof StateSurfaceEmbedShell) {
+				// state.props.fClosureSetStatus()
 			} else {
-				state.props.fClosureSetStatus()
+				// state.props.fClosureSetStatus()
 			}
 		} else {
 			error(500, {
@@ -195,7 +198,7 @@
 			listReorderColumn: dataObj.raw.listReorderColumn,
 			onCellClicked,
 			onSelectionChanged,
-			parmStateSelectedIds: state.parmsState.valueGet(ParmsValuesType.listIdsSelected),
+			parmStateSelectedIds: stateProps.state.parmsState.valueGet(ParmsValuesType.listIdsSelected),
 			rowData: initGridData(),
 			userSettings: dataObj.userGridSettings
 		})
@@ -250,7 +253,7 @@
 		if (field instanceof FieldParm) {
 			defn.cellEditorSelector = cellEditorSelectorParmField
 			defn.cellRendererSelector = cellRendererSelectorParmField
-			defn.context = { parmFields: field.parmFields, state }
+			defn.context = { parmFields: field.parmFields, state: stateProps.state }
 
 			// if (field.linkItemsSource) {
 			// 	defn.editable = false
@@ -310,7 +313,7 @@
 					const itemsKey = '_items_' + field.colDO.propName
 					if (field.linkItemsSource) {
 						defn.editable = false
-						defn.context = { linkItemsSource: field.linkItemsSource, state }
+						defn.context = { linkItemsSource: field.linkItemsSource, state: stateProps.state }
 						defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
 					} else {
 						defn.cellDataType = 'customText'
@@ -375,10 +378,10 @@
 					: [event.data[fieldName]]
 			const parms = fieldProcess.linkItemsSource.getGridParms()
 
-			state.update({
+			stateProps.change({
+				confirmType: TokenAppDoActionConfirmType.none,
 				packet: new StatePacket({
 					action: StatePacketAction.modalSelectOpen,
-					confirmType: TokenAppDoActionConfirmType.none,
 					token: new TokenAppModalSelect({
 						columnDefs: parms.columnDefs,
 						fModalClose,
@@ -389,7 +392,8 @@
 						selectLabel: fieldProcess.colDO.label,
 						sortModel: parms.sortModel
 					})
-				})
+				}),
+				target: StateTarget.feature
 			})
 		}
 
@@ -416,7 +420,7 @@
 		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit) {
 			return
 		} else if (isSelect) {
-			state.parmsState.valueSet(
+			stateProps.parmsState.valueSet(
 				ParmsValuesType.listIdsSelected,
 				getSelectedNodeIds(event.api, 'id')
 			)
@@ -426,18 +430,16 @@
 				const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
 				dataObj.data.parms.valueSet(ParmsValuesType.listIds, getFilteredNodeIds(event.api))
 				dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, record.id)
-				action.trigger(state, dataObj)
+				action.trigger(stateProps.state, dataObj)
 			}
 		}
 	}
 </script>
 
-<svelte:window bind:innerHeight />
-
 <div
 	id="form-list"
 	class="h-full max-h-full"
-	style={`max-height: ${innerHeight - elContentTopY - 0}px;`}
+	style={`max-height: ${innerHeight.current - elContentTopY - 50}px;`}
 	bind:this={elContent}
 >
 	{#if gridOptions}

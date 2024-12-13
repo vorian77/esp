@@ -1,25 +1,23 @@
 <script lang="ts">
 	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
-	import { goto } from '$app/navigation'
-	import { userInit } from '$utils/types'
-	import { State } from '$comps/app/types.appState'
+	import { userSetId } from '$utils/types'
+	import { State, StateTarget } from '$comps/app/types.appState.svelte'
 	import { TokenApiDbDataObjSource, TokenApiQueryType } from '$utils/types.token'
 
 	const FILENAME = 'routes/+page.svelte'
 
-	export let data
+	let { data }: { data: PageData } = $props()
 
 	const storeDrawer = getDrawerStore()
 	const storeToast = getToastStore()
 	const DEV_MODE = data.environ === 'dev'
-	const state = new State({ storeDrawer, storeToast })
+	const state = new State({ storeDrawer, storeToast, target: StateTarget.feature })
 	let pageCurrent = ''
 
 	async function expressLogin() {
 		const userSys = '0b3ba76c-c0f4-11ee-9b77-8f017aab6306'
 		const userPhyllipHall = '129d4a42-c0f4-11ee-9b77-bf2d11e31679'
-		await userInit(userSys)
-		goto('/home')
+		await userSetId(userSys)
 	}
 </script>
 

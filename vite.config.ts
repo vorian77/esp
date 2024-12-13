@@ -6,7 +6,11 @@ import { sentrySvelteKit } from '@sentry/sveltekit'
 
 /** @type {import('vite').userConfig} */
 export default defineConfig(({ mode }) => {
-	let plugins = [sentrySvelteKit(), sveltekit(), purgeCss({ safelist: { greedy: [/^ag-/] } })]
+	let plugins = [
+		sentrySvelteKit(),
+		sveltekit(),
+		purgeCss({ legacy: true, safelist: { greedy: [/^ag-/] } })
+	]
 	if (mode === 'development') {
 		plugins.push(nodeLoaderPlugin())
 	}

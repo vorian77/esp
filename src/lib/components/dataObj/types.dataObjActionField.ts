@@ -1,4 +1,9 @@
-import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
+import {
+	State,
+	StatePacket,
+	StatePacketAction,
+	StateTarget
+} from '$comps/app/types.appState.svelte'
 import { DataObj, DataObjConfirm, DataObjMode, DataObjSaveMode } from '$utils/types'
 import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 import { memberOfEnum, valueOrDefault } from '$utils/types'
@@ -57,22 +62,20 @@ export class DataObjActionField {
 				})
 		}
 	}
-	// setFieldEmbed(fieldEmbed: FieldEmbed) {
-	// 	this.fieldEmbed = fieldEmbed
-	// }
+
 	async trigger(state: State, dataObj: DataObj) {
 		const { confirmType, confirm } = this.getConfirm(state, dataObj)
-		state.update({
+		state.change({
+			confirm,
+			confirmType,
 			packet: new StatePacket({
 				action: this.codePacketAction,
-				confirm,
-				confirmType,
 				token: new TokenAppDo({
 					dataObj,
-					// fieldEmbed: this.fieldEmbed,
 					state
 				})
-			})
+			}),
+			target: StateTarget.feature
 		})
 	}
 }

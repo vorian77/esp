@@ -11,11 +11,9 @@ import {
 	required,
 	strOptional,
 	strRequired,
-	DBTable,
-	userGet,
 	valueOrDefault
 } from '$utils/types'
-import { State } from '$comps/app/types.appState'
+import { State } from '$comps/app/types.appState.svelte'
 import { App } from '$comps/app/types.app'
 import { AppRowActionType } from '$comps/app/types.app'
 import { Node } from '$comps/app/types.node'
@@ -181,9 +179,7 @@ export class TokenApiQueryData {
 		this.record = this.dataSet(data, 'record', {})
 		this.system = this.dataSet(data, 'system', {})
 		this.tree = this.dataSet(data, 'tree', [])
-		this.user = Object.hasOwn(data, 'user')
-			? this.dataSet(data, 'user', {})
-			: valueOrDefault(userGet(), {})
+		this.user = this.dataSet(data, 'user', {})
 	}
 	static load(currData: TokenApiQueryData) {
 		const newData = new TokenApiQueryData(currData)

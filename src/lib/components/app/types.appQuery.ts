@@ -1,5 +1,9 @@
 import { App, AppLevelTab } from '$comps/app/types.app'
-import { State, StateSurfaceEmbedShell, StateSurfaceModalEmbed } from '$comps/app/types.appState'
+import {
+	State,
+	StateSurfaceEmbedShell,
+	StateSurfaceModalEmbed
+} from '$comps/app/types.appState.svelte'
 import {
 	arrayOfClass,
 	debug,
@@ -45,7 +49,7 @@ export async function query(
 	}
 
 	// set other parms
-	const queryData = new TokenApiQueryData({ dataTab, tree: dataTree })
+	const queryData = new TokenApiQueryData({ dataTab, tree: dataTree, user: state.user })
 	let table = tab.getTable() // table will be undefined prior to retrieve
 
 	// query actions - pre

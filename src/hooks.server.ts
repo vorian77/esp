@@ -1,5 +1,7 @@
 import { type Handle, type HandleServerError, redirect } from '@sveltejs/kit'
-import { sequence } from '@sveltejs/kit/hooks'
+import { getUserByUserId } from '$routes/api/dbEdge/dbEdgeUtilities'
+import { getEnvVar } from '$server/env'
+import { TokenApiUserId } from '$utils/types.token'
 import * as Sentry from '@sentry/sveltekit'
 
 const FILENAME = 'hooks.server'
@@ -22,7 +24,9 @@ const routesUnprotected = ['/about', '/auth', '/legalDisclosure', '/test', '/tes
 // ): void;
 
 // handle - route
-const serverHandler: Handle = async ({ event, resolve }) => {
+export const handle: Handle = async ({ event, resolve }) => {
+	// const serverHandler: Handle = async ({ event, resolve }) => {
+
 	if (event.url.pathname === '/') {
 		if (event.cookies.get('session_id')) {
 			status('root path - deleting cookie...')
@@ -46,25 +50,22 @@ const serverHandler: Handle = async ({ event, resolve }) => {
 
 	// remaining routes require sessionId
 	const sessionId = event.cookies.get('session_id')
+	console.log('hooks.server.sessionId:', sessionId)
 	if (!sessionId) {
 		status('redirect - no sessionId...')
 		redirect(303, '/')
 	}
 
 	// get user info
-	// <todo> 240127 - only retrieved for legal disclosure???
-	// const user = await getUserByUserId(sessionId)
-	// status(`retrieved user...`)
-	// if (!user) {
-	// 	status(`redirect - could not retrieve user: ${sessionId}`)
-	// 	redirect(303, '/')
-	// }
-
-	// confirm legal disclosure
-	// if (!user.cm_ssr_disclosure) {
-	// status('redirect - not disclosed...')
-	// 	throw redirect(303, '/legalDisclosure')
-	// }
+	if (!event.locals.rawUser) {
+		const rawUser = await getUserByUserId(new TokenApiUserId(sessionId))
+		if (!rawUser) {
+			status('redirect - invalid sessionId...')
+			redirect(303, '/')
+		}
+		const dbBranch = getEnvVar('EDGEDB_BRANCH')
+		event.locals.rawUser = { ...rawUser, dbBranch }
+	}
 
 	// security protected routes
 	return await resolve(event)
@@ -75,22 +76,22 @@ const serverHandler: Handle = async ({ event, resolve }) => {
 	}
 }
 
-export const handle = sequence(Sentry.sentryHandle(), serverHandler)
+// export const handle = sequence(Sentry.sentryHandle(), serverHandler)
 
 // handle - error
-const serverErrorHandler: HandleServerError = async ({ error, event }) => {
-	const message =
-		error instanceof Error
-			? error.message
-			: 'Something unexpected happend. Please try again, or report the problem.'
+// const serverErrorHandler: HandleServerError = async ({ error, event }) => {
+// 	const message =
+// 		error instanceof Error
+// 			? error.message
+// 			: 'Something unexpected happend. Please try again, or report the problem.'
 
-	console.error('hooks.server.ErrorHandler:', message)
+// 	console.error('hooks.server.ErrorHandler:', message)
 
-	return {
-		file: event.route.id || 'unknown',
-		function: 'unknown',
-		message
-	}
-}
+// 	return {
+// 		file: event.route.id || 'unknown',
+// 		function: 'unknown',
+// 		message
+// 	}
+// }
 
-export const handleError = Sentry.handleErrorWithSentry(serverErrorHandler)
+// export const handleError = Sentry.handleErrorWithSentry(serverErrorHandler)

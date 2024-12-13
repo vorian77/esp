@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { AppLevel, AppLevelRowStatus } from '$comps/app/types.app'
-	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
+	import {
+		State,
+		StatePacket,
+		StatePacketAction,
+		StateTarget
+	} from '$comps/app/types.appState.svelte'
 	import { TokenAppDoActionConfirmType, TokenAppTab } from '$utils/types.token'
 	import { DataRecordStatus } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
@@ -9,26 +14,26 @@
 
 	const FILENAME = '$comps/layout/LayoutTab.svelte'
 
-	export let state: State
+	let { stateProps = $bindable() }: StateProps = $props()
 
-	let currLevel: AppLevel | undefined
-	let rowStatus: AppLevelRowStatus | undefined
+	let currLevel = $state(stateProps.state.app.getCurrLevel()) as AppLevel
+	let rowStatus = $state(stateProps.state.app.getRowStatus()) as AppLevelRowStatus
 
-	$: currLevel = state.app.getCurrLevel()
-	$: isHideChildTabs =
-		state?.props?.dataObjData.rowsRetrieved.hasRecord() &&
-		(state?.props?.dataObjData.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset) ||
-			state.objStatus.changed() ||
-			!state.objStatus.valid())
-	$: if (state) rowStatus = state?.app.getRowStatus()
+	let isHideChildTabs = $state(
+		stateProps?.dataObjData.rowsRetrieved.hasRecord() &&
+			(stateProps?.dataObjData.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset) ||
+				stateProps.state.objStatus.changed() ||
+				!stateProps.state.objStatus.valid())
+	)
 
 	async function onClick(index: number) {
-		state.update({
+		stateProps.change({
+			confirmType: TokenAppDoActionConfirmType.objectChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navTab,
-				confirmType: TokenAppDoActionConfirmType.objectChanged,
 				token: new TokenAppTab({ app: state.app, index })
-			})
+			}),
+			target: StateTarget.feature
 		})
 	}
 
@@ -51,7 +56,7 @@
 					{@const label = tab?.label || tab?.dataObj?.raw.header}
 					{@const classItem = isCurrent ? classItemCurrent : classItemNotCurrent}
 
-					<button {name} {hidden} class={classItem} on:click={() => onClick(idx)}>
+					<button {name} {hidden} class={classItem} onclick={() => onClick(idx)}>
 						{label}
 					</button>
 				{/each}
@@ -64,7 +69,7 @@
 						class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-sm text-nav outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2"
 						name="select-tabs"
 						id="select-tabs"
-						on:change={(event) => onClick(Number(event.currentTarget.value))}
+						onchange={(event) => onClick(Number(event.currentTarget.value))}
 					>
 						{#each currLevel.tabs as tab, idx}
 							{@const label = tab?.label || tab?.dataObj?.raw.header}
@@ -74,12 +79,12 @@
 						{/each}
 					</select>
 				</div>
-				<NavRow {state} {rowStatus} />
+				<NavRow bind:stateProps {rowStatus} />
 			</div>
 		{/if}
 
-		{#if state?.props?.dataObj && state?.props?.dataObjData}
-			<LayoutContent bind:state on:formCancelled />
+		{#if stateProps.dataObj && stateProps.dataObjData}
+			<LayoutContent bind:stateProps on:formCancelled />
 		{/if}
 	</div>
 {/if}

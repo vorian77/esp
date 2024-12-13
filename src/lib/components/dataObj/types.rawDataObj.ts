@@ -25,7 +25,7 @@ import {
 	DBTable,
 	valueOrDefault
 } from '$utils/types'
-import { StatePacketAction } from '$comps/app/types.appState'
+import { StatePacketAction } from '$comps/app/types.appState.svelte'
 import {
 	DataObj,
 	DataObjComponent,

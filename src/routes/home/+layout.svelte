@@ -1,17 +1,18 @@
 <script lang="ts">
-	import { appStoreUser, NodeType, User, userLogout } from '$utils/types'
+	import { NodeType, User } from '$utils/types'
 	import {
 		State,
 		StateLayoutComponent,
 		StatePacket,
-		StatePacketAction
-	} from '$comps/app/types.appState'
+		StatePacketAction,
+		StateTarget
+	} from '$comps/app/types.appState.svelte'
 	import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import { getDrawerStore, getModalStore, getToastStore } from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import NavDash from '$comps/nav/navDash/NavDash.svelte'
 	import NavBar from '$comps/nav/navBar/NavBar.svelte'
-	import { NavBarData } from '$comps/nav/navBar/types.navBar'
+	import { NavBarData } from '$comps/nav/navBar/types.navBar.svelte'
 	import NavBarMobile from '$comps/nav/NavBarMobile.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
@@ -21,9 +22,12 @@
 	import { fly } from 'svelte/transition'
 	import { tweened } from 'svelte/motion'
 	import { cubicOut } from 'svelte/easing'
+	import { setContext } from 'svelte'
+	import { ContextKey } from '$utils/utils.sys.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let data
+	let { data }: { data: PageData } = $props()
+
 	const DEV_MODE = data.environ === 'dev'
 	const FILENAME = '/$routes/home/+layout.svelte'
 
@@ -33,92 +37,39 @@
 
 	let innerWidth = 0
 	let isNavBarDrawerOpen = false
-	let launchApp = true
-	let navBar: NavBarData
-	let navBarWidth = 0
-	let state: State
-	let statePackets: Array<StatePacket> = []
-	let user: User | undefined
 
-	$: {
-		const rawUser = $appStoreUser
-		user = rawUser && Object.keys(rawUser).length > 0 ? new User(rawUser) : undefined
-	}
-	$: if (user && launchApp) {
-		state = new State({
-			fUpdateCallback: stateUpdateCallback,
+	let stateApp = $state(
+		new State({
+			fChangeCallback: stateChangeCallback,
 			layoutComponent: StateLayoutComponent.layoutApp,
 			storeDrawer,
 			storeModal,
 			storeToast,
-			user
+			target: StateTarget.dashboard,
+			user: new User(data.rawUser)
 		})
-		navBar = new NavBarData({ navBarUpdate, state })
-		launchApp = false
-	}
+	) as State
+	setContext(ContextKey.stateApp, stateApp)
 
-	$: if (state && state.packet) {
-		// navBarOpen
-		let packet = state.consume(StatePacketAction.navBarOpen)
-		;(async () => {
-			if (packet) if (!navBar.isOpen) navBar.toggleOpen()
-		})()
-	}
+	let stateTarget = $derived(stateApp.target)
+	let navBar: NavBarData = $state(new NavBarData({ stateApp }))
+	let navBarWidth = $state(0)
 
-	onMount(() => {
-		return () => {
-			userLogout()
-		}
-	})
-
-	async function stateUpdateCallback(obj: any) {
-		state = state.updateProperties(obj)
-		if (state.page !== $page.route.id) goto(state.page)
-	}
-
-	async function statePacketAdd(packet: StatePacket) {
-		statePackets = [...statePackets, packet]
-		await statePacketTrigger()
-	}
-	async function statePacketTrigger() {
-		while (statePackets.length > 0 && !state.packet) {
-			const packet = statePacketPop()
-
-			// set packet in global state
-			state.packet = packet
-		}
-	}
-	function statePacketPop() {
-		const packet = statePackets[statePackets.length - 1]
-		statePackets = [...statePackets.slice(0, -1)]
-		return packet
-	}
-
-	function goHome() {
-		state.update({
-			page: '/home',
-			nodeType: NodeType.home,
-			packet: new StatePacket({
-				action: StatePacketAction.navBarOpen,
-				confirmType: TokenAppDoActionConfirmType.objectChanged
-			})
+	const goHome = () => {
+		stateApp.change({
+			confirmType: TokenAppDoActionConfirmType.objectChanged,
+			target: StateTarget.dashboard
 		})
 	}
 
-	// NavBar
-	const getNavBarWidth = () => {
-		return isNavBarDrawerOpen ? `${innerWidth - navBar?.width}px` : '0'
-	}
-
-	const navBarUpdate = (isItemActivate: boolean) => {
-		if (isItemActivate && isNavBarDrawerOpen) toggleNavBarDrawer()
-		navBarWidth = getNavBarWidth()
-		navBar = navBar
+	async function stateChangeCallback(obj: any) {
+		stateApp.changeProperties(obj)
+		if (stateApp.page !== $page.route.id) goto(stateApp.page)
 	}
 
 	const toggleNavBarDrawer = () => {
-		isNavBarDrawerOpen = !isNavBarDrawerOpen
-		navBarWidth = getNavBarWidth()
+		// isNavBarDrawerOpen = !isNavBarDrawerOpen
+		// navBarWidth = isNavBarDrawerOpen ? `${innerWidth - navBar?.width}px` : '0'
 	}
 </script>
 
@@ -126,7 +77,7 @@
 
 <div id="layout" class="h-screen flex flex-col bg-white">
 	<header id="layout-nav-bar-mobile" class="md:hidden">
-		<NavBarMobile {state} {goHome} {toggleNavBarDrawer} />
+		<NavBarMobile state={stateApp} {goHome} {toggleNavBarDrawer} />
 	</header>
 
 	<div
@@ -136,20 +87,20 @@
 		on:click={() => toggleNavBarDrawer()}
 	>
 		<aside class="h-full" style="width: {navBarWidth}" on:click|stopPropagation>
-			<NavBar bind:navBar />
+			<NavBar {navBar} />
 		</aside>
 	</div>
 
 	<div id="layout-main" class="h-12 grow flex flex-row">
 		<div id="layout-main-menu-desktop" class="h-full hidden md:flex">
-			<NavBar bind:navBar />
+			<NavBar {navBar} />
 		</div>
 		<div id="layout-main-content" class="grow md:px-3 pb-3">
 			{#if $page.route.id === '/home'}
-				{#if state?.nodeType === NodeType.home}
-					<NavDash {state} />
-				{:else}
-					<RootLayoutApp bind:state />
+				{#if stateTarget === StateTarget.dashboard}
+					<NavDash state={stateApp} />
+				{:else if stateTarget === StateTarget.feature}
+					<RootLayoutApp />
 				{/if}
 			{:else}
 				<slot />

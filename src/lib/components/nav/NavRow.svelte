@@ -1,27 +1,32 @@
 <script lang="ts">
 	import { type AppLevelRowStatus, AppRowActionType } from '$comps/app/types.app'
-	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
+	import {
+		State,
+		StatePacket,
+		StatePacketAction,
+		StateProps,
+		StateTarget
+	} from '$comps/app/types.appState.svelte'
 	import { TokenAppDoActionConfirmType, TokenAppRow } from '$utils/types.token'
 	import NavRowAction from '$comps/nav/NavRowAction.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let state: State
-	export let rowStatus: AppLevelRowStatus | undefined
+	let {
+		stateProps = $bindable(),
+		rowStatus
+	}: { stateProps: StateProps; rowStatus: AppLevelRowStatus } = $props()
 
-	let isHideRowManager
-
-	$: {
-		const currTab = state.app.getCurrTab()
-		isHideRowManager = currTab ? currTab?.isHideRowManager : false
-	}
+	let currTab = $derived(stateProps.state.app.getCurrTab())
+	let isHideRowManager = $state(currTab ? currTab?.isHideRowManager : false)
 
 	async function onChange(rowAction: AppRowActionType) {
-		state.update({
+		stateProps.change({
+			confirmType: TokenAppDoActionConfirmType.objectChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navRow,
-				confirmType: TokenAppDoActionConfirmType.objectChanged,
 				token: new TokenAppRow({ rowAction })
-			})
+			}),
+			target: StateTarget.feature
 		})
 	}
 </script>

@@ -6,26 +6,28 @@
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let fp: FieldProps
+	let { fp = $bindable() }: FieldProps = $props()
 
-	$: dataObj = fp.state.props.dataObj
-	$: field = fp.field as FieldSelect
-	$: fieldId = 'field-input-select-' + field.colDO.orderDefine
-	$: fieldValue = fp.fieldValue
-	$: dataItems = field.linkItemsSource
-		? field.linkItemsSource.formatDataFieldColumnItem(fieldValue)
-		: []
+	let dataObj = $derived(fp.stateProps.dataObj)
+	let field = $derived(fp.field) as FieldSelect
+	let fieldId = $derived('field-input-select-' + field.colDO.orderDefine)
+	let fieldValue = $derived(fp.fieldValue)
+	let dataItems = $derived(
+		field.linkItemsSource ? field.linkItemsSource.formatDataFieldColumnItem(fieldValue) : []
+	)
 
-	$: classProps =
+	let classProps = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
 			? `select text-sm rounded-lg ${field.colorBackground}`
 			: `select text-sm rounded-lg bg-white`
-	$: classPropsLabel =
+	)
+	let classPropsLabel = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-1' : 'mb-1 hidden'
+	)
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		fp.state.props?.fClosureSetVal(fp.row, fp.field, target.value)
+		fp.stateProps.fSetVal(fp.row, fp.field, target.value)
 	}
 </script>
 

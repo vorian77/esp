@@ -3,7 +3,7 @@
 		NavBarData,
 		NavBarDataCompGroup,
 		NavBarDataCompItem
-	} from '$comps/nav/navBar/types.navBar'
+	} from '$comps/nav/navBar/types.navBar.svelte'
 	import NavBarItem from '$comps/nav/navBar/NavBarItem.svelte'
 	import NavBarHeader from '$comps/nav/navBar/NavBarHeader.svelte'
 	import { fade } from 'svelte/transition'
@@ -11,7 +11,7 @@
 
 	const FILENAME = '/$comps/app/navBar/NavBarItem.svelte'
 
-	export let data: NavBarDataCompGroup[]
+	let { data }: { data: NavBarDataCompGroup[] } = $props()
 </script>
 
 <div class={data.items.length === 0 ? 'hidden' : ''}>

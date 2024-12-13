@@ -7,21 +7,22 @@
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let fp: FieldProps
+	let { fp = $bindable() }: FieldProps = $props()
 
-	$: dataObj = fp.state.props.dataObj
-	$: field = fp.field as FieldCheckbox
-	$: fieldValue = fp.fieldValue
-	$: dataItems = field.linkItemsSource
-		? field.linkItemsSource.formatDataFieldColumnItem(fieldValue)
-		: []
+	let dataObj = $derived(fp.stateProps.dataObj)
+	let field = $derived(fp.field) as FieldCheckbox
+	let fieldValue = $derived(fp.fieldValue)
+	let dataItems = $derived(
+		field.linkItemsSource ? field.linkItemsSource.formatDataFieldColumnItem(fieldValue) : []
+	)
 
-	$: classFieldSet =
+	let classFieldSet = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.list
 			? 'fieldsetList'
 			: field.fieldAccess === FieldAccess.required
 				? 'fieldsetDetailRequired'
 				: 'fieldsetDetailOptional'
+	)
 
 	function onInput(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
@@ -35,18 +36,21 @@
 				dataItems.forEach((i) => {
 					if (i.selected) newValues.push(i.data)
 				})
-				fp.state.props?.fClosureSetVal(fp.row, fp.field, newValues)
+				fp.stateProps.fSetVal(fp.row, fp.field, newValues)
 			}
 		} else {
 			const idx = dataItems.findIndex((i) => i.data === value)
 			if (idx >= 0) {
 				dataItems[idx].selected = !dataItems[idx].selected
 				const newVal = dataItems[idx].selected ? value : null
-				fp.state.props?.fClosureSetVal(fp.row, fp.field, newVal)
+				fp.stateProps.fSetVal(fp.row, fp.field, newVal)
 			}
 		}
 	}
 </script>
+
+<!-- bind:checked={selected}
+bind:group={} -->
 
 <FormLabel {fp} />
 
@@ -61,8 +65,7 @@
 					name={itemName}
 					class="rounded-sm{i === 0 ? 'mt-2' : ''}"
 					value={data}
-					bind:checked={selected}
-					on:input={onInput}
+					oninput={() => onInput}
 				/>
 				<p class="text-sm">{display}</p>
 			</div>

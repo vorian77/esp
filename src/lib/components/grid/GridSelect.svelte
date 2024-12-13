@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { State } from '$comps/app/types.appState'
+	import { State } from '$comps/app/types.appState.svelte'
 	import { ParmsValuesType } from '$utils/types'
 	import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 	import Grid from '$comps/grid/Grid.svelte'

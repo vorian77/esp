@@ -1,22 +1,15 @@
 <script lang="ts">
-	import { State } from '$comps/app/types.appState'
+	import { StateProps } from '$comps/app/types.appState.svelte'
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import NavApp from '$comps/nav/NavApp.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/layout/LayoutApp.svelte'
 
-	export let state: State
-
-	let currLevel: AppLevel | undefined
-
-	$: currLevel = state.app.getCurrLevel()
+	let { stateProps = $bindable() }: StateProps = $props()
 </script>
 
 <div id="layout-app" class="flex flex-col h-full max-h-full">
-	<NavApp {state} />
-
-	{#if currLevel}
-		<LayoutTab bind:state on:formCancelled />
-	{/if}
+	<NavApp bind:stateProps />
+	<LayoutTab bind:stateProps on:formCancelled />
 </div>

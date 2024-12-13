@@ -1,12 +1,11 @@
 <script lang="ts">
 	import type { User } from '$utils/types'
-	import { userGet } from '$utils/types'
 	import { goto } from '$app/navigation'
 	import { error } from '@sveltejs/kit'
 
 	const FILENAME = 'routes/legalDisclosure'
 
-	const user: User | undefined = userGet()
+	const user: User | undefined = undefined
 	const legalDisclosure = user ? user.cm_ssr_disclosure : undefined
 
 	async function accept() {

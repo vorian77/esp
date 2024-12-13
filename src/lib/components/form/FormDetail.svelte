@@ -1,35 +1,38 @@
 <script lang="ts">
 	import { DataObj, DataObjData } from '$utils/types'
-	import { State } from '$comps/app/types.appState'
+	import { State, StateProps } from '$comps/app/types.appState.svelte'
 	import { Field, FieldAccess } from '$comps/form/field'
 	import { FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 	import FormElement from '$comps/form/FormElement.svelte'
 	import { onMount } from 'svelte'
+	import { innerHeight } from 'svelte/reactivity/window'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormDetail.svelte'
 	const FORM_NAME = ''
 	const SUBMIT_BUTTON_NAME = 'SUBMIT_BUTTON_NAME'
 
-	export let state: State
+	let { stateProps = $bindable() }: StateProps = $props()
+
+	let dataObj = $derived(stateProps.dataObj)
+	let dataObjData = $derived(stateProps.dataObjData)
 
 	let elContent: HTMLDivElement
 	let elContentTopY: number
-	let innerHeight: number
 	let tagGroupSections: TagGroupSection[]
 
-	onMount(() => {
+	$effect(() => {
 		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
 	})
 
-	$: (async () => await load(state.props.dataObjData))()
+	$effect(() => {
+		load(dataObjData)
+	})
 
 	async function load(data: DataObjData) {
-		if (!state.app.isMobileMode) loadTags()
-		state.props.dataObj.objData = data
-		state.setDataObjState(state.props.dataObj)
-		state.setStatus()
-		state = state
+		if (!stateProps.state.app.isMobileMode) loadTags()
+		stateProps.state.setDataObjState(dataObj)
+		stateProps.state.setStatus()
 	}
 
 	function loadTags() {
@@ -38,7 +41,7 @@
 		let isOpenRow = false
 		let isOpenSection = false
 
-		state.props.dataObj.fields.forEach((field, idx) => {
+		dataObj.fields.forEach((field, idx) => {
 			if (!isOpenSection) {
 				idxSection = tagGroupSections.push(new TagGroupSection(false)) - 1
 				isOpenSection = true
@@ -101,25 +104,25 @@
 	}
 </script>
 
-<svelte:window bind:innerHeight />
+<DataViewer header="dataFieldsChanged" data={dataObj?.dataFieldsChanged} />
+<DataViewer header="objStatus" data={stateProps.state.objStatus} />
 
-<DataViewer header="dataFieldsChanged" data={state.props?.dataObj?.dataFieldsChanged} />
-<DataViewer header="objStatus" data={state.objStatus} />
+<h1>Form Detail</h1>
 
 <form
-	id={'form_' + state.props.dataObj.raw.name}
+	id={'form_' + stateProps.dataObj.raw.name}
 	class="h-full max-h-full overflow-y-auto md:p-4 md:border-2 rounded-md"
 	style={`max-height: ${innerHeight - elContentTopY - 30}px;`}
 	bind:this={elContent}
 >
 	<div class="md:hidden max-h-full">
-		{#each state.props.dataObj.fields as field, fieldIdx}
+		{#each stateProps.dataObj.fields as field, fieldIdx}
 			{@const display =
 				!field.colDO.colDB.isNonData &&
 				field.colDO.isDisplayable &&
 				field.fieldAccess !== FieldAccess.hidden}
 			{#if display}
-				<FormElement bind:state field={state.props.dataObj.fields[fieldIdx]} row={0} />
+				<FormElement bind:stateProps field={stateProps.dataObj.fields[fieldIdx]} row={0} />
 			{/if}
 		{/each}
 	</div>
@@ -138,7 +141,7 @@
 					<div class={row.isRow ? 'w-full flex flex-row gap-x-4' : ''}>
 						{#each row.indexes as fieldIdx}
 							<div class="grow">
-								<FormElement bind:state field={state.props.dataObj.fields[fieldIdx]} row={0} />
+								<FormElement bind:stateProps field={stateProps.dataObj.fields[fieldIdx]} row={0} />
 							</div>
 						{/each}
 					</div>

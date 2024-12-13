@@ -1,6 +1,6 @@
 <script lang="ts">
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
-	import { StatePacketAction, StateSurfaceModal } from '$comps/app/types.appState'
+	import { StatePacketAction, StateSurfaceModal } from '$comps/app/types.appState.svelte'
 	import { TokenAppModalReturn, TokenAppModalReturnType } from '$utils/types.token'
 	import { getModalStore } from '@skeletonlabs/skeleton'
 	import { DataObjCardinality, DataObjEmbedType, ParmsValuesType } from '$utils/types'
@@ -17,7 +17,7 @@
 	let state: StateSurfaceModal = $storeModal[0].meta.state
 	let modeDelete: boolean = false
 
-	state.setFUpdateCallback((obj: any) => {
+	state.setfChangeCallback((obj: any) => {
 		state.packet = obj.packet
 		if (
 			state.embedType === DataObjEmbedType.listConfig &&

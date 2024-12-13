@@ -5,9 +5,10 @@
 		DataObjData,
 		FieldValue,
 		ValidityErrorLevel,
-		ValidityError
+		ValidityError,
+		type DataRecord
 	} from '$utils/types'
-	import { State, StateSurfaceEmbedShell } from '$comps/app/types.appState'
+	import { State, StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
 	import FormElCustomActionButton from './FormElCustomActionButton.svelte'
 	import FormElCustomActionLink from './FormElCustomActionLink.svelte'
 	import FormElCustomHeader from '$comps/form/FormElCustomHeader.svelte'
@@ -50,62 +51,72 @@
 
 	const FILENAME = '$comps/form/FormDetailElement.svelte'
 
-	export let state: State
-	export let field: Field
-	export let row: number
+	let {
+		field,
+		row,
+		stateProps = $bindable()
+	}: { field: Field; row: number; stateProps: StateProps } = $props()
 
-	let classProps =
-		!state.app.isMobileMode &&
-		state.props.dataObj.raw.codeCardinality === DataObjCardinality.detail &&
-		field.colDO.isDisplayable
+	let classProps = $derived(
+		!stateProps.state.app.isMobileMode &&
+			stateProps.dataObj.raw.codeCardinality === DataObjCardinality.detail &&
+			field.colDO.isDisplayable
 			? 'mb-4'
 			: ''
+	)
 
-	let currentElement: any
+	// const elements: Record<string, any> = {
+	// 	FieldCheckbox: FormElInpCheckbox,
+	// 	FieldChips: FormElChips,
+	// 	FieldCustomActionButton: FormElCustomActionButton,
+	// 	FieldCustomActionLink: FormElCustomActionLink,
+	// 	FieldCustomHeader: FormElCustomHeader,
+	// 	FieldCustomText: FormElCustomText,
+	// 	FieldEmbedListConfig: FormElEmbedListConfig,
+	// 	FieldEmbedListEdit: FormElEmbedListEdit,
+	// 	FieldEmbedListSelect: FormElEmbedListSelect,
+	// 	FieldEmbedShell: FormElEmbedShell,
+	// 	FieldFile: FormElFile,
+	// 	FieldInput: FormElInp,
+	// 	FieldRadio: FormElInpRadio,
+	// 	FieldSelect: FormElSelect,
+	// 	FieldTextarea: FormElTextarea,
+	// 	FieldToggle: FormElToggle
+	// }
+
 	const elements: Record<string, any> = {
-		FieldCheckbox: FormElInpCheckbox,
-		FieldChips: FormElChips,
-		FieldCustomActionButton: FormElCustomActionButton,
-		FieldCustomActionLink: FormElCustomActionLink,
-		FieldCustomHeader: FormElCustomHeader,
-		FieldCustomText: FormElCustomText,
-		FieldEmbedListConfig: FormElEmbedListConfig,
-		FieldEmbedListEdit: FormElEmbedListEdit,
-		FieldEmbedListSelect: FormElEmbedListSelect,
-		FieldEmbedShell: FormElEmbedShell,
-		FieldFile: FormElFile,
-		FieldInput: FormElInp,
-		FieldRadio: FormElInpRadio,
-		FieldSelect: FormElSelect,
-		FieldTextarea: FormElTextarea,
-		FieldToggle: FormElToggle
+		FieldInput: FormElInp
 	}
 
-	let fieldValue: any
+	let dataRecord = $derived(stateProps.dataObj.dataRecordsDisplay[row]) as DataRecord
+	console.log('dataRecord', dataRecord)
+	let fieldRender = $derived(stateProps.dataObj.getField(field, row)) as Field
+	let fieldValue = $state(dataRecord[fieldRender.colDO.propName])
+	let validity = $state(
+		stateProps.dataObj.dataFieldsValidity.valueGet(dataRecord.id, fieldRender.colDO.propName)
+	)
+	let elementName =
+		typeof fieldRender.constructor.name === 'string' && fieldRender.constructor.name !== ''
+			? fieldRender.constructor.name
+			: ''
 
-	$: dataRecord = state.props.dataObj.dataRecordsDisplay[row]
-	$: field = state.props.dataObj.getField(field, row)
-	$: fieldValue = dataRecord[field.colDO.propName]
-	$: validity = state.props.dataObj.dataFieldsValidity.valueGet(dataRecord.id, field.colDO.propName)
-	$: {
-		const fieldClass = field.constructor.name
-		if (typeof fieldClass === 'string' && fieldClass !== '') {
-			currentElement = elements[field.constructor.name]
-		}
-	}
+	// const fieldClass = field.constructor.name
+	// if (typeof fieldClass === 'string' && fieldClass !== '') {
+	// 	currentElement = elements[field.constructor.name]
+	// }
 
-	$: fp = new FieldProps({
+	let fp = new FieldProps({
 		dataRecord,
-		field,
+		field: fieldRender,
 		fieldValue,
 		row,
-		state
+		stateProps
 	})
 </script>
 
 <div class={classProps}>
-	{#if field.colDO.isDisplayable}
-		<svelte:component this={currentElement} bind:fp />
+	{#if elementName && fieldRender.colDO.isDisplayable}
+		<svelte:component this={elements[elementName]} bind:fp />
 	{/if}
 </div>
 

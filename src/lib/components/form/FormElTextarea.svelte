@@ -4,16 +4,16 @@
 	import { FieldAccess } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 
-	export let fp: FieldProps
+	let { fp = $bindable() }: FieldProps = $props()
 
-	$: field = fp.field as FieldTextarea
-	$: fieldValue = fp.fieldValue
-	$: classProps = 'rounded-lg ' + field.classProps + ' ' + field.colorBackground
-	$: if (field.cols === 0) classProps += ' w-full text-sm'
+	let field = $derived(fp.field) as FieldTextarea
+	let fieldValue = $derived(fp.fieldValue)
+	let classProps = $state('rounded-lg ' + field.classProps + ' ' + field.colorBackground)
+	if (field.cols === 0) classProps += ' w-full text-sm'
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		fp.state.props?.fClosureSetVal(fp.row, fp.field, target.value)
+		fp.stateProps.fSetVal(fp.row, fp.field, target.value)
 	}
 </script>
 

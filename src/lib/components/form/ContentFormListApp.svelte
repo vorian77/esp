@@ -1,11 +1,10 @@
 <script lang="ts">
-	import type { State } from '$comps/app/types.appState'
-	import type { DataObj, DataObjData } from '$utils/types'
+	import { StateProps } from '$comps/app/types.appState.svelte'
 	import FormList from '$comps/form/FormList.svelte'
 	import { getContext } from 'svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let state: State
+	let { stateProps = $bindable() }: StateProps = $props()
 
 	const scrollToTop: any = getContext('scrollToTop')
 
@@ -14,4 +13,4 @@
 
 <!-- <DataViewer header="state" data={state} /> -->
 
-<FormList bind:state on:formCancelled on:rowClick />
+<FormList bind:stateProps on:formCancelled on:rowClick />

@@ -4,12 +4,12 @@
 		NavBarDataCompAppsItem,
 		NavBarDataCompItem,
 		NavBarContentType
-	} from '$comps/nav/navBar/types.navBar'
+	} from '$comps/nav/navBar/types.navBar.svelte'
 	import { fade } from 'svelte/transition'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
 
-	export let item: NavBarDataCompItem
+	let { item }: { item: NavBarDataCompItem } = $props()
 
 	let classIndent = ['', 'ml-[18px]', 'ml-[32px]'][item.indent]
 </script>
@@ -22,13 +22,9 @@
 
 	{#if showItem}
 		<li class="{classIndent} {classMB}  ">
-			<a
-				href="#"
-				class="flex {item.navBar.isOpen ? 'w-full' : 'content-center'} "
-				on:click={item.click()}
-			>
-				<div class="flex-none border-0 border-red-400">
-					{#if showIcon}
+			<button class="flex {item.navBar.isOpen ? 'w-full' : 'content-center'} " onclick={item.click}>
+				{#if showIcon}
+					<div class="flex-none border-0 border-red-400">
 						<Icon
 							props={new IconProps({
 								clazz: 'mt-0',
@@ -38,12 +34,12 @@
 								strokeWidth: 2
 							})}
 						/>
-					{/if}
-				</div>
+					</div>
+				{/if}
 
 				{#if item.navBar.isOpen && showItem}
 					<div
-						class="grow text-left {showIcon
+						class="grow text-left border-0 border-amber-400 {showIcon
 							? 'ml-1'
 							: ''} hover:-translate-y-0.5 transition-transform"
 					>
@@ -51,23 +47,21 @@
 							{item.label.text}
 						</span>
 					</div>
-					<div class="flex-none w-8 border-0 border-blue-400">
-						{#if showToggle}
-							<div class={item.isOpen ? '' : 'rotate-180'}>
-								<Icon
-									props={new IconProps({
-										clazz: 'mt-0 ',
-										color: item.navBar.iconColor,
-										name: 'ChevronUp',
-										size: 18,
-										strokeWidth: 2
-									})}
-								/>
-							</div>
-						{/if}
-					</div>
+					{#if showToggle}
+						<div class="flex-none {item.isOpen ? '' : 'rotate-180'} border-0 border-blue-400">
+							<Icon
+								props={new IconProps({
+									clazz: 'mt-0 ',
+									color: item.navBar.iconColor,
+									name: 'ChevronUp',
+									size: 18,
+									strokeWidth: 2
+								})}
+							/>
+						</div>
+					{/if}
 				{/if}
-			</a>
+			</button>
 		</li>
 	{/if}
 {/if}

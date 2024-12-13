@@ -9,7 +9,7 @@
 
 	const FILENAME = '$comps/form/FormElEmbeddedListConfig.svelte'
 
-	export let fp: FieldProps
+	let { fp = $bindable() }: FieldProps = $props()
 
 	let recordIdCurrent: string
 

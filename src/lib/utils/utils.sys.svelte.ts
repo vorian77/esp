@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState'
+import { State } from '$comps/app/types.appState.svelte'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiUserId } from '$utils/types.token'
 
@@ -12,11 +12,40 @@ export function capitalizeFirstLetter(text: string) {
 	return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
+export enum ContextKey {
+	stateApp = 'stateApp',
+	test = 'test'
+}
+
+export class TestState {
+	data = new TestData()
+	value = $state(0)
+	constructor() {}
+	increment = () => {
+		this.value++
+	}
+}
+
+export class TestData {
+	value: number = $state(0)
+	constructor() {}
+	increment = () => {
+		this.value++
+	}
+}
+
 export async function encrypt(text: string) {
 	// let salt = bcrypt.genSaltSync(10)
 	// let hash = bcrypt.hashSync(text, salt)
 	// return hash
 	return text
+}
+
+export enum FileProcessingMode {
+	delete = 'delete',
+	none = 'none',
+	storage = 'storage',
+	upload = 'upload'
 }
 
 export const isNumber = (value: any) => {

@@ -3,10 +3,10 @@
 	import { FieldCustomText } from '$comps/form/fieldCustom'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let fp: FieldProps
+	let { fp = $bindable() }: FieldProps = $props()
 
-	$: field = fp.field as FieldCustomText
-	$: classAlign = field.align ? 'text-' + field.align : 'text-left'
+	let field = $derived(fp.field) as FieldCustomText
+	let classAlign = $derived(field.align ? 'text-' + field.align : 'text-left')
 </script>
 
 <div class={classAlign}>

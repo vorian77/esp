@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { AppLevelRowStatus } from '$comps/app/types.app'
-	import { State, StateSurfaceModal } from '$comps/app/types.appState'
+	import { State, StateProps, StateSurfaceModal } from '$comps/app/types.appState.svelte'
 	import { valueOrDefault, type DataObj, type DataObjData, ParmsValuesType } from '$utils/types'
 	import NavRow from '$comps/nav/NavRow.svelte'
 	import ContentFormDetailApp from '$comps/form/ContentFormDetailApp.svelte'
@@ -9,6 +9,8 @@
 	import GridSelect from '$comps/grid/GridSelect.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import { createEventDispatcher } from 'svelte'
+	import { ContextKey } from '$utils/utils.sys.svelte'
+
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/layout/LayoutContent.svelte'
@@ -21,42 +23,41 @@
 		ModalSelect: GridSelect
 	}
 
-	export let state: State
+	let { stateProps = $bindable() }: StateProps = $props()
 
-	let classHeader = ''
-	let currComponent: any
-	let headerObj: string = ''
-	let headerObjSub: string = ''
-	let isDrawerClose: boolean = false
-	let rowStatus: AppLevelRowStatus | undefined
+	let currComponent = $state(comps[stateProps.component])
+	let dataObj = $derived(stateProps.dataObj)
 
-	$: currComponent = comps[state?.props?.component]
-	$: dataObj = state.props?.dataObj
-
-	$: {
-		// header parms
-		headerObj = state.layoutHeader.headerText
-			? state.layoutHeader.headerText
-			: state.layoutHeader.isDataObj
+	// header parms
+	let headerObj = $state(
+		stateProps.state.layoutHeader.headerText
+			? stateProps.state.layoutHeader.headerText
+			: stateProps.state.layoutHeader.isDataObj
 				? dataObj?.raw?.header
 				: ''
-		headerObjSub = state.layoutHeader.isDataObj
+	)
+
+	let headerObjSub = $state(
+		stateProps.state.layoutHeader.isDataObj
 			? dataObj?.raw?.subHeader
 				? dataObj?.raw?.subHeader
 				: ''
 			: ''
-		isDrawerClose = state.layoutHeader.isDrawerClose
-		rowStatus = state.layoutHeader.isRowStatus ? state.app.getRowStatus() : undefined
+	)
+	let isDrawerClose = $state(stateProps.state.layoutHeader.isDrawerClose)
+	let rowStatus = $state(
+		stateProps.state.layoutHeader.isRowStatus ? state.app.getRowStatus() : undefined
+	)
 
-		// header styling
-		classHeader =
-			(!state.app.isMobileMode && dataObj && dataObj.actionsField.length > 0) ||
+	// header styling
+	let classHeader = $state(
+		(!stateProps.state.app.isMobileMode && dataObj && dataObj.actionsField.length > 0) ||
 			headerObj ||
 			headerObjSub ||
 			rowStatus
-				? 'border-2 p-4 '
-				: ''
-	}
+			? 'border-2 p-4 '
+			: ''
+	)
 
 	function cancel(event: MouseEvent) {
 		dispatch('formCancelled')
@@ -69,11 +70,11 @@
 		class="h-full max-h-full flex flex-col md:flex-row border-2 p-4 rounded-md"
 	>
 		<div class="grow">
-			<svelte:component this={currComponent} bind:state on:formCancelled />
+			<svelte:component this={currComponent} bind:stateProps on:formCancelled />
 		</div>
 
-		{#if dataObj && state?.props?.dataObjData}
-			<DataObjActionsObj {state} on:formCancelled />
+		{#if dataObj && stateProps.dataObjData}
+			<DataObjActionsObj bind:stateProps on:formCancelled />
 		{/if}
 	</div>
 {/if}

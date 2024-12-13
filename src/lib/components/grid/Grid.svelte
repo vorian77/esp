@@ -54,11 +54,15 @@
 		required,
 		strRequired
 	} from '$utils/types'
-	import { StatePacket, StatePacketAction } from '$comps/app/types.appState'
 	import { ParmsValues } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
-	import { State, StateSurfaceModal } from '$comps/app/types.appState'
+	import {
+		State,
+		StatePacket,
+		StatePacketAction,
+		StateSurfaceModal
+	} from '$comps/app/types.appState.svelte'
 	import GridFilter from '$comps/grid/GridFilter.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -69,8 +73,10 @@
 
 	const FILENAME = '$comps/other/ListBox.svelte'
 
-	export let api: GridApi
-	export let options: GridManagerOptions
+	// export let api: GridApi
+	// export let options: GridManagerOptions
+
+	let { api = $bindable(), options }: { api: GridApi; options: GridManagerOptions } = $props()
 
 	let eGui: HTMLDivElement
 	let isSuppressFilterSort: boolean

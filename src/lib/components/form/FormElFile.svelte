@@ -8,6 +8,9 @@
 		TokenApiBlobAction,
 		TokenApiBlobType
 	} from '$utils/types.token'
+
+	import { FileProcessingMode } from '$utils/utils.sys.svelte'
+
 	import { isEqual } from 'lodash-es'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -15,95 +18,88 @@
 
 	const toastStore = getToastStore()
 
-	export let fp: FieldProps
-
-	enum Mode {
-		delete = 'delete',
-		none = 'none',
-		storage = 'storage',
-		upload = 'upload'
-	}
+	let { fp = $bindable() }: FieldProps = $props()
 
 	let elInput: any
-	let files: FileList
-	let showImg = false
-	let mode: Mode
-	let recordIdCurrent: string
-	let urlCurrent = ''
-	let urlOld = ''
+	let files: FileList = $state()
+	let showImg = $state(false)
+	let mode: FileProcessingMode = $state()
+	let recordIdCurrent: string = $state()
+	let urlCurrent = $state('')
+	let urlOld = $state('')
 
-	$: field = fp.field as FieldFile
-	$: fieldValue = fp.fieldValue
+	let field = $derived(fp.field) as FieldFile
+	let fieldValue = $state(fp.fieldValue)
 
-	$: if (recordIdCurrent !== fp.dataRecord?.id) {
+	if (recordIdCurrent !== fp.dataRecord?.id) {
 		recordIdCurrent = fp.dataRecord?.id
-		mode = Mode.none
+		mode = FileProcessingMode.none
 	}
 
-	$: labelDelete = 'Delete ' + field.colDO.label
-	$: chooseBtnWidth = urlCurrent ? 'w-3/4' : 'w-full'
-	$: labelSelect = urlCurrent ? 'Choose New ' + field.colDO.label : 'Choose ' + field.colDO.label
+	let labelDelete = $derived('Delete ' + field.colDO.label)
+	let chooseBtnWidth = $derived(urlCurrent ? 'w-3/4' : 'w-full')
+	let labelSelect = $derived(
+		urlCurrent ? 'Choose New ' + field.colDO.label : 'Choose ' + field.colDO.label
+	)
 
-	$: {
-		if (mode === Mode.delete) {
-			if (!fieldValue) {
-				mode = Mode.none
-				urlCurrent = undefined
-				urlOld = undefined
-			}
-		} else if (mode === Mode.upload) {
-			if (!(fieldValue instanceof TokenApiBlobParmUpload) && fieldValue && fieldValue.url) {
-				mode = Mode.storage
-				urlCurrent = fieldValue.url
-				urlOld = fieldValue.url
-			}
-		} else if (mode === Mode.none) {
-			if (fieldValue && fieldValue.url) {
-				mode = Mode.storage
-				urlCurrent = fieldValue.url
-				urlOld = fieldValue.url
-			} else {
-				urlCurrent = undefined
-				urlOld = undefined
-			}
+	if (mode === FileProcessingFileProcessingMode.delete) {
+		if (!fieldValue) {
+			mode = FileProcessingFileProcessingMode.none
+			urlCurrent = undefined
+			urlOld = undefined
 		}
-
-		// render image based on source
-		if (mode === Mode.storage) {
-			;(async () => {
-				urlCurrent = fieldValue.url
-			})()
-		} else if (mode === Mode.upload) {
-			urlCurrent = URL.createObjectURL(files[0])
+	} else if (mode === FileProcessingFileProcessingMode.upload) {
+		if (!(fieldValue instanceof TokenApiBlobParmUpload) && fieldValue && fieldValue.url) {
+			mode = FileProcessingFileProcessingMode.storage
+			urlCurrent = fieldValue.url
+			urlOld = fieldValue.url
+		}
+	} else if (mode === FileProcessingFileProcessingMode.none) {
+		if (fieldValue && fieldValue.url) {
+			mode = FileProcessingFileProcessingMode.storage
+			urlCurrent = fieldValue.url
+			urlOld = fieldValue.url
 		} else {
-			urlCurrent = ''
+			urlCurrent = undefined
+			urlOld = undefined
 		}
-		showImg = urlCurrent ? true : false
 	}
+
+	// render image based on source
+	if (mode === FileProcessingFileProcessingMode.storage) {
+		;(async () => {
+			urlCurrent = fieldValue.url
+		})()
+	} else if (mode === FileProcessingFileProcessingMode.upload) {
+		urlCurrent = URL.createObjectURL(files[0])
+	} else {
+		urlCurrent = ''
+	}
+	showImg = urlCurrent ? true : false
 
 	function onDelete(event: Event) {
 		elInput.value = ''
 
 		if (urlOld) {
-			mode = Mode.delete
-			fp.state.props?.fClosureSetVal(
+			mode = FileProcessingMode.delete
+			fp.stateProps.fSetVal(
 				fp.row,
 				field,
 				new TokenApiFileParmDelete({
 					urlOld
 				})
 			)
-		} else if (mode === Mode.upload) {
-			mode = Mode.none
+		} else if (mode === FileProcessingMode.upload) {
+			mode = FileProcessingMode.none
 			fieldValue = undefined
 		}
 	}
 
 	function onNew(event: Event) {
 		if (files.length > 0) {
-			mode = Mode.upload
+			mode = FileProcessingMode.upload
 			fieldValue = undefined
-			fp.state.props?.fClosureSetVal(
+			fp.stateProps.fSetVal(
 				fp.row,
 				field,
 				new TokenApiBlobParmUpload({
@@ -121,8 +117,17 @@
 			fp.state.downloadUrl(fieldValue.downloadUrl, fieldValue.fileName)
 		}
 	}
+
+	function preventDefault(fn) {
+		return function (event) {
+			event.preventDefault()
+			fn.call(this, event)
+		}
+	}
 </script>
 
+<!-- onclick|preventDefault={() => elInput.click()} -->
+<!-- on:click|preventDefault={() => elInput.click()} -->
 <fieldset>
 	<legend>{field.colDO.label}</legend>
 
@@ -133,7 +138,7 @@
 					alt={field.colDO.label}
 					class="mx-auto p-4"
 					hidden={!showImg}
-					on:click|preventDefault={elInput.click()}
+					onclick={preventDefault(elInput.click())}
 					src={urlCurrent}
 					width="80%"
 				/>
@@ -142,7 +147,7 @@
 					<iframe
 						frameborder="0"
 						height="600px"
-						on:click|preventDefault={elInput.click()}
+						onclick={preventDefault(elInput.click())}
 						src={urlCurrent}
 						title={field.colDO.label}
 						width="80%"
@@ -154,19 +159,19 @@
 		<div class="flex mt-2">
 			<button
 				class="btn btn-action variant-filled-primary {chooseBtnWidth}"
-				on:click={elInput.click()}
+				onclick={() => elInput.click()}
 			>
 				{labelSelect}
 			</button>
 
 			{#if urlCurrent}
-				<button class="btn btn-action variant-filled-error ml-2 w-1/4" on:click={onDelete}>
+				<button class="btn btn-action variant-filled-error ml-2 w-1/4" onclick={() => onDelete}>
 					{labelDelete}
 				</button>
 			{/if}
 
-			{#if mode === Mode.storage}
-				<button class="btn btn-action variant-filled-primary ml-2 w-1/4" on:click={onDownload}>
+			{#if mode === FileProcessingMode.storage}
+				<button class="btn btn-action variant-filled-primary ml-2 w-1/4" onclick={() => onDownload}>
 					Download
 				</button>
 			{/if}
@@ -180,7 +185,7 @@
 			hidden={true}
 			id={field.colDO.propNamDBe}
 			name={field.colDO.propName}
-			on:change={onNew}
+			onchange={() => onNew}
 			type="file"
 		/>
 	</div>

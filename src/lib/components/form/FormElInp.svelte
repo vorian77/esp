@@ -8,7 +8,7 @@
 	import { IconProps } from '$comps/icon/types.icon'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let fp: FieldProps
+	let { fp = $bindable() }: FieldProps = $props()
 
 	const setHidTextIcon = () => {
 		field.setIconProps({
@@ -24,16 +24,16 @@
 		field = field
 	}
 
-	let field = fp.field as FieldInput
-	$: if (field.fieldElement === FieldElement.textHide) {
+	let field = $derived(fp.field) as FieldInput
+	if (field.fieldElement === FieldElement.textHide) {
 		setHidTextIcon()
 	}
 
-	$: classPropsInput =
-		fp.state.props.dataObj.raw.codeCardinality === DataObjCardinality.detail
+	let classPropsInput =
+		fp.stateProps.dataObj.raw.codeCardinality === DataObjCardinality.detail
 			? 'input text-sm text-black ' + field.colorBackground
 			: 'w-full border-none bg-transparent text-black'
-	$: classPropsInput +=
+	classPropsInput +=
 		field.fieldAlignment === FieldAlignment.left
 			? ' text-left'
 			: field.fieldAlignment === FieldAlignment.center
@@ -44,13 +44,13 @@
 						? ' text-right'
 						: ' text-left'
 
-	$: min = field.minValue ? field.minValue.toString() : ''
-	$: max = field.maxValue ? field.maxValue.toString() : ''
-	$: step = field.spinStep ? field.spinStep : ''
+	let min = $derived(field.minValue ? field.minValue.toString() : '')
+	let max = $derived(field.maxValue ? field.maxValue.toString() : '')
+	let step = $derived(field.spinStep ? field.spinStep : '')
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		fp.state.props?.fClosureSetVal(fp.row, fp.field, target.value)
+		fp.stateProps.fSetVal(fp.row, fp.field, target.value)
 	}
 
 	function onDoubleClick(event: MouseEvent) {
@@ -62,7 +62,7 @@
 			const month = dateMonth < 10 ? '0' + dateMonth : dateMonth.toString()
 			const day = dateDay < 10 ? '0' + dateDay : dateDay.toString()
 			const value = year + '-' + month + '-' + day
-			fp.state.props?.fClosureSetVal(fp.row, fp.field, value)
+			fp.stateProps.fSetVal(fp.row, fp.field, value)
 		}
 	}
 </script>
@@ -81,8 +81,8 @@
 		on:change={onChange}
 		on:dblclick={onDoubleClick}
 		on:keyup={onChange}
-		placeholder={fp.state.props.dataObj.raw.codeCardinality === DataObjCardinality.detail ||
-		fp.state.props.dataObj.raw.isListEdit
+		placeholder={fp.stateProps.dataObj.raw.codeCardinality === DataObjCardinality.detail ||
+		fp.stateProps.dataObj.raw.isListEdit
 			? field.placeHolder
 			: ''}
 		readonly={field.fieldAccess === FieldAccess.readonly}

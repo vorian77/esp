@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { NavBarDataCompApps, NavBarDataCompItem } from '$comps/nav/navBar/types.navBar'
+	import { NavBarDataCompApps, NavBarDataCompItem } from '$comps/nav/navBar/types.navBar.svelte'
 	import NavBarGroup from '$comps/nav/navBar/NavBarGroup.svelte'
 	import NavBarItem from '$comps/nav/navBar/NavBarItem.svelte'
 	import NavBarHeader from '$comps/nav/navBar/NavBarHeader.svelte'
@@ -8,7 +8,7 @@
 
 	const FILENAME = '/$comps/nav/navBar/NavBarApps.svelte'
 
-	export let data: NavBarDataCompApps[]
+	let { data }: { data: NavBarDataCompApps[] } = $props()
 </script>
 
 <div>

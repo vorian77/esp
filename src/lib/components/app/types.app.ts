@@ -38,8 +38,9 @@ import {
 	State,
 	StatePacket,
 	StatePacketAction,
-	StateSurfaceModalDataObj
-} from '$comps/app/types.appState'
+	StateSurfaceModalDataObj,
+	StateTarget
+} from '$comps/app/types.appState.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/nav/types.app.ts'
@@ -295,13 +296,9 @@ export class App {
 	popLevel(state: State) {
 		this.levels.pop()
 		if (this.levels.length === 0) {
-			state.update({
-				page: '/home',
-				nodeType: NodeType.home,
-				packet: new StatePacket({
-					action: StatePacketAction.navBarOpen,
-					confirmType: TokenAppDoActionConfirmType.objectChanged
-				})
+			state.change({
+				confirmType: TokenAppDoActionConfirmType.objectChanged,
+				target: StateTarget.dashboard
 			})
 		}
 		return this

@@ -6,12 +6,14 @@
 
 	const FILENAME = '/$comps/form/FormElCustomActionButton.svelte'
 
-	export let fp: FieldProps
+	let { fp = $bindable() }: FieldProps = $props()
 
-	$: state = fp.state
-	$: dataRecord = fp.dataRecord
-	$: field = fp.field as FieldCustomActionButton
-	$: disabled = !(state.objStatus.changed() && state.objStatus.valid())
+	let state = $derived(fp.stateProps.state)
+	let dataRecord = $derived(fp.dataRecord)
+	let field = $derived(fp.field) as FieldCustomActionButton
+	let disabled = $derived(
+		!(stateProps.state.objStatus.changed() && stateProps.state.objStatus.valid())
+	)
 
 	async function action() {
 		const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
@@ -23,7 +25,7 @@
 	class="w-full btn btn-action text-white"
 	style:background-color={field.colDO.fieldColor.color}
 	{disabled}
-	on:click={async () => await action()}
+	onclick={async () => await action()}
 >
 	{field.colDO.label}
 </button>

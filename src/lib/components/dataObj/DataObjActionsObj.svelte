@@ -12,8 +12,9 @@
 		State,
 		StatePacket,
 		StatePacketAction,
+		StateProps,
 		StateSurfaceEmbedShell
-	} from '$comps/app/types.appState'
+	} from '$comps/app/types.appState.svelte'
 	import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import { flip } from 'svelte/animate'
 	import { error } from '@sveltejs/kit'
@@ -21,19 +22,14 @@
 
 	const FILENAME = '/$comps/dataObj/DataObjActions.svelte'
 
-	const animationDurationMs = 500
-
-	export let state: State
+	let { stateProps = $bindable() }: StateProps = $props()
 
 	let actions: DataObjActionField[]
 	let isEditing: boolean = false
-	let objStatus: DataObjStatus
 
-	$: dataObj = state.props?.dataObj
-	$: {
-		objStatus = state.objStatus
-		load()
-	}
+	let dataObj = $state(stateProps.dataObj)
+
+	load()
 
 	function load() {
 		dataObj.actionsField.forEach((a) => {
@@ -46,26 +42,25 @@
 				[StatePacketAction.doDetailSave, StatePacketAction.doListSelfSave].includes(
 					a.codePacketAction
 				) &&
-				state.objStatus.changed() &&
+				stateProps.state.objStatus.changed() &&
 				!dataObj.fieldEmbed
 		)
 	}
 
-	let isTriggeredEnable = function (action: DataObjActionField) {
+	function isTriggeredEnable(action: DataObjActionField) {
 		const tg = new DataObjActionFieldTriggerGroup()
-		tg.addStatus(state, dataObj, action.codeActionFieldTriggerEnable, true)
+		tg.addStatus(stateProps.state, dataObj, action.codeActionFieldTriggerEnable, true)
 		return tg.isTriggered()
 	}
-	let isTriggeredShow = function (action: DataObjActionField) {
+	function isTriggeredShow(action: DataObjActionField) {
 		const tg = new DataObjActionFieldTriggerGroup()
 		action.actionFieldShows.forEach((show) => {
-			tg.addStatus(state, dataObj, show.codeTriggerShow, show.isRequired)
+			tg.addStatus(stateProps.state, dataObj, show.codeTriggerShow, show.isRequired)
 		})
 		return tg.isTriggered()
 	}
-
 	async function onClick(action: DataObjActionField) {
-		await action.trigger(state, dataObj)
+		await action.trigger(stateProps.state, dataObj)
 	}
 </script>
 

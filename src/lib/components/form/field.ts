@@ -1,4 +1,4 @@
-import { State, StateProps } from '$comps/app/types.appState'
+import { State, StateProps } from '$comps/app/types.appState.svelte'
 import {
 	booleanRequired,
 	classOptional,
@@ -270,7 +270,7 @@ export class FieldProps {
 	iconProps?: IconProps
 	isLabelBold: boolean = false
 	row: number
-	state: State
+	stateProps: StateProps
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'FieldProps'
@@ -279,9 +279,8 @@ export class FieldProps {
 		this.fieldValue = obj.fieldValue
 		this.iconProps = obj.iconProps
 		this.row = required(obj.row, clazz, 'row')
-		this.state = required(obj.state, clazz, 'state')
+		this.stateProps = required(obj.stateProps, clazz, 'stateProps')
 	}
-
 	setIsLabelBold(isLabelBold: boolean) {
 		this.isLabelBold = isLabelBold
 	}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { State } from '$comps/app/types.appState'
+	import type { State } from '$comps/app/types.appState.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 

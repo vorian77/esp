@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Drawer, getDrawerStore } from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
-	import { State } from '$comps/app/types.appState'
+	import { State } from '$comps/app/types.appState.svelte'
 
 	const FILENAME = 'OverlayDrawer.svelte'
 	const storeDrawer = getDrawerStore()

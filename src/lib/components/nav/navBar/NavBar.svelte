@@ -5,24 +5,27 @@
 	import NavBarOrg from '$comps/nav/navBar/NavBarOrg.svelte'
 	import NavBarUser from '$comps/nav/navBar/NavBarUser.svelte'
 	import NavCopyright from '$comps/nav/navBar/NavCopyright.svelte'
-	import { NavBarData } from '$comps/nav/navBar/types.navBar'
-	import { tweened } from 'svelte/motion'
+	import { NavBarData } from '$comps/nav/navBar/types.navBar.svelte'
+	import { Tween } from 'svelte/motion'
 	import { cubicOut } from 'svelte/easing'
 
 	const FILENAME = '/$comps/nav/navBar/NavBar.svelte'
 
-	export let navBar: NavBarData
+	let { navBar }: { navBar: NavBarData } = $props()
 
-	const widthValue = tweened(navBar?.width ? navBar.width : 0, {
+	let widthValue = new Tween(0, {
 		duration: 500,
 		easing: cubicOut
 	})
-	$: $widthValue = navBar?.width ? navBar.width : 0
+
+	$effect(() => {
+		widthValue.target = navBar?.width ? navBar.width : 0
+	})
 </script>
 
 <nav
 	class="h-full flex flex-col justify-between text-sm p-3 bg-neutral-50 border-r"
-	style="width: {$widthValue}px;"
+	style="width: {widthValue.current}px;"
 >
 	<div>
 		{#if navBar}

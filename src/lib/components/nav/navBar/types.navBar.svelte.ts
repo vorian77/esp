@@ -8,9 +8,14 @@ import {
 	UserResourceTask,
 	valueOrDefault
 } from '$utils/types'
-import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
+import {
+	State,
+	StatePacket,
+	StatePacketAction,
+	StateTarget
+} from '$comps/app/types.appState.svelte'
 import { TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
-import { adminDbReset } from '$utils/utils.sys'
+import { adminDbReset } from '$utils/utils.sys.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = 'src/lib/components/navBar/types.navBar.ts'
@@ -24,28 +29,26 @@ export class NavBarData {
 		delay: 0,
 		duration: 200
 	}
-	fUpdateNav: Function = (isItemActivate: boolean) => {}
 	iconColor = '#daa520'
 	idIndex = -1
-	isOpen = true
+	isOpen = $state(true)
 	items: NavBarDataComp[] = []
-	state: State
-	width: any
+	stateApp: State
+	width: any = $state()
 	widthClosed = 70
 	widthOpen = 250
 	constructor(obj: any) {
 		const clazz = 'NavBarData'
 		obj = valueOrDefault(obj, {})
-		this.fUpdateNav = required(obj.navBarUpdate, clazz, 'fUpdateNav')
-		this.state = obj.state
+		this.stateApp = obj.stateApp
 		this.width = this.widthOpen
 
-		if (this.state && this.state.user) {
+		if (this.stateApp && this.stateApp.user) {
 			// org
-			this.items.push(new NavBarDataCompOrg(this, { user: this.state.user }))
+			this.items.push(new NavBarDataCompOrg(this, { user: this.stateApp.user }))
 
 			// apps
-			const rawMenu = new RawMenu(this.state.user.resources_sys_app)
+			const rawMenu = new RawMenu(this.stateApp.user.resources_sys_app)
 			if (rawMenu.apps.length === 1) {
 				const itemGroupSingleProgram = new NavBarDataCompGroup(this, {
 					header: 'My Apps',
@@ -66,8 +69,8 @@ export class NavBarData {
 
 			// item - group - tasks - default
 			const itemGroupTasks = new NavBarDataCompGroup(this, { header: 'My Tasks' })
-			this.state.user.resources_sys_task_default
-				.filter((r) => r.isShow && !this.state.user?.isMobileOnly && !r.codeStatusObjName)
+			this.stateApp.user.resources_sys_task_default
+				.filter((r) => r.isShow && !this.stateApp.user?.isMobileOnly && !r.codeStatusObjName)
 				.forEach((r) => {
 					itemGroupTasks.addItem({
 						content: new NavBarContent('task', r),
@@ -78,7 +81,7 @@ export class NavBarData {
 			this.items.push(itemGroupTasks)
 
 			// user
-			this.items.push(new NavBarDataCompUser(this, { user: this.state.user }))
+			this.items.push(new NavBarDataCompUser(this, { user: this.stateApp.user }))
 
 			// item - group - default items
 			const itemDefault = new NavBarDataCompGroup(this, {})
@@ -105,36 +108,33 @@ export class NavBarData {
 					break
 
 				case NavBarContentType.page:
-					this.state.update({
+					this.stateApp.change({
+						confirmType: TokenAppDoActionConfirmType.objectChanged,
 						page: content.value,
-						packet: new StatePacket({
-							action: StatePacketAction.navCrumbs,
-							confirmType: TokenAppDoActionConfirmType.objectChanged
-						})
+						target: StateTarget.page
 					})
 					break
 				case NavBarContentType.node:
 					node = content.value as Node
-					this.state.update({
-						page: '/home',
+					this.stateApp.change({
+						confirmType: TokenAppDoActionConfirmType.objectChanged,
 						// parmsState: { programId: this.getProgramId(node) },
-						nodeType: node.type,
 						packet: new StatePacket({
 							action: StatePacketAction.openNode,
-							confirmType: TokenAppDoActionConfirmType.objectChanged,
 							token: new TokenAppNode({ node })
-						})
+						}),
+						target: StateTarget.feature
 					})
 					break
 				case NavBarContentType.task:
 					const task: UserResourceTask = content.value as UserResourceTask
-					this.state.update({
-						nodeType: '', // todo - 241125 - when this is removed the packet doesn't get to RootLayoutApp
+					this.stateApp.change({
+						confirmType: TokenAppDoActionConfirmType.objectChanged,
 						packet: new StatePacket({
 							action: StatePacketAction.openNode,
-							confirmType: TokenAppDoActionConfirmType.objectChanged,
-							token: task.getTokenNode(this.state.user)
-						})
+							token: task.getTokenNode(this.stateApp.user)
+						}),
+						target: StateTarget.feature
 					})
 					break
 				default:
@@ -180,7 +180,6 @@ export class NavBarData {
 	toggleOpen = (isItemActivate: boolean) => {
 		this.isOpen = !this.isOpen
 		this.width = this.isOpen ? this.widthOpen : this.widthClosed
-		this.fUpdateNav(isItemActivate)
 	}
 }
 
@@ -319,7 +318,7 @@ export class NavBarDataCompItem extends NavBarDataComp {
 	hasChildren: boolean
 	icon?: string
 	indent: number
-	isOpen: boolean
+	isOpen: boolean = $state(false)
 	isRoot: boolean
 	label: NavBarLabel
 	constructor(navBar: NavBarData, obj: any) {
@@ -333,11 +332,10 @@ export class NavBarDataCompItem extends NavBarDataComp {
 		this.isRoot = booleanOrDefault(obj.isRoot, false)
 		this.label = required(obj.label, clazz, 'label')
 	}
-	async click() {
+	click = async () => {
 		if (this.hasChildren) {
 			if (this.navBar.isOpen) {
 				this.isOpen = !this.isOpen
-				this.navBar.fUpdateNav(false)
 			} else {
 				if (!this.isOpen) this.isOpen = !this.isOpen
 				this.navBar.toggleOpen(false)
@@ -403,13 +401,13 @@ export class NavBarDataCompUser extends NavBarDataComp {
 		this.items.addItem(obj)
 	}
 	async adminResetDb(navBar: NavBarData) {
-		await adminDbReset(navBar.state)
-		await navBar.state.resetUser(true)
+		await adminDbReset(navBar.stateApp)
+		await navBar.stateApp.resetUser(true)
 	}
 
 	async myPreferences(navBar: NavBarData) {
-		await navBar.state.openModalDataObj('data_obj_auth_user_pref_type', async () => {
-			await navBar.state.resetUser(true)
+		await navBar.stateApp.openModalDataObj('data_obj_auth_user_pref_type', async () => {
+			await navBar.stateApp.resetUser(true)
 		})
 	}
 }

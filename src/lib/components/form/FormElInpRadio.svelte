@@ -5,25 +5,28 @@
 	import { FieldAccess, FieldAlignment } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 
-	export let fp: FieldProps
+	let { fp = $bindable() }: FieldProps = $props()
 
-	$: dataObj = fp.state.props.dataObj
-	$: field = fp.field as FieldRadio
-	$: fieldValue = fp.fieldValue
-	$: dataItems = field.linkItemsSource
-		? field.linkItemsSource.formatDataFieldColumnItem(fieldValue)
-		: []
-	$: row = fp.row
+	let dataObj = $derived(fp.stateProps.dataObj)
+	let field = $derived(fp.field) as FieldRadio
+	let fieldValue = $derived(fp.fieldValue)
+	let dataItems = $derived(
+		field.linkItemsSource ? field.linkItemsSource.formatDataFieldColumnItem(fieldValue) : []
+	)
+	let ow = $derived(fp.row)
 
-	$: classPropsLabel = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
-	$: classFormat = field.isDisplayBlock ? 'block mb-2' : 'inline mr-7'
-	$: classFieldSet =
+	let classPropsLabel = $derived(
+		dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
+	)
+	let classFormat = $derived(field.isDisplayBlock ? 'block mb-2' : 'inline mr-7')
+	let classFieldSet = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.list
 			? 'fieldsetList'
 			: field.fieldAccess === FieldAccess.required
 				? 'fieldsetDetailRequired'
 				: 'fieldsetDetailOptional'
-	$: classAlignment =
+	)
+	let classAlignment = $derived(
 		field.fieldAlignment === FieldAlignment.left
 			? ' text-left'
 			: field.fieldAlignment === FieldAlignment.center
@@ -33,12 +36,13 @@
 					: field.fieldAlignment === FieldAlignment.right
 						? ' text-right'
 						: ' text-left'
+	)
 
 	if (field) field.isDisplayBlock = false
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		fp.state.props?.fClosureSetVal(fp.row, fp.field, target.value)
+		fp.stateProps.fSetVal(fp.row, fp.field, target.value)
 	}
 </script>
 

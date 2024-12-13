@@ -1,23 +1,32 @@
 <script lang="ts">
 	import { AppLevelCrumb } from '$comps/app/types.app'
-	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
+	import {
+		State,
+		StatePacket,
+		StatePacketAction,
+		StateProps,
+		StateTarget
+	} from '$comps/app/types.appState.svelte'
 	import { TokenAppDoActionConfirmType, TokenAppIndex } from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/nav/NavCrumbs.svelte'
 
-	export let state: State
-	export let crumbsList: Array<AppLevelCrumb> = []
+	let {
+		stateProps = $bindable(),
+		crumbsList
+	}: { stateProps: StateProps; crumbsList: AppLevelCrumb[] } = $props()
 
 	async function onClick(index: number) {
-		state.update({
+		stateProps.change({
+			confirmType: TokenAppDoActionConfirmType.objectChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navCrumbs,
-				confirmType: TokenAppDoActionConfirmType.objectChanged,
 				token: new TokenAppIndex({
 					index
 				})
-			})
+			}),
+			target: StateTarget.feature
 		})
 	}
 </script>

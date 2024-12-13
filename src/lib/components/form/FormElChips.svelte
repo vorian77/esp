@@ -11,8 +11,9 @@
 		StatePacket,
 		StatePacketAction,
 		StateSurfaceEmbedShell,
-		StateSurfaceModalEmbed
-	} from '$comps/app/types.appState'
+		StateSurfaceModalEmbed,
+		StateTarget
+	} from '$comps/app/types.appState.svelte'
 	import {
 		TokenApiUserPref,
 		TokenAppDo,
@@ -28,29 +29,27 @@
 	import { IconProps } from '$comps/icon/types.icon'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let fp: FieldProps
+	let { fp = $bindable() }: FieldProps = $props()
 
 	let columnDefs: DataRecord
 	let displayValue: string
-	let field: FieldCheckbox
 	let rowData: DataRecord[]
 	let sortModel: DataObjSort[]
 
-	$: dataObj = fp.state.props.dataObj
+	let dataObj = $derived(fp.stateProps.dataObj)
 
-	$: {
-		field = fp.field as FieldCheckbox
-		field.setIconProps({
-			name: 'SquareMousePointer',
-			clazz: 'ml-1.5 mt-0.5',
-			color: '#3b79e1',
-			onClick: onChange,
-			size: 18,
-			strokeWidth: 2
-		})
-	}
-	$: fieldValue = fp.fieldValue
-	$: if (field.linkItemsSource) {
+	let field = $derived(fp.field) as FieldCheckbox
+	field.setIconProps({
+		name: 'SquareMousePointer',
+		clazz: 'ml-1.5 mt-0.5',
+		color: '#3b79e1',
+		onClick: onChange,
+		size: 18,
+		strokeWidth: 2
+	})
+
+	let fieldValue = $derived(fp.fieldValue)
+	if (field.linkItemsSource) {
 		displayValue = field.linkItemsSource.getDisplayValueList(fieldValue)
 		const parms = field.linkItemsSource.getGridParms()
 		columnDefs = parms.columnDefs
@@ -59,10 +58,10 @@
 	}
 
 	function onChange(event: Event) {
-		fp.state.update({
+		fp.stateProps.change({
+			confirmType: TokenAppDoActionConfirmType.none,
 			packet: new StatePacket({
 				action: StatePacketAction.modalSelectOpen,
-				confirmType: TokenAppDoActionConfirmType.none,
 				token: new TokenAppModalSelect({
 					columnDefs,
 					fModalClose,
@@ -73,18 +72,15 @@
 					selectLabel: field.colDO.label,
 					sortModel
 				})
-			})
+			}),
+			target: StateTarget.feature
 		})
 
 		async function fModalClose(returnType: TokenAppModalReturnType, returnData?: ParmsValues) {
 			if (returnType === TokenAppModalReturnType.complete) {
 				if (returnData.data) {
 					const parms = new ParmsValues(returnData.data)
-					fp.state.props?.fClosureSetVal(
-						fp.row,
-						fp.field,
-						parms.valueGet(ParmsValuesType.listIdsSelected)
-					)
+					fp.stateProps.fSetVal(fp.row, fp.field, parms.valueGet(ParmsValuesType.listIdsSelected))
 				}
 			}
 		}

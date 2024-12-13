@@ -6,12 +6,12 @@
 
 	const FILENAME = '/$comps/form/FormElCustomActionLink.svelte'
 
-	export let fp: FieldProps
+	let { fp = $bindable() }: FieldProps = $props()
 
-	$: state = fp.state
-	$: dataRecord = fp.dataRecord
-	$: field = fp.field as FieldCustomActionLink
-	$: prefix = field.prefix ? field.prefix + ' ' : ''
+	let state = $derived(fp.stateProps.state)
+	let dataRecord = $derived(fp.dataRecord)
+	let field = $derived(fp.field) as FieldCustomActionLink
+	let prefix = $derived(field.prefix ? field.prefix + ' ' : '')
 
 	async function action() {
 		const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')

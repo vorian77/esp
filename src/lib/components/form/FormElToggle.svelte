@@ -6,45 +6,48 @@
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let fp: FieldProps
+	let { fp = $bindable() }: FieldProps = $props()
 
-	$: dataObj = fp.state.props.dataObj
-	$: field = fp.field as FieldToggle
-	$: fieldValue = fp.fieldValue
+	let dataObj = $derived(fp.stateProps.dataObj)
+	let field = $derived(fp.field) as FieldToggle
+	let fieldValue = $state(fp.fieldValue)
 
-	$: classProps = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'text-center'
-	$: classPropsLabel =
+	let classProps = $derived(
+		dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'text-center'
+	)
+	let classPropsLabel = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-1' : 'mb-1 hidden'
-	$: classDisabled = field.fieldAccess === FieldAccess.readonly ? 'disabled' : ''
+	)
+	let classDisabled = $derived(field.fieldAccess === FieldAccess.readonly ? 'disabled' : '')
 
-	$: selections = (function () {
-		switch (field.colDO.colDB.codeDataType) {
-			case PropDataType.int16:
-				return [getValTrue(1), getValFalse(0)]
+	let selections = $state(
+		(() => {
+			switch (field.colDO.colDB.codeDataType) {
+				case PropDataType.int16:
+					return [getValTrue(1), getValFalse(0)]
 
-			case PropDataType.str:
-				return [getValTrue('Yes'), getValFalse('No')]
+				case PropDataType.str:
+					return [getValTrue('Yes'), getValFalse('No')]
 
-			default:
-				return [getValTrue(true), getValFalse(false)]
-		}
-		function getValFalse(dbValue: any) {
-			return [dbValue, field.valueFalse ? field.valueFalse : dbValue]
-		}
-		function getValTrue(dbValue: any) {
-			return [dbValue, field.valueTrue ? field.valueTrue : dbValue]
-		}
-	})()
-	let valueToggle: boolean
-	let valueDisplay: any
+				default:
+					return [getValTrue(true), getValFalse(false)]
+			}
+			function getValFalse(dbValue: any) {
+				return [dbValue, field.valueFalse ? field.valueFalse : dbValue]
+			}
+			function getValTrue(dbValue: any) {
+				return [dbValue, field.valueTrue ? field.valueTrue : dbValue]
+			}
+		})()
+	)
+	let valueToggle: boolean = $state()
+	let valueDisplay: any = $state()
 
-	$: {
-		if (fieldValue === undefined || fieldValue === null) {
-			fieldValue = field.presetTrue ? selections[0][0] : selections[1][0]
-			fp.state.props?.fClosureSetVal(fp.row, fp.field, fieldValue)
-		}
-		setToggle(fieldValue)
+	if (fieldValue === undefined || fieldValue === null) {
+		fieldValue = field.presetTrue ? selections[0][0] : selections[1][0]
+		fp.stateProps.fSetVal(fp.row, fp.field, fieldValue)
 	}
+	setToggle(fieldValue)
 
 	function onChange(event: Event) {
 		const idx = selections.findIndex((s: any) => {
@@ -52,7 +55,7 @@
 		})
 		const newValue = selections[(idx + 1) % 2][0]
 		setToggle(newValue)
-		fp.state.props?.fClosureSetVal(fp.row, fp.field, newValue)
+		fp.stateProps.fSetVal(fp.row, fp.field, newValue)
 	}
 
 	function setToggle(value: any) {

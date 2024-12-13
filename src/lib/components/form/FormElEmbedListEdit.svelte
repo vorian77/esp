@@ -6,11 +6,9 @@
 
 	const FILENAME = '$comps/form/FormElEmbeddedListSelect.svelte'
 
-	export let fp: FieldProps
+	let { fp = $bindable() }: FieldProps = $props()
 
-	$: {
-		fp.setIsLabelBold(true)
-	}
+	fp.setIsLabelBold(true)
 </script>
 
 <FormLabel {fp} />

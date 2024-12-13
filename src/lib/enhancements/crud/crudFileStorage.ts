@@ -1,5 +1,5 @@
 import { DataObjActionQueryTriggerTiming } from '$comps/app/types.appQuery'
-import { State } from '$comps/app/types.appState'
+import { State } from '$comps/app/types.appState.svelte'
 import type { ResponseBody } from '$utils/types'
 import {
 	DataObjData,

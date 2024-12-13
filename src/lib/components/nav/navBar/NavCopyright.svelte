@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { NavBarData } from '$comps/nav/navBar/types.navBar'
+	import { NavBarData } from '$comps/nav/navBar/types.navBar.svelte'
 	import { fade } from 'svelte/transition'
 
-	export let navBar: NavBarData
+	let { navBar }: { navBar: NavBarData } = $props()
 
 	let currentYear = new Date().getFullYear()
 </script>

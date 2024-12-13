@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
+	import {
+		State,
+		StatePacket,
+		StatePacketAction,
+		StateTarget
+	} from '$comps/app/types.appState.svelte'
 	import { TokenApiQueryData, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import {
@@ -53,7 +58,7 @@
 
 		const result: ResponseBody = await apiFetch(
 			ApiFunction.dbEdgeProcessExpression,
-			new TokenApiQueryData({ dataTab })
+			new TokenApiQueryData({ dataTab, user: state.user })
 		)
 		if (result.success) {
 			return result.data
@@ -68,14 +73,13 @@
 	async function onClick(task: UserResourceTask, parms: DataRecord | undefined = undefined) {
 		state.parmsState.update(parms)
 		const token = task.getTokenNode(state.user)
-		state.update({
-			page: token.node.page,
-			nodeType: token.node.type,
+		state.change({
+			confirmType: TokenAppDoActionConfirmType.objectChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.openNode,
-				confirmType: TokenAppDoActionConfirmType.objectChanged,
 				token
-			})
+			}),
+			target: StateTarget.feature
 		})
 	}
 </script>

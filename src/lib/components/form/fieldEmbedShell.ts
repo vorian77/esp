@@ -6,7 +6,7 @@ import {
 	FieldEmbedListSelect
 } from '$comps/form/fieldEmbed'
 import { DataObj, DataObjStatus } from '$utils/types'
-import { StatePacketAction, StateSurfaceEmbedShell } from '$comps/app/types.appState'
+import { StatePacketAction, StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
 
 export class FieldEmbedShell extends Field {
 	fields: FieldEmbed[] = []

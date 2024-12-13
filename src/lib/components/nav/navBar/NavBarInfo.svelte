@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { NavBarData, NavBarInfo } from '$comps/nav/navBar/types.navBar'
+	import { NavBarData, NavBarInfo } from '$comps/nav/navBar/types.navBar.svelte'
 	import { fade } from 'svelte/transition'
 
-	export let navBar: NavBarData
-	export let info: NavBarInfo
+	let { info, navBar }: { info: NavBarInfo; navBar: NavBarData } = $props()
 </script>
 
 {#if navBar.isOpen}

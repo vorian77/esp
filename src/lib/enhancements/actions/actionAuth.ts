@@ -1,7 +1,7 @@
-import { State } from '$comps/app/types.appState'
+import { State } from '$comps/app/types.appState.svelte'
 import { FieldCustomAction } from '$comps/form/fieldCustom'
 import type { DataRecord, ResponseBody } from '$utils/types'
-import { debug, DataObjData, encrypt, ToastType, userInit } from '$utils/types'
+import { userSetId } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import {
 	TokenApiDbDataObjSource,
@@ -123,12 +123,10 @@ export default async function action(state: State, field: FieldCustomAction, dat
 					alert(msgFail)
 					return
 				}
-				const userId = resultRecord['userId']
-				const user = await userInit(userId)
-				if (user && Object.hasOwn(user, 'id')) {
-					state.storeDrawer.close()
-					goto('/home')
-				}
+				state.storeDrawer.close()
+				await userSetId(resultRecord['userId'])
+				goto('/home')
+
 				break
 
 			case 'data_obj_auth_signup':

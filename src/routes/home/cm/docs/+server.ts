@@ -32,7 +32,7 @@ export const POST = async ({ request, locals }) => {
 	// 	return new Response(JSON.stringify({ formDefn }))
 	// }
 
-	// export const GET = async ({ locals }) => {
+	// export const GET = async ({}) => {
 	// 	// const responsePromise = await dbESPAPI(HTMLMETHOD.GET, 'ws_cm_ssr_elg_list', {
 	// 	// 	referralId: locals.user.referral_id
 	// 	// })

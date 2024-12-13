@@ -1,4 +1,4 @@
-import { State, StatePacketAction } from '$comps/app/types.appState'
+import { State, StatePacketAction } from '$comps/app/types.appState.svelte'
 import {
 	type ColDef,
 	type GridApi,

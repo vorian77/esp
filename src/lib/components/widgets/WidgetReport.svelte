@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { State } from '$comps/app/types.appState'
+	import { State, StateTarget } from '$comps/app/types.appState.svelte'
 	import { DataObj, DataObjData, type DataRecord, ResponseBody, User } from '$utils/types'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import {
@@ -40,7 +40,7 @@
 
 	let dataObj: DataObj
 	let record: DataRecord = {}
-	let state = new State({})
+	let state = new State({ target: StateTarget.feature })
 	let table = new Table()
 
 	const getPropLabel = (propName: string) => {
@@ -57,7 +57,7 @@
 			new TokenApiQuery(
 				TokenApiQueryType.retrieve,
 				new TokenApiDbDataObjSource({ dataObjName }),
-				new TokenApiQueryData({ record: {} })
+				new TokenApiQueryData({ record: {}, user: state.user })
 			)
 		)
 		const dataResult = DataObjData.load(result.data.dataObjData)

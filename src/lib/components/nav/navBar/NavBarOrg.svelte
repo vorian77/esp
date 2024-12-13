@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { NavBarDataCompOrg } from '$comps/nav/navBar/types.navBar'
+	import { NavBarDataCompOrg } from '$comps/nav/navBar/types.navBar.svelte'
 	import { User } from '$utils/types'
 	import { Avatar } from '@skeletonlabs/skeleton'
 	import { fade } from 'svelte/transition'
@@ -9,7 +9,7 @@
 
 	const FILENAME = '/$comps/app/navBar/NavBarOrg.svelte'
 
-	export let data: NavBarDataCompOrg
+	let { data }: { data: NavBarDataCompOrg } = $props()
 </script>
 
 {#if data.user}
@@ -17,7 +17,7 @@
 		<a
 			href="#"
 			class="flex-none w-14 border-0 border-red-700 hover:-translate-y-0.5 transition-transform"
-			on:click={data.navBar.toggleOpen()}
+			onclick={data.navBar.toggleOpen}
 		>
 			<img src={data.user.org.urlLogo} />
 		</a>
@@ -30,7 +30,7 @@
 			</div>
 
 			<div class="flex-none w-6 text-end border-0 border-blue-700">
-				<button on:click={data.navBar.toggleOpen()}>
+				<button onclick={data.navBar.toggleOpen}>
 					<div class={data.navBar.isOpen ? '' : 'rotate-180'}>
 						<Icon
 							props={new IconProps({
