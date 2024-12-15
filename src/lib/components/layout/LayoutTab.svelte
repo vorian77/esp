@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { AppLevel, AppLevelRowStatus } from '$comps/app/types.app'
+	import { ContextKey, required } from '$utils/types'
+	import { getContext } from 'svelte'
+	import { AppLevel, AppLevelRowStatus } from '$comps/app/types.app.svelte'
 	import {
 		State,
 		StatePacket,
@@ -14,20 +16,23 @@
 
 	const FILENAME = '$comps/layout/LayoutTab.svelte'
 
-	let { stateProps = $bindable() }: StateProps = $props()
+	let { parms }: DataRecord = $props()
+	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
 
-	let currLevel = $state(stateProps.state.app.getCurrLevel()) as AppLevel
-	let rowStatus = $state(stateProps.state.app.getRowStatus()) as AppLevelRowStatus
+	let currLevel: AppLevel = $derived(stateApp.app.getCurrLevel())
+	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let rowsRetrieved = $derived(dm.getRowsRetrieved(parms.dataObjId))
 
-	let isHideChildTabs = $state(
-		stateProps?.dataObjData.rowsRetrieved.hasRecord() &&
-			(stateProps?.dataObjData.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset) ||
-				stateProps.state.objStatus.changed() ||
-				!stateProps.state.objStatus.valid())
+	let isHideChildTabs = $derived(
+		rowsRetrieved.hasRecord() &&
+			(rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset) ||
+				dm.isStatusChanged() ||
+				!dm.isStatusValid())
 	)
 
-	async function onClick(index: number) {
-		stateProps.change({
+	function onClick(index: number) {
+		stateApp.change({
 			confirmType: TokenAppDoActionConfirmType.objectChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navTab,
@@ -53,7 +58,7 @@
 					{@const name = 'tab' + idx}
 					{@const isCurrent = idx === currLevel.tabIdxCurrent}
 					{@const hidden = isHideChildTabs && !isCurrent}
-					{@const label = tab?.label || tab?.dataObj?.raw.header}
+					{@const label = tab.label || dataObj.raw.header}
 					{@const classItem = isCurrent ? classItemCurrent : classItemNotCurrent}
 
 					<button {name} {hidden} class={classItem} onclick={() => onClick(idx)}>
@@ -72,19 +77,17 @@
 						onchange={(event) => onClick(Number(event.currentTarget.value))}
 					>
 						{#each currLevel.tabs as tab, idx}
-							{@const label = tab?.label || tab?.dataObj?.raw.header}
-							<option value={idx} selected={idx === currLevel?.tabIdxCurrent}>
+							{@const label = tab.label || dataObj.raw.header}
+							<option value={idx} selected={idx === currLevel.tabIdxCurrent}>
 								{label}
 							</option>
 						{/each}
 					</select>
 				</div>
-				<NavRow bind:stateProps {rowStatus} />
+				<NavRow />
 			</div>
 		{/if}
 
-		{#if stateProps.dataObj && stateProps.dataObjData}
-			<LayoutContent bind:stateProps on:formCancelled />
-		{/if}
+		<LayoutContent {parms} on:formCancelled />
 	</div>
 {/if}

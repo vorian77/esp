@@ -1,12 +1,12 @@
-import { App } from '$comps/app/types.app'
+import { App } from '$comps/app/types.app.svelte'
 import { required, strRequired, valueOrDefault } from '$utils/utils'
 import {
+	DataManager,
 	DataObj,
 	DataObjCardinality,
 	DataObjConfirm,
 	DataObjData,
 	DataObjEmbedType,
-	DataObjStatus,
 	type DataRecord,
 	memberOfEnum,
 	ParmsValues,
@@ -42,22 +42,49 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/app/types.appState.ts'
 
+async function askB4Transition(
+	state: State,
+	obj: any,
+	confirmConfig: DataObjConfirm,
+	fChangeCallback?: Function
+) {
+	if (state instanceof StateSurfaceModal) {
+		if (confirm(confirmConfig.message)) {
+			state.changeValidate(state, obj, fChangeCallback)
+		}
+	} else {
+		const modal: ModalSettings = {
+			type: 'confirm',
+			title: confirmConfig.title,
+			body: confirmConfig.message,
+			buttonTextCancel: confirmConfig.buttonLabelCancel,
+			buttonTextConfirm: confirmConfig.buttonLabelConfirm,
+			response: async (r: boolean) => {
+				if (r) {
+					// discard changes
+					obj.confirmType = TokenAppDoActionConfirmType.none
+					state.dataManager?.resetStatus()
+					state.changeValidate(state, obj, fChangeCallback)
+				}
+			}
+		}
+		return state.storeModal.trigger(modal)
+	}
+}
+
 export class State {
 	app: App = new App()
-	confirm: DataObjConfirm = new DataObjConfirm()
-	confirmType?: TokenAppDoActionConfirmType
 	data?: DataObj
+	dataManager?: DataManager
 	dataObjState?: DataObj
 	fChangeCallback?: Function
 	layoutComponent: StateLayoutComponent = StateLayoutComponent.layoutContent
 	layoutHeader: StateLayoutHeader = new StateLayoutHeader({})
 	nodeType: NodeType = NodeType.home
-	objStatus: DataObjStatus = new DataObjStatus()
 	packet?: StatePacket = $state()
 	page = '/home'
 	parmsState: ParmsValues = new ParmsValues()
 	parmsUser: ParmsUser = new ParmsUser()
-	props?: StateProps
 	storeDrawer: any
 	storeModal: any
 	storeToast: any
@@ -76,7 +103,6 @@ export class State {
 		// optional
 		if (Object.hasOwn(obj, 'app')) this.app = obj.app
 		if (Object.hasOwn(obj, 'fChangeCallback')) this.fChangeCallback = obj.fChangeCallback
-		if (Object.hasOwn(obj, 'confirmType')) this.confirmType = obj.confirmType
 		if (Object.hasOwn(obj, 'data')) this.data = obj.data
 		if (Object.hasOwn(obj, 'layoutComponent')) this.layoutComponent = obj.layoutComponent
 		if (Object.hasOwn(obj, 'layoutHeader'))
@@ -91,7 +117,6 @@ export class State {
 		if (Object.hasOwn(obj, 'user')) this.user = obj.user
 
 		// required
-		this.confirm = valueOrDefault(obj.confirm, new DataObjConfirm())
 		this.target = memberOfEnum(obj.target, 'State', 'target', 'StateTarget', StateTarget)
 		if ([StateTarget.dashboard, StateTarget.feature].includes(obj.target)) this.page = '/home'
 
@@ -100,15 +125,15 @@ export class State {
 
 	async changeValidate(state: State, obj: any, callback: Function | undefined = undefined) {
 		obj = valueOrDefault(obj, {})
-		if (state.confirmType && state.confirm) {
-			const confirmType = state.confirmType
-			const confirm = state.confirm
+		if (obj.confirmType) {
+			const confirmType = obj.confirmType
+			const confirm = obj.confirm || new DataObjConfirm()
 			if (
 				confirmType &&
 				(confirmType === TokenAppDoActionConfirmType.always ||
-					(confirmType === TokenAppDoActionConfirmType.objectChanged && state.objStatus.changed()))
+					(confirmType === TokenAppDoActionConfirmType.objectChanged &&
+						state.dataManager?.isStatusChanged()))
 			) {
-				obj.packet.confirmType = undefined
 				await askB4Transition(state, obj, confirm, callback)
 			} else {
 				if (callback) await callback(obj)
@@ -262,8 +287,7 @@ export class State {
 				isDataObj: true
 			},
 			packet: new StatePacket({
-				action: StatePacketAction.modalDataObj,
-				confirmType: TokenAppDoActionConfirmType.none
+				action: StatePacketAction.modalDataObj
 			})
 		})
 		await this.openModal(stateModal, fUpdate)
@@ -291,7 +315,6 @@ export class State {
 			},
 			packet: new StatePacket({
 				action: StatePacketAction.modalEmbed,
-				confirmType: TokenAppDoActionConfirmType.none,
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
 						dataObjId: field.raw.dataObjModalId,
@@ -337,7 +360,6 @@ export class State {
 			},
 			packet: new StatePacket({
 				action: StatePacketAction.modalEmbed,
-				confirmType: TokenAppDoActionConfirmType.none,
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
 						dataObjId: field.raw.dataObjListID,
@@ -377,7 +399,6 @@ export class State {
 			},
 			packet: new StatePacket({
 				action: StatePacketAction.modalSelectSurface,
-				confirmType: TokenAppDoActionConfirmType.none,
 				token
 			}),
 			parmsState
@@ -398,10 +419,6 @@ export class State {
 		}
 		this.storeToast.trigger(t)
 	}
-	resetState() {
-		this.objStatus.reset()
-		if (this.dataObjState) this.dataObjState.modeReset()
-	}
 
 	async resetUser(loadHome: boolean) {
 		if (this.user) {
@@ -414,8 +431,9 @@ export class State {
 			}
 		}
 	}
-	set(packet: StatePacket) {
-		this.packet = packet
+
+	setDataManager(dataManager: DataManager) {
+		this.dataManager = dataManager
 	}
 
 	setDataObjState(dataObj: DataObj) {
@@ -424,19 +442,6 @@ export class State {
 
 	setfChangeCallback(f: Function) {
 		this.fChangeCallback = f
-	}
-
-	setStatus() {
-		if (this.dataObjState) {
-			this.objStatus = this.dataObjState.setStatus()
-			return this
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'State.setStatus',
-				message: 'No state data object defined.'
-			})
-		}
 	}
 }
 
@@ -466,7 +471,6 @@ export class StateLayoutHeader {
 }
 export class StatePacket {
 	action: StatePacketAction
-
 	token?: Token
 	constructor(obj: any) {
 		const clazz = 'StatePacket'
@@ -518,40 +522,6 @@ export enum StatePacketAction {
 	none = 'none'
 }
 
-export class StateProps {
-	changedData: StatPropsData[] = []
-	changedElements: FieldElement[] = []
-	component?: string
-	dataObj?: DataObj
-	dataObjData?: DataObjData
-	fSetVal: Function
-	state: State
-	constructor(obj: any) {
-		const clazz = 'StateProps'
-		obj = valueOrDefault(obj, {})
-		this.component = obj.component
-		this.dataObj = obj.dataObj
-		this.dataObjData = obj.dataObjData
-		this.fSetVal = this.dataObj ? this.dataObj.setFieldVal : () => {}
-		this.state = required(obj.state, clazz, 'state')
-		this.state.resetState()
-
-		// derived
-		if (this.component) this.changedData.push(StatPropsData.component)
-		if (this.dataObj) this.changedData.push(StatPropsData.dataObj)
-		if (this.dataObjData) this.changedData.push(StatPropsData.dataObjData)
-	}
-	change(obj: any) {
-		this.state.change(obj)
-	}
-}
-
-export enum StatPropsData {
-	component = 'component',
-	dataObj = 'dataObj',
-	dataObjData = 'dataObjData'
-}
-
 export class StateSurfaceEmbed extends State {
 	constructor(obj: any) {
 		const clazz = 'StateSurfaceEmbed'
@@ -567,7 +537,6 @@ export class StateSurfaceEmbedField extends StateSurfaceEmbed {
 		this.nodeType = NodeType.object
 		this.packet = new StatePacket({
 			action: StatePacketAction.embedField,
-			confirmType: TokenAppDoActionConfirmType.none,
 			token: new TokenApiQuery(
 				required(obj.queryType, clazz, 'queryType'),
 				required(obj.dataObjSource, clazz, 'dataObjSource'),
@@ -629,29 +598,4 @@ export enum StateTarget {
 	dashboard = 'dashboard',
 	feature = 'feature',
 	page = 'page'
-}
-
-async function askB4Transition(
-	state: State,
-	obj: any,
-	confirmConfig: DataObjConfirm,
-	fChangeCallback?: Function
-) {
-	if (state instanceof StateSurfaceModal) {
-		if (confirm(confirmConfig.message)) {
-			state.changeValidate(state, obj, fChangeCallback)
-		}
-	} else {
-		const modal: ModalSettings = {
-			type: 'confirm',
-			title: confirmConfig.title,
-			body: confirmConfig.message,
-			buttonTextCancel: confirmConfig.buttonLabelCancel,
-			buttonTextConfirm: confirmConfig.buttonLabelConfirm,
-			response: async (r: boolean) => {
-				if (r) state.changeValidate(state, obj, fChangeCallback)
-			}
-		}
-		return state.storeModal.trigger(modal)
-	}
 }

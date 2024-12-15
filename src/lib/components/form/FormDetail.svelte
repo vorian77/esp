@@ -1,40 +1,66 @@
 <script lang="ts">
-	import { DataObj, DataObjData } from '$utils/types'
-	import { State, StateProps } from '$comps/app/types.appState.svelte'
+	import { ContextKey, DataManager, DataObj, type DataRecord, required } from '$utils/types'
+	import { getContext } from 'svelte'
 	import { Field, FieldAccess } from '$comps/form/field'
 	import { FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 	import FormElement from '$comps/form/FormElement.svelte'
-	import { onMount } from 'svelte'
 	import { innerHeight } from 'svelte/reactivity/window'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormDetail.svelte'
-	const FORM_NAME = ''
-	const SUBMIT_BUTTON_NAME = 'SUBMIT_BUTTON_NAME'
 
-	let { stateProps = $bindable() }: StateProps = $props()
+	let { parms }: DataRecord = $props()
+	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
 
-	let dataObj = $derived(stateProps.dataObj)
-	let dataObjData = $derived(stateProps.dataObjData)
-
+	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let dataRecord: DataRecord = $derived(dm.getDataRecord(parms.dataObjId, 0))
 	let elContent: HTMLDivElement
 	let elContentTopY: number
-	let tagGroupSections: TagGroupSection[]
+	let tagGroupSections: TagGroupSection[] = $state()
 
 	$effect(() => {
 		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
 	})
 
-	$effect(() => {
-		load(dataObjData)
-	})
-
-	async function load(data: DataObjData) {
-		if (!stateProps.state.app.isMobileMode) loadTags()
-		stateProps.state.setDataObjState(dataObj)
-		stateProps.state.setStatus()
+	class TagGroupRow {
+		isRow: boolean
+		indexes: number[]
+		constructor(isRow: boolean) {
+			this.isRow = isRow
+			this.indexes = []
+		}
+		setIsRow(isRow: boolean) {
+			this.isRow = isRow
+		}
 	}
 
+	class TagGroupSection {
+		color?: string
+		isVisible: boolean
+		legend?: string
+		rows: TagGroupRow[]
+		constructor(isVisible: boolean) {
+			this.isVisible = isVisible
+			this.rows = []
+		}
+		rowAddIdx(field: Field, idx: number, isOpenRow: boolean) {
+			if (!isOpenRow || this.rows.length === 0) this.rowNew()
+			this.rows[this.rows.length - 1].indexes.push(idx)
+		}
+		rowNew() {
+			this.rows.push(new TagGroupRow(true))
+		}
+		rowIsEmpty() {
+			return this.rows.length === 0
+		}
+		update(field: FieldTagSection) {
+			this.color = field.colDO.fieldColor.color
+			this.isVisible = true
+			this.legend = field.legend
+		}
+	}
+
+	loadTags()
 	function loadTags() {
 		tagGroupSections = []
 		let idxSection = 0
@@ -66,63 +92,30 @@
 			}
 		})
 	}
-	class TagGroupRow {
-		isRow: boolean
-		indexes: number[]
-		constructor(isRow: boolean) {
-			this.isRow = isRow
-			this.indexes = []
-		}
-		setIsRow(isRow: boolean) {
-			this.isRow = isRow
-		}
-	}
-	class TagGroupSection {
-		color?: string
-		isVisible: boolean
-		legend?: string
-		rows: TagGroupRow[]
-		constructor(isVisible: boolean) {
-			this.isVisible = isVisible
-			this.rows = []
-		}
-		rowAddIdx(field: Field, idx: number, isOpenRow: boolean) {
-			if (!isOpenRow || this.rows.length === 0) this.rowNew()
-			this.rows[this.rows.length - 1].indexes.push(idx)
-		}
-		rowNew() {
-			this.rows.push(new TagGroupRow(true))
-		}
-		rowIsEmpty() {
-			return this.rows.length === 0
-		}
-		update(field: FieldTagSection) {
-			this.color = field.colDO.fieldColor.color
-			this.isVisible = true
-			this.legend = field.legend
-		}
-	}
 </script>
 
-<DataViewer header="dataFieldsChanged" data={dataObj?.dataFieldsChanged} />
-<DataViewer header="objStatus" data={stateProps.state.objStatus} />
-
-<h1>Form Detail</h1>
+<h2>Form Detail</h2>
+<DataViewer
+	header="dataManager.dataRecord"
+	data={dm.getDataRecord(parms.dataObjId, 0).table_SysPerson_firstName}
+/>
+<DataViewer header="dataManager.isObjStatus" data={dm.getStatus()} />
 
 <form
-	id={'form_' + stateProps.dataObj.raw.name}
+	id={'form_' + dataObj.raw.name}
 	class="h-full max-h-full overflow-y-auto md:p-4 md:border-2 rounded-md"
 	style={`max-height: ${innerHeight - elContentTopY - 30}px;`}
 	bind:this={elContent}
 >
 	<div class="md:hidden max-h-full">
-		{#each stateProps.dataObj.fields as field, fieldIdx}
+		{#each dataObj.fields as field, fieldIdx}
 			{@const display =
 				!field.colDO.colDB.isNonData &&
 				field.colDO.isDisplayable &&
 				field.fieldAccess !== FieldAccess.hidden}
+			{@const elementParms = { ...parms, field: dataObj.fields[fieldIdx], row: 0 }}
 			{#if display}
-				<FormElement bind:stateProps field={stateProps.dataObj.fields[fieldIdx]} row={0} />
+				<FormElement parms={elementParms} />
 			{/if}
 		{/each}
 	</div>
@@ -140,8 +133,9 @@
 				{#each section.rows as row}
 					<div class={row.isRow ? 'w-full flex flex-row gap-x-4' : ''}>
 						{#each row.indexes as fieldIdx}
+							{@const elementParms = { ...parms, field: dataObj.fields[fieldIdx], row: 0 }}
 							<div class="grow">
-								<FormElement bind:stateProps field={stateProps.dataObj.fields[fieldIdx]} row={0} />
+								<FormElement parms={elementParms} />
 							</div>
 						{/each}
 					</div>

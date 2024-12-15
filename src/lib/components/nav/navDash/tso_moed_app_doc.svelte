@@ -27,7 +27,7 @@
 			{@const btnStyle = doc._uploaded ? 'bg-green-500' : 'bg-red-500'}
 			{@const statusStyle = doc._uploaded ? 'text-green-500' : 'text-red-500'}
 			{@const statusLabel = doc._uploaded ? `Uploaded` : `Not uploaded`}
-			<button class={`${classButton} ${btnStyle}`} on:click={() => onClickLocal(doc)}>
+			<button class={`${classButton} ${btnStyle}`} onclick={() => onClickLocal(doc)}>
 				{btnLabel}:
 			</button>
 			<span class={`${classData} ${statusStyle}`}>{statusLabel}</span>

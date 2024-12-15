@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { FieldProps } from '$comps/form/field'
 	import { FieldFile, FileStorage } from '$comps/form/fieldFile'
 	import { getToastStore } from '@skeletonlabs/skeleton'
 	import {
@@ -18,7 +17,7 @@
 
 	const toastStore = getToastStore()
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
 
 	let elInput: any
 	let files: FileList = $state()
@@ -82,7 +81,7 @@
 
 		if (urlOld) {
 			mode = FileProcessingMode.delete
-			fp.stateProps.fSetVal(
+			fp.stateApp.fSetVal(
 				fp.row,
 				field,
 				new TokenApiFileParmDelete({
@@ -99,7 +98,7 @@
 		if (files.length > 0) {
 			mode = FileProcessingMode.upload
 			fieldValue = undefined
-			fp.stateProps.fSetVal(
+			fp.stateApp.fSetVal(
 				fp.row,
 				field,
 				new TokenApiBlobParmUpload({
@@ -126,8 +125,6 @@
 	}
 </script>
 
-<!-- onclick|preventDefault={() => elInput.click()} -->
-<!-- on:click|preventDefault={() => elInput.click()} -->
 <fieldset>
 	<legend>{field.colDO.label}</legend>
 
@@ -139,6 +136,7 @@
 					class="mx-auto p-4"
 					hidden={!showImg}
 					onclick={preventDefault(elInput.click())}
+					onkeyup={preventDefault(elInput.click())}
 					src={urlCurrent}
 					width="80%"
 				/>

@@ -49,7 +49,7 @@ import {
 import { GridSettings } from '$comps/grid/grid'
 import { FieldInput } from '$comps/form/fieldInput'
 import { FieldFile } from '$comps/form/fieldFile'
-import { FieldParm } from '$comps/form/fieldParm'
+// import { FieldParm } from '$comps/form/fieldParm'
 import { FieldRadio } from '$comps/form/fieldRadio'
 import { FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 import { FieldSelect } from '$comps/form/fieldSelect'
@@ -61,7 +61,7 @@ import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 import { getEnhancement } from '$enhance/crud/_crud'
 import { error } from '@sveltejs/kit'
 
-const FILENAME = '/$comps/dataObj/types.dataObj.ts'
+const FILENAME = '/$comps/dataObj/types.dataObj.svelte.ts'
 
 export type DataItems = Record<string, { data: string; display: string }[]>
 
@@ -70,16 +70,11 @@ export class DataObj {
 	actionsFieldListRowActionIdx: number = -1
 	actionsQueryFunctions: DataObjActionQueryFunction[] = []
 	data: DataObjData
-	dataFieldsChanged: FieldValues = new FieldValues()
-	dataFieldsValidity: FieldValues = new FieldValues()
 	dataItems: DataItems = {}
-	dataRecordsDisplay: DataRecord[] = []
-	dataRecordsHidden: DataRecord[] = []
 	fieldEmbed?: FieldEmbed
 	fields: Field[] = []
 	isMobileMode: boolean = false
 	modes: DataObjMode[] = []
-	objStatus: DataObjStatus = new DataObjStatus()
 	raw: RawDataObj
 	rootTable?: DBTable
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
@@ -177,18 +172,6 @@ export class DataObj {
 	fieldsCreate(state: State, data: DataObjData, rawDataObj: RawDataObj) {
 		let fields: Field[] = []
 		let propsRaw = rawDataObj.rawPropsDisplay
-
-		if (state.app.isMobileMode) {
-			const mobileModeFilterElements = ['tagRow', 'tagSection']
-			const mobileModeFilterProps = ['createdAt', 'createdBy', 'modifiedAt', 'modifiedBy']
-			propsRaw = propsRaw.filter((f) => {
-				return (
-					!mobileModeFilterElements.includes(f.rawFieldElement || '') &&
-					!mobileModeFilterProps.includes(f.propName)
-				)
-			})
-		}
-
 		let firstVisibleIdx = propsRaw.findIndex((f) => f.isDisplayable)
 
 		// create fields
@@ -274,9 +257,9 @@ export class DataObj {
 				newField = new FieldFile(props)
 				break
 
-			case FieldElement.parm:
-				newField = new FieldParm(props)
-				break
+			// case FieldElement.parm:
+			// 	newField = new FieldParm(props)
+			// 	break
 
 			case FieldElement.radio:
 				newField = new FieldRadio(props)
@@ -321,78 +304,75 @@ export class DataObj {
 	}
 
 	get objData() {
-		// root data
-		this.data.rowsSave.setDataRows(setData(this))
-
-		// embedded fields
-		this.fields.forEach((field: Field) => {
-			if (field instanceof FieldEmbed && field.dataObj) {
-				const idx = this.data.fields.findIndex((f) => f.embedFieldName === field.colDO.propName)
-				if (idx > -1) {
-					this.data.fields[idx].data.rowsSave.setDataRows(setData(field.dataObj))
-					this.data.fields[idx].data.parms.valueSet(
-						ParmsValuesType.embedParentId,
-						field.embedParentId
-					)
-					this.data.fields[idx].data.parms.valueSet(
-						ParmsValuesType.embedListSave,
-						field.embedType === DataObjEmbedType.listEdit
-					)
-				}
-			}
-		})
-
-		return this.data
-
-		function setData(dataObj: DataObj) {
-			let fieldsParmValueNames: string[] = []
-			dataObj.fields.forEach((f) => {
-				if (f.isParmValue) {
-					const fieldParm: FieldParm = f as FieldParm
-					fieldParm.parmFields.forEach((f) => {
-						fieldsParmValueNames.push(f.colDO.propName)
-					})
-				}
-			})
-
-			let dataRows: DataRow[] = setDataRecords(
-				fieldsParmValueNames,
-				dataObj.data,
-				dataObj.dataRecordsDisplay
-			)
-			dataRows = dataRows.concat(
-				setDataRecords(fieldsParmValueNames, dataObj.data, dataObj.dataRecordsHidden)
-			)
-			return dataRows
-		}
-		function setDataRecords(
-			fieldsParmValueNames: string[],
-			dataCurrent: DataObjData,
-			dataRecords: DataRecord[]
-		) {
-			let dataRows: DataRow[] = []
-			dataRecords.forEach((record) => {
-				let newRecord: DataRecord = {}
-				Object.entries(record).forEach(([key, value]) => {
-					if (![null, undefined].includes(value)) {
-						// don't included embedded fields
-						if (-1 === dataCurrent.fields.findIndex((f) => f.embedFieldName === key)) {
-							// don't include null or undefined values
-							if (fieldsParmValueNames.includes(key)) {
-								// <todo> temp parmValue
-								// newRecord.parmValue = record[key]
-								// delete newRecord[key]
-							} else {
-								newRecord[key] = value
-							}
-						}
-					}
-				})
-				const oldStatus = dataCurrent.rowsRetrieved.getRowStatusById(record.id)
-				dataRows.push(new DataRow(oldStatus ? oldStatus : DataRecordStatus.preset, newRecord))
-			})
-			return dataRows
-		}
+		// // root data
+		// this.data.rowsSave.setDataRows(setData(this))
+		// // embedded fields
+		// this.fields.forEach((field: Field) => {
+		// 	if (field instanceof FieldEmbed && field.dataObj) {
+		// 		const idx = this.data.fields.findIndex((f) => f.embedFieldName === field.colDO.propName)
+		// 		if (idx > -1) {
+		// 			this.data.fields[idx].data.rowsSave.setDataRows(setData(field.dataObj))
+		// 			this.data.fields[idx].data.parms.valueSet(
+		// 				ParmsValuesType.embedParentId,
+		// 				field.embedParentId
+		// 			)
+		// 			this.data.fields[idx].data.parms.valueSet(
+		// 				ParmsValuesType.embedListSave,
+		// 				field.embedType === DataObjEmbedType.listEdit
+		// 			)
+		// 		}
+		// 	}
+		// })
+		// return this.data
+		// // return field.isParmValue ? (field as FieldParm).parmFields[row] : field
+		// function setData(dataObj: DataObj) {
+		// 	let fieldsParmValueNames: string[] = []
+		// 	dataObj.fields.forEach((f) => {
+		// 		if (f.isParmValue) {
+		// 			const fieldParm: FieldParm = f
+		// 			fieldParm.parmFields.forEach((f) => {
+		// 				fieldsParmValueNames.push(f.colDO.propName)
+		// 			})
+		// 		}
+		// 	})
+		// 	let dataRows: DataRow[] = setDataRecords(
+		// 		fieldsParmValueNames,
+		// 		dataObj.data,
+		// 		dataObj.dataRecordsDisplay
+		// 	)
+		// 	dataRows = dataRows.concat(
+		// 		setDataRecords(fieldsParmValueNames, dataObj.data, dataObj.dataRecordsHidden)
+		// 	)
+		// 	return dataRows
+		// }
+		// function setDataRecords(
+		// 	fieldsParmValueNames: string[],
+		// 	dataCurrent: DataObjData,
+		// 	dataRecords: DataRecord[]
+		// ) {
+		// 	let dataRows: DataRow[] = []
+		// 	dataRecords.forEach((record) => {
+		// 		let newRecord: DataRecord = {}
+		// 		Object.entries(record).forEach(([key, value]) => {
+		// 			if (![null, undefined].includes(value)) {
+		// 				// don't included embedded fields
+		// 				if (-1 === dataCurrent.fields.findIndex((f) => f.embedFieldName === key)) {
+		// 					// don't include null or undefined values
+		// 					if (fieldsParmValueNames.includes(key)) {
+		// 						// <todo> temp parmValue
+		// 						// newRecord.parmValue = record[key]
+		// 						// delete newRecord[key]
+		// 					} else {
+		// 						newRecord[key] = value
+		// 					}
+		// 				}
+		// 			}
+		// 		})
+		// 		const oldStatus = dataCurrent.rowsRetrieved.getRowStatusById(record.id)
+		// 		dataRows.push(new DataRow(oldStatus ? oldStatus : DataRecordStatus.preset, newRecord))
+		// 	})
+		// 	return dataRows
+		// }
 	}
 
 	set objData(dataSource: DataObjData) {
@@ -402,28 +382,6 @@ export class DataObj {
 					? DataObjSaveMode.insert
 					: DataObjSaveMode.update
 				: DataObjSaveMode.any
-
-		// set data
-		let recordsClone: DataRecord[] = []
-		const parmValueFields = this.fields.filter((f) => f.isParmValue) as FieldParm[]
-		dataSource.rowsRetrieved.getRows().forEach((dataRow, rowIdx) => {
-			if (dataRow.status !== DataRecordStatus.delete) {
-				const record = dataRow.record
-				// init parmValue
-				parmValueFields.forEach((field) => {
-					const parmFieldName = field.parmFields[rowIdx].colDO.propName
-					if (!Object.hasOwn(record, parmFieldName)) {
-						// <todo> temp parmValue
-						// record[parmFieldName] = record.parmValue
-						// delete record.parmValue
-					}
-				})
-				recordsClone.push({ ...record })
-			}
-		})
-		this.dataRecordsDisplay = recordsClone
-		this.dataFieldsChanged = new FieldValues()
-		this.dataFieldsValidity = new FieldValues()
 
 		// set data items
 		Object.entries(dataSource.items).forEach(([key, value]) => {
@@ -444,11 +402,10 @@ export class DataObj {
 		})
 
 		this.data = dataSource
-		this.preValidate()
 	}
 
 	getField(field: Field, row: number) {
-		return field.isParmValue ? (field as FieldParm).parmFields[row] : field
+		// return field.isParmValue ? (field as FieldParm).parmFields[row] : field
 	}
 
 	modeAdd(mode: DataObjMode) {
@@ -466,79 +423,9 @@ export class DataObj {
 			f.modeReset()
 		})
 	}
-	preValidate() {
-		const validityErrorLevel =
-			this.raw.isListEdit ||
-			this.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.retrieved)
-				? ValidityErrorLevel.warning
-				: ValidityErrorLevel.none
-
-		this.dataRecordsDisplay.forEach((record, row) => {
-			this.fields.forEach((f) => {
-				const v: Validation = f.validate(row, record[f.colDO.propName], validityErrorLevel)
-				if (v.status === ValidationStatus.invalid) {
-					this.dataFieldsValidity.valueSet(
-						record.id,
-						v.validityFields[0].fieldName,
-						v.validityFields[0].validity
-					)
-				}
-			})
-		})
-	}
 
 	print() {
 		alert('Print functionality for this object has not yet been implemented.')
-	}
-
-	setFieldVal(row: number, field: Field, value: any) {
-		const recordId = this.dataRecordsDisplay[row].id
-		this.setFieldValChanged(row, recordId, field.colDO.propName, value)
-		this.setFieldValValidity(row, recordId, field)
-		if (this.raw.listReorderColumn && this.fieldEmbed) {
-			const reorderColumn = this.raw.listReorderColumn
-			this.dataRecordsDisplay.sort((a, b) => a[reorderColumn] - b[reorderColumn])
-		}
-		return this
-	}
-	setFieldValChanged(row: number, recordId: string, fieldName: string, value: any) {
-		this.dataRecordsDisplay[row][fieldName] = value
-		const valueInitial = this.data.rowsRetrieved.getRowValueById(recordId, fieldName)
-		const hasChanged = valueHasChanged(valueInitial, value)
-		if (hasChanged) {
-			this.dataFieldsChanged.valueSet(recordId, fieldName, hasChanged)
-		} else {
-			this.dataFieldsChanged.valueDrop(recordId, fieldName)
-		}
-	}
-	setFieldValValidity(row: number, recordId: string, field: Field) {
-		const v: Validation = field.validate(
-			row,
-			this.dataRecordsDisplay[row][field.colDO.propName],
-			ValidityErrorLevel.warning
-		)
-		v.validityFields.forEach(({ fieldName, validity }) => {
-			this.dataFieldsValidity.valueSet(recordId, fieldName, validity)
-		})
-		this.dataFieldsValidity = this.dataFieldsValidity
-	}
-	setStatus() {
-		let newStatus = new DataObjStatus()
-		this.dataRecordsDisplay.forEach((r) => {
-			const recordId = r.id
-			this.fields.forEach((f) => {
-				if (
-					([FieldAccess.optional, FieldAccess.required].includes(f.fieldAccess) &&
-						!f.colDO.colDB.isNonData) ||
-					f.colDO.propName === this.raw.listReorderColumn
-				) {
-					const statusField = f.getStatus(this, recordId)
-					newStatus = newStatus.update(statusField)
-				}
-			})
-		})
-		this.objStatus = newStatus
-		return this.objStatus
 	}
 }
 
@@ -749,36 +636,6 @@ export enum DataObjMode {
 
 export enum DataObjProcessType {
 	reportRender = 'reportRender'
-}
-
-export class DataObjStatus {
-	objHasChanged: boolean = false
-	objValidToSave: boolean = true
-	constructor() {}
-	changed() {
-		return this.objHasChanged
-	}
-	reset() {
-		this.objHasChanged = false
-		this.objValidToSave = true
-	}
-	setChanged(status: boolean) {
-		this.objHasChanged = status
-		return status
-	}
-	setValid(status: boolean) {
-		this.objValidToSave = status
-		return status
-	}
-	update(currentStatus: DataObjStatus) {
-		this.objHasChanged = this.objHasChanged || currentStatus.objHasChanged
-		this.objValidToSave = this.objValidToSave && currentStatus.objValidToSave
-		return this
-	}
-
-	valid() {
-		return this.objValidToSave
-	}
 }
 
 export enum DataObjSaveMode {
@@ -1007,39 +864,6 @@ export class DBTable {
 		this.mod = strRequired(obj.mod, clazz, 'module')
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.object = this.mod + '::' + this.name
-	}
-}
-
-export class FieldValue {
-	fieldName: string
-	recordId: string
-	value: any
-	constructor(recordId: string, fieldName: string, value: any) {
-		this.fieldName = fieldName
-		this.recordId = recordId
-		this.value = value
-	}
-}
-
-export class FieldValues {
-	values: FieldValue[] = []
-	constructor() {}
-	valueDrop(recordId: string, fieldName: string) {
-		this.values = this.values.filter((v) => v.recordId !== recordId || v.fieldName !== fieldName)
-	}
-	valueGet(recordId: string, fieldName: string) {
-		const value = this.values.find((v) => v.recordId === recordId && v.fieldName === fieldName)
-		return value ? value.value : undefined
-	}
-	valueSet(recordId: string, fieldName: string, value: any) {
-		const valueIdx = this.values.findIndex(
-			(v) => v.recordId === recordId && v.fieldName === fieldName
-		)
-		if (valueIdx > -1) {
-			this.values[valueIdx].value = value
-		} else {
-			this.values.push(new FieldValue(recordId, fieldName, value))
-		}
 	}
 }
 

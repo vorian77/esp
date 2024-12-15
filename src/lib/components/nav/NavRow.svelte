@@ -1,26 +1,27 @@
 <script lang="ts">
-	import { type AppLevelRowStatus, AppRowActionType } from '$comps/app/types.app'
+	import { ContextKey, required } from '$utils/types'
+	import { getContext } from 'svelte'
+	import { type AppLevelRowStatus, AppRowActionType } from '$comps/app/types.app.svelte'
 	import {
 		State,
 		StatePacket,
 		StatePacketAction,
-		StateProps,
 		StateTarget
 	} from '$comps/app/types.appState.svelte'
 	import { TokenAppDoActionConfirmType, TokenAppRow } from '$utils/types.token'
 	import NavRowAction from '$comps/nav/NavRowAction.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	let {
-		stateProps = $bindable(),
-		rowStatus
-	}: { stateProps: StateProps; rowStatus: AppLevelRowStatus } = $props()
+	const FILENAME = '/$comps/nav/NavRow.svelte'
 
-	let currTab = $derived(stateProps.state.app.getCurrTab())
+	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
+
+	let currTab = $derived(stateApp.app.getCurrTab())
 	let isHideRowManager = $state(currTab ? currTab?.isHideRowManager : false)
+	let rowStatus: AppLevelRowStatus = $derived(stateApp.app.getRowStatus())
 
-	async function onChange(rowAction: AppRowActionType) {
-		stateProps.change({
+	function onChange(rowAction: AppRowActionType) {
+		stateApp.change({
 			confirmType: TokenAppDoActionConfirmType.objectChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navRow,
@@ -31,7 +32,7 @@
 	}
 </script>
 
-{#if rowStatus && rowStatus.show && !isHideRowManager}
+{#if rowStatus && rowStatus.show && !$isHideRowManager}
 	<span style:cursor="pointer">
 		<div
 			class="flex flex-row p-2 h-[46px] items-center border-2 bg-white rounded-md md:rounded-none"
@@ -48,10 +49,10 @@
 				{rowStatus.status}
 			</div>
 			<div class="flex flex-row">
-				<div class={rowStatus.rowCurrentDisplay === rowStatus.rowCount ? 'invisible' : ''}>
+				<div class={rowStatus.rowCurrentDisplay === $rowStatus.rowCount ? 'invisible' : ''}>
 					<NavRowAction action={AppRowActionType.right} icon={'ChevronRight'} {onChange} />
 				</div>
-				<div class={rowStatus.rowCurrentDisplay === rowStatus.rowCount ? 'invisible' : '-ml-2'}>
+				<div class={rowStatus.rowCurrentDisplay === $rowStatus.rowCount ? 'invisible' : '-ml-2'}>
 					<NavRowAction action={AppRowActionType.last} icon={'ChevronLast'} {onChange} />
 				</div>
 			</div>

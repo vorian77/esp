@@ -21,7 +21,7 @@
 		TokenAppModalSelect,
 		TokenAppModalReturnType
 	} from '$utils/types.token'
-	import { FieldElement, FieldProps } from '$comps/form/field'
+	import { FieldElement } from '$comps/form/field'
 	import { FieldSelectMulti } from '$comps/form/fieldSelect'
 	import { FieldAccess } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
@@ -29,21 +29,21 @@
 	import { IconProps } from '$comps/icon/types.icon'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
 
 	let columnDefs: DataRecord
 	let displayValue: string
 	let rowData: DataRecord[]
 	let sortModel: DataObjSort[]
 
-	let dataObj = $derived(fp.stateProps.dataObj)
+	let dataObj = $derived(fp.stateApp.dataObj)
 
 	let field = $derived(fp.field) as FieldCheckbox
 	field.setIconProps({
 		name: 'SquareMousePointer',
 		clazz: 'ml-1.5 mt-0.5',
 		color: '#3b79e1',
-		onClick: onChange,
+		onClick,
 		size: 18,
 		strokeWidth: 2
 	})
@@ -57,8 +57,8 @@
 		sortModel = parms.sortModel
 	}
 
-	function onChange(event: Event) {
-		fp.stateProps.change({
+	function onClick(event: Event) {
+		fp.stateApp.change({
 			confirmType: TokenAppDoActionConfirmType.none,
 			packet: new StatePacket({
 				action: StatePacketAction.modalSelectOpen,
@@ -80,7 +80,7 @@
 			if (returnType === TokenAppModalReturnType.complete) {
 				if (returnData.data) {
 					const parms = new ParmsValues(returnData.data)
-					fp.stateProps.fSetVal(fp.row, fp.field, parms.valueGet(ParmsValuesType.listIdsSelected))
+					fp.stateApp.fSetVal(fp.row, fp.field, parms.valueGet(ParmsValuesType.listIdsSelected))
 				}
 			}
 		}
@@ -88,13 +88,13 @@
 </script>
 
 {#if field}
-	<FormLabel {fp} />
+	<FormLabel {parms} />
 	<textarea
 		class={'w-full text-sm rounded-lg'}
 		cols={field.cols}
 		id={field.colDO.propName}
 		name={field.colDO.propName}
-		on:click={onChange}
+		onclick={onClick}
 		readonly={true}
 		rows={field.rows}
 		value={displayValue}

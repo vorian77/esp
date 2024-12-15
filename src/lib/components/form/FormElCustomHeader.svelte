@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { FieldProps } from '$comps/form/field'
 	import { FieldCustomHeader } from '$comps/form/fieldCustom'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
 
 	let field = $derived(fp.field) as FieldCustomHeader
 	let classMargin = $derived(field.isFirstVisible ? '' : field.isSubHeader ? '-mt-3' : 'mt-4 -mb-2')

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { FieldAccess, FieldProps } from '$comps/form/field'
+	import { FieldAccess } from '$comps/form/field'
 	import { DataObj, DataObjCardinality } from '$utils/types'
 	import { FieldToggle } from '$comps/form/fieldToggle'
 	import { SlideToggle } from '@skeletonlabs/skeleton'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
 
-	let dataObj = $derived(fp.stateProps.dataObj)
+	let dataObj = $derived(fp.stateApp.dataObj)
 	let field = $derived(fp.field) as FieldToggle
 	let fieldValue = $state(fp.fieldValue)
 
@@ -45,7 +45,7 @@
 
 	if (fieldValue === undefined || fieldValue === null) {
 		fieldValue = field.presetTrue ? selections[0][0] : selections[1][0]
-		fp.stateProps.fSetVal(fp.row, fp.field, fieldValue)
+		fp.stateApp.fSetVal(fp.row, fp.field, fieldValue)
 	}
 	setToggle(fieldValue)
 
@@ -55,7 +55,7 @@
 		})
 		const newValue = selections[(idx + 1) % 2][0]
 		setToggle(newValue)
-		fp.stateProps.fSetVal(fp.row, fp.field, newValue)
+		fp.stateApp.fSetVal(fp.row, fp.field, newValue)
 	}
 
 	function setToggle(value: any) {
@@ -73,7 +73,7 @@
 	<SlideToggle
 		name={field.colDO.propName}
 		bind:checked={valueToggle}
-		on:change={onChange}
+		onchange={onChange}
 		active="bg-primary-500"
 		disabled={classDisabled}
 	>

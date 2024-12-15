@@ -10,7 +10,7 @@
 	<div class="w-full flex mb-4 justify-between">
 		<button
 			class="btn btn-action variant-soft-primary mr-4 {listFilterQuick === '' ? 'hidden' : ''}"
-			on:click={() => {
+			onclick={() => {
 				listFilterQuick = ''
 				setFilterQuick('')
 			}}
@@ -23,7 +23,7 @@
 			type="text"
 			id="search-text-"
 			bind:value={listFilterQuick}
-			on:keyup={() => setFilterQuick(listFilterQuick)}
+			onkeyup={() => setFilterQuick(listFilterQuick)}
 			placeholder="Search..."
 		/>
 

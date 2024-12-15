@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { FieldProps } from '$comps/form/field'
 	import { FieldEmbedListConfig } from '$comps/form/fieldEmbed'
 	import { DataObjMode } from '$utils/types'
 	import FormLabel from '$comps/form/FormLabel.svelte'
@@ -9,7 +8,7 @@
 
 	const FILENAME = '$comps/form/FormElEmbeddedListConfig.svelte'
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
 
 	let recordIdCurrent: string
 
@@ -37,7 +36,7 @@
 	// }
 </script>
 
-<FormLabel {fp} />
+<FormLabel {parms} />
 FormElEmbedListConfig
 
 {#if fp}

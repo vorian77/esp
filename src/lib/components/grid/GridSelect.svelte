@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { State } from '$comps/app/types.appState.svelte'
-	import { ParmsValuesType } from '$utils/types'
+	import { ContextKey, type DataRecord, ParmsValuesType } from '$utils/types'
 	import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
 	import Grid from '$comps/grid/Grid.svelte'
 	import { getSelectedNodeIds, GridManagerOptions } from '$comps/grid/grid'
@@ -8,7 +8,7 @@
 
 	const FILENAME = '$comps/selectMulti/GridSelect.svelte'
 
-	export let state: State
+	let { parms }: DataRecord = $props()
 
 	let gridApi: GridApi
 	let gridOptions: GridManagerOptions

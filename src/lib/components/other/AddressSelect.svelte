@@ -33,7 +33,7 @@
 			{#if v.ent_id == currentSite}
 				<button class="btn btn-action variant-filled-primary w-full">Selected</button>
 			{:else}
-				<button class="btn btn-action variant-filled-secondary w-full" on:click={() => onSelect(v.ent_id)}
+				<button class="btn btn-action variant-filled-secondary w-full" onclick={() => onSelect(v.ent_id)}
 					>Select {v.rec_id}</button
 				>
 			{/if}

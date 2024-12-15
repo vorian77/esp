@@ -1,17 +1,20 @@
 import {
+	ContextKey,
 	booleanOrFalse,
+	DataManager,
 	DataObj,
 	DataObjData,
+	type DataRecord,
 	DataRecordStatus,
 	DataRow,
 	Node,
 	NodeType,
 	ParmsValuesType,
+	required,
 	ResponseBody,
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
-import type { DataRecord } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import {
 	TokenApiDbDataObjSource,
@@ -33,7 +36,7 @@ import {
 	FieldEmbedListSelect
 } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
-import { query } from '$comps/app/types.appQuery'
+import { queryTypeDataObj, queryTypeTab } from '$comps/app/types.appQuery'
 import {
 	State,
 	StatePacket,
@@ -46,9 +49,7 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$comps/nav/types.app.ts'
 
 export class App {
-	appSystemId?: string
 	crumbs: Array<any> = []
-	isMobileMode: boolean = false
 	levels: Array<AppLevel> = []
 	constructor() {}
 
@@ -63,7 +64,7 @@ export class App {
 				})
 			])
 		)
-		await query(state, this.getCurrTab(), token.queryType)
+		await queryTypeTab(state, this.getCurrTab(), token.queryType)
 	}
 
 	async addLevelEmbedShell(fieldShell: FieldEmbedShell) {
@@ -93,10 +94,12 @@ export class App {
 			})
 		}
 
-		const recordId =
-			fieldShell.stateShell.dataObjState?.data.rowsRetrieved.getDetailRecordValue('id')
-		const dataObjForm = fieldShell.stateShell.dataObjState!
-		fieldShell.stateShell.objStatus = fieldShell.getStatus(dataObjForm, recordId)
+		// const dataMgr: DataManager = getContext(ContextKey.dataManager)
+		// const recordId =
+		// 	fieldShell.stateShell.dataObjState?.data.rowsRetrieved.getDetailRecordValue('id')
+
+		// 	const dataObjForm = fieldShell.stateShell.dataObjState!
+		// fieldShell.stateShell.objStatus = fieldShell.getStatus(dataObjForm, recordId)
 		return fieldShell
 	}
 	async addLevelModalDataObj(state: StateSurfaceModalDataObj) {
@@ -112,7 +115,7 @@ export class App {
 		)
 		if (newLevel) {
 			this.levels.push(newLevel)
-			await query(state, this.getCurrTab(), TokenApiQueryType.retrieve)
+			await queryTypeTab(state, this.getCurrTab(), TokenApiQueryType.retrieve)
 		}
 		return this
 	}
@@ -130,23 +133,26 @@ export class App {
 		)
 		if (newLevel) {
 			this.levels.push(newLevel)
-			await query(state, this.getCurrTab(), token.queryType)
+			await queryTypeTab(state, this.getCurrTab(), token.queryType)
 		}
 		return this
 	}
 
-	async addLevelNode(state: State, token: TokenAppNode) {
-		this.isMobileMode = token.node.isMobileMode || false
-
+	async addLevelNode(state: State, dm: DataManager, token: TokenAppNode) {
 		// create root level
 		this.levels.push(new AppLevel([new AppLevelTab(App.addLevelNodeParmsList(token.node))]))
 		const currTab = this.getCurrTab()
 		if (currTab) {
-			await query(state, currTab, TokenApiQueryType.retrieve)
+			await this.retrieveForm(state, dm, currTab, TokenApiQueryType.retrieve)
 		}
 	}
 
-	async addLevelNodeChildren(state: State, token: TokenAppDo, queryType: TokenApiQueryType) {
+	async addLevelNodeChildren(
+		state: State,
+		dm: DataManager,
+		token: TokenAppDo,
+		queryType: TokenApiQueryType
+	) {
 		const clazz = 'addLevelNodeChildren'
 		const currTab = this.getCurrTab()
 		if (currTab) {
@@ -179,7 +185,12 @@ export class App {
 						tabs.push(new AppLevelTab(App.addLevelNodeParmsList(new Node(n))))
 					})
 					this.levels.push(new AppLevel(tabs))
-					await query(state, this.getCurrTab(), queryType)
+
+					// retrieve data - new level root
+					const currTab = this.getCurrTab()
+					if (currTab) {
+						await this.retrieveForm(state, dm, currTab, queryType)
+					}
 				}
 			}
 			return this
@@ -245,7 +256,7 @@ export class App {
 	}
 	getCurrTab() {
 		const level = this.getCurrLevel()
-		return level ? level.getCurrTab() : undefined
+		if (level && level.tabs.length > 0) return level.getCurrTab()
 	}
 	getCurrTabParentLevel() {
 		return this.getLevel(this.levels.length - 2)
@@ -288,7 +299,7 @@ export class App {
 			currLevel.tabIdxSet(token.index)
 			const currTab = currLevel.getCurrTab()
 			if (!currTab.isRetrieved) {
-				await query(state, currTab, TokenApiQueryType.retrieve)
+				await queryTypeTab(state, currTab, TokenApiQueryType.retrieve)
 			}
 		}
 	}
@@ -303,6 +314,31 @@ export class App {
 		}
 		return this
 	}
+
+	async retrieveForm(
+		state: State,
+		dm: DataManager,
+		tab: AppLevelTab,
+		queryType: TokenApiQueryType
+	) {
+		const clazz = `${FILENAME}.retrieveForm`
+		// retrieve root tab form
+		const dataObj = required(await queryTypeTab(state, tab, queryType), FILENAME, 'dataObj')
+		dm.init(dataObj)
+
+		// const dataMgr: DataManager = required(
+		// 	getContext(ContextKey.dataManager),
+		// 	`${FILENAME}.retrieveForm`,
+		// 	'dataManager'
+		// )
+		// dataMgr.init(dataObj)
+
+		// // test dataObj query
+		// const dataObj1 = await queryTypeDataObj(state, dataObj.raw.id, undefined, queryType)
+
+		state.setDataManager(dm)
+	}
+
 	async rowUpdate(state: State, token: TokenAppRow) {
 		if (this.levels.length > 1) {
 			const tabParent = this.getCurrTabParentTab()
@@ -354,7 +390,7 @@ export class App {
 
 								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 									return this
-								await query(state, tabParent, TokenApiQueryType.retrieve)
+								await queryTypeTab(state, tabParent, TokenApiQueryType.retrieve)
 								tabParent.data.parms.updateList(
 									listIds.filter((id) => id !== recordIdOld),
 									recordIdOld,
@@ -368,7 +404,7 @@ export class App {
 							} else {
 								if (!(await this.tabQueryDetailData(state, TokenApiQueryType.save, currTab.data)))
 									return this
-								await query(state, tabParent, TokenApiQueryType.retrieve)
+								await queryTypeTab(state, tabParent, TokenApiQueryType.retrieve)
 								this.popLevel(state)
 							}
 						}
@@ -381,7 +417,7 @@ export class App {
 						// parent list
 						const detailIdCurrent = currTab.data.rowsRetrieved.getDetailRecordValue('id')
 						let listIdsPre: string[] = tabParent.data.parms.valueGet(ParmsValuesType.listIds)
-						await query(state, tabParent, TokenApiQueryType.retrieve)
+						await queryTypeTab(state, tabParent, TokenApiQueryType.retrieve)
 						let listIdsPost: string[] = []
 						tabParent.data.parms.valueGet(ParmsValuesType.listIds).forEach((id: string) => {
 							if (listIdsPre.includes(id) || id === detailIdCurrent) listIdsPost.push(id)
@@ -432,7 +468,7 @@ export class App {
 		const currTab = this.getCurrTab()
 		if (currTab && currTab.dataObj) {
 			currTab.data = data
-			return await query(state, currTab, TokenApiQueryType.save)
+			return await queryTypeTab(state, currTab, TokenApiQueryType.save)
 		}
 	}
 	async tabDuplicate(state: State, token: TokenAppDo) {
@@ -450,7 +486,7 @@ export class App {
 			currLevel.resetTabs()
 			const currTab = currLevel.getCurrTab()
 			currTab.data = data
-			return await query(state, currTab, queryType)
+			return await queryTypeTab(state, currTab, queryType)
 		}
 	}
 	async tabQueryDetailDataRow(state: State, queryType: TokenApiQueryType, dataRow?: DataRow) {
@@ -561,29 +597,7 @@ export class AppLevelTab {
 		this.label = obj.label
 		this.nodeIdParent = obj.nodeIdParent
 	}
-	getDataObjSource() {
-		if (this.dataObjSource) {
-			return this.dataObjSource
-		} else {
-			let sourceParms: DataRecord = {}
-			sourceParms['dataObjId'] = strRequired(
-				this.dataObjId ? this.dataObjId : this.dataObj?.raw?.id,
-				'AppLevelTab.getDataObjSource',
-				'dataObjId'
-			)
-			let dataObjSource = new TokenApiDbDataObjSource(sourceParms)
-			if (this.dataObj) {
-				dataObjSource.updateReplacements({
-					exprFilter: this?.dataObj?.raw?.exprFilter
-				})
-			}
-			return dataObjSource
-		}
-	}
 
-	getTable() {
-		return this.dataObj?.rootTable?.name
-	}
 	listCrumbLabelId() {
 		let id = ''
 		const crumbFieldNames: Array<string> = this.dataObj?.raw.crumbs ? this.dataObj.raw.crumbs : []

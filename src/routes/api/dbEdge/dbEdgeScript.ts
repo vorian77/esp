@@ -11,7 +11,7 @@ import {
 	ParmsValuesType,
 	strRequired
 } from '$utils/types'
-import type { DataObjTable, DataRecord, DataRow } from '$utils/types'
+import type { DataObjTable, type DataRecord, DataRow } from '$utils/types'
 import { TokenApiQueryData } from '$utils/types.token'
 import { RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj'
 import { LinkSaveAction, Query, QueryParent } from '$routes/api/dbEdge/dbEdgeQuery'

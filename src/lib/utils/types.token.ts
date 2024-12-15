@@ -14,8 +14,8 @@ import {
 	valueOrDefault
 } from '$utils/types'
 import { State } from '$comps/app/types.appState.svelte'
-import { App } from '$comps/app/types.app'
-import { AppRowActionType } from '$comps/app/types.app'
+import { App } from '$comps/app/types.app.svelte'
+import { AppRowActionType } from '$comps/app/types.app.svelte'
 import { Node } from '$comps/app/types.node'
 import { FieldColumnItem } from '$comps/form/field'
 import { FieldEmbed } from '$comps/form/fieldEmbed'

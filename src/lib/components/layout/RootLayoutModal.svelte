@@ -90,7 +90,7 @@
 						disabled={action.isDisabled}
 						class="w-full btn btn-action text-white"
 						style:background-color={action.fieldColor.color}
-						on:click={async () => await onFooterActionClick(action)}
+						onclick={async () => await onFooterActionClick(action)}
 					>
 						{action.header}
 					</button>

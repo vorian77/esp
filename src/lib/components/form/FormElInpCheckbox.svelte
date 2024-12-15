@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { FieldProps } from '$comps/form/field'
 	import { DataObj } from '$utils/types'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import { FieldAccess } from '$comps/form/field'
@@ -7,9 +6,9 @@
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
 
-	let dataObj = $derived(fp.stateProps.dataObj)
+	let dataObj = $derived(fp.stateApp.dataObj)
 	let field = $derived(fp.field) as FieldCheckbox
 	let fieldValue = $derived(fp.fieldValue)
 	let dataItems = $derived(
@@ -36,14 +35,14 @@
 				dataItems.forEach((i) => {
 					if (i.selected) newValues.push(i.data)
 				})
-				fp.stateProps.fSetVal(fp.row, fp.field, newValues)
+				fp.stateApp.fSetVal(fp.row, fp.field, newValues)
 			}
 		} else {
 			const idx = dataItems.findIndex((i) => i.data === value)
 			if (idx >= 0) {
 				dataItems[idx].selected = !dataItems[idx].selected
 				const newVal = dataItems[idx].selected ? value : null
-				fp.stateProps.fSetVal(fp.row, fp.field, newVal)
+				fp.stateApp.fSetVal(fp.row, fp.field, newVal)
 			}
 		}
 	}
@@ -52,7 +51,7 @@
 <!-- bind:checked={selected}
 bind:group={} -->
 
-<FormLabel {fp} />
+<FormLabel {parms} />
 
 <fieldset class={classFieldSet}>
 	{#if dataItems}
@@ -65,7 +64,7 @@ bind:group={} -->
 					name={itemName}
 					class="rounded-sm{i === 0 ? 'mt-2' : ''}"
 					value={data}
-					oninput={() => onInput}
+					oninput={onInput}
 				/>
 				<p class="text-sm">{display}</p>
 			</div>

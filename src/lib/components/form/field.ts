@@ -1,10 +1,9 @@
-import { State, StateProps } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.appState.svelte'
 import {
 	booleanRequired,
 	classOptional,
 	DataObj,
 	DataObjData,
-	DataObjStatus,
 	type DataRecord,
 	required,
 	strRequired
@@ -21,6 +20,8 @@ import {
 } from '$comps/form/types.validation'
 import { PropLinkItemsSource, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { IconProps } from '$comps/icon/types.icon'
+import { DataObjStatus } from '$comps/dataObj/types.dataManager.svelte'
+// import { DataManagerNode } from '$comps/dataObj/types.dataManager.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/form/field.ts/'
@@ -78,20 +79,20 @@ export class Field {
 		return this.isParmValue ? 'parmValue' : this.colDO.propName
 	}
 
-	getStatus(dataObjForm: DataObj, recordId: string) {
-		const status = new DataObjStatus()
-		const propName = this.getPropName()
+	// getStatus(node: DataManagerNode, recordId: string) {
+	// 	const status = new DataObjStatus()
+	// 	const propName = this.getPropName()
 
-		// changed
-		const isChanged = dataObjForm.dataFieldsChanged.valueGet(recordId, propName) || false
-		status.setChanged(isChanged)
+	// 	// changed
+	// 	const isChanged = node.fieldsChanged.valueGet(recordId, propName) || false
+	// 	status.setChanged(isChanged)
 
-		// valid
-		const validity = dataObjForm.dataFieldsValidity.valueGet(recordId, propName)
-		status.setValid(validity === undefined || validity.error === ValidityError.none)
+	// 	// valid
+	// 	const validity = node.fieldsValidity.valueGet(recordId, propName)
+	// 	status.setValid(validity === undefined || validity.error === ValidityError.none)
 
-		return status
-	}
+	// 	return status
+	// }
 
 	getValuationInvalid(error: ValidityError, level: ValidityErrorLevel, message: string) {
 		const propName = this.getPropName()
@@ -253,37 +254,6 @@ export enum FieldElement {
 	textArea = 'textArea',
 	textHide = 'textHide',
 	toggle = 'toggle'
-}
-
-export enum FieldParmType {
-	boolean = 'boolean',
-	date = 'date',
-	link = 'link',
-	number = 'number',
-	string = 'string'
-}
-
-export class FieldProps {
-	dataRecord: DataRecord
-	field: Field
-	fieldValue: any
-	iconProps?: IconProps
-	isLabelBold: boolean = false
-	row: number
-	stateProps: StateProps
-	constructor(obj: any) {
-		obj = valueOrDefault(obj, {})
-		const clazz = 'FieldProps'
-		this.dataRecord = required(obj.dataRecord, clazz, 'dataRecord')
-		this.field = required(obj.field, clazz, 'field')
-		this.fieldValue = obj.fieldValue
-		this.iconProps = obj.iconProps
-		this.row = required(obj.row, clazz, 'row')
-		this.stateProps = required(obj.stateProps, clazz, 'stateProps')
-	}
-	setIsLabelBold(isLabelBold: boolean) {
-		this.isLabelBold = isLabelBold
-	}
 }
 
 export class PropsField {

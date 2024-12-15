@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { AppLevel, AppLevelTab } from '$comps/app/types.app'
-	import { query } from '$comps/app/types.appQuery'
+	import { AppLevel, AppLevelTab } from '$comps/app/types.app.svelte'
+	import { queryTypeTab } from '$comps/app/types.appQuery'
 	import {
 		State,
 		StateLayoutContent,
@@ -8,7 +8,6 @@
 		StateSurfaceModal,
 		StatePacket,
 		StatePacketAction,
-		StateProps,
 		StateSurfaceEmbedShell,
 		StateTarget
 	} from '$comps/app/types.appState.svelte'
@@ -30,15 +29,19 @@
 		TokenAppWidget
 	} from '$utils/types.token'
 	import {
+		ContextKey,
+		DataManager,
 		DataObj,
 		DataObjCardinality,
 		DataObjMode,
 		DataObjData,
+		type DataRecord,
 		DataRecordStatus,
 		required,
 		ParmsValues,
 		ParmsValuesType
 	} from '$utils/types'
+	import { getContext, setContext } from 'svelte'
 	import { NodeType } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import LayoutProcess from '$comps/layout/LayoutProcess.svelte'
@@ -46,15 +49,16 @@
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import { migrate } from '$utils/utils.processMigrate'
 	import action from '$enhance/actions/actionAuth'
-	import { getContext, setContext } from 'svelte'
-	import { ContextKey } from '$utils/utils.sys.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '$comps/dataObj/DataObj.svelte'
+	const FILENAME = '$comps/layout/RootLayoutApp.svelte'
 
-	let stateApp = getContext(ContextKey.stateApp) as State
-	let currLayout = $derived(componentsLayout[stateApp.layoutComponent])
+	let dm: DataManager = $state(new DataManager())
+	setContext(ContextKey.dataManager, dm)
+
+	let stateApp: State = getContext(ContextKey.stateApp)
+
 	$effect(() => {
 		const packet = stateApp.consume(actionsPacket)
 		if (packet) process(packet)
@@ -65,8 +69,8 @@
 	let currTab: AppLevelTab | undefined
 	let dataObj: DataObj | undefined
 	let dataObjData: DataObjData | undefined
+	let parms: DataRecord = $state({})
 	let parentTab: AppLevelTab | undefined
-	let stateProps: StateProps = $state()
 
 	const componentsLayout: Record<string, any> = {
 		layoutApp: LayoutApp,
@@ -74,6 +78,8 @@
 		layoutProcess: LayoutProcess,
 		layoutTab: LayoutTab
 	}
+
+	let Component = $state(componentsLayout[stateApp.layoutComponent])
 
 	const actionsPacket = [
 		StatePacketAction.doDetailDelete,
@@ -120,7 +126,7 @@
 			case StatePacketAction.doDetailNew:
 				parentTab = stateApp.app.getCurrTabParentTab()
 				if (parentTab) parentTab.data?.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
-				await query(stateApp, stateApp.app.getCurrTab(), TokenApiQueryType.preset)
+				await queryTypeTab(stateApp, stateApp.app.getCurrTab(), TokenApiQueryType.preset)
 				updateObjectsForm()
 				break
 
@@ -147,12 +153,12 @@
 						const status = currTab?.data?.rowsRetrieved?.getDetailRowStatus()
 						switch (status) {
 							case DataRecordStatus.preset:
-								await query(stateApp, currTab, TokenApiQueryType.preset)
+								await queryTypeTab(stateApp, currTab, TokenApiQueryType.preset)
 								updateObjectsForm()
 								break
 							case DataRecordStatus.retrieved:
 							case DataRecordStatus.update:
-								await query(stateApp, currTab, TokenApiQueryType.retrieve)
+								await queryTypeTab(stateApp, currTab, TokenApiQueryType.retrieve)
 								updateObjectsForm()
 								break
 							default:
@@ -192,17 +198,17 @@
 				break
 
 			case StatePacketAction.doListDetailEdit:
-				await stateApp.app.addLevelNodeChildren(stateApp, token, TokenApiQueryType.retrieve)
+				await stateApp.app.addLevelNodeChildren(stateApp, dm, token, TokenApiQueryType.retrieve)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doListDetailNew:
-				await stateApp.app.addLevelNodeChildren(stateApp, token, TokenApiQueryType.preset)
+				await stateApp.app.addLevelNodeChildren(stateApp, dm, token, TokenApiQueryType.preset)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doListSelfRefresh:
-				await query(stateApp, stateApp.app.getCurrTab(), TokenApiQueryType.retrieve)
+				await queryTypeTab(stateApp, stateApp.app.getCurrTab(), TokenApiQueryType.retrieve)
 				updateObjectsForm()
 				break
 
@@ -268,7 +274,7 @@
 			case StatePacketAction.openNode:
 				if (token instanceof TokenAppNode) {
 					stateApp.newApp()
-					await stateApp.app.addLevelNode(stateApp, token)
+					await stateApp.app.addLevelNode(stateApp, dm, token)
 					updateObjectsForm()
 				}
 				break
@@ -298,7 +304,7 @@
 		currLevel = stateApp.app.getCurrLevel()
 		if (currLevel) {
 			currTab = currLevel.getCurrTab()
-			await query(stateApp, currTab, TokenApiQueryType.retrieve)
+			await queryTypeTab(stateApp, currTab, TokenApiQueryType.retrieve)
 		}
 		updateObjectsForm()
 	}
@@ -317,7 +323,7 @@
 				if (idx > -1) {
 					currTab.data.fields[idx].data.parms.update(data?.valueGetAll())
 					currTab.data.fields[idx].data.parms.valueSet(ParmsValuesType.embedListSave, true)
-					await query(stateApp, currTab, TokenApiQueryType.save)
+					await queryTypeTab(stateApp, currTab, TokenApiQueryType.save)
 				}
 			}
 			updateObjectsForm()
@@ -340,46 +346,33 @@
 		})
 	}
 
-	const closureSetStatus = () => {
-		stateApp = stateApp.setStatus()
-		// console.log('closureSetStatus.objStatus', state.objStatus)
-	}
-	const closureSetVal = (row: number, field: Field, value: any) => {
-		stateApp.props.dataObj = stateApp.props.dataObj.setFieldVal(row, field, value)
-		console.log('closureSetVal.dataFieldsChanged', stateApp.props.dataObj.dataFieldsChanged)
-	}
-
 	function updateObjectsContent(componentName: string) {
 		// componentContentName = componentName
 		// dataObj = undefined
 		// dataObjData = undefined
-		// stateApp.resetState({
-		// 	component: componentContentName,
-		// 	dataObj,
-		// 	dataObjData,
-		// 	fClosureSetStatus: closureSetStatus,
-		// 	fClosureSetVal: closureSetVal
-		// })
 	}
 
 	function updateObjectsForm() {
 		currTab = stateApp.app.getCurrTab()
 		if (currTab) {
-			stateProps = new StateProps({
-				component: currTab.dataObj.raw.codeComponent,
-				dataObj: currTab.dataObj,
-				dataObjData: currTab.data,
-				state: stateApp
-			})
-			console.log('updateObjectsForm.stateProps:', { currTab, stateProps, currLayout })
+			parms = { dataObjId: currTab.dataObjId, component: currTab.dataObj?.raw.codeComponent }
 		}
+		dm.increment()
 	}
 </script>
 
-{#if currLayout && stateProps}
+{#if currLayout && dm && Object.hasOwn(parms, 'dataObjId')}
+	<!-- <DataViewer header="pars" data={parms} /> -->
+	<h2>RootLayoutApp</h2>
+	<!-- <DataViewer header="dataManager.value" data={dm.value} /> -->
+	<DataViewer
+		header="dataManager.dataRecord"
+		data={dm.getDataRecord(parms.dataObjId, 0).table_SysPerson_firstName}
+	/>
+	<DataViewer header="dataManager.isObjStatus" data={dm.getStatus()} />
+
 	<div class="h-full max-h-full">
-		<svelte:component this={currLayout} bind:stateProps on:formCancelled />
+		<!-- <svelte:component this={currLayout} {parms} on:formCancelled /> -->
+		<Component {parms} on:formCancelled />
 	</div>
 {/if}
-
-<!-- <DataViewer header="rowStatus" data={dataObjData?.getRowStatus()} /> -->

@@ -1,5 +1,6 @@
 // master types list
-export * from '$comps/dataObj/types.dataObj'
+export * from '$comps/dataObj/types.dataObj.svelte'
+export * from '$comps/dataObj/types.dataManager.svelte'
 export * from '$comps/dataObj/types.rawDataObj'
 export * from '$comps/form/types.source'
 export * from '$comps/form/types.validation'

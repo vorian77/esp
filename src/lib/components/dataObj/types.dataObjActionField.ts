@@ -4,11 +4,17 @@ import {
 	StatePacketAction,
 	StateTarget
 } from '$comps/app/types.appState.svelte'
-import { DataObj, DataObjConfirm, DataObjMode, DataObjSaveMode } from '$utils/types'
+import {
+	DataManager,
+	DataObj,
+	DataObjConfirm,
+	DataObjMode,
+	DataObjSaveMode,
+	required
+} from '$utils/types'
 import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 import { memberOfEnum, valueOrDefault } from '$utils/types'
 import { FieldColor } from '$comps/form/field'
-// import { FieldEmbed } from '$comps/form/fieldEmbed'
 import { RawDataObjActionField } from '$comps/dataObj/types.rawDataObj'
 import { error } from '@sveltejs/kit'
 
@@ -19,7 +25,6 @@ export class DataObjActionField {
 	actionFieldShows: DataObjActionFieldShow[]
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
 	codePacketAction: StatePacketAction
-	// fieldEmbed?: FieldEmbed
 	fieldColor: FieldColor
 	header: string
 	isDisabled: boolean = false
@@ -127,8 +132,11 @@ export class DataObjActionFieldTriggerGroup {
 		trigger: DataObjActionFieldTriggerEnable,
 		isRequired: boolean
 	) {
+		const clazz = 'DataObjActionFieldTriggerGroup'
 		let isTriggered = false
 		let rowCount: number
+
+		const dm: DataManager = required(state.dataManager, clazz, 'state.dataManager')
 
 		switch (trigger) {
 			case DataObjActionFieldTriggerEnable.always:
@@ -138,13 +146,13 @@ export class DataObjActionFieldTriggerGroup {
 				isTriggered = false
 				break
 			case DataObjActionFieldTriggerEnable.notObjectChanged:
-				isTriggered = !state.objStatus.changed()
+				isTriggered = !state.dataManager?.isStatusChanged()
 				break
 			case DataObjActionFieldTriggerEnable.objectChanged:
-				isTriggered = state.objStatus.changed()
+				isTriggered = dm.isStatusChanged()
 				break
 			case DataObjActionFieldTriggerEnable.objectValidToSave:
-				isTriggered = state.objStatus.valid()
+				isTriggered = dm.isStatusValid()
 				break
 			case DataObjActionFieldTriggerEnable.parentObjectSaved:
 				isTriggered = dataObj.modeActive(DataObjMode.ParentObjectSaved)

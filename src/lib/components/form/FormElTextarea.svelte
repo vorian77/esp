@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { FieldProps } from '$comps/form/field'
 	import { FieldTextarea } from '$comps/form/fieldTextarea'
 	import { FieldAccess } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
 
 	let field = $derived(fp.field) as FieldTextarea
 	let fieldValue = $derived(fp.fieldValue)
@@ -13,11 +12,17 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		fp.stateProps.fSetVal(fp.row, fp.field, target.value)
+		fp.stateApp.fSetVal(fp.row, fp.field, target.value)
+	}
+	function preventDefault(fn) {
+		return function (event) {
+			event.preventDefault()
+			fn.call(this, event)
+		}
 	}
 </script>
 
-<FormLabel {fp} />
+<FormLabel {parms} />
 
 <textarea
 	id={field.colDO.propName}
@@ -27,7 +32,6 @@
 	hidden={field.fieldAccess === FieldAccess.hidden}
 	readonly={field.fieldAccess === FieldAccess.readonly}
 	class={classProps}
-	on:change={onChange}
-	on:keyup|preventDefault={onChange}
+	oninput={onChange}
 	value={fieldValue}
 />

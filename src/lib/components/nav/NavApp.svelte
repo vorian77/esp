@@ -1,28 +1,26 @@
 <script lang="ts">
+	import { ContextKey, required } from '$utils/types'
+	import { getContext } from 'svelte'
 	import {
 		State,
 		StatePacket,
 		StatePacketAction,
-		StateProps,
 		StateTarget
 	} from '$comps/app/types.appState.svelte'
 	import { TokenAppDoActionConfirmType } from '$utils/types.token'
-	import { AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app'
+	import { AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
 	import NavCrumbs from '$comps/nav/NavCrumbs.svelte'
 	import NavRow from '$comps/nav/NavRow.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	let { stateProps = $bindable() }: StateProps = $props()
-
 	const FILENAME = '$comps/nav/NavApp.svelte'
 
-	let crumbsList = $derived(stateProps.state.app.getCrumbsList()) as AppLevelCrumb[]
-	let rowStatus = $derived(stateProps.state.app.getRowStatus()) as AppLevelRowStatus
+	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
 
-	function back() {
-		stateProps.change({
+	const back = () => {
+		stateApp.change({
 			confirmType: TokenAppDoActionConfirmType.objectChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navBack
@@ -39,7 +37,7 @@
 	<div id="lead">
 		<div class="grid items-end">
 			<div class="flex items-center">
-				<button class="mr-4" on:click={back}>
+				<button class="mr-4" onclick={back}>
 					<Icon
 						props={new IconProps({
 							name: 'ArrowLeft',
@@ -51,11 +49,11 @@
 					/>
 				</button>
 				<div class="hidden md:block">
-					<NavCrumbs bind:stateProps {crumbsList} />
+					<NavCrumbs />
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<NavRow bind:stateProps {rowStatus} />
+	<NavRow />
 </div>

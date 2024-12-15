@@ -32,7 +32,7 @@ import {
 	DataObjListEditPresetType,
 	DataObjProcessType,
 	type DataRecord
-} from '$comps/dataObj/types.dataObj'
+} from '$comps/dataObj/types.dataObj.svelte'
 import {
 	DataObjActionField,
 	DataObjActionFieldConfirm,

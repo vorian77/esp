@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { StatePacketAction } from '$comps/app/types.appState.svelte'
-	import { FieldProps } from '$comps/form/field'
 	import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 	import Layout from '$comps/layout/RootLayoutApp.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
@@ -11,11 +10,13 @@
 
 	const FILENAME = '$comps/form/FormElEmbeddedListSelect.svelte'
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
 
-	fp.setIsLabelBold(true)
+	parms.isLabelBold = true
 
-	fp.field.setIconProps({
+	let field: FieldEmbedListSelect = $derived(parms.field)
+
+	field.setIconProps({
 		name: 'SquareMousePointer',
 		clazz: 'ml-1.5 mt-0.5',
 		color: '#3b79e1',
@@ -24,12 +25,12 @@
 		strokeWidth: 2
 	})
 
-	function openDialogIcon() {
-		fp.field.dataObj.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, fp.stateProps.state)
+	const openDialogIcon = () => {
+		field.dataObj.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, fp.stateApp)
 	}
 </script>
 
-<FormLabel {fp} />
+<FormLabel {parms} />
 
 {#if fp}
 	<div class="mt-4">

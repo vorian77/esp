@@ -12,9 +12,16 @@ import {
 } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiQueryData } from '$utils/types.token'
+import { DataManagerNode } from '$comps/dataObj/types.dataManager.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldParm.ts/'
+
+export class FieldJunk extends Field {
+	constructor(props: PropsFieldRaw) {
+		super(props)
+	}
+}
 
 export class FieldParm extends Field {
 	parmFields: Field[] = []
@@ -25,7 +32,7 @@ export class FieldParm extends Field {
 	}
 	async init(props: PropsField) {
 		for (const dataRow of props.dataObj.data.rowsRetrieved.dataRows) {
-			this.parmFields.push(await this.configParmItemsInit(props, dataRow.record, this.parmFields))
+			// this.parmFields.push(await this.configParmItemsInit(props, dataRow.record, this.parmFields))
 		}
 	}
 
@@ -63,10 +70,10 @@ export class FieldParm extends Field {
 		)
 	}
 
-	getStatus(dataObjForm: DataObj, recordId: string) {
-		const row = dataObjForm.dataRecordsDisplay.findIndex((r) => r.id === recordId)
+	getStatus(node: DataManagerNode, recordId: string) {
+		const row = node.recordsDisplay.findIndex((r) => r.id === recordId)
 		if (row > -1) {
-			return this.parmFields[row].getStatus(dataObjForm, recordId)
+			return this.parmFields[row].getStatus(node, recordId)
 		} else {
 			error(500, {
 				file: FILENAME,

@@ -3,7 +3,6 @@
 		State,
 		StatePacket,
 		StatePacketAction,
-		StateProps,
 		StateSurfaceEmbedShell,
 		StateSurfaceModalEmbed,
 		StateTarget
@@ -28,6 +27,8 @@
 	import 'ag-grid-charts-enterprise'
 	import { LicenseManager } from 'ag-grid-charts-enterprise'
 	import {
+		ContextKey,
+		DataManager,
 		DataObj,
 		DataObjData,
 		DataObjEmbedType,
@@ -44,7 +45,7 @@
 	import { innerHeight } from 'svelte/reactivity/window'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
-	import { FieldParm } from '$comps/form/fieldParm'
+	// import { FieldParm } from '$comps/form/fieldParm'
 	import FormElement from '$comps/form/FormElement.svelte'
 	import Grid from '$comps/grid/Grid.svelte'
 	import {
@@ -69,25 +70,26 @@
 
 	const FILENAME = '$comps/form/FormList.svelte'
 
-	let { stateProps = $bindable() }: StateProps = $props()
+	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
 
 	let elContent: HTMLDivElement
 	let elContentTopY: number
 	let gridApi: GridApi
 	let gridOptions: GridManagerOptions
-	let isSelect = stateProps.state instanceof StateSurfaceModalEmbed
-	let scrollToTop = () => {}
+	let isSelect = stateApp instanceof StateSurfaceModalEmbed
 
 	$effect(() => {
 		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
 	})
 
-	let dataObj = $state(stateProps.dataObj)
-	let dataObjData = $state(stateProps.dataObjData)
+	let dataObj = $state(stateApp.dataObj)
+	let dataObjData = $state(stateApp.dataObjData)
 	load(dataObjData)
-	if (stateProps.state && stateProps.state.packet) {
-		// let packet
-		// // gridDownload
+
+	if (stateApp && stateApp.packet) {
+		let packet
+		// gridDownload
 		// packet = state.consume(StatePacketAction.gridDownload)
 		// if (packet) {
 		// 	;(async () => {
@@ -134,33 +136,16 @@
 			}
 		})
 
-		stateProps.state.downloadContent(`${dataObj.raw.header}.csv`, 'text/csv', data)
+		stateApp.downloadContent(`${dataObj.raw.header}.csv`, 'text/csv', data)
 	}
 
 	function load(data: DataObjData) {
-		if (!dataObj.fieldEmbed) dataObj.objData = data
-
-		// listEdit
-		if (dataObj.raw.isListEdit) {
-			const presetRows = dataObj.data.rowsRetrieved
-				.getRows()
-				.filter((row) => row.record.id.startsWith('preset_'))
-			presetRows.forEach((row) => {
-				dataObj.dataFieldsChanged.valueSet(row.record.id + '_new', 'id', true)
-			})
-		}
-
-		if (!dataObj.fieldEmbed) {
-			stateProps.state.setDataObjState(dataObj)
-			stateProps.state.setStatus()
-		}
-
 		gridOptions = initGrid()
 	}
 
 	function fGridCallbackFilter(event: FilterChangedEvent) {
 		dataObjData.rowsRetrieved.syncFields(dataObj.dataRecordsDisplay, ['selected'])
-		stateProps.state.parmsState.valueSet(
+		stateApp.parmsState.valueSet(
 			ParmsValuesType.listIdsSelected,
 			getSelectedNodeIds(event.api, 'id')
 		)
@@ -171,11 +156,6 @@
 		const field = dataObj.fields.find((f) => f.colDO.propName === fieldName)
 		if (row > -1 && field) {
 			dataObj = dataObj.setFieldVal(row, field, data[fieldName])
-			if (stateProps.state instanceof StateSurfaceEmbedShell) {
-				// state.props.fClosureSetStatus()
-			} else {
-				// state.props.fClosureSetStatus()
-			}
 		} else {
 			error(500, {
 				file: FILENAME,
@@ -198,7 +178,7 @@
 			listReorderColumn: dataObj.raw.listReorderColumn,
 			onCellClicked,
 			onSelectionChanged,
-			parmStateSelectedIds: stateProps.state.parmsState.valueGet(ParmsValuesType.listIdsSelected),
+			parmStateSelectedIds: stateApp.parmsState.valueGet(ParmsValuesType.listIdsSelected),
 			rowData: initGridData(),
 			userSettings: dataObj.userGridSettings
 		})
@@ -250,94 +230,94 @@
 		defn.singleClickEdit = isEditable ? true : undefined
 		defnCellStyle.addStyle('text-align', field.fieldAlignment)
 
-		if (field instanceof FieldParm) {
-			defn.cellEditorSelector = cellEditorSelectorParmField
-			defn.cellRendererSelector = cellRendererSelectorParmField
-			defn.context = { parmFields: field.parmFields, state: stateProps.state }
+		// if (field instanceof FieldParm) {
+		// 	defn.cellEditorSelector = cellEditorSelectorParmField
+		// 	defn.cellRendererSelector = cellRendererSelectorParmField
+		// 	defn.context = { parmFields: field.parmFields, state: stateApp }
 
-			// if (field.linkItemsSource) {
-			// 	defn.editable = false
-			// 	defn.context = { linkItemsSource: field.linkItemsSource, state }
-			// 	defn.context = { parmFields: field.parmFields, state }
-			// 	defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
-			// }
+		// if (field.linkItemsSource) {
+		// 	defn.editable = false
+		// 	defn.context = { linkItemsSource: field.linkItemsSource, state }
+		// 	defn.context = { parmFields: field.parmFields, state }
+		// 	defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
+		// }
 
-			// field.parmFields[2].colDO.items = [
-			// 	{ display: 'Item 1', id: '1' },
-			// 	{ display: 'Item 2', id: '2' },
-			// 	{ display: 'Item 3', id: '3' },
-			// 	{ display: 'Item 4', id: '4' },
-			// 	{ display: 'Item 5', id: '5' }
-			// ]
-			// field.parmFields[2].hasItems = true
-			// defn.context = { items: dataObjData.items[itemsKey], state }
+		// field.parmFields[2].colDO.items = [
+		// 	{ display: 'Item 1', id: '1' },
+		// 	{ display: 'Item 2', id: '2' },
+		// 	{ display: 'Item 3', id: '3' },
+		// 	{ display: 'Item 4', id: '4' },
+		// 	{ display: 'Item 5', id: '5' }
+		// ]
+		// field.parmFields[2].hasItems = true
+		// defn.context = { items: dataObjData.items[itemsKey], state }
 
-			// defn.editable = false
-			// defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
-		} else {
-			// data type
-			switch (field.colDO.colDB.codeDataType) {
-				case PropDataType.bool:
-					defn.cellDataType = isEditable ? 'customBoolean' : 'customText'
-					break
+		// defn.editable = false
+		// defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
+		// } else {
+		// data type
+		switch (field.colDO.colDB.codeDataType) {
+			case PropDataType.bool:
+				defn.cellDataType = isEditable ? 'customBoolean' : 'customText'
+				break
 
-				case PropDataType.date:
-					defn.cellDataType = 'customDateString'
-					break
+			case PropDataType.date:
+				defn.cellDataType = 'customDateString'
+				break
 
-				case PropDataType.datetime:
-					// <todo> - 240921 - text until proper custom data type is built
-					defn.cellDataType = 'text'
-					break
+			case PropDataType.datetime:
+				// <todo> - 240921 - text until proper custom data type is built
+				defn.cellDataType = 'text'
+				break
 
-				case PropDataType.float64:
-					defn.cellDataType =
-						field.fieldElement === FieldElement.currency
-							? 'customNumberCurrency'
-							: field.fieldElement === FieldElement.percentage
-								? 'customNumberPercentage'
-								: 'customNumber'
-					break
+			case PropDataType.float64:
+				defn.cellDataType =
+					field.fieldElement === FieldElement.currency
+						? 'customNumberCurrency'
+						: field.fieldElement === FieldElement.percentage
+							? 'customNumberPercentage'
+							: 'customNumber'
+				break
 
-				case PropDataType.int16:
-				case PropDataType.int32:
-				case PropDataType.int64:
-					defn.cellDataType = 'customNumberInt'
-					break
+			case PropDataType.int16:
+			case PropDataType.int32:
+			case PropDataType.int64:
+				defn.cellDataType = 'customNumberInt'
+				break
 
-				case PropDataType.json:
-					defn.cellDataType = 'object'
-					break
+			case PropDataType.json:
+				defn.cellDataType = 'object'
+				break
 
-				case PropDataType.link:
-					const itemsKey = '_items_' + field.colDO.propName
-					if (field.linkItemsSource) {
-						defn.editable = false
-						defn.context = { linkItemsSource: field.linkItemsSource, state: stateProps.state }
-						defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
-					} else {
-						defn.cellDataType = 'customText'
-					}
-					defnCellStyle.addStyle(
-						'backgroundColor',
-						field.fieldAccess === FieldAccess.required ? 'rgb(219,234,254)' : ''
-					)
-					break
+			case PropDataType.link:
+				const itemsKey = '_items_' + field.colDO.propName
+				if (field.linkItemsSource) {
+					defn.editable = false
+					defn.context = { linkItemsSource: field.linkItemsSource, state: stateApp }
+					defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
+				} else {
+					defn.cellDataType = 'customText'
+				}
+				defnCellStyle.addStyle(
+					'backgroundColor',
+					field.fieldAccess === FieldAccess.required ? 'rgb(219,234,254)' : ''
+				)
+				break
 
-				case PropDataType.str:
-				case PropDataType.uuid:
-					defn.cellDataType =
-						field.fieldElement === FieldElement.textArea ? 'customTextLarge' : 'customText'
-					break
+			case PropDataType.str:
+			case PropDataType.uuid:
+				defn.cellDataType =
+					field.fieldElement === FieldElement.textArea ? 'customTextLarge' : 'customText'
+				break
 
-				default:
-					error(500, {
-						file: FILENAME,
-						function: 'initGridColumns',
-						message: `No case defined for PropDataType: ${field.colDO.colDB.codeDataType}`
-					})
-			}
+			default:
+				error(500, {
+					file: FILENAME,
+					function: 'initGridColumns',
+					message: `No case defined for PropDataType: ${field.colDO.colDB.codeDataType}`
+				})
 		}
+		// }
 		defn.cellStyle = defnCellStyle.cellStyle
 		return defn
 	}
@@ -365,9 +345,9 @@
 	async function onCellClicked(event: CellClickedEvent) {
 		const rowNode = event.api.getRowNode(event.data.id)
 		let field = dataObj.fields.find((f) => f.colDO.propName === event.colDef.field)
-		let fieldParm = field instanceof FieldParm ? field.parmFields[event.rowIndex] : undefined
-		let fieldProcess = fieldParm || field
-		if (fieldProcess && fieldProcess.linkItemsSource) await onCellClickedSelectItems()
+		// let fieldParm = field instanceof FieldParm ? field.parmFields[event.rowIndex] : undefined
+		// let fieldProcess = fieldParm || field
+		// if (fieldProcess && fieldProcess.linkItemsSource) await onCellClickedSelectItems()
 
 		async function onCellClickedSelectItems() {
 			const fieldName = field.colDO.propName
@@ -378,7 +358,7 @@
 					: [event.data[fieldName]]
 			const parms = fieldProcess.linkItemsSource.getGridParms()
 
-			stateProps.change({
+			stateApp.change({
 				confirmType: TokenAppDoActionConfirmType.none,
 				packet: new StatePacket({
 					action: StatePacketAction.modalSelectOpen,
@@ -420,7 +400,7 @@
 		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit) {
 			return
 		} else if (isSelect) {
-			stateProps.parmsState.valueSet(
+			stateApp.parmsState.valueSet(
 				ParmsValuesType.listIdsSelected,
 				getSelectedNodeIds(event.api, 'id')
 			)
@@ -430,7 +410,7 @@
 				const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
 				dataObj.data.parms.valueSet(ParmsValuesType.listIds, getFilteredNodeIds(event.api))
 				dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, record.id)
-				action.trigger(stateProps.state, dataObj)
+				action.trigger(stateApp, dataObj)
 			}
 		}
 	}

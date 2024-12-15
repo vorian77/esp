@@ -21,7 +21,7 @@
 	<a
 		href="#"
 		class="flex items-center hover:-translate-y-0.5 transition-transform"
-		on:click={() => data.items.activateLinkByLabel('My Account')}
+		onclick={() => data.items.activateLinkByLabel('My Account')}
 	>
 		<div class="h-9 w-9 rounded-full place-content-center bg-neutral-200 text-center">
 			{#if data.user.avatar}

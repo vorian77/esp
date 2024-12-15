@@ -24,6 +24,7 @@
 	import { cubicOut } from 'svelte/easing'
 	import { setContext } from 'svelte'
 	import { ContextKey } from '$utils/utils.sys.svelte'
+	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	let { data }: { data: PageData } = $props()
@@ -50,8 +51,8 @@
 		})
 	) as State
 	setContext(ContextKey.stateApp, stateApp)
-
 	let stateTarget = $derived(stateApp.target)
+
 	let navBar: NavBarData = $state(new NavBarData({ stateApp }))
 	let navBarWidth = $state(0)
 
@@ -71,6 +72,12 @@
 		// isNavBarDrawerOpen = !isNavBarDrawerOpen
 		// navBarWidth = isNavBarDrawerOpen ? `${innerWidth - navBar?.width}px` : '0'
 	}
+	function preventDefault(fn) {
+		return function (event) {
+			event.preventDefault()
+			fn.call(this, event)
+		}
+	}
 </script>
 
 <svelte:window bind:innerWidth />
@@ -84,9 +91,9 @@
 		id="layout-menu-mobile"
 		class="h-[calc(100vh-54px)] grow fixed top-12 left-0 md:hidden overflow-hidden z-10 transition-all duration-500"
 		style="width: {navBarWidth}"
-		on:click={() => toggleNavBarDrawer()}
+		onclick={() => toggleNavBarDrawer()}
 	>
-		<aside class="h-full" style="width: {navBarWidth}" on:click|stopPropagation>
+		<aside class="h-full" style="width: {navBarWidth}" onclick={preventDefault()}>
 			<NavBar {navBar} />
 		</aside>
 	</div>
@@ -98,7 +105,7 @@
 		<div id="layout-main-content" class="grow md:px-3 pb-3">
 			{#if $page.route.id === '/home'}
 				{#if stateTarget === StateTarget.dashboard}
-					<NavDash state={stateApp} />
+					<NavDash />
 				{:else if stateTarget === StateTarget.feature}
 					<RootLayoutApp />
 				{/if}

@@ -1,48 +1,49 @@
 <script lang="ts">
-	import { FieldAlignment, FieldProps, FieldElement } from '$comps/form/field'
+	import {
+		ContextKey,
+		DataManager,
+		DataObjCardinality,
+		type DataRecord,
+		required
+	} from '$utils/types'
+	import { FieldAlignment, FieldElement } from '$comps/form/field'
 	import { FieldInput } from '$comps/form/fieldInput'
 	import { FieldAccess } from '$comps/form/field'
-	import { DataObjCardinality } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
+	import { getContext } from 'svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
+	let dm: DataManager = required(getContext(ContextKey.dataManager), 'FormElInput', 'dataManager')
 
-	const setHidTextIcon = () => {
-		field.setIconProps({
-			name: field.inputTypeCurrent === 'password' ? 'Eye' : 'EyeOff',
-			clazz: 'ml-1',
-			onClick: onClickToggleHideText,
-			size: 20
-		})
-	}
-	const onClickToggleHideText = () => {
-		field.inputTypeCurrent = field.inputTypeCurrent === 'password' ? 'text' : 'password'
-		setHidTextIcon()
-		field = field
-	}
+	let dataObj = $state(dm.getDataObj(parms.dataObjId))
+	let field: FieldInput = $state(parms.field)
+	let fieldValue = $state(parms.fieldValue)
+	let row = $state(parms.row)
 
-	let field = $derived(fp.field) as FieldInput
 	if (field.fieldElement === FieldElement.textHide) {
-		setHidTextIcon()
+		setHideTextIcon()
 	}
 
-	let classPropsInput =
-		fp.stateProps.dataObj.raw.codeCardinality === DataObjCardinality.detail
-			? 'input text-sm text-black ' + field.colorBackground
-			: 'w-full border-none bg-transparent text-black'
-	classPropsInput +=
-		field.fieldAlignment === FieldAlignment.left
-			? ' text-left'
-			: field.fieldAlignment === FieldAlignment.center
-				? ' text-center'
-				: field.fieldAlignment === FieldAlignment.justify
-					? ' text-justify'
-					: field.fieldAlignment === FieldAlignment.right
-						? ' text-right'
-						: ' text-left'
+	let classPropsInput = $derived.by(() => {
+		let clazz =
+			dataObj.raw.codeCardinality === DataObjCardinality.detail
+				? 'input text-sm text-black ' + field.colorBackground
+				: 'w-full border-none bg-transparent text-black'
+		clazz +=
+			field.fieldAlignment === FieldAlignment.left
+				? ' text-left'
+				: field.fieldAlignment === FieldAlignment.center
+					? ' text-center'
+					: field.fieldAlignment === FieldAlignment.justify
+						? ' text-justify'
+						: field.fieldAlignment === FieldAlignment.right
+							? ' text-right'
+							: ' text-left'
+		return clazz
+	})
 
 	let min = $derived(field.minValue ? field.minValue.toString() : '')
 	let max = $derived(field.maxValue ? field.maxValue.toString() : '')
@@ -50,7 +51,7 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		fp.stateProps.fSetVal(fp.row, fp.field, target.value)
+		dm.setFieldValue(parms.dataObjId, row, field, target.value)
 	}
 
 	function onDoubleClick(event: MouseEvent) {
@@ -62,15 +63,24 @@
 			const month = dateMonth < 10 ? '0' + dateMonth : dateMonth.toString()
 			const day = dateDay < 10 ? '0' + dateDay : dateDay.toString()
 			const value = year + '-' + month + '-' + day
-			fp.stateProps.fSetVal(fp.row, fp.field, value)
+			dm.setFieldValue(parms.dataObjId, row, field, value)
 		}
+	}
+	function setHideTextIcon() {
+		field.setIconProps({
+			name: field.inputTypeCurrent === 'password' ? 'Eye' : 'EyeOff',
+			clazz: 'ml-1',
+			onClick: onClickToggleHideText,
+			size: 20
+		})
+	}
+	function onClickToggleHideText() {
+		field.inputTypeCurrent = field.inputTypeCurrent === 'password' ? 'text' : 'password'
+		setHideTextIcon()
 	}
 </script>
 
-<!-- <DataViewer header="element" data={field.element} /> -->
-<!-- <DataViewer header="fieldAccess" data={field.fieldAccess} /> -->
-
-<FormLabel {fp}>
+<FormLabel {parms}>
 	<input
 		class={classPropsInput}
 		hidden={field.fieldAccess === FieldAccess.hidden}
@@ -78,16 +88,22 @@
 		{max}
 		{min}
 		name={field.colDO.propName}
-		on:change={onChange}
-		on:dblclick={onDoubleClick}
-		on:keyup={onChange}
-		placeholder={fp.stateProps.dataObj.raw.codeCardinality === DataObjCardinality.detail ||
-		fp.stateProps.dataObj.raw.isListEdit
+		onchange={onChange}
+		ondblclick={onDoubleClick}
+		oninput={onChange}
+		placeholder={dataObj.raw.codeCardinality === DataObjCardinality.detail || dataObj.raw.isListEdit
 			? field.placeHolder
 			: ''}
 		readonly={field.fieldAccess === FieldAccess.readonly}
 		{step}
 		type={field.inputTypeCurrent ? field.inputTypeCurrent : field.FieldElement}
-		value={fp.fieldValue}
+		value={fieldValue}
 	/>
 </FormLabel>
+
+<!-- <input bind:value={value} /> -->
+
+<!-- onchange={() => onChange}
+oninput={() => onChange}
+ondblclick={() => onDoubleClick}
+onkeyup={() => onChange} -->

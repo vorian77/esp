@@ -13,6 +13,7 @@ export function capitalizeFirstLetter(text: string) {
 }
 
 export enum ContextKey {
+	dataManager = 'dataManager',
 	stateApp = 'stateApp',
 	test = 'test'
 }

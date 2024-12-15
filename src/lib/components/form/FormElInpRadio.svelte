@@ -1,13 +1,12 @@
 <script lang="ts">
-	import { FieldProps } from '$comps/form/field'
 	import { DataObj, DataObjCardinality } from '$utils/types'
 	import { FieldRadio } from '$comps/form/fieldRadio'
 	import { FieldAccess, FieldAlignment } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
 
-	let dataObj = $derived(fp.stateProps.dataObj)
+	let dataObj = $derived(fp.stateApp.dataObj)
 	let field = $derived(fp.field) as FieldRadio
 	let fieldValue = $derived(fp.fieldValue)
 	let dataItems = $derived(
@@ -40,13 +39,13 @@
 
 	if (field) field.isDisplayBlock = false
 
-	function onChange(event: Event) {
+	function onClick(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		fp.stateProps.fSetVal(fp.row, fp.field, target.value)
+		fp.stateApp.fSetVal(fp.row, fp.field, target.value)
 	}
 </script>
 
-<FormLabel {fp} />
+<FormLabel {parms} />
 
 <fieldset id="input-radio-row-{row}" class={classFieldSet}>
 	<div class="mt-3 {classAlignment}">
@@ -58,7 +57,7 @@
 						name={field.colDO.propName + '-' + row}
 						value={data}
 						checked={fp.fieldValue == data}
-						on:click={onChange}
+						onclick={onClick}
 					/>
 					{display}
 				</div>

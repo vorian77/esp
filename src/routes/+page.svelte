@@ -11,6 +11,7 @@
 	const storeDrawer = getDrawerStore()
 	const storeToast = getToastStore()
 	const DEV_MODE = data.environ === 'dev'
+
 	const state = new State({ storeDrawer, storeToast, target: StateTarget.feature })
 	let pageCurrent = ''
 
@@ -21,13 +22,15 @@
 	}
 </script>
 
+Home1
+
 <div id="full-screen">
 	<div class="content">
 		<div class="flex gap-4">
 			<button
 				type="button"
 				class="btn btn-action variant-filled-primary w-full"
-				on:click={async () =>
+				onclick={async () =>
 					await state.openDrawerDataObj(
 						'auth',
 						'bottom',
@@ -43,7 +46,7 @@
 			<button
 				type="button"
 				class="btn btn-action variant-filled-primary w-full"
-				on:click={async () =>
+				onclick={async () =>
 					await state.openDrawerDataObj(
 						'auth',
 						'bottom',
@@ -60,7 +63,7 @@
 				<button
 					type="button"
 					class="btn btn-action variant-filled-secondary w-full"
-					on:click={expressLogin}
+					onclick={expressLogin}
 				>
 					Dev Login
 				</button>

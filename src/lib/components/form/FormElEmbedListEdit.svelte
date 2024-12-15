@@ -1,17 +1,16 @@
 <script lang="ts">
-	import { FieldProps } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElEmbeddedListSelect.svelte'
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
 
 	fp.setIsLabelBold(true)
 </script>
 
-<FormLabel {fp} />
+<FormLabel {parms} />
 
 {#if fp}
 	<div class="mt-4">

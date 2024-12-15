@@ -1,18 +1,19 @@
 <script lang="ts">
 	import { getContext } from 'svelte'
 	import { ContextKey } from '$utils/utils.sys.svelte'
+	import { State } from '$comps/app/types.appState.svelte'
 	import { User } from '$utils/types.user'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const state = getContext(ContextKey.stateApp)
+	const stateApp: State = getContext(ContextKey.stateApp)
 	const testState = getContext(ContextKey.test)
 
 	testState.increment()
 </script>
 
 <h1>My Test Component</h1>
-{#if state}
-	<p>Hello, {state?.user?.fullName}!!!</p>
+{#if stateApp}
+	<p>Hello, {stateApp?.user?.fullName}!!!</p>
 {/if}
 
 <DataViewer header="testState" data={testState.value} />

@@ -1,11 +1,7 @@
 <script lang="ts">
-	import { StateProps } from '$comps/app/types.appState.svelte'
+	import { ContextKey, DataManager, type DataRecord, required } from '$utils/types'
 	import FormDetail from '$comps/form/FormDetail.svelte'
-	import { getContext } from 'svelte'
-
-	const scrollToTop: any = getContext('scrollToTop')
-
-	let { stateProps = $bindable() }: StateProps = $props()
+	let { parms }: DataRecord = $props()
 </script>
 
-<FormDetail bind:stateProps on:formCancelled />
+<FormDetail {parms} on:formCancelled />

@@ -1,16 +1,7 @@
 <script lang="ts">
-	import { StateProps } from '$comps/app/types.appState.svelte'
+	import { ContextKey, DataManager, type DataRecord, required } from '$utils/types'
 	import FormList from '$comps/form/FormList.svelte'
-	import { getContext } from 'svelte'
-	import DataViewer from '$utils/DataViewer.svelte'
-
-	let { stateProps = $bindable() }: StateProps = $props()
-
-	const scrollToTop: any = getContext('scrollToTop')
-
-	// $: if (scrollToTop) scrollToTop()
+	let { parms }: DataRecord = $props()
 </script>
 
-<!-- <DataViewer header="state" data={state} /> -->
-
-<FormList bind:stateProps on:formCancelled on:rowClick />
+<FormList {parms} on:formCancelled on:rowClick />

@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { DataObjCardinality } from '$utils/types'
-	import { FieldElement, FieldProps } from '$comps/form/field'
+	import { FieldElement } from '$comps/form/field'
 	import { FieldSelect } from '$comps/form/fieldSelect'
 	import { FieldAccess } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
 
-	let dataObj = $derived(fp.stateProps.dataObj)
+	let dataObj = $derived(fp.stateApp.dataObj)
 	let field = $derived(fp.field) as FieldSelect
 	let fieldId = $derived('field-input-select-' + field.colDO.orderDefine)
 	let fieldValue = $derived(fp.fieldValue)
@@ -27,7 +27,7 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		fp.stateProps.fSetVal(fp.row, fp.field, target.value)
+		fp.stateApp.fSetVal(fp.row, fp.field, target.value)
 	}
 </script>
 
@@ -37,7 +37,7 @@
 		name={field.colDO.propName}
 		id={fieldId}
 		disabled={field.fieldAccess == FieldAccess.readonly}
-		on:change={onChange}
+		onchange={onChange}
 	>
 		<option value={null} class="">Select an option...</option>
 		{#if dataItems}

@@ -25,15 +25,15 @@
 </script>
 
 <Drawer on:backdrop={closeDrawer}>
-	{#if $storeDrawer.id === 'auth'}
+	{#if storeDrawer.id === 'auth'}
 		<div>
-			{#if $storeDrawer.meta.state}
+			{#if storeDrawer.meta.state}
 				<div class="esp-card-space-y">
-					<RootLayoutApp state={$storeDrawer.meta.state} on:formCancelled={onformCancelled} />
+					<RootLayoutApp state={storeDrawer.meta.state} on:formCancelled={onformCancelled} />
 				</div>
 			{/if}
 		</div>
 	{/if}
 </Drawer>
 
-<svelte:window on:keydown={onKeyDown} />
+<svelte:window onkeydown={onKeyDown} />

@@ -8,6 +8,7 @@
 	import { TokenApiQueryData, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import {
+		ContextKey,
 		DataObjData,
 		type DataRecord,
 		Node,
@@ -17,6 +18,7 @@
 		UserResourceTask,
 		UserResourceTaskCategory
 	} from '$utils/types'
+	import { getContext } from 'svelte'
 	import TsoMoedApp from '$comps/nav/navDash/tso_moed_app.svelte'
 	import TsoMoedAppDoc from '$comps/nav/navDash/tso_moed_app_doc.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -24,13 +26,14 @@
 
 	const FILENAME = '$comps/nav/navDash/NavDash.svelte'
 
-	export let state: State
+	let stateApp: State = getContext(ContextKey.stateApp)
 
-	$: tasks = [
-		...state.user.resources_sys_task_default,
-		...state.user?.resources_sys_task_setting
-	].filter((task: UserResourceTask) => task.codeStatusObjName)
-
+	let tasks = $derived(
+		[
+			...stateApp.user.resources_sys_task_default,
+			...stateApp.user?.resources_sys_task_setting
+		].filter((task: UserResourceTask) => task.codeStatusObjName)
+	)
 	const StatusType = { tso_moed_app: TsoMoedApp, tso_moed_app_doc: TsoMoedAppDoc }
 
 	const getData = async (task: UserResourceTask) => {
@@ -58,7 +61,7 @@
 
 		const result: ResponseBody = await apiFetch(
 			ApiFunction.dbEdgeProcessExpression,
-			new TokenApiQueryData({ dataTab, user: state.user })
+			new TokenApiQueryData({ dataTab, user: stateApp.user })
 		)
 		if (result.success) {
 			return result.data
@@ -71,9 +74,9 @@
 		}
 	}
 	async function onClick(task: UserResourceTask, parms: DataRecord | undefined = undefined) {
-		state.parmsState.update(parms)
-		const token = task.getTokenNode(state.user)
-		state.change({
+		stateApp.parmsstateApp.update(parms)
+		const token = task.getTokenNode(stateApp.user)
+		stateApp.change({
 			confirmType: TokenAppDoActionConfirmType.objectChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.openNode,
@@ -90,7 +93,7 @@
 	{:then statusData}
 		{#if task.isShow}
 			<div
-				on:click={task.hasAltOpen ? undefined : onClick(task)}
+				onclick={task.hasAltOpen ? undefined : () => onClick(task)}
 				class="rounded-lg p-6 border-4 bg-gray-100 min-h-40 flex flex-col items-center"
 			>
 				<div class="text-center font-bold text-4xl text-blue-400">{task.header}</div>

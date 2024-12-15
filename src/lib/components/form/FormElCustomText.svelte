@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { FieldProps } from '$comps/form/field'
 	import { FieldCustomText } from '$comps/form/fieldCustom'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	let { fp = $bindable() }: FieldProps = $props()
+	let { parms }: DataRecord = $props()
 
 	let field = $derived(fp.field) as FieldCustomText
 	let classAlign = $derived(field.align ? 'text-' + field.align : 'text-left')

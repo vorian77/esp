@@ -32,17 +32,7 @@ export class FieldEmbed extends Field {
 		)
 		this.embedType = embedType
 	}
-	getStatus(dataObjForm: DataObj, recordId: string) {
-		if (this.dataObj) {
-			return this.dataObj.setStatus()
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: `FieldEmbed.getStatus`,
-				message: `No data object defined for FieldEmbedListEdit: ${this.colDO.propName}`
-			})
-		}
-	}
+
 	async initDataObj(props: PropsField) {
 		const clazz = `${FILENAME}.FieldEmbed`
 

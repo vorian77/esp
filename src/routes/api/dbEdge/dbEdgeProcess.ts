@@ -15,6 +15,7 @@ import {
 	DataObjEmbedType,
 	DataObjDataField,
 	DataObjProcessType,
+	type DataRecord,
 	DataRecordStatus,
 	DataRow,
 	DataRows,
@@ -36,7 +37,6 @@ import {
 	RawDataObjPropDB
 } from '$comps/dataObj/types.rawDataObj'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
-import type { DataRecord } from '$utils/types'
 import {
 	getDataObjById,
 	getDataObjByName,
@@ -63,7 +63,7 @@ export async function getFieldListItems(queryData: TokenApiQueryData) {
 				acc += `${prop.key} := ${prop.expr}`
 				return acc
 			}, 'data := .id')
-			const expr = `SELECT ${source.table.object} {${props}} FILTER ${source.exprFilter}`
+			const expr = `SELECT ${source.table.object} {{props}} FILTER ${source.exprFilter}`
 			rawSource.rawItems = await exeQueryMultiData(
 				expr,
 				queryData,
@@ -412,7 +412,7 @@ export class ProcessRow {
 		this.propNames = propsSelect.map((prop) => prop.propName)
 		this.propsSelect = propsSelect
 	}
-	evalExprCalc(expr: string, dataRecord: DataRecord, propNames: string[]) {
+	evalExprCalc(expr: string, DataRecord: DataRecord, propNames: string[]) {
 		const clazz = 'evalExprCalc'
 		const regex = /\.\w+/g
 		let newExpr = expr
@@ -421,7 +421,7 @@ export class ProcessRow {
 			const key = match[0].substring(1)
 			const propName = propNames.find((prop) => prop.endsWith(key))
 			if (propName) {
-				newExpr = newExpr.replace(`.${key}`, dataRecord[propName])
+				newExpr = newExpr.replace(`.${key}`, DataRecord[propName])
 			}
 		}
 		newExpr = evalExpr(newExpr, this.dummyQueryData, new EvalExprContext('ProcessRow', clazz))

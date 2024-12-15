@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { AppLevelCrumb } from '$comps/app/types.app'
+	import { ContextKey, required } from '$utils/types'
+	import { getContext } from 'svelte'
+	import { AppLevelCrumb } from '$comps/app/types.app.svelte'
 	import {
 		State,
 		StatePacket,
 		StatePacketAction,
-		StateProps,
 		StateTarget
 	} from '$comps/app/types.appState.svelte'
 	import { TokenAppDoActionConfirmType, TokenAppIndex } from '$utils/types.token'
@@ -12,13 +13,11 @@
 
 	const FILENAME = '/$comps/nav/NavCrumbs.svelte'
 
-	let {
-		stateProps = $bindable(),
-		crumbsList
-	}: { stateProps: StateProps; crumbsList: AppLevelCrumb[] } = $props()
+	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
+	let crumbsList: AppLevelCrumb[] = $derived(stateApp.app.getCrumbsList())
 
-	async function onClick(index: number) {
-		stateProps.change({
+	function onClick(index: number) {
+		stateApp.change({
 			confirmType: TokenAppDoActionConfirmType.objectChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navCrumbs,
@@ -41,11 +40,10 @@
 			{#if i === 0}
 				<li id="li-crumb-first" class="flex">
 					<div class="flex items-center">
-						<a
-							href="#"
+						<button
 							class="text-nav hover:text-nav-hover"
-							on:click={() => onClick(i)}
-							on:keyup={() => onClick(i)}
+							onclick={() => onClick(i)}
+							onkeyup={() => onClick(i)}
 						>
 							<svg
 								class="size-5 shrink-0"
@@ -61,7 +59,7 @@
 								/>
 							</svg>
 							<span class="sr-only">{label}</span>
-						</a>
+						</button>
 					</div>
 				</li>
 			{:else if i === crumbsList.length - 1}
@@ -76,15 +74,14 @@
 						>
 							<path d="M.293 0l22 22-22 22h1.414l22-22-22-22H.293z" />
 						</svg>
-						<a
-							href="#"
+						<button
 							class="ml-4 text-sm font-medium text-nav hover:text-nav-hover"
 							aria-current="page"
-							on:click={() => onClick(i)}
-							on:keyup={() => onClick(i)}
+							onclick={() => onClick(i)}
+							onkeyup={() => onClick(i)}
 						>
 							{label}
-						</a>
+						</button>
 					</div>
 				</li>
 			{:else}
@@ -99,14 +96,13 @@
 						>
 							<path d="M.293 0l22 22-22 22h1.414l22-22-22-22H.293z" />
 						</svg>
-						<a
-							href="#"
+						<button
 							class="ml-4 text-sm font-medium text-nav hover:text-nav-hover"
-							on:click={() => onClick(i)}
-							on:keyup={() => onClick(i)}
+							onclick={() => onClick(i)}
+							onkeyup={() => onClick(i)}
 						>
 							{label}
-						</a>
+						</button>
 					</div>
 				</li>
 			{/if}

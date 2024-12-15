@@ -1,5 +1,14 @@
 <script lang="ts">
-	import { DataObj, DataObjMode, DataObjSaveMode, DataObjStatus } from '$utils/types'
+	import {
+		ContextKey,
+		DataManager,
+		DataObj,
+		DataObjMode,
+		DataObjSaveMode,
+		type DataRecord,
+		required
+	} from '$utils/types'
+	import { getContext } from 'svelte'
 	import {
 		DataObjActionField,
 		DataObjActionFieldConfirm,
@@ -12,7 +21,6 @@
 		State,
 		StatePacket,
 		StatePacketAction,
-		StateProps,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState.svelte'
 	import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
@@ -22,12 +30,13 @@
 
 	const FILENAME = '/$comps/dataObj/DataObjActions.svelte'
 
-	let { stateProps = $bindable() }: StateProps = $props()
+	let { parms }: DataRecord = $props()
+	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
 
-	let actions: DataObjActionField[]
-	let isEditing: boolean = false
-
-	let dataObj = $state(stateProps.dataObj)
+	let dataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let actions: DataObjActionField[] = $state([])
+	let isEditing: boolean = $state(false)
 
 	load()
 
@@ -42,25 +51,26 @@
 				[StatePacketAction.doDetailSave, StatePacketAction.doListSelfSave].includes(
 					a.codePacketAction
 				) &&
-				stateProps.state.objStatus.changed() &&
+				dm.isStatusChanged() &&
 				!dataObj.fieldEmbed
 		)
 	}
 
 	function isTriggeredEnable(action: DataObjActionField) {
 		const tg = new DataObjActionFieldTriggerGroup()
-		tg.addStatus(stateProps.state, dataObj, action.codeActionFieldTriggerEnable, true)
+		tg.addStatus(stateApp, dataObj, action.codeActionFieldTriggerEnable, true)
 		return tg.isTriggered()
 	}
 	function isTriggeredShow(action: DataObjActionField) {
 		const tg = new DataObjActionFieldTriggerGroup()
 		action.actionFieldShows.forEach((show) => {
-			tg.addStatus(stateProps.state, dataObj, show.codeTriggerShow, show.isRequired)
+			tg.addStatus(stateApp, dataObj, show.codeTriggerShow, show.isRequired)
 		})
 		return tg.isTriggered()
 	}
-	async function onClick(action: DataObjActionField) {
-		await action.trigger(stateProps.state, dataObj)
+
+	const onClick = async (action: DataObjActionField) => {
+		await action.trigger(stateApp, dataObj)
 	}
 </script>
 
@@ -78,7 +88,7 @@
 				class="w-full btn btn-action text-sm text-white"
 				style:background-color={action.fieldColor.color}
 				disabled={action.isDisabled}
-				on:click={() => onClick(action)}
+				onclick={onClick(action)}
 			>
 				{action.header}
 			</button>

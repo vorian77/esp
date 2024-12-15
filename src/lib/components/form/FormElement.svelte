@@ -1,13 +1,17 @@
 <script lang="ts">
 	import {
+		ContextKey,
+		DataManager,
 		DataObj,
 		DataObjCardinality,
 		DataObjData,
-		FieldValue,
+		type DataRecord,
+		required,
+		Validity,
 		ValidityErrorLevel,
-		ValidityError,
-		type DataRecord
+		ValidityError
 	} from '$utils/types'
+	import { getContext } from 'svelte'
 	import { State, StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
 	import FormElCustomActionButton from './FormElCustomActionButton.svelte'
 	import FormElCustomActionLink from './FormElCustomActionLink.svelte'
@@ -25,7 +29,7 @@
 	import FormElSelect from '$comps/form/FormElSelect.svelte'
 	import FormElTextarea from '$comps/form/FormElTextarea.svelte'
 	import FormElToggle from '$comps/form/FormElToggle.svelte'
-	import { Field, FieldProps } from '$comps/form/field'
+	import { Field } from '$comps/form/field'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import {
 		FieldCustomActionButton,
@@ -42,29 +46,14 @@
 	import { FieldChips } from '$comps/form/fieldChips'
 	import { FieldFile } from '$comps/form/fieldFile'
 	import { FieldInput } from '$comps/form/fieldInput'
-	import { FieldParm } from '$comps/form/fieldParm'
+	// import { FieldParm } from '$comps/form/fieldParm'
 	import { FieldRadio } from '$comps/form/fieldRadio'
 	import { FieldSelect } from '$comps/form/fieldSelect'
 	import { FieldTextarea } from '$comps/form/fieldTextarea'
 	import { FieldToggle } from '$comps/form/fieldToggle'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '$comps/form/FormDetailElement.svelte'
-
-	let {
-		field,
-		row,
-		stateProps = $bindable()
-	}: { field: Field; row: number; stateProps: StateProps } = $props()
-
-	let classProps = $derived(
-		!stateProps.state.app.isMobileMode &&
-			stateProps.dataObj.raw.codeCardinality === DataObjCardinality.detail &&
-			field.colDO.isDisplayable
-			? 'mb-4'
-			: ''
-	)
-
+	const FILENAME = '$comps/form/FormElement.svelte'
 	// const elements: Record<string, any> = {
 	// 	FieldCheckbox: FormElInpCheckbox,
 	// 	FieldChips: FormElChips,
@@ -83,52 +72,55 @@
 	// 	FieldTextarea: FormElTextarea,
 	// 	FieldToggle: FormElToggle
 	// }
-
 	const elements: Record<string, any> = {
 		FieldInput: FormElInp
 	}
+	let Element: any = $state()
 
-	let dataRecord = $derived(stateProps.dataObj.dataRecordsDisplay[row]) as DataRecord
-	console.log('dataRecord', dataRecord)
-	let fieldRender = $derived(stateProps.dataObj.getField(field, row)) as Field
-	let fieldValue = $state(dataRecord[fieldRender.colDO.propName])
-	let validity = $state(
-		stateProps.dataObj.dataFieldsValidity.valueGet(dataRecord.id, fieldRender.colDO.propName)
-	)
-	let elementName =
-		typeof fieldRender.constructor.name === 'string' && fieldRender.constructor.name !== ''
-			? fieldRender.constructor.name
-			: ''
+	let { parms }: DataRecord = $props()
+	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
 
-	// const fieldClass = field.constructor.name
-	// if (typeof fieldClass === 'string' && fieldClass !== '') {
-	// 	currentElement = elements[field.constructor.name]
-	// }
+	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let field: Field = $derived(parms.field)
+	let fieldValidity = $derived(dm.getFieldValidity(parms.dataObjId, parms.row, field))
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
 
-	let fp = new FieldProps({
-		dataRecord,
-		field: fieldRender,
-		fieldValue,
-		row,
-		stateProps
+	$effect(() => (parms.fieldValue = fieldValue))
+	$effect(() => {
+		let elementName =
+			typeof field.constructor.name === 'string' && field.constructor.name !== ''
+				? field.constructor.name
+				: ''
+		if (elementName) Element = elements[elementName]
 	})
+
+	let classProps = $derived(
+		dataObj.raw.codeCardinality === DataObjCardinality.detail && field.colDO.isDisplayable
+			? 'mb-4'
+			: ''
+	)
 </script>
 
+<p>field: {field.colDO.label}</p>
+<p>value: {fieldValue}</p>
+
 <div class={classProps}>
-	{#if elementName && fieldRender.colDO.isDisplayable}
-		<svelte:component this={elements[elementName]} bind:fp />
+	{#if Element && field.colDO.isDisplayable}
+		<Element {parms} />
+	{:else}
+		no element
 	{/if}
 </div>
 
-{#if validity}
+{#if fieldValidity}
 	<div class="mb-3 text-sm">
-		{#if validity.level == ValidityErrorLevel.error}
+		{#if fieldValidity.level == ValidityErrorLevel.error}
 			<div class="text-error-500">
-				<p>{validity.message}</p>
+				<p>{fieldValidity.message}</p>
 			</div>
-		{:else if validity.level == ValidityErrorLevel.warning}
+		{:else if fieldValidity.level == ValidityErrorLevel.warning}
 			<div class="text-warning-500">
-				<p>{validity.message}</p>
+				<p>{fieldValidity.message}</p>
 			</div>
 		{/if}
 	</div>
