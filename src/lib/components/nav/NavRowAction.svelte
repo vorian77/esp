@@ -14,9 +14,9 @@
 <div
 	role="button"
 	tabindex="0"
-	onclick={() => onChange($action)}
-	onkeyup={() => onChange($action)}
+	onclick={() => onChange(action)}
+	onkeyup={() => onChange(action)}
 	class="border-0 border-blue-100"
 >
-	<Icon props={new IconProps({ isNav: true, name: $icon, size: 26, strokeWidth: 2 })} />
+	<Icon props={new IconProps({ isNav: true, name: icon, size: 26, strokeWidth: 2 })} />
 </div>

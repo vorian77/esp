@@ -11,9 +11,9 @@
 	import { getDrawerStore, getModalStore, getToastStore } from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import NavDash from '$comps/nav/navDash/NavDash.svelte'
-	import NavBar from '$comps/nav/navBar/NavBar.svelte'
-	import { NavBarData } from '$comps/nav/navBar/types.navBar.svelte'
-	import NavBarMobile from '$comps/nav/NavBarMobile.svelte'
+	import NavMenu from '$comps/nav/navMenu/NavMenu.svelte'
+	import { NavMenuData } from '$comps/nav/navMenu/types.navMenu.svelte'
+	import NavAppMobile from '$comps/nav/NavAppMobile.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
 	import { page } from '$app/stores'
@@ -36,9 +36,6 @@
 	const storeModal = getModalStore()
 	const storeToast = getToastStore()
 
-	let innerWidth = 0
-	let isNavBarDrawerOpen = false
-
 	let stateApp = $state(
 		new State({
 			fChangeCallback: stateChangeCallback,
@@ -53,25 +50,22 @@
 	setContext(ContextKey.stateApp, stateApp)
 	let stateTarget = $derived(stateApp.target)
 
-	let navBar: NavBarData = $state(new NavBarData({ stateApp }))
-	let navBarWidth = $state(0)
-
-	const goHome = () => {
-		stateApp.change({
-			confirmType: TokenAppDoActionConfirmType.objectChanged,
-			target: StateTarget.dashboard
-		})
-	}
+	let innerWidth = $state(0)
+	let isMobile = $derived(innerWidth <= 640)
+	let isMobileMenuHide = $state(true)
+	let navMenu: NavMenuData = $state(new NavMenuData({ stateApp }))
 
 	async function stateChangeCallback(obj: any) {
 		stateApp.changeProperties(obj)
+		if (isMobile) isMobileMenuHide = stateTarget !== StateTarget.dashboard
+		if (stateTarget === StateTarget.dashboard && !navMenu.isOpen) navMenu.toggleOpen()
 		if (stateApp.page !== $page.route.id) goto(stateApp.page)
 	}
 
-	const toggleNavBarDrawer = () => {
-		// isNavBarDrawerOpen = !isNavBarDrawerOpen
-		// navBarWidth = isNavBarDrawerOpen ? `${innerWidth - navBar?.width}px` : '0'
+	function toggleMobileMenuHide() {
+		isMobileMenuHide = !isMobileMenuHide
 	}
+
 	function preventDefault(fn) {
 		return function (event) {
 			event.preventDefault()
@@ -83,31 +77,23 @@
 <svelte:window bind:innerWidth />
 
 <div id="layout" class="h-screen flex flex-col bg-white">
-	<header id="layout-nav-bar-mobile" class="md:hidden">
-		<NavBarMobile state={stateApp} {goHome} {toggleNavBarDrawer} />
+	<header id="layout-nav-bar-mobile" class="sm:hidden">
+		<NavAppMobile {toggleMobileMenuHide} />
 	</header>
 
-	<div
-		id="layout-menu-mobile"
-		class="h-[calc(100vh-54px)] grow fixed top-12 left-0 md:hidden overflow-hidden z-10 transition-all duration-500"
-		style="width: {navBarWidth}"
-		onclick={() => toggleNavBarDrawer()}
-	>
-		<aside class="h-full" style="width: {navBarWidth}" onclick={preventDefault()}>
-			<NavBar {navBar} />
-		</aside>
-	</div>
-
 	<div id="layout-main" class="h-12 grow flex flex-row">
-		<div id="layout-main-menu-desktop" class="h-full hidden md:flex">
-			<NavBar {navBar} />
+		<div
+			id="layout-main-menu-desktop"
+			class="h-full {isMobileMenuHide ? 'hidden' : ''} mr-1 sm:mr-0 sm:block"
+		>
+			<NavMenu {navMenu} />
 		</div>
-		<div id="layout-main-content" class="grow md:px-3 pb-3">
+		<div id="layout-main-content" class="grow sm:px-3 pb-3">
 			{#if $page.route.id === '/home'}
 				{#if stateTarget === StateTarget.dashboard}
 					<NavDash />
 				{:else if stateTarget === StateTarget.feature}
-					<RootLayoutApp />
+					<RootLayoutApp {stateApp} />
 				{/if}
 			{:else}
 				<slot />

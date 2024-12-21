@@ -30,6 +30,7 @@ import {
 	TokenApiQueryData,
 	TokenApiQueryDataTree
 } from '$utils/types.token'
+import { FieldClassType } from '$comps/form/field'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/app/types.appQuery.ts'
@@ -42,22 +43,11 @@ function queryDataPre(state: State, data: DataObjData | undefined, queryType: To
 	const clazz = `${FILENAME}.queryDataPre`
 
 	// dataTree
-	const dataTree = queryDataPreTree(
-		queryType,
-		(state instanceof StateSurfaceEmbedShell || state instanceof StateSurfaceModalEmbed) &&
-			state?.stateRoot?.app
-			? state.stateRoot.app
-			: state.app
-	)
+	const dataTree = queryDataPreTree(queryType, state.stateRoot ? state.stateRoot.app : state.app)
 
 	// dataTab
 	const dataTab = data ? data : new DataObjData()
 	dataTab.parms.update(state.parmsState.valueGetAll())
-
-	// embedParentId
-	if (state instanceof StateSurfaceModalEmbed) {
-		dataTab.parms.valueSet(ParmsValuesType.embedParentId, state.embedParentId)
-	}
 
 	state.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
 	if (state.user) dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.user.system.id)
@@ -92,9 +82,11 @@ function queryDataPreTree(queryType: TokenApiQueryType, app: App) {
 		const level = app.levels[i]
 		const currTab = level.getCurrTab()
 		const dataObj = required(currTab.dataObj, clazz, 'currTab.dataObj')
-		const table = required(dataObj.rootTable?.name, 'rootTable', 'DataObj')
-		const dataRow = currTab.listGetDataRow()
-		if (dataRow) dataTree.upsertData(table, dataRow)
+		if (dataObj && dataObj.raw.codeCardinality === DataObjCardinality.list) {
+			const table = required(dataObj.rootTable?.name, 'rootTable', 'DataObj')
+			const dataRow = currTab.listGetDataRow()
+			if (dataRow) dataTree.upsertData(table, dataRow)
+		}
 	}
 	return dataTree
 }
@@ -181,10 +173,9 @@ export async function queryTypeBase(
 	const dataObj = await DataObj.init(state, dataObjData)
 
 	if (dataObj && dataObj.raw.codeCardinality === DataObjCardinality.list) {
-		dataObjData.parms.valueSetList(ParmsValuesType.listIds, dataObjData.rowsRetrieved.getRows())
+		dataObj.data.parms.valueSetList(ParmsValuesType.listIds, dataObj.data.rowsRetrieved.getRows())
 	}
 
-	dataObj.objData = dataObjData
 	return dataObj
 }
 
@@ -213,7 +204,7 @@ export async function queryTypeTab(
 
 	if (!tab) return undefined
 
-	let { dataTab, dataTree } = queryDataPre(state, tab.data, queryType)
+	let { dataTab, dataTree } = queryDataPre(state, tab.dataObj?.data, queryType)
 
 	let table = getTable(tab.dataObj) // table will be undefined prior to retrieve
 
@@ -251,10 +242,10 @@ export async function queryTypeTab(
 
 	// query post
 	if (dataObj) {
+		tab.isRetrieved = !tab.isAlwaysRetrieveData
 		tab.dataObj = dataObj
 		table = getTable(tab.dataObj)
-
-		dataObj.data = await queryExecuteActions(
+		tab.dataObj.data = await queryExecuteActions(
 			state,
 			tab.dataObj.actionsQueryFunctions,
 			queryType,
@@ -262,8 +253,23 @@ export async function queryTypeTab(
 			table,
 			dataObj.data
 		)
-		tab.data = dataObj.data
-		tab.isRetrieved = !tab.isAlwaysRetrieveData
+
+		// embedded data objects
+		if (queryType === TokenApiQueryType.preset) {
+			// filter out embedded data objects
+			tab.dataObj.fields = tab.dataObj.fields.filter(
+				(field) => field.classType !== FieldClassType.embed
+			)
+		} else {
+			// add embedded data objects to tab
+			let dataObjEmbedded: DataObj[] = []
+			for (let i = 0; i < dataObj.data.fields.length; i++) {
+				const doEmbed = await DataObj.init(state, dataObj.data.fields[i].data)
+				doEmbed.setFieldEmbed(dataObj.data.fields[i])
+				dataObjEmbedded.push(doEmbed)
+			}
+			tab.dataObjEmbedded = dataObjEmbedded
+		}
 	}
 	return dataObj
 }

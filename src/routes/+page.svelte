@@ -2,7 +2,7 @@
 	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
 	import { userSetId } from '$utils/types'
 	import { State, StateTarget } from '$comps/app/types.appState.svelte'
-	import { TokenApiDbDataObjSource, TokenApiQueryType } from '$utils/types.token'
+	import { TokenApiQueryType, TokenAppDataObjName } from '$utils/types.token'
 
 	const FILENAME = 'routes/+page.svelte'
 
@@ -22,8 +22,6 @@
 	}
 </script>
 
-Home1
-
 <div id="full-screen">
 	<div class="content">
 		<div class="flex gap-4">
@@ -34,10 +32,12 @@ Home1
 					await state.openDrawerDataObj(
 						'auth',
 						'bottom',
-						'h-[50%]',
+						'h-[90%]',
 						undefined,
-						new TokenApiDbDataObjSource({ dataObjName: 'data_obj_auth_login' }),
-						TokenApiQueryType.preset
+						new TokenAppDataObjName({
+							dataObjName: 'data_obj_auth_login',
+							queryType: TokenApiQueryType.preset
+						})
 					)}
 			>
 				Log in
@@ -50,10 +50,12 @@ Home1
 					await state.openDrawerDataObj(
 						'auth',
 						'bottom',
-						'h-[50%]',
+						'h-[90%]',
 						undefined,
-						new TokenApiDbDataObjSource({ dataObjName: 'data_obj_auth_signup' }),
-						TokenApiQueryType.preset
+						new TokenAppDataObjName({
+							dataObjName: 'data_obj_auth_signup',
+							queryType: TokenApiQueryType.preset
+						})
 					)}
 			>
 				Sign up

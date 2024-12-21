@@ -13,9 +13,9 @@
 	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
 
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
-	let dataRecord: DataRecord = $derived(dm.getDataRecord(parms.dataObjId, 0))
+	let dataRecord: DataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
 	let elContent: HTMLDivElement
-	let elContentTopY: number
+	let elContentTopY: number = $state()
 	let tagGroupSections: TagGroupSection[] = $state()
 
 	$effect(() => {
@@ -94,33 +94,30 @@
 	}
 </script>
 
-<h2>Form Detail</h2>
-<DataViewer
-	header="dataManager.dataRecord"
-	data={dm.getDataRecord(parms.dataObjId, 0).table_SysPerson_firstName}
-/>
-<DataViewer header="dataManager.isObjStatus" data={dm.getStatus()} />
+<!-- <h1>Form Detail</h1>
+<DataViewer header="dataManager.dataRecord" data={dm.getRecordsDisplayRow(parms.dataObjId, 0)} />
+<DataViewer header="dataManager.isObjStatus" data={dm.getStatus()} /> -->
 
 <form
 	id={'form_' + dataObj.raw.name}
-	class="h-full max-h-full overflow-y-auto md:p-4 md:border-2 rounded-md"
-	style={`max-height: ${innerHeight - elContentTopY - 30}px;`}
+	class="h-full max-h-full overflow-y-auto sm:p-4 sm:border rounded-md"
+	style={`max-height: ${innerHeight.current - elContentTopY - 30}px;`}
 	bind:this={elContent}
 >
-	<div class="md:hidden max-h-full">
+	<div class="sm:hidden max-h-full">
 		{#each dataObj.fields as field, fieldIdx}
 			{@const display =
 				!field.colDO.colDB.isNonData &&
 				field.colDO.isDisplayable &&
 				field.fieldAccess !== FieldAccess.hidden}
-			{@const elementParms = { ...parms, field: dataObj.fields[fieldIdx], row: 0 }}
+			{@const elementParms = { ...parms, dataObj, field: dataObj.fields[fieldIdx], row: 0 }}
 			{#if display}
 				<FormElement parms={elementParms} />
 			{/if}
 		{/each}
 	</div>
 
-	<div class="hidden md:block">
+	<div class="hidden sm:block">
 		{#each tagGroupSections as section}
 			<fieldset
 				class={section.isVisible ? 'p-4 border-1 mb-4' : 'p-0 border-0'}
@@ -133,7 +130,7 @@
 				{#each section.rows as row}
 					<div class={row.isRow ? 'w-full flex flex-row gap-x-4' : ''}>
 						{#each row.indexes as fieldIdx}
-							{@const elementParms = { ...parms, field: dataObj.fields[fieldIdx], row: 0 }}
+							{@const elementParms = { ...parms, dataObj, field: dataObj.fields[fieldIdx], row: 0 }}
 							<div class="grow">
 								<FormElement parms={elementParms} />
 							</div>

@@ -4,4 +4,4 @@
 	let { parms }: DataRecord = $props()
 </script>
 
-<FormDetail {parms} on:formCancelled />
+<FormDetail {parms} />

@@ -1,20 +1,24 @@
 <script lang="ts">
-	import { DataObjCardinality } from '$utils/types'
+	import { ContextKey, DataManager, DataObjCardinality, required } from '$utils/types'
+	import { getContext } from 'svelte'
 	import { FieldElement } from '$comps/form/field'
 	import { FieldSelect } from '$comps/form/fieldSelect'
 	import { FieldAccess } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	let { parms }: DataRecord = $props()
+	const FILENAME = '/$comps/form/FormElSelect.svelte'
 
-	let dataObj = $derived(fp.stateApp.dataObj)
-	let field = $derived(fp.field) as FieldSelect
+	let { parms }: DataRecord = $props()
+	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+
+	let dataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let field = $derived(parms.field) as FieldCustomActionLink
 	let fieldId = $derived('field-input-select-' + field.colDO.orderDefine)
-	let fieldValue = $derived(fp.fieldValue)
-	let dataItems = $derived(
+	let fieldItems = $derived(
 		field.linkItemsSource ? field.linkItemsSource.formatDataFieldColumnItem(fieldValue) : []
 	)
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
 
 	let classProps = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
@@ -27,11 +31,11 @@
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		fp.stateApp.fSetVal(fp.row, fp.field, target.value)
+		dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
 	}
 </script>
 
-<FormLabel {fp}>
+<FormLabel {parms}>
 	<select
 		class={classProps}
 		name={field.colDO.propName}
@@ -40,8 +44,8 @@
 		onchange={onChange}
 	>
 		<option value={null} class="">Select an option...</option>
-		{#if dataItems}
-			{#each dataItems as { data, display }, index (data)}
+		{#if fieldItems}
+			{#each fieldItems as { data, display }, index (data)}
 				<option value={data} selected={data === fieldValue}>
 					{display}
 				</option>

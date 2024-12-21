@@ -8,7 +8,8 @@ import {
 	TokenApiQuery,
 	TokenApiQueryData,
 	TokenApiQueryType,
-	TokenApiSysSendText
+	TokenApiSysSendText,
+	TokenAppDataObjName
 } from '$utils/types.token'
 import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
@@ -29,10 +30,9 @@ export default async function action(state: State, field: FieldCustomAction, dat
 			await state.openDrawerDataObj(
 				'auth',
 				'bottom',
-				'h-[50%]',
+				'h-[90%]',
 				undefined,
-				new TokenApiDbDataObjSource({ dataObjName: value }),
-				TokenApiQueryType.preset
+				new TokenAppDataObjName({ dataObjName: value, queryType: TokenApiQueryType.preset })
 			)
 			break
 
@@ -55,10 +55,12 @@ export default async function action(state: State, field: FieldCustomAction, dat
 					await state.openDrawerDataObj(
 						'auth',
 						'bottom',
-						'h-[50%]',
+						'h-[90%]',
 						undefined,
-						new TokenApiDbDataObjSource({ dataObjName: 'data_obj_auth_verify_phone_mobile' }),
-						TokenApiQueryType.preset
+						new TokenAppDataObjName({
+							dataObjName: 'data_obj_auth_verify_phone_mobile',
+							queryType: TokenApiQueryType.preset
+						})
 					)
 					break
 
@@ -144,10 +146,12 @@ export default async function action(state: State, field: FieldCustomAction, dat
 					await state.openDrawerDataObj(
 						'auth',
 						'bottom',
-						'h-[50%]',
+						'h-[90%]',
 						undefined,
-						new TokenApiDbDataObjSource({ dataObjName: 'data_obj_auth_verify_phone_mobile' }),
-						TokenApiQueryType.preset
+						new TokenAppDataObjName({
+							dataObjName: 'data_obj_auth_verify_phone_mobile',
+							queryType: TokenApiQueryType.preset
+						})
 					)
 				}
 				break
@@ -167,11 +171,12 @@ async function sendCode(phoneMobile: string) {
 	const max = 999999
 	authSecurityCode = Math.floor(Math.random() * (max - min + 1)) + min
 	authSecurityCodePhone = phoneMobile
-	await apiFetch(
-		ApiFunction.sysSendText,
-		new TokenApiSysSendText(
-			phoneMobile,
-			`Mobile phone number verification code: ${authSecurityCode}`
-		)
-	)
+	console.log('actionAuth.sendCode:', authSecurityCode)
+	// await apiFetch(
+	// 	ApiFunction.sysSendText,
+	// 	new TokenApiSysSendText(
+	// 		phoneMobile,
+	// 		`Mobile phone number verification code: ${authSecurityCode}`
+	// 	)
+	// )
 }

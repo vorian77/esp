@@ -74,10 +74,10 @@
 		}
 	}
 	async function onClick(task: UserResourceTask, parms: DataRecord | undefined = undefined) {
-		stateApp.parmsstateApp.update(parms)
+		stateApp.parmsState.update(parms)
 		const token = task.getTokenNode(stateApp.user)
 		stateApp.change({
-			confirmType: TokenAppDoActionConfirmType.objectChanged,
+			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.openNode,
 				token
@@ -94,7 +94,7 @@
 		{#if task.isShow}
 			<div
 				onclick={task.hasAltOpen ? undefined : () => onClick(task)}
-				class="rounded-lg p-6 border-4 bg-gray-100 min-h-40 flex flex-col items-center"
+				class="rounded-lg p-6 border bg-gray-100 min-h-40 flex flex-col items-center"
 			>
 				<div class="text-center font-bold text-4xl text-blue-400">{task.header}</div>
 

@@ -1,18 +1,24 @@
 <script lang="ts">
+	import { ContextKey, DataManager, required } from '$utils/types'
+	import { getContext } from 'svelte'
 	import { FieldTextarea } from '$comps/form/fieldTextarea'
 	import { FieldAccess } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 
-	let { parms }: DataRecord = $props()
+	const FILENAME = '/$comps/form/FormElTextarea.svelte'
 
-	let field = $derived(fp.field) as FieldTextarea
-	let fieldValue = $derived(fp.fieldValue)
+	let { parms }: DataRecord = $props()
+	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+
+	let field = $derived(parms.field) as FieldCustomActionLink
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
+
 	let classProps = $state('rounded-lg ' + field.classProps + ' ' + field.colorBackground)
 	if (field.cols === 0) classProps += ' w-full text-sm'
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		fp.stateApp.fSetVal(fp.row, fp.field, target.value)
+		dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
 	}
 	function preventDefault(fn) {
 		return function (event) {

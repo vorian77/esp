@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { ContextKey, DataManager, DataObj, required } from '$utils/types'
+	import { getContext } from 'svelte'
 	import { FieldFile, FileStorage } from '$comps/form/fieldFile'
 	import { getToastStore } from '@skeletonlabs/skeleton'
 	import {
@@ -7,10 +9,6 @@
 		TokenApiBlobAction,
 		TokenApiBlobType
 	} from '$utils/types.token'
-
-	import { FileProcessingMode } from '$utils/utils.sys.svelte'
-
-	import { isEqual } from 'lodash-es'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElFile.svelte'
@@ -18,89 +16,63 @@
 	const toastStore = getToastStore()
 
 	let { parms }: DataRecord = $props()
+	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
 
 	let elInput: any
 	let files: FileList = $state()
-	let showImg = $state(false)
-	let mode: FileProcessingMode = $state()
 	let recordIdCurrent: string = $state()
-	let urlCurrent = $state('')
-	let urlOld = $state('')
+	let isSourceStorage = $state(false)
+	let urlCurrent = $state()
+	let urlOld = $state()
 
-	let field = $derived(fp.field) as FieldFile
-	let fieldValue = $state(fp.fieldValue)
+	let dataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
+	$effect(() => {
+		if (recordIdCurrent !== dataRecord?.id) {
+			urlCurrent = undefined
+			urlOld = undefined
+			isSourceStorage = false
+			recordIdCurrent = dataRecord?.id
+		}
+	})
 
-	if (recordIdCurrent !== fp.dataRecord?.id) {
-		recordIdCurrent = fp.dataRecord?.id
-		mode = FileProcessingMode.none
-	}
-
+	let field = $derived(parms.field) as FieldCustomActionLink
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
+	$effect(() => {
+		urlCurrent = fieldValue && fieldValue.url ? fieldValue.url : urlCurrent
+		urlOld = fieldValue && fieldValue?.url ? fieldValue.url : urlOld
+		isSourceStorage = fieldValue && fieldValue?.url ? true : false
+	})
+	let showImg = $derived(urlCurrent ? true : false)
 	let labelDelete = $derived('Delete ' + field.colDO.label)
 	let chooseBtnWidth = $derived(urlCurrent ? 'w-3/4' : 'w-full')
 	let labelSelect = $derived(
 		urlCurrent ? 'Choose New ' + field.colDO.label : 'Choose ' + field.colDO.label
 	)
-
-	if (mode === FileProcessingFileProcessingMode.delete) {
-		if (!fieldValue) {
-			mode = FileProcessingFileProcessingMode.none
-			urlCurrent = undefined
-			urlOld = undefined
-		}
-	} else if (mode === FileProcessingFileProcessingMode.upload) {
-		if (!(fieldValue instanceof TokenApiBlobParmUpload) && fieldValue && fieldValue.url) {
-			mode = FileProcessingFileProcessingMode.storage
-			urlCurrent = fieldValue.url
-			urlOld = fieldValue.url
-		}
-	} else if (mode === FileProcessingFileProcessingMode.none) {
-		if (fieldValue && fieldValue.url) {
-			mode = FileProcessingFileProcessingMode.storage
-			urlCurrent = fieldValue.url
-			urlOld = fieldValue.url
-		} else {
-			urlCurrent = undefined
-			urlOld = undefined
-		}
-	}
-
-	// render image based on source
-	if (mode === FileProcessingFileProcessingMode.storage) {
-		;(async () => {
-			urlCurrent = fieldValue.url
-		})()
-	} else if (mode === FileProcessingFileProcessingMode.upload) {
-		urlCurrent = URL.createObjectURL(files[0])
-	} else {
-		urlCurrent = ''
-	}
-	showImg = urlCurrent ? true : false
-
-	function onDelete(event: Event) {
+	const onDelete = (event: Event) => {
 		elInput.value = ''
-
+		isSourceStorage = false
+		urlCurrent = undefined
 		if (urlOld) {
-			mode = FileProcessingMode.delete
-			fp.stateApp.fSetVal(
-				fp.row,
-				field,
+			dm.setFieldValue(
+				parms.dataObjId,
+				parms.row,
+				parms.field,
 				new TokenApiFileParmDelete({
 					urlOld
 				})
 			)
-		} else if (mode === FileProcessingMode.upload) {
-			mode = FileProcessingMode.none
-			fieldValue = undefined
 		}
 	}
 
-	function onNew(event: Event) {
-		if (files.length > 0) {
-			mode = FileProcessingMode.upload
-			fieldValue = undefined
-			fp.stateApp.fSetVal(
-				fp.row,
-				field,
+	const onNew = (event: Event) => {
+		if (files && files.length > 0) {
+			isSourceStorage = false
+			urlCurrent = URL.createObjectURL(files[0])
+			dm.setFieldValue(
+				parms.dataObjId,
+				parms.row,
+				parms.field,
 				new TokenApiBlobParmUpload({
 					file: files[0],
 					fileType: files[0].type.includes('pdf') ? TokenApiBlobType.pdf : TokenApiBlobType.image,
@@ -113,21 +85,24 @@
 
 	function onDownload(event: Event) {
 		if (Object.hasOwn(fieldValue, 'downloadUrl')) {
-			fp.state.downloadUrl(fieldValue.downloadUrl, fieldValue.fileName)
+			stateApp.downloadUrl(fieldValue.downloadUrl, fieldValue.fileName)
 		}
 	}
 
 	function preventDefault(fn) {
 		return function (event) {
 			event.preventDefault()
-			fn.call(this, event)
+			if (fn) fn.call(this, event)
 		}
 	}
 </script>
 
+<!-- <DataViewer header="urlCurrent" data={urlCurrent} /> -->
+<!-- <DataViewer header="urlOld" data={urlOld} /> -->
+<!-- <DataViewer header="fieldValue" data={fieldValue} /> -->
+
 <fieldset>
 	<legend>{field.colDO.label}</legend>
-
 	<div>
 		{#if fieldValue && urlCurrent}
 			{#if fieldValue.fileType === TokenApiBlobType.image}
@@ -146,6 +121,7 @@
 						frameborder="0"
 						height="600px"
 						onclick={preventDefault(elInput.click())}
+						onkeyup={preventDefault(elInput.click())}
 						src={urlCurrent}
 						title={field.colDO.label}
 						width="80%"
@@ -163,13 +139,13 @@
 			</button>
 
 			{#if urlCurrent}
-				<button class="btn btn-action variant-filled-error ml-2 w-1/4" onclick={() => onDelete}>
+				<button class="btn btn-action variant-filled-error ml-2 w-1/4" onclick={onDelete}>
 					{labelDelete}
 				</button>
 			{/if}
 
-			{#if mode === FileProcessingMode.storage}
-				<button class="btn btn-action variant-filled-primary ml-2 w-1/4" onclick={() => onDownload}>
+			{#if isSourceStorage}
+				<button class="btn btn-action variant-filled-primary ml-2 w-1/4" onclick={onDownload}>
 					Download
 				</button>
 			{/if}
@@ -183,7 +159,7 @@
 			hidden={true}
 			id={field.colDO.propNamDBe}
 			name={field.colDO.propName}
-			onchange={() => onNew}
+			onchange={() => onNew(event)}
 			type="file"
 		/>
 	</div>

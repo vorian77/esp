@@ -1,11 +1,15 @@
 <script lang="ts">
 	import {
+		ContextKey,
+		DataManager,
 		DataObj,
 		DataObjCardinality,
 		type DataRecord,
 		ParmsValues,
-		ParmsValuesType
+		ParmsValuesType,
+		required
 	} from '$utils/types'
+	import { getContext } from 'svelte'
 	import {
 		State,
 		StatePacket,
@@ -21,56 +25,51 @@
 		TokenAppModalSelect,
 		TokenAppModalReturnType
 	} from '$utils/types.token'
-	import { FieldElement } from '$comps/form/field'
+	import { Field, FieldElement } from '$comps/form/field'
 	import { FieldSelectMulti } from '$comps/form/fieldSelect'
+	import { FieldChips } from '$comps/form/fieldChips'
 	import { FieldAccess } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
 	import DataViewer from '$utils/DataViewer.svelte'
 
+	const FILENAME = '$comps/form/FormElChips.svelte'
+
 	let { parms }: DataRecord = $props()
-
-	let columnDefs: DataRecord
-	let displayValue: string
-	let rowData: DataRecord[]
-	let sortModel: DataObjSort[]
-
-	let dataObj = $derived(fp.stateApp.dataObj)
-
-	let field = $derived(fp.field) as FieldCheckbox
-	field.setIconProps({
-		name: 'SquareMousePointer',
-		clazz: 'ml-1.5 mt-0.5',
-		color: '#3b79e1',
-		onClick,
-		size: 18,
-		strokeWidth: 2
-	})
-
-	let fieldValue = $derived(fp.fieldValue)
-	if (field.linkItemsSource) {
-		displayValue = field.linkItemsSource.getDisplayValueList(fieldValue)
-		const parms = field.linkItemsSource.getGridParms()
-		columnDefs = parms.columnDefs
-		rowData = parms.rowData
-		sortModel = parms.sortModel
-	}
+	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
+	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let field = $derived.by(() => {
+		const f: Field = parms.field
+		f.setIconProps({
+			name: 'SquareMousePointer',
+			clazz: 'ml-1.5 mt-0.5',
+			color: '#3b79e1',
+			onClick,
+			size: 18,
+			strokeWidth: 2
+		})
+		return f
+	}) as FieldChips
+	let linkItemsSource = $derived(field.linkItemsSource.getGridParms())
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
+	let displayValue: string = $derived(field.linkItemsSource.getDisplayValueList(fieldValue))
+	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
 	function onClick(event: Event) {
-		fp.stateApp.change({
+		stateApp.change({
 			confirmType: TokenAppDoActionConfirmType.none,
 			packet: new StatePacket({
 				action: StatePacketAction.modalSelectOpen,
 				token: new TokenAppModalSelect({
-					columnDefs,
+					columnDefs: linkItemsSource.columnDefs,
 					fModalClose,
 					gridColumnId: 'data',
 					isMultiSelect: field.colDO.colDB.isMultiSelect,
 					listIdsSelected: fieldValue,
-					rowData,
+					rowData: linkItemsSource.rowData,
 					selectLabel: field.colDO.label,
-					sortModel
+					sortModel: linkItemsSource.sortModel
 				})
 			}),
 			target: StateTarget.feature
@@ -79,8 +78,13 @@
 		async function fModalClose(returnType: TokenAppModalReturnType, returnData?: ParmsValues) {
 			if (returnType === TokenAppModalReturnType.complete) {
 				if (returnData.data) {
-					const parms = new ParmsValues(returnData.data)
-					fp.stateApp.fSetVal(fp.row, fp.field, parms.valueGet(ParmsValuesType.listIdsSelected))
+					const parmsReturn = new ParmsValues(returnData.data)
+					dm.setFieldValue(
+						parms.dataObjId,
+						parms.row,
+						parms.field,
+						parmsReturn.valueGet(ParmsValuesType.listIdsSelected)
+					)
 				}
 			}
 		}

@@ -21,7 +21,7 @@
 
 	const back = () => {
 		stateApp.change({
-			confirmType: TokenAppDoActionConfirmType.objectChanged,
+			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navBack
 			}),
@@ -30,30 +30,28 @@
 	}
 </script>
 
-<div
-	id="layout-app"
-	class="hidden md:flex justify-between items-center p-2 mb-4 bg-neutral-50 rounded-md"
->
-	<div id="lead">
-		<div class="grid items-end">
-			<div class="flex items-center">
-				<button class="mr-4" onclick={back}>
-					<Icon
-						props={new IconProps({
-							name: 'ArrowLeft',
-							clazz: 'mt-1',
-							isNav: true,
-							size: 20,
-							strokeWidth: 2
-						})}
-					/>
-				</button>
-				<div class="hidden md:block">
-					<NavCrumbs />
-				</div>
-			</div>
+<!-- <div id="layout-app" class="flex justify-between items-center p-2 mb-4 bg-neutral-50 rounded-md"> -->
+
+<div id="layout-app" class="flex justify-between items-center border-b p-2 mb-4">
+	<div class="flex items-center">
+		<button class="mr-2 flex-none border-0 border-green-300" onclick={back}>
+			<Icon
+				props={new IconProps({
+					name: 'ArrowLeft',
+					clazz: 'mt-1',
+					isNav: true,
+					size: 20,
+					strokeWidth: 2
+				})}
+			/>
+		</button>
+
+		<div class="flex-grow border-0 border-red-300">
+			<NavCrumbs />
 		</div>
 	</div>
 
-	<NavRow />
+	<div class="flex-none">
+		<NavRow />
+	</div>
 </div>

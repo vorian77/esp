@@ -12,7 +12,6 @@ import {
 	debugData,
 	DataObj,
 	DataObjData,
-	DataObjEmbedType,
 	DataObjDataField,
 	DataObjProcessType,
 	type DataRecord,
@@ -217,7 +216,7 @@ async function processDataObjExecute(
 
 		const rawDataList = await exeQueryMulti(expr)
 
-		scriptData = script?.query?.field ? script.query.field.data : returnData
+		scriptData = script?.query?.fieldEmbed ? script.query.fieldEmbed.data : returnData
 		scriptData.parms.update(script.queryData.dataTab?.parms.valueGetAll())
 		switch (script.exePost) {
 			case ScriptExePost.dataItems:

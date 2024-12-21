@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { ContextKey, DataManager, required } from '$utils/types'
+	import { getContext } from 'svelte'
 	import { FieldEmbedListConfig } from '$comps/form/fieldEmbed'
-	import { DataObjMode } from '$utils/types'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import { error } from '@sveltejs/kit'
@@ -9,49 +10,23 @@
 	const FILENAME = '$comps/form/FormElEmbeddedListConfig.svelte'
 
 	let { parms }: DataRecord = $props()
+	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
 
-	let recordIdCurrent: string
-
-	// $: {
-	// 	let recordId = fp.dataRecord['id'] || ''
-	// 	console.log('FormElEmbedListConfig.recordId', recordId)
-	// 	if (recordId.startsWith('preset_')) recordId = ''
-	// 	if (recordIdCurrent !== recordId) recordIdCurrent = recordId
-
-	// 	const field = fp.field as FieldEmbedListConfig
-	// 	const rows = field.dataObj?.data.rowsRetrieved.length
-	// 	fp.setIsLabelBold(true)
-
-	// 	const parentObjectSaved =
-	// 		recordIdCurrent !== '' &&
-	// 		fp.state.objStatus.objValidToSave &&
-	// 		!fp.state.objStatus.objHasChanged
-	// 	if (field.dataObj) {
-	// 		if (parentObjectSaved) {
-	// 			field.dataObj.modeAdd(DataObjMode.ParentObjectSaved)
-	// 		} else {
-	// 			field.dataObj.modeDrop(DataObjMode.ParentObjectSaved)
-	// 		}
-	// 	}
-	// }
+	let fieldEmbed = $derived(parms.field) as FieldEmbedListConfig
+	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.embedDataObjId)
 </script>
 
 <FormLabel {parms} />
-FormElEmbedListConfig
 
-{#if fp}
-	<!-- {#key recordIdCurrent}
-		{recordIdCurrent} -->
-	<div class="mt-4">
-		<!-- <LayoutContent
-			bind:state={fp.state}
-			component={fp.field.dataObj.raw.codeComponent}
-			dataObj={fp.field.dataObj}
-			dataObjData={fp.field.dataObj.data}
-			on:formCancelled
-		/> -->
-	</div>
-	<!-- {/key} -->
-{/if}
+<div class="mt-4">
+	<LayoutContent
+		parms={{
+			...parms,
+			component: dataObjEmbed.raw.codeComponent,
+			dataObj: dataObjEmbed,
+			dataObjId: dataObjEmbed.raw.id
+		}}
+	/>
+</div>
 
 <!-- <DataViewer header="stateDisplay" data={stateDisplay} /> -->

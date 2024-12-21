@@ -22,7 +22,7 @@
 
 	function onChange(rowAction: AppRowActionType) {
 		stateApp.change({
-			confirmType: TokenAppDoActionConfirmType.objectChanged,
+			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navRow,
 				token: new TokenAppRow({ rowAction })
@@ -32,30 +32,26 @@
 	}
 </script>
 
-{#if rowStatus && rowStatus.show && !$isHideRowManager}
-	<span style:cursor="pointer">
-		<div
-			class="flex flex-row p-2 h-[46px] items-center border-2 bg-white rounded-md md:rounded-none"
-		>
-			<div class="flex flex-row">
-				<div class={rowStatus.rowCurrentDisplay === 1 ? 'invisible' : ''}>
-					<NavRowAction action={AppRowActionType.first} icon={'ChevronFirst'} {onChange} />
-				</div>
-				<div class={rowStatus.rowCurrentDisplay === 1 ? 'invisible' : '-ml-2'}>
-					<NavRowAction action={AppRowActionType.left} icon={'ChevronLeft'} {onChange} />
-				</div>
+{#if rowStatus && rowStatus.show && !isHideRowManager}
+	<div class="flex flex-row p-2 h-[48px] items-center rounded-md border bg-white">
+		<div class="flex flex-row">
+			<div class={rowStatus.rowCurrentDisplay === 1 ? 'hidden' : ''}>
+				<NavRowAction action={AppRowActionType.first} icon={'ChevronFirst'} {onChange} />
 			</div>
-			<div class="-mt-1.5 text-sm font-medium text-nav">
-				{rowStatus.status}
-			</div>
-			<div class="flex flex-row">
-				<div class={rowStatus.rowCurrentDisplay === $rowStatus.rowCount ? 'invisible' : ''}>
-					<NavRowAction action={AppRowActionType.right} icon={'ChevronRight'} {onChange} />
-				</div>
-				<div class={rowStatus.rowCurrentDisplay === $rowStatus.rowCount ? 'invisible' : '-ml-2'}>
-					<NavRowAction action={AppRowActionType.last} icon={'ChevronLast'} {onChange} />
-				</div>
+			<div class={rowStatus.rowCurrentDisplay === 1 ? 'hidden' : '-ml-2'}>
+				<NavRowAction action={AppRowActionType.left} icon={'ChevronLeft'} {onChange} />
 			</div>
 		</div>
-	</span>
+		<div class="text-sm font-medium text-nav">
+			{rowStatus.status}
+		</div>
+		<div class="flex flex-row">
+			<div class={rowStatus.rowCurrentDisplay === rowStatus.rowCount ? 'hidden' : ''}>
+				<NavRowAction action={AppRowActionType.right} icon={'ChevronRight'} {onChange} />
+			</div>
+			<div class={rowStatus.rowCurrentDisplay === rowStatus.rowCount ? 'hidden' : '-ml-2'}>
+				<NavRowAction action={AppRowActionType.last} icon={'ChevronLast'} {onChange} />
+			</div>
+		</div>
+	</div>
 {/if}

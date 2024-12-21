@@ -8,5 +8,5 @@
 
 <div id="layout-app" class="flex flex-col h-full max-h-full">
 	<NavApp />
-	<LayoutTab {parms} on:formCancelled />
+	<LayoutTab {parms} />
 </div>

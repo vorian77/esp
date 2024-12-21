@@ -17,9 +17,12 @@ import {
 	RawDataObj,
 	RawDataObjActionField,
 	RawDataObjPropDisplay,
-	RawDataObjTable
+	RawDataObjTable,
+	RawDataObjPropDisplayEmbedListConfig,
+	RawDataObjPropDisplayEmbedListEdit,
+	RawDataObjPropDisplayEmbedListSelect
 } from '$comps/dataObj/types.rawDataObj'
-import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
+import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField.svelte'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
 import {
 	Field,
@@ -27,6 +30,7 @@ import {
 	FieldColor,
 	FieldColumnItem,
 	FieldElement,
+	FieldEmbedType,
 	PropsField,
 	PropsFieldRaw
 } from '$comps/form/field'
@@ -66,15 +70,14 @@ const FILENAME = '/$comps/dataObj/types.dataObj.svelte.ts'
 export type DataItems = Record<string, { data: string; display: string }[]>
 
 export class DataObj {
-	actionsField: DataObjActionField[] = []
+	actionsField: DataObjActionField[] = $state([])
 	actionsFieldListRowActionIdx: number = -1
 	actionsQueryFunctions: DataObjActionQueryFunction[] = []
 	data: DataObjData
 	dataItems: DataItems = {}
-	fieldEmbed?: FieldEmbed
+	fieldEmbed?: DataObjDataField
 	fields: Field[] = []
 	isMobileMode: boolean = false
-	modes: DataObjMode[] = []
 	raw: RawDataObj
 	rootTable?: DBTable
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
@@ -109,15 +112,11 @@ export class DataObj {
 		const clazz = 'DataObj.init'
 		const rawDataObj = required(data.rawDataObj, clazz, 'rawDataObj')
 		const dataObj = new DataObj(data)
+		dataObj.data = data
 		dataObj.userGridSettings = await initPrefs(state, dataObj)
 
-		// embedded fields
-		for (let i = 0; i < data.fields.length; i++) {
-			data.fields[i].dataObj = await DataObj.init(state, data.fields[i].data)
-		}
-
 		// actions
-		dataObj.fields = dataObj.fieldsCreate(state, data, rawDataObj)
+		dataObj.fields = dataObj.fieldsCreate(state, dataObj.data, rawDataObj)
 		await dataObj.fieldsInit(state, dataObj)
 
 		enhanceCustomFields(dataObj.fields)
@@ -162,11 +161,6 @@ export class DataObj {
 			}
 			return dataObj.userGridSettings.load(rawSettings, state, dataObj)
 		}
-	}
-
-	async initEmbed(state: State, data: DataObjData, fieldEmbed: FieldEmbed) {
-		this.fieldEmbed = fieldEmbed
-		return await DataObj.init(state, data)
 	}
 
 	fieldsCreate(state: State, data: DataObjData, rawDataObj: RawDataObj) {
@@ -303,129 +297,15 @@ export class DataObj {
 		}
 	}
 
-	get objData() {
-		// // root data
-		// this.data.rowsSave.setDataRows(setData(this))
-		// // embedded fields
-		// this.fields.forEach((field: Field) => {
-		// 	if (field instanceof FieldEmbed && field.dataObj) {
-		// 		const idx = this.data.fields.findIndex((f) => f.embedFieldName === field.colDO.propName)
-		// 		if (idx > -1) {
-		// 			this.data.fields[idx].data.rowsSave.setDataRows(setData(field.dataObj))
-		// 			this.data.fields[idx].data.parms.valueSet(
-		// 				ParmsValuesType.embedParentId,
-		// 				field.embedParentId
-		// 			)
-		// 			this.data.fields[idx].data.parms.valueSet(
-		// 				ParmsValuesType.embedListSave,
-		// 				field.embedType === DataObjEmbedType.listEdit
-		// 			)
-		// 		}
-		// 	}
-		// })
-		// return this.data
-		// // return field.isParmValue ? (field as FieldParm).parmFields[row] : field
-		// function setData(dataObj: DataObj) {
-		// 	let fieldsParmValueNames: string[] = []
-		// 	dataObj.fields.forEach((f) => {
-		// 		if (f.isParmValue) {
-		// 			const fieldParm: FieldParm = f
-		// 			fieldParm.parmFields.forEach((f) => {
-		// 				fieldsParmValueNames.push(f.colDO.propName)
-		// 			})
-		// 		}
-		// 	})
-		// 	let dataRows: DataRow[] = setDataRecords(
-		// 		fieldsParmValueNames,
-		// 		dataObj.data,
-		// 		dataObj.dataRecordsDisplay
-		// 	)
-		// 	dataRows = dataRows.concat(
-		// 		setDataRecords(fieldsParmValueNames, dataObj.data, dataObj.dataRecordsHidden)
-		// 	)
-		// 	return dataRows
-		// }
-		// function setDataRecords(
-		// 	fieldsParmValueNames: string[],
-		// 	dataCurrent: DataObjData,
-		// 	dataRecords: DataRecord[]
-		// ) {
-		// 	let dataRows: DataRow[] = []
-		// 	dataRecords.forEach((record) => {
-		// 		let newRecord: DataRecord = {}
-		// 		Object.entries(record).forEach(([key, value]) => {
-		// 			if (![null, undefined].includes(value)) {
-		// 				// don't included embedded fields
-		// 				if (-1 === dataCurrent.fields.findIndex((f) => f.embedFieldName === key)) {
-		// 					// don't include null or undefined values
-		// 					if (fieldsParmValueNames.includes(key)) {
-		// 						// <todo> temp parmValue
-		// 						// newRecord.parmValue = record[key]
-		// 						// delete newRecord[key]
-		// 					} else {
-		// 						newRecord[key] = value
-		// 					}
-		// 				}
-		// 			}
-		// 		})
-		// 		const oldStatus = dataCurrent.rowsRetrieved.getRowStatusById(record.id)
-		// 		dataRows.push(new DataRow(oldStatus ? oldStatus : DataRecordStatus.preset, newRecord))
-		// 	})
-		// 	return dataRows
-		// }
-	}
-
-	set objData(dataSource: DataObjData) {
-		this.saveMode =
-			dataSource.cardinality === DataObjCardinality.detail && dataSource.rowsRetrieved.hasRecord()
-				? dataSource.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)
-					? DataObjSaveMode.insert
-					: DataObjSaveMode.update
-				: DataObjSaveMode.any
-
-		// set data items
-		Object.entries(dataSource.items).forEach(([key, value]) => {
-			const fieldKey = key.replace('_items_', '')
-			const fieldIndex = this.fields.findIndex((f) => f.colDO.propName === fieldKey)
-			if (fieldIndex > -1) {
-				if (this.fields[fieldIndex].linkItemsSource) {
-					this.fields[fieldIndex].linkItemsSource.setRawItems(value)
-				}
-			}
-		})
-
-		// update row status
-		dataSource.rowsRetrieved.getRows().forEach((dataRow) => {
-			if (dataRow.status === DataRecordStatus.inserted) {
-				dataRow.status = DataRecordStatus.update
-			}
-		})
-
-		this.data = dataSource
-	}
-
 	getField(field: Field, row: number) {
 		// return field.isParmValue ? (field as FieldParm).parmFields[row] : field
 	}
 
-	modeAdd(mode: DataObjMode) {
-		if (!this.modes.includes(mode)) this.modes.push(mode)
-	}
-	modeActive(mode: DataObjMode) {
-		return this.modes.includes(mode)
-	}
-	modeDrop(mode: DataObjMode) {
-		this.modes = this.modes.filter((m) => m !== mode)
-	}
-	modeReset() {
-		this.modes = []
-		this.fields.forEach((f) => {
-			f.modeReset()
-		})
-	}
-
 	print() {
 		alert('Print functionality for this object has not yet been implemented.')
+	}
+	setFieldEmbed(fieldEmbed: DataObjDataField) {
+		this.fieldEmbed = fieldEmbed
 	}
 }
 
@@ -539,24 +419,28 @@ export class DataObjData {
 export class DataObjDataField {
 	columnBacklink?: string
 	data: DataObjData
-	dataObj?: DataObj
+	dataObjIdEmbed: string
+	dataObjIdParent: string
 	embedFieldName: string
 	embedFieldNameRaw: string
-	embedTable: DBTable
-	embedType: DataObjEmbedType
+	embedType: FieldEmbedType
+	fieldEmbedListConfig?: RawDataObjPropDisplayEmbedListConfig
+	fieldEmbedListEdit?: RawDataObjPropDisplayEmbedListEdit
+	fieldEmbedListSelect?: RawDataObjPropDisplayEmbedListSelect
 	parentTable: DBTable
 	constructor(obj: any = {}) {
 		const clazz = 'DataObjDataField'
 		this.columnBacklink = strOptional(obj.columnBacklink, clazz, 'columnBacklink')
+		this.dataObjIdEmbed = strRequired(obj.dataObjIdEmbed, clazz, 'dataObjIdEmbed')
+		this.dataObjIdParent = strRequired(obj.dataObjIdParent, clazz, 'dataObjIdParent')
 		this.embedFieldName = strRequired(obj.embedFieldName, clazz, 'embedFieldName')
 		this.embedFieldNameRaw = strRequired(obj.embedFieldNameRaw, clazz, 'embedFieldNameRaw')
-		this.embedTable = required(obj.embedTable, clazz, 'embedTable')
 		this.embedType = memberOfEnum(
 			obj.embedType,
 			clazz,
 			'embedType',
-			'DataObjDataField',
-			DataObjEmbedType
+			'FieldEmbedType',
+			FieldEmbedType
 		)
 		this.parentTable = new DBTable(obj.parentTable)
 
@@ -564,6 +448,23 @@ export class DataObjDataField {
 		this.data = new DataObjData(
 			required(obj.rawDataObj ? obj.rawDataObj : obj?.data?.rawDataObj, clazz, 'rawDataObj')
 		)
+		switch (this.embedType) {
+			case FieldEmbedType.listConfig:
+				this.fieldEmbedListConfig = obj.fieldEmbedListConfig
+				break
+			case FieldEmbedType.listEdit:
+				this.fieldEmbedListEdit = obj.fieldEmbedListEdit
+				break
+			case FieldEmbedType.listSelect:
+				this.fieldEmbedListSelect = obj.fieldEmbedListSelect
+				break
+			default:
+				error(500, {
+					file: FILENAME,
+					function: 'DataObjDataField.constructor',
+					message: `No class defined for FieldEmbedType: ${this.embedType}.`
+				})
+		}
 	}
 	static async init(
 		rawDataObjParent: RawDataObj,
@@ -575,17 +476,16 @@ export class DataObjDataField {
 			rawDataObjParent.tables.length > 0 ? rawDataObjParent.tables[0].table : undefined
 		if (parentTable) {
 			const FIELDTYPES = [
-				DataObjEmbedType.listConfig,
-				DataObjEmbedType.listEdit,
-				DataObjEmbedType.listSelect
+				FieldEmbedType.listConfig,
+				FieldEmbedType.listEdit,
+				FieldEmbedType.listSelect
 			]
-			const embeds = rawDataObjParent.rawPropsSelect.filter(
-				(prop) => prop.fieldEmbed && FIELDTYPES.includes(prop.fieldEmbed.type)
+			const embeds = rawDataObjParent.rawPropsDisplay.filter(
+				(prop) => prop.fieldEmbedListConfig || prop.fieldEmbedListEdit || prop.fieldEmbedListSelect
 			)
 			for (let i = 0; i < embeds.length; i++) {
 				const field = embeds[i]
 				const embedDataObjId = field?.fieldEmbed?.id
-				const embedFieldName = field.propName
 				const rawDataObj = await fGetRawDataObj(
 					new TokenApiDbDataObjSource({
 						dataObjId: embedDataObjId,
@@ -596,12 +496,15 @@ export class DataObjDataField {
 				fields.push(
 					new DataObjDataField({
 						columnBacklink: field.columnBacklink,
-						embedDataObjId,
+						dataObjIdEmbed: embedDataObjId,
+						dataObjIdParent: rawDataObjParent.id,
 						embedFieldName: field.propName,
 						embedFieldNameRaw: field.propNameRaw,
-						embedTable: field?.link?.table,
 						embedType: field?.fieldEmbed?.type,
-						parentTable: parentTable,
+						fieldEmbedListConfig: field?.fieldEmbedListConfig,
+						fieldEmbedListEdit: field?.fieldEmbedListEdit,
+						fieldEmbedListSelect: field?.fieldEmbedListSelect,
+						parentTable,
 						rawDataObj
 					})
 				)
@@ -619,19 +522,9 @@ export class DataObjDataField {
 	}
 }
 
-export enum DataObjEmbedType {
-	listConfig = 'listConfig',
-	listEdit = 'listEdit',
-	listSelect = 'listSelect'
-}
-
 export enum DataObjListEditPresetType {
 	insert = 'insert',
 	save = 'save'
-}
-
-export enum DataObjMode {
-	ParentObjectSaved = 'ParentObjectSaved'
 }
 
 export enum DataObjProcessType {
@@ -757,6 +650,9 @@ export class DataRows {
 	add(newRow: DataRow) {
 		this.dataRows.push(newRow)
 	}
+	addRows(dataRows: DataRow[]) {
+		this.dataRows = this.dataRows.concat(dataRows)
+	}
 	getDetailRecordValue(key: string) {
 		return this.getRowValue(0, key)
 	}
@@ -814,9 +710,6 @@ export class DataRows {
 	}
 	reset() {
 		this.dataRows = []
-	}
-	setDataRows(dataRows: DataRow[]) {
-		this.dataRows = dataRows
 	}
 	setDetailRecord(record: DataRecord) {
 		if (this.dataRows.length > 0) this.dataRows[0].record = record
@@ -969,7 +862,6 @@ export enum ParmsValuesType {
 	dbExpr = 'dbExpr',
 	embedFieldName = 'embedFieldName',
 	embedListSave = 'embedListSave',
-	embedParentId = 'embedParentId',
 	fieldListItems = 'fieldListItems',
 	gridColumnId = 'gridColumnId',
 	isMultiSelect = 'isMultiSelect',

@@ -1,4 +1,4 @@
-import { Field, FieldAlignment, PropsField, PropsFieldRaw } from '$comps/form/field'
+import { Field, FieldClassType, FieldAlignment, PropsField, PropsFieldRaw } from '$comps/form/field'
 import { PropLinkItemsSource, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
 import {
@@ -17,13 +17,8 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldParm.ts/'
 
-export class FieldJunk extends Field {
-	constructor(props: PropsFieldRaw) {
-		super(props)
-	}
-}
-
 export class FieldParm extends Field {
+	classType: FieldClassType = FieldClassType.parm
 	parmFields: Field[] = []
 	constructor(props: PropsFieldRaw) {
 		super(props)
@@ -32,7 +27,7 @@ export class FieldParm extends Field {
 	}
 	async init(props: PropsField) {
 		for (const dataRow of props.dataObj.data.rowsRetrieved.dataRows) {
-			// this.parmFields.push(await this.configParmItemsInit(props, dataRow.record, this.parmFields))
+			this.parmFields.push(await this.configParmItemsInit(props, dataRow.record, this.parmFields))
 		}
 	}
 
@@ -68,19 +63,6 @@ export class FieldParm extends Field {
 			props.dataObj,
 			props.dataObj.data
 		)
-	}
-
-	getStatus(node: DataManagerNode, recordId: string) {
-		const row = node.recordsDisplay.findIndex((r) => r.id === recordId)
-		if (row > -1) {
-			return this.parmFields[row].getStatus(node, recordId)
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'getStatus',
-				message: `Unable to find row for recordId: ${recordId} for FieldParm: ${this.colDO.propName}`
-			})
-		}
 	}
 
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {

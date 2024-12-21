@@ -7,4 +7,4 @@
 	let { parms }: DataRecord = $props()
 </script>
 
-<LayoutContent {parms} on:formCancelled />
+<LayoutContent {parms} />

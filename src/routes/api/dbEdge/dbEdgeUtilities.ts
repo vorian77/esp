@@ -120,6 +120,7 @@ export async function getDataObjById(token: TokenApiId) {
 	const shapeProp = e.shape(e.sys_core.SysDataObjColumn, (doc) => ({
 		...shapeColumnHasItems(doc),
 		_codeSortDir: doc.codeSortDir.name,
+		_columnBacklink: doc.columnBacklink.name,
 		_link: e.select(doc, (l) => ({
 			_columns: e.select(l.linkColumns, (c) => ({
 				_name: c.column.name,
@@ -148,7 +149,6 @@ export async function getDataObjById(token: TokenApiId) {
 		...shapeProp(doc),
 		_codeDataType: doc.column.codeDataType.name,
 		_codeDbDataSourceValue: doc.codeDbDataSourceValue.name,
-		_columnBacklink: doc.columnBacklink.name,
 		_fieldEmbedListConfig: e.select(doc.fieldEmbedListConfig, (fe) => ({
 			_dataObjEmbedId: fe.dataObjEmbed.id
 		})),

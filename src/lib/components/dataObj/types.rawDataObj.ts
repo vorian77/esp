@@ -4,7 +4,6 @@ import {
 	booleanOrFalse,
 	booleanRequired,
 	DataObjCardinality,
-	DataObjEmbedType,
 	DataObjSort,
 	DataObjTable,
 	DataObjType,
@@ -38,9 +37,9 @@ import {
 	DataObjActionFieldConfirm,
 	DataObjActionFieldShow,
 	DataObjActionFieldTriggerEnable
-} from '$comps/dataObj/types.dataObjActionField'
+} from '$comps/dataObj/types.dataObjActionField.svelte'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
-import { FieldColor, FieldColumnItem } from '$comps/form/field'
+import { FieldColor, FieldColumnItem, FieldEmbedType } from '$comps/form/field'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { error } from '@sveltejs/kit'
 
@@ -247,7 +246,7 @@ export class RawDataObjDyn extends RawDataObj {
 export class RawDataObjParent {
 	_columnName: string
 	_columnIsMultiSelect: boolean
-	_embedType?: DataObjEmbedType
+	_embedType?: FieldEmbedType
 	_filterExpr?: string
 	_table: DBTable
 	constructor(obj: RawDataObjParent) {
@@ -264,8 +263,8 @@ export class RawDataObjParent {
 			clazz,
 			'_embedType',
 			'DataObjEmbedType',
-			DataObjEmbedType,
-			DataObjEmbedType.listEdit
+			FieldEmbedType,
+			FieldEmbedType.listEdit
 		)
 		this._filterExpr = strOptional(obj._filterExpr, clazz, '_filterExpr')
 		this._table = new DBTable(obj._table)
@@ -275,8 +274,10 @@ export class RawDataObjParent {
 export class RawDataObjProp {
 	_linkItemsSource?: PropLinkItemsSource
 	codeSortDir?: PropSortDir
+	columnBacklink?: string
 	exprCustom?: string
 	exprPreset?: string
+	fieldEmbed?: RawDataObjPropDBFieldEmbed
 	hasItems: boolean
 	indexTable: number
 	link?: PropLink
@@ -296,8 +297,25 @@ export class RawDataObjProp {
 			PropSortDir,
 			PropSortDir.asc
 		)
+		this.columnBacklink = obj._columnBacklink
 		this.exprCustom = obj.exprCustom
 		this.exprPreset = obj.exprPreset
+		this.fieldEmbed = obj._fieldEmbedListConfig
+			? new RawDataObjPropDBFieldEmbed(
+					FieldEmbedType.listConfig,
+					obj._fieldEmbedListConfig._dataObjEmbedId
+				)
+			: obj._fieldEmbedListEdit
+				? new RawDataObjPropDBFieldEmbed(
+						FieldEmbedType.listEdit,
+						obj._fieldEmbedListEdit._dataObjEmbedId
+					)
+				: obj._fieldEmbedListSelect
+					? new RawDataObjPropDBFieldEmbed(
+							FieldEmbedType.listSelect,
+							obj._fieldEmbedListSelect._dataObjListId
+						)
+					: undefined
 		this.hasItems = booleanOrDefault(obj._hasItems, false)
 		this.indexTable = nbrOrDefault(obj.indexTable, -1)
 		this.link = classOptional(PropLink, obj._link)
@@ -344,8 +362,6 @@ export class RawDataObjPropDB extends RawDataObjProp {
 	childTableTraversal: string
 	codeDataSourceValue: PropDataSourceValue
 	codeDataType: PropDataType
-	columnBacklink?: string
-	fieldEmbed?: RawDataObjPropDBFieldEmbed
 	isMultiSelect: boolean
 	isSelfReference: boolean
 	constructor(obj: any, tables: DataObjTable[]) {
@@ -367,23 +383,6 @@ export class RawDataObjPropDB extends RawDataObjProp {
 			'PropDataType',
 			PropDataType
 		)
-		this.columnBacklink = obj._columnBacklink
-		this.fieldEmbed = obj._fieldEmbedListConfig
-			? new RawDataObjPropDBFieldEmbed(
-					DataObjEmbedType.listConfig,
-					obj._fieldEmbedListConfig._dataObjEmbedId
-				)
-			: obj._fieldEmbedListEdit
-				? new RawDataObjPropDBFieldEmbed(
-						DataObjEmbedType.listEdit,
-						obj._fieldEmbedListEdit._dataObjEmbedId
-					)
-				: obj._fieldEmbedListSelect
-					? new RawDataObjPropDBFieldEmbed(
-							DataObjEmbedType.listSelect,
-							obj._fieldEmbedListSelect._dataObjListId
-						)
-					: undefined
 		this.isMultiSelect = booleanOrDefault(obj._isMultiSelect, false)
 		this.isSelfReference = booleanOrDefault(obj._isSelfReference, false)
 
@@ -408,8 +407,8 @@ export class RawDataObjPropDB extends RawDataObjProp {
 
 export class RawDataObjPropDBFieldEmbed {
 	id: string
-	type: DataObjEmbedType
-	constructor(type: DataObjEmbedType, dataObjId: string) {
+	type: FieldEmbedType
+	constructor(type: FieldEmbedType, dataObjId: string) {
 		const clazz = 'RawDataObjPropDBFieldEmbed'
 		this.id = dataObjId
 		this.type = type

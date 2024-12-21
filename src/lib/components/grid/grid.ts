@@ -340,3 +340,7 @@ export class GridManagerOptions {
 		this.userSettings = valueOrDefault(obj.userSettings, new GridSettings(''))
 	}
 }
+
+enum GridAutoSizeStrategy {
+	fitGridWidth = 'fitGridWidth'
+}

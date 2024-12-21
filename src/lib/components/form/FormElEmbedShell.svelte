@@ -18,13 +18,11 @@
 
 	let { parms }: DataRecord = $props()
 
-	let field = $derived(fp.field) as FieldEmbedShell
+	let field = $derived(parms.field) as FieldEmbedShell
 	let component: string
 	let currTab: AppLevelTab
 	let dataObj: DataObj
 	let dataObjData: DataObjData
-
-	fp.setIsLabelBold(true)
 
 	field.stateShell.setfChangeCallback((obj: any) => {
 		fp.stateApp.fChangeCallback(obj)
@@ -43,6 +41,6 @@
 <!-- <FormLabel {parms} /> -->
 {#if dataObj && dataObjData}
 	<div class="border-0 border-red-300 px-4 pb-4">
-		<!-- <LayoutTab  on:formCancelled /> -->
+		<!-- <LayoutTab /> -->
 	</div>
 {/if}

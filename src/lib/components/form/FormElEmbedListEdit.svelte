@@ -6,8 +6,6 @@
 	const FILENAME = '$comps/form/FormElEmbeddedListSelect.svelte'
 
 	let { parms }: DataRecord = $props()
-
-	fp.setIsLabelBold(true)
 </script>
 
 <FormLabel {parms} />
@@ -19,7 +17,7 @@
 			component={fp.field.dataObj.raw.codeComponent}
 			dataObj={fp.field.dataObj}
 			dataObjData={fp.field.dataObj.data}
-			on:formCancelled
+
 		/> -->
 	</div>
 {/if}

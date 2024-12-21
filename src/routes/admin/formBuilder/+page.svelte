@@ -14,7 +14,7 @@
 	let newDefn = 'Sample defn.'
 </script>
 
-<!-- <Form bind:formObj={form} on:formSubmitted={onFormSubmitted} /> -->
+<!-- <Form bind:formObj={form}  /> -->
 
 <h3 class="h3 mt-10">Columns</h3>
 

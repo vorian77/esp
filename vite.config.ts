@@ -14,6 +14,11 @@ export default defineConfig(({ mode }) => {
 	if (mode === 'development') {
 		plugins.push(nodeLoaderPlugin())
 	}
+	// if (mode === 'development') {
+	// 	const loaderPlugin: Promise<any> = Promise.resolve(nodeLoaderPlugin())
+	// 	plugins = [loaderPlugin, ...plugins]
+	// }
+
 	return {
 		build: {
 			minify: false
@@ -21,3 +26,5 @@ export default defineConfig(({ mode }) => {
 		plugins
 	}
 })
+
+// export default defineConfig({ plugins: [sveltekit(), nodeLoaderPlugin()] })

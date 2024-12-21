@@ -5,8 +5,7 @@ import {
 	DataObj,
 	DataObjCardinality,
 	DataObjConfirm,
-	DataObjData,
-	DataObjEmbedType,
+	DataObjDataField,
 	type DataRecord,
 	memberOfEnum,
 	ParmsValues,
@@ -16,7 +15,7 @@ import {
 	ToastType,
 	User
 } from '$utils/types'
-import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField'
+import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField.svelte'
 import {
 	Token,
 	TokenApiDbDataObjSource,
@@ -24,6 +23,7 @@ import {
 	TokenApiQuery,
 	TokenApiQueryData,
 	TokenApiQueryType,
+	TokenAppDataObjName,
 	TokenAppDo,
 	TokenAppDoActionConfirmType,
 	TokenAppModalEmbedField,
@@ -31,7 +31,7 @@ import {
 	TokenAppModalReturnType,
 	TokenAppModalSelect
 } from '$utils/types.token'
-import { FieldElement } from '$comps/form/field'
+import { FieldEmbedType } from '$comps/form/field'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { RawDataObjActionField, RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
@@ -85,6 +85,7 @@ export class State {
 	page = '/home'
 	parmsState: ParmsValues = new ParmsValues()
 	parmsUser: ParmsUser = new ParmsUser()
+	stateRoot?: State
 	storeDrawer: any
 	storeModal: any
 	storeToast: any
@@ -111,13 +112,20 @@ export class State {
 		if (Object.hasOwn(obj, 'packet')) this.packet = obj.packet
 		if (Object.hasOwn(obj, 'page')) this.page = obj.page
 		if (Object.hasOwn(obj, 'parmsState')) this.parmsState.update(obj?.parmsState?.data)
+		if (Object.hasOwn(obj, 'stateRoot')) this.stateRoot = obj.stateRoot
 		if (Object.hasOwn(obj, 'storeDrawer')) this.storeDrawer = obj.storeDrawer
 		if (Object.hasOwn(obj, 'storeModal')) this.storeModal = obj.storeModal
 		if (Object.hasOwn(obj, 'storeToast')) this.storeToast = obj.storeToast
 		if (Object.hasOwn(obj, 'user')) this.user = obj.user
 
 		// required
-		this.target = memberOfEnum(obj.target, 'State', 'target', 'StateTarget', StateTarget)
+		this.target = memberOfEnum(
+			obj.target || this.target,
+			'State',
+			'target',
+			'StateTarget',
+			StateTarget
+		)
 		if ([StateTarget.dashboard, StateTarget.feature].includes(obj.target)) this.page = '/home'
 
 		return this
@@ -131,7 +139,7 @@ export class State {
 			if (
 				confirmType &&
 				(confirmType === TokenAppDoActionConfirmType.always ||
-					(confirmType === TokenAppDoActionConfirmType.objectChanged &&
+					(confirmType === TokenAppDoActionConfirmType.statusChanged &&
 						state.dataManager?.isStatusChanged()))
 			) {
 				await askB4Transition(state, obj, confirm, callback)
@@ -146,7 +154,7 @@ export class State {
 	closeModal() {
 		this.storeModal.close()
 	}
-	consume(actions: StatePacketAction | Array<StatePacketAction>) {
+	consume(actions: StatePacketAction | StatePacketAction[]) {
 		if (this.packet && actions.includes(this.packet.action)) {
 			const packet = this.packet
 			this.packet = undefined
@@ -159,23 +167,14 @@ export class State {
 	downloadContent(title: string, mimeType: string, content: string) {
 		const blob = new Blob([content], { type: mimeType })
 		const url = URL.createObjectURL(blob)
-		this.downloadUrl(url, title)
 
-		// const link = document.createElement('a')
-		// link.href = url
-		// link.download =
-		// link.click()
-		// URL.revokeObjectURL(url)
-
-		this.openToast(ToastType.success, `"${title}" has been downloaded.`)
-	}
-
-	downloadUrl(url: string, title: string = '') {
 		const link = document.createElement('a')
 		link.href = url
 		if (title) link.download = title
 		link.click()
 		URL.revokeObjectURL(url)
+
+		this.openToast(ToastType.success, `"${title}" has been downloaded.`)
 	}
 
 	async getActions(fieldGroupName: string) {
@@ -210,8 +209,8 @@ export class State {
 		width: string | undefined,
 		meta: DataRecord
 	) {
-		const state = required(meta.state, 'State.openDrawer', 'meta.state')
-		state.updateProperties({
+		const stateApp = required(meta.stateApp, 'State.openDrawer', 'meta.stateApp')
+		stateApp.changeProperties({
 			storeDrawer: this.storeDrawer,
 			storeModal: this.storeModal,
 			storeToast: this.storeToast
@@ -225,19 +224,22 @@ export class State {
 		position: 'left' | 'right' | 'top' | 'bottom' | undefined,
 		height: string | undefined,
 		width: string | undefined,
-		dataObjSource: TokenApiDbDataObjSource,
-		queryType: TokenApiQueryType
+		token: TokenAppDataObjName
 	) {
 		this.openDrawer(id, position, height, width, {
-			state: new StateSurfaceEmbedField({
+			stateApp: new State({
 				cardinality: DataObjCardinality.detail,
-				dataObjSource,
+
 				layoutComponent: StateLayoutComponent.layoutContent,
 				layoutHeader: {
 					isDataObj: true,
 					isDrawerClose: true
 				},
-				queryType
+				packet: new StatePacket({
+					action: StatePacketAction.doOpen,
+					token
+				}),
+				target: StateTarget.feature
 			})
 		})
 	}
@@ -246,13 +248,15 @@ export class State {
 		state.changeProperties({
 			storeDrawer: this.storeDrawer,
 			storeModal: this.storeModal,
-			storeToast: this.storeToast
+			storeToast: this.storeToast,
+			target: state.target,
+			user: this.user
 		})
 		new Promise<any>((resolve) => {
 			const modalSettings: ModalSettings = {
 				type: 'component',
 				component: 'rootLayoutModal',
-				meta: { state },
+				meta: { stateApp: state },
 				response: async (r: any) => {
 					resolve(r)
 				}
@@ -279,15 +283,15 @@ export class State {
 
 	async openModalDataObj(dataObjName: string, fUpdate?: Function) {
 		const clazz = `${FILENAME}.openModalDataObj`
-		const stateModal = new StateSurfaceModalDataObj({
+		const stateModal = new StateSurfaceModal({
 			actionsFieldDialog: await this.getActions('doag_dialog_footer_detail'),
-			dataObjName,
 			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutHeader: {
 				isDataObj: true
 			},
 			packet: new StatePacket({
-				action: StatePacketAction.modalDataObj
+				action: StatePacketAction.doOpen,
+				token: new TokenAppDataObjName({ dataObjName, querytype: TokenApiQueryType.retrieve })
 			})
 		})
 		await this.openModal(stateModal, fUpdate)
@@ -299,15 +303,30 @@ export class State {
 		fModalCloseUpdate: Function
 	) {
 		const clazz = `${FILENAME}.openModalEmbedListConfig`
-		const field: FieldEmbedListConfig = required(token.dataObj.fieldEmbed, clazz, 'field')
-		const rootTable = required(this?.dataObjState?.rootTable, clazz, 'rootTable')
-		const fieldDataObj = required(field.dataObj, clazz, 'fieldDataObj')
+		const field: DataObjDataField = required(token.dataObj.fieldEmbed, clazz, 'field')
+		const dataObjEmbed = required(
+			token.state.dataManager?.getDataObj(field.dataObjIdEmbed),
+			clazz,
+			'dataObjEmbed'
+		)
+
+		// required(field.dataObj, clazz, 'fieldDataObj')
+		const dataObjParent = required(
+			token.state.dataManager?.getDataObj(field.dataObjIdParent),
+			clazz,
+			'dataObjParent'
+		)
+		const dataObjParentRootTable = required(
+			dataObjParent.rootTable,
+			clazz,
+			'dataObjParentRootTable'
+		)
 
 		const stateModal = new StateSurfaceModalEmbed({
-			actionsFieldDialog: field.actionsFieldModal,
+			actionsFieldDialog: field.fieldEmbedListConfig?.rawActionsFieldModal,
 			app: this.app,
-			embedParentId: field.embedParentId,
-			embedType: DataObjEmbedType.listConfig,
+			embedParentId: token.state.dataManager?.getRecordId(field.dataObjIdParent, 0),
+			embedType: field.embedType,
 			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutHeader: {
 				isDataObj: true,
@@ -317,43 +336,59 @@ export class State {
 				action: StatePacketAction.modalEmbed,
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
-						dataObjId: field.raw.dataObjModalId,
+						dataObjId: field.fieldEmbedListConfig?.dataObjModalId,
 						parent: new RawDataObjParent({
-							_columnName: field.colDO.propNameRaw,
+							_columnName: field.embedFieldNameRaw,
 							_columnIsMultiSelect: true,
-							_filterExpr: '.id = <parms,uuid,embedParentId>',
-							_table: rootTable
+							_filterExpr: `.id = <uuid>`,
+							_table: dataObjParentRootTable
 						})
 					}),
 					queryType
 				})
 			}),
-			parmsState: new ParmsValues()
+			parmsState: new ParmsValues(),
+			target: StateTarget.feature
 		})
 
-		stateModal.app.addTabModal(fieldDataObj)
+		stateModal.app.addTabModal(dataObjEmbed)
 		await this.openModal(stateModal, fModalCloseUpdate)
 	}
 
 	async openModalEmbedListSelect(token: TokenAppDo, fModalCloseUpdate: Function) {
 		const clazz = `${FILENAME}.openModalEmbedListSelect`
-		const field: FieldEmbedListSelect = required(token.dataObj.fieldEmbed, clazz, 'field')
-		const fieldDataObj = required(field.dataObj, clazz, 'fieldDataObj')
-		const rootTable = required(this?.dataObjState?.rootTable, clazz, 'rootTable')
+
+		const field: DataObjDataField = required(token.dataObj.fieldEmbed, clazz, 'field')
+		const dataObjEmbed = required(
+			token.state.dataManager?.getDataObj(field.dataObjIdEmbed),
+			clazz,
+			'dataObjEmbed'
+		)
+		const dataObjParent = required(
+			token.state.dataManager?.getDataObj(field.dataObjIdParent),
+			clazz,
+			'dataObjParent'
+		)
+		const dataObjParentRootTable = required(
+			dataObjParent.rootTable,
+			clazz,
+			'dataObjParentRootTable'
+		)
 
 		// parms
-		const parmsState = new ParmsValues(fieldDataObj.data.getParms())
-		parmsState.update(fieldDataObj.data.parms.valueGetAll())
-		parmsState.valueSet(ParmsValuesType.embedFieldName, field.colDO.propName)
+		const parmsState = new ParmsValues(dataObjEmbed.data.getParms())
+		parmsState.update(dataObjEmbed.data.parms.valueGetAll())
+		parmsState.valueSet(ParmsValuesType.embedFieldName, field.embedFieldName)
 		parmsState.valueSetList(
 			ParmsValuesType.listIdsSelected,
 			token.dataObj.data.rowsRetrieved.getRows()
 		)
 
 		const stateModal = new StateSurfaceModalEmbed({
-			actionsFieldDialog: field.actionsFieldModal,
-			embedParentId: field.embedParentId,
-			embedType: DataObjEmbedType.listSelect,
+			actionsFieldDialog: field.fieldEmbedListSelect?.rawActionsFieldModal,
+			app: this.app,
+			embedParentId: token.state.dataManager?.getRecordId(field.dataObjIdParent, 0),
+			embedType: field.embedType,
 			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutHeader: {
 				isDataObj: true
@@ -362,12 +397,12 @@ export class State {
 				action: StatePacketAction.modalEmbed,
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
-						dataObjId: field.raw.dataObjListID,
+						dataObjId: field.fieldEmbedListSelect?.dataObjListID,
 						parent: new RawDataObjParent({
-							_columnName: field.colDO.propNameRaw,
-							_columnIsMultiSelect: field.colDO.colDB.isMultiSelect,
+							_columnName: field.embedFieldNameRaw,
+							_columnIsMultiSelect: true,
 							_filterExpr: '.id = <parms,uuid,embedParentId>',
-							_table: rootTable
+							_table: dataObjParentRootTable
 						})
 					}),
 					queryType: TokenApiQueryType.retrieve
@@ -401,7 +436,8 @@ export class State {
 				action: StatePacketAction.modalSelectSurface,
 				token
 			}),
-			parmsState
+			parmsState,
+			target: StateTarget.feature
 		})
 
 		await this.openModal(stateModal, token.fModalClose)
@@ -452,9 +488,7 @@ export enum StateLayoutComponent {
 	layoutSelectMulti = 'layoutSelectMulti',
 	layoutTab = 'layoutTab'
 }
-export enum StateLayoutContent {
-	ModalSelect = 'ModalSelect'
-}
+
 export class StateLayoutHeader {
 	headerText?: string
 	isDataObj: boolean
@@ -487,7 +521,6 @@ export enum StatePacketAction {
 	doDetailProcessExecute = 'doDetailProcessExecute',
 	doDetailSave = 'doDetailSave',
 	doDetailSaveAs = 'doDetailSaveAs',
-	doDetailSaveCancel = 'doDetailSaveCancel',
 
 	doEmbedListConfigEdit = 'doEmbedListConfigEdit',
 	doEmbedListConfigNew = 'doEmbedListConfigNew',
@@ -499,6 +532,9 @@ export enum StatePacketAction {
 	doListSelfRefresh = 'doListSelfRefresh',
 	doListSelfSave = 'doListSelfSave',
 
+	doOpen = 'doOpen',
+	doSaveCancel = 'doSaveCancel',
+
 	embedField = 'embedField',
 	embedShell = 'embedShell',
 
@@ -506,7 +542,6 @@ export enum StatePacketAction {
 
 	// modal
 	modalCancel = 'modalCancel',
-	modalDataObj = 'modalDataObj',
 	modalDone = 'modalDone',
 	modalEmbed = 'modalEmbed',
 	modalSelectOpen = 'modalSelectOpen',
@@ -515,7 +550,7 @@ export enum StatePacketAction {
 	// nav
 	navBack = 'navBack',
 	navCrumbs = 'navCrumbs',
-	navBarOpen = 'navBarOpen',
+	navMenuOpen = 'navMenuOpen',
 	navRow = 'navRow',
 	navTab = 'navTab',
 	openNode = 'openNode',
@@ -548,7 +583,7 @@ export class StateSurfaceEmbedField extends StateSurfaceEmbed {
 
 export class StateSurfaceEmbedShell extends StateSurfaceEmbed {
 	embedField: FieldEmbedShell
-	stateRoot: State
+
 	constructor(obj: any) {
 		const clazz = 'StateSurfaceEmbedShell'
 		super(obj)
@@ -556,7 +591,6 @@ export class StateSurfaceEmbedShell extends StateSurfaceEmbed {
 		this.dataObjState = required(obj.dataObjState, clazz, 'dataObjState')
 		this.embedField = required(obj.embedField, clazz, 'embedField')
 		this.nodeType = NodeType.object
-		this.stateRoot = required(obj.stateRoot, clazz, 'stateRoot')
 	}
 }
 
@@ -570,27 +604,15 @@ export class StateSurfaceModal extends State {
 	}
 }
 
-export class StateSurfaceModalDataObj extends StateSurfaceModal {
-	dataObjName: string
-	constructor(obj: any) {
-		const clazz = 'StateSurfaceDataObj'
-		super(obj)
-		obj = valueOrDefault(obj, {})
-		this.dataObjName = strRequired(obj.dataObjName, clazz, 'dataObjName')
-	}
-}
-
 export class StateSurfaceModalEmbed extends StateSurfaceModal {
 	embedParentId: string
-	embedType: DataObjEmbedType
-	stateRoot?: State
+	embedType: FieldEmbedType
 	constructor(obj: any) {
 		const clazz = 'StateSurfaceModalEmbed'
 		super(obj)
 		obj = valueOrDefault(obj, {})
 		this.embedParentId = strRequired(obj.embedParentId, clazz, 'embedParentId')
 		this.embedType = required(obj.embedType, clazz, 'embedType')
-		this.stateRoot = obj.stateRoot
 	}
 }
 

@@ -8,13 +8,13 @@
 	const classData = '-ml-2 text-base text-gray-700'
 
 	export let task: UserResourceTask
-	export let onClick: Function
+	export let onclick: Function
 	export let data: any
 
 	let docTypes = data
 
 	const onClickLocal = async (doc: any) => {
-		await onClick(task, { [ParmsValuesType.itemsParmName]: doc.name })
+		await onclick(task, { [ParmsValuesType.itemsParmName]: doc.name })
 	}
 </script>
 

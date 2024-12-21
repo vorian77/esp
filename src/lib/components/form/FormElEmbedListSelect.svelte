@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { ContextKey, DataManager, required } from '$utils/types'
+	import { getContext } from 'svelte'
 	import { StatePacketAction } from '$comps/app/types.appState.svelte'
+	import { Field } from '$comps/form/field'
 	import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 	import Layout from '$comps/layout/RootLayoutApp.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
@@ -11,35 +14,39 @@
 	const FILENAME = '$comps/form/FormElEmbeddedListSelect.svelte'
 
 	let { parms }: DataRecord = $props()
+	parms.isLabelbold = true
 
-	parms.isLabelBold = true
+	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
+	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
 
-	let field: FieldEmbedListSelect = $derived(parms.field)
+	let fieldEmbed = $derived.by(() => {
+		const f: Field = parms.field
+		f.setIconProps({
+			name: 'SquareMousePointer',
+			clazz: 'ml-1.5 mt-0.5',
+			color: '#3b79e1',
+			onclick: openDialogIcon,
+			size: 18,
+			strokeWidth: 2
+		})
+		return f
+	}) as FieldEmbedListSelect
+	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.embedDataObjId)
 
-	field.setIconProps({
-		name: 'SquareMousePointer',
-		clazz: 'ml-1.5 mt-0.5',
-		color: '#3b79e1',
-		onClick: openDialogIcon,
-		size: 18,
-		strokeWidth: 2
-	})
-
-	const openDialogIcon = () => {
-		field.dataObj.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, fp.stateApp)
+	function openDialogIcon() {
+		dataObjEmbed.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, stateApp)
 	}
 </script>
 
 <FormLabel {parms} />
 
-{#if fp}
-	<div class="mt-4">
-		<!-- <LayoutContent
-			bind:state={fp.state}
-			component={fp.field.dataObj.raw.codeComponent}
-			dataObj={fp.field.dataObj}
-			dataObjData={fp.field.dataObj.data}
-			on:formCancelled
-		/> -->
-	</div>
-{/if}
+<div class="mt-4">
+	<LayoutContent
+		parms={{
+			...parms,
+			component: dataObjEmbed.raw.codeComponent,
+			dataObj: dataObjEmbed,
+			dataObjId: dataObjEmbed.raw.id
+		}}
+	/>
+</div>

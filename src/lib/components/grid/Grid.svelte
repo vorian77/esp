@@ -44,8 +44,6 @@
 	import {
 		DataObj,
 		DataObjData,
-		DataObjEmbedType,
-		DataObjMode,
 		DataObjSort,
 		DataObjSortItem,
 		ParmsValuesType,
@@ -104,6 +102,9 @@
 		styleMaxHeight = isSuppressFilterSort ? '100%' : 'calc(100% - 70px)'
 
 		const gridOptions = {
+			autoSizeStrategy: {
+				type: autoSizeStrategy(options.columnDefs)
+			},
 			columnDefs: options.columnDefs,
 			columnTypes,
 			dataTypeDefinitions,
@@ -157,22 +158,27 @@
 			},
 			suppressSetFilterByDefault: true
 		}
+
+		function autoSizeStrategy(columnDefs: ColDef) {
+			const avgColW = 150
+			const colCntVisible = columnDefs.reduce((acc, col) => {
+				return acc + (col.hide ? 0 : 1)
+			}, 0)
+			const strategy =
+				colCntVisible * avgColW > eGui.offsetWidth ? 'fitCellContents' : 'fitGridWidth'
+			// console.log('Grid.autoSizeStrategy:', {
+			// 	gridWidth: eGui.offsetWidth,
+			// 	colCntVisible,
+			// 	strategy
+			// })
+			return strategy
+		}
+
 		// <todo> 241115 - bug - createGrid makes options.userSettings.listSortModel undefined
 		const rawSort =
 			options.userSettings.getPref(ParmsUserDataType.listSortModel) || options.sortModel
 
 		api = createGrid(eGui, gridOptions)
-
-		// update column sizing strategy
-		let columnsWidth = 0
-		api.getAllGridColumns().forEach((columnTypes) => {
-			columnsWidth += columnTypes.visible ? columnTypes.actualWidth : 0
-		})
-		if (columnsWidth > 1.25 * eGui.offsetWidth) {
-			api.setGridOption('autoSizeStrategy', {
-				type: 'fitCellContents'
-			})
-		}
 
 		if (options.isSelect) {
 			const selectedIds = options.parmStateSelectedIds
@@ -362,7 +368,7 @@
 	}
 </script>
 
-<div id="grid" class="h-full flex flex-col md:p-4 md:border-2 rounded-md">
+<div id="grid" class="h-full flex flex-col sm:p-4 sm:border rounded-md">
 	<GridFilter
 		isHideFilter={isSuppressFilterSort}
 		listFilterQuick={options.userSettings.getPref(ParmsUserDataType.listFilterQuick)}

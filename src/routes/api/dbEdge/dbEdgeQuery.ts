@@ -3,7 +3,6 @@ import {
 	booleanRequired,
 	classOptional,
 	DataObjDataField,
-	DataObjEmbedType,
 	DataObjTable,
 	DBTable,
 	debug,
@@ -39,14 +38,14 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$routes/api/dbEdge/dbEdgeQuery.ts'
 
 export class Query {
-	field?: DataObjDataField
+	fieldEmbed?: DataObjDataField
 	parent?: QueryParent
 	processRow?: ProcessRow
 	rawDataObj: RawDataObj
 	scriptOrder: string = ''
-	constructor(rawDataObj: RawDataObj, field?: DataObjDataField) {
+	constructor(rawDataObj: RawDataObj, fieldEmbed?: DataObjDataField) {
 		const clazz = 'Query'
-		this.field = field
+		this.fieldEmbed = fieldEmbed
 		this.rawDataObj = rawDataObj
 		this.parent = classOptional(QueryParent, this.rawDataObj.rawParent)
 	}
@@ -181,34 +180,25 @@ export class Query {
 		return properties
 	}
 
-	getPropsSaveScalar(parms: DataRecord, queryData: TokenApiQueryData, dataRows: DataRow[]) {
-		let properties = ''
+	getPropsPrimary(parms: DataRecord, queryData: TokenApiQueryData, dataRows: DataRow[]) {
+		let properties: string[] = []
 		let fValues: Function[] = []
 		const clazz = 'getPropsSaveScalar'
 		const indexTable = required(parms.indexTable, clazz, 'indexTable')
-		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
+		const propsRaw = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		const action = strRequired(parms.action, clazz, 'action') as LinkSaveAction
-		// const isDelete = parms.isDelete ? parms.isDelete : false
-		// const isUpdate = action.toLowerCase() === 'update'
-		// const subObjGroup = new LinkSave(action, this.getTableRootObj())
 
 		// 1. build props, subObjGroup
-		props
-			.filter((propObj) => propObj.indexTable === indexTable)
-			.forEach((propObj, idx) => {
-				if (!propObj.fieldEmbed) {
-					const prop = `${propObj.propNameRaw} := ${this.getPropsSavePropExpr(action, idx, propObj, queryData, fValues)}`
-					properties = this.addItemComma(properties, prop)
-
-					// if (propObj.indexTable === 0) {
-					// 	properties = this.addItemComma(properties, prop)
-					// } else {
-					// 	subObjGroup.addProp(propObj.indexTable!, prop)
-					// }
+		propsRaw
+			.filter((p) => p.indexTable === indexTable)
+			.forEach((p, idx) => {
+				if (!p.fieldEmbed) {
+					const propDB = `${p.propNameRaw} := ${this.getPropsSavePropExpr(action, idx, p, queryData, fValues)}`
+					properties.push(propDB)
 
 					// format values
 					dataRows.forEach((dataRow) => {
-						dataRow.record[propObj.propName] = fValues[idx](dataRow.getValue(propObj.propName))
+						dataRow.record[p.propName] = fValues[idx](dataRow.getValue(p.propName))
 					})
 				}
 			})

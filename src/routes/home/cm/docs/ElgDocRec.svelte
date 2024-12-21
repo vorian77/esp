@@ -88,7 +88,7 @@
 		// }
 	}
 
-	function onformCancelled() {
+	function formCancel() {
 		modalStore.close()
 	}
 </script>
@@ -97,7 +97,7 @@
 	<!-- <Form
 		bind:formObj
 		bind:this={formElement}
-		on:formSubmitted={onFormSubmitted}
-		on:formCancelled={onformCancelled}
+		onFormSubmitted
+		formCancel
 	/> -->
 </div>

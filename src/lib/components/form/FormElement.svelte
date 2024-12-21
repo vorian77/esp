@@ -55,60 +55,53 @@
 
 	const FILENAME = '$comps/form/FormElement.svelte'
 	// const elements: Record<string, any> = {
-	// 	FieldCheckbox: FormElInpCheckbox,
-	// 	FieldChips: FormElChips,
-	// 	FieldCustomActionButton: FormElCustomActionButton,
-	// 	FieldCustomActionLink: FormElCustomActionLink,
-	// 	FieldCustomHeader: FormElCustomHeader,
-	// 	FieldCustomText: FormElCustomText,
-	// 	FieldEmbedListConfig: FormElEmbedListConfig,
 	// 	FieldEmbedListEdit: FormElEmbedListEdit,
-	// 	FieldEmbedListSelect: FormElEmbedListSelect,
 	// 	FieldEmbedShell: FormElEmbedShell,
-	// 	FieldFile: FormElFile,
-	// 	FieldInput: FormElInp,
-	// 	FieldRadio: FormElInpRadio,
-	// 	FieldSelect: FormElSelect,
-	// 	FieldTextarea: FormElTextarea,
-	// 	FieldToggle: FormElToggle
 	// }
 	const elements: Record<string, any> = {
-		FieldInput: FormElInp
+		FieldCustomActionButton: FormElCustomActionButton,
+		FieldCustomActionLink: FormElCustomActionLink,
+		FieldCustomHeader: FormElCustomHeader,
+		FieldCustomText: FormElCustomText,
+		FieldChips: FormElChips,
+		FieldCheckbox: FormElInpCheckbox,
+		FieldEmbedListConfig: FormElEmbedListConfig,
+		FieldEmbedListSelect: FormElEmbedListSelect,
+		FieldFile: FormElFile,
+		FieldInput: FormElInp,
+		FieldRadio: FormElInpRadio,
+		FieldSelect: FormElSelect,
+		FieldTextarea: FormElTextarea,
+		FieldToggle: FormElToggle
 	}
 	let Element: any = $state()
 
 	let { parms }: DataRecord = $props()
 	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let fieldValidity = $derived(dm.getFieldValidity(parms.dataObjId, parms.row, parms.field))
 
-	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
-	let field: Field = $derived(parms.field)
-	let fieldValidity = $derived(dm.getFieldValidity(parms.dataObjId, parms.row, field))
-	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
-
-	$effect(() => (parms.fieldValue = fieldValue))
 	$effect(() => {
 		let elementName =
-			typeof field.constructor.name === 'string' && field.constructor.name !== ''
-				? field.constructor.name
+			typeof parms.field.constructor.name === 'string' && parms.field.constructor.name !== ''
+				? parms.field.constructor.name
 				: ''
 		if (elementName) Element = elements[elementName]
 	})
 
 	let classProps = $derived(
-		dataObj.raw.codeCardinality === DataObjCardinality.detail && field.colDO.isDisplayable
+		parms.dataObj.raw.codeCardinality === DataObjCardinality.detail &&
+			parms.field.colDO.isDisplayable
 			? 'mb-4'
 			: ''
 	)
 </script>
 
-<p>field: {field.colDO.label}</p>
-<p>value: {fieldValue}</p>
+<!-- <p>field: {parms.field.colDO.label}</p> -->
+<!-- <p>value: {fieldValue}</p> -->
 
 <div class={classProps}>
-	{#if Element && field.colDO.isDisplayable}
+	{#if Element && parms.field.colDO.isDisplayable}
 		<Element {parms} />
-	{:else}
-		no element
 	{/if}
 </div>
 

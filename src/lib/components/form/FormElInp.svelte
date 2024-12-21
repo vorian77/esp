@@ -6,30 +6,29 @@
 		type DataRecord,
 		required
 	} from '$utils/types'
+	import { getContext } from 'svelte'
 	import { FieldAlignment, FieldElement } from '$comps/form/field'
-	import { FieldInput } from '$comps/form/fieldInput'
 	import { FieldAccess } from '$comps/form/field'
+	import { FieldInput } from '$comps/form/fieldInput'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
-	import { getContext } from 'svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
+	import Icon from '$comps/icon/Icon.svelte'
+
+	const FILENAME = '$comps/form/FormElInp.svelte'
 
 	let { parms }: DataRecord = $props()
-	let dm: DataManager = required(getContext(ContextKey.dataManager), 'FormElInput', 'dataManager')
 
-	let dataObj = $state(dm.getDataObj(parms.dataObjId))
-	let field: FieldInput = $state(parms.field)
-	let fieldValue = $state(parms.fieldValue)
-	let row = $state(parms.row)
-
-	if (field.fieldElement === FieldElement.textHide) {
-		setHideTextIcon()
-	}
+	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let field = $state(parms.field) as FieldInput
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
+	let fieldInputType = $state(field.inputTypeCurrent || field.fieldElement)
+	let iconProps: IconProps = $state(setIconProps())
 
 	let classPropsInput = $derived.by(() => {
 		let clazz =
-			dataObj.raw.codeCardinality === DataObjCardinality.detail
+			parms.dataObj.raw.codeCardinality === DataObjCardinality.detail
 				? 'input text-sm text-black ' + field.colorBackground
 				: 'w-full border-none bg-transparent text-black'
 		clazz +=
@@ -45,13 +44,9 @@
 		return clazz
 	})
 
-	let min = $derived(field.minValue ? field.minValue.toString() : '')
-	let max = $derived(field.maxValue ? field.maxValue.toString() : '')
-	let step = $derived(field.spinStep ? field.spinStep : '')
-
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		dm.setFieldValue(parms.dataObjId, row, field, target.value)
+		dm.setFieldValue(parms.dataObjId, parms.row, field, target.value)
 	}
 
 	function onDoubleClick(event: MouseEvent) {
@@ -63,47 +58,55 @@
 			const month = dateMonth < 10 ? '0' + dateMonth : dateMonth.toString()
 			const day = dateDay < 10 ? '0' + dateDay : dateDay.toString()
 			const value = year + '-' + month + '-' + day
-			dm.setFieldValue(parms.dataObjId, row, field, value)
+			dm.setFieldValue(parms.dataObjId, parms.row, field, value)
 		}
 	}
-	function setHideTextIcon() {
-		field.setIconProps({
-			name: field.inputTypeCurrent === 'password' ? 'Eye' : 'EyeOff',
-			clazz: 'ml-1',
-			onClick: onClickToggleHideText,
-			size: 20
-		})
+	function setIconProps() {
+		let iconProps: IconProps = undefined
+		let iconName =
+			field.fieldElement === FieldElement.textHide
+				? fieldInputType === 'password'
+					? 'Eye'
+					: 'EyeOff'
+				: undefined
+		if (iconName) {
+			iconProps = new IconProps({
+				name: iconName,
+				clazz: 'ml-1',
+				onclick: onClickToggleHideText,
+				size: 20
+			})
+		}
+		return iconProps
 	}
 	function onClickToggleHideText() {
-		field.inputTypeCurrent = field.inputTypeCurrent === 'password' ? 'text' : 'password'
-		setHideTextIcon()
+		fieldInputType = fieldInputType === 'password' ? 'text' : 'password'
+		iconProps = setIconProps()
 	}
 </script>
 
-<FormLabel {parms}>
+<!-- <button onclick={onClickToggleHideText}>Toggle</button> -->
+
+<!-- <DataViewer header="inp.iconProps" data={iconProps?.name} />
+<DataViewer header="fieldInputType" data={fieldInputType} /> -->
+
+<FormLabel {parms} {iconProps}>
 	<input
 		class={classPropsInput}
 		hidden={field.fieldAccess === FieldAccess.hidden}
 		id={field.colDO.propName}
-		{max}
-		{min}
+		max={field.maxValue?.toString() || ''}
+		min={field.minValue?.toString() || ''}
 		name={field.colDO.propName}
-		onchange={onChange}
 		ondblclick={onDoubleClick}
 		oninput={onChange}
-		placeholder={dataObj.raw.codeCardinality === DataObjCardinality.detail || dataObj.raw.isListEdit
+		placeholder={parms.dataObj.raw.codeCardinality === DataObjCardinality.detail ||
+		parms.dataObj.raw.isListEdit
 			? field.placeHolder
 			: ''}
 		readonly={field.fieldAccess === FieldAccess.readonly}
-		{step}
-		type={field.inputTypeCurrent ? field.inputTypeCurrent : field.FieldElement}
+		step={field.spinStep?.toString() || ''}
+		type={fieldInputType || field.FieldElement}
 		value={fieldValue}
 	/>
 </FormLabel>
-
-<!-- <input bind:value={value} /> -->
-
-<!-- onchange={() => onChange}
-oninput={() => onChange}
-ondblclick={() => onDoubleClick}
-onkeyup={() => onChange} -->

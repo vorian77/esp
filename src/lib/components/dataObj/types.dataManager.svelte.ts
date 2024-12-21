@@ -1,18 +1,17 @@
 import { SvelteMap } from 'svelte/reactivity'
 import {
 	DataObj,
-	DataObjEmbedType,
+	DataObjCardinality,
+	DataObjData,
 	type DataRecord,
 	DataRecordStatus,
-	DataRows
+	DataRow,
+	DataRows,
+	DataObjSaveMode
 } from '$lib/components/dataObj/types.dataObj.svelte'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
-import { Validity, valueHasChanged } from '$utils/types'
-import { Field, FieldAccess } from '$comps/form/field'
-import { FieldEmbed } from '$comps/form/fieldEmbed'
-// import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
-// import { FieldInfo } from '$comps/form/fieldParm'
-// import { Field, FieldAccess, FieldEmbed, FieldEmbedShell, FieldParm } from '$comps/form/types.field'
+import { required, Validity, ValidityError, valueHasChanged } from '$utils/types'
+import { Field, FieldAccess, FieldClassType, FieldEmbedType } from '$comps/form/field'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/dataObj/types.dataManager.svelte'
@@ -48,128 +47,35 @@ export class DataObjStatus {
 }
 
 export class DataManager {
-	nodes: SvelteMap<string, DataManagerNode> = $state(new SvelteMap<string, DataManagerNode>())
+	nodes: Map<string, DataManagerNode> = new Map<string, DataManagerNode>()
 	objStatus: DataObjStatus = $state(new DataObjStatus())
 	value: number = $state(0)
 	constructor() {}
-
-	addNode(dataObj: DataObj) {
-		this.nodes.set(dataObj.raw.id, new DataManagerNode(dataObj))
-	}
-	addNodeParent(dataObj: DataObj, dataObjIdParent: string) {
-		this.addNode(dataObj)
-		this.nodes.get(dataObj.raw.id)?.setParent(dataObjIdParent)
-	}
 
 	getDataObj(dataObjId: string): DataObj | undefined {
 		return this.getNode(dataObjId)?.dataObj
 	}
 
-	getDataRecord(dataObjId: string, row: number): DataRecord | undefined {
-		return this.getNode(dataObjId)?.recordsDisplay[row]
-	}
-
 	getDataSave() {
-		let dataSave = new DataRows()
-
-		// root data
-		// this.data.rowsSave.setDataRows(setData(this))
-		// dataSave.setDataRows(setData(this.node['0']?.dataObj))
-
-		this.nodes.forEach((node) => {})
-
-		// embedded fields
-		// this.dataObj.fields.forEach((field: Field) => {
-		// 	if (field instanceof FieldEmbed && field.dataObj) {
-		// 		const idx = this.data.fields.findIndex((f) => f.embedFieldName === field.colDO.propName)
-		// 		if (idx > -1) {
-		// 			this.data.fields[idx].data.rowsSave.setDataRows(setData(field.dataObj))
-		// 			this.data.fields[idx].data.parms.valueSet(
-		// 				ParmsValuesType.embedParentId,
-		// 				field.embedParentId
-		// 			)
-		// 			this.data.fields[idx].data.parms.valueSet(
-		// 				ParmsValuesType.embedListSave,
-		// 				field.embedType === DataObjEmbedType.listEdit
-		// 			)
-		// 		}
-		// 	}
-		// })
-
-		// return this.data
-
-		function setData(dataObj: DataObj) {
-			// 	let fieldsParmValueNames: string[] = []
-			// 	dataObj.fields.forEach((f) => {
-			// 		if (f.isParmValue) {
-			// 			const fieldParm: FieldParm = f
-			// 			fieldParm.parmFields.forEach((f) => {
-			// 				fieldsParmValueNames.push(f.colDO.propName)
-			// 			})
-			// 		}
-			// 	})
-			// 	let dataRows: DataRow[] = setDataRecords(
-			// 		fieldsParmValueNames,
-			// 		dataObj.data,
-			// 		dataObj.dataRecordsDisplay
-			// 	)
-			// 	dataRows = dataRows.concat(
-			// 		setDataRecords(fieldsParmValueNames, dataObj.data, dataObj.dataRecordsHidden)
-			// 	)
-			// 	return dataRows
-			// }
-			// function setDataRecords(
-			// 	fieldsParmValueNames: string[],
-			// 	dataCurrent: DataObjData,
-			// 	dataRecords: DataRecord[]
-			// ) {
-			// 	let dataRows: DataRow[] = []
-			// 	dataRecords.forEach((record) => {
-			// 		let newRecord: DataRecord = {}
-			// 		Object.entries(record).forEach(([key, value]) => {
-			// 			if (![null, undefined].includes(value)) {
-			// 				// don't included embedded fields
-			// 				if (-1 === dataCurrent.fields.findIndex((f) => f.embedFieldName === key)) {
-			// 					// don't include null or undefined values
-			// 					if (fieldsParmValueNames.includes(key)) {
-			// 						// <todo> temp parmValue
-			// 						// newRecord.parmValue = record[key]
-			// 						// delete newRecord[key]
-			// 					} else {
-			// 						newRecord[key] = value
-			// 					}
-			// 				}
-			// 			}
-			// 		})
-			// 		const oldStatus = dataCurrent.rowsRetrieved.getRowStatusById(record.id)
-			// 		dataRows.push(new DataRow(oldStatus ? oldStatus : DataRecordStatus.preset, newRecord))
-			// 	})
-			// return dataRows
+		const nodeRoot = this.getNodeRoot()
+		if (nodeRoot) {
+			let data = nodeRoot.dataObj.data
+			data.rowsSave = nodeRoot.getDataSave()
+			data.fields.forEach((field) => {
+				const dataObjId = field.dataObjIdEmbed
+				const node = this.getNode(dataObjId)
+				if (node) field.data.rowsSave = node.getDataSave()
+			})
+			return data
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'DataManager.getDataSave',
+				message: `No root node defined.`
+			})
 		}
 	}
 
-	getFieldData(dataObjId: string, row: number, field: Field) {
-		const node = this.getNode(dataObjId)
-
-		if (node) {
-			const id = node.recordsDisplay[row]['id']
-			const fieldName = field.colDO.propName
-			const fieldValue = node.recordsDisplay[row][fieldName]
-			const fieldValidity = node.fieldsValidity.valueGet(id, fieldName)
-			return { fieldValue, fieldValidity }
-		}
-		error(500, {
-			file: FILENAME,
-			function: 'getFieldData',
-			message: `Cannot get field value - dataObjId: ${dataObjId}, row: ${row}, field: ${field.colDO.propName}`
-		})
-	}
-	getFieldNode(field: Field, node: DataManagerNode) {
-		if (field instanceof FieldEmbed && field.dataObj) {
-			return this.getNode(field.dataObj.raw.id)
-		}
-		return node
-	}
 	getFieldValidity(dataObjId: string, row: number, field: Field) {
 		return this.getNode(dataObjId)?.getFieldValidity(row, field)
 	}
@@ -184,22 +90,27 @@ export class DataManager {
 		const mapEntry = iterator.next().value
 		return mapEntry ? mapEntry[1] : undefined
 	}
-	getRowsRetrieved(dataObjId: string): DataRows | undefined {
-		return this.getDataObj(dataObjId)?.data.rowsRetrieved
+	getRecordId(dataObjId: string, row: number): string | undefined {
+		return this.getNode(dataObjId)?.recordsDisplay[row].id
 	}
+
+	getRecordsDisplayList(dataObjId: string): DataRecord[] {
+		return this.getNode(dataObjId)?.recordsDisplay || []
+	}
+
+	getRecordsDisplayRow(dataObjId: string, row: number): DataRecord | undefined {
+		return this.getNode(dataObjId)?.recordsDisplay[row]
+	}
+
 	getStatus() {
 		return this.objStatus.getStatus()
 	}
 
-	increment = () => {
-		this.value++
-		this.nodes.get('0')?.increment()
-	}
-
 	init(dataObj: DataObj) {
+		const clazz = 'DataManager.init'
 		this.objStatus.reset()
-		this.nodes = new SvelteMap<string, DataManagerNode>()
-		this.addNode(dataObj)
+		this.nodes = new Map<string, DataManagerNode>()
+		this.nodes.set(dataObj.raw.id, new DataManagerNode(dataObj))
 	}
 	isStatusChanged() {
 		return this.objStatus.isChanged()
@@ -207,10 +118,12 @@ export class DataManager {
 	isStatusValid() {
 		return this.objStatus.isValid()
 	}
+	nodeAdd(dataObj: DataObj) {
+		this.nodes.set(dataObj.raw.id, new DataManagerNode(dataObj))
+	}
 	resetStatus() {
 		this.objStatus.reset()
 	}
-
 	setFieldValue(dataObjId: string, row: number, field: Field, value: any) {
 		const node = this.getNode(dataObjId)
 		if (node) {
@@ -220,98 +133,53 @@ export class DataManager {
 	}
 	setFieldValueStatus() {
 		let newStatus = new DataObjStatus()
-
-		const node = this.getNodeRoot()
-		if (node) {
-			let fields: [Field, string][] = node.dataObj.fields.map((f) => [f, node.dataObj.raw.id])
-			while (fields.length > 0) {
-				const field = fields.pop()
-				// if (field instanceof FieldEmbedShell) {
-				// 	// do nothing - status set in the embedded fields
-				// } else if (field instanceof FieldEmbed) {
-				// 	if (field.dataObj) {
-				// 		fields = fields.concat(field.dataObj.fields.map((f) => [f, field?.dataObj?.raw.id!]))
-				// 	}
-				// } else if (field) {
-				// 	const fieldNode = this.getNode(field[1])
-				// 	if (fieldNode) {
-				// 		// newStatus.update(fieldNode.getStatus(field))
-				// 	}
-				// }
-			}
-		}
+		this.nodes.forEach((node, key) => {
+			newStatus.update(node.getStatus())
+		})
 		return newStatus
 	}
 }
 
 export class DataManagerNode {
 	dataObj: DataObj
-	#parent?: string = $state('')
 	fieldsChanged: FieldValues = $state(new FieldValues())
 	fieldsValidity: FieldValues = $state(new FieldValues())
 	recordsDisplay: DataRecord[] = $state([])
 	recordsHidden: DataRecord[] = $state([])
-	constructor(dataObj: DataObj, parentId?: string) {
-		this.dataObj = dataObj
-		this.setData()
+	constructor(dataObj: DataObj) {
+		this.dataObj = this.formatDataDisplay(dataObj)
 	}
-	get parent(): string | undefined {
-		return this.#parent
-	}
-	set parent(dataObjId: string) {
-		this.#parent = dataObjId
-	}
-	getFieldValidity(row: number, field: Field) {
-		return this.fieldsValidity.valueGet(this.recordsDisplay[row].id, field.colDO.propName)
-	}
-	getFieldValue(row: number, field: Field) {
-		return this.recordsDisplay[row][field.colDO.propName]
-	}
-	getStatus(field: Field) {
-		let newStatus = new DataObjStatus()
-		this.recordsDisplay.forEach((r) => {
-			const recordId = r.id
-			if (
-				([FieldAccess.optional, FieldAccess.required].includes(field.fieldAccess) &&
-					!field.colDO.colDB.isNonData) ||
-				field.colDO.propName === this.dataObj.raw.listReorderColumn
-			) {
-				const statusField = field.getStatus(this, recordId)
-				newStatus.update(statusField)
+
+	formatDataDisplay(dataObj: DataObj) {
+		dataObj.saveMode =
+			dataObj.data.cardinality === DataObjCardinality.detail &&
+			dataObj.data.rowsRetrieved.hasRecord()
+				? dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)
+					? DataObjSaveMode.insert
+					: DataObjSaveMode.update
+				: DataObjSaveMode.any
+
+		// set data items
+		Object.entries(dataObj.data.items).forEach(([key, value]) => {
+			const fieldKey = key.replace('_items_', '')
+			const fieldIndex = dataObj.fields.findIndex((f) => f.colDO.propName === fieldKey)
+			if (fieldIndex > -1) {
+				if (dataObj.fields[fieldIndex].linkItemsSource) {
+					dataObj.fields[fieldIndex].linkItemsSource.setRawItems(value)
+				}
 			}
 		})
-		return newStatus
-	}
 
-	increment() {
-		// this.#parent = val.toString()
-	}
-	preValidate() {
-		const validityErrorLevel =
-			this.dataObj.raw.isListEdit ||
-			this.dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.retrieved)
-				? ValidityErrorLevel.warning
-				: ValidityErrorLevel.none
-
-		this.recordsDisplay.forEach((record, row) => {
-			this.dataObj.fields.forEach((f) => {
-				const v: Validation = f.validate(row, record[f.colDO.propName], validityErrorLevel)
-				if (v.status === ValidationStatus.invalid) {
-					this.fieldsValidity.valueSet(
-						record.id,
-						v.validityFields[0].fieldName,
-						v.validityFields[0].validity
-					)
-				}
-			})
+		// update row status
+		dataObj.data.rowsRetrieved.getRows().forEach((dataRow) => {
+			if (dataRow.status === DataRecordStatus.inserted) {
+				dataRow.status = DataRecordStatus.update
+			}
 		})
-	}
 
-	setData() {
-		// set data
 		let recordsClone: DataRecord[] = []
-		// const parmValueFields: FieldParm[] = this.dataObj.fields.filter((f) => f.isParmValue)
-		this.dataObj.data.rowsRetrieved.getRows().forEach((dataRow, rowIdx) => {
+		// const parmValueFields: FieldParm[] = dataObj.fields.filter((f) => f.isParmValue)
+		dataObj.data.rowsRetrieved.getRows().forEach((dataRow, rowIdx) => {
 			if (dataRow.status !== DataRecordStatus.delete) {
 				const record = dataRow.record
 				// init parmValue
@@ -328,8 +196,8 @@ export class DataManagerNode {
 		})
 
 		// listEdit
-		if (this.dataObj.raw.isListEdit) {
-			const presetRows = this.dataObj.data.rowsRetrieved
+		if (dataObj.raw.isListEdit) {
+			const presetRows = dataObj.data.rowsRetrieved
 				.getRows()
 				.filter((row) => row.record.id.startsWith('preset_'))
 			presetRows.forEach((row) => {
@@ -341,12 +209,93 @@ export class DataManagerNode {
 		this.fieldsChanged = new FieldValues()
 		this.fieldsValidity = new FieldValues()
 
-		this.preValidate()
+		return this.formDataDisplayValidate(dataObj)
 	}
 
-	setParent(val: string) {
-		this.#parent = val
+	formDataDisplayValidate(dataObj: DataObj) {
+		const validityErrorLevel =
+			dataObj.raw.isListEdit ||
+			dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.retrieved)
+				? ValidityErrorLevel.warning
+				: ValidityErrorLevel.none
+
+		this.recordsDisplay.forEach((record, row) => {
+			dataObj.fields.forEach((f) => {
+				const v: Validation = f.validate(row, record[f.colDO.propName], validityErrorLevel)
+				if (v.status === ValidationStatus.invalid) {
+					this.fieldsValidity.valueSet(
+						record.id,
+						v.validityFields[0].fieldName,
+						v.validityFields[0].validity
+					)
+				}
+			})
+		})
+		return dataObj
 	}
+
+	getDataSave() {
+		let rowsSave: DataRows = new DataRows()
+		rowsSave.addRows(this.getDataSaveRows(this.recordsDisplay))
+		rowsSave.addRows(this.getDataSaveRows(this.recordsHidden))
+		return rowsSave
+	}
+
+	getDataSaveRows(dataRecords: DataRecord[]) {
+		let rowsSave: DataRow[] = []
+		dataRecords.forEach((record) => {
+			let newRecord: DataRecord = {}
+			Object.entries(record).forEach(([key, value]) => {
+				if (![null, undefined].includes(value)) {
+					newRecord[key] = value
+				}
+			})
+			const oldStatus = this.dataObj.data.rowsRetrieved.getRowStatusById(record.id)
+			rowsSave.push(new DataRow(oldStatus ? oldStatus : DataRecordStatus.preset, newRecord))
+		})
+		return rowsSave
+	}
+
+	getFieldValidity(row: number, field: Field) {
+		return this.fieldsValidity.valueGet(this.recordsDisplay[row].id, field.colDO.propName)
+	}
+	getFieldValue(row: number, field: Field) {
+		return this.recordsDisplay[row][field.colDO.propName]
+	}
+	getStatus() {
+		let newStatus = new DataObjStatus()
+
+		this.recordsDisplay.forEach((r) => {
+			const recordId = r.id
+			this.dataObj.fields.forEach((f) => {
+				if (
+					(f.classType === FieldClassType.regular &&
+						[FieldAccess.optional, FieldAccess.required].includes(f.fieldAccess) &&
+						!f.colDO.colDB.isNonData) ||
+					f.colDO.propName === this.dataObj.raw.listReorderColumn
+				) {
+					newStatus.update(this.getStatusField(recordId, f))
+				}
+			})
+		})
+		return newStatus
+	}
+
+	getStatusField(recordId: string, field: Field) {
+		const newStatus = new DataObjStatus()
+		const propName = field.colDO.propName
+
+		// changed
+		const isChanged = this.fieldsChanged.valueGet(recordId, propName) || false
+		newStatus.setChanged(isChanged)
+
+		// valid
+		const validity = this.fieldsValidity.valueGet(recordId, propName)
+		newStatus.setValid(validity === undefined || validity.error === ValidityError.none)
+
+		return newStatus
+	}
+
 	setFieldVal(row: number, field: Field, value: any) {
 		const recordId = this.recordsDisplay[row].id
 

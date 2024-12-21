@@ -2,9 +2,13 @@
 	import { Drawer, getDrawerStore } from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import { State } from '$comps/app/types.appState.svelte'
+	import { getContext, setContext } from 'svelte'
+	import { ContextKey } from '$utils/types'
 
 	const FILENAME = 'OverlayDrawer.svelte'
 	const storeDrawer = getDrawerStore()
+
+	setContext(ContextKey.cancelForm, closeDrawer)
 
 	function closeDrawer() {
 		if ($storeDrawer.meta && Object.hasOwn($storeDrawer.meta, 'onCloseDrawer')) {
@@ -14,10 +18,6 @@
 		$storeDrawer.id = undefined
 	}
 
-	function onformCancelled() {
-		closeDrawer()
-	}
-
 	function onKeyDown(event: KeyboardEvent) {
 		if (!$storeDrawer.id) return
 		if (event.key === 'Escape') closeDrawer()
@@ -25,14 +25,12 @@
 </script>
 
 <Drawer on:backdrop={closeDrawer}>
-	{#if storeDrawer.id === 'auth'}
-		<div>
-			{#if storeDrawer.meta.state}
-				<div class="esp-card-space-y">
-					<RootLayoutApp state={storeDrawer.meta.state} on:formCancelled={onformCancelled} />
-				</div>
-			{/if}
-		</div>
+	{#if $storeDrawer.id === 'auth'}
+		{#if $storeDrawer.meta.stateApp}
+			<div class="esp-card-space-y p-4">
+				<RootLayoutApp stateApp={$storeDrawer.meta.stateApp} />
+			</div>
+		{/if}
 	{/if}
 </Drawer>
 

@@ -4,14 +4,7 @@ import {
 	StatePacketAction,
 	StateTarget
 } from '$comps/app/types.appState.svelte'
-import {
-	DataManager,
-	DataObj,
-	DataObjConfirm,
-	DataObjMode,
-	DataObjSaveMode,
-	required
-} from '$utils/types'
+import { DataManager, DataObj, DataObjConfirm, DataObjSaveMode, required } from '$utils/types'
 import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 import { memberOfEnum, valueOrDefault } from '$utils/types'
 import { FieldColor } from '$comps/form/field'
@@ -27,9 +20,9 @@ export class DataObjActionField {
 	codePacketAction: StatePacketAction
 	fieldColor: FieldColor
 	header: string
-	isDisabled: boolean = false
 	isListRowAction: boolean
-	isShow: boolean = false
+	isStatusDisabled: boolean = false
+	isStatusShow: boolean = false
 	name: string
 	constructor(rawAction: RawDataObjActionField, state: State | undefined = undefined) {
 		const clazz = 'DataObjActionField'
@@ -41,6 +34,8 @@ export class DataObjActionField {
 		this.header = rawAction.header
 		this.isListRowAction = rawAction.isListRowAction
 		this.name = rawAction.name
+
+		console.log('DataObjActionField: ', this.name, { shows: this.actionFieldShows })
 	}
 	getConfirm(state: State, dataObj: DataObj) {
 		const confirms = this.actionFieldConfirms
@@ -66,6 +61,21 @@ export class DataObjActionField {
 					message: `No conditional confirm found for triggers: ${confirms.map((c) => c.codeTriggerConfirmConditional).join()}.`
 				})
 		}
+	}
+
+	isDisabled(stateApp: State, dataObj: DataObj) {
+		const tg = new DataObjActionFieldTriggerGroup()
+		tg.addStatus(stateApp, dataObj, this.codeActionFieldTriggerEnable, true)
+		this.isStatusDisabled = !tg.isTriggered()
+		return this.isStatusDisabled
+	}
+	isShow(stateApp: State, dataObj: DataObj) {
+		const tg = new DataObjActionFieldTriggerGroup()
+		this.actionFieldShows.forEach((show) => {
+			tg.addStatus(stateApp, dataObj, show.codeTriggerShow, show.isRequired)
+		})
+		this.isStatusShow = tg.isTriggered()
+		return this.isStatusShow
 	}
 
 	async trigger(state: State, dataObj: DataObj) {
@@ -113,11 +123,10 @@ export enum DataObjActionFieldTriggerEnable {
 	always = 'always',
 	never = 'never',
 	none = 'none',
-	notObjectChanged = 'notObjectChanged',
-	objectChanged = 'objectChanged',
+	notStatusChanged = 'notStatusChanged',
+	statusChanged = 'statusChanged',
 	objectValidToContinue = 'objectValidToContinue',
-	objectValidToSave = 'objectValidToSave',
-	parentObjectSaved = 'parentObjectSaved',
+	statusValid = 'statusValid',
 	rootDataObj = 'rootDataObj',
 	saveMode = 'saveMode',
 	saveModeInsert = 'saveModeInsert',
@@ -134,7 +143,6 @@ export class DataObjActionFieldTriggerGroup {
 	) {
 		const clazz = 'DataObjActionFieldTriggerGroup'
 		let isTriggered = false
-		let rowCount: number
 
 		const dm: DataManager = required(state.dataManager, clazz, 'state.dataManager')
 
@@ -145,17 +153,14 @@ export class DataObjActionFieldTriggerGroup {
 			case DataObjActionFieldTriggerEnable.never:
 				isTriggered = false
 				break
-			case DataObjActionFieldTriggerEnable.notObjectChanged:
-				isTriggered = !state.dataManager?.isStatusChanged()
+			case DataObjActionFieldTriggerEnable.notStatusChanged:
+				isTriggered = !dm.isStatusChanged()
 				break
-			case DataObjActionFieldTriggerEnable.objectChanged:
+			case DataObjActionFieldTriggerEnable.statusChanged:
 				isTriggered = dm.isStatusChanged()
 				break
-			case DataObjActionFieldTriggerEnable.objectValidToSave:
+			case DataObjActionFieldTriggerEnable.statusValid:
 				isTriggered = dm.isStatusValid()
-				break
-			case DataObjActionFieldTriggerEnable.parentObjectSaved:
-				isTriggered = dataObj.modeActive(DataObjMode.ParentObjectSaved)
 				break
 			case DataObjActionFieldTriggerEnable.rootDataObj:
 				isTriggered = !dataObj.fieldEmbed

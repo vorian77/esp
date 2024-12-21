@@ -307,6 +307,17 @@ export class TokenApp extends Token {
 	}
 }
 
+export class TokenAppDataObjName extends TokenApp {
+	dataObjName: string
+	queryType: TokenApiQueryType
+	constructor(obj: any) {
+		const clazz = 'TokenAppDo'
+		super(obj)
+		this.dataObjName = strRequired(obj.dataObjName, clazz, 'dataObjName')
+		this.queryType = required(obj.queryType, clazz, 'queryType')
+	}
+}
+
 export class TokenAppDo extends TokenApp {
 	dataObj: DataObj
 	state: State
@@ -321,7 +332,7 @@ export class TokenAppDo extends TokenApp {
 export enum TokenAppDoActionConfirmType {
 	always = 'always',
 	none = 'none',
-	objectChanged = 'objectChanged',
+	statusChanged = 'statusChanged',
 	objectValidToContinue = 'objectValidToContinue'
 }
 
@@ -334,14 +345,6 @@ export class TokenAppIndex extends TokenApp {
 	}
 }
 
-export class TokenAppModalDataObj extends TokenApp {
-	dataObjName: string
-	constructor(obj: any) {
-		const clazz = 'TokenAppModalDataObj'
-		super(obj)
-		this.dataObjName = strRequired(obj.dataObjName, clazz, 'dataObjName')
-	}
-}
 export class TokenAppModalEmbedField extends TokenApp {
 	dataObjSourceModal: TokenApiDbDataObjSource
 	queryType: TokenApiQueryType

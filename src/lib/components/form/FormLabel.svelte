@@ -14,7 +14,8 @@
 
 	const FILENAME = '$comps/form/FormLabel.svelte'
 
-	let { parms }: DataRecord = $props()
+	let { parms, iconProps = undefined }: { parms: DataRecord; iconProps: IconProps } = $props()
+
 	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
 
 	let isLabelBold = $state(parms.isLabelBold)
@@ -23,7 +24,7 @@
 	let classProps = $derived(`label flex text-sm ${isLabelBold ? 'font-bold mt-2' : ''} `)
 </script>
 
-<!-- <DataViewer header="field" data={field.colDO.propName} /> -->
+<!-- <DataViewer header="label.iconProps" data={iconProps?.name} /> -->
 
 <label for={field.colDO.propName}>
 	<div
@@ -31,8 +32,8 @@
 		hidden={dataObj.raw.codeCardinality === DataObjCardinality.list ? 'hidden' : ''}
 	>
 		{field.colDO.label}
-		{#if field?.iconProps}
-			<Icon props={field?.iconProps} />
+		{#if iconProps}
+			<Icon props={iconProps} />
 		{/if}
 	</div>
 	<slot />

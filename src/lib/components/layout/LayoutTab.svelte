@@ -11,7 +11,6 @@
 	import { TokenAppDoActionConfirmType, TokenAppTab } from '$utils/types.token'
 	import { DataRecordStatus } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
-	import NavRow from '$comps/nav/NavRow.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/layout/LayoutTab.svelte'
@@ -22,21 +21,20 @@
 
 	let currLevel: AppLevel = $derived(stateApp.app.getCurrLevel())
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
-	let rowsRetrieved = $derived(dm.getRowsRetrieved(parms.dataObjId))
 
 	let isHideChildTabs = $derived(
-		rowsRetrieved.hasRecord() &&
-			(rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset) ||
+		dataObj?.data.rowsRetrieved.hasRecord() &&
+			(dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset) ||
 				dm.isStatusChanged() ||
 				!dm.isStatusValid())
 	)
 
 	function onClick(index: number) {
 		stateApp.change({
-			confirmType: TokenAppDoActionConfirmType.objectChanged,
+			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navTab,
-				token: new TokenAppTab({ app: state.app, index })
+				token: new TokenAppTab({ app: stateApp.app, index })
 			}),
 			target: StateTarget.feature
 		})
@@ -50,10 +48,10 @@
 
 <!-- <DataViewer header="isHideChildTabs" data={isHideChildTabs} /> -->
 
-{#if currLevel}
+{#if currLevel && dataObj}
 	<div id="layout-tab" class="h-full max-h-full flex flex-col">
 		{#if currLevel.tabs.length > 1}
-			<div class="p-3 bg-neutral-50 hidden md:block rounded-md mb-4">
+			<div class="p-3 bg-neutral-50 hidden sm:block rounded-md mb-4">
 				{#each currLevel.tabs as tab, idx}
 					{@const name = 'tab' + idx}
 					{@const isCurrent = idx === currLevel.tabIdxCurrent}
@@ -67,7 +65,7 @@
 				{/each}
 			</div>
 
-			<div class="md:hidden flex items-center justify-between gap-4 px-2 mb-4">
+			<div class="sm:hidden flex items-center justify-between gap-4 px-2 mb-4">
 				<div class="grow">
 					<select
 						aria-label="Select a tab"
@@ -84,10 +82,9 @@
 						{/each}
 					</select>
 				</div>
-				<NavRow />
 			</div>
 		{/if}
 
-		<LayoutContent {parms} on:formCancelled />
+		<LayoutContent {parms} />
 	</div>
 {/if}

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { NavBarDataCompUser } from '$comps/nav/navBar/types.navBar.svelte'
-	import NavBarGroup from '$comps/nav/navBar/NavBarGroup.svelte'
-	import NavBarHeader from '$comps/nav/navBar/NavBarHeader.svelte'
-	import NavBarInfo from '$comps/nav/navBar/NavBarInfo.svelte'
-	import NavBarHr from '$comps/nav/navBar/NavBarHr.svelte'
+	import { NavMenuDataCompUser } from '$comps/nav/navMenu/types.navMenu.svelte'
+	import NavMenuGroup from '$comps/nav/navMenu/NavMenuGroup.svelte'
+	import NavMenuHeader from '$comps/nav/navMenu/NavMenuHeader.svelte'
+	import NavMenuInfo from '$comps/nav/navMenu/NavMenuInfo.svelte'
+	import NavMenuHr from '$comps/nav/navMenu/NavMenuHr.svelte'
 	import { User } from '$utils/types'
 	import { Avatar } from '@skeletonlabs/skeleton'
 	import { fade } from 'svelte/transition'
@@ -11,15 +11,14 @@
 	import { IconProps } from '$comps/icon/types.icon'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '/$comps/app/navBar/NavBarOrg.svelte'
+	const FILENAME = '/$comps/app/navMenu/NavMenuOrg.svelte'
 
-	let { data }: { data: NavBarDataCompUser } = $props()
+	let { data }: { data: NavMenuDataCompUser } = $props()
 </script>
 
 {#if data.user}
-	<hr class="lg:mt-32 my-2" />
-	<a
-		href="#"
+	<hr class="sm:mt-32 my-2" />
+	<button
 		class="flex items-center hover:-translate-y-0.5 transition-transform"
 		onclick={() => data.items.activateLinkByLabel('My Account')}
 	>
@@ -31,18 +30,18 @@
 			{/if}
 		</div>
 
-		{#if data.navBar.isOpen}
-			<span class="ml-1" in:fade={data.navBar.fadeIn} out:fade={data.navBar.fadeOut}>
+		{#if data.navMenu.isOpen}
+			<span class="ml-1" in:fade={data.navMenu.fadeIn} out:fade={data.navMenu.fadeOut}>
 				{data.user.fullName}
 			</span>
 		{/if}
-	</a>
+	</button>
 
-	<div class="mt-3 {data.navBar.isOpen ? '' : 'justify-items-center'} ">
-		<NavBarGroup data={data.items} />
+	<div class="mt-3 {data.navMenu.isOpen ? '' : 'justify-items-center'} ">
+		<NavMenuGroup data={data.items} />
 	</div>
 
 	{#each data.info as info}
-		<NavBarInfo navBar={data.navBar} {info} />
+		<NavMenuInfo navMenu={data.navMenu} {info} />
 	{/each}
 {/if}

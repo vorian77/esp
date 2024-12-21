@@ -18,9 +18,9 @@ import { TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 import { adminDbReset } from '$utils/utils.sys.svelte'
 import { error } from '@sveltejs/kit'
 
-const FILENAME = 'src/lib/components/navBar/types.navBar.ts'
+const FILENAME = 'src/lib/components/navMenu/types.navMenu.ts'
 
-export class NavBarData {
+export class NavMenuData {
 	fadeIn = {
 		delay: 300,
 		duration: 200
@@ -32,92 +32,92 @@ export class NavBarData {
 	iconColor = '#daa520'
 	idIndex = -1
 	isOpen = $state(true)
-	items: NavBarDataComp[] = []
+	items: NavMenuDataComp[] = []
 	stateApp: State
 	width: any = $state()
 	widthClosed = 70
 	widthOpen = 250
 	constructor(obj: any) {
-		const clazz = 'NavBarData'
+		const clazz = 'NavMenuData'
 		obj = valueOrDefault(obj, {})
 		this.stateApp = obj.stateApp
 		this.width = this.widthOpen
 
 		if (this.stateApp && this.stateApp.user) {
 			// org
-			this.items.push(new NavBarDataCompOrg(this, { user: this.stateApp.user }))
+			this.items.push(new NavMenuDataCompOrg(this, { user: this.stateApp.user }))
 
 			// apps
 			const rawMenu = new RawMenu(this.stateApp.user.resources_sys_app)
 			if (rawMenu.apps.length === 1) {
-				const itemGroupSingleProgram = new NavBarDataCompGroup(this, {
+				const itemGroupSingleProgram = new NavMenuDataCompGroup(this, {
 					header: 'My Apps',
 					hideHr: true
 				})
 				rawMenu.apps[0].nodes.forEach((n) => {
 					itemGroupSingleProgram.addItem({
-						content: new NavBarContent('node', n),
+						content: new NavMenuContent('node', n),
 						icon: n.icon,
 						isRoot: true,
-						label: new NavBarLabel(n.label)
+						label: new NavMenuLabel(n.label)
 					})
 				})
 				this.items.push(itemGroupSingleProgram)
 			} else if (rawMenu.apps.length > 1) {
-				this.items.push(new NavBarDataCompApps(this, { rawMenu }))
+				this.items.push(new NavMenuDataCompApps(this, { rawMenu }))
 			}
 
 			// item - group - tasks - default
-			const itemGroupTasks = new NavBarDataCompGroup(this, { header: 'My Tasks' })
+			const itemGroupTasks = new NavMenuDataCompGroup(this, { header: 'My Tasks' })
 			this.stateApp.user.resources_sys_task_default
 				.filter((r) => r.isShow && !this.stateApp.user?.isMobileOnly && !r.codeStatusObjName)
 				.forEach((r) => {
 					itemGroupTasks.addItem({
-						content: new NavBarContent('task', r),
+						content: new NavMenuContent('task', r),
 						icon: r.codeIconName,
-						label: new NavBarLabel(r.header!)
+						label: new NavMenuLabel(r.header!)
 					})
 				})
 			this.items.push(itemGroupTasks)
 
 			// user
-			this.items.push(new NavBarDataCompUser(this, { user: this.stateApp.user }))
+			this.items.push(new NavMenuDataCompUser(this, { user: this.stateApp.user }))
 
 			// item - group - default items
-			const itemDefault = new NavBarDataCompGroup(this, {})
+			const itemDefault = new NavMenuDataCompGroup(this, {})
 			// logout
 			itemDefault.addItem(
-				new NavBarDataCompItem(this, {
-					content: new NavBarContent('page', '/'),
+				new NavMenuDataCompItem(this, {
+					content: new NavMenuContent('page', '/'),
 					icon: 'LogOut',
 					isRoot: true,
-					label: new NavBarLabel('Logout')
+					label: new NavMenuLabel('Logout')
 				})
 			)
 			this.items.push(itemDefault)
 		}
 	}
 
-	async activateLink(item: NavBarDataCompItem) {
+	async activateLink(item: NavMenuDataCompItem) {
 		const content = item.content
 		let node
 		if (content) {
 			switch (content.codeType) {
-				case NavBarContentType.functionAsync:
+				case NavMenuContentType.functionAsync:
 					await content.value(this)
 					break
 
-				case NavBarContentType.page:
+				case NavMenuContentType.page:
 					this.stateApp.change({
-						confirmType: TokenAppDoActionConfirmType.objectChanged,
+						confirmType: TokenAppDoActionConfirmType.statusChanged,
 						page: content.value,
 						target: StateTarget.page
 					})
 					break
-				case NavBarContentType.node:
+				case NavMenuContentType.node:
 					node = content.value as Node
 					this.stateApp.change({
-						confirmType: TokenAppDoActionConfirmType.objectChanged,
+						confirmType: TokenAppDoActionConfirmType.statusChanged,
 						// parmsState: { programId: this.getProgramId(node) },
 						packet: new StatePacket({
 							action: StatePacketAction.openNode,
@@ -126,10 +126,10 @@ export class NavBarData {
 						target: StateTarget.feature
 					})
 					break
-				case NavBarContentType.task:
+				case NavMenuContentType.task:
 					const task: UserResourceTask = content.value as UserResourceTask
 					this.stateApp.change({
-						confirmType: TokenAppDoActionConfirmType.objectChanged,
+						confirmType: TokenAppDoActionConfirmType.statusChanged,
 						packet: new StatePacket({
 							action: StatePacketAction.openNode,
 							token: task.getTokenNode(this.stateApp.user)
@@ -153,7 +153,7 @@ export class NavBarData {
 		return this.idIndex
 	}
 
-	getItem(itemId: number): NavBarDataComp | undefined {
+	getItem(itemId: number): NavMenuDataComp | undefined {
 		for (let i of this.items) {
 			const item = i.getItem(itemId)
 			if (item) return item
@@ -165,7 +165,7 @@ export class NavBarData {
 		return Object.getPrototypeOf(item).constructor.name
 	}
 
-	getAncestor(item: NavBarDataCompItem, ancestorType: any) {
+	getAncestor(item: NavMenuDataCompItem, ancestorType: any) {
 		let searchItem: any = item
 		let bfound = false
 		while (!bfound && searchItem.parent) {
@@ -192,22 +192,22 @@ export class NavBarData {
 // 	return this.getProgramId(this.getParentNode(nodeNav))
 // }
 
-export class NavBarContent {
-	codeType: NavBarContentType
+export class NavMenuContent {
+	codeType: NavMenuContentType
 	value: any
 	constructor(codeType: string, value: any) {
-		const clazz = 'NavBarContent'
+		const clazz = 'NavMenuContent'
 		this.codeType = memberOfEnum(
 			codeType,
 			clazz,
 			'codeType',
-			'NavBarDataCompItemType',
-			NavBarContentType
+			'NavMenuDataCompItemType',
+			NavMenuContentType
 		)
 		this.value = value
 	}
 }
-export enum NavBarContentType {
+export enum NavMenuContentType {
 	functionAsync = 'functionAsync',
 	functionNormal = 'functionNormal',
 	info = 'info',
@@ -217,53 +217,58 @@ export enum NavBarContentType {
 	task = 'task'
 }
 
-export class NavBarDataComp {
-	content?: NavBarContent
+export class NavMenuDataComp {
+	content?: NavMenuContent
 	id: number
-	navBar: NavBarData
-	parent?: NavBarDataComp
-	constructor(navBar: NavBarData, obj: any) {
+	navMenu: NavMenuData
+	parent?: NavMenuDataComp
+	constructor(navMenu: NavMenuData, obj: any) {
 		obj = valueOrDefault(obj, {})
 		this.content = obj.content
-		this.id = navBar.getId()
-		this.navBar = navBar
+		this.id = navMenu.getId()
+		this.navMenu = navMenu
 		this.parent = obj.parent
 	}
-	getItem(itemId: number): NavBarDataComp | undefined {
+	getItem(itemId: number): NavMenuDataComp | undefined {
 		return itemId === this.id ? this : undefined
 	}
 }
 
-export class NavBarDataCompApps extends NavBarDataComp {
-	apps: NavBarDataCompAppsItem[] = []
-	constructor(navBar: NavBarData, obj: any) {
-		super(navBar, obj)
-		const clazz = 'NavBarDataCompApps'
+export class NavMenuDataCompApps extends NavMenuDataComp {
+	apps: NavMenuDataCompAppsItem[] = []
+	constructor(navMenu: NavMenuData, obj: any) {
+		super(navMenu, obj)
+		const clazz = 'NavMenuDataCompApps'
 		obj = valueOrDefault(obj, {})
 		const rawMenu: RawMenu = required(obj.rawMenu, clazz, 'rawMenu')
 		rawMenu.apps.forEach((a) => {
-			this.apps.push(new NavBarDataCompAppsItem(navBar, { ...a, parent: this }))
+			this.apps.push(new NavMenuDataCompAppsItem(navMenu, { ...a, parent: this }))
 		})
 	}
 }
 
-export class NavBarDataCompAppsItem extends NavBarDataComp {
-	group: NavBarDataCompGroup
-	constructor(navBar: NavBarData, obj: any) {
-		super(navBar, obj)
-		const clazz = 'NavBarDataCompAppsItem'
+export class NavMenuDataCompAppsItem extends NavMenuDataComp {
+	group: NavMenuDataCompGroup
+	constructor(navMenu: NavMenuData, obj: any) {
+		super(navMenu, obj)
+		const clazz = 'NavMenuDataCompAppsItem'
 		obj = valueOrDefault(obj, {})
-		this.group = new NavBarDataCompGroup(navBar, { ...obj, header: '', hideHr: true, parent: this })
+		this.group = new NavMenuDataCompGroup(navMenu, {
+			...obj,
+			header: '',
+			hideHr: true,
+			parent: this
+		})
 
 		// header
 		const header = this.group.addItem({
 			...obj,
-			content: new NavBarContent('nodeHeader', obj.header),
+			content: new NavMenuContent('nodeHeader', obj.header),
 			hasChildren: true,
 			icon: obj.header.icon,
 			isRoot: true,
 			parent: this,
-			label: new NavBarLabel(obj.header.label),
+			label: new NavMenuLabel(obj.header.label),
 			indent: 0
 		})
 
@@ -271,29 +276,29 @@ export class NavBarDataCompAppsItem extends NavBarDataComp {
 		obj.nodes.forEach((n: any) =>
 			this.group.addItem({
 				...obj,
-				content: new NavBarContent('node', n),
+				content: new NavMenuContent('node', n),
 				parent: header,
-				label: new NavBarLabel(n.label),
+				label: new NavMenuLabel(n.label),
 				indent: 1
 			})
 		)
 	}
 }
 
-export class NavBarDataCompGroup extends NavBarDataComp {
+export class NavMenuDataCompGroup extends NavMenuDataComp {
 	header?: string
 	hideHr: boolean
-	items: NavBarDataCompItem[] = []
-	constructor(navBar: NavBarData, obj: any) {
-		super(navBar, obj)
-		const clazz = 'NavBarDataCompGroup'
+	items: NavMenuDataCompItem[] = []
+	constructor(navMenu: NavMenuData, obj: any) {
+		super(navMenu, obj)
+		const clazz = 'NavMenuDataCompGroup'
 		obj = valueOrDefault(obj, {})
 		this.header = obj.header
 		this.hideHr = booleanOrDefault(obj.hideHr, false)
 	}
 	addItem(obj: any) {
 		this.items.push(
-			new NavBarDataCompItem(this.navBar, {
+			new NavMenuDataCompItem(this.navMenu, {
 				...obj,
 				parent: obj.parent || this
 			})
@@ -303,10 +308,10 @@ export class NavBarDataCompGroup extends NavBarDataComp {
 	activateLinkByLabel(labelText: string) {
 		const item = this.items.find((i) => i.label.text === labelText)
 		if (item) {
-			this.navBar.activateLink(item)
+			this.navMenu.activateLink(item)
 		} else {
 			error(500, {
-				file: `${FILENAME}.NavBarDataCompGroup`,
+				file: `${FILENAME}.NavMenuDataCompGroup`,
 				function: 'activateLink',
 				message: `Item not found: ${labelText}`
 			})
@@ -314,16 +319,16 @@ export class NavBarDataCompGroup extends NavBarDataComp {
 	}
 }
 
-export class NavBarDataCompItem extends NavBarDataComp {
+export class NavMenuDataCompItem extends NavMenuDataComp {
 	hasChildren: boolean
 	icon?: string
 	indent: number
 	isOpen: boolean = $state(false)
 	isRoot: boolean
-	label: NavBarLabel
-	constructor(navBar: NavBarData, obj: any) {
-		super(navBar, obj)
-		const clazz = 'NavBarDataCompItem'
+	label: NavMenuLabel
+	constructor(navMenu: NavMenuData, obj: any) {
+		super(navMenu, obj)
+		const clazz = 'NavMenuDataCompItem'
 		obj = valueOrDefault(obj, {})
 		this.hasChildren = booleanOrDefault(obj.hasChildren, false)
 		this.icon = obj.icon
@@ -334,85 +339,85 @@ export class NavBarDataCompItem extends NavBarDataComp {
 	}
 	click = async () => {
 		if (this.hasChildren) {
-			if (this.navBar.isOpen) {
+			if (this.navMenu.isOpen) {
 				this.isOpen = !this.isOpen
 			} else {
 				if (!this.isOpen) this.isOpen = !this.isOpen
-				this.navBar.toggleOpen(false)
+				this.navMenu.toggleOpen(false)
 			}
 		} else {
-			await this.navBar.activateLink(this)
+			await this.navMenu.activateLink(this)
 		}
 	}
 }
 
-export class NavBarDataCompOrg extends NavBarDataComp {
+export class NavMenuDataCompOrg extends NavMenuDataComp {
 	user: User
-	constructor(navBar: NavBarData, obj: any) {
-		super(navBar, obj)
-		const clazz = 'NavBarDataCompOrg'
+	constructor(navMenu: NavMenuData, obj: any) {
+		super(navMenu, obj)
+		const clazz = 'NavMenuDataCompOrg'
 		obj = valueOrDefault(obj, {})
 		this.user = required(obj.user, clazz, 'user')
 	}
 }
-export class NavBarDataCompUser extends NavBarDataComp {
-	info: NavBarInfo[] = []
-	items: NavBarDataCompGroup
+export class NavMenuDataCompUser extends NavMenuDataComp {
+	info: NavMenuInfo[] = []
+	items: NavMenuDataCompGroup
 	user: User
-	constructor(navBar: NavBarData, obj: any) {
-		super(navBar, obj)
-		const clazz = 'NavBarDataCompUser'
+	constructor(navMenu: NavMenuData, obj: any) {
+		super(navMenu, obj)
+		const clazz = 'NavMenuDataCompUser'
 		obj = valueOrDefault(obj, {})
 		this.user = required(obj.user, clazz, 'user')
 
 		// info
 		if (['user_sys', '2487985578'].includes(this.user.userName)) {
-			this.info.push(new NavBarInfo('dbBranch', this.user.dbBranch))
-			this.info.push(new NavBarInfo('Default Organization', this.user.org.name))
-			this.info.push(new NavBarInfo('Default System', this.user.system.name))
+			this.info.push(new NavMenuInfo('dbBranch', this.user.dbBranch))
+			this.info.push(new NavMenuInfo('Default Organization', this.user.org.name))
+			this.info.push(new NavMenuInfo('Default System', this.user.system.name))
 		}
 
 		// group - items
-		this.items = new NavBarDataCompGroup(navBar, { hideHr: true })
+		this.items = new NavMenuDataCompGroup(navMenu, { hideHr: true })
 		this.user.resources_sys_task_setting.forEach((r) => {
 			this.addItem({
-				content: new NavBarContent('task', r),
+				content: new NavMenuContent('task', r),
 				icon: r.codeIconName,
 				isRoot: true,
-				label: new NavBarLabel(r.header!)
+				label: new NavMenuLabel(r.header!)
 			})
 		})
 		this.addItem({
-			content: new NavBarContent('functionAsync', this.myPreferences),
+			content: new NavMenuContent('functionAsync', this.myPreferences),
 			icon: 'Settings2',
 			isRoot: true,
-			label: new NavBarLabel('My Preferences')
+			label: new NavMenuLabel('My Preferences')
 		})
 		if (['user_sys', '2487985578'].includes(this.user.userName)) {
 			this.addItem({
-				content: new NavBarContent('functionAsync', this.adminResetDb),
+				content: new NavMenuContent('functionAsync', this.adminResetDb),
 				icon: 'RotateCcw',
 				isRoot: true,
-				label: new NavBarLabel('Admin - Reset DB')
+				label: new NavMenuLabel('Admin - Reset DB')
 			})
 		}
 	}
 	addItem(obj: any) {
 		this.items.addItem(obj)
 	}
-	async adminResetDb(navBar: NavBarData) {
-		await adminDbReset(navBar.stateApp)
-		await navBar.stateApp.resetUser(true)
+	async adminResetDb(navMenu: NavMenuData) {
+		await adminDbReset(navMenu.stateApp)
+		await navMenu.stateApp.resetUser(true)
 	}
 
-	async myPreferences(navBar: NavBarData) {
-		await navBar.stateApp.openModalDataObj('data_obj_auth_user_pref_type', async () => {
-			await navBar.stateApp.resetUser(true)
+	async myPreferences(navMenu: NavMenuData) {
+		await navMenu.stateApp.openModalDataObj('data_obj_auth_user_pref_type', async () => {
+			await navMenu.stateApp.resetUser(true)
 		})
 	}
 }
 
-export class NavBarInfo {
+export class NavMenuInfo {
 	label: string
 	value: string
 	constructor(label: string, value: string) {
@@ -421,7 +426,7 @@ export class NavBarInfo {
 	}
 }
 
-export class NavBarLabel {
+export class NavMenuLabel {
 	text: string
 	tooltip?: string
 	constructor(text: string, tooltip?: string) {
