@@ -11,6 +11,7 @@
 	import { TokenAppDoActionConfirmType, TokenAppTab } from '$utils/types.token'
 	import { DataRecordStatus } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
+	import { innerHeight } from 'svelte/reactivity/window'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/layout/LayoutTab.svelte'
@@ -21,6 +22,13 @@
 
 	let currLevel: AppLevel = $derived(stateApp.app.getCurrLevel())
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
+
+	let elContent: HTMLDivElement
+	let elContentTopY: number = $state()
+
+	$effect(() => {
+		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
+	})
 
 	let isHideChildTabs = $derived(
 		dataObj?.data.rowsRetrieved.hasRecord() &&
@@ -49,7 +57,12 @@
 <!-- <DataViewer header="isHideChildTabs" data={isHideChildTabs} /> -->
 
 {#if currLevel && dataObj}
-	<div id="layout-tab" class="h-full max-h-full flex flex-col">
+	<div
+		id="layout-tab"
+		class="h-full max-h-full flex flex-col border rounded-md p-4"
+		bind:this={elContent}
+		style={`max-height: ${innerHeight.current - elContentTopY - 30}px;`}
+	>
 		{#if currLevel.tabs.length > 1}
 			<div class="p-3 bg-neutral-50 hidden sm:block rounded-md mb-4">
 				{#each currLevel.tabs as tab, idx}

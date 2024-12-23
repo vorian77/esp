@@ -92,24 +92,25 @@
 			}
 		})
 	}
+
+	console.log('formdetail.fields:', dataObj.fields)
 </script>
 
-<!-- <h1>Form Detail</h1>
-<DataViewer header="dataManager.dataRecord" data={dm.getRecordsDisplayRow(parms.dataObjId, 0)} />
-<DataViewer header="dataManager.isObjStatus" data={dm.getStatus()} /> -->
+<!-- <h1>Form Detail</h1> -->
+<!-- <DataViewer header="dataManager.dataRecord" data={dm.getRecordsDisplayRow(parms.dataObjId, 0)} /> -->
+<!-- <DataViewer header="dataManager.isObjStatus" data={dm.getStatus()} /> -->
+
+<!-- style={`max-height: ${innerHeight.current - elContentTopY - 30}px;`} -->
 
 <form
 	id={'form_' + dataObj.raw.name}
-	class="h-full max-h-full overflow-y-auto sm:p-4 sm:border rounded-md"
-	style={`max-height: ${innerHeight.current - elContentTopY - 30}px;`}
+	class="w-full h-full max-h-full overflow-y-auto sm:p-4 sm:border rounded-md"
 	bind:this={elContent}
 >
-	<div class="sm:hidden max-h-full">
+	<div class="sm:hidden">
 		{#each dataObj.fields as field, fieldIdx}
-			{@const display =
-				!field.colDO.colDB.isNonData &&
-				field.colDO.isDisplayable &&
-				field.fieldAccess !== FieldAccess.hidden}
+			{@const nonData = field.colDO.colDB.isNonData && !field.fieldElement.startsWith('custom')}
+			{@const display = field.fieldAccess !== FieldAccess.hidden && !nonData}
 			{@const elementParms = { ...parms, dataObj, field: dataObj.fields[fieldIdx], row: 0 }}
 			{#if display}
 				<FormElement parms={elementParms} />

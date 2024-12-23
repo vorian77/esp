@@ -176,7 +176,6 @@ export class Query {
 		const set = isUpdate ? 'SET ' : ''
 		if (properties)
 			properties = `${set}{\n${this.addItemComma(properties, subObjGroup.getPropsUpdate(isUpdate, this.rawDataObj.tables))}}`
-		debug('getPropsSave', 'properties', properties)
 		return properties
 	}
 
@@ -208,7 +207,6 @@ export class Query {
 		// 	subObjGroup.getPropsUpdate(isUpdate, this.rawDataObj.tables)
 		// 	properties = `{\n${this.addItemComma(properties)}}`
 		// }
-		debug('getPropsSaveScalar', 'properties', properties)
 		return properties
 	}
 

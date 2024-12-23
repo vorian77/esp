@@ -30,7 +30,7 @@ export default async function action(state: State, field: FieldCustomAction, dat
 			await state.openDrawerDataObj(
 				'auth',
 				'bottom',
-				'h-[90%]',
+				'h-[60%]',
 				undefined,
 				new TokenAppDataObjName({ dataObjName: value, queryType: TokenApiQueryType.preset })
 			)
@@ -55,7 +55,7 @@ export default async function action(state: State, field: FieldCustomAction, dat
 					await state.openDrawerDataObj(
 						'auth',
 						'bottom',
-						'h-[90%]',
+						'h-[60%]',
 						undefined,
 						new TokenAppDataObjName({
 							dataObjName: 'data_obj_auth_verify_phone_mobile',
@@ -146,7 +146,7 @@ export default async function action(state: State, field: FieldCustomAction, dat
 					await state.openDrawerDataObj(
 						'auth',
 						'bottom',
-						'h-[90%]',
+						'h-[60%]',
 						undefined,
 						new TokenAppDataObjName({
 							dataObjName: 'data_obj_auth_verify_phone_mobile',
@@ -171,7 +171,7 @@ async function sendCode(phoneMobile: string) {
 	const max = 999999
 	authSecurityCode = Math.floor(Math.random() * (max - min + 1)) + min
 	authSecurityCodePhone = phoneMobile
-	console.log('actionAuth.sendCode:', authSecurityCode)
+	alert(`Security code: ${authSecurityCode}`)
 	// await apiFetch(
 	// 	ApiFunction.sysSendText,
 	// 	new TokenApiSysSendText(

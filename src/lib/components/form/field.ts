@@ -225,6 +225,7 @@ export enum FieldElement {
 	customActionButton = 'customActionButton',
 	customActionLink = 'customActionLink',
 	customHeader = 'customHeader',
+	customHTML = 'customHTML',
 	customText = 'customText',
 	date = 'date',
 	email = 'email',

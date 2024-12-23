@@ -1,4 +1,4 @@
-import e from '$db/dbschema/edgeql-js'
+import e from '$db/esdl/edgeql-js'
 import {
 	client,
 	booleanOrDefaultJSON,

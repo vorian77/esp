@@ -65,12 +65,6 @@
 		{@const isDisabled = action.isDisabled(stateApp, dataObj)}
 		{@const isShow = action.isShow(stateApp, dataObj)}
 
-		<div class="mt-8">
-			<p>{action.header}</p>
-			<p>show: {isShow}</p>
-			<p>disabled: {isDisabled}</p>
-		</div>
-
 		<button
 			class="w-full btn btn-action text-sm text-white {isShow ? '' : 'hidden'}"
 			style:background-color={action.fieldColor.color}

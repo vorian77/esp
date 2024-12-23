@@ -16,7 +16,9 @@ export function initContentMOEDStudent(init: InitDb) {
 	// participant
 	initTaskSsrApp(init)
 	initTaskSsrDoc(init)
+	initTaskSsrLegal(init)
 	initTaskSsrMsg(init)
+	initTaskSsrWelcome(init)
 
 	// demo data
 	initDemoData()
@@ -1391,7 +1393,7 @@ function initTaskSsrApp(init: InitDb) {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		codeDataObjType: 'task',
+		codeDataObjType: 'taskTarget',
 		exprFilter: '.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
 		isDetailRetrievePreset: true,
 		name: 'data_obj_task_moed_ssr_app',
@@ -1699,8 +1701,10 @@ function initTaskSsrApp(init: InitDb) {
 		btnStyle: 'bg-gradient-to-b from-green-300 hover:from-pink-500 active:bg-violet-700',
 		codeCategory: 'default',
 		codeIcon: 'ClipboardPen',
+		codeRenderType: 'button',
 		codeStatusObj: 'tso_moed_app',
 		description: 'First step to my future.',
+		exprShow: `SELECT true IF (SELECT EXISTS ((SELECT app_cm::CmClientServiceFlow filter .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person))) ?? false ELSE false`,
 		exprStatus: `SELECT app_cm::CmClientServiceFlow
 { _codeStatus := .codeStatus.name, dateCreated, modifiedAt, _modifiedBy := .modifiedBy.person.fullName }
 FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person ORDER BY .modifiedAt DESC`,
@@ -1708,8 +1712,8 @@ FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).p
 		isPinToDash: true,
 		isGlobalResource: false,
 		name: 'task_moed_ssr_app',
-		sourceDataObj: 'data_obj_task_moed_ssr_app',
-		orderDefine: 10,
+		targetDataObj: 'data_obj_task_moed_ssr_app',
+		orderDefine: 30,
 		owner: 'sys_moed_old'
 	})
 }
@@ -1772,7 +1776,7 @@ function initTaskSsrDoc(init: InitDb) {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		codeDataObjType: 'task',
+		codeDataObjType: 'taskTarget',
 		exprFilter:
 			'.csf.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person AND <parms,str,itemsParmName> IN .codeType.codeTypeFamily.name LIMIT 1',
 		name: 'data_obj_task_moed_ssr_doc_detail',
@@ -1890,6 +1894,7 @@ function initTaskSsrDoc(init: InitDb) {
 		btnStyle: 'bg-gradient-to-b from-blue-300 hover:from-pink-500 active:bg-violet-700 ',
 		codeCategory: 'default',
 		codeIcon: 'ImageUp',
+		codeRenderType: 'button',
 		codeStatusObj: 'tso_moed_app_doc',
 		description: 'Step 2: to help speed up my application processing.',
 		exprShow: `SELECT true IF EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person) ELSE false`,
@@ -1904,8 +1909,82 @@ FILTER .parent.name = 'ct_cm_doc_type' ORDER BY .order asc`,
 		isPinToDash: true,
 		isGlobalResource: false,
 		name: 'task_moed_ssr_app_doc',
-		sourceDataObj: 'data_obj_task_moed_ssr_doc_detail',
-		orderDefine: 20,
+		targetDataObj: 'data_obj_task_moed_ssr_doc_detail',
+		orderDefine: 40,
+		owner: 'sys_moed_old'
+	})
+}
+
+function initTaskSsrLegal(init: InitDb) {
+	init.addTrans('sysDataObjTask', {
+		owner: 'sys_moed_old',
+		codeComponent: 'FormDetail',
+		codeCardinality: 'detail',
+		codeDataObjType: 'taskPage',
+		exprFilter: 'none',
+		header: 'Legal',
+		name: 'data_obj_task_moed_ssr_legal',
+		fields: [
+			{
+				codeFieldElement: 'customHTML',
+				columnName: 'custom_element',
+				customElement: {
+					rawHTML: `
+		<div class="flex flex-col gap-4 text-center">
+			<h1 class="text-green-400 text-3xl">Legal</h1>
+			<h1 class="text-xl">Individual's Consent To Disclose Personal Information</h1> 
+			<p>By registering with <span class="font-bold">Baltimore City Mayor's Office of Employment Development Youth Opportunity Program</span> you agree that the Career Partners can see and use the information contained within your application in order to better provide assistance to you in determining eligibility for assistance in obtaining employment, training for employment, education, or other services. Personal information such as social security number, race, ethnicity, sexual orientation and disability status is being requested for federal record keeping and reporting requirements only and is kept confidential.</p>
+			<p class="font-bold">By clicking "Accept" below, I consent to disclose personal information for the purposes of registering for the Baltimore City Mayor's Office of Employment Development Youth Opportunity Program.</p>
+		</div>`
+				},
+				isDisplayable: true,
+				orderDisplay: 10,
+				orderDefine: 10,
+				indexTable: 0
+			},
+			{
+				codeColor: 'green',
+				codeFieldElement: 'customActionButton',
+				columnName: 'custom_element',
+				customElement: {
+					action: {
+						method: 'core',
+						type: 'dbExpression',
+						value: `UPDATE default::SysPerson FILTER .id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id SET { isLegalAgreed := true}`
+					},
+					label: 'Accept'
+				},
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'customActionLink',
+				columnName: 'custom_element',
+				customElement: {
+					action: { method: 'core', type: 'page', value: '/' },
+					label: 'Decline'
+				},
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			}
+		]
+	})
+	init.addTrans('sysTask', {
+		btnStyle: 'bg-gradient-to-b from-green-300 hover:from-pink-500 active:bg-violet-700',
+		codeCategory: 'default',
+		codeIcon: 'ClipboardPen',
+		codeRenderType: 'page',
+		exprShow: `SELECT false IF (SELECT ((SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)).person.isLegalAgreed = true) ?? false ELSE true`,
+		header: 'Legal',
+		isPinToDash: true,
+		isGlobalResource: false,
+		name: 'task_moed_ssr_legal',
+		pageDataObj: 'data_obj_task_moed_ssr_legal',
+		orderDefine: 10,
 		owner: 'sys_moed_old'
 	})
 }
@@ -1915,6 +1994,7 @@ function initTaskSsrMsg(init: InitDb) {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
+		codeDataObjType: 'taskTarget',
 		name: 'data_obj_task_moed_ssr_msg_list',
 		header: 'My Messages',
 		tables: [{ index: 0, table: 'CmCsfMsg' }],
@@ -2119,6 +2199,7 @@ function initTaskSsrMsg(init: InitDb) {
 		btnStyle: 'bg-gradient-to-b from-amber-300 hover:from-pink-500 active:bg-violet-700 ',
 		codeCategory: 'default',
 		codeIcon: 'Mail',
+		codeRenderType: 'button',
 		codeStatusObj: 'tso_moed_app_msg',
 		description: 'Have questions? Send messages to program staff.',
 		exprShow: `SELECT true IF EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person) ELSE false`,
@@ -2126,9 +2207,75 @@ function initTaskSsrMsg(init: InitDb) {
 		isPinToDash: true,
 		isGlobalResource: false,
 		name: 'task_moed_ssr_app_msg',
-		sourceDataObj: 'node_obj_task_moed_ssr_msg_list',
-		orderDefine: 30,
+		targetDataObj: 'node_obj_task_moed_ssr_msg_list',
+		orderDefine: 50,
 		owner: 'sys_moed_old'
+	})
+}
+
+function initTaskSsrWelcome(init: InitDb) {
+	init.addTrans('sysDataObjTask', {
+		owner: 'sys_moed_old',
+		codeComponent: 'FormDetail',
+		codeCardinality: 'detail',
+		codeDataObjType: 'taskPage',
+		exprFilter: 'none',
+		header: 'Welcome',
+		name: 'data_obj_task_moed_ssr_welcome',
+		fields: [
+			{
+				codeFieldElement: 'customHTML',
+				columnName: 'custom_element',
+				customElement: {
+					rawHTML: `
+		<div class="flex flex-col justify-center gap-4 text-center">
+			<h1 class="text-green-400 text-3xl">Welcome</h1>
+
+			<div class="flex justify-center items-center mt-0">
+				<img class="w-60" src="src/lib/assets/org_logo_moed.png" alt="Logo" />
+			</div>
+
+			<p> <span class="font-bold">Youth Opportunity (YO) Baltimore</span> serves individuals between the ages of 18 and 24 who are out of school and/or looking for employment or connections to college. Operating out of two locations - one in West Baltimore and one in East Baltimore - YO embraces a model that offers a full range of srvices that lead to your success.</p>
+		</div>`
+				},
+				isDisplayable: true,
+				orderDisplay: 10,
+				orderDefine: 10,
+				indexTable: 0
+			},
+			{
+				codeColor: 'green',
+				codeFieldElement: 'customActionButton',
+				columnName: 'custom_element',
+				customElement: {
+					action: {
+						method: 'core',
+						type: 'start',
+						value: ``
+					},
+					label: 'Get Started!'
+				},
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			}
+		]
+	})
+	init.addTrans('sysTask', {
+		btnStyle: 'bg-gradient-to-b from-green-300 hover:from-pink-500 active:bg-violet-700',
+		codeCategory: 'default',
+		codeIcon: 'ClipboardPen',
+		codeRenderType: 'page',
+		exprShow: `SELECT true IF (SELECT ((SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)).person.isLegalAgreed = true AND NOT EXISTS ((SELECT app_cm::CmClientServiceFlow filter .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person))) ?? false ELSE false`,
+		header: 'Welcome',
+		isPinToDash: true,
+		isGlobalResource: false,
+		name: 'task_moed_ssr_welcome',
+		pageDataObj: 'data_obj_task_moed_ssr_welcome',
+		orderDefine: 20,
+		owner: 'sys_moed_old',
+		targetDataObj: 'data_obj_task_moed_ssr_app'
 	})
 }
 

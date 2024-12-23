@@ -37,7 +37,7 @@ import {
 	FieldEmbedListSelect
 } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
-import { queryTypeDataObj, queryTypeTab } from '$comps/app/types.appQuery'
+import { queryTypeTab } from '$comps/app/types.appQuery'
 import {
 	State,
 	StatePacket,
@@ -99,16 +99,16 @@ export class App {
 			const fieldEmbed = fieldShell.fields[tabIdx]
 			EMBEB_FIELD_TYPES.forEach((type) => {
 				if (fieldEmbed instanceof type) {
-					currLevel.tabs.push(
-						new AppLevelTab({
-							data: fieldEmbed?.dataObj?.objData,
-							dataObj: fieldEmbed?.dataObj,
-							isRetrieved: true,
-							label: fieldEmbed.colDO.label,
-							levelIdx,
-							tabIdx
-						})
-					)
+					// currLevel.tabs.push(
+					// 	new AppLevelTab({
+					// 		data: fieldEmbed?.dataObj?.objData,
+					// 		dataObj: fieldEmbed?.dataObj,
+					// 		isRetrieved: true,
+					// 		label: fieldEmbed.colDO.label,
+					// 		levelIdx,
+					// 		tabIdx
+					// 	})
+					// )
 				}
 			})
 		}

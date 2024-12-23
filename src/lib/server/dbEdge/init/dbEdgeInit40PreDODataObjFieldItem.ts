@@ -287,7 +287,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter: `.id IN ((SELECT sys_core::SysObj [IS sys_core::SysNodeObj] FILTER .codeNodeType.name = 'task') UNION (SELECT sys_core::SysObj [IS sys_core::SysDataObj] FILTER .codeDataObjType.name = 'task')).id`,
+		exprFilter: `.id IN ((SELECT sys_core::SysObj [IS sys_core::SysNodeObj] FILTER .codeNodeType.name = 'taskTarget') UNION (SELECT sys_core::SysObj [IS sys_core::SysDataObj] FILTER .codeDataObjType.name = 'taskTarget')).id`,
 		name: 'il_sys_task_obj',
 		owner: 'sys_system_old',
 		table: 'SysObj'

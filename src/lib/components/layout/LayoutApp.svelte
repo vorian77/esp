@@ -6,7 +6,8 @@
 	let { parms }: DataRecord = $props()
 </script>
 
-<div id="layout-app" class="flex flex-col h-full max-h-full">
+<div id="layout-app" class="h-full max-h-full flex flex-col">
 	<NavApp />
+
 	<LayoutTab {parms} />
 </div>

@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
-	import { userSetId } from '$utils/types'
+	import { ContextKey, userSetId } from '$utils/types'
 	import { State, StateTarget } from '$comps/app/types.appState.svelte'
+	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
 	import { TokenApiQueryType, TokenAppDataObjName } from '$utils/types.token'
+	import { setContext } from 'svelte'
 
 	const FILENAME = 'routes/+page.svelte'
 
@@ -12,8 +14,20 @@
 	const storeToast = getToastStore()
 	const DEV_MODE = data.environ === 'dev'
 
-	const state = new State({ storeDrawer, storeToast, target: StateTarget.feature })
-	let pageCurrent = ''
+	// page state
+	// global state
+	let dm: DataManager = $state(new DataManager())
+	setContext(ContextKey.dataManager, dm)
+
+	const stateApp = new State({
+		dataManager: dm,
+		storeDrawer,
+		storeToast,
+		target: StateTarget.feature
+	})
+	setContext(ContextKey.stateApp, stateApp)
+
+	let pageCurrent = $state('')
 
 	async function expressLogin() {
 		const userSys = '0b3ba76c-c0f4-11ee-9b77-8f017aab6306'
@@ -29,10 +43,10 @@
 				type="button"
 				class="btn btn-action variant-filled-primary w-full"
 				onclick={async () =>
-					await state.openDrawerDataObj(
+					await stateApp.openDrawerDataObj(
 						'auth',
 						'bottom',
-						'h-[90%]',
+						'h-[60%]',
 						undefined,
 						new TokenAppDataObjName({
 							dataObjName: 'data_obj_auth_login',
@@ -47,10 +61,10 @@
 				type="button"
 				class="btn btn-action variant-filled-primary w-full"
 				onclick={async () =>
-					await state.openDrawerDataObj(
+					await stateApp.openDrawerDataObj(
 						'auth',
 						'bottom',
-						'h-[90%]',
+						'h-[60%]',
 						undefined,
 						new TokenAppDataObjName({
 							dataObjName: 'data_obj_auth_signup',

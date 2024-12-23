@@ -85,10 +85,8 @@
 	}
 </script>
 
-<!-- <button onclick={onClickToggleHideText}>Toggle</button> -->
-
-<!-- <DataViewer header="inp.iconProps" data={iconProps?.name} />
-<DataViewer header="fieldInputType" data={fieldInputType} /> -->
+<!-- <DataViewer header="inp.iconProps" data={iconProps?.name} /> -->
+<!-- <DataViewer header="fieldInputType" data={fieldInputType} /> -->
 
 <FormLabel {parms} {iconProps}>
 	<input

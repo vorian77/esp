@@ -368,7 +368,7 @@
 	}
 </script>
 
-<div id="grid" class="h-full flex flex-col sm:p-4 sm:border rounded-md">
+<div id="grid" class="w-full h-full flex flex-col sm:p-4 sm:border rounded-md">
 	<GridFilter
 		isHideFilter={isSuppressFilterSort}
 		listFilterQuick={options.userSettings.getPref(ParmsUserDataType.listFilterQuick)}

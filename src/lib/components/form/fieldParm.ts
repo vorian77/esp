@@ -25,6 +25,10 @@ export class FieldParm extends Field {
 		const clazz = 'FieldParm'
 		this.isParmValue = true
 	}
+	getField(row: number) {
+		return this.parmFields[row]
+	}
+
 	async init(props: PropsField) {
 		for (const dataRow of props.dataObj.data.rowsRetrieved.dataRows) {
 			this.parmFields.push(await this.configParmItemsInit(props, dataRow.record, this.parmFields))
@@ -46,7 +50,8 @@ export class FieldParm extends Field {
 			_hasItems: getRecordValue(record, '_hasItems'),
 			_linkItemsSource: await getFieldListItems({
 				fieldListItems: getRecordValue(record, 'fieldListItems'),
-				fieldListItemsParmName: getRecordValue(record, 'fieldListItemsParmName')
+				fieldListItemsParmName: getRecordValue(record, 'fieldListItemsParmName'),
+				user: props.state.user
 			}),
 			_propName: getRecordValue(record, 'name'),
 			isDisplayable: true,
@@ -81,7 +86,7 @@ async function getFieldListItems(obj: any) {
 
 	const result: ResponseBody = await apiFetch(
 		ApiFunction.dbEdgeGetFieldListItems,
-		new TokenApiQueryData({ dataTab })
+		new TokenApiQueryData({ dataTab, user: obj.user })
 	)
 	if (result.success) {
 		return result.data.data

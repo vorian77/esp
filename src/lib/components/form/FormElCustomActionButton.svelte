@@ -12,11 +12,14 @@
 	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
 	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
 
+	let dashboardReset = getContext(ContextKey.dashboardReset)
+
 	let dataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
-	let disabled = $derived(!(dm.isStatusChanged() && dm.isStatusValid()))
+	let disabled = $derived(!dm.isStatusValid())
 	let field = $derived(parms.field) as FieldCustomActionButton
 
 	async function action() {
+		// if (dashboardReset) dashboardReset()
 		const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
 		await enhancement(stateApp, field, dataRecord)
 	}

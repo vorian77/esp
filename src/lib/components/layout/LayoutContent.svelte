@@ -16,6 +16,8 @@
 	import GridSelect from '$comps/grid/GridSelect.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
+	import NavRow from '$comps/nav/NavRow.svelte'
+	import { innerHeight } from 'svelte/reactivity/window'
 
 	const FILENAME = '$comps/layout/LayoutContent.svelte'
 	const comps: Record<string, any> = {
@@ -32,6 +34,13 @@
 
 	let Component = $state(comps[parms.component])
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
+
+	let elContent: HTMLDivElement
+	let elContentTopY: number = $state()
+
+	$effect(() => {
+		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
+	})
 
 	// header parms
 	let headerObj = $derived(
@@ -62,36 +71,45 @@
 	}
 </script>
 
-<DataViewer header="rowStatus" data={rowStatus} />
-
-{#if Component}
-	{#if headerObj}
-		<div class="mb-4">
-			<div class="flex justify-between items-start">
-				<h2 class="h2">{headerObj}</h2>
-				<div class="mr-0"></div>
-				{#if stateApp.layoutHeader.isDrawerClose}
-					<button type="button" class="btn-icon btn-icon-sm variant-filled-error" onclick={cancel}>
-						X
-					</button>
+<!-- contentTop: {elContentTopY} -->
+<!-- <DataViewer header="rowStatus" data={rowStatus} /> -->
+<div
+	class="h-full max-h-full flex flex-col border rounded-md p-0"
+	bind:this={elContent}
+	style={`max-height: ${innerHeight.current - elContentTopY - 30}px;`}
+>
+	{#if Component}
+		{#if headerObj}
+			<div class="mb-4">
+				<div class="flex justify-between items-start">
+					<h2 class="h2">{headerObj}</h2>
+					<div>
+						{#if stateApp.layoutHeader.isRowStatus}
+							<NavRow />
+						{/if}
+						{#if stateApp.layoutHeader.isDrawerClose}
+							<button
+								type="button"
+								class="btn-icon btn-icon-sm variant-filled-error"
+								onclick={cancel}
+							>
+								X
+							</button>
+						{/if}
+					</div>
+				</div>
+				{#if headerObjSub}
+					<h4 class="mt-1 h4 text-gray-500">{headerObjSub}</h4>
 				{/if}
 			</div>
-			{#if headerObjSub}
-				<h4 class="mt-1 h4 text-gray-500">{headerObjSub}</h4>
+		{/if}
+		<!-- class="h-full flex flex-col sm:flex-row border border-blue-400 p-4 rounded-md" -->
+		<div id="layout-content" class="h-full flex flex-col sm:flex-row rounded-md p-4">
+			<Component {parms} />
+
+			{#if dataObj}
+				<DataObjActionsObj {parms} />
 			{/if}
 		</div>
 	{/if}
-
-	<div
-		id="layout-content"
-		class="h-full max-h-full flex flex-col sm:flex-row border p-4 rounded-md"
-	>
-		<div class="grow">
-			<Component {parms} />
-		</div>
-
-		{#if dataObj}
-			<DataObjActionsObj {parms} />
-		{/if}
-	</div>
-{/if}
+</div>

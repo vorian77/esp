@@ -36,6 +36,7 @@ export class CellEditorSelect implements ICellEditorComp {
 }
 
 export function cellEditorSelectorParmField(params: ICellEditorParams) {
+	console.log('gridParmfields.cellEditorSelectorParmField', params)
 	const codeDataType = getRecordValue(params.data, 'codeDataType')
 	switch (codeDataType) {
 		case PropDataType.date:

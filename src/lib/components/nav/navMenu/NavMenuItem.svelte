@@ -27,7 +27,7 @@
 				onclick={item.click}
 			>
 				{#if showIcon}
-					<div class="flex-none border-0 border-red-400">
+					<div class="flex-none">
 						<Icon
 							props={new IconProps({
 								clazz: 'mt-0',
@@ -42,7 +42,7 @@
 
 				{#if item.navMenu.isOpen}
 					<div
-						class="grow text-left border-0 border-amber-400 {showIcon
+						class="grow text-left {showIcon
 							? 'ml-1'
 							: ''}  hover:-translate-y-0.5 transition-transform"
 					>
@@ -51,7 +51,7 @@
 						</span>
 					</div>
 					{#if showToggle}
-						<div class="flex-none {item.isOpen ? '' : 'rotate-180'} border-0 border-blue-400">
+						<div class="flex-none {item.isOpen ? '' : 'rotate-180'} ">
 							<Icon
 								props={new IconProps({
 									clazz: 'mt-0 ',

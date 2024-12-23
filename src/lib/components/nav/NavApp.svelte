@@ -34,7 +34,7 @@
 
 <div id="layout-app" class="flex justify-between items-center border-b p-2 mb-4">
 	<div class="flex items-center">
-		<button class="mr-2 flex-none border-0 border-green-300" onclick={back}>
+		<button class="mr-2 flex-none" onclick={back}>
 			<Icon
 				props={new IconProps({
 					name: 'ArrowLeft',
@@ -46,7 +46,7 @@
 			/>
 		</button>
 
-		<div class="flex-grow border-0 border-red-300">
+		<div class="flex-grow">
 			<NavCrumbs />
 		</div>
 	</div>

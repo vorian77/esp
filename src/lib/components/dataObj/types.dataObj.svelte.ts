@@ -48,12 +48,13 @@ import {
 	FieldCustomActionButton,
 	FieldCustomActionLink,
 	FieldCustomHeader,
+	FieldCustomHTML,
 	FieldCustomText
 } from '$comps/form/fieldCustom'
 import { GridSettings } from '$comps/grid/grid'
 import { FieldInput } from '$comps/form/fieldInput'
 import { FieldFile } from '$comps/form/fieldFile'
-// import { FieldParm } from '$comps/form/fieldParm'
+import { FieldParm } from '$comps/form/fieldParm'
 import { FieldRadio } from '$comps/form/fieldRadio'
 import { FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 import { FieldSelect } from '$comps/form/fieldSelect'
@@ -227,6 +228,10 @@ export class DataObj {
 				newField = new FieldCustomHeader(props)
 				break
 
+			case FieldElement.customHTML:
+				newField = new FieldCustomHTML(props)
+				break
+
 			case FieldElement.customText:
 				newField = new FieldCustomText(props)
 				break
@@ -251,9 +256,9 @@ export class DataObj {
 				newField = new FieldFile(props)
 				break
 
-			// case FieldElement.parm:
-			// 	newField = new FieldParm(props)
-			// 	break
+			case FieldElement.parm:
+				newField = new FieldParm(props)
+				break
 
 			case FieldElement.radio:
 				newField = new FieldRadio(props)
@@ -615,7 +620,8 @@ export enum DataObjType {
 	default = 'default',
 	embed = 'embed',
 	report = 'report',
-	task = 'task'
+	taskPage = 'taskPage',
+	taskTarget = 'taskTarget'
 }
 
 export type DataRecord = Record<string, any>

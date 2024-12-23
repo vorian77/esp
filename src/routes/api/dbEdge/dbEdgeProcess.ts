@@ -62,7 +62,7 @@ export async function getFieldListItems(queryData: TokenApiQueryData) {
 				acc += `${prop.key} := ${prop.expr}`
 				return acc
 			}, 'data := .id')
-			const expr = `SELECT ${source.table.object} {{props}} FILTER ${source.exprFilter}`
+			const expr = `SELECT ${source.table.object} {${props}} FILTER ${source.exprFilter}`
 			rawSource.rawItems = await exeQueryMultiData(
 				expr,
 				queryData,
@@ -394,11 +394,7 @@ export async function processExpression(queryData: TokenApiQueryData) {
 	let result: RawDataList = []
 	if (queryData?.dataTab) {
 		const expr = queryData.dataTab.parms.valueGet(ParmsValuesType.dbExpr)
-		result = await exeQueryMultiData(
-			expr,
-			queryData,
-			new EvalExprContext('processExpression', 'exeQueryMultiData')
-		)
+		result = await exeQueryMultiData(expr, queryData, new EvalExprContext('processExpression', ''))
 	}
 	return new ApiResult(true, { data: result })
 }
@@ -406,7 +402,7 @@ export async function processExpression(queryData: TokenApiQueryData) {
 export class ProcessRow {
 	propNames: string[] = []
 	propsSelect: RawDataObjPropDB[]
-	dummyQueryData: TokenApiQueryData = new TokenApiQueryData()
+	dummyQueryData: TokenApiQueryData = new TokenApiQueryData({})
 	constructor(propsSelect: RawDataObjPropDB[]) {
 		this.propNames = propsSelect.map((prop) => prop.propName)
 		this.propsSelect = propsSelect

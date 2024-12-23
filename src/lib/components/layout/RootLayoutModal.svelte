@@ -81,21 +81,19 @@
 </script>
 
 {#if stateApp}
-	<div class="esp-card-space-y w-modal-wide p-4">
+	<div class="h-[70vh] esp-card-space-y w-modal-wide flex flex-col p-4">
 		<RootLayoutApp {stateApp} />
 
-		<div class="flex justify-end">
+		<div class="flex justify-end gap-3 pt-0">
 			{#each stateApp.actionsFieldDialog as action}
-				<div class="pb-4 mr-2">
-					<button
-						disabled={action.isStatusDisabled}
-						class="w-full btn btn-action text-white"
-						style:background-color={action.fieldColor.color}
-						onclick={async () => await onFooterActionClick(action)}
-					>
-						{action.header}
-					</button>
-				</div>
+				<button
+					disabled={action.isStatusDisabled}
+					class="btn btn-action text-white"
+					style:background-color={action.fieldColor.color}
+					onclick={async () => await onFooterActionClick(action)}
+				>
+					{action.header}
+				</button>
 			{/each}
 		</div>
 	</div>

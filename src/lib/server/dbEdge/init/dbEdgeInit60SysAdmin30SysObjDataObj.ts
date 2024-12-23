@@ -1019,30 +1019,30 @@ function initDataObjColumn(init: InitDb) {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 530,
-				orderDefine: 530
+				orderDisplay: 525,
+				orderDefine: 525
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 540,
-				orderDefine: 540
+				orderDisplay: 530,
+				orderDefine: 530
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'customColActionValue',
 				isDisplayable: true,
-				orderDisplay: 550,
-				orderDefine: 550,
+				orderDisplay: 535,
+				orderDefine: 535,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'customColAlign',
 				isDisplayable: true,
-				orderDisplay: 560,
-				orderDefine: 560,
+				orderDisplay: 540,
+				orderDefine: 540,
 				indexTable: 0
 			},
 			{
@@ -1050,8 +1050,8 @@ function initDataObjColumn(init: InitDb) {
 				codeFieldElement: 'select',
 				columnName: 'customColCodeColor',
 				isDisplayable: true,
-				orderDisplay: 565,
-				orderDefine: 565,
+				orderDisplay: 545,
+				orderDefine: 545,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_tailwind_color',
@@ -1061,13 +1061,36 @@ function initDataObjColumn(init: InitDb) {
 				codeFieldElement: 'toggle',
 				columnName: 'customColIsSubHeader',
 				isDisplayable: true,
-				orderDisplay: 567,
-				orderDefine: 567,
+				orderDisplay: 550,
+				orderDefine: 550,
 				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 555,
+				orderDefine: 555
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 560,
+				orderDefine: 560
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'customColPrefix',
+				isDisplayable: true,
+				orderDisplay: 565,
+				orderDefine: 565,
+				indexTable: 0
+			},
+
+			{
+				codeAccess: 'optional',
+				columnName: 'customColSize',
 				isDisplayable: true,
 				orderDisplay: 570,
 				orderDefine: 570,
@@ -1075,34 +1098,35 @@ function initDataObjColumn(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				columnName: 'customColSize',
-				isDisplayable: true,
-				orderDisplay: 580,
-				orderDefine: 580,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
 				columnName: 'customColSource',
 				isDisplayable: true,
-				orderDisplay: 590,
-				orderDefine: 590,
+				orderDisplay: 575,
+				orderDefine: 575,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'customColSourceKey',
 				isDisplayable: true,
-				orderDisplay: 600,
-				orderDefine: 600,
+				orderDisplay: 580,
+				orderDefine: 580,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 610,
-				orderDefine: 610
+				orderDisplay: 585,
+				orderDefine: 585
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'customColRawHTML',
+				isDisplayable: true,
+				orderDisplay: 590,
+				orderDefine: 590,
+				indexTable: 0
 			},
 			{
 				codeFieldElement: 'customHeader',

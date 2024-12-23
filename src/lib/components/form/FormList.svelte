@@ -172,7 +172,7 @@
 		const row = dataRecordsDisplay.findIndex((row) => row.id === data.id)
 		const field = dataObj.fields.find((f) => f.colDO.propName === fieldName)
 		if (row > -1 && field) {
-			dm.setFieldValue(row, field, data[fieldName])
+			dm.setFieldValue(dataObj.raw.id, row, field, data[fieldName])
 		} else {
 			error(500, {
 				file: FILENAME,
@@ -234,94 +234,84 @@
 		defn.singleClickEdit = isEditable ? true : undefined
 		defnCellStyle.addStyle('text-align', field.fieldAlignment)
 
-		// if (field instanceof FieldParm) {
-		// 	defn.cellEditorSelector = cellEditorSelectorParmField
-		// 	defn.cellRendererSelector = cellRendererSelectorParmField
-		// 	defn.context = { parmFields: field.parmFields, state: stateApp }
+		if (field instanceof FieldParm) {
+			defn.cellEditorSelector = cellEditorSelectorParmField
+			defn.cellRendererSelector = cellRendererSelectorParmField
+			defn.context = { parmFields: field.parmFields, stateApp }
 
-		// if (field.linkItemsSource) {
-		// 	defn.editable = false
-		// 	defn.context = { linkItemsSource: field.linkItemsSource, state }
-		// 	defn.context = { parmFields: field.parmFields, state }
-		// 	defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
-		// }
+			// if (field.linkItemsSource) {
+			// 	defn.editable = false
+			// 	defn.context = {
+			// 		linkItemsSource: field.linkItemsSource,
+			// 		parmFields: field.parmFields,
+			// 		stateApp
+			// 	}
+			// 	defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
+			// }
+		} else {
+			// data type
+			switch (field.colDO.colDB.codeDataType) {
+				case PropDataType.bool:
+					defn.cellDataType = isEditable ? 'customBoolean' : 'customText'
+					break
 
-		// field.parmFields[2].colDO.items = [
-		// 	{ display: 'Item 1', id: '1' },
-		// 	{ display: 'Item 2', id: '2' },
-		// 	{ display: 'Item 3', id: '3' },
-		// 	{ display: 'Item 4', id: '4' },
-		// 	{ display: 'Item 5', id: '5' }
-		// ]
-		// field.parmFields[2].hasItems = true
-		// defn.context = { items: dataObjData.items[itemsKey], state }
+				case PropDataType.date:
+					defn.cellDataType = 'customDateString'
+					break
 
-		// defn.editable = false
-		// defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
-		// } else {
-		// data type
-		switch (field.colDO.colDB.codeDataType) {
-			case PropDataType.bool:
-				defn.cellDataType = isEditable ? 'customBoolean' : 'customText'
-				break
+				case PropDataType.datetime:
+					// <todo> - 240921 - text until proper custom data type is built
+					defn.cellDataType = 'text'
+					break
 
-			case PropDataType.date:
-				defn.cellDataType = 'customDateString'
-				break
+				case PropDataType.float64:
+					defn.cellDataType =
+						field.fieldElement === FieldElement.currency
+							? 'customNumberCurrency'
+							: field.fieldElement === FieldElement.percentage
+								? 'customNumberPercentage'
+								: 'customNumber'
+					break
 
-			case PropDataType.datetime:
-				// <todo> - 240921 - text until proper custom data type is built
-				defn.cellDataType = 'text'
-				break
+				case PropDataType.int16:
+				case PropDataType.int32:
+				case PropDataType.int64:
+					defn.cellDataType = 'customNumberInt'
+					break
 
-			case PropDataType.float64:
-				defn.cellDataType =
-					field.fieldElement === FieldElement.currency
-						? 'customNumberCurrency'
-						: field.fieldElement === FieldElement.percentage
-							? 'customNumberPercentage'
-							: 'customNumber'
-				break
+				case PropDataType.json:
+					defn.cellDataType = 'object'
+					break
 
-			case PropDataType.int16:
-			case PropDataType.int32:
-			case PropDataType.int64:
-				defn.cellDataType = 'customNumberInt'
-				break
+				case PropDataType.link:
+					const itemsKey = '_items_' + field.colDO.propName
+					if (field.linkItemsSource) {
+						defn.editable = false
+						defn.context = { dm, linkItemsSource: field.linkItemsSource, state: stateApp }
+						defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
+					} else {
+						defn.cellDataType = 'customText'
+					}
+					defnCellStyle.addStyle(
+						'backgroundColor',
+						field.fieldAccess === FieldAccess.required ? 'rgb(219,234,254)' : ''
+					)
+					break
 
-			case PropDataType.json:
-				defn.cellDataType = 'object'
-				break
+				case PropDataType.str:
+				case PropDataType.uuid:
+					defn.cellDataType =
+						field.fieldElement === FieldElement.textArea ? 'customTextLarge' : 'customText'
+					break
 
-			case PropDataType.link:
-				const itemsKey = '_items_' + field.colDO.propName
-				if (field.linkItemsSource) {
-					defn.editable = false
-					defn.context = { dm, linkItemsSource: field.linkItemsSource, state: stateApp }
-					defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
-				} else {
-					defn.cellDataType = 'customText'
-				}
-				defnCellStyle.addStyle(
-					'backgroundColor',
-					field.fieldAccess === FieldAccess.required ? 'rgb(219,234,254)' : ''
-				)
-				break
-
-			case PropDataType.str:
-			case PropDataType.uuid:
-				defn.cellDataType =
-					field.fieldElement === FieldElement.textArea ? 'customTextLarge' : 'customText'
-				break
-
-			default:
-				error(500, {
-					file: FILENAME,
-					function: 'initGridColumns',
-					message: `No case defined for PropDataType: ${field.colDO.colDB.codeDataType}`
-				})
+				default:
+					error(500, {
+						file: FILENAME,
+						function: 'initGridColumns',
+						message: `No case defined for PropDataType: ${field.colDO.colDB.codeDataType}`
+					})
+			}
 		}
-		// }
 		defn.cellStyle = defnCellStyle.cellStyle
 		return defn
 	}
@@ -386,14 +376,7 @@
 				const parms: ParmsValues = returnData.data || undefined
 				if (parms) {
 					const newValue = parms[ParmsValuesType.listIdsSelected]
-
 					const fieldName = field.colDO.propName
-					const multiLinkValue = { id: rowNode.data.id, [fieldName]: newValue }
-
-					// update dataObj
-					fGridCallbackUpdateValue(fieldName, multiLinkValue)
-
-					// update grid rowNode
 					rowNode.setDataValue(fieldName, newValue)
 				}
 			}
@@ -420,7 +403,8 @@
 	}
 </script>
 
-<div id="form-list" class="h-full max-h-full" style={`height: ${height}px;`} bind:this={elContent}>
+<!-- style={`height: ${height}px;`} -->
+<div id="form-list" class="w-full h-full" bind:this={elContent}>
 	{#if gridOptions}
 		<Grid bind:api={gridApi} options={gridOptions} />
 	{/if}

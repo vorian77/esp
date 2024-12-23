@@ -1,6 +1,7 @@
 import { App } from '$comps/app/types.app.svelte'
 import { required, strRequired, valueOrDefault } from '$utils/utils'
 import {
+	ContextKey,
 	DataManager,
 	DataObj,
 	DataObjCardinality,
@@ -31,6 +32,7 @@ import {
 	TokenAppModalReturnType,
 	TokenAppModalSelect
 } from '$utils/types.token'
+import { setContext } from 'svelte'
 import { FieldEmbedType } from '$comps/form/field'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
@@ -50,6 +52,9 @@ async function askB4Transition(
 ) {
 	if (state instanceof StateSurfaceModal) {
 		if (confirm(confirmConfig.message)) {
+			// discard changes
+			obj.confirmType = TokenAppDoActionConfirmType.none
+			state.dataManager?.resetStatus()
 			state.changeValidate(state, obj, fChangeCallback)
 		}
 	} else {
@@ -103,6 +108,7 @@ export class State {
 	changeProperties(obj: any) {
 		// optional
 		if (Object.hasOwn(obj, 'app')) this.app = obj.app
+		if (Object.hasOwn(obj, 'dataManager')) this.dataManager = obj.dataManager
 		if (Object.hasOwn(obj, 'fChangeCallback')) this.fChangeCallback = obj.fChangeCallback
 		if (Object.hasOwn(obj, 'data')) this.data = obj.data
 		if (Object.hasOwn(obj, 'layoutComponent')) this.layoutComponent = obj.layoutComponent
@@ -210,6 +216,7 @@ export class State {
 		meta: DataRecord
 	) {
 		const stateApp = required(meta.stateApp, 'State.openDrawer', 'meta.stateApp')
+
 		stateApp.changeProperties({
 			storeDrawer: this.storeDrawer,
 			storeModal: this.storeModal,
@@ -226,26 +233,25 @@ export class State {
 		width: string | undefined,
 		token: TokenAppDataObjName
 	) {
-		this.openDrawer(id, position, height, width, {
-			stateApp: new State({
-				cardinality: DataObjCardinality.detail,
-
-				layoutComponent: StateLayoutComponent.layoutContent,
-				layoutHeader: {
-					isDataObj: true,
-					isDrawerClose: true
-				},
-				packet: new StatePacket({
-					action: StatePacketAction.doOpen,
-					token
-				}),
-				target: StateTarget.feature
-			})
+		this.changeProperties({
+			// cardinality: DataObjCardinality.detail,
+			layoutComponent: StateLayoutComponent.layoutContent,
+			layoutHeader: {
+				isDataObj: true,
+				isDrawerClose: true
+			},
+			packet: new StatePacket({
+				action: StatePacketAction.doOpen,
+				token
+			}),
+			target: StateTarget.feature
 		})
+		this.openDrawer(id, position, height, width, { stateApp: this })
 	}
 
 	async openModal(state: StateSurfaceModal, fUpdate?: Function) {
 		state.changeProperties({
+			dataManager: this.dataManager,
 			storeDrawer: this.storeDrawer,
 			storeModal: this.storeModal,
 			storeToast: this.storeToast,
@@ -309,8 +315,6 @@ export class State {
 			clazz,
 			'dataObjEmbed'
 		)
-
-		// required(field.dataObj, clazz, 'fieldDataObj')
 		const dataObjParent = required(
 			token.state.dataManager?.getDataObj(field.dataObjIdParent),
 			clazz,
@@ -409,7 +413,8 @@ export class State {
 				})
 			}),
 			parmsState,
-			stateRoot: token.state
+			// stateRoot: token.state
+			target: StateTarget.feature
 		})
 
 		await this.openModal(stateModal, fModalCloseUpdate)
@@ -466,10 +471,6 @@ export class State {
 				})
 			}
 		}
-	}
-
-	setDataManager(dataManager: DataManager) {
-		this.dataManager = dataManager
 	}
 
 	setDataObjState(dataObj: DataObj) {
@@ -533,6 +534,7 @@ export enum StatePacketAction {
 	doListSelfSave = 'doListSelfSave',
 
 	doOpen = 'doOpen',
+
 	doSaveCancel = 'doSaveCancel',
 
 	embedField = 'embedField',

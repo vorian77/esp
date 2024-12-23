@@ -485,10 +485,11 @@ export class RawDataObjPropDisplayCustom {
 	customColActionType?: string
 	customColActionValue?: string
 	customColAlign?: string
-	customColCodeColor: FieldColor
+	customColCodeColor?: FieldColor
 	customColIsSubHeader?: boolean
 	customColLabel?: string
 	customColPrefix?: string
+	customColRawHTML?: string
 	customColSize?: string
 	customColSource?: string
 	customColSourceKey?: string
@@ -503,10 +504,11 @@ export class RawDataObjPropDisplayCustom {
 		this.customColActionType = strOptional(obj.customColActionType, clazz, 'customColActionType')
 		this.customColActionValue = strOptional(obj.customColActionValue, clazz, 'customColActionValue')
 		this.customColAlign = strOptional(obj.customColAlign, clazz, 'customColAlign')
-		this.customColCodeColor = new FieldColor(obj._customColCodeColor, 'blue')
+		this.customColCodeColor = classOptional(FieldColor, obj._customColCodeColor)
 		this.customColIsSubHeader = obj.customColIsSubHeader
 		this.customColLabel = strOptional(obj.customColLabel, clazz, 'customColLabel')
 		this.customColPrefix = strOptional(obj.customColPrefix, clazz, 'customColPrefix')
+		this.customColRawHTML = strOptional(obj.customColRawHTML, clazz, 'customColRawHTML')
 		this.customColSize = strOptional(obj.customColSize, clazz, 'customColSize')
 		this.customColSource = strOptional(obj.customColSource, clazz, 'customColSource')
 		this.customColSourceKey = strOptional(obj.customColSourceKey, clazz, 'customColSourceKey')

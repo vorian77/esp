@@ -403,7 +403,7 @@ export class ScriptGroup {
 		if (query.parent) {
 			let scriptParent = new ScriptTypeSaveParent({
 				action,
-				dataRows: [queryData.tree.levels[queryData.tree.levels.length - 2].dataRow],
+				dataRows: [queryData.tree.getDataRow(query.parent.table.name)],
 				query,
 				queryData
 			})

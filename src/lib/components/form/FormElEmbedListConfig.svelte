@@ -18,7 +18,7 @@
 
 <FormLabel {parms} />
 
-<div class="mt-4">
+<div class="h-80">
 	<LayoutContent
 		parms={{
 			...parms,

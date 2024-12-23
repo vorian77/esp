@@ -15,25 +15,25 @@
 {#if data.user}
 	<div class="flex items-center">
 		<button
-			class="flex-none w-14 border-0 border-red-700 hover:-translate-y-0.5 transition-transform"
+			class="flex-none w-14 hover:-translate-y-0.5 transition-transform"
 			onclick={data.navMenu.toggleOpen}
 		>
 			<img src={data.user.org.urlLogo} />
 		</button>
 
 		{#if data.navMenu.isOpen}
-			<div class="text-sm ml-1 border-0 border-green-700">
+			<div class="text-sm ml-1">
 				<span in:fade={data.navMenu.fadeIn} out:fade={data.navMenu.fadeOut}>
 					{data.user.org.appName}
 				</span>
 			</div>
 
-			<div class="flex-none w-6 text-end border-0 border-blue-700">
+			<div class="flex-none w-6 text-end">
 				<button onclick={data.navMenu.toggleOpen}>
 					<div class={data.navMenu.isOpen ? '' : 'rotate-180'}>
 						<Icon
 							props={new IconProps({
-								clazz: 'mt-0.5 border-0 border-red-400',
+								clazz: 'mt-0.5 ',
 								color: data.navMenu.iconColor,
 								name: 'ChevronLeft',
 								size: 20,

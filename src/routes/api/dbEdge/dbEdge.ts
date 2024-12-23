@@ -1,4 +1,4 @@
-import e from '$db/dbschema/edgeql-js'
+import e from '$db/esdl/edgeql-js'
 import { createClient } from 'edgedb'
 import { EDGEDB_BRANCH, EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
 import { error } from '@sveltejs/kit'

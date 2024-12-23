@@ -58,7 +58,7 @@
 					</button>
 				</li>
 			{:else if i === crumbsList.length - 1}
-				<li id="li-crumb-last" class="flex border-0 border-red-300">
+				<li id="li-crumb-last" class="flex">
 					<svg
 						class="h-full w-6 shrink-0 text-gray-200"
 						viewBox="0 0 24 44"
@@ -73,10 +73,7 @@
 					</button>
 				</li>
 			{:else}
-				<li
-					id="li-crumb-default"
-					class="{i >= lastItem ? '' : 'hidden'} sm:flex flex border-0 border-green-300"
-				>
+				<li id="li-crumb-default" class="{i >= lastItem ? '' : 'hidden'} sm:flex flex">
 					<svg
 						class="h-full w-6 shrink-0 text-gray-200"
 						viewBox="0 0 24 44"

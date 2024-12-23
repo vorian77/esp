@@ -11,12 +11,6 @@
 		$props()
 </script>
 
-<div
-	role="button"
-	tabindex="0"
-	onclick={() => onChange(action)}
-	onkeyup={() => onChange(action)}
-	class="border-0 border-blue-100"
->
+<div role="button" tabindex="0" onclick={() => onChange(action)} onkeyup={() => onChange(action)}>
 	<Icon props={new IconProps({ isNav: true, name: icon, size: 26, strokeWidth: 2 })} />
 </div>

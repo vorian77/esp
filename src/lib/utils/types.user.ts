@@ -1,5 +1,5 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { type DataRecord, Node, ParmsValues } from '$utils/types'
+import { DataObjData, type DataRecord, Node, ParmsValues } from '$utils/types'
 import {
 	arrayOfClass,
 	booleanOrFalse,
@@ -12,7 +12,13 @@ import {
 	valueOrDefault
 } from '$utils/utils'
 import { DataObj, ParmsValuesType } from '$utils/types'
-import { TokenAppModalReturnType, TokenAppModalSelect, TokenAppNode } from '$utils/types.token'
+import { queryTypeDataObj } from '$comps/app/types.appQuery'
+import {
+	TokenApiQueryType,
+	TokenAppModalReturnType,
+	TokenAppModalSelect,
+	TokenAppNode
+} from '$utils/types.token'
 import { FileStorage } from '$comps/form/fieldFile'
 import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
@@ -204,15 +210,18 @@ export class UserResource {
 export class UserResourceTask extends UserResource {
 	btnStyle?: string
 	codeCategory: UserResourceTaskCategory
+	codeRenderType: UserResourceTaskRenderType
 	codeStatusObjName?: string
+	dataObjPage?: DataObj
 	description?: string
 	exprShow?: string
 	exprStatus?: string
 	hasAltOpen: boolean
 	isPinToDash: boolean
 	isShow: boolean = true
-	sourceDataObjId?: string
-	sourceNodeObjId?: string
+	pageDataObjId?: string
+	targetDataObjId?: string
+	targetNodeObjId?: string
 	constructor(obj: any) {
 		super(obj)
 		const clazz = 'UserResourceTask'
@@ -224,35 +233,54 @@ export class UserResourceTask extends UserResource {
 			'UserResourceTaskCategory',
 			UserResourceTaskCategory
 		)
+		this.codeRenderType = memberOfEnum(
+			obj._codeRenderType,
+			clazz,
+			'codeRender',
+			'UserResourceTaskRenderType',
+			UserResourceTaskRenderType
+		)
 		this.codeStatusObjName = obj._codeStatusObjName
 		this.description = obj.description
 		this.exprShow = obj.exprShow
 		this.exprStatus = obj.exprStatus
 		this.hasAltOpen = booleanOrFalse(obj.hasAltOpen, 'hasAltOpen')
 		this.isPinToDash = booleanOrFalse(obj.isPinToDash, 'isPinToDash')
-		this.sourceDataObjId = obj._sourceDataObjId
-		this.sourceNodeObjId = obj._sourceNodeObjId
+		this.pageDataObjId = obj._pageDataObjId
+		this.targetDataObjId = obj._targetDataObjId
+		this.targetNodeObjId = obj._targetNodeObjId
 	}
 
 	getTokenNode(user: User | undefined) {
 		return new TokenAppNode({
 			node: new Node({
-				_codeNodeType: this.sourceDataObjId
+				_codeNodeType: this.targetDataObjId
 					? 'program'
-					: this.sourceNodeObjId
+					: this.targetNodeObjId
 						? 'object'
 						: undefined,
-				dataObjId: this.sourceDataObjId,
+				dataObjId: this.targetDataObjId,
 				header: this.header,
 				icon: this.codeIconName,
 				id: this.id,
 				isMobileMode: valueOrDefault(user?.isMobileOnly, false),
 				name: this.name,
-				nodeObjId: this.sourceNodeObjId,
+				nodeObjId: this.targetNodeObjId,
 				page: '/home'
 			})
 		})
 	}
+	async loadPage(stateApp: State) {
+		if (this.pageDataObjId) {
+			this.dataObjPage = await queryTypeDataObj(
+				stateApp,
+				this.pageDataObjId,
+				new DataObjData(),
+				TokenApiQueryType.retrieve
+			)
+		}
+	}
+
 	setShow(isShow: boolean) {
 		this.isShow = isShow
 	}
@@ -323,6 +351,10 @@ export enum UserResourceTaskCategory {
 	record = 'record',
 	setting = 'setting',
 	tab = 'tab'
+}
+export enum UserResourceTaskRenderType {
+	button = 'button',
+	page = 'page'
 }
 
 export enum UserTypeResourceType {

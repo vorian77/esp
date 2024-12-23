@@ -2,6 +2,7 @@
 	import { ContextKey, DataManager, type DataRecord, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldCustomActionLink } from '$comps/form/fieldCustom'
+	import { goto } from '$app/navigation'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/form/FormElCustomActionLink.svelte'
@@ -15,12 +16,19 @@
 	let field = $derived(parms.field) as FieldCustomActionLink
 	let prefix = $derived(field.prefix ? field.prefix + ' ' : '')
 
-	const action = async () => {
-		const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
-		await enhancement(stateApp, field, dataRecord)
+	async function action() {
+		alert('customLink')
+		goto('/')
+		// const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
+		// await enhancement(stateApp, field, dataRecord)
 	}
 </script>
 
-<button class="btn btn-action w-full text-sm" onclick={action}>
+<!-- <a href="/" class="btn btn-action w-full text-sm">
 	<p>{prefix}<span class="text-blue-500">{field.colDO.label}</span></p>
-</button>
+</a>
+ -->
+
+<div class="btn btn-action w-full text-sm" onclick={() => goto('/')}>
+	<p>{prefix}<span class="text-blue-500">{field.colDO.label}</span></p>
+</div>

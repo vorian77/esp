@@ -29,10 +29,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	if (event.url.pathname === '/') {
 		if (event.cookies.get('session_id')) {
-			status('root path - deleting cookie...')
 			event.cookies.delete('session_id', { path: '/' })
 		}
-		status('resolving root path...')
 		return await resolve(event)
 	}
 

@@ -34,8 +34,6 @@ export class DataObjActionField {
 		this.header = rawAction.header
 		this.isListRowAction = rawAction.isListRowAction
 		this.name = rawAction.name
-
-		console.log('DataObjActionField: ', this.name, { shows: this.actionFieldShows })
 	}
 	getConfirm(state: State, dataObj: DataObj) {
 		const confirms = this.actionFieldConfirms

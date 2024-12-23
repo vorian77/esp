@@ -16,6 +16,7 @@
 	import FormElCustomActionButton from './FormElCustomActionButton.svelte'
 	import FormElCustomActionLink from './FormElCustomActionLink.svelte'
 	import FormElCustomHeader from '$comps/form/FormElCustomHeader.svelte'
+	import FormElCustomHTML from '$comps/form/FormElCustomHTML.svelte'
 	import FormElCustomText from '$comps/form/FormElCustomText.svelte'
 	import FormElFile from '$comps/form/FormElFile.svelte'
 	import FormElInp from '$comps/form/FormElInp.svelte'
@@ -54,19 +55,19 @@
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElement.svelte'
-	// const elements: Record<string, any> = {
-	// 	FieldEmbedListEdit: FormElEmbedListEdit,
-	// 	FieldEmbedShell: FormElEmbedShell,
-	// }
+
 	const elements: Record<string, any> = {
 		FieldCustomActionButton: FormElCustomActionButton,
 		FieldCustomActionLink: FormElCustomActionLink,
 		FieldCustomHeader: FormElCustomHeader,
+		FieldCustomHTML: FormElCustomHTML,
 		FieldCustomText: FormElCustomText,
 		FieldChips: FormElChips,
 		FieldCheckbox: FormElInpCheckbox,
 		FieldEmbedListConfig: FormElEmbedListConfig,
+		FieldEmbedListEdit: FormElEmbedListEdit,
 		FieldEmbedListSelect: FormElEmbedListSelect,
+		FieldEmbedShell: FormElEmbedShell,
 		FieldFile: FormElFile,
 		FieldInput: FormElInp,
 		FieldRadio: FormElInpRadio,
@@ -97,7 +98,6 @@
 </script>
 
 <!-- <p>field: {parms.field.colDO.label}</p> -->
-<!-- <p>value: {fieldValue}</p> -->
 
 <div class={classProps}>
 	{#if Element && parms.field.colDO.isDisplayable}

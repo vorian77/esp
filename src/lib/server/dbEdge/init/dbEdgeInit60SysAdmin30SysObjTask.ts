@@ -210,19 +210,19 @@ function initTask(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'sourceDataObj',
+				columnName: 'targetDataObj',
 				isDisplayable: true,
 				orderDisplay: 170,
 				orderDefine: 170,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmName: 'task',
+				fieldListItemsParmName: 'taskTarget',
 				linkTable: 'SysDataObj'
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'sourceNodeObj',
+				columnName: 'targetNodeObj',
 				isDisplayable: true,
 				orderDisplay: 180,
 				orderDefine: 180,

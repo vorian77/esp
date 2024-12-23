@@ -18,29 +18,28 @@
 
 	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
 	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
-
-	let fieldEmbed = $derived.by(() => {
-		const f: Field = parms.field
-		f.setIconProps({
+	let fieldEmbed = $derived(parms.field) as FieldEmbedListSelect
+	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.embedDataObjId)
+	let iconProps = $state(
+		new IconProps({
 			name: 'SquareMousePointer',
 			clazz: 'ml-1.5 mt-0.5',
 			color: '#3b79e1',
-			onclick: openDialogIcon,
+			onclick: () =>
+				dataObjEmbed.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, stateApp),
 			size: 18,
 			strokeWidth: 2
 		})
-		return f
-	}) as FieldEmbedListSelect
-	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.embedDataObjId)
+	)
 
-	function openDialogIcon() {
-		dataObjEmbed.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, stateApp)
-	}
+	// function openDialogIcon() {
+	// 	dataObjEmbed.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, stateApp)
+	// }
 </script>
 
-<FormLabel {parms} />
+<FormLabel {parms} {iconProps} />
 
-<div class="mt-4">
+<div class="h-80">
 	<LayoutContent
 		parms={{
 			...parms,

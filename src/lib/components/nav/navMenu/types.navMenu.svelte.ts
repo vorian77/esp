@@ -6,6 +6,7 @@ import {
 	required,
 	User,
 	UserResourceTask,
+	UserResourceTaskRenderType,
 	valueOrDefault
 } from '$utils/types'
 import {
@@ -56,7 +57,7 @@ export class NavMenuData {
 				})
 				rawMenu.apps[0].nodes.forEach((n) => {
 					itemGroupSingleProgram.addItem({
-						content: new NavMenuContent('node', n),
+						content: new NavMenuContent(NavMenuContentType.node, n),
 						icon: n.icon,
 						isRoot: true,
 						label: new NavMenuLabel(n.label)
@@ -70,10 +71,16 @@ export class NavMenuData {
 			// item - group - tasks - default
 			const itemGroupTasks = new NavMenuDataCompGroup(this, { header: 'My Tasks' })
 			this.stateApp.user.resources_sys_task_default
-				.filter((r) => r.isShow && !this.stateApp.user?.isMobileOnly && !r.codeStatusObjName)
+				.filter(
+					(r) =>
+						r.isShow &&
+						!this.stateApp.user?.isMobileOnly &&
+						!r.codeStatusObjName &&
+						r.codeRenderType !== UserResourceTaskRenderType.page
+				)
 				.forEach((r) => {
 					itemGroupTasks.addItem({
-						content: new NavMenuContent('task', r),
+						content: new NavMenuContent(NavMenuContentType.task, r),
 						icon: r.codeIconName,
 						label: new NavMenuLabel(r.header!)
 					})
@@ -88,7 +95,7 @@ export class NavMenuData {
 			// logout
 			itemDefault.addItem(
 				new NavMenuDataCompItem(this, {
-					content: new NavMenuContent('page', '/'),
+					content: new NavMenuContent(NavMenuContentType.page, '/'),
 					icon: 'LogOut',
 					isRoot: true,
 					label: new NavMenuLabel('Logout')
@@ -263,7 +270,7 @@ export class NavMenuDataCompAppsItem extends NavMenuDataComp {
 		// header
 		const header = this.group.addItem({
 			...obj,
-			content: new NavMenuContent('nodeHeader', obj.header),
+			content: new NavMenuContent(NavMenuContentType.nodeHeader, obj.header),
 			hasChildren: true,
 			icon: obj.header.icon,
 			isRoot: true,
@@ -276,7 +283,7 @@ export class NavMenuDataCompAppsItem extends NavMenuDataComp {
 		obj.nodes.forEach((n: any) =>
 			this.group.addItem({
 				...obj,
-				content: new NavMenuContent('node', n),
+				content: new NavMenuContent(NavMenuContentType.node, n),
 				parent: header,
 				label: new NavMenuLabel(n.label),
 				indent: 1
@@ -381,21 +388,21 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 		this.items = new NavMenuDataCompGroup(navMenu, { hideHr: true })
 		this.user.resources_sys_task_setting.forEach((r) => {
 			this.addItem({
-				content: new NavMenuContent('task', r),
+				content: new NavMenuContent(NavMenuContentType.task, r),
 				icon: r.codeIconName,
 				isRoot: true,
 				label: new NavMenuLabel(r.header!)
 			})
 		})
 		this.addItem({
-			content: new NavMenuContent('functionAsync', this.myPreferences),
+			content: new NavMenuContent(NavMenuContentType.functionAsync, this.myPreferences),
 			icon: 'Settings2',
 			isRoot: true,
 			label: new NavMenuLabel('My Preferences')
 		})
 		if (['user_sys', '2487985578'].includes(this.user.userName)) {
 			this.addItem({
-				content: new NavMenuContent('functionAsync', this.adminResetDb),
+				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminResetDb),
 				icon: 'RotateCcw',
 				isRoot: true,
 				label: new NavMenuLabel('Admin - Reset DB')

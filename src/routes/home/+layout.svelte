@@ -36,29 +36,43 @@
 	const storeModal = getModalStore()
 	const storeToast = getToastStore()
 
+	// user
+	let user = $derived(new User(data.rawUser))
+
+	// global data manager
+	let dm: DataManager = $state(new DataManager())
+	setContext(ContextKey.dataManager, dm)
+
 	let stateApp = $state(
 		new State({
+			dataManager: dm,
+			fExitApp: () => goto('/'),
 			fChangeCallback: stateChangeCallback,
 			layoutComponent: StateLayoutComponent.layoutApp,
 			storeDrawer,
 			storeModal,
 			storeToast,
 			target: StateTarget.dashboard,
-			user: new User(data.rawUser)
+			user
 		})
 	) as State
 	setContext(ContextKey.stateApp, stateApp)
-	let stateTarget = $derived(stateApp.target)
 
 	let innerWidth = $state(0)
 	let isMobile = $derived(innerWidth <= 640)
 	let isMobileMenuHide = $state(true)
 	let navMenu: NavMenuData = $state(new NavMenuData({ stateApp }))
+	let stateTarget = $derived(stateApp.target)
 
 	async function stateChangeCallback(obj: any) {
 		stateApp.changeProperties(obj)
 		if (isMobile) isMobileMenuHide = stateTarget !== StateTarget.dashboard
-		if (stateTarget === StateTarget.dashboard && !navMenu.isOpen) navMenu.toggleOpen()
+		if (isMobile) {
+			if (stateTarget === StateTarget.dashboard && navMenu.isOpen) toggleMobileMenuHide()
+		} else {
+			if (stateTarget === StateTarget.dashboard && !navMenu.isOpen) navMenu.toggleOpen()
+		}
+
 		if (stateApp.page !== $page.route.id) goto(stateApp.page)
 	}
 
@@ -76,7 +90,7 @@
 
 <svelte:window bind:innerWidth />
 
-<div id="layout" class="h-screen flex flex-col bg-white">
+<div id="layout" class="h-screen flex flex-col bg-white b">
 	<header id="layout-nav-bar-mobile" class="sm:hidden">
 		<NavAppMobile {toggleMobileMenuHide} />
 	</header>

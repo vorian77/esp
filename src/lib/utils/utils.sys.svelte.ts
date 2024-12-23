@@ -14,6 +14,7 @@ export function capitalizeFirstLetter(text: string) {
 
 export enum ContextKey {
 	cancelForm = 'cancelForm',
+	dashboardReset = 'dashboardReset',
 	dataManager = 'dataManager',
 	stateApp = 'stateApp',
 	test = 'test'

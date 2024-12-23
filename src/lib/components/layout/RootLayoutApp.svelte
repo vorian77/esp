@@ -46,7 +46,6 @@
 	import LayoutApp from '$comps/layout/LayoutApp.svelte'
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import { migrate } from '$utils/utils.processMigrate'
-	import action from '$enhance/actions/actionAuth'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -54,18 +53,9 @@
 
 	let { stateApp }: { stateApp: State } = $props()
 
-	// global state - data manager
-	let dm: DataManager = $state(new DataManager())
+	let dm: DataManager = $derived(stateApp.dataManager)
 	setContext(ContextKey.dataManager, dm)
-
-	// global state - state
-	stateApp.setDataManager(dm)
 	setContext(ContextKey.stateApp, stateApp)
-
-	$effect(() => {
-		const packet = stateApp.consume(actionsPacket)
-		if (packet) process(packet)
-	})
 
 	let componentContentName: string | undefined
 	let currLevel: AppLevel | undefined
@@ -75,6 +65,11 @@
 	let keyValue: boolean = $state(false)
 	let parms: DataRecord = $state({})
 	let parentTab: AppLevelTab | undefined
+
+	$effect(() => {
+		const packet = stateApp.consume(actionsPacket)
+		if (packet) process(packet)
+	})
 
 	const componentsLayout: Record<string, any> = {
 		layoutApp: LayoutApp,

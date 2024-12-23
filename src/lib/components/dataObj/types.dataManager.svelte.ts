@@ -107,10 +107,8 @@ export class DataManager {
 	}
 
 	init(dataObj: DataObj) {
-		const clazz = 'DataManager.init'
-		this.objStatus.reset()
-		this.nodes = new Map<string, DataManagerNode>()
-		this.nodes.set(dataObj.raw.id, new DataManagerNode(dataObj))
+		this.reset()
+		this.nodeAdd(dataObj)
 	}
 	isStatusChanged() {
 		return this.objStatus.isChanged()
@@ -120,7 +118,13 @@ export class DataManager {
 	}
 	nodeAdd(dataObj: DataObj) {
 		this.nodes.set(dataObj.raw.id, new DataManagerNode(dataObj))
+		this.setStatus()
 	}
+	reset() {
+		this.resetStatus()
+		this.nodes = new Map<string, DataManagerNode>()
+	}
+
 	resetStatus() {
 		this.objStatus.reset()
 	}
@@ -128,15 +132,15 @@ export class DataManager {
 		const node = this.getNode(dataObjId)
 		if (node) {
 			node.setFieldVal(row, field, value)
-			this.objStatus = this.setFieldValueStatus()
+			this.setStatus()
 		}
 	}
-	setFieldValueStatus() {
+	setStatus() {
 		let newStatus = new DataObjStatus()
 		this.nodes.forEach((node, key) => {
 			newStatus.update(node.getStatus())
 		})
-		return newStatus
+		this.objStatus = newStatus
 	}
 }
 
@@ -209,15 +213,15 @@ export class DataManagerNode {
 		this.fieldsChanged = new FieldValues()
 		this.fieldsValidity = new FieldValues()
 
-		return this.formDataDisplayValidate(dataObj)
+		return this.formatDataDisplayValidate(dataObj)
 	}
 
-	formDataDisplayValidate(dataObj: DataObj) {
+	formatDataDisplayValidate(dataObj: DataObj) {
 		const validityErrorLevel =
 			dataObj.raw.isListEdit ||
 			dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.retrieved)
 				? ValidityErrorLevel.warning
-				: ValidityErrorLevel.none
+				: ValidityErrorLevel.silent
 
 		this.recordsDisplay.forEach((record, row) => {
 			dataObj.fields.forEach((f) => {
@@ -269,7 +273,7 @@ export class DataManagerNode {
 			const recordId = r.id
 			this.dataObj.fields.forEach((f) => {
 				if (
-					(f.classType === FieldClassType.regular &&
+					([FieldClassType.parm, FieldClassType.regular].includes(f.classType) &&
 						[FieldAccess.optional, FieldAccess.required].includes(f.fieldAccess) &&
 						!f.colDO.colDB.isNonData) ||
 					f.colDO.propName === this.dataObj.raw.listReorderColumn
