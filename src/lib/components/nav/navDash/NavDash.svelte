@@ -116,7 +116,7 @@
 	<p>Loading tasks...</p>
 {:then tasks}
 	{#if tasks.length === 0}
-		<h1 class="p-4">No widgets configured or tasks to compelte.</h1>
+		<h1 class="p-4">No tasks to complete or widgets configured.</h1>
 	{:else}
 		<button class="btn btn-action variant-ghost-primary" onclick={() => (promise = getData())}
 			>Refresh Dashboard</button
