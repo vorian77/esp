@@ -26,9 +26,9 @@
 
 <Drawer on:backdrop={closeDrawer}>
 	{#if $storeDrawer.id === 'auth'}
-		{#if $storeDrawer.meta.stateApp}
+		{#if $storeDrawer.meta.sm}
 			<div class="esp-card-space-y p-4">
-				<RootLayoutApp stateApp={$storeDrawer.meta.stateApp} />
+				<RootLayoutApp sm={$storeDrawer.meta.sm} />
 			</div>
 		{/if}
 	{/if}

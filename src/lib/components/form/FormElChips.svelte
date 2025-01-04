@@ -37,8 +37,9 @@
 	const FILENAME = '$comps/form/FormElChips.svelte'
 
 	let { parms }: DataRecord = $props()
-	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
+
 	let field = $derived.by(() => {
 		const f: Field = parms.field
 		f.setIconProps({
@@ -57,7 +58,7 @@
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
 	function onClick(event: Event) {
-		stateApp.change({
+		sm.change({
 			confirmType: TokenAppDoActionConfirmType.none,
 			packet: new StatePacket({
 				action: StatePacketAction.modalSelectOpen,

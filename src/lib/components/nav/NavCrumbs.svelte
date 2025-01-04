@@ -13,11 +13,11 @@
 
 	const FILENAME = '/$comps/nav/NavCrumbs.svelte'
 
-	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
-	let crumbsList: AppLevelCrumb[] = $derived(stateApp.app.getCrumbsList())
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let crumbsList: AppLevelCrumb[] = $derived(sm.app.getCrumbsList())
 
 	function onClick(index: number) {
-		stateApp.change({
+		sm.change({
 			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navCrumbs,
@@ -30,10 +30,10 @@
 	}
 </script>
 
-<nav class="grow flex rounded-md border border-gray-200 bg-white" aria-label="Breadcrumb">
+<nav class="flex rounded-md border border-gray-200 bg-white" aria-label="Breadcrumb">
 	<ol
 		role="list"
-		class="mx-auto flex w-full max-w-(--breakpoint-xl) text-sm font-medium text-nav space-x-4 px-4 sm:px-6 lg:px-8"
+		class=" flex w-full max-w-(--breakpoint-xl) text-sm font-medium text-nav space-x-4 px-4 sm:px-6 lg:px-8"
 	>
 		{#each crumbsList as item, i}
 			{@const label = item.label}
@@ -73,7 +73,7 @@
 					</button>
 				</li>
 			{:else}
-				<li id="li-crumb-default" class="{i >= lastItem ? '' : 'hidden'} sm:flex flex">
+				<li id="li-crumb-default" class="{i >= lastItem ? '' : 'hidden'} flex lg:flex">
 					<svg
 						class="h-full w-6 shrink-0 text-gray-200"
 						viewBox="0 0 24 44"

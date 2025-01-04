@@ -8,11 +8,10 @@
 	const FILENAME = '/$comps/form/FormElCustomActionButton.svelte'
 
 	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
-	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
-
-	let dashboardReset = getContext(ContextKey.dashboardReset)
+	let dashboardReset = getContext(ContextKey.dashboardRefresh)
 
 	let dataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
 	let disabled = $derived(!dm.isStatusValid())
@@ -21,7 +20,7 @@
 	async function action() {
 		// if (dashboardReset) dashboardReset()
 		const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
-		await enhancement(stateApp, field, dataRecord)
+		await enhancement(sm, field, dataRecord)
 	}
 </script>
 

@@ -18,8 +18,6 @@ import { App } from '$comps/app/types.app.svelte'
 import { AppRowActionType } from '$comps/app/types.app.svelte'
 import { Node } from '$comps/app/types.node'
 import { FieldColumnItem } from '$comps/form/field'
-import { FieldEmbed } from '$comps/form/fieldEmbed'
-import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { Process } from '$utils/utils.process'
 import { error } from '@sveltejs/kit'
@@ -320,12 +318,12 @@ export class TokenAppDataObjName extends TokenApp {
 
 export class TokenAppDo extends TokenApp {
 	dataObj: DataObj
-	state: State
+	sm: State
 	constructor(obj: any) {
 		const clazz = 'TokenAppDo'
 		super(obj)
 		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
-		this.state = required(obj.state, clazz, 'state')
+		this.sm = required(obj.sm, clazz, 'sm')
 	}
 }
 
@@ -391,6 +389,7 @@ export class TokenAppModalReturn extends TokenApp {
 }
 export enum TokenAppModalReturnType {
 	cancel = 'cancel',
+	close = 'close',
 	complete = 'complete',
 	delete = 'delete'
 }

@@ -39,7 +39,7 @@ import {
 	DataObjActionFieldTriggerEnable
 } from '$comps/dataObj/types.dataObjActionField.svelte'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
-import { FieldColor, FieldColumnItem, FieldEmbedType } from '$comps/form/field'
+import { FieldAccess, FieldColor, FieldColumnItem, FieldEmbedType } from '$comps/form/field'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { error } from '@sveltejs/kit'
 
@@ -66,7 +66,7 @@ export class RawDataObj {
 	listEditPresetExpr?: string
 	listReorderColumn?: string
 	name: string
-	processType?: string
+	processType?: DataObjProcessType
 	rawActionsField: RawDataObjActionField[] = []
 	rawParent?: RawDataObjParent
 	rawPropsDisplay: RawDataObjPropDisplay[] = []
@@ -141,7 +141,10 @@ export class RawDataObj {
 
 		/* dependent properties */
 		this.rawParent = classOptional(RawDataObjParent, obj._parent)
+
 		this.rawPropsDisplay = arrayOfClass(RawDataObjPropDisplay, obj._propsDisplay, this.tables)
+		this.setFirstVisible(this.rawPropsDisplay)
+
 		this.rawPropsSaveInsert = this.initProps(obj._propsSaveInsert)
 		this.rawPropsSaveUpdate = this.initProps(obj._propsSaveUpdate)
 		this.rawPropsSelect = this.initProps(obj._propsSelect)
@@ -187,6 +190,11 @@ export class RawDataObj {
 			t.setChildren(newTables)
 		})
 		return newTables
+	}
+
+	setFirstVisible(rawPropsDisplay: RawDataObjPropDisplay[]) {
+		let idx = rawPropsDisplay.findIndex((p) => p.isDisplay)
+		if (idx > -1) rawPropsDisplay[idx].isFirstVisible = true
 	}
 }
 
@@ -279,6 +287,7 @@ export class RawDataObjProp {
 	exprPreset?: string
 	fieldEmbed?: RawDataObjPropDBFieldEmbed
 	hasItems: boolean
+	id: string
 	indexTable: number
 	link?: PropLink
 	propName: string
@@ -317,6 +326,7 @@ export class RawDataObjProp {
 						)
 					: undefined
 		this.hasItems = booleanOrDefault(obj._hasItems, false)
+		this.id = strRequired(obj.id, clazz, 'id')
 		this.indexTable = nbrOrDefault(obj.indexTable, -1)
 		this.link = classOptional(PropLink, obj._link)
 		this.propNameRaw = strRequired(obj._propName, clazz, 'propName')
@@ -428,6 +438,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 	isDisplay: boolean
 	isDisplayable: boolean
 	isDisplayBlock: boolean
+	isFirstVisible: boolean = false
 	isParmValue: boolean
 	items: FieldColumnItem[]
 	label: string
@@ -463,7 +474,6 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 			: []
 		this.headerAlt = strOptional(obj.headerAlt, clazz, 'headerAlt')
 		this.height = nbrOptional(obj.height, clazz, 'height')
-		this.isDisplay = booleanOrDefault(obj.isDisplay, true)
 		this.isDisplayable = booleanOrDefault(obj.isDisplayable, false)
 		this.isDisplayBlock = booleanOrDefault(obj.isDisplayBlock, true)
 		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
@@ -476,6 +486,13 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		this.width = nbrOptional(obj.width, clazz, 'width')
 
 		/* dependent properties */
+		this.isDisplay = booleanOrDefault(
+			this.isDisplayable &&
+				!this.colDB.isNonData &&
+				this.rawFieldAccess !== FieldAccess.hidden &&
+				obj.isDisplay,
+			true
+		)
 		this.label = override(obj.headerAlt, this.colDB.header, clazz, 'label')
 		this.labelSide = valueOrDefault(this.colDB.headerSide, this.label)
 	}
@@ -629,7 +646,11 @@ export class RawDBColumn {
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.headerSide = strOptional(obj.headerSide, clazz, 'headerSide')
 		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
-		this.isNonData = booleanRequired(obj.isNonData, clazz, 'isNonData')
+		this.isNonData = booleanRequired(
+			obj.isNonData && !obj.rawFieldElement?.startsWidth('custom'),
+			clazz,
+			'isNonData'
+		)
 		this.matchColumn = strOptional(obj.matchColumn, clazz, 'matchColumn')
 		this.maxLength = nbrOptional(obj.maxLength, clazz, 'maxLength')
 		this.maxValue = nbrOptional(obj.maxValue, clazz, 'maxValue')
@@ -768,14 +789,7 @@ export class PropLinkItemsSource {
 		})
 
 		// rowData
-		let rowData: DataRecord[] = []
-		this.rawItems.forEach((item) => {
-			let row: DataRecord = { data: item.data }
-			this.props.forEach((prop) => {
-				row[prop.key] = getRecordValue(item, prop.key)
-			})
-			rowData.push(row)
-		})
+		let rowData: DataRecord[] = this.getRowData()
 
 		// rawSortObj
 		let sortModel = new DataObjSort()
@@ -786,10 +800,26 @@ export class PropLinkItemsSource {
 		return { columnDefs, rowData, sortModel }
 	}
 
+	getRowData() {
+		return this.rawItems.map((item) => {
+			let row: DataRecord = { data: item.data }
+			this.props.forEach((prop) => {
+				row[prop.key] = getRecordValue(item, prop.key)
+			})
+			return row
+		})
+	}
+
 	getSortProps() {
 		return this.props
 			.filter((prop) => isNumber(prop.orderSort))
 			.sort((a, b) => a.orderSort! - b.orderSort!)
+	}
+
+	getValuesSelect() {
+		let data = this.rawItems.map((item) => item.data)
+		data.unshift('')
+		return data
 	}
 
 	setRawItems(rawItems: DataRecord[]) {

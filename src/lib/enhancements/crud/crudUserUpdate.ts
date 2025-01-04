@@ -8,7 +8,7 @@ const FILENAME = '/$enhance/crud/crudUserUpdate.ts'
 
 export async function qaExecuteUserUpdate(
 	queryActionName: string,
-	state: State,
+	sm: State,
 	queryType: TokenApiQueryType,
 	queryTiming: DataObjActionQueryTriggerTiming,
 	table: string | undefined,
@@ -19,7 +19,7 @@ export async function qaExecuteUserUpdate(
 		dataTab.rowsSave.getDetailRowStatusIs(DataRecordStatus.update) &&
 		queryTiming === DataObjActionQueryTriggerTiming.post
 	) {
-		state.resetUser(false)
+		sm.resetUser(false)
 	}
 	return dataTab
 }

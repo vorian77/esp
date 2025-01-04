@@ -4,23 +4,32 @@
 	import { Field, FieldAccess } from '$comps/form/field'
 	import { FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 	import FormElement from '$comps/form/FormElement.svelte'
-	import { innerHeight } from 'svelte/reactivity/window'
+	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormDetail.svelte'
 
 	let { parms }: DataRecord = $props()
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let dataRecord: DataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
-	let elContent: HTMLDivElement
-	let elContentTopY: number = $state()
 	let tagGroupSections: TagGroupSection[] = $state()
 
+	let actions: DataObjActionsObj
+
+	let elContent: any = $state()
+	let contentH: number = $state()
+
 	$effect(() => {
-		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
+		handleResize()
 	})
+
+	function handleResize() {
+		const parentHeight = elContent ? elContent.parentElement.offsetHeight : undefined
+		contentH = Math.round(parentHeight * 0.99)
+	}
 
 	class TagGroupRow {
 		isRow: boolean
@@ -92,22 +101,18 @@
 			}
 		})
 	}
-
-	console.log('formdetail.fields:', dataObj.fields)
 </script>
 
-<!-- <h1>Form Detail</h1> -->
 <!-- <DataViewer header="dataManager.dataRecord" data={dm.getRecordsDisplayRow(parms.dataObjId, 0)} /> -->
-<!-- <DataViewer header="dataManager.isObjStatus" data={dm.getStatus()} /> -->
 
-<!-- style={`max-height: ${innerHeight.current - elContentTopY - 30}px;`} -->
+<svelte:window onresize={() => handleResize()} />
 
-<form
-	id={'form_' + dataObj.raw.name}
-	class="w-full h-full max-h-full overflow-y-auto sm:p-4 sm:border rounded-md"
+<div
 	bind:this={elContent}
+	class="h-full w-full flex flex-col sm:flex-row"
+	style="height: {contentH}px"
 >
-	<div class="sm:hidden">
+	<div class="sm:hidden flex flex-col sm:grow overflow-y-auto">
 		{#each dataObj.fields as field, fieldIdx}
 			{@const nonData = field.colDO.colDB.isNonData && !field.fieldElement.startsWith('custom')}
 			{@const display = field.fieldAccess !== FieldAccess.hidden && !nonData}
@@ -118,7 +123,7 @@
 		{/each}
 	</div>
 
-	<div class="hidden sm:block">
+	<div class="hidden sm:block flex flex-col sm:grow overflow-y-auto rounded-md p-3 border">
 		{#each tagGroupSections as section}
 			<fieldset
 				class={section.isVisible ? 'p-4 border-1 mb-4' : 'p-0 border-0'}
@@ -131,7 +136,12 @@
 				{#each section.rows as row}
 					<div class={row.isRow ? 'w-full flex flex-row gap-x-4' : ''}>
 						{#each row.indexes as fieldIdx}
-							{@const elementParms = { ...parms, dataObj, field: dataObj.fields[fieldIdx], row: 0 }}
+							{@const elementParms = {
+								...parms,
+								dataObj,
+								field: dataObj.fields[fieldIdx],
+								row: 0
+							}}
 							<div class="grow">
 								<FormElement parms={elementParms} />
 							</div>
@@ -141,4 +151,9 @@
 			</fieldset>
 		{/each}
 	</div>
-</form>
+
+	<DataObjActionsObj bind:this={actions} {parms} />
+</div>
+
+<!-- winH: {innerHeight.current} - parH: {parentHeight} - contentHByWin: {contentHeightByWindow}
+- contentHByPar: {contentHeightByParent} -->

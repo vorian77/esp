@@ -117,6 +117,7 @@ export class RepEl {
 	description?: string
 	exprCustom?: string
 	header?: string
+	id: string
 	indexTable?: number
 	isDisplay: boolean
 	isDisplayable: boolean
@@ -171,6 +172,7 @@ export class RepEl {
 			RepElementType
 		)
 		this._column = obj._column ? new RepElColumn(obj._column) : undefined
+		this.id = strRequired(obj.id, clazz, 'id')
 		this._link = obj._link
 		this.description = strOptional(obj.description, clazz, 'description')
 		this.exprCustom = strOptional(obj.exprCustom, clazz, 'expr')

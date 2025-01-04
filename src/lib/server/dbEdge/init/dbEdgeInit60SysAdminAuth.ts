@@ -175,6 +175,7 @@ function initTaskMyAccount(init: InitDb) {
 
 			// reset password link
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
@@ -242,6 +243,7 @@ function initDataObjLogin(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
@@ -254,6 +256,7 @@ function initDataObjLogin(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
@@ -266,6 +269,7 @@ function initDataObjLogin(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
@@ -321,6 +325,7 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
@@ -389,6 +394,7 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
@@ -413,6 +419,7 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
@@ -463,6 +470,7 @@ function initDataObjVerify(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
@@ -475,6 +483,7 @@ function initDataObjVerify(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
@@ -538,6 +547,7 @@ function initDataObjSignup(init: InitDb) {
 				linkTable: 'SysUserType'
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
@@ -560,6 +570,7 @@ function initDataObjSignup(init: InitDb) {
 				orderDefine: 100
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {

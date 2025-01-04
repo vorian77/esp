@@ -16,8 +16,8 @@
 	const toastStore = getToastStore()
 
 	let { parms }: DataRecord = $props()
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
-	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
 	let elInput: any
 	let files: FileList = $state()
@@ -85,7 +85,7 @@
 
 	function onDownload(event: Event) {
 		if (Object.hasOwn(fieldValue, 'downloadUrl')) {
-			stateApp.downloadUrl(fieldValue.downloadUrl, fieldValue.fileName)
+			sm.downloadUrl(fieldValue.downloadUrl, fieldValue.fileName)
 		}
 	}
 

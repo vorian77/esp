@@ -144,6 +144,7 @@ export async function getDataObjById(token: TokenApiId) {
 		_propName: e.op(doc.nameCustom, '??', doc.column.name),
 		exprCustom: true,
 		exprPreset: true,
+		id: true,
 		indexTable: true
 	}))
 
@@ -492,6 +493,7 @@ export async function getReportUser(repUserId: string) {
 		description: true,
 		exprCustom: true,
 		header: true,
+		id: true,
 		indexTable: true,
 		isDisplay: true,
 		isDisplayable: true,

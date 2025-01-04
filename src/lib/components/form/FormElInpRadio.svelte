@@ -5,8 +5,12 @@
 	import { FieldAccess, FieldAlignment } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 
+	const FILENAME = '$comps/form/FormElInpRadio.svelte'
+
 	let { parms }: DataRecord = $props()
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
+
 	let field = $derived(parms.field) as FieldRadio
 	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))

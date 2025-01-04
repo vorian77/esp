@@ -8,6 +8,5 @@
 
 <div id="layout-app" class="h-full max-h-full flex flex-col">
 	<NavApp />
-
 	<LayoutTab {parms} />
 </div>

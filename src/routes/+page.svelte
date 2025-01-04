@@ -14,18 +14,12 @@
 	const storeToast = getToastStore()
 	const DEV_MODE = data.environ === 'dev'
 
-	// page state
-	// global state
-	let dm: DataManager = $state(new DataManager())
-	setContext(ContextKey.dataManager, dm)
-
-	const stateApp = new State({
-		dataManager: dm,
+	const sm = new State({
 		storeDrawer,
 		storeToast,
 		target: StateTarget.feature
 	})
-	setContext(ContextKey.stateApp, stateApp)
+	setContext(ContextKey.stateManager, sm)
 
 	let pageCurrent = $state('')
 
@@ -43,7 +37,7 @@
 				type="button"
 				class="btn btn-action variant-filled-primary w-full"
 				onclick={async () =>
-					await stateApp.openDrawerDataObj(
+					await sm.openDrawerDataObj(
 						'auth',
 						'bottom',
 						'h-[60%]',
@@ -61,7 +55,7 @@
 				type="button"
 				class="btn btn-action variant-filled-primary w-full"
 				onclick={async () =>
-					await stateApp.openDrawerDataObj(
+					await sm.openDrawerDataObj(
 						'auth',
 						'bottom',
 						'h-[60%]',

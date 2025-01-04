@@ -8,7 +8,7 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '$utils/utils.processMigrate.ts'
 
-export async function migrate(state: State, dataObj: DataObj) {
+export async function migrate(sm: State, dataObj: DataObj) {
 	const migrId = dataObj.data.rowsRetrieved.getDetailRecordValue('id')
 	const process = new ProcessMigrate()
 }

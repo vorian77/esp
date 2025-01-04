@@ -8,9 +8,8 @@
 	const FILENAME = '/$comps/form/FormElCustomActionLink.svelte'
 
 	let { parms }: DataRecord = $props()
-
-	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
 	let dataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
 	let field = $derived(parms.field) as FieldCustomActionLink
@@ -20,7 +19,7 @@
 		alert('customLink')
 		goto('/')
 		// const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
-		// await enhancement(stateApp, field, dataRecord)
+		// await enhancement(sm, field, dataRecord)
 	}
 </script>
 

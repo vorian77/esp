@@ -14,14 +14,14 @@
 
 	const FILENAME = '/$comps/nav/NavRow.svelte'
 
-	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 
-	let currTab = $derived(stateApp.app.getCurrTab())
+	let currTab = $derived(sm.app.getCurrTab())
 	let isHideRowManager = $state(currTab ? currTab?.isHideRowManager : false)
-	let rowStatus: AppLevelRowStatus = $derived(stateApp.app.getRowStatus())
+	let rowStatus: AppLevelRowStatus = $derived(sm.app.getRowStatus())
 
 	function onChange(rowAction: AppRowActionType) {
-		stateApp.change({
+		sm.change({
 			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navRow,

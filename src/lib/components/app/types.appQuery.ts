@@ -1,12 +1,7 @@
 import { App, AppLevelTab } from '$comps/app/types.app.svelte'
-import {
-	State,
-	StateSurfaceEmbedShell,
-	StateSurfaceModalEmbed
-} from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.appState.svelte'
 import {
 	arrayOfClass,
-	debug,
 	DataObj,
 	type DataRecord,
 	DataObjCardinality,
@@ -18,11 +13,10 @@ import {
 	required,
 	ResponseBody,
 	strRequired,
-	UserTypeResource,
-	UserTypeResourceType,
 	valueOrDefault
 } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
+import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import {
 	TokenApiDbDataObjSource,
 	TokenApiQuery,
@@ -30,7 +24,6 @@ import {
 	TokenApiQueryData,
 	TokenApiQueryDataTree
 } from '$utils/types.token'
-import { FieldClassType } from '$comps/form/field'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/app/types.appQuery.ts'
@@ -39,18 +32,18 @@ function getTable(dataObj: DataObj | undefined) {
 	return dataObj ? dataObj?.rootTable?.name : undefined
 }
 
-function queryDataPre(state: State, data: DataObjData | undefined, queryType: TokenApiQueryType) {
+function queryDataPre(sm: State, data: DataObjData | undefined, queryType: TokenApiQueryType) {
 	const clazz = `${FILENAME}.queryDataPre`
 
 	// dataTree
-	const dataTree = queryDataPreTree(queryType, state.stateRoot ? state.stateRoot.app : state.app)
+	const dataTree = queryDataPreTree(queryType, sm.stateRoot ? sm.stateRoot.app : sm.app)
 
 	// dataTab
 	const dataTab = data ? data : new DataObjData()
-	dataTab.parms.update(state.parmsState.valueGetAll())
+	dataTab.parms.update(sm.parmsState.valueGetAll())
 
-	state.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
-	if (state.user) dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.user.system.id)
+	sm.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
+	if (sm.user) dataTab.parms.valueSet(ParmsValuesType.appSystemId, sm.user.system.id)
 
 	return { dataTree, dataTab }
 }
@@ -119,7 +112,7 @@ export async function queryExecute(
 }
 
 async function queryExecuteActions(
-	state: State,
+	sm: State,
 	actionsQueryFunctions: DataObjActionQueryFunction[],
 	queryType: TokenApiQueryType,
 	queryTiming: DataObjActionQueryTriggerTiming,
@@ -129,7 +122,7 @@ async function queryExecuteActions(
 	for (const f of actionsQueryFunctions) {
 		data = await f.execute(
 			f.actionsQuery.name,
-			state,
+			sm,
 			queryType,
 			queryTiming,
 			table,
@@ -141,7 +134,7 @@ async function queryExecuteActions(
 }
 
 export async function queryTypeBase(
-	state: State,
+	sm: State,
 	dataObjSource: TokenApiDbDataObjSource,
 	dataObjData: DataObjData | undefined,
 	dataTree: TokenApiQueryDataTree,
@@ -152,7 +145,7 @@ export async function queryTypeBase(
 	const queryData = new TokenApiQueryData({
 		dataTab: dataObjData,
 		tree: dataTree,
-		user: state.user
+		user: sm.user
 	})
 
 	// retrieve data
@@ -170,7 +163,7 @@ export async function queryTypeBase(
 
 	// successful
 	dataObjData = DataObjData.load(result.data.dataObjData)
-	const dataObj = await DataObj.init(state, dataObjData)
+	const dataObj = await DataObj.init(sm, dataObjData, queryType)
 
 	if (dataObj && dataObj.raw.codeCardinality === DataObjCardinality.list) {
 		dataObj.data.parms.valueSetList(ParmsValuesType.listIds, dataObj.data.rowsRetrieved.getRows())
@@ -180,7 +173,7 @@ export async function queryTypeBase(
 }
 
 export async function queryTypeDataObj(
-	state: State,
+	sm: State,
 	dataObjId: string,
 	dataObjData: DataObjData | undefined,
 	queryType: TokenApiQueryType
@@ -188,15 +181,15 @@ export async function queryTypeDataObj(
 	const clazz = `${FILENAME}.queryTypeDataObj`
 
 	let { dataTab, dataTree }: { dataTab: DataObjData; dataTree: TokenApiQueryDataTree } =
-		queryDataPre(state, dataObjData, queryType)
+		queryDataPre(sm, dataObjData, queryType)
 
 	let dataObjSource: TokenApiDbDataObjSource = new TokenApiDbDataObjSource({ dataObjId })
 
-	return await queryTypeBase(state, dataObjSource, dataTab, dataTree, queryType)
+	return await queryTypeBase(sm, dataObjSource, dataTab, dataTree, queryType)
 }
 
 export async function queryTypeTab(
-	state: State,
+	sm: State,
 	tab: AppLevelTab | undefined,
 	queryType: TokenApiQueryType
 ) {
@@ -204,14 +197,14 @@ export async function queryTypeTab(
 
 	if (!tab) return undefined
 
-	let { dataTab, dataTree } = queryDataPre(state, tab.dataObj?.data, queryType)
+	let { dataTab, dataTree } = queryDataPre(sm, tab.dataObj?.data, queryType)
 
 	let table = getTable(tab.dataObj) // table will be undefined prior to retrieve
 
 	// query actions - pre
 	if (tab.dataObj && dataTab.rowsSave.getRows().length > 0) {
 		dataTab = await queryExecuteActions(
-			state,
+			sm,
 			tab.dataObj.actionsQueryFunctions,
 			queryType,
 			DataObjActionQueryTriggerTiming.pre,
@@ -238,7 +231,7 @@ export async function queryTypeTab(
 			})
 		}
 	}
-	let dataObj = await queryTypeBase(state, dataObjSource, dataTab, dataTree, queryType)
+	let dataObj = await queryTypeBase(sm, dataObjSource, dataTab, dataTree, queryType)
 
 	// query post
 	if (dataObj) {
@@ -246,30 +239,13 @@ export async function queryTypeTab(
 		tab.dataObj = dataObj
 		table = getTable(tab.dataObj)
 		tab.dataObj.data = await queryExecuteActions(
-			state,
+			sm,
 			tab.dataObj.actionsQueryFunctions,
 			queryType,
 			DataObjActionQueryTriggerTiming.post,
 			table,
 			dataObj.data
 		)
-
-		// embedded data objects
-		if (queryType === TokenApiQueryType.preset) {
-			// filter out embedded data objects
-			tab.dataObj.fields = tab.dataObj.fields.filter(
-				(field) => field.classType !== FieldClassType.embed
-			)
-		} else {
-			// add embedded data objects to tab
-			let dataObjEmbedded: DataObj[] = []
-			for (let i = 0; i < dataObj.data.fields.length; i++) {
-				const doEmbed = await DataObj.init(state, dataObj.data.fields[i].data)
-				doEmbed.setFieldEmbed(dataObj.data.fields[i])
-				dataObjEmbedded.push(doEmbed)
-			}
-			tab.dataObjEmbedded = dataObjEmbedded
-		}
 	}
 	return dataObj
 }
@@ -314,7 +290,7 @@ export class DataObjActionQueryFunction {
 	}
 	async execute(
 		queryActionName: string,
-		state: State,
+		sm: State,
 		queryType: TokenApiQueryType,
 		queryTiming: DataObjActionQueryTriggerTiming,
 		table: string | undefined,
@@ -322,7 +298,7 @@ export class DataObjActionQueryFunction {
 		parms: DataRecord
 	): Promise<DataObjData> {
 		if (!this.activate(queryTiming, queryType)) return data
-		return this.funct(queryActionName, state, queryType, queryTiming, table, data, parms)
+		return this.funct(queryActionName, sm, queryType, queryTiming, table, data, parms)
 	}
 }
 

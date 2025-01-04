@@ -40,12 +40,8 @@
 	let user = $derived(new User(data.rawUser))
 
 	// global data manager
-	let dm: DataManager = $state(new DataManager())
-	setContext(ContextKey.dataManager, dm)
-
-	let stateApp = $state(
+	let sm = $state(
 		new State({
-			dataManager: dm,
 			fExitApp: () => goto('/'),
 			fChangeCallback: stateChangeCallback,
 			layoutComponent: StateLayoutComponent.layoutApp,
@@ -55,25 +51,24 @@
 			target: StateTarget.dashboard,
 			user
 		})
-	) as State
-	setContext(ContextKey.stateApp, stateApp)
+	) as sm
+	setContext(ContextKey.stateManager, sm)
 
 	let innerWidth = $state(0)
 	let isMobile = $derived(innerWidth <= 640)
 	let isMobileMenuHide = $state(true)
-	let navMenu: NavMenuData = $state(new NavMenuData({ stateApp }))
-	let stateTarget = $derived(stateApp.target)
+	let navMenu: NavMenuData = $state(new NavMenuData({ sm }))
+	let stateTarget = $derived(sm.target)
 
 	async function stateChangeCallback(obj: any) {
-		stateApp.changeProperties(obj)
-		if (isMobile) isMobileMenuHide = stateTarget !== StateTarget.dashboard
+		sm.changeProperties(obj)
+
 		if (isMobile) {
-			if (stateTarget === StateTarget.dashboard && navMenu.isOpen) toggleMobileMenuHide()
+			if (!isMobileMenuHide) toggleMobileMenuHide()
 		} else {
 			if (stateTarget === StateTarget.dashboard && !navMenu.isOpen) navMenu.toggleOpen()
 		}
-
-		if (stateApp.page !== $page.route.id) goto(stateApp.page)
+		if (sm.page !== $page.route.id) goto(sm.page)
 	}
 
 	function toggleMobileMenuHide() {
@@ -102,12 +97,12 @@
 		>
 			<NavMenu {navMenu} />
 		</div>
-		<div id="layout-main-content" class="grow sm:px-3 pb-3">
+		<div id="layout-main-content" class="grow">
 			{#if $page.route.id === '/home'}
 				{#if stateTarget === StateTarget.dashboard}
 					<NavDash />
 				{:else if stateTarget === StateTarget.feature}
-					<RootLayoutApp {stateApp} />
+					<RootLayoutApp {sm} />
 				{/if}
 			{:else}
 				<slot />

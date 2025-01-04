@@ -7,13 +7,13 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionCore.ts'
 
-export default async function action(stateApp: State, field: FieldCustomAction, data: any) {
+export default async function action(sm: State, field: FieldCustomAction, data: any) {
 	const type = field.type
 	const value = field.value
 
 	switch (type.toLowerCase()) {
 		case 'dbexpression':
-			await processDbExpr(stateApp, value)
+			await processDbExpr(sm, value)
 			break
 
 		case 'start':
@@ -28,12 +28,12 @@ export default async function action(stateApp: State, field: FieldCustomAction, 
 	}
 }
 
-const processDbExpr = async (stateApp: State, expr: string) => {
+const processDbExpr = async (sm: State, expr: string) => {
 	const dataTab = new DataObjData()
 	dataTab.parms.valueSet(ParmsValuesType.dbExpr, expr)
 	const result: ResponseBody = await apiFetch(
 		ApiFunction.dbEdgeProcessExpression,
-		new TokenApiQueryData({ dataTab, user: stateApp.user })
+		new TokenApiQueryData({ dataTab, user: sm.user })
 	)
 	if (result.success) {
 		return result.data

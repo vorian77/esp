@@ -78,7 +78,9 @@
 	let Element: any = $state()
 
 	let { parms }: DataRecord = $props()
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
+
 	let fieldValidity = $derived(dm.getFieldValidity(parms.dataObjId, parms.row, parms.field))
 
 	$effect(() => {

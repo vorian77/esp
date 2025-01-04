@@ -1,5 +1,11 @@
-import { Field, FieldClassType, FieldAlignment, PropsField, PropsFieldRaw } from '$comps/form/field'
-import { PropLinkItemsSource, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
+import {
+	Field,
+	FieldClassType,
+	FieldAlignment,
+	PropsFieldInit,
+	PropsFieldCreate
+} from '$comps/form/field'
+import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
 import {
 	DataObj,
@@ -12,7 +18,6 @@ import {
 } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiQueryData } from '$utils/types.token'
-import { DataManagerNode } from '$comps/dataObj/types.dataManager.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldParm.ts/'
@@ -20,7 +25,7 @@ const FILENAME = '$comps/form/fieldParm.ts/'
 export class FieldParm extends Field {
 	classType: FieldClassType = FieldClassType.parm
 	parmFields: Field[] = []
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		super(props)
 		const clazz = 'FieldParm'
 		this.isParmValue = true
@@ -29,13 +34,13 @@ export class FieldParm extends Field {
 		return this.parmFields[row]
 	}
 
-	async init(props: PropsField) {
+	async init(props: PropsFieldInit) {
 		for (const dataRow of props.dataObj.data.rowsRetrieved.dataRows) {
 			this.parmFields.push(await this.configParmItemsInit(props, dataRow.record, this.parmFields))
 		}
 	}
 
-	async configParmItemsInit(props: PropsField, record: DataRecord, fields: Field[]) {
+	async configParmItemsInit(props: PropsFieldInit, record: DataRecord, fields: Field[]) {
 		const propParmObj = {
 			_codeAccess: getRecordValue(record, 'isRequired') ? 'required' : 'optional',
 			_codeFieldElement: getRecordValue(record, 'codeFieldElement'),
@@ -51,23 +56,17 @@ export class FieldParm extends Field {
 			_linkItemsSource: await getFieldListItems({
 				fieldListItems: getRecordValue(record, 'fieldListItems'),
 				fieldListItemsParmName: getRecordValue(record, 'fieldListItemsParmName'),
-				user: props.state.user
+				user: props.sm.user
 			}),
 			_propName: getRecordValue(record, 'name'),
+			id: getRecordValue(record, 'id'),
 			isDisplayable: true,
 			isDisplayBlock: true,
 			isParmValue: true,
 			orderDefine: getRecordValue(record, 'orderDefine')
 		}
 		const propParm = new RawDataObjPropDisplay(propParmObj, [])
-		return DataObj.fieldsCreateItem(
-			props.state,
-			propParm,
-			false,
-			fields,
-			props.dataObj,
-			props.dataObj.data
-		)
+		return DataObj.fieldsCreateItem(props.sm, props.dataObj, propParm, fields)
 	}
 
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {

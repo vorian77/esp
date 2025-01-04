@@ -1,7 +1,7 @@
-import { Field, PropsFieldRaw } from '$comps/form/field'
+import { Field, PropsFieldCreate } from '$comps/form/field'
 
 export class FieldChips extends Field {
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		super(props)
 	}
 }

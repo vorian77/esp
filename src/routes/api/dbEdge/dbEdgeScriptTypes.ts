@@ -1,10 +1,12 @@
 import {
 	DataObjTable,
 	type DataRecord,
+	DataRecordStatus,
 	DataRow,
 	DataRows,
 	DBTable,
 	debug,
+	ParmsValuesType,
 	required,
 	strRequired,
 	valueOrDefault
@@ -32,30 +34,29 @@ export class ScriptTypeSave {
 		this.tableKey = required(obj.query.rawDataObj.tables[0].table, clazz, 'tableChild')
 		this.tables = required(obj.query.rawDataObj.tables, clazz, 'tables')
 	}
-	addItem(list: string, item: string, separator: string) {
-		return list ? list + separator + '\n' + item : item
+	static addItem(list: string, item: string, separator: string) {
+		return list && item ? list + separator + '\n' + item : list || item
 	}
-	addItemComma(list: string, item: string) {
-		return this.addItem(list, item, ',')
+	static addItemComma(list: string, item: string) {
+		return ScriptTypeSave.addItem(list, item, ',')
 	}
 	build(): string {
 		return ''
 	}
 
-	getExprData() {
-		const label = this.getLabelData(this.tableKey)
-		const body = `(SELECT to_json($$${JSON.stringify(this.dataRows.map((row: DataRow) => row.record))}$$))`
+	getExprData(label: string, dataRows: DataRow[]) {
+		const body = `(SELECT to_json($$${JSON.stringify(dataRows.map((row: DataRow) => row.record))}$$))`
 		return `${label} := ${body}`
 	}
 	getExprSave() {
 		let label = this.getLabelSave(this.tableKey)
 		let exprCore = this.getExprSaveCore()
-		let exprBody = this.getExprSaveBody(exprCore)
+		let exprBody = this.getExprSaveBody(this.getLabelData(this.tableKey), exprCore)
 		let exprSave = `${label} := ${exprBody}`
 		return exprSave
 	}
-	getExprSaveBody(exprCore: string) {
-		return `(FOR item IN json_array_unpack(${this.getLabelData(this.tableKey)}) UNION (\n${exprCore}))`
+	getExprSaveBody(label: string, exprCore: string) {
+		return `(FOR item IN json_array_unpack(${label}) UNION (\n${exprCore}))`
 	}
 	getExprSaveCore(): string {
 		return ''
@@ -70,12 +71,14 @@ export class ScriptTypeSave {
 
 export class ScriptTypeSaveParent extends ScriptTypeSave {
 	id: string
+	isListSelect: boolean
 	queryParent: QueryParent
 	tableChild: DBTable
 	constructor(obj: any) {
 		const clazz = 'ScriptTypeSaveParent'
 		super(obj)
 		this.id = required(obj.dataRows[0].record.id, clazz, 'id')
+		this.isListSelect = required(obj.isListSelect, clazz, 'isListSelect	')
 		this.queryParent = required(obj.query.parent, clazz, 'parent')
 		this.tableChild = required(obj.query.rawDataObj.tables[0].table, clazz, 'tableChild')
 		this.tableKey = this.queryParent.table
@@ -84,24 +87,20 @@ export class ScriptTypeSaveParent extends ScriptTypeSave {
 		const label = this.getLabelData(this.tableKey)
 		const exprUpdate = `UPDATE ${this.queryParent.table.object}`
 		const exprFilter = `FILTER .id = <uuid>"${this.id}"`
-		const exprProp = `SET {${this.queryParent.columnName} += ${this.getLabelSave(this.tableChild)}}`
+		const operator = this.isListSelect ? ':=' : '+='
+		const exprProp = `SET {${this.queryParent.columnName} ${operator} ${this.getLabelSave(this.tableChild)}}`
 		const expr = `${label} := (\n${exprUpdate}\n${exprFilter}\n${exprProp}\n)`
 		return expr
 	}
 }
 
-export class ScriptTypePrimary extends ScriptTypeSave {
-	scriptParent?: ScriptTypeSaveParent
+export class ScriptTypeSavePrimary extends ScriptTypeSave {
 	constructor(obj: any) {
 		const clazz = 'ScriptTypeSavePrimary'
 		super(obj)
-		this.scriptParent = obj.scriptParent
 	}
 	build() {
-		let exprSave = this.getExprSave()
-		let exprData = this.getExprData()
-		let expr = 'WITH\n' + this.addItem(exprData, exprSave, ',\n')
-		return expr
+		return ''
 	}
 	getExprPropsSelect() {
 		const exprPropsSelect = this.query.getPropsSelect(
@@ -113,7 +112,23 @@ export class ScriptTypePrimary extends ScriptTypeSave {
 	}
 
 	getExprSaveCore(): string {
-		const clazz = 'ScriptTypePrimary.getExprSaveCore'
+		return ''
+	}
+}
+
+export class ScriptTypeSavePrimaryCore extends ScriptTypeSavePrimary {
+	constructor(obj: any) {
+		const clazz = 'ScriptTypeSavePrimaryCore'
+		super(obj)
+	}
+	build() {
+		let exprSave = this.getExprSave()
+		let exprData = this.getExprData(this.getLabelData(this.tableKey), this.dataRows)
+		let expr = 'WITH\n' + ScriptTypeSave.addItem(exprData, exprSave, ',\n')
+		return expr
+	}
+	getExprSaveCore(): string {
+		const clazz = 'ScriptTypeSavePrimaryCore.getExprSaveCore'
 		let expr = ''
 		const tables = this.tables
 
@@ -182,5 +197,122 @@ export class ScriptTypePrimary extends ScriptTypeSave {
 			}
 		}
 		return expr
+	}
+}
+
+enum BackwardLinkFilterType {
+	union = 'UNION',
+	except = 'EXCEPT'
+}
+
+export class ScriptTypeSavePrimaryListSelectLinkBackward extends ScriptTypeSavePrimary {
+	columnBacklink: string
+	columnEmbed: string
+	idParent: string
+	idsAdd: string[]
+	idsRemove: string[]
+	tableParent: DBTable
+	constructor(obj: any) {
+		super(obj)
+		const clazz = 'ScriptTypeSavePrimaryListSelectLinkBackward'
+		this.columnBacklink = strRequired(
+			this.query.fieldEmbed?.columnBacklink,
+			clazz,
+			'columnBacklink'
+		)
+		this.columnEmbed = strRequired(this.query.fieldEmbed?.embedFieldNameRaw, clazz, 'columnEmbed')
+		this.idParent = strRequired(
+			this.dataRows.length > 0 ? this.dataRows[0].record.id : undefined,
+			clazz,
+			'idParent'
+		)
+		const parms = required(this.queryData?.dataTab?.parms, clazz, 'queryData.dataTab.parms')
+		const listIds = parms.valueGet(ParmsValuesType.listIds)
+		const listIdsSelected = parms.valueGet(ParmsValuesType.listIdsSelected)
+		this.idsAdd = listIdsSelected.filter((id: string) => !listIds.includes(id))
+		this.idsRemove = listIds.filter((id: string) => !listIdsSelected.includes(id))
+		this.tableParent = required(this.query.fieldEmbed?.parentTable, clazz, 'tableParent')
+	}
+	build() {
+		let exprAdd: string = this.buildExpr(BackwardLinkFilterType.union, this.idsAdd)
+		let exprRemove: string = this.buildExpr(BackwardLinkFilterType.except, this.idsRemove)
+		let expr = ScriptTypeSave.addItem(exprAdd, exprRemove, ',\n')
+		if (expr) expr = `WITH\n${expr}`
+		return expr
+	}
+	buildExpr(filterType: BackwardLinkFilterType, ids: string[]) {
+		if (ids.length === 0) return ''
+		const labelData = this.buildExprLabelData(filterType)
+		const labelSave = this.buildExprLabelSave(filterType)
+		let exprData = this.buildExprData(labelData, filterType, ids)
+		let exprSaveCore = this.buildExprSaveCore(filterType)
+		let exprSaveBody = this.getExprSaveBody(labelData, exprSaveCore)
+		let exprSave = `${labelSave} := ${exprSaveBody}`
+		return ScriptTypeSave.addItem(exprData, exprSave, ',\n')
+	}
+	buildExprData(label: string, filterType: BackwardLinkFilterType, ids: string[]) {
+		const dataRows: DataRow[] = ids.map(
+			(id: string) => new DataRow(DataRecordStatus.unknown, { id })
+		)
+		return this.getExprData(label, dataRows)
+	}
+	buildExprLabel(filterType: BackwardLinkFilterType, label: string) {
+		return `${label}_${filterType}`
+	}
+	buildExprLabelData(filterType: BackwardLinkFilterType) {
+		return this.buildExprLabel(filterType, this.getLabelData(this.tableKey))
+	}
+
+	buildExprLabelSave(filterType: BackwardLinkFilterType) {
+		return this.buildExprLabel(filterType, this.getLabelSave(this.tableKey))
+	}
+	buildExprSaveCore(filterType: BackwardLinkFilterType): string {
+		const exprUpdate = `  UPDATE ${this.tableKey.object}`
+		const exprFilter = `  FILTER .id = <uuid>item['id']`
+		const exprPropPrimary = `(SELECT ${this.tableKey.object} FILTER .id = <uuid>item['id']).${this.columnBacklink}`
+		const exprPropUpdate = `(SELECT ${this.tableParent.object} FILTER .id = <uuid>"${this.idParent}")`
+		const exprProp = `  SET {${this.columnBacklink} := DISTINCT(${exprPropPrimary} ${filterType} ${exprPropUpdate})}`
+		const expr = `${exprUpdate}\n${exprFilter}\n${exprProp}\n`
+		return expr
+	}
+
+	getExprPropsSelect() {
+		const exprPropsSelect = this.query.getPropsSelect(
+			{ props: this.query.rawDataObj.rawPropsSelect },
+			this.queryData
+		)
+
+		const exprSelectAdd =
+			this.idsAdd.length > 0
+				? this.buildExprLabel(BackwardLinkFilterType.union, this.getLabelSave(this.tableKey))
+				: ''
+		const exprSelectRemove =
+			this.idsRemove.length > 0
+				? this.buildExprLabel(BackwardLinkFilterType.except, this.getLabelSave(this.tableKey))
+				: ''
+		const exprSelectList = `(SELECT ${this.tableParent.object} FILTER .id = <uuid>"${this.idParent}").${this.columnEmbed}`
+		let exprSelect = ScriptTypeSave.addItem(exprSelectList, exprSelectAdd, ' UNION ')
+		exprSelect = ScriptTypeSave.addItem(exprSelect, exprSelectRemove, ' EXCEPT ')
+		exprSelect = `SELECT DISTINCT(${exprSelect})`
+		const expr = `${exprSelect}\n${exprPropsSelect}`
+		return expr
+	}
+}
+
+export class ScriptTypeSavePrimaryListSelectLinkBackwardType extends ScriptTypeSave {
+	constructor(obj: any) {
+		super(obj)
+		const clazz = 'ScriptTypeSavePrimaryListSelectLinkBackwardType'
+	}
+}
+
+export class ScriptTypeSavePrimaryListSelectLinkForward extends ScriptTypeSavePrimary {
+	constructor(obj: any) {
+		super(obj)
+	}
+	build() {
+		let label = this.getLabelSave(this.tableKey)
+		let select = `(SELECT ${this.tableKey.object} FILTER .id IN <parms,uuidlist,listIdsSelected>)`
+		return `WITH\n${label} := ${select}`
 	}
 }

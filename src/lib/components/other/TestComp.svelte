@@ -5,15 +5,15 @@
 	import { User } from '$utils/types.user'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const stateApp: State = getContext(ContextKey.stateApp)
+	const sm: State = getContext(ContextKey.stateManager)
 	const testState = getContext(ContextKey.test)
 
 	testState.increment()
 </script>
 
 <h1>My Test Component</h1>
-{#if stateApp}
-	<p>Hello, {stateApp?.user?.fullName}!!!</p>
+{#if sm}
+	<p>Hello, {sm?.user?.fullName}!!!</p>
 {/if}
 
 <DataViewer header="testState" data={testState.value} />

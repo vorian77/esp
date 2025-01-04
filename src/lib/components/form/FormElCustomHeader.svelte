@@ -7,7 +7,9 @@
 	let { parms }: DataRecord = $props()
 
 	let field = $derived(parms.field) as FieldCustomHeader
-	let classMargin = $derived(field.isFirstVisible ? '' : field.isSubHeader ? '-mt-3' : 'mt-4 -mb-2')
+	let classMargin = $derived(
+		field.colDO.isFirstVisible ? '' : field.isSubHeader ? '-mt-3' : 'mt-4 -mb-2'
+	)
 	let classSize = $derived(field.isSubHeader ? 'h4' : field.size ? 'h' + field.size : 'h3')
 	let classColor = $derived(field.isSubHeader ? 'text-zinc-400' : '')
 	let classWeight = $derived(field.isSubHeader ? 'font-normal' : 'font-bold')

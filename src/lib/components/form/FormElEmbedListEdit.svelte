@@ -15,14 +15,16 @@
 	const FILENAME = '$comps/form/FormElEmbedListEdit.svelte'
 
 	let { parms }: DataRecord = $props()
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
+
 	let fieldEmbed = $derived(parms.field) as FieldEmbedListEdit
-	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.embedDataObjId)
+	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.dataObjIdEmbed)
 </script>
 
 <FormLabel {parms} />
 
-<div class="h-80">
+<div class="h-80 border rounded-md">
 	<LayoutContent
 		parms={{
 			...parms,

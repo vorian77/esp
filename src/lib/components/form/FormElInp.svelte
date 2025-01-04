@@ -12,15 +12,17 @@
 	import { FieldInput } from '$comps/form/fieldInput'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import FormLabel from '$comps/form/FormLabel.svelte'
-	import { IconProps } from '$comps/icon/types.icon'
-	import DataViewer from '$utils/DataViewer.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
+	import { IconProps } from '$comps/icon/types.icon'
+	// import { imask } from '@imask/svelte'
+	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElInp.svelte'
 
 	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
 	let field = $state(parms.field) as FieldInput
 	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
 	let fieldInputType = $state(field.inputTypeCurrent || field.fieldElement)

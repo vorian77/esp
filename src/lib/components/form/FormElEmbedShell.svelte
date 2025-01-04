@@ -25,10 +25,11 @@
 	const FILENAME = '$comps/Form/FormElembedShell.svelte'
 
 	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
 	let field = $state(parms.field) as FieldEmbedShell
-	let stateShell: State = $derived(field.stateShell)
+	let stateShell: sm = $derived(field.stateShell)
 	let currLevel = $derived(stateShell.app.getCurrLevel())
 	$inspect('FormElEmbedShell.currLevel', currLevel)
 
@@ -38,7 +39,7 @@
 	// let currTab: AppLevelTab
 
 	field.stateShell.setfChangeCallback((obj: any) => {
-		stateApp.fChangeCallback(obj)
+		sm.fChangeCallback(obj)
 	})
 
 	// let parmsShell = $derived({

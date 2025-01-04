@@ -34,22 +34,22 @@ export class NavMenuData {
 	idIndex = -1
 	isOpen = $state(true)
 	items: NavMenuDataComp[] = []
-	stateApp: State
+	sm: State
 	width: any = $state()
 	widthClosed = 70
 	widthOpen = 250
 	constructor(obj: any) {
 		const clazz = 'NavMenuData'
 		obj = valueOrDefault(obj, {})
-		this.stateApp = obj.stateApp
+		this.sm = obj.sm
 		this.width = this.widthOpen
 
-		if (this.stateApp && this.stateApp.user) {
+		if (this.sm && this.sm.user) {
 			// org
-			this.items.push(new NavMenuDataCompOrg(this, { user: this.stateApp.user }))
+			this.items.push(new NavMenuDataCompOrg(this, { user: this.sm.user }))
 
 			// apps
-			const rawMenu = new RawMenu(this.stateApp.user.resources_sys_app)
+			const rawMenu = new RawMenu(this.sm.user.resources_sys_app)
 			if (rawMenu.apps.length === 1) {
 				const itemGroupSingleProgram = new NavMenuDataCompGroup(this, {
 					header: 'My Apps',
@@ -70,11 +70,11 @@ export class NavMenuData {
 
 			// item - group - tasks - default
 			const itemGroupTasks = new NavMenuDataCompGroup(this, { header: 'My Tasks' })
-			this.stateApp.user.resources_sys_task_default
+			this.sm.user.resources_sys_task_default
 				.filter(
 					(r) =>
 						r.isShow &&
-						!this.stateApp.user?.isMobileOnly &&
+						!this.sm.user?.isMobileOnly &&
 						!r.codeStatusObjName &&
 						r.codeRenderType !== UserResourceTaskRenderType.page
 				)
@@ -88,7 +88,7 @@ export class NavMenuData {
 			this.items.push(itemGroupTasks)
 
 			// user
-			this.items.push(new NavMenuDataCompUser(this, { user: this.stateApp.user }))
+			this.items.push(new NavMenuDataCompUser(this, { user: this.sm.user }))
 
 			// item - group - default items
 			const itemDefault = new NavMenuDataCompGroup(this, {})
@@ -115,7 +115,7 @@ export class NavMenuData {
 					break
 
 				case NavMenuContentType.page:
-					this.stateApp.change({
+					this.sm.change({
 						confirmType: TokenAppDoActionConfirmType.statusChanged,
 						page: content.value,
 						target: StateTarget.page
@@ -123,7 +123,7 @@ export class NavMenuData {
 					break
 				case NavMenuContentType.node:
 					node = content.value as Node
-					this.stateApp.change({
+					this.sm.change({
 						confirmType: TokenAppDoActionConfirmType.statusChanged,
 						// parmsState: { programId: this.getProgramId(node) },
 						packet: new StatePacket({
@@ -135,11 +135,11 @@ export class NavMenuData {
 					break
 				case NavMenuContentType.task:
 					const task: UserResourceTask = content.value as UserResourceTask
-					this.stateApp.change({
+					this.sm.change({
 						confirmType: TokenAppDoActionConfirmType.statusChanged,
 						packet: new StatePacket({
 							action: StatePacketAction.openNode,
-							token: task.getTokenNode(this.stateApp.user)
+							token: task.getTokenNode(this.sm.user)
 						}),
 						target: StateTarget.feature
 					})
@@ -413,13 +413,13 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 		this.items.addItem(obj)
 	}
 	async adminResetDb(navMenu: NavMenuData) {
-		await adminDbReset(navMenu.stateApp)
-		await navMenu.stateApp.resetUser(true)
+		await adminDbReset(navMenu.sm)
+		await navMenu.sm.resetUser(true)
 	}
 
 	async myPreferences(navMenu: NavMenuData) {
-		await navMenu.stateApp.openModalDataObj('data_obj_auth_user_pref_type', async () => {
-			await navMenu.stateApp.resetUser(true)
+		await navMenu.sm.openModalDataObj('data_obj_auth_user_pref_type', async () => {
+			await navMenu.sm.resetUser(true)
 		})
 	}
 }

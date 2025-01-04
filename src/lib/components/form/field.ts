@@ -20,8 +20,6 @@ import {
 } from '$comps/form/types.validation'
 import { PropLinkItemsSource, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { IconProps } from '$comps/icon/types.icon'
-import { DataObjStatus } from '$comps/dataObj/types.dataManager.svelte'
-// import { DataManagerNode } from '$comps/dataObj/types.dataManager.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/form/field.ts/'
@@ -34,10 +32,9 @@ export class Field {
 	fieldAlignment: FieldAlignment
 	fieldElement: FieldElement
 	iconProps?: IconProps
-	isFirstVisible: boolean
 	isParmValue: boolean
 	linkItemsSource?: PropLinkItemsSource
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		const clazz = `Field: ${props.propRaw.propName}`
 		const obj = valueOrDefault(props.propRaw, {})
 		this.colDO = obj
@@ -64,7 +61,6 @@ export class Field {
 			'FieldElement',
 			FieldElement
 		)
-		this.isFirstVisible = props.isFirstVisible
 		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
 		this.linkItemsSource = classOptional(PropLinkItemsSource, obj._linkItemsSource)
 
@@ -99,7 +95,7 @@ export class Field {
 		])
 	}
 
-	async init(props: PropsField) {
+	async init(props: PropsFieldInit) {
 		// used for async initialization
 	}
 
@@ -257,29 +253,28 @@ export enum FieldEmbedType {
 	listSelect = 'listSelect'
 }
 
-export class PropsField {
+export class PropsFieldInit {
 	dataObj: DataObj
-	state: State
+	sm: State
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'PropsField'
 		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
-		this.state = required(obj.state, clazz, 'state')
+		this.sm = required(obj.sm, clazz, 'sm')
 	}
 }
 
-export class PropsFieldRaw extends PropsField {
-	data: DataObjData
-	fields: Field[]
-	isFirstVisible: boolean
+export class PropsFieldCreate {
+	parms: DataRecord = {}
 	propRaw: RawDataObjPropDisplay
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
-		super(obj)
-		const clazz = 'PropsFieldRaw'
-		this.data = required(obj.data, clazz, 'data')
-		this.fields = required(obj.fields, clazz, 'fields')
-		this.isFirstVisible = booleanRequired(obj.isFirstVisible, clazz, 'isFirstVisible')
+		const clazz = 'PropsFieldCreate'
 		this.propRaw = required(obj.propRaw, clazz, 'propRaw')
+		Object.keys(obj).forEach((key) => {
+			if (key !== 'propRaw') {
+				this.parms[key] = obj[key]
+			}
+		})
 	}
 }

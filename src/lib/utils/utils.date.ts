@@ -25,7 +25,7 @@ export function formatDateTime(val: any) {
 	return formattedDate
 }
 
-export function isValidDate(date) {
+export function isValidDate(date: any) {
 	if (!date) return false
 	let isValid = true
 	try {

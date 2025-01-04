@@ -8,20 +8,16 @@ import {
 	TokenApiQueryType
 } from '$utils/types.token'
 import {
+	DBTable,
 	debug,
-	debugData,
-	DataObj,
 	DataObjData,
-	DataObjDataField,
-	DataObjProcessType,
 	type DataRecord,
 	DataRecordStatus,
 	DataRow,
 	DataRows,
-	DBTable,
 	formatDateTime,
 	getArray,
-	getRecordValue,
+	memberOfEnum,
 	ParmsValuesType,
 	required,
 	strRequired,
@@ -33,7 +29,11 @@ import {
 	PropLinkItemsSource,
 	PropNamePrefixType,
 	RawDataObj,
-	RawDataObjPropDB
+	RawDataObjPropDB,
+	RawDataObjPropDisplay,
+	RawDataObjPropDisplayEmbedListConfig,
+	RawDataObjPropDisplayEmbedListEdit,
+	RawDataObjPropDisplayEmbedListSelect
 } from '$comps/dataObj/types.rawDataObj'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import {
@@ -41,7 +41,14 @@ import {
 	getDataObjByName,
 	getLinkItemsSource
 } from '$routes/api/dbEdge/dbEdgeUtilities'
-import { evalExpr, EvalExprContext, evalExprTokens } from '$routes/api/dbEdge/dbEdgeGetVal'
+import { Field, FieldEmbedType, PropsFieldCreate } from '$comps/form/field'
+import {
+	FieldEmbed,
+	FieldEmbedListConfig,
+	FieldEmbedListEdit,
+	FieldEmbedListSelect
+} from '$comps/form/fieldEmbed'
+import { evalExpr, EvalExprContext } from '$routes/api/dbEdge/dbEdgeGetVal'
 import type { RawDataList } from '$routes/api/dbEdge/types.dbEdge'
 import { Script, ScriptExePost, ScriptGroup } from '$routes/api/dbEdge/dbEdgeScript'
 import { getRawDataObjDynamic } from '$routes/api/dbEdge/dbEdgeProcessDynDO'
@@ -125,7 +132,7 @@ export async function processDataObj(token: TokenApiQuery) {
 	let returnData = new DataObjData(rawDataObj)
 
 	await processDataObjQuery(token.queryType, query, queryData, scriptGroup, returnData)
-	return processDataObjExecute(token.queryType, queryData, scriptGroup, returnData)
+	return processDataObjExecute(scriptGroup, returnData)
 }
 
 async function processDataObjQuery(
@@ -138,7 +145,7 @@ async function processDataObjQuery(
 	const clazz = 'processDataObjQuery'
 	switch (queryType) {
 		case TokenApiQueryType.preset:
-			returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
+			returnData.fields = await processDataObjQueryEmbedFields(query.rawDataObj, queryData)
 			query.setProcessRow(
 				new ProcessRowSelectPreset(query.rawDataObj.rawPropsSelect, DataRecordStatus.preset)
 			)
@@ -146,7 +153,7 @@ async function processDataObjQuery(
 			break
 
 		case TokenApiQueryType.retrieve:
-			returnData.fields = await DataObjDataField.init(query.rawDataObj, queryData, getRawDataObj)
+			returnData.fields = await processDataObjQueryEmbedFields(query.rawDataObj, queryData)
 			query.setProcessRow(
 				new ProcessRowSelect(query.rawDataObj.rawPropsSelect, DataRecordStatus.retrieved)
 			)
@@ -173,13 +180,12 @@ async function processDataObjQuery(
 	const EMBED_QUERY_TYPES = [TokenApiQueryType.retrieve, TokenApiQueryType.save]
 	if (EMBED_QUERY_TYPES.includes(queryType)) {
 		for (let i = 0; i < returnData.fields.length; i++) {
-			const field = returnData.fields[i]
+			const field: FieldEmbed = returnData.fields[i]
 			queryData.dataTab = field.data
 			const queryTypeEmbed =
 				queryType === TokenApiQueryType.retrieve
 					? queryType
-					: queryType === TokenApiQueryType.save &&
-						  field.data.parms.valueGet(ParmsValuesType.embedListSave)
+					: queryType === TokenApiQueryType.save && field.embedType === FieldEmbedType.listEdit
 						? TokenApiQueryType.save
 						: TokenApiQueryType.retrieve
 			await processDataObjQuery(
@@ -193,12 +199,37 @@ async function processDataObjQuery(
 	}
 }
 
-async function processDataObjExecute(
-	queryType: TokenApiQueryType,
-	queryData: TokenApiQueryData,
-	scriptGroup: ScriptGroup,
-	returnData: DataObjData
+async function processDataObjQueryEmbedFields(
+	rawDataObjParent: RawDataObj,
+	queryData: TokenApiQueryData
 ) {
+	let fields: FieldEmbed[] = []
+	for (let i = 0; i < rawDataObjParent.rawPropsDisplay.length; i++) {
+		const propRaw = rawDataObjParent.rawPropsDisplay[i]
+		let FieldEmbedClass: any = undefined
+		if (propRaw.fieldEmbedListConfig) {
+			FieldEmbedClass = FieldEmbedListConfig
+		} else if (propRaw.fieldEmbedListEdit) {
+			FieldEmbedClass = FieldEmbedListEdit
+		} else if (propRaw.fieldEmbedListSelect) {
+			FieldEmbedClass = FieldEmbedListSelect
+		}
+		if (FieldEmbedClass) {
+			fields.push(
+				await FieldEmbed.initFieldServer(
+					rawDataObjParent,
+					queryData,
+					propRaw,
+					FieldEmbedClass,
+					getRawDataObj
+				)
+			)
+		}
+	}
+	return fields
+}
+
+async function processDataObjExecute(scriptGroup: ScriptGroup, returnData: DataObjData) {
 	const clazz = 'processDataObjExecute'
 	let scriptData: DataObjData
 	returnData.resetRowsRetrieved()
@@ -213,6 +244,8 @@ async function processDataObjExecute(
 			script.queryData,
 			new EvalExprContext('processDataObjExecute', script.query.rawDataObj.name)
 		)
+
+		debug('processDataObjExecute', `expr`, expr)
 
 		const rawDataList = await exeQueryMulti(expr)
 

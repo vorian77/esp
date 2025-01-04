@@ -21,13 +21,13 @@ let verifyData: DataRecord = {}
 let authSecurityCodePhone = ''
 let authSecurityCode = 0
 
-export default async function action(state: State, field: FieldCustomAction, data: any) {
+export default async function action(sm: State, field: FieldCustomAction, data: any) {
 	const type = field.type
 	const value = field.value
 
 	switch (type) {
 		case 'page':
-			await state.openDrawerDataObj(
+			await sm.openDrawerDataObj(
 				'auth',
 				'bottom',
 				'h-[60%]',
@@ -52,7 +52,7 @@ export default async function action(state: State, field: FieldCustomAction, dat
 					verifyFrom = value
 					verifyData = data
 					await sendCode(data['userName'])
-					await state.openDrawerDataObj(
+					await sm.openDrawerDataObj(
 						'auth',
 						'bottom',
 						'h-[60%]',
@@ -125,7 +125,7 @@ export default async function action(state: State, field: FieldCustomAction, dat
 					alert(msgFail)
 					return
 				}
-				state.storeDrawer.close()
+				sm.storeDrawer.close()
 				await userSetId(resultRecord['userId'])
 				goto('/home')
 
@@ -143,7 +143,7 @@ export default async function action(state: State, field: FieldCustomAction, dat
 					verifyFrom = 'data_obj_auth_signup_update'
 					verifyData = data
 					await sendCode(data['userName'])
-					await state.openDrawerDataObj(
+					await sm.openDrawerDataObj(
 						'auth',
 						'bottom',
 						'h-[60%]',

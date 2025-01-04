@@ -17,7 +17,6 @@
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import NavRow from '$comps/nav/NavRow.svelte'
-	import { innerHeight } from 'svelte/reactivity/window'
 
 	const FILENAME = '$comps/layout/LayoutContent.svelte'
 	const comps: Record<string, any> = {
@@ -28,36 +27,28 @@
 	}
 
 	let { parms }: DataRecord = $props()
-	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
+
 	let cancelForm: Function = getContext(ContextKey.cancelForm) || undefined
 
 	let Component = $state(comps[parms.component])
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
-	let elContent: HTMLDivElement
-	let elContentTopY: number = $state()
-
-	$effect(() => {
-		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
-	})
-
 	// header parms
 	let headerObj = $derived(
-		stateApp.layoutHeader.headerText
-			? stateApp.layoutHeader.headerText
-			: stateApp.layoutHeader.isDataObj
+		sm.layoutHeader.headerText
+			? sm.layoutHeader.headerText
+			: sm.layoutHeader.isDataObj
 				? dataObj?.raw?.header
 				: ''
 	)
 
 	let headerObjSub = $derived(
-		stateApp.layoutHeader.isDataObj ? (dataObj?.raw?.subHeader ? dataObj?.raw?.subHeader : '') : ''
+		sm.layoutHeader.isDataObj ? (dataObj?.raw?.subHeader ? dataObj?.raw?.subHeader : '') : ''
 	)
-	let isDrawerClose = $derived(stateApp.layoutHeader.isDrawerClose)
-	let rowStatus = $derived(
-		stateApp.layoutHeader.isRowStatus ? stateApp.app.getRowStatus() : undefined
-	)
+	let isDrawerClose = $derived(sm.layoutHeader.isDrawerClose)
+	let rowStatus = $derived(sm.layoutHeader.isRowStatus ? sm.app.getRowStatus() : undefined)
 
 	// header styling
 	let classHeader = $derived(
@@ -71,23 +62,19 @@
 	}
 </script>
 
-<!-- contentTop: {elContentTopY} -->
 <!-- <DataViewer header="rowStatus" data={rowStatus} /> -->
-<div
-	class="h-full max-h-full flex flex-col border rounded-md p-0"
-	bind:this={elContent}
-	style={`max-height: ${innerHeight.current - elContentTopY - 30}px;`}
->
+
+<div class="h-full max-h-full flex flex-col p-3 {headerObj ? 'border p-3 rounded-md' : ''}">
 	{#if Component}
 		{#if headerObj}
 			<div class="mb-4">
 				<div class="flex justify-between items-start">
 					<h2 class="h2">{headerObj}</h2>
 					<div>
-						{#if stateApp.layoutHeader.isRowStatus}
+						{#if sm.layoutHeader.isRowStatus}
 							<NavRow />
 						{/if}
-						{#if stateApp.layoutHeader.isDrawerClose}
+						{#if sm.layoutHeader.isDrawerClose}
 							<button
 								type="button"
 								class="btn-icon btn-icon-sm variant-filled-error"
@@ -103,13 +90,9 @@
 				{/if}
 			</div>
 		{/if}
-		<!-- class="h-full flex flex-col sm:flex-row border border-blue-400 p-4 rounded-md" -->
-		<div id="layout-content" class="h-full flex flex-col sm:flex-row rounded-md p-4">
-			<Component {parms} />
 
-			{#if dataObj}
-				<DataObjActionsObj {parms} />
-			{/if}
+		<div class="h-full">
+			<Component {parms} />
 		</div>
 	{/if}
 </div>

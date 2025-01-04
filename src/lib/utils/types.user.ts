@@ -86,7 +86,7 @@ export class User {
 		// this.user_id = nbrOptional(obj.user_id, 'User')
 	}
 
-	async selectResource(state: State, resourceType: UserTypeResourceType) {
+	async selectResource(sm: State, resourceType: UserTypeResourceType) {
 		const resources = this.resources.getResources(resourceType)
 		switch (resources.length) {
 			case 0:
@@ -103,7 +103,7 @@ export class User {
 				// })
 				// parmData.data[parmName] = resources[0].idResource
 				// console.log('User.setUserSelectParms.parmSelect.multi', { parmName, resources, itemsList })
-				await state.openModalSelect(
+				await sm.openModalSelect(
 					new TokenAppModalSelect({
 						columnsDefs: undefined,
 						fModalClose: (returnType: TokenAppModalReturnType, returnData?: ParmsValues) => {
@@ -212,6 +212,7 @@ export class UserResourceTask extends UserResource {
 	codeCategory: UserResourceTaskCategory
 	codeRenderType: UserResourceTaskRenderType
 	codeStatusObjName?: string
+	data: DataRecord = {}
 	dataObjPage?: DataObj
 	description?: string
 	exprShow?: string
@@ -270,10 +271,10 @@ export class UserResourceTask extends UserResource {
 			})
 		})
 	}
-	async loadPage(stateApp: State) {
+	async loadPage(sm: State) {
 		if (this.pageDataObjId) {
 			this.dataObjPage = await queryTypeDataObj(
-				stateApp,
+				sm,
 				this.pageDataObjId,
 				new DataObjData(),
 				TokenApiQueryType.retrieve

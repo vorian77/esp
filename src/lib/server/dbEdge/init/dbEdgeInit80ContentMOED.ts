@@ -73,6 +73,49 @@ function initStudent(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 1
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				codeFieldElement: 'date',
+				columnName: 'custom_element_date',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_moed::MoedParticipant).dateCreated`,
+				headerAlt: 'Application Date',
+				indexTable: 0,
+				nameCustom: 'customAppDate'
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'right',
+				codeFieldElement: 'number',
+				columnName: 'custom_element_int',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				exprCustom: `(with 
+  now := cal::to_local_date(datetime_current(), 'UTC') ,
+  compare :=(select app_cm::CmClientServiceFlow FILTER .client = org_moed::MoedParticipant).dateCreated,
+  dur := now - compare,
+	SELECT std::duration_get(dur, 'day'))`,
+				headerAlt: 'Days Open',
+				indexTable: 0,
+				nameCustom: 'customAppDaysOpen',
+				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'left',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_moed::MoedParticipant).codeStatus.name`,
+				headerAlt: 'Application Status',
+				indexTable: 0,
+				nameCustom: 'customAppStatus'
 			}
 		]
 	})
@@ -2298,7 +2341,7 @@ function initSubjects(init: InitDb) {
 
 function initDemoData() {
 	moedDataParticipant.setData()
-	console.log('moedDataParticipant.data', moedDataParticipant.data)
+	console.log('moedDataParticipant.data.rows:', moedDataParticipant.data.length)
 }
 
 function initParticipants(init: InitDb) {

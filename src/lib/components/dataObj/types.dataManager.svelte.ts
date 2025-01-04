@@ -1,8 +1,6 @@
-import { SvelteMap } from 'svelte/reactivity'
 import {
 	DataObj,
 	DataObjCardinality,
-	DataObjData,
 	type DataRecord,
 	DataRecordStatus,
 	DataRow,
@@ -10,8 +8,8 @@ import {
 	DataObjSaveMode
 } from '$lib/components/dataObj/types.dataObj.svelte'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
-import { required, Validity, ValidityError, valueHasChanged } from '$utils/types'
-import { Field, FieldAccess, FieldClassType, FieldEmbedType } from '$comps/form/field'
+import { ValidityError, valueHasChanged } from '$utils/types'
+import { Field, FieldAccess, FieldClassType } from '$comps/form/field'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/dataObj/types.dataManager.svelte'
@@ -302,13 +300,12 @@ export class DataManagerNode {
 
 	setFieldVal(row: number, field: Field, value: any) {
 		const recordId = this.recordsDisplay[row].id
-
 		const fieldName = field.colDO.propName
 		this.recordsDisplay[row][fieldName] = value
 
 		this.setFieldValChanged(row, recordId, fieldName, value)
 		this.setFieldValValidity(row, recordId, field)
-		if (this.dataObj.raw.listReorderColumn && this.dataObj.fieldEmbed) {
+		if (this.dataObj.raw.listReorderColumn && this.dataObj.embedField) {
 			const reorderColumn = this.dataObj.raw.listReorderColumn
 			this.recordsDisplay.sort((a, b) => a[reorderColumn] - b[reorderColumn])
 		}

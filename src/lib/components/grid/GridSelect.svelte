@@ -10,36 +10,29 @@
 	const FILENAME = '$comps/selectMulti/GridSelect.svelte'
 
 	let { parms }: DataRecord = $props()
-	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 
 	let gridApi: GridApi = $state()
-	let idColumn = $derived(stateApp.parmsState.valueGet(ParmsValuesType.gridColumnId))
+	let idColumn = $derived(sm.parmsState.valueGet(ParmsValuesType.gridColumnId))
 
 	let gridOptions = $state(
 		new GridManagerOptions({
-			columnDefs: stateApp.parmsState.valueGet(ParmsValuesType.columnDefs),
+			columnDefs: sm.parmsState.valueGet(ParmsValuesType.columnDefs),
 			idColumn,
 			isSelect: true,
-			isSelectMulti: stateApp.parmsState.valueGet(ParmsValuesType.isMultiSelect),
+			isSelectMulti: sm.parmsState.valueGet(ParmsValuesType.isMultiSelect),
 			onSelectionChanged,
-			parmStateSelectedIds: stateApp.parmsState.valueGet(ParmsValuesType.listIdsSelected),
-			rowData: stateApp.parmsState.valueGet(ParmsValuesType.rowData),
-			sortModel: stateApp.parmsState.valueGet(ParmsValuesType.listSortModel)
+			parmStateSelectedIds: sm.parmsState.valueGet(ParmsValuesType.listIdsSelected),
+			rowData: sm.parmsState.valueGet(ParmsValuesType.rowData),
+			sortModel: sm.parmsState.valueGet(ParmsValuesType.listSortModel)
 		})
 	)
 
 	function onSelectionChanged(event: SelectionChangedEvent) {
-		stateApp.parmsState.valueSet(
-			ParmsValuesType.listIdsSelected,
-			getSelectedNodeIds(event.api, idColumn)
-		)
+		sm.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, idColumn))
 	}
 </script>
 
-<div class="h-[60vh]">
-	{#if gridOptions}
-		<Grid bind:api={gridApi} options={gridOptions} />
-	{/if}
-</div>
-
-<!-- <DataViewer header="rowData" data={rowData} /> -->
+{#if gridOptions}
+	<Grid bind:api={gridApi} options={gridOptions} />
+{/if}

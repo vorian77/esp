@@ -2,9 +2,9 @@ import { State } from '$comps/app/types.appState.svelte'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiUserId } from '$utils/types.token'
 
-export async function adminDbReset(state: State) {
+export async function adminDbReset(sm: State) {
 	// <todo> - 240125
-	const userId = state.user!.id
+	const userId = sm.user!.id
 	return await apiFetch(ApiFunction.dbEdgeInit, new TokenApiUserId(userId))
 }
 
@@ -14,9 +14,9 @@ export function capitalizeFirstLetter(text: string) {
 
 export enum ContextKey {
 	cancelForm = 'cancelForm',
-	dashboardReset = 'dashboardReset',
+	dashboardRefresh = 'dashboardReset',
 	dataManager = 'dataManager',
-	stateApp = 'stateApp',
+	stateManager = 'stateManager',
 	test = 'test'
 }
 

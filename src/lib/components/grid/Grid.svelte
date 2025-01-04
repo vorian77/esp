@@ -62,6 +62,7 @@
 		StateSurfaceModal
 	} from '$comps/app/types.appState.svelte'
 	import GridFilter from '$comps/grid/GridFilter.svelte'
+	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -74,9 +75,13 @@
 	// export let api: GridApi
 	// export let options: GridManagerOptions
 
-	let { api = $bindable(), options }: { api: GridApi; options: GridManagerOptions } = $props()
+	let {
+		api = $bindable(),
+		options,
+		parms
+	}: { api: GridApi; options: GridManagerOptions; parms: DataRecord } = $props()
 
-	let eGui: HTMLDivElement
+	let eGui: HTMLElement
 	let isSuppressFilterSort: boolean
 	let rowCountFiltered: number
 	let rowCountSelected: number
@@ -164,8 +169,10 @@
 			const colCntVisible = columnDefs.reduce((acc, col) => {
 				return acc + (col.hide ? 0 : 1)
 			}, 0)
+
 			const strategy =
 				colCntVisible * avgColW > eGui.offsetWidth ? 'fitCellContents' : 'fitGridWidth'
+
 			// console.log('Grid.autoSizeStrategy:', {
 			// 	gridWidth: eGui.offsetWidth,
 			// 	colCntVisible,
@@ -368,14 +375,24 @@
 	}
 </script>
 
-<div id="grid" class="w-full h-full flex flex-col sm:p-4 sm:border rounded-md">
-	<GridFilter
-		isHideFilter={isSuppressFilterSort}
-		listFilterQuick={options.userSettings.getPref(ParmsUserDataType.listFilterQuick)}
-		{rowCountFiltered}
-		{rowCountSelected}
-		setFilterQuick={settingsFilterQuickSet}
-	/>
+<div id="grid" class="w-full h-full flex flex-col sm:flex-row rounded-md">
+	<div class="grow flex flex-col gap-3">
+		<GridFilter
+			isHideFilter={isSuppressFilterSort}
+			listFilterQuick={options.userSettings.getPref(ParmsUserDataType.listFilterQuick)}
+			{rowCountFiltered}
+			{rowCountSelected}
+			setFilterQuick={settingsFilterQuickSet}
+		/>
 
-	<div bind:this={eGui} style="height: 100%; width:100%;" class="grow max-h-full ag-theme-quartz" />
+		<div
+			bind:this={eGui}
+			style="height: 100%; width:100%;"
+			class="grow max-h-full ag-theme-quartz"
+		/>
+	</div>
+	<div class="flex flex-col">
+		<div id="spacer" class="hidden block sm:flex h-[65px] justify-center" />
+		<DataObjActionsObj {parms} />
+	</div>
 </div>

@@ -10,19 +10,19 @@
 	const DEFAULT_APP_NAME = 'The App Factory'
 
 	let { toggleMobileMenuHide }: { toggleMobileMenuHide: Function } = $props()
-	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 
-	let appName = stateApp?.user?.org?.appName || DEFAULT_APP_NAME
+	let appName = sm?.user?.org?.appName || DEFAULT_APP_NAME
 
 	const goHome = () => {
-		stateApp.change({
+		sm.change({
 			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			target: StateTarget.dashboard
 		})
 	}
 </script>
 
-<nav class="h-12 flex items-center bg-white gap-4 border-b p-2 mb-2">
+<nav class="h-12 flex items-center bg-white p-3 gap-4 border-b">
 	<Icon
 		props={new IconProps({
 			isNav: true,

@@ -15,8 +15,8 @@
 	const FILENAME = '$comps/form/FormLabel.svelte'
 
 	let { parms, iconProps = undefined }: { parms: DataRecord; iconProps: IconProps } = $props()
-
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
 	let isLabelBold = $state(parms.isLabelBold)
 	let field: Field = $state(parms.field)

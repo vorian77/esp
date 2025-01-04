@@ -30,7 +30,7 @@ let uploadData: FileStorage
 
 export async function qaExecuteFileStorage(
 	queryActionName: string,
-	state: State,
+	sm: State,
 	queryType: TokenApiQueryType,
 	queryTiming: DataObjActionQueryTriggerTiming,
 	table: string | undefined,
@@ -61,7 +61,7 @@ export async function qaExecuteFileStorage(
 					url = fileParm.url
 				}
 				if (url) {
-					await blobDelete(state, url)
+					await blobDelete(sm, url)
 					dataUpdate.rowsSave.setDetailRecordValue(parms.imageField, undefined)
 				}
 				break
@@ -72,8 +72,8 @@ export async function qaExecuteFileStorage(
 
 			case TokenApiBlobAction.upload:
 				if (fileParm instanceof TokenApiBlobParmUpload) {
-					if (fileParm.urlOld) await blobDelete(state, fileParm.urlOld)
-					await blobUpload(state, fileParm, dataUpdate, parms)
+					if (fileParm.urlOld) await blobDelete(sm, fileParm.urlOld)
+					await blobUpload(sm, fileParm, dataUpdate, parms)
 				}
 				break
 
@@ -88,7 +88,7 @@ export async function qaExecuteFileStorage(
 	return dataUpdate
 }
 
-const blobDelete = async function (state: State, url: string) {
+const blobDelete = async function (sm: State, url: string) {
 	const formData = new FormData()
 	formData.set('fileAction', TokenApiBlobAction.delete)
 	formData.set('url', url)
@@ -101,7 +101,7 @@ const blobDelete = async function (state: State, url: string) {
 }
 
 const blobUpload = async function (
-	state: State,
+	sm: State,
 	fileParm: TokenApiBlobParmUpload,
 	dataUpdate: DataObjData,
 	parms: DataRecord
@@ -130,5 +130,5 @@ const blobUpload = async function (
 			url: result.data.url
 		})
 	)
-	state.openToast(ToastType.success, `File '${fileName}' uploaded successfully!`)
+	sm.openToast(ToastType.success, `File '${fileName}' uploaded successfully!`)
 }

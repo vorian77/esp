@@ -30,48 +30,58 @@
 	const FILENAME = '/$comps/dataObj/DataObjActions.svelte'
 
 	let { parms }: DataRecord = $props()
-	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
-	let dataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	let isShowing = $derived(dataObj.actionsField.some((a) => a.isShow(stateApp, dataObj)))
-
+	let dataObjId = $derived(parms?.dataObjId)
+	let dataObj = $derived(dataObjId ? dm.getDataObj(dataObjId) : undefined)
+	let isShowing = $derived(
+		dataObjId ? dataObj.actionsField.some((a) => a.isShow(sm, dataObj)) : false
+	)
 	let isEditing = $derived(
-		dataObj.actionsField.some(
-			(a: DataObjActionField) =>
-				[StatePacketAction.doDetailSave, StatePacketAction.doListSelfSave].includes(
-					a.codePacketAction
-				) &&
-				dm.isStatusChanged() &&
-				!dataObj.fieldEmbed
-		)
+		dataObjId
+			? dataObj.actionsField.some(
+					(a: DataObjActionField) =>
+						[StatePacketAction.doDetailSave, StatePacketAction.doListSelfSave].includes(
+							a.codePacketAction
+						) &&
+						dm.isStatusChanged() &&
+						!dataObj.isFieldEmbed
+				)
+			: false
 	)
 
 	async function onClick(action: DataObjActionField) {
-		await action.trigger(stateApp, dataObj)
+		await action.trigger(sm, dataObj)
 	}
 </script>
 
 <!-- <DataViewer header="actions" data={dataObj.actionsField.map((a) => a.header)} /> -->
 
-<hr class="my-4 sm:hidden" />
+<div class=" flex flex-col {isShowing ? 'sm:pl-3' : 'hidden'}">
+	<div class="my-2 sm:hidden">
+		<hr />
+	</div>
 
-<div class="flex flex-row gap-3 justify-end sm:flex-col sm:justify-start {isShowing ? 'pl-4' : ''}">
-	{#if isEditing}
-		<p class="text-blue-500">Editing...</p>
+	{#if dataObj}
+		<div class="flex flex-row justify-end gap-3 sm:flex-col">
+			{#if isEditing}
+				<p class="text-blue-500 self-center sm:self-start">Editing...</p>
+			{/if}
+
+			{#each dataObj?.actionsField as action (action.name)}
+				{@const isDisabled = action.isDisabled(sm, dataObj)}
+				{@const isShow = action.isShow(sm, dataObj)}
+
+				<button
+					class="btn btn-action text-sm text-white {isShow ? '' : 'hidden'}"
+					style:background-color={action.fieldColor.color}
+					disabled={isDisabled}
+					onclick={async () => onClick(action)}
+				>
+					{action.header}
+				</button>
+			{/each}
+		</div>
 	{/if}
-
-	{#each dataObj?.actionsField as action (action.name)}
-		{@const isDisabled = action.isDisabled(stateApp, dataObj)}
-		{@const isShow = action.isShow(stateApp, dataObj)}
-
-		<button
-			class="w-full btn btn-action text-sm text-white {isShow ? '' : 'hidden'}"
-			style:background-color={action.fieldColor.color}
-			disabled={isDisabled}
-			onclick={async () => onClick(action)}
-		>
-			{action.header}
-		</button>
-	{/each}
 </div>

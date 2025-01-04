@@ -50,6 +50,7 @@ export async function dynDOReportRender(
 			_link: el._link,
 			_propName: el.nameCustom || el._column?.name,
 			exprCustom: el.exprCustom,
+			id: el.id,
 			indexTable: el.indexTable,
 			orderDefine: el.orderDisplay || el.orderDefine
 		}

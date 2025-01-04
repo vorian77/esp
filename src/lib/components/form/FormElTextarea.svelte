@@ -8,7 +8,8 @@
 	const FILENAME = '/$comps/form/FormElTextarea.svelte'
 
 	let { parms }: DataRecord = $props()
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
 	let field = $derived(parms.field) as FieldCustomActionLink
 	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))

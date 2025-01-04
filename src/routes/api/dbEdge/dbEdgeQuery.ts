@@ -2,7 +2,6 @@ import { nbrOrDefault, valueOrDefault } from '$lib/utils/utils'
 import {
 	booleanRequired,
 	classOptional,
-	DataObjDataField,
 	DataObjTable,
 	DBTable,
 	debug,
@@ -14,6 +13,8 @@ import {
 	strRequired
 } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
+import { FieldEmbedType } from '$comps/form/field'
+import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
 	PropDataSourceValue,
 	PropDataType,
@@ -38,16 +39,24 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$routes/api/dbEdge/dbEdgeQuery.ts'
 
 export class Query {
-	fieldEmbed?: DataObjDataField
+	fieldEmbed?: FieldEmbed
 	parent?: QueryParent
 	processRow?: ProcessRow
 	rawDataObj: RawDataObj
-	scriptOrder: string = ''
-	constructor(rawDataObj: RawDataObj, fieldEmbed?: DataObjDataField) {
+	constructor(rawDataObj: RawDataObj, fieldEmbed?: FieldEmbed) {
 		const clazz = 'Query'
 		this.fieldEmbed = fieldEmbed
 		this.rawDataObj = rawDataObj
 		this.parent = classOptional(QueryParent, this.rawDataObj.rawParent)
+		if (this.fieldEmbed && this.fieldEmbed.embedType === FieldEmbedType.listSelect) {
+			this.parent = new QueryParent({
+				_columnName: this.fieldEmbed.embedFieldNameRaw,
+				_columnIsMultiSelect: true,
+				_filterExpr: 'none',
+				_table: this.fieldEmbed.parentTable
+			})
+			console.log('this.query.fieldEmbed.parent', this.parent)
+		}
 	}
 	addItem(list: string, item: string, separator: string) {
 		return list ? list + separator + '\n' + item : item

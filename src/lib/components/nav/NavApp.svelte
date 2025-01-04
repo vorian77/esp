@@ -17,10 +17,10 @@
 
 	const FILENAME = '$comps/nav/NavApp.svelte'
 
-	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 
 	const back = () => {
-		stateApp.change({
+		sm.change({
 			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
 				action: StatePacketAction.navBack
@@ -30,9 +30,7 @@
 	}
 </script>
 
-<!-- <div id="layout-app" class="flex justify-between items-center p-2 mb-4 bg-neutral-50 rounded-md"> -->
-
-<div id="layout-app" class="flex justify-between items-center border-b p-2 mb-4">
+<div id="layout-app" class="flex justify-between items-center p-3 border-b">
 	<div class="flex items-center">
 		<button class="mr-2 flex-none" onclick={back}>
 			<Icon

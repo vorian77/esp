@@ -14,33 +14,32 @@
 	const storeModal = getModalStore()
 
 	let { parent } = $props()
-	let modeDelete: boolean = $state(false)
-	let stateApp: StateSurfaceModal = $state()
-	if ($storeModal[0]) stateApp = $storeModal[0].meta.stateApp
 
-	stateApp.setfChangeCallback((obj: any) => {
-		stateApp.packet = obj.packet
-		if (
-			stateApp.embedType === FieldEmbedType.listConfig &&
-			obj.packet.action === StatePacketAction.doDetailDelete
-		) {
-			modeDelete = true
+	let sm: StateSurfaceModal = $state($storeModal[0] ? $storeModal[0].meta.sm : undefined)
+
+	let rowCount: number = $derived.by(() => {
+		let rowCount = undefined
+		const currLevel = sm.app.levels[sm.app.levels.length - 1]
+		if (currLevel) {
+			const currTab = currLevel.tabs[currLevel.tabIdxCurrent]
+			if (currTab) rowCount = currTab.dataObj?.data?.rowsRetrieved.dataRows.length
 		}
+		return rowCount
+	})
+
+	sm.setfChangeCallback((obj: any) => {
+		sm.packet = obj.packet
 	})
 
 	$effect(() => {
-		if (modeDelete) {
-			const currTab = stateApp.app.getCurrTab()
-			const rowCnt = currTab?.data?.rowsRetrieved.dataRows.length
-			if (rowCnt === 0) {
-				if ($storeModal[0]?.response) {
-					$storeModal[0].response(
-						new TokenAppModalReturn({
-							data: [],
-							type: TokenAppModalReturnType.complete
-						})
-					)
-				}
+		if (sm.embedType === FieldEmbedType.listConfig && rowCount === 0) {
+			if ($storeModal[0]?.response) {
+				$storeModal[0].response(
+					new TokenAppModalReturn({
+						data: [],
+						type: TokenAppModalReturnType.close
+					})
+				)
 				storeModal.close()
 			}
 		}
@@ -63,7 +62,7 @@
 				if ($storeModal[0].response)
 					$storeModal[0].response(
 						new TokenAppModalReturn({
-							data: stateApp.parmsState,
+							data: sm.parmsState,
 							type: TokenAppModalReturnType.complete
 						})
 					)
@@ -80,12 +79,12 @@
 	}
 </script>
 
-{#if stateApp}
-	<div class="h-[70vh] esp-card-space-y w-modal-wide flex flex-col p-4">
-		<RootLayoutApp {stateApp} />
+{#if sm}
+	<div class="h-[70vh] bg-white w-modal-wide flex flex-col p-3">
+		<RootLayoutApp {sm} />
 
-		<div class="flex justify-end gap-3 pt-0">
-			{#each stateApp.actionsFieldDialog as action}
+		<div class="flex justify-end gap-3 mt-3">
+			{#each sm.actionsFieldDialog as action}
 				<button
 					disabled={action.isStatusDisabled}
 					class="btn btn-action text-white"

@@ -14,32 +14,32 @@
 	const FILENAME = '$comps/form/FormElEmbeddedListSelect.svelte'
 
 	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
+
 	parms.isLabelbold = true
 
-	let stateApp: State = required(getContext(ContextKey.stateApp), FILENAME, 'stateApp')
-	let dm: DataManager = required(getContext(ContextKey.dataManager), FILENAME, 'dataManager')
 	let fieldEmbed = $derived(parms.field) as FieldEmbedListSelect
-	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.embedDataObjId)
+	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.dataObjIdEmbed)
 	let iconProps = $state(
 		new IconProps({
 			name: 'SquareMousePointer',
 			clazz: 'ml-1.5 mt-0.5',
 			color: '#3b79e1',
-			onclick: () =>
-				dataObjEmbed.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, stateApp),
+			onclick: () => dataObjEmbed.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, sm),
 			size: 18,
 			strokeWidth: 2
 		})
 	)
 
 	// function openDialogIcon() {
-	// 	dataObjEmbed.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, stateApp)
+	// 	dataObjEmbed.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, sm)
 	// }
 </script>
 
 <FormLabel {parms} {iconProps} />
 
-<div class="h-80">
+<div class="h-80 border rounded-md">
 	<LayoutContent
 		parms={{
 			...parms,

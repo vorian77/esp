@@ -39,6 +39,7 @@
 		ParmsValues,
 		ParmsValuesType
 	} from '$utils/types'
+	import { FieldClassType } from '$comps/form/field'
 	import { getContext, setContext } from 'svelte'
 	import { NodeType } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
@@ -51,11 +52,9 @@
 
 	const FILENAME = '$comps/layout/RootLayoutApp.svelte'
 
-	let { stateApp }: { stateApp: State } = $props()
+	let { sm }: { sm: State } = $props()
 
-	let dm: DataManager = $derived(stateApp.dataManager)
-	setContext(ContextKey.dataManager, dm)
-	setContext(ContextKey.stateApp, stateApp)
+	setContext(ContextKey.stateManager, sm)
 
 	let componentContentName: string | undefined
 	let currLevel: AppLevel | undefined
@@ -67,7 +66,7 @@
 	let parentTab: AppLevelTab | undefined
 
 	$effect(() => {
-		const packet = stateApp.consume(actionsPacket)
+		const packet = sm.consume(actionsPacket)
 		if (packet) process(packet)
 	})
 
@@ -114,18 +113,18 @@
 
 		switch (packet.action) {
 			case StatePacketAction.doDetailDelete:
-				await stateApp.app.saveDetail(stateApp, packet.action, token)
+				await sm.app.saveDetail(sm, packet.action, token)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doDetailMigrate:
-				await migrate(stateApp, token.dataObj)
+				await migrate(sm, token.dataObj)
 				break
 
 			case StatePacketAction.doDetailNew:
-				parentTab = stateApp.app.getCurrTabParentTab()
+				parentTab = sm.app.getCurrTabParentTab()
 				if (parentTab) parentTab.data?.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
-				await queryTypeTab(stateApp, stateApp.app.getCurrTab(), TokenApiQueryType.preset)
+				await queryTypeTab(sm, sm.app.getCurrTab(), TokenApiQueryType.preset)
 				updateObjectsForm()
 				break
 
@@ -134,18 +133,18 @@
 				break
 
 			case StatePacketAction.doDetailSave:
-				if (await stateApp.app.saveDetail(stateApp, packet.action, token)) {
+				if (await sm.app.saveDetail(sm, packet.action, token)) {
 					updateObjectsForm()
 				}
 				break
 
 			case StatePacketAction.doDetailSaveAs:
-				await stateApp.app.tabDuplicate(stateApp, token)
+				await sm.app.tabDuplicate(sm, token)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doEmbedListConfigEdit:
-				await stateApp.openModalEmbedListConfig(
+				await sm.openModalEmbedListConfig(
 					token,
 					TokenApiQueryType.retrieve,
 					fModalCloseUpdateEmbedListConfig
@@ -153,7 +152,7 @@
 				break
 
 			case StatePacketAction.doEmbedListConfigNew:
-				await stateApp.openModalEmbedListConfig(
+				await sm.openModalEmbedListConfig(
 					token,
 					TokenApiQueryType.preset,
 					fModalCloseUpdateEmbedListConfig
@@ -161,49 +160,49 @@
 				break
 
 			case StatePacketAction.doEmbedListSelect:
-				await stateApp.openModalEmbedListSelect(token, fModalCloseUpdateEmbedListSelect)
+				await sm.openModalEmbedListSelect(token, fModalCloseUpdateEmbedListSelect)
 				break
 
 			case StatePacketAction.doListDetailEdit:
-				await stateApp.app.addLevelNodeChildren(stateApp, token, TokenApiQueryType.retrieve)
+				await sm.app.addLevelNodeChildren(sm, token, TokenApiQueryType.retrieve)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doListDetailNew:
-				await stateApp.app.addLevelNodeChildren(stateApp, token, TokenApiQueryType.preset)
+				await sm.app.addLevelNodeChildren(sm, token, TokenApiQueryType.preset)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doListSelfRefresh:
-				await queryTypeTab(stateApp, stateApp.app.getCurrTab(), TokenApiQueryType.retrieve)
+				await queryTypeTab(sm, sm.app.getCurrTab(), TokenApiQueryType.retrieve)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doListSelfSave:
-				const rtn = await stateApp.app.saveList(stateApp, token)
+				const rtn = await sm.app.saveList(sm)
 				updateObjectsForm()
 				resetModes = false
 				break
 
 			case StatePacketAction.doOpen:
-				await stateApp.app.addLevelDataObj(stateApp, token)
+				await sm.app.addLevelDataObj(sm, token)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.doSaveCancel:
-				currLevel = stateApp.app.getCurrLevel()
+				currLevel = sm.app.getCurrLevel()
 				if (currLevel) {
 					currTab = currLevel.getCurrTab()
 					if (currTab && currTab.dataObj) {
-						const status = currTab?.data?.rowsRetrieved?.getDetailRowStatus()
+						const status = currTab?.dataObj.data?.rowsRetrieved?.getDetailRowStatus()
 						switch (status) {
 							case DataRecordStatus.preset:
-								await queryTypeTab(stateApp, currTab, TokenApiQueryType.preset)
+								await queryTypeTab(sm, currTab, TokenApiQueryType.preset)
 								updateObjectsForm()
 								break
 							case DataRecordStatus.retrieved:
 							case DataRecordStatus.update:
-								await queryTypeTab(stateApp, currTab, TokenApiQueryType.retrieve)
+								await queryTypeTab(sm, currTab, TokenApiQueryType.retrieve)
 								updateObjectsForm()
 								break
 							default:
@@ -219,7 +218,7 @@
 
 			case StatePacketAction.embedField:
 				if (token instanceof TokenApiQuery) {
-					await stateApp.app.addLevelEmbedField(stateApp, token)
+					await sm.app.addLevelEmbedField(sm, token)
 					updateObjectsForm()
 					resetModes = false
 				}
@@ -230,12 +229,12 @@
 				break
 
 			case StatePacketAction.modalEmbed:
-				await stateApp.app.addLevelModalEmbedField(stateApp, token)
+				await sm.app.addLevelModalEmbedField(sm, token)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.modalSelectOpen:
-				await stateApp.openModalSelect(token)
+				await sm.openModalSelect(token)
 				break
 
 			case StatePacketAction.modalSelectSurface:
@@ -244,10 +243,10 @@
 				break
 
 			case StatePacketAction.navBack:
-				if (stateApp.app.levels.length === 1) {
-					returnHome(stateApp)
+				if (sm.app.levels.length === 1) {
+					returnHome(sm)
 				} else {
-					await stateApp.app.navBack(stateApp, 1)
+					await sm.app.navBack(sm, 1)
 					updateObjectsForm()
 				}
 				break
@@ -255,9 +254,9 @@
 			case StatePacketAction.navCrumbs:
 				if (token instanceof TokenAppIndex) {
 					if (token.index === 0) {
-						returnHome(stateApp)
+						returnHome(sm)
 					} else {
-						await stateApp.app.navCrumbs(stateApp, token)
+						await sm.app.navCrumbs(sm, token)
 						updateObjectsForm()
 					}
 				}
@@ -265,20 +264,20 @@
 
 			case StatePacketAction.navRow:
 				if (token instanceof TokenAppRow) {
-					await stateApp.app.rowUpdate(stateApp, token)
+					await sm.app.rowUpdate(sm, token)
 					updateObjectsForm()
 				}
 				break
 
 			case StatePacketAction.navTab:
-				await token.app.navTab(stateApp, token)
+				await token.app.navTab(sm, token)
 				updateObjectsForm()
 				break
 
 			case StatePacketAction.openNode:
 				if (token instanceof TokenAppNode) {
-					stateApp.newApp()
-					await stateApp.app.addLevelNode(stateApp, token)
+					sm.newApp()
+					await sm.app.addLevelNode(sm, token)
 					updateObjectsForm()
 				}
 				break
@@ -296,22 +295,20 @@
 		returnType: TokenAppModalReturnType,
 		data?: ParmsValues
 	) => {
-		fModalCloseUpdateEmbedListDropResources()
-		currLevel = stateApp.app.getCurrLevel()
+		currLevel = sm.app.getCurrLevel()
 		if (currLevel) {
 			currTab = currLevel.getCurrTab()
-			await queryTypeTab(stateApp, currTab, TokenApiQueryType.retrieve)
+			await queryTypeTab(sm, currTab, TokenApiQueryType.retrieve)
+			updateObjectsForm()
 		}
-		updateObjectsForm()
 	}
 
 	const fModalCloseUpdateEmbedListSelect = async (
 		returnType: TokenAppModalReturnType,
 		data?: ParmsValues
 	) => {
-		fModalCloseUpdateEmbedListDropResources()
 		if (returnType === TokenAppModalReturnType.complete) {
-			currLevel = stateApp.app.getCurrLevel()
+			currLevel = sm.app.getCurrLevel()
 			if (currLevel) {
 				const embedFieldName = data?.valueGet(ParmsValuesType.embedFieldName)
 				currTab = currLevel.getCurrTab()
@@ -321,42 +318,36 @@
 				if (idx > -1) {
 					currTab.dataObj.data.fields[idx].data.parms.update(data?.valueGetAll())
 					currTab.dataObj.data.fields[idx].data.parms.valueSet(ParmsValuesType.embedListSave, true)
-					await queryTypeTab(stateApp, currTab, TokenApiQueryType.save)
+					await sm.app.saveList(sm)
 				}
 			}
 			updateObjectsForm()
 		}
 	}
 
-	function fModalCloseUpdateEmbedListDropResources() {
-		stateApp.app.levels = stateApp.app.levels.filter((level) => !level.isModal)
-		stateApp.app.levels.forEach((level) => {
-			level.tabs = level.tabs.filter((tab) => !tab.isModal)
-		})
-		const idxLevel = stateApp.app.levels.length - 1
-		if (idxLevel >= 0) stateApp.app.levels[idxLevel].tabIdxRestore()
-	}
-
-	function returnHome(state: State) {
-		state.change({
+	function returnHome(sm: State) {
+		sm.change({
 			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			target: StateTarget.dashboard
 		})
 	}
 
 	function updateObjectsComponent() {
-		Component = componentsLayout[stateApp.layoutComponent]
+		Component = componentsLayout[sm.layoutComponent]
 		keyValue = !keyValue
 	}
 
 	function updateObjectsForm() {
-		currTab = stateApp.app.getCurrTab()
+		const clazz = `${FILENAME}.updateObjectsForm`
+		currTab = sm.app.getCurrTab()
 		if (currTab && currTab.dataObj) {
-			dm.init(currTab.dataObj)
-			currTab.dataObjEmbedded.forEach((dataObj) => {
-				dm.nodeAdd(dataObj)
-			})
-			parms = { dataObjId: currTab.dataObjId, component: currTab.dataObj.raw.codeComponent }
+			sm.dm.init(currTab.dataObj)
+			currTab.dataObj.fields
+				.filter((f) => f.classType === FieldClassType.embed)
+				.forEach((f: FieldEmbed) => {
+					sm.dm.nodeAdd(required(f.dataObjEmbed, clazz, 'f.dataObjEmbed'))
+				})
+			parms = { dataObjId: currTab.dataObj.raw.id, component: currTab.dataObj.raw.codeComponent }
 			updateObjectsComponent()
 		}
 	}

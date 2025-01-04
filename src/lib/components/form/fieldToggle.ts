@@ -1,4 +1,4 @@
-import { Field, FieldAccess, PropsFieldRaw } from '$comps/form/field'
+import { Field, FieldAccess, PropsFieldCreate } from '$comps/form/field'
 import { valueOrDefault } from '$utils/types'
 
 export class FieldToggle extends Field {
@@ -6,7 +6,7 @@ export class FieldToggle extends Field {
 	valueFalse: string
 	valueShow: boolean
 	valueTrue: string
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
 		this.presetTrue = valueOrDefault(obj.colDB.togglePresetTrue, false)

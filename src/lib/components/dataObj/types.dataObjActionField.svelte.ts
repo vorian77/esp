@@ -24,7 +24,7 @@ export class DataObjActionField {
 	isStatusDisabled: boolean = false
 	isStatusShow: boolean = false
 	name: string
-	constructor(rawAction: RawDataObjActionField, state: State | undefined = undefined) {
+	constructor(rawAction: RawDataObjActionField, sm: State | undefined = undefined) {
 		const clazz = 'DataObjActionField'
 		this.actionFieldConfirms = rawAction.actionFieldConfirms
 		this.actionFieldShows = rawAction.actionFieldShows
@@ -35,7 +35,7 @@ export class DataObjActionField {
 		this.isListRowAction = rawAction.isListRowAction
 		this.name = rawAction.name
 	}
-	getConfirm(state: State, dataObj: DataObj) {
+	getConfirm(sm: State, dataObj: DataObj) {
 		const confirms = this.actionFieldConfirms
 		switch (confirms.length) {
 			case 0:
@@ -46,7 +46,7 @@ export class DataObjActionField {
 				for (let i = 0; i < confirms.length; i++) {
 					const confirmAction = confirms[i]
 					const tg = new DataObjActionFieldTriggerGroup()
-					tg.addStatus(state, dataObj, confirmAction.codeTriggerConfirmConditional, true)
+					tg.addStatus(sm, dataObj, confirmAction.codeTriggerConfirmConditional, true)
 					if (tg.isTriggered()) {
 						const confirmType = confirmAction.codeConfirmType
 						const confirm = confirmAction.confirm
@@ -61,31 +61,31 @@ export class DataObjActionField {
 		}
 	}
 
-	isDisabled(stateApp: State, dataObj: DataObj) {
+	isDisabled(sm: State, dataObj: DataObj) {
 		const tg = new DataObjActionFieldTriggerGroup()
-		tg.addStatus(stateApp, dataObj, this.codeActionFieldTriggerEnable, true)
+		tg.addStatus(sm, dataObj, this.codeActionFieldTriggerEnable, true)
 		this.isStatusDisabled = !tg.isTriggered()
 		return this.isStatusDisabled
 	}
-	isShow(stateApp: State, dataObj: DataObj) {
+	isShow(sm: State, dataObj: DataObj) {
 		const tg = new DataObjActionFieldTriggerGroup()
 		this.actionFieldShows.forEach((show) => {
-			tg.addStatus(stateApp, dataObj, show.codeTriggerShow, show.isRequired)
+			tg.addStatus(sm, dataObj, show.codeTriggerShow, show.isRequired)
 		})
 		this.isStatusShow = tg.isTriggered()
 		return this.isStatusShow
 	}
 
-	async trigger(state: State, dataObj: DataObj) {
-		const { confirmType, confirm } = this.getConfirm(state, dataObj)
-		state.change({
+	async trigger(sm: State, dataObj: DataObj) {
+		const { confirmType, confirm } = this.getConfirm(sm, dataObj)
+		sm.change({
 			confirm,
 			confirmType,
 			packet: new StatePacket({
 				action: this.codePacketAction,
 				token: new TokenAppDo({
 					dataObj,
-					state
+					sm
 				})
 			}),
 			target: StateTarget.feature
@@ -134,7 +134,7 @@ export class DataObjActionFieldTriggerGroup {
 	statuses: DataObjActionFieldTriggerStatus[] = []
 	constructor() {}
 	addStatus(
-		state: State,
+		sm: State,
 		dataObj: DataObj,
 		trigger: DataObjActionFieldTriggerEnable,
 		isRequired: boolean
@@ -142,7 +142,7 @@ export class DataObjActionFieldTriggerGroup {
 		const clazz = 'DataObjActionFieldTriggerGroup'
 		let isTriggered = false
 
-		const dm: DataManager = required(state.dataManager, clazz, 'state.dataManager')
+		const dm: DataManager = required(sm.dm, clazz, 'state.dataManager')
 
 		switch (trigger) {
 			case DataObjActionFieldTriggerEnable.always:
@@ -161,7 +161,7 @@ export class DataObjActionFieldTriggerGroup {
 				isTriggered = dm.isStatusValid()
 				break
 			case DataObjActionFieldTriggerEnable.rootDataObj:
-				isTriggered = !dataObj.fieldEmbed
+				isTriggered = !dataObj.embedField
 				break
 			case DataObjActionFieldTriggerEnable.saveModeInsert:
 				isTriggered = dataObj.saveMode === DataObjSaveMode.insert
