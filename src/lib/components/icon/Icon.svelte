@@ -52,19 +52,9 @@
 
 	/* icons source -  https://lucide.dev/icons/ */
 
-	export let props: IconProps
-	let iconProps: DataRecord
+	let { props }: { props: IconProps } = $props()
 
-	$: {
-		iconProps = {
-			absoluteStrokeWidth: props.absoluteStrokeWidth,
-			size: props.size,
-			strokeWidth: props.strokeWidth
-		}
-		if (props.color) iconProps.color = props.color
-	}
-
-	$: IconType = {
+	const IconObjects = {
 		activity: Activity,
 		appwindow: AppWindow,
 		arrowleft: ArrowLeft,
@@ -110,13 +100,13 @@
 		tenttree: TentTree,
 		userroundcog: UserRoundCog,
 		usersround: UsersRound
-	}[props.name.toLowerCase()]
+	}
+	let IconType: any = $derived(IconObjects[props.name.toLowerCase()])
 </script>
 
+<!-- hover:bg-gray-200 hover:rounded-full -->
 {#if props && IconType}
-	<div class="hover:bg-gray-200 hover:rounded-full {props.clazz}">
-		<button on:click={props.onClick}>
-			<svelte:component this={IconType} {...iconProps} />
-		</button>
+	<div class=" {props.clazz}">
+		<IconType {...props} />
 	</div>
 {/if}

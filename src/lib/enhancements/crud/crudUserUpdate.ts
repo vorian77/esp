@@ -1,6 +1,6 @@
 import { TokenApiQueryType } from '$utils/types.token'
 import { DataObjActionQueryTriggerTiming } from '$comps/app/types.appQuery'
-import { State } from '$comps/app/types.appState'
+import { State } from '$comps/app/types.appState.svelte'
 import { error } from '@sveltejs/kit'
 import { DataObjData, type DataRecord, DataRecordStatus } from '$utils/types'
 
@@ -8,7 +8,7 @@ const FILENAME = '/$enhance/crud/crudUserUpdate.ts'
 
 export async function qaExecuteUserUpdate(
 	queryActionName: string,
-	state: State,
+	sm: State,
 	queryType: TokenApiQueryType,
 	queryTiming: DataObjActionQueryTriggerTiming,
 	table: string | undefined,
@@ -19,7 +19,7 @@ export async function qaExecuteUserUpdate(
 		dataTab.rowsSave.getDetailRowStatusIs(DataRecordStatus.update) &&
 		queryTiming === DataObjActionQueryTriggerTiming.post
 	) {
-		state.resetUser(false)
+		sm.resetUser(false)
 	}
 	return dataTab
 }

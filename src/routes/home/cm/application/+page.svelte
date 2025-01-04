@@ -70,7 +70,7 @@
 	active="variant-filled-primary"
 	buttonNext="variant-filled-primary"
 	on:next={onStepHandler}
-	on:complete={onCompleteHandler}
+	oncomplete={onCompleteHandler}
 >
 	{#each forms.filter((f, i) => i < 2) as form, i}
 		<Step locked={!forms[i][1].validToSubmit}>

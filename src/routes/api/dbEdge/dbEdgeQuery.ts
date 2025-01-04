@@ -2,8 +2,6 @@ import { nbrOrDefault, valueOrDefault } from '$lib/utils/utils'
 import {
 	booleanRequired,
 	classOptional,
-	DataObjDataField,
-	DataObjEmbedType,
 	DataObjTable,
 	DBTable,
 	debug,
@@ -15,6 +13,8 @@ import {
 	strRequired
 } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
+import { FieldEmbedType } from '$comps/form/field'
+import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
 	PropDataSourceValue,
 	PropDataType,
@@ -39,16 +39,24 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$routes/api/dbEdge/dbEdgeQuery.ts'
 
 export class Query {
-	field?: DataObjDataField
+	fieldEmbed?: FieldEmbed
 	parent?: QueryParent
 	processRow?: ProcessRow
 	rawDataObj: RawDataObj
-	scriptOrder: string = ''
-	constructor(rawDataObj: RawDataObj, field?: DataObjDataField) {
+	constructor(rawDataObj: RawDataObj, fieldEmbed?: FieldEmbed) {
 		const clazz = 'Query'
-		this.field = field
+		this.fieldEmbed = fieldEmbed
 		this.rawDataObj = rawDataObj
 		this.parent = classOptional(QueryParent, this.rawDataObj.rawParent)
+		if (this.fieldEmbed && this.fieldEmbed.embedType === FieldEmbedType.listSelect) {
+			this.parent = new QueryParent({
+				_columnName: this.fieldEmbed.embedFieldNameRaw,
+				_columnIsMultiSelect: true,
+				_filterExpr: 'none',
+				_table: this.fieldEmbed.parentTable
+			})
+			console.log('this.query.fieldEmbed.parent', this.parent)
+		}
 	}
 	addItem(list: string, item: string, separator: string) {
 		return list ? list + separator + '\n' + item : item
@@ -177,38 +185,28 @@ export class Query {
 		const set = isUpdate ? 'SET ' : ''
 		if (properties)
 			properties = `${set}{\n${this.addItemComma(properties, subObjGroup.getPropsUpdate(isUpdate, this.rawDataObj.tables))}}`
-		debug('getPropsSave', 'properties', properties)
 		return properties
 	}
 
-	getPropsSaveScalar(parms: DataRecord, queryData: TokenApiQueryData, dataRows: DataRow[]) {
-		let properties = ''
+	getPropsPrimary(parms: DataRecord, queryData: TokenApiQueryData, dataRows: DataRow[]) {
+		let properties: string[] = []
 		let fValues: Function[] = []
 		const clazz = 'getPropsSaveScalar'
 		const indexTable = required(parms.indexTable, clazz, 'indexTable')
-		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
+		const propsRaw = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		const action = strRequired(parms.action, clazz, 'action') as LinkSaveAction
-		// const isDelete = parms.isDelete ? parms.isDelete : false
-		// const isUpdate = action.toLowerCase() === 'update'
-		// const subObjGroup = new LinkSave(action, this.getTableRootObj())
 
 		// 1. build props, subObjGroup
-		props
-			.filter((propObj) => propObj.indexTable === indexTable)
-			.forEach((propObj, idx) => {
-				if (!propObj.fieldEmbed) {
-					const prop = `${propObj.propNameRaw} := ${this.getPropsSavePropExpr(action, idx, propObj, queryData, fValues)}`
-					properties = this.addItemComma(properties, prop)
-
-					// if (propObj.indexTable === 0) {
-					// 	properties = this.addItemComma(properties, prop)
-					// } else {
-					// 	subObjGroup.addProp(propObj.indexTable!, prop)
-					// }
+		propsRaw
+			.filter((p) => p.indexTable === indexTable)
+			.forEach((p, idx) => {
+				if (!p.fieldEmbed) {
+					const propDB = `${p.propNameRaw} := ${this.getPropsSavePropExpr(action, idx, p, queryData, fValues)}`
+					properties.push(propDB)
 
 					// format values
 					dataRows.forEach((dataRow) => {
-						dataRow.record[propObj.propName] = fValues[idx](dataRow.getValue(propObj.propName))
+						dataRow.record[p.propName] = fValues[idx](dataRow.getValue(p.propName))
 					})
 				}
 			})
@@ -218,7 +216,6 @@ export class Query {
 		// 	subObjGroup.getPropsUpdate(isUpdate, this.rawDataObj.tables)
 		// 	properties = `{\n${this.addItemComma(properties)}}`
 		// }
-		debug('getPropsSaveScalar', 'properties', properties)
 		return properties
 	}
 

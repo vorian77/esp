@@ -1,8 +1,7 @@
-import { App, AppLevelTab } from '$comps/app/types.app'
-import { State, StateSurfaceEmbedShell, StateSurfaceModalEmbed } from '$comps/app/types.appState'
+import { App, AppLevelTab } from '$comps/app/types.app.svelte'
+import { State } from '$comps/app/types.appState.svelte'
 import {
 	arrayOfClass,
-	debug,
 	DataObj,
 	type DataRecord,
 	DataObjCardinality,
@@ -14,11 +13,10 @@ import {
 	required,
 	ResponseBody,
 	strRequired,
-	UserTypeResource,
-	UserTypeResourceType,
 	valueOrDefault
 } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
+import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import {
 	TokenApiDbDataObjSource,
 	TokenApiQuery,
@@ -30,94 +28,22 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/app/types.appQuery.ts'
 
-export async function query(
-	state: State,
-	tab: AppLevelTab | undefined,
-	queryType: TokenApiQueryType
-) {
-	const clazz = `${FILENAME}.query`
-
-	if (!tab) return false
-	let { dataTab, dataTree } = queryDataPre(state, tab, queryType)
-
-	if (state.user) {
-		dataTab.parms.valueSet(ParmsValuesType.appSystemId, state.user.system.id)
-	}
-
-	// set other parms
-	const queryData = new TokenApiQueryData({ dataTab, tree: dataTree })
-	let table = tab.getTable() // table will be undefined prior to retrieve
-
-	// query actions - pre
-	if (tab.dataObj && dataTab.rowsSave.getRows().length > 0) {
-		dataTab = await queryExecuteActions(
-			state,
-			tab.dataObj.actionsQueryFunctions,
-			queryType,
-			DataObjActionQueryTriggerTiming.pre,
-			table,
-			dataTab
-		)
-	}
-
-	document.body.style.setProperty('cursor', 'wait', 'important')
-	const result: ResponseBody = await queryExecute(tab.getDataObjSource(), queryType, queryData)
-	document.body.style.setProperty('cursor', 'default')
-
-	if (!result.success) {
-		console.error('types.appQuery.query failed', result)
-		return false
-	}
-	// successful
-	let dataResult = DataObjData.load(result.data.dataObjData)
-	// console.log('types.appQuery.dataResult:', {
-	// 	dataResult,
-	// 	rawDataObj: dataResult.rawDataObj
-	// })
-	tab.dataObj = await DataObj.init(state, dataResult)
-	table = tab.getTable()
-
-	// query actions - post
-	if (tab.dataObj) {
-		dataResult = await queryExecuteActions(
-			state,
-			tab.dataObj.actionsQueryFunctions,
-			queryType,
-			DataObjActionQueryTriggerTiming.post,
-			table,
-			dataResult
-		)
-		tab.data = dataResult
-		tab.isRetrieved = !tab.isAlwaysRetrieveData
-		if (tab.dataObj.raw.codeCardinality === DataObjCardinality.list) {
-			tab.data.parms.valueSetList(ParmsValuesType.listIds, tab.data.rowsRetrieved.getRows())
-		}
-	}
-	return true
+function getTable(dataObj: DataObj | undefined) {
+	return dataObj ? dataObj?.rootTable?.name : undefined
 }
 
-function queryDataPre(state: State, tab: AppLevelTab, queryType: TokenApiQueryType) {
+function queryDataPre(sm: State, data: DataObjData | undefined, queryType: TokenApiQueryType) {
 	const clazz = `${FILENAME}.queryDataPre`
 
 	// dataTree
-	const dataTree = queryDataPreTree(
-		queryType,
-		(state instanceof StateSurfaceEmbedShell || state instanceof StateSurfaceModalEmbed) &&
-			state?.stateRoot?.app
-			? state.stateRoot.app
-			: state.app
-	)
+	const dataTree = queryDataPreTree(queryType, sm.stateRoot ? sm.stateRoot.app : sm.app)
 
 	// dataTab
-	const dataTab = tab.data ? tab.data : new DataObjData()
-	dataTab.parms.update(state.parmsState.valueGetAll())
+	const dataTab = data ? data : new DataObjData()
+	dataTab.parms.update(sm.parmsState.valueGetAll())
 
-	// embedParentId
-	if (state instanceof StateSurfaceModalEmbed) {
-		dataTab.parms.valueSet(ParmsValuesType.embedParentId, state.embedParentId)
-	}
-
-	state.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
+	sm.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
+	if (sm.user) dataTab.parms.valueSet(ParmsValuesType.appSystemId, sm.user.system.id)
 
 	return { dataTree, dataTab }
 }
@@ -149,9 +75,11 @@ function queryDataPreTree(queryType: TokenApiQueryType, app: App) {
 		const level = app.levels[i]
 		const currTab = level.getCurrTab()
 		const dataObj = required(currTab.dataObj, clazz, 'currTab.dataObj')
-		const table = required(dataObj.rootTable?.name, 'rootTable', 'DataObj')
-		const dataRow = currTab.listGetDataRow()
-		if (dataRow) dataTree.upsertData(table, dataRow)
+		if (dataObj && dataObj.raw.codeCardinality === DataObjCardinality.list) {
+			const table = required(dataObj.rootTable?.name, 'rootTable', 'DataObj')
+			const dataRow = currTab.listGetDataRow()
+			if (dataRow) dataTree.upsertData(table, dataRow)
+		}
 	}
 	return dataTree
 }
@@ -184,7 +112,7 @@ export async function queryExecute(
 }
 
 async function queryExecuteActions(
-	state: State,
+	sm: State,
 	actionsQueryFunctions: DataObjActionQueryFunction[],
 	queryType: TokenApiQueryType,
 	queryTiming: DataObjActionQueryTriggerTiming,
@@ -194,7 +122,7 @@ async function queryExecuteActions(
 	for (const f of actionsQueryFunctions) {
 		data = await f.execute(
 			f.actionsQuery.name,
-			state,
+			sm,
 			queryType,
 			queryTiming,
 			table,
@@ -203,6 +131,123 @@ async function queryExecuteActions(
 		)
 	}
 	return data
+}
+
+export async function queryTypeBase(
+	sm: State,
+	dataObjSource: TokenApiDbDataObjSource,
+	dataObjData: DataObjData | undefined,
+	dataTree: TokenApiQueryDataTree,
+	queryType: TokenApiQueryType
+) {
+	const clazz = `${FILENAME}.queryTypeBase`
+
+	const queryData = new TokenApiQueryData({
+		dataTab: dataObjData,
+		tree: dataTree,
+		user: sm.user
+	})
+
+	// retrieve data
+	document.body.style.setProperty('cursor', 'wait', 'important')
+	const result: ResponseBody = await queryExecute(dataObjSource, queryType, queryData)
+	document.body.style.setProperty('cursor', 'default')
+
+	if (!result.success) {
+		error(500, {
+			file: FILENAME,
+			function: clazz,
+			message: `Unable to complete query: ${queryType} - ${result.message}`
+		})
+	}
+
+	// successful
+	dataObjData = DataObjData.load(result.data.dataObjData)
+	const dataObj = await DataObj.init(sm, dataObjData, queryType)
+
+	if (dataObj && dataObj.raw.codeCardinality === DataObjCardinality.list) {
+		dataObj.data.parms.valueSetList(ParmsValuesType.listIds, dataObj.data.rowsRetrieved.getRows())
+	}
+
+	return dataObj
+}
+
+export async function queryTypeDataObj(
+	sm: State,
+	dataObjId: string,
+	dataObjData: DataObjData | undefined,
+	queryType: TokenApiQueryType
+) {
+	const clazz = `${FILENAME}.queryTypeDataObj`
+
+	let { dataTab, dataTree }: { dataTab: DataObjData; dataTree: TokenApiQueryDataTree } =
+		queryDataPre(sm, dataObjData, queryType)
+
+	let dataObjSource: TokenApiDbDataObjSource = new TokenApiDbDataObjSource({ dataObjId })
+
+	return await queryTypeBase(sm, dataObjSource, dataTab, dataTree, queryType)
+}
+
+export async function queryTypeTab(
+	sm: State,
+	tab: AppLevelTab | undefined,
+	queryType: TokenApiQueryType
+) {
+	const clazz = `${FILENAME}.queryTypeTab`
+
+	if (!tab) return undefined
+
+	let { dataTab, dataTree } = queryDataPre(sm, tab.dataObj?.data, queryType)
+
+	let table = getTable(tab.dataObj) // table will be undefined prior to retrieve
+
+	// query actions - pre
+	if (tab.dataObj && dataTab.rowsSave.getRows().length > 0) {
+		dataTab = await queryExecuteActions(
+			sm,
+			tab.dataObj.actionsQueryFunctions,
+			queryType,
+			DataObjActionQueryTriggerTiming.pre,
+			table,
+			dataTab
+		)
+	}
+
+	// dataObjSource
+	let dataObjSource: TokenApiDbDataObjSource
+	if (tab.dataObjSource) {
+		dataObjSource = tab.dataObjSource
+	} else {
+		let sourceParms: DataRecord = {}
+		sourceParms['dataObjId'] = strRequired(
+			tab.dataObjId ? tab.dataObjId : tab.dataObj?.raw?.id,
+			`${FILENAME}.quryTypeTab.dataObjSource`,
+			'dataObjId'
+		)
+		dataObjSource = new TokenApiDbDataObjSource(sourceParms)
+		if (tab.dataObj) {
+			dataObjSource.updateReplacements({
+				exprFilter: tab?.dataObj?.raw?.exprFilter
+			})
+		}
+	}
+	let dataObj = await queryTypeBase(sm, dataObjSource, dataTab, dataTree, queryType)
+
+	// query post
+	if (dataObj) {
+		tab.isRetrieved = !tab.isAlwaysRetrieveData
+		tab.dataObj = dataObj
+		table = getTable(tab.dataObj)
+		tab.dataObj.data = await queryExecuteActions(
+			sm,
+			tab.dataObj.actionsQueryFunctions,
+			queryType,
+			DataObjActionQueryTriggerTiming.post,
+			table,
+			dataObj.data
+		)
+	}
+	return dataObj
 }
 
 export class DataObjActionQuery {
@@ -245,7 +290,7 @@ export class DataObjActionQueryFunction {
 	}
 	async execute(
 		queryActionName: string,
-		state: State,
+		sm: State,
 		queryType: TokenApiQueryType,
 		queryTiming: DataObjActionQueryTriggerTiming,
 		table: string | undefined,
@@ -253,7 +298,7 @@ export class DataObjActionQueryFunction {
 		parms: DataRecord
 	): Promise<DataObjData> {
 		if (!this.activate(queryTiming, queryType)) return data
-		return this.funct(queryActionName, state, queryType, queryTiming, table, data, parms)
+		return this.funct(queryActionName, sm, queryType, queryTiming, table, data, parms)
 	}
 }
 

@@ -406,25 +406,36 @@ function initRepConfig(init: InitDb) {
 				orderDefine: 110
 			},
 			{
+				codeAccess: 'optional',
 				codeFieldElement: 'embedListEdit',
 				columnName: 'parms',
-				isDisplayable: false,
+				isDisplayable: true,
 				orderDefine: 120,
 				orderDisplay: 120,
 				fieldEmbedListEdit: 'fele_sys_rep_user_parm',
 				indexTable: 0,
 				linkTable: 'SysRepUserParm'
 			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'embedShell',
-				columnName: 'custom_embed_shell',
-				headerAlt: 'Report Config',
-				isDisplayable: true,
-				nameCustom: 'repUserConfig',
-				orderDefine: 140,
-				orderDisplay: 140
-			},
+			// {
+			// 	codeFieldElement: 'embedListEdit',
+			// 	columnName: 'parms',
+			// 	isDisplayable: false,
+			// 	orderDefine: 120,
+			// 	orderDisplay: 120,
+			// 	fieldEmbedListEdit: 'fele_sys_rep_user_parm',
+			// 	indexTable: 0,
+			// 	linkTable: 'SysRepUserParm'
+			// },
+			// {
+			// 	codeAccess: 'optional',
+			// 	codeFieldElement: 'embedShell',
+			// 	columnName: 'custom_embed_shell',
+			// 	headerAlt: 'Report Config',
+			// 	isDisplayable: true,
+			// 	nameCustom: 'repUserConfig',
+			// 	orderDefine: 140,
+			// 	orderDisplay: 140
+			// },
 
 			/* management */
 			{

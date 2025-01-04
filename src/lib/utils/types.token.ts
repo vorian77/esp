@@ -11,17 +11,13 @@ import {
 	required,
 	strOptional,
 	strRequired,
-	DBTable,
-	userGet,
 	valueOrDefault
 } from '$utils/types'
-import { State } from '$comps/app/types.appState'
-import { App } from '$comps/app/types.app'
-import { AppRowActionType } from '$comps/app/types.app'
+import { State } from '$comps/app/types.appState.svelte'
+import { App } from '$comps/app/types.app.svelte'
+import { AppRowActionType } from '$comps/app/types.app.svelte'
 import { Node } from '$comps/app/types.node'
 import { FieldColumnItem } from '$comps/form/field'
-import { FieldEmbed } from '$comps/form/fieldEmbed'
-import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { Process } from '$utils/utils.process'
 import { error } from '@sveltejs/kit'
@@ -181,9 +177,7 @@ export class TokenApiQueryData {
 		this.record = this.dataSet(data, 'record', {})
 		this.system = this.dataSet(data, 'system', {})
 		this.tree = this.dataSet(data, 'tree', [])
-		this.user = Object.hasOwn(data, 'user')
-			? this.dataSet(data, 'user', {})
-			: valueOrDefault(userGet(), {})
+		this.user = this.dataSet(data, 'user', {})
 	}
 	static load(currData: TokenApiQueryData) {
 		const newData = new TokenApiQueryData(currData)
@@ -311,21 +305,32 @@ export class TokenApp extends Token {
 	}
 }
 
+export class TokenAppDataObjName extends TokenApp {
+	dataObjName: string
+	queryType: TokenApiQueryType
+	constructor(obj: any) {
+		const clazz = 'TokenAppDo'
+		super(obj)
+		this.dataObjName = strRequired(obj.dataObjName, clazz, 'dataObjName')
+		this.queryType = required(obj.queryType, clazz, 'queryType')
+	}
+}
+
 export class TokenAppDo extends TokenApp {
 	dataObj: DataObj
-	state: State
+	sm: State
 	constructor(obj: any) {
 		const clazz = 'TokenAppDo'
 		super(obj)
 		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
-		this.state = required(obj.state, clazz, 'state')
+		this.sm = required(obj.sm, clazz, 'sm')
 	}
 }
 
 export enum TokenAppDoActionConfirmType {
 	always = 'always',
 	none = 'none',
-	objectChanged = 'objectChanged',
+	statusChanged = 'statusChanged',
 	objectValidToContinue = 'objectValidToContinue'
 }
 
@@ -338,14 +343,6 @@ export class TokenAppIndex extends TokenApp {
 	}
 }
 
-export class TokenAppModalDataObj extends TokenApp {
-	dataObjName: string
-	constructor(obj: any) {
-		const clazz = 'TokenAppModalDataObj'
-		super(obj)
-		this.dataObjName = strRequired(obj.dataObjName, clazz, 'dataObjName')
-	}
-}
 export class TokenAppModalEmbedField extends TokenApp {
 	dataObjSourceModal: TokenApiDbDataObjSource
 	queryType: TokenApiQueryType
@@ -392,6 +389,7 @@ export class TokenAppModalReturn extends TokenApp {
 }
 export enum TokenAppModalReturnType {
 	cancel = 'cancel',
+	close = 'close',
 	complete = 'complete',
 	delete = 'delete'
 }

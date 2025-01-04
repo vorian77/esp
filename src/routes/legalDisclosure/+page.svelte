@@ -1,12 +1,11 @@
 <script lang="ts">
 	import type { User } from '$utils/types'
-	import { userGet } from '$utils/types'
 	import { goto } from '$app/navigation'
 	import { error } from '@sveltejs/kit'
 
 	const FILENAME = 'routes/legalDisclosure'
 
-	const user: User | undefined = userGet()
+	const user: User | undefined = undefined
 	const legalDisclosure = user ? user.cm_ssr_disclosure : undefined
 
 	async function accept() {
@@ -53,12 +52,17 @@
 
 	{#if !legalDisclosure}
 		<div class="flex gap-3">
-			<button class="btn btn-action variant-filled-primary w-1/2" on:click={accept}>Accept</button>
-			<button class="btn btn-action variant-filled-error w-1/2" on:click={decline}>Decline</button>
+			<button class="btn btn-action variant-filled-primary w-1/2" onclick={() => accept}
+				>Accept</button
+			>
+			<button class="btn btn-action variant-filled-error w-1/2" onclick={() => decline}
+				>Decline</button
+			>
 		</div>
 	{:else}
 		<div class="flex gap-3">
-			<button class="btn btn-action variant-filled-primary w-full" on:click={goBack}>Ok</button>
+			<button class="btn btn-action variant-filled-primary w-full" onclick={() => goBack}>Ok</button
+			>
 		</div>
 	{/if}
 </div>

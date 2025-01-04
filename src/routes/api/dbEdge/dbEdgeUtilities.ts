@@ -1,4 +1,4 @@
-import e from '$db/dbschema/edgeql-js'
+import e from '$db/esdl/edgeql-js'
 import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
 import { TokenApiId, TokenApiIds } from '$utils/types.token'
 import { TokenApiDbTableColumns, TokenApiUserId, TokenApiUserPref } from '$utils/types.token'
@@ -94,9 +94,11 @@ const shapeTable = e.shape(e.sys_db.SysTable, (t) => ({
 const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	_codeCategory: t.codeCategory.name,
 	_codeIconName: t.codeIcon.name,
+	_codeRenderType: t.codeRenderType.name,
 	_codeStatusObjName: t.codeStatusObj.name,
-	_sourceDataObjId: t.sourceDataObj.id,
-	_sourceNodeObjId: t.sourceNodeObj.id,
+	_pageDataObjId: t.pageDataObj.id,
+	_targetDataObjId: t.targetDataObj.id,
+	_targetNodeObjId: t.targetNodeObj.id,
 	btnStyle: true,
 	description: true,
 	exprShow: true,
@@ -120,6 +122,7 @@ export async function getDataObjById(token: TokenApiId) {
 	const shapeProp = e.shape(e.sys_core.SysDataObjColumn, (doc) => ({
 		...shapeColumnHasItems(doc),
 		_codeSortDir: doc.codeSortDir.name,
+		_columnBacklink: doc.columnBacklink.name,
 		_link: e.select(doc, (l) => ({
 			_columns: e.select(l.linkColumns, (c) => ({
 				_name: c.column.name,
@@ -141,6 +144,7 @@ export async function getDataObjById(token: TokenApiId) {
 		_propName: e.op(doc.nameCustom, '??', doc.column.name),
 		exprCustom: true,
 		exprPreset: true,
+		id: true,
 		indexTable: true
 	}))
 
@@ -148,7 +152,6 @@ export async function getDataObjById(token: TokenApiId) {
 		...shapeProp(doc),
 		_codeDataType: doc.column.codeDataType.name,
 		_codeDbDataSourceValue: doc.codeDbDataSourceValue.name,
-		_columnBacklink: doc.columnBacklink.name,
 		_fieldEmbedListConfig: e.select(doc.fieldEmbedListConfig, (fe) => ({
 			_dataObjEmbedId: fe.dataObjEmbed.id
 		})),
@@ -265,6 +268,7 @@ export async function getDataObjById(token: TokenApiId) {
 					customColIsSubHeader: true,
 					customColLabel: true,
 					customColPrefix: true,
+					customColRawHTML: true,
 					customColSize: true,
 					customColSource: true,
 					customColSourceKey: true
@@ -489,6 +493,7 @@ export async function getReportUser(repUserId: string) {
 		description: true,
 		exprCustom: true,
 		header: true,
+		id: true,
 		indexTable: true,
 		isDisplay: true,
 		isDisplayable: true,

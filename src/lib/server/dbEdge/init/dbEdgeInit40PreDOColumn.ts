@@ -461,6 +461,13 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
+		header: 'Render Type',
+		isMultiSelect: false,
+		name: 'codeRenderType'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
 		header: 'Report Element Type',
 		isMultiSelect: false,
 		name: 'codeReportElementType'
@@ -570,11 +577,18 @@ export function initPreColumn(init: InitDb) {
 		name: 'codeUserTypeTags'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
+		owner: 'sys_ai_old',
 		codeDataType: 'link',
 		header: 'Wage Type',
 		isMultiSelect: false,
 		name: 'codeWageType'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Widget Type',
+		isMultiSelect: false,
+		name: 'codeWidgetType'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -972,6 +986,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Custom - Prefix',
 		name: 'customColPrefix'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Custom - Raw HTML',
+		name: 'customColRawHTML'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1857,6 +1877,13 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
+		header: 'Page Data Object',
+		isMultiSelect: false,
+		name: 'pageDataObj'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
 		header: 'Parent',
 		isMultiSelect: false,
 		isSelfReference: true,
@@ -2030,20 +2057,6 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Source - Data Object',
-		isMultiSelect: false,
-		name: 'sourceDataObj',
-		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Source - Node Object',
-		isMultiSelect: false,
-		name: 'sourceNodeObj',
-		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Spin Step',
@@ -2114,6 +2127,20 @@ export function initPreColumn(init: InitDb) {
 		header: 'Target Tables',
 		isMultiSelect: true,
 		name: 'tablesTarget',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Target - Data Object',
+		isMultiSelect: false,
+		name: 'targetDataObj',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Target - Node Object',
+		isMultiSelect: false,
+		name: 'targetNodeObj',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {

@@ -6,7 +6,7 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '$routes/api/dbEdge/dbEdgeProcessDynamic.ts'
 
 export async function getRawDataObjDynamic(
-	processType: DataObjProcessType,
+	processType: DataObjProcessType | undefined,
 	queryData: TokenApiQueryData,
 	source: any,
 	dataObjSource: TokenApiDbDataObjSource

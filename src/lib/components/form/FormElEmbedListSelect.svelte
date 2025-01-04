@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { StatePacketAction } from '$comps/app/types.appState'
-	import { FieldProps } from '$comps/form/field'
+	import { ContextKey, DataManager, required } from '$utils/types'
+	import { getContext } from 'svelte'
+	import { StatePacketAction } from '$comps/app/types.appState.svelte'
+	import { Field } from '$comps/form/field'
 	import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 	import Layout from '$comps/layout/RootLayoutApp.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
@@ -10,36 +12,40 @@
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElEmbeddedListSelect.svelte'
-	let field: FieldEmbedListSelect
-	export let fp: FieldProps
 
-	$: {
-		fp.setIsLabelBold(true)
-		fp.field.setIconProps({
+	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
+
+	parms.isLabelbold = true
+
+	let fieldEmbed = $derived(parms.field) as FieldEmbedListSelect
+	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.dataObjIdEmbed)
+	let iconProps = $state(
+		new IconProps({
 			name: 'SquareMousePointer',
 			clazz: 'ml-1.5 mt-0.5',
 			color: '#3b79e1',
-			onClick: openDialogIcon,
+			onclick: () => dataObjEmbed.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, sm),
 			size: 18,
 			strokeWidth: 2
 		})
-	}
+	)
 
-	function openDialogIcon() {
-		fp.field.dataObj.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, fp.state)
-	}
+	// function openDialogIcon() {
+	// 	dataObjEmbed.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, sm)
+	// }
 </script>
 
-<FormLabel {fp} />
+<FormLabel {parms} {iconProps} />
 
-{#if fp}
-	<div class="mt-4">
-		<!-- <LayoutContent
-			bind:state={fp.state}
-			component={fp.field.dataObj.raw.codeComponent}
-			dataObj={fp.field.dataObj}
-			dataObjData={fp.field.dataObj.data}
-			on:formCancelled
-		/> -->
-	</div>
-{/if}
+<div class="h-80 border rounded-md">
+	<LayoutContent
+		parms={{
+			...parms,
+			component: dataObjEmbed.raw.codeComponent,
+			dataObj: dataObjEmbed,
+			dataObjId: dataObjEmbed.raw.id
+		}}
+	/>
+</div>

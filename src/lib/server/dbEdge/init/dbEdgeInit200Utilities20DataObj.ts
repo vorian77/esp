@@ -1,4 +1,4 @@
-import e from '$db/dbschema/edgeql-js'
+import e from '$db/esdl/edgeql-js'
 import {
 	client,
 	booleanOrDefaultJSON,
@@ -249,6 +249,7 @@ export async function addDataObj(data: any) {
 						),
 						customColLabel: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'label')),
 						customColPrefix: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'prefix')),
+						customColRawHTML: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'rawHTML')),
 						customColSize: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'size')),
 						customColSource: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'source')),
 						customColSourceKey: e.cast(

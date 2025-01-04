@@ -7,10 +7,10 @@
 </script>
 
 {#if !isHideFilter}
-	<div class="w-full flex mb-4 justify-between">
+	<div class="flex justify-between">
 		<button
 			class="btn btn-action variant-soft-primary mr-4 {listFilterQuick === '' ? 'hidden' : ''}"
-			on:click={() => {
+			onclick={() => {
 				listFilterQuick = ''
 				setFilterQuick('')
 			}}
@@ -19,11 +19,11 @@
 		</button>
 
 		<input
-			class="w-full text-sm border-neutral-300 rounded-md p-4"
+			class="w-full text-sm border border-neutral-300 rounded-md p-4"
 			type="text"
 			id="search-text-"
 			bind:value={listFilterQuick}
-			on:keyup={() => setFilterQuick(listFilterQuick)}
+			onkeyup={() => setFilterQuick(listFilterQuick)}
 			placeholder="Search..."
 		/>
 

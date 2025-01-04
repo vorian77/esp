@@ -1,22 +1,39 @@
 <script lang="ts">
+	import {
+		ContextKey,
+		DataManager,
+		DataObjCardinality,
+		type DataRecord,
+		required
+	} from '$utils/types'
+	import { getContext } from 'svelte'
 	import { Field, FieldAccess } from '$comps/form/field'
-	import { DataObjCardinality } from '$utils/types'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
+	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let fp: FieldProps
+	const FILENAME = '$comps/form/FormLabel.svelte'
 
-	$: classProps = `label flex text-sm ${fp.isLabelBold ? 'font-bold mt-2' : ''} `
+	let { parms, iconProps = undefined }: { parms: DataRecord; iconProps: IconProps } = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
+
+	let isLabelBold = $state(parms.isLabelBold)
+	let field: Field = $state(parms.field)
+	let dataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let classProps = $derived(`label flex text-sm ${isLabelBold ? 'font-bold mt-2' : ''} `)
 </script>
 
-<label for={fp.field.colDO.propName}>
+<!-- <DataViewer header="label.iconProps" data={iconProps?.name} /> -->
+
+<label for={field.colDO.propName}>
 	<div
 		class={classProps}
-		hidden={fp.dataObj.raw.codeCardinality === DataObjCardinality.list ? 'hidden' : ''}
+		hidden={dataObj.raw.codeCardinality === DataObjCardinality.list ? 'hidden' : ''}
 	>
-		{fp.field.colDO.label}
-		{#if fp?.field?.iconProps}
-			<Icon props={fp.field?.iconProps} />
+		{field.colDO.label}
+		{#if iconProps}
+			<Icon props={iconProps} />
 		{/if}
 	</div>
 	<slot />

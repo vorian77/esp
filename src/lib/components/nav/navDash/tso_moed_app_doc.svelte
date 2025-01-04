@@ -4,16 +4,16 @@
 	import { error } from '@sveltejs/kit'
 
 	const FILENAME = '$comps/nav/navDash/tso_moed_app_doc.svelte'
-	const classButton = 'rounded-md text-base p-2 text-white text-right'
-	const classData = '-ml-2 text-base text-gray-700'
 
-	export let task: UserResourceTask
-	export let onClick: Function
-	export let data: any
+	const classButton = 'rounded-md text-base p-2 text-white text-right'
+	const classData = '-ml-2 text-base '
+
+	let { data, onClick, task }: { data: any; onClick: Function; task: UserResourceTask } = $props()
 
 	let docTypes = data
 
-	const onClickLocal = async (doc: any) => {
+	async function onClickLocal(doc: any) {
+		console.log('onClickLocal', doc)
 		await onClick(task, { [ParmsValuesType.itemsParmName]: doc.name })
 	}
 </script>
@@ -24,10 +24,10 @@
 			{@const btnLabel = doc._uploaded
 				? `Proof of ${doc.header} uploaded`
 				: `Upload proof of ${doc.header}`}
-			{@const btnStyle = doc._uploaded ? 'bg-green-500' : 'bg-red-500'}
-			{@const statusStyle = doc._uploaded ? 'text-green-500' : 'text-red-500'}
+			{@const btnStyle = doc._uploaded ? 'bg-[#2E67B1]' : 'bg-[#BF2C23]'}
+			{@const statusStyle = doc._uploaded ? 'text-[#2E67B1]' : 'text-[#BF2C23]'}
 			{@const statusLabel = doc._uploaded ? `Uploaded` : `Not uploaded`}
-			<button class={`${classButton} ${btnStyle}`} on:click={() => onClickLocal(doc)}>
+			<button class={`${classButton} ${btnStyle}`} onclick={() => onClickLocal(doc)}>
 				{btnLabel}:
 			</button>
 			<span class={`${classData} ${statusStyle}`}>{statusLabel}</span>

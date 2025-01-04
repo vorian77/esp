@@ -1,5 +1,5 @@
 import { ApiFunction } from '$routes/api/api'
-import { debug, getServerResponse, userRetrieve } from '$utils/types'
+import { debug, getServerResponse } from '$utils/types'
 import { getEnvVar } from '$server/env'
 import {
 	getFieldListItems,
@@ -48,9 +48,6 @@ export async function POST({ request, cookies }) {
 
 		case ApiFunction.dbEdgeGetTableColumns:
 			return getServerResponse(await getTableColumns(token))
-
-		case ApiFunction.dbEdgeGetUser:
-			return getServerResponse(await userRetrieve(token, cookies, getUserByUserId))
 
 		case ApiFunction.dbEdgeInit:
 			await dbEdgeInit()

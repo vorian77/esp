@@ -242,6 +242,7 @@ module sys_core {
     customColIsSubHeader: bool;
     customColLabel: str;
     customColPrefix: str;
+    customColRawHTML: str;
     customColSize: str;
     customColSource: str;
     customColSourceKey: str;

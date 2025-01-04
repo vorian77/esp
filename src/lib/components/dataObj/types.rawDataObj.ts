@@ -4,7 +4,6 @@ import {
 	booleanOrFalse,
 	booleanRequired,
 	DataObjCardinality,
-	DataObjEmbedType,
 	DataObjSort,
 	DataObjTable,
 	DataObjType,
@@ -25,22 +24,22 @@ import {
 	DBTable,
 	valueOrDefault
 } from '$utils/types'
-import { StatePacketAction } from '$comps/app/types.appState'
+import { StatePacketAction } from '$comps/app/types.appState.svelte'
 import {
 	DataObj,
 	DataObjComponent,
 	DataObjListEditPresetType,
 	DataObjProcessType,
 	type DataRecord
-} from '$comps/dataObj/types.dataObj'
+} from '$comps/dataObj/types.dataObj.svelte'
 import {
 	DataObjActionField,
 	DataObjActionFieldConfirm,
 	DataObjActionFieldShow,
 	DataObjActionFieldTriggerEnable
-} from '$comps/dataObj/types.dataObjActionField'
+} from '$comps/dataObj/types.dataObjActionField.svelte'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
-import { FieldColor, FieldColumnItem } from '$comps/form/field'
+import { FieldAccess, FieldColor, FieldColumnItem, FieldEmbedType } from '$comps/form/field'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { error } from '@sveltejs/kit'
 
@@ -67,7 +66,7 @@ export class RawDataObj {
 	listEditPresetExpr?: string
 	listReorderColumn?: string
 	name: string
-	processType?: string
+	processType?: DataObjProcessType
 	rawActionsField: RawDataObjActionField[] = []
 	rawParent?: RawDataObjParent
 	rawPropsDisplay: RawDataObjPropDisplay[] = []
@@ -142,7 +141,10 @@ export class RawDataObj {
 
 		/* dependent properties */
 		this.rawParent = classOptional(RawDataObjParent, obj._parent)
+
 		this.rawPropsDisplay = arrayOfClass(RawDataObjPropDisplay, obj._propsDisplay, this.tables)
+		this.setFirstVisible(this.rawPropsDisplay)
+
 		this.rawPropsSaveInsert = this.initProps(obj._propsSaveInsert)
 		this.rawPropsSaveUpdate = this.initProps(obj._propsSaveUpdate)
 		this.rawPropsSelect = this.initProps(obj._propsSelect)
@@ -188,6 +190,11 @@ export class RawDataObj {
 			t.setChildren(newTables)
 		})
 		return newTables
+	}
+
+	setFirstVisible(rawPropsDisplay: RawDataObjPropDisplay[]) {
+		let idx = rawPropsDisplay.findIndex((p) => p.isDisplay)
+		if (idx > -1) rawPropsDisplay[idx].isFirstVisible = true
 	}
 }
 
@@ -247,7 +254,7 @@ export class RawDataObjDyn extends RawDataObj {
 export class RawDataObjParent {
 	_columnName: string
 	_columnIsMultiSelect: boolean
-	_embedType?: DataObjEmbedType
+	_embedType?: FieldEmbedType
 	_filterExpr?: string
 	_table: DBTable
 	constructor(obj: RawDataObjParent) {
@@ -264,8 +271,8 @@ export class RawDataObjParent {
 			clazz,
 			'_embedType',
 			'DataObjEmbedType',
-			DataObjEmbedType,
-			DataObjEmbedType.listEdit
+			FieldEmbedType,
+			FieldEmbedType.listEdit
 		)
 		this._filterExpr = strOptional(obj._filterExpr, clazz, '_filterExpr')
 		this._table = new DBTable(obj._table)
@@ -275,9 +282,12 @@ export class RawDataObjParent {
 export class RawDataObjProp {
 	_linkItemsSource?: PropLinkItemsSource
 	codeSortDir?: PropSortDir
+	columnBacklink?: string
 	exprCustom?: string
 	exprPreset?: string
+	fieldEmbed?: RawDataObjPropDBFieldEmbed
 	hasItems: boolean
+	id: string
 	indexTable: number
 	link?: PropLink
 	propName: string
@@ -296,9 +306,27 @@ export class RawDataObjProp {
 			PropSortDir,
 			PropSortDir.asc
 		)
+		this.columnBacklink = obj._columnBacklink
 		this.exprCustom = obj.exprCustom
 		this.exprPreset = obj.exprPreset
+		this.fieldEmbed = obj._fieldEmbedListConfig
+			? new RawDataObjPropDBFieldEmbed(
+					FieldEmbedType.listConfig,
+					obj._fieldEmbedListConfig._dataObjEmbedId
+				)
+			: obj._fieldEmbedListEdit
+				? new RawDataObjPropDBFieldEmbed(
+						FieldEmbedType.listEdit,
+						obj._fieldEmbedListEdit._dataObjEmbedId
+					)
+				: obj._fieldEmbedListSelect
+					? new RawDataObjPropDBFieldEmbed(
+							FieldEmbedType.listSelect,
+							obj._fieldEmbedListSelect._dataObjListId
+						)
+					: undefined
 		this.hasItems = booleanOrDefault(obj._hasItems, false)
+		this.id = strRequired(obj.id, clazz, 'id')
 		this.indexTable = nbrOrDefault(obj.indexTable, -1)
 		this.link = classOptional(PropLink, obj._link)
 		this.propNameRaw = strRequired(obj._propName, clazz, 'propName')
@@ -344,8 +372,6 @@ export class RawDataObjPropDB extends RawDataObjProp {
 	childTableTraversal: string
 	codeDataSourceValue: PropDataSourceValue
 	codeDataType: PropDataType
-	columnBacklink?: string
-	fieldEmbed?: RawDataObjPropDBFieldEmbed
 	isMultiSelect: boolean
 	isSelfReference: boolean
 	constructor(obj: any, tables: DataObjTable[]) {
@@ -367,23 +393,6 @@ export class RawDataObjPropDB extends RawDataObjProp {
 			'PropDataType',
 			PropDataType
 		)
-		this.columnBacklink = obj._columnBacklink
-		this.fieldEmbed = obj._fieldEmbedListConfig
-			? new RawDataObjPropDBFieldEmbed(
-					DataObjEmbedType.listConfig,
-					obj._fieldEmbedListConfig._dataObjEmbedId
-				)
-			: obj._fieldEmbedListEdit
-				? new RawDataObjPropDBFieldEmbed(
-						DataObjEmbedType.listEdit,
-						obj._fieldEmbedListEdit._dataObjEmbedId
-					)
-				: obj._fieldEmbedListSelect
-					? new RawDataObjPropDBFieldEmbed(
-							DataObjEmbedType.listSelect,
-							obj._fieldEmbedListSelect._dataObjListId
-						)
-					: undefined
 		this.isMultiSelect = booleanOrDefault(obj._isMultiSelect, false)
 		this.isSelfReference = booleanOrDefault(obj._isSelfReference, false)
 
@@ -408,8 +417,8 @@ export class RawDataObjPropDB extends RawDataObjProp {
 
 export class RawDataObjPropDBFieldEmbed {
 	id: string
-	type: DataObjEmbedType
-	constructor(type: DataObjEmbedType, dataObjId: string) {
+	type: FieldEmbedType
+	constructor(type: FieldEmbedType, dataObjId: string) {
 		const clazz = 'RawDataObjPropDBFieldEmbed'
 		this.id = dataObjId
 		this.type = type
@@ -429,6 +438,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 	isDisplay: boolean
 	isDisplayable: boolean
 	isDisplayBlock: boolean
+	isFirstVisible: boolean = false
 	isParmValue: boolean
 	items: FieldColumnItem[]
 	label: string
@@ -464,7 +474,6 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 			: []
 		this.headerAlt = strOptional(obj.headerAlt, clazz, 'headerAlt')
 		this.height = nbrOptional(obj.height, clazz, 'height')
-		this.isDisplay = booleanOrDefault(obj.isDisplay, true)
 		this.isDisplayable = booleanOrDefault(obj.isDisplayable, false)
 		this.isDisplayBlock = booleanOrDefault(obj.isDisplayBlock, true)
 		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
@@ -477,6 +486,13 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		this.width = nbrOptional(obj.width, clazz, 'width')
 
 		/* dependent properties */
+		this.isDisplay = booleanOrDefault(
+			this.isDisplayable &&
+				!this.colDB.isNonData &&
+				this.rawFieldAccess !== FieldAccess.hidden &&
+				obj.isDisplay,
+			true
+		)
 		this.label = override(obj.headerAlt, this.colDB.header, clazz, 'label')
 		this.labelSide = valueOrDefault(this.colDB.headerSide, this.label)
 	}
@@ -486,10 +502,11 @@ export class RawDataObjPropDisplayCustom {
 	customColActionType?: string
 	customColActionValue?: string
 	customColAlign?: string
-	customColCodeColor: FieldColor
+	customColCodeColor?: FieldColor
 	customColIsSubHeader?: boolean
 	customColLabel?: string
 	customColPrefix?: string
+	customColRawHTML?: string
 	customColSize?: string
 	customColSource?: string
 	customColSourceKey?: string
@@ -504,10 +521,11 @@ export class RawDataObjPropDisplayCustom {
 		this.customColActionType = strOptional(obj.customColActionType, clazz, 'customColActionType')
 		this.customColActionValue = strOptional(obj.customColActionValue, clazz, 'customColActionValue')
 		this.customColAlign = strOptional(obj.customColAlign, clazz, 'customColAlign')
-		this.customColCodeColor = new FieldColor(obj._customColCodeColor, 'blue')
+		this.customColCodeColor = classOptional(FieldColor, obj._customColCodeColor)
 		this.customColIsSubHeader = obj.customColIsSubHeader
 		this.customColLabel = strOptional(obj.customColLabel, clazz, 'customColLabel')
 		this.customColPrefix = strOptional(obj.customColPrefix, clazz, 'customColPrefix')
+		this.customColRawHTML = strOptional(obj.customColRawHTML, clazz, 'customColRawHTML')
 		this.customColSize = strOptional(obj.customColSize, clazz, 'customColSize')
 		this.customColSource = strOptional(obj.customColSource, clazz, 'customColSource')
 		this.customColSourceKey = strOptional(obj.customColSourceKey, clazz, 'customColSourceKey')
@@ -628,7 +646,11 @@ export class RawDBColumn {
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.headerSide = strOptional(obj.headerSide, clazz, 'headerSide')
 		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
-		this.isNonData = booleanRequired(obj.isNonData, clazz, 'isNonData')
+		this.isNonData = booleanRequired(
+			obj.isNonData && !obj.rawFieldElement?.startsWidth('custom'),
+			clazz,
+			'isNonData'
+		)
 		this.matchColumn = strOptional(obj.matchColumn, clazz, 'matchColumn')
 		this.maxLength = nbrOptional(obj.maxLength, clazz, 'maxLength')
 		this.maxValue = nbrOptional(obj.maxValue, clazz, 'maxValue')
@@ -767,14 +789,7 @@ export class PropLinkItemsSource {
 		})
 
 		// rowData
-		let rowData: DataRecord[] = []
-		this.rawItems.forEach((item) => {
-			let row: DataRecord = { data: item.data }
-			this.props.forEach((prop) => {
-				row[prop.key] = getRecordValue(item, prop.key)
-			})
-			rowData.push(row)
-		})
+		let rowData: DataRecord[] = this.getRowData()
 
 		// rawSortObj
 		let sortModel = new DataObjSort()
@@ -785,10 +800,26 @@ export class PropLinkItemsSource {
 		return { columnDefs, rowData, sortModel }
 	}
 
+	getRowData() {
+		return this.rawItems.map((item) => {
+			let row: DataRecord = { data: item.data }
+			this.props.forEach((prop) => {
+				row[prop.key] = getRecordValue(item, prop.key)
+			})
+			return row
+		})
+	}
+
 	getSortProps() {
 		return this.props
 			.filter((prop) => isNumber(prop.orderSort))
 			.sort((a, b) => a.orderSort! - b.orderSort!)
+	}
+
+	getValuesSelect() {
+		let data = this.rawItems.map((item) => item.data)
+		data.unshift('')
+		return data
 	}
 
 	setRawItems(rawItems: DataRecord[]) {

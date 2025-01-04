@@ -1,8 +1,15 @@
 <script lang="ts">
-	import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState'
+	import {
+		State,
+		StatePacket,
+		StatePacketAction,
+		StateTarget
+	} from '$comps/app/types.appState.svelte'
 	import { TokenApiQueryData, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import {
+		ContextKey,
+		DataObjComponent,
 		DataObjData,
 		type DataRecord,
 		Node,
@@ -10,50 +17,72 @@
 		ParmsValuesType,
 		ResponseBody,
 		UserResourceTask,
-		UserResourceTaskCategory
+		UserResourceTaskCategory,
+		UserResourceTaskRenderType
 	} from '$utils/types'
+	import { getContext, setContext } from 'svelte'
 	import TsoMoedApp from '$comps/nav/navDash/tso_moed_app.svelte'
 	import TsoMoedAppDoc from '$comps/nav/navDash/tso_moed_app_doc.svelte'
+	import FormDetail from '$comps/form/FormDetail.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
+	import { goto } from '$app/navigation'
 	import { error } from '@sveltejs/kit'
 
 	const FILENAME = '$comps/nav/navDash/NavDash.svelte'
 
-	export let state: State
+	let sm: State = getContext(ContextKey.stateManager)
+	let dm: DataManager = $derived(sm.dm)
+	dm.reset()
+	let keyValue: boolean = $state(false)
 
-	$: tasks = [
-		...state.user.resources_sys_task_default,
-		...state.user?.resources_sys_task_setting
-	].filter((task: UserResourceTask) => task.codeStatusObjName)
+	setContext(ContextKey.dashboardRefresh, getData)
 
+	let tasks = $derived(
+		[...sm.user.resources_sys_task_default, ...sm.user?.resources_sys_task_setting].filter(
+			(task: UserResourceTask) =>
+				task.codeStatusObjName || task.codeRenderType === UserResourceTaskRenderType.page
+		)
+	)
 	const StatusType = { tso_moed_app: TsoMoedApp, tso_moed_app_doc: TsoMoedAppDoc }
 
-	const getData = async (task: UserResourceTask) => {
-		let taskData: DataRecord = {}
-		task.setShow(await getDataShow(task))
-		if (task.isShow) taskData.data = await getDataStatus(task)
-		return taskData
+	let promise = $state(getData())
+
+	async function getData() {
+		for (let i = 0; i < tasks.length; i++) {
+			await getDataTask(tasks[i])
+		}
+		return tasks
 	}
 
-	const getDataShow = async (task: UserResourceTask) => {
+	async function getDataTask(task: UserResourceTask) {
+		task.data = {}
+		task.setShow(await getDataShow(task))
+		if (task.isShow) {
+			await task.loadPage(sm)
+			if (task.dataObjPage) dm.nodeAdd(task.dataObjPage)
+			task.data = await getDataStatus(task)
+		}
+	}
+
+	async function getDataShow(task: UserResourceTask) {
 		if (!task.exprShow) return true
 		const show = await getDataDB(task, task.exprShow)
 		return show.data[0]
 	}
 
-	const getDataStatus = async (task: UserResourceTask) => {
+	async function getDataStatus(task: UserResourceTask) {
 		if (!task.exprStatus) return undefined
 		const status = await getDataDB(task, task.exprStatus)
 		return status.data
 	}
 
-	const getDataDB = async (task: UserResourceTask, expr: string) => {
+	async function getDataDB(task: UserResourceTask, expr: string) {
 		const dataTab = new DataObjData()
 		dataTab.parms.valueSet(ParmsValuesType.dbExpr, expr)
 
 		const result: ResponseBody = await apiFetch(
 			ApiFunction.dbEdgeProcessExpression,
-			new TokenApiQueryData({ dataTab })
+			new TokenApiQueryData({ dataTab, user: sm.user })
 		)
 		if (result.success) {
 			return result.data
@@ -66,43 +95,68 @@
 		}
 	}
 	async function onClick(task: UserResourceTask, parms: DataRecord | undefined = undefined) {
-		state.parmsState.update(parms)
-		const token = task.getTokenNode(state.user)
-		state.update({
-			page: token.node.page,
-			nodeType: token.node.type,
-			packet: new StatePacket({
-				action: StatePacketAction.openNode,
-				confirmType: TokenAppDoActionConfirmType.objectChanged,
-				token
+		if ((task.targetDataObjId || task.targetNodeObjId) && !task.dataObjPage) {
+			console.log('NavDash.onClick', task)
+
+			sm.parmsState.update(parms)
+			const token = task.getTokenNode(sm.user)
+			sm.change({
+				confirmType: TokenAppDoActionConfirmType.statusChanged,
+				packet: new StatePacket({
+					action: StatePacketAction.openNode,
+					token
+				}),
+				target: StateTarget.feature
 			})
-		})
+		}
 	}
 </script>
 
-{#each tasks as task}
-	{#await getData(task)}
-		<p>...loading task data</p>
-	{:then statusData}
-		{#if task.isShow}
-			<div
-				on:click={task.hasAltOpen ? undefined : onClick(task)}
-				class="rounded-lg p-6 border-4 bg-gray-100 min-h-40 flex flex-col items-center"
-			>
-				<div class="text-center font-bold text-4xl text-blue-400">{task.header}</div>
-
-				{#if statusData && statusData.data && StatusType[task.codeStatusObjName]}
-					<p class="mt-6 mb-2 text-center text-3xl text-blue-300">Status</p>
-					<svelte:component
-						this={StatusType[task.codeStatusObjName]}
-						{task}
-						{onClick}
-						data={statusData.data}
-					/>
-				{/if}
-			</div>
-		{/if}
-	{:catch error}
-		<p>Task Status Data Error: {error.message}</p>
-	{/await}
-{/each}
+{#await promise}
+	<p>Loading tasks...</p>
+{:then tasks}
+	{#if tasks.length === 0}
+		<h1 class="p-4">No widgets configured or tasks to compelte.</h1>
+	{:else}
+		<button class="btn btn-action variant-ghost-primary" onclick={() => (promise = getData())}
+			>Refresh Dashboard</button
+		>
+		<div class="h-full flex flex-col overflow-y-auto gap-4 p-4">
+			{#each tasks as task}
+				<!-- {#if task.isShow} -->
+				{@const isButton = !task.dataObjPage && !task.hasAltOpen}
+				<div
+					class="bg-white rounded-lg p-4 flex flex-col items-center border border-gray-200 shawdow-xl {isButton
+						? 'cursor-pointer hover:bg-gray-100'
+						: ''}"
+					onclick={task.hasAltOpen ? undefined : () => onClick(task)}
+				>
+					{#if task.dataObjPage}
+						{@const pageParms = {
+							component: DataObjComponent.FormDetail,
+							dataObjId: task.pageDataObjId
+						}}
+						<FormDetail parms={pageParms} />
+					{:else}
+						{@const Component = task.codeStatusObjName
+							? StatusType[task.codeStatusObjName]
+							: undefined}
+						{@const hasStatus = task.data}
+						<h5 class="mb-2 text-4xl font-bold tracking-tight text-blue-400">
+							{task.header}
+						</h5>
+						{#if hasStatus}
+							<p class="mt-6 mb-2 text-center text-2xl text-blue-300">Status</p>
+						{/if}
+						{#if Component}
+							<Component {task} {onClick} data={task.data} />
+						{/if}
+					{/if}
+				</div>
+				<!-- {/if} -->
+			{/each}
+		</div>
+	{/if}
+{:catch error}
+	<p>Could not retrieve tasks - error: {error.message}</p>
+{/await}

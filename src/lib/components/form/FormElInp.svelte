@@ -1,56 +1,54 @@
 <script lang="ts">
-	import { FieldAlignment, FieldProps, FieldElement } from '$comps/form/field'
-	import { FieldInput } from '$comps/form/fieldInput'
+	import {
+		ContextKey,
+		DataManager,
+		DataObjCardinality,
+		type DataRecord,
+		required
+	} from '$utils/types'
+	import { getContext } from 'svelte'
+	import { FieldAlignment, FieldElement } from '$comps/form/field'
 	import { FieldAccess } from '$comps/form/field'
-	import { DataObjCardinality } from '$utils/types'
+	import { FieldInput } from '$comps/form/fieldInput'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import FormLabel from '$comps/form/FormLabel.svelte'
+	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
+	// import { imask } from '@imask/svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let fp: FieldProps
+	const FILENAME = '$comps/form/FormElInp.svelte'
 
-	const setHidTextIcon = () => {
-		field.setIconProps({
-			name: field.inputTypeCurrent === 'password' ? 'Eye' : 'EyeOff',
-			clazz: 'ml-1',
-			onClick: onClickToggleHideText,
-			size: 20
-		})
-	}
-	const onClickToggleHideText = () => {
-		field.inputTypeCurrent = field.inputTypeCurrent === 'password' ? 'text' : 'password'
-		setHidTextIcon()
-		field = field
-	}
+	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	$: dataObj = fp.dataObj
-	$: field = fp.field as FieldInput
-	$: if (field.fieldElement === FieldElement.textHide) {
-		setHidTextIcon()
-	}
+	let field = $state(parms.field) as FieldInput
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
+	let fieldInputType = $state(field.inputTypeCurrent || field.fieldElement)
+	let iconProps: IconProps = $state(setIconProps())
 
-	$: classPropsInput = dataObj.raw.codeCarfSetVal = DataObjCardinality.detail
-		? 'input text-sm text-black ' + field.colorBackground
-		: 'w-full border-none bg-transparent text-black'
-	$: classPropsInput +=
-		field.fieldAlignment === FieldAlignment.left
-			? ' text-left'
-			: field.fieldAlignment === FieldAlignment.center
-				? ' text-center'
-				: field.fieldAlignment === FieldAlignment.justify
-					? ' text-justify'
-					: field.fieldAlignment === FieldAlignment.right
-						? ' text-right'
-						: ' text-left'
-
-	$: min = field.minValue ? field.minValue.toString() : ''
-	$: max = field.maxValue ? field.maxValue.toString() : ''
-	$: step = field.spinStep ? field.spinStep : ''
+	let classPropsInput = $derived.by(() => {
+		let clazz =
+			parms.dataObj.raw.codeCardinality === DataObjCardinality.detail
+				? 'input text-sm text-black ' + field.colorBackground
+				: 'w-full border-none bg-transparent text-black'
+		clazz +=
+			field.fieldAlignment === FieldAlignment.left
+				? ' text-left'
+				: field.fieldAlignment === FieldAlignment.center
+					? ' text-center'
+					: field.fieldAlignment === FieldAlignment.justify
+						? ' text-justify'
+						: field.fieldAlignment === FieldAlignment.right
+							? ' text-right'
+							: ' text-left'
+		return clazz
+	})
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		fp.fSetVal(fp.row, fp.field, target.value)
+		dm.setFieldValue(parms.dataObjId, parms.row, field, target.value)
 	}
 
 	function onDoubleClick(event: MouseEvent) {
@@ -62,31 +60,53 @@
 			const month = dateMonth < 10 ? '0' + dateMonth : dateMonth.toString()
 			const day = dateDay < 10 ? '0' + dateDay : dateDay.toString()
 			const value = year + '-' + month + '-' + day
-			fp.fSetVal(fp.row, fp.field, value)
+			dm.setFieldValue(parms.dataObjId, parms.row, field, value)
 		}
+	}
+	function setIconProps() {
+		let iconProps: IconProps = undefined
+		let iconName =
+			field.fieldElement === FieldElement.textHide
+				? fieldInputType === 'password'
+					? 'Eye'
+					: 'EyeOff'
+				: undefined
+		if (iconName) {
+			iconProps = new IconProps({
+				name: iconName,
+				clazz: 'ml-1',
+				onclick: onClickToggleHideText,
+				size: 20
+			})
+		}
+		return iconProps
+	}
+	function onClickToggleHideText() {
+		fieldInputType = fieldInputType === 'password' ? 'text' : 'password'
+		iconProps = setIconProps()
 	}
 </script>
 
-<!-- <DataViewer header="element" data={field.element} /> -->
-<!-- <DataViewer header="fieldAccess" data={field.fieldAccess} /> -->
+<!-- <DataViewer header="inp.iconProps" data={iconProps?.name} /> -->
+<!-- <DataViewer header="fieldInputType" data={fieldInputType} /> -->
 
-<FormLabel {fp}>
+<FormLabel {parms} {iconProps}>
 	<input
 		class={classPropsInput}
 		hidden={field.fieldAccess === FieldAccess.hidden}
 		id={field.colDO.propName}
-		{max}
-		{min}
+		max={field.maxValue?.toString() || ''}
+		min={field.minValue?.toString() || ''}
 		name={field.colDO.propName}
-		on:change={onChange}
-		on:dblclick={onDoubleClick}
-		on:keyup={onChange}
-		placeholder={dataObj.raw.codeCardinality === DataObjCardinality.detail || dataObj.raw.isListEdit
+		ondblclick={onDoubleClick}
+		oninput={onChange}
+		placeholder={parms.dataObj.raw.codeCardinality === DataObjCardinality.detail ||
+		parms.dataObj.raw.isListEdit
 			? field.placeHolder
 			: ''}
 		readonly={field.fieldAccess === FieldAccess.readonly}
-		{step}
-		type={field.inputTypeCurrent ? field.inputTypeCurrent : field.FieldElement}
-		value={fp.fieldValue}
+		step={field.spinStep?.toString() || ''}
+		type={fieldInputType || field.FieldElement}
+		value={fieldValue}
 	/>
 </FormLabel>

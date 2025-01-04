@@ -1,29 +1,36 @@
 <script lang="ts">
-	import { FieldProps } from '$comps/form/field'
-	import { DataObj, DataObjCardinality } from '$utils/types'
+	import { ContextKey, DataManager, DataObj, DataObjCardinality, required } from '$utils/types'
+	import { getContext } from 'svelte'
 	import { FieldRadio } from '$comps/form/fieldRadio'
 	import { FieldAccess, FieldAlignment } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 
-	export let fp: FieldProps
+	const FILENAME = '$comps/form/FormElInpRadio.svelte'
 
-	$: dataObj = fp.dataObj
-	$: field = fp.field as FieldRadio
-	$: fieldValue = fp.fieldValue
-	$: dataItems = field.linkItemsSource
-		? field.linkItemsSource.formatDataFieldColumnItem(fieldValue)
-		: []
-	$: row = fp.row
+	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	$: classPropsLabel = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
-	$: classFormat = field.isDisplayBlock ? 'block mb-2' : 'inline mr-7'
-	$: classFieldSet =
+	let field = $derived(parms.field) as FieldRadio
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
+	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
+
+	let dataItems = $derived(
+		field.linkItemsSource ? field.linkItemsSource.formatDataFieldColumnItem(fieldValue) : []
+	)
+
+	let classPropsLabel = $derived(
+		dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
+	)
+	let classFormat = $derived(field.isDisplayBlock ? 'block mb-2' : 'inline mr-7')
+	let classFieldSet = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.list
 			? 'fieldsetList'
 			: field.fieldAccess === FieldAccess.required
 				? 'fieldsetDetailRequired'
 				: 'fieldsetDetailOptional'
-	$: classAlignment =
+	)
+	let classAlignment = $derived(
 		field.fieldAlignment === FieldAlignment.left
 			? ' text-left'
 			: field.fieldAlignment === FieldAlignment.center
@@ -33,28 +40,27 @@
 					: field.fieldAlignment === FieldAlignment.right
 						? ' text-right'
 						: ' text-left'
+	)
 
-	if (field) field.isDisplayBlock = false
-
-	function onChange(event: Event) {
+	function onClick(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		fp.fSetVal(fp.row, fp.field, target.value)
+		dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
 	}
 </script>
 
-<FormLabel {fp} />
+<FormLabel {parms} />
 
-<fieldset id="input-radio-row-{row}" class={classFieldSet}>
+<fieldset id="input-radio-row-{parms.row}" class={classFieldSet}>
 	<div class="mt-3 {classAlignment}">
 		{#if dataItems}
 			{#each dataItems as { data, display }, index (data)}
 				<div class="text-sm {classFormat} {index === 0 ? 'mt-4' : ''}">
 					<input
 						type="radio"
-						name={field.colDO.propName + '-' + row}
+						name={field.colDO.propName + '-' + parms.row}
 						value={data}
-						checked={fp.fieldValue == data}
-						on:click={onChange}
+						checked={fieldValue == data}
+						onclick={onClick}
 					/>
 					{display}
 				</div>

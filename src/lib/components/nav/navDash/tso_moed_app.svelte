@@ -8,7 +8,7 @@
 	const classData = 'ml-2 text-lg text-gray-700'
 
 	export let task: UserResourceTask
-	export let onClick: Function
+	export let onclick: Function
 	export let data: any
 
 	let record = data[0]

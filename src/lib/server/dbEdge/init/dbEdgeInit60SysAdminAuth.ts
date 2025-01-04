@@ -17,7 +17,7 @@ function initTaskMyAccount(init: InitDb) {
 		actionFieldGroup: 'doag_auth_my_account',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		codeDataObjType: 'task',
+		codeDataObjType: 'taskTarget',
 		header: 'My Account',
 		name: 'data_obj_task_sys_auth_my_account',
 		owner: 'sys_system_old',
@@ -175,6 +175,7 @@ function initTaskMyAccount(init: InitDb) {
 
 			// reset password link
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
@@ -195,11 +196,12 @@ function initTaskMyAccount(init: InitDb) {
 	init.addTrans('sysTask', {
 		codeCategory: 'setting',
 		codeIcon: 'Settings',
+		codeRenderType: 'button',
 		header: 'My Account',
 		isPinToDash: false,
 		isGlobalResource: true,
 		name: 'task_sys_auth_my_account',
-		sourceDataObj: 'data_obj_task_sys_auth_my_account',
+		targetDataObj: 'data_obj_task_sys_auth_my_account',
 		orderDefine: 0,
 		owner: 'sys_system_old'
 	})
@@ -241,6 +243,7 @@ function initDataObjLogin(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
@@ -253,6 +256,7 @@ function initDataObjLogin(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
@@ -265,6 +269,7 @@ function initDataObjLogin(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
@@ -320,6 +325,7 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
@@ -388,6 +394,7 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
@@ -412,6 +419,7 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
@@ -462,6 +470,7 @@ function initDataObjVerify(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
@@ -474,6 +483,7 @@ function initDataObjVerify(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
@@ -537,6 +547,7 @@ function initDataObjSignup(init: InitDb) {
 				linkTable: 'SysUserType'
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
@@ -559,6 +570,7 @@ function initDataObjSignup(init: InitDb) {
 				orderDefine: 100
 			},
 			{
+				codeColor: 'blue',
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {

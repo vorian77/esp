@@ -14,7 +14,6 @@ export enum ApiFunction {
 	dbEdgeProcessDataObj = 'dbEdgeProcessDataObj',
 	dbEdgeProcessExpression = 'dbEdgeProcessExpression',
 	dbEdgeGetTableColumns = 'dbEdgeGetTableColumns',
-	dbEdgeGetUser = 'dbEdgeGetUser',
 	dbEdgeInit = 'dbEdgeInit',
 	sysBlobUpload = 'sysBlobUpload',
 	sysGetEnvDbBranch = 'sysGetEnvDbBranch',

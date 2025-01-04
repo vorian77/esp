@@ -21,7 +21,7 @@ export function initPreDataObjAction(init: InitDb) {
 			}
 		],
 		actionFieldShows: [
-			{ codeTriggerShow: 'notObjectChanged', isRequired: true },
+			{ codeTriggerShow: 'notStatusChanged', isRequired: true },
 			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
 			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
 		],
@@ -38,7 +38,7 @@ export function initPreDataObjAction(init: InitDb) {
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
 			{
-				codeConfirmType: 'objectChanged',
+				codeConfirmType: 'statusChanged',
 				codeTriggerConfirmConditional: 'none',
 				confirmButtonLabelConfirm: 'Confirm Cancel',
 				confirmMessage: 'Are you sure you want to discard your data?',
@@ -55,7 +55,7 @@ export function initPreDataObjAction(init: InitDb) {
 	})
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
 		codeActionFieldTriggerEnable: 'always',
@@ -69,7 +69,7 @@ export function initPreDataObjAction(init: InitDb) {
 	/* edit */
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
 		codePacketAction: 'doListDetailEdit',
@@ -83,11 +83,11 @@ export function initPreDataObjAction(init: InitDb) {
 	/* embed */
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
 		codePacketAction: 'doEmbedListConfigEdit',
-		codeActionFieldTriggerEnable: 'parentObjectSaved',
+		codeActionFieldTriggerEnable: 'always',
 		header: 'Edit',
 		isListRowAction: true,
 		name: 'noa_embed_list_config_edit',
@@ -95,14 +95,14 @@ export function initPreDataObjAction(init: InitDb) {
 	})
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [
-			{ codeTriggerShow: 'notObjectChanged', isRequired: true },
-			{ codeTriggerShow: 'parentObjectSaved', isRequired: true }
+			{ codeTriggerShow: 'notStatusChanged', isRequired: true },
+			{ codeTriggerShow: 'statusValid', isRequired: true }
 		],
 		codePacketAction: 'doEmbedListConfigNew',
-		codeActionFieldTriggerEnable: 'parentObjectSaved',
+		codeActionFieldTriggerEnable: 'always',
 		header: 'New',
 		isListRowAction: false,
 		name: 'noa_embed_list_config_new',
@@ -110,11 +110,11 @@ export function initPreDataObjAction(init: InitDb) {
 	})
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
 		codePacketAction: 'doEmbedListEditParmValue',
-		codeActionFieldTriggerEnable: 'parentObjectSaved',
+		codeActionFieldTriggerEnable: 'always',
 		header: 'Parameter Value',
 		isListRowAction: true,
 		name: 'noa_embed_list_edit_parm_value',
@@ -122,7 +122,7 @@ export function initPreDataObjAction(init: InitDb) {
 	})
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
 		codePacketAction: 'doEmbedListSelect',
@@ -136,9 +136,9 @@ export function initPreDataObjAction(init: InitDb) {
 	/* export */
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
-		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
+		actionFieldShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
 		codePacketAction: 'gridDownload',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Download',
@@ -150,9 +150,9 @@ export function initPreDataObjAction(init: InitDb) {
 	/* new */
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
-		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
+		actionFieldShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
 		codePacketAction: 'doDetailNew',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'New',
@@ -162,9 +162,9 @@ export function initPreDataObjAction(init: InitDb) {
 	})
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
-		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
+		actionFieldShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
 		codePacketAction: 'doDetailNew',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'New',
@@ -175,9 +175,9 @@ export function initPreDataObjAction(init: InitDb) {
 
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
-		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
+		actionFieldShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
 		codePacketAction: 'doListDetailNew',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'New',
@@ -189,7 +189,7 @@ export function initPreDataObjAction(init: InitDb) {
 	/* refresh */
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
 		codePacketAction: 'doListSelfRefresh',
@@ -203,7 +203,7 @@ export function initPreDataObjAction(init: InitDb) {
 	/* save */
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
 		codePacketAction: 'doDetailSaveAs',
@@ -216,12 +216,12 @@ export function initPreDataObjAction(init: InitDb) {
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionFieldShows: [
-			{ codeTriggerShow: 'objectChanged', isRequired: true },
+			{ codeTriggerShow: 'statusChanged', isRequired: true },
 			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
 			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
 		],
 		codePacketAction: 'doDetailSave',
-		codeActionFieldTriggerEnable: 'objectValidToSave',
+		codeActionFieldTriggerEnable: 'statusValid',
 		header: 'Save',
 		isListRowAction: false,
 		name: 'noa_save_detail',
@@ -230,13 +230,13 @@ export function initPreDataObjAction(init: InitDb) {
 
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [
-			{ codeTriggerShow: 'objectChanged', isRequired: true },
+			{ codeTriggerShow: 'statusChanged', isRequired: true },
 			{ codeTriggerShow: 'rootDataObj', isRequired: true }
 		],
-		codePacketAction: 'doDetailSaveCancel',
+		codePacketAction: 'doSaveCancel',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Cancel Save',
 		isListRowAction: false,
@@ -247,11 +247,11 @@ export function initPreDataObjAction(init: InitDb) {
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionFieldShows: [
-			{ codeTriggerShow: 'objectChanged', isRequired: true },
+			{ codeTriggerShow: 'statusChanged', isRequired: true },
 			{ codeTriggerShow: 'rootDataObj', isRequired: true }
 		],
 		codePacketAction: 'doListSelfSave',
-		codeActionFieldTriggerEnable: 'objectValidToSave',
+		codeActionFieldTriggerEnable: 'statusValid',
 		header: 'Save',
 		isListRowAction: false,
 		name: 'noa_save_list',
@@ -260,9 +260,9 @@ export function initPreDataObjAction(init: InitDb) {
 
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
-		actionFieldShows: [{ codeTriggerShow: 'objectChanged', isRequired: true }],
+		actionFieldShows: [{ codeTriggerShow: 'statusChanged', isRequired: true }],
 		codePacketAction: 'doListSelfSave',
-		codeActionFieldTriggerEnable: 'objectValidToSave',
+		codeActionFieldTriggerEnable: 'statusValid',
 		header: 'Save',
 		isListRowAction: true,
 		name: 'noa_save_list_edit',
@@ -272,9 +272,9 @@ export function initPreDataObjAction(init: InitDb) {
 	/* special */
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [
-			{ codeConfirmType: 'objectChanged', codeTriggerConfirmConditional: 'none' }
+			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
-		actionFieldShows: [{ codeTriggerShow: 'notObjectChanged', isRequired: true }],
+		actionFieldShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
 		codePacketAction: 'doDetailMigrate',
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Migrate',

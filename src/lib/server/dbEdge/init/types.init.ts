@@ -150,7 +150,7 @@ export class InitDb {
 				name: 'sysDataObjTask',
 				dataMap: 'name',
 				dbObject: 'sys_core::SysDataObj',
-				exprResetFull: `DELETE sys_core::SysDataObj FILTER .codeDataObjType.name = 'task'`,
+				exprResetFull: `DELETE sys_core::SysDataObj FILTER .codeDataObjType.name IN {'taskPage', 'taskTarget'}`,
 				fCreate: addDataObj
 			})
 		)

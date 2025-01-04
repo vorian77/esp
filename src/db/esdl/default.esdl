@@ -30,6 +30,7 @@ module default {
     required firstName: default::Name;
     property fullName := .firstName ++ ' ' ++ .lastName;
     idMigration: uuid;
+    isLegalAgreed: bool;
     required lastName: default::Name;
     middleName: default::Name;
     note: str;

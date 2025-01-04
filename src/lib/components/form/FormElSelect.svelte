@@ -1,45 +1,52 @@
 <script lang="ts">
-	import { DataObjCardinality } from '$utils/types'
-	import { FieldElement, FieldProps } from '$comps/form/field'
+	import { ContextKey, DataManager, DataObjCardinality, required } from '$utils/types'
+	import { getContext } from 'svelte'
+	import { FieldElement } from '$comps/form/field'
 	import { FieldSelect } from '$comps/form/fieldSelect'
 	import { FieldAccess } from '$comps/form/field'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let fp: FieldProps
+	const FILENAME = '/$comps/form/FormElSelect.svelte'
 
-	$: dataObj = fp.dataObj
-	$: field = fp.field as FieldSelect
-	$: fieldId = 'field-input-select-' + field.colDO.orderDefine
-	$: fieldValue = fp.fieldValue
-	$: dataItems = field.linkItemsSource
-		? field.linkItemsSource.formatDataFieldColumnItem(fieldValue)
-		: []
+	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	$: classProps =
+	let dataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let field = $derived(parms.field) as FieldCustomActionLink
+	let fieldId = $derived('field-input-select-' + field.colDO.orderDefine)
+	let fieldItems = $derived(
+		field.linkItemsSource ? field.linkItemsSource.formatDataFieldColumnItem(fieldValue) : []
+	)
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
+
+	let classProps = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
 			? `select text-sm rounded-lg ${field.colorBackground}`
 			: `select text-sm rounded-lg bg-white`
-	$: classPropsLabel =
+	)
+	let classPropsLabel = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-1' : 'mb-1 hidden'
+	)
 
 	function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		fp.fSetVal(fp.row, fp.field, target.value)
+		dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
 	}
 </script>
 
-<FormLabel {fp}>
+<FormLabel {parms}>
 	<select
 		class={classProps}
 		name={field.colDO.propName}
 		id={fieldId}
 		disabled={field.fieldAccess == FieldAccess.readonly}
-		on:change={onChange}
+		onchange={onChange}
 	>
 		<option value={null} class="">Select an option...</option>
-		{#if dataItems}
-			{#each dataItems as { data, display }, index (data)}
+		{#if fieldItems}
+			{#each fieldItems as { data, display }, index (data)}
 				<option value={data} selected={data === fieldValue}>
 					{display}
 				</option>

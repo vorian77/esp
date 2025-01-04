@@ -1,5 +1,5 @@
-import { State } from '$comps/app/types.appState'
-import { type DataRecord, Node, ParmsValues } from '$utils/types'
+import { State } from '$comps/app/types.appState.svelte'
+import { DataObjData, type DataRecord, Node, ParmsValues } from '$utils/types'
 import {
 	arrayOfClass,
 	booleanOrFalse,
@@ -12,11 +12,18 @@ import {
 	valueOrDefault
 } from '$utils/utils'
 import { DataObj, ParmsValuesType } from '$utils/types'
-import { TokenAppModalReturnType, TokenAppModalSelect, TokenAppNode } from '$utils/types.token'
+import { queryTypeDataObj } from '$comps/app/types.appQuery'
+import {
+	TokenApiQueryType,
+	TokenAppModalReturnType,
+	TokenAppModalSelect,
+	TokenAppNode
+} from '$utils/types.token'
 import { FileStorage } from '$comps/form/fieldFile'
+import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
 
-const FILENAME = '$utils/utils.user.ts'
+const FILENAME = '$utils/types.user.ts'
 
 export class User {
 	avatar?: FileStorage
@@ -79,7 +86,7 @@ export class User {
 		// this.user_id = nbrOptional(obj.user_id, 'User')
 	}
 
-	async selectResource(state: State, resourceType: UserTypeResourceType) {
+	async selectResource(sm: State, resourceType: UserTypeResourceType) {
 		const resources = this.resources.getResources(resourceType)
 		switch (resources.length) {
 			case 0:
@@ -96,7 +103,7 @@ export class User {
 				// })
 				// parmData.data[parmName] = resources[0].idResource
 				// console.log('User.setUserSelectParms.parmSelect.multi', { parmName, resources, itemsList })
-				await state.openModalSelect(
+				await sm.openModalSelect(
 					new TokenAppModalSelect({
 						columnsDefs: undefined,
 						fModalClose: (returnType: TokenAppModalReturnType, returnData?: ParmsValues) => {
@@ -203,15 +210,19 @@ export class UserResource {
 export class UserResourceTask extends UserResource {
 	btnStyle?: string
 	codeCategory: UserResourceTaskCategory
+	codeRenderType: UserResourceTaskRenderType
 	codeStatusObjName?: string
+	data: DataRecord = {}
+	dataObjPage?: DataObj
 	description?: string
 	exprShow?: string
 	exprStatus?: string
 	hasAltOpen: boolean
 	isPinToDash: boolean
 	isShow: boolean = true
-	sourceDataObjId?: string
-	sourceNodeObjId?: string
+	pageDataObjId?: string
+	targetDataObjId?: string
+	targetNodeObjId?: string
 	constructor(obj: any) {
 		super(obj)
 		const clazz = 'UserResourceTask'
@@ -223,38 +234,67 @@ export class UserResourceTask extends UserResource {
 			'UserResourceTaskCategory',
 			UserResourceTaskCategory
 		)
+		this.codeRenderType = memberOfEnum(
+			obj._codeRenderType,
+			clazz,
+			'codeRender',
+			'UserResourceTaskRenderType',
+			UserResourceTaskRenderType
+		)
 		this.codeStatusObjName = obj._codeStatusObjName
 		this.description = obj.description
 		this.exprShow = obj.exprShow
 		this.exprStatus = obj.exprStatus
 		this.hasAltOpen = booleanOrFalse(obj.hasAltOpen, 'hasAltOpen')
 		this.isPinToDash = booleanOrFalse(obj.isPinToDash, 'isPinToDash')
-		this.sourceDataObjId = obj._sourceDataObjId
-		this.sourceNodeObjId = obj._sourceNodeObjId
+		this.pageDataObjId = obj._pageDataObjId
+		this.targetDataObjId = obj._targetDataObjId
+		this.targetNodeObjId = obj._targetNodeObjId
 	}
 
 	getTokenNode(user: User | undefined) {
 		return new TokenAppNode({
 			node: new Node({
-				_codeNodeType: this.sourceDataObjId
+				_codeNodeType: this.targetDataObjId
 					? 'program'
-					: this.sourceNodeObjId
+					: this.targetNodeObjId
 						? 'object'
 						: undefined,
-				dataObjId: this.sourceDataObjId,
+				dataObjId: this.targetDataObjId,
 				header: this.header,
 				icon: this.codeIconName,
 				id: this.id,
 				isMobileMode: valueOrDefault(user?.isMobileOnly, false),
 				name: this.name,
-				nodeObjId: this.sourceNodeObjId,
+				nodeObjId: this.targetNodeObjId,
 				page: '/home'
 			})
 		})
 	}
+	async loadPage(sm: State) {
+		if (this.pageDataObjId) {
+			this.dataObjPage = await queryTypeDataObj(
+				sm,
+				this.pageDataObjId,
+				new DataObjData(),
+				TokenApiQueryType.retrieve
+			)
+		}
+	}
+
 	setShow(isShow: boolean) {
 		this.isShow = isShow
 	}
+}
+
+export async function userSetId(userId: string) {
+	const formData = new FormData()
+	formData.set('session_id', userId)
+	const responsePromise: Response = await fetch('/', {
+		method: 'POST',
+		body: formData
+	})
+	goto('/home')
 }
 
 export class UserTypeResourceList {
@@ -313,6 +353,10 @@ export enum UserResourceTaskCategory {
 	setting = 'setting',
 	tab = 'tab'
 }
+export enum UserResourceTaskRenderType {
+	button = 'button',
+	page = 'page'
+}
 
 export enum UserTypeResourceType {
 	app = 'app',
@@ -322,3 +366,66 @@ export enum UserTypeResourceType {
 	task = 'task',
 	widget = 'widget'
 }
+
+/*  
+	<todo> 231130 - esp user record
+	user_id: 170896,
+		per_name_first: 'Phyllip',
+		per_name_last: 'Hall',
+		per_name_full: 'Phyllip Hall',
+		initials: 'PH',
+		org_id: 6761,
+		user_type_list: '',
+		user_types: [ 'student' ],
+		header: 'Atlantic Impact Mobile',
+		apps: [ '/home/cm' ],
+		cm_ssr_disclosure: 1,
+		cm_ssr_site: null,
+		site: '',
+		referral_id: -1,
+		cm_ssr_submitted: null,
+		status: 'Pending',
+		time_stamp: '2023-11-30 07:53:29.205',
+		root: '/home/cm',
+	
+		async function getUserESP() {
+			const responsePromise = await dbESPAPI(HTMLMETHOD.GET, 'ws_cm_ssr_user', { userId })
+			const response: ResponseBody = await responsePromise.json()
+	
+			if (!response.success) {
+				throw error(500, {
+					file: FILENAME,
+					function: 'getUserESP',
+					message: `Unable to retrieve user: ${userId}`
+				})
+			}
+	
+			// set user
+			const user = response.data
+	
+			// array user types
+			user.user_types = user.user_types.split(',')
+	
+			// apps
+			if (user.apps === '') {
+				throw error(500, {
+					file: FILENAME,
+					function: 'fetchUser',
+					message: `No apps defined for user: ${user.per_name_full} id: ${user.user_id}`
+				})
+			}
+			const appsList = user.apps.split(',')
+			user.apps = appsList.map((app: string) => '/home/' + app)
+			user.root = user.user_types.includes('admin') ? '/home' : user.apps[0]
+	
+	*/
+
+// <todo> 231008 - need to figure out how to set global current user
+// set global current user
+// await dbExecute(`set global sys_user::currentUserId := <uuid>"${user.id}"`)
+// set global currentUserId := <uuid>"9a2966ba-4e96-11ee-abc0-73f75479eb42";
+
+// const q = `select global sys_user::currentUser { fullName }`
+// const u = await dbSelectSingle(q)
+// console.log('global user:', u)
+// await getData('')

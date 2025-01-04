@@ -1,4 +1,4 @@
-import { Field, PropsFieldRaw } from '$comps/form/field'
+import { Field, PropsFieldCreate } from '$comps/form/field'
 import { valueOrDefault } from '$utils/utils'
 
 export class FieldTextarea extends Field {
@@ -6,7 +6,7 @@ export class FieldTextarea extends Field {
 	cols: number
 	classProps: string
 
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
 		this.rows = valueOrDefault(obj.height, 3)

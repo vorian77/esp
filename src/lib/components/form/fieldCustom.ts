@@ -1,4 +1,4 @@
-import { Field, FieldAccess, FieldColor, PropsFieldRaw } from '$comps/form/field'
+import { Field, FieldAccess, FieldColor, PropsFieldCreate } from '$comps/form/field'
 import { memberOfEnum, required, strRequired, valueOrDefault } from '$utils/types'
 import {
 	PropNamePrefixType,
@@ -11,7 +11,7 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$comps/form/fieldCustom.ts'
 
 export class FieldCustom extends Field {
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		super(props)
 		const propRaw = valueOrDefault(props.propRaw, {})
 		const clazz = 'FieldCustom'
@@ -23,7 +23,7 @@ export class FieldCustom extends Field {
 		)
 		this.fieldAccess = FieldAccess.readonly
 		const customCol = required(propRaw.customCol, clazz, 'customCol') as RawDataObjPropDisplayCustom
-		this.colDO.label = strRequired(customCol.customColLabel, clazz, 'label')
+		this.colDO.label = customCol.customColLabel ? customCol.customColLabel : this.colDO.label
 	}
 }
 
@@ -32,7 +32,7 @@ export class FieldCustomAction extends FieldCustom {
 	method: string
 	type: string
 	value: string
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		const clazz = 'FieldCustomAction'
 		super(props)
 		const customCol = required(
@@ -42,7 +42,7 @@ export class FieldCustomAction extends FieldCustom {
 		) as RawDataObjPropDisplayCustom
 		this.method = strRequired(customCol.customColActionMethod, clazz, 'method').toLowerCase()
 		this.type = strRequired(customCol.customColActionType, clazz, 'type').toLowerCase()
-		this.value = valueOrDefault(customCol.customColActionValue, '').toLowerCase()
+		this.value = valueOrDefault(customCol.customColActionValue, '')
 	}
 	async initEnhancement() {
 		this.enhancement = await getEnhancement(this.method)
@@ -50,7 +50,7 @@ export class FieldCustomAction extends FieldCustom {
 }
 
 export class FieldCustomActionButton extends FieldCustomAction {
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		const clazz = 'FieldCustomActionButton'
 		super(props)
 		const customCol = required(
@@ -58,12 +58,16 @@ export class FieldCustomActionButton extends FieldCustomAction {
 			clazz,
 			'customCol'
 		) as RawDataObjPropDisplayCustom
-		this.colDO.fieldColor = required(customCol.customColCodeColor, clazz, 'fieldColor')
+		this.colDO.fieldColor = customCol.customColCodeColor
+			? customCol.customColCodeColor
+			: props.propRaw.fieldColor
+				? props.propRaw.fieldColor
+				: new FieldColor('blue', 'blue')
 	}
 }
 export class FieldCustomActionLink extends FieldCustomAction {
 	prefix?: string
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		const clazz = 'FieldCustomActionLink'
 		super(props)
 		const customCol = required(
@@ -80,7 +84,7 @@ export class FieldCustomHeader extends FieldCustom {
 	size?: string
 	source?: string
 	sourceKey?: string
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		const clazz = 'FieldCustomHeader'
 		super(props)
 		const customCol = required(
@@ -97,7 +101,7 @@ export class FieldCustomHeader extends FieldCustom {
 
 export class FieldCustomText extends FieldCustom {
 	align?: string
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		const clazz = 'FieldCustomText'
 		super(props)
 		const customCol = required(
@@ -106,5 +110,19 @@ export class FieldCustomText extends FieldCustom {
 			'customCol'
 		) as RawDataObjPropDisplayCustom
 		this.align = customCol.customColAlign
+	}
+}
+
+export class FieldCustomHTML extends FieldCustom {
+	rawHTML: string
+	constructor(props: PropsFieldCreate) {
+		const clazz = 'FieldCustomHTML'
+		super(props)
+		const customCol = required(
+			props.propRaw.customCol,
+			clazz,
+			'customCol'
+		) as RawDataObjPropDisplayCustom
+		this.rawHTML = strRequired(customCol.customColRawHTML, clazz, 'rawHTML')
 	}
 }

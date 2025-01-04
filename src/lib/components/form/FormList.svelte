@@ -4,8 +4,9 @@
 		StatePacket,
 		StatePacketAction,
 		StateSurfaceEmbedShell,
-		StateSurfaceModalEmbed
-	} from '$comps/app/types.appState'
+		StateSurfaceModalEmbed,
+		StateTarget
+	} from '$comps/app/types.appState.svelte'
 	import {
 		TokenApiUserPref,
 		TokenAppDo,
@@ -26,10 +27,11 @@
 	import 'ag-grid-charts-enterprise'
 	import { LicenseManager } from 'ag-grid-charts-enterprise'
 	import {
+		ContextKey,
+		DataManager,
 		DataObj,
 		DataObjData,
-		DataObjEmbedType,
-		DataObjMode,
+		DataObjType,
 		type DataRecord,
 		ParmsValues,
 		ParmsValuesType,
@@ -39,6 +41,7 @@
 		type ResponseBody,
 		strRequired
 	} from '$utils/types'
+	import { getContext } from 'svelte'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
 	import { FieldParm } from '$comps/form/fieldParm'
@@ -66,36 +69,45 @@
 
 	const FILENAME = '$comps/form/FormList.svelte'
 
-	export let state: State
-	export let component: string
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
+	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	let elContent: HTMLDivElement
-	let elContentTopY: number
-	let gridApi: GridApi
-	let gridOptions: GridManagerOptions
-	let innerHeight: number
-	let isSelect = state instanceof StateSurfaceModalEmbed
-	let scrollToTop = () => {}
+	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let dataObjData = $derived(dataObj.data)
+	let dataRecordsDisplay = $derived(dm.getRecordsDisplayList(parms.dataObjId))
 
-	onMount(() => {
-		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
-	})
+	let gridApi: GridApi = $state()
+	let isSelect = $derived(sm instanceof StateSurfaceModalEmbed)
 
-	$: load(dataObjData)
-
-	$: if (state && state.packet) {
-		let packet
-
-		// gridDownload
-		packet = state.consume(StatePacketAction.gridDownload)
-		if (packet) {
-			;(async () => {
+	$effect(() => {
+		const packet = sm.consume(StatePacketAction.gridDownload)
+		if (packet)
+			(async () => {
 				await gridDownload()
 			})()
-		}
-	}
+	})
+
+	let gridOptions: GridManagerOptions | undefined = $state(
+		dataObj
+			? new GridManagerOptions({
+					columnDefs: initGridColumns(),
+					fCallbackFilter: fGridCallbackFilter,
+					fCallbackUpdateValue: fGridCallbackUpdateValue,
+					isEmbed: !!dataObj.embedField,
+					isSelect,
+					isSelectMulti: isSelect,
+					isSuppressFilterSort: dataObj.raw.isListSuppressFilterSort,
+					isSuppressSelect: dataObj.raw.isListSuppressSelect,
+					listReorderColumn: dataObj.raw.listReorderColumn,
+					onCellClicked,
+					onSelectionChanged,
+					parmStateSelectedIds: sm.parmsState.valueGet(ParmsValuesType.listIdsSelected),
+					rowData: initGridData(),
+					userSettings: dataObj?.userGridSettings
+				})
+			: undefined
+	)
 
 	async function gridDownload() {
 		let data: string = ''
@@ -135,46 +147,19 @@
 			}
 		})
 
-		state.downloadContent(`${dataObj.raw.header}.csv`, 'text/csv', data)
-	}
-
-	function load(data: DataObjData) {
-		if (!dataObj.fieldEmbed) dataObj.objData = data
-
-		// listEdit
-		if (dataObj.raw.isListEdit) {
-			const presetRows = dataObj.data.rowsRetrieved
-				.getRows()
-				.filter((row) => row.record.id.startsWith('preset_'))
-			presetRows.forEach((row) => {
-				dataObj.dataFieldsChanged.valueSet(row.record.id + '_new', 'id', true)
-			})
-		}
-
-		if (!dataObj.fieldEmbed) {
-			state.setDataObjState(dataObj)
-			state.setStatus()
-			state = state
-		}
-
-		gridOptions = initGrid()
+		sm.downloadContent(`${dataObj.raw.header}.csv`, 'text/csv', data)
 	}
 
 	function fGridCallbackFilter(event: FilterChangedEvent) {
-		dataObjData.rowsRetrieved.syncFields(dataObj.dataRecordsDisplay, ['selected'])
-		state.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, 'id'))
+		dataObjData.rowsRetrieved.syncFields(dataRecordsDisplay, ['selected'])
+		sm.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, 'id'))
 	}
 
 	function fGridCallbackUpdateValue(fieldName: string, data: DataRecord) {
-		const row = dataObj.dataRecordsDisplay.findIndex((row) => row.id === data.id)
+		const row = dataRecordsDisplay.findIndex((row) => row.id === data.id)
 		const field = dataObj.fields.find((f) => f.colDO.propName === fieldName)
 		if (row > -1 && field) {
-			dataObj = dataObj.setFieldVal(row, field, data[fieldName])
-			if (state instanceof StateSurfaceEmbedShell) {
-				state.stateRoot.fClosureSetStatus()
-			} else {
-				state.fClosureSetStatus()
-			}
+			dm.setFieldValue(dataObj.raw.id, row, field, data[fieldName])
 		} else {
 			error(500, {
 				file: FILENAME,
@@ -184,25 +169,6 @@
 		}
 	}
 
-	function initGrid() {
-		return new GridManagerOptions({
-			columnDefs: initGridColumns(),
-			fCallbackFilter: fGridCallbackFilter,
-			fCallbackUpdateValue: fGridCallbackUpdateValue,
-			isEmbed: !!dataObj.fieldEmbed,
-			isSelect,
-			isSelectMulti: isSelect,
-			isSuppressFilterSort: dataObj.raw.isListSuppressFilterSort,
-			isSuppressSelect: dataObj.raw.isListSuppressSelect,
-			listReorderColumn: dataObj.raw.listReorderColumn,
-			onCellClicked,
-			onSelectionChanged,
-			parmStateSelectedIds: state.parmsState.valueGet(ParmsValuesType.listIdsSelected),
-			rowData: initGridData(),
-			userSettings: dataObj.userGridSettings
-		})
-	}
-
 	function initGridColumns() {
 		let columnDefs: ColDef[] = []
 		const fieldsSettings =
@@ -210,30 +176,36 @@
 		const fieldsCore = dataObj.fields.filter(
 			(f) => f.colDO.isDisplayable || f.colDO.propName === 'id'
 		)
-		const fieldsGrid = fieldsCore.filter((f) => {
-			return !fieldsSettings.map((fs) => fs.colId).includes(f.colDO.propName)
-		})
+		const fieldsNotInSettings =
+			fieldsCore.filter((f) => {
+				return !fieldsSettings.map((fs) => fs.colId).includes(f.colDO.propName)
+			}).length > 0
 
-		// config settings fields
-		fieldsSettings.forEach((fs) => {
-			const field = fieldsCore.find((f) => f.colDO.propName === fs.colId)
-			if (field) {
-				let defn = initGridColumnsField(field)
-				defn.flex = fs.flex
-				defn.hide = !fs.visible
+		if (fieldsNotInSettings) {
+			fieldsCore.forEach((f) => {
+				let defn = initGridColumnsField(f)
+				defn.hide = !f.colDO.isDisplayable || !f.colDO.isDisplay
+				defn.flex = 1
 				columnDefs.push(defn)
-			}
-		})
-
-		// config new fields
-		fieldsGrid.forEach((f) => {
-			let defn = initGridColumnsField(f)
-			defn.flex = 1
-			defn.hide = !f.colDO.isDisplayable || !f.colDO.isDisplay
-			columnDefs.push(defn)
-		})
+			})
+		} else {
+			const columnWidth = fieldsSettings.reduce(
+				(acc, curr) => (acc + curr.visible ? curr.flex : 0),
+				0
+			)
+			fieldsSettings.forEach((fs) => {
+				const field = fieldsCore.find((f) => f.colDO.propName === fs.colId)
+				if (field) {
+					let defn = initGridColumnsField(field)
+					defn.hide = !fs.visible
+					defn.flex = defn.hide ? 0 : fs.flex / columnWidth
+					columnDefs.push(defn)
+				}
+			})
+		}
 		return columnDefs
 	}
+
 	function initGridColumnsField(field: Field) {
 		let defn = {}
 		let defnCellStyle = new GridCellStyle()
@@ -252,36 +224,29 @@
 		if (field instanceof FieldParm) {
 			defn.cellEditorSelector = cellEditorSelectorParmField
 			defn.cellRendererSelector = cellRendererSelectorParmField
-			defn.context = { parmFields: field.parmFields, state }
+			defn.context = { parmFields: field.parmFields, sm }
 
 			// if (field.linkItemsSource) {
 			// 	defn.editable = false
-			// 	defn.context = { linkItemsSource: field.linkItemsSource, state }
-			// 	defn.context = { parmFields: field.parmFields, state }
+			// 	defn.context = {
+			// 		linkItemsSource: field.linkItemsSource,
+			// 		parmFields: field.parmFields,
+			// 		sm
+			// 	}
 			// 	defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
 			// }
-
-			// field.parmFields[2].colDO.items = [
-			// 	{ display: 'Item 1', id: '1' },
-			// 	{ display: 'Item 2', id: '2' },
-			// 	{ display: 'Item 3', id: '3' },
-			// 	{ display: 'Item 4', id: '4' },
-			// 	{ display: 'Item 5', id: '5' }
-			// ]
-			// field.parmFields[2].hasItems = true
-			// defn.context = { items: dataObjData.items[itemsKey], state }
-
-			// defn.editable = false
-			// defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
 		} else {
 			// data type
 			switch (field.colDO.colDB.codeDataType) {
 				case PropDataType.bool:
 					defn.cellDataType = isEditable ? 'customBoolean' : 'customText'
+					// defnCellStyle.addStyle('display', 'flex')
+					// defnCellStyle.addStyle('justify-content', 'center')
 					break
 
 				case PropDataType.date:
 					defn.cellDataType = 'customDateString'
+
 					break
 
 				case PropDataType.datetime:
@@ -311,8 +276,8 @@
 				case PropDataType.link:
 					const itemsKey = '_items_' + field.colDO.propName
 					if (field.linkItemsSource) {
-						defn.editable = false
-						defn.context = { linkItemsSource: field.linkItemsSource, state }
+						defn.context = { dm, linkItemsSource: field.linkItemsSource, sm }
+						defn.editable = !field.colDO.colDB.isMultiSelect
 						defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
 					} else {
 						defn.cellDataType = 'customText'
@@ -342,10 +307,10 @@
 	}
 
 	function initGridData() {
-		const fields = dataObj.fields.map((f) => {
+		const fieldNames = dataObj.fields.map((f) => {
 			return f.colDO.propName
 		})
-		const dataRows = dataObj.dataRecordsDisplay.map((record) => {
+		const dataRows = dataRecordsDisplay.map((record) => {
 			const row = {}
 			dataObj.fields.forEach((f) => {
 				row[f.colDO.propName] = record[f.colDO.propName]
@@ -362,11 +327,13 @@
 	}
 
 	async function onCellClicked(event: CellClickedEvent) {
-		const rowNode = event.api.getRowNode(event.data.id)
+		let rowNode = event.api.getRowNode(event.data.id)
 		let field = dataObj.fields.find((f) => f.colDO.propName === event.colDef.field)
 		let fieldParm = field instanceof FieldParm ? field.parmFields[event.rowIndex] : undefined
 		let fieldProcess = fieldParm || field
-		if (fieldProcess && fieldProcess.linkItemsSource) await onCellClickedSelectItems()
+		if (fieldProcess && fieldProcess.linkItemsSource && fieldProcess.colDO.colDB.isMultiSelect) {
+			await onCellClickedSelectItems()
+		}
 
 		async function onCellClickedSelectItems() {
 			const fieldName = field.colDO.propName
@@ -377,10 +344,10 @@
 					: [event.data[fieldName]]
 			const parms = fieldProcess.linkItemsSource.getGridParms()
 
-			state.update({
+			sm.change({
+				confirmType: TokenAppDoActionConfirmType.none,
 				packet: new StatePacket({
 					action: StatePacketAction.modalSelectOpen,
-					confirmType: TokenAppDoActionConfirmType.none,
 					token: new TokenAppModalSelect({
 						columnDefs: parms.columnDefs,
 						fModalClose,
@@ -391,7 +358,8 @@
 						selectLabel: fieldProcess.colDO.label,
 						sortModel: parms.sortModel
 					})
-				})
+				}),
+				target: StateTarget.feature
 			})
 		}
 
@@ -399,16 +367,22 @@
 			if (returnType === TokenAppModalReturnType.complete) {
 				const parms: ParmsValues = returnData.data || undefined
 				if (parms) {
+					event.api.startEditingCell({
+						rowIndex: event.rowIndex,
+						colKey: event.colDef.field
+					})
 					const newValue = parms[ParmsValuesType.listIdsSelected]
-
 					const fieldName = field.colDO.propName
-					const multiLinkValue = { id: rowNode.data.id, [fieldName]: newValue }
 
-					// update dataObj
-					fGridCallbackUpdateValue(fieldName, multiLinkValue)
+					// <todo? - 250401 - temporarily use updateData vs setDataValue and manually trigger fGridCallbackUpdateValue
+					// becuse of bug in setDataValue
+					let data = event.data
+					data[fieldName] = newValue
+					rowNode?.updateData(data)
+					fGridCallbackUpdateValue(fieldName, data)
 
-					// update grid rowNode
-					rowNode.setDataValue(fieldName, newValue)
+					// rowNode.setDataValue(fieldName, newValue)
+					event.api.stopEditing()
 				}
 			}
 		}
@@ -418,33 +392,19 @@
 		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit) {
 			return
 		} else if (isSelect) {
-			state.parmsState.valueSet(
-				ParmsValuesType.listIdsSelected,
-				getSelectedNodeIds(event.api, 'id')
-			)
+			sm.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, 'id'))
 		} else {
 			const record = event.api.getSelectedRows()[0]
 			if (record) {
 				const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
 				dataObj.data.parms.valueSet(ParmsValuesType.listIds, getFilteredNodeIds(event.api))
 				dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, record.id)
-				action.trigger(state, dataObj)
+				action.trigger(sm, dataObj)
 			}
 		}
 	}
 </script>
 
-<svelte:window bind:innerHeight />
-
-<div
-	id="form-list"
-	class="h-full max-h-full"
-	style={`max-height: ${innerHeight - elContentTopY - 0}px;`}
-	bind:this={elContent}
->
-	{#if gridOptions}
-		{#key gridOptions}
-			<Grid bind:api={gridApi} options={gridOptions} />
-		{/key}
-	{/if}
-</div>
+{#if gridOptions}
+	<Grid bind:api={gridApi} options={gridOptions} {parms} />
+{/if}

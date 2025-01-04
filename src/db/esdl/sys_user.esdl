@@ -16,14 +16,16 @@ module sys_user {
    type SysTask extending sys_core::SysObj {
     btnStyle: str;
     required codeCategory: sys_core::SysCode;
+    codeRenderType: sys_core::SysCode;
     codeStatusObj: sys_core::SysCode;
     description: str;
     exprShow: str;
     exprStatus: str;
     hasAltOpen: bool;
     isPinToDash: bool;
-    sourceDataObj: sys_core::SysDataObj;
-    sourceNodeObj: sys_core::SysNodeObj;
+    pageDataObj: sys_core::SysDataObj;
+    targetDataObj: sys_core::SysDataObj;
+    targetNodeObj: sys_core::SysNodeObj;
     constraint exclusive on (.name);
   }
   

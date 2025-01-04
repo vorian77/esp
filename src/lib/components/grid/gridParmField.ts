@@ -6,7 +6,7 @@ import {
 } from 'ag-grid-community'
 import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj'
-import { getRecordValue } from '$utils/types'
+import { type DataRecord, getRecordValue } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/other/gridParmField.ts'
@@ -18,6 +18,23 @@ export class CellEditorSelect implements ICellEditorComp {
 
 	init(params: ICellEditorParams) {
 		this.params = params
+		this.gui = document.createElement('div')
+
+		let style = 'width: 100%; border: 0; font-size: 14px;'
+		const fieldName = getRecordValue(params.data, 'name')
+		const parmFields = params?.colDef?.context.parmFields
+		if (parmFields) {
+			const field = parmFields.find((f: Field) => f.colDO.propNameRaw === fieldName)
+			if (field && field.fieldAccess === FieldAccess.required) {
+				style += ' background-color: rgb(219,234,254);'
+			}
+		}
+		const value = getSelectDisplayValue(
+			params.data,
+			params.value,
+			params?.colDef?.context.parmFields
+		)
+		this.gui.innerHTML = `<input id="${fieldName}" name="${fieldName}" type="text" style="${style}" readonly value="${value}"/>`
 	}
 
 	getGui() {
@@ -25,7 +42,7 @@ export class CellEditorSelect implements ICellEditorComp {
 	}
 
 	getValue() {
-		return this.params.value
+		return getRecordValue(this.params.data, 'parmValue')
 	}
 
 	afterGuiAttached() {}
@@ -37,6 +54,7 @@ export class CellEditorSelect implements ICellEditorComp {
 
 export function cellEditorSelectorParmField(params: ICellEditorParams) {
 	const codeDataType = getRecordValue(params.data, 'codeDataType')
+
 	switch (codeDataType) {
 		case PropDataType.date:
 			return {
@@ -57,9 +75,11 @@ export function cellEditorSelectorParmField(params: ICellEditorParams) {
 }
 
 export class CellRendererParmField implements ICellRendererComp {
-	gui!: HTMLDivElement
+	gui!: HTMLElement
+	params!: ICellRendererParams
 
 	init(params: ICellRendererParams) {
+		this.params = params
 		this.gui = document.createElement('div')
 
 		let style = 'width: 100%; border: 0; font-size: 14px;'
@@ -75,33 +95,22 @@ export class CellRendererParmField implements ICellRendererComp {
 	}
 
 	getDisplayValue(params: ICellRendererParams) {
-		return params.value
+		return params.value ? params.value : ''
 	}
 
 	getGui() {
 		return this.gui
 	}
 	refresh(params: ICellRendererParams): boolean {
-		return false
+		return true
 	}
 }
 
-export class CellRendererParmFieldDate extends CellRendererParmField {
-	getDisplayValue(params: ICellRendererParams) {
-		return params.value ? params.value : ''
-	}
-}
+export class CellRendererParmFieldDate extends CellRendererParmField {}
 
 export class CellRendererParmFieldSelect extends CellRendererParmField {
 	getDisplayValue(params: ICellRendererParams) {
-		if (params.value) {
-			const parmFieldName = getRecordValue(params.data, 'name')
-			const parmFields = params?.colDef?.context.parmFields
-			const field = parmFields.find((f: Field) => f.colDO.propNameRaw === parmFieldName)
-			const linkItemsSource = field.linkItemsSource
-			return linkItemsSource.getDisplayValueList(params.value)
-		}
-		return ''
+		return getSelectDisplayValue(params.data, params.value, params?.colDef?.context.parmFields)
 	}
 }
 
@@ -113,6 +122,9 @@ export function cellRendererSelectorParmField(params: ICellRendererParams) {
 				component: CellRendererParmFieldDate
 			}
 		case PropDataType.uuid:
+			return {
+				component: CellRendererParmFieldSelect
+			}
 		case PropDataType.uuidList:
 			return {
 				component: CellRendererParmFieldSelect
@@ -124,4 +136,17 @@ export function cellRendererSelectorParmField(params: ICellRendererParams) {
 				message: `No case defined for PropDataType: ${codeDataType}`
 			})
 	}
+}
+
+function getSelectDisplayValue(paramsData: DataRecord, parmsValue: any, parmFields: Field[]) {
+	let displayValue = ''
+	const parmValue = getRecordValue(paramsData, 'parmValue')
+	if (parmValue) {
+		const parmFieldName = getRecordValue(paramsData, 'name')
+		const field = parmFields.find((f: Field) => f.colDO.propNameRaw === parmFieldName)
+		if (field && field.linkItemsSource) {
+			displayValue = field.linkItemsSource.getDisplayValueList(parmsValue)
+		}
+	}
+	return displayValue
 }

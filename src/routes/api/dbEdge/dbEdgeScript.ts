@@ -1,9 +1,7 @@
 import { required } from '$lib/utils/utils'
 import {
 	DataObjCardinality,
-	DataObjEmbedType,
 	DataObjData,
-	DataObjDataField,
 	DataObjListEditPresetType,
 	DataRecordStatus,
 	debug,
@@ -11,12 +9,24 @@ import {
 	ParmsValuesType,
 	strRequired
 } from '$utils/types'
+import { FieldEmbedType } from '$comps/form/field'
 import type { DataObjTable, DataRecord, DataRow } from '$utils/types'
 import { TokenApiQueryData } from '$utils/types.token'
 import { RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj'
 import { LinkSaveAction, Query, QueryParent } from '$routes/api/dbEdge/dbEdgeQuery'
 import { evalExpr } from '$routes/api/dbEdge/dbEdgeGetVal'
+import {
+	ScriptTypeSave,
+	ScriptTypeSaveParent,
+	ScriptTypeSavePrimary,
+	ScriptTypeSavePrimaryCore,
+	ScriptTypeSavePrimaryListSelectLinkBackward,
+	ScriptTypeSavePrimaryListSelectLinkForward
+} from '$routes/api/dbEdge/dbEdgeScriptTypes'
 import { error } from '@sveltejs/kit'
+import exp from 'constants'
+import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
+import { is } from '$db/esdl/edgeql-js'
 
 const FILENAME = '/$routes/api/dbEdge/dbEdgeScript.ts'
 
@@ -208,26 +218,26 @@ export class ScriptGroup {
 	}
 
 	addScriptSave(query: Query, queryData: TokenApiQueryData) {
-		if (query?.field?.embedType === DataObjEmbedType.listSelect) {
-			this.addScriptSaveListSelect(query, queryData)
-		} else {
-			const actions = []
-			const dataRowsSaved = required(queryData.dataTab?.rowsSave, 'ScriptGroup', 'dataSave')
-			let items: [string, DataRecordStatus[]][] = [
-				['DELETE', [DataRecordStatus.delete]],
-				['INSERT', [DataRecordStatus.preset]],
-				['UPDATE', [DataRecordStatus.retrieved, DataRecordStatus.update]]
-			]
-			items.forEach((item) => {
-				const action = item[0]
-				const statuses = item[1]
-				const dataRows = dataRowsSaved.dataRows.filter((row: DataRow) =>
-					statuses.includes(row.status)
-				)
-				if (query.field && action == 'DELETE') return
-				if (dataRows.length > 0) this.addScriptSaveItem(query, queryData, action, dataRows)
-			})
-		}
+		const dataRowsSaved = required(queryData.dataTab?.rowsSave, 'ScriptGroup', 'dataSave')
+		let items: [string, DataRecordStatus[]][] = [
+			['DELETE', [DataRecordStatus.delete]],
+			['INSERT', [DataRecordStatus.preset]],
+			['UPDATE', [DataRecordStatus.retrieved, DataRecordStatus.update]]
+		]
+		items.forEach((item) => {
+			const action = item[0]
+			const statuses = item[1]
+			const dataRows = dataRowsSaved.dataRows.filter((row: DataRow) =>
+				statuses.includes(row.status)
+			)
+			if (query.fieldEmbed && action == 'DELETE') return
+			if (
+				dataRows.length > 0 ||
+				(query.fieldEmbed instanceof FieldEmbedListSelect && action == 'UPDATE')
+			) {
+				this.addScriptSaveItem(query, queryData, action, dataRows)
+			}
+		})
 	}
 	addScriptSaveItem(
 		query: Query,
@@ -242,15 +252,13 @@ export class ScriptGroup {
 				config = this.addScriptSaveDelete(query)
 				break
 			case 'INSERT':
-				// config = this.addScriptSaveInsert(query, queryData)
-				expr = this.addScriptSaveInsert(query, queryData, dataRows)
+				expr = this.addScriptSaveAction(query, queryData, dataRows, LinkSaveAction.INSERT)
 				if (expr) {
 					this.addScriptNew(query, queryData, ScriptExePost.formatData, dataRows, expr)
 				}
 				break
 			case 'UPDATE':
-				// config = this.addScriptSaveUpdate(query)
-				expr = this.addScriptSaveUpdate(query, queryData, dataRows)
+				expr = this.addScriptSaveAction(query, queryData, dataRows, LinkSaveAction.UPDATE)
 				if (expr) {
 					this.addScriptNew(query, queryData, ScriptExePost.formatData, dataRows, expr)
 				}
@@ -269,238 +277,72 @@ export class ScriptGroup {
 
 	// prettier-ignore
 	addScriptSaveDelete(query: Query): Config {    
-    return [
-			['action', { type: 'DELETE', table: query.getTableRootObj() }],
-			['filter', { exprFilter: `.id = <uuid>item['id']` }],
-			['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter'] }],
-			...this.addScriptSavePost(query)
-		]
-	}
+	return [
+		['action', { type: 'DELETE', table: query.getTableRootObj() }],
+		['filter', { exprFilter: `.id = <uuid>item['id']` }],
+		['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter'] }],
+		...this.addScriptSavePost(query)
+	]
+}
 
-	addScriptSaveInsert(query: Query, queryData: TokenApiQueryData, dataRows: DataRow[]): string {
-		const clazz = 'ScriptGroup.addScriptSaveInsert'
-		const tables = query.rawDataObj.tables
-		let expr = ''
-
-		const processTable = (table: DataObjTable, tables: DataObjTable[]) => {
-			// post-order traversal
-			table.indexesChildren.forEach((i) => {
-				processTable(tables[i], tables)
-			})
-
-			// add props-scalar
-			let props = query.getPropsSaveScalar(
-				{
-					action: LinkSaveAction.INSERT,
-					indexTable: table.index,
-					props: query.rawDataObj.rawPropsSaveInsert
-				},
-				queryData,
-				dataRows
-			)
-
-			// add props-children
-			table.indexesChildren.forEach((i) => {
-				const childTable = tables[i]
-				if (childTable.script) {
-					const propChild = `${childTable.columnParent} := (${childTable.script})`
-					props = props ? `${props},\n${propChild}` : propChild
-				}
-			})
-
-			if (props) {
-				if (table.exprFilterUpdate) {
-					table.script = `UPDATE ${table.table.object}\nFILTER ${table.exprFilterUpdate}\nSET {\n${props}\n}`
-				} else {
-					table.script = `INSERT ${table.table.object} {\n${props}\n}`
-				}
-			}
-		}
-
-		if (tables.length > 0) {
-			// data
-			processTable(tables[0], tables)
-			const exprCore = tables[0].script
-			const exprData = `data := (SELECT to_json($$${JSON.stringify(dataRows.map((row: DataRow) => row.record))}$$)),`
-			const exprLoop = `Records := (FOR item IN json_array_unpack(data) UNION (\n${exprCore}\n))`
-			const exprPropsSelect = query.getPropsSelect(
-				{ props: query.rawDataObj.rawPropsSelect },
-				queryData
-			)
-			const exprWith = `WITH\n${exprData}\n${exprLoop}`
-			const exprSelect = `SELECT Records\n${exprPropsSelect}`
-			expr = `${exprWith}\n\n${exprSelect}`
-		}
-		debug('addScriptSaveInsert', 'expr', expr)
-		return expr
-	}
-
-	addScriptSaveListSelect(query: Query, queryData: TokenApiQueryData) {
-		const clazz = 'ScriptGroup.addScriptSaveListSelect'
-		const field = required(query.field, clazz, 'query.field')
-		return field.columnBacklink
-			? this.addScriptSaveListSelectLinkBack(query, queryData, field)
-			: this.addScriptSaveListSelectLinkForward(query, queryData, field)
-	}
-
-	addScriptSaveListSelectLinkBack(
+	addScriptSaveAction(
 		query: Query,
 		queryData: TokenApiQueryData,
-		field: DataObjDataField
-	) {
-		const getScriptBacklink = (
-			clause: string,
-			field: DataObjDataField,
-			targetIds: string[],
-			filterType: 'UNION' | 'EXCEPT'
-		): Config => {
-			const setValue = `assert_distinct(.${field.columnBacklink} ${filterType} (SELECT ${field.parentTable.object} FILTER .id = <tree,uuid,${field.parentTable.name}.id>))`
-			const ids = `'[${targetIds.map((id: string) => `"${id}"`).toString()}]'`
-			const scriptLoop = `FOR item IN json_array_unpack(to_json(${ids}))`
-			return [
-				// loop
-				['setValue', { key: 'loop', value: scriptLoop }],
-				['action', { type: 'UPDATE', table: field.embedTable.object }],
-				['filter', { exprFilter: `.id = <uuid>item` }],
+		dataRows: DataRow[],
+		action: LinkSaveAction
+	): string {
+		const clazz = 'ScriptGroup.addScriptSaveAction'
+		let scriptPrimary: ScriptTypeSavePrimary
+		const isListSelectLinkBackward =
+			query.fieldEmbed instanceof FieldEmbedListSelect && query.fieldEmbed.columnBacklink
+		const isListSelectLinkForward =
+			query.fieldEmbed instanceof FieldEmbedListSelect && !query.fieldEmbed.columnBacklink
+		let exprParent = ''
+		let exprPrimary = ''
 
-				// set clause
-				['setValue', { key: 'setValue', value: setValue }],
-				['wrap', { key: 'setProp', open: `${field.columnBacklink} := (`, content: ['setValue'] }],
-				['wrap', { key: 'set', open: `SET {`, content: ['setProp'] }],
-
-				// clause
-				['setValue', { key: 'semicolon', value: ';' }],
-				['combine', { key: clause, content: ['loop', 'action', 'filter', 'set', 'semicolon'] }]
-			]
-		}
-
-		const clazz = 'ScriptGroup.addScriptSaveListSelectLinkBack'
-		const parms = required(queryData?.dataTab?.parms, clazz, 'queryData.dataTab.parms')
-		const listIds = parms.valueGet(ParmsValuesType.listIds)
-		const listIdsSelected = parms.valueGet(ParmsValuesType.listIdsSelected)
-		const idsAdd = listIdsSelected.filter((id: string) => !listIds.includes(id))
-		const idsRemove = listIds.filter((id: string) => !listIdsSelected.includes(id))
-
-		const parentFilter = `.${field.columnBacklink}.id = <tree,uuid,${field.parentTable.name}.id>`
-		return this.addScript(query, queryData, ScriptExePost.formatData, [
-			// add/remove clauses
-			...getScriptBacklink('add', field, idsAdd, 'UNION'),
-			...getScriptBacklink('remove', field, idsRemove, 'EXCEPT'),
-
-			// return data
-			['action', { type: 'SELECT', table: field.embedTable.object }],
-			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
-			['filter', { exprFilter: parentFilter }],
-			['order'],
-
-			//	script
-			['script', { content: ['add', 'remove', 'action', 'propsSelect', 'filter', 'order'] }]
-		])
-	}
-
-	addScriptSaveListSelectLinkForward(
-		query: Query,
-		queryData: TokenApiQueryData,
-		field: DataObjDataField
-	) {
-		return this.addScript(query, queryData, ScriptExePost.formatData, [
-			// sub-table
-			['action', { type: 'SELECT', table: field.embedTable.object }],
-			['filter', { exprFilter: `.id IN <parms,uuidlist,listIdsSelected>` }],
-			['wrap', { key: 'select', open: `:= (`, content: ['action', 'filter'] }],
-
-			// embed-field
-			['setValue', { key: 'fieldName', value: `${field.embedFieldNameRaw}` }],
-			['wrap', { key: 'set', open: `SET {`, content: ['fieldName', 'select'] }],
-
-			// primary-table
-			['action', { type: 'UPDATE', table: field.parentTable.object }],
-			['filter', { exprFilter: `.id = <tree,uuid,${field.parentTable.name}.id>` }],
-
-			// Records
-			['wrap', { key: 'records', open: 'WITH Records := (', content: ['action', 'filter', 'set'] }],
-
-			// select Records
-			['action', { type: 'SELECT', table: field.embedTable.object }],
-			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
-			['filter', { exprFilter: `.id IN <parms,uuidlist,listIdsSelected>` }],
-
-			// script
-			['script', { content: ['records', 'action', 'propsSelect', 'filter'] }]
-		])
-	}
-
-	// addScriptSaveUpdate(query: Query): Config {
-	// 	return [
-	// 		['action', { type: 'UPDATE', table: query.getTableRootObj() }],
-	// 		['filter', { exprFilter: `.id = <uuid>item['id']` }],
-	// 		['propsSave', { action: 'UPDATE', props: query.rawDataObj.rawPropsSaveUpdate }],
-	// 		['wrap', { key: 'loop', open: this.scriptSegmentLoop, content: ['action', 'filter', 'propsSave'] }
-	// 		],
-	// 		...this.addScriptSavePost(query)
-	// 	]
-	// }
-
-	addScriptSaveUpdate(query: Query, queryData: TokenApiQueryData, dataRows: DataRow[]): string {
-		const clazz = 'ScriptGroup.addScriptSaveUpdate'
-		const tables = query.rawDataObj.tables
-		const rootTable = query.getTableRootObj()
-		const rootFilter = `.id = <uuid>item['id']`
-		let expr = ''
-
-		const processTable = (table: DataObjTable, tables: DataObjTable[]) => {
-			// post-order traversal
-			table.indexesChildren.forEach((i) => {
-				processTable(tables[i], tables)
-			})
-
-			// add props-scalar
-			let props = query.getPropsSaveScalar(
-				{
-					action: LinkSaveAction.UPDATE,
-					indexTable: table.index,
-					props: query.rawDataObj.rawPropsSaveUpdate
-				},
-				queryData,
-				dataRows
+		if (isListSelectLinkBackward) {
+			const parentTableName = strRequired(
+				query.parent?.table.name,
+				clazz,
+				'query.parent.table.name'
 			)
-
-			// add props-children
-			table.indexesChildren.forEach((i) => {
-				const childTable = tables[i]
-				if (childTable.script) {
-					const propChild = `${childTable.columnParent} := (${childTable.script})`
-					props = props ? `${props},\n${propChild}` : propChild
-				}
+			scriptPrimary = new ScriptTypeSavePrimaryListSelectLinkBackward({
+				action,
+				dataRows: [queryData.tree.getDataRow(parentTableName)],
+				query,
+				queryData
 			})
-
-			if (props) {
-				if (table.index === 0) {
-					table.script = `UPDATE ${table.table.object}\nFILTER ${rootFilter}\nSET {\n${props}\n}`
-				} else {
-					const traversalFromRoot = table.traversalFromRoot
-					const subTableFilter = `.id = (SELECT assert_single((SELECT ${table.table.object} FILTER .id = (SELECT DETACHED ${rootTable} FILTER ${rootFilter}).${traversalFromRoot}.id))).id`
-					table.script = `UPDATE ${table.table.object}\nFILTER ${subTableFilter}\nSET {\n${props}\n}`
-				}
+		} else {
+			// parent
+			if (query.parent) {
+				let scriptParent = new ScriptTypeSaveParent({
+					action,
+					dataRows: [queryData.tree.getDataRow(query.parent.table.name)],
+					isListSelect: isListSelectLinkForward,
+					query,
+					queryData
+				})
+				exprParent = scriptParent.build()
+			}
+			if (isListSelectLinkForward) {
+				scriptPrimary = new ScriptTypeSavePrimaryListSelectLinkForward({
+					action,
+					dataRows,
+					query,
+					queryData
+				})
+			} else {
+				scriptPrimary = new ScriptTypeSavePrimaryCore({
+					action,
+					dataRows,
+					query,
+					queryData
+				})
 			}
 		}
-
-		if (tables.length > 0) {
-			// data
-			processTable(tables[0], tables)
-			const exprCore = tables[0].script
-			const exprData = `data := (SELECT to_json($$${JSON.stringify(dataRows.map((row: DataRow) => row.record))}$$)),`
-			const exprLoop = `Records := (FOR item IN json_array_unpack(data) UNION (\n${exprCore}\n))`
-			const exprPropsSelect = query.getPropsSelect(
-				{ props: query.rawDataObj.rawPropsSelect },
-				queryData
-			)
-			const exprWith = `WITH\n${exprData}\n${exprLoop}`
-			const exprSelect = `SELECT Records\n${exprPropsSelect}`
-			expr = `${exprWith}\n\n${exprSelect}`
-		}
-		debug('addScriptSaveUpdate', 'expr', expr)
-		return expr
+		exprPrimary = scriptPrimary.build()
+		let expr = exprParent ? ScriptTypeSave.addItem(exprPrimary, exprParent, ',\n') : exprPrimary
+		return ScriptTypeSave.addItem(expr, scriptPrimary.getExprPropsSelect(), '\n')
 	}
 
 	addScriptSavePost(query: Query): Config {

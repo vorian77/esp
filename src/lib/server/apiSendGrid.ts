@@ -1,6 +1,5 @@
 import sgMail from '@sendgrid/mail'
 import { strOptional, strRequired, valueOrDefault } from '$utils/utils'
-import { getServerResponse } from '$utils/types'
 
 const FILENAME = '$server/sendGrid.ts'
 
@@ -51,7 +50,8 @@ export class EmailAlert {
 		const siteCurrent = strRequired(obj.site_current, 'EmailAlert', 'siteCurrent')
 		const sitePrevious = strRequired(obj.site_previous, 'EmailAlert', 'sitePrevious')
 
-		const subject = 'KidSmart - New Self-Service App File Update - ' + type + ' (' + applicant + ')'
+		const subject =
+			'The App Factory - New Self-Service App File Update - ' + type + ' (' + applicant + ')'
 		let body =
 			'<h3>Please check CaseManager for a file modification initiated by the applicant: </h3>' +
 			'<p><b>Applicant:</b> ' +

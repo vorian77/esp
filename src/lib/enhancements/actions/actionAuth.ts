@@ -1,14 +1,15 @@
-import { State } from '$comps/app/types.appState'
+import { State } from '$comps/app/types.appState.svelte'
 import { FieldCustomAction } from '$comps/form/fieldCustom'
 import type { DataRecord, ResponseBody } from '$utils/types'
-import { debug, DataObjData, encrypt, ToastType, userInit } from '$utils/types'
+import { userSetId } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import {
 	TokenApiDbDataObjSource,
 	TokenApiQuery,
 	TokenApiQueryData,
 	TokenApiQueryType,
-	TokenApiSysSendText
+	TokenApiSysSendText,
+	TokenAppDataObjName
 } from '$utils/types.token'
 import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
@@ -20,19 +21,18 @@ let verifyData: DataRecord = {}
 let authSecurityCodePhone = ''
 let authSecurityCode = 0
 
-export default async function action(state: State, field: FieldCustomAction, data: any) {
+export default async function action(sm: State, field: FieldCustomAction, data: any) {
 	const type = field.type
 	const value = field.value
 
 	switch (type) {
 		case 'page':
-			await state.openDrawerDataObj(
+			await sm.openDrawerDataObj(
 				'auth',
 				'bottom',
-				'h-[50%]',
+				'h-[60%]',
 				undefined,
-				new TokenApiDbDataObjSource({ dataObjName: value }),
-				TokenApiQueryType.preset
+				new TokenAppDataObjName({ dataObjName: value, queryType: TokenApiQueryType.preset })
 			)
 			break
 
@@ -52,13 +52,15 @@ export default async function action(state: State, field: FieldCustomAction, dat
 					verifyFrom = value
 					verifyData = data
 					await sendCode(data['userName'])
-					await state.openDrawerDataObj(
+					await sm.openDrawerDataObj(
 						'auth',
 						'bottom',
-						'h-[50%]',
+						'h-[60%]',
 						undefined,
-						new TokenApiDbDataObjSource({ dataObjName: 'data_obj_auth_verify_phone_mobile' }),
-						TokenApiQueryType.preset
+						new TokenAppDataObjName({
+							dataObjName: 'data_obj_auth_verify_phone_mobile',
+							queryType: TokenApiQueryType.preset
+						})
 					)
 					break
 
@@ -123,12 +125,10 @@ export default async function action(state: State, field: FieldCustomAction, dat
 					alert(msgFail)
 					return
 				}
-				const userId = resultRecord['userId']
-				const user = await userInit(userId)
-				if (user && Object.hasOwn(user, 'id')) {
-					state.storeDrawer.close()
-					goto('/home')
-				}
+				sm.storeDrawer.close()
+				await userSetId(resultRecord['userId'])
+				goto('/home')
+
 				break
 
 			case 'data_obj_auth_signup':
@@ -143,13 +143,15 @@ export default async function action(state: State, field: FieldCustomAction, dat
 					verifyFrom = 'data_obj_auth_signup_update'
 					verifyData = data
 					await sendCode(data['userName'])
-					await state.openDrawerDataObj(
+					await sm.openDrawerDataObj(
 						'auth',
 						'bottom',
-						'h-[50%]',
+						'h-[60%]',
 						undefined,
-						new TokenApiDbDataObjSource({ dataObjName: 'data_obj_auth_verify_phone_mobile' }),
-						TokenApiQueryType.preset
+						new TokenAppDataObjName({
+							dataObjName: 'data_obj_auth_verify_phone_mobile',
+							queryType: TokenApiQueryType.preset
+						})
 					)
 				}
 				break
@@ -169,11 +171,12 @@ async function sendCode(phoneMobile: string) {
 	const max = 999999
 	authSecurityCode = Math.floor(Math.random() * (max - min + 1)) + min
 	authSecurityCodePhone = phoneMobile
-	await apiFetch(
-		ApiFunction.sysSendText,
-		new TokenApiSysSendText(
-			phoneMobile,
-			`Mobile phone number verification code: ${authSecurityCode}`
-		)
-	)
+	alert(`Security code: ${authSecurityCode}`)
+	// await apiFetch(
+	// 	ApiFunction.sysSendText,
+	// 	new TokenApiSysSendText(
+	// 		phoneMobile,
+	// 		`Mobile phone number verification code: ${authSecurityCode}`
+	// 	)
+	// )
 }

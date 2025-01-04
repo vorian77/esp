@@ -1,25 +1,32 @@
 <script lang="ts">
 	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
-	import { goto } from '$app/navigation'
-	import { userInit } from '$utils/types'
-	import { State } from '$comps/app/types.appState'
-	import { TokenApiDbDataObjSource, TokenApiQueryType } from '$utils/types.token'
+	import { ContextKey, userSetId } from '$utils/types'
+	import { State, StateTarget } from '$comps/app/types.appState.svelte'
+	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
+	import { TokenApiQueryType, TokenAppDataObjName } from '$utils/types.token'
+	import { setContext } from 'svelte'
 
 	const FILENAME = 'routes/+page.svelte'
 
-	export let data
+	let { data }: { data: PageData } = $props()
 
 	const storeDrawer = getDrawerStore()
 	const storeToast = getToastStore()
 	const DEV_MODE = data.environ === 'dev'
-	const state = new State({ storeDrawer, storeToast })
-	let pageCurrent = ''
+
+	const sm = new State({
+		storeDrawer,
+		storeToast,
+		target: StateTarget.feature
+	})
+	setContext(ContextKey.stateManager, sm)
+
+	let pageCurrent = $state('')
 
 	async function expressLogin() {
 		const userSys = '0b3ba76c-c0f4-11ee-9b77-8f017aab6306'
 		const userPhyllipHall = '129d4a42-c0f4-11ee-9b77-bf2d11e31679'
-		await userInit(userSys)
-		goto('/home')
+		await userSetId(userSys)
 	}
 </script>
 
@@ -29,14 +36,16 @@
 			<button
 				type="button"
 				class="btn btn-action variant-filled-primary w-full"
-				on:click={async () =>
-					await state.openDrawerDataObj(
+				onclick={async () =>
+					await sm.openDrawerDataObj(
 						'auth',
 						'bottom',
-						'h-[50%]',
+						'h-[60%]',
 						undefined,
-						new TokenApiDbDataObjSource({ dataObjName: 'data_obj_auth_login' }),
-						TokenApiQueryType.preset
+						new TokenAppDataObjName({
+							dataObjName: 'data_obj_auth_login',
+							queryType: TokenApiQueryType.preset
+						})
 					)}
 			>
 				Log in
@@ -45,14 +54,16 @@
 			<button
 				type="button"
 				class="btn btn-action variant-filled-primary w-full"
-				on:click={async () =>
-					await state.openDrawerDataObj(
+				onclick={async () =>
+					await sm.openDrawerDataObj(
 						'auth',
 						'bottom',
-						'h-[50%]',
+						'h-[60%]',
 						undefined,
-						new TokenApiDbDataObjSource({ dataObjName: 'data_obj_auth_signup' }),
-						TokenApiQueryType.preset
+						new TokenAppDataObjName({
+							dataObjName: 'data_obj_auth_signup',
+							queryType: TokenApiQueryType.preset
+						})
 					)}
 			>
 				Sign up
@@ -62,7 +73,7 @@
 				<button
 					type="button"
 					class="btn btn-action variant-filled-secondary w-full"
-					on:click={expressLogin}
+					onclick={expressLogin}
 				>
 					Dev Login
 				</button>

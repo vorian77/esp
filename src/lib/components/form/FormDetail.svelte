@@ -1,40 +1,75 @@
 <script lang="ts">
-	import { DataObj, DataObjData } from '$utils/types'
-	import { State } from '$comps/app/types.appState'
+	import { ContextKey, DataManager, DataObj, type DataRecord, required } from '$utils/types'
+	import { getContext } from 'svelte'
 	import { Field, FieldAccess } from '$comps/form/field'
 	import { FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 	import FormElement from '$comps/form/FormElement.svelte'
-	import { onMount } from 'svelte'
+	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormDetail.svelte'
-	const FORM_NAME = ''
-	const SUBMIT_BUTTON_NAME = 'SUBMIT_BUTTON_NAME'
 
-	export let state: State
-	export let component: string
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
+	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	let elContent: HTMLDivElement
-	let elContentTopY: number
-	let innerHeight: number
-	let tagGroupSections: TagGroupSection[]
+	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let dataRecord: DataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
+	let tagGroupSections: TagGroupSection[] = $state()
 
-	onMount(() => {
-		elContentTopY = Math.ceil(elContent.getBoundingClientRect().top)
+	let actions: DataObjActionsObj
+
+	let elContent: any = $state()
+	let contentH: number = $state()
+
+	$effect(() => {
+		handleResize()
 	})
 
-	$: (async () => await load(dataObjData))()
-
-	async function load(data: DataObjData) {
-		if (!state.app.isMobileMode) loadTags()
-		dataObj.objData = data
-		state.setDataObjState(dataObj)
-		state.setStatus()
-		state = state
+	function handleResize() {
+		const parentHeight = elContent ? elContent.parentElement.offsetHeight : undefined
+		contentH = Math.round(parentHeight * 0.99)
 	}
 
+	class TagGroupRow {
+		isRow: boolean
+		indexes: number[]
+		constructor(isRow: boolean) {
+			this.isRow = isRow
+			this.indexes = []
+		}
+		setIsRow(isRow: boolean) {
+			this.isRow = isRow
+		}
+	}
+
+	class TagGroupSection {
+		color?: string
+		isVisible: boolean
+		legend?: string
+		rows: TagGroupRow[]
+		constructor(isVisible: boolean) {
+			this.isVisible = isVisible
+			this.rows = []
+		}
+		rowAddIdx(field: Field, idx: number, isOpenRow: boolean) {
+			if (!isOpenRow || this.rows.length === 0) this.rowNew()
+			this.rows[this.rows.length - 1].indexes.push(idx)
+		}
+		rowNew() {
+			this.rows.push(new TagGroupRow(true))
+		}
+		rowIsEmpty() {
+			return this.rows.length === 0
+		}
+		update(field: FieldTagSection) {
+			this.color = field.colDO.fieldColor.color
+			this.isVisible = true
+			this.legend = field.legend
+		}
+	}
+
+	loadTags()
 	function loadTags() {
 		tagGroupSections = []
 		let idxSection = 0
@@ -66,74 +101,29 @@
 			}
 		})
 	}
-	class TagGroupRow {
-		isRow: boolean
-		indexes: number[]
-		constructor(isRow: boolean) {
-			this.isRow = isRow
-			this.indexes = []
-		}
-		setIsRow(isRow: boolean) {
-			this.isRow = isRow
-		}
-	}
-	class TagGroupSection {
-		color?: string
-		isVisible: boolean
-		legend?: string
-		rows: TagGroupRow[]
-		constructor(isVisible: boolean) {
-			this.isVisible = isVisible
-			this.rows = []
-		}
-		rowAddIdx(field: Field, idx: number, isOpenRow: boolean) {
-			if (!isOpenRow || this.rows.length === 0) this.rowNew()
-			this.rows[this.rows.length - 1].indexes.push(idx)
-		}
-		rowNew() {
-			this.rows.push(new TagGroupRow(true))
-		}
-		rowIsEmpty() {
-			return this.rows.length === 0
-		}
-		update(field: FieldTagSection) {
-			this.color = field.colDO.fieldColor.color
-			this.isVisible = true
-			this.legend = field.legend
-		}
-	}
 </script>
 
-<!-- <DataViewer header="tagGroupSection" data={tagGroupSection} /> -->
+<!-- <DataViewer header="dataManager.dataRecord" data={dm.getRecordsDisplayRow(parms.dataObjId, 0)} /> -->
 
-<svelte:window bind:innerHeight />
+<svelte:window onresize={() => handleResize()} />
 
-<form
-	id={'form_' + dataObj.raw.name}
-	class="h-full max-h-full overflow-y-auto md:p-4 md:border-2 rounded-md"
-	style={`max-height: ${innerHeight - elContentTopY - 30}px;`}
+<div
 	bind:this={elContent}
+	class="h-full w-full flex flex-col sm:flex-row"
+	style="height: {contentH}px"
 >
-	<div class="md:hidden max-h-full">
+	<div class="sm:hidden flex flex-col sm:grow overflow-y-auto">
 		{#each dataObj.fields as field, fieldIdx}
-			{@const display =
-				!field.colDO.colDB.isNonData &&
-				field.colDO.isDisplayable &&
-				field.fieldAccess !== FieldAccess.hidden}
+			{@const nonData = field.colDO.colDB.isNonData && !field.fieldElement.startsWith('custom')}
+			{@const display = field.fieldAccess !== FieldAccess.hidden && !nonData}
+			{@const elementParms = { ...parms, dataObj, field: dataObj.fields[fieldIdx], row: 0 }}
 			{#if display}
-				<FormElement
-					bind:state
-					{component}
-					{dataObj}
-					{dataObjData}
-					field={dataObj.fields[fieldIdx]}
-					row={0}
-				/>
+				<FormElement parms={elementParms} />
 			{/if}
 		{/each}
 	</div>
 
-	<div class="hidden md:block">
+	<div class="hidden sm:block flex flex-col sm:grow overflow-y-auto rounded-md p-3 border">
 		{#each tagGroupSections as section}
 			<fieldset
 				class={section.isVisible ? 'p-4 border-1 mb-4' : 'p-0 border-0'}
@@ -146,15 +136,14 @@
 				{#each section.rows as row}
 					<div class={row.isRow ? 'w-full flex flex-row gap-x-4' : ''}>
 						{#each row.indexes as fieldIdx}
+							{@const elementParms = {
+								...parms,
+								dataObj,
+								field: dataObj.fields[fieldIdx],
+								row: 0
+							}}
 							<div class="grow">
-								<FormElement
-									bind:state
-									{component}
-									{dataObj}
-									{dataObjData}
-									field={dataObj.fields[fieldIdx]}
-									row={0}
-								/>
+								<FormElement parms={elementParms} />
 							</div>
 						{/each}
 					</div>
@@ -162,4 +151,9 @@
 			</fieldset>
 		{/each}
 	</div>
-</form>
+
+	<DataObjActionsObj bind:this={actions} {parms} />
+</div>
+
+<!-- winH: {innerHeight.current} - parH: {parentHeight} - contentHByWin: {contentHeightByWindow}
+- contentHByPar: {contentHeightByParent} -->

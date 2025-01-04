@@ -30,7 +30,6 @@ function initFieldListSelectResource(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'isGlobalResource',
-				orderSort: 20,
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
@@ -39,10 +38,10 @@ function initFieldListSelectResource(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeType',
-				orderSort: 10,
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
+				orderSort: 10,
 				indexTable: 0,
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -50,10 +49,10 @@ function initFieldListSelectResource(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
-				orderSort: 20,
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
+				orderSort: 20,
 				indexTable: 1
 			},
 			{

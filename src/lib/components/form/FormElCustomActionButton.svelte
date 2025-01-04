@@ -1,21 +1,26 @@
 <script lang="ts">
-	import { FieldProps } from '$comps/form/field'
+	import { ContextKey, DataManager, type DataRecord, required } from '$utils/types'
+	import { getContext } from 'svelte'
+	import { State } from '$comps/app/types.appState.svelte'
 	import { FieldCustomActionButton } from '$comps/form/fieldCustom'
-	import { required } from '$utils/types'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/form/FormElCustomActionButton.svelte'
 
-	export let fp: FieldProps
+	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	$: state = fp.state
-	$: dataRecord = fp.dataRecord
-	$: field = fp.field as FieldCustomActionButton
-	$: disabled = !(state.objStatus.changed() && state.objStatus.valid())
+	let dashboardReset = getContext(ContextKey.dashboardRefresh)
+
+	let dataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
+	let disabled = $derived(!dm.isStatusValid())
+	let field = $derived(parms.field) as FieldCustomActionButton
 
 	async function action() {
+		// if (dashboardReset) dashboardReset()
 		const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
-		await enhancement(state, field, dataRecord)
+		await enhancement(sm, field, dataRecord)
 	}
 </script>
 
@@ -23,7 +28,7 @@
 	class="w-full btn btn-action text-white"
 	style:background-color={field.colDO.fieldColor.color}
 	{disabled}
-	on:click={async () => await action()}
+	onclick={() => action()}
 >
 	{field.colDO.label}
 </button>

@@ -7,7 +7,8 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
-import { Field, FieldAccess, FieldElement, PropsFieldRaw } from '$comps/form/field'
+import { Field, FieldAccess, FieldElement, PropsFieldCreate } from '$comps/form/field'
+import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { valueOrDefault } from '$utils/utils'
 import { required } from '$utils/types'
 import { error } from '@sveltejs/kit'
@@ -26,11 +27,14 @@ export class FieldInput extends Field {
 	patternReplacement?: string
 	placeHolder: string
 	spinStep?: string
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
+		const clazz = `FieldInput: ${props.propRaw.propName}`
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
+		const fields: Field[] = required(props.parms.fields, clazz, 'fields')
+
 		this.inputTypeCurrent = this.fieldElement === FieldElement.textHide ? 'password' : 'text'
-		this.matchColumn = initMatchColumn(obj.colDB.matchColumn, this, props.fields)
+		this.matchColumn = initMatchColumn(obj.colDB.matchColumn, this, fields)
 		this.maxLength = obj.colDB.maxLength
 		this.maxValue = obj.colDB.maxValue
 		this.minLength = obj.colDB.minLength

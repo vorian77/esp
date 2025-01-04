@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { FieldAccess, FieldProps } from '$comps/form/field'
-	import { DataObj, DataObjCardinality } from '$utils/types'
+	import { ContextKey, DataManager, DataObj, DataObjCardinality, required } from '$utils/types'
+	import { getContext } from 'svelte'
+	import { FieldAccess } from '$comps/form/field'
 	import { FieldToggle } from '$comps/form/fieldToggle'
 	import { SlideToggle } from '@skeletonlabs/skeleton'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
+	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let fp: FieldProps
+	const FILENAME = '$comps/form/FormElToggle.svelte'
 
-	$: dataObj = fp.dataObj
-	$: field = fp.field as FieldToggle
-	$: fieldValue = fp.fieldValue
+	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	$: classProps = dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'text-center'
-	$: classPropsLabel =
-		dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-1' : 'mb-1 hidden'
-	$: classDisabled = field.fieldAccess === FieldAccess.readonly ? 'disabled' : ''
+	let dataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let field = $derived(parms.field) as FieldCustomActionLink
 
-	$: selections = (function () {
+	let selections = (() => {
 		switch (field.colDO.colDB.codeDataType) {
 			case PropDataType.int16:
 				return [getValTrue(1), getValFalse(0)]
@@ -35,16 +35,17 @@
 			return [dbValue, field.valueTrue ? field.valueTrue : dbValue]
 		}
 	})()
-	let valueToggle: boolean
-	let valueDisplay: any
 
-	$: {
-		if (fieldValue === undefined || fieldValue === null) {
-			fieldValue = field.presetTrue ? selections[0][0] : selections[1][0]
-			fp.fSetVal(fp.row, fp.field, fieldValue)
+	let fieldValue = $derived.by(() => {
+		let fv = dm.getFieldValue(parms.dataObjId, parms.row, parms.field)
+		if (fv === undefined || fv === null) {
+			fv = field.presetTrue ? selections[0][0] : selections[1][0]
 		}
-		setToggle(fieldValue)
-	}
+		return fv
+	})
+	let valueToggle: boolean = $state()
+	let valueDisplay: any = $state()
+	setToggle(fieldValue)
 
 	function onChange(event: Event) {
 		const idx = selections.findIndex((s: any) => {
@@ -52,7 +53,7 @@
 		})
 		const newValue = selections[(idx + 1) % 2][0]
 		setToggle(newValue)
-		fp.fSetVal(fp.row, fp.field, newValue)
+		dm.setFieldValue(parms.dataObjId, parms.row, parms.field, newValue)
 	}
 
 	function setToggle(value: any) {
@@ -61,17 +62,17 @@
 	}
 </script>
 
-<div class={classPropsLabel}>
-	<legend>{field.colDO.label}</legend>
+<div class={dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-1' : 'mb-1 hidden'}>
+	<FormLabel {parms} />
 </div>
 
-<div class="{classProps} disabled=">
+<div class={dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'text-center'}>
 	<SlideToggle
 		name={field.colDO.propName}
-		bind:checked={valueToggle}
-		on:change={onChange}
 		active="bg-primary-500"
-		disabled={classDisabled}
+		bind:checked={valueToggle}
+		onclick={onChange}
+		disabled={field.fieldAccess === FieldAccess.readonly}
 	>
 		{#if field.valueShow}
 			{valueDisplay}

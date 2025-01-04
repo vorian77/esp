@@ -14,7 +14,7 @@
 	let newDefn = 'Sample defn.'
 </script>
 
-<!-- <Form bind:formObj={form} on:formSubmitted={onFormSubmitted} /> -->
+<!-- <Form bind:formObj={form}  /> -->
 
 <h3 class="h3 mt-10">Columns</h3>
 
@@ -31,7 +31,7 @@
 <button
 	type="button"
 	class="btn btn-action variant-filled-primary w-full mt-2"
-	on:click={onFormSubmitted}>Build Form Definition</button
+	onclick={onFormSubmitted}>Build Form Definition</button
 >
 
 <textarea id="formDefn" name="formDefn" rows="10" cols="50" class="mt-8">

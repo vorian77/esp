@@ -1,13 +1,13 @@
-import { Field, PropsFieldRaw } from '$comps/form/field'
+import { Field, PropsFieldCreate } from '$comps/form/field'
 
 export class FieldSelect extends Field {
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		super(props)
 	}
 }
 
 export class FieldSelectMulti extends FieldSelect {
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		super(props)
 	}
 }

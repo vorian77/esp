@@ -1,10 +1,9 @@
-import { State } from '$comps/app/types.appState'
+import { State } from '$comps/app/types.appState.svelte'
 import {
 	booleanRequired,
 	classOptional,
 	DataObj,
 	DataObjData,
-	DataObjStatus,
 	type DataRecord,
 	required,
 	strRequired
@@ -26,16 +25,16 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$comps/form/field.ts/'
 
 export class Field {
+	classType: FieldClassType = FieldClassType.regular
 	colDO: RawDataObjPropDisplay
 	colorBackground: string
 	fieldAccess: FieldAccess
 	fieldAlignment: FieldAlignment
 	fieldElement: FieldElement
 	iconProps?: IconProps
-	isFirstVisible: boolean
 	isParmValue: boolean
 	linkItemsSource?: PropLinkItemsSource
-	constructor(props: PropsFieldRaw) {
+	constructor(props: PropsFieldCreate) {
 		const clazz = `Field: ${props.propRaw.propName}`
 		const obj = valueOrDefault(props.propRaw, {})
 		this.colDO = obj
@@ -62,7 +61,6 @@ export class Field {
 			'FieldElement',
 			FieldElement
 		)
-		this.isFirstVisible = props.isFirstVisible
 		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
 		this.linkItemsSource = classOptional(PropLinkItemsSource, obj._linkItemsSource)
 
@@ -76,21 +74,6 @@ export class Field {
 	}
 	getPropName() {
 		return this.isParmValue ? 'parmValue' : this.colDO.propName
-	}
-
-	getStatus(dataObjForm: DataObj, recordId: string) {
-		const status = new DataObjStatus()
-		const propName = this.getPropName()
-
-		// changed
-		const isChanged = dataObjForm.dataFieldsChanged.valueGet(recordId, propName) || false
-		status.setChanged(isChanged)
-
-		// valid
-		const validity = dataObjForm.dataFieldsValidity.valueGet(recordId, propName)
-		status.setValid(validity === undefined || validity.error === ValidityError.none)
-
-		return status
 	}
 
 	getValuationInvalid(error: ValidityError, level: ValidityErrorLevel, message: string) {
@@ -112,9 +95,9 @@ export class Field {
 		])
 	}
 
-	async init(props: PropsField) {}
-
-	modeReset() {}
+	async init(props: PropsFieldInit) {
+		// used for async initialization
+	}
 
 	setIconProps(obj: any) {
 		this.iconProps = new IconProps(obj)
@@ -166,6 +149,13 @@ export enum FieldAlignment {
 	justify = 'justify',
 	left = 'left',
 	right = 'right'
+}
+
+export enum FieldClassType {
+	embed = 'embed',
+	embedShell = 'embedShell',
+	parm = 'parm',
+	regular = 'regular'
 }
 
 export class FieldColor {
@@ -231,6 +221,7 @@ export enum FieldElement {
 	customActionButton = 'customActionButton',
 	customActionLink = 'customActionLink',
 	customHeader = 'customHeader',
+	customHTML = 'customHTML',
 	customText = 'customText',
 	date = 'date',
 	email = 'email',
@@ -255,69 +246,35 @@ export enum FieldElement {
 	toggle = 'toggle'
 }
 
-export enum FieldParmType {
-	boolean = 'boolean',
-	date = 'date',
-	link = 'link',
-	number = 'number',
-	string = 'string'
+// <todo> 241217 - placing this in FieldEmbed causes a circular reference
+export enum FieldEmbedType {
+	listConfig = 'listConfig',
+	listEdit = 'listEdit',
+	listSelect = 'listSelect'
 }
 
-export class FieldProps {
-	component: string
+export class PropsFieldInit {
 	dataObj: DataObj
-	dataObjData: DataObjData
-	dataRecord: DataRecord
-	field: Field
-	fieldValue: any
-	fSetVal: Function
-	iconProps?: IconProps
-	isLabelBold: boolean = false
-	row: number
-	state: State
-	constructor(obj: any) {
-		obj = valueOrDefault(obj, {})
-		const clazz = 'FieldProps'
-		this.component = strRequired(obj.component, clazz, 'component')
-		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
-		this.dataObjData = required(obj.dataObjData, clazz, 'dataObjData')
-		this.dataRecord = required(obj.dataRecord, clazz, 'dataRecord')
-		this.field = required(obj.field, clazz, 'field')
-		this.fieldValue = obj.fieldValue
-		this.iconProps = obj.iconProps
-		this.row = required(obj.row, clazz, 'row')
-		this.fSetVal = required(obj.fSetVal, clazz, 'fSetVal')
-		this.state = required(obj.state, clazz, 'state')
-	}
-
-	setIsLabelBold(isLabelBold: boolean) {
-		this.isLabelBold = isLabelBold
-	}
-}
-
-export class PropsField {
-	dataObj: DataObj
-	state: State
+	sm: State
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'PropsField'
 		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
-		this.state = required(obj.state, clazz, 'state')
+		this.sm = required(obj.sm, clazz, 'sm')
 	}
 }
 
-export class PropsFieldRaw extends PropsField {
-	data: DataObjData
-	fields: Field[]
-	isFirstVisible: boolean
+export class PropsFieldCreate {
+	parms: DataRecord = {}
 	propRaw: RawDataObjPropDisplay
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
-		super(obj)
-		const clazz = 'PropsFieldRaw'
-		this.data = required(obj.data, clazz, 'data')
-		this.fields = required(obj.fields, clazz, 'fields')
-		this.isFirstVisible = booleanRequired(obj.isFirstVisible, clazz, 'isFirstVisible')
+		const clazz = 'PropsFieldCreate'
 		this.propRaw = required(obj.propRaw, clazz, 'propRaw')
+		Object.keys(obj).forEach((key) => {
+			if (key !== 'propRaw') {
+				this.parms[key] = obj[key]
+			}
+		})
 	}
 }

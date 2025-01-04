@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { FieldProps } from '$comps/form/field'
+	import { ContextKey, DataManager, type DataRecord, required } from '$utils/types'
+	import { getContext } from 'svelte'
 	import { FieldCustomText } from '$comps/form/fieldCustom'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	export let fp: FieldProps
+	let { parms }: DataRecord = $props()
 
-	$: field = fp.field as FieldCustomText
-	$: classAlign = field.align ? 'text-' + field.align : 'text-left'
+	let field = $derived(parms.field) as FieldCustomText
+	let classAlign = $derived(field.align ? 'text-' + field.align : 'text-left')
 </script>
 
 <div class={classAlign}>

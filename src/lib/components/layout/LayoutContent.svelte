@@ -1,19 +1,24 @@
 <script lang="ts">
-	import { AppLevelRowStatus } from '$comps/app/types.app'
-	import { State, StateSurfaceModal } from '$comps/app/types.appState'
-	import { valueOrDefault, type DataObj, type DataObjData, ParmsValuesType } from '$utils/types'
-	import NavRow from '$comps/nav/NavRow.svelte'
+	import {
+		ContextKey,
+		type DataObj,
+		type DataObjData,
+		ParmsValuesType,
+		required,
+		valueOrDefault
+	} from '$utils/types'
+	import { getContext } from 'svelte'
+	import { AppLevelRowStatus } from '$comps/app/types.app.svelte'
+	import { State, StateSurfaceModal } from '$comps/app/types.appState.svelte'
 	import ContentFormDetailApp from '$comps/form/ContentFormDetailApp.svelte'
 	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
 	import ContentFormListApp from '$comps/form/ContentFormListApp.svelte'
 	import GridSelect from '$comps/grid/GridSelect.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
-	import { createEventDispatcher } from 'svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
+	import NavRow from '$comps/nav/NavRow.svelte'
 
 	const FILENAME = '$comps/layout/LayoutContent.svelte'
-	const dispatch = createEventDispatcher()
-
 	const comps: Record<string, any> = {
 		FormDetail: ContentFormDetailApp,
 		FormDetailRepConfig: ContentFormDetailRepConfig,
@@ -21,70 +26,73 @@
 		ModalSelect: GridSelect
 	}
 
-	export let state: State
-	export let component: string
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
+	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	let classHeader = ''
-	let currComponent: any
-	let headerObj: string = ''
-	let headerObjSub: string = ''
-	let isDrawerClose: boolean = false
-	let rowStatus: AppLevelRowStatus | undefined
+	let cancelForm: Function = getContext(ContextKey.cancelForm) || undefined
 
-	$: currComponent = comps[component]
+	let Component = $state(comps[parms.component])
+	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
-	$: {
-		// header parms
-		headerObj = state.layoutHeader.headerText
-			? state.layoutHeader.headerText
-			: state.layoutHeader.isDataObj
+	// header parms
+	let headerObj = $derived(
+		sm.layoutHeader.headerText
+			? sm.layoutHeader.headerText
+			: sm.layoutHeader.isDataObj
 				? dataObj?.raw?.header
 				: ''
-		headerObjSub = state.layoutHeader.isDataObj
-			? dataObj?.raw?.subHeader
-				? dataObj?.raw?.subHeader
-				: ''
-			: ''
-		isDrawerClose = state.layoutHeader.isDrawerClose
-		rowStatus = state.layoutHeader.isRowStatus ? state.app.getRowStatus() : undefined
+	)
 
-		// header styling
-		classHeader =
-			(!state.app.isMobileMode && dataObj && dataObj.actionsField.length > 0) ||
-			headerObj ||
-			headerObjSub ||
-			rowStatus
-				? 'border-2 p-4 '
-				: ''
-	}
+	let headerObjSub = $derived(
+		sm.layoutHeader.isDataObj ? (dataObj?.raw?.subHeader ? dataObj?.raw?.subHeader : '') : ''
+	)
+	let isDrawerClose = $derived(sm.layoutHeader.isDrawerClose)
+	let rowStatus = $derived(sm.layoutHeader.isRowStatus ? sm.app.getRowStatus() : undefined)
+
+	// header styling
+	let classHeader = $derived(
+		(dataObj && dataObj.actionsField.length > 0) || headerObj || headerObjSub || rowStatus
+			? 'border p-4 '
+			: ''
+	)
 
 	function cancel(event: MouseEvent) {
-		dispatch('formCancelled')
+		if (cancelForm) cancelForm()
 	}
 </script>
 
-{#if currComponent}
-	<div
-		id="layout-content"
-		class="h-full max-h-full flex flex-col md:flex-row border-2 p-4 rounded-md"
-	>
-		<div class="grow">
-			<svelte:component
-				this={currComponent}
-				{component}
-				bind:state
-				{dataObj}
-				{dataObjData}
-				on:formCancelled
-			/>
-		</div>
+<!-- <DataViewer header="rowStatus" data={rowStatus} /> -->
 
-		{#if dataObj && dataObjData}
-			<DataObjActionsObj {state} {dataObj} on:formCancelled />
+<div class="h-full max-h-full flex flex-col p-3 {headerObj ? 'border p-3 rounded-md' : ''}">
+	{#if Component}
+		{#if headerObj}
+			<div class="mb-4">
+				<div class="flex justify-between items-start">
+					<h2 class="h2">{headerObj}</h2>
+					<div>
+						{#if sm.layoutHeader.isRowStatus}
+							<NavRow />
+						{/if}
+						{#if sm.layoutHeader.isDrawerClose}
+							<button
+								type="button"
+								class="btn-icon btn-icon-sm variant-filled-error"
+								onclick={cancel}
+							>
+								X
+							</button>
+						{/if}
+					</div>
+				</div>
+				{#if headerObjSub}
+					<h4 class="mt-1 h4 text-gray-500">{headerObjSub}</h4>
+				{/if}
+			</div>
 		{/if}
-	</div>
-{/if}
 
-<!-- <DataViewer header="state" data={state.test} /> -->
+		<div class="h-full">
+			<Component {parms} />
+		</div>
+	{/if}
+</div>

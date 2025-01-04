@@ -1,16 +1,22 @@
 <script lang="ts">
 	import {
+		ContextKey,
+		DataManager,
 		DataObj,
 		DataObjCardinality,
 		DataObjData,
-		FieldValue,
+		type DataRecord,
+		required,
+		Validity,
 		ValidityErrorLevel,
 		ValidityError
 	} from '$utils/types'
-	import { State, StateSurfaceEmbedShell } from '$comps/app/types.appState'
+	import { getContext } from 'svelte'
+	import { State, StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
 	import FormElCustomActionButton from './FormElCustomActionButton.svelte'
 	import FormElCustomActionLink from './FormElCustomActionLink.svelte'
 	import FormElCustomHeader from '$comps/form/FormElCustomHeader.svelte'
+	import FormElCustomHTML from '$comps/form/FormElCustomHTML.svelte'
 	import FormElCustomText from '$comps/form/FormElCustomText.svelte'
 	import FormElFile from '$comps/form/FormElFile.svelte'
 	import FormElInp from '$comps/form/FormElInp.svelte'
@@ -24,7 +30,7 @@
 	import FormElSelect from '$comps/form/FormElSelect.svelte'
 	import FormElTextarea from '$comps/form/FormElTextarea.svelte'
 	import FormElToggle from '$comps/form/FormElToggle.svelte'
-	import { Field, FieldProps } from '$comps/form/field'
+	import { Field } from '$comps/form/field'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import {
 		FieldCustomActionButton,
@@ -41,37 +47,23 @@
 	import { FieldChips } from '$comps/form/fieldChips'
 	import { FieldFile } from '$comps/form/fieldFile'
 	import { FieldInput } from '$comps/form/fieldInput'
-	import { FieldParm } from '$comps/form/fieldParm'
+	// import { FieldParm } from '$comps/form/fieldParm'
 	import { FieldRadio } from '$comps/form/fieldRadio'
 	import { FieldSelect } from '$comps/form/fieldSelect'
 	import { FieldTextarea } from '$comps/form/fieldTextarea'
 	import { FieldToggle } from '$comps/form/fieldToggle'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '$comps/form/FormDetailElement.svelte'
+	const FILENAME = '$comps/form/FormElement.svelte'
 
-	export let state: State
-	export let component: string
-	export let dataObj: DataObj
-	export let dataObjData: DataObjData
-	export let field: Field
-	export let row: number
-
-	let classProps =
-		!state.app.isMobileMode &&
-		dataObj.raw.codeCardinality === DataObjCardinality.detail &&
-		field.colDO.isDisplayable
-			? 'mb-4'
-			: ''
-
-	let currentElement: any
 	const elements: Record<string, any> = {
-		FieldCheckbox: FormElInpCheckbox,
-		FieldChips: FormElChips,
 		FieldCustomActionButton: FormElCustomActionButton,
 		FieldCustomActionLink: FormElCustomActionLink,
 		FieldCustomHeader: FormElCustomHeader,
+		FieldCustomHTML: FormElCustomHTML,
 		FieldCustomText: FormElCustomText,
+		FieldChips: FormElChips,
+		FieldCheckbox: FormElInpCheckbox,
 		FieldEmbedListConfig: FormElEmbedListConfig,
 		FieldEmbedListEdit: FormElEmbedListEdit,
 		FieldEmbedListSelect: FormElEmbedListSelect,
@@ -83,53 +75,47 @@
 		FieldTextarea: FormElTextarea,
 		FieldToggle: FormElToggle
 	}
+	let Element: any = $state()
 
-	let fieldValue: any
+	let { parms }: DataRecord = $props()
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let dm: DataManager = $derived(sm.dm)
 
-	$: dataRecord = dataObj.dataRecordsDisplay[row]
-	$: field = dataObj.getField(field, row)
-	$: fieldValue = dataRecord[field.colDO.propName]
-	$: validity = dataObj.dataFieldsValidity.valueGet(dataRecord.id, field.colDO.propName)
-	$: {
-		const fieldClass = field.constructor.name
-		if (typeof fieldClass === 'string' && fieldClass !== '') {
-			currentElement = elements[field.constructor.name]
-		}
-	}
+	let fieldValidity = $derived(dm.getFieldValidity(parms.dataObjId, parms.row, parms.field))
 
-	$: fp = new FieldProps({
-		component,
-		dataObj,
-		dataObjData,
-		dataRecord,
-		field,
-		fieldValue,
-		fSetVal: closureSetVal,
-		row,
-		state
+	$effect(() => {
+		let elementName =
+			typeof parms.field.constructor.name === 'string' && parms.field.constructor.name !== ''
+				? parms.field.constructor.name
+				: ''
+		if (elementName) Element = elements[elementName]
 	})
 
-	function closureSetVal(row: number, field: Field, value: any) {
-		dataObj = dataObj.setFieldVal(row, field, value)
-		fp.state.fClosureSetStatus() // <todo> - 241121 - this causes screen to flicker - should be fixed with Svelte 5 state management
-	}
+	let classProps = $derived(
+		parms.dataObj.raw.codeCardinality === DataObjCardinality.detail &&
+			parms.field.colDO.isDisplayable
+			? 'mb-4'
+			: ''
+	)
 </script>
 
+<!-- <p>field: {parms.field.colDO.label}</p> -->
+
 <div class={classProps}>
-	{#if field.colDO.isDisplayable}
-		<svelte:component this={currentElement} bind:fp />
+	{#if Element && parms.field.colDO.isDisplayable}
+		<Element {parms} />
 	{/if}
 </div>
 
-{#if validity}
+{#if fieldValidity}
 	<div class="mb-3 text-sm">
-		{#if validity.level == ValidityErrorLevel.error}
+		{#if fieldValidity.level == ValidityErrorLevel.error}
 			<div class="text-error-500">
-				<p>{validity.message}</p>
+				<p>{fieldValidity.message}</p>
 			</div>
-		{:else if validity.level == ValidityErrorLevel.warning}
+		{:else if fieldValidity.level == ValidityErrorLevel.warning}
 			<div class="text-warning-500">
-				<p>{validity.message}</p>
+				<p>{fieldValidity.message}</p>
 			</div>
 		{/if}
 	</div>

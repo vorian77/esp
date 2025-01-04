@@ -8,6 +8,10 @@ export async function getEnhancement(method: string) {
 			return (await import('$enhance/actions/actionAuth')).default
 			break
 
+		case 'core':
+			return (await import('$enhance/actions/actionCore')).default
+			break
+
 		default:
 			error(500, {
 				file: FILENAME,

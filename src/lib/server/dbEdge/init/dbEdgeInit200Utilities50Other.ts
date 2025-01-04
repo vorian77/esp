@@ -1,4 +1,4 @@
-import e from '$db/dbschema/edgeql-js'
+import e from '$db/esdl/edgeql-js'
 import { client, sectionHeader, valueOrDefaultParm } from '$routes/api/dbEdge/dbEdge'
 import { debug } from '$utils/types'
 
@@ -302,6 +302,7 @@ export async function addTask(data: any) {
 			btnStyle: e.optional(e.str),
 			codeCategory: e.str,
 			codeIcon: e.str,
+			codeRenderType: e.str,
 			codeStatusObj: e.optional(e.str),
 			description: e.optional(e.str),
 			exprShow: e.optional(e.str),
@@ -311,8 +312,9 @@ export async function addTask(data: any) {
 			isPinToDash: e.optional(e.bool),
 			isGlobalResource: e.bool,
 			name: e.str,
-			sourceDataObj: e.optional(e.str),
-			sourceNodeObj: e.optional(e.str),
+			pageDataObj: e.optional(e.str),
+			targetDataObj: e.optional(e.str),
+			targetNodeObj: e.optional(e.str),
 			orderDefine: e.int16,
 			owner: e.str
 		},
@@ -321,6 +323,7 @@ export async function addTask(data: any) {
 				btnStyle: p.btnStyle,
 				codeCategory: e.select(e.sys_core.getCode('ct_sys_task_category', p.codeCategory)),
 				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
+				codeRenderType: e.sys_core.getCode('ct_sys_task_render_type', p.codeRenderType),
 				codeStatusObj: e.sys_core.getCode('ct_sys_task_status_obj', p.codeStatusObj),
 				createdBy: CREATOR,
 				exprShow: p.exprShow,
@@ -331,10 +334,11 @@ export async function addTask(data: any) {
 				isGlobalResource: p.isGlobalResource,
 				modifiedBy: CREATOR,
 				name: p.name,
-				sourceDataObj: e.sys_core.getDataObj(p.sourceDataObj),
-				sourceNodeObj: e.sys_core.getNodeObjByName(p.sourceNodeObj),
 				orderDefine: p.orderDefine,
-				owner: e.sys_core.getSystemPrime(p.owner)
+				owner: e.sys_core.getSystemPrime(p.owner),
+				pageDataObj: e.sys_core.getDataObj(p.pageDataObj),
+				targetDataObj: e.sys_core.getDataObj(p.targetDataObj),
+				targetNodeObj: e.sys_core.getNodeObjByName(p.targetNodeObj)
 			})
 		}
 	)

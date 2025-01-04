@@ -111,7 +111,7 @@ export function getValDB(codeDataType: PropDataType, valueRaw: any) {
 		valueDB =
 			valueRaw.length > 0
 				? `{${getArray(valueRaw).map((v: string) => getUUIDQuoted(v))}}`
-				: `{${getUUIDQuoted()}}`
+				: getUUIDQuoted('')
 	} else if (codeDataType === PropDataType.bool) {
 		dataType = '<bool>'
 		valueDB = [undefined, null].includes(valueRaw) ? false : valueRaw

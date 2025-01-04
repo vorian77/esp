@@ -6,7 +6,7 @@ export class IconProps {
 	color?: string
 	isNav: boolean
 	name: string
-	onClick: Function
+	onclick: Function
 	size: number
 	strokeWidth: number
 	constructor(obj: any) {
@@ -17,7 +17,7 @@ export class IconProps {
 		this.color = obj.color
 		this.isNav = valueOrDefault(obj.isNav, false)
 		this.name = strRequired(obj.name, clazz, 'name')
-		this.onClick = valueOrDefault(obj.onClick, () => {})
+		this.onclick = valueOrDefault(obj.onclick, () => {})
 		this.size = valueOrDefault(obj.size, 24)
 		this.strokeWidth = valueOrDefault(obj.strokeWidth, 1)
 

@@ -14,10 +14,7 @@ function initResources(init: InitDb) {
 		['sys_system_old', 'widget_sys_report', true],
 		['sys_system_old', 'widget_sys_quotes', true],
 		['sys_system_old', 'widget_sys_user', true],
-		['sys_ai_old', 'widget_ai_user', false],
-		['sys_moed_old', 'wf_moed_student_ssr_app', false],
-		['sys_moed_old', 'wf_moed_student_ssr_doc', false],
-		['sys_moed_old', 'wf_moed_student_ssr_msg', false]
+		['sys_ai_old', 'widget_ai_user', false]
 	])
 }
 
@@ -192,9 +189,11 @@ function initUserType(init: InitDb) {
 		name: 'ut_moed_student',
 		owner: 'sys_moed_old',
 		resources: [
+			{ codeType: 'task', resource: 'task_moed_ssr_legal' },
 			{ codeType: 'task', resource: 'task_moed_ssr_app' },
-			{ codeType: 'task', resource: 'task_moed_ssr_app_doc' }
-			// { codeType: 'task', resource: 'task_moed_ssr_app_msg' }
+			{ codeType: 'task', resource: 'task_moed_ssr_app_doc' },
+			// { codeType: 'task', resource: 'task_moed_ssr_app_msg' },
+			{ codeType: 'task', resource: 'task_moed_ssr_welcome' }
 		]
 	})
 }

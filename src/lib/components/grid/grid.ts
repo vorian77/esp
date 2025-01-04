@@ -1,4 +1,4 @@
-import { State, StatePacketAction } from '$comps/app/types.appState'
+import { State, StatePacketAction } from '$comps/app/types.appState.svelte'
 import {
 	type ColDef,
 	type GridApi,
@@ -8,6 +8,7 @@ import {
 	type ICellRendererParams,
 	type IDateComp,
 	type IDateParams,
+	type ValueFormatterParams,
 	type ValueGetterParams,
 	type ValueParserParams,
 	type ValueSetterParams
@@ -45,8 +46,9 @@ export type ColumnsDefsSelect = {
 }[]
 
 export const columnTypes = {
-	// cellStyle: { 'background-color': 'orange' }
-	ctBoolean: {},
+	ctBoolean: {
+		cellStyle: { display: 'flex', 'justify-content': 'center' }
+	},
 	ctDateString: {},
 	ctNumber: {
 		cellEditor: 'agNumberCellEditor'
@@ -65,33 +67,27 @@ export const columnTypes = {
 		cellEditor: 'agTextCellEditor',
 		valueGetter: (params: ValueGetterParams) => {
 			const fieldName = required(params.colDef.field, FILENAME, 'params.colDef.field')
+			console.log('grid.ctSelectMulti.valueGetter', fieldName, params.data[fieldName])
 			const currentValue = params.data[fieldName]
 			const linkItemsSource = params.colDef.context.linkItemsSource
 			return linkItemsSource.getDisplayValueList(currentValue)
 		}
 	},
 	ctSelectSingle: {
-		cellEditor: 'agTextCellEditor',
-		valueGetter: (params: ValueGetterParams) => {
-			const fieldName = required(
-				params.colDef.field,
-				`${FILENAME}.valueGetter`,
-				'params.colDef.field'
-			)
-			const currentValue = params.data[fieldName]
-			const linkItemsSource = params.colDef.context.linkItemsSource
-			return linkItemsSource.getDisplayValueList(currentValue)
+		cellEditor: 'agRichSelectCellEditor',
+		cellEditorParams: {
+			values: (params: ValueGetterParams) => {
+				const linkItemsSource = params.colDef.context.linkItemsSource
+				return linkItemsSource.getValuesSelect()
+			}
 		},
-		valueSetter: (params: ValueSetterParams) => {
-			const fieldName = required(
-				params.colDef.field,
-				`${FILENAME}.valueSetter`,
-				'params.colDef.field'
-			)
-			params.data[fieldName] = params.newValue[0] || ''
-			return true
+		keyCreator: (params: any) => params.value.data,
+		valueFormatter: (params: ValueFormatterParams) => {
+			const linkItemsSource = params.colDef.context.linkItemsSource
+			return linkItemsSource.getDisplayValueList(params.value)
 		}
 	},
+
 	ctText: {
 		cellEditor: 'agTextCellEditor'
 	},
@@ -224,8 +220,8 @@ export class GridSettings {
 	setPref(type: ParmsUserDataType, value: any) {
 		this.data[type] = value
 	}
-	load(rawSettings: any, state: State, dataObj: DataObj) {
-		if (state.user) this.idUser = state.user.id
+	load(rawSettings: any, sm: State, dataObj: DataObj) {
+		if (sm.user) this.idUser = sm.user.id
 		rawSettings = valueOrDefault(rawSettings, {})
 		const PREFS: [ParmsUserDataType, Function][] = [
 			[ParmsUserDataType.listColumnsModel, initPrefsColumnsModel],
@@ -339,4 +335,8 @@ export class GridManagerOptions {
 		this.sortModel = valueOrDefault(obj.sortModel, new DataObjSort())
 		this.userSettings = valueOrDefault(obj.userSettings, new GridSettings(''))
 	}
+}
+
+enum GridAutoSizeStrategy {
+	fitGridWidth = 'fitGridWidth'
 }
