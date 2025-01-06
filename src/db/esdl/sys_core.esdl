@@ -1,23 +1,14 @@
 module sys_core {
-  # core objects
   type ObjRoot {
-    addr1: str;
-    addr2: str;
-    avatar: json;
-    city: str;
+    note: str;
+  }
+
+  type ObjRootCore extending sys_core::ObjRoot {
     codeIcon: sys_core::SysCode;
     codeObjType: sys_core::SysCode;
-    codeState: sys_core::SysCode;
-    multi contacts: default::SysPerson{
-      on target delete allow;
-    };
-    email: str;
     header: str;
     required name: str;
-    note: str;
     orderDefine: default::nonNegative;
-    website: str;
-    zip: str;
     
     # test fields
     testBool: bool;
@@ -30,11 +21,24 @@ module sys_core {
     testText: str;
   }
 
-  type SysObj extending sys_core::ObjRoot, sys_user::Mgmt {
+  type SysObj extending sys_core::ObjRootCore, sys_user::Mgmt {
     isGlobalResource: bool;
     required owner: sys_core::SysSystem;
     constraint exclusive on ((.owner, .name));
   } 
+
+  type SysObjEnt extending sys_core::SysObj {
+    addr1: str;
+    addr2: str;
+    city: str;
+    codeState: sys_core::SysCode;
+    multi contacts: default::SysPerson{
+      on target delete allow;
+    };
+    email: str;
+    website: str;
+    zip: str;
+  }
 
   type SysObjNote extending sys_user::Mgmt {
     required date: cal::local_date;
@@ -50,7 +54,7 @@ module sys_core {
   }
 
 
-  type SysOrg extending sys_core::ObjRoot, sys_user::Mgmt {
+  type SysOrg extending sys_core::ObjRootCore, sys_user::Mgmt {
     appName: str;
     file: json;
     logoMarginRight: float64;
@@ -58,7 +62,7 @@ module sys_core {
     constraint exclusive on (.name);
   }
 
-  type SysSystem extending sys_core::ObjRoot, sys_user::Mgmt  {
+  type SysSystem extending sys_core::ObjRootCore, sys_user::Mgmt  {
     required owner: sys_core::SysOrg;
     constraint exclusive on ((.owner, .name));
   }
@@ -83,7 +87,7 @@ module sys_core {
     constraint exclusive on ((.name));
   }
 
-  type SysCode extending sys_core::ObjRoot, sys_user::Mgmt {
+  type SysCode extending sys_core::ObjRootCore, sys_user::Mgmt {
     required owner: sys_core::SysSystem;
     parent: sys_core::SysCode;
     required codeType: sys_core::SysCodeType;
@@ -401,8 +405,8 @@ module sys_core {
   function getObj(name: str) -> optional sys_core::SysObj
     using (select assert_single((select sys_core::SysObj filter .name = name)));
 
-  function getObjRoot(name: str) -> optional sys_core::ObjRoot
-    using (select assert_single((select sys_core::ObjRoot filter .name = name)));
+  function getObjRootCore(name: str) -> optional sys_core::ObjRootCore
+    using (select assert_single((select sys_core::ObjRootCore filter .name = name)));
     
   function getOrg(name: str) -> optional sys_core::SysOrg
     using (select assert_single((select sys_core::SysOrg filter .name = name)));

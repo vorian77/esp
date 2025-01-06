@@ -14,7 +14,33 @@ module default {
     };
   }
 
-  type SysPerson {
+ type SysPerson extending sys_core::ObjRoot {
+    addr1: str;
+    addr2: str;
+    avatar: json;
+    birthDate: cal::local_date;
+    city: str;
+    codeDisabilityStatus: sys_core::SysCode;
+    codeEthnicity: sys_core::SysCode;
+    codeGender: sys_core::SysCode;
+    codeRace: sys_core::SysCode;
+    codeState: sys_core::SysCode;
+    email: str;
+    favFood: str;
+    required firstName: default::Name;
+    property fullName := .firstName ++ ' ' ++ .lastName;
+    idMigration: uuid;
+    isLegalAgreed: bool;
+    required lastName: default::Name;
+    middleName: default::Name;
+    phoneAlt: str;
+    phoneMobile: str;
+    ssn: str;
+    title: str;
+    zip: str;
+  }
+
+  type SysPersonOld {
     addr1: str;
     addr2: str;
     avatar: json;

@@ -196,7 +196,10 @@ export namespace app_cm {
     "date": edgedb.LocalDate;
     "note"?: string | null;
   }
-  export interface CmPartner extends sys_core.SysObj {}
+  export interface CmPartner extends sys_core.SysObjEnt {
+    "idMigration"?: string | null;
+  }
+  export interface CmPartnerOld extends sys_core.SysObj {}
   export interface CmServiceFlow extends sys_core.SysObj {}
 }
 export namespace sys_core {
@@ -228,6 +231,16 @@ export namespace sys_core {
   export interface SysObj extends ObjRoot, sys_user.Mgmt {
     "isGlobalResource"?: boolean | null;
     "owner": SysSystem;
+  }
+  export interface SysObjEnt extends SysObj {
+    "codeState"?: SysCode | null;
+    "contacts": $default.SysPerson[];
+    "addr1"?: string | null;
+    "addr2"?: string | null;
+    "city"?: string | null;
+    "email"?: string | null;
+    "website"?: string | null;
+    "zip"?: string | null;
   }
   export interface SysApp extends SysObj {
     "appHeader": SysAppHeader;
@@ -982,11 +995,13 @@ export interface types {
     "CmCsfNote": app_cm.CmCsfNote;
     "CmCsfSchoolPlacement": app_cm.CmCsfSchoolPlacement;
     "CmPartner": app_cm.CmPartner;
+    "CmPartnerOld": app_cm.CmPartnerOld;
     "CmServiceFlow": app_cm.CmServiceFlow;
   };
   "sys_core": {
     "ObjRoot": sys_core.ObjRoot;
     "SysObj": sys_core.SysObj;
+    "SysObjEnt": sys_core.SysObjEnt;
     "SysApp": sys_core.SysApp;
     "SysAppHeader": sys_core.SysAppHeader;
     "SysCode": sys_core.SysCode;

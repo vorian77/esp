@@ -62,6 +62,10 @@ module app_cm {
       # on source delete delete target if orphan;
       on source delete allow;
     };
+    personOld: default::SysPersonOld{
+      # on source delete delete target if orphan;
+      on source delete allow;
+    };
     school: str;
   }
 
@@ -155,11 +159,11 @@ module app_cm {
     note: str;
   }
 
-  type CmPartner extending sys_core::SysObj {}
-
-  # FUNCTIONS
-  function getCMTrainingCourse(name: str) -> optional app_cm::CmCourse
-      using (select assert_single((select app_cm::CmCourse filter .name = name)));
+ type CmPartner extending sys_core::SysObjEnt {}
+ 
+# FUNCTIONS
+function getCMTrainingCourse(name: str) -> optional app_cm::CmCourse
+  using (select assert_single((select app_cm::CmCourse filter .name = name)));
 }
 
 
