@@ -67,7 +67,6 @@ export const columnTypes = {
 		cellEditor: 'agTextCellEditor',
 		valueGetter: (params: ValueGetterParams) => {
 			const fieldName = required(params.colDef.field, FILENAME, 'params.colDef.field')
-			console.log('grid.ctSelectMulti.valueGetter', fieldName, params.data[fieldName])
 			const currentValue = params.data[fieldName]
 			const linkItemsSource = params.colDef.context.linkItemsSource
 			return linkItemsSource.getDisplayValueList(currentValue)

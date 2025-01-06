@@ -292,7 +292,7 @@ export class State {
 			},
 			packet: new StatePacket({
 				action: StatePacketAction.doOpen,
-				token: new TokenAppDataObjName({ dataObjName, querytype: TokenApiQueryType.retrieve })
+				token: new TokenAppDataObjName({ dataObjName, queryType: TokenApiQueryType.retrieve })
 			})
 		})
 		await this.openModal(stateModal, fUpdate)
