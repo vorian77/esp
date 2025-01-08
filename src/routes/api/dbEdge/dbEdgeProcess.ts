@@ -179,6 +179,7 @@ async function processDataObjQuery(
 	// embedded fields
 	const EMBED_QUERY_TYPES = [TokenApiQueryType.retrieve, TokenApiQueryType.save]
 	if (EMBED_QUERY_TYPES.includes(queryType)) {
+		const recordStatus = queryData.dataTab?.rowsRetrieved.getDetailRowStatus()
 		for (let i = 0; i < returnData.fields.length; i++) {
 			const field: FieldEmbed = returnData.fields[i]
 			queryData.dataTab = field.data
@@ -187,7 +188,14 @@ async function processDataObjQuery(
 					? queryType
 					: queryType === TokenApiQueryType.save && field.embedType === FieldEmbedType.listEdit
 						? TokenApiQueryType.save
-						: TokenApiQueryType.retrieve
+						: queryType === TokenApiQueryType.save &&
+							  field.embedType === FieldEmbedType.listSelect &&
+							  recordStatus !== DataRecordStatus.preset &&
+							  queryData.dataTab?.parms.hasOwn('listIdsSelected')
+							? TokenApiQueryType.save
+							: TokenApiQueryType.retrieve
+			debug('processDataObjQuery', 'embeddedField', { queryType, recordStatus, queryTypeEmbed })
+
 			await processDataObjQuery(
 				queryTypeEmbed,
 				new Query(required(field.data.rawDataObj, clazz, 'field.data.rawDataObj'), field),
@@ -244,8 +252,6 @@ async function processDataObjExecute(scriptGroup: ScriptGroup, returnData: DataO
 			script.queryData,
 			new EvalExprContext('processDataObjExecute', script.query.rawDataObj.name)
 		)
-
-		debug('processDataObjExecute', `expr`, expr)
 
 		const rawDataList = await exeQueryMulti(expr)
 

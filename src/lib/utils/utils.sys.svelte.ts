@@ -20,23 +20,6 @@ export enum ContextKey {
 	test = 'test'
 }
 
-export class TestState {
-	data = new TestData()
-	value = $state(0)
-	constructor() {}
-	increment = () => {
-		this.value++
-	}
-}
-
-export class TestData {
-	value: number = $state(0)
-	constructor() {}
-	increment = () => {
-		this.value++
-	}
-}
-
 export async function encrypt(text: string) {
 	// let salt = bcrypt.genSaltSync(10)
 	// let hash = bcrypt.hashSync(text, salt)

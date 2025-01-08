@@ -55,7 +55,6 @@ export class Query {
 				_filterExpr: 'none',
 				_table: this.fieldEmbed.parentTable
 			})
-			console.log('this.query.fieldEmbed.parent', this.parent)
 		}
 	}
 	addItem(list: string, item: string, separator: string) {

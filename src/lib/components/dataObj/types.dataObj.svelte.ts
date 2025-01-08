@@ -564,7 +564,7 @@ export class DataRows {
 			message: `No detail row available.`
 		})
 	}
-	getDetailRowStatus(status: DataRecordStatus) {
+	getDetailRowStatus() {
 		return this.getRowStatus(0)
 	}
 	getDetailRowStatusIs(status: DataRecordStatus) {
@@ -721,6 +721,9 @@ export class ParmsValues {
 	data: DataRecord = {}
 	constructor(data?: DataRecord) {
 		this.data = valueOrDefault(data, {})
+	}
+	hasOwn(key: string) {
+		return Object.hasOwn(this.data, key)
 	}
 	static load(parms: ParmsValues) {
 		const newParms = new ParmsValues()

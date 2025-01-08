@@ -153,7 +153,7 @@ const dataItemsDataDoc = {
 	codeType: {
 		type: 'list',
 		values: [
-			'Acknowledgement Letter',
+			'Alien Registration Card',
 			'Applicant Statement',
 			'Birth Certificate',
 			'Drivers License',
