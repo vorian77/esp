@@ -354,7 +354,7 @@
 </script>
 
 {#if Component}
-	<div class="h-full max-h-full">
+	<div class="h-full max-h-full w-full">
 		{#key keyValue}
 			<Component {parms} />
 		{/key}

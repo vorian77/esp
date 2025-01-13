@@ -18,7 +18,9 @@
 			class="flex-none w-14 hover:-translate-y-0.5 transition-transform"
 			onclick={data.navMenu.toggleOpen}
 		>
-			<img src={data.user.org.urlLogo} />
+			{#if data.user.org.urlLogo}
+				<img src={data.user.org.urlLogo} />
+			{/if}
 		</button>
 
 		{#if data.navMenu.isOpen}

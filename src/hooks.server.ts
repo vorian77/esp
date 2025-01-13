@@ -14,7 +14,7 @@ Sentry.init({
 	tracesSampleRate: 1.0
 })
 
-const routesUnprotected = ['/about', '/auth', '/legalDisclosure', '/test', '/test1']
+const routesUnprotected = ['/about', '/auth', '/legalDisclosure', '/test']
 
 // <todo> - 240206 - possible way to control user reload of a page
 // function beforeNavigate(
@@ -30,8 +30,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (event.url.pathname === '/') {
 		if (event.cookies.get('session_id')) {
 			event.cookies.delete('session_id', { path: '/' })
+			redirect(303, '/auth/login')
+		} else {
+			return await resolve(event)
 		}
-		return await resolve(event)
 	}
 
 	if (event.url.pathname.toLowerCase().startsWith('/api')) {
@@ -40,7 +42,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	if (
-		routesUnprotected.findIndex((r) => r.toLowerCase() === event.url.pathname.toLowerCase()) >= 0
+		routesUnprotected.findIndex((r) =>
+			event.url.pathname.toLowerCase().startsWith(r.toLowerCase())
+		) >= 0
 	) {
 		status('unprotected route...')
 		return await resolve(event)

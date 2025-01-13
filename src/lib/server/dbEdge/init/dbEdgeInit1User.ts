@@ -27,13 +27,15 @@ function initAppHeaders(init: InitDb) {
 		orderDefine: 0,
 		owner: 'sys_system_old'
 	})
+
+	/* CRM */
 	init.addTrans('sysAppHeader', {
-		codeIcon: 'FileStack',
-		header: 'Reports',
+		codeIcon: 'UsersRound',
+		header: 'CRM',
 		isGlobalResource: true,
-		name: 'app_hdr_sys_reporting',
-		orderDefine: 1000,
-		owner: 'sys_system_old'
+		name: 'app_hdr_app_crm',
+		orderDefine: 500,
+		owner: 'sys_app_crm'
 	})
 
 	/* Atlantic Impact */
@@ -88,6 +90,15 @@ function initApps(init: InitDb) {
 		nodes: ['node_obj_sys_admin_org_list_user', 'node_obj_sys_admin_system_list_meta']
 	})
 
+	/* CRM */
+	init.addTrans('sysApp', {
+		appHeader: 'app_hdr_app_crm',
+		isGlobalResource: false,
+		name: 'app_app_crm',
+		owner: 'sys_app_crm',
+		nodes: ['node_obj_app_crm_client_list']
+	})
+
 	/* Atlantic Impact */
 	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_ai_staff',
@@ -131,6 +142,17 @@ function initUserType(init: InitDb) {
 		]
 	})
 
+	/* CRM */
+	init.addTrans('sysUserType', {
+		header: 'CRM Admin',
+		name: 'ut_crm_admin',
+		owner: 'sys_app_crm',
+		resources: [
+			{ codeType: 'app', resource: 'app_app_crm' },
+			{ codeType: 'report', resource: 'report_crm_client_detail' }
+		]
+	})
+
 	/* Atlantic Impact */
 	init.addTrans('sysUserType', {
 		header: 'AI-Admin',
@@ -142,7 +164,7 @@ function initUserType(init: InitDb) {
 		]
 	})
 	init.addTrans('sysUserType', {
-		header: 'AI-Staff',
+		header: 'AI-Instructor',
 		name: 'ut_ai_instructor',
 		owner: 'sys_ai_old',
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_ai_instructor' }]
@@ -204,7 +226,6 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_system',
 		defaultSystem: 'sys_system_old',
 		firstName: 'Root',
-		isMobileOnly: false,
 		lastName: 'User',
 		orgs: ['org_system'],
 		owner: 'org_system',
@@ -217,13 +238,19 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_system',
 		defaultSystem: 'sys_system_old',
 		firstName: 'User',
-		isMobileOnly: false,
 		lastName: 'System',
-		orgs: ['org_ai', 'org_moed', 'org_system'],
+		orgs: ['org_ai', 'org_app_crm', 'org_client_app_factory', 'org_moed', 'org_system'],
 		owner: 'org_system',
-		systems: ['sys_ai_old', 'sys_moed_old', 'sys_system_old'],
+		systems: [
+			'sys_ai_old',
+			'sys_app_crm',
+			'sys_client_app_factory',
+			'sys_moed_old',
+			'sys_system_old'
+		],
 		userName: 'user_sys',
 		userTypes: [
+			'ut_crm_admin',
 			'ut_sys_admin_global',
 			'ut_ai_admin',
 			'ut_ai_staff',
@@ -232,12 +259,24 @@ function initUsers(init: InitDb) {
 		]
 	})
 
+	/* App Factory */
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_client_app_factory',
+		defaultSystem: 'sys_client_app_factory',
+		firstName: 'Phyllip',
+		lastName: 'Hall',
+		orgs: ['org_ai', 'org_app_crm', 'org_client_app_factory', 'org_moed', 'org_system'],
+		owner: 'org_client_app_factory',
+		systems: ['sys_ai_old', 'sys_app_crm', 'sys_client_app_factory'],
+		userName: '2487985578',
+		userTypes: ['ut_ai_staff', 'ut_crm_admin']
+	})
+
 	/* Atlantic Impact */
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_ai',
 		defaultSystem: 'sys_ai_old',
 		firstName: 'Anise',
-		isMobileOnly: false,
 		lastName: 'Hayes',
 		orgs: ['org_ai'],
 		owner: 'org_ai',
@@ -245,24 +284,10 @@ function initUsers(init: InitDb) {
 		userName: '2482317505',
 		userTypes: ['ut_ai_staff']
 	})
-
-	init.addTrans('sysUser', {
-		defaultOrg: 'org_ai',
-		defaultSystem: 'sys_ai_old',
-		firstName: 'Phyllip',
-		isMobileOnly: false,
-		lastName: 'Hall',
-		orgs: ['org_ai'],
-		owner: 'org_ai',
-		systems: ['sys_ai_old'],
-		userName: '2487985578',
-		userTypes: ['ut_ai_staff']
-	})
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_ai',
 		defaultSystem: 'sys_ai_old',
 		firstName: 'Erica',
-		isMobileOnly: false,
 		lastName: 'Hicks',
 		orgs: ['org_ai'],
 		owner: 'org_ai',
@@ -274,7 +299,6 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_ai',
 		defaultSystem: 'sys_ai_old',
 		firstName: 'Matthew',
-		isMobileOnly: false,
 		lastName: 'Clayton',
 		orgs: ['org_ai'],
 		owner: 'org_ai',
@@ -286,7 +310,6 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_ai',
 		defaultSystem: 'sys_ai_old',
 		firstName: 'Nico',
-		isMobileOnly: false,
 		lastName: 'Tanzini',
 		orgs: ['org_ai'],
 		owner: 'org_ai',
@@ -300,7 +323,6 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_moed',
 		defaultSystem: 'sys_moed_old',
 		firstName: 'Burlinton',
-		isMobileOnly: false,
 		lastName: 'Stone',
 		orgs: ['org_moed'],
 		owner: 'org_moed',
@@ -313,7 +335,6 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_moed',
 		defaultSystem: 'sys_moed_old',
 		firstName: 'Omari',
-		isMobileOnly: true,
 		lastName: 'Jackson',
 		orgs: ['org_moed'],
 		owner: 'org_moed',
@@ -326,7 +347,6 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_moed',
 		defaultSystem: 'sys_moed_old',
 		firstName: 'Tyshell',
-		isMobileOnly: false,
 		lastName: 'Oliver',
 		orgs: ['org_moed'],
 		owner: 'org_moed',
@@ -339,7 +359,6 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_moed',
 		defaultSystem: 'sys_moed_old',
 		firstName: 'Travis',
-		isMobileOnly: false,
 		lastName: 'Williams',
 		orgs: ['org_moed'],
 		owner: 'org_moed',
@@ -352,7 +371,6 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_moed',
 		defaultSystem: 'sys_moed_old',
 		firstName: 'Tynesha',
-		isMobileOnly: false,
 		lastName: 'Wilson',
 		orgs: ['org_moed'],
 		owner: 'org_moed',

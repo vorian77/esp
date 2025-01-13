@@ -272,7 +272,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysSystem'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
-		exprFilter: '.id IN (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).systems.id',
+		exprFilter: '.id IN <user,uuidlist,systemIds>',
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		name: 'il_sys_system_by_user',
 		owner: 'sys_system_old',

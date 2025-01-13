@@ -11,6 +11,7 @@ import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 import { getReportUser } from '$routes/api/dbEdge/types.dbEdge'
 import { error } from '@sveltejs/kit'
+import { is } from '$db/esdl/edgeql-js'
 
 const FILENAME = '$routes/api/dbEdge/dbEdgeProcessDynDOReportRender.ts'
 let fName = (functionName: string) => {
@@ -81,8 +82,8 @@ export async function dynDOReportRender(
 			_codeDataType: repEl._codeDataType || repEl._column?._codeDataType,
 			header: repEl.header || repEl._column?.header,
 			indexTable: repEl.indexTable,
+			isFormTag: false,
 			isMultiSelect: false,
-			isNonData: false,
 			name: repEl._column?.name || getFieldColumnCustomName(repEl._codeDataType)
 		}
 	}

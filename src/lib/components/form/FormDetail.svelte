@@ -114,8 +114,7 @@
 >
 	<div class="sm:hidden flex flex-col sm:grow overflow-y-auto">
 		{#each dataObj.fields as field, fieldIdx}
-			{@const nonData = field.colDO.colDB.isNonData && !field.fieldElement.startsWith('custom')}
-			{@const display = field.fieldAccess !== FieldAccess.hidden && !nonData}
+			{@const display = field.fieldAccess !== FieldAccess.hidden && !field.colDO.colDB.isFormTag}
 			{@const elementParms = { ...parms, dataObj, field: dataObj.fields[fieldIdx], row: 0 }}
 			{#if display}
 				<FormElement parms={elementParms} />

@@ -44,10 +44,10 @@ export type $SysRepλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "exprFilter": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprObject": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprSort": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "exprWith": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "tables": $.LinkDesc<_sys_core.$SysDataObjTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "elements": $.LinkDesc<$SysRepEl, $.Cardinality.Many, {}, false, false,  false, false>;
   "parms": $.LinkDesc<$SysRepParm, $.Cardinality.Many, {}, false, false,  false, false>;
-  "exprWith": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "<report[is sys_rep::SysRepUser]": $.LinkDesc<$SysRepUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<report": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -90,15 +90,15 @@ const SysRepEl: $.$expr_PathNode<$.TypeSet<$SysRepEl, $.Cardinality.Many>, null>
 export type $SysRepParmλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "codeDataType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "codeFieldElement": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
-  "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "header": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
-  "isMultiSelect": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
-  "name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
-  "orderDefine": $.PropertyDesc<_default.$nonNegative, $.Cardinality.One, false, false, false, false>;
   "fieldListItems": $.LinkDesc<_sys_core.$SysDataObjFieldListItems, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprFilter": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "fieldListItemsParmName": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "header": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "isMultiSelect": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
   "isRequired": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
+  "name": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "orderDefine": $.PropertyDesc<_default.$nonNegative, $.Cardinality.One, false, false, false, false>;
   "<parms[is sys_rep::SysRep]": $.LinkDesc<$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parms[is sys_rep::SysAnalytic]": $.LinkDesc<$SysAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parm[is sys_rep::SysRepUserParm]": $.LinkDesc<$SysRepUserParm, $.Cardinality.Many, {}, false, false,  false, false>;

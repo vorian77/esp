@@ -32,7 +32,6 @@ module sys_user {
   type SysUser extending sys_user::Mgmt {
     required defaultOrg: sys_core::SysOrg;
     required defaultSystem: sys_core::SysSystem;
-    isMobileOnly: bool;
     required multi orgs: sys_core::SysOrg {
       on target delete allow;
     };

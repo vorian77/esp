@@ -32,7 +32,6 @@ export class User {
 	fullName: string = ''
 	id: string
 	initials: string = ''
-	isMobileOnly: boolean
 	lastName: string
 	org: UserOrg
 	orgIds: string[] = []
@@ -60,7 +59,6 @@ export class User {
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
 		this.fullName = strRequired(obj.fullName, clazz, 'fullName')
 		this.id = strRequired(obj.id, clazz, 'id')
-		this.isMobileOnly = booleanOrFalse(obj.isMobileOnly, 'isMobileOnly')
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
 		this.org = new UserOrg(obj.org)
 		this.orgIds = obj.orgs.map((o: any) => o.id)
@@ -159,7 +157,7 @@ export class UserOrg {
 		this.logoMarginRight = required(obj.logoMarginRight, clazz, 'logoMarginRight')
 		this.logoWidth = required(obj.logoWidth, clazz, 'logoWidth')
 		this.name = strRequired(obj.name, clazz, 'name')
-		this.urlLogo = strRequired(obj.file.url, clazz, 'file.url')
+		this.urlLogo = obj.file?.url
 	}
 }
 
@@ -264,7 +262,6 @@ export class UserResourceTask extends UserResource {
 				header: this.header,
 				icon: this.codeIconName,
 				id: this.id,
-				isMobileMode: valueOrDefault(user?.isMobileOnly, false),
 				name: this.name,
 				nodeObjId: this.targetNodeObjId,
 				page: '/home'

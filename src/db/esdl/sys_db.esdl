@@ -8,8 +8,8 @@ module sys_db {
     required isExcludeInsert: bool;
     required isExcludeSelect: bool;
     required isExcludeUpdate: bool;
+    isFormTag: bool;
     required isMultiSelect: bool;
-    required isNonData: bool;
     required isSelfReference: bool;
     matchColumn: str;
     maxLength: default::nonNegative;

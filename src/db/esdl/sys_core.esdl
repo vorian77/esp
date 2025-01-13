@@ -59,6 +59,7 @@ module sys_core {
     file: json;
     logoMarginRight: float64;
     logoWidth: int16;
+    users := .<orgs[is sys_user::SysUser];
     constraint exclusive on (.name);
   }
 

@@ -228,7 +228,6 @@ export class State {
 		token: TokenAppDataObjName
 	) {
 		this.changeProperties({
-			// cardinality: DataObjCardinality.detail,
 			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutHeader: {
 				isDataObj: true,

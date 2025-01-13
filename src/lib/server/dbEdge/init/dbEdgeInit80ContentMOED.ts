@@ -1,5 +1,5 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
-import { moedDataParticipant } from '$utils/utils.randomDataGenerator'
+import { moedDataApplicant } from '$utils/utils.randomDataGenerator'
 
 // export function initContentMOEDStudent(init: InitDb) {
 // 	initDemoData()
@@ -22,8 +22,8 @@ export function initContentMOEDStudent(init: InitDb) {
 
 	// demo data
 	initDemoData()
-	initParticipants(init)
-	initParticipantServiceFlows(init)
+	initApplicants(init)
+	initApplicipantServiceFlows(init)
 	initParticipantDataDoc(init)
 	initParticipantDataMsg(init)
 	initParticipantData(init)
@@ -39,10 +39,10 @@ function initStudent(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: `.owner.id in <user,uuidlist,systemIds>`,
-		header: 'Participants',
+		header: 'Applicants',
 		name: 'data_obj_moed_part_list',
 		owner: 'sys_moed_old',
-		subHeader: 'Participants who have self-enrolled.',
+		subHeader: 'Applicants who have self-enrolled.',
 		tables: [
 			{ index: 0, table: 'MoedParticipant' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -124,7 +124,7 @@ function initStudent(init: InitDb) {
 		actionFieldGroup: 'doag_detail',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		header: 'Participant',
+		header: 'Applicant',
 		name: 'data_obj_moed_part_detail',
 		owner: 'sys_moed_old',
 		tables: [
@@ -424,7 +424,7 @@ function initStudent(init: InitDb) {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
 		dataObj: 'data_obj_moed_part_list',
-		header: 'Participants',
+		header: 'Applicants',
 		name: 'node_obj_moed_part_list',
 		orderDefine: 10,
 		owner: 'sys_moed_old'
@@ -433,7 +433,7 @@ function initStudent(init: InitDb) {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_moed_part_detail',
-		header: 'Participant',
+		header: 'Applicant',
 		name: 'node_obj_moed_part_detail',
 		orderDefine: 10,
 		owner: 'sys_moed_old',
@@ -2340,24 +2340,24 @@ function initSubjects(init: InitDb) {
 }
 
 function initDemoData() {
-	moedDataParticipant.setData()
-	console.log('moedDataParticipant.data.rows:', moedDataParticipant.data.length)
+	moedDataApplicant.setData()
+	console.log('moedDataParticipant.data.rows:', moedDataApplicant.data.length)
 }
 
-function initParticipants(init: InitDb) {
-	init.addTrans('MoedPBulkPart', moedDataParticipant.data['participant'])
+function initApplicants(init: InitDb) {
+	init.addTrans('MoedPBulkPart', moedDataApplicant.data['applicant'])
 }
 
-function initParticipantServiceFlows(init: InitDb) {
-	init.addTrans('MoedBulkCsf', moedDataParticipant.data['serviceFlow'])
+function initApplicipantServiceFlows(init: InitDb) {
+	init.addTrans('MoedBulkCsf', moedDataApplicant.data['serviceFlow'])
 }
 
 function initParticipantDataDoc(init: InitDb) {
-	init.addTrans('MoedBulkDataDoc', moedDataParticipant.data['dataDoc'])
+	init.addTrans('MoedBulkDataDoc', moedDataApplicant.data['dataDoc'])
 }
 
 function initParticipantDataMsg(init: InitDb) {
-	init.addTrans('MoedBulkDataMsg', moedDataParticipant.data['dataMsg'])
+	init.addTrans('MoedBulkDataMsg', moedDataApplicant.data['dataMsg'])
 }
 
 function initParticipantData(init: InitDb) {

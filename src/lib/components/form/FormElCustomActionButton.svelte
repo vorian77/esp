@@ -18,7 +18,6 @@
 	let field = $derived(parms.field) as FieldCustomActionButton
 
 	async function action() {
-		// if (dashboardReset) dashboardReset()
 		const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
 		await enhancement(sm, field, dataRecord)
 	}

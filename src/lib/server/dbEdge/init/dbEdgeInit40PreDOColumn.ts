@@ -833,7 +833,6 @@ export function initPreColumn(init: InitDb) {
 		isExcludeInsert: true,
 		isExcludeSelect: true,
 		isExcludeUpdate: true,
-		isNonData: true,
 		name: 'custom_element'
 	})
 	init.addTrans('sysColumn', {
@@ -904,7 +903,7 @@ export function initPreColumn(init: InitDb) {
 		isExcludeInsert: true,
 		isExcludeSelect: true,
 		isExcludeUpdate: true,
-		isNonData: true,
+		isFormTag: true,
 		name: 'custom_row_end'
 	})
 	init.addTrans('sysColumn', {
@@ -914,7 +913,7 @@ export function initPreColumn(init: InitDb) {
 		isExcludeInsert: true,
 		isExcludeSelect: true,
 		isExcludeUpdate: true,
-		isNonData: true,
+		isFormTag: true,
 		name: 'custom_row_start'
 	})
 	init.addTrans('sysColumn', {
@@ -924,7 +923,7 @@ export function initPreColumn(init: InitDb) {
 		isExcludeInsert: true,
 		isExcludeSelect: true,
 		isExcludeUpdate: true,
-		isNonData: true,
+		isFormTag: true,
 		name: 'custom_section_end'
 	})
 	init.addTrans('sysColumn', {
@@ -934,7 +933,7 @@ export function initPreColumn(init: InitDb) {
 		isExcludeInsert: true,
 		isExcludeSelect: true,
 		isExcludeUpdate: true,
-		isNonData: true,
+		isFormTag: true,
 		name: 'custom_section_start'
 	})
 
@@ -1541,6 +1540,12 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
+		header: 'Form Tag',
+		name: 'isFormTag'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
 		header: 'Global Resource',
 		name: 'isGlobalResource'
 	})
@@ -1583,20 +1588,8 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
-		header: 'Mobile Only',
-		name: 'isMobileOnly'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'bool',
 		header: 'Multiple Select',
 		name: 'isMultiSelect'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'bool',
-		header: 'Non-Data',
-		name: 'isNonData'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1628,6 +1621,7 @@ export function initPreColumn(init: InitDb) {
 		header: 'Is Table Extension',
 		name: 'isTableExtension'
 	})
+
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
@@ -1932,9 +1926,9 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
-		header: 'Participant',
+		header: 'Applicant',
 		isMultiSelect: false,
-		name: 'participant'
+		name: 'applicant'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -2197,7 +2191,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
-		header: 'Mobile Phone Number',
+		header: 'User Name',
 		name: 'userName'
 	})
 	init.addTrans('sysColumn', {

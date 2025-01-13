@@ -73,10 +73,7 @@ export class NavMenuData {
 			this.sm.user.resources_sys_task_default
 				.filter(
 					(r) =>
-						r.isShow &&
-						!this.sm.user?.isMobileOnly &&
-						!r.codeStatusObjName &&
-						r.codeRenderType !== UserResourceTaskRenderType.page
+						r.isShow && !r.codeStatusObjName && r.codeRenderType !== UserResourceTaskRenderType.page
 				)
 				.forEach((r) => {
 					itemGroupTasks.addItem({

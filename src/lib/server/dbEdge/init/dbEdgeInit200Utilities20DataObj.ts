@@ -178,21 +178,28 @@ export async function addDataObj(data: any) {
 						codeAccess: e.select(
 							e.sys_core.getCode(
 								'ct_sys_do_field_access',
-								e.op(
-									e.cast(e.str, e.json_get(f, 'codeAccess')),
-									'if',
-									e.op('exists', e.cast(e.str, e.json_get(f, 'codeAccess'))),
-									'else',
-									e.op(
-										'required',
-										'if',
-										e.op('exists', e.cast(e.int16, e.json_get(f, 'orderDisplay'))),
-										'else',
-										e.cast(e.str, e.json_get(f, 'codeAccess'))
-									)
-								)
+								e.cast(e.str, e.json_get(f, 'codeAccess'))
 							)
 						),
+
+						// codeAccess: e.select(
+						// 	e.sys_core.getCode(
+						// 		'ct_sys_do_field_access',
+						// 		e.op(
+						// 			e.cast(e.str, e.json_get(f, 'codeAccess')),
+						// 			'if',
+						// 			e.op('exists', e.cast(e.str, e.json_get(f, 'codeAccess'))),
+						// 			'else',
+						// 			e.op(
+						// 				'required',
+						// 				'if',
+						// 				e.op('exists', e.cast(e.int16, e.json_get(f, 'orderDisplay'))),
+						// 				'else',
+						// 				e.cast(e.str, e.json_get(f, 'codeAccess'))
+						// 			)
+						// 		)
+						// 	)
+						// ),
 
 						codeAlignmentAlt: e.sys_core.getCode(
 							'ct_db_col_alignment',
@@ -330,11 +337,9 @@ export async function addDataObj(data: any) {
 							e.sys_db.getColumn(e.cast(e.str, e.json_get(t, 'columnParent')))
 						),
 						columnsId: e.assert_distinct(
-							e.set(
-								e.for(e.array_unpack(e.cast(e.array(e.str), e.json_get(t, 'columnsId'))), (c) => {
-									return e.select(e.sys_db.getColumn(c))
-								})
-							)
+							e.for(e.array_unpack(e.cast(e.array(e.str), e.json_get(t, 'columnsId'))), (c) => {
+								return e.select(e.sys_db.getColumn(c))
+							})
 						),
 						createdBy: CREATOR,
 						exprFilterUpdate: e.cast(e.str, e.json_get(t, 'exprFilterUpdate')),
@@ -366,16 +371,14 @@ export async function addDataObjActionFieldGroup(data: any) {
 		(p) => {
 			return e.insert(e.sys_core.SysDataObjActionFieldGroup, {
 				actionFieldItems: e.assert_distinct(
-					e.set(
-						e.for(e.json_array_unpack(p.actionFieldItems), (a) => {
-							return e.insert(e.sys_core.SysDataObjActionFieldGroupItem, {
-								createdBy: CREATOR,
-								action: e.select(e.sys_core.getDataObjActionField(e.cast(e.str, a[0]))),
-								modifiedBy: CREATOR,
-								orderDefine: e.cast(e.int16, a[1])
-							})
+					e.for(e.json_array_unpack(p.actionFieldItems), (a) => {
+						return e.insert(e.sys_core.SysDataObjActionFieldGroupItem, {
+							createdBy: CREATOR,
+							action: e.select(e.sys_core.getDataObjActionField(e.cast(e.str, a[0]))),
+							modifiedBy: CREATOR,
+							orderDefine: e.cast(e.int16, a[1])
 						})
-					)
+					})
 				),
 				createdBy: CREATOR,
 				modifiedBy: CREATOR,

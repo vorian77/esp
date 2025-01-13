@@ -104,7 +104,8 @@ export class Field {
 	}
 
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel): Validation {
-		if (this.colDO.colDB.isNonData) {
+		// only validate displayable fields
+		if (!this.colDO.isDisplay) {
 			return this.getValuationValid()
 		}
 
@@ -138,6 +139,7 @@ export class Field {
 export enum FieldAccess {
 	readonly = 'readonly',
 	hidden = 'hidden',
+	none = 'none',
 	optional = 'optional',
 	required = 'required',
 	shell = 'shell'

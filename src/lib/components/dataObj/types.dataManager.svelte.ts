@@ -272,8 +272,7 @@ export class DataManagerNode {
 			this.dataObj.fields.forEach((f) => {
 				if (
 					([FieldClassType.parm, FieldClassType.regular].includes(f.classType) &&
-						[FieldAccess.optional, FieldAccess.required].includes(f.fieldAccess) &&
-						!f.colDO.colDB.isNonData) ||
+						[FieldAccess.optional, FieldAccess.required].includes(f.fieldAccess)) ||
 					f.colDO.propName === this.dataObj.raw.listReorderColumn
 				) {
 					newStatus.update(this.getStatusField(recordId, f))

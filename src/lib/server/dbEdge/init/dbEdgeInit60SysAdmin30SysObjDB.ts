@@ -187,7 +187,7 @@ function initColumn(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'toggle',
-				columnName: 'isNonData',
+				columnName: 'isFormTag',
 				exprPreset: `(SELECT false)`,
 				indexTable: 0,
 				isDisplayable: true,

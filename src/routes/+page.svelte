@@ -1,101 +1,109 @@
 <script lang="ts">
-	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
-	import { ContextKey, userSetId } from '$utils/types'
-	import { State, StateTarget } from '$comps/app/types.appState.svelte'
-	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
-	import { TokenApiQueryType, TokenAppDataObjName } from '$utils/types.token'
-	import { setContext } from 'svelte'
+	import srcLogo from '$assets/org_logo_sys.png'
+	import srcExFormList from '$assets/ex_form_list.png'
+	import { ArrowRight } from 'lucide-svelte'
+	import { goto } from '$app/navigation'
+	import { DataObjData, type DataRecord, ParmsValuesType, ResponseBody } from '$utils/types'
+	import { apiFetch, ApiFunction } from '$routes/api/api'
+	import { TokenApiQueryData } from '$utils/types.token'
 
-	const FILENAME = 'routes/+page.svelte'
+	let prospectEmail = $state('')
 
-	let { data }: { data: PageData } = $props()
+	async function processEmail() {
+		if (prospectEmail.includes('@')) {
+			await saveEmail(prospectEmail)
+			alert(
+				"Thanks for joining The App Factory email list! We'll send you more information as we get closer to launch."
+			)
+			prospectEmail = ''
+		} else {
+			alert('Please enter a valid email address.')
+		}
+	}
 
-	const storeDrawer = getDrawerStore()
-	const storeToast = getToastStore()
-	const DEV_MODE = data.environ === 'dev'
+	async function saveEmail(email: string) {
+		let expr = `INSERT app_crm::CrmClient { 
+			createdBy := sys_user::getRootUser(),
+			email := '${email}',
+			modifiedBy := sys_user::getRootUser(),
+			name := '${email}',
+			owner := sys_core::getSystemPrime('sys_client_app_factory'),
+		}`
+		const dataTab = new DataObjData()
+		dataTab.parms.valueSet(ParmsValuesType.dbExpr, expr)
 
-	const sm = new State({
-		storeDrawer,
-		storeToast,
-		target: StateTarget.feature
-	})
-	setContext(ContextKey.stateManager, sm)
-
-	let pageCurrent = $state('')
-
-	async function expressLogin() {
-		const userSys = '0b3ba76c-c0f4-11ee-9b77-8f017aab6306'
-		const userPhyllipHall = '129d4a42-c0f4-11ee-9b77-bf2d11e31679'
-		await userSetId(userSys)
+		const result: ResponseBody = await apiFetch(
+			ApiFunction.dbEdgeProcessExpression,
+			new TokenApiQueryData({ dataTab })
+		)
+		if (result.success) {
+			return result.data
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'saveEmail',
+				message: `Error saving email: ${email}`
+			})
+		}
 	}
 </script>
 
-<div id="full-screen">
-	<div class="content">
-		<div class="flex gap-4">
-			<button
-				type="button"
-				class="btn btn-action variant-filled-primary w-full"
-				onclick={async () =>
-					await sm.openDrawerDataObj(
-						'auth',
-						'bottom',
-						'h-[60%]',
-						undefined,
-						new TokenAppDataObjName({
-							dataObjName: 'data_obj_auth_login',
-							queryType: TokenApiQueryType.preset
-						})
-					)}
-			>
+<div class="bg-white h-full">
+	<header class="shadow-xs flex justify-between border-b py-2">
+		<img class="ml-4 h-16" src={srcLogo} alt="The App Factory" />
+		<div class="flex items-center justify-end">
+			<button class="btn text-white variant-filled-primary mr-4" onclick={goto('/auth/login')}>
 				Log in
 			</button>
-
-			<button
-				type="button"
-				class="btn btn-action variant-filled-primary w-full"
-				onclick={async () =>
-					await sm.openDrawerDataObj(
-						'auth',
-						'bottom',
-						'h-[60%]',
-						undefined,
-						new TokenAppDataObjName({
-							dataObjName: 'data_obj_auth_signup',
-							queryType: TokenApiQueryType.preset
-						})
-					)}
-			>
+			<button class="btn variant-ringed-primary mr-4" onclick={goto('/auth/signup')}>
 				Sign up
 			</button>
-
-			{#if DEV_MODE}
-				<button
-					type="button"
-					class="btn btn-action variant-filled-secondary w-full"
-					onclick={expressLogin}
-				>
-					Dev Login
-				</button>
-			{/if}
 		</div>
+	</header>
+
+	<div
+		class="py-4 px-4 md:px-20 flex flex-col items-center md:flex-row gap-10 border-0 border-green-400"
+	>
+		<div class="flex flex-col border-0 border-red-400">
+			<p class="text-3xl font-bold mb-2">
+				The App Factory makes enterprise-class data management affordable
+			</p>
+			<div class="flex flex-col gap-4 text-lg text-gray-500">
+				<p>
+					Our first of its kind "application compiler" allows us to build robust and secure data
+					management systems, customized for each user role in your organization with little or no
+					traditional programming.
+				</p>
+				<p>
+					We charge a moderate monthly fee per user per month ($75 for most users, $125 for
+					managers, system administrators, and data analysts), with startup in days rather than
+					months, generally for about $10k.
+				</p>
+				<p>We're launching publicly this fall! Join our email list for more information.</p>
+			</div>
+			<div
+				class="w-full flex flex-row justify-between text-sm border border-neutral-300 rounded-xl p-2 mt-6"
+			>
+				<input
+					class="grow border-0"
+					type="email"
+					bind:value={prospectEmail}
+					placeholder="Your email address"
+				/>
+				<div class="flex items-center ml-2">
+					<button
+						class="btn text-white bg-orange-500 hover:bg-orange-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 mr-2"
+						onclick={() => processEmail()}
+					>
+						Learn more
+						<div class="mt-0 ml-2">
+							<ArrowRight clazz="mb-4" size="18" />
+						</div>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<img class="md:w-[55%] p-1 border" src={srcExFormList} alt="Example list form" />
 	</div>
 </div>
-
-<style>
-	#full-screen {
-		height: 100vh;
-		overflow: hidden; /* Hide scrollbars */
-		background-color: whitesmoke;
-		background-image: url('$assets/moed2.jpg');
-		background-size: cover;
-	}
-
-	.content {
-		position: fixed;
-		top: 85%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 90%;
-	}
-</style>

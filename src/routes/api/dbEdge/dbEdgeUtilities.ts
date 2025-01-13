@@ -236,8 +236,8 @@ export async function getDataObjById(token: TokenApiId) {
 					exprStorageKey: true,
 					header: true,
 					headerSide: true,
+					isFormTag: true,
 					isMultiSelect: true,
-					isNonData: true,
 					matchColumn: true,
 					maxLength: true,
 					maxValue: true,
@@ -582,7 +582,6 @@ export async function getUserByUserId(token: TokenApiUserId) {
 		firstName: u.person.firstName,
 		fullName: u.person.fullName,
 		id: true,
-		isMobileOnly: true,
 		lastName: u.person.lastName,
 		org: e.select(e.sys_core.SysOrg, (o) => ({
 			appName: true,

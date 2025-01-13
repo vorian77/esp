@@ -16,18 +16,11 @@
 	let prefix = $derived(field.prefix ? field.prefix + ' ' : '')
 
 	async function action() {
-		alert('customLink')
-		goto('/')
-		// const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
-		// await enhancement(sm, field, dataRecord)
+		const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
+		await enhancement(sm, field, dataRecord)
 	}
 </script>
 
-<!-- <a href="/" class="btn btn-action w-full text-sm">
-	<p>{prefix}<span class="text-blue-500">{field.colDO.label}</span></p>
-</a>
- -->
-
-<div class="btn btn-action w-full text-sm" onclick={() => goto('/')}>
+<div class="btn btn-action w-full text-sm" onclick={() => action()}>
 	<p>{prefix}<span class="text-blue-500">{field.colDO.label}</span></p>
 </div>

@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State, StatePacket, StatePacketAction } from '$comps/app/types.appState.svelte'
 import { FieldCustomAction } from '$comps/form/fieldCustom'
 import type { DataRecord, ResponseBody } from '$utils/types'
 import { userSetId } from '$utils/types'
@@ -27,13 +27,14 @@ export default async function action(sm: State, field: FieldCustomAction, data: 
 
 	switch (type) {
 		case 'page':
-			await sm.openDrawerDataObj(
-				'auth',
-				'bottom',
-				'h-[60%]',
-				undefined,
-				new TokenAppDataObjName({ dataObjName: value, queryType: TokenApiQueryType.preset })
-			)
+			// await sm.openDrawerDataObj(
+			// 	'auth',
+			// 	'bottom',
+			// 	'h-[60%]',
+			// 	undefined,
+			// 	new TokenAppDataObjName({ dataObjName: value, queryType: TokenApiQueryType.preset })
+			// )
+			await changeDataObj(sm, value)
 			break
 
 		case 'resend_code':
@@ -52,16 +53,7 @@ export default async function action(sm: State, field: FieldCustomAction, data: 
 					verifyFrom = value
 					verifyData = data
 					await sendCode(data['userName'])
-					await sm.openDrawerDataObj(
-						'auth',
-						'bottom',
-						'h-[60%]',
-						undefined,
-						new TokenAppDataObjName({
-							dataObjName: 'data_obj_auth_verify_phone_mobile',
-							queryType: TokenApiQueryType.preset
-						})
-					)
+					await changeDataObj(sm, 'data_obj_auth_verify_phone_mobile')
 					break
 
 				case 'data_obj_auth_verify_phone_mobile':
@@ -70,7 +62,6 @@ export default async function action(sm: State, field: FieldCustomAction, data: 
 						alert('The security code you entered is not correct. Please try again.')
 						return
 					}
-					// state.openToast(ToastType.success, 'Your account has been updated!')
 					await processDataObj(verifyFrom, verifyData)
 					break
 
@@ -143,16 +134,7 @@ export default async function action(sm: State, field: FieldCustomAction, data: 
 					verifyFrom = 'data_obj_auth_signup_update'
 					verifyData = data
 					await sendCode(data['userName'])
-					await sm.openDrawerDataObj(
-						'auth',
-						'bottom',
-						'h-[60%]',
-						undefined,
-						new TokenAppDataObjName({
-							dataObjName: 'data_obj_auth_verify_phone_mobile',
-							queryType: TokenApiQueryType.preset
-						})
-					)
+					await changeDataObj(sm, 'data_obj_auth_verify_phone_mobile')
 				}
 				break
 
@@ -165,18 +147,28 @@ export default async function action(sm: State, field: FieldCustomAction, data: 
 		}
 	}
 }
+async function changeDataObj(sm: State, dataObjName: string) {
+	sm.changeProperties({
+		packet: new StatePacket({
+			action: StatePacketAction.doOpen,
+			token: new TokenAppDataObjName({
+				dataObjName,
+				queryType: TokenApiQueryType.preset
+			})
+		})
+	})
+}
 
 async function sendCode(phoneMobile: string) {
 	const min = 100000
 	const max = 999999
 	authSecurityCode = Math.floor(Math.random() * (max - min + 1)) + min
 	authSecurityCodePhone = phoneMobile
-	alert(`Security code: ${authSecurityCode}`)
-	// await apiFetch(
-	// 	ApiFunction.sysSendText,
-	// 	new TokenApiSysSendText(
-	// 		phoneMobile,
-	// 		`Mobile phone number verification code: ${authSecurityCode}`
-	// 	)
-	// )
+	await apiFetch(
+		ApiFunction.sysSendText,
+		new TokenApiSysSendText(
+			phoneMobile,
+			`Mobile phone number verification code: ${authSecurityCode}`
+		)
+	)
 }

@@ -70,6 +70,11 @@ export function initPreTable(init: InitDb) {
 	])
 
 	init.addTrans('tablesBulk', [
+		// customer resource ranager
+		['sys_app_crm', 'app_crm', 'CrmClient', true]
+	])
+
+	init.addTrans('tablesBulk', [
 		// Atlantic Impact
 		['sys_ai_old', 'app_cm', 'CmClient', true],
 		['sys_ai_old', 'app_cm', 'CmClientServiceFlow', true],

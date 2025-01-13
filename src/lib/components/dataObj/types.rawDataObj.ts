@@ -144,7 +144,6 @@ export class RawDataObj {
 
 		this.rawPropsDisplay = arrayOfClass(RawDataObjPropDisplay, obj._propsDisplay, this.tables)
 		this.setFirstVisible(this.rawPropsDisplay)
-
 		this.rawPropsSaveInsert = this.initProps(obj._propsSaveInsert)
 		this.rawPropsSaveUpdate = this.initProps(obj._propsSaveUpdate)
 		this.rawPropsSelect = this.initProps(obj._propsSelect)
@@ -480,7 +479,11 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		this.items = arrayOfClass(FieldColumnItem, obj._items)
 		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
-		this.rawFieldAccess = strOptional(obj._codeAccess, clazz, 'rawFieldAccess')
+		this.rawFieldAccess = strRequired(
+			this.colDB.isFormTag ? FieldAccess.none : obj._codeAccess || FieldAccess.required,
+			clazz,
+			'rawFieldAccess'
+		)
 		this.rawFieldAlignmentAlt = strOptional(obj._codeAlignmentAlt, clazz, 'rawFieldAlignmentAlt')
 		this.rawFieldElement = strOptional(obj._codeFieldElement, clazz, 'rawFieldElement')
 		this.width = nbrOptional(obj.width, clazz, 'width')
@@ -488,9 +491,9 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		/* dependent properties */
 		this.isDisplay = booleanOrDefault(
 			this.isDisplayable &&
-				!this.colDB.isNonData &&
+				!(obj.isDisplay === false) &&
 				this.rawFieldAccess !== FieldAccess.hidden &&
-				obj.isDisplay,
+				!this.colDB.isFormTag,
 			true
 		)
 		this.label = override(obj.headerAlt, this.colDB.header, clazz, 'label')
@@ -614,8 +617,8 @@ export class RawDBColumn {
 	exprStorageKey?: string
 	header: string
 	headerSide?: string
+	isFormTag: boolean
 	isMultiSelect: boolean
-	isNonData: boolean
 	matchColumn?: string
 	maxLength?: number
 	maxValue?: number
@@ -645,12 +648,8 @@ export class RawDBColumn {
 		this.exprStorageKey = strOptional(obj.exprStorageKey, clazz, 'exprStorageKey')
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.headerSide = strOptional(obj.headerSide, clazz, 'headerSide')
+		this.isFormTag = booleanOrFalse(obj.isFormTag, clazz)
 		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
-		this.isNonData = booleanRequired(
-			obj.isNonData && !obj.rawFieldElement?.startsWidth('custom'),
-			clazz,
-			'isNonData'
-		)
 		this.matchColumn = strOptional(obj.matchColumn, clazz, 'matchColumn')
 		this.maxLength = nbrOptional(obj.maxLength, clazz, 'maxLength')
 		this.maxValue = nbrOptional(obj.maxValue, clazz, 'maxValue')

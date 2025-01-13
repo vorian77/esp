@@ -21,12 +21,6 @@ export class NodeHeader {
 	type: NodeType
 	constructor(obj: any) {
 		const clazz = 'NodeHeader'
-		if (!(obj.header || obj.label)) {
-			console.log('obj', obj)
-		}
-		if (!obj.name) {
-			console.log('obj', obj)
-		}
 		obj = valueOrDefault(obj, {})
 		this.icon = valueOrDefault(obj._codeIcon, DEFAULT_ICON)
 		this.id = strRequired(obj.id, clazz, 'id')
@@ -40,6 +34,7 @@ export class NodeHeader {
 export class Node extends NodeHeader {
 	dataObjId?: string
 	dataObjIdChild?: string
+	dataObjName?: string
 	isAlwaysRetrieveData: boolean
 	isHideRowManager: boolean
 	isMobileMode: boolean
@@ -50,6 +45,7 @@ export class Node extends NodeHeader {
 		super(obj)
 		this.dataObjId = obj.dataObjId
 		this.dataObjIdChild = obj.dataObjIdChild
+		this.dataObjName = obj.dataObjName
 		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData, 'isAlwaysRetrieveData')
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
 		this.isMobileMode = booleanOrFalse(obj.isMobileMode, 'isHideRowManager')

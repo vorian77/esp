@@ -89,11 +89,9 @@ export async function addReport(data: any) {
 			return e.insert(e.sys_rep.SysRep, {
 				actionFieldGroup: e.select(e.sys_core.getDataObjActionFieldGroup(p.actionFieldGroup)),
 				analytics: e.assert_distinct(
-					e.set(
-						e.for(e.array_unpack(p.analytics), (a) => {
-							return e.select(e.sys_rep.getAnalytic(a))
-						})
-					)
+					e.for(e.array_unpack(p.analytics), (a) => {
+						return e.select(e.sys_rep.getAnalytic(a))
+					})
 				),
 				createdBy: CREATOR,
 				description: p.description,

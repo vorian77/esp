@@ -48,8 +48,8 @@ export class FieldParm extends Field {
 				_codeAlignment: FieldAlignment.left,
 				_codeDataType: getRecordValue(record, 'codeDataType'),
 				header: getRecordValue(record, 'header'),
+				isFormTag: false,
 				isMultiSelect: getRecordValue(record, 'isMultiSelect'),
-				isNonData: false,
 				placeHolder: ''
 			},
 			_hasItems: getRecordValue(record, '_hasItems'),

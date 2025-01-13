@@ -16,7 +16,6 @@ import {
 	valueOrDefault
 } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import {
 	TokenApiDbDataObjSource,
 	TokenApiQuery,

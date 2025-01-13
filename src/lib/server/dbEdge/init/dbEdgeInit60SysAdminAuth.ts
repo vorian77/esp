@@ -68,6 +68,7 @@ function initTaskMyAccount(init: InitDb) {
 			},
 			{
 				columnName: 'userName',
+				headerAlt: 'Mobile Phone Number',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
@@ -227,19 +228,29 @@ function initDataObjLogin(init: InitDb) {
 		],
 		fields: [
 			{
-				codeFieldElement: 'tel',
-				columnName: 'userName',
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: { label: 'Log in' },
 				isDisplayable: true,
 				orderDisplay: 10,
 				orderDefine: 10,
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'textHide',
-				columnName: 'password',
+				codeFieldElement: 'tel',
+				columnName: 'userName',
+				headerAlt: 'Mobile Phone Number',
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'textHide',
+				columnName: 'password',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 0
 			},
 			{
@@ -251,8 +262,8 @@ function initDataObjLogin(init: InitDb) {
 					label: 'Log in'
 				},
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
 			{
@@ -264,8 +275,8 @@ function initDataObjLogin(init: InitDb) {
 					label: 'Forgot Password?'
 				},
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
 			},
 			{
@@ -278,8 +289,8 @@ function initDataObjLogin(init: InitDb) {
 					prefix: 'Need an account?'
 				},
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50
+				orderDisplay: 60,
+				orderDefine: 60
 			}
 		]
 	})
@@ -308,19 +319,29 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 		],
 		fields: [
 			{
-				codeFieldElement: 'tel',
-				columnName: 'userName',
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: { label: 'Reset Password' },
 				isDisplayable: true,
 				orderDisplay: 10,
 				orderDefine: 10,
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'textHide',
-				columnName: 'password',
+				codeFieldElement: 'tel',
+				columnName: 'userName',
+				headerAlt: 'Mobile Phone Number',
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'textHide',
+				columnName: 'password',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
 				headerAlt: 'New Password',
 				indexTable: 0
 			},
@@ -333,8 +354,8 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 					label: 'Confirm Mobile Phone Number'
 				},
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
 			{
@@ -345,8 +366,8 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 					label: `We'll text you to confirm your mobile phone number. Standard rates apply.`
 				},
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
 			}
 		]
@@ -376,19 +397,29 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 		],
 		fields: [
 			{
-				codeFieldElement: 'tel',
-				columnName: 'userName',
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: { label: 'Reset Password' },
 				isDisplayable: true,
 				orderDisplay: 10,
 				orderDefine: 10,
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'textHide',
-				columnName: 'password',
+				codeFieldElement: 'tel',
+				columnName: 'userName',
+				headerAlt: 'Mobile Phone Number',
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'textHide',
+				columnName: 'password',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
 
 				headerAlt: 'New Password',
 				indexTable: 0
@@ -402,8 +433,8 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 					label: 'Confirm Mobile Phone Number'
 				},
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
 			{
@@ -414,8 +445,8 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 					label: `We'll text you to confirm your mobile phone number. Standard rates apply.`
 				},
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
 			},
 			{
@@ -428,8 +459,8 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 					prefix: 'Already have an account?'
 				},
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDisplay: 60,
+				orderDefine: 60,
 				indexTable: 0
 			}
 		]
@@ -450,14 +481,23 @@ function initDataObjVerify(init: InitDb) {
 		],
 		fields: [
 			{
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: { label: 'Verify Mobile Phone Number' },
+				isDisplayable: true,
+				orderDisplay: 10,
+				orderDefine: 10,
+				indexTable: 0
+			},
+			{
 				codeFieldElement: 'customText',
 				columnName: 'custom_element',
 				customElement: {
 					label: `Check your message app for the security code and enter it here.`
 				},
 				isDisplayable: true,
-				orderDisplay: 10,
-				orderDefine: 10,
+				orderDisplay: 20,
+				orderDefine: 20,
 				indexTable: 0
 			},
 			{
@@ -465,8 +505,8 @@ function initDataObjVerify(init: InitDb) {
 				codeFieldElement: 'textHide',
 				columnName: 'authSecurityCode',
 				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 0
 			},
 			{
@@ -478,8 +518,8 @@ function initDataObjVerify(init: InitDb) {
 					label: 'Verify'
 				},
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
 			{
@@ -491,8 +531,8 @@ function initDataObjVerify(init: InitDb) {
 					label: 'Resend Security Code'
 				},
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
 			}
 		]
@@ -510,6 +550,15 @@ function initDataObjSignup(init: InitDb) {
 		table: 'SysUser',
 		fields: [
 			{
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: { label: 'Sign up' },
+				isDisplayable: true,
+				orderDisplay: 10,
+				orderDefine: 10,
+				indexTable: 0
+			},
+			{
 				columnName: 'firstName',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -524,24 +573,25 @@ function initDataObjSignup(init: InitDb) {
 			{
 				codeFieldElement: 'tel',
 				columnName: 'userName',
+				headerAlt: 'Mobile Phone Number',
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60
+				orderDisplay: 40,
+				orderDefine: 40
 			},
 			{
 				codeFieldElement: 'textHide',
 				columnName: 'password',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70
+				orderDisplay: 50,
+				orderDefine: 50
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'userType',
 				headerAlt: 'System',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 60,
+				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_user_type_self_signup',
 				linkTable: 'SysUserType'
@@ -555,8 +605,8 @@ function initDataObjSignup(init: InitDb) {
 					label: 'Sign up'
 				},
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90
+				orderDisplay: 70,
+				orderDefine: 70
 			},
 			{
 				codeFieldElement: 'customText',
@@ -566,8 +616,8 @@ function initDataObjSignup(init: InitDb) {
 					label: `We'll text you to confirm your mobile phone number. Standard rates apply.`
 				},
 				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100
+				orderDisplay: 80,
+				orderDefine: 80
 			},
 			{
 				codeColor: 'blue',
@@ -579,8 +629,8 @@ function initDataObjSignup(init: InitDb) {
 					prefix: 'Already have an account?'
 				},
 				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110
+				orderDisplay: 90,
+				orderDefine: 90
 			}
 		]
 	})
@@ -606,7 +656,6 @@ user := (
     createdBy := 	sys_user::getRootUser(),
     defaultOrg := _userType.owner.owner,
     defaultSystem := _userType.owner,
-    isMobileOnly := true,
     modifiedBy := 	sys_user::getRootUser(),
     orgs := _userType.owner.owner,
     owner := _userType.owner.owner,

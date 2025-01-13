@@ -10,6 +10,8 @@ import { initSysRepUser } from '$server/dbEdge/init/dbEdgeInit60SysAdminRepUser'
 import { initContentAITraining } from '$server/dbEdge/init/dbEdgeInit80ContentAITraining'
 import { initContentAIStudent } from '$server/dbEdge/init/dbEdgeInit80ContentAIStudent'
 import { initContentAIRep } from '$server/dbEdge/init/dbEdgeInit80ContentAIRep'
+import { initContentCrm } from '$server/dbEdge/init/dbEdgeInit80ContentCrm'
+import { initContentCrmRep } from '$server/dbEdge/init/dbEdgeInit80ContentCrmRep'
 import { initContentMOEDStudent } from '$server/dbEdge/init/dbEdgeInit80ContentMOED'
 import { initContentMOEDRep } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDRep'
 
@@ -32,6 +34,10 @@ function dbEdgeInitAll(initDb: InitDb) {
 	initSysAuth(initDb)
 	initSysRepUser(initDb)
 
+	// content - CRM
+	initContentCrm(initDb)
+	initContentCrmRep(initDb)
+
 	// content - Atlantic Impact
 	initContentAITraining(initDb)
 	initContentAIStudent(initDb)
@@ -43,8 +49,9 @@ function dbEdgeInitAll(initDb: InitDb) {
 }
 
 export function initFeature(initDb: InitDb) {
+	initSysAuth(initDb)
 	// initSysRepUser(initDb)
 	// initContentAIRep(initDb)
 	// initContentAIStudent(initDb)
-	initContentMOEDStudent(initDb)
+	// initContentMOEDStudent(initDb)
 }

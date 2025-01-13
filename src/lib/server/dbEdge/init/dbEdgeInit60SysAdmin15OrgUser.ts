@@ -396,7 +396,6 @@ function initSystem(init: InitDb) {
 				linkTable: 'SysOrg'
 			},
 			{
-				codeAccess: 'readOnly',
 				columnName: 'name',
 				isDisplayable: true,
 				orderDisplay: 30,
@@ -497,14 +496,6 @@ function initUser(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				codeFieldElement: 'toggle',
-				columnName: 'isMobileOnly',
-				isDisplayable: true,
-				orderDisplay: 15,
-				orderDefine: 15,
-				indexTable: 0
-			},
-			{
 				codeAccess: 'readOnly',
 				columnName: 'firstName',
 				orderCrumb: 20,
@@ -597,14 +588,6 @@ function initUser(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40
-			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isMobileOnly',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
 			},
 			{
 				columnName: 'firstName',

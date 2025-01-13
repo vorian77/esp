@@ -24,11 +24,9 @@ export async function addApp(data: any) {
 				owner: e.sys_core.getSystemPrime(p.owner),
 				modifiedBy: CREATOR,
 				nodes: e.assert_distinct(
-					e.set(
-						e.for(e.array_unpack(p.nodes), (nodeName) => {
-							return e.sys_core.getNodeObjByName(nodeName)
-						})
-					)
+					e.for(e.array_unpack(p.nodes), (nodeName) => {
+						return e.sys_core.getNodeObjByName(nodeName)
+					})
 				)
 			})
 		}
@@ -353,7 +351,6 @@ export async function addUser(data: any) {
 			defaultOrg: e.str,
 			defaultSystem: e.str,
 			firstName: e.str,
-			isMobileOnly: e.optional(e.bool),
 			lastName: e.str,
 			orgs: e.optional(e.array(e.str)),
 			owner: e.str,
@@ -367,14 +364,11 @@ export async function addUser(data: any) {
 					createdBy: CREATOR,
 					defaultOrg: e.select(e.sys_core.getOrg(p.defaultOrg)),
 					defaultSystem: e.select(e.sys_core.getSystemPrime(p.defaultSystem)),
-					isMobileOnly: valueOrDefaultParm(p.isMobileOnly, false),
 					modifiedBy: CREATOR,
 					orgs: e.assert_distinct(
-						e.set(
-							e.for(e.array_unpack(p.orgs || e.cast(e.array(e.str), e.set())), (org) => {
-								return e.sys_core.getOrg(org)
-							})
-						)
+						e.for(e.array_unpack(p.orgs || e.cast(e.array(e.str), e.set())), (org) => {
+							return e.sys_core.getOrg(org)
+						})
 					),
 					owner: e.select(e.sys_core.getOrg(p.owner)),
 					person: e.insert(e.default.SysPerson, {
@@ -382,32 +376,25 @@ export async function addUser(data: any) {
 						lastName: p.lastName
 					}),
 					systems: e.assert_distinct(
-						e.set(
-							e.for(e.array_unpack(p.systems || e.cast(e.array(e.str), e.set())), (sys) => {
-								return e.sys_core.getSystemPrime(sys)
-							})
-						)
+						e.for(e.array_unpack(p.systems || e.cast(e.array(e.str), e.set())), (sys) => {
+							return e.sys_core.getSystemPrime(sys)
+						})
 					),
 					userName: p.userName,
 					userTypes: e.assert_distinct(
-						e.set(
-							e.for(e.array_unpack(p.userTypes || e.cast(e.array(e.str), e.set())), (ut_parm) => {
-								return e.sys_user.getUserType(ut_parm)
-							})
-						)
+						e.for(e.array_unpack(p.userTypes || e.cast(e.array(e.str), e.set())), (ut_parm) => {
+							return e.sys_user.getUserType(ut_parm)
+						})
 					)
 				})
 				.unlessConflict((user) => ({
 					on: user.userName,
 					else: e.update(user, () => ({
 						set: {
-							isMobileOnly: valueOrDefaultParm(p.isMobileOnly, false),
 							orgs: e.assert_distinct(
-								e.set(
-									e.for(e.array_unpack(p.orgs || e.cast(e.array(e.str), e.set())), (org) => {
-										return e.sys_core.getOrg(org)
-									})
-								)
+								e.for(e.array_unpack(p.orgs || e.cast(e.array(e.str), e.set())), (org) => {
+									return e.sys_core.getOrg(org)
+								})
 							),
 							owner: e.select(e.sys_core.getOrg(p.owner)),
 							person: e.insert(e.default.SysPerson, {
@@ -415,21 +402,14 @@ export async function addUser(data: any) {
 								lastName: p.lastName
 							}),
 							systems: e.assert_distinct(
-								e.set(
-									e.for(e.array_unpack(p.systems || e.cast(e.array(e.str), e.set())), (sys) => {
-										return e.sys_core.getSystemPrime(sys)
-									})
-								)
+								e.for(e.array_unpack(p.systems || e.cast(e.array(e.str), e.set())), (sys) => {
+									return e.sys_core.getSystemPrime(sys)
+								})
 							),
 							userTypes: e.assert_distinct(
-								e.set(
-									e.for(
-										e.array_unpack(p.userTypes || e.cast(e.array(e.str), e.set())),
-										(ut_parm) => {
-											return e.sys_user.getUserType(ut_parm)
-										}
-									)
-								)
+								e.for(e.array_unpack(p.userTypes || e.cast(e.array(e.str), e.set())), (ut_parm) => {
+									return e.sys_user.getUserType(ut_parm)
+								})
 							)
 						}
 					}))

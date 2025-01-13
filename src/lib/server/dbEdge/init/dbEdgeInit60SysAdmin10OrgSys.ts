@@ -1,7 +1,47 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
 export function initAdminOrgSys(init: InitDb) {
+	initFieldListSelectUser(init)
 	initOrg(init)
+}
+
+function initFieldListSelectUser(init: InitDb) {
+	init.addTrans('sysDataObjEmbed', {
+		actionFieldGroup: 'doag_embed_list_select',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeDataObjType: 'embed',
+		exprFilter: 'none',
+		header: 'Select Users',
+		name: 'dofls_sys_user_org_sys',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysUser' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'userName',
+				orderCrumb: 10,
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			}
+		]
+	})
+	init.addTrans('sysDataObjFieldEmbedListSelect', {
+		actionFieldGroupModal: 'doag_dialog_footer_list',
+		btnLabelComplete: 'Select User(s)',
+		dataObjList: 'dofls_sys_user_org_sys',
+		name: 'fels_sys_user_org_sys',
+		owner: 'sys_system_old'
+	})
 }
 
 function initOrg(init: InitDb) {
@@ -55,6 +95,18 @@ function initOrg(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'embedListSelect',
+				columnBacklink: 'orgs',
+				columnName: 'users',
+				fieldEmbedListSelect: 'fels_sys_user_org_sys',
+				indexTable: 0,
+				isDisplayable: true,
+				linkTable: 'SysUser',
+				orderDisplay: 30,
+				orderDefine: 30
 			},
 
 			/* management */
