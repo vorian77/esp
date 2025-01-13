@@ -48,9 +48,9 @@
 	}
 </script>
 
-<div class="bg-white h-full">
+<div class="bg-white h-full overflow-y-auto">
 	<header class="shadow-xs flex justify-between border-b py-2">
-		<img class="ml-4 h-16" src={srcLogo} alt="The App Factory" />
+		<img class="ml-4 h-14 sm:h-16" src={srcLogo} alt="The App Factory" />
 		<div class="flex items-center justify-end">
 			<button class="btn text-white variant-filled-primary mr-4" onclick={goto('/auth/login')}>
 				Log in
@@ -62,7 +62,7 @@
 	</header>
 
 	<div
-		class="py-4 px-4 md:px-20 flex flex-col items-center md:flex-row gap-10 border-0 border-green-400"
+		class="py-4 px-6 md:px-20 flex flex-col items-center md:flex-row gap-10 border-0 border-green-400"
 	>
 		<div class="flex flex-col border-0 border-red-400">
 			<p class="text-3xl font-bold mb-2">
@@ -75,11 +75,16 @@
 					traditional programming.
 				</p>
 				<p>
-					We charge a moderate monthly fee per user per month ($75 for most users, $125 for
-					managers, system administrators, and data analysts), with startup in days rather than
-					months, generally for about $10k.
+					We get you up and running, including migrating your existing apps and data, in weeks
+					rather than months - generally for about $10k.
 				</p>
-				<p>We're launching publicly this fall! Join our email list for more information.</p>
+				<p>
+					We charge a moderate monthly fee per user per month - $75 for most users, and $125 for
+					managers, system administrators, and data analysts with discounts available for volume
+					installations.
+				</p>
+				<p>We're launching publicly this fall!</p>
+				<p>Join our email list for more information.</p>
 			</div>
 			<div
 				class="w-full flex flex-row justify-between text-sm border border-neutral-300 rounded-xl p-2 mt-6"
