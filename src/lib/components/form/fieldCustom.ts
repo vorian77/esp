@@ -1,11 +1,6 @@
 import { Field, FieldAccess, FieldColor, PropsFieldCreate } from '$comps/form/field'
-import { CodeAction, memberOfEnum, required, strRequired, valueOrDefault } from '$utils/types'
-import {
-	PropNamePrefixType,
-	RawDataObjPropDisplay,
-	RawDataObjPropDisplayCustom
-} from '$comps/dataObj/types.rawDataObj'
-import { getEnhancement } from '$enhance/actions/_actions'
+import { CodeAction, required, strRequired, valueOrDefault } from '$utils/types'
+import { PropNamePrefixType, RawDataObjPropDisplayCustom } from '$comps/dataObj/types.rawDataObj'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/form/fieldCustom.ts'
@@ -28,7 +23,7 @@ export class FieldCustom extends Field {
 }
 
 export class FieldCustomAction extends FieldCustom {
-	action: CodeAction
+	codeAction: CodeAction
 	enhancement: Function | undefined
 	method: string
 	type: string
@@ -36,17 +31,18 @@ export class FieldCustomAction extends FieldCustom {
 	constructor(props: PropsFieldCreate) {
 		const clazz = 'FieldCustomAction'
 		super(props)
-		const customCol = required(
+		const customCol: RawDataObjPropDisplayCustom = required(
 			props.propRaw.customCol,
 			clazz,
 			'customCol'
-		) as RawDataObjPropDisplayCustom
+		)
+		this.codeAction = required(customCol.codeAction, clazz, 'codeAction')
 		this.method = strRequired(customCol.customColActionMethod, clazz, 'method').toLowerCase()
 		this.type = strRequired(customCol.customColActionType, clazz, 'type').toLowerCase()
 		this.value = valueOrDefault(customCol.customColActionValue, '')
 	}
 	async initEnhancement() {
-		this.enhancement = await getEnhancement(this.method)
+		// this.enhancement = await getEnhancement(this.method)
 	}
 }
 

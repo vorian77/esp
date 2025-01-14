@@ -498,6 +498,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 	}
 }
 export class RawDataObjPropDisplayCustom {
+	codeAction?: CodeAction
 	customColActionMethod?: string
 	customColActionType?: string
 	customColActionValue?: string
@@ -513,6 +514,7 @@ export class RawDataObjPropDisplayCustom {
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjPropDisplayCustom'
+		this.codeAction = classOptional(CodeAction, obj._codeAction)
 		this.customColActionMethod = strOptional(
 			obj.customColActionMethod,
 			clazz,

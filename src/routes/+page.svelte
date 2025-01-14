@@ -75,13 +75,19 @@
 					traditional programming.
 				</p>
 				<p>
-					We get you up and running, including migrating your existing apps and data, in weeks
-					rather than months - generally for about $10k.
+					We provide you with a customized solution that supports your exact business processes and
+					includes enterprise-class data management features such as integrated reporting and data
+					analytics, organizational OKRs, and AI agents, all while maintaining the implementation
+					timeline and costs of an off-the-shelf product.
 				</p>
 				<p>
-					We charge a moderate monthly fee per user per month - $75 for most users, and $125 for
+					We get you up and running, including migrating your existing data, in weeks rather than
+					months - generally for about $10k.
+				</p>
+				<p>
+					We charge a moderate monthly fee per user per month - $75 for most users, $125 for
 					managers, system administrators, and data analysts with discounts available for volume
-					installations.
+					implementations.
 				</p>
 				<p>We're launching publicly this fall!</p>
 				<p>Join our email list for more information.</p>

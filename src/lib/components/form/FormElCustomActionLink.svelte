@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { ContextKey, DataManager, type DataRecord, required } from '$utils/types'
 	import { getContext } from 'svelte'
+	import { State, StateCodeActionTrigger } from '$comps/app/types.appState.svelte'
 	import { FieldCustomActionLink } from '$comps/form/fieldCustom'
 	import { goto } from '$app/navigation'
-	import { type FCodeActionState } from '$comps/app/types.appStateActions'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/form/FormElCustomActionLink.svelte'
@@ -17,8 +17,12 @@
 	let prefix = $derived(field.prefix ? field.prefix + ' ' : '')
 
 	async function action() {
-		const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
-		await enhancement(sm, field, dataRecord)
+		await sm.triggerCodeAction(
+			new StateCodeActionTrigger(field.codeAction, {
+				dataRecord: $state.snapshot(dataRecord),
+				value: field.value
+			})
+		)
 	}
 </script>
 

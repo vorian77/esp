@@ -39,7 +39,8 @@ import { RawDataObjActionField, RawDataObjParent } from '$comps/dataObj/types.ra
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { booleanOrFalse, ResponseBody, strOptional } from '$utils/types'
-// import { FCodeActionState, fActions } from '$comps/app/types.appStateActions'
+import fActionsClassDoFieldAuth from '$enhance/actions/actionsClassDoFieldAuth'
+import fActionsClassUtils from '$enhance/actions/actionsClassUtils'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/app/types.appState.ts'
@@ -82,7 +83,7 @@ export class State {
 	data?: DataObj
 	dm?: DataManager = new DataManager()
 	dataObjState?: DataObj
-	// fActions: Function = fActions
+	fActions: Record<string, Function> = {}
 	fChangeCallback?: Function
 	layoutComponent: StateLayoutComponent = StateLayoutComponent.layoutContent
 	layoutHeader: StateLayoutHeader = new StateLayoutHeader({})
@@ -100,10 +101,8 @@ export class State {
 	constructor(obj: any) {
 		const clazz = 'State'
 		obj = valueOrDefault(obj, {})
+		this.loadActions()
 		this.changeProperties(obj)
-	}
-	async triggerAction(parms: FCodeActionState) {
-		// return await this.fActions(parms)
 	}
 
 	change(obj: any) {
@@ -162,6 +161,7 @@ export class State {
 	closeModal() {
 		this.storeModal.close()
 	}
+
 	consume(actions: CodeActionType | CodeActionType[]) {
 		if (this.packet && actions.includes(this.packet.actionType)) {
 			const packet = this.packet
@@ -203,6 +203,31 @@ export class State {
 				message: `Error retrieving data object action field group: ${fieldGroupName}`
 			})
 		}
+	}
+
+	loadActions() {
+		for (const key of Object.keys(CodeActionClass)) {
+			switch (key) {
+				case CodeActionClass.ct_sys_code_action_class_do_embed:
+				case CodeActionClass.ct_sys_code_action_class_do_group_item:
+				case CodeActionClass.ct_sys_code_action_class_modal:
+				case CodeActionClass.ct_sys_code_action_class_nav:
+					break
+				case CodeActionClass.ct_sys_code_action_class_do_field_auth:
+					this.fActions[key] = fActionsClassDoFieldAuth
+					break
+				case CodeActionClass.ct_sys_code_action_class_utils:
+					this.fActions[key] = fActionsClassUtils
+					break
+				default:
+					error(500, {
+						file: FILENAME,
+						function: 'load action classes',
+						message: `No case defined for actionClass: ${key}`
+					})
+			}
+		}
+		// console.log('State.loadActions:', this.fActions)
 	}
 
 	newApp() {
@@ -467,6 +492,32 @@ export class State {
 
 	setfChangeCallback(f: Function) {
 		this.fChangeCallback = f
+	}
+
+	async triggerCodeAction(parms: StateCodeActionTrigger) {
+		return await this.fActions[parms.action.actionClass](
+			new StateCodeAction(this, parms.action.actionType, parms.data)
+		)
+	}
+}
+
+export class StateCodeAction {
+	sm: State
+	actionType: CodeActionType
+	data: DataRecord
+	constructor(sm: State, actionType: CodeActionType, data: DataRecord = {}) {
+		this.sm = sm
+		this.actionType = actionType
+		this.data = data
+	}
+}
+
+export class StateCodeActionTrigger {
+	action: CodeAction
+	data: DataRecord
+	constructor(action: CodeAction, data: DataRecord = {}) {
+		this.action = action
+		this.data = data
 	}
 }
 

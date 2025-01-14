@@ -7,6 +7,7 @@
 	import { TokenApiQueryType, TokenAppDataObjName } from '$utils/types.token'
 	import { setContext } from 'svelte'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
+	import { goto } from '$app/navigation'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -60,7 +61,9 @@
 	<div
 		class="w-full h-full sm:h-[70%] sm:w-[50%] md:w-[375px] bg-white border-2 rounded-lg shawdow-2xl p-4 flex flex-col items-center justify-center"
 	>
-		<img class="h-16 mb-4" src={srcLogo} alt="The App Factory" />
+		<button onclick={() => goto('/')}>
+			<img class="h-16 mb-4" src={srcLogo} alt="The App Factory" />
+		</button>
 
 		{#if sm}
 			<RootLayoutApp {sm} />

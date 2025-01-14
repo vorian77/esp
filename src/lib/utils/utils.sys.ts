@@ -31,6 +31,11 @@ export class CodeAction {
 }
 
 export enum CodeActionType {
+	// auth
+	page = 'page',
+	resendCode = 'resendCode',
+	submit = 'submit',
+
 	// dataObj - group item
 	doDetailDelete = 'doDetailDelete',
 	doDetailMigrate = 'doDetailMigrate',
