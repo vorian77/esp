@@ -1,6 +1,7 @@
 import { State } from '$comps/app/types.appState.svelte'
 import { type DataRecord } from '$utils/types'
 import { CodeActionClass, CodeActionType } from '$lib/utils/utils.sys'
+import fActionsClassDoFieldAuth from '$enhance/actions/actionsClassDoFieldAuth'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/app/types.appStateActions.ts'
