@@ -1,13 +1,8 @@
 <script lang="ts">
-	import { ContextKey, required } from '$utils/types'
+	import { CodeAction, ContextKey, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { type AppLevelRowStatus, AppRowActionType } from '$comps/app/types.app.svelte'
-	import {
-		State,
-		StatePacket,
-		StatePacketAction,
-		StateTarget
-	} from '$comps/app/types.appState.svelte'
+	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
 	import { TokenAppDoActionConfirmType, TokenAppRow } from '$utils/types.token'
 	import NavRowAction from '$comps/nav/NavRowAction.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -24,7 +19,7 @@
 		sm.change({
 			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
-				action: StatePacketAction.navRow,
+				action: CodeAction.navRow,
 				token: new TokenAppRow({ rowAction })
 			}),
 			target: StateTarget.feature

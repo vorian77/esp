@@ -3,6 +3,8 @@ import {
 	booleanOrDefault,
 	booleanOrFalse,
 	booleanRequired,
+	CodeAction,
+	CodeActionClass,
 	DataObjCardinality,
 	DataObjSort,
 	DataObjTable,
@@ -24,7 +26,6 @@ import {
 	DBTable,
 	valueOrDefault
 } from '$utils/types'
-import { StatePacketAction } from '$comps/app/types.appState.svelte'
 import {
 	DataObj,
 	DataObjComponent,
@@ -200,8 +201,9 @@ export class RawDataObj {
 export class RawDataObjActionField {
 	actionFieldConfirms: DataObjActionFieldConfirm[]
 	actionFieldShows: DataObjActionFieldShow[]
+	codeAction: CodeAction
+	codeActionClass: CodeActionClass
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
-	codePacketAction: StatePacketAction
 	fieldColor: FieldColor
 	header: string
 	isListRowAction: boolean
@@ -211,19 +213,26 @@ export class RawDataObjActionField {
 		obj = valueOrDefault(obj._action, {})
 		this.actionFieldConfirms = arrayOfClass(DataObjActionFieldConfirm, obj._actionFieldConfirms)
 		this.actionFieldShows = arrayOfClass(DataObjActionFieldShow, obj._actionFieldShows)
+		this.codeAction = memberOfEnum(
+			obj._codeAction.name,
+			clazz,
+			'codeAction',
+			'CodeAction',
+			CodeAction
+		)
+		this.codeActionClass = memberOfEnum(
+			obj._codeAction._class,
+			clazz,
+			'codeActionClass',
+			'CodeActionClass',
+			CodeActionClass
+		)
 		this.codeActionFieldTriggerEnable = memberOfEnum(
 			obj._codeActionFieldTriggerEnable,
 			clazz,
 			'codeActionFieldTriggerEnable',
 			'DataObjActionFieldTriggerEnable',
 			DataObjActionFieldTriggerEnable
-		)
-		this.codePacketAction = memberOfEnum(
-			obj._codePacketAction,
-			clazz,
-			'codePacketAction',
-			'StatePacketAction',
-			StatePacketAction
 		)
 		this.fieldColor = new FieldColor(obj._codeColor, 'blue')
 		this.header = strRequired(obj.header, clazz, 'header')

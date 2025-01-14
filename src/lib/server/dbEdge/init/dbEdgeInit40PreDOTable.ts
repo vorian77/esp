@@ -13,6 +13,7 @@ export function initPreTable(init: InitDb) {
 		['sys_system_old', 'sys_core', 'SysApp', true],
 		['sys_system_old', 'sys_core', 'SysAppHeader', true],
 		['sys_system_old', 'sys_core', 'SysCode', true],
+		['sys_system_old', 'sys_core', 'SysCodeAction', true],
 		['sys_system_old', 'sys_core', 'SysCodeType', true],
 		['sys_system_old', 'sys_core', 'SysDataObj', true],
 		['sys_system_old', 'sys_core', 'SysDataObjActionField', true],

@@ -4,7 +4,6 @@
 		State,
 		StateLayoutComponent,
 		StatePacket,
-		StatePacketAction,
 		StateTarget
 	} from '$comps/app/types.appState.svelte'
 	import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
@@ -22,7 +21,7 @@
 	import { tweened } from 'svelte/motion'
 	import { cubicOut } from 'svelte/easing'
 	import { setContext } from 'svelte'
-	import { ContextKey } from '$utils/utils.sys.svelte'
+	import { ContextKey } from '$utils/utils.sys'
 	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 

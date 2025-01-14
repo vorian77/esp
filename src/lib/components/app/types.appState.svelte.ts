@@ -1,6 +1,7 @@
 import { App } from '$comps/app/types.app.svelte'
 import { required, strRequired, valueOrDefault } from '$utils/utils'
 import {
+	CodeAction,
 	DataManager,
 	DataObj,
 	DataObjConfirm,
@@ -154,7 +155,7 @@ export class State {
 	closeModal() {
 		this.storeModal.close()
 	}
-	consume(actions: StatePacketAction | StatePacketAction[]) {
+	consume(actions: CodeAction | CodeAction[]) {
 		if (this.packet && actions.includes(this.packet.action)) {
 			const packet = this.packet
 			this.packet = undefined
@@ -234,7 +235,7 @@ export class State {
 				isDrawerClose: true
 			},
 			packet: new StatePacket({
-				action: StatePacketAction.doOpen,
+				action: CodeAction.doOpen,
 				token
 			}),
 			target: StateTarget.feature
@@ -290,7 +291,7 @@ export class State {
 				isDataObj: true
 			},
 			packet: new StatePacket({
-				action: StatePacketAction.doOpen,
+				action: CodeAction.doOpen,
 				token: new TokenAppDataObjName({ dataObjName, queryType: TokenApiQueryType.retrieve })
 			})
 		})
@@ -324,7 +325,7 @@ export class State {
 				isRowStatus: true
 			},
 			packet: new StatePacket({
-				action: StatePacketAction.modalEmbed,
+				action: CodeAction.modalEmbed,
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
 						dataObjId: fieldEmbed.dataObjModalId,
@@ -381,7 +382,7 @@ export class State {
 				isDataObj: true
 			},
 			packet: new StatePacket({
-				action: StatePacketAction.modalEmbed,
+				action: CodeAction.modalEmbed,
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
 						dataObjId: fieldEmbed.dataObjListID,
@@ -419,7 +420,7 @@ export class State {
 				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.selectLabel}`
 			},
 			packet: new StatePacket({
-				action: StatePacketAction.modalSelectSurface,
+				action: CodeAction.modalSelectSurface,
 				token
 			}),
 			parmsState
@@ -485,7 +486,7 @@ export class StateLayoutHeader {
 	}
 }
 export class StatePacket {
-	action: StatePacketAction
+	action: CodeAction
 	callback?: Function
 	token?: Token
 	constructor(obj: any) {
@@ -498,51 +499,6 @@ export class StatePacket {
 	setCallback(f: Function) {
 		this.callback = f
 	}
-}
-
-export enum StatePacketAction {
-	// dataObj
-	doDetailDelete = 'doDetailDelete',
-	doDetailMigrate = 'doDetailMigrate',
-	doDetailNew = 'doDetailNew',
-	doDetailProcessExecute = 'doDetailProcessExecute',
-	doDetailSave = 'doDetailSave',
-	doDetailSaveAs = 'doDetailSaveAs',
-
-	doEmbedListConfigEdit = 'doEmbedListConfigEdit',
-	doEmbedListConfigNew = 'doEmbedListConfigNew',
-	doEmbedListEditParmValue = 'doEmbedListEditParmValue',
-	doEmbedListSelect = 'doEmbedListSelect',
-
-	doListDetailEdit = 'doListDetailEdit',
-	doListDetailNew = 'doListDetailNew',
-	doListSelfRefresh = 'doListSelfRefresh',
-	doListSelfSave = 'doListSelfSave',
-
-	doOpen = 'doOpen',
-
-	doSaveCancel = 'doSaveCancel',
-
-	embedField = 'embedField',
-	embedShell = 'embedShell',
-
-	gridDownload = 'gridDownload',
-
-	// modal
-	modalCancel = 'modalCancel',
-	modalDone = 'modalDone',
-	modalEmbed = 'modalEmbed',
-	modalSelectOpen = 'modalSelectOpen',
-	modalSelectSurface = 'modalSelectSurface',
-
-	// nav
-	navBack = 'navBack',
-	navCrumbs = 'navCrumbs',
-	navMenuOpen = 'navMenuOpen',
-	navRow = 'navRow',
-	navTab = 'navTab',
-	openNode = 'openNode',
-	none = 'none'
 }
 
 export class StateSurfaceEmbed extends State {
@@ -559,7 +515,7 @@ export class StateSurfaceEmbedField extends StateSurfaceEmbed {
 		obj = valueOrDefault(obj, {})
 		this.nodeType = NodeType.object
 		this.packet = new StatePacket({
-			action: StatePacketAction.embedField,
+			action: CodeAction.embedField,
 			token: new TokenApiQuery(
 				required(obj.queryType, clazz, 'queryType'),
 				required(obj.dataObjSource, clazz, 'dataObjSource'),

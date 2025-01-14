@@ -63,6 +63,7 @@ export async function addAppHeader(data: any) {
 }
 
 export async function addCode(data: any) {
+	sectionHeader(`addCode - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
@@ -71,7 +72,7 @@ export async function addCode(data: any) {
 			parent: e.optional(e.json),
 			header: e.optional(e.str),
 			name: e.str,
-			order: e.int16,
+			order: e.optional(e.int16),
 			valueDecimal: e.optional(e.float64),
 			valueInteger: e.optional(e.int64),
 			valueString: e.optional(e.str)
@@ -100,7 +101,47 @@ export async function addCode(data: any) {
 	return await query.run(client, data)
 }
 
+export async function addCodeAction(data: any) {
+	sectionHeader(`addCodeAction - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			owner: e.str,
+			codeType: e.str,
+			parent: e.optional(e.json),
+			header: e.optional(e.str),
+			name: e.str,
+			order: e.optional(e.int16),
+			valueDecimal: e.optional(e.float64),
+			valueInteger: e.optional(e.int64),
+			valueString: e.optional(e.str)
+		},
+		(p) => {
+			return e.insert(e.sys_core.SysCodeAction, {
+				owner: e.sys_core.getSystemPrime(p.owner),
+				codeType: e.sys_core.getCodeType(p.codeType),
+				parent: e.select(
+					e.sys_core.getCode(
+						e.cast(e.str, e.json_get(p.parent, 'codeType')),
+						e.cast(e.str, e.json_get(p.parent, 'code'))
+					)
+				),
+				header: p.header,
+				name: p.name,
+				order: p.order,
+				valueDecimal: p.valueDecimal,
+				valueInteger: p.valueInteger,
+				valueString: p.valueString,
+				createdBy: CREATOR,
+				modifiedBy: CREATOR
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
 export async function addCodeType(data: any) {
+	sectionHeader(`addCodeType - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
@@ -108,7 +149,7 @@ export async function addCodeType(data: any) {
 			parent: e.optional(e.str),
 			header: e.optional(e.str),
 			name: e.str,
-			order: e.int16
+			order: e.optional(e.int16)
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysCodeType, {

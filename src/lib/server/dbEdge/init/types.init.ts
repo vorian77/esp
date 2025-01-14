@@ -19,6 +19,9 @@ import {
 import {
 	addApp,
 	addAppHeader,
+	addCode,
+	addCodeAction,
+	addCodeType,
 	addNode,
 	addTask,
 	addUser,
@@ -58,6 +61,41 @@ export class InitDb {
 	reset: ResetDb = new ResetDb()
 	constructor(isFullDbReset: boolean = false) {
 		this.isFullDbReset = isFullDbReset
+
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysCodeType',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysCodeType',
+				fCreate: addCodeType,
+				isResetByObjRecord: true
+			})
+		)
+
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysCode',
+				dataMap: [
+					['name', 'name'],
+					['codeType.name', 'codeType']
+				],
+				dbObject: 'sys_core::SysCode',
+				fCreate: addCode,
+				isResetByObjRecord: true
+			})
+		)
+
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysCodeAction',
+				dataMap: [
+					['name', 'name'],
+					['codeType.name', 'codeType']
+				],
+				dbObject: 'sys_core::SysCodeAction',
+				fCreate: addCodeAction
+			})
+		)
 
 		this.items.push(
 			new InitDbItemObject({
@@ -375,33 +413,39 @@ export class InitDb {
 						this.reset.addStatement(expr)
 					})
 				}
-				if (item.exprResetFull) {
+				if (item.isResetByObjRecord) {
+					this.executeResetTrans(item, false)
+				} else if (item.exprResetFull) {
 					this.reset.addStatement(item.exprResetFull)
 				} else if (item.dbObject && !item.isExcludeResetByObj) {
 					this.reset.addStatement(`DELETE ${item.dbObject}`)
 				}
 			} else {
-				for (let j: number = item.trans.length - 1; j > -1; j--) {
-					const trans = item.trans[j]
-					const data = getArray(trans[1])
-
-					// reset expressions
-					item.exprResets.forEach((expr) => {
-						this.reset.addStatement(expr)
-					})
-
-					// source record
-					if (!item.isExcludeResetByObj) {
-						data.forEach((row) => {
-							this.reset.addStatement(`DELETE ${item.dbObject} ${item.exprSourceFilter(row)}`)
-						})
-					}
-				}
+				this.executeResetTrans(item, true)
 			}
 			if (this.reset.statements.length > 0) await this.reset.execute()
 		}
-
 		sectionHeader(`InitDB.reset.complete.`)
+	}
+	async executeResetTrans(item: InitDbItem, resetExprResets: boolean) {
+		for (let j: number = item.trans.length - 1; j > -1; j--) {
+			const trans = item.trans[j]
+			const data = getArray(trans[1])
+
+			// reset expressions
+			if (resetExprResets) {
+				item.exprResets.forEach((expr) => {
+					this.reset.addStatement(expr)
+				})
+			}
+
+			// source record
+			if (!item.isExcludeResetByObj) {
+				data.forEach((row) => {
+					this.reset.addStatement(`DELETE ${item.dbObject} ${item.exprSourceFilter(row)}`)
+				})
+			}
+		}
 	}
 }
 export class InitDbItem {
@@ -410,6 +454,7 @@ export class InitDbItem {
 	exprResets: string[] = []
 	fCreate?: Function
 	isExcludeResetByObj: boolean = false
+	isResetByObjRecord: boolean = false
 	name: string
 	trans: [string, any][] = []
 	constructor(obj: any) {
@@ -420,6 +465,7 @@ export class InitDbItem {
 		this.exprResetFull = obj.exprResetFull
 		this.exprResets = getArray(obj.exprResets)
 		this.isExcludeResetByObj = booleanOrFalse(obj.isExcludeResetByObj, 'isExcludeResetByObj')
+		this.isResetByObjRecord = booleanOrFalse(obj.isResetByObjRecord, 'isResetByObjRecord')
 		this.name = obj.name
 	}
 	addTrans(name: string, data: any) {

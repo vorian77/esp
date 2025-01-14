@@ -1,10 +1,13 @@
+import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
 import {
-	State,
-	StatePacket,
-	StatePacketAction,
-	StateTarget
-} from '$comps/app/types.appState.svelte'
-import { DataManager, DataObj, DataObjConfirm, DataObjSaveMode, required } from '$utils/types'
+	CodeAction,
+	CodeActionClass,
+	DataManager,
+	DataObj,
+	DataObjConfirm,
+	DataObjSaveMode,
+	required
+} from '$utils/types'
 import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 import { memberOfEnum, valueOrDefault } from '$utils/types'
 import { FieldColor } from '$comps/form/field'
@@ -16,8 +19,9 @@ const FILENAME = '/$comps/dataObj/types.dataObjActionField.ts'
 export class DataObjActionField {
 	actionFieldConfirms: DataObjActionFieldConfirm[]
 	actionFieldShows: DataObjActionFieldShow[]
+	codeAction: CodeAction
+	codeActionClass: CodeActionClass
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
-	codePacketAction: StatePacketAction
 	fieldColor: FieldColor
 	header: string
 	isListRowAction: boolean
@@ -28,8 +32,9 @@ export class DataObjActionField {
 		const clazz = 'DataObjActionField'
 		this.actionFieldConfirms = rawAction.actionFieldConfirms
 		this.actionFieldShows = rawAction.actionFieldShows
+		this.codeAction = rawAction.codeAction
+		this.codeActionClass = rawAction.codeActionClass
 		this.codeActionFieldTriggerEnable = rawAction.codeActionFieldTriggerEnable
-		this.codePacketAction = rawAction.codePacketAction
 		this.fieldColor = rawAction.fieldColor
 		this.header = rawAction.header
 		this.isListRowAction = rawAction.isListRowAction
@@ -82,7 +87,7 @@ export class DataObjActionField {
 			confirm,
 			confirmType,
 			packet: new StatePacket({
-				action: this.codePacketAction,
+				action: this.codeAction,
 				token: new TokenAppDo({
 					dataObj,
 					sm

@@ -319,6 +319,7 @@ export namespace sys_core {
     "owner": SysSystem;
     "codeTypeFamily": SysCodeType[];
   }
+  export interface SysCodeAction extends SysCode {}
   export interface SysCodeType extends SysObj {
     "parent"?: SysCodeType | null;
     "order"?: number | null;
@@ -355,10 +356,10 @@ export namespace sys_core {
   export interface SysDataObjActionField extends SysObj {
     "codeActionFieldTriggerEnable": SysCode;
     "codeColor"?: SysCode | null;
-    "codePacketAction": SysCode;
     "isListRowAction": boolean;
     "actionFieldConfirms": SysDataObjActionFieldConfirm[];
     "actionFieldShows": SysDataObjActionFieldShow[];
+    "codeAction": SysCodeAction;
   }
   export interface SysDataObjActionFieldConfirm extends sys_user.Mgmt {
     "codeConfirmType": SysCode;
@@ -393,6 +394,7 @@ export namespace sys_core {
     "codeTriggerTiming": SysCode;
   }
   export interface SysDataObjColumn extends sys_user.Mgmt {
+    "codeAction"?: SysCode | null;
     "codeAccess"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
     "codeColor"?: SysCode | null;
@@ -1032,6 +1034,7 @@ export interface types {
     "SysApp": sys_core.SysApp;
     "SysAppHeader": sys_core.SysAppHeader;
     "SysCode": sys_core.SysCode;
+    "SysCodeAction": sys_core.SysCodeAction;
     "SysCodeType": sys_core.SysCodeType;
     "SysDataObj": sys_core.SysDataObj;
     "SysDataObjActionField": sys_core.SysDataObjActionField;

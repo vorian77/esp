@@ -1,6 +1,7 @@
-import { State, StatePacketAction } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.appState.svelte'
 import {
 	booleanRequired,
+	CodeAction,
 	getArray,
 	memberOfEnum,
 	memberOfEnumOrDefault,
@@ -88,15 +89,15 @@ export class DataObj {
 				: undefined
 	}
 
-	actionsFieldTrigger(packetAction: StatePacketAction, sm: State) {
-		const action = this.actionsField.find((f) => f.codePacketAction === packetAction)
+	actionsFieldTrigger(codeAction: CodeAction, sm: State) {
+		const action = this.actionsField.find((f) => f.codeAction === codeAction)
 		if (action) {
 			action.trigger(sm, this)
 		} else {
 			error(500, {
 				file: FILENAME,
 				function: 'DataObj.actionsFieldTrigger',
-				message: `Field for StatePacketAction: ${packetAction} not found.`
+				message: `Field for CodeAction: ${codeAction} not found.`
 			})
 		}
 	}
@@ -315,9 +316,9 @@ export class DataObj {
 }
 
 export class DataObjActionProxy {
-	action: StatePacketAction
+	action: CodeAction
 	proxy: Function
-	constructor(action: StatePacketAction, proxy: Function) {
+	constructor(action: CodeAction, proxy: Function) {
 		this.action = action
 		this.proxy = proxy
 	}

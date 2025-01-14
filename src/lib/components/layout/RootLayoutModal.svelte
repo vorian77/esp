@@ -1,9 +1,9 @@
 <script lang="ts">
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
-	import { StatePacketAction, StateSurfaceModal } from '$comps/app/types.appState.svelte'
+	import { StateSurfaceModal } from '$comps/app/types.appState.svelte'
 	import { TokenAppModalReturn, TokenAppModalReturnType } from '$utils/types.token'
 	import { getModalStore } from '@skeletonlabs/skeleton'
-	import { ContextKey, DataObjCardinality, ParmsValuesType } from '$utils/types'
+	import { CodeAction, ContextKey, DataObjCardinality, ParmsValuesType } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldEmbedType } from '$comps/form/field'
 	import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField.svelte'
@@ -46,8 +46,8 @@
 	})
 
 	async function onFooterActionClick(action: DataObjActionField) {
-		switch (action.codePacketAction) {
-			case StatePacketAction.modalCancel:
+		switch (action.codeAction) {
+			case CodeAction.modalCancel:
 				if ($storeModal[0].response)
 					$storeModal[0].response(
 						new TokenAppModalReturn({
@@ -58,7 +58,7 @@
 				storeModal.close()
 				break
 
-			case StatePacketAction.modalDone:
+			case CodeAction.modalDone:
 				if ($storeModal[0].response)
 					$storeModal[0].response(
 						new TokenAppModalReturn({
@@ -73,7 +73,7 @@
 				error(500, {
 					file: FILENAME,
 					function: 'onFooterActionClick',
-					message: `No case defined for StatePacketAction: ${action.codePacketAction} `
+					message: `No case defined for CodeAction: ${action.codeAction} `
 				})
 		}
 	}

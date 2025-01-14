@@ -100,6 +100,8 @@ module sys_core {
     constraint exclusive on ((.owner, .codeType, .name));
   }
 
+  type SysCodeAction extending sys_core::SysCode {}
+
   # SysDataObj
   type SysDataObj extending sys_core::SysObj {
     actionFieldGroup: sys_core::SysDataObjActionFieldGroup;
@@ -154,8 +156,8 @@ module sys_core {
       on source delete delete target;
       on target delete allow;
     };
+    required codeAction: sys_core::SysCodeAction;
     required codeActionFieldTriggerEnable: sys_core::SysCode;
-    required codePacketAction: sys_core::SysCode;
     codeColor: sys_core::SysCode;
     required isListRowAction: bool;
     constraint exclusive on (.name);
@@ -235,6 +237,7 @@ module sys_core {
   
     # fields - el
     codeAccess: sys_core::SysCode;
+    codeAction: sys_core::SysCode;
     codeAlignmentAlt: sys_core::SysCode;
     codeColor: sys_core::SysCode;
     codeFieldElement: sys_core::SysCode;
@@ -242,6 +245,7 @@ module sys_core {
     customColActionMethod: str;
     customColActionType: str;
     customColActionValue: str;
+    
     customColAlign: str;
     customColCodeColor: sys_core::SysCode;
     customColIsSubHeader: bool;
@@ -394,14 +398,15 @@ module sys_core {
 
   function getCode(codeTypeName: str,  codeName: str) -> optional sys_core::SysCode
     using (select assert_single(sys_core::SysCode filter 
-      .codeType.name = codeTypeName and 
-      .name = codeName));
+      .codeType.name = codeTypeName and .name = codeName));
 
+  function getCodeAction(codeTypeName: str,  codeName: str) -> optional sys_core::SysCodeAction
+    using (select assert_single(sys_core::SysCodeAction filter 
+      .codeType.name = codeTypeName and .name = codeName));
+      
   function getCodeSystem(sysName: str, codeTypeName: str,  codeName: str) -> optional sys_core::SysCode
     using (select assert_single(sys_core::SysCode filter 
-      .owner.name = sysName and
-      .codeType.name = codeTypeName and 
-      .name = codeName));
+      .owner.name = sysName and .codeType.name = codeTypeName and .name = codeName));
 
   function getObj(name: str) -> optional sys_core::SysObj
     using (select assert_single((select sys_core::SysObj filter .name = name)));

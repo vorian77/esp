@@ -12,6 +12,58 @@ export function capitalizeFirstLetter(text: string) {
 	return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
+export enum CodeAction {
+	// dataObj - group item
+	doDetailDelete = 'doDetailDelete',
+	doDetailMigrate = 'doDetailMigrate',
+	doDetailNew = 'doDetailNew',
+	doDetailProcessExecute = 'doDetailProcessExecute',
+	doDetailSave = 'doDetailSave',
+	doDetailSaveAs = 'doDetailSaveAs',
+
+	doEmbedListConfigEdit = 'doEmbedListConfigEdit',
+	doEmbedListConfigNew = 'doEmbedListConfigNew',
+	doEmbedListEditParmValue = 'doEmbedListEditParmValue',
+	doEmbedListSelect = 'doEmbedListSelect',
+
+	doListDetailEdit = 'doListDetailEdit',
+	doListDetailNew = 'doListDetailNew',
+	doListDownload = 'doListDownload',
+	doListSelfRefresh = 'doListSelfRefresh',
+	doListSelfSave = 'doListSelfSave',
+
+	doOpen = 'doOpen',
+
+	doSaveCancel = 'doSaveCancel',
+
+	embedField = 'embedField',
+	embedShell = 'embedShell',
+
+	// modal
+	modalCancel = 'modalCancel',
+	modalDone = 'modalDone',
+	modalEmbed = 'modalEmbed',
+	modalSelectOpen = 'modalSelectOpen',
+	modalSelectSurface = 'modalSelectSurface',
+
+	// nav
+	navBack = 'navBack',
+	navCrumbs = 'navCrumbs',
+	navMenuOpen = 'navMenuOpen',
+	navRow = 'navRow',
+	navTab = 'navTab',
+	openNode = 'openNode',
+	none = 'none'
+}
+
+export enum CodeActionClass {
+	ct_sys_code_action_class_do_embed = 'ct_sys_code_action_class_do_embed',
+	ct_sys_code_action_class_do_field_auth = 'ct_sys_code_action_class_do_field_auth',
+	ct_sys_code_action_class_do_group_item = 'ct_sys_code_action_class_do_group_item',
+	ct_sys_code_action_class_modal = 'ct_sys_code_action_class_modal',
+	ct_sys_code_action_class_nav = 'ct_sys_code_action_class_nav'
+}
+
 export enum ContextKey {
 	cancelForm = 'cancelForm',
 	dashboardRefresh = 'dashboardReset',

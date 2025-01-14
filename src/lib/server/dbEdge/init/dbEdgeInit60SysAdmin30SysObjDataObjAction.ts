@@ -258,14 +258,14 @@ function initDataObjActionField(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'codePacketAction',
+				columnName: 'codeAction',
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_packet_action',
-				linkTable: 'SysCode'
+				fieldListItems: 'il_sys_codeAction_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_code_action_class',
+				linkTable: 'SysCodeAction'
 			},
 			{
 				codeAccess: 'optional',

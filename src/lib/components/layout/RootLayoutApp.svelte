@@ -6,7 +6,6 @@
 		StateSurfaceEmbed,
 		StateSurfaceModal,
 		StatePacket,
-		StatePacketAction,
 		StateSurfaceEmbedShell,
 		StateTarget
 	} from '$comps/app/types.appState.svelte'
@@ -28,6 +27,7 @@
 		TokenAppWidget
 	} from '$utils/types.token'
 	import {
+		CodeAction,
 		ContextKey,
 		DataManager,
 		DataObj,
@@ -80,31 +80,31 @@
 	let Component = $state()
 
 	const actionsPacket = [
-		StatePacketAction.doDetailDelete,
-		StatePacketAction.doDetailMigrate,
-		StatePacketAction.doDetailNew,
-		StatePacketAction.doDetailProcessExecute,
-		StatePacketAction.doDetailSave,
-		StatePacketAction.doDetailSaveAs,
-		StatePacketAction.doEmbedListConfigEdit,
-		StatePacketAction.doEmbedListConfigNew,
-		StatePacketAction.doEmbedListSelect,
-		StatePacketAction.doListDetailEdit,
-		StatePacketAction.doListDetailNew,
-		StatePacketAction.doListSelfRefresh,
-		StatePacketAction.doListSelfSave,
-		StatePacketAction.doOpen,
-		StatePacketAction.doSaveCancel,
-		StatePacketAction.embedField,
-		StatePacketAction.embedShell,
-		StatePacketAction.modalEmbed,
-		StatePacketAction.modalSelectOpen,
-		StatePacketAction.modalSelectSurface,
-		StatePacketAction.navBack,
-		StatePacketAction.navCrumbs,
-		StatePacketAction.navRow,
-		StatePacketAction.navTab,
-		StatePacketAction.openNode
+		CodeAction.doDetailDelete,
+		CodeAction.doDetailMigrate,
+		CodeAction.doDetailNew,
+		CodeAction.doDetailProcessExecute,
+		CodeAction.doDetailSave,
+		CodeAction.doDetailSaveAs,
+		CodeAction.doEmbedListConfigEdit,
+		CodeAction.doEmbedListConfigNew,
+		CodeAction.doEmbedListSelect,
+		CodeAction.doListDetailEdit,
+		CodeAction.doListDetailNew,
+		CodeAction.doListSelfRefresh,
+		CodeAction.doListSelfSave,
+		CodeAction.doOpen,
+		CodeAction.doSaveCancel,
+		CodeAction.embedField,
+		CodeAction.embedShell,
+		CodeAction.modalEmbed,
+		CodeAction.modalSelectOpen,
+		CodeAction.modalSelectSurface,
+		CodeAction.navBack,
+		CodeAction.navCrumbs,
+		CodeAction.navRow,
+		CodeAction.navTab,
+		CodeAction.openNode
 	]
 
 	async function process(packet: StatePacket) {
@@ -112,38 +112,38 @@
 		let resetModes = true
 
 		switch (packet.action) {
-			case StatePacketAction.doDetailDelete:
+			case CodeAction.doDetailDelete:
 				await sm.app.saveDetail(sm, packet.action, token)
 				updateObjectsForm()
 				break
 
-			case StatePacketAction.doDetailMigrate:
+			case CodeAction.doDetailMigrate:
 				await migrate(sm, token.dataObj)
 				break
 
-			case StatePacketAction.doDetailNew:
+			case CodeAction.doDetailNew:
 				parentTab = sm.app.getCurrTabParentTab()
 				if (parentTab) parentTab.data?.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
 				await queryTypeTab(sm, sm.app.getCurrTab(), TokenApiQueryType.preset)
 				updateObjectsForm()
 				break
 
-			case StatePacketAction.doDetailProcessExecute:
+			case CodeAction.doDetailProcessExecute:
 				// await migrate(state, token.dataObj)
 				break
 
-			case StatePacketAction.doDetailSave:
+			case CodeAction.doDetailSave:
 				if (await sm.app.saveDetail(sm, packet.action, token)) {
 					updateObjectsForm()
 				}
 				break
 
-			case StatePacketAction.doDetailSaveAs:
+			case CodeAction.doDetailSaveAs:
 				await sm.app.tabDuplicate(sm, token)
 				updateObjectsForm()
 				break
 
-			case StatePacketAction.doEmbedListConfigEdit:
+			case CodeAction.doEmbedListConfigEdit:
 				await sm.openModalEmbedListConfig(
 					token,
 					TokenApiQueryType.retrieve,
@@ -151,7 +151,7 @@
 				)
 				break
 
-			case StatePacketAction.doEmbedListConfigNew:
+			case CodeAction.doEmbedListConfigNew:
 				await sm.openModalEmbedListConfig(
 					token,
 					TokenApiQueryType.preset,
@@ -159,37 +159,37 @@
 				)
 				break
 
-			case StatePacketAction.doEmbedListSelect:
+			case CodeAction.doEmbedListSelect:
 				await sm.openModalEmbedListSelect(token, fModalCloseUpdateEmbedListSelect)
 				break
 
-			case StatePacketAction.doListDetailEdit:
+			case CodeAction.doListDetailEdit:
 				await sm.app.addLevelNodeChildren(sm, token, TokenApiQueryType.retrieve)
 				updateObjectsForm()
 				break
 
-			case StatePacketAction.doListDetailNew:
+			case CodeAction.doListDetailNew:
 				await sm.app.addLevelNodeChildren(sm, token, TokenApiQueryType.preset)
 				updateObjectsForm()
 				break
 
-			case StatePacketAction.doListSelfRefresh:
+			case CodeAction.doListSelfRefresh:
 				await queryTypeTab(sm, sm.app.getCurrTab(), TokenApiQueryType.retrieve)
 				updateObjectsForm()
 				break
 
-			case StatePacketAction.doListSelfSave:
+			case CodeAction.doListSelfSave:
 				const rtn = await sm.app.saveList(sm)
 				updateObjectsForm()
 				resetModes = false
 				break
 
-			case StatePacketAction.doOpen:
+			case CodeAction.doOpen:
 				await sm.app.addLevelDataObj(sm, token)
 				updateObjectsForm()
 				break
 
-			case StatePacketAction.doSaveCancel:
+			case CodeAction.doSaveCancel:
 				currLevel = sm.app.getCurrLevel()
 				if (currLevel) {
 					currTab = currLevel.getCurrTab()
@@ -216,7 +216,7 @@
 				}
 				break
 
-			case StatePacketAction.embedField:
+			case CodeAction.embedField:
 				if (token instanceof TokenApiQuery) {
 					await sm.app.addLevelEmbedField(sm, token)
 					updateObjectsForm()
@@ -225,24 +225,24 @@
 				doOpen
 				break
 
-			case StatePacketAction.embedShell:
+			case CodeAction.embedShell:
 				break
 
-			case StatePacketAction.modalEmbed:
+			case CodeAction.modalEmbed:
 				await sm.app.addLevelModalEmbedField(sm, token)
 				updateObjectsForm()
 				break
 
-			case StatePacketAction.modalSelectOpen:
+			case CodeAction.modalSelectOpen:
 				await sm.openModalSelect(token)
 				break
 
-			case StatePacketAction.modalSelectSurface:
+			case CodeAction.modalSelectSurface:
 				parms = { component: 'ModalSelect' }
 				updateObjectsComponent()
 				break
 
-			case StatePacketAction.navBack:
+			case CodeAction.navBack:
 				if (sm.app.levels.length === 1) {
 					returnHome(sm)
 				} else {
@@ -251,7 +251,7 @@
 				}
 				break
 
-			case StatePacketAction.navCrumbs:
+			case CodeAction.navCrumbs:
 				if (token instanceof TokenAppIndex) {
 					if (token.index === 0) {
 						returnHome(sm)
@@ -262,19 +262,19 @@
 				}
 				break
 
-			case StatePacketAction.navRow:
+			case CodeAction.navRow:
 				if (token instanceof TokenAppRow) {
 					await sm.app.rowUpdate(sm, token)
 					updateObjectsForm()
 				}
 				break
 
-			case StatePacketAction.navTab:
+			case CodeAction.navTab:
 				await token.app.navTab(sm, token)
 				updateObjectsForm()
 				break
 
-			case StatePacketAction.openNode:
+			case CodeAction.openNode:
 				if (token instanceof TokenAppNode) {
 					sm.newApp()
 					await sm.app.addLevelNode(sm, token)
@@ -286,7 +286,7 @@
 				error(500, {
 					file: FILENAME,
 					function: 'process',
-					message: `No case defined for StatePacketAction: ${packet.action}`
+					message: `No case defined for CodeAction: ${packet.action}`
 				})
 		}
 	}

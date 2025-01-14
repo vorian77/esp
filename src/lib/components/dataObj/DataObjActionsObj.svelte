@@ -1,5 +1,6 @@
 <script lang="ts">
 	import {
+		CodeAction,
 		ContextKey,
 		DataManager,
 		DataObj,
@@ -16,12 +17,7 @@
 		DataObjActionFieldTriggerStatus,
 		DataObjActionFieldShow
 	} from '$comps/dataObj/types.dataObjActionField.svelte'
-	import {
-		State,
-		StatePacket,
-		StatePacketAction,
-		StateSurfaceEmbedShell
-	} from '$comps/app/types.appState.svelte'
+	import { State, StatePacket, StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
 	import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
 	import { flip } from 'svelte/animate'
 	import { error } from '@sveltejs/kit'
@@ -42,9 +38,7 @@
 		dataObjId
 			? dataObj.actionsField.some(
 					(a: DataObjActionField) =>
-						[StatePacketAction.doDetailSave, StatePacketAction.doListSelfSave].includes(
-							a.codePacketAction
-						) &&
+						[CodeAction.doDetailSave, CodeAction.doListSelfSave].includes(a.codeAction) &&
 						dm.isStatusChanged() &&
 						!dataObj.isFieldEmbed
 				)

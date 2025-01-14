@@ -228,6 +228,13 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
+		header: 'Code Action',
+		isMultiSelect: false,
+		name: 'codeAction',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
 		header: 'Action Field - Trigger Enable',
 		isMultiSelect: false,
 		name: 'codeActionFieldTriggerEnable',
@@ -421,13 +428,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Object Type',
 		isMultiSelect: false,
 		name: 'codeObjType',
-		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Token Action',
-		isMultiSelect: false,
-		name: 'codePacketAction',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {

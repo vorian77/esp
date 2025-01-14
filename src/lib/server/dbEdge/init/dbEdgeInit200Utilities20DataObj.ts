@@ -478,8 +478,8 @@ export async function addDataObjActionField(data: any) {
 		{
 			actionFieldConfirms: e.array(e.json),
 			actionFieldShows: e.array(e.json),
+			codeAction: e.json,
 			codeActionFieldTriggerEnable: e.str,
-			codePacketAction: e.str,
 			codeColor: e.optional(e.str),
 			header: e.str,
 			isListRowAction: e.bool,
@@ -523,12 +523,16 @@ export async function addDataObjActionField(data: any) {
 						modifiedBy: CREATOR
 					})
 				}),
+				codeAction: e.select(
+					e.sys_core.getCodeAction(
+						e.cast(e.str, e.json_get(p.codeAction, 'codeType')),
+						e.cast(e.str, e.json_get(p.codeAction, 'name'))
+					)
+				),
 				codeActionFieldTriggerEnable: e.select(
 					e.sys_core.getCode('ct_sys_do_action_field_trigger', p.codeActionFieldTriggerEnable)
 				),
-				codePacketAction: e.select(e.sys_core.getCode('ct_sys_packet_action', p.codePacketAction)),
 				codeColor: e.select(e.sys_core.getCode('ct_sys_tailwind_color', p.codeColor)),
-
 				createdBy: CREATOR,
 				header: p.header,
 				isListRowAction: valueOrDefaultParm(p.isListRowAction, false),

@@ -12,7 +12,6 @@
 		State,
 		StateLayoutComponent,
 		StatePacket,
-		StatePacketAction,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState.svelte'
 	import { TokenAppDoActionConfirmType } from '$utils/types.token'

@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { ContextKey, DataManager, required } from '$utils/types'
+	import { CodeAction, ContextKey, DataManager, required } from '$utils/types'
 	import { getContext } from 'svelte'
-	import { StatePacketAction } from '$comps/app/types.appState.svelte'
 	import { Field } from '$comps/form/field'
 	import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 	import Layout from '$comps/layout/RootLayoutApp.svelte'
@@ -26,14 +25,14 @@
 			name: 'SquareMousePointer',
 			clazz: 'ml-1.5 mt-0.5',
 			color: '#3b79e1',
-			onclick: () => dataObjEmbed.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, sm),
+			onclick: () => dataObjEmbed.actionsFieldTrigger(CodeAction.doEmbedListSelect, sm),
 			size: 18,
 			strokeWidth: 2
 		})
 	)
 
 	// function openDialogIcon() {
-	// 	dataObjEmbed.actionsFieldTrigger(StatePacketAction.doEmbedListSelect, sm)
+	// 	dataObjEmbed.actionsFieldTrigger(CodeAction.doEmbedListSelect, sm)
 	// }
 </script>
 

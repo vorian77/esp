@@ -1,12 +1,7 @@
 <script lang="ts">
-	import { ContextKey, required } from '$utils/types'
+	import { CodeAction, ContextKey, required } from '$utils/types'
 	import { getContext } from 'svelte'
-	import {
-		State,
-		StatePacket,
-		StatePacketAction,
-		StateTarget
-	} from '$comps/app/types.appState.svelte'
+	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
 	import { TokenAppDoActionConfirmType } from '$utils/types.token'
 	import { AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
@@ -23,7 +18,7 @@
 		sm.change({
 			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
-				action: StatePacketAction.navBack
+				action: CodeAction.navBack
 			}),
 			target: StateTarget.feature
 		})

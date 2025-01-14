@@ -1,13 +1,8 @@
 <script lang="ts">
-	import { ContextKey, required } from '$utils/types'
+	import { CodeAction, ContextKey, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { AppLevelCrumb } from '$comps/app/types.app.svelte'
-	import {
-		State,
-		StatePacket,
-		StatePacketAction,
-		StateTarget
-	} from '$comps/app/types.appState.svelte'
+	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
 	import { TokenAppDoActionConfirmType, TokenAppIndex } from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -20,7 +15,7 @@
 		sm.change({
 			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
-				action: StatePacketAction.navCrumbs,
+				action: CodeAction.navCrumbs,
 				token: new TokenAppIndex({
 					index
 				})

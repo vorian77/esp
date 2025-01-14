@@ -1,5 +1,6 @@
 import {
 	booleanOrDefault,
+	CodeAction,
 	memberOfEnum,
 	Node,
 	RawMenu,
@@ -9,14 +10,9 @@ import {
 	UserResourceTaskRenderType,
 	valueOrDefault
 } from '$utils/types'
-import {
-	State,
-	StatePacket,
-	StatePacketAction,
-	StateTarget
-} from '$comps/app/types.appState.svelte'
+import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
 import { TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
-import { adminDbReset } from '$utils/utils.sys.svelte'
+import { adminDbReset } from '$utils/utils.sys'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = 'src/lib/components/navMenu/types.navMenu.ts'
@@ -124,7 +120,7 @@ export class NavMenuData {
 						confirmType: TokenAppDoActionConfirmType.statusChanged,
 						// parmsState: { programId: this.getProgramId(node) },
 						packet: new StatePacket({
-							action: StatePacketAction.openNode,
+							action: CodeAction.openNode,
 							token: new TokenAppNode({ node })
 						}),
 						target: StateTarget.feature
@@ -135,7 +131,7 @@ export class NavMenuData {
 					this.sm.change({
 						confirmType: TokenAppDoActionConfirmType.statusChanged,
 						packet: new StatePacket({
-							action: StatePacketAction.openNode,
+							action: CodeAction.openNode,
 							token: task.getTokenNode(this.sm.user)
 						}),
 						target: StateTarget.feature

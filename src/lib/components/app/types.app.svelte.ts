@@ -1,4 +1,5 @@
 import {
+	CodeAction,
 	ContextKey,
 	booleanOrFalse,
 	DataManager,
@@ -38,13 +39,7 @@ import {
 } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { queryTypeTab } from '$comps/app/types.appQuery'
-import {
-	State,
-	StatePacket,
-	StatePacketAction,
-	StateSurfaceModal,
-	StateTarget
-} from '$comps/app/types.appState.svelte'
+import { State, StateTarget } from '$comps/app/types.appState.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/nav/types.app.ts'
@@ -308,7 +303,7 @@ export class App {
 		}
 		return this
 	}
-	async saveDetail(sm: State, packetAction: StatePacketAction, token: TokenAppDo) {
+	async saveDetail(sm: State, codeAction: CodeAction, token: TokenAppDo) {
 		const clazz = `${FILENAME}.saveDetail`
 		const currTab = this.getCurrTab()
 		if (currTab && currTab.dataObj && sm.dm) {
@@ -316,8 +311,8 @@ export class App {
 
 			const tabParent = this.getCurrTabParentTab()
 			if (tabParent && tabParent.dataObj) {
-				switch (packetAction) {
-					case StatePacketAction.doDetailDelete:
+				switch (codeAction) {
+					case CodeAction.doDetailDelete:
 						if (currTab.dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)) {
 							if (!tabParent || !tabParent.listHasData()) {
 								this.popLevel(sm)
@@ -369,7 +364,7 @@ export class App {
 						}
 						break
 
-					case StatePacketAction.doDetailSave:
+					case CodeAction.doDetailSave:
 						if (!(await this.tabQueryDetailData(sm, TokenApiQueryType.save, currTab.dataObj.data)))
 							return this
 
@@ -392,13 +387,13 @@ export class App {
 						error(500, {
 							file: FILENAME,
 							function: 'App.detailUpdate',
-							message: `No case defined for StatePacketAction: ${packetAction}`
+							message: `No case defined for CodeAction: ${codeAction}`
 						})
 				}
 			} else {
 				// no parent tab (orphan detail record)
-				switch (packetAction) {
-					case StatePacketAction.doDetailDelete:
+				switch (codeAction) {
+					case CodeAction.doDetailDelete:
 						// <todo> - 241019 - this path must be tested - only example "My Account" which doesn't have Delete option
 						if (!currTab.dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)) {
 							currTab.dataObj.data.rowsSave.setDetailRecordStatus(DataRecordStatus.delete)
@@ -410,7 +405,7 @@ export class App {
 						this.popLevel(sm)
 						break
 
-					case StatePacketAction.doDetailSave:
+					case CodeAction.doDetailSave:
 						if (!(await this.tabQueryDetailData(sm, TokenApiQueryType.save, currTab.dataObj.data)))
 							return this
 						break
@@ -419,7 +414,7 @@ export class App {
 						error(500, {
 							file: FILENAME,
 							function: 'App.detailUpdate',
-							message: `No case defined for StatePacketAction: ${packetAction}`
+							message: `No case defined for CodeAction: ${codeAction}`
 						})
 				}
 			}

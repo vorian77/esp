@@ -1,13 +1,8 @@
 <script lang="ts">
-	import { ContextKey, required } from '$utils/types'
+	import { CodeAction, ContextKey, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { AppLevel, AppLevelRowStatus } from '$comps/app/types.app.svelte'
-	import {
-		State,
-		StatePacket,
-		StatePacketAction,
-		StateTarget
-	} from '$comps/app/types.appState.svelte'
+	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
 	import { TokenAppDoActionConfirmType, TokenAppTab } from '$utils/types.token'
 	import { DataRecordStatus } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
@@ -33,7 +28,7 @@
 		sm.change({
 			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
-				action: StatePacketAction.navTab,
+				action: CodeAction.navTab,
 				token: new TokenAppTab({ app: sm.app, index })
 			}),
 			target: StateTarget.feature

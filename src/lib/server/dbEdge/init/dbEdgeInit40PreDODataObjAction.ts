@@ -25,7 +25,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
 			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
 		],
-		codePacketAction: 'doDetailDelete',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doDetailDelete' },
 		codeActionFieldTriggerEnable: 'always',
 		codeColor: 'red',
 		header: 'Delete',
@@ -46,7 +46,7 @@ export function initPreDataObjAction(init: InitDb) {
 			}
 		],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codePacketAction: 'modalCancel',
+		codeAction: { codeType: 'ct_sys_code_action_class_modal', name: 'modalCancel' },
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Cancel',
 		isListRowAction: false,
@@ -58,8 +58,8 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_modal', name: 'modalDone' },
 		codeActionFieldTriggerEnable: 'always',
-		codePacketAction: 'modalDone',
 		header: 'Done',
 		isListRowAction: false,
 		name: 'noa_dialog_done',
@@ -72,7 +72,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codePacketAction: 'doListDetailEdit',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doListDetailEdit' },
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Edit',
 		isListRowAction: true,
@@ -86,7 +86,10 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codePacketAction: 'doEmbedListConfigEdit',
+		codeAction: {
+			codeType: 'ct_sys_code_action_class_do_group_item',
+			name: 'doEmbedListConfigEdit'
+		},
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Edit',
 		isListRowAction: true,
@@ -101,7 +104,10 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeTriggerShow: 'notStatusChanged', isRequired: true },
 			{ codeTriggerShow: 'statusValid', isRequired: true }
 		],
-		codePacketAction: 'doEmbedListConfigNew',
+		codeAction: {
+			codeType: 'ct_sys_code_action_class_do_group_item',
+			name: 'doEmbedListConfigNew'
+		},
 		codeActionFieldTriggerEnable: 'always',
 		header: 'New',
 		isListRowAction: false,
@@ -113,7 +119,10 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codePacketAction: 'doEmbedListEditParmValue',
+		codeAction: {
+			codeType: 'ct_sys_code_action_class_do_group_item',
+			name: 'doEmbedListEditParmValue'
+		},
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Parameter Value',
 		isListRowAction: true,
@@ -125,7 +134,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codePacketAction: 'doEmbedListSelect',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doEmbedListSelect' },
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Edit',
 		isListRowAction: true,
@@ -139,7 +148,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
-		codePacketAction: 'gridDownload',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doListDownload' },
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Download',
 		isListRowAction: false,
@@ -153,7 +162,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
-		codePacketAction: 'doDetailNew',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doDetailNew' },
 		codeActionFieldTriggerEnable: 'always',
 		header: 'New',
 		isListRowAction: false,
@@ -165,7 +174,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
-		codePacketAction: 'doDetailNew',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doDetailNew' },
 		codeActionFieldTriggerEnable: 'always',
 		header: 'New',
 		isListRowAction: false,
@@ -178,7 +187,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
-		codePacketAction: 'doListDetailNew',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doListDetailNew' },
 		codeActionFieldTriggerEnable: 'always',
 		header: 'New',
 		isListRowAction: false,
@@ -192,7 +201,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codePacketAction: 'doListSelfRefresh',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doListSelfRefresh' },
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Refresh',
 		isListRowAction: false,
@@ -206,7 +215,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codePacketAction: 'doDetailSaveAs',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doDetailSaveAs' },
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Save As',
 		isListRowAction: false,
@@ -220,7 +229,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
 			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
 		],
-		codePacketAction: 'doDetailSave',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doDetailSave' },
 		codeActionFieldTriggerEnable: 'statusValid',
 		header: 'Save',
 		isListRowAction: false,
@@ -236,7 +245,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeTriggerShow: 'statusChanged', isRequired: true },
 			{ codeTriggerShow: 'rootDataObj', isRequired: true }
 		],
-		codePacketAction: 'doSaveCancel',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doSaveCancel' },
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Cancel Save',
 		isListRowAction: false,
@@ -250,7 +259,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeTriggerShow: 'statusChanged', isRequired: true },
 			{ codeTriggerShow: 'rootDataObj', isRequired: true }
 		],
-		codePacketAction: 'doListSelfSave',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doListSelfSave' },
 		codeActionFieldTriggerEnable: 'statusValid',
 		header: 'Save',
 		isListRowAction: false,
@@ -261,7 +270,7 @@ export function initPreDataObjAction(init: InitDb) {
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionFieldShows: [{ codeTriggerShow: 'statusChanged', isRequired: true }],
-		codePacketAction: 'doListSelfSave',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doListSelfSave' },
 		codeActionFieldTriggerEnable: 'statusValid',
 		header: 'Save',
 		isListRowAction: true,
@@ -275,7 +284,7 @@ export function initPreDataObjAction(init: InitDb) {
 			{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }
 		],
 		actionFieldShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
-		codePacketAction: 'doDetailMigrate',
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doDetailMigrate' },
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Migrate',
 		isListRowAction: false,
@@ -286,7 +295,10 @@ export function initPreDataObjAction(init: InitDb) {
 	init.addTrans('sysDataObjActionField', {
 		actionFieldConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionFieldShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codePacketAction: 'doDetailProcessExecute',
+		codeAction: {
+			codeType: 'ct_sys_code_action_class_do_group_item',
+			name: 'doDetailProcessExecute'
+		},
 		codeActionFieldTriggerEnable: 'always',
 		header: 'Execute',
 		isListRowAction: false,

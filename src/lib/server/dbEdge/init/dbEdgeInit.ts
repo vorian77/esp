@@ -1,6 +1,8 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
 // system
+import { initPreCode } from '$server/dbEdge/init/dbEdgeInit30PreCode'
+import { initPreCodeAction } from '$server/dbEdge/init/dbEdgeInit30PreCodeAction'
 import { initPreDataObj } from '$server/dbEdge/init/dbEdgeInit40PreDO'
 import { initSysAdmin } from '$server/dbEdge/init/dbEdgeInit60SysAdmin'
 import { initSysAuth } from '$server/dbEdge/init/dbEdgeInit60SysAdminAuth'
@@ -29,6 +31,8 @@ export async function dbEdgeInit() {
 }
 
 function dbEdgeInitAll(initDb: InitDb) {
+	initPreCode(initDb)
+	initPreCodeAction(initDb)
 	initPreDataObj(initDb)
 	initSysAdmin(initDb)
 	initSysAuth(initDb)
@@ -49,7 +53,9 @@ function dbEdgeInitAll(initDb: InitDb) {
 }
 
 export function initFeature(initDb: InitDb) {
-	initSysAuth(initDb)
+	initPreCode(initDb)
+	initPreCodeAction(initDb)
+	// initSysAuth(initDb)
 	// initSysRepUser(initDb)
 	// initContentAIRep(initDb)
 	// initContentAIStudent(initDb)

@@ -78,6 +78,15 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysCode'
 	})
 
+	/* code action */
+	init.addTrans('sysDataObjFieldListItems', {
+		props: [[0, 'name', 'Name', '.name', true, 0]],
+		exprFilter: '.codeType.parent.name = <parms,str,itemsParmName>',
+		name: 'il_sys_codeAction_order_name_by_codeType_name',
+		owner: 'sys_system_old',
+		table: 'SysCodeAction'
+	})
+
 	/* other */
 	init.addTrans('sysDataObjFieldListItems', {
 		exprFilter: `.cohortId = (SELECT app_cm::CmCsfCohort FILTER .id = <tree,uuid,CmCsfCohort.id>).cohort.id AND .id NOT IN (SELECT app_cm::CmCsfCohortAttd FILTER .csfCohort.id = <tree,uuid,CmCsfCohort.id>).cohortAttd.id`,

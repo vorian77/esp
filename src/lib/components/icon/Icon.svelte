@@ -21,6 +21,7 @@
 		CircleUserRound,
 		ClipboardPen,
 		ClipboardPlus,
+		Database,
 		Eye,
 		EyeOff,
 		FileChartColumnIncreasing,
@@ -49,6 +50,7 @@
 	} from 'lucide-svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import { type DataRecord, PropSortDir } from '$utils/types'
+	import { dataTypeDefinitions } from '$comps/grid/grid'
 
 	/* icons source -  https://lucide.dev/icons/ */
 
@@ -75,6 +77,7 @@
 		circleuserround: CircleUserRound,
 		clipboardpen: ClipboardPen,
 		clipboardplus: ClipboardPlus,
+		database: Database,
 		eye: Eye,
 		eyeoff: EyeOff,
 		filechartcolumnincreasing: FileChartColumnIncreasing,

@@ -1,13 +1,9 @@
 <script lang="ts">
-	import {
-		State,
-		StatePacket,
-		StatePacketAction,
-		StateTarget
-	} from '$comps/app/types.appState.svelte'
+	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
 	import { TokenApiQueryData, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import {
+		CodeAction,
 		ContextKey,
 		DataObjComponent,
 		DataObjData,
@@ -103,7 +99,7 @@
 			sm.change({
 				confirmType: TokenAppDoActionConfirmType.statusChanged,
 				packet: new StatePacket({
-					action: StatePacketAction.openNode,
+					action: CodeAction.openNode,
 					token
 				}),
 				target: StateTarget.feature

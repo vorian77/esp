@@ -2,7 +2,6 @@
 	import {
 		State,
 		StatePacket,
-		StatePacketAction,
 		StateSurfaceEmbedShell,
 		StateSurfaceModalEmbed,
 		StateTarget
@@ -27,6 +26,7 @@
 	import 'ag-grid-charts-enterprise'
 	import { LicenseManager } from 'ag-grid-charts-enterprise'
 	import {
+		CodeAction,
 		ContextKey,
 		DataManager,
 		DataObj,
@@ -80,7 +80,7 @@
 	let isSelect = $derived(sm instanceof StateSurfaceModalEmbed)
 
 	$effect(() => {
-		const packet = sm.consume(StatePacketAction.gridDownload)
+		const packet = sm.consume(CodeAction.doListDownload)
 		if (packet)
 			(async () => {
 				await gridDownload()
@@ -346,7 +346,7 @@
 			sm.change({
 				confirmType: TokenAppDoActionConfirmType.none,
 				packet: new StatePacket({
-					action: StatePacketAction.modalSelectOpen,
+					action: CodeAction.modalSelectOpen,
 					token: new TokenAppModalSelect({
 						columnDefs: parms.columnDefs,
 						fModalClose,
