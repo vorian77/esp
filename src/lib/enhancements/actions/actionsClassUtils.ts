@@ -1,29 +1,36 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { FieldCustomAction } from '$comps/form/fieldCustom'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiQueryData } from '$utils/types.token'
-import { DataObjData, ParmsValuesType, ResponseBody } from '$utils/types'
+import {
+	CodeActionType,
+	DataObjData,
+	type DataRecord,
+	ParmsValuesType,
+	ResponseBody,
+	strRequired
+} from '$utils/types'
+import { type FCodeActionClass } from '$comps/app/types.appStateActions'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionCore.ts'
 
-export default async function action(sm: State, field: FieldCustomAction, data: any) {
-	const type = field.type
-	const value = field.value
+const errorFunction = (codeActionType: CodeActionType) => `${FILENAME}.${codeActionType}`
 
-	switch (type.toLowerCase()) {
-		case 'dbexpression':
-			await processDbExpr(sm, value)
+export default async function action(parms: FCodeActionClass) {
+	switch (parms.actionType) {
+		case CodeActionType.dbexpression:
+			const expr = strRequired(parms.data.value, errorFunction(parms.actionType), 'expr')
+			await processDbExpr(parms.sm, expr)
 			break
 
-		case 'none':
+		case CodeActionType.none:
 			break
 
 		default:
 			error(500, {
 				file: FILENAME,
-				function: 'action-type',
-				message: `No case defined for action type: ${type}`
+				function: 'default',
+				message: `No case defined for codeActionType: ${parms.actionType}`
 			})
 	}
 }

@@ -181,11 +181,11 @@ function initTaskMyAccount(init: InitDb) {
 				columnName: 'custom_element',
 				customElement: {
 					action: {
-						method: 'auth',
-						type: 'page',
-						value: 'data_obj_auth_reset_password_account'
+						class: 'ct_sys_code_action_class_do_field_auth',
+						type: 'page'
 					},
-					label: 'Reset Password?'
+					label: 'Reset Password?',
+					value: 'data_obj_auth_reset_password_account'
 				},
 				isDisplayable: true,
 				orderDisplay: 1060,
@@ -258,8 +258,12 @@ function initDataObjLogin(init: InitDb) {
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
-					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_login' },
-					label: 'Log in'
+					action: {
+						class: 'ct_sys_code_action_class_do_field_auth',
+						type: 'submit'
+					},
+					label: 'Log in',
+					value: 'data_obj_auth_login'
 				},
 				isDisplayable: true,
 				orderDisplay: 40,
@@ -271,8 +275,12 @@ function initDataObjLogin(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: { method: 'auth', type: 'page', value: 'data_obj_auth_reset_password_login' },
-					label: 'Forgot Password?'
+					action: {
+						class: 'ct_sys_code_action_class_do_field_auth',
+						type: 'page'
+					},
+					label: 'Forgot Password?',
+					value: 'data_obj_auth_reset_password_login'
 				},
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -284,9 +292,13 @@ function initDataObjLogin(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: { method: 'auth', type: 'page', value: 'data_obj_auth_signup' },
+					action: {
+						class: 'ct_sys_code_action_class_do_field_auth',
+						type: 'page'
+					},
 					label: 'Sign up',
-					prefix: 'Need an account?'
+					prefix: 'Need an account?',
+					value: 'data_obj_auth_signup'
 				},
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -350,8 +362,12 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
-					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_reset_password_account' },
-					label: 'Confirm Mobile Phone Number'
+					action: {
+						class: 'ct_sys_code_action_class_do_field_auth',
+						type: 'submit'
+					},
+					label: 'Confirm Mobile Phone Number',
+					value: 'data_obj_auth_reset_password_account'
 				},
 				isDisplayable: true,
 				orderDisplay: 40,
@@ -429,8 +445,12 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
-					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_reset_password_login' },
-					label: 'Confirm Mobile Phone Number'
+					action: {
+						class: 'ct_sys_code_action_class_do_field_auth',
+						type: 'submit'
+					},
+					label: 'Confirm Mobile Phone Number',
+					value: 'data_obj_auth_reset_password_login'
 				},
 				isDisplayable: true,
 				orderDisplay: 40,
@@ -454,9 +474,13 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: { method: 'auth', type: 'page', value: 'data_obj_auth_login' },
+					action: {
+						class: 'ct_sys_code_action_class_do_field_auth',
+						type: 'page'
+					},
 					label: 'Log in',
-					prefix: 'Already have an account?'
+					prefix: 'Already have an account?',
+					value: 'data_obj_auth_login'
 				},
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -514,8 +538,12 @@ function initDataObjVerify(init: InitDb) {
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
-					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_verify_phone_mobile' },
-					label: 'Verify'
+					action: {
+						class: 'ct_sys_code_action_class_do_field_auth',
+						type: 'submit'
+					},
+					label: 'Verify',
+					value: 'data_obj_auth_verify_phone_mobile'
 				},
 				isDisplayable: true,
 				orderDisplay: 40,
@@ -527,7 +555,7 @@ function initDataObjVerify(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: { method: 'auth', type: 'resend_code' },
+					action: { class: 'ct_sys_code_action_class_do_field_auth', type: 'resend_code' },
 					label: 'Resend Security Code'
 				},
 				isDisplayable: true,
@@ -601,8 +629,12 @@ function initDataObjSignup(init: InitDb) {
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
-					action: { method: 'auth', type: 'submit', value: 'data_obj_auth_signup' },
-					label: 'Sign up'
+					action: {
+						class: 'ct_sys_code_action_class_do_field_auth',
+						type: 'submit'
+					},
+					label: 'Sign up',
+					value: 'data_obj_auth_signup'
 				},
 				isDisplayable: true,
 				orderDisplay: 70,
@@ -624,9 +656,13 @@ function initDataObjSignup(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: { method: 'auth', type: 'page', value: 'data_obj_auth_login' },
+					action: {
+						class: 'ct_sys_code_action_class_do_field_auth',
+						type: 'page'
+					},
 					label: 'Log in',
-					prefix: 'Already have an account?'
+					prefix: 'Already have an account?',
+					value: 'data_obj_auth_login'
 				},
 				isDisplayable: true,
 				orderDisplay: 90,

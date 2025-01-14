@@ -2,6 +2,8 @@ import { App } from '$comps/app/types.app.svelte'
 import { required, strRequired, valueOrDefault } from '$utils/utils'
 import {
 	CodeAction,
+	CodeActionClass,
+	CodeActionType,
 	DataManager,
 	DataObj,
 	DataObjConfirm,
@@ -37,6 +39,7 @@ import { RawDataObjActionField, RawDataObjParent } from '$comps/dataObj/types.ra
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { booleanOrFalse, ResponseBody, strOptional } from '$utils/types'
+import { FCodeActionState, fActions } from '$comps/app/types.appStateActions'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/app/types.appState.ts'
@@ -79,6 +82,7 @@ export class State {
 	data?: DataObj
 	dm?: DataManager = new DataManager()
 	dataObjState?: DataObj
+	// fActions: Function = fActions
 	fChangeCallback?: Function
 	layoutComponent: StateLayoutComponent = StateLayoutComponent.layoutContent
 	layoutHeader: StateLayoutHeader = new StateLayoutHeader({})
@@ -97,6 +101,9 @@ export class State {
 		const clazz = 'State'
 		obj = valueOrDefault(obj, {})
 		this.changeProperties(obj)
+	}
+	async triggerAction(parms: FCodeActionState) {
+		// return await this.fActions(parms)
 	}
 
 	change(obj: any) {
@@ -155,8 +162,8 @@ export class State {
 	closeModal() {
 		this.storeModal.close()
 	}
-	consume(actions: CodeAction | CodeAction[]) {
-		if (this.packet && actions.includes(this.packet.action)) {
+	consume(actions: CodeActionType | CodeActionType[]) {
+		if (this.packet && actions.includes(this.packet.actionType)) {
 			const packet = this.packet
 			this.packet = undefined
 			return packet
@@ -235,7 +242,7 @@ export class State {
 				isDrawerClose: true
 			},
 			packet: new StatePacket({
-				action: CodeAction.doOpen,
+				actionType: CodeActionType.doOpen,
 				token
 			}),
 			target: StateTarget.feature
@@ -291,7 +298,7 @@ export class State {
 				isDataObj: true
 			},
 			packet: new StatePacket({
-				action: CodeAction.doOpen,
+				actionType: CodeActionType.doOpen,
 				token: new TokenAppDataObjName({ dataObjName, queryType: TokenApiQueryType.retrieve })
 			})
 		})
@@ -325,7 +332,7 @@ export class State {
 				isRowStatus: true
 			},
 			packet: new StatePacket({
-				action: CodeAction.modalEmbed,
+				actionType: CodeActionType.modalEmbed,
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
 						dataObjId: fieldEmbed.dataObjModalId,
@@ -382,7 +389,7 @@ export class State {
 				isDataObj: true
 			},
 			packet: new StatePacket({
-				action: CodeAction.modalEmbed,
+				actionType: CodeActionType.modalEmbed,
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
 						dataObjId: fieldEmbed.dataObjListID,
@@ -420,7 +427,7 @@ export class State {
 				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.selectLabel}`
 			},
 			packet: new StatePacket({
-				action: CodeAction.modalSelectSurface,
+				actionType: CodeActionType.modalSelectSurface,
 				token
 			}),
 			parmsState
@@ -486,13 +493,13 @@ export class StateLayoutHeader {
 	}
 }
 export class StatePacket {
-	action: CodeAction
+	actionType: CodeActionType
 	callback?: Function
 	token?: Token
 	constructor(obj: any) {
 		const clazz = 'StatePacket'
 		obj = valueOrDefault(obj, {})
-		this.action = required(obj.action, clazz, 'action')
+		this.actionType = required(obj.actionType, clazz, 'actionType')
 		this.callback = obj.callback
 		this.token = valueOrDefault(obj.token, undefined)
 	}
@@ -515,7 +522,7 @@ export class StateSurfaceEmbedField extends StateSurfaceEmbed {
 		obj = valueOrDefault(obj, {})
 		this.nodeType = NodeType.object
 		this.packet = new StatePacket({
-			action: CodeAction.embedField,
+			actionType: CodeActionType.embedField,
 			token: new TokenApiQuery(
 				required(obj.queryType, clazz, 'queryType'),
 				required(obj.dataObjSource, clazz, 'dataObjSource'),

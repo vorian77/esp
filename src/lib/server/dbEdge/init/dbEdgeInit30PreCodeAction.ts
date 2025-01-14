@@ -227,3 +227,12 @@ function initCodeActionsNav(init: InitDb) {
 		order: 0
 	})
 }
+
+function initCodeActionsUtils(init: InitDb) {
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_utils',
+		name: 'none',
+		order: 0
+	})
+}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import srcLogo from '$assets/org_logo_sys.png'
 	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
-	import { CodeAction, ContextKey, Node, userSetId } from '$utils/types'
+	import { CodeActionType, ContextKey, Node, userSetId } from '$utils/types'
 	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
 	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
 	import { TokenApiQueryType, TokenAppDataObjName } from '$utils/types.token'
@@ -37,7 +37,7 @@
 				storeDrawer,
 				storeToast,
 				packet: new StatePacket({
-					action: CodeAction.doOpen,
+					actionType: CodeActionType.doOpen,
 					token: new TokenAppDataObjName({
 						dataObjName: dataObj,
 						queryType: TokenApiQueryType.preset

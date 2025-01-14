@@ -1,5 +1,5 @@
 import { Field, FieldAccess, FieldColor, PropsFieldCreate } from '$comps/form/field'
-import { memberOfEnum, required, strRequired, valueOrDefault } from '$utils/types'
+import { CodeAction, memberOfEnum, required, strRequired, valueOrDefault } from '$utils/types'
 import {
 	PropNamePrefixType,
 	RawDataObjPropDisplay,
@@ -28,6 +28,7 @@ export class FieldCustom extends Field {
 }
 
 export class FieldCustomAction extends FieldCustom {
+	action: CodeAction
 	enhancement: Function | undefined
 	method: string
 	type: string

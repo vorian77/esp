@@ -34,4 +34,9 @@ function initCodeTypes(init: InitDb) {
 		name: 'ct_sys_code_action_class_nav',
 		parent: 'ct_sys_code_action_class'
 	})
+	init.addTrans('sysCodeType', {
+		owner: 'sys_system_old',
+		name: 'ct_sys_code_action_class_utils',
+		parent: 'ct_sys_code_action_class'
+	})
 }

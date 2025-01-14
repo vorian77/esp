@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CodeAction, ContextKey, required } from '$utils/types'
+	import { CodeActionType, ContextKey, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { AppLevelCrumb } from '$comps/app/types.app.svelte'
 	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
@@ -15,7 +15,7 @@
 		sm.change({
 			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
-				action: CodeAction.navCrumbs,
+				actionType: CodeActionType.navCrumbs,
 				token: new TokenAppIndex({
 					index
 				})

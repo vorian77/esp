@@ -3,7 +3,7 @@
 	import { TokenApiQueryData, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import {
-		CodeAction,
+		CodeActionType,
 		ContextKey,
 		DataObjComponent,
 		DataObjData,
@@ -99,7 +99,7 @@
 			sm.change({
 				confirmType: TokenAppDoActionConfirmType.statusChanged,
 				packet: new StatePacket({
-					action: CodeAction.openNode,
+					actionType: CodeActionType.openNode,
 					token
 				}),
 				target: StateTarget.feature

@@ -1,6 +1,6 @@
 import {
 	booleanOrDefault,
-	CodeAction,
+	CodeActionType,
 	memberOfEnum,
 	Node,
 	RawMenu,
@@ -120,7 +120,7 @@ export class NavMenuData {
 						confirmType: TokenAppDoActionConfirmType.statusChanged,
 						// parmsState: { programId: this.getProgramId(node) },
 						packet: new StatePacket({
-							action: CodeAction.openNode,
+							actionType: CodeActionType.openNode,
 							token: new TokenAppNode({ node })
 						}),
 						target: StateTarget.feature
@@ -131,7 +131,7 @@ export class NavMenuData {
 					this.sm.change({
 						confirmType: TokenAppDoActionConfirmType.statusChanged,
 						packet: new StatePacket({
-							action: CodeAction.openNode,
+							actionType: CodeActionType.openNode,
 							token: task.getTokenNode(this.sm.user)
 						}),
 						target: StateTarget.feature

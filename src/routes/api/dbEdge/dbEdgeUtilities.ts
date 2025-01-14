@@ -4,6 +4,11 @@ import { TokenApiId, TokenApiIds } from '$utils/types.token'
 import { TokenApiDbTableColumns, TokenApiUserId, TokenApiUserPref } from '$utils/types.token'
 import { debug } from '$utils/utils.debug'
 
+const shapeCodeAction = e.shape(e.sys_core.SysCodeAction, (ca) => ({
+	_class: ca.codeType.name,
+	_type: ca.name
+}))
+
 const shapeDataObjActionFieldGroup = e.shape(e.sys_core.SysDataObjActionFieldGroup, (g) => ({
 	_actionFieldItems: e.select(g.actionFieldItems, (i) => ({
 		_action: e.select(i.action, (a) => ({
@@ -20,8 +25,7 @@ const shapeDataObjActionFieldGroup = e.shape(e.sys_core.SysDataObjActionFieldGro
 				isRequired: true
 			})),
 			_codeAction: e.select(a.codeAction, (ca) => ({
-				_class: ca.codeType.name,
-				name: true
+				...shapeCodeAction(ca)
 			})),
 			_codeActionFieldTriggerEnable: a.codeActionFieldTriggerEnable.name,
 			_codeColor: a.codeColor.name,
@@ -263,6 +267,9 @@ export async function getDataObjById(token: TokenApiId) {
 				_codeColor: doc.codeColor.name,
 				_codeFieldElement: doc.codeFieldElement.name,
 				_customCol: e.select(doc, (c) => ({
+					_codeAction: e.select(c.codeAction, (ca) => ({
+						...shapeCodeAction(ca)
+					})),
 					_customColCodeColor: c.customColCodeColor.name,
 					customColActionMethod: true,
 					customColActionType: true,

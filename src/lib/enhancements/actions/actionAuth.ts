@@ -1,7 +1,7 @@
 import { State, StatePacket } from '$comps/app/types.appState.svelte'
 import { FieldCustomAction } from '$comps/form/fieldCustom'
 import type { DataRecord, ResponseBody } from '$utils/types'
-import { CodeAction, userSetId } from '$utils/types'
+import { CodeActionType, userSetId } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import {
 	TokenApiDbDataObjSource,
@@ -150,7 +150,7 @@ export default async function action(sm: State, field: FieldCustomAction, data: 
 async function changeDataObj(sm: State, dataObjName: string) {
 	sm.changeProperties({
 		packet: new StatePacket({
-			action: CodeAction.doOpen,
+			actionType: CodeActionType.doOpen,
 			token: new TokenAppDataObjName({
 				dataObjName,
 				queryType: TokenApiQueryType.preset

@@ -1991,7 +1991,7 @@ function initTaskSsrLegal(init: InitDb) {
 				columnName: 'custom_element',
 				customElement: {
 					action: {
-						method: 'core',
+						method: 'ct_sys_code_action_class_utils',
 						type: 'dbExpression',
 						value: `UPDATE default::SysPerson FILTER .id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id SET { isLegalAgreed := true}`
 					},
@@ -2006,7 +2006,7 @@ function initTaskSsrLegal(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: { method: 'core', type: 'page', value: '/' },
+					action: { method: 'ct_sys_code_action_class_utils', type: 'page', value: '/' },
 					label: 'Decline'
 				},
 				isDisplayable: true,
@@ -2292,9 +2292,8 @@ function initTaskSsrWelcome(init: InitDb) {
 				columnName: 'custom_element',
 				customElement: {
 					action: {
-						method: 'core',
-						type: 'start',
-						value: ``
+						method: 'ct_sys_code_action_class_utils',
+						type: 'none'
 					},
 					label: 'Get Started!'
 				},

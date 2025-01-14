@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CodeAction, ContextKey, required } from '$utils/types'
+	import { CodeActionType, ContextKey, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { type AppLevelRowStatus, AppRowActionType } from '$comps/app/types.app.svelte'
 	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
@@ -19,7 +19,7 @@
 		sm.change({
 			confirmType: TokenAppDoActionConfirmType.statusChanged,
 			packet: new StatePacket({
-				action: CodeAction.navRow,
+				actionType: CodeActionType.navRow,
 				token: new TokenAppRow({ rowAction })
 			}),
 			target: StateTarget.feature

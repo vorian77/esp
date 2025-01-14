@@ -230,9 +230,22 @@ export async function addDataObj(data: any) {
 						),
 
 						/* custom column */
+						codeAction: e.select(
+							e.sys_core.getCodeAction(
+								e.cast(
+									e.str,
+									e.json_get(e.json_get(e.json_get(f, 'customElement'), 'action'), 'class')
+								),
+								e.cast(
+									e.str,
+									e.json_get(e.json_get(e.json_get(f, 'customElement'), 'action'), 'type')
+								)
+							)
+						),
+
 						customColActionMethod: e.cast(
 							e.str,
-							e.json_get(e.json_get(e.json_get(f, 'customElement'), 'action'), 'method')
+							e.json_get(e.json_get(e.json_get(f, 'customElement'), 'action'), 'class')
 						),
 						customColActionType: e.cast(
 							e.str,
@@ -240,7 +253,7 @@ export async function addDataObj(data: any) {
 						),
 						customColActionValue: e.cast(
 							e.str,
-							e.json_get(e.json_get(e.json_get(f, 'customElement'), 'action'), 'value')
+							e.json_get(e.json_get(f, 'customElement'), 'value')
 						),
 						customColAlign: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'align')),
 						customColCodeColor: e.select(

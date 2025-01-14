@@ -3,6 +3,7 @@
 	import { getContext } from 'svelte'
 	import { State } from '$comps/app/types.appState.svelte'
 	import { FieldCustomActionButton } from '$comps/form/fieldCustom'
+	import { FCodeActionState } from '$comps/app/types.appStateActions'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/form/FormElCustomActionButton.svelte'
@@ -18,8 +19,13 @@
 	let field = $derived(parms.field) as FieldCustomActionButton
 
 	async function action() {
-		const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
-		await enhancement(sm, field, dataRecord)
+		await sm.triggerAction(
+			new FCodeActionState(
+				field.action.actionClass,
+				field.action.actionType,
+				new DataRecord({ dataRecord, value: field.value })
+			)
+		)
 	}
 </script>
 

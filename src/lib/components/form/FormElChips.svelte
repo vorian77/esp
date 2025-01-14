@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {
-		CodeAction,
+		CodeActionType,
 		ContextKey,
 		DataManager,
 		DataObj,
@@ -61,7 +61,7 @@
 		sm.change({
 			confirmType: TokenAppDoActionConfirmType.none,
 			packet: new StatePacket({
-				action: CodeAction.modalSelectOpen,
+				actionType: CodeActionType.modalSelectOpen,
 				token: new TokenAppModalSelect({
 					columnDefs: linkItemsSource.columnDefs,
 					fModalClose,

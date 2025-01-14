@@ -1,5 +1,6 @@
 import {
 	CodeAction,
+	CodeActionType,
 	ContextKey,
 	booleanOrFalse,
 	DataManager,
@@ -303,7 +304,7 @@ export class App {
 		}
 		return this
 	}
-	async saveDetail(sm: State, codeAction: CodeAction, token: TokenAppDo) {
+	async saveDetail(sm: State, codeActionType: CodeActionType, token: TokenAppDo) {
 		const clazz = `${FILENAME}.saveDetail`
 		const currTab = this.getCurrTab()
 		if (currTab && currTab.dataObj && sm.dm) {
@@ -311,8 +312,8 @@ export class App {
 
 			const tabParent = this.getCurrTabParentTab()
 			if (tabParent && tabParent.dataObj) {
-				switch (codeAction) {
-					case CodeAction.doDetailDelete:
+				switch (codeActionType) {
+					case CodeActionType.doDetailDelete:
 						if (currTab.dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)) {
 							if (!tabParent || !tabParent.listHasData()) {
 								this.popLevel(sm)
@@ -364,7 +365,7 @@ export class App {
 						}
 						break
 
-					case CodeAction.doDetailSave:
+					case CodeActionType.doDetailSave:
 						if (!(await this.tabQueryDetailData(sm, TokenApiQueryType.save, currTab.dataObj.data)))
 							return this
 
@@ -387,13 +388,13 @@ export class App {
 						error(500, {
 							file: FILENAME,
 							function: 'App.detailUpdate',
-							message: `No case defined for CodeAction: ${codeAction}`
+							message: `No case defined for codeActionType: ${codeActionType}`
 						})
 				}
 			} else {
 				// no parent tab (orphan detail record)
-				switch (codeAction) {
-					case CodeAction.doDetailDelete:
+				switch (codeActionType) {
+					case CodeActionType.doDetailDelete:
 						// <todo> - 241019 - this path must be tested - only example "My Account" which doesn't have Delete option
 						if (!currTab.dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)) {
 							currTab.dataObj.data.rowsSave.setDetailRecordStatus(DataRecordStatus.delete)
@@ -405,7 +406,7 @@ export class App {
 						this.popLevel(sm)
 						break
 
-					case CodeAction.doDetailSave:
+					case CodeActionType.doDetailSave:
 						if (!(await this.tabQueryDetailData(sm, TokenApiQueryType.save, currTab.dataObj.data)))
 							return this
 						break
@@ -414,7 +415,7 @@ export class App {
 						error(500, {
 							file: FILENAME,
 							function: 'App.detailUpdate',
-							message: `No case defined for CodeAction: ${codeAction}`
+							message: `No case defined for codeActionType: ${codeActionType}`
 						})
 				}
 			}

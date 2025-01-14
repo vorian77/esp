@@ -1,6 +1,7 @@
 import { State } from '$comps/app/types.appState.svelte'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiUserId } from '$utils/types.token'
+import { valueOrDefault, memberOfEnum } from '$utils/utils.model'
 
 export async function adminDbReset(sm: State) {
 	// <todo> - 240125
@@ -12,7 +13,24 @@ export function capitalizeFirstLetter(text: string) {
 	return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
-export enum CodeAction {
+export class CodeAction {
+	actionClass: CodeActionClass
+	actionType: CodeActionType
+	constructor(obj: any) {
+		obj = valueOrDefault(obj, {})
+		const clazz = 'CodeAction'
+		this.actionClass = memberOfEnum(
+			obj._class,
+			clazz,
+			'actionClass',
+			'CodeActionClass',
+			CodeActionClass
+		)
+		this.actionType = memberOfEnum(obj._type, clazz, 'actionType', 'CodeActionType', CodeActionType)
+	}
+}
+
+export enum CodeActionType {
 	// dataObj - group item
 	doDetailDelete = 'doDetailDelete',
 	doDetailMigrate = 'doDetailMigrate',
@@ -53,7 +71,12 @@ export enum CodeAction {
 	navRow = 'navRow',
 	navTab = 'navTab',
 	openNode = 'openNode',
-	none = 'none'
+
+	// utils
+	dbexpression = 'dbexpression',
+
+	// shared
+	none = 'none' // nav, utils
 }
 
 export enum CodeActionClass {
@@ -61,7 +84,8 @@ export enum CodeActionClass {
 	ct_sys_code_action_class_do_field_auth = 'ct_sys_code_action_class_do_field_auth',
 	ct_sys_code_action_class_do_group_item = 'ct_sys_code_action_class_do_group_item',
 	ct_sys_code_action_class_modal = 'ct_sys_code_action_class_modal',
-	ct_sys_code_action_class_nav = 'ct_sys_code_action_class_nav'
+	ct_sys_code_action_class_nav = 'ct_sys_code_action_class_nav',
+	ct_sys_code_action_class_utils = 'ct_sys_code_action_class_utils'
 }
 
 export enum ContextKey {

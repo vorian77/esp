@@ -5,7 +5,7 @@ import {
 	FieldEmbedListEdit,
 	FieldEmbedListSelect
 } from '$comps/form/fieldEmbed'
-import { CodeAction, required } from '$utils/types'
+import { CodeActionType, required } from '$utils/types'
 import { StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
 
 export class FieldEmbedShell extends Field {
@@ -18,7 +18,7 @@ export class FieldEmbedShell extends Field {
 		const dataObj = required(props.parms.dataObj, clazz, 'dataObj')
 
 		this.stateShell = new StateSurfaceEmbedShell({
-			action: CodeAction.embedShell,
+			action: CodeActionType.embedShell,
 			dataObjState: dataObj,
 			embedField: this
 			// stateRoot: props.sm

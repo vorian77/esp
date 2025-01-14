@@ -1,11 +1,13 @@
 import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
 import {
 	CodeAction,
+	CodeActionType,
 	CodeActionClass,
 	DataManager,
 	DataObj,
 	DataObjConfirm,
 	DataObjSaveMode,
+	debug,
 	required
 } from '$utils/types'
 import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
@@ -20,7 +22,6 @@ export class DataObjActionField {
 	actionFieldConfirms: DataObjActionFieldConfirm[]
 	actionFieldShows: DataObjActionFieldShow[]
 	codeAction: CodeAction
-	codeActionClass: CodeActionClass
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
 	fieldColor: FieldColor
 	header: string
@@ -33,7 +34,6 @@ export class DataObjActionField {
 		this.actionFieldConfirms = rawAction.actionFieldConfirms
 		this.actionFieldShows = rawAction.actionFieldShows
 		this.codeAction = rawAction.codeAction
-		this.codeActionClass = rawAction.codeActionClass
 		this.codeActionFieldTriggerEnable = rawAction.codeActionFieldTriggerEnable
 		this.fieldColor = rawAction.fieldColor
 		this.header = rawAction.header
@@ -87,7 +87,7 @@ export class DataObjActionField {
 			confirm,
 			confirmType,
 			packet: new StatePacket({
-				action: this.codeAction,
+				actionType: this.codeAction.actionType,
 				token: new TokenAppDo({
 					dataObj,
 					sm

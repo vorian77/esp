@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {
-		CodeAction,
+		CodeActionType,
 		ContextKey,
 		DataManager,
 		DataObj,
@@ -38,7 +38,9 @@
 		dataObjId
 			? dataObj.actionsField.some(
 					(a: DataObjActionField) =>
-						[CodeAction.doDetailSave, CodeAction.doListSelfSave].includes(a.codeAction) &&
+						[CodeActionType.doDetailSave, CodeActionType.doListSelfSave].includes(
+							a.codeAction.actionType
+						) &&
 						dm.isStatusChanged() &&
 						!dataObj.isFieldEmbed
 				)

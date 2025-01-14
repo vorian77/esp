@@ -90,14 +90,14 @@ export class DataObj {
 	}
 
 	actionsFieldTrigger(codeAction: CodeAction, sm: State) {
-		const action = this.actionsField.find((f) => f.codeAction === codeAction)
+		const action = this.actionsField.find((f) => f.codeAction.actionType === codeAction.actionType)
 		if (action) {
 			action.trigger(sm, this)
 		} else {
 			error(500, {
 				file: FILENAME,
 				function: 'DataObj.actionsFieldTrigger',
-				message: `Field for CodeAction: ${codeAction} not found.`
+				message: `Field for CodeAction.name: ${codeAction.actionType} not found.`
 			})
 		}
 	}

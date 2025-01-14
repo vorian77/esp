@@ -4,6 +4,7 @@ import {
 	booleanOrFalse,
 	booleanRequired,
 	CodeAction,
+	CodeActionType,
 	CodeActionClass,
 	DataObjCardinality,
 	DataObjSort,
@@ -202,7 +203,6 @@ export class RawDataObjActionField {
 	actionFieldConfirms: DataObjActionFieldConfirm[]
 	actionFieldShows: DataObjActionFieldShow[]
 	codeAction: CodeAction
-	codeActionClass: CodeActionClass
 	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
 	fieldColor: FieldColor
 	header: string
@@ -213,20 +213,7 @@ export class RawDataObjActionField {
 		obj = valueOrDefault(obj._action, {})
 		this.actionFieldConfirms = arrayOfClass(DataObjActionFieldConfirm, obj._actionFieldConfirms)
 		this.actionFieldShows = arrayOfClass(DataObjActionFieldShow, obj._actionFieldShows)
-		this.codeAction = memberOfEnum(
-			obj._codeAction.name,
-			clazz,
-			'codeAction',
-			'CodeAction',
-			CodeAction
-		)
-		this.codeActionClass = memberOfEnum(
-			obj._codeAction._class,
-			clazz,
-			'codeActionClass',
-			'CodeActionClass',
-			CodeActionClass
-		)
+		this.codeAction = new CodeAction(obj._codeAction)
 		this.codeActionFieldTriggerEnable = memberOfEnum(
 			obj._codeActionFieldTriggerEnable,
 			clazz,
@@ -238,6 +225,7 @@ export class RawDataObjActionField {
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.isListRowAction = booleanOrFalse(obj.isListRowAction, 'isListRowAction')
 		this.name = strRequired(obj.name, clazz, 'name')
+		debug('RawDataObjActionField', 'constructor', this)
 	}
 }
 

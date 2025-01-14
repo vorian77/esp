@@ -3,7 +3,7 @@
 	import { StateSurfaceModal } from '$comps/app/types.appState.svelte'
 	import { TokenAppModalReturn, TokenAppModalReturnType } from '$utils/types.token'
 	import { getModalStore } from '@skeletonlabs/skeleton'
-	import { CodeAction, ContextKey, DataObjCardinality, ParmsValuesType } from '$utils/types'
+	import { CodeActionType, ContextKey, DataObjCardinality, ParmsValuesType } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldEmbedType } from '$comps/form/field'
 	import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField.svelte'
@@ -46,8 +46,8 @@
 	})
 
 	async function onFooterActionClick(action: DataObjActionField) {
-		switch (action.codeAction) {
-			case CodeAction.modalCancel:
+		switch (action.codeAction.actionType) {
+			case CodeActionType.modalCancel:
 				if ($storeModal[0].response)
 					$storeModal[0].response(
 						new TokenAppModalReturn({
@@ -58,7 +58,7 @@
 				storeModal.close()
 				break
 
-			case CodeAction.modalDone:
+			case CodeActionType.modalDone:
 				if ($storeModal[0].response)
 					$storeModal[0].response(
 						new TokenAppModalReturn({
@@ -73,7 +73,7 @@
 				error(500, {
 					file: FILENAME,
 					function: 'onFooterActionClick',
-					message: `No case defined for CodeAction: ${action.codeAction} `
+					message: `No case defined for CodeAction.name: ${action.codeAction.actionType} `
 				})
 		}
 	}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CodeAction, ContextKey, DataManager, required } from '$utils/types'
+	import { CodeActionType, ContextKey, DataManager, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { Field } from '$comps/form/field'
 	import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
@@ -25,7 +25,7 @@
 			name: 'SquareMousePointer',
 			clazz: 'ml-1.5 mt-0.5',
 			color: '#3b79e1',
-			onclick: () => dataObjEmbed.actionsFieldTrigger(CodeAction.doEmbedListSelect, sm),
+			onclick: () => dataObjEmbed.actionsFieldTrigger(CodeActionType.doEmbedListSelect, sm),
 			size: 18,
 			strokeWidth: 2
 		})
