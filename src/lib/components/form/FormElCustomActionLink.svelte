@@ -3,7 +3,7 @@
 	import { getContext } from 'svelte'
 	import { FieldCustomActionLink } from '$comps/form/fieldCustom'
 	import { goto } from '$app/navigation'
-	import { FCodeActionState } from '$comps/app/types.appStateActions'
+	import { type FCodeActionState } from '$comps/app/types.appStateActions'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/form/FormElCustomActionLink.svelte'
@@ -17,13 +17,8 @@
 	let prefix = $derived(field.prefix ? field.prefix + ' ' : '')
 
 	async function action() {
-		await sm.triggerAction(
-			new FCodeActionState(
-				field.action.actionClass,
-				field.action.actionType,
-				new DataRecord({ dataRecord, value: field.value })
-			)
-		)
+		const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
+		await enhancement(sm, field, dataRecord)
 	}
 </script>
 

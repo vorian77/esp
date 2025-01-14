@@ -19,14 +19,19 @@
 	let field = $derived(parms.field) as FieldCustomActionButton
 
 	async function action() {
-		await sm.triggerAction(
-			new FCodeActionState(
-				field.action.actionClass,
-				field.action.actionType,
-				new DataRecord({ dataRecord, value: field.value })
-			)
-		)
+		const enhancement = required(field.enhancement, FILENAME, 'field.enhancement')
+		await enhancement(sm, field, dataRecord)
 	}
+
+	// async function action() {
+	// 	await sm.triggerAction(
+	// 		new FCodeActionState(
+	// 			field.action.actionClass,
+	// 			field.action.actionType,
+	// 			new DataRecord({ dataRecord, value: field.value })
+	// 		)
+	// 	)
+	// }
 </script>
 
 <button
