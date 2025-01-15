@@ -1,0 +1,259 @@
+import { InitDb } from '$server/dbEdge/init/types.init'
+
+export function initPreUserAction(init: InitDb) {
+	/* delete */
+	init.addTrans('sysUserAction', {
+		actionConfirms: [
+			{
+				codeTriggerConfirmConditional: 'saveModeInsert',
+				codeConfirmType: 'always',
+				confirmButtonLabelConfirm: 'Confirm Discard',
+				confirmMessage: 'Are you sure you want to discard your data?',
+				confirmTitle: 'Discard Data'
+			},
+			{
+				codeTriggerConfirmConditional: 'saveModeUpdate',
+				codeConfirmType: 'always',
+				confirmButtonLabelConfirm: 'Confirm Delete',
+				confirmMessage:
+					'Are you sure you want to delete this record (this action cannot be reversed)?',
+				confirmTitle: 'Delete Record'
+			}
+		],
+		actionShows: [
+			{ codeTriggerShow: 'notStatusChanged', isRequired: true },
+			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
+			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
+		],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doDetailDelete' },
+		codeTriggerEnable: 'always',
+		header: 'Delete',
+		name: 'ua_delete_detail',
+		owner: 'sys_system_old'
+	})
+
+	/* dialog */
+	init.addTrans('sysUserAction', {
+		actionConfirms: [
+			{
+				codeConfirmType: 'statusChanged',
+				codeTriggerConfirmConditional: 'none',
+				confirmButtonLabelConfirm: 'Confirm Cancel',
+				confirmMessage: 'Are you sure you want to discard your data?',
+				confirmTitle: 'Cancel'
+			}
+		],
+		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_modal', name: 'modalCancel' },
+		codeTriggerEnable: 'always',
+		header: 'Cancel',
+		name: 'ua_dialog_cancel',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_modal', name: 'modalDone' },
+		codeTriggerEnable: 'always',
+		header: 'Done',
+		name: 'ua_dialog_done',
+		owner: 'sys_system_old'
+	})
+
+	/* edit */
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'never', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doListDetailEdit' },
+		codeTriggerEnable: 'always',
+		header: 'Edit',
+		name: 'ua_edit_list',
+		owner: 'sys_system_old'
+	})
+
+	/* embed */
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'never', isRequired: true }],
+		codeAction: {
+			codeType: 'ct_sys_code_action_class_do_group_item',
+			name: 'doEmbedListConfigEdit'
+		},
+		codeTriggerEnable: 'always',
+		header: 'Edit',
+		name: 'ua_embed_list_config_edit',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [
+			{ codeTriggerShow: 'notStatusChanged', isRequired: true },
+			{ codeTriggerShow: 'statusValid', isRequired: true }
+		],
+		codeAction: {
+			codeType: 'ct_sys_code_action_class_do_group_item',
+			name: 'doEmbedListConfigNew'
+		},
+		codeTriggerEnable: 'always',
+		header: 'New',
+		name: 'ua_embed_list_config_new',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'never', isRequired: true }],
+		codeAction: {
+			codeType: 'ct_sys_code_action_class_do_group_item',
+			name: 'doEmbedListEditParmValue'
+		},
+		codeTriggerEnable: 'always',
+		header: 'Parameter Value',
+		name: 'ua_embed_list_edit_parm_value',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'never', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doEmbedListSelect' },
+		codeTriggerEnable: 'always',
+		header: 'Edit',
+		name: 'ua_embed_list_select',
+		owner: 'sys_system_old'
+	})
+
+	/* export */
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doListDownload' },
+		codeTriggerEnable: 'always',
+		header: 'Download',
+		name: 'ua_download_grid',
+		owner: 'sys_system_old'
+	})
+
+	/* new */
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doDetailNew' },
+		codeTriggerEnable: 'always',
+		header: 'New',
+		name: 'ua_new_detail',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doDetailNew' },
+		codeTriggerEnable: 'always',
+		header: 'New',
+		name: 'ua_new_detail_dialog_detail',
+		owner: 'sys_system_old'
+	})
+
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doListDetailNew' },
+		codeTriggerEnable: 'always',
+		header: 'New',
+		name: 'ua_new_detail_list',
+		owner: 'sys_system_old'
+	})
+
+	/* refresh */
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doListSelfRefresh' },
+		codeTriggerEnable: 'always',
+		header: 'Refresh',
+		name: 'ua_refresh_list',
+		owner: 'sys_system_old'
+	})
+
+	/* save */
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doDetailSaveAs' },
+		codeTriggerEnable: 'always',
+		header: 'Save As',
+		name: 'ua_save_as_detail',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [
+			{ codeTriggerShow: 'statusChanged', isRequired: true },
+			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
+			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
+		],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doDetailSave' },
+		codeTriggerEnable: 'statusValid',
+		header: 'Save',
+		name: 'ua_save_detail',
+		owner: 'sys_system_old'
+	})
+
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [
+			{ codeTriggerShow: 'statusChanged', isRequired: true },
+			{ codeTriggerShow: 'rootDataObj', isRequired: true }
+		],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doSaveCancel' },
+		codeTriggerEnable: 'always',
+		header: 'Cancel Save',
+		name: 'ua_save_cancel',
+		owner: 'sys_system_old'
+	})
+
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [
+			{ codeTriggerShow: 'statusChanged', isRequired: true },
+			{ codeTriggerShow: 'rootDataObj', isRequired: true }
+		],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doListSelfSave' },
+		codeTriggerEnable: 'statusValid',
+		header: 'Save',
+		name: 'ua_save_list',
+		owner: 'sys_system_old'
+	})
+
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'statusChanged', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doListSelfSave' },
+		codeTriggerEnable: 'statusValid',
+		header: 'Save',
+		name: 'ua_save_list_edit',
+		owner: 'sys_system_old'
+	})
+
+	/* special */
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_group_item', name: 'doDetailMigrate' },
+		codeTriggerEnable: 'always',
+		header: 'Migrate',
+		name: 'ua_migrate',
+		owner: 'sys_system_old'
+	})
+
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
+		codeAction: {
+			codeType: 'ct_sys_code_action_class_do_group_item',
+			name: 'doDetailProcessExecute'
+		},
+		codeTriggerEnable: 'always',
+		header: 'Execute',
+		name: 'ua_process_execute',
+		owner: 'sys_system_old'
+	})
+}

@@ -13,7 +13,7 @@
 	import { ContextKey } from '$utils/utils.sys'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	let { data }: { data: PageData } = $props()
+	let { children, data }: { children: any, data: PageData } = $props()
 
 	const DEV_MODE = data.environ === 'dev'
 	const FILENAME = '/$routes/home/+layout.svelte'
@@ -76,6 +76,8 @@
 				{:else if stateTarget === StateTarget.feature}
 					<RootLayoutApp {sm} />
 				{/if}
+			{:else}
+				 {@render children()}
 			{/if}
 		</div>
 	</div>

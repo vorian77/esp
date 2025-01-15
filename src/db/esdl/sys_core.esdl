@@ -147,6 +147,22 @@ module sys_core {
     constraint exclusive on (.name);
   } 
 
+  # dataObj-action
+  type SysDataObjAction extending sys_user::Mgmt {
+    required action: sys_user::SysUserAction;
+    required codeColor: sys_core::SysCode;
+    required isListRowAction: bool;
+    required orderDefine: default::nonNegative;
+  }
+  type SysDataObjActionGroup extending sys_core::SysObj {
+    multi actions: sys_core::SysDataObjAction {
+      on source delete delete target;
+      on target delete allow;
+    };
+    constraint exclusive on (.name);
+  }
+
+  # dataObj-action-field - old
   type SysDataObjActionField extending sys_core::SysObj {
     multi actionFieldConfirms: SysDataObjActionFieldConfirm {
       on source delete delete target;
@@ -162,7 +178,6 @@ module sys_core {
     required isListRowAction: bool;
     constraint exclusive on (.name);
   }
-
   type SysDataObjActionFieldConfirm extending sys_user::Mgmt {
     required codeConfirmType: sys_core::SysCode;
     required codeTriggerConfirmConditional: sys_core::SysCode;
@@ -171,7 +186,6 @@ module sys_core {
     confirmMessage: str;
     confirmTitle: str;
   }
-
   type SysDataObjActionFieldGroup extending sys_core::SysObj {
     multi actionFieldItems: sys_core::SysDataObjActionFieldGroupItem {
       on source delete delete target;
@@ -179,17 +193,16 @@ module sys_core {
     };
     constraint exclusive on (.name);
   }
-  
  type SysDataObjActionFieldGroupItem extending sys_user::Mgmt {
     required action: sys_core::SysDataObjActionField;
     required orderDefine: default::nonNegative;
   }
-
   type SysDataObjActionFieldShow extending sys_user::Mgmt {
     required codeTriggerShow: sys_core::SysCode;
     required isRequired: bool;
   }
 
+  # dataObj-action-query
   type SysDataObjActionQuery extending sys_user::Mgmt {
     required name: str;
     multi parms: SysDataObjActionQueryParm{
@@ -201,12 +214,10 @@ module sys_core {
       on target delete allow;
     };
   }
-  
   type SysDataObjActionQueryParm extending sys_user::Mgmt {
     required key: str;
     required value: str;
   }
-
   type SysDataObjActionQueryTrigger extending sys_user::Mgmt {
     required codeQueryType: sys_core::SysCode;
     required codeTriggerTiming: sys_core::SysCode;
@@ -237,13 +248,13 @@ module sys_core {
   
     # fields - el
     codeAccess: sys_core::SysCode;
-    codeAction: sys_core::SysCode;
     codeAlignmentAlt: sys_core::SysCode;
     codeColor: sys_core::SysCode;
     codeFieldElement: sys_core::SysCode;
 
-    customColActionMethod: str;
-    customColActionType: str;
+    # custom
+    action: sys_user::SysUserAction;
+    codeAction: sys_core::SysCode;
     customColActionValue: str;
     
     customColAlign: str;

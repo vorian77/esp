@@ -1986,7 +1986,7 @@ function initTaskSsrLegal(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeColor: 'green',
+				codeColor: 'secondary',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
@@ -2287,7 +2287,7 @@ function initTaskSsrWelcome(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeColor: 'green',
+				codeColor: 'secondary',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {

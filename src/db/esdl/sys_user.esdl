@@ -13,7 +13,8 @@ module sys_user {
     required modifiedBy: sys_user::SysUser;
   }
 
-   type SysTask extending sys_core::SysObj {
+  # task  
+  type SysTask extending sys_core::SysObj {
     btnStyle: str;
     required codeCategory: sys_core::SysCode;
     codeRenderType: sys_core::SysCode;
@@ -50,20 +51,48 @@ module sys_user {
     constraint exclusive on (.userName);
   }
 
+  # action
+  type SysUserAction extending sys_core::SysObj {
+    multi actionConfirms: sys_user::SysUserActionConfirm {
+      on source delete delete target;
+      on target delete allow;
+    };
+    multi actionShows: sys_user::SysUserActionShow {
+      on source delete delete target;
+      on target delete allow;
+    };
+    required codeAction: sys_core::SysCodeAction;
+    required codeTriggerEnable: sys_core::SysCode;
+    constraint exclusive on (.name);
+  }
+  type SysUserActionConfirm extending sys_user::Mgmt {
+    required codeConfirmType: sys_core::SysCode;
+    required codeTriggerConfirmConditional: sys_core::SysCode;
+    confirmButtonLabelCancel: str;
+    confirmButtonLabelConfirm: str;
+    confirmMessage: str;
+    confirmTitle: str;
+  }
+  type SysUserActionShow extending sys_user::Mgmt {
+    required codeTriggerShow: sys_core::SysCode;
+    required isRequired: bool;
+  }
+
+  # preference
   type SysUserPref extending sys_user::Mgmt {
     required user: sys_user::SysUser;
     required idFeature: uuid;
     required data: json;
     constraint exclusive on ((.user, .idFeature));
   }
-
-   type SysUserPrefType extending sys_user::Mgmt {
+  type SysUserPrefType extending sys_user::Mgmt {
     required codeType: sys_core::SysCode;
     required isActive: bool;
     required user: sys_user::SysUser;
     constraint exclusive on ((.user, .codeType));
   }
   
+  # type
   type SysUserType extending sys_core::SysObj {
     isSelfSignup: bool;
     multi resources: sys_user::SysUserTypeResource {
@@ -79,6 +108,7 @@ module sys_user {
     required resource: sys_core::SysObj;
   }
   
+  # widget
   type SysWidget extending sys_core::SysObj {
     constraint exclusive on (.name);
   }
@@ -91,9 +121,12 @@ module sys_user {
   );
 
   # FUNCTIONS
-   function getRootUser() -> optional sys_user::SysUser
+  function getRootUser() -> optional sys_user::SysUser
     using (select assert_single((select sys_user::SysUser filter .userName = '*ROOTUSER*')));
   
+  function getUserAction(name: str) -> optional sys_user::SysUserAction
+      using (select sys_user::SysUserAction filter .name = name);
+    
   function getUserById(userId: str) -> optional sys_user::SysUser
       using (select sys_user::SysUser filter .id = <uuid>userId);
 

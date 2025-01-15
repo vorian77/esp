@@ -271,8 +271,6 @@ export async function getDataObjById(token: TokenApiId) {
 						...shapeCodeAction(ca)
 					})),
 					_customColCodeColor: c.customColCodeColor.name,
-					customColActionMethod: true,
-					customColActionType: true,
 					customColActionValue: true,
 					customColAlign: true,
 					customColIsSubHeader: true,

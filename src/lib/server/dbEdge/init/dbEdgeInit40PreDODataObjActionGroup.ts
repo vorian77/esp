@@ -1,188 +1,233 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
-export function initPreDataObjActionGroups(init: InitDb) {
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [['noa_save_detail', 0]],
+export function initPreDataObjActionGroup(init: InitDb) {
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 0 }
+		],
 		name: 'doag_auth_my_account',
 		owner: 'sys_system_old'
 	})
 
 	/* base */
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_detail', 0],
-			['noa_save_cancel', 1],
-			['noa_new_detail', 2],
-			['noa_delete_detail', 3]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 },
+			{ action: 'ua_new_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 2 },
+			{ action: 'ua_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 3 }
 		],
 		name: 'doag_detail',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_list', 0],
-			['noa_save_cancel', 1],
-			['noa_new_detail_list', 2],
-			['noa_edit_list', 3],
-			['noa_download_grid', 4]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 },
+			{
+				action: 'ua_new_detail_list',
+				codeColor: 'primary',
+				isListRowAction: false,
+				orderDefine: 2
+			},
+			{ action: 'ua_edit_list', codeColor: 'primary', isListRowAction: true, orderDefine: 3 },
+			{ action: 'ua_download_grid', codeColor: 'primary', isListRowAction: false, orderDefine: 4 }
 		],
 		name: 'doag_list',
 		owner: 'sys_system_old'
 	})
 
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [['noa_save_list_edit', 0]],
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_list_edit', codeColor: 'primary', isListRowAction: true, orderDefine: 0 }
+		],
 		name: 'doag_list_edit',
 		owner: 'sys_system_old'
 	})
 
 	/* dialog */
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [['noa_dialog_done', 0]],
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_dialog_done', codeColor: 'primary', isListRowAction: false, orderDefine: 0 }
+		],
 		name: 'doag_dialog_footer_detail',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_dialog_cancel', 0],
-			['noa_dialog_done', 1]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_dialog_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_dialog_done', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_dialog_footer_list',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_detail', 0],
-			['noa_save_cancel', 1],
-			['noa_new_detail_dialog_detail', 2],
-			['noa_delete_detail', 3]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 },
+			{
+				action: 'ua_new_detail_dialog_detail',
+				codeColor: 'primary',
+				isListRowAction: false,
+				orderDefine: 2
+			},
+			{ action: 'ua_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 3 }
 		],
 		name: 'doag_dialog_form_detail',
 		owner: 'sys_system_old'
 	})
 
 	/* embed */
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_list', 0],
-			['noa_save_cancel', 1],
-			['noa_embed_list_config_new', 2],
-			['noa_embed_list_config_edit', 3]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 },
+			{
+				action: 'ua_embed_list_config_new',
+				codeColor: 'primary',
+				isListRowAction: false,
+				orderDefine: 2
+			},
+			{
+				action: 'ua_embed_list_config_edit',
+				codeColor: 'primary',
+				isListRowAction: true,
+				orderDefine: 3
+			}
 		],
 		name: 'doag_embed_list_config',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_list', 0],
-			['noa_save_cancel', 1]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_embed_list_edit',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_list', 0],
-			['noa_save_cancel', 1],
-			['noa_embed_list_edit_parm_value', 2]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 },
+			{
+				action: 'ua_embed_list_edit_parm_value',
+				codeColor: 'primary',
+				isListRowAction: true,
+				orderDefine: 2
+			}
 		],
 		name: 'doag_embed_list_edit_parm_value',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [['noa_embed_list_select', 0]],
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{
+				action: 'ua_embed_list_select',
+				codeColor: 'primary',
+				isListRowAction: true,
+				orderDefine: 0
+			}
+		],
 		name: 'doag_embed_list_select',
 		owner: 'sys_system_old'
 	})
 
 	/* organizations-user */
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_detail', 0],
-			['noa_save_cancel', 1]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_detail_org_user',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_edit_list', 0],
-			['noa_download_grid', 1]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_edit_list', codeColor: 'primary', isListRowAction: true, orderDefine: 0 },
+			{ action: 'ua_download_grid', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_list_org_user',
 		owner: 'sys_system_old'
 	})
 
 	/* mobile */
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_detail', 0],
-			['noa_save_cancel', 1]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_detail_mobile_save',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_detail', 0],
-			['noa_save_cancel', 1],
-			['noa_delete_detail', 2]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 },
+			{ action: 'ua_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 2 }
 		],
 		name: 'doag_detail_mobile_save_delete',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_list', 0],
-			['noa_save_cancel', 1],
-			['noa_new_detail_list', 2],
-			['noa_edit_list', 3]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 },
+			{
+				action: 'ua_new_detail_list',
+				codeColor: 'primary',
+				isListRowAction: false,
+				orderDefine: 2
+			},
+			{ action: 'ua_edit_list', codeColor: 'primary', isListRowAction: true, orderDefine: 3 }
 		],
 		name: 'doag_list_mobile',
 		owner: 'sys_system_old'
 	})
 
 	/* report */
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_refresh_list', 0],
-			['noa_download_grid', 1]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_refresh_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_download_grid', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_report_render',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_detail', 0],
-			['noa_save_cancel', 1]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_detail_report',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_list', 0],
-			['noa_save_cancel', 1],
-			['noa_edit_list', 2]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 },
+			{ action: 'ua_edit_list', codeColor: 'primary', isListRowAction: true, orderDefine: 2 }
 		],
 		name: 'doag_list_report',
 		owner: 'sys_system_old'
 	})
 
 	/* specialty */
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [
-			['noa_save_detail', 0],
-			['noa_save_cancel', 1],
-			['noa_new_detail', 2],
-			['noa_delete_detail', 3],
-			['noa_migrate', 4]
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_save_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 },
+			{ action: 'ua_new_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 2 },
+			{ action: 'ua_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 3 },
+			{ action: 'ua_migrate', codeColor: 'primary', isListRowAction: false, orderDefine: 4 }
 		],
 		name: 'doag_detail_migrate_define',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionFieldGroup', {
-		actionFieldItems: [['noa_process_execute', 0]],
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_process_execute', codeColor: 'primary', isListRowAction: false, orderDefine: 0 }
+		],
 		name: 'doag_detail_migrate_process',
 		owner: 'sys_system_old'
 	})

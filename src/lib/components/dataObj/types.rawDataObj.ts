@@ -499,8 +499,6 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 }
 export class RawDataObjPropDisplayCustom {
 	codeAction?: CodeAction
-	customColActionMethod?: string
-	customColActionType?: string
 	customColActionValue?: string
 	customColAlign?: string
 	customColCodeColor?: FieldColor
@@ -515,12 +513,6 @@ export class RawDataObjPropDisplayCustom {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjPropDisplayCustom'
 		this.codeAction = classOptional(CodeAction, obj._codeAction)
-		this.customColActionMethod = strOptional(
-			obj.customColActionMethod,
-			clazz,
-			'customColActionMethod'
-		)
-		this.customColActionType = strOptional(obj.customColActionType, clazz, 'customColActionType')
 		this.customColActionValue = strOptional(obj.customColActionValue, clazz, 'customColActionValue')
 		this.customColAlign = strOptional(obj.customColAlign, clazz, 'customColAlign')
 		this.customColCodeColor = classOptional(FieldColor, obj._customColCodeColor)
@@ -581,7 +573,7 @@ export class RawDataObjPropDisplayEmbedListSelect {
 		const btnLabelComplete = strOptional(label, clazz, 'btnLabelComplete')
 		if (btnLabelComplete) {
 			const actionDone = actions.find((action) => {
-				return action.name === 'noa_dialog_done'
+				return action.name === 'ua_dialog_done'
 			})
 			if (actionDone) actionDone.header = btnLabelComplete
 		}

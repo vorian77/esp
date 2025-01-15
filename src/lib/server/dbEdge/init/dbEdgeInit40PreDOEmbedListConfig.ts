@@ -83,7 +83,7 @@ async function initFieldListConfigDataObjActionFieldConfirms(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_action_field_confirm_type',
+				fieldListItemsParmName: 'ct_sys_user_action_confirm_type',
 				linkTable: 'SysCode'
 			},
 			{
@@ -94,7 +94,7 @@ async function initFieldListConfigDataObjActionFieldConfirms(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_action_field_confirm_type',
+				fieldListItemsParmName: 'ct_sys_user_action_confirm_type',
 				linkTable: 'SysCode'
 			},
 			{
@@ -260,7 +260,7 @@ async function initFieldListConfigDataObjActionFieldShows(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_action_field_trigger',
+				fieldListItemsParmName: 'ct_sys_user_action_trigger',
 				linkTable: 'SysCode'
 			},
 			{

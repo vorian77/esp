@@ -1651,7 +1651,7 @@ function initRepParm(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'tagSection',
-				codeColor: 'blue',
+				codeColor: 'primary',
 				columnName: 'custom_section_start',
 				isDisplayable: true,
 				orderDisplay: 120,

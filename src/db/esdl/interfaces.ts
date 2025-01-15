@@ -45,6 +45,24 @@ export namespace sys_user {
     "userTypes": SysUserType[];
     "person": $default.SysPerson;
   }
+  export interface SysUserAction extends sys_core.SysObj {
+    "actionConfirms": SysUserActionConfirm[];
+    "actionShows": SysUserActionShow[];
+    "codeAction": sys_core.SysCodeAction;
+    "codeTriggerEnable": sys_core.SysCode;
+  }
+  export interface SysUserActionConfirm extends Mgmt {
+    "codeConfirmType": sys_core.SysCode;
+    "codeTriggerConfirmConditional": sys_core.SysCode;
+    "confirmButtonLabelCancel"?: string | null;
+    "confirmButtonLabelConfirm"?: string | null;
+    "confirmMessage"?: string | null;
+    "confirmTitle"?: string | null;
+  }
+  export interface SysUserActionShow extends Mgmt {
+    "codeTriggerShow": sys_core.SysCode;
+    "isRequired": boolean;
+  }
   export interface SysUserPref extends Mgmt {
     "user": SysUser;
     "idFeature": string;
@@ -353,6 +371,12 @@ export namespace sys_core {
     "parentTable"?: sys_db.SysTable | null;
     "tables": SysDataObjTable[];
   }
+  export interface SysDataObjAction extends sys_user.Mgmt {
+    "codeColor": SysCode;
+    "orderDefine": number;
+    "action": sys_user.SysUserAction;
+    "isListRowAction": boolean;
+  }
   export interface SysDataObjActionField extends SysObj {
     "codeActionFieldTriggerEnable": SysCode;
     "codeColor"?: SysCode | null;
@@ -379,6 +403,9 @@ export namespace sys_core {
   export interface SysDataObjActionFieldShow extends sys_user.Mgmt {
     "codeTriggerShow": SysCode;
     "isRequired": boolean;
+  }
+  export interface SysDataObjActionGroup extends SysObj {
+    "actions": SysDataObjAction[];
   }
   export interface SysDataObjActionQuery extends sys_user.Mgmt {
     "parms": SysDataObjActionQueryParm[];
@@ -413,8 +440,6 @@ export namespace sys_core {
     "items": SysDataObjColumnItem[];
     "linkColumns": SysDataObjColumnLink[];
     "linkTable"?: sys_db.SysTable | null;
-    "customColActionMethod"?: string | null;
-    "customColActionType"?: string | null;
     "customColActionValue"?: string | null;
     "customColAlign"?: string | null;
     "customColIsSubHeader"?: boolean | null;
@@ -446,6 +471,7 @@ export namespace sys_core {
     "orderDisplay"?: number | null;
     "orderSort"?: number | null;
     "width"?: number | null;
+    "action"?: sys_user.SysUserAction | null;
   }
   export interface SysDataObjColumnItem extends sys_user.Mgmt {
     "data": string;
@@ -994,6 +1020,9 @@ export interface types {
     "Mgmt": sys_user.Mgmt;
     "SysTask": sys_user.SysTask;
     "SysUser": sys_user.SysUser;
+    "SysUserAction": sys_user.SysUserAction;
+    "SysUserActionConfirm": sys_user.SysUserActionConfirm;
+    "SysUserActionShow": sys_user.SysUserActionShow;
     "SysUserPref": sys_user.SysUserPref;
     "SysUserPrefType": sys_user.SysUserPrefType;
     "SysUserType": sys_user.SysUserType;
@@ -1037,11 +1066,13 @@ export interface types {
     "SysCodeAction": sys_core.SysCodeAction;
     "SysCodeType": sys_core.SysCodeType;
     "SysDataObj": sys_core.SysDataObj;
+    "SysDataObjAction": sys_core.SysDataObjAction;
     "SysDataObjActionField": sys_core.SysDataObjActionField;
     "SysDataObjActionFieldConfirm": sys_core.SysDataObjActionFieldConfirm;
     "SysDataObjActionFieldGroup": sys_core.SysDataObjActionFieldGroup;
     "SysDataObjActionFieldGroupItem": sys_core.SysDataObjActionFieldGroupItem;
     "SysDataObjActionFieldShow": sys_core.SysDataObjActionFieldShow;
+    "SysDataObjActionGroup": sys_core.SysDataObjActionGroup;
     "SysDataObjActionQuery": sys_core.SysDataObjActionQuery;
     "SysDataObjActionQueryParm": sys_core.SysDataObjActionQueryParm;
     "SysDataObjActionQueryTrigger": sys_core.SysDataObjActionQueryTrigger;

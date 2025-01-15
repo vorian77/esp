@@ -11,10 +11,12 @@ import { tablesBulk, widgetsBulk } from '$server/dbEdge/init/dbEdgeInit200Utilit
 import {
 	addDataObjActionField,
 	addDataObjActionFieldGroup,
+	addDataObjActionGroup,
 	addDataObjFieldItems,
 	addDataObjFieldEmbedListConfig,
 	addDataObjFieldEmbedListEdit,
-	addDataObjFieldEmbedListSelect
+	addDataObjFieldEmbedListSelect,
+	addUserAction
 } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
 import {
 	addApp,
@@ -123,12 +125,30 @@ export class InitDb {
 		)
 		this.items.push(
 			new InitDbItemObject({
+				name: 'sysUserAction',
+				dataMap: 'name',
+				dbObject: 'sys_user::SysUserAction',
+				fCreate: addUserAction
+			})
+		)
+
+		this.items.push(
+			new InitDbItemObject({
 				name: 'sysDataObjActionField',
 				dataMap: 'name',
 				dbObject: 'sys_core::SysDataObjActionField',
 				fCreate: addDataObjActionField
 			})
 		)
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysDataObjActionGroup',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysDataObjActionGroup',
+				fCreate: addDataObjActionGroup
+			})
+		)
+
 		this.items.push(
 			new InitDbItemObject({
 				name: 'sysDataObjActionFieldGroup',

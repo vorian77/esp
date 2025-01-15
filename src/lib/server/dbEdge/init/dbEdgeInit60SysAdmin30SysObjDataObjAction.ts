@@ -253,7 +253,7 @@ function initDataObjActionField(init: InitDb) {
 				orderDefine: 100,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_action_field_trigger',
+				fieldListItemsParmName: 'ct_sys_user_action_trigger',
 				linkTable: 'SysCode'
 			},
 			{

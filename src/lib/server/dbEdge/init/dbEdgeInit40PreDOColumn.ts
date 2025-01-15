@@ -58,6 +58,21 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
+		header: 'Action - Confirms',
+		isMultiSelect: true,
+		name: 'actionConfirms',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Action - Shows',
+		isMultiSelect: true,
+		name: 'actionShows',
+		owner: 'sys_system_old'
+	})
+
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
 		header: 'Action Field - Confirms',
 		isMultiSelect: true,
 		name: 'actionFieldConfirms',
@@ -77,6 +92,14 @@ export function initPreColumn(init: InitDb) {
 		name: 'actionFieldShows',
 		owner: 'sys_system_old'
 	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Actions',
+		isMultiSelect: true,
+		name: 'actions',
+		owner: 'sys_system_old'
+	})
+
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Action - Submits',
@@ -536,6 +559,13 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
+		header: 'Action - Trigger Enable',
+		isMultiSelect: false,
+		name: 'codeTriggerEnable',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
 		header: 'Trigger - Show',
 		isMultiSelect: false,
 		name: 'codeTriggerShow',
@@ -935,19 +965,6 @@ export function initPreColumn(init: InitDb) {
 		isExcludeUpdate: true,
 		isFormTag: true,
 		name: 'custom_section_start'
-	})
-
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'str',
-		header: 'Custom - Action - Method',
-		name: 'customColActionMethod'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'str',
-		header: 'Custom Action - Type',
-		name: 'customColActionType'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

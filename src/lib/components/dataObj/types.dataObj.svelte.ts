@@ -119,20 +119,12 @@ export class DataObj {
 		dataObj.fields = await dataObj.fieldsCreate(sm, dataObj, queryType)
 		await dataObj.fieldsInit(sm, dataObj)
 
-		enhanceCustomFields(dataObj.fields)
 		const rawDataObj = required(data.rawDataObj, clazz, 'rawDataObj')
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
 
 		return dataObj
 
-		async function enhanceCustomFields(fields: Field[]) {
-			for (const field of fields) {
-				if (field instanceof FieldCustomAction) {
-					await field.initEnhancement()
-				}
-			}
-		}
 		async function getActionQueryFunctions(actions: DataObjActionQuery[]) {
 			let funcs: DataObjActionQueryFunction[] = []
 			for (let i = 0; i < actions.length; i++) {

@@ -33,7 +33,7 @@ function initAppHeaders(init: InitDb) {
 		header: 'Reporting',
 		isGlobalResource: true,
 		name: 'app_hdr_sys_reporting',
-		orderDefine: 20,
+		orderDefine: 10000,
 		owner: 'sys_system_old'
 	})
 

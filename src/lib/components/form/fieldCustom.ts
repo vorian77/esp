@@ -24,9 +24,6 @@ export class FieldCustom extends Field {
 
 export class FieldCustomAction extends FieldCustom {
 	codeAction: CodeAction
-	enhancement: Function | undefined
-	method: string
-	type: string
 	value: string
 	constructor(props: PropsFieldCreate) {
 		const clazz = 'FieldCustomAction'
@@ -37,12 +34,7 @@ export class FieldCustomAction extends FieldCustom {
 			'customCol'
 		)
 		this.codeAction = required(customCol.codeAction, clazz, 'codeAction')
-		this.method = strRequired(customCol.customColActionMethod, clazz, 'method').toLowerCase()
-		this.type = strRequired(customCol.customColActionType, clazz, 'type').toLowerCase()
 		this.value = valueOrDefault(customCol.customColActionValue, '')
-	}
-	async initEnhancement() {
-		// this.enhancement = await getEnhancement(this.method)
 	}
 }
 

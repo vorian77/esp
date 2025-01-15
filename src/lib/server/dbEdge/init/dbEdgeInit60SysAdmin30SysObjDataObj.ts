@@ -236,7 +236,7 @@ function initDataObj(init: InitDb) {
 			/* parent */
 			{
 				codeFieldElement: 'tagSection',
-				codeColor: 'blue',
+				codeColor: 'primary',
 				columnName: 'custom_section_start',
 				isDisplayable: true,
 				orderDisplay: 160,
@@ -312,7 +312,7 @@ function initDataObj(init: InitDb) {
 			/* list */
 			{
 				codeFieldElement: 'tagSection',
-				codeColor: 'blue',
+				codeColor: 'primary',
 				columnName: 'custom_section_start',
 				isDisplayable: true,
 				orderDisplay: 240,
@@ -849,7 +849,7 @@ function initDataObjColumn(init: InitDb) {
 
 			/* Display element */
 			{
-				codeColor: 'blue',
+				codeColor: 'primary',
 				codeFieldElement: 'tagSection',
 				columnName: 'custom_section_start',
 				isDisplayable: true,
@@ -983,7 +983,7 @@ function initDataObjColumn(init: InitDb) {
 			},
 			/* Display element - custom */
 			// {
-			// 	codeColor: 'blue',
+			// 	codeColor: 'primary',
 			// 	codeFieldElement: 'tagSection',
 			// 	columnName: 'custom_section_start',
 			// 	isDisplayable: true,
@@ -997,22 +997,6 @@ function initDataObjColumn(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 500,
 				orderDefine: 500,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'customColActionMethod',
-				isDisplayable: true,
-				orderDisplay: 510,
-				orderDefine: 510,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'customColActionType',
-				isDisplayable: true,
-				orderDisplay: 520,
-				orderDefine: 520,
 				indexTable: 0
 			},
 			{

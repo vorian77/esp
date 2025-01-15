@@ -5,6 +5,7 @@ import {
 	sectionHeader,
 	valueOrDefaultParm
 } from '$routes/api/dbEdge/dbEdge'
+import { debug } from '$utils/types'
 
 export async function addDataObj(data: any) {
 	sectionHeader(`addDataObj - ${data.name}`)
@@ -242,15 +243,6 @@ export async function addDataObj(data: any) {
 								)
 							)
 						),
-
-						customColActionMethod: e.cast(
-							e.str,
-							e.json_get(e.json_get(e.json_get(f, 'customElement'), 'action'), 'class')
-						),
-						customColActionType: e.cast(
-							e.str,
-							e.json_get(e.json_get(e.json_get(f, 'customElement'), 'action'), 'type')
-						),
 						customColActionValue: e.cast(
 							e.str,
 							e.json_get(e.json_get(f, 'customElement'), 'value')
@@ -403,6 +395,42 @@ export async function addDataObjActionFieldGroup(data: any) {
 	return await query.run(client, data)
 }
 
+export async function addDataObjActionGroup(data: any) {
+	sectionHeader(`addDataObjActionGroup - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			actions: e.json,
+			name: e.str,
+			owner: e.str
+		},
+		(p) => {
+			return e.insert(e.sys_core.SysDataObjActionGroup, {
+				actions: e.assert_distinct(
+					e.for(e.json_array_unpack(p.actions), (a) => {
+						return e.insert(e.sys_core.SysDataObjAction, {
+							createdBy: CREATOR,
+							action: e.sys_user.getUserAction(e.cast(e.str, e.json_get(a, 'action'))),
+							codeColor: e.sys_core.getCode(
+								'ct_sys_tailwind_color',
+								e.cast(e.str, e.json_get(a, 'codeColor'))
+							),
+							isListRowAction: e.cast(e.bool, e.json_get(a, 'isListRowAction')),
+							modifiedBy: CREATOR,
+							orderDefine: e.cast(e.int16, e.json_get(a, 'orderDefine'))
+						})
+					})
+				),
+				createdBy: CREATOR,
+				modifiedBy: CREATOR,
+				name: p.name,
+				owner: e.sys_core.getSystemPrime(p.owner)
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
 export async function addDataObjFieldEmbedListConfig(data: any) {
 	sectionHeader(`addDataObjFieldEmbedListConfig - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
@@ -505,13 +533,13 @@ export async function addDataObjActionField(data: any) {
 					return e.insert(e.sys_core.SysDataObjActionFieldConfirm, {
 						codeConfirmType: e.select(
 							e.sys_core.getCode(
-								'ct_sys_do_action_field_confirm_type',
+								'ct_sys_user_action_confirm_type',
 								e.cast(e.str, e.json_get(a, 'codeConfirmType'))
 							)
 						),
 						codeTriggerConfirmConditional: e.select(
 							e.sys_core.getCode(
-								'ct_sys_do_action_field_trigger',
+								'ct_sys_user_action_trigger',
 								e.cast(e.str, e.json_get(a, 'codeTriggerConfirmConditional'))
 							)
 						),
@@ -527,7 +555,7 @@ export async function addDataObjActionField(data: any) {
 					return e.insert(e.sys_core.SysDataObjActionFieldShow, {
 						codeTriggerShow: e.select(
 							e.sys_core.getCode(
-								'ct_sys_do_action_field_trigger',
+								'ct_sys_user_action_trigger',
 								e.cast(e.str, e.json_get(a, 'codeTriggerShow'))
 							)
 						),
@@ -543,7 +571,7 @@ export async function addDataObjActionField(data: any) {
 					)
 				),
 				codeActionFieldTriggerEnable: e.select(
-					e.sys_core.getCode('ct_sys_do_action_field_trigger', p.codeActionFieldTriggerEnable)
+					e.sys_core.getCode('ct_sys_user_action_trigger', p.codeActionFieldTriggerEnable)
 				),
 				codeColor: e.select(e.sys_core.getCode('ct_sys_tailwind_color', p.codeColor)),
 				createdBy: CREATOR,
@@ -597,6 +625,76 @@ export async function addDataObjFieldItems(data: any) {
 					})
 				}),
 				table: e.select(e.sys_db.getTable(p.table))
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
+export async function addUserAction(data: any) {
+	sectionHeader(`addUserAction - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			actionConfirms: e.array(e.json),
+			actionShows: e.array(e.json),
+			codeAction: e.json,
+			codeTriggerEnable: e.str,
+			header: e.str,
+			name: e.str,
+			owner: e.str
+		},
+		(p) => {
+			return e.insert(e.sys_user.SysUserAction, {
+				actionConfirms: e.for(e.array_unpack(p.actionConfirms), (a) => {
+					return e.insert(e.sys_user.SysUserActionConfirm, {
+						codeConfirmType: e.select(
+							e.sys_core.getCode(
+								'ct_sys_user_action_confirm_type',
+								e.cast(e.str, e.json_get(a, 'codeConfirmType'))
+							)
+						),
+						codeTriggerConfirmConditional: e.select(
+							e.sys_core.getCode(
+								'ct_sys_user_action_trigger',
+								e.cast(e.str, e.json_get(a, 'codeTriggerConfirmConditional'))
+							)
+						),
+						confirmButtonLabelCancel: e.cast(e.str, e.json_get(a, 'confirmButtonLabelCancel')),
+						confirmButtonLabelConfirm: e.cast(e.str, e.json_get(a, 'confirmButtonLabelConfirm')),
+						confirmMessage: e.cast(e.str, e.json_get(a, 'confirmMessage')),
+						confirmTitle: e.cast(e.str, e.json_get(a, 'confirmTitle')),
+						createdBy: CREATOR,
+						modifiedBy: CREATOR
+					})
+				}),
+				actionShows: e.for(e.array_unpack(p.actionShows), (a) => {
+					return e.insert(e.sys_user.SysUserActionShow, {
+						codeTriggerShow: e.select(
+							e.sys_core.getCode(
+								'ct_sys_user_action_trigger',
+								e.cast(e.str, e.json_get(a, 'codeTriggerShow'))
+							)
+						),
+						createdBy: CREATOR,
+						isRequired: e.cast(e.bool, e.json_get(a, 'isRequired')),
+						modifiedBy: CREATOR
+					})
+				}),
+				codeAction: e.select(
+					e.sys_core.getCodeAction(
+						e.cast(e.str, e.json_get(p.codeAction, 'codeType')),
+						e.cast(e.str, e.json_get(p.codeAction, 'name'))
+					)
+				),
+				codeTriggerEnable: e.select(
+					e.sys_core.getCode('ct_sys_user_action_trigger', p.codeTriggerEnable)
+				),
+				createdBy: CREATOR,
+				header: p.header,
+				modifiedBy: CREATOR,
+				name: p.name,
+				owner: e.sys_core.getSystemPrime(p.owner)
 			})
 		}
 	)
