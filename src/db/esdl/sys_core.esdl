@@ -104,7 +104,7 @@ module sys_core {
 
   # SysDataObj
   type SysDataObj extending sys_core::SysObj {
-    actionFieldGroup: sys_core::SysDataObjActionFieldGroup;
+    actionGroup: sys_core::SysDataObjActionGroup;
     multi actionsQuery: sys_core::SysDataObjActionQuery {
       on source delete delete target;
       on target delete allow;
@@ -155,51 +155,11 @@ module sys_core {
     required orderDefine: default::nonNegative;
   }
   type SysDataObjActionGroup extending sys_core::SysObj {
-    multi actions: sys_core::SysDataObjAction {
+    multi dataObjActions: sys_core::SysDataObjAction {
       on source delete delete target;
       on target delete allow;
     };
     constraint exclusive on (.name);
-  }
-
-  # dataObj-action-field - old
-  type SysDataObjActionField extending sys_core::SysObj {
-    multi actionFieldConfirms: SysDataObjActionFieldConfirm {
-      on source delete delete target;
-      on target delete allow;
-    };
-    multi actionFieldShows: SysDataObjActionFieldShow {
-      on source delete delete target;
-      on target delete allow;
-    };
-    required codeAction: sys_core::SysCodeAction;
-    required codeActionFieldTriggerEnable: sys_core::SysCode;
-    codeColor: sys_core::SysCode;
-    required isListRowAction: bool;
-    constraint exclusive on (.name);
-  }
-  type SysDataObjActionFieldConfirm extending sys_user::Mgmt {
-    required codeConfirmType: sys_core::SysCode;
-    required codeTriggerConfirmConditional: sys_core::SysCode;
-    confirmButtonLabelCancel: str;
-    confirmButtonLabelConfirm: str;
-    confirmMessage: str;
-    confirmTitle: str;
-  }
-  type SysDataObjActionFieldGroup extending sys_core::SysObj {
-    multi actionFieldItems: sys_core::SysDataObjActionFieldGroupItem {
-      on source delete delete target;
-      on target delete allow;
-    };
-    constraint exclusive on (.name);
-  }
- type SysDataObjActionFieldGroupItem extending sys_user::Mgmt {
-    required action: sys_core::SysDataObjActionField;
-    required orderDefine: default::nonNegative;
-  }
-  type SysDataObjActionFieldShow extending sys_user::Mgmt {
-    required codeTriggerShow: sys_core::SysCode;
-    required isRequired: bool;
   }
 
   # dataObj-action-query
@@ -316,7 +276,7 @@ module sys_core {
   }
 
   type SysDataObjFieldEmbedListConfig extending sys_core::SysObj {
-    required actionFieldGroupModal: sys_core::SysDataObjActionFieldGroup {
+    required actionGroupModal: sys_core::SysDataObjActionGroup {
       on target delete allow;
     }
     required dataObjEmbed: sys_core::SysDataObj {
@@ -336,7 +296,7 @@ module sys_core {
   }
 
   type SysDataObjFieldEmbedListSelect extending sys_core::SysObj {
-    required actionFieldGroupModal: sys_core::SysDataObjActionFieldGroup {
+    required actionGroupModal: sys_core::SysDataObjActionGroup {
       on target delete allow;
     }
     required btnLabelComplete: str;
@@ -430,12 +390,9 @@ module sys_core {
 
   function getDataObj(dataObjName: str) -> optional sys_core::SysDataObj
     using (select sys_core::SysDataObj filter .name = dataObjName);        
-    
-  function getDataObjActionField(dataObjActionName: str) -> optional sys_core::SysDataObjActionField
-    using (select sys_core::SysDataObjActionField filter .name = dataObjActionName);        
-    
-  function getDataObjActionFieldGroup(name: str) -> optional sys_core::SysDataObjActionFieldGroup
-    using (select sys_core::SysDataObjActionFieldGroup filter .name = name);        
+      
+  function getDataObjActionGroup(name: str) -> optional sys_core::SysDataObjActionGroup
+    using (select sys_core::SysDataObjActionGroup filter .name = name);        
       
   function getDataObjFieldEmbedListConfig(name: str) -> optional sys_core::SysDataObjFieldEmbedListConfig
     using (select sys_core::SysDataObjFieldEmbedListConfig filter .name = name);

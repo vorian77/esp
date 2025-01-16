@@ -8,7 +8,7 @@ export function initSysRepUser(init: InitDb) {
 
 function initFieldEmbedListEditRepUserParm(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_edit_parm_value',
+		actionGroup: 'doag_embed_list_edit_parm_value',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -189,7 +189,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 
 function initRepConfig(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list_report',
+		actionGroup: 'doag_list_report',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeListEditPresetType: 'save',
@@ -305,7 +305,7 @@ function initRepConfig(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail_report',
+		actionGroup: 'doag_detail_report',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetailRepConfig',
 		header: 'Config',
@@ -496,7 +496,7 @@ function initRepConfig(init: InitDb) {
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program',
 		dataObj: 'data_obj_sys_rep_my_report_list',
-		header: 'Reports',
+		header: 'My Reports',
 		name: 'node_obj_sys_rep_my_report_list',
 		orderDefine: 40,
 		owner: 'sys_system_old'

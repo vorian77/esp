@@ -13,7 +13,7 @@ export function initAdminSysObjRep(init: InitDb) {
 
 function initFieldListSelectAnalytics(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_select',
+		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -43,7 +43,7 @@ function initFieldListSelectAnalytics(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionFieldGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select Analytic(s)',
 		dataObjList: 'dofls_sys_rep_analytic',
 		name: 'fels_sys_rep_analytic',
@@ -53,7 +53,7 @@ function initFieldListSelectAnalytics(init: InitDb) {
 
 function initAnalytic(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
@@ -98,7 +98,7 @@ function initAnalytic(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Analytic',
@@ -231,7 +231,7 @@ function initAnalytic(init: InitDb) {
 
 function initAnalyticParm(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter:
@@ -337,7 +337,7 @@ function initAnalyticParm(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Parm',
@@ -523,7 +523,7 @@ function initAnalyticParm(init: InitDb) {
 
 function initAnalyticStatus(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter:
@@ -572,7 +572,7 @@ function initAnalyticStatus(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Status',
@@ -690,7 +690,7 @@ function initAnalyticStatus(init: InitDb) {
 
 function initRep(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
@@ -735,7 +735,7 @@ function initRep(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Report',
@@ -780,13 +780,13 @@ function initRep(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'actionFieldGroup',
+				columnName: 'actionGroup',
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_action_field_group_order_name',
-				linkTable: 'SysDataObjActionFieldGroup'
+				fieldListItems: 'il_sys_data_obj_action_group_order_name',
+				linkTable: 'SysDataObjActionGroup'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -940,7 +940,7 @@ function initRep(init: InitDb) {
 
 function initRepEl(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter: '.id IN (SELECT sys_rep::SysRep FILTER .id = <tree,uuid,SysRep.id>).elements.id',
@@ -1072,7 +1072,7 @@ function initRepEl(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Element',
@@ -1455,7 +1455,7 @@ function initRepEl(init: InitDb) {
 
 function initRepParm(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter: '.id IN (SELECT sys_rep::SysRep FILTER .id = <tree,uuid,SysRep.id>).parms.id',
@@ -1566,7 +1566,7 @@ function initRepParm(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Parm',
@@ -1796,7 +1796,7 @@ function initRepParm(init: InitDb) {
 
 function initRepUser(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter: '.report.id = <tree,uuid,SysRep.id>',
@@ -1841,7 +1841,7 @@ function initRepUser(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'User',

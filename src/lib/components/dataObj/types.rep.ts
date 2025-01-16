@@ -73,7 +73,7 @@ export enum RepAnalyticStatusType {
 }
 
 export class Rep {
-	actionFieldGroup: any
+	actionGroup: any
 	analytics: RepAnalytic[] = []
 	description?: string
 	elements: RepEl[]
@@ -89,7 +89,7 @@ export class Rep {
 	constructor(obj: any) {
 		const clazz = 'Rep'
 		obj = valueOrDefault(obj, {})
-		this.actionFieldGroup = obj._actionFieldGroup
+		this.actionGroup = obj._actionGroup
 		// this.analytics = getArrayOfModels(RepAnalytic, obj.analytics)
 		this.description = strOptional(obj.description, clazz, 'description')
 		this.elements = arrayOfClass(RepEl, obj.elements)

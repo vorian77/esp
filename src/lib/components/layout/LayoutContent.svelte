@@ -52,7 +52,7 @@
 
 	// header styling
 	let classHeader = $derived(
-		(dataObj && dataObj.actionsField.length > 0) || headerObj || headerObjSub || rowStatus
+		(dataObj && dataObj.userActions.length > 0) || headerObj || headerObjSub || rowStatus
 			? 'border p-4 '
 			: ''
 	)

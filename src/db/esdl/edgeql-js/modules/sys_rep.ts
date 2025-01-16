@@ -38,7 +38,6 @@ const $SysAnalyticStatus = $.makeType<$SysAnalyticStatus>(_.spec, "16f93cc7-1880
 const SysAnalyticStatus: $.$expr_PathNode<$.TypeSet<$SysAnalyticStatus, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysAnalyticStatus, $.Cardinality.Many), null);
 
 export type $SysRepλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
-  "actionFieldGroup": $.LinkDesc<_sys_core.$SysDataObjActionFieldGroup, $.Cardinality.One, {}, false, false,  false, false>;
   "analytics": $.LinkDesc<$SysAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprFilter": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -48,6 +47,7 @@ export type $SysRepλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "tables": $.LinkDesc<_sys_core.$SysDataObjTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "elements": $.LinkDesc<$SysRepEl, $.Cardinality.Many, {}, false, false,  false, false>;
   "parms": $.LinkDesc<$SysRepParm, $.Cardinality.Many, {}, false, false,  false, false>;
+  "actionGroup": $.LinkDesc<_sys_core.$SysDataObjActionGroup, $.Cardinality.One, {}, false, false,  false, false>;
   "<report[is sys_rep::SysRepUser]": $.LinkDesc<$SysRepUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<report": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

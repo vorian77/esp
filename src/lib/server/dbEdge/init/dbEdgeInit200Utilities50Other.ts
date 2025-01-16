@@ -438,10 +438,6 @@ export async function addUser(data: any) {
 								})
 							),
 							owner: e.select(e.sys_core.getOrg(p.owner)),
-							person: e.insert(e.default.SysPerson, {
-								firstName: p.firstName,
-								lastName: p.lastName
-							}),
 							systems: e.assert_distinct(
 								e.for(e.array_unpack(p.systems || e.cast(e.array(e.str), e.set())), (sys) => {
 									return e.sys_core.getSystemPrime(sys)

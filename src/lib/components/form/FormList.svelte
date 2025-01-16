@@ -9,9 +9,9 @@
 	import {
 		TokenApiUserPref,
 		TokenAppDo,
-		TokenAppDoActionConfirmType,
 		TokenAppModalSelect,
-		TokenAppModalReturnType
+		TokenAppModalReturnType,
+		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
 	import {
 		type CellClassParams,
@@ -344,7 +344,7 @@
 			const parms = fieldProcess.linkItemsSource.getGridParms()
 
 			sm.change({
-				confirmType: TokenAppDoActionConfirmType.none,
+				confirmType: TokenAppUserActionConfirmType.none,
 				packet: new StatePacket({
 					actionType: CodeActionType.modalSelectOpen,
 					token: new TokenAppModalSelect({
@@ -395,10 +395,10 @@
 		} else {
 			const record = event.api.getSelectedRows()[0]
 			if (record) {
-				const action = dataObj.actionsField[dataObj.actionsFieldListRowActionIdx]
+				const doa = dataObj.userActions[dataObj.actionsFieldListRowActionIdx]
 				dataObj.data.parms.valueSet(ParmsValuesType.listIds, getFilteredNodeIds(event.api))
 				dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, record.id)
-				action.trigger(sm, dataObj)
+				doa.action.trigger(sm, dataObj)
 			}
 		}
 	}

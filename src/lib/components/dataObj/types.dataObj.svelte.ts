@@ -14,14 +14,14 @@ import {
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import {
 	RawDataObj,
-	RawDataObjActionField,
+	RawDataObjAction,
 	RawDataObjPropDisplay,
 	RawDataObjTable
 } from '$comps/dataObj/types.rawDataObj'
-import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField.svelte'
+import { UserAction } from '$comps/other/types.userAction.svelte'
 import {
 	Field,
-	FieldClassType,
+	FieldColor,
 	FieldColumnItem,
 	FieldElement,
 	PropsFieldInit,
@@ -37,7 +37,6 @@ import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 import { FieldChips } from '$comps/form/fieldChips'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import {
-	FieldCustomAction,
 	FieldCustomActionButton,
 	FieldCustomActionLink,
 	FieldCustomHeader,
@@ -64,7 +63,6 @@ const FILENAME = '/$comps/dataObj/types.dataObj.svelte.ts'
 export type DataItems = Record<string, { data: string; display: string }[]>
 
 export class DataObj {
-	actionsField: DataObjActionField[] = $state([])
 	actionsFieldListRowActionIdx: number = -1
 	actionsQueryFunctions: DataObjActionQueryFunction[] = []
 	data: DataObjData = $state(new DataObjData())
@@ -75,6 +73,7 @@ export class DataObj {
 	raw: RawDataObj
 	rootTable?: DBTable
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
+	userActions: DataObjAction[] = $state([])
 	userGridSettings: GridSettings
 	constructor(data: DataObjData) {
 		const clazz = 'DataObj'
@@ -89,15 +88,17 @@ export class DataObj {
 				: undefined
 	}
 
-	actionsFieldTrigger(codeAction: CodeAction, sm: State) {
-		const action = this.actionsField.find((f) => f.codeAction.actionType === codeAction.actionType)
-		if (action) {
-			action.trigger(sm, this)
+	actionsFieldTrigger(sm: State, codeAction: CodeAction) {
+		const doa = this.userActions.find(
+			(f) => f.action.codeAction.actionType === codeAction.actionType
+		)
+		if (doa) {
+			doa.action.trigger(sm, this)
 		} else {
 			error(500, {
 				file: FILENAME,
 				function: 'DataObj.actionsFieldTrigger',
-				message: `Field for CodeAction.name: ${codeAction.actionType} not found.`
+				message: `Could not find user action for codeAction: class: ${codeAction.actionClass} - type: ${codeAction.actionType}.`
 			})
 		}
 	}
@@ -134,12 +135,10 @@ export class DataObj {
 			return funcs
 		}
 		function initActionsField() {
-			dataObj.actionsField = rawDataObj.rawActionsField.map((rawAction: RawDataObjActionField) => {
-				return new DataObjActionField(rawAction, sm)
+			dataObj.userActions = rawDataObj.rawActions.map((rawAction: RawDataObjAction) => {
+				return new DataObjAction(rawAction, sm)
 			})
-			dataObj.actionsFieldListRowActionIdx = dataObj.actionsField.findIndex(
-				(f) => f.isListRowAction
-			)
+			dataObj.actionsFieldListRowActionIdx = dataObj.userActions.findIndex((f) => f.isListRowAction)
 		}
 		async function initPrefs(sm: State, dataObj: DataObj) {
 			let rawSettings = {}
@@ -307,6 +306,18 @@ export class DataObj {
 	}
 }
 
+export class DataObjAction {
+	action: UserAction
+	fieldColor: FieldColor
+	isListRowAction: boolean
+	constructor(rawAction: RawDataObjAction, sm: State | undefined = undefined) {
+		const clazz = 'DataObjAction'
+		this.action = new UserAction(rawAction.action)
+		this.fieldColor = rawAction.fieldColor
+		this.isListRowAction = rawAction.isListRowAction
+	}
+}
+
 export class DataObjActionProxy {
 	action: CodeAction
 	proxy: Function
@@ -327,23 +338,6 @@ export enum DataObjComponent {
 	FormDetailRepConfig = 'FormDetailRepConfig',
 	ProcessStatus = 'ProcessStatus',
 	Tree = 'Tree'
-}
-export class DataObjConfirm {
-	buttonLabelCancel: string
-	buttonLabelConfirm: string
-	message: string
-	title: string
-	constructor(obj: any = {}) {
-		const clazz = 'DataObjConfirm'
-		obj = valueOrDefault(obj, {})
-		this.buttonLabelCancel = valueOrDefault(obj.confirmButtonLabelCancel, 'Keep Editing')
-		this.buttonLabelConfirm = valueOrDefault(obj.confirmButtonLabelConfirm, 'Discard Changes')
-		this.message = valueOrDefault(
-			obj.confirmMessage,
-			'Are you sure you want to discard your changes?'
-		)
-		this.title = valueOrDefault(obj.confirmTitle, 'Discard Changes')
-	}
 }
 
 export class DataObjData {

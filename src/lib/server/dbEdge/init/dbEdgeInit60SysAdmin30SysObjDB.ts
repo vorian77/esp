@@ -7,7 +7,7 @@ export function initAdminSysObjDB(init: InitDb) {
 
 function initColumn(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
@@ -44,7 +44,7 @@ function initColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Column',
@@ -534,7 +534,7 @@ function initColumn(init: InitDb) {
 function initTable(init: InitDb) {
 	// data objects
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
@@ -579,7 +579,7 @@ function initTable(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Table',

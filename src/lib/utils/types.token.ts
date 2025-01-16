@@ -327,13 +327,6 @@ export class TokenAppDo extends TokenApp {
 	}
 }
 
-export enum TokenAppDoActionConfirmType {
-	always = 'always',
-	none = 'none',
-	statusChanged = 'statusChanged',
-	objectValidToContinue = 'objectValidToContinue'
-}
-
 export class TokenAppIndex extends TokenApp {
 	index: number
 	constructor(obj: any) {
@@ -432,6 +425,13 @@ export class TokenAppTab extends TokenApp {
 		this.app = required(obj.app, clazz, 'app')
 		this.index = nbrRequired(obj.index, clazz, 'index')
 	}
+}
+
+export enum TokenAppUserActionConfirmType {
+	always = 'always',
+	none = 'none',
+	statusChanged = 'statusChanged',
+	objectValidToContinue = 'objectValidToContinue'
 }
 
 export class TokenAppWidget extends TokenApp {

@@ -11,7 +11,7 @@ export function initAdminSysObjMigration(init: InitDb) {
 
 function initMigr(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
@@ -48,7 +48,7 @@ function initMigr(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail_migrate_define',
+		actionGroup: 'doag_detail_migrate_define',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Migration',
@@ -161,7 +161,7 @@ function initMigr(init: InitDb) {
 
 function initMigrSourceTable(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter:
@@ -211,7 +211,7 @@ function initMigrSourceTable(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Source Table',
@@ -330,7 +330,7 @@ function initMigrSourceTable(init: InitDb) {
 
 function initMigrSourceColumn(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter:
@@ -372,7 +372,7 @@ function initMigrSourceColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Column',
@@ -482,7 +482,7 @@ function initMigrSourceColumn(init: InitDb) {
 
 function initMigrTargetTable(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter:
@@ -570,7 +570,7 @@ function initMigrTargetTable(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Target Table',
@@ -702,7 +702,7 @@ function initMigrTargetTable(init: InitDb) {
 
 function initMigrTargetColumn(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter:
@@ -790,7 +790,7 @@ function initMigrTargetColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Column',
@@ -917,7 +917,7 @@ function initMigrTargetColumn(init: InitDb) {
 
 function initMigrProcess(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail_migrate_process',
+		actionGroup: 'doag_detail_migrate_process',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		exprFilter: '.id = <parms,uuid,migrId>',

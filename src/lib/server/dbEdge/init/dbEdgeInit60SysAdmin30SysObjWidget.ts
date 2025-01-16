@@ -6,7 +6,7 @@ export function initAdminSysObjWidget(init: InitDb) {
 
 function initWidget(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
@@ -52,7 +52,7 @@ function initWidget(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Widget',
@@ -169,7 +169,7 @@ function initWidget(init: InitDb) {
 		dataObj: 'data_obj_sys_admin_widget_list',
 		header: 'Widgets',
 		name: 'node_obj_sys_admin_widget_list',
-		orderDefine: 190,
+		orderDefine: 200,
 		owner: 'sys_system_old',
 		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})

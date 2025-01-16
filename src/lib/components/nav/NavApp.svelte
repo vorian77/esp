@@ -2,7 +2,7 @@
 	import { CodeActionType, ContextKey, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
-	import { TokenAppDoActionConfirmType } from '$utils/types.token'
+	import { TokenAppUserActionConfirmType } from '$utils/types.token'
 	import { AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
@@ -16,7 +16,7 @@
 
 	const back = () => {
 		sm.change({
-			confirmType: TokenAppDoActionConfirmType.statusChanged,
+			confirmType: TokenAppUserActionConfirmType.statusChanged,
 			packet: new StatePacket({
 				actionType: CodeActionType.navBack
 			}),

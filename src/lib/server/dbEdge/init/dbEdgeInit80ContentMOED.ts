@@ -35,7 +35,7 @@ export function initContentMOEDStudent(init: InitDb) {
 
 function initStudent(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: `.owner.id in <user,uuidlist,systemIds>`,
@@ -121,7 +121,7 @@ function initStudent(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Applicant',
@@ -450,7 +450,7 @@ function initCsf(init: InitDb) {
 		header: 'Service Flows',
 		tables: [{ index: 0, table: 'CmClientServiceFlow' }],
 		exprFilter: '.client.id = <tree,uuid,MoedParticipant.id>',
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		fields: [
 			{
 				columnName: 'id',
@@ -554,7 +554,7 @@ function initCsf(init: InitDb) {
 		name: 'data_obj_moed_csf_detail',
 		header: 'Service Flow',
 		tables: [{ index: 0, table: 'CmClientServiceFlow' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		fields: [
 			{
 				columnName: 'id',
@@ -791,7 +791,7 @@ function initCsfMsg(init: InitDb) {
 		header: 'Messages',
 		tables: [{ index: 0, table: 'CmCsfMsg' }],
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		fields: [
 			{
 				columnName: 'id',
@@ -863,7 +863,7 @@ function initCsfMsg(init: InitDb) {
 		name: 'data_obj_moed_csf_msg_detail',
 		header: 'Message',
 		tables: [{ index: 0, table: 'CmCsfMsg' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		fields: [
 			{
 				columnName: 'id',
@@ -1049,7 +1049,7 @@ function initCsfNote(init: InitDb) {
 		header: 'Case Notes',
 		tables: [{ index: 0, table: 'CmCsfNote' }],
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		fields: [
 			{
 				columnName: 'id',
@@ -1096,7 +1096,7 @@ function initCsfNote(init: InitDb) {
 		name: 'data_obj_moed_csf_note_detail',
 		header: 'Case Note',
 		tables: [{ index: 0, table: 'CmCsfNote' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		fields: [
 			{
 				columnName: 'id',
@@ -1237,7 +1237,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Documents',
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		fields: [
 			{
 				columnName: 'id',
@@ -1281,7 +1281,7 @@ function initCsfDocument(init: InitDb) {
 		name: 'data_obj_moed_csf_doc_detail',
 		header: 'Document',
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		actionsQuery: [
 			{
 				name: 'qa_file_storage',
@@ -1432,7 +1432,7 @@ function initCsfDocument(init: InitDb) {
 
 function initTaskSsrApp(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
-		actionFieldGroup: 'doag_detail_mobile_save',
+		actionGroup: 'doag_detail_mobile_save',
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -1770,7 +1770,7 @@ function initTaskSsrDoc(init: InitDb) {
 		header: 'My Documents',
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
 		exprFilter: '.csf.id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90"',
-		actionFieldGroup: 'doag_list_mobile',
+		actionGroup: 'doag_list_mobile',
 		fields: [
 			{
 				columnName: 'id',
@@ -1808,7 +1808,7 @@ function initTaskSsrDoc(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjTask', {
-		actionFieldGroup: 'doag_detail_mobile_save_delete',
+		actionGroup: 'doag_detail_mobile_save_delete',
 		actionsQuery: [
 			{
 				name: 'qa_file_storage',
@@ -2042,7 +2042,7 @@ function initTaskSsrMsg(init: InitDb) {
 		header: 'My Messages',
 		tables: [{ index: 0, table: 'CmCsfMsg' }],
 		exprFilter: '.csf.id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90"',
-		actionFieldGroup: 'doag_list_mobile',
+		actionGroup: 'doag_list_mobile',
 		fields: [
 			{
 				columnName: 'id',
@@ -2088,7 +2088,7 @@ function initTaskSsrMsg(init: InitDb) {
 		name: 'data_obj_task_moed_ssr_msg_detail',
 		header: 'My Message',
 		tables: [{ index: 0, table: 'CmCsfMsg' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		fields: [
 			{
 				columnName: 'id',
@@ -2387,7 +2387,7 @@ function initAnalytic(init: InitDb) {
 
 function initReport(init: InitDb) {
 	init.addTrans('sysRep', {
-		actionFieldGroup: 'doag_report_render',
+		actionGroup: 'doag_report_render',
 		exprFilter: '.client[IS org_moed::MoedParticipant].owner.id IN <user,uuidlist,systemIds>',
 		// exprWith: `parts := (SELECT org_moed::MoedParticipant FILTER .owner.id IN <user,uuidlist,systemIds>)`,
 		header: 'Self Service Registration - Student Status',

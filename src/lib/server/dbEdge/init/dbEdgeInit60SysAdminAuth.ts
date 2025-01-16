@@ -14,7 +14,7 @@ export function initSysAuth(init: InitDb) {
 
 function initTaskMyAccount(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
-		actionFieldGroup: 'doag_auth_my_account',
+		actionGroup: 'doag_auth_my_account',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		codeDataObjType: 'taskTarget',
@@ -757,7 +757,7 @@ SELECT { userId := user.id }`,
 
 function initDataObjUserPrefType(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_embed_list_edit',
+		actionGroup: 'doag_embed_list_edit',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeListEditPresetType: 'save',

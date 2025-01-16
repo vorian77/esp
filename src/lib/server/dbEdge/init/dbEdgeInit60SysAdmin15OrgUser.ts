@@ -12,7 +12,7 @@ export function initAdminOrgUser(init: InitDb) {
 
 function initFieldListSelectOrg(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_select',
+		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -41,7 +41,7 @@ function initFieldListSelectOrg(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionFieldGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select Organization(s)',
 		dataObjList: 'dofls_sys_admin_org_user_org',
 		name: 'fels_sys_admin_org',
@@ -51,7 +51,7 @@ function initFieldListSelectOrg(init: InitDb) {
 
 function initFieldListSelectSystem(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_select',
+		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -80,7 +80,7 @@ function initFieldListSelectSystem(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionFieldGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select System(s)',
 		dataObjList: 'dofls_sys_admin_org_user_system',
 		name: 'fels_sys_admin_system',
@@ -90,7 +90,7 @@ function initFieldListSelectSystem(init: InitDb) {
 
 function initFieldListSelectUserType(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_select',
+		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -120,7 +120,7 @@ function initFieldListSelectUserType(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionFieldGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select UserType(s)',
 		dataObjList: 'dofls_sys_sys_admin_user_type',
 		name: 'fels_sys_sys_admin_user_type',
@@ -130,7 +130,7 @@ function initFieldListSelectUserType(init: InitDb) {
 
 function initOrg(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		header: 'Organizations (User)',
@@ -194,7 +194,7 @@ function initOrg(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		actionsQuery: [
 			{
 				name: 'qa_file_storage',
@@ -343,7 +343,7 @@ function initOrg(init: InitDb) {
 
 function initSystem(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		header: 'Systems',
@@ -372,7 +372,7 @@ function initSystem(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		exprFilter: '.owner.id = <tree,uuid,SysOrg.id>',
@@ -477,7 +477,7 @@ function initSystem(init: InitDb) {
 
 function initUser(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysOrg.id>',
@@ -549,7 +549,7 @@ function initUser(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'User',

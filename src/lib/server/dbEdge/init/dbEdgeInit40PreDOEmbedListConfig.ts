@@ -1,31 +1,32 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
 export function initPreEmbedListConfig(init: InitDb) {
-	initFieldListConfigDataObjActionFieldConfirms(init)
-	initFieldListConfigDataObjActionFieldShows(init)
+	initFieldListConfigDataObjAction(init)
 
 	initFieldListConfigDataObjActionQueryParm(init)
 	initFieldListConfigDataObjActionQueryTrigger(init)
-
-	initFieldListConfigDataObjActionFieldGroupItem(init)
 
 	initFieldListConfigDataObjColumnItem(init)
 	initFieldListConfigDataObjColumnLink(init)
 
 	initFieldListConfigDataObjFieldListItemsProp(init)
 	initFieldListConfigDataObjTable(init)
+
+	initFieldListConfigUserActionConfirm(init)
+	initFieldListConfigUserActionShow(init)
 }
 
-async function initFieldListConfigDataObjActionFieldConfirms(init: InitDb) {
+async function initFieldListConfigDataObjAction(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_config',
+		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		header: 'Data Object Action Field - Confirms',
-		name: 'doflc_sys_admin_data_obj_action_field_confirm_list',
+		header: 'Data Object Actions',
+		listReorderColumn: 'orderDefine',
+		name: 'doflc_sys_admin_data_obj_action_list',
 		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysDataObjActionFieldConfirm' }],
+		tables: [{ index: 0, table: 'SysDataObjAction' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -35,208 +36,62 @@ async function initFieldListConfigDataObjActionFieldConfirms(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeConfirmType',
-				orderSort: 10,
+				columnName: 'action',
 				isDisplayable: true,
+				isExcludeUpdate: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				linkColumns: ['name']
 			},
 			{
-				codeAccess: 'readOnly',
-				columnName: 'codeTriggerConfirmConditional',
-				orderSort: 20,
-				isDisplayable: true,
-				orderDisplay: 30,
+				columnName: 'orderDefine',
 				orderDefine: 30,
 				indexTable: 0,
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
-			}
-		]
-	})
-
-	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_dialog_form_detail',
-		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
-		codeDataObjType: 'embed',
-		header: 'Data Object Action Field - Confirm',
-		name: 'doflc_sys_admin_data_obj_action_field_confirm_detail',
-		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysDataObjActionFieldConfirm' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'codeConfirmType',
-				orderSort: 10,
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_user_action_confirm_type',
-				linkTable: 'SysCode'
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'codeTriggerConfirmConditional',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_user_action_confirm_type',
-				linkTable: 'SysCode'
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'confirmButtonLabelCancel',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'confirmButtonLabelConfirm',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'confirmMessage',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'confirmTitle',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
+				isDisplayable: false
 			},
 
 			/* management */
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 1000,
-				orderDefine: 1000
-			},
-			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
-				isDisplayable: true,
-				orderDisplay: 1010,
-				orderDefine: 1010,
-				indexTable: 0
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1010
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdBy',
-				isDisplayable: true,
-				orderDisplay: 1020,
-				orderDefine: 1020,
-				indexTable: 0
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1020
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedAt',
-				isDisplayable: true,
-				orderDisplay: 1030,
-				orderDefine: 1030,
-				indexTable: 0
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 1030
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'modifiedBy',
-				isDisplayable: true,
-				orderDisplay: 1040,
-				orderDefine: 1040,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 1050,
-				orderDefine: 1050
-			}
-		]
-	})
-
-	init.addTrans('sysDataObjFieldEmbedListConfig', {
-		actionFieldGroupModal: 'doag_dialog_footer_detail',
-		dataObjEmbed: 'doflc_sys_admin_data_obj_action_field_confirm_list',
-		dataObjModal: 'doflc_sys_admin_data_obj_action_field_confirm_detail',
-		name: 'flec_data_obj_action_field_confirm',
-		owner: 'sys_system_old'
-	})
-}
-
-async function initFieldListConfigDataObjActionFieldShows(init: InitDb) {
-	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_config',
-		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		codeDataObjType: 'embed',
-		header: 'Data Object Action Field - Shows',
-		name: 'doflc_sys_admin_data_obj_action_field_show_list',
-		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysDataObjActionFieldShow' }],
-		fields: [
-			{
-				columnName: 'id',
 				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'codeTriggerShow',
-				orderSort: 10,
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0,
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'isRequired',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0
+				orderDefine: 1040
 			}
 		]
 	})
 
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_dialog_form_detail',
+		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
-		header: 'Data Object Action Field - Show',
-		name: 'doflc_sys_admin_data_obj_action_field_show_detail',
+		header: 'Data Object Action',
+		name: 'doflc_sys_admin_data_obj_action_detail',
 		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysDataObjActionFieldShow' }],
+		tables: [{ index: 0, table: 'SysDataObjAction' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -253,30 +108,47 @@ async function initFieldListConfigDataObjActionFieldShows(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'codeTriggerShow',
-				orderSort: 10,
+				columnName: 'action',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
+				fieldListItems: 'il_sys_data_obj_action_order_name',
+				linkTable: 'SysDataObjAction'
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeColor',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_user_action_trigger',
+				fieldListItemsParmName: 'ct_sys_tailwind_color',
 				linkTable: 'SysCode'
 			},
 			{
 				codeFieldElement: 'toggle',
-				columnName: 'isRequired',
+				columnName: 'isListRowAction',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
+				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				columnName: 'orderDefine',
+				orderDefine: 70,
+				exprPreset: `(SELECT count((SELECT sys_core::SysDataObjAction
+					FILTER .id IN ((SELECT sys_core::SysDataObjAction FILTER .id = <parms,uuid,embedParentId>).dataObjActions.id))) + 1)`,
+				indexTable: 0,
+				isDisplayable: false
 			},
 
 			/* management */
@@ -330,17 +202,17 @@ async function initFieldListConfigDataObjActionFieldShows(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListConfig', {
-		actionFieldGroupModal: 'doag_dialog_footer_detail',
-		dataObjEmbed: 'doflc_sys_admin_data_obj_action_field_show_list',
-		dataObjModal: 'doflc_sys_admin_data_obj_action_field_show_detail',
-		name: 'flec_data_obj_action_field_show',
+		actionGroupModal: 'doag_dialog_footer_detail',
+		dataObjEmbed: 'doflc_sys_admin_data_obj_action_list',
+		dataObjModal: 'doflc_sys_admin_data_obj_action_detail',
+		name: 'flec_data_obj_action',
 		owner: 'sys_system_old'
 	})
 }
 
 async function initFieldListConfigDataObjActionQueryParm(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_config',
+		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -376,7 +248,7 @@ async function initFieldListConfigDataObjActionQueryParm(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_dialog_form_detail',
+		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
@@ -471,7 +343,7 @@ async function initFieldListConfigDataObjActionQueryParm(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListConfig', {
-		actionFieldGroupModal: 'doag_dialog_footer_detail',
+		actionGroupModal: 'doag_dialog_footer_detail',
 		dataObjEmbed: 'doflc_sys_admin_data_obj_action_query_parm_list',
 		dataObjModal: 'doflc_sys_admin_data_obj_action_query_parm_detail',
 		name: 'flec_data_obj_action_query_parm',
@@ -481,7 +353,7 @@ async function initFieldListConfigDataObjActionQueryParm(init: InitDb) {
 
 async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_config',
+		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -522,7 +394,7 @@ async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_dialog_form_detail',
+		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
@@ -625,7 +497,7 @@ async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListConfig', {
-		actionFieldGroupModal: 'doag_dialog_footer_detail',
+		actionGroupModal: 'doag_dialog_footer_detail',
 		dataObjEmbed: 'doflc_sys_admin_data_obj_action_query_trigger_list',
 		dataObjModal: 'doflc_sys_admin_data_obj_action_query_trigger_detail',
 		name: 'flec_data_obj_action_query_trigger',
@@ -633,170 +505,9 @@ async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 	})
 }
 
-async function initFieldListConfigDataObjActionFieldGroupItem(init: InitDb) {
-	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_config',
-		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		codeDataObjType: 'embed',
-		header: 'Action Field Items',
-		listReorderColumn: 'orderDefine',
-		name: 'doflc_sys_admin_data_obj_action_field_group_item_list',
-		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysDataObjActionFieldGroupItem' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'action',
-				isDisplayable: true,
-				isExcludeUpdate: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0,
-				linkColumns: ['name']
-			},
-			{
-				columnName: 'orderDefine',
-				orderDefine: 30,
-				indexTable: 0,
-				isDisplayable: false
-			},
-
-			/* management */
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdAt',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 1010
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdBy',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 1020
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedAt',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 1030
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedBy',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 1040
-			}
-		]
-	})
-
-	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_dialog_form_detail',
-		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
-		codeDataObjType: 'embed',
-		header: 'Action Field Item',
-		name: 'doflc_sys_admin_data_obj_action_field_group_item_detail',
-		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysDataObjActionFieldGroupItem' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'action',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_action_field_order_name',
-				linkTable: 'SysDataObjActionField'
-			},
-			{
-				columnName: 'orderDefine',
-				orderDefine: 30,
-				exprPreset: `(SELECT count((SELECT sys_core::SysDataObjActionFieldGroupItem
-					FILTER .id IN ((SELECT sys_core::SysDataObjActionFieldGroup FILTER .id = <parms,uuid,embedParentId>).actionFieldItems.id))) + 1)`,
-				indexTable: 0,
-				isDisplayable: false
-			},
-
-			/* management */
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 1000,
-				orderDefine: 1000
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdAt',
-				isDisplayable: true,
-				orderDisplay: 1010,
-				orderDefine: 1010,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdBy',
-				isDisplayable: true,
-				orderDisplay: 1020,
-				orderDefine: 1020,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedAt',
-				isDisplayable: true,
-				orderDisplay: 1030,
-				orderDefine: 1030,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedBy',
-				isDisplayable: true,
-				orderDisplay: 1040,
-				orderDefine: 1040,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 1050,
-				orderDefine: 1050
-			}
-		]
-	})
-
-	init.addTrans('sysDataObjFieldEmbedListConfig', {
-		actionFieldGroupModal: 'doag_dialog_footer_detail',
-		dataObjEmbed: 'doflc_sys_admin_data_obj_action_field_group_item_list',
-		dataObjModal: 'doflc_sys_admin_data_obj_action_field_group_item_detail',
-		name: 'flec_data_obj_action_field_group_item',
-		owner: 'sys_system_old'
-	})
-}
-
 async function initFieldListConfigDataObjColumnItem(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_config',
+		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -868,7 +579,7 @@ async function initFieldListConfigDataObjColumnItem(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_dialog_form_detail',
+		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
@@ -970,7 +681,7 @@ async function initFieldListConfigDataObjColumnItem(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListConfig', {
-		actionFieldGroupModal: 'doag_dialog_footer_detail',
+		actionGroupModal: 'doag_dialog_footer_detail',
 		dataObjEmbed: 'doflc_sys_admin_data_obj_column_item_list',
 		dataObjModal: 'doflc_sys_admin_data_obj_column_item_detail',
 		name: 'flec_data_obj_data_obj_column_item',
@@ -980,7 +691,7 @@ async function initFieldListConfigDataObjColumnItem(init: InitDb) {
 
 async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_config',
+		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -1045,7 +756,7 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 		]
 	})
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_dialog_form_detail',
+		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
@@ -1129,7 +840,7 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListConfig', {
-		actionFieldGroupModal: 'doag_dialog_footer_detail',
+		actionGroupModal: 'doag_dialog_footer_detail',
 		dataObjEmbed: 'doflc_sys_admin_data_obj_column_link_list',
 		dataObjModal: 'doflc_sys_admin_data_obj_column_link_detail',
 		name: 'flec_data_obj_column_link',
@@ -1139,7 +850,7 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 
 async function initFieldListConfigDataObjFieldListItemsProp(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_config',
+		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -1207,7 +918,7 @@ async function initFieldListConfigDataObjFieldListItemsProp(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_dialog_form_detail',
+		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
@@ -1284,7 +995,7 @@ async function initFieldListConfigDataObjFieldListItemsProp(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListConfig', {
-		actionFieldGroupModal: 'doag_dialog_footer_detail',
+		actionGroupModal: 'doag_dialog_footer_detail',
 		dataObjEmbed: 'doflc_sys_admin_data_obj_field_list_items_prop_list',
 		dataObjModal: 'doflc_sys_admin_data_obj_field_list_items_prop_detail',
 		name: 'flec_data_obj_field_list_items_prop',
@@ -1294,7 +1005,7 @@ async function initFieldListConfigDataObjFieldListItemsProp(init: InitDb) {
 
 async function initFieldListConfigDataObjTable(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_config',
+		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -1366,7 +1077,7 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_dialog_form_detail',
+		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
@@ -1526,10 +1237,332 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListConfig', {
-		actionFieldGroupModal: 'doag_dialog_footer_detail',
+		actionGroupModal: 'doag_dialog_footer_detail',
 		dataObjEmbed: 'doflc_sys_admin_data_obj_table_list',
 		dataObjModal: 'doflc_sys_admin_data_obj_table_detail',
 		name: 'flec_data_obj_table',
+		owner: 'sys_system_old'
+	})
+}
+
+async function initFieldListConfigUserActionConfirm(init: InitDb) {
+	init.addTrans('sysDataObjEmbed', {
+		actionGroup: 'doag_embed_list_config',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeDataObjType: 'embed',
+		header: 'User Action - Confirms',
+		name: 'doflc_sys_admin_user_action_confirm_list',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysUserActionConfirm' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeConfirmType',
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeTriggerConfirmConditional',
+				orderSort: 20,
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
+			}
+		]
+	})
+
+	init.addTrans('sysDataObjEmbed', {
+		actionGroup: 'doag_dialog_form_detail',
+		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
+		codeDataObjType: 'embed',
+		header: 'User Action - Confirm',
+		name: 'doflc_sys_admin_user_action_confirm_detail',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysUserActionConfirm' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeConfirmType',
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_user_action_confirm_type',
+				linkTable: 'SysCode'
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeTriggerConfirmConditional',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_user_action_confirm_type',
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'confirmButtonLabelCancel',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'confirmButtonLabelConfirm',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'confirmMessage',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'confirmTitle',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+
+			/* management */
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 1000,
+				orderDefine: 1000
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				isDisplayable: true,
+				orderDisplay: 1010,
+				orderDefine: 1010,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				isDisplayable: true,
+				orderDisplay: 1020,
+				orderDefine: 1020,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				isDisplayable: true,
+				orderDisplay: 1030,
+				orderDefine: 1030,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: true,
+				orderDisplay: 1040,
+				orderDefine: 1040,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 1050,
+				orderDefine: 1050
+			}
+		]
+	})
+
+	init.addTrans('sysDataObjFieldEmbedListConfig', {
+		actionGroupModal: 'doag_dialog_footer_detail',
+		dataObjEmbed: 'doflc_sys_admin_user_action_confirm_list',
+		dataObjModal: 'doflc_sys_admin_user_action_confirm_detail',
+		name: 'flec_user_action_confirm',
+		owner: 'sys_system_old'
+	})
+}
+
+async function initFieldListConfigUserActionShow(init: InitDb) {
+	init.addTrans('sysDataObjEmbed', {
+		actionGroup: 'doag_embed_list_config',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeDataObjType: 'embed',
+		header: 'User Action - Shows',
+		name: 'doflc_sys_admin_user_action_show_list',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysUserActionShow' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeTriggerShow',
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'isRequired',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			}
+		]
+	})
+
+	init.addTrans('sysDataObjEmbed', {
+		actionGroup: 'doag_dialog_form_detail',
+		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
+		codeDataObjType: 'embed',
+		header: 'User Action - Show',
+		name: 'doflc_sys_admin_user_action_show_detail',
+		owner: 'sys_system_old',
+		tables: [{ index: 0, table: 'SysUserActionShow' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeTriggerShow',
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmName: 'ct_sys_user_action_trigger',
+				linkTable: 'SysCode'
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isRequired',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50
+			},
+
+			/* management */
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 1000,
+				orderDefine: 1000
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				isDisplayable: true,
+				orderDisplay: 1010,
+				orderDefine: 1010,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				isDisplayable: true,
+				orderDisplay: 1020,
+				orderDefine: 1020,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				isDisplayable: true,
+				orderDisplay: 1030,
+				orderDefine: 1030,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: true,
+				orderDisplay: 1040,
+				orderDefine: 1040,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 1050,
+				orderDefine: 1050
+			}
+		]
+	})
+
+	init.addTrans('sysDataObjFieldEmbedListConfig', {
+		actionGroupModal: 'doag_dialog_footer_detail',
+		dataObjEmbed: 'doflc_sys_admin_user_action_show_list',
+		dataObjModal: 'doflc_sys_admin_user_action_show_detail',
+		name: 'flec_user_action_show',
 		owner: 'sys_system_old'
 	})
 }

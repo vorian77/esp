@@ -70,33 +70,11 @@ export function initPreColumn(init: InitDb) {
 		name: 'actionShows',
 		owner: 'sys_system_old'
 	})
-
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
-		header: 'Action Field - Confirms',
+		header: 'Data Object Actions',
 		isMultiSelect: true,
-		name: 'actionFieldConfirms',
-		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Action Field - Items',
-		isMultiSelect: true,
-		name: 'actionFieldItems',
-		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Action Field - Shows',
-		isMultiSelect: true,
-		name: 'actionFieldShows',
-		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Actions',
-		isMultiSelect: true,
-		name: 'actions',
+		name: 'dataObjActions',
 		owner: 'sys_system_old'
 	})
 
@@ -118,14 +96,14 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'link',
 		header: 'Action Field Group',
 		isMultiSelect: false,
-		name: 'actionFieldGroup',
+		name: 'actionGroup',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
-		header: 'Action Field Group Modal',
+		header: 'Action Group Modal',
 		isMultiSelect: false,
-		name: 'actionFieldGroupModal',
+		name: 'actionGroupModal',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
@@ -254,13 +232,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Code Action',
 		isMultiSelect: false,
 		name: 'codeAction',
-		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Action Field - Trigger Enable',
-		isMultiSelect: false,
-		name: 'codeActionFieldTriggerEnable',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {

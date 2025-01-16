@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { State, StateTarget } from '$comps/app/types.appState.svelte'
 	import { ContextKey, required } from '$utils/types'
-	import { TokenAppDoActionConfirmType } from '$utils/types.token'
+	import { TokenAppUserActionConfirmType } from '$utils/types.token'
 	import { getContext } from 'svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
@@ -16,7 +16,7 @@
 
 	const goHome = () => {
 		sm.change({
-			confirmType: TokenAppDoActionConfirmType.statusChanged,
+			confirmType: TokenAppUserActionConfirmType.statusChanged,
 			target: StateTarget.dashboard
 		})
 	}

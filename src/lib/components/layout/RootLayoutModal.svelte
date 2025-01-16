@@ -3,10 +3,15 @@
 	import { StateSurfaceModal } from '$comps/app/types.appState.svelte'
 	import { TokenAppModalReturn, TokenAppModalReturnType } from '$utils/types.token'
 	import { getModalStore } from '@skeletonlabs/skeleton'
-	import { CodeActionType, ContextKey, DataObjCardinality, ParmsValuesType } from '$utils/types'
+	import {
+		CodeActionType,
+		ContextKey,
+		DataObjAction,
+		DataObjCardinality,
+		ParmsValuesType
+	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldEmbedType } from '$comps/form/field'
-	import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -45,8 +50,8 @@
 		}
 	})
 
-	async function onFooterActionClick(action: DataObjActionField) {
-		switch (action.codeAction.actionType) {
+	async function onFooterActionClick(doa: DataObjAction) {
+		switch (doa.action.codeAction.actionType) {
 			case CodeActionType.modalCancel:
 				if ($storeModal[0].response)
 					$storeModal[0].response(
@@ -73,7 +78,7 @@
 				error(500, {
 					file: FILENAME,
 					function: 'onFooterActionClick',
-					message: `No case defined for CodeAction.name: ${action.codeAction.actionType} `
+					message: `No case defined for Data Object Action type: ${doa.action.codeAction.actionType} `
 				})
 		}
 	}
@@ -84,14 +89,14 @@
 		<RootLayoutApp {sm} />
 
 		<div class="flex justify-end gap-3 mt-3">
-			{#each sm.actionsFieldDialog as action}
+			{#each sm.actionsDialog as doa (doa.action.name)}
 				<button
-					disabled={action.isStatusDisabled}
+					disabled={doa.action.isStatusDisabled}
 					class="btn btn-action text-white"
-					style:background-color={action.fieldColor.color}
-					onclick={async () => await onFooterActionClick(action)}
+					style:background-color={doa.fieldColor.color}
+					onclick={async () => await onFooterActionClick(doa)}
 				>
-					{action.header}
+					{doa.action.header}
 				</button>
 			{/each}
 		</div>

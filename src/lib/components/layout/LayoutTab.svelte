@@ -3,7 +3,7 @@
 	import { getContext } from 'svelte'
 	import { AppLevel, AppLevelRowStatus } from '$comps/app/types.app.svelte'
 	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
-	import { TokenAppDoActionConfirmType, TokenAppTab } from '$utils/types.token'
+	import { TokenAppTab, TokenAppUserActionConfirmType } from '$utils/types.token'
 	import { DataRecordStatus } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -26,7 +26,7 @@
 
 	function onClick(index: number) {
 		sm.change({
-			confirmType: TokenAppDoActionConfirmType.statusChanged,
+			confirmType: TokenAppUserActionConfirmType.statusChanged,
 			packet: new StatePacket({
 				actionType: CodeActionType.navTab,
 				token: new TokenAppTab({ app: sm.app, index })

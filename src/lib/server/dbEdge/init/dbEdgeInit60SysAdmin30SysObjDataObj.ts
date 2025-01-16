@@ -7,7 +7,7 @@ export function initAdminSysObjDataObj(init: InitDb) {
 
 function initDataObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
@@ -36,7 +36,7 @@ function initDataObj(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Data Object',
@@ -169,13 +169,13 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'actionFieldGroup',
+				columnName: 'actionGroup',
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
 				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_action_field_group_order_name',
-				linkTable: 'SysDataObjActionFieldGroup'
+				fieldListItems: 'il_sys_data_obj_action_group_order_name',
+				linkTable: 'SysDataObjActionGroup'
 			},
 			{
 				codeAccess: 'optional',
@@ -472,7 +472,7 @@ function initDataObj(init: InitDb) {
 
 function initDataObjColumn(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter:
@@ -574,7 +574,7 @@ function initDataObjColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Column',

@@ -27,11 +27,11 @@ import {
 	TokenAppIndex,
 	TokenAppDataObjName,
 	TokenAppDo,
-	TokenAppDoActionConfirmType,
 	TokenAppModalEmbedField,
 	TokenAppNode,
 	TokenAppRow,
-	TokenAppTab
+	TokenAppTab,
+	TokenAppUserActionConfirmType
 } from '$utils/types.token'
 import {
 	FieldEmbedListConfig,
@@ -228,7 +228,7 @@ export class App {
 	getCurrLevelActions() {
 		const level = this.getCurrLevel()
 		const dataObj = level ? level.getCurrTab().dataObj : undefined
-		return dataObj ? dataObj.actionsField : []
+		return dataObj ? dataObj.userActions : []
 	}
 	getCurrTab() {
 		const level = this.getCurrLevel()
@@ -287,7 +287,7 @@ export class App {
 		this.levels.pop()
 		if (this.levels.length === 0) {
 			sm.change({
-				confirmType: TokenAppDoActionConfirmType.statusChanged,
+				confirmType: TokenAppUserActionConfirmType.statusChanged,
 				target: StateTarget.dashboard
 			})
 		}

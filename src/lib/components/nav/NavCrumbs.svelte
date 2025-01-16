@@ -3,7 +3,7 @@
 	import { getContext } from 'svelte'
 	import { AppLevelCrumb } from '$comps/app/types.app.svelte'
 	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
-	import { TokenAppDoActionConfirmType, TokenAppIndex } from '$utils/types.token'
+	import { TokenAppIndex, TokenAppUserActionConfirmType } from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/nav/NavCrumbs.svelte'
@@ -13,7 +13,7 @@
 
 	function onClick(index: number) {
 		sm.change({
-			confirmType: TokenAppDoActionConfirmType.statusChanged,
+			confirmType: TokenAppUserActionConfirmType.statusChanged,
 			packet: new StatePacket({
 				actionType: CodeActionType.navCrumbs,
 				token: new TokenAppIndex({

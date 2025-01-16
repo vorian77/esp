@@ -3,7 +3,7 @@
 	import { getContext } from 'svelte'
 	import { type AppLevelRowStatus, AppRowActionType } from '$comps/app/types.app.svelte'
 	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
-	import { TokenAppDoActionConfirmType, TokenAppRow } from '$utils/types.token'
+	import { TokenAppRow, TokenAppUserActionConfirmType } from '$utils/types.token'
 	import NavRowAction from '$comps/nav/NavRowAction.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -17,7 +17,7 @@
 
 	function onChange(rowAction: AppRowActionType) {
 		sm.change({
-			confirmType: TokenAppDoActionConfirmType.statusChanged,
+			confirmType: TokenAppUserActionConfirmType.statusChanged,
 			packet: new StatePacket({
 				actionType: CodeActionType.navRow,
 				token: new TokenAppRow({ rowAction })

@@ -164,7 +164,7 @@ export class FieldColor {
 	color: string
 	name: string
 	constructor(parmColor: string | undefined, defaultColor: string) {
-		const colorError = 'ef4444'
+		const colorError = '#ef4444'
 		const colorPrimary = '#60a5fa'
 		const colorSecondary = '#22c55e'
 		const colors = [

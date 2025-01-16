@@ -6,7 +6,7 @@ import {
 	CodeActionType,
 	DataManager,
 	DataObj,
-	DataObjConfirm,
+	DataObjAction,
 	type DataRecord,
 	memberOfEnum,
 	ParmsValues,
@@ -16,7 +16,7 @@ import {
 	ToastType,
 	User
 } from '$utils/types'
-import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField.svelte'
+import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
 import {
 	Token,
 	TokenApiDbDataObjSource,
@@ -26,16 +26,16 @@ import {
 	TokenApiQueryType,
 	TokenAppDataObjName,
 	TokenAppDo,
-	TokenAppDoActionConfirmType,
 	TokenAppModalEmbedField,
 	TokenAppModalReturn,
 	TokenAppModalReturnType,
-	TokenAppModalSelect
+	TokenAppModalSelect,
+	TokenAppUserActionConfirmType
 } from '$utils/types.token'
 import { FieldEmbedType } from '$comps/form/field'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
-import { RawDataObjActionField, RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
+import { RawDataObjAction, RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { booleanOrFalse, ResponseBody, strOptional } from '$utils/types'
@@ -48,13 +48,13 @@ const FILENAME = '/$comps/app/types.appState.ts'
 async function askB4Transition(
 	sm: State,
 	obj: any,
-	confirmConfig: DataObjConfirm,
+	confirmConfig: UserActionConfirmContent,
 	fChangeCallback?: Function
 ) {
 	if (sm instanceof StateSurfaceModal) {
 		if (confirm(confirmConfig.message)) {
 			// discard changes
-			obj.confirmType = TokenAppDoActionConfirmType.none
+			obj.confirmType = TokenAppUserActionConfirmType.none
 			sm.dm?.resetStatus()
 			sm.changeValidate(sm, obj, fChangeCallback)
 		}
@@ -68,7 +68,7 @@ async function askB4Transition(
 			response: async (r: boolean) => {
 				if (r) {
 					// discard changes
-					obj.confirmType = TokenAppDoActionConfirmType.none
+					obj.confirmType = TokenAppUserActionConfirmType.none
 					sm.dm?.resetStatus()
 					sm.changeValidate(sm, obj, fChangeCallback)
 				}
@@ -143,11 +143,11 @@ export class State {
 		obj = valueOrDefault(obj, {})
 		if (obj.confirmType) {
 			const confirmType = obj.confirmType
-			const confirm = obj.confirm || new DataObjConfirm()
+			const confirm = obj.confirm || new UserActionConfirmContent()
 			if (
 				confirmType &&
-				(confirmType === TokenAppDoActionConfirmType.always ||
-					(confirmType === TokenAppDoActionConfirmType.statusChanged && sm.dm?.isStatusChanged()))
+				(confirmType === TokenAppUserActionConfirmType.always ||
+					(confirmType === TokenAppUserActionConfirmType.statusChanged && sm.dm?.isStatusChanged()))
 			) {
 				await askB4Transition(sm, obj, confirm, callback)
 			} else {
@@ -187,14 +187,14 @@ export class State {
 
 	async getActions(fieldGroupName: string) {
 		const result: ResponseBody = await apiFetch(
-			ApiFunction.dbEdgeGetDataObjActionFieldGroup,
+			ApiFunction.dbEdgeGetDataObjActionGroup,
 			new TokenApiId(fieldGroupName)
 		)
 		if (result.success) {
-			const actionFieldGroup = result.data
-			return actionFieldGroup._actionFieldItems.map((action: any) => {
-				const rawAction = new RawDataObjActionField(action)
-				return new DataObjActionField(rawAction, this)
+			const actionGroup = result.data
+			return actionGroup._dataObjActions.map((doa: any) => {
+				const rawAction = new RawDataObjAction(doa)
+				return new DataObjAction(rawAction, this)
 			})
 		} else {
 			error(500, {
@@ -317,7 +317,7 @@ export class State {
 	async openModalDataObj(dataObjName: string, fUpdate?: Function) {
 		const clazz = `${FILENAME}.openModalDataObj`
 		const stateModal = new StateSurfaceModal({
-			actionsFieldDialog: await this.getActions('doag_dialog_footer_detail'),
+			actionsdDialog: await this.getActions('doag_dialog_footer_detail'),
 			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutHeader: {
 				isDataObj: true
@@ -347,7 +347,7 @@ export class State {
 		const dataObjParentRootTable = fieldEmbed.parentTable
 
 		const stateModal = new StateSurfaceModalEmbed({
-			actionsFieldDialog: fieldEmbed.actionsFieldModal,
+			actionsDialog: fieldEmbed.actionsModal,
 			app: this.app,
 			embedParentId: token.sm.dm?.getRecordId(fieldEmbed.dataObjIdParent, 0),
 			embedType: fieldEmbed.embedType,
@@ -405,7 +405,7 @@ export class State {
 		)
 
 		const stateModal = new StateSurfaceModalEmbed({
-			actionsFieldDialog: fieldEmbed.actionsFieldModal,
+			actionsDialog: fieldEmbed.actionsModal,
 			app: this.app,
 			embedParentId: token.sm.dm?.getRecordId(fieldEmbed.dataObjIdParent, 0),
 			embedType: fieldEmbed.embedType,
@@ -446,7 +446,7 @@ export class State {
 		parmsState.valueSet(ParmsValuesType.rowData, token.rowData)
 
 		const stateModal = new StateSurfaceModal({
-			actionsFieldDialog: await this.getActions('doag_dialog_footer_list'),
+			actionsdDialog: await this.getActions('doag_dialog_footer_list'),
 			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutHeader: {
 				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.selectLabel}`
@@ -597,12 +597,12 @@ export class StateSurfaceEmbedShell extends StateSurfaceEmbed {
 }
 
 export class StateSurfaceModal extends State {
-	actionsFieldDialog: DataObjActionField[] = []
+	actionsDialog: DataObjAction[] = []
 	constructor(obj: any) {
 		const clazz = 'StateSurfaceModal'
 		super(obj)
 		obj = valueOrDefault(obj, {})
-		this.actionsFieldDialog = valueOrDefault(obj.actionsFieldDialog, [])
+		this.actionsDialog = valueOrDefault(obj.actionsDialog, [])
 	}
 }
 

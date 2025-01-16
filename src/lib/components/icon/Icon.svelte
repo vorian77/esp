@@ -109,7 +109,7 @@
 
 <!-- hover:bg-gray-200 hover:rounded-full -->
 {#if props && IconType}
-	<div class=" {props.clazz}">
+	<div class={props.clazz}>
 		<IconType {...props} />
 	</div>
 {/if}

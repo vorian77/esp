@@ -183,18 +183,38 @@ async function processDataObjQuery(
 		for (let i = 0; i < returnData.fields.length; i++) {
 			const field: FieldEmbed = returnData.fields[i]
 			queryData.dataTab = field.data
-			const queryTypeEmbed =
-				queryType === TokenApiQueryType.retrieve
-					? queryType
-					: queryType === TokenApiQueryType.save && field.embedType === FieldEmbedType.listEdit
-						? TokenApiQueryType.save
-						: queryType === TokenApiQueryType.save &&
-							  field.embedType === FieldEmbedType.listSelect &&
-							  recordStatus !== DataRecordStatus.preset &&
-							  queryData.dataTab?.parms.hasOwn('listIdsSelected')
-							? TokenApiQueryType.save
-							: TokenApiQueryType.retrieve
-			debug('processDataObjQuery', 'embeddedField', { queryType, recordStatus, queryTypeEmbed })
+
+			let queryTypeEmbed = queryType
+			if (queryType === TokenApiQueryType.retrieve || recordStatus === DataRecordStatus.preset) {
+				queryTypeEmbed = TokenApiQueryType.retrieve
+			} else {
+				// save && !preset
+				switch (field.embedType) {
+					case FieldEmbedType.listConfig:
+						queryTypeEmbed = TokenApiQueryType.save
+						break
+
+					case FieldEmbedType.listEdit:
+						queryTypeEmbed = TokenApiQueryType.save
+						break
+
+					case FieldEmbedType.listSelect:
+						if (queryData.dataTab?.parms.hasOwn('listIdsSelected')) {
+							queryTypeEmbed = TokenApiQueryType.save
+						}
+						break
+
+					default:
+						queryTypeEmbed = TokenApiQueryType.retrieve
+				}
+			}
+
+			debug('processDataObjQuery', 'embeddedField', {
+				fieldEmbedType: field.embedType,
+				queryType,
+				recordStatus,
+				queryTypeEmbed
+			})
 
 			await processDataObjQuery(
 				queryTypeEmbed,

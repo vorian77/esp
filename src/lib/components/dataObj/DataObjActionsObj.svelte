@@ -4,21 +4,14 @@
 		ContextKey,
 		DataManager,
 		DataObj,
+		DataObjAction,
 		DataObjSaveMode,
 		type DataRecord,
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import {
-		DataObjActionField,
-		DataObjActionFieldConfirm,
-		DataObjActionFieldTriggerEnable,
-		DataObjActionFieldTriggerGroup,
-		DataObjActionFieldTriggerStatus,
-		DataObjActionFieldShow
-	} from '$comps/dataObj/types.dataObjActionField.svelte'
 	import { State, StatePacket, StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
-	import { TokenAppDo, TokenAppDoActionConfirmType } from '$utils/types.token'
+	import { TokenAppDo, TokenAppUserActionConfirmType } from '$utils/types.token'
 	import { flip } from 'svelte/animate'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -31,15 +24,18 @@
 
 	let dataObjId = $derived(parms?.dataObjId)
 	let dataObj = $derived(dataObjId ? dm.getDataObj(dataObjId) : undefined)
+
 	let isShowing = $derived(
-		dataObjId ? dataObj.actionsField.some((a) => a.isShow(sm, dataObj)) : false
+		dataObjId
+			? dataObj.userActions.some((doa: DataObjAction) => doa.action.isShow(sm, dataObj))
+			: false
 	)
 	let isEditing = $derived(
 		dataObjId
-			? dataObj.actionsField.some(
-					(a: DataObjActionField) =>
+			? dataObj.userActions.some(
+					(doa: DataObjAction) =>
 						[CodeActionType.doDetailSave, CodeActionType.doListSelfSave].includes(
-							a.codeAction.actionType
+							doa.action.codeAction.actionType
 						) &&
 						dm.isStatusChanged() &&
 						!dataObj.isFieldEmbed
@@ -47,12 +43,10 @@
 			: false
 	)
 
-	async function onClick(action: DataObjActionField) {
-		await action.trigger(sm, dataObj)
+	async function onClick(doa: DataObjAction) {
+		await doa.action.trigger(sm, dataObj)
 	}
 </script>
-
-<!-- <DataViewer header="actions" data={dataObj.actionsField.map((a) => a.header)} /> -->
 
 <div class=" flex flex-col {isShowing ? 'sm:pl-3' : 'hidden'}">
 	<div class="my-2 sm:hidden">
@@ -65,17 +59,16 @@
 				<p class="text-blue-500 self-center sm:self-start">Editing...</p>
 			{/if}
 
-			{#each dataObj?.actionsField as action (action.name)}
-				{@const isDisabled = action.isDisabled(sm, dataObj)}
-				{@const isShow = action.isShow(sm, dataObj)}
-
+			{#each dataObj.userActions as doa (doa.action.name)}
+				{@const isDisabled = doa.action.isDisabled(sm, dataObj)}
+				{@const isShow = doa.action.isShow(sm, dataObj)}
 				<button
 					class="btn btn-action text-sm text-white {isShow ? '' : 'hidden'}"
-					style:background-color={action.fieldColor.color}
+					style:background-color={doa.fieldColor.color}
 					disabled={isDisabled}
-					onclick={async () => onClick(action)}
+					onclick={async () => onClick(doa)}
 				>
-					{action.header}
+					{doa.action.header}
 				</button>
 			{/each}
 		</div>

@@ -7,7 +7,7 @@ import {
 	processExpression
 } from '$routes/api/dbEdge/dbEdgeProcess'
 import {
-	getDataObjActionFieldGroup,
+	getDataObjActionGroup,
 	getDataObjId,
 	getFieldEmbedListSelect,
 	getNodesBranch,
@@ -28,8 +28,8 @@ export async function POST({ request, cookies }) {
 	const { apiFunction, token } = requestData
 
 	switch (apiFunction) {
-		case ApiFunction.dbEdgeGetDataObjActionFieldGroup:
-			return getServerResponse(await getDataObjActionFieldGroup(token))
+		case ApiFunction.dbEdgeGetDataObjActionGroup:
+			return getServerResponse(await getDataObjActionGroup(token))
 
 		case ApiFunction.dbEdgeGetDataObjId:
 			return getServerResponse(await getDataObjId(token))

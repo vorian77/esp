@@ -13,7 +13,7 @@ export async function addDataObj(data: any) {
 	const actionsQuery = data.actionsQuery && data.actionsQuery.length > 0 ? data.actionsQuery : []
 	const query = e.params(
 		{
-			actionFieldGroup: e.optional(e.str),
+			actionGroup: e.optional(e.str),
 			actionsQuery: e.optional(e.array(e.json)),
 			codeCardinality: e.str,
 			codeComponent: e.str,
@@ -43,7 +43,7 @@ export async function addDataObj(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObj, {
-				actionFieldGroup: e.select(e.sys_core.getDataObjActionFieldGroup(p.actionFieldGroup)),
+				actionGroup: e.select(e.sys_core.getDataObjActionGroup(p.actionGroup)),
 				actionsQuery: e.for(e.array_unpack(p.actionsQuery), (a) => {
 					return e.insert(e.sys_core.SysDataObjActionQuery, {
 						name: e.cast(e.str, e.json_get(a, 'name')),
@@ -364,37 +364,6 @@ export async function addDataObj(data: any) {
 	return await query.run(client, data)
 }
 
-export async function addDataObjActionFieldGroup(data: any) {
-	sectionHeader(`addDataObjActionGroup - ${data.name}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			actionFieldItems: e.json,
-			name: e.str,
-			owner: e.str
-		},
-		(p) => {
-			return e.insert(e.sys_core.SysDataObjActionFieldGroup, {
-				actionFieldItems: e.assert_distinct(
-					e.for(e.json_array_unpack(p.actionFieldItems), (a) => {
-						return e.insert(e.sys_core.SysDataObjActionFieldGroupItem, {
-							createdBy: CREATOR,
-							action: e.select(e.sys_core.getDataObjActionField(e.cast(e.str, a[0]))),
-							modifiedBy: CREATOR,
-							orderDefine: e.cast(e.int16, a[1])
-						})
-					})
-				),
-				createdBy: CREATOR,
-				modifiedBy: CREATOR,
-				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner)
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-
 export async function addDataObjActionGroup(data: any) {
 	sectionHeader(`addDataObjActionGroup - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
@@ -406,7 +375,7 @@ export async function addDataObjActionGroup(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObjActionGroup, {
-				actions: e.assert_distinct(
+				dataObjActions: e.assert_distinct(
 					e.for(e.json_array_unpack(p.actions), (a) => {
 						return e.insert(e.sys_core.SysDataObjAction, {
 							createdBy: CREATOR,
@@ -437,7 +406,7 @@ export async function addDataObjFieldEmbedListConfig(data: any) {
 
 	const query = e.params(
 		{
-			actionFieldGroupModal: e.str,
+			actionGroupModal: e.str,
 			dataObjEmbed: e.str,
 			dataObjModal: e.str,
 			name: e.str,
@@ -445,9 +414,7 @@ export async function addDataObjFieldEmbedListConfig(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObjFieldEmbedListConfig, {
-				actionFieldGroupModal: e.select(
-					e.sys_core.getDataObjActionFieldGroup(p.actionFieldGroupModal)
-				),
+				actionGroupModal: e.select(e.sys_core.getDataObjActionGroup(p.actionGroupModal)),
 				createdBy: CREATOR,
 				dataObjEmbed: e.select(e.sys_core.getDataObj(p.dataObjEmbed)),
 				dataObjModal: e.select(e.sys_core.getDataObj(p.dataObjModal)),
@@ -489,7 +456,7 @@ export async function addDataObjFieldEmbedListSelect(data: any) {
 
 	const query = e.params(
 		{
-			actionFieldGroupModal: e.optional(e.str),
+			actionGroupModal: e.optional(e.str),
 			btnLabelComplete: e.optional(e.str),
 			dataObjList: e.str,
 			name: e.str,
@@ -497,86 +464,10 @@ export async function addDataObjFieldEmbedListSelect(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObjFieldEmbedListSelect, {
-				actionFieldGroupModal: e.select(
-					e.sys_core.getDataObjActionFieldGroup(p.actionFieldGroupModal)
-				),
+				actionGroupModal: e.select(e.sys_core.getDataObjActionGroup(p.actionGroupModal)),
 				btnLabelComplete: p.btnLabelComplete,
 				createdBy: CREATOR,
 				dataObjList: e.select(e.sys_core.getDataObj(p.dataObjList)),
-				modifiedBy: CREATOR,
-				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner)
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-
-export async function addDataObjActionField(data: any) {
-	sectionHeader(`addDataObjActionField - ${data.name}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			actionFieldConfirms: e.array(e.json),
-			actionFieldShows: e.array(e.json),
-			codeAction: e.json,
-			codeActionFieldTriggerEnable: e.str,
-			codeColor: e.optional(e.str),
-			header: e.str,
-			isListRowAction: e.bool,
-			name: e.str,
-			owner: e.str
-		},
-		(p) => {
-			return e.insert(e.sys_core.SysDataObjActionField, {
-				actionFieldConfirms: e.for(e.array_unpack(p.actionFieldConfirms), (a) => {
-					return e.insert(e.sys_core.SysDataObjActionFieldConfirm, {
-						codeConfirmType: e.select(
-							e.sys_core.getCode(
-								'ct_sys_user_action_confirm_type',
-								e.cast(e.str, e.json_get(a, 'codeConfirmType'))
-							)
-						),
-						codeTriggerConfirmConditional: e.select(
-							e.sys_core.getCode(
-								'ct_sys_user_action_trigger',
-								e.cast(e.str, e.json_get(a, 'codeTriggerConfirmConditional'))
-							)
-						),
-						confirmButtonLabelCancel: e.cast(e.str, e.json_get(a, 'confirmButtonLabelCancel')),
-						confirmButtonLabelConfirm: e.cast(e.str, e.json_get(a, 'confirmButtonLabelConfirm')),
-						confirmMessage: e.cast(e.str, e.json_get(a, 'confirmMessage')),
-						confirmTitle: e.cast(e.str, e.json_get(a, 'confirmTitle')),
-						createdBy: CREATOR,
-						modifiedBy: CREATOR
-					})
-				}),
-				actionFieldShows: e.for(e.array_unpack(p.actionFieldShows), (a) => {
-					return e.insert(e.sys_core.SysDataObjActionFieldShow, {
-						codeTriggerShow: e.select(
-							e.sys_core.getCode(
-								'ct_sys_user_action_trigger',
-								e.cast(e.str, e.json_get(a, 'codeTriggerShow'))
-							)
-						),
-						createdBy: CREATOR,
-						isRequired: e.cast(e.bool, e.json_get(a, 'isRequired')),
-						modifiedBy: CREATOR
-					})
-				}),
-				codeAction: e.select(
-					e.sys_core.getCodeAction(
-						e.cast(e.str, e.json_get(p.codeAction, 'codeType')),
-						e.cast(e.str, e.json_get(p.codeAction, 'name'))
-					)
-				),
-				codeActionFieldTriggerEnable: e.select(
-					e.sys_core.getCode('ct_sys_user_action_trigger', p.codeActionFieldTriggerEnable)
-				),
-				codeColor: e.select(e.sys_core.getCode('ct_sys_tailwind_color', p.codeColor)),
-				createdBy: CREATOR,
-				header: p.header,
-				isListRowAction: valueOrDefaultParm(p.isListRowAction, false),
 				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner)

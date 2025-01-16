@@ -2,6 +2,7 @@ import { State } from '$comps/app/types.appState.svelte'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiUserId } from '$utils/types.token'
 import { valueOrDefault, memberOfEnum } from '$utils/utils.model'
+import type { Code } from 'lucide-svelte'
 
 export async function adminDbReset(sm: State) {
 	// <todo> - 240125
@@ -27,6 +28,9 @@ export class CodeAction {
 			CodeActionClass
 		)
 		this.actionType = memberOfEnum(obj._type, clazz, 'actionType', 'CodeActionType', CodeActionType)
+	}
+	static init(actionClass: CodeActionClass, actionType: CodeActionType) {
+		return new CodeAction({ _class: actionClass, _type: actionType })
 	}
 }
 

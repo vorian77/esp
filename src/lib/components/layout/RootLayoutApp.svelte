@@ -17,14 +17,14 @@
 		TokenApp,
 		TokenAppDo,
 		TokenAppIndex,
-		TokenAppDoActionConfirmType,
 		TokenAppModalEmbedField,
 		TokenAppModalReturnType,
 		TokenAppProcess,
 		TokenAppRow,
 		TokenAppTab,
 		TokenAppNode,
-		TokenAppWidget
+		TokenAppWidget,
+		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
 	import {
 		CodeActionType,
@@ -327,7 +327,7 @@
 
 	function returnHome(sm: State) {
 		sm.change({
-			confirmType: TokenAppDoActionConfirmType.statusChanged,
+			confirmType: TokenAppUserActionConfirmType.statusChanged,
 			target: StateTarget.dashboard
 		})
 	}

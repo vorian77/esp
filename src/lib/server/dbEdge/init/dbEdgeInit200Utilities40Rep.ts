@@ -71,7 +71,7 @@ export async function addReport(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			actionFieldGroup: e.str,
+			actionGroup: e.str,
 			analytics: e.optional(e.array(e.str)),
 			description: e.optional(e.str),
 			elements: e.optional(e.array(e.json)),
@@ -87,7 +87,7 @@ export async function addReport(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_rep.SysRep, {
-				actionFieldGroup: e.select(e.sys_core.getDataObjActionFieldGroup(p.actionFieldGroup)),
+				actionGroup: e.select(e.sys_core.getDataObjActionGroup(p.actionGroup)),
 				analytics: e.assert_distinct(
 					e.for(e.array_unpack(p.analytics), (a) => {
 						return e.select(e.sys_rep.getAnalytic(a))

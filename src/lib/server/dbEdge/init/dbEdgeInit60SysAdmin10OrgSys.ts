@@ -7,7 +7,7 @@ export function initAdminOrgSys(init: InitDb) {
 
 function initFieldListSelectUser(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_select',
+		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -36,7 +36,7 @@ function initFieldListSelectUser(init: InitDb) {
 		]
 	})
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionFieldGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select User(s)',
 		dataObjList: 'dofls_sys_user_org_sys',
 		name: 'fels_sys_user_org_sys',
@@ -46,7 +46,7 @@ function initFieldListSelectUser(init: InitDb) {
 
 function initOrg(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		header: 'Organizations (System)',
@@ -75,7 +75,7 @@ function initOrg(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Organization (System)',

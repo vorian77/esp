@@ -18,7 +18,7 @@ function initClient(init: InitDb) {
 		// exprFilter:
 		// 	'.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).userTypes.owner',
 
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		fields: [
 			{
 				columnName: 'id',
@@ -53,7 +53,7 @@ function initClient(init: InitDb) {
 		name: 'data_obj_app_crm_client_detail',
 		header: 'Client',
 		tables: [{ index: 0, table: 'CrmClient' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		fields: [
 			{
 				columnName: 'id',

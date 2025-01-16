@@ -21,9 +21,9 @@
 	import {
 		TokenApiUserPref,
 		TokenAppDo,
-		TokenAppDoActionConfirmType,
 		TokenAppModalSelect,
-		TokenAppModalReturnType
+		TokenAppModalReturnType,
+		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
 	import { Field, FieldElement } from '$comps/form/field'
 	import { FieldSelectMulti } from '$comps/form/fieldSelect'
@@ -59,7 +59,7 @@
 
 	function onClick(event: Event) {
 		sm.change({
-			confirmType: TokenAppDoActionConfirmType.none,
+			confirmType: TokenAppUserActionConfirmType.none,
 			packet: new StatePacket({
 				actionType: CodeActionType.modalSelectOpen,
 				token: new TokenAppModalSelect({

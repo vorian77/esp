@@ -11,7 +11,7 @@ import {
 	valueOrDefault
 } from '$utils/types'
 import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
-import { TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
+import { TokenAppNode, TokenAppUserActionConfirmType } from '$utils/types.token'
 import { adminDbReset } from '$utils/utils.sys'
 import { error } from '@sveltejs/kit'
 
@@ -109,7 +109,7 @@ export class NavMenuData {
 
 				case NavMenuContentType.page:
 					this.sm.change({
-						confirmType: TokenAppDoActionConfirmType.statusChanged,
+						confirmType: TokenAppUserActionConfirmType.statusChanged,
 						page: content.value,
 						target: StateTarget.page
 					})
@@ -117,7 +117,7 @@ export class NavMenuData {
 				case NavMenuContentType.node:
 					node = content.value as Node
 					this.sm.change({
-						confirmType: TokenAppDoActionConfirmType.statusChanged,
+						confirmType: TokenAppUserActionConfirmType.statusChanged,
 						// parmsState: { programId: this.getProgramId(node) },
 						packet: new StatePacket({
 							actionType: CodeActionType.openNode,
@@ -129,7 +129,7 @@ export class NavMenuData {
 				case NavMenuContentType.task:
 					const task: UserResourceTask = content.value as UserResourceTask
 					this.sm.change({
-						confirmType: TokenAppDoActionConfirmType.statusChanged,
+						confirmType: TokenAppUserActionConfirmType.statusChanged,
 						packet: new StatePacket({
 							actionType: CodeActionType.openNode,
 							token: task.getTokenNode(this.sm.user)

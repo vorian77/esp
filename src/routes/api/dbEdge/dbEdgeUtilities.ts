@@ -9,10 +9,10 @@ const shapeCodeAction = e.shape(e.sys_core.SysCodeAction, (ca) => ({
 	_type: ca.name
 }))
 
-const shapeDataObjActionFieldGroup = e.shape(e.sys_core.SysDataObjActionFieldGroup, (g) => ({
-	_actionFieldItems: e.select(g.actionFieldItems, (i) => ({
+const shapeDataObjActionGroup = e.shape(e.sys_core.SysDataObjActionGroup, (g) => ({
+	_dataObjActions: e.select(g.dataObjActions, (i) => ({
 		_action: e.select(i.action, (a) => ({
-			_actionFieldConfirms: e.select(a.actionFieldConfirms, (c) => ({
+			_actionConfirms: e.select(a.actionConfirms, (c) => ({
 				_codeConfirmType: c.codeConfirmType.name,
 				_codeTriggerConfirmConditional: c.codeTriggerConfirmConditional.name,
 				confirmButtonLabelCancel: true,
@@ -20,19 +20,19 @@ const shapeDataObjActionFieldGroup = e.shape(e.sys_core.SysDataObjActionFieldGro
 				confirmMessage: true,
 				confirmTitle: true
 			})),
-			_actionFieldShows: e.select(a.actionFieldShows, (s) => ({
+			_actionShows: e.select(a.actionShows, (s) => ({
 				_codeTriggerShow: s.codeTriggerShow.name,
 				isRequired: true
 			})),
 			_codeAction: e.select(a.codeAction, (ca) => ({
 				...shapeCodeAction(ca)
 			})),
-			_codeActionFieldTriggerEnable: a.codeActionFieldTriggerEnable.name,
-			_codeColor: a.codeColor.name,
+			_codeTriggerEnable: a.codeTriggerEnable.name,
 			header: a.header,
-			isListRowAction: a.isListRowAction,
 			name: a.name
 		})),
+		_codeColor: i.codeColor.name,
+		isListRowAction: i.isListRowAction,
 		order_by: i.orderDefine
 	}))
 }))
@@ -71,8 +71,8 @@ const shapeLinkItemsSource = e.shape(e.sys_core.SysDataObjFieldListItems, (fli) 
 }))
 
 const shapeFieldEmbedListSelect = e.shape(e.sys_core.SysDataObjFieldEmbedListSelect, (fels) => ({
-	_actionFieldGroupModal: e.select(fels.actionFieldGroupModal, (afg) => ({
-		...shapeDataObjActionFieldGroup(afg)
+	_actionGroupModal: e.select(fels.actionGroupModal, (afg) => ({
+		...shapeDataObjActionGroup(afg)
 	})),
 	_dataObjListId: fels.dataObjList.id,
 	btnLabelComplete: true
@@ -117,9 +117,9 @@ const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	name: true
 }))
 
-export async function getDataObjActionFieldGroup(token: TokenApiId) {
-	const query = e.select(e.sys_core.SysDataObjActionFieldGroup, (a) => ({
-		...shapeDataObjActionFieldGroup(a),
+export async function getDataObjActionGroup(token: TokenApiId) {
+	const query = e.select(e.sys_core.SysDataObjActionGroup, (a) => ({
+		...shapeDataObjActionGroup(a),
 		filter_single: e.op(a.name, '=', token.id)
 	}))
 	return await query.run(client)
@@ -196,8 +196,8 @@ export async function getDataObjById(token: TokenApiId) {
 			listEditPresetExpr: true,
 			name: true,
 			subHeader: true,
-			_actionFieldGroup: e.select(do1.actionFieldGroup, (afg) => ({
-				...shapeDataObjActionFieldGroup(afg)
+			_actionGroup: e.select(do1.actionGroup, (afg) => ({
+				...shapeDataObjActionGroup(afg)
 			})),
 			_actionsQuery: e.select(do1.actionsQuery, (a) => ({
 				name: true,
@@ -282,8 +282,8 @@ export async function getDataObjById(token: TokenApiId) {
 					customColSourceKey: true
 				})),
 				_fieldEmbedListConfig: e.select(doc.fieldEmbedListConfig, (fe) => ({
-					_actionFieldGroupModal: e.select(fe.actionFieldGroupModal, (afg) => ({
-						...shapeDataObjActionFieldGroup(afg)
+					_actionGroupModal: e.select(fe.actionGroupModal, (afg) => ({
+						...shapeDataObjActionGroup(afg)
 					})),
 					_dataObjEmbedId: fe.dataObjEmbed.id,
 					_dataObjModalId: fe.dataObjModal.id
@@ -534,8 +534,8 @@ export async function getReportUser(repUserId: string) {
 		})),
 
 		report: e.select(r.report, (rep) => ({
-			_actionFieldGroup: e.select(rep.actionFieldGroup, (afg) => ({
-				...shapeDataObjActionFieldGroup(afg)
+			_actionGroup: e.select(rep.actionGroup, (afg) => ({
+				...shapeDataObjActionGroup(afg)
 			})),
 			description: true,
 			elements: e.select(rep.elements, (repE) => ({

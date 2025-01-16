@@ -363,13 +363,13 @@ export namespace sys_core {
     "listEditPresetExpr"?: string | null;
     "parentFilterExpr"?: string | null;
     "subHeader"?: string | null;
-    "actionFieldGroup"?: SysDataObjActionFieldGroup | null;
     "actionsQuery": SysDataObjActionQuery[];
     "columns": SysDataObjColumn[];
     "listReorderColumn"?: sys_db.SysColumn | null;
     "parentColumn"?: sys_db.SysColumn | null;
     "parentTable"?: sys_db.SysTable | null;
     "tables": SysDataObjTable[];
+    "actionGroup"?: SysDataObjActionGroup | null;
   }
   export interface SysDataObjAction extends sys_user.Mgmt {
     "codeColor": SysCode;
@@ -377,35 +377,8 @@ export namespace sys_core {
     "action": sys_user.SysUserAction;
     "isListRowAction": boolean;
   }
-  export interface SysDataObjActionField extends SysObj {
-    "codeActionFieldTriggerEnable": SysCode;
-    "codeColor"?: SysCode | null;
-    "isListRowAction": boolean;
-    "actionFieldConfirms": SysDataObjActionFieldConfirm[];
-    "actionFieldShows": SysDataObjActionFieldShow[];
-    "codeAction": SysCodeAction;
-  }
-  export interface SysDataObjActionFieldConfirm extends sys_user.Mgmt {
-    "codeConfirmType": SysCode;
-    "codeTriggerConfirmConditional": SysCode;
-    "confirmButtonLabelCancel"?: string | null;
-    "confirmButtonLabelConfirm"?: string | null;
-    "confirmMessage"?: string | null;
-    "confirmTitle"?: string | null;
-  }
-  export interface SysDataObjActionFieldGroup extends SysObj {
-    "actionFieldItems": SysDataObjActionFieldGroupItem[];
-  }
-  export interface SysDataObjActionFieldGroupItem extends sys_user.Mgmt {
-    "action": SysDataObjActionField;
-    "orderDefine": number;
-  }
-  export interface SysDataObjActionFieldShow extends sys_user.Mgmt {
-    "codeTriggerShow": SysCode;
-    "isRequired": boolean;
-  }
   export interface SysDataObjActionGroup extends SysObj {
-    "actions": SysDataObjAction[];
+    "dataObjActions": SysDataObjAction[];
   }
   export interface SysDataObjActionQuery extends sys_user.Mgmt {
     "parms": SysDataObjActionQueryParm[];
@@ -485,15 +458,15 @@ export namespace sys_core {
   export interface SysDataObjFieldEmbedListConfig extends SysObj {
     "dataObjEmbed": SysDataObj;
     "dataObjModal": SysDataObj;
-    "actionFieldGroupModal": SysDataObjActionFieldGroup;
+    "actionGroupModal": SysDataObjActionGroup;
   }
   export interface SysDataObjFieldEmbedListEdit extends SysObj {
     "dataObjEmbed": SysDataObj;
   }
   export interface SysDataObjFieldEmbedListSelect extends SysObj {
     "dataObjList": SysDataObj;
-    "actionFieldGroupModal": SysDataObjActionFieldGroup;
     "btnLabelComplete": string;
+    "actionGroupModal": SysDataObjActionGroup;
   }
   export interface SysDataObjFieldListItems extends SysObj {
     "codeDataTypeDisplay"?: SysCode | null;
@@ -934,7 +907,6 @@ export namespace sys_rep {
     "expr"?: string | null;
   }
   export interface SysRep extends sys_core.SysObj {
-    "actionFieldGroup": sys_core.SysDataObjActionFieldGroup;
     "analytics": SysAnalytic[];
     "description"?: string | null;
     "exprFilter"?: string | null;
@@ -944,6 +916,7 @@ export namespace sys_rep {
     "tables": sys_core.SysDataObjTable[];
     "elements": SysRepEl[];
     "parms": SysRepParm[];
+    "actionGroup": sys_core.SysDataObjActionGroup;
   }
   export interface SysRepEl extends sys_user.Mgmt {
     "codeAlignment"?: sys_core.SysCode | null;
@@ -1067,11 +1040,6 @@ export interface types {
     "SysCodeType": sys_core.SysCodeType;
     "SysDataObj": sys_core.SysDataObj;
     "SysDataObjAction": sys_core.SysDataObjAction;
-    "SysDataObjActionField": sys_core.SysDataObjActionField;
-    "SysDataObjActionFieldConfirm": sys_core.SysDataObjActionFieldConfirm;
-    "SysDataObjActionFieldGroup": sys_core.SysDataObjActionFieldGroup;
-    "SysDataObjActionFieldGroupItem": sys_core.SysDataObjActionFieldGroupItem;
-    "SysDataObjActionFieldShow": sys_core.SysDataObjActionFieldShow;
     "SysDataObjActionGroup": sys_core.SysDataObjActionGroup;
     "SysDataObjActionQuery": sys_core.SysDataObjActionQuery;
     "SysDataObjActionQueryParm": sys_core.SysDataObjActionQueryParm;

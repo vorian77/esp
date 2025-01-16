@@ -14,7 +14,7 @@ export function initContentAITraining(init: InitDb) {
 
 function initCourse(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter:
@@ -68,7 +68,7 @@ function initCourse(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Course',
@@ -301,7 +301,7 @@ function initCourse(init: InitDb) {
 
 function initCohort(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.id in (SELECT app_cm::CmCourse FILTER .id = <tree,uuid,CmCourse.id>).cohorts.id',
@@ -378,7 +378,7 @@ function initCohort(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Cohort',
@@ -559,7 +559,7 @@ function initCohort(init: InitDb) {
 
 function initCohortStudentRoster(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_report_render',
+		actionGroup: 'doag_report_render',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.cohort.id = <tree,uuid,CmCohort.id>',
@@ -624,7 +624,7 @@ function initCohortStudentRoster(init: InitDb) {
 
 function initCohortAttd(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.cohortId = <tree,uuid,CmCohort.id>',
@@ -699,7 +699,7 @@ function initCohortAttd(init: InitDb) {
 		parentColumn: 'cohortAttds',
 		parentTable: 'CmCohort',
 		tables: [{ index: 0, table: 'CmCohortAttd' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		actionsQuery: [
 			{
 				name: 'qa_file_storage',
@@ -837,7 +837,7 @@ function initCohortAttd(init: InitDb) {
 
 function initCohortAttdSheet(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_embed_list_edit',
+		actionGroup: 'doag_embed_list_edit',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeListEditPresetType: 'insert',
@@ -983,7 +983,7 @@ function initCohortAttdSheet(init: InitDb) {
 
 function initCohortDoc(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.cohort.id = <tree,uuid,CmCohort.id>',
@@ -1045,7 +1045,7 @@ function initCohortDoc(init: InitDb) {
 		name: 'data_obj_cm_cohort_doc_detail',
 		header: 'Document',
 		tables: [{ index: 0, table: 'CmCohortDoc' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		actionsQuery: [
 			{
 				name: 'qa_file_storage',
@@ -1195,7 +1195,7 @@ function initCohortDoc(init: InitDb) {
 
 function initFieldListConfigPartnerContact(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_config',
+		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -1250,7 +1250,7 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_dialog_form_detail',
+		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
@@ -1329,7 +1329,7 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListConfig', {
-		actionFieldGroupModal: 'doag_dialog_footer_detail',
+		actionGroupModal: 'doag_dialog_footer_detail',
 		dataObjEmbed: 'doflc_cm_partner_contact_list',
 		dataObjModal: 'doflc_cm_partner_contact_detail',
 		name: 'flec_cm_partner_contact',
@@ -1339,7 +1339,7 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 
 function initPartner(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter:
@@ -1436,7 +1436,7 @@ function initPartner(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Partner',
@@ -1683,7 +1683,7 @@ function initPartner(init: InitDb) {
 
 function initPartnerNote(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,CmPartner.id>',
@@ -1737,7 +1737,7 @@ function initPartnerNote(init: InitDb) {
 		name: 'data_obj_cm_partner_note_detail',
 		header: 'Note',
 		tables: [{ index: 0, table: 'SysObjNote' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		fields: [
 			{
 				columnName: 'id',

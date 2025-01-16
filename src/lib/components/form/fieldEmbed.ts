@@ -3,13 +3,13 @@ import { Field, FieldClassType, FieldEmbedType, PropsFieldCreate } from '$comps/
 import {
 	arrayOfClass,
 	DataObj,
+	DataObjAction,
 	DataObjData,
 	DBTable,
 	required,
 	strOptional,
 	strRequired
 } from '$utils/types'
-import { DataObjActionField } from '$comps/dataObj/types.dataObjActionField.svelte'
 import { RawDataObj, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
 import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
@@ -159,7 +159,7 @@ export class FieldEmbed extends Field {
 }
 
 export class FieldEmbedListConfig extends FieldEmbed {
-	actionsFieldModal: DataObjActionField[]
+	actionsModal: DataObjAction[]
 	dataObjModalId: string
 	constructor(
 		rawDataObjParent: RawDataObj,
@@ -168,9 +168,9 @@ export class FieldEmbedListConfig extends FieldEmbed {
 	) {
 		const clazz = 'FieldEmbedListConfig'
 		super(rawDataObjParent, propRawEmbed, dataEmbed, FieldEmbedType.listConfig)
-		this.actionsFieldModal = arrayOfClass(
-			DataObjActionField,
-			propRawEmbed.fieldEmbedListConfig?.rawActionsFieldModal
+		this.actionsModal = arrayOfClass(
+			DataObjAction,
+			propRawEmbed.fieldEmbedListConfig?.rawActionsModal
 		)
 		this.dataObjModalId = strRequired(
 			propRawEmbed.fieldEmbedListConfig?.dataObjModalId,
@@ -192,7 +192,7 @@ export class FieldEmbedListEdit extends FieldEmbed {
 }
 
 export class FieldEmbedListSelect extends FieldEmbed {
-	actionsFieldModal: DataObjActionField[]
+	actionsModal: DataObjAction[]
 	btnLabelComplete?: string
 	dataObjListID: string
 	exprFilter: string
@@ -203,9 +203,9 @@ export class FieldEmbedListSelect extends FieldEmbed {
 	) {
 		const clazz = 'FieldEmbedListSelect'
 		super(rawDataObjParent, propRawEmbed, dataEmbed, FieldEmbedType.listSelect)
-		this.actionsFieldModal = arrayOfClass(
-			DataObjActionField,
-			propRawEmbed.fieldEmbedListSelect?.rawActionsFieldModal
+		this.actionsModal = arrayOfClass(
+			DataObjAction,
+			propRawEmbed.fieldEmbedListSelect?.rawActionsModal
 		)
 		this.btnLabelComplete = strOptional(
 			propRawEmbed.fieldEmbedListSelect?.btnLabelComplete,

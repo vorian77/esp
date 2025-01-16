@@ -14,7 +14,7 @@ export function initContentAIStudent(init: InitDb) {
 
 function initStudent(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter:
@@ -86,7 +86,7 @@ function initStudent(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Student',
@@ -460,7 +460,7 @@ function initCsf(init: InitDb) {
 		header: 'Service Flows',
 		tables: [{ index: 0, table: 'CmClientServiceFlow' }],
 		exprFilter: '.client.id = <tree,uuid,CmClient.id>',
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		fields: [
 			{
 				columnName: 'id',
@@ -539,7 +539,7 @@ function initCsf(init: InitDb) {
 		name: 'data_obj_cm_client_service_flow_detail',
 		header: 'Service Flow',
 		tables: [{ index: 0, table: 'CmClientServiceFlow' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		fields: [
 			{
 				columnName: 'id',
@@ -733,7 +733,7 @@ function initCsfCohort(init: InitDb) {
 		subHeader: "Student's course enrollments.",
 		tables: [{ index: 0, table: 'CmCsfCohort' }],
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		fields: [
 			{
 				columnName: 'id',
@@ -778,7 +778,7 @@ function initCsfCohort(init: InitDb) {
 		name: 'data_obj_cm_csf_cohort_detail',
 		header: 'Cohort',
 		tables: [{ index: 0, table: 'CmCsfCohort' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		fields: [
 			{
 				columnName: 'id',
@@ -920,7 +920,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 		name: 'data_obj_cm_csf_cohort_attd_student_list',
 		header: 'Attendance Records',
 		tables: [{ index: 0, table: 'CmCsfCohortAttd' }],
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		fields: [
 			{
 				codeAccess: 'readOnly',
@@ -964,7 +964,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Attendance',
@@ -1122,7 +1122,7 @@ function initCsfNote(init: InitDb) {
 		header: 'Case Notes',
 		tables: [{ index: 0, table: 'CmCsfNote' }],
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		fields: [
 			{
 				columnName: 'id',
@@ -1169,7 +1169,7 @@ function initCsfNote(init: InitDb) {
 		name: 'data_obj_cm_csf_note_detail',
 		header: 'Case Note',
 		tables: [{ index: 0, table: 'CmCsfNote' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		fields: [
 			{
 				columnName: 'id',
@@ -1303,7 +1303,7 @@ function initCsfNote(init: InitDb) {
 
 function initCsfJobPlacement(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
@@ -1351,7 +1351,7 @@ function initCsfJobPlacement(init: InitDb) {
 		]
 	})
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Job Placement',
@@ -1623,7 +1623,7 @@ function initCsfJobPlacement(init: InitDb) {
 
 function initCsfSchoolPlacement(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
@@ -1703,7 +1703,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'School Placement',
@@ -1893,7 +1893,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Documents',
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		fields: [
 			{
 				columnName: 'id',
@@ -1965,7 +1965,7 @@ function initCsfDocument(init: InitDb) {
 		name: 'data_obj_cm_csf_document_detail',
 		header: 'Document',
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		actionsQuery: [
 			{
 				name: 'qa_file_storage',

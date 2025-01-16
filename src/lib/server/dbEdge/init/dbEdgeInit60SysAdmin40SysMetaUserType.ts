@@ -8,7 +8,7 @@ export function initAdminSysMetaUserType(init: InitDb) {
 
 function initFieldListSelectResource(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_select',
+		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -66,7 +66,7 @@ function initFieldListSelectResource(init: InitDb) {
 		]
 	})
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionFieldGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select Resource(s)',
 		dataObjList: 'dofls_sys_admin_sys_user_type_resource',
 		name: 'fels_sys_admin_sys_user_type_resource',
@@ -76,7 +76,7 @@ function initFieldListSelectResource(init: InitDb) {
 
 function initFieldListSelectUser(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_select',
+		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -105,7 +105,7 @@ function initFieldListSelectUser(init: InitDb) {
 		]
 	})
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionFieldGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select User(s)',
 		dataObjList: 'dofls_sys_sys_admin_user',
 		name: 'fels_sys_sys_admin_user',
@@ -115,7 +115,7 @@ function initFieldListSelectUser(init: InitDb) {
 
 function initUserType(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
@@ -160,7 +160,7 @@ function initUserType(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'User Type',

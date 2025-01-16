@@ -9,24 +9,15 @@ import { initPreEmbedListConfig } from '$server/dbEdge/init/dbEdgeInit40PreDOEmb
 import { initPreEmbedListSelect } from '$server/dbEdge/init/dbEdgeInit40PreDOEmbedListSelect'
 import { initPreUserAction } from '$server/dbEdge/init/dbEdgeInit40PreUserAction'
 
-// old
-import { initPreDataObjAction } from '$server/dbEdge/init/dbEdgeInit40PreDODataObjAction-Old'
-import { initPreDataObjActionGroups } from './dbEdgeInit40PreDODataObjActionGroup-Old'
-
 export function initPreDataObj(init: InitDb) {
 	initPreColumn(init)
 	initPreTable(init)
 	initTableColumn(init)
 
-	// new
-	// initPreUserAction(init)
-	// initPreDataObjActionGroup(init)
+	initPreUserAction(init)
+	initPreDataObjActionGroup(init)
 
-	// old
-	initPreDataObjAction(init)
-	initPreDataObjActionGroups(init)
 	initPreDataObjFieldItem(init)
-
 	initPreEmbedListConfig(init)
 	initPreEmbedListSelect(init)
 }

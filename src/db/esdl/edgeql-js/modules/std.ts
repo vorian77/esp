@@ -6,13 +6,13 @@ import _module__enc from "./std/enc";
 import type * as _cfg from "./cfg";
 import type * as _cal from "./cal";
 import type * as _schema from "./schema";
-type $anyscalar = $anypoint | $anyreal | $.EnumType | $bool | $bytes | $uuid | $str | $json | _cfg.$memory | _cal.$local_time | _cal.$relative_duration | _cal.$date_duration;
+type $anyscalar = $anypoint | $anyreal | $.EnumType | $bool | $bytes | $uuid | $str | _cfg.$memory | _cal.$local_time | _cal.$relative_duration | _cal.$date_duration | $json;
 
 type $anypoint = $anydiscrete | $anycontiguous;
 
-type $anydiscrete = $number | _cal.$local_date;
+type $anydiscrete = _cal.$local_date | $number;
 
-type $anycontiguous = $anyfloat | $datetime | $duration | $decimal | _cal.$local_datetime;
+type $anycontiguous = $anyfloat | _cal.$local_datetime | $datetime | $duration | $decimal;
 
 export type $str = $.ScalarType<"std::str", string>;
 const str: $.scalarTypeWithConstructor<$str, never> = $.makeType<$.scalarTypeWithConstructor<$str, never>>(_.spec, "00000000-0000-0000-0000-000000000101", _.syntax.literal);

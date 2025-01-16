@@ -9,8 +9,6 @@ import {
 import { addColumn, tableColumnsBulk } from '$server/dbEdge/init/dbEdgeInit200Utilities30DB'
 import { tablesBulk, widgetsBulk } from '$server/dbEdge/init/dbEdgeInit200Utilities10'
 import {
-	addDataObjActionField,
-	addDataObjActionFieldGroup,
 	addDataObjActionGroup,
 	addDataObjFieldItems,
 	addDataObjFieldEmbedListConfig,
@@ -134,27 +132,10 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
-				name: 'sysDataObjActionField',
-				dataMap: 'name',
-				dbObject: 'sys_core::SysDataObjActionField',
-				fCreate: addDataObjActionField
-			})
-		)
-		this.items.push(
-			new InitDbItemObject({
 				name: 'sysDataObjActionGroup',
 				dataMap: 'name',
 				dbObject: 'sys_core::SysDataObjActionGroup',
 				fCreate: addDataObjActionGroup
-			})
-		)
-
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysDataObjActionFieldGroup',
-				dataMap: 'name',
-				dbObject: 'sys_core::SysDataObjActionFieldGroup',
-				fCreate: addDataObjActionFieldGroup
 			})
 		)
 

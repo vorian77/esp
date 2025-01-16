@@ -132,6 +132,7 @@ function initApps(init: InitDb) {
 		owner: 'sys_moed_old',
 		nodes: ['node_obj_moed_part_list']
 	})
+
 	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_client_moed_student',
 		isGlobalResource: false,
@@ -328,7 +329,7 @@ function initUsers(init: InitDb) {
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_ai',
 		defaultSystem: 'sys_ai_old',
-		firstName: 'Nico',
+		firstName: 'Nino',
 		lastName: 'Tanzini',
 		orgs: ['org_ai'],
 		owner: 'org_ai',

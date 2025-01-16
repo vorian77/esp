@@ -3,8 +3,8 @@
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import {
 		TokenApiUserPref,
-		TokenAppDoActionConfirmType,
-		TokenAppModalReturnType
+		TokenAppModalReturnType,
+		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
 	import {
 		createGrid,

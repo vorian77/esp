@@ -150,7 +150,7 @@ function getFieldColumnCustomName(dataType: string | undefined) {
 
 function getRawDataObj(repUser: RepUser) {
 	return new RawDataObjDyn({
-		_actionFieldGroup: repUser.report.actionFieldGroup,
+		_actionGroup: repUser.report.actionGroup,
 		_codeCardinality: DataObjCardinality.list,
 		_codeComponent: DataObjComponent.FormList,
 		_codeDataObjType: DataObjType.report,

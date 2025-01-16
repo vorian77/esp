@@ -2,7 +2,7 @@ import { InitDb } from '$server/dbEdge/init/types.init'
 import { initAdminSysObjApp } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjApp'
 import { initAdminSysObjCode } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjCode'
 import { initAdminSysObjDataObj } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObj'
-import { initAdminSysObjDataObjAction } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObjAction'
+import { initAdminSysObjDataObjActionQuery } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObjActionQuery'
 import { initAdminSysObjDataObjEmbed } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObjEmbed'
 import { initAdminSysObjDB } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDB'
 import { initAdminSysObjFieldItems } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObjFieldItmes'
@@ -10,6 +10,7 @@ import { initAdminSysObjMigration } from '$server/dbEdge/init/dbEdgeInit60SysAdm
 import { initAdminSysObjNodeObj } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjNodeObj'
 import { initAdminSysObjRep } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjRep'
 import { initAdminSysObjTask } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjTask'
+import { initAdminSysObjUserAction } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjUserAction'
 import { initAdminSysObjWidget } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjWidget'
 
 export function initAdminSysObj(init: InitDb) {
@@ -17,7 +18,7 @@ export function initAdminSysObj(init: InitDb) {
 	initAdminSysObjApp(init)
 	initAdminSysObjCode(init)
 	initAdminSysObjDataObj(init)
-	initAdminSysObjDataObjAction(init)
+	initAdminSysObjDataObjActionQuery(init)
 	initAdminSysObjDataObjEmbed(init)
 	initAdminSysObjDB(init)
 	initAdminSysObjFieldItems(init)
@@ -25,12 +26,13 @@ export function initAdminSysObj(init: InitDb) {
 	initAdminSysObjNodeObj(init)
 	initAdminSysObjRep(init)
 	initAdminSysObjTask(init)
+	initAdminSysObjUserAction(init)
 	initAdminSysObjWidget(init)
 }
 
 async function initSystemObject(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: 'none',
@@ -60,7 +62,7 @@ async function initSystemObject(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'System (Object)',

@@ -7,7 +7,7 @@ export function initAdminSysObjDataObjEmbed(init: InitDb) {
 
 function initDataObjFielEmbedListConfig(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
@@ -34,7 +34,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'actionFieldGroupModal',
+				columnName: 'actionGroupModal',
 				orderCrumb: 10,
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -64,7 +64,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Embed List Config',
@@ -102,13 +102,13 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'actionFieldGroupModal',
+				columnName: 'actionGroupModal',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_action_field_group_order_name',
-				linkTable: 'SysDataObjActionFieldGroup'
+				fieldListItems: 'il_sys_data_obj_action_group_order_name',
+				linkTable: 'SysDataObjActionGroup'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -229,7 +229,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 
 function initDataObjFieldEmbedListEdit(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
@@ -267,7 +267,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Embed List Edit',
@@ -397,7 +397,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 
 function initDataObjFieldEmbedListSelect(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
@@ -414,7 +414,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'actionFieldGroupModal',
+				columnName: 'actionGroupModal',
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
@@ -442,7 +442,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Embed List Select',
@@ -480,13 +480,13 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'actionFieldGroupModal',
+				columnName: 'actionGroupModal',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_action_field_group_order_name',
-				linkTable: 'SysDataObjActionFieldGroup'
+				fieldListItems: 'il_sys_data_obj_action_group_order_name',
+				linkTable: 'SysDataObjActionGroup'
 			},
 			{
 				codeFieldElement: 'tagRow',

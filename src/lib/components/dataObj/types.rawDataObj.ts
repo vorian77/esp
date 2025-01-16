@@ -4,8 +4,6 @@ import {
 	booleanOrFalse,
 	booleanRequired,
 	CodeAction,
-	CodeActionType,
-	CodeActionClass,
 	DataObjCardinality,
 	DataObjSort,
 	DataObjTable,
@@ -28,22 +26,22 @@ import {
 	valueOrDefault
 } from '$utils/types'
 import {
-	DataObj,
 	DataObjComponent,
 	DataObjListEditPresetType,
 	DataObjProcessType,
 	type DataRecord
 } from '$comps/dataObj/types.dataObj.svelte'
 import {
-	DataObjActionField,
-	DataObjActionFieldConfirm,
-	DataObjActionFieldShow,
-	DataObjActionFieldTriggerEnable
-} from '$comps/dataObj/types.dataObjActionField.svelte'
+	UserAction,
+	UserActionConfirm,
+	UserActionShow,
+	UserActionTrigger
+} from '$comps/other/types.userAction.svelte'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
 import { FieldAccess, FieldColor, FieldColumnItem, FieldEmbedType } from '$comps/form/field'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { error } from '@sveltejs/kit'
+import type { User } from 'lucide-svelte'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
 
@@ -69,7 +67,7 @@ export class RawDataObj {
 	listReorderColumn?: string
 	name: string
 	processType?: DataObjProcessType
-	rawActionsField: RawDataObjActionField[] = []
+	rawActions: RawDataObjAction[] = []
 	rawParent?: RawDataObjParent
 	rawPropsDisplay: RawDataObjPropDisplay[] = []
 	rawPropsRepParmItems: RawDataObjPropDB[] = []
@@ -134,10 +132,7 @@ export class RawDataObj {
 			'DataObjProcessType',
 			DataObjProcessType
 		)
-		this.rawActionsField = arrayOfClass(
-			RawDataObjActionField,
-			obj._actionFieldGroup?._actionFieldItems
-		)
+		this.rawActions = arrayOfClass(RawDataObjAction, obj._actionGroup?._dataObjActions)
 		this.subHeader = strOptional(obj.subHeader, clazz, 'subHeader')
 		this.tables = this.initTables(obj._tables)
 
@@ -199,33 +194,16 @@ export class RawDataObj {
 	}
 }
 
-export class RawDataObjActionField {
-	actionFieldConfirms: DataObjActionFieldConfirm[]
-	actionFieldShows: DataObjActionFieldShow[]
-	codeAction: CodeAction
-	codeActionFieldTriggerEnable: DataObjActionFieldTriggerEnable
+export class RawDataObjAction {
+	action: UserAction
 	fieldColor: FieldColor
-	header: string
 	isListRowAction: boolean
-	name: string
 	constructor(obj: any) {
-		const clazz = 'RawDataObjActionField'
-		obj = valueOrDefault(obj._action, {})
-		this.actionFieldConfirms = arrayOfClass(DataObjActionFieldConfirm, obj._actionFieldConfirms)
-		this.actionFieldShows = arrayOfClass(DataObjActionFieldShow, obj._actionFieldShows)
-		this.codeAction = new CodeAction(obj._codeAction)
-		this.codeActionFieldTriggerEnable = memberOfEnum(
-			obj._codeActionFieldTriggerEnable,
-			clazz,
-			'codeActionFieldTriggerEnable',
-			'DataObjActionFieldTriggerEnable',
-			DataObjActionFieldTriggerEnable
-		)
+		const clazz = 'RawDataObjAction'
+		obj = valueOrDefault(obj, {})
+		this.action = new UserAction(new RawUserAction(obj._action))
 		this.fieldColor = new FieldColor(obj._codeColor, 'blue')
-		this.header = strRequired(obj.header, clazz, 'header')
 		this.isListRowAction = booleanOrFalse(obj.isListRowAction, 'isListRowAction')
-		this.name = strRequired(obj.name, clazz, 'name')
-		debug('RawDataObjActionField', 'constructor', this)
 	}
 }
 
@@ -529,16 +507,13 @@ export class RawDataObjPropDisplayCustom {
 export class RawDataObjPropDisplayEmbedListConfig {
 	dataObjEmbedId: string
 	dataObjModalId: string
-	rawActionsFieldModal: RawDataObjActionField[]
+	rawActionsModal: RawDataObjAction[]
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjPropDisplayEmbedListConfig'
 		this.dataObjEmbedId = strRequired(obj._dataObjEmbedId, clazz, '_dataObjIdEmbed')
 		this.dataObjModalId = strRequired(obj._dataObjModalId, clazz, '_dataObjIdModal')
-		this.rawActionsFieldModal = arrayOfClass(
-			RawDataObjActionField,
-			obj._actionFieldGroupModal._actionFieldItems
-		)
+		this.rawActionsModal = arrayOfClass(RawDataObjAction, obj._actionGroupModal._dataObjActions)
 	}
 }
 
@@ -554,28 +529,24 @@ export class RawDataObjPropDisplayEmbedListEdit {
 export class RawDataObjPropDisplayEmbedListSelect {
 	btnLabelComplete?: string
 	dataObjListID: string
-	rawActionsFieldModal: RawDataObjActionField[]
+	rawActionsModal: RawDataObjAction[]
 	constructor(obj: any) {
 		const clazz = 'RawDataObjPropDisplayEmbedListSelect'
 		obj = valueOrDefault(obj, {})
-		this.btnLabelComplete = this.initBtnComplete(
-			clazz,
-			obj.btnLabelComplete,
-			obj._actionFieldGroupModal._actionFieldItems
-		)
 		this.dataObjListID = strRequired(obj._dataObjListId, clazz, '_dataObjId')
-		this.rawActionsFieldModal = arrayOfClass(
-			RawDataObjActionField,
-			obj._actionFieldGroupModal._actionFieldItems
-		)
+		this.rawActionsModal = arrayOfClass(RawDataObjAction, obj._actionGroupModal._dataObjActions)
+
+		// dependent
+		this.btnLabelComplete = this.initBtnComplete(clazz, obj.btnLabelComplete, this.rawActionsModal)
 	}
-	initBtnComplete(clazz: string, label: string | undefined, actions: RawDataObjActionField[] = []) {
+	initBtnComplete(clazz: string, label: string | undefined, rawDataObjActions: RawDataObjAction[]) {
+		debug('RawDataObjPropDisplayEmbedListSelect', 'initBtnComplete', { label, rawDataObjActions })
 		const btnLabelComplete = strOptional(label, clazz, 'btnLabelComplete')
 		if (btnLabelComplete) {
-			const actionDone = actions.find((action) => {
-				return action.name === 'ua_dialog_done'
+			const dataObjActionDone = rawDataObjActions.find((rdoa) => {
+				return rdoa.action.name === 'ua_dialog_done'
 			})
-			if (actionDone) actionDone.header = btnLabelComplete
+			if (dataObjActionDone) dataObjActionDone.action.header = btnLabelComplete
 		}
 		return btnLabelComplete
 	}
@@ -656,6 +627,31 @@ export class RawDBColumn {
 		this.toggleValueFalse = strOptional(obj.toggleValueFalse, clazz, 'toggleValueFalse')
 		this.toggleValueShow = booleanOrDefault(obj.toggleValueShow, false)
 		this.toggleValueTrue = strOptional(obj.toggleValueTrue, clazz, 'toggleValueTrue')
+	}
+}
+
+export class RawUserAction {
+	actionConfirms: UserActionConfirm[]
+	actionShows: UserActionShow[]
+	codeAction: CodeAction
+	codeTriggerEnable: UserActionTrigger
+	header: string
+	name: string
+	constructor(obj: any) {
+		const clazz = 'RawUserAction'
+		obj = valueOrDefault(obj, {})
+		this.actionConfirms = arrayOfClass(UserActionConfirm, obj._actionConfirms)
+		this.actionShows = arrayOfClass(UserActionShow, obj._actionShows)
+		this.codeAction = new CodeAction(obj._codeAction)
+		this.codeTriggerEnable = memberOfEnum(
+			obj._codeTriggerEnable,
+			clazz,
+			'codeTriggerEnable',
+			'UserActionTrigger',
+			UserActionTrigger
+		)
+		this.header = strRequired(obj.header, clazz, 'header')
+		this.name = strRequired(obj.name, clazz, 'name')
 	}
 }
 

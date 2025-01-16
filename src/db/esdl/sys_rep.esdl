@@ -19,7 +19,7 @@ module sys_rep {
   }
 
   type SysRep extending sys_core::SysObj {
-    required actionFieldGroup: sys_core::SysDataObjActionFieldGroup;
+    required actionGroup: sys_core::SysDataObjActionGroup;
     multi analytics: sys_rep::SysAnalytic;
     description: str;
     multi elements: sys_rep::SysRepEl {

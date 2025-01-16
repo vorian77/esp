@@ -8,7 +8,7 @@ export function initAdminSysObjApp(init: InitDb) {
 
 function initFieldListSelectNodes(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
-		actionFieldGroup: 'doag_embed_list_select',
+		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
@@ -37,7 +37,7 @@ function initFieldListSelectNodes(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionFieldGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select Node(s)',
 		dataObjList: 'dofls_sys_admin_sys_node',
 		name: 'fels_sys_node',
@@ -47,7 +47,7 @@ function initFieldListSelectNodes(init: InitDb) {
 
 function initApp(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		header: 'Apps',
@@ -84,7 +84,7 @@ function initApp(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'App',
@@ -234,7 +234,7 @@ function initApp(init: InitDb) {
 
 function initAppHeader(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_list',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		header: 'App Headers',
@@ -297,7 +297,7 @@ function initAppHeader(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionFieldGroup: 'doag_detail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'App Header',

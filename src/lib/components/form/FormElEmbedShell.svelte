@@ -14,7 +14,7 @@
 		StatePacket,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState.svelte'
-	import { TokenAppDoActionConfirmType } from '$utils/types.token'
+	import { TokenAppUserActionConfirmType } from '$utils/types.token'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import Layout from '$comps/layout/RootLayoutApp.svelte'
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'

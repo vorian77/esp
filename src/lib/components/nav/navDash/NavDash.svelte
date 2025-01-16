@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
-	import { TokenApiQueryData, TokenAppDoActionConfirmType, TokenAppNode } from '$utils/types.token'
+	import {
+		TokenApiQueryData,
+		TokenAppNode,
+		TokenAppUserActionConfirmType
+	} from '$utils/types.token'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import {
 		CodeActionType,
@@ -97,7 +101,7 @@
 			sm.parmsState.update(parms)
 			const token = task.getTokenNode(sm.user)
 			sm.change({
-				confirmType: TokenAppDoActionConfirmType.statusChanged,
+				confirmType: TokenAppUserActionConfirmType.statusChanged,
 				packet: new StatePacket({
 					actionType: CodeActionType.openNode,
 					token

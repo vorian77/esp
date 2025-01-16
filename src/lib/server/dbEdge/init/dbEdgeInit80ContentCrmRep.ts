@@ -8,7 +8,7 @@ export function initContentCrmRep(init: InitDb) {
 
 function initRepClientDetail(init: InitDb) {
 	init.addTrans('sysRep', {
-		actionFieldGroup: 'doag_report_render',
+		actionGroup: 'doag_report_render',
 		description: '',
 		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Client - Detail',
