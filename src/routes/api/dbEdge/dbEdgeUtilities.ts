@@ -139,10 +139,7 @@ export async function getDataObjById(token: TokenApiId) {
 				hasMgmt: true,
 				mod: true,
 				name: true
-			})),
-			exprPreset: l.linkExprPreset,
-			exprSave: l.linkExprSave,
-			exprSelect: l.linkExprSelect
+			}))
 		})),
 		_linkItemsSource: e.select(doc.fieldListItems, (fli) => ({
 			_parmName: doc.fieldListItemsParmName,
@@ -151,6 +148,7 @@ export async function getDataObjById(token: TokenApiId) {
 		_propName: e.op(doc.nameCustom, '??', doc.column.name),
 		exprCustom: true,
 		exprPreset: true,
+		exprSave: true,
 		id: true,
 		indexTable: true
 	}))

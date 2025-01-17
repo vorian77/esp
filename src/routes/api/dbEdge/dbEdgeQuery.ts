@@ -87,7 +87,7 @@ export class Query {
 		if (script) script = 'FILTER ' + script
 		return script
 	}
-	getPropsListEditPresetInsert(parms: DataRecord, queryData: TokenApiQueryData) {
+	getPropsListEditPresetInsert(parms: DataRecord) {
 		const clazz = 'getPropsListEditPresetInsert'
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		let properties = ''
@@ -95,11 +95,7 @@ export class Query {
 		props.forEach((propObj) => {
 			const clazzProp = `${clazz}.${propObj.propName}`
 			const propExpr = strRequired(
-				propObj?.exprPreset
-					? propObj.exprPreset
-					: propObj?.link?.exprSave
-						? propObj.link.exprSave
-						: '',
+				propObj?.exprPreset ? propObj.exprPreset : propObj.exprSave ? propObj.exprSave : '',
 				clazzProp,
 				'expr'
 			)
@@ -120,11 +116,7 @@ export class Query {
 			let propExpr = ''
 			const clazzProp = `${clazz}.${propObj.propName}`
 			const expr = strRequired(
-				propObj?.exprPreset
-					? propObj.exprPreset
-					: propObj?.link?.exprSave
-						? propObj.link.exprSave
-						: '',
+				propObj?.exprPreset ? propObj.exprPreset : propObj.exprSave ? propObj.exprSave : '',
 				clazzProp,
 				'expr'
 			)
@@ -150,47 +142,10 @@ export class Query {
 		return properties
 	}
 
-	getPropsSave(parms: DataRecord, queryData: TokenApiQueryData, dataRows: DataRow[]) {
-		let properties = ''
-		let fValues: Function[] = []
-		const clazz = 'getPropsSave'
-		const action = strRequired(parms.action, clazz, 'action') as LinkSaveAction
-		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
-		const isDelete = parms.isDelete ? parms.isDelete : false
-		const isUpdate = action.toLowerCase() === 'update'
-		const subObjGroup = new LinkSave(action, this.getTableRootObj())
-
-		if (isDelete) return properties
-
-		// 1. build props, subObjGroup
-		props.forEach((propObj, idx) => {
-			if (!propObj.fieldEmbed) {
-				const prop = `${propObj.propNameRaw} := ${this.getPropsSavePropExpr(action, idx, propObj, queryData, fValues)}`
-
-				if (propObj.indexTable === 0) {
-					properties = this.addItemComma(properties, prop)
-				} else {
-					subObjGroup.addProp(propObj.indexTable!, prop)
-				}
-
-				dataRows.forEach((dataRow) => {
-					// format values
-					dataRow.record[propObj.propName] = fValues[idx](dataRow.getValue(propObj.propName))
-				})
-			}
-		})
-
-		// 2. add subObjGroup properties
-		const set = isUpdate ? 'SET ' : ''
-		if (properties)
-			properties = `${set}{\n${this.addItemComma(properties, subObjGroup.getPropsUpdate(isUpdate, this.rawDataObj.tables))}}`
-		return properties
-	}
-
-	getPropsPrimary(parms: DataRecord, queryData: TokenApiQueryData, dataRows: DataRow[]) {
+	getPropsSave(parms: DataRecord, query: Query, queryData: TokenApiQueryData, dataRows: DataRow[]) {
 		let properties: string[] = []
 		let fValues: Function[] = []
-		const clazz = 'getPropsSaveScalar'
+		const clazz = 'getPropsSave'
 		const indexTable = required(parms.indexTable, clazz, 'indexTable')
 		const propsRaw = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		const action = strRequired(parms.action, clazz, 'action') as LinkSaveAction
@@ -200,7 +155,7 @@ export class Query {
 			.filter((p) => p.indexTable === indexTable)
 			.forEach((p, idx) => {
 				if (!p.fieldEmbed) {
-					const propDB = `${p.propNameRaw} := ${this.getPropsSavePropExpr(action, idx, p, queryData, fValues)}`
+					const propDB = `${p.propNameRaw} := ${this.getPropsSavePropExpr(action, idx, p, query, queryData, fValues)}`
 					properties.push(propDB)
 
 					// format values
@@ -209,12 +164,6 @@ export class Query {
 					})
 				}
 			})
-
-		// 2. add subObjGroup properties
-		// if (properties) {
-		// 	subObjGroup.getPropsUpdate(isUpdate, this.rawDataObj.tables)
-		// 	properties = `{\n${this.addItemComma(properties)}}`
-		// }
 		return properties
 	}
 
@@ -222,6 +171,7 @@ export class Query {
 		action: LinkSaveAction,
 		propIdx: number,
 		propObj: RawDataObjPropDB,
+		query: Query,
 		queryData: TokenApiQueryData,
 		fValues: Function[]
 	) {
@@ -229,10 +179,12 @@ export class Query {
 		let propExpr = ''
 		const clazzProp = `${clazz}.${propObj.propName}`
 
-		let expr = propObj?.link?.exprSave || propObj.exprCustom || ''
-		if (!expr && action === LinkSaveAction.INSERT) {
-			expr = propObj?.link?.exprPreset || propObj.exprPreset || ''
-		}
+		let expr =
+			action === LinkSaveAction.INSERT && !query.rawDataObj.listEditPresetExpr && propObj.exprPreset
+				? propObj.exprPreset
+				: propObj.exprSave
+					? propObj.exprSave
+					: ''
 
 		const setValueFunction = (idx: number, f: Function) => {
 			fValues[idx] = f
@@ -329,9 +281,7 @@ export class Query {
 
 			if (prop.codeDataType === PropDataType.link) {
 				if (prop.exprCustom) {
-					propValue = prop.exprCustom
-				} else if (prop.link && prop.link.exprSelect) {
-					propValue = prop.link.exprSelect
+					propValue = prop.exprCustom + '.' + propDisplay
 				} else {
 					propValue = '.' + propChildTableTraversal
 					if (propDisplay) {
@@ -361,11 +311,11 @@ export class Query {
 		let properties = ''
 
 		props.forEach((prop) => {
-			const expr = prop.link?.exprPreset
-				? prop.link.exprPreset
-				: prop.exprPreset
-					? prop.exprPreset
-					: ''
+			let expr = prop.exprPreset ? prop.exprPreset : ''
+			if (expr && prop.link) {
+				expr += `.${prop.link.propDisplay}`
+			}
+
 			let value = ''
 			if (expr) {
 				value = expr

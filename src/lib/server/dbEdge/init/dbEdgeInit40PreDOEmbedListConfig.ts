@@ -145,8 +145,7 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 			{
 				columnName: 'orderDefine',
 				orderDefine: 70,
-				exprPreset: `(SELECT count((SELECT sys_core::SysDataObjAction
-					FILTER .id IN ((SELECT sys_core::SysDataObjAction FILTER .id = <parms,uuid,embedParentId>).dataObjActions.id))) + 1)`,
+				exprPreset: `(SELECT count((SELECT sys_core::SysDataObjAction FILTER .id IN ((SELECT sys_core::SysDataObjAction FILTER .id = <parms,uuid,embedParentId>).dataObjActions.id))) + 1)`,
 				indexTable: 0,
 				isDisplayable: false
 			},

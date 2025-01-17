@@ -141,7 +141,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 			},
 			{
 				columnName: 'parm',
-				exprPreset: '(SELECT sys_rep::SysRepParm FILTER .id = item.id)',
+				exprPreset: `(SELECT sys_rep::SysRepParm FILTER .id = item.id)`,
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
@@ -324,18 +324,18 @@ function initRepConfig(init: InitDb) {
 			},
 			{
 				columnName: 'user',
+				exprSave: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				linkTable: 'SysUser'
 			},
 			{
 				columnName: 'report',
+				exprSave: `(SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>).report`,
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>).report`,
 				linkTable: 'SysRep'
 			},
 			{

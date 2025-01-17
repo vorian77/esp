@@ -1,4 +1,3 @@
-import { required } from '$lib/utils/utils'
 import {
 	DataObjCardinality,
 	DataObjData,
@@ -7,6 +6,7 @@ import {
 	debug,
 	getArray,
 	ParmsValuesType,
+	required,
 	strRequired
 } from '$utils/types'
 import { FieldEmbedType } from '$comps/form/field'
@@ -15,6 +15,7 @@ import { TokenApiQueryData } from '$utils/types.token'
 import { RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj'
 import { LinkSaveAction, Query, QueryParent } from '$routes/api/dbEdge/dbEdgeQuery'
 import { evalExpr } from '$routes/api/dbEdge/dbEdgeGetVal'
+import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import {
 	ScriptTypeSave,
 	ScriptTypeSaveParent,
@@ -24,9 +25,6 @@ import {
 	ScriptTypeSavePrimaryListSelectLinkForward
 } from '$routes/api/dbEdge/dbEdgeScriptTypes'
 import { error } from '@sveltejs/kit'
-import exp from 'constants'
-import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
-import { is } from '$db/esdl/edgeql-js'
 
 const FILENAME = '/$routes/api/dbEdge/dbEdgeScript.ts'
 
@@ -432,15 +430,11 @@ export class Script {
 					break
 
 				case 'propsListEditPresetInsert':
-					element = this.query.getPropsListEditPresetInsert(parms, this.queryData)
+					element = this.query.getPropsListEditPresetInsert(parms)
 					break
 
 				case 'propsListEditPresetSave':
 					element = this.query.getPropsListEditPresetSave(parms, this.queryData)
-					break
-
-				case 'propsSave':
-					element = this.query.getPropsSave(parms, this.queryData, this.dataRows)
 					break
 
 				case 'propsSelect':

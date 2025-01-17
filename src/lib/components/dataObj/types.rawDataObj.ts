@@ -162,15 +162,16 @@ export class RawDataObj {
 		rawProps = this.initPropsSignatureLink(rawProps, 'modifiedBy')
 		return arrayOfClass(RawDataObjPropDB, rawProps, this.tables)
 	}
+
 	initPropsSignatureLink(rawProps: any[], propName: string) {
-		rawProps.forEach((p: any) => {
+		rawProps.forEach((p) => {
 			if (p._propName === propName) {
+				p.exprCustom = `(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>)`
+				p.exprPreset = `(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>)`
+				p.exprSave = '(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>)'
 				p._link = {
 					_columns: [{ _name: 'person' }, { _name: 'fullName' }],
-					_table: { hasMgmt: false, mod: 'sys_user', name: 'SysUser' },
-					exprPreset: `(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>).person.fullName`,
-					exprSave: '(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>)',
-					exprSelect: `(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>).person.fullName`
+					_table: { hasMgmt: false, mod: 'sys_user', name: 'SysUser' }
 				}
 			}
 		})
@@ -259,6 +260,7 @@ export class RawDataObjProp {
 	columnBacklink?: string
 	exprCustom?: string
 	exprPreset?: string
+	exprSave?: string
 	fieldEmbed?: RawDataObjPropDBFieldEmbed
 	hasItems: boolean
 	id: string
@@ -283,6 +285,7 @@ export class RawDataObjProp {
 		this.columnBacklink = obj._columnBacklink
 		this.exprCustom = obj.exprCustom
 		this.exprPreset = obj.exprPreset
+		this.exprSave = obj.exprSave
 		this.fieldEmbed = obj._fieldEmbedListConfig
 			? new RawDataObjPropDBFieldEmbed(
 					FieldEmbedType.listConfig,
@@ -309,12 +312,12 @@ export class RawDataObjProp {
 		if (Array.isArray(tables) && tables.length > 0 && this.indexTable > 0) {
 			this.propNamePrefixType = PropNamePrefixType.table
 			this.propNamePrefixTypeId = tables[this.indexTable].table.name
-		} else if (this.exprCustom) {
-			this.propNamePrefixType = PropNamePrefixType.exprCustom
 		} else if (this.link) {
 			this.propNamePrefixType = PropNamePrefixType.link
 		} else if (this._linkItemsSource) {
 			this.propNamePrefixType = PropNamePrefixType.linkItems
+		} else if (this.exprCustom) {
+			this.propNamePrefixType = PropNamePrefixType.exprCustom
 		}
 		this.propName = this.getPropNameDB()
 	}
@@ -417,7 +420,6 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 	items: FieldColumnItem[]
 	label: string
 	labelSide: string
-	linkExprSave?: string
 	orderDefine: number
 	orderSort?: number
 	rawFieldAccess?: string
@@ -680,17 +682,11 @@ export enum PropDataType {
 }
 
 export class PropLink {
-	exprPreset?: string
-	exprSave?: string
-	exprSelect?: string
 	propDisplay?: string
 	table?: DBTable
 	constructor(obj: any) {
 		const clazz = 'PropLink'
 		obj = valueOrDefault(obj, {})
-		this.exprPreset = strOptional(obj.exprPreset, clazz, 'exprPreset')
-		this.exprSave = strOptional(obj.exprSave, clazz, 'exprSave')
-		this.exprSelect = strOptional(obj.exprSelect, clazz, 'exprSelect')
 		this.propDisplay =
 			Array.isArray(obj._columns) && obj._columns.length > 0
 				? obj._columns.map((col: any) => col._name).join('.')

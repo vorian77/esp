@@ -6,6 +6,7 @@ export function initPreCodeAction(init: InitDb) {
 	initCodeActionsDoGroupItem(init)
 	initCodeActionsModal(init)
 	initCodeActionsNav(init)
+	initCodeActionsUtils(init)
 }
 
 function initCodeActionsDoEmbed(init: InitDb) {
@@ -232,7 +233,19 @@ function initCodeActionsUtils(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
 		codeType: 'ct_sys_code_action_class_utils',
+		name: 'dbExpression',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_utils',
 		name: 'none',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_utils',
+		name: 'page',
 		order: 0
 	})
 }

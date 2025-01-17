@@ -1232,6 +1232,12 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'str',
+		header: 'Expression - Save',
+		name: 'exprSave',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Expression - Select',
@@ -1641,24 +1647,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Link-Columns',
 		isMultiSelect: true,
 		name: 'linkColumns'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'str',
-		header: 'Link - Expression - Preset',
-		name: 'linkExprPreset'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'str',
-		header: 'Link - Expression - Save',
-		name: 'linkExprSave'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'str',
-		header: 'Link - Expression - Select',
-		name: 'linkExprSelect'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

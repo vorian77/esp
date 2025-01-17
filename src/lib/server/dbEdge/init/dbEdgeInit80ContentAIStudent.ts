@@ -105,11 +105,11 @@ function initStudent(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))`,
 				orderDefine: 15,
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -241,7 +241,7 @@ function initStudent(init: InitDb) {
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'hasDriversLicense',
-				exprPreset: '(SELECT false)',
+				exprPreset: `(SELECT false)`,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 81,
@@ -549,10 +549,10 @@ function initCsf(init: InitDb) {
 			},
 			{
 				columnName: 'client',
+				exprSave: `(SELECT app_cm::CmClient FILTER .id = <tree,uuid,CmClient.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: '(SELECT app_cm::CmClient FILTER .id = <tree,uuid,CmClient.id>)',
 				linkTable: 'CmClient'
 			},
 			{
@@ -743,14 +743,17 @@ function initCsfCohort(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'cohort',
-				orderCrumb: 10,
+				codeAlignmentAlt: 'left',
+				codeFieldElement: 'str',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
-				indexTable: 0,
-				linkExprSelect: `(.cohort.course.name ++ ' (' ++ .cohort.name ++ ')' ++ ' (' ++ std::to_str(<cal::local_date>.cohort.dateStart) ++ ')')`
+				exprCustom: `(.cohort.course.name ++ ' (' ++ .cohort.name ++ ')' ++ ' (' ++ std::to_str(<cal::local_date>.cohort.dateStart) ++ ')')`,
+				headerAlt: 'Cohort',
+				nameCustom: 'customCohort'
 			},
+
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeStatus',
@@ -788,11 +791,10 @@ function initCsfCohort(init: InitDb) {
 			},
 			{
 				columnName: 'csf',
+				exprSave: `(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave:
-					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -980,10 +982,10 @@ function initCsfCohortAttdStudent(init: InitDb) {
 			},
 			{
 				columnName: 'csfCohort',
+				exprSave: `(SELECT app_cm::CmCsfCohort FILTER .id = <tree,uuid,CmCsfCohort.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: '(SELECT app_cm::CmCsfCohort FILTER .id = <tree,uuid,CmCsfCohort.id>)',
 				linkTable: 'CmCsfCohort'
 			},
 			{
@@ -1179,11 +1181,10 @@ function initCsfNote(init: InitDb) {
 			},
 			{
 				columnName: 'csf',
+				exprSave: `(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave:
-					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1367,11 +1368,10 @@ function initCsfJobPlacement(init: InitDb) {
 			},
 			{
 				columnName: 'csf',
+				exprSave: `(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave:
-					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1719,11 +1719,10 @@ function initCsfSchoolPlacement(init: InitDb) {
 			},
 			{
 				columnName: 'csf',
+				exprSave: `(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave:
-					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1982,11 +1981,10 @@ function initCsfDocument(init: InitDb) {
 			},
 			{
 				columnName: 'csf',
+				exprSave: `(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave:
-					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 				linkTable: 'CmClientServiceFlow'
 			},
 			{

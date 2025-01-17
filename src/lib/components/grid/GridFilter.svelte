@@ -1,9 +1,11 @@
 <script lang="ts">
-	export let isHideFilter: boolean
-	export let listFilterQuick: string
-	export let rowCountFiltered: number
-	export let rowCountSelected: number
-	export let setFilterQuick: (listFilterQuick: string) => void
+	let {
+		isHideFilter,
+		listFilterQuick,
+		rowCountFiltered,
+		rowCountSelected,
+		setFilterQuick
+	}: DataRecord = $props()
 </script>
 
 {#if !isHideFilter}

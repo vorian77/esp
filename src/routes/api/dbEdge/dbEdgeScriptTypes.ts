@@ -19,7 +19,6 @@ export class ScriptTypeSave {
 	action: LinkSaveAction
 	dataRows: DataRow[]
 	exprData: string = ''
-	exprSave: string = ''
 	query: Query
 	queryData: TokenApiQueryData
 	tableKey: DBTable
@@ -151,7 +150,7 @@ export class ScriptTypeSavePrimaryCore extends ScriptTypeSavePrimary {
 			})
 
 			// add props-primary
-			let props: string[] = query.getPropsPrimary(
+			let props: string[] = query.getPropsSave(
 				{
 					action,
 					indexTable: table.index,
@@ -160,6 +159,7 @@ export class ScriptTypeSavePrimaryCore extends ScriptTypeSavePrimary {
 							? query.rawDataObj.rawPropsSaveInsert
 							: query.rawDataObj.rawPropsSaveUpdate
 				},
+				query,
 				queryData,
 				dataRows
 			)

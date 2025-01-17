@@ -60,6 +60,7 @@ module app_cm {
     required owner: sys_core::SysSystem;
     required person: default::SysPerson{
       on source delete delete target if orphan;
+      on source delete allow;
     };
     school: str;
   }

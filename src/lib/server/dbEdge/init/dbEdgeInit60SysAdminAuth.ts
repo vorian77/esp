@@ -813,7 +813,7 @@ function initDataObjUserPrefType(init: InitDb) {
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isActive',
-				exprPreset: '(SELECT false)',
+				exprPreset: `(SELECT false)`,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 20,

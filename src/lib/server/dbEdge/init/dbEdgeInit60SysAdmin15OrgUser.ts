@@ -389,10 +389,10 @@ function initSystem(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
+				exprSave: `(SELECT sys_core::SysOrg FILTER .id = <tree,uuid,SysOrg.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysOrg FILTER .id = <tree,uuid,SysOrg.id>)`,
 				linkTable: 'SysOrg'
 			},
 			{
@@ -568,9 +568,9 @@ function initUser(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
+				exprSave: `(SELECT sys_core::SysOrg FILTER .id = <tree,uuid,SysOrg.id>)`,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysOrg FILTER .id = <tree,uuid,SysOrg.id>)`,
 				linkTable: 'SysOrg',
 				orderDefine: 20
 			},

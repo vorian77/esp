@@ -194,7 +194,7 @@ export class State {
 			const actionGroup = result.data
 			return actionGroup._dataObjActions.map((doa: any) => {
 				const rawAction = new RawDataObjAction(doa)
-				return new DataObjAction(rawAction, this)
+				return new DataObjAction(rawAction)
 			})
 		} else {
 			error(500, {
@@ -317,7 +317,7 @@ export class State {
 	async openModalDataObj(dataObjName: string, fUpdate?: Function) {
 		const clazz = `${FILENAME}.openModalDataObj`
 		const stateModal = new StateSurfaceModal({
-			actionsdDialog: await this.getActions('doag_dialog_footer_detail'),
+			actionsDialog: await this.getActions('doag_dialog_footer_detail'),
 			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutHeader: {
 				isDataObj: true
@@ -446,7 +446,7 @@ export class State {
 		parmsState.valueSet(ParmsValuesType.rowData, token.rowData)
 
 		const stateModal = new StateSurfaceModal({
-			actionsdDialog: await this.getActions('doag_dialog_footer_list'),
+			actionsDialog: await this.getActions('doag_dialog_footer_list'),
 			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutHeader: {
 				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.selectLabel}`

@@ -52,10 +52,10 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysSystem'
 			},
 			{
@@ -743,7 +743,6 @@ function initDataObjColumn(init: InitDb) {
 				orderDisplay: 220,
 				orderDefine: 220
 			},
-
 			{
 				codeAccess: 'optional',
 				columnName: 'exprCustom',
@@ -758,6 +757,14 @@ function initDataObjColumn(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 240,
 				orderDefine: 240,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'exprSave',
+				isDisplayable: true,
+				orderDisplay: 245,
+				orderDefine: 245,
 				indexTable: 0
 			},
 			{
@@ -1268,22 +1275,6 @@ function initDataObjColumn(init: InitDb) {
 				fieldEmbedListConfig: 'flec_data_obj_column_link',
 				indexTable: 0,
 				linkTable: 'SysDataObjColumnLink'
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'linkExprSave',
-				isDisplayable: true,
-				orderDisplay: 920,
-				orderDefine: 920,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'linkExprSelect',
-				isDisplayable: true,
-				orderDisplay: 930,
-				orderDefine: 930,
-				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',

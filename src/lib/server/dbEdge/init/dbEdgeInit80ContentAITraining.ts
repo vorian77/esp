@@ -84,11 +84,11 @@ function initCourse(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -396,11 +396,11 @@ function initCohort(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -868,7 +868,7 @@ function initCohortAttdSheet(init: InitDb) {
 			},
 			{
 				columnName: 'cohortAttd',
-				exprPreset: '<tree,uuid,CmCohortAttd.id>',
+				exprPreset: `<tree,uuid,CmCohortAttd.id>`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -876,7 +876,7 @@ function initCohortAttdSheet(init: InitDb) {
 			},
 			{
 				columnName: 'csfCohort',
-				exprPreset: 'newVals.id',
+				exprPreset: `newVals.id`,
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false,
@@ -885,7 +885,7 @@ function initCohortAttdSheet(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'firstName',
-				exprPreset: '.csf.client.person.firstName',
+				exprPreset: `.csf.client.person.firstName`,
 				orderSort: 20,
 				isDisplayable: true,
 				orderDisplay: 40,
@@ -897,7 +897,7 @@ function initCohortAttdSheet(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'lastName',
-				exprPreset: '.csf.client.person.lastName',
+				exprPreset: `.csf.client.person.lastName`,
 				orderSort: 10,
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -1062,11 +1062,11 @@ function initCohortDoc(init: InitDb) {
 			},
 			{
 				columnName: 'cohort',
+				exprSave: `(SELECT app_cm::CmCohort Filter .id = <tree,uuid,CmCohort.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave: '(SELECT app_cm::CmCohort Filter .id = <tree,uuid,CmCohort.id>)',
 				linkTable: 'CmCohort'
 			},
 			{
@@ -1452,11 +1452,11 @@ function initPartner(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -1751,7 +1751,6 @@ function initPartnerNote(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave: '(SELECT sys_core::SysObj Filter .id = (<tree,uuid,CmPartner.id>))',
 				linkTable: 'SysObj'
 			},
 			{

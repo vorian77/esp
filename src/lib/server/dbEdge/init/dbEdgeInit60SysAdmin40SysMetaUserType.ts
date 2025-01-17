@@ -176,10 +176,10 @@ function initUserType(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				linkTable: 'SysSystem'
 			},
 			{
@@ -208,7 +208,7 @@ function initUserType(init: InitDb) {
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isGlobalResource',
-				exprPreset: '(SELECT false)',
+				exprPreset: `(SELECT false)`,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -217,7 +217,7 @@ function initUserType(init: InitDb) {
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isSelfSignup',
-				exprPreset: '(SELECT false)',
+				exprPreset: `(SELECT false)`,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 65,

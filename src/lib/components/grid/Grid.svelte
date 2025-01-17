@@ -77,9 +77,9 @@
 	}: { api: GridApi; options: GridManagerOptions; parms: DataRecord } = $props()
 
 	let eGui: HTMLElement
-	let isSuppressFilterSort: boolean
-	let rowCountFiltered: number
-	let rowCountSelected: number
+	let isSuppressFilterSort: boolean = $state(false)
+	let rowCountFiltered: number = $state()
+	let rowCountSelected: number = $state()
 	let rowData: any[]
 	let styleMaxHeight = ''
 

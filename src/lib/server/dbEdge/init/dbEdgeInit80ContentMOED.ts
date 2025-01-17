@@ -140,11 +140,11 @@ function initStudent(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprSave: '(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))',
 				linkTable: 'SysSystem'
 			},
 			{
@@ -564,11 +564,10 @@ function initCsf(init: InitDb) {
 			},
 			{
 				columnName: 'client',
+				exprSave: `(SELECT org_moed::MoedParticipant FILTER .id = <tree,uuid,MoedParticipant.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave:
-					'(SELECT org_moed::MoedParticipant FILTER .id = <tree,uuid,MoedParticipant.id>)',
 				linkTable: 'CmClient'
 			},
 			{
@@ -873,11 +872,10 @@ function initCsfMsg(init: InitDb) {
 			},
 			{
 				columnName: 'csf',
+				exprSave: `(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave:
-					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -917,7 +915,7 @@ function initCsfMsg(init: InitDb) {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeStatus',
-				// exprPreset: `(SELECT assert_single((SELECT sys_core::SysCode FILTER .id = <uuid>"0bbab7c8-c0f4-11ee-9b77-e7fc1bb9b40e")))`,
+				exprPreset: `(SELECT assert_single((SELECT sys_core::SysCode FILTER .id = <uuid>"0bbab7c8-c0f4-11ee-9b77-e7fc1bb9b40e")))`,
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
@@ -1106,11 +1104,10 @@ function initCsfNote(init: InitDb) {
 			},
 			{
 				columnName: 'csf',
+				exprSave: `(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave:
-					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1298,11 +1295,10 @@ function initCsfDocument(init: InitDb) {
 			},
 			{
 				columnName: 'csf',
+				exprSave: `(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave:
-					'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1496,34 +1492,35 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				columnName: 'serviceFlow',
+				exprSave: `(SELECT assert_single((SELECT app_cm::CmServiceFlow FILTER .name = 'sf_moed_self_service_reg')))`,
 				orderDefine: 40,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave: `(SELECT assert_single((SELECT app_cm::CmServiceFlow FILTER .name = 'sf_moed_self_service_reg')))`,
 				linkTable: 'CmServiceFlow'
 			},
 			{
 				columnName: 'codeServiceFlowType',
+				exprPreset: `(SELECT assert_single((sys_core::getCode('ct_cm_service_flow_type', 'Walk in'))))`,
 				orderDefine: 45,
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkExprPreset: `(SELECT assert_single((SELECT sys_core::SysCode FILTER .codeType.name = 'ct_cm_service_flow_type' AND .name = 'Walk in')))`,
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
 				columnName: 'idxDemo',
 				exprPreset: `-100`,
-				indexTable: 1,
+				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 50
 			},
 			{
 				columnName: 'owner',
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <user,uuid,system.id>)`,
 				orderDefine: 60,
 				indexTable: 1,
 				isDisplayable: false,
-				linkExprSave: `(SELECT sys_core::SysSystem FILTER .id = <user,uuid,system.id>)`,
 				linkTable: 'SysSystem'
 			},
 			{
@@ -1541,13 +1538,13 @@ function initTaskSsrApp(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeStatus',
+				exprPreset: `(SELECT assert_single((sys_core::getCode('ct_cm_service_flow_status', 'New application'))))`,
 				orderDefine: 200,
 				orderDisplay: 200,
 				indexTable: 0,
 				isDisplayable: true,
 				isExcludeUpdate: true,
 				linkColumns: ['name'],
-				linkExprPreset: `(SELECT assert_single((SELECT sys_core::SysCode FILTER .name = 'Application submitted')))`,
 				linkTable: 'SysCode'
 			},
 			{
@@ -1835,11 +1832,10 @@ function initTaskSsrDoc(init: InitDb) {
 			},
 			{
 				columnName: 'csf',
+				exprSave: `(SELECT assert_single((SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <uuid><user,uuid,id>).person)))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkExprSave:
-					'(SELECT assert_single((SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <uuid><user,uuid,id>).person)))',
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1991,23 +1987,38 @@ function initTaskSsrLegal(init: InitDb) {
 				columnName: 'custom_element',
 				customElement: {
 					action: {
-						method: 'ct_sys_code_action_class_utils',
-						type: 'dbExpression',
-						value: `UPDATE default::SysPerson FILTER .id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id SET { isLegalAgreed := true}`
+						class: 'ct_sys_code_action_class_utils',
+						type: 'dbExpression'
 					},
-					label: 'Accept'
+					label: 'Accept',
+					value: `UPDATE default::SysPerson FILTER .id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id SET { isLegalAgreed := true}`
 				},
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
 			},
+
+			// {
+			// 	codeColor: 'primary',
+			// 	codeFieldElement: 'customActionLink',
+			// 	columnName: 'custom_element',
+			// 	customElement: {
+			// 		action: {
+			// 			class: 'ct_sys_code_action_class_do_field_auth',
+			// 			type: 'page'
+			// 		},
+			// 		label: 'Reset Password?',
+			// 		value: 'data_obj_auth_reset_password_account'
+			// 	},
+
 			{
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: { method: 'ct_sys_code_action_class_utils', type: 'page', value: '/' },
-					label: 'Decline'
+					action: { class: 'ct_sys_code_action_class_utils', type: 'page' },
+					label: 'Decline',
+					value: '/'
 				},
 				isDisplayable: true,
 				orderDisplay: 30,
@@ -2098,11 +2109,11 @@ function initTaskSsrMsg(init: InitDb) {
 			},
 			// {
 			// 	columnName: 'csf',
+			// 	exprSave:
+			// 		'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 			// 	orderDefine: 20,
 			// 	indexTable: 0,
 			// 	isDisplayable: false,
-			// 	linkExprSave:
-			// 		'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
 			// 	linkTable: 'CmClientServiceFlow'
 			// },
 			{
@@ -2292,7 +2303,7 @@ function initTaskSsrWelcome(init: InitDb) {
 				columnName: 'custom_element',
 				customElement: {
 					action: {
-						method: 'ct_sys_code_action_class_utils',
+						class: 'ct_sys_code_action_class_utils',
 						type: 'none'
 					},
 					label: 'Get Started!'

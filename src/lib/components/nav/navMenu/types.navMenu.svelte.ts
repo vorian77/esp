@@ -387,12 +387,12 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 				label: new NavMenuLabel(r.header!)
 			})
 		})
-		this.addItem({
-			content: new NavMenuContent(NavMenuContentType.functionAsync, this.myPreferences),
-			icon: 'Settings2',
-			isRoot: true,
-			label: new NavMenuLabel('My Preferences')
-		})
+		// this.addItem({
+		// 	content: new NavMenuContent(NavMenuContentType.functionAsync, this.myPreferences),
+		// 	icon: 'Settings2',
+		// 	isRoot: true,
+		// 	label: new NavMenuLabel('My Preferences')
+		// })
 		if (['user_sys', '2487985578'].includes(this.user.userName)) {
 			this.addItem({
 				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminResetDb),

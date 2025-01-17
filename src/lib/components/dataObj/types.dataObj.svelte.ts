@@ -136,7 +136,7 @@ export class DataObj {
 		}
 		function initActionsField() {
 			dataObj.userActions = rawDataObj.rawActions.map((rawAction: RawDataObjAction) => {
-				return new DataObjAction(rawAction, sm)
+				return new DataObjAction(rawAction)
 			})
 			dataObj.actionsFieldListRowActionIdx = dataObj.userActions.findIndex((f) => f.isListRowAction)
 		}
@@ -310,7 +310,7 @@ export class DataObjAction {
 	action: UserAction
 	fieldColor: FieldColor
 	isListRowAction: boolean
-	constructor(rawAction: RawDataObjAction, sm: State | undefined = undefined) {
+	constructor(rawAction: RawDataObjAction) {
 		const clazz = 'DataObjAction'
 		this.action = new UserAction(rawAction.action)
 		this.fieldColor = rawAction.fieldColor

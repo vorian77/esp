@@ -196,6 +196,7 @@ module sys_core {
     columnBacklink: sys_db::SysColumn;
     exprCustom: str;
     exprPreset: str;
+    exprSave: str;
 
     indexTable: default::nonNegative;
     indexWith: default::nonNegative;
@@ -251,9 +252,6 @@ module sys_core {
       on source delete delete target;
       on target delete allow;
     };
-    linkExprPreset: str;
-    linkExprSave: str;
-    linkExprSelect: str;
     linkTable: sys_db::SysTable;
     
     orderCrumb: default::nonNegative;

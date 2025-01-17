@@ -210,7 +210,6 @@ export class DataManagerNode {
 		this.recordsDisplay = recordsClone
 		this.fieldsChanged = new FieldValues()
 		this.fieldsValidity = new FieldValues()
-
 		return this.formatDataDisplayValidate(dataObj)
 	}
 

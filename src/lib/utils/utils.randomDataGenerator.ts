@@ -215,7 +215,7 @@ const dataItemsServiceFlow = {
 	codeStatus: {
 		type: 'list',
 		values: [
-			'Application submitted',
+			'New application',
 			'Application under review',
 			'Pending eligibility documentation',
 			'Pending eligibility determination',

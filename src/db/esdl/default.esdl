@@ -10,7 +10,7 @@ type SysError {
   errFunction: str;
   errMsg: str;
   required user: sys_user::SysUser{
-    on source delete delete target if orphan;
+    on target delete delete source;
   };
 }
 

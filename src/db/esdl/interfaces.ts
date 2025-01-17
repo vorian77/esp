@@ -88,14 +88,13 @@ export namespace sys_user {
 }
 export namespace app_cm {
   export interface CmClient extends sys_user.Mgmt {
-    "personOld"?: $default.SysPersonOld | null;
+    "person": $default.SysPerson;
     "codeHighestEducation"?: sys_core.SysCode | null;
     "owner": sys_core.SysSystem;
     "agencyId"?: string | null;
     "hasDriversLicense"?: boolean | null;
     "school"?: string | null;
     "office"?: sys_core.SysObjSubject | null;
-    "person": $default.SysPerson;
   }
   export interface CmClientServiceFlow extends sys_user.Mgmt {
     "client": CmClient;
@@ -346,6 +345,7 @@ export namespace sys_core {
     "valueString"?: string | null;
   }
   export interface SysDataObj extends SysObj {
+    "actionGroup"?: SysDataObjActionGroup | null;
     "codeCardinality": SysCode;
     "codeComponent": SysCode;
     "codeDataObjType"?: SysCode | null;
@@ -369,7 +369,6 @@ export namespace sys_core {
     "parentColumn"?: sys_db.SysColumn | null;
     "parentTable"?: sys_db.SysTable | null;
     "tables": SysDataObjTable[];
-    "actionGroup"?: SysDataObjActionGroup | null;
   }
   export interface SysDataObjAction extends sys_user.Mgmt {
     "codeColor": SysCode;
@@ -394,6 +393,7 @@ export namespace sys_core {
     "codeTriggerTiming": SysCode;
   }
   export interface SysDataObjColumn extends sys_user.Mgmt {
+    "exprSave"?: string | null;
     "codeAction"?: SysCode | null;
     "codeAccess"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
@@ -435,9 +435,6 @@ export namespace sys_core {
     "isExcludeInsert": boolean;
     "isExcludeSelect": boolean;
     "isExcludeUpdate": boolean;
-    "linkExprPreset"?: string | null;
-    "linkExprSave"?: string | null;
-    "linkExprSelect"?: string | null;
     "nameCustom"?: string | null;
     "orderCrumb"?: number | null;
     "orderDefine": number;
@@ -456,17 +453,17 @@ export namespace sys_core {
     "orderDefine": number;
   }
   export interface SysDataObjFieldEmbedListConfig extends SysObj {
+    "actionGroupModal": SysDataObjActionGroup;
     "dataObjEmbed": SysDataObj;
     "dataObjModal": SysDataObj;
-    "actionGroupModal": SysDataObjActionGroup;
   }
   export interface SysDataObjFieldEmbedListEdit extends SysObj {
     "dataObjEmbed": SysDataObj;
   }
   export interface SysDataObjFieldEmbedListSelect extends SysObj {
+    "actionGroupModal": SysDataObjActionGroup;
     "dataObjList": SysDataObj;
     "btnLabelComplete": string;
-    "actionGroupModal": SysDataObjActionGroup;
   }
   export interface SysDataObjFieldListItems extends SysObj {
     "codeDataTypeDisplay"?: SysCode | null;
@@ -907,6 +904,7 @@ export namespace sys_rep {
     "expr"?: string | null;
   }
   export interface SysRep extends sys_core.SysObj {
+    "actionGroup": sys_core.SysDataObjActionGroup;
     "analytics": SysAnalytic[];
     "description"?: string | null;
     "exprFilter"?: string | null;
@@ -916,7 +914,6 @@ export namespace sys_rep {
     "tables": sys_core.SysDataObjTable[];
     "elements": SysRepEl[];
     "parms": SysRepParm[];
-    "actionGroup": sys_core.SysDataObjActionGroup;
   }
   export interface SysRepEl extends sys_user.Mgmt {
     "codeAlignment"?: sys_core.SysCode | null;

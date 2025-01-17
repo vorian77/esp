@@ -119,11 +119,6 @@ export async function processDataObj(token: TokenApiQuery) {
 		)
 
 		token.queryType = currentData.length > 0 ? TokenApiQueryType.retrieve : TokenApiQueryType.preset
-		debug('processDataObj', 'isDetailRetrievePreset', {
-			dataObjName: rawDataObj.name,
-			currentData,
-			queryType: token.queryType
-		})
 	}
 
 	// queries
@@ -188,7 +183,8 @@ async function processDataObjQuery(
 			if (queryType === TokenApiQueryType.retrieve || recordStatus === DataRecordStatus.preset) {
 				queryTypeEmbed = TokenApiQueryType.retrieve
 			} else {
-				// save && !preset
+				// save && !preset > assume retrieve
+				queryTypeEmbed = TokenApiQueryType.retrieve
 				switch (field.embedType) {
 					case FieldEmbedType.listConfig:
 						queryTypeEmbed = TokenApiQueryType.save
@@ -205,7 +201,11 @@ async function processDataObjQuery(
 						break
 
 					default:
-						queryTypeEmbed = TokenApiQueryType.retrieve
+						error(500, {
+							file: FILENAME,
+							function: `processDataObjExecute.${clazz}`,
+							message: `No case defined for field.embedType: ${field.embedType}`
+						})
 				}
 			}
 

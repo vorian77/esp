@@ -132,6 +132,8 @@ export async function addDataObj(data: any) {
 
 						exprPreset: e.cast(e.str, e.json_get(f, 'exprPreset')),
 
+						exprSave: e.cast(e.str, e.json_get(f, 'exprSave')),
+
 						indexTable: e.cast(e.int16, e.json_get(f, 'indexTable')),
 
 						isDisplay: booleanOrDefaultJSON(f, 'isDisplay', true),
@@ -155,9 +157,6 @@ export async function addDataObj(data: any) {
 								})
 							}
 						),
-						linkExprPreset: e.cast(e.str, e.json_get(f, 'linkExprPreset')),
-						linkExprSave: e.cast(e.str, e.json_get(f, 'linkExprSave')),
-						linkExprSelect: e.cast(e.str, e.json_get(f, 'linkExprSelect')),
 						linkTable: e.select(
 							e.sys_db.getTable(
 								e.op(
