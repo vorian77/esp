@@ -576,7 +576,7 @@ export class RawDataObjTable {
 }
 
 export class RawDBColumn {
-	codeDataType: string
+	codeDataType: PropDataType
 	classProps?: string
 	exprStorageKey?: string
 	header: string

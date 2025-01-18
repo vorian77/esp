@@ -64,7 +64,7 @@
 
 <!-- <DataViewer header="rowStatus" data={rowStatus} /> -->
 
-<div class="h-full max-h-full flex flex-col p-3 {headerObj ? 'border p-3 rounded-md' : ''}">
+<div class="h-full max-h-full flex flex-col p-3 {headerObj ? 'border p-3 rounded-md' : ''} ">
 	{#if Component}
 		{#if headerObj}
 			<div class="mb-4">

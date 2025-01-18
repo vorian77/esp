@@ -56,7 +56,7 @@
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
 	import { State, StatePacket, StateSurfaceModal } from '$comps/app/types.appState.svelte'
-	import GridFilter from '$comps/grid/GridFilter.svelte'
+	import ListFilter from '$comps/form/ListFilter.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -370,24 +370,16 @@
 	}
 </script>
 
-<div id="grid" class="w-full h-full flex flex-col sm:flex-row rounded-md">
+<div class="h-full flex rounded-md">
 	<div class="grow flex flex-col gap-3">
-		<GridFilter
+		<ListFilter
 			isHideFilter={isSuppressFilterSort}
-			listFilterQuick={options.userSettings.getPref(ParmsUserDataType.listFilterQuick)}
+			filter={options.userSettings.getPref(ParmsUserDataType.listFilterQuick)}
 			{rowCountFiltered}
 			{rowCountSelected}
-			setFilterQuick={settingsFilterQuickSet}
+			fSetFilter={settingsFilterQuickSet}
 		/>
-
-		<div
-			bind:this={eGui}
-			style="height: 100%; width:100%;"
-			class="grow max-h-full ag-theme-quartz"
-		/>
+		<div bind:this={eGui} class="h-full ag-theme-quartz" />
 	</div>
-	<div class="flex flex-col">
-		<div id="spacer" class="hidden block sm:flex h-[65px] justify-center" />
-		<DataObjActionsObj {parms} />
-	</div>
+	<DataObjActionsObj {parms} />
 </div>

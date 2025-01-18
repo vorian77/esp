@@ -8,7 +8,7 @@ import {
 	DataObjSaveMode
 } from '$lib/components/dataObj/types.dataObj.svelte'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
-import { ValidityError, valueHasChanged } from '$utils/types'
+import { PropDataType, ValidityError, valueHasChanged } from '$utils/types'
 import { Field, FieldAccess, FieldClassType } from '$comps/form/field'
 import { error } from '@sveltejs/kit'
 
@@ -49,6 +49,10 @@ export class DataManager {
 	objStatus: DataObjStatus = $state(new DataObjStatus())
 	value: number = $state(0)
 	constructor() {}
+
+	filterList(dataObjId: string, filter: string) {
+		return this.getNode(dataObjId)?.filterList(filter)
+	}
 
 	getDataObj(dataObjId: string): DataObj | undefined {
 		return this.getNode(dataObjId)?.dataObj
@@ -94,6 +98,10 @@ export class DataManager {
 
 	getRecordsDisplayList(dataObjId: string): DataRecord[] {
 		return this.getNode(dataObjId)?.recordsDisplay || []
+	}
+
+	getRecordsDisplayListCount(dataObjId: string) {
+		return this.getNode(dataObjId)?.recordsDisplay.length || 0
 	}
 
 	getRecordsDisplayRow(dataObjId: string, row: number): DataRecord | undefined {
@@ -150,6 +158,53 @@ export class DataManagerNode {
 	recordsHidden: DataRecord[] = $state([])
 	constructor(dataObj: DataObj) {
 		this.dataObj = this.formatDataDisplay(dataObj)
+	}
+
+	filterList(filter: string) {
+		const search = filter.toLowerCase()
+		let filteredIds: string[] = []
+		const records: DataRecord[] = [...this.recordsDisplay, ...this.recordsHidden]
+		records.filter((record) => {
+			this.dataObj.fields.forEach((field) => {
+				const propName = field.colDO.propName
+				const dataType = field.colDO.colDB.codeDataType
+				switch (dataType) {
+					case PropDataType.bool:
+						if (
+							(record[propName] && search === 'true') ||
+							(!record[propName] && search === 'false')
+						)
+							filteredIds.push(record.id)
+						break
+
+					case PropDataType.date:
+						const date = new Date(record[propName])
+						const filterDate = new Date(filter)
+						if (date.toDateString() === filterDate.toDateString()) {
+							filteredIds.push(record.id)
+						}
+						break
+
+					case PropDataType.int16:
+					case PropDataType.int32:
+					case PropDataType.int64:
+						if (record[propName].toString().includes(search)) {
+							filteredIds.push(record.id)
+						}
+						break
+
+					case PropDataType.str:
+						if (record[propName].toString().toLowerCase().includes(search)) {
+							filteredIds.push(record.id)
+						}
+						break
+
+					default:
+				}
+			})
+		})
+		this.recordsDisplay = records.filter((r) => filteredIds.includes(r.id))
+		this.recordsHidden = records.filter((r) => !filteredIds.includes(r.id))
 	}
 
 	formatDataDisplay(dataObj: DataObj) {

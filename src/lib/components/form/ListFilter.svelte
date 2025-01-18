@@ -1,20 +1,15 @@
 <script lang="ts">
-	let {
-		isHideFilter,
-		listFilterQuick,
-		rowCountFiltered,
-		rowCountSelected,
-		setFilterQuick
-	}: DataRecord = $props()
+	let { filter, fSetFilter, isHideFilter, rowCountFiltered, rowCountSelected }: DataRecord =
+		$props()
 </script>
 
 {#if !isHideFilter}
 	<div class="flex justify-between">
 		<button
-			class="btn btn-action variant-soft-primary mr-4 {listFilterQuick === '' ? 'hidden' : ''}"
+			class="btn btn-action variant-soft-primary mr-4 {filter === '' ? 'hidden' : ''}"
 			onclick={() => {
-				listFilterQuick = ''
-				setFilterQuick('')
+				filter = ''
+				fSetFilter('')
 			}}
 		>
 			Reset
@@ -24,12 +19,12 @@
 			class="w-full text-sm border border-neutral-300 rounded-md p-4"
 			type="text"
 			id="search-text-"
-			bind:value={listFilterQuick}
-			onkeyup={() => setFilterQuick(listFilterQuick)}
+			bind:value={filter}
+			onkeyup={() => fSetFilter(filter)}
 			placeholder="Search..."
 		/>
 
-		{#if !!rowCountFiltered}
+		{#if !!rowCountFiltered || rowCountFiltered === 0}
 			<span class="ml-4 text-sm text-nav">
 				Rows: <span class="text-black">{rowCountFiltered}</span>
 			</span>
