@@ -2,7 +2,7 @@
 	import {
 		State,
 		StateSurfaceEmbedShell,
-		StateSurfaceModalEmbed,
+		StateSurfacePopupModalEmbed,
 		StateTriggerToken
 	} from '$comps/app/types.appState.svelte'
 	import {
@@ -79,7 +79,7 @@
 	let dataRecordsDisplay = $derived(dm.getRecordsDisplayList(parms.dataObjId))
 
 	let gridApi: GridApi = $state()
-	let isSelect = $derived(sm instanceof StateSurfaceModalEmbed)
+	let isSelect = $derived(sm instanceof StateSurfacePopupModalEmbed)
 
 	$effect(() => {
 		if (sm.consumeTriggerToken(StateTriggerToken.listDownload)) {

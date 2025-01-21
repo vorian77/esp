@@ -37,7 +37,7 @@
 				dataObjEmbed.actionsFieldTrigger(
 					sm,
 					CodeAction.init(
-						CodeActionClass.ct_sys_code_action_class_do_embed,
+						CodeActionClass.ct_sys_code_action_class_do,
 						CodeActionType.doEmbedListSelect
 					)
 				),

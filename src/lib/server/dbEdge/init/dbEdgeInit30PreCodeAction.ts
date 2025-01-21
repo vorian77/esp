@@ -1,27 +1,11 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
 export function initPreCodeAction(init: InitDb) {
-	initCodeActionsDoEmbed(init)
 	initCodeActionsDoFieldAuth(init)
 	initCodeActionsDoGroupItem(init)
 	initCodeActionsModal(init)
 	initCodeActionsNav(init)
 	initCodeActionsUtils(init)
-}
-
-function initCodeActionsDoEmbed(init: InitDb) {
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_embed',
-		name: 'embedField',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_embed',
-		name: 'embedShell',
-		order: 0
-	})
 }
 
 function initCodeActionsDoFieldAuth(init: InitDb) {
@@ -151,6 +135,18 @@ function initCodeActionsDoGroupItem(init: InitDb) {
 }
 
 function initCodeActionsModal(init: InitDb) {
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_modal',
+		name: 'embedField',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_modal',
+		name: 'embedShell',
+		order: 0
+	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
 		codeType: 'ct_sys_code_action_class_modal',

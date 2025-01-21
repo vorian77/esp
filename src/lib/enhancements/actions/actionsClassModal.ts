@@ -13,7 +13,7 @@ import {
 } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
-const FILENAME = '/$enhance/actions/actionClassNav.ts'
+const FILENAME = '/$enhance/actions/actionClassModal.ts'
 
 export default async function action(sm: State, parms: TokenAppStateTriggerAction) {
 	const actionType = parms.codeAction.actionType

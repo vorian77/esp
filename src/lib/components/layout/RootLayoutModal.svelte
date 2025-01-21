@@ -33,10 +33,6 @@
 		return rowCount
 	})
 
-	sm.setfChangeCallback((obj: DataRecord) => {
-		sm.packet = obj.packet
-	})
-
 	$effect(() => {
 		if (sm.embedType === FieldEmbedType.listConfig && rowCount === 0) {
 			if ($storeModal[0]?.response) {

@@ -92,7 +92,6 @@ export enum CodeActionType {
 
 export enum CodeActionClass {
 	ct_sys_code_action_class_do = 'ct_sys_code_action_class_do',
-	ct_sys_code_action_class_do_embed = 'ct_sys_code_action_class_do_embed',
 	ct_sys_code_action_class_do_field_auth = 'ct_sys_code_action_class_do_field_auth',
 	ct_sys_code_action_class_modal = 'ct_sys_code_action_class_modal',
 	ct_sys_code_action_class_nav = 'ct_sys_code_action_class_nav',

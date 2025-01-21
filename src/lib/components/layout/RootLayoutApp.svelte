@@ -45,7 +45,7 @@
 		}
 
 		if (sm.consumeTriggerToken(StateTriggerToken.componentContentForm)) {
-			const clazz = `${FILENAME}.updateObjectsForm`
+			const clazz = `${FILENAME}.componentContentForm`
 			currTab = sm.app.getCurrTab()
 			if (currTab && currTab.dataObj) {
 				sm.dm.init(currTab.dataObj)
@@ -61,16 +61,12 @@
 	})
 
 	function setComponent() {
-		// if (!sm.componentLayout) sm.componentLayout = StateComponentLayout.layoutContent
 		Component = componentsLayout[sm.componentLayout]
-		console.log('RootLayoutApp.svelte', Component)
 		keyValue = !keyValue
 	}
 </script>
 
 {#if Component}
-	RootLayoutApp
-
 	<div class="h-full max-h-full w-full">
 		{#key keyValue}
 			<Component {parms} />

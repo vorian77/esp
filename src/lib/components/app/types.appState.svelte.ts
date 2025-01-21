@@ -8,7 +8,6 @@ import {
 	DataObj,
 	DataObjAction,
 	type DataRecord,
-	memberOfEnum,
 	ParmsValues,
 	ParmsValuesType,
 	NodeType,
@@ -17,19 +16,10 @@ import {
 	User
 } from '$utils/types'
 import {
-	UserAction,
-	UserActionConfirm,
-	UserActionConfirmContent,
-	UserActionTrigger
-} from '$comps/other/types.userAction.svelte'
-import {
 	Token,
 	TokenApiDbDataObjSource,
 	TokenApiId,
-	TokenApiQuery,
-	TokenApiQueryData,
 	TokenApiQueryType,
-	TokenApp,
 	TokenAppDataObjName,
 	TokenAppDo,
 	TokenAppModalEmbedField,
@@ -37,18 +27,15 @@ import {
 	TokenAppModalReturnType,
 	TokenAppModalSelect,
 	TokenAppStateTriggerAction,
-	TokenAppUserAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
 import { FieldEmbedType } from '$comps/form/field'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
-import { RawDataObjAction, RawDataObjParent, RawUserAction } from '$comps/dataObj/types.rawDataObj'
+import { RawDataObjAction, RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { booleanOrFalse, ResponseBody, strOptional } from '$utils/types'
-import { page } from '$app/stores'
-import { goto } from '$app/navigation'
 import fActionsClassDo from '$enhance/actions/actionsClassDo'
 import fActionsClassDoFieldAuth from '$enhance/actions/actionsClassDoFieldAuth'
 import fActionsClassModal from '$enhance/actions/actionsClassModal'
@@ -62,17 +49,14 @@ export class State {
 	app: App = $state(new App())
 	componentContent?: StateComponentContent
 	componentLayout: StateComponentLayout = StateComponentLayout.layoutContent
-	data?: DataObj
 	dm: DataManager = new DataManager()
 	dataObjState?: DataObj
 	fActions: Record<string, Function> = {}
 	fChangeCallback?: Function
 	layoutHeader: StateLayoutHeader = new StateLayoutHeader({})
 	nodeType: NodeType = NodeType.home
-	packet?: StatePacket = $state()
 	page: string
 	parmsState: ParmsValues = new ParmsValues()
-	parmsUser: ParmsUser = new ParmsUser()
 	stateRoot?: State
 	storeDrawer: any
 	storeModal: any
@@ -85,7 +69,6 @@ export class State {
 		this.fActions = this.loadActions()
 		this.page = strRequired(obj.page, clazz, 'page')
 		this.change(obj)
-		if (obj.triggerAction) this.triggerAction(obj.triggerAction)
 	}
 
 	change(obj: DataRecord) {
@@ -93,11 +76,9 @@ export class State {
 		if (Object.hasOwn(obj, 'componentContent')) this.componentContent = obj.componentContent
 		if (Object.hasOwn(obj, 'componentLayout')) this.componentLayout = obj.componentLayout
 		if (Object.hasOwn(obj, 'fChangeCallback')) this.fChangeCallback = obj.fChangeCallback
-		if (Object.hasOwn(obj, 'data')) this.data = obj.data
 		if (Object.hasOwn(obj, 'layoutHeader'))
 			this.layoutHeader = new StateLayoutHeader(obj.layoutHeader)
 		if (Object.hasOwn(obj, 'nodeType')) this.nodeType = obj.nodeType
-		if (Object.hasOwn(obj, 'packet')) this.packet = obj.packet
 		if (Object.hasOwn(obj, 'page')) this.page = obj.page
 		if (Object.hasOwn(obj, 'parmsState')) this.parmsState.update(obj?.parmsState?.data)
 		if (Object.hasOwn(obj, 'stateRoot')) this.stateRoot = obj.stateRoot
@@ -181,10 +162,6 @@ export class State {
 					fActions[key] = fActionsClassUtils
 					break
 
-				case CodeActionClass.ct_sys_code_action_class_do_embed:
-					// unused
-					break
-
 				default:
 					error(500, {
 						file: FILENAME,
@@ -198,7 +175,6 @@ export class State {
 
 	newApp() {
 		this.app = new App()
-		this.parmsUser.reset()
 	}
 
 	async openDrawer(
@@ -209,12 +185,6 @@ export class State {
 		meta: DataRecord
 	) {
 		const sm = required(meta.sm, 'State.openDrawer', 'meta.sm')
-
-		sm.changeProperties({
-			storeDrawer: this.storeDrawer,
-			storeModal: this.storeModal,
-			storeToast: this.storeToast
-		})
 		const settings: DrawerSettings = { id, position, height, width, meta }
 		this.storeDrawer.open(settings)
 	}
@@ -226,18 +196,22 @@ export class State {
 		width: string | undefined,
 		token: TokenAppDataObjName
 	) {
-		this.change({
+		const stateModal = new StateSurfacePopup(this, {
 			layoutHeader: {
 				isDataObj: true,
 				isDrawerClose: true
-			},
-			packet: new StatePacket({
-				codeActionType: CodeActionType.doOpen,
-				stateTargetObj: StateTriggerToken.componentContentForm,
+			}
+		})
+		await stateModal.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_do,
+					CodeActionType.doOpen
+				),
 				token
 			})
-		})
-		this.openDrawer(id, position, height, width, { sm: this })
+		)
+		this.openDrawer(id, position, height, width, { sm: stateModal })
 	}
 
 	async openModal(sm: StateSurfacePopup, fUpdate?: Function) {
@@ -278,15 +252,17 @@ export class State {
 			actionsDialog: await this.getActions('doag_dialog_footer_detail'),
 			layoutHeader: {
 				isDataObj: true
-			},
-			triggerAction: new TokenAppStateTriggerAction({
+			}
+		})
+		await stateModal.triggerAction(
+			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_do,
 					CodeActionType.doOpen
 				),
 				token: new TokenAppDataObjName({ dataObjName, queryType: TokenApiQueryType.retrieve })
 			})
-		})
+		)
 		await this.openModal(stateModal, fUpdate)
 	}
 
@@ -306,8 +282,9 @@ export class State {
 		)
 		const dataObjParentRootTable = fieldEmbed.parentTable
 
-		const stateModal = new StateSurfaceModalEmbed(this, {
+		const stateModal = new StateSurfacePopupModalEmbed(this, {
 			actionsDialog: fieldEmbed.actionsModal,
+			app: this.app,
 			embedParentId: token.sm.dm?.getRecordId(fieldEmbed.dataObjIdParent, 0),
 			embedType: fieldEmbed.embedType,
 			parmsState: new ParmsValues(),
@@ -318,7 +295,7 @@ export class State {
 		})
 
 		stateModal.app.virtualModalLevelAdd(dataObjEmbed)
-		stateModal.triggerAction(
+		await stateModal.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_modal,
@@ -366,15 +343,17 @@ export class State {
 			token.dataObj.data.rowsRetrieved.getRows()
 		)
 
-		const stateModal = new StateSurfaceModalEmbed(this, {
+		const stateModal = new StateSurfacePopupModalEmbed(this, {
 			actionsDialog: fieldEmbed.actionsModal,
 			embedParentId: token.sm.dm?.getRecordId(fieldEmbed.dataObjIdParent, 0),
 			embedType: fieldEmbed.embedType,
 			layoutHeader: {
 				isDataObj: true
 			},
-			parmsState,
-			triggerAction: new TokenAppStateTriggerAction({
+			parmsState
+		})
+		await stateModal.triggerAction(
+			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_modal,
 					CodeActionType.modalEmbed
@@ -392,7 +371,7 @@ export class State {
 					queryType: TokenApiQueryType.retrieve
 				})
 			})
-		})
+		)
 
 		await this.openModal(stateModal, fModalCloseUpdate)
 	}
@@ -436,7 +415,7 @@ export class State {
 	async resetUser(loadHome: boolean) {
 		if (this.user) {
 			if (loadHome) {
-				this.triggerAction(
+				await this.triggerAction(
 					new TokenAppStateTriggerAction({
 						codeAction: CodeAction.init(
 							CodeActionClass.ct_sys_code_action_class_nav,
@@ -532,18 +511,6 @@ export class StateLayoutHeader {
 		this.isRowStatus = booleanOrFalse(obj.isRowStatus, 'isRowStatus')
 	}
 }
-export class StatePacket {
-	codeActionType?: CodeActionType
-	stateTargetObj?: StateTriggerToken
-	token?: Token
-	constructor(obj: any) {
-		const clazz = 'StatePacket'
-		obj = valueOrDefault(obj, {})
-		this.codeActionType = obj.codeActionType
-		this.stateTargetObj = obj.stateTargetObj
-		this.token = obj.token
-	}
-}
 
 export class StateSurfaceEmbed extends State {
 	constructor(obj: any) {
@@ -573,7 +540,6 @@ export class StateSurfacePopup extends State {
 		super(obj)
 		obj = valueOrDefault(obj, {})
 		this.actionsDialog = valueOrDefault(obj.actionsDialog, [])
-		this.app = stateParent.app
 		this.storeDrawer = stateParent.storeDrawer
 		this.storeModal = stateParent.storeModal
 		this.storeToast = stateParent.storeToast
@@ -581,11 +547,11 @@ export class StateSurfacePopup extends State {
 	}
 }
 
-export class StateSurfaceModalEmbed extends StateSurfacePopup {
+export class StateSurfacePopupModalEmbed extends StateSurfacePopup {
 	embedParentId: string
 	embedType: FieldEmbedType
 	constructor(stateParent: State, obj: any) {
-		const clazz = 'StateSurfaceModalEmbed'
+		const clazz = 'StateSurfacePopupModalEmbed'
 		super(stateParent, obj)
 		obj = valueOrDefault(obj, {})
 		this.embedParentId = strRequired(obj.embedParentId, clazz, 'embedParentId')

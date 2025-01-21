@@ -25,12 +25,10 @@
 </script>
 
 <Drawer on:backdrop={closeDrawer}>
-	{#if $storeDrawer.id === 'auth'}
-		{#if $storeDrawer.meta.sm}
-			<div class="h-full esp-card-space-y p-4">
-				<RootLayoutApp sm={$storeDrawer.meta.sm} />
-			</div>
-		{/if}
+	{#if $storeDrawer.meta.sm}
+		<div class="h-full esp-card-space-y p-4">
+			<RootLayoutApp sm={$storeDrawer.meta.sm} />
+		</div>
 	{/if}
 </Drawer>
 
