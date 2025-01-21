@@ -13,10 +13,8 @@
 	import { getContext } from 'svelte'
 	import {
 		State,
-		StatePacket,
 		StateSurfaceEmbedShell,
-		StateSurfaceModalEmbed,
-		StateTarget
+		StateTriggerToken
 	} from '$comps/app/types.appState.svelte'
 	import {
 		TokenApiUserPref,
@@ -58,10 +56,13 @@
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
 	function onClick(event: Event) {
-		sm.change({
-			confirmType: TokenAppUserActionConfirmType.none,
-			packet: new StatePacket({
-				actionType: CodeActionType.modalSelectOpen,
+		sm.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_modal,
+					CodeActionType.modalSelectOpen
+				),
+				codeConfirmType: TokenAppUserActionConfirmType.none,
 				token: new TokenAppModalSelect({
 					columnDefs: linkItemsSource.columnDefs,
 					fModalClose,
@@ -72,9 +73,8 @@
 					selectLabel: field.colDO.label,
 					sortModel: linkItemsSource.sortModel
 				})
-			}),
-			target: StateTarget.feature
-		})
+			})
+		)
 
 		async function fModalClose(returnType: TokenAppModalReturnType, returnData?: ParmsValues) {
 			if (returnType === TokenAppModalReturnType.complete) {

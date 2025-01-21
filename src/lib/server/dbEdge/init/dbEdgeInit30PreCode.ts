@@ -11,17 +11,17 @@ function initCodeTypes(init: InitDb) {
 	})
 	init.addTrans('sysCodeType', {
 		owner: 'sys_system_old',
+		name: 'ct_sys_code_action_class_do',
+		parent: 'ct_sys_code_action_class'
+	})
+	init.addTrans('sysCodeType', {
+		owner: 'sys_system_old',
 		name: 'ct_sys_code_action_class_do_embed',
 		parent: 'ct_sys_code_action_class'
 	})
 	init.addTrans('sysCodeType', {
 		owner: 'sys_system_old',
 		name: 'ct_sys_code_action_class_do_field_auth',
-		parent: 'ct_sys_code_action_class'
-	})
-	init.addTrans('sysCodeType', {
-		owner: 'sys_system_old',
-		name: 'ct_sys_code_action_class_do_group_item',
 		parent: 'ct_sys_code_action_class'
 	})
 	init.addTrans('sysCodeType', {

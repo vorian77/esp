@@ -16,7 +16,12 @@ import {
 	ToastType,
 	User
 } from '$utils/types'
-import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
+import {
+	UserAction,
+	UserActionConfirm,
+	UserActionConfirmContent,
+	UserActionTrigger
+} from '$comps/other/types.userAction.svelte'
 import {
 	Token,
 	TokenApiDbDataObjSource,
@@ -24,96 +29,71 @@ import {
 	TokenApiQuery,
 	TokenApiQueryData,
 	TokenApiQueryType,
+	TokenApp,
 	TokenAppDataObjName,
 	TokenAppDo,
 	TokenAppModalEmbedField,
 	TokenAppModalReturn,
 	TokenAppModalReturnType,
 	TokenAppModalSelect,
+	TokenAppStateTriggerAction,
+	TokenAppUserAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
 import { FieldEmbedType } from '$comps/form/field'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
-import { RawDataObjAction, RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
+import { RawDataObjAction, RawDataObjParent, RawUserAction } from '$comps/dataObj/types.rawDataObj'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { booleanOrFalse, ResponseBody, strOptional } from '$utils/types'
+import { page } from '$app/stores'
+import { goto } from '$app/navigation'
+import fActionsClassDo from '$enhance/actions/actionsClassDo'
 import fActionsClassDoFieldAuth from '$enhance/actions/actionsClassDoFieldAuth'
+import fActionsClassModal from '$enhance/actions/actionsClassModal'
+import fActionsClassNav from '$enhance/actions/actionsClassNav'
 import fActionsClassUtils from '$enhance/actions/actionsClassUtils'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/app/types.appState.ts'
 
-async function askB4Transition(
-	sm: State,
-	obj: any,
-	confirmConfig: UserActionConfirmContent,
-	fChangeCallback?: Function
-) {
-	if (sm instanceof StateSurfaceModal) {
-		if (confirm(confirmConfig.message)) {
-			// discard changes
-			obj.confirmType = TokenAppUserActionConfirmType.none
-			sm.dm?.resetStatus()
-			sm.changeValidate(sm, obj, fChangeCallback)
-		}
-	} else {
-		const modal: ModalSettings = {
-			type: 'confirm',
-			title: confirmConfig.title,
-			body: confirmConfig.message,
-			buttonTextCancel: confirmConfig.buttonLabelCancel,
-			buttonTextConfirm: confirmConfig.buttonLabelConfirm,
-			response: async (r: boolean) => {
-				if (r) {
-					// discard changes
-					obj.confirmType = TokenAppUserActionConfirmType.none
-					sm.dm?.resetStatus()
-					sm.changeValidate(sm, obj, fChangeCallback)
-				}
-			}
-		}
-		return sm.storeModal.trigger(modal)
-	}
-}
-
 export class State {
 	app: App = $state(new App())
+	componentContent?: StateComponentContent
+	componentLayout: StateComponentLayout = StateComponentLayout.layoutContent
 	data?: DataObj
-	dm?: DataManager = new DataManager()
+	dm: DataManager = new DataManager()
 	dataObjState?: DataObj
 	fActions: Record<string, Function> = {}
 	fChangeCallback?: Function
-	layoutComponent: StateLayoutComponent = StateLayoutComponent.layoutContent
 	layoutHeader: StateLayoutHeader = new StateLayoutHeader({})
 	nodeType: NodeType = NodeType.home
 	packet?: StatePacket = $state()
-	page = '/home'
+	page: string
 	parmsState: ParmsValues = new ParmsValues()
 	parmsUser: ParmsUser = new ParmsUser()
 	stateRoot?: State
 	storeDrawer: any
 	storeModal: any
 	storeToast: any
-	target: StateTarget = $state(StateTarget.dashboard)
+	triggerTokens: StateTriggerToken[] = $state([])
 	user?: User
 	constructor(obj: any) {
 		const clazz = 'State'
 		obj = valueOrDefault(obj, {})
-		this.loadActions()
-		this.changeProperties(obj)
+		this.fActions = this.loadActions()
+		this.page = strRequired(obj.page, clazz, 'page')
+		this.change(obj)
+		if (obj.triggerAction) this.triggerAction(obj.triggerAction)
 	}
 
-	change(obj: any) {
-		this.changeValidate(this, obj, this.fChangeCallback)
-	}
-	changeProperties(obj: any) {
-		// optional
+	change(obj: DataRecord) {
 		if (Object.hasOwn(obj, 'app')) this.app = obj.app
+		if (Object.hasOwn(obj, 'componentContent')) this.componentContent = obj.componentContent
+		if (Object.hasOwn(obj, 'componentLayout')) this.componentLayout = obj.componentLayout
 		if (Object.hasOwn(obj, 'fChangeCallback')) this.fChangeCallback = obj.fChangeCallback
 		if (Object.hasOwn(obj, 'data')) this.data = obj.data
-		if (Object.hasOwn(obj, 'layoutComponent')) this.layoutComponent = obj.layoutComponent
 		if (Object.hasOwn(obj, 'layoutHeader'))
 			this.layoutHeader = new StateLayoutHeader(obj.layoutHeader)
 		if (Object.hasOwn(obj, 'nodeType')) this.nodeType = obj.nodeType
@@ -126,49 +106,21 @@ export class State {
 		if (Object.hasOwn(obj, 'storeToast')) this.storeToast = obj.storeToast
 		if (Object.hasOwn(obj, 'user')) this.user = obj.user
 
-		// required
-		this.target = memberOfEnum(
-			obj.target || this.target,
-			'State',
-			'target',
-			'StateTarget',
-			StateTarget
-		)
-		if ([StateTarget.dashboard, StateTarget.feature].includes(obj.target)) this.page = '/home'
+		this.triggerTokens = valueOrDefault(obj.triggerTokens, [])
 
-		return this
-	}
-
-	async changeValidate(sm: State, obj: any, callback: Function | undefined = undefined) {
-		obj = valueOrDefault(obj, {})
-		if (obj.confirmType) {
-			const confirmType = obj.confirmType
-			const confirm = obj.confirm || new UserActionConfirmContent()
-			if (
-				confirmType &&
-				(confirmType === TokenAppUserActionConfirmType.always ||
-					(confirmType === TokenAppUserActionConfirmType.statusChanged && sm.dm?.isStatusChanged()))
-			) {
-				await askB4Transition(sm, obj, confirm, callback)
-			} else {
-				if (callback) await callback(obj)
-			}
-		} else {
-			if (callback) await callback(obj)
-		}
+		if (this.fChangeCallback) this.fChangeCallback(obj)
 	}
 
 	closeModal() {
 		this.storeModal.close()
 	}
 
-	consume(actions: CodeActionType | CodeActionType[]) {
-		if (this.packet && actions.includes(this.packet.actionType)) {
-			const packet = this.packet
-			this.packet = undefined
-			return packet
+	consumeTriggerToken(triggerToken: StateTriggerToken) {
+		if (this.triggerTokens.includes(triggerToken)) {
+			this.triggerTokens = this.triggerTokens.filter((t) => t !== triggerToken)
+			return true
 		} else {
-			return undefined
+			return false
 		}
 	}
 
@@ -206,19 +158,33 @@ export class State {
 	}
 
 	loadActions() {
+		let fActions: Record<string, Function> = {}
 		for (const key of Object.keys(CodeActionClass)) {
 			switch (key) {
-				case CodeActionClass.ct_sys_code_action_class_do_embed:
-				case CodeActionClass.ct_sys_code_action_class_do_group_item:
+				case CodeActionClass.ct_sys_code_action_class_do:
+					fActions[key] = fActionsClassDo
+					break
+
 				case CodeActionClass.ct_sys_code_action_class_modal:
-				case CodeActionClass.ct_sys_code_action_class_nav:
+					fActions[key] = fActionsClassModal
 					break
+
 				case CodeActionClass.ct_sys_code_action_class_do_field_auth:
-					this.fActions[key] = fActionsClassDoFieldAuth
+					fActions[key] = fActionsClassDoFieldAuth
 					break
+
+				case CodeActionClass.ct_sys_code_action_class_nav:
+					fActions[key] = fActionsClassNav
+					break
+
 				case CodeActionClass.ct_sys_code_action_class_utils:
-					this.fActions[key] = fActionsClassUtils
+					fActions[key] = fActionsClassUtils
 					break
+
+				case CodeActionClass.ct_sys_code_action_class_do_embed:
+					// unused
+					break
+
 				default:
 					error(500, {
 						file: FILENAME,
@@ -227,7 +193,7 @@ export class State {
 					})
 			}
 		}
-		// console.log('State.loadActions:', this.fActions)
+		return fActions
 	}
 
 	newApp() {
@@ -260,29 +226,21 @@ export class State {
 		width: string | undefined,
 		token: TokenAppDataObjName
 	) {
-		this.changeProperties({
-			layoutComponent: StateLayoutComponent.layoutContent,
+		this.change({
 			layoutHeader: {
 				isDataObj: true,
 				isDrawerClose: true
 			},
 			packet: new StatePacket({
-				actionType: CodeActionType.doOpen,
+				codeActionType: CodeActionType.doOpen,
+				stateTargetObj: StateTriggerToken.componentContentForm,
 				token
-			}),
-			target: StateTarget.feature
+			})
 		})
 		this.openDrawer(id, position, height, width, { sm: this })
 	}
 
-	async openModal(sm: StateSurfaceModal, fUpdate?: Function) {
-		sm.changeProperties({
-			storeDrawer: this.storeDrawer,
-			storeModal: this.storeModal,
-			storeToast: this.storeToast,
-			target: sm.target,
-			user: this.user
-		})
+	async openModal(sm: StateSurfacePopup, fUpdate?: Function) {
 		new Promise<any>((resolve) => {
 			const modalSettings: ModalSettings = {
 				type: 'component',
@@ -316,14 +274,16 @@ export class State {
 
 	async openModalDataObj(dataObjName: string, fUpdate?: Function) {
 		const clazz = `${FILENAME}.openModalDataObj`
-		const stateModal = new StateSurfaceModal({
+		const stateModal = new StateSurfacePopup(this, {
 			actionsDialog: await this.getActions('doag_dialog_footer_detail'),
-			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutHeader: {
 				isDataObj: true
 			},
-			packet: new StatePacket({
-				actionType: CodeActionType.doOpen,
+			triggerAction: new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_do,
+					CodeActionType.doOpen
+				),
 				token: new TokenAppDataObjName({ dataObjName, queryType: TokenApiQueryType.retrieve })
 			})
 		})
@@ -346,18 +306,24 @@ export class State {
 		)
 		const dataObjParentRootTable = fieldEmbed.parentTable
 
-		const stateModal = new StateSurfaceModalEmbed({
+		const stateModal = new StateSurfaceModalEmbed(this, {
 			actionsDialog: fieldEmbed.actionsModal,
-			app: this.app,
 			embedParentId: token.sm.dm?.getRecordId(fieldEmbed.dataObjIdParent, 0),
 			embedType: fieldEmbed.embedType,
-			layoutComponent: StateLayoutComponent.layoutContent,
+			parmsState: new ParmsValues(),
 			layoutHeader: {
 				isDataObj: true,
 				isRowStatus: true
-			},
-			packet: new StatePacket({
-				actionType: CodeActionType.modalEmbed,
+			}
+		})
+
+		stateModal.app.virtualModalLevelAdd(dataObjEmbed)
+		stateModal.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_modal,
+					CodeActionType.modalEmbed
+				),
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
 						dataObjId: fieldEmbed.dataObjModalId,
@@ -370,12 +336,8 @@ export class State {
 					}),
 					queryType
 				})
-			}),
-			parmsState: new ParmsValues(),
-			target: StateTarget.feature
-		})
-
-		stateModal.app.virtualModalLevelAdd(dataObjEmbed)
+			})
+		)
 		await this.openModal(stateModal, fModalCloseUpdate)
 	}
 
@@ -404,17 +366,19 @@ export class State {
 			token.dataObj.data.rowsRetrieved.getRows()
 		)
 
-		const stateModal = new StateSurfaceModalEmbed({
+		const stateModal = new StateSurfaceModalEmbed(this, {
 			actionsDialog: fieldEmbed.actionsModal,
-			app: this.app,
 			embedParentId: token.sm.dm?.getRecordId(fieldEmbed.dataObjIdParent, 0),
 			embedType: fieldEmbed.embedType,
-			layoutComponent: StateLayoutComponent.layoutContent,
 			layoutHeader: {
 				isDataObj: true
 			},
-			packet: new StatePacket({
-				actionType: CodeActionType.modalEmbed,
+			parmsState,
+			triggerAction: new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_modal,
+					CodeActionType.modalEmbed
+				),
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
 						dataObjId: fieldEmbed.dataObjListID,
@@ -427,9 +391,7 @@ export class State {
 					}),
 					queryType: TokenApiQueryType.retrieve
 				})
-			}),
-			parmsState,
-			target: StateTarget.feature
+			})
 		})
 
 		await this.openModal(stateModal, fModalCloseUpdate)
@@ -445,16 +407,13 @@ export class State {
 		parmsState.valueSet(ParmsValuesType.isMultiSelect, token.isMultiSelect)
 		parmsState.valueSet(ParmsValuesType.rowData, token.rowData)
 
-		const stateModal = new StateSurfaceModal({
+		const stateModal = new StateSurfacePopup(this, {
 			actionsDialog: await this.getActions('doag_dialog_footer_list'),
-			layoutComponent: StateLayoutComponent.layoutContent,
+			componentContent: StateComponentContent.ModalSelect,
 			layoutHeader: {
 				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.selectLabel}`
 			},
-			packet: new StatePacket({
-				actionType: CodeActionType.modalSelectSurface,
-				token
-			}),
+			triggerTokens: [StateTriggerToken.homeApp, StateTriggerToken.componentContentCustom],
 			parmsState
 		})
 
@@ -477,11 +436,15 @@ export class State {
 	async resetUser(loadHome: boolean) {
 		if (this.user) {
 			if (loadHome) {
-				this.change({
-					page: '/home',
-					nodeType: NodeType.home,
-					packet: this.packet
-				})
+				this.triggerAction(
+					new TokenAppStateTriggerAction({
+						codeAction: CodeAction.init(
+							CodeActionClass.ct_sys_code_action_class_nav,
+							CodeActionType.navHome
+						),
+						codeConfirmType: TokenAppUserActionConfirmType.statusChanged
+					})
+				)
 			}
 		}
 	}
@@ -494,38 +457,64 @@ export class State {
 		this.fChangeCallback = f
 	}
 
-	async triggerCodeAction(parms: StateCodeActionTrigger) {
-		return await this.fActions[parms.action.actionClass](
-			new StateCodeAction(this, parms.action.actionType, parms.data)
-		)
+	async triggerAction(parms: TokenAppStateTriggerAction) {
+		await this.triggerActionValidate(parms, this.fActions[parms.codeAction.actionClass])
+	}
+
+	async triggerActionValidate(
+		parms: TokenAppStateTriggerAction,
+		fCallback: Function | undefined = undefined
+	) {
+		const codeConfirmType = parms.codeConfirmType
+		if (
+			codeConfirmType === TokenAppUserActionConfirmType.always ||
+			(codeConfirmType === TokenAppUserActionConfirmType.statusChanged && this.dm.isStatusChanged())
+		) {
+			await this.triggerActionValidateAskB4(parms, fCallback)
+		} else {
+			if (fCallback) await fCallback(this, parms)
+		}
+	}
+
+	async triggerActionValidateAskB4(parms: TokenAppStateTriggerAction, fCallback?: Function) {
+		if (this instanceof StateSurfacePopup) {
+			if (confirm(parms.confirm.message)) {
+				discardChanges(this)
+			}
+		} else {
+			const modal: ModalSettings = {
+				type: 'confirm',
+				title: parms.confirm.title,
+				body: parms.confirm.message,
+				buttonTextCancel: parms.confirm.buttonLabelCancel,
+				buttonTextConfirm: parms.confirm.buttonLabelConfirm,
+				response: async (r: boolean) => {
+					if (r) {
+						discardChanges(this)
+					}
+				}
+			}
+			return this.storeModal.trigger(modal)
+		}
+		function discardChanges(sm: State) {
+			parms.codeConfirmType = TokenAppUserActionConfirmType.none
+			sm.dm.resetStatus()
+			sm.triggerActionValidate(parms, fCallback)
+		}
 	}
 }
 
-export class StateCodeAction {
-	sm: State
-	actionType: CodeActionType
-	data: DataRecord
-	constructor(sm: State, actionType: CodeActionType, data: DataRecord = {}) {
-		this.sm = sm
-		this.actionType = actionType
-		this.data = data
-	}
+export enum StateComponentContent {
+	FormDetail = 'FormDetail',
+	FormDetailReportConrig = 'FormDetailReportConrig',
+	FormList = 'FormList',
+	ModalSelect = 'ModalSelect'
 }
 
-export class StateCodeActionTrigger {
-	action: CodeAction
-	data: DataRecord
-	constructor(action: CodeAction, data: DataRecord = {}) {
-		this.action = action
-		this.data = data
-	}
-}
-
-export enum StateLayoutComponent {
+export enum StateComponentLayout {
 	layoutApp = 'layoutApp',
 	layoutContent = 'layoutContent',
 	layoutProcess = 'layoutProcess',
-	layoutSelectMulti = 'layoutSelectMulti',
 	layoutTab = 'layoutTab'
 }
 
@@ -544,18 +533,15 @@ export class StateLayoutHeader {
 	}
 }
 export class StatePacket {
-	actionType: CodeActionType
-	callback?: Function
+	codeActionType?: CodeActionType
+	stateTargetObj?: StateTriggerToken
 	token?: Token
 	constructor(obj: any) {
 		const clazz = 'StatePacket'
 		obj = valueOrDefault(obj, {})
-		this.actionType = required(obj.actionType, clazz, 'actionType')
-		this.callback = obj.callback
-		this.token = valueOrDefault(obj.token, undefined)
-	}
-	setCallback(f: Function) {
-		this.callback = f
+		this.codeActionType = obj.codeActionType
+		this.stateTargetObj = obj.stateTargetObj
+		this.token = obj.token
 	}
 }
 
@@ -563,23 +549,6 @@ export class StateSurfaceEmbed extends State {
 	constructor(obj: any) {
 		const clazz = 'StateSurfaceEmbed'
 		super(obj)
-	}
-}
-
-export class StateSurfaceEmbedField extends StateSurfaceEmbed {
-	constructor(obj: any) {
-		const clazz = 'StateSurfaceEmbedField'
-		super(obj)
-		obj = valueOrDefault(obj, {})
-		this.nodeType = NodeType.object
-		this.packet = new StatePacket({
-			actionType: CodeActionType.embedField,
-			token: new TokenApiQuery(
-				required(obj.queryType, clazz, 'queryType'),
-				required(obj.dataObjSource, clazz, 'dataObjSource'),
-				new TokenApiQueryData({ dataObjData: obj.data, user: this.user })
-			)
-		})
 	}
 }
 
@@ -596,30 +565,38 @@ export class StateSurfaceEmbedShell extends StateSurfaceEmbed {
 	}
 }
 
-export class StateSurfaceModal extends State {
+export class StateSurfacePopup extends State {
 	actionsDialog: DataObjAction[] = []
-	constructor(obj: any) {
-		const clazz = 'StateSurfaceModal'
+	constructor(stateParent: State, obj: any) {
+		const clazz = 'StateSurfacePopup'
+		obj.page = stateParent.page
 		super(obj)
 		obj = valueOrDefault(obj, {})
 		this.actionsDialog = valueOrDefault(obj.actionsDialog, [])
+		this.app = stateParent.app
+		this.storeDrawer = stateParent.storeDrawer
+		this.storeModal = stateParent.storeModal
+		this.storeToast = stateParent.storeToast
+		this.user = stateParent.user
 	}
 }
 
-export class StateSurfaceModalEmbed extends StateSurfaceModal {
+export class StateSurfaceModalEmbed extends StateSurfacePopup {
 	embedParentId: string
 	embedType: FieldEmbedType
-	constructor(obj: any) {
+	constructor(stateParent: State, obj: any) {
 		const clazz = 'StateSurfaceModalEmbed'
-		super(obj)
+		super(stateParent, obj)
 		obj = valueOrDefault(obj, {})
 		this.embedParentId = strRequired(obj.embedParentId, clazz, 'embedParentId')
 		this.embedType = required(obj.embedType, clazz, 'embedType')
 	}
 }
 
-export enum StateTarget {
-	dashboard = 'dashboard',
-	feature = 'feature',
-	page = 'page'
+export enum StateTriggerToken {
+	componentContentCustom = 'componentContentCustom',
+	componentContentForm = 'componentContentForm',
+	homeApp = 'homeApp',
+	homeDashboard = 'dashboard',
+	listDownload = 'listDownload'
 }

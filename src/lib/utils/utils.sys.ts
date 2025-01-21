@@ -36,6 +36,7 @@ export class CodeAction {
 
 export enum CodeActionType {
 	// auth
+	authOpen = 'authOpen',
 	page = 'page',
 	resendCode = 'resendCode',
 	submit = 'submit',
@@ -71,12 +72,13 @@ export enum CodeActionType {
 	modalDone = 'modalDone',
 	modalEmbed = 'modalEmbed',
 	modalSelectOpen = 'modalSelectOpen',
-	modalSelectSurface = 'modalSelectSurface',
 
 	// nav
 	navBack = 'navBack',
 	navCrumbs = 'navCrumbs',
+	navHome = 'navHome',
 	navMenuOpen = 'navMenuOpen',
+	navPage = 'navPage',
 	navRow = 'navRow',
 	navTab = 'navTab',
 	openNode = 'openNode',
@@ -89,9 +91,9 @@ export enum CodeActionType {
 }
 
 export enum CodeActionClass {
+	ct_sys_code_action_class_do = 'ct_sys_code_action_class_do',
 	ct_sys_code_action_class_do_embed = 'ct_sys_code_action_class_do_embed',
 	ct_sys_code_action_class_do_field_auth = 'ct_sys_code_action_class_do_field_auth',
-	ct_sys_code_action_class_do_group_item = 'ct_sys_code_action_class_do_group_item',
 	ct_sys_code_action_class_modal = 'ct_sys_code_action_class_modal',
 	ct_sys_code_action_class_nav = 'ct_sys_code_action_class_nav',
 	ct_sys_code_action_class_utils = 'ct_sys_code_action_class_utils'

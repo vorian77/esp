@@ -10,7 +10,7 @@
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { State, StatePacket, StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
+	import { State, StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
 	import { TokenAppDo, TokenAppUserActionConfirmType } from '$utils/types.token'
 	import { flip } from 'svelte/animate'
 	import { error } from '@sveltejs/kit'

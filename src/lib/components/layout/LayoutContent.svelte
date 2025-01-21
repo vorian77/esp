@@ -9,7 +9,7 @@
 	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { AppLevelRowStatus } from '$comps/app/types.app.svelte'
-	import { State, StateSurfaceModal } from '$comps/app/types.appState.svelte'
+	import { State, StateSurfacePopup } from '$comps/app/types.appState.svelte'
 	import ContentFormDetailApp from '$comps/form/ContentFormDetailApp.svelte'
 	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
 	import ContentFormListApp from '$comps/form/ContentFormListApp.svelte'

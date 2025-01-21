@@ -1,9 +1,13 @@
 <script lang="ts">
-	import { CodeActionType, ContextKey, required } from '$utils/types'
+	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { AppLevel, AppLevelRowStatus } from '$comps/app/types.app.svelte'
-	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
-	import { TokenAppTab, TokenAppUserActionConfirmType } from '$utils/types.token'
+	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import {
+		TokenAppTab,
+		TokenAppStateTriggerAction,
+		TokenAppUserActionConfirmType
+	} from '$utils/types.token'
 	import { DataRecordStatus } from '$utils/types'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -25,14 +29,16 @@
 	)
 
 	function onClick(index: number) {
-		sm.change({
-			confirmType: TokenAppUserActionConfirmType.statusChanged,
-			packet: new StatePacket({
-				actionType: CodeActionType.navTab,
+		sm.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_nav,
+					CodeActionType.navTab
+				),
+				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
 				token: new TokenAppTab({ app: sm.app, index })
-			}),
-			target: StateTarget.feature
-		})
+			})
+		)
 	}
 
 	const classItemCurrent =

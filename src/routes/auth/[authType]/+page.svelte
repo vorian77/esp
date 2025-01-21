@@ -1,10 +1,21 @@
 <script lang="ts">
 	import srcLogo from '$assets/org_logo_sys.png'
 	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
-	import { CodeActionType, ContextKey, Node, userSetId } from '$utils/types'
-	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
+	import {
+		CodeAction,
+		CodeActionClass,
+		CodeActionType,
+		ContextKey,
+		Node,
+		userSetId
+	} from '$utils/types'
+	import { State } from '$comps/app/types.appState.svelte'
 	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
-	import { TokenApiQueryType, TokenAppDataObjName } from '$utils/types.token'
+	import {
+		TokenApiQueryType,
+		TokenAppDataObjName,
+		TokenAppStateTriggerAction
+	} from '$utils/types.token'
 	import { setContext } from 'svelte'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import { goto } from '$app/navigation'
@@ -17,36 +28,46 @@
 
 	const storeDrawer = getDrawerStore()
 	const storeToast = getToastStore()
-	const DEV_MODE = data.environ === 'dev'
+	const IS_DEV_MODE = data.environ === 'dev'
 
 	let sm: State = $derived.by(() => {
-		const authType = data.authType
-		if (authType) {
-			const dataObjects = {
-				login: 'data_obj_auth_login',
-				signup: 'data_obj_auth_signup'
-			}
-			const dataObj = dataObjects[authType]
-			if (!dataObj) {
-				error(404, {
-					file: FILENAME,
-					function: 'constructor',
-					message: `Invalid authType: ${authType}`
-				})
-			}
-			return new State({
-				storeDrawer,
-				storeToast,
-				packet: new StatePacket({
-					actionType: CodeActionType.doOpen,
-					token: new TokenAppDataObjName({
-						dataObjName: dataObj,
-						queryType: TokenApiQueryType.preset
+		return new State({
+			page: '/auth',
+			storeDrawer,
+			storeToast
+		})
+		return undefined
+	})
+
+	$effect(() => {
+		if (sm) {
+			const authType = data.authType
+			if (authType) {
+				const dataObjects = {
+					login: 'data_obj_auth_login',
+					signup: 'data_obj_auth_signup'
+				}
+				const dataObj = dataObjects[authType]
+				if (!dataObj) {
+					error(404, {
+						file: FILENAME,
+						function: 'constructor',
+						message: `Invalid authType: ${authType}`
 					})
-				}),
-				target: StateTarget.feature
-			})
-			return undefined
+				}
+				sm.triggerAction(
+					new TokenAppStateTriggerAction({
+						codeAction: CodeAction.init(
+							CodeActionClass.ct_sys_code_action_class_do,
+							CodeActionType.doOpen
+						),
+						token: new TokenAppDataObjName({
+							dataObjName: dataObj,
+							queryType: TokenApiQueryType.preset
+						})
+					})
+				)
+			}
 		}
 	})
 
@@ -69,7 +90,7 @@
 			<RootLayoutApp {sm} />
 		{/if}
 
-		{#if DEV_MODE}
+		{#if IS_DEV_MODE}
 			<button
 				type="button"
 				class="btn btn-action variant-filled-secondary w-full"

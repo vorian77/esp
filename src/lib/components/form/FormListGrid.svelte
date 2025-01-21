@@ -1,16 +1,16 @@
 <script lang="ts">
 	import {
 		State,
-		StatePacket,
 		StateSurfaceEmbedShell,
 		StateSurfaceModalEmbed,
-		StateTarget
+		StateTriggerToken
 	} from '$comps/app/types.appState.svelte'
 	import {
 		TokenApiUserPref,
 		TokenAppDo,
 		TokenAppModalSelect,
 		TokenAppModalReturnType,
+		TokenAppStateTriggerAction,
 		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
 	import {
@@ -26,6 +26,8 @@
 	import 'ag-grid-charts-enterprise'
 	import { LicenseManager } from 'ag-grid-charts-enterprise'
 	import {
+		CodeAction,
+		CodeActionClass,
 		CodeActionType,
 		ContextKey,
 		DataManager,
@@ -80,11 +82,11 @@
 	let isSelect = $derived(sm instanceof StateSurfaceModalEmbed)
 
 	$effect(() => {
-		const packet = sm.consume(CodeActionType.doListDownload)
-		if (packet)
-			(async () => {
+		if (sm.consumeTriggerToken(StateTriggerToken.listDownload)) {
+			;(async () => {
 				await gridDownload()
 			})()
+		}
 	})
 
 	let gridOptions: GridManagerOptions | undefined = $state(
@@ -343,10 +345,13 @@
 					: [event.data[fieldName]]
 			const parms = fieldProcess.linkItemsSource.getGridParms()
 
-			sm.change({
-				confirmType: TokenAppUserActionConfirmType.none,
-				packet: new StatePacket({
-					actionType: CodeActionType.modalSelectOpen,
+			sm.triggerAction(
+				new TokenAppStateTriggerAction({
+					codeAction: CodeAction.init(
+						CodeActionClass.ct_sys_code_action_class_modal,
+						CodeActionType.modalSelectOpen
+					),
+					codeConfirmType: TokenAppUserActionConfirmType.none,
 					token: new TokenAppModalSelect({
 						columnDefs: parms.columnDefs,
 						fModalClose,
@@ -357,9 +362,8 @@
 						selectLabel: fieldProcess.colDO.label,
 						sortModel: parms.sortModel
 					})
-				}),
-				target: StateTarget.feature
-			})
+				})
+			)
 		}
 
 		async function fModalClose(returnType: TokenAppModalReturnType, returnData?: ParmsValues) {

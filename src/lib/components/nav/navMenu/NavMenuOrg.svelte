@@ -16,7 +16,7 @@
 	<div class="flex items-center">
 		<button
 			class="flex-none w-14 hover:-translate-y-0.5 transition-transform"
-			onclick={data.navMenu.toggleOpen}
+			onclick={data.navMenu.openToggle}
 		>
 			{#if data.user.org.urlLogo}
 				<img src={data.user.org.urlLogo} />
@@ -24,14 +24,16 @@
 		</button>
 
 		{#if data.navMenu.isOpen}
-			<div class="text-sm ml-1">
-				<span in:fade={data.navMenu.fadeIn} out:fade={data.navMenu.fadeOut}>
-					{data.user.org.appName}
-				</span>
-			</div>
+			<button onclick={data.navMenu.openToggle}>
+				<div class="text-sm ml-1">
+					<span in:fade={data.navMenu.fadeIn} out:fade={data.navMenu.fadeOut}>
+						{data.user.org.appName}
+					</span>
+				</div>
+			</button>
 
 			<div class="flex-none w-6 text-end">
-				<button onclick={data.navMenu.toggleOpen}>
+				<button onclick={data.navMenu.openToggle}>
 					<div class={data.navMenu.isOpen ? '' : 'rotate-180'}>
 						<Icon
 							props={new IconProps({
@@ -47,5 +49,6 @@
 			</div>
 		{/if}
 	</div>
+
 	<hr class="my-2" />
 {/if}

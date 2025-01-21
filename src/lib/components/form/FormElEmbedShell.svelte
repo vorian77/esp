@@ -10,8 +10,7 @@
 	import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 	import {
 		State,
-		StateLayoutComponent,
-		StatePacket,
+		StateComponentLayout,
 		StateSurfaceEmbedShell
 	} from '$comps/app/types.appState.svelte'
 	import { TokenAppUserActionConfirmType } from '$utils/types.token'
@@ -37,7 +36,7 @@
 	// let component: string
 	// let currTab: AppLevelTab
 
-	field.stateShell.setfChangeCallback((obj: any) => {
+	field.stateShell.setfChangeCallback((obj: DataRecord) => {
 		sm.fChangeCallback(obj)
 	})
 

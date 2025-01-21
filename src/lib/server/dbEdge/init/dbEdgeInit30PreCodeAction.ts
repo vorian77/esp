@@ -48,103 +48,103 @@ function initCodeActionsDoFieldAuth(init: InitDb) {
 function initCodeActionsDoGroupItem(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doDetailDelete',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doDetailMigrate',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doDetailNew',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doDetailProcessExecute',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doDetailSave',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doDetailSaveAs',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doEmbedListConfigEdit',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doEmbedListConfigNew',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doEmbedListEditParmValue',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doEmbedListSelect',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doListDetailEdit',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doListDetailNew',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doListDownload',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doListSelfRefresh',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doListSelfSave',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doOpen',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_group_item',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doSaveCancel',
 		order: 0
 	})
@@ -175,13 +175,6 @@ function initCodeActionsModal(init: InitDb) {
 		name: 'modalSelectOpen',
 		order: 0
 	})
-
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_modal',
-		name: 'modalSelectSurface',
-		order: 0
-	})
 }
 
 function initCodeActionsNav(init: InitDb) {
@@ -200,7 +193,19 @@ function initCodeActionsNav(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
 		codeType: 'ct_sys_code_action_class_nav',
+		name: 'navHome',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_nav',
 		name: 'navMenuOpen',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_nav',
+		name: 'navPage',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
@@ -240,12 +245,6 @@ function initCodeActionsUtils(init: InitDb) {
 		owner: 'sys_system_old',
 		codeType: 'ct_sys_code_action_class_utils',
 		name: 'none',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_utils',
-		name: 'page',
 		order: 0
 	})
 }

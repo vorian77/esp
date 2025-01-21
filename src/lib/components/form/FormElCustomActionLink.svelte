@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { ContextKey, DataManager, type DataRecord, required } from '$utils/types'
 	import { getContext } from 'svelte'
-	import { State, StateCodeActionTrigger } from '$comps/app/types.appState.svelte'
+	import { State } from '$comps/app/types.appState.svelte'
+	import { TokenAppStateTriggerAction } from '$utils/types.token'
 	import { FieldCustomActionLink } from '$comps/form/fieldCustom'
 	import { goto } from '$app/navigation'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -17,8 +18,9 @@
 	let prefix = $derived(field.prefix ? field.prefix + ' ' : '')
 
 	async function action() {
-		await sm.triggerCodeAction(
-			new StateCodeActionTrigger(field.codeAction, {
+		await sm.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: field.codeAction,
 				dataRecord: $state.snapshot(dataRecord),
 				value: field.value
 			})

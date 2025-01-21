@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { CodeActionType, ContextKey, required } from '$utils/types'
+	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, required } from '$utils/types'
 	import { getContext } from 'svelte'
-	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
-	import { TokenAppUserActionConfirmType } from '$utils/types.token'
+	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import { TokenAppStateTriggerAction, TokenAppUserActionConfirmType } from '$utils/types.token'
 	import { AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
@@ -15,13 +15,15 @@
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 
 	const back = () => {
-		sm.change({
-			confirmType: TokenAppUserActionConfirmType.statusChanged,
-			packet: new StatePacket({
-				actionType: CodeActionType.navBack
-			}),
-			target: StateTarget.feature
-		})
+		sm.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_nav,
+					CodeActionType.navBack
+				),
+				codeConfirmType: TokenAppUserActionConfirmType.statusChanged
+			})
+		)
 	}
 </script>
 

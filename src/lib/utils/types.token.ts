@@ -1,6 +1,8 @@
 import {
 	booleanOrFalse,
 	booleanRequired,
+	CodeAction,
+	CodeActionType,
 	DataObj,
 	DataObjData,
 	DataObjSort,
@@ -13,7 +15,8 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
-import { State } from '$comps/app/types.appState.svelte'
+import { UserActionConfirm, UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
+import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import { App } from '$comps/app/types.app.svelte'
 import { AppRowActionType } from '$comps/app/types.app.svelte'
 import { Node } from '$comps/app/types.node'
@@ -416,6 +419,25 @@ export class TokenAppRow extends TokenApp {
 	}
 }
 
+export class TokenAppStateTriggerAction extends TokenApp {
+	codeAction: CodeAction
+	codeConfirmType: TokenAppUserActionConfirmType
+	confirm: UserActionConfirmContent
+	data: DataRecord = {}
+	constructor(obj: any) {
+		const clazz = 'TokenAppStateTriggerAction'
+		obj = valueOrDefault(obj, {})
+		super(obj)
+		this.codeAction = obj.codeAction
+		this.codeConfirmType = obj.codeConfirmType || TokenAppUserActionConfirmType.none
+		this.confirm = obj.confirm || new UserActionConfirmContent(obj)
+		this.data.state = obj.state ? obj.state : {}
+		if (obj.dataRecord) this.data.dataRecord = obj.dataRecord
+		if (obj.token) this.data.token = obj.token
+		if (obj.value) this.data.value = obj.value
+	}
+}
+
 export class TokenAppTab extends TokenApp {
 	app: App
 	index: number
@@ -424,6 +446,17 @@ export class TokenAppTab extends TokenApp {
 		super(obj)
 		this.app = required(obj.app, clazz, 'app')
 		this.index = nbrRequired(obj.index, clazz, 'index')
+	}
+}
+
+export class TokenAppUserAction {
+	codeActionType: CodeActionType
+	data: DataRecord
+	sm: State
+	constructor(sm: State, codeActionType: CodeActionType, data: DataRecord = {}) {
+		this.codeActionType = codeActionType
+		this.data = data
+		this.sm = sm
 	}
 }
 

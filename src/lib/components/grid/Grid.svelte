@@ -55,7 +55,7 @@
 	import { ParmsValues } from '$utils/types'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
-	import { State, StatePacket, StateSurfaceModal } from '$comps/app/types.appState.svelte'
+	import { State, StateSurfacePopup } from '$comps/app/types.appState.svelte'
 	import ListFilter from '$comps/form/ListFilter.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import { error } from '@sveltejs/kit'

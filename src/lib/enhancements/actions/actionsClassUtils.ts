@@ -1,6 +1,11 @@
-import { State, StateCodeAction } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.appState.svelte'
+import { userActionError } from '$comps/other/types.userAction.svelte'
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { TokenApiQueryData } from '$utils/types.token'
+import {
+	TokenApiQueryData,
+	TokenAppStateTriggerAction,
+	TokenAppUserAction
+} from '$utils/types.token'
 import {
 	CodeActionType,
 	DataObjData,
@@ -13,13 +18,12 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionsClassUtils.ts'
 
-const errorFunction = (codeActionType: CodeActionType) => `${FILENAME}.${codeActionType}`
-
-export default async function action(parms: StateCodeAction) {
-	switch (parms.actionType) {
+export default async function action(sm: State, parms: TokenAppStateTriggerAction) {
+	const actionType = parms.codeAction.actionType
+	switch (actionType) {
 		case CodeActionType.dbexpression:
-			const expr = strRequired(parms.data.value, errorFunction(parms.actionType), 'expr')
-			await processDbExpr(parms.sm, expr)
+			const expr = strRequired(parms.data.value, userActionError(FILENAME, actionType), 'expr')
+			await processDbExpr(sm, expr)
 			break
 
 		case CodeActionType.none:
@@ -29,7 +33,7 @@ export default async function action(parms: StateCodeAction) {
 			error(500, {
 				file: FILENAME,
 				function: 'default',
-				message: `No case defined for codeActionType: ${parms.actionType}`
+				message: `No case defined for ationType: ${actionType}`
 			})
 	}
 }

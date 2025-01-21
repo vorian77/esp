@@ -1,6 +1,6 @@
 <script lang="ts">
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
-	import { StateSurfaceModal } from '$comps/app/types.appState.svelte'
+	import { StateSurfacePopup } from '$comps/app/types.appState.svelte'
 	import { TokenAppModalReturn, TokenAppModalReturnType } from '$utils/types.token'
 	import { getModalStore } from '@skeletonlabs/skeleton'
 	import {
@@ -8,6 +8,7 @@
 		ContextKey,
 		DataObjAction,
 		DataObjCardinality,
+		type DataRecord,
 		ParmsValuesType
 	} from '$utils/types'
 	import { getContext } from 'svelte'
@@ -20,7 +21,7 @@
 
 	let { parent } = $props()
 
-	let sm: StateSurfaceModal = $state($storeModal[0] ? $storeModal[0].meta.sm : undefined)
+	let sm: StateSurfacePopup = $state($storeModal[0] ? $storeModal[0].meta.sm : undefined)
 
 	let rowCount: number = $derived.by(() => {
 		let rowCount = undefined
@@ -32,7 +33,7 @@
 		return rowCount
 	})
 
-	sm.setfChangeCallback((obj: any) => {
+	sm.setfChangeCallback((obj: DataRecord) => {
 		sm.packet = obj.packet
 	})
 

@@ -1,9 +1,13 @@
 <script lang="ts">
-	import { CodeActionType, ContextKey, required } from '$utils/types'
+	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { type AppLevelRowStatus, AppRowActionType } from '$comps/app/types.app.svelte'
-	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
-	import { TokenAppRow, TokenAppUserActionConfirmType } from '$utils/types.token'
+	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import {
+		TokenAppRow,
+		TokenAppStateTriggerAction,
+		TokenAppUserActionConfirmType
+	} from '$utils/types.token'
 	import NavRowAction from '$comps/nav/NavRowAction.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -16,14 +20,16 @@
 	let rowStatus: AppLevelRowStatus = $derived(sm.app.getRowStatus())
 
 	function onChange(rowAction: AppRowActionType) {
-		sm.change({
-			confirmType: TokenAppUserActionConfirmType.statusChanged,
-			packet: new StatePacket({
-				actionType: CodeActionType.navRow,
+		sm.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_nav,
+					CodeActionType.navRow
+				),
+				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
 				token: new TokenAppRow({ rowAction })
-			}),
-			target: StateTarget.feature
-		})
+			})
+		)
 	}
 </script>
 

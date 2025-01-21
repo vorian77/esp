@@ -1,7 +1,20 @@
-import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
-import { CodeAction, DataManager, DataObj, DataObjSaveMode, debug, required } from '$utils/types'
-import { TokenAppDo, TokenAppUserActionConfirmType } from '$utils/types.token'
-import { memberOfEnum, valueOrDefault } from '$utils/types'
+import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+import {
+	CodeAction,
+	CodeActionType,
+	DataManager,
+	DataObj,
+	DataObjSaveMode,
+	debug,
+	memberOfEnum,
+	required,
+	valueOrDefault
+} from '$utils/types'
+import {
+	TokenAppDo,
+	TokenAppStateTriggerAction,
+	TokenAppUserActionConfirmType
+} from '$utils/types.token'
 import { FieldColor } from '$comps/form/field'
 import { RawDataObjAction, RawUserAction } from '$comps/dataObj/types.rawDataObj'
 import { error } from '@sveltejs/kit'
@@ -30,18 +43,18 @@ export class UserAction {
 		const confirms = this.actionConfirms
 		switch (confirms.length) {
 			case 0:
-				return { confirmType: TokenAppUserActionConfirmType.none, confirm: undefined }
+				return { codeConfirmType: TokenAppUserActionConfirmType.none, confirm: undefined }
 			case 1:
-				return { confirmType: confirms[0].codeConfirmType, confirm: confirms[0].confirm }
+				return { codeConfirmType: confirms[0].codeConfirmType, confirm: confirms[0].confirm }
 			default:
 				for (let i = 0; i < confirms.length; i++) {
 					const confirmAction = confirms[i]
 					const sg = new UserActionStatusGroup()
 					sg.addStatus(sm, dataObj, confirmAction.codeTriggerConfirmConditional, true)
 					if (sg.isTriggered()) {
-						const confirmType = confirmAction.codeConfirmType
+						const codeConfirmType = confirmAction.codeConfirmType
 						const confirm = confirmAction.confirm
-						return { confirmType, confirm }
+						return { codeConfirmType, confirm }
 					}
 				}
 				error(500, {
@@ -68,19 +81,18 @@ export class UserAction {
 	}
 
 	async trigger(sm: State, dataObj: DataObj) {
-		const { confirmType, confirm } = this.getConfirm(sm, dataObj)
-		sm.change({
-			confirm,
-			confirmType,
-			packet: new StatePacket({
-				actionType: this.codeAction.actionType,
+		const { codeConfirmType, confirm } = this.getConfirm(sm, dataObj)
+		await sm.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: this.codeAction,
+				codeConfirmType,
+				confirm,
 				token: new TokenAppDo({
 					dataObj,
 					sm
 				})
-			}),
-			target: StateTarget.feature
-		})
+			})
+		)
 	}
 }
 
@@ -125,6 +137,37 @@ export class UserActionConfirmContent {
 		)
 		this.title = valueOrDefault(obj.confirmTitle, 'Discard Changes')
 	}
+}
+
+export const userActionError = (filename: string, actionType: CodeActionType) =>
+	`${filename}.${actionType}`
+
+export function userActionStateChange(
+	sm: State,
+	triggerTokens: StateTriggerToken[],
+	parms: TokenAppStateTriggerAction
+) {
+	sm.change({ ...parms.data.state, triggerTokens })
+}
+
+export function userActionStateChangeHomeAppCustom(sm: State, parms: TokenAppStateTriggerAction) {
+	userActionStateChange(
+		sm,
+		[StateTriggerToken.homeApp, StateTriggerToken.componentContentCustom],
+		parms
+	)
+}
+
+export function userActionStateChangeHomeAppForm(sm: State, parms: TokenAppStateTriggerAction) {
+	userActionStateChange(
+		sm,
+		[StateTriggerToken.homeApp, StateTriggerToken.componentContentForm],
+		parms
+	)
+}
+
+export function userActionStateChangeHomeDashboard(sm: State, parms: TokenAppStateTriggerAction) {
+	userActionStateChange(sm, [StateTriggerToken.homeDashboard], parms)
 }
 
 export class UserActionShow {

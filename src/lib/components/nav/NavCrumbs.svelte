@@ -1,9 +1,13 @@
 <script lang="ts">
-	import { CodeActionType, ContextKey, required } from '$utils/types'
+	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { AppLevelCrumb } from '$comps/app/types.app.svelte'
-	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
-	import { TokenAppIndex, TokenAppUserActionConfirmType } from '$utils/types.token'
+	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import {
+		TokenAppIndex,
+		TokenAppStateTriggerAction,
+		TokenAppUserActionConfirmType
+	} from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/nav/NavCrumbs.svelte'
@@ -12,16 +16,16 @@
 	let crumbsList: AppLevelCrumb[] = $derived(sm.app.getCrumbsList())
 
 	function onClick(index: number) {
-		sm.change({
-			confirmType: TokenAppUserActionConfirmType.statusChanged,
-			packet: new StatePacket({
-				actionType: CodeActionType.navCrumbs,
-				token: new TokenAppIndex({
-					index
-				})
-			}),
-			target: StateTarget.feature
-		})
+		sm.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_nav,
+					CodeActionType.navCrumbs
+				),
+				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+				token: new TokenAppIndex({ index })
+			})
+		)
 	}
 </script>
 

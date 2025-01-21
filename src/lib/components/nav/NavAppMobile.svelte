@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { State, StateTarget } from '$comps/app/types.appState.svelte'
-	import { ContextKey, required } from '$utils/types'
-	import { TokenAppUserActionConfirmType } from '$utils/types.token'
+	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, required } from '$utils/types'
+	import { TokenAppStateTriggerAction, TokenAppUserActionConfirmType } from '$utils/types.token'
 	import { getContext } from 'svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
@@ -15,10 +15,15 @@
 	let appName = sm?.user?.org?.appName || DEFAULT_APP_NAME
 
 	const goHome = () => {
-		sm.change({
-			confirmType: TokenAppUserActionConfirmType.statusChanged,
-			target: StateTarget.dashboard
-		})
+		sm.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_nav,
+					CodeActionType.navHome
+				),
+				codeConfirmType: TokenAppUserActionConfirmType.statusChanged
+			})
+		)
 	}
 </script>
 

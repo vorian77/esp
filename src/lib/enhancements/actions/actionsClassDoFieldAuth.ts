@@ -1,34 +1,49 @@
-import { State, StateCodeAction, StatePacket } from '$comps/app/types.appState.svelte'
-import { FieldCustomAction } from '$comps/form/fieldCustom'
-import type { DataRecord, ResponseBody } from '$utils/types'
-import { CodeActionType, required, strRequired, userSetId } from '$utils/types'
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { State } from '$comps/app/types.appState.svelte'
+import {
+	CodeAction,
+	CodeActionClass,
+	CodeActionType,
+	required,
+	strRequired,
+	userSetId
+} from '$utils/types'
+import { userActionError } from '$comps/other/types.userAction.svelte'
 import {
 	TokenApiDbDataObjSource,
 	TokenApiQuery,
 	TokenApiQueryData,
 	TokenApiQueryType,
 	TokenApiSysSendText,
-	TokenAppDataObjName
+	TokenAppDataObjName,
+	TokenAppStateTriggerAction,
+	TokenAppUserAction,
+	TokenAppUserActionConfirmType
 } from '$utils/types.token'
+import { FieldCustomAction } from '$comps/form/fieldCustom'
+import type { DataRecord, ResponseBody } from '$utils/types'
+import { apiFetch, ApiFunction } from '$routes/api/api'
 import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionClassDoFieldAuth.ts'
-const errorFunction = (codeActionType: CodeActionType) => `${FILENAME}.${codeActionType}`
 
 let verifyFrom = ''
 let verifyData: DataRecord = {}
 let authSecurityCodePhone = ''
 let authSecurityCode = 0
 
-export default async function action(parms: StateCodeAction) {
-	const dataRecord = required(parms.data.dataRecord, errorFunction(parms.actionType), 'dataRecord')
-	const value = strRequired(parms.data.value, errorFunction(parms.actionType), 'value')
+export default async function action(sm: State, parms: TokenAppStateTriggerAction) {
+	const actionType = parms.codeAction.actionType
+	const dataRecord = required(
+		parms.data.dataRecord,
+		userActionError(FILENAME, actionType),
+		'dataRecord'
+	)
+	const value = strRequired(parms.data.value, userActionError(FILENAME, actionType), 'value')
 
-	switch (parms.actionType) {
+	switch (actionType) {
 		case CodeActionType.page:
-			await changeDataObj(parms.sm, value)
+			await changeDataObj(sm, value)
 			break
 
 		case CodeActionType.resendCode:
@@ -47,7 +62,7 @@ export default async function action(parms: StateCodeAction) {
 					verifyFrom = value
 					verifyData = dataRecord
 					await sendCode(dataRecord['userName'])
-					await changeDataObj(parms.sm, 'data_obj_auth_verify_phone_mobile')
+					await changeDataObj(sm, 'data_obj_auth_verify_phone_mobile')
 					break
 
 				case 'data_obj_auth_verify_phone_mobile':
@@ -72,7 +87,7 @@ export default async function action(parms: StateCodeAction) {
 			error(500, {
 				file: FILENAME,
 				function: 'default',
-				message: `No case defined for actionType: ${parms.actionType}`
+				message: `No case defined for actionType: ${actionType}`
 			})
 	}
 
@@ -110,10 +125,8 @@ export default async function action(parms: StateCodeAction) {
 					alert(msgFail)
 					return
 				}
-				parms.sm.storeDrawer.close()
+				sm.storeDrawer.close()
 				await userSetId(resultRecord['userId'])
-				goto('/home')
-
 				break
 
 			case 'data_obj_auth_signup':
@@ -128,7 +141,7 @@ export default async function action(parms: StateCodeAction) {
 					verifyFrom = 'data_obj_auth_signup_update'
 					verifyData = dataRecord
 					await sendCode(dataRecord['userName'])
-					await changeDataObj(parms.sm, 'data_obj_auth_verify_phone_mobile')
+					await changeDataObj(sm, 'data_obj_auth_verify_phone_mobile')
 				}
 				break
 
@@ -143,15 +156,18 @@ export default async function action(parms: StateCodeAction) {
 }
 
 async function changeDataObj(sm: State, dataObjName: string) {
-	sm.changeProperties({
-		packet: new StatePacket({
-			actionType: CodeActionType.doOpen,
+	sm.triggerAction(
+		new TokenAppStateTriggerAction({
+			codeAction: CodeAction.init(
+				CodeActionClass.ct_sys_code_action_class_do,
+				CodeActionType.doOpen
+			),
 			token: new TokenAppDataObjName({
 				dataObjName,
 				queryType: TokenApiQueryType.preset
 			})
 		})
-	})
+	)
 }
 
 async function sendCode(phoneMobile: string) {

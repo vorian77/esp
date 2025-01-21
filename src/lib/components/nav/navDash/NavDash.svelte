@@ -1,12 +1,15 @@
 <script lang="ts">
-	import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
+	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import {
 		TokenApiQueryData,
 		TokenAppNode,
+		TokenAppStateTriggerAction,
 		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
 	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import {
+		CodeAction,
+		CodeActionClass,
 		CodeActionType,
 		ContextKey,
 		DataObjComponent,
@@ -96,18 +99,18 @@
 	}
 	async function onClick(task: UserResourceTask, parms: DataRecord | undefined = undefined) {
 		if ((task.targetDataObjId || task.targetNodeObjId) && !task.dataObjPage) {
-			console.log('NavDash.onClick', task)
-
 			sm.parmsState.update(parms)
 			const token = task.getTokenNode(sm.user)
-			sm.change({
-				confirmType: TokenAppUserActionConfirmType.statusChanged,
-				packet: new StatePacket({
-					actionType: CodeActionType.openNode,
+			sm.triggerAction(
+				new TokenAppStateTriggerAction({
+					codeAction: CodeAction.init(
+						CodeActionClass.ct_sys_code_action_class_nav,
+						CodeActionType.openNode
+					),
+					codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
 					token
-				}),
-				target: StateTarget.feature
-			})
+				})
+			)
 		}
 	}
 </script>

@@ -1,5 +1,7 @@
 import {
 	booleanOrDefault,
+	CodeAction,
+	CodeActionClass,
 	CodeActionType,
 	memberOfEnum,
 	Node,
@@ -10,8 +12,12 @@ import {
 	UserResourceTaskRenderType,
 	valueOrDefault
 } from '$utils/types'
-import { State, StatePacket, StateTarget } from '$comps/app/types.appState.svelte'
-import { TokenAppNode, TokenAppUserActionConfirmType } from '$utils/types.token'
+import { State } from '$comps/app/types.appState.svelte'
+import {
+	TokenAppNode,
+	TokenAppStateTriggerAction,
+	TokenAppUserActionConfirmType
+} from '$utils/types.token'
 import { adminDbReset } from '$utils/utils.sys'
 import { error } from '@sveltejs/kit'
 
@@ -108,35 +114,47 @@ export class NavMenuData {
 					break
 
 				case NavMenuContentType.page:
-					this.sm.change({
-						confirmType: TokenAppUserActionConfirmType.statusChanged,
-						page: content.value,
-						target: StateTarget.page
-					})
+					this.sm.triggerAction(
+						new TokenAppStateTriggerAction({
+							codeAction: CodeAction.init(
+								CodeActionClass.ct_sys_code_action_class_nav,
+								CodeActionType.navPage
+							),
+							codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+							value: content.value
+						})
+					)
 					break
+
 				case NavMenuContentType.node:
 					node = content.value as Node
-					this.sm.change({
-						confirmType: TokenAppUserActionConfirmType.statusChanged,
-						// parmsState: { programId: this.getProgramId(node) },
-						packet: new StatePacket({
-							actionType: CodeActionType.openNode,
+					await this.sm.triggerAction(
+						new TokenAppStateTriggerAction({
+							codeAction: CodeAction.init(
+								CodeActionClass.ct_sys_code_action_class_nav,
+								CodeActionType.openNode
+							),
+							codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+							// parmsState: { programId: this.getProgramId(node) },
 							token: new TokenAppNode({ node })
-						}),
-						target: StateTarget.feature
-					})
+						})
+					)
 					break
+
 				case NavMenuContentType.task:
 					const task: UserResourceTask = content.value as UserResourceTask
-					this.sm.change({
-						confirmType: TokenAppUserActionConfirmType.statusChanged,
-						packet: new StatePacket({
-							actionType: CodeActionType.openNode,
+					await this.sm.triggerAction(
+						new TokenAppStateTriggerAction({
+							codeAction: CodeAction.init(
+								CodeActionClass.ct_sys_code_action_class_nav,
+								CodeActionType.openNode
+							),
+							codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
 							token: task.getTokenNode(this.sm.user)
-						}),
-						target: StateTarget.feature
-					})
+						})
+					)
 					break
+
 				default:
 					error(500, {
 						file: FILENAME,
@@ -144,7 +162,7 @@ export class NavMenuData {
 						message: `No case defined for item type: ${content.codeType}`
 					})
 			}
-			if (this.isOpen) this.toggleOpen(true)
+			if (this.isOpen) this.openToggle()
 		}
 	}
 
@@ -177,20 +195,11 @@ export class NavMenuData {
 		}
 	}
 
-	toggleOpen = (isItemActivate: boolean) => {
+	openToggle = () => {
 		this.isOpen = !this.isOpen
 		this.width = this.isOpen ? this.widthOpen : this.widthClosed
 	}
 }
-
-// getParentNode(nodeNav: NodeNav) {
-// 	return this.listTree.find((n) => n.node.id === nodeNav.parentId)
-// }
-// getProgramId(nodeNav: NodeNav | undefined): string | undefined {
-// 	if (!nodeNav) return undefined
-// 	if (nodeNav.node.type === NodeType.program) return nodeNav.node.id
-// 	return this.getProgramId(this.getParentNode(nodeNav))
-// }
 
 export class NavMenuContent {
 	codeType: NavMenuContentType
@@ -343,7 +352,7 @@ export class NavMenuDataCompItem extends NavMenuDataComp {
 				this.isOpen = !this.isOpen
 			} else {
 				if (!this.isOpen) this.isOpen = !this.isOpen
-				this.navMenu.toggleOpen(false)
+				this.navMenu.openToggle()
 			}
 		} else {
 			await this.navMenu.activateLink(this)
@@ -387,12 +396,12 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 				label: new NavMenuLabel(r.header!)
 			})
 		})
-		// this.addItem({
-		// 	content: new NavMenuContent(NavMenuContentType.functionAsync, this.myPreferences),
-		// 	icon: 'Settings2',
-		// 	isRoot: true,
-		// 	label: new NavMenuLabel('My Preferences')
-		// })
+		this.addItem({
+			content: new NavMenuContent(NavMenuContentType.functionAsync, this.myPreferences),
+			icon: 'Settings2',
+			isRoot: true,
+			label: new NavMenuLabel('My Preferences')
+		})
 		if (['user_sys', '2487985578'].includes(this.user.userName)) {
 			this.addItem({
 				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminResetDb),
@@ -411,7 +420,10 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 	}
 
 	async myPreferences(navMenu: NavMenuData) {
-		await navMenu.sm.openModalDataObj('data_obj_auth_user_pref_type', async () => {
+		// await navMenu.sm.openModalDataObj('data_obj_auth_user_pref_type', async () => {
+		// 	await navMenu.sm.resetUser(true)
+		// })
+		await navMenu.sm.openModalDataObj('data_obj_task_sys_auth_my_account', async () => {
 			await navMenu.sm.resetUser(true)
 		})
 	}

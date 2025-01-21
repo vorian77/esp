@@ -2016,9 +2016,8 @@ function initTaskSsrLegal(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: { class: 'ct_sys_code_action_class_utils', type: 'page' },
-					label: 'Decline',
-					value: '/'
+					action: { class: 'ct_sys_code_action_class_nav', type: 'navHome' },
+					label: 'Decline'
 				},
 				isDisplayable: true,
 				orderDisplay: 30,

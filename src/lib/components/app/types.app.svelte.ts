@@ -1,5 +1,6 @@
 import {
 	CodeAction,
+	CodeActionClass,
 	CodeActionType,
 	ContextKey,
 	booleanOrFalse,
@@ -30,6 +31,7 @@ import {
 	TokenAppModalEmbedField,
 	TokenAppNode,
 	TokenAppRow,
+	TokenAppStateTriggerAction,
 	TokenAppTab,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
@@ -40,7 +42,7 @@ import {
 } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { queryTypeTab } from '$comps/app/types.appQuery'
-import { State, StateTarget } from '$comps/app/types.appState.svelte'
+import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/nav/types.app.ts'
@@ -286,10 +288,15 @@ export class App {
 	popLevel(sm: State) {
 		this.levels.pop()
 		if (this.levels.length === 0) {
-			sm.change({
-				confirmType: TokenAppUserActionConfirmType.statusChanged,
-				target: StateTarget.dashboard
-			})
+			sm.triggerAction(
+				new TokenAppStateTriggerAction({
+					codeAction: CodeAction.init(
+						CodeActionClass.ct_sys_code_action_class_nav,
+						CodeActionType.navHome
+					),
+					codeConfirmType: TokenAppUserActionConfirmType.statusChanged
+				})
+			)
 		}
 		return this
 	}

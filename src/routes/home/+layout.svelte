@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { User } from '$utils/types'
-	import { State, StateLayoutComponent, StateTarget } from '$comps/app/types.appState.svelte'
+	import { State, StateComponentLayout, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import { getDrawerStore, getModalStore, getToastStore } from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import NavDash from '$comps/nav/navDash/NavDash.svelte'
@@ -13,42 +13,44 @@
 	import { ContextKey } from '$utils/utils.sys'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	let { children, data }: { children: any, data: PageData } = $props()
+	let { data }: { data: PageData } = $props()
 
-	const DEV_MODE = data.environ === 'dev'
+	const IS_DEV_MODE = data.environ === 'dev'
 	const FILENAME = '/$routes/home/+layout.svelte'
-
-	// global data manager
-	let sm: State = $state(
-		new State({
-			fExitApp: () => goto('/'),
-			fChangeCallback: stateChangeCallback,
-			layoutComponent: StateLayoutComponent.layoutApp,
-			storeDrawer: getDrawerStore(),
-			storeModal: getModalStore(),
-			storeToast: getToastStore(),
-			target: StateTarget.dashboard,
-			user: new User(data.rawUser)
-		})
-	)
-	setContext(ContextKey.stateManager, sm)
 
 	let innerWidth = $state(0)
 	let isMobile = $derived(innerWidth <= 640)
 	let isMobileMenuHide = $state(true)
+	let triggerToken: StateTriggerToken = $state()
+
+	let sm: State = $state(
+		new State({
+			componentLayout: StateComponentLayout.layoutApp,
+			page: '/home',
+			storeDrawer: getDrawerStore(),
+			storeModal: getModalStore(),
+			storeToast: getToastStore(),
+			triggerTokens: [StateTriggerToken.homeDashboard],
+			user: new User(data.rawUser)
+		})
+	)
+	setContext(ContextKey.stateManager, sm)
 	let navMenu: NavMenuData = $state(new NavMenuData({ sm }))
-	let stateTarget = $derived(sm.target)
 
-	async function stateChangeCallback(obj: any) {
-		sm.changeProperties(obj)
-
-		if (isMobile) {
-			if (!isMobileMenuHide) toggleMobileMenuHide()
-		} else {
-			if (stateTarget === StateTarget.dashboard && !navMenu.isOpen) navMenu.toggleOpen()
+	$effect(() => {
+		if (sm.consumeTriggerToken(StateTriggerToken.homeDashboard)) {
+			triggerToken = StateTriggerToken.homeDashboard
+			if (isMobile) {
+				if (!isMobileMenuHide) toggleMobileMenuHide()
+			} else {
+				if (triggerToken === StateTriggerToken.homeDashboard && !navMenu.isOpen) {
+					navMenu.openToggle()
+				}
+			}
+		} else if (sm.consumeTriggerToken(StateTriggerToken.homeApp)) {
+			triggerToken = StateTriggerToken.homeApp
 		}
-		if (sm.page !== $page.route.id) goto(sm.page)
-	}
+	})
 
 	function toggleMobileMenuHide() {
 		isMobileMenuHide = !isMobileMenuHide
@@ -71,13 +73,13 @@
 		</div>
 		<div id="layout-main-content" class="grow">
 			{#if $page.route.id === '/home'}
-				{#if stateTarget === StateTarget.dashboard}
+				{#if triggerToken === StateTriggerToken.homeDashboard}
 					<NavDash />
-				{:else if stateTarget === StateTarget.feature}
+				{:else if triggerToken === StateTriggerToken.homeApp}
 					<RootLayoutApp {sm} />
 				{/if}
 			{:else}
-				 {@render children()}
+				<slot />
 			{/if}
 		</div>
 	</div>
