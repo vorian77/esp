@@ -144,11 +144,19 @@ function initDataObj(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeFieldElement: 'toggle',
+				columnName: 'isInitialValidationSilent',
+				isDisplayable: true,
+				orderDisplay: 74,
+				orderDefine: 74,
+				indexTable: 0
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 74,
-				orderDefine: 74
+				orderDisplay: 76,
+				orderDefine: 76
 			},
 			{
 				codeAccess: 'optional',
@@ -1000,10 +1008,18 @@ function initDataObjColumn(init: InitDb) {
 			// },
 			{
 				codeAccess: 'optional',
-				columnName: 'customColLabel',
+				columnName: 'detailsSummary',
 				isDisplayable: true,
 				orderDisplay: 500,
 				orderDefine: 500,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'customColLabel',
+				isDisplayable: true,
+				orderDisplay: 505,
+				orderDefine: 505,
 				indexTable: 0
 			},
 			{

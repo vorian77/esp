@@ -60,11 +60,11 @@
 	async function getDataTask(task: UserResourceTask) {
 		task.data = {}
 		task.setShow(await getDataShow(task))
-		if (task.isShow) {
-			await task.loadPage(sm)
-			if (task.dataObjPage) dm.nodeAdd(task.dataObjPage)
-			task.data = await getDataStatus(task)
-		}
+		// if (task.isShow) {
+		await task.loadPage(sm)
+		if (task.dataObjPage) dm.nodeAdd(task.dataObjPage)
+		task.data = await getDataStatus(task)
+		// }
 	}
 
 	async function getDataShow(task: UserResourceTask) {
@@ -121,25 +121,27 @@
 	{#if tasks.length === 0}
 		<h1 class="p-4">No tasks to complete or widgets configured.</h1>
 	{:else}
-		<button class="btn btn-action variant-ghost-primary" onclick={() => (promise = getData())}
-			>Refresh Dashboard</button
-		>
-		<div class="h-full flex flex-col overflow-y-auto gap-4 p-4">
+		<div class="h-full flex flex-col overflow-y-auto gap-3 p-4 bg-neutral-100">
+			<button class="btn btn-action variant-ghost-primary" onclick={() => (promise = getData())}
+				>Refresh Dashboard</button
+			>
 			{#each tasks as task}
 				<!-- {#if task.isShow} -->
 				{@const isButton = !task.dataObjPage && !task.hasAltOpen}
 				<div
-					class="bg-white rounded-lg p-4 flex flex-col items-center border border-gray-200 shawdow-xl {isButton
+					class="bg-white rounded-lg p-4 flex flex-col items-center border shadow-md {isButton
 						? 'cursor-pointer hover:bg-gray-100'
 						: ''}"
 					onclick={task.hasAltOpen ? undefined : () => onClick(task)}
 				>
 					{#if task.dataObjPage}
-						{@const pageParms = {
-							component: DataObjComponent.FormDetail,
-							dataObjId: task.pageDataObjId
-						}}
-						<FormDetail parms={pageParms} />
+						<FormDetail
+							parms={{
+								component: DataObjComponent.FormDetail,
+								dataObjId: task.pageDataObjId,
+								isFixedHeight: true
+							}}
+						/>
 					{:else}
 						{@const Component = task.codeStatusObjName
 							? StatusType[task.codeStatusObjName]

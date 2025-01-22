@@ -27,7 +27,6 @@ export namespace sys_user {
     "pageDataObj"?: sys_core.SysDataObj | null;
     "targetDataObj"?: sys_core.SysDataObj | null;
     "targetNodeObj"?: sys_core.SysNodeObj | null;
-    "btnStyle"?: string | null;
     "description"?: string | null;
     "exprShow"?: string | null;
     "exprStatus"?: string | null;
@@ -346,6 +345,7 @@ export namespace sys_core {
   }
   export interface SysDataObj extends SysObj {
     "actionGroup"?: SysDataObjActionGroup | null;
+    "isInitialValidationSilent"?: boolean | null;
     "codeCardinality": SysCode;
     "codeComponent": SysCode;
     "codeDataObjType"?: SysCode | null;
@@ -394,6 +394,7 @@ export namespace sys_core {
   }
   export interface SysDataObjColumn extends sys_user.Mgmt {
     "exprSave"?: string | null;
+    "detailsSummary"?: string | null;
     "codeAction"?: SysCode | null;
     "codeAccess"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
@@ -829,6 +830,7 @@ export namespace sys {
 }
 export namespace sys_db {
   export interface SysColumn extends sys_core.SysObj {
+    "toggleContinueRequiresTrue"?: boolean | null;
     "codeAlignment": sys_core.SysCode;
     "codeDataType": sys_core.SysCode;
     "classProps"?: string | null;

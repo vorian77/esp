@@ -219,6 +219,7 @@ function initDataObjLogin(init: InitDb) {
 		FILTER .userName = userName AND .password = password 
 		`,
 		header: 'Log in',
+		isInitialValidationSilent: true,
 		name: 'data_obj_auth_login',
 		owner: 'sys_system_old',
 		table: 'SysUser',
@@ -322,6 +323,7 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 		)
 		SELECT { userId := user.id }`,
 		header: 'Reset Password',
+		isInitialValidationSilent: true,
 		name: 'data_obj_auth_reset_password_account',
 		owner: 'sys_system_old',
 		table: 'SysUser',
@@ -404,6 +406,7 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 		)
 		SELECT { userId := user.id }`,
 		header: 'Reset Password',
+		isInitialValidationSilent: true,
 		name: 'data_obj_auth_reset_password_login',
 		owner: 'sys_system_old',
 		table: 'SysUser',
@@ -496,6 +499,7 @@ function initDataObjVerify(init: InitDb) {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
+		isInitialValidationSilent: true,
 		name: 'data_obj_auth_verify_phone_mobile',
 		owner: 'sys_system_old',
 		table: 'SysUser',
@@ -573,6 +577,7 @@ function initDataObjSignup(init: InitDb) {
 		codeCardinality: 'detail',
 		exprObject: `SELECT { isNew := NOT EXISTS (SELECT sys_user::SysUser FILTER .userName = <record,str,userName>) }`,
 		header: 'Sign up',
+		isInitialValidationSilent: true,
 		name: 'data_obj_auth_signup',
 		owner: 'sys_system_old',
 		table: 'SysUser',

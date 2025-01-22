@@ -404,6 +404,14 @@ function initColumn(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'toggle',
+				columnName: 'toggleContinueRequiresTrue',
+				isDisplayable: true,
+				orderDisplay: 425,
+				orderDefine: 425,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
 				columnName: 'togglePresetTrue',
 				isDisplayable: true,
 				orderDisplay: 430,

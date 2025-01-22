@@ -60,6 +60,7 @@ export class RawDataObj {
 	header: string
 	id: string
 	isDetailRetrievePreset: boolean
+	isInitialValidationSilent: boolean
 	isListEdit: boolean
 	isListSuppressFilterSort: boolean
 	isListSuppressSelect: boolean
@@ -119,6 +120,7 @@ export class RawDataObj {
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.isDetailRetrievePreset = booleanOrDefault(obj.isDetailRetrievePreset, false)
+		this.isInitialValidationSilent = booleanOrDefault(obj.isInitialValidationSilent, false)
 		this.isListEdit = booleanRequired(obj.isListEdit, clazz, 'isListEdit')
 		this.isListSuppressFilterSort = booleanOrDefault(obj.isListSuppressFilterSort, false)
 		this.isListSuppressSelect = booleanOrDefault(obj.isListSuppressSelect, false)
@@ -405,6 +407,7 @@ export class RawDataObjPropDBFieldEmbed {
 export class RawDataObjPropDisplay extends RawDataObjProp {
 	colDB: RawDBColumn
 	customCol?: RawDataObjPropDisplayCustom
+	detailsSummary?: string
 	fieldColor: FieldColor
 	fieldEmbedListConfig?: RawDataObjPropDisplayEmbedListConfig
 	fieldEmbedListEdit?: RawDataObjPropDisplayEmbedListEdit
@@ -432,6 +435,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		obj = valueOrDefault(obj, {})
 		this.colDB = new RawDBColumn(obj._column)
 		this.customCol = classOptional(RawDataObjPropDisplayCustom, obj._customCol)
+		this.detailsSummary = strOptional(obj.detailsSummary, clazz, 'detailsSummary')
 		this.fieldColor = new FieldColor(obj._codeColor, 'black')
 		this.fieldEmbedListConfig = classOptional(
 			RawDataObjPropDisplayEmbedListConfig,
@@ -594,9 +598,10 @@ export class RawDBColumn {
 	placeHolder?: string
 	rawFieldAlignment?: string
 	spinStep?: string
-	togglePresetTrue?: boolean
+	toggleContinueRequiresTrue: boolean
+	togglePresetTrue: boolean
 	toggleValueFalse?: string
-	toggleValueShow?: boolean
+	toggleValueShow: boolean
 	toggleValueTrue?: string
 	constructor(obj: any) {
 		const clazz = 'RawDBColumn'
@@ -625,6 +630,7 @@ export class RawDBColumn {
 		this.placeHolder = strOptional(obj.placeHolder, clazz, 'placeHolder')
 		this.rawFieldAlignment = strOptional(obj._codeAlignment, clazz, 'rawFieldAlignment')
 		this.spinStep = strOptional(obj.spinStep, clazz, 'spinStep')
+		this.toggleContinueRequiresTrue = booleanOrDefault(obj.toggleContinueRequiresTrue, false)
 		this.togglePresetTrue = booleanOrDefault(obj.togglePresetTrue, false)
 		this.toggleValueFalse = strOptional(obj.toggleValueFalse, clazz, 'toggleValueFalse')
 		this.toggleValueShow = booleanOrDefault(obj.toggleValueShow, false)

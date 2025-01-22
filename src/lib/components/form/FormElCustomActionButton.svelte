@@ -15,7 +15,7 @@
 	let dashboardReset = getContext(ContextKey.dashboardRefresh)
 
 	let dataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
-	let disabled = $derived(!dm.isStatusValid())
+	let disabled = $derived(!dm.isStatusValidNode(parms.dataObjId))
 	let field = $derived(parms.field) as FieldCustomActionButton
 
 	async function action() {

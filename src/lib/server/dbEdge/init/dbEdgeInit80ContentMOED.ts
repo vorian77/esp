@@ -1511,7 +1511,7 @@ function initTaskSsrApp(init: InitDb) {
 			{
 				columnName: 'idxDemo',
 				exprPreset: `-100`,
-				indexTable: 0,
+				indexTable: 1,
 				isDisplayable: false,
 				orderDefine: 50
 			},
@@ -1738,7 +1738,6 @@ function initTaskSsrApp(init: InitDb) {
 	})
 
 	init.addTrans('sysTask', {
-		btnStyle: 'bg-gradient-to-b from-green-300 hover:from-pink-500 active:bg-violet-700',
 		codeCategory: 'default',
 		codeIcon: 'ClipboardPen',
 		codeRenderType: 'button',
@@ -1930,7 +1929,6 @@ function initTaskSsrDoc(init: InitDb) {
 	})
 
 	init.addTrans('sysTask', {
-		btnStyle: 'bg-gradient-to-b from-blue-300 hover:from-pink-500 active:bg-violet-700 ',
 		codeCategory: 'default',
 		codeIcon: 'ImageUp',
 		codeRenderType: 'button',
@@ -1962,6 +1960,7 @@ function initTaskSsrLegal(init: InitDb) {
 		codeDataObjType: 'taskPage',
 		exprFilter: 'none',
 		header: 'Legal',
+		isInitialValidationSilent: true,
 		name: 'data_obj_task_moed_ssr_legal',
 		fields: [
 			{
@@ -2027,7 +2026,6 @@ function initTaskSsrLegal(init: InitDb) {
 		]
 	})
 	init.addTrans('sysTask', {
-		btnStyle: 'bg-gradient-to-b from-green-300 hover:from-pink-500 active:bg-violet-700',
 		codeCategory: 'default',
 		codeIcon: 'ClipboardPen',
 		codeRenderType: 'page',
@@ -2249,7 +2247,6 @@ function initTaskSsrMsg(init: InitDb) {
 	})
 
 	init.addTrans('sysTask', {
-		btnStyle: 'bg-gradient-to-b from-amber-300 hover:from-pink-500 active:bg-violet-700 ',
 		codeCategory: 'default',
 		codeIcon: 'Mail',
 		codeRenderType: 'button',
@@ -2272,10 +2269,18 @@ function initTaskSsrWelcome(init: InitDb) {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		codeDataObjType: 'taskPage',
-		exprFilter: 'none',
+		exprFilter: `.id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id`,
 		header: 'Welcome',
+		isInitialValidationSilent: true,
 		name: 'data_obj_task_moed_ssr_welcome',
+		tables: [{ index: 0, table: 'SysPerson' }],
 		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
 			{
 				codeFieldElement: 'customHTML',
 				columnName: 'custom_element',
@@ -2292,9 +2297,34 @@ function initTaskSsrWelcome(init: InitDb) {
 		</div>`
 				},
 				isDisplayable: true,
-				orderDisplay: 10,
-				orderDefine: 10,
+				orderDisplay: 20,
+				orderDefine: 20,
 				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isLegalAgreed',
+				headerAlt:
+					"I consent to disclose personal information for the purposes of registering for the Baltimore City Mayor's Office of Employment Development Youth Opportunity Program",
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_details_start',
+				detailsSummary: "Individual's Consent To Disclose Personal Information",
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_details_end',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40
 			},
 			{
 				codeColor: 'secondary',
@@ -2308,14 +2338,13 @@ function initTaskSsrWelcome(init: InitDb) {
 					label: 'Get Started!'
 				},
 				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			}
 		]
 	})
 	init.addTrans('sysTask', {
-		btnStyle: 'bg-gradient-to-b from-green-300 hover:from-pink-500 active:bg-violet-700',
 		codeCategory: 'default',
 		codeIcon: 'ClipboardPen',
 		codeRenderType: 'page',
@@ -2326,8 +2355,7 @@ function initTaskSsrWelcome(init: InitDb) {
 		name: 'task_moed_ssr_welcome',
 		pageDataObj: 'data_obj_task_moed_ssr_welcome',
 		orderDefine: 20,
-		owner: 'sys_moed_old',
-		targetDataObj: 'data_obj_task_moed_ssr_app'
+		owner: 'sys_moed_old'
 	})
 }
 

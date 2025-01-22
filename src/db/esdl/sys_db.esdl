@@ -21,6 +21,7 @@ module sys_db {
     patternReplacement: str;
     placeHolder: str;
     spinStep: str;
+    toggleContinueRequiresTrue: bool;
     togglePresetTrue: bool;
     toggleValueFalse: str;
     toggleValueShow: bool;

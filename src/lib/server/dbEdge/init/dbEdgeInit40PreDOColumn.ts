@@ -198,12 +198,6 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
-		header: 'Button Style',
-		name: 'btnStyle'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'str',
 		header: 'City',
 		name: 'city'
 	})
@@ -827,6 +821,27 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: true,
 		name: 'csfCohorts'
 	})
+
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'none',
+		header: 'custom_details_end',
+		isExcludeInsert: true,
+		isExcludeSelect: true,
+		isExcludeUpdate: true,
+		isFormTag: true,
+		name: 'custom_details_end'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'none',
+		header: 'custom_details_start',
+		isExcludeInsert: true,
+		isExcludeSelect: true,
+		isExcludeUpdate: true,
+		isFormTag: true,
+		name: 'custom_details_start'
+	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
@@ -1126,6 +1141,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'My Description',
 		name: 'descriptionUser'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Details Summary',
+		name: 'detailsSummary'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1486,7 +1507,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
-		header: 'Is Detail Retrieve-Preset',
+		header: 'Detail Retrieve-Preset',
 		name: 'isDetailRetrievePreset'
 	})
 	init.addTrans('sysColumn', {
@@ -1552,8 +1573,21 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'bool',
+		header: 'Initial Validation Is Silent',
+		name: 'isInitialValidationSilent'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
 		header: 'Initialize Table',
 		name: 'isInitTable'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Legal Agreed',
+		name: 'isLegalAgreed',
+		toggleContinueRequiresTrue: true
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -2125,6 +2159,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Title',
 		name: 'title'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Toggle Continue Requires True',
+		name: 'toggleContinueRequiresTrue'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

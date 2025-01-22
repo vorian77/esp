@@ -125,7 +125,9 @@ module sys_core {
     exprSort: str;
     exprWith: str;
 
+
     isDetailRetrievePreset: bool;
+    isInitialValidationSilent: bool;
     required isListEdit: bool;
     isListSuppressFilterSort: bool;
     isListSuppressSelect: bool;
@@ -212,12 +214,12 @@ module sys_core {
     codeAlignmentAlt: sys_core::SysCode;
     codeColor: sys_core::SysCode;
     codeFieldElement: sys_core::SysCode;
+    detailsSummary: str;
 
     # custom
     action: sys_user::SysUserAction;
     codeAction: sys_core::SysCode;
     customColActionValue: str;
-    
     customColAlign: str;
     customColCodeColor: sys_core::SysCode;
     customColIsSubHeader: bool;

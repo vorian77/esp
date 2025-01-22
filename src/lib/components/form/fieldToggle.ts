@@ -1,7 +1,9 @@
-import { Field, FieldAccess, PropsFieldCreate } from '$comps/form/field'
+import { Field, PropsFieldCreate } from '$comps/form/field'
+import { ValidityError, ValidityErrorLevel } from '$comps/form/types.validation'
 import { valueOrDefault } from '$utils/types'
 
 export class FieldToggle extends Field {
+	continueRequiresTrue: boolean = true
 	presetTrue: boolean
 	valueFalse: string
 	valueShow: boolean
@@ -9,9 +11,23 @@ export class FieldToggle extends Field {
 	constructor(props: PropsFieldCreate) {
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
+		this.continueRequiresTrue = valueOrDefault(obj.colDB.toggleContinueRequiresTrue, false)
 		this.presetTrue = valueOrDefault(obj.colDB.togglePresetTrue, false)
 		this.valueFalse = valueOrDefault(obj.colDB.toggleValueFalse, undefined)
 		this.valueShow = valueOrDefault(obj.colDB.toggleValueShow, false)
 		this.valueTrue = valueOrDefault(obj.colDB.toggleValueTrue, undefined)
+	}
+	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {
+		if (
+			this.continueRequiresTrue &&
+			([undefined, false].includes(value) || (this.valueTrue && value !== this.valueTrue))
+		) {
+			return this.getValuationInvalid(
+				ValidityError.required,
+				missingDataErrorLevel,
+				`"${this.colDO.label}" must be selected to continue.`
+			)
+		}
+		return super.validate(row, value, missingDataErrorLevel)
 	}
 }

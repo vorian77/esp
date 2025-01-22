@@ -34,7 +34,7 @@
 </script>
 
 {#if rowStatus && rowStatus.show && !isHideRowManager}
-	<div class="flex flex-row p-2 h-[48px] items-center rounded-md border bg-white">
+	<div class="flex flex-row p-2 h-[46px] items-center rounded-md border bg-white">
 		<div class="flex flex-row">
 			<div class={rowStatus.rowCurrentDisplay === 1 ? 'hidden' : ''}>
 				<NavRowAction action={AppRowActionType.first} icon={'ChevronFirst'} {onChange} />

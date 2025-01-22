@@ -10,7 +10,7 @@
 	} from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '/$comps/nav/NavCrumbs.svelte'
+	const FILENAME = '/$comps/nav/NavCrumbsDesktop.svelte'
 
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 	let crumbsList: AppLevelCrumb[] = $derived(sm.app.getCrumbsList())

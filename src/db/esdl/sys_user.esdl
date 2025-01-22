@@ -15,7 +15,6 @@ module sys_user {
 
   # task  
   type SysTask extending sys_core::SysObj {
-    btnStyle: str;
     required codeCategory: sys_core::SysCode;
     codeRenderType: sys_core::SysCode;
     codeStatusObj: sys_core::SysCode;

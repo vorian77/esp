@@ -338,7 +338,6 @@ export async function addTask(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			btnStyle: e.optional(e.str),
 			codeCategory: e.str,
 			codeIcon: e.str,
 			codeRenderType: e.str,
@@ -359,7 +358,6 @@ export async function addTask(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysTask, {
-				btnStyle: p.btnStyle,
 				codeCategory: e.select(e.sys_core.getCode('ct_sys_task_category', p.codeCategory)),
 				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
 				codeRenderType: e.sys_core.getCode('ct_sys_task_render_type', p.codeRenderType),

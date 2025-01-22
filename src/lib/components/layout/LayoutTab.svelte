@@ -50,38 +50,36 @@
 {#if currLevel && dataObj}
 	<div id="layout-tab" class="h-full flex flex-col">
 		{#if currLevel.tabs.length > 1}
-			<div class="p-3">
-				<div class="bg-neutral-100 hidden sm:block rounded-md">
+			<div class="p-3 sm:ml-1 mr-1 mt-1 bg-neutral-100 rounded-md">
+				<div class="sm:hidden flex items-center justify-between gap-1">
+					<span class="text-base text-nav">Tab</span>
+					<select
+						aria-label="Select a tab"
+						class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-sm text-nav outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2"
+						name="select-tabs"
+						id="select-tabs"
+						onchange={(event) => onClick(Number(event.currentTarget.value))}
+					>
+						{#each currLevel.tabs as tab, idx}
+							{@const label = tab.label}
+							<option value={idx} selected={idx === currLevel.tabIdxCurrent}>
+								{label}
+							</option>
+						{/each}
+					</select>
+				</div>
+
+				<div class="hidden sm:block rounded-md">
 					{#each currLevel.tabs as tab, idx}
 						{@const name = 'tab' + idx}
 						{@const isCurrent = idx === currLevel.tabIdxCurrent}
 						{@const hidden = isHideChildTabs && !isCurrent}
 						{@const label = tab.label}
 						{@const classItem = isCurrent ? classItemCurrent : classItemNotCurrent}
-
 						<button {name} {hidden} class={classItem} onclick={() => onClick(idx)}>
 							{label}
 						</button>
 					{/each}
-				</div>
-
-				<div class="sm:hidden flex items-center justify-between gap-4">
-					<div class="grow">
-						<select
-							aria-label="Select a tab"
-							class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-sm text-nav outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2"
-							name="select-tabs"
-							id="select-tabs"
-							onchange={(event) => onClick(Number(event.currentTarget.value))}
-						>
-							{#each currLevel.tabs as tab, idx}
-								{@const label = tab.label}
-								<option value={idx} selected={idx === currLevel.tabIdxCurrent}>
-									{label}
-								</option>
-							{/each}
-						</select>
-					</div>
 				</div>
 			</div>
 		{/if}

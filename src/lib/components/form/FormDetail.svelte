@@ -14,6 +14,7 @@
 	let dm: DataManager = $derived(sm.dm)
 
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let isFixedHeight = $derived(parms.isFixedHeight || false)
 	let dataRecord: DataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
 	let tagGroupSections: TagGroupSection[] = $state()
 
@@ -28,7 +29,7 @@
 
 	function handleResize() {
 		const parentHeight = elContent ? elContent.parentElement.offsetHeight : undefined
-		contentH = Math.round(parentHeight * 0.99)
+		contentH = isFixedHeight ? '100%' : Math.round(parentHeight * 0.99) + 'px'
 	}
 
 	class TagGroupRow {
@@ -103,16 +104,16 @@
 	}
 </script>
 
-<!-- <DataViewer header="dataManager.dataRecord" data={dm.getRecordsDisplayRow(parms.dataObjId, 0)} /> -->
+<!-- <DataViewer header="status.node" data={dm.getStatusNode(parms.dataObjId)} /> -->
 
 <svelte:window onresize={() => handleResize()} />
 
 <div
 	bind:this={elContent}
 	class="h-full w-full flex flex-col sm:flex-row"
-	style="height: {contentH}px"
+	style="height: {contentH}"
 >
-	<div class="sm:hidden flex flex-col sm:grow overflow-y-auto">
+	<div class="sm:hidden flex flex-col overflow-y-auto">
 		{#each dataObj.fields as field, fieldIdx}
 			{@const display = field.fieldAccess !== FieldAccess.hidden && !field.colDO.colDB.isFormTag}
 			{@const elementParms = { ...parms, dataObj, field: dataObj.fields[fieldIdx], row: 0 }}
@@ -122,7 +123,7 @@
 		{/each}
 	</div>
 
-	<div class="hidden sm:block flex flex-col sm:grow overflow-y-auto rounded-md p-3 border">
+	<div class="hidden sm:block flex-grow flex flex-col overflow-y-auto rounded-md p-3 border">
 		{#each tagGroupSections as section}
 			<fieldset
 				class={section.isVisible ? 'p-4 border-1 mb-4' : 'p-0 border-0'}

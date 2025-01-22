@@ -111,7 +111,9 @@ export class DataManager {
 	getStatus() {
 		return this.objStatus.getStatus()
 	}
-
+	getStatusNode(dataObjId: string) {
+		return this.getNode(dataObjId)?.objStatus.getStatus()
+	}
 	init(dataObj: DataObj) {
 		this.reset()
 		this.nodeAdd(dataObj)
@@ -119,8 +121,14 @@ export class DataManager {
 	isStatusChanged() {
 		return this.objStatus.isChanged()
 	}
+	isStatusChangedNode(dataObjId: string) {
+		return this.getNode(dataObjId)?.objStatus.isChanged()
+	}
 	isStatusValid() {
 		return this.objStatus.isValid()
+	}
+	isStatusValidNode(dataObjId: string) {
+		return this.getNode(dataObjId)?.objStatus.isValid()
 	}
 	nodeAdd(dataObj: DataObj) {
 		this.nodes.set(dataObj.raw.id, new DataManagerNode(dataObj))
@@ -143,8 +151,8 @@ export class DataManager {
 	}
 	setStatus() {
 		let newStatus = new DataObjStatus()
-		this.nodes.forEach((node, key) => {
-			newStatus.update(node.getStatus())
+		this.nodes.forEach((node) => {
+			newStatus.update(node.setStatus())
 		})
 		this.objStatus = newStatus
 	}
@@ -154,6 +162,7 @@ export class DataManagerNode {
 	dataObj: DataObj
 	fieldsChanged: FieldValues = $state(new FieldValues())
 	fieldsValidity: FieldValues = $state(new FieldValues())
+	objStatus: DataObjStatus = $state(new DataObjStatus())
 	recordsDisplay: DataRecord[] = $state([])
 	recordsHidden: DataRecord[] = $state([])
 	constructor(dataObj: DataObj) {
@@ -269,11 +278,9 @@ export class DataManagerNode {
 	}
 
 	formatDataDisplayValidate(dataObj: DataObj) {
-		const validityErrorLevel =
-			dataObj.raw.isListEdit ||
-			dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.retrieved)
-				? ValidityErrorLevel.warning
-				: ValidityErrorLevel.silent
+		const validityErrorLevel = dataObj.raw.isInitialValidationSilent
+			? ValidityErrorLevel.silent
+			: ValidityErrorLevel.warning
 
 		this.recordsDisplay.forEach((record, row) => {
 			dataObj.fields.forEach((f) => {
@@ -318,7 +325,7 @@ export class DataManagerNode {
 	getFieldValue(row: number, field: Field) {
 		return this.recordsDisplay[row][field.colDO.propName]
 	}
-	getStatus() {
+	setStatus() {
 		let newStatus = new DataObjStatus()
 
 		this.recordsDisplay.forEach((r) => {
@@ -329,14 +336,15 @@ export class DataManagerNode {
 						[FieldAccess.optional, FieldAccess.required].includes(f.fieldAccess)) ||
 					f.colDO.propName === this.dataObj.raw.listReorderColumn
 				) {
-					newStatus.update(this.getStatusField(recordId, f))
+					newStatus.update(this.setStatusField(recordId, f))
 				}
 			})
 		})
+		this.objStatus = newStatus
 		return newStatus
 	}
 
-	getStatusField(recordId: string, field: Field) {
+	setStatusField(recordId: string, field: Field) {
 		const newStatus = new DataObjStatus()
 		const propName = field.colDO.propName
 

@@ -31,7 +31,6 @@ export type $SysTaskλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "pageDataObj": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "targetDataObj": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "targetNodeObj": $.LinkDesc<_sys_core.$SysNodeObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "btnStyle": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprShow": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprStatus": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;

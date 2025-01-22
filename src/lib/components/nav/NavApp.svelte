@@ -6,7 +6,8 @@
 	import { AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
-	import NavCrumbs from '$comps/nav/NavCrumbs.svelte'
+	import NavCrumbsMobile from '$comps/nav/NavCrumbsMobile.svelte'
+	import NavCrumbsDesktop from '$comps/nav/NavCrumbsDesktop.svelte'
 	import NavRow from '$comps/nav/NavRow.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -27,8 +28,8 @@
 	}
 </script>
 
-<div id="layout-app" class="flex justify-between items-center p-3 border-b">
-	<div class="flex items-center">
+<div id="layout-app" class="flex justify-between items-center p-3 border-b gap-3">
+	<div class="flex flex-grow items-center">
 		<button class="mr-2 flex-none" onclick={back}>
 			<Icon
 				props={new IconProps({
@@ -41,11 +42,15 @@
 			/>
 		</button>
 
-		<div class="flex-grow">
-			<NavCrumbs />
+		<!-- <div class=" border-0 border-green-400"> -->
+		<div class="flex-grow md:hidden">
+			<NavCrumbsMobile />
+		</div>
+		<div class="flex-none hidden md:inline">
+			<NavCrumbsDesktop />
 		</div>
 	</div>
-
+	<!-- </div> -->
 	<div class="flex-none">
 		<NavRow />
 	</div>

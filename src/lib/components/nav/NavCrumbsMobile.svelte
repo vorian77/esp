@@ -1,0 +1,48 @@
+<script lang="ts">
+	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, required } from '$utils/types'
+	import { getContext } from 'svelte'
+	import { AppLevelCrumb } from '$comps/app/types.app.svelte'
+	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import {
+		TokenAppIndex,
+		TokenAppStateTriggerAction,
+		TokenAppUserActionConfirmType
+	} from '$utils/types.token'
+	import DataViewer from '$utils/DataViewer.svelte'
+
+	const FILENAME = '/$comps/nav/NavCrumbsMobile.svelte'
+
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
+	let crumbsList: AppLevelCrumb[] = $derived(sm.app.getCrumbsList())
+
+	function onClick(index: number) {
+		sm.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_nav,
+					CodeActionType.navCrumbs
+				),
+				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+				token: new TokenAppIndex({ index })
+			})
+		)
+	}
+</script>
+
+<div class="w-full flex items-center justify-between gap-4">
+	<select
+		aria-label="Select a crumb"
+		class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-sm text-nav outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2"
+		name="select-crumbs"
+		id="select-crumbs"
+		onchange={(event) => onClick(Number(event.currentTarget.value))}
+	>
+		{#each crumbsList as item, idx}
+			{@const label = item.label}
+			{@const lastItem = crumbsList.length - 1}
+			<option value={idx} selected={idx === lastItem}>
+				{label}
+			</option>
+		{/each}
+	</select>
+</div>

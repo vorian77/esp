@@ -206,7 +206,6 @@ export class UserResource {
 }
 
 export class UserResourceTask extends UserResource {
-	btnStyle?: string
 	codeCategory: UserResourceTaskCategory
 	codeRenderType: UserResourceTaskRenderType
 	codeStatusObjName?: string
@@ -224,7 +223,6 @@ export class UserResourceTask extends UserResource {
 	constructor(obj: any) {
 		super(obj)
 		const clazz = 'UserResourceTask'
-		this.btnStyle = obj.btnStyle
 		this.codeCategory = memberOfEnum(
 			obj._codeCategory,
 			clazz,

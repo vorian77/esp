@@ -27,6 +27,7 @@ export async function addDataObj(data: any) {
 			fields: e.optional(e.array(e.json)),
 			header: e.optional(e.str),
 			isDetailRetrievePreset: e.optional(e.bool),
+			isInitialValidationSilent: e.optional(e.bool),
 			isListEdit: e.optional(e.bool),
 			isListSuppressFilterSort: e.optional(e.bool),
 			isListSuppressSelect: e.optional(e.bool),
@@ -253,6 +254,7 @@ export async function addDataObj(data: any) {
 								e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'color'))
 							)
 						),
+
 						customColIsSubHeader: booleanOrDefaultJSON(
 							e.json_get(f, 'customElement'),
 							'isSubHeader',
@@ -267,6 +269,8 @@ export async function addDataObj(data: any) {
 							e.str,
 							e.json_get(e.json_get(f, 'customElement'), 'sourceKey')
 						),
+
+						detailsSummary: e.cast(e.str, e.json_get(f, 'detailsSummary')),
 
 						fieldEmbedListConfig: e.select(
 							e.sys_core.getDataObjFieldEmbedListConfig(
@@ -322,6 +326,7 @@ export async function addDataObj(data: any) {
 				exprWith: p.exprWith,
 				header: p.header,
 				isDetailRetrievePreset: valueOrDefaultParm(p.isDetailRetrievePreset, false),
+				isInitialValidationSilent: valueOrDefaultParm(p.isInitialValidationSilent, false),
 				isListEdit: valueOrDefaultParm(p.isListEdit, false),
 				isListSuppressFilterSort: valueOrDefaultParm(p.isListSuppressFilterSort, false),
 				isListSuppressSelect: valueOrDefaultParm(p.isListSuppressSelect, false),
