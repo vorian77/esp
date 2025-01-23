@@ -48,7 +48,7 @@ import { FieldInput } from '$comps/form/fieldInput'
 import { FieldFile } from '$comps/form/fieldFile'
 import { FieldParm } from '$comps/form/fieldParm'
 import { FieldRadio } from '$comps/form/fieldRadio'
-import { FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
+import { FieldTagDetails, FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 import { FieldSelect } from '$comps/form/fieldSelect'
 import { FieldTextarea } from '$comps/form/fieldTextarea'
 import { FieldToggle } from '$comps/form/fieldToggle'
@@ -263,6 +263,10 @@ export class DataObj {
 				newField = new FieldSelect(props)
 				break
 
+			case FieldElement.tagDetails:
+				newField = new FieldTagDetails(props)
+				break
+
 			case FieldElement.tagRow:
 				newField = new FieldTagRow(props)
 				break
@@ -313,7 +317,7 @@ export class DataObjAction {
 	constructor(rawAction: RawDataObjAction) {
 		const clazz = 'DataObjAction'
 		this.action = new UserAction(rawAction.action)
-		this.fieldColor = rawAction.fieldColor
+		this.fieldColor = new FieldColor(rawAction.codeColor, 'blue')
 		this.isListRowAction = rawAction.isListRowAction
 	}
 }

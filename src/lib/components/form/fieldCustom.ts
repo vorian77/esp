@@ -39,6 +39,7 @@ export class FieldCustomAction extends FieldCustom {
 }
 
 export class FieldCustomActionButton extends FieldCustomAction {
+	fieldColor: FieldColor
 	constructor(props: PropsFieldCreate) {
 		const clazz = 'FieldCustomActionButton'
 		super(props)
@@ -47,11 +48,7 @@ export class FieldCustomActionButton extends FieldCustomAction {
 			clazz,
 			'customCol'
 		) as RawDataObjPropDisplayCustom
-		this.colDO.fieldColor = customCol.customColCodeColor
-			? customCol.customColCodeColor
-			: props.propRaw.fieldColor
-				? props.propRaw.fieldColor
-				: new FieldColor('blue', 'blue')
+		this.fieldColor = new FieldColor(customCol.customColCodeColor || this.colDO.codeColor, 'blue')
 	}
 }
 export class FieldCustomActionLink extends FieldCustomAction {

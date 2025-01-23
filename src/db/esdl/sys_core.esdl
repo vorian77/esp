@@ -214,7 +214,6 @@ module sys_core {
     codeAlignmentAlt: sys_core::SysCode;
     codeColor: sys_core::SysCode;
     codeFieldElement: sys_core::SysCode;
-    detailsSummary: str;
 
     # custom
     action: sys_user::SysUserAction;

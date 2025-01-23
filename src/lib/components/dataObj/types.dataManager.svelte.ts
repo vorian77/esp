@@ -278,9 +278,11 @@ export class DataManagerNode {
 	}
 
 	formatDataDisplayValidate(dataObj: DataObj) {
-		const validityErrorLevel = dataObj.raw.isInitialValidationSilent
-			? ValidityErrorLevel.silent
-			: ValidityErrorLevel.warning
+		const validityErrorLevel =
+			dataObj.raw.isInitialValidationSilent ||
+			dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)
+				? ValidityErrorLevel.silent
+				: ValidityErrorLevel.warning
 
 		this.recordsDisplay.forEach((record, row) => {
 			dataObj.fields.forEach((f) => {

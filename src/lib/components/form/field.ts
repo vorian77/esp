@@ -169,6 +169,7 @@ export class FieldColor {
 		const colorSecondary = '#22c55e'
 		const colors = [
 			['amber', '#b45309'],
+			['defaultBorder', '#e5e7eb'],
 			['black', '#000000'],
 			['blue', colorPrimary],
 			['error', colorError],
@@ -245,6 +246,7 @@ export enum FieldElement {
 	percentage = 'percentage',
 	radio = 'radio',
 	select = 'select',
+	tagDetails = 'tagDetails',
 	tagRow = 'tagRow',
 	tagSection = 'tagSection',
 	tel = 'tel',

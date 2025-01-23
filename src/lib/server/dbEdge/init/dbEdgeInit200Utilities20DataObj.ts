@@ -183,25 +183,6 @@ export async function addDataObj(data: any) {
 							)
 						),
 
-						// codeAccess: e.select(
-						// 	e.sys_core.getCode(
-						// 		'ct_sys_do_field_access',
-						// 		e.op(
-						// 			e.cast(e.str, e.json_get(f, 'codeAccess')),
-						// 			'if',
-						// 			e.op('exists', e.cast(e.str, e.json_get(f, 'codeAccess'))),
-						// 			'else',
-						// 			e.op(
-						// 				'required',
-						// 				'if',
-						// 				e.op('exists', e.cast(e.int16, e.json_get(f, 'orderDisplay'))),
-						// 				'else',
-						// 				e.cast(e.str, e.json_get(f, 'codeAccess'))
-						// 			)
-						// 		)
-						// 	)
-						// ),
-
 						codeAlignmentAlt: e.sys_core.getCode(
 							'ct_db_col_alignment',
 							e.cast(e.str, e.json_get(f, 'codeAlignmentAlt'))
@@ -269,8 +250,6 @@ export async function addDataObj(data: any) {
 							e.str,
 							e.json_get(e.json_get(f, 'customElement'), 'sourceKey')
 						),
-
-						detailsSummary: e.cast(e.str, e.json_get(f, 'detailsSummary')),
 
 						fieldEmbedListConfig: e.select(
 							e.sys_core.getDataObjFieldEmbedListConfig(

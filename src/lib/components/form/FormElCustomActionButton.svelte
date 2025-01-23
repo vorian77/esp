@@ -31,7 +31,7 @@
 
 <button
 	class="w-full btn btn-action text-white"
-	style:background-color={field.colDO.fieldColor.color}
+	style:background-color={field.fieldColor.color}
 	{disabled}
 	onclick={() => action()}
 >

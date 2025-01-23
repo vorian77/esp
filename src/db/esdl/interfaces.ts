@@ -394,7 +394,6 @@ export namespace sys_core {
   }
   export interface SysDataObjColumn extends sys_user.Mgmt {
     "exprSave"?: string | null;
-    "detailsSummary"?: string | null;
     "codeAction"?: SysCode | null;
     "codeAccess"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;

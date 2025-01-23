@@ -199,13 +199,13 @@ export class RawDataObj {
 
 export class RawDataObjAction {
 	action: UserAction
-	fieldColor: FieldColor
+	codeColor: string
 	isListRowAction: boolean
 	constructor(obj: any) {
 		const clazz = 'RawDataObjAction'
 		obj = valueOrDefault(obj, {})
 		this.action = new UserAction(new RawUserAction(obj._action))
-		this.fieldColor = new FieldColor(obj._codeColor, 'blue')
+		this.codeColor = obj._codeColor
 		this.isListRowAction = booleanOrFalse(obj.isListRowAction, 'isListRowAction')
 	}
 }
@@ -405,10 +405,9 @@ export class RawDataObjPropDBFieldEmbed {
 }
 
 export class RawDataObjPropDisplay extends RawDataObjProp {
+	codeColor?: string
 	colDB: RawDBColumn
 	customCol?: RawDataObjPropDisplayCustom
-	detailsSummary?: string
-	fieldColor: FieldColor
 	fieldEmbedListConfig?: RawDataObjPropDisplayEmbedListConfig
 	fieldEmbedListEdit?: RawDataObjPropDisplayEmbedListEdit
 	fieldEmbedListSelect?: RawDataObjPropDisplayEmbedListSelect
@@ -433,10 +432,9 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		super(obj, tables)
 		const clazz = 'RawDataObjPropDisplay'
 		obj = valueOrDefault(obj, {})
+		this.codeColor = strOptional(obj._codeColor, clazz, 'codeColor')
 		this.colDB = new RawDBColumn(obj._column)
 		this.customCol = classOptional(RawDataObjPropDisplayCustom, obj._customCol)
-		this.detailsSummary = strOptional(obj.detailsSummary, clazz, 'detailsSummary')
-		this.fieldColor = new FieldColor(obj._codeColor, 'black')
 		this.fieldEmbedListConfig = classOptional(
 			RawDataObjPropDisplayEmbedListConfig,
 			obj._fieldEmbedListConfig
@@ -485,7 +483,7 @@ export class RawDataObjPropDisplayCustom {
 	codeAction?: CodeAction
 	customColActionValue?: string
 	customColAlign?: string
-	customColCodeColor?: FieldColor
+	customColCodeColor?: string
 	customColIsSubHeader?: boolean
 	customColLabel?: string
 	customColPrefix?: string
@@ -499,7 +497,7 @@ export class RawDataObjPropDisplayCustom {
 		this.codeAction = classOptional(CodeAction, obj._codeAction)
 		this.customColActionValue = strOptional(obj.customColActionValue, clazz, 'customColActionValue')
 		this.customColAlign = strOptional(obj.customColAlign, clazz, 'customColAlign')
-		this.customColCodeColor = classOptional(FieldColor, obj._customColCodeColor)
+		this.customColCodeColor = strOptional(obj._customColCodeColor, clazz, 'customColCodeColor')
 		this.customColIsSubHeader = obj.customColIsSubHeader
 		this.customColLabel = strOptional(obj.customColLabel, clazz, 'customColLabel')
 		this.customColPrefix = strOptional(obj.customColPrefix, clazz, 'customColPrefix')

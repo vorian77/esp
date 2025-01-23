@@ -231,10 +231,9 @@ function initUserType(init: InitDb) {
 		name: 'ut_client_moed_student',
 		owner: 'sys_moed_old',
 		resources: [
-			{ codeType: 'task', resource: 'task_moed_ssr_legal' },
 			{ codeType: 'task', resource: 'task_moed_ssr_app' },
 			{ codeType: 'task', resource: 'task_moed_ssr_app_doc' },
-			// { codeType: 'task', resource: 'task_moed_ssr_app_msg' },
+			{ codeType: 'task', resource: 'task_moed_ssr_app_msg' },
 			{ codeType: 'task', resource: 'task_moed_ssr_welcome' }
 		]
 	})

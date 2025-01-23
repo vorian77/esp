@@ -1,9 +1,6 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 import { moedDataApplicant } from '$utils/utils.randomDataGenerator'
 
-// export function initContentMOEDStudent(init: InitDb) {
-// 	initDemoData()
-// }
 export function initContentMOEDStudent(init: InitDb) {
 	// staff
 	initStudent(init)
@@ -16,7 +13,6 @@ export function initContentMOEDStudent(init: InitDb) {
 	// participant
 	initTaskSsrApp(init)
 	initTaskSsrDoc(init)
-	initTaskSsrLegal(init)
 	initTaskSsrMsg(init)
 	initTaskSsrWelcome(init)
 
@@ -1952,94 +1948,6 @@ FILTER .parent.name = 'ct_cm_doc_type' ORDER BY .order asc`,
 	})
 }
 
-function initTaskSsrLegal(init: InitDb) {
-	init.addTrans('sysDataObjTask', {
-		owner: 'sys_moed_old',
-		codeComponent: 'FormDetail',
-		codeCardinality: 'detail',
-		codeDataObjType: 'taskPage',
-		exprFilter: 'none',
-		header: 'Legal',
-		isInitialValidationSilent: true,
-		name: 'data_obj_task_moed_ssr_legal',
-		fields: [
-			{
-				codeFieldElement: 'customHTML',
-				columnName: 'custom_element',
-				customElement: {
-					rawHTML: `
-		<div class="flex flex-col gap-4 text-center">
-			<h1 class="text-green-400 text-3xl">Legal</h1>
-			<h1 class="text-xl">Individual's Consent To Disclose Personal Information</h1> 
-			<p>By registering with <span class="font-bold">Baltimore City Mayor's Office of Employment Development Youth Opportunity Program</span> you agree that the Career Partners can see and use the information contained within your application in order to better provide assistance to you in determining eligibility for assistance in obtaining employment, training for employment, education, or other services. Personal information such as social security number, race, ethnicity, sexual orientation and disability status is being requested for federal record keeping and reporting requirements only and is kept confidential.</p>
-			<p class="font-bold">By clicking "Accept" below, I consent to disclose personal information for the purposes of registering for the Baltimore City Mayor's Office of Employment Development Youth Opportunity Program.</p>
-		</div>`
-				},
-				isDisplayable: true,
-				orderDisplay: 10,
-				orderDefine: 10,
-				indexTable: 0
-			},
-			{
-				codeColor: 'secondary',
-				codeFieldElement: 'customActionButton',
-				columnName: 'custom_element',
-				customElement: {
-					action: {
-						class: 'ct_sys_code_action_class_utils',
-						type: 'dbExpression'
-					},
-					label: 'Accept',
-					value: `UPDATE default::SysPerson FILTER .id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id SET { isLegalAgreed := true}`
-				},
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0
-			},
-
-			// {
-			// 	codeColor: 'primary',
-			// 	codeFieldElement: 'customActionLink',
-			// 	columnName: 'custom_element',
-			// 	customElement: {
-			// 		action: {
-			// 			class: 'ct_sys_code_action_class_do_field_auth',
-			// 			type: 'page'
-			// 		},
-			// 		label: 'Reset Password?',
-			// 		value: 'data_obj_auth_reset_password_account'
-			// 	},
-
-			{
-				codeFieldElement: 'customActionLink',
-				columnName: 'custom_element',
-				customElement: {
-					action: { class: 'ct_sys_code_action_class_nav', type: 'navHome' },
-					label: 'Decline'
-				},
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0
-			}
-		]
-	})
-	init.addTrans('sysTask', {
-		codeCategory: 'default',
-		codeIcon: 'ClipboardPen',
-		codeRenderType: 'page',
-		exprShow: `SELECT false IF (SELECT ((SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)).person.isLegalAgreed = true) ?? false ELSE true`,
-		header: 'Legal',
-		isPinToDash: true,
-		isGlobalResource: false,
-		name: 'task_moed_ssr_legal',
-		pageDataObj: 'data_obj_task_moed_ssr_legal',
-		orderDefine: 10,
-		owner: 'sys_moed_old'
-	})
-}
-
 function initTaskSsrMsg(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		owner: 'sys_moed_old',
@@ -2293,7 +2201,7 @@ function initTaskSsrWelcome(init: InitDb) {
 				<img class="w-60" src="src/lib/assets/org_logo_moed.png" alt="Logo" />
 			</div>
 
-			<p> <span class="font-bold">Youth Opportunity (YO) Baltimore</span> serves individuals between the ages of 18 and 24 who are out of school and/or looking for employment or connections to college. Operating out of two locations - one in West Baltimore and one in East Baltimore - YO embraces a model that offers a full range of srvices that lead to your success.</p>
+			<p> <span class="font-bold">Youth Opportunity (YO) Baltimore</span> serves individuals between the ages of 18 and 24 who are out of school and/or looking for employment or connections to college. Operating out of two locations - one in West Baltimore and one in East Baltimore - YO embraces a model that offers a full range of services that lead to your success.</p>
 		</div>`
 				},
 				isDisplayable: true,
@@ -2302,29 +2210,55 @@ function initTaskSsrWelcome(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'toggle',
-				columnName: 'isLegalAgreed',
-				headerAlt:
-					"I consent to disclose personal information for the purposes of registering for the Baltimore City Mayor's Office of Employment Development Youth Opportunity Program",
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_start',
 				isDisplayable: true,
 				orderDisplay: 30,
-				orderDefine: 30,
+				orderDefine: 30
+			},
+			{
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_start',
+				headerAlt: 'Consent To Disclose Personal Information',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40
+			},
+			{
+				codeFieldElement: 'customText',
+				columnName: 'custom_element',
+				customElement: {
+					align: 'left',
+					label: `By registering with Baltimore City Mayor's Office of Employment Development Youth Opportunity Program you agree that the Career Partners can see and use the information contained within your application in order to better provide assistance to you in determining eligibility for assistance in obtaining employment, training for employment, education, or other services. Personal information such as social security number, race, ethnicity, sexual orientation and disability status is being requested for federal record keeping and reporting requirements only and is kept confidential.`
+				},
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_details_start',
-				detailsSummary: "Individual's Consent To Disclose Personal Information",
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40
-			},
-			{
-				codeFieldElement: 'tagRow',
+				codeFieldElement: 'tagDetails',
 				columnName: 'custom_details_end',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isLegalAgreed',
+				headerAlt:
+					"I confirm that I have read, consent and agree to YO Baltimore's Consent to Disclose Personal Information.",
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80
 			},
 			{
 				codeColor: 'secondary',
@@ -2338,8 +2272,8 @@ function initTaskSsrWelcome(init: InitDb) {
 					label: 'Get Started!'
 				},
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0
 			}
 		]

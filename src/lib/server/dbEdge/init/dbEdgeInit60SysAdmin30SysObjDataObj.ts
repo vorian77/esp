@@ -966,57 +966,22 @@ function initDataObjColumn(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'toggle',
-				columnName: 'isDisplayBlock',
-				isDisplayable: true,
-				orderDisplay: 444,
-				orderDefine: 444,
-				indexTable: 0
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 446,
-				orderDefine: 446
-			},
-			{
-				codeFieldElement: 'customHeader',
-				columnName: 'custom_element',
-				customElement: { label: 'Custom' },
-				isDisplayable: true,
-				orderDisplay: 460,
-				orderDefine: 460,
-				indexTable: 0
+				orderDisplay: 445,
+				orderDefine: 445
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 470,
-				orderDefine: 470
-			},
-			/* Display element - custom */
-			// {
-			// 	codeColor: 'primary',
-			// 	codeFieldElement: 'tagSection',
-			// 	columnName: 'custom_section_start',
-			// 	isDisplayable: true,
-			//orderDisplay: 215,
-			//orderDefine: 215,
-			// 	headerAlt: 'Custom'
-			// },
-			{
-				codeAccess: 'optional',
-				columnName: 'detailsSummary',
-				isDisplayable: true,
-				orderDisplay: 500,
-				orderDefine: 500,
-				indexTable: 0
+				orderDisplay: 450,
+				orderDefine: 450
 			},
 			{
-				codeAccess: 'optional',
-				columnName: 'customColLabel',
+				codeFieldElement: 'toggle',
+				columnName: 'isDisplayBlock',
 				isDisplayable: true,
 				orderDisplay: 505,
 				orderDefine: 505,
@@ -1026,8 +991,27 @@ function initDataObjColumn(init: InitDb) {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
+				orderDisplay: 510,
+				orderDefine: 510
+			},
+
+			/* Display element - custom */
+			{
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: { label: 'Custom' },
+				isDisplayable: true,
+				orderDisplay: 520,
+				orderDefine: 520,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'customColLabel',
+				isDisplayable: true,
 				orderDisplay: 525,
-				orderDefine: 525
+				orderDefine: 525,
+				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
