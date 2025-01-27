@@ -550,20 +550,21 @@ export class AppTree {
 	getDataTree(offset: number) {
 		const clazz = 'getDataTree'
 		let dataTree = new TokenApiQueryDataTree()
-		for (let i = 0; i < this.levels.length; i++) {
+		for (let i = 0; i < this.levels.length - offset; i++) {
 			const level = this.levels[i]
 			const currTab = level.getCurrTab()
-			const dataObj = required(currTab.dataObj, clazz, 'currTab.dataObj')
-			const table = required(dataObj.rootTable?.name, 'rootTable', 'DataObj')
-			let dataRow
-			if (dataObj.raw.codeCardinality === DataObjCardinality.list) {
-				dataRow = currTab.listGetDataRow()
-			} else {
-				dataRow = currTab.detailGetDataRow()
+			let dataObjCurr: DataObj | undefined = currTab.dataObj
+			if (dataObjCurr) {
+				const dataRow: DataRow | undefined =
+					dataObjCurr.raw.codeCardinality === DataObjCardinality.list
+						? currTab.listGetDataRow()
+						: currTab.detailGetDataRow()
+				if (dataRow) {
+					const table = required(dataObjCurr.rootTable?.name, 'getDataTree', 'table')
+					dataTree.upsertData(table, dataRow)
+				}
 			}
-			if (dataRow) dataTree.upsertData(table, dataRow)
 		}
-		console.log('types.app.getDataTree', dataTree)
 		return dataTree
 	}
 

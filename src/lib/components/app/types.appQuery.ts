@@ -49,25 +49,7 @@ function queryDataPre(sm: State, data: DataObjData | undefined, queryType: Token
 
 function queryDataPreTree(queryType: TokenApiQueryType, app: App) {
 	const clazz = `${FILENAME}.queryDataPreTree`
-	let offset = 0
-
-	switch (queryType) {
-		case TokenApiQueryType.preset:
-			offset = 2
-			// offset = 1
-			break
-		case TokenApiQueryType.retrieve:
-		case TokenApiQueryType.save:
-			offset = 1
-			// offset = 0
-			break
-		default:
-			error(500, {
-				file: FILENAME,
-				function: clazz,
-				message: `No case defined for queryType: ${queryType}`
-			})
-	}
+	let offset = queryType === TokenApiQueryType.preset ? 1 : 0
 	return app.getDataTree(offset)
 }
 
