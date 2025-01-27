@@ -1,6 +1,8 @@
 import { App } from '$comps/app/types.app.svelte'
 import { required, strRequired, valueOrDefault } from '$utils/utils'
 import {
+	booleanOrFalse,
+	booleanRequired,
 	CodeAction,
 	CodeActionClass,
 	CodeActionType,
@@ -11,7 +13,8 @@ import {
 	ParmsValues,
 	ParmsValuesType,
 	NodeType,
-	ParmsUser,
+	ResponseBody,
+	strOptional,
 	ToastType,
 	User
 } from '$utils/types'
@@ -20,7 +23,7 @@ import {
 	TokenApiDbDataObjSource,
 	TokenApiId,
 	TokenApiQueryType,
-	TokenAppDataObjName,
+	TokenAppDoQuery,
 	TokenAppDo,
 	TokenAppModalEmbedField,
 	TokenAppModalReturn,
@@ -35,7 +38,6 @@ import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { RawDataObjAction, RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { booleanOrFalse, ResponseBody, strOptional } from '$utils/types'
 import fActionsClassDo from '$enhance/actions/actionsClassDo'
 import fActionsClassDoFieldAuth from '$enhance/actions/actionsClassDoFieldAuth'
 import fActionsClassModal from '$enhance/actions/actionsClassModal'
@@ -89,7 +91,7 @@ export class State {
 
 		this.triggerTokens = valueOrDefault(obj.triggerTokens, [])
 
-		if (this.fChangeCallback) this.fChangeCallback(obj)
+		// if (this.fChangeCallback) this.fChangeCallback(obj)
 	}
 
 	closeModal() {
@@ -150,7 +152,7 @@ export class State {
 					fActions[key] = fActionsClassModal
 					break
 
-				case CodeActionClass.ct_sys_code_action_class_do_field_auth:
+				case CodeActionClass.ct_sys_code_action_class_do_auth:
 					fActions[key] = fActionsClassDoFieldAuth
 					break
 
@@ -174,7 +176,8 @@ export class State {
 	}
 
 	newApp() {
-		this.app = new App()
+		this.app = new App({ isMultiTree: this.app.isMultiTree })
+		this.dm.reset()
 	}
 
 	async openDrawer(
@@ -194,7 +197,8 @@ export class State {
 		position: 'left' | 'right' | 'top' | 'bottom' | undefined,
 		height: string | undefined,
 		width: string | undefined,
-		token: TokenAppDataObjName
+		token: TokenAppDoQuery,
+		isNewApp: boolean
 	) {
 		const stateModal = new StateSurfacePopup(this, {
 			layoutHeader: {
@@ -208,6 +212,7 @@ export class State {
 					CodeActionClass.ct_sys_code_action_class_do,
 					CodeActionType.doOpen
 				),
+				isNewApp,
 				token
 			})
 		)
@@ -246,7 +251,7 @@ export class State {
 		})
 	}
 
-	async openModalDataObj(dataObjName: string, fUpdate?: Function) {
+	async openModalDataObj(token: TokenAppDoQuery, isNewApp: boolean, fUpdate?: Function) {
 		const clazz = `${FILENAME}.openModalDataObj`
 		const stateModal = new StateSurfacePopup(this, {
 			actionsDialog: await this.getActions('doag_dialog_footer_detail'),
@@ -260,7 +265,8 @@ export class State {
 					CodeActionClass.ct_sys_code_action_class_do,
 					CodeActionType.doOpen
 				),
-				token: new TokenAppDataObjName({ dataObjName, queryType: TokenApiQueryType.retrieve })
+				isNewApp,
+				token
 			})
 		)
 		await this.openModal(stateModal, fUpdate)
@@ -276,7 +282,7 @@ export class State {
 		const fieldEmbed: FieldEmbedListConfig = required(dataObjEmbed.embedField, clazz, 'fieldEmbed')
 
 		const dataObjParent = required(
-			token.sm.dm?.getDataObj(fieldEmbed.dataObjIdParent),
+			this.dm.getDataObj(fieldEmbed.dataObjIdParent),
 			clazz,
 			'dataObjParent'
 		)
@@ -285,7 +291,7 @@ export class State {
 		const stateModal = new StateSurfacePopupModalEmbed(this, {
 			actionsDialog: fieldEmbed.actionsModal,
 			app: this.app,
-			embedParentId: token.sm.dm?.getRecordId(fieldEmbed.dataObjIdParent, 0),
+			embedParentId: this.dm.getRecordId(fieldEmbed.dataObjIdParent, 0),
 			embedType: fieldEmbed.embedType,
 			parmsState: new ParmsValues(),
 			layoutHeader: {
@@ -324,7 +330,7 @@ export class State {
 		const fieldEmbed: FieldEmbedListSelect = required(dataObjEmbed.embedField, clazz, 'fieldEmbed')
 
 		const dataObjParent = required(
-			token.sm.dm?.getDataObj(fieldEmbed.dataObjIdParent),
+			this.dm.getDataObj(fieldEmbed.dataObjIdParent),
 			clazz,
 			'dataObjParent'
 		)
@@ -345,7 +351,7 @@ export class State {
 
 		const stateModal = new StateSurfacePopupModalEmbed(this, {
 			actionsDialog: fieldEmbed.actionsModal,
-			embedParentId: token.sm.dm?.getRecordId(fieldEmbed.dataObjIdParent, 0),
+			embedParentId: this.dm.getRecordId(fieldEmbed.dataObjIdParent, 0),
 			embedType: fieldEmbed.embedType,
 			layoutHeader: {
 				isDataObj: true

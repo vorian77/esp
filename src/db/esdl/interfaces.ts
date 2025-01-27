@@ -45,6 +45,7 @@ export namespace sys_user {
     "person": $default.SysPerson;
   }
   export interface SysUserAction extends sys_core.SysObj {
+    "actionAlertMsg"?: string | null;
     "actionConfirms": SysUserActionConfirm[];
     "actionShows": SysUserActionShow[];
     "codeAction": sys_core.SysCodeAction;
@@ -394,7 +395,7 @@ export namespace sys_core {
   }
   export interface SysDataObjColumn extends sys_user.Mgmt {
     "exprSave"?: string | null;
-    "codeAction"?: SysCode | null;
+    "actionAlertMsg"?: string | null;
     "codeAccess"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
     "codeColor"?: SysCode | null;
@@ -402,7 +403,6 @@ export namespace sys_core {
     "codeDbDataSourceValue"?: SysCode | null;
     "codeFieldElement"?: SysCode | null;
     "codeSortDir"?: SysCode | null;
-    "customColCodeColor"?: SysCode | null;
     "column": sys_db.SysColumn;
     "columnBacklink"?: sys_db.SysColumn | null;
     "customEmbedShellFields": SysDataObjColumn[];

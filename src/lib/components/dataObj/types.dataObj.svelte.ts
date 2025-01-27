@@ -68,11 +68,13 @@ export class DataObj {
 	data: DataObjData = $state(new DataObjData())
 	dataItems: DataItems = {}
 	embedField?: FieldEmbed
+	fCallbackUserAction?: Function
 	fields: Field[] = []
 	isMobileMode: boolean = false
 	raw: RawDataObj
 	rootTable?: DBTable
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
+	treeLevelIdx: number = 0
 	userActions: DataObjAction[] = $state([])
 	userGridSettings: GridSettings
 	constructor(data: DataObjData) {
@@ -307,6 +309,12 @@ export class DataObj {
 
 	print() {
 		alert('Print functionality for this object has not yet been implemented.')
+	}
+	setCallbackUserAction(fCallback: Function) {
+		this.fCallbackUserAction = fCallback
+	}
+	setTreeLevelIdx(idx: number) {
+		this.treeLevelIdx = idx
 	}
 }
 

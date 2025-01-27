@@ -1,11 +1,7 @@
 import { State } from '$comps/app/types.appState.svelte'
 import { userActionError } from '$comps/other/types.userAction.svelte'
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import {
-	TokenApiQueryData,
-	TokenAppStateTriggerAction,
-	TokenAppUserAction
-} from '$utils/types.token'
+import { TokenApiQueryData, TokenAppStateTriggerAction } from '$utils/types.token'
 import {
 	CodeActionType,
 	DataObjData,

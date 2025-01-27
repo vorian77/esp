@@ -5,6 +5,9 @@ import {
 	booleanOrFalse,
 	booleanRequired,
 	classOptional,
+	CodeAction,
+	CodeActionClass,
+	CodeActionType,
 	getArray,
 	memberOfEnum,
 	required,
@@ -15,9 +18,12 @@ import { DataObj, ParmsValuesType } from '$utils/types'
 import { queryTypeDataObj } from '$comps/app/types.appQuery'
 import {
 	TokenApiQueryType,
+	TokenAppDo,
+	TokenAppDoQuery,
 	TokenAppModalReturnType,
 	TokenAppModalSelect,
-	TokenAppNode
+	TokenAppNode,
+	TokenAppStateTriggerAction
 } from '$utils/types.token'
 import { FileStorage } from '$comps/form/fieldFile'
 import { goto } from '$app/navigation'
@@ -266,14 +272,27 @@ export class UserResourceTask extends UserResource {
 			})
 		})
 	}
-	async loadPage(sm: State) {
+	async loadPage(sm: State, fCallBack: Function | undefined) {
 		if (this.pageDataObjId) {
-			this.dataObjPage = await queryTypeDataObj(
-				sm,
-				this.pageDataObjId,
-				new DataObjData(),
-				TokenApiQueryType.retrieve
+			await sm.triggerAction(
+				new TokenAppStateTriggerAction({
+					codeAction: CodeAction.init(
+						CodeActionClass.ct_sys_code_action_class_do,
+						CodeActionType.doOpen
+					),
+					isNewApp: false,
+					token: new TokenAppDoQuery({
+						dataObjId: this.pageDataObjId,
+						queryType: TokenApiQueryType.retrieve
+					})
+				})
 			)
+			this.dataObjPage = sm.app.getCurrTab()?.dataObj
+			if (this.dataObjPage) {
+				if (fCallBack) this.dataObjPage.setCallbackUserAction(fCallBack)
+				sm.dm.nodeAdd(this.dataObjPage)
+			}
+			console.log('UserResourceTask.loadPage.dataObjPage', this.dataObjPage)
 		}
 	}
 

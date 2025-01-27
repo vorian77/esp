@@ -11,12 +11,14 @@ import {
 	memberOfEnum,
 	nbrRequired,
 	required,
+	ResponseBody,
 	strOptional,
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
-import { UserActionConfirm, UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
-import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+import { apiFetch, ApiFunction } from '$routes/api/api'
+import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
+import { State } from '$comps/app/types.appState.svelte'
 import { App } from '$comps/app/types.app.svelte'
 import { AppRowActionType } from '$comps/app/types.app.svelte'
 import { Node } from '$comps/app/types.node'
@@ -308,25 +310,51 @@ export class TokenApp extends Token {
 	}
 }
 
-export class TokenAppDataObjName extends TokenApp {
-	dataObjName: string
-	queryType: TokenApiQueryType
-	constructor(obj: any) {
-		const clazz = 'TokenAppDo'
-		super(obj)
-		this.dataObjName = strRequired(obj.dataObjName, clazz, 'dataObjName')
-		this.queryType = required(obj.queryType, clazz, 'queryType')
-	}
-}
-
 export class TokenAppDo extends TokenApp {
 	dataObj: DataObj
-	sm: State
 	constructor(obj: any) {
 		const clazz = 'TokenAppDo'
 		super(obj)
 		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
-		this.sm = required(obj.sm, clazz, 'sm')
+	}
+}
+
+export class TokenAppDoQuery extends TokenApp {
+	dataObjId?: string
+	dataObjName?: string
+	queryType: TokenApiQueryType
+	constructor(obj: any) {
+		const clazz = 'TokenAppDo'
+		super(obj)
+		this.dataObjId = obj.dataObjId
+		this.dataObjName = obj.dataObjName
+		this.queryType = required(obj.queryType, clazz, 'queryType')
+		if (!this.dataObjId && !this.dataObjName) {
+			error(500, {
+				file: FILENAME,
+				function: 'TokenAppDoQuery.constructor',
+				message: `Missing dataObjId or dataObjName`
+			})
+		}
+	}
+	async getDataObjId() {
+		if (this.dataObjId) {
+			return this.dataObjId
+		} else {
+			const result: ResponseBody = await apiFetch(
+				ApiFunction.dbEdgeGetDataObjId,
+				new TokenApiId(this.dataObjName!)
+			)
+			if (result.success) {
+				return result.data.id
+			} else {
+				error(500, {
+					file: FILENAME,
+					function: 'getDataObjId',
+					message: `Error retrieving dataObj for dataObjName: ${this.dataObjName}`
+				})
+			}
+		}
 	}
 }
 
@@ -420,17 +448,23 @@ export class TokenAppRow extends TokenApp {
 }
 
 export class TokenAppStateTriggerAction extends TokenApp {
+	actionAlertMsg?: string
 	codeAction: CodeAction
 	codeConfirmType: TokenAppUserActionConfirmType
 	confirm: UserActionConfirmContent
 	data: DataRecord = {}
+	fCallback: Function | undefined = undefined
+	isNewApp: boolean
 	constructor(obj: any) {
 		const clazz = 'TokenAppStateTriggerAction'
 		obj = valueOrDefault(obj, {})
 		super(obj)
+		this.actionAlertMsg = obj.actionAlertMsg
 		this.codeAction = obj.codeAction
 		this.codeConfirmType = obj.codeConfirmType || TokenAppUserActionConfirmType.none
 		this.confirm = obj.confirm || new UserActionConfirmContent(obj)
+		this.fCallback = obj.fCallback
+		this.isNewApp = booleanOrFalse(obj.isNewApp, 'isNewApp')
 		this.data.state = obj.state ? obj.state : {}
 		if (obj.dataRecord) this.data.dataRecord = obj.dataRecord
 		if (obj.token) this.data.token = obj.token

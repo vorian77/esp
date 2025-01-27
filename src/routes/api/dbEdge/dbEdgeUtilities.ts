@@ -9,27 +9,32 @@ const shapeCodeAction = e.shape(e.sys_core.SysCodeAction, (ca) => ({
 	_type: ca.name
 }))
 
+const shapeUserAction = e.shape(e.sys_user.SysUserAction, (ua) => ({
+	_actionConfirms: e.select(ua.actionConfirms, (c) => ({
+		_codeConfirmType: c.codeConfirmType.name,
+		_codeTriggerConfirmConditional: c.codeTriggerConfirmConditional.name,
+		confirmButtonLabelCancel: true,
+		confirmButtonLabelConfirm: true,
+		confirmMessage: true,
+		confirmTitle: true
+	})),
+	_actionShows: e.select(ua.actionShows, (s) => ({
+		_codeTriggerShow: s.codeTriggerShow.name,
+		isRequired: true
+	})),
+	_codeAction: e.select(ua.codeAction, (ca) => ({
+		...shapeCodeAction(ca)
+	})),
+	_codeTriggerEnable: ua.codeTriggerEnable.name,
+	actionAlertMsg: true,
+	header: ua.header,
+	name: ua.name
+}))
+
 const shapeDataObjActionGroup = e.shape(e.sys_core.SysDataObjActionGroup, (g) => ({
 	_dataObjActions: e.select(g.dataObjActions, (i) => ({
 		_action: e.select(i.action, (a) => ({
-			_actionConfirms: e.select(a.actionConfirms, (c) => ({
-				_codeConfirmType: c.codeConfirmType.name,
-				_codeTriggerConfirmConditional: c.codeTriggerConfirmConditional.name,
-				confirmButtonLabelCancel: true,
-				confirmButtonLabelConfirm: true,
-				confirmMessage: true,
-				confirmTitle: true
-			})),
-			_actionShows: e.select(a.actionShows, (s) => ({
-				_codeTriggerShow: s.codeTriggerShow.name,
-				isRequired: true
-			})),
-			_codeAction: e.select(a.codeAction, (ca) => ({
-				...shapeCodeAction(ca)
-			})),
-			_codeTriggerEnable: a.codeTriggerEnable.name,
-			header: a.header,
-			name: a.name
+			...shapeUserAction(a)
 		})),
 		_codeColor: i.codeColor.name,
 		isListRowAction: i.isListRowAction,
@@ -266,10 +271,10 @@ export async function getDataObjById(token: TokenApiId) {
 				_codeColor: doc.codeColor.name,
 				_codeFieldElement: doc.codeFieldElement.name,
 				_customCol: e.select(doc, (c) => ({
-					_codeAction: e.select(c.codeAction, (ca) => ({
-						...shapeCodeAction(ca)
+					_action: e.select(c.action, (a) => ({
+						...shapeUserAction(a)
 					})),
-					_customColCodeColor: c.customColCodeColor.name,
+					actionAlertMsg: true,
 					customColActionValue: true,
 					customColAlign: true,
 					customColIsSubHeader: true,

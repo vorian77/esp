@@ -217,10 +217,10 @@ module sys_core {
 
     # custom
     action: sys_user::SysUserAction;
-    codeAction: sys_core::SysCode;
+    actionAlertMsg: str;
+    
     customColActionValue: str;
     customColAlign: str;
-    customColCodeColor: sys_core::SysCode;
     customColIsSubHeader: bool;
     customColLabel: str;
     customColPrefix: str;

@@ -57,6 +57,12 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Action - Alert Message',
+		name: 'actionAlertMsg'
+	})
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Action - Confirms',
 		isMultiSelect: true,
@@ -70,14 +76,6 @@ export function initPreColumn(init: InitDb) {
 		name: 'actionShows',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Data Object Actions',
-		isMultiSelect: true,
-		name: 'dataObjActions',
-		owner: 'sys_system_old'
-	})
-
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Action - Submits',
@@ -955,7 +953,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
-		header: 'Custom - Action - Value',
+		header: 'Action - Value',
 		name: 'customColActionValue'
 	})
 	init.addTrans('sysColumn', {
@@ -963,13 +961,6 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Custom - Align',
 		name: 'customColAlign'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Custom - Color',
-		isMultiSelect: false,
-		name: 'customColCodeColor'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1041,6 +1032,13 @@ export function initPreColumn(init: InitDb) {
 		name: 'dataObj'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Data Object Actions',
+		isMultiSelect: true,
+		name: 'dataObjActions',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Data Object - Embed',
@@ -1061,7 +1059,6 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'dataObjModal'
 	})
-
 	init.addTrans('sysColumn', {
 		codeAlignment: 'center',
 		codeDataType: 'date',

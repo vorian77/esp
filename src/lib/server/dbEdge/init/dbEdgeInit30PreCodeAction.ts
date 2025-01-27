@@ -11,19 +11,13 @@ export function initPreCodeAction(init: InitDb) {
 function initCodeActionsDoFieldAuth(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_field_auth',
-		name: 'page',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_field_auth',
+		codeType: 'ct_sys_code_action_class_do_auth',
 		name: 'resendCode',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
-		codeType: 'ct_sys_code_action_class_do_field_auth',
+		codeType: 'ct_sys_code_action_class_do_auth',
 		name: 'submit',
 		order: 0
 	})
@@ -124,6 +118,12 @@ function initCodeActionsDoGroupItem(init: InitDb) {
 		owner: 'sys_system_old',
 		codeType: 'ct_sys_code_action_class_do',
 		name: 'doOpen',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_do',
+		name: 'doOpenLink',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {

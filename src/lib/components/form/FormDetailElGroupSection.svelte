@@ -15,7 +15,7 @@
 
 <fieldset class="p-3 mb-3 border" style:border-color={elSection.field.fieldColor.color}>
 	{#if elSection.label}
-		<legend class="text-lg font-bold">{elSection.label}</legend>
+		<legend class="text-lg font-medium">{elSection.label}</legend>
 	{/if}
 
 	{#each elSection.elements as el}

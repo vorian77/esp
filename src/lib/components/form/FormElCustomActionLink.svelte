@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { ContextKey, DataManager, type DataRecord, required } from '$utils/types'
+	import { ContextKey, DataManager, DataObj, type DataRecord, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { State } from '$comps/app/types.appState.svelte'
-	import { TokenAppStateTriggerAction } from '$utils/types.token'
+	import { TokenAppDo, TokenAppStateTriggerAction } from '$utils/types.token'
 	import { FieldCustomActionLink } from '$comps/form/fieldCustom'
 	import { goto } from '$app/navigation'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -13,15 +13,22 @@
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 	let dm: DataManager = $derived(sm.dm)
 
+	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let dataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
 	let field = $derived(parms.field) as FieldCustomActionLink
 	let prefix = $derived(field.prefix ? field.prefix + ' ' : '')
 
 	async function action() {
+		sm.app.setTreeLevelIdxCurrent(dataObj.treeLevelIdx)
 		await sm.triggerAction(
 			new TokenAppStateTriggerAction({
-				codeAction: field.codeAction,
+				actionAlertMsg: field.actionAlertMsg,
+				codeAction: field.action.codeAction,
 				dataRecord: $state.snapshot(dataRecord),
+				fCallback: dataObj.fCallbackUserAction,
+				token: new TokenAppDo({
+					dataObj
+				}),
 				value: field.value
 			})
 		)

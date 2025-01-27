@@ -4,8 +4,11 @@ import {
 	userActionStateChangeHomeAppForm
 } from '$comps/other/types.userAction.svelte'
 import {
+	CodeAction,
+	CodeActionClass,
 	CodeActionType,
 	DataRecordStatus,
+	memberOfEnum,
 	ParmsValues,
 	ParmsValuesType,
 	required
@@ -16,7 +19,7 @@ import {
 	Token,
 	TokenApiQueryType,
 	TokenAppDo,
-	TokenAppDataObjName,
+	TokenAppDoQuery,
 	TokenAppModalReturnType,
 	TokenAppStateTriggerAction
 } from '$utils/types.token'
@@ -31,6 +34,7 @@ let parentTab: AppLevelTab | undefined
 export default async function action(sm: State, parms: TokenAppStateTriggerAction) {
 	const actionType = parms.codeAction.actionType
 	const token: Token = required(parms.data.token, FILENAME, 'token')
+	const value = parms.data.value
 
 	switch (actionType) {
 		case CodeActionType.doDetailDelete:
@@ -86,12 +90,12 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 			break
 
 		case CodeActionType.doListDetailEdit:
-			await sm.app.addLevelNodeChildren(sm, token as TokenAppDo, TokenApiQueryType.retrieve)
+			await sm.app.addTreeNodeChildren(sm, token as TokenAppDo, TokenApiQueryType.retrieve)
 			userActionStateChangeHomeAppForm(sm, parms)
 			break
 
 		case CodeActionType.doListDetailNew:
-			await sm.app.addLevelNodeChildren(sm, token as TokenAppDo, TokenApiQueryType.preset)
+			await sm.app.addTreeNodeChildren(sm, token as TokenAppDo, TokenApiQueryType.preset)
 			userActionStateChangeHomeAppForm(sm, parms)
 			break
 
@@ -111,8 +115,36 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 			break
 
 		case CodeActionType.doOpen:
-			await sm.app.addLevelDataObj(sm, token as TokenAppDataObjName)
+			if (parms.isNewApp) sm.newApp()
+			await sm.app.addTreeDataObj(sm, token as TokenAppDoQuery)
 			userActionStateChangeHomeAppForm(sm, parms)
+			break
+
+		case CodeActionType.doOpenLink:
+			const doOpenValues = value.trim().split(',')
+			if (doOpenValues.length !== 2) {
+				error(500, {
+					file: FILENAME,
+					function: 'doOpenLink',
+					message: `Invalid value for doOpenLink: ${value}`
+				})
+			}
+			parms.codeAction = CodeAction.init(
+				CodeActionClass.ct_sys_code_action_class_do,
+				CodeActionType.doOpen
+			)
+			parms.data.token = new TokenAppDoQuery({
+				dataObjName: doOpenValues[0],
+				queryType: memberOfEnum(
+					doOpenValues[1],
+					FILENAME,
+					'queryType',
+					'TokenApiQueryType',
+					TokenApiQueryType
+				)
+			})
+			parms.isNewApp = !sm.app.isMultiTree
+			await action(sm, parms)
 			break
 
 		case CodeActionType.doSaveCancel:

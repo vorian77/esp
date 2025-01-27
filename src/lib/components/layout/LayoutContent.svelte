@@ -48,7 +48,7 @@
 		sm.layoutHeader.isDataObj ? (dataObj?.raw?.subHeader ? dataObj?.raw?.subHeader : '') : ''
 	)
 	let isDrawerClose = $derived(sm.layoutHeader.isDrawerClose)
-	let rowStatus = $derived(sm.layoutHeader.isRowStatus ? sm.app.getRowStatus() : undefined)
+	let rowStatus = $derived(sm.layoutHeader.isRowStatus ? sm.app.navRowStatus() : undefined)
 
 	// header styling
 	let classHeader = $derived(

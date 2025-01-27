@@ -13,7 +13,7 @@
 	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
 	import {
 		TokenApiQueryType,
-		TokenAppDataObjName,
+		TokenAppDoQuery,
 		TokenAppStateTriggerAction
 	} from '$utils/types.token'
 	import { setContext } from 'svelte'
@@ -30,46 +30,88 @@
 	const storeToast = getToastStore()
 	const IS_DEV_MODE = data.environ === 'dev'
 
-	let sm: State = $derived.by(() => {
-		return new State({
-			page: '/auth',
-			storeDrawer,
-			storeToast
-		})
-		return undefined
+	// let sm: State = $derived.by(() => {
+	// 	return new State({
+	// 		page: '/auth',
+	// 		storeDrawer,
+	// 		storeToast
+	// 	})
+	// 	return undefined
+	// })
+
+	let sm: State = new State({
+		page: '/auth',
+		storeDrawer,
+		storeToast
 	})
 
-	$effect(() => {
-		if (sm) {
-			const authType = data.authType
-			if (authType) {
-				const dataObjects = {
-					login: 'data_obj_auth_login',
-					signup: 'data_obj_auth_signup'
-				}
-				const dataObj = dataObjects[authType]
-				if (!dataObj) {
-					error(404, {
-						file: FILENAME,
-						function: 'constructor',
-						message: `Invalid authType: ${authType}`
-					})
-				}
-				sm.triggerAction(
-					new TokenAppStateTriggerAction({
-						codeAction: CodeAction.init(
-							CodeActionClass.ct_sys_code_action_class_do,
-							CodeActionType.doOpen
-						),
-						token: new TokenAppDataObjName({
-							dataObjName: dataObj,
-							queryType: TokenApiQueryType.preset
-						})
-					})
-				)
+	if (sm) {
+		const authType = data.authType
+		if (authType) {
+			const dataObjects = {
+				login: 'data_obj_auth_login',
+				signup: 'data_obj_auth_signup'
 			}
+			const dataObj = dataObjects[authType]
+			if (!dataObj) {
+				error(404, {
+					file: FILENAME,
+					function: 'constructor',
+					message: `Invalid authType: ${authType}`
+				})
+			}
+			sm.triggerAction(
+				new TokenAppStateTriggerAction({
+					codeAction: CodeAction.init(
+						CodeActionClass.ct_sys_code_action_class_do,
+						CodeActionType.doOpen
+					),
+					isNewApp: true,
+					token: new TokenAppDoQuery({
+						dataObjName: dataObj,
+						queryType: TokenApiQueryType.preset
+					})
+				})
+			)
 		}
-	})
+	}
+
+	// $effect(() => {
+	// 	$inspect.trace()
+
+	// 	const v = 5
+	// 	console.log('+page.$effect')
+	// 	if (sm) {
+	// 		const authType = data.authType
+	// 		if (authType) {
+	// 			const dataObjects = {
+	// 				login: 'data_obj_auth_login',
+	// 				signup: 'data_obj_auth_signup'
+	// 			}
+	// 			const dataObj = dataObjects[authType]
+	// 			if (!dataObj) {
+	// 				error(404, {
+	// 					file: FILENAME,
+	// 					function: 'constructor',
+	// 					message: `Invalid authType: ${authType}`
+	// 				})
+	// 			}
+	// 			sm.triggerAction(
+	// 				new TokenAppStateTriggerAction({
+	// 					codeAction: CodeAction.init(
+	// 						CodeActionClass.ct_sys_code_action_class_do,
+	// 						CodeActionType.doOpen
+	// 					),
+	// 					isNewApp: true,
+	// 					token: new TokenAppDoQuery({
+	// 						dataObjName: dataObj,
+	// 						queryType: TokenApiQueryType.preset
+	// 					})
+	// 				})
+	// 			)
+	// 		}
+	// 	}
+	// })
 
 	async function expressLogin() {
 		const userSys = '0b3ba76c-c0f4-11ee-9b77-8f017aab6306'

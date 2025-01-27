@@ -35,10 +35,9 @@
 
 	let sm: State = getContext(ContextKey.stateManager)
 	let dm: DataManager = $derived(sm.dm)
-	dm.reset()
 	let keyValue: boolean = $state(false)
 
-	setContext(ContextKey.dashboardRefresh, getData)
+	const fCallback = () => alert('Dashboard callback!')
 
 	let tasks = $derived(
 		[...sm.user.resources_sys_task_default, ...sm.user?.resources_sys_task_setting].filter(
@@ -51,6 +50,7 @@
 	let promise = $state(getData())
 
 	async function getData() {
+		sm.newApp({ isMultiTree: true })
 		for (let i = 0; i < tasks.length; i++) {
 			await getDataTask(tasks[i])
 		}
@@ -61,8 +61,9 @@
 		task.data = {}
 		task.setShow(await getDataShow(task))
 		// if (task.isShow) {
-		await task.loadPage(sm)
-		if (task.dataObjPage) dm.nodeAdd(task.dataObjPage)
+		if (task.pageDataObjId) {
+			// await task.loadPage(sm, fCallback)
+		}
 		task.data = await getDataStatus(task)
 		// }
 	}
@@ -108,6 +109,7 @@
 						CodeActionType.openNode
 					),
 					codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+					isNewApp: true,
 					token
 				})
 			)

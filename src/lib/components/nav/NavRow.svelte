@@ -1,5 +1,12 @@
 <script lang="ts">
-	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, required } from '$utils/types'
+	import {
+		CodeAction,
+		CodeActionClass,
+		CodeActionType,
+		ContextKey,
+		ParmsUser,
+		required
+	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { type AppLevelRowStatus, AppRowActionType } from '$comps/app/types.app.svelte'
 	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
@@ -17,7 +24,7 @@
 
 	let currTab = $derived(sm.app.getCurrTab())
 	let isHideRowManager = $state(currTab ? currTab?.isHideRowManager : false)
-	let rowStatus: AppLevelRowStatus = $derived(sm.app.getRowStatus())
+	let rowStatus: AppLevelRowStatus = $derived(sm.app.navRowStatus())
 
 	function onChange(rowAction: AppRowActionType) {
 		sm.triggerAction(

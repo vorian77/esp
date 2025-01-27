@@ -55,7 +55,7 @@
 			<button class="btn text-white variant-filled-primary mr-4" onclick={goto('/auth/login')}>
 				Log in
 			</button>
-			<button class="btn variant-ringed-primary mr-4" onclick={goto('/auth/signup')}>
+			<button class="btn variant-ringed-primary mr-4" onclick={() => goto('/auth/signup')}>
 				Sign up
 			</button>
 		</div>

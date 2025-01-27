@@ -3,7 +3,7 @@
 	import { getContext } from 'svelte'
 	import { State } from '$comps/app/types.appState.svelte'
 	import { FieldCustomActionButton } from '$comps/form/fieldCustom'
-	import { TokenAppStateTriggerAction } from '$utils/types.token'
+	import { TokenAppDo, TokenAppStateTriggerAction } from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/form/FormElCustomActionButton.svelte'
@@ -12,17 +12,22 @@
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 	let dm: DataManager = $derived(sm.dm)
 
-	let dashboardReset = getContext(ContextKey.dashboardRefresh)
-
+	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let dataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
 	let disabled = $derived(!dm.isStatusValidNode(parms.dataObjId))
 	let field = $derived(parms.field) as FieldCustomActionButton
 
 	async function action() {
+		sm.app.setTreeLevelIdxCurrent(dataObj.treeLevelIdx)
 		await sm.triggerAction(
 			new TokenAppStateTriggerAction({
-				codeAction: field.codeAction,
+				actionAlertMsg: field.actionAlertMsg,
+				codeAction: field.action.codeAction,
 				dataRecord: $state.snapshot(dataRecord),
+				fCallback: dataObj.fCallbackUserAction,
+				token: new TokenAppDo({
+					dataObj
+				}),
 				value: field.value
 			})
 		)

@@ -407,23 +407,23 @@ function initDataObj(init: InitDb) {
 
 			/* management */
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_start',
+				headerAlt: 'Meta',
 				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
-				codeAccess: 'readOnly',
-				columnName: 'createdAt',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 1010,
-				orderDefine: 1010,
-				indexTable: 0
+				orderDefine: 1010
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'createdBy',
+				columnName: 'createdAt',
 				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
@@ -431,7 +431,7 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'modifiedAt',
+				columnName: 'createdBy',
 				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
@@ -439,18 +439,33 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'modifiedBy',
+				columnName: 'modifiedAt',
 				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
 			},
 			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: true,
+				orderDisplay: 1050,
+				orderDefine: 1050,
+				indexTable: 0
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 1050,
-				orderDefine: 1050
+				orderDisplay: 1060,
+				orderDefine: 1060
+			},
+			{
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_end',
+				isDisplayable: true,
+				orderDisplay: 1070,
+				orderDefine: 1070
 			}
 		]
 	})
@@ -916,6 +931,14 @@ function initDataObjColumn(init: InitDb) {
 				linkTable: 'SysCode'
 			},
 			{
+				codeFieldElement: 'toggle',
+				columnName: 'isDisplayBlock',
+				isDisplayable: true,
+				orderDisplay: 427,
+				orderDefine: 427,
+				indexTable: 0
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
@@ -980,14 +1003,6 @@ function initDataObjColumn(init: InitDb) {
 				orderDefine: 450
 			},
 			{
-				codeFieldElement: 'toggle',
-				columnName: 'isDisplayBlock',
-				isDisplayable: true,
-				orderDisplay: 505,
-				orderDefine: 505,
-				indexTable: 0
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
@@ -997,9 +1012,23 @@ function initDataObjColumn(init: InitDb) {
 
 			/* Display element - custom */
 			{
-				codeFieldElement: 'customHeader',
-				columnName: 'custom_element',
-				customElement: { label: 'Custom' },
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_start',
+				isDisplayable: true,
+				orderDisplay: 515,
+				orderDefine: 515,
+				headerAlt: 'Custom'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 517,
+				orderDefine: 517
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'customColLabel',
 				isDisplayable: true,
 				orderDisplay: 520,
 				orderDefine: 520,
@@ -1007,11 +1036,29 @@ function initDataObjColumn(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				columnName: 'customColLabel',
+				codeFieldElement: 'select',
+				columnName: 'action',
 				isDisplayable: true,
-				orderDisplay: 525,
-				orderDefine: 525,
+				orderDisplay: 522,
+				orderDefine: 522,
+				indexTable: 0,
+				fieldListItems: 'il_sys_user_action',
+				linkTable: 'SysUserAction'
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'actionAlertMsg',
+				isDisplayable: true,
+				orderDisplay: 524,
+				orderDefine: 524,
 				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 526,
+				orderDefine: 526
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1035,18 +1082,6 @@ function initDataObjColumn(init: InitDb) {
 				orderDisplay: 540,
 				orderDefine: 540,
 				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'customColCodeColor',
-				isDisplayable: true,
-				orderDisplay: 545,
-				orderDefine: 545,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_tailwind_color',
-				linkTable: 'SysCode'
 			},
 			{
 				codeFieldElement: 'toggle',
@@ -1078,7 +1113,6 @@ function initDataObjColumn(init: InitDb) {
 				orderDefine: 565,
 				indexTable: 0
 			},
-
 			{
 				codeAccess: 'optional',
 				columnName: 'customColSize',
@@ -1120,13 +1154,21 @@ function initDataObjColumn(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'customHeader',
-				columnName: 'custom_element',
-				customElement: { label: 'List Items' },
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				isDisplayable: true,
+				orderDisplay: 595,
+				orderDefine: 595
+			},
+
+			/* Display element - list items */
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_start',
 				isDisplayable: true,
 				orderDisplay: 620,
 				orderDefine: 620,
-				indexTable: 0
+				headerAlt: 'List Items'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1173,13 +1215,19 @@ function initDataObjColumn(init: InitDb) {
 				orderDisplay: 670
 			},
 			{
-				codeFieldElement: 'customHeader',
-				columnName: 'custom_element',
-				customElement: { label: 'List Embed' },
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				isDisplayable: true,
+				orderDisplay: 675,
+				orderDefine: 675
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_start',
 				isDisplayable: true,
 				orderDisplay: 680,
 				orderDefine: 680,
-				indexTable: 0
+				headerAlt: 'List Embed'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1229,13 +1277,20 @@ function initDataObjColumn(init: InitDb) {
 				orderDefine: 730
 			},
 			{
-				codeFieldElement: 'customHeader',
-				columnName: 'custom_element',
-				customElement: { label: 'Embed Shell' },
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				isDisplayable: true,
+				orderDisplay: 735,
+				orderDefine: 735
+			},
+
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_start',
 				isDisplayable: true,
 				orderDisplay: 740,
 				orderDefine: 740,
-				indexTable: 0
+				headerAlt: 'Embed Shell'
 			},
 			{
 				codeAccess: 'optional',
@@ -1247,6 +1302,14 @@ function initDataObjColumn(init: InitDb) {
 				linkTable: 'SysDataObjColumn',
 				orderDisplay: 750,
 				orderDefine: 750
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				isDisplayable: true,
+				orderDisplay: 755,
+				orderDefine: 755,
+				headerAlt: 'List Embed'
 			},
 			{
 				codeFieldElement: 'tagSection',
@@ -1297,23 +1360,23 @@ function initDataObjColumn(init: InitDb) {
 
 			/* management */
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_start',
+				headerAlt: 'Meta',
 				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
-				codeAccess: 'readOnly',
-				columnName: 'createdAt',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 1010,
-				orderDefine: 1010,
-				indexTable: 0
+				orderDefine: 1010
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'createdBy',
+				columnName: 'createdAt',
 				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
@@ -1321,7 +1384,7 @@ function initDataObjColumn(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'modifiedAt',
+				columnName: 'createdBy',
 				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
@@ -1329,18 +1392,33 @@ function initDataObjColumn(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'modifiedBy',
+				columnName: 'modifiedAt',
 				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
 			},
 			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: true,
+				orderDisplay: 1050,
+				orderDefine: 1050,
+				indexTable: 0
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 1050,
-				orderDefine: 1050
+				orderDisplay: 1060,
+				orderDefine: 1060
+			},
+			{
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_end',
+				isDisplayable: true,
+				orderDisplay: 1070,
+				orderDefine: 1070
 			}
 		]
 	})

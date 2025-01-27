@@ -18,7 +18,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 
 	switch (actionType) {
 		case CodeActionType.navBack:
-			if (sm.app.levels.length === 1) {
+			if (sm.app.getCurrLevelsLength() === 1) {
 				userActionStateChangeHomeDashboard(sm, parms)
 			} else {
 				await sm.app.navBack(sm, 1)
@@ -59,8 +59,8 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 			break
 
 		case CodeActionType.openNode:
-			sm.newApp()
-			await sm.app.addLevelNode(sm, token as TokenAppNode)
+			if (parms.isNewApp) sm.newApp()
+			await sm.app.addTreeNode(sm, token as TokenAppNode)
 			userActionStateChangeHomeAppForm(sm, parms)
 			break
 

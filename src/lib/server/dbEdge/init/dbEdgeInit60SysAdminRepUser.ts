@@ -439,23 +439,23 @@ function initRepConfig(init: InitDb) {
 
 			/* management */
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_start',
+				headerAlt: 'Meta',
 				isDisplayable: true,
 				orderDisplay: 1000,
 				orderDefine: 1000
 			},
 			{
-				codeAccess: 'readOnly',
-				columnName: 'createdAt',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 1010,
-				orderDefine: 1010,
-				indexTable: 0
+				orderDefine: 1010
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'createdBy',
+				columnName: 'createdAt',
 				isDisplayable: true,
 				orderDisplay: 1020,
 				orderDefine: 1020,
@@ -463,7 +463,7 @@ function initRepConfig(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'modifiedAt',
+				columnName: 'createdBy',
 				isDisplayable: true,
 				orderDisplay: 1030,
 				orderDefine: 1030,
@@ -471,18 +471,33 @@ function initRepConfig(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'modifiedBy',
+				columnName: 'modifiedAt',
 				isDisplayable: true,
 				orderDisplay: 1040,
 				orderDefine: 1040,
 				indexTable: 0
 			},
 			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: true,
+				orderDisplay: 1050,
+				orderDefine: 1050,
+				indexTable: 0
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 1050,
-				orderDefine: 1050
+				orderDisplay: 1060,
+				orderDefine: 1060
+			},
+			{
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_end',
+				isDisplayable: true,
+				orderDisplay: 1070,
+				orderDefine: 1070
 			}
 		]
 	})

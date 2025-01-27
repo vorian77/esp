@@ -56,6 +56,7 @@ module sys_user {
       on source delete delete target;
       on target delete allow;
     };
+    actionAlertMsg: str;
     multi actionShows: sys_user::SysUserActionShow {
       on source delete delete target;
       on target delete allow;

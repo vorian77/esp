@@ -25,7 +25,7 @@
 
 	let rowCount: number = $derived.by(() => {
 		let rowCount = undefined
-		const currLevel = sm.app.levels[sm.app.levels.length - 1]
+		const currLevel = sm.app.getCurrLevel()
 		if (currLevel) {
 			const currTab = currLevel.tabs[currLevel.tabIdxCurrent]
 			if (currTab) rowCount = currTab.dataObj?.data?.rowsRetrieved.dataRows.length

@@ -11,7 +11,6 @@ import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj'
 import { getReportUser } from '$routes/api/dbEdge/types.dbEdge'
 import { error } from '@sveltejs/kit'
-import { is } from '$db/esdl/edgeql-js'
 
 const FILENAME = '$routes/api/dbEdge/dbEdgeProcessDynDOReportRender.ts'
 let fName = (functionName: string) => {

@@ -13,7 +13,7 @@
 	const FILENAME = '/$comps/nav/NavCrumbsMobile.svelte'
 
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
-	let crumbsList: AppLevelCrumb[] = $derived(sm.app.getCrumbsList())
+	let crumbsList: AppLevelCrumb[] = $derived(sm.app.navCrumbsList())
 
 	function onClick(index: number) {
 		sm.triggerAction(

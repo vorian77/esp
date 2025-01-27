@@ -15,23 +15,24 @@ import {
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
-import { FieldColor } from '$comps/form/field'
 import { RawDataObjAction, RawUserAction } from '$comps/dataObj/types.rawDataObj'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.userAction.ts'
 
 export class UserAction {
+	actionAlertMsg?: string
 	actionConfirms: UserActionConfirm[]
 	actionShows: UserActionShow[]
 	codeAction: CodeAction
 	codeTriggerEnable: UserActionTrigger
-	header: string
+	header?: string
 	isStatusDisabled: boolean = false
 	isStatusShow: boolean = false
 	name: string
 	constructor(rawAction: RawUserAction, sm: State | undefined = undefined) {
 		const clazz = 'UserAction'
+		this.actionAlertMsg = rawAction.actionAlertMsg
 		this.actionConfirms = rawAction.actionConfirms
 		this.actionShows = rawAction.actionShows
 		this.codeAction = rawAction.codeAction
@@ -88,8 +89,7 @@ export class UserAction {
 				codeConfirmType,
 				confirm,
 				token: new TokenAppDo({
-					dataObj,
-					sm
+					dataObj
 				})
 			})
 		)

@@ -480,10 +480,10 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 	}
 }
 export class RawDataObjPropDisplayCustom {
-	codeAction?: CodeAction
+	action?: UserAction
+	actionAlertMsg?: string
 	customColActionValue?: string
 	customColAlign?: string
-	customColCodeColor?: string
 	customColIsSubHeader?: boolean
 	customColLabel?: string
 	customColPrefix?: string
@@ -494,10 +494,12 @@ export class RawDataObjPropDisplayCustom {
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjPropDisplayCustom'
-		this.codeAction = classOptional(CodeAction, obj._codeAction)
+		if (obj._action) {
+			this.action = new UserAction(new RawUserAction(obj._action))
+		}
+		this.actionAlertMsg = strOptional(obj.actionAlertMsg, clazz, 'actionAlertMsg')
 		this.customColActionValue = strOptional(obj.customColActionValue, clazz, 'customColActionValue')
 		this.customColAlign = strOptional(obj.customColAlign, clazz, 'customColAlign')
-		this.customColCodeColor = strOptional(obj._customColCodeColor, clazz, 'customColCodeColor')
 		this.customColIsSubHeader = obj.customColIsSubHeader
 		this.customColLabel = strOptional(obj.customColLabel, clazz, 'customColLabel')
 		this.customColPrefix = strOptional(obj.customColPrefix, clazz, 'customColPrefix')
@@ -548,7 +550,7 @@ export class RawDataObjPropDisplayEmbedListSelect {
 		const btnLabelComplete = strOptional(label, clazz, 'btnLabelComplete')
 		if (btnLabelComplete) {
 			const dataObjActionDone = rawDataObjActions.find((rdoa) => {
-				return rdoa.action.name === 'ua_dialog_done'
+				return rdoa.action.name === 'ua_sys_dialog_done'
 			})
 			if (dataObjActionDone) dataObjActionDone.action.header = btnLabelComplete
 		}
@@ -637,15 +639,17 @@ export class RawDBColumn {
 }
 
 export class RawUserAction {
+	actionAlertMsg?: string
 	actionConfirms: UserActionConfirm[]
 	actionShows: UserActionShow[]
 	codeAction: CodeAction
 	codeTriggerEnable: UserActionTrigger
-	header: string
+	header?: string
 	name: string
 	constructor(obj: any) {
 		const clazz = 'RawUserAction'
 		obj = valueOrDefault(obj, {})
+		this.actionAlertMsg = strOptional(obj.actionAlertMsg, clazz, 'actionAlertMsg')
 		this.actionConfirms = arrayOfClass(UserActionConfirm, obj._actionConfirms)
 		this.actionShows = arrayOfClass(UserActionShow, obj._actionShows)
 		this.codeAction = new CodeAction(obj._codeAction)
@@ -656,7 +660,7 @@ export class RawUserAction {
 			'UserActionTrigger',
 			UserActionTrigger
 		)
-		this.header = strRequired(obj.header, clazz, 'header')
+		this.header = obj.header
 		this.name = strRequired(obj.name, clazz, 'name')
 	}
 }

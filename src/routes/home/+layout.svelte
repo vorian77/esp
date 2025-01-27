@@ -43,9 +43,7 @@
 			if (isMobile) {
 				if (!isMobileMenuHide) toggleMobileMenuHide()
 			} else {
-				if (triggerToken === StateTriggerToken.homeDashboard && !navMenu.isOpen) {
-					navMenu.openToggle()
-				}
+				if (!navMenu.isOpen) navMenu.openToggle()
 			}
 		} else if (sm.consumeTriggerToken(StateTriggerToken.homeApp)) {
 			triggerToken = StateTriggerToken.homeApp

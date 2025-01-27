@@ -49,18 +49,17 @@ function queryDataPre(sm: State, data: DataObjData | undefined, queryType: Token
 
 function queryDataPreTree(queryType: TokenApiQueryType, app: App) {
 	const clazz = `${FILENAME}.queryDataPreTree`
-	let dataTree = new TokenApiQueryDataTree()
 	let offset = 0
 
 	switch (queryType) {
 		case TokenApiQueryType.preset:
 			offset = 2
+			// offset = 1
 			break
 		case TokenApiQueryType.retrieve:
-			offset = 1
-			break
 		case TokenApiQueryType.save:
 			offset = 1
+			// offset = 0
 			break
 		default:
 			error(500, {
@@ -69,18 +68,7 @@ function queryDataPreTree(queryType: TokenApiQueryType, app: App) {
 				message: `No case defined for queryType: ${queryType}`
 			})
 	}
-
-	for (let i = 0; i < app.levels.length - offset; i++) {
-		const level = app.levels[i]
-		const currTab = level.getCurrTab()
-		const dataObj = required(currTab.dataObj, clazz, 'currTab.dataObj')
-		if (dataObj && dataObj.raw.codeCardinality === DataObjCardinality.list) {
-			const table = required(dataObj.rootTable?.name, 'rootTable', 'DataObj')
-			const dataRow = currTab.listGetDataRow()
-			if (dataRow) dataTree.upsertData(table, dataRow)
-		}
-	}
-	return dataTree
+	return app.getDataTree(offset)
 }
 
 export async function queryExecute(
@@ -234,6 +222,7 @@ export async function queryTypeTab(
 
 	// query post
 	if (dataObj) {
+		dataObj.setTreeLevelIdx(tab.treeLevelIdx)
 		tab.isRetrieved = !tab.isAlwaysRetrieveData
 		tab.dataObj = dataObj
 		table = getTable(tab.dataObj)

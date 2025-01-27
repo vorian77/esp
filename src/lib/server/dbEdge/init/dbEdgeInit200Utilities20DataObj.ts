@@ -212,30 +212,18 @@ export async function addDataObj(data: any) {
 						),
 
 						/* custom column */
-						codeAction: e.select(
-							e.sys_core.getCodeAction(
-								e.cast(
-									e.str,
-									e.json_get(e.json_get(e.json_get(f, 'customElement'), 'action'), 'class')
-								),
-								e.cast(
-									e.str,
-									e.json_get(e.json_get(e.json_get(f, 'customElement'), 'action'), 'type')
-								)
-							)
+						action: e.sys_user.getUserAction(
+							e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'action'))
+						),
+						actionAlertMsg: e.cast(
+							e.str,
+							e.json_get(e.json_get(f, 'customElement'), 'actionAlertMsg')
 						),
 						customColActionValue: e.cast(
 							e.str,
 							e.json_get(e.json_get(f, 'customElement'), 'value')
 						),
 						customColAlign: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'align')),
-						customColCodeColor: e.select(
-							e.sys_core.getCode(
-								'ct_sys_tailwind_color',
-								e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'color'))
-							)
-						),
-
 						customColIsSubHeader: booleanOrDefaultJSON(
 							e.json_get(f, 'customElement'),
 							'isSubHeader',
@@ -510,16 +498,18 @@ export async function addUserAction(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
+			actionAlertMsg: e.optional(e.str),
 			actionConfirms: e.array(e.json),
 			actionShows: e.array(e.json),
 			codeAction: e.json,
 			codeTriggerEnable: e.str,
-			header: e.str,
+			header: e.optional(e.str),
 			name: e.str,
 			owner: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysUserAction, {
+				actionAlertMsg: p.actionAlertMsg,
 				actionConfirms: e.for(e.array_unpack(p.actionConfirms), (a) => {
 					return e.insert(e.sys_user.SysUserActionConfirm, {
 						codeConfirmType: e.select(

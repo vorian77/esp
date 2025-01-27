@@ -136,7 +136,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter: `.owner.id in <user,uuidlist,systemIds> OR .isGlobalResource = true`,
+		exprFilter: `.owner.id in <user,uuidlist,systemIds> UNION .isGlobalResource = true`,
 		name: 'il_sys_app_header_order_name',
 		owner: 'sys_system_old',
 		table: 'SysAppHeader'
@@ -323,6 +323,15 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		owner: 'sys_system_old',
 		table: 'SysUser'
 	})
+
+	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter: `.owner.id in <user,uuidlist,systemIds> UNION .isGlobalResource = true`,
+		props: [[0, 'name', 'Name', '.name', true, 0]],
+		name: 'il_sys_user_action',
+		owner: 'sys_system_old',
+		table: 'SysUserAction'
+	})
+
 	init.addTrans('sysDataObjFieldListItems', {
 		exprFilter: `.id IN (<tree,uuid,SysOrg.id> UNION (SELECT DETACHED sys_user::SysUser FILTER .id = <tree,uuid,SysUser.id,undefined>).orgs.id)`,
 		props: [[0, 'name', 'Name', '.name', true, 0]],

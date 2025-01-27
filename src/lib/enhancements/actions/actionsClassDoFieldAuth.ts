@@ -1,12 +1,5 @@
 import { State } from '$comps/app/types.appState.svelte'
-import {
-	CodeAction,
-	CodeActionClass,
-	CodeActionType,
-	required,
-	strRequired,
-	userSetId
-} from '$utils/types'
+import { CodeAction, CodeActionClass, CodeActionType, required, userSetId } from '$utils/types'
 import { userActionError } from '$comps/other/types.userAction.svelte'
 import {
 	TokenApiDbDataObjSource,
@@ -14,15 +7,11 @@ import {
 	TokenApiQueryData,
 	TokenApiQueryType,
 	TokenApiSysSendText,
-	TokenAppDataObjName,
-	TokenAppStateTriggerAction,
-	TokenAppUserAction,
-	TokenAppUserActionConfirmType
+	TokenAppDoQuery,
+	TokenAppStateTriggerAction
 } from '$utils/types.token'
-import { FieldCustomAction } from '$comps/form/fieldCustom'
 import type { DataRecord, ResponseBody } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionClassDoFieldAuth.ts'
@@ -39,13 +28,9 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 		userActionError(FILENAME, actionType),
 		'dataRecord'
 	)
-	const value = strRequired(parms.data.value, userActionError(FILENAME, actionType), 'value')
+	const value = parms.data.value
 
 	switch (actionType) {
-		case CodeActionType.page:
-			await changeDataObj(sm, value)
-			break
-
 		case CodeActionType.resendCode:
 			sendCode(authSecurityCodePhone)
 			break
@@ -162,7 +147,8 @@ async function changeDataObj(sm: State, dataObjName: string) {
 				CodeActionClass.ct_sys_code_action_class_do,
 				CodeActionType.doOpen
 			),
-			token: new TokenAppDataObjName({
+			isNewApp: true,
+			token: new TokenAppDoQuery({
 				dataObjName,
 				queryType: TokenApiQueryType.preset
 			})

@@ -1,6 +1,7 @@
 import { Field, FieldAccess, FieldColor, PropsFieldCreate } from '$comps/form/field'
 import { CodeAction, required, strRequired, valueOrDefault } from '$utils/types'
 import { PropNamePrefixType, RawDataObjPropDisplayCustom } from '$comps/dataObj/types.rawDataObj'
+import { UserAction } from '$comps/other/types.userAction.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/form/fieldCustom.ts'
@@ -23,7 +24,8 @@ export class FieldCustom extends Field {
 }
 
 export class FieldCustomAction extends FieldCustom {
-	codeAction: CodeAction
+	action: UserAction
+	actionAlertMsg?: string
 	value: string
 	constructor(props: PropsFieldCreate) {
 		const clazz = 'FieldCustomAction'
@@ -33,7 +35,8 @@ export class FieldCustomAction extends FieldCustom {
 			clazz,
 			'customCol'
 		)
-		this.codeAction = required(customCol.codeAction, clazz, 'codeAction')
+		this.action = required(customCol.action, clazz, 'action')
+		this.actionAlertMsg = customCol.actionAlertMsg || this.action.actionAlertMsg
 		this.value = valueOrDefault(customCol.customColActionValue, '')
 	}
 }
@@ -48,7 +51,7 @@ export class FieldCustomActionButton extends FieldCustomAction {
 			clazz,
 			'customCol'
 		) as RawDataObjPropDisplayCustom
-		this.fieldColor = new FieldColor(customCol.customColCodeColor || this.colDO.codeColor, 'blue')
+		this.fieldColor = new FieldColor(this.colDO.codeColor, 'blue')
 	}
 }
 export class FieldCustomActionLink extends FieldCustomAction {
