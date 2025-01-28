@@ -91,7 +91,7 @@ export class State {
 
 		this.triggerTokens = valueOrDefault(obj.triggerTokens, [])
 
-		// if (this.fChangeCallback) this.fChangeCallback(obj)
+		if (this.fChangeCallback) this.fChangeCallback(obj)
 	}
 
 	closeModal() {

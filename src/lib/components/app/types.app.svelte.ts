@@ -52,8 +52,8 @@ const FILENAME = '/$comps/nav/types.app.ts'
 export class App {
 	isMultiTree: boolean
 	treeLevelIdxCurrent: number = -1
-	// treeLevels: AppTree[] = $state([])
-	treeLevels: AppTree[] = []
+	treeLevels: AppTree[] = $state([])
+	// treeLevels: AppTree[] = []
 	constructor(obj: any = {}) {
 		this.isMultiTree = booleanOrFalse(obj.isMultiTree, 'isMultiTree')
 	}
@@ -242,7 +242,7 @@ export class App {
 		this.getCurrTreeLevel()?.levelPop(sm)
 	}
 	async navBack(sm: State, backCnt: number) {
-		this.getCurrTreeLevel()?.navBack(sm, backCnt)
+		await this.getCurrTreeLevel()?.navBack(sm, backCnt)
 	}
 	navCrumbsList() {
 		return this.getCurrTreeLevel()?.navCrumbsList()
@@ -254,17 +254,17 @@ export class App {
 		return this.getCurrTreeLevel()?.navRowStatus()
 	}
 	async navTab(sm: State, token: TokenAppTab) {
-		this.getCurrTreeLevel()?.navTab(sm, token)
+		await this.getCurrTreeLevel()?.navTab(sm, token)
 	}
 	async rowUpdate(sm: State, token: TokenAppRow) {
-		this.getCurrTreeLevel()?.rowUpdate(sm, token)
+		await this.getCurrTreeLevel()?.rowUpdate(sm, token)
 	}
 
 	async saveDetail(sm: State, codeActionType: CodeActionType, token: TokenAppDo) {
-		return this.getCurrTreeLevel()?.saveDetail(sm, codeActionType, token)
+		return await this.getCurrTreeLevel()?.saveDetail(sm, codeActionType, token)
 	}
 	async saveList(sm: State) {
-		this.getCurrTreeLevel()?.saveList(sm)
+		await this.getCurrTreeLevel()?.saveList(sm)
 	}
 
 	setTreeLevelIdxCurrent(treeLevelIdx: number) {
@@ -272,7 +272,7 @@ export class App {
 		return treeLevelIdx
 	}
 	async tabDuplicate(sm: State, token: TokenAppDo) {
-		this.getCurrTreeLevel()?.tabDuplicate(sm, token)
+		await this.getCurrTreeLevel()?.tabDuplicate(sm, token)
 	}
 
 	virtualModalLevelAdd(dataObjEmbed: DataObj) {
