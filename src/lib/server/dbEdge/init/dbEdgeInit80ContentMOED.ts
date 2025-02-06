@@ -240,6 +240,14 @@ function initStudent(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
+				columnName: 'genderSelfId',
+				indexTable: 1,
+				isDisplayable: true,
+				orderDefine: 145,
+				orderDisplay: 145
+			},
+			{
+				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeRace',
 				isDisplayable: true,
@@ -1701,6 +1709,14 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
+				columnName: 'genderSelfId',
+				indexTable: 2,
+				isDisplayable: true,
+				orderDefine: 285,
+				orderDisplay: 285
+			},
+			{
+				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeRace',
 				isDisplayable: true,
@@ -1808,16 +1824,55 @@ function initTaskSsrApp(init: InitDb) {
 		]
 	})
 
+	init.addTrans('dataObjColumnItemChangeBulk', [
+		[
+			'data_obj_task_moed_ssr_app',
+			[
+				{
+					fieldTrigger: 'codeGender',
+					fieldTriggerTargets: [
+						{
+							codeValueTrigger: {
+								codeType: 'ct_sys_person_gender',
+								name: 'Prefer to self-identify',
+								owner: 'sys_moed_old'
+							},
+							codeValueTypeTarget: 'none',
+							codeValueTypeTrigger: 'code',
+							field: 'genderSelfId',
+							fieldAccess: 'required',
+							op: 'equal',
+							orderDefine: 0
+						},
+						{
+							codeValueTrigger: {
+								codeType: 'ct_sys_person_gender',
+								name: 'Prefer to self-identify',
+								owner: 'sys_moed_old'
+							},
+							codeValueTypeTarget: 'reset',
+							codeValueTypeTrigger: 'code',
+							field: 'genderSelfId',
+							fieldAccess: 'hidden',
+							op: 'notEqual',
+							orderDefine: 1
+						}
+					]
+				}
+			]
+		]
+	])
+
 	init.addTrans('sysTask', {
 		codeCategory: 'default',
 		codeIcon: 'ClipboardPen',
 		codeRenderType: 'button',
 		codeStatusObj: 'tso_moed_app',
 		description: 'First step to my future.',
-		exprShow: `SELECT true IF (SELECT EXISTS ((SELECT app_cm::CmClientServiceFlow filter .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person))) ?? false ELSE false`,
+		exprShow: `SELECT true IF (SELECT (SELECT sys_user::SysUser FILTER .id =  <user,uuid,id>).person.isLegalAgreed = true) ?? false ELSE false`,
 		exprStatus: `SELECT app_cm::CmClientServiceFlow
-{ _codeStatus := .codeStatus.name, dateCreated, modifiedAt, _modifiedBy := .modifiedBy.person.fullName }
-FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person ORDER BY .modifiedAt DESC`,
+	{ _codeStatus := .codeStatus.name, dateCreated, modifiedAt, _modifiedBy := .modifiedBy.person.fullName }
+	FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person ORDER BY .modifiedAt DESC`,
 		header: 'My Application',
 		isPinToDash: true,
 		isGlobalResource: false,
@@ -2356,7 +2411,7 @@ function initTaskSsrWelcome(init: InitDb) {
 				columnName: 'custom_element',
 				customElement: {
 					action: 'ua_sys_save_detail',
-					actionAlertMsg: 'Action alert: custom button',
+					actionAlertMsg: `Great! Next complete your application!`,
 					label: 'Get Started!'
 				},
 				isDisplayable: true,
@@ -2370,7 +2425,7 @@ function initTaskSsrWelcome(init: InitDb) {
 		codeCategory: 'default',
 		codeIcon: 'ClipboardPen',
 		codeRenderType: 'page',
-		exprShow: `SELECT true IF (SELECT ((SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)).person.isLegalAgreed = true AND NOT EXISTS ((SELECT app_cm::CmClientServiceFlow filter .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person))) ?? false ELSE false`,
+		exprShow: `SELECT false IF (SELECT (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.isLegalAgreed = true) ?? false ELSE true`,
 		header: 'Welcome',
 		isPinToDash: true,
 		isGlobalResource: false,

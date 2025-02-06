@@ -4,21 +4,19 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doOpenLink' },
-		codeTriggerEnable: 'always',
-		name: 'ua_ca_sys_do_open_link',
-		owner: 'sys_system_old'
-	})
-
-	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
 		codeAction: { codeType: 'ct_sys_code_action_class_do_auth', name: 'resendCode' },
 		codeTriggerEnable: 'always',
 		name: 'ua_ca_sys_auth_resend_code',
 		owner: 'sys_system_old'
 	})
-
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do_auth', name: 'setUserId' },
+		codeTriggerEnable: 'always',
+		name: 'ua_ca_sys_auth_set_user_id',
+		owner: 'sys_system_old'
+	})
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
@@ -83,6 +81,15 @@ export function initPreUserAction(init: InitDb) {
 		codeTriggerEnable: 'always',
 		header: 'Done',
 		name: 'ua_sys_dialog_done',
+		owner: 'sys_system_old'
+	})
+
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doOpenLink' },
+		codeTriggerEnable: 'always',
+		name: 'ua_ca_sys_do_open_link',
 		owner: 'sys_system_old'
 	})
 
@@ -223,6 +230,16 @@ export function initPreUserAction(init: InitDb) {
 
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailSaveAs' },
+		codeTriggerEnable: 'always',
+		header: 'Save As',
+		name: 'ua_sys_save_as_detail',
+		owner: 'sys_system_old'
+	})
+
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [
 			{ codeTriggerShow: 'statusChanged', isRequired: true },
 			{ codeTriggerShow: 'rootDataObj', isRequired: true }
@@ -231,16 +248,6 @@ export function initPreUserAction(init: InitDb) {
 		codeTriggerEnable: 'always',
 		header: 'Cancel Save',
 		name: 'ua_sys_save_cancel',
-		owner: 'sys_system_old'
-	})
-
-	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailSaveAs' },
-		codeTriggerEnable: 'always',
-		header: 'Save As',
-		name: 'ua_sys_save_as_detail',
 		owner: 'sys_system_old'
 	})
 

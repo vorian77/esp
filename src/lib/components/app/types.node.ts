@@ -38,7 +38,6 @@ export class Node extends NodeHeader {
 	isAlwaysRetrieveData: boolean
 	isHideRowManager: boolean
 	isMobileMode: boolean
-	page: string
 	constructor(obj: any) {
 		const clazz = 'Node'
 		obj = valueOrDefault(obj, {})
@@ -49,7 +48,6 @@ export class Node extends NodeHeader {
 		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData, 'isAlwaysRetrieveData')
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
 		this.isMobileMode = booleanOrFalse(obj.isMobileMode, 'isHideRowManager')
-		this.page = valueOrDefault(obj.page, '/home')
 	}
 }
 

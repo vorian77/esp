@@ -26,8 +26,8 @@
 	let isHideRowManager = $state(currTab ? currTab?.isHideRowManager : false)
 	let rowStatus: AppLevelRowStatus = $derived(sm.app.navRowStatus())
 
-	function onChange(rowAction: AppRowActionType) {
-		sm.triggerAction(
+	async function onChange(rowAction: AppRowActionType) {
+		await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_nav,

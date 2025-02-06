@@ -310,13 +310,7 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'codeDataTypeDisplay'
 	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Operation',
-		isMultiSelect: false,
-		name: 'codeDbDataOp'
-	})
+
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
@@ -1351,6 +1345,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Full Name',
 		name: 'fullName'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Gender Self Identity',
+		name: 'genderSelfId'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

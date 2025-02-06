@@ -1,9 +1,14 @@
 <script lang="ts">
 	import { User } from '$utils/types'
-	import { State, StateComponentLayout, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import {
+		State,
+		StateComponentContent,
+		StateComponentLayout,
+		StateTriggerToken
+	} from '$comps/app/types.appState.svelte'
 	import { getDrawerStore, getModalStore, getToastStore } from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
-	import NavDash from '$comps/nav/navDash/NavDash.svelte'
+	import LayoutDash from '$comps/layout/layoutDash/LayoutDashboard.svelte'
 	import NavMenu from '$comps/nav/navMenu/NavMenu.svelte'
 	import { NavMenuData } from '$comps/nav/navMenu/types.navMenu.svelte'
 	import NavAppMobile from '$comps/nav/NavAppMobile.svelte'
@@ -21,32 +26,29 @@
 	let innerWidth = $state(0)
 	let isMobile = $derived(innerWidth <= 640)
 	let isMobileMenuHide = $state(true)
-	let triggerToken: StateTriggerToken = $state()
 
 	let sm: State = $state(
 		new State({
-			componentLayout: StateComponentLayout.layoutApp,
-			page: '/home',
+			navLayout: StateComponentLayout.layoutDashboard,
+			navPage: '/home',
 			storeDrawer: getDrawerStore(),
 			storeModal: getModalStore(),
 			storeToast: getToastStore(),
-			triggerTokens: [StateTriggerToken.homeDashboard],
+			triggerTokens: [StateTriggerToken.navDashboard, StateTriggerToken.navLayout],
 			user: new User(data.rawUser)
 		})
 	)
 	setContext(ContextKey.stateManager, sm)
 	let navMenu: NavMenuData = $state(new NavMenuData({ sm }))
+	let triggerTokens: StateTriggerToken[] = $derived(sm.triggerTokens)
 
 	$effect(() => {
-		if (sm.consumeTriggerToken(StateTriggerToken.homeDashboard)) {
-			triggerToken = StateTriggerToken.homeDashboard
+		if (sm.consumeTriggerToken(StateTriggerToken.navDashboard)) {
 			if (isMobile) {
 				if (!isMobileMenuHide) toggleMobileMenuHide()
 			} else {
 				if (!navMenu.isOpen) navMenu.openToggle()
 			}
-		} else if (sm.consumeTriggerToken(StateTriggerToken.homeApp)) {
-			triggerToken = StateTriggerToken.homeApp
 		}
 	})
 
@@ -71,11 +73,7 @@
 		</div>
 		<div id="layout-main-content" class="grow">
 			{#if $page.route.id === '/home'}
-				{#if triggerToken === StateTriggerToken.homeDashboard}
-					<NavDash />
-				{:else if triggerToken === StateTriggerToken.homeApp}
-					<RootLayoutApp {sm} />
-				{/if}
+				<RootLayoutApp {sm} />
 			{:else}
 				<slot />
 			{/if}

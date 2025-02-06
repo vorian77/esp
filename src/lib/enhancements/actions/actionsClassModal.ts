@@ -1,8 +1,5 @@
-import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
-import {
-	userActionStateChangeHomeAppCustom,
-	userActionStateChangeHomeAppForm
-} from '$comps/other/types.userAction.svelte'
+import { State } from '$comps/app/types.appState.svelte'
+import { userActionStateChangeDataObj } from '$comps/other/types.userAction.svelte'
 import { TokenAppStateTriggerAction } from '$utils/types.token'
 import { CodeActionType } from '$utils/types'
 import {
@@ -22,7 +19,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 	switch (actionType) {
 		case CodeActionType.embedField:
 			await sm.app.addLevelEmbedField(sm, token as TokenApiQuery)
-			userActionStateChangeHomeAppForm(sm, parms)
+			await userActionStateChangeDataObj(sm, parms)
 			break
 
 		case CodeActionType.embedShell:
@@ -30,7 +27,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 
 		case CodeActionType.modalEmbed:
 			await sm.app.addLevelModalEmbedField(sm, token as TokenAppModalEmbedField)
-			userActionStateChangeHomeAppForm(sm, parms)
+			await userActionStateChangeDataObj(sm, parms)
 			break
 
 		case CodeActionType.modalSelectOpen:

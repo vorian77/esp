@@ -6,9 +6,6 @@ const FILENAME = '$comps/form/types.fieldGroup.ts'
 export function getDetailElements(dataObj: DataObj) {
 	let newEls: DetailEl[] = []
 	let currGroup: DetailElGroup | undefined
-	if (dataObj.raw.name.endsWith('welcome')) {
-		console.log(FILENAME, 'getDetailElements', 'dataObj: ' + dataObj.raw.name)
-	}
 	dataObj.fields.forEach((field, idx) => {
 		const propName = field.colDO.propNameRaw.toLowerCase()
 		switch (propName) {

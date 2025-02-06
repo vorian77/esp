@@ -62,6 +62,7 @@ export type $SysPersonλShape = $.typeutil.flatten<_sys_core.$ObjRootλShape & {
   "city": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "email": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "zip": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "genderSelfId": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "codeDisabilityStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeEthnicity": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeGender": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;

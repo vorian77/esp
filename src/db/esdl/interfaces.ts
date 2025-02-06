@@ -239,6 +239,7 @@ export namespace $default {
     "city"?: string | null;
     "email"?: string | null;
     "zip"?: string | null;
+    "genderSelfId"?: string | null;
     "codeDisabilityStatus"?: sys_core.SysCode | null;
     "codeEthnicity"?: sys_core.SysCode | null;
     "codeGender"?: sys_core.SysCode | null;
@@ -396,10 +397,10 @@ export namespace sys_core {
   export interface SysDataObjColumn extends sys_user.Mgmt {
     "exprSave"?: string | null;
     "actionAlertMsg"?: string | null;
+    "itemChanges": SysDataObjColumnItemChange[];
     "codeAccess"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
     "codeColor"?: SysCode | null;
-    "codeDbDataOp"?: SysCode | null;
     "codeDbDataSourceValue"?: SysCode | null;
     "codeFieldElement"?: SysCode | null;
     "codeSortDir"?: SysCode | null;
@@ -410,7 +411,7 @@ export namespace sys_core {
     "fieldEmbedListEdit"?: SysDataObjFieldEmbedListEdit | null;
     "fieldEmbedListSelect"?: SysDataObjFieldEmbedListSelect | null;
     "fieldListItems"?: SysDataObjFieldListItems | null;
-    "items": SysDataObjColumnItem[];
+    "items": SysDataObjColumnItemValue[];
     "linkColumns": SysDataObjColumnLink[];
     "linkTable"?: sys_db.SysTable | null;
     "customColActionValue"?: string | null;
@@ -443,7 +444,20 @@ export namespace sys_core {
     "width"?: number | null;
     "action"?: sys_user.SysUserAction | null;
   }
-  export interface SysDataObjColumnItem extends sys_user.Mgmt {
+  export interface SysDataObjColumnItemChange extends sys_user.Mgmt {
+    "codeAccess"?: SysCode | null;
+    "codeValueTarget"?: SysCode | null;
+    "codeValueTrigger"?: SysCode | null;
+    "column": SysDataObjColumn;
+    "fieldListItemsParmName"?: string | null;
+    "valueScalarTarget"?: string | null;
+    "valueScalarTrigger"?: string | null;
+    "orderDefine": number;
+    "codeOp"?: SysCode | null;
+    "codeValueTypeTarget": SysCode;
+    "codeValueTypeTrigger": SysCode;
+  }
+  export interface SysDataObjColumnItemValue extends sys_user.Mgmt {
     "data": string;
     "display": string;
     "orderDefine": number;
@@ -1043,7 +1057,8 @@ export interface types {
     "SysDataObjActionQueryParm": sys_core.SysDataObjActionQueryParm;
     "SysDataObjActionQueryTrigger": sys_core.SysDataObjActionQueryTrigger;
     "SysDataObjColumn": sys_core.SysDataObjColumn;
-    "SysDataObjColumnItem": sys_core.SysDataObjColumnItem;
+    "SysDataObjColumnItemChange": sys_core.SysDataObjColumnItemChange;
+    "SysDataObjColumnItemValue": sys_core.SysDataObjColumnItemValue;
     "SysDataObjColumnLink": sys_core.SysDataObjColumnLink;
     "SysDataObjFieldEmbedListConfig": sys_core.SysDataObjFieldEmbedListConfig;
     "SysDataObjFieldEmbedListEdit": sys_core.SysDataObjFieldEmbedListEdit;

@@ -1,5 +1,5 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { CodeAction, CodeActionClass, CodeActionType, required, userSetId } from '$utils/types'
+import { CodeAction, CodeActionClass, CodeActionType, required, strRequired } from '$utils/types'
 import { userActionError } from '$comps/other/types.userAction.svelte'
 import {
 	TokenApiDbDataObjSource,
@@ -8,7 +8,8 @@ import {
 	TokenApiQueryType,
 	TokenApiSysSendText,
 	TokenAppDoQuery,
-	TokenAppStateTriggerAction
+	TokenAppStateTriggerAction,
+	TokenAppUserActionConfirmType
 } from '$utils/types.token'
 import type { DataRecord, ResponseBody } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
@@ -23,11 +24,6 @@ let authSecurityCode = 0
 
 export default async function action(sm: State, parms: TokenAppStateTriggerAction) {
 	const actionType = parms.codeAction.actionType
-	const dataRecord = required(
-		parms.data.dataRecord,
-		userActionError(FILENAME, actionType),
-		'dataRecord'
-	)
 	const value = parms.data.value
 
 	switch (actionType) {
@@ -35,7 +31,35 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 			sendCode(authSecurityCodePhone)
 			break
 
+		case CodeActionType.setUserId:
+			const formData = new FormData()
+			const userId = strRequired(
+				value,
+				userActionError(FILENAME, CodeActionType.setUserId),
+				'userId'
+			)
+			formData.set('session_id', userId)
+			const responsePromise: Response = await fetch('/', {
+				method: 'POST',
+				body: formData
+			})
+			await sm.triggerAction(
+				new TokenAppStateTriggerAction({
+					codeAction: CodeAction.init(
+						CodeActionClass.ct_sys_code_action_class_nav,
+						CodeActionType.navPage
+					),
+					value: '/home'
+				})
+			)
+			break
+
 		case CodeActionType.submit:
+			const dataRecord = required(
+				parms.data.dataRecord,
+				userActionError(FILENAME, actionType),
+				'dataRecord'
+			)
 			switch (value) {
 				case 'data_obj_auth_login':
 				case 'data_obj_auth_signup':
@@ -111,7 +135,15 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 					return
 				}
 				sm.storeDrawer.close()
-				await userSetId(resultRecord['userId'])
+				await sm.triggerAction(
+					new TokenAppStateTriggerAction({
+						codeAction: CodeAction.init(
+							CodeActionClass.ct_sys_code_action_class_do_auth,
+							CodeActionType.setUserId
+						),
+						value: resultRecord['userId']
+					})
+				)
 				break
 
 			case 'data_obj_auth_signup':
@@ -141,7 +173,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 }
 
 async function changeDataObj(sm: State, dataObjName: string) {
-	sm.triggerAction(
+	await sm.triggerAction(
 		new TokenAppStateTriggerAction({
 			codeAction: CodeAction.init(
 				CodeActionClass.ct_sys_code_action_class_do,

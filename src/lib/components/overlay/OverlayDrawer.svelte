@@ -10,17 +10,17 @@
 
 	setContext(ContextKey.cancelForm, closeDrawer)
 
-	function closeDrawer() {
+	async function closeDrawer() {
 		if ($storeDrawer.meta && Object.hasOwn($storeDrawer.meta, 'onCloseDrawer')) {
-			$storeDrawer.meta.onCloseDrawer()
+			await $storeDrawer.meta.onCloseDrawer()
 		}
 		storeDrawer.close()
 		$storeDrawer.id = undefined
 	}
 
-	function onKeyDown(event: KeyboardEvent) {
+	async function onKeyDown(event: KeyboardEvent) {
 		if (!$storeDrawer.id) return
-		if (event.key === 'Escape') closeDrawer()
+		if (event.key === 'Escape') await closeDrawer()
 	}
 </script>
 

@@ -1,34 +1,12 @@
 import e from '$db/esdl/edgeql-js'
 import { client, sectionHeader } from '$routes/api/dbEdge/dbEdge'
-import { TokenApiId, TokenApiIds } from '$utils/types.token'
+import { TokenApiId } from '$utils/types.token'
 import { TokenApiDbTableColumns, TokenApiUserId, TokenApiUserPref } from '$utils/types.token'
 import { debug } from '$utils/utils.debug'
 
 const shapeCodeAction = e.shape(e.sys_core.SysCodeAction, (ca) => ({
 	_class: ca.codeType.name,
 	_type: ca.name
-}))
-
-const shapeUserAction = e.shape(e.sys_user.SysUserAction, (ua) => ({
-	_actionConfirms: e.select(ua.actionConfirms, (c) => ({
-		_codeConfirmType: c.codeConfirmType.name,
-		_codeTriggerConfirmConditional: c.codeTriggerConfirmConditional.name,
-		confirmButtonLabelCancel: true,
-		confirmButtonLabelConfirm: true,
-		confirmMessage: true,
-		confirmTitle: true
-	})),
-	_actionShows: e.select(ua.actionShows, (s) => ({
-		_codeTriggerShow: s.codeTriggerShow.name,
-		isRequired: true
-	})),
-	_codeAction: e.select(ua.codeAction, (ca) => ({
-		...shapeCodeAction(ca)
-	})),
-	_codeTriggerEnable: ua.codeTriggerEnable.name,
-	actionAlertMsg: true,
-	header: ua.header,
-	name: ua.name
 }))
 
 const shapeDataObjActionGroup = e.shape(e.sys_core.SysDataObjActionGroup, (g) => ({
@@ -42,6 +20,20 @@ const shapeDataObjActionGroup = e.shape(e.sys_core.SysDataObjActionGroup, (g) =>
 	}))
 }))
 
+const SysDataObjColumnItemChange = e.shape(e.sys_core.SysDataObjColumnItemChange, (t) => ({
+	_codeAccess: t.codeAccess.name,
+	_codeOp: t.codeOp.name,
+	_codeValueTarget: t.codeValueTarget.id,
+	_codeValueTrigger: t.codeValueTrigger.id,
+	_codeValueTypeTarget: t.codeValueTypeTarget.name,
+	_codeValueTypeTrigger: t.codeValueTypeTrigger.name,
+	_column: t.column.column.name,
+	fieldListItemsParmName: true,
+	valueScalarTarget: true,
+	valueScalarTrigger: true,
+	order_by: t.orderDefine
+}))
+
 const shapeDataObjTable = e.shape(e.sys_core.SysDataObjTable, (dot) => ({
 	_columnParent: dot.columnParent.name,
 	_columnsId: dot.columnsId.name,
@@ -53,6 +45,14 @@ const shapeDataObjTable = e.shape(e.sys_core.SysDataObjTable, (dot) => ({
 		...shapeTable(dot.table)
 	})),
 	order_by: dot.index
+}))
+
+const shapeFieldEmbedListSelect = e.shape(e.sys_core.SysDataObjFieldEmbedListSelect, (fels) => ({
+	_actionGroupModal: e.select(fels.actionGroupModal, (afg) => ({
+		...shapeDataObjActionGroup(afg)
+	})),
+	_dataObjListId: fels.dataObjList.id,
+	btnLabelComplete: true
 }))
 
 const shapeLinkItemsSource = e.shape(e.sys_core.SysDataObjFieldListItems, (fli) => ({
@@ -73,14 +73,6 @@ const shapeLinkItemsSource = e.shape(e.sys_core.SysDataObjFieldListItems, (fli) 
 	exprFilter: true,
 	exprSort: true,
 	exprWith: true
-}))
-
-const shapeFieldEmbedListSelect = e.shape(e.sys_core.SysDataObjFieldEmbedListSelect, (fels) => ({
-	_actionGroupModal: e.select(fels.actionGroupModal, (afg) => ({
-		...shapeDataObjActionGroup(afg)
-	})),
-	_dataObjListId: fels.dataObjList.id,
-	btnLabelComplete: true
 }))
 
 const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
@@ -121,6 +113,28 @@ const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	name: true
 }))
 
+const shapeUserAction = e.shape(e.sys_user.SysUserAction, (ua) => ({
+	_actionConfirms: e.select(ua.actionConfirms, (c) => ({
+		_codeConfirmType: c.codeConfirmType.name,
+		_codeTriggerConfirmConditional: c.codeTriggerConfirmConditional.name,
+		confirmButtonLabelCancel: true,
+		confirmButtonLabelConfirm: true,
+		confirmMessage: true,
+		confirmTitle: true
+	})),
+	_actionShows: e.select(ua.actionShows, (s) => ({
+		_codeTriggerShow: s.codeTriggerShow.name,
+		isRequired: true
+	})),
+	_codeAction: e.select(ua.codeAction, (ca) => ({
+		...shapeCodeAction(ca)
+	})),
+	_codeTriggerEnable: ua.codeTriggerEnable.name,
+	actionAlertMsg: true,
+	header: ua.header,
+	name: ua.name
+}))
+
 export async function getDataObjActionGroup(token: TokenApiId) {
 	const query = e.select(e.sys_core.SysDataObjActionGroup, (a) => ({
 		...shapeDataObjActionGroup(a),
@@ -134,6 +148,9 @@ export async function getDataObjById(token: TokenApiId) {
 		...shapeColumnHasItems(doc),
 		_codeSortDir: doc.codeSortDir.name,
 		_columnBacklink: doc.columnBacklink.name,
+		_itemChanges: e.select(doc.itemChanges, (t) => ({
+			...SysDataObjColumnItemChange(t)
+		})),
 		_link: e.select(doc, (l) => ({
 			_columns: e.select(l.linkColumns, (c) => ({
 				_name: c.column.name,

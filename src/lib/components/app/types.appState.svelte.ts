@@ -49,15 +49,21 @@ const FILENAME = '/$comps/app/types.appState.ts'
 
 export class State {
 	app: App = $state(new App())
-	componentContent?: StateComponentContent
-	componentLayout: StateComponentLayout = StateComponentLayout.layoutContent
 	dm: DataManager = new DataManager()
 	dataObjState?: DataObj
 	fActions: Record<string, Function> = {}
 	fChangeCallback?: Function
+
+	// old
 	layoutHeader: StateLayoutHeader = new StateLayoutHeader({})
+	componentContent?: StateComponentContent
 	nodeType: NodeType = NodeType.home
-	page: string
+
+	navContent?: StateComponentContent = $state()
+	navLayout?: StateComponentLayout = $state()
+	navLayoutParms?: DataRecord = $state()
+	navPage: string
+
 	parmsState: ParmsValues = new ParmsValues()
 	stateRoot?: State
 	storeDrawer: any
@@ -69,29 +75,42 @@ export class State {
 		const clazz = 'State'
 		obj = valueOrDefault(obj, {})
 		this.fActions = this.loadActions()
-		this.page = strRequired(obj.page, clazz, 'page')
+		this.navPage = strRequired(obj.navPage, clazz, 'navPage')
 		this.change(obj)
 	}
 
 	change(obj: DataRecord) {
-		if (Object.hasOwn(obj, 'app')) this.app = obj.app
-		if (Object.hasOwn(obj, 'componentContent')) this.componentContent = obj.componentContent
-		if (Object.hasOwn(obj, 'componentLayout')) this.componentLayout = obj.componentLayout
-		if (Object.hasOwn(obj, 'fChangeCallback')) this.fChangeCallback = obj.fChangeCallback
+		this.app = this.changeParm(obj, 'app', this.app)
+		this.fChangeCallback = this.changeParm(obj, 'fChangeCallback', this.fChangeCallback)
+		this.navContent = this.changeParm(obj, 'navContent', this.navContent)
+		this.navLayout = this.changeParm(obj, 'navLayout', this.navLayout)
+		this.navLayoutParms = this.changeParm(obj, 'navLayoutParms', this.navLayoutParms)
+		this.navPage = this.changeParm(obj, 'navPage', this.navPage)
+		this.nodeType = this.changeParm(obj, 'nodeType', this.nodeType)
+		this.stateRoot = this.changeParm(obj, 'stateRoot', this.stateRoot)
+		this.storeDrawer = this.changeParm(obj, 'storeDrawer', this.storeDrawer)
+		this.storeModal = this.changeParm(obj, 'storeModal', this.storeModal)
+		this.storeToast = this.changeParm(obj, 'storeToast', this.storeToast)
+		this.user = this.changeParm(obj, 'user', this.user)
+
+		if (Object.hasOwn(obj, 'parmsState')) this.parmsState.update(obj?.parmsState?.data)
+
+		// old
+		obj.componentContent = this.changeParm(obj, 'componentContent', this.componentContent)
 		if (Object.hasOwn(obj, 'layoutHeader'))
 			this.layoutHeader = new StateLayoutHeader(obj.layoutHeader)
-		if (Object.hasOwn(obj, 'nodeType')) this.nodeType = obj.nodeType
-		if (Object.hasOwn(obj, 'page')) this.page = obj.page
-		if (Object.hasOwn(obj, 'parmsState')) this.parmsState.update(obj?.parmsState?.data)
-		if (Object.hasOwn(obj, 'stateRoot')) this.stateRoot = obj.stateRoot
-		if (Object.hasOwn(obj, 'storeDrawer')) this.storeDrawer = obj.storeDrawer
-		if (Object.hasOwn(obj, 'storeModal')) this.storeModal = obj.storeModal
-		if (Object.hasOwn(obj, 'storeToast')) this.storeToast = obj.storeToast
-		if (Object.hasOwn(obj, 'user')) this.user = obj.user
 
 		this.triggerTokens = valueOrDefault(obj.triggerTokens, [])
 
 		if (this.fChangeCallback) this.fChangeCallback(obj)
+	}
+	changeParm(obj: any, key: string, defaultValue: any) {
+		return Object.hasOwn(obj, key) ? obj[key] : defaultValue
+	}
+	async changeUserAction(obj: any) {
+		this.change(obj)
+		if (obj.userActionAlertMsg) alert(obj.userActionAlertMsg)
+		if (obj.fChangeCallbackUserAction) await obj.fChangeCallbackUserAction()
 	}
 
 	closeModal() {
@@ -213,10 +232,23 @@ export class State {
 					CodeActionType.doOpen
 				),
 				isNewApp,
+				navLayout: StateComponentLayout.layoutContent,
 				token
 			})
 		)
-		this.openDrawer(id, position, height, width, { sm: stateModal })
+		this.openDrawer(id, position, height, width, {
+			sm: stateModal,
+			onCloseDrawer: async () => {
+				await this.triggerAction(
+					new TokenAppStateTriggerAction({
+						codeAction: CodeAction.init(
+							CodeActionClass.ct_sys_code_action_class_nav,
+							CodeActionType.navHome
+						)
+					})
+				)
+			}
+		})
 	}
 
 	async openModal(sm: StateSurfacePopup, fUpdate?: Function) {
@@ -266,6 +298,7 @@ export class State {
 					CodeActionType.doOpen
 				),
 				isNewApp,
+				navLayout: StateComponentLayout.layoutContent,
 				token
 			})
 		)
@@ -307,6 +340,7 @@ export class State {
 					CodeActionClass.ct_sys_code_action_class_modal,
 					CodeActionType.modalEmbed
 				),
+				navLayout: StateComponentLayout.layoutContent,
 				token: new TokenAppModalEmbedField({
 					dataObjSourceModal: new TokenApiDbDataObjSource({
 						dataObjId: fieldEmbed.dataObjModalId,
@@ -398,7 +432,7 @@ export class State {
 			layoutHeader: {
 				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.selectLabel}`
 			},
-			triggerTokens: [StateTriggerToken.homeApp, StateTriggerToken.componentContentCustom],
+			triggerTokens: [StateTriggerToken.componentContentCustom],
 			parmsState
 		})
 
@@ -499,6 +533,7 @@ export enum StateComponentContent {
 export enum StateComponentLayout {
 	layoutApp = 'layoutApp',
 	layoutContent = 'layoutContent',
+	layoutDashboard = 'layoutDashboard',
 	layoutProcess = 'layoutProcess',
 	layoutTab = 'layoutTab'
 }
@@ -515,6 +550,33 @@ export class StateLayoutHeader {
 		this.isDataObj = booleanOrFalse(obj.isDataObj, 'isDataObj')
 		this.isDrawerClose = booleanOrFalse(obj.isDrawerClose, 'isDrawerClose')
 		this.isRowStatus = booleanOrFalse(obj.isRowStatus, 'isRowStatus')
+	}
+}
+
+export class StateParms {
+	data: DataRecord = {}
+	triggerTokens: StateTriggerToken[] = []
+	constructor(obj: any) {
+		const clazz = 'StateParms'
+		obj = valueOrDefault(obj, {})
+		this.addParm(obj, 'navContent', StateTriggerToken.navContent)
+		this.addParm(obj, 'navLayout', StateTriggerToken.navLayout)
+		this.addParm(obj, 'navLayoutParms', StateTriggerToken.navLayoutParms)
+		if (Object.hasOwn(obj, 'triggerTokens')) {
+			this.triggerTokens = [...this.triggerTokens, ...obj.triggerTokens]
+		}
+	}
+	addParm(obj: any, key: string, triggerToken: StateTriggerToken) {
+		if (Object.hasOwn(obj, key)) {
+			this.data[key] = obj[key]
+			this.triggerTokens.push(triggerToken)
+		}
+	}
+	addParmNavLayout(navLayout: StateComponentLayout | undefined) {
+		if (navLayout) this.addParm({ navLayout }, 'navLayout', StateTriggerToken.navLayout)
+	}
+	addTrigger(triggerToken: StateTriggerToken) {
+		this.triggerTokens.push(triggerToken)
 	}
 }
 
@@ -542,7 +604,7 @@ export class StateSurfacePopup extends State {
 	actionsDialog: DataObjAction[] = []
 	constructor(stateParent: State, obj: any) {
 		const clazz = 'StateSurfacePopup'
-		obj.page = stateParent.page
+		obj.navPage = stateParent.navPage
 		super(obj)
 		obj = valueOrDefault(obj, {})
 		this.actionsDialog = valueOrDefault(obj.actionsDialog, [])
@@ -568,7 +630,9 @@ export class StateSurfacePopupModalEmbed extends StateSurfacePopup {
 export enum StateTriggerToken {
 	componentContentCustom = 'componentContentCustom',
 	componentContentForm = 'componentContentForm',
-	homeApp = 'homeApp',
-	homeDashboard = 'dashboard',
-	listDownload = 'listDownload'
+	listDownload = 'listDownload',
+	navContent = 'navContent',
+	navLayout = 'navLayout',
+	navLayoutParms = 'navLayoutParms',
+	navDashboard = 'navDashboard'
 }

@@ -27,7 +27,7 @@
 				: 'fieldsetDetailOptional'
 	)
 
-	function onInput(event: Event) {
+	async function onInput(event: Event) {
 		const value = event.target.value
 
 		if (field.colDO.colDB.isMultiSelect) {
@@ -39,11 +39,11 @@
 					if (i.selected) newValues.push(i.data)
 				})
 				console.log('onInput.newValues:', newValues)
-				dm.setFieldValue(parms.dataObjId, parms.row, parms.field, newValues)
+				await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, newValues)
 			}
 		} else {
 			console.log('onInput.newValue:', !fieldValue)
-			dm.setFieldValue(parms.dataObjId, parms.row, parms.field, !fieldValue)
+			await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, !fieldValue)
 		}
 	}
 </script>

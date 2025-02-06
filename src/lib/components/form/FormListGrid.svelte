@@ -156,11 +156,11 @@
 		sm.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, 'id'))
 	}
 
-	function fGridCallbackUpdateValue(fieldName: string, data: DataRecord) {
+	async function fGridCallbackUpdateValue(fieldName: string, data: DataRecord) {
 		const row = dataRecordsDisplay.findIndex((row) => row.id === data.id)
 		const field = dataObj.fields.find((f) => f.colDO.propName === fieldName)
 		if (row > -1 && field) {
-			dm.setFieldValue(dataObj.raw.id, row, field, data[fieldName])
+			await dm.setFieldValue(dataObj.raw.id, row, field, data[fieldName])
 		} else {
 			error(500, {
 				file: FILENAME,
@@ -345,7 +345,7 @@
 					: [event.data[fieldName]]
 			const parms = fieldProcess.linkItemsSource.getGridParms()
 
-			sm.triggerAction(
+			await sm.triggerAction(
 				new TokenAppStateTriggerAction({
 					codeAction: CodeAction.init(
 						CodeActionClass.ct_sys_code_action_class_modal,

@@ -1,7 +1,7 @@
 import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import {
-	userActionStateChange,
-	userActionStateChangeHomeAppForm
+	userActionStateChangeDataObj,
+	userActionStateChangeRaw
 } from '$comps/other/types.userAction.svelte'
 import {
 	CodeAction,
@@ -31,15 +31,15 @@ let currLevel: AppLevel | undefined
 let currTab: AppLevelTab | undefined
 let parentTab: AppLevelTab | undefined
 
-export default async function action(sm: State, parms: TokenAppStateTriggerAction) {
-	const actionType = parms.codeAction.actionType
-	const token: Token = required(parms.data.token, FILENAME, 'token')
-	const value = parms.data.value
+export default async function action(sm: State, parmsAction: TokenAppStateTriggerAction) {
+	const actionType = parmsAction.codeAction.actionType
+	const token: Token = required(parmsAction.data.token, FILENAME, 'token')
+	const value = parmsAction.data.value
 
 	switch (actionType) {
 		case CodeActionType.doDetailDelete:
 			await sm.app.saveDetail(sm, actionType, token as TokenAppDo)
-			userActionStateChangeHomeAppForm(sm, parms)
+			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.doDetailMigrate:
@@ -51,7 +51,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 			if (parentTab)
 				parentTab.dataObj?.data?.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
 			await queryTypeTab(sm, sm.app.getCurrTab(), TokenApiQueryType.preset)
-			userActionStateChangeHomeAppForm(sm, parms)
+			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.doDetailProcessExecute:
@@ -60,13 +60,13 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 
 		case CodeActionType.doDetailSave:
 			if (await sm.app.saveDetail(sm, actionType, token as TokenAppDo)) {
-				userActionStateChangeHomeAppForm(sm, parms)
+				await userActionStateChangeDataObj(sm, parmsAction)
 			}
 			break
 
 		case CodeActionType.doDetailSaveAs:
 			await sm.app.tabDuplicate(sm, token as TokenAppDo)
-			userActionStateChangeHomeAppForm(sm, parms)
+			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.doEmbedListConfigEdit:
@@ -91,33 +91,34 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 
 		case CodeActionType.doListDetailEdit:
 			await sm.app.addTreeNodeChildren(sm, token as TokenAppDo, TokenApiQueryType.retrieve)
-			userActionStateChangeHomeAppForm(sm, parms)
+			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.doListDetailNew:
 			await sm.app.addTreeNodeChildren(sm, token as TokenAppDo, TokenApiQueryType.preset)
-			userActionStateChangeHomeAppForm(sm, parms)
+			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.doListDownload:
-			userActionStateChange(sm, [StateTriggerToken.listDownload], parms)
+			parmsAction.triggerTokens = [StateTriggerToken.listDownload]
+			await userActionStateChangeRaw(sm, parmsAction, {})
 			break
 
 		case CodeActionType.doListSelfRefresh:
 			await queryTypeTab(sm, sm.app.getCurrTab(), TokenApiQueryType.retrieve)
-			userActionStateChangeHomeAppForm(sm, parms)
+			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.doListSelfSave:
 			const rtn = await sm.app.saveList(sm)
-			userActionStateChangeHomeAppForm(sm, parms)
+			await userActionStateChangeDataObj(sm, parmsAction)
 
 			break
 
 		case CodeActionType.doOpen:
-			if (parms.isNewApp) sm.newApp()
+			if (parmsAction.isNewApp) sm.newApp()
 			await sm.app.addTreeDataObj(sm, token as TokenAppDoQuery)
-			userActionStateChangeHomeAppForm(sm, parms)
+			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.doOpenLink:
@@ -129,11 +130,11 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 					message: `Invalid value for doOpenLink: ${value}`
 				})
 			}
-			parms.codeAction = CodeAction.init(
+			parmsAction.codeAction = CodeAction.init(
 				CodeActionClass.ct_sys_code_action_class_do,
 				CodeActionType.doOpen
 			)
-			parms.data.token = new TokenAppDoQuery({
+			parmsAction.data.token = new TokenAppDoQuery({
 				dataObjName: doOpenValues[0],
 				queryType: memberOfEnum(
 					doOpenValues[1],
@@ -143,8 +144,8 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 					TokenApiQueryType
 				)
 			})
-			parms.isNewApp = !sm.app.isMultiTree
-			await action(sm, parms)
+			parmsAction.isNewApp = !sm.app.isMultiTree
+			await action(sm, parmsAction)
 			break
 
 		case CodeActionType.doSaveCancel:
@@ -156,12 +157,12 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 					switch (status) {
 						case DataRecordStatus.preset:
 							await queryTypeTab(sm, currTab, TokenApiQueryType.preset)
-							userActionStateChangeHomeAppForm(sm, parms)
+							await userActionStateChangeDataObj(sm, parmsAction)
 							break
 						case DataRecordStatus.retrieved:
 						case DataRecordStatus.update:
 							await queryTypeTab(sm, currTab, TokenApiQueryType.retrieve)
-							userActionStateChangeHomeAppForm(sm, parms)
+							await userActionStateChangeDataObj(sm, parmsAction)
 							break
 						default:
 							error(500, {
@@ -190,7 +191,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 		if (currLevel) {
 			currTab = currLevel.getCurrTab()
 			await queryTypeTab(sm, currTab, TokenApiQueryType.retrieve)
-			userActionStateChangeHomeAppForm(sm, parms)
+			await userActionStateChangeDataObj(sm, parmsAction)
 		}
 	}
 
@@ -217,7 +218,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 					}
 				}
 			}
-			userActionStateChangeHomeAppForm(sm, parms)
+			await userActionStateChangeDataObj(sm, parmsAction)
 		}
 	}
 }

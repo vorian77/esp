@@ -47,7 +47,6 @@ export class DataObjStatus {
 export class DataManager {
 	nodes: Map<string, DataManagerNode> = new Map<string, DataManagerNode>()
 	objStatus: DataObjStatus = $state(new DataObjStatus())
-	value: number = $state(0)
 	constructor() {}
 
 	filterList(dataObjId: string, filter: string) {
@@ -142,10 +141,10 @@ export class DataManager {
 	resetStatus() {
 		this.objStatus.reset()
 	}
-	setFieldValue(dataObjId: string, row: number, field: Field, value: any) {
+	async setFieldValue(dataObjId: string, row: number, field: Field, value: any) {
 		const node = this.getNode(dataObjId)
 		if (node) {
-			node.setFieldVal(row, field, value)
+			await node.setFieldVal(row, field, value)
 			this.setStatus()
 		}
 	}
@@ -322,10 +321,14 @@ export class DataManagerNode {
 	}
 
 	getFieldValidity(row: number, field: Field) {
-		return this.fieldsValidity.valueGet(this.recordsDisplay[row].id, field.colDO.propName)
+		return row < this.recordsDisplay.length
+			? this.fieldsValidity.valueGet(this.recordsDisplay[row].id, field.colDO.propName)
+			: undefined
 	}
 	getFieldValue(row: number, field: Field) {
-		return this.recordsDisplay[row][field.colDO.propName]
+		return row < this.recordsDisplay.length
+			? this.recordsDisplay[row][field.colDO.propName]
+			: undefined
 	}
 	setStatus() {
 		let newStatus = new DataObjStatus()
@@ -351,7 +354,7 @@ export class DataManagerNode {
 		const propName = field.colDO.propName
 
 		// changed
-		const isChanged = this.fieldsChanged.valueGet(recordId, propName) || false
+		const isChanged = this.fieldsChanged.valueExists(recordId, propName) || false
 		newStatus.setChanged(isChanged)
 
 		// valid
@@ -361,18 +364,17 @@ export class DataManagerNode {
 		return newStatus
 	}
 
-	setFieldVal(row: number, field: Field, value: any) {
+	async setFieldVal(row: number, field: Field, value: any) {
 		const recordId = this.recordsDisplay[row].id
 		const fieldName = field.colDO.propName
 		this.recordsDisplay[row][fieldName] = value
-
 		this.setFieldValChanged(row, recordId, fieldName, value)
 		this.setFieldValValidity(row, recordId, field)
 		if (this.dataObj.raw.listReorderColumn && this.dataObj.embedField) {
 			const reorderColumn = this.dataObj.raw.listReorderColumn
 			this.recordsDisplay.sort((a, b) => a[reorderColumn] - b[reorderColumn])
 		}
-		return this
+		await this.setFieldItemChanged(row, recordId, field)
 	}
 	setFieldValChanged(row: number, recordId: string, fieldName: string, value: any) {
 		const valueInitial = this.dataObj.data.rowsRetrieved.getRowValueById(recordId, fieldName)
@@ -393,6 +395,7 @@ export class DataManagerNode {
 			this.fieldsValidity.valueSet(recordId, fieldName, validity)
 		})
 	}
+	async setFieldItemChanged(row: number, recordId: string, field: Field) {}
 }
 
 export class FieldValue {
@@ -411,6 +414,11 @@ export class FieldValues {
 	constructor() {}
 	valueDrop(recordId: string, fieldName: string) {
 		this.values = this.values.filter((v) => v.recordId !== recordId || v.fieldName !== fieldName)
+	}
+	valueExists(recordId: string, fieldName: string) {
+		const isExists =
+			this.values.findIndex((v) => v.recordId === recordId && v.fieldName === fieldName) > -1
+		return isExists
 	}
 	valueGet(recordId: string, fieldName: string) {
 		const value = this.values.find((v) => v.recordId === recordId && v.fieldName === fieldName)

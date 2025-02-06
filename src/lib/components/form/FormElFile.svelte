@@ -49,12 +49,12 @@
 	let labelSelect = $derived(
 		urlCurrent ? 'Choose New ' + field.colDO.label : 'Choose ' + field.colDO.label
 	)
-	const onDelete = (event: Event) => {
+	const onDelete = async (event: Event) => {
 		elInput.value = ''
 		isSourceStorage = false
 		urlCurrent = undefined
 		if (urlOld) {
-			dm.setFieldValue(
+			await dm.setFieldValue(
 				parms.dataObjId,
 				parms.row,
 				parms.field,
@@ -65,11 +65,11 @@
 		}
 	}
 
-	const onNew = (event: Event) => {
+	const onNew = async (event: Event) => {
 		if (files && files.length > 0) {
 			isSourceStorage = false
 			urlCurrent = URL.createObjectURL(files[0])
-			dm.setFieldValue(
+			await dm.setFieldValue(
 				parms.dataObjId,
 				parms.row,
 				parms.field,

@@ -98,11 +98,6 @@ export async function addDataObj(data: any) {
 						column: e.sys_db.getColumn(e.cast(e.str, e.json_get(f, 'columnName'))),
 
 						/* DB */
-						codeDbDataOp: e.sys_core.getCode(
-							'ct_sys_do_field_op',
-							e.cast(e.str, e.json_get(f, 'codeDbDataOp'))
-						),
-
 						codeDbDataSourceValue: e.op(
 							e.sys_core.getCode(
 								'ct_sys_do_field_source_value',
@@ -563,6 +558,114 @@ export async function addUserAction(data: any) {
 		}
 	)
 	return await query.run(client, data)
+}
+
+export async function dataObjColumnItemChangeBulk(data: any) {
+	sectionHeader('SysDataObjColumnItemChange - Bulk')
+	const CREATOR = e.sys_user.getRootUser()
+
+	const query = e.params({ data: e.json }, (params) => {
+		return e.for(e.json_array_unpack(params.data), (i) => {
+			return e.for(e.array_unpack(e.cast(e.array(e.json), i[1])), (trigger) => {
+				return e.update(e.sys_core.SysDataObjColumn, (sdoc) => ({
+					filter: e.op(
+						e.op(
+							sdoc.id,
+							'in',
+							e.select(e.sys_core.SysDataObj, (sdo) => ({
+								filter: e.op(sdo.name, '=', e.cast(e.str, i[0]))
+							})).columns.id
+						),
+						'and',
+						e.op(sdoc.column.name, '=', e.cast(e.str, e.json_get(trigger, 'fieldTrigger')))
+					),
+					set: {
+						itemChanges: {
+							'+=': e.for(
+								e.array_unpack(e.cast(e.array(e.json), trigger.fieldTriggerTargets)),
+								(target) => {
+									return e.insert(e.sys_core.SysDataObjColumnItemChange, {
+										codeAccess: e.sys_core.getCode(
+											'ct_sys_do_field_access',
+											e.cast(e.str, e.json_get(target, 'fieldAccess'))
+										),
+										codeOp: e.sys_core.getCode(
+											'ct_sys_do_field_item_change_op',
+											e.cast(e.str, e.json_get(target, 'op'))
+										),
+										codeValueTarget: e.sys_core.getCodeSystem(
+											e.cast(
+												e.str,
+												e.json_get(e.cast(e.json, e.json_get(target, 'codeValueTarget')), 'owner')
+											),
+											e.cast(
+												e.str,
+												e.json_get(
+													e.cast(e.json, e.json_get(target, 'codeValueTarget')),
+													'codeType'
+												)
+											),
+											e.cast(
+												e.str,
+												e.json_get(e.cast(e.json, e.json_get(target, 'codeValueTarget')), 'name')
+											)
+										),
+										codeValueTrigger: e.sys_core.getCodeSystem(
+											e.cast(
+												e.str,
+												e.json_get(e.cast(e.json, e.json_get(target, 'codeValueTrigger')), 'owner')
+											),
+											e.cast(
+												e.str,
+												e.json_get(
+													e.cast(e.json, e.json_get(target, 'codeValueTrigger')),
+													'codeType'
+												)
+											),
+											e.cast(
+												e.str,
+												e.json_get(e.cast(e.json, e.json_get(target, 'codeValueTrigger')), 'name')
+											)
+										),
+										codeValueTypeTarget: e.sys_core.getCode(
+											'ct_sys_do_field_item_change_type_target',
+											e.cast(e.str, e.json_get(target, 'codeValueTypeTarget'))
+										),
+										codeValueTypeTrigger: e.sys_core.getCode(
+											'ct_sys_do_field_item_change_type_trigger',
+											e.cast(e.str, e.json_get(target, 'codeValueTypeTrigger'))
+										),
+										// codeValueTypeTarget: e.sys_core.getCode(
+										// 	'ct_sys_do_field_item_change_type_target',
+										// 	'codeParm'
+										// ),
+										// codeValueTypeTrigger: e.sys_core.getCode(
+										// 	'ct_sys_do_field_item_change_type_trigger',
+										// 	'any'
+										// ),
+										column: e.sys_core.getDataObjColumn(
+											e.cast(e.str, e.cast(e.str, i[0])),
+											e.cast(e.str, e.json_get(target, 'field'))
+										),
+										createdBy: CREATOR,
+										fieldListItemsParmName: e.cast(
+											e.str,
+											e.json_get(target, 'fieldListItemsParmName')
+										),
+										modifiedBy: CREATOR,
+										orderDefine: e.cast(e.int16, e.json_get(target, 'orderDefine')),
+										valueScalarTarget: e.cast(e.str, e.json_get(target, 'valueScalarTarget')),
+										valueScalarTrigger: e.cast(e.str, e.json_get(target, 'valueScalarTrigger'))
+									})
+								}
+							)
+						}
+					}
+				}))
+			})
+		})
+	})
+	return await query.run(client, { data })
 }
 
 export async function updateDataObjColumnCustomEmbedShellFields(data: any) {

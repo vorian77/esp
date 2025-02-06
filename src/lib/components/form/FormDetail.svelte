@@ -14,17 +14,16 @@
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 	let dm: DataManager = $derived(sm.dm)
 
-	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
+	let dataObj: DataObj = $derived(required(dm.getDataObj(parms.dataObjId), FILENAME, 'dataObj'))
 	let elements: DetailEl[] = $state(getDetailElements(dataObj))
 
-	let dataRecord: DataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
 	let actions: DataObjActionsObj
 
 	let isFixedHeight = $derived(parms.isFixedHeight || false)
 	let elContent: any = $state()
 	let contentH: number = $state()
 
-	let name = 'phyl'
+	let dr = $derived(dm.getRecordsDisplayRow(parms.dataObjId, parms.row))
 
 	$effect(() => {
 		handleResize()
@@ -36,7 +35,7 @@
 	}
 </script>
 
-<!-- <DataViewer header="status.node" data={dm.getStatusNode(parms.dataObjId)} /> -->
+<!-- <DataViewer header="dataRecord" data={dr} /> -->
 
 <svelte:window onresize={() => handleResize()} />
 

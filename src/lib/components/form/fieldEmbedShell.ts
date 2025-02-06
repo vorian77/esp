@@ -23,7 +23,6 @@ export class FieldEmbedShell extends Field {
 			embedField: this
 			// stateRoot: props.sm
 		})
-		console.log('FieldEmbedShell', this)
 	}
 	addField(field: FieldEmbed) {
 		this.fields.push(field)

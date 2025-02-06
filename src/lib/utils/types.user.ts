@@ -58,7 +58,6 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
-		// console.log('User.constructor.obj: ', obj)
 		const clazz = 'User'
 		this.avatar = classOptional(FileStorage, obj.avatar)
 		this.dbBranch = required(obj.dbBranch, clazz, 'dbBranch')
@@ -267,48 +266,31 @@ export class UserResourceTask extends UserResource {
 				icon: this.codeIconName,
 				id: this.id,
 				name: this.name,
-				nodeObjId: this.targetNodeObjId,
-				page: '/home'
+				nodeObjId: this.targetNodeObjId
 			})
 		})
 	}
 	async loadPage(sm: State, fCallBack: Function | undefined) {
 		if (this.pageDataObjId) {
-			await sm.triggerAction(
-				new TokenAppStateTriggerAction({
-					codeAction: CodeAction.init(
-						CodeActionClass.ct_sys_code_action_class_do,
-						CodeActionType.doOpen
-					),
-					isNewApp: false,
-					token: new TokenAppDoQuery({
-						dataObjId: this.pageDataObjId,
-						queryType: TokenApiQueryType.retrieve
-					})
-				})
-			)
+			const token = new TokenAppDoQuery({
+				dataObjId: this.pageDataObjId,
+				queryType: TokenApiQueryType.retrieve
+			})
+
+			await sm.app.addTreeDataObj(sm, token)
+
 			this.dataObjPage = sm.app.getCurrTab()?.dataObj
+
 			if (this.dataObjPage) {
 				if (fCallBack) this.dataObjPage.setCallbackUserAction(fCallBack)
 				sm.dm.nodeAdd(this.dataObjPage)
 			}
-			console.log('UserResourceTask.loadPage.dataObjPage', this.dataObjPage)
 		}
 	}
 
 	setShow(isShow: boolean) {
 		this.isShow = isShow
 	}
-}
-
-export async function userSetId(userId: string) {
-	const formData = new FormData()
-	formData.set('session_id', userId)
-	const responsePromise: Response = await fetch('/', {
-		method: 'POST',
-		body: formData
-	})
-	goto('/home')
 }
 
 export class UserTypeResourceList {

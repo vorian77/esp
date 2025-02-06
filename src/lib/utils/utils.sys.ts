@@ -2,7 +2,6 @@ import { State } from '$comps/app/types.appState.svelte'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiUserId } from '$utils/types.token'
 import { valueOrDefault, memberOfEnum } from '$utils/utils.model'
-import type { Code } from 'lucide-svelte'
 
 export async function adminDbReset(sm: State) {
 	// <todo> - 240125
@@ -37,8 +36,8 @@ export class CodeAction {
 export enum CodeActionType {
 	// auth
 	authOpen = 'authOpen',
-	page = 'page',
 	resendCode = 'resendCode',
+	setUserId = 'setUserId',
 	submit = 'submit',
 
 	// dataObj - group item
@@ -59,10 +58,8 @@ export enum CodeActionType {
 	doListDownload = 'doListDownload',
 	doListSelfRefresh = 'doListSelfRefresh',
 	doListSelfSave = 'doListSelfSave',
-
 	doOpen = 'doOpen',
 	doOpenLink = 'doOpenLink',
-
 	doSaveCancel = 'doSaveCancel',
 
 	embedField = 'embedField',
@@ -82,13 +79,16 @@ export enum CodeActionType {
 	navPage = 'navPage',
 	navRow = 'navRow',
 	navTab = 'navTab',
+	openDataObjDrawer = 'openDataObjDrawer',
+	openDataObjModal = 'openDataObjModal',
 	openNode = 'openNode',
 
 	// utils
 	dbexpression = 'dbexpression',
 
 	// shared
-	none = 'none' // nav, utils
+	none = 'none', // nav, utils,
+	page = 'page' // auth, nav,
 }
 
 export enum CodeActionClass {

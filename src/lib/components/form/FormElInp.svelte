@@ -46,12 +46,12 @@
 		return clazz
 	})
 
-	function onChange(event: Event) {
+	async function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		dm.setFieldValue(parms.dataObjId, parms.row, field, target.value)
+		await dm.setFieldValue(parms.dataObjId, parms.row, field, target.value)
 	}
 
-	function onDoubleClick(event: MouseEvent) {
+	async function onDoubleClick(event: MouseEvent) {
 		if (field.colDO.colDB.codeDataType === PropDataType.date) {
 			const date = new Date()
 			const year = date.getFullYear().toString()
@@ -60,7 +60,7 @@
 			const month = dateMonth < 10 ? '0' + dateMonth : dateMonth.toString()
 			const day = dateDay < 10 ? '0' + dateDay : dateDay.toString()
 			const value = year + '-' + month + '-' + day
-			dm.setFieldValue(parms.dataObjId, parms.row, field, value)
+			await dm.setFieldValue(parms.dataObjId, parms.row, field, value)
 		}
 	}
 	function setIconProps() {
@@ -86,9 +86,6 @@
 		iconProps = setIconProps()
 	}
 </script>
-
-<!-- <DataViewer header="inp.iconProps" data={iconProps?.name} /> -->
-<!-- <DataViewer header="fieldInputType" data={fieldInputType} /> -->
 
 <FormLabel {parms} {iconProps}>
 	<input

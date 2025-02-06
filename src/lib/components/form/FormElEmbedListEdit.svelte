@@ -28,23 +28,11 @@
 	<LayoutContent
 		parms={{
 			...parms,
-			component: dataObjEmbed.raw.codeComponent,
+			navContent: dataObjEmbed.raw.codeComponent,
 			dataObj: dataObjEmbed,
 			dataObjId: dataObjEmbed.raw.id
 		}}
 	/>
 </div>
-
-<!-- {#if fp}
-	<div class="h-80">
-		<LayoutContent
-			bind:state={fp.state}
-			component={fp.field.dataObj.raw.codeComponent}
-			dataObj={fp.field.dataObj}
-			dataObjData={fp.field.dataObj.data}
-
-		/>
-	</div>
-{/if} -->
 
 <!-- <DataViewer header="stateEmbedListEdit.objStatus" data={stateEmbed.objStatus} /> -->

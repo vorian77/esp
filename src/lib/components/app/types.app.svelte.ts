@@ -51,9 +51,8 @@ const FILENAME = '/$comps/nav/types.app.ts'
 
 export class App {
 	isMultiTree: boolean
-	treeLevelIdxCurrent: number = -1
 	treeLevels: AppTree[] = $state([])
-	// treeLevels: AppTree[] = []
+	treeLevelsIdxCurrent: number = -1
 	constructor(obj: any = {}) {
 		this.isMultiTree = booleanOrFalse(obj.isMultiTree, 'isMultiTree')
 	}
@@ -62,7 +61,7 @@ export class App {
 		const newTab = new AppLevelTab({
 			data: token.queryData.dataTab,
 			dataObjSource: token.dataObjSource,
-			treeLevelIdx: this.treeLevelIdxCurrent
+			treeLevelIdx: this.treeLevelsIdxCurrent
 		})
 		await queryTypeTab(sm, newTab, token.queryType)
 		this.levelAdd([newTab])
@@ -106,7 +105,7 @@ export class App {
 			dataObjId: token.dataObjSourceModal.sources.dataObjId,
 			dataObjSource: token.dataObjSourceModal,
 			label: 'modalEmbedField',
-			treeLevelIdx: this.treeLevelIdxCurrent
+			treeLevelIdx: this.treeLevelsIdxCurrent
 		})
 		await queryTypeTab(sm, newTab, token.queryType)
 		this.levelAdd([newTab], true)
@@ -221,7 +220,7 @@ export class App {
 		return this.getCurrTreeLevel()?.getCurrTabParentTab()
 	}
 	getCurrTreeLevel() {
-		return this.treeLevelIdxCurrent >= 0 ? this.treeLevels[this.treeLevelIdxCurrent] : undefined
+		return this.treeLevelsIdxCurrent >= 0 ? this.treeLevels[this.treeLevelsIdxCurrent] : undefined
 	}
 	getDataTree(offset: number) {
 		const treeLevel = this.getCurrTreeLevel()
@@ -238,9 +237,7 @@ export class App {
 	levelAdd(tabs: AppLevelTab[], isVirtual: boolean = false) {
 		this.getCurrTreeLevel()?.levelAdd(tabs, isVirtual)
 	}
-	levelPop(sm: State) {
-		this.getCurrTreeLevel()?.levelPop(sm)
-	}
+
 	async navBack(sm: State, backCnt: number) {
 		await this.getCurrTreeLevel()?.navBack(sm, backCnt)
 	}
@@ -268,7 +265,7 @@ export class App {
 	}
 
 	setTreeLevelIdxCurrent(treeLevelIdx: number) {
-		this.treeLevelIdxCurrent = treeLevelIdx
+		this.treeLevelsIdxCurrent = treeLevelIdx
 		return treeLevelIdx
 	}
 	async tabDuplicate(sm: State, token: TokenAppDo) {
@@ -276,7 +273,7 @@ export class App {
 	}
 
 	virtualModalLevelAdd(dataObjEmbed: DataObj) {
-		this.getCurrTreeLevel()?.virtualModalLevelAdd(dataObjEmbed)
+		this.getCurrTreeLevel()?.virtualModalLevelAdd(dataObjEmbed, this.treeLevelsIdxCurrent)
 	}
 	virtualModalLevelRestore() {
 		this.getCurrTreeLevel()?.virtualModalLevelRestore()
@@ -592,10 +589,10 @@ export class AppTree {
 	levelAdd(tabs: AppLevelTab[], isVirtual: boolean = false) {
 		this.levels.push(new AppLevel(tabs, isVirtual))
 	}
-	levelPop(sm: State) {
+	async levelPop(sm: State) {
 		this.levels.pop()
 		if (this.levels.length === 0) {
-			sm.triggerAction(
+			await sm.triggerAction(
 				new TokenAppStateTriggerAction({
 					codeAction: CodeAction.init(
 						CodeActionClass.ct_sys_code_action_class_nav,
@@ -614,7 +611,7 @@ export class AppTree {
 				if (currLevel.tabIdxCurrent > 0) {
 					currLevel.tabIdxSet(0, true)
 				} else {
-					this.levelPop(sm)
+					await this.levelPop(sm)
 				}
 			}
 		}
@@ -674,7 +671,7 @@ export class AppTree {
 					case CodeActionType.doDetailDelete:
 						if (currTab.dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)) {
 							if (!tabParent || !tabParent.listHasData()) {
-								this.levelPop(sm)
+								await this.levelPop(sm)
 							} else {
 								tabParent.dataObj.data.parms.valueSet(
 									ParmsValuesType.listRecordIdCurrent,
@@ -718,7 +715,7 @@ export class AppTree {
 								)
 									return this
 								await queryTypeTab(sm, tabParent, TokenApiQueryType.retrieve)
-								this.levelPop(sm)
+								await this.levelPop(sm)
 							}
 						}
 						break
@@ -761,7 +758,7 @@ export class AppTree {
 							)
 								return this
 						}
-						this.levelPop(sm)
+						await this.levelPop(sm)
 						break
 
 					case CodeActionType.doDetailSave:
@@ -820,15 +817,17 @@ export class AppTree {
 		}
 	}
 
-	virtualModalLevelAdd(dataObjEmbed: DataObj) {
+	virtualModalLevelAdd(dataObjEmbed: DataObj, treeLevelIdx: number) {
 		if (this.levels.length > 0) {
 			const idxLevelCurr = this.levels.length - 1
 			const idxTabNew = this.levels[idxLevelCurr].tabs.length
 			const tabNew = new AppLevelTab({
 				dataObj: dataObjEmbed,
 				isVirtual: true,
-				label: dataObjEmbed.raw.header
+				label: dataObjEmbed.raw.header,
+				treeLevelIdx
 			})
+
 			this.levels[idxLevelCurr].tabIdxRestoreVal = this.levels[idxLevelCurr].tabIdxCurrent
 			this.levels[idxLevelCurr].tabIdxSet(idxTabNew)
 			this.levels[idxLevelCurr].tabs.push(tabNew)

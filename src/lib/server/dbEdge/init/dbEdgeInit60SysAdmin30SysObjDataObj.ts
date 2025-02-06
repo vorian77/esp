@@ -681,18 +681,6 @@ function initDataObjColumn(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'codeDbDataOp',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_field_op',
-				linkTable: 'SysCode'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
 				columnName: 'codeDbDataSourceValue',
 				isDisplayable: true,
 				orderDisplay: 130,
@@ -1207,10 +1195,10 @@ function initDataObjColumn(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'items',
-				fieldEmbedListConfig: 'flec_data_obj_data_obj_column_item',
+				fieldEmbedListConfig: 'flec_data_obj_data_obj_column_item_value',
 				indexTable: 0,
 				isDisplayable: true,
-				linkTable: 'SysDataObjColumnItem',
+				linkTable: 'SysDataObjColumnItemValue',
 				orderDefine: 670,
 				orderDisplay: 670
 			},

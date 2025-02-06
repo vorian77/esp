@@ -9,7 +9,12 @@
 	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { AppLevelRowStatus } from '$comps/app/types.app.svelte'
-	import { State, StateSurfacePopup } from '$comps/app/types.appState.svelte'
+	import {
+		State,
+		StateComponentContent,
+		StateSurfacePopup,
+		StateTriggerToken
+	} from '$comps/app/types.appState.svelte'
 	import ContentFormDetailApp from '$comps/form/ContentFormDetailApp.svelte'
 	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
 	import ContentFormListApp from '$comps/form/ContentFormListApp.svelte'
@@ -19,7 +24,8 @@
 	import NavRow from '$comps/nav/NavRow.svelte'
 
 	const FILENAME = '$comps/layout/LayoutContent.svelte'
-	const comps: Record<string, any> = {
+
+	const componentsContent: Record<StateComponentContent, any> = {
 		FormDetail: ContentFormDetailApp,
 		FormDetailRepConfig: ContentFormDetailRepConfig,
 		FormList: ContentFormListApp,
@@ -29,11 +35,15 @@
 	let { parms }: DataRecord = $props()
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 	let dm: DataManager = $derived(sm.dm)
+	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
 	let cancelForm: Function = getContext(ContextKey.cancelForm) || undefined
+	let navContent: StateComponentContent = $derived(parms.navContent || sm.navContent)
+	let Component = $state()
 
-	let Component = $state(comps[parms.component])
-	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
+	$effect(() => {
+		Component = componentsContent[navContent]
+	})
 
 	// header parms
 	let headerObj = $derived(
@@ -62,7 +72,8 @@
 	}
 </script>
 
-<!-- <DataViewer header="rowStatus" data={rowStatus} /> -->
+<!-- <DataViewer header="parms" data={parms} /> -->
+<!-- <div>layoutContent.navContent: {navContent}</div> -->
 
 <div class="h-full max-h-full flex flex-col p-3 {headerObj ? 'border p-3 rounded-md' : ''} ">
 	{#if Component}

@@ -556,10 +556,10 @@ async function initFieldListConfigDataObjColumnItem(init: InitDb) {
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		header: 'Items',
-		name: 'doflc_sys_admin_data_obj_column_item_list',
+		name: 'doflc_sys_admin_data_obj_column_item_value_list',
 		listReorderColumn: 'orderDefine',
 		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysDataObjColumnItem' }],
+		tables: [{ index: 0, table: 'SysDataObjColumnItemValue' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -628,9 +628,9 @@ async function initFieldListConfigDataObjColumnItem(init: InitDb) {
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
 		header: 'Item',
-		name: 'doflc_sys_admin_data_obj_column_item_detail',
+		name: 'doflc_sys_admin_data_obj_column_item_value_detail',
 		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysDataObjColumnItem' }],
+		tables: [{ index: 0, table: 'SysDataObjColumnItemValue' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -741,9 +741,9 @@ async function initFieldListConfigDataObjColumnItem(init: InitDb) {
 
 	init.addTrans('sysDataObjFieldEmbedListConfig', {
 		actionGroupModal: 'doag_dialog_footer_detail',
-		dataObjEmbed: 'doflc_sys_admin_data_obj_column_item_list',
-		dataObjModal: 'doflc_sys_admin_data_obj_column_item_detail',
-		name: 'flec_data_obj_data_obj_column_item',
+		dataObjEmbed: 'doflc_sys_admin_data_obj_column_item_value_list',
+		dataObjModal: 'doflc_sys_admin_data_obj_column_item_value_detail',
+		name: 'flec_data_obj_data_obj_column_item_value',
 		owner: 'sys_system_old'
 	})
 }

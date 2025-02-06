@@ -17,9 +17,9 @@
 	let classProps = $state('rounded-lg ' + field.classProps + ' ' + field.colorBackground)
 	if (field.cols === 0) classProps += ' w-full text-sm'
 
-	function onChange(event: Event) {
+	async function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
+		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
 	}
 	function preventDefault(fn) {
 		return function (event) {

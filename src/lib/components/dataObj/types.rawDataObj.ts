@@ -419,6 +419,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 	isDisplayBlock: boolean
 	isFirstVisible: boolean = false
 	isParmValue: boolean
+	itemChanges: RawDataObjPropDisplayItemChange[]
 	items: FieldColumnItem[]
 	label: string
 	labelSide: string
@@ -455,6 +456,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		this.isDisplayable = booleanOrDefault(obj.isDisplayable, false)
 		this.isDisplayBlock = booleanOrDefault(obj.isDisplayBlock, true)
 		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
+		this.itemChanges = arrayOfClass(RawDataObjPropDisplayItemChange, obj._itemChanges)
 		this.items = arrayOfClass(FieldColumnItem, obj._items)
 		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
@@ -479,6 +481,38 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		this.labelSide = valueOrDefault(this.colDB.headerSide, this.label)
 	}
 }
+
+export class RawDataObjPropDisplayItemChange {
+	_codeAccess?: string
+	_codeOp: string
+	_codeValueTarget?: string
+	_codeValueTrigger?: string
+	_codeValueTypeTarget: string
+	_codeValueTypeTrigger: string
+	_column: string
+	fieldListItemsParmName?: string
+	valueScalarTarget?: string
+	valueScalarTrigger?: string
+	constructor(obj: any) {
+		const clazz = 'RawDataObjPropDisplayItemChange'
+		obj = valueOrDefault(obj, {})
+		this._codeAccess = obj._codeAccess
+		this._codeOp = strRequired(obj._codeOp, clazz, '_codeOp')
+		this._codeValueTarget = obj._codeValueTarget
+		this._codeValueTrigger = obj._codeValueTrigger
+		this._codeValueTypeTarget = strRequired(obj._codeValueTypeTarget, clazz, '_codeValueTypeTarget')
+		this._codeValueTypeTrigger = strRequired(
+			obj._codeValueTypeTrigger,
+			clazz,
+			'_codeValueTypeTrigger'
+		)
+		this._column = strRequired(obj._column, clazz, '_column')
+		this.fieldListItemsParmName = obj.fieldListItemsParmName
+		this.valueScalarTarget = obj.valueScalarTarget
+		this.valueScalarTrigger = obj.valueScalarTrigger
+	}
+}
+
 export class RawDataObjPropDisplayCustom {
 	action?: UserAction
 	actionAlertMsg?: string

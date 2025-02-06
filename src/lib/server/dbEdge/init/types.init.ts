@@ -4,6 +4,7 @@ import { getDBObjectLinks } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { TokenApiId } from '$utils/types.token'
 import {
 	addDataObj,
+	dataObjColumnItemChangeBulk,
 	updateDataObjColumnCustomEmbedShellFields
 } from '$server/dbEdge/init/dbEdgeInit200Utilities20DataObj'
 import { addColumn, tableColumnsBulk } from '$server/dbEdge/init/dbEdgeInit200Utilities30DB'
@@ -108,7 +109,7 @@ export class InitDb {
 		this.items.push(
 			new InitDbItemBulk({
 				name: 'tablesBulk',
-				dataMap: ['name', 2],
+				dataMap: [`.name = '[0]'`, 2],
 				dbObject: 'sys_db::SysTable',
 				fCreate: tablesBulk
 			})
@@ -116,7 +117,7 @@ export class InitDb {
 		this.items.push(
 			new InitDbItemBulk({
 				name: 'tableColumnsBulk',
-				dataMap: ['name', 0],
+				dataMap: [`.name = '[0]'`, 0],
 				dbObject: 'sys_db::SysTable',
 				fCreate: tableColumnsBulk
 			})
@@ -221,6 +222,19 @@ export class InitDb {
 				fCreate: addDataObj
 			})
 		)
+
+		this.items.push(
+			new InitDbItemBulk({
+				name: 'dataObjColumnItemChangeBulk',
+				dataMap: [
+					`.id IN (SELECT sys_core::SysDataObj FILTER .name = '[0]').columns.itemChanges.id`,
+					0
+				],
+				dbObject: 'sys_core::SysDataObjColumnItemChange',
+				fCreate: dataObjColumnItemChangeBulk
+			})
+		)
+
 		this.items.push(
 			new InitDbItem({
 				name: 'updateDataObjColumnCustomEmbedShellFields',
@@ -266,7 +280,7 @@ export class InitDb {
 		this.items.push(
 			new InitDbItemBulk({
 				name: 'widgetsBulk',
-				dataMap: ['name', 1],
+				dataMap: [`.name = '[0]'`, 1],
 				dbObject: 'sys_user::SysWidget',
 				fCreate: widgetsBulk
 			})
@@ -472,7 +486,7 @@ export class InitDbItem {
 	addTrans(name: string, data: any) {
 		this.trans.push([name, data])
 	}
-	exprSourceFilter(data: any, prefix: string = '') {}
+	exprSourceFilter(data: any) {}
 }
 
 class InitDbItemBulk extends InitDbItem {
@@ -488,12 +502,11 @@ class InitDbItemBulk extends InitDbItem {
 				? [obj.dataMap]
 				: obj.dataMap
 	}
-	exprSourceFilter(data: any[], prefix: string = '') {
+	exprSourceFilter(data: any[]) {
 		let filter = ''
-		prefix = prefix ? `${prefix}.` : ''
-		this.dataMap.forEach((map) => {
+		this.dataMap.forEach((map, i) => {
 			if (filter) filter += ' AND '
-			filter += `.${prefix}${map[0]} = '${data[map[1]]}'`
+			filter += map[0].replace(`[${i}]`, data[map[1]])
 		})
 		return `FILTER ${filter}`
 	}
@@ -507,12 +520,11 @@ class InitDbItemObject extends InitDbItem {
 		obj = valueOrDefault(obj, clazz)
 		this.dataMap = typeof obj.dataMap === 'string' ? [[obj.dataMap, obj.dataMap]] : obj.dataMap
 	}
-	exprSourceFilter(data: DataRecord, prefix: string = '') {
+	exprSourceFilter(data: DataRecord) {
 		let filter = ''
-		prefix = prefix ? `${prefix}.` : ''
 		this.dataMap.forEach((map) => {
 			if (filter) filter += ' AND '
-			filter += `.${prefix}${map[0]} = '${data[map[1]]}'`
+			filter += `.${map[0]} = '${data[map[1]]}'`
 		})
 		return `FILTER ${filter}`
 	}

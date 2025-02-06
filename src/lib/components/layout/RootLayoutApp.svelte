@@ -13,6 +13,7 @@
 	import { getContext, setContext } from 'svelte'
 	import LayoutApp from '$comps/layout/LayoutApp.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
+	import LayoutDashboard from '$comps/layout/layoutDash/LayoutDashboard.svelte'
 	import LayoutProcess from '$comps/layout/LayoutProcess.svelte'
 	import LayoutTab from '$comps/layout/LayoutTab.svelte'
 	import { error } from '@sveltejs/kit'
@@ -20,14 +21,17 @@
 
 	const FILENAME = '$comps/layout/RootLayoutApp.svelte'
 
-	const componentsLayout: Record<string, any> = {
+	const componentsLayout: Record<StateComponentLayout, any> = {
 		layoutApp: LayoutApp,
 		layoutContent: LayoutContent,
+		layoutDashboard: LayoutDashboard,
 		layoutProcess: LayoutProcess,
 		layoutTab: LayoutTab
 	}
 
 	let { sm }: { sm: State } = $props()
+	let navLayout: StateComponentLayout = $derived(sm.navLayout)
+	let navLayoutParms: DataRecord = $derived(sm.navLayoutParms)
 	let Component = $state()
 
 	setContext(ContextKey.stateManager, sm)
@@ -38,25 +42,24 @@
 	let keyValue: boolean = $state(false)
 	let parms: DataRecord = $state({})
 
-	$effect(() => {
-		if (sm.consumeTriggerToken(StateTriggerToken.componentContentCustom)) {
-			parms = { component: sm.componentContent }
-			setComponent()
-		}
+	const setParms = (newParms: DataRecord) => {
+		parms = newParms
+	}
 
-		if (sm.consumeTriggerToken(StateTriggerToken.componentContentForm)) {
-			const clazz = `${FILENAME}.componentContentForm`
-			currTab = sm.app.getCurrTab()
-			if (currTab && currTab.dataObj) {
-				sm.dm.init(currTab.dataObj)
-				currTab.dataObj.fields
-					.filter((f) => f.classType === FieldClassType.embed)
-					.forEach((f: FieldEmbed) => {
-						sm.dm.nodeAdd(required(f.dataObjEmbed, clazz, 'f.dataObjEmbed'))
-					})
-				parms = { dataObjId: currTab.dataObj.raw.id, component: currTab.dataObj.raw.codeComponent }
-				setComponent()
+	$effect(() => {
+		if (sm.consumeTriggerToken(StateTriggerToken.navLayout)) {
+			Component = componentsLayout[navLayout]
+			if (sm.consumeTriggerToken(StateTriggerToken.navLayoutParms)) {
+				setParms(navLayoutParms)
 			}
+			keyValue = !keyValue
+		}
+	})
+
+	$effect(() => {
+		if (sm.consumeTriggerToken(StateTriggerToken.navLayoutParms)) {
+			setParms(navLayoutParms)
+			keyValue = !keyValue
 		}
 	})
 

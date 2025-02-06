@@ -3,6 +3,7 @@ import {
 	CodeAction,
 	CodeActionClass,
 	CodeActionType,
+	type DataRecord,
 	memberOfEnum,
 	Node,
 	RawMenu,
@@ -12,8 +13,9 @@ import {
 	UserResourceTaskRenderType,
 	valueOrDefault
 } from '$utils/types'
-import { State } from '$comps/app/types.appState.svelte'
+import { State, StateComponentLayout } from '$comps/app/types.appState.svelte'
 import {
+	Token,
 	TokenApiQueryType,
 	TokenAppDoQuery,
 	TokenAppNode,
@@ -115,47 +117,66 @@ export class NavMenuData {
 					await content.value(this)
 					break
 
-				case NavMenuContentType.page:
-					this.sm.triggerAction(
+				case NavMenuContentType.dataObjApp:
+					await triggerAction(
+						this.sm,
+						CodeActionClass.ct_sys_code_action_class_do,
+						CodeActionType.doOpen,
+						{ token: content.value as TokenAppDoQuery }
+					)
+					break
+
+				case NavMenuContentType.dataObjDrawer:
+					await triggerAction(
+						this.sm,
+						CodeActionClass.ct_sys_code_action_class_nav,
+						CodeActionType.openDataObjDrawer,
+						{ token: content.value as TokenAppDoQuery }
+					)
+					break
+
+				case NavMenuContentType.dataObjModal:
+					await this.sm.triggerAction(
 						new TokenAppStateTriggerAction({
 							codeAction: CodeAction.init(
 								CodeActionClass.ct_sys_code_action_class_nav,
-								CodeActionType.navPage
+								CodeActionType.openDataObjModal
 							),
 							codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-							value: content.value
+							navLayout: StateComponentLayout.layoutApp,
+							isNewApp: true,
+							token: content.value as TokenAppDoQuery
 						})
 					)
 					break
 
 				case NavMenuContentType.node:
 					node = content.value as Node
-					await this.sm.triggerAction(
-						new TokenAppStateTriggerAction({
-							codeAction: CodeAction.init(
-								CodeActionClass.ct_sys_code_action_class_nav,
-								CodeActionType.openNode
-							),
-							codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-							isNewApp: true,
-							// parmsState: { programId: this.getProgramId(node) },
-							token: new TokenAppNode({ node })
-						})
+					await triggerAction(
+						this.sm,
+						CodeActionClass.ct_sys_code_action_class_nav,
+						CodeActionType.openNode,
+						{ navLayout: StateComponentLayout.layoutApp, token: new TokenAppNode({ node }) }
+					)
+					// parmsState: { programId: this.getProgramId(node) },
+					break
+
+				case NavMenuContentType.page:
+					await triggerAction(
+						this.sm,
+						CodeActionClass.ct_sys_code_action_class_nav,
+						CodeActionType.navPage,
+						{ value: content.value }
 					)
 					break
 
 				case NavMenuContentType.task:
 					const task: UserResourceTask = content.value as UserResourceTask
-					await this.sm.triggerAction(
-						new TokenAppStateTriggerAction({
-							codeAction: CodeAction.init(
-								CodeActionClass.ct_sys_code_action_class_nav,
-								CodeActionType.openNode
-							),
-							codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-							isNewApp: true,
-							token: task.getTokenNode(this.sm.user)
-						})
+					await triggerAction(
+						this.sm,
+						CodeActionClass.ct_sys_code_action_class_nav,
+						CodeActionType.openNode,
+						{ token: task.getTokenNode(this.sm.user) }
 					)
 					break
 
@@ -167,6 +188,23 @@ export class NavMenuData {
 					})
 			}
 			if (this.isOpen) this.openToggle()
+		}
+
+		async function triggerAction(
+			sm: State,
+			actionClass: CodeActionClass,
+			actionType: CodeActionType,
+			data: DataRecord
+		) {
+			await sm.triggerAction(
+				new TokenAppStateTriggerAction({
+					codeAction: CodeAction.init(actionClass, actionType),
+					codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+					navLayout: StateComponentLayout.layoutApp,
+					isNewApp: true,
+					...data
+				})
+			)
 		}
 	}
 
@@ -221,6 +259,9 @@ export class NavMenuContent {
 	}
 }
 export enum NavMenuContentType {
+	dataObjApp = 'dataObjApp',
+	dataObjDrawer = 'dataObjDrawer',
+	dataObjModal = 'dataObjModal',
 	functionAsync = 'functionAsync',
 	functionNormal = 'functionNormal',
 	info = 'info',
@@ -400,12 +441,46 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 				label: new NavMenuLabel(r.header!)
 			})
 		})
+
 		this.addItem({
-			content: new NavMenuContent(NavMenuContentType.functionAsync, this.myPreferences),
+			content: new NavMenuContent(
+				NavMenuContentType.dataObjApp,
+				new TokenAppDoQuery({
+					dataObjName: 'data_obj_auth_user_pref_type',
+					queryType: TokenApiQueryType.retrieve
+				})
+			),
 			icon: 'Settings2',
 			isRoot: true,
 			label: new NavMenuLabel('My Preferences')
 		})
+
+		this.addItem({
+			content: new NavMenuContent(
+				NavMenuContentType.dataObjDrawer,
+				new TokenAppDoQuery({
+					dataObjName: 'data_obj_auth_user_pref_type',
+					queryType: TokenApiQueryType.retrieve
+				})
+			),
+			icon: 'Settings2',
+			isRoot: true,
+			label: new NavMenuLabel('My Preferences (drawer)')
+		})
+
+		this.addItem({
+			content: new NavMenuContent(
+				NavMenuContentType.dataObjModal,
+				new TokenAppDoQuery({
+					dataObjName: 'data_obj_auth_user_pref_type',
+					queryType: TokenApiQueryType.retrieve
+				})
+			),
+			icon: 'Settings2',
+			isRoot: true,
+			label: new NavMenuLabel('My Preferences (modal)')
+		})
+
 		if (['user_sys', '2487985578'].includes(this.user.userName)) {
 			this.addItem({
 				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminResetDb),
@@ -421,19 +496,6 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 	async adminResetDb(navMenu: NavMenuData) {
 		await adminDbReset(navMenu.sm)
 		await navMenu.sm.resetUser(true)
-	}
-
-	async myPreferences(navMenu: NavMenuData) {
-		await navMenu.sm.openModalDataObj(
-			new TokenAppDoQuery({
-				dataObjName: 'data_obj_auth_user_pref_type',
-				queryType: TokenApiQueryType.retrieve
-			}),
-			true,
-			async () => {
-				await navMenu.sm.resetUser(true)
-			}
-		)
 	}
 }
 

@@ -192,7 +192,6 @@ module sys_core {
     nameCustom: str;
 
     # fields - db
-    codeDbDataOp: sys_core::SysCode;
     codeDbDataSourceValue: sys_core::SysCode;
     codeSortDir: sys_core::SysCode;
     columnBacklink: sys_db::SysColumn;
@@ -242,8 +241,12 @@ module sys_core {
 
     headerAlt: str;
     height: int16;
+    multi itemChanges: sys_core::SysDataObjColumnItemChange {
+      on source delete delete target;
+      on target delete allow;
+    };
     isDisplayBlock: bool;
-    multi items: sys_core::SysDataObjColumnItem {
+    multi items: sys_core::SysDataObjColumnItemValue {
       on source delete delete target;
       on target delete allow;
     };
@@ -263,12 +266,28 @@ module sys_core {
     width: int16;
   }
 
-  type SysDataObjColumnItem extending sys_user::Mgmt {
+  type SysDataObjColumnItemChange extending sys_user::Mgmt {
+    codeAccess: sys_core::SysCode;
+    codeOp: sys_core::SysCode;
+    codeValueTarget: sys_core::SysCode;
+    codeValueTrigger: sys_core::SysCode;
+    required codeValueTypeTarget: sys_core::SysCode;
+    required codeValueTypeTrigger: sys_core::SysCode;
+    required column: sys_core::SysDataObjColumn {
+      on target delete allow;
+    };
+    fieldListItemsParmName: str;
+    required orderDefine: default::nonNegative;
+    valueScalarTarget: str;
+    valueScalarTrigger: str;
+  }
+  
+  type SysDataObjColumnItemValue extending sys_user::Mgmt {
     required data: str;
     required display: str;
     required orderDefine: default::nonNegative;
   }
-
+  
   type SysDataObjColumnLink extending sys_user::Mgmt {
     required column: sys_db::SysColumn;
     required orderDefine: default::nonNegative;
@@ -393,6 +412,9 @@ module sys_core {
   function getDataObjActionGroup(name: str) -> optional sys_core::SysDataObjActionGroup
     using (select sys_core::SysDataObjActionGroup filter .name = name);        
       
+  function getDataObjColumn(dataObjName: str, columnName: str) -> optional sys_core::SysDataObjColumn
+    using (select assert_single((select sys_core::SysDataObjColumn filter .id in (select sys_core::SysDataObj filter .name = dataObjName).columns.id and .column.name = columnName)));        
+   
   function getDataObjFieldEmbedListConfig(name: str) -> optional sys_core::SysDataObjFieldEmbedListConfig
     using (select sys_core::SysDataObjFieldEmbedListConfig filter .name = name);
 

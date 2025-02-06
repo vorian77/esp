@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import { State, StateComponentLayout, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import {
 		TokenApiQueryData,
 		TokenAppNode,
@@ -24,20 +24,20 @@
 		UserResourceTaskRenderType
 	} from '$utils/types'
 	import { getContext, setContext } from 'svelte'
-	import TsoMoedApp from '$comps/nav/navDash/tso_moed_app.svelte'
-	import TsoMoedAppDoc from '$comps/nav/navDash/tso_moed_app_doc.svelte'
+	import TsoMoedApp from '$comps/layout/layoutDash/tso_moed_app.svelte'
+	import TsoMoedAppDoc from '$comps/layout/layoutDash/tso_moed_app_doc.svelte'
 	import FormDetail from '$comps/form/FormDetail.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import { goto } from '$app/navigation'
 	import { error } from '@sveltejs/kit'
 
-	const FILENAME = '$comps/nav/navDash/NavDash.svelte'
+	const FILENAME = '$comps/layout/layoutDash/LayoutDash.svelte'
 
 	let sm: State = getContext(ContextKey.stateManager)
 	let dm: DataManager = $derived(sm.dm)
 	let keyValue: boolean = $state(false)
 
-	const fCallback = () => alert('Dashboard callback!')
+	const fCallback = () => getData()
 
 	let tasks = $derived(
 		[...sm.user.resources_sys_task_default, ...sm.user?.resources_sys_task_setting].filter(
@@ -60,12 +60,13 @@
 	async function getDataTask(task: UserResourceTask) {
 		task.data = {}
 		task.setShow(await getDataShow(task))
-		// if (task.isShow) {
-		if (task.pageDataObjId) {
-			// await task.loadPage(sm, fCallback)
+		// console.log('LayoutDashboard.getDataTask', { name: task.name, isShow: task.isShow })
+		if (task.isShow) {
+			if (task.pageDataObjId) {
+				await task.loadPage(sm, fCallback)
+			}
+			task.data = await getDataStatus(task)
 		}
-		task.data = await getDataStatus(task)
-		// }
 	}
 
 	async function getDataShow(task: UserResourceTask) {
@@ -102,7 +103,7 @@
 		if ((task.targetDataObjId || task.targetNodeObjId) && !task.dataObjPage) {
 			sm.parmsState.update(parms)
 			const token = task.getTokenNode(sm.user)
-			sm.triggerAction(
+			await sm.triggerAction(
 				new TokenAppStateTriggerAction({
 					codeAction: CodeAction.init(
 						CodeActionClass.ct_sys_code_action_class_nav,
@@ -110,6 +111,7 @@
 					),
 					codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
 					isNewApp: true,
+					navLayout: StateComponentLayout.layoutApp,
 					token
 				})
 			)
@@ -124,43 +126,43 @@
 		<h1 class="p-4">No tasks to complete or widgets configured.</h1>
 	{:else}
 		<div class="h-full flex flex-col overflow-y-auto gap-3 p-4 bg-neutral-100">
-			<button class="btn btn-action variant-ghost-primary" onclick={() => (promise = getData())}
+			<!-- <button class="btn btn-action variant-ghost-primary" onclick={() => (promise = getData())}
 				>Refresh Dashboard</button
-			>
+			> -->
 			{#each tasks as task}
-				<!-- {#if task.isShow} -->
-				{@const isButton = !task.dataObjPage && !task.hasAltOpen}
-				<div
-					class="bg-white rounded-lg p-4 flex flex-col items-center border shadow-md {isButton
-						? 'cursor-pointer hover:bg-gray-100'
-						: ''}"
-					onclick={task.hasAltOpen ? undefined : () => onClick(task)}
-				>
-					{#if task.dataObjPage}
-						<FormDetail
-							parms={{
-								component: DataObjComponent.FormDetail,
-								dataObjId: task.pageDataObjId,
-								isFixedHeight: true
-							}}
-						/>
-					{:else}
-						{@const Component = task.codeStatusObjName
-							? StatusType[task.codeStatusObjName]
-							: undefined}
-						{@const hasStatus = task.data}
-						<h5 class="mb-2 text-4xl font-bold tracking-tight text-blue-400">
-							{task.header}
-						</h5>
-						{#if hasStatus}
-							<p class="mt-6 mb-2 text-center text-2xl text-blue-300">Status</p>
+				{#if task.isShow}
+					{@const isButton = !task.dataObjPage && !task.hasAltOpen}
+					<div
+						class="bg-white rounded-lg p-4 flex flex-col items-center border shadow-md {isButton
+							? 'cursor-pointer hover:bg-gray-100'
+							: ''}"
+						onclick={task.hasAltOpen ? undefined : () => onClick(task)}
+					>
+						{#if task.dataObjPage}
+							<FormDetail
+								parms={{
+									component: DataObjComponent.FormDetail,
+									dataObjId: task.pageDataObjId,
+									isFixedHeight: true
+								}}
+							/>
+						{:else}
+							{@const Component = task.codeStatusObjName
+								? StatusType[task.codeStatusObjName]
+								: undefined}
+							{@const hasStatus = task.data}
+							<h5 class="mb-2 text-4xl font-bold tracking-tight text-blue-400">
+								{task.header}
+							</h5>
+							{#if hasStatus}
+								<p class="mt-6 mb-2 text-center text-2xl text-blue-300">Status</p>
+							{/if}
+							{#if Component}
+								<Component {task} {onClick} data={task.data} />
+							{/if}
 						{/if}
-						{#if Component}
-							<Component {task} {onClick} data={task.data} />
-						{/if}
-					{/if}
-				</div>
-				<!-- {/if} -->
+					</div>
+				{/if}
 			{/each}
 		</div>
 	{/if}

@@ -18,7 +18,7 @@ import {
 } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
-import { State } from '$comps/app/types.appState.svelte'
+import { State, StateComponentLayout, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import { App } from '$comps/app/types.app.svelte'
 import { AppRowActionType } from '$comps/app/types.app.svelte'
 import { Node } from '$comps/app/types.node'
@@ -323,20 +323,16 @@ export class TokenAppDoQuery extends TokenApp {
 	dataObjId?: string
 	dataObjName?: string
 	queryType: TokenApiQueryType
+	source: string
 	constructor(obj: any) {
 		const clazz = 'TokenAppDo'
 		super(obj)
 		this.dataObjId = obj.dataObjId
 		this.dataObjName = obj.dataObjName
 		this.queryType = required(obj.queryType, clazz, 'queryType')
-		if (!this.dataObjId && !this.dataObjName) {
-			error(500, {
-				file: FILENAME,
-				function: 'TokenAppDoQuery.constructor',
-				message: `Missing dataObjId or dataObjName`
-			})
-		}
+		this.source = strRequired(this.dataObjId || this.dataObjName, clazz, 'dataObjId or dataObjName')
 	}
+
 	async getDataObjId() {
 		if (this.dataObjId) {
 			return this.dataObjId
@@ -455,6 +451,8 @@ export class TokenAppStateTriggerAction extends TokenApp {
 	data: DataRecord = {}
 	fCallback: Function | undefined = undefined
 	isNewApp: boolean
+	navLayout?: StateComponentLayout
+	triggerTokens: StateTriggerToken[] = []
 	constructor(obj: any) {
 		const clazz = 'TokenAppStateTriggerAction'
 		obj = valueOrDefault(obj, {})
@@ -465,10 +463,17 @@ export class TokenAppStateTriggerAction extends TokenApp {
 		this.confirm = obj.confirm || new UserActionConfirmContent(obj)
 		this.fCallback = obj.fCallback
 		this.isNewApp = booleanOrFalse(obj.isNewApp, 'isNewApp')
+		this.navLayout = obj.navLayout
 		this.data.state = obj.state ? obj.state : {}
 		if (obj.dataRecord) this.data.dataRecord = obj.dataRecord
 		if (obj.token) this.data.token = obj.token
 		if (obj.value) this.data.value = obj.value
+	}
+	triggerTokensAdd(token: StateTriggerToken) {
+		this.triggerTokens.push(token)
+	}
+	triggerTokensInit(tokens: StateTriggerToken[]) {
+		this.triggerTokens = tokens
 	}
 }
 

@@ -42,9 +42,9 @@
 						: ' text-left'
 	)
 
-	function onClick(event: Event) {
+	async function onClick(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
+		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
 	}
 </script>
 

@@ -16,6 +16,7 @@ import {
 	RawDataObj,
 	RawDataObjAction,
 	RawDataObjPropDisplay,
+	RawDataObjPropDisplayItemChange,
 	RawDataObjTable
 } from '$comps/dataObj/types.rawDataObj'
 import { UserAction } from '$comps/other/types.userAction.svelte'
@@ -25,7 +26,8 @@ import {
 	FieldColumnItem,
 	FieldElement,
 	PropsFieldInit,
-	PropsFieldCreate
+	PropsFieldCreate,
+	FieldItemChange
 } from '$comps/form/field'
 import {
 	FieldEmbed,
@@ -118,13 +120,14 @@ export class DataObj {
 		dataObj.data = data
 		dataObj.userGridSettings = await initPrefs(sm, dataObj)
 
-		// actions
 		dataObj.fields = await dataObj.fieldsCreate(sm, dataObj, queryType)
 		await dataObj.fieldsInit(sm, dataObj)
 
 		const rawDataObj = required(data.rawDataObj, clazz, 'rawDataObj')
 		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
+
+		initItemChangedTriggers(dataObj.fields)
 
 		return dataObj
 
@@ -142,6 +145,15 @@ export class DataObj {
 			})
 			dataObj.actionsFieldListRowActionIdx = dataObj.userActions.findIndex((f) => f.isListRowAction)
 		}
+		function initItemChangedTriggers(fields: Field[]) {
+			fields.forEach((field) => {
+				field.colDO.itemChanges.forEach((target: RawDataObjPropDisplayItemChange) => {
+					field.itemChanges.push(new FieldItemChange(target, fields))
+					console.log('types.dataObj.initItemChangedTriggers', new FieldItemChange(target, fields))
+				})
+			})
+		}
+
 		async function initPrefs(sm: State, dataObj: DataObj) {
 			let rawSettings = {}
 			if (sm?.user?.prefIsActive(UserPrefType.remember_list_settings)) {

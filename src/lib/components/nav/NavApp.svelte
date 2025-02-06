@@ -15,8 +15,8 @@
 
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 
-	const back = () => {
-		sm.triggerAction(
+	const back = async () => {
+		await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_nav,

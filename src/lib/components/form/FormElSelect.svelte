@@ -30,9 +30,9 @@
 		dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-1' : 'mb-1 hidden'
 	)
 
-	function onChange(event: Event) {
+	async function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
+		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
 	}
 </script>
 

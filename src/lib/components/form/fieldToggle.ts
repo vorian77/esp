@@ -13,9 +13,15 @@ export class FieldToggle extends Field {
 		const obj = valueOrDefault(props.propRaw, {})
 		this.continueRequiresTrue = valueOrDefault(obj.colDB.toggleContinueRequiresTrue, false)
 		this.presetTrue = valueOrDefault(obj.colDB.togglePresetTrue, false)
-		this.valueFalse = valueOrDefault(obj.colDB.toggleValueFalse, undefined)
+		this.valueFalse = valueOrDefault(obj.colDB.toggleValueFalse, false)
 		this.valueShow = valueOrDefault(obj.colDB.toggleValueShow, false)
-		this.valueTrue = valueOrDefault(obj.colDB.toggleValueTrue, undefined)
+		this.valueTrue = valueOrDefault(obj.colDB.toggleValueTrue, true)
+	}
+	getValueBoolean(currValue: any) {
+		return currValue === this.valueTrue ? true : false
+	}
+	toggle(currValue: any) {
+		return currValue === this.valueTrue ? this.valueFalse : this.valueTrue
 	}
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {
 		if (

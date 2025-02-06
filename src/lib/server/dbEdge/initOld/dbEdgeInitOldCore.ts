@@ -35,7 +35,6 @@ async function initSysCodeTypess() {
 		['app_sys', 0, 'ct_sys_do_field_element'],
 		['app_sys', 0, 'ct_sys_do_field_element_custom_type'],
 		['app_sys', 0, 'ct_sys_do_field_sort_dir'],
-		['app_sys', 0, 'ct_sys_do_field_op'],
 		['app_sys', 0, 'ct_sys_do_field_source'],
 		['app_sys', 0, 'ct_sys_do_render_type'],
 		['app_sys', 0, 'ct_sys_icon'],
@@ -190,9 +189,6 @@ async function initSysCodes() {
 		// data obj field - list direction
 		['ct_sys_do_field_sort_dir', 'app_sys', 'ASC', 0],
 		['ct_sys_do_field_sort_dir', 'app_sys', 'DESC', 0],
-
-		// data obj field - op
-		['ct_sys_do_field_op', 'app_sys', 'eq', 0],
 
 		// data obj field - source
 		['ct_sys_do_field_source', 'app_sys', 'calc', 0],

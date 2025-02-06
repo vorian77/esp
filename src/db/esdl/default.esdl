@@ -29,6 +29,7 @@ type SysPerson extending sys_core::ObjRoot {
   favFood: str;
   required firstName: default::Name;
   property fullName := .firstName ++ ' ' ++ .lastName;
+  genderSelfId: str;
   idMigration: uuid;
   isLegalAgreed: bool;
   required lastName: default::Name;

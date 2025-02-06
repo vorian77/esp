@@ -14,8 +14,8 @@
 
 	let appName = sm?.user?.org?.appName || DEFAULT_APP_NAME
 
-	const goHome = () => {
-		sm.triggerAction(
+	const goHome = async () => {
+		await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_nav,

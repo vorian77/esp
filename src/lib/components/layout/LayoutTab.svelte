@@ -28,8 +28,8 @@
 				!dm.isStatusValid())
 	)
 
-	function onClick(index: number) {
-		sm.triggerAction(
+	async function onClick(index: number) {
+		await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_nav,

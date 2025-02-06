@@ -23,7 +23,7 @@
 	<LayoutContent
 		parms={{
 			...parms,
-			component: dataObjEmbed.raw.codeComponent,
+			navContent: dataObjEmbed.raw.codeComponent,
 			dataObj: dataObjEmbed,
 			dataObjId: dataObjEmbed.raw.id
 		}}

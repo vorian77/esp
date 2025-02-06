@@ -18,7 +18,11 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
-import { PropLinkItemsSource, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
+import {
+	PropLinkItemsSource,
+	RawDataObjPropDisplay,
+	RawDataObjPropDisplayItemChange
+} from '$comps/dataObj/types.rawDataObj'
 import { IconProps } from '$comps/icon/types.icon'
 import { error } from '@sveltejs/kit'
 
@@ -33,6 +37,7 @@ export class Field {
 	fieldElement: FieldElement
 	iconProps?: IconProps
 	isParmValue: boolean
+	itemChanges: FieldItemChange[] = []
 	linkItemsSource?: PropLinkItemsSource
 	constructor(props: PropsFieldCreate) {
 		const clazz = `Field: ${props.propRaw.propName}`
@@ -261,6 +266,80 @@ export enum FieldEmbedType {
 	listConfig = 'listConfig',
 	listEdit = 'listEdit',
 	listSelect = 'listSelect'
+}
+
+export class FieldItemChange {
+	codeAccess: FieldAccess
+	codeOp: FieldItemChangeOp
+	codeValueTarget?: string
+	codeValueTrigger?: string
+	codeValueTypeTarget: FieldItemChangeTypeTarget
+	codeValueTypeTrigger: FieldItemChangeTypeTrigger
+	field: Field
+	fieldListItemsParmName?: string
+	valueScalarTarget?: string
+	valueScalarTrigger?: string
+	constructor(target: RawDataObjPropDisplayItemChange, fields: Field[]) {
+		const clazz = 'FieldItemChange'
+		this.codeAccess = memberOfEnum(
+			target._codeAccess,
+			clazz,
+			'codeAccess',
+			'FieldAccess',
+			FieldAccess
+		)
+		this.codeOp = memberOfEnum(target._codeOp, clazz, 'codeOp', 'FieldTriggerOp', FieldItemChangeOp)
+		this.codeValueTarget = target._codeValueTarget
+		this.codeValueTrigger = target._codeValueTrigger
+		this.codeValueTypeTarget = memberOfEnum(
+			target._codeValueTypeTarget,
+			clazz,
+			'codeValueTypeTarget',
+			'FieldTriggerValueTypeTarget',
+			FieldItemChangeTypeTarget
+		)
+		this.codeValueTypeTrigger = memberOfEnum(
+			target._codeValueTypeTrigger,
+			clazz,
+			'codeValueTypeTrigger',
+			'FieldTriggerValueTypeTrigger',
+			FieldItemChangeTypeTrigger
+		)
+		this.field = required(
+			fields.find((f: Field) => {
+				return f.colDO.propNameRaw === target._column
+			}),
+			clazz,
+			'field'
+		)
+		this.fieldListItemsParmName = target.fieldListItemsParmName
+		this.valueScalarTarget = target.valueScalarTarget
+		this.valueScalarTrigger = target.valueScalarTrigger
+	}
+}
+
+export enum FieldItemChangeOp {
+	equal = 'equal',
+	greaterThan = 'greaterThan',
+	greaterThanOrEqual = 'greaterThanOrEqual',
+	lessThan = 'lessThan',
+	lessThanOrEqual = 'lessThanOrEqual',
+	notEqual = 'notEqual'
+}
+
+export enum FieldItemChangeTypeTarget {
+	codeParm = 'codeParm',
+	none = 'none',
+	reset = 'reset',
+	scalar = 'scalar'
+}
+
+export enum FieldItemChangeTypeTrigger {
+	any = 'any',
+	code = 'code',
+	notNull = 'notNull',
+	null = 'null',
+	scalar = 'scalar'
 }
 
 export class PropsFieldInit {

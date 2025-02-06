@@ -55,8 +55,8 @@
 	let displayValue: string = $derived(field.linkItemsSource.getDisplayValueList(fieldValue))
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
-	function onClick(event: Event) {
-		sm.triggerAction(
+	async function onClick(event: Event) {
+		await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_modal,
@@ -80,7 +80,7 @@
 			if (returnType === TokenAppModalReturnType.complete) {
 				if (returnData.data) {
 					const parmsReturn = new ParmsValues(returnData.data)
-					dm.setFieldValue(
+					await dm.setFieldValue(
 						parms.dataObjId,
 						parms.row,
 						parms.field,

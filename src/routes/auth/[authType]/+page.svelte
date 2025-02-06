@@ -1,15 +1,8 @@
 <script lang="ts">
 	import srcLogo from '$assets/org_logo_sys.png'
 	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
-	import {
-		CodeAction,
-		CodeActionClass,
-		CodeActionType,
-		ContextKey,
-		Node,
-		userSetId
-	} from '$utils/types'
-	import { State } from '$comps/app/types.appState.svelte'
+	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, Node } from '$utils/types'
+	import { State, StateComponentLayout } from '$comps/app/types.appState.svelte'
 	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
 	import {
 		TokenApiQueryType,
@@ -26,99 +19,68 @@
 
 	let { data }: { data: PageData } = $props()
 
-	const storeDrawer = getDrawerStore()
-	const storeToast = getToastStore()
 	const IS_DEV_MODE = data.environ === 'dev'
 
-	// let sm: State = $derived.by(() => {
-	// 	return new State({
-	// 		page: '/auth',
-	// 		storeDrawer,
-	// 		storeToast
-	// 	})
-	// 	return undefined
-	// })
-
 	let sm: State = new State({
-		page: '/auth',
-		storeDrawer,
-		storeToast
+		navPage: '/auth',
+		storeDrawer: getDrawerStore(),
+		storeToast: getToastStore()
 	})
 
-	if (sm) {
-		const authType = data.authType
-		if (authType) {
-			const dataObjects = {
-				login: 'data_obj_auth_login',
-				signup: 'data_obj_auth_signup'
-			}
-			const dataObj = dataObjects[authType]
-			if (!dataObj) {
-				error(404, {
-					file: FILENAME,
-					function: 'constructor',
-					message: `Invalid authType: ${authType}`
-				})
-			}
-			sm.triggerAction(
-				new TokenAppStateTriggerAction({
-					codeAction: CodeAction.init(
-						CodeActionClass.ct_sys_code_action_class_do,
-						CodeActionType.doOpen
-					),
-					isNewApp: true,
-					token: new TokenAppDoQuery({
-						dataObjName: dataObj,
-						queryType: TokenApiQueryType.preset
+	let promise = $state(retrieveForm())
+
+	async function retrieveForm() {
+		if (sm) {
+			const authType = data.authType
+			if (authType) {
+				const dataObjects = {
+					login: 'data_obj_auth_login',
+					signup: 'data_obj_auth_signup'
+				}
+				const dataObj = dataObjects[authType]
+				if (!dataObj) {
+					error(404, {
+						file: FILENAME,
+						function: 'constructor',
+						message: `Invalid authType: ${authType}`
 					})
-				})
-			)
+				}
+				await sm.triggerAction(
+					new TokenAppStateTriggerAction({
+						codeAction: CodeAction.init(
+							CodeActionClass.ct_sys_code_action_class_do,
+							CodeActionType.doOpen
+						),
+						isNewApp: true,
+						navLayout: StateComponentLayout.layoutContent,
+						token: new TokenAppDoQuery({
+							dataObjName: dataObj,
+							queryType: TokenApiQueryType.preset
+						})
+					})
+				)
+			}
 		}
 	}
-
-	// $effect(() => {
-	// 	$inspect.trace()
-
-	// 	const v = 5
-	// 	console.log('+page.$effect')
-	// 	if (sm) {
-	// 		const authType = data.authType
-	// 		if (authType) {
-	// 			const dataObjects = {
-	// 				login: 'data_obj_auth_login',
-	// 				signup: 'data_obj_auth_signup'
-	// 			}
-	// 			const dataObj = dataObjects[authType]
-	// 			if (!dataObj) {
-	// 				error(404, {
-	// 					file: FILENAME,
-	// 					function: 'constructor',
-	// 					message: `Invalid authType: ${authType}`
-	// 				})
-	// 			}
-	// 			sm.triggerAction(
-	// 				new TokenAppStateTriggerAction({
-	// 					codeAction: CodeAction.init(
-	// 						CodeActionClass.ct_sys_code_action_class_do,
-	// 						CodeActionType.doOpen
-	// 					),
-	// 					isNewApp: true,
-	// 					token: new TokenAppDoQuery({
-	// 						dataObjName: dataObj,
-	// 						queryType: TokenApiQueryType.preset
-	// 					})
-	// 				})
-	// 			)
-	// 		}
-	// 	}
-	// })
 
 	async function expressLogin() {
 		const userSys = '0b3ba76c-c0f4-11ee-9b77-8f017aab6306'
 		const userPhyllipHall = '129d4a42-c0f4-11ee-9b77-bf2d11e31679'
-		await userSetId(userSys)
+		await sm.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_do_auth,
+					CodeActionType.setUserId
+				),
+				value: userSys
+			})
+		)
 	}
 </script>
+
+{#await promise catch error}
+	<p>Could not retrieve auth form - error: {error.message}</p>
+{/await}
 
 <div class="h-screen flex flex-col items-center justify-center">
 	<div

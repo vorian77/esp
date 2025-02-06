@@ -168,8 +168,8 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<modifiedBy[is sys_user::SysUserPrefType]": $.LinkDesc<$SysUserPrefType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_user::SysUserPrefType]": $.LinkDesc<$SysUserPrefType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<user[is sys_user::SysUserPrefType]": $.LinkDesc<$SysUserPrefType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<modifiedBy[is sys_core::SysDataObjColumnItem]": $.LinkDesc<_sys_core.$SysDataObjColumnItem, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<createdBy[is sys_core::SysDataObjColumnItem]": $.LinkDesc<_sys_core.$SysDataObjColumnItem, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<modifiedBy[is sys_core::SysDataObjColumnItemValue]": $.LinkDesc<_sys_core.$SysDataObjColumnItemValue, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<createdBy[is sys_core::SysDataObjColumnItemValue]": $.LinkDesc<_sys_core.$SysDataObjColumnItemValue, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysDataObjColumnLink]": $.LinkDesc<_sys_core.$SysDataObjColumnLink, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysDataObjColumnLink]": $.LinkDesc<_sys_core.$SysDataObjColumnLink, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysDataObjColumn]": $.LinkDesc<_sys_core.$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -208,6 +208,8 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<createdBy[is sys_core::SysDataObjAction]": $.LinkDesc<_sys_core.$SysDataObjAction, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysDataObjActionGroup]": $.LinkDesc<_sys_core.$SysDataObjActionGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysDataObjActionGroup]": $.LinkDesc<_sys_core.$SysDataObjActionGroup, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<modifiedBy[is sys_core::SysDataObjColumnItemChange]": $.LinkDesc<_sys_core.$SysDataObjColumnItemChange, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<createdBy[is sys_core::SysDataObjColumnItemChange]": $.LinkDesc<_sys_core.$SysDataObjColumnItemChange, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<recipients": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

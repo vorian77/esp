@@ -18,6 +18,12 @@ function initCodeActionsDoFieldAuth(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
 		codeType: 'ct_sys_code_action_class_do_auth',
+		name: 'setUserId',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_do_auth',
 		name: 'submit',
 		order: 0
 	})
@@ -214,6 +220,18 @@ function initCodeActionsNav(init: InitDb) {
 		owner: 'sys_system_old',
 		codeType: 'ct_sys_code_action_class_nav',
 		name: 'navTab',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_nav',
+		name: 'openDrawerDataObj',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_nav',
+		name: 'openModalDataObj',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
