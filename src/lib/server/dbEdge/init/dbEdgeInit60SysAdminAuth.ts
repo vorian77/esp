@@ -1,8 +1,8 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
 export function initSysAuth(init: InitDb) {
-	initTaskMyAccount(init)
 	initDataObjLogin(init)
+	initDataObjMyAccount(init)
 	initDataObjResetPasswordAccount(init)
 	initDataObjResetPasswordLogin(init)
 	initDataObjVerify(init)
@@ -12,7 +12,98 @@ export function initSysAuth(init: InitDb) {
 	initDataObjUserPrefType(init)
 }
 
-function initTaskMyAccount(init: InitDb) {
+function initDataObjLogin(init: InitDb) {
+	init.addTrans('sysDataObj', {
+		codeComponent: 'FormDetail',
+		codeCardinality: 'detail',
+		exprObject: `WITH 
+		userName := <record,str,userName>,
+		password := <record,str,password>,
+		SELECT sys_user::SysUser { userId := .id }
+		FILTER .userName = userName AND .password = password 
+		`,
+		header: 'Log in',
+		name: 'data_obj_auth_login',
+		owner: 'sys_system_old',
+		table: 'SysUser',
+		tables: [
+			{ index: 0, table: 'SysUser' },
+			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
+		],
+		fields: [
+			{
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: { label: 'Log in' },
+				isDisplayable: true,
+				orderDisplay: 10,
+				orderDefine: 10,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tel',
+				columnName: 'userName',
+				headerAlt: 'Mobile Phone Number',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'textHide',
+				columnName: 'password',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				codeColor: 'primary',
+				codeFieldElement: 'customActionButton',
+				columnName: 'custom_element',
+				customElement: {
+					action: 'ua_ca_sys_auth_submit',
+					label: 'Log in',
+					value: 'data_obj_auth_login'
+				},
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeColor: 'primary',
+				codeFieldElement: 'customActionLink',
+				columnName: 'custom_element',
+				customElement: {
+					action: 'ua_ca_sys_do_open_link',
+					label: 'Forgot Password?',
+					value: 'data_obj_auth_reset_password_login,preset'
+				},
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeColor: 'primary',
+				codeFieldElement: 'customActionLink',
+				columnName: 'custom_element',
+				customElement: {
+					action: 'ua_ca_sys_do_open_link',
+					label: 'Sign up',
+					prefix: 'Need an account?',
+					value: 'data_obj_auth_signup,preset'
+				},
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			}
+		]
+	})
+}
+
+function initDataObjMyAccount(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_auth_my_account',
 		codeComponent: 'FormDetail',
@@ -206,109 +297,18 @@ function initTaskMyAccount(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysTask', {
-		codeCategory: 'setting',
-		codeIcon: 'Settings',
-		codeRenderType: 'button',
-		header: 'My Account',
-		isPinToDash: false,
-		isGlobalResource: true,
-		name: 'task_sys_auth_my_account',
-		targetDataObj: 'data_obj_task_sys_auth_my_account',
-		orderDefine: 0,
-		owner: 'sys_system_old'
-	})
-}
-
-function initDataObjLogin(init: InitDb) {
-	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
-		codeCardinality: 'detail',
-		exprObject: `WITH 
-		userName := <record,str,userName>,
-		password := <record,str,password>,
-		SELECT sys_user::SysUser { userId := .id }
-		FILTER .userName = userName AND .password = password 
-		`,
-		header: 'Log in',
-		name: 'data_obj_auth_login',
-		owner: 'sys_system_old',
-		table: 'SysUser',
-		tables: [
-			{ index: 0, table: 'SysUser' },
-			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
-		],
-		fields: [
-			{
-				codeFieldElement: 'customHeader',
-				columnName: 'custom_element',
-				customElement: { label: 'Log in' },
-				isDisplayable: true,
-				orderDisplay: 10,
-				orderDefine: 10,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tel',
-				columnName: 'userName',
-				headerAlt: 'Mobile Phone Number',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'textHide',
-				columnName: 'password',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0
-			},
-			{
-				codeColor: 'primary',
-				codeFieldElement: 'customActionButton',
-				columnName: 'custom_element',
-				customElement: {
-					action: 'ua_ca_sys_auth_submit',
-					label: 'Log in',
-					value: 'data_obj_auth_login'
-				},
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				codeColor: 'primary',
-				codeFieldElement: 'customActionLink',
-				columnName: 'custom_element',
-				customElement: {
-					action: 'ua_ca_sys_do_open_link',
-					label: 'Forgot Password?',
-					value: 'data_obj_auth_reset_password_login,preset'
-				},
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
-			},
-			{
-				codeColor: 'primary',
-				codeFieldElement: 'customActionLink',
-				columnName: 'custom_element',
-				customElement: {
-					action: 'ua_ca_sys_do_open_link',
-					label: 'Sign up',
-					prefix: 'Need an account?',
-					value: 'data_obj_auth_signup,preset'
-				},
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60
-			}
-		]
-	})
+	// init.addTrans('sysTask', {
+	// 	codeCategory: 'setting',
+	// 	codeIcon: 'Settings',
+	// 	codeRenderType: 'button',
+	// 	header: 'My Account',
+	// 	isPinToDash: false,
+	// 	isGlobalResource: true,
+	// 	name: 'task_sys_auth_my_account',
+	// 	targetDataObj: 'data_obj_task_sys_auth_my_account',
+	// 	orderDefine: 0,
+	// 	owner: 'sys_system_old'
+	// })
 }
 
 function initDataObjResetPasswordAccount(init: InitDb) {

@@ -23,7 +23,7 @@
 					CodeActionType.navCrumbs
 				),
 				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-				token: new TokenAppIndex({ index })
+				data: { token: new TokenAppIndex({ index }) }
 			})
 		)
 	}

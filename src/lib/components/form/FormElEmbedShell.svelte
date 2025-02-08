@@ -8,11 +8,7 @@
 	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
-	import {
-		State,
-		StateComponentLayout,
-		StateSurfaceEmbedShell
-	} from '$comps/app/types.appState.svelte'
+	import { State, StateNavLayout, StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
 	import { TokenAppUserActionConfirmType } from '$utils/types.token'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import Layout from '$comps/layout/RootLayoutApp.svelte'

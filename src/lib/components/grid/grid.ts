@@ -14,7 +14,7 @@ import {
 	type ValueSetterParams
 } from 'ag-grid-community'
 import { LicenseManager } from 'ag-grid-charts-enterprise'
-import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field'
+import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
 import {
 	arrayOfClass,
 	booleanOrFalse,
@@ -29,7 +29,7 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
-import { PropDataType } from '$comps/dataObj/types.rawDataObj'
+import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 import { error } from '@sveltejs/kit'
 
 LicenseManager.setLicenseKey(
@@ -293,7 +293,7 @@ export class GridSettingsColumnItem {
 		const clazz = 'GridSettingsColumnItem'
 		this.actualWidth = required(parseInt(obj.actualWidth), clazz, 'actualWidth')
 		this.colId = strRequired(obj.colId, clazz, 'colId')
-		this.visible = booleanOrFalse(obj.visible, 'visible')
+		this.visible = booleanOrFalse(obj.visible)
 	}
 }
 
@@ -321,11 +321,11 @@ export class GridManagerOptions {
 		this.fCallbackFilter = obj.fCallbackFilter
 		this.fCallbackUpdateValue = obj.fCallbackUpdateValue
 		this.idColumn = valueOrDefault(obj.idColumn, 'id')
-		this.isEmbed = booleanOrFalse(obj.isEmbed, 'isEmbed')
-		this.isSelect = booleanOrFalse(obj.isSelect, 'isSelect')
-		this.isSelectMulti = booleanOrFalse(obj.isSelectMulti, 'isSelectMulti')
-		this.isSuppressFilterSort = booleanOrFalse(obj.isSuppressFilterSort, 'isSuppressFilterSort')
-		this.isSuppressSelect = booleanOrFalse(obj.isSuppressSelect, 'isSuppressSelect')
+		this.isEmbed = booleanOrFalse(obj.isEmbed)
+		this.isSelect = booleanOrFalse(obj.isSelect)
+		this.isSelectMulti = booleanOrFalse(obj.isSelectMulti)
+		this.isSuppressFilterSort = booleanOrFalse(obj.isSuppressFilterSort)
+		this.isSuppressSelect = booleanOrFalse(obj.isSuppressSelect)
 		this.listReorderColumn = obj.listReorderColumn || ''
 		this.onCellClicked = obj.onCellClicked
 		this.onSelectionChanged = obj.onSelectionChanged

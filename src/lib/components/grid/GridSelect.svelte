@@ -2,7 +2,7 @@
 	import { State } from '$comps/app/types.appState.svelte'
 	import { ContextKey, type DataRecord, ParmsValuesType, required } from '$utils/types'
 	import { getContext } from 'svelte'
-	import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
+	import { PropSortDir } from '$comps/dataObj/types.rawDataObj.svelte'
 	import Grid from '$comps/grid/Grid.svelte'
 	import { getSelectedNodeIds, GridManagerOptions } from '$comps/grid/grid'
 	import DataViewer from '$utils/DataViewer.svelte'

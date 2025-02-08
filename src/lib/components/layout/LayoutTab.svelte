@@ -36,7 +36,7 @@
 					CodeActionType.navTab
 				),
 				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-				token: new TokenAppTab({ app: sm.app, index })
+				data: { token: new TokenAppTab({ app: sm.app, index }) }
 			})
 		)
 	}
@@ -62,9 +62,11 @@
 					>
 						{#each currLevel.tabs as tab, idx}
 							{@const label = tab.label}
-							<option value={idx} selected={idx === currLevel.tabIdxCurrent}>
-								{label}
-							</option>
+							{#if !tab.isVirtual}
+								<option value={idx} selected={idx === currLevel.tabIdxCurrent}>
+									{label}
+								</option>
+							{/if}
 						{/each}
 					</select>
 				</div>
@@ -76,9 +78,11 @@
 						{@const hidden = isHideChildTabs && !isCurrent}
 						{@const label = tab.label}
 						{@const classItem = isCurrent ? classItemCurrent : classItemNotCurrent}
-						<button {name} {hidden} class={classItem} onclick={() => onClick(idx)}>
-							{label}
-						</button>
+						{#if !tab.isVirtual}
+							<button {name} {hidden} class={classItem} onclick={() => onClick(idx)}>
+								{label}
+							</button>
+						{/if}
 					{/each}
 				</div>
 			</div>

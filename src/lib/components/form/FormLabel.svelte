@@ -7,7 +7,7 @@
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { Field, FieldAccess } from '$comps/form/field'
+	import { Field, FieldAccess } from '$comps/form/field.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -26,15 +26,17 @@
 
 <!-- <DataViewer header="label.iconProps" data={iconProps?.name} /> -->
 
-<label for={field.colDO.propName}>
-	<div
-		class={classProps}
-		hidden={dataObj.raw.codeCardinality === DataObjCardinality.list ? 'hidden' : ''}
-	>
-		{field.colDO.label}
-		{#if iconProps}
-			<Icon props={iconProps} />
-		{/if}
-	</div>
-	<slot />
-</label>
+{#if field.fieldAccess !== FieldAccess.hidden}
+	<label for={field.colDO.propName}>
+		<div
+			class={classProps}
+			hidden={dataObj.raw.codeCardinality === DataObjCardinality.list ? 'hidden' : ''}
+		>
+			{field.colDO.label}
+			{#if iconProps}
+				<Icon props={iconProps} />
+			{/if}
+		</div>
+		<slot />
+	</label>
+{/if}

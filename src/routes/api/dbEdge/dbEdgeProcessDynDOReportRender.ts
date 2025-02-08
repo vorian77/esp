@@ -6,9 +6,9 @@ import {
 	DataObjTable,
 	DataObjType
 } from '$utils/types'
-import { RawDataObj, RawDataObjDyn } from '$comps/dataObj/types.rawDataObj'
+import { RawDataObj, RawDataObjDyn } from '$comps/dataObj/types.rawDataObj.svelte'
 import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
-import { PropDataType } from '$comps/dataObj/types.rawDataObj'
+import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 import { getReportUser } from '$routes/api/dbEdge/types.dbEdge'
 import { error } from '@sveltejs/kit'
 

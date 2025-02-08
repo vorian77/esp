@@ -62,14 +62,14 @@ export enum CodeActionType {
 	doOpenLink = 'doOpenLink',
 	doSaveCancel = 'doSaveCancel',
 
-	embedField = 'embedField',
 	embedShell = 'embedShell',
 
 	// modal
 	modalCancel = 'modalCancel',
 	modalDone = 'modalDone',
-	modalEmbed = 'modalEmbed',
-	modalSelectOpen = 'modalSelectOpen',
+	modalOpenEmbedFieldLevel = 'modalOpenEmbedFieldLevel',
+	modalOpenEmbedFieldTree = 'modalOpenEmbedFieldTree',
+	modalOpenSelect = 'modalOpenSelect',
 
 	// nav
 	navBack = 'navBack',

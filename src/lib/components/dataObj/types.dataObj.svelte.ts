@@ -18,7 +18,7 @@ import {
 	RawDataObjPropDisplay,
 	RawDataObjPropDisplayItemChange,
 	RawDataObjTable
-} from '$comps/dataObj/types.rawDataObj'
+} from '$comps/dataObj/types.rawDataObj.svelte'
 import { UserAction } from '$comps/other/types.userAction.svelte'
 import {
 	Field,
@@ -28,7 +28,7 @@ import {
 	PropsFieldInit,
 	PropsFieldCreate,
 	FieldItemChange
-} from '$comps/form/field'
+} from '$comps/form/field.svelte'
 import {
 	FieldEmbed,
 	FieldEmbedListConfig,
@@ -56,7 +56,7 @@ import { FieldTextarea } from '$comps/form/fieldTextarea'
 import { FieldToggle } from '$comps/form/fieldToggle'
 import { DataObjActionQuery, DataObjActionQueryFunction } from '$comps/app/types.appQuery'
 import { TokenApiQueryType, TokenApiUserPref } from '$utils/types.token'
-import { PropSortDir } from '$comps/dataObj/types.rawDataObj'
+import { PropSortDir } from '$comps/dataObj/types.rawDataObj.svelte'
 import { getEnhancement } from '$enhance/crud/_crud'
 import { error } from '@sveltejs/kit'
 
@@ -149,7 +149,6 @@ export class DataObj {
 			fields.forEach((field) => {
 				field.colDO.itemChanges.forEach((target: RawDataObjPropDisplayItemChange) => {
 					field.itemChanges.push(new FieldItemChange(target, fields))
-					console.log('types.dataObj.initItemChangedTriggers', new FieldItemChange(target, fields))
 				})
 			})
 		}

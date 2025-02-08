@@ -2,6 +2,7 @@ import { State } from '$comps/app/types.appState.svelte'
 import {
 	booleanRequired,
 	classOptional,
+	DataManagerNode,
 	DataObj,
 	DataObjData,
 	type DataRecord,
@@ -22,7 +23,7 @@ import {
 	PropLinkItemsSource,
 	RawDataObjPropDisplay,
 	RawDataObjPropDisplayItemChange
-} from '$comps/dataObj/types.rawDataObj'
+} from '$comps/dataObj/types.rawDataObj.svelte'
 import { IconProps } from '$comps/icon/types.icon'
 import { error } from '@sveltejs/kit'
 
@@ -31,8 +32,7 @@ const FILENAME = '/$comps/form/field.ts/'
 export class Field {
 	classType: FieldClassType = FieldClassType.regular
 	colDO: RawDataObjPropDisplay
-	colorBackground: string
-	fieldAccess: FieldAccess
+	fieldAccess: FieldAccess = $state(FieldAccess.hidden)
 	fieldAlignment: FieldAlignment
 	fieldElement: FieldElement
 	iconProps?: IconProps
@@ -68,14 +68,13 @@ export class Field {
 		)
 		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
 		this.linkItemsSource = classOptional(PropLinkItemsSource, obj._linkItemsSource)
-
-		/* derived */
-		this.colorBackground =
-			this.fieldAccess === FieldAccess.required
-				? 'bg-blue-100'
-				: this.fieldAccess == FieldAccess.readonly
-					? 'bg-gray-200'
-					: 'bg-white'
+	}
+	getBackgroundColor(fieldAccess: FieldAccess) {
+		return fieldAccess === FieldAccess.required
+			? 'bg-blue-100'
+			: fieldAccess == FieldAccess.readonly
+				? 'bg-gray-200'
+				: 'bg-white'
 	}
 	getPropName() {
 		return this.isParmValue ? 'parmValue' : this.colDO.propName
@@ -102,6 +101,114 @@ export class Field {
 
 	async init(props: PropsFieldInit) {
 		// used for async initialization
+	}
+
+	async processItemChanges(row: number, value: any, dmn: DataManagerNode) {
+		for (let i = 0; i < this.itemChanges.length; i++) {
+			const itemChange = this.itemChanges[i]
+			switch (itemChange.codeValueTypeTrigger) {
+				case FieldItemChangeTypeTrigger.any:
+					return process(itemChange)
+
+				case FieldItemChangeTypeTrigger.code:
+					switch (itemChange.codeOp) {
+						case FieldItemChangeOp.equal:
+							if (value === itemChange.codeValueTrigger) await process(itemChange)
+							break
+						case FieldItemChangeOp.notEqual:
+							if (value !== itemChange.codeValueTrigger) await process(itemChange)
+							break
+						default:
+							error(500, {
+								file: FILENAME,
+								function: 'processItemChanges.code',
+								message: `No case defined for FieldItemChangeOp: ${itemChange.codeOp}`
+							})
+					}
+					break
+
+				case FieldItemChangeTypeTrigger.notNull:
+					if (![null, undefined].includes(value)) await process(itemChange)
+					break
+
+				case FieldItemChangeTypeTrigger.null:
+					if ([null, undefined].includes(value)) await process(itemChange)
+					break
+
+				case FieldItemChangeTypeTrigger.scalar:
+					if (itemChange.valueScalarTrigger) {
+						switch (itemChange.codeOp) {
+							case FieldItemChangeOp.equal:
+								if (value === itemChange.valueScalarTrigger) await process(itemChange)
+								break
+
+							case FieldItemChangeOp.greaterThan:
+								if (value > itemChange.valueScalarTrigger) await process(itemChange)
+								break
+
+							case FieldItemChangeOp.greaterThanOrEqual:
+								if (value >= itemChange.valueScalarTrigger) await process(itemChange)
+								break
+
+							case FieldItemChangeOp.lessThan:
+								if (value < itemChange.valueScalarTrigger) await process(itemChange)
+								break
+
+							case FieldItemChangeOp.lessThanOrEqual:
+								if (value <= itemChange.valueScalarTrigger) await process(itemChange)
+								break
+
+							case FieldItemChangeOp.notEqual:
+								if (value !== itemChange.valueScalarTrigger) await process(itemChange)
+								break
+							default:
+								error(500, {
+									file: FILENAME,
+									function: 'processItemChanges.scalar',
+									message: `No case defined for FieldItemChangeOp: ${itemChange.codeOp}`
+								})
+						}
+					}
+					break
+
+				default:
+					error(500, {
+						file: FILENAME,
+						function: 'processItemChanges',
+						message: `No case defined for FieldItemChangeTypeTriggerInvalid: ${itemChange.codeValueTypeTrigger}`
+					})
+			}
+		}
+		async function process(itemChange: FieldItemChange) {
+			if (itemChange.codeAccess) itemChange.field.fieldAccess = itemChange.codeAccess
+			let newValue
+			switch (itemChange.codeValueTypeTarget) {
+				case FieldItemChangeTypeTarget.codeParm:
+					// retrieve select
+					// itemChange.fieldListItemsParmName
+
+					if (itemChange.codeValueTarget) {
+						await dmn.setFieldVal(row, itemChange.field, itemChange.codeValueTarget)
+					}
+					break
+				case FieldItemChangeTypeTarget.none:
+					const currValue = dmn.recordsDisplay[row][itemChange.field.colDO.propName]
+					await dmn.setFieldVal(row, itemChange.field, currValue)
+					break
+				case FieldItemChangeTypeTarget.reset:
+					await dmn.setFieldVal(row, itemChange.field, null)
+					break
+				case FieldItemChangeTypeTarget.scalar:
+					await dmn.setFieldVal(row, itemChange.field, itemChange.valueScalarTarget)
+					break
+				default:
+					error(500, {
+						file: FILENAME,
+						function: 'processItemChanges.process',
+						message: `No case defined for FieldItemChangeTypeTarget: ${itemChange.codeValueTypeTarget}`
+					})
+			}
+		}
 	}
 
 	setIconProps(obj: any) {

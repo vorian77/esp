@@ -17,20 +17,20 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 	const token: Token = parms.data.token
 
 	switch (actionType) {
-		case CodeActionType.embedField:
-			await sm.app.addLevelEmbedField(sm, token as TokenApiQuery)
-			await userActionStateChangeDataObj(sm, parms)
-			break
-
 		case CodeActionType.embedShell:
 			break
 
-		case CodeActionType.modalEmbed:
-			await sm.app.addLevelModalEmbedField(sm, token as TokenAppModalEmbedField)
+		case CodeActionType.modalOpenEmbedFieldLevel:
+			await sm.app.addLevelEmbedFieldModal(sm, token as TokenAppModalEmbedField)
 			await userActionStateChangeDataObj(sm, parms)
 			break
 
-		case CodeActionType.modalSelectOpen:
+		case CodeActionType.modalOpenEmbedFieldTree:
+			await sm.app.addTreeEmbedFieldModal(sm, token as TokenAppModalEmbedField)
+			await userActionStateChangeDataObj(sm, parms)
+			break
+
+		case CodeActionType.modalOpenSelect:
 			await sm.openModalSelect(token as TokenAppModalSelect)
 			break
 

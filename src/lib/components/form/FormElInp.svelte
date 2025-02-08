@@ -7,10 +7,10 @@
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldAlignment, FieldElement } from '$comps/form/field'
-	import { FieldAccess } from '$comps/form/field'
+	import { FieldAlignment, FieldElement } from '$comps/form/field.svelte'
+	import { FieldAccess } from '$comps/form/field.svelte'
 	import { FieldInput } from '$comps/form/fieldInput'
-	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
+	import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
@@ -31,7 +31,7 @@
 	let classPropsInput = $derived.by(() => {
 		let clazz =
 			parms.dataObj.raw.codeCardinality === DataObjCardinality.detail
-				? 'input text-sm text-black ' + field.colorBackground
+				? 'input text-sm text-black ' + field.getBackgroundColor(field.fieldAccess)
 				: 'w-full border-none bg-transparent text-black'
 		clazz +=
 			field.fieldAlignment === FieldAlignment.left
@@ -45,6 +45,12 @@
 							: ' text-left'
 		return clazz
 	})
+
+	let placeholder = $derived(
+		parms.dataObj.raw.codeCardinality === DataObjCardinality.detail || parms.dataObj.raw.isListEdit
+			? field.getPlaceholder(field.fieldAccess)
+			: ''
+	)
 
 	async function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
@@ -97,10 +103,7 @@
 		name={field.colDO.propName}
 		ondblclick={onDoubleClick}
 		oninput={onChange}
-		placeholder={parms.dataObj.raw.codeCardinality === DataObjCardinality.detail ||
-		parms.dataObj.raw.isListEdit
-			? field.placeHolder
-			: ''}
+		{placeholder}
 		readonly={field.fieldAccess === FieldAccess.readonly}
 		step={field.spinStep?.toString() || ''}
 		type={fieldInputType || field.FieldElement}

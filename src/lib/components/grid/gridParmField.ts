@@ -4,8 +4,8 @@ import {
 	type ICellRendererComp,
 	type ICellRendererParams
 } from 'ag-grid-community'
-import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field'
-import { PropDataType } from '$comps/dataObj/types.rawDataObj'
+import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
+import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 import { type DataRecord, getRecordValue } from '$utils/types'
 import { error } from '@sveltejs/kit'
 

@@ -34,14 +34,14 @@ import {
 	RawDataObjPropDisplayEmbedListConfig,
 	RawDataObjPropDisplayEmbedListEdit,
 	RawDataObjPropDisplayEmbedListSelect
-} from '$comps/dataObj/types.rawDataObj'
+} from '$comps/dataObj/types.rawDataObj.svelte'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import {
 	getDataObjById,
 	getDataObjByName,
 	getLinkItemsSource
 } from '$routes/api/dbEdge/dbEdgeUtilities'
-import { Field, FieldEmbedType, PropsFieldCreate } from '$comps/form/field'
+import { Field, FieldEmbedType, PropsFieldCreate } from '$comps/form/field.svelte'
 import {
 	FieldEmbed,
 	FieldEmbedListConfig,

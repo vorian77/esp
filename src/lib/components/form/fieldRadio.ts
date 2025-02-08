@@ -1,4 +1,4 @@
-import { Field, PropsFieldCreate } from '$comps/form/field'
+import { Field, PropsFieldCreate } from '$comps/form/field.svelte'
 import { booleanOrFalse } from '$utils/types'
 
 export class FieldRadio extends Field {
@@ -6,6 +6,6 @@ export class FieldRadio extends Field {
 	constructor(props: PropsFieldCreate) {
 		super(props)
 		const clazz = 'FieldRadio'
-		this.isDisplayBlock = booleanOrFalse(props.propRaw.isDisplayBlock, clazz)
+		this.isDisplayBlock = booleanOrFalse(props.propRaw.isDisplayBlock)
 	}
 }

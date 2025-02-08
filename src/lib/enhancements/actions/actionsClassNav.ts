@@ -1,4 +1,9 @@
-import { State, StateComponentLayout, StateTriggerToken } from '$comps/app/types.appState.svelte'
+import {
+	State,
+	StateNavLayout,
+	StateParms,
+	StateTriggerToken
+} from '$comps/app/types.appState.svelte'
 import {
 	userActionError,
 	userActionStateChangeDataObj,
@@ -64,22 +69,21 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 				'bottom',
 				'h-[70%]',
 				undefined,
-				tokenDataObjDrawer,
-				true
+				tokenDataObjDrawer
 			)
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.openDataObjModal:
 			const tokenDataObjModal = token as TokenAppDoQuery
-			await sm.openModalDataObj(tokenDataObjModal, true, async () =>
+			await sm.openModalDataObj(tokenDataObjModal, async () =>
 				userActionStateChangeHomeDashboard(sm, parmsAction)
 			)
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.openNode:
-			if (parmsAction.isNewApp) sm.newApp()
+			if (!parmsAction.isMultiTree) sm.newApp()
 			await sm.app.addTreeNode(sm, token as TokenAppNode)
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
@@ -96,9 +100,10 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 		sm: State,
 		parmsAction: TokenAppStateTriggerAction
 	) {
-		await userActionStateChangeRaw(sm, parmsAction, {
-			navLayout: StateComponentLayout.layoutDashboard,
-			triggerTokens: [StateTriggerToken.navDashboard]
-		})
+		parmsAction.isMultiTree = true
+		parmsAction.stateParms = new StateParms({ navLayout: StateNavLayout.layoutDashboard }, [
+			StateTriggerToken.navDashboard
+		])
+		await userActionStateChangeRaw(sm, parmsAction)
 	}
 }

@@ -196,7 +196,6 @@ function initStudent(init: InitDb) {
 				orderDefine: 90
 			},
 			{
-				codeAccess: 'optional',
 				columnName: 'phoneMobile',
 				indexTable: 1,
 				isDisplayable: true,
@@ -227,7 +226,6 @@ function initStudent(init: InitDb) {
 				orderDefine: 130
 			},
 			{
-				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeGender',
 				isDisplayable: true,
@@ -247,7 +245,6 @@ function initStudent(init: InitDb) {
 				orderDisplay: 145
 			},
 			{
-				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeRace',
 				isDisplayable: true,
@@ -439,6 +436,46 @@ function initStudent(init: InitDb) {
 			}
 		]
 	})
+
+	init.addTrans('dataObjColumnItemChangeBulk', [
+		[
+			'data_obj_moed_part_detail',
+			[
+				{
+					fieldTrigger: 'codeGender',
+					fieldTriggerTargets: [
+						{
+							codeValueTrigger: {
+								codeType: 'ct_sys_person_gender',
+								name: 'Prefer to self-identify',
+								owner: 'sys_moed_old'
+							},
+							codeValueTypeTarget: 'none',
+							codeValueTypeTrigger: 'code',
+							field: 'genderSelfId',
+							fieldAccess: 'required',
+							op: 'equal',
+							orderDefine: 0
+						},
+						{
+							codeValueTrigger: {
+								codeType: 'ct_sys_person_gender',
+								name: 'Prefer to self-identify',
+								owner: 'sys_moed_old'
+							},
+							codeValueTypeTarget: 'reset',
+							codeValueTypeTrigger: 'code',
+							field: 'genderSelfId',
+							fieldAccess: 'hidden',
+							op: 'notEqual',
+							orderDefine: 1
+						}
+					]
+				}
+			]
+		]
+	])
+
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
@@ -1679,7 +1716,6 @@ function initTaskSsrApp(init: InitDb) {
 				indexTable: 2
 			},
 			{
-				codeAccess: 'optional',
 				columnName: 'phoneMobile',
 				indexTable: 2,
 				isDisplayable: true,
@@ -1696,7 +1732,6 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 270
 			},
 			{
-				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeGender',
 				isDisplayable: true,
@@ -1716,7 +1751,6 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 285
 			},
 			{
-				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeRace',
 				isDisplayable: true,

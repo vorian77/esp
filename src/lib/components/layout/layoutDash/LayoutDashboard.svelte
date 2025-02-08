@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { State, StateComponentLayout, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import {
+		State,
+		StateNavLayout,
+		StateParms,
+		StateTriggerToken
+	} from '$comps/app/types.appState.svelte'
 	import {
 		TokenApiQueryData,
 		TokenAppNode,
@@ -35,7 +40,6 @@
 
 	let sm: State = getContext(ContextKey.stateManager)
 	let dm: DataManager = $derived(sm.dm)
-	let keyValue: boolean = $state(false)
 
 	const fCallback = () => getData()
 
@@ -110,9 +114,8 @@
 						CodeActionType.openNode
 					),
 					codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-					isNewApp: true,
-					navLayout: StateComponentLayout.layoutApp,
-					token
+					data: { token },
+					stateParms: new StateParms({ navLayout: StateNavLayout.layoutApp })
 				})
 			)
 		}

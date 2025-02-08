@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State, StateParms } from '$comps/app/types.appState.svelte'
 import { CodeAction, CodeActionClass, CodeActionType, required, strRequired } from '$utils/types'
 import { userActionError } from '$comps/other/types.userAction.svelte'
 import {
@@ -49,7 +49,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 						CodeActionClass.ct_sys_code_action_class_nav,
 						CodeActionType.navPage
 					),
-					value: '/home'
+					data: { value: '/home' }
 				})
 			)
 			break
@@ -141,7 +141,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 							CodeActionClass.ct_sys_code_action_class_do_auth,
 							CodeActionType.setUserId
 						),
-						value: resultRecord['userId']
+						data: { value: resultRecord['userId'] }
 					})
 				)
 				break
@@ -179,11 +179,12 @@ async function changeDataObj(sm: State, dataObjName: string) {
 				CodeActionClass.ct_sys_code_action_class_do,
 				CodeActionType.doOpen
 			),
-			isNewApp: true,
-			token: new TokenAppDoQuery({
-				dataObjName,
-				queryType: TokenApiQueryType.preset
-			})
+			data: {
+				token: new TokenAppDoQuery({
+					dataObjName,
+					queryType: TokenApiQueryType.preset
+				})
+			}
 		})
 	)
 }

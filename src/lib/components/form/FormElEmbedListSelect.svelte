@@ -9,7 +9,7 @@
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { Field } from '$comps/form/field'
+	import { Field } from '$comps/form/field.svelte'
 	import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 	import Layout from '$comps/layout/RootLayoutApp.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
@@ -53,7 +53,7 @@
 	<LayoutContent
 		parms={{
 			...parms,
-			component: dataObjEmbed.raw.codeComponent,
+			navContent: dataObjEmbed.raw.codeComponent,
 			dataObj: dataObjEmbed,
 			dataObjId: dataObjEmbed.raw.id
 		}}

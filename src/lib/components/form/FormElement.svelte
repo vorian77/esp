@@ -30,7 +30,7 @@
 	import FormElSelect from '$comps/form/FormElSelect.svelte'
 	import FormElTextarea from '$comps/form/FormElTextarea.svelte'
 	import FormElToggle from '$comps/form/FormElToggle.svelte'
-	import { Field } from '$comps/form/field'
+	import { Field } from '$comps/form/field.svelte'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import {
 		FieldCustomActionButton,

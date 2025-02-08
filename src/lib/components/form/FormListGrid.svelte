@@ -44,8 +44,8 @@
 		strRequired
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
-	import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
+	import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
+	import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field.svelte'
 	import { FieldParm } from '$comps/form/fieldParm'
 	import FormElement from '$comps/form/FormElement.svelte'
 	import Grid from '$comps/grid/Grid.svelte'
@@ -349,19 +349,21 @@
 				new TokenAppStateTriggerAction({
 					codeAction: CodeAction.init(
 						CodeActionClass.ct_sys_code_action_class_modal,
-						CodeActionType.modalSelectOpen
+						CodeActionType.modalOpenSelect
 					),
 					codeConfirmType: TokenAppUserActionConfirmType.none,
-					token: new TokenAppModalSelect({
-						columnDefs: parms.columnDefs,
-						fModalClose,
-						gridColumnId: 'data',
-						isMultiSelect: fieldProcess.colDO.colDB.isMultiSelect,
-						listIdsSelected,
-						rowData: parms.rowData,
-						selectLabel: fieldProcess.colDO.label,
-						sortModel: parms.sortModel
-					})
+					data: {
+						token: new TokenAppModalSelect({
+							columnDefs: parms.columnDefs,
+							fModalClose,
+							gridColumnId: 'data',
+							isMultiSelect: fieldProcess.colDO.colDB.isMultiSelect,
+							listIdsSelected,
+							rowData: parms.rowData,
+							selectLabel: fieldProcess.colDO.label,
+							sortModel: parms.sortModel
+						})
+					}
 				})
 			)
 		}

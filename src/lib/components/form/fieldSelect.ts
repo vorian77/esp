@@ -1,4 +1,4 @@
-import { Field, PropsFieldCreate } from '$comps/form/field'
+import { Field, PropsFieldCreate } from '$comps/form/field.svelte'
 
 export class FieldSelect extends Field {
 	constructor(props: PropsFieldCreate) {

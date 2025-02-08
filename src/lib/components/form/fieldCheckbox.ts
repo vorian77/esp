@@ -1,4 +1,4 @@
-import { Field, PropsFieldCreate } from '$comps/form/field'
+import { Field, PropsFieldCreate } from '$comps/form/field.svelte'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
 import { type DataRecord } from '$utils/types'
 

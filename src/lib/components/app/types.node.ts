@@ -45,9 +45,9 @@ export class Node extends NodeHeader {
 		this.dataObjId = obj.dataObjId
 		this.dataObjIdChild = obj.dataObjIdChild
 		this.dataObjName = obj.dataObjName
-		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData, 'isAlwaysRetrieveData')
-		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
-		this.isMobileMode = booleanOrFalse(obj.isMobileMode, 'isHideRowManager')
+		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData)
+		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager)
+		this.isMobileMode = booleanOrFalse(obj.isMobileMode)
 	}
 }
 

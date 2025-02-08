@@ -89,56 +89,6 @@ export class User {
 		// this.user_id = nbrOptional(obj.user_id, 'User')
 	}
 
-	async selectResource(sm: State, resourceType: UserTypeResourceType) {
-		const resources = this.resources.getResources(resourceType)
-		switch (resources.length) {
-			case 0:
-				alert(
-					`Cannot proceed. You have not been assigned any resources of type: ${resourceType}. Please see your administrator.`
-				)
-				return undefined
-			case 1:
-				return resources[0]
-
-			default:
-				// const itemsList = resources.map((r) => {
-				// 	return new FieldItem(r.idResource, r.header)
-				// })
-				// parmData.data[parmName] = resources[0].idResource
-				// console.log('User.setUserSelectParms.parmSelect.multi', { parmName, resources, itemsList })
-				await sm.openModalSelect(
-					new TokenAppModalSelect({
-						columnsDefs: undefined,
-						fModalClose: (returnType: TokenAppModalReturnType, returnData?: ParmsValues) => {
-							// if (returnType === TokenAppModalReturnType.complete) {
-							// 	const parms: ParmsValues = returnData.data || undefined
-							// 	if (parms) {
-							// 		const selectedIds = parms[ParmsValuesType.listIdsSelected]
-							// 		console.log('User.setUserSelectParms.fModalClose', {
-							// 			returnData: returnData.data,
-							// 			selectedIds
-							// 		})
-							// 		// parmData.data[parmName] = resources[0].idResource
-							// 	}
-							// 	return false
-							// } else {
-							// 	return false
-							// }
-						},
-						gridColumnId: '',
-						isMultiSelect: false,
-						listIdsSelected: [],
-						rowData: undefined,
-						selectLabel: `System Record`
-					})
-				)
-				// parmData.data[parmName] = resources[0].idResource
-				return undefined
-		}
-
-		return undefined
-	}
-
 	prefIsActive(prefType: UserPrefType): boolean {
 		return this.preferences.isActive(prefType)
 	}
@@ -204,7 +154,7 @@ export class UserResource {
 		const clazz = 'UserResource'
 		this.codeIconName = obj._codeIconName
 		this.id = strRequired(obj.id, clazz, 'id')
-		this.isGlobalResource = booleanOrFalse(obj.isGlobalResource, 'isGlobalResource')
+		this.isGlobalResource = booleanOrFalse(obj.isGlobalResource)
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.name = strRequired(obj.name, clazz, 'name')
 	}
@@ -246,8 +196,8 @@ export class UserResourceTask extends UserResource {
 		this.description = obj.description
 		this.exprShow = obj.exprShow
 		this.exprStatus = obj.exprStatus
-		this.hasAltOpen = booleanOrFalse(obj.hasAltOpen, 'hasAltOpen')
-		this.isPinToDash = booleanOrFalse(obj.isPinToDash, 'isPinToDash')
+		this.hasAltOpen = booleanOrFalse(obj.hasAltOpen)
+		this.isPinToDash = booleanOrFalse(obj.isPinToDash)
 		this.pageDataObjId = obj._pageDataObjId
 		this.targetDataObjId = obj._targetDataObjId
 		this.targetNodeObjId = obj._targetNodeObjId

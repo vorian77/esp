@@ -38,7 +38,7 @@ import {
 	UserActionTrigger
 } from '$comps/other/types.userAction.svelte'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
-import { FieldAccess, FieldColor, FieldColumnItem, FieldEmbedType } from '$comps/form/field'
+import { FieldAccess, FieldColor, FieldColumnItem, FieldEmbedType } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { error } from '@sveltejs/kit'
 import type { User } from 'lucide-svelte'
@@ -206,7 +206,7 @@ export class RawDataObjAction {
 		obj = valueOrDefault(obj, {})
 		this.action = new UserAction(new RawUserAction(obj._action))
 		this.codeColor = obj._codeColor
-		this.isListRowAction = booleanOrFalse(obj.isListRowAction, 'isListRowAction')
+		this.isListRowAction = booleanOrFalse(obj.isListRowAction)
 	}
 }
 
@@ -257,7 +257,7 @@ export class RawDataObjParent {
 }
 
 export class RawDataObjProp {
-	_linkItemsSource?: PropLinkItemsSource
+	_linkItemsSource?: PropLinkItemsSource = $state()
 	codeSortDir?: PropSortDir
 	columnBacklink?: string
 	exprCustom?: string
@@ -651,7 +651,7 @@ export class RawDBColumn {
 		this.exprStorageKey = strOptional(obj.exprStorageKey, clazz, 'exprStorageKey')
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.headerSide = strOptional(obj.headerSide, clazz, 'headerSide')
-		this.isFormTag = booleanOrFalse(obj.isFormTag, clazz)
+		this.isFormTag = booleanOrFalse(obj.isFormTag)
 		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
 		this.matchColumn = strOptional(obj.matchColumn, clazz, 'matchColumn')
 		this.maxLength = nbrOptional(obj.maxLength, clazz, 'maxLength')
@@ -742,9 +742,10 @@ export class PropLinkItemsSource {
 	exprFilter: string
 	exprSort: string
 	exprWith?: string
+	isRetrieved: boolean = false
 	parmName?: string
 	props: PropLinkItemsSourceProp[] = []
-	rawItems: DataRecord[] = []
+	rawItems: DataRecord[] = $state([])
 	table?: DBTable
 	constructor(obj: any) {
 		const clazz = 'PropLinkItemsSource'
@@ -844,6 +845,13 @@ export class PropLinkItemsSource {
 		let data = this.rawItems.map((item) => item.data)
 		data.unshift('')
 		return data
+	}
+
+	async retrieveItems() {
+		if (!this.isRetrieved) {
+			this.rawItems = [...this.rawItems, { data: 'test', name: 'Test' }]
+			this.isRetrieved = true
+		}
 	}
 
 	setRawItems(rawItems: DataRecord[]) {

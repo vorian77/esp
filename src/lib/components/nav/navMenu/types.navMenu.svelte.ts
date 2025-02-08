@@ -13,7 +13,7 @@ import {
 	UserResourceTaskRenderType,
 	valueOrDefault
 } from '$utils/types'
-import { State, StateComponentLayout } from '$comps/app/types.appState.svelte'
+import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
 import {
 	Token,
 	TokenApiQueryType,
@@ -118,20 +118,20 @@ export class NavMenuData {
 					break
 
 				case NavMenuContentType.dataObjApp:
-					await triggerAction(
-						this.sm,
+					await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_do,
 						CodeActionType.doOpen,
-						{ token: content.value as TokenAppDoQuery }
+						{ token: content.value as TokenAppDoQuery },
+						{ navLayout: StateNavLayout.layoutApp }
 					)
 					break
 
 				case NavMenuContentType.dataObjDrawer:
-					await triggerAction(
-						this.sm,
+					await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_nav,
 						CodeActionType.openDataObjDrawer,
-						{ token: content.value as TokenAppDoQuery }
+						{ token: content.value as TokenAppDoQuery },
+						{}
 					)
 					break
 
@@ -143,40 +143,39 @@ export class NavMenuData {
 								CodeActionType.openDataObjModal
 							),
 							codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-							navLayout: StateComponentLayout.layoutApp,
-							isNewApp: true,
-							token: content.value as TokenAppDoQuery
+							data: { token: content.value as TokenAppDoQuery },
+							stateParms: new StateParms({ navLayout: StateNavLayout.layoutApp })
 						})
 					)
 					break
 
 				case NavMenuContentType.node:
 					node = content.value as Node
-					await triggerAction(
-						this.sm,
+					await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_nav,
 						CodeActionType.openNode,
-						{ navLayout: StateComponentLayout.layoutApp, token: new TokenAppNode({ node }) }
+						{ token: new TokenAppNode({ node }) },
+						{ navLayout: StateNavLayout.layoutApp }
 					)
 					// parmsState: { programId: this.getProgramId(node) },
 					break
 
 				case NavMenuContentType.page:
-					await triggerAction(
-						this.sm,
+					await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_nav,
 						CodeActionType.navPage,
-						{ value: content.value }
+						{ value: content.value },
+						{}
 					)
 					break
 
 				case NavMenuContentType.task:
 					const task: UserResourceTask = content.value as UserResourceTask
-					await triggerAction(
-						this.sm,
+					await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_nav,
 						CodeActionType.openNode,
-						{ token: task.getTokenNode(this.sm.user) }
+						{ token: task.getTokenNode(this.sm.user) },
+						{}
 					)
 					break
 
@@ -188,23 +187,6 @@ export class NavMenuData {
 					})
 			}
 			if (this.isOpen) this.openToggle()
-		}
-
-		async function triggerAction(
-			sm: State,
-			actionClass: CodeActionClass,
-			actionType: CodeActionType,
-			data: DataRecord
-		) {
-			await sm.triggerAction(
-				new TokenAppStateTriggerAction({
-					codeAction: CodeAction.init(actionClass, actionType),
-					codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-					navLayout: StateComponentLayout.layoutApp,
-					isNewApp: true,
-					...data
-				})
-			)
 		}
 	}
 
@@ -240,6 +222,36 @@ export class NavMenuData {
 	openToggle = () => {
 		this.isOpen = !this.isOpen
 		this.width = this.isOpen ? this.widthOpen : this.widthClosed
+	}
+
+	async triggerAction(
+		actionClass: CodeActionClass,
+		actionType: CodeActionType,
+		dataAction: DataRecord,
+		dataState: DataRecord
+	) {
+		dataState.navLayout = StateNavLayout.layoutApp
+		await this.sm.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(actionClass, actionType),
+				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+				data: dataAction,
+				stateParms: new StateParms(dataState)
+			})
+		)
+	}
+	async triggerActionDataObjApp(dataObjName: string) {
+		await this.triggerAction(
+			CodeActionClass.ct_sys_code_action_class_do,
+			CodeActionType.doOpen,
+			{
+				token: new TokenAppDoQuery({
+					dataObjName,
+					queryType: TokenApiQueryType.retrieve
+				})
+			},
+			{ navLayout: StateNavLayout.layoutApp }
+		)
 	}
 }
 
@@ -442,44 +454,44 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 			})
 		})
 
-		this.addItem({
-			content: new NavMenuContent(
-				NavMenuContentType.dataObjApp,
-				new TokenAppDoQuery({
-					dataObjName: 'data_obj_auth_user_pref_type',
-					queryType: TokenApiQueryType.retrieve
-				})
-			),
-			icon: 'Settings2',
-			isRoot: true,
-			label: new NavMenuLabel('My Preferences')
-		})
+		// this.addItem({
+		// 	content: new NavMenuContent(
+		// 		NavMenuContentType.dataObjApp,
+		// 		new TokenAppDoQuery({
+		// 			dataObjName: 'data_obj_auth_user_pref_type',
+		// 			queryType: TokenApiQueryType.retrieve
+		// 		})
+		// 	),
+		// 	icon: 'Settings2',
+		// 	isRoot: true,
+		// 	label: new NavMenuLabel('My Preferences')
+		// })
 
-		this.addItem({
-			content: new NavMenuContent(
-				NavMenuContentType.dataObjDrawer,
-				new TokenAppDoQuery({
-					dataObjName: 'data_obj_auth_user_pref_type',
-					queryType: TokenApiQueryType.retrieve
-				})
-			),
-			icon: 'Settings2',
-			isRoot: true,
-			label: new NavMenuLabel('My Preferences (drawer)')
-		})
+		// this.addItem({
+		// 	content: new NavMenuContent(
+		// 		NavMenuContentType.dataObjDrawer,
+		// 		new TokenAppDoQuery({
+		// 			dataObjName: 'data_obj_auth_user_pref_type',
+		// 			queryType: TokenApiQueryType.retrieve
+		// 		})
+		// 	),
+		// 	icon: 'Settings2',
+		// 	isRoot: true,
+		// 	label: new NavMenuLabel('My Preferences (drawer)')
+		// })
 
-		this.addItem({
-			content: new NavMenuContent(
-				NavMenuContentType.dataObjModal,
-				new TokenAppDoQuery({
-					dataObjName: 'data_obj_auth_user_pref_type',
-					queryType: TokenApiQueryType.retrieve
-				})
-			),
-			icon: 'Settings2',
-			isRoot: true,
-			label: new NavMenuLabel('My Preferences (modal)')
-		})
+		// this.addItem({
+		// 	content: new NavMenuContent(
+		// 		NavMenuContentType.dataObjModal,
+		// 		new TokenAppDoQuery({
+		// 			dataObjName: 'data_obj_auth_user_pref_type',
+		// 			queryType: TokenApiQueryType.retrieve
+		// 		})
+		// 	),
+		// 	icon: 'Settings2',
+		// 	isRoot: true,
+		// 	label: new NavMenuLabel('My Preferences (modal)')
+		// })
 
 		if (['user_sys', '2487985578'].includes(this.user.userName)) {
 			this.addItem({

@@ -23,10 +23,10 @@
 		TokenAppModalReturnType,
 		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
-	import { Field, FieldElement } from '$comps/form/field'
+	import { Field, FieldElement } from '$comps/form/field.svelte'
 	import { FieldSelectMulti } from '$comps/form/fieldSelect'
 	import { FieldChips } from '$comps/form/fieldChips'
-	import { FieldAccess } from '$comps/form/field'
+	import { FieldAccess } from '$comps/form/field.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
@@ -60,19 +60,21 @@
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_modal,
-					CodeActionType.modalSelectOpen
+					CodeActionType.modalOpenSelect
 				),
 				codeConfirmType: TokenAppUserActionConfirmType.none,
-				token: new TokenAppModalSelect({
-					columnDefs: linkItemsSource.columnDefs,
-					fModalClose,
-					gridColumnId: 'data',
-					isMultiSelect: field.colDO.colDB.isMultiSelect,
-					listIdsSelected: fieldValue,
-					rowData: linkItemsSource.rowData,
-					selectLabel: field.colDO.label,
-					sortModel: linkItemsSource.sortModel
-				})
+				data: {
+					token: new TokenAppModalSelect({
+						columnDefs: linkItemsSource.columnDefs,
+						fModalClose,
+						gridColumnId: 'data',
+						isMultiSelect: field.colDO.colDB.isMultiSelect,
+						listIdsSelected: fieldValue,
+						rowData: linkItemsSource.rowData,
+						selectLabel: field.colDO.label,
+						sortModel: linkItemsSource.sortModel
+					})
+				}
 			})
 		)
 

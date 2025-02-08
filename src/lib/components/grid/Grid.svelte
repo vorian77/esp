@@ -53,8 +53,8 @@
 		strRequired
 	} from '$utils/types'
 	import { ParmsValues } from '$utils/types'
-	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
-	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field'
+	import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
+	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field.svelte'
 	import { State, StateSurfacePopup } from '$comps/app/types.appState.svelte'
 	import ListFilter from '$comps/form/ListFilter.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'

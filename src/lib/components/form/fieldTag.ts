@@ -1,4 +1,4 @@
-import { Field, FieldColor, PropsFieldCreate } from '$comps/form/field'
+import { Field, FieldColor, PropsFieldCreate } from '$comps/form/field.svelte'
 import { strOptional, nbrRequired } from '$utils/utils'
 
 export class FieldTag extends Field {

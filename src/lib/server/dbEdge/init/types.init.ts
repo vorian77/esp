@@ -479,8 +479,8 @@ export class InitDbItem {
 		this.fCreate = obj.fCreate
 		this.exprResetFull = obj.exprResetFull
 		this.exprResets = getArray(obj.exprResets)
-		this.isExcludeResetByObj = booleanOrFalse(obj.isExcludeResetByObj, 'isExcludeResetByObj')
-		this.isResetByObjRecord = booleanOrFalse(obj.isResetByObjRecord, 'isResetByObjRecord')
+		this.isExcludeResetByObj = booleanOrFalse(obj.isExcludeResetByObj)
+		this.isResetByObjRecord = booleanOrFalse(obj.isResetByObjRecord)
 		this.name = obj.name
 	}
 	addTrans(name: string, data: any) {

@@ -159,14 +159,14 @@ export class FormSourceItem {
 			FormSourceItemDataType,
 			''
 		)
-		this.dbIdentity = booleanOrFalse(obj.dbIdentity, 'FormSourceItem.dbIdentity')
-		this.dbAllowNull = booleanOrFalse(obj.dbAllowNull, 'FormSourceItem.dbAllowNull')
-		this.dbDelete = booleanOrFalse(obj.dbDelete, 'FormSourceItem.dbDelete')
-		this.dbInsert = booleanOrFalse(obj.dbInsert, 'FormSourceItem.dbInsert')
-		this.dbSelect = booleanOrFalse(obj.dbSelect, 'FormSourceItem.dbSelect')
-		this.dbUpdate = booleanOrFalse(obj.dbUpdate, 'FormSourceItem.dbUpdate')
-		this.dbWhere = booleanOrFalse(obj.dbWhere, 'FormSourceItem.dbWhere')
-		this.apiArg = booleanOrFalse(obj.apiArg, 'FormSourceItem.apiArg')
+		this.dbIdentity = booleanOrFalse(obj.dbIdentity)
+		this.dbAllowNull = booleanOrFalse(obj.dbAllowNull)
+		this.dbDelete = booleanOrFalse(obj.dbDelete)
+		this.dbInsert = booleanOrFalse(obj.dbInsert)
+		this.dbSelect = booleanOrFalse(obj.dbSelect)
+		this.dbUpdate = booleanOrFalse(obj.dbUpdate)
+		this.dbWhere = booleanOrFalse(obj.dbWhere)
+		this.apiArg = booleanOrFalse(obj.apiArg)
 		this.fieldName = valueOrDefault(obj.fieldName, '')
 	}
 }

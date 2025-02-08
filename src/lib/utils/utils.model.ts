@@ -12,18 +12,8 @@ export function booleanOrDefault(val: any, valDefault: boolean) {
 	}
 }
 
-export function booleanOrFalse(val: any, name: string) {
-	if (!val) {
-		return false
-	} else if (typeof val === 'boolean') {
-		return val
-	} else {
-		error(500, {
-			file: FILENAME,
-			function: 'booleanOrFalse',
-			message: `Value: (${val}) for Field: (${name}) is expected to be typeof "boolean" but is typeof (${typeof val}).`
-		})
-	}
+export function booleanOrFalse(val: any) {
+	return typeof val === 'boolean' ? val : false
 }
 
 export function booleanRequired(val: any, clazz: string, fieldName: string) {

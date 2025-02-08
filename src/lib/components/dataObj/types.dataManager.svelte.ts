@@ -9,7 +9,7 @@ import {
 } from '$lib/components/dataObj/types.dataObj.svelte'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
 import { PropDataType, ValidityError, valueHasChanged } from '$utils/types'
-import { Field, FieldAccess, FieldClassType } from '$comps/form/field'
+import { Field, FieldAccess, FieldClassType } from '$comps/form/field.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/dataObj/types.dataManager.svelte'
@@ -165,7 +165,9 @@ export class DataManagerNode {
 	recordsDisplay: DataRecord[] = $state([])
 	recordsHidden: DataRecord[] = $state([])
 	constructor(dataObj: DataObj) {
-		this.dataObj = this.formatDataDisplay(dataObj)
+		this.dataObj = this.initDataObjData(dataObj)
+		this.initDataObjItemChanges()
+		this.initDataObjValidate()
 	}
 
 	filterList(filter: string) {
@@ -215,7 +217,40 @@ export class DataManagerNode {
 		this.recordsHidden = records.filter((r) => !filteredIds.includes(r.id))
 	}
 
-	formatDataDisplay(dataObj: DataObj) {
+	getDataSave() {
+		let rowsSave: DataRows = new DataRows()
+		rowsSave.addRows(this.getDataSaveRows(this.recordsDisplay))
+		rowsSave.addRows(this.getDataSaveRows(this.recordsHidden))
+		return rowsSave
+	}
+
+	getDataSaveRows(dataRecords: DataRecord[]) {
+		let rowsSave: DataRow[] = []
+		dataRecords.forEach((record) => {
+			let newRecord: DataRecord = {}
+			Object.entries(record).forEach(([key, value]) => {
+				if (![null, undefined].includes(value)) {
+					newRecord[key] = value
+				}
+			})
+			const oldStatus = this.dataObj.data.rowsRetrieved.getRowStatusById(record.id)
+			rowsSave.push(new DataRow(oldStatus ? oldStatus : DataRecordStatus.preset, newRecord))
+		})
+		return rowsSave
+	}
+
+	getFieldValidity(row: number, field: Field) {
+		return row < this.recordsDisplay.length
+			? this.fieldsValidity.valueGet(this.recordsDisplay[row].id, field.colDO.propName)
+			: undefined
+	}
+	getFieldValue(row: number, field: Field) {
+		return row < this.recordsDisplay.length
+			? this.recordsDisplay[row][field.colDO.propName]
+			: undefined
+	}
+
+	initDataObjData(dataObj: DataObj) {
 		dataObj.saveMode =
 			dataObj.data.cardinality === DataObjCardinality.detail &&
 			dataObj.data.rowsRetrieved.hasRecord()
@@ -228,6 +263,13 @@ export class DataManagerNode {
 		Object.entries(dataObj.data.items).forEach(([key, value]) => {
 			const fieldKey = key.replace('_items_', '')
 			const fieldIndex = dataObj.fields.findIndex((f) => f.colDO.propName === fieldKey)
+
+			// temp
+			const currValue = dataObj.data.rowsRetrieved.dataRows[0].record[fieldKey]
+			if (currValue) {
+				value = value.filter((v: any) => v.data === currValue)
+			}
+
 			if (fieldIndex > -1) {
 				if (dataObj.fields[fieldIndex].linkItemsSource) {
 					dataObj.fields[fieldIndex].linkItemsSource.setRawItems(value)
@@ -273,18 +315,27 @@ export class DataManagerNode {
 		this.recordsDisplay = recordsClone
 		this.fieldsChanged = new FieldValues()
 		this.fieldsValidity = new FieldValues()
-		return this.formatDataDisplayValidate(dataObj)
+
+		return dataObj
 	}
 
-	formatDataDisplayValidate(dataObj: DataObj) {
+	initDataObjItemChanges() {
+		this.recordsDisplay.forEach((record, row) => {
+			this.dataObj.fields.forEach((f) => {
+				this.setFieldItemChanged(row, f, record[f.colDO.propName])
+			})
+		})
+	}
+
+	initDataObjValidate() {
 		const validityErrorLevel =
-			dataObj.raw.isInitialValidationSilent ||
-			dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)
+			this.dataObj.raw.isInitialValidationSilent ||
+			this.dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)
 				? ValidityErrorLevel.silent
 				: ValidityErrorLevel.warning
 
 		this.recordsDisplay.forEach((record, row) => {
-			dataObj.fields.forEach((f) => {
+			this.dataObj.fields.forEach((f) => {
 				const v: Validation = f.validate(row, record[f.colDO.propName], validityErrorLevel)
 				if (v.status === ValidationStatus.invalid) {
 					this.fieldsValidity.valueSet(
@@ -295,41 +346,8 @@ export class DataManagerNode {
 				}
 			})
 		})
-		return dataObj
 	}
 
-	getDataSave() {
-		let rowsSave: DataRows = new DataRows()
-		rowsSave.addRows(this.getDataSaveRows(this.recordsDisplay))
-		rowsSave.addRows(this.getDataSaveRows(this.recordsHidden))
-		return rowsSave
-	}
-
-	getDataSaveRows(dataRecords: DataRecord[]) {
-		let rowsSave: DataRow[] = []
-		dataRecords.forEach((record) => {
-			let newRecord: DataRecord = {}
-			Object.entries(record).forEach(([key, value]) => {
-				if (![null, undefined].includes(value)) {
-					newRecord[key] = value
-				}
-			})
-			const oldStatus = this.dataObj.data.rowsRetrieved.getRowStatusById(record.id)
-			rowsSave.push(new DataRow(oldStatus ? oldStatus : DataRecordStatus.preset, newRecord))
-		})
-		return rowsSave
-	}
-
-	getFieldValidity(row: number, field: Field) {
-		return row < this.recordsDisplay.length
-			? this.fieldsValidity.valueGet(this.recordsDisplay[row].id, field.colDO.propName)
-			: undefined
-	}
-	getFieldValue(row: number, field: Field) {
-		return row < this.recordsDisplay.length
-			? this.recordsDisplay[row][field.colDO.propName]
-			: undefined
-	}
 	setStatus() {
 		let newStatus = new DataObjStatus()
 
@@ -374,7 +392,7 @@ export class DataManagerNode {
 			const reorderColumn = this.dataObj.raw.listReorderColumn
 			this.recordsDisplay.sort((a, b) => a[reorderColumn] - b[reorderColumn])
 		}
-		await this.setFieldItemChanged(row, recordId, field)
+		await this.setFieldItemChanged(row, field, value)
 	}
 	setFieldValChanged(row: number, recordId: string, fieldName: string, value: any) {
 		const valueInitial = this.dataObj.data.rowsRetrieved.getRowValueById(recordId, fieldName)
@@ -395,7 +413,9 @@ export class DataManagerNode {
 			this.fieldsValidity.valueSet(recordId, fieldName, validity)
 		})
 	}
-	async setFieldItemChanged(row: number, recordId: string, field: Field) {}
+	async setFieldItemChanged(row: number, field: Field, value: any) {
+		await field.processItemChanges(row, value, this)
+	}
 }
 
 export class FieldValue {

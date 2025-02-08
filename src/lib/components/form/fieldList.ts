@@ -1,4 +1,4 @@
-import { Field, PropsFieldCreate } from '$comps/form/field'
+import { Field, PropsFieldCreate } from '$comps/form/field.svelte'
 
 const COMPONENT = '/$comps/form/fieldList.ts/'
 

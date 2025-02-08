@@ -2,7 +2,7 @@
 	import { ContextKey, DataManager, DataObj, DataObjCardinality, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldRadio } from '$comps/form/fieldRadio'
-	import { FieldAccess, FieldAlignment } from '$comps/form/field'
+	import { FieldAccess, FieldAlignment } from '$comps/form/field.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 
 	const FILENAME = '$comps/form/FormElInpRadio.svelte'

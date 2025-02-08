@@ -1,11 +1,6 @@
 <script lang="ts">
 	import { User } from '$utils/types'
-	import {
-		State,
-		StateComponentContent,
-		StateComponentLayout,
-		StateTriggerToken
-	} from '$comps/app/types.appState.svelte'
+	import { State, StateNavLayout, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import { getDrawerStore, getModalStore, getToastStore } from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
 	import LayoutDash from '$comps/layout/layoutDash/LayoutDashboard.svelte'
@@ -29,12 +24,11 @@
 
 	let sm: State = $state(
 		new State({
-			navLayout: StateComponentLayout.layoutDashboard,
+			navLayout: StateNavLayout.layoutDashboard,
 			navPage: '/home',
 			storeDrawer: getDrawerStore(),
 			storeModal: getModalStore(),
 			storeToast: getToastStore(),
-			triggerTokens: [StateTriggerToken.navDashboard, StateTriggerToken.navLayout],
 			user: new User(data.rawUser)
 		})
 	)
@@ -44,10 +38,12 @@
 
 	$effect(() => {
 		if (sm.consumeTriggerToken(StateTriggerToken.navDashboard)) {
-			if (isMobile) {
-				if (!isMobileMenuHide) toggleMobileMenuHide()
-			} else {
-				if (!navMenu.isOpen) navMenu.openToggle()
+			if (sm.navLayout === StateNavLayout.layoutDashboard) {
+				if (isMobile) {
+					if (!isMobileMenuHide) toggleMobileMenuHide()
+				} else {
+					if (!navMenu.isOpen) navMenu.openToggle()
+				}
 			}
 		}
 	})

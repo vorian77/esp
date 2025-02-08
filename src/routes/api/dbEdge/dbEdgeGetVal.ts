@@ -1,5 +1,5 @@
 import { TokenApiQueryData } from '$utils/types.token'
-import { PropDataSourceValue, PropDataType } from '$comps/dataObj/types.rawDataObj'
+import { PropDataSourceValue, PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 import {
 	debug,
 	type DataRecord,

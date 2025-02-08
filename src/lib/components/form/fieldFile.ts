@@ -1,4 +1,4 @@
-import { Field, PropsFieldCreate } from '$comps/form/field'
+import { Field, PropsFieldCreate } from '$comps/form/field.svelte'
 import { strRequired, valueOrDefault } from '$utils/utils'
 import { evalExpr } from '$routes/api/dbEdge/dbEdgeGetVal'
 import { TokenApiQueryData } from '$utils/types.token'

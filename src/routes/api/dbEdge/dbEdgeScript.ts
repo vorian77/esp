@@ -9,10 +9,10 @@ import {
 	required,
 	strRequired
 } from '$utils/types'
-import { FieldEmbedType } from '$comps/form/field'
+import { FieldEmbedType } from '$comps/form/field.svelte'
 import type { DataObjTable, DataRecord, DataRow } from '$utils/types'
 import { TokenApiQueryData } from '$utils/types.token'
-import { RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj'
+import { RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj.svelte'
 import { LinkSaveAction, Query, QueryParent } from '$routes/api/dbEdge/dbEdgeQuery'
 import { evalExpr } from '$routes/api/dbEdge/dbEdgeGetVal'
 import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'

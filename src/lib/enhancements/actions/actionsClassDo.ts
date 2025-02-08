@@ -1,4 +1,4 @@
-import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+import { State, StateParms, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import {
 	userActionStateChangeDataObj,
 	userActionStateChangeRaw
@@ -100,8 +100,8 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doListDownload:
-			parmsAction.triggerTokens = [StateTriggerToken.listDownload]
-			await userActionStateChangeRaw(sm, parmsAction, {})
+			parmsAction.stateParms = new StateParms({}, [StateTriggerToken.listDownload])
+			await userActionStateChangeRaw(sm, parmsAction)
 			break
 
 		case CodeActionType.doListSelfRefresh:
@@ -116,7 +116,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doOpen:
-			if (parmsAction.isNewApp) sm.newApp()
+			if (!parmsAction.isMultiTree) sm.newApp()
 			await sm.app.addTreeDataObj(sm, token as TokenAppDoQuery)
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
@@ -144,7 +144,6 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 					TokenApiQueryType
 				)
 			})
-			parmsAction.isNewApp = !sm.app.isMultiTree
 			await action(sm, parmsAction)
 			break
 

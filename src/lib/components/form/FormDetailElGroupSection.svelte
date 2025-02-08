@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Field } from '$comps/form/field'
+	import { Field } from '$comps/form/field.svelte'
 	import { DataObj, type DataRecord } from '$utils/types'
 	import { DetailElField, DetailElGroupSection } from '$comps/form/types.detailElement'
 	import FormDetailEl from '$comps/form/FormDetailEl.svelte'

@@ -12,7 +12,7 @@
 		ParmsValuesType
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldEmbedType } from '$comps/form/field'
+	import { FieldEmbedType } from '$comps/form/field.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 

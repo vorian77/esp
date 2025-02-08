@@ -9,7 +9,7 @@
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { Field, FieldAccess } from '$comps/form/field'
+	import { Field, FieldAccess } from '$comps/form/field.svelte'
 	import ListFilter from '$comps/form/ListFilter.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import { error } from '@sveltejs/kit'

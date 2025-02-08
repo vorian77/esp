@@ -1,5 +1,5 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { Field, FieldClassType, FieldEmbedType, PropsFieldCreate } from '$comps/form/field'
+import { Field, FieldClassType, FieldEmbedType, PropsFieldCreate } from '$comps/form/field.svelte'
 import {
 	arrayOfClass,
 	DataObj,
@@ -10,7 +10,7 @@ import {
 	strOptional,
 	strRequired
 } from '$utils/types'
-import { RawDataObj, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
+import { RawDataObj, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
 import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 

@@ -7,8 +7,8 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
-import { Field, FieldAccess, FieldElement, PropsFieldCreate } from '$comps/form/field'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
+import { Field, FieldAccess, FieldElement, PropsFieldCreate } from '$comps/form/field.svelte'
+import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
 import { valueOrDefault } from '$utils/utils'
 import { required } from '$utils/types'
 import { error } from '@sveltejs/kit'
@@ -25,14 +25,13 @@ export class FieldInput extends Field {
 	pattern?: string
 	patternMsg?: string
 	patternReplacement?: string
-	placeHolder: string
+	placeHolder?: string
 	spinStep?: string
 	constructor(props: PropsFieldCreate) {
 		const clazz = `FieldInput: ${props.propRaw.propName}`
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
 		const fields: Field[] = required(props.parms.fields, clazz, 'fields')
-
 		this.inputTypeCurrent = this.fieldElement === FieldElement.textHide ? 'password' : 'text'
 		this.matchColumn = initMatchColumn(obj.colDB.matchColumn, this, fields)
 		this.maxLength = obj.colDB.maxLength
@@ -42,13 +41,7 @@ export class FieldInput extends Field {
 		this.pattern = obj.colDB.pattern
 		this.patternMsg = obj.colDB.patternMsg
 		this.patternReplacement = obj.colDB.patternReplacement
-		this.placeHolder =
-			this.fieldAccess !== FieldAccess.readonly
-				? valueOrDefault(obj.colDB.placeHolder, this.colDO.label ? 'Enter ' + this.colDO.label : '')
-				: ''
-		if (this.fieldAccess == FieldAccess.optional) {
-			this.placeHolder += ' (optional)'
-		}
+		this.placeHolder = obj.colDB.placeHolder
 		this.spinStep = obj.colDB.spinStep
 
 		// set field type defaults
@@ -97,6 +90,15 @@ export class FieldInput extends Field {
 				})
 			}
 		}
+	}
+
+	getPlaceholder(fieldAccess: FieldAccess) {
+		let placeholder =
+			fieldAccess !== FieldAccess.readonly
+				? valueOrDefault(this.placeHolder, this.colDO.label ? 'Enter ' + this.colDO.label : '')
+				: ''
+		if (fieldAccess == FieldAccess.optional) placeholder += ' (optional)'
+		return placeholder
 	}
 
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {

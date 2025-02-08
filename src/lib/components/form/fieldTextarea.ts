@@ -1,4 +1,4 @@
-import { Field, PropsFieldCreate } from '$comps/form/field'
+import { Field, PropsFieldCreate } from '$comps/form/field.svelte'
 import { valueOrDefault } from '$utils/utils'
 
 export class FieldTextarea extends Field {

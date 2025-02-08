@@ -13,7 +13,7 @@ import {
 	strRequired
 } from '$utils/types'
 import type { DataRecord, DataRow } from '$utils/types'
-import { FieldEmbedType } from '$comps/form/field'
+import { FieldEmbedType } from '$comps/form/field.svelte'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
 	PropDataSourceValue,
@@ -23,7 +23,7 @@ import {
 	RawDataObj,
 	RawDataObjParent,
 	RawDataObjPropDB
-} from '$comps/dataObj/types.rawDataObj'
+} from '$comps/dataObj/types.rawDataObj.svelte'
 import { TokenApiQueryData } from '$utils/types.token'
 import {
 	ExprToken,

@@ -34,7 +34,7 @@
 					CodeActionType.navRow
 				),
 				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-				token: new TokenAppRow({ rowAction })
+				data: { token: new TokenAppRow({ rowAction }) }
 			})
 		)
 	}

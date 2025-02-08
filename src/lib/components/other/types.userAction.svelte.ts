@@ -1,7 +1,7 @@
 import {
 	State,
-	StateComponentContent,
-	StateComponentLayout,
+	StateNavContent,
+	StateNavLayout,
 	StateParms,
 	StateTriggerToken
 } from '$comps/app/types.appState.svelte'
@@ -17,14 +17,14 @@ import {
 	required,
 	valueOrDefault
 } from '$utils/types'
-import { Field, FieldClassType } from '$comps/form/field'
+import { Field, FieldClassType } from '$comps/form/field.svelte'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
 	TokenAppDo,
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
-import { RawDataObjAction, RawUserAction } from '$comps/dataObj/types.rawDataObj'
+import { RawDataObjAction, RawUserAction } from '$comps/dataObj/types.rawDataObj.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.userAction.ts'
@@ -97,9 +97,7 @@ export class UserAction {
 				codeAction: this.codeAction,
 				codeConfirmType,
 				confirm,
-				token: new TokenAppDo({
-					dataObj
-				})
+				data: { token: new TokenAppDo({ dataObj }) }
 			})
 		)
 	}
@@ -151,16 +149,11 @@ export class UserActionConfirmContent {
 export const userActionError = (filename: string, actionType: CodeActionType) =>
 	`${filename}.${actionType}`
 
-export async function userActionStateChange(
-	sm: State,
-	parmsAction: TokenAppStateTriggerAction,
-	stateParms: StateParms
-) {
-	stateParms.addParmNavLayout(parmsAction.navLayout)
+export async function userActionStateChange(sm: State, parmsAction: TokenAppStateTriggerAction) {
 	await sm.changeUserAction({
-		...stateParms.data,
+		...parmsAction.stateParms.data,
 		fChangeCallbackUserAction: parmsAction.fCallback,
-		triggerTokens: [...stateParms.triggerTokens, ...parmsAction.triggerTokens],
+		triggerTokens: parmsAction.stateParms.triggerTokens,
 		userActionAlertMsg: parmsAction.actionAlertMsg
 	})
 }
@@ -177,30 +170,20 @@ export async function userActionStateChangeDataObj(
 			.filter((f) => f.classType === FieldClassType.embed)
 			.forEach((f: Field) => {
 				if (f instanceof FieldEmbed) {
-					console.log('userActionStateChangeDataObj.embed', {
-						dataObjEmbed: f?.dataObjEmbed?.raw.name
-					})
 					sm.dm.nodeAdd(required(f.dataObjEmbed, clazz, 'f.dataObjEmbed'))
 				}
 			})
-		const navLayoutParms = {
-			dataObjId: currTab.dataObj.raw.id,
-			navContent: currTab.dataObj.raw.codeComponent
-		}
-		let stateParms = new StateParms({
-			navLayoutParms,
-			triggerTokens: [StateTriggerToken.navContent]
+		parmsAction.updateStateParms({
+			navContent: currTab.dataObj.raw.codeComponent,
+			navLayoutParms: { dataObjId: currTab.dataObj.raw.id }
 		})
-		await userActionStateChange(sm, parmsAction, stateParms)
+
+		await userActionStateChange(sm, parmsAction)
 	}
 }
 
-export async function userActionStateChangeRaw(
-	sm: State,
-	parmsAction: TokenAppStateTriggerAction,
-	stateParmsRaw: DataRecord
-) {
-	await userActionStateChange(sm, parmsAction, new StateParms(stateParmsRaw))
+export async function userActionStateChangeRaw(sm: State, parmsAction: TokenAppStateTriggerAction) {
+	await userActionStateChange(sm, parmsAction)
 }
 
 export class UserActionShow {

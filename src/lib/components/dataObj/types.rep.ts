@@ -16,14 +16,14 @@ import {
 	valueOrDefault
 } from '$utils/utils'
 import { DBTable } from '$utils/types'
-import { FieldAlignment, FieldElement } from '$comps/form/field'
+import { FieldAlignment, FieldElement } from '$comps/form/field.svelte'
 import {
 	PropDataSourceValue,
 	PropDataType,
 	PropLinkItemsSource,
 	PropSortDir,
 	RawDataObjTable
-} from '$comps/dataObj/types.rawDataObj'
+} from '$comps/dataObj/types.rawDataObj.svelte'
 
 const FILENAME = '$comps/report/types.report.ts'
 
@@ -243,7 +243,7 @@ export class RepParm {
 		this.description = strOptional(obj.description, clazz, 'description')
 		this.exprFilter = strOptional(obj.exprFilter, clazz, 'exprFilter')
 		this.header = strRequired(obj.header, clazz, 'header')
-		this.isMultiSelect = booleanOrFalse(obj.isMultiSelect, 'isMultiSelect')
+		this.isMultiSelect = booleanOrFalse(obj.isMultiSelect)
 		this.isRequired = booleanRequired(obj.isRequired, clazz, 'isRequired')
 		this.name = strRequired(obj.name, clazz, 'name')
 	}

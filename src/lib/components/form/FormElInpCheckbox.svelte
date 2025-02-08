@@ -2,7 +2,7 @@
 	import { ContextKey, DataManager, DataObj, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
-	import { FieldAccess } from '$comps/form/field'
+	import { FieldAccess } from '$comps/form/field.svelte'
 	import { DataObjCardinality, getArray } from '$utils/types'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'

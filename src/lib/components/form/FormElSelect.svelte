@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { ContextKey, DataManager, DataObjCardinality, required } from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldElement } from '$comps/form/field'
+	import { FieldElement } from '$comps/form/field.svelte'
 	import { FieldSelect } from '$comps/form/fieldSelect'
-	import { FieldAccess } from '$comps/form/field'
+	import { FieldAccess } from '$comps/form/field.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -14,7 +14,7 @@
 	let dm: DataManager = $derived(sm.dm)
 
 	let dataObj = $derived(dm.getDataObj(parms.dataObjId))
-	let field = $derived(parms.field) as FieldCustomActionLink
+	let field = $derived(parms.field) as FieldSelect
 	let fieldId = $derived('field-input-select-' + field.colDO.orderDefine)
 	let fieldItems = $derived(
 		field.linkItemsSource ? field.linkItemsSource.formatDataFieldColumnItem(fieldValue) : []
@@ -23,7 +23,7 @@
 
 	let classProps = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
-			? `select text-sm rounded-lg ${field.colorBackground}`
+			? `select text-sm rounded-lg ${field.getBackgroundColor(field.fieldAccess)}`
 			: `select text-sm rounded-lg bg-white`
 	)
 	let classPropsLabel = $derived(
@@ -34,6 +34,10 @@
 		const target = event.currentTarget as HTMLSelectElement
 		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
 	}
+
+	async function onClick(event: Event) {
+		if (field.linkItemsSource) field.linkItemsSource.retrieveItems()
+	}
 </script>
 
 <FormLabel {parms}>
@@ -43,6 +47,7 @@
 		id={fieldId}
 		disabled={field.fieldAccess == FieldAccess.readonly}
 		onchange={onChange}
+		onclick={onClick}
 	>
 		<option value={null} class="">Select an option...</option>
 		{#if fieldItems}

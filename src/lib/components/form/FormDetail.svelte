@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ContextKey, DataManager, DataObj, type DataRecord, required } from '$utils/types'
 	import { getContext } from 'svelte'
-	import { Field, FieldAccess } from '$comps/form/field'
+	import { Field, FieldAccess } from '$comps/form/field.svelte'
 	import FormElement from '$comps/form/FormElement.svelte'
 	import FormDetailEl from '$comps/form/FormDetailEl.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
@@ -35,7 +35,7 @@
 	}
 </script>
 
-<!-- <DataViewer header="dataRecord" data={dr} /> -->
+<!-- <DataViewer header="status" data={dm.getStatus()} /> -->
 
 <svelte:window onresize={() => handleResize()} />
 

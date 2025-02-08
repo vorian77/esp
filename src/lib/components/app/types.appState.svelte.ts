@@ -32,10 +32,10 @@ import {
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
-import { FieldEmbedType } from '$comps/form/field'
+import { FieldEmbedType } from '$comps/form/field.svelte'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
-import { RawDataObjAction, RawDataObjParent } from '$comps/dataObj/types.rawDataObj'
+import { RawDataObjAction, RawDataObjParent } from '$comps/dataObj/types.rawDataObj.svelte'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import fActionsClassDo from '$enhance/actions/actionsClassDo'
@@ -55,12 +55,11 @@ export class State {
 	fChangeCallback?: Function
 
 	// old
-	layoutHeader: StateLayoutHeader = new StateLayoutHeader({})
-	componentContent?: StateComponentContent
 	nodeType: NodeType = NodeType.home
 
-	navContent?: StateComponentContent = $state()
-	navLayout?: StateComponentLayout = $state()
+	navContent?: StateNavContent = $state()
+	navHeader: StateNavHeader = new StateNavHeader({})
+	navLayout?: StateNavLayout = $state()
 	navLayoutParms?: DataRecord = $state()
 	navPage: string
 
@@ -93,12 +92,8 @@ export class State {
 		this.storeToast = this.changeParm(obj, 'storeToast', this.storeToast)
 		this.user = this.changeParm(obj, 'user', this.user)
 
+		if (Object.hasOwn(obj, 'navHeader')) this.navHeader = new StateNavHeader(obj.navHeader)
 		if (Object.hasOwn(obj, 'parmsState')) this.parmsState.update(obj?.parmsState?.data)
-
-		// old
-		obj.componentContent = this.changeParm(obj, 'componentContent', this.componentContent)
-		if (Object.hasOwn(obj, 'layoutHeader'))
-			this.layoutHeader = new StateLayoutHeader(obj.layoutHeader)
 
 		this.triggerTokens = valueOrDefault(obj.triggerTokens, [])
 
@@ -216,11 +211,10 @@ export class State {
 		position: 'left' | 'right' | 'top' | 'bottom' | undefined,
 		height: string | undefined,
 		width: string | undefined,
-		token: TokenAppDoQuery,
-		isNewApp: boolean
+		token: TokenAppDoQuery
 	) {
 		const stateModal = new StateSurfacePopup(this, {
-			layoutHeader: {
+			navHeader: {
 				isDataObj: true,
 				isDrawerClose: true
 			}
@@ -231,9 +225,8 @@ export class State {
 					CodeActionClass.ct_sys_code_action_class_do,
 					CodeActionType.doOpen
 				),
-				isNewApp,
-				navLayout: StateComponentLayout.layoutContent,
-				token
+				data: { token },
+				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
 			})
 		)
 		this.openDrawer(id, position, height, width, {
@@ -283,13 +276,11 @@ export class State {
 		})
 	}
 
-	async openModalDataObj(token: TokenAppDoQuery, isNewApp: boolean, fUpdate?: Function) {
+	async openModalDataObj(token: TokenAppDoQuery, fUpdate?: Function) {
 		const clazz = `${FILENAME}.openModalDataObj`
 		const stateModal = new StateSurfacePopup(this, {
 			actionsDialog: await this.getActions('doag_dialog_footer_detail'),
-			layoutHeader: {
-				isDataObj: true
-			}
+			navHeader: { isDataObj: true }
 		})
 		await stateModal.triggerAction(
 			new TokenAppStateTriggerAction({
@@ -297,9 +288,8 @@ export class State {
 					CodeActionClass.ct_sys_code_action_class_do,
 					CodeActionType.doOpen
 				),
-				isNewApp,
-				navLayout: StateComponentLayout.layoutContent,
-				token
+				data: { token },
+				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
 			})
 		)
 		await this.openModal(stateModal, fUpdate)
@@ -326,35 +316,39 @@ export class State {
 			app: this.app,
 			embedParentId: this.dm.getRecordId(fieldEmbed.dataObjIdParent, 0),
 			embedType: fieldEmbed.embedType,
-			parmsState: new ParmsValues(),
-			layoutHeader: {
+			navHeader: {
 				isDataObj: true,
 				isRowStatus: true
-			}
+			},
+			parmsState: new ParmsValues()
 		})
 
 		stateModal.app.virtualModalLevelAdd(dataObjEmbed)
+
 		await stateModal.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_modal,
-					CodeActionType.modalEmbed
+					CodeActionType.modalOpenEmbedFieldLevel
 				),
-				navLayout: StateComponentLayout.layoutContent,
-				token: new TokenAppModalEmbedField({
-					dataObjSourceModal: new TokenApiDbDataObjSource({
-						dataObjId: fieldEmbed.dataObjModalId,
-						parent: new RawDataObjParent({
-							_columnName: fieldEmbed.embedFieldNameRaw,
-							_columnIsMultiSelect: true,
-							_filterExpr: `.id = <uuid>`,
-							_table: dataObjParentRootTable
-						})
-					}),
-					queryType
-				})
+				data: {
+					token: new TokenAppModalEmbedField({
+						dataObjSourceModal: new TokenApiDbDataObjSource({
+							dataObjId: fieldEmbed.dataObjModalId,
+							parent: new RawDataObjParent({
+								_columnName: fieldEmbed.embedFieldNameRaw,
+								_columnIsMultiSelect: true,
+								_filterExpr: `.id = <uuid>`,
+								_table: dataObjParentRootTable
+							})
+						}),
+						queryType
+					})
+				},
+				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
 			})
 		)
+
 		await this.openModal(stateModal, fModalCloseUpdate)
 	}
 
@@ -387,29 +381,30 @@ export class State {
 			actionsDialog: fieldEmbed.actionsModal,
 			embedParentId: this.dm.getRecordId(fieldEmbed.dataObjIdParent, 0),
 			embedType: fieldEmbed.embedType,
-			layoutHeader: {
-				isDataObj: true
-			},
+			navHeader: { isDataObj: true },
 			parmsState
 		})
 		await stateModal.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_modal,
-					CodeActionType.modalEmbed
+					CodeActionType.modalOpenEmbedFieldTree
 				),
-				token: new TokenAppModalEmbedField({
-					dataObjSourceModal: new TokenApiDbDataObjSource({
-						dataObjId: fieldEmbed.dataObjListID,
-						parent: new RawDataObjParent({
-							_columnName: fieldEmbed.embedFieldNameRaw,
-							_columnIsMultiSelect: true,
-							_filterExpr: '.id = <parms,uuid,embedParentId>',
-							_table: dataObjParentRootTable
-						})
-					}),
-					queryType: TokenApiQueryType.retrieve
-				})
+				data: {
+					token: new TokenAppModalEmbedField({
+						dataObjSourceModal: new TokenApiDbDataObjSource({
+							dataObjId: fieldEmbed.dataObjListID,
+							parent: new RawDataObjParent({
+								_columnName: fieldEmbed.embedFieldNameRaw,
+								_columnIsMultiSelect: true,
+								_filterExpr: '.id = <parms,uuid,embedParentId>',
+								_table: dataObjParentRootTable
+							})
+						}),
+						queryType: TokenApiQueryType.retrieve
+					})
+				},
+				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
 			})
 		)
 
@@ -428,11 +423,11 @@ export class State {
 
 		const stateModal = new StateSurfacePopup(this, {
 			actionsDialog: await this.getActions('doag_dialog_footer_list'),
-			componentContent: StateComponentContent.ModalSelect,
-			layoutHeader: {
+			navContent: StateNavContent.ModalSelect,
+			navHeader: {
 				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.selectLabel}`
 			},
-			triggerTokens: [StateTriggerToken.componentContentCustom],
+			navLayout: StateNavLayout.layoutContent,
 			parmsState
 		})
 
@@ -523,14 +518,29 @@ export class State {
 	}
 }
 
-export enum StateComponentContent {
+export enum StateNavContent {
 	FormDetail = 'FormDetail',
 	FormDetailReportConrig = 'FormDetailReportConrig',
 	FormList = 'FormList',
 	ModalSelect = 'ModalSelect'
 }
 
-export enum StateComponentLayout {
+export class StateNavHeader {
+	headerText?: string
+	isDataObj: boolean
+	isDrawerClose: boolean
+	isRowStatus: boolean
+	constructor(obj: any) {
+		const clazz = 'StateNavHeader'
+		obj = valueOrDefault(obj, {})
+		this.headerText = obj.headerText
+		this.isDataObj = booleanOrFalse(obj.isDataObj)
+		this.isDrawerClose = booleanOrFalse(obj.isDrawerClose)
+		this.isRowStatus = booleanOrFalse(obj.isRowStatus)
+	}
+}
+
+export enum StateNavLayout {
 	layoutApp = 'layoutApp',
 	layoutContent = 'layoutContent',
 	layoutDashboard = 'layoutDashboard',
@@ -538,45 +548,13 @@ export enum StateComponentLayout {
 	layoutTab = 'layoutTab'
 }
 
-export class StateLayoutHeader {
-	headerText?: string
-	isDataObj: boolean
-	isDrawerClose: boolean
-	isRowStatus: boolean
-	constructor(obj: any) {
-		const clazz = 'StateLayoutHeader'
-		obj = valueOrDefault(obj, {})
-		this.headerText = strOptional(obj.headerText, clazz, 'headerText')
-		this.isDataObj = booleanOrFalse(obj.isDataObj, 'isDataObj')
-		this.isDrawerClose = booleanOrFalse(obj.isDrawerClose, 'isDrawerClose')
-		this.isRowStatus = booleanOrFalse(obj.isRowStatus, 'isRowStatus')
-	}
-}
-
 export class StateParms {
 	data: DataRecord = {}
 	triggerTokens: StateTriggerToken[] = []
-	constructor(obj: any) {
+	constructor(data: DataRecord, triggerTokens: StateTriggerToken[] = []) {
 		const clazz = 'StateParms'
-		obj = valueOrDefault(obj, {})
-		this.addParm(obj, 'navContent', StateTriggerToken.navContent)
-		this.addParm(obj, 'navLayout', StateTriggerToken.navLayout)
-		this.addParm(obj, 'navLayoutParms', StateTriggerToken.navLayoutParms)
-		if (Object.hasOwn(obj, 'triggerTokens')) {
-			this.triggerTokens = [...this.triggerTokens, ...obj.triggerTokens]
-		}
-	}
-	addParm(obj: any, key: string, triggerToken: StateTriggerToken) {
-		if (Object.hasOwn(obj, key)) {
-			this.data[key] = obj[key]
-			this.triggerTokens.push(triggerToken)
-		}
-	}
-	addParmNavLayout(navLayout: StateComponentLayout | undefined) {
-		if (navLayout) this.addParm({ navLayout }, 'navLayout', StateTriggerToken.navLayout)
-	}
-	addTrigger(triggerToken: StateTriggerToken) {
-		this.triggerTokens.push(triggerToken)
+		this.data = data
+		this.triggerTokens = triggerTokens
 	}
 }
 
@@ -628,11 +606,6 @@ export class StateSurfacePopupModalEmbed extends StateSurfacePopup {
 }
 
 export enum StateTriggerToken {
-	componentContentCustom = 'componentContentCustom',
-	componentContentForm = 'componentContentForm',
 	listDownload = 'listDownload',
-	navContent = 'navContent',
-	navLayout = 'navLayout',
-	navLayoutParms = 'navLayoutParms',
 	navDashboard = 'navDashboard'
 }

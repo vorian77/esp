@@ -2,7 +2,7 @@
 	import srcLogo from '$assets/org_logo_sys.png'
 	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
 	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, Node } from '$utils/types'
-	import { State, StateComponentLayout } from '$comps/app/types.appState.svelte'
+	import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
 	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
 	import {
 		TokenApiQueryType,
@@ -51,12 +51,13 @@
 							CodeActionClass.ct_sys_code_action_class_do,
 							CodeActionType.doOpen
 						),
-						isNewApp: true,
-						navLayout: StateComponentLayout.layoutContent,
-						token: new TokenAppDoQuery({
-							dataObjName: dataObj,
-							queryType: TokenApiQueryType.preset
-						})
+						data: {
+							token: new TokenAppDoQuery({
+								dataObjName: dataObj,
+								queryType: TokenApiQueryType.preset
+							})
+						},
+						stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
 					})
 				)
 			}
@@ -72,7 +73,7 @@
 					CodeActionClass.ct_sys_code_action_class_do_auth,
 					CodeActionType.setUserId
 				),
-				value: userSys
+				data: { value: userSys }
 			})
 		)
 	}

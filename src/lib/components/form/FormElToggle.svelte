@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { ContextKey, DataManager, DataObj, DataObjCardinality, required } from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldAccess } from '$comps/form/field'
+	import { FieldAccess } from '$comps/form/field.svelte'
 	import { FieldToggle } from '$comps/form/fieldToggle'
 	import { SlideToggle } from '@skeletonlabs/skeleton'
-	import { PropDataType } from '$comps/dataObj/types.rawDataObj'
+	import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 

@@ -4,8 +4,8 @@ import {
 	FieldAlignment,
 	PropsFieldInit,
 	PropsFieldCreate
-} from '$comps/form/field'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj'
+} from '$comps/form/field.svelte'
+import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
 import {
 	DataObj,

@@ -1,4 +1,5 @@
 import {
+	booleanOrDefault,
 	booleanOrFalse,
 	booleanRequired,
 	CodeAction,
@@ -18,11 +19,16 @@ import {
 } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
-import { State, StateComponentLayout, StateTriggerToken } from '$comps/app/types.appState.svelte'
+import {
+	State,
+	StateNavLayout,
+	StateParms,
+	StateTriggerToken
+} from '$comps/app/types.appState.svelte'
 import { App } from '$comps/app/types.app.svelte'
 import { AppRowActionType } from '$comps/app/types.app.svelte'
 import { Node } from '$comps/app/types.node'
-import { FieldColumnItem } from '$comps/form/field'
+import { FieldColumnItem } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { Process } from '$utils/utils.process'
 import { error } from '@sveltejs/kit'
@@ -450,9 +456,8 @@ export class TokenAppStateTriggerAction extends TokenApp {
 	confirm: UserActionConfirmContent
 	data: DataRecord = {}
 	fCallback: Function | undefined = undefined
-	isNewApp: boolean
-	navLayout?: StateComponentLayout
-	triggerTokens: StateTriggerToken[] = []
+	isMultiTree: boolean
+	stateParms: StateParms
 	constructor(obj: any) {
 		const clazz = 'TokenAppStateTriggerAction'
 		obj = valueOrDefault(obj, {})
@@ -461,19 +466,20 @@ export class TokenAppStateTriggerAction extends TokenApp {
 		this.codeAction = obj.codeAction
 		this.codeConfirmType = obj.codeConfirmType || TokenAppUserActionConfirmType.none
 		this.confirm = obj.confirm || new UserActionConfirmContent(obj)
+		this.data = obj.data || {}
 		this.fCallback = obj.fCallback
-		this.isNewApp = booleanOrFalse(obj.isNewApp, 'isNewApp')
-		this.navLayout = obj.navLayout
-		this.data.state = obj.state ? obj.state : {}
-		if (obj.dataRecord) this.data.dataRecord = obj.dataRecord
-		if (obj.token) this.data.token = obj.token
-		if (obj.value) this.data.value = obj.value
+		this.isMultiTree = booleanOrFalse(obj.isMultiTree)
+		this.stateParms = obj.stateParms || new StateParms({})
 	}
-	triggerTokensAdd(token: StateTriggerToken) {
-		this.triggerTokens.push(token)
-	}
-	triggerTokensInit(tokens: StateTriggerToken[]) {
-		this.triggerTokens = tokens
+	updateStateParms(parms: DataRecord, triggerTokens: StateTriggerToken[] = []) {
+		for (const key in parms) {
+			this.stateParms.data[key] = parms[key]
+		}
+		triggerTokens.forEach((triggerToken: StateTriggerToken) => {
+			if (!this.stateParms.triggerTokens.find((tt) => tt === triggerToken)) {
+				this.stateParms.triggerTokens.push(triggerToken)
+			}
+		})
 	}
 }
 

@@ -24,12 +24,14 @@
 			new TokenAppStateTriggerAction({
 				actionAlertMsg: field.actionAlertMsg,
 				codeAction: field.action.codeAction,
-				dataRecord: $state.snapshot(dataRecord),
-				fCallback: dataObj.fCallbackUserAction,
-				token: new TokenAppDo({
-					dataObj
-				}),
-				value: field.value
+				data: {
+					dataRecord: $state.snapshot(dataRecord),
+					token: new TokenAppDo({
+						dataObj
+					}),
+					value: field.value
+				},
+				fCallback: dataObj.fCallbackUserAction
 			})
 		)
 	}

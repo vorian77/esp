@@ -3,7 +3,7 @@
 	import { getContext } from 'svelte'
 	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import { TokenAppStateTriggerAction, TokenAppUserActionConfirmType } from '$utils/types.token'
-	import { AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app.svelte'
+	import { App, AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
 	import NavCrumbsMobile from '$comps/nav/NavCrumbsMobile.svelte'
@@ -28,30 +28,30 @@
 	}
 </script>
 
-<div id="layout-app" class="flex justify-between items-center p-3 border-b gap-3">
-	<div class="flex flex-grow items-center">
-		<button class="mr-2 flex-none" onclick={back}>
-			<Icon
-				props={new IconProps({
-					name: 'ArrowLeft',
-					clazz: 'mt-1',
-					isNav: true,
-					size: 20,
-					strokeWidth: 2
-				})}
-			/>
-		</button>
+{#if sm.app.treeLevelsIdxCurrent > -1}
+	<div id="layout-app" class="flex justify-between items-center p-3 border-b gap-3">
+		<div class="flex flex-grow items-center">
+			<button class="mr-2 flex-none" onclick={back}>
+				<Icon
+					props={new IconProps({
+						name: 'ArrowLeft',
+						clazz: 'mt-1',
+						isNav: true,
+						size: 20,
+						strokeWidth: 2
+					})}
+				/>
+			</button>
 
-		<!-- <div class=" border-0 border-green-400"> -->
-		<div class="flex-grow md:hidden">
-			<NavCrumbsMobile />
+			<div class="flex-grow md:hidden">
+				<NavCrumbsMobile />
+			</div>
+			<div class="flex-none hidden md:inline">
+				<NavCrumbsDesktop />
+			</div>
 		</div>
-		<div class="flex-none hidden md:inline">
-			<NavCrumbsDesktop />
+		<div class="flex-none">
+			<NavRow />
 		</div>
 	</div>
-	<!-- </div> -->
-	<div class="flex-none">
-		<NavRow />
-	</div>
-</div>
+{/if}

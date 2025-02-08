@@ -1,5 +1,5 @@
 import { DataObj } from '$utils/types'
-import { Field, FieldColor } from '$comps/form/field'
+import { Field, FieldColor } from '$comps/form/field.svelte'
 
 const FILENAME = '$comps/form/types.fieldGroup.ts'
 

@@ -1,4 +1,4 @@
-import { Field, FieldClassType, PropsFieldInit, PropsFieldCreate } from '$comps/form/field'
+import { Field, FieldClassType, PropsFieldInit, PropsFieldCreate } from '$comps/form/field.svelte'
 import {
 	FieldEmbed,
 	FieldEmbedListConfig,
@@ -37,6 +37,6 @@ export class FieldEmbedShell extends Field {
 				}
 			})
 		})
-		await this.stateShell.app.addLevelEmbedShell(this)
+		await this.stateShell.app.addLevelEmbedShellForm(this)
 	}
 }

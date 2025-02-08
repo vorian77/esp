@@ -11,7 +11,8 @@
 	import { AppLevelRowStatus } from '$comps/app/types.app.svelte'
 	import {
 		State,
-		StateComponentContent,
+		StateNavContent,
+		StateNavHeader,
 		StateSurfacePopup,
 		StateTriggerToken
 	} from '$comps/app/types.appState.svelte'
@@ -25,7 +26,7 @@
 
 	const FILENAME = '$comps/layout/LayoutContent.svelte'
 
-	const componentsContent: Record<StateComponentContent, any> = {
+	const componentsContent: Record<StateNavContent, any> = {
 		FormDetail: ContentFormDetailApp,
 		FormDetailRepConfig: ContentFormDetailRepConfig,
 		FormList: ContentFormListApp,
@@ -37,28 +38,21 @@
 	let dm: DataManager = $derived(sm.dm)
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
+	let Component = $derived(componentsContent[parms?.navContent || sm.navContent])
 	let cancelForm: Function = getContext(ContextKey.cancelForm) || undefined
-	let navContent: StateComponentContent = $derived(parms.navContent || sm.navContent)
-	let Component = $state()
 
-	$effect(() => {
-		Component = componentsContent[navContent]
-	})
-
-	// header parms
+	// navHeader
 	let headerObj = $derived(
-		sm.layoutHeader.headerText
-			? sm.layoutHeader.headerText
-			: sm.layoutHeader.isDataObj
+		sm.navHeader.headerText
+			? sm.navHeader.headerText
+			: sm.navHeader.isDataObj
 				? dataObj?.raw?.header
 				: ''
 	)
-
 	let headerObjSub = $derived(
-		sm.layoutHeader.isDataObj ? (dataObj?.raw?.subHeader ? dataObj?.raw?.subHeader : '') : ''
+		sm.navHeader.isDataObj ? (dataObj?.raw?.subHeader ? dataObj?.raw?.subHeader : '') : ''
 	)
-	let isDrawerClose = $derived(sm.layoutHeader.isDrawerClose)
-	let rowStatus = $derived(sm.layoutHeader.isRowStatus ? sm.app.navRowStatus() : undefined)
+	let rowStatus = $derived(sm.navHeader.isRowStatus ? sm.app.navRowStatus() : undefined)
 
 	// header styling
 	let classHeader = $derived(
@@ -72,9 +66,6 @@
 	}
 </script>
 
-<!-- <DataViewer header="parms" data={parms} /> -->
-<!-- <div>layoutContent.navContent: {navContent}</div> -->
-
 <div class="h-full max-h-full flex flex-col p-3 {headerObj ? 'border p-3 rounded-md' : ''} ">
 	{#if Component}
 		{#if headerObj}
@@ -82,10 +73,10 @@
 				<div class="flex justify-between items-start">
 					<h2 class="h2">{headerObj}</h2>
 					<div>
-						{#if sm.layoutHeader.isRowStatus}
+						{#if rowStatus}
 							<NavRow />
 						{/if}
-						{#if sm.layoutHeader.isDrawerClose}
+						{#if sm.navHeader.isDrawerClose}
 							<button
 								type="button"
 								class="btn-icon btn-icon-sm variant-filled-error"

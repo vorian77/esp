@@ -20,7 +20,7 @@
 	<hr class="sm:mt-32 my-2" />
 	<button
 		class="flex items-center hover:-translate-y-0.5 transition-transform"
-		onclick={() => data.items.activateLinkByLabel('My Account')}
+		onclick={() => data.navMenu.triggerActionDataObjApp('data_obj_task_sys_auth_my_account')}
 	>
 		<div class="h-9 w-9 rounded-full place-content-center bg-neutral-200 text-center">
 			{#if data.user.avatar}

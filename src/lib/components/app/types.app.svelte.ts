@@ -54,20 +54,21 @@ export class App {
 	treeLevels: AppTree[] = $state([])
 	treeLevelsIdxCurrent: number = -1
 	constructor(obj: any = {}) {
-		this.isMultiTree = booleanOrFalse(obj.isMultiTree, 'isMultiTree')
+		this.isMultiTree = booleanOrFalse(obj.isMultiTree)
 	}
 
-	async addLevelEmbedField(sm: State, token: TokenApiQuery) {
+	async addLevelEmbedFieldModal(sm: State, token: TokenAppModalEmbedField) {
 		const newTab = new AppLevelTab({
-			data: token.queryData.dataTab,
-			dataObjSource: token.dataObjSource,
+			dataObjId: token.dataObjSourceModal.sources.dataObjId,
+			dataObjSource: token.dataObjSourceModal,
+			label: 'modalEmbedField',
 			treeLevelIdx: this.treeLevelsIdxCurrent
 		})
 		await queryTypeTab(sm, newTab, token.queryType)
-		this.levelAdd([newTab])
+		this.levelAdd([newTab], true)
 	}
 
-	async addLevelEmbedShell(fieldShell: FieldEmbedShell) {
+	async addLevelEmbedShellForm(fieldShell: FieldEmbedShell) {
 		// build tabs
 		let tabs: AppLevelTab[] = []
 		// const levelIdx = 0
@@ -100,15 +101,10 @@ export class App {
 		return fieldShell
 	}
 
-	async addLevelModalEmbedField(sm: State, token: TokenAppModalEmbedField) {
-		const newTab = new AppLevelTab({
-			dataObjId: token.dataObjSourceModal.sources.dataObjId,
-			dataObjSource: token.dataObjSourceModal,
-			label: 'modalEmbedField',
-			treeLevelIdx: this.treeLevelsIdxCurrent
-		})
-		await queryTypeTab(sm, newTab, token.queryType)
-		this.levelAdd([newTab], true)
+	async addTree(tabs: AppLevelTab[]) {
+		const newLevel = new AppLevel(tabs)
+		const newTree = new AppTree(newLevel)
+		this.setTreeLevelIdxCurrent(this.treeLevels.push(newTree) - 1)
 	}
 
 	async addTreeDataObj(sm: State, token: TokenAppDoQuery) {
@@ -117,14 +113,18 @@ export class App {
 			treeLevelIdx: this.treeLevels.length
 		})
 		await queryTypeTab(sm, newTab, token.queryType)
-		this.addTreeLevel([newTab])
+		this.addTree([newTab])
 	}
 
-	async addTreeLevel(tabs: AppLevelTab[]) {
-		const newLevel = new AppLevel(tabs)
-		const newTree = new AppTree(newLevel)
-		const treeLevelIdx = this.setTreeLevelIdxCurrent(this.treeLevels.push(newTree) - 1)
-		return treeLevelIdx
+	async addTreeEmbedFieldModal(sm: State, token: TokenAppModalEmbedField) {
+		const newTab = new AppLevelTab({
+			dataObjId: token.dataObjSourceModal.sources.dataObjId,
+			dataObjSource: token.dataObjSourceModal,
+			label: 'modalEmbedField',
+			treeLevelIdx: this.treeLevels.length
+		})
+		await queryTypeTab(sm, newTab, token.queryType)
+		this.addTree([newTab])
 	}
 
 	async addTreeNode(sm: State, token: TokenAppNode) {
@@ -132,7 +132,7 @@ export class App {
 			...this.addTreeNodeParmsList(token.node, this.treeLevels.length)
 		})
 		await queryTypeTab(sm, newTab, TokenApiQueryType.retrieve)
-		this.addTreeLevel([newTab])
+		this.addTree([newTab])
 	}
 
 	async addTreeNodeChildren(sm: State, token: TokenAppDo, queryType: TokenApiQueryType) {
@@ -290,12 +290,11 @@ export class AppLevel {
 		this.tabIdxCurrent = 0
 		this.tabs = tabs
 	}
-	getCrumbLabel(tabIdx: number, parentLevel: AppLevel | undefined = undefined) {
+	getCrumbLabel(tab: AppLevelTab, parentLevel: AppLevel | undefined = undefined) {
 		const clazz = 'AppLevel.getCrumbLabel'
-		const label = this.tabs[tabIdx]?.dataObj?.raw?.header || this.tabs[tabIdx].label || 'unknown'
+		const label = tab?.dataObj?.raw?.header || tab.label || 'unknown'
 		if (!label) return ''
 		const labelId = parentLevel ? parentLevel.getCurrTab().listCrumbLabelId() : ''
-		// return label + labelId
 		return labelId ? labelId : label
 	}
 	getCurrTab() {
@@ -367,11 +366,11 @@ export class AppLevelTab {
 		this.dataObjId = obj.dataObjId
 		this.dataObjIdChild = obj.dataObjIdChild
 		this.dataObjSource = obj.dataObjSource
-		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData, 'isAlwaysRetrieveData')
-		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager, 'isHideRowManager')
-		this.isProgramObject = booleanOrFalse(obj.isProgramObject, 'isProgramObject')
-		this.isRetrieved = booleanOrFalse(obj.isRetrieved, 'isRetrieved')
-		this.isVirtual = booleanOrFalse(obj.isVirtual, 'isVirtual')
+		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData)
+		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager)
+		this.isProgramObject = booleanOrFalse(obj.isProgramObject)
+		this.isRetrieved = booleanOrFalse(obj.isRetrieved)
+		this.isVirtual = booleanOrFalse(obj.isVirtual)
 		this.label = obj.label
 		this.nodeIdParent = obj.nodeIdParent
 		this.treeLevelIdx = required(obj.treeLevelIdx, clazz, 'treeLevelIdx')
@@ -619,12 +618,17 @@ export class AppTree {
 	navCrumbsList() {
 		this.crumbs = [new AppLevelCrumb(-1, 'Home')]
 		this.levels.forEach((level, i) => {
-			const parentLevel = i > 0 ? this.levels[i - 1] : undefined
-			this.crumbs.push(new AppLevelCrumb(0, level.getCrumbLabel(0, parentLevel)))
-			if (level.tabIdxCurrent > 0)
-				this.crumbs.push(
-					new AppLevelCrumb(level.tabIdxCurrent, level.getCrumbLabel(level.tabIdxCurrent))
-				)
+			if (!level.isVirtual) {
+				const parentLevel: AppLevel | undefined = i > 0 ? this.levels[i - 1] : undefined
+				const tabRoot = level.tabs[0]
+				this.crumbs.push(new AppLevelCrumb(0, level.getCrumbLabel(tabRoot, parentLevel)))
+				if (level.tabIdxCurrent > 0) {
+					const tabChild = level.tabs[level.tabIdxCurrent]
+					if (!tabChild.isVirtual) {
+						this.crumbs.push(new AppLevelCrumb(level.tabIdxCurrent, level.getCrumbLabel(tabChild)))
+					}
+				}
+			}
 		})
 		return this.crumbs
 	}
