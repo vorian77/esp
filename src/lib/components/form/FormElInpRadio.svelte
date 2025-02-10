@@ -53,13 +53,13 @@
 <fieldset id="input-radio-row-{parms.row}" class={classFieldSet}>
 	<div class="mt-3 {classAlignment}">
 		{#if dataItems}
-			{#each dataItems as { data, display }, index (data)}
+			{#each dataItems as { id, display }, index (id)}
 				<div class="text-sm {classFormat} {index === 0 ? 'mt-4' : ''}">
 					<input
 						type="radio"
 						name={field.colDO.propName + '-' + parms.row}
-						value={data}
-						checked={fieldValue == data}
+						value={id}
+						checked={fieldValue == id}
 						onclick={onClick}
 					/>
 					{display}

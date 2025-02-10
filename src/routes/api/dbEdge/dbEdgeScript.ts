@@ -62,13 +62,6 @@ export class ScriptGroup {
 		return script
 	}
 
-	addScriptDataItems(query: Query, queryData: TokenApiQueryData, props: RawDataObjPropDB[]) {
-		const isFilterCurrentValue = query.rawDataObj.codeCardinality === DataObjCardinality.detail
-		return this.addScript(query, queryData, ScriptExePost.dataItems, [
-			['propsSelectDataItems', { props, isFilterCurrentValue }],
-			['script', { content: ['propsSelectDataItems'] }]
-		])
-	}
 	addScriptExpression(query: Query, queryData: TokenApiQueryData) {
 		const script = new Script(query, queryData, ScriptExePost.formatData)
 		script.script = query.getExpression(queryData)
@@ -439,10 +432,6 @@ export class Script {
 
 				case 'propsSelect':
 					element = this.query.getPropsSelect(parms, this.queryData)
-					break
-
-				case 'propsSelectDataItems':
-					element = this.query.getPropsSelectDataItems(parms, this.queryData)
 					break
 
 				case 'propsSelectPreset':

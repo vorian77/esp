@@ -31,12 +31,12 @@
 		const value = event.target.value
 
 		if (field.colDO.colDB.isMultiSelect) {
-			const idx = dataItems.findIndex((i) => i.data === value)
+			const idx = dataItems.findIndex((i) => i.id === value)
 			if (idx >= 0) {
 				let newValues: string[] = []
 				dataItems[idx].selected = !dataItems[idx].selected
 				dataItems.forEach((i) => {
-					if (i.selected) newValues.push(i.data)
+					if (i.selected) newValues.push(i.id)
 				})
 				console.log('onInput.newValues:', newValues)
 				await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, newValues)
@@ -51,7 +51,7 @@
 {#if field.colDO.colDB.isMultiSelect}
 	<FormLabel {parms} />
 	<fieldset class="text-sm space-y-2 {classFieldSet}">
-		{#each dataItems as { data, display }, i (data)}
+		{#each dataItems as { id, display }, i (id)}
 			<label class="flex gap-1.5 {i === 0 ? 'mt-3' : ''}">
 				<input
 					type="checkbox"
@@ -59,7 +59,7 @@
 					class="rounded-sm mt-0.5"
 					name={field.colDO.propName}
 					oninput={onInput}
-					value={data}
+					value={id}
 				/>
 				{display}
 			</label>

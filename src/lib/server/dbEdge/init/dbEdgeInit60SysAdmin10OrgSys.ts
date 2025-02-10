@@ -104,6 +104,7 @@ function initOrg(init: InitDb) {
 				fieldEmbedListSelect: 'fels_sys_user_org_sys',
 				indexTable: 0,
 				isDisplayable: true,
+				linkColumns: ['person', 'fullName'],
 				linkTable: 'SysUser',
 				orderDisplay: 30,
 				orderDefine: 30

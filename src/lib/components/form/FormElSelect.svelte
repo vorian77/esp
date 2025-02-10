@@ -36,7 +36,7 @@
 	}
 
 	async function onClick(event: Event) {
-		if (field.linkItemsSource) field.linkItemsSource.retrieveItems()
+		if (field.linkItemsSource) field.linkItemsSource.retrieve(sm.user)
 	}
 </script>
 
@@ -51,8 +51,8 @@
 	>
 		<option value={null} class="">Select an option...</option>
 		{#if fieldItems}
-			{#each fieldItems as { data, display }, index (data)}
-				<option value={data} selected={data === fieldValue}>
+			{#each fieldItems as { id, display }, index (id)}
+				<option value={id} selected={id === fieldValue}>
 					{display}
 				</option>
 			{/each}

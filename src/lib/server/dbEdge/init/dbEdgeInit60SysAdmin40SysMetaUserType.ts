@@ -180,6 +180,7 @@ function initUserType(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -238,6 +239,7 @@ function initUserType(init: InitDb) {
 				fieldEmbedListSelect: 'fels_sys_sys_admin_user',
 				indexTable: 0,
 				isDisplayable: true,
+				linkColumns: ['person', 'fullName'],
 				linkTable: 'SysUser',
 				orderDisplay: 80,
 				orderDefine: 80
@@ -251,6 +253,7 @@ function initUserType(init: InitDb) {
 				orderDefine: 90,
 				fieldEmbedListSelect: 'fels_sys_admin_sys_user_type_resource',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysUserTypeResource'
 			},
 

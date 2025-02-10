@@ -68,6 +68,7 @@ function initDataObjActionsQuery(init: InitDb) {
 				orderDefine: 30,
 				fieldEmbedListConfig: 'flec_data_obj_action_query_parm',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjActionQueryParm'
 			},
 			{
@@ -79,6 +80,7 @@ function initDataObjActionsQuery(init: InitDb) {
 				orderDefine: 40,
 				fieldEmbedListConfig: 'flec_data_obj_action_query_trigger',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjActionQueryTrigger'
 			},
 

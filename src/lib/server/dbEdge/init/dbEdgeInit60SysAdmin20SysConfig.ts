@@ -47,6 +47,7 @@ async function initConfig(init: InitDb) {
 				fieldListItemsParmName: 'ct_cm_cohort_attd_duration',
 				indexTable: 0,
 				isDisplayable: true,
+				linkColumns: ['name'],
 				linkTable: 'SysCode',
 				orderDefine: 40,
 				orderDisplay: 40
@@ -58,6 +59,7 @@ async function initConfig(init: InitDb) {
 				fieldListItemsParmName: 'ct_cm_cohort_attd_duration',
 				indexTable: 0,
 				isDisplayable: true,
+				linkColumns: ['name'],
 				linkTable: 'SysCode',
 				orderDefine: 50,
 				orderDisplay: 50

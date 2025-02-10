@@ -123,6 +123,7 @@ function initNodeObj(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -141,6 +142,7 @@ function initNodeObj(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_node_obj_nav_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -152,6 +154,7 @@ function initNodeObj(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_node_obj_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -163,6 +166,7 @@ function initNodeObj(init: InitDb) {
 				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_node_obj_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysNodeObj'
 			},
 			{
@@ -230,6 +234,7 @@ function initNodeObj(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_icon',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -256,6 +261,7 @@ function initNodeObj(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
 				fieldListItemsParmName: 'default',
+				linkColumns: ['name'],
 				linkTable: 'SysDataObj'
 			},
 			{

@@ -18,7 +18,7 @@ import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
 	PropDataSourceValue,
 	PropDataType,
-	PropLinkItemsSource,
+	PropLinkItems,
 	PropNamePrefixType,
 	RawDataObj,
 	RawDataObjParent,
@@ -279,7 +279,18 @@ export class Query {
 			const indexTable = nbrOrDefault(prop.indexTable, -1)
 			let propValue = ''
 
+			let linkProp = {}
+			let linkValue = ''
+
 			if (prop.codeDataType === PropDataType.link) {
+				linkProp = {
+					prop: prop.propNameRaw,
+					propChildTableTraversal,
+					propDisplay,
+					exprCustom: prop.exprCustom
+				}
+				// propValue = `.${propChildTableTraversal} { id, display := .${propDisplay} }`
+
 				if (prop.exprCustom) {
 					propValue = prop.exprCustom + '.' + propDisplay
 				} else {
@@ -301,6 +312,12 @@ export class Query {
 
 			propValue = propValue ? ` := ${propValue}` : ''
 			const item = prop.propName + propValue
+			if (Object.keys(linkProp).length > 0) {
+				linkProp.item = item
+				linkProp.linkValue = linkValue
+				debug('processPropsSelectItem', 'linkProp', linkProp)
+			}
+
 			return item
 		}
 	}
@@ -319,7 +336,7 @@ export class Query {
 			let value = ''
 			if (expr) {
 				value = expr
-			} else if (prop._linkItemsSource) {
+			} else if (prop.linkItemsSource) {
 				value = '<uuid>{}'
 			}
 			if (value) {
@@ -330,108 +347,6 @@ export class Query {
 		if (!properties) properties = `dummy:= <str>{}`
 		properties = `SELECT {\n${properties}\n}`
 		return properties
-	}
-
-	getPropsSelectDataItems(parms: DataRecord, queryData: TokenApiQueryData) {
-		const clazz = 'getPropsSelectDataItems'
-		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
-		const isFilterCurrentValue = required(parms.isFilterCurrentValue, clazz, 'isFilterCurrentValue')
-
-		let properties = ''
-
-		props.forEach((prop) => {
-			if (prop._linkItemsSource) {
-				properties = this.addItemComma(
-					properties,
-					this.getPropsSelectDataItemsContent(prop, queryData, isFilterCurrentValue)
-				)
-			}
-		})
-		const script = properties ? `SELECT {\n${properties}\n}` : ''
-		return script
-	}
-
-	getPropsSelectDataItemsContent(
-		prop: RawDataObjPropDB,
-		queryData: TokenApiQueryData,
-		isFilterCurrentValue: boolean
-	) {
-		const clazz = 'getPropsSelectDataItemsContent'
-		let script = new Script(this, queryData, ScriptExePost.formatData)
-		const defn = new PropLinkItemsSource(prop._linkItemsSource)
-		if (defn.parmName)
-			queryData.dataTab?.parms.update({ [ParmsValuesType.itemsParmName]: defn.parmName })
-
-		// shape
-		let shape = 'data := .id'
-		defn.props.forEach((prop) => {
-			shape += `, ${prop.key} := ${prop.expr}`
-		})
-		shape = `{${shape}}`
-
-		// sort
-		const sort = defn.getSortProps().reduce((sort, prop) => {
-			if (sort) sort += ' THEN '
-			return (sort += `.${prop.key}`)
-		}, '')
-
-		const filter = defn.exprFilter ? evalExpr(defn.exprFilter, queryData) : ''
-		const orderBy = defn.exprSort ? `ORDER BY ${defn.exprSort}` : sort ? `ORDER BY ${sort}` : ''
-
-		// table
-		const dataObjTable = this.getTableRootObj()
-		let table = defn.table?.object
-		table = table === dataObjTable ? `DETACHED ${table}` : table
-
-		// preset - script = `SELECT ${table} ${shapeCustom} ${filerCustom} ${orderCustom}`
-		// retrieve - script = `(SELECT DISTINCT (SELECT ((SELECT ${table} FILTER ${filter}) UNION (currentValue)))${shape} ${orderBy})`
-
-		if (defn.exprWith) {
-			script.addItem('values', { withContent: defn.exprWith })
-			script.addItem('with', { content: ['withContent'] })
-		}
-		script.addItem('values', { shape, orderBy })
-
-		if (isFilterCurrentValue) {
-			// core select
-			script.addItem('action', { type: 'SELECT', table })
-			if (filter) script.addItem('filter', { exprFilter: filter })
-			script.addItem('wrap', { key: 'select0', open: '(', content: ['action', 'filter'] })
-
-			// current value
-			let currentValue = ''
-			if (prop.codeDataType === PropDataType.link) {
-				const linkDataType = prop.isMultiSelect ? 'uuidList' : 'uuid'
-				currentValue = prop.childTableTraversal
-					? `(SELECT ${table} FILTER .id = <record,${linkDataType},${prop.propName}>)`
-					: '{}'
-			} else {
-				error(500, {
-					file: FILENAME,
-					function: 'getPropsSelectDataItemsContent',
-					message: `No option defined for codeDataType: ${prop.codeDataType} for prop: ${prop.propName}.`
-				})
-			}
-
-			script.addItem('values', { currentValue })
-			script.addItem('wrap', { key: 'select1', open: 'UNION (', content: ['currentValue'] })
-
-			// wrap selects
-			script.addItem('wrap', { key: 'select2', open: 'SELECT (', content: ['select0', 'select1'] })
-
-			// wrap distinct
-			script.addItem('wrap', { key: 'body', open: 'SELECT DISTINCT (', content: ['select2'] })
-
-			script.addItem('script', { content: ['body', 'shape', 'orderBy'] })
-		} else {
-			script.addItem('action', { type: 'SELECT', table })
-			if (filter) script.addItem('filter', { exprFilter: filter })
-			script.addItem('combine', { key: 'body', content: ['action', 'shape', 'filter', 'orderBy'] })
-			script.addItem('script', { content: ['body'] })
-		}
-		script.build()
-		script.script = `${`_items_${prop.propName}`} := (${script.script})`
-		return script.script
 	}
 
 	getSort(queryData: TokenApiQueryData) {

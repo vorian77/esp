@@ -42,7 +42,6 @@ function queryDataPre(sm: State, data: DataObjData | undefined, queryType: Token
 	dataTab.parms.update(sm.parmsState.valueGetAll())
 
 	sm.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
-	if (sm.user) dataTab.parms.valueSet(ParmsValuesType.appSystemId, sm.user.system.id)
 
 	return { dataTree, dataTab }
 }

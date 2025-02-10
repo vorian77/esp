@@ -84,6 +84,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -108,6 +109,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_action_group_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjActionGroup'
 			},
 			{
@@ -133,6 +135,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
 				fieldListItemsParmName: 'embed',
+				linkColumns: ['name'],
 				linkTable: 'SysDataObj'
 			},
 			{
@@ -144,6 +147,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
 				fieldListItemsParmName: 'embed',
+				linkColumns: ['name'],
 				linkTable: 'SysDataObj'
 			},
 			{
@@ -302,6 +306,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -327,6 +332,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
 				fieldListItemsParmName: 'embed',
+				linkColumns: ['name'],
 				linkTable: 'SysDataObj'
 			},
 			{
@@ -492,6 +498,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -516,6 +523,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_action_group_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjActionGroup'
 			},
 			{
@@ -548,6 +556,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
 				fieldListItemsParmName: 'embed',
+				linkColumns: ['name'],
 				linkTable: 'SysDataObj'
 			},
 			{

@@ -106,6 +106,7 @@ function initCodeType(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -124,6 +125,7 @@ function initCodeType(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_codeType_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysCodeType'
 			},
 			{
@@ -385,6 +387,7 @@ function initCodeTypeCode(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysCodeType'
 			},
 			{
@@ -402,6 +405,7 @@ function initCodeTypeCode(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_system',
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -413,6 +417,7 @@ function initCodeTypeCode(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_parent',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -509,6 +514,7 @@ function initCodeTypeCode(init: InitDb) {
 				orderDefine: 170,
 				fieldEmbedListSelect: 'fels_sys_code_type_family',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysCodeType'
 			},
 
@@ -708,6 +714,7 @@ function initCode(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -725,6 +732,7 @@ function initCode(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_codeType_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysCodeType'
 			},
 			{
@@ -736,6 +744,7 @@ function initCode(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_parent',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -832,6 +841,7 @@ function initCode(init: InitDb) {
 				orderDefine: 170,
 				fieldEmbedListSelect: 'fels_sys_code_type_family',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysCodeType'
 			},
 

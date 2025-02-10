@@ -26,7 +26,9 @@ import {
 import {
 	PropDataSourceValue,
 	PropDataType,
+	PropLinkItems,
 	PropLinkItemsSource,
+	PropLinkItemsSourceProp,
 	PropNamePrefixType,
 	RawDataObj,
 	RawDataObjPropDB,
@@ -36,11 +38,7 @@ import {
 	RawDataObjPropDisplayEmbedListSelect
 } from '$comps/dataObj/types.rawDataObj.svelte'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
-import {
-	getDataObjById,
-	getDataObjByName,
-	getLinkItemsSource
-} from '$routes/api/dbEdge/dbEdgeUtilities'
+import { getDataObjById, getDataObjByName } from '$routes/api/dbEdge/dbEdgeUtilities'
 import { Field, FieldEmbedType, PropsFieldCreate } from '$comps/form/field.svelte'
 import {
 	FieldEmbed,
@@ -56,35 +54,63 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = 'server/dbEdgeQueryProcess.ts'
 
-export async function getFieldListItems(queryData: TokenApiQueryData) {
+export async function getLinkItems(queryData: TokenApiQueryData) {
+	const clazz = 'getFieldListItems'
 	queryData = TokenApiQueryData.load(queryData)
-	const fieldListItems = queryData?.dataTab?.parms.valueGet(ParmsValuesType.fieldListItems)
+	const propLinkItemsSource = new PropLinkItemsSource(
+		required(
+			queryData?.dataTab?.parms.valueGet(ParmsValuesType.propLinkItemsSourceRaw),
+			clazz,
+			'propLinkItems'
+		)
+	)
 
-	const rawSource: any = await getLinkItemsSource(new TokenApiId(fieldListItems))
-	if (rawSource) {
-		const source = new PropLinkItemsSource(rawSource)
-		if (source.table) {
-			const props = source.props.reduce((acc, prop) => {
-				if (acc) acc += ', '
-				acc += `${prop.key} := ${prop.expr}`
-				return acc
-			}, 'data := .id')
-			const expr = `SELECT ${source.table.object} {${props}} FILTER ${source.exprFilter}`
-			rawSource.rawItems = await exeQueryMultiData(
-				expr,
-				queryData,
-				new EvalExprContext('getFieldListItems', fieldListItems)
-			)
-			return new ApiResult(true, { data: rawSource })
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'getFieldListItems',
-				message: `No table defined for FieldListItems: ${fieldListItems.table}`
+	if (propLinkItemsSource.table) {
+		// select
+		const props = propLinkItemsSource.props.reduce((acc: string, prop: PropLinkItemsSourceProp) => {
+			if (acc) acc += ', '
+			acc += `${prop.key} := ${prop.expr}`
+			return acc
+		}, '_id := .id')
+
+		// filter
+		let filter = propLinkItemsSource.exprFilter
+			? propLinkItemsSource.exprFilter
+			: propLinkItemsSource.parmName
+				? propLinkItemsSource.parmName
+				: ''
+		if (propLinkItemsSource.parmName) {
+			queryData.dataTab?.parms.update({
+				[ParmsValuesType.itemsParmName]: propLinkItemsSource.parmName
 			})
 		}
+
+		// order by
+		const sort = propLinkItemsSource.getSortProps().reduce((sort, prop) => {
+			if (sort) sort += ' THEN '
+			return (sort += `.${prop.key}`)
+		}, '')
+		const orderBy = propLinkItemsSource.exprSort ? propLinkItemsSource.exprSort : sort ? sort : ''
+
+		// expr
+		let expr = `SELECT ${propLinkItemsSource.table.object} {${props}}`
+		if (filter) expr += ` FILTER ${filter}`
+		if (orderBy) expr += ` ORDER BY ${orderBy}`
+		const rawItems = await exeQueryMultiData(
+			expr,
+			queryData,
+			new EvalExprContext(clazz, propLinkItemsSource.name)
+		)
+		return new ApiResult(true, { data: rawItems })
+	} else {
+		error(500, {
+			file: FILENAME,
+			function: 'getFieldListItems',
+			message: `No table defined for FieldListItems: ${propLinkItemsSource.name}`
+		})
 	}
 }
+
 export async function processDataObj(token: TokenApiQuery) {
 	const queryData = TokenApiQueryData.load(token.queryData)
 	let rawDataObj = await getRawDataObj(token.dataObjSource, queryData)
@@ -295,14 +321,6 @@ async function processDataObjExecute(scriptGroup: ScriptGroup, returnData: DataO
 						script.queryData.updateTableData(rootTableName, dataRow)
 					})
 				}
-				// add dataItems
-				script.queryData?.dataTab?.parms.update(scriptData.parms.valueGetAll())
-				script.queryData.record = dataRow.record
-				scriptGroup.addScriptDataItems(
-					script.query,
-					script.queryData,
-					script.query.rawDataObj.rawPropsSelect
-				)
 				break
 
 			case ScriptExePost.none:

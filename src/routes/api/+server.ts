@@ -1,15 +1,12 @@
 import { ApiFunction } from '$routes/api/api'
 import { debug, getServerResponse } from '$utils/types'
 import { getEnvVar } from '$server/env'
-import {
-	getFieldListItems,
-	processDataObj,
-	processExpression
-} from '$routes/api/dbEdge/dbEdgeProcess'
+import { getLinkItems, processDataObj, processExpression } from '$routes/api/dbEdge/dbEdgeProcess'
 import {
 	getDataObjActionGroup,
 	getDataObjId,
 	getFieldEmbedListSelect,
+	getLinkItemsSource,
 	getNodesBranch,
 	getNodesLevel,
 	getTableColumns,
@@ -37,8 +34,11 @@ export async function POST({ request, cookies }) {
 		case ApiFunction.dbEdgeGetFieldEmbedListSelect:
 			return getServerResponse(await getFieldEmbedListSelect(token))
 
-		case ApiFunction.dbEdgeGetFieldListItems:
-			return getServerResponse(await getFieldListItems(token))
+		case ApiFunction.dbEdgeGetLinkItems:
+			return getServerResponse(await getLinkItems(token))
+
+		case ApiFunction.dbEdgeGetLinkItemsSource:
+			return getServerResponse(await getLinkItemsSource(token))
 
 		case ApiFunction.dbEdgeGetNodesBranch:
 			return getServerResponse(await getNodesBranch(token))

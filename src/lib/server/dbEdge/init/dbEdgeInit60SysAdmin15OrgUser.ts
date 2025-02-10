@@ -408,6 +408,7 @@ function initSystem(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysOrg'
 			},
 			{
@@ -601,6 +602,7 @@ function initUser(init: InitDb) {
 				exprSave: `(SELECT sys_core::SysOrg FILTER .id = <tree,uuid,SysOrg.id>)`,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysOrg',
 				orderDefine: 20
 			},
@@ -662,6 +664,7 @@ function initUser(init: InitDb) {
 				orderDefine: 110,
 				indexTable: 0,
 				fieldListItems: 'il_sys_user_org',
+				linkColumns: ['name'],
 				linkTable: 'SysOrg'
 			},
 			{
@@ -672,6 +675,7 @@ function initUser(init: InitDb) {
 				orderDefine: 120,
 				indexTable: 0,
 				fieldListItems: 'il_sys_user_system',
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -690,6 +694,7 @@ function initUser(init: InitDb) {
 				orderDefine: 140,
 				fieldEmbedListSelect: 'fels_sys_admin_org',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysOrg'
 			},
 			{
@@ -701,6 +706,7 @@ function initUser(init: InitDb) {
 				orderDefine: 150,
 				fieldEmbedListSelect: 'fels_sys_admin_system',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -712,6 +718,7 @@ function initUser(init: InitDb) {
 				orderDefine: 160,
 				fieldEmbedListSelect: 'fels_sys_sys_admin_user_type',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysUserType'
 			},
 

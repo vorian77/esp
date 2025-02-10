@@ -6,6 +6,8 @@ import {
 	DataObj,
 	DataObjData,
 	type DataRecord,
+	ParmsValuesType,
+	ResponseBody,
 	required,
 	strRequired
 } from '$utils/types'
@@ -19,8 +21,10 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
+import { apiFetch, ApiFunction } from '$routes/api/api'
+import { TokenApiQueryData } from '$utils/types.token'
 import {
-	PropLinkItemsSource,
+	PropLinkItems,
 	RawDataObjPropDisplay,
 	RawDataObjPropDisplayItemChange
 } from '$comps/dataObj/types.rawDataObj.svelte'
@@ -38,11 +42,11 @@ export class Field {
 	iconProps?: IconProps
 	isParmValue: boolean
 	itemChanges: FieldItemChange[] = []
-	linkItemsSource?: PropLinkItemsSource
+	linkItemsSource?: PropLinkItems
 	constructor(props: PropsFieldCreate) {
 		const clazz = `Field: ${props.propRaw.propName}`
-		const obj = valueOrDefault(props.propRaw, {})
-		this.colDO = obj
+
+		this.colDO = props.propRaw
 		this.fieldAccess = memberOfEnumOrDefault(
 			this.colDO.rawFieldAccess,
 			clazz,
@@ -66,8 +70,8 @@ export class Field {
 			'FieldElement',
 			FieldElement
 		)
-		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
-		this.linkItemsSource = classOptional(PropLinkItemsSource, obj._linkItemsSource)
+		this.isParmValue = booleanOrDefault(props.propRaw.isParmValue, false)
+		this.linkItemsSource = classOptional(PropLinkItems, props.propRaw.linkItemsSource)
 	}
 	getBackgroundColor(fieldAccess: FieldAccess) {
 		return fieldAccess === FieldAccess.required
@@ -76,6 +80,7 @@ export class Field {
 				? 'bg-gray-200'
 				: 'bg-white'
 	}
+
 	getPropName() {
 		return this.isParmValue ? 'parmValue' : this.colDO.propName
 	}
@@ -310,13 +315,11 @@ export class FieldColor {
 }
 
 export class FieldColumnItem {
-	data: string
+	id: string
 	display: string
-	selected?: boolean
-	constructor(data: string, display: string, selected: boolean | undefined = false) {
-		this.data = data
+	constructor(id: string, display: string) {
+		this.id = id
 		this.display = display
-		this.selected = selected
 	}
 }
 

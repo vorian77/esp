@@ -11,6 +11,7 @@ import {
 	DataRow,
 	memberOfEnum,
 	nbrRequired,
+	ParmsValuesType,
 	required,
 	ResponseBody,
 	strOptional,

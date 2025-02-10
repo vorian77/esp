@@ -145,6 +145,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
+				linkColumns: ['name'],
 				linkTable: 'SysRepParm',
 				orderDefine: 130
 			},
@@ -216,6 +217,7 @@ function initRepConfig(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['person', 'fullName'],
 				linkTable: 'SysUser'
 			},
 			{
@@ -224,6 +226,7 @@ function initRepConfig(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysRep'
 			},
 			{
@@ -328,6 +331,7 @@ function initRepConfig(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['person', 'fullName'],
 				linkTable: 'SysUser'
 			},
 			{
@@ -336,6 +340,7 @@ function initRepConfig(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysRep'
 			},
 			{
@@ -414,6 +419,7 @@ function initRepConfig(init: InitDb) {
 				orderDisplay: 120,
 				fieldEmbedListEdit: 'fele_sys_rep_user_parm',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysRepUserParm'
 			},
 			// {

@@ -68,6 +68,7 @@ function initMigr(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -258,6 +259,7 @@ function initMigrSourceTable(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_migr_source_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -434,6 +436,7 @@ function initMigrSourceColumn(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_db_col_data_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 
@@ -639,6 +642,7 @@ function initMigrTargetTable(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				fieldListItems: 'il_sys_table_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysTable'
 			},
 			{
@@ -874,6 +878,7 @@ function initMigrTargetColumn(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				fieldListItems: 'il_sys_migr_target_table_column_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysColumn'
 			},
 			{

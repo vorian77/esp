@@ -20,7 +20,7 @@ import { FieldAlignment, FieldElement } from '$comps/form/field.svelte'
 import {
 	PropDataSourceValue,
 	PropDataType,
-	PropLinkItemsSource,
+	PropLinkItems,
 	PropSortDir,
 	RawDataObjTable
 } from '$comps/dataObj/types.rawDataObj.svelte'

@@ -1,4 +1,5 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
+import { link } from 'fs'
 
 export function initPreEmbedListConfig(init: InitDb) {
 	initFieldListConfigDataObjAction(init)
@@ -114,6 +115,7 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_action_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjAction'
 			},
 			{
@@ -125,6 +127,7 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_tailwind_color',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -454,6 +457,7 @@ async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_query_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -465,6 +469,7 @@ async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_action_query_trigger_timing',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -838,6 +843,7 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				fieldListItems: 'il_sys_column_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysColumn'
 			},
 			{
@@ -1188,6 +1194,7 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_table_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysTable'
 			},
 			{
@@ -1231,6 +1238,7 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 				fieldListItems: 'il_sys_column_order_name',
 				headerAlt: 'Parent Table Column',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysColumn'
 			},
 			{
@@ -1402,6 +1410,7 @@ async function initFieldListConfigUserActionConfirm(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_user_action_confirm_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -1413,6 +1422,7 @@ async function initFieldListConfigUserActionConfirm(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_user_action_confirm_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -1594,6 +1604,7 @@ async function initFieldListConfigUserActionShow(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_user_action_trigger',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{

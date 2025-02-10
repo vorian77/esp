@@ -56,6 +56,7 @@ function initDataObj(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -81,6 +82,7 @@ function initDataObj(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_cardinality',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -92,6 +94,7 @@ function initDataObj(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_component',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -103,6 +106,7 @@ function initDataObj(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -183,6 +187,7 @@ function initDataObj(init: InitDb) {
 				orderDefine: 90,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_action_group_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjActionGroup'
 			},
 			{
@@ -195,6 +200,7 @@ function initDataObj(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_dynamic_process_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -267,6 +273,7 @@ function initDataObj(init: InitDb) {
 				orderDefine: 180,
 				indexTable: 0,
 				fieldListItems: 'il_sys_table_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysTable'
 			},
 			{
@@ -278,6 +285,7 @@ function initDataObj(init: InitDb) {
 				orderDefine: 190,
 				indexTable: 0,
 				fieldListItems: 'il_sys_column_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysColumn'
 			},
 			{
@@ -314,6 +322,7 @@ function initDataObj(init: InitDb) {
 				orderDefine: 230,
 				fieldEmbedListConfig: 'flec_data_obj_table',
 				indexTable: 0,
+				linkColumns: ['table', 'name'],
 				linkTable: 'SysDataObjTable'
 			},
 
@@ -359,6 +368,7 @@ function initDataObj(init: InitDb) {
 				orderDefine: 270,
 				fieldListItems: 'il_sys_column_order_name',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysColumn'
 			},
 			{
@@ -379,6 +389,7 @@ function initDataObj(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_list_edit_preset_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -644,6 +655,7 @@ function initDataObjColumn(init: InitDb) {
 				orderDefine: 50,
 				fieldListItems: 'il_sys_column_order_name',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysColumn'
 			},
 			{
@@ -688,6 +700,7 @@ function initDataObjColumn(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_field_source_value',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -700,6 +713,7 @@ function initDataObjColumn(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_field_sort_dir',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -824,6 +838,7 @@ function initDataObjColumn(init: InitDb) {
 				orderDefine: 305,
 				indexTable: 0,
 				fieldListItems: 'il_sys_column_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysColumn'
 			},
 			{
@@ -892,6 +907,7 @@ function initDataObjColumn(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_field_access',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -904,6 +920,7 @@ function initDataObjColumn(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_db_col_alignment',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -916,6 +933,7 @@ function initDataObjColumn(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_do_field_element',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -958,6 +976,7 @@ function initDataObjColumn(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_tailwind_color',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -1031,6 +1050,7 @@ function initDataObjColumn(init: InitDb) {
 				orderDefine: 522,
 				indexTable: 0,
 				fieldListItems: 'il_sys_user_action',
+				linkColumns: ['name'],
 				linkTable: 'SysUserAction'
 			},
 			{
@@ -1174,6 +1194,7 @@ function initDataObjColumn(init: InitDb) {
 				orderDefine: 640,
 				fieldListItems: 'il_sys_data_obj_field_list_items_order_name',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjFieldListItems'
 			},
 			{
@@ -1198,6 +1219,7 @@ function initDataObjColumn(init: InitDb) {
 				fieldEmbedListConfig: 'flec_data_obj_data_obj_column_item_value',
 				indexTable: 0,
 				isDisplayable: true,
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjColumnItemValue',
 				orderDefine: 670,
 				orderDisplay: 670
@@ -1233,6 +1255,7 @@ function initDataObjColumn(init: InitDb) {
 				orderDefine: 700,
 				fieldListItems: 'il_sys_data_obj_field_embed_list_config_order_name',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjFieldEmbedListConfig'
 			},
 			{
@@ -1244,6 +1267,7 @@ function initDataObjColumn(init: InitDb) {
 				orderDefine: 710,
 				fieldListItems: 'il_sys_data_obj_field_embed_list_edit_order_name',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjFieldEmbedListEdit'
 			},
 			{
@@ -1253,6 +1277,7 @@ function initDataObjColumn(init: InitDb) {
 				fieldListItems: 'il_sys_data_obj_field_embed_list_select_order_name',
 				indexTable: 0,
 				isDisplayable: true,
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjFieldEmbedListSelect',
 				orderDisplay: 720,
 				orderDefine: 720
@@ -1287,6 +1312,7 @@ function initDataObjColumn(init: InitDb) {
 				fieldListItems: 'il_sys_data_obj_columns_order_name',
 				indexTable: 0,
 				isDisplayable: true,
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjColumn',
 				orderDisplay: 750,
 				orderDefine: 750
@@ -1325,6 +1351,7 @@ function initDataObjColumn(init: InitDb) {
 				orderDefine: 910,
 				fieldEmbedListConfig: 'flec_data_obj_column_link',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysDataObjColumnLink'
 			},
 			{
@@ -1336,6 +1363,7 @@ function initDataObjColumn(init: InitDb) {
 				orderDefine: 940,
 				indexTable: 0,
 				fieldListItems: 'il_sys_table_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysTable'
 			},
 			{

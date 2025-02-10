@@ -104,6 +104,7 @@ function initApp(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -128,6 +129,7 @@ function initApp(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_app_header_order_name',
+				linkColumns: ['name'],
 				linkTable: 'SysAppHeader'
 			},
 			{
@@ -156,6 +158,7 @@ function initApp(init: InitDb) {
 				orderDefine: 80,
 				fieldEmbedListSelect: 'fels_sys_node',
 				indexTable: 0,
+				linkColumns: ['name'],
 				linkTable: 'SysNodeObj'
 			},
 
@@ -332,6 +335,7 @@ function initAppHeader(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -365,6 +369,7 @@ function initAppHeader(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_icon',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{

@@ -380,7 +380,7 @@ export class DataObjData {
 		let display = ''
 		if (!Array.isArray(ids)) ids = [ids]
 		ids.forEach((id: string) => {
-			const item = items.find((i: FieldColumnItem) => i.data === id)
+			const item = items.find((i: FieldColumnItem) => i.id === id)
 			if (item) display += display ? ',' + item.display : item.display
 		})
 		return display
@@ -772,7 +772,6 @@ export class ParmsValues {
 }
 
 export enum ParmsValuesType {
-	appSystemId = 'appSystemId',
 	columnDefs = 'columnDefs',
 	customProgramOwnerId = 'customProgramOwnerId',
 	dbExpr = 'dbExpr',
@@ -786,6 +785,7 @@ export enum ParmsValuesType {
 	listIdsSelected = 'listIdsSelected',
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listSortModel = 'listSortModel',
+	propLinkItemsSourceRaw = 'propLinkItemsSource',
 	rowData = 'rowData',
 	selectLabel = 'selectLabel'
 }

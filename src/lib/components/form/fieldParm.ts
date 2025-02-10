@@ -7,17 +7,9 @@ import {
 } from '$comps/form/field.svelte'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
-import {
-	DataObj,
-	DataObjData,
-	type DataRecord,
-	getRecordValue,
-	ParmsValuesType,
-	ResponseBody,
-	valueOrDefault
-} from '$utils/types'
+import { DataObj, ResponseBody, type DataRecord, getRecordValue } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { TokenApiQueryData } from '$utils/types.token'
+import { TokenApiId } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldParm.ts/'
@@ -53,11 +45,7 @@ export class FieldParm extends Field {
 				placeHolder: ''
 			},
 			_hasItems: getRecordValue(record, '_hasItems'),
-			_linkItemsSource: await getFieldListItems({
-				fieldListItems: getRecordValue(record, 'fieldListItems'),
-				fieldListItemsParmName: getRecordValue(record, 'fieldListItemsParmName'),
-				user: props.sm.user
-			}),
+			_linkItemsSource: await getLinkItemsSource(getRecordValue(record, 'fieldListItems')),
 			_propName: getRecordValue(record, 'name'),
 			id: getRecordValue(record, 'id'),
 			isDisplayable: true,
@@ -67,33 +55,25 @@ export class FieldParm extends Field {
 		}
 		const propParm = new RawDataObjPropDisplay(propParmObj, [])
 		return DataObj.fieldsCreateItem(props.sm, props.dataObj, propParm, fields)
+
+		async function getLinkItemsSource(fieldListItemsName: string) {
+			const result: ResponseBody = await apiFetch(
+				ApiFunction.dbEdgeGetLinkItemsSource,
+				new TokenApiId(fieldListItemsName)
+			)
+			if (result.success) {
+				return result.data
+			} else {
+				error(500, {
+					file: FILENAME,
+					function: 'getNodesLevel',
+					message: `Error retrieving link items source: ${fieldListItemsName}`
+				})
+			}
+		}
 	}
 
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {
 		return this.parmFields[row].validate(row, value, missingDataErrorLevel)
-	}
-}
-
-async function getFieldListItems(obj: any) {
-	obj = valueOrDefault(obj, {})
-	if (!obj.fieldListItems) return undefined
-
-	// parms
-	const dataTab = new DataObjData()
-	dataTab.parms.valueSet(ParmsValuesType.fieldListItems, obj.fieldListItems)
-	dataTab.parms.valueSet(ParmsValuesType.itemsParmName, obj.fieldListItemsParmName)
-
-	const result: ResponseBody = await apiFetch(
-		ApiFunction.dbEdgeGetFieldListItems,
-		new TokenApiQueryData({ dataTab, user: obj.user })
-	)
-	if (result.success) {
-		return result.data.data
-	} else {
-		error(500, {
-			file: FILENAME,
-			function: 'getLinkItemsSource',
-			message: `Error retrieving LinkItemsSource: ${obj.fieldListItems}`
-		})
 	}
 }

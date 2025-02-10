@@ -84,11 +84,12 @@ function initCourse(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<user,uuid,systemIdCurrent>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -114,6 +115,7 @@ function initCourse(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
 				fieldListItemsParmName: 'ct_cm_course_sector',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -411,11 +413,12 @@ function initCohort(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<user,uuid,systemIdCurrent>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -482,6 +485,7 @@ function initCohort(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_user_by_tag_type',
 				fieldListItemsParmName: 'utt_role_ai_instructor',
+				linkColumns: ['person', 'fullName'],
 				linkTable: 'SysUser'
 			},
 			{
@@ -917,6 +921,7 @@ function initCohortAttdSheet(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'CmCohortAttd'
 			},
 			{
@@ -925,6 +930,7 @@ function initCohortAttdSheet(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false,
+				linkColumns: ['name'],
 				linkTable: 'CmCsfCohort'
 			},
 			{
@@ -962,6 +968,7 @@ function initCohortAttdSheet(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
 				fieldListItemsParmName: 'ct_cm_cohort_attd_duration',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -1112,6 +1119,7 @@ function initCohortDoc(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
+				linkColumns: ['name'],
 				linkTable: 'CmCohort'
 			},
 			{
@@ -1138,6 +1146,7 @@ function initCohortDoc(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
 				fieldListItemsParmName: 'ct_cm_cohort_doc_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -1512,11 +1521,12 @@ function initPartner(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<user,uuid,systemIdCurrent>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -1543,6 +1553,7 @@ function initPartner(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
 				fieldListItemsParmName: 'ct_cm_partner_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -1624,6 +1635,7 @@ function initPartner(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_state',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{
@@ -1655,6 +1667,7 @@ function initPartner(init: InitDb) {
 				fieldEmbedListConfig: 'flec_cm_partner_contact',
 				indexTable: 0,
 				isDisplayable: true,
+				linkColumns: ['name'],
 				linkTable: 'SysPerson',
 				orderDefine: 190,
 				orderDisplay: 190
@@ -1826,6 +1839,7 @@ function initPartnerNote(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
+				linkColumns: ['name'],
 				linkTable: 'SysObj'
 			},
 			{
@@ -1853,6 +1867,7 @@ function initPartnerNote(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmName: 'ct_sys_obj_note_type',
+				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
 			{

@@ -72,7 +72,8 @@ const shapeLinkItemsSource = e.shape(e.sys_core.SysDataObjFieldListItems, (fli) 
 	displayIdSeparator: true,
 	exprFilter: true,
 	exprSort: true,
-	exprWith: true
+	exprWith: true,
+	name: true
 }))
 
 const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({

@@ -47,6 +47,7 @@ export class User {
 	resources_sys_task_default: UserResourceTask[] = []
 	resources_sys_task_setting: UserResourceTask[] = []
 	system: UserResource
+	systemIdCurrent: string
 	systemIds: string[] = []
 	userName: string
 
@@ -72,6 +73,7 @@ export class User {
 		this.resources_sys_task_default = arrayOfClass(UserResourceTask, obj.resources_task_default)
 		this.resources_sys_task_setting = arrayOfClass(UserResourceTask, obj.resources_task_setting)
 		this.system = new UserResource(obj.system)
+		this.systemIdCurrent = this.system.id
 		this.systemIds = obj.systems.map((s: any) => s.id)
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 

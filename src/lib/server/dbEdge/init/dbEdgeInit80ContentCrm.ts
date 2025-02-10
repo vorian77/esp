@@ -63,11 +63,12 @@ function initClient(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,appSystemId>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<user,uuid,systemIdCurrent>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
+				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
