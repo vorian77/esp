@@ -66,23 +66,21 @@ export async function getLinkItems(queryData: TokenApiQueryData) {
 	)
 
 	if (propLinkItemsSource.table) {
-		// select
-		const props = propLinkItemsSource.props.reduce((acc: string, prop: PropLinkItemsSourceProp) => {
-			if (acc) acc += ', '
-			acc += `${prop.key} := ${prop.expr}`
-			return acc
-		}, '_id := .id')
-
 		// filter
+		if (propLinkItemsSource.parmName) {
+			queryData.dataTab?.parms.update({
+				[ParmsValuesType.itemsParmName]: propLinkItemsSource.parmName
+			})
+		}
 		let filter = propLinkItemsSource.exprFilter
 			? propLinkItemsSource.exprFilter
 			: propLinkItemsSource.parmName
 				? propLinkItemsSource.parmName
 				: ''
-		if (propLinkItemsSource.parmName) {
-			queryData.dataTab?.parms.update({
-				[ParmsValuesType.itemsParmName]: propLinkItemsSource.parmName
-			})
+		let idCurrent = queryData?.dataTab?.parms.valueGet(ParmsValuesType.propLinkItemsIdCurrent)
+		if (idCurrent) {
+			idCurrent = `.id = <uuid>'${idCurrent}'`
+			filter = filter ? `(${filter}) UNION ${idCurrent}` : `${idCurrent}`
 		}
 
 		// order by
@@ -93,7 +91,7 @@ export async function getLinkItems(queryData: TokenApiQueryData) {
 		const orderBy = propLinkItemsSource.exprSort ? propLinkItemsSource.exprSort : sort ? sort : ''
 
 		// expr
-		let expr = `SELECT ${propLinkItemsSource.table.object} {${props}}`
+		let expr = `SELECT ${propLinkItemsSource.table.object} ${propLinkItemsSource.exprProps}`
 		if (filter) expr += ` FILTER ${filter}`
 		if (orderBy) expr += ` ORDER BY ${orderBy}`
 		const rawItems = await exeQueryMultiData(
@@ -440,6 +438,7 @@ export async function getRawDataObj(
 	} else if (Object.hasOwn(dataObjSource.sources, 'dataObjName')) {
 		dbDataObj = await getDataObjByName(new TokenApiId(dataObjSource.sources.dataObjName))
 	}
+	const dataObjName = dbDataObj.name
 	rawDataObj = new RawDataObj(dbDataObj)
 	rawDataObj = await getRawDataObjDynamic(
 		rawDataObj.processType,

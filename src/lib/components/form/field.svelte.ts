@@ -42,7 +42,7 @@ export class Field {
 	iconProps?: IconProps
 	isParmValue: boolean
 	itemChanges: FieldItemChange[] = []
-	linkItemsSource?: PropLinkItems
+	linkItems?: PropLinkItems
 	constructor(props: PropsFieldCreate) {
 		const clazz = `Field: ${props.propRaw.propName}`
 
@@ -71,7 +71,7 @@ export class Field {
 			FieldElement
 		)
 		this.isParmValue = booleanOrDefault(props.propRaw.isParmValue, false)
-		this.linkItemsSource = classOptional(PropLinkItems, props.propRaw.linkItemsSource)
+		this.linkItems = classOptional(PropLinkItems, props.propRaw.linkItemsSource)
 	}
 	getBackgroundColor(fieldAccess: FieldAccess) {
 		return fieldAccess === FieldAccess.required

@@ -167,12 +167,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		owner: 'sys_system_old',
 		table: 'SysColumn'
 	})
-	init.addTrans('sysDataObjFieldListItems', {
-		props: [[0, 'name', 'Name', '.action.name', true, 0]],
-		name: 'il_sys_data_obj_action_order_name',
-		owner: 'sys_system_old',
-		table: 'SysDataObjAction'
-	})
+
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		name: 'il_sys_data_obj_action_group_order_name',
@@ -322,6 +317,13 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		name: 'il_sys_user_by_tag_type',
 		owner: 'sys_system_old',
 		table: 'SysUser'
+	})
+
+	init.addTrans('sysDataObjFieldListItems', {
+		props: [[0, 'name', 'Name', '.name', true, 0]],
+		name: 'il_sys_user_action_order_name',
+		owner: 'sys_system_old',
+		table: 'SysUserAction'
 	})
 
 	init.addTrans('sysDataObjFieldListItems', {

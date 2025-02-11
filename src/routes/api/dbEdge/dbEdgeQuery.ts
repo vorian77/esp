@@ -275,32 +275,13 @@ export class Query {
 
 		function processPropsSelectItem(prop: RawDataObjPropDB, query: Query) {
 			const propChildTableTraversal = prop.childTableTraversal
-			const propDisplay = prop?.link?.propDisplay ? prop.link.propDisplay : ''
 			const indexTable = nbrOrDefault(prop.indexTable, -1)
 			let propValue = ''
 
-			let linkProp = {}
-			let linkValue = ''
-
-			if (prop.codeDataType === PropDataType.link) {
-				linkProp = {
-					prop: prop.propNameRaw,
-					propChildTableTraversal,
-					propDisplay,
-					exprCustom: prop.exprCustom
-				}
-				// propValue = `.${propChildTableTraversal} { id, display := .${propDisplay} }`
-
-				if (prop.exprCustom) {
-					propValue = prop.exprCustom + '.' + propDisplay
-				} else {
-					propValue = '.' + propChildTableTraversal
-					if (propDisplay) {
-						propValue += '.' + propDisplay
-					} else {
-						propValue += '.id'
-					}
-				}
+			if (prop.linkItemsSource) {
+				propValue = `.${propChildTableTraversal} ${prop.linkItemsSource.exprProps}`
+			} else if (prop.link) {
+				propValue = `.${propChildTableTraversal} ${prop.link.exprProps}`
 			} else if (prop.exprCustom) {
 				propValue = prop.exprCustom
 			} else if (indexTable > 0) {
@@ -311,14 +292,7 @@ export class Query {
 			}
 
 			propValue = propValue ? ` := ${propValue}` : ''
-			const item = prop.propName + propValue
-			if (Object.keys(linkProp).length > 0) {
-				linkProp.item = item
-				linkProp.linkValue = linkValue
-				debug('processPropsSelectItem', 'linkProp', linkProp)
-			}
-
-			return item
+			return prop.propName + propValue
 		}
 	}
 
@@ -328,20 +302,15 @@ export class Query {
 		let properties = ''
 
 		props.forEach((prop) => {
-			let expr = prop.exprPreset ? prop.exprPreset : ''
-			if (expr && prop.link) {
-				expr += `.${prop.link.propDisplay}`
+			let expr = strRequired(prop.exprPreset, clazz, 'exprPreset')
+
+			if (prop.linkItemsSource) {
+				expr = `${expr} ${prop.linkItemsSource.exprProps}`
+			} else if (prop.link) {
+				expr = `${expr} ${prop.link.exprProps}`
 			}
 
-			let value = ''
-			if (expr) {
-				value = expr
-			} else if (prop.linkItemsSource) {
-				value = '<uuid>{}'
-			}
-			if (value) {
-				properties = this.addItemComma(properties, `${prop.propName} := ${value}`)
-			}
+			properties = this.addItemComma(properties, `${prop.propName} := ${expr}`)
 		})
 
 		if (!properties) properties = `dummy:= <str>{}`

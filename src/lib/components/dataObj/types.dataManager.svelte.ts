@@ -9,7 +9,7 @@ import {
 } from '$lib/components/dataObj/types.dataObj.svelte'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
 import { PropDataType, ValidityError, valueHasChanged } from '$utils/types'
-import { Field, FieldAccess, FieldClassType } from '$comps/form/field.svelte'
+import { Field, FieldAccess, FieldClassType, FieldElement } from '$comps/form/field.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/dataObj/types.dataManager.svelte'
@@ -271,8 +271,8 @@ export class DataManagerNode {
 			}
 
 			if (fieldIndex > -1) {
-				if (dataObj.fields[fieldIndex].linkItemsSource) {
-					dataObj.fields[fieldIndex].linkItemsSource.setRawItems(value)
+				if (dataObj.fields[fieldIndex].linkItems) {
+					dataObj.fields[fieldIndex].linkItems.setRawItems(value)
 				}
 			}
 		})
@@ -285,10 +285,35 @@ export class DataManagerNode {
 		})
 
 		let recordsClone: DataRecord[] = []
+		const linkFieldIElements = [
+			FieldElement.checkbox,
+			FieldElement.chips,
+			FieldElement.radio,
+			FieldElement.select
+		]
 		// const parmValueFields: FieldParm[] = dataObj.fields.filter((f) => f.isParmValue)
+		const linkFields = dataObj.fields.filter((f) => f.colDO.link)
+		const links = linkFields.map((f) => {
+			return { propName: f.colDO.propName, fieldElement: f.fieldElement, link: f.colDO.link }
+		})
+
 		dataObj.data.rowsRetrieved.getRows().forEach((dataRow, rowIdx) => {
 			if (dataRow.status !== DataRecordStatus.delete) {
-				const record = dataRow.record
+				let record = dataRow.record
+
+				// set link items
+				linkFields.forEach((f) => {
+					const value = record[f.colDO.propName]
+					if (Object.hasOwn(value, 'id') && Object.hasOwn(value, 'display')) {
+						if (linkFieldIElements.includes(f.fieldElement)) {
+							f.linkItems?.setRawItems([value])
+							record[f.colDO.propName] = record[f.colDO.propName].id
+						} else {
+							record[f.colDO.propName] = record[f.colDO.propName].display
+						}
+					}
+				})
+				// console.log('types.dataManager.initDataObj.record', { record, links, linkFields })
 				// init parmValue
 				// parmValueFields.forEach((field) => {
 				// 	const parmFieldName = field.parmFields[rowIdx].colDO.propName
@@ -298,6 +323,7 @@ export class DataManagerNode {
 				// 		// delete record.parmValue
 				// 	}
 				// })
+				// console.log('types.dataManager.initDataObj.record.1', record)
 				recordsClone.push({ ...record })
 			}
 		})

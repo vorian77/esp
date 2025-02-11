@@ -31,7 +31,8 @@ function initCodeAction(init: InitDb) {
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCodeType'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -259,7 +260,7 @@ function initDataObjActionGroup(init: InitDb) {
 				orderDefine: 40,
 				fieldEmbedListConfig: 'flec_data_obj_action',
 				indexTable: 0,
-				linkColumns: ['name'],
+				linkColumns: ['action', 'name'],
 				linkTable: 'SysDataObjAction'
 			},
 
@@ -475,7 +476,7 @@ function initUserAction(init: InitDb) {
 				orderDefine: 150,
 				fieldEmbedListConfig: 'flec_user_action_confirm',
 				indexTable: 0,
-				linkColumns: ['name'],
+				linkColumns: ['codeConfirmType', 'name'],
 				linkTable: 'SysUserActionConfirm'
 			},
 			{

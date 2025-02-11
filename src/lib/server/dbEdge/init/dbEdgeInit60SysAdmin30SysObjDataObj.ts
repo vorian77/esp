@@ -1219,7 +1219,7 @@ function initDataObjColumn(init: InitDb) {
 				fieldEmbedListConfig: 'flec_data_obj_data_obj_column_item_value',
 				indexTable: 0,
 				isDisplayable: true,
-				linkColumns: ['name'],
+				linkColumns: ['display'],
 				linkTable: 'SysDataObjColumnItemValue',
 				orderDefine: 670,
 				orderDisplay: 670
@@ -1312,7 +1312,7 @@ function initDataObjColumn(init: InitDb) {
 				fieldListItems: 'il_sys_data_obj_columns_order_name',
 				indexTable: 0,
 				isDisplayable: true,
-				linkColumns: ['name'],
+				linkColumns: ['column', 'name'],
 				linkTable: 'SysDataObjColumn',
 				orderDisplay: 750,
 				orderDefine: 750
@@ -1351,7 +1351,7 @@ function initDataObjColumn(init: InitDb) {
 				orderDefine: 910,
 				fieldEmbedListConfig: 'flec_data_obj_column_link',
 				indexTable: 0,
-				linkColumns: ['name'],
+				linkColumns: ['column', 'name'],
 				linkTable: 'SysDataObjColumnLink'
 			},
 			{

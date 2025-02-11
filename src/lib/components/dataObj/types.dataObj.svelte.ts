@@ -785,6 +785,7 @@ export enum ParmsValuesType {
 	listIdsSelected = 'listIdsSelected',
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listSortModel = 'listSortModel',
+	propLinkItemsIdCurrent = 'propLinkItemsIdCurrent',
 	propLinkItemsSourceRaw = 'propLinkItemsSource',
 	rowData = 'rowData',
 	selectLabel = 'selectLabel'

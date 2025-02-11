@@ -574,7 +574,7 @@ function initCsf(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['person', 'fullName'],
 				linkTable: 'CmClient'
 			},
 			{
@@ -835,7 +835,7 @@ function initCsfCohort(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['serviceFlow', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1044,7 +1044,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['cohort', 'name'],
 				linkTable: 'CmCsfCohort'
 			},
 			{
@@ -1261,7 +1261,7 @@ function initCsfNote(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['serviceFlow', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1465,7 +1465,7 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['serviceFlow', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1836,7 +1836,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['serviceFlow', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -2115,7 +2115,7 @@ function initCsfDocument(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['serviceFlow', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{

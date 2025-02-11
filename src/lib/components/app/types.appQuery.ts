@@ -31,7 +31,11 @@ function getTable(dataObj: DataObj | undefined) {
 	return dataObj ? dataObj?.rootTable?.name : undefined
 }
 
-function queryDataPre(sm: State, data: DataObjData | undefined, queryType: TokenApiQueryType) {
+export function queryDataPre(
+	sm: State,
+	data: DataObjData | undefined,
+	queryType: TokenApiQueryType
+) {
 	const clazz = `${FILENAME}.queryDataPre`
 
 	// dataTree

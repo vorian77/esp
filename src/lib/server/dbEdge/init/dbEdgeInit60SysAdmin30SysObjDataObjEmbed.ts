@@ -40,7 +40,8 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysDataObjActionGroup'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -49,7 +50,8 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysDataObj'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -58,7 +60,8 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysDataObj'
 			}
 		]
 	})
@@ -280,7 +283,8 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysDataObj'
 			}
 		]
 	})
@@ -455,7 +459,8 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysDataObjActionGroup'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -472,7 +477,8 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysDataObj'
 			}
 		]
 	})

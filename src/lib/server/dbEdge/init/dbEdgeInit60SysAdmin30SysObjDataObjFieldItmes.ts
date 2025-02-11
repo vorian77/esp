@@ -37,7 +37,8 @@ function initDataObjFieldListItems(init: InitDb) {
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysTable'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -78,7 +79,8 @@ function initDataObjFieldListItems(init: InitDb) {
 				orderDisplay: 90,
 				orderDefine: 90,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -87,7 +89,8 @@ function initDataObjFieldListItems(init: InitDb) {
 				orderDisplay: 100,
 				orderDefine: 100,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			}
 		]
 	})
@@ -175,7 +178,7 @@ function initDataObjFieldListItems(init: InitDb) {
 				orderDefine: 100,
 				fieldEmbedListConfig: 'flec_data_obj_field_list_items_prop',
 				indexTable: 0,
-				linkColumns: ['name'],
+				linkColumns: ['key'],
 				linkTable: 'SysDataObjFieldListItemsProp'
 			},
 			{

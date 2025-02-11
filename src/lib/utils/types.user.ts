@@ -15,7 +15,6 @@ import {
 	valueOrDefault
 } from '$utils/utils'
 import { DataObj, ParmsValuesType } from '$utils/types'
-import { queryTypeDataObj } from '$comps/app/types.appQuery'
 import {
 	TokenApiQueryType,
 	TokenAppDo,

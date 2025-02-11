@@ -50,9 +50,9 @@
 		})
 		return f
 	}) as FieldChips
-	let linkItemsSource = $derived(field.linkItemsSource.getGridParms())
+	let linkItemsSource = $derived(field.linkItems.getGridParms())
 	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
-	let displayValue: string = $derived(field.linkItemsSource.getDisplayValueList(fieldValue))
+	let displayValue: string = $derived(field.linkItems.getDisplayValueList(fieldValue))
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
 	async function onClick(event: Event) {

@@ -1,3 +1,4 @@
+import { State } from '$comps/app/types.appState.svelte'
 import {
 	arrayOfClass,
 	booleanOrDefault,
@@ -42,6 +43,7 @@ import {
 	UserActionShow,
 	UserActionTrigger
 } from '$comps/other/types.userAction.svelte'
+import { queryDataPre } from '$comps/app/types.appQuery'
 import { DataObjActionQuery } from '$comps/app/types.appQuery'
 import {
 	Field,
@@ -52,7 +54,7 @@ import {
 } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { TokenApiQueryData } from '$utils/types.token'
+import { TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
@@ -736,16 +738,23 @@ export enum PropDataType {
 }
 
 export class PropLink {
-	propDisplay?: string
+	exprProps: string
 	table?: DBTable
 	constructor(obj: any) {
 		const clazz = 'PropLink'
 		obj = valueOrDefault(obj, {})
-		this.propDisplay =
-			Array.isArray(obj._columns) && obj._columns.length > 0
-				? obj._columns.map((col: any) => col._name).join('.')
-				: ''
-		this.table = obj._table ? new DBTable(obj._table) : undefined
+		const cols = getArray(obj._columns)
+		const display = cols.reduce((acc: string, col: any) => {
+			if (acc) acc += '.'
+			acc += col._name
+			return acc
+		}, '')
+		this.exprProps = `{ id, display := .${display} }`
+		// this.table = new DBTable(required(obj._table, clazz, 'table'))
+		this.table = classOptional(DBTable, obj._table)
+		if (!this.table) {
+			debug('PropLink.no table', 'constructor', { obj })
+		}
 	}
 }
 
@@ -757,17 +766,8 @@ export class PropLinkItems {
 		const clazz = 'PropLinkItems'
 		this.source = source
 	}
-	formatDataFieldColumnItem(idsCurrent: string | string[]) {
-		let fieldItems: FieldColumnItem[] = []
-		const ids = getArray(idsCurrent)
-		this.rawItems.forEach((item) => {
-			const fi = new FieldColumnItem(item._id, this.getDisplayValueItem(item))
-			fieldItems.push(fi)
-		})
-		return fieldItems
-	}
 
-	getDisplayValueItem(record: DataRecord) {
+	formatDataItemDisplay(record: DataRecord) {
 		let value = ''
 		const displayIdSeparator = this.source.displayIdSeparator
 		this.source.props.forEach((prop) => {
@@ -779,13 +779,22 @@ export class PropLinkItems {
 		return value
 	}
 
+	getDataItemsFormatted() {
+		let fieldItems: FieldColumnItem[] = []
+		this.rawItems.forEach((item) => {
+			const fi = new FieldColumnItem(item.id, this.formatDataItemDisplay(item))
+			fieldItems.push(fi)
+		})
+		return fieldItems
+	}
+
 	getDisplayValueList(idsCurrent: string | string[]) {
 		const ids = getArray(idsCurrent)
 		let values = ''
 		this.rawItems.forEach((item) => {
 			if (ids.includes(item.data)) {
 				if (values) values += ', '
-				values += this.getDisplayValueItem(item)
+				values += this.formatDataItemDisplay(item)
 			}
 		})
 		return values
@@ -836,17 +845,19 @@ export class PropLinkItems {
 		return data
 	}
 
-	async retrieve(user: User) {
+	async retrieve(sm: State, fieldValue: string | undefined) {
 		if (!this.isRetrieved) {
 			this.isRetrieved = true
 
 			// parms
-			const dataTab = new DataObjData()
+			let { dataTab, dataTree } = queryDataPre(sm, new DataObjData(), TokenApiQueryType.retrieve)
+			dataTab.parms.valueSet(ParmsValuesType.propLinkItemsIdCurrent, fieldValue)
 			dataTab.parms.valueSet(ParmsValuesType.propLinkItemsSourceRaw, this.source.raw)
 
+			// retrieve
 			const result: ResponseBody = await apiFetch(
 				ApiFunction.dbEdgeGetLinkItems,
-				new TokenApiQueryData({ dataTab, user })
+				new TokenApiQueryData({ dataTab, tree: dataTree, user: sm.user })
 			)
 			if (result.success) {
 				this.setRawItems(
@@ -870,6 +881,7 @@ export class PropLinkItems {
 export class PropLinkItemsSource {
 	displayIdSeparator: string
 	exprFilter: string
+	exprProps: string
 	exprSort: string
 	exprWith?: string
 	name: string
@@ -889,6 +901,18 @@ export class PropLinkItemsSource {
 		this.props = arrayOfClass(PropLinkItemsSourceProp, obj._props)
 		this.raw = obj
 		this.table = classOptional(DBTable, obj._table)
+
+		let props = ''
+		let display = ''
+		this.props.forEach((p: PropLinkItemsSourceProp) => {
+			if (display) display += '++' + this.displayIdSeparator
+			display += p.expr
+
+			if (props) props += ', '
+			props += `${p.key} := ${p.expr}`
+		})
+
+		this.exprProps = `{ id, display := ${display}, ${props} }`
 	}
 	getSortProps() {
 		return this.props

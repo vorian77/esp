@@ -30,7 +30,8 @@ function initCodeType(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCodeType'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -311,7 +312,8 @@ function initCodeTypeCode(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -628,7 +630,8 @@ function initCode(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -638,7 +641,8 @@ function initCode(init: InitDb) {
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCodeType'
 			},
 			{
 				codeAccess: 'readOnly',

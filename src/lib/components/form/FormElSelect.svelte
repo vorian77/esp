@@ -16,9 +16,7 @@
 	let dataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let field = $derived(parms.field) as FieldSelect
 	let fieldId = $derived('field-input-select-' + field.colDO.orderDefine)
-	let fieldItems = $derived(
-		field.linkItemsSource ? field.linkItemsSource.formatDataFieldColumnItem(fieldValue) : []
-	)
+	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsFormatted() : [])
 	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
 
 	let classProps = $derived(
@@ -36,7 +34,7 @@
 	}
 
 	async function onClick(event: Event) {
-		if (field.linkItemsSource) field.linkItemsSource.retrieve(sm.user)
+		if (field.linkItems) field.linkItems.retrieve(sm, fieldValue)
 	}
 </script>
 
@@ -50,8 +48,8 @@
 		onclick={onClick}
 	>
 		<option value={null} class="">Select an option...</option>
-		{#if fieldItems}
-			{#each fieldItems as { id, display }, index (id)}
+		{#if dataItems}
+			{#each dataItems as { id, display }, index (id)}
 				<option value={id} selected={id === fieldValue}>
 					{display}
 				</option>

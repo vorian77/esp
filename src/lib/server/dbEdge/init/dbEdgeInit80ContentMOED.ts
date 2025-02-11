@@ -631,7 +631,7 @@ function initCsf(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['person', 'fullName'],
 				linkTable: 'CmClient'
 			},
 			{
@@ -959,7 +959,7 @@ function initCsfMsg(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['serviceFlow', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1210,7 +1210,7 @@ function initCsfNote(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['serviceFlow', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1418,7 +1418,7 @@ function initCsfDocument(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['serviceFlow', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -2023,7 +2023,7 @@ function initTaskSsrDoc(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['serviceFlow', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -2213,6 +2213,7 @@ function initTaskSsrMsg(init: InitDb) {
 			// 	orderDefine: 20,
 			// 	indexTable: 0,
 			// 	isDisplayable: false,
+			// linkColumns: ['serviceFlow', 'name'],
 			// 	linkTable: 'CmClientServiceFlow'
 			// },
 			{

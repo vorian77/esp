@@ -253,7 +253,6 @@ function initUserType(init: InitDb) {
 				orderDefine: 90,
 				fieldEmbedListSelect: 'fels_sys_admin_sys_user_type_resource',
 				indexTable: 0,
-				linkColumns: ['name'],
 				linkTable: 'SysUserTypeResource'
 			},
 

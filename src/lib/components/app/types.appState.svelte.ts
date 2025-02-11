@@ -320,7 +320,8 @@ export class State {
 				isDataObj: true,
 				isRowStatus: true
 			},
-			parmsState: new ParmsValues()
+			parmsState: new ParmsValues(),
+			stateRoot: this
 		})
 
 		stateModal.app.virtualModalLevelAdd(dataObjEmbed)
@@ -382,7 +383,8 @@ export class State {
 			embedParentId: this.dm.getRecordId(fieldEmbed.dataObjIdParent, 0),
 			embedType: fieldEmbed.embedType,
 			navHeader: { isDataObj: true },
-			parmsState
+			parmsState,
+			stateRoot: this
 		})
 		await stateModal.triggerAction(
 			new TokenAppStateTriggerAction({

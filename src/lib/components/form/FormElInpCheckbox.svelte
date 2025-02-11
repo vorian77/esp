@@ -15,9 +15,7 @@
 	let fieldValue = $state(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
-	let dataItems = $derived(
-		field.linkItemsSource ? field.linkItemsSource.formatDataFieldColumnItem(fieldValue) : []
-	)
+	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsFormatted() : [])
 
 	let classFieldSet = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.list

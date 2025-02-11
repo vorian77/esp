@@ -144,8 +144,8 @@ function getSelectDisplayValue(paramsData: DataRecord, parmsValue: any, parmFiel
 	if (parmValue) {
 		const parmFieldName = getRecordValue(paramsData, 'name')
 		const field = parmFields.find((f: Field) => f.colDO.propNameRaw === parmFieldName)
-		if (field && field.linkItemsSource) {
-			displayValue = field.linkItemsSource.getDisplayValueList(parmsValue)
+		if (field && field.linkItems) {
+			displayValue = field.linkItems.getDisplayValueList(parmsValue)
 		}
 	}
 	return displayValue

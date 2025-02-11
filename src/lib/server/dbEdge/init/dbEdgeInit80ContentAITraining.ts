@@ -930,7 +930,7 @@ function initCohortAttdSheet(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
+				linkColumns: ['cohort', 'name'],
 				linkTable: 'CmCsfCohort'
 			},
 			{
@@ -1667,7 +1667,7 @@ function initPartner(init: InitDb) {
 				fieldEmbedListConfig: 'flec_cm_partner_contact',
 				indexTable: 0,
 				isDisplayable: true,
-				linkColumns: ['name'],
+				linkColumns: ['fullName'],
 				linkTable: 'SysPerson',
 				orderDefine: 190,
 				orderDisplay: 190

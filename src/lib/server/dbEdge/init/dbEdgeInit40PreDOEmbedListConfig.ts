@@ -43,11 +43,30 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysUserAction'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeColor',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'isListRowAction',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
 			},
 			{
 				columnName: 'orderDefine',
-				orderDefine: 30,
+				orderDefine: 50,
 				indexTable: 0,
 				isDisplayable: false
 			},
@@ -114,9 +133,9 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_action_order_name',
+				fieldListItems: 'il_sys_user_action_order_name',
 				linkColumns: ['name'],
-				linkTable: 'SysDataObjAction'
+				linkTable: 'SysUserAction'
 			},
 			{
 				codeFieldElement: 'select',
@@ -779,7 +798,8 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysColumn'
 			},
 			{
 				columnName: 'orderDefine',
@@ -1116,7 +1136,8 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysTable'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1143,7 +1164,8 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 				orderDefine: 60,
 				headerAlt: 'Parent Table Column',
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysColumn'
 			},
 			{
 				codeAccess: 'readOnly',

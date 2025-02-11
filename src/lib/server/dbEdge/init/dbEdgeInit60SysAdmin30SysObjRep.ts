@@ -292,7 +292,8 @@ function initAnalyticParm(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -302,7 +303,8 @@ function initAnalyticParm(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -583,7 +585,8 @@ function initAnalyticStatus(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1034,7 +1037,8 @@ function initRepEl(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1044,7 +1048,8 @@ function initRepEl(init: InitDb) {
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1081,7 +1086,8 @@ function initRepEl(init: InitDb) {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1090,7 +1096,8 @@ function initRepEl(init: InitDb) {
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1317,7 +1324,7 @@ function initRepEl(init: InitDb) {
 				orderDefine: 195,
 				fieldEmbedListConfig: 'flec_data_obj_column_link',
 				indexTable: 0,
-				linkColumns: ['name'],
+				linkColumns: ['column', 'name'],
 				linkTable: 'SysDataObjColumnLink'
 			},
 			{
@@ -1587,7 +1594,8 @@ function initRepParm(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1596,7 +1604,8 @@ function initRepParm(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1928,7 +1937,8 @@ function initRepUser(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				linkColumns: ['person', 'fullName']
+				linkColumns: ['person', 'fullName'],
+				linkTable: 'SysUser'
 			},
 			{
 				codeAccess: 'readOnly',
