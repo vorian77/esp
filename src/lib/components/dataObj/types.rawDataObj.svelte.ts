@@ -779,10 +779,19 @@ export class PropLinkItems {
 		return value
 	}
 
-	getDataItemsFormatted() {
+	getDataIs() {
+		return this.rawItems.map((item) => item.id)
+	}
+
+	getDataItemsFormatted(fieldValue: DataRecord | DataRecord[]) {
+		const fieldValues: DataRecord[] = getArray(fieldValue)
 		let fieldItems: FieldColumnItem[] = []
 		this.rawItems.forEach((item) => {
-			const fi = new FieldColumnItem(item.id, this.formatDataItemDisplay(item))
+			const fi = new FieldColumnItem(
+				item.id,
+				this.formatDataItemDisplay(item),
+				fieldValues.includes(item.id)
+			)
 			fieldItems.push(fi)
 		})
 		return fieldItems
@@ -792,7 +801,7 @@ export class PropLinkItems {
 		const ids = getArray(idsCurrent)
 		let values = ''
 		this.rawItems.forEach((item) => {
-			if (ids.includes(item.data)) {
+			if (ids.includes(item.id)) {
 				if (values) values += ', '
 				values += this.formatDataItemDisplay(item)
 			}
@@ -803,7 +812,7 @@ export class PropLinkItems {
 	getGridParms() {
 		let columnDefs: ColumnsDefsSelect = [
 			{
-				field: 'data',
+				field: 'id',
 				headerName: 'ID',
 				hide: true
 			}
@@ -831,7 +840,7 @@ export class PropLinkItems {
 
 	getRowData() {
 		return this.rawItems.map((item) => {
-			let row: DataRecord = { data: item.data }
+			let row: DataRecord = { id: item.id }
 			this.source.props.forEach((prop) => {
 				row[prop.key] = getRecordValue(item, prop.key)
 			})
@@ -840,7 +849,7 @@ export class PropLinkItems {
 	}
 
 	getValuesSelect() {
-		let data = this.rawItems.map((item) => item.data)
+		let data = this.rawItems.map((item) => item.id)
 		data.unshift('')
 		return data
 	}

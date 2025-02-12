@@ -4,6 +4,7 @@
 	import { FieldRadio } from '$comps/form/fieldRadio'
 	import { FieldAccess, FieldAlignment } from '$comps/form/field.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
+	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElInpRadio.svelte'
 
@@ -15,7 +16,7 @@
 	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
-	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsFormatted() : [])
+	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsFormatted(fieldValue) : [])
 
 	let classPropsLabel = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
@@ -45,6 +46,8 @@
 		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
 	}
 </script>
+
+<!-- <DataViewer header="dataItems" data={dataItems} /> -->
 
 <FormLabel {parms} />
 

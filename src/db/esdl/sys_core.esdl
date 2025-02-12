@@ -1,15 +1,7 @@
 module sys_core {
   type ObjRoot {
     note: str;
-  }
-
-  type ObjRootCore extending sys_core::ObjRoot {
-    codeIcon: sys_core::SysCode;
-    codeObjType: sys_core::SysCode;
-    header: str;
-    required name: str;
-    orderDefine: default::nonNegative;
-    
+     
     # test fields
     testBool: bool;
     multi testCodeMulti: sys_core::SysCode;
@@ -19,6 +11,14 @@ module sys_core {
     testNumberFloat: float64;
     testNumberInt: int64;
     testText: str;
+  }
+
+  type ObjRootCore extending sys_core::ObjRoot {
+    codeIcon: sys_core::SysCode;
+    codeObjType: sys_core::SysCode;
+    header: str;
+    required name: str;
+    orderDefine: default::nonNegative;
   }
 
   type SysObj extending sys_core::ObjRootCore, sys_user::Mgmt {

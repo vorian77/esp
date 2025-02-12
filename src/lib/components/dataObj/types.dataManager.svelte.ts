@@ -259,24 +259,6 @@ export class DataManagerNode {
 					: DataObjSaveMode.update
 				: DataObjSaveMode.any
 
-		// set data items
-		Object.entries(dataObj.data.items).forEach(([key, value]) => {
-			const fieldKey = key.replace('_items_', '')
-			const fieldIndex = dataObj.fields.findIndex((f) => f.colDO.propName === fieldKey)
-
-			// temp
-			const currValue = dataObj.data.rowsRetrieved.dataRows[0].record[fieldKey]
-			if (currValue) {
-				value = value.filter((v: any) => v.data === currValue)
-			}
-
-			if (fieldIndex > -1) {
-				if (dataObj.fields[fieldIndex].linkItems) {
-					dataObj.fields[fieldIndex].linkItems.setRawItems(value)
-				}
-			}
-		})
-
 		// update row status
 		dataObj.data.rowsRetrieved.getRows().forEach((dataRow) => {
 			if (dataRow.status === DataRecordStatus.inserted) {
@@ -285,17 +267,14 @@ export class DataManagerNode {
 		})
 
 		let recordsClone: DataRecord[] = []
-		const linkFieldIElements = [
+		const linkFieldIElementsListCurrent = [FieldElement.select]
+		const linkFieldIElementsListFull = [
 			FieldElement.checkbox,
 			FieldElement.chips,
-			FieldElement.radio,
-			FieldElement.select
+			FieldElement.radio
 		]
-		// const parmValueFields: FieldParm[] = dataObj.fields.filter((f) => f.isParmValue)
+
 		const linkFields = dataObj.fields.filter((f) => f.colDO.link)
-		const links = linkFields.map((f) => {
-			return { propName: f.colDO.propName, fieldElement: f.fieldElement, link: f.colDO.link }
-		})
 
 		dataObj.data.rowsRetrieved.getRows().forEach((dataRow, rowIdx) => {
 			if (dataRow.status !== DataRecordStatus.delete) {
@@ -305,25 +284,16 @@ export class DataManagerNode {
 				linkFields.forEach((f) => {
 					const value = record[f.colDO.propName]
 					if (Object.hasOwn(value, 'id') && Object.hasOwn(value, 'display')) {
-						if (linkFieldIElements.includes(f.fieldElement)) {
+						if (linkFieldIElementsListCurrent.includes(f.fieldElement)) {
 							f.linkItems?.setRawItems([value])
+							record[f.colDO.propName] = record[f.colDO.propName].id
+						} else if (linkFieldIElementsListFull.includes(f.fieldElement)) {
 							record[f.colDO.propName] = record[f.colDO.propName].id
 						} else {
 							record[f.colDO.propName] = record[f.colDO.propName].display
 						}
 					}
 				})
-				// console.log('types.dataManager.initDataObj.record', { record, links, linkFields })
-				// init parmValue
-				// parmValueFields.forEach((field) => {
-				// 	const parmFieldName = field.parmFields[rowIdx].colDO.propName
-				// 	if (!Object.hasOwn(record, parmFieldName)) {
-				// 		// <todo> temp parmValue
-				// 		// record[parmFieldName] = record.parmValue
-				// 		// delete record.parmValue
-				// 	}
-				// })
-				// console.log('types.dataManager.initDataObj.record.1', record)
 				recordsClone.push({ ...record })
 			}
 		})

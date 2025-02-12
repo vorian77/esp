@@ -17,8 +17,7 @@ function initStudent(init: InitDb) {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter:
-			'.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).userTypes.owner',
+		exprFilter: `.owner.name = 'sys_ai_old'`,
 		header: 'Students',
 		name: 'data_obj_cm_student_list',
 		owner: 'sys_ai_old',
@@ -199,7 +198,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 59,
 				orderDefine: 59,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_highest_education',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -212,7 +211,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_person_gender',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -225,7 +224,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_person_race',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -238,7 +237,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_person_ethnicity',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -348,7 +347,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 170,
 				orderDefine: 170,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_state',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -602,7 +601,7 @@ function initCsf(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_service_flow_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -655,7 +654,7 @@ function initCsf(init: InitDb) {
 				orderDisplay: 150,
 				orderDefine: 150,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_service_flow_outcome',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -863,7 +862,7 @@ function initCsfCohort(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_service_flow_status',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1287,7 +1286,7 @@ function initCsfNote(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_case_note_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1513,7 +1512,7 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDisplay: 75,
 				orderDefine: 75,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_job_retention',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1594,7 +1593,7 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDisplay: 160,
 				orderDefine: 160,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_job_wage_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1614,7 +1613,7 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDisplay: 180,
 				orderDefine: 180,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_job_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1626,7 +1625,7 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDisplay: 190,
 				orderDefine: 190,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_job_training_related',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1869,7 +1868,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_college_status',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -2149,7 +2148,7 @@ function initCsfDocument(init: InitDb) {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_doc_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'

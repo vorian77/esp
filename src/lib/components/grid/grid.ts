@@ -25,6 +25,7 @@ import {
 	ParmsValuesType,
 	ParmsUser,
 	ParmsUserDataType,
+	PropLinkItems,
 	required,
 	strRequired,
 	valueOrDefault
@@ -68,22 +69,22 @@ export const columnTypes = {
 		valueGetter: (params: ValueGetterParams) => {
 			const fieldName = required(params.colDef.field, FILENAME, 'params.colDef.field')
 			const currentValue = params.data[fieldName]
-			const linkItemsSource = params.colDef.context.linkItemsSource
-			return linkItemsSource.getDisplayValueList(currentValue)
+			const linkItems: PropLinkItems = params.colDef.context.linkItems
+			return linkItems.getDisplayValueList(currentValue)
 		}
 	},
 	ctSelectSingle: {
 		cellEditor: 'agRichSelectCellEditor',
 		cellEditorParams: {
 			values: (params: ValueGetterParams) => {
-				const linkItemsSource = params.colDef.context.linkItemsSource
-				return linkItemsSource.getValuesSelect()
+				const linkItems: PropLinkItems = params.colDef.context.linkItems
+				return linkItems.getValuesSelect()
 			}
 		},
 		keyCreator: (params: any) => params.value.data,
 		valueFormatter: (params: ValueFormatterParams) => {
-			const linkItemsSource = params.colDef.context.linkItemsSource
-			return linkItemsSource.getDisplayValueList(params.value)
+			const linkItems: PropLinkItems = params.colDef.context.linkItems
+			return linkItems.getDisplayValueList(params.value)
 		}
 	},
 

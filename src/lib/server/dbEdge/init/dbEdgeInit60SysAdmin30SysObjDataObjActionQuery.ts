@@ -68,7 +68,7 @@ function initDataObjActionsQuery(init: InitDb) {
 				orderDefine: 30,
 				fieldEmbedListConfig: 'flec_data_obj_action_query_parm',
 				indexTable: 0,
-				linkColumns: ['name'],
+				linkColumns: ['key'],
 				linkTable: 'SysDataObjActionQueryParm'
 			},
 			{

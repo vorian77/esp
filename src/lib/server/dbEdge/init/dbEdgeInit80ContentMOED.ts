@@ -3,7 +3,7 @@ import { moedDataApplicant } from '$utils/utils.randomDataGenerator'
 
 export function initContentMOEDStudent(init: InitDb) {
 	// staff
-	initStudent(init)
+	initApplicant(init)
 	initCsf(init)
 	initCsfMsg(init)
 	initCsfNote(init)
@@ -29,12 +29,12 @@ export function initContentMOEDStudent(init: InitDb) {
 	initReport(init)
 }
 
-function initStudent(init: InitDb) {
+function initApplicant(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: `.owner.id in <user,uuidlist,systemIds>`,
+		exprFilter: `.owner.name = 'sys_moed_old'`,
 		header: 'Applicants',
 		name: 'data_obj_moed_part_list',
 		owner: 'sys_moed_old',
@@ -233,7 +233,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 140,
 				orderDefine: 140,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_person_gender',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -247,13 +247,26 @@ function initStudent(init: InitDb) {
 				orderDisplay: 145
 			},
 			{
+				codeAccess: 'optional',
+				codeFieldElement: 'checkbox',
+				columnName: 'testCodeMulti',
+				isDisplayable: true,
+				orderDisplay: 147,
+				orderDefine: 147,
+				indexTable: 1,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItemsParmName: 'ct_sys_person_gender',
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
+			},
+			{
 				codeFieldElement: 'select',
 				columnName: 'codeRace',
 				isDisplayable: true,
 				orderDisplay: 150,
 				orderDefine: 150,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_person_race',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -266,7 +279,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 160,
 				orderDefine: 160,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_person_ethnicity',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -279,7 +292,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 170,
 				orderDefine: 170,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_person_disability_status',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -331,7 +344,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 240,
 				orderDefine: 240,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_state',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -659,7 +672,7 @@ function initCsf(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_service_flow_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -679,7 +692,7 @@ function initCsf(init: InitDb) {
 				orderDisplay: 65,
 				orderDefine: 65,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_service_flow_status',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -756,7 +769,7 @@ function initCsf(init: InitDb) {
 				orderDisplay: 150,
 				orderDefine: 150,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_service_flow_outcome',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1236,7 +1249,7 @@ function initCsfNote(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_case_note_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1761,7 +1774,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 280,
 				orderDefine: 280,
 				indexTable: 2,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_person_gender',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1781,7 +1794,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 300,
 				orderDefine: 300,
 				indexTable: 2,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_person_race',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1794,7 +1807,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 310,
 				orderDefine: 310,
 				indexTable: 2,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_person_ethnicity',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1807,7 +1820,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 320,
 				orderDefine: 320,
 				indexTable: 2,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_person_disability_status',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1844,7 +1857,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 360,
 				orderDefine: 360,
 				indexTable: 2,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_sys_state',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'

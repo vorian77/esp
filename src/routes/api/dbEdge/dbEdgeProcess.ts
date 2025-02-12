@@ -302,10 +302,6 @@ async function processDataObjExecute(scriptGroup: ScriptGroup, returnData: DataO
 		scriptData = script?.query?.fieldEmbed ? script.query.fieldEmbed.data : returnData
 		scriptData.parms.update(script.queryData.dataTab?.parms.valueGetAll())
 		switch (script.exePost) {
-			case ScriptExePost.dataItems:
-				scriptData.items = rawDataList.length > 0 ? rawDataList[0] : []
-				break
-
 			case ScriptExePost.formatData:
 				let dataRow: DataRow = new DataRow(DataRecordStatus.unknown, {})
 				if (script.query.processRow) formatData(scriptData, rawDataList, script.query.processRow)

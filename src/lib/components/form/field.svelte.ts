@@ -317,9 +317,11 @@ export class FieldColor {
 export class FieldColumnItem {
 	id: string
 	display: string
-	constructor(id: string, display: string) {
+	selected: boolean
+	constructor(id: string, display: string, selected: boolean = false) {
 		this.id = id
 		this.display = display
+		this.selected = selected
 	}
 }
 

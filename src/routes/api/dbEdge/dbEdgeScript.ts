@@ -527,7 +527,6 @@ export class ScriptItem {
 }
 
 export enum ScriptExePost {
-	dataItems = 'dataItems',
 	formatData = 'formatData',
 	none = 'none',
 	processRowSelectPreset = 'processRowSelectPreset'

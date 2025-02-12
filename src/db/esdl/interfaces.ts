@@ -292,13 +292,7 @@ export type SysPersonOld = $default.SysPersonOld;
 export namespace sys_core {
   export interface ObjRoot extends std.$Object {
     "note"?: string | null;
-  }
-  export interface ObjRootCore extends ObjRoot {
-    "codeObjType"?: SysCode | null;
-    "codeIcon"?: SysCode | null;
-    "orderDefine"?: number | null;
-    "header"?: string | null;
-    "name": string;
+    "testText"?: string | null;
     "testCodeMulti": SysCode[];
     "testCodeSingle"?: SysCode | null;
     "testBool"?: boolean | null;
@@ -306,7 +300,13 @@ export namespace sys_core {
     "testDateTime"?: edgedb.LocalDateTime | null;
     "testNumberFloat"?: number | null;
     "testNumberInt"?: number | null;
-    "testText"?: string | null;
+  }
+  export interface ObjRootCore extends ObjRoot {
+    "codeObjType"?: SysCode | null;
+    "codeIcon"?: SysCode | null;
+    "orderDefine"?: number | null;
+    "header"?: string | null;
+    "name": string;
   }
   export interface SysObj extends ObjRootCore, sys_user.Mgmt {
     "isGlobalResource"?: boolean | null;

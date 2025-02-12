@@ -30,7 +30,7 @@
 	import FormElSelect from '$comps/form/FormElSelect.svelte'
 	import FormElTextarea from '$comps/form/FormElTextarea.svelte'
 	import FormElToggle from '$comps/form/FormElToggle.svelte'
-	import { Field } from '$comps/form/field.svelte'
+	import { Field, FieldAccess } from '$comps/form/field.svelte'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import {
 		FieldCustomActionButton,
@@ -47,7 +47,7 @@
 	import { FieldChips } from '$comps/form/fieldChips'
 	import { FieldFile } from '$comps/form/fieldFile'
 	import { FieldInput } from '$comps/form/fieldInput'
-	// import { FieldParm } from '$comps/form/fieldParm'
+	import { FieldParm } from '$comps/form/fieldParm'
 	import { FieldRadio } from '$comps/form/fieldRadio'
 	import { FieldSelect } from '$comps/form/fieldSelect'
 	import { FieldTextarea } from '$comps/form/fieldTextarea'
@@ -92,19 +92,14 @@
 	})
 
 	let classProps = $derived(
-		parms.dataObj.raw.codeCardinality === DataObjCardinality.detail &&
-			parms.field.colDO.isDisplayable
-			? 'mb-4'
-			: ''
+		parms.dataObj.raw.codeCardinality === DataObjCardinality.detail ? 'mb-4' : ''
 	)
 </script>
 
 <!-- <p>field: {parms.field.colDO.label}</p> -->
 
 <div class={classProps}>
-	{#if Element && parms.field.colDO.isDisplayable}
-		<Element {parms} />
-	{/if}
+	<Element {parms} />
 </div>
 
 {#if fieldValidity}

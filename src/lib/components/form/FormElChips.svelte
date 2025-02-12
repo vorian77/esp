@@ -67,7 +67,7 @@
 					token: new TokenAppModalSelect({
 						columnDefs: linkItemsSource.columnDefs,
 						fModalClose,
-						gridColumnId: 'data',
+						gridColumnId: 'id',
 						isMultiSelect: field.colDO.colDB.isMultiSelect,
 						listIdsSelected: fieldValue,
 						rowData: linkItemsSource.rowData,
@@ -94,6 +94,7 @@
 	}
 </script>
 
+abc
 {#if field}
 	<FormLabel {parms} />
 	<textarea
@@ -107,4 +108,4 @@
 		value={displayValue}
 	/>
 {/if}
-<!-- <DataViewer header="fieldValue" data={fieldValue} /> -->
+<DataViewer header="fieldValue" data={fieldValue} />

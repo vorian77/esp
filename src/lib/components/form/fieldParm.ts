@@ -35,17 +35,17 @@ export class FieldParm extends Field {
 	async configParmItemsInit(props: PropsFieldInit, record: DataRecord, fields: Field[]) {
 		const propParmObj = {
 			_codeAccess: getRecordValue(record, 'isRequired') ? 'required' : 'optional',
-			_codeFieldElement: getRecordValue(record, 'codeFieldElement'),
+			_codeFieldElement: getRecordValue(record, 'codeFieldElement').display,
 			_column: {
 				_codeAlignment: FieldAlignment.left,
-				_codeDataType: getRecordValue(record, 'codeDataType'),
+				_codeDataType: getRecordValue(record, 'codeDataType').display,
 				header: getRecordValue(record, 'header'),
 				isFormTag: false,
 				isMultiSelect: getRecordValue(record, 'isMultiSelect'),
 				placeHolder: ''
 			},
 			_hasItems: getRecordValue(record, '_hasItems'),
-			_linkItemsSource: await getLinkItemsSource(getRecordValue(record, 'fieldListItems')),
+			_linkItemsSource: await getLinkItemsSource(getRecordValue(record, 'fieldListItems').id),
 			_propName: getRecordValue(record, 'name'),
 			id: getRecordValue(record, 'id'),
 			isDisplayable: true,
@@ -56,10 +56,10 @@ export class FieldParm extends Field {
 		const propParm = new RawDataObjPropDisplay(propParmObj, [])
 		return DataObj.fieldsCreateItem(props.sm, props.dataObj, propParm, fields)
 
-		async function getLinkItemsSource(fieldListItemsName: string) {
+		async function getLinkItemsSource(fieldListItemsNameId: string) {
 			const result: ResponseBody = await apiFetch(
 				ApiFunction.dbEdgeGetLinkItemsSource,
-				new TokenApiId(fieldListItemsName)
+				new TokenApiId(fieldListItemsNameId)
 			)
 			if (result.success) {
 				return result.data
@@ -67,7 +67,7 @@ export class FieldParm extends Field {
 				error(500, {
 					file: FILENAME,
 					function: 'getNodesLevel',
-					message: `Error retrieving link items source: ${fieldListItemsName}`
+					message: `Error retrieving link items source id: ${fieldListItemsNameId}`
 				})
 			}
 		}

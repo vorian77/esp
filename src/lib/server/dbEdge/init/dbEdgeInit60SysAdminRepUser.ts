@@ -419,7 +419,7 @@ function initRepConfig(init: InitDb) {
 				orderDisplay: 120,
 				fieldEmbedListEdit: 'fele_sys_rep_user_parm',
 				indexTable: 0,
-				linkColumns: ['name'],
+				linkColumns: ['parm', 'name'],
 				linkTable: 'SysRepUserParm'
 			},
 			// {

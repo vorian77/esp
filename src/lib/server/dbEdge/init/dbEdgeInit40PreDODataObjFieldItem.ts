@@ -27,7 +27,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		exprFilter:
 			'.codeType.name = <parms,str,itemsParmName> AND .owner.id = <user,uuid,systemIdCurrent>',
 		exprSort: '.order',
-		name: 'il_sys_code_order_index_by_codeType_name_system',
+		name: 'il_sys_code_order_index_by_codeType_name_system_user',
 		owner: 'sys_system_old',
 		table: 'SysCode'
 	})
@@ -35,7 +35,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
 			'.codeType.name = <parms,str,itemsParmName> AND .owner.id = <user,uuid,systemIdCurrent>',
-		name: 'il_sys_code_order_name_by_codeType_name_system',
+		name: 'il_sys_code_order_name_by_codeType_name_system_user',
 		owner: 'sys_system_old',
 		table: 'SysCode'
 	})
@@ -114,7 +114,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 				0
 			]
 		],
-		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).userTypes.owner`,
+		exprFilter: `.owner.id = <user,uuid,systemIdCurrent>`,
 		name: 'il_cm_cohort_long_by_userName',
 		owner: 'sys_ai_old',
 		table: 'CmCohort'

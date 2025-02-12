@@ -1144,7 +1144,7 @@ function initCohortDoc(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 				fieldListItemsParmName: 'ct_cm_cohort_doc_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'

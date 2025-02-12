@@ -226,16 +226,6 @@
 			defn.cellEditorSelector = cellEditorSelectorParmField
 			defn.cellRendererSelector = cellRendererSelectorParmField
 			defn.context = { parmFields: field.parmFields, sm }
-
-			// if (field.linkItemsSource) {
-			// 	defn.editable = false
-			// 	defn.context = {
-			// 		linkItemsSource: field.linkItemsSource,
-			// 		parmFields: field.parmFields,
-			// 		sm
-			// 	}
-			// 	defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
-			// }
 		} else {
 			// data type
 			switch (field.colDO.colDB.codeDataType) {
@@ -275,9 +265,8 @@
 					break
 
 				case PropDataType.link:
-					const itemsKey = '_items_' + field.colDO.propName
 					if (field.linkItems) {
-						defn.context = { dm, linkItemsSource: field.linkItems, sm }
+						defn.context = { dm, linkItems: field.linkItems, sm }
 						defn.editable = !field.colDO.colDB.isMultiSelect
 						defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
 					} else {
@@ -332,7 +321,7 @@
 		let field = dataObj.fields.find((f) => f.colDO.propName === event.colDef.field)
 		let fieldParm = field instanceof FieldParm ? field.parmFields[event.rowIndex] : undefined
 		let fieldProcess = fieldParm || field
-		if (fieldProcess && fieldProcess.linkItemsSource && fieldProcess.colDO.colDB.isMultiSelect) {
+		if (fieldProcess && fieldProcess.linkItems && fieldProcess.colDO.colDB.isMultiSelect) {
 			await onCellClickedSelectItems()
 		}
 
@@ -343,7 +332,7 @@
 				: ['', null, undefined].includes(event.data[fieldName])
 					? []
 					: [event.data[fieldName]]
-			const parms = fieldProcess.linkItemsSource.getGridParms()
+			const parms = fieldProcess.linkItems.getGridParms()
 
 			await sm.triggerAction(
 				new TokenAppStateTriggerAction({
@@ -356,7 +345,7 @@
 						token: new TokenAppModalSelect({
 							columnDefs: parms.columnDefs,
 							fModalClose,
-							gridColumnId: 'data',
+							gridColumnId: 'id',
 							isMultiSelect: fieldProcess.colDO.colDB.isMultiSelect,
 							listIdsSelected,
 							rowData: parms.rowData,
