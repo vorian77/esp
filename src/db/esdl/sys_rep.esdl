@@ -71,7 +71,7 @@ module sys_rep {
     description: str;
     exprFilter: str;
     fieldListItems: sys_core::SysDataObjFieldListItems;
-    fieldListItemsParmName: str;
+    fieldListItemsParmValue: str;
     required header: str;
     required isMultiSelect: bool;
     required isRequired: bool;

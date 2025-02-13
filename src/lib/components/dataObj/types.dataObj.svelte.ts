@@ -152,7 +152,6 @@ export class DataObj {
 				})
 			})
 		}
-
 		async function initPrefs(sm: State, dataObj: DataObj) {
 			let rawSettings = {}
 			if (sm?.user?.prefIsActive(UserPrefType.remember_list_settings)) {
@@ -775,7 +774,7 @@ export enum ParmsValuesType {
 	embedListSave = 'embedListSave',
 	fieldListItems = 'fieldListItems',
 	isMultiSelect = 'isMultiSelect',
-	itemsParmName = 'itemsParmName',
+	itemsParmValue = 'itemsParmValue',
 	listIds = 'listIds',
 	listIdsSelected = 'listIdsSelected',
 	listRecordIdCurrent = 'listRecordIdCurrent',

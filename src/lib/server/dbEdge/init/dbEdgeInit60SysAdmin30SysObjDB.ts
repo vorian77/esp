@@ -96,7 +96,7 @@ function initColumn(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_db_col_data_type',
+				fieldListItemsParmValue: 'ct_db_col_data_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -108,7 +108,7 @@ function initColumn(init: InitDb) {
 				orderDefine: 45,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_db_col_alignment',
+				fieldListItemsParmValue: 'ct_db_col_alignment',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},

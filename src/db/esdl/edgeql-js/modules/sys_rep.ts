@@ -88,12 +88,12 @@ const $SysRepEl = $.makeType<$SysRepEl>(_.spec, "17071154-1880-11ef-aa59-4b0afc0
 const SysRepEl: $.$expr_PathNode<$.TypeSet<$SysRepEl, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysRepEl, $.Cardinality.Many), null);
 
 export type $SysRepParmλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
+  "fieldListItemsParmValue": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "codeDataType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "codeFieldElement": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "fieldListItems": $.LinkDesc<_sys_core.$SysDataObjFieldListItems, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprFilter": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "fieldListItemsParmName": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "header": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
   "isMultiSelect": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
   "isRequired": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;

@@ -368,7 +368,7 @@ function initAppHeader(init: InitDb) {
 				orderDefine: 55,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_icon',
+				fieldListItemsParmValue: 'ct_sys_icon',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},

@@ -145,7 +145,7 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_tailwind_color',
+				fieldListItemsParmValue: 'ct_sys_tailwind_color',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -475,7 +475,7 @@ async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_query_type',
+				fieldListItemsParmValue: 'ct_sys_do_query_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -487,7 +487,7 @@ async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_action_query_trigger_timing',
+				fieldListItemsParmValue: 'ct_sys_do_action_query_trigger_timing',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1431,7 +1431,7 @@ async function initFieldListConfigUserActionConfirm(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_user_action_confirm_type',
+				fieldListItemsParmValue: 'ct_sys_user_action_confirm_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1443,7 +1443,7 @@ async function initFieldListConfigUserActionConfirm(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_user_action_confirm_type',
+				fieldListItemsParmValue: 'ct_sys_user_action_confirm_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1625,7 +1625,7 @@ async function initFieldListConfigUserActionShow(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_user_action_trigger',
+				fieldListItemsParmValue: 'ct_sys_user_action_trigger',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},

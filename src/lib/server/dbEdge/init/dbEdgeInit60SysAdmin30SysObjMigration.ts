@@ -258,7 +258,7 @@ function initMigrSourceTable(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_migr_source_type',
+				fieldListItemsParmValue: 'ct_sys_migr_source_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -435,7 +435,7 @@ function initMigrSourceColumn(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_db_col_data_type',
+				fieldListItemsParmValue: 'ct_db_col_data_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},

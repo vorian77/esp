@@ -76,7 +76,7 @@ export class ScriptGroup {
 			if (prop.linkItemsSource) {
 				let propValue = `${prop.linkItemsSource.getExprSelect(true, record[prop.propName])}`
 				queryData?.dataTab?.parms.valueSet(
-					ParmsValuesType.itemsParmName,
+					ParmsValuesType.itemsParmValue,
 					prop.linkItemsSource.parmName
 				)
 				propValue = evalExpr(

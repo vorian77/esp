@@ -123,7 +123,7 @@ function initTask(init: InitDb) {
 				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_task_category',
+				fieldListItemsParmValue: 'ct_sys_task_category',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -158,7 +158,7 @@ function initTask(init: InitDb) {
 				orderDefine: 100,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_task_render_type',
+				fieldListItemsParmValue: 'ct_sys_task_render_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -171,7 +171,7 @@ function initTask(init: InitDb) {
 				orderDefine: 110,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmName: 'taskPage',
+				fieldListItemsParmValue: 'taskPage',
 				linkColumns: ['name'],
 				linkTable: 'SysDataObj'
 			},
@@ -205,7 +205,7 @@ function initTask(init: InitDb) {
 				orderDefine: 150,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_icon',
+				fieldListItemsParmValue: 'ct_sys_icon',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -258,7 +258,7 @@ function initTask(init: InitDb) {
 				orderDefine: 210,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmName: 'taskTarget',
+				fieldListItemsParmValue: 'taskTarget',
 				linkColumns: ['name'],
 				linkTable: 'SysDataObj'
 			},
@@ -271,7 +271,7 @@ function initTask(init: InitDb) {
 				orderDefine: 220,
 				indexTable: 0,
 				fieldListItems: 'il_sys_node_obj_by_nav_type',
-				fieldListItemsParmName: 'task',
+				fieldListItemsParmValue: 'task',
 				linkColumns: ['name'],
 				linkTable: 'SysNodeObj'
 			},
@@ -284,7 +284,7 @@ function initTask(init: InitDb) {
 				orderDefine: 230,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_task_status_obj',
+				fieldListItemsParmValue: 'ct_sys_task_status_obj',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},

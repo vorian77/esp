@@ -926,7 +926,7 @@ function initCode(init: InitDb) {
 							codeValueTypeTrigger: 'any',
 							column: 'parent',
 							orderDefine: 0,
-							selectParmName: 'fieldListItemsParmId'
+							selectParmValue: 'fieldListItemsParmId'
 						}
 					]
 				}

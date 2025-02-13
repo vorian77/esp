@@ -32,10 +32,6 @@
 		const target = event.currentTarget as HTMLSelectElement
 		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
 	}
-
-	async function onClick(event: Event) {
-		if (field.linkItems) field.linkItems.retrieve(sm, fieldValue)
-	}
 </script>
 
 <FormLabel {parms}>
@@ -45,7 +41,6 @@
 		id={fieldId}
 		disabled={field.fieldAccess == FieldAccess.readonly}
 		onchange={onChange}
-		onclick={onClick}
 	>
 		<option value={null} class="">Select an option...</option>
 		{#if dataItems}

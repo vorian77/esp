@@ -37,7 +37,7 @@ export async function addAnalytic(data: any) {
 						fieldListItems: e.select(
 							e.sys_core.getDataObjFieldListItems(e.cast(e.str, e.json_get(p, 'fieldListItems')))
 						),
-						fieldListItemsParmName: e.cast(e.str, e.json_get(p, 'fieldListItemsParmName')),
+						fieldListItemsParmValue: e.cast(e.str, e.json_get(p, 'fieldListItemsParmValue')),
 						header: e.cast(e.str, e.json_get(p, 'header')),
 						isMultiSelect: e.cast(e.bool, e.json_get(p, 'isMultiSelect')),
 						isRequired: e.cast(e.bool, e.json_get(p, 'isRequired')),
@@ -179,7 +179,7 @@ export async function addReport(data: any) {
 						fieldListItems: e.select(
 							e.sys_core.getDataObjFieldListItems(e.cast(e.str, e.json_get(p, 'fieldListItems')))
 						),
-						fieldListItemsParmName: e.cast(e.str, e.json_get(p, 'fieldListItemsParmName')),
+						fieldListItemsParmValue: e.cast(e.str, e.json_get(p, 'fieldListItemsParmValue')),
 						header: e.cast(e.str, e.json_get(p, 'header')),
 						isMultiSelect: e.cast(e.bool, e.json_get(p, 'isMultiSelect')),
 						isRequired: e.cast(e.bool, e.json_get(p, 'isRequired')),

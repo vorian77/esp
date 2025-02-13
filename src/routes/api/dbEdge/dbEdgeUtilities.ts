@@ -28,7 +28,7 @@ const SysDataObjColumnItemChange = e.shape(e.sys_core.SysDataObjColumnItemChange
 	_codeValueTypeTarget: t.codeValueTypeTarget.name,
 	_codeValueTypeTrigger: t.codeValueTypeTrigger.name,
 	_column: t.column.column.name,
-	selectParmName: true,
+	selectParmValue: true,
 	valueScalarTarget: true,
 	valueScalarTrigger: true,
 	order_by: t.orderDefine
@@ -164,7 +164,7 @@ export async function getDataObjById(token: TokenApiId) {
 			}))
 		})),
 		_linkItemsSource: e.select(doc.fieldListItems, (fli) => ({
-			_parmName: doc.fieldListItemsParmName,
+			_parmName: doc.fieldListItemsParmValue,
 			...shapeLinkItemsSource(fli)
 		})),
 		_propName: e.op(doc.nameCustom, '??', doc.column.name),
@@ -542,7 +542,7 @@ export async function getReportUser(repUserId: string) {
 				_codeDataType: p.codeDataType.name,
 				_codeFieldElement: p.codeFieldElement.name,
 				_linkItemsSource: e.select(p.fieldListItems, (fli) => ({
-					_parmName: p.fieldListItemsParmName,
+					_parmName: p.fieldListItemsParmValue,
 					...shapeLinkItemsSource(fli)
 				})),
 				description: true,

@@ -116,7 +116,7 @@ function initCourse(init: InitDb) {
 				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_course_sector',
+				fieldListItemsParmValue: 'ct_cm_course_sector',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -486,7 +486,7 @@ function initCohort(init: InitDb) {
 				orderDefine: 110,
 				indexTable: 0,
 				fieldListItems: 'il_sys_user_by_tag_type',
-				fieldListItemsParmName: 'utt_role_ai_instructor',
+				fieldListItemsParmValue: 'utt_role_ai_instructor',
 				linkColumns: ['person', 'fullName'],
 				linkTable: 'SysUser'
 			},
@@ -969,7 +969,7 @@ function initCohortAttdSheet(init: InitDb) {
 				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_cohort_attd_duration',
+				fieldListItemsParmValue: 'ct_cm_cohort_attd_duration',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1148,7 +1148,7 @@ function initCohortDoc(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmName: 'ct_cm_cohort_doc_type',
+				fieldListItemsParmValue: 'ct_cm_cohort_doc_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1557,7 +1557,7 @@ function initPartner(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmName: 'ct_cm_partner_type',
+				fieldListItemsParmValue: 'ct_cm_partner_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1639,7 +1639,7 @@ function initPartner(init: InitDb) {
 				orderDefine: 150,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_state',
+				fieldListItemsParmValue: 'ct_sys_state',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1868,7 +1868,7 @@ function initPartnerNote(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_obj_note_type',
+				fieldListItemsParmValue: 'ct_sys_obj_note_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},

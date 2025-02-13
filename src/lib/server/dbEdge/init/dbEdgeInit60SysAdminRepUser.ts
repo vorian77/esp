@@ -110,7 +110,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				linkTable: 'SysDataObjFieldListItems'
 			},
 			{
-				columnName: 'fieldListItemsParmName',
+				columnName: 'fieldListItemsParmValue',
 				indexTable: 1,
 				isDisplayable: false,
 				isExcludeInsert: true,

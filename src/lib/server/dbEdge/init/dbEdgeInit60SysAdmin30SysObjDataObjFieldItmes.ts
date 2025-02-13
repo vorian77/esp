@@ -214,7 +214,7 @@ function initDataObjFieldListItems(init: InitDb) {
 				orderDefine: 140,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_db_col_data_type',
+				fieldListItemsParmValue: 'ct_db_col_data_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -227,7 +227,7 @@ function initDataObjFieldListItems(init: InitDb) {
 				orderDefine: 150,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_db_col_mask',
+				fieldListItemsParmValue: 'ct_db_col_mask',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},

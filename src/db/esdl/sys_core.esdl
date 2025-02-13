@@ -239,7 +239,7 @@ module sys_core {
     fieldEmbedListSelect: sys_core::SysDataObjFieldEmbedListSelect;
    
     fieldListItems: sys_core::SysDataObjFieldListItems;
-    fieldListItemsParmName: str;
+    fieldListItemsParmValue: str;
 
     headerAlt: str;
     height: int16;
@@ -279,7 +279,7 @@ module sys_core {
       on target delete allow;
     };
     required orderDefine: default::nonNegative;
-    selectParmName: str;
+    selectParmValue: str;
     valueScalarTarget: str;
     valueScalarTrigger: str;
   }

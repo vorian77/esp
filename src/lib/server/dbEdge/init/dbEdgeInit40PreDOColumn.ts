@@ -413,13 +413,6 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
-		header: 'Parm Type',
-		isMultiSelect: false,
-		name: 'codeParmType'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'link',
 		header: 'Placement Related To Training',
 		isMultiSelect: false,
 		name: 'codePlacementRelated'
@@ -1325,7 +1318,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Field List Parm - Name',
-		name: 'fieldListItemsParmName'
+		name: 'fieldListItemsParmValue'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -2047,8 +2040,8 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
-		header: 'Select Parm Name',
-		name: 'selectParmName'
+		header: 'Select Parm Value',
+		name: 'selectParmValue'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

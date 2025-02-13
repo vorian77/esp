@@ -400,7 +400,7 @@ function initAnalyticParm(init: InitDb) {
 				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_db_col_data_type',
+				fieldListItemsParmValue: 'ct_db_col_data_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -412,7 +412,7 @@ function initAnalyticParm(init: InitDb) {
 				orderDefine: 70,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_field_element',
+				fieldListItemsParmValue: 'ct_sys_do_field_element',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -632,7 +632,7 @@ function initAnalyticStatus(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_rep_analytic_status',
+				fieldListItemsParmValue: 'ct_sys_rep_analytic_status',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1185,7 +1185,7 @@ function initRepEl(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_rep_element_type',
+				fieldListItemsParmValue: 'ct_sys_rep_element_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1197,7 +1197,7 @@ function initRepEl(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_field_source_value',
+				fieldListItemsParmValue: 'ct_sys_do_field_source_value',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1248,7 +1248,7 @@ function initRepEl(init: InitDb) {
 				orderDefine: 100,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_field_element',
+				fieldListItemsParmValue: 'ct_sys_do_field_element',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1367,7 +1367,7 @@ function initRepEl(init: InitDb) {
 				orderDefine: 240,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_db_col_data_type',
+				fieldListItemsParmValue: 'ct_db_col_data_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1380,7 +1380,7 @@ function initRepEl(init: InitDb) {
 				orderDefine: 250,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_db_col_alignment',
+				fieldListItemsParmValue: 'ct_db_col_alignment',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1439,7 +1439,7 @@ function initRepEl(init: InitDb) {
 				orderDefine: 320,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_field_sort_dir',
+				fieldListItemsParmValue: 'ct_sys_do_field_sort_dir',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1711,7 +1711,7 @@ function initRepParm(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_db_col_data_type',
+				fieldListItemsParmValue: 'ct_db_col_data_type',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1723,7 +1723,7 @@ function initRepParm(init: InitDb) {
 				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmName: 'ct_sys_do_field_element',
+				fieldListItemsParmValue: 'ct_sys_do_field_element',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},
@@ -1781,7 +1781,7 @@ function initRepParm(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				columnName: 'fieldListItemsParmName',
+				columnName: 'fieldListItemsParmValue',
 				isDisplayable: true,
 				orderDisplay: 150,
 				orderDefine: 150,

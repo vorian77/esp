@@ -66,7 +66,7 @@ export async function getLinkItems(queryData: TokenApiQueryData) {
 	)
 	if (propLinkItemsSource.parmName) {
 		queryData.dataTab?.parms.update({
-			[ParmsValuesType.itemsParmName]: propLinkItemsSource.parmName
+			[ParmsValuesType.itemsParmValue]: propLinkItemsSource.parmName
 		})
 	}
 	let valueCurrent = queryData?.dataTab?.parms.valueGet(ParmsValuesType.propLinkItemsValueCurrent)

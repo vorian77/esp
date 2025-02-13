@@ -7,7 +7,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	/* code - general */
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter: '.codeType.name = <parms,str,itemsParmName>',
+		exprFilter: '.codeType.name = <parms,str,itemsParmValue>',
 		exprSort: '.order',
 		name: 'il_sys_code_order_index_by_codeType_name',
 		owner: 'sys_system_old',
@@ -15,7 +15,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter: '.codeType.name = <parms,str,itemsParmName>',
+		exprFilter: '.codeType.name = <parms,str,itemsParmValue>',
 		name: 'il_sys_code_order_name_by_codeType_name',
 		owner: 'sys_system_old',
 		table: 'SysCode'
@@ -25,7 +25,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'.codeType.name = <parms,str,itemsParmName> AND .owner.id = <user,uuid,systemIdCurrent>',
+			'.codeType.name = <parms,str,itemsParmValue> AND .owner.id = <user,uuid,systemIdCurrent>',
 		exprSort: '.order',
 		name: 'il_sys_code_order_index_by_codeType_name_system_user',
 		owner: 'sys_system_old',
@@ -34,7 +34,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'.codeType.name = <parms,str,itemsParmName> AND .owner.id = <user,uuid,systemIdCurrent>',
+			'.codeType.name = <parms,str,itemsParmValue> AND .owner.id = <user,uuid,systemIdCurrent>',
 		name: 'il_sys_code_order_name_by_codeType_name_system_user',
 		owner: 'sys_system_old',
 		table: 'SysCode'
@@ -44,7 +44,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'<parms,str,itemsParmName> IN .codeTypeFamily.name AND .owner.id = <user,uuid,systemIdCurrent>',
+			'<parms,str,itemsParmValue> IN .codeTypeFamily.name AND .owner.id = <user,uuid,systemIdCurrent>',
 		exprSort: '.order',
 		name: 'il_sys_code_family_group_order_index_by_codeType_name_system',
 		owner: 'sys_system_old',
@@ -53,7 +53,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'<parms,str,itemsParmName> IN .codeTypeFamily.name AND .owner.id = <user,uuid,systemIdCurrent>',
+			'<parms,str,itemsParmValue> IN .codeTypeFamily.name AND .owner.id = <user,uuid,systemIdCurrent>',
 		name: 'il_sys_code_family_group_order_name_by_codeType_name_system',
 		owner: 'sys_system_old',
 		table: 'SysCode'
@@ -62,7 +62,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'.codeTypeFamily.parent.name = <parms,str,itemsParmName> AND .owner.id = <user,uuid,systemIdCurrent>',
+			'.codeTypeFamily.parent.name = <parms,str,itemsParmValue> AND .owner.id = <user,uuid,systemIdCurrent>',
 		exprSort: '.order',
 		name: 'il_sys_code_family_order_index_by_codeType_name_system',
 		owner: 'sys_system_old',
@@ -72,7 +72,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'.codeTypeFamily.parent.name = <parms,str,itemsParmName> AND .owner.id = <user,uuid,systemIdCurrent>',
+			'.codeTypeFamily.parent.name = <parms,str,itemsParmValue> AND .owner.id = <user,uuid,systemIdCurrent>',
 		name: 'il_sys_code_family_order_name_by_codeType_name_system',
 		owner: 'sys_system_old',
 		table: 'SysCode'
@@ -81,7 +81,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	/* code action */
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter: '.codeType.parent.name = <parms,str,itemsParmName>',
+		exprFilter: '.codeType.parent.name = <parms,str,itemsParmValue>',
 		name: 'il_sys_codeAction_order_name_by_codeType_name',
 		owner: 'sys_system_old',
 		table: 'SysCodeAction'
@@ -208,7 +208,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysDataObjFieldListItems'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
-		exprFilter: '.codeDataObjType.name = <parms,str,itemsParmName> ',
+		exprFilter: '.codeDataObjType.name = <parms,str,itemsParmValue> ',
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		name: 'il_sys_data_obj_by_type',
 		owner: 'sys_system_old',
@@ -223,7 +223,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysColumn'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
-		exprFilter: '.codeNavType.name = <parms,str,itemsParmName> ',
+		exprFilter: '.codeNavType.name = <parms,str,itemsParmValue> ',
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		name: 'il_sys_node_obj_by_nav_type',
 		owner: 'sys_system_old',
@@ -264,7 +264,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter: '.roles.name = <parms,str,itemsParmName>',
+		exprFilter: '.roles.name = <parms,str,itemsParmValue>',
 		name: 'il_sys_role_org_by_codeName',
 		owner: 'sys_system_old',
 		table: 'SysOrg'
@@ -313,7 +313,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 			[1, '_lastName', 'Last Name', '.person.lastName', true, 0],
 			[2, '_userName', 'Username', `'(' ++ .userName ++ ')'`, true, undefined]
 		],
-		exprFilter: '.userTypes.tags.name = <parms,str,itemsParmName>',
+		exprFilter: '.userTypes.tags.name = <parms,str,itemsParmValue>',
 		name: 'il_sys_user_by_tag_type',
 		owner: 'sys_system_old',
 		table: 'SysUser'

@@ -398,6 +398,7 @@ export namespace sys_core {
   export interface SysDataObjColumn extends sys_user.Mgmt {
     "exprSave"?: string | null;
     "actionAlertMsg"?: string | null;
+    "fieldListItemsParmValue"?: string | null;
     "itemChanges": SysDataObjColumnItemChange[];
     "codeAccess"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
@@ -426,7 +427,6 @@ export namespace sys_core {
     "customColSourceKey"?: string | null;
     "exprCustom"?: string | null;
     "exprPreset"?: string | null;
-    "fieldListItemsParmName"?: string | null;
     "headerAlt"?: string | null;
     "height"?: number | null;
     "indexTable"?: number | null;
@@ -446,13 +446,13 @@ export namespace sys_core {
     "action"?: sys_user.SysUserAction | null;
   }
   export interface SysDataObjColumnItemChange extends sys_user.Mgmt {
-    "selectParmName"?: string | null;
     "codeAccess"?: SysCode | null;
     "codeValueTarget"?: SysCode | null;
     "codeValueTrigger"?: SysCode | null;
     "column": SysDataObjColumn;
     "valueScalarTarget"?: string | null;
     "valueScalarTrigger"?: string | null;
+    "selectParmValue"?: string | null;
     "orderDefine": number;
     "codeOp"?: SysCode | null;
     "codeValueTypeTarget": SysCode;
@@ -951,12 +951,12 @@ export namespace sys_rep {
     "orderSort"?: number | null;
   }
   export interface SysRepParm extends sys_user.Mgmt {
+    "fieldListItemsParmValue"?: string | null;
     "codeDataType": sys_core.SysCode;
     "codeFieldElement": sys_core.SysCode;
     "fieldListItems"?: sys_core.SysDataObjFieldListItems | null;
     "description"?: string | null;
     "exprFilter"?: string | null;
-    "fieldListItemsParmName"?: string | null;
     "header": string;
     "isMultiSelect": boolean;
     "isRequired": boolean;

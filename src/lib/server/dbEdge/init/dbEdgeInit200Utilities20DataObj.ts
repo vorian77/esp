@@ -256,7 +256,7 @@ export async function addDataObj(data: any) {
 							e.sys_core.getDataObjFieldListItems(e.cast(e.str, e.json_get(f, 'fieldListItems')))
 						),
 
-						fieldListItemsParmName: e.cast(e.str, e.json_get(f, 'fieldListItemsParmName')),
+						fieldListItemsParmValue: e.cast(e.str, e.json_get(f, 'fieldListItemsParmValue')),
 
 						headerAlt: e.cast(e.str, e.json_get(f, 'headerAlt')),
 
@@ -642,7 +642,7 @@ export async function dataObjColumnItemChangeBulk(data: any) {
 										createdBy: CREATOR,
 										modifiedBy: CREATOR,
 										orderDefine: e.cast(e.int16, e.json_get(target, 'orderDefine')),
-										selectParmName: e.cast(e.str, e.json_get(target, 'selectParmName')),
+										selectParmValue: e.cast(e.str, e.json_get(target, 'selectParmValue')),
 										valueScalarTarget: e.cast(e.str, e.json_get(target, 'valueScalarTarget')),
 										valueScalarTrigger: e.cast(e.str, e.json_get(target, 'valueScalarTrigger'))
 									})

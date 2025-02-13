@@ -13,7 +13,7 @@
 	let docTypes = data
 
 	async function onClickLocal(doc: any) {
-		await onClick(task, { [ParmsValuesType.itemsParmName]: doc.name })
+		await onClick(task, { [ParmsValuesType.itemsParmValue]: doc.name })
 	}
 </script>
 

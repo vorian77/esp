@@ -499,20 +499,20 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 
 export class RawDataObjPropDisplayItemChange {
 	_codeAccess?: string
-	_codeOp: string
+	_codeOp?: string
 	_codeValueTarget?: string
 	_codeValueTrigger?: string
 	_codeValueTypeTarget: string
 	_codeValueTypeTrigger: string
 	_column: string
-	selectParmName?: string
+	selectParmValue?: string
 	valueScalarTarget?: string
 	valueScalarTrigger?: string
 	constructor(obj: any) {
 		const clazz = 'RawDataObjPropDisplayItemChange'
 		obj = valueOrDefault(obj, {})
 		this._codeAccess = obj._codeAccess
-		this._codeOp = strRequired(obj._codeOp, clazz, '_codeOp')
+		this._codeOp = obj._codeOp
 		this._codeValueTarget = obj._codeValueTarget
 		this._codeValueTrigger = obj._codeValueTrigger
 		this._codeValueTypeTarget = strRequired(obj._codeValueTypeTarget, clazz, '_codeValueTypeTarget')
@@ -522,7 +522,7 @@ export class RawDataObjPropDisplayItemChange {
 			'_codeValueTypeTrigger'
 		)
 		this._column = strRequired(obj._column, clazz, '_column')
-		this.selectParmName = obj.selectParmName
+		this.selectParmValue = obj.selectParmValue
 		this.valueScalarTarget = obj.valueScalarTarget
 		this.valueScalarTrigger = obj.valueScalarTrigger
 	}
@@ -862,6 +862,7 @@ export class PropLinkItems {
 			let { dataTab, dataTree } = queryDataPre(sm, new DataObjData(), TokenApiQueryType.retrieve)
 			dataTab.parms.valueSet(ParmsValuesType.propLinkItemsValueCurrent, fieldValue)
 			dataTab.parms.valueSet(ParmsValuesType.propLinkItemsSourceRaw, this.source.raw)
+
 			// retrieve
 			const result: ResponseBody = await apiFetch(
 				ApiFunction.dbEdgeGetLinkItems,

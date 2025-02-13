@@ -137,7 +137,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDefine: 80,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmName: 'embed',
+				fieldListItemsParmValue: 'embed',
 				linkColumns: ['name'],
 				linkTable: 'SysDataObj'
 			},
@@ -149,7 +149,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDefine: 90,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmName: 'embed',
+				fieldListItemsParmValue: 'embed',
 				linkColumns: ['name'],
 				linkTable: 'SysDataObj'
 			},
@@ -335,7 +335,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmName: 'embed',
+				fieldListItemsParmValue: 'embed',
 				linkColumns: ['name'],
 				linkTable: 'SysDataObj'
 			},
@@ -561,7 +561,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 				orderDefine: 90,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmName: 'embed',
+				fieldListItemsParmValue: 'embed',
 				linkColumns: ['name'],
 				linkTable: 'SysDataObj'
 			},
