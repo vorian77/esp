@@ -1798,6 +1798,13 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
+		header: 'Notes',
+		isMultiSelect: true,
+		name: 'notes'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
 		header: 'Task Object - Data Object',
 		name: 'objectDataObj'
 	})

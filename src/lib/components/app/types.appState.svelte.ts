@@ -416,7 +416,6 @@ export class State {
 	async openModalSelect(token: TokenAppModalSelect) {
 		const parmsState = new ParmsValues({})
 		parmsState.valueSet(ParmsValuesType.columnDefs, token.columnDefs)
-		parmsState.valueSet(ParmsValuesType.gridColumnId, token.gridColumnId)
 		parmsState.valueSet(ParmsValuesType.selectLabel, token.selectLabel)
 		parmsState.valueSet(ParmsValuesType.listIdsSelected, token.listIdsSelected)
 		parmsState.valueSet(ParmsValuesType.listSortModel, token.sortModel)

@@ -332,7 +332,7 @@
 				: ['', null, undefined].includes(event.data[fieldName])
 					? []
 					: [event.data[fieldName]]
-			const parms = fieldProcess.linkItems.getGridParms()
+			const gridParms = fieldProcess.linkItems.getGridParms()
 
 			await sm.triggerAction(
 				new TokenAppStateTriggerAction({
@@ -343,14 +343,13 @@
 					codeConfirmType: TokenAppUserActionConfirmType.none,
 					data: {
 						token: new TokenAppModalSelect({
-							columnDefs: parms.columnDefs,
+							columnDefs: gridParms.columnDefs,
 							fModalClose,
-							gridColumnId: 'id',
 							isMultiSelect: fieldProcess.colDO.colDB.isMultiSelect,
 							listIdsSelected,
-							rowData: parms.rowData,
+							rowData: gridParms.rowData,
 							selectLabel: fieldProcess.colDO.label,
-							sortModel: parms.sortModel
+							sortModel: gridParms.sortModel
 						})
 					}
 				})

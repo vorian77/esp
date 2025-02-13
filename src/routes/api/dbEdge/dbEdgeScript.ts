@@ -14,7 +14,7 @@ import type { DataObjTable, DataRecord, DataRow } from '$utils/types'
 import { TokenApiQueryData } from '$utils/types.token'
 import { RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj.svelte'
 import { LinkSaveAction, Query, QueryParent } from '$routes/api/dbEdge/dbEdgeQuery'
-import { evalExpr } from '$routes/api/dbEdge/dbEdgeGetVal'
+import { evalExpr, EvalExprContext } from '$routes/api/dbEdge/dbEdgeGetVal'
 import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import {
 	ScriptTypeSave,
@@ -60,6 +60,37 @@ export class ScriptGroup {
 		script.script = expr
 		this.scripts.push(script)
 		return script
+	}
+
+	addScriptDataItems(
+		query: Query,
+		queryData: TokenApiQueryData,
+		props: RawDataObjPropDB[],
+		record: DataRecord
+	) {
+		const clazz = 'getPropsSelectDataItems'
+		let expr = ''
+		// const isFilterCurrentValue = query.rawDataObj.codeCardinality === DataObjCardinality.detail
+
+		props.forEach((prop) => {
+			if (prop.linkItemsSource) {
+				let propValue = `${prop.linkItemsSource.getExprSelect(true, record[prop.propName])}`
+				queryData?.dataTab?.parms.valueSet(
+					ParmsValuesType.itemsParmName,
+					prop.linkItemsSource.parmName
+				)
+				propValue = evalExpr(
+					propValue,
+					queryData,
+					new EvalExprContext(clazz, query.rawDataObj.name)
+				)
+				expr = query.addItemComma(expr, `${prop.propName} := ${propValue}`)
+			}
+		})
+
+		if (!expr) expr = `dummy:= <str>{}`
+		expr = `SELECT {\n${expr}\n}`
+		this.addScriptNew(query, queryData, ScriptExePost.dataItems, [], expr)
 	}
 
 	addScriptExpression(query: Query, queryData: TokenApiQueryData) {
@@ -527,6 +558,7 @@ export class ScriptItem {
 }
 
 export enum ScriptExePost {
+	dataItems = 'dataItems',
 	formatData = 'formatData',
 	none = 'none',
 	processRowSelectPreset = 'processRowSelectPreset'

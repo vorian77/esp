@@ -71,7 +71,7 @@ export class Field {
 			FieldElement
 		)
 		this.isParmValue = booleanOrDefault(props.propRaw.isParmValue, false)
-		this.linkItems = classOptional(PropLinkItems, props.propRaw.linkItemsSource)
+		this.linkItems = classOptional(PropLinkItems, props.propRaw?.linkItemsSource?.raw)
 	}
 	getBackgroundColor(fieldAccess: FieldAccess) {
 		return fieldAccess === FieldAccess.required

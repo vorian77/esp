@@ -464,7 +464,7 @@ export async function getFieldEmbedListSelect(token: TokenApiId) {
 export async function getLinkItemsSource(token: TokenApiId) {
 	const query = e.select(e.sys_core.SysDataObjFieldListItems, (fli) => ({
 		...shapeLinkItemsSource(fli),
-		filter_single: e.op(fli.id, '=', e.cast(e.uuid, token.id))
+		filter_single: e.op(fli.name, '=', e.cast(e.str, token.id))
 	}))
 	return await query.run(client)
 }

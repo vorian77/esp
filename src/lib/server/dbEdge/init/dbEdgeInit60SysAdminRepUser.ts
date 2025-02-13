@@ -86,7 +86,8 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
 				orderDefine: 60,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				columnName: 'codeFieldElement',
@@ -95,7 +96,8 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
 				orderDefine: 70,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				columnName: 'fieldListItems',
@@ -104,7 +106,8 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				isExcludeInsert: true,
 				isExcludeUpdate: true,
 				orderDefine: 80,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysDataObjFieldListItems'
 			},
 			{
 				columnName: 'fieldListItemsParmName',

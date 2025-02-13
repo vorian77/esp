@@ -217,12 +217,10 @@ export class DataObj {
 
 			case FieldElement.checkbox:
 				newField = new FieldCheckbox(props)
-				await newField.linkItems?.retrieve(sm, undefined)
 				break
 
 			case FieldElement.chips:
 				newField = new FieldChips(props)
-				await newField.linkItems?.retrieve(sm, undefined)
 				break
 
 			case FieldElement.customActionButton:
@@ -272,7 +270,6 @@ export class DataObj {
 
 			case FieldElement.radio:
 				newField = new FieldRadio(props)
-				await newField.linkItems?.retrieve(sm, undefined)
 				break
 
 			case FieldElement.select:
@@ -315,10 +312,6 @@ export class DataObj {
 			const field: Field = dataObj.fields[i]
 			await field.init(props)
 		}
-	}
-
-	getField(field: Field, row: number) {
-		// return field.isParmValue ? (field as FieldParm).parmFields[row] : field
 	}
 
 	print() {
@@ -404,6 +397,7 @@ export class DataObjData {
 	static load(source: DataObjData) {
 		const data = new DataObjData(source.rawDataObj)
 		data.fields = FieldEmbed.initFieldsLoad(source.fields, data)
+		data.items = { ...source.items }
 		data.parms = ParmsValues.load(source.parms)
 		data.rowsRetrieved = DataRows.load(source.rowsRetrieved)
 		data.rowsSave = DataRows.load(source.rowsSave)
@@ -780,15 +774,14 @@ export enum ParmsValuesType {
 	embedFieldName = 'embedFieldName',
 	embedListSave = 'embedListSave',
 	fieldListItems = 'fieldListItems',
-	gridColumnId = 'gridColumnId',
 	isMultiSelect = 'isMultiSelect',
 	itemsParmName = 'itemsParmName',
 	listIds = 'listIds',
 	listIdsSelected = 'listIdsSelected',
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listSortModel = 'listSortModel',
-	propLinkItemsIdCurrent = 'propLinkItemsIdCurrent',
 	propLinkItemsSourceRaw = 'propLinkItemsSource',
+	propLinkItemsValueCurrent = 'propLinkItemsValueCurrent',
 	rowData = 'rowData',
 	selectLabel = 'selectLabel'
 }

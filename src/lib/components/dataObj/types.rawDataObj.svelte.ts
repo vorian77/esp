@@ -56,6 +56,7 @@ import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
+import { University } from 'lucide-svelte'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
 
@@ -738,23 +739,23 @@ export enum PropDataType {
 }
 
 export class PropLink {
+	exprDisplay: string
 	exprProps: string
 	table?: DBTable
 	constructor(obj: any) {
 		const clazz = 'PropLink'
 		obj = valueOrDefault(obj, {})
 		const cols = getArray(obj._columns)
-		const display = cols.reduce((acc: string, col: any) => {
+		this.exprDisplay = cols.reduce((acc: string, col: any) => {
 			if (acc) acc += '.'
 			acc += col._name
 			return acc
 		}, '')
-		this.exprProps = `{ id, display := .${display} }`
-		// this.table = new DBTable(required(obj._table, clazz, 'table'))
-		this.table = classOptional(DBTable, obj._table)
-		if (!this.table) {
-			debug('PropLink.no table', 'constructor', { obj })
+		this.exprProps = `{ id, display := .${this.exprDisplay} }`
+		if (!obj._table) {
+			console.log(`Missing table for ${clazz} ${this.exprProps}`)
 		}
+		this.table = new DBTable(required(obj._table, clazz, 'table'))
 	}
 }
 
@@ -762,9 +763,9 @@ export class PropLinkItems {
 	isRetrieved: boolean = false
 	rawItems: DataRecord[] = $state([])
 	source: PropLinkItemsSource
-	constructor(source: PropLinkItemsSource) {
+	constructor(source: any) {
 		const clazz = 'PropLinkItems'
-		this.source = source
+		this.source = new PropLinkItemsSource(source)
 	}
 
 	formatDataItemDisplay(record: DataRecord) {
@@ -779,8 +780,9 @@ export class PropLinkItems {
 		return value
 	}
 
-	getDataIs() {
-		return this.rawItems.map((item) => item.id)
+	getFieldValueIds(fieldValue: DataRecord | DataRecord[]) {
+		const fieldValues: DataRecord[] = getArray(fieldValue)
+		return fieldValues.map((v) => v.id)
 	}
 
 	getDataItemsFormatted(fieldValue: DataRecord | DataRecord[]) {
@@ -856,13 +858,10 @@ export class PropLinkItems {
 
 	async retrieve(sm: State, fieldValue: string | undefined) {
 		if (!this.isRetrieved) {
-			this.isRetrieved = true
-
 			// parms
 			let { dataTab, dataTree } = queryDataPre(sm, new DataObjData(), TokenApiQueryType.retrieve)
-			dataTab.parms.valueSet(ParmsValuesType.propLinkItemsIdCurrent, fieldValue)
+			dataTab.parms.valueSet(ParmsValuesType.propLinkItemsValueCurrent, fieldValue)
 			dataTab.parms.valueSet(ParmsValuesType.propLinkItemsSourceRaw, this.source.raw)
-
 			// retrieve
 			const result: ResponseBody = await apiFetch(
 				ApiFunction.dbEdgeGetLinkItems,
@@ -884,6 +883,7 @@ export class PropLinkItems {
 
 	setRawItems(rawItems: DataRecord[]) {
 		this.rawItems = rawItems
+		this.isRetrieved = true
 	}
 }
 
@@ -923,6 +923,46 @@ export class PropLinkItemsSource {
 
 		this.exprProps = `{ id, display := ${display}, ${props} }`
 	}
+
+	getExprSelect(isCompilation: boolean, currVal: string | string[]) {
+		let expr = ''
+		let filter = this.exprFilter ? `(${this.exprFilter})` : ''
+
+		if (filter) {
+			let currValFilter = ''
+			if (Array.isArray(currVal)) {
+				if (currVal.length > 0) {
+					currValFilter = `.id IN <uuid>{${currVal.map((v: string) => `'${v}'`).join(',')}}`
+				}
+			} else if (currVal) {
+				currValFilter = `.id = <uuid>'${currVal}'`
+			}
+			if (currValFilter) filter += ` UNION ${currValFilter}`
+		}
+
+		const sort =
+			this.exprSort ||
+			this.getSortProps().reduce((sort, prop) => {
+				if (sort) sort += ' THEN '
+				return (sort += `.${prop.key}`)
+			}, '')
+
+		expr = this.exprWith ? `${this.exprWith} ` : ''
+		expr += `SELECT ${this.table?.object}`
+		expr += filter ? ` FILTER ${filter}` : ''
+
+		if (isCompilation) {
+			expr = `(${expr}) ${this.exprProps}`
+			expr += sort ? ` ORDER BY ${sort}` : ''
+			expr = `(SELECT ${expr})`
+		} else {
+			expr = `SELECT (${expr}) ${this.exprProps}`
+			expr += sort ? ` ORDER BY ${sort}` : ''
+		}
+
+		return expr
+	}
+
 	getSortProps() {
 		return this.props
 			.filter((prop) => isNumber(prop.orderSort))

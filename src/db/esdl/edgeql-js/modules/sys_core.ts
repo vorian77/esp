@@ -48,8 +48,6 @@ export type $SysObjλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user.
   "isGlobalResource": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "owner": $.LinkDesc<$SysSystem, $.Cardinality.One, {}, false, false,  false, false>;
   "<resource[is sys_user::SysUserTypeResource]": $.LinkDesc<_sys_user.$SysUserTypeResource, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<owner[is sys_core::SysObjNote]": $.LinkDesc<$SysObjNote, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<owner": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<resource": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysObj = $.ObjectType<"sys_core::SysObj", $SysObjλShape, null, [
@@ -62,13 +60,14 @@ const SysObj: $.$expr_PathNode<$.TypeSet<$SysObj, $.Cardinality.Many>, null> = _
 
 export type $SysObjEntλShape = $.typeutil.flatten<$SysObjλShape & {
   "codeState": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "contacts": $.LinkDesc<_default.$SysPerson, $.Cardinality.Many, {}, false, false,  false, false>;
   "addr1": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "addr2": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "city": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "email": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "website": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "zip": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "contacts": $.LinkDesc<_default.$SysPerson, $.Cardinality.Many, {}, false, false,  false, false>;
+  "notes": $.LinkDesc<$SysObjNote, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysObjEnt = $.ObjectType<"sys_core::SysObjEnt", $SysObjEntλShape, null, [
   ...$SysObj['__exclusives__'],
@@ -789,9 +788,12 @@ const SysNodeObj: $.$expr_PathNode<$.TypeSet<$SysNodeObj, $.Cardinality.Many>, n
 
 export type $SysObjNoteλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "codeType": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
-  "owner": $.LinkDesc<$SysObj, $.Cardinality.One, {}, false, false,  false, false>;
   "date": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "<notes[is sys_core::SysObjEnt]": $.LinkDesc<$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<notes[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<notes[is app_crm::CrmClient]": $.LinkDesc<_app_crm.$CrmClient, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<notes": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysObjNote = $.ObjectType<"sys_core::SysObjNote", $SysObjNoteλShape, null, [
   ..._sys_user.$Mgmt['__exclusives__'],

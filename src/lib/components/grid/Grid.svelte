@@ -117,7 +117,7 @@
 				sortable: !isSuppressFilterSort,
 				wrapHeaderText: false
 			},
-			getRowId: (params: GetRowIdParams) => params.data[options.idColumn] || 'id',
+			getRowId: (params: GetRowIdParams) => params.data.id,
 			onCellClicked: options.onCellClicked,
 			onCellValueChanged,
 			onFilterChanged: onFilterChanged,
@@ -188,7 +188,7 @@
 				const selected: IRowNode[] = []
 				const deselected: IRowNode[] = []
 				api.forEachNode((node) => {
-					if (selectedIds.includes(node.data![options.idColumn])) {
+					if (selectedIds.includes(node.data.id)) {
 						selected.push(node)
 					} else {
 						deselected.push(node)

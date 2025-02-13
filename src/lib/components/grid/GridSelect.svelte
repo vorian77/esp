@@ -13,12 +13,10 @@
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 
 	let gridApi: GridApi = $state()
-	let idColumn = $derived(sm.parmsState.valueGet(ParmsValuesType.gridColumnId))
 
 	let gridOptions = $state(
 		new GridManagerOptions({
 			columnDefs: sm.parmsState.valueGet(ParmsValuesType.columnDefs),
-			idColumn,
 			isSelect: true,
 			isSelectMulti: sm.parmsState.valueGet(ParmsValuesType.isMultiSelect),
 			onSelectionChanged,
@@ -29,7 +27,7 @@
 	)
 
 	function onSelectionChanged(event: SelectionChangedEvent) {
-		sm.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, idColumn))
+		sm.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, 'id'))
 	}
 </script>
 

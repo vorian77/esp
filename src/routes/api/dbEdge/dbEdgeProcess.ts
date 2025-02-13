@@ -64,49 +64,20 @@ export async function getLinkItems(queryData: TokenApiQueryData) {
 			'propLinkItems'
 		)
 	)
-
-	if (propLinkItemsSource.table) {
-		// filter
-		if (propLinkItemsSource.parmName) {
-			queryData.dataTab?.parms.update({
-				[ParmsValuesType.itemsParmName]: propLinkItemsSource.parmName
-			})
-		}
-		let filter = propLinkItemsSource.exprFilter
-			? propLinkItemsSource.exprFilter
-			: propLinkItemsSource.parmName
-				? propLinkItemsSource.parmName
-				: ''
-		let idCurrent = queryData?.dataTab?.parms.valueGet(ParmsValuesType.propLinkItemsIdCurrent)
-		if (idCurrent) {
-			idCurrent = `.id = <uuid>'${idCurrent}'`
-			filter = filter ? `(${filter}) UNION ${idCurrent}` : `${idCurrent}`
-		}
-
-		// order by
-		const sort = propLinkItemsSource.getSortProps().reduce((sort, prop) => {
-			if (sort) sort += ' THEN '
-			return (sort += `.${prop.key}`)
-		}, '')
-		const orderBy = propLinkItemsSource.exprSort ? propLinkItemsSource.exprSort : sort ? sort : ''
-
-		// expr
-		let expr = `SELECT ${propLinkItemsSource.table.object} ${propLinkItemsSource.exprProps}`
-		if (filter) expr += ` FILTER ${filter}`
-		if (orderBy) expr += ` ORDER BY ${orderBy}`
-		const rawItems = await exeQueryMultiData(
-			expr,
-			queryData,
-			new EvalExprContext(clazz, propLinkItemsSource.name)
-		)
-		return new ApiResult(true, { data: rawItems })
-	} else {
-		error(500, {
-			file: FILENAME,
-			function: 'getFieldListItems',
-			message: `No table defined for FieldListItems: ${propLinkItemsSource.name}`
+	if (propLinkItemsSource.parmName) {
+		queryData.dataTab?.parms.update({
+			[ParmsValuesType.itemsParmName]: propLinkItemsSource.parmName
 		})
 	}
+	let valueCurrent = queryData?.dataTab?.parms.valueGet(ParmsValuesType.propLinkItemsValueCurrent)
+	let expr = propLinkItemsSource.getExprSelect(false, valueCurrent)
+
+	const rawItems = await exeQueryMultiData(
+		expr,
+		queryData,
+		new EvalExprContext(clazz, propLinkItemsSource.name)
+	)
+	return new ApiResult(true, { data: rawItems })
 }
 
 export async function processDataObj(token: TokenApiQuery) {
@@ -302,6 +273,10 @@ async function processDataObjExecute(scriptGroup: ScriptGroup, returnData: DataO
 		scriptData = script?.query?.fieldEmbed ? script.query.fieldEmbed.data : returnData
 		scriptData.parms.update(script.queryData.dataTab?.parms.valueGetAll())
 		switch (script.exePost) {
+			case ScriptExePost.dataItems:
+				scriptData.items = rawDataList.length > 0 ? rawDataList[0] : []
+				break
+
 			case ScriptExePost.formatData:
 				let dataRow: DataRow = new DataRow(DataRecordStatus.unknown, {})
 				if (script.query.processRow) formatData(scriptData, rawDataList, script.query.processRow)
@@ -315,6 +290,15 @@ async function processDataObjExecute(scriptGroup: ScriptGroup, returnData: DataO
 						script.queryData.updateTableData(rootTableName, dataRow)
 					})
 				}
+
+				// add dataItems
+				script.queryData?.dataTab?.parms.update(scriptData.parms.valueGetAll())
+				scriptGroup.addScriptDataItems(
+					script.query,
+					script.queryData,
+					script.query.rawDataObj.rawPropsSelect,
+					dataRow.record
+				)
 				break
 
 			case ScriptExePost.none:

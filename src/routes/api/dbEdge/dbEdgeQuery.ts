@@ -279,9 +279,11 @@ export class Query {
 			let propValue = ''
 
 			if (prop.linkItemsSource) {
-				propValue = `.${propChildTableTraversal} ${prop.linkItemsSource.exprProps}`
+				// propValue = `.${propChildTableTraversal} ${prop.linkItemsSource.exprProps}`
+				propValue = `.${propChildTableTraversal}.id`
 			} else if (prop.link) {
-				propValue = `.${propChildTableTraversal} ${prop.link.exprProps}`
+				// propValue = `.${propChildTableTraversal} ${prop.link.exprProps}`
+				propValue = `.${propChildTableTraversal}.${prop.link.exprDisplay}`
 			} else if (prop.exprCustom) {
 				propValue = prop.exprCustom
 			} else if (indexTable > 0) {
@@ -305,9 +307,11 @@ export class Query {
 			let expr = strRequired(prop.exprPreset, clazz, 'exprPreset')
 
 			if (prop.linkItemsSource) {
-				expr = `${expr} ${prop.linkItemsSource.exprProps}`
+				// expr = `${expr} ${prop.linkItemsSource.exprProps}`
+				expr = `${expr}.id`
 			} else if (prop.link) {
-				expr = `${expr} ${prop.link.exprProps}`
+				// expr = `${expr} ${prop.link.exprProps}`
+				expr = `${expr}.${prop.link.exprDisplay}`
 			}
 
 			properties = this.addItemComma(properties, `${prop.propName} := ${expr}`)

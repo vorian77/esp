@@ -33,9 +33,14 @@ module sys_core {
     city: str;
     codeState: sys_core::SysCode;
     multi contacts: default::SysPerson{
+      on source delete delete target;
       on target delete allow;
     };
     email: str;
+    multi notes: sys_core::SysObjNote{
+      on source delete delete target;
+      on target delete allow;
+    };
     website: str;
     zip: str;
   }
@@ -43,9 +48,6 @@ module sys_core {
   type SysObjNote extending sys_user::Mgmt {
     required date: cal::local_date;
     required codeType: sys_core::SysCode;
-    required owner: sys_core::SysObj {
-      on target delete delete source;
-    };
     note: str;
   }
 

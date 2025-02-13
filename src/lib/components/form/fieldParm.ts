@@ -35,17 +35,17 @@ export class FieldParm extends Field {
 	async configParmItemsInit(props: PropsFieldInit, record: DataRecord, fields: Field[]) {
 		const propParmObj = {
 			_codeAccess: getRecordValue(record, 'isRequired') ? 'required' : 'optional',
-			_codeFieldElement: getRecordValue(record, 'codeFieldElement').display,
+			_codeFieldElement: getRecordValue(record, 'codeFieldElement'),
 			_column: {
 				_codeAlignment: FieldAlignment.left,
-				_codeDataType: getRecordValue(record, 'codeDataType').display,
+				_codeDataType: getRecordValue(record, 'codeDataType'),
 				header: getRecordValue(record, 'header'),
 				isFormTag: false,
 				isMultiSelect: getRecordValue(record, 'isMultiSelect'),
 				placeHolder: ''
 			},
 			_hasItems: getRecordValue(record, '_hasItems'),
-			_linkItemsSource: await getLinkItemsSource(getRecordValue(record, 'fieldListItems').id),
+			_linkItemsSource: await getLinkItemsSource(getRecordValue(record, 'fieldListItems')),
 			_propName: getRecordValue(record, 'name'),
 			id: getRecordValue(record, 'id'),
 			isDisplayable: true,
@@ -54,12 +54,14 @@ export class FieldParm extends Field {
 			orderDefine: getRecordValue(record, 'orderDefine')
 		}
 		const propParm = new RawDataObjPropDisplay(propParmObj, [])
-		return DataObj.fieldsCreateItem(props.sm, props.dataObj, propParm, fields)
+		const field: Field = await DataObj.fieldsCreateItem(props.sm, props.dataObj, propParm, fields)
+		await field.linkItems?.retrieve(props.sm, record.parmValue)
+		return field
 
-		async function getLinkItemsSource(fieldListItemsNameId: string) {
+		async function getLinkItemsSource(fieldListItemsName: string) {
 			const result: ResponseBody = await apiFetch(
 				ApiFunction.dbEdgeGetLinkItemsSource,
-				new TokenApiId(fieldListItemsNameId)
+				new TokenApiId(fieldListItemsName)
 			)
 			if (result.success) {
 				return result.data
@@ -67,7 +69,7 @@ export class FieldParm extends Field {
 				error(500, {
 					file: FILENAME,
 					function: 'getNodesLevel',
-					message: `Error retrieving link items source id: ${fieldListItemsNameId}`
+					message: `Error retrieving link items source id: ${fieldListItemsName}`
 				})
 			}
 		}

@@ -384,7 +384,6 @@ export class TokenAppModalEmbedField extends TokenApp {
 export class TokenAppModalSelect extends TokenApp {
 	columnDefs: ColumnsDefsSelect
 	fModalClose: Function
-	gridColumnId: string
 	isMultiSelect: boolean
 	listIdsSelected: FieldColumnItem[]
 	rowData: DataRecord[]
@@ -395,7 +394,6 @@ export class TokenAppModalSelect extends TokenApp {
 		super(obj)
 		this.columnDefs = required(obj.columnDefs, clazz, 'columnDefs')
 		this.fModalClose = required(obj.fModalClose, clazz, 'fModalClose')
-		this.gridColumnId = strRequired(obj.gridColumnId, clazz, 'gridColumnId')
 		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
 		this.listIdsSelected = required(obj.listIdsSelected, clazz, 'listIdsSelected')
 		this.rowData = required(obj.rowData, clazz, 'rowData')

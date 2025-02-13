@@ -8,7 +8,7 @@ import {
 	DataObjSaveMode
 } from '$lib/components/dataObj/types.dataObj.svelte'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
-import { PropDataType, ValidityError, valueHasChanged } from '$utils/types'
+import { getArray, PropDataType, ValidityError, valueHasChanged } from '$utils/types'
 import { Field, FieldAccess, FieldClassType, FieldElement } from '$comps/form/field.svelte'
 import { error } from '@sveltejs/kit'
 
@@ -267,34 +267,17 @@ export class DataManagerNode {
 		})
 
 		let recordsClone: DataRecord[] = []
-		const linkFieldIElementsListCurrent = [FieldElement.select]
-		const linkFieldIElementsListFull = [
-			FieldElement.checkbox,
-			FieldElement.chips,
-			FieldElement.radio
-		]
-
-		const linkFields = dataObj.fields.filter((f) => f.colDO.link)
-
+		const linkItemFields = dataObj.fields.filter((f) => f.colDO.linkItemsSource)
 		dataObj.data.rowsRetrieved.getRows().forEach((dataRow, rowIdx) => {
 			if (dataRow.status !== DataRecordStatus.delete) {
-				let record = dataRow.record
+				recordsClone.push({ ...dataRow.record })
 
 				// set link items
-				linkFields.forEach((f) => {
-					const value = record[f.colDO.propName]
-					if (Object.hasOwn(value, 'id') && Object.hasOwn(value, 'display')) {
-						if (linkFieldIElementsListCurrent.includes(f.fieldElement)) {
-							f.linkItems?.setRawItems([value])
-							record[f.colDO.propName] = record[f.colDO.propName].id
-						} else if (linkFieldIElementsListFull.includes(f.fieldElement)) {
-							record[f.colDO.propName] = record[f.colDO.propName].id
-						} else {
-							record[f.colDO.propName] = record[f.colDO.propName].display
-						}
-					}
+				linkItemFields.forEach((f) => {
+					const propName = f.colDO.propName
+					const items = dataObj.data.items[propName]
+					if (items) f.linkItems?.setRawItems(getArray(items))
 				})
-				recordsClone.push({ ...record })
 			}
 		})
 

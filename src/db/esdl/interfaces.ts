@@ -314,13 +314,14 @@ export namespace sys_core {
   }
   export interface SysObjEnt extends SysObj {
     "codeState"?: SysCode | null;
-    "contacts": $default.SysPerson[];
     "addr1"?: string | null;
     "addr2"?: string | null;
     "city"?: string | null;
     "email"?: string | null;
     "website"?: string | null;
     "zip"?: string | null;
+    "contacts": $default.SysPerson[];
+    "notes": SysObjNote[];
   }
   export interface SysApp extends SysObj {
     "appHeader": SysAppHeader;
@@ -521,7 +522,6 @@ export namespace sys_core {
   }
   export interface SysObjNote extends sys_user.Mgmt {
     "codeType": SysCode;
-    "owner": SysObj;
     "date": edgedb.LocalDate;
     "note"?: string | null;
   }

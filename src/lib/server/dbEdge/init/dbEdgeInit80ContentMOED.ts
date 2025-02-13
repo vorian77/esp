@@ -246,19 +246,20 @@ function initApplicant(init: InitDb) {
 				orderDefine: 145,
 				orderDisplay: 145
 			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'checkbox',
-				columnName: 'testCodeMulti',
-				isDisplayable: true,
-				orderDisplay: 147,
-				orderDefine: 147,
-				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmName: 'ct_sys_person_gender',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
-			},
+			// {
+			// 	codeAccess: 'optional',
+			// 	// codeFieldElement: 'chips',
+			// 	codeFieldElement: 'checkbox',
+			// 	columnName: 'testCodeMulti',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 147,
+			// 	orderDefine: 147,
+			// 	indexTable: 1,
+			// 	fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+			// 	fieldListItemsParmName: 'ct_sys_person_gender',
+			// 	linkColumns: ['name'],
+			// 	linkTable: 'SysCode'
+			// },
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeRace',

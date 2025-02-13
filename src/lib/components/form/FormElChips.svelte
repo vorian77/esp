@@ -1,5 +1,7 @@
 <script lang="ts">
 	import {
+		CodeAction,
+		CodeActionClass,
 		CodeActionType,
 		ContextKey,
 		DataManager,
@@ -10,6 +12,7 @@
 		ParmsValuesType,
 		required
 	} from '$utils/types'
+	import { PropLinkItems } from '$comps/dataObj/types.rawDataObj.svelte'
 	import { getContext } from 'svelte'
 	import {
 		State,
@@ -21,6 +24,7 @@
 		TokenAppDo,
 		TokenAppModalSelect,
 		TokenAppModalReturnType,
+		TokenAppStateTriggerAction,
 		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
 	import { Field, FieldElement } from '$comps/form/field.svelte'
@@ -37,6 +41,7 @@
 	let { parms }: DataRecord = $props()
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 	let dm: DataManager = $derived(sm.dm)
+	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
 	let field = $derived.by(() => {
 		const f: Field = parms.field
@@ -50,12 +55,11 @@
 		})
 		return f
 	}) as FieldChips
-	let linkItemsSource = $derived(field.linkItems.getGridParms())
-	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
 	let displayValue: string = $derived(field.linkItems.getDisplayValueList(fieldValue))
-	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
 	async function onClick(event: Event) {
+		const gridParms = field.linkItems.getGridParms()
 		await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
@@ -65,14 +69,13 @@
 				codeConfirmType: TokenAppUserActionConfirmType.none,
 				data: {
 					token: new TokenAppModalSelect({
-						columnDefs: linkItemsSource.columnDefs,
+						columnDefs: gridParms.columnDefs,
 						fModalClose,
-						gridColumnId: 'id',
 						isMultiSelect: field.colDO.colDB.isMultiSelect,
 						listIdsSelected: fieldValue,
-						rowData: linkItemsSource.rowData,
+						rowData: gridParms.rowData,
 						selectLabel: field.colDO.label,
-						sortModel: linkItemsSource.sortModel
+						sortModel: gridParms.sortModel
 					})
 				}
 			})
@@ -94,7 +97,6 @@
 	}
 </script>
 
-abc
 {#if field}
 	<FormLabel {parms} />
 	<textarea
@@ -108,4 +110,5 @@ abc
 		value={displayValue}
 	/>
 {/if}
-<DataViewer header="fieldValue" data={fieldValue} />
+<!-- <DataViewer header="fieldValue" data={fieldValue} />
+<DataViewer header="displayValue" data={displayValue} /> -->

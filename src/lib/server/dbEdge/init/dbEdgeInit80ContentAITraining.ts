@@ -1,4 +1,5 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
+import { link } from 'fs'
 
 export function initContentAITraining(init: InitDb) {
 	initCourse(init)
@@ -48,7 +49,8 @@ function initCourse(init: InitDb) {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -920,18 +922,18 @@ function initCohortAttdSheet(init: InitDb) {
 				exprPreset: `<tree,uuid,CmCohortAttd.id>`,
 				orderDefine: 20,
 				indexTable: 0,
-				isDisplayable: false,
-				linkColumns: ['name'],
-				linkTable: 'CmCohortAttd'
+				isDisplayable: false
+				// linkColumns: ['date'],
+				// linkTable: 'CmCohortAttd'
 			},
 			{
 				columnName: 'csfCohort',
 				exprPreset: `newVals.id`,
 				orderDefine: 30,
 				indexTable: 0,
-				isDisplayable: false,
-				linkColumns: ['cohort', 'name'],
-				linkTable: 'CmCsfCohort'
+				isDisplayable: false
+				// linkColumns: ['cohort', 'name'],
+				// linkTable: 'CmCsfCohort'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1066,6 +1068,7 @@ function initCohortDoc(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: true,
 				linkColumns: ['name'],
+				linkTable: 'SysCode',
 				orderDefine: 30,
 				orderDisplay: 30
 			},
@@ -1442,7 +1445,8 @@ function initPartner(init: InitDb) {
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1475,7 +1479,8 @@ function initPartner(init: InitDb) {
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1774,10 +1779,12 @@ function initPartnerNote(init: InitDb) {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: '.owner.id = <tree,uuid,CmPartner.id>',
+		exprFilter: '.id IN (SELECT app_cm::CmPartner FILTER .id = <tree,uuid,CmPartner.id>).notes.id',
 		header: 'Notes',
 		name: 'data_obj_cm_partner_note_list',
 		owner: 'sys_ai_old',
+		parentColumn: 'notes',
+		parentTable: 'CmPartner',
 		tables: [{ index: 0, table: 'SysObjNote' }],
 		fields: [
 			{
@@ -1805,7 +1812,8 @@ function initPartnerNote(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1819,28 +1827,22 @@ function initPartnerNote(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
+		actionGroup: 'doag_detail',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_partner_note_detail',
 		header: 'Note',
+		owner: 'sys_ai_old',
+		parentColumn: 'notes',
+		parentTable: 'CmPartner',
 		tables: [{ index: 0, table: 'SysObjNote' }],
-		actionGroup: 'doag_detail',
+
 		fields: [
 			{
 				columnName: 'id',
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 10
-			},
-			{
-				columnName: 'owner',
-				orderDefine: 20,
-				indexTable: 0,
-				isDisplayable: false,
-				isExcludeUpdate: true,
-				linkColumns: ['name'],
-				linkTable: 'SysObj'
 			},
 			{
 				codeFieldElement: 'tagRow',
