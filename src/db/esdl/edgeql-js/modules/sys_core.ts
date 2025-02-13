@@ -608,11 +608,11 @@ const $SysDataObjColumn = $.makeType<$SysDataObjColumn>(_.spec, "20c31a70-baf0-1
 const SysDataObjColumn: $.$expr_PathNode<$.TypeSet<$SysDataObjColumn, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysDataObjColumn, $.Cardinality.Many), null);
 
 export type $SysDataObjColumnItemChangeλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
+  "selectParmName": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "codeAccess": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeValueTarget": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeValueTrigger": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "column": $.LinkDesc<$SysDataObjColumn, $.Cardinality.One, {}, false, false,  false, false>;
-  "fieldListItemsParmName": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "valueScalarTarget": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "valueScalarTrigger": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "orderDefine": $.PropertyDesc<_default.$nonNegative, $.Cardinality.One, false, false, false, false>;

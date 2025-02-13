@@ -424,7 +424,7 @@ export class FieldItemChange {
 			clazz,
 			'field'
 		)
-		this.fieldListItemsParmName = target.fieldListItemsParmName
+		this.fieldListItemsParmName = target.selectParmName
 		this.valueScalarTarget = target.valueScalarTarget
 		this.valueScalarTrigger = target.valueScalarTrigger
 	}

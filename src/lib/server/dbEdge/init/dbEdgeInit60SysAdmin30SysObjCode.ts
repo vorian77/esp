@@ -913,6 +913,27 @@ function initCode(init: InitDb) {
 			}
 		]
 	})
+
+	init.addTrans('dataObjColumnItemChangeBulk', [
+		[
+			'data_obj_sys_admin_code_detail',
+			[
+				{
+					fieldTrigger: 'codeType',
+					fieldTriggerTargets: [
+						{
+							codeValueTypeTarget: 'select',
+							codeValueTypeTrigger: 'any',
+							column: 'parent',
+							orderDefine: 0,
+							selectParmName: 'fieldListItemsParmId'
+						}
+					]
+				}
+			]
+		]
+	])
+
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',

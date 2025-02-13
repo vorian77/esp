@@ -473,7 +473,7 @@ function initApplicant(init: InitDb) {
 							},
 							codeValueTypeTarget: 'none',
 							codeValueTypeTrigger: 'code',
-							field: 'genderSelfId',
+							column: 'genderSelfId',
 							fieldAccess: 'required',
 							op: 'equal',
 							orderDefine: 0
@@ -486,7 +486,7 @@ function initApplicant(init: InitDb) {
 							},
 							codeValueTypeTarget: 'reset',
 							codeValueTypeTrigger: 'code',
-							field: 'genderSelfId',
+							column: 'genderSelfId',
 							fieldAccess: 'hidden',
 							op: 'notEqual',
 							orderDefine: 1
@@ -1915,7 +1915,7 @@ function initTaskSsrApp(init: InitDb) {
 							},
 							codeValueTypeTarget: 'none',
 							codeValueTypeTrigger: 'code',
-							field: 'genderSelfId',
+							column: 'genderSelfId',
 							fieldAccess: 'required',
 							op: 'equal',
 							orderDefine: 0
@@ -1928,7 +1928,7 @@ function initTaskSsrApp(init: InitDb) {
 							},
 							codeValueTypeTarget: 'reset',
 							codeValueTypeTrigger: 'code',
-							field: 'genderSelfId',
+							column: 'genderSelfId',
 							fieldAccess: 'hidden',
 							op: 'notEqual',
 							orderDefine: 1

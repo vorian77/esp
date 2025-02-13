@@ -2046,6 +2046,12 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Select Parm Name',
+		name: 'selectParmName'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Sender',
 		isMultiSelect: false,

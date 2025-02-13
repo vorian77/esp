@@ -505,7 +505,7 @@ export class RawDataObjPropDisplayItemChange {
 	_codeValueTypeTarget: string
 	_codeValueTypeTrigger: string
 	_column: string
-	fieldListItemsParmName?: string
+	selectParmName?: string
 	valueScalarTarget?: string
 	valueScalarTrigger?: string
 	constructor(obj: any) {
@@ -522,7 +522,7 @@ export class RawDataObjPropDisplayItemChange {
 			'_codeValueTypeTrigger'
 		)
 		this._column = strRequired(obj._column, clazz, '_column')
-		this.fieldListItemsParmName = obj.fieldListItemsParmName
+		this.selectParmName = obj.selectParmName
 		this.valueScalarTarget = obj.valueScalarTarget
 		this.valueScalarTrigger = obj.valueScalarTrigger
 	}

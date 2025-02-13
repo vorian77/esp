@@ -446,11 +446,11 @@ export namespace sys_core {
     "action"?: sys_user.SysUserAction | null;
   }
   export interface SysDataObjColumnItemChange extends sys_user.Mgmt {
+    "selectParmName"?: string | null;
     "codeAccess"?: SysCode | null;
     "codeValueTarget"?: SysCode | null;
     "codeValueTrigger"?: SysCode | null;
     "column": SysDataObjColumn;
-    "fieldListItemsParmName"?: string | null;
     "valueScalarTarget"?: string | null;
     "valueScalarTrigger"?: string | null;
     "orderDefine": number;

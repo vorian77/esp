@@ -278,8 +278,8 @@ module sys_core {
     required column: sys_core::SysDataObjColumn {
       on target delete allow;
     };
-    fieldListItemsParmName: str;
     required orderDefine: default::nonNegative;
+    selectParmName: str;
     valueScalarTarget: str;
     valueScalarTrigger: str;
   }

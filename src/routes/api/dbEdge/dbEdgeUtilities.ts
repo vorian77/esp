@@ -28,7 +28,7 @@ const SysDataObjColumnItemChange = e.shape(e.sys_core.SysDataObjColumnItemChange
 	_codeValueTypeTarget: t.codeValueTypeTarget.name,
 	_codeValueTypeTrigger: t.codeValueTypeTrigger.name,
 	_column: t.column.column.name,
-	fieldListItemsParmName: true,
+	selectParmName: true,
 	valueScalarTarget: true,
 	valueScalarTrigger: true,
 	order_by: t.orderDefine

@@ -635,25 +635,14 @@ export async function dataObjColumnItemChangeBulk(data: any) {
 											'ct_sys_do_field_item_change_type_trigger',
 											e.cast(e.str, e.json_get(target, 'codeValueTypeTrigger'))
 										),
-										// codeValueTypeTarget: e.sys_core.getCode(
-										// 	'ct_sys_do_field_item_change_type_target',
-										// 	'codeParm'
-										// ),
-										// codeValueTypeTrigger: e.sys_core.getCode(
-										// 	'ct_sys_do_field_item_change_type_trigger',
-										// 	'any'
-										// ),
 										column: e.sys_core.getDataObjColumn(
 											e.cast(e.str, e.cast(e.str, i[0])),
-											e.cast(e.str, e.json_get(target, 'field'))
+											e.cast(e.str, e.json_get(target, 'column'))
 										),
 										createdBy: CREATOR,
-										fieldListItemsParmName: e.cast(
-											e.str,
-											e.json_get(target, 'fieldListItemsParmName')
-										),
 										modifiedBy: CREATOR,
 										orderDefine: e.cast(e.int16, e.json_get(target, 'orderDefine')),
+										selectParmName: e.cast(e.str, e.json_get(target, 'selectParmName')),
 										valueScalarTarget: e.cast(e.str, e.json_get(target, 'valueScalarTarget')),
 										valueScalarTrigger: e.cast(e.str, e.json_get(target, 'valueScalarTrigger'))
 									})
