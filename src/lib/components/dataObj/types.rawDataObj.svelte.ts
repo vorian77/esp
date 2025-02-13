@@ -760,7 +760,6 @@ export class PropLink {
 }
 
 export class PropLinkItems {
-	isRetrieved: boolean = false
 	rawItems: DataRecord[] = $state([])
 	source: PropLinkItemsSource
 	constructor(source: any) {
@@ -857,34 +856,30 @@ export class PropLinkItems {
 	}
 
 	async retrieve(sm: State, fieldValue: string | undefined) {
-		if (!this.isRetrieved) {
-			// parms
-			let { dataTab, dataTree } = queryDataPre(sm, new DataObjData(), TokenApiQueryType.retrieve)
-			dataTab.parms.valueSet(ParmsValuesType.propLinkItemsValueCurrent, fieldValue)
-			dataTab.parms.valueSet(ParmsValuesType.propLinkItemsSourceRaw, this.source.raw)
+		// parms
+		let { dataTab, dataTree } = queryDataPre(sm, new DataObjData(), TokenApiQueryType.retrieve)
+		dataTab.parms.valueSet(ParmsValuesType.itemsParmValue, this.source.parmValue)
+		dataTab.parms.valueSet(ParmsValuesType.propLinkItemsValueCurrent, fieldValue)
+		dataTab.parms.valueSet(ParmsValuesType.propLinkItemsSourceRaw, this.source.raw)
 
-			// retrieve
-			const result: ResponseBody = await apiFetch(
-				ApiFunction.dbEdgeGetLinkItems,
-				new TokenApiQueryData({ dataTab, tree: dataTree, user: sm.user })
-			)
-			if (result.success) {
-				this.setRawItems(
-					required(result.data.data, `${FILENAME}.PropLinkItems.retrieve`, 'rawItems')
-				)
-			} else {
-				error(500, {
-					file: FILENAME,
-					function: 'retrieve',
-					message: `Error retrieving LinkItemsSource: ${this.source.name}`
-				})
-			}
+		// retrieve
+		const result: ResponseBody = await apiFetch(
+			ApiFunction.dbEdgeGetLinkItems,
+			new TokenApiQueryData({ dataTab, tree: dataTree, user: sm.user })
+		)
+		if (result.success) {
+			this.setRawItems(required(result.data.data, `${FILENAME}.PropLinkItems.retrieve`, 'rawItems'))
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'retrieve',
+				message: `Error retrieving LinkItemsSource: ${this.source.name}`
+			})
 		}
 	}
 
 	setRawItems(rawItems: DataRecord[]) {
 		this.rawItems = rawItems
-		this.isRetrieved = true
 	}
 }
 
@@ -895,7 +890,7 @@ export class PropLinkItemsSource {
 	exprSort: string
 	exprWith?: string
 	name: string
-	parmName?: string
+	parmValue?: string
 	props: PropLinkItemsSourceProp[] = []
 	raw: any
 	table?: DBTable
@@ -907,7 +902,7 @@ export class PropLinkItemsSource {
 		this.exprSort = valueOrDefault(obj.exprSort, '')
 		this.exprWith = valueOrDefault(obj.exprWith, '')
 		this.name = strRequired(obj.name, clazz, 'name')
-		this.parmName = obj._parmName
+		this.parmValue = obj._parmValue
 		this.props = arrayOfClass(PropLinkItemsSourceProp, obj._props)
 		this.raw = obj
 		this.table = classOptional(DBTable, obj._table)
@@ -968,6 +963,9 @@ export class PropLinkItemsSource {
 		return this.props
 			.filter((prop) => isNumber(prop.orderSort))
 			.sort((a, b) => a.orderSort! - b.orderSort!)
+	}
+	setParmValue(value: string) {
+		this.parmValue = value
 	}
 }
 

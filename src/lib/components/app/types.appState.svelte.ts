@@ -49,7 +49,7 @@ const FILENAME = '/$comps/app/types.appState.ts'
 
 export class State {
 	app: App = $state(new App())
-	dm: DataManager = new DataManager()
+	dm: DataManager
 	dataObjState?: DataObj
 	fActions: Record<string, Function> = {}
 	fChangeCallback?: Function
@@ -73,6 +73,7 @@ export class State {
 	constructor(obj: any) {
 		const clazz = 'State'
 		obj = valueOrDefault(obj, {})
+		this.dm = new DataManager(this)
 		this.fActions = this.loadActions()
 		this.navPage = strRequired(obj.navPage, clazz, 'navPage')
 		this.change(obj)

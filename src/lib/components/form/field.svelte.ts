@@ -114,7 +114,7 @@ export class Field {
 		// used for async initialization
 	}
 
-	async processItemChanges(row: number, triggerValueCurrent: any, dmn: DataManagerNode) {
+	async processItemChanges(sm: State, row: number, triggerValueCurrent: any, dmn: DataManagerNode) {
 		for (let i = 0; i < this.itemChanges.length; i++) {
 			const itemChange = this.itemChanges[i]
 			switch (itemChange.codeValueTypeTrigger) {
@@ -208,13 +208,12 @@ export class Field {
 					break
 
 				case FieldItemChangeTypeTarget.select:
-					console.log('FieldItemChangeTypeTarget.select.triggerValueCurrent:', triggerValueCurrent)
-					// retrieve select
-					// itemChange.fieldListItemsParmValue
+					itemChange.field.linkItems?.source.setParmValue(triggerValueCurrent)
+					await itemChange.field.linkItems?.retrieve(sm, undefined)
 
-					if (itemChange.codeValueTarget) {
-						await dmn.setFieldVal(row, itemChange.field, itemChange.codeValueTarget)
-					}
+					// if (itemChange.codeValueTarget) {
+					// 	await dmn.setFieldVal(row, itemChange.field, itemChange.codeValueTarget)
+					// }
 					break
 				default:
 					error(500, {

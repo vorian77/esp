@@ -418,7 +418,7 @@ function initCodeTypeCode(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_parent',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_id',
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
 			},

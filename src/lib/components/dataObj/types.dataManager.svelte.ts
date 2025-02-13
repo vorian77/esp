@@ -1,3 +1,4 @@
+import { State } from '$comps/app/types.appState.svelte'
 import {
 	DataObj,
 	DataObjCardinality,
@@ -47,7 +48,10 @@ export class DataObjStatus {
 export class DataManager {
 	nodes: Map<string, DataManagerNode> = new Map<string, DataManagerNode>()
 	objStatus: DataObjStatus = $state(new DataObjStatus())
-	constructor() {}
+	sm: State
+	constructor(sm: State) {
+		this.sm = sm
+	}
 
 	filterList(dataObjId: string, filter: string) {
 		return this.getNode(dataObjId)?.filterList(filter)
@@ -130,7 +134,7 @@ export class DataManager {
 		return this.getNode(dataObjId)?.objStatus.isValid()
 	}
 	nodeAdd(dataObj: DataObj) {
-		this.nodes.set(dataObj.raw.id, new DataManagerNode(dataObj))
+		this.nodes.set(dataObj.raw.id, new DataManagerNode(this.sm, dataObj))
 		this.setStatus()
 	}
 	reset() {
@@ -164,8 +168,10 @@ export class DataManagerNode {
 	objStatus: DataObjStatus = $state(new DataObjStatus())
 	recordsDisplay: DataRecord[] = $state([])
 	recordsHidden: DataRecord[] = $state([])
-	constructor(dataObj: DataObj) {
+	sm: State
+	constructor(sm: State, dataObj: DataObj) {
 		this.dataObj = this.initDataObjData(dataObj)
+		this.sm = sm
 		this.initDataObjItemChanges()
 		this.initDataObjValidate()
 	}
@@ -393,7 +399,7 @@ export class DataManagerNode {
 		})
 	}
 	async setFieldItemChanged(row: number, field: Field, value: any) {
-		await field.processItemChanges(row, value, this)
+		await field.processItemChanges(this.sm, row, value, this)
 	}
 }
 

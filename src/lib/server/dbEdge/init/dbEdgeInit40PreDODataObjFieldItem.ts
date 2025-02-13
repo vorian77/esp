@@ -150,7 +150,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter: '.codeType = sys_core::SysCode.codeType',
+		exprFilter: '.codeType.id = <parms,uuid,itemsParmValue> ',
 		name: 'il_sys_code_parent',
 		owner: 'sys_system_old',
 		table: 'SysCode'

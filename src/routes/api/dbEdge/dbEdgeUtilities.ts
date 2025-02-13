@@ -164,7 +164,7 @@ export async function getDataObjById(token: TokenApiId) {
 			}))
 		})),
 		_linkItemsSource: e.select(doc.fieldListItems, (fli) => ({
-			_parmName: doc.fieldListItemsParmValue,
+			_parmValue: doc.fieldListItemsParmValue,
 			...shapeLinkItemsSource(fli)
 		})),
 		_propName: e.op(doc.nameCustom, '??', doc.column.name),
@@ -542,7 +542,7 @@ export async function getReportUser(repUserId: string) {
 				_codeDataType: p.codeDataType.name,
 				_codeFieldElement: p.codeFieldElement.name,
 				_linkItemsSource: e.select(p.fieldListItems, (fli) => ({
-					_parmName: p.fieldListItemsParmValue,
+					_parmValue: p.fieldListItemsParmValue,
 					...shapeLinkItemsSource(fli)
 				})),
 				description: true,
