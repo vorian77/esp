@@ -20,14 +20,14 @@ import {
 import {
 	addApp,
 	addAppHeader,
+	addAttrObj,
 	addCode,
 	addCodeAction,
 	addCodeType,
 	addNode,
 	addTask,
 	addUser,
-	addUserType,
-	addSubjectObj
+	addUserType
 } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 import {
 	MoedBulkCsf,
@@ -238,8 +238,7 @@ export class InitDb {
 		this.items.push(
 			new InitDbItem({
 				name: 'updateDataObjColumnCustomEmbedShellFields',
-				fCreate: updateDataObjColumnCustomEmbedShellFields,
-				isExcludeResetByObj: true
+				fCreate: updateDataObjColumnCustomEmbedShellFields
 			})
 		)
 
@@ -287,10 +286,11 @@ export class InitDb {
 		)
 		this.items.push(
 			new InitDbItemObject({
-				name: 'sysObjSubject',
+				name: 'sysObjAttr',
 				dataMap: 'name',
-				dbObject: 'sys_core::SysObjSubject',
-				fCreate: addSubjectObj
+				dbObject: 'sys_core::SysObjEnt',
+				fCreate: addAttrObj,
+				isResetByObjRecord: true
 			})
 		)
 		this.items.push(
@@ -333,39 +333,35 @@ export class InitDb {
 			new InitDbItem({
 				name: 'MoedPBulkPart',
 				exprResets: `DELETE org_moed::MoedParticipant`,
-				fCreate: MoedPBulkPart,
-				isExcludeResetByObj: true
+				fCreate: MoedPBulkPart
 			})
 		)
 		this.items.push(
 			new InitDbItem({
 				name: 'MoedBulkCsf',
-				exprResets: `DELETE app_cm::CmClientServiceFlow FILTER .client IN org_moed::MoedParticipant`,
-				fCreate: MoedBulkCsf,
-				isExcludeResetByObj: true
+				exprResets: `UPDATE default::SysPerson SET {attributes := (select default::SysPerson.attributes filter .obj.codeObjType.name != 'attr_moed_office')};
+				DELETE app_cm::CmClientServiceFlow FILTER .client IN org_moed::MoedParticipant`,
+				fCreate: MoedBulkCsf
 			})
 		)
 		this.items.push(
 			new InitDbItem({
 				name: 'MoedBulkDataDoc',
 				exprResets: `DELETE app_cm::CmCsfDocument FILTER .csf.client IN org_moed::MoedParticipant`,
-				fCreate: MoedBulkDataDoc,
-				isExcludeResetByObj: true
+				fCreate: MoedBulkDataDoc
 			})
 		)
 		this.items.push(
 			new InitDbItem({
 				name: 'MoedBulkDataMsg',
 				exprResets: `DELETE app_cm::CmCsfMsg FILTER .csf.client IN org_moed::MoedParticipant`,
-				fCreate: MoedBulkDataMsg,
-				isExcludeResetByObj: true
+				fCreate: MoedBulkDataMsg
 			})
 		)
 		this.items.push(
 			new InitDbItem({
 				name: 'MoedCmCsfDataBulk',
-				exprResets: 'DELETE app_cm::CmCsfData FILTER .csf.client IN org_moed::MoedParticipant',
-				isExcludeResetByObj: true
+				exprResets: 'DELETE app_cm::CmCsfData FILTER .csf.client IN org_moed::MoedParticipant'
 			})
 		)
 	}
@@ -383,7 +379,6 @@ export class InitDb {
 	}
 
 	async execute() {
-		// await this.executeLinks()
 		await this.executeReset()
 		await this.executeCreate()
 	}
@@ -402,18 +397,6 @@ export class InitDb {
 			}
 		}
 		sectionHeader(`InitDB.reset.complete.`)
-	}
-
-	async executeLinks() {
-		sectionHeader(`InitDB.links...`)
-		this.items = this.items.filter((item) => item.name === 'sysObjSubject')
-		for (let i: number = 0; i < this.items.length; i++) {
-			const item = this.items[i]
-			if (item instanceof InitDbItemObject && item.dbObject) {
-				let links = arrayOfClass(ObjectLink, await getDBObjectLinks(new TokenApiId(item.dbObject)))
-				debug('executeLinks: ' + item.name, 'links', links)
-			}
-		}
 	}
 
 	async executeReset() {
@@ -455,7 +438,7 @@ export class InitDb {
 			}
 
 			// source record
-			if (!item.isExcludeResetByObj) {
+			if (item.dbObject && !item.isExcludeResetByObj) {
 				data.forEach((row) => {
 					this.reset.addStatement(`DELETE ${item.dbObject} ${item.exprSourceFilter(row)}`)
 				})

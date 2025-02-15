@@ -4,6 +4,15 @@ import { InitDb } from '$server/dbEdge/init/types.init'
 // .##csfCohort[is app_cm::CmCsfCohortAttd].cohortAttd.id`,
 
 export function initPreDataObjFieldItem(init: InitDb) {
+	/* attributes */
+	init.addTrans('sysDataObjFieldListItems', {
+		props: [[0, 'header', 'Attribute', '.header', true, 0]],
+		exprFilter: '.codeObjType.name = <parms,str,itemsParmValue>',
+		name: 'il_sys_attribute_order_header_by_attributeType_name',
+		owner: 'sys_system_old',
+		table: 'SysObjEnt'
+	})
+
 	/* code - general */
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
@@ -234,12 +243,6 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		name: 'il_sys_node_obj_order_name',
 		owner: 'sys_system_old',
 		table: 'SysNodeObj'
-	})
-	init.addTrans('sysDataObjFieldListItems', {
-		props: [[0, 'header', 'Header', '.header', true, 0]],
-		name: 'il_sys_obj_subject_order_name',
-		owner: 'sys_system_old',
-		table: 'SysObjSubject'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],

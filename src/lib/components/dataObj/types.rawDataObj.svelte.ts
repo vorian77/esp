@@ -720,6 +720,7 @@ export enum PropDataSourceValue {
 }
 
 export enum PropDataType {
+	attribute = 'attribute',
 	bool = 'bool',
 	date = 'date',
 	datetime = 'datetime',
@@ -746,16 +747,18 @@ export class PropLink {
 		const clazz = 'PropLink'
 		obj = valueOrDefault(obj, {})
 		const cols = getArray(obj._columns)
-		this.exprDisplay = cols.reduce((acc: string, col: any) => {
-			if (acc) acc += '.'
-			acc += col._name
-			return acc
-		}, '')
+		this.exprDisplay =
+			cols.reduce((acc: string, col: any) => {
+				if (acc) acc += '.'
+				acc += col._name
+				return acc
+			}, '') || 'id'
 		this.exprProps = `{ id, display := .${this.exprDisplay} }`
-		if (!obj._table) {
-			console.log(`Missing table for ${clazz} ${this.exprProps}`)
-		}
-		this.table = new DBTable(required(obj._table, clazz, 'table'))
+		console.log('PropLink.exprProps', this.exprProps)
+		this.table = classOptional(DBTable, obj._table)
+	}
+	getTableObj() {
+		return this.table ? this.table.object : undefined
 	}
 }
 
@@ -964,6 +967,11 @@ export class PropLinkItemsSource {
 			.filter((prop) => isNumber(prop.orderSort))
 			.sort((a, b) => a.orderSort! - b.orderSort!)
 	}
+
+	getTableObj() {
+		return this.table ? this.table.object : undefined
+	}
+
 	setParmValue(value: string) {
 		this.parmValue = value
 	}

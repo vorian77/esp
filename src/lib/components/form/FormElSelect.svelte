@@ -1,5 +1,12 @@
 <script lang="ts">
-	import { ContextKey, DataManager, DataObjCardinality, required } from '$utils/types'
+	import {
+		ContextKey,
+		DataManager,
+		DataObjCardinality,
+		getArray,
+		PropDataType,
+		required
+	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldElement } from '$comps/form/field.svelte'
 	import { FieldSelect } from '$comps/form/fieldSelect'
@@ -16,7 +23,10 @@
 	let dataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let field = $derived(parms.field) as FieldSelect
 	let fieldId = $derived('field-input-select-' + field.colDO.orderDefine)
-	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
+	let fieldValue = $derived.by(() => {
+		const value = dm.getFieldValue(parms.dataObjId, parms.row, parms.field)
+		return Array.isArray(value) ? value[0] : value
+	})
 	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsFormatted(fieldValue) : [])
 
 	let classProps = $derived(
@@ -30,7 +40,9 @@
 
 	async function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
+		let value = target.value
+		if (field.colDO.colDB.isMultiSelect) value = value ? [value] : []
+		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, value)
 	}
 </script>
 

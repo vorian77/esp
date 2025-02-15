@@ -176,6 +176,7 @@ export class UserResourceTask extends UserResource {
 	pageDataObjId?: string
 	targetDataObjId?: string
 	targetNodeObjId?: string
+	targetNodeObjDataObjId?: string
 	constructor(obj: any) {
 		super(obj)
 		const clazz = 'UserResourceTask'
@@ -202,6 +203,7 @@ export class UserResourceTask extends UserResource {
 		this.pageDataObjId = obj._pageDataObjId
 		this.targetDataObjId = obj._targetDataObjId
 		this.targetNodeObjId = obj._targetNodeObjId
+		this.targetNodeObjDataObjId = obj._targetNodeObjDataObjId
 	}
 
 	getTokenNode(user: User | undefined) {
@@ -212,12 +214,11 @@ export class UserResourceTask extends UserResource {
 					: this.targetNodeObjId
 						? 'object'
 						: undefined,
-				dataObjId: this.targetDataObjId,
+				dataObjId: this.targetNodeObjDataObjId || this.targetDataObjId,
 				header: this.header,
 				icon: this.codeIconName,
-				id: this.id,
-				name: this.name,
-				nodeObjId: this.targetNodeObjId
+				id: this.targetNodeObjId || 'dummyId',
+				name: this.name
 			})
 		})
 	}

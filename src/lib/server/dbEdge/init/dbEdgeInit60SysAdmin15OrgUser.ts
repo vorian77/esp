@@ -408,7 +408,6 @@ function initSystem(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysOrg'
 			},
 			{
@@ -602,7 +601,6 @@ function initUser(init: InitDb) {
 				exprSave: `(SELECT sys_core::SysOrg FILTER .id = <tree,uuid,SysOrg.id>)`,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysOrg',
 				orderDefine: 20
 			},
@@ -663,9 +661,7 @@ function initUser(init: InitDb) {
 				orderDisplay: 110,
 				orderDefine: 110,
 				indexTable: 0,
-				fieldListItems: 'il_sys_user_org',
-				linkColumns: ['name'],
-				linkTable: 'SysOrg'
+				fieldListItems: 'il_sys_user_org'
 			},
 			{
 				codeFieldElement: 'select',
@@ -674,9 +670,7 @@ function initUser(init: InitDb) {
 				orderDisplay: 120,
 				orderDefine: 120,
 				indexTable: 0,
-				fieldListItems: 'il_sys_user_system',
-				linkColumns: ['name'],
-				linkTable: 'SysSystem'
+				fieldListItems: 'il_sys_user_system'
 			},
 			{
 				codeFieldElement: 'tagRow',

@@ -14,7 +14,6 @@ export type $CmClientλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "agencyId": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "hasDriversLicense": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "school": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "office": $.LinkDesc<_sys_core.$SysObjSubject, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<client[is app_cm::CmClientServiceFlow]": $.LinkDesc<$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<client": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -211,7 +210,6 @@ const CmCsfJobPlacement: $.$expr_PathNode<$.TypeSet<$CmCsfJobPlacement, $.Cardin
 
 export type $CmCsfMsgλShape = $.typeutil.flatten<$CmCsfDataλShape & {
   "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
-  "office": $.LinkDesc<_sys_core.$SysObjSubject, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "parent": $.LinkDesc<$CmCsfMsg, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "recipients": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "sender": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.One, {}, false, false,  false, false>;

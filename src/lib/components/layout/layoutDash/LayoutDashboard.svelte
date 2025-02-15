@@ -64,7 +64,6 @@
 	async function getDataTask(task: UserResourceTask) {
 		task.data = {}
 		task.setShow(await getDataShow(task))
-		// console.log('LayoutDashboard.getDataTask', { name: task.name, isShow: task.isShow })
 		if (task.isShow) {
 			if (task.pageDataObjId) {
 				await task.loadPage(sm, fCallback)

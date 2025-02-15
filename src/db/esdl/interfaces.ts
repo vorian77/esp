@@ -94,7 +94,6 @@ export namespace app_cm {
     "agencyId"?: string | null;
     "hasDriversLicense"?: boolean | null;
     "school"?: string | null;
-    "office"?: sys_core.SysObjSubject | null;
   }
   export interface CmClientServiceFlow extends sys_user.Mgmt {
     "client": CmClient;
@@ -191,7 +190,6 @@ export namespace app_cm {
   }
   export interface CmCsfMsg extends CmCsfData {
     "codeStatus": sys_core.SysCode;
-    "office"?: sys_core.SysObjSubject | null;
     "parent"?: CmCsfMsg | null;
     "recipients": sys_user.SysUser[];
     "sender": sys_user.SysUser;
@@ -217,13 +215,6 @@ export namespace app_cm {
   export interface CmServiceFlow extends sys_core.SysObj {}
 }
 export namespace $default {
-  export interface Movie extends std.$Object {
-    "character"?: Person | null;
-    "title": string;
-  }
-  export interface Person extends std.$Object {
-    "name": string;
-  }
   export interface SysError extends std.$Object {
     "user": sys_user.SysUser;
     "createdAt": Date;
@@ -257,42 +248,14 @@ export namespace $default {
     "ssn"?: string | null;
     "title"?: string | null;
   }
-  export interface SysPersonOld extends std.$Object {
-    "codeDisabilityStatus"?: sys_core.SysCode | null;
-    "codeEthnicity"?: sys_core.SysCode | null;
-    "codeGender"?: sys_core.SysCode | null;
-    "codeRace"?: sys_core.SysCode | null;
-    "codeState"?: sys_core.SysCode | null;
-    "addr1"?: string | null;
-    "addr2"?: string | null;
-    "avatar"?: unknown | null;
-    "birthDate"?: edgedb.LocalDate | null;
-    "city"?: string | null;
-    "email"?: string | null;
-    "favFood"?: string | null;
-    "firstName": string;
-    "lastName": string;
-    "fullName": string;
-    "idMigration"?: string | null;
-    "isLegalAgreed"?: boolean | null;
-    "middleName"?: string | null;
-    "note"?: string | null;
-    "phoneAlt"?: string | null;
-    "phoneMobile"?: string | null;
-    "ssn"?: string | null;
-    "title"?: string | null;
-    "zip"?: string | null;
-  }
 }
-export type Movie = $default.Movie;
-export type Person = $default.Person;
 export type SysError = $default.SysError;
 export type SysPerson = $default.SysPerson;
-export type SysPersonOld = $default.SysPersonOld;
 export namespace sys_core {
   export interface ObjRoot extends std.$Object {
     "note"?: string | null;
     "testText"?: string | null;
+    "attributes": SysAttr[];
     "testCodeMulti": SysCode[];
     "testCodeSingle"?: SysCode | null;
     "testBool"?: boolean | null;
@@ -328,6 +291,10 @@ export namespace sys_core {
     "nodes": SysNodeObj[];
   }
   export interface SysAppHeader extends SysObj {}
+  export interface SysAttr extends sys_user.Mgmt {
+    "hasAccess": boolean;
+    "obj": SysObjEnt;
+  }
   export interface SysCode extends ObjRootCore, sys_user.Mgmt {
     "valueDecimal"?: number | null;
     "parent"?: SysCode | null;
@@ -511,6 +478,14 @@ export namespace sys_core {
     "expr": string;
     "index": number;
   }
+  export interface SysMsg extends ObjRoot {
+    "codeStatus": SysCode;
+    "parent"?: SysMsg | null;
+    "recipients": sys_user.SysUser[];
+    "sender": sys_user.SysUser;
+    "subject"?: string | null;
+    "createdAt": Date;
+  }
   export interface SysNodeObj extends SysObj {
     "codeNavType": SysCode;
     "codeNodeType": SysCode;
@@ -524,9 +499,6 @@ export namespace sys_core {
     "codeType": SysCode;
     "date": edgedb.LocalDate;
     "note"?: string | null;
-  }
-  export interface SysObjSubject extends SysObj {
-    "codeType": SysCode;
   }
   export interface SysOrg extends ObjRootCore, sys_user.Mgmt {
     "appName"?: string | null;
@@ -1034,11 +1006,8 @@ export interface types {
     "CmServiceFlow": app_cm.CmServiceFlow;
   };
   "default": {
-    "Movie": $default.Movie;
-    "Person": $default.Person;
     "SysError": $default.SysError;
     "SysPerson": $default.SysPerson;
-    "SysPersonOld": $default.SysPersonOld;
   };
   "sys_core": {
     "ObjRoot": sys_core.ObjRoot;
@@ -1047,6 +1016,7 @@ export interface types {
     "SysObjEnt": sys_core.SysObjEnt;
     "SysApp": sys_core.SysApp;
     "SysAppHeader": sys_core.SysAppHeader;
+    "SysAttr": sys_core.SysAttr;
     "SysCode": sys_core.SysCode;
     "SysCodeAction": sys_core.SysCodeAction;
     "SysCodeType": sys_core.SysCodeType;
@@ -1067,9 +1037,9 @@ export interface types {
     "SysDataObjFieldListItemsProp": sys_core.SysDataObjFieldListItemsProp;
     "SysDataObjTable": sys_core.SysDataObjTable;
     "SysDataObjWith": sys_core.SysDataObjWith;
+    "SysMsg": sys_core.SysMsg;
     "SysNodeObj": sys_core.SysNodeObj;
     "SysObjNote": sys_core.SysObjNote;
-    "SysObjSubject": sys_core.SysObjSubject;
     "SysOrg": sys_core.SysOrg;
     "SysSystem": sys_core.SysSystem;
   };

@@ -149,9 +149,9 @@ function initUserType(init: InitDb) {
 		name: 'ut_sys_admin_global',
 		owner: 'sys_system_old',
 		resources: [
-			{ codeType: 'app', resource: 'app_sys_admin_global' },
-			{ codeType: 'app', resource: 'app_sys_reporting' },
-			{ codeType: 'widget', resource: 'widget_sys_report' }
+			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_admin_global' },
+			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
+			{ codeType: 'widget', owner: 'sys_system_old', name: 'widget_sys_report' }
 		]
 	})
 
@@ -161,9 +161,9 @@ function initUserType(init: InitDb) {
 		name: 'ut_app_crm_admin',
 		owner: 'sys_app_crm',
 		resources: [
-			{ codeType: 'app', resource: 'app_app_crm' },
-			{ codeType: 'app', resource: 'app_sys_reporting' },
-			{ codeType: 'report', resource: 'report_crm_client_detail' }
+			{ codeType: 'app', owner: 'sys_app_crm', name: 'app_app_crm' },
+			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
+			{ codeType: 'report', owner: 'sys_app_crm', name: 'report_crm_client_detail' }
 		]
 	})
 
@@ -173,55 +173,67 @@ function initUserType(init: InitDb) {
 		name: 'ut_client_ai_admin',
 		owner: 'sys_ai_old',
 		resources: [
-			{ codeType: 'app', resource: 'app_sys_admin_user' },
-			{ codeType: 'app', resource: 'app_sys_reporting' },
-			{ codeType: 'widget', resource: 'widget_sys_report' }
+			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_admin_user' },
+			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
+			{ codeType: 'widget', owner: 'sys_system_old', name: 'widget_sys_report' }
 		]
 	})
 	init.addTrans('sysUserType', {
 		header: 'AI-Instructor',
 		name: 'ut_client_ai_instructor',
 		owner: 'sys_ai_old',
-		tags: [
-			{ codeType: 'app', resource: 'app_sys_reporting' },
-			{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_ai_instructor' }
-		]
+		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_ai_instructor' }]
 	})
 	init.addTrans('sysUserType', {
 		header: 'AI-Staff',
 		name: 'ut_client_ai_staff',
 		owner: 'sys_ai_old',
 		resources: [
-			{ codeType: 'app', resource: 'app_client_ai_staff' },
-			{ codeType: 'app', resource: 'app_sys_reporting' },
-			{ codeType: 'report', resource: 'report_ai_cohort_performance' },
-			{ codeType: 'report', resource: 'report_ai_course_performance' },
-			// { codeType: 'report', resource: 'report_ai_cohorts_detail' },
-			// { codeType: 'report', resource: 'report_ai_courses_detail' },
-			// { codeType: 'report', resource: 'report_ai_partners_detail' },
-			// { codeType: 'report', resource: 'report_ai_student_attd_detail' },
-			// { codeType: 'report', resource: 'report_ai_student_docs_detail' },
-			// { codeType: 'report', resource: 'report_ai_student_notes_detail' },
-			{ codeType: 'report', resource: 'report_ai_student_cohort_attd_summary' },
-			{ codeType: 'report', resource: 'report_ai_student_job_placement_detail' },
-			{ codeType: 'report', resource: 'report_ai_student_school_placement_detail' },
-			{ codeType: 'report', resource: 'report_ai_student_roster' },
-			// { codeType: 'report', resource: 'report_ai_student_service_flow_summary' },
-			{ codeType: 'widget', resource: 'widget_sys_report' }
+			{ codeType: 'app', owner: 'sys_ai_old', name: 'app_client_ai_staff' },
+			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
+			{ codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_cohort_performance' },
+			{ codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_course_performance' },
+			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_cohorts_detail' },
+			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_courses_detail' },
+			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_partners_detail' },
+			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_attd_detail' },
+			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_docs_detail' },
+			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_notes_detail' },
+			{ codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_cohort_attd_summary' },
+			{ codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_job_placement_detail' },
+			{
+				codeType: 'report',
+				owner: 'sys_ai_old',
+				name: 'report_ai_student_school_placement_detail'
+			},
+			{ codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_roster' },
+			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_service_flow_summary' },
+			{ codeType: 'widget', owner: 'sys_system_old', name: 'widget_sys_report' }
 		]
 	})
 
 	/* MOED */
 	init.addTrans('sysUserType', {
-		header: 'MOED-Staff',
-		name: 'ut_client_moed_advocate',
+		attributes: [{ hasAccess: true, name: 'moedOfficeEastside', owner: 'sys_moed_old' }],
+		header: 'MOED-Staff-Eastside',
+		name: 'ut_client_moed_advocate_east',
 		owner: 'sys_moed_old',
 		resources: [
-			{ codeType: 'app', resource: 'app_client_moed_advocate' },
-			{ codeType: 'app', resource: 'app_sys_reporting' },
-			{ codeType: 'report', resource: 'report_moed_self_serv_student_status' },
-			{ codeType: 'subject', resource: 'moedOfficeEastside' },
-			{ codeType: 'subject', resource: 'moedOfficeWestside' }
+			{ codeType: 'app', owner: 'sys_moed_old', name: 'app_client_moed_advocate' },
+			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
+			{ codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' }
+		],
+		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
+	})
+	init.addTrans('sysUserType', {
+		attributes: [{ hasAccess: true, name: 'moedOfficeWestside', owner: 'sys_moed_old' }],
+		header: 'MOED-Staff-Westside',
+		name: 'ut_client_moed_advocate_west',
+		owner: 'sys_moed_old',
+		resources: [
+			{ codeType: 'app', owner: 'sys_moed_old', name: 'app_client_moed_advocate' },
+			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
+			{ codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' }
 		],
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
 	})
@@ -231,10 +243,10 @@ function initUserType(init: InitDb) {
 		name: 'ut_client_moed_student',
 		owner: 'sys_moed_old',
 		resources: [
-			{ codeType: 'task', resource: 'task_moed_ssr_app' },
-			{ codeType: 'task', resource: 'task_moed_ssr_app_doc' },
-			{ codeType: 'task', resource: 'task_moed_ssr_app_msg' },
-			{ codeType: 'task', resource: 'task_moed_ssr_welcome' }
+			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_ssr_app' },
+			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_ssr_app_doc' },
+			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_ssr_app_msg' },
+			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_ssr_welcome' }
 		]
 	})
 }
@@ -273,7 +285,8 @@ function initUsers(init: InitDb) {
 			'ut_sys_admin_global',
 			'ut_client_ai_admin',
 			'ut_client_ai_staff',
-			'ut_client_moed_advocate',
+			'ut_client_moed_advocate_east',
+			'ut_client_moed_advocate_west',
 			'ut_client_moed_student'
 		]
 	})
@@ -347,7 +360,7 @@ function initUsers(init: InitDb) {
 		owner: 'org_moed',
 		systems: ['sys_moed_old'],
 		userName: 'bstone',
-		userTypes: ['ut_client_moed_advocate']
+		userTypes: ['ut_client_moed_advocate_east']
 	})
 
 	init.addTrans('sysUser', {
@@ -371,7 +384,7 @@ function initUsers(init: InitDb) {
 		owner: 'org_moed',
 		systems: ['sys_moed_old'],
 		userName: 'toliver',
-		userTypes: ['ut_client_moed_advocate']
+		userTypes: ['ut_client_moed_advocate_west']
 	})
 
 	init.addTrans('sysUser', {
@@ -383,7 +396,7 @@ function initUsers(init: InitDb) {
 		owner: 'org_moed',
 		systems: ['sys_moed_old'],
 		userName: 'twilliams',
-		userTypes: ['ut_client_moed_advocate']
+		userTypes: ['ut_client_moed_advocate_east']
 	})
 
 	init.addTrans('sysUser', {
@@ -395,6 +408,6 @@ function initUsers(init: InitDb) {
 		owner: 'org_moed',
 		systems: ['sys_moed_old'],
 		userName: 'twilson',
-		userTypes: ['ut_client_moed_advocate']
+		userTypes: ['ut_client_moed_advocate_west']
 	})
 }

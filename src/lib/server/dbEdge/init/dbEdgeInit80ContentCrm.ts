@@ -68,7 +68,6 @@ function initClient(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{

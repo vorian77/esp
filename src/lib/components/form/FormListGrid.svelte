@@ -264,6 +264,7 @@
 					defn.cellDataType = 'object'
 					break
 
+				case PropDataType.attribute:
 				case PropDataType.link:
 					if (field.linkItems) {
 						defn.context = { dm, linkItems: field.linkItems, sm }

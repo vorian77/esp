@@ -91,7 +91,6 @@ function initCourse(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -116,9 +115,7 @@ function initCourse(init: InitDb) {
 				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmValue: 'ct_cm_course_sector',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_cm_course_sector'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -420,7 +417,6 @@ function initCohort(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -486,9 +482,7 @@ function initCohort(init: InitDb) {
 				orderDefine: 110,
 				indexTable: 0,
 				fieldListItems: 'il_sys_user_by_tag_type',
-				fieldListItemsParmValue: 'utt_role_ai_instructor',
-				linkColumns: ['person', 'fullName'],
-				linkTable: 'SysUser'
+				fieldListItemsParmValue: 'utt_role_ai_instructor'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -969,9 +963,7 @@ function initCohortAttdSheet(init: InitDb) {
 				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmValue: 'ct_cm_cohort_attd_duration',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_cm_cohort_attd_duration'
 			},
 			{
 				codeAlignmentAlt: 'center',
@@ -1148,9 +1140,7 @@ function initCohortDoc(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_cm_cohort_doc_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_cm_cohort_doc_type'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1531,7 +1521,6 @@ function initPartner(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -1557,9 +1546,7 @@ function initPartner(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmValue: 'ct_cm_partner_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_cm_partner_type'
 			},
 			{
 				codeAccess: 'optional',
@@ -1639,9 +1626,7 @@ function initPartner(init: InitDb) {
 				orderDefine: 150,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_state',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_state'
 			},
 			{
 				codeAccess: 'optional',
@@ -1868,9 +1853,7 @@ function initPartnerNote(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_obj_note_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_obj_note_type'
 			},
 			{
 				codeFieldElement: 'tagRow',

@@ -116,7 +116,6 @@ function initDataObjFieldListItems(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -140,9 +139,7 @@ function initDataObjFieldListItems(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_table_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysTable'
+				fieldListItems: 'il_sys_table_order_name'
 			},
 			{
 				codeAccess: 'optional',
@@ -214,9 +211,7 @@ function initDataObjFieldListItems(init: InitDb) {
 				orderDefine: 140,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_db_col_data_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_db_col_data_type'
 			},
 			{
 				codeAccess: 'optional',
@@ -227,9 +222,7 @@ function initDataObjFieldListItems(init: InitDb) {
 				orderDefine: 150,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_db_col_mask',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_db_col_mask'
 			},
 			{
 				codeFieldElement: 'tagRow',

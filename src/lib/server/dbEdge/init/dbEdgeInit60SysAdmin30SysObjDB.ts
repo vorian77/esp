@@ -64,7 +64,6 @@ function initColumn(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -96,9 +95,7 @@ function initColumn(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_db_col_data_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_db_col_data_type'
 			},
 			{
 				codeFieldElement: 'select',
@@ -108,9 +105,7 @@ function initColumn(init: InitDb) {
 				orderDefine: 45,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_db_col_alignment',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_db_col_alignment'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -625,7 +620,6 @@ function initTable(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{

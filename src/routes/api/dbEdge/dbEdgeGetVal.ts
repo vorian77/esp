@@ -99,77 +99,89 @@ export function getValDB(codeDataType: PropDataType, valueRaw: any) {
 	let dataType = ''
 	let valueDB: any
 
-	if (codeDataType === PropDataType.json) {
-		dataType = '<json>'
-		valueDB = valueRaw ? getValQuoted(JSON.stringify(valueRaw)) : '{}'
-	} else if (codeDataType === PropDataType.uuid) {
-		dataType = '<uuid>'
-		valueDB = `${getUUIDQuoted(valueRaw)}`
-	} else if (codeDataType === PropDataType.uuidList) {
-		dataType = '<uuid>'
-		valueDB = getArray(valueRaw)
-		valueDB =
-			valueRaw.length > 0
-				? `{${getArray(valueRaw).map((v: string) => getUUIDQuoted(v))}}`
-				: getUUIDQuoted('')
-	} else if (codeDataType === PropDataType.bool) {
-		dataType = '<bool>'
-		valueDB = [undefined, null].includes(valueRaw) ? false : valueRaw
-	} else {
-		switch (codeDataType) {
-			case PropDataType.date:
-				dataType = '<cal::local_date>'
-				valueDB = getValQuoted(valueRaw)
-				break
+	switch (codeDataType) {
+		case PropDataType.attribute:
+			dataType = 'attribute'
+			valueDB = valueRaw ? valueRaw : '{}'
+			break
 
-			case PropDataType.datetime:
-				dataType = '<datetime>'
-				valueDB = `DATETIME(${getValQuoted(valueRaw)})`
-				break
+		case PropDataType.bool:
+			dataType = '<bool>'
+			valueDB = [undefined, null].includes(valueRaw) ? false : valueRaw
+			break
 
-			case PropDataType.float64:
-				dataType = '<float64>'
-				valueDB = valueRaw
-				break
+		case PropDataType.date:
+			dataType = '<cal::local_date>'
+			valueDB = getValQuoted(valueRaw)
+			break
 
-			case PropDataType.int16:
-				dataType = '<int16>'
-				valueDB = valueRaw
-				break
+		case PropDataType.datetime:
+			dataType = '<datetime>'
+			valueDB = `DATETIME(${getValQuoted(valueRaw)})`
+			break
 
-			case PropDataType.int32:
-				dataType = '<int32>'
-				valueDB = valueRaw
-				break
+		case PropDataType.float64:
+			dataType = '<float64>'
+			valueDB = valueRaw
+			break
 
-			case PropDataType.int64:
-				dataType = '<int64>'
-				valueDB = valueRaw
-				break
+		case PropDataType.int16:
+			dataType = '<int16>'
+			valueDB = valueRaw
+			break
 
-			case PropDataType.items:
-				dataType = 'items'
-				valueDB = valueRaw ? valueRaw : '{}'
-				break
+		case PropDataType.int32:
+			dataType = '<int32>'
+			valueDB = valueRaw
+			break
 
-			case PropDataType.link:
-				dataType = 'link'
-				valueDB = valueRaw ? valueRaw : '{}'
-				break
+		case PropDataType.int64:
+			dataType = '<int64>'
+			valueDB = valueRaw
+			break
 
-			case PropDataType.str:
-				dataType = '<str>'
-				valueDB = getValQuoted(valueRaw)
-				break
+		case PropDataType.items:
+			dataType = 'items'
+			valueDB = valueRaw ? valueRaw : '{}'
+			break
 
-			default:
-				error(500, {
-					file: FILENAME,
-					function: clazz,
-					message: `No case defined for dataType: (${codeDataType}).`
-				})
-		}
+		case PropDataType.json:
+			dataType = '<json>'
+			valueDB = valueRaw ? getValQuoted(JSON.stringify(valueRaw)) : '{}'
+			break
+
+		case PropDataType.link:
+			dataType = 'link'
+			valueDB = valueRaw ? valueRaw : '{}'
+			break
+
+		case PropDataType.str:
+			dataType = '<str>'
+			valueDB = getValQuoted(valueRaw)
+			break
+
+		case PropDataType.uuid:
+			dataType = '<uuid>'
+			valueDB = `${getUUIDQuoted(valueRaw)}`
+			break
+
+		case PropDataType.uuidList:
+			dataType = '<uuid>'
+			valueDB = getArray(valueRaw)
+			valueDB =
+				valueRaw.length > 0
+					? `{${getArray(valueRaw).map((v: string) => getUUIDQuoted(v))}}`
+					: getUUIDQuoted('')
+			break
+
+		default:
+			error(500, {
+				file: FILENAME,
+				function: clazz,
+				message: `No case defined for dataType: (${codeDataType}).`
+			})
 	}
+
 	return { dataType, valueDB }
 }
 

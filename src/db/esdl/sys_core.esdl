@@ -1,5 +1,8 @@
 module sys_core {
   type ObjRoot {
+    multi attributes: sys_core::SysAttr {
+      on source delete delete target;
+    };
     note: str;
      
     # test fields
@@ -21,6 +24,13 @@ module sys_core {
     orderDefine: default::nonNegative;
   }
 
+  type SysAttr extending sys_user::Mgmt {
+    required hasAccess: bool;
+    required obj: sys_core::SysObjEnt{
+      on target delete delete source;
+    };
+  }
+  
   type SysObj extending sys_core::ObjRootCore, sys_user::Mgmt {
     isGlobalResource: bool;
     required owner: sys_core::SysSystem;
@@ -43,18 +53,16 @@ module sys_core {
     };
     website: str;
     zip: str;
+    trigger sys_user_delete after delete for each do (
+      delete default::SysPerson filter .id not in (app_cm::CmClient.person.id union sys_core::SysObjEnt.contacts.id union sys_user::SysUser.person.id)
+    );
   }
-
+ 
   type SysObjNote extending sys_user::Mgmt {
     required date: cal::local_date;
     required codeType: sys_core::SysCode;
     note: str;
   }
-
-  type SysObjSubject extending sys_core::SysObj {
-    required codeType: sys_core::SysCode;
-  }
-
 
   type SysOrg extending sys_core::ObjRootCore, sys_user::Mgmt {
     appName: str;
@@ -367,6 +375,18 @@ module sys_core {
     required expr: str;
   }
   
+  type SysMsg extending sys_core::ObjRoot {
+    required codeStatus: sys_core::SysCode;
+    required createdAt: datetime {
+      default := datetime_of_transaction();
+      readonly := true;
+    };
+    parent: sys_core::SysMsg;
+    multi recipients: sys_user::SysUser;
+    required sender: sys_user::SysUser;
+    subject: str;
+  }
+
   type SysNodeObj extending sys_core::SysObj {
     required codeNavType: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
@@ -399,15 +419,6 @@ module sys_core {
     using (select assert_single(sys_core::SysCode filter 
       .owner.name = sysName and .codeType.name = codeTypeName and .name = codeName));
 
-  function getObj(name: str) -> optional sys_core::SysObj
-    using (select assert_single((select sys_core::SysObj filter .name = name)));
-
-  function getObjRootCore(name: str) -> optional sys_core::ObjRootCore
-    using (select assert_single((select sys_core::ObjRootCore filter .name = name)));
-    
-  function getOrg(name: str) -> optional sys_core::SysOrg
-    using (select assert_single((select sys_core::SysOrg filter .name = name)));
-
   function getDataObj(dataObjName: str) -> optional sys_core::SysDataObj
     using (select sys_core::SysDataObj filter .name = dataObjName);        
       
@@ -434,6 +445,18 @@ module sys_core {
 
   function getNodeObjById(nodeObjId: str) -> optional sys_core::SysNodeObj
     using (select sys_core::SysNodeObj filter .id = <uuid>nodeObjId);    
+
+  function getObj(ownerName:str, name: str) -> optional sys_core::SysObj
+    using (select assert_single((select sys_core::SysObj filter .owner.name = ownerName and .name = name)));
+
+  function getObjEnt(ownerName:str, name: str) -> optional sys_core::SysObjEnt
+    using (select assert_single((select sys_core::SysObjEnt filter .owner.name = ownerName and .name = name)));
+
+  function getObjRootCore(name: str) -> optional sys_core::ObjRootCore
+    using (select assert_single((select sys_core::ObjRootCore filter .name = name)));
+    
+  function getOrg(name: str) -> optional sys_core::SysOrg
+    using (select assert_single((select sys_core::SysOrg filter .name = name)));
 
   function getSystem(nameOwner: str, nameSystem: str) -> optional sys_core::SysSystem
     using (select assert_single((select sys_core::SysSystem filter .owner.name = nameOwner and .name = nameOwner))); 

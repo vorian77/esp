@@ -7,14 +7,15 @@ import type * as _cal from "./cal";
 import type * as _default from "./default";
 import type * as _sys_user from "./sys_user";
 import type * as _app_cm from "./app_cm";
-import type * as _sys_db from "./sys_db";
-import type * as _app_crm from "./app_crm";
-import type * as _org_moed from "./org_moed";
-import type * as _sys_rep from "./sys_rep";
 import type * as _sys_migr from "./sys_migr";
+import type * as _app_crm from "./app_crm";
+import type * as _sys_rep from "./sys_rep";
+import type * as _sys_db from "./sys_db";
+import type * as _org_moed from "./org_moed";
 export type $ObjRootλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "testText": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "attributes": $.LinkDesc<$SysAttr, $.Cardinality.Many, {}, false, false,  false, false>;
   "testCodeMulti": $.LinkDesc<$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
   "testCodeSingle": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "testBool": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -68,6 +69,8 @@ export type $SysObjEntλShape = $.typeutil.flatten<$SysObjλShape & {
   "zip": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "contacts": $.LinkDesc<_default.$SysPerson, $.Cardinality.Many, {}, false, false,  false, false>;
   "notes": $.LinkDesc<$SysObjNote, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<obj[is sys_core::SysAttr]": $.LinkDesc<$SysAttr, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<obj": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysObjEnt = $.ObjectType<"sys_core::SysObjEnt", $SysObjEntλShape, null, [
   ...$SysObj['__exclusives__'],
@@ -97,6 +100,53 @@ type $SysAppHeader = $.ObjectType<"sys_core::SysAppHeader", $SysAppHeaderλShape
 const $SysAppHeader = $.makeType<$SysAppHeader>(_.spec, "64f1500c-8962-11ef-9a4b-bf96d24716cc", _.syntax.literal);
 
 const SysAppHeader: $.$expr_PathNode<$.TypeSet<$SysAppHeader, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysAppHeader, $.Cardinality.Many), null);
+
+export type $SysAttrλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
+  "hasAccess": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
+  "obj": $.LinkDesc<$SysObjEnt, $.Cardinality.One, {}, false, false,  false, false>;
+  "<attributes[is sys_core::ObjRoot]": $.LinkDesc<$ObjRoot, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::ObjRootCore]": $.LinkDesc<$ObjRootCore, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysObj]": $.LinkDesc<$SysObj, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysApp]": $.LinkDesc<$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysDataObjActionGroup]": $.LinkDesc<$SysDataObjActionGroup, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysDataObjFieldListItems]": $.LinkDesc<$SysDataObjFieldListItems, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_migr::SysMigr]": $.LinkDesc<_sys_migr.$SysMigr, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysDataObjFieldEmbedListSelect]": $.LinkDesc<$SysDataObjFieldEmbedListSelect, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysObjEnt]": $.LinkDesc<$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysDataObjFieldEmbedListConfig]": $.LinkDesc<$SysDataObjFieldEmbedListConfig, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is app_crm::CrmClient]": $.LinkDesc<_app_crm.$CrmClient, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysCodeType]": $.LinkDesc<$SysCodeType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is SysPerson]": $.LinkDesc<_default.$SysPerson, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_rep::SysRep]": $.LinkDesc<_sys_rep.$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_user::SysWidget]": $.LinkDesc<_sys_user.$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysDataObjFieldEmbedListEdit]": $.LinkDesc<$SysDataObjFieldEmbedListEdit, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysCode]": $.LinkDesc<$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysNodeObj]": $.LinkDesc<$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is app_cm::CmServiceFlow]": $.LinkDesc<_app_cm.$CmServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_rep::SysAnalytic]": $.LinkDesc<_sys_rep.$SysAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is app_cm::CmCohort]": $.LinkDesc<_app_cm.$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysDataObj]": $.LinkDesc<$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysAppHeader]": $.LinkDesc<$SysAppHeader, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_user::SysUserAction]": $.LinkDesc<_sys_user.$SysUserAction, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysSystem]": $.LinkDesc<$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_db::SysColumn]": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_user::SysUserType]": $.LinkDesc<_sys_user.$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysOrg]": $.LinkDesc<$SysOrg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is org_moed::MoedPartData]": $.LinkDesc<_org_moed.$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysCodeAction]": $.LinkDesc<$SysCodeAction, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is app_cm::CmCourse]": $.LinkDesc<_app_cm.$CmCourse, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_db::SysTable]": $.LinkDesc<_sys_db.$SysTable, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attributes": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+}>;
+type $SysAttr = $.ObjectType<"sys_core::SysAttr", $SysAttrλShape, null, [
+  ..._sys_user.$Mgmt['__exclusives__'],
+]>;
+const $SysAttr = $.makeType<$SysAttr>(_.spec, "48c323d0-ea3d-11ef-bee1-f9ee524e51eb", _.syntax.literal);
+
+const SysAttr: $.$expr_PathNode<$.TypeSet<$SysAttr, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysAttr, $.Cardinality.Many), null);
 
 export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user.$MgmtλShape & {
   "valueDecimal": $.PropertyDesc<_std.$float64, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -132,12 +182,6 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<tags[is sys_user::SysUserType]": $.LinkDesc<_sys_user.$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeHighestEducation[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeHighestEducation[is org_moed::MoedParticipant]": $.LinkDesc<_org_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeType[is sys_core::SysObjSubject]": $.LinkDesc<$SysObjSubject, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeDisabilityStatus[is SysPersonOld]": $.LinkDesc<_default.$SysPersonOld, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeEthnicity[is SysPersonOld]": $.LinkDesc<_default.$SysPersonOld, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeGender[is SysPersonOld]": $.LinkDesc<_default.$SysPersonOld, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeRace[is SysPersonOld]": $.LinkDesc<_default.$SysPersonOld, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeState[is SysPersonOld]": $.LinkDesc<_default.$SysPersonOld, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeServiceFlowOutcome[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeServiceFlowType[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeStatus[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -233,7 +277,6 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<testCodeMulti[is sys_user::SysUserAction]": $.LinkDesc<_sys_user.$SysUserAction, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeMulti[is sys_core::SysAppHeader]": $.LinkDesc<$SysAppHeader, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeMulti[is sys_user::SysWidget]": $.LinkDesc<_sys_user.$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<testCodeMulti[is sys_core::SysObjSubject]": $.LinkDesc<$SysObjSubject, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeMulti[is sys_core::SysDataObj]": $.LinkDesc<$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeMulti[is sys_core::SysObjEnt]": $.LinkDesc<$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeMulti[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -254,7 +297,6 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<codeObjType[is sys_migr::SysMigr]": $.LinkDesc<_sys_migr.$SysMigr, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeObjType[is sys_core::SysAppHeader]": $.LinkDesc<$SysAppHeader, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeObjType[is sys_user::SysWidget]": $.LinkDesc<_sys_user.$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeObjType[is sys_core::SysObjSubject]": $.LinkDesc<$SysObjSubject, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeObjType[is sys_core::SysDataObj]": $.LinkDesc<$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeObjType[is sys_db::SysTable]": $.LinkDesc<_sys_db.$SysTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeObjType[is sys_core::SysCodeType]": $.LinkDesc<$SysCodeType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -285,7 +327,7 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<testCodeSingle[is sys_user::SysUserAction]": $.LinkDesc<_sys_user.$SysUserAction, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeSingle[is sys_core::SysAppHeader]": $.LinkDesc<$SysAppHeader, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeSingle[is sys_user::SysWidget]": $.LinkDesc<_sys_user.$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<testCodeSingle[is sys_core::SysObjSubject]": $.LinkDesc<$SysObjSubject, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<testCodeSingle[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeSingle[is sys_core::SysDataObj]": $.LinkDesc<$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeSingle[is sys_core::SysObjEnt]": $.LinkDesc<$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeSingle[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -299,13 +341,14 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<testCodeSingle[is sys_core::SysDataObjFieldEmbedListConfig]": $.LinkDesc<$SysDataObjFieldEmbedListConfig, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeSingle[is sys_core::SysOrg]": $.LinkDesc<$SysOrg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeSingle[is SysPerson]": $.LinkDesc<_default.$SysPerson, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<testCodeMulti[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeStatus[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeIcon[is sys_core::ObjRootCore]": $.LinkDesc<$ObjRootCore, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeIcon[is sys_core::SysObj]": $.LinkDesc<$SysObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeIcon[is sys_db::SysColumn]": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeIcon[is sys_core::SysCode]": $.LinkDesc<$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeIcon[is sys_core::SysDataObjFieldEmbedListEdit]": $.LinkDesc<$SysDataObjFieldEmbedListEdit, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeIcon[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeIcon[is sys_core::SysObjSubject]": $.LinkDesc<$SysObjSubject, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeIcon[is sys_user::SysUserType]": $.LinkDesc<_sys_user.$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeIcon[is sys_core::SysApp]": $.LinkDesc<$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeIcon[is app_cm::CmCohort]": $.LinkDesc<_app_cm.$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -764,6 +807,23 @@ const $SysDataObjWith = $.makeType<$SysDataObjWith>(_.spec, "c9893a7f-19bf-11ef-
 
 const SysDataObjWith: $.$expr_PathNode<$.TypeSet<$SysDataObjWith, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysDataObjWith, $.Cardinality.Many), null);
 
+export type $SysMsgλShape = $.typeutil.flatten<$ObjRootλShape & {
+  "codeStatus": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "parent": $.LinkDesc<$SysMsg, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "recipients": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
+  "sender": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
+  "subject": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "createdAt": $.PropertyDesc<_std.$datetime, $.Cardinality.One, false, false, true, true>;
+  "<parent[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<parent": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+}>;
+type $SysMsg = $.ObjectType<"sys_core::SysMsg", $SysMsgλShape, null, [
+  ...$ObjRoot['__exclusives__'],
+]>;
+const $SysMsg = $.makeType<$SysMsg>(_.spec, "edaa8125-eb1c-11ef-9496-0105da2cc911", _.syntax.literal);
+
+const SysMsg: $.$expr_PathNode<$.TypeSet<$SysMsg, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysMsg, $.Cardinality.Many), null);
+
 export type $SysNodeObjλShape = $.typeutil.flatten<$SysObjλShape & {
   "codeNavType": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "codeNodeType": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
@@ -801,20 +861,6 @@ type $SysObjNote = $.ObjectType<"sys_core::SysObjNote", $SysObjNoteλShape, null
 const $SysObjNote = $.makeType<$SysObjNote>(_.spec, "dd354dbb-8b4c-11ef-88ca-8f6d8e9def1c", _.syntax.literal);
 
 const SysObjNote: $.$expr_PathNode<$.TypeSet<$SysObjNote, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysObjNote, $.Cardinality.Many), null);
-
-export type $SysObjSubjectλShape = $.typeutil.flatten<$SysObjλShape & {
-  "codeType": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
-  "<office[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<office[is org_moed::MoedParticipant]": $.LinkDesc<_org_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<office[is app_cm::CmCsfMsg]": $.LinkDesc<_app_cm.$CmCsfMsg, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<office": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-}>;
-type $SysObjSubject = $.ObjectType<"sys_core::SysObjSubject", $SysObjSubjectλShape, null, [
-  ...$SysObj['__exclusives__'],
-]>;
-const $SysObjSubject = $.makeType<$SysObjSubject>(_.spec, "a73a6a1f-921b-11ef-8556-bfed64a0aa00", _.syntax.literal);
-
-const SysObjSubject: $.$expr_PathNode<$.TypeSet<$SysObjSubject, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysObjSubject, $.Cardinality.Many), null);
 
 export type $SysOrgλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user.$MgmtλShape & {
   "appName": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -869,7 +915,6 @@ export type $SysSystemλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_us
   "<systems[is sys_user::currentUser]": $.LinkDesc<_sys_user.$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is org_moed::MoedParticipant]": $.LinkDesc<_org_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<owner[is sys_core::SysObjSubject]": $.LinkDesc<$SysObjSubject, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is app_cm::CmServiceFlow]": $.LinkDesc<_app_cm.$CmServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is app_cm::CmCohort]": $.LinkDesc<_app_cm.$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_core::SysCodeAction]": $.LinkDesc<$SysCodeAction, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -1164,30 +1209,6 @@ function getNodeObjByName(...args: any[]) {
   }) as any;
 };
 
-type getObjλFuncExpr<
-  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
-> = $.$expr_Function<
-  $SysObj, $.cardutil.overrideLowerBound<$.cardutil.paramCardinality<P1>, "Zero">
->;
-function getObj<
-  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
->(
-  name: P1,
-): getObjλFuncExpr<P1>;
-function getObj(...args: any[]) {
-  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('sys_core::getObj', args, _.spec, [
-    {args: [{typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}], returnTypeId: "502c3231-b3c2-11ee-8bbb-0d7244bf9fbc", returnTypemod: "OptionalType"},
-  ]);
-  return _.syntax.$expressionify({
-    __kind__: $.ExpressionKind.Function,
-    __element__: returnType,
-    __cardinality__: cardinality,
-    __name__: "sys_core::getObj",
-    __args__: positionalArgs,
-    __namedargs__: namedArgs,
-  }) as any;
-};
-
 type getOrgλFuncExpr<
   P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
 > = $.$expr_Function<
@@ -1392,9 +1413,63 @@ function getDataObjColumn(...args: any[]) {
   }) as any;
 };
 
+type getObjλFuncExpr<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+  P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+> = $.$expr_Function<
+  $SysObj, $.cardutil.overrideLowerBound<$.cardutil.multiplyCardinalities<$.cardutil.paramCardinality<P1>, $.cardutil.paramCardinality<P2>>, "Zero">
+>;
+function getObj<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+  P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+>(
+  ownerName: P1,
+  name: P2,
+): getObjλFuncExpr<P1, P2>;
+function getObj(...args: any[]) {
+  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('sys_core::getObj', args, _.spec, [
+    {args: [{typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}, {typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}], returnTypeId: "502c3231-b3c2-11ee-8bbb-0d7244bf9fbc", returnTypemod: "OptionalType"},
+  ]);
+  return _.syntax.$expressionify({
+    __kind__: $.ExpressionKind.Function,
+    __element__: returnType,
+    __cardinality__: cardinality,
+    __name__: "sys_core::getObj",
+    __args__: positionalArgs,
+    __namedargs__: namedArgs,
+  }) as any;
+};
+
+type getObjEntλFuncExpr<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+  P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+> = $.$expr_Function<
+  $SysObjEnt, $.cardutil.overrideLowerBound<$.cardutil.multiplyCardinalities<$.cardutil.paramCardinality<P1>, $.cardutil.paramCardinality<P2>>, "Zero">
+>;
+function getObjEnt<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+  P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+>(
+  ownerName: P1,
+  name: P2,
+): getObjEntλFuncExpr<P1, P2>;
+function getObjEnt(...args: any[]) {
+  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('sys_core::getObjEnt', args, _.spec, [
+    {args: [{typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}, {typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}], returnTypeId: "7b94c00b-cc19-11ef-b3a9-37c1ac9f1a10", returnTypemod: "OptionalType"},
+  ]);
+  return _.syntax.$expressionify({
+    __kind__: $.ExpressionKind.Function,
+    __element__: returnType,
+    __cardinality__: cardinality,
+    __name__: "sys_core::getObjEnt",
+    __args__: positionalArgs,
+    __namedargs__: namedArgs,
+  }) as any;
+};
 
 
-export { $ObjRoot, ObjRoot, $ObjRootCore, ObjRootCore, $SysObj, SysObj, $SysObjEnt, SysObjEnt, $SysApp, SysApp, $SysAppHeader, SysAppHeader, $SysCode, SysCode, $SysCodeAction, SysCodeAction, $SysCodeType, SysCodeType, $SysDataObj, SysDataObj, $SysDataObjAction, SysDataObjAction, $SysDataObjActionGroup, SysDataObjActionGroup, $SysDataObjActionQuery, SysDataObjActionQuery, $SysDataObjActionQueryParm, SysDataObjActionQueryParm, $SysDataObjActionQueryTrigger, SysDataObjActionQueryTrigger, $SysDataObjColumn, SysDataObjColumn, $SysDataObjColumnItemChange, SysDataObjColumnItemChange, $SysDataObjColumnItemValue, SysDataObjColumnItemValue, $SysDataObjColumnLink, SysDataObjColumnLink, $SysDataObjFieldEmbedListConfig, SysDataObjFieldEmbedListConfig, $SysDataObjFieldEmbedListEdit, SysDataObjFieldEmbedListEdit, $SysDataObjFieldEmbedListSelect, SysDataObjFieldEmbedListSelect, $SysDataObjFieldListItems, SysDataObjFieldListItems, $SysDataObjFieldListItemsProp, SysDataObjFieldListItemsProp, $SysDataObjTable, SysDataObjTable, $SysDataObjWith, SysDataObjWith, $SysNodeObj, SysNodeObj, $SysObjNote, SysObjNote, $SysObjSubject, SysObjSubject, $SysOrg, SysOrg, $SysSystem, SysSystem };
+
+export { $ObjRoot, ObjRoot, $ObjRootCore, ObjRootCore, $SysObj, SysObj, $SysObjEnt, SysObjEnt, $SysApp, SysApp, $SysAppHeader, SysAppHeader, $SysAttr, SysAttr, $SysCode, SysCode, $SysCodeAction, SysCodeAction, $SysCodeType, SysCodeType, $SysDataObj, SysDataObj, $SysDataObjAction, SysDataObjAction, $SysDataObjActionGroup, SysDataObjActionGroup, $SysDataObjActionQuery, SysDataObjActionQuery, $SysDataObjActionQueryParm, SysDataObjActionQueryParm, $SysDataObjActionQueryTrigger, SysDataObjActionQueryTrigger, $SysDataObjColumn, SysDataObjColumn, $SysDataObjColumnItemChange, SysDataObjColumnItemChange, $SysDataObjColumnItemValue, SysDataObjColumnItemValue, $SysDataObjColumnLink, SysDataObjColumnLink, $SysDataObjFieldEmbedListConfig, SysDataObjFieldEmbedListConfig, $SysDataObjFieldEmbedListEdit, SysDataObjFieldEmbedListEdit, $SysDataObjFieldEmbedListSelect, SysDataObjFieldEmbedListSelect, $SysDataObjFieldListItems, SysDataObjFieldListItems, $SysDataObjFieldListItemsProp, SysDataObjFieldListItemsProp, $SysDataObjTable, SysDataObjTable, $SysDataObjWith, SysDataObjWith, $SysMsg, SysMsg, $SysNodeObj, SysNodeObj, $SysObjNote, SysObjNote, $SysOrg, SysOrg, $SysSystem, SysSystem };
 
 type __defaultExports = {
   "ObjRoot": typeof ObjRoot;
@@ -1403,6 +1478,7 @@ type __defaultExports = {
   "SysObjEnt": typeof SysObjEnt;
   "SysApp": typeof SysApp;
   "SysAppHeader": typeof SysAppHeader;
+  "SysAttr": typeof SysAttr;
   "SysCode": typeof SysCode;
   "SysCodeAction": typeof SysCodeAction;
   "SysCodeType": typeof SysCodeType;
@@ -1423,9 +1499,9 @@ type __defaultExports = {
   "SysDataObjFieldListItemsProp": typeof SysDataObjFieldListItemsProp;
   "SysDataObjTable": typeof SysDataObjTable;
   "SysDataObjWith": typeof SysDataObjWith;
+  "SysMsg": typeof SysMsg;
   "SysNodeObj": typeof SysNodeObj;
   "SysObjNote": typeof SysObjNote;
-  "SysObjSubject": typeof SysObjSubject;
   "SysOrg": typeof SysOrg;
   "SysSystem": typeof SysSystem;
   "getApp": typeof getApp;
@@ -1439,7 +1515,6 @@ type __defaultExports = {
   "getDataObjFieldListItems": typeof getDataObjFieldListItems;
   "getNodeObjById": typeof getNodeObjById;
   "getNodeObjByName": typeof getNodeObjByName;
-  "getObj": typeof getObj;
   "getOrg": typeof getOrg;
   "getSystem": typeof getSystem;
   "getSystemPrime": typeof getSystemPrime;
@@ -1447,7 +1522,9 @@ type __defaultExports = {
   "getObjRootCore": typeof getObjRootCore;
   "getCodeAction": typeof getCodeAction;
   "getDataObjActionGroup": typeof getDataObjActionGroup;
-  "getDataObjColumn": typeof getDataObjColumn
+  "getDataObjColumn": typeof getDataObjColumn;
+  "getObj": typeof getObj;
+  "getObjEnt": typeof getObjEnt
 };
 const __defaultExports: __defaultExports = {
   "ObjRoot": ObjRoot,
@@ -1456,6 +1533,7 @@ const __defaultExports: __defaultExports = {
   "SysObjEnt": SysObjEnt,
   "SysApp": SysApp,
   "SysAppHeader": SysAppHeader,
+  "SysAttr": SysAttr,
   "SysCode": SysCode,
   "SysCodeAction": SysCodeAction,
   "SysCodeType": SysCodeType,
@@ -1476,9 +1554,9 @@ const __defaultExports: __defaultExports = {
   "SysDataObjFieldListItemsProp": SysDataObjFieldListItemsProp,
   "SysDataObjTable": SysDataObjTable,
   "SysDataObjWith": SysDataObjWith,
+  "SysMsg": SysMsg,
   "SysNodeObj": SysNodeObj,
   "SysObjNote": SysObjNote,
-  "SysObjSubject": SysObjSubject,
   "SysOrg": SysOrg,
   "SysSystem": SysSystem,
   "getApp": getApp,
@@ -1492,7 +1570,6 @@ const __defaultExports: __defaultExports = {
   "getDataObjFieldListItems": getDataObjFieldListItems,
   "getNodeObjById": getNodeObjById,
   "getNodeObjByName": getNodeObjByName,
-  "getObj": getObj,
   "getOrg": getOrg,
   "getSystem": getSystem,
   "getSystemPrime": getSystemPrime,
@@ -1500,6 +1577,8 @@ const __defaultExports: __defaultExports = {
   "getObjRootCore": getObjRootCore,
   "getCodeAction": getCodeAction,
   "getDataObjActionGroup": getDataObjActionGroup,
-  "getDataObjColumn": getDataObjColumn
+  "getDataObjColumn": getDataObjColumn,
+  "getObj": getObj,
+  "getObjEnt": getObjEnt
 };
 export default __defaultExports;

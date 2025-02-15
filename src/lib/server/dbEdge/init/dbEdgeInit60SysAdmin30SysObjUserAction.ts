@@ -68,7 +68,6 @@ function initCodeAction(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -85,9 +84,7 @@ function initCodeAction(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_sys_codeType_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysCodeType'
+				fieldListItems: 'il_sys_codeType_order_name'
 			},
 			{
 				columnName: 'name',
@@ -241,7 +238,6 @@ function initDataObjActionGroup(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -403,7 +399,6 @@ function initUserAction(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -436,9 +431,7 @@ function initUserAction(init: InitDb) {
 				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_codeAction_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_code_action_class',
-				linkColumns: ['name'],
-				linkTable: 'SysCodeAction'
+				fieldListItemsParmValue: 'ct_sys_code_action_class'
 			},
 			{
 				codeFieldElement: 'select',
@@ -448,9 +441,7 @@ function initUserAction(init: InitDb) {
 				orderDefine: 70,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_user_action_trigger',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_user_action_trigger'
 			},
 			{
 				codeFieldElement: 'tagRow',

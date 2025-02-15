@@ -56,13 +56,14 @@ module app_cm {
     agencyId: str;
     codeHighestEducation: sys_core::SysCode;
     hasDriversLicense: bool;
-    office: sys_core::SysObjSubject;
     required owner: sys_core::SysSystem;
     required person: default::SysPerson{
-      on source delete delete target if orphan;
       on source delete allow;
     };
     school: str;
+    trigger cm_client_delete after delete for each do (
+      delete default::SysPerson filter .id not in (app_cm::CmClient.person.id union sys_core::SysObjEnt.contacts.id union sys_user::SysUser.person.id)
+    );
   }
 
   type CmClientServiceFlow extending sys_user::Mgmt {
@@ -115,7 +116,6 @@ module app_cm {
     # };
     required date: cal::local_date;
     msg: str;
-    office: sys_core::SysObjSubject;
     parent: app_cm::CmCsfMsg;
     multi recipients: sys_user::SysUser;
     required sender: sys_user::SysUser;

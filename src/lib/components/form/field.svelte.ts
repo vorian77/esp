@@ -200,9 +200,11 @@ export class Field {
 				case FieldItemChangeTypeTarget.none:
 					await dmn.setFieldVal(row, itemChange.field, targetCurrValue)
 					break
+
 				case FieldItemChangeTypeTarget.reset:
 					await dmn.setFieldVal(row, itemChange.field, null)
 					break
+
 				case FieldItemChangeTypeTarget.scalar:
 					await dmn.setFieldVal(row, itemChange.field, itemChange.valueScalarTarget)
 					break
@@ -210,11 +212,8 @@ export class Field {
 				case FieldItemChangeTypeTarget.select:
 					itemChange.field.linkItems?.source.setParmValue(triggerValueCurrent)
 					await itemChange.field.linkItems?.retrieve(sm, undefined)
-
-					// if (itemChange.codeValueTarget) {
-					// 	await dmn.setFieldVal(row, itemChange.field, itemChange.codeValueTarget)
-					// }
 					break
+
 				default:
 					error(500, {
 						file: FILENAME,

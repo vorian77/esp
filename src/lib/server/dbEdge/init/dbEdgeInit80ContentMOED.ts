@@ -5,10 +5,10 @@ export function initContentMOEDStudent(init: InitDb) {
 	// staff
 	initApplicant(init)
 	initCsf(init)
-	initCsfMsg(init)
+	// initCsfMsg(init)
 	initCsfNote(init)
 	initCsfDocument(init)
-	initSubjects(init)
+	initOffices(init)
 
 	// participant
 	initTaskSsrApp(init)
@@ -21,7 +21,7 @@ export function initContentMOEDStudent(init: InitDb) {
 	initApplicants(init)
 	initApplicipantServiceFlows(init)
 	initParticipantDataDoc(init)
-	initParticipantDataMsg(init)
+	// initParticipantDataMsg(init)
 	initParticipantData(init)
 
 	// reports
@@ -141,7 +141,6 @@ function initApplicant(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: false,
 				isExcludeUpdate: true,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -234,9 +233,7 @@ function initApplicant(init: InitDb) {
 				orderDefine: 140,
 				indexTable: 1,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_sys_person_gender',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_person_gender'
 			},
 			{
 				codeAccess: 'optional',
@@ -257,8 +254,6 @@ function initApplicant(init: InitDb) {
 			// 	indexTable: 1,
 			// 	fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
 			// 	fieldListItemsParmValue: 'ct_sys_person_gender',
-			// 	linkColumns: ['name'],
-			// 	linkTable: 'SysCode'
 			// },
 			{
 				codeFieldElement: 'select',
@@ -268,9 +263,7 @@ function initApplicant(init: InitDb) {
 				orderDefine: 150,
 				indexTable: 1,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_sys_person_race',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_person_race'
 			},
 			{
 				codeAccess: 'optional',
@@ -281,9 +274,7 @@ function initApplicant(init: InitDb) {
 				orderDefine: 160,
 				indexTable: 1,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_sys_person_ethnicity',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_person_ethnicity'
 			},
 			{
 				codeAccess: 'optional',
@@ -294,9 +285,7 @@ function initApplicant(init: InitDb) {
 				orderDefine: 170,
 				indexTable: 1,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_sys_person_disability_status',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_person_disability_status'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -346,9 +335,7 @@ function initApplicant(init: InitDb) {
 				orderDefine: 240,
 				indexTable: 1,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_sys_state',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_state'
 			},
 			{
 				codeAccess: 'optional',
@@ -373,17 +360,14 @@ function initApplicant(init: InitDb) {
 				orderDefine: 300
 			},
 			{
-				codeAccess: 'optional',
-				codeAlignmentAlt: 'center',
-				codeFieldElement: 'radio',
-				columnName: 'office',
+				codeFieldElement: 'select',
+				columnName: 'attributes',
 				isDisplayable: true,
 				orderDisplay: 310,
 				orderDefine: 310,
-				indexTable: 0,
-				fieldListItems: 'il_sys_obj_subject_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysObjSubject'
+				indexTable: 2,
+				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name',
+				fieldListItemsParmValue: 'attr_moed_office'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -662,9 +646,7 @@ function initCsf(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_cm_service_flow',
-				linkColumns: ['name'],
-				linkTable: 'CmServiceFlow'
+				fieldListItems: 'il_cm_service_flow'
 			},
 			{
 				codeFieldElement: 'select',
@@ -674,9 +656,7 @@ function initCsf(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_cm_service_flow_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_cm_service_flow_type'
 			},
 			{
 				codeFieldElement: 'date',
@@ -694,9 +674,7 @@ function initCsf(init: InitDb) {
 				orderDefine: 65,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_cm_service_flow_status',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_cm_service_flow_status'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -771,9 +749,7 @@ function initCsf(init: InitDb) {
 				orderDefine: 150,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_cm_service_flow_outcome',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_cm_service_flow_outcome'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -885,7 +861,7 @@ function initCsfMsg(init: InitDb) {
 		codeCardinality: 'list',
 		name: 'data_obj_moed_csf_msg_list',
 		header: 'Messages',
-		tables: [{ index: 0, table: 'CmCsfMsg' }],
+		tables: [{ index: 0, table: 'SysMsg' }],
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
 		actionGroup: 'doag_list',
 		fields: [
@@ -926,15 +902,6 @@ function initCsfMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'office',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0,
-				linkColumns: ['name']
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'subject',
 				isDisplayable: true,
 				orderDisplay: 70,
@@ -958,7 +925,7 @@ function initCsfMsg(init: InitDb) {
 		codeCardinality: 'detail',
 		name: 'data_obj_moed_csf_msg_detail',
 		header: 'Message',
-		tables: [{ index: 0, table: 'CmCsfMsg' }],
+		tables: [{ index: 0, table: 'SysMsg' }],
 		actionGroup: 'doag_detail',
 		fields: [
 			{
@@ -1000,9 +967,7 @@ function initCsfMsg(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_user_by_tag_type',
-				fieldListItemsParmValue: 'utt_role_moed_staff',
-				linkColumns: ['person', 'fullName'],
-				linkTable: 'SysUser'
+				fieldListItemsParmValue: 'utt_role_moed_staff'
 			},
 			{
 				columnName: 'subject',
@@ -1020,9 +985,7 @@ function initCsfMsg(init: InitDb) {
 				orderDefine: 70,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmValue: 'ct_cm_msg_status',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_cm_msg_status'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1046,19 +1009,6 @@ function initCsfMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 200,
 				orderDefine: 200
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				codeFieldElement: 'radio',
-				columnName: 'office',
-				isDisplayable: true,
-				orderDisplay: 210,
-				orderDefine: 210,
-				indexTable: 0,
-				fieldListItems: 'il_sys_obj_subject_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysObjSubject'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1251,9 +1201,7 @@ function initCsfNote(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_cm_case_note_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_cm_case_note_type'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1459,9 +1407,7 @@ function initCsfDocument(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_family_order_name_by_codeType_name_system',
-				fieldListItemsParmValue: 'ct_cm_doc_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_cm_doc_type'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1672,7 +1618,6 @@ function initTaskSsrApp(init: InitDb) {
 				orderDefine: 60,
 				indexTable: 1,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -1701,14 +1646,14 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'office',
+				columnName: 'attributes',
+				headerAlt: 'Office',
 				isDisplayable: true,
 				orderDisplay: 210,
 				orderDefine: 210,
-				indexTable: 1,
-				fieldListItems: 'il_sys_obj_subject_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysObjSubject'
+				indexTable: 2,
+				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name',
+				fieldListItemsParmValue: 'attr_moed_office'
 			},
 			{
 				codeFieldElement: 'date',
@@ -1776,9 +1721,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDefine: 280,
 				indexTable: 2,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_sys_person_gender',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_person_gender'
 			},
 			{
 				codeAccess: 'optional',
@@ -1796,9 +1739,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDefine: 300,
 				indexTable: 2,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_sys_person_race',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_person_race'
 			},
 			{
 				codeAccess: 'optional',
@@ -1809,9 +1750,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDefine: 310,
 				indexTable: 2,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_sys_person_ethnicity',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_person_ethnicity'
 			},
 			{
 				codeAccess: 'optional',
@@ -1822,9 +1761,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDefine: 320,
 				indexTable: 2,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_sys_person_disability_status',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_person_disability_status'
 			},
 			{
 				codeAccess: 'optional',
@@ -1859,9 +1796,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDefine: 360,
 				indexTable: 2,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_sys_state',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_state'
 			},
 			{
 				codeAccess: 'optional',
@@ -1960,7 +1895,7 @@ function initTaskSsrApp(init: InitDb) {
 }
 
 function initTaskSsrDoc(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjTask', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
@@ -2056,9 +1991,7 @@ function initTaskSsrDoc(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_family_group_order_name_by_codeType_name_system',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItems: 'il_sys_code_family_group_order_name_by_codeType_name_system'
 			},
 			{
 				codeFieldElement: 'file',
@@ -2157,16 +2090,16 @@ FILTER .parent.name = 'ct_cm_doc_type' ORDER BY .order asc`,
 }
 
 function initTaskSsrMsg(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjTask', {
+		actionGroup: 'doag_list_mobile',
 		owner: 'sys_moed_old',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		codeDataObjType: 'taskTarget',
-		name: 'data_obj_task_moed_ssr_msg_list',
+		exprFilter: '.sender.id = <user,uuid,id> OR <user,uuid,id> IN .recipients.id',
 		header: 'My Messages',
-		tables: [{ index: 0, table: 'CmCsfMsg' }],
-		exprFilter: '.csf.id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90"',
-		actionGroup: 'doag_list_mobile',
+		name: 'data_obj_task_moed_ssr_msg_list',
+		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -2177,12 +2110,20 @@ function initTaskSsrMsg(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				codeSortDir: 'desc',
-				columnName: 'date',
+				columnName: 'createdAt',
 				orderCrumb: 10,
 				orderSort: 10,
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'subject',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
 				indexTable: 0
 			},
 			{
@@ -2193,25 +2134,17 @@ function initTaskSsrMsg(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				linkColumns: ['name']
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'subject',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
 			}
 		]
 	})
 
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjTask', {
 		owner: 'sys_moed_old',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_task_moed_ssr_msg_detail',
 		header: 'My Message',
-		tables: [{ index: 0, table: 'CmCsfMsg' }],
+		tables: [{ index: 0, table: 'SysMsg' }],
 		actionGroup: 'doag_detail',
 		fields: [
 			{
@@ -2220,141 +2153,39 @@ function initTaskSsrMsg(init: InitDb) {
 				isDisplayable: false,
 				orderDefine: 10
 			},
-			// {
-			// 	columnName: 'csf',
-			// 	exprSave:
-			// 		'(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)',
-			// 	orderDefine: 20,
-			// 	indexTable: 0,
-			// 	isDisplayable: false,
-			// linkColumns: ['serviceFlow', 'name'],
-			// 	linkTable: 'CmClientServiceFlow'
-			// },
 			{
-				codeFieldElement: 'date',
-				columnName: 'date',
-				orderSort: 10,
+				columnName: 'codeStatus',
+				exprSave: `(sys_core::getCodeSystem('sys_system_old', 'ct_sys_msg_status', 'sent'))`,
+				orderDefine: 20,
+				indexTable: 0,
+				isDisplayable: false,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
+			},
+			{
+				columnName: 'sender',
+				exprSave: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
+				orderDefine: 30,
+				indexTable: 0,
+				isDisplayable: false,
+				linkColumns: ['person', 'fullName'],
+				linkTable: 'SysUser'
+			},
+			{
+				columnName: 'subject',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
 			},
-			// {
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'sender',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 50,
-			// 	orderDefine: 50,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_user_by_tag_type',
-			// 	fieldListItemsParmValue: 'utt_role_moed_staff',
-			// linkColumns: ['person', 'fullName'],
-			// 	linkTable: 'SysUser'
-			// },
-			{
-				columnName: 'subject',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
-			},
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	columnName: 'codeStatus',
-			// 	// exprPreset: `(SELECT assert_single((SELECT sys_core::SysCode FILTER .id = <uuid>"0bbab7c8-c0f4-11ee-9b77-e7fc1bb9b40e")))`,
-			// 	isDisplayable: true,
-			// 	orderDisplay: 70,
-			// 	orderDefine: 70,
-			// 	indexTable: 0,
-			// 	// fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-			// 	// fieldListItemsParmValue: 'ct_cm_msg_status',
-			// 	linkTable: 'SysCode',
-			// 	linkColumns: ['name']
-			// },
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
-				columnName: 'msg',
+				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				codeFieldElement: 'radio',
-				columnName: 'office',
-				isDisplayable: true,
-				orderDisplay: 210,
-				orderDefine: 210,
-				indexTable: 0,
-				fieldListItems: 'il_sys_obj_subject_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysObjSubject'
-			},
-
-			/* management */
-			{
-				codeFieldElement: 'tagDetails',
-				columnName: 'custom_details_start',
-				headerAlt: 'Meta',
-				isDisplayable: true,
-				orderDisplay: 1000,
-				orderDefine: 1000
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 1010,
-				orderDefine: 1010
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdAt',
-				isDisplayable: true,
-				orderDisplay: 1020,
-				orderDefine: 1020,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdBy',
-				isDisplayable: true,
-				orderDisplay: 1030,
-				orderDefine: 1030,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedAt',
-				isDisplayable: true,
-				orderDisplay: 1040,
-				orderDefine: 1040,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedBy',
-				isDisplayable: true,
-				orderDisplay: 1050,
-				orderDefine: 1050,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 1060,
-				orderDefine: 1060
-			},
-			{
-				codeFieldElement: 'tagDetails',
-				columnName: 'custom_details_end',
-				isDisplayable: true,
-				orderDisplay: 1070,
-				orderDefine: 1070
 			}
 		]
 	})
@@ -2391,7 +2222,7 @@ function initTaskSsrMsg(init: InitDb) {
 		isPinToDash: true,
 		isGlobalResource: false,
 		name: 'task_moed_ssr_app_msg',
-		targetDataObj: 'node_obj_task_moed_ssr_msg_list',
+		targetNodeObj: 'node_obj_task_moed_ssr_msg_list',
 		orderDefine: 50,
 		owner: 'sys_moed_old'
 	})
@@ -2517,16 +2348,16 @@ function initTaskSsrWelcome(init: InitDb) {
 	})
 }
 
-function initSubjects(init: InitDb) {
-	init.addTrans('sysObjSubject', {
-		codeType: 'cst_moed_office',
+function initOffices(init: InitDb) {
+	init.addTrans('sysObjAttr', {
+		codeObjType: 'attr_moed_office',
 		header: 'Eastside YO Center - 1212 N. Wolfe St. - 410-732-2661',
 		isGlobalResource: false,
 		name: 'moedOfficeEastside',
 		owner: 'sys_moed_old'
 	})
-	init.addTrans('sysObjSubject', {
-		codeType: 'cst_moed_office',
+	init.addTrans('sysObjAttr', {
+		codeObjType: 'attr_moed_office',
 		header: 'Westside YO Center - 1510 W. Laffayette Ave. -  410-545-6953',
 		isGlobalResource: false,
 		name: 'moedOfficeWestside',
@@ -2536,7 +2367,7 @@ function initSubjects(init: InitDb) {
 
 function initDemoData() {
 	moedDataApplicant.setData()
-	console.log('moedDataParticipant.data.rows:', moedDataApplicant.data.length)
+	console.log('moedDataParticipant.data.rows:', moedDataApplicant.data['applicant'].length)
 }
 
 function initApplicants(init: InitDb) {
@@ -2584,14 +2415,13 @@ function initAnalytic(init: InitDb) {
 function initReport(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
-		exprFilter: '.client[IS org_moed::MoedParticipant].owner.id IN <user,uuidlist,systemIds>',
-		// exprWith: `parts := (SELECT org_moed::MoedParticipant FILTER .owner.id IN <user,uuidlist,systemIds>)`,
+		exprFilter: '.client IN org_moed::MoedParticipant',
 		header: 'Self Service Registration - Student Status',
 		name: 'report_moed_self_serv_student_status',
 		owner: 'sys_moed_old',
 		tables: [
 			{ index: 0, table: 'CmClientServiceFlow' },
-			{ columnParent: 'client', indexParent: 0, index: 1, table: 'CmClient' },
+			{ columnParent: 'client', indexParent: 0, index: 1, table: 'MoedParticipant' },
 			{ columnParent: 'person', indexParent: 1, index: 2, table: 'SysPerson' }
 		],
 		elements: [
@@ -2674,6 +2504,16 @@ function initReport(init: InitDb) {
 				linkColumns: ['name'],
 				orderDefine: 70,
 				orderDisplay: 70
+			},
+			{
+				codeFieldElement: 'text',
+				codeReportElementType: 'column',
+				columnName: 'genderSelfId',
+				indexTable: 2,
+				isDisplay: false,
+				isDisplayable: true,
+				orderDefine: 75,
+				orderDisplay: 75
 			},
 			{
 				codeFieldElement: 'text',
@@ -2762,11 +2602,12 @@ function initReport(init: InitDb) {
 			{
 				codeFieldElement: 'text',
 				codeReportElementType: 'column',
-				columnName: 'office',
-				indexTable: 1,
-				isDisplay: false,
+				columnName: 'attributes',
+				header: 'Office',
+				indexTable: 2,
+				isDisplay: true,
 				isDisplayable: true,
-				linkColumns: ['name'],
+				linkColumns: ['obj', 'name'],
 				orderDefine: 160,
 				orderDisplay: 160
 			},
@@ -2823,72 +2664,72 @@ function initReport(init: InitDb) {
 				nameCustom: 'docCnt',
 				orderDefine: 210,
 				orderDisplay: 210
-			},
-			{
-				codeAlignment: 'right',
-				codeDataType: 'int64',
-				codeFieldElement: 'number',
-				codeReportElementType: 'column',
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfMsg FILTER .csf = app_cm::CmClientServiceFlow)))`,
-				header: 'Messages - Total',
-				isDisplay: true,
-				isDisplayable: true,
-				nameCustom: 'msgCnt',
-				orderDefine: 220,
-				orderDisplay: 220
-			},
-			{
-				codeAlignment: 'right',
-				codeDataType: 'int64',
-				codeFieldElement: 'number',
-				codeReportElementType: 'column',
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeStatus.name = 'Sent')))`,
-				header: 'Messages - Sent',
-				isDisplay: true,
-				isDisplayable: true,
-				nameCustom: 'msgSentCnt',
-				orderDefine: 230,
-				orderDisplay: 230
-			},
-			{
-				codeAlignment: 'right',
-				codeDataType: 'int64',
-				codeFieldElement: 'number',
-				codeReportElementType: 'column',
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeStatus.name = 'Under review')))`,
-				header: 'Messages - Under review',
-				isDisplay: true,
-				isDisplayable: true,
-				nameCustom: 'msgUrCnt',
-				orderDefine: 240,
-				orderDisplay: 240
-			},
-			{
-				codeAlignment: 'right',
-				codeDataType: 'int64',
-				codeFieldElement: 'number',
-				codeReportElementType: 'column',
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeStatus.name = 'Responded')))`,
-				header: 'Messages - Responded',
-				isDisplay: true,
-				isDisplayable: true,
-				nameCustom: 'msgRespondedCnt',
-				orderDefine: 250,
-				orderDisplay: 250
-			},
-			{
-				codeAlignment: 'right',
-				codeDataType: 'int64',
-				codeFieldElement: 'number',
-				codeReportElementType: 'column',
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeStatus.name = 'Closed')))`,
-				header: 'Messages - Closed',
-				isDisplay: true,
-				isDisplayable: true,
-				nameCustom: 'msgClosedCnt',
-				orderDefine: 260,
-				orderDisplay: 260
 			}
+			// {
+			// 	codeAlignment: 'right',
+			// 	codeDataType: 'int64',
+			// 	codeFieldElement: 'number',
+			// 	codeReportElementType: 'column',
+			// 	exprCustom: `(SELECT count((SELECT app_cm::CmCsfMsg FILTER .csf = app_cm::CmClientServiceFlow)))`,
+			// 	header: 'Messages - Total',
+			// 	isDisplay: true,
+			// 	isDisplayable: true,
+			// 	nameCustom: 'msgCnt',
+			// 	orderDefine: 220,
+			// 	orderDisplay: 220
+			// },
+			// {
+			// 	codeAlignment: 'right',
+			// 	codeDataType: 'int64',
+			// 	codeFieldElement: 'number',
+			// 	codeReportElementType: 'column',
+			// 	exprCustom: `(SELECT count((SELECT app_cm::CmCsfMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeStatus.name = 'Sent')))`,
+			// 	header: 'Messages - Sent',
+			// 	isDisplay: true,
+			// 	isDisplayable: true,
+			// 	nameCustom: 'msgSentCnt',
+			// 	orderDefine: 230,
+			// 	orderDisplay: 230
+			// },
+			// {
+			// 	codeAlignment: 'right',
+			// 	codeDataType: 'int64',
+			// 	codeFieldElement: 'number',
+			// 	codeReportElementType: 'column',
+			// 	exprCustom: `(SELECT count((SELECT app_cm::CmCsfMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeStatus.name = 'Under review')))`,
+			// 	header: 'Messages - Under review',
+			// 	isDisplay: true,
+			// 	isDisplayable: true,
+			// 	nameCustom: 'msgUrCnt',
+			// 	orderDefine: 240,
+			// 	orderDisplay: 240
+			// },
+			// {
+			// 	codeAlignment: 'right',
+			// 	codeDataType: 'int64',
+			// 	codeFieldElement: 'number',
+			// 	codeReportElementType: 'column',
+			// 	exprCustom: `(SELECT count((SELECT app_cm::CmCsfMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeStatus.name = 'Responded')))`,
+			// 	header: 'Messages - Responded',
+			// 	isDisplay: true,
+			// 	isDisplayable: true,
+			// 	nameCustom: 'msgRespondedCnt',
+			// 	orderDefine: 250,
+			// 	orderDisplay: 250
+			// },
+			// {
+			// 	codeAlignment: 'right',
+			// 	codeDataType: 'int64',
+			// 	codeFieldElement: 'number',
+			// 	codeReportElementType: 'column',
+			// 	exprCustom: `(SELECT count((SELECT app_cm::CmCsfMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeStatus.name = 'Closed')))`,
+			// 	header: 'Messages - Closed',
+			// 	isDisplay: true,
+			// 	isDisplayable: true,
+			// 	nameCustom: 'msgClosedCnt',
+			// 	orderDefine: 260,
+			// 	orderDisplay: 260
+			// }
 		]
 	})
 }

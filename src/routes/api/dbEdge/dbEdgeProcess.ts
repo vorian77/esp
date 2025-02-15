@@ -369,6 +369,7 @@ function formatDataForDisplay(prop: RawDataObjPropDB, propDataType: PropDataType
 			// no change
 			break
 
+		case PropDataType.attribute:
 		case PropDataType.items:
 		case PropDataType.link:
 			if (value && Object.hasOwn(value, 'value')) value = value.value

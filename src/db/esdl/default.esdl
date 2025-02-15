@@ -1,47 +1,20 @@
 module default {
   scalar type Name extending str;
 
-type SysError {
-  required createdAt: datetime {
-    default := datetime_of_transaction();
-    readonly := true;
-  };
-  errFile: str;
-  errFunction: str;
-  errMsg: str;
-  required user: sys_user::SysUser{
-    on target delete delete source;
-  };
-}
+  type SysError {
+    required createdAt: datetime {
+      default := datetime_of_transaction();
+      readonly := true;
+    };
+    errFile: str;
+    errFunction: str;
+    errMsg: str;
+    required user: sys_user::SysUser{
+      on target delete delete source;
+    };
+  }
 
-type SysPerson extending sys_core::ObjRoot {
-  addr1: str;
-  addr2: str;
-  avatar: json;
-  birthDate: cal::local_date;
-  city: str;
-  codeDisabilityStatus: sys_core::SysCode;
-  codeEthnicity: sys_core::SysCode;
-  codeGender: sys_core::SysCode;
-  codeRace: sys_core::SysCode;
-  codeState: sys_core::SysCode;
-  email: str;
-  favFood: str;
-  required firstName: default::Name;
-  property fullName := .firstName ++ ' ' ++ .lastName;
-  genderSelfId: str;
-  idMigration: uuid;
-  isLegalAgreed: bool;
-  required lastName: default::Name;
-  middleName: default::Name;
-  phoneAlt: str;
-  phoneMobile: str;
-  ssn: str;
-  title: str;
-  zip: str;
-}
-
-  type SysPersonOld {
+  type SysPerson extending sys_core::ObjRoot {
     addr1: str;
     addr2: str;
     avatar: json;
@@ -56,29 +29,20 @@ type SysPerson extending sys_core::ObjRoot {
     favFood: str;
     required firstName: default::Name;
     property fullName := .firstName ++ ' ' ++ .lastName;
+    genderSelfId: str;
     idMigration: uuid;
     isLegalAgreed: bool;
     required lastName: default::Name;
     middleName: default::Name;
-    note: str;
     phoneAlt: str;
     phoneMobile: str;
     ssn: str;
     title: str;
     zip: str;
   }
-  
+
   scalar type nonNegative extending int64 {
     constraint min_value(0);
-  }
-
-  type Person {
-    required name: str { constraint exclusive };
-  }
-
-  type Movie {
-    required title: str { constraint exclusive };
-    character: Person;
   }
 
   # FUNCTIONS

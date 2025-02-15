@@ -165,6 +165,13 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'attribute',
+		header: 'Attributes',
+		isMultiSelect: true,
+		name: 'attributes',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'json',
 		exprStorageKey: 'avatar_<random10>',
@@ -1796,6 +1803,13 @@ export function initPreColumn(init: InitDb) {
 		name: 'notes'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Object',
+		isMultiSelect: false,
+		name: 'obj',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Task Object - Data Object',
@@ -1811,7 +1825,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Office',
-		isMultiSelect: false,
+		isMultiSelect: true,
 		name: 'office'
 	})
 	init.addTrans('sysColumn', {

@@ -107,7 +107,6 @@ function initCodeType(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -125,9 +124,7 @@ function initCodeType(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_sys_codeType_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysCodeType'
+				fieldListItems: 'il_sys_codeType_order_name'
 			},
 			{
 				columnName: 'name',
@@ -406,9 +403,7 @@ function initCodeTypeCode(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_sys_system',
-				linkColumns: ['name'],
-				linkTable: 'SysSystem'
+				fieldListItems: 'il_sys_system'
 			},
 			{
 				codeAccess: 'optional',
@@ -418,9 +413,7 @@ function initCodeTypeCode(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_id',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItems: 'il_sys_code_order_name_by_codeType_id'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -718,7 +711,6 @@ function initCode(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -735,9 +727,7 @@ function initCode(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_sys_codeType_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysCodeType'
+				fieldListItems: 'il_sys_codeType_order_name'
 			},
 			{
 				codeAccess: 'optional',
@@ -747,9 +737,7 @@ function initCode(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_parent',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItems: 'il_sys_code_parent'
 			},
 			{
 				codeFieldElement: 'tagRow',

@@ -104,7 +104,6 @@ function initApp(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -128,9 +127,7 @@ function initApp(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_app_header_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysAppHeader'
+				fieldListItems: 'il_sys_app_header_order_name'
 			},
 			{
 				codeFieldElement: 'toggle',
@@ -335,7 +332,6 @@ function initAppHeader(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -368,9 +364,7 @@ function initAppHeader(init: InitDb) {
 				orderDefine: 55,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_icon',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_icon'
 			},
 			{
 				codeFieldElement: 'toggle',

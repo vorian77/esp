@@ -133,9 +133,7 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
-				fieldListItems: 'il_sys_user_action_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysUserAction'
+				fieldListItems: 'il_sys_user_action_order_name'
 			},
 			{
 				codeFieldElement: 'select',
@@ -145,9 +143,7 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_tailwind_color',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_tailwind_color'
 			},
 			{
 				codeFieldElement: 'toggle',
@@ -475,9 +471,7 @@ async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_do_query_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_do_query_type'
 			},
 			{
 				codeFieldElement: 'select',
@@ -487,9 +481,7 @@ async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_do_action_query_trigger_timing',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_do_action_query_trigger_timing'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -862,9 +854,7 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				fieldListItems: 'il_sys_column_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysColumn'
+				fieldListItems: 'il_sys_column_order_name'
 			},
 			{
 				columnName: 'orderDefine',
@@ -1215,9 +1205,7 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_sys_table_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysTable'
+				fieldListItems: 'il_sys_table_order_name'
 			},
 			{
 				codeFieldElement: 'toggle',
@@ -1259,9 +1247,7 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 				orderDefine: 90,
 				fieldListItems: 'il_sys_column_order_name',
 				headerAlt: 'Parent Table Column',
-				indexTable: 0,
-				linkColumns: ['name'],
-				linkTable: 'SysColumn'
+				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1431,9 +1417,7 @@ async function initFieldListConfigUserActionConfirm(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_user_action_confirm_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_user_action_confirm_type'
 			},
 			{
 				codeFieldElement: 'select',
@@ -1443,9 +1427,7 @@ async function initFieldListConfigUserActionConfirm(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_user_action_confirm_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_user_action_confirm_type'
 			},
 			{
 				codeAccess: 'optional',
@@ -1625,9 +1607,7 @@ async function initFieldListConfigUserActionShow(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_user_action_trigger',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_user_action_trigger'
 			},
 			{
 				codeFieldElement: 'toggle',

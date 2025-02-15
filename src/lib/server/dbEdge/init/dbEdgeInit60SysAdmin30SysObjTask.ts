@@ -91,7 +91,6 @@ function initTask(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -123,9 +122,7 @@ function initTask(init: InitDb) {
 				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_task_category',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_task_category'
 			},
 			{
 				codeFieldElement: 'toggle',
@@ -158,9 +155,7 @@ function initTask(init: InitDb) {
 				orderDefine: 100,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_task_render_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_task_render_type'
 			},
 			{
 				codeAccess: 'optional',
@@ -171,9 +166,7 @@ function initTask(init: InitDb) {
 				orderDefine: 110,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'taskPage',
-				linkColumns: ['name'],
-				linkTable: 'SysDataObj'
+				fieldListItemsParmValue: 'taskPage'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -205,9 +198,7 @@ function initTask(init: InitDb) {
 				orderDefine: 150,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_icon',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_icon'
 			},
 			{
 				codeFieldElement: 'number',
@@ -258,9 +249,7 @@ function initTask(init: InitDb) {
 				orderDefine: 210,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'taskTarget',
-				linkColumns: ['name'],
-				linkTable: 'SysDataObj'
+				fieldListItemsParmValue: 'taskTarget'
 			},
 			{
 				codeAccess: 'optional',
@@ -271,9 +260,7 @@ function initTask(init: InitDb) {
 				orderDefine: 220,
 				indexTable: 0,
 				fieldListItems: 'il_sys_node_obj_by_nav_type',
-				fieldListItemsParmValue: 'task',
-				linkColumns: ['name'],
-				linkTable: 'SysNodeObj'
+				fieldListItemsParmValue: 'task'
 			},
 			{
 				codeAccess: 'optional',
@@ -284,9 +271,7 @@ function initTask(init: InitDb) {
 				orderDefine: 230,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_task_status_obj',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_task_status_obj'
 			},
 			{
 				codeFieldElement: 'tagRow',

@@ -87,7 +87,6 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -111,9 +110,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_action_group_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysDataObjActionGroup'
+				fieldListItems: 'il_sys_data_obj_action_group_order_name'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -137,9 +134,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDefine: 80,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'embed',
-				linkColumns: ['name'],
-				linkTable: 'SysDataObj'
+				fieldListItemsParmValue: 'embed'
 			},
 			{
 				codeFieldElement: 'select',
@@ -149,9 +144,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDefine: 90,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'embed',
-				linkColumns: ['name'],
-				linkTable: 'SysDataObj'
+				fieldListItemsParmValue: 'embed'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -310,7 +303,6 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -335,9 +327,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'embed',
-				linkColumns: ['name'],
-				linkTable: 'SysDataObj'
+				fieldListItemsParmValue: 'embed'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -504,7 +494,6 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -528,9 +517,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_action_group_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysDataObjActionGroup'
+				fieldListItems: 'il_sys_data_obj_action_group_order_name'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -561,9 +548,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 				orderDefine: 90,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'embed',
-				linkColumns: ['name'],
-				linkTable: 'SysDataObj'
+				fieldListItemsParmValue: 'embed'
 			},
 			{
 				codeFieldElement: 'tagRow',

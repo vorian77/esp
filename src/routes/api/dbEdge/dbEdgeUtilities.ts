@@ -104,6 +104,7 @@ const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	_pageDataObjId: t.pageDataObj.id,
 	_targetDataObjId: t.targetDataObj.id,
 	_targetNodeObjId: t.targetNodeObj.id,
+	_targetNodeObjDataObjId: t.targetNodeObj?.dataObj?.id,
 	description: true,
 	exprShow: true,
 	exprStatus: true,
@@ -346,7 +347,11 @@ export async function getDataObjById(token: TokenApiId) {
 					e.op(
 						e.op(doc.column.codeDataType.name, '=', 'link'),
 						'and',
-						e.op('not', e.op('exists', doc.linkTable))
+						e.op(
+							e.op('not', e.op('exists', doc.linkTable)),
+							'and',
+							e.op('not', e.op('exists', doc.fieldListItems))
+						)
 					),
 					'else',
 					e.op(
@@ -369,7 +374,11 @@ export async function getDataObjById(token: TokenApiId) {
 					e.op(
 						e.op(doc.column.codeDataType.name, '=', 'link'),
 						'and',
-						e.op('not', e.op('exists', doc.linkTable))
+						e.op(
+							e.op('not', e.op('exists', doc.linkTable)),
+							'and',
+							e.op('not', e.op('exists', doc.fieldListItems))
+						)
 					),
 					'else',
 					e.op(
@@ -663,16 +672,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			filter: e.op(res.id, 'in', u.userTypes.resources.resource.id),
 			order_by: res.appHeader.orderDefine
 		})),
-		resources_subject: e.select(u.userTypes.resources, (res) => ({
-			_codeType: res.codeType.name,
-			_resource: e.select(res.resource.is(e.sys_core.SysObjSubject), (obj) => ({
-				_codeType: obj.codeType.name,
-				header: true,
-				id: true,
-				name: true
-			})),
-			filter: e.op(res.codeType.name, '=', 'subject')
-		})),
+
 		resources_task_default: e.select(e.sys_user.SysTask, (res) => ({
 			...shapeTask(res),
 			filter: e.op(

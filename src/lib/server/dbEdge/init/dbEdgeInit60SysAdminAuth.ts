@@ -186,9 +186,7 @@ function initDataObjMyAccount(init: InitDb) {
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 0,
-				fieldListItems: 'il_sys_org_by_user',
-				linkColumns: ['name'],
-				linkTable: 'SysOrg'
+				fieldListItems: 'il_sys_org_by_user'
 			},
 			{
 				codeFieldElement: 'select',
@@ -197,9 +195,7 @@ function initDataObjMyAccount(init: InitDb) {
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 0,
-				fieldListItems: 'il_sys_system_by_user',
-				linkColumns: ['name'],
-				linkTable: 'SysSystem'
+				fieldListItems: 'il_sys_system_by_user'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -614,9 +610,7 @@ function initDataObjSignup(init: InitDb) {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
-				fieldListItems: 'il_sys_user_type_self_signup',
-				linkColumns: ['name'],
-				linkTable: 'SysUserType'
+				fieldListItems: 'il_sys_user_type_self_signup'
 			},
 			{
 				codeColor: 'primary',

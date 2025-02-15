@@ -37,7 +37,7 @@ module sys_user {
     };
     required owner: sys_core::SysOrg;
     required person: default::SysPerson {
-      on source delete delete target if orphan;
+      on source delete allow;
     };
     required password: str {
       default := (SELECT <str>uuid_generate_v4());
@@ -47,6 +47,9 @@ module sys_user {
     multi userTypes: sys_user::SysUserType {
       on target delete allow;
     };
+    trigger sys_user_delete after delete for each do (
+      delete default::SysPerson filter .id not in (app_cm::CmClient.person.id union sys_core::SysObjEnt.contacts.id union sys_user::SysUser.person.id)
+    );
     constraint exclusive on (.userName);
   }
 

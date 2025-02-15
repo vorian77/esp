@@ -68,7 +68,6 @@ function initMigr(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
 				linkTable: 'SysSystem'
 			},
 			{
@@ -258,9 +257,7 @@ function initMigrSourceTable(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_migr_source_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_sys_migr_source_type'
 			},
 			{
 				codeAccess: 'optional',
@@ -435,9 +432,7 @@ function initMigrSourceColumn(init: InitDb) {
 				orderDefine: 30,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_db_col_data_type',
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
+				fieldListItemsParmValue: 'ct_db_col_data_type'
 			},
 
 			/* management */
@@ -641,9 +636,7 @@ function initMigrTargetTable(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				fieldListItems: 'il_sys_table_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysTable'
+				fieldListItems: 'il_sys_table_order_name'
 			},
 			{
 				codeFieldElement: 'toggle',
@@ -877,9 +870,7 @@ function initMigrTargetColumn(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				fieldListItems: 'il_sys_migr_target_table_column_order_name',
-				linkColumns: ['name'],
-				linkTable: 'SysColumn'
+				fieldListItems: 'il_sys_migr_target_table_column_order_name'
 			},
 			{
 				codeFieldElement: 'textArea',

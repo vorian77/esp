@@ -12,7 +12,7 @@ import {
 	strOptional,
 	strRequired
 } from '$utils/types'
-import type { DataRecord, DataRow } from '$utils/types'
+import type { DataRecord, DataRow, PropLink, PropLinkItemsSource } from '$utils/types'
 import { FieldEmbedType } from '$comps/form/field.svelte'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
@@ -210,11 +210,59 @@ export class Query {
 		} else {
 			let item = `json_get(item, '${propObj.propName}')`
 			let { dataType } = getValDB(propObj.codeDataType, undefined)
+			let propTable = strRequired(
+				this.getTableObj(propObj.indexTable),
+				clazzProp,
+				'attrLink.table?.object'
+			)
 
 			switch (dataType) {
+				case 'attribute':
+					const attrLinkItemsSource: PropLinkItemsSource = required(
+						propObj.linkItemsSource,
+						clazzProp,
+						'attrLinkItemsSource'
+					)
+					const attrType = strRequired(
+						attrLinkItemsSource.parmValue,
+						clazzProp,
+						'linkItemsSource.parmValue'
+					)
+
+					const exprAttrOthers = `(SELECT ${propTable}.attributes FILTER .obj.codeObjType.name != '${attrType}')`
+					const exprAttrNew = `
+					(FOR attr IN json_array_unpack(${item}) UNION
+						(INSERT sys_core::SysAttr
+							{
+								obj := (SELECT sys_core::SysObjEnt FILTER .id = <uuid>attr),
+								hasAccess := true,
+								createdBy := sys_user::getRootUser(),
+								modifiedBy := sys_user::getRootUser()
+							}
+						)
+					)`
+
+					propExpr = `DISTINCT (${exprAttrOthers} UNION ${exprAttrNew})`
+					debug('getPropsSavePropExpr', 'propObj.attributes', { propExpr })
+					setValueFunction(propIdx, (rawValue: any) => {
+						return rawValue ? rawValue : getUUID()
+					})
+					break
+
 				case 'link':
-					let propTable = strRequired(propObj.link?.table?.object, clazzProp, 'propTable')
-					propTable = propTable === this.getTableRootObj() ? `DETACHED ${propTable}` : propTable
+					let linkTable = ''
+
+					if (propObj.linkItemsSource) {
+						linkTable = strRequired(
+							propObj.linkItemsSource.getTableObj(),
+							clazzProp,
+							'linkItemsSource.table'
+						)
+					} else if (propObj.link) {
+						linkTable = strRequired(propObj.link.getTableObj(), clazzProp, 'link.table')
+					}
+
+					linkTable = linkTable === this.getTableRootObj() ? `DETACHED ${linkTable}` : linkTable
 					let filter = ''
 
 					if (propObj.isMultiSelect) {
@@ -229,7 +277,7 @@ export class Query {
 							return rawValue ? rawValue : getUUID()
 						})
 					}
-					propExpr = `(SELECT ${propTable} FILTER .id ${filter})`
+					propExpr = `(SELECT ${linkTable} FILTER .id ${filter})`
 					break
 
 				case '<cal::local_date>':
@@ -278,11 +326,17 @@ export class Query {
 			const indexTable = nbrOrDefault(prop.indexTable, -1)
 			let propValue = ''
 
-			if (prop.linkItemsSource) {
-				// propValue = `.${propChildTableTraversal} ${prop.linkItemsSource.exprProps}`
+			if (prop.propNameRaw === 'parent') {
+				debug('processPropsSelectItem', 'prop', prop)
+			}
+
+			if (prop.codeDataType === PropDataType.attribute) {
+				propValue = prop.linkItemsSource
+					? `.${propChildTableTraversal}.obj.id`
+					: `.${propChildTableTraversal}.obj.header`
+			} else if (prop.linkItemsSource) {
 				propValue = `.${propChildTableTraversal}.id`
 			} else if (prop.link) {
-				// propValue = `.${propChildTableTraversal} ${prop.link.exprProps}`
 				propValue = `.${propChildTableTraversal}.${prop.link.exprDisplay}`
 			} else if (prop.exprCustom) {
 				propValue = prop.exprCustom
@@ -336,6 +390,11 @@ export class Query {
 
 		if (script) script = 'ORDER BY ' + script
 		return script
+	}
+
+	getTableObj(indexTable: number) {
+		const table = this.rawDataObj.tables.find((table) => table.index === indexTable)
+		return table ? table.table.object : ''
 	}
 
 	getTableRootName() {

@@ -62,6 +62,32 @@ export async function addAppHeader(data: any) {
 	return await query.run(client, data)
 }
 
+export async function addAttrObj(data: any) {
+	sectionHeader(`addAttrObj - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			codeObjType: e.str,
+			header: e.optional(e.str),
+			isGlobalResource: e.bool,
+			name: e.str,
+			owner: e.str
+		},
+		(p) => {
+			return e.insert(e.sys_core.SysObjEnt, {
+				codeObjType: e.sys_core.getCode('ct_sys_attribute', p.codeObjType),
+				createdBy: CREATOR,
+				header: p.header,
+				isGlobalResource: p.isGlobalResource,
+				name: p.name,
+				owner: e.sys_core.getSystemPrime(p.owner),
+				modifiedBy: CREATOR
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
 export async function addCode(data: any) {
 	sectionHeader(`addCode - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
@@ -307,32 +333,6 @@ export async function addOrg(data: any) {
 	return await query.run(client, data)
 }
 
-export async function addSubjectObj(data: any) {
-	sectionHeader(`addSubjectObj - ${data.name}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			codeType: e.str,
-			header: e.optional(e.str),
-			isGlobalResource: e.bool,
-			name: e.str,
-			owner: e.str
-		},
-		(p) => {
-			return e.insert(e.sys_core.SysObjSubject, {
-				codeType: e.sys_core.getCode('ct_sys_config_subject_type', p.codeType),
-				createdBy: CREATOR,
-				header: p.header,
-				isGlobalResource: p.isGlobalResource,
-				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner),
-				modifiedBy: CREATOR
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-
 export async function addTask(data: any) {
 	sectionHeader(`addTask - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
@@ -459,6 +459,7 @@ export async function addUserType(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
+			attributes: e.optional(e.array(e.json)),
 			header: e.str,
 			isSelfSignup: e.optional(e.bool),
 			name: e.str,
@@ -468,6 +469,19 @@ export async function addUserType(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysUserType, {
+				attributes: e.for(
+					e.array_unpack(p.attributes || e.cast(e.array(e.str), e.set())),
+					(attr) => {
+						const objName = e.cast(e.str, e.json_get(attr, 'name'))
+						const objOwner = e.cast(e.str, e.json_get(attr, 'owner'))
+						return e.insert(e.sys_core.SysAttr, {
+							createdBy: CREATOR,
+							hasAccess: e.cast(e.bool, e.json_get(attr, 'hasAccess')),
+							modifiedBy: CREATOR,
+							obj: e.sys_core.getObjEnt(objOwner, objName)
+						})
+					}
+				),
 				createdBy: CREATOR,
 				header: p.header,
 				isSelfSignup: valueOrDefaultParm(p.isSelfSignup, false),
@@ -476,10 +490,11 @@ export async function addUserType(data: any) {
 				modifiedBy: CREATOR,
 				resources: e.for(e.array_unpack(p.resources || e.cast(e.array(e.str), e.set())), (res) => {
 					const codeType = e.cast(e.str, e.json_get(res, 'codeType'))
-					const resource = e.cast(e.str, e.json_get(res, 'resource'))
+					const resourceName = e.cast(e.str, e.json_get(res, 'name'))
+					const resourceOwner = e.cast(e.str, e.json_get(res, 'owner'))
 					return e.insert(e.sys_user.SysUserTypeResource, {
 						codeType: e.sys_core.getCode('ct_sys_user_type_resource_type', codeType),
-						resource: e.sys_core.getObj(resource)
+						resource: e.sys_core.getObj(resourceOwner, resourceName)
 					})
 				}),
 				tags: e.assert_distinct(

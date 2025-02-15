@@ -15,31 +15,6 @@ const Name: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarT
 export type $nonNegative = $.ScalarType<"std::number", number>;
 const nonNegative: $.scalarTypeWithConstructor<_std.$number, string> = $.makeType<$.scalarTypeWithConstructor<_std.$number, string>>(_.spec, "50312c72-b3c2-11ee-8e6a-23f218a1f329", _.syntax.literal);
 
-export type $MovieλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
-  "character": $.LinkDesc<$Person, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "title": $.PropertyDesc<_std.$str, $.Cardinality.One, true, false, false, false>;
-}>;
-type $Movie = $.ObjectType<"default::Movie", $MovieλShape, null, [
-  ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
-  {title: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
-]>;
-const $Movie = $.makeType<$Movie>(_.spec, "0a03c423-fbfc-11ee-97c7-bbbf283c38a8", _.syntax.literal);
-
-const Movie: $.$expr_PathNode<$.TypeSet<$Movie, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Movie, $.Cardinality.Many), null);
-
-export type $PersonλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
-  "name": $.PropertyDesc<_std.$str, $.Cardinality.One, true, false, false, false>;
-  "<character[is Movie]": $.LinkDesc<$Movie, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<character": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-}>;
-type $Person = $.ObjectType<"default::Person", $PersonλShape, null, [
-  ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
-  {name: {__element__: _std.$str, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
-]>;
-const $Person = $.makeType<$Person>(_.spec, "0a020ae9-fbfc-11ee-87a7-9b61aa1fc993", _.syntax.literal);
-
-const Person: $.$expr_PathNode<$.TypeSet<$Person, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Person, $.Cardinality.Many), null);
-
 export type $SysErrorλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "user": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
   "createdAt": $.PropertyDesc<_std.$datetime, $.Cardinality.One, false, false, true, true>;
@@ -96,39 +71,6 @@ const $SysPerson = $.makeType<$SysPerson>(_.spec, "f7873edb-cbb2-11ef-830a-35b01
 
 const SysPerson: $.$expr_PathNode<$.TypeSet<$SysPerson, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysPerson, $.Cardinality.Many), null);
 
-export type $SysPersonOldλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
-  "codeDisabilityStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeEthnicity": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeGender": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeRace": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeState": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "addr1": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "addr2": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "avatar": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
-  "birthDate": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
-  "city": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "email": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "favFood": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "firstName": $.PropertyDesc<$Name, $.Cardinality.One, false, false, false, false>;
-  "lastName": $.PropertyDesc<$Name, $.Cardinality.One, false, false, false, false>;
-  "fullName": $.PropertyDesc<_std.$str, $.Cardinality.One, false, true, false, false>;
-  "idMigration": $.PropertyDesc<_std.$uuid, $.Cardinality.AtMostOne, false, false, false, false>;
-  "isLegalAgreed": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
-  "middleName": $.PropertyDesc<$Name, $.Cardinality.AtMostOne, false, false, false, false>;
-  "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "phoneAlt": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "phoneMobile": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "ssn": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "title": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "zip": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-}>;
-type $SysPersonOld = $.ObjectType<"default::SysPersonOld", $SysPersonOldλShape, null, [
-  ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
-]>;
-const $SysPersonOld = $.makeType<$SysPersonOld>(_.spec, "5061da6e-b3c2-11ee-bf41-01b5a8f3a48e", _.syntax.literal);
-
-const SysPersonOld: $.$expr_PathNode<$.TypeSet<$SysPersonOld, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysPersonOld, $.Cardinality.Many), null);
-
 type rateλFuncExpr<
   P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$number>>,
   P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$number>>,
@@ -182,27 +124,21 @@ function average(...args: any[]) {
 
 
 
-export { Name, nonNegative, $Movie, Movie, $Person, Person, $SysError, SysError, $SysPerson, SysPerson, $SysPersonOld, SysPersonOld };
+export { Name, nonNegative, $SysError, SysError, $SysPerson, SysPerson };
 
 type __defaultExports = {
   "Name": typeof Name;
   "nonNegative": typeof nonNegative;
-  "Movie": typeof Movie;
-  "Person": typeof Person;
   "SysError": typeof SysError;
   "SysPerson": typeof SysPerson;
-  "SysPersonOld": typeof SysPersonOld;
   "rate": typeof rate;
   "average": typeof average
 };
 const __defaultExports: __defaultExports = {
   "Name": Name,
   "nonNegative": nonNegative,
-  "Movie": Movie,
-  "Person": Person,
   "SysError": SysError,
   "SysPerson": SysPerson,
-  "SysPersonOld": SysPersonOld,
   "rate": rate,
   "average": average
 };

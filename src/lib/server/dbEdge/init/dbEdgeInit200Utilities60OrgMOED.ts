@@ -11,13 +11,14 @@ export async function MoedPBulkPart(params: any) {
 				createdBy: CREATOR,
 				idxDemo: e.cast(e.int64, i[0]),
 				modifiedBy: CREATOR,
-				office: e.assert_single(
-					e.select(e.sys_core.SysObjSubject, (o) => ({
-						filter_single: e.op(o.name, '=', e.cast(e.str, i[13]))
-					}))
-				),
 				person: e.insert(e.default.SysPerson, {
 					addr1: e.cast(e.str, i[1]),
+					attributes: e.insert(e.sys_core.SysAttr, {
+						createdBy: CREATOR,
+						hasAccess: true,
+						modifiedBy: CREATOR,
+						obj: e.sys_core.getObjEnt('sys_moed_old', e.cast(e.str, i[13]))
+					}),
 					birthDate: e.cal.to_local_date(e.cast(e.str, i[3])),
 					city: e.cast(e.str, i[4]),
 					codeDisabilityStatus: e.sys_core.getCodeSystem(
@@ -137,11 +138,11 @@ export async function MoedBulkDataMsg(params: any) {
 				),
 				codeStatus: e.sys_core.getCode('ct_cm_msg_status', e.cast(e.str, i[2])),
 				date: e.cal.to_local_date(e.cast(e.str, i[1])),
-				office: e.assert_single(
-					e.select(e.sys_core.SysObjSubject, (o) => ({
-						filter_single: e.op(o.name, '=', e.cast(e.str, i[3]))
-					}))
-				),
+				// office: e.assert_single(
+				// 	e.select(e.sys_core.SysObjSubject, (o) => ({
+				// 		filter_single: e.op(o.name, '=', e.cast(e.str, i[3]))
+				// 	}))
+				// ),
 				sender: CREATOR
 			})
 		})

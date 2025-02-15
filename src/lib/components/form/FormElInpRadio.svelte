@@ -11,11 +11,13 @@
 	let { parms }: DataRecord = $props()
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 	let dm: DataManager = $derived(sm.dm)
-
-	let field = $derived(parms.field) as FieldRadio
-	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
+	let field = $derived(parms.field) as FieldRadio
+	let fieldValue = $derived.by(() => {
+		const value = dm.getFieldValue(parms.dataObjId, parms.row, parms.field)
+		return Array.isArray(value) ? value[0] : value
+	})
 	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsFormatted(fieldValue) : [])
 
 	let classPropsLabel = $derived(
@@ -43,7 +45,9 @@
 
 	async function onClick(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
+		let value = target.value
+		if (field.colDO.colDB.isMultiSelect) value = value ? [value] : []
+		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, value)
 	}
 </script>
 

@@ -730,8 +730,6 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_user::currentUser]": $.LinkDesc<_sys_user.$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is org_moed::MoedParticipant]": $.LinkDesc<_org_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is sys_core::SysObjSubject]": $.LinkDesc<_sys_core.$SysObjSubject, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is SysPersonOld]": $.LinkDesc<_default.$SysPersonOld, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmServiceFlow]": $.LinkDesc<_app_cm.$CmServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmCsfData]": $.LinkDesc<_app_cm.$CmCsfData, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -746,8 +744,6 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_core::SysCodeAction]": $.LinkDesc<_sys_core.$SysCodeAction, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmCohortDoc]": $.LinkDesc<_app_cm.$CmCohortDoc, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmCsfCohortAttd]": $.LinkDesc<_app_cm.$CmCsfCohortAttd, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is Person]": $.LinkDesc<_default.$Person, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is Movie]": $.LinkDesc<_default.$Movie, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is SysError]": $.LinkDesc<_default.$SysError, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is org_moed::MoedPartData]": $.LinkDesc<_org_moed.$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -784,6 +780,8 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjActionGroup]": $.LinkDesc<_sys_core.$SysDataObjActionGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjColumnItemChange]": $.LinkDesc<_sys_core.$SysDataObjColumnItemChange, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_core::SysMsg]": $.LinkDesc<_sys_core.$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_core::SysAttr]": $.LinkDesc<_sys_core.$SysAttr, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<intersection_of": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<subject": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
