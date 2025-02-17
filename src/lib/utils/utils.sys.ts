@@ -34,6 +34,8 @@ export class CodeAction {
 }
 
 export enum CodeActionType {
+	default = 'default',
+
 	// auth
 	authOpen = 'authOpen',
 	resendCode = 'resendCode',
@@ -42,8 +44,10 @@ export enum CodeActionType {
 
 	// dataObj - group item
 	doDetailDelete = 'doDetailDelete',
+	doDetailMsgSetUnread = 'doDetailMsgSetUnread',
 	doDetailMigrate = 'doDetailMigrate',
 	doDetailNew = 'doDetailNew',
+	doDetailNewMsgReply = 'doDetailNewMsgReply',
 	doDetailProcessExecute = 'doDetailProcessExecute',
 	doDetailSave = 'doDetailSave',
 	doDetailSaveAs = 'doDetailSaveAs',
@@ -54,6 +58,7 @@ export enum CodeActionType {
 	doEmbedListSelect = 'doEmbedListSelect',
 
 	doListDetailEdit = 'doListDetailEdit',
+	doListDetailEditMsg = 'doListDetailEditmsg',
 	doListDetailNew = 'doListDetailNew',
 	doListDownload = 'doListDownload',
 	doListSelfRefresh = 'doListSelfRefresh',

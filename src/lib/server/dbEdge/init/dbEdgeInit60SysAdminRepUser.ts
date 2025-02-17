@@ -250,7 +250,6 @@ function initRepConfig(init: InitDb) {
 				orderDefine: 50,
 				exprCustom: `.report.header`,
 				headerAlt: 'System Name',
-				indexTable: 0,
 				nameCustom: 'sysName'
 			},
 			{
@@ -267,7 +266,6 @@ function initRepConfig(init: InitDb) {
 				orderDefine: 70,
 				exprCustom: `.report.description`,
 				headerAlt: 'System Description',
-				indexTable: 0,
 				nameCustom: 'sysDescription'
 			},
 			{
@@ -368,7 +366,6 @@ function initRepConfig(init: InitDb) {
 				orderDefine: 60,
 				exprCustom: `.report.header`,
 				headerAlt: 'System Name',
-				indexTable: 0,
 				nameCustom: 'sysName'
 			},
 			{
@@ -403,7 +400,6 @@ function initRepConfig(init: InitDb) {
 				orderDefine: 100,
 				exprCustom: `.report.description`,
 				headerAlt: 'System Description',
-				indexTable: 0,
 				nameCustom: 'sysDescription'
 			},
 			{
@@ -519,7 +515,7 @@ function initRepConfig(init: InitDb) {
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program',
-		dataObj: 'data_obj_sys_rep_my_report_list',
+		data: [{ dataObj: 'data_obj_sys_rep_my_report_list' }],
 		header: 'My Reports',
 		name: 'node_obj_sys_rep_my_report_list',
 		orderDefine: 40,
@@ -528,7 +524,7 @@ function initRepConfig(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_rep_my_report_detail',
+		data: [{ dataObj: 'data_obj_sys_rep_my_report_detail' }],
 		header: 'Config',
 		name: 'node_obj_sys_rep_my_report_detail',
 		orderDefine: 10,
@@ -560,7 +556,7 @@ function initRepRender(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_dyn_sys_rep_render',
+		data: [{ dataObj: 'data_obj_dyn_sys_rep_render' }],
 		header: 'Run',
 		isAlwaysRetrieveData: true,
 		isHideRowManager: true,

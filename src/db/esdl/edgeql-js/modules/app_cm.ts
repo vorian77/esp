@@ -44,7 +44,6 @@ export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_user.$MgmtλSh
   "<csf[is app_cm::CmCsfJobPlacement]": $.LinkDesc<$CmCsfJobPlacement, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfNote]": $.LinkDesc<$CmCsfNote, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfSchoolPlacement]": $.LinkDesc<$CmCsfSchoolPlacement, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<csf[is app_cm::CmCsfMsg]": $.LinkDesc<$CmCsfMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $CmClientServiceFlow = $.ObjectType<"app_cm::CmClientServiceFlow", $CmClientServiceFlowλShape, null, [
@@ -208,24 +207,6 @@ const $CmCsfJobPlacement = $.makeType<$CmCsfJobPlacement>(_.spec, "c00e457a-c4ef
 
 const CmCsfJobPlacement: $.$expr_PathNode<$.TypeSet<$CmCsfJobPlacement, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCsfJobPlacement, $.Cardinality.Many), null);
 
-export type $CmCsfMsgλShape = $.typeutil.flatten<$CmCsfDataλShape & {
-  "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
-  "parent": $.LinkDesc<$CmCsfMsg, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "recipients": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
-  "sender": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
-  "date": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
-  "msg": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "subject": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "<parent[is app_cm::CmCsfMsg]": $.LinkDesc<$CmCsfMsg, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<parent": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-}>;
-type $CmCsfMsg = $.ObjectType<"app_cm::CmCsfMsg", $CmCsfMsgλShape, null, [
-  ...$CmCsfData['__exclusives__'],
-]>;
-const $CmCsfMsg = $.makeType<$CmCsfMsg>(_.spec, "e07c1a80-95ed-11ef-9893-411f995490b9", _.syntax.literal);
-
-const CmCsfMsg: $.$expr_PathNode<$.TypeSet<$CmCsfMsg, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCsfMsg, $.Cardinality.Many), null);
-
 export type $CmCsfNoteλShape = $.typeutil.flatten<$CmCsfDataλShape & {
   "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "date": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
@@ -300,7 +281,7 @@ function getCMTrainingCourse(...args: any[]) {
 
 
 
-export { $CmClient, CmClient, $CmClientServiceFlow, CmClientServiceFlow, $CmCohort, CmCohort, $CmCohortAttd, CmCohortAttd, $CmCohortDoc, CmCohortDoc, $CmCourse, CmCourse, $CmCsfData, CmCsfData, $CmCsfCohort, CmCsfCohort, $CmCsfCohortAttd, CmCsfCohortAttd, $CmCsfDocument, CmCsfDocument, $CmCsfJobPlacement, CmCsfJobPlacement, $CmCsfMsg, CmCsfMsg, $CmCsfNote, CmCsfNote, $CmCsfSchoolPlacement, CmCsfSchoolPlacement, $CmPartner, CmPartner, $CmServiceFlow, CmServiceFlow };
+export { $CmClient, CmClient, $CmClientServiceFlow, CmClientServiceFlow, $CmCohort, CmCohort, $CmCohortAttd, CmCohortAttd, $CmCohortDoc, CmCohortDoc, $CmCourse, CmCourse, $CmCsfData, CmCsfData, $CmCsfCohort, CmCsfCohort, $CmCsfCohortAttd, CmCsfCohortAttd, $CmCsfDocument, CmCsfDocument, $CmCsfJobPlacement, CmCsfJobPlacement, $CmCsfNote, CmCsfNote, $CmCsfSchoolPlacement, CmCsfSchoolPlacement, $CmPartner, CmPartner, $CmServiceFlow, CmServiceFlow };
 
 type __defaultExports = {
   "CmClient": typeof CmClient;
@@ -314,7 +295,6 @@ type __defaultExports = {
   "CmCsfCohortAttd": typeof CmCsfCohortAttd;
   "CmCsfDocument": typeof CmCsfDocument;
   "CmCsfJobPlacement": typeof CmCsfJobPlacement;
-  "CmCsfMsg": typeof CmCsfMsg;
   "CmCsfNote": typeof CmCsfNote;
   "CmCsfSchoolPlacement": typeof CmCsfSchoolPlacement;
   "CmPartner": typeof CmPartner;
@@ -333,7 +313,6 @@ const __defaultExports: __defaultExports = {
   "CmCsfCohortAttd": CmCsfCohortAttd,
   "CmCsfDocument": CmCsfDocument,
   "CmCsfJobPlacement": CmCsfJobPlacement,
-  "CmCsfMsg": CmCsfMsg,
   "CmCsfNote": CmCsfNote,
   "CmCsfSchoolPlacement": CmCsfSchoolPlacement,
   "CmPartner": CmPartner,

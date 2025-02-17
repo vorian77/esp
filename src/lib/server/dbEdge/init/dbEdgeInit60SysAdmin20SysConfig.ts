@@ -109,7 +109,7 @@ async function initConfig(init: InitDb) {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'System (Config)',
-		name: 'data_obj_sys_admin_system_list_detail',
+		name: 'data_obj_sys_admin_system_detail_config',
 		owner: 'sys_system_old',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
@@ -195,7 +195,7 @@ async function initConfig(init: InitDb) {
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
-		dataObj: 'data_obj_sys_admin_system_list_config',
+		data: [{ dataObj: 'data_obj_sys_admin_system_list_config' }],
 		header: 'Systems (Config)',
 		name: 'node_obj_sys_admin_system_list_config',
 		orderDefine: 20,
@@ -205,7 +205,7 @@ async function initConfig(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_system_detail_config',
+		data: [{ dataObj: 'data_obj_sys_admin_system_detail_config' }],
 		header: 'Organization',
 		name: 'node_obj_sys_admin_system_detail_config',
 		orderDefine: 10,

@@ -11,6 +11,7 @@ import {
 	DataRow,
 	memberOfEnum,
 	nbrRequired,
+	ParmsValues,
 	ParmsValuesType,
 	required,
 	ResponseBody,
@@ -318,10 +319,12 @@ export class TokenApp extends Token {
 }
 
 export class TokenAppDo extends TokenApp {
+	actionType: CodeActionType
 	dataObj: DataObj
 	constructor(obj: any) {
 		const clazz = 'TokenAppDo'
 		super(obj)
+		this.actionType = required(obj.actionType, clazz, 'actionType')
 		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
 	}
 }
@@ -457,6 +460,7 @@ export class TokenAppStateTriggerAction extends TokenApp {
 	fCallback: Function | undefined = undefined
 	isMultiTree: boolean
 	stateParms: StateParms
+	transParms: ParmsValues
 	constructor(obj: any) {
 		const clazz = 'TokenAppStateTriggerAction'
 		obj = valueOrDefault(obj, {})
@@ -469,6 +473,10 @@ export class TokenAppStateTriggerAction extends TokenApp {
 		this.fCallback = obj.fCallback
 		this.isMultiTree = booleanOrFalse(obj.isMultiTree)
 		this.stateParms = obj.stateParms || new StateParms({})
+		this.transParms = new ParmsValues(obj.transParms)
+	}
+	setTransParms(data: DataRecord) {
+		this.transParms = new ParmsValues(data)
 	}
 	updateStateParms(parms: DataRecord, triggerTokens: StateTriggerToken[] = []) {
 		for (const key in parms) {

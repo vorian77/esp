@@ -344,7 +344,7 @@ function initNodeObj(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_node_obj_list',
+		data: [{ dataObj: 'data_obj_sys_admin_node_obj_list' }],
 		header: 'Node Objects',
 		name: 'node_obj_sys_admin_node_obj_list',
 		orderDefine: 130,
@@ -355,7 +355,7 @@ function initNodeObj(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_node_obj_detail',
+		data: [{ dataObj: 'data_obj_sys_admin_node_obj_detail' }],
 		header: 'Node Object',
 		name: 'node_obj_sys_admin_node_obj_detail',
 		orderDefine: 10,

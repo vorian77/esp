@@ -168,7 +168,7 @@ function initCodeAction(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_code_action_list',
+		data: [{ dataObj: 'data_obj_sys_admin_code_action_list' }],
 		header: 'Code Actions',
 		name: 'node_obj_sys_admin_code_action_list',
 		orderDefine: 45,
@@ -178,7 +178,7 @@ function initCodeAction(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_code_action_detail',
+		data: [{ dataObj: 'data_obj_sys_admin_code_action_detail' }],
 		header: 'Code Action',
 		name: 'node_obj_sys_admin_code_action_detail',
 		orderDefine: 10,
@@ -328,7 +328,7 @@ function initDataObjActionGroup(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_data_obj_action_group_list',
+		data: [{ dataObj: 'data_obj_sys_admin_data_obj_action_group_list' }],
 		header: 'Data Object Action Groups',
 		name: 'node_obj_sys_admin_data_obj_action_group_list',
 		orderDefine: 70,
@@ -339,7 +339,7 @@ function initDataObjActionGroup(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_data_obj_action_group_detail',
+		data: [{ dataObj: 'data_obj_sys_admin_data_obj_action_group_detail' }],
 		header: 'Data Object Action Group',
 		name: 'node_obj_sys_admin_data_obj_action_group_detail',
 		orderDefine: 10,
@@ -551,7 +551,7 @@ function initUserAction(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_user_action_list',
+		data: [{ dataObj: 'data_obj_sys_admin_user_action_list' }],
 		header: 'User Actions',
 		name: 'node_obj_sys_admin_user_action_list',
 		orderDefine: 190,
@@ -562,7 +562,7 @@ function initUserAction(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_user_action_detail',
+		data: [{ dataObj: 'data_obj_sys_admin_user_action_detail' }],
 		header: 'User Action',
 		name: 'node_obj_sys_admin_user_action_detail',
 		orderDefine: 10,

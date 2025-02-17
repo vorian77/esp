@@ -178,7 +178,7 @@ function initOrg(init: InitDb) {
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
-		dataObj: 'data_obj_sys_admin_org_list_sys',
+		data: [{ dataObj: 'data_obj_sys_admin_org_list_sys' }],
 		header: 'Organizations (System)',
 		name: 'node_obj_sys_admin_org_list_sys',
 		orderDefine: 10,
@@ -187,7 +187,7 @@ function initOrg(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_org_detail_sys',
+		data: [{ dataObj: 'data_obj_sys_admin_org_detail_sys' }],
 		header: 'Organization (System)',
 		name: 'node_obj_sys_admin_org_detail_sys',
 		orderDefine: 10,

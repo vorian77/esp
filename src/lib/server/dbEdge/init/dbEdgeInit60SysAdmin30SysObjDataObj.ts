@@ -128,32 +128,40 @@ function initDataObj(init: InitDb) {
 				codeAccess: 'optional',
 				columnName: 'subHeader',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 64,
+				orderDefine: 64,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isDetailRetrievePreset',
 				isDisplayable: true,
-				orderDisplay: 72,
-				orderDefine: 72,
+				orderDisplay: 66,
+				orderDefine: 66,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isInitialValidationSilent',
 				isDisplayable: true,
-				orderDisplay: 74,
-				orderDefine: 74,
+				orderDisplay: 68,
+				orderDefine: 68,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isRetrieveReadonly',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 76,
-				orderDefine: 76
+				orderDisplay: 72,
+				orderDefine: 72
 			},
 			{
 				codeAccess: 'optional',
@@ -463,7 +471,7 @@ function initDataObj(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_data_obj_list',
+		data: [{ dataObj: 'data_obj_sys_admin_data_obj_list' }],
 		header: 'Data Objects',
 		name: 'node_obj_sys_admin_data_obj_list',
 		orderDefine: 60,
@@ -474,7 +482,7 @@ function initDataObj(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_data_obj_detail',
+		data: [{ dataObj: 'data_obj_sys_admin_data_obj_detail' }],
 		header: 'Data Object',
 		name: 'node_obj_sys_admin_data_obj_detail',
 		orderDefine: 10,
@@ -778,14 +786,6 @@ function initDataObjColumn(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 270,
 				orderDefine: 270,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'indexWith',
-				isDisplayable: true,
-				orderDisplay: 280,
-				orderDefine: 280,
 				indexTable: 0
 			},
 			{
@@ -1392,7 +1392,7 @@ function initDataObjColumn(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_data_obj_column_list',
+		data: [{ dataObj: 'data_obj_sys_admin_data_obj_column_list' }],
 		header: 'Columns',
 		name: 'node_obj_sys_admin_data_obj_column_list',
 		orderDefine: 20,
@@ -1403,7 +1403,7 @@ function initDataObjColumn(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_data_obj_column_detail',
+		data: [{ dataObj: 'data_obj_sys_admin_data_obj_column_detail' }],
 		header: 'Column',
 		name: 'node_obj_sys_admin_data_obj_column_detail',
 		orderDefine: 10,

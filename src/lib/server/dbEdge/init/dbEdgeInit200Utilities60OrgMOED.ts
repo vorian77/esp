@@ -17,7 +17,7 @@ export async function MoedPBulkPart(params: any) {
 						createdBy: CREATOR,
 						hasAccess: true,
 						modifiedBy: CREATOR,
-						obj: e.sys_core.getObjEnt('sys_moed_old', e.cast(e.str, i[13]))
+						obj: e.sys_core.getObjEntAttr('sys_moed_old', e.cast(e.str, i[13]))
 					}),
 					birthDate: e.cal.to_local_date(e.cast(e.str, i[3])),
 					city: e.cast(e.str, i[4]),
@@ -120,30 +120,26 @@ export async function MoedBulkDataDoc(params: any) {
 
 export async function MoedBulkDataMsg(params: any) {
 	sectionHeader(`MOED Bulk Data - Message`)
-	debug('MOED Bulk Data - Documents', 'params', params)
 	const CREATOR = e.sys_user.getRootUser()
+	const SENDER = CREATOR.person
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.insert(e.app_cm.CmCsfMsg, {
-				createdBy: CREATOR,
-				modifiedBy: CREATOR,
-				csf: e.assert_single(
-					e.select(e.app_cm.CmClientServiceFlow, (sf) => ({
-						filter_single: e.op(
-							sf.client.is(e.org_moed.MoedParticipant).idxDemo,
-							'=',
-							e.cast(e.int64, i[0])
-						)
-					}))
-				),
-				codeStatus: e.sys_core.getCode('ct_cm_msg_status', e.cast(e.str, i[2])),
+			return e.insert(e.sys_core.SysMsg, {
+				attributes: e.insert(e.sys_core.SysAttr, {
+					createdBy: CREATOR,
+					hasAccess: true,
+					modifiedBy: CREATOR,
+					obj: e.sys_core.getObjEntAttr('sys_moed_old', e.cast(e.str, i[4]))
+				}),
+				codeStatus: e.sys_core.getCode('ct_sys_msg_status', e.cast(e.str, i[2])),
 				date: e.cal.to_local_date(e.cast(e.str, i[1])),
-				// office: e.assert_single(
-				// 	e.select(e.sys_core.SysObjSubject, (o) => ({
-				// 		filter_single: e.op(o.name, '=', e.cast(e.str, i[3]))
-				// 	}))
-				// ),
-				sender: CREATOR
+				isRead: false,
+				sender: e.assert_single(
+					e.select(e.org_moed.MoedParticipant, (part) => ({
+						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
+					})).person
+				),
+				subject: e.cast(e.str, i[3])
 			})
 		})
 	})

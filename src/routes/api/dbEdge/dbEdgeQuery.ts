@@ -228,14 +228,22 @@ export class Query {
 						clazzProp,
 						'linkItemsSource.parmValue'
 					)
-
+					const attrAccess = booleanRequired(propObj.attrAccess, clazzProp, 'attrAccess')
+					propTable = propTable === this.getTableRootObj() ? `DETACHED ${propTable}` : propTable
 					const exprAttrOthers = `(SELECT ${propTable}.attributes FILTER .obj.codeObjType.name != '${attrType}')`
+
+					const exprObjs = propObj.exprSaveAttrObjects
+						? '(SELECT (SELECT ' +
+							propObj.exprSaveAttrObjects +
+							`.attributes FILTER .hasAccess = ${attrAccess} AND .obj.codeObjType.name = '${attrType}').obj.id)`
+						: `json_array_unpack(${item})`
+
 					const exprAttrNew = `
-					(FOR attr IN json_array_unpack(${item}) UNION
+					(FOR attr IN ${exprObjs} UNION
 						(INSERT sys_core::SysAttr
 							{
-								obj := (SELECT sys_core::SysObjEnt FILTER .id = <uuid>attr),
-								hasAccess := true,
+								obj := (SELECT sys_core::SysObjEntAttr FILTER .id = <uuid>attr),
+								hasAccess := ${attrAccess},
 								createdBy := sys_user::getRootUser(),
 								modifiedBy := sys_user::getRootUser()
 							}
@@ -326,10 +334,6 @@ export class Query {
 			const indexTable = nbrOrDefault(prop.indexTable, -1)
 			let propValue = ''
 
-			if (prop.propNameRaw === 'parent') {
-				debug('processPropsSelectItem', 'prop', prop)
-			}
-
 			if (prop.codeDataType === PropDataType.attribute) {
 				propValue = prop.linkItemsSource
 					? `.${propChildTableTraversal}.obj.id`
@@ -361,10 +365,8 @@ export class Query {
 			let expr = strRequired(prop.exprPreset, clazz, 'exprPreset')
 
 			if (prop.linkItemsSource) {
-				// expr = `${expr} ${prop.linkItemsSource.exprProps}`
 				expr = `${expr}.id`
 			} else if (prop.link) {
-				// expr = `${expr} ${prop.link.exprProps}`
 				expr = `${expr}.${prop.link.exprDisplay}`
 			}
 

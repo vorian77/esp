@@ -26,7 +26,7 @@ module sys_core {
 
   type SysAttr extending sys_user::Mgmt {
     required hasAccess: bool;
-    required obj: sys_core::SysObjEnt{
+    required obj: sys_core::SysObjEntAttr{
       on target delete delete source;
     };
   }
@@ -57,6 +57,9 @@ module sys_core {
       delete default::SysPerson filter .id not in (app_cm::CmClient.person.id union sys_core::SysObjEnt.contacts.id union sys_user::SysUser.person.id)
     );
   }
+
+
+  type SysObjEntAttr extending sys_core::SysObjEnt {}
  
   type SysObjNote extending sys_user::Mgmt {
     required date: cal::local_date;
@@ -141,6 +144,7 @@ module sys_core {
     required isListEdit: bool;
     isListSuppressFilterSort: bool;
     isListSuppressSelect: bool;
+    isRetrieveReadonly: bool;
     
     listEditPresetExpr: str;
     listReorderColumn: sys_db::SysColumn;
@@ -202,15 +206,17 @@ module sys_core {
     nameCustom: str;
 
     # fields - db
+    attrAccess: bool;
+    codeAttrType: sys_core::SysCode;
     codeDbDataSourceValue: sys_core::SysCode;
     codeSortDir: sys_core::SysCode;
     columnBacklink: sys_db::SysColumn;
     exprCustom: str;
     exprPreset: str;
     exprSave: str;
+    exprSaveAttrObjects: str;
 
     indexTable: default::nonNegative;
-    indexWith: default::nonNegative;
 
     isDisplay: bool;
     isDisplayable: bool;
@@ -376,20 +382,26 @@ module sys_core {
   }
   
   type SysMsg extending sys_core::ObjRoot {
-    required codeStatus: sys_core::SysCode;
+    codeStatus: sys_core::SysCode;
     required createdAt: datetime {
       default := datetime_of_transaction();
       readonly := true;
     };
+    date: cal::local_date;
+    required isRead: bool;
     parent: sys_core::SysMsg;
-    multi recipients: sys_user::SysUser;
-    required sender: sys_user::SysUser;
+    multi recipients: default::SysPerson;
+    required sender: default::SysPerson;
     subject: str;
   }
 
   type SysNodeObj extending sys_core::SysObj {
     required codeNavType: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
+    multi data: sys_core::SysNodeObjData {
+      on source delete delete target;
+      on target delete allow;
+    };
     dataObj: sys_core::SysDataObj {
       on target delete allow
     };
@@ -398,6 +410,11 @@ module sys_core {
     parent: sys_core::SysNodeObj;
     page: str;
     constraint exclusive on (.name);
+  }
+
+  type SysNodeObjData {
+    required dataObj: sys_core::SysDataObj;
+    required codeAction: sys_core::SysCodeAction;
   }
 
   # FUNCTIONS
@@ -449,8 +466,8 @@ module sys_core {
   function getObj(ownerName:str, name: str) -> optional sys_core::SysObj
     using (select assert_single((select sys_core::SysObj filter .owner.name = ownerName and .name = name)));
 
-  function getObjEnt(ownerName:str, name: str) -> optional sys_core::SysObjEnt
-    using (select assert_single((select sys_core::SysObjEnt filter .owner.name = ownerName and .name = name)));
+  function getObjEntAttr(ownerName:str, name: str) -> optional sys_core::SysObjEntAttr
+    using (select assert_single((select sys_core::SysObjEntAttr filter .owner.name = ownerName and .name = name)));
 
   function getObjRootCore(name: str) -> optional sys_core::ObjRootCore
     using (select assert_single((select sys_core::ObjRootCore filter .name = name)));

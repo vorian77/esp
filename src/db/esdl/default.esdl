@@ -44,11 +44,10 @@ module default {
   scalar type nonNegative extending int64 {
     constraint min_value(0);
   }
-
-  # FUNCTIONS
-  function average(values: array<float64>) -> float64
-     using (select (IF len(values) = 0 THEN 0 ELSE rate(sum(array_unpack(values)), len(values))));
-
-  function rate(num: float64, denom: float64) -> float64
-    using (select (IF denom = 0 THEN 0 ELSE round(num / denom * 100) / 100));
 }
+
+
+# with now := cal::to_local_date(datetime_current(), 'UTC'),
+#   compare := <cal::local_date>'2024-11-10',
+#   elapsed := now - compare
+# select duration_get(elapsed, 'day');

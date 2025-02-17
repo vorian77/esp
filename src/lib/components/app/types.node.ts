@@ -1,5 +1,7 @@
 import {
+	arrayOfClass,
 	booleanOrFalse,
+	CodeActionType,
 	getArray,
 	memberOfEnum,
 	nbrRequired,
@@ -32,9 +34,7 @@ export class NodeHeader {
 }
 
 export class Node extends NodeHeader {
-	dataObjId?: string
-	dataObjIdChild?: string
-	dataObjName?: string
+	data: NodeData[]
 	isAlwaysRetrieveData: boolean
 	isHideRowManager: boolean
 	isMobileMode: boolean
@@ -42,12 +42,41 @@ export class Node extends NodeHeader {
 		const clazz = 'Node'
 		obj = valueOrDefault(obj, {})
 		super(obj)
-		this.dataObjId = obj.dataObjId
-		this.dataObjIdChild = obj.dataObjIdChild
-		this.dataObjName = obj.dataObjName
+		this.data = arrayOfClass(NodeData, obj._data)
 		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData)
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager)
 		this.isMobileMode = booleanOrFalse(obj.isMobileMode)
+	}
+	getNodeData(actionType: CodeActionType) {
+		let nodeData = this.data.find((d) => d.actionType === actionType)
+		if (nodeData) return nodeData
+		nodeData = this.data.find((d) => d.actionType === CodeActionType.default)
+		if (nodeData) return nodeData
+		error(500, {
+			file: FILENAME,
+			function: 'Node.getNodeData',
+			message: `No default NodeData defined for node name: ${this.name}`
+		})
+	}
+}
+
+export class NodeData {
+	actionType: CodeActionType
+	dataObjId?: string
+	dataObjName?: string
+	constructor(obj: any) {
+		const clazz = 'NodeData'
+		obj = valueOrDefault(obj, {})
+		this.actionType = memberOfEnum(
+			obj._actionType,
+			clazz,
+			'actionType',
+			'CodeActionType',
+			CodeActionType
+		)
+		this.dataObjId = obj._dataObjId
+		this.dataObjName = obj._dataObjName
+		strRequired(this.dataObjId || this.dataObjName, clazz, 'dataObjId or dataObjName')
 	}
 }
 

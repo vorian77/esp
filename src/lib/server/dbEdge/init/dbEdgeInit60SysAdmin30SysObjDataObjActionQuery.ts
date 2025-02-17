@@ -152,7 +152,7 @@ function initDataObjActionsQuery(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_data_obj_action_query_list',
+		data: [{ dataObj: 'data_obj_sys_admin_data_obj_action_query_list' }],
 		header: 'Query Actions',
 		name: 'node_obj_sys_admin_data_obj_action_query_list',
 		orderDefine: 30,
@@ -163,7 +163,7 @@ function initDataObjActionsQuery(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_data_obj_action_query_detail',
+		data: [{ dataObj: 'data_obj_sys_admin_data_obj_action_query_detail' }],
 		header: 'Query Action',
 		name: 'node_obj_sys_admin_data_obj_action_query_detail',
 		orderDefine: 10,

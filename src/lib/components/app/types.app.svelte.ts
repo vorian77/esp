@@ -129,7 +129,7 @@ export class App {
 
 	async addTreeNode(sm: State, token: TokenAppNode) {
 		let newTab = new AppLevelTab({
-			...this.addTreeNodeParmsList(token.node, this.treeLevels.length)
+			...this.addTreeNodeParmsList(token.node, CodeActionType.default)
 		})
 		await queryTypeTab(sm, newTab, TokenApiQueryType.retrieve)
 		this.addTree([newTab])
@@ -160,9 +160,9 @@ export class App {
 					if (rawNodes.root.length === 1) {
 						// create root tab - detail
 						const nodeLevelRootDetail = new Node(rawNodes.root[0])
+						const nodeData = nodeLevelRootDetail.getNodeData(token.actionType)
 						let nodeParms: DataRecord = {
-							dataObjId: nodeLevelRootDetail.dataObjId,
-							// dataObjId: currTab.dataObjIdChild,
+							dataObjId: nodeData.dataObjId,
 							isAlwaysRetrieveData: nodeLevelRootDetail.isAlwaysRetrieveData,
 							isProgramObject: nodeLevelRootDetail.type === NodeType.program_object,
 							label: nodeLevelRootDetail.label,
@@ -174,9 +174,7 @@ export class App {
 
 						// add children - lists
 						rawNodes.children.forEach((n) => {
-							tabs.push(
-								new AppLevelTab(this.addTreeNodeParmsList(new Node(n), currTab.treeLevelIdx))
-							)
+							tabs.push(new AppLevelTab(this.addTreeNodeParmsList(new Node(n), token.actionType)))
 						})
 
 						// create new level with tabs
@@ -186,10 +184,10 @@ export class App {
 			}
 		}
 	}
-	addTreeNodeParmsList(node: Node, treeLevelIdx: number) {
+	addTreeNodeParmsList(node: Node, actionType: CodeActionType) {
+		const nodeData = node.getNodeData(actionType)
 		return {
-			dataObjId: node.dataObjId,
-			dataObjIdChild: node.dataObjIdChild,
+			dataObjId: nodeData.dataObjId,
 			isAlwaysRetrieveData: node.isAlwaysRetrieveData,
 			isHideRowManager: node.isHideRowManager,
 			label: node.label,
@@ -210,6 +208,7 @@ export class App {
 	getCurrLevelsLength() {
 		return this.getCurrTreeLevel()?.levels.length
 	}
+
 	getCurrTab() {
 		return this.getCurrTreeLevel()?.getCurrTab()
 	}
@@ -379,6 +378,19 @@ export class AppLevelTab {
 	detailGetDataRow(): DataRow | undefined {
 		return this.dataObj?.data.rowsRetrieved.getDetailRow()
 	}
+
+	getCurrRecordValue(key: string) {
+		if (this.dataObj) {
+			if (this.dataObj.raw.codeCardinality === DataObjCardinality.list) {
+				const listRowIdx = this.listGetRowIdx()
+				return this.dataObj.data.rowsRetrieved.getRowValue(listRowIdx, key)
+			} else {
+				return this.dataObj.data.rowsRetrieved.getDetailRecordValue(key)
+			}
+		}
+		return undefined
+	}
+
 	listCrumbLabelId() {
 		let id = ''
 		const crumbFieldNames: Array<string> = this.dataObj?.raw.crumbs ? this.dataObj.raw.crumbs : []
@@ -600,6 +612,14 @@ export class AppTree {
 					codeConfirmType: TokenAppUserActionConfirmType.statusChanged
 				})
 			)
+		} else {
+			const currLevel = this.getCurrLevel()
+			if (currLevel) {
+				const currTab = currLevel.getCurrTab()
+				if (currTab.isAlwaysRetrieveData) {
+					await queryTypeTab(sm, currTab, TokenApiQueryType.retrieve)
+				}
+			}
 		}
 	}
 

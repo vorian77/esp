@@ -42,10 +42,13 @@ export function queryDataPre(
 	const dataTree = queryDataPreTree(queryType, sm.stateRoot ? sm.stateRoot.app : sm.app)
 
 	// dataTab
-	const dataTab = data ? data : new DataObjData()
+	const dataTab = data ? DataObjData.load(data) : new DataObjData()
 	dataTab.parms.update(sm.parmsState.valueGetAll())
+	dataTab.parms.update(sm.parmsTrans.valueGetAll())
 
 	sm.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
+
+	console.log('queryDataPre.dataTab.parms:', dataTab.parms)
 
 	return { dataTree, dataTab }
 }

@@ -300,7 +300,7 @@ function initDataObjFieldListItems(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_data_obj_field_list_items_list',
+		data: [{ dataObj: 'data_obj_sys_admin_data_obj_field_list_items_list' }],
 		header: 'Field List Items',
 		name: 'node_obj_sys_admin_data_obj_field_list_items_list',
 		orderDefine: 120,
@@ -311,7 +311,7 @@ function initDataObjFieldListItems(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_data_obj_field_list_items_detail',
+		data: [{ dataObj: 'data_obj_sys_admin_data_obj_field_list_items_detail' }],
 		header: 'Item',
 		name: 'node_obj_sys_admin_data_obj_field_list_items_detail',
 		orderDefine: 10,

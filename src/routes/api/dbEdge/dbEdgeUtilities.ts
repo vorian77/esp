@@ -76,9 +76,18 @@ const shapeLinkItemsSource = e.shape(e.sys_core.SysDataObjFieldListItems, (fli) 
 	name: true
 }))
 
+const shapeNodeObjData = e.shape(e.sys_core.SysNodeObjData, (d) => ({
+	_actionType: d.codeAction.name,
+	_dataObjId: d.dataObj.id,
+	_dataObjName: d.dataObj.name
+}))
+
 const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 	_codeIcon: n.codeIcon.name,
 	_codeNodeType: n.codeNodeType.name,
+	_data: e.select(n.data, (d) => ({
+		...shapeNodeObjData(d)
+	})),
 	dataObjId: n.dataObj.id,
 	header: true,
 	id: true,
@@ -104,7 +113,9 @@ const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	_pageDataObjId: t.pageDataObj.id,
 	_targetDataObjId: t.targetDataObj.id,
 	_targetNodeObjId: t.targetNodeObj.id,
-	_targetNodeObjDataObjId: t.targetNodeObj?.dataObj?.id,
+	_targetNodeObjData: e.select(t.targetNodeObj?.data, (d) => ({
+		...shapeNodeObjData(d)
+	})),
 	description: true,
 	exprShow: true,
 	exprStatus: true,
@@ -148,6 +159,7 @@ export async function getDataObjActionGroup(token: TokenApiId) {
 export async function getDataObjById(token: TokenApiId) {
 	const shapeProp = e.shape(e.sys_core.SysDataObjColumn, (doc) => ({
 		...shapeColumnHasItems(doc),
+		_codeAttrType: doc.codeAttrType.name,
 		_codeSortDir: doc.codeSortDir.name,
 		_columnBacklink: doc.columnBacklink.name,
 		_itemChanges: e.select(doc.itemChanges, (t) => ({
@@ -166,12 +178,15 @@ export async function getDataObjById(token: TokenApiId) {
 		})),
 		_linkItemsSource: e.select(doc.fieldListItems, (fli) => ({
 			_parmValue: doc.fieldListItemsParmValue,
+			_codeAttrType: doc.codeAttrType.name,
 			...shapeLinkItemsSource(fli)
 		})),
 		_propName: e.op(doc.nameCustom, '??', doc.column.name),
+		attrAccess: true,
 		exprCustom: true,
 		exprPreset: true,
 		exprSave: true,
+		exprSaveAttrObjects: true,
 		id: true,
 		indexTable: true
 	}))
@@ -215,6 +230,7 @@ export async function getDataObjById(token: TokenApiId) {
 			isListEdit: true,
 			isListSuppressFilterSort: true,
 			isListSuppressSelect: true,
+			isRetrieveReadonly: true,
 			listEditPresetExpr: true,
 			name: true,
 			subHeader: true,
@@ -481,14 +497,7 @@ export async function getLinkItemsSource(token: TokenApiId) {
 export async function getNodesBranch(token: TokenApiId) {
 	const parentNodeId = token.id
 	const query = e.select(e.sys_core.SysNodeObj, (n) => ({
-		_codeIcon: n.codeIcon.name,
-		_codeNodeType: n.codeNodeType.name,
-		dataObjId: n.dataObj.id,
-		header: true,
-		id: true,
-		name: true,
-		orderDefine: true,
-		page: true,
+		...shapeNodeObj(n),
 		filter: e.op(n.parent.id, '=', e.cast(e.uuid, parentNodeId)),
 		order_by: n.orderDefine
 	}))
@@ -617,6 +626,7 @@ export async function getTableColumns(token: TokenApiDbTableColumns) {
 
 export async function getUserByUserId(token: TokenApiUserId) {
 	const query = e.select(e.sys_user.SysUser, (u) => ({
+		_personId: u.person.id,
 		avatar: u.person.avatar,
 		firstName: u.person.firstName,
 		fullName: u.person.fullName,
@@ -659,14 +669,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			id: true,
 			name: true,
 			nodes: e.select(res.nodes, (n) => ({
-				_codeIcon: n.codeIcon.name,
-				_codeNodeType: n.codeNodeType.name,
-				dataObjId: n.dataObj.id,
-				header: true,
-				id: true,
-				name: true,
-				orderDefine: true,
-				page: true,
+				...shapeNodeObj(n),
 				order_by: n.orderDefine
 			})),
 			filter: e.op(res.id, 'in', u.userTypes.resources.resource.id),

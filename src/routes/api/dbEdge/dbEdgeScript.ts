@@ -70,16 +70,16 @@ export class ScriptGroup {
 	) {
 		const clazz = 'getPropsSelectDataItems'
 		let expr = ''
-		// const isFilterCurrentValue = query.rawDataObj.codeCardinality === DataObjCardinality.detail
 
 		props.forEach((prop) => {
 			if (prop.linkItemsSource) {
-				let propValue = `${prop.linkItemsSource.getExprSelect(true, record[prop.propName])}`
-				if (prop.linkItemsSource.parmValue)
+				if (prop.linkItemsSource.parmValue) {
 					queryData?.dataTab?.parms.valueSet(
 						ParmsValuesType.itemsParmValue,
 						prop.linkItemsSource.parmValue
 					)
+				}
+				let propValue = `${prop.linkItemsSource.getExprSelect(true, record[prop.propName])}`
 				propValue = evalExpr(
 					propValue,
 					queryData,

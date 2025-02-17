@@ -165,6 +165,12 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Attribute Access',
+		name: 'attrAccess'
+	})
+	init.addTrans('sysColumn', {
 		codeDataType: 'attribute',
 		header: 'Attributes',
 		isMultiSelect: true,
@@ -174,7 +180,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'json',
-		exprStorageKey: 'avatar_<random10>',
+		exprStorageKey: 'avatar_<fSysRandom10>',
 		header: 'Avatar',
 		name: 'avatar'
 	})
@@ -246,6 +252,13 @@ export function initPreColumn(init: InitDb) {
 		header: 'Alignment (Alt)',
 		isMultiSelect: false,
 		name: 'codeAlignmentAlt'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Attribute Type',
+		isMultiSelect: false,
+		name: 'codeAttrType'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
@@ -1244,6 +1257,12 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'str',
+		header: 'Expression - Save Attribute Objects',
+		name: 'exprSaveAttrObjects',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Expression - Select',
@@ -1330,7 +1349,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'json',
-		exprStorageKey: 'file_<random10>',
+		exprStorageKey: 'file_<fSysRandom10>',
 		header: 'File',
 		name: 'file'
 	})
@@ -1472,13 +1491,6 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
-		codeAlignment: 'right',
-		codeDataType: 'int16',
-		header: 'With Index',
-		name: 'indexWith'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Active',
 		name: 'isActive'
@@ -1612,9 +1624,24 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeAlignment: 'center',
+		codeDataType: 'bool',
+		header: 'Read',
+		name: 'isRead',
+		toggleValueFalse: 'No',
+		toggleValueTrue: 'Yes'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
 		codeDataType: 'bool',
 		header: 'Required',
 		name: 'isRequired'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Retrieve Readonly',
+		name: 'isRetrieveReadonly'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

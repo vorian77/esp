@@ -62,32 +62,6 @@ export async function addAppHeader(data: any) {
 	return await query.run(client, data)
 }
 
-export async function addAttrObj(data: any) {
-	sectionHeader(`addAttrObj - ${data.name}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			codeObjType: e.str,
-			header: e.optional(e.str),
-			isGlobalResource: e.bool,
-			name: e.str,
-			owner: e.str
-		},
-		(p) => {
-			return e.insert(e.sys_core.SysObjEnt, {
-				codeObjType: e.sys_core.getCode('ct_sys_attribute', p.codeObjType),
-				createdBy: CREATOR,
-				header: p.header,
-				isGlobalResource: p.isGlobalResource,
-				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner),
-				modifiedBy: CREATOR
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-
 export async function addCode(data: any) {
 	sectionHeader(`addCode - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
@@ -278,6 +252,7 @@ export async function addNode(data: any) {
 			codeIcon: e.str,
 			codeNavType: e.optional(e.str) || 'tree',
 			codeNodeType: e.str,
+			data: e.optional(e.array(e.json)),
 			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
 			isAlwaysRetrieveData: e.optional(e.bool),
@@ -297,6 +272,15 @@ export async function addNode(data: any) {
 				),
 				codeNodeType: e.sys_core.getCode('ct_sys_node_obj_type', p.codeNodeType),
 				createdBy: CREATOR,
+				data: e.for(e.array_unpack(p.data || e.cast(e.array(e.json), e.set())), (d) => {
+					return e.insert(e.sys_core.SysNodeObjData, {
+						dataObj: e.sys_core.getDataObj(e.cast(e.str, e.json_get(d, 'dataObj'))),
+						codeAction: e.sys_core.getCodeAction(
+							e.op(e.cast(e.str, e.json_get(d, 'actionClass')), '??', 'ct_sys_code_action_class'),
+							e.op(e.cast(e.str, e.json_get(d, 'actionType')), '??', 'default')
+						)
+					})
+				}),
 				dataObj: e.sys_core.getDataObj(p.dataObj),
 				header: p.header,
 				isAlwaysRetrieveData: valueOrDefaultParm(p.isAlwaysRetrieveData, false),
@@ -307,6 +291,32 @@ export async function addNode(data: any) {
 				owner: e.sys_core.getSystemPrime(p.owner),
 				page: p.page,
 				parent: e.sys_core.getNodeObjByName(p.parentNodeName)
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
+export async function addObjEntAttr(data: any) {
+	sectionHeader(`addObjEntAttr - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			codeObjType: e.str,
+			header: e.optional(e.str),
+			isGlobalResource: e.bool,
+			name: e.str,
+			owner: e.str
+		},
+		(p) => {
+			return e.insert(e.sys_core.SysObjEntAttr, {
+				codeObjType: e.sys_core.getCode('ct_sys_attribute', p.codeObjType),
+				createdBy: CREATOR,
+				header: p.header,
+				isGlobalResource: p.isGlobalResource,
+				name: p.name,
+				owner: e.sys_core.getSystemPrime(p.owner),
+				modifiedBy: CREATOR
 			})
 		}
 	)
@@ -478,7 +488,7 @@ export async function addUserType(data: any) {
 							createdBy: CREATOR,
 							hasAccess: e.cast(e.bool, e.json_get(attr, 'hasAccess')),
 							modifiedBy: CREATOR,
-							obj: e.sys_core.getObjEnt(objOwner, objName)
+							obj: e.sys_core.getObjEntAttr(objOwner, objName)
 						})
 					}
 				),

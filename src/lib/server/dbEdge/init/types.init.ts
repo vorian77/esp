@@ -20,7 +20,7 @@ import {
 import {
 	addApp,
 	addAppHeader,
-	addAttrObj,
+	addObjEntAttr,
 	addCode,
 	addCodeAction,
 	addCodeType,
@@ -286,11 +286,11 @@ export class InitDb {
 		)
 		this.items.push(
 			new InitDbItemObject({
-				name: 'sysObjAttr',
+				name: 'SysObjEntAttr',
 				dataMap: 'name',
-				dbObject: 'sys_core::SysObjEnt',
-				fCreate: addAttrObj,
-				isResetByObjRecord: true
+				dbObject: 'sys_core::SysObjEntAttr',
+				fCreate: addObjEntAttr
+				// isResetByObjRecord: true
 			})
 		)
 		this.items.push(
@@ -338,8 +338,16 @@ export class InitDb {
 		)
 		this.items.push(
 			new InitDbItem({
+				name: 'MoedBulkDataMsg',
+				exprResets: `DELETE sys_core::SysMsg`,
+				// exprResets: `DELETE sys_core::SysMsg FILTER .sender.person IN org_moed::MoedParticipant.person OR .recipients.person IN org_moed::MoedParticipant.person`,
+				fCreate: MoedBulkDataMsg
+			})
+		)
+		this.items.push(
+			new InitDbItem({
 				name: 'MoedBulkCsf',
-				exprResets: `UPDATE default::SysPerson SET {attributes := (select default::SysPerson.attributes filter .obj.codeObjType.name != 'attr_moed_office')};
+				exprResets: `UPDATE default::SysPerson SET {attributes := (SELECT .attributes filter .obj.codeObjType.name != 'attr_moed_office')};
 				DELETE app_cm::CmClientServiceFlow FILTER .client IN org_moed::MoedParticipant`,
 				fCreate: MoedBulkCsf
 			})
@@ -353,14 +361,7 @@ export class InitDb {
 		)
 		this.items.push(
 			new InitDbItem({
-				name: 'MoedBulkDataMsg',
-				exprResets: `DELETE app_cm::CmCsfMsg FILTER .csf.client IN org_moed::MoedParticipant`,
-				fCreate: MoedBulkDataMsg
-			})
-		)
-		this.items.push(
-			new InitDbItem({
-				name: 'MoedCmCsfDataBulk',
+				name: 'MoedBulkDataDelete',
 				exprResets: 'DELETE app_cm::CmCsfData FILTER .csf.client IN org_moed::MoedParticipant'
 			})
 		)

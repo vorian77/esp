@@ -79,6 +79,7 @@ export class RawDataObj {
 	isListEdit: boolean
 	isListSuppressFilterSort: boolean
 	isListSuppressSelect: boolean
+	isRetrieveReadonly: boolean
 	listEditPresetExpr?: string
 	listReorderColumn?: string
 	name: string
@@ -139,6 +140,7 @@ export class RawDataObj {
 		this.isListEdit = booleanRequired(obj.isListEdit, clazz, 'isListEdit')
 		this.isListSuppressFilterSort = booleanOrDefault(obj.isListSuppressFilterSort, false)
 		this.isListSuppressSelect = booleanOrDefault(obj.isListSuppressSelect, false)
+		this.isRetrieveReadonly = booleanOrDefault(obj.isRetrieveReadonly, false)
 		this.listEditPresetExpr = strOptional(obj.listEditPresetExpr, clazz, 'listEditPresetExpr')
 		this.listReorderColumn = strOptional(obj._listReorderColumn, clazz, '_listReorderColumn')
 		this.name = strRequired(obj.name, clazz, 'name')
@@ -272,11 +274,14 @@ export class RawDataObjParent {
 }
 
 export class RawDataObjProp {
+	attrAccess?: string
+	codeAttrType?: string
 	codeSortDir?: PropSortDir
 	columnBacklink?: string
 	exprCustom?: string
 	exprPreset?: string
 	exprSave?: string
+	exprSaveAttrObjects?: string
 	fieldEmbed?: RawDataObjPropDBFieldEmbed
 	hasItems: boolean
 	id: string
@@ -290,6 +295,8 @@ export class RawDataObjProp {
 	constructor(obj: any, tables: DataObjTable[]) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjProp'
+		this.attrAccess = obj.attrAccess
+		this.codeAttrType = obj._codeAttrType
 		this.codeSortDir = memberOfEnumOrDefault(
 			obj._codeSortDir,
 			clazz,
@@ -302,6 +309,7 @@ export class RawDataObjProp {
 		this.exprCustom = obj.exprCustom
 		this.exprPreset = obj.exprPreset
 		this.exprSave = obj.exprSave
+		this.exprSaveAttrObjects = obj.exprSaveAttrObjects
 		this.fieldEmbed = obj._fieldEmbedListConfig
 			? new RawDataObjPropDBFieldEmbed(
 					FieldEmbedType.listConfig,
@@ -754,7 +762,6 @@ export class PropLink {
 				return acc
 			}, '') || 'id'
 		this.exprProps = `{ id, display := .${this.exprDisplay} }`
-		console.log('PropLink.exprProps', this.exprProps)
 		this.table = classOptional(DBTable, obj._table)
 	}
 	getTableObj() {
@@ -905,7 +912,7 @@ export class PropLinkItemsSource {
 		this.exprSort = valueOrDefault(obj.exprSort, '')
 		this.exprWith = valueOrDefault(obj.exprWith, '')
 		this.name = strRequired(obj.name, clazz, 'name')
-		this.parmValue = obj._parmValue
+		this.parmValue = obj._parmValue || obj._codeAttrType
 		this.props = arrayOfClass(PropLinkItemsSourceProp, obj._props)
 		this.raw = obj
 		this.table = classOptional(DBTable, obj._table)

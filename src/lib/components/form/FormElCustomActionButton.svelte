@@ -26,6 +26,7 @@
 				data: {
 					dataRecord: $state.snapshot(dataRecord),
 					token: new TokenAppDo({
+						actionType: field.action.codeAction.actionType,
 						dataObj
 					}),
 					value: field.value

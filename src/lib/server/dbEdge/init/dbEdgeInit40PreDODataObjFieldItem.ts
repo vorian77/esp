@@ -30,6 +30,15 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysCode'
 	})
 
+	init.addTrans('sysDataObjFieldListItems', {
+		props: [[0, 'header', 'Header', '.header', true, 0]],
+		exprFilter: '.codeType.name = <parms,str,itemsParmValue>',
+		exprSort: '.order',
+		name: 'il_sys_code_header_order_index_by_codeType_name',
+		owner: 'sys_system_old',
+		table: 'SysCode'
+	})
+
 	/* code - system */
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],

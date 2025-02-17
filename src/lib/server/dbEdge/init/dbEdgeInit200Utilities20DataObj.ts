@@ -31,6 +31,7 @@ export async function addDataObj(data: any) {
 			isListEdit: e.optional(e.bool),
 			isListSuppressFilterSort: e.optional(e.bool),
 			isListSuppressSelect: e.optional(e.bool),
+			isRetrieveReadonly: e.optional(e.bool),
 			listEditPresetExpr: e.optional(e.str),
 			listReorderColumn: e.optional(e.str),
 			name: e.str,
@@ -98,6 +99,12 @@ export async function addDataObj(data: any) {
 						column: e.sys_db.getColumn(e.cast(e.str, e.json_get(f, 'columnName'))),
 
 						/* DB */
+						attrAccess: booleanOrDefaultJSON(f, 'attrAccess', false),
+
+						codeAttrType: e.select(
+							e.sys_core.getCode('ct_sys_attribute', e.cast(e.str, e.json_get(f, 'codeAttrType')))
+						),
+
 						codeDbDataSourceValue: e.op(
 							e.sys_core.getCode(
 								'ct_sys_do_field_source_value',
@@ -129,6 +136,8 @@ export async function addDataObj(data: any) {
 						exprPreset: e.cast(e.str, e.json_get(f, 'exprPreset')),
 
 						exprSave: e.cast(e.str, e.json_get(f, 'exprSave')),
+
+						exprSaveAttrObjects: e.cast(e.str, e.json_get(f, 'exprSaveAttrObjects')),
 
 						indexTable: e.cast(e.int16, e.json_get(f, 'indexTable')),
 
@@ -292,6 +301,7 @@ export async function addDataObj(data: any) {
 				isListEdit: valueOrDefaultParm(p.isListEdit, false),
 				isListSuppressFilterSort: valueOrDefaultParm(p.isListSuppressFilterSort, false),
 				isListSuppressSelect: valueOrDefaultParm(p.isListSuppressSelect, false),
+				isRetrieveReadonly: valueOrDefaultParm(p.isRetrieveReadonly, false),
 				listEditPresetExpr: p.listEditPresetExpr,
 				listReorderColumn: e.select(e.sys_db.getColumn(p.listReorderColumn)),
 				modifiedBy: CREATOR,

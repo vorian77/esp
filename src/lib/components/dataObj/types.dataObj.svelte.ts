@@ -22,6 +22,7 @@ import {
 import { UserAction } from '$comps/other/types.userAction.svelte'
 import {
 	Field,
+	FieldAccess,
 	FieldColor,
 	FieldColumnItem,
 	FieldElement,
@@ -128,6 +129,7 @@ export class DataObj {
 		initActionsField()
 
 		initItemChangedTriggers(dataObj.fields)
+		initRetrieveReadonly(dataObj, queryType)
 
 		return dataObj
 
@@ -164,6 +166,19 @@ export class DataObj {
 						: {}
 			}
 			return dataObj.userGridSettings.load(rawSettings, sm, dataObj)
+		}
+
+		function initRetrieveReadonly(dataObj: DataObj, queryType: TokenApiQueryType) {
+			if (
+				dataObj.raw.isRetrieveReadonly &&
+				[TokenApiQueryType.retrieve, TokenApiQueryType.save].includes(queryType)
+			) {
+				dataObj.fields.forEach((field) => {
+					if ([FieldAccess.optional, FieldAccess.required].includes(field.fieldAccess)) {
+						field.fieldAccess = FieldAccess.readonly
+					}
+				})
+			}
 		}
 	}
 
@@ -779,6 +794,7 @@ export enum ParmsValuesType {
 	listIdsSelected = 'listIdsSelected',
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listSortModel = 'listSortModel',
+	parentRecordId = 'parentRecordId',
 	propLinkItemsSourceRaw = 'propLinkItemsSource',
 	propLinkItemsValueCurrent = 'propLinkItemsValueCurrent',
 	rowData = 'rowData',

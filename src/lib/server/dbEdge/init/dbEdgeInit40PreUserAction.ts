@@ -116,6 +116,16 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'never', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doListDetailEditMsg' },
+		codeTriggerEnable: 'always',
+		header: 'Edit',
+		name: 'ua_sys_edit_list_msg',
+		owner: 'sys_system_old'
+	})
+
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'never', isRequired: true }],
 		codeAction: {
 			codeType: 'ct_sys_code_action_class_do',
 			name: 'doEmbedListConfigEdit'
@@ -162,6 +172,29 @@ export function initPreUserAction(init: InitDb) {
 		codeTriggerEnable: 'always',
 		header: 'Edit',
 		name: 'ua_sys_embed_list_select',
+		owner: 'sys_system_old'
+	})
+
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [
+			{ codeTriggerShow: 'notStatusChanged', isRequired: true },
+			{ codeTriggerShow: 'notRecordOwner', isRequired: true }
+		],
+		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailNewMsgReply' },
+		codeTriggerEnable: 'always',
+		header: 'Reply',
+		name: 'ua_sys_msg_reply',
+		owner: 'sys_system_old'
+	})
+
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailMsgSetUnread' },
+		codeTriggerEnable: 'always',
+		header: 'Set Unread',
+		name: 'ua_sys_msg_set_unread',
 		owner: 'sys_system_old'
 	})
 

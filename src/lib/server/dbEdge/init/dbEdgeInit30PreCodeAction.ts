@@ -1,11 +1,21 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 
 export function initPreCodeAction(init: InitDb) {
+	initCodeActionsDefault(init)
 	initCodeActionsDoFieldAuth(init)
 	initCodeActionsDoGroupItem(init)
 	initCodeActionsModal(init)
 	initCodeActionsNav(init)
 	initCodeActionsUtils(init)
+}
+
+function initCodeActionsDefault(init: InitDb) {
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class',
+		name: 'default',
+		order: 0
+	})
 }
 
 function initCodeActionsDoFieldAuth(init: InitDb) {
@@ -39,6 +49,12 @@ function initCodeActionsDoGroupItem(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system_old',
 		codeType: 'ct_sys_code_action_class_do',
+		name: 'doDetailMsgSetUnread',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doDetailMigrate',
 		order: 0
 	})
@@ -46,6 +62,12 @@ function initCodeActionsDoGroupItem(init: InitDb) {
 		owner: 'sys_system_old',
 		codeType: 'ct_sys_code_action_class_do',
 		name: 'doDetailNew',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_do',
+		name: 'doDetailNewMsgReply',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
@@ -94,6 +116,12 @@ function initCodeActionsDoGroupItem(init: InitDb) {
 		owner: 'sys_system_old',
 		codeType: 'ct_sys_code_action_class_do',
 		name: 'doListDetailEdit',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system_old',
+		codeType: 'ct_sys_code_action_class_do',
+		name: 'doListDetailEditMsg',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {

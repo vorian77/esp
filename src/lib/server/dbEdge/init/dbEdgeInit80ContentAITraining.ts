@@ -62,7 +62,7 @@ function initCourse(init: InitDb) {
 				orderDefine: 70,
 				exprCustom: `(SELECT count(app_cm::CmCsfCohort FILTER .cohort.id IN app_cm::CmCourse.cohorts.id))`,
 				headerAlt: 'Enrollments',
-				indexTable: 0,
+
 				nameCustom: 'customCohortsCount',
 				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
 			}
@@ -297,7 +297,7 @@ function initCourse(init: InitDb) {
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'BookOpen',
 		codeNodeType: 'program',
-		dataObj: 'data_obj_cm_course_list',
+		data: [{ dataObj: 'data_obj_cm_course_list' }],
 		header: 'Courses',
 		name: 'node_obj_cm_course_list',
 		orderDefine: 10,
@@ -306,7 +306,7 @@ function initCourse(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'BookOpen',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_cm_course_detail',
+		data: [{ dataObj: 'data_obj_cm_course_detail' }],
 		header: 'Course',
 		name: 'node_obj_cm_course_detail',
 		orderDefine: 10,
@@ -386,7 +386,7 @@ function initCohort(init: InitDb) {
 				orderDefine: 70,
 				exprCustom: `(SELECT count(app_cm::CmCsfCohort FILTER .cohort.id = app_cm::CmCohort.id))`,
 				headerAlt: 'Enrollments',
-				indexTable: 0,
+
 				nameCustom: 'customCohortsCount',
 				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
 			}
@@ -568,7 +568,7 @@ function initCohort(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_cm_cohort_list',
+		data: [{ dataObj: 'data_obj_cm_cohort_list' }],
 		header: 'Cohorts',
 		name: 'node_obj_cm_cohort_list',
 		orderDefine: 10,
@@ -578,7 +578,7 @@ function initCohort(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_cm_cohort_detail',
+		data: [{ dataObj: 'data_obj_cm_cohort_detail' }],
 		header: 'Cohort',
 		name: 'node_obj_cm_cohort_detail',
 		orderDefine: 10,
@@ -643,7 +643,7 @@ function initCohortStudentRoster(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_cm_student_roster_list_by_cohort',
+		data: [{ dataObj: 'data_obj_cm_student_roster_list_by_cohort' }],
 		header: 'Student Roster',
 		name: 'node_obj_cm_student_roster_list_by_cohort',
 		orderDefine: 10,
@@ -861,7 +861,7 @@ function initCohortAttd(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_cm_cohort_attd_list',
+		data: [{ dataObj: 'data_obj_cm_cohort_attd_list' }],
 		header: 'Attendance Days',
 		name: 'node_obj_cm_cohort_attd_list',
 		orderDefine: 20,
@@ -871,7 +871,7 @@ function initCohortAttd(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_cm_cohort_attd_detail',
+		data: [{ dataObj: 'data_obj_cm_cohort_attd_detail' }],
 		header: 'Attendance Day',
 		name: 'node_obj_cm_cohort_attd_detail',
 		orderDefine: 10,
@@ -1018,7 +1018,7 @@ function initCohortAttdSheet(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_cm_cohort_attd_sheet',
+		data: [{ dataObj: 'data_obj_cm_cohort_attd_sheet' }],
 		header: 'Attendance Sheet',
 		name: 'node_obj_cm_cohort_attd_sheet',
 		orderDefine: 10,
@@ -1236,7 +1236,7 @@ function initCohortDoc(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_cm_cohort_doc_list',
+		data: [{ dataObj: 'data_obj_cm_cohort_doc_list' }],
 		header: 'Documents',
 		name: 'node_obj_cm_cohort_doc_list',
 		orderDefine: 40,
@@ -1246,7 +1246,7 @@ function initCohortDoc(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_cm_cohort_doc_detail',
+		data: [{ dataObj: 'data_obj_cm_cohort_doc_detail' }],
 		header: 'Document',
 		name: 'node_obj_cm_cohort_doc_detail',
 		orderDefine: 10,
@@ -1740,7 +1740,7 @@ function initPartner(init: InitDb) {
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'Handshake',
 		codeNodeType: 'program',
-		dataObj: 'data_obj_cm_partner_list',
+		data: [{ dataObj: 'data_obj_cm_partner_list' }],
 		header: 'Partners',
 		name: 'node_obj_cm_partner_list',
 		orderDefine: 20,
@@ -1750,7 +1750,7 @@ function initPartner(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'Handshake',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_cm_partner_detail',
+		data: [{ dataObj: 'data_obj_cm_partner_detail' }],
 		header: 'Partner',
 		name: 'node_obj_cm_partner_detail',
 		orderDefine: 10,
@@ -1781,7 +1781,7 @@ function initPartnerNote(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				codeFieldElement: 'date',
-				codeSortDir: 'desc',
+				codeSortDir: 'DESC',
 				columnName: 'date',
 				orderCrumb: 10,
 				orderSort: 10,
@@ -1939,7 +1939,7 @@ function initPartnerNote(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_cm_partner_note_list',
+		data: [{ dataObj: 'data_obj_cm_partner_note_list' }],
 		header: 'Notes',
 		name: 'node_obj_cm_partner_note_list',
 		orderDefine: 10,
@@ -1949,7 +1949,7 @@ function initPartnerNote(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_cm_partner_note_detail',
+		data: [{ dataObj: 'data_obj_cm_partner_note_detail' }],
 		header: 'Note',
 		name: 'node_obj_cm_partner_note_detail',
 		orderDefine: 10,

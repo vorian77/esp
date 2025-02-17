@@ -62,8 +62,8 @@ export class State {
 	navLayout?: StateNavLayout = $state()
 	navLayoutParms?: DataRecord = $state()
 	navPage: string
-
 	parmsState: ParmsValues = new ParmsValues()
+	parmsTrans: ParmsValues = new ParmsValues()
 	stateRoot?: State
 	storeDrawer: any
 	storeModal: any
@@ -103,10 +103,11 @@ export class State {
 	changeParm(obj: any, key: string, defaultValue: any) {
 		return Object.hasOwn(obj, key) ? obj[key] : defaultValue
 	}
-	async changeUserAction(obj: any) {
-		this.change(obj)
-		if (obj.userActionAlertMsg) alert(obj.userActionAlertMsg)
-		if (obj.fChangeCallbackUserAction) await obj.fChangeCallbackUserAction()
+	async changeUserAction(parmsAction: TokenAppStateTriggerAction) {
+		this.parmsTrans = parmsAction.transParms
+		this.change({ ...parmsAction.stateParms.data })
+		if (parmsAction.actionAlertMsg) alert(parmsAction.actionAlertMsg)
+		if (parmsAction.fCallback) await parmsAction.fCallback()
 	}
 
 	closeModal() {
@@ -321,7 +322,6 @@ export class State {
 				isDataObj: true,
 				isRowStatus: true
 			},
-			parmsState: new ParmsValues(),
 			stateRoot: this
 		})
 

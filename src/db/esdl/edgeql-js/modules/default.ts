@@ -61,8 +61,13 @@ export type $SysPersonλShape = $.typeutil.flatten<_sys_core.$ObjRootλShape & {
   "<person[is org_moed::MoedParticipant]": $.LinkDesc<_org_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is sys_user::SysUser]": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is sys_user::currentUser]": $.LinkDesc<_sys_user.$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<recipients[is sys_core::SysMsg]": $.LinkDesc<_sys_core.$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<sender[is sys_core::SysMsg]": $.LinkDesc<_sys_core.$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<contacts[is sys_core::SysObjEntAttr]": $.LinkDesc<_sys_core.$SysObjEntAttr, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<recipients": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<sender": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysPerson = $.ObjectType<"default::SysPerson", $SysPersonλShape, null, [
   ..._sys_core.$ObjRoot['__exclusives__'],
@@ -70,57 +75,6 @@ type $SysPerson = $.ObjectType<"default::SysPerson", $SysPersonλShape, null, [
 const $SysPerson = $.makeType<$SysPerson>(_.spec, "f7873edb-cbb2-11ef-830a-35b011cd4df3", _.syntax.literal);
 
 const SysPerson: $.$expr_PathNode<$.TypeSet<$SysPerson, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysPerson, $.Cardinality.Many), null);
-
-type rateλFuncExpr<
-  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$number>>,
-  P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$number>>,
-> = $.$expr_Function<
-  _std.$number, $.cardutil.multiplyCardinalities<$.cardutil.paramCardinality<P1>, $.cardutil.paramCardinality<P2>>
->;
-function rate<
-  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$number>>,
-  P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$number>>,
->(
-  num: P1,
-  denom: P2,
-): rateλFuncExpr<P1, P2>;
-function rate(...args: any[]) {
-  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('default::rate', args, _.spec, [
-    {args: [{typeId: "00000000-0000-0000-0000-0000000001ff", optional: false, setoftype: false, variadic: false}, {typeId: "00000000-0000-0000-0000-0000000001ff", optional: false, setoftype: false, variadic: false}], returnTypeId: "00000000-0000-0000-0000-0000000001ff"},
-  ]);
-  return _.syntax.$expressionify({
-    __kind__: $.ExpressionKind.Function,
-    __element__: returnType,
-    __cardinality__: cardinality,
-    __name__: "default::rate",
-    __args__: positionalArgs,
-    __namedargs__: namedArgs,
-  }) as any;
-};
-
-type averageλFuncExpr<
-  P1 extends $.TypeSet<$.ArrayType<_std.$float64>>,
-> = $.$expr_Function<
-  _std.$number, $.cardutil.paramCardinality<P1>
->;
-function average<
-  P1 extends $.TypeSet<$.ArrayType<_std.$float64>>,
->(
-  values: P1,
-): averageλFuncExpr<P1>;
-function average(...args: any[]) {
-  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('default::average', args, _.spec, [
-    {args: [{typeId: "2b65df4c-4942-59b1-8819-061ca68b2f4e", optional: false, setoftype: false, variadic: false}], returnTypeId: "00000000-0000-0000-0000-0000000001ff"},
-  ]);
-  return _.syntax.$expressionify({
-    __kind__: $.ExpressionKind.Function,
-    __element__: returnType,
-    __cardinality__: cardinality,
-    __name__: "default::average",
-    __args__: positionalArgs,
-    __namedargs__: namedArgs,
-  }) as any;
-};
 
 
 
@@ -130,16 +84,12 @@ type __defaultExports = {
   "Name": typeof Name;
   "nonNegative": typeof nonNegative;
   "SysError": typeof SysError;
-  "SysPerson": typeof SysPerson;
-  "rate": typeof rate;
-  "average": typeof average
+  "SysPerson": typeof SysPerson
 };
 const __defaultExports: __defaultExports = {
   "Name": Name,
   "nonNegative": nonNegative,
   "SysError": SysError,
-  "SysPerson": SysPerson,
-  "rate": rate,
-  "average": average
+  "SysPerson": SysPerson
 };
 export default __defaultExports;

@@ -188,15 +188,6 @@ export namespace app_cm {
     "title": string;
     "wage"?: number | null;
   }
-  export interface CmCsfMsg extends CmCsfData {
-    "codeStatus": sys_core.SysCode;
-    "parent"?: CmCsfMsg | null;
-    "recipients": sys_user.SysUser[];
-    "sender": sys_user.SysUser;
-    "date": edgedb.LocalDate;
-    "msg"?: string | null;
-    "subject"?: string | null;
-  }
   export interface CmCsfNote extends CmCsfData {
     "codeType": sys_core.SysCode;
     "date": edgedb.LocalDate;
@@ -292,8 +283,8 @@ export namespace sys_core {
   }
   export interface SysAppHeader extends SysObj {}
   export interface SysAttr extends sys_user.Mgmt {
+    "obj": SysObjEntAttr;
     "hasAccess": boolean;
-    "obj": SysObjEnt;
   }
   export interface SysCode extends ObjRootCore, sys_user.Mgmt {
     "valueDecimal"?: number | null;
@@ -333,6 +324,7 @@ export namespace sys_core {
     "listEditPresetExpr"?: string | null;
     "parentFilterExpr"?: string | null;
     "subHeader"?: string | null;
+    "isRetrieveReadonly"?: boolean | null;
     "actionsQuery": SysDataObjActionQuery[];
     "columns": SysDataObjColumn[];
     "listReorderColumn"?: sys_db.SysColumn | null;
@@ -366,6 +358,9 @@ export namespace sys_core {
     "exprSave"?: string | null;
     "actionAlertMsg"?: string | null;
     "fieldListItemsParmValue"?: string | null;
+    "exprSaveAttrObjects"?: string | null;
+    "codeAttrType"?: SysCode | null;
+    "attrAccess"?: boolean | null;
     "itemChanges": SysDataObjColumnItemChange[];
     "codeAccess"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
@@ -397,7 +392,6 @@ export namespace sys_core {
     "headerAlt"?: string | null;
     "height"?: number | null;
     "indexTable"?: number | null;
-    "indexWith"?: number | null;
     "isDisplay"?: boolean | null;
     "isDisplayBlock"?: boolean | null;
     "isDisplayable"?: boolean | null;
@@ -479,12 +473,14 @@ export namespace sys_core {
     "index": number;
   }
   export interface SysMsg extends ObjRoot {
-    "codeStatus": SysCode;
     "parent"?: SysMsg | null;
-    "recipients": sys_user.SysUser[];
-    "sender": sys_user.SysUser;
     "subject"?: string | null;
+    "date"?: edgedb.LocalDate | null;
     "createdAt": Date;
+    "recipients": $default.SysPerson[];
+    "sender": $default.SysPerson;
+    "codeStatus"?: SysCode | null;
+    "isRead": boolean;
   }
   export interface SysNodeObj extends SysObj {
     "codeNavType": SysCode;
@@ -494,7 +490,13 @@ export namespace sys_core {
     "isAlwaysRetrieveData": boolean;
     "isHideRowManager": boolean;
     "page"?: string | null;
+    "data": SysNodeObjData[];
   }
+  export interface SysNodeObjData extends std.$Object {
+    "dataObj": SysDataObj;
+    "codeAction": SysCodeAction;
+  }
+  export interface SysObjEntAttr extends SysObjEnt {}
   export interface SysObjNote extends sys_user.Mgmt {
     "codeType": SysCode;
     "date": edgedb.LocalDate;
@@ -999,7 +1001,6 @@ export interface types {
     "CmCsfCohortAttd": app_cm.CmCsfCohortAttd;
     "CmCsfDocument": app_cm.CmCsfDocument;
     "CmCsfJobPlacement": app_cm.CmCsfJobPlacement;
-    "CmCsfMsg": app_cm.CmCsfMsg;
     "CmCsfNote": app_cm.CmCsfNote;
     "CmCsfSchoolPlacement": app_cm.CmCsfSchoolPlacement;
     "CmPartner": app_cm.CmPartner;
@@ -1039,6 +1040,8 @@ export interface types {
     "SysDataObjWith": sys_core.SysDataObjWith;
     "SysMsg": sys_core.SysMsg;
     "SysNodeObj": sys_core.SysNodeObj;
+    "SysNodeObjData": sys_core.SysNodeObjData;
+    "SysObjEntAttr": sys_core.SysObjEntAttr;
     "SysObjNote": sys_core.SysObjNote;
     "SysOrg": sys_core.SysOrg;
     "SysSystem": sys_core.SysSystem;

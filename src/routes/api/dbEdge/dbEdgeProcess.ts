@@ -200,13 +200,6 @@ async function processDataObjQuery(
 				}
 			}
 
-			debug('processDataObjQuery', 'embeddedField', {
-				fieldEmbedType: field.embedType,
-				queryType,
-				recordStatus,
-				queryTypeEmbed
-			})
-
 			await processDataObjQuery(
 				queryTypeEmbed,
 				new Query(required(field.data.rawDataObj, clazz, 'field.data.rawDataObj'), field),

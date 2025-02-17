@@ -153,7 +153,7 @@ async function initSystemObject(init: InitDb) {
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
-		dataObj: 'data_obj_sys_admin_system_list_obj',
+		data: [{ dataObj: 'data_obj_sys_admin_system_list_obj' }],
 		header: 'Systems (Objects)',
 		name: 'node_obj_sys_admin_system_list_obj',
 		orderDefine: 30,
@@ -163,7 +163,7 @@ async function initSystemObject(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_system_detail_obj',
+		data: [{ dataObj: 'data_obj_sys_admin_system_detail_obj' }],
 		header: 'System (Object)',
 		name: 'node_obj_sys_admin_system_detail_obj',
 		orderDefine: 10,

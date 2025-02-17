@@ -51,7 +51,6 @@ export class Field {
 	linkItems?: PropLinkItems
 	constructor(props: PropsFieldCreate) {
 		const clazz = `Field: ${props.propRaw.propName}`
-
 		this.colDO = props.propRaw
 		this.fieldAccess = memberOfEnumOrDefault(
 			this.colDO.rawFieldAccess,

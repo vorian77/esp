@@ -270,14 +270,16 @@ export function getValRaw(exprParms: ExprParms) {
 		const itemF = exprParms.item.itemFunction
 		let value
 		switch (itemF.type) {
-			case ExprSourceFunction.random10:
+			case ExprSourceFunction.fSysRandom10:
 				return parseInt(Math.random().toFixed(10).replace('0.', ''))
-			case ExprSourceFunction.rate:
+			case ExprSourceFunction.fSysRate:
 				if (itemF.parms.length === 2) {
 					const denom = parseFloat(itemF.parms[1])
 					value = Math.round((denom !== 0 ? parseFloat(itemF.parms[0]) / denom : 0) * 100)
 				}
 				return value
+			case ExprSourceFunction.fSysToday:
+				return `<cal::local_date>'${new Date().toISOString().slice(0, 10)}'`
 		}
 		return valueNotFound({})
 	}
@@ -417,8 +419,9 @@ enum ExprSource {
 }
 
 enum ExprSourceFunction {
-	random10 = 'random10',
-	rate = 'rate'
+	fSysRandom10 = 'fSysRandom10',
+	fSysRate = 'fSysRate',
+	fSysToday = 'fSysToday'
 }
 
 export class ExprToken {

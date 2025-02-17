@@ -68,8 +68,7 @@ function initDataObjLogin(init: InitDb) {
 				},
 				isDisplayable: true,
 				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
+				orderDefine: 40
 			},
 			{
 				codeColor: 'primary',
@@ -337,8 +336,7 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 				customElement: { label: 'Reset Password' },
 				isDisplayable: true,
 				orderDisplay: 10,
-				orderDefine: 10,
-				indexTable: 0
+				orderDefine: 10
 			},
 			{
 				codeFieldElement: 'tel',
@@ -369,8 +367,7 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 				},
 				isDisplayable: true,
 				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
+				orderDefine: 40
 			},
 			{
 				codeFieldElement: 'customText',
@@ -381,8 +378,7 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 				},
 				isDisplayable: true,
 				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
+				orderDefine: 50
 			}
 		]
 	})
@@ -416,8 +412,7 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 				customElement: { label: 'Reset Password' },
 				isDisplayable: true,
 				orderDisplay: 10,
-				orderDefine: 10,
-				indexTable: 0
+				orderDefine: 10
 			},
 			{
 				codeFieldElement: 'tel',
@@ -449,8 +444,7 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 				},
 				isDisplayable: true,
 				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
+				orderDefine: 40
 			},
 			{
 				codeFieldElement: 'customText',
@@ -461,8 +455,7 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 				},
 				isDisplayable: true,
 				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
+				orderDefine: 50
 			},
 			{
 				codeColor: 'primary',
@@ -476,8 +469,7 @@ function initDataObjResetPasswordLogin(init: InitDb) {
 				},
 				isDisplayable: true,
 				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
+				orderDefine: 60
 			}
 		]
 	})
@@ -502,8 +494,7 @@ function initDataObjVerify(init: InitDb) {
 				customElement: { label: 'Verify Mobile Phone Number' },
 				isDisplayable: true,
 				orderDisplay: 10,
-				orderDefine: 10,
-				indexTable: 0
+				orderDefine: 10
 			},
 			{
 				codeFieldElement: 'customText',
@@ -513,8 +504,7 @@ function initDataObjVerify(init: InitDb) {
 				},
 				isDisplayable: true,
 				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0
+				orderDefine: 20
 			},
 			{
 				codeAlignmentAlt: 'left',
@@ -536,8 +526,7 @@ function initDataObjVerify(init: InitDb) {
 				},
 				isDisplayable: true,
 				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
+				orderDefine: 40
 			},
 			{
 				codeColor: 'primary',
@@ -549,8 +538,7 @@ function initDataObjVerify(init: InitDb) {
 				},
 				isDisplayable: true,
 				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
+				orderDefine: 50
 			}
 		]
 	})
@@ -572,8 +560,7 @@ function initDataObjSignup(init: InitDb) {
 				customElement: { label: 'Sign up' },
 				isDisplayable: true,
 				orderDisplay: 10,
-				orderDefine: 10,
-				indexTable: 0
+				orderDefine: 10
 			},
 			{
 				columnName: 'firstName',

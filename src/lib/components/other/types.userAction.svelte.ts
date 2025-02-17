@@ -13,6 +13,7 @@ import {
 	DataObjSaveMode,
 	type DataRecord,
 	debug,
+	getRecordValue,
 	memberOfEnum,
 	required,
 	valueOrDefault
@@ -97,7 +98,7 @@ export class UserAction {
 				codeAction: this.codeAction,
 				codeConfirmType,
 				confirm,
-				data: { token: new TokenAppDo({ dataObj }) }
+				data: { token: new TokenAppDo({ actionType: this.codeAction.actionType, dataObj }) }
 			})
 		)
 	}
@@ -150,12 +151,7 @@ export const userActionError = (filename: string, actionType: CodeActionType) =>
 	`${filename}.${actionType}`
 
 export async function userActionStateChange(sm: State, parmsAction: TokenAppStateTriggerAction) {
-	await sm.changeUserAction({
-		...parmsAction.stateParms.data,
-		fChangeCallbackUserAction: parmsAction.fCallback,
-		triggerTokens: parmsAction.stateParms.triggerTokens,
-		userActionAlertMsg: parmsAction.actionAlertMsg
-	})
+	await sm.changeUserAction(parmsAction)
 }
 
 export async function userActionStateChangeDataObj(
@@ -220,8 +216,8 @@ export class UserActionStatusGroup {
 	addStatus(sm: State, dataObj: DataObj, trigger: UserActionTrigger, isRequired: boolean) {
 		const clazz = 'UserActionStatusGroup'
 		let isTriggered = false
-
 		const dm: DataManager = required(sm.dm, clazz, 'state.dataManager')
+		let dataRecord: DataRecord | undefined
 
 		switch (trigger) {
 			case UserActionTrigger.always:
@@ -230,8 +226,26 @@ export class UserActionStatusGroup {
 			case UserActionTrigger.never:
 				isTriggered = false
 				break
+			case UserActionTrigger.notRecordOwner:
+				dataRecord = dm.getRecordsDisplayRow(dataObj.raw.id, 0)
+				if (dataRecord && sm.user) {
+					const recordOwner = getRecordValue(dataRecord, 'recordOwner')
+					isTriggered = !recordOwner ? false : recordOwner !== sm.user.personId
+				} else {
+					isTriggered = false
+				}
+				break
 			case UserActionTrigger.notStatusChanged:
 				isTriggered = !dm.isStatusChanged()
+				break
+			case UserActionTrigger.recordOwner:
+				dataRecord = dm.getRecordsDisplayRow(dataObj.raw.id, 0)
+				if (dataRecord && sm.user) {
+					const recordOwner = getRecordValue(dataRecord, 'recordOwner')
+					isTriggered = !recordOwner ? true : recordOwner === sm.user.personId
+				} else {
+					isTriggered = false
+				}
 				break
 			case UserActionTrigger.statusChanged:
 				isTriggered = dm.isStatusChanged()
@@ -270,10 +284,12 @@ export enum UserActionTrigger {
 	always = 'always',
 	never = 'never',
 	none = 'none',
+	notRecordOwner = 'notRecordOwner',
 	notStatusChanged = 'notStatusChanged',
 	statusChanged = 'statusChanged',
 	objectValidToContinue = 'objectValidToContinue',
 	statusValid = 'statusValid',
+	recordOwner = 'recordOwner',
 	rootDataObj = 'rootDataObj',
 	saveMode = 'saveMode',
 	saveModeInsert = 'saveModeInsert',

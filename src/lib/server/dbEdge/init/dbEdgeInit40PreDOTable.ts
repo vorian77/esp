@@ -38,6 +38,7 @@ export function initPreTable(init: InitDb) {
 		['sys_system_old', 'sys_core', 'SysNodeObj', true],
 		['sys_system_old', 'sys_core', 'SysObj', true],
 		['sys_system_old', 'sys_core', 'SysObjEnt', true],
+		['sys_system_old', 'sys_core', 'SysObjEntAttr', true],
 		['sys_system_old', 'sys_core', 'SysObjNote', true],
 		['sys_system_old', 'sys_core', 'SysOrg', true],
 		['sys_system_old', 'sys_core', 'SysSystem', true],

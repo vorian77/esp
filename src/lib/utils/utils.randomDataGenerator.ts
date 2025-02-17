@@ -1,4 +1,5 @@
 import type { DataRecord } from '$utils/types'
+import { debug } from '$utils/types'
 
 const recordCount = 25
 
@@ -253,19 +254,26 @@ const dataItemsDataDoc = {
 const recordDataDoc = ['dateIssued', 'codeType']
 
 const dataItemsDataMsg = {
-	codeStatus: {
-		type: 'list',
-		values: ['Closed', 'Responded', 'Sent', 'Under review']
-	},
 	date: {
 		type: 'date',
-		dateStart: '2024-10-01',
-		dateEnd: '2024-12-4'
+		dateStart: '2025-01-05',
+		dateEnd: '2025-02-15'
 	},
-	office: { type: 'list', values: ['moedOfficeEastside', 'moedOfficeWestside'] }
+	codeStatus: {
+		type: 'list',
+		values: ['closed', 'replied', 'sent', 'underReview']
+	},
+	subject: {
+		type: 'list',
+		values: ['Question about my application?', 'Question about documents?', 'More info', 'Help']
+	},
+	office: {
+		type: 'list',
+		values: ['moedOfficeWestside', 'moedOfficeEastside']
+	}
 }
 
-const recordDataMsg = ['date', 'codeStatus', 'office']
+const recordDataMsg = ['date', 'codeStatus', 'subject', 'office']
 
 export class RandomDataGenerator {
 	data: DataRecord = {}
@@ -275,13 +283,14 @@ export class RandomDataGenerator {
 		record: string[],
 		dataItems: Partial<Record<string, any>>,
 		recCnt: number,
-		isData: boolean
+		dataFactor: number
 	) {
 		let newData: any[] = []
-		const totalRecords = isData ? Math.ceil(this.getRandomValue(5) * recCnt) : recCnt
+		const totalRecords = dataFactor !== 0 ? Math.floor(dataFactor * recCnt) : recCnt
+		console.log('generatedData', { label, dataFactor, recCnt, totalRecords })
 		for (let i = 0; i < totalRecords; i++) {
 			let newRow: any[] = []
-			const recIdx = isData ? Math.ceil(this.getRandomValue(recCnt)) : i
+			const recIdx = dataFactor !== 0 ? Math.floor(this.getRandomValue(recCnt)) : i
 			newRow.push(recIdx)
 			record.forEach((key, idx) => {
 				if (dataItems[key]) {
@@ -342,10 +351,10 @@ export class RandomDataGenerator {
 		return Math.floor(Math.random() * max)
 	}
 	setData() {
-		this.addData('applicant', recordPart, dataItemsPart, recordCount, false)
-		this.addData('serviceFlow', recordServiceFlow, dataItemsServiceFlow, recordCount, false)
-		this.addData('dataDoc', recordDataDoc, dataItemsDataDoc, recordCount, true)
-		this.addData('dataMsg', recordDataMsg, dataItemsDataMsg, recordCount, true)
+		this.addData('applicant', recordPart, dataItemsPart, recordCount, 0)
+		this.addData('serviceFlow', recordServiceFlow, dataItemsServiceFlow, recordCount, 0)
+		this.addData('dataDoc', recordDataDoc, dataItemsDataDoc, recordCount, 0.75)
+		this.addData('dataMsg', recordDataMsg, dataItemsDataMsg, recordCount, 0.5)
 	}
 }
 

@@ -181,7 +181,7 @@ function initWidget(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_widget_list',
+		data: [{ dataObj: 'data_obj_sys_admin_widget_list' }],
 		header: 'Widgets',
 		name: 'node_obj_sys_admin_widget_list',
 		orderDefine: 200,
@@ -192,7 +192,7 @@ function initWidget(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_widget_detail',
+		data: [{ dataObj: 'data_obj_sys_admin_widget_detail' }],
 		header: 'Widget',
 		name: 'node_obj_sys_admin_widget_detail',
 		orderDefine: 10,

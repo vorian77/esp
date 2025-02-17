@@ -35,11 +35,33 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 	const actionType = parmsAction.codeAction.actionType
 	const token: Token = required(parmsAction.data.token, FILENAME, 'token')
 	const value = parmsAction.data.value
+	let currRecordId: string
 
 	switch (actionType) {
 		case CodeActionType.doDetailDelete:
 			await sm.app.saveDetail(sm, actionType, token as TokenAppDo)
 			await userActionStateChangeDataObj(sm, parmsAction)
+			break
+
+		case CodeActionType.doDetailMsgSetUnread:
+			currTab = sm.app.getCurrTab()
+			if (currTab && currTab.dataObj) {
+				currRecordId = currTab.getCurrRecordValue('id')
+				if (currRecordId) {
+					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {isRead := false}`
+					await sm.triggerAction(
+						new TokenAppStateTriggerAction({
+							codeAction: CodeAction.init(
+								CodeActionClass.ct_sys_code_action_class_utils,
+								CodeActionType.dbexpression
+							),
+							data: { value: expr }
+						})
+					)
+					await queryTypeTab(sm, currTab, TokenApiQueryType.retrieve)
+					await userActionStateChangeDataObj(sm, parmsAction)
+				}
+			}
 			break
 
 		case CodeActionType.doDetailMigrate:
@@ -48,10 +70,24 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 
 		case CodeActionType.doDetailNew:
 			parentTab = sm.app.getCurrTabParentTab()
-			if (parentTab)
-				parentTab.dataObj?.data?.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
+			if (parentTab && parentTab.dataObj) {
+				parentTab.dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
+			}
 			await queryTypeTab(sm, sm.app.getCurrTab(), TokenApiQueryType.preset)
 			await userActionStateChangeDataObj(sm, parmsAction)
+			break
+
+		case CodeActionType.doDetailNewMsgReply:
+			currTab = sm.app.getCurrTab()
+			if (currTab && currTab.dataObj) {
+				currRecordId = currTab.getCurrRecordValue('id')
+				parmsAction.transParms.valueSet(ParmsValuesType.parentRecordId, currRecordId)
+			}
+			parmsAction.codeAction = CodeAction.init(
+				CodeActionClass.ct_sys_code_action_class_do,
+				CodeActionType.doDetailNew
+			)
+			await action(sm, parmsAction)
 			break
 
 		case CodeActionType.doDetailProcessExecute:
@@ -92,6 +128,30 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 		case CodeActionType.doListDetailEdit:
 			await sm.app.addTreeNodeChildren(sm, token as TokenAppDo, TokenApiQueryType.retrieve)
 			await userActionStateChangeDataObj(sm, parmsAction)
+			break
+
+		case CodeActionType.doListDetailEditMsg:
+			currTab = sm.app.getCurrTab()
+			if (currTab && currTab.dataObj) {
+				currRecordId = currTab.getCurrRecordValue('id')
+				if (currRecordId) {
+					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {isRead := true}`
+					await sm.triggerAction(
+						new TokenAppStateTriggerAction({
+							codeAction: CodeAction.init(
+								CodeActionClass.ct_sys_code_action_class_utils,
+								CodeActionType.dbexpression
+							),
+							data: { value: expr }
+						})
+					)
+				}
+			}
+			parmsAction.codeAction = CodeAction.init(
+				CodeActionClass.ct_sys_code_action_class_do,
+				CodeActionType.doListDetailEdit
+			)
+			await action(sm, parmsAction)
 			break
 
 		case CodeActionType.doListDetailNew:

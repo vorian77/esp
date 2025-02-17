@@ -129,7 +129,7 @@ function initSystem(init: InitDb) {
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
-		dataObj: 'data_obj_sys_admin_system_list_meta',
+		data: [{ dataObj: 'data_obj_sys_admin_system_list_meta' }],
 		header: 'Systems (Meta)',
 		name: 'node_obj_sys_admin_system_list_meta',
 		orderDefine: 40,
@@ -139,7 +139,7 @@ function initSystem(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_system_detail_meta',
+		data: [{ dataObj: 'data_obj_sys_admin_system_detail_meta' }],
 		header: 'System (Meta)',
 		name: 'node_obj_sys_admin_system_detail_meta',
 		orderDefine: 10,

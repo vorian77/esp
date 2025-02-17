@@ -338,7 +338,7 @@ function initOrg(init: InitDb) {
 	init.addTrans('sysNodeObjProgram', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
-		dataObj: 'data_obj_sys_admin_org_list_user',
+		data: [{ dataObj: 'data_obj_sys_admin_org_list_user' }],
 		header: 'Organizations (User)',
 		name: 'node_obj_sys_admin_org_list_user',
 		orderDefine: 10,
@@ -347,7 +347,7 @@ function initOrg(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_org_detail_user',
+		data: [{ dataObj: 'data_obj_sys_admin_org_detail_user' }],
 		header: 'Organization (User)',
 		name: 'node_obj_sys_admin_org_detail_user',
 		orderDefine: 10,
@@ -486,7 +486,7 @@ function initSystem(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_system_list_user',
+		data: [{ dataObj: 'data_obj_sys_admin_system_list_user' }],
 		header: 'Systems',
 		name: 'node_obj_sys_admin_system_list_user',
 		orderDefine: 10,
@@ -496,7 +496,7 @@ function initSystem(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_system_detail_user',
+		data: [{ dataObj: 'data_obj_sys_admin_system_detail_user' }],
 		header: 'System',
 		name: 'node_obj_sys_admin_system_detail_user',
 		orderDefine: 10,
@@ -783,7 +783,7 @@ function initUser(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_user_list_user',
+		data: [{ dataObj: 'data_obj_sys_admin_user_list_user' }],
 		header: 'Users',
 		name: 'node_obj_sys_admin_user_list_user',
 		orderDefine: 20,
@@ -794,7 +794,7 @@ function initUser(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_user_detail_user',
+		data: [{ dataObj: 'data_obj_sys_admin_user_detail_user' }],
 		header: 'User',
 		name: 'node_obj_sys_admin_user_detail_user',
 		orderDefine: 10,

@@ -1,5 +1,5 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { DataObjData, type DataRecord, Node, ParmsValues } from '$utils/types'
+import { DataObjData, type DataRecord, Node, NodeData, ParmsValues } from '$utils/types'
 import {
 	arrayOfClass,
 	booleanOrFalse,
@@ -25,8 +25,6 @@ import {
 	TokenAppStateTriggerAction
 } from '$utils/types.token'
 import { FileStorage } from '$comps/form/fieldFile'
-import { goto } from '$app/navigation'
-import { error } from '@sveltejs/kit'
 
 const FILENAME = '$utils/types.user.ts'
 
@@ -40,6 +38,7 @@ export class User {
 	lastName: string
 	org: UserOrg
 	orgIds: string[] = []
+	personId: string
 	preferences: UserPrefs
 	resources = new UserTypeResourceList()
 	resources_sys_app: any[] = []
@@ -67,6 +66,7 @@ export class User {
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
 		this.org = new UserOrg(obj.org)
 		this.orgIds = obj.orgs.map((o: any) => o.id)
+		this.personId = strRequired(obj._personId, clazz, 'personId')
 		this.preferences = new UserPrefs(obj.preferences)
 		this.resources_sys_app = obj.resources_app
 		this.resources_sys_task_default = arrayOfClass(UserResourceTask, obj.resources_task_default)
@@ -175,8 +175,8 @@ export class UserResourceTask extends UserResource {
 	isShow: boolean = true
 	pageDataObjId?: string
 	targetDataObjId?: string
+	targetNodeObjData?: NodeData[] = []
 	targetNodeObjId?: string
-	targetNodeObjDataObjId?: string
 	constructor(obj: any) {
 		super(obj)
 		const clazz = 'UserResourceTask'
@@ -202,11 +202,15 @@ export class UserResourceTask extends UserResource {
 		this.isPinToDash = booleanOrFalse(obj.isPinToDash)
 		this.pageDataObjId = obj._pageDataObjId
 		this.targetDataObjId = obj._targetDataObjId
+		this.targetNodeObjData = arrayOfClass(NodeData, obj._targetNodeObjData)
 		this.targetNodeObjId = obj._targetNodeObjId
-		this.targetNodeObjDataObjId = obj._targetNodeObjDataObjId
 	}
 
 	getTokenNode(user: User | undefined) {
+		const _dataObjId =
+			this.targetNodeObjData && this.targetNodeObjData.length > 0
+				? this.targetNodeObjData[0].dataObjId
+				: this.targetDataObjId
 		return new TokenAppNode({
 			node: new Node({
 				_codeNodeType: this.targetDataObjId
@@ -214,7 +218,7 @@ export class UserResourceTask extends UserResource {
 					: this.targetNodeObjId
 						? 'object'
 						: undefined,
-				dataObjId: this.targetNodeObjDataObjId || this.targetDataObjId,
+				_data: [{ _actionType: 'default', _dataObjId }],
 				header: this.header,
 				icon: this.codeIconName,
 				id: this.targetNodeObjId || 'dummyId',

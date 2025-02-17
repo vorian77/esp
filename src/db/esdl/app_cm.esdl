@@ -109,19 +109,6 @@ module app_cm {
     note: str;
   }
 
-  type CmCsfMsg extending app_cm::CmCsfData {
-    required codeStatus: sys_core::SysCode;
-    # {
-    #   default := (SELECT assert_single(sys_core::SysCode FILTER .codeType.name = 'ct_cm_msg_status' AND .name = 'Sent'));
-    # };
-    required date: cal::local_date;
-    msg: str;
-    parent: app_cm::CmCsfMsg;
-    multi recipients: sys_user::SysUser;
-    required sender: sys_user::SysUser;
-    subject: str;
-  }
-
   type CmCsfNote extending app_cm::CmCsfData {
     required date: cal::local_date;
     required codeType: sys_core::SysCode;
