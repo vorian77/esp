@@ -160,12 +160,12 @@ export class App {
 					if (rawNodes.root.length === 1) {
 						// create root tab - detail
 						const nodeLevelRootDetail = new Node(rawNodes.root[0])
-						const nodeData = nodeLevelRootDetail.getNodeData(token.actionType)
 						let nodeParms: DataRecord = {
-							dataObjId: nodeData.dataObjId,
+							dataObjId: nodeLevelRootDetail.getNodeDataObjId(token.actionType),
 							isAlwaysRetrieveData: nodeLevelRootDetail.isAlwaysRetrieveData,
 							isProgramObject: nodeLevelRootDetail.type === NodeType.program_object,
 							label: nodeLevelRootDetail.label,
+							node: nodeLevelRootDetail,
 							treeLevelIdx: currTab.treeLevelIdx
 						}
 						let newTab = new AppLevelTab(nodeParms)
@@ -185,12 +185,12 @@ export class App {
 		}
 	}
 	addTreeNodeParmsList(node: Node, actionType: CodeActionType) {
-		const nodeData = node.getNodeData(actionType)
 		return {
-			dataObjId: nodeData.dataObjId,
+			dataObjId: node.getNodeDataObjId(actionType),
 			isAlwaysRetrieveData: node.isAlwaysRetrieveData,
 			isHideRowManager: node.isHideRowManager,
 			label: node.label,
+			node: node,
 			nodeIdParent: node.id,
 			treeLevelIdx: this.treeLevels.length
 		}
@@ -252,6 +252,19 @@ export class App {
 	async navTab(sm: State, token: TokenAppTab) {
 		await this.getCurrTreeLevel()?.navTab(sm, token)
 	}
+
+	async queryTab(
+		sm: State,
+		tab: AppLevelTab | undefined,
+		actionType: CodeActionType,
+		queryType: TokenApiQueryType
+	) {
+		if (tab) {
+			if (tab.node) tab.dataObjId = tab.node.getNodeDataObjId(actionType)
+			await queryTypeTab(sm, tab, queryType)
+		}
+	}
+
 	async rowUpdate(sm: State, token: TokenAppRow) {
 		await this.getCurrTreeLevel()?.rowUpdate(sm, token)
 	}
@@ -356,6 +369,7 @@ export class AppLevelTab {
 	isProgramObject: boolean
 	isRetrieved: boolean
 	label?: string
+	node?: Node
 	nodeIdParent?: string
 	treeLevelIdx: number
 	constructor(obj: any) {
@@ -371,6 +385,7 @@ export class AppLevelTab {
 		this.isRetrieved = booleanOrFalse(obj.isRetrieved)
 		this.isVirtual = booleanOrFalse(obj.isVirtual)
 		this.label = obj.label
+		this.node = obj.node
 		this.nodeIdParent = obj.nodeIdParent
 		this.treeLevelIdx = required(obj.treeLevelIdx, clazz, 'treeLevelIdx')
 	}

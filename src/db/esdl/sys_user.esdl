@@ -77,7 +77,10 @@ module sys_user {
     confirmTitle: str;
   }
   type SysUserActionShow extending sys_user::Mgmt {
+    codeExprOp: sys_core::SysCode;
     required codeTriggerShow: sys_core::SysCode;
+    exprField: str;
+    exprValue: str;
     required isRequired: bool;
   }
 

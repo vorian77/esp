@@ -257,6 +257,7 @@ module sys_core {
 
     headerAlt: str;
     height: int16;
+    inputMaskAlt: str;
     multi itemChanges: sys_core::SysDataObjColumnItemChange {
       on source delete delete target;
       on target delete allow;
@@ -390,6 +391,7 @@ module sys_core {
     date: cal::local_date;
     required isRead: bool;
     parent: sys_core::SysMsg;
+    multi readers: default::SysPerson;
     multi recipients: default::SysPerson;
     required sender: default::SysPerson;
     subject: str;
@@ -399,21 +401,24 @@ module sys_core {
     required codeNavType: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
     multi data: sys_core::SysNodeObjData {
-      on source delete delete target;
-      on target delete allow;
+       on target delete delete source;
     };
     dataObj: sys_core::SysDataObj {
       on target delete allow
     };
     required isAlwaysRetrieveData: bool;
     required isHideRowManager: bool;
-    parent: sys_core::SysNodeObj;
+    parent: sys_core::SysNodeObj{
+       on target delete delete source;
+    };
     page: str;
     constraint exclusive on (.name);
   }
 
   type SysNodeObjData {
-    required dataObj: sys_core::SysDataObj;
+    required dataObj: sys_core::SysDataObj{
+      on target delete delete source;
+    };
     required codeAction: sys_core::SysCodeAction;
   }
 

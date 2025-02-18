@@ -14,7 +14,6 @@ import {
 	required
 } from '$utils/types'
 import { AppLevel, AppLevelTab } from '$comps/app/types.app.svelte'
-import { queryTypeTab } from '$comps/app/types.appQuery'
 import {
 	Token,
 	TokenApiQueryType,
@@ -48,7 +47,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			if (currTab && currTab.dataObj) {
 				currRecordId = currTab.getCurrRecordValue('id')
 				if (currRecordId) {
-					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {isRead := false}`
+					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {readers := (.readers except (SELECT default::SysPerson FILTER .id = <user,uuid,personId>))}`
 					await sm.triggerAction(
 						new TokenAppStateTriggerAction({
 							codeAction: CodeAction.init(
@@ -58,7 +57,12 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 							data: { value: expr }
 						})
 					)
-					await queryTypeTab(sm, currTab, TokenApiQueryType.retrieve)
+					await sm.app.queryTab(
+						sm,
+						currTab,
+						parmsAction.codeAction.actionType,
+						TokenApiQueryType.retrieve
+					)
 					await userActionStateChangeDataObj(sm, parmsAction)
 				}
 			}
@@ -73,21 +77,29 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			if (parentTab && parentTab.dataObj) {
 				parentTab.dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
 			}
-			await queryTypeTab(sm, sm.app.getCurrTab(), TokenApiQueryType.preset)
+			await sm.app.queryTab(
+				sm,
+				sm.app.getCurrTab(),
+				parmsAction.codeAction.actionType,
+				TokenApiQueryType.preset
+			)
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.doDetailNewMsgReply:
 			currTab = sm.app.getCurrTab()
 			if (currTab && currTab.dataObj) {
-				currRecordId = currTab.getCurrRecordValue('id')
-				parmsAction.transParms.valueSet(ParmsValuesType.parentRecordId, currRecordId)
+				sm.parmsTrans.valueSet(ParmsValuesType.parentRecordId, currTab.getCurrRecordValue('id'))
+				sm.parmsTrans.valueSet('subject', currTab.getCurrRecordValue('subject'))
+				await sm.app.queryTab(
+					sm,
+					currTab,
+					parmsAction.codeAction.actionType,
+					TokenApiQueryType.preset
+				)
+				await userActionStateChangeDataObj(sm, parmsAction)
 			}
-			parmsAction.codeAction = CodeAction.init(
-				CodeActionClass.ct_sys_code_action_class_do,
-				CodeActionType.doDetailNew
-			)
-			await action(sm, parmsAction)
+
 			break
 
 		case CodeActionType.doDetailProcessExecute:
@@ -135,7 +147,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			if (currTab && currTab.dataObj) {
 				currRecordId = currTab.getCurrRecordValue('id')
 				if (currRecordId) {
-					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {isRead := true}`
+					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {readers := DISTINCT (.readers UNION (SELECT default::SysPerson FILTER .id = <user,uuid,personId>))}`
 					await sm.triggerAction(
 						new TokenAppStateTriggerAction({
 							codeAction: CodeAction.init(
@@ -165,7 +177,13 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doListSelfRefresh:
-			await queryTypeTab(sm, sm.app.getCurrTab(), TokenApiQueryType.retrieve)
+			await sm.app.queryTab(
+				sm,
+				sm.app.getCurrTab(),
+				parmsAction.codeAction.actionType,
+				TokenApiQueryType.retrieve
+			)
+
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
@@ -215,12 +233,22 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 					const status = currTab?.dataObj.data?.rowsRetrieved?.getDetailRowStatus()
 					switch (status) {
 						case DataRecordStatus.preset:
-							await queryTypeTab(sm, currTab, TokenApiQueryType.preset)
+							await sm.app.queryTab(
+								sm,
+								currTab,
+								parmsAction.codeAction.actionType,
+								TokenApiQueryType.preset
+							)
 							await userActionStateChangeDataObj(sm, parmsAction)
 							break
 						case DataRecordStatus.retrieved:
 						case DataRecordStatus.update:
-							await queryTypeTab(sm, currTab, TokenApiQueryType.retrieve)
+							await sm.app.queryTab(
+								sm,
+								currTab,
+								parmsAction.codeAction.actionType,
+								TokenApiQueryType.retrieve
+							)
 							await userActionStateChangeDataObj(sm, parmsAction)
 							break
 						default:
@@ -249,7 +277,12 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 		currLevel = sm.app.getCurrLevel()
 		if (currLevel) {
 			currTab = currLevel.getCurrTab()
-			await queryTypeTab(sm, currTab, TokenApiQueryType.retrieve)
+			await sm.app.queryTab(
+				sm,
+				currTab,
+				parmsAction.codeAction.actionType,
+				TokenApiQueryType.retrieve
+			)
 			await userActionStateChangeDataObj(sm, parmsAction)
 		}
 	}

@@ -256,6 +256,9 @@ const $SysUserActionConfirm = $.makeType<$SysUserActionConfirm>(_.spec, "6f54723
 const SysUserActionConfirm: $.$expr_PathNode<$.TypeSet<$SysUserActionConfirm, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserActionConfirm, $.Cardinality.Many), null);
 
 export type $SysUserActionShowλShape = $.typeutil.flatten<$MgmtλShape & {
+  "codeExprOp": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "exprField": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "exprValue": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "codeTriggerShow": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "isRequired": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
   "<actionShows[is sys_user::SysUserAction]": $.LinkDesc<$SysUserAction, $.Cardinality.Many, {}, false, false,  false, false>;

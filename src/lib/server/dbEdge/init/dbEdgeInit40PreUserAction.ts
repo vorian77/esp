@@ -190,7 +190,16 @@ export function initPreUserAction(init: InitDb) {
 
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
+		actionShows: [
+			{ codeTriggerShow: 'notStatusChanged', isRequired: true },
+			{
+				codeExprOp: 'equal',
+				codeTriggerShow: 'expression',
+				exprField: 'isReadDisplay',
+				exprValue: 'Yes',
+				isRequired: true
+			}
+		],
 		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailMsgSetUnread' },
 		codeTriggerEnable: 'always',
 		header: 'Set Unread',

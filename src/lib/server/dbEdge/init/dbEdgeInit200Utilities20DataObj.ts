@@ -271,6 +271,8 @@ export async function addDataObj(data: any) {
 
 						height: e.cast(e.int16, e.json_get(f, 'height')),
 
+						inputMaskAlt: e.cast(e.str, e.json_get(f, 'inputMaskAlt')),
+
 						isDisplayBlock: booleanOrDefaultJSON(f, 'isDisplayBlock', false),
 
 						nameCustom: e.cast(e.str, e.json_get(f, 'nameCustom')),
@@ -539,6 +541,7 @@ export async function addUserAction(data: any) {
 				}),
 				actionShows: e.for(e.array_unpack(p.actionShows), (a) => {
 					return e.insert(e.sys_user.SysUserActionShow, {
+						codeExprOp: e.sys_core.getCode('ct_sys_op', e.cast(e.str, e.json_get(a, 'codeExprOp'))),
 						codeTriggerShow: e.select(
 							e.sys_core.getCode(
 								'ct_sys_user_action_trigger',
@@ -546,6 +549,8 @@ export async function addUserAction(data: any) {
 							)
 						),
 						createdBy: CREATOR,
+						exprField: e.cast(e.str, e.json_get(a, 'exprField')),
+						exprValue: e.cast(e.str, e.json_get(a, 'exprValue')),
 						isRequired: e.cast(e.bool, e.json_get(a, 'isRequired')),
 						modifiedBy: CREATOR
 					})
@@ -600,7 +605,7 @@ export async function dataObjColumnItemChangeBulk(data: any) {
 											e.cast(e.str, e.json_get(target, 'fieldAccess'))
 										),
 										codeOp: e.sys_core.getCode(
-											'ct_sys_do_field_item_change_op',
+											'ct_sys_op',
 											e.cast(e.str, e.json_get(target, 'op'))
 										),
 										codeValueTarget: e.sys_core.getCodeSystem(

@@ -50,6 +50,9 @@ dependencies:
   lucide-svelte:
     specifier: ^0.468.0
     version: 0.468.0(svelte@5.16.0)
+  maska:
+    specifier: ^3.1.0
+    version: 3.1.0
   svelte-language-server:
     specifier: ^0.17.7
     version: 0.17.7
@@ -2803,6 +2806,10 @@ packages:
       '@babel/parser': 7.26.3
       '@babel/types': 7.26.3
       recast: 0.23.9
+    dev: false
+
+  /maska@3.1.0:
+    resolution: {integrity: sha512-ryO1EGYDQt4TrYEyEN0/hrdgJHuXfATG6/h58maxzebGv31Xdlaw9B6FQdgblg6pzd6aw2HrWq3rpp6N9rlyog==}
     dev: false
 
   /mdn-data@2.0.30:

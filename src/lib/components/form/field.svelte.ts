@@ -122,10 +122,10 @@ export class Field {
 
 				case FieldItemChangeTypeTrigger.code:
 					switch (itemChange.codeOp) {
-						case FieldItemChangeOp.equal:
+						case FieldOp.equal:
 							if (triggerValueCurrent === itemChange.codeValueTrigger) await process(itemChange)
 							break
-						case FieldItemChangeOp.notEqual:
+						case FieldOp.notEqual:
 							if (triggerValueCurrent !== itemChange.codeValueTrigger) await process(itemChange)
 							break
 						default:
@@ -148,27 +148,27 @@ export class Field {
 				case FieldItemChangeTypeTrigger.scalar:
 					if (itemChange.valueScalarTrigger) {
 						switch (itemChange.codeOp) {
-							case FieldItemChangeOp.equal:
+							case FieldOp.equal:
 								if (triggerValueCurrent === itemChange.valueScalarTrigger) await process(itemChange)
 								break
 
-							case FieldItemChangeOp.greaterThan:
+							case FieldOp.greaterThan:
 								if (triggerValueCurrent > itemChange.valueScalarTrigger) await process(itemChange)
 								break
 
-							case FieldItemChangeOp.greaterThanOrEqual:
+							case FieldOp.greaterThanOrEqual:
 								if (triggerValueCurrent >= itemChange.valueScalarTrigger) await process(itemChange)
 								break
 
-							case FieldItemChangeOp.lessThan:
+							case FieldOp.lessThan:
 								if (triggerValueCurrent < itemChange.valueScalarTrigger) await process(itemChange)
 								break
 
-							case FieldItemChangeOp.lessThanOrEqual:
+							case FieldOp.lessThanOrEqual:
 								if (triggerValueCurrent <= itemChange.valueScalarTrigger) await process(itemChange)
 								break
 
-							case FieldItemChangeOp.notEqual:
+							case FieldOp.notEqual:
 								if (triggerValueCurrent !== itemChange.valueScalarTrigger) await process(itemChange)
 								break
 							default:
@@ -389,7 +389,7 @@ export enum FieldEmbedType {
 
 export class FieldItemChange {
 	codeAccess?: FieldAccess
-	codeOp?: FieldItemChangeOp
+	codeOp?: FieldOp
 	codeValueTarget?: string
 	codeValueTrigger?: string
 	codeValueTypeTarget: FieldItemChangeTypeTarget
@@ -407,13 +407,7 @@ export class FieldItemChange {
 			'FieldAccess',
 			FieldAccess
 		)
-		this.codeOp = memberOfEnumIfExists(
-			target._codeOp,
-			'codeOp',
-			clazz,
-			'FieldTriggerOp',
-			FieldItemChangeOp
-		)
+		this.codeOp = memberOfEnumIfExists(target._codeOp, 'codeOp', clazz, 'FieldTriggerOp', FieldOp)
 		this.codeValueTarget = target._codeValueTarget
 		this.codeValueTrigger = target._codeValueTrigger
 		this.codeValueTypeTarget = memberOfEnum(
@@ -443,15 +437,6 @@ export class FieldItemChange {
 	}
 }
 
-export enum FieldItemChangeOp {
-	equal = 'equal',
-	greaterThan = 'greaterThan',
-	greaterThanOrEqual = 'greaterThanOrEqual',
-	lessThan = 'lessThan',
-	lessThanOrEqual = 'lessThanOrEqual',
-	notEqual = 'notEqual'
-}
-
 export enum FieldItemChangeTypeTarget {
 	none = 'none',
 	reset = 'reset',
@@ -465,6 +450,15 @@ export enum FieldItemChangeTypeTrigger {
 	notNull = 'notNull',
 	null = 'null',
 	scalar = 'scalar'
+}
+
+export enum FieldOp {
+	equal = 'equal',
+	greaterThan = 'greaterThan',
+	greaterThanOrEqual = 'greaterThanOrEqual',
+	lessThan = 'lessThan',
+	lessThanOrEqual = 'lessThanOrEqual',
+	notEqual = 'notEqual'
 }
 
 export class PropsFieldInit {

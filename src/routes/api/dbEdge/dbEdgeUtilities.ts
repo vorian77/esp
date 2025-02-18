@@ -136,7 +136,10 @@ const shapeUserAction = e.shape(e.sys_user.SysUserAction, (ua) => ({
 		confirmTitle: true
 	})),
 	_actionShows: e.select(ua.actionShows, (s) => ({
+		_codeExprOp: s.codeExprOp.name,
 		_codeTriggerShow: s.codeTriggerShow.name,
+		exprField: true,
+		exprValue: true,
 		isRequired: true
 	})),
 	_codeAction: e.select(ua.codeAction, (ca) => ({
@@ -281,6 +284,7 @@ export async function getDataObjById(token: TokenApiId) {
 					exprStorageKey: true,
 					header: true,
 					headerSide: true,
+					inputMask: true,
 					isFormTag: true,
 					isMultiSelect: true,
 					matchColumn: true,
@@ -346,6 +350,7 @@ export async function getDataObjById(token: TokenApiId) {
 
 				headerAlt: true,
 				height: true,
+				inputMaskAlt: true,
 				isDisplay: true,
 				isDisplayable: true,
 				isDisplayBlock: true,

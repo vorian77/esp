@@ -51,6 +51,7 @@
 		"lodash-es": "^4.17.21",
 		"lucide": "^0.468.0",
 		"lucide-svelte": "^0.468.0",
+		"maska": "^3.1.0",
 		"svelte-language-server": "^0.17.7",
 		"twilio": "^5.3.7"
 	},

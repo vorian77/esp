@@ -1,6 +1,7 @@
 import { InitDb } from '$server/dbEdge/init/types.init'
 import { moedDataApplicant } from '$utils/utils.randomDataGenerator'
 import { ParmsValuesType } from '$utils/types'
+import { link } from 'fs'
 
 export function initContentMOEDStudent(init: InitDb) {
 	// staff
@@ -145,8 +146,8 @@ function initApplicant(init: InitDb) {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40
+				orderDisplay: 45,
+				orderDefine: 45
 			},
 			{
 				columnName: 'firstName',
@@ -509,25 +510,36 @@ function initApplicantMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 15,
+				orderDisplay: 15,
+				exprCustom: `'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				headerAlt: 'Read',
+				nameCustom: 'isReadDisplay'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'parent',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0,
+				linkColumns: ['id']
+			},
+			{
+				codeAccess: 'readOnly',
 				codeSortDir: 'DESC',
 				columnName: 'date',
 				headerAlt: 'Date (Demonstration Only)',
 				indexTable: 0,
 				isDisplayable: true,
 				orderCrumb: 10,
-				orderDefine: 20,
-				orderDisplay: 20,
+				orderDefine: 25,
+				orderDisplay: 25,
 				orderSort: 10
 			},
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	columnName: 'codeStatus',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 40,
-			// 	orderDefine: 40,
-			// 	indexTable: 0,
-			// 	linkColumns: ['name']
-			// },
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
@@ -544,17 +556,6 @@ function initApplicantMsg(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 50,
-				orderDisplay: 50,
-				exprCustom: `'Yes' IF .isRead ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -615,10 +616,21 @@ function initApplicantMsg(init: InitDb) {
 				orderDefine: 40
 			},
 			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 45,
+				orderDisplay: 45,
+				exprCustom: `'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				headerAlt: 'Read',
+				nameCustom: 'isReadDisplay'
+			},
+			{
 				codeFieldElement: 'date',
 				columnName: 'date',
 				exprPreset: `<fSysToday>`,
-				headerAlt: 'Date (Demonstration Only)',
+				headerAlt: 'Date (Demonstration Only)-Default',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
@@ -653,34 +665,12 @@ function initApplicantMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 80,
-				orderDisplay: 80,
-				exprCustom: `'Yes' IF .isRead ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'isRead',
 				isDisplayable: false,
 				orderDisplay: 90,
 				orderDefine: 90,
 				indexTable: 0
 			},
-			// {
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'codeStatus',
-			// 	exprSave: `(sys_core::getCodeSystem('sys_system_old', 'ct_sys_msg_status', 'sent'))`,
-			// 	isDisplayable: true,
-			// 	orderDisplay: 70,
-			// 	orderDefine: 70,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_code_header_order_index_by_codeType_name',
-			// 	fieldListItemsParmValue: 'ct_sys_msg_status'
-			// },
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
@@ -761,10 +751,21 @@ function initApplicantMsg(init: InitDb) {
 				orderDefine: 40
 			},
 			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 45,
+				orderDisplay: 45,
+				exprCustom: `'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				headerAlt: 'Read',
+				nameCustom: 'isReadDisplay'
+			},
+			{
 				codeFieldElement: 'date',
 				columnName: 'date',
 				exprPreset: `<fSysToday>`,
-				headerAlt: 'Date (Demonstration Only)',
+				headerAlt: 'Date (Demonstration Only) - Reply',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
@@ -791,22 +792,13 @@ function initApplicantMsg(init: InitDb) {
 				linkTable: 'SysPerson'
 			},
 			{
+				codeAccess: 'readOnly',
 				columnName: 'subject',
+				exprPreset: `<parms,str,subject>`,
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 80,
-				orderDisplay: 80,
-				exprCustom: `'Yes' IF .isRead ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -816,17 +808,6 @@ function initApplicantMsg(init: InitDb) {
 				orderDefine: 90,
 				indexTable: 0
 			},
-			// {
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'codeStatus',
-			// 	exprSave: `(sys_core::getCodeSystem('sys_system_old', 'ct_sys_msg_status', 'sent'))`,
-			// 	isDisplayable: true,
-			// 	orderDisplay: 70,
-			// 	orderDefine: 70,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_code_header_order_index_by_codeType_name',
-			// 	fieldListItemsParmValue: 'ct_sys_msg_status'
-			// },
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
@@ -1795,7 +1776,7 @@ function initTaskSsrApp(init: InitDb) {
 			{
 				codeFieldElement: 'date',
 				columnName: 'dateCreated',
-				headerAlt: 'Application Date',
+				headerAlt: 'Application Date (yyyy-mm-dd)',
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 215,
@@ -2051,13 +2032,33 @@ function initTaskSsrMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 15,
+				orderDisplay: 15,
+				exprCustom: `'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				headerAlt: 'Read',
+				nameCustom: 'isReadDisplay'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'parent',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0,
+				linkColumns: ['id']
+			},
+			{
+				codeAccess: 'readOnly',
 				codeSortDir: 'DESC',
 				columnName: 'date',
 				orderCrumb: 10,
 				orderSort: 10,
 				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
+				orderDisplay: 25,
+				orderDefine: 25,
 				indexTable: 0
 			},
 			{
@@ -2091,17 +2092,6 @@ function initTaskSsrMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 50,
-				orderDisplay: 50,
-				exprCustom: `'Yes' IF .isRead ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'isRead',
 				isDisplayable: false,
 				orderDisplay: 50,
@@ -2117,15 +2107,6 @@ function initTaskSsrMsg(init: InitDb) {
 				orderDefine: 60,
 				indexTable: 0
 			}
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	columnName: 'codeStatus',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 40,
-			// 	orderDefine: 40,
-			// 	indexTable: 0,
-			// 	linkColumns: ['name']
-			// }
 		]
 	})
 
@@ -2162,20 +2143,23 @@ function initTaskSsrMsg(init: InitDb) {
 				exprCustom: `.sender.id`,
 				nameCustom: 'recordOwner'
 			},
-			// {
-			// 	columnName: 'codeStatus',
-			// 	exprSave: `(sys_core::getCodeSystem('sys_system_old', 'ct_sys_msg_status', 'sent'))`,
-			// 	orderDefine: 50,
-			// 	indexTable: 0,
-			// 	isDisplayable: false,
-			// 	linkTable: 'SysCode'
-			// },
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 55,
+				orderDisplay: 55,
+				exprCustom: `'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				headerAlt: 'Read',
+				nameCustom: 'isReadDisplay'
 			},
 			{
 				codeFieldElement: 'date',
@@ -2204,17 +2188,6 @@ function initTaskSsrMsg(init: InitDb) {
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 90,
-				orderDisplay: 90,
-				exprCustom: `'Yes' IF .isRead ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -2276,20 +2249,23 @@ function initTaskSsrMsg(init: InitDb) {
 				exprCustom: `.sender.id`,
 				nameCustom: 'recordOwner'
 			},
-			// {
-			// 	columnName: 'codeStatus',
-			// 	exprSave: `(sys_core::getCodeSystem('sys_system_old', 'ct_sys_msg_status', 'sent'))`,
-			// 	orderDefine: 50,
-			// 	indexTable: 0,
-			// 	isDisplayable: false,
-			// 	linkTable: 'SysCode'
-			// },
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 55,
+				orderDisplay: 55,
+				exprCustom: `'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				headerAlt: 'Read',
+				nameCustom: 'isReadDisplay'
 			},
 			{
 				codeFieldElement: 'date',
@@ -2313,22 +2289,13 @@ function initTaskSsrMsg(init: InitDb) {
 				linkTable: 'SysPerson'
 			},
 			{
+				codeAccess: 'readOnly',
 				columnName: 'subject',
+				exprPreset: `(SELECT default::SysPerson FILTER .id = <parms,str,subject>)`,
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 90,
-				orderDisplay: 90,
-				exprCustom: `'Yes' IF .isRead ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
 			},
 			{
 				codeAccess: 'readOnly',

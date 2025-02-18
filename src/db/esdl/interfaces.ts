@@ -60,6 +60,9 @@ export namespace sys_user {
     "confirmTitle"?: string | null;
   }
   export interface SysUserActionShow extends Mgmt {
+    "codeExprOp"?: sys_core.SysCode | null;
+    "exprField"?: string | null;
+    "exprValue"?: string | null;
     "codeTriggerShow": sys_core.SysCode;
     "isRequired": boolean;
   }
@@ -357,6 +360,7 @@ export namespace sys_core {
   export interface SysDataObjColumn extends sys_user.Mgmt {
     "exprSave"?: string | null;
     "actionAlertMsg"?: string | null;
+    "inputMaskAlt"?: string | null;
     "fieldListItemsParmValue"?: string | null;
     "exprSaveAttrObjects"?: string | null;
     "codeAttrType"?: SysCode | null;
@@ -476,6 +480,7 @@ export namespace sys_core {
     "parent"?: SysMsg | null;
     "subject"?: string | null;
     "date"?: edgedb.LocalDate | null;
+    "readers": $default.SysPerson[];
     "createdAt": Date;
     "recipients": $default.SysPerson[];
     "sender": $default.SysPerson;
@@ -486,11 +491,11 @@ export namespace sys_core {
     "codeNavType": SysCode;
     "codeNodeType": SysCode;
     "dataObj"?: SysDataObj | null;
-    "parent"?: SysNodeObj | null;
     "isAlwaysRetrieveData": boolean;
     "isHideRowManager": boolean;
     "page"?: string | null;
     "data": SysNodeObjData[];
+    "parent"?: SysNodeObj | null;
   }
   export interface SysNodeObjData extends std.$Object {
     "dataObj": SysDataObj;
@@ -818,6 +823,7 @@ export namespace sys {
 export namespace sys_db {
   export interface SysColumn extends sys_core.SysObj {
     "toggleContinueRequiresTrue"?: boolean | null;
+    "inputMask"?: string | null;
     "codeAlignment": sys_core.SysCode;
     "codeDataType": sys_core.SysCode;
     "classProps"?: string | null;

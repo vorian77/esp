@@ -437,6 +437,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 	fieldEmbedShellFields: string[]
 	headerAlt?: string
 	height?: number
+	inputMaskAlt?: string
 	isDisplay: boolean
 	isDisplayable: boolean
 	isDisplayBlock: boolean
@@ -476,6 +477,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 			: []
 		this.headerAlt = strOptional(obj.headerAlt, clazz, 'headerAlt')
 		this.height = nbrOptional(obj.height, clazz, 'height')
+		this.inputMaskAlt = strOptional(obj.inputMaskAlt, clazz, 'inputMaskAlt')
 		this.isDisplayable = booleanOrDefault(obj.isDisplayable, false)
 		this.isDisplayBlock = booleanOrDefault(obj.isDisplayBlock, true)
 		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
@@ -642,6 +644,7 @@ export class RawDBColumn {
 	exprStorageKey?: string
 	header: string
 	headerSide?: string
+	inputMask?: string
 	isFormTag: boolean
 	isMultiSelect: boolean
 	matchColumn?: string
@@ -674,6 +677,7 @@ export class RawDBColumn {
 		this.exprStorageKey = strOptional(obj.exprStorageKey, clazz, 'exprStorageKey')
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.headerSide = strOptional(obj.headerSide, clazz, 'headerSide')
+		this.inputMask = strOptional(obj.inputMask, clazz, 'inputMask')
 		this.isFormTag = booleanOrFalse(obj.isFormTag)
 		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
 		this.matchColumn = strOptional(obj.matchColumn, clazz, 'matchColumn')

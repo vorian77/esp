@@ -920,12 +920,20 @@ function initDataObjColumn(init: InitDb) {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 434,
-				orderDefine: 434
+				orderDisplay: 432,
+				orderDefine: 432
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'headerAlt',
+				isDisplayable: true,
+				orderDisplay: 434,
+				orderDefine: 434,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'inputMaskAlt',
 				isDisplayable: true,
 				orderDisplay: 436,
 				orderDefine: 436,

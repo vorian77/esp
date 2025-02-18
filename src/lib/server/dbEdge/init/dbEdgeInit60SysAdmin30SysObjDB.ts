@@ -138,6 +138,14 @@ function initColumn(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeAccess: 'optional',
+				columnName: 'inputMask',
+				isDisplayable: true,
+				orderDisplay: 95,
+				orderDefine: 95,
+				indexTable: 0
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,

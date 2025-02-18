@@ -26,7 +26,8 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 't.Date',
+		header: 't.Date (yyyy-mm-dd)',
+		inputMask: 'date',
 		name: 'testDate'
 	})
 	init.addTrans('sysColumn', {
@@ -196,7 +197,8 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Birth Date',
+		header: 'Birth Date (yyyy-mm-dd)',
+		inputMask: 'date',
 		name: 'birthDate',
 		owner: 'sys_system_old'
 	})
@@ -742,6 +744,7 @@ export function initPreColumn(init: InitDb) {
 		codeAlignment: 'right',
 		codeDataType: 'float64',
 		header: 'Cost',
+		inputMask: 'currency',
 		minValue: 0,
 		name: 'cost'
 	})
@@ -826,7 +829,6 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: true,
 		name: 'csfCohorts'
 	})
-
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'none',
@@ -869,6 +871,7 @@ export function initPreColumn(init: InitDb) {
 		codeAlignment: 'center',
 		codeDataType: 'date',
 		header: 'custom_element_date',
+		inputMask: 'date',
 		isExcludeInsert: true,
 		isExcludeUpdate: true,
 		name: 'custom_element_date'
@@ -1069,7 +1072,8 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Date',
+		header: 'Date (yyyy-mm-dd)',
+		inputMask: 'date',
 		name: 'date',
 		owner: 'sys_system_old'
 	})
@@ -1077,49 +1081,56 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Creation Date',
+		inputMask: 'date',
+		header: 'Creation Date (yyyy-mm-dd)',
 		name: 'dateCreated'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'End Date',
+		header: 'End Date (yyyy-mm-dd)',
+		inputMask: 'date',
 		name: 'dateEnd'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Estimated End Date',
+		header: 'Estimated End Date (yyyy-mm-dd)',
+		inputMask: 'date',
 		name: 'dateEndEst'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Expiration Date',
+		header: 'Expiration Date (yyyy-mm-dd)',
+		inputMask: 'date',
 		name: 'dateExpires'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Issued Date',
+		header: 'Issued Date (yyyy-mm-dd)',
+		inputMask: 'date',
 		name: 'dateIssued'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Start Date',
+		header: 'Start Date (yyyy-mm-dd)',
+		inputMask: 'date',
 		name: 'dateStart'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Estimated Start Date',
+		header: 'Estimated Start Date (yyyy-mm-dd)',
+		inputMask: 'date',
 		name: 'dateStartEst'
 	})
 	init.addTrans('sysColumn', {
@@ -1200,6 +1211,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_ai_old',
 		codeDataType: 'str',
 		header: 'Employer - Contact Phone',
+		inputMask: 'phone',
 		name: 'employerContactPhone'
 	})
 	init.addTrans('sysColumn', {
@@ -1488,6 +1500,18 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'int16',
 		header: 'Table Index',
 		name: 'indexTable'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Input Mask',
+		name: 'inputMask'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Input Mask (Alternate)',
+		name: 'inputMaskAlt'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -2010,12 +2034,14 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Alternate Phone',
+		inputMask: 'phone',
 		name: 'phoneAlt'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Mobile Phone',
+		inputMask: 'phone',
 		name: 'phoneMobile'
 	})
 	init.addTrans('sysColumn', {
@@ -2108,6 +2134,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Social Security Number',
+		inputMask: '###-##-####',
 		name: 'ssn'
 	})
 	init.addTrans('sysColumn', {
@@ -2298,6 +2325,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeAlignment: 'right',
 		codeDataType: 'float64',
+		inputMask: 'currency',
 		header: 'Wage',
 		name: 'wage'
 	})

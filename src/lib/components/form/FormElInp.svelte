@@ -7,14 +7,14 @@
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldAlignment, FieldElement } from '$comps/form/field.svelte'
+	import { Field, FieldAlignment, FieldElement } from '$comps/form/field.svelte'
 	import { FieldAccess } from '$comps/form/field.svelte'
 	import { FieldInput } from '$comps/form/fieldInput'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
-	// import { imask } from '@imask/svelte'
+	import { maska, type MaskInputOptions } from 'maska/svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElInp.svelte'
@@ -87,10 +87,60 @@
 		}
 		return iconProps
 	}
+
 	function onClickToggleHideText() {
 		fieldInputType = fieldInputType === 'password' ? 'text' : 'password'
 		iconProps = setIconProps()
 	}
+
+	const imCurrency: MaskInputOptions = {
+		preProcess: (val) => val.replace(/[$,]/g, ''),
+		postProcess: (val) => {
+			if (!val) return ''
+
+			const sub = 3 - (val.includes('.') ? val.length - val.indexOf('.') : 0)
+
+			return Intl.NumberFormat('en-US', {
+				style: 'currency',
+				currency: 'USD'
+			})
+				.format(val)
+				.slice(0, sub ? -sub : undefined)
+		}
+	}
+
+	const imDate: MaskInputOptions = {
+		mask: '####-##-##'
+		// preProcess: (val) => val.replace(/[^0-9]/g, ''),
+		// postProcess: (val) => {
+		// 	if (!val) return ''
+
+		// 	const sub = 10 - val.length
+
+		// 	return val
+		// 		.split('')
+		// 		.map((c, i) => (i === 2 || i === 4 ? c + '/' : c))
+		// 		.join('')
+		// 		.slice(0, sub ? -sub : undefined)
+		// }
+	}
+
+	const inputMask = $derived.by(() => {
+		if (field.inputMask) {
+			switch (field.inputMask) {
+				case 'currency':
+					return imCurrency
+				case 'date':
+					return '####-##-##'
+				case 'phone':
+					return '(###) ###-####'
+				default:
+					return field.inputMask
+			}
+		} else {
+			return ''
+		}
+	})
 </script>
 
 <FormLabel {parms} {iconProps}>
@@ -108,5 +158,11 @@
 		step={field.spinStep?.toString() || ''}
 		type={fieldInputType || field.FieldElement}
 		value={fieldValue}
+		use:maska={inputMask}
 	/>
 </FormLabel>
+
+<!-- <details>
+	<summary>Money, via hooks (pre v3 variant)</summary>
+	<input class="money" data-maska="0.99" data-maska-tokens="0:\d:multiple|9:\d:optional">
+</details> -->

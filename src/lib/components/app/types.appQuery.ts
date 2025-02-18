@@ -48,8 +48,6 @@ export function queryDataPre(
 
 	sm.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
 
-	console.log('queryDataPre.dataTab.parms:', dataTab.parms)
-
 	return { dataTree, dataTab }
 }
 

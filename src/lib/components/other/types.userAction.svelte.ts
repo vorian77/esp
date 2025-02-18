@@ -15,10 +15,12 @@ import {
 	debug,
 	getRecordValue,
 	memberOfEnum,
+	memberOfEnumIfExists,
 	required,
+	strRequired,
 	valueOrDefault
 } from '$utils/types'
-import { Field, FieldClassType } from '$comps/form/field.svelte'
+import { Field, FieldClassType, FieldOp } from '$comps/form/field.svelte'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
 	TokenAppDo,
@@ -85,7 +87,15 @@ export class UserAction {
 	isShow(sm: State, dataObj: DataObj) {
 		const sg = new UserActionStatusGroup()
 		this.actionShows.forEach((show) => {
-			sg.addStatus(sm, dataObj, show.codeTriggerShow, show.isRequired)
+			sg.addStatus(
+				sm,
+				dataObj,
+				show.codeTriggerShow,
+				show.isRequired,
+				show.codeExprOp,
+				show.exprField,
+				show.exprValue
+			)
 		})
 		this.isStatusShow = sg.isTriggered()
 		return this.isStatusShow
@@ -183,11 +193,15 @@ export async function userActionStateChangeRaw(sm: State, parmsAction: TokenAppS
 }
 
 export class UserActionShow {
+	codeExprOp?: FieldOp
 	codeTriggerShow: UserActionTrigger
+	exprField?: string
+	exprValue?: string
 	isRequired: boolean
 	constructor(obj: any) {
 		const clazz = 'UserActionShow'
 		obj = valueOrDefault(obj, {})
+		this.codeExprOp = memberOfEnumIfExists(obj._codeExprOp, 'codeExprOp', clazz, 'FieldOp', FieldOp)
 		this.codeTriggerShow = memberOfEnum(
 			obj._codeTriggerShow,
 			clazz,
@@ -195,6 +209,8 @@ export class UserActionShow {
 			'UserActionTriggerEnable',
 			UserActionTrigger
 		)
+		this.exprField = obj.exprField
+		this.exprValue = obj.exprValue
 		this.isRequired = valueOrDefault(obj.isRequired, false)
 	}
 }
@@ -213,7 +229,15 @@ export class UserActionStatus {
 export class UserActionStatusGroup {
 	statuses: UserActionStatus[] = []
 	constructor() {}
-	addStatus(sm: State, dataObj: DataObj, trigger: UserActionTrigger, isRequired: boolean) {
+	addStatus(
+		sm: State,
+		dataObj: DataObj,
+		trigger: UserActionTrigger,
+		isRequired: boolean,
+		codeExprOp: FieldOp | undefined = undefined,
+		exprField: string | undefined = undefined,
+		exprValue: string | undefined = undefined
+	) {
 		const clazz = 'UserActionStatusGroup'
 		let isTriggered = false
 		const dm: DataManager = required(sm.dm, clazz, 'state.dataManager')
@@ -223,6 +247,29 @@ export class UserActionStatusGroup {
 			case UserActionTrigger.always:
 				isTriggered = true
 				break
+
+			case UserActionTrigger.expression:
+				exprField = strRequired(exprField, clazz, 'exprField')
+				codeExprOp = required(codeExprOp, clazz, 'codeExprOp')
+				dataRecord = required(dm.getRecordsDisplayRow(dataObj.raw.id, 0), clazz, 'dataRecord')
+				const currValue = getRecordValue(dataRecord!, exprField)
+				switch (codeExprOp) {
+					case FieldOp.equal:
+						isTriggered = currValue === exprValue
+						break
+
+					case FieldOp.notEqual:
+						isTriggered = currValue !== exprValue
+
+					default:
+						error(500, {
+							file: FILENAME,
+							function: 'UserActionStatusGroup.addStatus',
+							message: `No case definded for codeExprOp: ${codeExprOp}.`
+						})
+				}
+				break
+
 			case UserActionTrigger.never:
 				isTriggered = false
 				break
@@ -282,6 +329,7 @@ export class UserActionStatusGroup {
 }
 export enum UserActionTrigger {
 	always = 'always',
+	expression = 'expression',
 	never = 'never',
 	none = 'none',
 	notRecordOwner = 'notRecordOwner',

@@ -16,6 +16,7 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '$comps/form/fieldInput.ts'
 
 export class FieldInput extends Field {
+	inputMask: string
 	inputTypeCurrent: string = ''
 	matchColumn?: MatchColumn
 	maxLength?: number
@@ -32,6 +33,7 @@ export class FieldInput extends Field {
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
 		const fields: Field[] = required(props.parms.fields, clazz, 'fields')
+		this.inputMask = obj.inputMaskAlt || obj.colDB.inputMask || ''
 		this.inputTypeCurrent = this.fieldElement === FieldElement.textHide ? 'password' : 'text'
 		this.matchColumn = initMatchColumn(obj.colDB.matchColumn, this, fields)
 		this.maxLength = obj.colDB.maxLength

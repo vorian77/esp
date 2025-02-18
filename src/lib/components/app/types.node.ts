@@ -58,6 +58,9 @@ export class Node extends NodeHeader {
 			message: `No default NodeData defined for node name: ${this.name}`
 		})
 	}
+	getNodeDataObjId(actionType: CodeActionType) {
+		return this.getNodeData(actionType)?.dataObjId
+	}
 }
 
 export class NodeData {
@@ -77,6 +80,9 @@ export class NodeData {
 		this.dataObjId = obj._dataObjId
 		this.dataObjName = obj._dataObjName
 		strRequired(this.dataObjId || this.dataObjName, clazz, 'dataObjId or dataObjName')
+	}
+	getActionType() {
+		alert('NodeData.actionType: ' + this.actionType)
 	}
 }
 
