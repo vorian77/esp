@@ -29,8 +29,10 @@
 		UserResourceTaskRenderType
 	} from '$utils/types'
 	import { getContext, setContext } from 'svelte'
-	import TsoMoedApp from '$comps/layout/layoutDash/tso_moed_app.svelte'
-	import TsoMoedAppDoc from '$comps/layout/layoutDash/tso_moed_app_doc.svelte'
+	import TsoMoedSsrAdvocate from '$comps/layout/layoutDash/tso_moed_ssr_advocate.svelte'
+	import TsoMoedSsrApp from '$comps/layout/layoutDash/tso_moed_ssr_app.svelte'
+	import TsoMoedSsrDoc from '$comps/layout/layoutDash/tso_moed_ssr_doc.svelte'
+	import TsoMoedSsrMsg from '$comps/layout/layoutDash/tso_moed_ssr_msg.svelte'
 	import FormDetail from '$comps/form/FormDetail.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import { goto } from '$app/navigation'
@@ -49,7 +51,12 @@
 				task.codeStatusObjName || task.codeRenderType === UserResourceTaskRenderType.page
 		)
 	)
-	const StatusType = { tso_moed_app: TsoMoedApp, tso_moed_app_doc: TsoMoedAppDoc }
+	const StatusType = {
+		tso_moed_ssr_advocate: TsoMoedSsrAdvocate,
+		tso_moed_ssr_app: TsoMoedSsrApp,
+		tso_moed_ssr_doc: TsoMoedSsrDoc,
+		tso_moed_ssr_msg: TsoMoedSsrMsg
+	}
 
 	let promise = $state(getData())
 
@@ -152,13 +159,9 @@
 							{@const Component = task.codeStatusObjName
 								? StatusType[task.codeStatusObjName]
 								: undefined}
-							{@const hasStatus = task.data}
-							<h5 class="mb-2 text-4xl font-bold tracking-tight text-blue-400">
+							<h5 class="mb-6 text-4xl font-bold tracking-tight text-blue-400">
 								{task.header}
 							</h5>
-							{#if hasStatus}
-								<p class="mt-6 mb-2 text-center text-2xl text-blue-300">Status</p>
-							{/if}
 							{#if Component}
 								<Component {task} {onClick} data={task.data} />
 							{/if}

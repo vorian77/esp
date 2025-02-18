@@ -1,7 +1,7 @@
 import type { DataRecord } from '$utils/types'
 import { debug } from '$utils/types'
 
-const recordCount = 25
+const recordCount = 100
 
 const dataItemsPart = {
 	addr1: { type: 'list', values: ['123 Main St', '456 Elm St', '789 Oak St'] },
@@ -219,7 +219,6 @@ const dataItemsServiceFlow = {
 			'New application',
 			'Application under review',
 			'Pending eligibility documentation',
-			'Pending eligibility determination',
 			'Pending enrollment',
 			'Enrolled',
 			'Rejected'

@@ -650,7 +650,7 @@ WITH
 firstName := <record,str,firstName>,
 lastName := <record,str,lastName>,
 userName := <record,str,userName>,
-userType := <record,str,link_userType>,
+userType := <record,str,linkItems_userType>,
 password := <record,str,password>,
 
 _user := (SELECT sys_user::SysUser FILTER .userName = userName),

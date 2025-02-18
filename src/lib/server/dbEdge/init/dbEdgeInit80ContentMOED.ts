@@ -12,7 +12,7 @@ export function initContentMOEDStudent(init: InitDb) {
 	initCsfDocument(init)
 	initAttributes(init)
 
-	// participant
+	// tasks
 	initTaskSsrApp(init)
 	initTaskSsrMsg(init)
 	initTaskSsrDoc(init)
@@ -32,10 +32,11 @@ export function initContentMOEDStudent(init: InitDb) {
 }
 
 function initApplicant(init: InitDb) {
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
+		codeDataObjType: 'taskTarget',
 		exprFilter: `.owner.name = 'sys_moed_old'`,
 		header: 'Applicants',
 		name: 'data_obj_moed_part_list',
@@ -115,7 +116,7 @@ function initApplicant(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysDataObj', {
+	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_detail',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
@@ -166,6 +167,7 @@ function initApplicant(init: InitDb) {
 			{
 				codeFieldElement: 'date',
 				columnName: 'birthDate',
+				headerAlt: 'Birth Date (yyyy-mm-dd)',
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
@@ -469,8 +471,9 @@ function initApplicant(init: InitDb) {
 		]
 	])
 
-	init.addTrans('sysNodeObjProgram', {
+	init.addTrans('sysNodeObjTask', {
 		codeIcon: 'AppWindow',
+		codeNavType: 'task',
 		codeNodeType: 'program',
 		data: [{ dataObj: 'data_obj_moed_part_list' }],
 		header: 'Applicants',
@@ -478,8 +481,9 @@ function initApplicant(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_moed_old'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjTask', {
 		codeIcon: 'AppWindow',
+		codeNavType: 'task',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_moed_part_detail' }],
 		header: 'Applicant',
@@ -487,6 +491,32 @@ function initApplicant(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_moed_old',
 		parentNodeName: 'node_obj_moed_part_list'
+	})
+
+	init.addTrans('sysTask', {
+		codeCategory: 'default',
+		codeIcon: 'Activity',
+		codeRenderType: 'button',
+		codeStatusObj: 'tso_moed_ssr_advocate',
+		exprStatus: `WITH 
+		apps := (SELECT org_moed::MoedParticipant),
+		msgs := (SELECT sys_core::SysMsg),
+		docs := (SELECT app_cm::CmCsfDocument FILTER .csf.client IN org_moed::MoedParticipant),
+		sfs := (SELECT app_cm::CmClientServiceFlow filter .client in org_moed::MoedParticipant)
+			SELECT {
+				appsCnt := count(apps),
+				appsCntOpen := count(sfs FILTER .codeStatus.name not in {'Enrolled', 'Rejected'}),
+				msgsCnt := count(msgs),
+				msgsCntUnread := count(msgs FILTER exists .attributes and not exists .readers),
+				docsCnt := count(docs)
+			}`,
+		header: 'Self-Service Registration Applicants',
+		isPinToDash: true,
+		isGlobalResource: false,
+		name: 'task_moed_ssr_app_advocate',
+		targetNodeObj: 'node_obj_moed_part_list',
+		orderDefine: 10,
+		owner: 'sys_moed_old'
 	})
 }
 
@@ -515,18 +545,16 @@ function initApplicantMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDefine: 15,
 				orderDisplay: 15,
-				exprCustom: `'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
 				headerAlt: 'Read',
 				nameCustom: 'isReadDisplay'
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'parent',
-				isDisplayable: true,
-				orderDisplay: 20,
+				isDisplayable: false,
 				orderDefine: 20,
-				indexTable: 0,
-				linkColumns: ['id']
+				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
@@ -622,7 +650,7 @@ function initApplicantMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDefine: 45,
 				orderDisplay: 45,
-				exprCustom: `'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
 				headerAlt: 'Read',
 				nameCustom: 'isReadDisplay'
 			},
@@ -757,7 +785,7 @@ function initApplicantMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDefine: 45,
 				orderDisplay: 45,
-				exprCustom: `'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
 				headerAlt: 'Read',
 				nameCustom: 'isReadDisplay'
 			},
@@ -1801,6 +1829,7 @@ function initTaskSsrApp(init: InitDb) {
 			{
 				codeFieldElement: 'date',
 				columnName: 'birthDate',
+				headerAlt: 'Birth Date (yyyy-mm-dd)',
 				isDisplayable: true,
 				orderDisplay: 240,
 				orderDefine: 240,
@@ -1996,7 +2025,7 @@ function initTaskSsrApp(init: InitDb) {
 		codeCategory: 'default',
 		codeIcon: 'ClipboardPen',
 		codeRenderType: 'button',
-		codeStatusObj: 'tso_moed_app',
+		codeStatusObj: 'tso_moed_ssr_app',
 		description: 'First step to my future.',
 		exprShow: `SELECT true IF (SELECT (SELECT sys_user::SysUser FILTER .id =  <user,uuid,id>).person.isLegalAgreed = true) ?? false ELSE false`,
 		exprStatus: `SELECT app_cm::CmClientServiceFlow
@@ -2037,18 +2066,16 @@ function initTaskSsrMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDefine: 15,
 				orderDisplay: 15,
-				exprCustom: `'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
 				headerAlt: 'Read',
 				nameCustom: 'isReadDisplay'
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'parent',
-				isDisplayable: true,
-				orderDisplay: 20,
+				isDisplayable: false,
 				orderDefine: 20,
-				indexTable: 0,
-				linkColumns: ['id']
+				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
@@ -2157,7 +2184,7 @@ function initTaskSsrMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDefine: 55,
 				orderDisplay: 55,
-				exprCustom: `'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
 				headerAlt: 'Read',
 				nameCustom: 'isReadDisplay'
 			},
@@ -2263,7 +2290,7 @@ function initTaskSsrMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDefine: 55,
 				orderDisplay: 55,
-				exprCustom: `'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
 				headerAlt: 'Read',
 				nameCustom: 'isReadDisplay'
 			},
@@ -2358,9 +2385,14 @@ function initTaskSsrMsg(init: InitDb) {
 		codeCategory: 'default',
 		codeIcon: 'Mail',
 		codeRenderType: 'button',
-		codeStatusObj: 'tso_moed_app_msg',
+		codeStatusObj: 'tso_moed_ssr_msg',
 		description: 'Have questions? Send messages to program staff.',
 		exprShow: `SELECT true IF EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person) ELSE false`,
+		exprStatus: `WITH msgs := (SELECT sys_core::SysMsg FILTER <user,uuid,personId> IN (.sender.id UNION .recipients.id))
+		SELECT {
+			msgsCnt := count(msgs),
+			msgsCntUnread := count(msgs FILTER <user,uuid,personId> != .sender.id AND <user,uuid,personId> NOT IN .readers.id),
+		}`,
 		header: 'My Messages',
 		isPinToDash: true,
 		isGlobalResource: false,
@@ -2546,7 +2578,7 @@ function initTaskSsrDoc(init: InitDb) {
 		codeCategory: 'default',
 		codeIcon: 'ImageUp',
 		codeRenderType: 'button',
-		codeStatusObj: 'tso_moed_app_doc',
+		codeStatusObj: 'tso_moed_ssr_doc',
 		description: 'Step 2: to help speed up my application processing.',
 		exprShow: `SELECT true IF EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person) ELSE false`,
 		exprStatus: `SELECT sys_core::SysCodeType { 

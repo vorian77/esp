@@ -26,7 +26,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 't.Date (yyyy-mm-dd)',
+		header: 't.Date',
 		inputMask: 'date',
 		name: 'testDate'
 	})
@@ -197,7 +197,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Birth Date (yyyy-mm-dd)',
+		header: 'Birth Date',
 		inputMask: 'date',
 		name: 'birthDate',
 		owner: 'sys_system_old'
@@ -1072,7 +1072,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Date (yyyy-mm-dd)',
+		header: 'Date',
 		inputMask: 'date',
 		name: 'date',
 		owner: 'sys_system_old'
@@ -1082,14 +1082,14 @@ export function initPreColumn(init: InitDb) {
 		codeAlignment: 'center',
 		codeDataType: 'date',
 		inputMask: 'date',
-		header: 'Creation Date (yyyy-mm-dd)',
+		header: 'Creation Date',
 		name: 'dateCreated'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'End Date (yyyy-mm-dd)',
+		header: 'End Date',
 		inputMask: 'date',
 		name: 'dateEnd'
 	})
@@ -1097,7 +1097,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Estimated End Date (yyyy-mm-dd)',
+		header: 'Estimated End Date',
 		inputMask: 'date',
 		name: 'dateEndEst'
 	})
@@ -1105,7 +1105,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Expiration Date (yyyy-mm-dd)',
+		header: 'Expiration Date',
 		inputMask: 'date',
 		name: 'dateExpires'
 	})
@@ -1113,7 +1113,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Issued Date (yyyy-mm-dd)',
+		header: 'Issued Date',
 		inputMask: 'date',
 		name: 'dateIssued'
 	})
@@ -1121,7 +1121,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Start Date (yyyy-mm-dd)',
+		header: 'Start Date',
 		inputMask: 'date',
 		name: 'dateStart'
 	})
@@ -1129,7 +1129,7 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old',
 		codeAlignment: 'center',
 		codeDataType: 'date',
-		header: 'Estimated Start Date (yyyy-mm-dd)',
+		header: 'Estimated Start Date',
 		inputMask: 'date',
 		name: 'dateStartEst'
 	})

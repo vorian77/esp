@@ -6,11 +6,14 @@ module sys_user {
     };
     required createdBy: sys_user::SysUser {
       readonly := true;
+      on target delete delete source;
     };
     modifiedAt: datetime {
       rewrite insert, update using (datetime_of_transaction())
     }
-    required modifiedBy: sys_user::SysUser;
+    required modifiedBy: sys_user::SysUser{
+      on target delete delete source;
+    };
   }
 
   # task  

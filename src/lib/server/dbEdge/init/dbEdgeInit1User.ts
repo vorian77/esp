@@ -221,7 +221,8 @@ function initUserType(init: InitDb) {
 		resources: [
 			{ codeType: 'app', owner: 'sys_moed_old', name: 'app_client_moed_advocate' },
 			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
-			{ codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' }
+			{ codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' },
+			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_ssr_app_advocate' }
 		],
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
 	})
@@ -233,7 +234,8 @@ function initUserType(init: InitDb) {
 		resources: [
 			{ codeType: 'app', owner: 'sys_moed_old', name: 'app_client_moed_advocate' },
 			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
-			{ codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' }
+			{ codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' },
+			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_ssr_app_advocate' }
 		],
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
 	})
@@ -301,7 +303,7 @@ function initUsers(init: InitDb) {
 		owner: 'org_client_app_factory',
 		systems: ['sys_ai_old', 'sys_app_crm', 'sys_client_app_factory'],
 		userName: '2487985578',
-		userTypes: ['ut_client_ai_staff', 'ut_app_crm_admin']
+		userTypes: ['ut_client_moed_advocate_east']
 	})
 
 	/* Atlantic Impact */
@@ -354,60 +356,12 @@ function initUsers(init: InitDb) {
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_moed',
 		defaultSystem: 'sys_moed_old',
-		firstName: 'Burlinton',
-		lastName: 'Stone',
+		firstName: 'Tavon',
+		lastName: 'Thomas',
 		orgs: ['org_moed'],
 		owner: 'org_moed',
 		systems: ['sys_moed_old'],
-		userName: 'bstone',
-		userTypes: ['ut_client_moed_advocate_east']
-	})
-
-	init.addTrans('sysUser', {
-		defaultOrg: 'org_moed',
-		defaultSystem: 'sys_moed_old',
-		firstName: 'Omari',
-		lastName: 'Jackson',
-		orgs: ['org_moed'],
-		owner: 'org_moed',
-		systems: ['sys_moed_old'],
-		userName: '1111111111',
-		userTypes: ['ut_client_moed_student']
-	})
-
-	init.addTrans('sysUser', {
-		defaultOrg: 'org_moed',
-		defaultSystem: 'sys_moed_old',
-		firstName: 'Tyshell',
-		lastName: 'Oliver',
-		orgs: ['org_moed'],
-		owner: 'org_moed',
-		systems: ['sys_moed_old'],
-		userName: 'toliver',
-		userTypes: ['ut_client_moed_advocate_west']
-	})
-
-	init.addTrans('sysUser', {
-		defaultOrg: 'org_moed',
-		defaultSystem: 'sys_moed_old',
-		firstName: 'Travis',
-		lastName: 'Williams',
-		orgs: ['org_moed'],
-		owner: 'org_moed',
-		systems: ['sys_moed_old'],
-		userName: 'twilliams',
-		userTypes: ['ut_client_moed_advocate_east']
-	})
-
-	init.addTrans('sysUser', {
-		defaultOrg: 'org_moed',
-		defaultSystem: 'sys_moed_old',
-		firstName: 'Tynesha',
-		lastName: 'Wilson',
-		orgs: ['org_moed'],
-		owner: 'org_moed',
-		systems: ['sys_moed_old'],
-		userName: 'twilson',
+		userName: '2222222222',
 		userTypes: ['ut_client_moed_advocate_west']
 	})
 }
