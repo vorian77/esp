@@ -59,11 +59,12 @@ export namespace sys_user {
     "confirmMessage"?: string | null;
     "confirmTitle"?: string | null;
   }
-  export interface SysUserActionPost extends Mgmt {
+  export interface SysUserActionRider extends Mgmt {
     "action": SysUserAction;
     "codeDestination"?: sys_core.SysCode | null;
     "codeMsgDelivery"?: sys_core.SysCode | null;
     "msg"?: string | null;
+    "codeTrigger": sys_core.SysCode;
   }
   export interface SysUserActionShow extends Mgmt {
     "codeExprOp"?: sys_core.SysCode | null;
@@ -334,7 +335,7 @@ export namespace sys_core {
     "parentFilterExpr"?: string | null;
     "subHeader"?: string | null;
     "isRetrieveReadonly"?: boolean | null;
-    "actionPost"?: sys_user.SysUserActionPost | null;
+    "actionRider"?: sys_user.SysUserActionRider | null;
     "actionsQuery": SysDataObjActionQuery[];
     "columns": SysDataObjColumn[];
     "listReorderColumn"?: sys_db.SysColumn | null;
@@ -369,11 +370,11 @@ export namespace sys_core {
     "actionAlertMsg"?: string | null;
     "inputMaskAlt"?: string | null;
     "fieldListItemsParmValue"?: string | null;
-    "actionPost"?: sys_user.SysUserActionPost | null;
     "file"?: unknown | null;
     "exprSaveAttrObjects"?: string | null;
     "codeAttrType"?: SysCode | null;
     "attrAccess"?: boolean | null;
+    "actionRider"?: sys_user.SysUserActionRider | null;
     "itemChanges": SysDataObjColumnItemChange[];
     "codeAccess"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
@@ -1003,7 +1004,7 @@ export interface types {
     "SysUser": sys_user.SysUser;
     "SysUserAction": sys_user.SysUserAction;
     "SysUserActionConfirm": sys_user.SysUserActionConfirm;
-    "SysUserActionPost": sys_user.SysUserActionPost;
+    "SysUserActionRider": sys_user.SysUserActionRider;
     "SysUserActionShow": sys_user.SysUserActionShow;
     "SysUserPref": sys_user.SysUserPref;
     "SysUserPrefType": sys_user.SysUserPrefType;

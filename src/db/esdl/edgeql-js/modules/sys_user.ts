@@ -57,11 +57,11 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<modifiedBy[is sys_core::SysObjEnt]": $.LinkDesc<_sys_core.$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysObjEnt]": $.LinkDesc<_sys_core.$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<modifiedBy[is sys_user::SysUserActionPost]": $.LinkDesc<$SysUserActionPost, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<createdBy[is sys_user::SysUserActionPost]": $.LinkDesc<$SysUserActionPost, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysNotify]": $.LinkDesc<_sys_core.$SysNotify, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysNotify]": $.LinkDesc<_sys_core.$SysNotify, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<createdBy[is sys_user::SysUserActionRider]": $.LinkDesc<$SysUserActionRider, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<modifiedBy[is sys_user::SysUserActionRider]": $.LinkDesc<$SysUserActionRider, $.Cardinality.Many, {}, false, false,  false, false>;
   "<users[is sys_core::SysOrg]": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_user::Mgmt]": $.LinkDesc<$Mgmt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysObj]": $.LinkDesc<_sys_core.$SysObj, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -231,7 +231,7 @@ export type $SysUserActionλShape = $.typeutil.flatten<_sys_core.$SysObjλShape 
   "actionShows": $.LinkDesc<$SysUserActionShow, $.Cardinality.Many, {}, false, false,  false, false>;
   "codeAction": $.LinkDesc<_sys_core.$SysCodeAction, $.Cardinality.One, {}, false, false,  false, false>;
   "codeTriggerEnable": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
-  "<action[is sys_user::SysUserActionPost]": $.LinkDesc<$SysUserActionPost, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<action[is sys_user::SysUserActionRider]": $.LinkDesc<$SysUserActionRider, $.Cardinality.Many, {}, false, false,  false, false>;
   "<action[is sys_core::SysDataObjAction]": $.LinkDesc<_sys_core.$SysDataObjAction, $.Cardinality.Many, {}, false, false,  false, false>;
   "<action[is sys_core::SysDataObjColumn]": $.LinkDesc<_sys_core.$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<action": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -260,21 +260,22 @@ const $SysUserActionConfirm = $.makeType<$SysUserActionConfirm>(_.spec, "6f54723
 
 const SysUserActionConfirm: $.$expr_PathNode<$.TypeSet<$SysUserActionConfirm, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserActionConfirm, $.Cardinality.Many), null);
 
-export type $SysUserActionPostλShape = $.typeutil.flatten<$MgmtλShape & {
+export type $SysUserActionRiderλShape = $.typeutil.flatten<$MgmtλShape & {
   "action": $.LinkDesc<$SysUserAction, $.Cardinality.One, {}, false, false,  false, false>;
   "codeDestination": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeMsgDelivery": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "msg": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "<actionPost[is sys_core::SysDataObj]": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<actionPost[is sys_core::SysDataObjColumn]": $.LinkDesc<_sys_core.$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<actionPost": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "codeTrigger": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "<actionRider[is sys_core::SysDataObj]": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<actionRider[is sys_core::SysDataObjColumn]": $.LinkDesc<_sys_core.$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<actionRider": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
-type $SysUserActionPost = $.ObjectType<"sys_user::SysUserActionPost", $SysUserActionPostλShape, null, [
+type $SysUserActionRider = $.ObjectType<"sys_user::SysUserActionRider", $SysUserActionRiderλShape, null, [
   ...$Mgmt['__exclusives__'],
 ]>;
-const $SysUserActionPost = $.makeType<$SysUserActionPost>(_.spec, "5df5e8d4-eedf-11ef-9579-4b71125c79c0", _.syntax.literal);
+const $SysUserActionRider = $.makeType<$SysUserActionRider>(_.spec, "5df5e8d4-eedf-11ef-9579-4b71125c79c0", _.syntax.literal);
 
-const SysUserActionPost: $.$expr_PathNode<$.TypeSet<$SysUserActionPost, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserActionPost, $.Cardinality.Many), null);
+const SysUserActionRider: $.$expr_PathNode<$.TypeSet<$SysUserActionRider, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserActionRider, $.Cardinality.Many), null);
 
 export type $SysUserActionShowλShape = $.typeutil.flatten<$MgmtλShape & {
   "codeExprOp": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
@@ -521,7 +522,7 @@ const $sys_user__globals: {  currentUser: _.syntax.$expr_Global<
 
 
 
-export { $Mgmt, Mgmt, $SysTask, SysTask, $SysUser, SysUser, $SysUserAction, SysUserAction, $SysUserActionConfirm, SysUserActionConfirm, $SysUserActionPost, SysUserActionPost, $SysUserActionShow, SysUserActionShow, $SysUserPref, SysUserPref, $SysUserPrefType, SysUserPrefType, $SysUserType, SysUserType, $SysUserTypeResource, SysUserTypeResource, $SysWidget, SysWidget, $currentUser, currentUser };
+export { $Mgmt, Mgmt, $SysTask, SysTask, $SysUser, SysUser, $SysUserAction, SysUserAction, $SysUserActionConfirm, SysUserActionConfirm, $SysUserActionRider, SysUserActionRider, $SysUserActionShow, SysUserActionShow, $SysUserPref, SysUserPref, $SysUserPrefType, SysUserPrefType, $SysUserType, SysUserType, $SysUserTypeResource, SysUserTypeResource, $SysWidget, SysWidget, $currentUser, currentUser };
 
 type __defaultExports = {
   "Mgmt": typeof Mgmt;
@@ -529,7 +530,7 @@ type __defaultExports = {
   "SysUser": typeof SysUser;
   "SysUserAction": typeof SysUserAction;
   "SysUserActionConfirm": typeof SysUserActionConfirm;
-  "SysUserActionPost": typeof SysUserActionPost;
+  "SysUserActionRider": typeof SysUserActionRider;
   "SysUserActionShow": typeof SysUserActionShow;
   "SysUserPref": typeof SysUserPref;
   "SysUserPrefType": typeof SysUserPrefType;
@@ -551,7 +552,7 @@ const __defaultExports: __defaultExports = {
   "SysUser": SysUser,
   "SysUserAction": SysUserAction,
   "SysUserActionConfirm": SysUserActionConfirm,
-  "SysUserActionPost": SysUserActionPost,
+  "SysUserActionRider": SysUserActionRider,
   "SysUserActionShow": SysUserActionShow,
   "SysUserPref": SysUserPref,
   "SysUserPrefType": SysUserPrefType,

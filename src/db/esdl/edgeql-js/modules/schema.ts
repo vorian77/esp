@@ -709,12 +709,12 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_core::SysCode]": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysObjEnt]": $.LinkDesc<_sys_core.$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysNodeObjData]": $.LinkDesc<_sys_core.$SysNodeObjData, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is sys_user::SysUserActionPost]": $.LinkDesc<_sys_user.$SysUserActionPost, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysCodeType]": $.LinkDesc<_sys_core.$SysCodeType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysNotify]": $.LinkDesc<_sys_core.$SysNotify, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysSystem]": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObj]": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldEmbedListConfig]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListConfig, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_user::SysUserActionRider]": $.LinkDesc<_sys_user.$SysUserActionRider, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldEmbedListEdit]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListEdit, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldEmbedListSelect]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListSelect, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldListItemsProp]": $.LinkDesc<_sys_core.$SysDataObjFieldListItemsProp, $.Cardinality.Many, {}, false, false,  false, false>;
