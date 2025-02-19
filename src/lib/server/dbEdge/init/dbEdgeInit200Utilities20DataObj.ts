@@ -71,7 +71,7 @@ export async function addDataObj(data: any) {
 									),
 									codeTriggerTiming: e.select(
 										e.sys_core.getCode(
-											'ct_sys_do_action_query_trigger_timing',
+											'ct_sys_action_trigger_timing',
 											e.cast(e.str, e.json_get(t, 'codeTriggerTiming'))
 										)
 									),

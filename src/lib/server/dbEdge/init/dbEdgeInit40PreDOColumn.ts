@@ -72,6 +72,13 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
+		header: 'Action Post',
+		isMultiSelect: false,
+		name: 'actionPost',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
 		header: 'Action - Shows',
 		isMultiSelect: true,
 		name: 'actionShows',
@@ -342,6 +349,13 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
+		header: 'Destination',
+		isMultiSelect: false,
+		name: 'codeDestination',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
 		header: 'Disability Status',
 		isMultiSelect: false,
 		name: 'codeDisabilityStatus',
@@ -404,13 +418,19 @@ export function initPreColumn(init: InitDb) {
 		name: 'codeMask'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Message Delivery Type',
+		isMultiSelect: false,
+		name: 'codeMsgDelivery',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'link',
 		header: 'Source Type',
 		isMultiSelect: false,
 		name: 'codeMigrSourceType'
 	})
-
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Navigation Type',
@@ -423,6 +443,13 @@ export function initPreColumn(init: InitDb) {
 		header: 'Node Type',
 		isMultiSelect: false,
 		name: 'codeNodeType',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Notify Type',
+		isMultiSelect: false,
+		name: 'codeNotifyType',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
@@ -1234,8 +1261,20 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'str',
+		header: 'Expression - Cron',
+		name: 'exprCron',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'str',
 		header: 'Expression - Custom',
 		name: 'exprCustom',
+		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'str',
+		header: 'Expression - Data',
+		name: 'exprData',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
@@ -1303,6 +1342,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Expression - Storage Key',
 		name: 'exprStorageKey'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'str',
+		header: 'Expression - Trigger',
+		name: 'exprTrigger',
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'str',

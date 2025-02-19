@@ -122,6 +122,10 @@ module sys_core {
       on source delete delete target;
       on target delete allow;
     };
+    actionRider: sys_user::SysUserActionRider{
+      on source delete delete target;
+      on target delete allow;
+    };
     required codeCardinality: sys_core::SysCode;
     required codeComponent: sys_core::SysCode;
     codeDataObjType: sys_core::SysCode;
@@ -201,39 +205,25 @@ module sys_core {
 
   # SysDataObjColumn
   type SysDataObjColumn extending sys_user::Mgmt {
-    required column: sys_db::SysColumn;
-    
-    nameCustom: str;
-
-    # fields - db
-    attrAccess: bool;
-    codeAttrType: sys_core::SysCode;
-    codeDbDataSourceValue: sys_core::SysCode;
-    codeSortDir: sys_core::SysCode;
-    columnBacklink: sys_db::SysColumn;
-    exprCustom: str;
-    exprPreset: str;
-    exprSave: str;
-    exprSaveAttrObjects: str;
-
-    indexTable: default::nonNegative;
-
-    isDisplay: bool;
-    isDisplayable: bool;
-    required isExcludeInsert: bool;
-    required isExcludeSelect: bool;
-    required isExcludeUpdate: bool;
-  
-    # fields - el
-    codeAccess: sys_core::SysCode;
-    codeAlignmentAlt: sys_core::SysCode;
-    codeColor: sys_core::SysCode;
-    codeFieldElement: sys_core::SysCode;
-
-    # custom
     action: sys_user::SysUserAction;
     actionAlertMsg: str;
-    
+    actionRider: sys_user::SysUserActionRider{
+      on source delete delete target;
+      on target delete allow;
+    };   
+
+    attrAccess: bool;
+
+    codeAccess: sys_core::SysCode;
+    codeAlignmentAlt: sys_core::SysCode;
+    codeAttrType: sys_core::SysCode;
+    codeColor: sys_core::SysCode;
+    codeDbDataSourceValue: sys_core::SysCode;
+    codeFieldElement: sys_core::SysCode;
+    codeSortDir: sys_core::SysCode;
+    required column: sys_db::SysColumn;
+    columnBacklink: sys_db::SysColumn;
+
     customColActionValue: str;
     customColAlign: str;
     customColIsSubHeader: bool;
@@ -243,10 +233,14 @@ module sys_core {
     customColSize: str;
     customColSource: str;
     customColSourceKey: str;
-
     multi customEmbedShellFields: sys_core::SysDataObjColumn {
       on target delete allow;
     };
+
+    exprCustom: str;
+    exprPreset: str;
+    exprSave: str;
+    exprSaveAttrObjects: str;
 
     fieldEmbedListConfig: sys_core::SysDataObjFieldEmbedListConfig;
     fieldEmbedListEdit: sys_core::SysDataObjFieldEmbedListEdit;
@@ -255,26 +249,38 @@ module sys_core {
     fieldListItems: sys_core::SysDataObjFieldListItems;
     fieldListItemsParmValue: str;
 
+    file: json;
+
     headerAlt: str;
     height: int16;
+
+    indexTable: default::nonNegative;
     inputMaskAlt: str;
+    isDisplay: bool;
+    isDisplayable: bool;
+    isDisplayBlock: bool;
+
+    required isExcludeInsert: bool;
+    required isExcludeSelect: bool;
+    required isExcludeUpdate: bool;
+
     multi itemChanges: sys_core::SysDataObjColumnItemChange {
       on source delete delete target;
       on target delete allow;
     };
-    isDisplayBlock: bool;
     multi items: sys_core::SysDataObjColumnItemValue {
       on source delete delete target;
       on target delete allow;
     };
-
-     # link
+    
     multi linkColumns: sys_core::SysDataObjColumnLink{
       on source delete delete target;
       on target delete allow;
     };
     linkTable: sys_db::SysTable;
     
+    nameCustom: str;
+
     orderCrumb: default::nonNegative;
     required orderDefine: default::nonNegative;
     orderDisplay: default::nonNegative;
@@ -420,6 +426,14 @@ module sys_core {
       on target delete delete source;
     };
     required codeAction: sys_core::SysCodeAction;
+  }
+
+  type SysNotify extending sys_core::SysObj {
+    required codeNotifyType: sys_core::SysCode;
+    required exprCron: str;
+    exprData: str;
+    required exprTrigger: str;
+    msg: str;
   }
 
   # FUNCTIONS

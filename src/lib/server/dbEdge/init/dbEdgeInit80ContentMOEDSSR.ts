@@ -1,0 +1,1107 @@
+import { InitDb } from '$server/dbEdge/init/types.init'
+import { moedDataApplicant } from '$utils/utils.randomDataGenerator'
+
+export function initContentMOEDSsr(init: InitDb) {
+	initAttributes(init)
+
+	// tasks
+	initTaskSsrApp(init)
+	initTaskSsrMsg(init)
+	initTaskSsrDoc(init)
+	initTaskSsrWelcome(init)
+
+	// demo data
+	initDemoData()
+	initDemoDataApplicant(init)
+	initDemoDataMsg(init)
+	initDemoDataServiceFlows(init)
+	initDemoDataDoc(init)
+	initDemoDataDelete(init)
+}
+
+function initTaskSsrApp(init: InitDb) {
+	init.addTrans('sysDataObjTask', {
+		actionGroup: 'doag_detail_mobile_save',
+		owner: 'sys_moed_old',
+		codeComponent: 'FormDetail',
+		codeCardinality: 'detail',
+		codeDataObjType: 'taskTarget',
+		exprFilter: '.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
+		isDetailRetrievePreset: true,
+		name: 'data_obj_task_moed_ssr_app',
+		header: 'My Application',
+		tables: [
+			{ index: 0, table: 'CmClientServiceFlow' },
+			{
+				columnParent: 'client',
+				indexParent: 0,
+				index: 1,
+				isTableExtension: true,
+				table: 'MoedParticipant'
+			},
+			{
+				columnParent: 'person',
+				exprFilterUpdate: '.id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id',
+				indexParent: 1,
+				index: 2,
+				table: 'SysPerson',
+				columnsId: ['firstName', 'lastName']
+			},
+			{
+				columnParent: 'serviceFlow',
+				indexParent: 0,
+				index: 3,
+				table: 'CmServiceFlow',
+				columnsId: ['name']
+			}
+		],
+		fields: [
+			{
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: { label: 'Enter your program eligibility information here:' },
+				isDisplayable: true,
+				orderDisplay: 10,
+				orderDefine: 10
+			},
+			{
+				codeFieldElement: 'customHeader',
+				columnName: 'custom_element',
+				customElement: {
+					label: 'The blue colored fields are required and the white colored fields are optional.',
+					isSubHeader: true
+				},
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20
+			},
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 30
+			},
+			{
+				columnName: 'serviceFlow',
+				exprSave: `(SELECT assert_single((SELECT app_cm::CmServiceFlow FILTER .name = 'sf_moed_self_service_reg')))`,
+				orderDefine: 40,
+				indexTable: 0,
+				isDisplayable: false,
+				linkColumns: ['name'],
+				linkTable: 'CmServiceFlow'
+			},
+			{
+				columnName: 'codeServiceFlowType',
+				exprPreset: `(SELECT assert_single((sys_core::getCode('ct_cm_service_flow_type', 'Walk in'))))`,
+				orderDefine: 45,
+				indexTable: 0,
+				isDisplayable: false,
+				isExcludeUpdate: true,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
+			},
+			{
+				columnName: 'idxDemo',
+				exprPreset: `-100`,
+				indexTable: 1,
+				isDisplayable: false,
+				orderDefine: 50
+			},
+			{
+				columnName: 'owner',
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <user,uuid,system.id>)`,
+				orderDefine: 60,
+				indexTable: 1,
+				isDisplayable: false,
+				linkTable: 'SysSystem'
+			},
+			{
+				columnName: 'createdBy',
+				isDisplayable: false,
+				orderDefine: 70,
+				indexTable: 1
+			},
+			{
+				columnName: 'modifiedBy',
+				isDisplayable: false,
+				orderDefine: 80,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeStatus',
+				exprPreset: `(SELECT assert_single((sys_core::getCode('ct_cm_service_flow_status', 'New application'))))`,
+				orderDefine: 200,
+				orderDisplay: 200,
+				indexTable: 0,
+				isDisplayable: true,
+				isExcludeUpdate: true,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
+			},
+			{
+				attrAccess: true,
+				codeAttrType: 'attr_moed_office',
+				codeFieldElement: 'select',
+				columnName: 'attributes',
+				headerAlt: 'Office',
+				isDisplayable: true,
+				orderDisplay: 210,
+				orderDefine: 210,
+				indexTable: 2,
+				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name'
+			},
+			{
+				codeFieldElement: 'date',
+				columnName: 'dateCreated',
+				headerAlt: 'Application Date (yyyy-mm-dd)',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 215,
+				orderDefine: 215
+			},
+			{
+				columnName: 'firstName',
+				exprPreset: `<user,str,firstName>`,
+				isDisplayable: true,
+				orderDisplay: 220,
+				orderDefine: 220,
+				indexTable: 2
+			},
+			{
+				columnName: 'lastName',
+				exprPreset: `<user,str,lastName>`,
+				isDisplayable: true,
+				orderDisplay: 230,
+				orderDefine: 230,
+				indexTable: 2
+			},
+			{
+				codeFieldElement: 'date',
+				columnName: 'birthDate',
+				headerAlt: 'Birth Date (yyyy-mm-dd)',
+				isDisplayable: true,
+				orderDisplay: 240,
+				orderDefine: 240,
+				indexTable: 2
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textHide',
+				columnName: 'ssn',
+				isDisplayable: true,
+				orderDisplay: 250,
+				orderDefine: 250,
+				indexTable: 2
+			},
+			{
+				columnName: 'phoneMobile',
+				indexTable: 2,
+				isDisplayable: true,
+				orderDefine: 260,
+				orderDisplay: 260
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'email',
+				columnName: 'email',
+				indexTable: 2,
+				isDisplayable: true,
+				orderDefine: 270,
+				orderDisplay: 270
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeGender',
+				isDisplayable: true,
+				orderDisplay: 280,
+				orderDefine: 280,
+				indexTable: 2,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItemsParmValue: 'ct_sys_person_gender'
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'genderSelfId',
+				indexTable: 2,
+				isDisplayable: true,
+				orderDefine: 285,
+				orderDisplay: 285
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeRace',
+				isDisplayable: true,
+				orderDisplay: 300,
+				orderDefine: 300,
+				indexTable: 2,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItemsParmValue: 'ct_sys_person_race'
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeEthnicity',
+				isDisplayable: true,
+				orderDisplay: 310,
+				orderDefine: 310,
+				indexTable: 2,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItemsParmValue: 'ct_sys_person_ethnicity'
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeDisabilityStatus',
+				isDisplayable: true,
+				orderDisplay: 320,
+				orderDefine: 320,
+				indexTable: 2,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItemsParmValue: 'ct_sys_person_disability_status'
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'addr1',
+				indexTable: 2,
+				isDisplayable: true,
+				orderDefine: 330,
+				orderDisplay: 330
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'addr2',
+				indexTable: 2,
+				isDisplayable: true,
+				orderDefine: 340,
+				orderDisplay: 340
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'city',
+				indexTable: 2,
+				isDisplayable: true,
+				orderDefine: 350,
+				orderDisplay: 350
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeState',
+				isDisplayable: true,
+				orderDisplay: 360,
+				orderDefine: 360,
+				indexTable: 2,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItemsParmValue: 'ct_sys_state'
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'zip',
+				indexTable: 2,
+				isDisplayable: true,
+				orderDefine: 370,
+				orderDisplay: 370
+			},
+
+			/* management */
+			{
+				columnName: 'createdAt',
+				isDisplayable: false,
+				orderDefine: 1010,
+				indexTable: 0
+			},
+			{
+				columnName: 'createdBy',
+				isDisplayable: false,
+				orderDefine: 1020,
+				indexTable: 0
+			},
+			{
+				columnName: 'modifiedAt',
+				isDisplayable: false,
+				orderDefine: 1030,
+				indexTable: 0
+			},
+			{
+				columnName: 'modifiedBy',
+				isDisplayable: false,
+				orderDefine: 1040,
+				indexTable: 0
+			}
+		]
+	})
+
+	init.addTrans('dataObjColumnItemChangeBulk', [
+		[
+			'data_obj_task_moed_ssr_app',
+			[
+				{
+					fieldTrigger: 'codeGender',
+					fieldTriggerTargets: [
+						{
+							codeValueTrigger: {
+								codeType: 'ct_sys_person_gender',
+								name: 'Prefer to self-identify',
+								owner: 'sys_moed_old'
+							},
+							codeValueTypeTarget: 'none',
+							codeValueTypeTrigger: 'code',
+							column: 'genderSelfId',
+							fieldAccess: 'required',
+							op: 'equal',
+							orderDefine: 0
+						},
+						{
+							codeValueTrigger: {
+								codeType: 'ct_sys_person_gender',
+								name: 'Prefer to self-identify',
+								owner: 'sys_moed_old'
+							},
+							codeValueTypeTarget: 'reset',
+							codeValueTypeTrigger: 'code',
+							column: 'genderSelfId',
+							fieldAccess: 'hidden',
+							op: 'notEqual',
+							orderDefine: 1
+						}
+					]
+				}
+			]
+		]
+	])
+
+	init.addTrans('sysTask', {
+		codeCategory: 'default',
+		codeIcon: 'ClipboardPen',
+		codeRenderType: 'button',
+		codeStatusObj: 'tso_moed_ssr_app',
+		description: 'First step to my future.',
+		exprShow: `SELECT true IF (SELECT (SELECT sys_user::SysUser FILTER .id =  <user,uuid,id>).person.isLegalAgreed = true) ?? false ELSE false`,
+		exprStatus: `SELECT app_cm::CmClientServiceFlow
+	{ _codeStatus := .codeStatus.name, dateCreated, modifiedAt, _modifiedBy := .modifiedBy.person.fullName }
+	FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person ORDER BY .modifiedAt DESC`,
+		header: 'My Application',
+		isPinToDash: true,
+		isGlobalResource: false,
+		name: 'task_moed_ssr_app',
+		targetDataObj: 'data_obj_task_moed_ssr_app',
+		orderDefine: 30,
+		owner: 'sys_moed_old'
+	})
+}
+
+function initTaskSsrMsg(init: InitDb) {
+	init.addTrans('sysDataObjTask', {
+		actionGroup: 'doag_list_mobile',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeDataObjType: 'taskTarget',
+		exprFilter: '<user,uuid,personId> IN (.sender.id UNION .recipients.id)',
+		header: 'My Messages',
+		name: 'data_obj_task_moed_ssr_msg_list',
+		owner: 'sys_moed_old',
+		tables: [{ index: 0, table: 'SysMsg' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 15,
+				orderDisplay: 15,
+				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				headerAlt: 'Read',
+				nameCustom: 'isReadDisplay'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'parent',
+				isDisplayable: false,
+				orderDefine: 20,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				codeSortDir: 'DESC',
+				columnName: 'date',
+				orderCrumb: 10,
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 25,
+				orderDefine: 25,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'sender',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				linkColumns: ['fullName'],
+				linkTable: 'SysPerson'
+			},
+			// {
+			// 	codeAccess: 'readOnly',
+			// 	codeSortDir: 'DESC',
+			// 	columnName: 'createdAt',
+			// 	orderCrumb: 10,
+			// 	orderSort: 10,
+			// 	isDisplayable: true,
+			// 	orderDisplay: 20,
+			// 	orderDefine: 20,
+			// 	indexTable: 0
+			// },
+			{
+				codeAccess: 'readOnly',
+				columnName: 'subject',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'isRead',
+				isDisplayable: false,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'note',
+				isDisplay: false,
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0
+			}
+		]
+	})
+
+	init.addTrans('sysDataObjTask', {
+		actionGroup: 'doag_detail_msg',
+		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
+		header: 'My Message',
+		isRetrieveReadonly: true,
+		name: 'data_obj_task_moed_ssr_msg_detail',
+		owner: 'sys_moed_old',
+		tables: [{ index: 0, table: 'SysMsg' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				attrAccess: true,
+				codeAttrType: 'attr_moed_office',
+				exprSaveAttrObjects: '(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
+				columnName: 'attributes',
+				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 20
+			},
+			{
+				columnName: 'custom_element_str',
+				isDisplayable: false,
+				orderDefine: 40,
+				exprCustom: `.sender.id`,
+				nameCustom: 'recordOwner'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 55,
+				orderDisplay: 55,
+				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				headerAlt: 'Read',
+				nameCustom: 'isReadDisplay'
+			},
+			{
+				codeFieldElement: 'date',
+				columnName: 'date',
+				headerAlt: 'Date (Demonstration Only)',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'sender',
+				exprPreset: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
+				exprSave: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				linkColumns: ['fullName'],
+				linkTable: 'SysPerson'
+			},
+			{
+				columnName: 'subject',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'isRead',
+				isDisplayable: false,
+				orderDisplay: 90,
+				orderDefine: 90,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 110,
+				orderDefine: 110,
+				indexTable: 0
+			}
+		]
+	})
+
+	init.addTrans('sysDataObjTask', {
+		actionGroup: 'doag_detail_msg',
+		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
+		header: 'My Message',
+		isRetrieveReadonly: true,
+		name: 'data_obj_task_moed_ssr_msg_detail_reply',
+		owner: 'sys_moed_old',
+		tables: [{ index: 0, table: 'SysMsg' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				attrAccess: true,
+				codeAttrType: 'attr_moed_office',
+				exprSaveAttrObjects: '(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
+				columnName: 'attributes',
+				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 20
+			},
+			{
+				columnName: 'custom_element_str',
+				isDisplayable: false,
+				orderDefine: 40,
+				exprCustom: `.sender.id`,
+				nameCustom: 'recordOwner'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 55,
+				orderDisplay: 55,
+				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				headerAlt: 'Read',
+				nameCustom: 'isReadDisplay'
+			},
+			{
+				codeFieldElement: 'date',
+				columnName: 'date',
+				headerAlt: 'Date (Demonstration Only)',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'sender',
+				exprPreset: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
+				exprSave: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				linkColumns: ['fullName'],
+				linkTable: 'SysPerson'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'subject',
+				exprPreset: `(SELECT default::SysPerson FILTER .id = <parms,str,subject>)`,
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'isRead',
+				isDisplayable: false,
+				orderDisplay: 90,
+				orderDefine: 90,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 110,
+				orderDefine: 110,
+				indexTable: 0
+			}
+		]
+	})
+
+	init.addTrans('sysNodeObjTask', {
+		codeIcon: 'AppWindow',
+		codeNavType: 'task',
+		codeNodeType: 'program',
+		data: [{ dataObj: 'data_obj_task_moed_ssr_msg_list' }],
+		header: 'My Messages',
+		isAlwaysRetrieveData: true,
+		name: 'node_obj_task_moed_ssr_msg_list',
+		orderDefine: 10,
+		owner: 'sys_moed_old'
+	})
+	init.addTrans('sysNodeObjTask', {
+		codeIcon: 'AppWindow',
+		codeNavType: 'task',
+		codeNodeType: 'program_object',
+		data: [
+			{ dataObj: 'data_obj_task_moed_ssr_msg_detail' },
+			{
+				actionClass: 'ct_sys_code_action_class_do',
+				actionType: 'doDetailNewMsgReply',
+				dataObj: 'data_obj_task_moed_ssr_msg_detail_reply'
+			}
+		],
+		header: 'Message',
+		name: 'node_obj_task_moed_ssr_msg_detail',
+		orderDefine: 10,
+		owner: 'sys_moed_old',
+		parentNodeName: 'node_obj_task_moed_ssr_msg_list'
+	})
+
+	init.addTrans('sysTask', {
+		codeCategory: 'default',
+		codeIcon: 'Mail',
+		codeRenderType: 'button',
+		codeStatusObj: 'tso_moed_ssr_msg',
+		description: 'Have questions? Send messages to program staff.',
+		exprShow: `SELECT true IF EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person) ELSE false`,
+		exprStatus: `WITH msgs := (SELECT sys_core::SysMsg FILTER <user,uuid,personId> IN (.sender.id UNION .recipients.id))
+		SELECT {
+			msgsCnt := count(msgs),
+			msgsCntUnread := count(msgs FILTER <user,uuid,personId> != .sender.id AND <user,uuid,personId> NOT IN .readers.id),
+		}`,
+		header: 'My Messages',
+		isPinToDash: true,
+		isGlobalResource: false,
+		name: 'task_moed_ssr_app_msg',
+		targetNodeObj: 'node_obj_task_moed_ssr_msg_list',
+		orderDefine: 50,
+		owner: 'sys_moed_old'
+	})
+}
+
+function initTaskSsrDoc(init: InitDb) {
+	init.addTrans('sysDataObjTask', {
+		owner: 'sys_moed_old',
+		codeComponent: 'FormList',
+		codeCardinality: 'list',
+		name: 'data_obj_task_moed_ssr_doc_list',
+		header: 'My Documents',
+		tables: [{ index: 0, table: 'CmCsfDocument' }],
+		exprFilter: '.csf.id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90"',
+		actionGroup: 'doag_list_mobile',
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'dateIssued',
+				headerAlt: 'Date',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeType',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0,
+				linkColumns: ['name']
+			}
+			// {
+			// 	codeAccess: 'readOnly',
+			// 	columnName: 'note',
+			// 	orderDefine: 70,
+			// 	isDisplayable: true,
+			// 	orderDisplay: 70,
+			// 	indexTable: 0
+			// }
+		]
+	})
+
+	init.addTrans('sysDataObjTask', {
+		actionGroup: 'doag_detail_mobile_save_delete',
+		actionsQuery: [
+			{
+				name: 'qa_file_storage',
+				parms: [{ key: 'imageField', value: 'file' }],
+				triggers: [{ codeQueryType: 'save', codeTriggerTiming: 'pre' }]
+			}
+		],
+		owner: 'sys_moed_old',
+		codeComponent: 'FormDetail',
+		codeCardinality: 'detail',
+		codeDataObjType: 'taskTarget',
+		exprFilter:
+			'.csf.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person AND <parms,str,itemsParmValue> IN .codeType.codeTypeFamily.name LIMIT 1',
+		name: 'data_obj_task_moed_ssr_doc_detail',
+		header: 'My Document',
+		isDetailRetrievePreset: true,
+		tables: [{ index: 0, table: 'CmCsfDocument' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				columnName: 'csf',
+				exprSave: `(SELECT assert_single((SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <uuid><user,uuid,id>).person)))`,
+				orderDefine: 20,
+				indexTable: 0,
+				isDisplayable: false,
+				linkColumns: ['serviceFlow', 'name'],
+				linkTable: 'CmClientServiceFlow'
+			},
+			{
+				codeFieldElement: 'date',
+				columnName: 'dateIssued',
+				headerAlt: 'Date',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeType',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_family_group_order_name_by_codeType_name_system'
+			},
+			{
+				codeFieldElement: 'file',
+				columnName: 'file',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0,
+				width: 300
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90,
+				indexTable: 0
+			},
+
+			/* management */
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				isDisplayable: false,
+				orderDefine: 1010,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				isDisplayable: false,
+				orderDefine: 1020,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				isDisplayable: false,
+				orderDefine: 1030,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: false,
+				orderDefine: 1040,
+				indexTable: 0
+			}
+		]
+	})
+	init.addTrans('sysNodeObjTask', {
+		codeIcon: 'AppWindow',
+		codeNavType: 'task',
+		codeNodeType: 'program',
+		data: [{ dataObj: 'data_obj_task_moed_ssr_doc_list' }],
+		header: 'Documents',
+		name: 'node_obj_task_moed_ssr_doc_list',
+		orderDefine: 30,
+		owner: 'sys_moed_old'
+	})
+	init.addTrans('sysNodeObjTask', {
+		codeIcon: 'AppWindow',
+		codeNavType: 'task',
+		codeNodeType: 'program_object',
+		data: [{ dataObj: 'data_obj_task_moed_ssr_doc_detail' }],
+		header: 'Document',
+		name: 'node_obj_task_moed_ssr_doc_detail',
+		orderDefine: 10,
+		owner: 'sys_moed_old',
+		parentNodeName: 'node_obj_task_moed_ssr_doc_list'
+	})
+
+	init.addTrans('sysTask', {
+		codeCategory: 'default',
+		codeIcon: 'ImageUp',
+		codeRenderType: 'button',
+		codeStatusObj: 'tso_moed_ssr_doc',
+		description: 'Step 2: to help speed up my application processing.',
+		exprShow: `SELECT true IF EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person) ELSE false`,
+		exprStatus: `SELECT sys_core::SysCodeType { 
+  id, 
+  name, 
+  header,
+  _uploaded := (SELECT true IF (SELECT count((SELECT app_cm::CmCsfDocument FILTER .csf.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person AND sys_core::SysCodeType IN .codeType.codeTypeFamily))) > 0 ELSE false)}
+FILTER .parent.name = 'ct_cm_doc_type' ORDER BY .order asc`,
+		hasAltOpen: true,
+		header: 'My Eligibility Documents',
+		isPinToDash: true,
+		isGlobalResource: false,
+		name: 'task_moed_ssr_app_doc',
+		targetDataObj: 'data_obj_task_moed_ssr_doc_detail',
+		orderDefine: 40,
+		owner: 'sys_moed_old'
+	})
+}
+
+function initTaskSsrWelcome(init: InitDb) {
+	init.addTrans('sysDataObjTask', {
+		owner: 'sys_moed_old',
+		codeComponent: 'FormDetail',
+		codeCardinality: 'detail',
+		codeDataObjType: 'taskPage',
+		exprFilter: `.id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id`,
+		header: 'Welcome',
+		isInitialValidationSilent: true,
+		name: 'data_obj_task_moed_ssr_welcome',
+		tables: [{ index: 0, table: 'SysPerson' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeFieldElement: 'customHTML',
+				columnName: 'custom_element',
+				customElement: {
+					rawHTML: `
+		<div class="flex flex-col justify-center gap-4 text-center">
+			<h1 class="text-green-400 text-3xl">Welcome</h1>
+
+			<div class="flex justify-center items-center mt-0">
+				<img class="w-60" src="src/lib/assets/org_logo_moed.png" alt="Logo" />
+			</div>
+
+			<p> <span class="font-bold">Youth Opportunity (YO) Baltimore</span> serves individuals between the ages of 18 and 24 who are out of school and/or looking for employment or connections to college. Operating out of two locations - one in West Baltimore and one in East Baltimore - YO embraces a model that offers a full range of services that lead to your success.</p>
+		</div>`
+				},
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_start',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30
+			},
+			{
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_start',
+				headerAlt: 'Consent To Disclose Personal Information',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40
+			},
+			{
+				codeFieldElement: 'customText',
+				columnName: 'custom_element',
+				customElement: {
+					align: 'left',
+					label: `By registering with Baltimore City Mayor's Office of Employment Development Youth Opportunity Program you agree that the Career Partners can see and use the information contained within your application in order to better provide assistance to you in determining eligibility for assistance in obtaining employment, training for employment, education, or other services. Personal information such as social security number, race, ethnicity, sexual orientation and disability status is being requested for federal record keeping and reporting requirements only and is kept confidential.`
+				},
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50
+			},
+			{
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_end',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isLegalAgreed',
+				headerAlt:
+					"I confirm that I have read, consent and agree to YO Baltimore's Consent to Disclose Personal Information.",
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80
+			},
+			{
+				codeColor: 'secondary',
+				codeFieldElement: 'customActionButton',
+				columnName: 'custom_element',
+				customElement: {
+					action: 'ua_sys_save_detail',
+					actionAlertMsg: `Great! Next complete your application!`,
+					label: 'Get Started!'
+				},
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90
+			}
+		]
+	})
+	init.addTrans('sysTask', {
+		codeCategory: 'default',
+		codeIcon: 'ClipboardPen',
+		codeRenderType: 'page',
+		exprShow: `SELECT false IF (SELECT (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.isLegalAgreed = true) ?? false ELSE true`,
+		header: 'Welcome',
+		isPinToDash: true,
+		isGlobalResource: false,
+		name: 'task_moed_ssr_welcome',
+		pageDataObj: 'data_obj_task_moed_ssr_welcome',
+		orderDefine: 20,
+		owner: 'sys_moed_old'
+	})
+}
+
+function initAttributes(init: InitDb) {
+	init.addTrans('SysObjEntAttr', {
+		codeObjType: 'attr_moed_office',
+		header: 'Eastside YO Center - 1212 N. Wolfe St. - 410-732-2661',
+		isGlobalResource: false,
+		name: 'moedOfficeEastside',
+		owner: 'sys_moed_old'
+	})
+	init.addTrans('SysObjEntAttr', {
+		codeObjType: 'attr_moed_office',
+		header: 'Westside YO Center - 1510 W. Laffayette Ave. -  410-545-6953',
+		isGlobalResource: false,
+		name: 'moedOfficeWestside',
+		owner: 'sys_moed_old'
+	})
+}
+
+function initDemoData() {
+	moedDataApplicant.setData()
+}
+
+function initDemoDataApplicant(init: InitDb) {
+	init.addTrans('MoedPBulkPart', moedDataApplicant.data['applicant'])
+}
+
+function initDemoDataMsg(init: InitDb) {
+	init.addTrans('MoedBulkDataMsg', moedDataApplicant.data['dataMsg'])
+}
+
+function initDemoDataServiceFlows(init: InitDb) {
+	init.addTrans('MoedBulkCsf', moedDataApplicant.data['serviceFlow'])
+}
+
+function initDemoDataDoc(init: InitDb) {
+	init.addTrans('MoedBulkDataDoc', moedDataApplicant.data['dataDoc'])
+}
+
+function initDemoDataDelete(init: InitDb) {
+	init.addTrans('MoedBulkDataDelete', [])
+}

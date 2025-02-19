@@ -9,18 +9,23 @@ import { initSysAuth } from '$server/dbEdge/init/dbEdgeInit60SysAdminAuth'
 import { initSysRepUser } from '$server/dbEdge/init/dbEdgeInit60SysAdminRepUser'
 
 // content
+import { initContentCrm } from '$server/dbEdge/init/dbEdgeInit80ContentCrm'
+import { initContentCrmRep } from '$server/dbEdge/init/dbEdgeInit80ContentCrmRep'
+
+// content - Atlantic Impact
 import { initContentAITraining } from '$server/dbEdge/init/dbEdgeInit80ContentAITraining'
 import { initContentAIStudent } from '$server/dbEdge/init/dbEdgeInit80ContentAIStudent'
 import { initContentAIRep } from '$server/dbEdge/init/dbEdgeInit80ContentAIRep'
-import { initContentCrm } from '$server/dbEdge/init/dbEdgeInit80ContentCrm'
-import { initContentCrmRep } from '$server/dbEdge/init/dbEdgeInit80ContentCrmRep'
-import { initContentMOEDStudent } from '$server/dbEdge/init/dbEdgeInit80ContentMOED'
+
+// content - MOED
+import { initContentMOEDCm } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDCm'
+import { initContentMOEDSsr } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDSSR'
 import { initContentMOEDRep } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDRep'
 
 // user
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
-const isResetFullDB = false
+const isResetFullDB = true
 
 export async function dbEdgeInit() {
 	let initDb = new InitDb(isResetFullDB)
@@ -48,15 +53,12 @@ function dbEdgeInitAll(initDb: InitDb) {
 	initContentAIRep(initDb)
 
 	// content - MOED
-	initContentMOEDStudent(initDb)
+	initContentMOEDSsr(initDb)
+	initContentMOEDCm(initDb)
 	initContentMOEDRep(initDb)
 }
 
 export function initFeature(initDb: InitDb) {
-	initSysAuth(initDb)
-
-	// initSysRepUser(initDb)
-	// initContentAIRep(initDb)
-	// initContentAIStudent(initDb)
-	initContentMOEDStudent(initDb)
+	initContentMOEDSsr(initDb)
+	initContentMOEDCm(initDb)
 }

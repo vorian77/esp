@@ -197,20 +197,20 @@ const recordPart = [
 const dataItemsServiceFlow = {
 	dateCreated: {
 		type: 'date',
-		dateStart: '2024-11-20',
-		dateEnd: '2024-12-22'
+		dateStart: '2025-01-02',
+		dateEnd: '2025-02-10'
 	},
 	dateStart: {
 		type: 'date',
-		dateStart: '2024-11-20',
-		dateEnd: '2024-12-15'
+		dateStart: '2025-01-02',
+		dateEnd: '2025-02-10'
 	},
 	optionalDates: {
 		rate: 0.7,
 		type: 'optional',
 		values: [
-			['dateStart', { type: 'date', dateStart: '2024-11-20', dateEnd: '2024-12-22' }],
-			['dateEnd', { type: 'date', dateStart: '2024-11-28', dateEnd: '2024-12-17' }]
+			['dateStart', { type: 'date', dateStart: '2025-01-02', dateEnd: '2025-02-10' }],
+			['dateEnd', { type: 'date', dateStart: '2025-01-02', dateEnd: '2025-02-10' }]
 		]
 	},
 	codeStatus: {
@@ -230,8 +230,8 @@ const recordServiceFlow = ['dateCreated', 'optionalDates', 'codeStatus']
 const dataItemsDataDoc = {
 	dateIssued: {
 		type: 'date',
-		dateStart: '2024-10-01',
-		dateEnd: '2024-12-4'
+		dateStart: '2025-01-02',
+		dateEnd: '2025-02-10'
 	},
 	codeType: {
 		type: 'list',

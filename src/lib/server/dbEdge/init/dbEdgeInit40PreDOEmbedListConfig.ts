@@ -481,7 +481,7 @@ async function initFieldListConfigDataObjActionQueryTrigger(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_do_action_query_trigger_timing'
+				fieldListItemsParmValue: 'ct_sys_action_trigger_timing'
 			},
 			{
 				codeFieldElement: 'tagRow',
