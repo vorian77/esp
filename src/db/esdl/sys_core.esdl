@@ -126,6 +126,7 @@ module sys_core {
       on source delete delete target;
       on target delete allow;
     };
+
     required codeCardinality: sys_core::SysCode;
     required codeComponent: sys_core::SysCode;
     codeDataObjType: sys_core::SysCode;
@@ -158,6 +159,12 @@ module sys_core {
     parentTable: sys_db::SysTable;
     
     processType: sys_core::SysCode;
+
+    queryRider: sys_core::SysDataObjQueryRider{
+      on source delete delete target;
+      on target delete allow;
+    };
+
     subHeader: str;
 
     multi tables: sys_core::SysDataObjTable {
@@ -206,7 +213,6 @@ module sys_core {
   # SysDataObjColumn
   type SysDataObjColumn extending sys_user::Mgmt {
     action: sys_user::SysUserAction;
-    actionAlertMsg: str;
     actionRider: sys_user::SysUserActionRider{
       on source delete delete target;
       on target delete allow;
@@ -371,6 +377,19 @@ module sys_core {
     orderSort: default::nonNegative;
   }
  
+  type SysDataObjQueryRider extending sys_user::Mgmt {
+    required codeQueryType: sys_core::SysCode;
+    required codeTriggerTiming: sys_core::SysCode;
+    codeUserDestination: sys_core::SysCode;
+    codeUserMsgDelivery: sys_core::SysCode;
+    required hasCustomLogic: bool;
+    logicParmKey: str;
+    logicParmValue: str;
+    required name: str;
+    userMsg: str;
+   constraint exclusive on (.name);
+  }
+
   type SysDataObjTable extending sys_user::Mgmt {
     multi columnsId: sys_db::SysColumn{
       on target delete allow;

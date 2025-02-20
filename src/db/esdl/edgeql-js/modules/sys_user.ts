@@ -60,9 +60,14 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<modifiedBy[is sys_core::SysNotify]": $.LinkDesc<_sys_core.$SysNotify, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysNotify]": $.LinkDesc<_sys_core.$SysNotify, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<createdBy[is sys_core::SysDataObjQueryRider]": $.LinkDesc<_sys_core.$SysDataObjQueryRider, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_user::SysUserActionRider]": $.LinkDesc<$SysUserActionRider, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_user::SysUserActionRider]": $.LinkDesc<$SysUserActionRider, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<modifiedBy[is app_cm::CmGroup]": $.LinkDesc<_app_cm.$CmGroup, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<createdBy[is app_cm::CmGroup]": $.LinkDesc<_app_cm.$CmGroup, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<createdBy[is app_cm::CmCsfGroup]": $.LinkDesc<_app_cm.$CmCsfGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<users[is sys_core::SysOrg]": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<userGroupMgr[is app_cm::CmGroup]": $.LinkDesc<_app_cm.$CmGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_user::Mgmt]": $.LinkDesc<$Mgmt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysObj]": $.LinkDesc<_sys_core.$SysObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_user::Mgmt]": $.LinkDesc<$Mgmt, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -212,10 +217,13 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<modifiedBy[is sys_rep::SysRepUserAnalytic]": $.LinkDesc<_sys_rep.$SysRepUserAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_user::SysUserActionConfirm]": $.LinkDesc<$SysUserActionConfirm, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<modifiedBy[is app_cm::CmCsfGroup]": $.LinkDesc<_app_cm.$CmCsfGroup, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<modifiedBy[is sys_core::SysDataObjQueryRider]": $.LinkDesc<_sys_core.$SysDataObjQueryRider, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<staffInstructor": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<user": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<userGroupMgr": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<users": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysUser = $.ObjectType<"sys_user::SysUser", $SysUserλShape, null, [
@@ -226,7 +234,6 @@ const $SysUser = $.makeType<$SysUser>(_.spec, "50759917-b3c2-11ee-a6a5-635e27965
 const SysUser: $.$expr_PathNode<$.TypeSet<$SysUser, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUser, $.Cardinality.Many), null);
 
 export type $SysUserActionλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
-  "actionAlertMsg": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "actionConfirms": $.LinkDesc<$SysUserActionConfirm, $.Cardinality.Many, {}, false, false,  false, false>;
   "actionShows": $.LinkDesc<$SysUserActionShow, $.Cardinality.Many, {}, false, false,  false, false>;
   "codeAction": $.LinkDesc<_sys_core.$SysCodeAction, $.Cardinality.One, {}, false, false,  false, false>;

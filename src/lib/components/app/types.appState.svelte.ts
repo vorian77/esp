@@ -32,11 +32,17 @@ import {
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
+import { UserActionRider, UserActionRiderMsgDelivery } from '$comps/other/types.userAction.svelte'
 import { FieldEmbedType } from '$comps/form/field.svelte'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import { RawDataObjAction, RawDataObjParent } from '$comps/dataObj/types.rawDataObj.svelte'
-import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
+import {
+	Toast,
+	type DrawerSettings,
+	type ModalSettings,
+	type ToastSettings
+} from '@skeletonlabs/skeleton'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import fActionsClassDo from '$enhance/actions/actionsClassDo'
 import fActionsClassDoFieldAuth from '$enhance/actions/actionsClassDoFieldAuth'
@@ -106,9 +112,38 @@ export class State {
 	async changeUserAction(parmsAction: TokenAppStateTriggerAction) {
 		this.parmsTrans = parmsAction.transParms
 		this.change({ ...parmsAction.stateParms.data })
-		if (parmsAction.actionAlertMsg) alert(parmsAction.actionAlertMsg)
 		if (parmsAction.fCallback) await parmsAction.fCallback()
+		if (parmsAction.actionRider) parmsAction.actionRider.exeMsg(this.storeToast)
+		// this.changeActionMsg(parmsAction.actionRider)
 	}
+
+	// changeActionMsg(actionRider: UserActionRider | undefined) {
+	// 	if (!actionRider) return
+	// 	if (actionRider.codeMsgDelivery && actionRider.msg) {
+	// 		switch (actionRider.codeMsgDelivery) {
+	// 			case UserActionRiderMsgDelivery.alert:
+	// 				alert(actionRider.msg)
+	// 				break
+	// 			case UserActionRiderMsgDelivery.toast:
+	// 				this.openToast(ToastType.success, actionRider.msg)
+	// 				break
+	// 		}
+	// 	}
+	// }
+
+	// changeActionMsg(actionRider: UserActionRider | undefined) {
+	// 	if (!actionRider) return
+	// 	if (actionRider.codeMsgDelivery && actionRider.msg) {
+	// 		switch (actionRider.codeMsgDelivery) {
+	// 			case UserActionRiderMsgDelivery.alert:
+	// 				alert(actionRider.msg)
+	// 				break
+	// 			case UserActionRiderMsgDelivery.toast:
+	// 				this.openToast(ToastType.success, actionRider.msg)
+	// 				break
+	// 		}
+	// 	}
+	// }
 
 	closeModal() {
 		this.storeModal.close()

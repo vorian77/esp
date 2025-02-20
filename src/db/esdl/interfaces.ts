@@ -45,7 +45,6 @@ export namespace sys_user {
     "person": $default.SysPerson;
   }
   export interface SysUserAction extends sys_core.SysObj {
-    "actionAlertMsg"?: string | null;
     "actionConfirms": SysUserActionConfirm[];
     "actionShows": SysUserActionShow[];
     "codeAction": sys_core.SysCodeAction;
@@ -182,6 +181,9 @@ export namespace app_cm {
     "isShareWithClient"?: boolean | null;
     "note"?: string | null;
   }
+  export interface CmCsfGroup extends CmCsfData {
+    "cmGroup": CmGroup;
+  }
   export interface CmCsfJobPlacement extends CmCsfData {
     "codeJobType": sys_core.SysCode;
     "codePlacementRelated": sys_core.SysCode;
@@ -211,6 +213,14 @@ export namespace app_cm {
     "collegeName"?: string | null;
     "date": edgedb.LocalDate;
     "note"?: string | null;
+  }
+  export interface CmGroup extends sys_core.SysObj {
+    "userGroupMgr"?: sys_user.SysUser | null;
+    "codeGroupEnrollment": sys_core.SysCode;
+    "codeGroupType": sys_core.SysCode;
+    "dateEnd"?: edgedb.LocalDate | null;
+    "dateStart": edgedb.LocalDate;
+    "isActive": boolean;
   }
   export interface CmPartner extends sys_core.SysObjEnt {}
   export interface CmServiceFlow extends sys_core.SysObj {}
@@ -334,6 +344,7 @@ export namespace sys_core {
     "listEditPresetExpr"?: string | null;
     "parentFilterExpr"?: string | null;
     "subHeader"?: string | null;
+    "queryRider"?: SysDataObjQueryRider | null;
     "isRetrieveReadonly"?: boolean | null;
     "actionRider"?: sys_user.SysUserActionRider | null;
     "actionsQuery": SysDataObjActionQuery[];
@@ -367,7 +378,6 @@ export namespace sys_core {
   }
   export interface SysDataObjColumn extends sys_user.Mgmt {
     "exprSave"?: string | null;
-    "actionAlertMsg"?: string | null;
     "inputMaskAlt"?: string | null;
     "fieldListItemsParmValue"?: string | null;
     "file"?: unknown | null;
@@ -472,6 +482,17 @@ export namespace sys_core {
     "key": string;
     "orderDefine": number;
     "orderSort"?: number | null;
+  }
+  export interface SysDataObjQueryRider extends sys_user.Mgmt {
+    "name": string;
+    "codeQueryType": SysCode;
+    "codeTriggerTiming": SysCode;
+    "codeUserDestination"?: SysCode | null;
+    "codeUserMsgDelivery"?: SysCode | null;
+    "userMsg"?: string | null;
+    "logicParmKey"?: string | null;
+    "logicParmValue"?: string | null;
+    "hasCustomLogic": boolean;
   }
   export interface SysDataObjTable extends sys_user.Mgmt {
     "columnParent"?: sys_db.SysColumn | null;
@@ -1024,9 +1045,11 @@ export interface types {
     "CmCsfCohort": app_cm.CmCsfCohort;
     "CmCsfCohortAttd": app_cm.CmCsfCohortAttd;
     "CmCsfDocument": app_cm.CmCsfDocument;
+    "CmCsfGroup": app_cm.CmCsfGroup;
     "CmCsfJobPlacement": app_cm.CmCsfJobPlacement;
     "CmCsfNote": app_cm.CmCsfNote;
     "CmCsfSchoolPlacement": app_cm.CmCsfSchoolPlacement;
+    "CmGroup": app_cm.CmGroup;
     "CmPartner": app_cm.CmPartner;
     "CmServiceFlow": app_cm.CmServiceFlow;
   };
@@ -1060,6 +1083,7 @@ export interface types {
     "SysDataObjFieldEmbedListSelect": sys_core.SysDataObjFieldEmbedListSelect;
     "SysDataObjFieldListItems": sys_core.SysDataObjFieldListItems;
     "SysDataObjFieldListItemsProp": sys_core.SysDataObjFieldListItemsProp;
+    "SysDataObjQueryRider": sys_core.SysDataObjQueryRider;
     "SysDataObjTable": sys_core.SysDataObjTable;
     "SysDataObjWith": sys_core.SysDataObjWith;
     "SysMsg": sys_core.SysMsg;

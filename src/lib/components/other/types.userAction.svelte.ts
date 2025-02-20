@@ -18,6 +18,7 @@ import {
 	memberOfEnumIfExists,
 	required,
 	strRequired,
+	ToastType,
 	valueOrDefault
 } from '$utils/types'
 import { Field, FieldClassType, FieldOp } from '$comps/form/field.svelte'
@@ -33,7 +34,6 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$comps/dataObj/types.userAction.ts'
 
 export class UserAction {
-	actionAlertMsg?: string
 	actionConfirms: UserActionConfirm[]
 	actionShows: UserActionShow[]
 	codeAction: CodeAction
@@ -44,7 +44,6 @@ export class UserAction {
 	name: string
 	constructor(rawAction: RawUserAction, sm: State | undefined = undefined) {
 		const clazz = 'UserAction'
-		this.actionAlertMsg = rawAction.actionAlertMsg
 		this.actionConfirms = rawAction.actionConfirms
 		this.actionShows = rawAction.actionShows
 		this.codeAction = rawAction.codeAction
@@ -190,6 +189,64 @@ export async function userActionStateChangeDataObj(
 
 export async function userActionStateChangeRaw(sm: State, parmsAction: TokenAppStateTriggerAction) {
 	await userActionStateChange(sm, parmsAction)
+}
+
+export class UserActionRider {
+	action: string
+	codeDestination?: UserActionRiderDestination
+	codeMsgDelivery?: UserActionRiderMsgDelivery
+	codeTrigger: ActionTriggerTiming
+	msg?: string
+	constructor(obj: any) {
+		const clazz = 'UserActionRider'
+		obj = valueOrDefault(obj, {})
+		console.log('UserActionRider.obj', obj)
+		this.action = strRequired(obj._action, clazz, 'action')
+		this.codeDestination = memberOfEnumIfExists(
+			obj._codeDestination,
+			'codeDestination',
+			clazz,
+			'UserActionRiderDestination',
+			UserActionRiderDestination
+		)
+		this.codeMsgDelivery = memberOfEnumIfExists(
+			obj._codeMsgDelivery,
+			'codeMsgDelivery',
+			clazz,
+			'UserActionRiderMsgDelivery',
+			UserActionRiderMsgDelivery
+		)
+		this.codeTrigger = memberOfEnum(
+			obj._codeTrigger,
+			clazz,
+			'codeTrigger',
+			'ActionTriggerTiming',
+			ActionTriggerTiming
+		)
+		this.msg = obj.msg
+	}
+	exeMsg(storeToast: any) {
+		if (this.codeMsgDelivery && this.msg) {
+			switch (this.codeMsgDelivery) {
+				case UserActionRiderMsgDelivery.alert:
+					alert(this.msg)
+					break
+				case UserActionRiderMsgDelivery.toast:
+					storeToast.openToast(ToastType.success, this.msg)
+					break
+			}
+		}
+	}
+}
+
+export enum UserActionRiderDestination {
+	back = 'back',
+	home = 'home'
+}
+
+export enum UserActionRiderMsgDelivery {
+	alert = 'alert',
+	toast = 'toast'
 }
 
 export class UserActionShow {
@@ -342,4 +399,9 @@ export enum UserActionTrigger {
 	saveMode = 'saveMode',
 	saveModeInsert = 'saveModeInsert',
 	saveModeUpdate = 'saveModeUpdate'
+}
+
+export enum ActionTriggerTiming {
+	post = 'post',
+	pre = 'pre'
 }

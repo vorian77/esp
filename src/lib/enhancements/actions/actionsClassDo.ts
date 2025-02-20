@@ -183,7 +183,6 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 				parmsAction.codeAction.actionType,
 				TokenApiQueryType.retrieve
 			)
-
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 

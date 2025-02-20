@@ -82,6 +82,15 @@ module app_cm {
     user: sys_user::SysUser;
   }
 
+  type CmGroup extending sys_core::SysObj {
+    required isActive: bool;
+    required codeGroupType: sys_core::SysCode;
+    required codeGroupEnrollment: sys_core::SysCode;
+    dateEnd: cal::local_date;
+    required dateStart: cal::local_date;
+    userGroupMgr: sys_user::SysUser;
+  }
+
   type CmCsfData extending sys_user::Mgmt {
     required csf: app_cm::CmClientServiceFlow;
   }
@@ -107,6 +116,10 @@ module app_cm {
     file: json;
     isShareWithClient: bool;
     note: str;
+  }
+
+  type CmCsfGroup extending app_cm::CmCsfData {
+    required cmGroup: app_cm::CmGroup;
   }
 
   type CmCsfNote extending app_cm::CmCsfData {

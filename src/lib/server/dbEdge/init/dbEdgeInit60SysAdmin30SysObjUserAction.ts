@@ -452,14 +452,6 @@ function initUserAction(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				columnName: 'actionAlertMsg',
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'actionConfirms',
 				isDisplayable: true,

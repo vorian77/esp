@@ -22,7 +22,7 @@
 		sm.app.setTreeLevelIdxCurrent(dataObj.treeLevelIdx)
 		await sm.triggerAction(
 			new TokenAppStateTriggerAction({
-				actionAlertMsg: field.actionAlertMsg,
+				actionRider: field.actionRider,
 				codeAction: field.action.codeAction,
 				data: {
 					dataRecord: $state.snapshot(dataRecord),

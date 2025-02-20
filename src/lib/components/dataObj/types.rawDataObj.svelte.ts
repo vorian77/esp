@@ -40,6 +40,7 @@ import {
 import {
 	UserAction,
 	UserActionConfirm,
+	UserActionRider,
 	UserActionShow,
 	UserActionTrigger
 } from '$comps/other/types.userAction.svelte'
@@ -61,6 +62,7 @@ import { University } from 'lucide-svelte'
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
 
 export class RawDataObj {
+	actionRider?: UserActionRider
 	actionsQuery: DataObjActionQuery[] = []
 	codeCardinality: DataObjCardinality
 	codeComponent: DataObjComponent
@@ -98,6 +100,7 @@ export class RawDataObj {
 	constructor(obj: any) {
 		const clazz = `${obj.name}.RawDataObj`
 		obj = valueOrDefault(obj, {})
+		this.actionRider = classOptional(UserActionRider, obj._actionRider)
 		this.actionsQuery = arrayOfClass(DataObjActionQuery, obj._actionsQuery)
 		this.codeCardinality = memberOfEnum(
 			obj._codeCardinality,
@@ -274,6 +277,7 @@ export class RawDataObjParent {
 }
 
 export class RawDataObjProp {
+	actionRider?: UserActionRider
 	attrAccess?: string
 	codeAttrType?: string
 	codeSortDir?: PropSortDir
@@ -295,6 +299,7 @@ export class RawDataObjProp {
 	constructor(obj: any, tables: DataObjTable[]) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjProp'
+		this.actionRider = classOptional(UserActionRider, obj._actionRider)
 		this.attrAccess = obj.attrAccess
 		this.codeAttrType = obj._codeAttrType
 		this.codeSortDir = memberOfEnumOrDefault(
@@ -540,7 +545,6 @@ export class RawDataObjPropDisplayItemChange {
 
 export class RawDataObjPropDisplayCustom {
 	action?: UserAction
-	actionAlertMsg?: string
 	customColActionValue?: string
 	customColAlign?: string
 	customColIsSubHeader?: boolean
@@ -556,7 +560,6 @@ export class RawDataObjPropDisplayCustom {
 		if (obj._action) {
 			this.action = new UserAction(new RawUserAction(obj._action))
 		}
-		this.actionAlertMsg = strOptional(obj.actionAlertMsg, clazz, 'actionAlertMsg')
 		this.customColActionValue = strOptional(obj.customColActionValue, clazz, 'customColActionValue')
 		this.customColAlign = strOptional(obj.customColAlign, clazz, 'customColAlign')
 		this.customColIsSubHeader = obj.customColIsSubHeader
@@ -700,7 +703,6 @@ export class RawDBColumn {
 }
 
 export class RawUserAction {
-	actionAlertMsg?: string
 	actionConfirms: UserActionConfirm[]
 	actionShows: UserActionShow[]
 	codeAction: CodeAction
@@ -710,7 +712,6 @@ export class RawUserAction {
 	constructor(obj: any) {
 		const clazz = 'RawUserAction'
 		obj = valueOrDefault(obj, {})
-		this.actionAlertMsg = strOptional(obj.actionAlertMsg, clazz, 'actionAlertMsg')
 		this.actionConfirms = arrayOfClass(UserActionConfirm, obj._actionConfirms)
 		this.actionShows = arrayOfClass(UserActionShow, obj._actionShows)
 		this.codeAction = new CodeAction(obj._codeAction)

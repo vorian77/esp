@@ -23,6 +23,7 @@ import {
 	TokenApiQueryData,
 	TokenApiQueryDataTree
 } from '$utils/types.token'
+import { ActionTriggerTiming } from '$comps/other/types.userAction.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/app/types.appQuery.ts'
@@ -88,7 +89,7 @@ async function queryExecuteActions(
 	sm: State,
 	actionsQueryFunctions: DataObjActionQueryFunction[],
 	queryType: TokenApiQueryType,
-	queryTiming: DataObjActionQueryTriggerTiming,
+	queryTiming: ActionTriggerTiming,
 	table: string | undefined,
 	data: DataObjData
 ) {
@@ -180,7 +181,7 @@ export async function queryTypeTab(
 			sm,
 			tab.dataObj.actionsQueryFunctions,
 			queryType,
-			DataObjActionQueryTriggerTiming.pre,
+			ActionTriggerTiming.pre,
 			table,
 			dataTab
 		)
@@ -216,7 +217,7 @@ export async function queryTypeTab(
 			sm,
 			tab.dataObj.actionsQueryFunctions,
 			queryType,
-			DataObjActionQueryTriggerTiming.post,
+			ActionTriggerTiming.post,
 			table,
 			dataObj.data
 		)
@@ -255,7 +256,7 @@ export class DataObjActionQueryFunction {
 		this.actionsQuery = actionQuery
 		this.funct = qaFunction
 	}
-	activate(timing: DataObjActionQueryTriggerTiming, type: TokenApiQueryType) {
+	activate(timing: ActionTriggerTiming, type: TokenApiQueryType) {
 		return (
 			this.actionsQuery.triggers.findIndex(
 				(trigger) => trigger.timing === timing && trigger.type === type
@@ -266,7 +267,7 @@ export class DataObjActionQueryFunction {
 		queryActionName: string,
 		sm: State,
 		queryType: TokenApiQueryType,
-		queryTiming: DataObjActionQueryTriggerTiming,
+		queryTiming: ActionTriggerTiming,
 		table: string | undefined,
 		data: DataObjData,
 		parms: DataRecord
@@ -278,7 +279,7 @@ export class DataObjActionQueryFunction {
 
 export class DataObjActionQueryTrigger {
 	type: TokenApiQueryType
-	timing: DataObjActionQueryTriggerTiming
+	timing: ActionTriggerTiming
 	constructor(obj: any) {
 		const clazz = 'DataObjActionQueryTrigger'
 		this.type = memberOfEnum(
@@ -293,12 +294,7 @@ export class DataObjActionQueryTrigger {
 			clazz,
 			'timing',
 			'DataObjActionQueryTriggerTiming',
-			DataObjActionQueryTriggerTiming
+			ActionTriggerTiming
 		)
 	}
-}
-
-export enum DataObjActionQueryTriggerTiming {
-	post = 'post',
-	pre = 'pre'
 }

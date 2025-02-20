@@ -146,9 +146,16 @@ const shapeUserAction = e.shape(e.sys_user.SysUserAction, (ua) => ({
 		...shapeCodeAction(ca)
 	})),
 	_codeTriggerEnable: ua.codeTriggerEnable.name,
-	actionAlertMsg: true,
 	header: ua.header,
 	name: ua.name
+}))
+
+const shapeUserActionRider = e.shape(e.sys_user.SysUserActionRider, (uar) => ({
+	_action: uar.action.name,
+	_codeDestination: uar.codeDestination.name,
+	_codeMsgDelivery: uar.codeMsgDelivery.name,
+	_codeTrigger: uar.codeTrigger.name,
+	msg: true
 }))
 
 export async function getDataObjActionGroup(token: TokenApiId) {
@@ -251,6 +258,9 @@ export async function getDataObjById(token: TokenApiId) {
 					_codeTriggerTiming: t.codeTriggerTiming.name
 				}))
 			})),
+			_actionRider: e.select(do1.actionRider, (uar) => ({
+				...shapeUserActionRider(uar)
+			})),
 			_codeCardinality: do1.codeCardinality.name,
 			_codeComponent: do1.codeComponent.name,
 			_codeDataObjType: do1.codeDataObjType.name,
@@ -305,6 +315,9 @@ export async function getDataObjById(token: TokenApiId) {
 					toggleValueTrue: true
 				})),
 				...shapeProp(doc),
+				_actionRider: e.select(doc.actionRider, (uar) => ({
+					...shapeUserActionRider(uar)
+				})),
 				_codeAccess: doc.codeAccess.name,
 				_codeAlignmentAlt: doc.codeAlignmentAlt.name,
 				_codeColor: doc.codeColor.name,
@@ -313,7 +326,6 @@ export async function getDataObjById(token: TokenApiId) {
 					_action: e.select(c.action, (a) => ({
 						...shapeUserAction(a)
 					})),
-					actionAlertMsg: true,
 					customColActionValue: true,
 					customColAlign: true,
 					customColIsSubHeader: true,

@@ -20,7 +20,7 @@ import {
 	valueOrDefault
 } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
-import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
+import { UserActionConfirmContent, UserActionRider } from '$comps/other/types.userAction.svelte'
 import {
 	State,
 	StateNavLayout,
@@ -452,7 +452,7 @@ export class TokenAppRow extends TokenApp {
 }
 
 export class TokenAppStateTriggerAction extends TokenApp {
-	actionAlertMsg?: string
+	actionRider?: UserActionRider
 	codeAction: CodeAction
 	codeConfirmType: TokenAppUserActionConfirmType
 	confirm: UserActionConfirmContent
@@ -465,8 +465,8 @@ export class TokenAppStateTriggerAction extends TokenApp {
 		const clazz = 'TokenAppStateTriggerAction'
 		obj = valueOrDefault(obj, {})
 		super(obj)
-		this.actionAlertMsg = obj.actionAlertMsg
 		this.codeAction = obj.codeAction
+		this.actionRider = obj.actionRider
 		this.codeConfirmType = obj.codeConfirmType || TokenAppUserActionConfirmType.none
 		this.confirm = obj.confirm || new UserActionConfirmContent(obj)
 		this.data = obj.data || {}

@@ -1023,14 +1023,6 @@ function initDataObjColumn(init: InitDb) {
 				fieldListItems: 'il_sys_user_action'
 			},
 			{
-				codeAccess: 'optional',
-				columnName: 'actionAlertMsg',
-				isDisplayable: true,
-				orderDisplay: 524,
-				orderDefine: 524,
-				indexTable: 0
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,

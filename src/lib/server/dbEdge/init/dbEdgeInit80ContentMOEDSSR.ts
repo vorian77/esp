@@ -950,14 +950,21 @@ FILTER .parent.name = 'ct_cm_doc_type' ORDER BY .order asc`,
 
 function initTaskSsrWelcome(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
-		owner: 'sys_moed_old',
-		codeComponent: 'FormDetail',
+		actionRider: {
+			action: 'ua_sys_save_detail',
+			codeDestination: 'home',
+			codeMsgDelivery: 'alert',
+			codeTrigger: 'post',
+			msg: `Great! Next complete your application!`
+		},
 		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskPage',
 		exprFilter: `.id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id`,
 		header: 'Welcome',
 		isInitialValidationSilent: true,
 		name: 'data_obj_task_moed_ssr_welcome',
+		owner: 'sys_moed_old',
 		tables: [{ index: 0, table: 'SysPerson' }],
 		fields: [
 			{
@@ -1036,12 +1043,18 @@ function initTaskSsrWelcome(init: InitDb) {
 				orderDefine: 80
 			},
 			{
+				actionRider: {
+					action: 'ua_sys_save_detail',
+					codeDestination: 'home',
+					codeMsgDelivery: 'alert',
+					codeTrigger: 'post',
+					msg: `Great! Next complete your application!`
+				},
 				codeColor: 'secondary',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',
 				customElement: {
 					action: 'ua_sys_save_detail',
-					actionAlertMsg: `Great! Next complete your application!`,
 					label: 'Get Started!'
 				},
 				isDisplayable: true,

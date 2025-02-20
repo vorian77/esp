@@ -58,12 +58,6 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'str',
-		header: 'Action - Alert Message',
-		name: 'actionAlertMsg'
-	})
-	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Action - Confirms',
 		isMultiSelect: true,
@@ -153,6 +147,13 @@ export function initPreColumn(init: InitDb) {
 		name: 'analytics'
 	})
 	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Applicant',
+		isMultiSelect: false,
+		name: 'applicant'
+	})
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Application Header',
 		isMultiSelect: false,
@@ -233,6 +234,13 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'client',
 		owner: 'sys_ai_old'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_ai_old',
+		codeDataType: 'link',
+		header: 'Group',
+		isMultiSelect: false,
+		name: 'cmGroup'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -381,6 +389,20 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'codeGender',
 		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Group Enrollment',
+		isMultiSelect: false,
+		name: 'codeGroupEnrollment',
+		owner: 'sys_ai_old'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Group Type',
+		isMultiSelect: false,
+		name: 'codeGroupType',
+		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_ai_old',
@@ -597,6 +619,20 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'codeTypePayment',
 		owner: 'sys_system_old'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'User Destination',
+		isMultiSelect: false,
+		name: 'codeUserDestination'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'User Message Delivery',
+		isMultiSelect: false,
+		name: 'codeUserMsgDelivery'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1438,6 +1474,12 @@ export function initPreColumn(init: InitDb) {
 		toggleValueTrue: 'Yes'
 	})
 	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'bool',
+		header: 'Has Custom Logic',
+		name: 'hasCustomLogic'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_ai_old',
 		codeDataType: 'bool',
 		header: 'Has Drivers License',
@@ -1790,6 +1832,20 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Logic Parm Key',
+		isMultiSelect: false,
+		name: 'logicParmKey'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'Logic Parm Value',
+		isMultiSelect: false,
+		name: 'logicParmValue'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
 		codeDataType: 'int16',
 		header: 'Logo File Width',
 		name: 'logoWidth'
@@ -2036,13 +2092,6 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Applicant',
-		isMultiSelect: false,
-		name: 'applicant'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
 		codeDataType: 'str',
 		header: 'Password',
 		name: 'password',
@@ -2108,6 +2157,13 @@ export function initPreColumn(init: InitDb) {
 		header: 'Props',
 		isMultiSelect: true,
 		name: 'props'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Query Rider',
+		isMultiSelect: false,
+		name: 'queryRider',
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -2313,6 +2369,20 @@ export function initPreColumn(init: InitDb) {
 		header: 'User',
 		isMultiSelect: false,
 		name: 'user'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_ai_old',
+		codeDataType: 'link',
+		header: 'Group Manager',
+		isMultiSelect: false,
+		name: 'userGroupMgr'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'User Message',
+		isMultiSelect: false,
+		name: 'userMsg'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',

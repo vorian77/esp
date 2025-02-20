@@ -1,4 +1,3 @@
-import { DataObjActionQueryTriggerTiming } from '$comps/app/types.appQuery'
 import { State } from '$comps/app/types.appState.svelte'
 import type { ResponseBody } from '$utils/types'
 import {
@@ -17,6 +16,7 @@ import {
 	TokenApiBlobType,
 	TokenApiQueryType
 } from '$utils/types.token'
+import { ActionTriggerTiming } from '$comps/other/types.userAction.svelte'
 import { FileStorage } from '$comps/form/fieldFile'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { error } from '@sveltejs/kit'
@@ -32,7 +32,7 @@ export async function qaExecuteFileStorage(
 	queryActionName: string,
 	sm: State,
 	queryType: TokenApiQueryType,
-	queryTiming: DataObjActionQueryTriggerTiming,
+	queryTiming: ActionTriggerTiming,
 	table: string | undefined,
 	dataUpdate: DataObjData,
 	parms: DataRecord
@@ -41,7 +41,7 @@ export async function qaExecuteFileStorage(
 		dataUpdate.rowsSave.getDetailRecordValue(parms.imageField)
 	if (!fileParm || queryType !== TokenApiQueryType.save) return dataUpdate
 
-	if (queryTiming === DataObjActionQueryTriggerTiming.pre) {
+	if (queryTiming === ActionTriggerTiming.pre) {
 		fileAction = dataUpdate.rowsSave.getDetailRowStatusIs(DataRecordStatus.delete)
 			? TokenApiBlobAction.delete
 			: fileParm instanceof TokenApiFileParmDelete

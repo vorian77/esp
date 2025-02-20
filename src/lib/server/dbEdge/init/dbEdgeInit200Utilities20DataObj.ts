@@ -14,6 +14,7 @@ export async function addDataObj(data: any) {
 	const query = e.params(
 		{
 			actionGroup: e.optional(e.str),
+			actionRider: e.optional(e.json),
 			actionsQuery: e.optional(e.array(e.json)),
 			codeCardinality: e.str,
 			codeComponent: e.str,
@@ -71,7 +72,7 @@ export async function addDataObj(data: any) {
 									),
 									codeTriggerTiming: e.select(
 										e.sys_core.getCode(
-											'ct_sys_action_trigger_timing',
+											'ct_sys_do_query_rider_trigger_timing',
 											e.cast(e.str, e.json_get(t, 'codeTriggerTiming'))
 										)
 									),
@@ -82,6 +83,30 @@ export async function addDataObj(data: any) {
 						)
 					})
 				}),
+				actionRider: e.op(
+					e.insert(e.sys_user.SysUserActionRider, {
+						action: e.sys_user.getUserAction(e.cast(e.str, e.json_get(p.actionRider, 'action'))),
+						codeDestination: e.sys_core.getCode(
+							'ct_sys_do_query_rider_user_destination',
+							e.cast(e.str, e.json_get(p.actionRider, 'codeDestination'))
+						),
+						codeMsgDelivery: e.sys_core.getCode(
+							'ct_sys_do_query_rider_msg_delivery',
+							e.cast(e.str, e.json_get(p.actionRider, 'codeMsgDelivery'))
+						),
+						codeTrigger: e.sys_core.getCode(
+							'ct_sys_do_query_rider_trigger_timing',
+							e.cast(e.str, e.json_get(p.actionRider, 'codeTrigger'))
+						),
+						createdBy: CREATOR,
+						modifiedBy: CREATOR,
+						msg: e.cast(e.str, e.json_get(p.actionRider, 'msg'))
+					}),
+					'if',
+					e.op('exists', e.cast(e.json, p.actionRider)),
+					'else',
+					e.cast(e.sys_user.SysUserActionRider, e.set())
+				),
 				codeCardinality: e.select(e.sys_core.getCode('ct_sys_do_cardinality', p.codeCardinality)),
 				codeComponent: e.select(e.sys_core.getCode('ct_sys_do_component', p.codeComponent)),
 				codeDataObjType: e.op(
@@ -97,6 +122,33 @@ export async function addDataObj(data: any) {
 				columns: e.for(e.array_unpack(p.fields), (f) => {
 					return e.insert(e.sys_core.SysDataObjColumn, {
 						column: e.sys_db.getColumn(e.cast(e.str, e.json_get(f, 'columnName'))),
+
+						actionRider: e.op(
+							e.insert(e.sys_user.SysUserActionRider, {
+								action: e.sys_user.getUserAction(
+									e.cast(e.str, e.json_get(e.json_get(f, 'actionRider'), 'action'))
+								),
+								codeDestination: e.sys_core.getCode(
+									'ct_sys_do_query_rider_user_destination',
+									e.cast(e.str, e.json_get(e.json_get(f, 'actionRider'), 'codeDestination'))
+								),
+								codeMsgDelivery: e.sys_core.getCode(
+									'ct_sys_do_query_rider_msg_delivery',
+									e.cast(e.str, e.json_get(e.json_get(f, 'actionRider'), 'codeMsgDelivery'))
+								),
+								codeTrigger: e.sys_core.getCode(
+									'ct_sys_do_query_rider_trigger_timing',
+									e.cast(e.str, e.json_get(e.json_get(f, 'actionRider'), 'codeTrigger'))
+								),
+								createdBy: CREATOR,
+								modifiedBy: CREATOR,
+								msg: e.cast(e.str, e.json_get(e.json_get(f, 'actionRider'), 'msg'))
+							}),
+							'if',
+							e.op('exists', e.cast(e.json, e.json_get(f, 'actionRider'))),
+							'else',
+							e.cast(e.sys_user.SysUserActionRider, e.set())
+						),
 
 						/* DB */
 						attrAccess: booleanOrDefaultJSON(f, 'attrAccess', false),
@@ -218,10 +270,6 @@ export async function addDataObj(data: any) {
 						/* custom column */
 						action: e.sys_user.getUserAction(
 							e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'action'))
-						),
-						actionAlertMsg: e.cast(
-							e.str,
-							e.json_get(e.json_get(f, 'customElement'), 'actionAlertMsg')
 						),
 						customColActionValue: e.cast(
 							e.str,
@@ -505,7 +553,6 @@ export async function addUserAction(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			actionAlertMsg: e.optional(e.str),
 			actionConfirms: e.array(e.json),
 			actionShows: e.array(e.json),
 			codeAction: e.json,
@@ -516,7 +563,6 @@ export async function addUserAction(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysUserAction, {
-				actionAlertMsg: p.actionAlertMsg,
 				actionConfirms: e.for(e.array_unpack(p.actionConfirms), (a) => {
 					return e.insert(e.sys_user.SysUserActionConfirm, {
 						codeConfirmType: e.select(
