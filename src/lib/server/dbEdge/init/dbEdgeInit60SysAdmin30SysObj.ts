@@ -2,7 +2,6 @@ import { InitDb } from '$server/dbEdge/init/types.init'
 import { initAdminSysObjApp } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjApp'
 import { initAdminSysObjCode } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjCode'
 import { initAdminSysObjDataObj } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObj'
-import { initAdminSysObjDataObjActionQuery } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObjActionQuery'
 import { initAdminSysObjDataObjEmbed } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObjEmbed'
 import { initAdminSysObjDB } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDB'
 import { initAdminSysObjFieldItems } from '$server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObjFieldItmes'
@@ -18,7 +17,6 @@ export function initAdminSysObj(init: InitDb) {
 	initAdminSysObjApp(init)
 	initAdminSysObjCode(init)
 	initAdminSysObjDataObj(init)
-	initAdminSysObjDataObjActionQuery(init)
 	initAdminSysObjDataObjEmbed(init)
 	initAdminSysObjDB(init)
 	initAdminSysObjFieldItems(init)

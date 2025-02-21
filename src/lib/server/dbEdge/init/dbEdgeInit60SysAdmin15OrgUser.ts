@@ -195,18 +195,27 @@ function initOrg(init: InitDb) {
 
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
-		actionsQuery: [
-			{
-				name: 'qa_file_storage',
-				parms: [{ key: 'imageField', value: 'file' }],
-				triggers: [{ codeQueryType: 'save', codeTriggerTiming: 'pre' }]
-			}
-		],
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Organization (User)',
 		name: 'data_obj_sys_admin_org_detail_user',
 		owner: 'sys_system_old',
+		queryRiders: [
+			{
+				codeFunction: 'qrfFileStorage',
+				codeQueryType: 'save',
+				codeTriggerTiming: 'pre',
+				codeType: 'customFunction',
+				functionParmValue: 'file'
+			},
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'userMessage',
+				codeUserMsgDelivery: 'toast',
+				userMsg: 'File uploaded successfully!'
+			}
+		],
 		tables: [{ index: 0, table: 'SysOrg' }],
 		fields: [
 			{

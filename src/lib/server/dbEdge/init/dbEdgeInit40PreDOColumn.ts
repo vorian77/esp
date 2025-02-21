@@ -357,13 +357,6 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
-		header: 'Destination',
-		isMultiSelect: false,
-		name: 'codeDestination',
-		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
 		header: 'Disability Status',
 		isMultiSelect: false,
 		name: 'codeDisabilityStatus',
@@ -375,6 +368,13 @@ export function initPreColumn(init: InitDb) {
 		header: 'Field Element',
 		isMultiSelect: false,
 		name: 'codeFieldElement'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'link',
+		header: 'Function',
+		isMultiSelect: false,
+		name: 'codeFunction'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
@@ -438,13 +438,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Mask',
 		isMultiSelect: false,
 		name: 'codeMask'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Message Delivery Type',
-		isMultiSelect: false,
-		name: 'codeMsgDelivery',
-		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1461,6 +1454,13 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
 		codeDataType: 'str',
+		header: 'Function Parm Value',
+		isMultiSelect: false,
+		name: 'functionParmValue'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
 		header: 'Gender Self Identity',
 		name: 'genderSelfId'
 	})
@@ -1472,12 +1472,6 @@ export function initPreColumn(init: InitDb) {
 		togglePresetTrue: false,
 		toggleValueFalse: 'No',
 		toggleValueTrue: 'Yes'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'bool',
-		header: 'Has Custom Logic',
-		name: 'hasCustomLogic'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_ai_old',
@@ -1832,20 +1826,6 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
-		codeDataType: 'str',
-		header: 'Logic Parm Key',
-		isMultiSelect: false,
-		name: 'logicParmKey'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'str',
-		header: 'Logic Parm Value',
-		isMultiSelect: false,
-		name: 'logicParmValue'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
 		codeDataType: 'int16',
 		header: 'Logo File Width',
 		name: 'logoWidth'
@@ -2161,8 +2141,8 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Query Rider',
-		isMultiSelect: false,
-		name: 'queryRider',
+		isMultiSelect: true,
+		name: 'queryRiders',
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysColumn', {

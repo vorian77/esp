@@ -78,13 +78,7 @@ module sys_user {
     confirmMessage: str;
     confirmTitle: str;
   }
-  type SysUserActionRider extending sys_user::Mgmt {
-    required action: sys_user::SysUserAction;
-    codeDestination: sys_core::SysCode;
-    codeMsgDelivery: sys_core::SysCode;
-    required codeTrigger: sys_core::SysCode;
-    msg: str;
-  }
+
   type SysUserActionShow extending sys_user::Mgmt {
     codeExprOp: sys_core::SysCode;
     required codeTriggerShow: sys_core::SysCode;

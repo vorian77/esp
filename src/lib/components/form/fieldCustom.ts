@@ -4,7 +4,7 @@ import {
 	PropNamePrefixType,
 	RawDataObjPropDisplayCustom
 } from '$comps/dataObj/types.rawDataObj.svelte'
-import { UserAction, UserActionRider } from '$comps/other/types.userAction.svelte'
+import { UserAction } from '$comps/other/types.userAction.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/form/fieldCustom.ts'
@@ -28,7 +28,6 @@ export class FieldCustom extends Field {
 
 export class FieldCustomAction extends FieldCustom {
 	action: UserAction
-	actionRider?: UserActionRider
 	value: string
 	constructor(props: PropsFieldCreate) {
 		const clazz = 'FieldCustomAction'
@@ -39,7 +38,6 @@ export class FieldCustomAction extends FieldCustom {
 			'customCol'
 		)
 		this.action = required(customCol.action, clazz, 'action')
-		this.actionRider = props.propRaw.actionRider
 		this.value = valueOrDefault(customCol.customColActionValue, '')
 	}
 }

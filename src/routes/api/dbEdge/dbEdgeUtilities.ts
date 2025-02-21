@@ -34,6 +34,18 @@ const SysDataObjColumnItemChange = e.shape(e.sys_core.SysDataObjColumnItemChange
 	order_by: t.orderDefine
 }))
 
+const shapeDataObjQueryRider = e.shape(e.sys_core.SysDataObjQueryRider, (qr) => ({
+	_codeFunction: qr.codeFunction.name,
+	_codeQueryType: qr.codeQueryType.name,
+	_codeTriggerTiming: qr.codeTriggerTiming.name,
+	_codeType: qr.codeType.name,
+	_codeUserDestination: qr.codeUserDestination.name,
+	_codeUserMsgDelivery: qr.codeUserMsgDelivery.name,
+	expr: true,
+	functionParmValue: true,
+	userMsg: true
+}))
+
 const shapeDataObjTable = e.shape(e.sys_core.SysDataObjTable, (dot) => ({
 	_columnParent: dot.columnParent.name,
 	_columnsId: dot.columnsId.name,
@@ -150,14 +162,6 @@ const shapeUserAction = e.shape(e.sys_user.SysUserAction, (ua) => ({
 	name: ua.name
 }))
 
-const shapeUserActionRider = e.shape(e.sys_user.SysUserActionRider, (uar) => ({
-	_action: uar.action.name,
-	_codeDestination: uar.codeDestination.name,
-	_codeMsgDelivery: uar.codeMsgDelivery.name,
-	_codeTrigger: uar.codeTrigger.name,
-	msg: true
-}))
-
 export async function getDataObjActionGroup(token: TokenApiId) {
 	const query = e.select(e.sys_core.SysDataObjActionGroup, (a) => ({
 		...shapeDataObjActionGroup(a),
@@ -247,20 +251,6 @@ export async function getDataObjById(token: TokenApiId) {
 			_actionGroup: e.select(do1.actionGroup, (afg) => ({
 				...shapeDataObjActionGroup(afg)
 			})),
-			_actionsQuery: e.select(do1.actionsQuery, (a) => ({
-				name: true,
-				_parms: e.select(a.parms, (p) => ({
-					key: true,
-					value: true
-				})),
-				_triggers: e.select(a.triggers, (t) => ({
-					_codeQueryType: t.codeQueryType.name,
-					_codeTriggerTiming: t.codeTriggerTiming.name
-				}))
-			})),
-			_actionRider: e.select(do1.actionRider, (uar) => ({
-				...shapeUserActionRider(uar)
-			})),
 			_codeCardinality: do1.codeCardinality.name,
 			_codeComponent: do1.codeComponent.name,
 			_codeDataObjType: do1.codeDataObjType.name,
@@ -275,6 +265,9 @@ export async function getDataObjById(token: TokenApiId) {
 				}))
 			}),
 			_processType: do1.processType.name,
+			_queryRiders: e.select(do1.queryRiders, (qr) => ({
+				...shapeDataObjQueryRider(qr)
+			})),
 			_tables: e.select(do1.tables, (t) => ({
 				...shapeDataObjTable(t)
 			})),
@@ -315,9 +308,6 @@ export async function getDataObjById(token: TokenApiId) {
 					toggleValueTrue: true
 				})),
 				...shapeProp(doc),
-				_actionRider: e.select(doc.actionRider, (uar) => ({
-					...shapeUserActionRider(uar)
-				})),
 				_codeAccess: doc.codeAccess.name,
 				_codeAlignmentAlt: doc.codeAlignmentAlt.name,
 				_codeColor: doc.codeColor.name,

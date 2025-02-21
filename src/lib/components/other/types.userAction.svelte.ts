@@ -10,6 +10,9 @@ import {
 	CodeActionType,
 	DataManager,
 	DataObj,
+	DataObjQueryRiderTriggerTiming,
+	DataObjQueryRiderDestination,
+	DataObjQueryRiderMsgDelivery,
 	DataObjSaveMode,
 	type DataRecord,
 	debug,
@@ -191,64 +194,6 @@ export async function userActionStateChangeRaw(sm: State, parmsAction: TokenAppS
 	await userActionStateChange(sm, parmsAction)
 }
 
-export class UserActionRider {
-	action: string
-	codeDestination?: UserActionRiderDestination
-	codeMsgDelivery?: UserActionRiderMsgDelivery
-	codeTrigger: ActionTriggerTiming
-	msg?: string
-	constructor(obj: any) {
-		const clazz = 'UserActionRider'
-		obj = valueOrDefault(obj, {})
-		console.log('UserActionRider.obj', obj)
-		this.action = strRequired(obj._action, clazz, 'action')
-		this.codeDestination = memberOfEnumIfExists(
-			obj._codeDestination,
-			'codeDestination',
-			clazz,
-			'UserActionRiderDestination',
-			UserActionRiderDestination
-		)
-		this.codeMsgDelivery = memberOfEnumIfExists(
-			obj._codeMsgDelivery,
-			'codeMsgDelivery',
-			clazz,
-			'UserActionRiderMsgDelivery',
-			UserActionRiderMsgDelivery
-		)
-		this.codeTrigger = memberOfEnum(
-			obj._codeTrigger,
-			clazz,
-			'codeTrigger',
-			'ActionTriggerTiming',
-			ActionTriggerTiming
-		)
-		this.msg = obj.msg
-	}
-	exeMsg(storeToast: any) {
-		if (this.codeMsgDelivery && this.msg) {
-			switch (this.codeMsgDelivery) {
-				case UserActionRiderMsgDelivery.alert:
-					alert(this.msg)
-					break
-				case UserActionRiderMsgDelivery.toast:
-					storeToast.openToast(ToastType.success, this.msg)
-					break
-			}
-		}
-	}
-}
-
-export enum UserActionRiderDestination {
-	back = 'back',
-	home = 'home'
-}
-
-export enum UserActionRiderMsgDelivery {
-	alert = 'alert',
-	toast = 'toast'
-}
-
 export class UserActionShow {
 	codeExprOp?: FieldOp
 	codeTriggerShow: UserActionTrigger
@@ -399,9 +344,4 @@ export enum UserActionTrigger {
 	saveMode = 'saveMode',
 	saveModeInsert = 'saveModeInsert',
 	saveModeUpdate = 'saveModeUpdate'
-}
-
-export enum ActionTriggerTiming {
-	post = 'post',
-	pre = 'pre'
 }

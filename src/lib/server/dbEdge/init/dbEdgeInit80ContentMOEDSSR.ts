@@ -22,14 +22,25 @@ export function initContentMOEDSsr(init: InitDb) {
 function initTaskSsrApp(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_detail_mobile_save',
-		owner: 'sys_moed_old',
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskTarget',
 		exprFilter: '.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
+		header: 'My Application',
 		isDetailRetrievePreset: true,
 		name: 'data_obj_task_moed_ssr_app',
-		header: 'My Application',
+		owner: 'sys_moed_old',
+		queryRiders: [
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'userMessage',
+				userMsg:
+					'Your application has been submitted! Now upload your eligibility documents and if you have any questions send us a message.',
+				codeUserMsgDelivery: 'alert',
+				codeUserDestination: 'home'
+			}
+		],
 		tables: [
 			{ index: 0, table: 'CmClientServiceFlow' },
 			{
@@ -401,6 +412,14 @@ function initTaskSsrMsg(init: InitDb) {
 		header: 'My Messages',
 		name: 'data_obj_task_moed_ssr_msg_list',
 		owner: 'sys_moed_old',
+		queryRiders: [
+			{
+				codeQueryType: 'retrieve',
+				codeTriggerTiming: 'pre',
+				codeType: 'databaseExpression',
+				expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,SysMsg.id> SET {readers := DISTINCT (.readers UNION (SELECT default::SysPerson FILTER .id = <user,uuid,personId>))}`
+			}
+		],
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -495,6 +514,16 @@ function initTaskSsrMsg(init: InitDb) {
 		isRetrieveReadonly: true,
 		name: 'data_obj_task_moed_ssr_msg_detail',
 		owner: 'sys_moed_old',
+		queryRiders: [
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'userMessage',
+				codeUserDestination: 'back',
+				codeUserMsgDelivery: 'toast',
+				userMsg: `Your message has been sent. We'll get back with you ASAP!`
+			}
+		],
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -787,36 +816,52 @@ function initTaskSsrDoc(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0,
 				linkColumns: ['name']
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'note',
+				orderDefine: 70,
+				isDisplay: false,
+				isDisplayable: true,
+				orderDisplay: 70,
+				indexTable: 0
 			}
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	columnName: 'note',
-			// 	orderDefine: 70,
-			// 	isDisplayable: true,
-			// 	orderDisplay: 70,
-			// 	indexTable: 0
-			// }
 		]
 	})
 
 	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_detail_mobile_save_delete',
-		actionsQuery: [
-			{
-				name: 'qa_file_storage',
-				parms: [{ key: 'imageField', value: 'file' }],
-				triggers: [{ codeQueryType: 'save', codeTriggerTiming: 'pre' }]
-			}
-		],
-		owner: 'sys_moed_old',
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskTarget',
 		exprFilter:
 			'.csf.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person AND <parms,str,itemsParmValue> IN .codeType.codeTypeFamily.name LIMIT 1',
-		name: 'data_obj_task_moed_ssr_doc_detail',
 		header: 'My Document',
 		isDetailRetrievePreset: true,
+		name: 'data_obj_task_moed_ssr_doc_detail',
+		owner: 'sys_moed_old',
+		queryRiders: [
+			{
+				codeFunction: 'qrfFileStorage',
+				codeQueryType: 'save',
+				codeTriggerTiming: 'pre',
+				codeType: 'customFunction',
+				functionParmValue: 'file'
+			},
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'userMessage',
+				codeUserMsgDelivery: 'toast',
+				userMsg: 'File uploaded successfully!'
+			},
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'appDestination',
+				codeUserDestination: 'back'
+			}
+		],
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
 		fields: [
 			{
@@ -950,13 +995,6 @@ FILTER .parent.name = 'ct_cm_doc_type' ORDER BY .order asc`,
 
 function initTaskSsrWelcome(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
-		actionRider: {
-			action: 'ua_sys_save_detail',
-			codeDestination: 'home',
-			codeMsgDelivery: 'alert',
-			codeTrigger: 'post',
-			msg: `Great! Next complete your application!`
-		},
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskPage',
@@ -965,6 +1003,16 @@ function initTaskSsrWelcome(init: InitDb) {
 		isInitialValidationSilent: true,
 		name: 'data_obj_task_moed_ssr_welcome',
 		owner: 'sys_moed_old',
+		queryRiders: [
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'userMessage',
+				userMsg: 'Great! Next complete your application!',
+				codeUserMsgDelivery: 'alert',
+				codeUserDestination: 'home'
+			}
+		],
 		tables: [{ index: 0, table: 'SysPerson' }],
 		fields: [
 			{
@@ -1043,13 +1091,6 @@ function initTaskSsrWelcome(init: InitDb) {
 				orderDefine: 80
 			},
 			{
-				actionRider: {
-					action: 'ua_sys_save_detail',
-					codeDestination: 'home',
-					codeMsgDelivery: 'alert',
-					codeTrigger: 'post',
-					msg: `Great! Next complete your application!`
-				},
 				codeColor: 'secondary',
 				codeFieldElement: 'customActionButton',
 				columnName: 'custom_element',

@@ -54,7 +54,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 								CodeActionClass.ct_sys_code_action_class_utils,
 								CodeActionType.dbexpression
 							),
-							data: { value: expr }
+							data: { value: { expr } }
 						})
 					)
 					await sm.app.queryTab(
@@ -154,7 +154,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 								CodeActionClass.ct_sys_code_action_class_utils,
 								CodeActionType.dbexpression
 							),
-							data: { value: expr }
+							data: { value: { expr } }
 						})
 					)
 				}

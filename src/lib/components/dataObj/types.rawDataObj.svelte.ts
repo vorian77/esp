@@ -40,12 +40,10 @@ import {
 import {
 	UserAction,
 	UserActionConfirm,
-	UserActionRider,
 	UserActionShow,
 	UserActionTrigger
 } from '$comps/other/types.userAction.svelte'
 import { queryDataPre } from '$comps/app/types.appQuery'
-import { DataObjActionQuery } from '$comps/app/types.appQuery'
 import {
 	Field,
 	FieldAccess,
@@ -57,13 +55,19 @@ import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
-import { University } from 'lucide-svelte'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
 
+export enum PropNamePrefixType {
+	custom = 'custom',
+	expr = 'expr',
+	exprCustom = 'exprCustom',
+	link = 'link',
+	linkItems = 'linkItems',
+	table = 'table'
+}
+
 export class RawDataObj {
-	actionRider?: UserActionRider
-	actionsQuery: DataObjActionQuery[] = []
 	codeCardinality: DataObjCardinality
 	codeComponent: DataObjComponent
 	codeDataObjType: DataObjType
@@ -86,6 +90,7 @@ export class RawDataObj {
 	listReorderColumn?: string
 	name: string
 	processType?: DataObjProcessType
+	queryRiders: RawDataObjQueryRider[] = []
 	rawActions: RawDataObjAction[] = []
 	rawParent?: RawDataObjParent
 	rawPropsDisplay: RawDataObjPropDisplay[] = []
@@ -100,8 +105,6 @@ export class RawDataObj {
 	constructor(obj: any) {
 		const clazz = `${obj.name}.RawDataObj`
 		obj = valueOrDefault(obj, {})
-		this.actionRider = classOptional(UserActionRider, obj._actionRider)
-		this.actionsQuery = arrayOfClass(DataObjActionQuery, obj._actionsQuery)
 		this.codeCardinality = memberOfEnum(
 			obj._codeCardinality,
 			clazz,
@@ -154,6 +157,7 @@ export class RawDataObj {
 			'DataObjProcessType',
 			DataObjProcessType
 		)
+		this.queryRiders = arrayOfClass(RawDataObjQueryRider, obj._queryRiders)
 		this.rawActions = arrayOfClass(RawDataObjAction, obj._actionGroup?._dataObjActions)
 		this.subHeader = strOptional(obj.subHeader, clazz, 'subHeader')
 		this.tables = this.initTables(obj._tables)
@@ -277,7 +281,6 @@ export class RawDataObjParent {
 }
 
 export class RawDataObjProp {
-	actionRider?: UserActionRider
 	attrAccess?: string
 	codeAttrType?: string
 	codeSortDir?: PropSortDir
@@ -299,7 +302,6 @@ export class RawDataObjProp {
 	constructor(obj: any, tables: DataObjTable[]) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjProp'
-		this.actionRider = classOptional(UserActionRider, obj._actionRider)
 		this.attrAccess = obj.attrAccess
 		this.codeAttrType = obj._codeAttrType
 		this.codeSortDir = memberOfEnumOrDefault(
@@ -364,15 +366,6 @@ export class RawDataObjProp {
 			: this.propNameRaw
 		return propNameDB
 	}
-}
-
-export enum PropNamePrefixType {
-	custom = 'custom',
-	expr = 'expr',
-	exprCustom = 'exprCustom',
-	link = 'link',
-	linkItems = 'linkItems',
-	table = 'table'
 }
 
 export class RawDataObjPropDB extends RawDataObjProp {
@@ -617,6 +610,31 @@ export class RawDataObjPropDisplayEmbedListSelect {
 			if (dataObjActionDone) dataObjActionDone.action.header = btnLabelComplete
 		}
 		return btnLabelComplete
+	}
+}
+
+export class RawDataObjQueryRider {
+	_codeFunction?: string
+	_codeQueryType: string
+	_codeTriggerTiming: string
+	_codeType: string
+	_codeUserDestination?: string
+	_codeUserMsgDelivery?: string
+	expr?: string
+	functionParmValue?: string
+	userMsg?: string
+	constructor(obj: any) {
+		const clazz = 'RawDataObjQueryRider'
+		obj = valueOrDefault(obj, {})
+		this._codeFunction = obj._codeFunction
+		this._codeQueryType = strRequired(obj._codeQueryType, clazz, '_codeQueryType')
+		this._codeTriggerTiming = strRequired(obj._codeTriggerTiming, clazz, '_codeTriggerTiming')
+		this._codeType = strRequired(obj._codeType, clazz, '_codeType')
+		this._codeUserDestination = obj._codeUserDestination
+		this._codeUserMsgDelivery = obj._codeUserMsgDelivery
+		this.expr = obj.expr
+		this.functionParmValue = obj.functionParmValue
+		this.userMsg = obj.userMsg
 	}
 }
 

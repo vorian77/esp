@@ -2053,20 +2053,29 @@ function initCsfDocument(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
+		actionGroup: 'doag_detail',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		name: 'data_obj_cm_csf_document_detail',
 		header: 'Document',
-		tables: [{ index: 0, table: 'CmCsfDocument' }],
-		actionGroup: 'doag_detail',
-		actionsQuery: [
+		name: 'data_obj_cm_csf_document_detail',
+		owner: 'sys_ai_old',
+		queryRiders: [
 			{
-				name: 'qa_file_storage',
-				parms: [{ key: 'imageField', value: 'file' }],
-				triggers: [{ codeQueryType: 'save', codeTriggerTiming: 'pre' }]
+				codeFunction: 'qrfFileStorage',
+				codeQueryType: 'save',
+				codeTriggerTiming: 'pre',
+				codeType: 'customFunction',
+				functionParmValue: 'file'
+			},
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'userMessage',
+				codeUserMsgDelivery: 'toast',
+				userMsg: 'File uploaded successfully!'
 			}
 		],
+		tables: [{ index: 0, table: 'CmCsfDocument' }],
 		fields: [
 			{
 				columnName: 'id',

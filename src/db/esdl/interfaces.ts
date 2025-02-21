@@ -58,13 +58,6 @@ export namespace sys_user {
     "confirmMessage"?: string | null;
     "confirmTitle"?: string | null;
   }
-  export interface SysUserActionRider extends Mgmt {
-    "action": SysUserAction;
-    "codeDestination"?: sys_core.SysCode | null;
-    "codeMsgDelivery"?: sys_core.SysCode | null;
-    "msg"?: string | null;
-    "codeTrigger": sys_core.SysCode;
-  }
   export interface SysUserActionShow extends Mgmt {
     "codeExprOp"?: sys_core.SysCode | null;
     "exprField"?: string | null;
@@ -344,10 +337,8 @@ export namespace sys_core {
     "listEditPresetExpr"?: string | null;
     "parentFilterExpr"?: string | null;
     "subHeader"?: string | null;
-    "queryRider"?: SysDataObjQueryRider | null;
     "isRetrieveReadonly"?: boolean | null;
-    "actionRider"?: sys_user.SysUserActionRider | null;
-    "actionsQuery": SysDataObjActionQuery[];
+    "queryRiders": SysDataObjQueryRider[];
     "columns": SysDataObjColumn[];
     "listReorderColumn"?: sys_db.SysColumn | null;
     "parentColumn"?: sys_db.SysColumn | null;
@@ -363,19 +354,6 @@ export namespace sys_core {
   export interface SysDataObjActionGroup extends SysObj {
     "dataObjActions": SysDataObjAction[];
   }
-  export interface SysDataObjActionQuery extends sys_user.Mgmt {
-    "parms": SysDataObjActionQueryParm[];
-    "triggers": SysDataObjActionQueryTrigger[];
-    "name": string;
-  }
-  export interface SysDataObjActionQueryParm extends sys_user.Mgmt {
-    "key": string;
-    "value": string;
-  }
-  export interface SysDataObjActionQueryTrigger extends sys_user.Mgmt {
-    "codeQueryType": SysCode;
-    "codeTriggerTiming": SysCode;
-  }
   export interface SysDataObjColumn extends sys_user.Mgmt {
     "exprSave"?: string | null;
     "inputMaskAlt"?: string | null;
@@ -384,7 +362,6 @@ export namespace sys_core {
     "exprSaveAttrObjects"?: string | null;
     "codeAttrType"?: SysCode | null;
     "attrAccess"?: boolean | null;
-    "actionRider"?: sys_user.SysUserActionRider | null;
     "itemChanges": SysDataObjColumnItemChange[];
     "codeAccess"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
@@ -484,15 +461,15 @@ export namespace sys_core {
     "orderSort"?: number | null;
   }
   export interface SysDataObjQueryRider extends sys_user.Mgmt {
-    "name": string;
     "codeQueryType": SysCode;
     "codeTriggerTiming": SysCode;
     "codeUserDestination"?: SysCode | null;
     "codeUserMsgDelivery"?: SysCode | null;
     "userMsg"?: string | null;
-    "logicParmKey"?: string | null;
-    "logicParmValue"?: string | null;
-    "hasCustomLogic": boolean;
+    "codeFunction"?: SysCode | null;
+    "functionParmValue"?: string | null;
+    "codeType"?: SysCode | null;
+    "expr"?: string | null;
   }
   export interface SysDataObjTable extends sys_user.Mgmt {
     "columnParent"?: sys_db.SysColumn | null;
@@ -1025,7 +1002,6 @@ export interface types {
     "SysUser": sys_user.SysUser;
     "SysUserAction": sys_user.SysUserAction;
     "SysUserActionConfirm": sys_user.SysUserActionConfirm;
-    "SysUserActionRider": sys_user.SysUserActionRider;
     "SysUserActionShow": sys_user.SysUserActionShow;
     "SysUserPref": sys_user.SysUserPref;
     "SysUserPrefType": sys_user.SysUserPrefType;
@@ -1071,9 +1047,6 @@ export interface types {
     "SysDataObj": sys_core.SysDataObj;
     "SysDataObjAction": sys_core.SysDataObjAction;
     "SysDataObjActionGroup": sys_core.SysDataObjActionGroup;
-    "SysDataObjActionQuery": sys_core.SysDataObjActionQuery;
-    "SysDataObjActionQueryParm": sys_core.SysDataObjActionQueryParm;
-    "SysDataObjActionQueryTrigger": sys_core.SysDataObjActionQueryTrigger;
     "SysDataObjColumn": sys_core.SysDataObjColumn;
     "SysDataObjColumnItemChange": sys_core.SysDataObjColumnItemChange;
     "SysDataObjColumnItemValue": sys_core.SysDataObjColumnItemValue;

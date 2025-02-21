@@ -105,21 +105,33 @@ function initDataObjLogin(init: InitDb) {
 function initDataObjMyAccount(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_auth_my_account',
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskTarget',
+		exprFilter: '.id = <user,uuid,id>',
 		header: 'My Account',
 		name: 'data_obj_task_sys_auth_my_account',
 		owner: 'sys_system_old',
-		actionsQuery: [
+		queryRiders: [
 			{
-				name: 'qa_file_storage',
-				parms: [{ key: 'imageField', value: 'avatar' }],
-				triggers: [{ codeQueryType: 'save', codeTriggerTiming: 'pre' }]
+				codeFunction: 'qrfFileStorage',
+				codeQueryType: 'save',
+				codeTriggerTiming: 'pre',
+				codeType: 'customFunction',
+				functionParmValue: 'avatar'
 			},
 			{
-				name: 'qa_user_update',
-				triggers: [{ codeQueryType: 'save', codeTriggerTiming: 'post' }]
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'userMessage',
+				codeUserMsgDelivery: 'toast',
+				userMsg: 'File uploaded successfully!'
+			},
+			{
+				codeFunction: 'qrfUserUpdate',
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'customFunction'
 			}
 		],
 		table: 'SysUser',
@@ -127,7 +139,6 @@ function initDataObjMyAccount(init: InitDb) {
 			{ index: 0, table: 'SysUser' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
 		],
-		exprFilter: '.id = <user,uuid,id>',
 		fields: [
 			{
 				columnName: 'id',

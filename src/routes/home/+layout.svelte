@@ -32,6 +32,7 @@
 			user: new User(data.rawUser)
 		})
 	)
+
 	setContext(ContextKey.stateManager, sm)
 	let navMenu: NavMenuData = $state(new NavMenuData({ sm }))
 	let triggerTokens: StateTriggerToken[] = $derived(sm.triggerTokens)

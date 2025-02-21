@@ -6,6 +6,7 @@ import {
 	type DataRecord,
 	DataObjCardinality,
 	DataObjData,
+	DataObjQueryRiderTriggerTiming,
 	DataRecordStatus,
 	getArray,
 	memberOfEnum,
@@ -23,7 +24,6 @@ import {
 	TokenApiQueryData,
 	TokenApiQueryDataTree
 } from '$utils/types.token'
-import { ActionTriggerTiming } from '$comps/other/types.userAction.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/app/types.appQuery.ts'
@@ -83,28 +83,6 @@ export async function queryExecute(
 		}
 	}
 	return result
-}
-
-async function queryExecuteActions(
-	sm: State,
-	actionsQueryFunctions: DataObjActionQueryFunction[],
-	queryType: TokenApiQueryType,
-	queryTiming: ActionTriggerTiming,
-	table: string | undefined,
-	data: DataObjData
-) {
-	for (const f of actionsQueryFunctions) {
-		data = await f.execute(
-			f.actionsQuery.name,
-			sm,
-			queryType,
-			queryTiming,
-			table,
-			data,
-			f.actionsQuery.parms
-		)
-	}
-	return data
 }
 
 export async function queryTypeBase(
@@ -173,17 +151,14 @@ export async function queryTypeTab(
 
 	let { dataTab, dataTree } = queryDataPre(sm, tab.dataObj?.data, queryType)
 
-	let table = getTable(tab.dataObj) // table will be undefined prior to retrieve
-
 	// query actions - pre
 	if (tab.dataObj && dataTab.rowsSave.getRows().length > 0) {
-		dataTab = await queryExecuteActions(
-			sm,
-			tab.dataObj.actionsQueryFunctions,
+		dataTab = await tab.dataObj.queryRiders.execute(
+			DataObjQueryRiderTriggerTiming.pre,
 			queryType,
-			ActionTriggerTiming.pre,
-			table,
-			dataTab
+			sm,
+			dataTab,
+			dataTree
 		)
 	}
 
@@ -212,89 +187,13 @@ export async function queryTypeTab(
 		dataObj.setTreeLevelIdx(tab.treeLevelIdx)
 		tab.isRetrieved = !tab.isAlwaysRetrieveData
 		tab.dataObj = dataObj
-		table = getTable(tab.dataObj)
-		tab.dataObj.data = await queryExecuteActions(
-			sm,
-			tab.dataObj.actionsQueryFunctions,
+		dataObj.data = await tab.dataObj.queryRiders.execute(
+			DataObjQueryRiderTriggerTiming.post,
 			queryType,
-			ActionTriggerTiming.post,
-			table,
-			dataObj.data
+			sm,
+			dataObj.data,
+			dataTree
 		)
 	}
 	return dataObj
-}
-
-export class DataObjActionQuery {
-	name: string
-	parms: DataRecord = {}
-	triggers: DataObjActionQueryTrigger[] = []
-	constructor(obj: any) {
-		const clazz = 'DataObjActionQuery'
-		obj = valueOrDefault(obj, {})
-		this.name = strRequired(obj.name, clazz, 'name')
-		this.parms = this.initParms(obj._parms)
-		this.triggers = arrayOfClass(DataObjActionQueryTrigger, obj._triggers)
-	}
-	initParms(parms: DataRecord[]) {
-		let newParms: DataRecord = {}
-		parms = getArray(parms)
-		parms.forEach((parm) => {
-			const key = parm.key
-			const value = parm.value
-			newParms[key] = value
-		})
-		return newParms
-	}
-}
-
-export class DataObjActionQueryFunction {
-	actionsQuery: DataObjActionQuery
-	funct: Function
-	constructor(actionQuery: DataObjActionQuery, qaFunction: Function) {
-		const clazz = 'DataObjActionQueryFunction'
-		this.actionsQuery = actionQuery
-		this.funct = qaFunction
-	}
-	activate(timing: ActionTriggerTiming, type: TokenApiQueryType) {
-		return (
-			this.actionsQuery.triggers.findIndex(
-				(trigger) => trigger.timing === timing && trigger.type === type
-			) > -1
-		)
-	}
-	async execute(
-		queryActionName: string,
-		sm: State,
-		queryType: TokenApiQueryType,
-		queryTiming: ActionTriggerTiming,
-		table: string | undefined,
-		data: DataObjData,
-		parms: DataRecord
-	): Promise<DataObjData> {
-		if (!this.activate(queryTiming, queryType)) return data
-		return this.funct(queryActionName, sm, queryType, queryTiming, table, data, parms)
-	}
-}
-
-export class DataObjActionQueryTrigger {
-	type: TokenApiQueryType
-	timing: ActionTriggerTiming
-	constructor(obj: any) {
-		const clazz = 'DataObjActionQueryTrigger'
-		this.type = memberOfEnum(
-			obj._codeQueryType,
-			clazz,
-			'type',
-			'TokenApiQueryType',
-			TokenApiQueryType
-		)
-		this.timing = memberOfEnum(
-			obj._codeTriggerTiming,
-			clazz,
-			'timing',
-			'DataObjActionQueryTriggerTiming',
-			ActionTriggerTiming
-		)
-	}
 }

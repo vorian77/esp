@@ -721,22 +721,31 @@ function initCohortAttd(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
-		codeComponent: 'FormDetail',
+		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		name: 'data_obj_cm_cohort_attd_detail',
+		codeComponent: 'FormDetail',
 		header: 'Attendance Day',
+		name: 'data_obj_cm_cohort_attd_detail',
+		owner: 'sys_ai_old',
 		parentColumn: 'cohortAttds',
 		parentTable: 'CmCohort',
-		tables: [{ index: 0, table: 'CmCohortAttd' }],
-		actionGroup: 'doag_detail',
-		actionsQuery: [
+		queryRiders: [
 			{
-				name: 'qa_file_storage',
-				parms: [{ key: 'imageField', value: 'file' }],
-				triggers: [{ codeQueryType: 'save', codeTriggerTiming: 'pre' }]
+				codeFunction: 'qrfFileStorage',
+				codeQueryType: 'save',
+				codeTriggerTiming: 'pre',
+				codeType: 'customFunction',
+				functionParmValue: 'file'
+			},
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'userMessage',
+				codeUserMsgDelivery: 'toast',
+				userMsg: 'File uploaded successfully!'
 			}
 		],
+		tables: [{ index: 0, table: 'CmCohortAttd' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -1086,20 +1095,29 @@ function initCohortDoc(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
-		codeComponent: 'FormDetail',
-		codeCardinality: 'detail',
-		name: 'data_obj_cm_cohort_doc_detail',
-		header: 'Document',
-		tables: [{ index: 0, table: 'CmCohortDoc' }],
 		actionGroup: 'doag_detail',
-		actionsQuery: [
+		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
+		header: 'Document',
+		name: 'data_obj_cm_cohort_doc_detail',
+		owner: 'sys_ai_old',
+		queryRiders: [
 			{
-				name: 'qa_file_storage',
-				parms: [{ key: 'imageField', value: 'file' }],
-				triggers: [{ codeQueryType: 'save', codeTriggerTiming: 'pre' }]
+				codeFunction: 'qrfFileStorage',
+				codeQueryType: 'save',
+				codeTriggerTiming: 'pre',
+				codeType: 'customFunction',
+				functionParmValue: 'file'
+			},
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'userMessage',
+				codeUserMsgDelivery: 'toast',
+				userMsg: 'File uploaded successfully!'
 			}
 		],
+		tables: [{ index: 0, table: 'CmCohortDoc' }],
 		fields: [
 			{
 				columnName: 'id',

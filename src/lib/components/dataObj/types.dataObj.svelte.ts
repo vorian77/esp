@@ -1,13 +1,18 @@
 import { State } from '$comps/app/types.appState.svelte'
 import {
+	arrayOfClass,
 	booleanRequired,
 	CodeAction,
+	CodeActionClass,
+	CodeActionType,
 	getArray,
 	memberOfEnum,
+	memberOfEnumIfExists,
 	memberOfEnumOrDefault,
 	required,
 	ResponseBody,
 	strRequired,
+	ToastType,
 	UserPrefType,
 	valueOrDefault
 } from '$utils/types'
@@ -17,6 +22,7 @@ import {
 	RawDataObjAction,
 	RawDataObjPropDisplay,
 	RawDataObjPropDisplayItemChange,
+	RawDataObjQueryRider,
 	RawDataObjTable
 } from '$comps/dataObj/types.rawDataObj.svelte'
 import { UserAction } from '$comps/other/types.userAction.svelte'
@@ -55,10 +61,15 @@ import { FieldTagDetails, FieldTagRow, FieldTagSection } from '$comps/form/field
 import { FieldSelect } from '$comps/form/fieldSelect'
 import { FieldTextarea } from '$comps/form/fieldTextarea'
 import { FieldToggle } from '$comps/form/fieldToggle'
-import { DataObjActionQuery, DataObjActionQueryFunction } from '$comps/app/types.appQuery'
-import { TokenApiQueryType, TokenApiUserPref } from '$utils/types.token'
+import {
+	TokenApiQueryDataTree,
+	TokenApiQueryType,
+	TokenApiUserPref,
+	TokenAppStateTriggerAction
+} from '$utils/types.token'
 import { PropSortDir } from '$comps/dataObj/types.rawDataObj.svelte'
-import { getEnhancement } from '$enhance/crud/_crud'
+import { qrfFileStorage } from '$enhance/queryRiderFunctions/qrfFileStorage'
+import { qrfUserUpdate } from '$enhance/queryRiderFunctions/qrfUserUpdate'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.dataObj.svelte.ts'
@@ -67,13 +78,13 @@ export type DataItems = Record<string, { data: string; display: string }[]>
 
 export class DataObj {
 	actionsFieldListRowActionIdx: number = -1
-	actionsQueryFunctions: DataObjActionQueryFunction[] = []
 	data: DataObjData = $state(new DataObjData())
 	dataItems: DataItems = {}
 	embedField?: FieldEmbed
 	fCallbackUserAction?: Function
 	fields: Field[] = []
 	isMobileMode: boolean = false
+	queryRiders: DataObjQueryRiders
 	raw: RawDataObj
 	rootTable?: DBTable
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
@@ -86,11 +97,12 @@ export class DataObj {
 		this.raw = required(data.rawDataObj, clazz, 'rawDataObj')
 
 		/* dependent properties */
-		this.userGridSettings = new GridSettings(this.raw.id)
+		this.queryRiders = new DataObjQueryRiders(this.raw.queryRiders)
 		this.rootTable =
 			this.raw.tables && this.raw.tables.length > 0
 				? new DBTable(this.raw.tables[0].table)
 				: undefined
+		this.userGridSettings = new GridSettings(this.raw.id)
 	}
 
 	actionsFieldTrigger(sm: State, codeAction: CodeAction) {
@@ -125,7 +137,6 @@ export class DataObj {
 		await dataObj.fieldsInit(sm, dataObj)
 
 		const rawDataObj = required(data.rawDataObj, clazz, 'rawDataObj')
-		dataObj.actionsQueryFunctions = await getActionQueryFunctions(rawDataObj.actionsQuery)
 		initActionsField()
 
 		initItemChangedTriggers(dataObj.fields)
@@ -133,14 +144,6 @@ export class DataObj {
 
 		return dataObj
 
-		async function getActionQueryFunctions(actions: DataObjActionQuery[]) {
-			let funcs: DataObjActionQueryFunction[] = []
-			for (let i = 0; i < actions.length; i++) {
-				const action = actions[i]
-				funcs.push(new DataObjActionQueryFunction(action, await getEnhancement(action.name)))
-			}
-			return funcs
-		}
 		function initActionsField() {
 			dataObj.userActions = rawDataObj.rawActions.map((rawAction: RawDataObjAction) => {
 				return new DataObjAction(rawAction)
@@ -448,6 +451,232 @@ export enum DataObjListEditPresetType {
 
 export enum DataObjProcessType {
 	reportRender = 'reportRender'
+}
+
+export class DataObjQueryRiders {
+	riders: DataObjQueryRider[]
+	constructor(rawQueryRiders: RawDataObjQueryRider[]) {
+		this.riders = arrayOfClass(DataObjQueryRider, rawQueryRiders)
+		console.log('DataObjQueryRiders.constructor', this.riders)
+	}
+	async execute(
+		queryTiming: DataObjQueryRiderTriggerTiming,
+		queryType: TokenApiQueryType,
+		sm: State,
+		dataQuery: DataObjData,
+		dataTree: TokenApiQueryDataTree
+	) {
+		for (let i = 0; i < this.riders.length; i++) {
+			const rider = this.riders[i]
+			if (rider.codeQueryType === queryType && rider.codeTriggerTiming === queryTiming) {
+				switch (rider.codeType) {
+					case DataObjQueryRiderType.appDestination:
+						await rider.executeDestination(sm)
+						break
+
+					case DataObjQueryRiderType.customFunction:
+						dataQuery = await rider.executeFunction(sm, dataQuery)
+						break
+
+					case DataObjQueryRiderType.databaseExpression:
+						await rider.executeExpr(sm, dataQuery, dataTree)
+						break
+
+					case DataObjQueryRiderType.userMessage:
+						rider.executeMsg(sm)
+						break
+
+					default:
+						error(500, {
+							file: FILENAME,
+							function: 'DataObjQueryRiders.execute',
+							message: `No case defined for rider.codeType: ${rider.codeType}`
+						})
+				}
+			}
+		}
+		return dataQuery
+	}
+}
+
+export class DataObjQueryRider {
+	codeFunction?: DataObjQueryRiderFunction
+	codeQueryType: TokenApiQueryType
+	codeTriggerTiming: DataObjQueryRiderTriggerTiming
+	codeType: DataObjQueryRiderType
+	codeUserDestination?: DataObjQueryRiderDestination
+	codeUserMsgDelivery?: DataObjQueryRiderMsgDelivery
+	expr?: string
+	funct?: Function
+	functionParmValue?: string
+	userMsg?: string
+	constructor(obj: RawDataObjQueryRider) {
+		const clazz = 'DataObjQueryRider'
+		obj = valueOrDefault(obj, {})
+		this.codeFunction = memberOfEnumIfExists(
+			obj._codeFunction,
+			'codeFunction',
+			clazz,
+			'DataObjQueryRiderFunction',
+			DataObjQueryRiderFunction
+		)
+		this.codeQueryType = memberOfEnum(
+			obj._codeQueryType,
+			clazz,
+			'codeQueryType',
+			'TokenApiQueryType',
+			TokenApiQueryType
+		)
+		this.codeTriggerTiming = memberOfEnum(
+			obj._codeTriggerTiming,
+			clazz,
+			'codeTriggerTiming',
+			'DataObjQueryRiderTriggerTiming',
+			DataObjQueryRiderTriggerTiming
+		)
+		this.codeType = memberOfEnum(
+			obj._codeType,
+			clazz,
+			'codeType',
+			'DataObjQueryRiderType',
+			DataObjQueryRiderType
+		)
+		this.codeUserDestination = memberOfEnumIfExists(
+			obj._codeUserDestination,
+			'codeUserDestination',
+			clazz,
+			'DataObjQueryRiderDestination',
+			DataObjQueryRiderDestination
+		)
+		this.codeUserMsgDelivery = memberOfEnumIfExists(
+			obj._codeUserMsgDelivery,
+			'codeUserMsgDelivery',
+			clazz,
+			'DataObjQueryRiderMsgDelivery',
+			DataObjQueryRiderMsgDelivery
+		)
+		this.expr = obj.expr
+		this.funct = this.getFunction(this.codeFunction)
+		this.functionParmValue = obj.functionParmValue
+		this.userMsg = obj.userMsg
+	}
+
+	async executeDestination(sm: State) {
+		if (this.codeUserDestination) {
+			switch (this.codeUserDestination) {
+				case DataObjQueryRiderDestination.back:
+					await sm.triggerAction(
+						new TokenAppStateTriggerAction({
+							codeAction: CodeAction.init(
+								CodeActionClass.ct_sys_code_action_class_nav,
+								CodeActionType.navBack
+							)
+						})
+					)
+					break
+				case DataObjQueryRiderDestination.home:
+					await sm.triggerAction(
+						new TokenAppStateTriggerAction({
+							codeAction: CodeAction.init(
+								CodeActionClass.ct_sys_code_action_class_nav,
+								CodeActionType.navHome
+							)
+						})
+					)
+					break
+				default:
+					error(500, {
+						file: FILENAME,
+						function: 'DataObjQueryRider.executeDestination',
+						message: `No case defined for rider.codeUserDestination: ${this.codeUserDestination}`
+					})
+			}
+		}
+	}
+
+	async executeExpr(sm: State, dataTab: DataObjData, dataTree: TokenApiQueryDataTree) {
+		if (this.expr) {
+			await sm.triggerAction(
+				new TokenAppStateTriggerAction({
+					codeAction: CodeAction.init(
+						CodeActionClass.ct_sys_code_action_class_utils,
+						CodeActionType.dbexpression
+					),
+					data: {
+						value: {
+							expr: this.expr,
+							dataTab,
+							dataTree
+						}
+					}
+				})
+			)
+		}
+	}
+
+	async executeFunction(sm: State, dataQuery: DataObjData) {
+		return this.funct ? await this.funct(sm, this, dataQuery) : dataQuery
+	}
+
+	executeMsg(sm: State) {
+		if (this.userMsg && this.codeUserMsgDelivery) {
+			switch (this.codeUserMsgDelivery) {
+				case DataObjQueryRiderMsgDelivery.alert:
+					alert(this.userMsg)
+					break
+				case DataObjQueryRiderMsgDelivery.toast:
+					sm.openToast(ToastType.success, this.userMsg)
+					break
+				default:
+					error(500, {
+						file: FILENAME,
+						function: 'DataObjQueryRider.executeMsg',
+						message: `No case defined for rider.codeUserMsgDelivery: ${this.codeUserMsgDelivery}`
+					})
+			}
+		}
+	}
+
+	getFunction(codeFunction: DataObjQueryRiderFunction | undefined) {
+		if (!codeFunction) return undefined
+		switch (codeFunction) {
+			case DataObjQueryRiderFunction.qrfFileStorage:
+				return qrfFileStorage
+
+			case DataObjQueryRiderFunction.qrfUserUpdate:
+				return qrfUserUpdate
+
+			default:
+				error(500, {
+					file: FILENAME,
+					function: 'DataObjQueryRider.getFunction',
+					message: `No case defined for codeFunction: ${codeFunction}`
+				})
+		}
+	}
+}
+
+export enum DataObjQueryRiderDestination {
+	back = 'back',
+	home = 'home'
+}
+export enum DataObjQueryRiderFunction {
+	qrfFileStorage = 'qrfFileStorage',
+	qrfUserUpdate = 'qrfUserUpdate'
+}
+export enum DataObjQueryRiderMsgDelivery {
+	alert = 'alert',
+	toast = 'toast'
+}
+export enum DataObjQueryRiderTriggerTiming {
+	post = 'post',
+	pre = 'pre'
+}
+export enum DataObjQueryRiderType {
+	appDestination = 'appDestination',
+	customFunction = 'customFunction',
+	databaseExpression = 'databaseExpression',
+	userMessage = 'userMessage'
 }
 
 export enum DataObjSaveMode {

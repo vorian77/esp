@@ -118,15 +118,7 @@ module sys_core {
   # SysDataObj
   type SysDataObj extending sys_core::SysObj {
     actionGroup: sys_core::SysDataObjActionGroup;
-    multi actionsQuery: sys_core::SysDataObjActionQuery {
-      on source delete delete target;
-      on target delete allow;
-    };
-    actionRider: sys_user::SysUserActionRider{
-      on source delete delete target;
-      on target delete allow;
-    };
-
+  
     required codeCardinality: sys_core::SysCode;
     required codeComponent: sys_core::SysCode;
     codeDataObjType: sys_core::SysCode;
@@ -160,7 +152,7 @@ module sys_core {
     
     processType: sys_core::SysCode;
 
-    queryRider: sys_core::SysDataObjQueryRider{
+    multi queryRiders: sys_core::SysDataObjQueryRider{
       on source delete delete target;
       on target delete allow;
     };
@@ -189,35 +181,9 @@ module sys_core {
     constraint exclusive on (.name);
   }
 
-  # dataObj-action-query
-  type SysDataObjActionQuery extending sys_user::Mgmt {
-    required name: str;
-    multi parms: SysDataObjActionQueryParm{
-      on source delete delete target;
-      on target delete allow;
-    };
-    multi triggers: SysDataObjActionQueryTrigger{
-      on source delete delete target;
-      on target delete allow;
-    };
-  }
-  type SysDataObjActionQueryParm extending sys_user::Mgmt {
-    required key: str;
-    required value: str;
-  }
-  type SysDataObjActionQueryTrigger extending sys_user::Mgmt {
-    required codeQueryType: sys_core::SysCode;
-    required codeTriggerTiming: sys_core::SysCode;
-  }
-
   # SysDataObjColumn
   type SysDataObjColumn extending sys_user::Mgmt {
     action: sys_user::SysUserAction;
-    actionRider: sys_user::SysUserActionRider{
-      on source delete delete target;
-      on target delete allow;
-    };   
-
     attrAccess: bool;
 
     codeAccess: sys_core::SysCode;
@@ -378,16 +344,15 @@ module sys_core {
   }
  
   type SysDataObjQueryRider extending sys_user::Mgmt {
+    codeFunction: sys_core::SysCode;
     required codeQueryType: sys_core::SysCode;
     required codeTriggerTiming: sys_core::SysCode;
+    codeType: sys_core::SysCode;
     codeUserDestination: sys_core::SysCode;
     codeUserMsgDelivery: sys_core::SysCode;
-    required hasCustomLogic: bool;
-    logicParmKey: str;
-    logicParmValue: str;
-    required name: str;
+    functionParmValue: str;
+    expr: str;
     userMsg: str;
-   constraint exclusive on (.name);
   }
 
   type SysDataObjTable extending sys_user::Mgmt {

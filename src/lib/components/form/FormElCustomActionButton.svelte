@@ -21,7 +21,6 @@
 		sm.app.setTreeLevelIdxCurrent(dataObj.treeLevelIdx)
 		await sm.triggerAction(
 			new TokenAppStateTriggerAction({
-				actionRider: field.actionRider,
 				codeAction: field.action.codeAction,
 				data: {
 					dataRecord: $state.snapshot(dataRecord),

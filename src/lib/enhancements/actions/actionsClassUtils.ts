@@ -18,8 +18,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 	const actionType = parms.codeAction.actionType
 	switch (actionType) {
 		case CodeActionType.dbexpression:
-			const expr = strRequired(parms.data.value, userActionError(FILENAME, actionType), 'expr')
-			await processDbExpr(sm, expr)
+			await processDbExpr(sm, parms.data.value)
 			break
 
 		case CodeActionType.none:
@@ -34,12 +33,23 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 	}
 }
 
-const processDbExpr = async (sm: State, expr: string) => {
-	const dataTab = new DataObjData()
+const processDbExpr = async (sm: State, parms: DataRecord) => {
+	const expr = strRequired(
+		parms.expr,
+		userActionError(FILENAME, CodeActionType.dbexpression),
+		'expr'
+	)
+	const dataTab = parms.dataTab ? parms.dataTab : new DataObjData()
 	dataTab.parms.valueSet(ParmsValuesType.dbExpr, expr)
+
+	let exprParms: DataRecord = { dataTab, user: sm.user }
+	if (parms.dataTree) exprParms.tree = parms.dataTree
+
+	const queryData = new TokenApiQueryData(exprParms)
+
 	const result: ResponseBody = await apiFetch(
 		ApiFunction.dbEdgeProcessExpression,
-		new TokenApiQueryData({ dataTab, user: sm.user })
+		new TokenApiQueryData(exprParms)
 	)
 	if (result.success) {
 		return result.data

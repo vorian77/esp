@@ -32,7 +32,6 @@ import {
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
-import { UserActionRider, UserActionRiderMsgDelivery } from '$comps/other/types.userAction.svelte'
 import { FieldEmbedType } from '$comps/form/field.svelte'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
@@ -113,37 +112,7 @@ export class State {
 		this.parmsTrans = parmsAction.transParms
 		this.change({ ...parmsAction.stateParms.data })
 		if (parmsAction.fCallback) await parmsAction.fCallback()
-		if (parmsAction.actionRider) parmsAction.actionRider.exeMsg(this.storeToast)
-		// this.changeActionMsg(parmsAction.actionRider)
 	}
-
-	// changeActionMsg(actionRider: UserActionRider | undefined) {
-	// 	if (!actionRider) return
-	// 	if (actionRider.codeMsgDelivery && actionRider.msg) {
-	// 		switch (actionRider.codeMsgDelivery) {
-	// 			case UserActionRiderMsgDelivery.alert:
-	// 				alert(actionRider.msg)
-	// 				break
-	// 			case UserActionRiderMsgDelivery.toast:
-	// 				this.openToast(ToastType.success, actionRider.msg)
-	// 				break
-	// 		}
-	// 	}
-	// }
-
-	// changeActionMsg(actionRider: UserActionRider | undefined) {
-	// 	if (!actionRider) return
-	// 	if (actionRider.codeMsgDelivery && actionRider.msg) {
-	// 		switch (actionRider.codeMsgDelivery) {
-	// 			case UserActionRiderMsgDelivery.alert:
-	// 				alert(actionRider.msg)
-	// 				break
-	// 			case UserActionRiderMsgDelivery.toast:
-	// 				this.openToast(ToastType.success, actionRider.msg)
-	// 				break
-	// 		}
-	// 	}
-	// }
 
 	closeModal() {
 		this.storeModal.close()

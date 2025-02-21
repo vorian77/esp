@@ -14,7 +14,6 @@ export async function addDataObj(data: any) {
 	const query = e.params(
 		{
 			actionGroup: e.optional(e.str),
-			actionRider: e.optional(e.json),
 			actionsQuery: e.optional(e.array(e.json)),
 			codeCardinality: e.str,
 			codeComponent: e.str,
@@ -41,72 +40,13 @@ export async function addDataObj(data: any) {
 			parentFilterExpr: e.optional(e.str),
 			parentTable: e.optional(e.str),
 			processType: e.optional(e.str),
+			queryRiders: e.optional(e.array(e.json)),
 			subHeader: e.optional(e.str),
 			tables: e.optional(e.array(e.json))
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObj, {
 				actionGroup: e.select(e.sys_core.getDataObjActionGroup(p.actionGroup)),
-				actionsQuery: e.for(e.array_unpack(p.actionsQuery), (a) => {
-					return e.insert(e.sys_core.SysDataObjActionQuery, {
-						name: e.cast(e.str, e.json_get(a, 'name')),
-						createdBy: CREATOR,
-						modifiedBy: CREATOR,
-						parms: e.for(e.array_unpack(e.cast(e.array(e.json), e.json_get(a, 'parms'))), (p) => {
-							return e.insert(e.sys_core.SysDataObjActionQueryParm, {
-								createdBy: CREATOR,
-								key: e.cast(e.str, e.json_get(p, 'key')),
-								modifiedBy: CREATOR,
-								value: e.cast(e.str, e.json_get(p, 'value'))
-							})
-						}),
-						triggers: e.for(
-							e.array_unpack(e.cast(e.array(e.json), e.json_get(a, 'triggers'))),
-							(t) => {
-								return e.insert(e.sys_core.SysDataObjActionQueryTrigger, {
-									codeQueryType: e.select(
-										e.sys_core.getCode(
-											'ct_sys_do_query_type',
-											e.cast(e.str, e.json_get(t, 'codeQueryType'))
-										)
-									),
-									codeTriggerTiming: e.select(
-										e.sys_core.getCode(
-											'ct_sys_do_query_rider_trigger_timing',
-											e.cast(e.str, e.json_get(t, 'codeTriggerTiming'))
-										)
-									),
-									createdBy: CREATOR,
-									modifiedBy: CREATOR
-								})
-							}
-						)
-					})
-				}),
-				actionRider: e.op(
-					e.insert(e.sys_user.SysUserActionRider, {
-						action: e.sys_user.getUserAction(e.cast(e.str, e.json_get(p.actionRider, 'action'))),
-						codeDestination: e.sys_core.getCode(
-							'ct_sys_do_query_rider_user_destination',
-							e.cast(e.str, e.json_get(p.actionRider, 'codeDestination'))
-						),
-						codeMsgDelivery: e.sys_core.getCode(
-							'ct_sys_do_query_rider_msg_delivery',
-							e.cast(e.str, e.json_get(p.actionRider, 'codeMsgDelivery'))
-						),
-						codeTrigger: e.sys_core.getCode(
-							'ct_sys_do_query_rider_trigger_timing',
-							e.cast(e.str, e.json_get(p.actionRider, 'codeTrigger'))
-						),
-						createdBy: CREATOR,
-						modifiedBy: CREATOR,
-						msg: e.cast(e.str, e.json_get(p.actionRider, 'msg'))
-					}),
-					'if',
-					e.op('exists', e.cast(e.json, p.actionRider)),
-					'else',
-					e.cast(e.sys_user.SysUserActionRider, e.set())
-				),
 				codeCardinality: e.select(e.sys_core.getCode('ct_sys_do_cardinality', p.codeCardinality)),
 				codeComponent: e.select(e.sys_core.getCode('ct_sys_do_component', p.codeComponent)),
 				codeDataObjType: e.op(
@@ -122,33 +62,6 @@ export async function addDataObj(data: any) {
 				columns: e.for(e.array_unpack(p.fields), (f) => {
 					return e.insert(e.sys_core.SysDataObjColumn, {
 						column: e.sys_db.getColumn(e.cast(e.str, e.json_get(f, 'columnName'))),
-
-						actionRider: e.op(
-							e.insert(e.sys_user.SysUserActionRider, {
-								action: e.sys_user.getUserAction(
-									e.cast(e.str, e.json_get(e.json_get(f, 'actionRider'), 'action'))
-								),
-								codeDestination: e.sys_core.getCode(
-									'ct_sys_do_query_rider_user_destination',
-									e.cast(e.str, e.json_get(e.json_get(f, 'actionRider'), 'codeDestination'))
-								),
-								codeMsgDelivery: e.sys_core.getCode(
-									'ct_sys_do_query_rider_msg_delivery',
-									e.cast(e.str, e.json_get(e.json_get(f, 'actionRider'), 'codeMsgDelivery'))
-								),
-								codeTrigger: e.sys_core.getCode(
-									'ct_sys_do_query_rider_trigger_timing',
-									e.cast(e.str, e.json_get(e.json_get(f, 'actionRider'), 'codeTrigger'))
-								),
-								createdBy: CREATOR,
-								modifiedBy: CREATOR,
-								msg: e.cast(e.str, e.json_get(e.json_get(f, 'actionRider'), 'msg'))
-							}),
-							'if',
-							e.op('exists', e.cast(e.json, e.json_get(f, 'actionRider'))),
-							'else',
-							e.cast(e.sys_user.SysUserActionRider, e.set())
-						),
 
 						/* DB */
 						attrAccess: booleanOrDefaultJSON(f, 'attrAccess', false),
@@ -361,6 +274,41 @@ export async function addDataObj(data: any) {
 				parentFilterExpr: p.parentFilterExpr,
 				parentTable: e.select(e.sys_db.getTable(p.parentTable)),
 				processType: e.select(e.sys_core.getCode('ct_sys_do_dynamic_process_type', p.processType)),
+
+				queryRiders: e.for(e.array_unpack(p.queryRiders), (qr) => {
+					return e.insert(e.sys_core.SysDataObjQueryRider, {
+						codeFunction: e.sys_core.getCode(
+							'ct_sys_do_query_rider_function',
+							e.cast(e.str, e.json_get(qr, 'codeFunction'))
+						),
+						codeQueryType: e.sys_core.getCode(
+							'ct_sys_do_query_type',
+							e.cast(e.str, e.json_get(qr, 'codeQueryType'))
+						),
+						codeTriggerTiming: e.sys_core.getCode(
+							'ct_sys_do_query_rider_trigger_timing',
+							e.cast(e.str, e.json_get(qr, 'codeTriggerTiming'))
+						),
+						codeType: e.sys_core.getCode(
+							'ct_sys_do_query_rider_type',
+							e.cast(e.str, e.json_get(qr, 'codeType'))
+						),
+						codeUserDestination: e.sys_core.getCode(
+							'ct_sys_do_query_rider_user_destination',
+							e.cast(e.str, e.json_get(qr, 'codeUserDestination'))
+						),
+						codeUserMsgDelivery: e.sys_core.getCode(
+							'ct_sys_do_query_rider_msg_delivery',
+							e.cast(e.str, e.json_get(qr, 'codeUserMsgDelivery'))
+						),
+						createdBy: CREATOR,
+						expr: e.cast(e.str, e.json_get(qr, 'expr')),
+						functionParmValue: e.cast(e.str, e.json_get(qr, 'functionParmValue')),
+						modifiedBy: CREATOR,
+						userMsg: e.cast(e.str, e.json_get(qr, 'userMsg'))
+					})
+				}),
+
 				subHeader: p.subHeader,
 				tables: e.for(e.array_unpack(p.tables), (t) => {
 					return e.insert(e.sys_core.SysDataObjTable, {
