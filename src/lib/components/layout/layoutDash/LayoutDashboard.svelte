@@ -29,6 +29,7 @@
 		UserResourceTaskRenderType
 	} from '$utils/types'
 	import { getContext, setContext } from 'svelte'
+	import TsoData from '$comps/layout/layoutDash/tso_data.svelte'
 	import TsoMoedSsrAdvocate from '$comps/layout/layoutDash/tso_moed_ssr_advocate.svelte'
 	import TsoMoedSsrApp from '$comps/layout/layoutDash/tso_moed_ssr_app.svelte'
 	import TsoMoedSsrDoc from '$comps/layout/layoutDash/tso_moed_ssr_doc.svelte'
@@ -52,6 +53,7 @@
 		)
 	)
 	const StatusType = {
+		tso_data: TsoData,
 		tso_moed_ssr_advocate: TsoMoedSsrAdvocate,
 		tso_moed_ssr_app: TsoMoedSsrApp,
 		tso_moed_ssr_doc: TsoMoedSsrDoc,

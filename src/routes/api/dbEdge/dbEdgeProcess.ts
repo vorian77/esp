@@ -11,13 +11,14 @@ import {
 	DBTable,
 	debug,
 	DataObjData,
+	DataObjQueryRiderTriggerTiming,
+	DataObjQueryRiders,
 	type DataRecord,
 	DataRecordStatus,
 	DataRow,
 	DataRows,
 	formatDateTime,
 	getArray,
-	memberOfEnum,
 	ParmsValuesType,
 	required,
 	strRequired,
@@ -26,20 +27,14 @@ import {
 import {
 	PropDataSourceValue,
 	PropDataType,
-	PropLinkItems,
 	PropLinkItemsSource,
-	PropLinkItemsSourceProp,
 	PropNamePrefixType,
 	RawDataObj,
-	RawDataObjPropDB,
-	RawDataObjPropDisplay,
-	RawDataObjPropDisplayEmbedListConfig,
-	RawDataObjPropDisplayEmbedListEdit,
-	RawDataObjPropDisplayEmbedListSelect
+	RawDataObjPropDB
 } from '$comps/dataObj/types.rawDataObj.svelte'
 import { Query } from '$routes/api/dbEdge/dbEdgeQuery'
 import { getDataObjById, getDataObjByName } from '$routes/api/dbEdge/dbEdgeUtilities'
-import { Field, FieldEmbedType, PropsFieldCreate } from '$comps/form/field.svelte'
+import { FieldEmbedType } from '$comps/form/field.svelte'
 import {
 	FieldEmbed,
 	FieldEmbedListConfig,
@@ -144,7 +139,21 @@ async function processDataObjQuery(
 				new ProcessRowSelect(query.rawDataObj.rawPropsSelect, DataRecordStatus.retrieved)
 			)
 			scriptGroup.addScriptPresetListEdit(query, queryData)
+
+			const queryRiders = new DataObjQueryRiders(query.rawDataObj.queryRiders)
+			scriptGroup.addScriptQueryRetrieveQueryRiders(
+				query,
+				queryData,
+				queryRiders,
+				DataObjQueryRiderTriggerTiming.pre
+			)
 			scriptGroup.addScriptRetrieve(query, queryData)
+			scriptGroup.addScriptQueryRetrieveQueryRiders(
+				query,
+				queryData,
+				queryRiders,
+				DataObjQueryRiderTriggerTiming.post
+			)
 			break
 
 		case TokenApiQueryType.save:

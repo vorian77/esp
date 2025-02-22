@@ -23,10 +23,12 @@ export enum ApiFunction {
 	sysUserPrefSet = 'sysUserPrefSet'
 }
 
-export async function apiFetch(apiFunction: ApiFunction, token: Token) {
+export async function apiFetch(apiFunction: ApiFunction, token: Token | undefined = undefined) {
+	let parms: DataRecord = { apiFunction }
+	if (token) parms = { ...parms, token }
 	const responsePromise: Response = await fetch('/api', {
 		method: 'POST',
-		body: JSON.stringify({ apiFunction, token })
+		body: JSON.stringify(parms)
 	})
 	return await responsePromise.json()
 }

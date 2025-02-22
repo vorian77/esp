@@ -83,15 +83,6 @@ module sys_core {
 
 
   # other sys_core objects
-  type SysApp extending sys_core::SysObj {
-    required appHeader: sys_core::SysAppHeader;
-    multi nodes: sys_core::SysNodeObj {
-       on target delete allow;
-    };
-  }
-
-  type SysAppHeader extending sys_core::SysObj {}
-
   type SysCodeType extending sys_core::SysObj {
     parent: sys_core::SysCodeType;
     order: default::nonNegative;
@@ -347,7 +338,7 @@ module sys_core {
     codeFunction: sys_core::SysCode;
     required codeQueryType: sys_core::SysCode;
     required codeTriggerTiming: sys_core::SysCode;
-    codeType: sys_core::SysCode;
+    required codeType: sys_core::SysCode;
     codeUserDestination: sys_core::SysCode;
     codeUserMsgDelivery: sys_core::SysCode;
     functionParmValue: str;
@@ -393,9 +384,6 @@ module sys_core {
     multi data: sys_core::SysNodeObjData {
        on target delete delete source;
     };
-    dataObj: sys_core::SysDataObj {
-      on target delete allow
-    };
     required isAlwaysRetrieveData: bool;
     required isHideRowManager: bool;
     parent: sys_core::SysNodeObj{
@@ -421,8 +409,7 @@ module sys_core {
   }
 
   # FUNCTIONS
-  function getApp(name: str) -> optional sys_core::SysApp
-     using (select assert_single((select sys_core::SysApp filter .name = name)));
+
 
   function getCodeType(codeTypeName: str) -> optional sys_core::SysCodeType
     using (select sys_core::SysCodeType filter .name = codeTypeName);

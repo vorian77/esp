@@ -473,6 +473,9 @@ export class TokenAppStateTriggerAction extends TokenApp {
 		this.stateParms = obj.stateParms || new StateParms({})
 		this.transParms = new ParmsValues(obj.transParms)
 	}
+	setMenuClose() {
+		this.updateStateParms({}, [StateTriggerToken.menuClose])
+	}
 	setTransParms(data: DataRecord) {
 		this.transParms = new ParmsValues(data)
 	}

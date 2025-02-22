@@ -244,31 +244,6 @@ export function initPreDataObjActionGroup(init: InitDb) {
 		name: 'doag_detail_mobile_save_delete',
 		owner: 'sys_system_old'
 	})
-	init.addTrans('sysDataObjActionGroup', {
-		actions: [
-			{ action: 'ua_sys_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
-			{
-				action: 'ua_sys_save_cancel',
-				codeColor: 'primary',
-				isListRowAction: false,
-				orderDefine: 1
-			},
-			{
-				action: 'ua_sys_new_detail_list',
-				codeColor: 'primary',
-				isListRowAction: false,
-				orderDefine: 2
-			},
-			{
-				action: 'ua_sys_edit_list_msg',
-				codeColor: 'primary',
-				isListRowAction: true,
-				orderDefine: 3
-			}
-		],
-		name: 'doag_list_mobile',
-		owner: 'sys_system_old'
-	})
 
 	/* report */
 	init.addTrans('sysDataObjActionGroup', {

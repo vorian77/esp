@@ -186,7 +186,14 @@ export class NavMenuData {
 						message: `No case defined for item type: ${content.codeType}`
 					})
 			}
-			if (this.isOpen) this.openToggle()
+			// if (this.isOpen) this.openToggle()
+			// close menu
+			// await this.triggerAction(
+			// 	CodeActionClass.ct_sys_code_action_class_nav,
+			// 	CodeActionType.navMenuClose,
+			// 	{},
+			// 	{}
+			// )
 		}
 	}
 
@@ -506,7 +513,7 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 		this.items.addItem(obj)
 	}
 	async adminResetDb(navMenu: NavMenuData) {
-		await adminDbReset(navMenu.sm)
+		await adminDbReset()
 		await navMenu.sm.resetUser(true)
 	}
 }

@@ -41,15 +41,22 @@
 		if (sm.consumeTriggerToken(StateTriggerToken.navDashboard)) {
 			if (sm.navLayout === StateNavLayout.layoutDashboard) {
 				if (isMobile) {
-					if (!isMobileMenuHide) toggleMobileMenuHide()
+					if (!isMobileMenuHide) menuToggleMobileHide()
 				} else {
 					if (!navMenu.isOpen) navMenu.openToggle()
 				}
 			}
 		}
+		if (sm.consumeTriggerToken(StateTriggerToken.menuClose)) {
+			if (isMobile) {
+				if (!isMobileMenuHide) menuToggleMobileHide()
+			} else {
+				if (navMenu.isOpen) navMenu.openToggle()
+			}
+		}
 	})
 
-	function toggleMobileMenuHide() {
+	function menuToggleMobileHide() {
 		isMobileMenuHide = !isMobileMenuHide
 	}
 </script>
@@ -58,7 +65,7 @@
 
 <div id="layout" class="h-screen flex flex-col bg-white b">
 	<header id="layout-nav-bar-mobile" class="sm:hidden">
-		<NavAppMobile {toggleMobileMenuHide} />
+		<NavAppMobile toggleMobileMenuHide={menuToggleMobileHide} />
 	</header>
 
 	<div id="layout-main" class="h-12 grow flex flex-row">

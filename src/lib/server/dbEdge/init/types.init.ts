@@ -48,7 +48,6 @@ import {
 	ResponseBody,
 	strRequired
 } from '$utils/types'
-
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/server/dbEdge/init/types.init.ts'
@@ -297,7 +296,7 @@ export class InitDb {
 			new InitDbItemObject({
 				name: 'sysAppHeader',
 				dataMap: 'name',
-				dbObject: 'sys_core::SysAppHeader',
+				dbObject: 'sys_user::SysAppHeader',
 				fCreate: addAppHeader
 			})
 		)
@@ -305,7 +304,7 @@ export class InitDb {
 			new InitDbItemObject({
 				name: 'sysApp',
 				dataMap: 'name',
-				dbObject: 'sys_core::SysApp',
+				dbObject: 'sys_user::SysApp',
 				fCreate: addApp
 			})
 		)

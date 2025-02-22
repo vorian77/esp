@@ -3,10 +3,8 @@ import { apiFetch, ApiFunction } from '$routes/api/api'
 import { TokenApiUserId } from '$utils/types.token'
 import { valueOrDefault, memberOfEnum } from '$utils/utils.model'
 
-export async function adminDbReset(sm: State) {
-	// <todo> - 240125
-	const userId = sm.user!.id
-	return await apiFetch(ApiFunction.dbEdgeInit, new TokenApiUserId(userId))
+export async function adminDbReset() {
+	return await apiFetch(ApiFunction.dbEdgeInit)
 }
 
 export function capitalizeFirstLetter(text: string) {
@@ -58,7 +56,6 @@ export enum CodeActionType {
 	doEmbedListSelect = 'doEmbedListSelect',
 
 	doListDetailEdit = 'doListDetailEdit',
-	doListDetailEditMsg = 'doListDetailEditmsg',
 	doListDetailNew = 'doListDetailNew',
 	doListDownload = 'doListDownload',
 	doListSelfRefresh = 'doListSelfRefresh',
@@ -80,7 +77,6 @@ export enum CodeActionType {
 	navBack = 'navBack',
 	navCrumbs = 'navCrumbs',
 	navHome = 'navHome',
-	navMenuOpen = 'navMenuOpen',
 	navPage = 'navPage',
 	navRow = 'navRow',
 	navTab = 'navTab',

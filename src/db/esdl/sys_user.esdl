@@ -16,6 +16,24 @@ module sys_user {
     };
   }
 
+  type SysApp extending sys_core::SysObj {
+    required appHeader: sys_user::SysAppHeader;
+    multi nodes: sys_core::SysNodeObj {
+       on target delete allow;
+    };
+  }
+
+  type SysAppHeader extending sys_core::SysObj {}
+
+  type SysCodeType extending sys_core::SysObj {
+    parent: sys_core::SysCodeType;
+    order: default::nonNegative;
+    valueDecimal: float64;
+    valueInteger: int64;
+    valueString: str;
+    constraint exclusive on ((.name));
+  }
+
   # task  
   type SysTask extending sys_core::SysObj {
     required codeCategory: sys_core::SysCode;
@@ -130,6 +148,9 @@ module sys_user {
   );
 
   # FUNCTIONS
+  function getApp(name: str) -> optional sys_user::SysApp
+    using (select assert_single((select sys_user::SysApp filter .name = name)));
+
   function getRootUser() -> optional sys_user::SysUser
     using (select assert_single((select sys_user::SysUser filter .userName = '*ROOTUSER*')));
   

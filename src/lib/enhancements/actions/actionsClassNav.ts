@@ -71,6 +71,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 				undefined,
 				tokenDataObjDrawer
 			)
+			parmsAction.setMenuClose()
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
@@ -79,12 +80,14 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			await sm.openModalDataObj(tokenDataObjModal, async () =>
 				userActionStateChangeHomeDashboard(sm, parmsAction)
 			)
+			parmsAction.setMenuClose()
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.openNode:
 			if (!parmsAction.isMultiTree) sm.newApp()
 			await sm.app.addTreeNode(sm, token as TokenAppNode)
+			parmsAction.setMenuClose()
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 

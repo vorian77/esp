@@ -19,6 +19,7 @@ import { initContentAIRep } from '$server/dbEdge/init/dbEdgeInit80ContentAIRep'
 
 // content - MOED
 import { initContentMOEDCm } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDCm'
+import { initContentMOEDCmApplicant } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDCmApplicant'
 import { initContentMOEDSsr } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDSSR'
 import { initContentMOEDRep } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDRep'
 
@@ -55,10 +56,12 @@ function dbEdgeInitAll(initDb: InitDb) {
 	// content - MOED
 	initContentMOEDSsr(initDb)
 	initContentMOEDCm(initDb)
+	initContentMOEDCmApplicant(initDb)
 	initContentMOEDRep(initDb)
 }
 
 export function initFeature(initDb: InitDb) {
 	initContentMOEDSsr(initDb)
 	initContentMOEDCm(initDb)
+	initContentMOEDCmApplicant(initDb)
 }

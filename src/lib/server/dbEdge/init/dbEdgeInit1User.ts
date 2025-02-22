@@ -130,7 +130,7 @@ function initApps(init: InitDb) {
 		isGlobalResource: false,
 		name: 'app_client_moed_advocate',
 		owner: 'sys_moed_old',
-		nodes: ['node_obj_moed_part_list']
+		nodes: []
 	})
 
 	init.addTrans('sysApp', {
@@ -222,7 +222,8 @@ function initUserType(init: InitDb) {
 			{ codeType: 'app', owner: 'sys_moed_old', name: 'app_client_moed_advocate' },
 			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
 			{ codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' },
-			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_ssr_app_advocate' }
+			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_part_apps_open' },
+			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_part_msgs_open' }
 		],
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
 	})
@@ -235,7 +236,8 @@ function initUserType(init: InitDb) {
 			{ codeType: 'app', owner: 'sys_moed_old', name: 'app_client_moed_advocate' },
 			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
 			{ codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' },
-			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_ssr_app_advocate' }
+			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_part_apps_open' },
+			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_part_msgs_open' }
 		],
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
 	})

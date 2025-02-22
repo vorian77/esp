@@ -10,8 +10,6 @@ export function initPreTable(init: InitDb) {
 		['sys_system_old', 'sys_db', 'SysTable', true],
 
 		// sys_core
-		['sys_system_old', 'sys_core', 'SysApp', true],
-		['sys_system_old', 'sys_core', 'SysAppHeader', true],
 		['sys_system_old', 'sys_core', 'SysAttr', true],
 		['sys_system_old', 'sys_core', 'SysCode', true],
 		['sys_system_old', 'sys_core', 'SysCodeAction', true],
@@ -60,6 +58,8 @@ export function initPreTable(init: InitDb) {
 		['sys_system_old', 'sys_rep', 'SysRepUserParm', true],
 
 		// sys_user
+		['sys_system_old', 'sys_user', 'SysApp', true],
+		['sys_system_old', 'sys_user', 'SysAppHeader', true],
 		['sys_system_old', 'sys_user', 'SysTask', true],
 		['sys_system_old', 'sys_user', 'SysUser', true],
 		['sys_system_old', 'sys_user', 'SysUserAction', true],

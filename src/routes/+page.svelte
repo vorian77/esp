@@ -76,7 +76,7 @@
 				</p>
 				<p>
 					We provide you with a customized solution that supports your exact business processes and
-					includes enterprise-class data management features such as integrated reporting and data
+					includes enterprise-class data management features such as integrated reporting, data
 					analytics, organizational OKRs, and AI agents, all while maintaining the implementation
 					timeline and costs of an off-the-shelf product.
 				</p>

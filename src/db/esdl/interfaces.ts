@@ -20,6 +20,18 @@ export namespace sys_user {
     "createdBy": SysUser;
     "modifiedBy": SysUser;
   }
+  export interface SysApp extends sys_core.SysObj {
+    "appHeader": SysAppHeader;
+    "nodes": sys_core.SysNodeObj[];
+  }
+  export interface SysAppHeader extends sys_core.SysObj {}
+  export interface SysCodeType extends sys_core.SysObj {
+    "parent"?: sys_core.SysCodeType | null;
+    "order"?: number | null;
+    "valueDecimal"?: number | null;
+    "valueInteger"?: number | null;
+    "valueString"?: string | null;
+  }
   export interface SysTask extends sys_core.SysObj {
     "codeCategory": sys_core.SysCode;
     "codeRenderType"?: sys_core.SysCode | null;
@@ -290,11 +302,6 @@ export namespace sys_core {
     "contacts": $default.SysPerson[];
     "notes": SysObjNote[];
   }
-  export interface SysApp extends SysObj {
-    "appHeader": SysAppHeader;
-    "nodes": SysNodeObj[];
-  }
-  export interface SysAppHeader extends SysObj {}
   export interface SysAttr extends sys_user.Mgmt {
     "obj": SysObjEntAttr;
     "hasAccess": boolean;
@@ -468,8 +475,8 @@ export namespace sys_core {
     "userMsg"?: string | null;
     "codeFunction"?: SysCode | null;
     "functionParmValue"?: string | null;
-    "codeType"?: SysCode | null;
     "expr"?: string | null;
+    "codeType": SysCode;
   }
   export interface SysDataObjTable extends sys_user.Mgmt {
     "columnParent"?: sys_db.SysColumn | null;
@@ -498,7 +505,6 @@ export namespace sys_core {
   export interface SysNodeObj extends SysObj {
     "codeNavType": SysCode;
     "codeNodeType": SysCode;
-    "dataObj"?: SysDataObj | null;
     "isAlwaysRetrieveData": boolean;
     "isHideRowManager": boolean;
     "page"?: string | null;
@@ -998,6 +1004,9 @@ export interface types {
   };
   "sys_user": {
     "Mgmt": sys_user.Mgmt;
+    "SysApp": sys_user.SysApp;
+    "SysAppHeader": sys_user.SysAppHeader;
+    "SysCodeType": sys_user.SysCodeType;
     "SysTask": sys_user.SysTask;
     "SysUser": sys_user.SysUser;
     "SysUserAction": sys_user.SysUserAction;
@@ -1038,8 +1047,6 @@ export interface types {
     "ObjRootCore": sys_core.ObjRootCore;
     "SysObj": sys_core.SysObj;
     "SysObjEnt": sys_core.SysObjEnt;
-    "SysApp": sys_core.SysApp;
-    "SysAppHeader": sys_core.SysAppHeader;
     "SysAttr": sys_core.SysAttr;
     "SysCode": sys_core.SysCode;
     "SysCodeAction": sys_core.SysCodeAction;

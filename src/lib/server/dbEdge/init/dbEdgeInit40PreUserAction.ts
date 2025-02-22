@@ -116,16 +116,6 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doListDetailEditMsg' },
-		codeTriggerEnable: 'always',
-		header: 'Edit',
-		name: 'ua_sys_edit_list_msg',
-		owner: 'sys_system_old'
-	})
-
-	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [{ codeTriggerShow: 'never', isRequired: true }],
 		codeAction: {
 			codeType: 'ct_sys_code_action_class_do',
 			name: 'doEmbedListConfigEdit'

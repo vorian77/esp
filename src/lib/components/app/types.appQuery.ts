@@ -152,13 +152,12 @@ export async function queryTypeTab(
 	let { dataTab, dataTree } = queryDataPre(sm, tab.dataObj?.data, queryType)
 
 	// query actions - pre
-	if (tab.dataObj && dataTab.rowsSave.getRows().length > 0) {
+	if (tab.dataObj) {
 		dataTab = await tab.dataObj.queryRiders.execute(
 			DataObjQueryRiderTriggerTiming.pre,
 			queryType,
 			sm,
-			dataTab,
-			dataTree
+			dataTab
 		)
 	}
 
@@ -191,8 +190,7 @@ export async function queryTypeTab(
 			DataObjQueryRiderTriggerTiming.post,
 			queryType,
 			sm,
-			dataObj.data,
-			dataTree
+			dataObj.data
 		)
 	}
 	return dataObj

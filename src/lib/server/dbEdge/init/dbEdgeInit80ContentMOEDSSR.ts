@@ -37,7 +37,12 @@ function initTaskSsrApp(init: InitDb) {
 				codeType: 'userMessage',
 				userMsg:
 					'Your application has been submitted! Now upload your eligibility documents and if you have any questions send us a message.',
-				codeUserMsgDelivery: 'alert',
+				codeUserMsgDelivery: 'alert'
+			},
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'appDestination',
 				codeUserDestination: 'home'
 			}
 		],
@@ -404,7 +409,7 @@ function initTaskSsrApp(init: InitDb) {
 
 function initTaskSsrMsg(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
-		actionGroup: 'doag_list_mobile',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
@@ -412,14 +417,6 @@ function initTaskSsrMsg(init: InitDb) {
 		header: 'My Messages',
 		name: 'data_obj_task_moed_ssr_msg_list',
 		owner: 'sys_moed_old',
-		queryRiders: [
-			{
-				codeQueryType: 'retrieve',
-				codeTriggerTiming: 'pre',
-				codeType: 'databaseExpression',
-				expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,SysMsg.id> SET {readers := DISTINCT (.readers UNION (SELECT default::SysPerson FILTER .id = <user,uuid,personId>))}`
-			}
-		],
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -516,12 +513,23 @@ function initTaskSsrMsg(init: InitDb) {
 		owner: 'sys_moed_old',
 		queryRiders: [
 			{
+				codeQueryType: 'retrieve',
+				codeTriggerTiming: 'pre',
+				codeType: 'databaseExpression',
+				expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,SysMsg.id> SET {readers := DISTINCT (.readers UNION (SELECT default::SysPerson FILTER .id = <user,uuid,personId>))}`
+			},
+			{
 				codeQueryType: 'save',
 				codeTriggerTiming: 'post',
 				codeType: 'userMessage',
-				codeUserDestination: 'back',
 				codeUserMsgDelivery: 'toast',
 				userMsg: `Your message has been sent. We'll get back with you ASAP!`
+			},
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'appDestination',
+				codeUserDestination: 'back'
 			}
 		],
 		tables: [{ index: 0, table: 'SysMsg' }],
@@ -791,7 +799,7 @@ function initTaskSsrDoc(init: InitDb) {
 		header: 'My Documents',
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
 		exprFilter: '.csf.id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90"',
-		actionGroup: 'doag_list_mobile',
+		actionGroup: 'doag_list',
 		fields: [
 			{
 				columnName: 'id',
@@ -1009,7 +1017,12 @@ function initTaskSsrWelcome(init: InitDb) {
 				codeTriggerTiming: 'post',
 				codeType: 'userMessage',
 				userMsg: 'Great! Next complete your application!',
-				codeUserMsgDelivery: 'alert',
+				codeUserMsgDelivery: 'alert'
+			},
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'appDestination',
 				codeUserDestination: 'home'
 			}
 		],

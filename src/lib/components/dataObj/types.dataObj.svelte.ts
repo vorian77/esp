@@ -457,14 +457,12 @@ export class DataObjQueryRiders {
 	riders: DataObjQueryRider[]
 	constructor(rawQueryRiders: RawDataObjQueryRider[]) {
 		this.riders = arrayOfClass(DataObjQueryRider, rawQueryRiders)
-		console.log('DataObjQueryRiders.constructor', this.riders)
 	}
 	async execute(
 		queryTiming: DataObjQueryRiderTriggerTiming,
 		queryType: TokenApiQueryType,
 		sm: State,
-		dataQuery: DataObjData,
-		dataTree: TokenApiQueryDataTree
+		dataQuery: DataObjData
 	) {
 		for (let i = 0; i < this.riders.length; i++) {
 			const rider = this.riders[i]
@@ -479,7 +477,7 @@ export class DataObjQueryRiders {
 						break
 
 					case DataObjQueryRiderType.databaseExpression:
-						await rider.executeExpr(sm, dataQuery, dataTree)
+						// executed on server
 						break
 
 					case DataObjQueryRiderType.userMessage:

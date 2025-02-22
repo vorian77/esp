@@ -110,7 +110,10 @@ export class State {
 	}
 	async changeUserAction(parmsAction: TokenAppStateTriggerAction) {
 		this.parmsTrans = parmsAction.transParms
-		this.change({ ...parmsAction.stateParms.data })
+		this.change({
+			...parmsAction.stateParms.data,
+			triggerTokens: parmsAction.stateParms.triggerTokens
+		})
 		if (parmsAction.fCallback) await parmsAction.fCallback()
 	}
 
@@ -613,5 +616,6 @@ export class StateSurfacePopupModalEmbed extends StateSurfacePopup {
 
 export enum StateTriggerToken {
 	listDownload = 'listDownload',
+	menuClose = 'menuClose',
 	navDashboard = 'navDashboard'
 }

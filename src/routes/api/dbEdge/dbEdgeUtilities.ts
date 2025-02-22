@@ -100,7 +100,6 @@ const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 	_data: e.select(n.data, (d) => ({
 		...shapeNodeObjData(d)
 	})),
-	dataObjId: n.dataObj.id,
 	header: true,
 	id: true,
 	isAlwaysRetrieveData: true,
@@ -665,7 +664,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			})),
 			filter: e.op(r.codeType.name, '!=', 'subject')
 		})),
-		resources_app: e.select(e.sys_core.SysApp, (res) => ({
+		resources_app: e.select(e.sys_user.SysApp, (res) => ({
 			appHeader: e.select(res.appHeader, (ah) => ({
 				_codeIcon: ah.codeIcon.name,
 				id: true,

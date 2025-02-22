@@ -57,12 +57,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 							data: { value: { expr } }
 						})
 					)
-					await sm.app.queryTab(
-						sm,
-						currTab,
-						parmsAction.codeAction.actionType,
-						TokenApiQueryType.retrieve
-					)
+					currTab.dataObj.data.rowsRetrieved.setDetailRecordValue('isReadDisplay', 'No')
 					await userActionStateChangeDataObj(sm, parmsAction)
 				}
 			}
@@ -142,30 +137,6 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
-		case CodeActionType.doListDetailEditMsg:
-			currTab = sm.app.getCurrTab()
-			if (currTab && currTab.dataObj) {
-				currRecordId = currTab.getCurrRecordValue('id')
-				if (currRecordId) {
-					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {readers := DISTINCT (.readers UNION (SELECT default::SysPerson FILTER .id = <user,uuid,personId>))}`
-					await sm.triggerAction(
-						new TokenAppStateTriggerAction({
-							codeAction: CodeAction.init(
-								CodeActionClass.ct_sys_code_action_class_utils,
-								CodeActionType.dbexpression
-							),
-							data: { value: { expr } }
-						})
-					)
-				}
-			}
-			parmsAction.codeAction = CodeAction.init(
-				CodeActionClass.ct_sys_code_action_class_do,
-				CodeActionType.doListDetailEdit
-			)
-			await action(sm, parmsAction)
-			break
-
 		case CodeActionType.doListDetailNew:
 			await sm.app.addTreeNodeChildren(sm, token as TokenAppDo, TokenApiQueryType.preset)
 			await userActionStateChangeDataObj(sm, parmsAction)
@@ -195,6 +166,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 		case CodeActionType.doOpen:
 			if (!parmsAction.isMultiTree) sm.newApp()
 			await sm.app.addTreeDataObj(sm, token as TokenAppDoQuery)
+			parmsAction.setMenuClose()
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 

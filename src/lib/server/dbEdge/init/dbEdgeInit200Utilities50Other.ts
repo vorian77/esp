@@ -14,8 +14,8 @@ export async function addApp(data: any) {
 			nodes: e.array(e.str)
 		},
 		(p) => {
-			return e.insert(e.sys_core.SysApp, {
-				appHeader: e.select(e.sys_core.SysAppHeader, (sah) => ({
+			return e.insert(e.sys_user.SysApp, {
+				appHeader: e.select(e.sys_user.SysAppHeader, (sah) => ({
 					filter_single: e.op(sah.name, '=', p.appHeader)
 				})),
 				createdBy: CREATOR,
@@ -47,7 +47,7 @@ export async function addAppHeader(data: any) {
 			owner: e.str
 		},
 		(p) => {
-			return e.insert(e.sys_core.SysAppHeader, {
+			return e.insert(e.sys_user.SysAppHeader, {
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', p.codeIcon)),
 				header: p.header,
 				isGlobalResource: p.isGlobalResource,
@@ -281,7 +281,6 @@ export async function addNode(data: any) {
 						)
 					})
 				}),
-				dataObj: e.sys_core.getDataObj(p.dataObj),
 				header: p.header,
 				isAlwaysRetrieveData: valueOrDefaultParm(p.isAlwaysRetrieveData, false),
 				isHideRowManager: valueOrDefaultParm(p.isHideRowManager, false),

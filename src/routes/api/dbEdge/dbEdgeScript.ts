@@ -2,6 +2,9 @@ import {
 	DataObjCardinality,
 	DataObjData,
 	DataObjListEditPresetType,
+	DataObjQueryRiderTriggerTiming,
+	DataObjQueryRiderType,
+	DataObjQueryRiders,
 	DataRecordStatus,
 	debug,
 	getArray,
@@ -238,6 +241,24 @@ export class ScriptGroup {
 			['order'],
 			['script', { content: ['with', 'action', 'propsSelect', 'filter', 'order'] }]
 		])
+	}
+
+	addScriptQueryRetrieveQueryRiders(
+		query: Query,
+		queryData: TokenApiQueryData,
+		queryRiders: DataObjQueryRiders,
+		codeTriggerTiming: DataObjQueryRiderTriggerTiming
+	) {
+		for (let i = 0; i < queryRiders.riders.length; i++) {
+			const rider = queryRiders.riders[i]
+			if (
+				rider.codeTriggerTiming === codeTriggerTiming &&
+				rider.codeType === DataObjQueryRiderType.databaseExpression &&
+				rider.expr
+			) {
+				this.addScriptNew(query, queryData, ScriptExePost.none, [], rider.expr)
+			}
+		}
 	}
 
 	addScriptSave(query: Query, queryData: TokenApiQueryData) {

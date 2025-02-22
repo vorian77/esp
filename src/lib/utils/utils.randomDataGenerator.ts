@@ -1,7 +1,7 @@
 import type { DataRecord } from '$utils/types'
 import { debug } from '$utils/types'
 
-const recordCount = 100
+const recordCount = 25
 
 const dataItemsPart = {
 	addr1: { type: 'list', values: ['123 Main St', '456 Elm St', '789 Oak St'] },
