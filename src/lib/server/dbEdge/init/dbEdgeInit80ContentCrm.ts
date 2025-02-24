@@ -174,6 +174,7 @@ function initClient(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_app_crm_client_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_app_crm_client_list' }],

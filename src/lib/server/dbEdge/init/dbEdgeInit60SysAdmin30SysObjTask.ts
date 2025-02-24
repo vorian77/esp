@@ -365,6 +365,7 @@ function initTask(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_task_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_task_list' }],

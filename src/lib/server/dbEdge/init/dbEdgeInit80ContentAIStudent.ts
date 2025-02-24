@@ -436,6 +436,7 @@ function initStudent(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgram', {
+		children: ['node_obj_cm_student_detail'],
 		codeIcon: 'UsersRound',
 		codeNodeType: 'program',
 		data: [{ dataObj: 'data_obj_cm_student_list' }],
@@ -445,6 +446,7 @@ function initStudent(init: InitDb) {
 		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_service_flow_list'],
 		codeIcon: 'UsersRound',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_student_detail' }],
@@ -723,6 +725,7 @@ function initCsf(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_service_flow_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_client_service_flow_list' }],
@@ -733,6 +736,13 @@ function initCsf(init: InitDb) {
 		parentNodeName: 'node_obj_cm_student_detail'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: [
+			'node_obj_cm_csf_cohort_list',
+			'node_obj_cm_csf_note_list',
+			'node_obj_cm_csf_job_placement_list',
+			'node_obj_cm_csf_school_placement_list',
+			'node_obj_cm_csf_document_list'
+		],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_client_service_flow_detail' }],
@@ -928,6 +938,7 @@ function initCsfCohort(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_csf_cohort_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_csf_cohort_list' }],
@@ -938,6 +949,7 @@ function initCsfCohort(init: InitDb) {
 		parentNodeName: 'node_obj_cm_service_flow_detail'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_csf_cohort_attd_student_list'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_csf_cohort_detail' }],
@@ -1145,6 +1157,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_csf_cohort_attd_student_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_csf_cohort_attd_student_list' }],
@@ -1348,6 +1361,7 @@ function initCsfNote(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_csf_note_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_csf_note_list' }],
@@ -1678,6 +1692,7 @@ function initCsfJobPlacement(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_csf_job_placement_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_csf_job_placement_list' }],
@@ -1956,6 +1971,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_csf_school_placement_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_csf_school_placement_list' }],
@@ -2226,6 +2242,7 @@ function initCsfDocument(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_csf_document_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_csf_document_list' }],

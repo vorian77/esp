@@ -419,6 +419,7 @@ enum ExprSource {
 }
 
 enum ExprSourceFunction {
+	fSysDaysAfter = 'fSysDaysAfter',
 	fSysRandom10 = 'fSysRandom10',
 	fSysRate = 'fSysRate',
 	fSysToday = 'fSysToday'

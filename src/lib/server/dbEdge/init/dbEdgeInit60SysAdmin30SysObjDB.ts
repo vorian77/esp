@@ -538,6 +538,7 @@ function initColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_column_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_column_list' }],
@@ -745,6 +746,7 @@ function initTable(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_table_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_table_list' }],

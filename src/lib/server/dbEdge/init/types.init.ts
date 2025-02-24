@@ -27,7 +27,8 @@ import {
 	addNode,
 	addTask,
 	addUser,
-	addUserType
+	addUserType,
+	updateDepdNodeChildren
 } from '$server/dbEdge/init/dbEdgeInit200Utilities50Other'
 import {
 	MoedBulkCsf,
@@ -56,7 +57,7 @@ type Link = [string, string]
 type Reset = [Function, Link]
 
 export class InitDb {
-	isFullDbReset: boolean = false
+	isFullDbReset: boolean
 	items: InitDbItem[] = []
 	reset: ResetDb = new ResetDb()
 	constructor(isFullDbReset: boolean = false) {
@@ -183,7 +184,6 @@ export class InitDb {
 			})
 		)
 
-		// task
 		this.items.push(
 			new InitDbItemObject({
 				name: 'sysDataObjTask',
@@ -193,25 +193,7 @@ export class InitDb {
 				fCreate: addDataObj
 			})
 		)
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysNodeObjTask',
-				dataMap: 'name',
-				dbObject: 'sys_core::SysNodeObj',
-				exprResetFull: `DELETE sys_core::SysNodeObj FILTER .codeNavType.name = 'task'`,
-				fCreate: addNode
-			})
-		)
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysTask',
-				dataMap: 'name',
-				dbObject: 'sys_user::SysTask',
-				fCreate: addTask
-			})
-		)
 
-		// dataobj - default
 		this.items.push(
 			new InitDbItemObject({
 				name: 'sysDataObj',
@@ -243,6 +225,56 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
+				name: 'sysNodeObjProgramObj',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysNodeObj',
+				exprResetFull: `DELETE sys_core::SysNodeObj FILTER .codeNodeType.name = 'program_object' AND .codeNavType.name = 'tree'`,
+				fCreate: addNode
+			})
+		)
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysNodeObjProgram',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysNodeObj',
+				exprResetFull: `DELETE sys_core::SysNodeObj FILTER .codeNodeType.name = 'program' AND .codeNavType.name = 'tree'`,
+				fCreate: addNode
+			})
+		)
+
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysNodeObjTask',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysNodeObj',
+				exprResetFull: `DELETE sys_core::SysNodeObj FILTER .codeNavType.name = 'task'`,
+				fCreate: addNode
+			})
+		)
+
+		this.items.push(
+			new InitDbItemObject({
+				altTrans: ['sysNodeObjProgramObj', 'sysNodeObjProgram', 'sysNodeObjTask'],
+				name: 'sysNodeObjTaskChildren',
+				dataMap: 'name',
+				dbObject: 'sys_core::SysNodeObj',
+				exprResetFull: `UPDATE sys_core::SysNodeObj SET {children := {}}`,
+				fCreate: updateDepdNodeChildren,
+				isExcludeResetByObj: true
+			})
+		)
+
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysTask',
+				dataMap: 'name',
+				dbObject: 'sys_user::SysTask',
+				fCreate: addTask
+			})
+		)
+
+		this.items.push(
+			new InitDbItemObject({
 				name: 'sysAnalytic',
 				dataMap: 'name',
 				dbObject: 'sys_rep::SysAnalytic',
@@ -257,24 +289,7 @@ export class InitDb {
 				fCreate: addReport
 			})
 		)
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysNodeObjProgram',
-				dataMap: 'name',
-				dbObject: 'sys_core::SysNodeObj',
-				exprResetFull: `DELETE sys_core::SysNodeObj FILTER .codeNodeType.name = 'program' AND .codeNavType.name = 'tree'`,
-				fCreate: addNode
-			})
-		)
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysNodeObjProgramObj',
-				dataMap: 'name',
-				dbObject: 'sys_core::SysNodeObj',
-				exprResetFull: `DELETE sys_core::SysNodeObj FILTER .codeNodeType.name = 'program_object' AND .codeNavType.name = 'tree'`,
-				fCreate: addNode
-			})
-		)
+
 		this.items.push(
 			new InitDbItemBulk({
 				name: 'widgetsBulk',
@@ -379,6 +394,7 @@ export class InitDb {
 	}
 
 	async execute() {
+		debug('InitDb', 'execute')
 		await this.executeReset()
 		await this.executeCreate()
 	}
@@ -388,15 +404,29 @@ export class InitDb {
 		sectionHeader(`InitDB.create...`)
 		for (let i: number = 0; i < this.items.length; i++) {
 			const item = this.items[i]
-			if (item.fCreate) {
-				for (let j: number = 0; j < item.trans.length; j++) {
-					const trans = item.trans[j]
-					const data = trans[1]
-					await item.fCreate(data)
+			// base
+			await this.executCreateItem(item)
+
+			// altTrans
+			for (let j: number = 0; j < item.altTrans.length; j++) {
+				const altItem = this.items.find((k) => k.name === item.altTrans[j])
+				if (altItem) {
+					item.trans = altItem.trans
+					await this.executCreateItem(item)
 				}
 			}
 		}
 		sectionHeader(`InitDB.reset.complete.`)
+	}
+
+	async executCreateItem(item: InitDbItem) {
+		if (item.fCreate) {
+			for (let j: number = 0; j < item.trans.length; j++) {
+				const trans = item.trans[j]
+				const data = trans[1]
+				await item.fCreate(data)
+			}
+		}
 	}
 
 	async executeReset() {
@@ -447,6 +477,7 @@ export class InitDb {
 	}
 }
 export class InitDbItem {
+	altTrans: string[]
 	dbObject?: string
 	exprResetFull?: string
 	exprResets: string[] = []
@@ -458,6 +489,7 @@ export class InitDbItem {
 	constructor(obj: any) {
 		const clazz = 'InitDbItem'
 		obj = valueOrDefault(obj, clazz)
+		this.altTrans = getArray(obj.altTrans)
 		this.dbObject = obj.dbObject
 		this.fCreate = obj.fCreate
 		this.exprResetFull = obj.exprResetFull

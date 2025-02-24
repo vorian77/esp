@@ -149,6 +149,7 @@ async function initSystemObject(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgram', {
+		children: ['node_obj_sys_admin_system_detail_obj'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
 		data: [{ dataObj: 'data_obj_sys_admin_system_list_obj' }],
@@ -159,6 +160,28 @@ async function initSystemObject(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: [
+			'node_obj_sys_analytic_list',
+			'node_obj_sys_app_header_list',
+			'node_obj_sys_app_list',
+			'node_obj_sys_admin_code_type_list',
+			'node_obj_sys_admin_code_list',
+			'node_obj_sys_admin_code_action_list',
+			'node_obj_sys_admin_column_list',
+			'node_obj_sys_admin_data_obj_list',
+			'node_obj_sys_admin_data_obj_action_group_list',
+			'node_obj_sys_admin_data_obj_field_embed_list_config_list',
+			'node_obj_sys_admin_data_obj_field_embed_list_edit_list',
+			'node_obj_sys_admin_data_obj_field_embed_list_select_list',
+			'node_obj_sys_admin_data_obj_field_list_items_list',
+			'node_obj_sys_admin_node_obj_list',
+			'node_obj_sys_admin_migr_list',
+			'node_obj_sys_rep_list',
+			'node_obj_sys_admin_table_list',
+			'node_obj_sys_admin_task_list',
+			'node_obj_sys_admin_user_action_list',
+			'node_obj_sys_admin_widget_list'
+		],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_system_detail_obj' }],

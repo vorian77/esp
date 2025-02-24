@@ -295,6 +295,7 @@ function initCourse(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgram', {
+		children: ['node_obj_cm_course_detail'],
 		codeIcon: 'BookOpen',
 		codeNodeType: 'program',
 		data: [{ dataObj: 'data_obj_cm_course_list' }],
@@ -304,6 +305,7 @@ function initCourse(init: InitDb) {
 		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_cohort_list'],
 		codeIcon: 'BookOpen',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_course_detail' }],
@@ -566,6 +568,7 @@ function initCohort(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_cohort_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_cohort_list' }],
@@ -576,6 +579,11 @@ function initCohort(init: InitDb) {
 		parentNodeName: 'node_obj_cm_course_detail'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: [
+			'node_obj_cm_student_roster_list_by_cohort',
+			'node_obj_cm_cohort_attd_list',
+			'node_obj_cm_cohort_doc_list'
+		],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_cohort_detail' }],
@@ -590,6 +598,7 @@ function initCohort(init: InitDb) {
 function initCohortStudentRoster(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_report_render',
+		children: [''],
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.cohort.id = <tree,uuid,CmCohort.id>',
@@ -868,6 +877,7 @@ function initCohortAttd(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_cohort_attd_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_cohort_attd_list' }],
@@ -878,6 +888,7 @@ function initCohortAttd(init: InitDb) {
 		parentNodeName: 'node_obj_cm_cohort_detail'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_cohort_attd_sheet'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_cohort_attd_detail' }],
@@ -1252,6 +1263,7 @@ function initCohortDoc(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_cohort_doc_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_cohort_doc_list' }],
@@ -1756,6 +1768,7 @@ function initPartner(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgram', {
+		children: ['node_obj_cm_partner_detail'],
 		codeIcon: 'Handshake',
 		codeNodeType: 'program',
 		data: [{ dataObj: 'data_obj_cm_partner_list' }],
@@ -1766,6 +1779,7 @@ function initPartner(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_partner_note_list'],
 		codeIcon: 'Handshake',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_partner_detail' }],
@@ -1955,6 +1969,7 @@ function initPartnerNote(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_cm_partner_note_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_cm_partner_note_list' }],

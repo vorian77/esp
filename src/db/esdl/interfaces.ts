@@ -492,6 +492,7 @@ export namespace sys_core {
     "index": number;
   }
   export interface SysMsg extends ObjRoot {
+    "responses": SysMsg[];
     "parent"?: SysMsg | null;
     "subject"?: string | null;
     "date"?: edgedb.LocalDate | null;
@@ -503,6 +504,7 @@ export namespace sys_core {
     "isRead": boolean;
   }
   export interface SysNodeObj extends SysObj {
+    "children": SysNodeObj[];
     "codeNavType": SysCode;
     "codeNodeType": SysCode;
     "isAlwaysRetrieveData": boolean;

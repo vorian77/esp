@@ -345,6 +345,7 @@ function initOrg(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgram', {
+		childNods: ['node_obj_sys_admin_org_detail_user'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
 		data: [{ dataObj: 'data_obj_sys_admin_org_list_user' }],
@@ -354,6 +355,7 @@ function initOrg(init: InitDb) {
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_system_list_user', 'node_obj_sys_admin_user_list_user'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_org_detail_user' }],
@@ -493,6 +495,7 @@ function initSystem(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_system_detail_user'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_system_list_user' }],
@@ -790,6 +793,7 @@ function initUser(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_user_detail_user'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_user_list_user' }],

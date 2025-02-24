@@ -19,14 +19,14 @@ import { initContentAIRep } from '$server/dbEdge/init/dbEdgeInit80ContentAIRep'
 
 // content - MOED
 import { initContentMOEDCm } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDCm'
-import { initContentMOEDCmApplicant } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDCmApplicant'
+import { initContentMOEDCmAdvocate } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDCmAdvocate'
 import { initContentMOEDSsr } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDSSR'
 import { initContentMOEDRep } from '$server/dbEdge/init/dbEdgeInit80ContentMOEDRep'
 
 // user
 import { initUser } from '$server/dbEdge/init/dbEdgeInit1User'
 
-const isResetFullDB = false
+const isResetFullDB = true
 
 export async function dbEdgeInit() {
 	let initDb = new InitDb(isResetFullDB)
@@ -56,12 +56,12 @@ function dbEdgeInitAll(initDb: InitDb) {
 	// content - MOED
 	initContentMOEDSsr(initDb)
 	initContentMOEDCm(initDb)
-	initContentMOEDCmApplicant(initDb)
+	initContentMOEDCmAdvocate(initDb)
 	initContentMOEDRep(initDb)
 }
 
 export function initFeature(initDb: InitDb) {
 	initContentMOEDSsr(initDb)
 	initContentMOEDCm(initDb)
-	initContentMOEDCmApplicant(initDb)
+	initContentMOEDCmAdvocate(initDb)
 }

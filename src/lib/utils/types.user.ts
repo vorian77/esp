@@ -25,6 +25,7 @@ import {
 	TokenAppStateTriggerAction
 } from '$utils/types.token'
 import { FileStorage } from '$comps/form/fieldFile'
+import { error } from '@sveltejs/kit'
 
 const FILENAME = '$utils/types.user.ts'
 
@@ -175,8 +176,7 @@ export class UserResourceTask extends UserResource {
 	isShow: boolean = true
 	pageDataObjId?: string
 	targetDataObjId?: string
-	targetNodeObjData?: NodeData[] = []
-	targetNodeObjId?: string
+	targetNodeObj?: Node
 	constructor(obj: any) {
 		super(obj)
 		const clazz = 'UserResourceTask'
@@ -202,30 +202,34 @@ export class UserResourceTask extends UserResource {
 		this.isPinToDash = booleanOrFalse(obj.isPinToDash)
 		this.pageDataObjId = obj._pageDataObjId
 		this.targetDataObjId = obj._targetDataObjId
-		this.targetNodeObjData = arrayOfClass(NodeData, obj._targetNodeObjData)
-		this.targetNodeObjId = obj._targetNodeObjId
+		this.targetNodeObj = classOptional(Node, obj._targetNodeObj)
 	}
 
-	getTokenNode(user: User | undefined) {
-		const _dataObjId =
-			this.targetNodeObjData && this.targetNodeObjData.length > 0
-				? this.targetNodeObjData[0].dataObjId
-				: this.targetDataObjId
-		return new TokenAppNode({
-			node: new Node({
-				_codeNodeType: this.targetDataObjId
-					? 'program'
-					: this.targetNodeObjId
-						? 'object'
-						: undefined,
-				_data: [{ _actionType: 'default', _dataObjId }],
-				header: this.header,
-				icon: this.codeIconName,
-				id: this.targetNodeObjId || 'dummyId',
-				name: this.name
+	getTokenNode() {
+		const node = this.targetNodeObj
+			? this.targetNodeObj
+			: this.targetDataObjId
+				? new Node({
+						_codeNodeType: 'program',
+						_data: [{ _actionType: 'default', _dataObjId: this.targetDataObjId }],
+						header: this.header,
+						icon: this.codeIconName,
+						id: this.targetDataObjId,
+						name: this.name
+					})
+				: undefined
+
+		if (!node) {
+			error(500, {
+				file: FILENAME,
+				function: 'UserResourceTask.getTokenNode',
+				message: `Unable to instantiate tokenNode for task: ${this.name}`
 			})
-		})
+		}
+
+		return new TokenAppNode({ node })
 	}
+
 	async loadPage(sm: State, fCallBack: Function | undefined) {
 		if (this.pageDataObjId) {
 			const token = new TokenAppDoQuery({

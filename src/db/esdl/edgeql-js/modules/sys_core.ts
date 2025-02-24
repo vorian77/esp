@@ -807,6 +807,7 @@ const $SysDataObjWith = $.makeType<$SysDataObjWith>(_.spec, "c9893a7f-19bf-11ef-
 const SysDataObjWith: $.$expr_PathNode<$.TypeSet<$SysDataObjWith, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysDataObjWith, $.Cardinality.Many), null);
 
 export type $SysMsgλShape = $.typeutil.flatten<$ObjRootλShape & {
+  "responses": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, true,  false, false>;
   "parent": $.LinkDesc<$SysMsg, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "subject": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "date": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -816,8 +817,10 @@ export type $SysMsgλShape = $.typeutil.flatten<$ObjRootλShape & {
   "sender": $.LinkDesc<_default.$SysPerson, $.Cardinality.One, {}, false, false,  false, false>;
   "codeStatus": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "isRead": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
+  "<responses[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parent[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parent": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<responses": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysMsg = $.ObjectType<"sys_core::SysMsg", $SysMsgλShape, null, [
   ...$ObjRoot['__exclusives__'],
@@ -827,6 +830,7 @@ const $SysMsg = $.makeType<$SysMsg>(_.spec, "edaa8125-eb1c-11ef-9496-0105da2cc91
 const SysMsg: $.$expr_PathNode<$.TypeSet<$SysMsg, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysMsg, $.Cardinality.Many), null);
 
 export type $SysNodeObjλShape = $.typeutil.flatten<$SysObjλShape & {
+  "children": $.LinkDesc<$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "codeNavType": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "codeNodeType": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "isAlwaysRetrieveData": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
@@ -835,8 +839,10 @@ export type $SysNodeObjλShape = $.typeutil.flatten<$SysObjλShape & {
   "data": $.LinkDesc<$SysNodeObjData, $.Cardinality.Many, {}, false, false,  false, false>;
   "parent": $.LinkDesc<$SysNodeObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<parent[is sys_core::SysNodeObj]": $.LinkDesc<$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<children[is sys_core::SysNodeObj]": $.LinkDesc<$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<targetNodeObj[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
   "<nodes[is sys_user::SysApp]": $.LinkDesc<_sys_user.$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<children": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<nodes": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parent": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<targetNodeObj": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

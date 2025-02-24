@@ -469,6 +469,7 @@ function initDataObj(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_data_obj_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_data_obj_list' }],
@@ -480,6 +481,7 @@ function initDataObj(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_data_obj_column_list'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_data_obj_detail' }],
@@ -1390,6 +1392,7 @@ function initDataObjColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_data_obj_column_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_data_obj_column_list' }],

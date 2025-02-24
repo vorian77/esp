@@ -176,6 +176,7 @@ function initOrg(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgram', {
+		children: ['node_obj_sys_admin_org_detail_sys'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
 		data: [{ dataObj: 'data_obj_sys_admin_org_list_sys' }],

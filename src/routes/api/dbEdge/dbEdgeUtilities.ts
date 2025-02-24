@@ -123,9 +123,8 @@ const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	_codeStatusObjName: t.codeStatusObj.name,
 	_pageDataObjId: t.pageDataObj.id,
 	_targetDataObjId: t.targetDataObj.id,
-	_targetNodeObjId: t.targetNodeObj.id,
-	_targetNodeObjData: e.select(t.targetNodeObj?.data, (d) => ({
-		...shapeNodeObjData(d)
+	_targetNodeObj: e.select(t.targetNodeObj, (n) => ({
+		...shapeNodeObj(n)
 	})),
 	description: true,
 	exprShow: true,
@@ -274,6 +273,7 @@ export async function getDataObjById(token: TokenApiId) {
 			/* props */
 			_propsCrumb: e.select(do1.columns, (doc) => ({
 				_name: doc.column.name,
+				_nameCustom: doc.nameCustom,
 				filter: e.op('exists', doc.orderCrumb),
 				order_by: doc.orderCrumb
 			})),
@@ -512,13 +512,15 @@ export async function getNodesBranch(token: TokenApiId) {
 
 export async function getNodesLevel(token: TokenApiId) {
 	const parentNodeId = token.id
-	const root = e.select(e.sys_core.SysNodeObj, (n: any) => ({
-		...shapeNodeObj(n),
-		filter: e.op(n.parent.id, '=', e.cast(e.uuid, parentNodeId))
+	const parent = e.select(e.sys_core.SysNodeObj, (n: any) => ({
+		filter: e.op(n.id, '=', e.cast(e.uuid, parentNodeId))
+	}))
+	const root = e.select(parent.children, (n: any) => ({
+		...shapeNodeObj(n)
 	}))
 	const children = e.select(e.sys_core.SysNodeObj, (n: any) => ({
 		...shapeNodeObj(n),
-		filter: e.op(n.parent.parent.id, '=', e.cast(e.uuid, parentNodeId))
+		filter: e.op(n.id, 'in', root.children.id)
 	}))
 	const query = e.select({ root, children })
 	return await query.run(client)

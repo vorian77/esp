@@ -193,6 +193,7 @@ async function initConfig(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgram', {
+		children: ['node_obj_sys_admin_system_detail_config'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
 		data: [{ dataObj: 'data_obj_sys_admin_system_list_config' }],

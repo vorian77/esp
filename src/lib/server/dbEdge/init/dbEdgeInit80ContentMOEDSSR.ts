@@ -739,6 +739,7 @@ function initTaskSsrMsg(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjTask', {
+		children: ['node_obj_task_moed_ssr_msg_detail'],
 		codeIcon: 'AppWindow',
 		codeNavType: 'task',
 		codeNodeType: 'program',
@@ -956,6 +957,7 @@ function initTaskSsrDoc(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjTask', {
+		children: ['node_obj_task_moed_ssr_doc_detail'],
 		codeIcon: 'AppWindow',
 		codeNavType: 'task',
 		codeNodeType: 'program',

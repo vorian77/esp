@@ -178,7 +178,7 @@ export class RawDataObj {
 		crumbFields = getArray(crumbFields)
 		let list: string[] = []
 		crumbFields.forEach((cf: any) => {
-			list.push(cf._name)
+			list.push(cf._nameCustom || cf._name)
 		})
 		return list
 	}

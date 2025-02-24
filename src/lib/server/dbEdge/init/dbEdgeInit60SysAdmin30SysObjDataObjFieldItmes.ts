@@ -298,6 +298,7 @@ function initDataObjFieldListItems(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_data_obj_field_list_items_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_data_obj_field_list_items_list' }],

@@ -1,13 +1,17 @@
 import type { DataRecord } from '$utils/types'
-import { debug } from '$utils/types'
+import { debug, getArray } from '$utils/types'
+import { error } from '@sveltejs/kit'
 
-const recordCount = 25
+const FILENAME = 'utils.randomDataGenerator.ts'
+
+const recordCount = 100
+const universalStartDate = '2025-02-09'
 
 const dataItemsPart = {
 	addr1: { type: 'list', values: ['123 Main St', '456 Elm St', '789 Oak St'] },
 	addr2: { type: 'list', values: ['Apt 1', 'Apt 2', ''] },
 	birthDate: {
-		type: 'date',
+		type: 'dateRange',
 		dateStart: '2000-01-01',
 		dateEnd: '2008-12-31'
 	},
@@ -196,42 +200,55 @@ const recordPart = [
 
 const dataItemsServiceFlow = {
 	dateCreated: {
-		type: 'date',
-		dateStart: '2025-01-02',
-		dateEnd: '2025-02-10'
+		date: universalStartDate,
+		daysMin: 0,
+		daysMax: 10,
+		type: 'daysAfterDate'
 	},
 	dateStart: {
-		type: 'date',
-		dateStart: '2025-01-02',
-		dateEnd: '2025-02-10'
+		daysMin: 0,
+		daysMax: 4,
+		rate: 0.5,
+		refn: 'dateCreated',
+		type: 'daysAfterRefn'
 	},
-	optionalDates: {
-		rate: 0.7,
-		type: 'optional',
-		values: [
-			['dateStart', { type: 'date', dateStart: '2025-01-02', dateEnd: '2025-02-10' }],
-			['dateEnd', { type: 'date', dateStart: '2025-01-02', dateEnd: '2025-02-10' }]
-		]
+	dateEnd: {
+		daysMin: 0,
+		daysMax: 4,
+		rate: 0.25,
+		refn: 'dateStart',
+		type: 'daysAfterRefn'
 	},
 	codeStatus: {
-		type: 'list',
-		values: [
-			'New application',
-			'Application under review',
-			'Pending eligibility documentation',
-			'Pending enrollment',
-			'Enrolled',
-			'Rejected'
+		type: 'listDependent',
+		parms: [
+			{
+				prop: 'dateEnd',
+				values: ['Enrolled', 'Rejected']
+			},
+			{
+				prop: 'dateStart',
+				values: [
+					'Application under review',
+					'Pending eligibility documentation',
+					'Pending enrollment'
+				]
+			},
+			{
+				prop: 'dateCreated',
+				values: ['New application']
+			}
 		]
 	}
 }
-const recordServiceFlow = ['dateCreated', 'optionalDates', 'codeStatus']
+const recordServiceFlow = ['dateCreated', 'dateStart', 'dateEnd', 'codeStatus']
 
 const dataItemsDataDoc = {
 	dateIssued: {
-		type: 'date',
-		dateStart: '2025-01-02',
-		dateEnd: '2025-02-10'
+		date: universalStartDate,
+		daysMin: 0,
+		daysMax: 14,
+		type: 'daysAfterDate'
 	},
 	codeType: {
 		type: 'list',
@@ -254,13 +271,10 @@ const recordDataDoc = ['dateIssued', 'codeType']
 
 const dataItemsDataMsg = {
 	date: {
-		type: 'date',
-		dateStart: '2025-01-05',
-		dateEnd: '2025-02-15'
-	},
-	codeStatus: {
-		type: 'list',
-		values: ['closed', 'replied', 'sent', 'underReview']
+		date: universalStartDate,
+		daysMin: 0,
+		daysMax: 15,
+		type: 'daysAfterDate'
 	},
 	subject: {
 		type: 'list',
@@ -272,7 +286,7 @@ const dataItemsDataMsg = {
 	}
 }
 
-const recordDataMsg = ['date', 'codeStatus', 'subject', 'office']
+const recordDataMsg = ['date', 'subject', 'office']
 
 export class RandomDataGenerator {
 	data: DataRecord = {}
@@ -286,36 +300,19 @@ export class RandomDataGenerator {
 	) {
 		let newData: any[] = []
 		const totalRecords = dataFactor !== 0 ? Math.floor(dataFactor * recCnt) : recCnt
-		console.log('generatedData', { label, dataFactor, recCnt, totalRecords })
 		for (let i = 0; i < totalRecords; i++) {
 			let newRow: any[] = []
 			const recIdx = dataFactor !== 0 ? Math.floor(this.getRandomValue(recCnt)) : i
 			newRow.push(recIdx)
-			record.forEach((key, idx) => {
+			record.forEach((key) => {
 				if (dataItems[key]) {
 					const dataItem = dataItems[key]
-					if (dataItem.type === 'optional') {
-						let rate = dataItem.rate
-						let values = dataItem.values
-						let random = this.getRandomValue(100) / 100
-
-						if (rate < random) {
-							values.forEach((v: any) => {
-								newRow.push(this.getValue({ type: 'undefined' }))
-							})
-						} else {
-							const idxData = this.getRandomValue(values.length)
-							values.forEach((v: any, i: number) => {
-								let type = v[0]
-								let config = v[1]
-								if (i === idxData) {
-									newRow.push(this.getValue({ type, ...config }))
-								} else {
-									newRow.push(this.getValue({ type: 'undefined' }))
-								}
-							})
-						}
-					} else newRow.push(this.getValue(dataItem))
+					const isInclude = this.isInclude(dataItem.rate)
+					if (isInclude) {
+						newRow.push(this.getValue(dataItem, record, newRow))
+					} else {
+						newRow.push(undefined)
+					}
 				}
 			})
 			newData.push(newRow)
@@ -323,17 +320,42 @@ export class RandomDataGenerator {
 		this.data[label] = newData
 	}
 
-	getValue(type: any) {
+	getValue(type: DataRecord, record: DataRecord, newRow: any[]) {
+		let propIdx: number = -1
+		let refnValue: any
+
 		switch (type.type) {
-			case 'date':
-				let dateStart = new Date(type.dateStart).getTime()
-				let dateEnd = new Date(type.dateEnd).getTime()
-				return new Date(dateStart + this.getRandomValue(dateEnd - dateStart))
-					.toISOString()
-					.slice(0, 10)
+			case 'dateRange':
+				const dateStart = new Date(type.dateStart).getTime()
+				const dateEnd = new Date(type.dateEnd).getTime()
+				return this.formatDate(new Date(dateStart + this.getRandomValue(dateEnd - dateStart)))
+
+			case 'daysAfterDate':
+				return this.getDaysAfter(type.date, type)
+
+			case 'daysAfterRefn':
+				// get refn date
+				propIdx = this.getPropIdx(record, type.refn)
+				refnValue = propIdx > -1 ? newRow[propIdx] : undefined
+				if (!refnValue) return undefined
+
+				return this.getDaysAfter(refnValue, type)
+
+			case 'equal':
+				propIdx = this.getPropIdx(record, type.prop)
+				return propIdx > -1 ? newRow[propIdx] : undefined
 
 			case 'list':
-				return type.values[this.getRandomValue(type.values.length)]
+				return this.getListValue(type.values)
+
+			case 'listDependent':
+				const parms = getArray(type.parms)
+				for (let i = 0; i < parms.length; i++) {
+					const parm = parms[i]
+					propIdx = this.getPropIdx(record, parm.prop)
+					refnValue = propIdx > -1 ? newRow[propIdx] : undefined
+					if (refnValue) return this.getListValue(parm.values)
+				}
 
 			case 'number':
 				let value = ''
@@ -342,13 +364,50 @@ export class RandomDataGenerator {
 				}
 				return value
 
-			case 'undefined':
-				return undefined
+			default:
+				error(500, {
+					file: FILENAME,
+					function: 'getValue',
+					message: `No case defined for type: ${type.type}`
+				})
 		}
 	}
+
+	formatDate(date: Date) {
+		return date.toISOString().slice(0, 10)
+	}
+
+	getDaysAfter(dateString: Date, type: DataRecord) {
+		const daysAfter = this.getRandomValueBetween(type.daysMin, type.daysMax)
+		const newDate = new Date(dateString)
+		newDate.setDate(newDate.getDate() + daysAfter)
+		return this.formatDate(newDate)
+	}
+
+	getListValue(values: string[]) {
+		return values[this.getRandomValue(values.length)]
+	}
+
+	getPropIdx(record: DataRecord, prop: string) {
+		const propIdx = record.indexOf(prop)
+		return propIdx > -1 ? propIdx + 1 : -1
+	}
+
 	getRandomValue(max: number) {
 		return Math.floor(Math.random() * max)
 	}
+
+	getRandomValueBetween(min: number, max: number) {
+		min = Math.ceil(min)
+		max = Math.floor(max)
+		return Math.floor(Math.random() * (max - min + 1) + min)
+	}
+
+	isInclude(rate: number | undefined) {
+		if (!rate) return true
+		return this.getRandomValue(100) / 100 < rate
+	}
+
 	setData() {
 		this.addData('applicant', recordPart, dataItemsPart, recordCount, 0)
 		this.addData('serviceFlow', recordServiceFlow, dataItemsServiceFlow, recordCount, 0)

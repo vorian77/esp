@@ -127,6 +127,7 @@ function initSystem(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgram', {
+		children: ['node_obj_sys_admin_system_detail_meta'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
 		data: [{ dataObj: 'data_obj_sys_admin_system_list_meta' }],
@@ -137,6 +138,7 @@ function initSystem(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_user_type_list'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_system_detail_meta' }],

@@ -252,12 +252,14 @@
 							: field.fieldElement === FieldElement.percentage
 								? 'customNumberPercentage'
 								: 'customNumber'
+					defn.comparator = (valueA, valueB, nodeA, nodeB, isDescending) => valueA - valueB
 					break
 
 				case PropDataType.int16:
 				case PropDataType.int32:
 				case PropDataType.int64:
 					defn.cellDataType = 'customNumberInt'
+					defn.comparator = (valueA, valueB, nodeA, nodeB, isDescending) => valueA - valueB
 					break
 
 				case PropDataType.json:
@@ -293,7 +295,7 @@
 					})
 			}
 		}
-		defn.cellStyle = defnCellStyle.cellStyle
+		// defn.cellStyle = defnCellStyle.cellStyle
 		return defn
 	}
 

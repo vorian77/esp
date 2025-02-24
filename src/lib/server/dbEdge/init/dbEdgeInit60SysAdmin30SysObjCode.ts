@@ -264,6 +264,7 @@ function initCodeType(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_code_type_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_code_type_list' }],
@@ -274,6 +275,7 @@ function initCodeType(init: InitDb) {
 		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_code_list_codeType'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_code_type_detail' }],
@@ -578,6 +580,7 @@ function initCodeTypeCode(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_code_detail_codeType'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_code_list_codeType' }],
@@ -923,6 +926,7 @@ function initCode(init: InitDb) {
 	// ])
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_code_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_code_list' }],

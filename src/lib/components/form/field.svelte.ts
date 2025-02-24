@@ -6,6 +6,7 @@ import {
 	DataObj,
 	DataObjData,
 	type DataRecord,
+	getColor,
 	ParmsValuesType,
 	ResponseBody,
 	required,
@@ -288,36 +289,8 @@ export class FieldColor {
 	color: string
 	name: string
 	constructor(parmColor: string | undefined, defaultColor: string) {
-		const colorError = '#ef4444'
-		const colorPrimary = '#60a5fa'
-		const colorSecondary = '#22c55e'
-		const colors = [
-			['amber', '#b45309'],
-			['defaultBorder', '#e5e7eb'],
-			['black', '#000000'],
-			['blue', colorPrimary],
-			['error', colorError],
-			['gray', '#e5e7eb'],
-			['green', colorSecondary],
-			['orange', '#f97316'],
-			['primary', colorPrimary],
-			['purple', '#d8b4fe'],
-			['red', colorError],
-			['secondary', colorSecondary],
-			['white', '#FFFFFF'],
-			['yellow', '#fde047']
-		]
 		this.name = parmColor || defaultColor
-		const idx = colors.findIndex((c) => c[0] === this.name)
-		if (idx > -1) {
-			this.color = colors[idx][1]
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'FieldColor',
-				message: `Invalid color: ${this.name}`
-			})
-		}
+		this.color = getColor(this.name)
 	}
 }
 

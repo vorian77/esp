@@ -194,12 +194,12 @@ async function sendCode(phoneMobile: string) {
 	const max = 999999
 	authSecurityCode = Math.floor(Math.random() * (max - min + 1)) + min
 	authSecurityCodePhone = phoneMobile
-	console.log(`${authSecurityCode} - The App Factory mobile phone number verification code.`)
-	// await apiFetch(
-	// 	ApiFunction.sysSendText,
-	// 	new TokenApiSysSendText(
-	// 		phoneMobile,
-	// 		`${authSecurityCode} - The App Factory mobile phone number verification code.`
-	// 	)
-	// )
+	// console.log(`authSecurityCode: ${authSecurityCode}`)
+	await apiFetch(
+		ApiFunction.sysSendText,
+		new TokenApiSysSendText(
+			phoneMobile,
+			`${authSecurityCode} - The App Factory mobile phone number verification code.`
+		)
+	)
 }

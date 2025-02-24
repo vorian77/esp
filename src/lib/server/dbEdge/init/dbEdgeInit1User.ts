@@ -130,7 +130,7 @@ function initApps(init: InitDb) {
 		isGlobalResource: false,
 		name: 'app_client_moed_advocate',
 		owner: 'sys_moed_old',
-		nodes: []
+		nodes: ['node_obj_moed_part_list']
 	})
 
 	init.addTrans('sysApp', {
@@ -138,7 +138,7 @@ function initApps(init: InitDb) {
 		isGlobalResource: false,
 		name: 'app_client_moed_student',
 		owner: 'sys_moed_old',
-		nodes: []
+		nodes: ['node_obj_moed_part_list']
 	})
 }
 
@@ -220,8 +220,8 @@ function initUserType(init: InitDb) {
 		owner: 'sys_moed_old',
 		resources: [
 			{ codeType: 'app', owner: 'sys_moed_old', name: 'app_client_moed_advocate' },
-			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
-			{ codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' },
+			// { codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
+			// { codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' },
 			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_part_apps_open' },
 			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_part_msgs_open' }
 		],
@@ -234,8 +234,8 @@ function initUserType(init: InitDb) {
 		owner: 'sys_moed_old',
 		resources: [
 			{ codeType: 'app', owner: 'sys_moed_old', name: 'app_client_moed_advocate' },
-			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
-			{ codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' },
+			// { codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
+			// { codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' },
 			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_part_apps_open' },
 			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_part_msgs_open' }
 		],
@@ -354,7 +354,110 @@ function initUsers(init: InitDb) {
 		userTypes: ['ut_client_ai_instructor']
 	})
 
-	/* MOED */
+	/* MOED - admin*/
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Evelyn',
+		lastName: 'Nicholson',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4432962824',
+		userTypes: ['ut_client_moed_advocate_east', 'ut_client_moed_advocate_west']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Jon',
+		lastName: 'Smeton',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4439660748',
+		userTypes: ['ut_client_moed_advocate_east', 'ut_client_moed_advocate_west']
+	})
+
+	/* MOED - eastside*/
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Troy',
+		lastName: 'Bryant',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4432264888',
+		userTypes: ['ut_client_moed_advocate_east']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Ariel',
+		lastName: 'Liddell',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4108442002',
+		userTypes: ['ut_client_moed_advocate_east']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Maya',
+		lastName: 'Maddison',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4433269335',
+		userTypes: ['ut_client_moed_advocate_east']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Candyce',
+		lastName: 'Davis-Hill',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4436210149',
+		userTypes: ['ut_client_moed_advocate_east']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Larry',
+		lastName: 'Franklin',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4434680244',
+		userTypes: ['ut_client_moed_advocate_east']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Robin',
+		lastName: 'Thomas',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4109844181',
+		userTypes: ['ut_client_moed_advocate_east']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Flory',
+		lastName: 'Gessner',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '3195738122',
+		userTypes: ['ut_client_moed_advocate_east']
+	})
+
+	/* MOED - westside*/
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_moed',
 		defaultSystem: 'sys_moed_old',
@@ -363,7 +466,106 @@ function initUsers(init: InitDb) {
 		orgs: ['org_moed'],
 		owner: 'org_moed',
 		systems: ['sys_moed_old'],
-		userName: '2222222222',
+		userName: '4432862871',
+		userTypes: ['ut_client_moed_advocate_west']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Raquel',
+		lastName: 'Jones',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4432860129',
+		userTypes: ['ut_client_moed_advocate_west']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'CieAndre',
+		lastName: 'Frink',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4433551246',
+		userTypes: ['ut_client_moed_advocate_west']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Chauncey',
+		lastName: 'Roman',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4439328798',
+		userTypes: ['ut_client_moed_advocate_west']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Jeffrey',
+		lastName: 'LeSane',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4433144565',
+		userTypes: ['ut_client_moed_advocate_west']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Tyshell',
+		lastName: 'Oliver',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4439867910',
+		userTypes: ['ut_client_moed_advocate_west']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Marissa',
+		lastName: 'Epps',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '5164249129',
+		userTypes: ['ut_client_moed_advocate_west']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Cortez',
+		lastName: 'Cannon',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4433884488',
+		userTypes: ['ut_client_moed_advocate_west']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Lori',
+		lastName: 'Rawlins',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4437574367',
+		userTypes: ['ut_client_moed_advocate_west']
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
+		firstName: 'Candace',
+		lastName: 'Washington',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '4438017583',
 		userTypes: ['ut_client_moed_advocate_west']
 	})
 }

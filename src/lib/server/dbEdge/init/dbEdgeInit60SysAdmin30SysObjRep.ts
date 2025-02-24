@@ -223,6 +223,7 @@ function initAnalytic(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_analytic_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_analytic_list' }],
@@ -233,6 +234,7 @@ function initAnalytic(init: InitDb) {
 		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_analytic_parm_list', 'node_obj_sys_analytic_status_list'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_analytic_detail' }],
@@ -530,6 +532,7 @@ function initAnalyticParm(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_analytic_parm_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_analytic_parm_list' }],
@@ -712,6 +715,7 @@ function initAnalyticStatus(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_analytic_status_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_analytic_status_list' }],
@@ -978,6 +982,7 @@ function initRep(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_rep_detail'],
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_rep_list' }],
@@ -988,6 +993,11 @@ function initRep(init: InitDb) {
 		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: [
+			'node_obj_sys_rep_parm_list',
+			'node_obj_sys_rep_el_list',
+			'node_obj_sys_rep_user_list'
+		],
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_rep_detail' }],
@@ -1506,6 +1516,7 @@ function initRepEl(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_rep_el_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_rep_element_list' }],
@@ -1861,6 +1872,7 @@ function initRepParm(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_rep_parm_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_rep_parm_list' }],
@@ -2066,6 +2078,7 @@ function initRepUser(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_rep_user_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_rep_user_list' }],

@@ -52,6 +52,7 @@
 				task.codeStatusObjName || task.codeRenderType === UserResourceTaskRenderType.page
 		)
 	)
+
 	const StatusType = {
 		tso_data: TsoData,
 		tso_moed_ssr_advocate: TsoMoedSsrAdvocate,
@@ -112,7 +113,7 @@
 		}
 	}
 	async function onClick(task: UserResourceTask, parms: DataRecord | undefined = undefined) {
-		if ((task.targetDataObjId || task.targetNodeObjId) && !task.dataObjPage) {
+		if ((task.targetDataObjId || task.targetNodeObj) && !task.dataObjPage) {
 			sm.parmsState.update(parms)
 			const token = task.getTokenNode(sm.user)
 			await sm.triggerAction(

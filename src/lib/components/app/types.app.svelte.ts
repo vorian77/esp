@@ -408,7 +408,7 @@ export class AppLevelTab {
 
 	listCrumbLabelId() {
 		let id = ''
-		const crumbFieldNames: Array<string> = this.dataObj?.raw.crumbs ? this.dataObj.raw.crumbs : []
+		const crumbFieldNames: string[] = this.dataObj?.raw.crumbs ? this.dataObj?.raw.crumbs : []
 		const idCurrent = this.dataObj?.data.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
 		if (crumbFieldNames.length > 0 && idCurrent) {
 			const dataRow = this.listGetDataRow()

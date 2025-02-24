@@ -374,11 +374,15 @@ module sys_core {
     parent: sys_core::SysMsg;
     multi readers: default::SysPerson;
     multi recipients: default::SysPerson;
+    responses := .<parent[IS sys_core::SysMsg];
     required sender: default::SysPerson;
     subject: str;
   }
 
   type SysNodeObj extending sys_core::SysObj {
+    multi children: sys_core::SysNodeObj{
+      on source delete allow;
+    };
     required codeNavType: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
     multi data: sys_core::SysNodeObjData {

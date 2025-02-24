@@ -513,6 +513,7 @@ function initRepConfig(init: InitDb) {
 		customEmbedShellFields: ['parms']
 	})
 	init.addTrans('sysNodeObjProgram', {
+		children: ['node_obj_sys_rep_my_report_detail'],
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program',
 		data: [{ dataObj: 'data_obj_sys_rep_my_report_list' }],
@@ -522,6 +523,7 @@ function initRepConfig(init: InitDb) {
 		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_rep_render'],
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_rep_my_report_detail' }],

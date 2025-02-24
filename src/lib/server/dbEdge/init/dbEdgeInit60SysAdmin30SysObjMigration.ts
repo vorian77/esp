@@ -153,6 +153,7 @@ function initMigr(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_migr_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_migr_list' }],
@@ -163,6 +164,10 @@ function initMigr(init: InitDb) {
 		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		children: [
+			'node_obj_sys_admin_migr_source_table_list',
+			'node_obj_sys_admin_migr_target_table_list'
+		],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_migr_detail' }],
@@ -335,6 +340,7 @@ function initMigrSourceTable(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_migr_source_table_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_migr_source_table_list' }],
@@ -346,6 +352,7 @@ function initMigrSourceTable(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_migr_source_column_list'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_migr_source_table_detail' }],
@@ -501,6 +508,7 @@ function initMigrSourceColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_migr_source_column_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_migr_source_column_list' }],
@@ -735,6 +743,7 @@ function initMigrTargetTable(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_migr_target_table_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_migr_target_table_list' }],
@@ -746,6 +755,7 @@ function initMigrTargetTable(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_migr_target_column_list'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_migr_target_table_detail' }],
@@ -964,6 +974,7 @@ function initMigrTargetColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_migr_target_column_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_migr_target_column_list' }],

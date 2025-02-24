@@ -220,6 +220,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_data_obj_field_embed_list_config_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_config_list' }],
@@ -403,6 +404,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_data_obj_field_embed_list_edit_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_edit_list' }],
@@ -624,6 +626,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		children: ['node_obj_sys_admin_data_obj_field_embed_list_select_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_select_list' }],

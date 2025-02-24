@@ -174,7 +174,7 @@ export class NavMenuData {
 					await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_nav,
 						CodeActionType.openNode,
-						{ token: task.getTokenNode(this.sm.user) },
+						{ token: task.getTokenNode() },
 						{}
 					)
 					break

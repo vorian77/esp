@@ -120,6 +120,30 @@ export enum FileProcessingMode {
 	upload = 'upload'
 }
 
+export function getColor(colorName: string) {
+	const colorError = '#ef4444'
+	const colorPrimary = '#60a5fa'
+	const colorSecondary = '#22c55e'
+	const colors = [
+		['amber', '#b45309'],
+		['defaultBorder', '#e5e7eb'],
+		['black', '#000000'],
+		['blue', colorPrimary],
+		['error', colorError],
+		['gray', '#e5e7eb'],
+		['green', colorSecondary],
+		['orange', '#f97316'],
+		['primary', colorPrimary],
+		['purple', '#d8b4fe'],
+		['red', colorError],
+		['secondary', colorSecondary],
+		['white', '#FFFFFF'],
+		['yellow', '#fde047']
+	]
+	const idx = colors.findIndex((c) => c[0] === colorName)
+	return idx > -1 ? colors[idx][1] : ''
+}
+
 export const isNumber = (value: any) => {
 	if ([null, undefined, ''].includes(value)) return false
 	return typeof value === 'number' || !isNaN(value)

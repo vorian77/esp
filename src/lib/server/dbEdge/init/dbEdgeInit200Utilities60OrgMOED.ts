@@ -129,9 +129,8 @@ export async function MoedBulkDataMsg(params: any) {
 					createdBy: CREATOR,
 					hasAccess: true,
 					modifiedBy: CREATOR,
-					obj: e.sys_core.getObjEntAttr('sys_moed_old', e.cast(e.str, i[4]))
+					obj: e.sys_core.getObjEntAttr('sys_moed_old', e.cast(e.str, i[3]))
 				}),
-				codeStatus: e.sys_core.getCode('ct_sys_msg_status', e.cast(e.str, i[2])),
 				date: e.cal.to_local_date(e.cast(e.str, i[1])),
 				isRead: false,
 				sender: e.assert_single(
@@ -139,7 +138,7 @@ export async function MoedBulkDataMsg(params: any) {
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
 					})).person
 				),
-				subject: e.cast(e.str, i[3])
+				subject: e.cast(e.str, i[2])
 			})
 		})
 	})

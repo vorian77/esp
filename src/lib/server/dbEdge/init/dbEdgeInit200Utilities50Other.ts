@@ -249,6 +249,7 @@ export async function addNode(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
+			// children: e.optional(e.array(e.str)),
 			codeIcon: e.str,
 			codeNavType: e.optional(e.str) || 'tree',
 			codeNodeType: e.str,
@@ -260,11 +261,16 @@ export async function addNode(data: any) {
 			name: e.str,
 			orderDefine: e.int16,
 			owner: e.str,
-			page: e.optional(e.str),
-			parentNodeName: e.optional(e.str)
+			page: e.optional(e.str)
+			// parentNodeName: e.optional(e.str)
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysNodeObj, {
+				// children: e.assert_distinct(
+				// 	e.for(e.array_unpack(p.children), (child) => {
+				// 		return e.select(e.sys_core.getNodeObjByName(child))
+				// 	})
+				// ),
 				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
 				codeNavType: e.sys_core.getCode(
 					'ct_sys_node_obj_nav_type',
@@ -288,8 +294,8 @@ export async function addNode(data: any) {
 				name: p.name,
 				orderDefine: p.orderDefine,
 				owner: e.sys_core.getSystemPrime(p.owner),
-				page: p.page,
-				parent: e.sys_core.getNodeObjByName(p.parentNodeName)
+				page: p.page
+				// parent: e.sys_core.getNodeObjByName(p.parentNodeName)
 			})
 		}
 	)
@@ -517,4 +523,28 @@ export async function addUserType(data: any) {
 		}
 	)
 	return await query.run(client, data)
+}
+
+export async function updateDepdNodeChildren(data: any) {
+	sectionHeader(`updateDepdNodeChildren - ${data.name}`)
+	const dataUpdate = { name: data.name, children: data.children }
+	const query = e.params(
+		{
+			children: e.optional(e.array(e.str)),
+			name: e.str
+		},
+		(p) => {
+			return e.update(e.sys_core.SysNodeObj, (n) => ({
+				filter: e.op(n.name, '=', p.name),
+				set: {
+					children: e.assert_distinct(
+						e.for(e.array_unpack(p.children), (c) => {
+							return e.sys_core.getNodeObjByName(c)
+						})
+					)
+				}
+			}))
+		}
+	)
+	return await query.run(client, dataUpdate)
 }
