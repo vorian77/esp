@@ -38,7 +38,6 @@
 
 	let field = $derived(parms.field) as FieldCustomActionLink
 	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
-	$inspect('FormElFile.fieldValue:', fieldValue)
 	$effect(() => {
 		urlCurrent = fieldValue && fieldValue.url ? fieldValue.url : urlCurrent
 		urlOld = fieldValue && fieldValue?.url ? fieldValue.url : urlOld

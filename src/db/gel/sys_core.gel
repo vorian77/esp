@@ -68,15 +68,15 @@ module sys_core {
   }
 
   type SysOrg extending sys_core::ObjRootCore, sys_user::Mgmt {
-    appName: str;
-    file: json;
-    logoMarginRight: float64;
-    logoWidth: int16;
     users := .<orgs[is sys_user::SysUser];
     constraint exclusive on (.name);
   }
 
   type SysSystem extending sys_core::ObjRootCore, sys_user::Mgmt  {
+    appName: str;
+    file: json;
+    logoMarginRight: float64;
+    logoWidth: int16;
     required owner: sys_core::SysOrg;
     constraint exclusive on ((.owner, .name));
   }

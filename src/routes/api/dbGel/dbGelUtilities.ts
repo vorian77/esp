@@ -638,31 +638,11 @@ export async function getUserByUserId(token: TokenApiUserId) {
 		fullName: u.person.fullName,
 		id: true,
 		lastName: u.person.lastName,
-		org: e.select(e.sys_core.SysOrg, (o) => ({
-			appName: true,
-			file: true,
-			id: true,
-			name: true,
-			logoMarginRight: true,
-			logoWidth: true,
-			filter_single: e.op(o, '=', u.defaultOrg)
-		})),
 		orgs: true,
 		preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({
 			_codeType: p.codeType.name,
 			isActive: true,
 			filter: e.op(p.user.id, '=', u.id)
-		})),
-		resources_core: e.select(u.userTypes.resources, (r) => ({
-			_codeType: r.codeType.name,
-			_resource: e.select(r.resource, (obj) => ({
-				_icon: obj.codeIcon.name,
-				header: true,
-				id: true,
-				name: true,
-				order_by: obj.orderDefine
-			})),
-			filter: e.op(r.codeType.name, '!=', 'subject')
 		})),
 		resources_app: e.select(e.sys_user.SysApp, (res) => ({
 			appHeader: e.select(res.appHeader, (ah) => ({
@@ -678,10 +658,9 @@ export async function getUserByUserId(token: TokenApiUserId) {
 				...shapeNodeObj(n),
 				order_by: n.orderDefine
 			})),
-			filter: e.op(res.id, 'in', u.userTypes.resources.resource.id),
+			filter: e.op(res.id, 'in', u.userTypes.resources.id),
 			order_by: res.appHeader.orderDefine
 		})),
-
 		resources_task_default: e.select(e.sys_user.SysTask, (res) => ({
 			...shapeTask(res),
 			filter: e.op(
@@ -690,7 +669,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 				e.op(
 					e.op(res.isGlobalResource, '=', true),
 					'or',
-					e.op(res.id, 'in', u.userTypes.resources.resource.id)
+					e.op(res.id, 'in', u.userTypes.resources.id)
 				)
 			),
 			order_by: res.orderDefine
@@ -703,14 +682,19 @@ export async function getUserByUserId(token: TokenApiUserId) {
 				e.op(
 					e.op(res.isGlobalResource, '=', true),
 					'or',
-					e.op(res.id, 'in', u.userTypes.resources.resource.id)
+					e.op(res.id, 'in', u.userTypes.resources.id)
 				)
 			),
 			order_by: res.orderDefine
 		})),
 		system: e.select(e.sys_core.SysSystem, (s) => ({
+			_orgName: s.owner.name,
+			appName: true,
+			file: true,
 			header: true,
 			id: true,
+			logoMarginRight: true,
+			logoWidth: true,
 			name: true,
 			filter_single: e.op(s, '=', u.defaultSystem)
 		})),

@@ -446,7 +446,7 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 		// info
 		if (['user_sys', '2487985578'].includes(this.user.userName)) {
 			this.info.push(new NavMenuInfo('dbBranch', this.user.dbBranch))
-			this.info.push(new NavMenuInfo('Default Organization', this.user.org.name))
+			this.info.push(new NavMenuInfo('Default Organization', this.user.system.orgName))
 			this.info.push(new NavMenuInfo('Default System', this.user.system.name))
 		}
 

@@ -7,7 +7,7 @@ import {
 	updateDataObjColumnCustomEmbedShellFields
 } from '$server/dbGel/init/dbGelInit200Utilities20DataObj'
 import { addColumn, tableColumnsBulk } from '$server/dbGel/init/dbGelInit200Utilities30DB'
-import { tablesBulk, widgetsBulk } from '$server/dbGel/init/dbGelInit200Utilities10'
+import { tablesBulk, widgetBulk } from '$server/dbGel/init/dbGelInit200Utilities10'
 import {
 	addDataObjActionGroup,
 	addDataObjFieldItems,
@@ -50,6 +50,8 @@ import {
 	strRequired
 } from '$utils/types'
 import { error } from '@sveltejs/kit'
+import { update } from '$db/gel/edgeql-js'
+import exp from 'constants'
 
 const FILENAME = '/server/dbGel/init/types.init.ts'
 const TokenExprFilterRecord = '<ExprFilterRecord>'
@@ -110,7 +112,7 @@ export class InitDb {
 		this.items.push(
 			new InitDbItemBulk({
 				name: 'tablesBulk',
-				dataMap: [`.name = '[0]'`, 2],
+				dataMap: ['.name', 2],
 				deleteObj: 'sys_db::SysTable',
 				fCreate: tablesBulk
 			})
@@ -118,7 +120,7 @@ export class InitDb {
 		this.items.push(
 			new InitDbItemBulk({
 				name: 'tableColumnsBulk',
-				dataMap: [`.name = '[0]'`, 0],
+				dataMap: ['.name', 0],
 				deleteObj: 'sys_db::SysTable',
 				fCreate: tableColumnsBulk
 			})
@@ -259,7 +261,7 @@ export class InitDb {
 				dataMap: 'name',
 				fCreate: updateDepdNodeChildren,
 				updateObj: 'sys_core::SysNodeObj',
-				updateObjField: 'children'
+				updateObjFields: [['children', '{}']]
 			})
 		)
 
@@ -291,10 +293,10 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemBulk({
-				name: 'widgetsBulk',
-				dataMap: [`.name = '[0]'`, 1],
+				name: 'widgetBulk',
+				dataMap: ['.name', 1],
 				deleteObj: 'sys_user::SysWidget',
-				fCreate: widgetsBulk
+				fCreate: widgetBulk
 			})
 		)
 		this.items.push(
@@ -305,7 +307,16 @@ export class InitDb {
 					['owner.name', 'owner']
 				],
 				deleteObj: 'sys_core::SysObjEntAttr',
-				fCreate: addObjEntAttr
+				fCreate: addObjEntAttr,
+				isResetByTransOnly: true,
+				updateObj: 'sys_core::ObjRoot',
+				updateObjBypassRecordFilter: true,
+				updateObjFields: [
+					[
+						'attributes',
+						`.attributes EXCEPT (SELECT sys_core::SysAttr FILTER .obj = (SELECT sys_core::SysObjEntAttr FILTER ${TokenExprFilterRecord}))`
+					]
+				]
 			})
 		)
 		this.items.push(
@@ -476,8 +487,8 @@ export class InitDbItem {
 	name: string
 	trans: [string, any][] = []
 	updateObj?: string
-	updateObjField?: string
-	updateObjFilter?: string
+	updateObjBypassRecordFilter: boolean
+	updateObjFields?: [string, string][]
 	constructor(obj: any) {
 		const clazz = 'InitDbItem'
 		obj = valueOrDefault(obj, clazz)
@@ -489,8 +500,8 @@ export class InitDbItem {
 		this.isResetByTransOnly = booleanOrFalse(obj.isResetByTransOnly)
 		this.name = obj.name
 		this.updateObj = obj.updateObj
-		this.updateObjField = obj.updateObjField
-		this.updateObjFilter = obj.updateObjFilter
+		this.updateObjBypassRecordFilter = valueOrDefault(obj.updateObjBypassRecordFilter, false)
+		this.updateObjFields = valueOrDefault(obj.updateObjFields, [])
 	}
 	addTrans(name: string, data: any) {
 		this.trans.push([name, data])
@@ -548,11 +559,27 @@ export class InitDbItem {
 
 	getExprUpdate(record: DataRecord | undefined = undefined) {
 		let expr = ''
-		if (this.updateObj && this.updateObjField) {
+		if (this.updateObj && this.updateObjFields && this.updateObjFields.length > 0) {
 			expr = `UPDATE ${this.updateObj}`
-			const filter = this.getExprFilter({ filterCustom: this.updateObjFilter, record })
-			if (filter) expr += ` ${filter}`
-			expr += ` SET { ${this.updateObjField} := {} }`
+
+			// filter
+			if (!this.updateObjBypassRecordFilter) {
+				const filter = this.getExprFilter({ filterCustom: undefined, record })
+				if (filter) expr += ` ${filter}`
+			}
+
+			// set
+			let exprSet = ''
+			this.updateObjFields.forEach((f) => {
+				const field = f[0]
+				let value = f[1]
+				if (value.includes(TokenExprFilterRecord) && record) {
+					value = value.replace(TokenExprFilterRecord, this.getExprFilterRecord(record))
+				}
+				if (exprSet) exprSet += ', '
+				exprSet += `${field} := ${value}`
+			})
+			expr += ` SET { ${exprSet} }`
 		}
 		return expr
 	}
@@ -576,7 +603,7 @@ class InitDbItemBulk extends InitDbItem {
 		if (record) {
 			this.dataMap.forEach((map, i) => {
 				if (filter) filter += ' AND '
-				filter += map[0].replace(`[${i}]`, record[map[1]])
+				filter += `${map[0]} = '${record[map[1]]}'`
 			})
 		}
 		return filter

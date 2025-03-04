@@ -503,15 +503,15 @@ export async function addUserType(data: any) {
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
 				modifiedBy: CREATOR,
-				resources: e.for(e.array_unpack(p.resources || e.cast(e.array(e.str), e.set())), (res) => {
-					const codeType = e.cast(e.str, e.json_get(res, 'codeType'))
-					const resourceName = e.cast(e.str, e.json_get(res, 'name'))
-					const resourceOwner = e.cast(e.str, e.json_get(res, 'owner'))
-					return e.insert(e.sys_user.SysUserTypeResource, {
-						codeType: e.sys_core.getCode('ct_sys_user_type_resource_type', codeType),
-						resource: e.sys_core.getObj(resourceOwner, resourceName)
+				// resources: e.sys_user.getUserTypeResource('sys_system_old', 'app_sys_admin_global'),
+
+				resources: e.assert_distinct(
+					e.for(e.array_unpack(p.resources || e.cast(e.array(e.json), e.set())), (res) => {
+						const resourceOwner = e.cast(e.str, e.json_get(res, 'owner'))
+						const resourceName = e.cast(e.str, e.json_get(res, 'name'))
+						return e.sys_user.getUserTypeResource(resourceOwner, resourceName)
 					})
-				}),
+				),
 				tags: e.assert_distinct(
 					e.for(e.array_unpack(p.tags || e.cast(e.array(e.str), e.set())), (tag) => {
 						const codeType = e.cast(e.str, e.json_get(tag, 'codeType'))
@@ -526,7 +526,7 @@ export async function addUserType(data: any) {
 }
 
 export async function updateDepdDataObjColumnItemChange(data: any) {
-	// sectionHeader(`updateDepdDataObjColumnItemChange - ${data.name}`)
+	sectionHeader(`updateDepdDataObjColumnItemChange - ${data.name}`)
 	let itemChanges: DataRecord[] = []
 	data.fields.forEach((field: any) => {
 		if (field.itemChanges && field.itemChanges.length > 0) {

@@ -37,7 +37,7 @@ const $SysAnalyticStatus = $.makeType<$SysAnalyticStatus>(_.spec, "16f93cc7-1880
 
 const SysAnalyticStatus: $.$expr_PathNode<$.TypeSet<$SysAnalyticStatus, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysAnalyticStatus, $.Cardinality.Many), null);
 
-export type $SysRepλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
+export type $SysRepλShape = $.typeutil.flatten<_sys_user.$SysUserTypeResourceλShape & {
   "actionGroup": $.LinkDesc<_sys_core.$SysDataObjActionGroup, $.Cardinality.One, {}, false, false,  false, false>;
   "analytics": $.LinkDesc<$SysAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -51,7 +51,7 @@ export type $SysRepλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "<report": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysRep = $.ObjectType<"sys_rep::SysRep", $SysRepλShape, null, [
-  ..._sys_core.$SysObj['__exclusives__'],
+  ..._sys_user.$SysUserTypeResource['__exclusives__'],
 ], "sys_rep::SysRep">;
 const $SysRep = $.makeType<$SysRep>(_.spec, "170b40bb-1880-11ef-97a9-615fd4c43549", _.syntax.literal);
 

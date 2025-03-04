@@ -18,8 +18,8 @@
 			class="flex-none w-14 hover:-translate-y-0.5 transition-transform"
 			onclick={data.navMenu.openToggle}
 		>
-			{#if data.user.org.urlLogo}
-				<img src={data.user.org.urlLogo} />
+			{#if data.user.system.urlLogo}
+				<img src={data.user.system.urlLogo} />
 			{/if}
 		</button>
 
@@ -27,7 +27,7 @@
 			<button onclick={data.navMenu.openToggle}>
 				<div class="text-sm ml-1">
 					<span in:fade={data.navMenu.fadeIn} out:fade={data.navMenu.fadeOut}>
-						{data.user.org.appName}
+						{data.user.system.appName}
 					</span>
 				</div>
 			</button>

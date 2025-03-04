@@ -12,7 +12,7 @@
 	let { toggleMobileMenuHide }: { toggleMobileMenuHide: Function } = $props()
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 
-	let appName = sm?.user?.org?.appName || DEFAULT_APP_NAME
+	let appName = sm?.user?.system?.appName || DEFAULT_APP_NAME
 
 	const goHome = async () => {
 		await sm.triggerAction(

@@ -200,7 +200,7 @@ function initRepConfig(init: InitDb) {
 		exprFilter: '.user.id = <user,uuid,id>',
 		header: 'My Reports',
 		listEditPresetExpr: `WITH
-		userTypeReps := (SELECT (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).userTypes.resources.resource[IS sys_rep::SysRep]),
+		userTypeReps := (SELECT (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).userTypes.resources[IS sys_rep::SysRep]),
 		userReps := (SELECT sys_rep::SysRepUser FILTER .user.id = <user,uuid,id>).report,
 		newVals := (SELECT userTypeReps EXCEPT userReps)
 		SELECT newVals`,

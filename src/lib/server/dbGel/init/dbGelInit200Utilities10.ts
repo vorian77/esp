@@ -84,7 +84,7 @@ export async function nodeObjPagesBulk(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function widgetsBulk(params: any) {
+export async function widgetBulk(params: any) {
 	sectionHeader('Widgets')
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {

@@ -10,8 +10,7 @@ export function initUser(init: InitDb) {
 
 function initResources(init: InitDb) {
 	/* widgets */
-	init.addTrans('widgetsBulk', [
-		['sys_system_old', 'widget_sys_report', true],
+	init.addTrans('widgetBulk', [
 		['sys_system_old', 'widget_sys_quotes', true],
 		['sys_system_old', 'widget_sys_user', true],
 		['sys_ai_old', 'widget_ai_user', false]
@@ -96,7 +95,7 @@ function initApps(init: InitDb) {
 		isGlobalResource: true,
 		name: 'app_sys_admin_user',
 		owner: 'sys_system_old',
-		nodes: ['node_obj_sys_admin_org_list_user', 'node_obj_sys_admin_system_list_meta']
+		nodes: ['node_obj_sys_admin_system_list_meta']
 	})
 	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_sys_reporting',
@@ -149,9 +148,8 @@ function initUserType(init: InitDb) {
 		name: 'ut_sys_admin_global',
 		owner: 'sys_system_old',
 		resources: [
-			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_admin_global' },
-			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
-			{ codeType: 'widget', owner: 'sys_system_old', name: 'widget_sys_report' }
+			{ owner: 'sys_system_old', name: 'app_sys_admin_global' },
+			{ owner: 'sys_system_old', name: 'app_sys_reporting' }
 		]
 	})
 
@@ -161,9 +159,9 @@ function initUserType(init: InitDb) {
 		name: 'ut_app_crm_admin',
 		owner: 'sys_app_crm',
 		resources: [
-			{ codeType: 'app', owner: 'sys_app_crm', name: 'app_app_crm' },
-			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
-			{ codeType: 'report', owner: 'sys_app_crm', name: 'report_crm_client_detail' }
+			{ owner: 'sys_app_crm', name: 'app_app_crm' },
+			{ owner: 'sys_system_old', name: 'app_sys_reporting' },
+			{ owner: 'sys_app_crm', name: 'report_crm_client_detail' }
 		]
 	})
 
@@ -173,9 +171,8 @@ function initUserType(init: InitDb) {
 		name: 'ut_client_ai_admin',
 		owner: 'sys_ai_old',
 		resources: [
-			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_admin_user' },
-			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
-			{ codeType: 'widget', owner: 'sys_system_old', name: 'widget_sys_report' }
+			{ owner: 'sys_system_old', name: 'app_sys_admin_user' },
+			{ owner: 'sys_system_old', name: 'app_sys_reporting' }
 		]
 	})
 	init.addTrans('sysUserType', {
@@ -189,41 +186,50 @@ function initUserType(init: InitDb) {
 		name: 'ut_client_ai_staff',
 		owner: 'sys_ai_old',
 		resources: [
-			{ codeType: 'app', owner: 'sys_ai_old', name: 'app_client_ai_staff' },
-			{ codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
-			{ codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_cohort_performance' },
-			{ codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_course_performance' },
-			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_cohorts_detail' },
-			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_courses_detail' },
-			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_partners_detail' },
-			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_attd_detail' },
-			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_docs_detail' },
-			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_notes_detail' },
-			{ codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_cohort_attd_summary' },
-			{ codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_job_placement_detail' },
+			{ owner: 'sys_ai_old', name: 'app_client_ai_staff' },
+			{ owner: 'sys_system_old', name: 'app_sys_reporting' },
+			{ owner: 'sys_ai_old', name: 'report_ai_cohort_performance' },
+			{ owner: 'sys_ai_old', name: 'report_ai_course_performance' },
+			// { owner: 'sys_ai_old', name: 'report_ai_cohorts_detail' },
+			// { owner: 'sys_ai_old', name: 'report_ai_courses_detail' },
+			// {  owner: 'sys_ai_old', name: 'report_ai_partners_detail' },
+			// {  owner: 'sys_ai_old', name: 'report_ai_student_attd_detail' },
+			// {  owner: 'sys_ai_old', name: 'report_ai_student_docs_detail' },
+			// {  owner: 'sys_ai_old', name: 'report_ai_student_notes_detail' },
+			{ owner: 'sys_ai_old', name: 'report_ai_student_cohort_attd_summary' },
+			{ owner: 'sys_ai_old', name: 'report_ai_student_job_placement_detail' },
 			{
-				codeType: 'report',
 				owner: 'sys_ai_old',
 				name: 'report_ai_student_school_placement_detail'
 			},
-			{ codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_roster' },
-			// { codeType: 'report', owner: 'sys_ai_old', name: 'report_ai_student_service_flow_summary' },
-			{ codeType: 'widget', owner: 'sys_system_old', name: 'widget_sys_report' }
+			{ owner: 'sys_ai_old', name: 'report_ai_student_roster' }
+			// { owner: 'sys_ai_old', name: 'report_ai_student_service_flow_summary' },
 		]
 	})
 
 	/* MOED */
 	init.addTrans('sysUserType', {
 		attributes: [{ hasAccess: true, name: 'moedOfficeEastside', owner: 'sys_moed_old' }],
+		header: 'MOED-Administrator',
+		name: 'ut_client_moed_admin',
+		owner: 'sys_moed_old',
+		resources: [
+			{ owner: 'sys_system_old', name: 'app_sys_admin_user' }
+			// { owner: 'sys_system_old', name: 'app_sys_reporting' },
+		]
+	})
+
+	init.addTrans('sysUserType', {
+		attributes: [{ hasAccess: true, name: 'moedOfficeEastside', owner: 'sys_moed_old' }],
 		header: 'MOED-Staff-Eastside',
 		name: 'ut_client_moed_advocate_east',
 		owner: 'sys_moed_old',
 		resources: [
-			{ codeType: 'app', owner: 'sys_moed_old', name: 'app_client_moed_advocate' },
-			// { codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
-			// { codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' },
-			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_part_apps_open' },
-			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_part_msgs_open' }
+			{ owner: 'sys_moed_old', name: 'app_client_moed_advocate' },
+			// { owner: 'sys_system_old', name: 'app_sys_reporting' },
+			// { owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' },
+			{ owner: 'sys_moed_old', name: 'task_moed_part_apps_open' },
+			{ owner: 'sys_moed_old', name: 'task_moed_part_msgs_open' }
 		],
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
 	})
@@ -233,11 +239,11 @@ function initUserType(init: InitDb) {
 		name: 'ut_client_moed_advocate_west',
 		owner: 'sys_moed_old',
 		resources: [
-			{ codeType: 'app', owner: 'sys_moed_old', name: 'app_client_moed_advocate' },
-			// { codeType: 'app', owner: 'sys_system_old', name: 'app_sys_reporting' },
-			// { codeType: 'report', owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' },
-			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_part_apps_open' },
-			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_part_msgs_open' }
+			{ owner: 'sys_moed_old', name: 'app_client_moed_advocate' },
+			// { owner: 'sys_system_old', name: 'app_sys_reporting' },
+			// { owner: 'sys_moed_old', name: 'report_moed_self_serv_student_status' },
+			{ owner: 'sys_moed_old', name: 'task_moed_part_apps_open' },
+			{ owner: 'sys_moed_old', name: 'task_moed_part_msgs_open' }
 		],
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
 	})
@@ -247,10 +253,10 @@ function initUserType(init: InitDb) {
 		name: 'ut_client_moed_student',
 		owner: 'sys_moed_old',
 		resources: [
-			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_ssr_app' },
-			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_ssr_app_doc' },
-			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_ssr_app_msg' },
-			{ codeType: 'task', owner: 'sys_moed_old', name: 'task_moed_ssr_welcome' }
+			{ owner: 'sys_moed_old', name: 'task_moed_ssr_app' },
+			{ owner: 'sys_moed_old', name: 'task_moed_ssr_app_doc' },
+			{ owner: 'sys_moed_old', name: 'task_moed_ssr_app_msg' },
+			{ owner: 'sys_moed_old', name: 'task_moed_ssr_welcome' }
 		]
 	})
 }
@@ -358,13 +364,32 @@ function initUsers(init: InitDb) {
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_moed',
 		defaultSystem: 'sys_moed_old',
+		firstName: 'Test',
+		lastName: 'user1',
+		orgs: ['org_moed'],
+		owner: 'org_moed',
+		systems: ['sys_moed_old'],
+		userName: '2222222222',
+		userTypes: [
+			'ut_client_moed_admin',
+			'ut_client_moed_advocate_east',
+			'ut_client_moed_advocate_west'
+		]
+	})
+	init.addTrans('sysUser', {
+		defaultOrg: 'org_moed',
+		defaultSystem: 'sys_moed_old',
 		firstName: 'Evelyn',
 		lastName: 'Nicholson',
 		orgs: ['org_moed'],
 		owner: 'org_moed',
 		systems: ['sys_moed_old'],
 		userName: '4432962824',
-		userTypes: ['ut_client_moed_advocate_east', 'ut_client_moed_advocate_west']
+		userTypes: [
+			'ut_client_moed_admin',
+			'ut_client_moed_advocate_east',
+			'ut_client_moed_advocate_west'
+		]
 	})
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_moed',
@@ -375,7 +400,11 @@ function initUsers(init: InitDb) {
 		owner: 'org_moed',
 		systems: ['sys_moed_old'],
 		userName: '4439660748',
-		userTypes: ['ut_client_moed_advocate_east', 'ut_client_moed_advocate_west']
+		userTypes: [
+			'ut_client_moed_admin',
+			'ut_client_moed_advocate_east',
+			'ut_client_moed_advocate_west'
+		]
 	})
 
 	/* MOED - eastside*/

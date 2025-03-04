@@ -12,7 +12,7 @@ function initFieldListSelectResource(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		exprFilter: `.resource.isGlobalResource UNION .resource.owner.owner IN (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).orgs`,
+		exprFilter: `.resource.isGlobalResource UNION .owner IN (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).orgs`,
 		header: 'Select Resource(s)',
 		name: 'dofls_sys_admin_sys_user_type_resource',
 		owner: 'sys_system_old',
@@ -34,17 +34,6 @@ function initFieldListSelectResource(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 1
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'codeType',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				orderSort: 10,
-				indexTable: 0,
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -84,7 +73,10 @@ function initFieldListSelectUser(init: InitDb) {
 		header: 'Select Users',
 		name: 'dofls_sys_sys_admin_user',
 		owner: 'sys_system_old',
-		tables: [{ index: 0, table: 'SysUser' }],
+		tables: [
+			{ index: 0, table: 'SysUser' },
+			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
+		],
 		fields: [
 			{
 				columnName: 'id',
@@ -94,12 +86,30 @@ function initFieldListSelectUser(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'userName',
-				orderCrumb: 10,
-				orderSort: 10,
+				columnName: 'firstName',
+				orderCrumb: 20,
+				orderSort: 20,
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'lastName',
+				orderCrumb: 10,
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'userName',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			}
 		]

@@ -115,6 +115,16 @@ function initFieldListSelectUserType(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'name',
+				orderCrumb: 10,
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
 			}
 		]
 	})
@@ -154,41 +164,6 @@ function initOrg(init: InitDb) {
 				orderDisplay: 10,
 				orderDefine: 10,
 				orderSort: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'appName',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'logoWidth',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'logoMarginRight',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				codeFieldElement: 'toggle',
-				columnName: 'custom_element_bool',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				exprCustom: `'Yes' IF EXISTS .file ELSE 'No'`,
-				headerAlt: 'Document Uploaded',
-				nameCustom: 'hasFile'
 			}
 		]
 	})
@@ -200,22 +175,6 @@ function initOrg(init: InitDb) {
 		header: 'Organization (User)',
 		name: 'data_obj_sys_admin_org_detail_user',
 		owner: 'sys_system_old',
-		queryRiders: [
-			{
-				codeFunction: 'qrfFileStorage',
-				codeQueryType: 'save',
-				codeTriggerTiming: 'pre',
-				codeType: 'customFunction',
-				functionParmValue: 'file'
-			},
-			{
-				codeQueryType: 'save',
-				codeTriggerTiming: 'post',
-				codeType: 'userMessage',
-				codeUserMsgDelivery: 'toast',
-				userMsg: 'File uploaded successfully!'
-			}
-		],
 		tables: [{ index: 0, table: 'SysOrg' }],
 		fields: [
 			{
@@ -225,58 +184,12 @@ function initOrg(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20
-			},
-			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 20,
+				orderDefine: 20,
 				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'appName',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				columnName: 'logoWidth',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
-			},
-			{
-				columnName: 'logoMarginRight',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'file',
-				columnName: 'file',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
-				indexTable: 0,
-				width: 300
 			},
 
 			/* management */

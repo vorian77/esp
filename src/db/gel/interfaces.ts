@@ -20,7 +20,8 @@ export namespace sys_user {
     "createdBy": SysUser;
     "modifiedBy": SysUser;
   }
-  export interface SysApp extends sys_core.SysObj {
+  export interface SysUserTypeResource extends sys_core.SysObj {}
+  export interface SysApp extends SysUserTypeResource {
     "appHeader": SysAppHeader;
     "nodes": sys_core.SysNodeObj[];
   }
@@ -32,7 +33,7 @@ export namespace sys_user {
     "valueInteger"?: number | null;
     "valueString"?: string | null;
   }
-  export interface SysTask extends sys_core.SysObj {
+  export interface SysTask extends SysUserTypeResource {
     "codeCategory": sys_core.SysCode;
     "codeRenderType"?: sys_core.SysCode | null;
     "codeStatusObj"?: sys_core.SysCode | null;
@@ -88,16 +89,12 @@ export namespace sys_user {
     "isActive": boolean;
   }
   export interface SysUserType extends sys_core.SysObj {
-    "tags": sys_core.SysCode[];
     "resources": SysUserTypeResource[];
+    "tags": sys_core.SysCode[];
     "isSelfSignup"?: boolean | null;
     "users": SysUser[];
   }
-  export interface SysUserTypeResource extends std.$Object {
-    "codeType": sys_core.SysCode;
-    "resource": sys_core.SysObj;
-  }
-  export interface SysWidget extends sys_core.SysObj {}
+  export interface SysWidget extends SysUserTypeResource {}
   export interface currentUser extends SysUser {}
 }
 export namespace app_cm {
@@ -530,13 +527,13 @@ export namespace sys_core {
     "note"?: string | null;
   }
   export interface SysOrg extends ObjRootCore, sys_user.Mgmt {
+    "users": sys_user.SysUser[];
+  }
+  export interface SysSystem extends ObjRootCore, sys_user.Mgmt {
     "appName"?: string | null;
     "file"?: unknown | null;
     "logoMarginRight"?: number | null;
     "logoWidth"?: number | null;
-    "users": sys_user.SysUser[];
-  }
-  export interface SysSystem extends ObjRootCore, sys_user.Mgmt {
     "owner": SysOrg;
   }
 }
@@ -920,7 +917,7 @@ export namespace sys_rep {
     "comment"?: string | null;
     "expr"?: string | null;
   }
-  export interface SysRep extends sys_core.SysObj {
+  export interface SysRep extends sys_user.SysUserTypeResource {
     "actionGroup": sys_core.SysDataObjActionGroup;
     "analytics": SysAnalytic[];
     "description"?: string | null;
@@ -1004,6 +1001,7 @@ export interface types {
   };
   "sys_user": {
     "Mgmt": sys_user.Mgmt;
+    "SysUserTypeResource": sys_user.SysUserTypeResource;
     "SysApp": sys_user.SysApp;
     "SysAppHeader": sys_user.SysAppHeader;
     "SysCodeType": sys_user.SysCodeType;
@@ -1015,7 +1013,6 @@ export interface types {
     "SysUserPref": sys_user.SysUserPref;
     "SysUserPrefType": sys_user.SysUserPrefType;
     "SysUserType": sys_user.SysUserType;
-    "SysUserTypeResource": sys_user.SysUserTypeResource;
     "SysWidget": sys_user.SysWidget;
     "currentUser": sys_user.currentUser;
   };

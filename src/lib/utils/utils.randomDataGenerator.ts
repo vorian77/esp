@@ -414,6 +414,7 @@ export class RandomDataGenerator {
 		this.addData('dataDoc', recordDataDoc, dataItemsDataDoc, recordCount, 0.75)
 		this.addData('dataMsg', recordDataMsg, dataItemsDataMsg, recordCount, 0.5)
 
+		// debug('randomDataGenerator', 'applicant', this.data['applicant'])
 		// debug('randomDataGenerator', 'dataMsg', this.data['dataMsg'])
 	}
 }

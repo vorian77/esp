@@ -16,7 +16,7 @@ module sys_user {
     };
   }
 
-  type SysApp extending sys_core::SysObj {
+  type SysApp extending sys_user::SysUserTypeResource {
     required appHeader: sys_user::SysAppHeader;
     multi nodes: sys_core::SysNodeObj {
        on target delete allow;
@@ -35,7 +35,7 @@ module sys_user {
   }
 
   # task  
-  type SysTask extending sys_core::SysObj {
+  type SysTask extending sys_user::SysUserTypeResource {
     required codeCategory: sys_core::SysCode;
     codeRenderType: sys_core::SysCode;
     codeStatusObj: sys_core::SysCode;
@@ -124,21 +124,16 @@ module sys_user {
   # type
   type SysUserType extending sys_core::SysObj {
     isSelfSignup: bool;
-    multi resources: sys_user::SysUserTypeResource {
-      on source delete delete target;
-    };
+    multi resources: sys_user::SysUserTypeResource;
     multi tags: sys_core::SysCode;
     users := .<userTypes[is sys_user::SysUser];
     constraint exclusive on ((.name));
   }
 
-  type SysUserTypeResource {
-    required codeType: sys_core::SysCode;
-    required resource: sys_core::SysObj;
-  }
+  type SysUserTypeResource extending sys_core::SysObj {}
   
   # widget
-  type SysWidget extending sys_core::SysObj {
+  type SysWidget extending sys_user::SysUserTypeResource {
     constraint exclusive on (.name);
   }
 
@@ -168,6 +163,12 @@ module sys_user {
   function getUserType(userTypeName: str) -> optional sys_user::SysUserType
     using (select sys_user::SysUserType filter .name = userTypeName);
 
+  function getUserTypeResource(ownerName: str, name: str) -> optional sys_user::SysUserTypeResource
+    using (select assert_single((select sys_user::SysUserTypeResource filter .owner.name = ownerName AND .name = name)));
+
   function getWidget(widgetName: str) -> optional sys_user::SysWidget
     using (select sys_user::SysWidget filter .name = widgetName);
 }
+
+
+

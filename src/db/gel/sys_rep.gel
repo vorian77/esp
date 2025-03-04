@@ -18,7 +18,7 @@ module sys_rep {
     expr: str;
   }
 
-  type SysRep extending sys_core::SysObj {
+  type SysRep extending sys_user::SysUserTypeResource {
     required actionGroup: sys_core::SysDataObjActionGroup;
     multi analytics: sys_rep::SysAnalytic;
     description: str;

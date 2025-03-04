@@ -37,15 +37,13 @@ export class User {
 	id: string
 	initials: string = ''
 	lastName: string
-	org: UserOrg
 	orgIds: string[] = []
 	personId: string
 	preferences: UserPrefs
-	resources = new UserTypeResourceList()
 	resources_sys_app: any[] = []
 	resources_sys_task_default: UserResourceTask[] = []
 	resources_sys_task_setting: UserResourceTask[] = []
-	system: UserResource
+	system: UserSystem
 	systemIdCurrent: string
 	systemIds: string[] = []
 	userName: string
@@ -65,22 +63,19 @@ export class User {
 		this.fullName = strRequired(obj.fullName, clazz, 'fullName')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
-		this.org = new UserOrg(obj.org)
 		this.orgIds = obj.orgs.map((o: any) => o.id)
 		this.personId = strRequired(obj._personId, clazz, 'personId')
 		this.preferences = new UserPrefs(obj.preferences)
 		this.resources_sys_app = obj.resources_app
 		this.resources_sys_task_default = arrayOfClass(UserResourceTask, obj.resources_task_default)
 		this.resources_sys_task_setting = arrayOfClass(UserResourceTask, obj.resources_task_setting)
-		this.system = new UserResource(obj.system)
-		this.systemIdCurrent = this.system.id
+		this.system = new UserSystem(obj.system)
+		this.systemIdCurrent = strRequired(obj.system.id, clazz, 'systemIdCurrent')
 		this.systemIds = obj.systems.map((s: any) => s.id)
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 
 		/* derived */
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
-		this.resources.addResources(obj.resources_core)
-		this.resources.addResources(obj.resources_subject)
 		// console.log('User.constructor', this)
 
 		// old
@@ -97,24 +92,6 @@ export class User {
 
 	setName() {
 		this.fullName = `${this.firstName} ${this.lastName}`
-	}
-}
-
-export class UserOrg {
-	appName?: string
-	id: string
-	logoMarginRight: number
-	logoWidth: number
-	name: string
-	urlLogo?: string
-	constructor(obj: any) {
-		const clazz = 'UserOrg'
-		this.appName = obj.appName
-		this.id = strRequired(obj.id, clazz, 'id')
-		this.logoMarginRight = required(obj.logoMarginRight, clazz, 'logoMarginRight')
-		this.logoWidth = required(obj.logoWidth, clazz, 'logoWidth')
-		this.name = strRequired(obj.name, clazz, 'name')
-		this.urlLogo = obj.file?.url
 	}
 }
 
@@ -250,6 +227,26 @@ export class UserResourceTask extends UserResource {
 
 	setShow(isShow: boolean) {
 		this.isShow = isShow
+	}
+}
+
+export class UserSystem {
+	appName?: string
+	id: string
+	logoMarginRight: number
+	logoWidth: number
+	name: string
+	orgName: string
+	urlLogo?: string
+	constructor(obj: any) {
+		const clazz = 'UserOrg'
+		this.appName = obj.appName
+		this.id = strRequired(obj.id, clazz, 'id')
+		this.logoMarginRight = required(obj.logoMarginRight, clazz, 'logoMarginRight')
+		this.logoWidth = required(obj.logoWidth, clazz, 'logoWidth')
+		this.name = strRequired(obj.name, clazz, 'name')
+		this.orgName = strRequired(obj._orgName, clazz, 'orgName')
+		this.urlLogo = obj.file?.url
 	}
 }
 
