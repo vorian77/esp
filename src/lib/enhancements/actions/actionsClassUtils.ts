@@ -34,21 +34,21 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 }
 
 const processDbExpr = async (sm: State, parms: DataRecord) => {
-	const expr = strRequired(
+	const dbExpr = strRequired(
 		parms.expr,
 		userActionError(FILENAME, CodeActionType.dbexpression),
 		'expr'
 	)
-	const dataTab = parms.dataTab ? parms.dataTab : new DataObjData()
-	dataTab.parms.valueSet(ParmsValuesType.dbExpr, expr)
 
-	let exprParms: DataRecord = { dataTab, user: sm.user }
+	let exprParms: DataRecord = {
+		dataTab: parms.dataTab ? parms.dataTab : new DataObjData(),
+		dbExpr,
+		user: sm.user
+	}
 	if (parms.dataTree) exprParms.tree = parms.dataTree
 
-	const queryData = new TokenApiQueryData(exprParms)
-
 	const result: ResponseBody = await apiFetch(
-		ApiFunction.dbEdgeProcessExpression,
+		ApiFunction.dbGelProcessExpression,
 		new TokenApiQueryData(exprParms)
 	)
 	if (result.success) {
@@ -57,7 +57,7 @@ const processDbExpr = async (sm: State, parms: DataRecord) => {
 		error(500, {
 			file: FILENAME,
 			function: 'processDbExpr',
-			message: `Error executing DB expression: ${expr}`
+			message: `Error executing DB expression: ${dbExpr}`
 		})
 	}
 }

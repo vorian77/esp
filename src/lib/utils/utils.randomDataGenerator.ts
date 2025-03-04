@@ -280,13 +280,13 @@ const dataItemsDataMsg = {
 		type: 'list',
 		values: ['Question about my application?', 'Question about documents?', 'More info', 'Help']
 	},
-	office: {
+	attribute: {
 		type: 'list',
 		values: ['moedOfficeWestside', 'moedOfficeEastside']
 	}
 }
 
-const recordDataMsg = ['date', 'subject', 'office']
+const recordDataMsg = ['date', 'subject', 'attribute']
 
 export class RandomDataGenerator {
 	data: DataRecord = {}
@@ -413,6 +413,8 @@ export class RandomDataGenerator {
 		this.addData('serviceFlow', recordServiceFlow, dataItemsServiceFlow, recordCount, 0)
 		this.addData('dataDoc', recordDataDoc, dataItemsDataDoc, recordCount, 0.75)
 		this.addData('dataMsg', recordDataMsg, dataItemsDataMsg, recordCount, 0.5)
+
+		// debug('randomDataGenerator', 'dataMsg', this.data['dataMsg'])
 	}
 }
 

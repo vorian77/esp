@@ -4,7 +4,7 @@ import { TokenApiUserId } from '$utils/types.token'
 import { valueOrDefault, memberOfEnum } from '$utils/utils.model'
 
 export async function adminDbReset() {
-	return await apiFetch(ApiFunction.dbEdgeInit)
+	return await apiFetch(ApiFunction.dbGelInit)
 }
 
 export function capitalizeFirstLetter(text: string) {

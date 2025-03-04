@@ -28,10 +28,6 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/app/types.appQuery.ts'
 
-function getTable(dataObj: DataObj | undefined) {
-	return dataObj ? dataObj?.rootTable?.name : undefined
-}
-
 export function queryDataPre(
 	sm: State,
 	data: DataObjData | undefined,
@@ -46,6 +42,9 @@ export function queryDataPre(
 	const dataTab = data ? DataObjData.load(data) : new DataObjData()
 	dataTab.parms.update(sm.parmsState.valueGetAll())
 	dataTab.parms.update(sm.parmsTrans.valueGetAll())
+
+	// default for fieldListItems itemChanges
+	dataTab.parms.valueSetIfMissing(ParmsValuesType.itemsParmValue, '')
 
 	sm.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
 
@@ -64,7 +63,7 @@ export async function queryExecute(
 	queryData: TokenApiQueryData
 ) {
 	const result: ResponseBody = await apiFetch(
-		ApiFunction.dbEdgeProcessDataObj,
+		ApiFunction.dbGelProcessDataObj,
 		new TokenApiQuery(queryType, dataObjSource, queryData)
 	)
 	if (!result.success) {

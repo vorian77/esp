@@ -16,7 +16,7 @@ export async function migrate(sm: State, dataObj: DataObj) {
 async function getActions() {
 	const name = 'doag_dialog_footer_detail'
 	const result: ResponseBody = await apiFetch(
-		ApiFunction.dbEdgeGetDataObjActionGroup,
+		ApiFunction.dbGelGetDataObjActionGroup,
 		new TokenApiId(name)
 	)
 	if (result.success) {

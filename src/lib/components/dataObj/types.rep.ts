@@ -79,7 +79,6 @@ export class Rep {
 	elements: RepEl[]
 	elementsSort: RepEl[]
 	exprFilter?: string
-	exprObject?: string
 	exprSort?: string
 	exprWith?: string
 	header?: string
@@ -95,7 +94,6 @@ export class Rep {
 		this.elements = arrayOfClass(RepEl, obj.elements)
 		this.elementsSort = arrayOfClass(RepEl, obj.elementsSort)
 		this.exprFilter = strOptional(obj.exprFilter, clazz, 'exprFilter')
-		this.exprObject = strOptional(obj.exprObject, clazz, 'exprObject')
 		this.exprSort = strOptional(obj.exprSort, clazz, 'exprSort')
 		this.exprWith = strOptional(obj.exprWith, clazz, 'exprWith')
 		this.header = strOptional(obj.header, clazz, 'header')

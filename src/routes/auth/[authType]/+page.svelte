@@ -22,6 +22,7 @@
 	const IS_DEV_MODE = data.environ === 'dev'
 
 	let sm: State = new State({
+		isDevMode: IS_DEV_MODE,
 		navPage: '/auth',
 		storeDrawer: getDrawerStore(),
 		storeToast: getToastStore()

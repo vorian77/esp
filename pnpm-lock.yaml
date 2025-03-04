@@ -38,9 +38,9 @@ dependencies:
   dotenv:
     specifier: ^16.4.7
     version: 16.4.7
-  edgedb:
-    specifier: ^1.5.12
-    version: 1.5.12
+  gel:
+    specifier: ^2.0.0
+    version: 2.0.0
   lodash-es:
     specifier: ^4.17.21
     version: 4.17.21
@@ -61,9 +61,9 @@ dependencies:
     version: 5.3.7
 
 devDependencies:
-  '@edgedb/generate':
-    specifier: ^0.5.6
-    version: 0.5.6(edgedb@1.5.12)
+  '@gel/generate':
+    specifier: ^0.6.0
+    version: 0.6.0(gel@2.0.0)
   '@skeletonlabs/tw-plugin':
     specifier: ^0.4.0
     version: 0.4.0(tailwindcss@3.4.16)
@@ -266,20 +266,6 @@ packages:
     dependencies:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
-
-  /@edgedb/generate@0.5.6(edgedb@1.5.12):
-    resolution: {integrity: sha512-Nmd4ibgN3M7qxxHsOyB9NERp03449BfV+W7CWCpIE/tcvBr19GynoT5yI3k55k5NKzzstATwKtV+wVHXiOgizw==}
-    engines: {node: '>= 18.0.0'}
-    hasBin: true
-    peerDependencies:
-      edgedb: ^1.5.10
-    dependencies:
-      '@iarna/toml': 2.2.5
-      debug: 4.4.0
-      edgedb: 1.5.12
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
 
   /@emmetio/abbreviation@2.3.3:
     resolution: {integrity: sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA==}
@@ -510,6 +496,20 @@ packages:
   /@floating-ui/utils@0.2.8:
     resolution: {integrity: sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==}
     dev: false
+
+  /@gel/generate@0.6.0(gel@2.0.0):
+    resolution: {integrity: sha512-p1qiR/JHNM52GCp19aes2Nwt2gzz0juJu6xaXFQyT1nyAdjIBfiy9j/JNxEM9xvfXUjv/yf3OiEk9Rq7zJjLHg==}
+    engines: {node: '>= 18.0.0'}
+    hasBin: true
+    peerDependencies:
+      gel: ^2.0.0-rc
+    dependencies:
+      '@iarna/toml': 2.2.5
+      debug: 4.4.0
+      gel: 2.0.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
 
   /@iarna/toml@2.2.5:
     resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
@@ -1085,6 +1085,9 @@ packages:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.29.0(@opentelemetry/api@1.9.0)
     dev: false
+
+  /@petamoriken/float16@3.9.1:
+    resolution: {integrity: sha512-j+ejhYwY6PeB+v1kn7lZFACUIG97u90WxMuGosILFsl9d4Ovi0sjk0GlPfoEcx+FzvXZDAfioD+NGnnPamXgMA==}
 
   /@pkgjs/parseargs@0.11.0:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -2232,19 +2235,6 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
-  /edgedb@1.5.12:
-    resolution: {integrity: sha512-IZHCAyKmdSpLqGuM2oSrw0037Qr8Y0S5KoJYArsc5KYJCv10ScU7Uyr/b7pOd2UYWx8DBFSyTmMweIgFRVOdCQ==}
-    engines: {node: '>= 18.0.0'}
-    hasBin: true
-    dependencies:
-      debug: 4.4.0
-      env-paths: 3.0.0
-      semver: 7.6.3
-      shell-quote: 1.8.2
-      which: 4.0.0
-    transitivePeerDependencies:
-      - supports-color
-
   /electron-to-chromium@1.5.72:
     resolution: {integrity: sha512-ZpSAUOZ2Izby7qnZluSrAlGgGQzucmFbN0n64dYzocYxnxV5ufurpj3VgEe4cUp7ir9LmeLxNYo8bVnlM8bQHw==}
 
@@ -2433,6 +2423,20 @@ packages:
 
   /function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
+
+  /gel@2.0.0:
+    resolution: {integrity: sha512-Oq3Fjay71s00xzDc0BF/mpcLmnA+uRqMEJK8p5K4PaZjUEsxaeo+kR9OHBVAf289/qPd+0OcLOLUN0UhqiUCog==}
+    engines: {node: '>= 18.0.0'}
+    hasBin: true
+    dependencies:
+      '@petamoriken/float16': 3.9.1
+      debug: 4.4.0
+      env-paths: 3.0.0
+      semver: 7.6.3
+      shell-quote: 1.8.2
+      which: 4.0.0
+    transitivePeerDependencies:
+      - supports-color
 
   /gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}

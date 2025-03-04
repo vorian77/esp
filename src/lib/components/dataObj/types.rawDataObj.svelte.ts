@@ -75,7 +75,6 @@ export class RawDataObj {
 	crumbs: string[] = []
 	description?: string
 	exprFilter?: string
-	exprObject?: string
 	exprSort?: string
 	exprWith?: string
 	header: string
@@ -136,7 +135,6 @@ export class RawDataObj {
 		this.crumbs = this.initCrumbs(obj._propsCrumb)
 		this.description = strOptional(obj.description, clazz, 'description')
 		this.exprFilter = strOptional(obj.exprFilter, clazz, 'exprFilter')
-		this.exprObject = strOptional(obj.exprObject, clazz, 'exprObject')
 		this.exprSort = strOptional(obj.exprSort, clazz, 'exprSort')
 		this.exprWith = strOptional(obj.exprWith, clazz, 'exprWith')
 		this.header = strRequired(obj.header, clazz, 'header')
@@ -601,7 +599,6 @@ export class RawDataObjPropDisplayEmbedListSelect {
 		this.btnLabelComplete = this.initBtnComplete(clazz, obj.btnLabelComplete, this.rawActionsModal)
 	}
 	initBtnComplete(clazz: string, label: string | undefined, rawDataObjActions: RawDataObjAction[]) {
-		debug('RawDataObjPropDisplayEmbedListSelect', 'initBtnComplete', { label, rawDataObjActions })
 		const btnLabelComplete = strOptional(label, clazz, 'btnLabelComplete')
 		if (btnLabelComplete) {
 			const dataObjActionDone = rawDataObjActions.find((rdoa) => {
@@ -897,7 +894,7 @@ export class PropLinkItems {
 
 		// retrieve
 		const result: ResponseBody = await apiFetch(
-			ApiFunction.dbEdgeGetLinkItems,
+			ApiFunction.dbGelGetLinkItems,
 			new TokenApiQueryData({ dataTab, tree: dataTree, user: sm.user })
 		)
 		if (result.success) {

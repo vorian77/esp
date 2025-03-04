@@ -94,13 +94,10 @@
 		return status.data
 	}
 
-	async function getDataDB(task: UserResourceTask, expr: string) {
-		const dataTab = new DataObjData()
-		dataTab.parms.valueSet(ParmsValuesType.dbExpr, expr)
-
+	async function getDataDB(task: UserResourceTask, dbExpr: string) {
 		const result: ResponseBody = await apiFetch(
-			ApiFunction.dbEdgeProcessExpression,
-			new TokenApiQueryData({ dataTab, user: sm.user })
+			ApiFunction.dbGelProcessExpression,
+			new TokenApiQueryData({ dbExpr, user: sm.user })
 		)
 		if (result.success) {
 			return result.data

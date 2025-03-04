@@ -14,7 +14,7 @@
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
-	import { maska, type MaskInputOptions } from 'maska/svelte'
+	import { maska, type MaskaDetail, type MaskInputOptions } from 'maska/svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElInp.svelte'
@@ -141,6 +141,15 @@
 			return ''
 		}
 	})
+	const onMaska = async (event: CustomEvent<MaskaDetail>) => {
+		// console.log('FormElInp.svelte onMaska', {
+		// 	masked: event.detail.masked,
+		// 	unmasked: event.detail.unmasked,
+		// 	completed: event.detail.completed
+		// })
+		const target = event.currentTarget as HTMLSelectElement
+		await dm.setFieldValue(parms.dataObjId, parms.row, field, event.detail.masked)
+	}
 </script>
 
 <FormLabel {parms} {iconProps}>
@@ -152,15 +161,18 @@
 		min={field.minValue?.toString() || ''}
 		name={field.colDO.propName}
 		ondblclick={onDoubleClick}
-		oninput={onChange}
 		{placeholder}
 		readonly={field.fieldAccess === FieldAccess.readonly}
 		step={field.spinStep?.toString() || ''}
 		type={fieldInputType || field.FieldElement}
 		value={fieldValue}
-		use:maska={inputMask}
+		use:maska
+		data-maska={inputMask}
+		onmaska={onMaska}
 	/>
 </FormLabel>
+
+<!-- oninput={onChange} -->
 
 <!-- <details>
 	<summary>Money, via hooks (pre v3 variant)</summary>

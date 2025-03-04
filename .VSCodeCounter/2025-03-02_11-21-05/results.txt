@@ -1,0 +1,226 @@
+Date : 2025-03-02 11:21:05
+Directory : /Users/phylliphall/Documents/Programs/esp/src/lib
+Total : 178 files,  43980 codes, 859 comments, 2234 blanks, all 47073 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| TypeScript |        110 |     40,348 |        789 |      1,724 |     42,861 |
+| Svelte     |         68 |      3,632 |         70 |        510 |      4,212 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                  | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                     |        178 |     43,980 |        859 |      2,234 |     47,073 |
+| components                                                                                                            |         98 |     10,659 |        223 |      1,124 |     12,006 |
+| components/app                                                                                                        |          4 |      1,661 |         41 |        158 |      1,860 |
+| components/dataObj                                                                                                    |          5 |      2,642 |         21 |        206 |      2,869 |
+| components/form                                                                                                       |         49 |      3,336 |         59 |        423 |      3,818 |
+| components/grid                                                                                                       |          4 |        832 |          1 |         84 |        917 |
+| components/icon                                                                                                       |          2 |        134 |          2 |          8 |        144 |
+| components/layout                                                                                                     |         12 |        628 |          7 |         88 |        723 |
+| components/layout (Files)                                                                                             |          6 |        314 |          0 |         42 |        356 |
+| components/layout/layoutDash                                                                                          |          6 |        314 |          7 |         46 |        367 |
+| components/nav                                                                                                        |         17 |      1,040 |         55 |        120 |      1,215 |
+| components/nav (Files)                                                                                                |          6 |        300 |          0 |         32 |        332 |
+| components/nav/navMenu                                                                                                |         11 |        740 |         55 |         88 |        883 |
+| components/other                                                                                                      |          3 |        348 |         37 |         28 |        413 |
+| components/overlay                                                                                                    |          2 |         38 |          0 |          9 |         47 |
+| enhancements                                                                                                          |          7 |        787 |          9 |        102 |        898 |
+| enhancements/actions                                                                                                  |          5 |        657 |          8 |         82 |        747 |
+| enhancements/queryRiderFunctions                                                                                      |          2 |        130 |          1 |         20 |        151 |
+| server                                                                                                                |         57 |     30,765 |        532 |        834 |     32,131 |
+| server (Files)                                                                                                        |          3 |        355 |         28 |         43 |        426 |
+| server/dbEdge                                                                                                         |         54 |     30,410 |        504 |        791 |     31,705 |
+| server/dbEdge/init                                                                                                    |         51 |     29,963 |        476 |        742 |     31,181 |
+| server/dbEdge/initOld                                                                                                 |          3 |        447 |         28 |         49 |        524 |
+| utils                                                                                                                 |         16 |      1,769 |         95 |        174 |      2,038 |
++-----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                              | language   | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/app/types.app.svelte.ts                                  | TypeScript |        788 |         32 |         64 |        884 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/app/types.appQuery.ts                                    | TypeScript |        164 |          7 |         27 |        198 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/app/types.appState.svelte.ts                             | TypeScript |        565 |          2 |         57 |        624 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/app/types.node.ts                                        | TypeScript |        144 |          0 |         10 |        154 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/dataObj/DataObjActionsObj.svelte                         | Svelte     |         68 |          0 |          9 |         77 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/dataObj/types.dataManager.svelte.ts                      | TypeScript |        397 |          5 |         41 |        443 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/dataObj/types.dataObj.svelte.ts                          | TypeScript |        943 |          5 |         82 |      1,030 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/dataObj/types.rawDataObj.svelte.ts                       | TypeScript |        960 |          9 |         62 |      1,031 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/dataObj/types.rep.ts                                     | TypeScript |        274 |          2 |         12 |        288 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/ContentFormDetailApp.svelte                         | Svelte     |          6 |          0 |          2 |          8 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/ContentFormDetailRepConfig.svelte                   | Svelte     |          6 |          0 |          2 |          8 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/ContentFormListApp.svelte                           | Svelte     |         12 |          0 |          4 |         16 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormDetail.svelte                                   | Svelte     |         41 |          1 |         13 |         55 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormDetailEl.svelte                                 | Svelte     |         27 |          0 |          7 |         34 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormDetailElField.svelte                            | Svelte     |         20 |          0 |          4 |         24 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormDetailElGroupDetails.svelte                     | Svelte     |         19 |          0 |          4 |         23 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormDetailElGroupRow.svelte                         | Svelte     |         14 |          0 |          4 |         18 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormDetailElGroupSection.svelte                     | Svelte     |         20 |          0 |          5 |         25 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElChips.svelte                                  | Svelte     |        106 |          2 |          7 |        115 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElCustomActionButton.svelte                     | Svelte     |         41 |          0 |          6 |         47 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElCustomActionLink.svelte                       | Svelte     |         37 |          0 |          6 |         43 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElCustomHTML.svelte                             | Svelte     |          8 |          0 |          2 |         10 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElCustomHeader.svelte                           | Svelte     |         23 |          0 |          4 |         27 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElCustomText.svelte                             | Svelte     |         12 |          0 |          4 |         16 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElEmbedListConfig.svelte                        | Svelte     |         26 |          1 |          7 |         34 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElEmbedListEdit.svelte                          | Svelte     |         31 |          1 |          7 |         39 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElEmbedListSelect.svelte                        | Svelte     |         55 |          0 |          7 |         62 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElEmbedShell.svelte                             | Svelte     |         64 |          7 |         16 |         87 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElFile.svelte                                   | Svelte     |        156 |          3 |         17 |        176 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElInp.svelte                                    | Svelte     |        148 |          4 |         19 |        171 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElInpCheckbox.svelte                            | Svelte     |         69 |          1 |          9 |         79 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElInpRadio.svelte                               | Svelte     |         66 |          1 |          9 |         76 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElSelect.svelte                                 | Svelte     |         66 |          2 |          9 |         77 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElTextarea.svelte                               | Svelte     |         39 |          0 |          8 |         47 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElToggle.svelte                                 | Svelte     |         39 |          0 |          7 |         46 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormElement.svelte                                  | Svelte     |        107 |          1 |         10 |        118 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormLabel.svelte                                    | Svelte     |         36 |          1 |          6 |         43 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormListCard.svelte                                 | Svelte     |         88 |          0 |         12 |        100 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/FormListGrid.svelte                                 | Svelte     |        367 |          0 |         40 |        407 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/ListFilter.svelte                                   | Svelte     |         35 |          0 |          4 |         39 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/field.svelte.ts                                     | TypeScript |        412 |          7 |         43 |        462 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldCheckbox.ts                                    | TypeScript |         14 |          0 |          2 |         16 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldChips.ts                                       | TypeScript |          6 |          0 |          2 |          8 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldCustom.ts                                      | TypeScript |        111 |          0 |          8 |        119 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldEmbed.ts                                       | TypeScript |        207 |          0 |         16 |        223 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldEmbedShell.ts                                  | TypeScript |         38 |          1 |          4 |         43 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldFile.ts                                        | TypeScript |         34 |          0 |          4 |         38 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldInput.ts                                       | TypeScript |        183 |         18 |         20 |        221 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldList.ts                                        | TypeScript |          7 |          0 |          3 |         10 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldParm.ts                                        | TypeScript |         75 |          0 |          7 |         82 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldRadio.ts                                       | TypeScript |         10 |          0 |          2 |         12 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldSelect.ts                                      | TypeScript |         11 |          0 |          3 |         14 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldTag.ts                                         | TypeScript |         31 |          0 |          5 |         36 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldTextarea.ts                                    | TypeScript |         14 |          0 |          3 |         17 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/fieldToggle.ts                                      | TypeScript |         38 |          0 |          2 |         40 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/types.detailElement.ts                              | TypeScript |         79 |          0 |         15 |         94 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/types.source.ts                                     | TypeScript |        223 |          8 |         20 |        251 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/form/types.validation.ts                                 | TypeScript |         59 |          0 |          3 |         62 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/grid/Grid.svelte                                         | Svelte     |        346 |          0 |         40 |        386 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/grid/GridSelect.svelte                                   | Svelte     |         30 |          0 |          7 |         37 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/grid/grid.ts                                             | TypeScript |        324 |          0 |         17 |        341 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/grid/gridParmField.ts                                    | TypeScript |        132 |          1 |         20 |        153 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/icon/Icon.svelte                                         | Svelte     |        110 |          1 |          5 |        116 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/icon/types.icon.ts                                       | TypeScript |         24 |          1 |          3 |         28 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/layout/LayoutApp.svelte                                  | Svelte     |         11 |          0 |          2 |         13 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/layout/LayoutContent.svelte                              | Svelte     |         91 |          0 |         10 |        101 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/layout/LayoutProcess.svelte                              | Svelte     |          7 |          0 |          4 |         11 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/layout/LayoutTab.svelte                                  | Svelte     |         84 |          0 |         10 |         94 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/layout/RootLayoutApp.svelte                              | Svelte     |         30 |          0 |          5 |         35 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/layout/RootLayoutModal.svelte                            | Svelte     |         91 |          0 |         11 |        102 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/layout/layoutDash/LayoutDashboard.svelte                 | Svelte     |        163 |          3 |         14 |        180 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/layout/layoutDash/tso_data.svelte                        | Svelte     |         27 |          1 |          6 |         34 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/layout/layoutDash/tso_moed_ssr_advocate.svelte           | Svelte     |         36 |          1 |          7 |         44 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/layout/layoutDash/tso_moed_ssr_app.svelte                | Svelte     |         31 |          1 |          6 |         38 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/layout/layoutDash/tso_moed_ssr_doc.svelte                | Svelte     |         29 |          0 |          7 |         36 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/layout/layoutDash/tso_moed_ssr_msg.svelte                | Svelte     |         28 |          1 |          6 |         35 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/NavApp.svelte                                        | Svelte     |         52 |          0 |          6 |         58 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/NavAppMobile.svelte                                  | Svelte     |         38 |          0 |          7 |         45 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/NavCrumbsDesktop.svelte                              | Svelte     |         92 |          0 |          5 |         97 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/NavCrumbsMobile.svelte                               | Svelte     |         44 |          0 |          5 |         49 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/NavRow.svelte                                        | Svelte     |         60 |          0 |          6 |         66 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/NavRowAction.svelte                                  | Svelte     |         14 |          0 |          3 |         17 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/navMenu/NavMenu.svelte                               | Svelte     |         47 |          0 |          7 |         54 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/navMenu/NavMenuApps.svelte                           | Svelte     |         20 |          0 |          5 |         25 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/navMenu/NavMenuCopyright.svelte                      | Svelte     |         14 |          0 |          4 |         18 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/navMenu/NavMenuGroup.svelte                          | Svelte     |         30 |          0 |          4 |         34 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/navMenu/NavMenuHeader.svelte                         | Svelte     |         10 |          0 |          3 |         13 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/navMenu/NavMenuHr.svelte                             | Svelte     |          8 |          0 |          3 |         11 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/navMenu/NavMenuInfo.svelte                           | Svelte     |         13 |          0 |          3 |         16 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/navMenu/NavMenuItem.svelte                           | Svelte     |         65 |          0 |          6 |         71 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/navMenu/NavMenuOrg.svelte                            | Svelte     |         48 |          0 |          7 |         55 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/navMenu/NavMenuUser.svelte                           | Svelte     |         41 |          0 |          7 |         48 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/nav/navMenu/types.navMenu.svelte.ts                      | TypeScript |        444 |         55 |         39 |        538 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/other/AddressSelect.svelte                               | Svelte     |          8 |         37 |          4 |         49 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/other/UnderConstruction.svelte                           | Svelte     |         12 |          0 |          4 |         16 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/other/types.userAction.svelte.ts                         | TypeScript |        328 |          0 |         20 |        348 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/overlay/OverlayDrawer.svelte                             | Svelte     |         29 |          0 |          7 |         36 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/components/overlay/OverlayModal.svelte                              | Svelte     |          9 |          0 |          2 |         11 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/enhancements/actions/actionsClassDo.ts                              | TypeScript |        258 |          2 |         28 |        288 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/enhancements/actions/actionsClassDoFieldAuth.ts                     | TypeScript |        208 |          6 |         23 |        237 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/enhancements/actions/actionsClassModal.ts                           | TypeScript |         37 |          0 |          8 |         45 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/enhancements/actions/actionsClassNav.ts                             | TypeScript |         99 |          0 |         14 |        113 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/enhancements/actions/actionsClassUtils.ts                           | TypeScript |         55 |          0 |          9 |         64 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/enhancements/queryRiderFunctions/qrfFileStorage.ts                  | TypeScript |        108 |          1 |         17 |        126 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/enhancements/queryRiderFunctions/qrfUserUpdate.ts                   | TypeScript |         22 |          0 |          3 |         25 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/apiSendGrid.ts                                               | TypeScript |         64 |          2 |         12 |         78 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbESP.ts                                                     | TypeScript |        287 |         26 |         29 |        342 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit.ts                                    | TypeScript |         47 |          8 |         13 |         68 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit1User.ts                               | TypeScript |        530 |         30 |         23 |        583 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit200Utilities10.ts                      | TypeScript |        114 |          0 |          7 |        121 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit200Utilities20DataObj.ts               | TypeScript |        559 |          3 |         52 |        614 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit200Utilities30DB.ts                    | TypeScript |        102 |          0 |          3 |        105 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit200Utilities40Rep.ts                   | TypeScript |        205 |          0 |          3 |        208 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit200Utilities50Other.ts                 | TypeScript |        629 |          9 |         20 |        658 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit200Utilities60OrgMOED.ts               | TypeScript |        142 |          0 |          5 |        147 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit30PreCode.ts                           | TypeScript |         35 |          0 |          3 |         38 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit30PreCodeAction.ts                     | TypeScript |        279 |          0 |          8 |        287 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit40PreDO.ts                             | TypeScript |         19 |          0 |          5 |         24 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit40PreDOColumn.ts                       | TypeScript |      2,447 |          2 |          5 |      2,454 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit40PreDODataObjActionGroup.ts           | TypeScript |        350 |          7 |         11 |        368 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit40PreDODataObjFieldItem.ts             | TypeScript |        353 |          8 |         21 |        382 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit40PreDOEmbedListConfig.ts              | TypeScript |      1,310 |         20 |         34 |      1,364 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit40PreDOEmbedListSelect.ts              | TypeScript |        130 |          0 |          8 |        138 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit40PreDOTable.ts                        | TypeScript |         88 |          9 |         10 |        107 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit40PreDOTableColumn.ts                  | TypeScript |         72 |          0 |          6 |         78 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit40PreUserAction.ts                     | TypeScript |        298 |          0 |         25 |        323 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin.ts                          | TypeScript |         13 |          0 |          3 |         16 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin10OrgSys.ts                  | TypeScript |        191 |          1 |          7 |        199 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin15OrgUser.ts                 | TypeScript |        794 |          3 |         21 |        818 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin20SysConfig.ts               | TypeScript |        209 |          1 |          7 |        217 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObj.ts                  | TypeScript |        187 |          1 |          7 |        195 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjApp.ts               | TypeScript |        467 |          2 |         14 |        483 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjCode.ts              | TypeScript |        904 |         22 |         13 |        939 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDB.ts                | TypeScript |        757 |          3 |         11 |        771 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObj.ts           | TypeScript |      1,383 |         11 |         23 |      1,417 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObjEmbed.ts      | TypeScript |        632 |          3 |         16 |        651 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjDataObjFieldItmes.ts | TypeScript |        315 |          1 |          7 |        323 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjMigration.ts         | TypeScript |        999 |          7 |         31 |      1,037 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjNodeObj.ts           | TypeScript |        357 |          2 |          8 |        367 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjRep.ts               | TypeScript |      2,064 |         10 |         28 |      2,102 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjTask.ts              | TypeScript |        382 |          1 |          7 |        390 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjUserAction.ts        | TypeScript |        550 |          3 |         15 |        568 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin30SysObjWidget.ts            | TypeScript |        196 |          1 |          7 |        204 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin40SysMeta.ts                 | TypeScript |        144 |          1 |          7 |        152 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdmin40SysMetaUserType.ts         | TypeScript |        336 |          1 |          9 |        346 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdminAuth.ts                      | TypeScript |        803 |         15 |         17 |        835 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit60SysAdminRepUser.ts                   | TypeScript |        536 |         23 |         12 |        571 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit80ContentAIRep.ts                      | TypeScript |      1,685 |          3 |         23 |      1,711 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit80ContentAIStudent.ts                  | TypeScript |      2,222 |         37 |         27 |      2,286 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit80ContentAITraining.ts                 | TypeScript |      1,949 |         11 |         33 |      1,993 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit80ContentCrm.ts                        | TypeScript |        187 |          3 |          7 |        197 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit80ContentCrmRep.ts                     | TypeScript |         66 |          0 |          4 |         70 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit80ContentMOEDCm.ts                     | TypeScript |      1,834 |         86 |         22 |      1,942 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit80ContentMOEDCmAdvocate.ts             | TypeScript |        309 |         21 |          9 |        339 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit80ContentMOEDRep.ts                    | TypeScript |          2 |          0 |          2 |          4 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit80ContentMOEDSSR.ts                    | TypeScript |      1,128 |         15 |         26 |      1,169 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/dbEdgeInit80ContentMigrPerson.ts                 | TypeScript |         52 |         85 |          4 |        141 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/init/types.init.ts                                    | TypeScript |        601 |          7 |         53 |        661 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/initOld/dbEdgeInitOldCMDataAI.ts                      | TypeScript |        154 |          0 |         10 |        164 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/initOld/dbEdgeInitOldCMDataMOED.ts                    | TypeScript |         67 |          1 |          6 |         74 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/dbEdge/initOld/dbEdgeInitOldCore.ts                          | TypeScript |        226 |         27 |         33 |        286 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/server/env.ts                                                       | TypeScript |          4 |          0 |          2 |          6 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/DataViewer.svelte                                             | Svelte     |         12 |          0 |          2 |         14 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/types.token.ts                                                | TypeScript |        505 |          1 |         40 |        546 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/types.ts                                                      | TypeScript |          8 |          1 |          1 |         10 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/types.user.ts                                                 | TypeScript |        288 |         69 |         31 |        388 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/utils.appstore.ts                                             | TypeScript |         34 |          4 |          5 |         43 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/utils.array.ts                                                | TypeScript |         33 |          1 |          5 |         39 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/utils.date.ts                                                 | TypeScript |         31 |          5 |          4 |         40 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/utils.debug.ts                                                | TypeScript |         12 |          0 |          2 |         14 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/utils.error.ts                                                | TypeScript |         25 |          1 |          7 |         33 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/utils.model.ts                                                | TypeScript |        204 |          2 |         13 |        219 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/utils.process.ts                                              | TypeScript |         35 |          0 |          4 |         39 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/utils.processMigrate.ts                                       | TypeScript |         28 |          0 |          4 |         32 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/utils.randomDataGenerator.ts                                  | TypeScript |        389 |          2 |         31 |        422 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/utils.report.ts                                               | TypeScript |          5 |          0 |          1 |          6 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/utils.sys.ts                                                  | TypeScript |        152 |          9 |         23 |        184 |
+| /Users/phylliphall/Documents/Programs/esp/src/lib/utils/utils.ts                                                      | TypeScript |          8 |          0 |          1 |          9 |
+| Total                                                                                                                 |            |     43,980 |        859 |      2,234 |     47,073 |
++-----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

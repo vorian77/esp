@@ -1,5 +1,5 @@
 import { type Handle, type HandleServerError, redirect } from '@sveltejs/kit'
-import { getUserByUserId } from '$routes/api/dbEdge/dbEdgeUtilities'
+import { getUserByUserId } from '$routes/api/dbGel/dbGelUtilities'
 import { getEnvVar } from '$server/env'
 import { TokenApiUserId } from '$utils/types.token'
 import * as Sentry from '@sentry/sveltekit'

@@ -44,7 +44,7 @@ import {
 } from '@skeletonlabs/skeleton'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import fActionsClassDo from '$enhance/actions/actionsClassDo'
-import fActionsClassDoFieldAuth from '$enhance/actions/actionsClassDoFieldAuth'
+import fActionsClassDoFieldAuth from '$enhance/actions/actionsClassAuth'
 import fActionsClassModal from '$enhance/actions/actionsClassModal'
 import fActionsClassNav from '$enhance/actions/actionsClassNav'
 import fActionsClassUtils from '$enhance/actions/actionsClassUtils'
@@ -58,6 +58,7 @@ export class State {
 	dataObjState?: DataObj
 	fActions: Record<string, Function> = {}
 	fChangeCallback?: Function
+	isDevMode: boolean = false
 
 	// old
 	nodeType: NodeType = NodeType.home
@@ -87,6 +88,7 @@ export class State {
 	change(obj: DataRecord) {
 		this.app = this.changeParm(obj, 'app', this.app)
 		this.fChangeCallback = this.changeParm(obj, 'fChangeCallback', this.fChangeCallback)
+		this.isDevMode = this.changeParm(obj, 'isDevMode', this.isDevMode)
 		this.navContent = this.changeParm(obj, 'navContent', this.navContent)
 		this.navLayout = this.changeParm(obj, 'navLayout', this.navLayout)
 		this.navLayoutParms = this.changeParm(obj, 'navLayoutParms', this.navLayoutParms)
@@ -145,7 +147,7 @@ export class State {
 
 	async getActions(fieldGroupName: string) {
 		const result: ResponseBody = await apiFetch(
-			ApiFunction.dbEdgeGetDataObjActionGroup,
+			ApiFunction.dbGelGetDataObjActionGroup,
 			new TokenApiId(fieldGroupName)
 		)
 		if (result.success) {

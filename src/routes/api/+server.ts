@@ -1,7 +1,7 @@
 import { ApiFunction } from '$routes/api/api'
 import { debug, getServerResponse } from '$utils/types'
 import { getEnvVar } from '$server/env'
-import { getLinkItems, processDataObj, processExpression } from '$routes/api/dbEdge/dbEdgeProcess'
+import { getLinkItems, processDataObj, processExpression } from '$routes/api/dbGel/dbGelProcess'
 import {
 	getDataObjActionGroup,
 	getDataObjId,
@@ -13,50 +13,50 @@ import {
 	getUserByUserId,
 	getUserPref,
 	setUserPref
-} from '$routes/api/dbEdge/dbEdgeUtilities'
-import { dbEdgeInit } from '$server/dbEdge/init/dbEdgeInit'
+} from '$routes/api/dbGel/dbGelUtilities'
+import { dbInit } from '$server/dbGel/init/dbGelInit'
 import { sysSendText } from '$routes/api/apiTwilio'
 import { error } from '@sveltejs/kit'
 
-const FILENAME = '/routes/api/dbEdge/server.ts'
+const FILENAME = '/routes/api/dbGel/server.ts'
 
 export async function POST({ request, cookies }) {
 	const requestData = await request.json()
 	const { apiFunction, token } = requestData
 
 	switch (apiFunction) {
-		case ApiFunction.dbEdgeGetDataObjActionGroup:
+		case ApiFunction.dbGelGetDataObjActionGroup:
 			return getServerResponse(await getDataObjActionGroup(token))
 
-		case ApiFunction.dbEdgeGetDataObjId:
+		case ApiFunction.dbGelGetDataObjId:
 			return getServerResponse(await getDataObjId(token))
 
-		case ApiFunction.dbEdgeGetFieldEmbedListSelect:
+		case ApiFunction.dbGelGetFieldEmbedListSelect:
 			return getServerResponse(await getFieldEmbedListSelect(token))
 
-		case ApiFunction.dbEdgeGetLinkItems:
+		case ApiFunction.dbGelGetLinkItems:
 			return getServerResponse(await getLinkItems(token))
 
-		case ApiFunction.dbEdgeGetLinkItemsSource:
+		case ApiFunction.dbGelGetLinkItemsSource:
 			return getServerResponse(await getLinkItemsSource(token))
 
-		case ApiFunction.dbEdgeGetNodesBranch:
+		case ApiFunction.dbGelGetNodesBranch:
 			return getServerResponse(await getNodesBranch(token))
 
-		case ApiFunction.dbEdgeGetNodesLevel:
+		case ApiFunction.dbGelGetNodesLevel:
 			return getServerResponse(await getNodesLevel(token))
 
-		case ApiFunction.dbEdgeGetTableColumns:
+		case ApiFunction.dbGelGetTableColumns:
 			return getServerResponse(await getTableColumns(token))
 
-		case ApiFunction.dbEdgeInit:
-			await dbEdgeInit()
+		case ApiFunction.dbGelInit:
+			await dbInit()
 			return getServerResponse({})
 
-		case ApiFunction.dbEdgeProcessDataObj:
+		case ApiFunction.dbGelProcessDataObj:
 			return getServerResponse(await processDataObj(token))
 
-		case ApiFunction.dbEdgeProcessExpression:
+		case ApiFunction.dbGelProcessExpression:
 			return getServerResponse(await processExpression(token))
 
 		case ApiFunction.sysGetEnvDbBranch:

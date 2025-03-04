@@ -987,6 +987,9 @@ export class ParmsValues {
 		this.valueSet(ParmsValuesType.listIds, listIds)
 		this.valueSet(ParmsValuesType.listRecordIdCurrent, recordIdAlt ? recordIdAlt : recordId)
 	}
+	valueExists(key: string) {
+		return Object.hasOwn(this.data, key)
+	}
 	valueGet(key: string) {
 		return this.data[key]
 	}
@@ -1003,6 +1006,9 @@ export class ParmsValues {
 	valueSetDefault(key: string, parms: DataRecord, defaultValue: any) {
 		this.valueSet(key, Object.hasOwn(parms, key) ? parms[key] : defaultValue)
 	}
+	valueSetIfMissing(key: string, value: any) {
+		if (!this.valueExists(key)) this.valueSet(key, value)
+	}
 	valueSetList(key: string, dataRows?: DataRow[]) {
 		this.valueSet(key, dataRows ? dataRows.map((row) => row.record.id) : [])
 	}
@@ -1011,7 +1017,6 @@ export class ParmsValues {
 export enum ParmsValuesType {
 	columnDefs = 'columnDefs',
 	customProgramOwnerId = 'customProgramOwnerId',
-	dbExpr = 'dbExpr',
 	embedFieldName = 'embedFieldName',
 	embedListSave = 'embedListSave',
 	fieldListItems = 'fieldListItems',

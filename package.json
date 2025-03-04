@@ -13,7 +13,7 @@
 		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
-		"@edgedb/generate": "^0.5.6",
+		"@gel/generate": "^0.6.0",
 		"@skeletonlabs/tw-plugin": "^0.4.0",
 		"@sveltejs/adapter-auto": "^3.3.1",
 		"@sveltejs/kit": "^2.10.1",
@@ -47,7 +47,7 @@
 		"ag-grid-community": "^32.3.0",
 		"axios": "^1.7.9",
 		"dotenv": "^16.4.7",
-		"edgedb": "^1.5.12",
+		"gel": "^2.0.0",
 		"lodash-es": "^4.17.21",
 		"lucide": "^0.468.0",
 		"lucide-svelte": "^0.468.0",

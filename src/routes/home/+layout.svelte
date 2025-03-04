@@ -24,6 +24,7 @@
 
 	let sm: State = $state(
 		new State({
+			isDevMode: IS_DEV_MODE,
 			navLayout: StateNavLayout.layoutDashboard,
 			navPage: '/home',
 			storeDrawer: getDrawerStore(),

@@ -60,7 +60,7 @@ export class FieldParm extends Field {
 
 		async function getLinkItemsSource(fieldListItemsName: string) {
 			const result: ResponseBody = await apiFetch(
-				ApiFunction.dbEdgeGetLinkItemsSource,
+				ApiFunction.dbGelGetLinkItemsSource,
 				new TokenApiId(fieldListItemsName)
 			)
 			if (result.success) {

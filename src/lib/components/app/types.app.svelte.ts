@@ -526,7 +526,7 @@ export enum AppRowActionType {
 
 async function getNodesLevel(nodeId: string) {
 	const result: ResponseBody = await apiFetch(
-		ApiFunction.dbEdgeGetNodesLevel,
+		ApiFunction.dbGelGetNodesLevel,
 		new TokenApiId(nodeId)
 	)
 	if (result.success) {

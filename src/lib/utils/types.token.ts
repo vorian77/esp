@@ -1,5 +1,4 @@
 import {
-	booleanOrDefault,
 	booleanOrFalse,
 	booleanRequired,
 	CodeAction,
@@ -12,7 +11,6 @@ import {
 	memberOfEnum,
 	nbrRequired,
 	ParmsValues,
-	ParmsValuesType,
 	required,
 	ResponseBody,
 	strOptional,
@@ -21,12 +19,7 @@ import {
 } from '$utils/types'
 import { apiFetch, ApiFunction } from '$routes/api/api'
 import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
-import {
-	State,
-	StateNavLayout,
-	StateParms,
-	StateTriggerToken
-} from '$comps/app/types.appState.svelte'
+import { State, StateParms, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import { App } from '$comps/app/types.app.svelte'
 import { AppRowActionType } from '$comps/app/types.app.svelte'
 import { Node } from '$comps/app/types.node'
@@ -180,6 +173,7 @@ export class TokenApiQuery extends TokenApi {
 
 export class TokenApiQueryData {
 	dataTab?: DataObjData
+	dbExpr?: string
 	record: DataRecord
 	system: DataRecord
 	tree: TokenApiQueryDataTree
@@ -187,6 +181,7 @@ export class TokenApiQueryData {
 	constructor(data: any) {
 		data = valueOrDefault(data, {})
 		this.dataTab = this.dataSet(data, 'dataTab', undefined)
+		this.dbExpr = this.dataSet(data, 'dbExpr', '')
 		this.record = this.dataSet(data, 'record', {})
 		this.system = this.dataSet(data, 'system', {})
 		this.tree = this.dataSet(data, 'tree', [])
@@ -266,7 +261,6 @@ export class TokenApiQueryDataTreeLevel {
 }
 
 export enum TokenApiQueryType {
-	expression = 'expression',
 	preset = 'preset',
 	retrieve = 'retrieve',
 	retrieveRepParmItems = 'retrieveRepParmItems',
@@ -348,7 +342,7 @@ export class TokenAppDoQuery extends TokenApp {
 			return this.dataObjId
 		} else {
 			const result: ResponseBody = await apiFetch(
-				ApiFunction.dbEdgeGetDataObjId,
+				ApiFunction.dbGelGetDataObjId,
 				new TokenApiId(this.dataObjName!)
 			)
 			if (result.success) {

@@ -22,19 +22,16 @@
 	}
 
 	async function saveEmail(email: string) {
-		let expr = `INSERT app_crm::CrmClient { 
+		let dbExpr = `INSERT app_crm::CrmClient { 
 			createdBy := sys_user::getRootUser(),
 			email := '${email}',
 			modifiedBy := sys_user::getRootUser(),
 			name := '${email}',
 			owner := sys_core::getSystemPrime('sys_client_app_factory'),
 		}`
-		const dataTab = new DataObjData()
-		dataTab.parms.valueSet(ParmsValuesType.dbExpr, expr)
-
 		const result: ResponseBody = await apiFetch(
-			ApiFunction.dbEdgeProcessExpression,
-			new TokenApiQueryData({ dataTab })
+			ApiFunction.dbGelProcessExpression,
+			new TokenApiQueryData({ dbExpr })
 		)
 		if (result.success) {
 			return result.data
