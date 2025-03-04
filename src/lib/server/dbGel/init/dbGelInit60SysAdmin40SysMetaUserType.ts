@@ -12,14 +12,11 @@ function initFieldListSelectResource(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		exprFilter: `.resource.isGlobalResource UNION .owner IN (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).orgs`,
+		exprFilter: `.isGlobalResource UNION .owner IN (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).orgs`,
 		header: 'Select Resource(s)',
 		name: 'dofls_sys_admin_sys_user_type_resource',
 		owner: 'sys_system_old',
-		tables: [
-			{ index: 0, table: 'SysUserTypeResource' },
-			{ columnParent: 'resource', indexParent: 0, index: 1, table: 'SysObj' }
-		],
+		tables: [{ index: 0, table: 'SysUserTypeResource' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -33,7 +30,7 @@ function initFieldListSelectResource(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
-				indexTable: 1
+				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
@@ -42,7 +39,7 @@ function initFieldListSelectResource(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				orderSort: 20,
-				indexTable: 1
+				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
@@ -50,7 +47,7 @@ function initFieldListSelectResource(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
-				indexTable: 1
+				indexTable: 0
 			}
 		]
 	})
