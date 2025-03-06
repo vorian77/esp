@@ -28,7 +28,7 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { TokenApiQueryData } from '$utils/types.token'
 import {
 	PropLinkItems,

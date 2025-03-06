@@ -3,7 +3,7 @@ import { CodeAction, CodeActionClass, CodeActionType, required, strRequired } fr
 import { userActionError } from '$comps/other/types.userAction.svelte'
 import { TokenApiSysSendText, TokenAppStateTriggerAction } from '$utils/types.token'
 import type { DataRecord } from '$utils/types'
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
 	AuthProcess,
 	AuthProcessParm,
@@ -263,7 +263,7 @@ export async function codeSend(authProcess: AuthProcess) {
 	if (sm.isDevMode) {
 		console.log(`auth-securityCodeSystem: ${securityCodeSystem}`)
 	} else {
-		await apiFetch(
+		await apiFetchFunction(
 			ApiFunction.sysSendText,
 			new TokenApiSysSendText(
 				securityCodeUserName,

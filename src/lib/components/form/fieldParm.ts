@@ -8,7 +8,7 @@ import {
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
 import { DataObj, ResponseBody, type DataRecord, getRecordValue } from '$utils/types'
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { TokenApiId } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
@@ -59,7 +59,7 @@ export class FieldParm extends Field {
 		return field
 
 		async function getLinkItemsSource(fieldListItemsName: string) {
-			const result: ResponseBody = await apiFetch(
+			const result: ResponseBody = await apiFetchFunction(
 				ApiFunction.dbGelGetLinkItemsSource,
 				new TokenApiId(fieldListItemsName)
 			)

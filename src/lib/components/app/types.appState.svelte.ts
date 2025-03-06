@@ -42,7 +42,7 @@ import {
 	type ModalSettings,
 	type ToastSettings
 } from '@skeletonlabs/skeleton'
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import fActionsClassDo from '$enhance/actions/actionsClassDo'
 import fActionsClassDoFieldAuth from '$enhance/actions/actionsClassAuth'
 import fActionsClassModal from '$enhance/actions/actionsClassModal'
@@ -75,7 +75,7 @@ export class State {
 	storeModal: any
 	storeToast: any
 	triggerTokens: StateTriggerToken[] = $state([])
-	user?: User
+	user?: User = $state()
 	constructor(obj: any) {
 		const clazz = 'State'
 		obj = valueOrDefault(obj, {})
@@ -146,7 +146,7 @@ export class State {
 	}
 
 	async getActions(fieldGroupName: string) {
-		const result: ResponseBody = await apiFetch(
+		const result: ResponseBody = await apiFetchFunction(
 			ApiFunction.dbGelGetDataObjActionGroup,
 			new TokenApiId(fieldGroupName)
 		)
@@ -163,6 +163,11 @@ export class State {
 				message: `Error retrieving data object action field group: ${fieldGroupName}`
 			})
 		}
+	}
+
+	getTasksDash(fCallBack: Function) {
+		this.newApp({ isMultiTree: true })
+		return this.user ? this.user.getTasksDash(fCallBack) : []
 	}
 
 	loadActions() {
@@ -200,8 +205,8 @@ export class State {
 		return fActions
 	}
 
-	newApp() {
-		this.app = new App({ isMultiTree: this.app.isMultiTree })
+	newApp(parms: DataRecord = {}) {
+		this.app = new App(parms)
 		this.dm.reset()
 	}
 

@@ -1,4 +1,4 @@
-import { Token } from '$utils/types.token'
+import { Token, TokenApiFetchError, TokenApiFetchMethod } from '$utils/types.token'
 import { type DataRecord } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
@@ -23,7 +23,32 @@ export enum ApiFunction {
 	sysUserPrefSet = 'sysUserPrefSet'
 }
 
-export async function apiFetch(apiFunction: ApiFunction, token: Token | undefined = undefined) {
+export async function apiFetch(
+	server: string,
+	method: TokenApiFetchMethod,
+	tokenError: TokenApiFetchError,
+	tokenData: Token | undefined = undefined
+) {
+	server = `/api/${server}`
+	let parms: DataRecord = { method }
+	if (tokenData) parms.token = JSON.stringify(tokenData)
+	const responsePromise: Response = await fetch(server, parms)
+	const rtn = await responsePromise.json()
+	if (rtn.success) {
+		return rtn.data
+	} else {
+		error(500, {
+			file: tokenError.fileName,
+			function: tokenError.functionName,
+			message: tokenError.message
+		})
+	}
+}
+
+export async function apiFetchFunction(
+	apiFunction: ApiFunction,
+	token: Token | undefined = undefined
+) {
 	let parms: DataRecord = { apiFunction }
 	if (token) parms = { ...parms, token }
 	const responsePromise: Response = await fetch('/api', {

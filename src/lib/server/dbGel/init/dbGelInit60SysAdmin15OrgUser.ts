@@ -115,16 +115,6 @@ function initFieldListSelectUserType(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'name',
-				orderCrumb: 10,
-				orderSort: 10,
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0
 			}
 		]
 	})

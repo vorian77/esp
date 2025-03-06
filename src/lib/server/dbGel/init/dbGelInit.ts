@@ -22,6 +22,7 @@ import { initContentMOEDCm } from '$server/dbGel/init/dbGelInit80ContentMOEDCm'
 import { initContentMOEDCmAdvocate } from '$server/dbGel/init/dbGelInit80ContentMOEDCmAdvocate'
 import { initContentMOEDSsr } from '$server/dbGel/init/dbGelInit80ContentMOEDSSR'
 import { initContentMOEDRep } from '$server/dbGel/init/dbGelInit80ContentMOEDRep'
+import { initContentSys } from '$server/dbGel/init/dbGelInit80ContentSys'
 
 // user
 import { initUser } from '$server/dbGel/init/dbGelInit1User'
@@ -44,6 +45,9 @@ function dbInitAll(initDb: InitDb) {
 	initSysAuth(initDb)
 	initSysRepUser(initDb)
 
+	// content - system
+	initContentSys(initDb)
+
 	// content - CRM
 	initContentCrm(initDb)
 	initContentCrmRep(initDb)
@@ -61,8 +65,9 @@ function dbInitAll(initDb: InitDb) {
 }
 
 export function initFeature(initDb: InitDb) {
-	initSysAdmin(initDb)
-	// initContentMOEDSsr(initDb)
+	initContentSys(initDb)
+	// initSysAdmin(initDb)
+	initContentMOEDSsr(initDb)
 	// initContentMOEDCm(initDb)
-	// initContentMOEDCmAdvocate(initDb)
+	initContentMOEDCmAdvocate(initDb)
 }

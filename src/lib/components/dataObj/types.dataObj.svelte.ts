@@ -16,7 +16,7 @@ import {
 	UserPrefType,
 	valueOrDefault
 } from '$utils/types'
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
 	RawDataObj,
 	RawDataObjAction,
@@ -162,7 +162,7 @@ export class DataObj {
 			if (sm?.user?.prefIsActive(UserPrefType.remember_list_settings)) {
 				// attempt to retrieve user preferences from DB
 				const token = new TokenApiUserPref(sm.user.id, dataObj.raw.id)
-				const result: ResponseBody = await apiFetch(ApiFunction.sysUserPrefGet, token)
+				const result: ResponseBody = await apiFetchFunction(ApiFunction.sysUserPrefGet, token)
 				rawSettings =
 					Object.hasOwn(result, 'data') && Object.hasOwn(result.data, 'data')
 						? JSON.parse(result.data.data).data

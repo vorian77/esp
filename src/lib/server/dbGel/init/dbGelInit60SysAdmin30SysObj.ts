@@ -10,7 +10,6 @@ import { initAdminSysObjNodeObj } from '$server/dbGel/init/dbGelInit60SysAdmin30
 import { initAdminSysObjRep } from '$server/dbGel/init/dbGelInit60SysAdmin30SysObjRep'
 import { initAdminSysObjTask } from '$server/dbGel/init/dbGelInit60SysAdmin30SysObjTask'
 import { initAdminSysObjUserAction } from '$server/dbGel/init/dbGelInit60SysAdmin30SysObjUserAction'
-import { initAdminSysObjWidget } from '$server/dbGel/init/dbGelInit60SysAdmin30SysObjWidget'
 
 export function initAdminSysObj(init: InitDb) {
 	initSystemObject(init)
@@ -25,7 +24,6 @@ export function initAdminSysObj(init: InitDb) {
 	initAdminSysObjRep(init)
 	initAdminSysObjTask(init)
 	initAdminSysObjUserAction(init)
-	initAdminSysObjWidget(init)
 }
 
 async function initSystemObject(init: InitDb) {
@@ -179,8 +177,7 @@ async function initSystemObject(init: InitDb) {
 			'node_obj_sys_rep_list',
 			'node_obj_sys_admin_table_list',
 			'node_obj_sys_admin_task_list',
-			'node_obj_sys_admin_user_action_list',
-			'node_obj_sys_admin_widget_list'
+			'node_obj_sys_admin_user_action_list'
 		],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',

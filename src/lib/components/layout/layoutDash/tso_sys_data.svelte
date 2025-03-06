@@ -3,7 +3,7 @@
 	import DataViewer from '$utils/DataViewer.svelte'
 	import { error } from '@sveltejs/kit'
 
-	const FILENAME = '$comps/nav/navDash/tso_moed_ssr_advocate.svelte'
+	const FILENAME = '$comps/nav/navDash/tso_sys_data.svelte'
 	const classLabel = 'text-lg text-gray-500'
 	const classData = 'ml-2 text-lg text-gray-700 text-green-500'
 
@@ -12,14 +12,21 @@
 	export let data: any
 
 	let record = data[0]
+	let isShowData = true
+
+	record = record ? record : {}
 
 	let status = []
 	Object.entries(record).forEach((entry) => {
-		status.push({ label: entry[1].label, data: entry[1].data, color: entry[1].color })
+		if (entry[0] === 'isShowData') {
+			isShowData = entry[1]
+		} else {
+			status.push({ label: entry[1].label, data: entry[1].data, color: entry[1].color })
+		}
 	})
 </script>
 
-{#if record}
+{#if record && isShowData}
 	<div class="flex flex-col">
 		{#each status as { label, data, color }, i}
 			{@const colorHex = getColor(color || 'black')}
@@ -29,5 +36,7 @@
 			</span>
 		{/each}
 	</div>
+{:else if task.noDataMsg}
+	{task.noDataMsg}
 {/if}
 <!-- <DataViewer header="record" {data} /> -->

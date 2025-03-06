@@ -4,7 +4,7 @@
 	import { ArrowRight } from 'lucide-svelte'
 	import { goto } from '$app/navigation'
 	import { DataObjData, type DataRecord, ParmsValuesType, ResponseBody } from '$utils/types'
-	import { apiFetch, ApiFunction } from '$routes/api/api'
+	import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 	import { TokenApiQueryData } from '$utils/types.token'
 
 	let prospectEmail = $state('')
@@ -29,7 +29,7 @@
 			name := '${email}',
 			owner := sys_core::getSystemPrime('sys_client_app_factory'),
 		}`
-		const result: ResponseBody = await apiFetch(
+		const result: ResponseBody = await apiFetchFunction(
 			ApiFunction.dbGelProcessExpression,
 			new TokenApiQueryData({ dbExpr })
 		)

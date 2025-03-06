@@ -353,7 +353,6 @@ export async function addTask(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			codeCategory: e.str,
 			codeIcon: e.str,
 			codeRenderType: e.str,
 			codeStatusObj: e.optional(e.str),
@@ -365,6 +364,7 @@ export async function addTask(data: any) {
 			isPinToDash: e.optional(e.bool),
 			isGlobalResource: e.bool,
 			name: e.str,
+			noDataMsg: e.optional(e.str),
 			pageDataObj: e.optional(e.str),
 			targetDataObj: e.optional(e.str),
 			targetNodeObj: e.optional(e.str),
@@ -373,7 +373,6 @@ export async function addTask(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysTask, {
-				codeCategory: e.select(e.sys_core.getCode('ct_sys_task_category', p.codeCategory)),
 				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
 				codeRenderType: e.sys_core.getCode('ct_sys_task_render_type', p.codeRenderType),
 				codeStatusObj: e.sys_core.getCode('ct_sys_task_status_obj', p.codeStatusObj),
@@ -386,6 +385,7 @@ export async function addTask(data: any) {
 				isGlobalResource: p.isGlobalResource,
 				modifiedBy: CREATOR,
 				name: p.name,
+				noDataMsg: p.noDataMsg,
 				orderDefine: p.orderDefine,
 				owner: e.sys_core.getSystemPrime(p.owner),
 				pageDataObj: e.sys_core.getDataObj(p.pageDataObj),

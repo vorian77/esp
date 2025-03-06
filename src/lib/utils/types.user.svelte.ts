@@ -40,9 +40,8 @@ export class User {
 	orgIds: string[] = []
 	personId: string
 	preferences: UserPrefs
-	resources_sys_app: any[] = []
-	resources_sys_task_default: UserResourceTask[] = []
-	resources_sys_task_setting: UserResourceTask[] = []
+	resources_app: any[] = []
+	resources_task: UserResourceTask[] = $state([])
 	system: UserSystem
 	systemIdCurrent: string
 	systemIds: string[] = []
@@ -66,9 +65,8 @@ export class User {
 		this.orgIds = obj.orgs.map((o: any) => o.id)
 		this.personId = strRequired(obj._personId, clazz, 'personId')
 		this.preferences = new UserPrefs(obj.preferences)
-		this.resources_sys_app = obj.resources_app
-		this.resources_sys_task_default = arrayOfClass(UserResourceTask, obj.resources_task_default)
-		this.resources_sys_task_setting = arrayOfClass(UserResourceTask, obj.resources_task_setting)
+		this.resources_app = obj.resources_app
+		this.resources_task = arrayOfClass(UserResourceTask, obj.resources_task)
 		this.system = new UserSystem(obj.system)
 		this.systemIdCurrent = strRequired(obj.system.id, clazz, 'systemIdCurrent')
 		this.systemIds = obj.systems.map((s: any) => s.id)
@@ -92,6 +90,12 @@ export class User {
 
 	setName() {
 		this.fullName = `${this.firstName} ${this.lastName}`
+	}
+	getTasksDash(fDashRefresh: Function) {
+		this.resources_task.forEach((r) => {
+			r.fDashRefresh = fDashRefresh
+		})
+		return this.resources_task.filter((task: UserResourceTask) => task.isPinToDash || task.exprShow)
 	}
 }
 
@@ -118,9 +122,7 @@ class UserPrefItem {
 
 export enum UserPrefType {
 	notifications_auto_retrieve = 'notifications_auto_retrieve',
-	remember_list_settings = 'remember_list_settings',
-	widget_quick_report = 'widget_quick_report',
-	widget_quick_report_moed = 'widget_quick_report_moed'
+	remember_list_settings = 'remember_list_settings'
 }
 
 export class UserResource {
@@ -140,7 +142,6 @@ export class UserResource {
 }
 
 export class UserResourceTask extends UserResource {
-	codeCategory: UserResourceTaskCategory
 	codeRenderType: UserResourceTaskRenderType
 	codeStatusObjName?: string
 	data: DataRecord = {}
@@ -148,22 +149,18 @@ export class UserResourceTask extends UserResource {
 	description?: string
 	exprShow?: string
 	exprStatus?: string
+	fDashRefresh?: Function
 	hasAltOpen: boolean
-	isPinToDash: boolean
-	isShow: boolean = true
+	isPinToDash: boolean = $state(false)
+	isRecreate: boolean = $state(false)
+	isShow: boolean = $state(false)
+	noDataMsg?: string
 	pageDataObjId?: string
 	targetDataObjId?: string
 	targetNodeObj?: Node
 	constructor(obj: any) {
 		super(obj)
 		const clazz = 'UserResourceTask'
-		this.codeCategory = memberOfEnum(
-			obj._codeCategory,
-			clazz,
-			'codeCategory',
-			'UserResourceTaskCategory',
-			UserResourceTaskCategory
-		)
 		this.codeRenderType = memberOfEnum(
 			obj._codeRenderType,
 			clazz,
@@ -177,6 +174,7 @@ export class UserResourceTask extends UserResource {
 		this.exprStatus = obj.exprStatus
 		this.hasAltOpen = booleanOrFalse(obj.hasAltOpen)
 		this.isPinToDash = booleanOrFalse(obj.isPinToDash)
+		this.noDataMsg = obj.noDataMsg
 		this.pageDataObjId = obj._pageDataObjId
 		this.targetDataObjId = obj._targetDataObjId
 		this.targetNodeObj = classOptional(Node, obj._targetNodeObj)
@@ -196,18 +194,10 @@ export class UserResourceTask extends UserResource {
 					})
 				: undefined
 
-		if (!node) {
-			error(500, {
-				file: FILENAME,
-				function: 'UserResourceTask.getTokenNode',
-				message: `Unable to instantiate tokenNode for task: ${this.name}`
-			})
-		}
-
-		return new TokenAppNode({ node })
+		return node ? new TokenAppNode({ node }) : undefined
 	}
 
-	async loadPage(sm: State, fCallBack: Function | undefined) {
+	async loadPage(sm: State) {
 		if (this.pageDataObjId) {
 			const token = new TokenAppDoQuery({
 				dataObjId: this.pageDataObjId,
@@ -219,12 +209,18 @@ export class UserResourceTask extends UserResource {
 			this.dataObjPage = sm.app.getCurrTab()?.dataObj
 
 			if (this.dataObjPage) {
-				if (fCallBack) this.dataObjPage.setCallbackUserAction(fCallBack)
+				if (this.fDashRefresh) this.dataObjPage.setCallbackUserAction(this.fDashRefresh)
 				sm.dm.nodeAdd(this.dataObjPage)
 			}
 		}
 	}
-
+	async togglePinToDash() {
+		this.isPinToDash = !this.isPinToDash
+		if (this.fDashRefresh) await this.fDashRefresh()
+	}
+	toggleRecreate() {
+		this.isRecreate = !this.isRecreate
+	}
 	setShow(isShow: boolean) {
 		this.isShow = isShow
 	}
@@ -300,12 +296,6 @@ export class UserTypeResourceItem {
 	}
 }
 
-export enum UserResourceTaskCategory {
-	default = 'default',
-	record = 'record',
-	setting = 'setting',
-	tab = 'tab'
-}
 export enum UserResourceTaskRenderType {
 	button = 'button',
 	page = 'page'
@@ -316,8 +306,7 @@ export enum UserTypeResourceType {
 	report = 'report',
 	subject = 'subject',
 	system = 'system',
-	task = 'task',
-	widget = 'widget'
+	task = 'task'
 }
 
 /*  

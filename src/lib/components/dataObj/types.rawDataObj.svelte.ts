@@ -52,7 +52,7 @@ import {
 	FieldEmbedType
 } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
@@ -893,7 +893,7 @@ export class PropLinkItems {
 		dataTab.parms.valueSet(ParmsValuesType.propLinkItemsSourceRaw, this.source.raw)
 
 		// retrieve
-		const result: ResponseBody = await apiFetch(
+		const result: ResponseBody = await apiFetchFunction(
 			ApiFunction.dbGelGetLinkItems,
 			new TokenApiQueryData({ dataTab, tree: dataTree, user: sm.user })
 		)

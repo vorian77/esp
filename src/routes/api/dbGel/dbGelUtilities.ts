@@ -117,7 +117,6 @@ const shapeTable = e.shape(e.sys_db.SysTable, (t) => ({
 }))
 
 const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
-	_codeCategory: t.codeCategory.name,
 	_codeIconName: t.codeIcon.name,
 	_codeRenderType: t.codeRenderType.name,
 	_codeStatusObjName: t.codeStatusObj.name,
@@ -133,7 +132,8 @@ const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	header: true,
 	id: true,
 	isPinToDash: true,
-	name: true
+	name: true,
+	noDataMsg: true
 }))
 
 const shapeUserAction = e.shape(e.sys_user.SysUserAction, (ua) => ({
@@ -661,29 +661,12 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			filter: e.op(res.id, 'in', u.userTypes.resources.id),
 			order_by: res.appHeader.orderDefine
 		})),
-		resources_task_default: e.select(e.sys_user.SysTask, (res) => ({
+		resources_task: e.select(e.sys_user.SysTask, (res) => ({
 			...shapeTask(res),
 			filter: e.op(
-				e.op(res.codeCategory.name, '=', 'default'),
-				'and',
-				e.op(
-					e.op(res.isGlobalResource, '=', true),
-					'or',
-					e.op(res.id, 'in', u.userTypes.resources.id)
-				)
-			),
-			order_by: res.orderDefine
-		})),
-		resources_task_setting: e.select(e.sys_user.SysTask, (res) => ({
-			...shapeTask(res),
-			filter: e.op(
-				e.op(res.codeCategory.name, '=', 'setting'),
-				'and',
-				e.op(
-					e.op(res.isGlobalResource, '=', true),
-					'or',
-					e.op(res.id, 'in', u.userTypes.resources.id)
-				)
+				e.op(res.id, 'in', u.userTypes.resources.id),
+				'or',
+				e.op(res.isGlobalResource, '=', true)
 			),
 			order_by: res.orderDefine
 		})),

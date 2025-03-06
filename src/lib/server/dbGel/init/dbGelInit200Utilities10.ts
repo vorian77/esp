@@ -84,23 +84,6 @@ export async function nodeObjPagesBulk(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function widgetBulk(params: any) {
-	sectionHeader('Widgets')
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params({ data: e.json }, (params) => {
-		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.insert(e.sys_user.SysWidget, {
-				owner: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[0]))),
-				name: e.cast(e.str, i[1]),
-				isGlobalResource: e.cast(e.bool, i[2]),
-				createdBy: CREATOR,
-				modifiedBy: CREATOR
-			})
-		})
-	})
-	return await query.run(client, { data: params })
-}
-
 export async function tablesBulk(data: any) {
 	sectionHeader('Tables')
 	const CREATOR = e.sys_user.getRootUser()

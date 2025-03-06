@@ -34,7 +34,7 @@ export namespace sys_user {
     "valueString"?: string | null;
   }
   export interface SysTask extends SysUserTypeResource {
-    "codeCategory": sys_core.SysCode;
+    "noDataMsg"?: string | null;
     "codeRenderType"?: sys_core.SysCode | null;
     "codeStatusObj"?: sys_core.SysCode | null;
     "pageDataObj"?: sys_core.SysDataObj | null;
@@ -94,7 +94,6 @@ export namespace sys_user {
     "isSelfSignup"?: boolean | null;
     "users": SysUser[];
   }
-  export interface SysWidget extends SysUserTypeResource {}
   export interface currentUser extends SysUser {}
 }
 export namespace app_cm {
@@ -1013,7 +1012,6 @@ export interface types {
     "SysUserPref": sys_user.SysUserPref;
     "SysUserPrefType": sys_user.SysUserPrefType;
     "SysUserType": sys_user.SysUserType;
-    "SysWidget": sys_user.SysWidget;
     "currentUser": sys_user.currentUser;
   };
   "app_cm": {

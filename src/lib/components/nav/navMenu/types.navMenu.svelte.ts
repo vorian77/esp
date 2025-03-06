@@ -55,7 +55,7 @@ export class NavMenuData {
 			this.items.push(new NavMenuDataCompOrg(this, { user: this.sm.user }))
 
 			// apps
-			const rawMenu = new RawMenu(this.sm.user.resources_sys_app)
+			const rawMenu = new RawMenu(this.sm.user.resources_app)
 			if (rawMenu.apps.length === 1) {
 				const itemGroupSingleProgram = new NavMenuDataCompGroup(this, {
 					header: 'My Apps',
@@ -74,18 +74,16 @@ export class NavMenuData {
 				this.items.push(new NavMenuDataCompApps(this, { rawMenu }))
 			}
 
-			// item - group - tasks - default
+			// item - group - My Tasks
 			const itemGroupTasks = new NavMenuDataCompGroup(this, { header: 'My Tasks' })
-			this.sm.user.resources_sys_task_default
-				.filter(
-					(r) =>
-						r.isShow && !r.codeStatusObjName && r.codeRenderType !== UserResourceTaskRenderType.page
-				)
-				.forEach((r) => {
+			this.sm.user.resources_task
+				.filter((task) => !task.exprShow)
+				.forEach((task) => {
 					itemGroupTasks.addItem({
-						content: new NavMenuContent(NavMenuContentType.task, r),
-						icon: r.codeIconName,
-						label: new NavMenuLabel(r.header!)
+						content: new NavMenuContent(NavMenuContentType.task, task),
+						icon: task.codeIconName,
+						isRoot: true,
+						label: new NavMenuLabel(task.header!)
 					})
 				})
 			this.items.push(itemGroupTasks)
@@ -171,12 +169,18 @@ export class NavMenuData {
 
 				case NavMenuContentType.task:
 					const task: UserResourceTask = content.value as UserResourceTask
-					await this.triggerAction(
-						CodeActionClass.ct_sys_code_action_class_nav,
-						CodeActionType.openNode,
-						{ token: task.getTokenNode() },
-						{}
-					)
+					const taskNode = task.getTokenNode()
+
+					if (taskNode) {
+						await this.triggerAction(
+							CodeActionClass.ct_sys_code_action_class_nav,
+							CodeActionType.openNode,
+							{ token: task.getTokenNode() },
+							{}
+						)
+					} else {
+						await task.togglePinToDash()
+					}
 					break
 
 				default:
@@ -186,14 +190,6 @@ export class NavMenuData {
 						message: `No case defined for item type: ${content.codeType}`
 					})
 			}
-			// if (this.isOpen) this.openToggle()
-			// close menu
-			// await this.triggerAction(
-			// 	CodeActionClass.ct_sys_code_action_class_nav,
-			// 	CodeActionType.navMenuClose,
-			// 	{},
-			// 	{}
-			// )
 		}
 	}
 
@@ -452,14 +448,6 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 
 		// group - items
 		this.items = new NavMenuDataCompGroup(navMenu, { hideHr: true })
-		this.user.resources_sys_task_setting.forEach((r) => {
-			this.addItem({
-				content: new NavMenuContent(NavMenuContentType.task, r),
-				icon: r.codeIconName,
-				isRoot: true,
-				label: new NavMenuLabel(r.header!)
-			})
-		})
 
 		// this.addItem({
 		// 	content: new NavMenuContent(

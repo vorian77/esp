@@ -730,7 +730,6 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_user::SysUser]": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_user::SysCodeType]": $.LinkDesc<_sys_user.$SysCodeType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_user::SysUserType]": $.LinkDesc<_sys_user.$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is sys_user::SysWidget]": $.LinkDesc<_sys_user.$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_user::currentUser]": $.LinkDesc<_sys_user.$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is org_moed::MoedParticipant]": $.LinkDesc<_org_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;

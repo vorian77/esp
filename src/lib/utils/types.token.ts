@@ -17,7 +17,7 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
 import { State, StateParms, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import { App } from '$comps/app/types.app.svelte'
@@ -45,6 +45,23 @@ export enum TokenApiBlobAction {
 	list = 'list',
 	none = 'none',
 	upload = 'upload'
+}
+
+export class TokenApiFetchError extends TokenApi {
+	fileName: string
+	functionName: string
+	message: string
+	constructor(fileName: string, functionName: string, message: string) {
+		super()
+		this.fileName = fileName
+		this.functionName = functionName
+		this.message = message
+	}
+}
+
+export enum TokenApiFetchMethod {
+	get = 'GET',
+	post = 'POST'
 }
 
 export class TokenApiFileParmDelete extends TokenApi {
@@ -341,7 +358,7 @@ export class TokenAppDoQuery extends TokenApp {
 		if (this.dataObjId) {
 			return this.dataObjId
 		} else {
-			const result: ResponseBody = await apiFetch(
+			const result: ResponseBody = await apiFetchFunction(
 				ApiFunction.dbGelGetDataObjId,
 				new TokenApiId(this.dataObjName!)
 			)
@@ -512,28 +529,4 @@ export enum TokenAppUserActionConfirmType {
 	none = 'none',
 	statusChanged = 'statusChanged',
 	objectValidToContinue = 'objectValidToContinue'
-}
-
-export class TokenAppWidget extends TokenApp {
-	action: string
-	clazz: string
-	dataObjName?: string
-	nodeObjName?: string
-	statusHeader?: string
-	status?: string
-	title: string
-	constructor(obj: any) {
-		const clazz = 'TokenAppWidget'
-		super(obj)
-		this.action = required(obj.action, clazz, 'action')
-		this.clazz = required(obj.clazz, clazz, 'clazz')
-		this.dataObjName = strOptional(obj.dataObjName, clazz, 'dataObjName')
-		this.nodeObjName = strOptional(obj.nodeObjName, clazz, 'nodeObjName')
-		this.statusHeader = obj.statusHeader
-		this.status = obj.status
-		this.title = required(obj.title, clazz, 'title')
-
-		// derived
-		strRequired(this.dataObjName || this.nodeObjName, clazz, 'dataObjName or nodeObjName')
-	}
 }

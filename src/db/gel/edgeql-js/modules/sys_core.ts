@@ -26,7 +26,7 @@ export type $ObjRootλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f7384
 }>;
 type $ObjRoot = $.ObjectType<"sys_core::ObjRoot", $ObjRootλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
-], "sys_core::ObjRoot" | "sys_core::ObjRootCore" | "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCourse" | "app_cm::CmGroup" | "sys_core::SysObjEnt" | "app_cm::CmPartner" | "app_cm::CmServiceFlow" | "app_crm::CrmClient" | "default::SysPerson" | "org_moed::MoedPartData" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysMsg" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjEntAttr" | "sys_core::SysOrg" | "sys_core::SysSystem" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_user::SysUserTypeResource" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysCodeType" | "sys_user::SysTask" | "sys_user::SysUserAction" | "sys_user::SysUserType" | "sys_user::SysWidget">;
+], "sys_core::ObjRoot" | "sys_core::ObjRootCore" | "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCourse" | "app_cm::CmGroup" | "sys_core::SysObjEnt" | "app_cm::CmPartner" | "app_cm::CmServiceFlow" | "app_crm::CrmClient" | "default::SysPerson" | "org_moed::MoedPartData" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysMsg" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjEntAttr" | "sys_core::SysOrg" | "sys_core::SysSystem" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_user::SysUserTypeResource" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysCodeType" | "sys_user::SysTask" | "sys_user::SysUserAction" | "sys_user::SysUserType">;
 const $ObjRoot = $.makeType<$ObjRoot>(_.spec, "50288c7e-b3c2-11ee-9558-af251a93873c", _.syntax.literal);
 
 const ObjRoot: $.$expr_PathNode<$.TypeSet<$ObjRoot, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($ObjRoot, $.Cardinality.Many), null);
@@ -40,7 +40,7 @@ export type $ObjRootCoreλShape = $.typeutil.flatten<$ObjRootλShape & {
 }>;
 type $ObjRootCore = $.ObjectType<"sys_core::ObjRootCore", $ObjRootCoreλShape, null, [
   ...$ObjRoot['__exclusives__'],
-], "sys_core::ObjRootCore" | "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCourse" | "app_cm::CmGroup" | "sys_core::SysObjEnt" | "app_cm::CmPartner" | "app_cm::CmServiceFlow" | "app_crm::CrmClient" | "org_moed::MoedPartData" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjEntAttr" | "sys_core::SysOrg" | "sys_core::SysSystem" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_user::SysUserTypeResource" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysCodeType" | "sys_user::SysTask" | "sys_user::SysUserAction" | "sys_user::SysUserType" | "sys_user::SysWidget">;
+], "sys_core::ObjRootCore" | "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCourse" | "app_cm::CmGroup" | "sys_core::SysObjEnt" | "app_cm::CmPartner" | "app_cm::CmServiceFlow" | "app_crm::CrmClient" | "org_moed::MoedPartData" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjEntAttr" | "sys_core::SysOrg" | "sys_core::SysSystem" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_user::SysUserTypeResource" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysCodeType" | "sys_user::SysTask" | "sys_user::SysUserAction" | "sys_user::SysUserType">;
 const $ObjRootCore = $.makeType<$ObjRootCore>(_.spec, "8a1a1e1b-cbb3-11ef-a79b-611a8e027a2a", _.syntax.literal);
 
 const ObjRootCore: $.$expr_PathNode<$.TypeSet<$ObjRootCore, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($ObjRootCore, $.Cardinality.Many), null);
@@ -52,7 +52,7 @@ export type $SysObjλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user.
 type $SysObj = $.ObjectType<"sys_core::SysObj", $SysObjλShape, null, [
   ...$ObjRootCore['__exclusives__'],
   ..._sys_user.$Mgmt['__exclusives__'],
-], "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCourse" | "app_cm::CmGroup" | "sys_core::SysObjEnt" | "app_cm::CmPartner" | "app_cm::CmServiceFlow" | "app_crm::CrmClient" | "org_moed::MoedPartData" | "sys_core::SysCodeType" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjEntAttr" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_user::SysUserTypeResource" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysCodeType" | "sys_user::SysTask" | "sys_user::SysUserAction" | "sys_user::SysUserType" | "sys_user::SysWidget">;
+], "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCourse" | "app_cm::CmGroup" | "sys_core::SysObjEnt" | "app_cm::CmPartner" | "app_cm::CmServiceFlow" | "app_crm::CrmClient" | "org_moed::MoedPartData" | "sys_core::SysCodeType" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjEntAttr" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_user::SysUserTypeResource" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysCodeType" | "sys_user::SysTask" | "sys_user::SysUserAction" | "sys_user::SysUserType">;
 const $SysObj = $.makeType<$SysObj>(_.spec, "502c3231-b3c2-11ee-8bbb-0d7244bf9fbc", _.syntax.literal);
 
 const SysObj: $.$expr_PathNode<$.TypeSet<$SysObj, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysObj, $.Cardinality.Many), null);
@@ -117,7 +117,6 @@ export type $SysAttrλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "<attributes[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<attributes[is sys_core::SysObjEntAttr]": $.LinkDesc<$SysObjEntAttr, $.Cardinality.Many, {}, false, false,  false, false>;
   "<attributes[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<attributes[is sys_user::SysWidget]": $.LinkDesc<_sys_user.$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
   "<attributes": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysAttr = $.ObjectType<"sys_core::SysAttr", $SysAttrλShape, null, [
@@ -224,7 +223,6 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<codeCmCohortAttdDuration[is app_cm::CmCsfCohortAttd]": $.LinkDesc<_app_cm.$CmCsfCohortAttd, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeIcon[is sys_core::SysCodeAction]": $.LinkDesc<$SysCodeAction, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parent[is sys_core::SysCodeAction]": $.LinkDesc<$SysCodeAction, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeCategory[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeRenderType[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeStatusObj[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeDataType[is sys_migr::SysMigrSourceColumn]": $.LinkDesc<_sys_migr.$SysMigrSourceColumn, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -372,16 +370,11 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<codeIcon[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeMulti[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeSingle[is sys_user::SysTask]": $.LinkDesc<_sys_user.$SysTask, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeIcon[is sys_user::SysWidget]": $.LinkDesc<_sys_user.$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeObjType[is sys_user::SysWidget]": $.LinkDesc<_sys_user.$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<testCodeMulti[is sys_user::SysWidget]": $.LinkDesc<_sys_user.$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<testCodeSingle[is sys_user::SysWidget]": $.LinkDesc<_sys_user.$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeAccess": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeAlignment": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeAlignmentAlt": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeAttrType": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeCardinality": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeCategory": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeCmCohortAttdDuration": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeCollegeStatus": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeColor": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -960,7 +953,6 @@ export type $SysSystemλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_us
   "<systems[is sys_user::SysUser]": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_user::SysCodeType]": $.LinkDesc<_sys_user.$SysCodeType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_user::SysUserType]": $.LinkDesc<_sys_user.$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<owner[is sys_user::SysWidget]": $.LinkDesc<_sys_user.$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is app_crm::CrmClient]": $.LinkDesc<_app_crm.$CrmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<defaultSystem[is sys_user::currentUser]": $.LinkDesc<_sys_user.$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<systems[is sys_user::currentUser]": $.LinkDesc<_sys_user.$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;

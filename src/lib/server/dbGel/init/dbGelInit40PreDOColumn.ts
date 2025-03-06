@@ -286,13 +286,6 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
-		header: 'Category',
-		isMultiSelect: false,
-		name: 'codeCategory',
-		owner: 'sys_system_old'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
 		header: 'Duration',
 		isMultiSelect: false,
 		name: 'codeCmCohortAttdDuration',
@@ -640,13 +633,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Wage Type',
 		isMultiSelect: false,
 		name: 'codeWageType'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system_old',
-		codeDataType: 'link',
-		header: 'Widget Type',
-		isMultiSelect: false,
-		name: 'codeWidgetType'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system_old',
@@ -1907,6 +1893,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Custom Name',
 		name: 'nameCustom'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system_old',
+		codeDataType: 'str',
+		header: 'No Data Message',
+		name: 'noDataMsg'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',

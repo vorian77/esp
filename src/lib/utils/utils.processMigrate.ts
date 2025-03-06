@@ -1,4 +1,4 @@
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { TokenApiId } from '$utils/types.token'
 import { ResponseBody } from '$utils/types'
 import { DataObj } from '$utils/types'
@@ -15,7 +15,7 @@ export async function migrate(sm: State, dataObj: DataObj) {
 
 async function getActions() {
 	const name = 'doag_dialog_footer_detail'
-	const result: ResponseBody = await apiFetch(
+	const result: ResponseBody = await apiFetchFunction(
 		ApiFunction.dbGelGetDataObjActionGroup,
 		new TokenApiId(name)
 	)

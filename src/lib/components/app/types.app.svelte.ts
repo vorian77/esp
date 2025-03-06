@@ -19,7 +19,7 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
 	TokenApiDbDataObjSource,
 	TokenApiBlobAction,
@@ -53,7 +53,7 @@ export class App {
 	isMultiTree: boolean
 	treeLevels: AppTree[] = $state([])
 	treeLevelsIdxCurrent: number = -1
-	constructor(obj: any = {}) {
+	constructor(obj: DataRecord = {}) {
 		this.isMultiTree = booleanOrFalse(obj.isMultiTree)
 	}
 
@@ -525,7 +525,7 @@ export enum AppRowActionType {
 }
 
 async function getNodesLevel(nodeId: string) {
-	const result: ResponseBody = await apiFetch(
+	const result: ResponseBody = await apiFetchFunction(
 		ApiFunction.dbGelGetNodesLevel,
 		new TokenApiId(nodeId)
 	)

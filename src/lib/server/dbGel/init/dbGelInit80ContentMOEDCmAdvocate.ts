@@ -292,10 +292,10 @@ function initNodeObjsTask(init: InitDb) {
 
 function initTasks(init: InitDb) {
 	init.addTrans('sysTask', {
-		codeCategory: 'default',
 		codeIcon: 'Activity',
 		codeRenderType: 'button',
-		codeStatusObj: 'tso_data',
+		codeStatusObj: 'tso_sys_data',
+		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client IN org_moed::MoedParticipant AND NOT EXISTS .dateEnd)) > 0`,
 		exprStatus: `WITH 
   	sfs := (SELECT app_cm::CmClientServiceFlow FILTER .client IN org_moed::MoedParticipant),
   	sfsOpen := (SELECT sfs { days_open := duration_get(cal::to_local_date(datetime_current(), 'UTC') - .dateStart ?? .dateCreated, 'day') } FILTER NOT EXISTS .dateEnd),
@@ -305,7 +305,7 @@ function initTasks(init: InitDb) {
       openGT14 := {label := 'Open 15 or more days', data := count(sfsOpen FILTER .days_open > 14), color := 'red'},
 		}`,
 		header: 'Open Applications',
-		isPinToDash: true,
+		isPinToDash: false,
 		isGlobalResource: false,
 		name: 'task_moed_part_apps_open',
 		targetNodeObj: 'node_obj_task_moed_part_list_apps_open',
@@ -314,10 +314,10 @@ function initTasks(init: InitDb) {
 	})
 
 	init.addTrans('sysTask', {
-		codeCategory: 'default',
 		codeIcon: 'Activity',
 		codeRenderType: 'button',
-		codeStatusObj: 'tso_data',
+		codeStatusObj: 'tso_sys_data',
+		exprShow: `SELECT count((SELECT sys_core::SysMsg FILTER .sender IN org_moed::MoedParticipant.person AND NOT EXISTS .responses)) > 0`,
 		exprStatus: `WITH 
         sfs := (SELECT app_cm::CmClientServiceFlow filter .client in org_moed::MoedParticipant),
         msgs := (SELECT sys_core::SysMsg FILTER .sender IN sfs.client.person),
@@ -328,7 +328,7 @@ function initTasks(init: InitDb) {
           openGT7 := {label := 'Open 15 or more days', data := count(msgsOpen FILTER .days_open > 14), color := 'red'},
         }`,
 		header: 'Open Messages',
-		isPinToDash: true,
+		isPinToDash: false,
 		isGlobalResource: false,
 		name: 'task_moed_part_msgs_open',
 		targetNodeObj: 'node_obj_task_moed_msg_list_open',

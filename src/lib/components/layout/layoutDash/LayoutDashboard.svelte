@@ -11,7 +11,7 @@
 		TokenAppStateTriggerAction,
 		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
-	import { apiFetch, ApiFunction } from '$routes/api/api'
+	import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 	import {
 		CodeAction,
 		CodeActionClass,
@@ -25,46 +25,39 @@
 		ParmsValuesType,
 		ResponseBody,
 		UserResourceTask,
-		UserResourceTaskCategory,
 		UserResourceTaskRenderType
 	} from '$utils/types'
 	import { getContext, setContext } from 'svelte'
-	import TsoData from '$comps/layout/layoutDash/tso_data.svelte'
-	import TsoMoedSsrAdvocate from '$comps/layout/layoutDash/tso_moed_ssr_advocate.svelte'
-	import TsoMoedSsrApp from '$comps/layout/layoutDash/tso_moed_ssr_app.svelte'
 	import TsoMoedSsrDoc from '$comps/layout/layoutDash/tso_moed_ssr_doc.svelte'
-	import TsoMoedSsrMsg from '$comps/layout/layoutDash/tso_moed_ssr_msg.svelte'
+	import TsoSysData from '$comps/layout/layoutDash/tso_sys_data.svelte'
+	import TsoSysQuote from '$comps/layout/layoutDash/tso_sys_quote.svelte'
 	import FormDetail from '$comps/form/FormDetail.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import { goto } from '$app/navigation'
 	import { error } from '@sveltejs/kit'
 
 	const FILENAME = '$comps/layout/layoutDash/LayoutDash.svelte'
+	const StatusType = {
+		tso_moed_ssr_doc: TsoMoedSsrDoc,
+		tso_sys_data: TsoSysData,
+		tso_sys_quote: TsoSysQuote
+	}
 
 	let sm: State = getContext(ContextKey.stateManager)
 	let dm: DataManager = $derived(sm.dm)
 
-	const fCallback = () => getData()
+	let tasks = $state(sm.getTasksDash(setTasks))
 
-	let tasks = $derived(
-		[...sm.user.resources_sys_task_default, ...sm.user?.resources_sys_task_setting].filter(
-			(task: UserResourceTask) =>
-				task.codeStatusObjName || task.codeRenderType === UserResourceTaskRenderType.page
-		)
-	)
+	$effect(() => {
+		async function getTaskData() {
+			await getData(tasks)
+		}
+		getTaskData()
+	})
 
-	const StatusType = {
-		tso_data: TsoData,
-		tso_moed_ssr_advocate: TsoMoedSsrAdvocate,
-		tso_moed_ssr_app: TsoMoedSsrApp,
-		tso_moed_ssr_doc: TsoMoedSsrDoc,
-		tso_moed_ssr_msg: TsoMoedSsrMsg
-	}
+	let promise = $derived(getData(tasks))
 
-	let promise = $state(getData())
-
-	async function getData() {
-		sm.newApp({ isMultiTree: true })
+	async function getData(tasks: UserResourceTask[] = []) {
 		for (let i = 0; i < tasks.length; i++) {
 			await getDataTask(tasks[i])
 		}
@@ -75,15 +68,14 @@
 		task.data = {}
 		task.setShow(await getDataShow(task))
 		if (task.isShow) {
-			if (task.pageDataObjId) {
-				await task.loadPage(sm, fCallback)
-			}
-			task.data = await getDataStatus(task)
+			if (task.pageDataObjId) await task.loadPage(sm)
+			task.data = (await getDataStatus(task)) || []
 		}
 	}
 
 	async function getDataShow(task: UserResourceTask) {
-		if (!task.exprShow) return true
+		if (task.isPinToDash) return true
+		if (!task.exprShow) return false
 		const show = await getDataDB(task, task.exprShow)
 		return show.data[0]
 	}
@@ -95,7 +87,7 @@
 	}
 
 	async function getDataDB(task: UserResourceTask, dbExpr: string) {
-		const result: ResponseBody = await apiFetch(
+		const result: ResponseBody = await apiFetchFunction(
 			ApiFunction.dbGelProcessExpression,
 			new TokenApiQueryData({ dbExpr, user: sm.user })
 		)
@@ -109,8 +101,11 @@
 			})
 		}
 	}
+
 	async function onClick(task: UserResourceTask, parms: DataRecord | undefined = undefined) {
-		if ((task.targetDataObjId || task.targetNodeObj) && !task.dataObjPage) {
+		if (task.dataObjPage) {
+			// handled by custom actions on form
+		} else if (task.targetDataObjId || task.targetNodeObj) {
 			sm.parmsState.update(parms)
 			const token = task.getTokenNode(sm.user)
 			await sm.triggerAction(
@@ -124,7 +119,14 @@
 					stateParms: new StateParms({ navLayout: StateNavLayout.layoutApp })
 				})
 			)
+		} else {
+			await getDataTask(task)
+			task.toggleRecreate()
 		}
+	}
+
+	async function setTasks() {
+		tasks = sm.user.getTasksDash(setTasks)
 	}
 </script>
 
@@ -132,12 +134,9 @@
 	<p>Loading tasks...</p>
 {:then tasks}
 	{#if tasks.length === 0}
-		<h1 class="p-4">No tasks to complete or widgets configured.</h1>
+		<h1 class="p-4">No tasks are pinned or triggered.</h1>
 	{:else}
 		<div class="h-full flex flex-col overflow-y-auto gap-3 p-4 bg-neutral-100">
-			<!-- <button class="btn btn-action variant-ghost-primary" onclick={() => (promise = getData())}
-				>Refresh Dashboard</button
-			> -->
 			{#each tasks as task}
 				{#if task.isShow}
 					{@const isButton = !task.dataObjPage && !task.hasAltOpen}
@@ -159,12 +158,16 @@
 							{@const Component = task.codeStatusObjName
 								? StatusType[task.codeStatusObjName]
 								: undefined}
-							<h5 class="mb-6 text-4xl font-bold tracking-tight text-blue-400">
-								{task.header}
-							</h5>
-							{#if Component}
-								<Component {task} {onClick} data={task.data} />
-							{/if}
+							{#key task.isRecreate}
+								<h5 class="mb-6 text-4xl font-bold tracking-tight text-blue-400">
+									{task.header}
+								</h5>
+								{#if Component}
+									<Component {task} {onClick} data={task.data} />
+								{:else}
+									no Component: {task.codeStatusObjName}
+								{/if}
+							{/key}
 						{/if}
 					</div>
 				{/if}

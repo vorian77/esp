@@ -20,7 +20,7 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/routes/api/dbGel/server.ts'
 
-export async function POST({ request, cookies }) {
+export async function POST({ request }) {
 	const requestData = await request.json()
 	const { apiFunction, token } = requestData
 

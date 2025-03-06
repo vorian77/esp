@@ -51,11 +51,13 @@ const COLORS = [
 
 export async function GET({ request }) {
 	let quotes = []
-
+	console.log('API_NINJAS_SECRET:', API_NINJAS_SECRET)
 	const COLOR = { color: COLORS[Math.floor(Math.random() * COLORS.length)] }
 	const CATEGORY_IDX = Math.floor(Math.random() * (CATEGORIES.length + 1))
-	const API = 'https://api.api-ninjas.com/v1/quotes?limit=1&category=' + CATEGORIES[CATEGORY_IDX]
-	const DEMO_QUOTE = {
+	// const API = 'https://api.api-ninjas.com/v1/quotes?limit=1&category=' + CATEGORIES[CATEGORY_IDX]
+	const API = 'https://api.api-ninjas.com/v1/quotes'
+
+	const DEFAULT_QUOTE = {
 		quote:
 			'If you accept the expectations of others, especially negative ones, then you never will change the outcome.',
 		author: 'Michael Jordon',
@@ -71,9 +73,7 @@ export async function GET({ request }) {
 			}
 		})
 		quotes = await quotesRes.json()
-		const quote = quotes.length > 0 ? quotes[0] : DEMO_QUOTE
-		return quote
-		// return DEMO_QUOTE
+		return quotes.length > 0 ? quotes[0] : DEFAULT_QUOTE
 	}
 
 	const quote = await getQuote()

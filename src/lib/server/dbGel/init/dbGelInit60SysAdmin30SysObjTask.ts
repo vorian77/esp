@@ -41,17 +41,6 @@ function initTask(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeCategory',
-				isDisplayable: true,
-				isExcludeUpdate: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0,
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'isGlobalResource',
 				isDisplayable: true,
 				isExcludeUpdate: true,
@@ -115,16 +104,6 @@ function initTask(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'select',
-				columnName: 'codeCategory',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_task_category'
-			},
-			{
 				codeFieldElement: 'toggle',
 				columnName: 'isGlobalResource',
 				exprPreset: `(SELECT false)`,
@@ -181,6 +160,14 @@ function initTask(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 130,
 				orderDefine: 130,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'noDataMsg',
+				isDisplayable: true,
+				orderDisplay: 135,
+				orderDefine: 135,
 				indexTable: 0
 			},
 			{

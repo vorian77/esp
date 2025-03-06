@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { apiFetch, ApiFunction } from '$routes/api/api'
+	import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 	import {
 		TokenApiUserPref,
 		TokenAppModalReturnType,
@@ -221,7 +221,7 @@
 				ParmsUserDataType.listColumnsModel,
 				new GridSettingsColumns(api.getAllGridColumns())
 			)
-			await apiFetch(
+			await apiFetchFunction(
 				ApiFunction.sysUserPrefSet,
 				new TokenApiUserPref(
 					options.userSettings.idUser,

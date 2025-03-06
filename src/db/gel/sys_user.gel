@@ -36,7 +36,6 @@ module sys_user {
 
   # task  
   type SysTask extending sys_user::SysUserTypeResource {
-    required codeCategory: sys_core::SysCode;
     codeRenderType: sys_core::SysCode;
     codeStatusObj: sys_core::SysCode;
     description: str;
@@ -44,6 +43,7 @@ module sys_user {
     exprStatus: str;
     hasAltOpen: bool;
     isPinToDash: bool;
+    noDataMsg: str;
     pageDataObj: sys_core::SysDataObj;
     targetDataObj: sys_core::SysDataObj;
     targetNodeObj: sys_core::SysNodeObj;
@@ -132,10 +132,6 @@ module sys_user {
 
   type SysUserTypeResource extending sys_core::SysObj {}
   
-  # widget
-  type SysWidget extending sys_user::SysUserTypeResource {
-    constraint exclusive on (.name);
-  }
 
   # GLOBALS
   global currentUserId: uuid;
@@ -165,9 +161,6 @@ module sys_user {
 
   function getUserTypeResource(ownerName: str, name: str) -> optional sys_user::SysUserTypeResource
     using (select assert_single((select sys_user::SysUserTypeResource filter .owner.name = ownerName AND .name = name)));
-
-  function getWidget(widgetName: str) -> optional sys_user::SysWidget
-    using (select sys_user::SysWidget filter .name = widgetName);
 }
 
 

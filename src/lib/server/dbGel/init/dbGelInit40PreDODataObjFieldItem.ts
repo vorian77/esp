@@ -364,7 +364,6 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter: `sys_core::SysObj IN (SELECT 
 			(sys_core::SysObj[is sys_core::SysOrg]) UNION
-			(sys_core::SysObj[is sys_user::SysWidget]) UNION
 			(SELECT (sys_core::SysObj[is sys_core::SysNodeObj]) FILTER .codeNodeType.name = 'program')
 			)`,
 		name: 'il_sys_user_type_resource',

@@ -377,19 +377,24 @@ function initTaskSsrApp(init: InitDb) {
 	})
 
 	init.addTrans('sysTask', {
-		codeCategory: 'default',
 		codeIcon: 'ClipboardPen',
 		codeRenderType: 'button',
-		codeStatusObj: 'tso_moed_ssr_app',
+		codeStatusObj: 'tso_sys_data',
 		description: 'First step to my future.',
-		exprShow: `SELECT true IF (SELECT (SELECT sys_user::SysUser FILTER .id =  <user,uuid,id>).person.isLegalAgreed = true) ?? false ELSE false`,
-		exprStatus: `SELECT app_cm::CmClientServiceFlow
-	{ _codeStatus := .codeStatus.name, dateCreated, modifiedAt, _modifiedBy := .modifiedBy.person.fullName }
-	FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person ORDER BY .modifiedAt DESC`,
+		exprShow: `SELECT count((SELECT sys_user::SysUser FILTER .id = <user,uuid,id> AND .person.isLegalAgreed = true)) > 0`,
+		exprStatus: `WITH
+		sf := (SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person ORDER BY .modifiedAt DESC),
+		SELECT {
+			isShowData := (exists sf),
+			applicationDate := {label := 'Application Date', data := sf.dateCreated, color := 'black'},
+  		codeStatus := {label := 'Current Status', data := sf.codeStatus.name, color := 'black'},
+  		lastUpdateBy := {label := 'Last Update By', data := sf.modifiedBy.person.fullName, color := 'black'}
+		}`,
 		header: 'My Application',
-		isPinToDash: true,
+		isPinToDash: false,
 		isGlobalResource: false,
 		name: 'task_moed_ssr_app',
+		noDataMsg: 'Click to start application',
 		targetDataObj: 'data_obj_task_moed_ssr_app',
 		orderDefine: 30,
 		owner: 'sys_moed_old'
@@ -761,19 +766,18 @@ function initTaskSsrMsg(init: InitDb) {
 	})
 
 	init.addTrans('sysTask', {
-		codeCategory: 'default',
 		codeIcon: 'Mail',
 		codeRenderType: 'button',
-		codeStatusObj: 'tso_moed_ssr_msg',
+		codeStatusObj: 'tso_sys_data',
 		description: 'Have questions? Send messages to program staff.',
-		exprShow: `SELECT true IF EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person) ELSE false`,
+		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person)) > 0`,
 		exprStatus: `WITH msgs := (SELECT sys_core::SysMsg FILTER <user,uuid,personId> IN (.sender.id UNION .recipients.id))
 		SELECT {
-			msgsCnt := count(msgs),
-			msgsCntUnread := count(msgs FILTER <user,uuid,personId> != .sender.id AND <user,uuid,personId> NOT IN .readers.id),
-		}`,
+			msgsCnt := {label := 'Total', data := count(msgs), color := 'black'},
+			msgsCntUnread := {label := 'Unread', data := count(msgs FILTER <user,uuid,personId> != .sender.id AND <user,uuid,personId> NOT IN .readers.id), color := 'black'},
+			}`,
 		header: 'My Messages',
-		isPinToDash: true,
+		isPinToDash: false,
 		isGlobalResource: false,
 		name: 'task_moed_ssr_app_msg',
 		targetNodeObj: 'node_obj_task_moed_ssr_msg_list',
@@ -972,12 +976,11 @@ function initTaskSsrDoc(init: InitDb) {
 	})
 
 	init.addTrans('sysTask', {
-		codeCategory: 'default',
 		codeIcon: 'ImageUp',
 		codeRenderType: 'button',
 		codeStatusObj: 'tso_moed_ssr_doc',
 		description: 'Step 2: to help speed up my application processing.',
-		exprShow: `SELECT true IF EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person) ELSE false`,
+		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person)) > 0`,
 		exprStatus: `SELECT sys_core::SysCodeType { 
   id, 
   name, 
@@ -986,7 +989,7 @@ function initTaskSsrDoc(init: InitDb) {
 FILTER .parent.name = 'ct_cm_doc_type' ORDER BY .order asc`,
 		hasAltOpen: true,
 		header: 'My Eligibility Documents',
-		isPinToDash: true,
+		isPinToDash: false,
 		isGlobalResource: false,
 		name: 'task_moed_ssr_app_doc',
 		targetDataObj: 'data_obj_task_moed_ssr_doc_detail',
@@ -1112,12 +1115,11 @@ function initTaskSsrWelcome(init: InitDb) {
 		]
 	})
 	init.addTrans('sysTask', {
-		codeCategory: 'default',
 		codeIcon: 'ClipboardPen',
 		codeRenderType: 'page',
-		exprShow: `SELECT false IF (SELECT (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.isLegalAgreed = true) ?? false ELSE true`,
+		exprShow: `SELECT count((SELECT sys_user::SysUser FILTER .id = <user,uuid,id> AND (.person.isLegalAgreed = false UNION .person.isLegalAgreed ?= <bool>{}))) > 0`,
 		header: 'Welcome',
-		isPinToDash: true,
+		isPinToDash: false,
 		isGlobalResource: false,
 		name: 'task_moed_ssr_welcome',
 		pageDataObj: 'data_obj_task_moed_ssr_welcome',

@@ -8,14 +8,7 @@ export function initUser(init: InitDb) {
 	initUsers(init)
 }
 
-function initResources(init: InitDb) {
-	/* widgets */
-	init.addTrans('widgetBulk', [
-		['sys_system_old', 'widget_sys_quotes', true],
-		['sys_system_old', 'widget_sys_user', true],
-		['sys_ai_old', 'widget_ai_user', false]
-	])
-}
+function initResources(init: InitDb) {}
 
 function initAppHeaders(init: InitDb) {
 	/* system */
@@ -149,7 +142,8 @@ function initUserType(init: InitDb) {
 		owner: 'sys_system_old',
 		resources: [
 			{ owner: 'sys_system_old', name: 'app_sys_admin_global' },
-			{ owner: 'sys_system_old', name: 'app_sys_reporting' }
+			{ owner: 'sys_system_old', name: 'app_sys_reporting' },
+			{ owner: 'sys_system_old', name: 'task_sys_quote' }
 		]
 	})
 

@@ -7,7 +7,7 @@ import {
 	updateDataObjColumnCustomEmbedShellFields
 } from '$server/dbGel/init/dbGelInit200Utilities20DataObj'
 import { addColumn, tableColumnsBulk } from '$server/dbGel/init/dbGelInit200Utilities30DB'
-import { tablesBulk, widgetBulk } from '$server/dbGel/init/dbGelInit200Utilities10'
+import { tablesBulk } from '$server/dbGel/init/dbGelInit200Utilities10'
 import {
 	addDataObjActionGroup,
 	addDataObjFieldItems,
@@ -50,8 +50,6 @@ import {
 	strRequired
 } from '$utils/types'
 import { error } from '@sveltejs/kit'
-import { update } from '$db/gel/edgeql-js'
-import exp from 'constants'
 
 const FILENAME = '/server/dbGel/init/types.init.ts'
 const TokenExprFilterRecord = '<ExprFilterRecord>'
@@ -291,14 +289,6 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
-			new InitDbItemBulk({
-				name: 'widgetBulk',
-				dataMap: ['.name', 1],
-				deleteObj: 'sys_user::SysWidget',
-				fCreate: widgetBulk
-			})
-		)
 		this.items.push(
 			new InitDbItemObject({
 				name: 'SysObjEntAttr',

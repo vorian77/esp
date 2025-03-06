@@ -7,7 +7,7 @@ import {
 	TokenAppStateTriggerAction
 } from '$utils/types.token'
 import type { DataRecord, ResponseBody } from '$utils/types'
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/types.actionsClassAuth.ts'
@@ -42,7 +42,7 @@ export class AuthActionDB extends AuthAction {
 			record: authProcess.parms
 		}
 
-		const result: ResponseBody = await apiFetch(
+		const result: ResponseBody = await apiFetchFunction(
 			ApiFunction.dbGelProcessExpression,
 			new TokenApiQueryData(exprParms)
 		)

@@ -19,7 +19,7 @@ export type $MgmtλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c2
 }>;
 type $Mgmt = $.ObjectType<"sys_user::Mgmt", $MgmtλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
-], "app_cm::CmClient" | "app_cm::CmClientServiceFlow" | "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCohortAttd" | "app_cm::CmCohortDoc" | "app_cm::CmCourse" | "app_cm::CmCsfData" | "app_cm::CmCsfCohort" | "app_cm::CmCsfCohortAttd" | "app_cm::CmCsfDocument" | "app_cm::CmCsfGroup" | "app_cm::CmCsfJobPlacement" | "app_cm::CmCsfNote" | "app_cm::CmCsfSchoolPlacement" | "app_cm::CmGroup" | "sys_core::SysObjEnt" | "app_cm::CmPartner" | "app_cm::CmServiceFlow" | "app_crm::CrmClient" | "org_moed::MoedPartData" | "org_moed::MoedParticipant" | "sys_core::SysAttr" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysDataObj" | "sys_core::SysDataObjAction" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjColumn" | "sys_core::SysDataObjColumnItemChange" | "sys_core::SysDataObjColumnItemValue" | "sys_core::SysDataObjColumnLink" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysDataObjQueryRider" | "sys_core::SysDataObjTable" | "sys_core::SysDataObjWith" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjEntAttr" | "sys_core::SysObjNote" | "sys_core::SysOrg" | "sys_core::SysSystem" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_migr::SysMigrSourceColumn" | "sys_migr::SysMigrSourceTable" | "sys_migr::SysMigrTargetColumn" | "sys_migr::SysMigrTargetTable" | "sys_rep::SysAnalytic" | "sys_rep::SysAnalyticStatus" | "sys_user::SysUserTypeResource" | "sys_rep::SysRep" | "sys_rep::SysRepEl" | "sys_rep::SysRepParm" | "sys_rep::SysRepUser" | "sys_rep::SysRepUserAnalytic" | "sys_rep::SysRepUserParm" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysCodeType" | "sys_user::SysTask" | "sys_user::SysUser" | "sys_user::SysUserAction" | "sys_user::SysUserActionConfirm" | "sys_user::SysUserActionShow" | "sys_user::SysUserPref" | "sys_user::SysUserPrefType" | "sys_user::SysUserType" | "sys_user::SysWidget" | "sys_user::currentUser">;
+], "app_cm::CmClient" | "app_cm::CmClientServiceFlow" | "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCohortAttd" | "app_cm::CmCohortDoc" | "app_cm::CmCourse" | "app_cm::CmCsfData" | "app_cm::CmCsfCohort" | "app_cm::CmCsfCohortAttd" | "app_cm::CmCsfDocument" | "app_cm::CmCsfGroup" | "app_cm::CmCsfJobPlacement" | "app_cm::CmCsfNote" | "app_cm::CmCsfSchoolPlacement" | "app_cm::CmGroup" | "sys_core::SysObjEnt" | "app_cm::CmPartner" | "app_cm::CmServiceFlow" | "app_crm::CrmClient" | "org_moed::MoedPartData" | "org_moed::MoedParticipant" | "sys_core::SysAttr" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysDataObj" | "sys_core::SysDataObjAction" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjColumn" | "sys_core::SysDataObjColumnItemChange" | "sys_core::SysDataObjColumnItemValue" | "sys_core::SysDataObjColumnLink" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysDataObjQueryRider" | "sys_core::SysDataObjTable" | "sys_core::SysDataObjWith" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjEntAttr" | "sys_core::SysObjNote" | "sys_core::SysOrg" | "sys_core::SysSystem" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_migr::SysMigrSourceColumn" | "sys_migr::SysMigrSourceTable" | "sys_migr::SysMigrTargetColumn" | "sys_migr::SysMigrTargetTable" | "sys_rep::SysAnalytic" | "sys_rep::SysAnalyticStatus" | "sys_user::SysUserTypeResource" | "sys_rep::SysRep" | "sys_rep::SysRepEl" | "sys_rep::SysRepParm" | "sys_rep::SysRepUser" | "sys_rep::SysRepUserAnalytic" | "sys_rep::SysRepUserParm" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysCodeType" | "sys_user::SysTask" | "sys_user::SysUser" | "sys_user::SysUserAction" | "sys_user::SysUserActionConfirm" | "sys_user::SysUserActionShow" | "sys_user::SysUserPref" | "sys_user::SysUserPrefType" | "sys_user::SysUserType" | "sys_user::currentUser">;
 const $Mgmt = $.makeType<$Mgmt>(_.spec, "5029d127-b3c2-11ee-a4fe-a73f30dac3e0", _.syntax.literal);
 
 const Mgmt: $.$expr_PathNode<$.TypeSet<$Mgmt, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Mgmt, $.Cardinality.Many), null);
@@ -30,7 +30,7 @@ export type $SysUserTypeResourceλShape = $.typeutil.flatten<_sys_core.$SysObjλ
 }>;
 type $SysUserTypeResource = $.ObjectType<"sys_user::SysUserTypeResource", $SysUserTypeResourceλShape, null, [
   ..._sys_core.$SysObj['__exclusives__'],
-], "sys_user::SysUserTypeResource" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysTask" | "sys_user::SysWidget">;
+], "sys_user::SysUserTypeResource" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysTask">;
 const $SysUserTypeResource = $.makeType<$SysUserTypeResource>(_.spec, "cd58341b-f915-11ef-b469-a1b9e506291a", _.syntax.literal);
 
 const SysUserTypeResource: $.$expr_PathNode<$.TypeSet<$SysUserTypeResource, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserTypeResource, $.Cardinality.Many), null);
@@ -72,7 +72,7 @@ const $SysCodeType = $.makeType<$SysCodeType>(_.spec, "bd36ee3f-f0ae-11ef-a83e-5
 const SysCodeType: $.$expr_PathNode<$.TypeSet<$SysCodeType, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysCodeType, $.Cardinality.Many), null);
 
 export type $SysTaskλShape = $.typeutil.flatten<$SysUserTypeResourceλShape & {
-  "codeCategory": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "noDataMsg": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "codeRenderType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeStatusObj": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "pageDataObj": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
@@ -146,7 +146,6 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<createdBy[is sys_core::SysDataObjFieldEmbedListEdit]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListEdit, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysCodeType]": $.LinkDesc<_sys_core.$SysCodeType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is app_cm::CmCohort]": $.LinkDesc<_app_cm.$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<createdBy[is sys_user::SysWidget]": $.LinkDesc<$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
   "<staffInstructor[is app_cm::CmCohort]": $.LinkDesc<_app_cm.$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_migr::SysMigrTargetColumn]": $.LinkDesc<_sys_migr.$SysMigrTargetColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysDataObjFieldEmbedListConfig]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListConfig, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -261,7 +260,6 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<modifiedBy[is app_cm::CmCsfGroup]": $.LinkDesc<_app_cm.$CmCsfGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysDataObjQueryRider]": $.LinkDesc<_sys_core.$SysDataObjQueryRider, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_user::SysApp]": $.LinkDesc<$SysApp, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<modifiedBy[is sys_user::SysWidget]": $.LinkDesc<$SysWidget, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<staffInstructor": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -366,15 +364,6 @@ type $SysUserType = $.ObjectType<"sys_user::SysUserType", $SysUserTypeλShape, n
 const $SysUserType = $.makeType<$SysUserType>(_.spec, "5071c13e-b3c2-11ee-b22f-ff2605d1c34f", _.syntax.literal);
 
 const SysUserType: $.$expr_PathNode<$.TypeSet<$SysUserType, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserType, $.Cardinality.Many), null);
-
-export type $SysWidgetλShape = $.typeutil.flatten<$SysUserTypeResourceλShape & {
-}>;
-type $SysWidget = $.ObjectType<"sys_user::SysWidget", $SysWidgetλShape, null, [
-  ...$SysUserTypeResource['__exclusives__'],
-], "sys_user::SysWidget">;
-const $SysWidget = $.makeType<$SysWidget>(_.spec, "507b0cd6-b3c2-11ee-90f1-ff05f1b7241b", _.syntax.literal);
-
-const SysWidget: $.$expr_PathNode<$.TypeSet<$SysWidget, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysWidget, $.Cardinality.Many), null);
 
 export type $currentUserλShape = $.typeutil.flatten<$SysUserλShape & {
 }>;
@@ -526,30 +515,6 @@ function getUserType(...args: any[]) {
   }) as any;
 };
 
-type getWidgetλFuncExpr<
-  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
-> = $.$expr_Function<
-  $SysWidget, $.cardutil.overrideLowerBound<$.cardutil.paramCardinality<P1>, "Zero">
->;
-function getWidget<
-  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
->(
-  widgetName: P1,
-): getWidgetλFuncExpr<P1>;
-function getWidget(...args: any[]) {
-  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('sys_user::getWidget', args, _.spec, [
-    {args: [{typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}], returnTypeId: "507b0cd6-b3c2-11ee-90f1-ff05f1b7241b", returnTypemod: "OptionalType"},
-  ]);
-  return _.syntax.$expressionify({
-    __kind__: $.ExpressionKind.Function,
-    __element__: returnType,
-    __cardinality__: cardinality,
-    __name__: "sys_user::getWidget",
-    __args__: positionalArgs,
-    __namedargs__: namedArgs,
-  }) as any;
-};
-
 type getUserActionλFuncExpr<
   P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
 > = $.$expr_Function<
@@ -592,7 +557,7 @@ const $sys_user__globals: {  currentUser: _.syntax.$expr_Global<
 
 
 
-export { $Mgmt, Mgmt, $SysUserTypeResource, SysUserTypeResource, $SysApp, SysApp, $SysAppHeader, SysAppHeader, $SysCodeType, SysCodeType, $SysTask, SysTask, $SysUser, SysUser, $SysUserAction, SysUserAction, $SysUserActionConfirm, SysUserActionConfirm, $SysUserActionShow, SysUserActionShow, $SysUserPref, SysUserPref, $SysUserPrefType, SysUserPrefType, $SysUserType, SysUserType, $SysWidget, SysWidget, $currentUser, currentUser };
+export { $Mgmt, Mgmt, $SysUserTypeResource, SysUserTypeResource, $SysApp, SysApp, $SysAppHeader, SysAppHeader, $SysCodeType, SysCodeType, $SysTask, SysTask, $SysUser, SysUser, $SysUserAction, SysUserAction, $SysUserActionConfirm, SysUserActionConfirm, $SysUserActionShow, SysUserActionShow, $SysUserPref, SysUserPref, $SysUserPrefType, SysUserPrefType, $SysUserType, SysUserType, $currentUser, currentUser };
 
 type __defaultExports = {
   "Mgmt": typeof Mgmt;
@@ -608,7 +573,6 @@ type __defaultExports = {
   "SysUserPref": typeof SysUserPref;
   "SysUserPrefType": typeof SysUserPrefType;
   "SysUserType": typeof SysUserType;
-  "SysWidget": typeof SysWidget;
   "currentUser": typeof currentUser;
   "getUserTypeResource": typeof getUserTypeResource;
   "getApp": typeof getApp;
@@ -616,7 +580,6 @@ type __defaultExports = {
   "getUserById": typeof getUserById;
   "getUserByName": typeof getUserByName;
   "getUserType": typeof getUserType;
-  "getWidget": typeof getWidget;
   "getUserAction": typeof getUserAction;
   "global": typeof $sys_user__globals
 };
@@ -634,7 +597,6 @@ const __defaultExports: __defaultExports = {
   "SysUserPref": SysUserPref,
   "SysUserPrefType": SysUserPrefType,
   "SysUserType": SysUserType,
-  "SysWidget": SysWidget,
   "currentUser": currentUser,
   "getUserTypeResource": getUserTypeResource,
   "getApp": getApp,
@@ -642,7 +604,6 @@ const __defaultExports: __defaultExports = {
   "getUserById": getUserById,
   "getUserByName": getUserByName,
   "getUserType": getUserType,
-  "getWidget": getWidget,
   "getUserAction": getUserAction,
   "global": $sys_user__globals
 };

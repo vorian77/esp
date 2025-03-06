@@ -1,10 +1,10 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { apiFetch, ApiFunction } from '$routes/api/api'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { TokenApiUserId } from '$utils/types.token'
 import { valueOrDefault, memberOfEnum } from '$utils/utils.model'
 
 export async function adminDbReset() {
-	return await apiFetch(ApiFunction.dbGelInit)
+	return await apiFetchFunction(ApiFunction.dbGelInit)
 }
 
 export function capitalizeFirstLetter(text: string) {
