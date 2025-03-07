@@ -16,10 +16,10 @@ function initStudent(init: InitDb) {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: `.owner.name = 'sys_ai_old'`,
+		exprFilter: `.owner.name = 'sys_ai'`,
 		header: 'Students',
 		name: 'data_obj_cm_student_list',
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		subHeader: 'All students.',
 		tables: [
 			{ index: 0, table: 'CmClient' },
@@ -88,7 +88,7 @@ function initStudent(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Student',
 		name: 'data_obj_cm_student_detail',
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		tables: [
 			{ index: 0, table: 'CmClient' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -442,7 +442,7 @@ function initStudent(init: InitDb) {
 		header: 'Students',
 		name: 'node_obj_cm_student_list',
 		orderDefine: 30,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: ['node_obj_cm_service_flow_list'],
@@ -452,13 +452,13 @@ function initStudent(init: InitDb) {
 		header: 'Student',
 		name: 'node_obj_cm_student_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 }
 
 function initCsf(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_client_service_flow_list',
@@ -541,7 +541,7 @@ function initCsf(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_client_service_flow_detail',
@@ -730,7 +730,7 @@ function initCsf(init: InitDb) {
 		header: 'Service Flows',
 		name: 'node_obj_cm_service_flow_list',
 		orderDefine: 10,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [
@@ -746,13 +746,13 @@ function initCsf(init: InitDb) {
 		header: 'Service Flow',
 		name: 'node_obj_cm_service_flow_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 }
 
 function initCsfCohort(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_csf_cohort_list',
@@ -803,7 +803,7 @@ function initCsfCohort(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_csf_cohort_detail',
@@ -941,7 +941,7 @@ function initCsfCohort(init: InitDb) {
 		header: 'Cohorts',
 		name: 'node_obj_cm_csf_cohort_list',
 		orderDefine: 10,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: ['node_obj_cm_csf_cohort_attd_student_list'],
@@ -951,13 +951,13 @@ function initCsfCohort(init: InitDb) {
 		header: 'Cohort',
 		name: 'node_obj_cm_csf_cohort_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 }
 
 function initCsfCohortAttdStudent(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter: '.csfCohort.id = <tree,uuid,CmCsfCohort.id>',
@@ -1014,7 +1014,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Attendance',
 		name: 'data_obj_cm_csf_cohort_attd_student_detail',
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		tables: [{ index: 0, table: 'CmCsfCohortAttd' }],
 		fields: [
 			{
@@ -1158,7 +1158,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 		header: 'Attendance Records',
 		name: 'node_obj_cm_csf_cohort_attd_student_list',
 		orderDefine: 10,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1167,13 +1167,13 @@ function initCsfCohortAttdStudent(init: InitDb) {
 		header: 'Attendance',
 		name: 'node_obj_cm_csf_cohort_attd_student_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 }
 
 function initCsfNote(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_csf_note_list',
@@ -1222,7 +1222,7 @@ function initCsfNote(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_csf_note_detail',
@@ -1360,7 +1360,7 @@ function initCsfNote(init: InitDb) {
 		header: 'Case Notes',
 		name: 'node_obj_cm_csf_note_list',
 		orderDefine: 20,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1369,7 +1369,7 @@ function initCsfNote(init: InitDb) {
 		header: 'Case Note',
 		name: 'node_obj_cm_csf_note_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 }
 
@@ -1381,7 +1381,7 @@ function initCsfJobPlacement(init: InitDb) {
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
 		header: 'Job Placements',
 		name: 'data_obj_cm_csf_job_placement_list',
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		tables: [{ index: 0, table: 'CmCsfJobPlacement' }],
 		fields: [
 			{
@@ -1428,7 +1428,7 @@ function initCsfJobPlacement(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Job Placement',
 		name: 'data_obj_cm_csf_job_placement_detail',
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		tables: [{ index: 0, table: 'CmCsfJobPlacement' }],
 		fields: [
 			{
@@ -1689,7 +1689,7 @@ function initCsfJobPlacement(init: InitDb) {
 		header: 'Job Placements',
 		name: 'node_obj_cm_csf_job_placement_list',
 		orderDefine: 30,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1698,7 +1698,7 @@ function initCsfJobPlacement(init: InitDb) {
 		header: 'Job Placement',
 		name: 'node_obj_cm_csf_job_placement_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 }
 
@@ -1710,7 +1710,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
 		header: 'School Placements',
 		name: 'data_obj_cm_csf_school_placement_list',
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		tables: [{ index: 0, table: 'CmCsfSchoolPlacement' }],
 		fields: [
 			{
@@ -1790,7 +1790,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'School Placement',
 		name: 'data_obj_cm_csf_school_placement_detail',
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		tables: [{ index: 0, table: 'CmCsfSchoolPlacement' }],
 		fields: [
 			{
@@ -1966,7 +1966,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 		header: 'School Placements',
 		name: 'node_obj_cm_csf_school_placement_list',
 		orderDefine: 40,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1975,13 +1975,13 @@ function initCsfSchoolPlacement(init: InitDb) {
 		header: 'School Placement',
 		name: 'node_obj_cm_csf_school_placement_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 }
 
 function initCsfDocument(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_csf_document_list',
@@ -2060,7 +2060,7 @@ function initCsfDocument(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Document',
 		name: 'data_obj_cm_csf_document_detail',
-		owner: 'sys_ai_old',
+		owner: 'sys_ai',
 		queryRiders: [
 			{
 				codeFunction: 'qrfFileStorage',
@@ -2228,7 +2228,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Documents',
 		name: 'node_obj_cm_csf_document_list',
 		orderDefine: 50,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -2237,7 +2237,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Document',
 		name: 'node_obj_cm_csf_document_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old'
+		owner: 'sys_ai'
 	})
 }
 
@@ -2248,7 +2248,7 @@ function initCsfDocument(init: InitDb) {
 // 	isHideRowManager: false,
 // 	name: 'node_obj_cm_csf_job_placement_list',
 // 	orderDefine: 30,
-// 	owner: 'sys_ai_old',
+// 	owner: 'sys_ai',
 //
 // })
 // init.addTrans('sysNodeObjProgramObj', {
@@ -2258,6 +2258,6 @@ function initCsfDocument(init: InitDb) {
 // 	isHideRowManager: false,
 // 	name: 'node_obj_cm_csf_job_placement_detail',
 // 	orderDefine: 10,
-// 	owner: 'sys_ai_old',
+// 	owner: 'sys_ai',
 //
 // })

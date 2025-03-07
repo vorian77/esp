@@ -14,6 +14,6 @@ function initTaskQuote(init: InitDb) {
 		isGlobalResource: true,
 		name: 'task_sys_quote',
 		orderDefine: 0,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

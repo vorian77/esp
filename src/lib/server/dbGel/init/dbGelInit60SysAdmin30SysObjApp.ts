@@ -15,7 +15,7 @@ function initFieldListSelectNodes(init: InitDb) {
 		exprFilter: `.codeNodeType = (SELECT sys_core::getCode('ct_sys_node_obj_type', 'program')) AND (.owner.id = <tree,uuid,SysSystem.id> UNION .isGlobalResource)`,
 		header: 'Select Node(s)',
 		name: 'dofls_sys_admin_sys_node',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysNodeObj' }],
 		fields: [
 			{
@@ -41,7 +41,7 @@ function initFieldListSelectNodes(init: InitDb) {
 		btnLabelComplete: 'Select Node(s)',
 		dataObjList: 'dofls_sys_admin_sys_node',
 		name: 'fels_sys_node',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -53,7 +53,7 @@ function initApp(init: InitDb) {
 		header: 'Apps',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		name: 'data_obj_sys_app_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysApp' }],
 		fields: [
 			{
@@ -89,7 +89,7 @@ function initApp(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'App',
 		name: 'data_obj_sys_app_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysApp' }],
 		fields: [
 			{
@@ -232,7 +232,7 @@ function initApp(init: InitDb) {
 		header: 'Apps',
 		name: 'node_obj_sys_app_list',
 		orderDefine: 25,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -242,7 +242,7 @@ function initApp(init: InitDb) {
 		header: 'App',
 		name: 'node_obj_sys_app_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -254,7 +254,7 @@ function initAppHeader(init: InitDb) {
 		header: 'App Headers',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		name: 'data_obj_sys_app_header_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysAppHeader' }],
 		fields: [
 			{
@@ -316,7 +316,7 @@ function initAppHeader(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'App Header',
 		name: 'data_obj_sys_app_header_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysAppHeader' }],
 		fields: [
 			{
@@ -463,7 +463,7 @@ function initAppHeader(init: InitDb) {
 		header: 'App Headers',
 		name: 'node_obj_sys_app_header_list',
 		orderDefine: 20,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -473,6 +473,6 @@ function initAppHeader(init: InitDb) {
 		header: 'App Header',
 		name: 'node_obj_sys_app_header_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

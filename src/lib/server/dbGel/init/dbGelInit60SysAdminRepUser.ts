@@ -27,7 +27,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 			newVals := (SELECT repVals EXCEPT userVals)
 			SELECT newVals`,
 		name: 'dofls_sys_rep_user_parm',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		parentColumn: 'parms',
 		parentTable: 'SysRepUser',
 		tables: [
@@ -187,7 +187,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 	init.addTrans('sysDataObjFieldEmbedListEdit', {
 		dataObjEmbed: 'dofls_sys_rep_user_parm',
 		name: 'fele_sys_rep_user_parm',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -205,7 +205,7 @@ function initRepConfig(init: InitDb) {
 		newVals := (SELECT userTypeReps EXCEPT userReps)
 		SELECT newVals`,
 		name: 'data_obj_sys_rep_my_report_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysRepUser' }],
 		fields: [
 			{
@@ -314,7 +314,7 @@ function initRepConfig(init: InitDb) {
 		codeComponent: 'FormDetailRepConfig',
 		header: 'Config',
 		name: 'data_obj_sys_rep_my_report_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [
 			{ index: 0, table: 'SysRepUser' },
 			{ columnParent: 'parms', indexParent: 0, index: 1, table: 'SysRepUserParm' }
@@ -520,7 +520,7 @@ function initRepConfig(init: InitDb) {
 		header: 'My Reports',
 		name: 'node_obj_sys_rep_my_report_list',
 		orderDefine: 40,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: ['node_obj_sys_rep_render'],
@@ -530,7 +530,7 @@ function initRepConfig(init: InitDb) {
 		header: 'Config',
 		name: 'node_obj_sys_rep_my_report_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -540,7 +540,7 @@ function initRepRender(init: InitDb) {
 		codeCardinality: 'list',
 		header: 'Run',
 		name: 'data_obj_dyn_sys_rep_render',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		processType: 'reportRender',
 		tables: [{ index: 0, table: 'SysRepUser' }],
 		fields: [
@@ -563,6 +563,6 @@ function initRepRender(init: InitDb) {
 		isHideRowManager: true,
 		name: 'node_obj_sys_rep_render',
 		orderDefine: 20,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

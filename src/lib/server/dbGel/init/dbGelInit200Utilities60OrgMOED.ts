@@ -17,31 +17,27 @@ export async function MoedPBulkPart(params: any) {
 						createdBy: CREATOR,
 						hasAccess: true,
 						modifiedBy: CREATOR,
-						obj: e.sys_core.getObjEntAttr('sys_moed_old', e.cast(e.str, i[13]))
+						obj: e.sys_core.getObjEntAttr('sys_moed', e.cast(e.str, i[13]))
 					}),
 					birthDate: e.cal.to_local_date(e.cast(e.str, i[3])),
 					city: e.cast(e.str, i[4]),
 					codeDisabilityStatus: e.sys_core.getCodeSystem(
-						'sys_moed_old',
+						'sys_moed',
 						'ct_sys_person_disability_status',
 						e.cast(e.str, i[5])
 					),
 					codeEthnicity: e.sys_core.getCodeSystem(
-						'sys_moed_old',
+						'sys_moed',
 						'ct_sys_person_ethnicity',
 						e.cast(e.str, i[6])
 					),
 					codeGender: e.sys_core.getCodeSystem(
-						'sys_moed_old',
+						'sys_moed',
 						'ct_sys_person_gender',
 						e.cast(e.str, i[7])
 					),
-					codeRace: e.sys_core.getCodeSystem(
-						'sys_moed_old',
-						'ct_sys_person_race',
-						e.cast(e.str, i[8])
-					),
-					codeState: e.sys_core.getCodeSystem('sys_moed_old', 'ct_sys_state', e.cast(e.str, i[9])),
+					codeRace: e.sys_core.getCodeSystem('sys_moed', 'ct_sys_person_race', e.cast(e.str, i[8])),
+					codeState: e.sys_core.getCodeSystem('sys_moed', 'ct_sys_state', e.cast(e.str, i[9])),
 					email: e.cast(e.str, i[10]),
 					firstName: e.cast(e.str, i[11]),
 					lastName: e.cast(e.str, i[12]),
@@ -49,7 +45,7 @@ export async function MoedPBulkPart(params: any) {
 					ssn: e.cast(e.str, i[15]),
 					zip: e.cast(e.str, i[16])
 				}),
-				owner: e.sys_core.getSystemPrime('sys_moed_old')
+				owner: e.sys_core.getSystemPrime('sys_moed')
 			})
 		})
 	})
@@ -70,12 +66,12 @@ export async function MoedBulkCsf(params: any) {
 					}))
 				),
 				codeServiceFlowType: e.sys_core.getCodeSystem(
-					'sys_moed_old',
+					'sys_moed',
 					'ct_cm_service_flow_type',
 					'Walk in'
 				),
 				codeStatus: e.sys_core.getCodeSystem(
-					'sys_moed_old',
+					'sys_moed',
 					'ct_cm_service_flow_status',
 					e.cast(e.str, i[4])
 				),
@@ -110,7 +106,7 @@ export async function MoedBulkDataDoc(params: any) {
 						)
 					}))
 				),
-				codeType: e.sys_core.getCodeSystem('sys_moed_old', 'ct_cm_doc_type', e.cast(e.str, i[2])),
+				codeType: e.sys_core.getCodeSystem('sys_moed', 'ct_cm_doc_type', e.cast(e.str, i[2])),
 				dateIssued: e.cal.to_local_date(e.cast(e.str, i[1]))
 			})
 		})
@@ -129,7 +125,7 @@ export async function MoedBulkDataMsg(params: any) {
 					createdBy: CREATOR,
 					hasAccess: true,
 					modifiedBy: CREATOR,
-					obj: e.sys_core.getObjEntAttr('sys_moed_old', e.cast(e.str, i[3]))
+					obj: e.sys_core.getObjEntAttr('sys_moed', e.cast(e.str, i[3]))
 				}),
 				date: e.cal.to_local_date(e.cast(e.str, i[1])),
 				isRead: false,

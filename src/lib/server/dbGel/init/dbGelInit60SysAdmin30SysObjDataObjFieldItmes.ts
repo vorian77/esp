@@ -11,7 +11,7 @@ function initDataObjFieldListItems(init: InitDb) {
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Field List Items',
 		name: 'data_obj_sys_admin_data_obj_field_list_items_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjFieldListItems' }],
 		fields: [
 			{
@@ -101,7 +101,7 @@ function initDataObjFieldListItems(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Field List Item',
 		name: 'data_obj_sys_admin_data_obj_field_list_items_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjFieldListItems' }],
 		fields: [
 			{
@@ -305,7 +305,7 @@ function initDataObjFieldListItems(init: InitDb) {
 		header: 'Field List Items',
 		name: 'node_obj_sys_admin_data_obj_field_list_items_list',
 		orderDefine: 120,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -315,6 +315,6 @@ function initDataObjFieldListItems(init: InitDb) {
 		header: 'Item',
 		name: 'node_obj_sys_admin_data_obj_field_list_items_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

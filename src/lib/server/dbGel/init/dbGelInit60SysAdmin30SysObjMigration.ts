@@ -17,7 +17,7 @@ function initMigr(init: InitDb) {
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Migrations',
 		name: 'data_obj_sys_admin_migr_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysMigr' }],
 		fields: [
 			{
@@ -53,7 +53,7 @@ function initMigr(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Migration',
 		name: 'data_obj_sys_admin_migr_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysMigr' }],
 		fields: [
 			{
@@ -160,7 +160,7 @@ function initMigr(init: InitDb) {
 		header: 'Migrations',
 		name: 'node_obj_sys_admin_migr_list',
 		orderDefine: 140,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [
@@ -173,7 +173,7 @@ function initMigr(init: InitDb) {
 		header: 'Migration',
 		name: 'node_obj_sys_admin_migr_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -186,7 +186,7 @@ function initMigrSourceTable(init: InitDb) {
 			'.id IN (SELECT sys_migr::SysMigr FILTER .id = <tree,uuid,SysMigr.id>).tablesSource.id',
 		header: 'Source Tables',
 		name: 'data_obj_sys_admin_migr_source_table_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		parentColumn: 'tablesSource',
 		parentTable: 'SysMigr',
 		tables: [{ index: 0, table: 'SysMigrSourceTable' }],
@@ -234,7 +234,7 @@ function initMigrSourceTable(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Source Table',
 		name: 'data_obj_sys_admin_migr_source_table_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		parentColumn: 'tablesSource',
 		parentTable: 'SysMigr',
 		tables: [{ index: 0, table: 'SysMigrSourceTable' }],
@@ -345,7 +345,7 @@ function initMigrSourceTable(init: InitDb) {
 		header: 'Source Tables',
 		name: 'node_obj_sys_admin_migr_source_table_list',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -356,7 +356,7 @@ function initMigrSourceTable(init: InitDb) {
 		header: 'Source Table',
 		name: 'node_obj_sys_admin_migr_source_table_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -369,7 +369,7 @@ function initMigrSourceColumn(init: InitDb) {
 			'.id IN (SELECT sys_migr::SysMigrSourceTable FILTER .id = <tree,uuid,SysMigrSourceTable.id>).columns.id',
 		header: 'Columns',
 		name: 'data_obj_sys_admin_migr_source_column_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		parentColumn: 'columns',
 		parentTable: 'SysMigrSourceTable',
 		tables: [{ index: 0, table: 'SysMigrSourceColumn' }],
@@ -409,7 +409,7 @@ function initMigrSourceColumn(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Column',
 		name: 'data_obj_sys_admin_migr_source_column_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		parentColumn: 'columns',
 		parentTable: 'SysMigrSourceTable',
 		tables: [{ index: 0, table: 'SysMigrSourceColumn' }],
@@ -511,7 +511,7 @@ function initMigrSourceColumn(init: InitDb) {
 		header: 'Columns',
 		name: 'node_obj_sys_admin_migr_source_column_list',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -521,7 +521,7 @@ function initMigrSourceColumn(init: InitDb) {
 		header: 'Column',
 		name: 'node_obj_sys_admin_migr_source_column_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -535,7 +535,7 @@ function initMigrTargetTable(init: InitDb) {
 		header: 'Target Tables',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_admin_migr_target_table_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		parentColumn: 'tablesTarget',
 		parentTable: 'SysMigr',
 		tables: [{ index: 0, table: 'SysMigrTargetTable' }],
@@ -620,7 +620,7 @@ function initMigrTargetTable(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Target Table',
 		name: 'data_obj_sys_admin_migr_target_table_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		parentColumn: 'tablesTarget',
 		parentTable: 'SysMigr',
 		tables: [{ index: 0, table: 'SysMigrTargetTable' }],
@@ -744,7 +744,7 @@ function initMigrTargetTable(init: InitDb) {
 		header: 'Target Tables',
 		name: 'node_obj_sys_admin_migr_target_table_list',
 		orderDefine: 20,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -755,7 +755,7 @@ function initMigrTargetTable(init: InitDb) {
 		header: 'Target Table',
 		name: 'node_obj_sys_admin_migr_target_table_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -769,7 +769,7 @@ function initMigrTargetColumn(init: InitDb) {
 		header: 'Columns',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_admin_migr_target_column_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		parentColumn: 'columns',
 		parentTable: 'SysMigrTargetTable',
 		tables: [{ index: 0, table: 'SysMigrTargetColumn' }],
@@ -854,7 +854,7 @@ function initMigrTargetColumn(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Column',
 		name: 'data_obj_sys_admin_migr_target_column_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		parentColumn: 'columns',
 		parentTable: 'SysMigrTargetTable',
 		tables: [{ index: 0, table: 'SysMigrTargetColumn' }],
@@ -973,7 +973,7 @@ function initMigrTargetColumn(init: InitDb) {
 		header: 'Columns',
 		name: 'node_obj_sys_admin_migr_target_column_list',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -983,7 +983,7 @@ function initMigrTargetColumn(init: InitDb) {
 		header: 'Column',
 		name: 'node_obj_sys_admin_migr_target_column_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -995,7 +995,7 @@ function initMigrProcess(init: InitDb) {
 		exprFilter: '.id = <parms,uuid,migrId>',
 		header: 'Process - Migration',
 		name: 'data_obj_process_sys_admin_migr',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysMigr' }],
 		fields: [
 			{

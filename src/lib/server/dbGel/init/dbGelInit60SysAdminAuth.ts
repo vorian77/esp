@@ -20,7 +20,7 @@ function initDataObjAuthLogin(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Log in',
 		name: 'data_obj_auth_login',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -104,7 +104,7 @@ function initDataObjAuthLoginForgotPw(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Reset Password',
 		name: 'data_obj_auth_login_forgot_pw',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -171,7 +171,7 @@ function initDataObjAuthLoginVerify(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_login_verify',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -240,7 +240,7 @@ function initDataObjAuthSignup(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Sign up',
 		name: 'data_obj_auth_signup',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		table: 'SysUser',
 		fields: [
 			{
@@ -336,7 +336,7 @@ function initDataObjAuthSignupVerifyMobileInsert(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_signup_verify_mobile_insert',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -405,7 +405,7 @@ function initDataObjAuthSignupVerifyMobileUpdate(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_signup_verify_mobile_update',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -477,7 +477,7 @@ function initDataObjMyAccount(init: InitDb) {
 		exprFilter: '.id = <user,uuid,id>',
 		header: 'My Account',
 		name: 'data_obj_task_sys_auth_my_account',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		queryRiders: [
 			{
 				codeFunction: 'qrfFileStorage',
@@ -671,7 +671,7 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Reset Password',
 		name: 'data_obj_auth_reset_password_account',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -748,7 +748,7 @@ function initDataObjUserPrefType(init: InitDb) {
 			newVals := (SELECT allPrefs EXCEPT userPrefs)
 			SELECT newVals`,
 		name: 'data_obj_auth_user_pref_type',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [
 			{ index: 0, table: 'SysUserPrefType' },
 			{ columnParent: 'codeType', indexParent: 0, index: 1, table: 'SysCode' }

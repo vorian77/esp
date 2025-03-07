@@ -35,7 +35,7 @@ async function initSystemObject(init: InitDb) {
 		header: 'Systems (Objects)',
 		isListEdit: false,
 		name: 'data_obj_sys_admin_system_list_obj',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
@@ -63,7 +63,7 @@ async function initSystemObject(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'System (Object)',
 		name: 'data_obj_sys_admin_system_detail_obj',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
@@ -154,7 +154,7 @@ async function initSystemObject(init: InitDb) {
 		header: 'Systems (Objects)',
 		name: 'node_obj_sys_admin_system_list_obj',
 		orderDefine: 30,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -185,6 +185,6 @@ async function initSystemObject(init: InitDb) {
 		header: 'System (Object)',
 		name: 'node_obj_sys_admin_system_detail_obj',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

@@ -29,7 +29,7 @@ function initTaskSsrApp(init: InitDb) {
 		header: 'My Application',
 		isDetailRetrievePreset: true,
 		name: 'data_obj_task_moed_ssr_app',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		queryRiders: [
 			{
 				codeQueryType: 'save',
@@ -240,7 +240,7 @@ function initTaskSsrApp(init: InitDb) {
 						codeValueTrigger: {
 							codeType: 'ct_sys_person_gender',
 							name: 'Prefer to self-identify',
-							owner: 'sys_moed_old'
+							owner: 'sys_moed'
 						},
 						codeValueTypeTarget: 'none',
 						codeValueTypeTrigger: 'code',
@@ -253,7 +253,7 @@ function initTaskSsrApp(init: InitDb) {
 						codeValueTrigger: {
 							codeType: 'ct_sys_person_gender',
 							name: 'Prefer to self-identify',
-							owner: 'sys_moed_old'
+							owner: 'sys_moed'
 						},
 						codeValueTypeTarget: 'reset',
 						codeValueTypeTrigger: 'code',
@@ -397,7 +397,7 @@ function initTaskSsrApp(init: InitDb) {
 		noDataMsg: 'Click to start application',
 		targetDataObj: 'data_obj_task_moed_ssr_app',
 		orderDefine: 30,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 }
 
@@ -410,7 +410,7 @@ function initTaskSsrMsg(init: InitDb) {
 		exprFilter: '<user,uuid,personId> IN (.sender.id UNION .recipients.id)',
 		header: 'My Messages',
 		name: 'data_obj_task_moed_ssr_msg_list',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -505,7 +505,7 @@ function initTaskSsrMsg(init: InitDb) {
 		header: 'My Message',
 		isRetrieveReadonly: true,
 		name: 'data_obj_task_moed_ssr_msg_detail',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		queryRiders: [
 			{
 				codeQueryType: 'retrieve',
@@ -633,7 +633,7 @@ function initTaskSsrMsg(init: InitDb) {
 		header: 'My Message',
 		isRetrieveReadonly: true,
 		name: 'data_obj_task_moed_ssr_msg_detail_reply',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -744,7 +744,7 @@ function initTaskSsrMsg(init: InitDb) {
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_task_moed_ssr_msg_list',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 	init.addTrans('sysNodeObjTask', {
 		codeIcon: 'AppWindow',
@@ -761,7 +761,7 @@ function initTaskSsrMsg(init: InitDb) {
 		header: 'Message',
 		name: 'node_obj_task_moed_ssr_msg_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 
 	init.addTrans('sysTask', {
@@ -781,13 +781,13 @@ function initTaskSsrMsg(init: InitDb) {
 		name: 'task_moed_ssr_app_msg',
 		targetNodeObj: 'node_obj_task_moed_ssr_msg_list',
 		orderDefine: 50,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 }
 
 function initTaskSsrDoc(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		codeDataObjType: 'taskTarget',
@@ -843,7 +843,7 @@ function initTaskSsrDoc(init: InitDb) {
 		header: 'My Document',
 		isDetailRetrievePreset: true,
 		name: 'data_obj_task_moed_ssr_doc_detail',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		queryRiders: [
 			{
 				codeFunction: 'qrfFileStorage',
@@ -953,7 +953,7 @@ function initTaskSsrDoc(init: InitDb) {
 		header: 'Documents',
 		name: 'node_obj_task_moed_ssr_doc_list',
 		orderDefine: 30,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 	init.addTrans('sysNodeObjTask', {
 		codeIcon: 'AppWindow',
@@ -963,7 +963,7 @@ function initTaskSsrDoc(init: InitDb) {
 		header: 'Document',
 		name: 'node_obj_task_moed_ssr_doc_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 
 	init.addTrans('sysTask', {
@@ -985,7 +985,7 @@ FILTER .parent.name = 'ct_cm_doc_type' ORDER BY .order asc`,
 		name: 'task_moed_ssr_app_doc',
 		targetDataObj: 'data_obj_task_moed_ssr_doc_detail',
 		orderDefine: 40,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 }
 
@@ -998,7 +998,7 @@ function initTaskSsrWelcome(init: InitDb) {
 		header: 'Welcome',
 		isInitialValidationSilent: true,
 		name: 'data_obj_task_moed_ssr_welcome',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		queryRiders: [
 			{
 				codeQueryType: 'save',
@@ -1115,7 +1115,7 @@ function initTaskSsrWelcome(init: InitDb) {
 		name: 'task_moed_ssr_welcome',
 		pageDataObj: 'data_obj_task_moed_ssr_welcome',
 		orderDefine: 20,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 }
 
@@ -1125,14 +1125,14 @@ function initAttributes(init: InitDb) {
 		header: 'Eastside YO Center - 1212 N. Wolfe St. - 410-732-2661',
 		isGlobalResource: false,
 		name: 'moedOfficeEastside',
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 	init.addTrans('SysObjEntAttr', {
 		codeObjType: 'attr_moed_office',
 		header: 'Westside YO Center - 1510 W. Laffayette Ave. -  410-545-6953',
 		isGlobalResource: false,
 		name: 'moedOfficeWestside',
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 }
 

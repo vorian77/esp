@@ -15,7 +15,7 @@ function initFieldListSelectResource(init: InitDb) {
 		exprFilter: `.isGlobalResource UNION .owner IN (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).orgs`,
 		header: 'Select Resource(s)',
 		name: 'dofls_sys_admin_sys_user_type_resource',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysUserTypeResource' }],
 		fields: [
 			{
@@ -56,7 +56,7 @@ function initFieldListSelectResource(init: InitDb) {
 		btnLabelComplete: 'Select Resource(s)',
 		dataObjList: 'dofls_sys_admin_sys_user_type_resource',
 		name: 'fels_sys_admin_sys_user_type_resource',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -69,7 +69,7 @@ function initFieldListSelectUser(init: InitDb) {
 		exprFilter: '.owner IN (SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>).orgs',
 		header: 'Select Users',
 		name: 'dofls_sys_sys_admin_user',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [
 			{ index: 0, table: 'SysUser' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -116,7 +116,7 @@ function initFieldListSelectUser(init: InitDb) {
 		btnLabelComplete: 'Select User(s)',
 		dataObjList: 'dofls_sys_sys_admin_user',
 		name: 'fels_sys_sys_admin_user',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -128,7 +128,7 @@ function initUserType(init: InitDb) {
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'User Types',
 		name: 'data_obj_sys_admin_user_type_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysUserType' }],
 		fields: [
 			{
@@ -172,7 +172,7 @@ function initUserType(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'User Type',
 		name: 'data_obj_sys_admin_user_type_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysUserType' }],
 		fields: [
 			{
@@ -335,7 +335,7 @@ function initUserType(init: InitDb) {
 		header: 'User Types',
 		name: 'node_obj_sys_admin_user_type_list',
 		orderDefine: 20,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -345,6 +345,6 @@ function initUserType(init: InitDb) {
 		header: 'User Type',
 		name: 'node_obj_sys_admin_user_type_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

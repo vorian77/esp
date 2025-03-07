@@ -16,7 +16,7 @@ function initSystem(init: InitDb) {
 		header: 'Systems',
 		isListEdit: false,
 		name: 'data_obj_sys_admin_system_list_meta',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
@@ -79,7 +79,7 @@ function initSystem(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'System',
 		name: 'data_obj_sys_admin_system_detail_meta',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		queryRiders: [
 			{
 				codeFunction: 'qrfFileStorage',
@@ -225,7 +225,7 @@ function initSystem(init: InitDb) {
 		header: 'Systems',
 		name: 'node_obj_sys_admin_system_list_meta',
 		orderDefine: 40,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -236,7 +236,7 @@ function initSystem(init: InitDb) {
 		header: 'System',
 		name: 'node_obj_sys_admin_system_detail_meta',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -248,7 +248,7 @@ function initUser(init: InitDb) {
 		exprFilter: `.owner = (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).owner`,
 		header: 'Users',
 		name: 'data_obj_sys_admin_user_list_meta',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [
 			{ index: 0, table: 'SysUser' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -297,7 +297,7 @@ function initUser(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'User',
 		name: 'data_obj_sys_admin_user_detail_meta',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [
 			{ index: 0, table: 'SysUser' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -492,7 +492,7 @@ function initUser(init: InitDb) {
 		header: 'Users',
 		name: 'node_obj_sys_admin_user_list_meta',
 		orderDefine: 30,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -502,6 +502,6 @@ function initUser(init: InitDb) {
 		header: 'User',
 		name: 'node_obj_sys_admin_user_detail_meta',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

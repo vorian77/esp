@@ -12,7 +12,7 @@ function initTask(init: InitDb) {
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Tasks',
 		name: 'data_obj_sys_admin_task_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysTask' }],
 		fields: [
 			{
@@ -65,7 +65,7 @@ function initTask(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Task',
 		name: 'data_obj_sys_admin_task_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysTask' }],
 		fields: [
 			{
@@ -359,7 +359,7 @@ function initTask(init: InitDb) {
 		header: 'Tasks',
 		name: 'node_obj_sys_admin_task_list',
 		orderDefine: 180,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -369,6 +369,6 @@ function initTask(init: InitDb) {
 		header: 'Task',
 		name: 'node_obj_sys_admin_task_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

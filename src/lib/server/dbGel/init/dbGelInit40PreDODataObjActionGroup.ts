@@ -6,7 +6,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_save_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 0 }
 		],
 		name: 'doag_auth_my_account',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	/* base */
@@ -28,7 +28,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 3 }
 		],
 		name: 'doag_detail',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
@@ -54,7 +54,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			}
 		],
 		name: 'doag_list',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysDataObjActionGroup', {
@@ -67,7 +67,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			}
 		],
 		name: 'doag_list_edit',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	/* dialog */
@@ -76,7 +76,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_dialog_done', codeColor: 'primary', isListRowAction: false, orderDefine: 0 }
 		],
 		name: 'doag_dialog_footer_detail',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
@@ -89,7 +89,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_dialog_done', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_dialog_footer_list',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
@@ -114,7 +114,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 3 }
 		],
 		name: 'doag_dialog_form_detail',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	/* embed */
@@ -141,7 +141,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			}
 		],
 		name: 'doag_embed_list_config',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
@@ -149,7 +149,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_embed_list_edit',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
@@ -168,7 +168,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			}
 		],
 		name: 'doag_embed_list_edit_parm_value',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
@@ -180,7 +180,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			}
 		],
 		name: 'doag_embed_list_select',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	/* organizations-user */
@@ -195,7 +195,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_detail_org_user',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
@@ -208,7 +208,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			}
 		],
 		name: 'doag_list_org_user',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	/* mobile */
@@ -223,7 +223,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_detail_mobile_save',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
@@ -242,7 +242,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 2 }
 		],
 		name: 'doag_detail_mobile_save_delete',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	/* report */
@@ -262,7 +262,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			}
 		],
 		name: 'doag_report_render',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
@@ -275,7 +275,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_detail_report',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
@@ -289,7 +289,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_edit_list', codeColor: 'primary', isListRowAction: true, orderDefine: 2 }
 		],
 		name: 'doag_list_report',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	/* specialty */
@@ -323,7 +323,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 5 }
 		],
 		name: 'doag_detail_msg',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysDataObjActionGroup', {
@@ -350,7 +350,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_migrate', codeColor: 'primary', isListRowAction: false, orderDefine: 4 }
 		],
 		name: 'doag_detail_migrate_define',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
@@ -362,6 +362,6 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			}
 		],
 		name: 'doag_detail_migrate_process',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

@@ -18,10 +18,10 @@ function initApplicant(init: InitDb) {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		exprFilter: `.owner.name = 'sys_moed_old'`,
+		exprFilter: `.owner.name = 'sys_moed'`,
 		header: 'Applicants',
 		name: 'data_obj_moed_part_list',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		subHeader: 'Applicants who have self-enrolled.',
 		tables: [
 			{ index: 0, table: 'MoedParticipant' },
@@ -63,7 +63,7 @@ function initApplicant(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Applicant',
 		name: 'data_obj_moed_part_detail',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		tables: [
 			{ index: 0, table: 'MoedParticipant' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -77,7 +77,7 @@ function initApplicant(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .name = 'sys_moed_old')`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .name = 'sys_moed')`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -181,7 +181,7 @@ function initApplicant(init: InitDb) {
 						codeValueTrigger: {
 							codeType: 'ct_sys_person_gender',
 							name: 'Prefer to self-identify',
-							owner: 'sys_moed_old'
+							owner: 'sys_moed'
 						},
 						codeValueTypeTarget: 'none',
 						codeValueTypeTrigger: 'code',
@@ -194,7 +194,7 @@ function initApplicant(init: InitDb) {
 						codeValueTrigger: {
 							codeType: 'ct_sys_person_gender',
 							name: 'Prefer to self-identify',
-							owner: 'sys_moed_old'
+							owner: 'sys_moed'
 						},
 						codeValueTypeTarget: 'reset',
 						codeValueTypeTrigger: 'code',
@@ -410,7 +410,7 @@ function initApplicant(init: InitDb) {
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_moed_part_list',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: ['node_obj_moed_msg_list', 'node_obj_moed_csf_list'],
@@ -420,7 +420,7 @@ function initApplicant(init: InitDb) {
 		header: 'Applicant',
 		name: 'node_obj_moed_part_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 }
 
@@ -433,7 +433,7 @@ function initApplicantMsg(init: InitDb) {
 			'(SELECT org_moed::MoedParticipant FILTER .id = <tree,uuid,MoedParticipant.id>).person IN (.sender UNION .recipients)',
 		header: 'Messages',
 		name: 'data_obj_moed_msg_list',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -516,7 +516,7 @@ function initApplicantMsg(init: InitDb) {
 		header: 'Message',
 		isRetrieveReadonly: true,
 		name: 'data_obj_moed_msg_detail',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		queryRiders: [
 			{
 				codeQueryType: 'retrieve',
@@ -651,7 +651,7 @@ function initApplicantMsg(init: InitDb) {
 		header: 'Message',
 		isRetrieveReadonly: true,
 		name: 'data_obj_moed_msg_detail_reply',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -790,7 +790,7 @@ function initApplicantMsg(init: InitDb) {
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_moed_msg_list',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -806,13 +806,13 @@ function initApplicantMsg(init: InitDb) {
 		header: 'Message',
 		name: 'node_obj_moed_msg_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 }
 
 function initCsf(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		name: 'data_obj_moed_csf_list',
@@ -917,7 +917,7 @@ function initCsf(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_moed_csf_detail',
@@ -1148,7 +1148,7 @@ function initCsf(init: InitDb) {
 		header: 'Service Flows',
 		name: 'node_obj_moed_csf_list',
 		orderDefine: 20,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: ['node_obj_moed_csf_note_list', 'node_obj_moed_csf_doc_list'],
@@ -1158,13 +1158,13 @@ function initCsf(init: InitDb) {
 		header: 'Service Flow',
 		name: 'node_obj_moed_csf_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 }
 
 function initCsfNote(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		name: 'data_obj_moed_csf_note_list',
@@ -1212,7 +1212,7 @@ function initCsfNote(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		name: 'data_obj_moed_csf_note_detail',
@@ -1350,7 +1350,7 @@ function initCsfNote(init: InitDb) {
 		header: 'Case Notes',
 		name: 'node_obj_moed_csf_note_list',
 		orderDefine: 20,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1359,13 +1359,13 @@ function initCsfNote(init: InitDb) {
 		header: 'Case Note',
 		name: 'node_obj_moed_csf_note_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 }
 
 function initCsfDocument(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		name: 'data_obj_moed_csf_doc_list',
@@ -1415,7 +1415,7 @@ function initCsfDocument(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Document',
 		name: 'data_obj_moed_csf_doc_detail',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		queryRiders: [
 			{
 				codeFunction: 'qrfFileStorage',
@@ -1567,7 +1567,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Documents',
 		name: 'node_obj_moed_csf_doc_list',
 		orderDefine: 30,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1576,7 +1576,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Document',
 		name: 'node_obj_moed_csf_doc_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 }
 
@@ -1584,7 +1584,7 @@ function initAnalytic(init: InitDb) {
 	init.addTrans('sysAnalytic', {
 		header: 'MOED Analytic - Self Service Registration',
 		name: 'analytic_moed_self_serv_reg',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		statuses: [
 			{
 				codeStatus: 'met',
@@ -1608,7 +1608,7 @@ function initReport(init: InitDb) {
 		exprFilter: '.client IN org_moed::MoedParticipant',
 		header: 'Self Service Registration - Student Status',
 		name: 'report_moed_self_serv_student_status',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		tables: [
 			{ index: 0, table: 'CmClientServiceFlow' },
 			{ columnParent: 'client', indexParent: 0, index: 1, table: 'MoedParticipant' },

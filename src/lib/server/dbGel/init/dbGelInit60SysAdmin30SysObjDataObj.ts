@@ -13,7 +13,7 @@ function initDataObj(init: InitDb) {
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Data Objects',
 		name: 'data_obj_sys_admin_data_obj_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObj' }],
 		fields: [
 			{
@@ -41,7 +41,7 @@ function initDataObj(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Data Object',
 		name: 'data_obj_sys_admin_data_obj_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObj' }],
 		fields: [
 			{
@@ -467,7 +467,7 @@ function initDataObj(init: InitDb) {
 		header: 'Data Objects',
 		name: 'node_obj_sys_admin_data_obj_list',
 		orderDefine: 60,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -478,7 +478,7 @@ function initDataObj(init: InitDb) {
 		header: 'Data Object',
 		name: 'node_obj_sys_admin_data_obj_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -492,7 +492,7 @@ function initDataObjColumn(init: InitDb) {
 		header: 'Columns',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_admin_data_obj_column_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		parentColumn: 'columns',
 		parentTable: 'SysDataObj',
 		tables: [{ index: 0, table: 'SysDataObjColumn' }],
@@ -591,7 +591,7 @@ function initDataObjColumn(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Column',
 		name: 'data_obj_sys_admin_data_obj_column_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		parentColumn: 'columns',
 		parentTable: 'SysDataObj',
 		tables: [{ index: 0, table: 'SysDataObjColumn' }],
@@ -1388,7 +1388,7 @@ function initDataObjColumn(init: InitDb) {
 		header: 'Columns',
 		name: 'node_obj_sys_admin_data_obj_column_list',
 		orderDefine: 20,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -1398,6 +1398,6 @@ function initDataObjColumn(init: InitDb) {
 		header: 'Column',
 		name: 'node_obj_sys_admin_data_obj_column_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

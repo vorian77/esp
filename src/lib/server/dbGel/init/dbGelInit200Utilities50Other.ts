@@ -495,7 +495,7 @@ export async function addUserType(data: any) {
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
 				modifiedBy: CREATOR,
-				// resources: e.sys_user.getUserTypeResource('sys_system_old', 'app_sys_admin_global'),
+				// resources: e.sys_user.getUserTypeResource('sys_system', 'app_sys_admin_global'),
 
 				resources: e.assert_distinct(
 					e.for(e.array_unpack(p.resources || e.cast(e.array(e.json), e.set())), (res) => {

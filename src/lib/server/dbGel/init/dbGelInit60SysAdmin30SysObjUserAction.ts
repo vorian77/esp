@@ -14,7 +14,7 @@ function initCodeAction(init: InitDb) {
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Code Actions',
 		name: 'data_obj_sys_admin_code_action_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysCodeAction' }],
 		fields: [
 			{
@@ -53,7 +53,7 @@ function initCodeAction(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Code Action',
 		name: 'data_obj_sys_admin_code_action_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysCodeAction' }],
 		fields: [
 			{
@@ -173,7 +173,7 @@ function initCodeAction(init: InitDb) {
 		header: 'Code Actions',
 		name: 'node_obj_sys_admin_code_action_list',
 		orderDefine: 45,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -182,7 +182,7 @@ function initCodeAction(init: InitDb) {
 		header: 'Code Action',
 		name: 'node_obj_sys_admin_code_action_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -194,7 +194,7 @@ function initDataObjActionGroup(init: InitDb) {
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Data Object Action Groups',
 		name: 'data_obj_sys_admin_data_obj_action_group_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjActionGroup' }],
 		fields: [
 			{
@@ -222,7 +222,7 @@ function initDataObjActionGroup(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Data Object Action Group',
 		name: 'data_obj_sys_admin_data_obj_action_group_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjActionGroup' }],
 		fields: [
 			{
@@ -332,7 +332,7 @@ function initDataObjActionGroup(init: InitDb) {
 		header: 'Data Object Action Groups',
 		name: 'node_obj_sys_admin_data_obj_action_group_list',
 		orderDefine: 70,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -342,7 +342,7 @@ function initDataObjActionGroup(init: InitDb) {
 		header: 'Data Object Action Group',
 		name: 'node_obj_sys_admin_data_obj_action_group_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -354,7 +354,7 @@ function initUserAction(init: InitDb) {
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'User Actions',
 		name: 'data_obj_sys_admin_user_action_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysUserAction' }],
 		fields: [
 			{
@@ -382,7 +382,7 @@ function initUserAction(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'User Action',
 		name: 'data_obj_sys_admin_user_action_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysUserAction' }],
 		fields: [
 			{
@@ -546,7 +546,7 @@ function initUserAction(init: InitDb) {
 		header: 'User Actions',
 		name: 'node_obj_sys_admin_user_action_list',
 		orderDefine: 190,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -556,6 +556,6 @@ function initUserAction(init: InitDb) {
 		header: 'User Action',
 		name: 'node_obj_sys_admin_user_action_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

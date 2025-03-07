@@ -16,10 +16,10 @@ function initDataObjLists(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
-		exprFilter: `.owner.name = 'sys_moed_old' AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_moed::MoedParticipant).dateEnd`,
+		exprFilter: `.owner.name = 'sys_moed' AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_moed::MoedParticipant).dateEnd`,
 		header: 'Open Applicant Applications',
 		name: 'data_obj_task_moed_part_list_apps_open',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		tables: [
 			{ index: 0, table: 'MoedParticipant' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -126,7 +126,7 @@ function initDataObjLists(init: InitDb) {
 		exprFilter: `.sender IN org_moed::MoedParticipant.person AND NOT EXISTS .responses`,
 		header: 'Open Applicant Messages',
 		name: 'data_obj_task_moed_msg_list_open',
-		owner: 'sys_moed_old',
+		owner: 'sys_moed',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -246,7 +246,7 @@ function initNodeObjsTask(init: InitDb) {
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_task_moed_part_list_apps_open',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 	// init.addTrans('sysNodeObjProgramObj', {
 	// 	codeIcon: 'AppWindow',
@@ -255,7 +255,7 @@ function initNodeObjsTask(init: InitDb) {
 	// 	header: 'Applicant',
 	// 	name: 'node_obj_task_moed_part_detail_apps_open',
 	// 	orderDefine: 10,
-	// 	owner: 'sys_moed_old',
+	// 	owner: 'sys_moed',
 	//
 	// })
 
@@ -269,7 +269,7 @@ function initNodeObjsTask(init: InitDb) {
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_task_moed_msg_list_open',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -285,7 +285,7 @@ function initNodeObjsTask(init: InitDb) {
 		header: 'Applicant',
 		name: 'node_obj_task_moed_msg_detail_open',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 }
 
@@ -309,7 +309,7 @@ function initTasks(init: InitDb) {
 		name: 'task_moed_part_apps_open',
 		targetNodeObj: 'node_obj_task_moed_part_list_apps_open',
 		orderDefine: 10,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 
 	init.addTrans('sysTask', {
@@ -332,6 +332,6 @@ function initTasks(init: InitDb) {
 		name: 'task_moed_part_msgs_open',
 		targetNodeObj: 'node_obj_task_moed_msg_list_open',
 		orderDefine: 20,
-		owner: 'sys_moed_old'
+		owner: 'sys_moed'
 	})
 }

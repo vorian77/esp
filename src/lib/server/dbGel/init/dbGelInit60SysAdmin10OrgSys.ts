@@ -14,7 +14,7 @@ function initFieldListSelectUser(init: InitDb) {
 		exprFilter: 'none',
 		header: 'Select Users',
 		name: 'dofls_sys_user_org_sys',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysUser' }],
 		fields: [
 			{
@@ -40,7 +40,7 @@ function initFieldListSelectUser(init: InitDb) {
 		btnLabelComplete: 'Select User(s)',
 		dataObjList: 'dofls_sys_user_org_sys',
 		name: 'fels_sys_user_org_sys',
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -52,7 +52,7 @@ function initOrg(init: InitDb) {
 		header: 'Organizations (System)',
 		exprFilter: 'none',
 		name: 'data_obj_sys_admin_org_list_sys',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysOrg' }],
 		fields: [
 			{
@@ -80,7 +80,7 @@ function initOrg(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Organization (System)',
 		name: 'data_obj_sys_admin_org_detail_sys',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysOrg' }],
 		fields: [
 			{
@@ -183,7 +183,7 @@ function initOrg(init: InitDb) {
 		header: 'Organizations (System)',
 		name: 'node_obj_sys_admin_org_list_sys',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -192,6 +192,6 @@ function initOrg(init: InitDb) {
 		header: 'Organization (System)',
 		name: 'node_obj_sys_admin_org_detail_sys',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

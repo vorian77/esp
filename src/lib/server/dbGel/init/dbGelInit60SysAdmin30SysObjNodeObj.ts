@@ -13,7 +13,7 @@ function initNodeObj(init: InitDb) {
 		header: 'Node Objects',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_admin_node_obj_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysNodeObj' }],
 		fields: [
 			{
@@ -108,7 +108,7 @@ function initNodeObj(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Node Object',
 		name: 'data_obj_sys_admin_node_obj_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysNodeObj' }],
 		fields: [
 			{
@@ -349,7 +349,7 @@ function initNodeObj(init: InitDb) {
 		header: 'Node Objects',
 		name: 'node_obj_sys_admin_node_obj_list',
 		orderDefine: 130,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -359,6 +359,6 @@ function initNodeObj(init: InitDb) {
 		header: 'Node Object',
 		name: 'node_obj_sys_admin_node_obj_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

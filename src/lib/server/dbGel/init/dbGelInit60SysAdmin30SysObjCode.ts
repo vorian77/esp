@@ -14,7 +14,7 @@ function initCodeType(init: InitDb) {
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Code Types',
 		name: 'data_obj_sys_admin_code_type_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysCodeType' }],
 		fields: [
 			{
@@ -92,7 +92,7 @@ function initCodeType(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Code Type',
 		name: 'data_obj_sys_admin_code_type_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysCodeType' }],
 		fields: [
 			{
@@ -271,7 +271,7 @@ function initCodeType(init: InitDb) {
 		header: 'Code Types',
 		name: 'node_obj_sys_admin_code_type_list',
 		orderDefine: 30,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: ['node_obj_sys_admin_code_list_codeType'],
@@ -281,7 +281,7 @@ function initCodeType(init: InitDb) {
 		header: 'Code Type',
 		name: 'node_obj_sys_admin_code_type_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -293,7 +293,7 @@ function initCodeTypeCode(init: InitDb) {
 		exprFilter: '.codeType.id = <tree,uuid,SysCodeType.id>',
 		header: 'Codes',
 		name: 'data_obj_sys_admin_code_list_codeType',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -371,7 +371,7 @@ function initCodeTypeCode(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Code',
 		name: 'data_obj_sys_admin_code_detail_codeType',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -585,7 +585,7 @@ function initCodeTypeCode(init: InitDb) {
 		header: 'Codes',
 		name: 'node_obj_sys_admin_code_list_codeType',
 		orderDefine: 15,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -594,7 +594,7 @@ function initCodeTypeCode(init: InitDb) {
 		header: 'Code',
 		name: 'node_obj_sys_admin_code_detail_codeType',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
 
@@ -606,7 +606,7 @@ function initCode(init: InitDb) {
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Codes',
 		name: 'data_obj_sys_admin_code_list',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -695,7 +695,7 @@ function initCode(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Code',
 		name: 'data_obj_sys_admin_code_detail',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -918,7 +918,7 @@ function initCode(init: InitDb) {
 		header: 'Codes',
 		name: 'node_obj_sys_admin_code_list',
 		orderDefine: 40,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -927,6 +927,6 @@ function initCode(init: InitDb) {
 		header: 'Code',
 		name: 'node_obj_sys_admin_code_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }

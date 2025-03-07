@@ -13,7 +13,7 @@ async function initConfig(init: InitDb) {
 		header: 'Systems (Config)',
 		isListEdit: true,
 		name: 'data_obj_sys_admin_system_list_config',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
@@ -110,7 +110,7 @@ async function initConfig(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'System (Config)',
 		name: 'data_obj_sys_admin_system_detail_config',
-		owner: 'sys_system_old',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
@@ -200,7 +200,7 @@ async function initConfig(init: InitDb) {
 		header: 'Systems (Config)',
 		name: 'node_obj_sys_admin_system_list_config',
 		orderDefine: 20,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -210,6 +210,6 @@ async function initConfig(init: InitDb) {
 		header: 'Organization',
 		name: 'node_obj_sys_admin_system_detail_config',
 		orderDefine: 10,
-		owner: 'sys_system_old'
+		owner: 'sys_system'
 	})
 }
