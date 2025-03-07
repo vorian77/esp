@@ -78,28 +78,28 @@ export function initPreTable(init: InitDb) {
 
 	init.addTrans('tablesBulk', [
 		// Atlantic Impact
-		['sys_ai', 'app_cm', 'CmClient', true],
-		['sys_ai', 'app_cm', 'CmClientServiceFlow', true],
-		['sys_ai', 'app_cm', 'CmCohort', true],
-		['sys_ai', 'app_cm', 'CmCohortAttd', true],
-		['sys_ai', 'app_cm', 'CmCohortDoc', true],
-		['sys_ai', 'app_cm', 'CmCourse', true],
-		['sys_ai', 'app_cm', 'CmCsfCohort', true],
-		['sys_ai', 'app_cm', 'CmCsfCohortAttd', true],
-		['sys_ai', 'app_cm', 'CmCsfDocument', true],
-		['sys_ai', 'app_cm', 'CmCsfJobPlacement', true],
-		['sys_ai', 'app_cm', 'CmCsfNote', true],
-		['sys_ai', 'app_cm', 'CmCsfSchoolPlacement', true],
-		['sys_ai', 'app_cm', 'CmPartner', true],
-		['sys_ai', 'app_cm', 'CmProgram', true]
+		['sys_client_ai', 'app_cm', 'CmClient', true],
+		['sys_client_ai', 'app_cm', 'CmClientServiceFlow', true],
+		['sys_client_ai', 'app_cm', 'CmCohort', true],
+		['sys_client_ai', 'app_cm', 'CmCohortAttd', true],
+		['sys_client_ai', 'app_cm', 'CmCohortDoc', true],
+		['sys_client_ai', 'app_cm', 'CmCourse', true],
+		['sys_client_ai', 'app_cm', 'CmCsfCohort', true],
+		['sys_client_ai', 'app_cm', 'CmCsfCohortAttd', true],
+		['sys_client_ai', 'app_cm', 'CmCsfDocument', true],
+		['sys_client_ai', 'app_cm', 'CmCsfJobPlacement', true],
+		['sys_client_ai', 'app_cm', 'CmCsfNote', true],
+		['sys_client_ai', 'app_cm', 'CmCsfSchoolPlacement', true],
+		['sys_client_ai', 'app_cm', 'CmPartner', true],
+		['sys_client_ai', 'app_cm', 'CmProgram', true]
 	])
 
 	init.addTrans('tablesBulk', [
 		// MOED
-		['sys_moed', 'org_moed', 'MoedDoc', true],
-		['sys_moed', 'org_moed', 'MoedMessage', true],
-		['sys_moed', 'org_moed', 'MoedPartDoc', true],
-		['sys_moed', 'org_moed', 'MoedPartNote', true],
-		['sys_moed', 'org_moed', 'MoedParticipant', true]
+		['sys_client_moed', 'org_client_moed', 'MoedDoc', true],
+		['sys_client_moed', 'org_client_moed', 'MoedMessage', true],
+		['sys_client_moed', 'org_client_moed', 'MoedPartDoc', true],
+		['sys_client_moed', 'org_client_moed', 'MoedPartNote', true],
+		['sys_client_moed', 'org_client_moed', 'MoedParticipant', true]
 	])
 }

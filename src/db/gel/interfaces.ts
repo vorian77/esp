@@ -606,7 +606,7 @@ export namespace fts {
   export type PGLanguage = "xxx_simple" | "ara" | "hye" | "eus" | "cat" | "dan" | "nld" | "eng" | "fin" | "fra" | "deu" | "ell" | "hin" | "hun" | "ind" | "gle" | "ita" | "lit" | "npi" | "nor" | "por" | "ron" | "rus" | "srp" | "spa" | "swe" | "tam" | "tur" | "yid";
   export type Weight = "A" | "B" | "C" | "D";
 }
-export namespace org_moed {
+export namespace org_client_moed {
   export interface MoedPartData extends sys_core.SysObj {
     "participant"?: MoedParticipant | null;
   }
@@ -1099,9 +1099,9 @@ export interface types {
     "PGLanguage": fts.PGLanguage;
     "Weight": fts.Weight;
   };
-  "org_moed": {
-    "MoedPartData": org_moed.MoedPartData;
-    "MoedParticipant": org_moed.MoedParticipant;
+  "org_client_moed": {
+    "MoedPartData": org_client_moed.MoedPartData;
+    "MoedParticipant": org_client_moed.MoedParticipant;
   };
   "schema": {
     "AccessKind": schema.AccessKind;

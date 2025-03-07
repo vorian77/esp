@@ -129,7 +129,7 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Agency ID',
 		name: 'agencyId',
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		placeHolder: 'Enter agency ID'
 	})
 	init.addTrans('sysColumn', {
@@ -233,10 +233,10 @@ export function initPreColumn(init: InitDb) {
 		header: 'Client',
 		isMultiSelect: false,
 		name: 'client',
-		owner: 'sys_ai'
+		owner: 'sys_client_ai'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		codeDataType: 'link',
 		header: 'Group',
 		isMultiSelect: false,
@@ -289,7 +289,7 @@ export function initPreColumn(init: InitDb) {
 		header: 'Duration',
 		isMultiSelect: false,
 		name: 'codeCmCohortAttdDuration',
-		owner: 'sys_ai'
+		owner: 'sys_client_ai'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
@@ -388,17 +388,17 @@ export function initPreColumn(init: InitDb) {
 		header: 'Group Enrollment',
 		isMultiSelect: false,
 		name: 'codeGroupEnrollment',
-		owner: 'sys_ai'
+		owner: 'sys_client_ai'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Group Type',
 		isMultiSelect: false,
 		name: 'codeGroupType',
-		owner: 'sys_ai'
+		owner: 'sys_client_ai'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		codeDataType: 'link',
 		header: 'Highest Education',
 		isMultiSelect: false,
@@ -503,7 +503,7 @@ export function initPreColumn(init: InitDb) {
 		name: 'codeReportElementType'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		codeDataType: 'link',
 		header: 'Retention',
 		isMultiSelect: false,
@@ -628,7 +628,7 @@ export function initPreColumn(init: InitDb) {
 		name: 'codeUserTypeTags'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		codeDataType: 'link',
 		header: 'Wage Type',
 		isMultiSelect: false,
@@ -1235,22 +1235,22 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Employer - Contact Email',
 		name: 'employerContactEmail',
-		owner: 'sys_ai'
+		owner: 'sys_client_ai'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Employer - Contact First Name',
 		name: 'employerContactNameFirst',
-		owner: 'sys_ai'
+		owner: 'sys_client_ai'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Employer - Contact Last Name',
 		name: 'employerContactNameLast',
-		owner: 'sys_ai'
+		owner: 'sys_client_ai'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		codeDataType: 'str',
 		header: 'Employer - Contact Phone',
 		inputMask: 'phone',
@@ -1260,7 +1260,7 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Employer',
 		name: 'employerName',
-		owner: 'sys_ai'
+		owner: 'sys_client_ai'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'str',
@@ -1454,7 +1454,7 @@ export function initPreColumn(init: InitDb) {
 		toggleValueTrue: 'Yes'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		codeDataType: 'bool',
 		header: 'Has Drivers License',
 		name: 'hasDriversLicense',
@@ -2122,7 +2122,7 @@ export function initPreColumn(init: InitDb) {
 		header: 'Program',
 		isMultiSelect: false,
 		name: 'programCm',
-		owner: 'sys_ai'
+		owner: 'sys_client_ai'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
@@ -2337,7 +2337,7 @@ export function initPreColumn(init: InitDb) {
 		name: 'user'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		codeDataType: 'link',
 		header: 'Group Manager',
 		isMultiSelect: false,

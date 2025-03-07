@@ -49,7 +49,7 @@ function initCode(init: InitDb) {
 		name: 'tso_sys_quote'
 	})
 	init.addTrans('sysCode', {
-		owner: 'sys_moed',
+		owner: 'sys_client_moed',
 		codeType: 'ct_sys_task_status_obj',
 		name: 'tso_moed_ssr_doc'
 	})

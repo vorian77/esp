@@ -8,9 +8,9 @@ import type * as _std from "./std";
 export type $MoedPartDataλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "participant": $.LinkDesc<$MoedParticipant, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
 }>;
-type $MoedPartData = $.ObjectType<"org_moed::MoedPartData", $MoedPartDataλShape, null, [
+type $MoedPartData = $.ObjectType<"org_client_moed::MoedPartData", $MoedPartDataλShape, null, [
   ..._sys_core.$SysObj['__exclusives__'],
-], "org_moed::MoedPartData">;
+], "org_client_moed::MoedPartData">;
 const $MoedPartData = $.makeType<$MoedPartData>(_.spec, "2d502525-9382-11ef-9018-9556ec6c7c0b", _.syntax.literal);
 
 const MoedPartData: $.$expr_PathNode<$.TypeSet<$MoedPartData, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($MoedPartData, $.Cardinality.Many), null);
@@ -18,12 +18,12 @@ const MoedPartData: $.$expr_PathNode<$.TypeSet<$MoedPartData, $.Cardinality.Many
 export type $MoedParticipantλShape = $.typeutil.flatten<_app_cm.$CmClientλShape & {
   "consentDisclaimer": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "idxDemo": $.PropertyDesc<_std.$int64, $.Cardinality.One, false, false, false, false>;
-  "<participant[is org_moed::MoedPartData]": $.LinkDesc<$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<participant[is org_client_moed::MoedPartData]": $.LinkDesc<$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<participant": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
-type $MoedParticipant = $.ObjectType<"org_moed::MoedParticipant", $MoedParticipantλShape, null, [
+type $MoedParticipant = $.ObjectType<"org_client_moed::MoedParticipant", $MoedParticipantλShape, null, [
   ..._app_cm.$CmClient['__exclusives__'],
-], "org_moed::MoedParticipant">;
+], "org_client_moed::MoedParticipant">;
 const $MoedParticipant = $.makeType<$MoedParticipant>(_.spec, "d75af72d-92b5-11ef-901c-5315ce8c1da7", _.syntax.literal);
 
 const MoedParticipant: $.$expr_PathNode<$.TypeSet<$MoedParticipant, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($MoedParticipant, $.Cardinality.Many), null);

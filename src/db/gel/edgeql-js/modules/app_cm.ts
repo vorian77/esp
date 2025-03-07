@@ -19,7 +19,7 @@ export type $CmClientλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
 }>;
 type $CmClient = $.ObjectType<"app_cm::CmClient", $CmClientλShape, null, [
   ..._sys_user.$Mgmt['__exclusives__'],
-], "app_cm::CmClient" | "org_moed::MoedParticipant">;
+], "app_cm::CmClient" | "org_client_moed::MoedParticipant">;
 const $CmClient = $.makeType<$CmClient>(_.spec, "508d4869-b3c2-11ee-ac7f-9da0574a2000", _.syntax.literal);
 
 const CmClient: $.$expr_PathNode<$.TypeSet<$CmClient, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmClient, $.Cardinality.Many), null);

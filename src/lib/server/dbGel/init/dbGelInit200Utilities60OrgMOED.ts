@@ -7,7 +7,7 @@ export async function MoedPBulkPart(params: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.insert(e.org_moed.MoedParticipant, {
+			return e.insert(e.org_client_moed.MoedParticipant, {
 				createdBy: CREATOR,
 				idxDemo: e.cast(e.int64, i[0]),
 				modifiedBy: CREATOR,
@@ -17,27 +17,35 @@ export async function MoedPBulkPart(params: any) {
 						createdBy: CREATOR,
 						hasAccess: true,
 						modifiedBy: CREATOR,
-						obj: e.sys_core.getObjEntAttr('sys_moed', e.cast(e.str, i[13]))
+						obj: e.sys_core.getObjEntAttr('sys_client_moed', e.cast(e.str, i[13]))
 					}),
 					birthDate: e.cal.to_local_date(e.cast(e.str, i[3])),
 					city: e.cast(e.str, i[4]),
 					codeDisabilityStatus: e.sys_core.getCodeSystem(
-						'sys_moed',
+						'sys_client_moed',
 						'ct_sys_person_disability_status',
 						e.cast(e.str, i[5])
 					),
 					codeEthnicity: e.sys_core.getCodeSystem(
-						'sys_moed',
+						'sys_client_moed',
 						'ct_sys_person_ethnicity',
 						e.cast(e.str, i[6])
 					),
 					codeGender: e.sys_core.getCodeSystem(
-						'sys_moed',
+						'sys_client_moed',
 						'ct_sys_person_gender',
 						e.cast(e.str, i[7])
 					),
-					codeRace: e.sys_core.getCodeSystem('sys_moed', 'ct_sys_person_race', e.cast(e.str, i[8])),
-					codeState: e.sys_core.getCodeSystem('sys_moed', 'ct_sys_state', e.cast(e.str, i[9])),
+					codeRace: e.sys_core.getCodeSystem(
+						'sys_client_moed',
+						'ct_sys_person_race',
+						e.cast(e.str, i[8])
+					),
+					codeState: e.sys_core.getCodeSystem(
+						'sys_client_moed',
+						'ct_sys_state',
+						e.cast(e.str, i[9])
+					),
 					email: e.cast(e.str, i[10]),
 					firstName: e.cast(e.str, i[11]),
 					lastName: e.cast(e.str, i[12]),
@@ -45,7 +53,7 @@ export async function MoedPBulkPart(params: any) {
 					ssn: e.cast(e.str, i[15]),
 					zip: e.cast(e.str, i[16])
 				}),
-				owner: e.sys_core.getSystemPrime('sys_moed')
+				owner: e.sys_core.getSystemPrime('sys_client_moed')
 			})
 		})
 	})
@@ -66,13 +74,17 @@ export async function MoedBulkCsf(params: any) {
 				createdBy: CREATOR,
 				modifiedBy: CREATOR,
 				client: e.assert_single(
-					e.select(e.org_moed.MoedParticipant, (part) => ({
+					e.select(e.org_client_moed.MoedParticipant, (part) => ({
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
 					}))
 				),
-				codeServiceFlowType: e.sys_core.getCodeSystem('sys_moed', 'ct_cm_program_type', 'Walk in'),
+				codeServiceFlowType: e.sys_core.getCodeSystem(
+					'sys_client_moed',
+					'ct_cm_program_type',
+					'Walk in'
+				),
 				codeStatus: e.sys_core.getCodeSystem(
-					'sys_moed',
+					'sys_client_moed',
 					'ct_cm_service_flow_status',
 					e.cast(e.str, i[4])
 				),
@@ -97,13 +109,17 @@ export async function MoedBulkDataDoc(params: any) {
 				csf: e.assert_single(
 					e.select(e.app_cm.CmClientServiceFlow, (sf) => ({
 						filter_single: e.op(
-							sf.client.is(e.org_moed.MoedParticipant).idxDemo,
+							sf.client.is(e.org_client_moed.MoedParticipant).idxDemo,
 							'=',
 							e.cast(e.int64, i[0])
 						)
 					}))
 				),
-				codeType: e.sys_core.getCodeSystem('sys_moed', 'ct_cm_doc_type', e.cast(e.str, i[2])),
+				codeType: e.sys_core.getCodeSystem(
+					'sys_client_moed',
+					'ct_cm_doc_type',
+					e.cast(e.str, i[2])
+				),
 				dateIssued: e.cal.to_local_date(e.cast(e.str, i[1]))
 			})
 		})
@@ -122,12 +138,12 @@ export async function MoedBulkDataMsg(params: any) {
 					createdBy: CREATOR,
 					hasAccess: true,
 					modifiedBy: CREATOR,
-					obj: e.sys_core.getObjEntAttr('sys_moed', e.cast(e.str, i[3]))
+					obj: e.sys_core.getObjEntAttr('sys_client_moed', e.cast(e.str, i[3]))
 				}),
 				date: e.cal.to_local_date(e.cast(e.str, i[1])),
 				isRead: false,
 				sender: e.assert_single(
-					e.select(e.org_moed.MoedParticipant, (part) => ({
+					e.select(e.org_client_moed.MoedParticipant, (part) => ({
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
 					})).person
 				),

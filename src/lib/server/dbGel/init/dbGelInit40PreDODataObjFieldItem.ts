@@ -111,7 +111,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		props: [[0, '_date', 'Date', 'std::to_str(<cal::local_date>.date)', true, 0]],
 		exprWith: ``,
 		name: 'il_cm_cohort_attd_cohort',
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		table: 'CmCohortAttd'
 	})
 
@@ -119,7 +119,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		exprFilter: `.owner.id = <user,uuid,systemIdCurrent>`,
 		props: [[0, 'header', 'Header', '.header', true, 0]],
 		name: 'il_cm_program',
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		table: 'CmProgram'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
@@ -135,21 +135,21 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		],
 		exprFilter: `.owner.id = <user,uuid,systemIdCurrent>`,
 		name: 'il_cm_cohort_long_by_userName',
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		table: 'CmCohort'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).systems`,
 		name: 'il_cm_cohort_short_by_userName',
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		table: 'CmCohort'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter: `(.csf.id IN <tree,uuidList,CmClientServiceFlow.id> AND .codeStatus = (SELECT sys_core::getCode('ct_cm_service_flow_status', <parms,str,status>))).cohort.course)`,
 		name: 'il_cm_course_by_csfId_status',
-		owner: 'sys_ai',
+		owner: 'sys_client_ai',
 		table: 'CmCsfCohort'
 	})
 

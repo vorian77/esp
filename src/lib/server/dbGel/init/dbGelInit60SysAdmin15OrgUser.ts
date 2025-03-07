@@ -292,7 +292,15 @@ function initSystem(init: InitDb) {
 				orderCrumb: 10,
 				orderSort: 10,
 				isDisplayable: true,
-				orderDisplay: 30,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'header',
+				isDisplayable: true,
+				orderDisplay: 0,
 				orderDefine: 30,
 				indexTable: 0
 			}
@@ -303,7 +311,6 @@ function initSystem(init: InitDb) {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
-		exprFilter: '.owner.id = <tree,uuid,SysOrg.id>',
 		header: 'System',
 		name: 'data_obj_sys_admin_system_detail_user',
 		owner: 'sys_system',
@@ -328,6 +335,14 @@ function initSystem(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'header',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
 

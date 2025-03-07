@@ -346,14 +346,14 @@ export class InitDb {
 		this.items.push(
 			new InitDbItem({
 				name: 'MoedPBulkPart',
-				exprResets: `DELETE org_moed::MoedParticipant`,
+				exprResets: `DELETE org_client_moed::MoedParticipant`,
 				fCreate: MoedPBulkPart
 			})
 		)
 		this.items.push(
 			new InitDbItem({
 				name: 'MoedBulkDataMsg',
-				exprResets: `DELETE sys_core::SysMsg FILTER .sender IN org_moed::MoedParticipant.person UNION .recipients IN org_moed::MoedParticipant.person`,
+				exprResets: `DELETE sys_core::SysMsg FILTER .sender IN org_client_moed::MoedParticipant.person UNION .recipients IN org_client_moed::MoedParticipant.person`,
 				fCreate: MoedBulkDataMsg
 			})
 		)
@@ -361,7 +361,7 @@ export class InitDb {
 			new InitDbItem({
 				name: 'MoedBulkCsf',
 				exprResets: [
-					`DELETE app_cm::CmClientServiceFlow FILTER .client IN org_moed::MoedParticipant`
+					`DELETE app_cm::CmClientServiceFlow FILTER .client IN org_client_moed::MoedParticipant`
 				],
 				fCreate: MoedBulkCsf
 			})
@@ -369,14 +369,15 @@ export class InitDb {
 		this.items.push(
 			new InitDbItem({
 				name: 'MoedBulkDataDoc',
-				exprResets: `DELETE app_cm::CmCsfDocument FILTER .csf.client IN org_moed::MoedParticipant`,
+				exprResets: `DELETE app_cm::CmCsfDocument FILTER .csf.client IN org_client_moed::MoedParticipant`,
 				fCreate: MoedBulkDataDoc
 			})
 		)
 		this.items.push(
 			new InitDbItem({
 				name: 'MoedBulkDataDelete',
-				exprResets: 'DELETE app_cm::CmCsfData FILTER .csf.client IN org_moed::MoedParticipant'
+				exprResets:
+					'DELETE app_cm::CmCsfData FILTER .csf.client IN org_client_moed::MoedParticipant'
 			})
 		)
 	}
