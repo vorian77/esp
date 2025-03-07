@@ -335,8 +335,7 @@ function initUserType(init: InitDb) {
 		header: 'User Types',
 		name: 'node_obj_sys_admin_user_type_list',
 		orderDefine: 20,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_meta'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -346,7 +345,6 @@ function initUserType(init: InitDb) {
 		header: 'User Type',
 		name: 'node_obj_sys_admin_user_type_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_user_type_list'
+		owner: 'sys_system_old'
 	})
 }

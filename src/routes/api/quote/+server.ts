@@ -1,5 +1,9 @@
+import { apiFetch } from '$routes/api/api'
+import { TokenApiFetchError, TokenApiFetchMethod } from '$utils/types.token'
 import { API_NINJAS_SECRET } from '$env/static/private'
 import { getServerResponse } from '$utils/types'
+
+const FILENAME = '/routes/api/quote/+server.ts'
 
 const CATEGORIES = ['inspirational', 'courage']
 // const CATEGORIES = [
@@ -49,9 +53,9 @@ const COLORS = [
 	'#495a8f'
 ]
 
-export async function GET({ request }) {
+export async function GET() {
+	console.log('api.quote.GET')
 	let quotes = []
-	console.log('API_NINJAS_SECRET:', API_NINJAS_SECRET)
 	const COLOR = { color: COLORS[Math.floor(Math.random() * COLORS.length)] }
 	const CATEGORY_IDX = Math.floor(Math.random() * (CATEGORIES.length + 1))
 	// const API = 'https://api.api-ninjas.com/v1/quotes?limit=1&category=' + CATEGORIES[CATEGORY_IDX]
@@ -65,15 +69,18 @@ export async function GET({ request }) {
 	}
 
 	async function getQuote() {
-		const quotesRes: Response = await fetch(API, {
-			method: 'GET',
-			headers: {
-				'X-API-KEY': API_NINJAS_SECRET,
-				contentType: 'application/json'
+		const quotesRetrieved = await apiFetch(
+			API,
+			TokenApiFetchMethod.get,
+			new TokenApiFetchError(FILENAME, 'getQuote', `Unable to retrieve quote.`),
+			{
+				headers: {
+					'X-API-KEY': API_NINJAS_SECRET,
+					contentType: 'application/json'
+				}
 			}
-		})
-		quotes = await quotesRes.json()
-		return quotes.length > 0 ? quotes[0] : DEFAULT_QUOTE
+		)
+		return quotesRetrieved.length > 0 ? quotesRetrieved[0] : DEFAULT_QUOTE
 	}
 
 	const quote = await getQuote()

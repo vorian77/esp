@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte'
 	import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 	import {
+		TokenApiFetchError,
 		TokenApiUserPref,
 		TokenAppModalReturnType,
 		TokenAppUserActionConfirmType
@@ -223,6 +224,7 @@
 			)
 			await apiFetchFunction(
 				ApiFunction.sysUserPrefSet,
+				new TokenApiFetchError(FILENAME, 'saveUserSettings', 'Error saving user settings.'),
 				new TokenApiUserPref(
 					options.userSettings.idUser,
 					options.userSettings.idFeature,

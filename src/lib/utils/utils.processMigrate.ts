@@ -1,5 +1,5 @@
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-import { TokenApiId } from '$utils/types.token'
+import { TokenApiFetchError, TokenApiId } from '$utils/types.token'
 import { ResponseBody } from '$utils/types'
 import { DataObj } from '$utils/types'
 import { State } from '$comps/app/types.appState.svelte'
@@ -15,17 +15,13 @@ export async function migrate(sm: State, dataObj: DataObj) {
 
 async function getActions() {
 	const name = 'doag_dialog_footer_detail'
-	const result: ResponseBody = await apiFetchFunction(
+	return await apiFetchFunction(
 		ApiFunction.dbGelGetDataObjActionGroup,
+		new TokenApiFetchError(
+			FILENAME,
+			'getActions',
+			`Error retrieving data object action field group: ${name}`
+		),
 		new TokenApiId(name)
 	)
-	if (result.success) {
-		return result.data
-	} else {
-		error(500, {
-			file: FILENAME,
-			function: 'getAction',
-			message: `Error retrieving data object action field group: ${name}`
-		})
-	}
 }

@@ -190,7 +190,6 @@ function initClient(init: InitDb) {
 		header: 'Client',
 		name: 'node_obj_app_crm_client_detail',
 		orderDefine: 10,
-		owner: 'sys_app_crm',
-		parentNodeName: 'node_obj_app_crm_client_list'
+		owner: 'sys_app_crm'
 	})
 }

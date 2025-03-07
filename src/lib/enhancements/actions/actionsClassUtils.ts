@@ -1,15 +1,12 @@
 import { State } from '$comps/app/types.appState.svelte'
 import { userActionError } from '$comps/other/types.userAction.svelte'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-import { TokenApiQueryData, TokenAppStateTriggerAction } from '$utils/types.token'
 import {
-	CodeActionType,
-	DataObjData,
-	type DataRecord,
-	ParmsValuesType,
-	ResponseBody,
-	strRequired
-} from '$utils/types'
+	TokenApiFetchError,
+	TokenApiQueryData,
+	TokenAppStateTriggerAction
+} from '$utils/types.token'
+import { CodeActionType, DataObjData, type DataRecord, strRequired } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionsClassUtils.ts'
@@ -47,17 +44,9 @@ const processDbExpr = async (sm: State, parms: DataRecord) => {
 	}
 	if (parms.dataTree) exprParms.tree = parms.dataTree
 
-	const result: ResponseBody = await apiFetchFunction(
+	return await apiFetchFunction(
 		ApiFunction.dbGelProcessExpression,
+		new TokenApiFetchError(FILENAME, 'processDbExpr', `Error executing DB expression: ${dbExpr}`),
 		new TokenApiQueryData(exprParms)
 	)
-	if (result.success) {
-		return result.data
-	} else {
-		error(500, {
-			file: FILENAME,
-			function: 'processDbExpr',
-			message: `Error executing DB expression: ${dbExpr}`
-		})
-	}
 }

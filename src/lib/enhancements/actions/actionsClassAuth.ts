@@ -1,9 +1,13 @@
 import { State } from '$comps/app/types.appState.svelte'
 import { CodeAction, CodeActionClass, CodeActionType, required, strRequired } from '$utils/types'
 import { userActionError } from '$comps/other/types.userAction.svelte'
-import { TokenApiSysSendText, TokenAppStateTriggerAction } from '$utils/types.token'
-import type { DataRecord } from '$utils/types'
-import { apiFetchFunction, ApiFunction } from '$routes/api/api'
+import {
+	TokenApiFetchError,
+	TokenApiFetchMethod,
+	TokenApiSysSendText,
+	TokenAppStateTriggerAction
+} from '$utils/types.token'
+import { apiFetch, apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
 	AuthProcess,
 	AuthProcessParm,
@@ -28,17 +32,19 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 			break
 
 		case CodeActionType.setUserId:
-			const formData = new FormData()
 			const userId = strRequired(
 				value,
 				userActionError(FILENAME, CodeActionType.setUserId),
 				'userId'
 			)
-			formData.set('session_id', userId)
-			const responsePromise: Response = await fetch('/', {
-				method: 'POST',
-				body: formData
-			})
+
+			await apiFetch(
+				'/',
+				TokenApiFetchMethod.post,
+				new TokenApiFetchError(FILENAME, 'setUserId', `Unable to set user id: ${userId}.`),
+				{ formData: { session_id: userId } }
+			)
+
 			await sm.triggerAction(
 				new TokenAppStateTriggerAction({
 					codeAction: CodeAction.init(
@@ -265,6 +271,7 @@ export async function codeSend(authProcess: AuthProcess) {
 	} else {
 		await apiFetchFunction(
 			ApiFunction.sysSendText,
+			new TokenApiFetchError(FILENAME, 'codeSend', 'Error sending security code.'),
 			new TokenApiSysSendText(
 				securityCodeUserName,
 				`${securityCodeSystem} - The App Factory mobile phone number verification code.`

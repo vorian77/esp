@@ -53,7 +53,7 @@ import {
 } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-import { TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
+import { TokenApiFetchError, TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
@@ -893,19 +893,16 @@ export class PropLinkItems {
 		dataTab.parms.valueSet(ParmsValuesType.propLinkItemsSourceRaw, this.source.raw)
 
 		// retrieve
-		const result: ResponseBody = await apiFetchFunction(
+		const result = await apiFetchFunction(
 			ApiFunction.dbGelGetLinkItems,
+			new TokenApiFetchError(
+				FILENAME,
+				'retrieve',
+				`Error retrieving LinkItemsSource: ${this.source.name}`
+			),
 			new TokenApiQueryData({ dataTab, tree: dataTree, user: sm.user })
 		)
-		if (result.success) {
-			this.setRawItems(required(result.data.data, `${FILENAME}.PropLinkItems.retrieve`, 'rawItems'))
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'retrieve',
-				message: `Error retrieving LinkItemsSource: ${this.source.name}`
-			})
-		}
+		this.setRawItems(required(result.data, `${FILENAME}.PropLinkItems.retrieve`, 'rawItems'))
 	}
 
 	setRawItems(rawItems: DataRecord[]) {

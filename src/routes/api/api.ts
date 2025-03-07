@@ -9,13 +9,14 @@ export enum ApiFunction {
 	dbGelGetDataObjId = 'dbGelGetDataObjId',
 	dbGelGetFieldEmbedListSelect = 'dbGelGetFieldEmbedListSelect',
 	dbGelGetLinkItems = 'dbGelGetLinkItems',
+	dbGelInit = 'dbGelInit',
 	dbGelGetLinkItemsSource = 'dbGelGetLinkItemsSource',
 	dbGelGetNodesBranch = 'dbGelGetNodesBranch',
 	dbGelGetNodesLevel = 'dbGelGetNodesLevel',
+	dbGelGetTableColumns = 'dbGelGetTableColumns',
 	dbGelProcessDataObj = 'dbGelProcessDataObj',
 	dbGelProcessExpression = 'dbGelProcessExpression',
-	dbGelGetTableColumns = 'dbGelGetTableColumns',
-	dbGelInit = 'dbGelInit',
+
 	sysBlobUpload = 'sysBlobUpload',
 	sysGetEnvDbBranch = 'sysGetEnvDbBranch',
 	sysSendText = 'sysSendText',
@@ -27,30 +28,60 @@ export async function apiFetch(
 	server: string,
 	method: TokenApiFetchMethod,
 	tokenError: TokenApiFetchError,
-	tokenData: Token | undefined = undefined
+	components: DataRecord | undefined = undefined
 ) {
-	server = `/api/${server}`
 	let parms: DataRecord = { method }
-	if (tokenData) parms.token = JSON.stringify(tokenData)
+	if (components) {
+		if (Object.keys(components).includes('headers')) {
+			parms.headers = components.headers
+		}
+		if (Object.keys(components).includes('formData')) {
+			const formData = new FormData()
+			Object.keys(components.formData).forEach((key) => {
+				formData.set(key, components.formData[key])
+			})
+			parms.body = formData
+		}
+	}
+	return await apiFetchData(server, parms, tokenError)
+}
+
+async function apiFetchData(server: string, parms: DataRecord, tokenError: TokenApiFetchError) {
 	const responsePromise: Response = await fetch(server, parms)
-	const rtn = await responsePromise.json()
-	if (rtn.success) {
-		return rtn.data
+	if (responsePromise.status < 400) {
+		const result = await responsePromise.json()
+		return result.data ? result.data : result
 	} else {
 		error(500, {
 			file: tokenError.fileName,
 			function: tokenError.functionName,
-			message: tokenError.message
+			message: JSON.stringify({
+				httpStatus: responsePromise.status,
+				httpStatusText: responsePromise.statusText,
+				message: tokenError.message
+			})
 		})
 	}
 }
 
 export async function apiFetchFunction(
 	apiFunction: ApiFunction,
+	tokenError: TokenApiFetchError,
+	token: Token | undefined = undefined
+) {
+	let parms: DataRecord = { method: TokenApiFetchMethod.post }
+	let body: DataRecord = { apiFunction }
+	if (token) body.token = token
+	parms.body = JSON.stringify(body)
+	return await apiFetchData('/api', parms, tokenError)
+}
+
+export async function apiFetchFunctionRaw(
+	apiFunction: ApiFunction,
 	token: Token | undefined = undefined
 ) {
 	let parms: DataRecord = { apiFunction }
-	if (token) parms = { ...parms, token }
+	if (token) parms.token = token
 	const responsePromise: Response = await fetch('/api', {
 		method: 'POST',
 		body: JSON.stringify(parms)

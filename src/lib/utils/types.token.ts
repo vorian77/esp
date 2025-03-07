@@ -358,19 +358,16 @@ export class TokenAppDoQuery extends TokenApp {
 		if (this.dataObjId) {
 			return this.dataObjId
 		} else {
-			const result: ResponseBody = await apiFetchFunction(
+			const result: DataRecord = await apiFetchFunction(
 				ApiFunction.dbGelGetDataObjId,
+				new TokenApiFetchError(
+					FILENAME,
+					'TokenAppDoQuery.getDataObjId',
+					`Error retrieving dataObj for dataObjName: ${this.dataObjName}`
+				),
 				new TokenApiId(this.dataObjName!)
 			)
-			if (result.success) {
-				return result.data.id
-			} else {
-				error(500, {
-					file: FILENAME,
-					function: 'getDataObjId',
-					message: `Error retrieving dataObj for dataObjName: ${this.dataObjName}`
-				})
-			}
+			return result.id
 		}
 	}
 }

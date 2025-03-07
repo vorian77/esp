@@ -1383,11 +1383,11 @@ cohortWages := (SELECT completed {cohort, wages := (SELECT app_cm::CmCsfJobPlace
 				codeDataType: 'float64',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				exprCustom: `average(array_agg((SELECT cohortWages FILTER .cohort = app_cm::CmCohort).wages))`,
-				header: 'Students Completed & Placed Average Wage ($)',
+				exprCustom: `(math::mean((SELECT cohortWages FILTER .cohort = app_cm::CmCohort).wages ?? {0}))`,
+				header: 'Students Completed & Placed Mean Wage ($)',
 				isDisplay: true,
 				isDisplayable: true,
-				nameCustom: 'wageAverage',
+				nameCustom: 'wageMean',
 				orderDefine: 310,
 				orderDisplay: 310
 			}
@@ -1530,11 +1530,11 @@ cohortWages := (SELECT completed {cohort, wages := (SELECT app_cm::CmCsfJobPlace
 				codeDataType: 'float64',
 				codeFieldElement: 'number',
 				codeReportElementType: 'column',
-				exprCustom: `average(array_agg((SELECT cohortWages FILTER .course = app_cm::CmCourse).wages))`,
-				header: 'Students Completed & Placed Average Wage ($)',
+				exprCustom: `(math::mean((SELECT cohortWages FILTER .course = app_cm::CmCourse).wages ?? {0}))`,
+				header: 'Students Completed & Placed Mean Wage ($)',
 				isDisplay: true,
 				isDisplayable: true,
-				nameCustom: 'wageAverage',
+				nameCustom: 'wageMean',
 				orderDefine: 310,
 				orderDisplay: 310
 			}

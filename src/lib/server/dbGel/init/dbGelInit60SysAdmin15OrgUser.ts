@@ -265,8 +265,7 @@ function initOrg(init: InitDb) {
 		header: 'Organization (User)',
 		name: 'node_obj_sys_admin_org_detail_user',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_org_list_user'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -405,8 +404,7 @@ function initSystem(init: InitDb) {
 		header: 'Systems',
 		name: 'node_obj_sys_admin_system_list_user',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_org_detail_user'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -415,8 +413,7 @@ function initSystem(init: InitDb) {
 		header: 'System',
 		name: 'node_obj_sys_admin_system_detail_user',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_list_user'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -703,8 +700,7 @@ function initUser(init: InitDb) {
 		header: 'Users',
 		name: 'node_obj_sys_admin_user_list_user',
 		orderDefine: 20,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_org_detail_user'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -714,7 +710,6 @@ function initUser(init: InitDb) {
 		header: 'User',
 		name: 'node_obj_sys_admin_user_detail_user',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_user_list_user'
+		owner: 'sys_system_old'
 	})
 }

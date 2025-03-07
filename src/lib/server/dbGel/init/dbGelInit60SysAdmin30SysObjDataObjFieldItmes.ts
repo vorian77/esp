@@ -305,8 +305,7 @@ function initDataObjFieldListItems(init: InitDb) {
 		header: 'Field List Items',
 		name: 'node_obj_sys_admin_data_obj_field_list_items_list',
 		orderDefine: 120,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -316,7 +315,6 @@ function initDataObjFieldListItems(init: InitDb) {
 		header: 'Item',
 		name: 'node_obj_sys_admin_data_obj_field_list_items_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_data_obj_field_list_items_list'
+		owner: 'sys_system_old'
 	})
 }

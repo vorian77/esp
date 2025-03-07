@@ -16,7 +16,7 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
-import { apiFetchFunction, ApiFunction } from '$routes/api/api'
+import { apiFetchFunctionRaw, ApiFunction } from '$routes/api/api'
 import {
 	TokenApiDbDataObjSource,
 	TokenApiQuery,
@@ -62,7 +62,7 @@ export async function queryExecute(
 	queryType: TokenApiQueryType,
 	queryData: TokenApiQueryData
 ) {
-	const result: ResponseBody = await apiFetchFunction(
+	const result: ResponseBody = await apiFetchFunctionRaw(
 		ApiFunction.dbGelProcessDataObj,
 		new TokenApiQuery(queryType, dataObjSource, queryData)
 	)

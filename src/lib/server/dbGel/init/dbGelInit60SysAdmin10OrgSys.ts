@@ -192,7 +192,6 @@ function initOrg(init: InitDb) {
 		header: 'Organization (System)',
 		name: 'node_obj_sys_admin_org_detail_sys',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_org_list_sys'
+		owner: 'sys_system_old'
 	})
 }

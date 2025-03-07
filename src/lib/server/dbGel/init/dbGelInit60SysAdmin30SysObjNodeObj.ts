@@ -349,8 +349,7 @@ function initNodeObj(init: InitDb) {
 		header: 'Node Objects',
 		name: 'node_obj_sys_admin_node_obj_list',
 		orderDefine: 130,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -360,7 +359,6 @@ function initNodeObj(init: InitDb) {
 		header: 'Node Object',
 		name: 'node_obj_sys_admin_node_obj_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_node_obj_list'
+		owner: 'sys_system_old'
 	})
 }

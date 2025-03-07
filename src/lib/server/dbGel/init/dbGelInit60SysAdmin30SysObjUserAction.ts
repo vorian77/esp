@@ -173,8 +173,7 @@ function initCodeAction(init: InitDb) {
 		header: 'Code Actions',
 		name: 'node_obj_sys_admin_code_action_list',
 		orderDefine: 45,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -183,8 +182,7 @@ function initCodeAction(init: InitDb) {
 		header: 'Code Action',
 		name: 'node_obj_sys_admin_code_action_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_code_action_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -334,8 +332,7 @@ function initDataObjActionGroup(init: InitDb) {
 		header: 'Data Object Action Groups',
 		name: 'node_obj_sys_admin_data_obj_action_group_list',
 		orderDefine: 70,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -345,8 +342,7 @@ function initDataObjActionGroup(init: InitDb) {
 		header: 'Data Object Action Group',
 		name: 'node_obj_sys_admin_data_obj_action_group_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_data_obj_action_group_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -550,8 +546,7 @@ function initUserAction(init: InitDb) {
 		header: 'User Actions',
 		name: 'node_obj_sys_admin_user_action_list',
 		orderDefine: 190,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -561,7 +556,6 @@ function initUserAction(init: InitDb) {
 		header: 'User Action',
 		name: 'node_obj_sys_admin_user_action_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_user_action_list'
+		owner: 'sys_system_old'
 	})
 }

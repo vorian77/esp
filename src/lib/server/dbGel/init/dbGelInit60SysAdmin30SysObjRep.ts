@@ -230,8 +230,7 @@ function initAnalytic(init: InitDb) {
 		header: 'Analytics',
 		name: 'node_obj_sys_analytic_list',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: ['node_obj_sys_analytic_parm_list', 'node_obj_sys_analytic_status_list'],
@@ -241,8 +240,7 @@ function initAnalytic(init: InitDb) {
 		header: 'Analytic',
 		name: 'node_obj_sys_analytic_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_analytic_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -539,8 +537,7 @@ function initAnalyticParm(init: InitDb) {
 		header: 'Parms',
 		name: 'node_obj_sys_analytic_parm_list',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_analytic_detail'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -549,8 +546,7 @@ function initAnalyticParm(init: InitDb) {
 		header: 'Parm',
 		name: 'node_obj_sys_analytic_parm_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_analytic_parm_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -722,8 +718,7 @@ function initAnalyticStatus(init: InitDb) {
 		header: 'Statuses',
 		name: 'node_obj_sys_analytic_status_list',
 		orderDefine: 20,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_analytic_detail'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -732,8 +727,7 @@ function initAnalyticStatus(init: InitDb) {
 		header: 'Status',
 		name: 'node_obj_sys_analytic_status_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_analytic_status_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -979,8 +973,7 @@ function initRep(init: InitDb) {
 		header: 'Reports',
 		name: 'node_obj_sys_rep_list',
 		orderDefine: 150,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [
@@ -994,8 +987,7 @@ function initRep(init: InitDb) {
 		header: 'Report',
 		name: 'node_obj_sys_rep_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_rep_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -1513,8 +1505,7 @@ function initRepEl(init: InitDb) {
 		header: 'Elements',
 		name: 'node_obj_sys_rep_el_list',
 		orderDefine: 20,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_rep_detail'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1523,8 +1514,7 @@ function initRepEl(init: InitDb) {
 		header: 'Element',
 		name: 'node_obj_sys_rep_el_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_rep_el_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -1869,8 +1859,7 @@ function initRepParm(init: InitDb) {
 		header: 'Parms',
 		name: 'node_obj_sys_rep_parm_list',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_rep_detail'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1879,8 +1868,7 @@ function initRepParm(init: InitDb) {
 		header: 'Parm',
 		name: 'node_obj_sys_rep_parm_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_rep_parm_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -2075,8 +2063,7 @@ function initRepUser(init: InitDb) {
 		header: 'Users',
 		name: 'node_obj_sys_rep_user_list',
 		orderDefine: 30,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_rep_detail'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -2085,7 +2072,6 @@ function initRepUser(init: InitDb) {
 		header: 'User',
 		name: 'node_obj_sys_rep_user_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_rep_user_list'
+		owner: 'sys_system_old'
 	})
 }

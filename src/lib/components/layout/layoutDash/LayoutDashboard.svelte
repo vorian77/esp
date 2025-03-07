@@ -6,6 +6,7 @@
 		StateTriggerToken
 	} from '$comps/app/types.appState.svelte'
 	import {
+		TokenApiFetchError,
 		TokenApiQueryData,
 		TokenAppNode,
 		TokenAppStateTriggerAction,
@@ -87,19 +88,11 @@
 	}
 
 	async function getDataDB(task: UserResourceTask, dbExpr: string) {
-		const result: ResponseBody = await apiFetchFunction(
+		return await apiFetchFunction(
 			ApiFunction.dbGelProcessExpression,
+			new TokenApiFetchError(FILENAME, 'getDataDB', `Error retrieving data for task: ${task.name}`),
 			new TokenApiQueryData({ dbExpr, user: sm.user })
 		)
-		if (result.success) {
-			return result.data
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'getDataDB',
-				message: `Error retrieving data for task: ${task.name}`
-			})
-		}
 	}
 
 	async function onClick(task: UserResourceTask, parms: DataRecord | undefined = undefined) {

@@ -5,7 +5,9 @@
 	import { goto } from '$app/navigation'
 	import { DataObjData, type DataRecord, ParmsValuesType, ResponseBody } from '$utils/types'
 	import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-	import { TokenApiQueryData } from '$utils/types.token'
+	import { TokenApiFetchError, TokenApiQueryData } from '$utils/types.token'
+
+	const FILENAME = '$routes/+page.svelte'
 
 	let prospectEmail = $state('')
 
@@ -29,19 +31,12 @@
 			name := '${email}',
 			owner := sys_core::getSystemPrime('sys_client_app_factory'),
 		}`
-		const result: ResponseBody = await apiFetchFunction(
+
+		return await apiFetchFunction(
 			ApiFunction.dbGelProcessExpression,
+			new TokenApiFetchError(FILENAME, 'saveEmail', 'Error saving email.'),
 			new TokenApiQueryData({ dbExpr })
 		)
-		if (result.success) {
-			return result.data
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'saveEmail',
-				message: `Error saving email: ${email}`
-			})
-		}
 	}
 </script>
 

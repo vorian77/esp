@@ -452,8 +452,7 @@ function initStudent(init: InitDb) {
 		header: 'Student',
 		name: 'node_obj_cm_student_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_student_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -731,8 +730,7 @@ function initCsf(init: InitDb) {
 		header: 'Service Flows',
 		name: 'node_obj_cm_service_flow_list',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_student_detail'
+		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [
@@ -748,8 +746,7 @@ function initCsf(init: InitDb) {
 		header: 'Service Flow',
 		name: 'node_obj_cm_service_flow_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_service_flow_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -944,8 +941,7 @@ function initCsfCohort(init: InitDb) {
 		header: 'Cohorts',
 		name: 'node_obj_cm_csf_cohort_list',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_service_flow_detail'
+		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: ['node_obj_cm_csf_cohort_attd_student_list'],
@@ -955,8 +951,7 @@ function initCsfCohort(init: InitDb) {
 		header: 'Cohort',
 		name: 'node_obj_cm_csf_cohort_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_csf_cohort_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -1163,8 +1158,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 		header: 'Attendance Records',
 		name: 'node_obj_cm_csf_cohort_attd_student_list',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_csf_cohort_detail'
+		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1173,8 +1167,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 		header: 'Attendance',
 		name: 'node_obj_cm_csf_cohort_attd_student_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_csf_cohort_attd_student_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -1367,8 +1360,7 @@ function initCsfNote(init: InitDb) {
 		header: 'Case Notes',
 		name: 'node_obj_cm_csf_note_list',
 		orderDefine: 20,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_service_flow_detail'
+		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1377,8 +1369,7 @@ function initCsfNote(init: InitDb) {
 		header: 'Case Note',
 		name: 'node_obj_cm_csf_note_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_csf_note_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -1698,8 +1689,7 @@ function initCsfJobPlacement(init: InitDb) {
 		header: 'Job Placements',
 		name: 'node_obj_cm_csf_job_placement_list',
 		orderDefine: 30,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_service_flow_detail'
+		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1708,8 +1698,7 @@ function initCsfJobPlacement(init: InitDb) {
 		header: 'Job Placement',
 		name: 'node_obj_cm_csf_job_placement_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_csf_job_placement_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -1977,8 +1966,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 		header: 'School Placements',
 		name: 'node_obj_cm_csf_school_placement_list',
 		orderDefine: 40,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_service_flow_detail'
+		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1987,8 +1975,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 		header: 'School Placement',
 		name: 'node_obj_cm_csf_school_placement_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_csf_school_placement_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -2081,13 +2068,6 @@ function initCsfDocument(init: InitDb) {
 				codeTriggerTiming: 'pre',
 				codeType: 'customFunction',
 				functionParmValue: 'file'
-			},
-			{
-				codeQueryType: 'save',
-				codeTriggerTiming: 'post',
-				codeType: 'userMessage',
-				codeUserMsgDelivery: 'toast',
-				userMsg: 'File uploaded successfully!'
 			}
 		],
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
@@ -2248,8 +2228,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Documents',
 		name: 'node_obj_cm_csf_document_list',
 		orderDefine: 50,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_service_flow_detail'
+		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -2258,8 +2237,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Document',
 		name: 'node_obj_cm_csf_document_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_csf_document_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -2271,7 +2249,7 @@ function initCsfDocument(init: InitDb) {
 // 	name: 'node_obj_cm_csf_job_placement_list',
 // 	orderDefine: 30,
 // 	owner: 'sys_ai_old',
-// 	parentNodeName: 'node_obj_cm_service_flow_detail'
+//
 // })
 // init.addTrans('sysNodeObjProgramObj', {
 // 	codeIcon: 'AppWindow',
@@ -2281,5 +2259,5 @@ function initCsfDocument(init: InitDb) {
 // 	name: 'node_obj_cm_csf_job_placement_detail',
 // 	orderDefine: 10,
 // 	owner: 'sys_ai_old',
-// 	parentNodeName: 'node_obj_cm_csf_job_placement_list'
+//
 // })

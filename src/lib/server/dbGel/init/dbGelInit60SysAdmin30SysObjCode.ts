@@ -271,8 +271,7 @@ function initCodeType(init: InitDb) {
 		header: 'Code Types',
 		name: 'node_obj_sys_admin_code_type_list',
 		orderDefine: 30,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: ['node_obj_sys_admin_code_list_codeType'],
@@ -282,8 +281,7 @@ function initCodeType(init: InitDb) {
 		header: 'Code Type',
 		name: 'node_obj_sys_admin_code_type_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_code_type_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -587,8 +585,7 @@ function initCodeTypeCode(init: InitDb) {
 		header: 'Codes',
 		name: 'node_obj_sys_admin_code_list_codeType',
 		orderDefine: 15,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_code_type_detail'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -597,8 +594,7 @@ function initCodeTypeCode(init: InitDb) {
 		header: 'Code',
 		name: 'node_obj_sys_admin_code_detail_codeType',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_code_list_codeType'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -922,8 +918,7 @@ function initCode(init: InitDb) {
 		header: 'Codes',
 		name: 'node_obj_sys_admin_code_list',
 		orderDefine: 40,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -932,7 +927,6 @@ function initCode(init: InitDb) {
 		header: 'Code',
 		name: 'node_obj_sys_admin_code_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_code_list'
+		owner: 'sys_system_old'
 	})
 }

@@ -7,9 +7,9 @@ import {
 } from '$comps/form/field.svelte'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
-import { DataObj, ResponseBody, type DataRecord, getRecordValue } from '$utils/types'
+import { DataObj, type DataRecord, getRecordValue } from '$utils/types'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-import { TokenApiId } from '$utils/types.token'
+import { TokenApiFetchError, TokenApiId } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldParm.ts/'
@@ -59,19 +59,15 @@ export class FieldParm extends Field {
 		return field
 
 		async function getLinkItemsSource(fieldListItemsName: string) {
-			const result: ResponseBody = await apiFetchFunction(
+			return await apiFetchFunction(
 				ApiFunction.dbGelGetLinkItemsSource,
+				new TokenApiFetchError(
+					FILENAME,
+					'getLinkItemsSource',
+					`Error retrieving link items source id: ${fieldListItemsName}`
+				),
 				new TokenApiId(fieldListItemsName)
 			)
-			if (result.success) {
-				return result.data
-			} else {
-				error(500, {
-					file: FILENAME,
-					function: 'getNodesLevel',
-					message: `Error retrieving link items source id: ${fieldListItemsName}`
-				})
-			}
 		}
 	}
 

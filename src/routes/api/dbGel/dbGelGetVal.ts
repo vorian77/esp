@@ -274,8 +274,9 @@ export function getValRaw(exprParms: ExprParms) {
 				return parseInt(Math.random().toFixed(10).replace('0.', ''))
 			case ExprSourceFunction.fSysRate:
 				if (itemF.parms.length === 2) {
-					const denom = parseFloat(itemF.parms[1])
-					value = Math.round((denom !== 0 ? parseFloat(itemF.parms[0]) / denom : 0) * 100)
+					const numerator = itemF.parms[0]
+					const denominator = parseFloat(itemF.parms[1])
+					value = Math.round((denominator !== 0 ? parseFloat(numerator) / denominator : 0) * 100)
 				}
 				return value
 			case ExprSourceFunction.fSysToday:
@@ -419,7 +420,6 @@ enum ExprSource {
 }
 
 enum ExprSourceFunction {
-	fSysDaysAfter = 'fSysDaysAfter',
 	fSysRandom10 = 'fSysRandom10',
 	fSysRate = 'fSysRate',
 	fSysToday = 'fSysToday'

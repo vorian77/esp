@@ -160,8 +160,7 @@ function initMigr(init: InitDb) {
 		header: 'Migrations',
 		name: 'node_obj_sys_admin_migr_list',
 		orderDefine: 140,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [
@@ -174,8 +173,7 @@ function initMigr(init: InitDb) {
 		header: 'Migration',
 		name: 'node_obj_sys_admin_migr_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_migr_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -347,8 +345,7 @@ function initMigrSourceTable(init: InitDb) {
 		header: 'Source Tables',
 		name: 'node_obj_sys_admin_migr_source_table_list',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_migr_detail'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -359,8 +356,7 @@ function initMigrSourceTable(init: InitDb) {
 		header: 'Source Table',
 		name: 'node_obj_sys_admin_migr_source_table_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_migr_source_table_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -515,8 +511,7 @@ function initMigrSourceColumn(init: InitDb) {
 		header: 'Columns',
 		name: 'node_obj_sys_admin_migr_source_column_list',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_migr_source_table_detail'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -526,8 +521,7 @@ function initMigrSourceColumn(init: InitDb) {
 		header: 'Column',
 		name: 'node_obj_sys_admin_migr_source_column_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_migr_source_column_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -750,8 +744,7 @@ function initMigrTargetTable(init: InitDb) {
 		header: 'Target Tables',
 		name: 'node_obj_sys_admin_migr_target_table_list',
 		orderDefine: 20,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_migr_detail'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -762,8 +755,7 @@ function initMigrTargetTable(init: InitDb) {
 		header: 'Target Table',
 		name: 'node_obj_sys_admin_migr_target_table_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_migr_target_table_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -981,8 +973,7 @@ function initMigrTargetColumn(init: InitDb) {
 		header: 'Columns',
 		name: 'node_obj_sys_admin_migr_target_column_list',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_migr_target_table_detail'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -992,8 +983,7 @@ function initMigrTargetColumn(init: InitDb) {
 		header: 'Column',
 		name: 'node_obj_sys_admin_migr_target_column_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_migr_target_column_list'
+		owner: 'sys_system_old'
 	})
 }
 

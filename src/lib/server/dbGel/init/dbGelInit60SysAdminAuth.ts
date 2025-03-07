@@ -487,13 +487,6 @@ function initDataObjMyAccount(init: InitDb) {
 				functionParmValue: 'avatar'
 			},
 			{
-				codeQueryType: 'save',
-				codeTriggerTiming: 'post',
-				codeType: 'userMessage',
-				codeUserMsgDelivery: 'toast',
-				userMsg: 'File uploaded successfully!'
-			},
-			{
 				codeFunction: 'qrfUserUpdate',
 				codeQueryType: 'save',
 				codeTriggerTiming: 'post',

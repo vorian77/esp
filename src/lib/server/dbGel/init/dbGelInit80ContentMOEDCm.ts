@@ -420,8 +420,7 @@ function initApplicant(init: InitDb) {
 		header: 'Applicant',
 		name: 'node_obj_moed_part_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_moed_part_list'
+		owner: 'sys_moed_old'
 	})
 }
 
@@ -791,8 +790,7 @@ function initApplicantMsg(init: InitDb) {
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_moed_msg_list',
 		orderDefine: 10,
-		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_moed_part_detail'
+		owner: 'sys_moed_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -808,8 +806,7 @@ function initApplicantMsg(init: InitDb) {
 		header: 'Message',
 		name: 'node_obj_moed_msg_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_moed_msg_list'
+		owner: 'sys_moed_old'
 	})
 }
 
@@ -1151,8 +1148,7 @@ function initCsf(init: InitDb) {
 		header: 'Service Flows',
 		name: 'node_obj_moed_csf_list',
 		orderDefine: 20,
-		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_moed_part_detail'
+		owner: 'sys_moed_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: ['node_obj_moed_csf_note_list', 'node_obj_moed_csf_doc_list'],
@@ -1162,8 +1158,7 @@ function initCsf(init: InitDb) {
 		header: 'Service Flow',
 		name: 'node_obj_moed_csf_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_moed_csf_list'
+		owner: 'sys_moed_old'
 	})
 }
 
@@ -1355,8 +1350,7 @@ function initCsfNote(init: InitDb) {
 		header: 'Case Notes',
 		name: 'node_obj_moed_csf_note_list',
 		orderDefine: 20,
-		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_moed_csf_detail'
+		owner: 'sys_moed_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1365,8 +1359,7 @@ function initCsfNote(init: InitDb) {
 		header: 'Case Note',
 		name: 'node_obj_moed_csf_note_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_moed_csf_note_list'
+		owner: 'sys_moed_old'
 	})
 }
 
@@ -1430,13 +1423,6 @@ function initCsfDocument(init: InitDb) {
 				codeTriggerTiming: 'pre',
 				codeType: 'customFunction',
 				functionParmValue: 'file'
-			},
-			{
-				codeQueryType: 'save',
-				codeTriggerTiming: 'post',
-				codeType: 'userMessage',
-				codeUserMsgDelivery: 'toast',
-				userMsg: 'File uploaded successfully!'
 			}
 		],
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
@@ -1581,8 +1567,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Documents',
 		name: 'node_obj_moed_csf_doc_list',
 		orderDefine: 30,
-		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_moed_csf_detail'
+		owner: 'sys_moed_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1591,8 +1576,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Document',
 		name: 'node_obj_moed_csf_doc_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_moed_csf_doc_list'
+		owner: 'sys_moed_old'
 	})
 }
 

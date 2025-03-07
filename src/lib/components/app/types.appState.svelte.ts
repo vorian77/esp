@@ -21,6 +21,7 @@ import {
 import {
 	Token,
 	TokenApiDbDataObjSource,
+	TokenApiFetchError,
 	TokenApiId,
 	TokenApiQueryType,
 	TokenAppDoQuery,
@@ -146,23 +147,20 @@ export class State {
 	}
 
 	async getActions(fieldGroupName: string) {
-		const result: ResponseBody = await apiFetchFunction(
+		const actionGroup = await apiFetchFunction(
 			ApiFunction.dbGelGetDataObjActionGroup,
+			new TokenApiFetchError(
+				FILENAME,
+				'getActions',
+				`Error retrieving data object action field group: ${fieldGroupName}`
+			),
 			new TokenApiId(fieldGroupName)
 		)
-		if (result.success) {
-			const actionGroup = result.data
-			return actionGroup._dataObjActions.map((doa: any) => {
-				const rawAction = new RawDataObjAction(doa)
-				return new DataObjAction(rawAction)
-			})
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'getActions',
-				message: `Error retrieving data object action field group: ${fieldGroupName}`
-			})
-		}
+
+		return actionGroup._dataObjActions.map((doa: any) => {
+			const rawAction = new RawDataObjAction(doa)
+			return new DataObjAction(rawAction)
+		})
 	}
 
 	getTasksDash(fCallBack: Function) {

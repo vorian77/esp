@@ -761,8 +761,7 @@ function initTaskSsrMsg(init: InitDb) {
 		header: 'Message',
 		name: 'node_obj_task_moed_ssr_msg_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_task_moed_ssr_msg_list'
+		owner: 'sys_moed_old'
 	})
 
 	init.addTrans('sysTask', {
@@ -852,13 +851,6 @@ function initTaskSsrDoc(init: InitDb) {
 				codeTriggerTiming: 'pre',
 				codeType: 'customFunction',
 				functionParmValue: 'file'
-			},
-			{
-				codeQueryType: 'save',
-				codeTriggerTiming: 'post',
-				codeType: 'userMessage',
-				codeUserMsgDelivery: 'toast',
-				userMsg: 'File uploaded successfully!'
 			},
 			{
 				codeQueryType: 'save',
@@ -971,8 +963,7 @@ function initTaskSsrDoc(init: InitDb) {
 		header: 'Document',
 		name: 'node_obj_task_moed_ssr_doc_detail',
 		orderDefine: 10,
-		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_task_moed_ssr_doc_list'
+		owner: 'sys_moed_old'
 	})
 
 	init.addTrans('sysTask', {

@@ -312,8 +312,7 @@ function initCourse(init: InitDb) {
 		header: 'Course',
 		name: 'node_obj_cm_course_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_course_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -575,8 +574,7 @@ function initCohort(init: InitDb) {
 		header: 'Cohorts',
 		name: 'node_obj_cm_cohort_list',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_course_detail'
+		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [
@@ -590,8 +588,7 @@ function initCohort(init: InitDb) {
 		header: 'Cohort',
 		name: 'node_obj_cm_cohort_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_cohort_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -656,8 +653,7 @@ function initCohortStudentRoster(init: InitDb) {
 		header: 'Student Roster',
 		name: 'node_obj_cm_student_roster_list_by_cohort',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_cohort_detail'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -745,13 +741,6 @@ function initCohortAttd(init: InitDb) {
 				codeTriggerTiming: 'pre',
 				codeType: 'customFunction',
 				functionParmValue: 'file'
-			},
-			{
-				codeQueryType: 'save',
-				codeTriggerTiming: 'post',
-				codeType: 'userMessage',
-				codeUserMsgDelivery: 'toast',
-				userMsg: 'File uploaded successfully!'
 			}
 		],
 		tables: [{ index: 0, table: 'CmCohortAttd' }],
@@ -884,8 +873,7 @@ function initCohortAttd(init: InitDb) {
 		header: 'Attendance Days',
 		name: 'node_obj_cm_cohort_attd_list',
 		orderDefine: 20,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_cohort_detail'
+		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: ['node_obj_cm_cohort_attd_sheet'],
@@ -895,8 +883,7 @@ function initCohortAttd(init: InitDb) {
 		header: 'Attendance Day',
 		name: 'node_obj_cm_cohort_attd_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_cohort_attd_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -1042,8 +1029,7 @@ function initCohortAttdSheet(init: InitDb) {
 		header: 'Attendance Sheet',
 		name: 'node_obj_cm_cohort_attd_sheet',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_cohort_attd_detail'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -1119,13 +1105,6 @@ function initCohortDoc(init: InitDb) {
 				codeTriggerTiming: 'pre',
 				codeType: 'customFunction',
 				functionParmValue: 'file'
-			},
-			{
-				codeQueryType: 'save',
-				codeTriggerTiming: 'post',
-				codeType: 'userMessage',
-				codeUserMsgDelivery: 'toast',
-				userMsg: 'File uploaded successfully!'
 			}
 		],
 		tables: [{ index: 0, table: 'CmCohortDoc' }],
@@ -1270,8 +1249,7 @@ function initCohortDoc(init: InitDb) {
 		header: 'Documents',
 		name: 'node_obj_cm_cohort_doc_list',
 		orderDefine: 40,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_cohort_detail'
+		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1280,8 +1258,7 @@ function initCohortDoc(init: InitDb) {
 		header: 'Document',
 		name: 'node_obj_cm_cohort_doc_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_cohort_doc_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -1786,8 +1763,7 @@ function initPartner(init: InitDb) {
 		header: 'Partner',
 		name: 'node_obj_cm_partner_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_partner_list'
+		owner: 'sys_ai_old'
 	})
 }
 
@@ -1976,8 +1952,7 @@ function initPartnerNote(init: InitDb) {
 		header: 'Notes',
 		name: 'node_obj_cm_partner_note_list',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_partner_detail'
+		owner: 'sys_ai_old'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
@@ -1986,7 +1961,6 @@ function initPartnerNote(init: InitDb) {
 		header: 'Note',
 		name: 'node_obj_cm_partner_note_detail',
 		orderDefine: 10,
-		owner: 'sys_ai_old',
-		parentNodeName: 'node_obj_cm_partner_note_list'
+		owner: 'sys_ai_old'
 	})
 }

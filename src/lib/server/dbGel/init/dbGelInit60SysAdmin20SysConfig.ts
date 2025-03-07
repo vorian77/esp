@@ -210,7 +210,6 @@ async function initConfig(init: InitDb) {
 		header: 'Organization',
 		name: 'node_obj_sys_admin_system_detail_config',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_list_config'
+		owner: 'sys_system_old'
 	})
 }

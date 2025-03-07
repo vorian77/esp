@@ -62,6 +62,7 @@ import { FieldSelect } from '$comps/form/fieldSelect'
 import { FieldTextarea } from '$comps/form/fieldTextarea'
 import { FieldToggle } from '$comps/form/fieldToggle'
 import {
+	TokenApiFetchError,
 	TokenApiQueryDataTree,
 	TokenApiQueryType,
 	TokenApiUserPref,
@@ -158,15 +159,20 @@ export class DataObj {
 			})
 		}
 		async function initPrefs(sm: State, dataObj: DataObj) {
-			let rawSettings = {}
+			let rawSettings: DataRecord = {}
 			if (sm?.user?.prefIsActive(UserPrefType.remember_list_settings)) {
 				// attempt to retrieve user preferences from DB
-				const token = new TokenApiUserPref(sm.user.id, dataObj.raw.id)
-				const result: ResponseBody = await apiFetchFunction(ApiFunction.sysUserPrefGet, token)
-				rawSettings =
-					Object.hasOwn(result, 'data') && Object.hasOwn(result.data, 'data')
-						? JSON.parse(result.data.data).data
-						: {}
+				const rawData = await apiFetchFunction(
+					ApiFunction.sysUserPrefGet,
+					new TokenApiFetchError(
+						FILENAME,
+						'initPrefs',
+						`Error retrieving prefs for userId: ${sm.user.id}`
+					),
+					new TokenApiUserPref(sm.user.id, dataObj.raw.id)
+				)
+				rawSettings = JSON.parse(rawData.data)
+				rawSettings = rawSettings.data ? rawSettings.data : {}
 			}
 			return dataObj.userGridSettings.load(rawSettings, sm, dataObj)
 		}

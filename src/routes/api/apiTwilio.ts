@@ -2,15 +2,14 @@ import pkg from 'twilio'
 const { Twilio } = pkg
 import type { TokenApiSysSendText } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
-
-const FILENAME = '$routes/api/apiTtwilio.ts'
-
 import {
 	TWILIO_ACCT_SID,
 	TWILIO_AUTH_TOKEN,
 	TWILIO_PHONE_NBR,
 	TWILIO_MAXPRICE
 } from '$env/static/private'
+
+const FILENAME = '$routes/api/apiTtwilio.ts'
 
 export async function sysSendText(token: TokenApiSysSendText) {
 	const twilio = new Twilio(TWILIO_ACCT_SID, TWILIO_AUTH_TOKEN)

@@ -87,13 +87,6 @@ function initSystem(init: InitDb) {
 				codeTriggerTiming: 'pre',
 				codeType: 'customFunction',
 				functionParmValue: 'file'
-			},
-			{
-				codeQueryType: 'save',
-				codeTriggerTiming: 'post',
-				codeType: 'userMessage',
-				codeUserMsgDelivery: 'toast',
-				userMsg: 'File uploaded successfully!'
 			}
 		],
 		tables: [{ index: 0, table: 'SysSystem' }],
@@ -243,8 +236,7 @@ function initSystem(init: InitDb) {
 		header: 'System',
 		name: 'node_obj_sys_admin_system_detail_meta',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_list_meta'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -500,8 +492,7 @@ function initUser(init: InitDb) {
 		header: 'Users',
 		name: 'node_obj_sys_admin_user_list_meta',
 		orderDefine: 30,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_meta'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -511,7 +502,6 @@ function initUser(init: InitDb) {
 		header: 'User',
 		name: 'node_obj_sys_admin_user_detail_meta',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_user_list_meta'
+		owner: 'sys_system_old'
 	})
 }

@@ -530,8 +530,7 @@ function initRepConfig(init: InitDb) {
 		header: 'Config',
 		name: 'node_obj_sys_rep_my_report_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_rep_my_report_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -564,7 +563,6 @@ function initRepRender(init: InitDb) {
 		isHideRowManager: true,
 		name: 'node_obj_sys_rep_render',
 		orderDefine: 20,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_rep_my_report_detail'
+		owner: 'sys_system_old'
 	})
 }

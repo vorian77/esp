@@ -1,5 +1,4 @@
 import { State } from '$comps/app/types.appState.svelte'
-
 import {
 	DataObjData,
 	DataObjQueryRider,
@@ -11,7 +10,10 @@ import {
 	strRequired,
 	ToastType
 } from '$utils/types'
+import { apiFetch, apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
+	TokenApiFetchError,
+	TokenApiFetchMethod,
 	TokenApiFileParmDelete,
 	TokenApiBlobParmUpload,
 	TokenApiBlobAction,
@@ -54,7 +56,7 @@ export async function qrfFileStorage(
 					url = fileParm.url
 				}
 				if (url) {
-					await blobDelete(sm, url)
+					await blobDelete(sm, url, true)
 					dataQuery.rowsSave.setDetailRecordValue(fileKeyData, undefined)
 				}
 				break
@@ -65,7 +67,7 @@ export async function qrfFileStorage(
 
 			case TokenApiBlobAction.upload:
 				if (fileParm instanceof TokenApiBlobParmUpload) {
-					if (fileParm.urlOld) await blobDelete(sm, fileParm.urlOld)
+					if (fileParm.urlOld) await blobDelete(sm, fileParm.urlOld, false)
 					await blobUpload(sm, fileParm, dataQuery, fileKeyData)
 				}
 				break
@@ -81,16 +83,15 @@ export async function qrfFileStorage(
 	return dataQuery
 }
 
-const blobDelete = async function (sm: State, url: string) {
-	const formData = new FormData()
-	formData.set('fileAction', TokenApiBlobAction.delete)
-	formData.set('url', url)
-
-	const responsePromise: Response = await fetch('/api/vercel', {
-		method: 'POST',
-		body: formData
-	})
-	const result = await responsePromise.json()
+const blobDelete = async function (sm: State, url: string, isShowMsg: boolean) {
+	const result = await apiFetch(
+		'/api/vercel',
+		TokenApiFetchMethod.post,
+		new TokenApiFetchError(FILENAME, 'blobDelete', `Unable to delete blob: ${url}.`),
+		{ formData: { fileAction: TokenApiBlobAction.delete, url } }
+	)
+	if (isShowMsg) sm.openToast(ToastType.success, `File successfully deleted.`)
+	return result
 }
 
 const blobUpload = async function (
@@ -102,24 +103,21 @@ const blobUpload = async function (
 	const file = required(fileParm.file, FILENAME, 'file')
 	const fileName = required(file.name, FILENAME, 'file.name')
 
-	const formData = new FormData()
-	formData.set('fileAction', TokenApiBlobAction.upload)
-	formData.set('file', file)
-	formData.set('key', fileParm.key)
-
-	const responsePromise: Response = await fetch('/api/vercel', {
-		method: 'POST',
-		body: formData
-	})
-	const result = await responsePromise.json()
+	const result = await apiFetch(
+		'/api/vercel',
+		TokenApiFetchMethod.post,
+		new TokenApiFetchError(FILENAME, 'blobUpload', `Unable to upload blob: ${fileName}.`),
+		{ formData: { file, fileAction: TokenApiBlobAction.upload, key: fileParm.key } }
+	)
 
 	const fileStorage = new FileStorage({
-		downloadUrl: result.data.downloadUrl,
+		downloadUrl: result.downloadUrl,
 		fileName,
 		fileType: fileParm.fileType,
 		key: fileParm.key,
-		url: result.data.url
+		url: result.url
 	})
 
 	dataQuery.rowsSave.setDetailRecordValue(fileFieldKey, fileStorage)
+	sm.openToast(ToastType.success, `File ${fileName} successfully uploaded.`)
 }

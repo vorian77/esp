@@ -19,12 +19,13 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
-import { apiFetchFunction, ApiFunction } from '$routes/api/api'
+import { apiFetch, apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
 	TokenApiDbDataObjSource,
 	TokenApiBlobAction,
+	TokenApiFetchError,
+	TokenApiFetchMethod,
 	TokenApiId,
-	TokenApiQuery,
 	TokenApiQueryDataTree,
 	TokenApiQueryType,
 	TokenAppIndex,
@@ -155,7 +156,15 @@ export class App {
 					const rawNodes: {
 						root: any[]
 						children: any[]
-					} = await getNodesLevel(nodeIdParent)
+					} = await apiFetchFunction(
+						ApiFunction.dbGelGetNodesLevel,
+						new TokenApiFetchError(
+							FILENAME,
+							'getNodesLevel',
+							`Error retrieving nodes for nodeId: ${nodeIdParent}`
+						),
+						new TokenApiId(nodeIdParent)
+					)
 
 					if (rawNodes.root.length === 1) {
 						// create root tab - detail
@@ -524,30 +533,13 @@ export enum AppRowActionType {
 	last = 'last'
 }
 
-async function getNodesLevel(nodeId: string) {
-	const result: ResponseBody = await apiFetchFunction(
-		ApiFunction.dbGelGetNodesLevel,
-		new TokenApiId(nodeId)
-	)
-	if (result.success) {
-		return result.data
-	} else {
-		error(500, {
-			file: FILENAME,
-			function: 'getNodesLevel',
-			message: `Error retrieving nodes for nodeId: ${nodeId}`
-		})
-	}
-}
-
 async function getBlobList() {
-	const formData = new FormData()
-	formData.set('fileAction', TokenApiBlobAction.list)
-	const responsePromise: Response = await fetch('/api/vercel', {
-		method: 'POST',
-		body: formData
-	})
-	return await responsePromise.json()
+	return await apiFetch(
+		'/api/vercel',
+		TokenApiFetchMethod.post,
+		new TokenApiFetchError(FILENAME, 'getBlobList', 'Unable to retrieve Vercel blob list.'),
+		{ formData: { fileAction: TokenApiBlobAction.list } }
+	)
 }
 
 export class AppTree {

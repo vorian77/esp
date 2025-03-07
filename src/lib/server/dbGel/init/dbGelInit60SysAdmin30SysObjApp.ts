@@ -232,8 +232,7 @@ function initApp(init: InitDb) {
 		header: 'Apps',
 		name: 'node_obj_sys_app_list',
 		orderDefine: 25,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -243,8 +242,7 @@ function initApp(init: InitDb) {
 		header: 'App',
 		name: 'node_obj_sys_app_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_app_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -465,8 +463,7 @@ function initAppHeader(init: InitDb) {
 		header: 'App Headers',
 		name: 'node_obj_sys_app_header_list',
 		orderDefine: 20,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -476,7 +473,6 @@ function initAppHeader(init: InitDb) {
 		header: 'App Header',
 		name: 'node_obj_sys_app_header_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_app_header_list'
+		owner: 'sys_system_old'
 	})
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { apiFetch, apiFetchFunction, ApiFunction } from '$routes/api/api'
+	import { apiFetch, ApiFunction } from '$routes/api/api'
 	import { TokenApiFetchError, TokenApiFetchMethod } from '$utils/types.token'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
@@ -13,7 +13,7 @@
 
 	async function getQuote() {
 		return await apiFetch(
-			'quote',
+			'/api/quote',
 			TokenApiFetchMethod.get,
 			new TokenApiFetchError(FILENAME, 'getQuote', 'Error retrieving quote.')
 		)

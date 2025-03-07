@@ -359,8 +359,7 @@ function initTask(init: InitDb) {
 		header: 'Tasks',
 		name: 'node_obj_sys_admin_task_list',
 		orderDefine: 180,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -370,7 +369,6 @@ function initTask(init: InitDb) {
 		header: 'Task',
 		name: 'node_obj_sys_admin_task_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_task_list'
+		owner: 'sys_system_old'
 	})
 }

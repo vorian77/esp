@@ -185,7 +185,6 @@ async function initSystemObject(init: InitDb) {
 		header: 'System (Object)',
 		name: 'node_obj_sys_admin_system_detail_obj',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_list_obj'
+		owner: 'sys_system_old'
 	})
 }

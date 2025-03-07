@@ -256,7 +256,7 @@ function initNodeObjsTask(init: InitDb) {
 	// 	name: 'node_obj_task_moed_part_detail_apps_open',
 	// 	orderDefine: 10,
 	// 	owner: 'sys_moed_old',
-	// 	parentNodeName: 'node_obj_task_moed_part_list_apps_open'
+	//
 	// })
 
 	init.addTrans('sysNodeObjTask', {
@@ -285,8 +285,7 @@ function initNodeObjsTask(init: InitDb) {
 		header: 'Applicant',
 		name: 'node_obj_task_moed_msg_detail_open',
 		orderDefine: 10,
-		owner: 'sys_moed_old',
-		parentNodeName: 'node_obj_task_moed_msg_list_open'
+		owner: 'sys_moed_old'
 	})
 }
 

@@ -467,8 +467,7 @@ function initDataObj(init: InitDb) {
 		header: 'Data Objects',
 		name: 'node_obj_sys_admin_data_obj_list',
 		orderDefine: 60,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -479,8 +478,7 @@ function initDataObj(init: InitDb) {
 		header: 'Data Object',
 		name: 'node_obj_sys_admin_data_obj_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_data_obj_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -1390,8 +1388,7 @@ function initDataObjColumn(init: InitDb) {
 		header: 'Columns',
 		name: 'node_obj_sys_admin_data_obj_column_list',
 		orderDefine: 20,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_data_obj_detail'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -1401,7 +1398,6 @@ function initDataObjColumn(init: InitDb) {
 		header: 'Column',
 		name: 'node_obj_sys_admin_data_obj_column_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_data_obj_column_list'
+		owner: 'sys_system_old'
 	})
 }

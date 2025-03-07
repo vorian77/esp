@@ -227,8 +227,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 		header: 'Embed List Configs',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_config_list',
 		orderDefine: 90,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -238,8 +237,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 		header: 'Config',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_config_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_data_obj_field_embed_list_config_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -411,8 +409,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 		header: 'Embed List Edits',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_edit_list',
 		orderDefine: 100,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -422,8 +419,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 		header: 'Config',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_edit_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_data_obj_field_embed_list_edit_list'
+		owner: 'sys_system_old'
 	})
 }
 
@@ -633,8 +629,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 		header: 'Embed List Selects',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_select_list',
 		orderDefine: 110,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_system_detail_obj'
+		owner: 'sys_system_old'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
@@ -644,7 +639,6 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 		header: 'Config',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_select_detail',
 		orderDefine: 10,
-		owner: 'sys_system_old',
-		parentNodeName: 'node_obj_sys_admin_data_obj_field_embed_list_select_list'
+		owner: 'sys_system_old'
 	})
 }

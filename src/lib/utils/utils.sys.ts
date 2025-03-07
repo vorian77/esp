@@ -1,10 +1,15 @@
 import { State } from '$comps/app/types.appState.svelte'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-import { TokenApiUserId } from '$utils/types.token'
+import { TokenApiFetchError } from '$utils/types.token'
 import { valueOrDefault, memberOfEnum } from '$utils/utils.model'
 
+const FILENAME = '/$utils/utils.sys.ts'
+
 export async function adminDbReset() {
-	return await apiFetchFunction(ApiFunction.dbGelInit)
+	return await apiFetchFunction(
+		ApiFunction.dbGelInit,
+		new TokenApiFetchError(FILENAME, 'adminDbReset', 'Unable to reset database.')
+	)
 }
 
 export function capitalizeFirstLetter(text: string) {
