@@ -55,7 +55,7 @@ function initFieldListSelectSystem(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).orgs`,
+		exprFilter: `none`,
 		header: 'Select System(s)',
 		name: 'dofls_sys_admin_org_user_system',
 		owner: 'sys_system',
@@ -344,6 +344,18 @@ function initSystem(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'embedListSelect',
+				columnName: 'entitySystems',
+				fieldEmbedListSelect: 'fels_sys_admin_system',
+				indexTable: 0,
+				isDisplayable: true,
+				linkColumns: ['name'],
+				linkTable: 'SysSystem',
+				orderDisplay: 50,
+				orderDefine: 50
 			},
 
 			/* management */

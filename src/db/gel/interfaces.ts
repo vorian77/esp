@@ -533,6 +533,7 @@ export namespace sys_core {
     "file"?: unknown | null;
     "logoMarginRight"?: number | null;
     "logoWidth"?: number | null;
+    "entitySystems": SysSystem[];
     "owner": SysOrg;
   }
 }

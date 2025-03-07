@@ -1263,6 +1263,13 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_client_ai'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Entity Systems',
+		isMultiSelect: true,
+		name: 'entitySystems',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Expression',
 		name: 'expr',

@@ -161,18 +161,18 @@
 		min={field.minValue?.toString() || ''}
 		name={field.colDO.propName}
 		ondblclick={onDoubleClick}
+		oninput={onChange}
 		{placeholder}
 		readonly={field.fieldAccess === FieldAccess.readonly}
 		step={field.spinStep?.toString() || ''}
 		type={fieldInputType || field.FieldElement}
 		value={fieldValue}
-		use:maska
-		data-maska={inputMask}
-		onmaska={onMaska}
 	/>
 </FormLabel>
 
-<!-- oninput={onChange} -->
+<!-- use:maska
+data-maska={inputMask}
+onmaska={onMaska} -->
 
 <!-- <details>
 	<summary>Money, via hooks (pre v3 variant)</summary>

@@ -74,6 +74,7 @@ module sys_core {
 
   type SysSystem extending sys_core::ObjRootCore, sys_user::Mgmt  {
     appName: str;
+    multi entitySystems: sys_core::SysSystem;
     file: json;
     logoMarginRight: float64;
     logoWidth: int16;

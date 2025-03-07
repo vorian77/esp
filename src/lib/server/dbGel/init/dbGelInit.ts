@@ -9,6 +9,7 @@ import { initSysAuth } from '$server/dbGel/init/dbGelInit60SysAdminAuth'
 import { initSysRepUser } from '$server/dbGel/init/dbGelInit60SysAdminRepUser'
 
 // content
+import { initContentCm } from '$server/dbGel/init/dbGelInit80contentCm'
 import { initContentCrm } from '$server/dbGel/init/dbGelInit80ContentCrm'
 import { initContentCrmRep } from '$server/dbGel/init/dbGelInit80ContentCrmRep'
 
@@ -27,7 +28,7 @@ import { initContentSys } from '$server/dbGel/init/dbGelInit80ContentSys'
 // user
 import { initUser } from '$server/dbGel/init/dbGelInit1User'
 
-const isResetFullDB = false
+const isResetFullDB = true
 
 export async function dbInit() {
 	let initDb = new InitDb(isResetFullDB)
@@ -48,6 +49,9 @@ function dbInitAll(initDb: InitDb) {
 	// content - system
 	initContentSys(initDb)
 
+	// content - CM
+	initContentCm(initDb)
+
 	// content - CRM
 	initContentCrm(initDb)
 	initContentCrmRep(initDb)
@@ -65,9 +69,10 @@ function dbInitAll(initDb: InitDb) {
 }
 
 export function initFeature(initDb: InitDb) {
+	initContentCm(initDb)
 	// initContentSys(initDb)
 	// initSysAdmin(initDb)
-	initContentMOEDSsr(initDb)
+	// initContentMOEDSsr(initDb)
 	// initContentMOEDCm(initDb)
 	// initContentMOEDCmAdvocate(initDb)
 }
