@@ -248,7 +248,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 		{
 			codeFieldElement: 'text',
 			codeReportElementType: 'column',
-			columnName: 'serviceFlow',
+			columnName: 'programCm',
 			indexTable: 1,
 			isDisplay: false,
 			isDisplayable: true,

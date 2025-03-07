@@ -116,10 +116,11 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter: `.owner.id = <user,uuid,systemIdCurrent>`,
 		props: [[0, 'header', 'Header', '.header', true, 0]],
-		name: 'il_cm_service_flow',
+		name: 'il_cm_program',
 		owner: 'sys_ai',
-		table: 'CmServiceFlow'
+		table: 'CmProgram'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [

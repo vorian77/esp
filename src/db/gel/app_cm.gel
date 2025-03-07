@@ -47,10 +47,6 @@ module app_cm {
     note: str;
   }
 
-  # Service Flow
-  type CmServiceFlow extending sys_core::SysObj {}
-
-
   # Client
   type CmClient extending sys_user::Mgmt {
     agencyId: str;
@@ -78,7 +74,7 @@ module app_cm {
     dateStartEst: cal::local_date;
     idxDemo: int64;
     note: str;
-    required serviceFlow: app_cm::CmServiceFlow;
+    required programCm: app_cm::CmProgram;
     user: sys_user::SysUser;
   }
 
@@ -145,7 +141,7 @@ module app_cm {
     wage: float32;
   }
 
-   type CmCsfSchoolPlacement extending app_cm::CmCsfData {
+  type CmCsfSchoolPlacement extending app_cm::CmCsfData {
     required date: cal::local_date;
     required codeCollegeStatus: sys_core::SysCode;
     collegeGPA: str;
@@ -155,8 +151,10 @@ module app_cm {
     note: str;
   }
 
- type CmPartner extending sys_core::SysObjEnt {}
- 
+  type CmPartner extending sys_core::SysObjEnt {}
+  
+  type CmProgram extending sys_core::SysObj {}
+
 # FUNCTIONS
 function getCMTrainingCourse(name: str) -> optional app_cm::CmCourse
   using (select assert_single((select app_cm::CmCourse filter .name = name)));

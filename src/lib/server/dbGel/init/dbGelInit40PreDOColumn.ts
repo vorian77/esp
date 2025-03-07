@@ -2118,6 +2118,13 @@ export function initPreColumn(init: InitDb) {
 		name: 'processType'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Program',
+		isMultiSelect: false,
+		name: 'programCm',
+		owner: 'sys_ai'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'link',
 		header: 'Props',
@@ -2183,13 +2190,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Sender',
 		isMultiSelect: false,
 		name: 'sender'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Service Flow',
-		isMultiSelect: false,
-		name: 'serviceFlow',
-		owner: 'sys_ai'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',

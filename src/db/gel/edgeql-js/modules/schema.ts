@@ -734,7 +734,7 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is org_moed::MoedParticipant]": $.LinkDesc<_org_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is app_cm::CmServiceFlow]": $.LinkDesc<_app_cm.$CmServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is app_cm::CmProgram]": $.LinkDesc<_app_cm.$CmProgram, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmCsfData]": $.LinkDesc<_app_cm.$CmCsfData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmCsfCohort]": $.LinkDesc<_app_cm.$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmCsfDocument]": $.LinkDesc<_app_cm.$CmCsfDocument, $.Cardinality.Many, {}, false, false,  false, false>;

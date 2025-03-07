@@ -64,10 +64,10 @@ function initTaskSsrApp(init: InitDb) {
 				columnsId: ['firstName', 'lastName']
 			},
 			{
-				columnParent: 'serviceFlow',
+				columnParent: 'programCm',
 				indexParent: 0,
 				index: 3,
-				table: 'CmServiceFlow',
+				table: 'CmProgram',
 				columnsId: ['name']
 			}
 		],
@@ -98,17 +98,17 @@ function initTaskSsrApp(init: InitDb) {
 				orderDefine: 30
 			},
 			{
-				columnName: 'serviceFlow',
-				exprSave: `(SELECT assert_single((SELECT app_cm::CmServiceFlow FILTER .name = 'sf_moed_self_service_reg')))`,
+				columnName: 'programCm',
+				exprSave: `(SELECT assert_single((SELECT app_cm::CmProgram FILTER .name = 'cmp_moed_self_service_reg')))`,
 				orderDefine: 40,
 				indexTable: 0,
 				isDisplayable: false,
 				linkColumns: ['name'],
-				linkTable: 'CmServiceFlow'
+				linkTable: 'CmProgram'
 			},
 			{
 				columnName: 'codeServiceFlowType',
-				exprPreset: `(SELECT assert_single((sys_core::getCode('ct_cm_service_flow_type', 'Walk in'))))`,
+				exprPreset: `(SELECT assert_single((sys_core::getCode('ct_cm_program_type', 'Walk in'))))`,
 				orderDefine: 45,
 				indexTable: 0,
 				isDisplayable: false,
@@ -873,7 +873,7 @@ function initTaskSsrDoc(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['serviceFlow', 'name'],
+				linkColumns: ['programCm', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{

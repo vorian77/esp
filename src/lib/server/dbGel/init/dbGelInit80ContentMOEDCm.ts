@@ -19,10 +19,9 @@ function initApplicant(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: `.owner.name = 'sys_moed'`,
-		header: 'Applicants',
+		header: 'Participants',
 		name: 'data_obj_moed_part_list',
 		owner: 'sys_moed',
-		subHeader: 'Applicants who have self-enrolled.',
 		tables: [
 			{ index: 0, table: 'MoedParticipant' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -61,7 +60,7 @@ function initApplicant(init: InitDb) {
 		actionGroup: 'doag_detail',
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		header: 'Applicant',
+		header: 'Participant',
 		name: 'data_obj_moed_part_detail',
 		owner: 'sys_moed',
 		tables: [
@@ -406,7 +405,7 @@ function initApplicant(init: InitDb) {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
 		data: [{ dataObj: 'data_obj_moed_part_list' }],
-		header: 'Applicants',
+		header: 'Participants',
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_moed_part_list',
 		orderDefine: 10,
@@ -417,7 +416,7 @@ function initApplicant(init: InitDb) {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_moed_part_detail' }],
-		header: 'Applicant',
+		header: 'Participant',
 		name: 'node_obj_moed_part_detail',
 		orderDefine: 10,
 		owner: 'sys_moed'
@@ -829,7 +828,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'serviceFlow',
+				columnName: 'programCm',
 				orderCrumb: 10,
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -949,12 +948,12 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'serviceFlow',
+				columnName: 'programCm',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_cm_service_flow'
+				fieldListItems: 'il_cm_program'
 			},
 			{
 				codeFieldElement: 'select',
@@ -964,7 +963,7 @@ function initCsf(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_cm_service_flow_type'
+				fieldListItemsParmValue: 'ct_cm_program_type'
 			},
 			{
 				codeFieldElement: 'date',
@@ -1232,7 +1231,7 @@ function initCsfNote(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['serviceFlow', 'name'],
+				linkColumns: ['programCm', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1439,7 +1438,7 @@ function initCsfDocument(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['serviceFlow', 'name'],
+				linkColumns: ['programCm', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{

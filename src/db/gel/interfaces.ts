@@ -106,6 +106,7 @@ export namespace app_cm {
     "school"?: string | null;
   }
   export interface CmClientServiceFlow extends sys_user.Mgmt {
+    "programCm": CmProgram;
     "client": CmClient;
     "codeServiceFlowOutcome"?: sys_core.SysCode | null;
     "codeServiceFlowType"?: sys_core.SysCode | null;
@@ -118,7 +119,6 @@ export namespace app_cm {
     "dateStartEst"?: gel.LocalDate | null;
     "idxDemo"?: number | null;
     "note"?: string | null;
-    "serviceFlow": CmServiceFlow;
   }
   export interface CmCohort extends sys_core.SysObj {
     "codeStatus"?: sys_core.SysCode | null;
@@ -224,7 +224,7 @@ export namespace app_cm {
     "isActive": boolean;
   }
   export interface CmPartner extends sys_core.SysObjEnt {}
-  export interface CmServiceFlow extends sys_core.SysObj {}
+  export interface CmProgram extends sys_core.SysObj {}
 }
 export namespace $default {
   export interface SysError extends std.$Object {
@@ -1031,7 +1031,7 @@ export interface types {
     "CmCsfSchoolPlacement": app_cm.CmCsfSchoolPlacement;
     "CmGroup": app_cm.CmGroup;
     "CmPartner": app_cm.CmPartner;
-    "CmServiceFlow": app_cm.CmServiceFlow;
+    "CmProgram": app_cm.CmProgram;
   };
   "default": {
     "SysError": $default.SysError;

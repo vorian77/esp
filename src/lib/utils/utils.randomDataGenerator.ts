@@ -4,7 +4,7 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = 'utils.randomDataGenerator.ts'
 
-const recordCount = 0
+const recordCount = 100
 const universalStartDate = '2025-02-09'
 
 const dataItemsPart = {
@@ -414,6 +414,7 @@ export class RandomDataGenerator {
 		this.addData('dataDoc', recordDataDoc, dataItemsDataDoc, recordCount, 0.75)
 		this.addData('dataMsg', recordDataMsg, dataItemsDataMsg, recordCount, 0.5)
 
+		// debug('randomDataGenerator', 'serviceFlow', this.data['serviceFlow'])
 		// debug('randomDataGenerator', 'applicant', this.data['applicant'])
 		// debug('randomDataGenerator', 'dataMsg', this.data['dataMsg'])
 	}

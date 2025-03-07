@@ -55,6 +55,11 @@ export async function MoedPBulkPart(params: any) {
 export async function MoedBulkCsf(params: any) {
 	sectionHeader(`MOED Bulk - Service Flow`)
 	const CREATOR = e.sys_user.getRootUser()
+	const PROGRAM = e.assert_single(
+		e.select(e.app_cm.CmProgram, (program) => ({
+			filter_single: e.op(program.name, '=', 'cmp_moed_self_service_reg')
+		}))
+	)
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.app_cm.CmClientServiceFlow, {
@@ -65,11 +70,7 @@ export async function MoedBulkCsf(params: any) {
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
 					}))
 				),
-				codeServiceFlowType: e.sys_core.getCodeSystem(
-					'sys_moed',
-					'ct_cm_service_flow_type',
-					'Walk in'
-				),
+				codeServiceFlowType: e.sys_core.getCodeSystem('sys_moed', 'ct_cm_program_type', 'Walk in'),
 				codeStatus: e.sys_core.getCodeSystem(
 					'sys_moed',
 					'ct_cm_service_flow_status',
@@ -78,11 +79,7 @@ export async function MoedBulkCsf(params: any) {
 				dateCreated: e.cal.to_local_date(e.cast(e.str, i[1])),
 				dateStart: e.cal.to_local_date(e.cast(e.str, i[2])),
 				dateEnd: e.cal.to_local_date(e.cast(e.str, i[3])),
-				serviceFlow: e.assert_single(
-					e.select(e.app_cm.CmServiceFlow, (flow) => ({
-						filter_single: e.op(flow.name, '=', 'sf_moed_self_service_reg')
-					}))
-				)
+				programCm: PROGRAM
 			})
 		})
 	})

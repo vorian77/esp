@@ -91,7 +91,7 @@ export function initPreTable(init: InitDb) {
 		['sys_ai', 'app_cm', 'CmCsfNote', true],
 		['sys_ai', 'app_cm', 'CmCsfSchoolPlacement', true],
 		['sys_ai', 'app_cm', 'CmPartner', true],
-		['sys_ai', 'app_cm', 'CmServiceFlow', true]
+		['sys_ai', 'app_cm', 'CmProgram', true]
 	])
 
 	init.addTrans('tablesBulk', [
