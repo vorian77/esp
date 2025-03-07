@@ -509,6 +509,18 @@ export async function getNodesBranch(token: TokenApiId) {
 	return await query.run(client)
 }
 
+export async function getNodesEntitySystems(token: TokenApiId) {
+	const systemId = token.id
+	const children = e.select(e.sys_core.SysNodeObj, (n: any) => ({
+		...shapeNodeObj(n),
+		filter: e.op(
+			e.op(n.codeNodeType.name, '=', 'system'),
+			'and',
+			e.op(n.system.id, '=', e.cast(e.uuid, systemId))
+		)
+	}))
+}
+
 export async function getNodesLevel(token: TokenApiId) {
 	const parentNodeId = token.id
 	const parent = e.select(e.sys_core.SysNodeObj, (n: any) => ({

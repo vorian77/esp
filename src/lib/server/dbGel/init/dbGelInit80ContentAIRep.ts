@@ -1604,7 +1604,7 @@ function initContentAIRepStudentCohortAttdSummary(init: InitDb) {
 					codeFieldElement: 'number',
 					codeReportElementType: 'column',
 					description: 'The number of attendance days of the student in the cohort.',
-					exprCustom: `(SELECT count(app_cm::CmCsfCohortAttd FILTER .csfCohort.id = app_cm::CmCsfCohort.id))`,
+					exprCustom: `(SELECT count(app_cm::CmCsfCohortAttd FILTER .csfCohort.id = app_cm::CmCsfCohort.id AND .computedHours > 0))`,
 					header: 'Student Attendance Days',
 					isDisplay: true,
 					isDisplayable: true,
