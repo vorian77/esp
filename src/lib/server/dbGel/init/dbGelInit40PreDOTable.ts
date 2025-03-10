@@ -78,20 +78,20 @@ export function initPreTable(init: InitDb) {
 
 	init.addTrans('tablesBulk', [
 		// Atlantic Impact
-		['sys_client_ai', 'app_cm', 'CmClient', true],
-		['sys_client_ai', 'app_cm', 'CmClientServiceFlow', true],
-		['sys_client_ai', 'app_cm', 'CmCohort', true],
-		['sys_client_ai', 'app_cm', 'CmCohortAttd', true],
-		['sys_client_ai', 'app_cm', 'CmCohortDoc', true],
-		['sys_client_ai', 'app_cm', 'CmCourse', true],
-		['sys_client_ai', 'app_cm', 'CmCsfCohort', true],
-		['sys_client_ai', 'app_cm', 'CmCsfCohortAttd', true],
-		['sys_client_ai', 'app_cm', 'CmCsfDocument', true],
-		['sys_client_ai', 'app_cm', 'CmCsfJobPlacement', true],
-		['sys_client_ai', 'app_cm', 'CmCsfNote', true],
-		['sys_client_ai', 'app_cm', 'CmCsfSchoolPlacement', true],
-		['sys_client_ai', 'app_cm', 'CmPartner', true],
-		['sys_client_ai', 'app_cm', 'CmProgram', true]
+		['sys_client_atlantic_impact', 'app_cm', 'CmClient', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmClientServiceFlow', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmCohort', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmCohortAttd', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmCohortDoc', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmCourse', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmCsfCohort', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmCsfCohortAttd', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmCsfDocument', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmCsfJobPlacement', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmCsfNote', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmCsfSchoolPlacement', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmPartner', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmProgram', true]
 	])
 
 	init.addTrans('tablesBulk', [

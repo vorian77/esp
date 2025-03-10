@@ -14,8 +14,7 @@ function initProgram(init: InitDb) {
 		name: 'data_obj_app_cm_program_list',
 		header: 'Programs',
 		tables: [{ index: 0, table: 'CmProgram' }],
-		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
-
+		exprFilter: '.owner.id IN <tree,uuid,SysSystem.id>',
 		actionGroup: 'doag_list',
 		fields: [
 			{
@@ -27,19 +26,20 @@ function initProgram(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
-				orderCrumb: 10,
+				indexTable: 0,
 				isDisplayable: true,
+				orderCrumb: 10,
 				orderDisplay: 20,
 				orderDefine: 20,
-				indexTable: 0
+				orderSort: 10
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'header',
+				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 30,
 				orderDefine: 30,
-				indexTable: 0
+				orderDisplay: 30
 			}
 		]
 	})
@@ -61,7 +61,7 @@ function initProgram(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<user,uuid,systemIdCurrent>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,

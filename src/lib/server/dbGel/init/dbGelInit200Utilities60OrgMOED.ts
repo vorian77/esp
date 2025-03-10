@@ -13,12 +13,6 @@ export async function MoedPBulkPart(params: any) {
 				modifiedBy: CREATOR,
 				person: e.insert(e.default.SysPerson, {
 					addr1: e.cast(e.str, i[1]),
-					attributes: e.insert(e.sys_core.SysAttr, {
-						createdBy: CREATOR,
-						hasAccess: true,
-						modifiedBy: CREATOR,
-						obj: e.sys_core.getObjEntAttr('sys_client_moed', e.cast(e.str, i[13]))
-					}),
 					birthDate: e.cal.to_local_date(e.cast(e.str, i[3])),
 					city: e.cast(e.str, i[4]),
 					codeDisabilityStatus: e.sys_core.getCodeSystem(
@@ -49,9 +43,9 @@ export async function MoedPBulkPart(params: any) {
 					email: e.cast(e.str, i[10]),
 					firstName: e.cast(e.str, i[11]),
 					lastName: e.cast(e.str, i[12]),
-					phoneMobile: e.cast(e.str, i[14]),
-					ssn: e.cast(e.str, i[15]),
-					zip: e.cast(e.str, i[16])
+					phoneMobile: e.cast(e.str, i[13]),
+					ssn: e.cast(e.str, i[14]),
+					zip: e.cast(e.str, i[15])
 				}),
 				owner: e.sys_core.getSystemPrime('sys_client_moed')
 			})
@@ -65,7 +59,7 @@ export async function MoedBulkCsf(params: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const PROGRAM = e.assert_single(
 		e.select(e.app_cm.CmProgram, (program) => ({
-			filter_single: e.op(program.name, '=', 'cmp_moed_self_service_reg')
+			filter_single: e.op(program.name, '=', 'cmp_moed_yo')
 		}))
 	)
 	const query = e.params({ data: e.json }, (params) => {
@@ -78,19 +72,35 @@ export async function MoedBulkCsf(params: any) {
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
 					}))
 				),
-				codeServiceFlowType: e.sys_core.getCodeSystem(
+				codeSfEnrollType: e.sys_core.getCodeSystem(
 					'sys_client_moed',
-					'ct_cm_program_type',
-					'Walk in'
+					'ct_cm_sf_enroll_type',
+					'Self-Registration'
 				),
-				codeStatus: e.sys_core.getCodeSystem(
+				codeSfOutcome: e.sys_core.getCodeSystem(
 					'sys_client_moed',
-					'ct_cm_service_flow_status',
-					e.cast(e.str, i[4])
+					'ct_cm_sf_outcome',
+					e.cast(e.str, i[6])
+				),
+				codeSfEligibilityStatus: e.sys_core.getCodeSystem(
+					'sys_client_moed',
+					'ct_cm_sf_eligibility_status',
+					e.cast(e.str, i[5])
 				),
 				dateCreated: e.cal.to_local_date(e.cast(e.str, i[1])),
 				dateStart: e.cal.to_local_date(e.cast(e.str, i[2])),
 				dateEnd: e.cal.to_local_date(e.cast(e.str, i[3])),
+
+				objAttrSfSite: e.assert_single(
+					e.select(e.sys_core.SysObjEntAttr, (site) => ({
+						filter_single: e.op(
+							e.op(site.owner.name, '=', 'sys_client_moed'),
+							'and',
+							e.op(site.name, '=', e.cast(e.str, i[4]))
+						)
+					}))
+				),
+
 				programCm: PROGRAM
 			})
 		})

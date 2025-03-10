@@ -76,7 +76,7 @@ function initApplicant(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .name = 'sys_client_moed')`,
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,treeLeafIdSystem>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -184,7 +184,7 @@ function initApplicant(init: InitDb) {
 						},
 						codeValueTypeTarget: 'none',
 						codeValueTypeTrigger: 'code',
-						column: 'genderSelfId',
+						columns: ['genderSelfId'],
 						fieldAccess: 'required',
 						op: 'equal',
 						orderDefine: 0
@@ -197,7 +197,7 @@ function initApplicant(init: InitDb) {
 						},
 						codeValueTypeTarget: 'reset',
 						codeValueTypeTrigger: 'code',
-						column: 'genderSelfId',
+						columns: ['genderSelfId'],
 						fieldAccess: 'hidden',
 						op: 'notEqual',
 						orderDefine: 1
@@ -316,18 +316,6 @@ function initApplicant(init: InitDb) {
 				orderDefine: 300
 			},
 			{
-				attrAccess: true,
-				codeAttrType: 'attr_moed_office',
-				codeFieldElement: 'select',
-				columnName: 'attributes',
-				headerAlt: 'Office',
-				isDisplayable: true,
-				orderDisplay: 310,
-				orderDefine: 310,
-				indexTable: 1,
-				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name'
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
@@ -404,9 +392,9 @@ function initApplicant(init: InitDb) {
 		children: ['node_obj_moed_part_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
+		codeTreeLeafId: 'treeLeafIdSystemApp',
 		data: [{ dataObj: 'data_obj_moed_part_list' }],
 		header: 'Participants',
-		isAlwaysRetrieveData: true,
 		name: 'node_obj_moed_part_list',
 		orderDefine: 10,
 		owner: 'sys_client_moed'
@@ -838,7 +826,16 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeServiceFlowType',
+				columnName: 'objAttrSfSite',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0,
+				linkColumns: ['header']
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeSfEnrollType',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -856,7 +853,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeStatus',
+				columnName: 'codeSfEligibilityStatus',
 				isDisplayable: true,
 				orderDisplay: 55,
 				orderDefine: 55,
@@ -867,6 +864,7 @@ function initCsf(init: InitDb) {
 				codeAccess: 'readOnly',
 				columnName: 'dateStartEst',
 				indexTable: 0,
+				isDisplay: false,
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60
@@ -883,6 +881,7 @@ function initCsf(init: InitDb) {
 				codeAccess: 'readOnly',
 				columnName: 'dateEndEst',
 				indexTable: 0,
+				isDisplay: false,
 				isDisplayable: true,
 				orderDefine: 80,
 				orderDisplay: 80
@@ -897,7 +896,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeServiceFlowOutcome',
+				columnName: 'codeSfOutcome',
 				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
@@ -907,6 +906,7 @@ function initCsf(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'note',
+				isDisplay: false,
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
@@ -957,31 +957,23 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'codeServiceFlowType',
+				columnName: 'objAttrSfSite',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_cm_program_type'
-			},
-			{
-				codeFieldElement: 'date',
-				columnName: 'dateCreated',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
+				fieldListItems: 'il_sys_attr_obj_system_type',
+				fieldListItemsParmValue: 'attr_cm_sf_site'
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'codeStatus',
+				columnName: 'codeSfEnrollType',
 				isDisplayable: true,
-				orderDisplay: 65,
-				orderDefine: 65,
+				orderDisplay: 60,
+				orderDefine: 60,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_cm_service_flow_status'
+				fieldListItemsParmValue: 'ct_cm_sf_enroll_type'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -998,9 +990,8 @@ function initCsf(init: InitDb) {
 				orderDefine: 80
 			},
 			{
-				codeAccess: 'optional',
 				codeFieldElement: 'date',
-				columnName: 'dateStartEst',
+				columnName: 'dateCreated',
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
@@ -1009,33 +1000,52 @@ function initCsf(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'date',
-				columnName: 'dateEndEst',
+				columnName: 'dateStartEst',
 				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
 				indexTable: 0
 			},
 			{
+				codeAccess: 'optional',
+				codeFieldElement: 'date',
+				columnName: 'dateEndEst',
+				isDisplayable: true,
+				orderDisplay: 110,
+				orderDefine: 110,
+				indexTable: 0
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110
+				orderDisplay: 120,
+				orderDefine: 120
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120
+				orderDisplay: 130,
+				orderDefine: 130
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeSfEligibilityStatus',
+				isDisplayable: true,
+				orderDisplay: 140,
+				orderDefine: 140,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItemsParmValue: 'ct_cm_sf_eligibility_status'
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'date',
 				columnName: 'dateStart',
 				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130,
+				orderDisplay: 150,
+				orderDefine: 150,
 				indexTable: 0
 			},
 			{
@@ -1043,35 +1053,51 @@ function initCsf(init: InitDb) {
 				codeFieldElement: 'date',
 				columnName: 'dateEnd',
 				isDisplayable: true,
-				orderDisplay: 140,
-				orderDefine: 140,
+				itemChanges: [
+					{
+						codeValueTypeTarget: 'reset',
+						codeValueTypeTrigger: 'null',
+						columns: ['codeSfOutcome'],
+						fieldAccess: 'hidden',
+						orderDefine: 0
+					},
+					{
+						codeValueTypeTarget: 'none',
+						codeValueTypeTrigger: 'notNull',
+						columns: ['codeSfOutcome'],
+						fieldAccess: 'required',
+						orderDefine: 0
+					}
+				],
+				orderDisplay: 160,
+				orderDefine: 160,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'codeServiceFlowOutcome',
+				columnName: 'codeSfOutcome',
 				isDisplayable: true,
-				orderDisplay: 150,
-				orderDefine: 150,
+				orderDisplay: 170,
+				orderDefine: 170,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
-				fieldListItemsParmValue: 'ct_cm_service_flow_outcome'
+				fieldListItemsParmValue: 'ct_cm_sf_outcome'
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 160,
-				orderDefine: 160
+				orderDisplay: 180,
+				orderDefine: 180
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 170,
-				orderDefine: 170,
+				orderDisplay: 190,
+				orderDefine: 190,
 				indexTable: 0
 			},
 
@@ -1803,7 +1829,7 @@ function initReport(init: InitDb) {
 			{
 				codeFieldElement: 'text',
 				codeReportElementType: 'column',
-				columnName: 'codeStatus',
+				columnName: 'codeSfEligibilityStatus',
 				indexTable: 0,
 				isDisplay: true,
 				isDisplayable: true,
@@ -1872,7 +1898,7 @@ function initReport(init: InitDb) {
 			// 	codeDataType: 'int64',
 			// 	codeFieldElement: 'number',
 			// 	codeReportElementType: 'column',
-			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeStatus.name = 'Sent')))`,
+			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeSfEligibilityStatus.name = 'Sent')))`,
 			// 	header: 'Messages - Sent',
 			// 	isDisplay: true,
 			// 	isDisplayable: true,
@@ -1885,7 +1911,7 @@ function initReport(init: InitDb) {
 			// 	codeDataType: 'int64',
 			// 	codeFieldElement: 'number',
 			// 	codeReportElementType: 'column',
-			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeStatus.name = 'Under review')))`,
+			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeSfEligibilityStatus.name = 'Under review')))`,
 			// 	header: 'Messages - Under review',
 			// 	isDisplay: true,
 			// 	isDisplayable: true,
@@ -1898,7 +1924,7 @@ function initReport(init: InitDb) {
 			// 	codeDataType: 'int64',
 			// 	codeFieldElement: 'number',
 			// 	codeReportElementType: 'column',
-			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeStatus.name = 'replied')))`,
+			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeSfEligibilityStatus.name = 'replied')))`,
 			// 	header: 'Messages - Replied',
 			// 	isDisplay: true,
 			// 	isDisplayable: true,
@@ -1911,7 +1937,7 @@ function initReport(init: InitDb) {
 			// 	codeDataType: 'int64',
 			// 	codeFieldElement: 'number',
 			// 	codeReportElementType: 'column',
-			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeStatus.name = 'Closed')))`,
+			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeSfEligibilityStatus.name = 'Closed')))`,
 			// 	header: 'Messages - Closed',
 			// 	isDisplay: true,
 			// 	isDisplayable: true,

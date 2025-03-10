@@ -259,7 +259,18 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 		{
 			codeFieldElement: 'text',
 			codeReportElementType: 'column',
-			columnName: 'codeServiceFlowType',
+			columnName: 'objAttrSfSite',
+			indexTable: 1,
+			isDisplay: false,
+			isDisplayable: true,
+			linkColumns: ['header'],
+			orderDefine: 117,
+			orderDisplay: 117
+		},
+		{
+			codeFieldElement: 'text',
+			codeReportElementType: 'column',
+			columnName: 'codeSfEnrollType',
 			indexTable: 1,
 			isDisplay: false,
 			isDisplayable: true,
@@ -290,7 +301,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 		{
 			codeFieldElement: 'text',
 			codeReportElementType: 'column',
-			columnName: 'codeServiceFlowOutcome',
+			columnName: 'codeSfOutcome',
 			indexTable: 1,
 			isDisplay: false,
 			isDisplayable: true,
@@ -335,7 +346,7 @@ function initFieldListSelectCohorts(init: InitDb) {
 		],
 		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).userTypes.owner`,
 		name: 'ilr_cm_cohort',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		table: 'CmCohort'
 	})
 }
@@ -395,7 +406,7 @@ function initContentAIRepCohortsDetail(init: InitDb) {
 		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Cohorts - Detail',
 		name: 'report_ai_cohorts_detail',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCohort' },
 			{ columnParent: 'course', indexParent: 0, index: 1, table: 'CmCourse' }
@@ -444,7 +455,7 @@ function initContentAIRepCoursesDetail(init: InitDb) {
 		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Courses - Detail',
 		name: 'report_ai_courses_detail',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCourse' }],
 		elements: [
 			{
@@ -517,7 +528,7 @@ function initContentAIRepPartnersDetail(init: InitDb) {
 		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Partners - Detail',
 		name: 'report_ai_partners_detail',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmPartner' }],
 		elements: [
 			{
@@ -657,7 +668,7 @@ function initContentAIRepStudentAttdDetail(init: InitDb) {
 		exprFilter: '.csfCohort.csf.client.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Attendance - Detail',
 		name: 'report_ai_student_attd_detail',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfCohortAttd' },
 			{ columnParent: 'csfCohort', indexParent: 0, index: 1, table: 'CmCsfCohort' },
@@ -786,7 +797,7 @@ function initContentAIRepStudentCaseNotesDetail(init: InitDb) {
 		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Case Notes - Detail',
 		name: 'report_ai_student_notes_detail',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfNote' },
 			{ columnParent: 'csf', indexParent: 0, index: 2, table: 'CmClientServiceFlow' },
@@ -846,7 +857,7 @@ function initContentAIRepStudentDocsDetail(init: InitDb) {
 		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Documents - Detail',
 		name: 'report_ai_student_docs_detail',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfDocument' },
 			{ columnParent: 'csf', indexParent: 0, index: 1, table: 'CmClientServiceFlow' },
@@ -942,7 +953,7 @@ function initContentAIRepStudentJobPlacementDetail(init: InitDb) {
 		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Job Placements - Detail',
 		name: 'report_ai_student_job_placement_detail',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfJobPlacement' },
 			{ columnParent: 'csf', indexParent: 0, index: 1, table: 'CmClientServiceFlow' },
@@ -1120,7 +1131,7 @@ function initContentAIRepStudentSchoolPlacementDetail(init: InitDb) {
 		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Student - School Placements - Detail',
 		name: 'report_ai_student_school_placement_detail',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfSchoolPlacement' },
 			{ columnParent: 'csf', indexParent: 0, index: 1, table: 'CmClientServiceFlow' },
@@ -1224,7 +1235,7 @@ function initContentAIRepStudentRoster(init: InitDb) {
 		exprFilter: '.client.owner.id IN <user,uuidlist,systemIds> ',
 		header: 'Student - Roster',
 		name: 'report_ai_student_roster',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmClientServiceFlow' },
 			{ columnParent: 'client', indexParent: 0, index: 1, table: 'CmClient' },
@@ -1247,7 +1258,7 @@ completedPlacedRelated := (SELECT completed FILTER .csf IN (SELECT app_cm::CmCsf
 cohortWages := (SELECT completed {cohort, wages := (SELECT app_cm::CmCsfJobPlacement FILTER .csf = completed.csf).wage})`,
 		header: 'Cohort Performance',
 		name: 'report_ai_cohort_performance',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCohort' },
 			{ columnParent: 'course', indexParent: 0, index: 1, table: 'CmCourse' }
@@ -1409,7 +1420,7 @@ completedPlacedRelated := (SELECT completed FILTER .csf IN (SELECT app_cm::CmCsf
 cohortWages := (SELECT completed {cohort, wages := (SELECT app_cm::CmCsfJobPlacement FILTER .csf = completed.csf).wage})`,
 		header: 'Course Performance',
 		name: 'report_ai_course_performance',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCourse' }],
 		elements: [
 			{
@@ -1550,7 +1561,7 @@ function initContentAIRepStudentCohortAttdSummary(init: InitDb) {
 		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Cohort Attendance - Summary',
 		name: 'report_ai_student_cohort_attd_summary',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfCohort' },
 			{ columnParent: 'csf', indexParent: 0, index: 1, table: 'CmClientServiceFlow' },
@@ -1643,7 +1654,7 @@ function initContentAIRepStudentServiceFlowSummary(init: InitDb) {
 		exprFilter: '.client.owner.id IN <user,uuidlist,systemIds> ',
 		header: 'Student - Service Flow - Summary',
 		name: 'report_ai_student_service_flow_summary',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmClientServiceFlow' },
 			{ columnParent: 'client', indexParent: 0, index: 1, table: 'CmClient' },

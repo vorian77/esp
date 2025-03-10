@@ -252,10 +252,12 @@ export async function addNode(data: any) {
 			codeIcon: e.str,
 			codeNavType: e.optional(e.str) || 'tree',
 			codeNodeType: e.str,
+			codeTreeLeafId: e.optional(e.str),
 			data: e.optional(e.array(e.json)),
 			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
 			isAlwaysRetrieveData: e.optional(e.bool),
+			isDynamicChildrenSystemParents: e.optional(e.bool),
 			isHideRowManager: e.optional(e.bool),
 			name: e.str,
 			orderDefine: e.int16,
@@ -270,6 +272,7 @@ export async function addNode(data: any) {
 					valueOrDefaultParm(p.codeNavType, 'tree')
 				),
 				codeNodeType: e.sys_core.getCode('ct_sys_node_obj_type', p.codeNodeType),
+				codeTreeLeafId: e.sys_core.getCode('ct_sys_tree_leaf_id_type', p.codeTreeLeafId),
 				createdBy: CREATOR,
 				data: e.for(e.array_unpack(p.data || e.cast(e.array(e.json), e.set())), (d) => {
 					return e.insert(e.sys_core.SysNodeObjData, {
@@ -282,6 +285,7 @@ export async function addNode(data: any) {
 				}),
 				header: p.header,
 				isAlwaysRetrieveData: valueOrDefaultParm(p.isAlwaysRetrieveData, false),
+				isDynamicChildrenSystemParents: valueOrDefaultParm(p.isDynamicChildrenSystemParents, false),
 				isHideRowManager: valueOrDefaultParm(p.isHideRowManager, false),
 				modifiedBy: CREATOR,
 				name: p.name,
@@ -596,9 +600,13 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 											'ct_sys_do_field_item_change_type_trigger',
 											e.cast(e.str, e.json_get(t, 'codeValueTypeTrigger'))
 										),
-										column: e.sys_core.getDataObjColumn(
-											e.cast(e.str, ic.dataObjName),
-											e.cast(e.str, e.json_get(t, 'column'))
+										columns: e.assert_distinct(
+											e.for(
+												e.array_unpack(e.cast(e.array(e.str), e.json_get(t, 'columns'))),
+												(c) => {
+													return e.sys_core.getDataObjColumn(e.cast(e.str, ic.dataObjName), c)
+												}
+											)
 										),
 										createdBy: CREATOR,
 										modifiedBy: CREATOR,

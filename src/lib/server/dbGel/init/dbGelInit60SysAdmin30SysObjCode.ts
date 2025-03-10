@@ -730,7 +730,7 @@ function initCode(init: InitDb) {
 					{
 						codeValueTypeTarget: 'select',
 						codeValueTypeTrigger: 'any',
-						column: 'parent',
+						columns: ['parent'],
 						orderDefine: 0,
 						selectParmValue: 'itemsParmValue'
 					}

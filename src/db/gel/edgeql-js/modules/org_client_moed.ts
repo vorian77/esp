@@ -17,7 +17,7 @@ const MoedPartData: $.$expr_PathNode<$.TypeSet<$MoedPartData, $.Cardinality.Many
 
 export type $MoedParticipantλShape = $.typeutil.flatten<_app_cm.$CmClientλShape & {
   "consentDisclaimer": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
-  "idxDemo": $.PropertyDesc<_std.$int64, $.Cardinality.One, false, false, false, false>;
+  "idxDemo": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
   "<participant[is org_client_moed::MoedPartData]": $.LinkDesc<$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<participant": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

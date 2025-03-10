@@ -13,6 +13,7 @@ export enum ApiFunction {
 	dbGelGetLinkItemsSource = 'dbGelGetLinkItemsSource',
 	dbGelGetNodesBranch = 'dbGelGetNodesBranch',
 	dbGelGetNodesLevel = 'dbGelGetNodesLevel',
+	dbGelGetNodesSystemParents = 'dbGelGetNodesSystemParents',
 	dbGelGetTableColumns = 'dbGelGetTableColumns',
 	dbGelProcessDataObj = 'dbGelProcessDataObj',
 	dbGelProcessExpression = 'dbGelProcessExpression',

@@ -153,6 +153,16 @@ function initNodeObj(init: InitDb) {
 				fieldListItemsParmValue: 'ct_sys_node_obj_type'
 			},
 			{
+				codeFieldElement: 'select',
+				columnName: 'codeTreeLeafId',
+				isDisplayable: true,
+				orderDisplay: 55,
+				orderDefine: 55,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmValue: 'ct_sys_treae_leaf_id_type'
+			},
+			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'parent',
@@ -167,8 +177,17 @@ function initNodeObj(init: InitDb) {
 				columnName: 'isAlwaysRetrieveData',
 				exprPreset: `(SELECT false)`,
 				isDisplayable: true,
-				orderDisplay: 65,
-				orderDefine: 65,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isDynamicChildrenSystemParents',
+				exprPreset: `(SELECT false)`,
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
 				indexTable: 0
 			},
 			{
@@ -176,8 +195,8 @@ function initNodeObj(init: InitDb) {
 				columnName: 'isHideRowManager',
 				exprPreset: `(SELECT false)`,
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0
 			},
 			{
@@ -186,44 +205,44 @@ function initNodeObj(init: InitDb) {
 				exprPreset: `(SELECT false)`,
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 75,
-				orderDefine: 75
+				orderDisplay: 100,
+				orderDefine: 100
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80
+				orderDisplay: 110,
+				orderDefine: 110
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90
+				orderDisplay: 120,
+				orderDefine: 120
 			},
 			{
 				columnName: 'name',
 				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100,
+				orderDisplay: 130,
+				orderDefine: 130,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
 				columnName: 'header',
 				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
+				orderDisplay: 140,
+				orderDefine: 140,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeIcon',
 				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
+				orderDisplay: 150,
+				orderDefine: 150,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmValue: 'ct_sys_icon'
@@ -232,23 +251,23 @@ function initNodeObj(init: InitDb) {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130
+				orderDisplay: 160,
+				orderDefine: 160
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 140,
-				orderDefine: 140
+				orderDisplay: 170,
+				orderDefine: 170
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'dataObj',
 				isDisplayable: true,
-				orderDisplay: 150,
-				orderDefine: 150,
+				orderDisplay: 180,
+				orderDefine: 180,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
 				fieldListItemsParmValue: 'default'
@@ -257,20 +276,20 @@ function initNodeObj(init: InitDb) {
 				codeAccess: 'optional',
 				columnName: 'page',
 				isDisplayable: true,
-				orderDisplay: 160,
-				orderDefine: 160,
+				orderDisplay: 190,
+				orderDefine: 190,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 170,
-				orderDefine: 170
+				orderDisplay: 200,
+				orderDefine: 200
 			},
 			{
 				columnName: 'orderDefine',
-				orderDefine: 180,
+				orderDefine: 210,
 				exprPreset: `(SELECT (count((SELECT sys_core::SysNodeObj FILTER .owner.id = <tree,uuid,SysSystem.id>)) + 1))`,
 				indexTable: 0,
 				isDisplayable: false

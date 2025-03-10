@@ -342,7 +342,7 @@ export class NavMenuDataCompAppsItem extends NavMenuDataComp {
 		})
 
 		// children
-		obj.nodes.forEach((n: any) =>
+		obj.nodes.forEach((n: any) => {
 			this.group.addItem({
 				...obj,
 				content: new NavMenuContent(NavMenuContentType.node, n),
@@ -350,7 +350,7 @@ export class NavMenuDataCompAppsItem extends NavMenuDataComp {
 				label: new NavMenuLabel(n.label),
 				indent: 1
 			})
-		)
+		})
 	}
 }
 

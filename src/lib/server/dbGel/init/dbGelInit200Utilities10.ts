@@ -72,6 +72,7 @@ export async function nodeObjPagesBulk(params: any) {
 				name: e.cast(e.str, i[2]),
 				header: e.cast(e.str, i[3]),
 				isAlwaysRetrieveData: false,
+				isDynamicChildrenSystemParents: false,
 				orderDefine: e.cast(e.int64, i[4]),
 				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', e.cast(e.str, i[5]))),
 				page: e.cast(e.str, i[6]),

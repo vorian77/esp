@@ -62,6 +62,8 @@
 					urlOld
 				})
 			)
+		} else {
+			await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, null)
 		}
 	}
 

@@ -129,7 +129,7 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Agency ID',
 		name: 'agencyId',
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		placeHolder: 'Enter agency ID'
 	})
 	init.addTrans('sysColumn', {
@@ -233,10 +233,10 @@ export function initPreColumn(init: InitDb) {
 		header: 'Client',
 		isMultiSelect: false,
 		name: 'client',
-		owner: 'sys_client_ai'
+		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		codeDataType: 'link',
 		header: 'Group',
 		isMultiSelect: false,
@@ -289,7 +289,7 @@ export function initPreColumn(init: InitDb) {
 		header: 'Duration',
 		isMultiSelect: false,
 		name: 'codeCmCohortAttdDuration',
-		owner: 'sys_client_ai'
+		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
@@ -388,17 +388,17 @@ export function initPreColumn(init: InitDb) {
 		header: 'Group Enrollment',
 		isMultiSelect: false,
 		name: 'codeGroupEnrollment',
-		owner: 'sys_client_ai'
+		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Group Type',
 		isMultiSelect: false,
 		name: 'codeGroupType',
-		owner: 'sys_client_ai'
+		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		codeDataType: 'link',
 		header: 'Highest Education',
 		isMultiSelect: false,
@@ -503,7 +503,7 @@ export function initPreColumn(init: InitDb) {
 		name: 'codeReportElementType'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		codeDataType: 'link',
 		header: 'Retention',
 		isMultiSelect: false,
@@ -518,17 +518,24 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
-		header: 'Service Flow Outcome',
+		header: 'Eligibility Status',
 		isMultiSelect: false,
-		name: 'codeServiceFlowOutcome',
-		owner: 'sys_system'
+		name: 'codeSfEligibilityStatus',
+		owner: 'sys_app_cm'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
-		header: 'Service Flow Type',
+		header: 'Enrollment Type',
 		isMultiSelect: false,
-		name: 'codeServiceFlowType',
-		owner: 'sys_system'
+		name: 'codeSfEnrollType',
+		owner: 'sys_app_cm'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Outcome',
+		isMultiSelect: false,
+		name: 'codeSfOutcome',
+		owner: 'sys_app_cm'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
@@ -555,6 +562,13 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'link',
 		header: 'Status Object',
 		name: 'codeStatusObj',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Tree Leaf Id Type',
+		isMultiSelect: false,
+		name: 'codeTreeLeafId',
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
@@ -628,7 +642,7 @@ export function initPreColumn(init: InitDb) {
 		name: 'codeUserTypeTags'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		codeDataType: 'link',
 		header: 'Wage Type',
 		isMultiSelect: false,
@@ -1235,22 +1249,22 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Employer - Contact Email',
 		name: 'employerContactEmail',
-		owner: 'sys_client_ai'
+		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Employer - Contact First Name',
 		name: 'employerContactNameFirst',
-		owner: 'sys_client_ai'
+		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Employer - Contact Last Name',
 		name: 'employerContactNameLast',
-		owner: 'sys_client_ai'
+		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		codeDataType: 'str',
 		header: 'Employer - Contact Phone',
 		inputMask: 'phone',
@@ -1260,14 +1274,7 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Employer',
 		name: 'employerName',
-		owner: 'sys_client_ai'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Entity Systems',
-		isMultiSelect: true,
-		name: 'entitySystems',
-		owner: 'sys_system'
+		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'str',
@@ -1461,7 +1468,7 @@ export function initPreColumn(init: InitDb) {
 		toggleValueTrue: 'Yes'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		codeDataType: 'bool',
 		header: 'Has Drivers License',
 		name: 'hasDriversLicense',
@@ -1628,6 +1635,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'bool',
 		header: 'Display ID',
 		name: 'isDisplayId'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'bool',
+		header: 'Dynamic Children - Parent Systems',
+		name: 'isDynamicChildrenSystemParents'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
@@ -1935,6 +1948,13 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Site',
+		isMultiSelect: false,
+		name: 'objAttrSfSite',
+		owner: 'sys_app_cm'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'link',
 		header: 'Task Object - Data Object',
@@ -2114,6 +2134,13 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'str',
+		header: 'Office Phone',
+		inputMask: 'phone',
+		name: 'phoneOffice'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'str',
 		header: 'Placeholder',
 		name: 'placeHolder'
 	})
@@ -2129,7 +2156,7 @@ export function initPreColumn(init: InitDb) {
 		header: 'Program',
 		isMultiSelect: false,
 		name: 'programCm',
-		owner: 'sys_client_ai'
+		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
@@ -2239,6 +2266,13 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
+		header: 'Parent Systems',
+		isMultiSelect: true,
+		name: 'systemParents',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
 		header: 'Systems',
 		isMultiSelect: true,
 		name: 'systems',
@@ -2339,12 +2373,26 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'link',
+		header: 'Attribute Types',
+		isMultiSelect: true,
+		name: 'typesAttribute'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'link',
+		header: 'Code Types',
+		isMultiSelect: true,
+		name: 'typesCodeType'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'link',
 		header: 'User',
 		isMultiSelect: false,
 		name: 'user'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_client_ai',
+		owner: 'sys_client_atlantic_impact',
 		codeDataType: 'link',
 		header: 'Group Manager',
 		isMultiSelect: false,

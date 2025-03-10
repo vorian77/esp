@@ -67,6 +67,7 @@ export type $SysObjEntλShape = $.typeutil.flatten<$SysObjλShape & {
   "zip": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "contacts": $.LinkDesc<_default.$SysPerson, $.Cardinality.Many, {}, false, false,  false, false>;
   "notes": $.LinkDesc<$SysObjNote, $.Cardinality.Many, {}, false, false,  false, false>;
+  "phoneOffice": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
 }>;
 type $SysObjEnt = $.ObjectType<"sys_core::SysObjEnt", $SysObjEntλShape, null, [
   ...$SysObj['__exclusives__'],
@@ -135,6 +136,7 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "codeType": $.LinkDesc<$SysCodeType, $.Cardinality.One, {}, false, false,  false, false>;
   "owner": $.LinkDesc<$SysSystem, $.Cardinality.One, {}, false, false,  false, false>;
   "codeTypeFamily": $.LinkDesc<$SysCodeType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeTreeLeafId[is sys_core::SysNodeObj]": $.LinkDesc<$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parent[is sys_core::SysCode]": $.LinkDesc<$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeObjType[is sys_core::SysObjEnt]": $.LinkDesc<$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeIcon[is sys_core::SysObjEnt]": $.LinkDesc<$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -169,6 +171,7 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<codeGroupEnrollment[is app_cm::CmGroup]": $.LinkDesc<_app_cm.$CmGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeGroupType[is app_cm::CmGroup]": $.LinkDesc<_app_cm.$CmGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeDataTypeDisplay[is sys_core::SysDataObjFieldListItems]": $.LinkDesc<$SysDataObjFieldListItems, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<typesAttribute[is sys_core::SysSystem]": $.LinkDesc<$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeNavType[is sys_core::SysNodeObj]": $.LinkDesc<$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeNodeType[is sys_core::SysNodeObj]": $.LinkDesc<$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeFunction[is sys_core::SysDataObjQueryRider]": $.LinkDesc<$SysDataObjQueryRider, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -189,9 +192,9 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<tags[is sys_user::SysUserType]": $.LinkDesc<_sys_user.$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeHighestEducation[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeHighestEducation[is org_client_moed::MoedParticipant]": $.LinkDesc<_org_client_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeServiceFlowOutcome[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeServiceFlowType[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeStatus[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeSfOutcome[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeSfEnrollType[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeSfEligibilityStatus[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeMulti[is sys_rep::SysRep]": $.LinkDesc<_sys_rep.$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeStatus[is app_cm::CmCsfCohort]": $.LinkDesc<_app_cm.$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeType[is app_cm::CmCsfDocument]": $.LinkDesc<_app_cm.$CmCsfDocument, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -410,12 +413,14 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<codeReportElementType": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeRetention": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeSector": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeServiceFlowOutcome": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeServiceFlowType": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeSfEligibilityStatus": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeSfEnrollType": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeSfOutcome": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeSortDir": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeState": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeStatus": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeStatusObj": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeTreeLeafId": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTriggerConfirmConditional": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTriggerEnable": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTriggerShow": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -433,6 +438,7 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<tags": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeMulti": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeSingle": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<typesAttribute": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysCode = $.ObjectType<"sys_core::SysCode", $SysCodeλShape, null, [
   ...$ObjRootCore['__exclusives__'],
@@ -462,6 +468,7 @@ export type $SysCodeTypeλShape = $.typeutil.flatten<$SysObjλShape & {
   "valueString": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "<parent[is sys_core::SysCodeType]": $.LinkDesc<$SysCodeType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeType[is sys_core::SysCode]": $.LinkDesc<$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<typesCodeType[is sys_core::SysSystem]": $.LinkDesc<$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parent[is sys_user::SysCodeType]": $.LinkDesc<_sys_user.$SysCodeType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeType[is sys_core::SysCodeAction]": $.LinkDesc<$SysCodeAction, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTypePayment[is app_cm::CmCourse]": $.LinkDesc<_app_cm.$CmCourse, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -471,6 +478,7 @@ export type $SysCodeTypeλShape = $.typeutil.flatten<$SysObjλShape & {
   "<codeTypeFamily": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTypePayment": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parent": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<typesCodeType": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysCodeType = $.ObjectType<"sys_core::SysCodeType", $SysCodeTypeλShape, null, [
   ...$SysObj['__exclusives__'],
@@ -609,10 +617,9 @@ export type $SysDataObjColumnλShape = $.typeutil.flatten<_sys_user.$MgmtλShape
   "orderSort": $.PropertyDesc<_default.$nonNegative, $.Cardinality.AtMostOne, false, false, false, false>;
   "width": $.PropertyDesc<_std.$int16, $.Cardinality.AtMostOne, false, false, false, false>;
   "action": $.LinkDesc<_sys_user.$SysUserAction, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "<columns[is sys_core::SysDataObjColumnItemChange]": $.LinkDesc<$SysDataObjColumnItemChange, $.Cardinality.Many, {}, false, false,  false, false>;
   "<customEmbedShellFields[is sys_core::SysDataObjColumn]": $.LinkDesc<$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<columns[is sys_core::SysDataObj]": $.LinkDesc<$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<column[is sys_core::SysDataObjColumnItemChange]": $.LinkDesc<$SysDataObjColumnItemChange, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<column": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<columns": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<customEmbedShellFields": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
@@ -625,9 +632,9 @@ const SysDataObjColumn: $.$expr_PathNode<$.TypeSet<$SysDataObjColumn, $.Cardinal
 
 export type $SysDataObjColumnItemChangeλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "codeAccess": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "columns": $.LinkDesc<$SysDataObjColumn, $.Cardinality.AtLeastOne, {}, false, false,  false, false>;
   "codeValueTarget": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeValueTrigger": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "column": $.LinkDesc<$SysDataObjColumn, $.Cardinality.One, {}, false, false,  false, false>;
   "valueScalarTarget": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "valueScalarTrigger": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "selectParmValue": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -825,12 +832,14 @@ const SysMsg: $.$expr_PathNode<$.TypeSet<$SysMsg, $.Cardinality.Many>, null> = _
 
 export type $SysNodeObjλShape = $.typeutil.flatten<$SysObjλShape & {
   "children": $.LinkDesc<$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
+  "codeTreeLeafId": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeNavType": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "codeNodeType": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "isAlwaysRetrieveData": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
   "isHideRowManager": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
   "page": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "data": $.LinkDesc<$SysNodeObjData, $.Cardinality.Many, {}, false, false,  false, false>;
+  "isDynamicChildrenSystemParents": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
   "parent": $.LinkDesc<$SysNodeObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<parent[is sys_core::SysNodeObj]": $.LinkDesc<$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<children[is sys_core::SysNodeObj]": $.LinkDesc<$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -876,8 +885,10 @@ const $SysNotify = $.makeType<$SysNotify>(_.spec, "5dfb73c6-eedf-11ef-8c1d-f9a35
 const SysNotify: $.$expr_PathNode<$.TypeSet<$SysNotify, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysNotify, $.Cardinality.Many), null);
 
 export type $SysObjEntAttrλShape = $.typeutil.flatten<$SysObjEntλShape & {
+  "<objAttrSfSite[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<obj[is sys_core::SysAttr]": $.LinkDesc<$SysAttr, $.Cardinality.Many, {}, false, false,  false, false>;
   "<obj": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<objAttrSfSite": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysObjEntAttr = $.ObjectType<"sys_core::SysObjEntAttr", $SysObjEntAttrλShape, null, [
   ...$SysObjEnt['__exclusives__'],
@@ -929,9 +940,11 @@ export type $SysSystemλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_us
   "file": $.PropertyDesc<_std.$json, $.Cardinality.AtMostOne, false, false, false, false>;
   "logoMarginRight": $.PropertyDesc<_std.$float64, $.Cardinality.AtMostOne, false, false, false, false>;
   "logoWidth": $.PropertyDesc<_std.$int16, $.Cardinality.AtMostOne, false, false, false, false>;
-  "entitySystems": $.LinkDesc<$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
+  "users": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, true,  false, false>;
   "owner": $.LinkDesc<$SysOrg, $.Cardinality.One, {}, false, false,  false, false>;
-  "<entitySystems[is sys_core::SysSystem]": $.LinkDesc<$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
+  "systemParents": $.LinkDesc<$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
+  "typesAttribute": $.LinkDesc<$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
+  "typesCodeType": $.LinkDesc<$SysCodeType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_core::SysObjEnt]": $.LinkDesc<$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_user::SysUserTypeResource]": $.LinkDesc<_sys_user.$SysUserTypeResource, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -943,6 +956,7 @@ export type $SysSystemλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_us
   "<owner[is sys_core::SysDataObj]": $.LinkDesc<$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_core::SysNotify]": $.LinkDesc<$SysNotify, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_core::SysDataObjFieldEmbedListConfig]": $.LinkDesc<$SysDataObjFieldEmbedListConfig, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<systemParents[is sys_core::SysSystem]": $.LinkDesc<$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_core::SysDataObjFieldEmbedListEdit]": $.LinkDesc<$SysDataObjFieldEmbedListEdit, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_core::SysDataObjFieldEmbedListSelect]": $.LinkDesc<$SysDataObjFieldEmbedListSelect, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_core::SysDataObjFieldListItems]": $.LinkDesc<$SysDataObjFieldListItems, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -972,8 +986,8 @@ export type $SysSystemλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_us
   "<owner[is sys_core::SysDataObjActionGroup]": $.LinkDesc<$SysDataObjActionGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner[is sys_core::SysObjEntAttr]": $.LinkDesc<$SysObjEntAttr, $.Cardinality.Many, {}, false, false,  false, false>;
   "<defaultSystem": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<entitySystems": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<owner": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<systemParents": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<systems": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysSystem = $.ObjectType<"sys_core::SysSystem", $SysSystemλShape, null, [

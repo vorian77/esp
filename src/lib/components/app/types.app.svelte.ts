@@ -12,7 +12,9 @@ import {
 	DataRecordStatus,
 	DataRow,
 	Node,
+	NodeTreeLeafIdType,
 	NodeType,
+	ParmsValues,
 	ParmsValuesType,
 	required,
 	ResponseBody,
@@ -130,7 +132,7 @@ export class App {
 
 	async addTreeNode(sm: State, token: TokenAppNode) {
 		let newTab = new AppLevelTab({
-			...this.addTreeNodeParmsList(token.node, CodeActionType.default)
+			...this.addTreeNodeParmsList(token.node, CodeActionType.default, false)
 		})
 		await queryTypeTab(sm, newTab, TokenApiQueryType.retrieve)
 		this.addTree([newTab])
@@ -183,20 +185,53 @@ export class App {
 
 						// add children - lists
 						rawNodes.children.forEach((n) => {
-							tabs.push(new AppLevelTab(this.addTreeNodeParmsList(new Node(n), token.actionType)))
+							tabs.push(
+								new AppLevelTab(this.addTreeNodeParmsList(new Node(n), token.actionType, false))
+							)
 						})
 
 						// create new level with tabs
 						currTreeLevel.levelAdd(tabs)
+						await this.addTreeNodeChildrenDynamic(token.actionType)
 					}
 				}
 			}
 		}
 	}
-	addTreeNodeParmsList(node: Node, actionType: CodeActionType) {
+
+	async addTreeNodeChildrenDynamic(actionType: CodeActionType) {
+		const currTreeLevel = this.getCurrTreeLevel()
+		if (currTreeLevel) {
+			const tabParent = currTreeLevel.getCurrTabParentTab()
+			if (tabParent && tabParent.node && tabParent.node.isDynamicChildrenSystemParents) {
+				const listDataRow = tabParent.listGetDataRow()
+				const systemId = listDataRow?.getValue('id') || ''
+				const entitySystmesNodes: any[] = await apiFetchFunction(
+					ApiFunction.dbGelGetNodesSystemParents,
+					new TokenApiFetchError(
+						FILENAME,
+						'getNodesLevel',
+						`Error retrieving entity systems - nodeId: ${tabParent.node?.id} and systemId: ${systemId}`
+					),
+					new TokenApiId(systemId)
+				)
+
+				const dynamicTabs: AppLevelTab[] = entitySystmesNodes.reduce((acc, n) => {
+					acc.push(new AppLevelTab(this.addTreeNodeParmsList(new Node(n), actionType, true)))
+					return acc
+				}, [])
+
+				const currLevel = currTreeLevel.getCurrLevel()
+				currLevel.setDynamicTabs(dynamicTabs)
+			}
+		}
+	}
+
+	addTreeNodeParmsList(node: Node, actionType: CodeActionType, isDynamic: boolean) {
 		return {
 			dataObjId: node.getNodeDataObjId(actionType),
 			isAlwaysRetrieveData: node.isAlwaysRetrieveData,
+			isDynamic,
 			isHideRowManager: node.isHideRowManager,
 			label: node.label,
 			node: node,
@@ -230,6 +265,7 @@ export class App {
 	getCurrTreeLevel() {
 		return this.treeLevelsIdxCurrent >= 0 ? this.treeLevels[this.treeLevelsIdxCurrent] : undefined
 	}
+
 	getDataTree(offset: number) {
 		const treeLevel = this.getCurrTreeLevel()
 		if (treeLevel) {
@@ -275,7 +311,7 @@ export class App {
 	}
 
 	async rowUpdate(sm: State, token: TokenAppRow) {
-		await this.getCurrTreeLevel()?.rowUpdate(sm, token)
+		await this.getCurrTreeLevel()?.rowUpdate(sm, token, this)
 	}
 
 	async saveDetail(sm: State, codeActionType: CodeActionType, token: TokenAppDo) {
@@ -283,6 +319,29 @@ export class App {
 	}
 	async saveList(sm: State) {
 		await this.getCurrTreeLevel()?.saveList(sm)
+	}
+
+	setTreeLeafId(sm: State, parms: ParmsValues) {
+		const treeLevel = this.getCurrTreeLevel()
+		if (treeLevel) {
+			if (treeLevel.levels.length > 0) {
+				const rootTab = treeLevel.levels[0].getCurrTab()
+				if (rootTab && rootTab.node) {
+					if (rootTab.node.treeLeafIdType === NodeTreeLeafIdType.treeLeafIdOrgRecord) {
+						parms.valueSet(ParmsValuesType.treeLeafIdOrg, rootTab.getCurrRecordValue('id'))
+					} else if (
+						rootTab.node.treeLeafIdType === NodeTreeLeafIdType.treeLeafIdSystemApp &&
+						rootTab.node.systemId
+					) {
+						parms.valueSet(ParmsValuesType.treeLeafIdSystem, rootTab.node.systemId)
+					} else if (rootTab.node.treeLeafIdType === NodeTreeLeafIdType.treeLeafIdSystemRecord) {
+						parms.valueSet(ParmsValuesType.treeLeafIdSystem, rootTab.getCurrRecordValue('id'))
+					} else if (sm?.user?.systemIdCurrent) {
+						parms.valueSet(ParmsValuesType.treeLeafIdSystem, sm.user.systemIdCurrent)
+					}
+				}
+			}
+		}
 	}
 
 	setTreeLevelIdxCurrent(treeLevelIdx: number) {
@@ -330,6 +389,24 @@ export class AppLevel {
 			tab.reset()
 		})
 	}
+
+	setDynamicTabs(dynamicTabs: AppLevelTab[]) {
+		const currTab = this.getCurrTab()
+		if (
+			currTab &&
+			currTab.isDynamic &&
+			-1 === dynamicTabs.findIndex((tab) => tab.dataObjId === currTab.dataObjId)
+		) {
+			this.tabIdxCurrent = 0
+		}
+		this.tabs = [
+			...this.tabs.filter((tab) => {
+				return !tab.isDynamic
+			}),
+			...dynamicTabs
+		]
+	}
+
 	tabIdxRestore() {
 		if (this.tabIdxRestoreVal !== undefined && this.tabIdxRestoreVal > -1) {
 			this.tabIdxSet(this.tabIdxRestoreVal)
@@ -338,6 +415,13 @@ export class AppLevel {
 	}
 	tabIdxSet(newIdx: number, setTabSet: boolean = false) {
 		this.tabIdxCurrent = newIdx
+	}
+	tabInList(tab: AppLevelTab) {
+		return (
+			this.tabs.findIndex((t) => {
+				return t.dataObjId === tab.dataObjId
+			}) > -1
+		)
 	}
 }
 
@@ -373,6 +457,7 @@ export class AppLevelTab {
 	dataObjIdChild?: string
 	dataObjSource: TokenApiDbDataObjSource
 	isAlwaysRetrieveData: boolean
+	isDynamic: boolean
 	isHideRowManager: boolean
 	isVirtual: boolean
 	isProgramObject: boolean
@@ -389,6 +474,7 @@ export class AppLevelTab {
 		this.dataObjIdChild = obj.dataObjIdChild
 		this.dataObjSource = obj.dataObjSource
 		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData)
+		this.isDynamic = booleanOrFalse(obj.isDynamic)
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager)
 		this.isProgramObject = booleanOrFalse(obj.isProgramObject)
 		this.isRetrieved = booleanOrFalse(obj.isRetrieved)
@@ -682,10 +768,23 @@ export class AppTree {
 		}
 	}
 
-	async rowUpdate(sm: State, token: TokenAppRow) {
+	async rowUpdate(sm: State, token: TokenAppRow, app: App) {
 		const tabParent = this.getCurrTabParentTab()
 		if (tabParent) {
 			tabParent.listSetIdByAction(token.rowAction)
+			if (tabParent.node?.isDynamicChildrenSystemParents) {
+				const tabCurrent = this.getCurrTab()
+				if (tabCurrent) {
+					await app.addTreeNodeChildrenDynamic(CodeActionType.none)
+					const currLevel = this.getCurrLevel()
+					if (currLevel) {
+						if (!currLevel.tabInList(tabCurrent)) {
+							await this.levelPop(sm)
+							return
+						}
+					}
+				}
+			}
 			await this.tabQueryDetailDataRow(sm, TokenApiQueryType.retrieve, tabParent.listGetDataRow())
 		}
 	}

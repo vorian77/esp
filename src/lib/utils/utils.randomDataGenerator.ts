@@ -173,7 +173,6 @@ const dataItemsPart = {
 			'Turner'
 		]
 	},
-	office: { type: 'list', values: ['moedOfficeEastside', 'moedOfficeWestside'] },
 	phoneMobile: { type: 'number', length: 10 },
 	ssn: { type: 'number', length: 9 },
 	zip: { type: 'list', values: ['21202', '21201', '21205', '21206', '21207', '21208'] }
@@ -219,6 +218,7 @@ const dataItemsServiceFlow = {
 		refn: 'dateStart',
 		type: 'daysAfterRefn'
 	},
+	office: { type: 'list', values: ['moedOfficeEastside', 'moedOfficeWestside'] },
 	codeStatus: {
 		type: 'listDependent',
 		parms: [
@@ -239,9 +239,25 @@ const dataItemsServiceFlow = {
 				values: ['New application']
 			}
 		]
+	},
+	codeOutcome: {
+		type: 'listDependent',
+		parms: [
+			{
+				prop: 'dateEnd',
+				values: ['Did not complete']
+			}
+		]
 	}
 }
-const recordServiceFlow = ['dateCreated', 'dateStart', 'dateEnd', 'codeStatus']
+const recordServiceFlow = [
+	'dateCreated',
+	'dateStart',
+	'dateEnd',
+	'office',
+	'codeStatus',
+	'codeOutcome'
+]
 
 const dataItemsDataDoc = {
 	dateIssued: {

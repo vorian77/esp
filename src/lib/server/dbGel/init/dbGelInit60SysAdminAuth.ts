@@ -527,35 +527,26 @@ function initDataObjMyAccount(init: InitDb) {
 				indexTable: 1
 			},
 			{
-				columnName: 'userName',
-				headerAlt: 'Mobile Phone Number',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60
+				orderDisplay: 50,
+				orderDefine: 50
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70
+				orderDisplay: 60,
+				orderDefine: 60
 			},
 			{
-				codeFieldElement: 'select',
-				columnName: 'defaultOrg',
+				columnName: 'userName',
+				headerAlt: 'Mobile Phone Number',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
-				indexTable: 0,
-				fieldListItems: 'il_sys_org_by_user'
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
 			},
 			{
 				codeFieldElement: 'select',

@@ -34,14 +34,16 @@ export function queryDataPre(
 	queryType: TokenApiQueryType
 ) {
 	const clazz = `${FILENAME}.queryDataPre`
+	const currApp = sm.stateRoot ? sm.stateRoot.app : sm.app
 
 	// dataTree
-	const dataTree = queryDataPreTree(queryType, sm.stateRoot ? sm.stateRoot.app : sm.app)
+	const dataTree = queryDataPreTree(queryType, currApp)
 
-	// dataTab
+	// dataTab & parms
 	const dataTab = data ? DataObjData.load(data) : new DataObjData()
 	dataTab.parms.update(sm.parmsState.valueGetAll())
 	dataTab.parms.update(sm.parmsTrans.valueGetAll())
+	currApp.setTreeLeafId(sm, dataTab.parms)
 
 	// default for fieldListItems itemChanges
 	dataTab.parms.valueSetIfMissing(ParmsValuesType.itemsParmValue, '')

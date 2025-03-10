@@ -20,8 +20,8 @@ export class FieldToggle extends Field {
 	getValueBoolean(currValue: any) {
 		return currValue === this.valueTrue ? true : false
 	}
-	toggle(currValue: any) {
-		return currValue === this.valueTrue ? this.valueFalse : this.valueTrue
+	toggle(valueToggle: any) {
+		return valueToggle ? this.valueFalse : this.valueTrue
 	}
 	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {
 		if (

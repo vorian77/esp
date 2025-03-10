@@ -827,7 +827,7 @@ export class DataRows {
 		return this.dataRows.findIndex((dr) => dr.record.id === id)
 	}
 	getRowValue(row: number, key: string) {
-		if (this.dataRows.length <= row) return undefined
+		if (row < 0 || this.dataRows.length <= row) return undefined
 		return this.dataRows[row].getValue(key)
 	}
 	getRowValueById(id: string, key: string) {
@@ -1036,5 +1036,7 @@ export enum ParmsValuesType {
 	propLinkItemsSourceRaw = 'propLinkItemsSource',
 	propLinkItemsValueCurrent = 'propLinkItemsValueCurrent',
 	rowData = 'rowData',
-	selectLabel = 'selectLabel'
+	selectLabel = 'selectLabel',
+	treeLeafIdOrg = 'treeLeafIdOrg',
+	treeLeafIdSystem = 'treeLeafIdSystem'
 }

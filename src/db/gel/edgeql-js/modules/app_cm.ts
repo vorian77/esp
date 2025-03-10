@@ -26,10 +26,10 @@ const CmClient: $.$expr_PathNode<$.TypeSet<$CmClient, $.Cardinality.Many>, null>
 
 export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "programCm": $.LinkDesc<$CmProgram, $.Cardinality.One, {}, false, false,  false, false>;
+  "codeSfEligibilityStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "codeSfEnrollType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "codeSfOutcome": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "client": $.LinkDesc<$CmClient, $.Cardinality.One, {}, false, false,  false, false>;
-  "codeServiceFlowOutcome": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeServiceFlowType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "user": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "dateCreated": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;
   "dateEnd": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -38,6 +38,7 @@ export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_user.$MgmtλSh
   "dateStartEst": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "idxDemo": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "objAttrSfSite": $.LinkDesc<_sys_core.$SysObjEntAttr, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfGroup]": $.LinkDesc<$CmCsfGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfData]": $.LinkDesc<$CmCsfData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfCohort]": $.LinkDesc<$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;

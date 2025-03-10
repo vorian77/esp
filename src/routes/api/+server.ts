@@ -8,6 +8,7 @@ import {
 	getFieldEmbedListSelect,
 	getLinkItemsSource,
 	getNodesBranch,
+	getNodesSystemParentss,
 	getNodesLevel,
 	getTableColumns,
 	getUserByUserId,
@@ -42,6 +43,9 @@ export async function POST({ request }) {
 
 		case ApiFunction.dbGelGetNodesBranch:
 			return getServerResponse(await getNodesBranch(token))
+
+		case ApiFunction.dbGelGetNodesSystemParents:
+			return getServerResponse(await getNodesSystemParentss(token))
 
 		case ApiFunction.dbGelGetNodesLevel:
 			return getServerResponse(await getNodesLevel(token))

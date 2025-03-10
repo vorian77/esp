@@ -27,7 +27,7 @@ const SysDataObjColumnItemChange = e.shape(e.sys_core.SysDataObjColumnItemChange
 	_codeValueTrigger: t.codeValueTrigger.id,
 	_codeValueTypeTarget: t.codeValueTypeTarget.name,
 	_codeValueTypeTrigger: t.codeValueTypeTrigger.name,
-	_column: t.column.column.name,
+	_columns: t.columns.column.name,
 	selectParmValue: true,
 	valueScalarTarget: true,
 	valueScalarTrigger: true,
@@ -97,12 +97,14 @@ const shapeNodeObjData = e.shape(e.sys_core.SysNodeObjData, (d) => ({
 const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 	_codeIcon: n.codeIcon.name,
 	_codeNodeType: n.codeNodeType.name,
+	_codeTreeLeafId: n.codeTreeLeafId.name,
 	_data: e.select(n.data, (d) => ({
 		...shapeNodeObjData(d)
 	})),
 	header: true,
 	id: true,
 	isAlwaysRetrieveData: true,
+	isDynamicChildrenSystemParents: true,
 	isHideRowManager: true,
 	name: true,
 	orderDefine: true,
@@ -120,6 +122,7 @@ const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	_codeIconName: t.codeIcon.name,
 	_codeRenderType: t.codeRenderType.name,
 	_codeStatusObjName: t.codeStatusObj.name,
+	_ownerId: t.owner.id,
 	_pageDataObjId: t.pageDataObj.id,
 	_targetDataObjId: t.targetDataObj.id,
 	_targetNodeObj: e.select(t.targetNodeObj, (n) => ({
@@ -509,16 +512,22 @@ export async function getNodesBranch(token: TokenApiId) {
 	return await query.run(client)
 }
 
-export async function getNodesEntitySystems(token: TokenApiId) {
-	const systemId = token.id
-	const children = e.select(e.sys_core.SysNodeObj, (n: any) => ({
+export async function getNodesSystemParentss(token: TokenApiId) {
+	const query = e.select(e.sys_core.SysNodeObj, (n) => ({
 		...shapeNodeObj(n),
 		filter: e.op(
 			e.op(n.codeNodeType.name, '=', 'system'),
 			'and',
-			e.op(n.system.id, '=', e.cast(e.uuid, systemId))
+			e.op(
+				n.owner,
+				'in',
+				e.select(e.sys_core.SysSystem, (s) => ({
+					filter: e.op(s.id, '=', e.cast(e.uuid, token.id))
+				})).systemParents
+			)
 		)
 	}))
+	return await query.run(client)
 }
 
 export async function getNodesLevel(token: TokenApiId) {
@@ -656,22 +665,23 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			isActive: true,
 			filter: e.op(p.user.id, '=', u.id)
 		})),
-		resources_app: e.select(e.sys_user.SysApp, (res) => ({
-			appHeader: e.select(res.appHeader, (ah) => ({
+		resources_app: e.select(e.sys_user.SysApp, (app) => ({
+			_appHeader: e.select(app.appHeader, (ah) => ({
 				_codeIcon: ah.codeIcon.name,
 				id: true,
 				header: true,
 				name: true,
 				orderDefine: true
 			})),
-			id: true,
-			name: true,
-			nodes: e.select(res.nodes, (n) => ({
+			_nodes: e.select(app.nodes, (n) => ({
 				...shapeNodeObj(n),
 				order_by: n.orderDefine
 			})),
-			filter: e.op(res.id, 'in', u.userTypes.resources.id),
-			order_by: res.appHeader.orderDefine
+			_ownerId: app.owner.id,
+			id: true,
+			name: true,
+			filter: e.op(app.id, 'in', u.userTypes.resources.id),
+			order_by: app.appHeader.orderDefine
 		})),
 		resources_task: e.select(e.sys_user.SysTask, (res) => ({
 			...shapeTask(res),

@@ -56,7 +56,7 @@ export async function qrfFileStorage(
 					url = fileParm.url
 				}
 				if (url) {
-					await blobDelete(sm, url, true)
+					await blobDelete(sm, url, true, dataQuery, fileKeyData)
 					dataQuery.rowsSave.setDetailRecordValue(fileKeyData, undefined)
 				}
 				break
@@ -67,7 +67,7 @@ export async function qrfFileStorage(
 
 			case TokenApiBlobAction.upload:
 				if (fileParm instanceof TokenApiBlobParmUpload) {
-					if (fileParm.urlOld) await blobDelete(sm, fileParm.urlOld, false)
+					if (fileParm.urlOld) await blobDelete(sm, fileParm.urlOld, false, dataQuery, fileKeyData)
 					await blobUpload(sm, fileParm, dataQuery, fileKeyData)
 				}
 				break
@@ -83,13 +83,20 @@ export async function qrfFileStorage(
 	return dataQuery
 }
 
-const blobDelete = async function (sm: State, url: string, isShowMsg: boolean) {
+const blobDelete = async function (
+	sm: State,
+	url: string,
+	isShowMsg: boolean,
+	dataQuery: DataObjData,
+	fileFieldKey: string
+) {
 	const result = await apiFetch(
 		'/api/vercel',
 		TokenApiFetchMethod.post,
 		new TokenApiFetchError(FILENAME, 'blobDelete', `Unable to delete blob: ${url}.`),
 		{ formData: { fileAction: TokenApiBlobAction.delete, url } }
 	)
+	dataQuery.rowsSave.setDetailRecordValue(fileFieldKey, null)
 	if (isShowMsg) sm.openToast(ToastType.success, `File successfully deleted.`)
 	return result
 }

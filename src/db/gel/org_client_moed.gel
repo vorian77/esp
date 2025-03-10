@@ -1,7 +1,7 @@
 module org_client_moed {
   type MoedParticipant extending app_cm::CmClient {    
     consentDisclaimer: bool;
-    required idxDemo: int64;
+    idxDemo: int64;
   }
 
   type MoedPartData extending sys_core::SysObj {

@@ -4,6 +4,7 @@ import {
 	CodeActionType,
 	getArray,
 	memberOfEnum,
+	memberOfEnumIfExists,
 	nbrRequired,
 	strRequired,
 	valueOrDefault
@@ -36,16 +37,28 @@ export class NodeHeader {
 export class Node extends NodeHeader {
 	data: NodeData[]
 	isAlwaysRetrieveData: boolean
+	isDynamicChildrenSystemParents: boolean
 	isHideRowManager: boolean
 	isMobileMode: boolean
+	systemId?: string
+	treeLeafIdType?: NodeTreeLeafIdType
 	constructor(obj: any) {
 		const clazz = 'Node'
 		obj = valueOrDefault(obj, {})
 		super(obj)
 		this.data = arrayOfClass(NodeData, obj._data)
 		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData)
+		this.isDynamicChildrenSystemParents = booleanOrFalse(obj.isDynamicChildrenSystemParents)
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager)
 		this.isMobileMode = booleanOrFalse(obj.isMobileMode)
+		this.systemId = obj.systemId
+		this.treeLeafIdType = memberOfEnumIfExists(
+			obj._codeTreeLeafId,
+			'treeLeafIdType',
+			clazz,
+			'NodeTreeLeafIdType',
+			NodeTreeLeafIdType
+		)
 	}
 	getNodeData(actionType: CodeActionType) {
 		let nodeData = this.data.find((d) => d.actionType === actionType)
@@ -104,6 +117,12 @@ export class NodeNav {
 	}
 }
 
+export enum NodeTreeLeafIdType {
+	treeLeafIdOrgRecord = 'treeLeafIdOrgRecord',
+	treeLeafIdSystemApp = 'treeLeafIdSystemApp',
+	treeLeafIdSystemRecord = 'treeLeafIdSystemRecord'
+}
+
 export enum NodeType {
 	home = 'home',
 	menu_app = 'menu_app',
@@ -112,7 +131,8 @@ export enum NodeType {
 	object = 'object',
 	page = 'page',
 	program = 'program',
-	program_object = 'program_object'
+	program_object = 'program_object',
+	system = 'system'
 }
 
 export class RawMenu {
@@ -125,11 +145,11 @@ export class RawMenu {
 		this.apps = this.apps.sort((a, b) => a.header.orderDefine - b.header.orderDefine)
 	}
 	addApp(app: any) {
-		let idx = this.apps.findIndex((h) => h.header.id === app.appHeader.id)
+		let idx = this.apps.findIndex((h) => h.header.id === app._appHeader.id)
 		if (idx === -1) {
 			idx = this.apps.push(new RawMenuApp(app))
 		} else {
-			this.apps[idx].addNodes(app.nodes)
+			this.apps[idx].addNodes(app._nodes)
 		}
 	}
 }
@@ -137,16 +157,19 @@ export class RawMenu {
 export class RawMenuApp {
 	header: NodeHeader
 	nodes: Node[] = []
+	systemId: string
 	constructor(obj: any) {
 		const clazz = 'RawMenuApp'
 		obj = valueOrDefault(obj, {})
-		this.header = new NodeHeader({ ...obj.appHeader, _codeNodeType: NodeType.menu_app })
-		this.addNodes(obj.nodes)
+		this.header = new NodeHeader({ ...obj._appHeader, _codeNodeType: NodeType.menu_app })
+		this.systemId = strRequired(obj._ownerId, clazz, 'systemId')
+		this.addNodes(obj._nodes)
 	}
 	addNodes(nodes: Node[]) {
 		nodes = getArray(nodes)
 		nodes.forEach((n) => {
-			if (!this.nodes.find((e) => e.id === n.id)) this.nodes.push(new Node(n))
+			if (!this.nodes.find((e) => e.id === n.id))
+				this.nodes.push(new Node({ ...n, systemId: this.systemId }))
 		})
 		this.nodes.sort((a, b) => a.orderDefine - b.orderDefine)
 	}

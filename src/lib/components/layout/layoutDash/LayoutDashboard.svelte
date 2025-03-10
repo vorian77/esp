@@ -99,7 +99,7 @@
 		if (task.dataObjPage) {
 			// handled by custom actions on form
 		} else if (task.targetDataObjId || task.targetNodeObj) {
-			sm.parmsState.update(parms)
+			sm.parmsState.update({ ...parms, treeLeafIdSystem: task.ownerId })
 			const token = task.getTokenNode(sm.user)
 			await sm.triggerAction(
 				new TokenAppStateTriggerAction({

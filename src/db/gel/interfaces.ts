@@ -107,10 +107,10 @@ export namespace app_cm {
   }
   export interface CmClientServiceFlow extends sys_user.Mgmt {
     "programCm": CmProgram;
+    "codeSfEligibilityStatus"?: sys_core.SysCode | null;
+    "codeSfEnrollType"?: sys_core.SysCode | null;
+    "codeSfOutcome"?: sys_core.SysCode | null;
     "client": CmClient;
-    "codeServiceFlowOutcome"?: sys_core.SysCode | null;
-    "codeServiceFlowType"?: sys_core.SysCode | null;
-    "codeStatus"?: sys_core.SysCode | null;
     "user"?: sys_user.SysUser | null;
     "dateCreated": gel.LocalDate;
     "dateEnd"?: gel.LocalDate | null;
@@ -119,6 +119,7 @@ export namespace app_cm {
     "dateStartEst"?: gel.LocalDate | null;
     "idxDemo"?: number | null;
     "note"?: string | null;
+    "objAttrSfSite"?: sys_core.SysObjEntAttr | null;
   }
   export interface CmCohort extends sys_core.SysObj {
     "codeStatus"?: sys_core.SysCode | null;
@@ -297,6 +298,7 @@ export namespace sys_core {
     "zip"?: string | null;
     "contacts": $default.SysPerson[];
     "notes": SysObjNote[];
+    "phoneOffice"?: string | null;
   }
   export interface SysAttr extends sys_user.Mgmt {
     "obj": SysObjEntAttr;
@@ -411,9 +413,9 @@ export namespace sys_core {
   }
   export interface SysDataObjColumnItemChange extends sys_user.Mgmt {
     "codeAccess"?: SysCode | null;
+    "columns": SysDataObjColumn[];
     "codeValueTarget"?: SysCode | null;
     "codeValueTrigger"?: SysCode | null;
-    "column": SysDataObjColumn;
     "valueScalarTarget"?: string | null;
     "valueScalarTrigger"?: string | null;
     "selectParmValue"?: string | null;
@@ -500,12 +502,14 @@ export namespace sys_core {
   }
   export interface SysNodeObj extends SysObj {
     "children": SysNodeObj[];
+    "codeTreeLeafId"?: SysCode | null;
     "codeNavType": SysCode;
     "codeNodeType": SysCode;
     "isAlwaysRetrieveData": boolean;
     "isHideRowManager": boolean;
     "page"?: string | null;
     "data": SysNodeObjData[];
+    "isDynamicChildrenSystemParents": boolean;
     "parent"?: SysNodeObj | null;
   }
   export interface SysNodeObjData extends std.$Object {
@@ -533,8 +537,11 @@ export namespace sys_core {
     "file"?: unknown | null;
     "logoMarginRight"?: number | null;
     "logoWidth"?: number | null;
-    "entitySystems": SysSystem[];
+    "users": sys_user.SysUser[];
     "owner": SysOrg;
+    "systemParents": SysSystem[];
+    "typesAttribute": SysCode[];
+    "typesCodeType": SysCodeType[];
   }
 }
 export namespace app_crm {
@@ -613,7 +620,7 @@ export namespace org_client_moed {
   }
   export interface MoedParticipant extends app_cm.CmClient {
     "consentDisclaimer"?: boolean | null;
-    "idxDemo": number;
+    "idxDemo"?: number | null;
   }
 }
 export namespace schema {

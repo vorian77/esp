@@ -137,11 +137,11 @@ export class Field {
 					break
 
 				case FieldItemChangeTypeTrigger.notNull:
-					if (![null, undefined].includes(triggerValueCurrent)) await process(itemChange)
+					if (!['', null, undefined].includes(triggerValueCurrent)) await process(itemChange)
 					break
 
 				case FieldItemChangeTypeTrigger.null:
-					if ([null, undefined].includes(triggerValueCurrent)) await process(itemChange)
+					if (['', null, undefined].includes(triggerValueCurrent)) await process(itemChange)
 					break
 
 				case FieldItemChangeTypeTrigger.scalar:
@@ -189,35 +189,39 @@ export class Field {
 			}
 		}
 		async function process(itemChange: FieldItemChange) {
-			if (itemChange.codeAccess) itemChange.field.fieldAccess = itemChange.codeAccess
+			for (let i = 0; i < itemChange.fields.length; i++) {
+				const field = itemChange.fields[i]
 
-			let newValue
-			const targetCurrValue = dmn.recordsDisplay[row][itemChange.field.colDO.propName]
+				if (itemChange.codeAccess) field.fieldAccess = itemChange.codeAccess
 
-			switch (itemChange.codeValueTypeTarget) {
-				case FieldItemChangeTypeTarget.none:
-					await dmn.setFieldVal(row, itemChange.field, targetCurrValue)
-					break
+				let newValue
+				const targetCurrValue = dmn.recordsDisplay[row][field.colDO.propName]
 
-				case FieldItemChangeTypeTarget.reset:
-					await dmn.setFieldVal(row, itemChange.field, null)
-					break
+				switch (itemChange.codeValueTypeTarget) {
+					case FieldItemChangeTypeTarget.none:
+						await dmn.setFieldVal(row, field, targetCurrValue)
+						break
 
-				case FieldItemChangeTypeTarget.scalar:
-					await dmn.setFieldVal(row, itemChange.field, itemChange.valueScalarTarget)
-					break
+					case FieldItemChangeTypeTarget.reset:
+						await dmn.setFieldVal(row, field, null)
+						break
 
-				case FieldItemChangeTypeTarget.select:
-					itemChange.field.linkItems?.source.setParmValue(triggerValueCurrent)
-					await itemChange.field.linkItems?.retrieve(sm, undefined)
-					break
+					case FieldItemChangeTypeTarget.scalar:
+						await dmn.setFieldVal(row, field, itemChange.valueScalarTarget)
+						break
 
-				default:
-					error(500, {
-						file: FILENAME,
-						function: 'processItemChanges.process',
-						message: `No case defined for FieldItemChangeTypeTarget: ${itemChange.codeValueTypeTarget}`
-					})
+					case FieldItemChangeTypeTarget.select:
+						field.linkItems?.source.setParmValue(triggerValueCurrent)
+						await field.linkItems?.retrieve(sm, undefined)
+						break
+
+					default:
+						error(500, {
+							file: FILENAME,
+							function: 'processItemChanges.process',
+							message: `No case defined for FieldItemChangeTypeTarget: ${itemChange.codeValueTypeTarget}`
+						})
+				}
 			}
 		}
 	}
@@ -365,7 +369,7 @@ export class FieldItemChange {
 	codeValueTrigger?: string
 	codeValueTypeTarget: FieldItemChangeTypeTarget
 	codeValueTypeTrigger: FieldItemChangeTypeTrigger
-	field: Field
+	fields: Field[] = []
 	selectParmValue?: string
 	valueScalarTarget?: string
 	valueScalarTrigger?: string
@@ -395,13 +399,17 @@ export class FieldItemChange {
 			'FieldTriggerValueTypeTrigger',
 			FieldItemChangeTypeTrigger
 		)
-		this.field = required(
-			fields.find((f: Field) => {
-				return f.colDO.propNameRaw === target._column
-			}),
-			clazz,
-			'field'
-		)
+		target._columns.forEach((c) => {
+			this.fields.push(
+				required(
+					fields.find((f: Field) => {
+						return f.colDO.propNameRaw === c
+					}),
+					clazz,
+					'field'
+				)
+			)
+		})
 		this.selectParmValue = target.selectParmValue
 		this.valueScalarTarget = target.valueScalarTarget
 		this.valueScalarTrigger = target.valueScalarTrigger

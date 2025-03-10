@@ -12,7 +12,7 @@ function initFieldListSelectResource(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		exprFilter: `.isGlobalResource UNION .owner IN (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).orgs`,
+		exprFilter: `.isGlobalResource UNION .owner.id = <parms,uuid,treeLeafIdSystem> UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <parms,uuid,treeLeafIdSystem>).systemParents`,
 		header: 'Select Resource(s)',
 		name: 'dofls_sys_admin_sys_user_type_resource',
 		owner: 'sys_system',
@@ -66,7 +66,7 @@ function initFieldListSelectUser(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		exprFilter: '.owner IN (SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>).orgs',
+		exprFilter: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,treeLeafIdSystem>).owner IN .orgs`,
 		header: 'Select Users',
 		name: 'dofls_sys_sys_admin_user',
 		owner: 'sys_system',
@@ -334,7 +334,7 @@ function initUserType(init: InitDb) {
 		data: [{ dataObj: 'data_obj_sys_admin_user_type_list' }],
 		header: 'User Types',
 		name: 'node_obj_sys_admin_user_type_list',
-		orderDefine: 20,
+		orderDefine: 40,
 		owner: 'sys_system'
 	})
 

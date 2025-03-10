@@ -104,6 +104,7 @@ export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
   "<modifiedBy[is sys_core::SysObjEnt]": $.LinkDesc<_sys_core.$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysObjEnt]": $.LinkDesc<_sys_core.$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<users[is sys_core::SysSystem]": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysNotify]": $.LinkDesc<_sys_core.$SysNotify, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysNotify]": $.LinkDesc<_sys_core.$SysNotify, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;

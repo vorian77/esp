@@ -99,7 +99,7 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				columnName: 'programCm',
-				exprSave: `(SELECT assert_single((SELECT app_cm::CmProgram FILTER .name = 'cmp_moed_self_service_reg')))`,
+				exprSave: `(SELECT assert_single((SELECT app_cm::CmProgram FILTER .name = 'cmp_moed_yo')))`,
 				orderDefine: 40,
 				indexTable: 0,
 				isDisplayable: false,
@@ -107,8 +107,8 @@ function initTaskSsrApp(init: InitDb) {
 				linkTable: 'CmProgram'
 			},
 			{
-				columnName: 'codeServiceFlowType',
-				exprPreset: `(SELECT assert_single((sys_core::getCode('ct_cm_program_type', 'Walk in'))))`,
+				columnName: 'codeSfEnrollType',
+				exprPreset: `(SELECT assert_single((sys_core::getCode('ct_cm_sf_enroll_type', 'Self-Registration'))))`,
 				orderDefine: 45,
 				indexTable: 0,
 				isDisplayable: false,
@@ -125,7 +125,7 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <user,uuid,system.id>)`,
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,treeLeafIdSystem>)`,
 				orderDefine: 60,
 				indexTable: 1,
 				isDisplayable: false,
@@ -145,8 +145,8 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeStatus',
-				exprPreset: `(SELECT assert_single((sys_core::getCode('ct_cm_service_flow_status', 'New application'))))`,
+				columnName: 'codeSfEligibilityStatus',
+				exprPreset: `(SELECT assert_single((sys_core::getCode('ct_cm_sf_eligibility_status', 'New application'))))`,
 				orderDefine: 200,
 				orderDisplay: 200,
 				indexTable: 0,
@@ -156,16 +156,14 @@ function initTaskSsrApp(init: InitDb) {
 				linkTable: 'SysCode'
 			},
 			{
-				attrAccess: true,
-				codeAttrType: 'attr_moed_office',
 				codeFieldElement: 'select',
-				columnName: 'attributes',
-				headerAlt: 'Office',
+				columnName: 'objAttrSfSite',
 				isDisplayable: true,
 				orderDisplay: 210,
 				orderDefine: 210,
-				indexTable: 2,
-				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name'
+				indexTable: 0,
+				fieldListItems: 'il_sys_attr_obj_system_type',
+				fieldListItemsParmValue: 'attr_cm_sf_site'
 			},
 			{
 				codeFieldElement: 'date',
@@ -244,7 +242,7 @@ function initTaskSsrApp(init: InitDb) {
 						},
 						codeValueTypeTarget: 'none',
 						codeValueTypeTrigger: 'code',
-						column: 'genderSelfId',
+						columns: ['genderSelfId'],
 						fieldAccess: 'required',
 						op: 'equal',
 						orderDefine: 0
@@ -257,7 +255,7 @@ function initTaskSsrApp(init: InitDb) {
 						},
 						codeValueTypeTarget: 'reset',
 						codeValueTypeTrigger: 'code',
-						column: 'genderSelfId',
+						columns: ['genderSelfId'],
 						fieldAccess: 'hidden',
 						op: 'notEqual',
 						orderDefine: 1
@@ -380,6 +378,7 @@ function initTaskSsrApp(init: InitDb) {
 		codeIcon: 'ClipboardPen',
 		codeRenderType: 'button',
 		codeStatusObj: 'tso_sys_data',
+		codeTreeLeafId: 'treeLeafIdSystemApp',
 		description: 'First step to my future.',
 		exprShow: `SELECT count((SELECT sys_user::SysUser FILTER .id = <user,uuid,id> AND .person.isLegalAgreed = true)) > 0`,
 		exprStatus: `WITH
@@ -387,7 +386,7 @@ function initTaskSsrApp(init: InitDb) {
 		SELECT {
 			isShowData := (exists sf),
 			applicationDate := {label := 'Application Date', data := sf.dateCreated, color := 'black'},
-  		codeStatus := {label := 'Current Status', data := sf.codeStatus.name, color := 'black'},
+  		codeEligibilityStatus := {label := 'Current Eligibility Status', data := sf.codeSfEligibilityStatus.name, color := 'black'},
   		lastUpdateBy := {label := 'Last Update By', data := sf.modifiedBy.person.fullName, color := 'black'}
 		}`,
 		header: 'My Application',
@@ -537,7 +536,7 @@ function initTaskSsrMsg(init: InitDb) {
 			},
 			{
 				attrAccess: true,
-				codeAttrType: 'attr_moed_office',
+				codeAttrType: 'attr_cm_sf_site',
 				exprSaveAttrObjects: '(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
 				columnName: 'attributes',
 				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name',
@@ -644,7 +643,7 @@ function initTaskSsrMsg(init: InitDb) {
 			},
 			{
 				attrAccess: true,
-				codeAttrType: 'attr_moed_office',
+				codeAttrType: 'attr_cm_sf_site',
 				exprSaveAttrObjects: '(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
 				columnName: 'attributes',
 				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name',
@@ -1121,15 +1120,15 @@ function initTaskSsrWelcome(init: InitDb) {
 
 function initAttributes(init: InitDb) {
 	init.addTrans('SysObjEntAttr', {
-		codeObjType: 'attr_moed_office',
-		header: 'Eastside YO Center - 1212 N. Wolfe St. - 410-732-2661',
+		codeObjType: 'attr_cm_sf_site',
+		header: 'Eastside YO Center',
 		isGlobalResource: false,
 		name: 'moedOfficeEastside',
 		owner: 'sys_client_moed'
 	})
 	init.addTrans('SysObjEntAttr', {
-		codeObjType: 'attr_moed_office',
-		header: 'Westside YO Center - 1510 W. Laffayette Ave. -  410-545-6953',
+		codeObjType: 'attr_cm_sf_site',
+		header: 'Westside YO Center',
 		isGlobalResource: false,
 		name: 'moedOfficeWestside',
 		owner: 'sys_client_moed'

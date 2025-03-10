@@ -155,6 +155,7 @@ export class UserResourceTask extends UserResource {
 	isRecreate: boolean = $state(false)
 	isShow: boolean = $state(false)
 	noDataMsg?: string
+	ownerId: string
 	pageDataObjId?: string
 	targetDataObjId?: string
 	targetNodeObj?: Node
@@ -175,6 +176,7 @@ export class UserResourceTask extends UserResource {
 		this.hasAltOpen = booleanOrFalse(obj.hasAltOpen)
 		this.isPinToDash = booleanOrFalse(obj.isPinToDash)
 		this.noDataMsg = obj.noDataMsg
+		this.ownerId = strRequired(obj._ownerId, clazz, 'ownerId')
 		this.pageDataObjId = obj._pageDataObjId
 		this.targetDataObjId = obj._targetDataObjId
 		this.targetNodeObj = classOptional(Node, obj._targetNodeObj)

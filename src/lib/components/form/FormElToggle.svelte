@@ -20,7 +20,7 @@
 	let valueToggle: boolean = $state(field.getValueBoolean(fieldValue))
 
 	async function onChange(event: Event) {
-		const newValue = field.toggle(fieldValue)
+		const newValue = field.toggle(valueToggle)
 		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, newValue)
 		valueToggle = field.getValueBoolean(newValue)
 	}

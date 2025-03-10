@@ -51,6 +51,7 @@ module sys_core {
       on source delete delete target;
       on target delete allow;
     };
+    phoneOffice: str;
     website: str;
     zip: str;
     trigger sys_user_delete after delete for each do (
@@ -74,11 +75,14 @@ module sys_core {
 
   type SysSystem extending sys_core::ObjRootCore, sys_user::Mgmt  {
     appName: str;
-    multi entitySystems: sys_core::SysSystem;
     file: json;
     logoMarginRight: float64;
     logoWidth: int16;
     required owner: sys_core::SysOrg;
+    multi systemParents: sys_core::SysSystem;
+    multi typesAttribute: sys_core::SysCode;
+    multi typesCodeType: sys_core::SysCodeType;
+    users := .<systems[is sys_user::SysUser];
     constraint exclusive on ((.owner, .name));
   }
 
@@ -259,9 +263,7 @@ module sys_core {
     codeValueTrigger: sys_core::SysCode;
     required codeValueTypeTarget: sys_core::SysCode;
     required codeValueTypeTrigger: sys_core::SysCode;
-    required column: sys_core::SysDataObjColumn {
-      on target delete allow;
-    };
+    required multi columns: sys_core::SysDataObjColumn;
     required orderDefine: default::nonNegative;
     selectParmValue: str;
     valueScalarTarget: str;
@@ -385,10 +387,12 @@ module sys_core {
     };
     required codeNavType: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
+    codeTreeLeafId: sys_core::SysCode;
     multi data: sys_core::SysNodeObjData {
        on target delete delete source;
     };
     required isAlwaysRetrieveData: bool;
+    required isDynamicChildrenSystemParents: bool;
     required isHideRowManager: bool;
     parent: sys_core::SysNodeObj{
        on target delete delete source;
