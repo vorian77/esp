@@ -183,6 +183,7 @@ module sys_core {
 
     codeAccess: sys_core::SysCode;
     codeAlignmentAlt: sys_core::SysCode;
+    codeAttrObjsSource: sys_core::SysCode;
     codeAttrType: sys_core::SysCode;
     codeColor: sys_core::SysCode;
     codeDbDataSourceValue: sys_core::SysCode;

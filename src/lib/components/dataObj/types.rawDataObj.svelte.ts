@@ -58,15 +58,6 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
 
-export enum PropNamePrefixType {
-	custom = 'custom',
-	expr = 'expr',
-	exprCustom = 'exprCustom',
-	link = 'link',
-	linkItems = 'linkItems',
-	table = 'table'
-}
-
 export class RawDataObj {
 	codeCardinality: DataObjCardinality
 	codeComponent: DataObjComponent
@@ -280,6 +271,7 @@ export class RawDataObjParent {
 
 export class RawDataObjProp {
 	attrAccess?: string
+	codeAttrObjsSource?: PropAttributeObjectsSource
 	codeAttrType?: string
 	codeSortDir?: PropSortDir
 	columnBacklink?: string
@@ -301,6 +293,13 @@ export class RawDataObjProp {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjProp'
 		this.attrAccess = obj.attrAccess
+		this.codeAttrObjsSource = memberOfEnumIfExists(
+			obj._codeAttrObjsSource,
+			'codeAttrObjsSource',
+			clazz,
+			'PropAttributeObjectsSource',
+			PropAttributeObjectsSource
+		)
 		this.codeAttrType = obj._codeAttrType
 		this.codeSortDir = memberOfEnumOrDefault(
 			obj._codeSortDir,
@@ -742,31 +741,6 @@ export class RawUserAction {
 	}
 }
 
-export enum PropDataSourceValue {
-	calculate = 'calculate',
-	edgeDB = 'edgeDB'
-}
-
-export enum PropDataType {
-	attribute = 'attribute',
-	bool = 'bool',
-	date = 'date',
-	datetime = 'datetime',
-	file = 'file',
-	float64 = 'float64',
-	int16 = 'int16',
-	int32 = 'int32',
-	int64 = 'int64',
-	items = 'items',
-	json = 'json',
-	link = 'link',
-	literal = 'literal',
-	none = 'none',
-	str = 'str',
-	uuid = 'uuid',
-	uuidList = 'uuidList'
-}
-
 export class PropLink {
 	exprDisplay: string
 	exprProps: string
@@ -1016,6 +990,45 @@ export class PropLinkItemsSourceProp {
 		this.key = strRequired(obj.key, clazz, 'key')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
 	}
+}
+
+export enum PropAttributeObjectsSource {
+	attributesOfObject = 'attributesOfObject',
+	objects = 'objects'
+}
+
+export enum PropDataSourceValue {
+	calculate = 'calculate',
+	edgeDB = 'edgeDB'
+}
+
+export enum PropDataType {
+	attribute = 'attribute',
+	bool = 'bool',
+	date = 'date',
+	datetime = 'datetime',
+	file = 'file',
+	float64 = 'float64',
+	int16 = 'int16',
+	int32 = 'int32',
+	int64 = 'int64',
+	items = 'items',
+	json = 'json',
+	link = 'link',
+	literal = 'literal',
+	none = 'none',
+	str = 'str',
+	uuid = 'uuid',
+	uuidList = 'uuidList'
+}
+
+export enum PropNamePrefixType {
+	custom = 'custom',
+	expr = 'expr',
+	exprCustom = 'exprCustom',
+	link = 'link',
+	linkItems = 'linkItems',
+	table = 'table'
 }
 
 export enum PropSortDir {

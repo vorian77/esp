@@ -174,6 +174,7 @@ export async function getDataObjActionGroup(token: TokenApiId) {
 export async function getDataObjById(token: TokenApiId) {
 	const shapeProp = e.shape(e.sys_core.SysDataObjColumn, (doc) => ({
 		...shapeColumnHasItems(doc),
+		_codeAttrObjsSource: doc.codeAttrObjsSource.name,
 		_codeAttrType: doc.codeAttrType.name,
 		_codeSortDir: doc.codeSortDir.name,
 		_columnBacklink: doc.columnBacklink.name,

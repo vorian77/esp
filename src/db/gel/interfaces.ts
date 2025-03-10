@@ -360,6 +360,7 @@ export namespace sys_core {
   }
   export interface SysDataObjColumn extends sys_user.Mgmt {
     "exprSave"?: string | null;
+    "codeAttrObjsSource"?: SysCode | null;
     "inputMaskAlt"?: string | null;
     "fieldListItemsParmValue"?: string | null;
     "file"?: unknown | null;

@@ -273,6 +273,13 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'link',
+		header: 'Attribute Objects Source',
+		isMultiSelect: false,
+		name: 'codeAttrObjsSource'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'link',
 		header: 'Attribute Type',
 		isMultiSelect: false,
 		name: 'codeAttrType'

@@ -65,6 +65,13 @@ export async function addDataObj(data: any) {
 						/* DB */
 						attrAccess: booleanOrDefaultJSON(f, 'attrAccess', false),
 
+						codeAttrObjsSource: e.select(
+							e.sys_core.getCode(
+								'ct_sys_attribute_objects_source',
+								e.cast(e.str, e.json_get(f, 'codeAttrObjsSource'))
+							)
+						),
+
 						codeAttrType: e.select(
 							e.sys_core.getCode('ct_sys_attribute', e.cast(e.str, e.json_get(f, 'codeAttrType')))
 						),

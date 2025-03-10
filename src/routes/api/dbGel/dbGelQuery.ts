@@ -16,6 +16,7 @@ import type { DataRecord, DataRow, PropLink, PropLinkItemsSource } from '$utils/
 import { FieldEmbedType } from '$comps/form/field.svelte'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
+	PropAttributeObjectsSource,
 	PropDataSourceValue,
 	PropDataType,
 	PropLinkItems,
@@ -228,11 +229,27 @@ export class Query {
 					propTable = propTable === this.getTableRootObj() ? `DETACHED ${propTable}` : propTable
 					const exprAttrOthers = `(SELECT ${propTable}.attributes FILTER .obj.codeObjType.name != '${attrType}')`
 
-					const exprObjs = propObj.exprSaveAttrObjects
-						? '(SELECT (SELECT ' +
-							propObj.exprSaveAttrObjects +
-							`.attributes FILTER .hasAccess = ${attrAccess} AND .obj.codeObjType.name = '${attrType}').obj.id)`
-						: `json_array_unpack(${item})`
+					let exprObjs
+					switch (propObj.codeAttrObjsSource) {
+						case PropAttributeObjectsSource.attributesOfObject:
+							exprObjs = propObj.exprSaveAttrObjects
+								? '(SELECT (SELECT ' +
+									propObj.exprSaveAttrObjects +
+									`.attributes FILTER .hasAccess = ${attrAccess} AND .obj.codeObjType.name = '${attrType}').obj.id)`
+								: `json_array_unpack(${item})`
+							break
+
+						case PropAttributeObjectsSource.objects:
+							exprObjs = `${propObj.exprSaveAttrObjects}.id`
+							break
+
+						default:
+							error(500, {
+								file: FILENAME,
+								function: `${FILENAME}.getPropsSavePropExpr`,
+								message: `No case defined for PropAttributeObjectsSource: ${propObj.codeAttrObjsSource}`
+							})
+					}
 
 					const exprAttrNew = `
 					(FOR attr IN ${exprObjs} UNION

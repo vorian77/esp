@@ -536,8 +536,9 @@ function initTaskSsrMsg(init: InitDb) {
 			},
 			{
 				attrAccess: true,
+				codeAttrObjsSource: 'objects',
 				codeAttrType: 'attr_cm_sf_site',
-				exprSaveAttrObjects: '(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
+				exprSaveAttrObjects: `((SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person).objAttrSfSite)`,
 				columnName: 'attributes',
 				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name',
 				indexTable: 0,
@@ -643,8 +644,9 @@ function initTaskSsrMsg(init: InitDb) {
 			},
 			{
 				attrAccess: true,
+				codeAttrObjsSource: 'objects',
 				codeAttrType: 'attr_cm_sf_site',
-				exprSaveAttrObjects: '(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
+				exprSaveAttrObjects: `((SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person).objAttrSfSite)`,
 				columnName: 'attributes',
 				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name',
 				indexTable: 0,
