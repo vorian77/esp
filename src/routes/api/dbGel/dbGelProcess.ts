@@ -25,6 +25,7 @@ import {
 	DataObjCardinality
 } from '$utils/types'
 import {
+	DataObjQueryType,
 	PropDataSourceValue,
 	PropDataType,
 	PropLinkItemsSource,
@@ -75,19 +76,39 @@ export async function processDataObj(token: TokenApiQuery) {
 	const queryData = TokenApiQueryData.load(token.queryData)
 	let rawDataObj = await getRawDataObj(token.dataObjSource, queryData)
 
-	// retreivePreset
-	if (rawDataObj.isDetailRetrievePreset && token.queryType === TokenApiQueryType.retrieve) {
-		const exprFilter = rawDataObj.exprFilter
-		const type = rawDataObj.tables[0].table.object
-		const expr = `SELECT ${type} FILTER ${exprFilter}`
+	debug(
+		'processDataObj',
+		'queryOwnerIdSystem.0',
+		queryData.dataTab?.parms.valueGet(ParmsValuesType.queryOwnerIdSystem)
+	)
 
-		const currentData = await exeQueryMultiData(
-			expr,
-			queryData,
-			new EvalExprContext('processDataObj.retrievePreset', '')
-		)
+	queryData.dataTab?.parms.valueSetIfMissing(ParmsValuesType.queryOwnerIdSystem, rawDataObj.ownerId)
 
-		token.queryType = currentData.length > 0 ? TokenApiQueryType.retrieve : TokenApiQueryType.preset
+	debug(
+		'processDataObj',
+		'queryOwnerIdSystem.1',
+		queryData.dataTab?.parms.valueGet(ParmsValuesType.queryOwnerIdSystem)
+	)
+
+	if (token.queryType !== TokenApiQueryType.save) {
+		if (rawDataObj?.codeDoQueryType === DataObjQueryType.preset) {
+			token.queryType = TokenApiQueryType.preset
+		} else if (rawDataObj?.codeDoQueryType === DataObjQueryType.retrieve) {
+			token.queryType = TokenApiQueryType.retrieve
+		} else if (rawDataObj?.codeDoQueryType === DataObjQueryType.retrievePreset) {
+			const exprFilter = rawDataObj.exprFilter
+			const type = rawDataObj.tables[0].table.object
+			const expr = `SELECT ${type} FILTER ${exprFilter}`
+
+			const currentData = await exeQueryMultiData(
+				expr,
+				queryData,
+				new EvalExprContext('processDataObj.retrievePreset', '')
+			)
+
+			token.queryType =
+				currentData.length > 0 ? TokenApiQueryType.retrieve : TokenApiQueryType.preset
+		}
 	}
 
 	// queries
@@ -151,7 +172,7 @@ async function processDataObjQuery(
 			error(500, {
 				file: FILENAME,
 				function: 'processQuery.processDataObjQuery',
-				message: `No case defined for row TokenApiDbQueryType: ${queryType}`
+				message: `No case defined for TokenApiDbQueryType: ${queryType}`
 			})
 	}
 	// embedded fields

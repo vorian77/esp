@@ -150,7 +150,7 @@ async function initSystemObject(init: InitDb) {
 		children: ['node_obj_sys_admin_system_detail_obj'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
-		codeTreeLeafId: 'treeLeafIdSystemRecord',
+		codeQueryOwnerType: 'queryOwnerTypeSystemRecord',
 		data: [{ dataObj: 'data_obj_sys_admin_system_list_obj' }],
 		header: 'Systems (Objects)',
 		name: 'node_obj_sys_admin_system_list_obj',

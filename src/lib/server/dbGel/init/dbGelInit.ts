@@ -14,9 +14,10 @@ import { initContentCrm } from '$server/dbGel/init/dbGelInit80ContentCrm'
 import { initContentCrmRep } from '$server/dbGel/init/dbGelInit80ContentCrmRep'
 
 // content - Atlantic Impact
-import { initContentAITraining } from '$server/dbGel/init/dbGelInit80ContentAITraining'
-import { initContentAIStudent } from '$server/dbGel/init/dbGelInit80ContentAIStudent'
 import { initContentAIRep } from '$server/dbGel/init/dbGelInit80ContentAIRep'
+import { initContentAIStudent } from '$server/dbGel/init/dbGelInit80ContentAIStudent'
+import { initContentAITask } from '$server/dbGel/init/dbGelInit80ContentAITask'
+import { initContentAITraining } from '$server/dbGel/init/dbGelInit80ContentAITraining'
 
 // content - MOED
 import { initContentMOEDCm } from '$server/dbGel/init/dbGelInit80ContentMOEDCm'
@@ -28,7 +29,7 @@ import { initContentSys } from '$server/dbGel/init/dbGelInit80ContentSys'
 // user
 import { initUser } from '$server/dbGel/init/dbGelInit1User'
 
-const isResetFullDB = false
+const isResetFullDB = true
 
 export async function dbInit() {
 	let initDb = new InitDb(isResetFullDB)
@@ -57,9 +58,10 @@ function dbInitAll(initDb: InitDb) {
 	initContentCrmRep(initDb)
 
 	// content - Atlantic Impact
-	initContentAITraining(initDb)
-	initContentAIStudent(initDb)
 	initContentAIRep(initDb)
+	initContentAIStudent(initDb)
+	initContentAITask(initDb)
+	initContentAITraining(initDb)
 
 	// content - MOED
 	initContentMOEDSsr(initDb)
@@ -69,12 +71,13 @@ function dbInitAll(initDb: InitDb) {
 }
 
 export function initFeature(initDb: InitDb) {
-	// initContentAIStudent(initDb)
 	// initContentAIRep(initDb)
+	// initContentAIStudent(initDb)
+	initContentAITask(initDb)
 	// initContentCm(initDb)
 	// initContentSys(initDb)
 	// initSysAdmin(initDb)
-	initContentMOEDSsr(initDb)
-	initContentMOEDCm(initDb)
-	initContentMOEDCmAdvocate(initDb)
+	// initContentMOEDSsr(initDb)
+	// initContentMOEDCm(initDb)
+	// initContentMOEDCmAdvocate(initDb)
 }

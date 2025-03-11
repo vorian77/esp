@@ -363,6 +363,20 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Query Type',
+		isMultiSelect: false,
+		name: 'codeDoQueryType',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Render Platform',
+		isMultiSelect: false,
+		name: 'codeDoRenderPlatform',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'link',
 		header: 'Field Element',
@@ -483,6 +497,13 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
+		header: 'Query Owner Type',
+		isMultiSelect: false,
+		name: 'codeQueryOwnerType',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
 		header: 'Query Type',
 		isMultiSelect: false,
 		name: 'codeQueryType',
@@ -569,13 +590,6 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'link',
 		header: 'Status Object',
 		name: 'codeStatusObj',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Tree Leaf Id Type',
-		isMultiSelect: false,
-		name: 'codeTreeLeafId',
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
@@ -1612,12 +1626,6 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'bool',
 		header: 'Always Retrieve Data',
 		name: 'isAlwaysRetrieveData'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'bool',
-		header: 'Detail Retrieve-Preset',
-		name: 'isDetailRetrievePreset'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',

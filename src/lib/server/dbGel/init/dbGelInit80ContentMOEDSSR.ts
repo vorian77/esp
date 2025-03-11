@@ -25,9 +25,10 @@ function initTaskSsrApp(init: InitDb) {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskTarget',
+		codeDoQueryType: 'retrievePreset',
+		codeDoRenderPlatform: 'app',
 		exprFilter: '.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
 		header: 'My Application',
-		isDetailRetrievePreset: true,
 		name: 'data_obj_task_moed_ssr_app',
 		owner: 'sys_client_moed',
 		queryRiders: [
@@ -125,7 +126,7 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,treeLeafIdSystem>)`,
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerIdSystem>)`,
 				orderDefine: 60,
 				indexTable: 1,
 				isDisplayable: false,
@@ -231,7 +232,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 280,
 				orderDefine: 280,
 				indexTable: 2,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_gender',
 				itemChanges: [
 					{
@@ -277,7 +278,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 300,
 				orderDefine: 300,
 				indexTable: 2,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_race'
 			},
 			{
@@ -288,7 +289,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 310,
 				orderDefine: 310,
 				indexTable: 2,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_ethnicity'
 			},
 			{
@@ -299,7 +300,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 320,
 				orderDefine: 320,
 				indexTable: 2,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_disability_status'
 			},
 			{
@@ -334,7 +335,7 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 360,
 				orderDefine: 360,
 				indexTable: 2,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_state'
 			},
 			{
@@ -378,7 +379,6 @@ function initTaskSsrApp(init: InitDb) {
 		codeIcon: 'ClipboardPen',
 		codeRenderType: 'button',
 		codeStatusObj: 'tso_sys_data',
-		codeTreeLeafId: 'treeLeafIdSystemApp',
 		description: 'First step to my future.',
 		exprShow: `SELECT count((SELECT sys_user::SysUser FILTER .id = <user,uuid,id> AND .person.isLegalAgreed = true)) > 0`,
 		exprStatus: `WITH
@@ -839,10 +839,11 @@ function initTaskSsrDoc(init: InitDb) {
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskTarget',
+		codeDoQueryType: 'retrievePreset',
+		codeDoRenderPlatform: 'app',
 		exprFilter:
 			'.csf.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person AND <parms,str,itemsParmValue> IN .codeType.codeTypeFamily.name LIMIT 1',
 		header: 'My Document',
-		isDetailRetrievePreset: true,
 		name: 'data_obj_task_moed_ssr_doc_detail',
 		owner: 'sys_client_moed',
 		queryRiders: [

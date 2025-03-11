@@ -86,7 +86,7 @@ function initCourse(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,treeLeafIdSystem>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerIdSystem>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -298,7 +298,7 @@ function initCourse(init: InitDb) {
 		children: ['node_obj_cm_course_detail'],
 		codeIcon: 'BookOpen',
 		codeNodeType: 'program',
-		codeTreeLeafId: 'treeLeafIdSystemApp',
+		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
 		data: [{ dataObj: 'data_obj_cm_course_list' }],
 		header: 'Courses',
 		name: 'node_obj_cm_course_list',
@@ -414,7 +414,7 @@ function initCohort(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,treeLeafIdSystem>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerIdSystem>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -1148,7 +1148,7 @@ function initCohortDoc(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_cohort_doc_type'
 			},
 			{
@@ -1524,7 +1524,7 @@ function initPartner(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,treeLeafIdSystem>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerIdSystem>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -1749,7 +1749,7 @@ function initPartner(init: InitDb) {
 		children: ['node_obj_cm_partner_detail'],
 		codeIcon: 'Handshake',
 		codeNodeType: 'program',
-		codeTreeLeafId: 'treeLeafIdSystemApp',
+		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
 		data: [{ dataObj: 'data_obj_cm_partner_list' }],
 		header: 'Partners',
 		name: 'node_obj_cm_partner_list',

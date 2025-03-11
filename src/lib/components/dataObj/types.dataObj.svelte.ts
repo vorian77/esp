@@ -1035,8 +1035,8 @@ export enum ParmsValuesType {
 	parentRecordId = 'parentRecordId',
 	propLinkItemsSourceRaw = 'propLinkItemsSource',
 	propLinkItemsValueCurrent = 'propLinkItemsValueCurrent',
+	queryOwnerIdOrg = 'queryOwnerIdOrg',
+	queryOwnerIdSystem = 'queryOwnerIdSystem',
 	rowData = 'rowData',
-	selectLabel = 'selectLabel',
-	treeLeafIdOrg = 'treeLeafIdOrg',
-	treeLeafIdSystem = 'treeLeafIdSystem'
+	selectLabel = 'selectLabel'
 }

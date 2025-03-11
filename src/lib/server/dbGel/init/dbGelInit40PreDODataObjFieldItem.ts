@@ -14,7 +14,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'header', 'Header', '.header', true, 0]],
-		exprFilter: `.owner.id = <parms,uuid,treeLeafIdSystem> AND .codeObjType.name = <parms,str,itemsParmValue>`,
+		exprFilter: `.owner.id = <parms,uuid,queryOwnerIdSystem> AND .codeObjType.name = <parms,str,itemsParmValue>`,
 		name: 'il_sys_attr_obj_system_type',
 		owner: 'sys_system',
 		table: 'SysObjEntAttr'
@@ -62,17 +62,17 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'.codeType.name = <parms,str,itemsParmValue> AND .owner.id = <parms,uuid,treeLeafIdSystem>',
+			'.codeType.name = <parms,str,itemsParmValue> AND .owner.id = <parms,uuid,queryOwnerIdSystem>',
 		exprSort: '.order',
-		name: 'il_sys_code_order_index_by_codeType_name_system_user',
+		name: 'il_sys_code_order_index_by_codeType_name_system',
 		owner: 'sys_system',
 		table: 'SysCode'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'.codeType.name = <parms,str,itemsParmValue> AND .owner.id = <parms,uuid,treeLeafIdSystem>',
-		name: 'il_sys_code_order_name_by_codeType_name_system_user',
+			'.codeType.name = <parms,str,itemsParmValue> AND .owner.id = <parms,uuid,queryOwnerIdSystem>',
+		name: 'il_sys_code_order_name_by_codeType_name_system',
 		owner: 'sys_system',
 		table: 'SysCode'
 	})
@@ -81,7 +81,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'<parms,str,itemsParmValue> IN .codeTypeFamily.name AND .owner.id = <parms,uuid,treeLeafIdSystem>',
+			'<parms,str,itemsParmValue> IN .codeTypeFamily.name AND .owner.id = <parms,uuid,queryOwnerIdSystem>',
 		exprSort: '.order',
 		name: 'il_sys_code_family_group_order_index_by_codeType_name_system',
 		owner: 'sys_system',
@@ -90,7 +90,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'<parms,str,itemsParmValue> IN .codeTypeFamily.name AND .owner.id = <parms,uuid,treeLeafIdSystem>',
+			'<parms,str,itemsParmValue> IN .codeTypeFamily.name AND .owner.id = <parms,uuid,queryOwnerIdSystem>',
 		name: 'il_sys_code_family_group_order_name_by_codeType_name_system',
 		owner: 'sys_system',
 		table: 'SysCode'
@@ -99,7 +99,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'.codeTypeFamily.parent.name = <parms,str,itemsParmValue> AND .owner.id = <parms,uuid,treeLeafIdSystem>',
+			'.codeTypeFamily.parent.name = <parms,str,itemsParmValue> AND .owner.id = <parms,uuid,queryOwnerIdSystem>',
 		exprSort: '.order',
 		name: 'il_sys_code_family_order_index_by_codeType_name_system',
 		owner: 'sys_system',
@@ -109,7 +109,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'.codeTypeFamily.parent.name = <parms,str,itemsParmValue> AND .owner.id = <parms,uuid,treeLeafIdSystem>',
+			'.codeTypeFamily.parent.name = <parms,str,itemsParmValue> AND .owner.id = <parms,uuid,queryOwnerIdSystem>',
 		name: 'il_sys_code_family_order_name_by_codeType_name_system',
 		owner: 'sys_system',
 		table: 'SysCode'
@@ -135,7 +135,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldListItems', {
-		exprFilter: `.owner.id = <parms,uuid,treeLeafIdSystem>`,
+		exprFilter: `.owner.id = <parms,uuid,queryOwnerIdSystem>`,
 		props: [[0, 'header', 'Header', '.header', true, 0]],
 		name: 'il_cm_program',
 		owner: 'sys_client_atlantic_impact',
@@ -152,7 +152,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 				0
 			]
 		],
-		exprFilter: `.owner.id = <parms,uuid,treeLeafIdSystem>`,
+		exprFilter: `.owner.id = <parms,uuid,queryOwnerIdSystem>`,
 		name: 'il_cm_cohort_long_by_userName',
 		owner: 'sys_client_atlantic_impact',
 		table: 'CmCohort'

@@ -133,35 +133,49 @@ function initDataObj(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'toggle',
-				columnName: 'isDetailRetrievePreset',
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeDoQueryType',
 				isDisplayable: true,
-				orderDisplay: 66,
-				orderDefine: 66,
-				indexTable: 0
+				orderDisplay: 68,
+				orderDefine: 68,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmValue: 'ct_sys_do_query_type'
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeDoRenderPlatform',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmValue: 'ct_sys_do_render_platform'
 			},
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isInitialValidationSilent',
 				isDisplayable: true,
-				orderDisplay: 68,
-				orderDefine: 68,
+				orderDisplay: 72,
+				orderDefine: 72,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'isRetrieveReadonly',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 74,
+				orderDefine: 74,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 72,
-				orderDefine: 72
+				orderDisplay: 76,
+				orderDefine: 76
 			},
 			{
 				codeAccess: 'optional',

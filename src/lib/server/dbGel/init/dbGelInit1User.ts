@@ -142,7 +142,8 @@ function initUserType(init: InitDb) {
 		resources: [
 			{ owner: 'sys_system', name: 'app_sys_admin_global' },
 			{ owner: 'sys_system', name: 'app_sys_reporting' },
-			{ owner: 'sys_system', name: 'task_sys_quote' }
+			{ owner: 'sys_system', name: 'task_sys_quote' },
+			{ owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' }
 		]
 	})
 

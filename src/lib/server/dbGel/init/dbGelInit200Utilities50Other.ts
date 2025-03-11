@@ -252,7 +252,7 @@ export async function addNode(data: any) {
 			codeIcon: e.str,
 			codeNavType: e.optional(e.str) || 'tree',
 			codeNodeType: e.str,
-			codeTreeLeafId: e.optional(e.str),
+			codeQueryOwnerType: e.optional(e.str),
 			data: e.optional(e.array(e.json)),
 			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
@@ -272,7 +272,7 @@ export async function addNode(data: any) {
 					valueOrDefaultParm(p.codeNavType, 'tree')
 				),
 				codeNodeType: e.sys_core.getCode('ct_sys_node_obj_type', p.codeNodeType),
-				codeTreeLeafId: e.sys_core.getCode('ct_sys_tree_leaf_id_type', p.codeTreeLeafId),
+				codeQueryOwnerType: e.sys_core.getCode('ct_sys_query_owner_id_type', p.codeQueryOwnerType),
 				createdBy: CREATOR,
 				data: e.for(e.array_unpack(p.data || e.cast(e.array(e.json), e.set())), (d) => {
 					return e.insert(e.sys_core.SysNodeObjData, {

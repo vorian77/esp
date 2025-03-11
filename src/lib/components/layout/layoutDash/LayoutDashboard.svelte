@@ -8,7 +8,6 @@
 	import {
 		TokenApiFetchError,
 		TokenApiQueryData,
-		TokenAppNode,
 		TokenAppStateTriggerAction,
 		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
@@ -99,8 +98,8 @@
 		if (task.dataObjPage) {
 			// handled by custom actions on form
 		} else if (task.targetDataObjId || task.targetNodeObj) {
-			sm.parmsState.update({ ...parms, treeLeafIdSystem: task.ownerId })
-			const token = task.getTokenNode(sm.user)
+			sm.parmsState.update(parms)
+			const token = await task.getTokenNode(sm)
 			await sm.triggerAction(
 				new TokenAppStateTriggerAction({
 					codeAction: CodeAction.init(
@@ -157,8 +156,6 @@
 								</h5>
 								{#if Component}
 									<Component {task} {onClick} data={task.data} />
-								{:else}
-									no Component: {task.codeStatusObjName}
 								{/if}
 							{/key}
 						{/if}

@@ -12,7 +12,7 @@ import {
 	DataRecordStatus,
 	DataRow,
 	Node,
-	NodeTreeLeafIdType,
+	NodeQueryOwnerType,
 	NodeType,
 	ParmsValues,
 	ParmsValuesType,
@@ -134,7 +134,7 @@ export class App {
 		let newTab = new AppLevelTab({
 			...this.addTreeNodeParmsList(token.node, CodeActionType.default, false)
 		})
-		await queryTypeTab(sm, newTab, TokenApiQueryType.retrieve)
+		await queryTypeTab(sm, newTab, token.queryType)
 		this.addTree([newTab])
 	}
 
@@ -179,6 +179,7 @@ export class App {
 							node: nodeLevelRootDetail,
 							treeLevelIdx: currTab.treeLevelIdx
 						}
+						this.setQueryOwnerIdTree(sm)
 						let newTab = new AppLevelTab(nodeParms)
 						await queryTypeTab(sm, newTab, queryType)
 						tabs.push(newTab)
@@ -321,24 +322,25 @@ export class App {
 		await this.getCurrTreeLevel()?.saveList(sm)
 	}
 
-	setTreeLeafId(sm: State, parms: ParmsValues) {
+	setQueryOwnerIdTree(sm: State) {
 		const treeLevel = this.getCurrTreeLevel()
-		if (treeLevel) {
-			if (treeLevel.levels.length > 0) {
-				const rootTab = treeLevel.levels[0].getCurrTab()
-				if (rootTab && rootTab.node) {
-					if (rootTab.node.treeLeafIdType === NodeTreeLeafIdType.treeLeafIdOrgRecord) {
-						parms.valueSet(ParmsValuesType.treeLeafIdOrg, rootTab.getCurrRecordValue('id'))
-					} else if (
-						rootTab.node.treeLeafIdType === NodeTreeLeafIdType.treeLeafIdSystemApp &&
-						rootTab.node.systemId
-					) {
-						parms.valueSet(ParmsValuesType.treeLeafIdSystem, rootTab.node.systemId)
-					} else if (rootTab.node.treeLeafIdType === NodeTreeLeafIdType.treeLeafIdSystemRecord) {
-						parms.valueSet(ParmsValuesType.treeLeafIdSystem, rootTab.getCurrRecordValue('id'))
-					} else if (sm?.user?.systemIdCurrent) {
-						parms.valueSet(ParmsValuesType.treeLeafIdSystem, sm.user.systemIdCurrent)
-					}
+		if (treeLevel && treeLevel.levels.length > 0) {
+			const rootTab = treeLevel.levels[0].getCurrTab()
+			if (rootTab && rootTab.node) {
+				if (rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeOrgRecord) {
+					sm.parmsState.valueSet(ParmsValuesType.queryOwnerIdOrg, rootTab.getCurrRecordValue('id'))
+				} else if (
+					rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemApp &&
+					rootTab.node.ownerId
+				) {
+					sm.parmsState.valueSet(ParmsValuesType.queryOwnerIdSystem, rootTab.node.ownerId)
+				} else if (rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemRecord) {
+					sm.parmsState.valueSet(
+						ParmsValuesType.queryOwnerIdSystem,
+						rootTab.getCurrRecordValue('id')
+					)
+				} else if (sm?.user?.systemIdCurrent) {
+					sm.parmsState.valueSet(ParmsValuesType.queryOwnerIdSystem, rootTab.node.ownerId)
 				}
 			}
 		}

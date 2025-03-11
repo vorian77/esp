@@ -4,6 +4,7 @@ import {
 	CodeAction,
 	CodeActionType,
 	DataObj,
+	DataObjRenderPlatform,
 	DataObjData,
 	DataObjSort,
 	type DataRecord,
@@ -278,9 +279,9 @@ export class TokenApiQueryDataTreeLevel {
 }
 
 export enum TokenApiQueryType {
+	autonomous = 'autonomous',
 	preset = 'preset',
 	retrieve = 'retrieve',
-	retrieveRepParmItems = 'retrieveRepParmItems',
 	save = 'save'
 }
 
@@ -344,6 +345,7 @@ export class TokenAppDoQuery extends TokenApp {
 	dataObjId?: string
 	dataObjName?: string
 	queryType: TokenApiQueryType
+	renderPlatform: DataObjRenderPlatform
 	source: string
 	constructor(obj: any) {
 		const clazz = 'TokenAppDo'
@@ -351,6 +353,12 @@ export class TokenAppDoQuery extends TokenApp {
 		this.dataObjId = obj.dataObjId
 		this.dataObjName = obj.dataObjName
 		this.queryType = required(obj.queryType, clazz, 'queryType')
+		/* todo: add specification of render platform */
+		this.renderPlatform = required(
+			obj.renderPlatform || DataObjRenderPlatform.app,
+			clazz,
+			'renderPlatform'
+		)
 		this.source = strRequired(this.dataObjId || this.dataObjName, clazz, 'dataObjId or dataObjName')
 	}
 
@@ -431,10 +439,14 @@ export enum TokenAppModalReturnType {
 }
 export class TokenAppNode extends TokenApp {
 	node: Node
+	queryType: TokenApiQueryType
+	renderPlatform: DataObjRenderPlatform
 	constructor(obj: any) {
 		const clazz = 'TokenAppNode'
 		super(obj)
 		this.node = required(obj.node, clazz, 'node')
+		this.queryType = required(obj.queryType, clazz, 'queryType')
+		this.renderPlatform = required(obj.renderPlatform, clazz, 'renderPlatform')
 	}
 }
 export class TokenAppProcess extends TokenApp {

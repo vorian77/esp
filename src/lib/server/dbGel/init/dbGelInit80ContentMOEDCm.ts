@@ -76,7 +76,7 @@ function initApplicant(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,treeLeafIdSystem>)`,
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerIdSystem>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -173,7 +173,7 @@ function initApplicant(init: InitDb) {
 				orderDisplay: 140,
 				orderDefine: 140,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_gender',
 				itemChanges: [
 					{
@@ -219,7 +219,7 @@ function initApplicant(init: InitDb) {
 				orderDisplay: 150,
 				orderDefine: 150,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_race'
 			},
 			{
@@ -230,7 +230,7 @@ function initApplicant(init: InitDb) {
 				orderDisplay: 160,
 				orderDefine: 160,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_ethnicity'
 			},
 			{
@@ -241,7 +241,7 @@ function initApplicant(init: InitDb) {
 				orderDisplay: 170,
 				orderDefine: 170,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_disability_status'
 			},
 			{
@@ -290,7 +290,7 @@ function initApplicant(init: InitDb) {
 				orderDisplay: 240,
 				orderDefine: 240,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_state'
 			},
 			{
@@ -392,7 +392,7 @@ function initApplicant(init: InitDb) {
 		children: ['node_obj_moed_part_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
-		codeTreeLeafId: 'treeLeafIdSystemApp',
+		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
 		data: [{ dataObj: 'data_obj_moed_part_list' }],
 		header: 'Participants',
 		name: 'node_obj_moed_part_list',
@@ -972,7 +972,7 @@ function initCsf(init: InitDb) {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_sf_enroll_type'
 			},
 			{
@@ -1036,7 +1036,7 @@ function initCsf(init: InitDb) {
 				orderDisplay: 140,
 				orderDefine: 140,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_sf_eligibility_status'
 			},
 			{
@@ -1081,7 +1081,7 @@ function initCsf(init: InitDb) {
 				orderDisplay: 170,
 				orderDefine: 170,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_sf_outcome'
 			},
 			{
@@ -1283,7 +1283,7 @@ function initCsfNote(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_case_note_type'
 			},
 			{

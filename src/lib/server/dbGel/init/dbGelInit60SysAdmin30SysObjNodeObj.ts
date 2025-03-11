@@ -154,7 +154,7 @@ function initNodeObj(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'codeTreeLeafId',
+				columnName: 'codeQueryOwnerType',
 				isDisplayable: true,
 				orderDisplay: 55,
 				orderDefine: 55,

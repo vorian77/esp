@@ -334,15 +334,16 @@ export namespace sys_core {
     "exprFilter"?: string | null;
     "exprSort"?: string | null;
     "exprWith"?: string | null;
-    "isDetailRetrievePreset"?: boolean | null;
     "isListEdit": boolean;
     "isListSuppressFilterSort"?: boolean | null;
     "isListSuppressSelect"?: boolean | null;
     "listEditPresetExpr"?: string | null;
     "parentFilterExpr"?: string | null;
     "subHeader"?: string | null;
+    "codeDoQueryType"?: SysCode | null;
     "isRetrieveReadonly"?: boolean | null;
     "queryRiders": SysDataObjQueryRider[];
+    "codeDoRenderPlatform"?: SysCode | null;
     "columns": SysDataObjColumn[];
     "listReorderColumn"?: sys_db.SysColumn | null;
     "parentColumn"?: sys_db.SysColumn | null;
@@ -503,12 +504,12 @@ export namespace sys_core {
   }
   export interface SysNodeObj extends SysObj {
     "children": SysNodeObj[];
-    "codeTreeLeafId"?: SysCode | null;
     "codeNavType": SysCode;
     "codeNodeType": SysCode;
     "isAlwaysRetrieveData": boolean;
     "isHideRowManager": boolean;
     "page"?: string | null;
+    "codeQueryOwnerType"?: SysCode | null;
     "data": SysNodeObjData[];
     "isDynamicChildrenSystemParents": boolean;
     "parent"?: SysNodeObj | null;

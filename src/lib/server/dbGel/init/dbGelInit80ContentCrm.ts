@@ -63,7 +63,7 @@ function initClient(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,treeLeafIdSystem>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerIdSystem>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,

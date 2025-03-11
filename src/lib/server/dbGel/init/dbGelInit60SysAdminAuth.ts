@@ -18,6 +18,7 @@ function initDataObjAuthLogin(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
+		codeDoQueryType: 'preset',
 		header: 'Log in',
 		name: 'data_obj_auth_login',
 		owner: 'sys_system',
@@ -73,7 +74,7 @@ function initDataObjAuthLogin(init: InitDb) {
 				customElement: {
 					action: 'ua_ca_sys_do_open_link',
 					label: 'Forgot Password?',
-					value: 'data_obj_auth_login_forgot_pw,preset'
+					value: 'data_obj_auth_login_forgot_pw'
 				},
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -88,7 +89,7 @@ function initDataObjAuthLogin(init: InitDb) {
 					action: 'ua_ca_sys_do_open_link',
 					label: 'Sign up',
 					prefix: 'Need an account?',
-					value: 'data_obj_auth_signup,preset'
+					value: 'data_obj_auth_signup'
 				},
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -102,6 +103,7 @@ function initDataObjAuthLoginForgotPw(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
+		codeDoQueryType: 'preset',
 		header: 'Reset Password',
 		name: 'data_obj_auth_login_forgot_pw',
 		owner: 'sys_system',
@@ -238,6 +240,7 @@ function initDataObjAuthSignup(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
+		codeDoQueryType: 'preset',
 		header: 'Sign up',
 		name: 'data_obj_auth_signup',
 		owner: 'sys_system',
@@ -320,7 +323,7 @@ function initDataObjAuthSignup(init: InitDb) {
 					action: 'ua_ca_sys_do_open_link',
 					label: 'Log in',
 					prefix: 'Already have an account?',
-					value: 'data_obj_auth_login,preset'
+					value: 'data_obj_auth_login'
 				},
 				isDisplayable: true,
 				orderDisplay: 90,
@@ -646,7 +649,7 @@ function initDataObjMyAccount(init: InitDb) {
 				customElement: {
 					action: 'ua_ca_sys_do_open_link',
 					label: 'Reset Password?',
-					value: 'data_obj_auth_reset_password_account,preset'
+					value: 'data_obj_auth_reset_password_account'
 				},
 				isDisplayable: true,
 				orderDisplay: 1060,
@@ -660,6 +663,7 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
+		codeDoQueryType: 'preset',
 		header: 'Reset Password',
 		name: 'data_obj_auth_reset_password_account',
 		owner: 'sys_system',

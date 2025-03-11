@@ -3,6 +3,7 @@ import {
 	CodeAction,
 	CodeActionClass,
 	CodeActionType,
+	DataObjRenderPlatform,
 	type DataRecord,
 	memberOfEnum,
 	Node,
@@ -152,7 +153,13 @@ export class NavMenuData {
 					await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_nav,
 						CodeActionType.openNode,
-						{ token: new TokenAppNode({ node }) },
+						{
+							token: new TokenAppNode({
+								node,
+								queryType: TokenApiQueryType.retrieve,
+								renderPlatform: DataObjRenderPlatform.app
+							})
+						},
 						{ navLayout: StateNavLayout.layoutApp }
 					)
 					// parmsState: { programId: this.getProgramId(node) },
@@ -169,13 +176,12 @@ export class NavMenuData {
 
 				case NavMenuContentType.task:
 					const task: UserResourceTask = content.value as UserResourceTask
-					const taskNode = task.getTokenNode()
-
-					if (taskNode) {
+					const taskTokenNode = await task.getTokenNode(this.sm)
+					if (taskTokenNode) {
 						await this.triggerAction(
 							CodeActionClass.ct_sys_code_action_class_nav,
 							CodeActionType.openNode,
-							{ token: task.getTokenNode() },
+							{ token: taskTokenNode },
 							{}
 						)
 					} else {
@@ -448,45 +454,6 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 
 		// group - items
 		this.items = new NavMenuDataCompGroup(navMenu, { hideHr: true })
-
-		// this.addItem({
-		// 	content: new NavMenuContent(
-		// 		NavMenuContentType.dataObjApp,
-		// 		new TokenAppDoQuery({
-		// 			dataObjName: 'data_obj_auth_user_pref_type',
-		// 			queryType: TokenApiQueryType.retrieve
-		// 		})
-		// 	),
-		// 	icon: 'Settings2',
-		// 	isRoot: true,
-		// 	label: new NavMenuLabel('My Preferences')
-		// })
-
-		// this.addItem({
-		// 	content: new NavMenuContent(
-		// 		NavMenuContentType.dataObjDrawer,
-		// 		new TokenAppDoQuery({
-		// 			dataObjName: 'data_obj_auth_user_pref_type',
-		// 			queryType: TokenApiQueryType.retrieve
-		// 		})
-		// 	),
-		// 	icon: 'Settings2',
-		// 	isRoot: true,
-		// 	label: new NavMenuLabel('My Preferences (drawer)')
-		// })
-
-		// this.addItem({
-		// 	content: new NavMenuContent(
-		// 		NavMenuContentType.dataObjModal,
-		// 		new TokenAppDoQuery({
-		// 			dataObjName: 'data_obj_auth_user_pref_type',
-		// 			queryType: TokenApiQueryType.retrieve
-		// 		})
-		// 	),
-		// 	icon: 'Settings2',
-		// 	isRoot: true,
-		// 	label: new NavMenuLabel('My Preferences (modal)')
-		// })
 
 		if (['user_sys', '2487985578'].includes(this.user.userName)) {
 			this.addItem({

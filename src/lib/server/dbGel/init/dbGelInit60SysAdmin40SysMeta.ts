@@ -176,7 +176,7 @@ function initAttribute(init: InitDb) {
 				orderDisplay: 270,
 				orderDefine: 270,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_state'
 			},
 			{
@@ -665,7 +665,7 @@ function initFieldListSelectUserType(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		exprFilter: `.isGlobalResource UNION .owner.id = <parms,uuid,treeLeafIdSystem> UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <parms,uuid,treeLeafIdSystem>).systemParents`,
+		exprFilter: `.isGlobalResource UNION .owner.id = <parms,uuid,queryOwnerIdSystem> UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerIdSystem>).systemParents`,
 		header: 'Select User Types',
 		name: 'dofls_sys_sys_admin_user_type',
 		owner: 'sys_system',
@@ -944,7 +944,7 @@ function initSystem(init: InitDb) {
 		children: ['node_obj_sys_admin_system_detail_meta'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
-		codeTreeLeafId: 'treeLeafIdSystemRecord',
+		codeQueryOwnerType: 'queryOwnerTypeSystemRecord',
 		data: [{ dataObj: 'data_obj_sys_admin_system_list_meta' }],
 		header: 'Systems',
 		isDynamicChildrenSystemParents: true,

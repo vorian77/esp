@@ -102,7 +102,7 @@ function initStudent(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,treeLeafIdSystem>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerIdSystem>))`,
 				orderDefine: 15,
 				indexTable: 0,
 				isDisplayable: false,
@@ -194,7 +194,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 59,
 				orderDefine: 59,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_client_highest_education'
 			},
 			{
@@ -205,7 +205,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_gender'
 			},
 			{
@@ -216,7 +216,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 70,
 				orderDefine: 70,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_race'
 			},
 			{
@@ -227,7 +227,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_ethnicity'
 			},
 			{
@@ -334,7 +334,7 @@ function initStudent(init: InitDb) {
 				orderDisplay: 170,
 				orderDefine: 170,
 				indexTable: 1,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_state'
 			},
 			{
@@ -438,7 +438,7 @@ function initStudent(init: InitDb) {
 		children: ['node_obj_cm_student_detail'],
 		codeIcon: 'UsersRound',
 		codeNodeType: 'program',
-		codeTreeLeafId: 'treeLeafIdSystemApp',
+		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
 		data: [{ dataObj: 'data_obj_cm_student_list' }],
 		header: 'Students',
 		name: 'node_obj_cm_student_list',
@@ -607,7 +607,7 @@ function initCsf(init: InitDb) {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_sf_enroll_type'
 			},
 			{
@@ -674,7 +674,7 @@ function initCsf(init: InitDb) {
 				orderDisplay: 120,
 				orderDefine: 120,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_sf_outcome'
 			},
 			{
@@ -885,7 +885,7 @@ function initCsfCohort(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_sf_eligibility_status'
 			},
 			{
@@ -1304,7 +1304,7 @@ function initCsfNote(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_case_note_type'
 			},
 			{
@@ -1526,7 +1526,7 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDisplay: 75,
 				orderDefine: 75,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_place_job_retention'
 			},
 			{
@@ -1605,7 +1605,7 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDisplay: 160,
 				orderDefine: 160,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_place_job_wage_type'
 			},
 			{
@@ -1623,7 +1623,7 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDisplay: 180,
 				orderDefine: 180,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_place_job_type'
 			},
 			{
@@ -1633,7 +1633,7 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDisplay: 190,
 				orderDefine: 190,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_place_job_training_related'
 			},
 			{
@@ -1874,7 +1874,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_place_school_college_status'
 			},
 			{
@@ -2154,7 +2154,7 @@ function initCsfDocument(init: InitDb) {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system_user',
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_doc_type'
 			},
 			{

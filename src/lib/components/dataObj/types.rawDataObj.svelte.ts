@@ -62,6 +62,8 @@ export class RawDataObj {
 	codeCardinality: DataObjCardinality
 	codeComponent: DataObjComponent
 	codeDataObjType: DataObjType
+	codeDoQueryType?: DataObjQueryType
+	codeDoRenderPlatform?: DataObjRenderPlatform
 	codeListEditPresetType?: DataObjListEditPresetType
 	crumbs: string[] = []
 	description?: string
@@ -70,7 +72,6 @@ export class RawDataObj {
 	exprWith?: string
 	header: string
 	id: string
-	isDetailRetrievePreset: boolean
 	isInitialValidationSilent: boolean
 	isListEdit: boolean
 	isListSuppressFilterSort: boolean
@@ -79,6 +80,7 @@ export class RawDataObj {
 	listEditPresetExpr?: string
 	listReorderColumn?: string
 	name: string
+	ownerId: string
 	processType?: DataObjProcessType
 	queryRiders: RawDataObjQueryRider[] = []
 	rawActions: RawDataObjAction[] = []
@@ -116,6 +118,20 @@ export class RawDataObj {
 			'DataObjType',
 			DataObjType
 		)
+		this.codeDoQueryType = memberOfEnumIfExists(
+			obj._codeDoQueryType,
+			clazz,
+			'codeDoQueryType',
+			'DataObjQueryType',
+			DataObjQueryType
+		)
+		this.codeDoRenderPlatform = memberOfEnumIfExists(
+			obj._codeDoRenderPlatform,
+			clazz,
+			'codeDoRenderPlatform',
+			'DataObjRenderPlatform',
+			DataObjRenderPlatform
+		)
 		this.codeListEditPresetType = memberOfEnumIfExists(
 			obj._codeListEditPresetType,
 			clazz,
@@ -130,7 +146,6 @@ export class RawDataObj {
 		this.exprWith = strOptional(obj.exprWith, clazz, 'exprWith')
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
-		this.isDetailRetrievePreset = booleanOrDefault(obj.isDetailRetrievePreset, false)
 		this.isInitialValidationSilent = booleanOrDefault(obj.isInitialValidationSilent, false)
 		this.isListEdit = booleanRequired(obj.isListEdit, clazz, 'isListEdit')
 		this.isListSuppressFilterSort = booleanOrDefault(obj.isListSuppressFilterSort, false)
@@ -139,6 +154,7 @@ export class RawDataObj {
 		this.listEditPresetExpr = strOptional(obj.listEditPresetExpr, clazz, 'listEditPresetExpr')
 		this.listReorderColumn = strOptional(obj._listReorderColumn, clazz, '_listReorderColumn')
 		this.name = strRequired(obj.name, clazz, 'name')
+		this.ownerId = strRequired(obj._ownerId, clazz, '_ownerId')
 		this.processType = memberOfEnumIfExists(
 			obj._processType,
 			clazz,
@@ -990,6 +1006,18 @@ export class PropLinkItemsSourceProp {
 		this.key = strRequired(obj.key, clazz, 'key')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
 	}
+}
+
+export enum DataObjQueryType {
+	preset = 'preset',
+	retrieve = 'retrieve',
+	retrievePreset = 'retrievePreset'
+}
+
+export enum DataObjRenderPlatform {
+	app = 'app',
+	drawerBottom = 'drawerBottom',
+	modal = 'modal'
 }
 
 export enum PropAttributeObjectsSource {

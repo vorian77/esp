@@ -97,10 +97,11 @@ const shapeNodeObjData = e.shape(e.sys_core.SysNodeObjData, (d) => ({
 const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 	_codeIcon: n.codeIcon.name,
 	_codeNodeType: n.codeNodeType.name,
-	_codeTreeLeafId: n.codeTreeLeafId.name,
+	_codeQueryOwnerType: n.codeQueryOwnerType.name,
 	_data: e.select(n.data, (d) => ({
 		...shapeNodeObjData(d)
 	})),
+	_ownerId: n.owner.id,
 	header: true,
 	id: true,
 	isAlwaysRetrieveData: true,
@@ -125,6 +126,8 @@ const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	_ownerId: t.owner.id,
 	_pageDataObjId: t.pageDataObj.id,
 	_targetDataObjId: t.targetDataObj.id,
+	_targetDataObjOwnerId: t.targetDataObj.owner.id,
+	_targetDataObjRenderPlatform: t.targetDataObj.codeDoRenderPlatform.name,
 	_targetNodeObj: e.select(t.targetNodeObj, (n) => ({
 		...shapeNodeObj(n)
 	})),
@@ -240,7 +243,6 @@ export async function getDataObjById(token: TokenApiId) {
 			exprWith: true,
 			header: true,
 			id: true,
-			isDetailRetrievePreset: true,
 			isInitialValidationSilent: true,
 			isListEdit: true,
 			isListSuppressFilterSort: true,
@@ -255,8 +257,11 @@ export async function getDataObjById(token: TokenApiId) {
 			_codeCardinality: do1.codeCardinality.name,
 			_codeComponent: do1.codeComponent.name,
 			_codeDataObjType: do1.codeDataObjType.name,
+			_codeDoQueryType: do1.codeDoQueryType.name,
+			_codeDoRenderPlatform: do1.codeDoRenderPlatform.name,
 			_codeListEditPresetType: do1.codeListEditPresetType.name,
 			_listReorderColumn: do1.listReorderColumn.name,
+			_ownerId: do1.owner.id,
 			_parent: e.select({
 				_columnName: do1.parentColumn.name,
 				_columnIsMultiSelect: do1.parentColumn.isMultiSelect,

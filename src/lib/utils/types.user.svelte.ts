@@ -1,5 +1,12 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { DataObjData, type DataRecord, Node, NodeData, ParmsValues } from '$utils/types'
+import {
+	DataObjData,
+	DataObjRenderPlatform,
+	type DataRecord,
+	Node,
+	NodeData,
+	ParmsValues
+} from '$utils/types'
 import {
 	arrayOfClass,
 	booleanOrFalse,
@@ -158,6 +165,7 @@ export class UserResourceTask extends UserResource {
 	ownerId: string
 	pageDataObjId?: string
 	targetDataObjId?: string
+	targetDataObjOwnerId?: string
 	targetNodeObj?: Node
 	constructor(obj: any) {
 		super(obj)
@@ -179,24 +187,41 @@ export class UserResourceTask extends UserResource {
 		this.ownerId = strRequired(obj._ownerId, clazz, 'ownerId')
 		this.pageDataObjId = obj._pageDataObjId
 		this.targetDataObjId = obj._targetDataObjId
+		this.targetDataObjOwnerId = obj._targetDataObjOwnerId
 		this.targetNodeObj = classOptional(Node, obj._targetNodeObj)
 	}
 
-	getTokenNode() {
-		const node = this.targetNodeObj
-			? this.targetNodeObj
-			: this.targetDataObjId
-				? new Node({
-						_codeNodeType: 'program',
-						_data: [{ _actionType: 'default', _dataObjId: this.targetDataObjId }],
-						header: this.header,
-						icon: this.codeIconName,
-						id: this.targetDataObjId,
-						name: this.name
-					})
-				: undefined
-
-		return node ? new TokenAppNode({ node }) : undefined
+	async getTokenNode(sm: State) {
+		if (this.targetNodeObj) {
+			sm.parmsState.valueSet(ParmsValuesType.queryOwnerIdSystem, this.ownerId)
+			return new TokenAppNode({
+				node: this.targetNodeObj,
+				queryType: TokenApiQueryType.retrieve,
+				renderPlatform: DataObjRenderPlatform.app
+			})
+		} else if (this.targetDataObjId && this.targetDataObjOwnerId) {
+			sm.parmsState.valueSet(ParmsValuesType.queryOwnerIdSystem, this.targetDataObjOwnerId)
+			const dataObjNode = new Node({
+				_codeNodeType: 'program',
+				_data: [{ _actionType: 'default', _dataObjId: this.targetDataObjId }],
+				_ownerId: this.ownerId,
+				header: this.header,
+				icon: this.codeIconName,
+				id: this.targetDataObjId,
+				name: this.name
+			})
+			return new TokenAppNode({
+				node: dataObjNode,
+				queryType: TokenApiQueryType.autonomous,
+				renderPlatform: DataObjRenderPlatform.app
+			})
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'UserResourceTask.getTokenNode',
+				message: `No targetNodeObj or targetDataObjId fully defined for task: ${this.name}`
+			})
+		}
 	}
 
 	async loadPage(sm: State) {

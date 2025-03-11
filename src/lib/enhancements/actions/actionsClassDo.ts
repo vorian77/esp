@@ -171,27 +171,13 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doOpenLink:
-			const doOpenValues = value.trim().split(',')
-			if (doOpenValues.length !== 2) {
-				error(500, {
-					file: FILENAME,
-					function: 'doOpenLink',
-					message: `Invalid value for doOpenLink: ${value}`
-				})
-			}
 			parmsAction.codeAction = CodeAction.init(
 				CodeActionClass.ct_sys_code_action_class_do,
 				CodeActionType.doOpen
 			)
 			parmsAction.data.token = new TokenAppDoQuery({
-				dataObjName: doOpenValues[0],
-				queryType: memberOfEnum(
-					doOpenValues[1],
-					FILENAME,
-					'queryType',
-					'TokenApiQueryType',
-					TokenApiQueryType
-				)
+				dataObjName: value,
+				queryType: TokenApiQueryType.autonomous
 			})
 			await action(sm, parmsAction)
 			break

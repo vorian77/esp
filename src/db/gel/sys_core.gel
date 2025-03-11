@@ -118,6 +118,8 @@ module sys_core {
     required codeCardinality: sys_core::SysCode;
     required codeComponent: sys_core::SysCode;
     codeDataObjType: sys_core::SysCode;
+    codeDoQueryType: sys_core::SysCode;
+    codeDoRenderPlatform: sys_core::SysCode;
     codeListEditPresetType: sys_core::SysCode;
     
     multi columns: sys_core::SysDataObjColumn {
@@ -131,7 +133,6 @@ module sys_core {
     exprWith: str;
 
 
-    isDetailRetrievePreset: bool;
     isInitialValidationSilent: bool;
     required isListEdit: bool;
     isListSuppressFilterSort: bool;
@@ -388,7 +389,7 @@ module sys_core {
     };
     required codeNavType: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
-    codeTreeLeafId: sys_core::SysCode;
+    codeQueryOwnerType: sys_core::SysCode;
     multi data: sys_core::SysNodeObjData {
        on target delete delete source;
     };

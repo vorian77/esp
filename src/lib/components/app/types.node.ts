@@ -40,8 +40,8 @@ export class Node extends NodeHeader {
 	isDynamicChildrenSystemParents: boolean
 	isHideRowManager: boolean
 	isMobileMode: boolean
-	systemId?: string
-	treeLeafIdType?: NodeTreeLeafIdType
+	ownerId?: string
+	queryOwnerType?: NodeQueryOwnerType
 	constructor(obj: any) {
 		const clazz = 'Node'
 		obj = valueOrDefault(obj, {})
@@ -51,13 +51,13 @@ export class Node extends NodeHeader {
 		this.isDynamicChildrenSystemParents = booleanOrFalse(obj.isDynamicChildrenSystemParents)
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager)
 		this.isMobileMode = booleanOrFalse(obj.isMobileMode)
-		this.systemId = obj.systemId
-		this.treeLeafIdType = memberOfEnumIfExists(
-			obj._codeTreeLeafId,
-			'treeLeafIdType',
+		this.ownerId = strRequired(obj._ownerId, clazz, 'ownerId')
+		this.queryOwnerType = memberOfEnumIfExists(
+			obj._codeQueryOwnerType,
+			'queryOwnerType',
 			clazz,
-			'NodeTreeLeafIdType',
-			NodeTreeLeafIdType
+			'NodeQueryOwnerType',
+			NodeQueryOwnerType
 		)
 	}
 	getNodeData(actionType: CodeActionType) {
@@ -117,10 +117,10 @@ export class NodeNav {
 	}
 }
 
-export enum NodeTreeLeafIdType {
-	treeLeafIdOrgRecord = 'treeLeafIdOrgRecord',
-	treeLeafIdSystemApp = 'treeLeafIdSystemApp',
-	treeLeafIdSystemRecord = 'treeLeafIdSystemRecord'
+export enum NodeQueryOwnerType {
+	queryOwnerTypeOrgRecord = 'queryOwnerTypeOrgRecord',
+	queryOwnerTypeSystemApp = 'queryOwnerTypeSystemApp',
+	queryOwnerTypeSystemRecord = 'queryOwnerTypeSystemRecord'
 }
 
 export enum NodeType {
