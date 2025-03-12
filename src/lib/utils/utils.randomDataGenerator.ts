@@ -4,7 +4,7 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = 'utils.randomDataGenerator.ts'
 
-const recordCount = 0
+const recordCount = 100
 const universalStartDate = '2025-02-09'
 
 const dataItemsPart = {

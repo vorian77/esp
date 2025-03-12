@@ -61,15 +61,13 @@ function initTaskSsrApp(init: InitDb) {
 				exprFilterUpdate: '.id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id',
 				indexParent: 1,
 				index: 2,
-				table: 'SysPerson',
-				columnsId: ['firstName', 'lastName']
+				table: 'SysPerson'
 			},
 			{
 				columnParent: 'programCm',
 				indexParent: 0,
 				index: 3,
-				table: 'CmProgram',
-				columnsId: ['name']
+				table: 'CmProgram'
 			}
 		],
 		fields: [

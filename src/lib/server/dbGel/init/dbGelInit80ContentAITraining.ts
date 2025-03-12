@@ -889,8 +889,70 @@ function initCohortAttd(init: InitDb) {
 }
 
 function initCohortAttdSheet(init: InitDb) {
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_client_atlantic_impact',
+		codeType: 'ct_sys_code_action_class_custom',
+		name: 'doCustomAIAttdSheetSetAllFullClass',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_client_atlantic_impact',
+		codeType: 'ct_sys_code_action_class_custom',
+		name: 'doCustomAIAttdSheetReset',
+		order: 0
+	})
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
+		codeAction: {
+			codeType: 'ct_sys_code_action_class_custom',
+			name: 'doCustomAIAttdSheetSetAllFullClass'
+		},
+		codeTriggerEnable: 'always',
+		header: 'Set All-Full Class',
+		name: 'ua_client_ai_cohort_attd_sheet_set_all_full_class',
+		owner: 'sys_client_atlantic_impact'
+	})
+
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_custom', name: 'doCustomAIAttdSheetReset' },
+		codeTriggerEnable: 'always',
+		header: 'Reset',
+		name: 'ua_client_ai_cohort_attd_sheet_reset',
+		owner: 'sys_client_atlantic_impact'
+	})
+
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_sys_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{
+				action: 'ua_sys_save_cancel',
+				codeColor: 'primary',
+				isListRowAction: false,
+				orderDefine: 1
+			},
+			{
+				action: 'ua_client_ai_cohort_attd_sheet_set_all_full_class',
+				codeColor: 'primary',
+				isListRowAction: false,
+				orderDefine: 2
+			},
+			{
+				action: 'ua_client_ai_cohort_attd_sheet_reset',
+				codeColor: 'primary',
+				isListRowAction: false,
+				orderDefine: 3
+			}
+		],
+		name: 'doag_client_ai_cohort_attd_sheet',
+		owner: 'sys_system'
+	})
+
 	init.addTrans('sysDataObj', {
-		actionGroup: 'doag_embed_list_edit',
+		actionGroup: 'doag_client_ai_cohort_attd_sheet',
+		// actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeListEditPresetType: 'insert',
@@ -924,18 +986,16 @@ function initCohortAttdSheet(init: InitDb) {
 				exprPreset: `<tree,uuid,CmCohortAttd.id>`,
 				orderDefine: 20,
 				indexTable: 0,
-				isDisplayable: false
-				// linkColumns: ['date'],
-				// linkTable: 'CmCohortAttd'
+				isDisplayable: false,
+				linkTable: 'CmCohortAttd'
 			},
 			{
 				columnName: 'csfCohort',
 				exprPreset: `newVals.id`,
 				orderDefine: 30,
 				indexTable: 0,
-				isDisplayable: false
-				// linkColumns: ['cohort', 'name'],
-				// linkTable: 'CmCsfCohort'
+				isDisplayable: false,
+				linkTable: 'CmCsfCohort'
 			},
 			{
 				codeAccess: 'readOnly',

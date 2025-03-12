@@ -45,6 +45,10 @@ export enum CodeActionType {
 	setUserId = 'setUserId',
 	submit = 'submit',
 
+	// custom
+	doCustomAIAttdSheetSetAllFullClass = 'doCustomAIAttdSheetSetAllFullClass',
+	doCustomAIAttdSheetReset = 'doCustomAIAttdSheetReset',
+
 	// dataObj - group item
 	doDetailDelete = 'doDetailDelete',
 	doDetailMsgSetUnread = 'doDetailMsgSetUnread',
@@ -98,6 +102,7 @@ export enum CodeActionType {
 }
 
 export enum CodeActionClass {
+	ct_sys_code_action_class_custom = 'ct_sys_code_action_class_custom',
 	ct_sys_code_action_class_do = 'ct_sys_code_action_class_do',
 	ct_sys_code_action_class_do_auth = 'ct_sys_code_action_class_do_auth',
 	ct_sys_code_action_class_modal = 'ct_sys_code_action_class_modal',

@@ -44,6 +44,7 @@ import {
 	type ToastSettings
 } from '@skeletonlabs/skeleton'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
+import fActionsClassCustom from '$enhance/actions/actionsClassCustom'
 import fActionsClassDo from '$enhance/actions/actionsClassDo'
 import fActionsClassDoFieldAuth from '$enhance/actions/actionsClassAuth'
 import fActionsClassModal from '$enhance/actions/actionsClassModal'
@@ -172,6 +173,10 @@ export class State {
 		let fActions: Record<string, Function> = {}
 		for (const key of Object.keys(CodeActionClass)) {
 			switch (key) {
+				case CodeActionClass.ct_sys_code_action_class_custom:
+					fActions[key] = fActionsClassCustom
+					break
+
 				case CodeActionClass.ct_sys_code_action_class_do:
 					fActions[key] = fActionsClassDo
 					break

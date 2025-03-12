@@ -166,7 +166,8 @@ function initUserType(init: InitDb) {
 		owner: 'sys_client_atlantic_impact',
 		resources: [
 			{ owner: 'sys_system', name: 'app_sys_admin_user' },
-			{ owner: 'sys_system', name: 'app_sys_reporting' }
+			{ owner: 'sys_system', name: 'app_sys_reporting' },
+			{ owner: 'sys_system', name: 'task_sys_quote' }
 		]
 	})
 	init.addTrans('sysUserType', {
@@ -208,7 +209,8 @@ function initUserType(init: InitDb) {
 		name: 'ut_client_moed_admin',
 		owner: 'sys_client_moed',
 		resources: [
-			{ owner: 'sys_system', name: 'app_sys_admin_user' }
+			{ owner: 'sys_system', name: 'app_sys_admin_user' },
+			{ owner: 'sys_system', name: 'task_sys_quote' }
 			// { owner: 'sys_system', name: 'app_sys_reporting' },
 		]
 	})

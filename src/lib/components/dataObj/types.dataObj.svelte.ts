@@ -337,6 +337,19 @@ export class DataObj {
 		}
 	}
 
+	getField(fieldNameRaw: string) {
+		const field = this.fields.find((f) => f.colDO.propNameRaw === fieldNameRaw)
+		if (field) {
+			return field
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'DataObj.getField',
+				message: `Field ${fieldNameRaw} not found.`
+			})
+		}
+	}
+
 	print() {
 		alert('Print functionality for this object has not yet been implemented.')
 	}
@@ -918,7 +931,9 @@ export class DBTable {
 
 export function getRecordKey(record: DataRecord, key: string) {
 	for (const [k, v] of Object.entries(record)) {
-		if (k.endsWith(key)) return k
+		if (k.endsWith(key)) {
+			return k
+		}
 	}
 	return undefined
 }

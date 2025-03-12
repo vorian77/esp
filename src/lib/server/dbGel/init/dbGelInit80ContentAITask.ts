@@ -30,7 +30,6 @@ function initTaskNewStudent(init: InitDb) {
 				columnParent: 'client',
 				indexParent: 0,
 				index: 1,
-				isTableExtension: true,
 				table: 'CmClient'
 			},
 			{
@@ -38,53 +37,24 @@ function initTaskNewStudent(init: InitDb) {
 				exprFilterUpdate: '.id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id',
 				indexParent: 1,
 				index: 2,
-				table: 'SysPerson',
-				columnsId: ['firstName', 'lastName']
+				table: 'SysPerson'
 			},
 			{
 				columnParent: 'programCm',
 				indexParent: 0,
 				index: 3,
-				table: 'CmProgram',
-				columnsId: ['name']
+				table: 'CmProgram'
 			}
+			// {
+			// 	columnParent: 'programCm',
+			// 	indexParent: 0,
+			// 	index: 4,
+			// 	table: 'CmCsfCohort',
+			// 	columnsId: ['name']
+			// },
 		],
 		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 30
-			},
-			{
-				columnName: 'programCm',
-				exprSave: `(SELECT assert_single((SELECT app_cm::CmProgram FILTER .name = 'cmp_moed_yo')))`,
-				orderDefine: 40,
-				indexTable: 0,
-				isDisplayable: false,
-				linkColumns: ['name'],
-				linkTable: 'CmProgram'
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'objAttrSfSite',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0,
-				fieldListItems: 'il_sys_attr_obj_system_type',
-				fieldListItemsParmValue: 'attr_cm_sf_site'
-			},
-			{
-				columnName: 'codeSfEnrollType',
-				exprPreset: `(SELECT assert_single((sys_core::getCode('ct_cm_sf_enroll_type', 'Self-Registration'))))`,
-				orderDefine: 45,
-				indexTable: 0,
-				isDisplayable: false,
-				isExcludeUpdate: true,
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
-			},
+			/* client */
 			{
 				columnName: 'owner',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerIdSystem>)`,
@@ -105,74 +75,112 @@ function initTaskNewStudent(init: InitDb) {
 				orderDefine: 80,
 				indexTable: 1
 			},
+
+			/* Personal */
 			{
-				codeFieldElement: 'date',
-				columnName: 'dateCreated',
-				headerAlt: 'Application Date (yyyy-mm-dd)',
-				indexTable: 0,
+				codeFieldElement: 'tagSection',
+				codeColor: 'primary',
+				columnName: 'custom_section_start',
 				isDisplayable: true,
-				orderDisplay: 215,
-				orderDefine: 215
+				orderDisplay: 100,
+				orderDefine: 100,
+				headerAlt: 'Personal'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 110,
+				orderDefine: 110
 			},
 			{
 				columnName: 'firstName',
-				exprPreset: `<user,str,firstName>`,
 				isDisplayable: true,
-				orderDisplay: 220,
-				orderDefine: 220,
+				orderDisplay: 120,
+				orderDefine: 120,
+				indexTable: 2
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'middleName',
+				isDisplayable: true,
+				orderDisplay: 130,
+				orderDefine: 130,
 				indexTable: 2
 			},
 			{
 				columnName: 'lastName',
-				exprPreset: `<user,str,lastName>`,
 				isDisplayable: true,
-				orderDisplay: 230,
-				orderDefine: 230,
+				orderDisplay: 140,
+				orderDefine: 140,
 				indexTable: 2
 			},
 			{
 				codeFieldElement: 'date',
 				columnName: 'birthDate',
-				headerAlt: 'Birth Date (yyyy-mm-dd)',
 				isDisplayable: true,
-				orderDisplay: 240,
-				orderDefine: 240,
+				orderDisplay: 150,
+				orderDefine: 150,
 				indexTable: 2
-			},
-
-			{
-				columnName: 'phoneMobile',
-				indexTable: 2,
-				isDisplayable: true,
-				orderDefine: 260,
-				orderDisplay: 260
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'email',
-				columnName: 'email',
-				indexTable: 2,
+				columnName: 'agencyId',
 				isDisplayable: true,
-				orderDefine: 270,
-				orderDisplay: 270
+				orderDisplay: 160,
+				orderDefine: 160,
+				headerAlt: 'Group',
+				indexTable: 1
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 170,
+				orderDefine: 170
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 180,
+				orderDefine: 180
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'school',
+				isDisplayable: true,
+				orderDisplay: 190,
+				orderDefine: 190,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'codeHighestEducation',
+				isDisplayable: true,
+				orderDisplay: 200,
+				orderDefine: 200,
+				indexTable: 1,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItemsParmValue: 'ct_cm_client_highest_education'
 			},
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeGender',
 				isDisplayable: true,
-				orderDisplay: 280,
-				orderDefine: 280,
+				orderDisplay: 210,
+				orderDefine: 210,
 				indexTable: 2,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_gender'
 			},
-
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeRace',
 				isDisplayable: true,
-				orderDisplay: 300,
-				orderDefine: 300,
+				orderDisplay: 220,
+				orderDefine: 220,
 				indexTable: 2,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_race'
@@ -182,54 +190,123 @@ function initTaskNewStudent(init: InitDb) {
 				codeFieldElement: 'select',
 				columnName: 'codeEthnicity',
 				isDisplayable: true,
-				orderDisplay: 310,
-				orderDefine: 310,
+				orderDisplay: 230,
+				orderDefine: 230,
 				indexTable: 2,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_person_ethnicity'
 			},
 			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'codeDisabilityStatus',
+				codeFieldElement: 'toggle',
+				columnName: 'hasDriversLicense',
+				exprPreset: `(SELECT false)`,
+				indexTable: 1,
 				isDisplayable: true,
-				orderDisplay: 320,
+				orderDisplay: 240,
+				orderDefine: 240
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 250,
+				orderDefine: 250
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				isDisplayable: true,
+				orderDisplay: 260,
+				orderDefine: 260
+			},
+
+			/* Contact */
+			{
+				codeFieldElement: 'tagSection',
+				codeColor: 'primary',
+				columnName: 'custom_section_start',
+				isDisplayable: true,
+				orderDisplay: 300,
+				orderDefine: 300,
+				headerAlt: 'Contact'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 310,
+				orderDefine: 310
+			},
+			{
+				columnName: 'phoneMobile',
+				indexTable: 2,
+				isDisplayable: true,
 				orderDefine: 320,
-				indexTable: 2,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
-				fieldListItemsParmValue: 'ct_sys_person_disability_status'
+				orderDisplay: 320
 			},
 			{
 				codeAccess: 'optional',
-				columnName: 'addr1',
-				indexTable: 2,
+				codeFieldElement: 'tel',
+				columnName: 'phoneAlt',
 				isDisplayable: true,
+				orderDisplay: 330,
 				orderDefine: 330,
-				orderDisplay: 330
+				indexTable: 2
 			},
 			{
 				codeAccess: 'optional',
-				columnName: 'addr2',
+				codeFieldElement: 'email',
+				columnName: 'email',
 				indexTable: 2,
 				isDisplayable: true,
 				orderDefine: 340,
 				orderDisplay: 340
 			},
 			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 350,
+				orderDefine: 350
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 360,
+				orderDefine: 360
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'addr1',
+				indexTable: 2,
+				isDisplayable: true,
+				orderDefine: 370,
+				orderDisplay: 370
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'addr2',
+				indexTable: 2,
+				isDisplayable: true,
+				orderDefine: 380,
+				orderDisplay: 380
+			},
+			{
 				codeAccess: 'optional',
 				columnName: 'city',
 				indexTable: 2,
 				isDisplayable: true,
-				orderDefine: 350,
-				orderDisplay: 350
+				orderDefine: 390,
+				orderDisplay: 390
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeState',
 				isDisplayable: true,
-				orderDisplay: 360,
-				orderDefine: 360,
+				orderDisplay: 400,
+				orderDefine: 400,
 				indexTable: 2,
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_sys_state'
@@ -239,34 +316,143 @@ function initTaskNewStudent(init: InitDb) {
 				columnName: 'zip',
 				indexTable: 2,
 				isDisplayable: true,
-				orderDefine: 370,
-				orderDisplay: 370
+				orderDefine: 410,
+				orderDisplay: 410
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 420,
+				orderDefine: 420
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				isDisplayable: true,
+				orderDisplay: 430,
+				orderDefine: 430
 			},
 
-			/* management */
+			/* Service Flow */
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 500
+			},
 			{
 				columnName: 'createdAt',
+				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 1010,
-				indexTable: 0
+				orderDefine: 510
 			},
 			{
 				columnName: 'createdBy',
+				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 1020,
-				indexTable: 0
+				orderDefine: 520
 			},
 			{
 				columnName: 'modifiedAt',
+				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 1030,
-				indexTable: 0
+				orderDefine: 530
 			},
 			{
 				columnName: 'modifiedBy',
+				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 1040,
-				indexTable: 0
+				orderDefine: 540
+			},
+			{
+				codeFieldElement: 'tagSection',
+				codeColor: 'primary',
+				columnName: 'custom_section_start',
+				isDisplayable: true,
+				orderDisplay: 550,
+				orderDefine: 550,
+				headerAlt: 'Service Flow'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 560,
+				orderDefine: 560
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'programCm',
+				isDisplayable: true,
+				orderDisplay: 570,
+				orderDefine: 570,
+				indexTable: 0,
+				fieldListItems: 'il_cm_program'
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'objAttrSfSite',
+				isDisplayable: true,
+				orderDisplay: 580,
+				orderDefine: 580,
+				indexTable: 0,
+				fieldListItems: 'il_sys_attr_obj_system_type',
+				fieldListItemsParmValue: 'attr_cm_sf_site'
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeSfEnrollType',
+				isDisplayable: true,
+				orderDisplay: 590,
+				orderDefine: 590,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItemsParmValue: 'ct_cm_sf_enroll_type'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 600,
+				orderDefine: 610
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 620,
+				orderDefine: 620
+			},
+			{
+				codeFieldElement: 'date',
+				columnName: 'dateCreated',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 630,
+				orderDefine: 630
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'dateStart',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 640,
+				orderDefine: 640
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 650,
+				orderDefine: 650
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				isDisplayable: true,
+				orderDisplay: 660,
+				orderDefine: 660
 			}
 		]
 	})
