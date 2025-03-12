@@ -12,6 +12,11 @@ function initCodeType(init: InitDb) {
 	})
 	init.addTrans('sysCodeType', {
 		owner: 'sys_system',
+		name: 'ct_sys_code_action_class_custom',
+		parent: 'ct_sys_code_action_class'
+	})
+	init.addTrans('sysCodeType', {
+		owner: 'sys_system',
 		name: 'ct_sys_code_action_class_do',
 		parent: 'ct_sys_code_action_class'
 	})

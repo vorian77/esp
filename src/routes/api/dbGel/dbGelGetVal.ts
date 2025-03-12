@@ -9,6 +9,7 @@ import {
 	getRecordValue,
 	isNumber,
 	memberOfEnum,
+	ParmsValuesType,
 	strRequired
 } from '$utils/types'
 import { error } from '@sveltejs/kit'
@@ -231,34 +232,63 @@ export function getValRaw(exprParms: ExprParms) {
 
 	if (exprParms.item.itemData) {
 		const sourceKey = strRequired(exprParms.item.itemData.key, `${FILENAME}.getValRaw`, 'sourceKey')
+		const keyParms = exprParms.item.itemData.key.split('.')
+
 		switch (exprParms.item.codeDataSourceExpr) {
 			case ExprSource.dataSaveDetail:
-				if (exprParms.queryData?.dataTab?.rowsSave)
-					return exprParms.queryData.dataTab.rowsSave.getDetailRecordValue(sourceKey)
-				fError(`QueryData.dataSave not defined for sourceKey: ${sourceKey}`)
+				if (exprParms.queryData?.dataTab?.rowsSave && keyParms.length === 1) {
+					return exprParms.queryData.dataTab.rowsSave.getDetailRecordValue(keyParms[0])
+				} else {
+					fError(`QueryData.getValRaw.dataSaveDetail - invalid keyParms: ${keyParms}`)
+				}
 			case ExprSource.literal:
-				return sourceKey
+				if (keyParms.length === 1) {
+					return keyParms[0]
+				} else {
+					fError(`QueryData.getValRaw.literal - invalid keyParms: ${keyParms}`)
+				}
 			case ExprSource.parms:
-				return getValue(exprParms.queryData.getParms(), sourceKey)
+				if (keyParms.length === 1) {
+					return getValue(exprParms.queryData.getParms(), keyParms[0])
+				} else {
+					fError(`QueryData.getValRaw.parms - invalid keyParms: ${keyParms}`)
+				}
 			case ExprSource.record:
-				return getValue(exprParms.queryData.record, sourceKey)
+				if (keyParms.length === 1) {
+					return getValue(exprParms.queryData.record, keyParms[0])
+				} else {
+					fError(`QueryData.getValRaw.record - invalid keyParms: ${keyParms}`)
+				}
 			case ExprSource.system:
-				return getValue(exprParms.queryData.system, sourceKey)
+				if (keyParms.length === 1) {
+					return getValue(exprParms.queryData.system, keyParms[0])
+				} else {
+					fError(`QueryData.getValRaw.system - invalid keyParms: ${keyParms}`)
+				}
 			case ExprSource.tree:
-				const items = sourceKey.split('.')
+				// const items = sourceKey.split('.')
 				let dataRow: DataRow | undefined = undefined
 				let property = ''
-				switch (items.length) {
+				switch (keyParms.length) {
 					case 1:
-						property = items[0]
+						property = keyParms[0]
 						dataRow = exprParms.queryData.tree.getDataRow()
 						break
 					case 2:
-						dataRow = exprParms.queryData.tree.getDataRow(items[0])
-						property = items[1]
+						dataRow = exprParms.queryData.tree.getDataRow(keyParms[0])
+						property = keyParms[1]
 						break
+					case 3:
+						if (keyParms[0] === ParmsValuesType.treeAncestorValue) {
+							dataRow = exprParms.queryData.tree.getDataRowAncestor(parseInt(keyParms[1]))
+							property = keyParms[2]
+						} else {
+							fError(`QueryData.getValRaw.system - invalid keyParms: ${keyParms}`)
+						}
+						break
+
 					default:
-						fError(`Invalid configuration of tree data token: ${sourceKey}`)
+						fError(`QueryData.getValRaw.tree - invalid keyParms: ${keyParms}`)
 				}
 				return getValue(dataRow?.record, property)
 			case ExprSource.user:

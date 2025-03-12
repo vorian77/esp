@@ -1787,7 +1787,12 @@ export function initPreColumn(init: InitDb) {
 		header: 'Is Table Extension',
 		name: 'isTableExtension'
 	})
-
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'bool',
+		header: 'Toggle Continue Requires True',
+		name: 'toggleContinueRequiresTrue'
+	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'link',
@@ -2349,10 +2354,16 @@ export function initPreColumn(init: InitDb) {
 		name: 'title'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_system',
+		owner: 'sys_app_cm',
 		codeDataType: 'bool',
-		header: 'Toggle Continue Requires True',
-		name: 'toggleContinueRequiresTrue'
+		header: 'Verified By Case Manager',
+		name: 'isVerifiedByCaseManager'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_app_cm',
+		codeDataType: 'bool',
+		header: 'Verified By Compliance',
+		name: 'isVerifiedByCompliance'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',

@@ -172,6 +172,8 @@ const $CmCsfCohortAttd = $.makeType<$CmCsfCohortAttd>(_.spec, "50a81180-b3c2-11e
 const CmCsfCohortAttd: $.$expr_PathNode<$.TypeSet<$CmCsfCohortAttd, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCsfCohortAttd, $.Cardinality.Many), null);
 
 export type $CmCsfDocumentλShape = $.typeutil.flatten<$CmCsfDataλShape & {
+  "isVerifiedByCaseManager": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
+  "isVerifiedByCompliance": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "dateExpires": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateIssued": $.PropertyDesc<_cal.$local_date, $.Cardinality.One, false, false, false, false>;

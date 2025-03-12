@@ -417,9 +417,103 @@ function initApplicantMsg(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter:
-			'(SELECT org_client_moed::MoedParticipant FILTER .id = <tree,uuid,MoedParticipant.id>).person IN (.sender UNION .recipients)',
-		header: 'Messages',
-		name: 'data_obj_moed_msg_list',
+			'(SELECT org_client_moed::MoedParticipant FILTER .id = <tree,uuid,MoedParticipant.id>).person IN (.sender UNION .recipients) AND NOT EXISTS .parent',
+		header: 'Messages (Root)',
+		name: 'data_obj_moed_msg_list_root',
+		owner: 'sys_client_moed',
+		tables: [{ index: 0, table: 'SysMsg' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 20,
+				orderDisplay: 20,
+				exprCustom: `NOT EXISTS .parent`,
+				headerAlt: 'Is Root',
+				nameCustom: 'isRoot'
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 30,
+				orderDisplay: 30,
+				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
+				headerAlt: 'Read',
+				nameCustom: 'isReadDisplay'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'parent',
+				isDisplayable: false,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				codeSortDir: 'DESC',
+				columnName: 'date',
+				headerAlt: 'Date (Demonstration Only)',
+				indexTable: 0,
+				isDisplayable: true,
+				orderCrumb: 10,
+				orderDefine: 50,
+				orderDisplay: 50,
+				orderSort: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'sender',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0,
+				linkColumns: ['fullName']
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'subject',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'isRead',
+				isDisplayable: false,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'note',
+				isDisplay: false,
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90,
+				indexTable: 0
+			}
+		]
+	})
+
+	init.addTrans('sysDataObj', {
+		actionGroup: 'doag_list',
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		exprFilter: '.parent.id = <tree,uuid,id>',
+		header: 'Messages (Thread)',
+		name: 'data_obj_moed_msg_list_child',
 		owner: 'sys_client_moed',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
@@ -443,8 +537,9 @@ function initApplicantMsg(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'parent',
-				isDisplayable: false,
+				isDisplayable: true,
 				orderDefine: 20,
+				orderDisplay: 20,
 				indexTable: 0
 			},
 			{
@@ -547,8 +642,19 @@ function initApplicantMsg(init: InitDb) {
 				codeAlignmentAlt: 'center',
 				columnName: 'custom_element_str',
 				isDisplayable: true,
-				orderDefine: 45,
-				orderDisplay: 45,
+				orderDefine: 50,
+				orderDisplay: 50,
+				exprCustom: `NOT EXISTS .parent`,
+				headerAlt: 'isRoot',
+				nameCustom: 'isRoot'
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 60,
+				orderDisplay: 60,
 				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
 				headerAlt: 'Read',
 				nameCustom: 'isReadDisplay'
@@ -559,8 +665,8 @@ function initApplicantMsg(init: InitDb) {
 				exprPreset: `<fSysToday>`,
 				headerAlt: 'Date (Demonstration Only)-Default',
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDisplay: 70,
+				orderDefine: 70,
 				indexTable: 0
 			},
 			// {
@@ -578,55 +684,55 @@ function initApplicantMsg(init: InitDb) {
 				exprSave: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDisplay: 80,
+				orderDefine: 80,
 				linkColumns: ['fullName'],
 				linkTable: 'SysPerson'
 			},
 			{
 				columnName: 'subject',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'isRead',
 				isDisplayable: false,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 100,
+				orderDefine: 100,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100
+				orderDisplay: 110,
+				orderDefine: 110
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
+				orderDisplay: 120,
+				orderDefine: 120,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120
+				orderDisplay: 130,
+				orderDefine: 130
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130
+				orderDisplay: 140,
+				orderDefine: 140
 			}
 		]
 	})
@@ -637,7 +743,7 @@ function initApplicantMsg(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Message',
 		isRetrieveReadonly: true,
-		name: 'data_obj_moed_msg_detail_reply',
+		name: 'data_obj_moed_msg_detail_parent_reply',
 		owner: 'sys_client_moed',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
@@ -649,7 +755,8 @@ function initApplicantMsg(init: InitDb) {
 			},
 			{
 				columnName: 'parent',
-				exprSave: `(SELECT DETACHED sys_core::SysMsg FILTER .id = <parms,uuid,${ParmsValuesType.parentRecordId}>)`,
+				// exprSave: `(SELECT DETACHED sys_core::SysMsg FILTER .id = <parms,uuid,${ParmsValuesType.parentRecordId}>)`,
+				exprSave: `(SELECT DETACHED sys_core::SysMsg FILTER .id = <tree,uuid,${ParmsValuesType.treeAncestorValue}.0.id>)`,
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 15,
@@ -664,7 +771,7 @@ function initApplicantMsg(init: InitDb) {
 			},
 			{
 				columnName: 'recipients',
-				exprSave: `(SELECT DETACHED sys_core::SysMsg FILTER .id = <parms,uuid,${ParmsValuesType.parentRecordId}>).sender`,
+				exprSave: `(SELECT DETACHED sys_core::SysMsg FILTER .id = <tree,uuid,${ParmsValuesType.treeAncestorValue}.0.id>).sender`,
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 30,
@@ -721,7 +828,8 @@ function initApplicantMsg(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'subject',
-				exprPreset: `<parms,str,subject>`,
+				// exprPreset: `<parms,str,subject>`,
+				exprPreset: `<tree,str,${ParmsValuesType.treeAncestorValue}.0.subject>`,
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
@@ -772,7 +880,7 @@ function initApplicantMsg(init: InitDb) {
 		children: ['node_obj_moed_msg_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_moed_msg_list' }],
+		data: [{ dataObj: 'data_obj_moed_msg_list_root' }],
 		header: 'Messages',
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_moed_msg_list',
@@ -787,7 +895,7 @@ function initApplicantMsg(init: InitDb) {
 			{
 				actionClass: 'ct_sys_code_action_class_do',
 				actionType: 'doDetailNewMsgReply',
-				dataObj: 'data_obj_moed_msg_detail_reply'
+				dataObj: 'data_obj_moed_msg_detail_parent_reply'
 			}
 		],
 		header: 'Message',
@@ -1424,12 +1532,28 @@ function initCsfDocument(init: InitDb) {
 				linkColumns: ['name']
 			},
 			{
-				codeAccess: 'readOnly',
-				columnName: 'note',
-				orderDefine: 70,
+				codeFieldElement: 'toggle',
+				columnName: 'isVerifiedByCaseManager',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 60,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isVerifiedByCompliance',
 				isDisplayable: true,
 				orderDisplay: 70,
+				orderDefine: 70,
 				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'note',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 80,
+				orderDisplay: 80
 			}
 		]
 	})
@@ -1494,19 +1618,35 @@ function initCsfDocument(init: InitDb) {
 				fieldListItemsParmValue: 'ct_cm_doc_type'
 			},
 			{
+				codeFieldElement: 'toggle',
+				columnName: 'isVerifiedByCaseManager',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isVerifiedByCompliance',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70
+				orderDisplay: 80,
+				orderDefine: 80
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'file',
 				columnName: 'file',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0,
 				width: 300
 			},
@@ -1515,8 +1655,8 @@ function initCsfDocument(init: InitDb) {
 				codeFieldElement: 'textArea',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 100,
+				orderDefine: 100,
 				indexTable: 0
 			},
 

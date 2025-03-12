@@ -76,19 +76,7 @@ export async function processDataObj(token: TokenApiQuery) {
 	const queryData = TokenApiQueryData.load(token.queryData)
 	let rawDataObj = await getRawDataObj(token.dataObjSource, queryData)
 
-	debug(
-		'processDataObj',
-		'queryOwnerIdSystem.0',
-		queryData.dataTab?.parms.valueGet(ParmsValuesType.queryOwnerIdSystem)
-	)
-
 	queryData.dataTab?.parms.valueSetIfMissing(ParmsValuesType.queryOwnerIdSystem, rawDataObj.ownerId)
-
-	debug(
-		'processDataObj',
-		'queryOwnerIdSystem.1',
-		queryData.dataTab?.parms.valueGet(ParmsValuesType.queryOwnerIdSystem)
-	)
 
 	if (token.queryType !== TokenApiQueryType.save) {
 		if (rawDataObj?.codeDoQueryType === DataObjQueryType.preset) {

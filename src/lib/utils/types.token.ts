@@ -233,6 +233,11 @@ export class TokenApiQueryDataTree {
 		return idx > -1 ? this.levels[idx].dataRow : undefined
 	}
 
+	getDataRowAncestor(ancestor: number) {
+		const idx = this.levels.length - 1 - ancestor
+		return idx > -1 ? this.levels[idx].dataRow : undefined
+	}
+
 	getValue(table: string | undefined, fieldName: string) {
 		const dataRow = this.getDataRow(table)
 		return fieldName && dataRow ? dataRow.getValue(fieldName) : undefined

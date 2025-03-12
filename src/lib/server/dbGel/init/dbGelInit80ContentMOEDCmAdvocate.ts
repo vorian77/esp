@@ -275,11 +275,11 @@ function initNodeObjsTask(init: InitDb) {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [
-			{ dataObj: 'data_obj_moed_msg_detail' },
+			{ dataObj: 'data_obj_moed_msg_detail_parent_reply' },
 			{
 				actionClass: 'ct_sys_code_action_class_do',
 				actionType: 'doDetailNewMsgReply',
-				dataObj: 'data_obj_moed_msg_detail_reply'
+				dataObj: 'data_obj_moed_msg_detail_parent_reply'
 			}
 		],
 		header: 'Applicant',

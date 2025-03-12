@@ -113,6 +113,8 @@ module app_cm {
     file: json;
     isShareWithClient: bool;
     note: str;
+    isVerifiedByCaseManager: bool;
+    isVerifiedByCompliance: bool;
   }
 
   type CmCsfGroup extending app_cm::CmCsfData {

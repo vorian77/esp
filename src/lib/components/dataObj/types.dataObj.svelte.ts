@@ -1053,5 +1053,6 @@ export enum ParmsValuesType {
 	queryOwnerIdOrg = 'queryOwnerIdOrg',
 	queryOwnerIdSystem = 'queryOwnerIdSystem',
 	rowData = 'rowData',
-	selectLabel = 'selectLabel'
+	selectLabel = 'selectLabel',
+	treeAncestorValue = 'treeAncestorValue'
 }

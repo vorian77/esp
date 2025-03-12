@@ -176,6 +176,8 @@ export namespace app_cm {
     "note"?: string | null;
   }
   export interface CmCsfDocument extends CmCsfData {
+    "isVerifiedByCaseManager"?: boolean | null;
+    "isVerifiedByCompliance"?: boolean | null;
     "codeType": sys_core.SysCode;
     "dateExpires"?: gel.LocalDate | null;
     "dateIssued": gel.LocalDate;
