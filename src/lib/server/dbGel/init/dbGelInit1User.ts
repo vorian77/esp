@@ -142,8 +142,7 @@ function initUserType(init: InitDb) {
 		resources: [
 			{ owner: 'sys_system', name: 'app_sys_admin_global' },
 			{ owner: 'sys_system', name: 'app_sys_reporting' },
-			{ owner: 'sys_system', name: 'task_sys_quote' },
-			{ owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' }
+			{ owner: 'sys_system', name: 'task_sys_quote' }
 		]
 	})
 
@@ -181,8 +180,8 @@ function initUserType(init: InitDb) {
 		name: 'ut_client_ai_staff',
 		owner: 'sys_client_atlantic_impact',
 		resources: [
-			{ owner: 'sys_client_atlantic_impact', name: 'app_client_ai_staff' },
 			{ owner: 'sys_system', name: 'app_sys_reporting' },
+			{ owner: 'sys_client_atlantic_impact', name: 'app_client_ai_staff' },
 			{ owner: 'sys_client_atlantic_impact', name: 'report_ai_cohort_performance' },
 			{ owner: 'sys_client_atlantic_impact', name: 'report_ai_course_performance' },
 			// { owner: 'sys_client_atlantic_impact', name: 'report_ai_cohorts_detail' },
@@ -197,8 +196,10 @@ function initUserType(init: InitDb) {
 				owner: 'sys_client_atlantic_impact',
 				name: 'report_ai_student_school_placement_detail'
 			},
-			{ owner: 'sys_client_atlantic_impact', name: 'report_ai_student_roster' }
+			{ owner: 'sys_client_atlantic_impact', name: 'report_ai_student_roster' },
 			// { owner: 'sys_client_atlantic_impact', name: 'report_ai_student_service_flow_summary' },
+			{ owner: 'sys_client_atlantic_impact', name: 'task_ai_cohort_attd' },
+			{ owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' }
 		]
 	})
 

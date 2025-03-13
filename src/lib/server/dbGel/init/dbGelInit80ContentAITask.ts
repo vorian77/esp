@@ -1,12 +1,74 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
 export function initContentAITask(init: InitDb) {
+	initTaskCohortAttd(init)
 	initTaskNewStudent(init)
+}
+
+function initTaskCohortAttd(init: InitDb) {
+	init.addTrans('sysDataObjTask', {
+		actionGroup: 'doag_detail_mobile_save',
+		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
+		codeDataObjType: 'taskTarget',
+		codeDoQueryType: 'preset',
+		codeDoRenderPlatform: 'app',
+		exprFilter: 'none',
+		header: 'Cohort Attendance',
+		name: 'data_obj_task_ai_cohort_attd',
+		owner: 'sys_client_atlantic_impact',
+		tables: [{ index: 0, table: 'CmCsfCohortAttd' }],
+		fields: [
+			{
+				codeAccess: 'optional',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 10,
+				orderDefine: 10,
+				indexTable: 0
+			}
+
+			// {
+			// 	codeAlignment: 'right',
+			// 	codeDataType: 'link',
+			// 	codeFieldElement: 'select',
+			// 	header: 'Cohort',
+			// 	fieldListItems: 'il_cm_cohort_long_by_userName',
+			// 	isDisplay: true,
+			// 	isDisplayable: true,
+			// 	nameCustom: 'customCohort',
+			// 	orderDefine: 10,
+			// 	orderDisplay: 20
+			// },
+
+			// {
+			// 	codeFieldElement: 'select',
+			// 	columnName: 'cohort',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 40,
+			// 	orderDefine: 40,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_cm_cohort_long_by_userName'
+			// }
+		]
+	})
+
+	init.addTrans('sysTask', {
+		codeIcon: 'ClipboardPen',
+		codeRenderType: 'button',
+		header: 'Cohort Attendance',
+		isPinToDash: false,
+		isGlobalResource: false,
+		name: 'task_ai_cohort_attd',
+		targetDataObj: 'data_obj_task_ai_cohort_attd',
+		orderDefine: 20,
+		owner: 'sys_client_atlantic_impact'
+	})
 }
 
 function initTaskNewStudent(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
-		actionGroup: 'doag_detail_mobile_save',
+		actionGroup: 'doag_detail_task_record',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskTarget',
@@ -16,14 +78,6 @@ function initTaskNewStudent(init: InitDb) {
 		header: 'New Student',
 		name: 'data_obj_task_ai_new_student',
 		owner: 'sys_client_atlantic_impact',
-		// queryRiders: [
-		// 	{
-		// 		codeQueryType: 'save',
-		// 		codeTriggerTiming: 'post',
-		// 		codeType: 'appDestination',
-		// 		codeUserDestination: 'home'
-		// 	}
-		// ],
 		tables: [
 			{ index: 0, table: 'CmCsfCohort' },
 			{
@@ -40,7 +94,6 @@ function initTaskNewStudent(init: InitDb) {
 			},
 			{
 				columnParent: 'person',
-				exprFilterUpdate: '.id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id',
 				indexParent: 2,
 				index: 3,
 				table: 'SysPerson'
@@ -346,18 +399,6 @@ function initTaskNewStudent(init: InitDb) {
 				isDisplayable: false,
 				orderDefine: 520
 			},
-			// {
-			// 	columnName: 'modifiedAt',
-			// 	indexTable: 1,
-			// 	isDisplayable: false,
-			// 	orderDefine: 530
-			// },
-			// {
-			// 	columnName: 'modifiedBy',
-			// 	indexTable: 1,
-			// 	isDisplayable: false,
-			// 	orderDefine: 540
-			// },
 			{
 				codeFieldElement: 'tagSection',
 				codeColor: 'primary',
@@ -467,18 +508,6 @@ function initTaskNewStudent(init: InitDb) {
 				isDisplayable: false,
 				orderDefine: 820
 			},
-			// {
-			// 	columnName: 'modifiedAt',
-			// 	indexTable: 0,
-			// 	isDisplayable: false,
-			// 	orderDefine: 530
-			// },
-			// {
-			// 	columnName: 'modifiedBy',
-			// 	indexTable: 0,
-			// 	isDisplayable: false,
-			// 	orderDefine: 540
-			// },
 			{
 				codeFieldElement: 'tagSection',
 				codeColor: 'primary',

@@ -28,28 +28,23 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 
 	switch (actionType) {
 		case CodeActionType.doCustomAIAttdSheetSetAllFullClass:
-			alert('Set all - full class - coming soon...')
+			// alert('Set all - full class - coming soon...')
 
-			// const field = dataObj.getField('codeCmCohortAttdDuration')
-			// const fieldNote = dataObj.getField('note')
+			const field = dataObj.getField('codeCmCohortAttdDuration')
+			const fieldNote = dataObj.getField('note')
 
-			// for (let idx = 0; idx < dataObj.data.rowsRetrieved.dataRows.length; idx++) {
-			// 	// await dm.setFieldValue(dataObj.raw.id, idx, field, 'c5a9eed0-ebc2-11ee-a369-173f8eb5fa89')
-			// 	await dm.setFieldValue(
-			// 		dataObj.raw.id,
-			// 		idx,
-			// 		fieldNote,
-			// 		'c5a9eed0-ebc2-11ee-a369-173f8eb5fa89'
-			// 	)
-			// }
-			// console.log(
-			// 	'currTab.dataObj.data.rowsRetrieved.dataRows:',
-			// 	currTab.dataObj.data.rowsRetrieved.dataRows
+			for (let idx = 0; idx < dataObj.data.rowsRetrieved.dataRows.length; idx++) {
+				// await dm.setFieldValue(dataObj.raw.id, idx, field, 'c5a9eed0-ebc2-11ee-a369-173f8eb5fa89')
+				await dm.setFieldValue(dataObj.raw.id, idx, fieldNote, `value row: ${idx}`)
+			}
+			console.log(
+				'currTab.dataObj.data.rowsRetrieved.dataRows:',
+				currTab.dataObj.data.rowsRetrieved.dataRows
 
-			// 	// currTab.dataObj.data.rowsRetrieved.dataRows.map(
-			// 	// 	(dataRow: DataRow) => dataRow.record.linkItems_codeCmCohortAttdDuration
-			// 	// )
-			// )
+				// currTab.dataObj.data.rowsRetrieved.dataRows.map(
+				// 	(dataRow: DataRow) => dataRow.record.linkItems_codeCmCohortAttdDuration
+				// )
+			)
 			break
 
 		case CodeActionType.doCustomAIAttdSheetReset:

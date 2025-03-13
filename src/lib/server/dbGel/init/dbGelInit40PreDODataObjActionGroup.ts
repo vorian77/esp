@@ -30,6 +30,27 @@ export function initPreDataObjActionGroup(init: InitDb) {
 		name: 'doag_detail',
 		owner: 'sys_system'
 	})
+
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{
+				action: 'ua_sys_save_detail',
+				codeColor: 'primary',
+				isListRowAction: false,
+				orderDefine: 0
+			},
+			{
+				action: 'ua_sys_save_cancel',
+				codeColor: 'primary',
+				isListRowAction: false,
+				orderDefine: 1
+			},
+			{ action: 'ua_sys_new_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 2 }
+		],
+		name: 'doag_detail_task_record',
+		owner: 'sys_system'
+	})
+
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
 			{ action: 'ua_sys_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
