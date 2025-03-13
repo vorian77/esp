@@ -216,11 +216,7 @@ export class UserResourceTask extends UserResource {
 				renderPlatform: DataObjRenderPlatform.app
 			})
 		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'UserResourceTask.getTokenNode',
-				message: `No targetNodeObj or targetDataObjId fully defined for task: ${this.name}`
-			})
+			return undefined
 		}
 	}
 

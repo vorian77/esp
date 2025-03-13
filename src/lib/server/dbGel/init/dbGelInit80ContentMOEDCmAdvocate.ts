@@ -58,8 +58,8 @@ function initDataObjLists(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
-				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_moed::MoedParticipant).codeStatus.name`,
-				headerAlt: 'Application Status',
+				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_moed::MoedParticipant).codeSfEligibilityStatus.name`,
+				headerAlt: 'Elgibility Status',
 				nameCustom: 'customAppStatus'
 			},
 			{

@@ -47,6 +47,7 @@ export namespace sys_user {
     "isPinToDash"?: boolean | null;
   }
   export interface SysUser extends Mgmt {
+    "isActive"?: boolean | null;
     "userName"?: string | null;
     "defaultOrg": sys_core.SysOrg;
     "defaultSystem": sys_core.SysSystem;

@@ -92,6 +92,7 @@ const $SysTask = $.makeType<$SysTask>(_.spec, "e9a73ce4-a685-11ef-b1ba-356a5efcf
 const SysTask: $.$expr_PathNode<$.TypeSet<$SysTask, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysTask, $.Cardinality.Many), null);
 
 export type $SysUserλShape = $.typeutil.flatten<$MgmtλShape & {
+  "isActive": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "userName": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "defaultOrg": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.One, {}, false, false,  false, false>;
   "defaultSystem": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.One, {}, false, false,  false, false>;

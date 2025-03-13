@@ -401,6 +401,7 @@ export async function addUser(data: any) {
 			defaultOrg: e.str,
 			defaultSystem: e.str,
 			firstName: e.str,
+			isActive: e.bool,
 			lastName: e.str,
 			orgs: e.optional(e.array(e.str)),
 			owner: e.str,
@@ -414,6 +415,7 @@ export async function addUser(data: any) {
 					createdBy: CREATOR,
 					defaultOrg: e.select(e.sys_core.getOrg(p.defaultOrg)),
 					defaultSystem: e.select(e.sys_core.getSystemPrime(p.defaultSystem)),
+					isActive: p.isActive,
 					modifiedBy: CREATOR,
 					orgs: e.assert_distinct(
 						e.for(e.array_unpack(p.orgs || e.cast(e.array(e.str), e.set())), (org) => {

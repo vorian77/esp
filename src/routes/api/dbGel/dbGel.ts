@@ -33,6 +33,8 @@ export async function dbGelQuery(script: string) {
 	}
 }
 
+export async function dbGelTransactions(scripts: string[]) {}
+
 export async function queryJsonMultiple(script: string): Promise<RawDataList> {
 	if (!script) return []
 	script = scrubScript(script)

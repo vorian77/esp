@@ -64,7 +64,9 @@ function initFieldListSelectCodeType(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		exprFilter: `.owner.id = <tree,uuid,SysSystem.id> UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents`,
+		exprFilter: `.owner.id = <tree,uuid,SysSystem.id> 
+		UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents
+		UNION .owner = (SELECT sys_core::SysSystem FILTER .name = 'sys_system')`,
 		header: 'Select Code Types(s)',
 		name: 'dofls_sys_admin_org_user_code_type',
 		owner: 'sys_system',
@@ -100,7 +102,7 @@ function initFieldListSelectCodeType(init: InitDb) {
 		actionGroupModal: 'doag_dialog_footer_list',
 		btnLabelComplete: 'Select Code Type(s)',
 		dataObjList: 'dofls_sys_admin_org_user_code_type',
-		name: 'fels_sys_admin_code_type',
+		name: 'fels_sys_admin_code_type_org_system',
 		owner: 'sys_system'
 	})
 }
@@ -537,7 +539,7 @@ function initSystem(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'typesCodeType',
-				fieldEmbedListSelect: 'fels_sys_admin_code_type',
+				fieldEmbedListSelect: 'fels_sys_admin_code_type_org_system',
 				indexTable: 0,
 				isDisplayable: true,
 				linkColumns: ['name'],

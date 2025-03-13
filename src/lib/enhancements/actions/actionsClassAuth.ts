@@ -71,8 +71,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 						password := <record,str,password>,
 						userName := <record,str,userName>,
 						SELECT sys_user::SysUser { userId := .id }
-						FILTER .userName = userName AND .password = password 
-						`
+						FILTER .userName = userName AND .password = password AND .isActive = true`
 					})
 					authProcess.addAction(AuthActionLogic, {
 						logic: authActionLogicLogin
@@ -87,11 +86,11 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 						userName := <record,str,userName>,
 						user := (
 							UPDATE sys_user::SysUser 
-							FILTER .userName = userName
+							FILTER .userName = userName AND .isActive = true
 							SET { password := password }
 						)
 						SELECT { userId := user.id }`,
-						msgFail: 'We could reset your password. Please see you system administrator.'
+						msgFail: 'We could not reset your password. Please see you system administrator.'
 					})
 					authProcess.addAction(AuthActionLogic, { logic: authActionLogicLogin })
 
@@ -100,8 +99,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 						dbExpr: `WITH 
 							userName := <record,str,userName>,
 							SELECT sys_user::SysUser { userId := .id }
-							FILTER .userName = userName 
-							`,
+							FILTER .userName = userName AND .isActive = true`,
 						msgFail: 'We could not find an account with your Mobile Phone Number. Please try again.'
 					})
 					authProcess.addAction(AuthActionLogic, { logic: authActionLogicCodeSend })
@@ -135,6 +133,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 									createdBy := 	sys_user::getRootUser(),
 									defaultOrg := _userTypes.owner.owner,
 									defaultSystem := _userTypes.owner,
+									isActive := true,
 									modifiedBy := 	sys_user::getRootUser(),
 									orgs := _userTypes.owner.owner,
 									owner := _userTypes.owner.owner,
@@ -151,7 +150,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 								}
 							)
 							SELECT { userId := user.id }`,
-						msgFail: 'We could create a user for you. Please see you system administrator.'
+						msgFail: 'We could not create a user for you. Please see you system administrator.'
 					})
 					authProcess.addAction(AuthActionLogic, { logic: authActionLogicLogin })
 					break
@@ -169,7 +168,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 						_userTypes := (SELECT sys_user::SysUserType FILTER .id = <uuid>userType) ?? _user.userTypes,
 						user := (
 							UPDATE sys_user::SysUser 
-							FILTER .userName = userName
+							FILTER .userName = userName AND .isActive = true
 							SET { 
 								password := password, 
 								userTypes := _userTypes,
@@ -177,7 +176,7 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 							}
 						)
 						SELECT { userId := user.id }`,
-						msgFail: 'We could reset your password. Please see you system administrator.'
+						msgFail: 'We could not reset your password. Please see you system administrator.'
 					})
 					authProcess.addAction(AuthActionLogic, { logic: authActionLogicLogin })
 					break

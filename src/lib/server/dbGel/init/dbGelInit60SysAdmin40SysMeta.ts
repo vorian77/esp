@@ -1017,6 +1017,14 @@ function initUser(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'isActive',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
 			}
 		]
 	})
@@ -1091,58 +1099,66 @@ function initUser(init: InitDb) {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 10,
+				orderDisplay: 80,
 				orderDefine: 80
 			},
 			{
 				columnName: 'firstName',
 				isDisplayable: true,
-				orderDisplay: 20,
+				orderDisplay: 90,
 				orderDefine: 90,
 				indexTable: 1
 			},
 			{
 				columnName: 'lastName',
 				isDisplayable: true,
-				orderDisplay: 30,
+				orderDisplay: 100,
 				orderDefine: 100,
 				indexTable: 1
 			},
 			{
 				columnName: 'userName',
 				isDisplayable: true,
-				orderDisplay: 40,
+				orderDisplay: 110,
 				orderDefine: 110,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isActive',
+				isDisplayable: true,
+				orderDisplay: 120,
+				orderDefine: 120,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 120
+				orderDisplay: 130,
+				orderDefine: 130
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 130
+				orderDisplay: 140,
+				orderDefine: 140
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 140
+				orderDisplay: 150,
+				orderDefine: 150
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'userTypes',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 150,
+				orderDisplay: 160,
+				orderDefine: 160,
 				fieldEmbedListSelect: 'fels_sys_sys_admin_user_type',
 				indexTable: 0,
 				linkColumns: ['name'],
