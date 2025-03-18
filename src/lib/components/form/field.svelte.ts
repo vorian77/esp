@@ -6,6 +6,7 @@ import {
 	DataObj,
 	DataObjData,
 	type DataRecord,
+	getArray,
 	getColor,
 	ParmsValuesType,
 	ResponseBody,
@@ -113,113 +114,105 @@ export class Field {
 	}
 
 	async processItemChanges(sm: State, row: number, triggerValueCurrent: any, dmn: DataManagerNode) {
+		const clazz = 'Field.processItemChanges'
+
 		for (let i = 0; i < this.itemChanges.length; i++) {
 			const itemChange = this.itemChanges[i]
-			switch (itemChange.codeValueTypeTrigger) {
-				case FieldItemChangeTypeTrigger.any:
+
+			if (itemChange.retrieveParmKey) {
+				sm.parmsState.valueSet(itemChange.retrieveParmKey, triggerValueCurrent)
+			}
+
+			const valueTriggerArray =
+				itemChange.valueTriggerIdsAttribute.length > 0
+					? itemChange.valueTriggerIdsAttribute
+					: itemChange.valueTriggerIdsCode.length > 0
+						? itemChange.valueTriggerIdsCode
+						: getArray(itemChange.valueTargetScalar)
+
+			switch (itemChange.codeOp) {
+				case FieldOp.any:
 					return process(itemChange)
 
-				case FieldItemChangeTypeTrigger.code:
-					switch (itemChange.codeOp) {
-						case FieldOp.equal:
-							if (triggerValueCurrent === itemChange.codeValueTrigger) await process(itemChange)
-							break
-						case FieldOp.notEqual:
-							if (triggerValueCurrent !== itemChange.codeValueTrigger) await process(itemChange)
-							break
-						default:
-							error(500, {
-								file: FILENAME,
-								function: 'processItemChanges.code',
-								message: `No case defined for FieldItemChangeOp: ${itemChange.codeOp}`
-							})
-					}
+				case FieldOp.equal:
+					if (valueTriggerArray.includes(triggerValueCurrent)) await process(itemChange)
 					break
 
-				case FieldItemChangeTypeTrigger.notNull:
+				case FieldOp.notEqual:
+					if (!valueTriggerArray.includes(triggerValueCurrent)) await process(itemChange)
+					break
+
+				case FieldOp.notNull:
 					if (!['', null, undefined].includes(triggerValueCurrent)) await process(itemChange)
 					break
 
-				case FieldItemChangeTypeTrigger.null:
+				case FieldOp.null:
 					if (['', null, undefined].includes(triggerValueCurrent)) await process(itemChange)
 					break
 
-				case FieldItemChangeTypeTrigger.scalar:
-					if (itemChange.valueScalarTrigger) {
-						switch (itemChange.codeOp) {
-							case FieldOp.equal:
-								if (triggerValueCurrent === itemChange.valueScalarTrigger) await process(itemChange)
-								break
-
-							case FieldOp.greaterThan:
-								if (triggerValueCurrent > itemChange.valueScalarTrigger) await process(itemChange)
-								break
-
-							case FieldOp.greaterThanOrEqual:
-								if (triggerValueCurrent >= itemChange.valueScalarTrigger) await process(itemChange)
-								break
-
-							case FieldOp.lessThan:
-								if (triggerValueCurrent < itemChange.valueScalarTrigger) await process(itemChange)
-								break
-
-							case FieldOp.lessThanOrEqual:
-								if (triggerValueCurrent <= itemChange.valueScalarTrigger) await process(itemChange)
-								break
-
-							case FieldOp.notEqual:
-								if (triggerValueCurrent !== itemChange.valueScalarTrigger) await process(itemChange)
-								break
-							default:
-								error(500, {
-									file: FILENAME,
-									function: 'processItemChanges.scalar',
-									message: `No case defined for FieldItemChangeOp: ${itemChange.codeOp}`
-								})
-						}
-					}
-					break
-
 				default:
-					error(500, {
-						file: FILENAME,
-						function: 'processItemChanges',
-						message: `No case defined for FieldItemChangeTypeTriggerInvalid: ${itemChange.codeValueTypeTrigger}`
-					})
+					const valueTriggerScalar = required(itemChange.valueTriggerScalar, clazz, 'valueScalar')
+					switch (itemChange.codeOp) {
+						case FieldOp.greaterThan:
+							if (triggerValueCurrent > valueTriggerScalar) await process(itemChange)
+							break
+
+						case FieldOp.greaterThanOrEqual:
+							if (triggerValueCurrent >= valueTriggerScalar) await process(itemChange)
+							break
+
+						case FieldOp.lessThan:
+							if (triggerValueCurrent < valueTriggerScalar) await process(itemChange)
+							break
+
+						case FieldOp.lessThanOrEqual:
+							if (triggerValueCurrent <= valueTriggerScalar) await process(itemChange)
+							break
+
+						default:
+							error(500, {
+								file: FILENAME,
+								function: clazz,
+								message: `No case defined for operation: ${itemChange.codeOp}`
+							})
+					}
 			}
 		}
+
 		async function process(itemChange: FieldItemChange) {
 			for (let i = 0; i < itemChange.fields.length; i++) {
 				const field = itemChange.fields[i]
 
 				if (itemChange.codeAccess) field.fieldAccess = itemChange.codeAccess
 
-				let newValue
+				let retrieveParmKey
 				const targetCurrValue = dmn.recordsDisplay[row][field.colDO.propName]
 
-				switch (itemChange.codeValueTypeTarget) {
-					case FieldItemChangeTypeTarget.none:
-						await dmn.setFieldVal(row, field, targetCurrValue)
+				switch (itemChange.codeItemChangeAction) {
+					case FieldItemChangeAction.none:
 						break
 
-					case FieldItemChangeTypeTarget.reset:
+					case FieldItemChangeAction.reset:
 						await dmn.setFieldVal(row, field, null)
 						break
 
-					case FieldItemChangeTypeTarget.scalar:
-						await dmn.setFieldVal(row, field, itemChange.valueScalarTarget)
+					case FieldItemChangeAction.retrieveEmbed:
 						break
 
-					case FieldItemChangeTypeTarget.select:
+					case FieldItemChangeAction.retrieveSelect:
 						field.linkItems?.source.setParmValue(triggerValueCurrent)
 						await field.linkItems?.retrieve(sm, undefined)
+						break
+
+					case FieldItemChangeAction.setScalar:
+						await dmn.setFieldVal(row, field, itemChange.valueTargetScalar)
 						break
 
 					default:
 						error(500, {
 							file: FILENAME,
-							function: 'processItemChanges.process',
-							message: `No case defined for FieldItemChangeTypeTarget: ${itemChange.codeValueTypeTarget}`
+							function: clazz,
+							message: `No case defined for FieldItemChangeAction: ${itemChange.codeItemChangeAction}`
 						})
 				}
 			}
@@ -364,15 +357,17 @@ export enum FieldEmbedType {
 
 export class FieldItemChange {
 	codeAccess?: FieldAccess
-	codeOp?: FieldOp
-	codeValueTarget?: string
-	codeValueTrigger?: string
-	codeValueTypeTarget: FieldItemChangeTypeTarget
-	codeValueTypeTrigger: FieldItemChangeTypeTrigger
+	codeItemChangeAction: FieldItemChangeAction
+	codeItemChangeValueType?: FieldItemChangeValueType
+	codeOp: FieldOp
 	fields: Field[] = []
-	selectParmValue?: string
-	valueScalarTarget?: string
-	valueScalarTrigger?: string
+	retrieveParmKey?: string
+	valueTargetIdAttribute?: string
+	valueTargetIdCode?: string
+	valueTargetScalar?: string
+	valueTriggerIdsAttribute: string[]
+	valueTriggerIdsCode: string[]
+	valueTriggerScalar?: string
 	constructor(target: RawDataObjPropDisplayItemChange, fields: Field[]) {
 		const clazz = 'FieldItemChange'
 		this.codeAccess = memberOfEnumIfExists(
@@ -382,23 +377,21 @@ export class FieldItemChange {
 			'FieldAccess',
 			FieldAccess
 		)
-		this.codeOp = memberOfEnumIfExists(target._codeOp, 'codeOp', clazz, 'FieldTriggerOp', FieldOp)
-		this.codeValueTarget = target._codeValueTarget
-		this.codeValueTrigger = target._codeValueTrigger
-		this.codeValueTypeTarget = memberOfEnum(
-			target._codeValueTypeTarget,
+		this.codeItemChangeAction = memberOfEnum(
+			target._codeItemChangeAction,
 			clazz,
-			'codeValueTypeTarget',
-			'FieldTriggerValueTypeTarget',
-			FieldItemChangeTypeTarget
+			'codeItemChangeAction',
+			'FieldItemChangeAction',
+			FieldItemChangeAction
 		)
-		this.codeValueTypeTrigger = memberOfEnum(
-			target._codeValueTypeTrigger,
+		this.codeItemChangeValueType = memberOfEnumIfExists(
+			target._codeItemChangeValueType,
+			'codeItemChangeValueType',
 			clazz,
-			'codeValueTypeTrigger',
-			'FieldTriggerValueTypeTrigger',
-			FieldItemChangeTypeTrigger
+			'FieldItemChangeValueType',
+			FieldItemChangeValueType
 		)
+		this.codeOp = memberOfEnum(target._codeOp, clazz, 'codeOp', 'FieldOp', FieldOp)
 		target._columns.forEach((c) => {
 			this.fields.push(
 				required(
@@ -410,34 +403,40 @@ export class FieldItemChange {
 				)
 			)
 		})
-		this.selectParmValue = target.selectParmValue
-		this.valueScalarTarget = target.valueScalarTarget
-		this.valueScalarTrigger = target.valueScalarTrigger
+		this.retrieveParmKey = target.retrieveParmKey
+		this.valueTargetIdAttribute = target._valueTargetIdAttribute
+		this.valueTargetIdCode = target._valueTargetIdCode
+		this.valueTargetScalar = target.valueTargetScalar
+		this.valueTriggerIdsAttribute = target._valueTriggerIdsAttribute
+		this.valueTriggerIdsCode = target._valueTriggerIdsCode
+		this.valueTriggerScalar = target.valueTriggerScalar
 	}
 }
 
-export enum FieldItemChangeTypeTarget {
+export enum FieldItemChangeAction {
 	none = 'none',
 	reset = 'reset',
-	scalar = 'scalar',
-	select = 'select'
+	retrieveEmbed = 'retrieveEmbed',
+	retrieveSelect = 'retrieveSelect',
+	setScalar = 'setScalar'
 }
 
-export enum FieldItemChangeTypeTrigger {
-	any = 'any',
+export enum FieldItemChangeValueType {
+	attribute = 'attribute',
 	code = 'code',
-	notNull = 'notNull',
-	null = 'null',
 	scalar = 'scalar'
 }
 
 export enum FieldOp {
+	any = 'any',
 	equal = 'equal',
 	greaterThan = 'greaterThan',
 	greaterThanOrEqual = 'greaterThanOrEqual',
 	lessThan = 'lessThan',
 	lessThanOrEqual = 'lessThanOrEqual',
-	notEqual = 'notEqual'
+	notEqual = 'notEqual',
+	notNull = 'notNull',
+	null = 'null'
 }
 
 export class PropsFieldInit {

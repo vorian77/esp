@@ -417,17 +417,19 @@ export namespace sys_core {
     "action"?: sys_user.SysUserAction | null;
   }
   export interface SysDataObjColumnItemChange extends sys_user.Mgmt {
+    "retrieveParmKey"?: string | null;
+    "codeOp": SysCode;
+    "valueTriggerAttributes": SysObjEntAttr[];
+    "valueTriggerCodes": SysCode[];
+    "valueTriggerScalar"?: string | null;
+    "valueTargetCode"?: SysCode | null;
+    "valueTargetAttribute"?: SysObjEntAttr | null;
+    "valueTargetScalar"?: string | null;
     "codeAccess"?: SysCode | null;
     "columns": SysDataObjColumn[];
-    "codeValueTarget"?: SysCode | null;
-    "codeValueTrigger"?: SysCode | null;
-    "valueScalarTarget"?: string | null;
-    "valueScalarTrigger"?: string | null;
-    "selectParmValue"?: string | null;
+    "codeItemChangeAction": SysCode;
+    "codeItemChangeValueType"?: SysCode | null;
     "orderDefine": number;
-    "codeOp"?: SysCode | null;
-    "codeValueTypeTarget": SysCode;
-    "codeValueTypeTrigger": SysCode;
   }
   export interface SysDataObjColumnItemValue extends sys_user.Mgmt {
     "data": string;
@@ -500,10 +502,9 @@ export namespace sys_core {
     "date"?: gel.LocalDate | null;
     "readers": $default.SysPerson[];
     "createdAt": Date;
+    "isRequestResponse"?: boolean | null;
     "recipients": $default.SysPerson[];
     "sender": $default.SysPerson;
-    "codeStatus"?: SysCode | null;
-    "isRead": boolean;
   }
   export interface SysNodeObj extends SysObj {
     "children": SysNodeObj[];

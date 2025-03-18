@@ -154,7 +154,7 @@ async function initSystemObject(init: InitDb) {
 		data: [{ dataObj: 'data_obj_sys_admin_system_list_obj' }],
 		header: 'Systems (Objects)',
 		name: 'node_obj_sys_admin_system_list_obj',
-		orderDefine: 30,
+		orderDefine: 40,
 		owner: 'sys_system'
 	})
 

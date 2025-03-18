@@ -142,7 +142,9 @@ function initUserType(init: InitDb) {
 		resources: [
 			{ owner: 'sys_system', name: 'app_sys_admin_global' },
 			{ owner: 'sys_system', name: 'app_sys_reporting' },
-			{ owner: 'sys_system', name: 'task_sys_quote' }
+			{ owner: 'sys_system', name: 'task_sys_quote' },
+			{ owner: 'sys_client_atlantic_impact', name: 'task_ai_cohort_attd' },
+			{ owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' }
 		]
 	})
 
@@ -164,9 +166,9 @@ function initUserType(init: InitDb) {
 		name: 'ut_client_ai_admin',
 		owner: 'sys_client_atlantic_impact',
 		resources: [
-			{ owner: 'sys_system', name: 'app_sys_admin_user' },
-			{ owner: 'sys_system', name: 'app_sys_reporting' },
-			{ owner: 'sys_system', name: 'task_sys_quote' }
+			// { owner: 'sys_system', name: 'app_sys_admin_user' },
+			{ owner: 'sys_system', name: 'app_sys_reporting' }
+			// { owner: 'sys_system', name: 'task_sys_quote' }
 		]
 	})
 	init.addTrans('sysUserType', {
@@ -196,10 +198,10 @@ function initUserType(init: InitDb) {
 				owner: 'sys_client_atlantic_impact',
 				name: 'report_ai_student_school_placement_detail'
 			},
-			{ owner: 'sys_client_atlantic_impact', name: 'report_ai_student_roster' },
+			{ owner: 'sys_client_atlantic_impact', name: 'report_ai_student_roster' }
 			// { owner: 'sys_client_atlantic_impact', name: 'report_ai_student_service_flow_summary' },
-			{ owner: 'sys_client_atlantic_impact', name: 'task_ai_cohort_attd' },
-			{ owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' }
+			// { owner: 'sys_client_atlantic_impact', name: 'task_ai_cohort_attd' }
+			// { owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' }
 		]
 	})
 
@@ -321,9 +323,9 @@ function initUsers(init: InitDb) {
 			'org_system'
 		],
 		owner: 'org_client_app_factory',
-		systems: ['sys_client_atlantic_impact', 'sys_app_crm', 'sys_client_app_factory'],
+		systems: ['sys_client_atlantic_impact'],
 		userName: '2487985578',
-		userTypes: ['ut_client_moed_advocate_east']
+		userTypes: ['ut_client_ai_staff']
 	})
 
 	/* Atlantic Impact */
@@ -331,7 +333,7 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_client_atlantic_impact',
 		defaultSystem: 'sys_client_atlantic_impact',
 		firstName: 'Anise',
-		isActive: true,
+		isActive: false,
 		lastName: 'Hayes',
 		orgs: ['org_client_atlantic_impact'],
 		owner: 'org_client_atlantic_impact',
@@ -343,7 +345,7 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_client_atlantic_impact',
 		defaultSystem: 'sys_client_atlantic_impact',
 		firstName: 'Erica',
-		isActive: true,
+		isActive: false,
 		lastName: 'Hicks',
 		orgs: ['org_client_atlantic_impact'],
 		owner: 'org_client_atlantic_impact',
@@ -355,7 +357,7 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_client_atlantic_impact',
 		defaultSystem: 'sys_client_atlantic_impact',
 		firstName: 'Matthew',
-		isActive: true,
+		isActive: false,
 		lastName: 'Clayton',
 		orgs: ['org_client_atlantic_impact'],
 		owner: 'org_client_atlantic_impact',
@@ -367,7 +369,7 @@ function initUsers(init: InitDb) {
 		defaultOrg: 'org_client_atlantic_impact',
 		defaultSystem: 'sys_client_atlantic_impact',
 		firstName: 'Nino',
-		isActive: true,
+		isActive: false,
 		lastName: 'Tanzini',
 		orgs: ['org_client_atlantic_impact'],
 		owner: 'org_client_atlantic_impact',

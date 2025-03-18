@@ -199,7 +199,7 @@ async function initConfig(init: InitDb) {
 		data: [{ dataObj: 'data_obj_sys_admin_system_list_config' }],
 		header: 'Systems (Config)',
 		name: 'node_obj_sys_admin_system_list_config',
-		orderDefine: 20,
+		orderDefine: 30,
 		owner: 'sys_system'
 	})
 

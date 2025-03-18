@@ -72,13 +72,13 @@ function dbInitAll(initDb: InitDb) {
 
 export function initFeature(initDb: InitDb) {
 	// initContentAIRep(initDb)
-	initContentAIStudent(initDb)
-	initContentAITraining(initDb)
-	initContentAITask(initDb)
-	initContentCm(initDb)
+	// initContentAIStudent(initDb)
+	// initContentAITraining(initDb)
+	// initContentAITask(initDb)
+	// initContentCm(initDb)
 	// initContentSys(initDb)
 	// initSysAdmin(initDb)
-	// initContentMOEDSsr(initDb)
+	initContentMOEDSsr(initDb)
 	// initContentMOEDCm(initDb)
-	// initContentMOEDCmAdvocate(initDb)
+	initContentMOEDCmAdvocate(initDb)
 }

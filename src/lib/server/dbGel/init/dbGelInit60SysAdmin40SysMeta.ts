@@ -456,11 +456,10 @@ function initCode(init: InitDb) {
 				indexTable: 0,
 				itemChanges: [
 					{
-						codeValueTypeTarget: 'select',
-						codeValueTypeTrigger: 'any',
+						codeItemChangeAction: 'retrieveSelect',
+						codeOp: 'any',
 						columns: ['parent'],
-						orderDefine: 0,
-						selectParmValue: 'itemsParmValue'
+						orderDefine: 0
 					}
 				],
 				fieldListItems: 'il_sys_codeType_meta'
@@ -827,18 +826,18 @@ function initSystem(init: InitDb) {
 				isDisplayable: true,
 				itemChanges: [
 					{
-						codeValueTypeTarget: 'reset',
-						codeValueTypeTrigger: 'null',
+						codeAccess: 'required',
+						codeItemChangeAction: 'none',
+						codeOp: 'notNull',
 						columns: ['logoWidth', 'logoMarginRight'],
-						fieldAccess: 'hidden',
 						orderDefine: 0
 					},
 					{
-						codeValueTypeTarget: 'none',
-						codeValueTypeTrigger: 'notNull',
+						codeAccess: 'hidden',
+						codeOp: 'null',
+						codeItemChangeAction: 'reset',
 						columns: ['logoWidth', 'logoMarginRight'],
-						fieldAccess: 'required',
-						orderDefine: 0
+						orderDefine: 1
 					}
 				],
 				orderDisplay: 60,
@@ -949,7 +948,7 @@ function initSystem(init: InitDb) {
 		header: 'Systems',
 		isDynamicChildrenSystemParents: true,
 		name: 'node_obj_sys_admin_system_list_meta',
-		orderDefine: 40,
+		orderDefine: 10,
 		owner: 'sys_system'
 	})
 

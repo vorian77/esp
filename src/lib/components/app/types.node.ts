@@ -60,19 +60,16 @@ export class Node extends NodeHeader {
 			NodeQueryOwnerType
 		)
 	}
-	getNodeData(actionType: CodeActionType) {
+	nodeDataGet(actionType: CodeActionType) {
 		let nodeData = this.data.find((d) => d.actionType === actionType)
 		if (nodeData) return nodeData
 		nodeData = this.data.find((d) => d.actionType === CodeActionType.default)
 		if (nodeData) return nodeData
 		error(500, {
 			file: FILENAME,
-			function: 'Node.getNodeData',
+			function: 'Node.nodeDataGet',
 			message: `No default NodeData defined for node name: ${this.name}`
 		})
-	}
-	getNodeDataObjId(actionType: CodeActionType) {
-		return this.getNodeData(actionType)?.dataObjId
 	}
 }
 

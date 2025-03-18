@@ -649,18 +649,18 @@ function initCsf(init: InitDb) {
 				isDisplayable: true,
 				itemChanges: [
 					{
-						codeValueTypeTarget: 'reset',
-						codeValueTypeTrigger: 'null',
+						codeAccess: 'required',
+						codeItemChangeAction: 'none',
+						codeOp: 'notNull',
 						columns: ['codeSfOutcome'],
-						fieldAccess: 'hidden',
 						orderDefine: 0
 					},
 					{
-						codeValueTypeTarget: 'none',
-						codeValueTypeTrigger: 'notNull',
+						codeAccess: 'hidden',
+						codeItemChangeAction: 'reset',
+						codeOp: 'null',
 						columns: ['codeSfOutcome'],
-						fieldAccess: 'required',
-						orderDefine: 0
+						orderDefine: 1
 					}
 				],
 				orderDefine: 110,
@@ -1083,7 +1083,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 				orderDefine: 40,
 				headerAlt: 'Date',
 				indexTable: 0,
-				fieldListItems: 'il_cm_cohort_attd_cohort'
+				fieldListItems: 'il_cm_cohort_attd_cohort_tree'
 			},
 			{
 				codeFieldElement: 'radio',

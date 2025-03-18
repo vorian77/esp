@@ -260,16 +260,20 @@ module sys_core {
 
   type SysDataObjColumnItemChange extending sys_user::Mgmt {
     codeAccess: sys_core::SysCode;
-    codeOp: sys_core::SysCode;
-    codeValueTarget: sys_core::SysCode;
-    codeValueTrigger: sys_core::SysCode;
-    required codeValueTypeTarget: sys_core::SysCode;
-    required codeValueTypeTrigger: sys_core::SysCode;
+    required codeItemChangeAction: sys_core::SysCode;
+    codeItemChangeValueType: sys_core::SysCode;
+    required codeOp: sys_core::SysCode;
     required multi columns: sys_core::SysDataObjColumn;
     required orderDefine: default::nonNegative;
-    selectParmValue: str;
-    valueScalarTarget: str;
-    valueScalarTrigger: str;
+    retrieveParmKey: str;
+    
+    valueTargetAttribute: sys_core::SysObjEntAttr;
+    valueTargetCode: sys_core::SysCode;
+    valueTargetScalar: str;
+    
+    multi valueTriggerAttributes: sys_core::SysObjEntAttr;
+    multi valueTriggerCodes: sys_core::SysCode;
+    valueTriggerScalar: str;
   }
   
   type SysDataObjColumnItemValue extending sys_user::Mgmt {
@@ -368,13 +372,12 @@ module sys_core {
   }
   
   type SysMsg extending sys_core::ObjRoot {
-    codeStatus: sys_core::SysCode;
     required createdAt: datetime {
       default := datetime_of_transaction();
       readonly := true;
     };
     date: cal::local_date;
-    required isRead: bool;
+    isRequestResponse: bool;
     parent: sys_core::SysMsg;
     multi readers: default::SysPerson;
     multi recipients: default::SysPerson;

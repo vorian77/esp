@@ -297,6 +297,9 @@ export class InitDb {
 					['owner.name', 'owner']
 				],
 				deleteObj: 'sys_core::SysObjEntAttr',
+				exprResets: [
+					`UPDATE sys_core::SysDataObjColumnItemChange SET {valueTargetAttribute := {}, valueTriggerAttributes := {}}`
+				],
 				fCreate: addObjEntAttr,
 				isResetByTransOnly: true,
 				updateObj: 'sys_core::ObjRoot',

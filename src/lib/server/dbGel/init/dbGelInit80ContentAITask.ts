@@ -20,36 +20,48 @@ function initTaskCohortAttd(init: InitDb) {
 		tables: [{ index: 0, table: 'CmCsfCohortAttd' }],
 		fields: [
 			{
-				codeAccess: 'optional',
-				columnName: 'note',
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
 				orderDisplay: 10,
-				orderDefine: 10,
-				indexTable: 0
+				orderDefine: 10
+			},
+			{
+				codeAlignmentAlt: 'left',
+				codeFieldElement: 'select',
+				columnName: 'custom_element_link',
+				fieldListItems: 'il_cm_cohort_long_by_userName',
+				headerAlt: 'Cohort',
+				isDisplayable: true,
+				itemChanges: [
+					{
+						codeItemChangeAction: 'retrieveSelect',
+						codeOp: 'any',
+						columns: ['cohortAttd'],
+						orderDefine: 0
+					}
+				],
+				nameCustom: 'customCohort',
+				orderDefine: 20,
+				orderDisplay: 20
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'cohortAttd',
+				fieldListItems: 'il_cm_cohort_attd_cohort_ic',
+				headerAlt: 'Attendance Date',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 30,
+				orderDisplay: 30
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40
 			}
-
-			// {
-			// 	codeAlignment: 'right',
-			// 	codeDataType: 'link',
-			// 	codeFieldElement: 'select',
-			// 	header: 'Cohort',
-			// 	fieldListItems: 'il_cm_cohort_long_by_userName',
-			// 	isDisplay: true,
-			// 	isDisplayable: true,
-			// 	nameCustom: 'customCohort',
-			// 	orderDefine: 10,
-			// 	orderDisplay: 20
-			// },
-
-			// {
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'cohort',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 40,
-			// 	orderDefine: 40,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_cm_cohort_long_by_userName'
-			// }
 		]
 	})
 

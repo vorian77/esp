@@ -520,32 +520,36 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 
 export class RawDataObjPropDisplayItemChange {
 	_codeAccess?: string
+	_codeItemChangeAction: string
+	_codeItemChangeValueType?: string
 	_codeOp?: string
-	_codeValueTarget?: string
-	_codeValueTrigger?: string
-	_codeValueTypeTarget: string
-	_codeValueTypeTrigger: string
 	_columns: string[]
-	selectParmValue?: string
-	valueScalarTarget?: string
-	valueScalarTrigger?: string
+	_valueTargetIdAttribute?: string
+	_valueTargetIdCode?: string
+	_valueTriggerIdsAttribute: string[]
+	_valueTriggerIdsCode: string[]
+	retrieveParmKey?: string
+	valueTargetScalar?: string
+	valueTriggerScalar?: string
 	constructor(obj: any) {
 		const clazz = 'RawDataObjPropDisplayItemChange'
 		obj = valueOrDefault(obj, {})
 		this._codeAccess = obj._codeAccess
-		this._codeOp = obj._codeOp
-		this._codeValueTarget = obj._codeValueTarget
-		this._codeValueTrigger = obj._codeValueTrigger
-		this._codeValueTypeTarget = strRequired(obj._codeValueTypeTarget, clazz, '_codeValueTypeTarget')
-		this._codeValueTypeTrigger = strRequired(
-			obj._codeValueTypeTrigger,
+		this._codeItemChangeAction = strRequired(
+			obj._codeItemChangeAction,
 			clazz,
-			'_codeValueTypeTrigger'
+			'_codeItemChangeAction'
 		)
+		this._codeItemChangeValueType = obj._codeItemChangeValueType
+		this._codeOp = strRequired(obj._codeOp, clazz, '_codeOp')
 		this._columns = getArray(obj._columns)
-		this.selectParmValue = obj.selectParmValue
-		this.valueScalarTarget = obj.valueScalarTarget
-		this.valueScalarTrigger = obj.valueScalarTrigger
+		this._valueTargetIdAttribute = obj._valueTargetIdAttribute
+		this._valueTargetIdCode = obj._valueTargetIdCode
+		this._valueTriggerIdsAttribute = getArray(obj._valueTriggerIdsAttribute)
+		this._valueTriggerIdsCode = getArray(obj._valueTriggerIdsCode)
+		this.retrieveParmKey = obj.retrieveParmKey
+		this.valueTargetScalar = obj.valueTargetScalar
+		this.valueTriggerScalar = obj.valueTriggerScalar
 	}
 }
 
@@ -924,6 +928,7 @@ export class PropLinkItemsSource {
 		this.raw = obj
 		this.table = classOptional(DBTable, obj._table)
 
+		// derived
 		let props = ''
 		let display = ''
 		this.props.forEach((p: PropLinkItemsSourceProp) => {
@@ -933,7 +938,6 @@ export class PropLinkItemsSource {
 			if (props) props += ', '
 			props += `${p.key} := ${p.expr}`
 		})
-
 		this.exprProps = `{ id, display := ${display}, ${props} }`
 	}
 
@@ -986,8 +990,8 @@ export class PropLinkItemsSource {
 		return this.table ? this.table.object : undefined
 	}
 
-	setParmValue(value: string) {
-		this.parmValue = value
+	setParmValue(parmValue: string) {
+		this.parmValue = parmValue
 	}
 }
 

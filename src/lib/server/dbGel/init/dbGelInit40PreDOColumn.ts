@@ -1744,15 +1744,6 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
-		codeAlignment: 'center',
-		codeDataType: 'bool',
-		header: 'Read',
-		name: 'isRead',
-		toggleValueFalse: 'No',
-		toggleValueTrue: 'Yes'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
 		codeDataType: 'bool',
 		header: 'Required',
 		name: 'isRequired'

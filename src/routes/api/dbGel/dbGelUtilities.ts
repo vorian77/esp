@@ -22,15 +22,17 @@ const shapeDataObjActionGroup = e.shape(e.sys_core.SysDataObjActionGroup, (g) =>
 
 const SysDataObjColumnItemChange = e.shape(e.sys_core.SysDataObjColumnItemChange, (t) => ({
 	_codeAccess: t.codeAccess.name,
+	_codeItemChangeAction: t.codeItemChangeAction.name,
+	_codeItemChangeValueType: t.codeItemChangeValueType.name,
 	_codeOp: t.codeOp.name,
-	_codeValueTarget: t.codeValueTarget.id,
-	_codeValueTrigger: t.codeValueTrigger.id,
-	_codeValueTypeTarget: t.codeValueTypeTarget.name,
-	_codeValueTypeTrigger: t.codeValueTypeTrigger.name,
 	_columns: t.columns.column.name,
-	selectParmValue: true,
-	valueScalarTarget: true,
-	valueScalarTrigger: true,
+	_valueTargetIdAttribute: t.valueTargetAttribute.id,
+	_valueTargetIdCode: t.valueTargetCode.id,
+	_valueTriggerIdsAttribute: t.valueTriggerAttributes.id,
+	_valueTriggerIdsCode: t.valueTriggerCodes.id,
+	retrieveParmKey: true,
+	valueTargetScalar: true,
+	valueTriggerScalar: true,
 	order_by: t.orderDefine
 }))
 
@@ -537,6 +539,8 @@ export async function getNodesSystemParentss(token: TokenApiId) {
 }
 
 export async function getNodesLevel(token: TokenApiId) {
+	let query
+	let result
 	const parentNodeId = token.id
 	const parent = e.select(e.sys_core.SysNodeObj, (n: any) => ({
 		filter: e.op(n.id, '=', e.cast(e.uuid, parentNodeId))
@@ -544,12 +548,18 @@ export async function getNodesLevel(token: TokenApiId) {
 	const root = e.select(parent.children, (n: any) => ({
 		...shapeNodeObj(n)
 	}))
+	query = e.select(root)
+	const resultRoot = await query.run(client)
+	debug('getNodesLevel', 'resultRoot', resultRoot)
+
 	const children = e.select(e.sys_core.SysNodeObj, (n: any) => ({
 		...shapeNodeObj(n),
 		filter: e.op(n.id, 'in', root.children.id)
 	}))
-	const query = e.select({ root, children })
-	return await query.run(client)
+	query = e.select(children)
+	const resultChildren = await query.run(client)
+
+	return { root: resultRoot, children: resultChildren }
 }
 
 export async function getReportUser(repUserId: string) {

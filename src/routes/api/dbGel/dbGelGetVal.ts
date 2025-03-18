@@ -66,11 +66,7 @@ export function evalExprTokens(
 		const valueRaw = getValRaw(exprParms)
 		if (item.itemData) {
 			const { dataType, valueDB } = getValDB(item.itemData.codeDataType, valueRaw)
-			const t = new ExprToken(item.dataItem, dataType, valueRaw, valueDB)
-			debug('evalExprTokens', 'token', t)
-
-			tokens.push(t)
-			// tokens.push(new ExprToken(item.dataItem, dataType, valueRaw, valueDB))
+			tokens.push(new ExprToken(item.dataItem, dataType, valueRaw, valueDB))
 		} else if (item.itemFunction) {
 			tokens.push(new ExprToken(item.dataItem, PropDataType.none, valueRaw, valueRaw.toString()))
 		}

@@ -91,6 +91,14 @@ export function initPreDataObjActionGroup(init: InitDb) {
 		owner: 'sys_system'
 	})
 
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{ action: 'ua_sys_edit_list', codeColor: 'primary', isListRowAction: true, orderDefine: 0 }
+		],
+		name: 'doag_list_task',
+		owner: 'sys_system'
+	})
+
 	/* dialog */
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [

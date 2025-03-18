@@ -151,7 +151,7 @@ export async function MoedBulkDataMsg(params: any) {
 					obj: e.sys_core.getObjEntAttr('sys_client_moed', e.cast(e.str, i[3]))
 				}),
 				date: e.cal.to_local_date(e.cast(e.str, i[1])),
-				isRead: false,
+				isRequestResponse: e.cast(e.bool, i[4]),
 				sender: e.assert_single(
 					e.select(e.org_client_moed.MoedParticipant, (part) => ({
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))

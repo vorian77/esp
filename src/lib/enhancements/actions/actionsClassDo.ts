@@ -22,6 +22,7 @@ import {
 	TokenAppModalReturnType,
 	TokenAppStateTriggerAction
 } from '$utils/types.token'
+import { queryTypeTab } from '$comps/app/types.appQuery'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionClassDO.ts'
@@ -72,7 +73,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			if (parentTab && parentTab.dataObj) {
 				parentTab.dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
 			}
-			await sm.app.queryTab(
+			await queryTypeTab(
 				sm,
 				sm.app.getCurrTab(),
 				parmsAction.codeAction.actionType,
@@ -86,12 +87,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			if (currTab && currTab.dataObj) {
 				sm.parmsTrans.valueSet(ParmsValuesType.parentRecordId, currTab.getCurrRecordValue('id'))
 				sm.parmsTrans.valueSet('subject', currTab.getCurrRecordValue('subject'))
-				await sm.app.queryTab(
-					sm,
-					currTab,
-					parmsAction.codeAction.actionType,
-					TokenApiQueryType.preset
-				)
+				await queryTypeTab(sm, currTab, parmsAction.codeAction.actionType, TokenApiQueryType.preset)
 				await userActionStateChangeDataObj(sm, parmsAction)
 			}
 
@@ -148,7 +144,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doListSelfRefresh:
-			await sm.app.queryTab(
+			await queryTypeTab(
 				sm,
 				sm.app.getCurrTab(),
 				parmsAction.codeAction.actionType,
@@ -190,7 +186,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 					const status = currTab?.dataObj.data?.rowsRetrieved?.getDetailRowStatus()
 					switch (status) {
 						case DataRecordStatus.preset:
-							await sm.app.queryTab(
+							await queryTypeTab(
 								sm,
 								currTab,
 								parmsAction.codeAction.actionType,
@@ -200,7 +196,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 							break
 						case DataRecordStatus.retrieved:
 						case DataRecordStatus.update:
-							await sm.app.queryTab(
+							await queryTypeTab(
 								sm,
 								currTab,
 								parmsAction.codeAction.actionType,
@@ -234,12 +230,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 		currLevel = sm.app.getCurrLevel()
 		if (currLevel) {
 			currTab = currLevel.getCurrTab()
-			await sm.app.queryTab(
-				sm,
-				currTab,
-				parmsAction.codeAction.actionType,
-				TokenApiQueryType.retrieve
-			)
+			await queryTypeTab(sm, currTab, parmsAction.codeAction.actionType, TokenApiQueryType.retrieve)
 			await userActionStateChangeDataObj(sm, parmsAction)
 		}
 	}

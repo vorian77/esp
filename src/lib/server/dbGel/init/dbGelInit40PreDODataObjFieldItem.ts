@@ -126,10 +126,18 @@ export function initPreDataObjFieldItem(init: InitDb) {
 
 	/* other */
 	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter: `.cohortId = <parms,uuid,itemsParmValue>`,
+		props: [[0, '_date', 'Date', 'std::to_str(<cal::local_date>.date)', true, 0]],
+		exprWith: ``,
+		name: 'il_cm_cohort_attd_cohort_ic',
+		owner: 'sys_client_atlantic_impact',
+		table: 'CmCohortAttd'
+	})
+	init.addTrans('sysDataObjFieldListItems', {
 		exprFilter: `.cohortId = (SELECT app_cm::CmCsfCohort FILTER .id = <tree,uuid,CmCsfCohort.id>).cohort.id AND .id NOT IN (SELECT app_cm::CmCsfCohortAttd FILTER .csfCohort.id = <tree,uuid,CmCsfCohort.id>).cohortAttd.id`,
 		props: [[0, '_date', 'Date', 'std::to_str(<cal::local_date>.date)', true, 0]],
 		exprWith: ``,
-		name: 'il_cm_cohort_attd_cohort',
+		name: 'il_cm_cohort_attd_cohort_tree',
 		owner: 'sys_client_atlantic_impact',
 		table: 'CmCohortAttd'
 	})
@@ -188,7 +196,8 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter: '.codeType.id = <parms,uuid,itemsParmValue> ',
+		exprFilter:
+			'.owner.id = <tree,uuid,SysSystem.id> AND .codeType.id = <parms,uuid,itemsParmValue>',
 		name: 'il_sys_code_parent',
 		owner: 'sys_system',
 		table: 'SysCode'

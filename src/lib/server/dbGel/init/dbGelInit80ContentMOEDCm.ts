@@ -177,30 +177,34 @@ function initApplicant(init: InitDb) {
 				fieldListItemsParmValue: 'ct_sys_person_gender',
 				itemChanges: [
 					{
-						codeValueTrigger: {
-							codeType: 'ct_sys_person_gender',
-							name: 'Prefer to self-identify',
-							owner: 'sys_client_moed'
-						},
-						codeValueTypeTarget: 'none',
-						codeValueTypeTrigger: 'code',
+						codeAccess: 'required',
+						codeItemChangeAction: 'none',
+						codeItemChangeValueType: 'code',
+						codeOp: 'equal',
 						columns: ['genderSelfId'],
-						fieldAccess: 'required',
-						op: 'equal',
-						orderDefine: 0
+						orderDefine: 0,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_sys_person_gender',
+								name: 'Prefer to self-identify'
+							}
+						]
 					},
 					{
-						codeValueTrigger: {
-							codeType: 'ct_sys_person_gender',
-							name: 'Prefer to self-identify',
-							owner: 'sys_client_moed'
-						},
-						codeValueTypeTarget: 'reset',
-						codeValueTypeTrigger: 'code',
+						codeAccess: 'hidden',
+						codeItemChangeAction: 'reset',
+						codeItemChangeValueType: 'code',
+						codeOp: 'notEqual',
 						columns: ['genderSelfId'],
-						fieldAccess: 'hidden',
-						op: 'notEqual',
-						orderDefine: 1
+						orderDefine: 1,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_sys_person_gender',
+								name: 'Prefer to self-identify'
+							}
+						]
 					}
 				]
 			},
@@ -489,14 +493,6 @@ function initApplicantMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'isRead',
-				isDisplayable: false,
-				orderDisplay: 80,
-				orderDefine: 80,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'note',
 				isDisplay: false,
 				isDisplayable: true,
@@ -569,14 +565,6 @@ function initApplicantMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'isRead',
-				isDisplayable: false,
-				orderDisplay: 60,
-				orderDefine: 60,
 				indexTable: 0
 			},
 			{
@@ -694,14 +682,6 @@ function initApplicantMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'isRead',
-				isDisplayable: false,
-				orderDisplay: 100,
-				orderDefine: 100,
 				indexTable: 0
 			},
 			{
@@ -836,14 +816,6 @@ function initApplicantMsg(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeAccess: 'readOnly',
-				columnName: 'isRead',
-				isDisplayable: false,
-				orderDisplay: 90,
-				orderDefine: 90,
-				indexTable: 0
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
@@ -877,7 +849,7 @@ function initApplicantMsg(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_moed_msg_detail'],
+		children: ['node_obj_moed_msg_detail_old'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [{ dataObj: 'data_obj_moed_msg_list_root' }],
@@ -899,7 +871,7 @@ function initApplicantMsg(init: InitDb) {
 			}
 		],
 		header: 'Message',
-		name: 'node_obj_moed_msg_detail',
+		name: 'node_obj_moed_msg_detail_old',
 		orderDefine: 10,
 		owner: 'sys_client_moed'
 	})
@@ -1163,18 +1135,18 @@ function initCsf(init: InitDb) {
 				isDisplayable: true,
 				itemChanges: [
 					{
-						codeValueTypeTarget: 'reset',
-						codeValueTypeTrigger: 'null',
+						codeAccess: 'required',
+						codeItemChangeAction: 'none',
+						codeOp: 'notNull',
 						columns: ['codeSfOutcome'],
-						fieldAccess: 'hidden',
 						orderDefine: 0
 					},
 					{
-						codeValueTypeTarget: 'none',
-						codeValueTypeTrigger: 'notNull',
+						codeAccess: 'hidden',
+						codeOp: 'null',
+						codeItemChangeAction: 'reset',
 						columns: ['codeSfOutcome'],
-						fieldAccess: 'required',
-						orderDefine: 0
+						orderDefine: 1
 					}
 				],
 				orderDisplay: 160,

@@ -2,6 +2,7 @@ import { App, AppLevelTab } from '$comps/app/types.app.svelte'
 import { State } from '$comps/app/types.appState.svelte'
 import {
 	arrayOfClass,
+	CodeActionType,
 	DataObj,
 	type DataRecord,
 	DataObjCardinality,
@@ -43,10 +44,10 @@ export function queryDataPre(
 	dataTab.parms.update(sm.parmsState.valueGetAll())
 	dataTab.parms.update(sm.parmsTrans.valueGetAll())
 
-	// default for fieldListItems itemChanges
-	dataTab.parms.valueSetIfMissing(ParmsValuesType.itemsParmValue, '')
-
 	sm.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
+
+	// fieldListItems - itemChanges defaults
+	dataTab.parms.valueSetIfMissing(ParmsValuesType.itemsParmValue, '')
 
 	return { dataTree, dataTab }
 }
@@ -142,11 +143,14 @@ export async function queryTypeDataObj(
 export async function queryTypeTab(
 	sm: State,
 	tab: AppLevelTab | undefined,
+	actionType: CodeActionType,
 	queryType: TokenApiQueryType
 ) {
 	const clazz = `${FILENAME}.queryTypeTab`
 
 	if (!tab) return undefined
+
+	if (tab.node) tab.nodeDataObjIdSet(actionType)
 
 	let { dataTab, dataTree } = queryDataPre(sm, tab.dataObj?.data, queryType)
 

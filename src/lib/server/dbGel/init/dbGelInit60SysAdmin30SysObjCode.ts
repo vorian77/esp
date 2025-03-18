@@ -728,11 +728,10 @@ function initCode(init: InitDb) {
 				indexTable: 0,
 				itemChanges: [
 					{
-						codeValueTypeTarget: 'select',
-						codeValueTypeTrigger: 'any',
+						codeItemChangeAction: 'retrieveSelect',
+						codeOp: 'any',
 						columns: ['parent'],
-						orderDefine: 0,
-						selectParmValue: 'itemsParmValue'
+						orderDefine: 0
 					}
 				],
 				fieldListItems: 'il_sys_codeType_order_name'

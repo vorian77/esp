@@ -2,7 +2,7 @@ import { InitDb } from '$server/dbGel/init/types.init'
 import { moedDataApplicant } from '$utils/utils.randomDataGenerator'
 
 export function initContentMOEDSsr(init: InitDb) {
-	initAttributes(init)
+	// initAttributes(init)
 
 	// tasks
 	initTaskSsrApp(init)
@@ -234,30 +234,34 @@ function initTaskSsrApp(init: InitDb) {
 				fieldListItemsParmValue: 'ct_sys_person_gender',
 				itemChanges: [
 					{
-						codeValueTrigger: {
-							codeType: 'ct_sys_person_gender',
-							name: 'Prefer to self-identify',
-							owner: 'sys_client_moed'
-						},
-						codeValueTypeTarget: 'none',
-						codeValueTypeTrigger: 'code',
+						codeAccess: 'required',
+						codeItemChangeAction: 'none',
+						codeItemChangeValueType: 'code',
+						codeOp: 'equal',
 						columns: ['genderSelfId'],
-						fieldAccess: 'required',
-						op: 'equal',
-						orderDefine: 0
+						orderDefine: 0,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_sys_person_gender',
+								name: 'Prefer to self-identify'
+							}
+						]
 					},
 					{
-						codeValueTrigger: {
-							codeType: 'ct_sys_person_gender',
-							name: 'Prefer to self-identify',
-							owner: 'sys_client_moed'
-						},
-						codeValueTypeTarget: 'reset',
-						codeValueTypeTrigger: 'code',
+						codeAccess: 'hidden',
+						codeItemChangeAction: 'reset',
+						codeItemChangeValueType: 'code',
+						codeOp: 'notEqual',
 						columns: ['genderSelfId'],
-						fieldAccess: 'hidden',
-						op: 'notEqual',
-						orderDefine: 1
+						orderDefine: 1,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_sys_person_gender',
+								name: 'Prefer to self-identify'
+							}
+						]
 					}
 				]
 			},
@@ -476,14 +480,6 @@ function initTaskSsrMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'isRead',
-				isDisplayable: false,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'note',
 				isDisplay: false,
 				isDisplayable: true,
@@ -597,14 +593,6 @@ function initTaskSsrMsg(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeAccess: 'readOnly',
-				columnName: 'isRead',
-				isDisplayable: false,
-				orderDisplay: 90,
-				orderDefine: 90,
-				indexTable: 0
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
@@ -704,14 +692,6 @@ function initTaskSsrMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'isRead',
-				isDisplayable: false,
-				orderDisplay: 90,
-				orderDefine: 90,
 				indexTable: 0
 			},
 			{
@@ -1119,22 +1099,22 @@ function initTaskSsrWelcome(init: InitDb) {
 	})
 }
 
-function initAttributes(init: InitDb) {
-	init.addTrans('SysObjEntAttr', {
-		codeObjType: 'attr_cm_sf_site',
-		header: 'Eastside YO Center',
-		isGlobalResource: false,
-		name: 'moedOfficeEastside',
-		owner: 'sys_client_moed'
-	})
-	init.addTrans('SysObjEntAttr', {
-		codeObjType: 'attr_cm_sf_site',
-		header: 'Westside YO Center',
-		isGlobalResource: false,
-		name: 'moedOfficeWestside',
-		owner: 'sys_client_moed'
-	})
-}
+// function initAttributes(init: InitDb) {
+// 	init.addTrans('SysObjEntAttr', {
+// 		codeObjType: 'attr_cm_sf_site',
+// 		header: 'Eastside YO Center',
+// 		isGlobalResource: false,
+// 		name: 'moedOfficeEastside',
+// 		owner: 'sys_client_moed'
+// 	})
+// 	init.addTrans('SysObjEntAttr', {
+// 		codeObjType: 'attr_cm_sf_site',
+// 		header: 'Westside YO Center',
+// 		isGlobalResource: false,
+// 		name: 'moedOfficeWestside',
+// 		owner: 'sys_client_moed'
+// 	})
+// }
 
 function initDemoData() {
 	moedDataApplicant.setData()

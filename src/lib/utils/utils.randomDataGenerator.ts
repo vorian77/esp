@@ -5,7 +5,7 @@ import { error } from '@sveltejs/kit'
 const FILENAME = 'utils.randomDataGenerator.ts'
 
 const recordCount = 100
-const universalStartDate = '2025-02-09'
+const universalStartDate = '2025-03-03'
 
 const dataItemsPart = {
 	addr1: { type: 'list', values: ['123 Main St', '456 Elm St', '789 Oak St'] },
@@ -299,10 +299,11 @@ const dataItemsDataMsg = {
 	attribute: {
 		type: 'list',
 		values: ['moedOfficeWestside', 'moedOfficeEastside']
-	}
+	},
+	isRequestResponse: { type: 'boolean', rateTrue: 0.5 }
 }
 
-const recordDataMsg = ['date', 'subject', 'attribute']
+const recordDataMsg = ['date', 'subject', 'attribute', 'isRequestResponse']
 
 export class RandomDataGenerator {
 	data: DataRecord = {}
@@ -341,6 +342,9 @@ export class RandomDataGenerator {
 		let refnValue: any
 
 		switch (type.type) {
+			case 'boolean':
+				return this.isInclude(type.rateTrue)
+
 			case 'dateRange':
 				const dateStart = new Date(type.dateStart).getTime()
 				const dateEnd = new Date(type.dateEnd).getTime()
