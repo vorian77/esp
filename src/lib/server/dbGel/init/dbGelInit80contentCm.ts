@@ -1,6 +1,6 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
-const FILENAME = '$server/dbGel/init/dbGelInit80ContentCM.ts'
+const FILENAME = '$server/dbGel/init/dbGelInit80ContentCm.ts'
 
 export function initContentCm(init: InitDb) {
 	initProgram(init)
