@@ -5,6 +5,7 @@ import {
 	type DataRecord,
 	Node,
 	NodeData,
+	ObjAttr,
 	ParmsValues
 } from '$utils/types'
 import {
@@ -37,6 +38,7 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '$utils/types.user.ts'
 
 export class User {
+	attrs: ObjAttr[]
 	avatar?: FileStorage
 	dbBranch: string
 	firstName: string
@@ -63,6 +65,7 @@ export class User {
 
 	constructor(obj: any) {
 		const clazz = 'User'
+		this.attrs = arrayOfClass(ObjAttr, obj._attrs)
 		this.avatar = classOptional(FileStorage, obj.avatar)
 		this.dbBranch = required(obj.dbBranch, clazz, 'dbBranch')
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
@@ -71,11 +74,11 @@ export class User {
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
 		this.orgIds = obj.orgs.map((o: any) => o.id)
 		this.personId = strRequired(obj._personId, clazz, 'personId')
-		this.preferences = new UserPrefs(obj.preferences)
-		this.resources_app = obj.resources_app
-		this.resources_task = arrayOfClass(UserResourceTask, obj.resources_task)
-		this.system = new UserSystem(obj.system)
-		this.systemIdCurrent = strRequired(obj.system.id, clazz, 'systemIdCurrent')
+		this.preferences = new UserPrefs(obj._preferences)
+		this.resources_app = obj._resources_app
+		this.resources_task = arrayOfClass(UserResourceTask, obj._resources_task)
+		this.system = new UserSystem(obj._system)
+		this.systemIdCurrent = strRequired(obj._system.id, clazz, 'systemIdCurrent')
 		this.systemIds = obj.systems.map((s: any) => s.id)
 		this.userName = strRequired(obj.userName, clazz, 'userName')
 

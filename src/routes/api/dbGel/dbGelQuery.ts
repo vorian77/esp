@@ -16,7 +16,6 @@ import type { DataRecord, DataRow, PropLink, PropLinkItemsSource } from '$utils/
 import { FieldEmbedType } from '$comps/form/field.svelte'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
-	PropAttributeObjectsSource,
 	PropDataSourceValue,
 	PropDataType,
 	PropLinkItems,
@@ -65,24 +64,42 @@ export class Query {
 		return this.addItem(list, item, ',')
 	}
 	getFilter(queryData: TokenApiQueryData) {
-		let script = ''
+		let filter = ''
 
 		if (!this.rawDataObj.exprFilter) {
-			script = `.id = <tree,uuid,id>`
+			filter = `.id = <tree,uuid,id>`
 		} else if (this.rawDataObj.exprFilter?.toLowerCase() !== 'none') {
-			script = this.rawDataObj.exprFilter
+			filter = this.rawDataObj.exprFilter
 		}
 
 		const specialFilters: string[] = ['$ListSelectDisplayIds']
 		const parms = valueOrDefault(queryData.dataTab?.parms.data, {})
-		specialFilters.forEach((filter: string) => {
-			if (Object.hasOwn(parms, filter)) {
-				script = this.addItem(script, `.id in <uuid>{<parms,uuidList,${filter}>}`, 'AND')
+		specialFilters.forEach((sf: string) => {
+			if (Object.hasOwn(parms, sf)) {
+				filter = this.addItem(filter, `.id in <uuid>{<parms,uuidList,${sf}>}`, 'AND')
 			}
 		})
 
-		if (script) script = 'FILTER ' + script
-		return script
+		if (queryData.attrAccessFilter) {
+			let parmAttributeAccessFilter = false
+			let token = ParmsValuesType.attributeAccessFilter
+			if (this.rawDataObj.exprFilter && this.rawDataObj.exprFilter.indexOf(token) > -1) {
+				this.rawDataObj.exprFilter = this.rawDataObj.exprFilter.replaceAll(
+					token,
+					queryData.attrAccessFilter
+				)
+				parmAttributeAccessFilter = true
+			}
+			if (this.rawDataObj.exprWith && this.rawDataObj.exprWith.indexOf(token) > -1) {
+				parmAttributeAccessFilter = true
+			}
+			if (!parmAttributeAccessFilter) {
+				filter = filter ? queryData.attrAccessFilter + ' AND ' + filter : queryData.attrAccessFilter
+			}
+		}
+
+		if (filter) filter = 'FILTER ' + filter
+		return filter
 	}
 	getPropsListEditPresetInsert(parms: DataRecord) {
 		const clazz = 'getPropsListEditPresetInsert'
@@ -220,51 +237,20 @@ export class Query {
 						clazzProp,
 						'attrLinkItemsSource'
 					)
-					const attrType = strRequired(
-						attrLinkItemsSource.parmValue,
-						clazzProp,
-						'linkItemsSource.parmValue'
+					const attrTypes = attrLinkItemsSource.parmValueList.reduce(
+						(acc, val) => acc + (acc ? ',' : '') + `"${val}"`,
+						''
 					)
-					const attrAccess = booleanRequired(propObj.attrAccess, clazzProp, 'attrAccess')
 					propTable = propTable === this.getTableRootObj() ? `DETACHED ${propTable}` : propTable
-					const exprAttrOthers = `(SELECT ${propTable}.attributes FILTER .obj.codeObjType.name != '${attrType}')`
+					const exprAttrsUneffected = `(SELECT .attrs FILTER .codeAttrType.name NOT IN {${attrTypes}})`
+					const exprAttrsNew = `(FOR attr IN json_array_unpack(item['linkItems_attrs']) UNION ((SELECT sys_core::SysAttr FILTER .id = <uuid>attr)))`
 
-					let exprObjs
-					switch (propObj.codeAttrObjsSource) {
-						case PropAttributeObjectsSource.attributesOfObject:
-							exprObjs = propObj.exprSaveAttrObjects
-								? '(SELECT (SELECT ' +
-									propObj.exprSaveAttrObjects +
-									`.attributes FILTER .hasAccess = ${attrAccess} AND .obj.codeObjType.name = '${attrType}').obj.id)`
-								: `json_array_unpack(${item})`
-							break
+					propExpr =
+						action === LinkSaveAction.INSERT
+							? exprAttrsNew
+							: `(${exprAttrsUneffected} UNION ${exprAttrsNew})`
+					propExpr = 'DISTINCT ' + propExpr
 
-						case PropAttributeObjectsSource.objects:
-							exprObjs = `${propObj.exprSaveAttrObjects}.id`
-							break
-
-						default:
-							error(500, {
-								file: FILENAME,
-								function: `${FILENAME}.getPropsSavePropExpr`,
-								message: `No case defined for PropAttributeObjectsSource: ${propObj.codeAttrObjsSource}`
-							})
-					}
-
-					const exprAttrNew = `
-					(FOR attr IN ${exprObjs} UNION
-						(INSERT sys_core::SysAttr
-							{
-								obj := (SELECT sys_core::SysObjEntAttr FILTER .id = <uuid>attr),
-								hasAccess := ${attrAccess},
-								createdBy := sys_user::getRootUser(),
-								modifiedBy := sys_user::getRootUser()
-							}
-						)
-					)`
-
-					propExpr = `DISTINCT (${exprAttrOthers} UNION ${exprAttrNew})`
-					debug('getPropsSavePropExpr', 'propObj.attributes', { propExpr })
 					setValueFunction(propIdx, (rawValue: any) => {
 						return rawValue ? rawValue : getUUID()
 					})
@@ -349,8 +335,8 @@ export class Query {
 
 			if (prop.codeDataType === PropDataType.attribute) {
 				propValue = prop.linkItemsSource
-					? `.${propChildTableTraversal}.obj.id`
-					: `.${propChildTableTraversal}.obj.header`
+					? `.${propChildTableTraversal}.id`
+					: `.${propChildTableTraversal}.header`
 			} else if (prop.linkItemsSource) {
 				propValue = `.${propChildTableTraversal}.id`
 			} else if (prop.link) {

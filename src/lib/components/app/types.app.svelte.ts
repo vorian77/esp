@@ -320,6 +320,11 @@ export class App {
 						ParmsValuesType.queryOwnerIdSystem,
 						rootTab.getCurrRecordValue('id')
 					)
+				} else if (
+					rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemUser &&
+					sm?.user?.systemIdCurrent
+				) {
+					sm.parmsState.valueSet(ParmsValuesType.queryOwnerIdSystem, sm.user.systemIdCurrent)
 				} else if (sm?.user?.systemIdCurrent) {
 					sm.parmsState.valueSet(ParmsValuesType.queryOwnerIdSystem, rootTab.node.ownerId)
 				}

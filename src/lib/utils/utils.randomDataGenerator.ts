@@ -33,6 +33,10 @@ const dataItemsPart = {
 		type: 'list',
 		values: ['Female', 'Male', 'Non-Binary/Third Gender', 'Prefer not to say']
 	},
+	codeLivingArrangements: {
+		type: 'list',
+		values: ['I live on my own', 'I live with my parents']
+	},
 	codeRace: {
 		type: 'list',
 		values: [
@@ -186,6 +190,7 @@ const recordPart = [
 	'codeDisabilityStatus',
 	'codeEthnicity',
 	'codeGender',
+	'codeLivingArrangements',
 	'codeRace',
 	'codeState',
 	'email',
@@ -299,11 +304,10 @@ const dataItemsDataMsg = {
 	attribute: {
 		type: 'list',
 		values: ['moedOfficeWestside', 'moedOfficeEastside']
-	},
-	isRequestResponse: { type: 'boolean', rateTrue: 0.5 }
+	}
 }
 
-const recordDataMsg = ['date', 'subject', 'attribute', 'isRequestResponse']
+const recordDataMsg = ['date', 'subject', 'attribute']
 
 export class RandomDataGenerator {
 	data: DataRecord = {}

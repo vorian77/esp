@@ -259,7 +259,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 		{
 			codeFieldElement: 'text',
 			codeReportElementType: 'column',
-			columnName: 'objAttrSfSite',
+			columnName: 'attrs',
 			indexTable: 1,
 			isDisplay: false,
 			isDisplayable: true,

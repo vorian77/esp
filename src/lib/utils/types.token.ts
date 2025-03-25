@@ -4,20 +4,25 @@ import {
 	CodeAction,
 	CodeActionType,
 	DataObj,
+	DataObjAttrsAccessEval,
 	DataObjRenderPlatform,
 	DataObjData,
 	DataObjSort,
 	type DataRecord,
 	DataRow,
+	debug,
 	memberOfEnum,
 	nbrRequired,
 	ParmsValues,
+	ParmsValuesType,
 	required,
 	ResponseBody,
 	strOptional,
 	strRequired,
+	User,
 	valueOrDefault
 } from '$utils/types'
+import { RawDataObj } from '$comps/dataObj/types.rawDataObj.svelte'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
 import { State, StateParms, StateTriggerToken } from '$comps/app/types.appState.svelte'
@@ -190,12 +195,13 @@ export class TokenApiQuery extends TokenApi {
 }
 
 export class TokenApiQueryData {
+	attrAccessFilter: string = ''
 	dataTab?: DataObjData
 	dbExpr?: string
 	record: DataRecord
 	system: DataRecord
 	tree: TokenApiQueryDataTree
-	user: DataRecord
+	user: User
 	constructor(data: any) {
 		data = valueOrDefault(data, {})
 		this.dataTab = this.dataSet(data, 'dataTab', undefined)
@@ -207,6 +213,7 @@ export class TokenApiQueryData {
 	}
 	static load(currData: TokenApiQueryData) {
 		const newData = new TokenApiQueryData(currData)
+		newData.attrAccessFilter = currData.attrAccessFilter
 		newData.dataTab = currData.dataTab ? DataObjData.load(currData.dataTab) : undefined
 		newData.tree = new TokenApiQueryDataTree(currData.tree.levels)
 		return newData
@@ -217,6 +224,25 @@ export class TokenApiQueryData {
 	getParms() {
 		return this.dataTab ? this.dataTab.getParms() : {}
 	}
+	async setAttrsAccess(rawDataObj: RawDataObj) {
+		if (rawDataObj.attrsAccessGroup) {
+			let attrAccessEval: DataObjAttrsAccessEval = rawDataObj.attrsAccessGroup.eval(this.user.attrs)
+			this.setAttrsAccessFilter(
+				attrAccessEval.isDenyAccess
+					? '.id = <uuid>{}'
+					: `.attrs.id IN (<uuid>{${attrAccessEval.permittedObjIds.reduce((filter, id) => {
+							filter += `"${id}",`
+							return filter
+						}, '')}})`
+			)
+		} else {
+			this.setAttrsAccessFilter('')
+		}
+	}
+	setAttrsAccessFilter(filter: string) {
+		this.attrAccessFilter = filter
+	}
+
 	updateTableData(table: string, dataRow: DataRow) {
 		this.record = dataRow.record
 		this.tree.upsertData(table, dataRow)

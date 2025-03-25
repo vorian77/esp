@@ -1,8 +1,10 @@
 module sys_core {
   type ObjRoot {
-    multi attributes: sys_core::SysAttr {
+    multi attrs: sys_core::SysAttr;
+    multi attrsAccess: sys_core::SysAttrAccess {
       on source delete delete target;
     };
+    isGlobalResource: bool;
     note: str;
      
     # test fields
@@ -24,15 +26,19 @@ module sys_core {
     orderDefine: default::nonNegative;
   }
 
-  type SysAttr extending sys_user::Mgmt {
-    required hasAccess: bool;
-    required obj: sys_core::SysObjEntAttr{
-      on target delete delete source;
-    };
+  type SysAttr extending sys_core::SysObjEnt {
+    required codeAttrType: sys_core::SysCode;
+  }
+  
+  type SysAttrAccess extending sys_user::Mgmt {
+    attr: sys_core::SysAttr;
+    required codeAttrAccessSource: sys_core::SysCode;
+    required codeAttrAccessType: sys_core::SysCode;
+    codeAttrType: sys_core::SysCode;
   }
   
   type SysObj extending sys_core::ObjRootCore, sys_user::Mgmt {
-    isGlobalResource: bool;
+    isGlobalResourceOld: bool;
     required owner: sys_core::SysSystem;
     constraint exclusive on ((.owner, .name));
   } 
@@ -59,9 +65,6 @@ module sys_core {
     );
   }
 
-
-  type SysObjEntAttr extending sys_core::SysObjEnt {}
- 
   type SysObjNote extending sys_user::Mgmt {
     required date: cal::local_date;
     required codeType: sys_core::SysCode;
@@ -114,7 +117,7 @@ module sys_core {
   # SysDataObj
   type SysDataObj extending sys_core::SysObj {
     actionGroup: sys_core::SysDataObjActionGroup;
-  
+    
     required codeCardinality: sys_core::SysCode;
     required codeComponent: sys_core::SysCode;
     codeDataObjType: sys_core::SysCode;
@@ -180,12 +183,9 @@ module sys_core {
   # SysDataObjColumn
   type SysDataObjColumn extending sys_user::Mgmt {
     action: sys_user::SysUserAction;
-    attrAccess: bool;
 
     codeAccess: sys_core::SysCode;
     codeAlignmentAlt: sys_core::SysCode;
-    codeAttrObjsSource: sys_core::SysCode;
-    codeAttrType: sys_core::SysCode;
     codeColor: sys_core::SysCode;
     codeDbDataSourceValue: sys_core::SysCode;
     codeFieldElement: sys_core::SysCode;
@@ -209,7 +209,6 @@ module sys_core {
     exprCustom: str;
     exprPreset: str;
     exprSave: str;
-    exprSaveAttrObjects: str;
 
     fieldEmbedListConfig: sys_core::SysDataObjFieldEmbedListConfig;
     fieldEmbedListEdit: sys_core::SysDataObjFieldEmbedListEdit;
@@ -217,6 +216,7 @@ module sys_core {
    
     fieldListItems: sys_core::SysDataObjFieldListItems;
     fieldListItemsParmValue: str;
+    multi fieldListItemsParmValueList: str;
 
     file: json;
 
@@ -267,11 +267,11 @@ module sys_core {
     required orderDefine: default::nonNegative;
     retrieveParmKey: str;
     
-    valueTargetAttribute: sys_core::SysObjEntAttr;
+    valueTargetAttribute: sys_core::SysAttr;
     valueTargetCode: sys_core::SysCode;
     valueTargetScalar: str;
     
-    multi valueTriggerAttributes: sys_core::SysObjEntAttr;
+    multi valueTriggerAttributes: sys_core::SysAttr;
     multi valueTriggerCodes: sys_core::SysCode;
     valueTriggerScalar: str;
   }
@@ -377,9 +377,10 @@ module sys_core {
       readonly := true;
     };
     date: cal::local_date;
-    isRequestResponse: bool;
+    required isOpen: bool {
+      default := true;
+    };
     parent: sys_core::SysMsg;
-    multi readers: default::SysPerson;
     multi recipients: default::SysPerson;
     responses := .<parent[IS sys_core::SysMsg];
     required sender: default::SysPerson;
@@ -422,6 +423,9 @@ module sys_core {
   }
 
   # FUNCTIONS
+  function getAttr(ownerName:str, name: str) -> optional sys_core::SysAttr
+    using (select assert_single((select sys_core::SysAttr filter .owner.name = ownerName and .name = name)));
+
   function getCodeType(codeTypeName: str) -> optional sys_core::SysCodeType
     using (select sys_core::SysCodeType filter .name = codeTypeName);
 
@@ -467,9 +471,6 @@ module sys_core {
   function getObj(ownerName:str, name: str) -> optional sys_core::SysObj
     using (select assert_single((select sys_core::SysObj filter .owner.name = ownerName and .name = name)));
 
-  function getObjEntAttr(ownerName:str, name: str) -> optional sys_core::SysObjEntAttr
-    using (select assert_single((select sys_core::SysObjEntAttr filter .owner.name = ownerName and .name = name)));
-
   function getObjRootCore(name: str) -> optional sys_core::ObjRootCore
     using (select assert_single((select sys_core::ObjRootCore filter .name = name)));
     
@@ -495,7 +496,7 @@ module sys_core {
 # advanced attribute management
 # WITH
 # attrs := (SELECT to_json($$[${this.attributes.map((attr) => {return `["${attr.owner}","${attr.name}"]`}).join(',')}]$$)),
-# attrObjs := (FOR a IN json_array_unpack(attrs) UNION (SELECT sys_core::getObjEntAttr(<str>a[0], <str>a[1]))),
+# attrObjs := (FOR a IN json_array_unpack(attrs) UNION (SELECT sys_core::getAttr(<str>a[0], <str>a[1]))),
 # filter = this.getExprFilter({ filterCustom: this.attributesObjFilter, record })
 # obj = `UPDATE ${this.attributesObj}`
 # if (filter) obj += ' ' + filter

@@ -75,7 +75,7 @@ export function memberOfEnum(
 	error(500, {
 		file: className,
 		function: `memberOfEnum: ${enumName} - Field: ${fieldName} - Value: ${val}`,
-		message: `Invalid enum value for Elements: ${Object.values(enumObj).toString()}`
+		message: `Invalid enum value: ${val} enum: ${enumName} elements: ${Object.values(enumObj).toString()}`
 	})
 }
 export function memberOfEnumOrDefault(

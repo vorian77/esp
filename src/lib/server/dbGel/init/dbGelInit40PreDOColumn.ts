@@ -174,18 +174,20 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'bool',
-		header: 'Attribute Access',
-		name: 'attrAccess'
-	})
-	init.addTrans('sysColumn', {
 		codeDataType: 'attribute',
 		header: 'Attributes',
 		isMultiSelect: true,
-		name: 'attributes',
+		name: 'attrs',
 		owner: 'sys_system'
 	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'attributeAccess',
+		header: 'Attribute Accesses',
+		isMultiSelect: true,
+		name: 'attrsAccess',
+		owner: 'sys_system'
+	})
+
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'json',
@@ -269,13 +271,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Alignment (Alt)',
 		isMultiSelect: false,
 		name: 'codeAlignmentAlt'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'link',
-		header: 'Attribute Objects Source',
-		isMultiSelect: false,
-		name: 'codeAttrObjsSource'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
@@ -486,6 +481,13 @@ export function initPreColumn(init: InitDb) {
 		header: 'Object Type',
 		isMultiSelect: false,
 		name: 'codeObjType',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Living Arrangements',
+		isMultiSelect: false,
+		name: 'codePersonLivingArrangements',
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
@@ -1352,12 +1354,6 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
-		codeDataType: 'str',
-		header: 'Expression - Save Attribute Objects',
-		name: 'exprSaveAttrObjects',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'str',
 		header: 'Expression - Select',
@@ -1446,6 +1442,13 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Field List Parm - Name',
 		name: 'fieldListItemsParmValue'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'strList',
+		header: 'Field List Parm List',
+		isMultiSelect: true,
+		name: 'fieldListItemsParmValueList'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
@@ -1745,6 +1748,12 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'bool',
+		header: 'Open',
+		name: 'isOpen'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'bool',
 		header: 'Required',
 		name: 'isRequired'
 	})
@@ -1957,13 +1966,6 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'obj',
 		owner: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Site',
-		isMultiSelect: false,
-		name: 'objAttrSfSite',
-		owner: 'sys_app_cm'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',

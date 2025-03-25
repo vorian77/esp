@@ -15,6 +15,8 @@ export async function addDataObj(data: any) {
 		{
 			actionGroup: e.optional(e.str),
 			actionsQuery: e.optional(e.array(e.json)),
+			attrsAccess: e.optional(e.array(e.json)),
+			attrsSource: e.optional(e.array(e.json)),
 			codeCardinality: e.str,
 			codeComponent: e.str,
 			codeDataObjType: e.optional(e.str),
@@ -47,6 +49,28 @@ export async function addDataObj(data: any) {
 		(p) => {
 			return e.insert(e.sys_core.SysDataObj, {
 				actionGroup: e.select(e.sys_core.getDataObjActionGroup(p.actionGroup)),
+				attrsAccess: e.for(e.array_unpack(p.attrsAccess), (aa) => {
+					return e.insert(e.sys_core.SysAttrAccess, {
+						attr: e.sys_core.getAttr(
+							e.cast(e.str, e.json_get(e.cast(e.json, e.json_get(aa, 'attr')), 'owner')),
+							e.cast(e.str, e.json_get(e.cast(e.json, e.json_get(aa, 'attr')), 'name'))
+						),
+						codeAttrAccessSource: e.sys_core.getCode(
+							'ct_sys_attribute_access_source',
+							e.cast(e.str, e.json_get(aa, 'codeAttrAccessSource'))
+						),
+						codeAttrAccessType: e.sys_core.getCode(
+							'ct_sys_attribute_access_type',
+							e.cast(e.str, e.json_get(aa, 'codeAttrAccessType'))
+						),
+						codeAttrType: e.sys_core.getCode(
+							'ct_sys_attribute_type',
+							e.cast(e.str, e.json_get(aa, 'codeAttrType'))
+						),
+						createdBy: CREATOR,
+						modifiedBy: CREATOR
+					})
+				}),
 				codeCardinality: e.select(e.sys_core.getCode('ct_sys_do_cardinality', p.codeCardinality)),
 				codeComponent: e.select(e.sys_core.getCode('ct_sys_do_component', p.codeComponent)),
 				codeDataObjType: e.op(
@@ -68,19 +92,6 @@ export async function addDataObj(data: any) {
 						column: e.sys_db.getColumn(e.cast(e.str, e.json_get(f, 'columnName'))),
 
 						/* DB */
-						attrAccess: booleanOrDefaultJSON(f, 'attrAccess', false),
-
-						codeAttrObjsSource: e.select(
-							e.sys_core.getCode(
-								'ct_sys_attribute_objects_source',
-								e.cast(e.str, e.json_get(f, 'codeAttrObjsSource'))
-							)
-						),
-
-						codeAttrType: e.select(
-							e.sys_core.getCode('ct_sys_attribute', e.cast(e.str, e.json_get(f, 'codeAttrType')))
-						),
-
 						codeDbDataSourceValue: e.op(
 							e.sys_core.getCode(
 								'ct_sys_do_field_source_value',
@@ -112,8 +123,6 @@ export async function addDataObj(data: any) {
 						exprPreset: e.cast(e.str, e.json_get(f, 'exprPreset')),
 
 						exprSave: e.cast(e.str, e.json_get(f, 'exprSave')),
-
-						exprSaveAttrObjects: e.cast(e.str, e.json_get(f, 'exprSaveAttrObjects')),
 
 						indexTable: e.cast(e.int16, e.json_get(f, 'indexTable')),
 
@@ -238,6 +247,16 @@ export async function addDataObj(data: any) {
 						),
 
 						fieldListItemsParmValue: e.cast(e.str, e.json_get(f, 'fieldListItemsParmValue')),
+
+						fieldListItemsParmValueList: e.op(
+							e.for(e.json_array_unpack(e.json_get(f, 'fieldListItemsParmValueList')), (v) => {
+								return e.cast(e.str, v)
+							}),
+							'if',
+							e.op('exists', e.json_get(f, 'fieldListItemsParmValueList')),
+							'else',
+							e.cast(e.str, e.set())
+						),
 
 						headerAlt: e.cast(e.str, e.json_get(f, 'headerAlt')),
 

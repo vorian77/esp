@@ -82,6 +82,12 @@ export class ScriptGroup {
 						prop.linkItemsSource.parmValue
 					)
 				}
+				if (prop.linkItemsSource.parmValueList) {
+					queryData?.dataTab?.parms.valueSet(
+						ParmsValuesType.itemsParmValueList,
+						prop.linkItemsSource.parmValueList
+					)
+				}
 				let propValue = `${prop.linkItemsSource.getExprSelect(true, record[prop.propName])}`
 				propValue = evalExpr(
 					propValue,
@@ -219,11 +225,9 @@ export class ScriptGroup {
 		])
 	}
 
-	addScriptRetrieve(query: Query, queryData: TokenApiQueryData) {
-		return this.addScriptRetrieveItem(query, queryData, ScriptExePost.formatData)
-	}
-	addScriptRetrieveItem(query: Query, queryData: TokenApiQueryData, exePost: ScriptExePost) {
-		return this.addScript(query, queryData, exePost, [
+	async addScriptRetrieve(query: Query, queryData: TokenApiQueryData) {
+		await queryData.setAttrsAccess(query.rawDataObj)
+		return this.addScript(query, queryData, ScriptExePost.formatData, [
 			['with', { exprWith: query.rawDataObj.exprWith }],
 			['action', { type: 'SELECT', table: query.getTableRootObj() }],
 			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
@@ -424,8 +428,6 @@ export class Script {
 	}
 	build() {
 		let values: DataRecord = {}
-		let withValues: string[] = []
-		const WITH_VALUES = 'withValues'
 
 		this.items.forEach((item: ScriptItem) => {
 			const action = item.action
@@ -495,6 +497,12 @@ export class Script {
 
 				case 'with':
 					element = item.getParm('exprWith')
+					if (element) {
+						element = element.replaceAll(
+							ParmsValuesType.attributeAccessFilter,
+							this.queryData.attrAccessFilter
+						)
+					}
 					if (!element) {
 						element = this.buildCombineValues(values, item.getParm('content'), ',')
 						element = this.addComponent(element, item.getParm('value'))

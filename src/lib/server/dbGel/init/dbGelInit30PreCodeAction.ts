@@ -49,12 +49,6 @@ function initCodeActionsDoGroupItem(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system',
 		codeType: 'ct_sys_code_action_class_do',
-		name: 'doDetailMsgSetUnread',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system',
-		codeType: 'ct_sys_code_action_class_do',
 		name: 'doDetailMigrate',
 		order: 0
 	})
@@ -67,7 +61,19 @@ function initCodeActionsDoGroupItem(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system',
 		codeType: 'ct_sys_code_action_class_do',
-		name: 'doDetailNewMsgReply',
+		name: 'doDetailMsgCloseThread',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system',
+		codeType: 'ct_sys_code_action_class_do',
+		name: 'doDetailMsgSetClosed',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system',
+		codeType: 'ct_sys_code_action_class_do',
+		name: 'doDetailMsgSetOpen',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {

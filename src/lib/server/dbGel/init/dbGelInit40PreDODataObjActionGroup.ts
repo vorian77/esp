@@ -321,40 +321,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	/* specialty */
-	init.addTrans('sysDataObjActionGroup', {
-		actions: [
-			{
-				action: 'ua_sys_save_detail',
-				codeColor: 'primary',
-				isListRowAction: false,
-				orderDefine: 0
-			},
-			{
-				action: 'ua_sys_save_cancel',
-				codeColor: 'primary',
-				isListRowAction: false,
-				orderDefine: 1
-			},
-			{ action: 'ua_sys_new_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 2 },
-			{
-				action: 'ua_sys_msg_reply',
-				codeColor: 'secondary',
-				isListRowAction: false,
-				orderDefine: 3
-			},
-			{
-				action: 'ua_sys_msg_set_unread',
-				codeColor: 'primary',
-				isListRowAction: false,
-				orderDefine: 4
-			},
-			{ action: 'ua_sys_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 5 }
-		],
-		name: 'doag_detail_msg',
-		owner: 'sys_system'
-	})
-
+	/* migrate */
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
 			{

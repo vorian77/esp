@@ -1036,6 +1036,7 @@ export class ParmsValues {
 }
 
 export enum ParmsValuesType {
+	attributeAccessFilter = '<attributeAccessFilter>',
 	columnDefs = 'columnDefs',
 	customProgramOwnerId = 'customProgramOwnerId',
 	embedFieldName = 'embedFieldName',
@@ -1043,6 +1044,7 @@ export enum ParmsValuesType {
 	fieldListItems = 'fieldListItems',
 	isMultiSelect = 'isMultiSelect',
 	itemsParmValue = 'itemsParmValue',
+	itemsParmValueList = 'itemsParmValueList',
 	listIds = 'listIds',
 	listIdsSelected = 'listIdsSelected',
 	listRecordIdCurrent = 'listRecordIdCurrent',

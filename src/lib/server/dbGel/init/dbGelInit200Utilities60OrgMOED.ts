@@ -30,22 +30,27 @@ export async function MoedPBulkPart(params: any) {
 						'ct_sys_person_gender',
 						e.cast(e.str, i[7])
 					),
+					codePersonLivingArrangements: e.sys_core.getCodeSystem(
+						'sys_client_moed',
+						'ct_sys_person_living_arrangements',
+						e.cast(e.str, i[8])
+					),
 					codeRace: e.sys_core.getCodeSystem(
 						'sys_client_moed',
 						'ct_sys_person_race',
-						e.cast(e.str, i[8])
+						e.cast(e.str, i[9])
 					),
 					codeState: e.sys_core.getCodeSystem(
 						'sys_client_moed',
 						'ct_sys_state',
-						e.cast(e.str, i[9])
+						e.cast(e.str, i[10])
 					),
-					email: e.cast(e.str, i[10]),
-					firstName: e.cast(e.str, i[11]),
-					lastName: e.cast(e.str, i[12]),
-					phoneMobile: e.cast(e.str, i[13]),
-					ssn: e.cast(e.str, i[14]),
-					zip: e.cast(e.str, i[15])
+					email: e.cast(e.str, i[11]),
+					firstName: e.cast(e.str, i[12]),
+					lastName: e.cast(e.str, i[13]),
+					phoneMobile: e.cast(e.str, i[14]),
+					ssn: e.cast(e.str, i[15]),
+					zip: e.cast(e.str, i[16])
 				}),
 				owner: e.sys_core.getSystemPrime('sys_client_moed')
 			})
@@ -65,6 +70,7 @@ export async function MoedBulkCsf(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.app_cm.CmClientServiceFlow, {
+				attrs: e.sys_core.getAttr('sys_client_moed', e.cast(e.str, i[4])),
 				createdBy: CREATOR,
 				modifiedBy: CREATOR,
 				client: e.assert_single(
@@ -90,17 +96,6 @@ export async function MoedBulkCsf(params: any) {
 				dateCreated: e.cal.to_local_date(e.cast(e.str, i[1])),
 				dateStart: e.cal.to_local_date(e.cast(e.str, i[2])),
 				dateEnd: e.cal.to_local_date(e.cast(e.str, i[3])),
-
-				objAttrSfSite: e.assert_single(
-					e.select(e.sys_core.SysObjEntAttr, (site) => ({
-						filter_single: e.op(
-							e.op(site.owner.name, '=', 'sys_client_moed'),
-							'and',
-							e.op(site.name, '=', e.cast(e.str, i[4]))
-						)
-					}))
-				),
-
 				programCm: PROGRAM
 			})
 		})
@@ -144,14 +139,27 @@ export async function MoedBulkDataMsg(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_core.SysMsg, {
-				attributes: e.insert(e.sys_core.SysAttr, {
+				attrs: e.sys_core.getAttr('sys_client_moed', e.cast(e.str, i[3])),
+				attrsAccess: e.insert(e.sys_core.SysAttrAccess, {
+					codeAttrAccessSource: e.sys_core.getCodeSystem(
+						'sys_system',
+						'ct_sys_attribute_access_source',
+						'user'
+					),
+					codeAttrAccessType: e.sys_core.getCodeSystem(
+						'sys_system',
+						'ct_sys_attribute_access_type',
+						'permitted'
+					),
+					codeAttrType: e.sys_core.getCodeSystem(
+						'sys_app_cm',
+						'ct_sys_attribute_type',
+						'at_cm_sf_site'
+					),
 					createdBy: CREATOR,
-					hasAccess: true,
-					modifiedBy: CREATOR,
-					obj: e.sys_core.getObjEntAttr('sys_client_moed', e.cast(e.str, i[3]))
+					modifiedBy: CREATOR
 				}),
 				date: e.cal.to_local_date(e.cast(e.str, i[1])),
-				isRequestResponse: e.cast(e.bool, i[4]),
 				sender: e.assert_single(
 					e.select(e.org_client_moed.MoedParticipant, (part) => ({
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))

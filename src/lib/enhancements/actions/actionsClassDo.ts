@@ -43,12 +43,16 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
-		case CodeActionType.doDetailMsgSetUnread:
+		case CodeActionType.doDetailMsgSetClosed:
+			alert('doDetailMsgSetClosed')
+			break
+
+		case CodeActionType.doDetailMsgSetOpen:
 			currTab = sm.app.getCurrTab()
 			if (currTab && currTab.dataObj) {
 				currRecordId = currTab.getCurrRecordValue('id')
 				if (currRecordId) {
-					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {readers := (.readers except (SELECT default::SysPerson FILTER .id = <user,uuid,personId>))}`
+					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {isOpen := true}`
 					await sm.triggerAction(
 						new TokenAppStateTriggerAction({
 							codeAction: CodeAction.init(
@@ -58,7 +62,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 							data: { value: { expr } }
 						})
 					)
-					currTab.dataObj.data.rowsRetrieved.setDetailRecordValue('isReadDisplay', 'No')
+					// currTab.dataObj.data.rowsRetrieved.setDetailRecordValue('isReadDisplay', 'No')
 					await userActionStateChangeDataObj(sm, parmsAction)
 				}
 			}
@@ -80,17 +84,6 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 				TokenApiQueryType.preset
 			)
 			await userActionStateChangeDataObj(sm, parmsAction)
-			break
-
-		case CodeActionType.doDetailNewMsgReply:
-			currTab = sm.app.getCurrTab()
-			if (currTab && currTab.dataObj) {
-				sm.parmsTrans.valueSet(ParmsValuesType.parentRecordId, currTab.getCurrRecordValue('id'))
-				sm.parmsTrans.valueSet('subject', currTab.getCurrRecordValue('subject'))
-				await queryTypeTab(sm, currTab, parmsAction.codeAction.actionType, TokenApiQueryType.preset)
-				await userActionStateChangeDataObj(sm, parmsAction)
-			}
-
 			break
 
 		case CodeActionType.doDetailProcessExecute:

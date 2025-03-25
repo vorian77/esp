@@ -487,7 +487,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'objAttrSfSite',
+				columnName: 'attrs',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
@@ -592,13 +592,13 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'objAttrSfSite',
+				columnName: 'attrs',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_attr_obj_system_type',
-				fieldListItemsParmValue: 'attr_cm_sf_site'
+				fieldListItems: 'il_sys_attr_obj_system_types',
+				fieldListItemsParmValueList: ['at_cm_sf_site']
 			},
 			{
 				codeFieldElement: 'select',

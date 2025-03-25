@@ -62,7 +62,7 @@ module app_cm {
     );
   }
 
-  type CmClientServiceFlow extending sys_user::Mgmt {
+  type CmClientServiceFlow extending sys_core::ObjRoot, sys_user::Mgmt {
     required client: app_cm::CmClient;
     codeSfEligibilityStatus: sys_core::SysCode;
     codeSfEnrollType: sys_core::SysCode;
@@ -73,8 +73,6 @@ module app_cm {
     dateStart: cal::local_date;
     dateStartEst: cal::local_date;
     idxDemo: int64;
-    note: str;
-    objAttrSfSite: sys_core::SysObjEntAttr;
     required programCm: app_cm::CmProgram;
     user: sys_user::SysUser;
   }

@@ -161,6 +161,15 @@ export function getValDB(codeDataType: PropDataType, valueRaw: any) {
 			valueDB = getValQuoted(valueRaw)
 			break
 
+		case PropDataType.strList:
+			dataType = '<str>'
+			valueDB =
+				valueRaw.length > 0
+					? `{${getArray(valueRaw).map((v: string) => getValQuoted(v))}}`
+					: getValQuoted('')
+
+			break
+
 		case PropDataType.uuid:
 			dataType = '<uuid>'
 			valueDB = `${getUUIDQuoted(valueRaw)}`

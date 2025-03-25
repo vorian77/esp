@@ -2,7 +2,7 @@ import { InitDb } from '$server/dbGel/init/types.init'
 import { moedDataApplicant } from '$utils/utils.randomDataGenerator'
 
 export function initContentMOEDSsr(init: InitDb) {
-	// initAttributes(init)
+	initAttributes(init)
 
 	// tasks
 	initTaskSsrApp(init)
@@ -156,13 +156,14 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'objAttrSfSite',
+				columnName: 'attrs',
+				headerAlt: 'Site',
 				isDisplayable: true,
 				orderDisplay: 210,
 				orderDefine: 210,
 				indexTable: 0,
-				fieldListItems: 'il_sys_attr_obj_system_type',
-				fieldListItemsParmValue: 'attr_cm_sf_site'
+				fieldListItems: 'il_sys_attr_obj_system_types',
+				fieldListItemsParmValueList: ['at_cm_sf_site']
 			},
 			{
 				codeFieldElement: 'date',
@@ -306,6 +307,46 @@ function initTaskSsrApp(init: InitDb) {
 				fieldListItemsParmValue: 'ct_sys_person_disability_status'
 			},
 			{
+				codeFieldElement: 'select',
+				columnName: 'codePersonLivingArrangements',
+				isDisplayable: true,
+				itemChanges: [
+					{
+						codeAccess: 'optional',
+						codeItemChangeAction: 'none',
+						codeOp: 'notEqual',
+						columns: ['addr1', 'addr2', 'city', 'codeState', 'zip'],
+						orderDefine: 0,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_sys_person_living_arrangements',
+								name: 'I am currently homeless'
+							}
+						]
+					},
+					{
+						codeAccess: 'hidden',
+						codeOp: 'equal',
+						codeItemChangeAction: 'reset',
+						columns: ['addr1', 'addr2', 'city', 'codeState', 'zip'],
+						orderDefine: 1,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_sys_person_living_arrangements',
+								name: 'I am currently homeless'
+							}
+						]
+					}
+				],
+				orderDisplay: 325,
+				orderDefine: 325,
+				indexTable: 2,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItemsParmValue: 'ct_sys_person_living_arrangements'
+			},
+			{
 				codeAccess: 'optional',
 				columnName: 'addr1',
 				indexTable: 2,
@@ -422,17 +463,6 @@ function initTaskSsrMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 15,
-				orderDisplay: 15,
-				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'parent',
 				isDisplayable: false,
 				orderDefine: 20,
@@ -504,7 +534,7 @@ function initTaskSsrMsg(init: InitDb) {
 				codeQueryType: 'retrieve',
 				codeTriggerTiming: 'pre',
 				codeType: 'databaseExpression',
-				expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,SysMsg.id> SET {readers := DISTINCT (.readers UNION (SELECT default::SysPerson FILTER .id = <user,uuid,personId>))}`
+				expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,SysMsg.id> SET {isOpen := false}`
 			},
 			{
 				codeQueryType: 'save',
@@ -529,17 +559,6 @@ function initTaskSsrMsg(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				attrAccess: true,
-				codeAttrObjsSource: 'objects',
-				codeAttrType: 'attr_cm_sf_site',
-				exprSaveAttrObjects: `((SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person).objAttrSfSite)`,
-				columnName: 'attributes',
-				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 20
-			},
-			{
 				columnName: 'custom_element_str',
 				isDisplayable: false,
 				orderDefine: 40,
@@ -552,17 +571,6 @@ function initTaskSsrMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 55,
-				orderDisplay: 55,
-				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
 			},
 			{
 				codeFieldElement: 'date',
@@ -629,17 +637,6 @@ function initTaskSsrMsg(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				attrAccess: true,
-				codeAttrObjsSource: 'objects',
-				codeAttrType: 'attr_cm_sf_site',
-				exprSaveAttrObjects: `((SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person).objAttrSfSite)`,
-				columnName: 'attributes',
-				fieldListItems: 'il_sys_attribute_order_header_by_attributeType_name',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 20
-			},
-			{
 				columnName: 'custom_element_str',
 				isDisplayable: false,
 				orderDefine: 40,
@@ -652,17 +649,6 @@ function initTaskSsrMsg(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 55,
-				orderDisplay: 55,
-				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
 			},
 			{
 				codeFieldElement: 'date',
@@ -730,12 +716,12 @@ function initTaskSsrMsg(init: InitDb) {
 		codeNavType: 'task',
 		codeNodeType: 'program_object',
 		data: [
-			{ dataObj: 'data_obj_task_moed_ssr_msg_detail' },
-			{
-				actionClass: 'ct_sys_code_action_class_do',
-				actionType: 'doDetailNewMsgReply',
-				dataObj: 'data_obj_task_moed_ssr_msg_detail_reply'
-			}
+			{ dataObj: 'data_obj_task_moed_ssr_msg_detail' }
+			// {
+			// 	actionClass: 'ct_sys_code_action_class_custom',
+			// 	actionType: 'doDetailMsgReplyCmClient',
+			// 	dataObj: 'data_obj_task_moed_ssr_msg_detail_reply'
+			// }
 		],
 		header: 'Message',
 		name: 'node_obj_task_moed_ssr_msg_detail',
@@ -748,11 +734,11 @@ function initTaskSsrMsg(init: InitDb) {
 		codeRenderType: 'button',
 		codeStatusObj: 'tso_sys_data',
 		description: 'Have questions? Send messages to program staff.',
-		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person)) > 0`,
+		exprShow: `SELECT count((SELECT sys_core::SysMsg FILTER <user,uuid,personId> IN (.sender.id UNION .recipients.id))) > 0`,
 		exprStatus: `WITH msgs := (SELECT sys_core::SysMsg FILTER <user,uuid,personId> IN (.sender.id UNION .recipients.id))
 		SELECT {
 			msgsCnt := {label := 'Total', data := count(msgs), color := 'black'},
-			msgsCntUnread := {label := 'Unread', data := count(msgs FILTER <user,uuid,personId> != .sender.id AND <user,uuid,personId> NOT IN .readers.id), color := 'black'},
+			msgsCntOpen := {label := 'Open', data := count(msgs FILTER .isOpen), color := 'black'},
 			}`,
 		header: 'My Messages',
 		isPinToDash: false,
@@ -1099,22 +1085,22 @@ function initTaskSsrWelcome(init: InitDb) {
 	})
 }
 
-// function initAttributes(init: InitDb) {
-// 	init.addTrans('SysObjEntAttr', {
-// 		codeObjType: 'attr_cm_sf_site',
-// 		header: 'Eastside YO Center',
-// 		isGlobalResource: false,
-// 		name: 'moedOfficeEastside',
-// 		owner: 'sys_client_moed'
-// 	})
-// 	init.addTrans('SysObjEntAttr', {
-// 		codeObjType: 'attr_cm_sf_site',
-// 		header: 'Westside YO Center',
-// 		isGlobalResource: false,
-// 		name: 'moedOfficeWestside',
-// 		owner: 'sys_client_moed'
-// 	})
-// }
+function initAttributes(init: InitDb) {
+	init.addTrans('sysAttr', {
+		codeAttrType: 'at_cm_sf_site',
+		header: 'Eastside YO Center',
+		isGlobalResource: false,
+		name: 'moedOfficeEastside',
+		owner: 'sys_client_moed'
+	})
+	init.addTrans('sysAttr', {
+		codeAttrType: 'at_cm_sf_site',
+		header: 'Westside YO Center',
+		isGlobalResource: false,
+		name: 'moedOfficeWestside',
+		owner: 'sys_client_moed'
+	})
+}
 
 function initDemoData() {
 	moedDataApplicant.setData()

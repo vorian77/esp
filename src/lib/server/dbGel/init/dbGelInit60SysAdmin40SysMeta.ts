@@ -19,7 +19,7 @@ function initAttribute(init: InitDb) {
 		header: 'Attributes',
 		name: 'data_obj_sys_admin_attribute_list_meta',
 		owner: 'sys_system',
-		tables: [{ index: 0, table: 'SysObjEntAttr' }],
+		tables: [{ index: 0, table: 'SysAttr' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -29,11 +29,12 @@ function initAttribute(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'codeObjType',
-				orderSort: 10,
+				columnName: 'codeAttrType',
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderCrumb: 10,
+				orderDisplay: 20,
+				orderDefine: 20,
+				orderSort: 10,
 				indexTable: 0,
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -41,8 +42,16 @@ function initAttribute(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'name',
-				orderCrumb: 10,
+				orderCrumb: 20,
 				orderSort: 20,
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'header',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -58,7 +67,7 @@ function initAttribute(init: InitDb) {
 		header: 'Attribute',
 		name: 'data_obj_sys_admin_attribute_detail_meta',
 		owner: 'sys_system',
-		tables: [{ index: 0, table: 'SysObjEntAttr' }],
+		tables: [{ index: 0, table: 'SysAttr' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -83,12 +92,12 @@ function initAttribute(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'codeObjType',
+				columnName: 'codeAttrType',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_attribute_type_meta'
+				fieldListItems: 'il_sys_attr_type_system'
 			},
 			{
 				columnName: 'name',
@@ -98,7 +107,6 @@ function initAttribute(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeAccess: 'optional',
 				columnName: 'header',
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -439,6 +447,14 @@ function initCode(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: false,
 				linkTable: 'SysSystem'
+			},
+			{
+				columnName: 'isGlobalResource',
+				exprPreset: `(SELECT false)`,
+				indexTable: 0,
+				isDisplayable: false,
+				orderDisplay: 25,
+				orderDefine: 25
 			},
 			{
 				codeFieldElement: 'tagRow',

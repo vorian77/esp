@@ -3,11 +3,14 @@ import { ParmsValuesType } from '$utils/types'
 
 export function initContentMOEDCmAdvocate(init: InitDb) {
 	initTaskOpenApps(init)
-	initTaskOpenMsgs(init)
+	// initTaskOpenMsgs(init)
 
-	initMsgListRoot(init)
-	initMsgDetailEdit(init)
-	initMsgDetailNew(init)
+	// initMsgRootList(init)
+	// initMsgRootDetailNew(init)
+	// initMsgRootDetailEdit(init)
+
+	// initMsgDetailNew(init)
+	// initMsgDetailReply(init)
 }
 
 function initTaskOpenApps(init: InitDb) {
@@ -160,7 +163,7 @@ function initTaskOpenMsgs(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
-		exprFilter: `.id IN (SELECT org_client_moed::MoedParticipant).person.id AND (.id IN (SELECT sys_core::SysMsg FILTER .isRequestResponse AND NOT EXISTS .responses).sender.id OR .id IN (SELECT sys_core::SysMsg FILTER .isRequestResponse AND NOT EXISTS .responses).recipients.id)`,
+		exprFilter: `.id IN (SELECT org_client_moed::MoedParticipant).person.id AND (.id IN (SELECT sys_core::SysMsg FILTER .isOpen).sender.id OR .id IN (SELECT sys_core::SysMsg FILTER .isOpen).recipients.id)`,
 		header: 'Applicants With Open Messages',
 		name: 'data_obj_task_moed_part_list_msg_open',
 		owner: 'sys_client_moed',
@@ -201,7 +204,7 @@ function initTaskOpenMsgs(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .sender.id = default::SysPerson.id AND NOT EXISTS .responses)))`,
-				headerAlt: 'Open Messages',
+				headerAlt: 'Open Message Threads',
 				nameCustom: 'customOpenMsgsCnt',
 				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
 			},
@@ -218,7 +221,7 @@ function initTaskOpenMsgs(init: InitDb) {
 				now := cal::to_local_date(datetime_current(), 'UTC'),
 				dur := now - msgDate,
 				SELECT std::duration_get(dur, 'day'))`,
-				headerAlt: 'Days Open (Oldest Message)',
+				headerAlt: 'Days Open (Oldest Open Message)',
 				nameCustom: 'customOldestMsgDaysOpenCnt',
 				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
 			}
@@ -226,7 +229,7 @@ function initTaskOpenMsgs(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjTask', {
-		children: ['node_obj_task_moed_msg_list_root'],
+		children: ['node_obj_task_moed_msg_root_list'],
 		codeIcon: 'AppWindow',
 		codeNavType: 'task',
 		codeNodeType: 'program',
@@ -242,18 +245,19 @@ function initTaskOpenMsgs(init: InitDb) {
 		codeIcon: 'Activity',
 		codeRenderType: 'button',
 		codeStatusObj: 'tso_sys_data',
-		exprShow: `SELECT count((SELECT sys_core::SysMsg FILTER .isRequestResponse AND NOT EXISTS .responses AND (.sender IN org_client_moed::MoedParticipant.person UNION .recipients IN org_client_moed::MoedParticipant.person))) > 0`,
-		exprStatus: `WITH 
-		msgsOpen := (SELECT sys_core::SysMsg  FILTER .isRequestResponse AND NOT EXISTS .responses),
-		students := (SELECT default::SysPerson {id, fullName, days_open := duration_get(cal::to_local_date(datetime_current(), 'UTC') - min((SELECT msgsOpen FILTER default::SysPerson.id = .sender.id UNION default::SysPerson.id IN .recipients.id)).date, 'day')} FILTER .id IN (SELECT org_client_moed::MoedParticipant.person.id)),     
-		studentsWithMsg := (SELECT students FILTER count(students.days_open) > 0)
+		exprShow: `WITH
+		youth := org_client_moed::MoedParticipant.person
+		SELECT count((SELECT sys_core::SysMsg FILTER .isOpen AND (.sender = youth UNION youth IN .recipients))) > 0`,
+		exprStatus: `WITH
+		youth := org_client_moed::MoedParticipant.person,
+		msgsOpen := (SELECT sys_core::SysMsg FILTER .isOpen),
+		youthMsgs := (youth {max_days_open := duration_get(cal::to_local_date(datetime_current(), 'UTC') - min((SELECT msgsOpen FILTER youth = .sender or youth IN .recipients).date), 'day') ?? 0})
 		SELECT {
-			openLT2 := {label := 'Open 5 or fewer days', data := count(studentsWithMsg FILTER .days_open < 6), color := 'green' },
-			open2To7 := {label := 'Open between 6 and 14 days', data := count(studentsWithMsg FILTER .days_open > 5 AND .days_open < 15), color := 'yellow' },
-			openGT7 := {label := 'Open 15 or more days', data := count(studentsWithMsg FILTER .days_open > 14), color := 'red'},
-		
-    }`,
-		header: 'Open Messages',
+			openLT2 := {label := 'Open 5 or fewer days', data := count(youthMsgs FILTER .max_days_open > 0 AND .max_days_open < 6), color := 'green' },
+			open2To7 := {label := 'Open between 6 and 14 days', data := count(youthMsgs FILTER .max_days_open > 5 AND .max_days_open < 15), color := 'yellow' },
+			openGT7 := {label := 'Open 15 or more days', data := count(youthMsgs FILTER .max_days_open > 14), color := 'red'}
+		}`,
+		header: 'Participants With Open Messages',
 		isPinToDash: false,
 		isGlobalResource: false,
 		name: 'task_moed_part_msgs_open',
@@ -263,15 +267,15 @@ function initTaskOpenMsgs(init: InitDb) {
 	})
 }
 
-function initMsgListRoot(init: InitDb) {
-	init.addTrans('sysDataObjTask', {
+function initMsgRootList(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
 		exprFilter: `(<tree,uuid,SysPerson.id> = .sender.id UNION <tree,uuid,SysPerson.id> IN .responses.sender.id UNION <tree,uuid,SysPerson.id> IN .recipients.id)`,
 		header: 'Open Messages',
-		name: 'data_obj_task_moed_msg_list_root',
+		name: 'data_obj_task_moed_msg_root_list',
 		owner: 'sys_client_moed',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
@@ -283,30 +287,49 @@ function initMsgListRoot(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				columnName: 'custom_element_bool',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				exprCustom: `'Yes' IF .isOpen ELSE 'No'`,
+				headerAlt: 'Open',
+				nameCustom: 'isOpenDisplay'
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'right',
+				codeFieldElement: 'number',
+				columnName: 'custom_element_int',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				exprCustom: `(WITH 
+  			now := cal::to_local_date(datetime_current(), 'UTC'),
+  			compare :=.date,
+				dur := now - compare,
+				SELECT (<int64>{} IF EXISTS .responses ELSE (SELECT std::duration_get(dur, 'day'))))`,
+				headerAlt: 'Days Since Sent',
+				nameCustom: 'customAppDaysOpen',
+				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
+			},
+			{
+				codeAccess: 'readOnly',
 				columnName: 'date',
 				headerAlt: 'Date (Demonstration Only)',
 				indexTable: 0,
 				isDisplayable: true,
-				orderCrumb: 30,
-				orderDefine: 30,
-				orderDisplay: 30,
+				orderCrumb: 10,
+				orderDefine: 40,
+				orderDisplay: 40,
 				orderSort: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'subject',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 50,
+				orderDefine: 50,
 				linkColumns: ['fullName'],
 				linkTable: 'SysPerson'
 			},
@@ -315,47 +338,38 @@ function initMsgListRoot(init: InitDb) {
 				columnName: 'recipients',
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 60,
+				orderDefine: 60,
 				linkColumns: ['fullName'],
 				linkTable: 'SysPerson'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'subject',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'note',
 				isDisplay: true,
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 80,
+				orderDefine: 80,
 				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'right',
-				codeFieldElement: 'number',
-				columnName: 'custom_element_int',
-				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100,
-				exprCustom: `(WITH 
-  			now := cal::to_local_date(datetime_current(), 'UTC'),
-  			compare :=.date,
-				dur := now - compare,
-				SELECT (<int64>{} IF EXISTS .responses ELSE (SELECT std::duration_get(dur, 'day'))))`,
-				headerAlt: 'Days Open',
-				nameCustom: 'customAppDaysOpen',
-				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
 			}
 		]
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_moed_msg_detail'],
+		children: ['node_obj_task_moed_msg_root_detail'],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_task_moed_msg_list_root' }],
+		data: [{ dataObj: 'data_obj_task_moed_msg_root_list' }],
 		header: 'Message Threads',
-		name: 'node_obj_task_moed_msg_list_root',
+		name: 'node_obj_task_moed_msg_root_list',
 		orderDefine: 10,
 		owner: 'sys_client_moed'
 	})
@@ -365,50 +379,55 @@ function initMsgListRoot(init: InitDb) {
 		codeNodeType: 'program_object',
 		data: [
 			{
+				actionClass: 'ct_sys_code_action_class',
+				actionType: 'default',
+				dataObj: 'data_obj_task_moed_msg_root_detail_edit'
+			},
+			{
 				actionClass: 'ct_sys_code_action_class_do',
 				actionType: 'doDetailNew',
-				dataObj: 'data_obj_moed_msg_detail_new'
-			},
-			{
-				actionClass: 'ct_sys_code_action_class_do',
-				actionType: 'doDetailNewMsgReply',
-				dataObj: 'data_obj_moed_msg_detail_new'
-			},
-			{
-				actionClass: 'ct_sys_code_action_class_do',
-				actionType: 'doListDetailEdit',
-				dataObj: 'data_obj_moed_msg_detail_edit'
+				dataObj: 'data_obj_task_moed_msg_root_detail_new'
 			},
 			{
 				actionClass: 'ct_sys_code_action_class_do',
 				actionType: 'doListDetailNew',
-				dataObj: 'data_obj_moed_msg_detail_new'
+				dataObj: 'data_obj_task_moed_msg_root_detail_new'
 			}
+			// {
+			// 	actionClass: 'doDetailMsgReplyCmStaff',
+			// 	actionType: 'doDetailMsgReplyCmStaff',
+			// 	dataObj: 'data_obj_task_moed_msg_root_detail_new'
+			// },
+			// {
+			// 	actionClass: 'ct_sys_code_action_class_do',
+			// 	actionType: 'doListDetailEdit',
+			// 	dataObj: 'data_obj_task_moed_msg_root_detail_edit'
+			// },
 		],
 		header: 'Message',
-		name: 'node_obj_moed_msg_detail',
+		name: 'node_obj_task_moed_msg_root_detail',
 		orderDefine: 10,
 		owner: 'sys_client_moed'
 	})
 }
 
-function initMsgDetailEdit(init: InitDb) {
+function initMsgRootDetailNew(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionGroup: 'doag_detail_msg',
+		actionGroup: 'doag_detail_msg_root_new',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'Message',
 		isRetrieveReadonly: true,
-		name: 'data_obj_moed_msg_detail_edit',
+		name: 'data_obj_task_moed_msg_root_detail_new',
 		owner: 'sys_client_moed',
-		// queryRiders: [
-		// 	{
-		// 		codeQueryType: 'retrieve',
-		// 		codeTriggerTiming: 'pre',
-		// 		codeType: 'databaseExpression',
-		// 		expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,SysMsg.id> SET {readers := DISTINCT (.readers UNION (SELECT default::SysPerson FILTER .id = <user,uuid,personId>))}`
-		// 	}
-		// ],
+		queryRiders: [
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'appDestination',
+				codeUserDestination: 'back'
+			}
+		],
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -421,8 +440,8 @@ function initMsgDetailEdit(init: InitDb) {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40
+				orderDisplay: 20,
+				orderDefine: 20
 			},
 			{
 				codeFieldElement: 'date',
@@ -430,23 +449,16 @@ function initMsgDetailEdit(init: InitDb) {
 				exprPreset: `<fSysToday>`,
 				headerAlt: 'Date (Demonstration Only)-Default',
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'createdAt',
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
-			},
-			{
-				columnName: 'subject',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
 			{
@@ -456,20 +468,52 @@ function initMsgDetailEdit(init: InitDb) {
 				exprSave: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 50,
+				orderDefine: 50,
 				linkColumns: ['fullName'],
 				linkTable: 'SysPerson'
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'recipients',
+				exprPreset: `(SELECT default::SysPerson FILTER .id = <tree,uuid,SysPerson.id>)`,
+				exprSave: `(SELECT default::SysPerson FILTER .id = <tree,uuid,SysPerson.id>)`,
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100,
+				orderDisplay: 60,
+				orderDefine: 60,
 				linkColumns: ['fullName'],
 				linkTable: 'SysPerson'
+			},
+			{
+				columnName: 'subject',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -477,29 +521,110 @@ function initMsgDetailEdit(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110
+			}
+		]
+	})
+}
+
+function initMsgRootDetailEdit(init: InitDb) {
+	init.addTrans('sysDataObj', {
+		actionGroup: 'doag_detail_msg_root_edit',
+		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
+		header: 'Message',
+		isRetrieveReadonly: true,
+		name: 'data_obj_task_moed_msg_root_detail_edit',
+		owner: 'sys_client_moed',
+		tables: [{ index: 0, table: 'SysMsg' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30
+			},
+			{
+				codeFieldElement: 'date',
+				columnName: 'date',
+				exprPreset: `<fSysToday>`,
+				headerAlt: 'Date (Demonstration Only)-Default',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'sender',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				linkColumns: ['fullName'],
+				linkTable: 'SysPerson'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'recipients',
+				exprPreset: `(SELECT default::SysPerson FILTER .id = <tree,uuid,SysPerson.id>)`,
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				linkColumns: ['fullName'],
+				linkTable: 'SysPerson'
+			},
+			{
+				columnName: 'subject',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
+				orderDisplay: 100,
+				orderDefine: 100,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130
+				orderDisplay: 110,
+				orderDefine: 110
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 140,
-				orderDefine: 140
+				orderDisplay: 120,
+				orderDefine: 120
 			}
 		]
 	})
@@ -548,17 +673,7 @@ function initMsgDetailNew(init: InitDb) {
 			// 	headerAlt: 'isRoot',
 			// 	nameCustom: 'isRoot'
 			// },
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	codeAlignmentAlt: 'center',
-			// 	columnName: 'custom_element_str',
-			// 	isDisplayable: true,
-			// 	orderDefine: 60,
-			// 	orderDisplay: 60,
-			// 	exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
-			// 	headerAlt: 'Read',
-			// 	nameCustom: 'isReadDisplay'
-			// },
+
 			{
 				codeFieldElement: 'date',
 				columnName: 'date',
@@ -637,16 +752,8 @@ function initMsgDetailReply(init: InitDb) {
 		codeComponent: 'FormDetail',
 		header: 'Message',
 		isRetrieveReadonly: true,
-		name: 'data_obj_moed_msg_detail_new',
+		name: 'data_obj_moed_msg_detail_reply',
 		owner: 'sys_client_moed',
-		// queryRiders: [
-		// 	{
-		// 		codeQueryType: 'retrieve',
-		// 		codeTriggerTiming: 'pre',
-		// 		codeType: 'databaseExpression',
-		// 		expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,SysMsg.id> SET {readers := DISTINCT (.readers UNION (SELECT default::SysPerson FILTER .id = <user,uuid,personId>))}`
-		// 	}
-		// ],
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -688,17 +795,7 @@ function initMsgDetailReply(init: InitDb) {
 			// 	headerAlt: 'isRoot',
 			// 	nameCustom: 'isRoot'
 			// },
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	codeAlignmentAlt: 'center',
-			// 	columnName: 'custom_element_str',
-			// 	isDisplayable: true,
-			// 	orderDefine: 60,
-			// 	orderDisplay: 60,
-			// 	exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
-			// 	headerAlt: 'Read',
-			// 	nameCustom: 'isReadDisplay'
-			// },
+
 			{
 				codeFieldElement: 'date',
 				columnName: 'date',
@@ -776,8 +873,8 @@ function initMsgDetailReply(init: InitDb) {
 // 	data: [
 // 		{ dataObj: 'data_obj_moed_msg_detail_parent_reply' },
 // 		{
-// 			actionClass: 'ct_sys_code_action_class_do',
-// 			actionType: 'doDetailNewMsgReply',
+// 			actionClass: 'doDetailMsgReplyCmStaff',
+// 			actionType: 'doDetailMsgReplyCmStaff',
 // 			dataObj: 'data_obj_moed_msg_detail_parent_reply'
 // 		}
 // 	],

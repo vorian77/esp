@@ -17,7 +17,7 @@ function initFieldListSelectCodeAttribute(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		exprFilter: `.codeType.name = 'ct_sys_attribute' AND (.owner.id = <tree,uuid,SysSystem.id> UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents)`,
+		exprFilter: `.codeType.name = 'ct_sys_attribute_type' AND (.isGlobalResource UNION .owner.id = <tree,uuid,SysSystem.id> UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents)`,
 		header: 'Select Attribute Type(s)',
 		name: 'dofls_sys_admin_org_user_code_attribute',
 		owner: 'sys_system',

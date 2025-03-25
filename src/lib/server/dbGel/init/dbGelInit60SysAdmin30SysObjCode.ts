@@ -304,6 +304,14 @@ function initCodeTypeCode(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				columnName: 'isGlobalResource',
+				isDisplayable: true,
+				orderDisplay: 15,
+				orderDefine: 15,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
 				columnName: 'parent',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -395,6 +403,15 @@ function initCodeTypeCode(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isGlobalResource',
+				exprPreset: `(SELECT false)`,
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 35,
+				orderDefine: 35
 			},
 			{
 				codeFieldElement: 'select',
@@ -617,6 +634,14 @@ function initCode(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				columnName: 'isGlobalResource',
+				isDisplayable: true,
+				orderDisplay: 15,
+				orderDefine: 15,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
 				columnName: 'parent',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -718,6 +743,15 @@ function initCode(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isGlobalResource',
+				exprPreset: `(SELECT false)`,
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 35,
+				orderDefine: 35
 			},
 			{
 				codeFieldElement: 'select',

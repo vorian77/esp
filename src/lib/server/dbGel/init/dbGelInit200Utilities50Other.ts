@@ -272,7 +272,7 @@ export async function addNode(data: any) {
 					valueOrDefaultParm(p.codeNavType, 'tree')
 				),
 				codeNodeType: e.sys_core.getCode('ct_sys_node_obj_type', p.codeNodeType),
-				codeQueryOwnerType: e.sys_core.getCode('ct_sys_query_owner_id_type', p.codeQueryOwnerType),
+				codeQueryOwnerType: e.sys_core.getCode('ct_sys_query_owner_type', p.codeQueryOwnerType),
 				createdBy: CREATOR,
 				data: e.for(e.array_unpack(p.data || e.cast(e.array(e.json), e.set())), (d) => {
 					return e.insert(e.sys_core.SysNodeObjData, {
@@ -298,20 +298,20 @@ export async function addNode(data: any) {
 	return await query.run(client, data)
 }
 
-export async function addObjEntAttr(data: any) {
+export async function addAttr(data: any) {
 	sectionHeader(`addObjEntAttr - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			codeObjType: e.str,
+			codeAttrType: e.str,
 			header: e.optional(e.str),
 			isGlobalResource: e.bool,
 			name: e.str,
 			owner: e.str
 		},
 		(p) => {
-			return e.insert(e.sys_core.SysObjEntAttr, {
-				codeObjType: e.sys_core.getCode('ct_sys_attribute', p.codeObjType),
+			return e.insert(e.sys_core.SysAttr, {
+				codeAttrType: e.sys_core.getCode('ct_sys_attribute_type', p.codeAttrType),
 				createdBy: CREATOR,
 				header: p.header,
 				isGlobalResource: p.isGlobalResource,
@@ -472,7 +472,7 @@ export async function addUserType(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			attributes: e.optional(e.array(e.json)),
+			attrs: e.optional(e.array(e.json)),
 			header: e.str,
 			isSelfSignup: e.optional(e.bool),
 			name: e.str,
@@ -482,18 +482,15 @@ export async function addUserType(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysUserType, {
-				attributes: e.for(
-					e.array_unpack(p.attributes || e.cast(e.array(e.str), e.set())),
-					(attr) => {
-						const objName = e.cast(e.str, e.json_get(attr, 'name'))
-						const objOwner = e.cast(e.str, e.json_get(attr, 'owner'))
-						return e.insert(e.sys_core.SysAttr, {
-							createdBy: CREATOR,
-							hasAccess: e.cast(e.bool, e.json_get(attr, 'hasAccess')),
-							modifiedBy: CREATOR,
-							obj: e.sys_core.getObjEntAttr(objOwner, objName)
-						})
-					}
+				attrs: e.assert_distinct(
+					e.for(e.array_unpack(p.attrs || e.cast(e.array(e.str), e.set())), (attr) => {
+						return e.select(
+							e.sys_core.getAttr(
+								e.cast(e.str, e.json_get(attr, 'owner')),
+								e.cast(e.str, e.json_get(attr, 'name'))
+							)
+						)
+					})
 				),
 				createdBy: CREATOR,
 				header: p.header,
@@ -501,8 +498,6 @@ export async function addUserType(data: any) {
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
 				modifiedBy: CREATOR,
-				// resources: e.sys_user.getUserTypeResource('sys_system', 'app_sys_admin_global'),
-
 				resources: e.assert_distinct(
 					e.for(e.array_unpack(p.resources || e.cast(e.array(e.json), e.set())), (res) => {
 						const resourceOwner = e.cast(e.str, e.json_get(res, 'owner'))
@@ -586,7 +581,7 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 										modifiedBy: CREATOR,
 										orderDefine: e.cast(e.int16, e.json_get(t, 'orderDefine')),
 										retrieveParmKey: e.cast(e.str, e.json_get(t, 'retrieveParmKey')),
-										valueTargetAttribute: e.sys_core.getObjEntAttr(
+										valueTargetAttribute: e.sys_core.getAttr(
 											e.cast(
 												e.str,
 												e.json_get(e.cast(e.json, e.json_get(t, 'valueTargetAttribute')), 'owner')
@@ -617,7 +612,7 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 													e.cast(e.array(e.json), e.json_get(t, 'valueTriggerAttributes'))
 												),
 												(a) => {
-													return e.sys_core.getObjEntAttr(
+													return e.sys_core.getAttr(
 														e.cast(e.str, e.json_get(a, 'owner')),
 														e.cast(e.str, e.json_get(a, 'name'))
 													)

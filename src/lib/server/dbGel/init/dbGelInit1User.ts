@@ -207,7 +207,10 @@ function initUserType(init: InitDb) {
 
 	/* MOED */
 	init.addTrans('sysUserType', {
-		attributes: [{ hasAccess: true, name: 'moedOfficeEastside', owner: 'sys_client_moed' }],
+		attrs: [
+			{ name: 'moedOfficeEastside', owner: 'sys_client_moed' },
+			{ name: 'moedOfficeWestside', owner: 'sys_client_moed' }
+		],
 		header: 'MOED-Administrator',
 		name: 'ut_client_moed_admin',
 		owner: 'sys_client_moed',
@@ -217,9 +220,8 @@ function initUserType(init: InitDb) {
 			// { owner: 'sys_system', name: 'app_sys_reporting' },
 		]
 	})
-
 	init.addTrans('sysUserType', {
-		attributes: [{ hasAccess: true, name: 'moedOfficeEastside', owner: 'sys_client_moed' }],
+		attrs: [{ name: 'moedOfficeEastside', owner: 'sys_client_moed' }],
 		header: 'MOED-Staff-Eastside',
 		name: 'ut_client_moed_advocate_east',
 		owner: 'sys_client_moed',
@@ -228,12 +230,12 @@ function initUserType(init: InitDb) {
 			// { owner: 'sys_system', name: 'app_sys_reporting' },
 			// { owner: 'sys_client_moed', name: 'report_moed_self_serv_student_status' },
 			{ owner: 'sys_client_moed', name: 'task_moed_part_apps_open' },
-			{ owner: 'sys_client_moed', name: 'task_moed_part_msgs_open' }
+			{ owner: 'sys_system', name: 'task_sys_msg_open' }
 		],
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
 	})
 	init.addTrans('sysUserType', {
-		attributes: [{ hasAccess: true, name: 'moedOfficeWestside', owner: 'sys_client_moed' }],
+		attrs: [{ name: 'moedOfficeWestside', owner: 'sys_client_moed' }],
 		header: 'MOED-Staff-Westside',
 		name: 'ut_client_moed_advocate_west',
 		owner: 'sys_client_moed',
@@ -242,7 +244,7 @@ function initUserType(init: InitDb) {
 			// { owner: 'sys_system', name: 'app_sys_reporting' },
 			// { owner: 'sys_client_moed', name: 'report_moed_self_serv_student_status' },
 			{ owner: 'sys_client_moed', name: 'task_moed_part_apps_open' },
-			{ owner: 'sys_client_moed', name: 'task_moed_part_msgs_open' }
+			{ owner: 'sys_system', name: 'task_sys_msg_open' }
 		],
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
 	})
@@ -325,7 +327,11 @@ function initUsers(init: InitDb) {
 		owner: 'org_client_app_factory',
 		systems: ['sys_client_atlantic_impact'],
 		userName: '2487985578',
-		userTypes: ['ut_client_ai_staff']
+		userTypes: [
+			'ut_client_moed_admin',
+			'ut_client_moed_advocate_east',
+			'ut_client_moed_advocate_west'
+		]
 	})
 
 	/* Atlantic Impact */

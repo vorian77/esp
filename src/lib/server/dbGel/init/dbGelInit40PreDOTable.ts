@@ -11,6 +11,7 @@ export function initPreTable(init: InitDb) {
 
 		// sys_core
 		['sys_system', 'sys_core', 'SysAttr', true],
+		['sys_system', 'sys_core', 'SysAttrAccess', true],
 		['sys_system', 'sys_core', 'SysCode', true],
 		['sys_system', 'sys_core', 'SysCodeAction', true],
 		['sys_system', 'sys_core', 'SysCodeType', true],
@@ -34,7 +35,6 @@ export function initPreTable(init: InitDb) {
 		['sys_system', 'sys_core', 'SysNodeObj', true],
 		['sys_system', 'sys_core', 'SysObj', true],
 		['sys_system', 'sys_core', 'SysObjEnt', true],
-		['sys_system', 'sys_core', 'SysObjEntAttr', true],
 		['sys_system', 'sys_core', 'SysObjNote', true],
 		['sys_system', 'sys_core', 'SysOrg', true],
 		['sys_system', 'sys_core', 'SysSystem', true],

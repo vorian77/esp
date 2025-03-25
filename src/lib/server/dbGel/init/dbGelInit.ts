@@ -1,6 +1,6 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
-// system
+// system -
 import { initPreCode } from '$server/dbGel/init/dbGelInit30PreCode'
 import { initPreCodeAction } from '$server/dbGel/init/dbGelInit30PreCodeAction'
 import { initPreDataObj } from '$server/dbGel/init/dbGelInit40PreDO'
@@ -8,8 +8,11 @@ import { initSysAdmin } from '$server/dbGel/init/dbGelInit60SysAdmin'
 import { initSysAuth } from '$server/dbGel/init/dbGelInit60SysAdminAuth'
 import { initSysRepUser } from '$server/dbGel/init/dbGelInit60SysAdminRepUser'
 
-// content
-import { initContentCm } from '$server/dbGel/init/dbGelInit80contentCm'
+// content - system
+import { initContentSysMsg } from '$server/dbGel/init/dbGelInit80ContentSysMsg'
+
+// content - app, client
+import { initContentCm } from '$server/dbGel/init/dbGelInit80ContentCm'
 import { initContentCrm } from '$server/dbGel/init/dbGelInit80ContentCrm'
 import { initContentCrmRep } from '$server/dbGel/init/dbGelInit80ContentCrmRep'
 
@@ -24,6 +27,7 @@ import { initContentMOEDCm } from '$server/dbGel/init/dbGelInit80ContentMOEDCm'
 import { initContentMOEDCmAdvocate } from '$server/dbGel/init/dbGelInit80ContentMOEDCmAdvocate'
 import { initContentMOEDSsr } from '$server/dbGel/init/dbGelInit80ContentMOEDSSR'
 import { initContentMOEDRep } from '$server/dbGel/init/dbGelInit80ContentMOEDRep'
+
 import { initContentSys } from '$server/dbGel/init/dbGelInit80ContentSys'
 
 // user
@@ -49,6 +53,7 @@ function dbInitAll(initDb: InitDb) {
 
 	// content - system
 	initContentSys(initDb)
+	initContentSysMsg(initDb)
 
 	// content - CM
 	initContentCm(initDb)
@@ -71,14 +76,11 @@ function dbInitAll(initDb: InitDb) {
 }
 
 export function initFeature(initDb: InitDb) {
-	// initContentAIRep(initDb)
-	// initContentAIStudent(initDb)
-	// initContentAITraining(initDb)
-	// initContentAITask(initDb)
 	// initContentCm(initDb)
 	// initContentSys(initDb)
 	// initSysAdmin(initDb)
-	initContentMOEDSsr(initDb)
+	initContentSysMsg(initDb)
+	// initContentMOEDSsr(initDb)
 	// initContentMOEDCm(initDb)
-	initContentMOEDCmAdvocate(initDb)
+	// initContentMOEDCmAdvocate(initDb)
 }

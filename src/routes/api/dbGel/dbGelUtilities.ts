@@ -179,8 +179,6 @@ export async function getDataObjActionGroup(token: TokenApiId) {
 export async function getDataObjById(token: TokenApiId) {
 	const shapeProp = e.shape(e.sys_core.SysDataObjColumn, (doc) => ({
 		...shapeColumnHasItems(doc),
-		_codeAttrObjsSource: doc.codeAttrObjsSource.name,
-		_codeAttrType: doc.codeAttrType.name,
 		_codeSortDir: doc.codeSortDir.name,
 		_columnBacklink: doc.columnBacklink.name,
 		_itemChanges: e.select(doc.itemChanges, (t) => ({
@@ -199,15 +197,13 @@ export async function getDataObjById(token: TokenApiId) {
 		})),
 		_linkItemsSource: e.select(doc.fieldListItems, (fli) => ({
 			_parmValue: doc.fieldListItemsParmValue,
-			_codeAttrType: doc.codeAttrType.name,
+			_parmValueList: doc.fieldListItemsParmValueList,
 			...shapeLinkItemsSource(fli)
 		})),
 		_propName: e.op(doc.nameCustom, '??', doc.column.name),
-		attrAccess: true,
 		exprCustom: true,
 		exprPreset: true,
 		exprSave: true,
-		exprSaveAttrObjects: true,
 		id: true,
 		indexTable: true
 	}))
@@ -255,6 +251,16 @@ export async function getDataObjById(token: TokenApiId) {
 			subHeader: true,
 			_actionGroup: e.select(do1.actionGroup, (afg) => ({
 				...shapeDataObjActionGroup(afg)
+			})),
+			_attrsAccessGroup: e.select(do1.attrsAccess, (aa) => ({
+				_attr: e.select(aa.attr, (a) => ({
+					_codeAttrType: a.codeAttrType.name,
+					_name: a.name,
+					id: true
+				})),
+				_codeAttrAccessSource: aa.codeAttrAccessSource.name,
+				_codeAttrAccessType: aa.codeAttrAccessType.name,
+				_codeAttrType: aa.codeAttrType.name
 			})),
 			_codeCardinality: do1.codeCardinality.name,
 			_codeComponent: do1.codeComponent.name,
@@ -669,19 +675,18 @@ export async function getTableColumns(token: TokenApiDbTableColumns) {
 
 export async function getUserByUserId(token: TokenApiUserId) {
 	const query = e.select(e.sys_user.SysUser, (u) => ({
+		_attrs: e.select(u.userTypes.attrs, (a) => ({
+			_codeAttrType: a.codeAttrType.name,
+			_name: a.name,
+			id: true
+		})),
 		_personId: u.person.id,
-		avatar: u.person.avatar,
-		firstName: u.person.firstName,
-		fullName: u.person.fullName,
-		id: true,
-		lastName: u.person.lastName,
-		orgs: true,
-		preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({
+		_preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({
 			_codeType: p.codeType.name,
 			isActive: true,
 			filter: e.op(p.user.id, '=', u.id)
 		})),
-		resources_app: e.select(e.sys_user.SysApp, (app) => ({
+		_resources_app: e.select(e.sys_user.SysApp, (app) => ({
 			_appHeader: e.select(app.appHeader, (ah) => ({
 				_codeIcon: ah.codeIcon.name,
 				id: true,
@@ -699,7 +704,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			filter: e.op(app.id, 'in', u.userTypes.resources.id),
 			order_by: app.appHeader.orderDefine
 		})),
-		resources_task: e.select(e.sys_user.SysTask, (res) => ({
+		_resources_task: e.select(e.sys_user.SysTask, (res) => ({
 			...shapeTask(res),
 			filter: e.op(
 				e.op(res.id, 'in', u.userTypes.resources.id),
@@ -708,7 +713,7 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			),
 			order_by: res.orderDefine
 		})),
-		system: e.select(e.sys_core.SysSystem, (s) => ({
+		_system: e.select(e.sys_core.SysSystem, (s) => ({
 			_orgName: s.owner.name,
 			appName: true,
 			file: true,
@@ -719,6 +724,12 @@ export async function getUserByUserId(token: TokenApiUserId) {
 			name: true,
 			filter_single: e.op(s, '=', u.defaultSystem)
 		})),
+		avatar: u.person.avatar,
+		firstName: u.person.firstName,
+		fullName: u.person.fullName,
+		id: true,
+		lastName: u.person.lastName,
+		orgs: true,
 		systems: true,
 		userName: true,
 		filter_single: e.op(u.id, '=', e.cast(e.uuid, token.userId))

@@ -19,7 +19,7 @@ import {
 import {
 	addApp,
 	addAppHeader,
-	addObjEntAttr,
+	addAttr,
 	addCode,
 	addCodeAction,
 	addCodeType,
@@ -291,25 +291,25 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
-				name: 'SysObjEntAttr',
+				name: 'sysAttr',
 				dataMap: [
 					['name', 'name'],
 					['owner.name', 'owner']
 				],
-				deleteObj: 'sys_core::SysObjEntAttr',
-				exprResets: [
-					`UPDATE sys_core::SysDataObjColumnItemChange SET {valueTargetAttribute := {}, valueTriggerAttributes := {}}`
-				],
-				fCreate: addObjEntAttr,
-				isResetByTransOnly: true,
-				updateObj: 'sys_core::ObjRoot',
-				updateObjBypassRecordFilter: true,
-				updateObjFields: [
-					[
-						'attributes',
-						`.attributes EXCEPT (SELECT sys_core::SysAttr FILTER .obj = (SELECT sys_core::SysObjEntAttr FILTER ${TokenExprFilterRecord}))`
-					]
-				]
+				deleteObj: 'sys_core::SysAttr',
+				// exprResets: [
+				// 	`UPDATE sys_core::SysDataObjColumnItemChange SET {valueTargetAttribute := {}, valueTriggerAttributes := {}}`
+				// ],
+				fCreate: addAttr
+				// isResetByTransOnly: true,
+				// updateObj: 'sys_core::ObjRoot',
+				// updateObjBypassRecordFilter: true,
+				// updateObjFields: [
+				// 	[
+				// 		'attrs',
+				// 		`.attrs EXCEPT (SELECT sys_core::SysAttr FILTER .obj = (SELECT sys_core::SysAttr FILTER ${TokenExprFilterRecord}))`
+				// 	]
+				// ]
 			})
 		)
 		this.items.push(

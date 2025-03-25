@@ -1237,7 +1237,6 @@ function initDataObjColumn(init: InitDb) {
 				fieldListItems: 'il_sys_data_obj_field_embed_list_select_order_name',
 				indexTable: 0,
 				isDisplayable: true,
-
 				orderDisplay: 720,
 				orderDefine: 720
 			},

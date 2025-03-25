@@ -51,6 +51,21 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			alert('Reset coming soon...')
 			break
 
+		case CodeActionType.doDetailMsgReplyCmClient:
+			alert('doDetailMsgReplyCmClient')
+			break
+
+		case CodeActionType.doDetailMsgReplyCmStaff:
+			alert('doDetailMsgReplyCmStaff')
+			// currTab = sm.app.getCurrTab()
+			// if (currTab && currTab.dataObj) {
+			// 	sm.parmsTrans.valueSet(ParmsValuesType.parentRecordId, currTab.getCurrRecordValue('id'))
+			// 	sm.parmsTrans.valueSet('subject', currTab.getCurrRecordValue('subject'))
+			// 	await queryTypeTab(sm, currTab, parmsAction.codeAction.actionType, TokenApiQueryType.preset)
+			// 	await userActionStateChangeDataObj(sm, parmsAction)
+			// }
+			break
+
 		default:
 			error(500, {
 				file: FILENAME,

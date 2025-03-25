@@ -84,8 +84,6 @@
 	let rowData: any[]
 	let styleMaxHeight = ''
 
-	console.log('Grid:', { options })
-
 	onMount(() => {
 		// set options
 		isSuppressFilterSort = options.isSuppressFilterSort || options.listReorderColumn !== ''

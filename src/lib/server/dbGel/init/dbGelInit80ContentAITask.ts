@@ -438,13 +438,13 @@ function initTaskNewStudent(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'objAttrSfSite',
+				columnName: 'attrs',
 				isDisplayable: true,
 				orderDisplay: 580,
 				orderDefine: 580,
 				indexTable: 1,
-				fieldListItems: 'il_sys_attr_obj_system_type',
-				fieldListItemsParmValue: 'attr_cm_sf_site'
+				fieldListItems: 'il_sys_attr_obj_system_types',
+				fieldListItemsParmValueList: ['at_cm_sf_site']
 			},
 			{
 				codeFieldElement: 'select',

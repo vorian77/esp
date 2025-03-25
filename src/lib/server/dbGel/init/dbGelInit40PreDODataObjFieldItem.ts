@@ -7,17 +7,31 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	/* attributes */
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'header', 'Attribute', '.header', true, 0]],
-		exprFilter: '.codeObjType.name = <parms,str,itemsParmValue>',
+		exprFilter: '.codeAttrType.name = <parms,str,itemsParmValue>',
 		name: 'il_sys_attribute_order_header_by_attributeType_name',
 		owner: 'sys_system',
-		table: 'SysObjEntAttr'
+		table: 'SysAttr'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'header', 'Header', '.header', true, 0]],
-		exprFilter: `.owner.id = <parms,uuid,queryOwnerIdSystem> AND .codeObjType.name = <parms,str,itemsParmValue>`,
-		name: 'il_sys_attr_obj_system_type',
+		exprFilter: `.owner.id = <parms,uuid,queryOwnerIdSystem>`,
+		name: 'il_sys_attr_obj_system',
 		owner: 'sys_system',
-		table: 'SysObjEntAttr'
+		table: 'SysAttr'
+	})
+	init.addTrans('sysDataObjFieldListItems', {
+		props: [[0, 'header', 'Header', '.header', true, 0]],
+		exprFilter: `.owner.id = <parms,uuid,queryOwnerIdSystem> AND .codeAttrType.name IN <parms,strList,itemsParmValueList>`,
+		name: 'il_sys_attr_obj_system_types',
+		owner: 'sys_system',
+		table: 'SysAttr'
+	})
+	init.addTrans('sysDataObjFieldListItems', {
+		props: [[0, 'name', 'Name', '.name', true, 0]],
+		exprFilter: `.id IN (SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerIdSystem>).typesAttribute.id`,
+		name: 'il_sys_attr_type_system',
+		owner: 'sys_system',
+		table: 'SysCode'
 	})
 
 	/* code - general */
@@ -269,6 +283,15 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		owner: 'sys_system',
 		table: 'SysDataObj'
 	})
+
+	init.addTrans('sysDataObjFieldListItems', {
+		props: [[0, 'fullName', 'Name', '.fullName', true, 0]],
+		exprFilter: `.id IN org_client_moed::MoedParticipant.person.id`,
+		name: 'il_sys_msg_recipients_system',
+		owner: 'sys_system',
+		table: 'SysPerson'
+	})
+
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter: `.id IN (SELECT (SELECT sys_migr::SysMigrTargetTable FILTER .id = <tree,uuid,SysMigrTargetTable.id>).table.columns.id)

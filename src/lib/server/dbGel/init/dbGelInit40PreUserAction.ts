@@ -165,16 +165,14 @@ export function initPreUserAction(init: InitDb) {
 		owner: 'sys_system'
 	})
 
+	/* message */
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [
-			{ codeTriggerShow: 'notStatusChanged', isRequired: true },
-			{ codeTriggerShow: 'notRecordOwner', isRequired: true }
-		],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailNewMsgReply' },
+		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
+		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailMsgCloseThread' },
 		codeTriggerEnable: 'always',
-		header: 'Reply',
-		name: 'ua_sys_msg_reply',
+		header: 'Close Thread',
+		name: 'ua_sys_msg_close_thread',
 		owner: 'sys_system'
 	})
 
@@ -190,13 +188,32 @@ export function initPreUserAction(init: InitDb) {
 				isRequired: true
 			}
 		],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailMsgSetUnread' },
+		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailMsgSetClosed' },
 		codeTriggerEnable: 'always',
-		header: 'Set Unread',
-		name: 'ua_sys_msg_set_unread',
+		header: 'Set Closed',
+		name: 'ua_sys_msg_set_closed',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysUserAction', {
+		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
+		actionShows: [
+			{ codeTriggerShow: 'notStatusChanged', isRequired: true },
+			{
+				codeExprOp: 'equal',
+				codeTriggerShow: 'expression',
+				exprField: 'isReadDisplay',
+				exprValue: 'Yes',
+				isRequired: true
+			}
+		],
+		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailMsgSetOpen' },
+		codeTriggerEnable: 'always',
+		header: 'Set Open',
+		name: 'ua_sys_msg_set_open',
 		owner: 'sys_system'
 	})
 
+	/* migrate */
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],

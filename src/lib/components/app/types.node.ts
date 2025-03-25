@@ -117,7 +117,8 @@ export class NodeNav {
 export enum NodeQueryOwnerType {
 	queryOwnerTypeOrgRecord = 'queryOwnerTypeOrgRecord',
 	queryOwnerTypeSystemApp = 'queryOwnerTypeSystemApp',
-	queryOwnerTypeSystemRecord = 'queryOwnerTypeSystemRecord'
+	queryOwnerTypeSystemRecord = 'queryOwnerTypeSystemRecord',
+	queryOwnerTypeSystemUser = 'queryOwnerTypeSystemUser'
 }
 
 export enum NodeType {

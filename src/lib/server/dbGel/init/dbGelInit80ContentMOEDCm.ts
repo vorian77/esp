@@ -263,6 +263,46 @@ function initApplicant(init: InitDb) {
 				orderDefine: 200
 			},
 			{
+				codeFieldElement: 'select',
+				columnName: 'codePersonLivingArrangements',
+				isDisplayable: true,
+				itemChanges: [
+					{
+						codeAccess: 'optional',
+						codeItemChangeAction: 'none',
+						codeOp: 'notEqual',
+						columns: ['addr1', 'addr2', 'city', 'codeState', 'zip'],
+						orderDefine: 0,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_sys_person_living_arrangements',
+								name: 'I am currently homeless'
+							}
+						]
+					},
+					{
+						codeAccess: 'hidden',
+						codeOp: 'equal',
+						codeItemChangeAction: 'reset',
+						columns: ['addr1', 'addr2', 'city', 'codeState', 'zip'],
+						orderDefine: 1,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_sys_person_living_arrangements',
+								name: 'I am currently homeless'
+							}
+						]
+					}
+				],
+				orderDisplay: 205,
+				orderDefine: 205,
+				indexTable: 1,
+				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
+				fieldListItemsParmValue: 'ct_sys_person_living_arrangements'
+			},
+			{
 				codeAccess: 'optional',
 				columnName: 'addr1',
 				indexTable: 1,
@@ -446,17 +486,6 @@ function initApplicantMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 30,
-				orderDisplay: 30,
-				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'parent',
 				isDisplayable: false,
 				orderDefine: 40,
@@ -521,17 +550,6 @@ function initApplicantMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 15,
-				orderDisplay: 15,
-				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
-			},
-			{
-				codeAccess: 'readOnly',
 				columnName: 'parent',
 				isDisplayable: true,
 				orderDefine: 20,
@@ -587,14 +605,6 @@ function initApplicantMsg(init: InitDb) {
 		isRetrieveReadonly: true,
 		name: 'data_obj_moed_msg_detail',
 		owner: 'sys_client_moed',
-		queryRiders: [
-			{
-				codeQueryType: 'retrieve',
-				codeTriggerTiming: 'pre',
-				codeType: 'databaseExpression',
-				expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,SysMsg.id> SET {readers := DISTINCT (.readers UNION (SELECT default::SysPerson FILTER .id = <user,uuid,personId>))}`
-			}
-		],
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -635,17 +645,6 @@ function initApplicantMsg(init: InitDb) {
 				exprCustom: `NOT EXISTS .parent`,
 				headerAlt: 'isRoot',
 				nameCustom: 'isRoot'
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 60,
-				orderDisplay: 60,
-				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
 			},
 			{
 				codeFieldElement: 'date',
@@ -765,17 +764,6 @@ function initApplicantMsg(init: InitDb) {
 				orderDefine: 40
 			},
 			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 45,
-				orderDisplay: 45,
-				exprCustom: `'' IF <user,uuid,personId> = .sender.id ELSE 'Yes' IF <user,uuid,personId> IN .readers.id ELSE 'No'`,
-				headerAlt: 'Read',
-				nameCustom: 'isReadDisplay'
-			},
-			{
 				codeFieldElement: 'date',
 				columnName: 'date',
 				exprPreset: `<fSysToday>`,
@@ -863,12 +851,12 @@ function initApplicantMsg(init: InitDb) {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		data: [
-			{ dataObj: 'data_obj_moed_msg_detail' },
-			{
-				actionClass: 'ct_sys_code_action_class_do',
-				actionType: 'doDetailNewMsgReply',
-				dataObj: 'data_obj_moed_msg_detail_parent_reply'
-			}
+			{ dataObj: 'data_obj_moed_msg_detail' }
+			// {
+			// 	actionClass: 'ct_sys_code_action_class_custom',
+			// 	actionType: 'doDetailMsgReplyCmStaff',
+			// 	dataObj: 'data_obj_moed_msg_detail_parent_reply'
+			// }
 		],
 		header: 'Message',
 		name: 'node_obj_moed_msg_detail_old',
@@ -906,7 +894,8 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'objAttrSfSite',
+				columnName: 'attrs',
+				headerAlt: 'Site',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
@@ -1037,13 +1026,14 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'objAttrSfSite',
+				columnName: 'attrs',
+				headerAlt: 'Site',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_attr_obj_system_type',
-				fieldListItemsParmValue: 'attr_cm_sf_site'
+				fieldListItems: 'il_sys_attr_obj_system_types',
+				fieldListItemsParmValueList: ['at_cm_sf_site']
 			},
 			{
 				codeFieldElement: 'select',
@@ -1929,12 +1919,12 @@ function initReport(init: InitDb) {
 			{
 				codeFieldElement: 'text',
 				codeReportElementType: 'column',
-				columnName: 'attributes',
-				header: 'Office',
+				columnName: 'attrs',
+				header: 'Site',
 				indexTable: 2,
 				isDisplay: true,
 				isDisplayable: true,
-				linkColumns: ['obj', 'name'],
+				linkColumns: ['header'],
 				orderDefine: 160,
 				orderDisplay: 160
 			},

@@ -18,10 +18,12 @@ import {
 	memberOfEnum,
 	memberOfEnumIfExists,
 	memberOfEnumOrDefault,
+	memberOfEnumList,
 	nbrOrDefault,
 	nbrOptional,
 	nbrRequired,
 	classOptional,
+	ObjAttr,
 	override,
 	ParmsValuesType,
 	required,
@@ -59,6 +61,7 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
 
 export class RawDataObj {
+	attrsAccessGroup: DataObjAttrsAccessGroup
 	codeCardinality: DataObjCardinality
 	codeComponent: DataObjComponent
 	codeDataObjType: DataObjType
@@ -97,6 +100,7 @@ export class RawDataObj {
 	constructor(obj: any) {
 		const clazz = `${obj.name}.RawDataObj`
 		obj = valueOrDefault(obj, {})
+		this.attrsAccessGroup = classOptional(DataObjAttrsAccessGroup, obj._attrsAccessGroup)
 		this.codeCardinality = memberOfEnum(
 			obj._codeCardinality,
 			clazz,
@@ -286,15 +290,12 @@ export class RawDataObjParent {
 }
 
 export class RawDataObjProp {
-	attrAccess?: string
-	codeAttrObjsSource?: PropAttributeObjectsSource
 	codeAttrType?: string
 	codeSortDir?: PropSortDir
 	columnBacklink?: string
 	exprCustom?: string
 	exprPreset?: string
 	exprSave?: string
-	exprSaveAttrObjects?: string
 	fieldEmbed?: RawDataObjPropDBFieldEmbed
 	hasItems: boolean
 	id: string
@@ -308,14 +309,6 @@ export class RawDataObjProp {
 	constructor(obj: any, tables: DataObjTable[]) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjProp'
-		this.attrAccess = obj.attrAccess
-		this.codeAttrObjsSource = memberOfEnumIfExists(
-			obj._codeAttrObjsSource,
-			'codeAttrObjsSource',
-			clazz,
-			'PropAttributeObjectsSource',
-			PropAttributeObjectsSource
-		)
 		this.codeAttrType = obj._codeAttrType
 		this.codeSortDir = memberOfEnumOrDefault(
 			obj._codeSortDir,
@@ -329,7 +322,6 @@ export class RawDataObjProp {
 		this.exprCustom = obj.exprCustom
 		this.exprPreset = obj.exprPreset
 		this.exprSave = obj.exprSave
-		this.exprSaveAttrObjects = obj.exprSaveAttrObjects
 		this.fieldEmbed = obj._fieldEmbedListConfig
 			? new RawDataObjPropDBFieldEmbed(
 					FieldEmbedType.listConfig,
@@ -883,6 +875,7 @@ export class PropLinkItems {
 		// parms
 		let { dataTab, dataTree } = queryDataPre(sm, new DataObjData(), TokenApiQueryType.retrieve)
 		dataTab.parms.valueSet(ParmsValuesType.itemsParmValue, this.source.parmValue)
+		dataTab.parms.valueSet(ParmsValuesType.itemsParmValueList, this.source.parmValueList)
 		dataTab.parms.valueSet(ParmsValuesType.propLinkItemsValueCurrent, fieldValue)
 		dataTab.parms.valueSet(ParmsValuesType.propLinkItemsSourceRaw, this.source.raw)
 
@@ -912,6 +905,7 @@ export class PropLinkItemsSource {
 	exprWith?: string
 	name: string
 	parmValue?: string
+	parmValueList: string[] = []
 	props: PropLinkItemsSourceProp[] = []
 	raw: any
 	table?: DBTable
@@ -924,6 +918,7 @@ export class PropLinkItemsSource {
 		this.exprWith = valueOrDefault(obj.exprWith, '')
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.parmValue = obj._parmValue || obj._codeAttrType
+		this.parmValueList = getArray(obj._parmValueList)
 		this.props = arrayOfClass(PropLinkItemsSourceProp, obj._props)
 		this.raw = obj
 		this.table = classOptional(DBTable, obj._table)
@@ -1012,6 +1007,138 @@ export class PropLinkItemsSourceProp {
 	}
 }
 
+export class DataObjAttrsAccessGroup {
+	attrsAccessForbidden: DataObjAttrsAccessForbidden[] = []
+	attrsAccessPermitted: DataObjAttrsAccessPermitted[] = []
+	attrsAccessRequired: DataObjAttrsAccessRequired[] = []
+	constructor(rawAttrsAccess: any[]) {
+		const clazz = 'DataObjAttrsAccessGroup'
+		rawAttrsAccess = getArray(rawAttrsAccess)
+		rawAttrsAccess.forEach((raa: any) => {
+			const codeAttrAccessType = memberOfEnum(
+				raa._codeAttrAccessType,
+				clazz,
+				'codeAttrAccessType',
+				'DataObjAttrsAccessType',
+				DataObjAttrsAccessType
+			)
+			switch (codeAttrAccessType) {
+				case DataObjAttrsAccessType.forbidden:
+					this.attrsAccessForbidden.push(new DataObjAttrsAccessForbidden(raa))
+					break
+				case DataObjAttrsAccessType.permitted:
+					this.attrsAccessPermitted.push(new DataObjAttrsAccessPermitted(raa))
+					break
+				case DataObjAttrsAccessType.required:
+					this.attrsAccessRequired.push(new DataObjAttrsAccessRequired(raa))
+					break
+				default:
+					error(500, {
+						file: FILENAME,
+						function: 'DataObjAttrsAccessGroup.constructor',
+						message: `No case defined for codeAttrAccessType: ${codeAttrAccessType}`
+					})
+			}
+		})
+	}
+	eval(attrsRequestor: ObjAttr[]) {
+		// forbidden
+		if (
+			this.attrsAccessForbidden.some((forbidden) => {
+				return attrsRequestor.some((attr) => attr.id === forbidden.attr.id)
+			})
+		) {
+			return new DataObjAttrsAccessEval(true)
+		}
+
+		// required
+		if (
+			!this.attrsAccessRequired.every((required) => {
+				return attrsRequestor.some((attr) => attr.id === required.attr.id)
+			})
+		) {
+			return new DataObjAttrsAccessEval(true)
+		}
+
+		// permitted
+		let permittedIds: string[] = []
+		attrsRequestor.forEach((attr) => {
+			if (
+				this.attrsAccessPermitted.some((permitted) => {
+					return attr.codeAttrType === permitted.attrType
+				})
+			) {
+				permittedIds.push(attr.id)
+			}
+		})
+		return new DataObjAttrsAccessEval(false, permittedIds)
+	}
+}
+
+export class DataObjAttrsAccess {
+	codeAttrAccessSource: DataObjAttrsAccessSource
+	constructor(obj: any) {
+		const clazz = 'DataObjAttrsAccess'
+		obj = valueOrDefault(obj, {})
+		this.codeAttrAccessSource = memberOfEnum(
+			obj._codeAttrAccessSource,
+			clazz,
+			'codeAttrAccessSource',
+			'DataObjAttrsAccessSource',
+			DataObjAttrsAccessSource
+		)
+	}
+}
+export class DataObjAttrsAccessForbidden extends DataObjAttrsAccess {
+	attr: ObjAttr
+	constructor(obj: any) {
+		const clazz = 'DataObjAttrsAccessForbidden'
+		super(obj)
+		obj = valueOrDefault(obj, {})
+		this.attr = new ObjAttr(obj._attr)
+	}
+}
+export class DataObjAttrsAccessPermitted extends DataObjAttrsAccess {
+	attrType: string
+	constructor(obj: any) {
+		const clazz = 'DataObjAttrsAccessPermitted'
+		super(obj)
+		obj = valueOrDefault(obj, {})
+		this.attrType = strRequired(obj._codeAttrType, clazz, 'attrType')
+	}
+}
+export class DataObjAttrsAccessRequired extends DataObjAttrsAccess {
+	attr: ObjAttr
+	constructor(obj: any) {
+		const clazz = 'DataObjAttrsAccessRequired'
+		super(obj)
+		obj = valueOrDefault(obj, {})
+		this.attr = new ObjAttr(obj._attr)
+	}
+	eval(attrsRequestor: ObjAttr[]) {}
+}
+
+export class DataObjAttrsAccessEval {
+	isDenyAccess: boolean
+	permittedObjIds: string[]
+	constructor(isDenyAccess: boolean, permittedObjIds: string[] = []) {
+		const clazz = 'DataObjAttrsAccessEval'
+		this.isDenyAccess = isDenyAccess
+		this.permittedObjIds = permittedObjIds
+	}
+}
+
+export enum DataObjAttrsAccessSource {
+	environment = 'environment',
+	user = 'user'
+}
+
+export enum DataObjAttrsAccessType {
+	forbidden = 'forbidden',
+	permitted = 'permitted',
+	required = 'required'
+}
+
 export enum DataObjQueryType {
 	preset = 'preset',
 	retrieve = 'retrieve',
@@ -1022,11 +1149,6 @@ export enum DataObjRenderPlatform {
 	app = 'app',
 	drawerBottom = 'drawerBottom',
 	modal = 'modal'
-}
-
-export enum PropAttributeObjectsSource {
-	attributesOfObject = 'attributesOfObject',
-	objects = 'objects'
 }
 
 export enum PropDataSourceValue {
@@ -1050,6 +1172,7 @@ export enum PropDataType {
 	literal = 'literal',
 	none = 'none',
 	str = 'str',
+	strList = 'strList',
 	uuid = 'uuid',
 	uuidList = 'uuidList'
 }

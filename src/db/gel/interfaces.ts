@@ -106,7 +106,7 @@ export namespace app_cm {
     "hasDriversLicense"?: boolean | null;
     "school"?: string | null;
   }
-  export interface CmClientServiceFlow extends sys_user.Mgmt {
+  export interface CmClientServiceFlow extends sys_core.ObjRoot, sys_user.Mgmt {
     "programCm": CmProgram;
     "codeSfEligibilityStatus"?: sys_core.SysCode | null;
     "codeSfEnrollType"?: sys_core.SysCode | null;
@@ -119,8 +119,6 @@ export namespace app_cm {
     "dateStart"?: gel.LocalDate | null;
     "dateStartEst"?: gel.LocalDate | null;
     "idxDemo"?: number | null;
-    "note"?: string | null;
-    "objAttrSfSite"?: sys_core.SysObjEntAttr | null;
   }
   export interface CmCohort extends sys_core.SysObj {
     "codeStatus"?: sys_core.SysCode | null;
@@ -246,6 +244,7 @@ export namespace $default {
     "city"?: string | null;
     "email"?: string | null;
     "zip"?: string | null;
+    "codePersonLivingArrangements"?: sys_core.SysCode | null;
     "genderSelfId"?: string | null;
     "codeDisabilityStatus"?: sys_core.SysCode | null;
     "codeEthnicity"?: sys_core.SysCode | null;
@@ -271,10 +270,12 @@ export namespace sys_core {
   export interface ObjRoot extends std.$Object {
     "note"?: string | null;
     "testText"?: string | null;
-    "attributes": SysAttr[];
+    "attrsAccess": SysAttrAccess[];
+    "attrs": SysAttr[];
     "testCodeMulti": SysCode[];
     "testCodeSingle"?: SysCode | null;
     "testBool"?: boolean | null;
+    "isGlobalResource"?: boolean | null;
     "testDate"?: gel.LocalDate | null;
     "testDateTime"?: gel.LocalDateTime | null;
     "testNumberFloat"?: number | null;
@@ -288,8 +289,8 @@ export namespace sys_core {
     "name": string;
   }
   export interface SysObj extends ObjRootCore, sys_user.Mgmt {
-    "isGlobalResource"?: boolean | null;
     "owner": SysSystem;
+    "isGlobalResourceOld"?: boolean | null;
   }
   export interface SysObjEnt extends SysObj {
     "codeState"?: SysCode | null;
@@ -303,9 +304,14 @@ export namespace sys_core {
     "notes": SysObjNote[];
     "phoneOffice"?: string | null;
   }
-  export interface SysAttr extends sys_user.Mgmt {
-    "obj": SysObjEntAttr;
-    "hasAccess": boolean;
+  export interface SysAttr extends SysObjEnt {
+    "codeAttrType": SysCode;
+  }
+  export interface SysAttrAccess extends sys_user.Mgmt {
+    "codeAttrAccessSource": SysCode;
+    "codeAttrAccessType": SysCode;
+    "attr"?: SysAttr | null;
+    "codeAttrType"?: SysCode | null;
   }
   export interface SysCode extends ObjRootCore, sys_user.Mgmt {
     "valueDecimal"?: number | null;
@@ -364,13 +370,10 @@ export namespace sys_core {
   }
   export interface SysDataObjColumn extends sys_user.Mgmt {
     "exprSave"?: string | null;
-    "codeAttrObjsSource"?: SysCode | null;
     "inputMaskAlt"?: string | null;
+    "fieldListItemsParmValueList": string[];
     "fieldListItemsParmValue"?: string | null;
     "file"?: unknown | null;
-    "exprSaveAttrObjects"?: string | null;
-    "codeAttrType"?: SysCode | null;
-    "attrAccess"?: boolean | null;
     "itemChanges": SysDataObjColumnItemChange[];
     "codeAccess"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
@@ -419,16 +422,16 @@ export namespace sys_core {
   export interface SysDataObjColumnItemChange extends sys_user.Mgmt {
     "retrieveParmKey"?: string | null;
     "codeOp": SysCode;
-    "valueTriggerAttributes": SysObjEntAttr[];
     "valueTriggerCodes": SysCode[];
     "valueTriggerScalar"?: string | null;
     "valueTargetCode"?: SysCode | null;
-    "valueTargetAttribute"?: SysObjEntAttr | null;
     "valueTargetScalar"?: string | null;
     "codeAccess"?: SysCode | null;
     "columns": SysDataObjColumn[];
     "codeItemChangeAction": SysCode;
     "codeItemChangeValueType"?: SysCode | null;
+    "valueTargetAttribute"?: SysAttr | null;
+    "valueTriggerAttributes": SysAttr[];
     "orderDefine": number;
   }
   export interface SysDataObjColumnItemValue extends sys_user.Mgmt {
@@ -500,11 +503,10 @@ export namespace sys_core {
     "parent"?: SysMsg | null;
     "subject"?: string | null;
     "date"?: gel.LocalDate | null;
-    "readers": $default.SysPerson[];
     "createdAt": Date;
-    "isRequestResponse"?: boolean | null;
     "recipients": $default.SysPerson[];
     "sender": $default.SysPerson;
+    "isOpen": boolean;
   }
   export interface SysNodeObj extends SysObj {
     "children": SysNodeObj[];
@@ -529,7 +531,6 @@ export namespace sys_core {
     "exprTrigger": string;
     "msg"?: string | null;
   }
-  export interface SysObjEntAttr extends SysObjEnt {}
   export interface SysObjNote extends sys_user.Mgmt {
     "codeType": SysCode;
     "date": gel.LocalDate;
@@ -1057,6 +1058,7 @@ export interface types {
     "SysObj": sys_core.SysObj;
     "SysObjEnt": sys_core.SysObjEnt;
     "SysAttr": sys_core.SysAttr;
+    "SysAttrAccess": sys_core.SysAttrAccess;
     "SysCode": sys_core.SysCode;
     "SysCodeAction": sys_core.SysCodeAction;
     "SysCodeType": sys_core.SysCodeType;
@@ -1079,7 +1081,6 @@ export interface types {
     "SysNodeObj": sys_core.SysNodeObj;
     "SysNodeObjData": sys_core.SysNodeObjData;
     "SysNotify": sys_core.SysNotify;
-    "SysObjEntAttr": sys_core.SysObjEntAttr;
     "SysObjNote": sys_core.SysObjNote;
     "SysOrg": sys_core.SysOrg;
     "SysSystem": sys_core.SysSystem;

@@ -139,7 +139,7 @@ async function processDataObjQuery(
 				queryRiders,
 				DataObjQueryRiderTriggerTiming.pre
 			)
-			scriptGroup.addScriptRetrieve(query, queryData)
+			await scriptGroup.addScriptRetrieve(query, queryData)
 			scriptGroup.addScriptQueryRetrieveQueryRiders(
 				query,
 				queryData,

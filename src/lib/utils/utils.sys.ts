@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { strRequired } from '$utils/utils.model'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { TokenApiFetchError } from '$utils/types.token'
 import { valueOrDefault, memberOfEnum } from '$utils/utils.model'
@@ -51,10 +51,16 @@ export enum CodeActionType {
 
 	// dataObj - group item
 	doDetailDelete = 'doDetailDelete',
-	doDetailMsgSetUnread = 'doDetailMsgSetUnread',
+
+	doDetailMsgCloseThread = 'doDetailMsgCloseThread',
+	doDetailMsgReplyCmStaff = 'doDetailMsgReplyCmStaff',
+	doDetailMsgReplyCmClient = 'doDetailMsgReplyCmClient',
+	doDetailMsgSetClosed = 'doDetailMsgSetClosed',
+	doDetailMsgSetOpen = 'doDetailMsgSetOpen',
+
 	doDetailMigrate = 'doDetailMigrate',
 	doDetailNew = 'doDetailNew',
-	doDetailNewMsgReply = 'doDetailNewMsgReply',
+
 	doDetailProcessExecute = 'doDetailProcessExecute',
 	doDetailSave = 'doDetailSave',
 	doDetailSaveAs = 'doDetailSaveAs',
@@ -157,6 +163,19 @@ export function getColor(colorName: string) {
 export const isNumber = (value: any) => {
 	if ([null, undefined, ''].includes(value)) return false
 	return typeof value === 'number' || !isNaN(value)
+}
+
+export class ObjAttr {
+	codeAttrType: string
+	id: string
+	name: string
+	constructor(obj: any) {
+		const clazz = 'DataObjAttr'
+		obj = valueOrDefault(obj, {})
+		this.codeAttrType = strRequired(obj._codeAttrType, clazz, 'codeAttrType')
+		this.id = strRequired(obj.id, clazz, 'id')
+		this.name = strRequired(obj._name, clazz, 'name')
+	}
 }
 
 export function valueHasChanged(vSource: any, vCurrent: any): boolean {

@@ -24,7 +24,7 @@ const $CmClient = $.makeType<$CmClient>(_.spec, "508d4869-b3c2-11ee-ac7f-9da0574
 
 const CmClient: $.$expr_PathNode<$.TypeSet<$CmClient, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmClient, $.Cardinality.Many), null);
 
-export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
+export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_core.$ObjRootλShape & _sys_user.$MgmtλShape & {
   "programCm": $.LinkDesc<$CmProgram, $.Cardinality.One, {}, false, false,  false, false>;
   "codeSfEligibilityStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeSfEnrollType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
@@ -37,8 +37,6 @@ export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_user.$MgmtλSh
   "dateStart": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateStartEst": $.PropertyDesc<_cal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "idxDemo": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
-  "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "objAttrSfSite": $.LinkDesc<_sys_core.$SysObjEntAttr, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfGroup]": $.LinkDesc<$CmCsfGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfData]": $.LinkDesc<$CmCsfData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfCohort]": $.LinkDesc<$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -49,6 +47,7 @@ export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_user.$MgmtλSh
   "<csf": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $CmClientServiceFlow = $.ObjectType<"app_cm::CmClientServiceFlow", $CmClientServiceFlowλShape, null, [
+  ..._sys_core.$ObjRoot['__exclusives__'],
   ..._sys_user.$Mgmt['__exclusives__'],
 ], "app_cm::CmClientServiceFlow">;
 const $CmClientServiceFlow = $.makeType<$CmClientServiceFlow>(_.spec, "509285f9-b3c2-11ee-a00e-756d63ec4974", _.syntax.literal);

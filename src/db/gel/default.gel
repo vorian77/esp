@@ -23,6 +23,7 @@ module default {
     codeDisabilityStatus: sys_core::SysCode;
     codeEthnicity: sys_core::SysCode;
     codeGender: sys_core::SysCode;
+    codePersonLivingArrangements: sys_core::SysCode;
     codeRace: sys_core::SysCode;
     codeState: sys_core::SysCode;
     email: str;
