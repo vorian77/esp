@@ -12,7 +12,7 @@ import { initSysRepUser } from '$server/dbGel/init/dbGelInit60SysAdminRepUser'
 import { initContentSysMsg } from '$server/dbGel/init/dbGelInit80ContentSysMsg'
 
 // content - app, client
-import { initContentCm } from '$server/dbGel/init/dbGelInit80ContentCm'
+// import { initContentCm } from '$server/dbGel/init/dbGelInit80ContentCm'
 import { initContentCrm } from '$server/dbGel/init/dbGelInit80ContentCrm'
 import { initContentCrmRep } from '$server/dbGel/init/dbGelInit80ContentCrmRep'
 
@@ -56,7 +56,7 @@ function dbInitAll(initDb: InitDb) {
 	initContentSysMsg(initDb)
 
 	// content - CM
-	initContentCm(initDb)
+	// initContentCm(initDb)
 
 	// content - CRM
 	initContentCrm(initDb)
