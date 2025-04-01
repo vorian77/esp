@@ -377,6 +377,9 @@ module sys_core {
       readonly := true;
     };
     date: cal::local_date;
+    required isForward: bool {
+      default := false;
+    };
     required isOpen: bool {
       default := true;
     };
@@ -384,11 +387,18 @@ module sys_core {
     multi recipients: default::SysPerson;
     responses := .<parent[IS sys_core::SysMsg];
     required sender: default::SysPerson;
-    subject: str;
+    required subject: str;
+    thread :=  distinct(.responses union sys_core::SysMsg);
   }
 
   type SysNodeObj extending sys_core::SysObj {
-    multi children: sys_core::SysNodeObj{
+    multi actions: sys_core::SysNodeObjAction{
+      on source delete allow;
+    };
+    multi children: sys_core::SysNodeObjChild{
+      on source delete allow;
+    };
+    multi childrenOld: sys_core::SysNodeObj{
       on source delete allow;
     };
     required codeNavType: sys_core::SysCode;
@@ -397,6 +407,7 @@ module sys_core {
     multi data: sys_core::SysNodeObjData {
        on target delete delete source;
     };
+    dataObj: sys_core::SysDataObj;
     required isAlwaysRetrieveData: bool;
     required isDynamicChildrenSystemParents: bool;
     required isHideRowManager: bool;
@@ -407,6 +418,20 @@ module sys_core {
     constraint exclusive on (.name);
   }
 
+  type SysNodeObjAction {
+    required codeAction: sys_core::SysCodeAction;
+    required nodeObj: sys_core::SysNodeObj{
+      on target delete delete source;
+    };
+  }
+  
+  type SysNodeObjChild {
+    required nodeObj: sys_core::SysNodeObj{
+      on target delete delete source;
+    };
+    required orderDefine: default::nonNegative;
+  }
+    
   type SysNodeObjData {
     required dataObj: sys_core::SysDataObj{
       on target delete delete source;
@@ -433,9 +458,8 @@ module sys_core {
     using (select assert_single(sys_core::SysCode filter 
       .codeType.name = codeTypeName and .name = codeName));
 
-  function getCodeAction(codeTypeName: str,  codeName: str) -> optional sys_core::SysCodeAction
-    using (select assert_single(sys_core::SysCodeAction filter 
-      .codeType.name = codeTypeName and .name = codeName));
+  function getCodeAction(codeName: str) -> optional sys_core::SysCodeAction
+    using (select assert_single(sys_core::SysCodeAction filter .name = codeName));
       
   function getCodeSystem(sysName: str, codeTypeName: str,  codeName: str) -> optional sys_core::SysCode
     using (select assert_single(sys_core::SysCode filter 

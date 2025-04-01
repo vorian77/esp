@@ -73,7 +73,7 @@ function initDataObj(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'select',
+				codeFieldElement: 'radio',
 				columnName: 'codeCardinality',
 				isDisplayable: true,
 				orderDisplay: 40,
@@ -83,7 +83,7 @@ function initDataObj(init: InitDb) {
 				fieldListItemsParmValue: 'ct_sys_do_cardinality'
 			},
 			{
-				codeFieldElement: 'select',
+				codeFieldElement: 'radio',
 				columnName: 'codeComponent',
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -134,7 +134,7 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'select',
+				codeFieldElement: 'radio',
 				columnName: 'codeDoQueryType',
 				isDisplayable: true,
 				orderDisplay: 68,
@@ -145,7 +145,7 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'select',
+				codeFieldElement: 'radio',
 				columnName: 'codeDoRenderPlatform',
 				isDisplayable: true,
 				orderDisplay: 70,
@@ -474,10 +474,10 @@ function initDataObj(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_data_obj_detail'],
+		children: [{ node: 'node_obj_sys_admin_data_obj_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_data_obj_list' }],
+		dataObj: 'data_obj_sys_admin_data_obj_list',
 		header: 'Data Objects',
 		name: 'node_obj_sys_admin_data_obj_list',
 		orderDefine: 60,
@@ -485,10 +485,10 @@ function initDataObj(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_data_obj_column_list'],
+		children: [{ node: 'node_obj_sys_admin_data_obj_column_list', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_data_obj_detail' }],
+		dataObj: 'data_obj_sys_admin_data_obj_detail',
 		header: 'Data Object',
 		name: 'node_obj_sys_admin_data_obj_detail',
 		orderDefine: 10,
@@ -1394,10 +1394,10 @@ function initDataObjColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_data_obj_column_detail'],
+		children: [{ node: 'node_obj_sys_admin_data_obj_column_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_data_obj_column_list' }],
+		dataObj: 'data_obj_sys_admin_data_obj_column_list',
 		header: 'Columns',
 		name: 'node_obj_sys_admin_data_obj_column_list',
 		orderDefine: 20,
@@ -1407,7 +1407,7 @@ function initDataObjColumn(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_data_obj_column_detail' }],
+		dataObj: 'data_obj_sys_admin_data_obj_column_detail',
 		header: 'Column',
 		name: 'node_obj_sys_admin_data_obj_column_detail',
 		orderDefine: 10,

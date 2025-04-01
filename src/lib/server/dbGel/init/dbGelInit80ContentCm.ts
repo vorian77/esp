@@ -171,19 +171,20 @@ function initProgram(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_app_cm_program_detail'],
+		children: [{ node: 'node_obj_app_cm_program_detail', order: 10 }],
 		codeIcon: 'AppWindow',
-		codeNodeType: 'system',
-		data: [{ dataObj: 'data_obj_app_cm_program_list' }],
+		codeNodeType: 'program_object',
+		dataObj: 'data_obj_app_cm_program_list',
 		header: 'Programs',
 		name: 'node_obj_app_cm_program_list',
 		orderDefine: 10,
 		owner: 'sys_app_cm'
 	})
+
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_app_cm_program_detail' }],
+		dataObj: 'data_obj_app_cm_program_detail',
 		header: 'Program',
 		name: 'node_obj_app_cm_program_detail',
 		orderDefine: 10,

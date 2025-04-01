@@ -4,7 +4,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do_auth', name: 'resendCode' },
+		codeAction: 'resendCode',
 		codeTriggerEnable: 'always',
 		name: 'ua_ca_sys_auth_resend_code',
 		owner: 'sys_system'
@@ -12,7 +12,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do_auth', name: 'setUserId' },
+		codeAction: 'setUserId',
 		codeTriggerEnable: 'always',
 		name: 'ua_ca_sys_auth_set_user_id',
 		owner: 'sys_system'
@@ -20,7 +20,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do_auth', name: 'submit' },
+		codeAction: 'submit',
 		codeTriggerEnable: 'always',
 		name: 'ua_ca_sys_auth_submit',
 		owner: 'sys_system'
@@ -49,7 +49,7 @@ export function initPreUserAction(init: InitDb) {
 			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
 			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
 		],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailDelete' },
+		codeAction: 'doDetailDelete',
 		codeTriggerEnable: 'always',
 		header: 'Delete',
 		name: 'ua_sys_delete_detail',
@@ -67,7 +67,7 @@ export function initPreUserAction(init: InitDb) {
 			}
 		],
 		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_modal', name: 'modalCancel' },
+		codeAction: 'modalCancel',
 		codeTriggerEnable: 'always',
 		header: 'Cancel',
 		name: 'ua_sys_dialog_cancel',
@@ -77,7 +77,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_modal', name: 'modalDone' },
+		codeAction: 'modalDone',
 		codeTriggerEnable: 'always',
 		header: 'Done',
 		name: 'ua_sys_dialog_done',
@@ -87,7 +87,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doOpenLink' },
+		codeAction: 'doOpenLink',
 		codeTriggerEnable: 'always',
 		name: 'ua_ca_sys_do_open_link',
 		owner: 'sys_system'
@@ -96,7 +96,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doListDownload' },
+		codeAction: 'doListDownload',
 		codeTriggerEnable: 'always',
 		header: 'Download',
 		name: 'ua_sys_download_grid',
@@ -106,7 +106,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doListDetailEdit' },
+		codeAction: 'doListDetailEdit',
 		codeTriggerEnable: 'always',
 		header: 'Edit',
 		name: 'ua_sys_edit_list',
@@ -116,10 +116,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codeAction: {
-			codeType: 'ct_sys_code_action_class_do',
-			name: 'doEmbedListConfigEdit'
-		},
+		codeAction: 'doEmbedListConfigEdit',
 		codeTriggerEnable: 'always',
 		header: 'Edit',
 		name: 'ua_sys_embed_list_config_edit',
@@ -132,10 +129,7 @@ export function initPreUserAction(init: InitDb) {
 			{ codeTriggerShow: 'notStatusChanged', isRequired: true },
 			{ codeTriggerShow: 'statusValid', isRequired: true }
 		],
-		codeAction: {
-			codeType: 'ct_sys_code_action_class_do',
-			name: 'doEmbedListConfigNew'
-		},
+		codeAction: 'doEmbedListConfigNew',
 		codeTriggerEnable: 'always',
 		header: 'New',
 		name: 'ua_sys_embed_list_config_new',
@@ -145,10 +139,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codeAction: {
-			codeType: 'ct_sys_code_action_class_do',
-			name: 'doEmbedListEditParmValue'
-		},
+		codeAction: 'doEmbedListEditParmValue',
 		codeTriggerEnable: 'always',
 		header: 'Parameter Value',
 		name: 'ua_sys_embed_list_edit_parm_value',
@@ -158,58 +149,10 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'never', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doEmbedListSelect' },
+		codeAction: 'doEmbedListSelect',
 		codeTriggerEnable: 'always',
 		header: 'Edit',
 		name: 'ua_sys_embed_list_select',
-		owner: 'sys_system'
-	})
-
-	/* message */
-	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailMsgCloseThread' },
-		codeTriggerEnable: 'always',
-		header: 'Close Thread',
-		name: 'ua_sys_msg_close_thread',
-		owner: 'sys_system'
-	})
-
-	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [
-			{ codeTriggerShow: 'notStatusChanged', isRequired: true },
-			{
-				codeExprOp: 'equal',
-				codeTriggerShow: 'expression',
-				exprField: 'isReadDisplay',
-				exprValue: 'Yes',
-				isRequired: true
-			}
-		],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailMsgSetClosed' },
-		codeTriggerEnable: 'always',
-		header: 'Set Closed',
-		name: 'ua_sys_msg_set_closed',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [
-			{ codeTriggerShow: 'notStatusChanged', isRequired: true },
-			{
-				codeExprOp: 'equal',
-				codeTriggerShow: 'expression',
-				exprField: 'isReadDisplay',
-				exprValue: 'Yes',
-				isRequired: true
-			}
-		],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailMsgSetOpen' },
-		codeTriggerEnable: 'always',
-		header: 'Set Open',
-		name: 'ua_sys_msg_set_open',
 		owner: 'sys_system'
 	})
 
@@ -217,7 +160,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailMigrate' },
+		codeAction: 'doDetailMigrate',
 		codeTriggerEnable: 'always',
 		header: 'Migrate',
 		name: 'ua_sys_migrate',
@@ -227,7 +170,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailNew' },
+		codeAction: 'doDetailNew',
 		codeTriggerEnable: 'always',
 		header: 'New',
 		name: 'ua_sys_new_detail',
@@ -237,7 +180,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailNew' },
+		codeAction: 'doDetailNew',
 		codeTriggerEnable: 'always',
 		header: 'New',
 		name: 'ua_sys_new_detail_dialog_detail',
@@ -247,7 +190,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'notStatusChanged', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doListDetailNew' },
+		codeAction: 'doListDetailNew',
 		codeTriggerEnable: 'always',
 		header: 'New',
 		name: 'ua_sys_new_detail_list',
@@ -257,10 +200,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeAction: {
-			codeType: 'ct_sys_code_action_class_do',
-			name: 'doDetailProcessExecute'
-		},
+		codeAction: 'doDetailProcessExecute',
 		codeTriggerEnable: 'always',
 		header: 'Execute',
 		name: 'ua_sys_process_execute',
@@ -270,7 +210,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doListSelfRefresh' },
+		codeAction: 'doListSelfRefresh',
 		codeTriggerEnable: 'always',
 		header: 'Refresh',
 		name: 'ua_sys_refresh_list',
@@ -280,7 +220,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailSaveAs' },
+		codeAction: 'doDetailSaveAs',
 		codeTriggerEnable: 'always',
 		header: 'Save As',
 		name: 'ua_sys_save_as_detail',
@@ -293,7 +233,7 @@ export function initPreUserAction(init: InitDb) {
 			{ codeTriggerShow: 'statusChanged', isRequired: true },
 			{ codeTriggerShow: 'rootDataObj', isRequired: true }
 		],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doSaveCancel' },
+		codeAction: 'doSaveCancel',
 		codeTriggerEnable: 'always',
 		header: 'Cancel Save',
 		name: 'ua_sys_save_cancel',
@@ -307,7 +247,7 @@ export function initPreUserAction(init: InitDb) {
 			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
 			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
 		],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doDetailSave' },
+		codeAction: 'doDetailSave',
 		codeTriggerEnable: 'statusValid',
 		header: 'Save',
 		name: 'ua_sys_save_detail',
@@ -320,7 +260,7 @@ export function initPreUserAction(init: InitDb) {
 			{ codeTriggerShow: 'statusChanged', isRequired: true },
 			{ codeTriggerShow: 'rootDataObj', isRequired: true }
 		],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doListSelfSave' },
+		codeAction: 'doListSelfSave',
 		codeTriggerEnable: 'statusValid',
 		header: 'Save',
 		name: 'ua_sys_save_list',
@@ -330,7 +270,7 @@ export function initPreUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
 		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
 		actionShows: [{ codeTriggerShow: 'statusChanged', isRequired: true }],
-		codeAction: { codeType: 'ct_sys_code_action_class_do', name: 'doListSelfSave' },
+		codeAction: 'doListSelfSave',
 		codeTriggerEnable: 'statusValid',
 		header: 'Save',
 		name: 'ua_sys_save_list_edit',

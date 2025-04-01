@@ -35,7 +35,9 @@ export class NodeHeader {
 }
 
 export class Node extends NodeHeader {
-	data: NodeData[]
+	actions: NodeAction[]
+	children: string[]
+	dataObjId: string
 	isAlwaysRetrieveData: boolean
 	isDynamicChildrenSystemParents: boolean
 	isHideRowManager: boolean
@@ -46,7 +48,9 @@ export class Node extends NodeHeader {
 		const clazz = 'Node'
 		obj = valueOrDefault(obj, {})
 		super(obj)
-		this.data = arrayOfClass(NodeData, obj._data)
+		this.actions = arrayOfClass(NodeAction, obj._actions)
+		this.children = getArray(obj._children).map((c: any) => c._nodeObjId)
+		this.dataObjId = strRequired(obj._dataObjId || '', clazz, 'dataObjId')
 		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData)
 		this.isDynamicChildrenSystemParents = booleanOrFalse(obj.isDynamicChildrenSystemParents)
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager)
@@ -60,16 +64,63 @@ export class Node extends NodeHeader {
 			NodeQueryOwnerType
 		)
 	}
-	nodeDataGet(actionType: CodeActionType) {
-		let nodeData = this.data.find((d) => d.actionType === actionType)
-		if (nodeData) return nodeData
-		nodeData = this.data.find((d) => d.actionType === CodeActionType.default)
-		if (nodeData) return nodeData
+
+	getNodeIdAction(actionType: CodeActionType, nodeIdActionAlt: NodeIdActionAlt): string {
+		let nodeAction = this.actions.find((a) => a.actionType === actionType)
+		if (nodeAction) return nodeAction.nodeObjId
+		switch (nodeIdActionAlt) {
+			case NodeIdActionAlt.firstChild:
+				if (this.children.length > 0) return this.children[0]
+				error(500, {
+					file: FILENAME,
+					function: 'Node.getNodeIdAction',
+					message: `No children defined node: ${this.name}`
+				})
+			case NodeIdActionAlt.self:
+				return this.id
+			default:
+				error(500, {
+					file: FILENAME,
+					function: 'Node.getNodeIdAction',
+					message: `Invalid nodeIdActionAlt: ${nodeIdActionAlt}`
+				})
+		}
+	}
+
+	getNodeAction(actionType: CodeActionType) {
+		let nodeAction = this.actions.find((a) => a.actionType === actionType)
+		if (nodeAction) return nodeAction
+		nodeAction = this.actions.find((a) => a.actionType === CodeActionType.default)
+		if (nodeAction) return nodeAction
 		error(500, {
 			file: FILENAME,
-			function: 'Node.nodeDataGet',
-			message: `No default NodeData defined for node name: ${this.name}`
+			function: 'Node.getNodeAction',
+			message: `No default NodeAction defined for node name: ${this.name}`
 		})
+	}
+}
+
+export enum NodeIdActionAlt {
+	firstChild = 'firstChild',
+	self = 'self'
+}
+
+export class NodeAction {
+	actionType: CodeActionType
+	dataObjId: string
+	nodeObjId: string
+	constructor(obj: any) {
+		const clazz = 'NodeAction'
+		obj = valueOrDefault(obj, {})
+		this.actionType = memberOfEnum(
+			obj._codeAction,
+			clazz,
+			'actionType',
+			'CodeActionType',
+			CodeActionType
+		)
+		this.dataObjId = strRequired(obj._dataObjId, clazz, 'dataObjId')
+		this.nodeObjId = strRequired(obj._nodeObjId, clazz, 'nodeObjId')
 	}
 }
 

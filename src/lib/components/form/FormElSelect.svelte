@@ -8,7 +8,7 @@
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldElement } from '$comps/form/field.svelte'
+	import { FieldElement, FieldValueType } from '$comps/form/field.svelte'
 	import { FieldSelect } from '$comps/form/fieldSelect'
 	import { FieldAccess } from '$comps/form/field.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
@@ -24,10 +24,10 @@
 	let field = $derived(parms.field) as FieldSelect
 	let fieldId = $derived('field-input-select-' + field.colDO.orderDefine)
 	let fieldValue = $derived.by(() => {
-		const value = dm.getFieldValue(parms.dataObjId, parms.row, parms.field)
+		const value = dm.getFieldValue(parms.dataObjId, parms.row, parms.field, FieldValueType.data)
 		return Array.isArray(value) ? value[0] : value
 	})
-	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsFormatted(fieldValue) : [])
+	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsAll(fieldValue) : [])
 
 	let classProps = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.detail
@@ -56,8 +56,8 @@
 	>
 		<option value={null} class="">Select an option...</option>
 		{#if dataItems}
-			{#each dataItems as { id, display }, index (id)}
-				<option value={id} selected={id === fieldValue}>
+			{#each dataItems as { data, display }, index (data)}
+				<option value={data} selected={data === fieldValue}>
 					{display}
 				</option>
 			{/each}
@@ -66,7 +66,7 @@
 </FormLabel>
 
 <!-- <DataViewer header="fieldValue" data={fieldValue} /> -->
-<!-- <DataViewer header="items" data={field.items} /> -->
+<!-- <DataViewer header="dataItems" data={dataItems} /> -->
 
 <style>
 	select option {

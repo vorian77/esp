@@ -160,7 +160,7 @@ function initNodeObj(init: InitDb) {
 				orderDefine: 55,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_treae_leaf_id_type'
+				fieldListItemsParmValue: 'ct_sys_query_owner_type'
 			},
 			{
 				codeAccess: 'optional',
@@ -361,10 +361,10 @@ function initNodeObj(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_node_obj_detail'],
+		children: [{ node: 'node_obj_sys_admin_node_obj_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_node_obj_list' }],
+		dataObj: 'data_obj_sys_admin_node_obj_list',
 		header: 'Node Objects',
 		name: 'node_obj_sys_admin_node_obj_list',
 		orderDefine: 130,
@@ -374,7 +374,7 @@ function initNodeObj(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_node_obj_detail' }],
+		dataObj: 'data_obj_sys_admin_node_obj_detail',
 		header: 'Node Object',
 		name: 'node_obj_sys_admin_node_obj_detail',
 		orderDefine: 10,

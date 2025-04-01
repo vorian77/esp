@@ -274,16 +274,13 @@ const dataItemsDataDoc = {
 	codeType: {
 		type: 'list',
 		values: [
-			'Alien Registration Card',
-			'Applicant Statement',
-			'Birth Certificate',
+			'Applicant Statement of Address',
+			'Applicant Statement of Date of Birth',
 			'Drivers License',
-			'Hospital Record of Birth',
 			'Lease',
-			'MVA Identification',
-			'School Record',
 			'Selective Service Registration Card',
-			'Social Security Card'
+			'Social Security Card',
+			'U.S. Hospital Record of Birth'
 		]
 	}
 }

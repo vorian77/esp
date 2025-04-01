@@ -223,20 +223,23 @@ function initAnalytic(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_analytic_detail'],
+		children: [{ node: 'node_obj_sys_analytic_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_analytic_list' }],
+		dataObj: 'data_obj_sys_analytic_list',
 		header: 'Analytics',
 		name: 'node_obj_sys_analytic_list',
 		orderDefine: 10,
 		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_analytic_parm_list', 'node_obj_sys_analytic_status_list'],
+		children: [
+			{ node: 'node_obj_sys_analytic_parm_list', order: 10 },
+			{ node: 'node_obj_sys_analytic_status_list', order: 20 }
+		],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_analytic_detail' }],
+		dataObj: 'data_obj_sys_analytic_detail',
 		header: 'Analytic',
 		name: 'node_obj_sys_analytic_detail',
 		orderDefine: 10,
@@ -530,10 +533,10 @@ function initAnalyticParm(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_analytic_parm_detail'],
+		children: [{ node: 'node_obj_sys_analytic_parm_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_analytic_parm_list' }],
+		dataObj: 'data_obj_sys_analytic_parm_list',
 		header: 'Parms',
 		name: 'node_obj_sys_analytic_parm_list',
 		orderDefine: 10,
@@ -542,7 +545,7 @@ function initAnalyticParm(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_analytic_parm_detail' }],
+		dataObj: 'data_obj_sys_analytic_parm_detail',
 		header: 'Parm',
 		name: 'node_obj_sys_analytic_parm_detail',
 		orderDefine: 10,
@@ -711,10 +714,10 @@ function initAnalyticStatus(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_analytic_status_detail'],
+		children: [{ node: 'node_obj_sys_analytic_status_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_analytic_status_list' }],
+		dataObj: 'data_obj_sys_analytic_status_list',
 		header: 'Statuses',
 		name: 'node_obj_sys_analytic_status_list',
 		orderDefine: 20,
@@ -723,7 +726,7 @@ function initAnalyticStatus(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_analytic_status_detail' }],
+		dataObj: 'data_obj_sys_analytic_status_detail',
 		header: 'Status',
 		name: 'node_obj_sys_analytic_status_detail',
 		orderDefine: 10,
@@ -966,10 +969,10 @@ function initRep(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_rep_detail'],
+		children: [{ node: 'node_obj_sys_rep_detail', order: 10 }],
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_rep_list' }],
+		dataObj: 'data_obj_sys_rep_list',
 		header: 'Reports',
 		name: 'node_obj_sys_rep_list',
 		orderDefine: 150,
@@ -977,13 +980,13 @@ function initRep(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [
-			'node_obj_sys_rep_parm_list',
-			'node_obj_sys_rep_el_list',
-			'node_obj_sys_rep_user_list'
+			{ node: 'node_obj_sys_rep_parm_list', order: 10 },
+			{ node: 'node_obj_sys_rep_el_list', order: 20 },
+			{ node: 'node_obj_sys_rep_user_list', order: 30 }
 		],
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_rep_detail' }],
+		dataObj: 'data_obj_sys_rep_detail',
 		header: 'Report',
 		name: 'node_obj_sys_rep_detail',
 		orderDefine: 10,
@@ -1498,10 +1501,10 @@ function initRepEl(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_rep_el_detail'],
+		children: [{ node: 'node_obj_sys_rep_el_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_rep_element_list' }],
+		dataObj: 'data_obj_sys_rep_element_list',
 		header: 'Elements',
 		name: 'node_obj_sys_rep_el_list',
 		orderDefine: 20,
@@ -1510,7 +1513,7 @@ function initRepEl(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_rep_el_detail' }],
+		dataObj: 'data_obj_sys_rep_el_detail',
 		header: 'Element',
 		name: 'node_obj_sys_rep_el_detail',
 		orderDefine: 10,
@@ -1852,10 +1855,10 @@ function initRepParm(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_rep_parm_detail'],
+		children: [{ node: 'node_obj_sys_rep_parm_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_rep_parm_list' }],
+		dataObj: 'data_obj_sys_rep_parm_list',
 		header: 'Parms',
 		name: 'node_obj_sys_rep_parm_list',
 		orderDefine: 10,
@@ -1864,7 +1867,7 @@ function initRepParm(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_rep_parm_detail' }],
+		dataObj: 'data_obj_sys_rep_parm_detail',
 		header: 'Parm',
 		name: 'node_obj_sys_rep_parm_detail',
 		orderDefine: 10,
@@ -2056,10 +2059,10 @@ function initRepUser(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_rep_user_detail'],
+		children: [{ node: 'node_obj_sys_rep_user_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_rep_user_list' }],
+		dataObj: 'data_obj_sys_rep_user_list',
 		header: 'Users',
 		name: 'node_obj_sys_rep_user_list',
 		orderDefine: 30,
@@ -2068,7 +2071,7 @@ function initRepUser(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_rep_user_detail' }],
+		dataObj: 'data_obj_sys_rep_user_detail',
 		header: 'User',
 		name: 'node_obj_sys_rep_user_detail',
 		orderDefine: 10,

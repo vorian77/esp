@@ -352,10 +352,10 @@ function initTask(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_task_detail'],
+		children: [{ node: 'node_obj_sys_admin_task_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_task_list' }],
+		dataObj: 'data_obj_sys_admin_task_list',
 		header: 'Tasks',
 		name: 'node_obj_sys_admin_task_list',
 		orderDefine: 180,
@@ -365,7 +365,7 @@ function initTask(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_task_detail' }],
+		dataObj: 'data_obj_sys_admin_task_detail',
 		header: 'Task',
 		name: 'node_obj_sys_admin_task_detail',
 		orderDefine: 10,

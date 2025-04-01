@@ -174,10 +174,10 @@ function initClient(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_app_crm_client_detail'],
+		children: [{ node: 'node_obj_app_crm_client_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_app_crm_client_list' }],
+		dataObj: 'data_obj_app_crm_client_list',
 		header: 'Clients',
 		name: 'node_obj_app_crm_client_list',
 		orderDefine: 10,
@@ -186,7 +186,7 @@ function initClient(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_app_crm_client_detail' }],
+		dataObj: 'data_obj_app_crm_client_detail',
 		header: 'Client',
 		name: 'node_obj_app_crm_client_detail',
 		orderDefine: 10,

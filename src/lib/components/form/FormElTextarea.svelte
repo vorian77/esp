@@ -2,7 +2,7 @@
 	import { ContextKey, DataManager, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldTextarea } from '$comps/form/fieldTextarea'
-	import { FieldAccess } from '$comps/form/field.svelte'
+	import { FieldAccess, FieldValueType } from '$comps/form/field.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 
 	const FILENAME = '/$comps/form/FormElTextarea.svelte'
@@ -12,7 +12,9 @@
 	let dm: DataManager = $derived(sm.dm)
 
 	let field = $derived(parms.field) as FieldCustomActionLink
-	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
+	let fieldValue = $derived(
+		dm.getFieldValue(parms.dataObjId, parms.row, parms.field, FieldValueType.display)
+	)
 
 	let classProps = $state(
 		'rounded-lg ' + field.classProps + ' ' + field.getBackgroundColor(field.fieldAccess)

@@ -2,7 +2,7 @@
 	import { ContextKey, DataManager, DataObj, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
-	import { FieldAccess } from '$comps/form/field.svelte'
+	import { FieldAccess, FieldValueType } from '$comps/form/field.svelte'
 	import { DataObjCardinality, getArray } from '$utils/types'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -15,8 +15,10 @@
 
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let field = $derived(parms.field) as FieldCheckbox
-	let fieldValue = $state(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
-	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsFormatted(fieldValue) : [])
+	let fieldValue = $state(
+		dm.getFieldValue(parms.dataObjId, parms.row, parms.field, FieldValueType.data)
+	)
+	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsAll(fieldValue) : [])
 
 	let classFieldSet = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.list
@@ -30,12 +32,12 @@
 		const value = event.target.value
 
 		if (field.colDO.colDB.isMultiSelect) {
-			const idx = dataItems.findIndex((i) => i.id === value)
+			const idx = dataItems.findIndex((i) => i.data === value)
 			if (idx >= 0) {
 				let newValues: string[] = []
 				dataItems[idx].selected = !dataItems[idx].selected
 				dataItems.forEach((i) => {
-					if (i.selected) newValues.push(i.id)
+					if (i.selected) newValues.push(i.data)
 				})
 				await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, newValues)
 			}
@@ -50,7 +52,7 @@
 {#if field.colDO.colDB.isMultiSelect}
 	<FormLabel {parms} />
 	<fieldset class="text-sm space-y-2 {classFieldSet}">
-		{#each dataItems as { id, display }, i (id)}
+		{#each dataItems as { data, display }, i (data)}
 			<label class="flex gap-1.5 {i === 0 ? 'mt-3' : ''}">
 				<input
 					type="checkbox"
@@ -58,7 +60,7 @@
 					class="rounded-sm mt-0.5"
 					name={field.colDO.propName}
 					oninput={onInput}
-					value={id}
+					value={data}
 				/>
 				{display}
 			</label>

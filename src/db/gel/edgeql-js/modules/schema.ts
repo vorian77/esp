@@ -783,7 +783,9 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysMsg]": $.LinkDesc<_sys_core.$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysAttrAccess]": $.LinkDesc<_sys_core.$SysAttrAccess, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_core::SysNodeObjChild]": $.LinkDesc<_sys_core.$SysNodeObjChild, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjQueryRider]": $.LinkDesc<_sys_core.$SysDataObjQueryRider, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_core::SysNodeObjAction]": $.LinkDesc<_sys_core.$SysNodeObjAction, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<intersection_of": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<subject": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

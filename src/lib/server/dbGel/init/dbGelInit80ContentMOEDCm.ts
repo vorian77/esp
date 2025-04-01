@@ -433,21 +433,24 @@ function initApplicant(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgram', {
-		children: ['node_obj_moed_part_detail'],
+		children: [{ node: 'node_obj_moed_part_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
 		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
-		data: [{ dataObj: 'data_obj_moed_part_list' }],
+		dataObj: 'data_obj_moed_part_list',
 		header: 'Participants',
 		name: 'node_obj_moed_part_list',
 		orderDefine: 10,
 		owner: 'sys_client_moed'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_moed_msg_list', 'node_obj_moed_csf_list'],
+		children: [
+			{ node: 'node_obj_moed_msg_list', order: 10 },
+			{ node: 'node_obj_moed_csf_list', order: 20 }
+		],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_moed_part_detail' }],
+		dataObj: 'data_obj_moed_part_detail',
 		header: 'Participant',
 		name: 'node_obj_moed_part_detail',
 		orderDefine: 10,
@@ -837,10 +840,10 @@ function initApplicantMsg(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_moed_msg_detail_old'],
+		children: [{ node: 'node_obj_moed_msg_detail_old', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_moed_msg_list_root' }],
+		dataObj: 'data_obj_moed_msg_list_root',
 		header: 'Messages',
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_moed_msg_list',
@@ -850,14 +853,7 @@ function initApplicantMsg(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [
-			{ dataObj: 'data_obj_moed_msg_detail' }
-			// {
-			// 	actionClass: 'ct_sys_code_action_class_custom',
-			// 	actionType: 'doDetailMsgReplyCmStaff',
-			// 	dataObj: 'data_obj_moed_msg_detail_parent_reply'
-			// }
-		],
+		dataObj: 'data_obj_moed_msg_detail',
 		header: 'Message',
 		name: 'node_obj_moed_msg_detail_old',
 		orderDefine: 10,
@@ -900,7 +896,8 @@ function initCsf(init: InitDb) {
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0,
-				linkColumns: ['header']
+				linkColumns: ['header'],
+				linkTable: 'SysAttr'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1236,20 +1233,23 @@ function initCsf(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_moed_csf_detail'],
+		children: [{ node: 'node_obj_moed_csf_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_moed_csf_list' }],
+		dataObj: 'data_obj_moed_csf_list',
 		header: 'Service Flows',
 		name: 'node_obj_moed_csf_list',
 		orderDefine: 20,
 		owner: 'sys_client_moed'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_moed_csf_note_list', 'node_obj_moed_csf_doc_list'],
+		children: [
+			{ node: 'node_obj_moed_csf_note_list', order: 10 },
+			{ node: 'node_obj_moed_csf_doc_list', order: 20 }
+		],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_moed_csf_detail' }],
+		dataObj: 'data_obj_moed_csf_detail',
 		header: 'Service Flow',
 		name: 'node_obj_moed_csf_detail',
 		orderDefine: 10,
@@ -1438,10 +1438,10 @@ function initCsfNote(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_moed_csf_note_detail'],
+		children: [{ node: 'node_obj_moed_csf_note_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_moed_csf_note_list' }],
+		dataObj: 'data_obj_moed_csf_note_list',
 		header: 'Case Notes',
 		name: 'node_obj_moed_csf_note_list',
 		orderDefine: 20,
@@ -1450,7 +1450,7 @@ function initCsfNote(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_moed_csf_note_detail' }],
+		dataObj: 'data_obj_moed_csf_note_detail',
 		header: 'Case Note',
 		name: 'node_obj_moed_csf_note_detail',
 		orderDefine: 10,
@@ -1687,10 +1687,10 @@ function initCsfDocument(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_moed_csf_doc_detail'],
+		children: [{ node: 'node_obj_moed_csf_doc_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_moed_csf_doc_list' }],
+		dataObj: 'data_obj_moed_csf_doc_list',
 		header: 'Documents',
 		name: 'node_obj_moed_csf_doc_list',
 		orderDefine: 30,
@@ -1699,7 +1699,7 @@ function initCsfDocument(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_moed_csf_doc_detail' }],
+		dataObj: 'data_obj_moed_csf_doc_detail',
 		header: 'Document',
 		name: 'node_obj_moed_csf_doc_detail',
 		orderDefine: 10,
@@ -1925,6 +1925,7 @@ function initReport(init: InitDb) {
 				isDisplay: true,
 				isDisplayable: true,
 				linkColumns: ['header'],
+				linkTable: 'SysAttr',
 				orderDefine: 160,
 				orderDisplay: 160
 			},

@@ -8,6 +8,7 @@ import {
 	type DataRecord,
 	getArray,
 	getColor,
+	getDataRecordValueType,
 	ParmsValuesType,
 	ResponseBody,
 	required,
@@ -30,7 +31,10 @@ import {
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
 import {
+	PropDataType,
 	PropLinkItems,
+	RawDBColumn,
+	RawDataObjPropDB,
 	RawDataObjPropDisplay,
 	RawDataObjPropDisplayItemChange
 } from '$comps/dataObj/types.rawDataObj.svelte'
@@ -61,7 +65,7 @@ export class Field {
 			FieldAccess.hidden
 		)
 		this.fieldAlignment = memberOfEnumOrDefault(
-			this.colDO.rawFieldAlignmentAlt || this.colDO.colDB.rawFieldAlignment,
+			this.colDO.rawFieldAlignmentAlt || this.colDO?.colDB?.rawFieldAlignment,
 			clazz,
 			'fieldAlignment',
 			'FieldAlignment',
@@ -78,6 +82,7 @@ export class Field {
 		this.isParmValue = booleanOrDefault(props.propRaw.isParmValue, false)
 		this.linkItems = classOptional(PropLinkItems, props.propRaw?.linkItemsSource?.raw)
 	}
+
 	getBackgroundColor(fieldAccess: FieldAccess) {
 		return fieldAccess === FieldAccess.required
 			? 'bg-blue-100'
@@ -88,6 +93,21 @@ export class Field {
 
 	getPropName() {
 		return this.isParmValue ? 'parmValue' : this.colDO.propName
+	}
+
+	getValueType(record: DataRecord, fieldValueType: FieldValueType) {
+		return getDataRecordValueType(
+			record[this.colDO.propName],
+			fieldValueType,
+			this.colDO.colDB.codeDataType,
+			this.colDO.colDB.isMultiSelect
+		)
+	}
+	getValueTypeData(record: DataRecord) {
+		return this.getValueType(record, FieldValueType.data)
+	}
+	getValueTypeDisplay(record: DataRecord) {
+		return this.getValueType(record, FieldValueType.display)
 	}
 
 	getValuationInvalid(error: ValidityError, level: ValidityErrorLevel, message: string) {
@@ -132,41 +152,41 @@ export class Field {
 
 			switch (itemChange.codeOp) {
 				case FieldOp.any:
-					return process(itemChange)
+					return process(this, itemChange)
 
 				case FieldOp.equal:
-					if (valueTriggerArray.includes(triggerValueCurrent)) await process(itemChange)
+					if (valueTriggerArray.includes(triggerValueCurrent)) await process(this, itemChange)
 					break
 
 				case FieldOp.notEqual:
-					if (!valueTriggerArray.includes(triggerValueCurrent)) await process(itemChange)
+					if (!valueTriggerArray.includes(triggerValueCurrent)) await process(this, itemChange)
 					break
 
 				case FieldOp.notNull:
-					if (!['', null, undefined].includes(triggerValueCurrent)) await process(itemChange)
+					if (!['', null, undefined].includes(triggerValueCurrent)) await process(this, itemChange)
 					break
 
 				case FieldOp.null:
-					if (['', null, undefined].includes(triggerValueCurrent)) await process(itemChange)
+					if (['', null, undefined].includes(triggerValueCurrent)) await process(this, itemChange)
 					break
 
 				default:
 					const valueTriggerScalar = required(itemChange.valueTriggerScalar, clazz, 'valueScalar')
 					switch (itemChange.codeOp) {
 						case FieldOp.greaterThan:
-							if (triggerValueCurrent > valueTriggerScalar) await process(itemChange)
+							if (triggerValueCurrent > valueTriggerScalar) await process(this, itemChange)
 							break
 
 						case FieldOp.greaterThanOrEqual:
-							if (triggerValueCurrent >= valueTriggerScalar) await process(itemChange)
+							if (triggerValueCurrent >= valueTriggerScalar) await process(this, itemChange)
 							break
 
 						case FieldOp.lessThan:
-							if (triggerValueCurrent < valueTriggerScalar) await process(itemChange)
+							if (triggerValueCurrent < valueTriggerScalar) await process(this, itemChange)
 							break
 
 						case FieldOp.lessThanOrEqual:
-							if (triggerValueCurrent <= valueTriggerScalar) await process(itemChange)
+							if (triggerValueCurrent <= valueTriggerScalar) await process(this, itemChange)
 							break
 
 						default:
@@ -179,7 +199,7 @@ export class Field {
 			}
 		}
 
-		async function process(itemChange: FieldItemChange) {
+		async function process(field: Field, itemChange: FieldItemChange) {
 			for (let i = 0; i < itemChange.fields.length; i++) {
 				const field = itemChange.fields[i]
 
@@ -290,11 +310,11 @@ export class FieldColor {
 }
 
 export class FieldColumnItem {
-	id: string
+	data: string
 	display: string
 	selected: boolean
-	constructor(id: string, display: string, selected: boolean = false) {
-		this.id = id
+	constructor(data: string, display: string, selected: boolean = false) {
+		this.data = data
 		this.display = display
 		this.selected = selected
 	}
@@ -437,6 +457,11 @@ export enum FieldOp {
 	notEqual = 'notEqual',
 	notNull = 'notNull',
 	null = 'null'
+}
+
+export enum FieldValueType {
+	data = 'data',
+	display = 'display'
 }
 
 export class PropsFieldInit {

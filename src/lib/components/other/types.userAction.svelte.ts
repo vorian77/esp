@@ -16,7 +16,7 @@ import {
 	DataObjSaveMode,
 	type DataRecord,
 	debug,
-	getRecordValue,
+	getDataRecordValueKey,
 	memberOfEnum,
 	memberOfEnumIfExists,
 	required,
@@ -27,6 +27,8 @@ import {
 import { Field, FieldClassType, FieldOp } from '$comps/form/field.svelte'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
+	Token,
+	TokenApiQueryType,
 	TokenAppDo,
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
@@ -194,6 +196,16 @@ export async function userActionStateChangeRaw(sm: State, parmsAction: TokenAppS
 	await userActionStateChange(sm, parmsAction)
 }
 
+export async function userActionTreeNodeChildren(
+	sm: State,
+	token: Token,
+	queryType: TokenApiQueryType,
+	parmsAction: TokenAppStateTriggerAction
+) {
+	await sm.app.addTreeNodeChildren(sm, token as TokenAppDo, queryType)
+	await userActionStateChangeDataObj(sm, parmsAction)
+}
+
 export class UserActionShow {
 	codeExprOp?: FieldOp
 	codeTriggerShow: UserActionTrigger
@@ -254,7 +266,7 @@ export class UserActionStatusGroup {
 				exprField = strRequired(exprField, clazz, 'exprField')
 				codeExprOp = required(codeExprOp, clazz, 'codeExprOp')
 				dataRecord = required(dm.getRecordsDisplayRow(dataObj.raw.id, 0), clazz, 'dataRecord')
-				const currValue = getRecordValue(dataRecord!, exprField)
+				const currValue = getDataRecordValueKey(dataRecord!, exprField)
 				switch (codeExprOp) {
 					case FieldOp.equal:
 						isTriggered = currValue === exprValue
@@ -278,7 +290,7 @@ export class UserActionStatusGroup {
 			case UserActionTrigger.notRecordOwner:
 				dataRecord = dm.getRecordsDisplayRow(dataObj.raw.id, 0)
 				if (dataRecord && sm.user) {
-					const recordOwner = getRecordValue(dataRecord, 'recordOwner')
+					const recordOwner = getDataRecordValueKey(dataRecord, 'recordOwner')
 					isTriggered = !recordOwner ? false : recordOwner !== sm.user.personId
 				} else {
 					isTriggered = false
@@ -290,7 +302,7 @@ export class UserActionStatusGroup {
 			case UserActionTrigger.recordOwner:
 				dataRecord = dm.getRecordsDisplayRow(dataObj.raw.id, 0)
 				if (dataRecord && sm.user) {
-					const recordOwner = getRecordValue(dataRecord, 'recordOwner')
+					const recordOwner = getDataRecordValueKey(dataRecord, 'recordOwner')
 					isTriggered = !recordOwner ? true : recordOwner === sm.user.personId
 				} else {
 					isTriggered = false

@@ -13,7 +13,7 @@ import {
 	DBTable,
 	debug,
 	getArray,
-	getRecordValue,
+	getDataRecordValueKey,
 	isNumber,
 	memberOfEnum,
 	memberOfEnumIfExists,
@@ -789,41 +789,56 @@ export class PropLinkItems {
 		this.source.props.forEach((prop) => {
 			if (prop.isDisplayId) {
 				if (value) value += displayIdSeparator
-				value += getRecordValue(record, prop.key)
+				value += getDataRecordValueKey(record, prop.key)
 			}
 		})
 		return value
 	}
 
-	getFieldValueIds(fieldValue: DataRecord | DataRecord[]) {
-		const fieldValues: DataRecord[] = getArray(fieldValue)
-		return fieldValues.map((v) => v.id)
-	}
-
-	getDataItemsFormatted(fieldValue: DataRecord | DataRecord[]) {
+	getDataItemsAll(fieldValue: DataRecord | DataRecord[]) {
 		const fieldValues: DataRecord[] = getArray(fieldValue)
 		let fieldItems: FieldColumnItem[] = []
 		this.rawItems.forEach((item) => {
-			const fi = new FieldColumnItem(
-				item.id,
-				this.formatDataItemDisplay(item),
-				fieldValues.includes(item.id)
+			fieldItems.push(
+				new FieldColumnItem(
+					item.data,
+					this.formatDataItemDisplay(item),
+					fieldValues.includes(item.data)
+				)
 			)
-			fieldItems.push(fi)
 		})
 		return fieldItems
+	}
+
+	getDataItemsSelected(fieldValue: string | string[]) {
+		if (Array.isArray(fieldValue)) {
+			let fiMulti: FieldColumnItem[] = []
+			fieldValue.forEach((id) => {
+				const item = this.rawItems.find((i) => i.data === id)
+				if (item) fiMulti.push(new FieldColumnItem(id, this.formatDataItemDisplay(item), true))
+			})
+			return fiMulti
+		} else {
+			const item = this.rawItems.find((i) => i.data === fieldValue)
+			if (item) return new FieldColumnItem(fieldValue, this.formatDataItemDisplay(item), true)
+		}
 	}
 
 	getDisplayValueList(idsCurrent: string | string[]) {
 		const ids = getArray(idsCurrent)
 		let values = ''
 		this.rawItems.forEach((item) => {
-			if (ids.includes(item.id)) {
+			if (ids.includes(item.data)) {
 				if (values) values += ', '
 				values += this.formatDataItemDisplay(item)
 			}
 		})
 		return values
+	}
+
+	getFieldValueIds(fieldValue: DataRecord | DataRecord[]) {
+		const fieldValues: DataRecord[] = getArray(fieldValue)
+		return fieldValues.map((v) => v.id)
 	}
 
 	getGridParms() {
@@ -857,16 +872,16 @@ export class PropLinkItems {
 
 	getRowData() {
 		return this.rawItems.map((item) => {
-			let row: DataRecord = { id: item.id }
+			let row: DataRecord = { id: item.data }
 			this.source.props.forEach((prop) => {
-				row[prop.key] = getRecordValue(item, prop.key)
+				row[prop.key] = getDataRecordValueKey(item, prop.key)
 			})
 			return row
 		})
 	}
 
 	getValuesSelect() {
-		let data = this.rawItems.map((item) => item.id)
+		let data = this.rawItems.map((item) => item.data)
 		data.unshift('')
 		return data
 	}
@@ -933,7 +948,7 @@ export class PropLinkItemsSource {
 			if (props) props += ', '
 			props += `${p.key} := ${p.expr}`
 		})
-		this.exprProps = `{ id, display := ${display}, ${props} }`
+		this.exprProps = `{ data := .id, display := ${display}, ${props} }`
 	}
 
 	getExprSelect(isCompilation: boolean, currVal: string | string[]) {

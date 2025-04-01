@@ -328,10 +328,10 @@ function initUserType(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_user_type_detail'],
+		children: [{ node: 'node_obj_sys_admin_user_type_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_user_type_list' }],
+		dataObj: 'data_obj_sys_admin_user_type_list',
 		header: 'User Types',
 		name: 'node_obj_sys_admin_user_type_list',
 		orderDefine: 40,
@@ -341,7 +341,7 @@ function initUserType(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_user_type_detail' }],
+		dataObj: 'data_obj_sys_admin_user_type_detail',
 		header: 'User Type',
 		name: 'node_obj_sys_admin_user_type_detail',
 		orderDefine: 10,

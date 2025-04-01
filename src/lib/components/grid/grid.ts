@@ -14,7 +14,6 @@ import {
 	type ValueSetterParams
 } from 'ag-grid-community'
 import { LicenseManager } from 'ag-grid-charts-enterprise'
-import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
 import {
 	arrayOfClass,
 	booleanOrFalse,
@@ -303,7 +302,7 @@ export class GridManagerOptions {
 	fCallbackFilter: Function
 	fCallbackUpdateValue: Function
 	isEmbed: boolean
-	isSelect: boolean
+	isPopup: boolean
 	isSelectMulti: boolean
 	isSuppressFilterSort: boolean
 	isSuppressSelect: boolean
@@ -321,7 +320,7 @@ export class GridManagerOptions {
 		this.fCallbackFilter = obj.fCallbackFilter
 		this.fCallbackUpdateValue = obj.fCallbackUpdateValue
 		this.isEmbed = booleanOrFalse(obj.isEmbed)
-		this.isSelect = booleanOrFalse(obj.isSelect)
+		this.isPopup = booleanOrFalse(obj.isPopup)
 		this.isSelectMulti = booleanOrFalse(obj.isSelectMulti)
 		this.isSuppressFilterSort = booleanOrFalse(obj.isSuppressFilterSort)
 		this.isSuppressSelect = booleanOrFalse(obj.isSuppressSelect)

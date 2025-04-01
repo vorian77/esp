@@ -314,10 +314,10 @@ function initAttribute(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_attribute_detail_meta'],
+		children: [{ node: 'node_obj_sys_admin_attribute_detail_meta', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_attribute_list_meta' }],
+		dataObj: 'data_obj_sys_admin_attribute_list_meta',
 		header: 'Attributes',
 		name: 'node_obj_sys_admin_attribute_list_meta',
 		orderDefine: 10,
@@ -326,7 +326,7 @@ function initAttribute(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_attribute_detail_meta' }],
+		dataObj: 'data_obj_sys_admin_attribute_detail_meta',
 		header: 'Attribute',
 		name: 'node_obj_sys_admin_attribute_detail_meta',
 		orderDefine: 10,
@@ -654,10 +654,10 @@ function initCode(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_code_detail_meta'],
+		children: [{ node: 'node_obj_sys_admin_code_detail_meta', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_code_list_meta' }],
+		dataObj: 'data_obj_sys_admin_code_list_meta',
 		header: 'Codes',
 		name: 'node_obj_sys_admin_code_list_meta',
 		orderDefine: 20,
@@ -666,7 +666,7 @@ function initCode(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_code_detail_meta' }],
+		dataObj: 'data_obj_sys_admin_code_detail_meta',
 		header: 'Code',
 		name: 'node_obj_sys_admin_code_detail_meta',
 		orderDefine: 10,
@@ -956,11 +956,11 @@ function initSystem(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgram', {
-		children: ['node_obj_sys_admin_system_detail_meta'],
+		children: [{ node: 'node_obj_sys_admin_system_detail_meta', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
 		codeQueryOwnerType: 'queryOwnerTypeSystemRecord',
-		data: [{ dataObj: 'data_obj_sys_admin_system_list_meta' }],
+		dataObj: 'data_obj_sys_admin_system_list_meta',
 		header: 'Systems',
 		isDynamicChildrenSystemParents: true,
 		name: 'node_obj_sys_admin_system_list_meta',
@@ -970,14 +970,14 @@ function initSystem(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [
-			'node_obj_sys_admin_attribute_list_meta',
-			'node_obj_sys_admin_code_list_meta',
-			'node_obj_sys_admin_user_list_meta',
-			'node_obj_sys_admin_user_type_list'
+			{ node: 'node_obj_sys_admin_attribute_list_meta', order: 10 },
+			{ node: 'node_obj_sys_admin_code_list_meta', order: 20 },
+			{ node: 'node_obj_sys_admin_user_list_meta', order: 30 },
+			{ node: 'node_obj_sys_admin_user_type_list', order: 40 }
 		],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_system_detail_meta' }],
+		dataObj: 'data_obj_sys_admin_system_detail_meta',
 		header: 'System',
 		name: 'node_obj_sys_admin_system_detail_meta',
 		orderDefine: 10,
@@ -1154,20 +1154,6 @@ function initUser(init: InitDb) {
 				orderDefine: 130
 			},
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 140,
-				orderDefine: 140
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 150,
-				orderDefine: 150
-			},
-			{
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'userTypes',
@@ -1246,10 +1232,10 @@ function initUser(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_user_detail_meta'],
+		children: [{ node: 'node_obj_sys_admin_user_detail_meta', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_user_list_meta' }],
+		dataObj: 'data_obj_sys_admin_user_list_meta',
 		header: 'Users',
 		name: 'node_obj_sys_admin_user_list_meta',
 		orderDefine: 30,
@@ -1259,7 +1245,7 @@ function initUser(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_user_detail_meta' }],
+		dataObj: 'data_obj_sys_admin_user_detail_meta',
 		header: 'User',
 		name: 'node_obj_sys_admin_user_detail_meta',
 		orderDefine: 10,

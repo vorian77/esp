@@ -513,20 +513,20 @@ function initRepConfig(init: InitDb) {
 		customEmbedShellFields: ['parms']
 	})
 	init.addTrans('sysNodeObjProgram', {
-		children: ['node_obj_sys_rep_my_report_detail'],
+		children: [{ node: 'node_obj_sys_rep_my_report_detail', order: 10 }],
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program',
-		data: [{ dataObj: 'data_obj_sys_rep_my_report_list' }],
+		dataObj: 'data_obj_sys_rep_my_report_list',
 		header: 'My Reports',
 		name: 'node_obj_sys_rep_my_report_list',
 		orderDefine: 40,
 		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_rep_render'],
+		children: [{ node: 'node_obj_sys_rep_render', order: 10 }],
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_rep_my_report_detail' }],
+		dataObj: 'data_obj_sys_rep_my_report_detail',
 		header: 'Config',
 		name: 'node_obj_sys_rep_my_report_detail',
 		orderDefine: 10,
@@ -557,7 +557,7 @@ function initRepRender(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_dyn_sys_rep_render' }],
+		dataObj: 'data_obj_dyn_sys_rep_render',
 		header: 'Run',
 		isAlwaysRetrieveData: true,
 		isHideRowManager: true,

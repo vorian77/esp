@@ -84,7 +84,6 @@ export class User {
 
 		/* derived */
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
-		// console.log('User.constructor', this)
 
 		// old
 		// this.cm_ssr_disclosure = nbrOptional(obj.cm_ssr_disclosure, 'cm_ssr_disclosure')
@@ -206,7 +205,7 @@ export class UserResourceTask extends UserResource {
 			sm.parmsState.valueSet(ParmsValuesType.queryOwnerIdSystem, this.targetDataObjOwnerId)
 			const dataObjNode = new Node({
 				_codeNodeType: 'program',
-				_data: [{ _actionType: 'default', _dataObjId: this.targetDataObjId }],
+				_dataObjId: this.targetDataObjId,
 				_ownerId: this.ownerId,
 				header: this.header,
 				icon: this.codeIconName,

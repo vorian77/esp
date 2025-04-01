@@ -8,13 +8,14 @@ import {
 	DataRecordStatus,
 	debug,
 	getArray,
+	getDataRecordValueType,
 	ParmsValuesType,
 	required,
 	strRequired
 } from '$utils/types'
-import { FieldEmbedType } from '$comps/form/field.svelte'
+import { Field, FieldEmbedType, FieldValueType, PropsFieldCreate } from '$comps/form/field.svelte'
 import type { DataObjTable, DataRecord, DataRow } from '$utils/types'
-import { TokenApiQueryData } from '$utils/types.token'
+import { TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
 import { RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj.svelte'
 import { LinkSaveAction, Query, QueryParent } from '$routes/api/dbGel/dbGelQuery'
 import { evalExpr, EvalExprContext } from '$routes/api/dbGel/dbGelGetVal'
@@ -39,12 +40,13 @@ export class ScriptGroup {
 	constructor() {}
 	addScript(
 		query: Query,
+		queryType: TokenApiQueryType,
 		queryData: TokenApiQueryData,
 		exePost: ScriptExePost,
 		config: Config,
 		dataRows: DataRow[] = []
 	) {
-		const script = new Script(query, queryData, exePost, dataRows)
+		const script = new Script(query, queryType, queryData, exePost, dataRows)
 		config.forEach((item) => {
 			script.addItem(item[0], item[1])
 		})
@@ -54,12 +56,13 @@ export class ScriptGroup {
 	}
 	addScriptNew(
 		query: Query,
+		queryType: TokenApiQueryType,
 		queryData: TokenApiQueryData,
 		exePost: ScriptExePost,
 		dataRows: DataRow[] = [],
 		expr: string
 	) {
-		let script = new Script(query, queryData, exePost, dataRows)
+		let script = new Script(query, queryType, queryData, exePost, dataRows)
 		script.script = expr
 		this.scripts.push(script)
 		return script
@@ -88,7 +91,15 @@ export class ScriptGroup {
 						prop.linkItemsSource.parmValueList
 					)
 				}
-				let propValue = `${prop.linkItemsSource.getExprSelect(true, record[prop.propName])}`
+
+				const propValueType = getDataRecordValueType(
+					record[prop.propName],
+					FieldValueType.data,
+					prop.codeDataType,
+					prop.isMultiSelect
+				)
+
+				let propValue = `${prop.linkItemsSource.getExprSelect(true, propValueType)}`
 				propValue = evalExpr(
 					propValue,
 					queryData,
@@ -100,11 +111,18 @@ export class ScriptGroup {
 
 		if (!expr) expr = `dummy:= <str>{}`
 		expr = `SELECT {\n${expr}\n}`
-		this.addScriptNew(query, queryData, ScriptExePost.dataItems, [], expr)
+		this.addScriptNew(
+			query,
+			TokenApiQueryType.retrieve,
+			queryData,
+			ScriptExePost.dataItems,
+			[],
+			expr
+		)
 	}
 
 	addScriptPreset(query: Query, queryData: TokenApiQueryData) {
-		return this.addScript(query, queryData, ScriptExePost.formatData, [
+		return this.addScript(query, TokenApiQueryType.preset, queryData, ScriptExePost.formatData, [
 			['propsSelectPreset', { props: query.rawDataObj.rawPropsSelectPreset }],
 			['script', { content: ['propsSelectPreset'] }]
 		])
@@ -130,11 +148,17 @@ export class ScriptGroup {
 			strRequired(query.rawDataObj.listEditPresetExpr, clazz, 'listEditPresetExpr'),
 			queryData
 		)
-		return this.addScript(query, queryData, ScriptExePost.processRowSelectPreset, [
-			['setValue', { key: 'expr', value: listEditPresetExpr }],
-			['propsListEditPresetInsert', { props: query.rawDataObj.rawPropsSelectPreset }],
-			['script', { content: ['expr', 'propsListEditPresetInsert'] }]
-		])
+		return this.addScript(
+			query,
+			TokenApiQueryType.preset,
+			queryData,
+			ScriptExePost.processRowSelectPreset,
+			[
+				['setValue', { key: 'expr', value: listEditPresetExpr }],
+				['propsListEditPresetInsert', { props: query.rawDataObj.rawPropsSelectPreset }],
+				['script', { content: ['expr', 'propsListEditPresetInsert'] }]
+			]
+		)
 	}
 
 	addScriptPresetListEditSave(query: Query, queryData: TokenApiQueryData) {
@@ -160,7 +184,7 @@ export class ScriptGroup {
 			? parent.filterExpr
 			: `.id = <tree,uuid,${parent.table.name}.id>`
 
-		return this.addScript(query, queryData, ScriptExePost.none, [
+		return this.addScript(query, TokenApiQueryType.save, queryData, ScriptExePost.none, [
 			// data
 			['wrap', { key: 'data', open: `SELECT (`, value: listEditPresetExpr }],
 			['wrap', { key: 'data', open: `data := (`, content: ['data'] }],
@@ -202,7 +226,7 @@ export class ScriptGroup {
 		const recordsInsert = 'recordsInsert'
 		const parms = queryData.getParms()
 
-		return this.addScript(query, queryData, ScriptExePost.none, [
+		return this.addScript(query, TokenApiQueryType.save, queryData, ScriptExePost.none, [
 			// data
 			['wrap', { key: 'data', open: `SELECT (`, value: listEditPresetExpr }],
 			['wrap', { key: 'data', open: `data := (`, content: ['data'] }],
@@ -227,7 +251,7 @@ export class ScriptGroup {
 
 	async addScriptRetrieve(query: Query, queryData: TokenApiQueryData) {
 		await queryData.setAttrsAccess(query.rawDataObj)
-		return this.addScript(query, queryData, ScriptExePost.formatData, [
+		return this.addScript(query, TokenApiQueryType.retrieve, queryData, ScriptExePost.formatData, [
 			['with', { exprWith: query.rawDataObj.exprWith }],
 			['action', { type: 'SELECT', table: query.getTableRootObj() }],
 			['propsSelect', { props: query.rawDataObj.rawPropsSelect }],
@@ -241,16 +265,25 @@ export class ScriptGroup {
 		query: Query,
 		queryData: TokenApiQueryData,
 		queryRiders: DataObjQueryRiders,
+		queryType: TokenApiQueryType,
 		codeTriggerTiming: DataObjQueryRiderTriggerTiming
 	) {
 		for (let i = 0; i < queryRiders.riders.length; i++) {
 			const rider = queryRiders.riders[i]
 			if (
 				rider.codeTriggerTiming === codeTriggerTiming &&
-				rider.codeType === DataObjQueryRiderType.databaseExpression &&
+				rider.codeQueryType === queryType &&
+				rider.codeType === DataObjQueryRiderType.dbExpr &&
 				rider.expr
 			) {
-				this.addScriptNew(query, queryData, ScriptExePost.none, [], rider.expr)
+				this.addScriptNew(
+					query,
+					TokenApiQueryType.none,
+					queryData,
+					ScriptExePost.none,
+					[],
+					rider.expr
+				)
 			}
 		}
 	}
@@ -292,13 +325,27 @@ export class ScriptGroup {
 			case 'INSERT':
 				expr = this.addScriptSaveAction(query, queryData, dataRows, LinkSaveAction.INSERT)
 				if (expr) {
-					this.addScriptNew(query, queryData, ScriptExePost.formatData, dataRows, expr)
+					this.addScriptNew(
+						query,
+						TokenApiQueryType.save,
+						queryData,
+						ScriptExePost.formatData,
+						dataRows,
+						expr
+					)
 				}
 				break
 			case 'UPDATE':
 				expr = this.addScriptSaveAction(query, queryData, dataRows, LinkSaveAction.UPDATE)
 				if (expr) {
-					this.addScriptNew(query, queryData, ScriptExePost.formatData, dataRows, expr)
+					this.addScriptNew(
+						query,
+						TokenApiQueryType.save,
+						queryData,
+						ScriptExePost.formatData,
+						dataRows,
+						expr
+					)
 				}
 				break
 			default:
@@ -309,7 +356,14 @@ export class ScriptGroup {
 				})
 		}
 		if (config.length > 0) {
-			this.addScript(query, queryData, ScriptExePost.formatData, config, dataRows)
+			this.addScript(
+				query,
+				TokenApiQueryType.save,
+				queryData,
+				ScriptExePost.formatData,
+				config,
+				dataRows
+			)
 		}
 	}
 
@@ -403,9 +457,11 @@ export class Script {
 	items: ScriptItem[] = []
 	query: Query
 	queryData: TokenApiQueryData
+	queryType: TokenApiQueryType
 	script = ''
 	constructor(
 		query: Query,
+		queryType: TokenApiQueryType,
 		queryData: TokenApiQueryData,
 		exePost: ScriptExePost,
 		dataRows: DataRow[] = []
@@ -414,6 +470,7 @@ export class Script {
 		this.dataRows = dataRows
 		this.exePost = exePost
 		this.query = query
+		this.queryType = queryType
 		this.queryData = TokenApiQueryData.load(queryData)
 	}
 

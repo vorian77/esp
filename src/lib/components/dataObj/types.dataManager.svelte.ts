@@ -10,8 +10,15 @@ import {
 } from '$lib/components/dataObj/types.dataObj.svelte'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
 import { getArray, PropDataType, ValidityError, valueHasChanged } from '$utils/types'
-import { Field, FieldAccess, FieldClassType, FieldElement } from '$comps/form/field.svelte'
+import {
+	Field,
+	FieldAccess,
+	FieldClassType,
+	FieldElement,
+	FieldValueType
+} from '$comps/form/field.svelte'
 import { error } from '@sveltejs/kit'
+import FormElCustomActionButton from '$comps/form/FormElCustomActionButton.svelte'
 
 const FILENAME = '$comps/dataObj/types.dataManager.svelte'
 
@@ -84,8 +91,8 @@ export class DataManager {
 	getFieldValidity(dataObjId: string, row: number, field: Field) {
 		return this.getNode(dataObjId)?.getFieldValidity(row, field)
 	}
-	getFieldValue(dataObjId: string, row: number, field: Field) {
-		return this.getNode(dataObjId)?.getFieldValue(row, field)
+	getFieldValue(dataObjId: string, row: number, field: Field, fieldValueType: FieldValueType): any {
+		return this.getNode(dataObjId)?.getFieldValue(row, field, fieldValueType)
 	}
 	getNode(dataObjId: string): DataManagerNode | undefined {
 		return dataObjId ? this.nodes.get(dataObjId) : undefined
@@ -236,7 +243,12 @@ export class DataManagerNode {
 			let newRecord: DataRecord = {}
 			Object.entries(record).forEach(([key, value]) => {
 				if (![null, undefined].includes(value)) {
-					newRecord[key] = value
+					const field = this.dataObj.fields.find((f) => f.colDO.propName === key)
+					if (field) {
+						const isLink =
+							field.colDO.link !== undefined || field.colDO.linkItemsSource !== undefined
+						newRecord[key] = isLink ? field.getValueTypeData(record) : value
+					}
 				}
 			})
 			const oldStatus = this.dataObj.data.rowsRetrieved.getRowStatusById(record.id)
@@ -250,9 +262,9 @@ export class DataManagerNode {
 			? this.fieldsValidity.valueGet(this.recordsDisplay[row].id, field.colDO.propName)
 			: undefined
 	}
-	getFieldValue(row: number, field: Field) {
+	getFieldValue(row: number, field: Field, fieldValueType: FieldValueType) {
 		return row < this.recordsDisplay.length
-			? this.recordsDisplay[row][field.colDO.propName]
+			? field.getValueType(this.recordsDisplay[row], fieldValueType)
 			: undefined
 	}
 
@@ -307,7 +319,7 @@ export class DataManagerNode {
 	initDataObjItemChanges() {
 		this.recordsDisplay.forEach((record, row) => {
 			this.dataObj.fields.forEach((f) => {
-				this.setFieldItemChanged(row, f, record[f.colDO.propName])
+				this.setFieldItemChanged(row, f, f.getValueTypeData(record))
 			})
 		})
 	}
@@ -321,7 +333,7 @@ export class DataManagerNode {
 
 		this.recordsDisplay.forEach((record, row) => {
 			this.dataObj.fields.forEach((f) => {
-				const v: Validation = f.validate(row, record[f.colDO.propName], validityErrorLevel)
+				const v: Validation = f.validate(row, f.getValueTypeData(record), validityErrorLevel)
 				if (v.status === ValidationStatus.invalid) {
 					this.fieldsValidity.valueSet(
 						record.id,
@@ -331,6 +343,46 @@ export class DataManagerNode {
 				}
 			})
 		})
+	}
+
+	async setFieldVal(row: number, field: Field, value: any) {
+		const recordId = this.recordsDisplay[row].id
+		const fieldName = field.colDO.propName
+		this.recordsDisplay[row][fieldName] = this.setFieldValFormatted(field, value)
+		this.setFieldValChanged(row, recordId, fieldName, value)
+		this.setFieldValValidity(row, recordId, field)
+		if (this.dataObj.raw.listReorderColumn && this.dataObj.embedField) {
+			const reorderColumn = this.dataObj.raw.listReorderColumn
+			this.recordsDisplay.sort((a, b) => a[reorderColumn] - b[reorderColumn])
+		}
+		await this.setFieldItemChanged(row, field, value)
+	}
+	setFieldValChanged(row: number, recordId: string, fieldName: string, value: any) {
+		const valueInitial = this.dataObj.data.rowsRetrieved.getRowValueById(recordId, fieldName)
+		const hasChanged = valueHasChanged(valueInitial, value)
+		if (hasChanged) {
+			this.fieldsChanged.valueSet(recordId, fieldName, hasChanged)
+		} else {
+			this.fieldsChanged.valueDrop(recordId, fieldName)
+		}
+	}
+
+	setFieldValFormatted(field: Field, value: any): any {
+		return field.linkItems ? field.linkItems.getDataItemsSelected(value) : value
+	}
+
+	setFieldValValidity(row: number, recordId: string, field: Field) {
+		const v: Validation = field.validate(
+			row,
+			this.recordsDisplay[row][field.colDO.propName],
+			ValidityErrorLevel.warning
+		)
+		v.validityFields.forEach(({ fieldName, validity }) => {
+			this.fieldsValidity.valueSet(recordId, fieldName, validity)
+		})
+	}
+	async setFieldItemChanged(row: number, field: Field, value: any) {
+		await field.processItemChanges(this.sm, row, value, this)
 	}
 
 	setStatus() {
@@ -365,41 +417,6 @@ export class DataManagerNode {
 		newStatus.setValid(validity === undefined || validity.error === ValidityError.none)
 
 		return newStatus
-	}
-
-	async setFieldVal(row: number, field: Field, value: any) {
-		const recordId = this.recordsDisplay[row].id
-		const fieldName = field.colDO.propName
-		this.recordsDisplay[row][fieldName] = value
-		this.setFieldValChanged(row, recordId, fieldName, value)
-		this.setFieldValValidity(row, recordId, field)
-		if (this.dataObj.raw.listReorderColumn && this.dataObj.embedField) {
-			const reorderColumn = this.dataObj.raw.listReorderColumn
-			this.recordsDisplay.sort((a, b) => a[reorderColumn] - b[reorderColumn])
-		}
-		await this.setFieldItemChanged(row, field, value)
-	}
-	setFieldValChanged(row: number, recordId: string, fieldName: string, value: any) {
-		const valueInitial = this.dataObj.data.rowsRetrieved.getRowValueById(recordId, fieldName)
-		const hasChanged = valueHasChanged(valueInitial, value)
-		if (hasChanged) {
-			this.fieldsChanged.valueSet(recordId, fieldName, hasChanged)
-		} else {
-			this.fieldsChanged.valueDrop(recordId, fieldName)
-		}
-	}
-	setFieldValValidity(row: number, recordId: string, field: Field) {
-		const v: Validation = field.validate(
-			row,
-			this.recordsDisplay[row][field.colDO.propName],
-			ValidityErrorLevel.warning
-		)
-		v.validityFields.forEach(({ fieldName, validity }) => {
-			this.fieldsValidity.valueSet(recordId, fieldName, validity)
-		})
-	}
-	async setFieldItemChanged(row: number, field: Field, value: any) {
-		await field.processItemChanges(this.sm, row, value, this)
 	}
 }
 

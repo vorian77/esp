@@ -130,11 +130,11 @@
 			rowSelection: {
 				mode: options.isSuppressSelect
 					? undefined
-					: options.isSelect && options.isSelectMulti
+					: options.isPopup && options.isSelectMulti
 						? 'multiRow'
 						: 'singleRow',
-				checkboxes: options.isSelect,
-				enableClickSelection: !(options.isSelect || options.isSuppressSelect)
+				checkboxes: options.isPopup,
+				enableClickSelection: !(options.isPopup || options.isSuppressSelect)
 			},
 			rowDragManaged: options.listReorderColumn ? true : false,
 			sideBar: {
@@ -183,7 +183,7 @@
 
 		api = createGrid(eGui, gridOptions)
 
-		if (options.isSelect) {
+		if (options.isPopup) {
 			const selectedIds = options.parmStateSelectedIds
 			if (options.isSelectMulti) {
 				const selected: IRowNode[] = []
@@ -368,7 +368,7 @@
 
 	function updateCounters() {
 		rowCountFiltered = api.getDisplayedRowCount()
-		if (options.isSelect) rowCountSelected = api.getSelectedNodes().length
+		if (options.isPopup) rowCountSelected = api.getSelectedNodes().length
 	}
 </script>
 

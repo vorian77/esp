@@ -2,7 +2,7 @@
 	import {
 		State,
 		StateSurfaceEmbedShell,
-		StateSurfacePopupModalEmbed,
+		StateSurfacePopup,
 		StateTriggerToken
 	} from '$comps/app/types.appState.svelte'
 	import {
@@ -79,7 +79,7 @@
 	let dataRecordsDisplay = $derived(dm.getRecordsDisplayList(parms.dataObjId))
 
 	let gridApi: GridApi = $state()
-	let isSelect = $derived(sm instanceof StateSurfacePopupModalEmbed)
+	let isPopup = $derived(sm instanceof StateSurfacePopup)
 
 	$effect(() => {
 		if (sm.consumeTriggerToken(StateTriggerToken.listDownload)) {
@@ -96,8 +96,8 @@
 					fCallbackFilter: fGridCallbackFilter,
 					fCallbackUpdateValue: fGridCallbackUpdateValue,
 					isEmbed: !!dataObj.embedField,
-					isSelect,
-					isSelectMulti: isSelect,
+					isPopup,
+					isSelectMulti: isPopup,
 					isSuppressFilterSort: dataObj.raw.isListSuppressFilterSort,
 					isSuppressSelect: dataObj.raw.isListSuppressSelect,
 					listReorderColumn: dataObj.raw.listReorderColumn,
@@ -295,7 +295,6 @@
 					})
 			}
 		}
-		// defn.cellStyle = defnCellStyle.cellStyle
 		return defn
 	}
 
@@ -306,7 +305,7 @@
 		const dataRows = dataRecordsDisplay.map((record) => {
 			const row = {}
 			dataObj.fields.forEach((f) => {
-				row[f.colDO.propName] = record[f.colDO.propName]
+				row[f.colDO.propName] = f.getValueTypeDisplay(record)
 			})
 			return row
 		})
@@ -315,7 +314,6 @@
 			ParmsValuesType.listIds,
 			dataRows.map((r: any) => r.id)
 		)
-
 		return dataRows
 	}
 
@@ -387,7 +385,7 @@
 	async function onSelectionChanged(event: SelectionChangedEvent) {
 		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit) {
 			return
-		} else if (isSelect) {
+		} else if (isPopup) {
 			sm.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, 'id'))
 		} else {
 			const record = event.api.getSelectedRows()[0]

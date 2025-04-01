@@ -2,6 +2,7 @@ import { nbrOrDefault, valueOrDefault } from '$lib/utils/utils'
 import {
 	booleanRequired,
 	classOptional,
+	DataObjCardinality,
 	DataObjTable,
 	DBTable,
 	debug,
@@ -108,11 +109,7 @@ export class Query {
 
 		props.forEach((propObj) => {
 			const clazzProp = `${clazz}.${propObj.propName}`
-			const propExpr = strRequired(
-				propObj?.exprPreset ? propObj.exprPreset : propObj.exprSave ? propObj.exprSave : '',
-				clazzProp,
-				'expr'
-			)
+			const propExpr = strRequired(propObj.exprPreset, clazzProp, 'expr')
 			const prop = `${propObj.propName} := ${propExpr}`
 			properties = this.addItemComma(properties, prop)
 		})
@@ -129,11 +126,7 @@ export class Query {
 		props.forEach((propObj) => {
 			let propExpr = ''
 			const clazzProp = `${clazz}.${propObj.propName}`
-			const expr = strRequired(
-				propObj?.exprPreset ? propObj.exprPreset : propObj.exprSave ? propObj.exprSave : '',
-				clazzProp,
-				'expr'
-			)
+			const expr = strRequired(propObj.exprPreset, clazzProp, 'expr')
 
 			if (expr) {
 				const expressions: ExprToken[] = evalExprTokens(expr, queryData)
@@ -156,12 +149,17 @@ export class Query {
 		return properties
 	}
 
-	getPropsSave(parms: DataRecord, query: Query, queryData: TokenApiQueryData, dataRows: DataRow[]) {
+	getPropsSave(
+		propsRaw: RawDataObjPropDB[],
+		query: Query,
+		queryData: TokenApiQueryData,
+		dataRows: DataRow[],
+		parms: DataRecord
+	) {
 		let properties: string[] = []
 		let fValues: Function[] = []
 		const clazz = 'getPropsSave'
 		const indexTable = required(parms.indexTable, clazz, 'indexTable')
-		const propsRaw = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		const action = strRequired(parms.action, clazz, 'action') as LinkSaveAction
 
 		// 1. build props, subObjGroup
@@ -193,12 +191,7 @@ export class Query {
 		let propExpr = ''
 		const clazzProp = `${clazz}.${propObj.propName}`
 
-		let expr =
-			action === LinkSaveAction.INSERT && !query.rawDataObj.listEditPresetExpr && propObj.exprPreset
-				? propObj.exprPreset
-				: propObj.exprSave
-					? propObj.exprSave
-					: ''
+		let expr = !query.rawDataObj.listEditPresetExpr && propObj.exprSave ? propObj.exprSave : ''
 
 		const setValueFunction = (idx: number, f: Function) => {
 			fValues[idx] = f
@@ -261,12 +254,12 @@ export class Query {
 
 					if (propObj.linkItemsSource) {
 						linkTable = strRequired(
-							propObj.linkItemsSource.getTableObj(),
+							propObj.linkItemsSource.table?.object,
 							clazzProp,
 							'linkItemsSource.table'
 						)
 					} else if (propObj.link) {
-						linkTable = strRequired(propObj.link.getTableObj(), clazzProp, 'link.table')
+						linkTable = strRequired(propObj.link?.table?.object, clazzProp, 'link.table')
 					}
 
 					linkTable = linkTable === this.getTableRootObj() ? `DETACHED ${linkTable}` : linkTable
@@ -312,6 +305,7 @@ export class Query {
 	getPropsSelect(parms: DataRecord, queryData: TokenApiQueryData) {
 		const clazz = 'getPropsSelect'
 		let properties = ''
+		const isCardinalityDetail = this.rawDataObj.codeCardinality === DataObjCardinality.detail
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		const processProps = (query: Query) => {
 			props.forEach((prop) => {
@@ -333,14 +327,10 @@ export class Query {
 			const indexTable = nbrOrDefault(prop.indexTable, -1)
 			let propValue = ''
 
-			if (prop.codeDataType === PropDataType.attribute) {
-				propValue = prop.linkItemsSource
-					? `.${propChildTableTraversal}.id`
-					: `.${propChildTableTraversal}.header`
-			} else if (prop.linkItemsSource) {
-				propValue = `.${propChildTableTraversal}.id`
+			if (prop.linkItemsSource) {
+				propValue = `.${propChildTableTraversal} ${prop.linkItemsSource.exprProps}`
 			} else if (prop.link) {
-				propValue = `.${propChildTableTraversal}.${prop.link.exprDisplay}`
+				propValue = `.${propChildTableTraversal} {data := .id, display := .${prop.link.exprDisplay}}`
 			} else if (prop.exprCustom) {
 				propValue = prop.exprCustom
 			} else if (indexTable > 0) {
@@ -358,15 +348,17 @@ export class Query {
 	getPropsSelectPreset(parms: DataRecord, queryData: TokenApiQueryData) {
 		const clazz = 'getPropsSelectPreset'
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
+
 		let properties = ''
 
 		props.forEach((prop) => {
+			const propChildTableTraversal = prop.childTableTraversal
 			let expr = strRequired(prop.exprPreset, clazz, 'exprPreset')
 
 			if (prop.linkItemsSource) {
-				expr = `${expr}.id`
+				expr = `${expr} ${prop.linkItemsSource.exprProps}`
 			} else if (prop.link) {
-				expr = `${expr}.${prop.link.exprDisplay}`
+				expr = `${expr} {data := .id, display := .${prop.link.exprDisplay}}`
 			}
 
 			properties = this.addItemComma(properties, `${prop.propName} := ${expr}`)

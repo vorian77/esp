@@ -231,7 +231,8 @@ export class TokenApiQueryData {
 				attrAccessEval.isDenyAccess
 					? '.id = <uuid>{}'
 					: `.attrs.id IN (<uuid>{${attrAccessEval.permittedObjIds.reduce((filter, id) => {
-							filter += `"${id}",`
+							filter += filter ? ',' : ''
+							filter += `"${id}"`
 							return filter
 						}, '')}})`
 			)
@@ -245,13 +246,23 @@ export class TokenApiQueryData {
 
 	updateTableData(table: string, dataRow: DataRow) {
 		this.record = dataRow.record
-		this.tree.upsertData(table, dataRow)
+		let idx = this.tree.levels.length - 1
+		while (idx > -1) {
+			if (this.tree.levels[idx].table === table) {
+				this.tree.levels[idx].dataRow = dataRow
+				idx = -1
+			}
+		}
 	}
 }
 export class TokenApiQueryDataTree {
 	levels: TokenApiQueryDataTreeLevel[] = []
 	constructor(levels: TokenApiQueryDataTreeLevel[] = []) {
 		this.levels = levels
+	}
+
+	addLevel(table: string, dataRow: DataRow) {
+		this.levels.push(new TokenApiQueryDataTreeLevel(table, dataRow))
 	}
 
 	getDataRow(table: string | undefined = undefined) {
@@ -287,17 +298,6 @@ export class TokenApiQueryDataTree {
 	setDataRow(level: number, dataRow: DataRow) {
 		this.levels[level].dataRow = dataRow
 	}
-
-	upsertData(table: string | undefined, dataRow: DataRow) {
-		if (table) {
-			const idx = this.levels.findIndex((t) => t.table === table)
-			if (idx >= 0) {
-				this.setDataRow(idx, dataRow)
-			} else {
-				this.levels.push(new TokenApiQueryDataTreeLevel(table, dataRow))
-			}
-		}
-	}
 }
 
 export class TokenApiQueryDataTreeLevel {
@@ -311,6 +311,7 @@ export class TokenApiQueryDataTreeLevel {
 
 export enum TokenApiQueryType {
 	autonomous = 'autonomous',
+	none = 'none',
 	preset = 'preset',
 	retrieve = 'retrieve',
 	save = 'save'

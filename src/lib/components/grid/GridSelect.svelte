@@ -17,7 +17,7 @@
 	let gridOptions = $state(
 		new GridManagerOptions({
 			columnDefs: sm.parmsState.valueGet(ParmsValuesType.columnDefs),
-			isSelect: true,
+			isPopup: true,
 			isSelectMulti: sm.parmsState.valueGet(ParmsValuesType.isMultiSelect),
 			onSelectionChanged,
 			parmStateSelectedIds: sm.parmsState.valueGet(ParmsValuesType.listIdsSelected),

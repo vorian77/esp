@@ -131,21 +131,7 @@ async function processDataObjQuery(
 				new ProcessRowSelect(query.rawDataObj.rawPropsSelect, DataRecordStatus.retrieved)
 			)
 			scriptGroup.addScriptPresetListEdit(query, queryData)
-
-			const queryRiders = new DataObjQueryRiders(query.rawDataObj.queryRiders)
-			scriptGroup.addScriptQueryRetrieveQueryRiders(
-				query,
-				queryData,
-				queryRiders,
-				DataObjQueryRiderTriggerTiming.pre
-			)
 			await scriptGroup.addScriptRetrieve(query, queryData)
-			scriptGroup.addScriptQueryRetrieveQueryRiders(
-				query,
-				queryData,
-				queryRiders,
-				DataObjQueryRiderTriggerTiming.post
-			)
 			break
 
 		case TokenApiQueryType.save:
@@ -200,6 +186,8 @@ async function processDataObjQuery(
 						})
 				}
 			}
+
+			const embedDataObjRaw = field.data.rawDataObj
 
 			await processDataObjQuery(
 				queryTypeEmbed,
@@ -258,7 +246,24 @@ async function processDataObjExecute(scriptGroup: ScriptGroup, returnData: DataO
 			new EvalExprContext('processDataObjExecute', script.query.rawDataObj.name)
 		)
 
+		// const queryRiders = new DataObjQueryRiders(script.query.rawDataObj.queryRiders)
+		// scriptGroup.addScriptQueryRetrieveQueryRiders(
+		// 	script.query,
+		// 	script.queryData,
+		// 	queryRiders,
+		// 	script.queryType,
+		// 	DataObjQueryRiderTriggerTiming.pre
+		// )
+
 		const rawDataList = await exeQueryMulti(expr)
+
+		// scriptGroup.addScriptQueryRetrieveQueryRiders(
+		// 	script.query,
+		// 	script.queryData,
+		// 	queryRiders,
+		// 	script.queryType,
+		// 	DataObjQueryRiderTriggerTiming.post
+		// )
 
 		scriptData = script?.query?.fieldEmbed ? script.query.fieldEmbed.data : returnData
 		scriptData.parms.update(script.queryData.dataTab?.parms.valueGetAll())

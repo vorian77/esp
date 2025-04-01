@@ -4,9 +4,9 @@ import {
 	type ICellRendererComp,
 	type ICellRendererParams
 } from 'ag-grid-community'
-import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
+import { Field, FieldAccess } from '$comps/form/field.svelte'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
-import { type DataRecord, getRecordValue } from '$utils/types'
+import { type DataRecord, getDataRecordValueKey } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/other/gridParmField.ts'
@@ -21,7 +21,7 @@ export class CellEditorSelect implements ICellEditorComp {
 		this.gui = document.createElement('div')
 
 		let style = 'width: 100%; border: 0; font-size: 14px;'
-		const fieldName = getRecordValue(params.data, 'name')
+		const fieldName = getDataRecordValueKey(params.data, 'name')
 		const parmFields = params?.colDef?.context.parmFields
 		if (parmFields) {
 			const field = parmFields.find((f: Field) => f.colDO.propNameRaw === fieldName)
@@ -42,7 +42,7 @@ export class CellEditorSelect implements ICellEditorComp {
 	}
 
 	getValue() {
-		return getRecordValue(this.params.data, 'parmValue')
+		return getDataRecordValueKey(this.params.data, 'parmValue')
 	}
 
 	afterGuiAttached() {}
@@ -53,7 +53,7 @@ export class CellEditorSelect implements ICellEditorComp {
 }
 
 export function cellEditorSelectorParmField(params: ICellEditorParams) {
-	const codeDataType = getRecordValue(params.data, 'codeDataType')
+	const codeDataType = getDataRecordValueKey(params.data, 'codeDataType')
 
 	switch (codeDataType) {
 		case PropDataType.date:
@@ -83,7 +83,7 @@ export class CellRendererParmField implements ICellRendererComp {
 		this.gui = document.createElement('div')
 
 		let style = 'width: 100%; border: 0; font-size: 14px;'
-		const fieldName = getRecordValue(params.data, 'name')
+		const fieldName = getDataRecordValueKey(params.data, 'name')
 		const parmFields = params?.colDef?.context.parmFields
 		if (parmFields) {
 			const field = parmFields.find((f: Field) => f.colDO.propNameRaw === fieldName)
@@ -115,7 +115,7 @@ export class CellRendererParmFieldSelect extends CellRendererParmField {
 }
 
 export function cellRendererSelectorParmField(params: ICellRendererParams) {
-	const codeDataType = getRecordValue(params.data, 'codeDataType')
+	const codeDataType = getDataRecordValueKey(params.data, 'codeDataType')
 	switch (codeDataType) {
 		case PropDataType.date:
 			return {
@@ -140,9 +140,9 @@ export function cellRendererSelectorParmField(params: ICellRendererParams) {
 
 function getSelectDisplayValue(paramsData: DataRecord, parmsValue: any, parmFields: Field[]) {
 	let displayValue = ''
-	const parmValue = getRecordValue(paramsData, 'parmValue')
+	const parmValue = getDataRecordValueKey(paramsData, 'parmValue')
 	if (parmValue) {
-		const parmFieldName = getRecordValue(paramsData, 'name')
+		const parmFieldName = getDataRecordValueKey(paramsData, 'name')
 		const field = parmFields.find((f: Field) => f.colDO.propNameRaw === parmFieldName)
 		if (field && field.linkItems) {
 			displayValue = field.linkItems.getDisplayValueList(parmsValue)

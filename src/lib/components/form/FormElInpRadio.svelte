@@ -2,7 +2,7 @@
 	import { ContextKey, DataManager, DataObj, DataObjCardinality, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldRadio } from '$comps/form/fieldRadio'
-	import { FieldAccess, FieldAlignment } from '$comps/form/field.svelte'
+	import { FieldAccess, FieldAlignment, FieldValueType } from '$comps/form/field.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -15,10 +15,10 @@
 
 	let field = $derived(parms.field) as FieldRadio
 	let fieldValue = $derived.by(() => {
-		const value = dm.getFieldValue(parms.dataObjId, parms.row, parms.field)
+		const value = dm.getFieldValue(parms.dataObjId, parms.row, parms.field, FieldValueType.data)
 		return Array.isArray(value) ? value[0] : value
 	})
-	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsFormatted(fieldValue) : [])
+	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsAll(fieldValue) : [])
 
 	let classPropsLabel = $derived(
 		dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'hidden'
@@ -58,13 +58,13 @@
 <fieldset id="input-radio-row-{parms.row}" class={classFieldSet}>
 	<div class="mt-3 {classAlignment}">
 		{#if dataItems}
-			{#each dataItems as { id, display }, index (id)}
+			{#each dataItems as { data, display }, index (data)}
 				<div class="text-sm {classFormat} {index === 0 ? 'mt-4' : ''}">
 					<input
 						type="radio"
 						name={field.colDO.propName + '-' + parms.row}
-						value={id}
-						checked={fieldValue == id}
+						value={data}
+						checked={fieldValue == data}
 						onclick={onClick}
 					/>
 					{display}

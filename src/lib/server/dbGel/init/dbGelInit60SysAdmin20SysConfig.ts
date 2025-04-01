@@ -193,10 +193,10 @@ async function initConfig(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgram', {
-		children: ['node_obj_sys_admin_system_detail_config'],
+		children: [{ node: 'node_obj_sys_admin_system_detail_config', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
-		data: [{ dataObj: 'data_obj_sys_admin_system_list_config' }],
+		dataObj: 'data_obj_sys_admin_system_list_config',
 		header: 'Systems (Config)',
 		name: 'node_obj_sys_admin_system_list_config',
 		orderDefine: 30,
@@ -206,7 +206,7 @@ async function initConfig(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_system_detail_config' }],
+		dataObj: 'data_obj_sys_admin_system_detail_config',
 		header: 'Organization',
 		name: 'node_obj_sys_admin_system_detail_config',
 		orderDefine: 10,

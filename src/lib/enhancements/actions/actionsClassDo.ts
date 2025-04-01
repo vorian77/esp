@@ -1,7 +1,8 @@
 import { State, StateParms, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import {
 	userActionStateChangeDataObj,
-	userActionStateChangeRaw
+	userActionStateChangeRaw,
+	userActionTreeNodeChildren
 } from '$comps/other/types.userAction.svelte'
 import {
 	CodeAction,
@@ -122,13 +123,11 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doListDetailEdit:
-			await sm.app.addTreeNodeChildren(sm, token as TokenAppDo, TokenApiQueryType.retrieve)
-			await userActionStateChangeDataObj(sm, parmsAction)
+			await userActionTreeNodeChildren(sm, token, TokenApiQueryType.retrieve, parmsAction)
 			break
 
 		case CodeActionType.doListDetailNew:
-			await sm.app.addTreeNodeChildren(sm, token as TokenAppDo, TokenApiQueryType.preset)
-			await userActionStateChangeDataObj(sm, parmsAction)
+			await userActionTreeNodeChildren(sm, token, TokenApiQueryType.preset, parmsAction)
 			break
 
 		case CodeActionType.doListDownload:

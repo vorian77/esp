@@ -298,10 +298,10 @@ function initDataObjFieldListItems(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_data_obj_field_list_items_detail'],
+		children: [{ node: 'node_obj_sys_admin_data_obj_field_list_items_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_data_obj_field_list_items_list' }],
+		dataObj: 'data_obj_sys_admin_data_obj_field_list_items_list',
 		header: 'Field List Items',
 		name: 'node_obj_sys_admin_data_obj_field_list_items_list',
 		orderDefine: 120,
@@ -311,7 +311,7 @@ function initDataObjFieldListItems(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_data_obj_field_list_items_detail' }],
+		dataObj: 'data_obj_sys_admin_data_obj_field_list_items_detail',
 		header: 'Item',
 		name: 'node_obj_sys_admin_data_obj_field_list_items_detail',
 		orderDefine: 10,

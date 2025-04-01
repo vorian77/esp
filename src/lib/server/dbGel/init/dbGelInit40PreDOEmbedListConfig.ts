@@ -34,6 +34,16 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				columnName: 'action',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysUserAction'
+			},
+			{
+				codeAccess: 'readOnly',
 				columnName: 'codeColor',
 				isDisplayable: true,
 				orderDisplay: 30,
@@ -149,7 +159,7 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 			{
 				columnName: 'orderDefine',
 				orderDefine: 70,
-				exprPreset: `(SELECT count((SELECT sys_core::SysDataObjAction FILTER .id IN ((SELECT sys_core::SysDataObjAction FILTER .id = <parms,uuid,embedParentId>).dataObjActions.id))) + 1)`,
+				exprPreset: `(SELECT count((SELECT sys_core::SysDataObjAction FILTER .id IN ((SELECT sys_core::SysDataObjActionGroup FILTER .id = <parms,uuid,embedParentId>).dataObjActions.id))) + 1)`,
 				indexTable: 0,
 				isDisplayable: false
 			},

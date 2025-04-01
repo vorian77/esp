@@ -27,7 +27,7 @@
 		TokenAppStateTriggerAction,
 		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
-	import { Field, FieldElement } from '$comps/form/field.svelte'
+	import { Field, FieldElement, FieldValueType } from '$comps/form/field.svelte'
 	import { FieldSelectMulti } from '$comps/form/fieldSelect'
 	import { FieldChips } from '$comps/form/fieldChips'
 	import { FieldAccess } from '$comps/form/field.svelte'
@@ -36,7 +36,7 @@
 	import { IconProps } from '$comps/icon/types.icon'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '$comps/form/FormElChips.svelte'
+	const FILENAME = '$comps/form/FormElInpChips.svelte'
 
 	let { parms }: DataRecord = $props()
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
@@ -55,7 +55,10 @@
 		})
 		return f
 	}) as FieldChips
-	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
+	let fieldValue = $derived(
+		dm.getFieldValue(parms.dataObjId, parms.row, field, FieldValueType.data)
+	)
+
 	let displayValue: string = $derived(field.linkItems.getDisplayValueList(fieldValue))
 
 	async function onClick(event: Event) {
@@ -110,5 +113,5 @@
 		value={displayValue}
 	/>
 {/if}
-<!-- <DataViewer header="fieldValue" data={fieldValue} />
-<DataViewer header="displayValue" data={displayValue} /> -->
+<!-- <DataViewer header="fieldValue" data={fieldValue} /> -->
+<!-- <DataViewer header="displayValue" data={displayValue} /> -->

@@ -225,10 +225,10 @@ function initApp(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_app_detail'],
+		children: [{ node: 'node_obj_sys_app_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_app_list' }],
+		dataObj: 'data_obj_sys_app_list',
 		header: 'Apps',
 		name: 'node_obj_sys_app_list',
 		orderDefine: 25,
@@ -238,7 +238,7 @@ function initApp(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_app_detail' }],
+		dataObj: 'data_obj_sys_app_detail',
 		header: 'App',
 		name: 'node_obj_sys_app_detail',
 		orderDefine: 10,
@@ -456,10 +456,10 @@ function initAppHeader(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_app_header_detail'],
+		children: [{ node: 'node_obj_sys_app_header_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_app_header_list' }],
+		dataObj: 'data_obj_sys_app_header_list',
 		header: 'App Headers',
 		name: 'node_obj_sys_app_header_list',
 		orderDefine: 20,
@@ -469,7 +469,7 @@ function initAppHeader(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_app_header_detail' }],
+		dataObj: 'data_obj_sys_app_header_detail',
 		header: 'App Header',
 		name: 'node_obj_sys_app_header_detail',
 		orderDefine: 10,

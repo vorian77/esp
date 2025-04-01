@@ -45,18 +45,23 @@ export enum CodeActionType {
 	setUserId = 'setUserId',
 	submit = 'submit',
 
-	// custom
+	// dataObj - custom
 	doCustomAIAttdSheetSetAllFullClass = 'doCustomAIAttdSheetSetAllFullClass',
 	doCustomAIAttdSheetReset = 'doCustomAIAttdSheetReset',
 
-	// dataObj - group item
-	doDetailDelete = 'doDetailDelete',
+	doCustomSysMsgRootDetailSave = 'doCustomSysMsgRootDetailSave',
+	doCustomSysMsgThreadDetailClose = 'doCustomSysMsgThreadDetailClose',
+	doCustomSysMsgThreadDetailReply = 'doCustomSysMsgThreadDetailReply',
+	doCustomSysMsgThreadDetailSend = 'doCustomSysMsgThreadDetailSend',
+	doCustomSysMsgThreadListClose = 'doCustomSysMsgThreadListClose',
+	doCustomSysMsgThreadListForward = 'doCustomSysMsgThreadListForward',
+	doCustomSysMsgThreadListReply = 'doCustomSysMsgThreadListReply',
 
-	doDetailMsgCloseThread = 'doDetailMsgCloseThread',
-	doDetailMsgReplyCmStaff = 'doDetailMsgReplyCmStaff',
-	doDetailMsgReplyCmClient = 'doDetailMsgReplyCmClient',
 	doDetailMsgSetClosed = 'doDetailMsgSetClosed',
 	doDetailMsgSetOpen = 'doDetailMsgSetOpen',
+
+	// dataObj - system
+	doDetailDelete = 'doDetailDelete',
 
 	doDetailMigrate = 'doDetailMigrate',
 	doDetailNew = 'doDetailNew',

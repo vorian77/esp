@@ -35,7 +35,7 @@ function initTaskSsrApp(init: InitDb) {
 			{
 				codeQueryType: 'save',
 				codeTriggerTiming: 'post',
-				codeType: 'userMessage',
+				codeType: 'userMsg',
 				userMsg:
 					'Your application has been submitted! Now upload your eligibility documents and if you have any questions send us a message.',
 				codeUserMsgDelivery: 'alert'
@@ -533,13 +533,13 @@ function initTaskSsrMsg(init: InitDb) {
 			{
 				codeQueryType: 'retrieve',
 				codeTriggerTiming: 'pre',
-				codeType: 'databaseExpression',
+				codeType: 'dbExpr',
 				expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,SysMsg.id> SET {isOpen := false}`
 			},
 			{
 				codeQueryType: 'save',
 				codeTriggerTiming: 'post',
-				codeType: 'userMessage',
+				codeType: 'userMsg',
 				codeUserMsgDelivery: 'toast',
 				userMsg: `Your message has been sent. We'll get back with you ASAP!`
 			},
@@ -700,11 +700,11 @@ function initTaskSsrMsg(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjTask', {
-		children: ['node_obj_task_moed_ssr_msg_detail'],
+		children: [{ node: 'node_obj_task_moed_ssr_msg_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNavType: 'task',
 		codeNodeType: 'program',
-		data: [{ dataObj: 'data_obj_task_moed_ssr_msg_list' }],
+		dataObj: 'data_obj_task_moed_ssr_msg_list',
 		header: 'My Messages',
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_task_moed_ssr_msg_list',
@@ -715,14 +715,7 @@ function initTaskSsrMsg(init: InitDb) {
 		codeIcon: 'AppWindow',
 		codeNavType: 'task',
 		codeNodeType: 'program_object',
-		data: [
-			{ dataObj: 'data_obj_task_moed_ssr_msg_detail' }
-			// {
-			// 	actionClass: 'ct_sys_code_action_class_custom',
-			// 	actionType: 'doDetailMsgReplyCmClient',
-			// 	dataObj: 'data_obj_task_moed_ssr_msg_detail_reply'
-			// }
-		],
+		dataObj: 'data_obj_task_moed_ssr_msg_detail',
 		header: 'Message',
 		name: 'node_obj_task_moed_ssr_msg_detail',
 		orderDefine: 10,
@@ -858,7 +851,8 @@ function initTaskSsrDoc(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_family_group_order_name_by_codeType_name_system'
+				// fieldListItems: 'il_sys_code_family_group_order_name_by_codeType_name_system'
+				fieldListItems: 'il_sys_code_family_group_order_index_by_codeType_name_system'
 			},
 			{
 				codeFieldElement: 'file',
@@ -911,11 +905,11 @@ function initTaskSsrDoc(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjTask', {
-		children: ['node_obj_task_moed_ssr_doc_detail'],
+		children: [{ node: 'node_obj_task_moed_ssr_doc_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNavType: 'task',
 		codeNodeType: 'program',
-		data: [{ dataObj: 'data_obj_task_moed_ssr_doc_list' }],
+		dataObj: 'data_obj_task_moed_ssr_doc_list',
 		header: 'Documents',
 		name: 'node_obj_task_moed_ssr_doc_list',
 		orderDefine: 30,
@@ -925,7 +919,7 @@ function initTaskSsrDoc(init: InitDb) {
 		codeIcon: 'AppWindow',
 		codeNavType: 'task',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_task_moed_ssr_doc_detail' }],
+		dataObj: 'data_obj_task_moed_ssr_doc_detail',
 		header: 'Document',
 		name: 'node_obj_task_moed_ssr_doc_detail',
 		orderDefine: 10,
@@ -969,7 +963,7 @@ function initTaskSsrWelcome(init: InitDb) {
 			{
 				codeQueryType: 'save',
 				codeTriggerTiming: 'post',
-				codeType: 'userMessage',
+				codeType: 'userMsg',
 				userMsg: 'Great! Next complete your application!',
 				codeUserMsgDelivery: 'alert'
 			},

@@ -264,6 +264,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			isDisplay: false,
 			isDisplayable: true,
 			linkColumns: ['header'],
+			linkTable: 'SysAttr',
 			orderDefine: 117,
 			orderDisplay: 117
 		},

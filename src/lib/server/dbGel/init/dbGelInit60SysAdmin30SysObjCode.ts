@@ -264,20 +264,20 @@ function initCodeType(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_code_type_detail'],
+		children: [{ node: 'node_obj_sys_admin_code_type_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_code_type_list' }],
+		dataObj: 'data_obj_sys_admin_code_type_list',
 		header: 'Code Types',
 		name: 'node_obj_sys_admin_code_type_list',
 		orderDefine: 30,
 		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_code_list_codeType'],
+		children: [{ node: 'node_obj_sys_admin_code_list_codeType', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_code_type_detail' }],
+		dataObj: 'data_obj_sys_admin_code_type_detail',
 		header: 'Code Type',
 		name: 'node_obj_sys_admin_code_type_detail',
 		orderDefine: 10,
@@ -595,10 +595,10 @@ function initCodeTypeCode(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_code_detail_codeType'],
+		children: [{ node: 'node_obj_sys_admin_code_detail_codeType', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_code_list_codeType' }],
+		dataObj: 'data_obj_sys_admin_code_list_codeType',
 		header: 'Codes',
 		name: 'node_obj_sys_admin_code_list_codeType',
 		orderDefine: 15,
@@ -607,7 +607,7 @@ function initCodeTypeCode(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_code_detail_codeType' }],
+		dataObj: 'data_obj_sys_admin_code_detail_codeType',
 		header: 'Code',
 		name: 'node_obj_sys_admin_code_detail_codeType',
 		orderDefine: 10,
@@ -944,10 +944,10 @@ function initCode(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_code_detail'],
+		children: [{ node: 'node_obj_sys_admin_code_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_code_list' }],
+		dataObj: 'data_obj_sys_admin_code_list',
 		header: 'Codes',
 		name: 'node_obj_sys_admin_code_list',
 		orderDefine: 40,
@@ -956,7 +956,7 @@ function initCode(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_code_detail' }],
+		dataObj: 'data_obj_sys_admin_code_detail',
 		header: 'Code',
 		name: 'node_obj_sys_admin_code_detail',
 		orderDefine: 10,

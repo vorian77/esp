@@ -329,11 +329,12 @@ export class State {
 			'dataObjParent'
 		)
 		const dataObjParentRootTable = fieldEmbed.parentTable
+		const embedParentId = this.dm.getRecordId(fieldEmbed.dataObjIdParent, 0)
 
-		const stateModal = new StateSurfacePopupModalEmbed(this, {
+		const stateModal = new StateSurfacePopup(this, {
 			actionsDialog: fieldEmbed.actionsModal,
 			app: this.app,
-			embedParentId: this.dm.getRecordId(fieldEmbed.dataObjIdParent, 0),
+			embedParentId,
 			embedType: fieldEmbed.embedType,
 			navHeader: {
 				isDataObj: true,
@@ -342,6 +343,7 @@ export class State {
 			stateRoot: this
 		})
 
+		stateModal.parmsState.valueSet(ParmsValuesType.embedParentId, embedParentId)
 		stateModal.app.virtualModalLevelAdd(dataObjEmbed)
 
 		await stateModal.triggerAction(
@@ -396,7 +398,7 @@ export class State {
 			token.dataObj.data.rowsRetrieved.getRows()
 		)
 
-		const stateModal = new StateSurfacePopupModalEmbed(this, {
+		const stateModal = new StateSurfacePopup(this, {
 			actionsDialog: fieldEmbed.actionsModal,
 			embedParentId: this.dm.getRecordId(fieldEmbed.dataObjIdParent, 0),
 			embedType: fieldEmbed.embedType,
@@ -494,6 +496,19 @@ export class State {
 		await this.triggerActionValidate(parms, this.fActions[parms.codeAction.actionClass])
 	}
 
+	async triggerActionDo(doActionType: CodeActionType, dataObj: DataObj) {
+		await this.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(CodeActionClass.ct_sys_code_action_class_do, doActionType),
+				data: {
+					token: new TokenAppDo({
+						actionType: CodeActionType.doDetailSave,
+						dataObj
+					})
+				}
+			})
+		)
+	}
 	async triggerActionValidate(
 		parms: TokenAppStateTriggerAction,
 		fCallback: Function | undefined = undefined
@@ -505,7 +520,9 @@ export class State {
 		) {
 			await this.triggerActionValidateAskB4(parms, fCallback)
 		} else {
-			if (fCallback) await fCallback(this, parms)
+			if (fCallback) {
+				await fCallback(this, parms)
+			}
 		}
 	}
 
@@ -609,18 +626,6 @@ export class StateSurfacePopup extends State {
 		this.storeModal = stateParent.storeModal
 		this.storeToast = stateParent.storeToast
 		this.user = stateParent.user
-	}
-}
-
-export class StateSurfacePopupModalEmbed extends StateSurfacePopup {
-	embedParentId: string
-	embedType: FieldEmbedType
-	constructor(stateParent: State, obj: any) {
-		const clazz = 'StateSurfacePopupModalEmbed'
-		super(stateParent, obj)
-		obj = valueOrDefault(obj, {})
-		this.embedParentId = strRequired(obj.embedParentId, clazz, 'embedParentId')
-		this.embedType = required(obj.embedType, clazz, 'embedType')
 	}
 }
 

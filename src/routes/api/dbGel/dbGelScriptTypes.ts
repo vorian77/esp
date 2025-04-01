@@ -150,19 +150,14 @@ export class ScriptTypeSavePrimaryCore extends ScriptTypeSavePrimary {
 			})
 
 			// add props-primary
-			let props: string[] = query.getPropsSave(
-				{
-					action,
-					indexTable: table.index,
-					props:
-						action === LinkSaveAction.INSERT
-							? query.rawDataObj.rawPropsSaveInsert
-							: query.rawDataObj.rawPropsSaveUpdate
-				},
-				query,
-				queryData,
-				dataRows
-			)
+			const propsRaw =
+				action === LinkSaveAction.INSERT
+					? query.rawDataObj.rawPropsSaveInsert
+					: query.rawDataObj.rawPropsSaveUpdate
+			let props: string[] = query.getPropsSave(propsRaw, query, queryData, dataRows, {
+				action,
+				indexTable: table.index
+			})
 
 			// add props-links
 			table.indexesChildren.forEach((i) => {

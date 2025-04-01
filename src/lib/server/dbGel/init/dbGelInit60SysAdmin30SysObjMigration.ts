@@ -153,10 +153,10 @@ function initMigr(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_migr_detail'],
+		children: [{ node: 'node_obj_sys_admin_migr_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_migr_list' }],
+		dataObj: 'data_obj_sys_admin_migr_list',
 		header: 'Migrations',
 		name: 'node_obj_sys_admin_migr_list',
 		orderDefine: 140,
@@ -164,12 +164,12 @@ function initMigr(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [
-			'node_obj_sys_admin_migr_source_table_list',
-			'node_obj_sys_admin_migr_target_table_list'
+			{ node: 'node_obj_sys_admin_migr_source_table_list', order: 10 },
+			{ node: 'node_obj_sys_admin_migr_target_table_list', order: 20 }
 		],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_migr_detail' }],
+		dataObj: 'data_obj_sys_admin_migr_detail',
 		header: 'Migration',
 		name: 'node_obj_sys_admin_migr_detail',
 		orderDefine: 10,
@@ -338,10 +338,10 @@ function initMigrSourceTable(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_migr_source_table_detail'],
+		children: [{ node: 'node_obj_sys_admin_migr_source_table_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_migr_source_table_list' }],
+		dataObj: 'data_obj_sys_admin_migr_source_table_list',
 		header: 'Source Tables',
 		name: 'node_obj_sys_admin_migr_source_table_list',
 		orderDefine: 10,
@@ -349,10 +349,10 @@ function initMigrSourceTable(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_migr_source_column_list'],
+		children: [{ node: 'node_obj_sys_admin_migr_source_column_list', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_migr_source_table_detail' }],
+		dataObj: 'data_obj_sys_admin_migr_source_table_detail',
 		header: 'Source Table',
 		name: 'node_obj_sys_admin_migr_source_table_detail',
 		orderDefine: 10,
@@ -504,10 +504,10 @@ function initMigrSourceColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_migr_source_column_detail'],
+		children: [{ node: 'node_obj_sys_admin_migr_source_column_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_migr_source_column_list' }],
+		dataObj: 'data_obj_sys_admin_migr_source_column_list',
 		header: 'Columns',
 		name: 'node_obj_sys_admin_migr_source_column_list',
 		orderDefine: 10,
@@ -517,7 +517,7 @@ function initMigrSourceColumn(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_migr_source_column_detail' }],
+		dataObj: 'data_obj_sys_admin_migr_source_column_detail',
 		header: 'Column',
 		name: 'node_obj_sys_admin_migr_source_column_detail',
 		orderDefine: 10,
@@ -737,10 +737,10 @@ function initMigrTargetTable(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_migr_target_table_detail'],
+		children: [{ node: 'node_obj_sys_admin_migr_target_table_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_migr_target_table_list' }],
+		dataObj: 'data_obj_sys_admin_migr_target_table_list',
 		header: 'Target Tables',
 		name: 'node_obj_sys_admin_migr_target_table_list',
 		orderDefine: 20,
@@ -748,10 +748,10 @@ function initMigrTargetTable(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_migr_target_column_list'],
+		children: [{ node: 'node_obj_sys_admin_migr_target_column_list', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_migr_target_table_detail' }],
+		dataObj: 'data_obj_sys_admin_migr_target_table_detail',
 		header: 'Target Table',
 		name: 'node_obj_sys_admin_migr_target_table_detail',
 		orderDefine: 10,
@@ -966,10 +966,10 @@ function initMigrTargetColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_migr_target_column_detail'],
+		children: [{ node: 'node_obj_sys_admin_migr_target_column_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_migr_target_column_list' }],
+		dataObj: 'data_obj_sys_admin_migr_target_column_list',
 		header: 'Columns',
 		name: 'node_obj_sys_admin_migr_target_column_list',
 		orderDefine: 10,
@@ -979,7 +979,7 @@ function initMigrTargetColumn(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_migr_target_column_detail' }],
+		dataObj: 'data_obj_sys_admin_migr_target_column_detail',
 		header: 'Column',
 		name: 'node_obj_sys_admin_migr_target_column_detail',
 		orderDefine: 10,

@@ -122,11 +122,11 @@ function initTaskOpenApps(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjTask', {
-		children: ['node_obj_moed_part_detail'],
+		children: [{ node: 'node_obj_moed_part_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNavType: 'task',
 		codeNodeType: 'program',
-		data: [{ dataObj: 'data_obj_task_moed_part_list_apps_open' }],
+		dataObj: 'data_obj_task_moed_part_list_apps_open',
 		header: 'Open Applications',
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_task_moed_part_list_apps_open',
@@ -229,11 +229,11 @@ function initTaskOpenMsgs(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjTask', {
-		children: ['node_obj_task_moed_msg_root_list'],
+		children: [{ node: 'node_obj_task_moed_msg_root_list', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNavType: 'task',
 		codeNodeType: 'program',
-		data: [{ dataObj: 'data_obj_task_moed_part_list_msg_open' }],
+		dataObj: 'data_obj_task_moed_part_list_msg_open',
 		header: 'Open Messages',
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_task_moed_part_list_msg_open',
@@ -364,10 +364,10 @@ function initMsgRootList(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_task_moed_msg_root_detail'],
+		children: [{ node: 'node_obj_task_moed_msg_root_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_task_moed_msg_root_list' }],
+		dataObj: 'data_obj_task_moed_msg_root_list',
 		header: 'Message Threads',
 		name: 'node_obj_task_moed_msg_root_list',
 		orderDefine: 10,
@@ -377,33 +377,6 @@ function initMsgRootList(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [
-			{
-				actionClass: 'ct_sys_code_action_class',
-				actionType: 'default',
-				dataObj: 'data_obj_task_moed_msg_root_detail_edit'
-			},
-			{
-				actionClass: 'ct_sys_code_action_class_do',
-				actionType: 'doDetailNew',
-				dataObj: 'data_obj_task_moed_msg_root_detail_new'
-			},
-			{
-				actionClass: 'ct_sys_code_action_class_do',
-				actionType: 'doListDetailNew',
-				dataObj: 'data_obj_task_moed_msg_root_detail_new'
-			}
-			// {
-			// 	actionClass: 'doDetailMsgReplyCmStaff',
-			// 	actionType: 'doDetailMsgReplyCmStaff',
-			// 	dataObj: 'data_obj_task_moed_msg_root_detail_new'
-			// },
-			// {
-			// 	actionClass: 'ct_sys_code_action_class_do',
-			// 	actionType: 'doListDetailEdit',
-			// 	dataObj: 'data_obj_task_moed_msg_root_detail_edit'
-			// },
-		],
 		header: 'Message',
 		name: 'node_obj_task_moed_msg_root_detail',
 		orderDefine: 10,
@@ -866,20 +839,3 @@ function initMsgDetailReply(init: InitDb) {
 		]
 	})
 }
-
-// init.addTrans('sysNodeObjProgramObj', {
-// 	codeIcon: 'AppWindow',
-// 	codeNodeType: 'program_object',
-// 	data: [
-// 		{ dataObj: 'data_obj_moed_msg_detail_parent_reply' },
-// 		{
-// 			actionClass: 'doDetailMsgReplyCmStaff',
-// 			actionType: 'doDetailMsgReplyCmStaff',
-// 			dataObj: 'data_obj_moed_msg_detail_parent_reply'
-// 		}
-// 	],
-// 	header: 'Applicant',
-// 	name: 'node_obj_task_moed_msg_detail_open',
-// 	orderDefine: 10,
-// 	owner: 'sys_client_moed'
-// })

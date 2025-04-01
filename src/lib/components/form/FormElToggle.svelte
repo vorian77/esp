@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ContextKey, DataManager, DataObj, DataObjCardinality, required } from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldAccess } from '$comps/form/field.svelte'
+	import { FieldAccess, FieldValueType } from '$comps/form/field.svelte'
 	import { FieldToggle } from '$comps/form/fieldToggle'
 	import { SlideToggle } from '@skeletonlabs/skeleton'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
@@ -16,7 +16,9 @@
 
 	let dataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let field = $derived(parms.field) as FieldToggle
-	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
+	let fieldValue = $derived(
+		dm.getFieldValue(parms.dataObjId, parms.row, parms.field, FieldValueType.display)
+	)
 	let valueToggle: boolean = $state(field.getValueBoolean(fieldValue))
 
 	async function onChange(event: Event) {

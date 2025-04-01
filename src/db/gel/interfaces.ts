@@ -501,15 +501,16 @@ export namespace sys_core {
   export interface SysMsg extends ObjRoot {
     "responses": SysMsg[];
     "parent"?: SysMsg | null;
-    "subject"?: string | null;
     "date"?: gel.LocalDate | null;
     "createdAt": Date;
-    "recipients": $default.SysPerson[];
     "sender": $default.SysPerson;
     "isOpen": boolean;
+    "isForward": boolean;
+    "recipients": $default.SysPerson[];
+    "thread": SysMsg[];
+    "subject": string;
   }
   export interface SysNodeObj extends SysObj {
-    "children": SysNodeObj[];
     "codeNavType": SysCode;
     "codeNodeType": SysCode;
     "isAlwaysRetrieveData": boolean;
@@ -517,8 +518,20 @@ export namespace sys_core {
     "page"?: string | null;
     "codeQueryOwnerType"?: SysCode | null;
     "data": SysNodeObjData[];
+    "childrenOld": SysNodeObj[];
     "isDynamicChildrenSystemParents": boolean;
+    "children": SysNodeObjChild[];
+    "dataObj"?: SysDataObj | null;
     "parent"?: SysNodeObj | null;
+    "actions": SysNodeObjAction[];
+  }
+  export interface SysNodeObjAction extends std.$Object {
+    "codeAction": SysCodeAction;
+    "nodeObj": SysNodeObj;
+  }
+  export interface SysNodeObjChild extends std.$Object {
+    "nodeObj": SysNodeObj;
+    "orderDefine": number;
   }
   export interface SysNodeObjData extends std.$Object {
     "dataObj": SysDataObj;
@@ -1079,6 +1092,8 @@ export interface types {
     "SysDataObjWith": sys_core.SysDataObjWith;
     "SysMsg": sys_core.SysMsg;
     "SysNodeObj": sys_core.SysNodeObj;
+    "SysNodeObjAction": sys_core.SysNodeObjAction;
+    "SysNodeObjChild": sys_core.SysNodeObjChild;
     "SysNodeObjData": sys_core.SysNodeObjData;
     "SysNotify": sys_core.SysNotify;
     "SysObjNote": sys_core.SysObjNote;

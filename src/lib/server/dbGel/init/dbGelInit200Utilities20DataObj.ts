@@ -531,7 +531,7 @@ export async function addUserAction(data: any) {
 		{
 			actionConfirms: e.array(e.json),
 			actionShows: e.array(e.json),
-			codeAction: e.json,
+			codeAction: e.str,
 			codeTriggerEnable: e.str,
 			header: e.optional(e.str),
 			name: e.str,
@@ -577,12 +577,7 @@ export async function addUserAction(data: any) {
 						modifiedBy: CREATOR
 					})
 				}),
-				codeAction: e.select(
-					e.sys_core.getCodeAction(
-						e.cast(e.str, e.json_get(p.codeAction, 'codeType')),
-						e.cast(e.str, e.json_get(p.codeAction, 'name'))
-					)
-				),
+				codeAction: e.select(e.sys_core.getCodeAction(p.codeAction)),
 				codeTriggerEnable: e.select(
 					e.sys_core.getCode('ct_sys_user_action_trigger', p.codeTriggerEnable)
 				),

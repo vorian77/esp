@@ -9,6 +9,7 @@ import {
 	memberOfEnum,
 	memberOfEnumIfExists,
 	memberOfEnumOrDefault,
+	PropDataType,
 	required,
 	ResponseBody,
 	strRequired,
@@ -23,7 +24,8 @@ import {
 	RawDataObjPropDisplay,
 	RawDataObjPropDisplayItemChange,
 	RawDataObjQueryRider,
-	RawDataObjTable
+	RawDataObjTable,
+	RawDBColumn
 } from '$comps/dataObj/types.rawDataObj.svelte'
 import { UserAction } from '$comps/other/types.userAction.svelte'
 import {
@@ -34,7 +36,8 @@ import {
 	FieldElement,
 	PropsFieldInit,
 	PropsFieldCreate,
-	FieldItemChange
+	FieldItemChange,
+	FieldValueType
 } from '$comps/form/field.svelte'
 import {
 	FieldEmbed,
@@ -408,16 +411,6 @@ export class DataObjData {
 		if (rawDataObj) this.init(rawDataObj)
 	}
 
-	getItemDisplayValue(items: FieldColumnItem[], ids: any) {
-		let display = ''
-		if (!Array.isArray(ids)) ids = [ids]
-		ids.forEach((id: string) => {
-			const item = items.find((i: FieldColumnItem) => i.id === id)
-			if (item) display += display ? ',' + item.display : item.display
-		})
-		return display
-	}
-
 	init(rawDataObj: RawDataObj) {
 		const clazz = 'DataObjData'
 		this.cardinality = memberOfEnum(
@@ -495,11 +488,11 @@ export class DataObjQueryRiders {
 						dataQuery = await rider.executeFunction(sm, dataQuery)
 						break
 
-					case DataObjQueryRiderType.databaseExpression:
+					case DataObjQueryRiderType.dbExpr:
 						// executed on server
 						break
 
-					case DataObjQueryRiderType.userMessage:
+					case DataObjQueryRiderType.userMsg:
 						rider.executeMsg(sm)
 						break
 
@@ -692,8 +685,8 @@ export enum DataObjQueryRiderTriggerTiming {
 export enum DataObjQueryRiderType {
 	appDestination = 'appDestination',
 	customFunction = 'customFunction',
-	databaseExpression = 'databaseExpression',
-	userMessage = 'userMessage'
+	dbExpr = 'dbExpr',
+	userMsg = 'userMsg'
 }
 
 export enum DataObjSaveMode {
@@ -803,10 +796,10 @@ export class DataRow {
 		this.status = status
 	}
 	getValue(key: string) {
-		return getRecordValue(this.record, key)
+		return getDataRecordValueKey(this.record, key)
 	}
 	setValue(key: string, value: any) {
-		return setRecordValue(this.record, key, value)
+		return setDataRecordValue(this.record, key, value)
 	}
 }
 
@@ -929,7 +922,7 @@ export class DBTable {
 	}
 }
 
-export function getRecordKey(record: DataRecord, key: string) {
+export function getDataRecordKey(record: DataRecord, key: string) {
 	for (const [k, v] of Object.entries(record)) {
 		if (k.endsWith(key)) {
 			return k
@@ -938,13 +931,38 @@ export function getRecordKey(record: DataRecord, key: string) {
 	return undefined
 }
 
-export function getRecordValue(record: DataRecord, key: string) {
-	const recordKey = getRecordKey(record, key)
+export function getDataRecordValueType(
+	value: any,
+	fieldValueType: FieldValueType,
+	propDataType: PropDataType,
+	isMultiSelect: boolean
+) {
+	switch (propDataType) {
+		case PropDataType.attribute:
+		case PropDataType.link:
+			if (['', undefined, null].includes(value)) {
+				return ''
+			}
+			if (isMultiSelect) {
+				return getArray(value).map((v: any) => {
+					return `${v[fieldValueType]}`
+				})
+			} else {
+				return value[fieldValueType]
+			}
+
+		default:
+			return value
+	}
+}
+
+export function getDataRecordValueKey(record: DataRecord, key: string) {
+	const recordKey = getDataRecordKey(record, key)
 	return recordKey ? record[recordKey] : undefined
 }
 
-export function setRecordValue(record: DataRecord, key: string, value: any) {
-	const recordKey = getRecordKey(record, key)
+export function setDataRecordValue(record: DataRecord, key: string, value: any) {
+	const recordKey = getDataRecordKey(record, key)
 	if (recordKey) record[recordKey] = value
 	return recordKey
 }
@@ -1041,6 +1059,7 @@ export enum ParmsValuesType {
 	customProgramOwnerId = 'customProgramOwnerId',
 	embedFieldName = 'embedFieldName',
 	embedListSave = 'embedListSave',
+	embedParentId = 'embedParentId',
 	fieldListItems = 'fieldListItems',
 	isMultiSelect = 'isMultiSelect',
 	itemsParmValue = 'itemsParmValue',

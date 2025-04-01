@@ -5,8 +5,8 @@ import {
 	type DataRecord,
 	DataRow,
 	getArray,
-	getRecordKey,
-	getRecordValue,
+	getDataRecordKey,
+	getDataRecordValueKey,
 	isNumber,
 	memberOfEnum,
 	ParmsValuesType,
@@ -63,7 +63,8 @@ export function evalExprTokens(
 
 	exprItems.forEach((item) => {
 		const exprParms = new ExprParms(expr, item, queryData, context)
-		const valueRaw = getValRaw(exprParms)
+		let valueRaw = getValRaw(exprParms)
+
 		if (item.itemData) {
 			const { dataType, valueDB } = getValDB(item.itemData.codeDataType, valueRaw)
 			tokens.push(new ExprToken(item.dataItem, dataType, valueRaw, valueDB))
@@ -275,7 +276,6 @@ export function getValRaw(exprParms: ExprParms) {
 					fError(`QueryData.getValRaw.system - invalid keyParms: ${keyParms}`)
 				}
 			case ExprSource.tree:
-				// const items = sourceKey.split('.')
 				let dataRow: DataRow | undefined = undefined
 				let property = ''
 				switch (keyParms.length) {
@@ -287,17 +287,21 @@ export function getValRaw(exprParms: ExprParms) {
 						dataRow = exprParms.queryData.tree.getDataRow(keyParms[0])
 						property = keyParms[1]
 						break
-					case 3:
+
+					default:
 						if (keyParms[0] === ParmsValuesType.treeAncestorValue) {
+							const levels = exprParms.queryData.tree.levels.map((level) => level.table)
 							dataRow = exprParms.queryData.tree.getDataRowAncestor(parseInt(keyParms[1]))
-							property = keyParms[2]
+							property = keyParms.slice(2).join('.')
+							debug('getValRaw.tree', `levels: ${property}`, {
+								levelIdx: keyParms[1],
+								levels: JSON.stringify(levels),
+								dataRow
+							})
 						} else {
 							fError(`QueryData.getValRaw.system - invalid keyParms: ${keyParms}`)
 						}
 						break
-
-					default:
-						fError(`QueryData.getValRaw.tree - invalid keyParms: ${keyParms}`)
 				}
 				return getValue(dataRow?.record, property)
 			case ExprSource.user:
@@ -333,13 +337,16 @@ export function getValRaw(exprParms: ExprParms) {
 	function getValueNested(data: DataRecord, key: string) {
 		const tokens = key.split('.')
 		let currentData = data
-		for (let i = 0; i < tokens.length - 1; i++) {
-			if (!currentData || !getRecordKey(currentData, tokens[i])) return false
-			currentData = currentData[tokens[i]]
+		let i = 0
+		while (i < tokens.length) {
+			const currKey = getDataRecordKey(currentData, tokens[i])
+			if (!currKey) return false
+			if (currentData.hasOwnProperty(currKey)) {
+				currentData = currentData[currKey]
+			} else return false
+			i++
 		}
-		const idx = tokens.length - 1
-		if (!currentData || !getRecordKey(currentData, tokens[idx])) return false
-		return [true, currentData[tokens[idx]]]
+		return [true, currentData]
 	}
 
 	function valueNotFound(data: DataRecord) {

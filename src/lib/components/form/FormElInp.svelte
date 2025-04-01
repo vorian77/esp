@@ -8,7 +8,7 @@
 	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { Field, FieldAlignment, FieldElement } from '$comps/form/field.svelte'
-	import { FieldAccess } from '$comps/form/field.svelte'
+	import { FieldAccess, FieldValueType } from '$comps/form/field.svelte'
 	import { FieldInput } from '$comps/form/fieldInput'
 	import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
@@ -24,7 +24,9 @@
 	let dm: DataManager = $derived(sm.dm)
 
 	let field = $state(parms.field) as FieldInput
-	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
+	let fieldValue = $derived(
+		dm.getFieldValue(parms.dataObjId, parms.row, field, FieldValueType.display)
+	)
 	let fieldInputType = $state(field.inputTypeCurrent || field.fieldElement)
 	let iconProps: IconProps = $state(setIconProps())
 

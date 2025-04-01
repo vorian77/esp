@@ -58,10 +58,26 @@
 	>
 		<div class="flex flex-col border-0 border-red-400">
 			<p class="text-3xl font-bold mb-2">
-				The App Factory makes enterprise-class data management affordable
+				The App Factory makes enterprise-class data management easy, fast, and affordable
 			</p>
 			<div class="flex flex-col gap-4 text-lg text-gray-500">
 				<p>
+					The App Factory is a low-code SaaS framework that compiles descriptions of business
+					workflows into robust, secure data management applets customized for every user in your
+					organization.
+				</p>
+				<p>
+					In addition to comprehensive data management, the framework also provides tools that
+					tightly integrate with your organizational data to increase staff productivity and
+					facilitate just-in-time, fact-based decision making.
+				</p>
+				<p>
+					Our mission is to help organizations of all sizes and industries to automate their
+					workflows and transform data into information with the ease of using an office
+					application-empowering them to achieve in hours what once took months or years.
+				</p>
+
+				<!-- <p>
 					Our first of its kind "application compiler" allows us to build robust and secure data
 					management systems, customized for each user role in your organization with little or no
 					traditional programming.
@@ -80,7 +96,7 @@
 					We charge a moderate monthly fee per user per month - $75 for most users, $125 for
 					managers, system administrators, and data analysts with discounts available for volume
 					implementations.
-				</p>
+				</p> -->
 				<p>We're launching publicly this fall!</p>
 				<p>Join our email list for more information.</p>
 			</div>

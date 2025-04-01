@@ -7,7 +7,7 @@ import {
 } from '$comps/form/field.svelte'
 import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
-import { DataObj, type DataRecord, getRecordValue } from '$utils/types'
+import { DataObj, type DataRecord, getDataRecordValueKey } from '$utils/types'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { TokenApiFetchError, TokenApiId } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
@@ -34,24 +34,24 @@ export class FieldParm extends Field {
 
 	async configParmItemsInit(props: PropsFieldInit, record: DataRecord, fields: Field[]) {
 		const propParmObj = {
-			_codeAccess: getRecordValue(record, 'isRequired') ? 'required' : 'optional',
-			_codeFieldElement: getRecordValue(record, 'codeFieldElement'),
+			_codeAccess: getDataRecordValueKey(record, 'isRequired') ? 'required' : 'optional',
+			_codeFieldElement: getDataRecordValueKey(record, 'codeFieldElement'),
 			_column: {
 				_codeAlignment: FieldAlignment.left,
-				_codeDataType: getRecordValue(record, 'codeDataType'),
-				header: getRecordValue(record, 'header'),
+				_codeDataType: getDataRecordValueKey(record, 'codeDataType'),
+				header: getDataRecordValueKey(record, 'header'),
 				isFormTag: false,
-				isMultiSelect: getRecordValue(record, 'isMultiSelect'),
+				isMultiSelect: getDataRecordValueKey(record, 'isMultiSelect'),
 				placeHolder: ''
 			},
-			_hasItems: getRecordValue(record, '_hasItems'),
-			_linkItemsSource: await getLinkItemsSource(getRecordValue(record, 'fieldListItems')),
-			_propName: getRecordValue(record, 'name'),
-			id: getRecordValue(record, 'id'),
+			_hasItems: getDataRecordValueKey(record, '_hasItems'),
+			_linkItemsSource: await getLinkItemsSource(getDataRecordValueKey(record, 'fieldListItems')),
+			_propName: getDataRecordValueKey(record, 'name'),
+			id: getDataRecordValueKey(record, 'id'),
 			isDisplayable: true,
 			isDisplayBlock: true,
 			isParmValue: true,
-			orderDefine: getRecordValue(record, 'orderDefine')
+			orderDefine: getDataRecordValueKey(record, 'orderDefine')
 		}
 		const propParm = new RawDataObjPropDisplay(propParmObj, [])
 		const field: Field = await DataObj.fieldsCreateItem(props.sm, props.dataObj, propParm, fields)

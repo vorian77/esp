@@ -7,13 +7,27 @@ import {
 import {
 	userActionError,
 	userActionStateChangeDataObj,
-	userActionStateChangeRaw
+	userActionStateChangeRaw,
+	userActionTreeNodeChildren
 } from '$comps/other/types.userAction.svelte'
 import { AppLevel, AppLevelTab } from '$comps/app/types.app.svelte'
-import { TokenAppDoQuery, TokenAppStateTriggerAction } from '$utils/types.token'
-import { CodeActionType, DataObj, DataManager, DataRow, required, strRequired } from '$utils/types'
+import {
+	TokenApiQueryType,
+	TokenAppDo,
+	TokenAppDoQuery,
+	TokenAppStateTriggerAction
+} from '$utils/types.token'
+import {
+	CodeAction,
+	CodeActionClass,
+	CodeActionType,
+	DataObj,
+	DataManager,
+	DataRow,
+	required,
+	strRequired
+} from '$utils/types'
 import { Token, TokenAppIndex, TokenAppNode, TokenAppRow, TokenAppTab } from '$utils/types.token'
-
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionClassCustom.ts'
@@ -21,6 +35,7 @@ const FILENAME = '/$enhance/actions/actionClassCustom.ts'
 export default async function action(sm: State, parmsAction: TokenAppStateTriggerAction) {
 	const actionType = parmsAction.codeAction.actionType
 	const token: Token = parmsAction.data.token
+	const tokenAppDo = token as TokenAppDo
 
 	let dm = sm.dm
 	let currTab = required(sm.app.getCurrTab(), FILENAME, 'currTab')
@@ -48,22 +63,32 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doCustomAIAttdSheetReset:
-			alert('Reset coming soon...')
+			alert('doCustomAIAttdSheetReset')
 			break
 
-		case CodeActionType.doDetailMsgReplyCmClient:
-			alert('doDetailMsgReplyCmClient')
+		case CodeActionType.doCustomSysMsgRootDetailSave:
+			await sm.triggerActionDo(CodeActionType.doDetailSave, tokenAppDo.dataObj)
 			break
 
-		case CodeActionType.doDetailMsgReplyCmStaff:
-			alert('doDetailMsgReplyCmStaff')
-			// currTab = sm.app.getCurrTab()
-			// if (currTab && currTab.dataObj) {
-			// 	sm.parmsTrans.valueSet(ParmsValuesType.parentRecordId, currTab.getCurrRecordValue('id'))
-			// 	sm.parmsTrans.valueSet('subject', currTab.getCurrRecordValue('subject'))
-			// 	await queryTypeTab(sm, currTab, parmsAction.codeAction.actionType, TokenApiQueryType.preset)
-			// 	await userActionStateChangeDataObj(sm, parmsAction)
-			// }
+		case CodeActionType.doCustomSysMsgThreadDetailClose:
+			alert('doCustomSysMsgThreadDetailClose')
+			break
+
+		case CodeActionType.doCustomSysMsgThreadDetailReply:
+			alert('doCustomSysMsgThreadDetailReply')
+			break
+
+		case CodeActionType.doCustomSysMsgThreadDetailSend:
+			alert('doCustomSysMsgThreadDetailSend')
+			break
+
+		case CodeActionType.doCustomSysMsgThreadListClose:
+			alert('doCustomSysMsgThreadListClose')
+			break
+
+		case CodeActionType.doCustomSysMsgThreadListForward:
+		case CodeActionType.doCustomSysMsgThreadListReply:
+			await userActionTreeNodeChildren(sm, token, TokenApiQueryType.preset, parmsAction)
 			break
 
 		default:

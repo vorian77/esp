@@ -61,12 +61,6 @@ function initCodeActionsDoGroupItem(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system',
 		codeType: 'ct_sys_code_action_class_do',
-		name: 'doDetailMsgCloseThread',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system',
-		codeType: 'ct_sys_code_action_class_do',
 		name: 'doDetailMsgSetClosed',
 		order: 0
 	})

@@ -253,8 +253,7 @@ export async function addNode(data: any) {
 			codeNavType: e.optional(e.str) || 'tree',
 			codeNodeType: e.str,
 			codeQueryOwnerType: e.optional(e.str),
-			data: e.optional(e.array(e.json)),
-			dataObj: e.optional(e.str),
+			dataObj: e.str,
 			header: e.optional(e.str),
 			isAlwaysRetrieveData: e.optional(e.bool),
 			isDynamicChildrenSystemParents: e.optional(e.bool),
@@ -273,16 +272,8 @@ export async function addNode(data: any) {
 				),
 				codeNodeType: e.sys_core.getCode('ct_sys_node_obj_type', p.codeNodeType),
 				codeQueryOwnerType: e.sys_core.getCode('ct_sys_query_owner_type', p.codeQueryOwnerType),
+				dataObj: e.sys_core.getDataObj(p.dataObj),
 				createdBy: CREATOR,
-				data: e.for(e.array_unpack(p.data || e.cast(e.array(e.json), e.set())), (d) => {
-					return e.insert(e.sys_core.SysNodeObjData, {
-						dataObj: e.sys_core.getDataObj(e.cast(e.str, e.json_get(d, 'dataObj'))),
-						codeAction: e.sys_core.getCodeAction(
-							e.op(e.cast(e.str, e.json_get(d, 'actionClass')), '??', 'ct_sys_code_action_class'),
-							e.op(e.cast(e.str, e.json_get(d, 'actionType')), '??', 'default')
-						)
-					})
-				}),
 				header: p.header,
 				isAlwaysRetrieveData: valueOrDefaultParm(p.isAlwaysRetrieveData, false),
 				isDynamicChildrenSystemParents: valueOrDefaultParm(p.isDynamicChildrenSystemParents, false),
@@ -644,12 +635,39 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 	}
 }
 
-export async function updateDepdNodeChildren(data: any) {
+export async function updateDepdNodeAction(data: any) {
+	sectionHeader(`updateDepdNodeAction - ${data.name}`)
+	const dataUpdate = { name: data.name, actions: data.actions }
+	const query = e.params(
+		{
+			actions: e.optional(e.array(e.json)),
+			name: e.str
+		},
+		(p) => {
+			return e.update(e.sys_core.SysNodeObj, (n) => ({
+				filter: e.op(n.name, '=', p.name),
+				set: {
+					actions: e.assert_distinct(
+						e.for(e.array_unpack(p.actions), (a) => {
+							return e.insert(e.sys_core.SysNodeObjAction, {
+								codeAction: e.sys_core.getCodeAction(e.cast(e.str, e.json_get(a, 'action'))),
+								nodeObj: e.sys_core.getNodeObjByName(e.cast(e.str, e.json_get(a, 'node')))
+							})
+						})
+					)
+				}
+			}))
+		}
+	)
+	return await query.run(client, dataUpdate)
+}
+
+export async function updateDepdNodeChild(data: any) {
 	sectionHeader(`updateDepdNodeChildren - ${data.name}`)
 	const dataUpdate = { name: data.name, children: data.children }
 	const query = e.params(
 		{
-			children: e.optional(e.array(e.str)),
+			children: e.optional(e.array(e.json)),
 			name: e.str
 		},
 		(p) => {
@@ -658,6 +676,33 @@ export async function updateDepdNodeChildren(data: any) {
 				set: {
 					children: e.assert_distinct(
 						e.for(e.array_unpack(p.children), (c) => {
+							return e.insert(e.sys_core.SysNodeObjChild, {
+								nodeObj: e.sys_core.getNodeObjByName(e.cast(e.str, e.json_get(c, 'node'))),
+								orderDefine: e.cast(e.int16, e.json_get(c, 'order'))
+							})
+						})
+					)
+				}
+			}))
+		}
+	)
+	return await query.run(client, dataUpdate)
+}
+
+export async function updateDepdNodeChildrenOld(data: any) {
+	sectionHeader(`updateDepdNodeChildrenOld - ${data.name}`)
+	const dataUpdate = { name: data.name, childrenOld: data.childrenOld }
+	const query = e.params(
+		{
+			childrenOld: e.optional(e.array(e.str)),
+			name: e.str
+		},
+		(p) => {
+			return e.update(e.sys_core.SysNodeObj, (n) => ({
+				filter: e.op(n.name, '=', p.name),
+				set: {
+					childrenOld: e.assert_distinct(
+						e.for(e.array_unpack(p.childrenOld), (c) => {
 							return e.sys_core.getNodeObjByName(c)
 						})
 					)

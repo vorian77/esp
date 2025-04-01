@@ -11,6 +11,8 @@ import {
 	DataRecordStatus,
 	getArray,
 	memberOfEnum,
+	NodeQueryOwnerType,
+	ParmsValues,
 	ParmsValuesType,
 	required,
 	ResponseBody,
@@ -45,11 +47,38 @@ export function queryDataPre(
 	dataTab.parms.update(sm.parmsTrans.valueGetAll())
 
 	sm.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
+	queryDataPreOwnerId(sm.stateRoot || sm, dataTab.parms)
 
 	// fieldListItems - itemChanges defaults
 	dataTab.parms.valueSetIfMissing(ParmsValuesType.itemsParmValue, '')
 
 	return { dataTree, dataTab }
+}
+
+function queryDataPreOwnerId(smSource: State, parms: ParmsValues) {
+	const treeLevel = smSource.app.getCurrTreeLevel()
+	if (treeLevel && treeLevel.levels.length > 0) {
+		const rootTab = treeLevel.levels[0].getCurrTab()
+		if (rootTab && rootTab.node) {
+			if (rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeOrgRecord) {
+				parms.valueSet(ParmsValuesType.queryOwnerIdOrg, rootTab.getCurrRecordValue('id'))
+			} else if (
+				rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemApp &&
+				rootTab.node.ownerId
+			) {
+				parms.valueSet(ParmsValuesType.queryOwnerIdSystem, rootTab.node.ownerId)
+			} else if (rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemRecord) {
+				parms.valueSet(ParmsValuesType.queryOwnerIdSystem, rootTab.getCurrRecordValue('id'))
+			} else if (
+				rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemUser &&
+				smSource?.user?.systemIdCurrent
+			) {
+				parms.valueSet(ParmsValuesType.queryOwnerIdSystem, smSource.user.systemIdCurrent)
+			} else if (smSource?.user?.systemIdCurrent) {
+				parms.valueSet(ParmsValuesType.queryOwnerIdSystem, rootTab.node.ownerId)
+			}
+		}
+	}
 }
 
 function queryDataPreTree(queryType: TokenApiQueryType, app: App) {
@@ -135,7 +164,7 @@ export async function queryTypeDataObj(
 	let { dataTab, dataTree }: { dataTab: DataObjData; dataTree: TokenApiQueryDataTree } =
 		queryDataPre(sm, dataObjData, queryType)
 
-	let dataObjSource: TokenApiDbDataObjSource = new TokenApiDbDataObjSource({ dataObjId })
+	let dataObjSource = new TokenApiDbDataObjSource({ dataObjId })
 
 	return await queryTypeBase(sm, dataObjSource, dataTab, dataTree, queryType)
 }
@@ -149,8 +178,6 @@ export async function queryTypeTab(
 	const clazz = `${FILENAME}.queryTypeTab`
 
 	if (!tab) return undefined
-
-	if (tab.node) tab.nodeDataObjIdSet(actionType)
 
 	let { dataTab, dataTree } = queryDataPre(sm, tab.dataObj?.data, queryType)
 

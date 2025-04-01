@@ -20,13 +20,14 @@
 	import FormElCustomText from '$comps/form/FormElCustomText.svelte'
 	import FormElFile from '$comps/form/FormElFile.svelte'
 	import FormElInp from '$comps/form/FormElInp.svelte'
+	import FormElInpChips from '$comps/form/FormElInpChips.svelte'
 	import FormElInpCheckbox from '$comps/form/FormElInpCheckbox.svelte'
 	import FormElInpRadio from '$comps/form/FormElInpRadio.svelte'
 	import FormElEmbedListConfig from '$comps/form/FormElEmbedListConfig.svelte'
 	import FormElEmbedListEdit from '$comps/form/FormElEmbedListEdit.svelte'
 	import FormElEmbedListSelect from '$comps/form/FormElEmbedListSelect.svelte'
 	import FormElEmbedShell from '$comps/form/FormElEmbedShell.svelte'
-	import FormElChips from '$comps/form/FormElChips.svelte'
+
 	import FormElSelect from '$comps/form/FormElSelect.svelte'
 	import FormElTextarea from '$comps/form/FormElTextarea.svelte'
 	import FormElToggle from '$comps/form/FormElToggle.svelte'
@@ -62,7 +63,7 @@
 		FieldCustomHeader: FormElCustomHeader,
 		FieldCustomHTML: FormElCustomHTML,
 		FieldCustomText: FormElCustomText,
-		FieldChips: FormElChips,
+		FieldChips: FormElInpChips,
 		FieldCheckbox: FormElInpCheckbox,
 		FieldEmbedListConfig: FormElEmbedListConfig,
 		FieldEmbedListEdit: FormElEmbedListEdit,

@@ -538,10 +538,10 @@ function initColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_column_detail'],
+		children: [{ node: 'node_obj_sys_admin_column_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_column_list' }],
+		dataObj: 'data_obj_sys_admin_column_list',
 		header: 'Columns',
 		name: 'node_obj_sys_admin_column_list',
 		orderDefine: 50,
@@ -551,7 +551,7 @@ function initColumn(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_column_detail' }],
+		dataObj: 'data_obj_sys_admin_column_detail',
 		header: 'Column',
 		name: 'node_obj_sys_admin_column_detail',
 		orderDefine: 10,
@@ -744,10 +744,10 @@ function initTable(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		children: ['node_obj_sys_admin_table_detail'],
+		children: [{ node: 'node_obj_sys_admin_table_detail', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_table_list' }],
+		dataObj: 'data_obj_sys_admin_table_list',
 		header: 'Tables',
 		name: 'node_obj_sys_admin_table_list',
 		orderDefine: 160,
@@ -757,7 +757,7 @@ function initTable(init: InitDb) {
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
-		data: [{ dataObj: 'data_obj_sys_admin_table_detail' }],
+		dataObj: 'data_obj_sys_admin_table_detail',
 		header: 'Table',
 		name: 'node_obj_sys_admin_table_detail',
 		orderDefine: 10,

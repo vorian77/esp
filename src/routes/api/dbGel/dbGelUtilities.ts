@@ -1,7 +1,8 @@
 import e from '$db/gel/edgeql-js'
 import { client, sectionHeader } from '$routes/api/dbGel/dbGel'
-import { TokenApiId } from '$utils/types.token'
+import { TokenApiId, TokenApiIds } from '$utils/types.token'
 import { TokenApiDbTableColumns, TokenApiUserId, TokenApiUserPref } from '$utils/types.token'
+import { getArray, Node } from '$utils/types'
 import { debug } from '$utils/utils.debug'
 
 const shapeCodeAction = e.shape(e.sys_core.SysCodeAction, (ca) => ({
@@ -90,19 +91,23 @@ const shapeLinkItemsSource = e.shape(e.sys_core.SysDataObjFieldListItems, (fli) 
 	name: true
 }))
 
-const shapeNodeObjData = e.shape(e.sys_core.SysNodeObjData, (d) => ({
-	_actionType: d.codeAction.name,
-	_dataObjId: d.dataObj.id,
-	_dataObjName: d.dataObj.name
+const shapeNodeObjAction = e.shape(e.sys_core.SysNodeObjAction, (na) => ({
+	_codeAction: na.codeAction.name,
+	_dataObjId: na.nodeObj.dataObj.id,
+	_nodeObjId: na.nodeObj.id
 }))
-
 const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
+	_actions: e.select(n.actions, (a) => ({
+		...shapeNodeObjAction(a)
+	})),
+	_children: e.select(n.children, (c) => ({
+		_nodeObjId: c.nodeObj.id,
+		order_by: c.orderDefine
+	})),
 	_codeIcon: n.codeIcon.name,
 	_codeNodeType: n.codeNodeType.name,
 	_codeQueryOwnerType: n.codeQueryOwnerType.name,
-	_data: e.select(n.data, (d) => ({
-		...shapeNodeObjData(d)
-	})),
+	_dataObjId: n.dataObj.id,
 	_ownerId: n.owner.id,
 	header: true,
 	id: true,
@@ -516,17 +521,15 @@ export async function getLinkItemsSource(token: TokenApiId) {
 	return await query.run(client)
 }
 
-export async function getNodesBranch(token: TokenApiId) {
-	const parentNodeId = token.id
-	const query = e.select(e.sys_core.SysNodeObj, (n) => ({
+export async function getNode(token: TokenApiId) {
+	let query = e.select(e.sys_core.SysNodeObj, (n: any) => ({
 		...shapeNodeObj(n),
-		filter: e.op(n.parent.id, '=', e.cast(e.uuid, parentNodeId)),
-		order_by: n.orderDefine
+		filter_single: e.op(n.id, '=', e.cast(e.uuid, token.id))
 	}))
 	return await query.run(client)
 }
 
-export async function getNodesSystemParentss(token: TokenApiId) {
+export async function getNodesSystemParents(token: TokenApiId) {
 	const query = e.select(e.sys_core.SysNodeObj, (n) => ({
 		...shapeNodeObj(n),
 		filter: e.op(
@@ -544,28 +547,15 @@ export async function getNodesSystemParentss(token: TokenApiId) {
 	return await query.run(client)
 }
 
-export async function getNodesLevel(token: TokenApiId) {
-	let query
-	let result
-	const parentNodeId = token.id
-	const parent = e.select(e.sys_core.SysNodeObj, (n: any) => ({
-		filter: e.op(n.id, '=', e.cast(e.uuid, parentNodeId))
-	}))
-	const root = e.select(parent.children, (n: any) => ({
-		...shapeNodeObj(n)
-	}))
-	query = e.select(root)
-	const resultRoot = await query.run(client)
-	debug('getNodesLevel', 'resultRoot', resultRoot)
-
-	const children = e.select(e.sys_core.SysNodeObj, (n: any) => ({
-		...shapeNodeObj(n),
-		filter: e.op(n.id, 'in', root.children.id)
-	}))
-	query = e.select(children)
-	const resultChildren = await query.run(client)
-
-	return { root: resultRoot, children: resultChildren }
+export async function getNodesChildren(token: TokenApiIds) {
+	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+		e.select(e.sys_core.SysNodeObj, (n) => ({
+			...shapeNodeObj(n),
+			filter: e.op(n.id, 'in', e.array_unpack(ids))
+		}))
+	)
+	const result = await query.run(client, { ids: token.ids })
+	return result
 }
 
 export async function getReportUser(repUserId: string) {
