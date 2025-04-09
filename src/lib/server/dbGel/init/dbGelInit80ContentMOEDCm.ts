@@ -268,10 +268,24 @@ function initApplicant(init: InitDb) {
 				isDisplayable: true,
 				itemChanges: [
 					{
+						codeAccess: 'required',
+						codeItemChangeAction: 'none',
+						codeOp: 'notEqual',
+						columns: ['addr1', 'city', 'codeState', 'zip'],
+						orderDefine: 0,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_sys_person_living_arrangements',
+								name: 'I am currently homeless'
+							}
+						]
+					},
+					{
 						codeAccess: 'optional',
 						codeItemChangeAction: 'none',
 						codeOp: 'notEqual',
-						columns: ['addr1', 'addr2', 'city', 'codeState', 'zip'],
+						columns: ['addr2'],
 						orderDefine: 0,
 						valueTriggerCodes: [
 							{
@@ -303,7 +317,6 @@ function initApplicant(init: InitDb) {
 				fieldListItemsParmValue: 'ct_sys_person_living_arrangements'
 			},
 			{
-				codeAccess: 'optional',
 				columnName: 'addr1',
 				indexTable: 1,
 				isDisplayable: true,
@@ -319,7 +332,6 @@ function initApplicant(init: InitDb) {
 				orderDisplay: 220
 			},
 			{
-				codeAccess: 'optional',
 				columnName: 'city',
 				indexTable: 1,
 				isDisplayable: true,
@@ -327,7 +339,6 @@ function initApplicant(init: InitDb) {
 				orderDisplay: 230
 			},
 			{
-				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeState',
 				isDisplayable: true,
@@ -338,7 +349,6 @@ function initApplicant(init: InitDb) {
 				fieldListItemsParmValue: 'ct_sys_state'
 			},
 			{
-				codeAccess: 'optional',
 				columnName: 'zip',
 				indexTable: 1,
 				isDisplayable: true,
@@ -881,7 +891,6 @@ function initCsf(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'programCm',
-				orderCrumb: 10,
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
@@ -890,14 +899,13 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'attrs',
-				headerAlt: 'Site',
+				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
-				indexTable: 0,
-				linkColumns: ['header'],
-				linkTable: 'SysAttr'
+				exprCustom: `(SELECT sys_core::SysAttr FILTER .id IN app_cm::CmClientServiceFlow.attrs.id AND .codeAttrType.name = 'at_cm_sf_site').obj.header`,
+				headerAlt: 'Site',
+				nameCustom: 'customSite'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1029,8 +1037,8 @@ function initCsf(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_attr_obj_system_types',
-				fieldListItemsParmValueList: ['at_cm_sf_site']
+				fieldListItems: 'il_sys_attr_obj_system_type_single',
+				fieldListItemsParmValue: 'at_cm_sf_site'
 			},
 			{
 				codeFieldElement: 'select',
@@ -1103,6 +1111,68 @@ function initCsf(init: InitDb) {
 				orderDisplay: 140,
 				orderDefine: 140,
 				indexTable: 0,
+				itemChanges: [
+					{
+						codeAccess: 'required',
+						codeItemChangeAction: 'none',
+						codeItemChangeValueType: 'code',
+						codeOp: 'equal',
+						columns: ['dateStart'],
+						orderDefine: 0,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_cm_sf_eligibility_status',
+								name: 'Enrolled'
+							}
+						]
+					},
+					{
+						codeAccess: 'readOnly',
+						codeItemChangeAction: 'reset',
+						codeItemChangeValueType: 'code',
+						codeOp: 'notEqual',
+						columns: ['dateStart'],
+						orderDefine: 1,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_cm_sf_eligibility_status',
+								name: 'Enrolled'
+							}
+						]
+					},
+					{
+						codeAccess: 'required',
+						codeItemChangeAction: 'none',
+						codeItemChangeValueType: 'code',
+						codeOp: 'equal',
+						columns: ['dateEnd'],
+						orderDefine: 0,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_cm_sf_eligibility_status',
+								name: 'Rejected'
+							}
+						]
+					},
+					{
+						codeAccess: 'readOnly',
+						codeItemChangeAction: 'reset',
+						codeItemChangeValueType: 'code',
+						codeOp: 'notEqual',
+						columns: ['dateEnd'],
+						orderDefine: 1,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_cm_sf_eligibility_status',
+								name: 'Rejected'
+							}
+						]
+					}
+				],
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name_system',
 				fieldListItemsParmValue: 'ct_cm_sf_eligibility_status'
 			},

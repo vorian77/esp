@@ -1183,7 +1183,7 @@ function initDataObjColumn(init: InitDb) {
 				fieldEmbedListConfig: 'flec_data_obj_data_obj_column_item_value',
 				indexTable: 0,
 				isDisplayable: true,
-				linkColumns: ['display'],
+				linkColumns: ['itemDisplay'],
 				linkTable: 'SysDataObjColumnItemValue',
 				orderDefine: 670,
 				orderDisplay: 670

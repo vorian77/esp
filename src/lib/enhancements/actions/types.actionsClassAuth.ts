@@ -1,5 +1,12 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { CodeAction, CodeActionClass, CodeActionType, required, strRequired } from '$utils/types'
+import {
+	CodeAction,
+	CodeActionClass,
+	CodeActionType,
+	required,
+	setDataRecordValuesForSave,
+	strRequired
+} from '$utils/types'
 import {
 	TokenApiQueryData,
 	TokenApiQueryType,
@@ -39,7 +46,7 @@ export class AuthActionDB extends AuthAction {
 
 		let exprParms: DataRecord = {
 			dbExpr: this.dbExpr,
-			record: authProcess.parms
+			record: setDataRecordValuesForSave(authProcess.parms)
 		}
 
 		const result: ResponseBody = await apiFetchFunctionRaw(

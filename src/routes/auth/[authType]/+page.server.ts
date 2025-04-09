@@ -1,8 +1,5 @@
 import { getEnvVar } from '$server/env'
 import type { Actions } from './$types'
-import { dbInit } from '$server/dbGel/init/dbGelInit'
-
-// await dbInit()
 
 export async function load({ params }) {
 	return { environ: getEnvVar('environ'), authType: params.authType }

@@ -265,17 +265,17 @@ function initDataObj(init: InitDb) {
 			{
 				codeAttrAccessSource: 'user',
 				codeAttrAccessType: 'permitted',
-				codeAttrType: 'at_cm_sf_site'
+				codeAttrType: 'at_sys_msg_receive'
 			}
 		],
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
-		exprFilter: `.id IN msgsOpen.id`,
-		exprWith: `msgsRoot := (SELECT sys_core::SysMsg FILTER NOT EXISTS .parent),
-		msgsOpen := (SELECT msgsRoot FILTER .id IN (SELECT DETACHED sys_core::SysMsg FILTER .id IN msgsRoot.thread.id AND .isOpen AND .sender.id = <user,uuid,personId> UNION <user,uuid,personId> IN .recipients.id UNION ${ParmsValuesType.attributeAccessFilter}).id)`,
-		header: 'My Messages',
-		name: 'data_obj_task_sys_msg_root_list',
+		exprFilter: `.id IN msgsUserRootThreadOpen.id`,
+		exprWith: `msgsUserOpen := (SELECT sys_core::SysMsg FILTER .isOpen AND (<user,uuid,personId> IN .recipients.id OR ${ParmsValuesType.attributeAccessFilter})),
+		msgsUserRootThreadOpen := (SELECT sys_core::SysMsg FILTER NOT EXISTS .parent AND .id IN msgsUserOpen.thread.id)`,
+		header: 'My Open Messages',
+		name: 'data_obj_task_sys_msg_root_list_open',
 		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
@@ -287,16 +287,6 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'custom_element_bool',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				exprCustom: `'Yes' IF .isOpen ELSE 'No'`,
-				headerAlt: 'Open',
-				nameCustom: 'isOpenDisplay'
-			},
-			{
-				codeAccess: 'readOnly',
 				codeAlignmentAlt: 'right',
 				codeFieldElement: 'number',
 				columnName: 'custom_element_int',
@@ -305,7 +295,7 @@ function initDataObj(init: InitDb) {
 				orderDefine: 30,
 				exprCustom: `(WITH 
 			now := cal::to_local_date(datetime_current(), 'UTC'),
-			compare :=.date,
+			compare := min((SELECT .thread FILTER .id = msgsUserOpen.id).date),
 			dur := now - compare,
 			SELECT std::duration_get(dur, 'day'))`,
 				headerAlt: 'Days Open',
@@ -369,7 +359,7 @@ function initDataObj(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
-				linkColumns: ['header'],
+				linkColumns: ['obj', 'header'],
 				linkTable: 'SysAttr'
 			},
 			{
@@ -378,15 +368,6 @@ function initDataObj(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'note',
-				isDisplay: true,
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
 				indexTable: 0
 			}
 		]
@@ -477,35 +458,16 @@ function initDataObj(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_msg_recipients_system'
 			},
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'recipients',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 70,
-			// 	orderDefine: 70,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_msg_recipients_system'
-			// },
-			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'attrs',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 80,
-			// 	orderDefine: 80,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_attr_obj_system'
-			// },
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'chips',
+				codeFieldElement: 'select',
 				columnName: 'attrs',
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
 				indexTable: 0,
-				fieldListItems: 'il_sys_attr_obj_system'
+				fieldListItems: 'il_sys_attr_obj_system_type_single_msg_receive',
+				fieldListItemsParmValue: 'at_sys_msg_receive'
 			},
 			{
 				codeAccess: 'optional',
@@ -611,7 +573,7 @@ function initDataObj(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
-				linkColumns: ['header'],
+				linkColumns: ['obj', 'header'],
 				linkTable: 'SysAttr'
 			},
 			{
@@ -765,7 +727,7 @@ function initDataObj(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 120,
 				orderDefine: 120,
-				linkColumns: ['header'],
+				linkColumns: ['obj', 'header'],
 				linkTable: 'SysAttr'
 			},
 			// {
@@ -1034,7 +996,7 @@ function initDataObj(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,
-				linkColumns: ['header'],
+				linkColumns: ['obj', 'header'],
 				linkTable: 'SysAttr'
 			},
 			{
@@ -1048,6 +1010,131 @@ function initDataObj(init: InitDb) {
 			}
 		]
 	})
+
+	init.addTrans('sysDataObjTask', {
+		actionGroup: 'doag_list',
+		attrsAccess: [
+			{
+				codeAttrAccessSource: 'user',
+				codeAttrAccessType: 'permitted',
+				codeAttrType: 'at_sys_msg_receive'
+			}
+		],
+		codeCardinality: 'list',
+		codeComponent: 'FormList',
+		codeDataObjType: 'taskTarget',
+		exprFilter: `.id IN msgsUserRoot.id`,
+		exprWith: `msgsUser := (SELECT sys_core::SysMsg FILTER .sender.id = <user,uuid,personId> UNION <user,uuid,personId> IN .recipients.id UNION ${ParmsValuesType.attributeAccessFilter}),
+		msgsUserOpen := (SELECT sys_core::SysMsg FILTER .isOpen AND (<user,uuid,personId> IN .recipients.id UNION ${ParmsValuesType.attributeAccessFilter})),
+		msgsUserRoot := (SELECT sys_core::SysMsg FILTER NOT EXISTS .parent AND .id IN msgsUser.thread.id)`,
+		header: 'My Messages',
+		name: 'data_obj_task_sys_msg_root_list_all',
+		owner: 'sys_system',
+		tables: [{ index: 0, table: 'SysMsg' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				exprCustom: `'Yes' IF .id IN msgsUserOpen.thread.id ELSE 'No'`,
+				headerAlt: 'Awaiting Response',
+				nameCustom: 'isAwaitingResponse'
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'right',
+				codeFieldElement: 'number',
+				columnName: 'custom_element_int',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				exprCustom: `(WITH 
+			now := cal::to_local_date(datetime_current(), 'UTC'),
+			compare := min((SELECT .thread FILTER .id = msgsUserOpen.id).date),
+			dur := now - compare,
+			SELECT std::duration_get(dur, 'day'))`,
+				headerAlt: 'Days Open',
+				nameCustom: 'customAppDaysOpen',
+				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_int',
+				isDisplayable: true,
+				orderDisplay: 32,
+				orderDefine: 32,
+				exprCustom: `count(.thread)`,
+				headerAlt: 'Thread - Count',
+				nameCustom: 'customThread'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_date',
+				isDisplayable: true,
+				orderDisplay: 34,
+				orderDefine: 34,
+				exprCustom: `min(.thread.date)`,
+				headerAlt: 'Thread - Oldest',
+				nameCustom: 'customThreadDateOld'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_date',
+				isDisplayable: true,
+				orderDisplay: 36,
+				orderDefine: 36,
+				exprCustom: `max(.thread.date)`,
+				headerAlt: 'Thread - Newest',
+				nameCustom: 'customThreadDateNew'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'sender',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				linkColumns: ['fullName'],
+				linkTable: 'SysPerson'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'recipients',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				linkColumns: ['fullName'],
+				linkTable: 'SysPerson'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'attrs',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				linkColumns: ['obj', 'header'],
+				linkTable: 'SysAttr'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'subject',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				indexTable: 0
+			}
+		]
+	})
 }
 
 function initNodeObj(init: InitDb) {
@@ -1056,20 +1143,37 @@ function initNodeObj(init: InitDb) {
 			{ action: 'doListDetailEdit', node: 'node_obj_sys_msg_thread_list' },
 			{ action: 'doListDetailNew', node: 'node_obj_sys_msg_root_detail_new' }
 		],
-		codeIcon: 'AppWindow',
+		codeIcon: 'Mail',
 		codeNavType: 'task',
 		codeNodeType: 'program',
 		codeQueryOwnerType: 'queryOwnerTypeSystemUser',
-		dataObj: 'data_obj_task_sys_msg_root_list',
+		dataObj: 'data_obj_task_sys_msg_root_list_open',
+		header: 'My Open Messages',
+		isAlwaysRetrieveData: true,
+		name: 'node_obj_task_sys_msg_root_list_open',
+		orderDefine: 10,
+		owner: 'sys_system'
+	})
+
+	init.addTrans('sysNodeObjTask', {
+		actions: [
+			{ action: 'doListDetailEdit', node: 'node_obj_sys_msg_thread_list' },
+			{ action: 'doListDetailNew', node: 'node_obj_sys_msg_root_detail_new' }
+		],
+		codeIcon: 'Mail',
+		codeNavType: 'task',
+		codeNodeType: 'program',
+		codeQueryOwnerType: 'queryOwnerTypeSystemUser',
+		dataObj: 'data_obj_task_sys_msg_root_list_all',
 		header: 'My Messages',
 		isAlwaysRetrieveData: true,
-		name: 'node_obj_task_sys_msg_root_list',
+		name: 'node_obj_task_sys_msg_root_list_all',
 		orderDefine: 10,
 		owner: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		codeIcon: 'AppWindow',
+		codeIcon: 'Mail',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_msg_root_detail_new',
 		header: 'New Root Message',
@@ -1085,7 +1189,7 @@ function initNodeObj(init: InitDb) {
 			{ action: 'doCustomSysMsgThreadListReply', node: 'node_obj_sys_msg_thread_detail_reply' },
 			{ action: 'doListDetailEdit', node: 'node_obj_sys_msg_thread_detail_view' }
 		],
-		codeIcon: 'AppWindow',
+		codeIcon: 'Mail',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_msg_thread_list',
 		header: 'Message Thread',
@@ -1096,7 +1200,7 @@ function initNodeObj(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		codeIcon: 'AppWindow',
+		codeIcon: 'Mail',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_msg_thread_detail_forward',
 		header: 'Message Detail-Forward',
@@ -1106,7 +1210,7 @@ function initNodeObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		codeIcon: 'AppWindow',
+		codeIcon: 'Mail',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_msg_thread_detail_reply',
 		header: 'Message Detail-Reply',
@@ -1116,7 +1220,7 @@ function initNodeObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		codeIcon: 'AppWindow',
+		codeIcon: 'Mail',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_msg_thread_detail_view',
 		header: 'Message Detail-View',
@@ -1129,7 +1233,7 @@ function initNodeObj(init: InitDb) {
 
 function initTask(init: InitDb) {
 	init.addTrans('sysTask', {
-		codeIcon: 'Activity',
+		codeIcon: 'Mail',
 		codeRenderType: 'button',
 		codeStatusObj: 'tso_sys_data',
 		exprShow: `WITH
@@ -1148,8 +1252,30 @@ function initTask(init: InitDb) {
 		isPinToDash: false,
 		isGlobalResource: false,
 		name: 'task_sys_msg_open',
-		targetNodeObj: 'node_obj_task_sys_msg_root_list',
 		orderDefine: 20,
-		owner: 'sys_system'
+		owner: 'sys_system',
+		targetNodeObj: 'node_obj_task_sys_msg_root_list_open'
+	})
+
+	init.addTrans('sysTask', {
+		codeIcon: 'Mail',
+		codeRenderType: 'button',
+		codeStatusObj: 'tso_sys_data',
+		exprStatus: `WITH
+		youth := org_client_moed::MoedParticipant.person,
+		msgsOpen := (SELECT sys_core::SysMsg FILTER .isOpen),
+		youthMsgs := (youth {max_days_open := duration_get(cal::to_local_date(datetime_current(), 'UTC') - min((SELECT msgsOpen FILTER youth = .sender or youth IN .recipients).date), 'day') ?? 0})
+		SELECT {
+			openLT2 := {label := 'Open 5 or fewer days', data := count(youthMsgs FILTER .max_days_open > 0 AND .max_days_open < 6), color := 'green' },
+			open2To7 := {label := 'Open between 6 and 14 days', data := count(youthMsgs FILTER .max_days_open > 5 AND .max_days_open < 15), color := 'yellow' },
+			openGT7 := {label := 'Open 15 or more days', data := count(youthMsgs FILTER .max_days_open > 14), color := 'red'}
+		}`,
+		header: 'My Messages',
+		isPinToDash: false,
+		isGlobalResource: true,
+		name: 'task_sys_msg_all',
+		orderDefine: 0,
+		owner: 'sys_system',
+		targetNodeObj: 'node_obj_task_sys_msg_root_list_all'
 	})
 }

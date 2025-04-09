@@ -231,8 +231,6 @@
 			switch (field.colDO.colDB.codeDataType) {
 				case PropDataType.bool:
 					defn.cellDataType = isEditable ? 'customBoolean' : 'customText'
-					// defnCellStyle.addStyle('display', 'flex')
-					// defnCellStyle.addStyle('justify-content', 'center')
 					break
 
 				case PropDataType.date:

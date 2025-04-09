@@ -258,7 +258,7 @@ async function initFieldListConfigDataObjColumnItem(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'display',
+				columnName: 'itemDisplay',
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
@@ -266,7 +266,7 @@ async function initFieldListConfigDataObjColumnItem(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'data',
+				columnName: 'itemData',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
@@ -335,14 +335,14 @@ async function initFieldListConfigDataObjColumnItem(init: InitDb) {
 				orderDefine: 20
 			},
 			{
-				columnName: 'display',
+				columnName: 'itemDisplay',
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				indexTable: 0
 			},
 			{
-				columnName: 'data',
+				columnName: 'itemData',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,

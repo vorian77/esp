@@ -170,16 +170,16 @@ export const isNumber = (value: any) => {
 	return typeof value === 'number' || !isNaN(value)
 }
 
-export class ObjAttr {
+export class Attr {
 	codeAttrType: string
 	id: string
-	name: string
+	obj: string
 	constructor(obj: any) {
-		const clazz = 'DataObjAttr'
+		const clazz = 'Attr'
 		obj = valueOrDefault(obj, {})
 		this.codeAttrType = strRequired(obj._codeAttrType, clazz, 'codeAttrType')
 		this.id = strRequired(obj.id, clazz, 'id')
-		this.name = strRequired(obj._name, clazz, 'name')
+		this.obj = strRequired(obj._obj, clazz, 'obj')
 	}
 }
 

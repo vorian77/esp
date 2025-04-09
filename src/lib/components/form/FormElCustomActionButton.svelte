@@ -14,8 +14,8 @@
 
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let dataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
-	let disabled = $derived(!dm.isStatusValidNode(parms.dataObjId))
 	let field = $derived(parms.field) as FieldCustomActionButton
+	let disabled = $derived(!dm.isStatusValidNode(parms.dataObjId))
 
 	async function action() {
 		sm.app.setTreeLevelIdxCurrent(dataObj.treeLevelIdx)

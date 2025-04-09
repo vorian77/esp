@@ -23,7 +23,7 @@ import {
 	nbrOptional,
 	nbrRequired,
 	classOptional,
-	ObjAttr,
+	Attr,
 	override,
 	ParmsValuesType,
 	required,
@@ -942,7 +942,10 @@ export class PropLinkItemsSource {
 		let props = ''
 		let display = ''
 		this.props.forEach((p: PropLinkItemsSourceProp) => {
-			if (display) display += '++' + this.displayIdSeparator
+			if (display) {
+				display += ' ++ '
+				if (this.displayIdSeparator) display += `"${this.displayIdSeparator}" ++ `
+			}
 			display += p.expr
 
 			if (props) props += ', '
@@ -951,11 +954,11 @@ export class PropLinkItemsSource {
 		this.exprProps = `{ data := .id, display := ${display}, ${props} }`
 	}
 
-	getExprSelect(isCompilation: boolean, currVal: string | string[]) {
+	getExprSelect(isCompilation: boolean, currVal: string | string[] | undefined) {
 		let expr = ''
 		let filter = this.exprFilter ? `(${this.exprFilter})` : ''
 
-		if (filter) {
+		if (filter && currVal) {
 			let currValFilter = ''
 			if (Array.isArray(currVal)) {
 				if (currVal.length > 0) {
@@ -1056,7 +1059,7 @@ export class DataObjAttrsAccessGroup {
 			}
 		})
 	}
-	eval(attrsRequestor: ObjAttr[]) {
+	eval(attrsRequestor: Attr[]) {
 		// forbidden
 		if (
 			this.attrsAccessForbidden.some((forbidden) => {
@@ -1105,12 +1108,12 @@ export class DataObjAttrsAccess {
 	}
 }
 export class DataObjAttrsAccessForbidden extends DataObjAttrsAccess {
-	attr: ObjAttr
+	attr: Attr
 	constructor(obj: any) {
 		const clazz = 'DataObjAttrsAccessForbidden'
 		super(obj)
 		obj = valueOrDefault(obj, {})
-		this.attr = new ObjAttr(obj._attr)
+		this.attr = new Attr(obj._attr)
 	}
 }
 export class DataObjAttrsAccessPermitted extends DataObjAttrsAccess {
@@ -1123,14 +1126,14 @@ export class DataObjAttrsAccessPermitted extends DataObjAttrsAccess {
 	}
 }
 export class DataObjAttrsAccessRequired extends DataObjAttrsAccess {
-	attr: ObjAttr
+	attr: Attr
 	constructor(obj: any) {
 		const clazz = 'DataObjAttrsAccessRequired'
 		super(obj)
 		obj = valueOrDefault(obj, {})
-		this.attr = new ObjAttr(obj._attr)
+		this.attr = new Attr(obj._attr)
 	}
-	eval(attrsRequestor: ObjAttr[]) {}
+	eval(attrsRequestor: Attr[]) {}
 }
 
 export class DataObjAttrsAccessEval {

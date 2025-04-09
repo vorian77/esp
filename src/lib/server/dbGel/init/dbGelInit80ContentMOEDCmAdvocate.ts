@@ -19,8 +19,8 @@ function initTaskOpenApps(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
-		exprFilter: `.owner.name = 'sys_client_moed' AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_moed::MoedParticipant).dateEnd`,
-		header: 'Open Applicant Applications',
+		exprFilter: `.owner.name = 'sys_client_moed' AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_moed::MoedParticipant).dateStart AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_moed::MoedParticipant).dateEnd`,
+		header: 'Open Applications',
 		name: 'data_obj_task_moed_part_list_apps_open',
 		owner: 'sys_client_moed',
 		tables: [
@@ -138,10 +138,10 @@ function initTaskOpenApps(init: InitDb) {
 		codeIcon: 'Activity',
 		codeRenderType: 'button',
 		codeStatusObj: 'tso_sys_data',
-		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client IN org_client_moed::MoedParticipant AND NOT EXISTS .dateEnd)) > 0`,
+		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client IN org_client_moed::MoedParticipant AND NOT EXISTS .dateStart AND NOT EXISTS .dateEnd)) > 0`,
 		exprStatus: `WITH 
   	sfs := (SELECT app_cm::CmClientServiceFlow FILTER .client IN org_client_moed::MoedParticipant),
-  	sfsOpen := (SELECT sfs { days_open := duration_get(cal::to_local_date(datetime_current(), 'UTC') - .dateStart ?? .dateCreated, 'day') } FILTER NOT EXISTS .dateEnd),
+  	sfsOpen := (SELECT sfs { days_open := duration_get(cal::to_local_date(datetime_current(), 'UTC') - .dateStart ?? .dateCreated, 'day') } FILTER NOT EXISTS .dateStart AND NOT EXISTS .dateEnd),
   	SELECT {
       openLT6 := {label := 'Open 5 or fewer days', data := count(sfsOpen FILTER .days_open < 6), color := 'green'},
       open6To14 := {label := 'Open between 6 and 14 days', data := count(sfsOpen FILTER .days_open > 5 AND .days_open < 15), color := 'yellow'},

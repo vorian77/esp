@@ -235,13 +235,17 @@ export class Query {
 						''
 					)
 					propTable = propTable === this.getTableRootObj() ? `DETACHED ${propTable}` : propTable
-					const exprAttrsUneffected = `(SELECT .attrs FILTER .codeAttrType.name NOT IN {${attrTypes}})`
+					const exprAttrsUneffected = attrTypes
+						? `(SELECT .attrs FILTER .codeAttrType.name NOT IN {${attrTypes}})`
+						: ''
 					const exprAttrsNew = `(FOR attr IN json_array_unpack(item['linkItems_attrs']) UNION ((SELECT sys_core::SysAttr FILTER .id = <uuid>attr)))`
 
 					propExpr =
 						action === LinkSaveAction.INSERT
 							? exprAttrsNew
-							: `(${exprAttrsUneffected} UNION ${exprAttrsNew})`
+							: exprAttrsUneffected
+								? `(${exprAttrsUneffected} UNION ${exprAttrsNew})`
+								: `(${exprAttrsNew})`
 					propExpr = 'DISTINCT ' + propExpr
 
 					setValueFunction(propIdx, (rawValue: any) => {

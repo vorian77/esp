@@ -92,12 +92,15 @@ export class ScriptGroup {
 					)
 				}
 
-				const propValueType = getDataRecordValueType(
-					record[prop.propName],
-					FieldValueType.data,
-					prop.codeDataType,
-					prop.isMultiSelect
-				)
+				let propValueType: string | string[] | undefined = undefined
+				if (prop.propNameRaw !== 'attrs') {
+					propValueType = getDataRecordValueType(
+						record[prop.propName],
+						FieldValueType.data,
+						prop.codeDataType,
+						prop.isMultiSelect
+					)
+				}
 
 				let propValue = `${prop.linkItemsSource.getExprSelect(true, propValueType)}`
 				propValue = evalExpr(
@@ -271,8 +274,8 @@ export class ScriptGroup {
 		for (let i = 0; i < queryRiders.riders.length; i++) {
 			const rider = queryRiders.riders[i]
 			if (
-				rider.codeTriggerTiming === codeTriggerTiming &&
 				rider.codeQueryType === queryType &&
+				rider.codeTriggerTiming === codeTriggerTiming &&
 				rider.codeType === DataObjQueryRiderType.dbExpr &&
 				rider.expr
 			) {

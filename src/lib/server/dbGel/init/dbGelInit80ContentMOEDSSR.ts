@@ -1,8 +1,10 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 import { moedDataApplicant } from '$utils/utils.randomDataGenerator'
+import { ParmsValuesType } from '$utils/types'
 
 export function initContentMOEDSsr(init: InitDb) {
-	initAttributes(init)
+	initAttrObj(init)
+	initAttr(init)
 
 	// tasks
 	initTaskSsrApp(init)
@@ -162,8 +164,8 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 210,
 				orderDefine: 210,
 				indexTable: 0,
-				fieldListItems: 'il_sys_attr_obj_system_types',
-				fieldListItemsParmValueList: ['at_cm_sf_site']
+				fieldListItems: 'il_sys_attr_obj_system_type_single',
+				fieldListItemsParmValue: 'at_cm_sf_site'
 			},
 			{
 				codeFieldElement: 'date',
@@ -210,6 +212,7 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				columnName: 'phoneMobile',
+				exprPreset: `<user,str,userName>`,
 				indexTable: 2,
 				isDisplayable: true,
 				orderDefine: 260,
@@ -312,10 +315,24 @@ function initTaskSsrApp(init: InitDb) {
 				isDisplayable: true,
 				itemChanges: [
 					{
+						codeAccess: 'required',
+						codeItemChangeAction: 'none',
+						codeOp: 'notEqual',
+						columns: ['addr1', 'city', 'codeState', 'zip'],
+						orderDefine: 0,
+						valueTriggerCodes: [
+							{
+								owner: 'sys_client_moed',
+								codeType: 'ct_sys_person_living_arrangements',
+								name: 'I am currently homeless'
+							}
+						]
+					},
+					{
 						codeAccess: 'optional',
 						codeItemChangeAction: 'none',
 						codeOp: 'notEqual',
-						columns: ['addr1', 'addr2', 'city', 'codeState', 'zip'],
+						columns: ['addr2'],
 						orderDefine: 0,
 						valueTriggerCodes: [
 							{
@@ -347,7 +364,6 @@ function initTaskSsrApp(init: InitDb) {
 				fieldListItemsParmValue: 'ct_sys_person_living_arrangements'
 			},
 			{
-				codeAccess: 'optional',
 				columnName: 'addr1',
 				indexTable: 2,
 				isDisplayable: true,
@@ -363,7 +379,6 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 340
 			},
 			{
-				codeAccess: 'optional',
 				columnName: 'city',
 				indexTable: 2,
 				isDisplayable: true,
@@ -371,7 +386,6 @@ function initTaskSsrApp(init: InitDb) {
 				orderDisplay: 350
 			},
 			{
-				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'codeState',
 				isDisplayable: true,
@@ -382,7 +396,6 @@ function initTaskSsrApp(init: InitDb) {
 				fieldListItemsParmValue: 'ct_sys_state'
 			},
 			{
-				codeAccess: 'optional',
 				columnName: 'zip',
 				indexTable: 2,
 				isDisplayable: true,
@@ -446,13 +459,22 @@ function initTaskSsrApp(init: InitDb) {
 function initTaskSsrMsg(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_list',
+		attrsAccess: [
+			{
+				codeAttrAccessSource: 'user',
+				codeAttrAccessType: 'permitted',
+				codeAttrType: 'at_sys_msg_receive'
+			}
+		],
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
-		exprFilter: '<user,uuid,personId> IN (.sender.id UNION .recipients.id)',
-		header: 'My Messages',
+		exprFilter: `.id IN msgsUserRootThreadOpen.id`,
+		exprWith: `msgsUserOpen := (SELECT sys_core::SysMsg FILTER .isOpen AND <user,uuid,personId> IN .recipients.id),
+			msgsUserRootThreadOpen := (SELECT sys_core::SysMsg FILTER NOT EXISTS .parent AND .thread.id IN msgsUserOpen.thread.id)`,
+		header: 'My Open Messages',
 		name: 'data_obj_task_moed_ssr_msg_list',
-		owner: 'sys_client_moed',
+		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -463,65 +485,94 @@ function initTaskSsrMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'parent',
-				isDisplayable: false,
-				orderDefine: 20,
-				indexTable: 0
+				codeAlignmentAlt: 'right',
+				codeFieldElement: 'number',
+				columnName: 'custom_element_int',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				exprCustom: `(WITH 
+				now := cal::to_local_date(datetime_current(), 'UTC'),
+				compare := min((SELECT .thread FILTER .id = msgsUserOpen.id).date),
+				dur := now - compare,
+				SELECT std::duration_get(dur, 'day'))`,
+				headerAlt: 'Days Open',
+				nameCustom: 'customAppDaysOpen',
+				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
 			},
 			{
 				codeAccess: 'readOnly',
-				codeSortDir: 'DESC',
-				columnName: 'date',
-				orderCrumb: 10,
-				orderSort: 10,
+				columnName: 'custom_element_int',
 				isDisplayable: true,
-				orderDisplay: 25,
-				orderDefine: 25,
-				indexTable: 0
+				orderDisplay: 32,
+				orderDefine: 32,
+				exprCustom: `count(.thread)`,
+				headerAlt: 'Thread - Count',
+				nameCustom: 'customThread'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_date',
+				isDisplayable: true,
+				orderDisplay: 34,
+				orderDefine: 34,
+				exprCustom: `min(.thread.date)`,
+				headerAlt: 'Thread - Oldest',
+				nameCustom: 'customThreadDateOld'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_date',
+				isDisplayable: true,
+				orderDisplay: 36,
+				orderDefine: 36,
+				exprCustom: `max(.thread.date)`,
+				headerAlt: 'Thread - Newest',
+				nameCustom: 'customThreadDateNew'
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 50,
+				orderDefine: 50,
 				linkColumns: ['fullName'],
 				linkTable: 'SysPerson'
 			},
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	codeSortDir: 'DESC',
-			// 	columnName: 'createdAt',
-			// 	orderCrumb: 10,
-			// 	orderSort: 10,
-			// 	isDisplayable: true,
-			// 	orderDisplay: 20,
-			// 	orderDefine: 20,
-			// 	indexTable: 0
-			// },
+			{
+				codeAccess: 'readOnly',
+				columnName: 'recipients',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				linkColumns: ['fullName'],
+				linkTable: 'SysPerson'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'attrs',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				linkColumns: ['obj', 'header'],
+				linkTable: 'SysAttr'
+			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'subject',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'note',
-				isDisplay: false,
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDisplay: 80,
+				orderDefine: 80,
 				indexTable: 0
 			}
 		]
 	})
 
 	init.addTrans('sysDataObjTask', {
-		actionGroup: 'doag_detail_msg',
+		actionGroup: 'doag_detail_sys_msg_root_send',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskTarget',
@@ -530,12 +581,6 @@ function initTaskSsrMsg(init: InitDb) {
 		name: 'data_obj_task_moed_ssr_msg_detail',
 		owner: 'sys_client_moed',
 		queryRiders: [
-			{
-				codeQueryType: 'retrieve',
-				codeTriggerTiming: 'pre',
-				codeType: 'dbExpr',
-				expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,SysMsg.id> SET {isOpen := false}`
-			},
 			{
 				codeQueryType: 'save',
 				codeTriggerTiming: 'post',
@@ -601,6 +646,19 @@ function initTaskSsrMsg(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				// codeAccess: 'optional',
+				codeFieldElement: 'select',
+				columnName: 'attrs',
+				headerAlt: 'Site',
+				isDisplayable: true,
+				orderDisplay: 85,
+				orderDefine: 85,
+				indexTable: 0,
+				fieldListItems: 'il_sys_attr_obj_system_type_single_msg_receive',
+				fieldListItemsParmValue: 'at_sys_msg_receive'
+			},
+			//  ${ParmsValuesType.attributeAccessFilter})
+			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
@@ -629,6 +687,27 @@ function initTaskSsrMsg(init: InitDb) {
 		name: 'data_obj_task_moed_ssr_msg_detail_reply',
 		owner: 'sys_client_moed',
 		tables: [{ index: 0, table: 'SysMsg' }],
+		queryRiders: [
+			{
+				codeQueryType: 'retrieve',
+				codeTriggerTiming: 'pre',
+				codeType: 'dbExpr',
+				expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,SysMsg.id> SET {isOpen := false}`
+			},
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'userMsg',
+				codeUserMsgDelivery: 'toast',
+				userMsg: `Your message has been sent. We'll get back with you ASAP!`
+			},
+			{
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				codeType: 'appDestination',
+				codeUserDestination: 'back'
+			}
+		],
 		fields: [
 			{
 				columnName: 'id',
@@ -727,13 +806,21 @@ function initTaskSsrMsg(init: InitDb) {
 		codeRenderType: 'button',
 		codeStatusObj: 'tso_sys_data',
 		description: 'Have questions? Send messages to program staff.',
-		exprShow: `SELECT count((SELECT sys_core::SysMsg FILTER <user,uuid,personId> IN (.sender.id UNION .recipients.id))) > 0`,
+		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person)) > 0`,
+		// exprStatus: `WITH msgs := (SELECT sys_core::SysMsg FILTER <user,uuid,personId> IN (.sender.id UNION .recipients.id))
+		// SELECT {
+		// 	msgsCnt := {label := 'Total', data := count(msgs), color := 'black'},
+		// 	msgsCntOpen := {label := 'Open', data := count(msgs FILTER .isOpen), color := 'black'},
+		// 	}`,
+
+		// exprShow: `SELECT count((SELECT sys_core::SysMsg FILTER .isOpen AND <user,uuid,personId> IN .recipients.id)) > 0`,
 		exprStatus: `WITH msgs := (SELECT sys_core::SysMsg FILTER <user,uuid,personId> IN (.sender.id UNION .recipients.id))
 		SELECT {
 			msgsCnt := {label := 'Total', data := count(msgs), color := 'black'},
 			msgsCntOpen := {label := 'Open', data := count(msgs FILTER .isOpen), color := 'black'},
 			}`,
-		header: 'My Messages',
+
+		header: 'My Messages (Youth)',
 		isPinToDash: false,
 		isGlobalResource: false,
 		name: 'task_moed_ssr_app_msg',
@@ -1079,20 +1166,105 @@ function initTaskSsrWelcome(init: InitDb) {
 	})
 }
 
-function initAttributes(init: InitDb) {
-	init.addTrans('sysAttr', {
-		codeAttrType: 'at_cm_sf_site',
+function initAttrObj(init: InitDb) {
+	// site
+	init.addTrans('sysAttrObj', {
 		header: 'Eastside YO Center',
 		isGlobalResource: false,
 		name: 'moedOfficeEastside',
 		owner: 'sys_client_moed'
 	})
-	init.addTrans('sysAttr', {
-		codeAttrType: 'at_cm_sf_site',
+	init.addTrans('sysAttrObj', {
 		header: 'Westside YO Center',
 		isGlobalResource: false,
 		name: 'moedOfficeWestside',
 		owner: 'sys_client_moed'
+	})
+
+	// staff
+	init.addTrans('sysAttrObj', {
+		header: 'Staff-Eastside',
+		isGlobalResource: false,
+		name: 'moedStaffEastside',
+		owner: 'sys_client_moed'
+	})
+	init.addTrans('sysAttrObj', {
+		header: 'Staff-Westside',
+		isGlobalResource: false,
+		name: 'moedStaffWestside',
+		owner: 'sys_client_moed'
+	})
+
+	// youth
+	init.addTrans('sysAttrObj', {
+		header: 'Youth-Eastside',
+		isGlobalResource: false,
+		name: 'moedYouthEastside',
+		owner: 'sys_client_moed'
+	})
+	init.addTrans('sysAttrObj', {
+		header: 'Youth-Westside',
+		isGlobalResource: false,
+		name: 'moedYouthWestside',
+		owner: 'sys_client_moed'
+	})
+}
+
+function initAttr(init: InitDb) {
+	// site
+	init.addTrans('sysAttr', {
+		owner: 'sys_client_moed',
+		name: 'moedOfficeEastside',
+		type: 'at_cm_sf_site'
+	})
+	init.addTrans('sysAttr', {
+		owner: 'sys_client_moed',
+		name: 'moedOfficeWestside',
+		type: 'at_cm_sf_site'
+	})
+
+	// staff
+	init.addTrans('sysAttr', {
+		owner: 'sys_client_moed',
+		name: 'moedStaffEastside',
+		type: 'at_sys_msg_receive'
+	})
+	init.addTrans('sysAttr', {
+		owner: 'sys_client_moed',
+		name: 'moedStaffEastside',
+		type: 'at_sys_msg_send'
+	})
+	init.addTrans('sysAttr', {
+		owner: 'sys_client_moed',
+		name: 'moedStaffWestside',
+		type: 'at_sys_msg_receive'
+	})
+	init.addTrans('sysAttr', {
+		owner: 'sys_client_moed',
+		name: 'moedStaffWestside',
+		type: 'at_sys_msg_send'
+	})
+
+	// youth
+	init.addTrans('sysAttr', {
+		owner: 'sys_client_moed',
+		name: 'moedYouthEastside',
+		type: 'at_sys_msg_receive'
+	})
+	init.addTrans('sysAttr', {
+		owner: 'sys_client_moed',
+		name: 'moedYouthEastside',
+		type: 'at_sys_msg_send'
+	})
+	init.addTrans('sysAttr', {
+		owner: 'sys_client_moed',
+		name: 'moedYouthWestside',
+		type: 'at_sys_msg_receive'
+	})
+	init.addTrans('sysAttr', {
+		owner: 'sys_client_moed',
+		name: 'moedYouthWestside',
+		type: 'at_sys_msg_send'
 	})
 }
 

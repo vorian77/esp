@@ -5,6 +5,21 @@ import { TokenApiDbTableColumns, TokenApiUserId, TokenApiUserPref } from '$utils
 import { getArray, Node } from '$utils/types'
 import { debug } from '$utils/utils.debug'
 
+const shapeAttr = e.shape(e.sys_core.SysAttr, (a) => ({
+	_codeAttrType: a.codeAttrType.name,
+	_obj: a.obj.name,
+	id: true
+}))
+
+const shapeAttrAccess = e.shape(e.sys_core.SysAttrAccess, (aa) => ({
+	_attr: e.select(aa.attr, (a) => ({
+		...shapeAttr(a)
+	})),
+	_codeAttrAccessSource: aa.codeAttrAccessSource.name,
+	_codeAttrAccessType: aa.codeAttrAccessType.name,
+	_codeAttrType: aa.codeAttrType.name
+}))
+
 const shapeCodeAction = e.shape(e.sys_core.SysCodeAction, (ca) => ({
 	_class: ca.codeType.name,
 	_type: ca.name
@@ -258,14 +273,7 @@ export async function getDataObjById(token: TokenApiId) {
 				...shapeDataObjActionGroup(afg)
 			})),
 			_attrsAccessGroup: e.select(do1.attrsAccess, (aa) => ({
-				_attr: e.select(aa.attr, (a) => ({
-					_codeAttrType: a.codeAttrType.name,
-					_name: a.name,
-					id: true
-				})),
-				_codeAttrAccessSource: aa.codeAttrAccessSource.name,
-				_codeAttrAccessType: aa.codeAttrAccessType.name,
-				_codeAttrType: aa.codeAttrType.name
+				...shapeAttrAccess(aa)
 			})),
 			_codeCardinality: do1.codeCardinality.name,
 			_codeComponent: do1.codeComponent.name,
@@ -365,8 +373,8 @@ export async function getDataObjById(token: TokenApiId) {
 				})),
 
 				_items: e.select(doc.items, (i) => ({
-					data: true,
-					display: true,
+					itemData: true,
+					itemDisplay: true,
 					order_by: i.orderDefine
 				})),
 
@@ -666,9 +674,7 @@ export async function getTableColumns(token: TokenApiDbTableColumns) {
 export async function getUserByUserId(token: TokenApiUserId) {
 	const query = e.select(e.sys_user.SysUser, (u) => ({
 		_attrs: e.select(u.userTypes.attrs, (a) => ({
-			_codeAttrType: a.codeAttrType.name,
-			_name: a.name,
-			id: true
+			...shapeAttr(a)
 		})),
 		_personId: u.person.id,
 		_preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({

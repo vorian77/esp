@@ -33,7 +33,7 @@ import { initContentSys } from '$server/dbGel/init/dbGelInit80ContentSys'
 // user
 import { initUser } from '$server/dbGel/init/dbGelInit1User'
 
-const isResetFullDB = false
+const isResetFullDB = true
 
 export async function dbInit() {
 	let initDb = new InitDb(isResetFullDB)
@@ -81,7 +81,7 @@ export function initFeature(initDb: InitDb) {
 	// initContentCm(initDb)
 	// initContentSys(initDb)
 	// initSysAdmin(initDb)
-	initContentSysMsg(initDb)
+	// initContentSysMsg(initDb)
 	initContentMOEDSsr(initDb)
 	// initContentMOEDCm(initDb)
 	// initContentMOEDCmAdvocate(initDb)

@@ -967,6 +967,22 @@ export function setDataRecordValue(record: DataRecord, key: string, value: any) 
 	return recordKey
 }
 
+export function setDataRecordValuesForSave(record: DataRecord) {
+	Object.entries(record).forEach(([key, value]) => {
+		const isLink = Object.hasOwn(value, 'data')
+		if (isLink) {
+			let saveValue = value.data
+			if (Array.isArray(saveValue)) {
+				saveValue = saveValue.map((v) => {
+					return v.data
+				})
+			}
+			record[key] = saveValue
+		}
+	})
+	return record
+}
+
 export class ParmsUser {
 	data: ParmsUserData[] = []
 	constructor() {}

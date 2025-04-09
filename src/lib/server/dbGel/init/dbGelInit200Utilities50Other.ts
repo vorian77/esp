@@ -62,6 +62,51 @@ export async function addAppHeader(data: any) {
 	return await query.run(client, data)
 }
 
+export async function addAttr(data: any) {
+	sectionHeader(`addAttr - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			name: e.str,
+			owner: e.str,
+			type: e.str
+		},
+		(p) => {
+			return e.insert(e.sys_core.SysAttr, {
+				codeAttrType: e.sys_core.getCode('ct_sys_attribute_type', p.type),
+				createdBy: CREATOR,
+				modifiedBy: CREATOR,
+				obj: e.sys_core.getAttrObj(p.owner, p.name)
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
+export async function addAttrObj(data: any) {
+	sectionHeader(`addAttrObj - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			header: e.optional(e.str),
+			isGlobalResource: e.bool,
+			name: e.str,
+			owner: e.str
+		},
+		(p) => {
+			return e.insert(e.sys_core.SysAttrObj, {
+				createdBy: CREATOR,
+				header: p.header,
+				isGlobalResource: p.isGlobalResource,
+				name: p.name,
+				owner: e.sys_core.getSystemPrime(p.owner),
+				modifiedBy: CREATOR
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
 export async function addCode(data: any) {
 	sectionHeader(`addCode - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
@@ -289,32 +334,6 @@ export async function addNode(data: any) {
 	return await query.run(client, data)
 }
 
-export async function addAttr(data: any) {
-	sectionHeader(`addObjEntAttr - ${data.name}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			codeAttrType: e.str,
-			header: e.optional(e.str),
-			isGlobalResource: e.bool,
-			name: e.str,
-			owner: e.str
-		},
-		(p) => {
-			return e.insert(e.sys_core.SysAttr, {
-				codeAttrType: e.sys_core.getCode('ct_sys_attribute_type', p.codeAttrType),
-				createdBy: CREATOR,
-				header: p.header,
-				isGlobalResource: p.isGlobalResource,
-				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner),
-				modifiedBy: CREATOR
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-
 export async function addOrg(data: any) {
 	sectionHeader(`addOrg - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
@@ -475,11 +494,10 @@ export async function addUserType(data: any) {
 			return e.insert(e.sys_user.SysUserType, {
 				attrs: e.assert_distinct(
 					e.for(e.array_unpack(p.attrs || e.cast(e.array(e.str), e.set())), (attr) => {
-						return e.select(
-							e.sys_core.getAttr(
-								e.cast(e.str, e.json_get(attr, 'owner')),
-								e.cast(e.str, e.json_get(attr, 'name'))
-							)
+						return e.sys_core.getAttr(
+							e.cast(e.str, e.json_get(attr, 'owner')),
+							e.cast(e.str, e.json_get(attr, 'name')),
+							e.cast(e.str, e.json_get(attr, 'codeAttrType'))
 						)
 					})
 				),
@@ -572,7 +590,7 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 										modifiedBy: CREATOR,
 										orderDefine: e.cast(e.int16, e.json_get(t, 'orderDefine')),
 										retrieveParmKey: e.cast(e.str, e.json_get(t, 'retrieveParmKey')),
-										valueTargetAttribute: e.sys_core.getAttr(
+										valueTargetAttribute: e.sys_core.getAttrObj(
 											e.cast(
 												e.str,
 												e.json_get(e.cast(e.json, e.json_get(t, 'valueTargetAttribute')), 'owner')
@@ -603,7 +621,7 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 													e.cast(e.array(e.json), e.json_get(t, 'valueTriggerAttributes'))
 												),
 												(a) => {
-													return e.sys_core.getAttr(
+													return e.sys_core.getAttrObj(
 														e.cast(e.str, e.json_get(a, 'owner')),
 														e.cast(e.str, e.json_get(a, 'name'))
 													)

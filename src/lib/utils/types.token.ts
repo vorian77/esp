@@ -227,15 +227,30 @@ export class TokenApiQueryData {
 	async setAttrsAccess(rawDataObj: RawDataObj) {
 		if (rawDataObj.attrsAccessGroup) {
 			let attrAccessEval: DataObjAttrsAccessEval = rawDataObj.attrsAccessGroup.eval(this.user.attrs)
-			this.setAttrsAccessFilter(
-				attrAccessEval.isDenyAccess
-					? '.id = <uuid>{}'
-					: `.attrs.id IN (<uuid>{${attrAccessEval.permittedObjIds.reduce((filter, id) => {
-							filter += filter ? ',' : ''
-							filter += `"${id}"`
-							return filter
-						}, '')}})`
-			)
+			if (attrAccessEval.permittedObjIds.length > 0) {
+				this.setAttrsAccessFilter(
+					attrAccessEval.isDenyAccess
+						? '.id = <uuid>{}'
+						: `.attrs.id IN (<uuid>{${attrAccessEval.permittedObjIds.reduce((filter, id) => {
+								filter += filter ? ',' : ''
+								filter += `"${id}"`
+								return filter
+							}, '')}})`
+				)
+			} else {
+				if (
+					rawDataObj?.exprWith &&
+					rawDataObj?.exprWith?.indexOf('OR <attributeAccessFilter>') > -1
+				) {
+					this.setAttrsAccessFilter('')
+				}
+				if (
+					rawDataObj?.exprWith &&
+					rawDataObj?.exprWith?.indexOf('UNION <attributeAccessFilter>') > -1
+				) {
+					this.setAttrsAccessFilter('{}')
+				}
+			}
 		} else {
 			this.setAttrsAccessFilter('')
 		}

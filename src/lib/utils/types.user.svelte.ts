@@ -1,11 +1,11 @@
 import { State } from '$comps/app/types.appState.svelte'
 import {
+	Attr,
 	DataObjData,
 	DataObjRenderPlatform,
 	type DataRecord,
 	Node,
 	NodeData,
-	ObjAttr,
 	ParmsValues
 } from '$utils/types'
 import {
@@ -38,7 +38,7 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '$utils/types.user.ts'
 
 export class User {
-	attrs: ObjAttr[]
+	attrs: Attr[]
 	avatar?: FileStorage
 	dbBranch: string
 	firstName: string
@@ -65,7 +65,7 @@ export class User {
 
 	constructor(obj: any) {
 		const clazz = 'User'
-		this.attrs = arrayOfClass(ObjAttr, obj._attrs)
+		this.attrs = arrayOfClass(Attr, obj._attrs)
 		this.avatar = classOptional(FileStorage, obj.avatar)
 		this.dbBranch = required(obj.dbBranch, clazz, 'dbBranch')
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')

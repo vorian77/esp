@@ -10,15 +10,8 @@ import {
 } from '$lib/components/dataObj/types.dataObj.svelte'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
 import { getArray, PropDataType, ValidityError, valueHasChanged } from '$utils/types'
-import {
-	Field,
-	FieldAccess,
-	FieldClassType,
-	FieldElement,
-	FieldValueType
-} from '$comps/form/field.svelte'
+import { Field, FieldAccess, FieldClassType, FieldValueType } from '$comps/form/field.svelte'
 import { error } from '@sveltejs/kit'
-import FormElCustomActionButton from '$comps/form/FormElCustomActionButton.svelte'
 
 const FILENAME = '$comps/dataObj/types.dataManager.svelte'
 
@@ -118,12 +111,6 @@ export class DataManager {
 		return this.getNode(dataObjId)?.recordsDisplay[row]
 	}
 
-	getStatus() {
-		return this.objStatus.getStatus()
-	}
-	getStatusNode(dataObjId: string) {
-		return this.getNode(dataObjId)?.objStatus.getStatus()
-	}
 	init(dataObj: DataObj) {
 		this.reset()
 		this.nodeAdd(dataObj)
@@ -131,15 +118,14 @@ export class DataManager {
 	isStatusChanged() {
 		return this.objStatus.isChanged()
 	}
-	isStatusChangedNode(dataObjId: string) {
-		return this.getNode(dataObjId)?.objStatus.isChanged()
-	}
 	isStatusValid() {
 		return this.objStatus.isValid()
 	}
 	isStatusValidNode(dataObjId: string) {
+		const dmObjStatus = this.objStatus // trigger status change
 		return this.getNode(dataObjId)?.objStatus.isValid()
 	}
+
 	nodeAdd(dataObj: DataObj) {
 		this.nodes.set(dataObj.raw.id, new DataManagerNode(this.sm, dataObj))
 		this.setStatus()

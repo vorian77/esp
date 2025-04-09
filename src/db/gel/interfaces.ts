@@ -271,9 +271,9 @@ export namespace sys_core {
     "note"?: string | null;
     "testText"?: string | null;
     "attrsAccess": SysAttrAccess[];
-    "attrs": SysAttr[];
     "testCodeMulti": SysCode[];
     "testCodeSingle"?: SysCode | null;
+    "attrs": SysAttr[];
     "testBool"?: boolean | null;
     "isGlobalResource"?: boolean | null;
     "testDate"?: gel.LocalDate | null;
@@ -304,15 +304,17 @@ export namespace sys_core {
     "notes": SysObjNote[];
     "phoneOffice"?: string | null;
   }
-  export interface SysAttr extends SysObjEnt {
+  export interface SysAttr extends sys_user.Mgmt {
     "codeAttrType": SysCode;
+    "obj": SysAttrObj;
   }
   export interface SysAttrAccess extends sys_user.Mgmt {
     "codeAttrAccessSource": SysCode;
     "codeAttrAccessType": SysCode;
-    "attr"?: SysAttr | null;
     "codeAttrType"?: SysCode | null;
+    "attr"?: SysAttr | null;
   }
+  export interface SysAttrObj extends SysObjEnt {}
   export interface SysCode extends ObjRootCore, sys_user.Mgmt {
     "valueDecimal"?: number | null;
     "parent"?: SysCode | null;
@@ -353,6 +355,7 @@ export namespace sys_core {
     "isRetrieveReadonly"?: boolean | null;
     "queryRiders": SysDataObjQueryRider[];
     "codeDoRenderPlatform"?: SysCode | null;
+    "tempAttrAccessFilterNullValue"?: string | null;
     "columns": SysDataObjColumn[];
     "listReorderColumn"?: sys_db.SysColumn | null;
     "parentColumn"?: sys_db.SysColumn | null;
@@ -430,14 +433,14 @@ export namespace sys_core {
     "columns": SysDataObjColumn[];
     "codeItemChangeAction": SysCode;
     "codeItemChangeValueType"?: SysCode | null;
-    "valueTargetAttribute"?: SysAttr | null;
-    "valueTriggerAttributes": SysAttr[];
     "orderDefine": number;
+    "valueTargetAttribute"?: SysAttrObj | null;
+    "valueTriggerAttributes": SysAttrObj[];
   }
   export interface SysDataObjColumnItemValue extends sys_user.Mgmt {
-    "data": string;
-    "display": string;
     "orderDefine": number;
+    "itemData": string;
+    "itemDisplay": string;
   }
   export interface SysDataObjColumnLink extends sys_user.Mgmt {
     "column": sys_db.SysColumn;
@@ -501,6 +504,7 @@ export namespace sys_core {
   export interface SysMsg extends ObjRoot {
     "responses": SysMsg[];
     "parent"?: SysMsg | null;
+    "threadOpen": SysMsg[];
     "date"?: gel.LocalDate | null;
     "createdAt": Date;
     "sender": $default.SysPerson;
@@ -522,8 +526,8 @@ export namespace sys_core {
     "isDynamicChildrenSystemParents": boolean;
     "children": SysNodeObjChild[];
     "dataObj"?: SysDataObj | null;
-    "parent"?: SysNodeObj | null;
     "actions": SysNodeObjAction[];
+    "parent"?: SysNodeObj | null;
   }
   export interface SysNodeObjAction extends std.$Object {
     "codeAction": SysCodeAction;
@@ -1072,6 +1076,7 @@ export interface types {
     "SysObjEnt": sys_core.SysObjEnt;
     "SysAttr": sys_core.SysAttr;
     "SysAttrAccess": sys_core.SysAttrAccess;
+    "SysAttrObj": sys_core.SysAttrObj;
     "SysCode": sys_core.SysCode;
     "SysCodeAction": sys_core.SysCodeAction;
     "SysCodeType": sys_core.SysCodeType;

@@ -55,6 +55,7 @@
 		})
 		return f
 	}) as FieldChips
+
 	let fieldValue = $derived(
 		dm.getFieldValue(parms.dataObjId, parms.row, field, FieldValueType.data)
 	)

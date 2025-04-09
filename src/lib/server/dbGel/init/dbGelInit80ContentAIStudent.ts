@@ -599,8 +599,8 @@ function initCsf(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_attr_obj_system_types',
-				fieldListItemsParmValueList: ['at_cm_sf_site']
+				fieldListItems: 'il_sys_attr_obj_system_type_single',
+				fieldListItemsParmValue: 'at_cm_sf_site'
 			},
 			{
 				codeFieldElement: 'select',

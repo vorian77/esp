@@ -246,24 +246,26 @@ async function processDataObjExecute(scriptGroup: ScriptGroup, returnData: DataO
 			new EvalExprContext('processDataObjExecute', script.query.rawDataObj.name)
 		)
 
-		// const queryRiders = new DataObjQueryRiders(script.query.rawDataObj.queryRiders)
-		// scriptGroup.addScriptQueryRetrieveQueryRiders(
-		// 	script.query,
-		// 	script.queryData,
-		// 	queryRiders,
-		// 	script.queryType,
-		// 	DataObjQueryRiderTriggerTiming.pre
-		// )
+		// sandwich data retrieval in pre/post query riders
+		const queryRiders = new DataObjQueryRiders(script.query.rawDataObj.queryRiders)
+
+		scriptGroup.addScriptQueryRetrieveQueryRiders(
+			script.query,
+			script.queryData,
+			queryRiders,
+			script.queryType,
+			DataObjQueryRiderTriggerTiming.pre
+		)
 
 		const rawDataList = await exeQueryMulti(expr)
 
-		// scriptGroup.addScriptQueryRetrieveQueryRiders(
-		// 	script.query,
-		// 	script.queryData,
-		// 	queryRiders,
-		// 	script.queryType,
-		// 	DataObjQueryRiderTriggerTiming.post
-		// )
+		scriptGroup.addScriptQueryRetrieveQueryRiders(
+			script.query,
+			script.queryData,
+			queryRiders,
+			script.queryType,
+			DataObjQueryRiderTriggerTiming.post
+		)
 
 		scriptData = script?.query?.fieldEmbed ? script.query.fieldEmbed.data : returnData
 		scriptData.parms.update(script.queryData.dataTab?.parms.valueGetAll())

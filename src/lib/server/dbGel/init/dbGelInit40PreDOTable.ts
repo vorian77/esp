@@ -12,6 +12,7 @@ export function initPreTable(init: InitDb) {
 		// sys_core
 		['sys_system', 'sys_core', 'SysAttr', true],
 		['sys_system', 'sys_core', 'SysAttrAccess', true],
+		['sys_system', 'sys_core', 'SysAttrObj', true],
 		['sys_system', 'sys_core', 'SysCode', true],
 		['sys_system', 'sys_core', 'SysCodeAction', true],
 		['sys_system', 'sys_core', 'SysCodeType', true],

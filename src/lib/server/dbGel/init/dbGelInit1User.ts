@@ -141,10 +141,11 @@ function initUserType(init: InitDb) {
 		owner: 'sys_system',
 		resources: [
 			{ owner: 'sys_system', name: 'app_sys_admin_global' },
-			{ owner: 'sys_system', name: 'app_sys_reporting' },
-			{ owner: 'sys_system', name: 'task_sys_quote' },
-			{ owner: 'sys_client_atlantic_impact', name: 'task_ai_cohort_attd' },
-			{ owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' }
+			{ owner: 'sys_system', name: 'task_sys_msg_all' },
+			// { owner: 'sys_system', name: 'task_sys_quote' },
+			{ owner: 'sys_system', name: 'app_sys_reporting' }
+			// { owner: 'sys_client_atlantic_impact', name: 'task_ai_cohort_attd' },
+			// { owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' }
 		]
 	})
 
@@ -207,21 +208,20 @@ function initUserType(init: InitDb) {
 
 	/* MOED */
 	init.addTrans('sysUserType', {
-		attrs: [
-			{ name: 'moedOfficeEastside', owner: 'sys_client_moed' },
-			{ name: 'moedOfficeWestside', owner: 'sys_client_moed' }
-		],
 		header: 'MOED-Administrator',
 		name: 'ut_client_moed_admin',
 		owner: 'sys_client_moed',
 		resources: [
-			{ owner: 'sys_system', name: 'app_sys_admin_user' },
-			{ owner: 'sys_system', name: 'task_sys_quote' }
+			{ owner: 'sys_system', name: 'app_sys_admin_user' }
+			// { owner: 'sys_system', name: 'task_sys_quote' }
 			// { owner: 'sys_system', name: 'app_sys_reporting' },
 		]
 	})
 	init.addTrans('sysUserType', {
-		attrs: [{ name: 'moedOfficeEastside', owner: 'sys_client_moed' }],
+		attrs: [
+			{ codeAttrType: 'at_sys_msg_receive', name: 'moedStaffEastside', owner: 'sys_client_moed' },
+			{ codeAttrType: 'at_sys_msg_send', name: 'moedYouthEastside', owner: 'sys_client_moed' }
+		],
 		header: 'MOED-Staff-Eastside',
 		name: 'ut_client_moed_advocate_east',
 		owner: 'sys_client_moed',
@@ -230,12 +230,16 @@ function initUserType(init: InitDb) {
 			// { owner: 'sys_system', name: 'app_sys_reporting' },
 			// { owner: 'sys_client_moed', name: 'report_moed_self_serv_student_status' },
 			{ owner: 'sys_client_moed', name: 'task_moed_part_apps_open' },
+			{ owner: 'sys_system', name: 'task_sys_msg_all' },
 			{ owner: 'sys_system', name: 'task_sys_msg_open' }
 		],
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
 	})
 	init.addTrans('sysUserType', {
-		attrs: [{ name: 'moedOfficeWestside', owner: 'sys_client_moed' }],
+		attrs: [
+			{ codeAttrType: 'at_sys_msg_receive', name: 'moedStaffWestside', owner: 'sys_client_moed' },
+			{ codeAttrType: 'at_sys_msg_send', name: 'moedYouthWestside', owner: 'sys_client_moed' }
+		],
 		header: 'MOED-Staff-Westside',
 		name: 'ut_client_moed_advocate_west',
 		owner: 'sys_client_moed',
@@ -244,6 +248,7 @@ function initUserType(init: InitDb) {
 			// { owner: 'sys_system', name: 'app_sys_reporting' },
 			// { owner: 'sys_client_moed', name: 'report_moed_self_serv_student_status' },
 			{ owner: 'sys_client_moed', name: 'task_moed_part_apps_open' },
+			{ owner: 'sys_system', name: 'task_sys_msg_all' },
 			{ owner: 'sys_system', name: 'task_sys_msg_open' }
 		],
 		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_moed_staff' }]
@@ -251,13 +256,14 @@ function initUserType(init: InitDb) {
 	init.addTrans('sysUserType', {
 		header: `Baltimore - Mayor's Office of Employment Development`,
 		isSelfSignup: true,
-		name: 'ut_client_moed_student',
+		name: 'ut_client_moed_youth',
 		owner: 'sys_client_moed',
 		resources: [
 			{ owner: 'sys_client_moed', name: 'task_moed_ssr_app' },
 			{ owner: 'sys_client_moed', name: 'task_moed_ssr_app_doc' },
-			{ owner: 'sys_client_moed', name: 'task_moed_ssr_app_msg' },
-			{ owner: 'sys_client_moed', name: 'task_moed_ssr_welcome' }
+			{ owner: 'sys_client_moed', name: 'task_moed_ssr_welcome' },
+			// { owner: 'sys_system', name: 'task_sys_msg_all' }
+			{ owner: 'sys_client_moed', name: 'task_moed_ssr_app_msg' }
 		]
 	})
 }
@@ -302,11 +308,11 @@ function initUsers(init: InitDb) {
 		userTypes: [
 			'ut_app_crm_admin',
 			'ut_sys_admin_global',
-			'ut_client_ai_admin',
-			'ut_client_ai_staff',
+			// 'ut_client_ai_admin',
+			// 'ut_client_ai_staff',
 			'ut_client_moed_advocate_east',
 			'ut_client_moed_advocate_west',
-			'ut_client_moed_student'
+			'ut_client_moed_youth'
 		]
 	})
 
@@ -317,13 +323,7 @@ function initUsers(init: InitDb) {
 		firstName: 'Phyllip',
 		isActive: true,
 		lastName: 'Hall',
-		orgs: [
-			'org_client_atlantic_impact',
-			'org_apps',
-			'org_client_app_factory',
-			'org_client_moed',
-			'org_system'
-		],
+		orgs: ['org_client_moed', 'org_system'],
 		owner: 'org_client_app_factory',
 		systems: ['sys_client_atlantic_impact'],
 		userName: '2487985578',
@@ -398,7 +398,8 @@ function initUsers(init: InitDb) {
 		userTypes: [
 			'ut_client_moed_admin',
 			'ut_client_moed_advocate_east',
-			'ut_client_moed_advocate_west'
+			'ut_client_moed_advocate_west',
+			'ut_client_moed_youth'
 		]
 	})
 	init.addTrans('sysUser', {

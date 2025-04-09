@@ -1795,6 +1795,18 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
+		codeDataType: 'str',
+		header: 'Data',
+		name: 'itemData'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'str',
+		header: 'Display',
+		name: 'itemDisplay'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
 		codeDataType: 'link',
 		header: 'Items',
 		isMultiSelect: true,

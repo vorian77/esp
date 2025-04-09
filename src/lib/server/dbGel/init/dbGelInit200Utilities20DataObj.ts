@@ -51,10 +51,6 @@ export async function addDataObj(data: any) {
 				actionGroup: e.select(e.sys_core.getDataObjActionGroup(p.actionGroup)),
 				attrsAccess: e.for(e.array_unpack(p.attrsAccess), (aa) => {
 					return e.insert(e.sys_core.SysAttrAccess, {
-						attr: e.sys_core.getAttr(
-							e.cast(e.str, e.json_get(e.cast(e.json, e.json_get(aa, 'attr')), 'owner')),
-							e.cast(e.str, e.json_get(e.cast(e.json, e.json_get(aa, 'attr')), 'name'))
-						),
 						codeAttrAccessSource: e.sys_core.getCode(
 							'ct_sys_attribute_access_source',
 							e.cast(e.str, e.json_get(aa, 'codeAttrAccessSource'))

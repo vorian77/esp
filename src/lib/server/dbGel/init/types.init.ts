@@ -20,6 +20,7 @@ import {
 	addApp,
 	addAppHeader,
 	addAttr,
+	addAttrObj,
 	addCode,
 	addCodeAction,
 	addCodeType,
@@ -314,16 +315,16 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
-				name: 'sysAttr',
+				name: 'sysAttrObj',
 				dataMap: [
 					['name', 'name'],
 					['owner.name', 'owner']
 				],
-				deleteObj: 'sys_core::SysAttr',
+				deleteObj: 'sys_core::SysAttrObj',
 				// exprResets: [
 				// 	`UPDATE sys_core::SysDataObjColumnItemChange SET {valueTargetAttribute := {}, valueTriggerAttributes := {}}`
 				// ],
-				fCreate: addAttr
+				fCreate: addAttrObj
 				// isResetByTransOnly: true,
 				// updateObj: 'sys_core::ObjRoot',
 				// updateObjBypassRecordFilter: true,
@@ -333,6 +334,18 @@ export class InitDb {
 				// 		`.attrs EXCEPT (SELECT sys_core::SysAttr FILTER .obj = (SELECT sys_core::SysAttr FILTER ${TokenExprFilterRecord}))`
 				// 	]
 				// ]
+			})
+		)
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysAttr',
+				dataMap: [
+					['obj.name', 'name'],
+					['obj.owner.name', 'owner'],
+					['codeAttrType.name', 'type']
+				],
+				deleteObj: 'sys_core::SysAttr',
+				fCreate: addAttr
 			})
 		)
 		this.items.push(
@@ -380,8 +393,7 @@ export class InitDb {
 			new InitDbItem({
 				name: 'MoedBulkDataMsg',
 				exprResets: [
-					`UPDATE sys_core::SysMsg filter .parent IN (SELECT sys_core::SysMsg FILTER .sender IN org_client_moed::MoedParticipant.person UNION .recipients IN org_client_moed::MoedParticipant.person UNION .attrs IN (SELECT sys_core::SysAttr filter .owner.name = 'sys_client_moed') UNION .sender.fullName = 'User System') SET {parent := {}}`,
-					`DELETE sys_core::SysMsg FILTER .sender IN org_client_moed::MoedParticipant.person UNION .recipients IN org_client_moed::MoedParticipant.person UNION .attrs IN (SELECT sys_core::SysAttr filter .owner.name = 'sys_client_moed') UNION .sender.fullName = 'User System'`
+					`DELETE sys_core::SysMsg FILTER .sender IN org_client_moed::MoedParticipant.person UNION .recipients IN org_client_moed::MoedParticipant.person UNION .attrs IN (SELECT sys_core::SysAttr filter .obj.owner.name = 'sys_client_moed') UNION .sender.fullName = 'User System'`
 				],
 				fCreate: MoedBulkDataMsg
 			})

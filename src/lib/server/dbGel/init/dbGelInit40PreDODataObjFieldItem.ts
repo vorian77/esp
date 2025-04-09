@@ -12,20 +12,33 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		owner: 'sys_system',
 		table: 'SysAttr'
 	})
+
 	init.addTrans('sysDataObjFieldListItems', {
-		props: [[0, 'header', 'Header', '.header', true, 0]],
-		exprFilter: `.owner.id = <parms,uuid,queryOwnerIdSystem>`,
-		name: 'il_sys_attr_obj_system',
+		props: [
+			[0, '_type', 'Type', '.codeAttrType.header', true, 0],
+			[1, '_obj', 'Object', '.obj.header', true, 1]
+		],
+		displayIdSeparator: '-',
+		exprFilter: `.obj.owner.id = <parms,uuid,queryOwnerIdSystem> AND .codeAttrType.name IN <parms,strList,itemsParmValueList>`,
+		name: 'il_sys_attr_obj_system_type_multi',
 		owner: 'sys_system',
 		table: 'SysAttr'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
-		props: [[0, 'header', 'Header', '.header', true, 0]],
-		exprFilter: `.owner.id = <parms,uuid,queryOwnerIdSystem> AND .codeAttrType.name IN <parms,strList,itemsParmValueList>`,
-		name: 'il_sys_attr_obj_system_types',
+		props: [[0, '_obj', 'Object', '.obj.header', true, 0]],
+		exprFilter: `.obj.owner.id = <parms,uuid,queryOwnerIdSystem> AND .codeAttrType.name = <parms,str,itemsParmValue>`,
+		name: 'il_sys_attr_obj_system_type_single',
 		owner: 'sys_system',
 		table: 'SysAttr'
 	})
+	init.addTrans('sysDataObjFieldListItems', {
+		props: [[0, '_obj', 'Object', '.obj.header', true, 0]],
+		exprFilter: `.obj.owner.id = <parms,uuid,queryOwnerIdSystem> AND .codeAttrType.name = <parms,str,itemsParmValue> AND .obj.name like 'moedStaff%'`,
+		name: 'il_sys_attr_obj_system_type_single_msg_receive',
+		owner: 'sys_system',
+		table: 'SysAttr'
+	})
+
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter: `.id IN (SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerIdSystem>).typesAttribute.id`,

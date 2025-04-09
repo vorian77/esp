@@ -9,6 +9,10 @@
 
 	const FILENAME = '$routes/+page.svelte'
 
+	let { data }: { data: PageData } = $props()
+
+	const IS_DEV_MODE = data.environ === 'dev'
+
 	let prospectEmail = $state('')
 
 	async function processEmail() {
@@ -38,6 +42,12 @@
 			new TokenApiQueryData({ dbExpr })
 		)
 	}
+	async function dbInit() {
+		return await apiFetchFunction(
+			ApiFunction.dbGelInit,
+			new TokenApiFetchError(FILENAME, 'adminDbReset', 'Unable to reset database.')
+		)
+	}
 </script>
 
 <div class="bg-white h-full overflow-y-auto">
@@ -50,6 +60,11 @@
 			<button class="btn variant-ringed-primary mr-4" onclick={() => goto('/auth/signup')}>
 				Sign up
 			</button>
+			{#if IS_DEV_MODE}
+				<button type="button" class="btn btn-action variant-filled-error w-full" onclick={dbInit}>
+					Admin (DB Init)
+				</button>
+			{/if}
 		</div>
 	</header>
 

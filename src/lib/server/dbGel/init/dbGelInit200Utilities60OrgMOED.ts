@@ -70,13 +70,26 @@ export async function MoedBulkCsf(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.app_cm.CmClientServiceFlow, {
-				attrs: e.sys_core.getAttr('sys_client_moed', e.cast(e.str, i[4])),
+				attrs: e.assert_distinct(
+					e.for(e.json_array_unpack(i[1]), (a) => {
+						return e.sys_core.getAttr(
+							'sys_client_moed',
+							e.cast(e.str, e.json_get(e.cast(e.json, a), 'obj')),
+							e.cast(e.str, e.json_get(e.cast(e.json, a), 'type'))
+						)
+					})
+				),
 				createdBy: CREATOR,
 				modifiedBy: CREATOR,
 				client: e.assert_single(
 					e.select(e.org_client_moed.MoedParticipant, (part) => ({
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
 					}))
+				),
+				codeSfEligibilityStatus: e.sys_core.getCodeSystem(
+					'sys_client_moed',
+					'ct_cm_sf_eligibility_status',
+					e.cast(e.str, i[5])
 				),
 				codeSfEnrollType: e.sys_core.getCodeSystem(
 					'sys_client_moed',
@@ -88,14 +101,9 @@ export async function MoedBulkCsf(params: any) {
 					'ct_cm_sf_outcome',
 					e.cast(e.str, i[6])
 				),
-				codeSfEligibilityStatus: e.sys_core.getCodeSystem(
-					'sys_client_moed',
-					'ct_cm_sf_eligibility_status',
-					e.cast(e.str, i[5])
-				),
-				dateCreated: e.cal.to_local_date(e.cast(e.str, i[1])),
-				dateStart: e.cal.to_local_date(e.cast(e.str, i[2])),
-				dateEnd: e.cal.to_local_date(e.cast(e.str, i[3])),
+				dateCreated: e.cal.to_local_date(e.cast(e.str, i[2])),
+				dateStart: e.cal.to_local_date(e.cast(e.str, i[3])),
+				dateEnd: e.cal.to_local_date(e.cast(e.str, i[4])),
 				programCm: PROGRAM
 			})
 		})
@@ -139,26 +147,7 @@ export async function MoedBulkDataMsg(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_core.SysMsg, {
-				attrs: e.sys_core.getAttr('sys_client_moed', e.cast(e.str, i[3])),
-				attrsAccess: e.insert(e.sys_core.SysAttrAccess, {
-					codeAttrAccessSource: e.sys_core.getCodeSystem(
-						'sys_system',
-						'ct_sys_attribute_access_source',
-						'user'
-					),
-					codeAttrAccessType: e.sys_core.getCodeSystem(
-						'sys_system',
-						'ct_sys_attribute_access_type',
-						'permitted'
-					),
-					codeAttrType: e.sys_core.getCodeSystem(
-						'sys_app_cm',
-						'ct_sys_attribute_type',
-						'at_cm_sf_site'
-					),
-					createdBy: CREATOR,
-					modifiedBy: CREATOR
-				}),
+				attrs: e.sys_core.getAttr('sys_client_moed', e.cast(e.str, i[3]), 'at_sys_msg_receive'),
 				date: e.cal.to_local_date(e.cast(e.str, i[1])),
 				sender: e.assert_single(
 					e.select(e.org_client_moed.MoedParticipant, (part) => ({

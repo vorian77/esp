@@ -446,7 +446,7 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 		this.user = required(obj.user, clazz, 'user')
 
 		// info
-		if (['user_sys', '2487985578'].includes(this.user.userName)) {
+		if (['user_sys'].includes(this.user.userName)) {
 			this.info.push(new NavMenuInfo('dbBranch', this.user.dbBranch))
 			this.info.push(new NavMenuInfo('Default Organization', this.user.system.orgName))
 			this.info.push(new NavMenuInfo('Default System', this.user.system.name))
@@ -455,7 +455,7 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 		// group - items
 		this.items = new NavMenuDataCompGroup(navMenu, { hideHr: true })
 
-		if (['user_sys', '2487985578'].includes(this.user.userName)) {
+		if (['user_sys'].includes(this.user.userName)) {
 			this.addItem({
 				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminResetDb),
 				icon: 'RotateCcw',
