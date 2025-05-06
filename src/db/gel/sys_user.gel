@@ -112,7 +112,7 @@ module sys_user {
       on target delete delete source;
     };
     required idFeature: uuid;
-    required data: json;
+    required prefData: json;
     constraint exclusive on ((.user, .idFeature));
   }
   type SysUserPrefType extending sys_user::Mgmt {

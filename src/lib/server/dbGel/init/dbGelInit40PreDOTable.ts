@@ -4,6 +4,7 @@ export function initPreTable(init: InitDb) {
 	init.addTrans('tablesBulk', [
 		// default
 		['sys_system', 'default', 'SysPerson', false],
+		['sys_system', 'default', 'SysError', false],
 
 		// sys_db
 		['sys_system', 'sys_db', 'SysColumn', true],

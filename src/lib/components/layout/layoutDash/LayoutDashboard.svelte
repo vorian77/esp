@@ -1,40 +1,28 @@
 <script lang="ts">
-	import {
-		State,
-		StateNavLayout,
-		StateParms,
-		StateTriggerToken
-	} from '$comps/app/types.appState.svelte'
-	import {
-		TokenApiFetchError,
-		TokenApiQueryData,
-		TokenAppStateTriggerAction,
-		TokenAppUserActionConfirmType
-	} from '$utils/types.token'
+	import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
+	import FormDetail from '$comps/form/FormDetail.svelte'
+	import TsoMoedSsrDoc from '$comps/layout/layoutDash/tso_moed_ssr_doc.svelte'
+	import TsoSysData from '$comps/layout/layoutDash/tso_sys_data.svelte'
+	import TsoSysQuote from '$comps/layout/layoutDash/tso_sys_quote.svelte'
 	import { apiFetchFunction, ApiFunction } from '$routes/api/api'
+	import { clientQueryExpr } from '$lib/query/queryManagerClient'
 	import {
 		CodeAction,
 		CodeActionClass,
 		CodeActionType,
 		ContextKey,
 		DataObjComponent,
-		DataObjData,
 		type DataRecord,
-		Node,
-		NodeNav,
-		ParmsValuesType,
-		ResponseBody,
-		UserResourceTask,
-		UserResourceTaskRenderType
+		MethodResult,
+		UserResourceTask
 	} from '$utils/types'
-	import { getContext, setContext } from 'svelte'
-	import TsoMoedSsrDoc from '$comps/layout/layoutDash/tso_moed_ssr_doc.svelte'
-	import TsoSysData from '$comps/layout/layoutDash/tso_sys_data.svelte'
-	import TsoSysQuote from '$comps/layout/layoutDash/tso_sys_quote.svelte'
-	import FormDetail from '$comps/form/FormDetail.svelte'
+	import {
+		TokenApiQueryData,
+		TokenAppStateTriggerAction,
+		TokenAppUserActionConfirmType
+	} from '$utils/types.token'
+	import { getContext } from 'svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
-	import { goto } from '$app/navigation'
-	import { error } from '@sveltejs/kit'
 
 	const FILENAME = '$comps/layout/layoutDash/LayoutDash.svelte'
 	const StatusType = {
@@ -57,50 +45,75 @@
 
 	let promise = $derived(getData(tasks))
 
-	async function getData(tasks: UserResourceTask[] = []) {
+	async function getData(tasks: UserResourceTask[] = []): Promise<MethodResult> {
 		for (let i = 0; i < tasks.length; i++) {
-			await getDataTask(tasks[i])
+			let result: MethodResult = await getDataTask(tasks[i])
+			if (result.error) return result
 		}
 		return tasks
 	}
 
-	async function getDataTask(task: UserResourceTask) {
+	async function getDataTask(task: UserResourceTask): Promise<MethodResult> {
 		task.data = {}
-		task.setShow(await getDataShow(task))
+
+		let result: MethodResult = await getDataShow(task)
+		if (result.error) return result
+		task.setShow(result.data)
+
 		if (task.isShow) {
-			if (task.pageDataObjId) await task.loadPage(sm)
-			task.data = (await getDataStatus(task)) || []
+			if (task.pageDataObjId) {
+				let result = await task.loadPage(sm)
+				if (result.error) return result
+			}
+			result = await getDataStatus(task)
+			if (result.error) return result
+			task.data = result.data
 		}
+		return new MethodResult()
 	}
 
 	async function getDataShow(task: UserResourceTask) {
-		if (task.isPinToDash) return true
-		if (!task.exprShow) return false
-		const show = await getDataDB(task, task.exprShow)
-		return show.data[0]
+		let isShow = false
+		// if (task.isPinToDash) {
+		// 	isShow = true
+		// } else if (!task.exprShow) {
+		// 	isShow = false
+		// } else {
+		// 	const result: MethodResult = await getDataDB(task, task.exprShow)
+		// 	if (result.error) return result
+		// 	isShow = result.getResultExpr()[0]
+		// }
+		return new MethodResult(isShow)
 	}
 
 	async function getDataStatus(task: UserResourceTask) {
-		if (!task.exprStatus) return undefined
-		const status = await getDataDB(task, task.exprStatus)
-		return status.data
+		let status = undefined
+		if (!task.exprStatus) {
+			status = undefined
+		} else {
+			const result: MethodResult = await getDataDB(task, task.exprStatus)
+			if (result.error) return undefined
+			status = result.getResultExpr()
+		}
+		return new MethodResult(status)
 	}
 
 	async function getDataDB(task: UserResourceTask, dbExpr: string) {
-		return await apiFetchFunction(
-			ApiFunction.dbGelProcessExpression,
-			new TokenApiFetchError(FILENAME, 'getDataDB', `Error retrieving data for task: ${task.name}`),
-			new TokenApiQueryData({ dbExpr, user: sm.user })
-		)
+		const evalExprContext = `${FILENAME}.getDataDB`
+		return await clientQueryExpr(dbExpr, evalExprContext, {}, sm)
 	}
 
-	async function onClick(task: UserResourceTask, parms: DataRecord | undefined = undefined) {
+	async function onClick(
+		task: UserResourceTask,
+		parms: DataRecord | undefined = undefined
+	): Promise<MethodResult> {
 		if (task.dataObjPage) {
 			// handled by custom actions on form
+			return new MethodResult()
 		} else if (task.targetDataObjId || task.targetNodeObj) {
 			sm.parmsState.update(parms)
 			const token = await task.getTokenNode(sm)
-			await sm.triggerAction(
+			return await sm.triggerAction(
 				new TokenAppStateTriggerAction({
 					codeAction: CodeAction.init(
 						CodeActionClass.ct_sys_code_action_class_nav,
@@ -115,12 +128,15 @@
 			await getDataTask(task)
 			task.toggleRecreate()
 		}
+		return new MethodResult()
 	}
 
 	async function setTasks() {
 		tasks = sm.user.getTasksDash(setTasks)
 	}
 </script>
+
+<!-- <DataViewer header="task.isShow" data={task.isShow} /> -->
 
 {#await promise}
 	<p>Loading tasks...</p>

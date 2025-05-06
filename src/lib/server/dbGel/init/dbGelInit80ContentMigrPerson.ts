@@ -1,4 +1,4 @@
-import { sectionHeader } from '$routes/api/dbGel/dbGel'
+import { sectionHeader } from '$routes/api/db/dbGel/dbGel'
 import { addMigration } from '$server/dbGel/init/dbGelInit200Utilities50Other'
 
 export async function initMigrationPerson() {

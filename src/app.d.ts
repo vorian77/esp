@@ -7,8 +7,13 @@ declare namespace App {
 	}
 	// interface PageData {}
 	interface Error {
+		code?: string
 		file: string
 		function: string
+		message?: string
+		msg?: string
+		msgSystem?: string
+		msgUser?: string
 	}
 	// interface Platform {}
 }

@@ -210,16 +210,8 @@ const dataItemsServiceFlow = {
 	attrs: {
 		type: 'list',
 		values: [
-			[
-				{ type: 'at_sys_msg_receive', obj: 'moedYouthEastside' },
-				{ type: 'at_sys_msg_send', obj: 'moedStaffEastside' },
-				{ type: 'at_cm_sf_site', obj: 'moedOfficeEastside' }
-			],
-			[
-				{ type: 'at_sys_msg_receive', obj: 'moedYouthWestside' },
-				{ type: 'at_sys_msg_send', obj: 'moedStaffWestside' },
-				{ type: 'at_cm_sf_site', obj: 'moedOfficeWestside' }
-			]
+			[{ type: 'at_cm_sf_site', obj: 'moedOfficeEastside' }],
+			[{ type: 'at_cm_sf_site', obj: 'moedOfficeWestside' }]
 		]
 	},
 	dateCreated: {
@@ -412,7 +404,7 @@ export class RandomDataGenerator {
 				error(500, {
 					file: FILENAME,
 					function: 'getValue',
-					message: `No case defined for type: ${type.type}`
+					msg: `No case defined for type: ${type.type}`
 				})
 		}
 	}
@@ -461,7 +453,7 @@ export class RandomDataGenerator {
 		this.addData('applicant', recordPart, dataItemsPart, recordCount, 1)
 		this.addData('serviceFlow', recordServiceFlow, dataItemsServiceFlow, recordCount, 1)
 		this.addData('dataDoc', recordDataDoc, dataItemsDataDoc, recordCount, 0.75)
-		this.addData('dataMsg', recordDataMsg, dataItemsDataMsg, recordCount, 0.0)
+		this.addData('dataMsg', recordDataMsg, dataItemsDataMsg, recordCount, 0.5)
 
 		// debug('randomDataGenerator', 'serviceFlow', this.data['serviceFlow'])
 		// debug('randomDataGenerator', 'applicant', this.data['applicant'])

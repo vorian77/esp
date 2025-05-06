@@ -4,7 +4,7 @@ import {
 	booleanOrDefaultJSON,
 	sectionHeader,
 	valueOrDefaultParm
-} from '$routes/api/dbGel/dbGel'
+} from '$routes/api/db/dbGel/dbGel'
 
 export async function addColumn(data: any) {
 	sectionHeader(`addColumn - ${data.name}`)

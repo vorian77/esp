@@ -1023,10 +1023,16 @@ function initDataObj(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
-		exprFilter: `.id IN msgsUserRoot.id`,
-		exprWith: `msgsUser := (SELECT sys_core::SysMsg FILTER .sender.id = <user,uuid,personId> UNION <user,uuid,personId> IN .recipients.id UNION ${ParmsValuesType.attributeAccessFilter}),
-		msgsUserOpen := (SELECT sys_core::SysMsg FILTER .isOpen AND (<user,uuid,personId> IN .recipients.id UNION ${ParmsValuesType.attributeAccessFilter})),
-		msgsUserRoot := (SELECT sys_core::SysMsg FILTER NOT EXISTS .parent AND .id IN msgsUser.thread.id)`,
+		// exprFilter: `.id IN msgsUserRoot.id`,
+		// exprWith: `msgsUser := (SELECT sys_core::SysMsg FILTER .sender.id = <user,uuid,personId> UNION <user,uuid,personId> IN .recipients.id UNION ${ParmsValuesType.attributeAccessFilter}),
+		// msgsUserOpen := (SELECT sys_core::SysMsg FILTER .isOpen AND (<user,uuid,personId> IN .recipients.id UNION ${ParmsValuesType.attributeAccessFilter})),
+		// msgsUserRoot := (SELECT sys_core::SysMsg FILTER NOT EXISTS .parent AND .id IN msgsUser.thread.id)`,
+		exprFilter: `none`,
+		exprUnions: [
+			`SELECT sys_core::SysMsg FILTER <user,uuid,personId> = .sender.id`,
+			`SELECT sys_core::SysMsg FILTER <user,uuid,personId> IN .recipients.id`,
+			`SELECT sys_core::SysMsg FILTER (SELECT sys_core::SysAttrObjAction FILTER .id IN <attrsObjAction,user,aoa_sys_msg_receive>).obj.id IN .recipients.id`
+		],
 		header: 'My Messages',
 		name: 'data_obj_task_sys_msg_root_list_all',
 		owner: 'sys_system',
@@ -1038,33 +1044,33 @@ function initDataObj(init: InitDb) {
 				isDisplayable: false,
 				orderDefine: 10
 			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				exprCustom: `'Yes' IF .id IN msgsUserOpen.thread.id ELSE 'No'`,
-				headerAlt: 'Awaiting Response',
-				nameCustom: 'isAwaitingResponse'
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'right',
-				codeFieldElement: 'number',
-				columnName: 'custom_element_int',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				exprCustom: `(WITH 
-			now := cal::to_local_date(datetime_current(), 'UTC'),
-			compare := min((SELECT .thread FILTER .id = msgsUserOpen.id).date),
-			dur := now - compare,
-			SELECT std::duration_get(dur, 'day'))`,
-				headerAlt: 'Days Open',
-				nameCustom: 'customAppDaysOpen',
-				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
-			},
+			// {
+			// 	codeAccess: 'readOnly',
+			// 	columnName: 'custom_element_str',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 20,
+			// 	orderDefine: 20,
+			// 	exprCustom: `'Yes' IF .id IN msgsUserOpen.thread.id ELSE 'No'`,
+			// 	headerAlt: 'Awaiting Response',
+			// 	nameCustom: 'isAwaitingResponse'
+			// },
+			// {
+			// 	codeAccess: 'readOnly',
+			// 	codeAlignmentAlt: 'right',
+			// 	codeFieldElement: 'number',
+			// 	columnName: 'custom_element_int',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 30,
+			// 	orderDefine: 30,
+			// 	exprCustom: `(WITH
+			// now := cal::to_local_date(datetime_current(), 'UTC'),
+			// compare := min((SELECT .thread FILTER .id = msgsUserOpen.id).date),
+			// dur := now - compare,
+			// SELECT std::duration_get(dur, 'day'))`,
+			// 	headerAlt: 'Days Open',
+			// 	nameCustom: 'customAppDaysOpen',
+			// 	pattern: '[-+]?[0-9]*[.,]?[0-9]+'
+			// },
 			{
 				codeAccess: 'readOnly',
 				columnName: 'custom_element_int',
@@ -1107,13 +1113,13 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'recipients',
-				indexTable: 0,
+				columnName: 'custom_element_str',
 				isDisplayable: true,
-				orderDisplay: 60,
 				orderDefine: 60,
-				linkColumns: ['fullName'],
-				linkTable: 'SysPerson'
+				orderDisplay: 60,
+				exprCustom: `.recipients[IS sys_core::ObjRootCore].header ?? .recipients [IS default::SysPerson].fullName`,
+				headerAlt: 'Recipients',
+				nameCustom: '_recipients'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1237,18 +1243,19 @@ function initTask(init: InitDb) {
 		codeRenderType: 'button',
 		codeStatusObj: 'tso_sys_data',
 		exprShow: `WITH
-		youth := org_client_moed::MoedParticipant.person
-		SELECT count((SELECT sys_core::SysMsg FILTER .isOpen AND (.sender = youth UNION youth IN .recipients))) > 0`,
+		youth := org_client_moed::MoedParticipant.person,
+		SELECT count((SELECT sys_core::SysMsg FILTER .isOpen AND .sender.id in youth.id)) > 0`,
 		exprStatus: `WITH
 		youth := org_client_moed::MoedParticipant.person,
-		msgsOpen := (SELECT sys_core::SysMsg FILTER .isOpen),
-		youthMsgs := (youth {max_days_open := duration_get(cal::to_local_date(datetime_current(), 'UTC') - min((SELECT msgsOpen FILTER youth = .sender or youth IN .recipients).date), 'day') ?? 0})
+		msgsOpen := (SELECT sys_core::SysMsg FILTER .isOpen AND .sender.id in youth.id),
+		msgsOpenRoot := (SELECT sys_core::SysMsg FILTER NOT EXISTS .parent AND .thread.id IN msgsOpen.thread.id),
+		msgsOpenRootData := (msgsOpenRoot {max_days_open := duration_get(cal::to_local_date(datetime_current(), 'UTC') - min((SELECT msgsOpenRoot.thread FILTER .id IN msgsOpen.id).date), 'day') ?? 0})
 		SELECT {
-			openLT2 := {label := 'Open 5 or fewer days', data := count(youthMsgs FILTER .max_days_open > 0 AND .max_days_open < 6), color := 'green' },
-			open2To7 := {label := 'Open between 6 and 14 days', data := count(youthMsgs FILTER .max_days_open > 5 AND .max_days_open < 15), color := 'yellow' },
-			openGT7 := {label := 'Open 15 or more days', data := count(youthMsgs FILTER .max_days_open > 14), color := 'red'}
+			openLT2 := {label := 'Open 5 or fewer days', data := count(msgsOpenRootData FILTER .max_days_open > -1 AND .max_days_open < 6), color := 'green' },
+			open2To7 := {label := 'Open between 6 and 14 days', data := count(msgsOpenRootData FILTER .max_days_open > 5 AND .max_days_open < 15), color := 'yellow' },
+			openGT7 := {label := 'Open 15 or more days', data := count(msgsOpenRootData FILTER .max_days_open > 14), color := 'red'}
 		}`,
-		header: 'Open Messages',
+		header: 'Open Messages (Advocate)',
 		isPinToDash: false,
 		isGlobalResource: false,
 		name: 'task_sys_msg_open',

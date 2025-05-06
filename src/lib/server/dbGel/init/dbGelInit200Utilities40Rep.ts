@@ -1,5 +1,5 @@
 import e from '$db/gel/edgeql-js'
-import { client, sectionHeader } from '$routes/api/dbGel/dbGel'
+import { client, sectionHeader } from '$routes/api/db/dbGel/dbGel'
 
 export async function addAnalytic(data: any) {
 	sectionHeader(`addAnalytic - ${data.name}`)

@@ -4,6 +4,7 @@ import {
 	memberOfEnum,
 	memberOfEnumOrDefault,
 	memberOfEnumList,
+	MethodResult,
 	strOptional,
 	strRequired,
 	valueOrDefault
@@ -172,43 +173,10 @@ export class FormSourceItem {
 }
 
 export function getServerResponse(parms: any) {
-	return new Response(JSON.stringify(new ResponseBody(parms)))
+	return new Response(JSON.stringify(parms))
 }
-
-export class ResponseBody {
-	data: any
-	message = ''
-	success = true
-	type = 'object'
-
-	constructor(parms: any) {
-		parms = valueOrDefault(parms, {})
-
-		if (Object.hasOwn(parms, 'data') && Object.keys(parms).length === 1) {
-			parms = parms.data
-		}
-
-		if (Array.isArray(parms)) {
-			this.type = 'array'
-			this.data = parms
-		} else {
-			if (Object.hasOwn(parms, 'message')) {
-				this.message = parms.message
-				delete parms.message
-			}
-
-			if (Object.hasOwn(parms, 'success')) {
-				this.success = parms.success
-				delete parms.success
-			}
-
-			if (Object.hasOwn(parms, 'data') && Object.keys(parms).length === 1) {
-				this.data = { ...parms.data }
-			} else {
-				this.data = { ...parms }
-			}
-		}
-	}
+export function getServerResponseMethod(parms: any) {
+	return getServerResponse(new MethodResult(parms))
 }
 
 export enum FormSourceDBAction {

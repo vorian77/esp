@@ -11,10 +11,8 @@
 	export let onclick: Function
 	export let data: any
 
-	let record = data[0]
 	let isShowData = true
-
-	record = record ? record : {}
+	let record = data ? data[0] : {}
 
 	let status = []
 	Object.entries(record).forEach((entry) => {
@@ -39,4 +37,5 @@
 {:else if task.noDataMsg}
 	{task.noDataMsg}
 {/if}
+<!-- <DataViewer header="isShowData" data={isShowData} /> -->
 <!-- <DataViewer header="record" {data} /> -->

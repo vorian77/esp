@@ -81,7 +81,7 @@ export function initFeature(initDb: InitDb) {
 	// initContentCm(initDb)
 	// initContentSys(initDb)
 	// initSysAdmin(initDb)
-	// initContentSysMsg(initDb)
+	initContentSysMsg(initDb)
 	initContentMOEDSsr(initDb)
 	// initContentMOEDCm(initDb)
 	// initContentMOEDCmAdvocate(initDb)

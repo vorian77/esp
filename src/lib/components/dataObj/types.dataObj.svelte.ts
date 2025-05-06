@@ -1,53 +1,23 @@
 import { State } from '$comps/app/types.appState.svelte'
 import {
-	arrayOfClass,
-	booleanRequired,
-	CodeAction,
-	CodeActionClass,
-	CodeActionType,
-	getArray,
-	memberOfEnum,
-	memberOfEnumIfExists,
-	memberOfEnumOrDefault,
-	PropDataType,
-	required,
-	ResponseBody,
-	strRequired,
-	ToastType,
-	UserPrefType,
-	valueOrDefault
-} from '$utils/types'
-import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-import {
+	PropSortDir,
 	RawDataObj,
 	RawDataObjAction,
 	RawDataObjPropDisplay,
-	RawDataObjPropDisplayItemChange,
-	RawDataObjQueryRider,
-	RawDataObjTable,
-	RawDBColumn
+	RawDataObjPropDisplayItemChange
 } from '$comps/dataObj/types.rawDataObj.svelte'
-import { UserAction } from '$comps/other/types.userAction.svelte'
 import {
 	Field,
 	FieldAccess,
 	FieldColor,
-	FieldColumnItem,
 	FieldElement,
-	PropsFieldInit,
-	PropsFieldCreate,
 	FieldItemChange,
-	FieldValueType
+	FieldValueType,
+	PropsFieldCreate,
+	PropsFieldInit
 } from '$comps/form/field.svelte'
-import {
-	FieldEmbed,
-	FieldEmbedListConfig,
-	FieldEmbedListEdit,
-	FieldEmbedListSelect
-} from '$comps/form/fieldEmbed'
 import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 import { FieldChips } from '$comps/form/fieldChips'
-import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 import {
 	FieldCustomActionButton,
 	FieldCustomActionLink,
@@ -55,25 +25,36 @@ import {
 	FieldCustomHTML,
 	FieldCustomText
 } from '$comps/form/fieldCustom'
-import { GridSettings } from '$comps/grid/grid'
-import { FieldInput } from '$comps/form/fieldInput'
+import {
+	FieldEmbed,
+	FieldEmbedListConfig,
+	FieldEmbedListEdit,
+	FieldEmbedListSelect,
+	FieldEmbedShell
+} from '$comps/form/fieldEmbed'
 import { FieldFile } from '$comps/form/fieldFile'
+import { FieldInput } from '$comps/form/fieldInput'
 import { FieldParm } from '$comps/form/fieldParm'
 import { FieldRadio } from '$comps/form/fieldRadio'
-import { FieldTagDetails, FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 import { FieldSelect } from '$comps/form/fieldSelect'
+import { FieldTagDetails, FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 import { FieldTextarea } from '$comps/form/fieldTextarea'
 import { FieldToggle } from '$comps/form/fieldToggle'
+import { GridSettings } from '$comps/grid/grid'
+import { UserAction } from '$comps/other/types.userAction.svelte'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
-	TokenApiFetchError,
-	TokenApiQueryDataTree,
-	TokenApiQueryType,
-	TokenApiUserPref,
-	TokenAppStateTriggerAction
-} from '$utils/types.token'
-import { PropSortDir } from '$comps/dataObj/types.rawDataObj.svelte'
-import { qrfFileStorage } from '$enhance/queryRiderFunctions/qrfFileStorage'
-import { qrfUserUpdate } from '$enhance/queryRiderFunctions/qrfUserUpdate'
+	CodeAction,
+	getArray,
+	memberOfEnum,
+	memberOfEnumOrDefault,
+	MethodResult,
+	PropDataType,
+	required,
+	UserPrefType,
+	valueOrDefault
+} from '$utils/types'
+import { TokenApiQueryType, TokenApiUserPref } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.dataObj.svelte.ts'
@@ -88,9 +69,7 @@ export class DataObj {
 	fCallbackUserAction?: Function
 	fields: Field[] = []
 	isMobileMode: boolean = false
-	queryRiders: DataObjQueryRiders
 	raw: RawDataObj
-	rootTable?: DBTable
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
 	treeLevelIdx: number = 0
 	userActions: DataObjAction[] = $state([])
@@ -101,25 +80,23 @@ export class DataObj {
 		this.raw = required(data.rawDataObj, clazz, 'rawDataObj')
 
 		/* dependent properties */
-		this.queryRiders = new DataObjQueryRiders(this.raw.queryRiders)
-		this.rootTable =
-			this.raw.tables && this.raw.tables.length > 0
-				? new DBTable(this.raw.tables[0].table)
-				: undefined
 		this.userGridSettings = new GridSettings(this.raw.id)
 	}
 
-	actionsFieldTrigger(sm: State, codeAction: CodeAction) {
-		const doa = this.userActions.find(
+	async actionsFieldTrigger(sm: State, codeAction: CodeAction): Promise<MethodResult> {
+		const userAction = this.userActions.find(
 			(f) => f.action.codeAction.actionType === codeAction.actionType
 		)
-		if (doa) {
-			doa.action.trigger(sm, this)
+		if (userAction) {
+			return userAction.action.trigger(sm, this)
 		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'DataObj.actionsFieldTrigger',
-				message: `Could not find user action for codeAction: class: ${codeAction.actionClass} - type: ${codeAction.actionType}.`
+			return new MethodResult({
+				success: false,
+				error: {
+					file: FILENAME,
+					function: 'DataObj.actionsFieldTrigger',
+					msg: `Could not find user action for codeAction: class: ${codeAction.actionClass} - type: ${codeAction.actionType}.`
+				}
 			})
 		}
 	}
@@ -131,14 +108,24 @@ export class DataObj {
 		sm: State,
 		data: DataObjData,
 		queryType: TokenApiQueryType = TokenApiQueryType.retrieve
-	) {
+	): Promise<MethodResult> {
 		const clazz = 'DataObj.init'
 		const dataObj = new DataObj(data)
 		dataObj.data = data
 		dataObj.userGridSettings = await initPrefs(sm, dataObj)
 
-		dataObj.fields = await dataObj.fieldsCreate(sm, dataObj, queryType)
-		await dataObj.fieldsInit(sm, dataObj)
+		const propsFieldInit = new PropsFieldInit({
+			data: dataObj.data,
+			fields: dataObj.fields,
+			sm
+		})
+
+		let result: MethodResult = await dataObj.fieldsCreate(propsFieldInit, queryType)
+		if (result.error) return result
+		dataObj.fields = result.data
+
+		result = await dataObj.fieldsInit(sm, dataObj)
+		if (result.error) return result
 
 		const rawDataObj = required(data.rawDataObj, clazz, 'rawDataObj')
 		initActionsField()
@@ -146,7 +133,7 @@ export class DataObj {
 		initItemChangedTriggers(dataObj.fields)
 		initRetrieveReadonly(dataObj, queryType)
 
-		return dataObj
+		return new MethodResult(dataObj)
 
 		function initActionsField() {
 			dataObj.userActions = rawDataObj.rawActions.map((rawAction: RawDataObjAction) => {
@@ -163,19 +150,16 @@ export class DataObj {
 		}
 		async function initPrefs(sm: State, dataObj: DataObj) {
 			let rawSettings: DataRecord = {}
-			if (sm?.user?.prefIsActive(UserPrefType.remember_list_settings)) {
-				// attempt to retrieve user preferences from DB
-				const rawData = await apiFetchFunction(
-					ApiFunction.sysUserPrefGet,
-					new TokenApiFetchError(
-						FILENAME,
-						'initPrefs',
-						`Error retrieving prefs for userId: ${sm.user.id}`
-					),
-					new TokenApiUserPref(sm.user.id, dataObj.raw.id)
-				)
-				rawSettings = JSON.parse(rawData.data)
-				rawSettings = rawSettings.data ? rawSettings.data : {}
+			if (sm?.user) {
+				if (sm.user.prefIsActive(UserPrefType.remember_list_settings)) {
+					// attempt to retrieve user preferences from DB
+					const result: MethodResult = await apiFetchFunction(
+						ApiFunction.sysUserPrefGet,
+						new TokenApiUserPref(sm.user.id, dataObj.raw.id)
+					)
+					rawSettings = result.data
+					rawSettings = rawSettings.prefData ? rawSettings.prefData : {}
+				}
 			}
 			return dataObj.userGridSettings.load(rawSettings, sm, dataObj)
 		}
@@ -194,9 +178,12 @@ export class DataObj {
 		}
 	}
 
-	async fieldsCreate(sm: State, dataObj: DataObj, queryType: TokenApiQueryType) {
+	async fieldsCreate(
+		propsFieldInit: PropsFieldInit,
+		queryType: TokenApiQueryType
+	): Promise<MethodResult> {
 		const clazz = 'DataObj.fieldsCreate'
-		const rawDataObj = required(dataObj.data.rawDataObj, clazz, 'rawDataObj')
+		const rawDataObj = required(propsFieldInit.data.rawDataObj, clazz, 'rawDataObj')
 		const rawPropsDisplay = rawDataObj.rawPropsDisplay
 		let fields: Field[] = []
 
@@ -204,19 +191,18 @@ export class DataObj {
 		for (let i = 0; i < rawPropsDisplay.length; i++) {
 			const p: RawDataObjPropDisplay = rawPropsDisplay[i]
 			if (!(queryType === TokenApiQueryType.preset && p.fieldEmbed)) {
-				fields.push(await DataObj.fieldsCreateItem(sm, dataObj, p, fields))
+				let result: MethodResult = await DataObj.fieldsCreateItem(propsFieldInit, p)
+				if (result.error) return result
+				const field: Field = result.data
+				fields.push(field)
 			}
 		}
-		return fields
+		return new MethodResult(fields)
 	}
 
-	static async fieldsCreateItem(
-		sm: State,
-		dataObj: DataObj,
-		propRaw: RawDataObjPropDisplay,
-		fields: Field[]
-	) {
+	static async fieldsCreateItem(propsFieldInit: PropsFieldInit, propRaw: RawDataObjPropDisplay) {
 		let newField: Field
+		let result: MethodResult
 
 		const props = new PropsFieldCreate({ propRaw })
 
@@ -228,6 +214,7 @@ export class DataObj {
 			FieldElement,
 			FieldElement.text
 		)
+
 		switch (element) {
 			// input
 			case FieldElement.currency:
@@ -238,7 +225,7 @@ export class DataObj {
 			case FieldElement.tel:
 			case FieldElement.text:
 			case FieldElement.textHide:
-				newField = new FieldInput(new PropsFieldCreate({ propRaw, fields }))
+				newField = new FieldInput(new PropsFieldCreate({ propRaw, fields: propsFieldInit.fields }))
 				break
 
 			case FieldElement.checkbox:
@@ -270,20 +257,25 @@ export class DataObj {
 				break
 
 			case FieldElement.embedListConfig:
-				newField = await FieldEmbed.initFieldClient(sm, props, dataObj, FieldEmbedListConfig)
-
+				result = await FieldEmbed.initFieldClient(propsFieldInit, props, FieldEmbedListConfig)
+				if (result.error) return result
+				newField = result.data
 				break
 
 			case FieldElement.embedListEdit:
-				newField = await FieldEmbed.initFieldClient(sm, props, dataObj, FieldEmbedListEdit)
+				result = await FieldEmbed.initFieldClient(propsFieldInit, props, FieldEmbedListEdit)
+				if (result.error) return result
+				newField = result.data
 				break
 
 			case FieldElement.embedListSelect:
-				newField = await FieldEmbed.initFieldClient(sm, props, dataObj, FieldEmbedListSelect)
+				result = await FieldEmbed.initFieldClient(propsFieldInit, props, FieldEmbedListSelect)
+				if (result.error) return result
+				newField = result.data
 				break
 
 			case FieldElement.embedShell:
-				newField = new FieldEmbedShell(new PropsFieldCreate({ propRaw, dataObj }))
+				newField = new FieldEmbedShell(new PropsFieldCreate({ propRaw }))
 				break
 
 			case FieldElement.file:
@@ -323,21 +315,26 @@ export class DataObj {
 				break
 
 			default:
-				error(500, {
-					file: FILENAME,
-					function: 'initFields',
-					message: `No case defined for field element: ${element}`
+				return new MethodResult({
+					success: false,
+					error: {
+						file: FILENAME,
+						function: 'DataObj.fieldsCreateItem',
+						msg: `No case defined for field element: ${element}`
+					}
 				})
 		}
-		return newField
+		return new MethodResult(newField)
 	}
 
 	async fieldsInit(sm: State, dataObj: DataObj) {
-		const props = new PropsFieldInit({ dataObj, sm })
+		const props = new PropsFieldInit({ data: dataObj.data, dataObj, fields: dataObj.fields, sm })
 		for (let i = 0; i < dataObj.fields.length; i++) {
 			const field: Field = dataObj.fields[i]
-			await field.init(props)
+			let result: MethodResult = await field.init(props)
+			if (result.error) return result
 		}
+		return new MethodResult()
 	}
 
 	getField(fieldNameRaw: string) {
@@ -348,7 +345,7 @@ export class DataObj {
 			error(500, {
 				file: FILENAME,
 				function: 'DataObj.getField',
-				message: `Field ${fieldNameRaw} not found.`
+				msg: `Field ${fieldNameRaw} not found.`
 			})
 		}
 	}
@@ -408,50 +405,74 @@ export class DataObjData {
 	rowsSave: DataRows = new DataRows()
 	constructor(rawDataObj?: RawDataObj) {
 		const clazz = 'DataObjData'
-		if (rawDataObj) this.init(rawDataObj)
+		if (rawDataObj) {
+			this.cardinality = memberOfEnum(
+				rawDataObj.codeCardinality,
+				clazz,
+				'cardinality',
+				'DataObjCardinality',
+				DataObjCardinality
+			)
+			this.rawDataObj = rawDataObj
+		}
 	}
 
-	init(rawDataObj: RawDataObj) {
-		const clazz = 'DataObjData'
-		this.cardinality = memberOfEnum(
-			rawDataObj.codeCardinality,
-			clazz,
-			'cardinality',
-			'DataObjCardinality',
-			DataObjCardinality
-		)
-		this.rawDataObj = rawDataObj
+	getFieldEmbedData(field: FieldEmbed | undefined, evalExprContext: string): DataObjData {
+		return this.getFieldEmbedDataExe(this, field, evalExprContext)
 	}
 
-	static load(source: DataObjData) {
+	private getFieldEmbedDataExe(
+		data: DataObjData,
+		field: FieldEmbed | undefined,
+		evalExprContext: string
+	): DataObjData {
+		if (!field) return data
+		for (let i = 0; i < data.fields.length; i++) {
+			let fieldCurrent = data.fields[i]
+			if (fieldCurrent.colDO.id === field.colDO.id) return fieldCurrent.data
+			return this.getFieldEmbedDataExe(fieldCurrent.data, field, evalExprContext)
+		}
+		error(500, {
+			file: FILENAME,
+			function: 'dataObjData.getFieldEmbedDataExe',
+			msg: evalExprContext
+		})
+	}
+
+	getFieldEmbedFields(field: FieldEmbed | undefined, evalExprContext: string): FieldEmbed[] {
+		const dataField = this.getFieldEmbedDataExe(this, field, evalExprContext)
+		return dataField ? dataField.fields : []
+	}
+
+	getParms() {
+		return this.parms.valueGetAll()
+	}
+
+	static load(source: DataObjData): MethodResult {
+		if (source.rawDataObj) RawDataObj.initTableGroup(source.rawDataObj)
 		const data = new DataObjData(source.rawDataObj)
-		data.fields = FieldEmbed.initFieldsLoad(source.fields, data)
+
+		let result: MethodResult = FieldEmbed.initFieldsLoad(source.fields, data)
+		if (result.error) return result
+		data.fields = result.data
+
 		data.items = { ...source.items }
 		data.parms = ParmsValues.load(source.parms)
 		data.rowsRetrieved = DataRows.load(source.rowsRetrieved)
 		data.rowsSave = DataRows.load(source.rowsSave)
-		return data
+		return new MethodResult(data)
 	}
 
-	getField(fieldName: string) {
-		const field = this.fields.find((f) => f.embedFieldName === fieldName)
-		if (field) {
-			return field
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'dataObjData.getField',
-				message: `Field ${fieldName} not found.`
-			})
-		}
-	}
-	getParms() {
-		return this.parms.valueGetAll()
-	}
-	resetRowsRetrieved() {
+	reset() {
 		this.rowsRetrieved.reset()
 		this.fields.forEach((f) => {
-			f.data.resetRowsRetrieved()
+			f.data.rowsRetrieved.reset()
+		})
+	}
+	static reset(data: DataObjData) {
+		data.rowsRetrieved.reset()
+		data.fields.forEach((f) => {
+			DataObjData.reset(f.data)
 		})
 	}
 }
@@ -463,230 +484,6 @@ export enum DataObjListEditPresetType {
 
 export enum DataObjProcessType {
 	reportRender = 'reportRender'
-}
-
-export class DataObjQueryRiders {
-	riders: DataObjQueryRider[]
-	constructor(rawQueryRiders: RawDataObjQueryRider[]) {
-		this.riders = arrayOfClass(DataObjQueryRider, rawQueryRiders)
-	}
-	async execute(
-		queryTiming: DataObjQueryRiderTriggerTiming,
-		queryType: TokenApiQueryType,
-		sm: State,
-		dataQuery: DataObjData
-	) {
-		for (let i = 0; i < this.riders.length; i++) {
-			const rider = this.riders[i]
-			if (rider.codeQueryType === queryType && rider.codeTriggerTiming === queryTiming) {
-				switch (rider.codeType) {
-					case DataObjQueryRiderType.appDestination:
-						await rider.executeDestination(sm)
-						break
-
-					case DataObjQueryRiderType.customFunction:
-						dataQuery = await rider.executeFunction(sm, dataQuery)
-						break
-
-					case DataObjQueryRiderType.dbExpr:
-						// executed on server
-						break
-
-					case DataObjQueryRiderType.userMsg:
-						rider.executeMsg(sm)
-						break
-
-					default:
-						error(500, {
-							file: FILENAME,
-							function: 'DataObjQueryRiders.execute',
-							message: `No case defined for rider.codeType: ${rider.codeType}`
-						})
-				}
-			}
-		}
-		return dataQuery
-	}
-}
-
-export class DataObjQueryRider {
-	codeFunction?: DataObjQueryRiderFunction
-	codeQueryType: TokenApiQueryType
-	codeTriggerTiming: DataObjQueryRiderTriggerTiming
-	codeType: DataObjQueryRiderType
-	codeUserDestination?: DataObjQueryRiderDestination
-	codeUserMsgDelivery?: DataObjQueryRiderMsgDelivery
-	expr?: string
-	funct?: Function
-	functionParmValue?: string
-	userMsg?: string
-	constructor(obj: RawDataObjQueryRider) {
-		const clazz = 'DataObjQueryRider'
-		obj = valueOrDefault(obj, {})
-		this.codeFunction = memberOfEnumIfExists(
-			obj._codeFunction,
-			'codeFunction',
-			clazz,
-			'DataObjQueryRiderFunction',
-			DataObjQueryRiderFunction
-		)
-		this.codeQueryType = memberOfEnum(
-			obj._codeQueryType,
-			clazz,
-			'codeQueryType',
-			'TokenApiQueryType',
-			TokenApiQueryType
-		)
-		this.codeTriggerTiming = memberOfEnum(
-			obj._codeTriggerTiming,
-			clazz,
-			'codeTriggerTiming',
-			'DataObjQueryRiderTriggerTiming',
-			DataObjQueryRiderTriggerTiming
-		)
-		this.codeType = memberOfEnum(
-			obj._codeType,
-			clazz,
-			'codeType',
-			'DataObjQueryRiderType',
-			DataObjQueryRiderType
-		)
-		this.codeUserDestination = memberOfEnumIfExists(
-			obj._codeUserDestination,
-			'codeUserDestination',
-			clazz,
-			'DataObjQueryRiderDestination',
-			DataObjQueryRiderDestination
-		)
-		this.codeUserMsgDelivery = memberOfEnumIfExists(
-			obj._codeUserMsgDelivery,
-			'codeUserMsgDelivery',
-			clazz,
-			'DataObjQueryRiderMsgDelivery',
-			DataObjQueryRiderMsgDelivery
-		)
-		this.expr = obj.expr
-		this.funct = this.getFunction(this.codeFunction)
-		this.functionParmValue = obj.functionParmValue
-		this.userMsg = obj.userMsg
-	}
-
-	async executeDestination(sm: State) {
-		if (this.codeUserDestination) {
-			switch (this.codeUserDestination) {
-				case DataObjQueryRiderDestination.back:
-					await sm.triggerAction(
-						new TokenAppStateTriggerAction({
-							codeAction: CodeAction.init(
-								CodeActionClass.ct_sys_code_action_class_nav,
-								CodeActionType.navBack
-							)
-						})
-					)
-					break
-				case DataObjQueryRiderDestination.home:
-					await sm.triggerAction(
-						new TokenAppStateTriggerAction({
-							codeAction: CodeAction.init(
-								CodeActionClass.ct_sys_code_action_class_nav,
-								CodeActionType.navHome
-							)
-						})
-					)
-					break
-				default:
-					error(500, {
-						file: FILENAME,
-						function: 'DataObjQueryRider.executeDestination',
-						message: `No case defined for rider.codeUserDestination: ${this.codeUserDestination}`
-					})
-			}
-		}
-	}
-
-	async executeExpr(sm: State, dataTab: DataObjData, dataTree: TokenApiQueryDataTree) {
-		if (this.expr) {
-			await sm.triggerAction(
-				new TokenAppStateTriggerAction({
-					codeAction: CodeAction.init(
-						CodeActionClass.ct_sys_code_action_class_utils,
-						CodeActionType.dbexpression
-					),
-					data: {
-						value: {
-							expr: this.expr,
-							dataTab,
-							dataTree
-						}
-					}
-				})
-			)
-		}
-	}
-
-	async executeFunction(sm: State, dataQuery: DataObjData) {
-		return this.funct ? await this.funct(sm, this, dataQuery) : dataQuery
-	}
-
-	executeMsg(sm: State) {
-		if (this.userMsg && this.codeUserMsgDelivery) {
-			switch (this.codeUserMsgDelivery) {
-				case DataObjQueryRiderMsgDelivery.alert:
-					alert(this.userMsg)
-					break
-				case DataObjQueryRiderMsgDelivery.toast:
-					sm.openToast(ToastType.success, this.userMsg)
-					break
-				default:
-					error(500, {
-						file: FILENAME,
-						function: 'DataObjQueryRider.executeMsg',
-						message: `No case defined for rider.codeUserMsgDelivery: ${this.codeUserMsgDelivery}`
-					})
-			}
-		}
-	}
-
-	getFunction(codeFunction: DataObjQueryRiderFunction | undefined) {
-		if (!codeFunction) return undefined
-		switch (codeFunction) {
-			case DataObjQueryRiderFunction.qrfFileStorage:
-				return qrfFileStorage
-
-			case DataObjQueryRiderFunction.qrfUserUpdate:
-				return qrfUserUpdate
-
-			default:
-				error(500, {
-					file: FILENAME,
-					function: 'DataObjQueryRider.getFunction',
-					message: `No case defined for codeFunction: ${codeFunction}`
-				})
-		}
-	}
-}
-
-export enum DataObjQueryRiderDestination {
-	back = 'back',
-	home = 'home'
-}
-export enum DataObjQueryRiderFunction {
-	qrfFileStorage = 'qrfFileStorage',
-	qrfUserUpdate = 'qrfUserUpdate'
-}
-export enum DataObjQueryRiderMsgDelivery {
-	alert = 'alert',
-	toast = 'toast'
-}
-export enum DataObjQueryRiderTriggerTiming {
-	post = 'post',
-	pre = 'pre'
-}
-export enum DataObjQueryRiderType {
-	appDestination = 'appDestination',
-	customFunction = 'customFunction',
-	dbExpr = 'dbExpr',
-	userMsg = 'userMsg'
 }
 
 export enum DataObjSaveMode {
@@ -724,48 +521,6 @@ export class DataObjSortItem {
 		this.colId = colId
 		this.sort = sort
 		this.sortIndex = sortIndex
-	}
-}
-
-export class DataObjTable {
-	columnParent?: string
-	columnsId: string[]
-	exprFilterUpdate?: string
-	index: number
-	indexParent?: number
-	indexesChildren: number[] = []
-	isTableExtension: boolean
-	isRoot: boolean
-	parentObjTable?: DataObjTable
-	script: string = ''
-	table: DBTable
-	traversalFromRoot: string
-	constructor(obj: RawDataObjTable, tables: DataObjTable[]) {
-		const clazz = 'DataObjTable'
-		obj = valueOrDefault(obj, {})
-		this.columnParent = obj._columnParent
-		this.columnsId = getArray(obj._columnsId)
-		this.exprFilterUpdate = obj.exprFilterUpdate
-		this.index = required(obj.index, clazz, 'index')
-		this.indexParent = obj.indexParent
-		this.isRoot = this.index === 0
-		this.isTableExtension = obj.isTableExtension
-		this.parentObjTable =
-			typeof obj.indexParent === 'number' && obj.indexParent > -1
-				? tables.find((table) => table.index === obj.indexParent)
-				: undefined
-		this.table = new DBTable(obj._table)
-		this.traversalFromRoot =
-			this.parentObjTable && this.columnParent
-				? this.parentObjTable.traversalFromRoot
-					? this.parentObjTable.traversalFromRoot + '.' + this.columnParent
-					: this.columnParent
-				: ''
-	}
-	setChildren(tables: DataObjTable[]) {
-		this.indexesChildren = tables
-			.filter((table) => table.indexParent === this.index)
-			.map((t) => t.index)
 	}
 }
 
@@ -820,7 +575,7 @@ export class DataRows {
 		error(500, {
 			file: FILENAME,
 			function: 'DataRows.getDetailRow',
-			message: `No detail row available.`
+			msg: `No detail row available.`
 		})
 	}
 	getDetailRowStatus() {
@@ -844,7 +599,7 @@ export class DataRows {
 			error(500, {
 				file: FILENAME,
 				function: 'dataObjData.getRowValueById',
-				message: `Cannot find row for recordId: ${id}`
+				msg: `Cannot find row for recordId: ${id}`
 			})
 		}
 	}
@@ -883,7 +638,7 @@ export class DataRows {
 			error(500, {
 				file: FILENAME,
 				function: 'dataObjData.setDetailRecordStatus',
-				message: `No detail record available.`
+				msg: `No detail record available.`
 			})
 		}
 	}
@@ -904,21 +659,6 @@ export class DataRows {
 				if (row > -1) this.dataRows[row].record[fieldName] = record[fieldName]
 			})
 		})
-	}
-}
-
-export class DBTable {
-	hasMgmt: boolean
-	mod: string
-	name: string
-	object: string
-	constructor(obj: any) {
-		const clazz = 'DBTable'
-		obj = valueOrDefault(obj, {})
-		this.hasMgmt = booleanRequired(obj.hasMgmt, clazz, 'hasMgmt')
-		this.mod = strRequired(obj.mod, clazz, 'module')
-		this.name = strRequired(obj.name, clazz, 'name')
-		this.object = this.mod + '::' + this.name
 	}
 }
 
@@ -960,7 +700,22 @@ export function getDataRecordValueKey(record: DataRecord, key: string) {
 	const recordKey = getDataRecordKey(record, key)
 	return recordKey ? record[recordKey] : undefined
 }
-
+export function getDataRecordValueKeyData(record: DataRecord, key: string) {
+	const val = getDataRecordValueKey(record, key)
+	return val
+		? Object.hasOwn(val, 'data') && Object.hasOwn(val, 'display')
+			? val.data
+			: val
+		: undefined
+}
+export function getDataRecordValueKeyDisplay(record: DataRecord, key: string) {
+	const val = getDataRecordValueKey(record, key)
+	return val
+		? Object.hasOwn(val, 'data') && Object.hasOwn(val, 'display')
+			? val.display
+			: val
+		: undefined
+}
 export function setDataRecordValue(record: DataRecord, key: string, value: any) {
 	const recordKey = getDataRecordKey(record, key)
 	if (recordKey) record[recordKey] = value
@@ -1074,7 +829,6 @@ export enum ParmsValuesType {
 	columnDefs = 'columnDefs',
 	customProgramOwnerId = 'customProgramOwnerId',
 	embedFieldName = 'embedFieldName',
-	embedListSave = 'embedListSave',
 	embedParentId = 'embedParentId',
 	fieldListItems = 'fieldListItems',
 	isMultiSelect = 'isMultiSelect',
@@ -1085,8 +839,6 @@ export enum ParmsValuesType {
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listSortModel = 'listSortModel',
 	parentRecordId = 'parentRecordId',
-	propLinkItemsSourceRaw = 'propLinkItemsSource',
-	propLinkItemsValueCurrent = 'propLinkItemsValueCurrent',
 	queryOwnerIdOrg = 'queryOwnerIdOrg',
 	queryOwnerIdSystem = 'queryOwnerIdSystem',
 	rowData = 'rowData',

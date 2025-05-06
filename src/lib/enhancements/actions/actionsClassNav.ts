@@ -10,23 +10,29 @@ import {
 	userActionStateChangeRaw
 } from '$comps/other/types.userAction.svelte'
 import { TokenAppDoQuery, TokenAppStateTriggerAction } from '$utils/types.token'
-import { CodeActionType, strRequired } from '$utils/types'
+import { CodeActionType, MethodResult, strRequired } from '$utils/types'
 import { Token, TokenAppIndex, TokenAppNode, TokenAppRow, TokenAppTab } from '$utils/types.token'
 import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionClassNav.ts'
 
-export default async function action(sm: State, parmsAction: TokenAppStateTriggerAction) {
+export default async function action(
+	sm: State,
+	parmsAction: TokenAppStateTriggerAction
+): Promise<MethodResult> {
 	const actionType = parmsAction.codeAction.actionType
 	const token: Token = parmsAction.data.token
+	let result: MethodResult
 
 	switch (actionType) {
 		case CodeActionType.navBack:
 			if (sm.app.getCurrLevelsLength() === 1) {
 				await userActionStateChangeHomeDashboard(sm, parmsAction)
 			} else {
-				await sm.app.navBack(sm, 1)
+				result = await sm.app.navBack(sm, 1)
+				if (result.error) return result
+
 				await userActionStateChangeDataObj(sm, parmsAction)
 			}
 			break
@@ -36,7 +42,9 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 				if (token.index === 0) {
 					await userActionStateChangeHomeDashboard(sm, parmsAction)
 				} else {
-					await sm.app.navCrumbs(sm, token)
+					result = await sm.app.navCrumbs(sm, token)
+					if (result.error) return result
+
 					await userActionStateChangeDataObj(sm, parmsAction)
 				}
 			}
@@ -51,51 +59,63 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.navRow:
-			await sm.app.rowUpdate(sm, token as TokenAppRow)
+			result = await sm.app.rowUpdate(sm, token as TokenAppRow)
+			if (result.error) return result
+
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.navTab:
 			if (token instanceof TokenAppTab) {
-				await token.app.navTab(sm, token)
+				result = await token.app.navTab(sm, token)
+				if (result.error) return result
 				await userActionStateChangeDataObj(sm, parmsAction)
 			}
 			break
 
 		case CodeActionType.openDataObjDrawer:
 			const tokenDataObjDrawer = token as TokenAppDoQuery
-			await sm.openDrawerDataObj(
+			result = await sm.openDrawerDataObj(
 				tokenDataObjDrawer.source,
 				'bottom',
 				'h-[70%]',
 				undefined,
 				tokenDataObjDrawer
 			)
+			if (result.error) return result
+
 			parmsAction.setMenuClose()
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.openDataObjModal:
 			const tokenDataObjModal = token as TokenAppDoQuery
-			await sm.openModalDataObj(tokenDataObjModal, async () =>
+			result = await sm.openModalDataObj(tokenDataObjModal, async () =>
 				userActionStateChangeHomeDashboard(sm, parmsAction)
 			)
+			if (result.error) return result
+
 			parmsAction.setMenuClose()
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.openNode:
 			if (!parmsAction.isMultiTree) sm.newApp()
-			await sm.app.addTreeNode(sm, token as TokenAppNode)
+			result = await sm.app.addTreeNode(sm, token as TokenAppNode)
+			if (result.error) return result
+
 			parmsAction.setMenuClose()
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		default:
-			error(500, {
-				file: FILENAME,
-				function: 'default',
-				message: `No case defined for actionType: ${actionType}`
+			return new MethodResult({
+				success: false,
+				error: {
+					file: FILENAME,
+					function: 'default',
+					msg: `No case defined for actionType: ${actionType}`
+				}
 			})
 	}
 
@@ -109,4 +129,6 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 		])
 		await userActionStateChangeRaw(sm, parmsAction)
 	}
+
+	return new MethodResult()
 }

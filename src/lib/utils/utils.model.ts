@@ -1,5 +1,3 @@
-import { getArray } from '$utils/utils.array'
-import { debug } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/utils/model.utils.ts'
@@ -23,7 +21,7 @@ export function booleanRequired(val: any, clazz: string, fieldName: string) {
 		error(500, {
 			file: FILENAME,
 			function: `Class: ${clazz} - booleanRequired`,
-			message: `No value supplied for field ${fieldName}.`
+			msg: `No value supplied for field ${fieldName}.`
 		})
 	}
 }
@@ -64,7 +62,8 @@ export function memberOfEnum(
 		error(500, {
 			file: className,
 			function: `memberOfEnum: ${enumName} - Field: ${fieldName}`,
-			message: `No value supplied. Elements:${Object.values(enumObj).toString()}`
+			msgSystem: `No value supplied. Elements:${Object.values(enumObj).toString()}`,
+			msgUser: `No value supplied.`
 		})
 	}
 	for (const value of Object.values(enumObj)) {
@@ -75,7 +74,8 @@ export function memberOfEnum(
 	error(500, {
 		file: className,
 		function: `memberOfEnum: ${enumName} - Field: ${fieldName} - Value: ${val}`,
-		message: `Invalid enum value: ${val} enum: ${enumName} elements: ${Object.values(enumObj).toString()}`
+		msgSystem: `Invalid enum value: ${val} enum: ${enumName} elements: ${Object.values(enumObj).toString()}`,
+		msgUser: `Invalid enum value: ${val} enum: ${enumName}`
 	})
 }
 export function memberOfEnumOrDefault(
@@ -130,7 +130,7 @@ export function nbrRequired(val: number | undefined, clazz: string, name: string
 		error(500, {
 			file: FILENAME,
 			function: clazz,
-			message: `Required value: (${name}) - is undefined or has an invlid value: (${val}).`
+			msg: `Required value: (${name}) - is undefined or has an invlid value: (${val}).`
 		})
 	}
 }
@@ -162,7 +162,7 @@ export function override(valOverride: any, valBase: any, clazz: string, fieldNam
 	error(500, {
 		file: FILENAME,
 		function: clazz,
-		message: `No override or base value provided for field ${fieldNameBase}. ${valOverride} ${valBase}`
+		msg: `No override or base value provided for field ${fieldNameBase}. ${valOverride} ${valBase}`
 	})
 }
 
@@ -173,7 +173,7 @@ export function required(val: any, clazz: any, valueName: string) {
 		error(500, {
 			file: FILENAME,
 			function: clazz,
-			message: `Value: ${valueName} - is required but is undefined or null.`
+			msg: `Value: ${valueName} - is required but is undefined or null.`
 		})
 	}
 }
@@ -201,7 +201,7 @@ export function strRequired(val: string | null | undefined, className: string, f
 		error(500, {
 			file: className,
 			function: 'strRequired',
-			message: `Value: (${val}) for field: ${field} is invalid.`
+			msg: `Value: (${val}) for field: ${field} is invalid.`
 		})
 	}
 }

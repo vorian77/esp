@@ -88,7 +88,7 @@ export class FieldInput extends Field {
 				error(500, {
 					file: FILENAME,
 					function: 'FieldInput.initMatchColumn',
-					message: `For column: "${thisField.colDO.propName}", can not find parent matchColumn: "${parentMatchColumn}"`
+					msg: `For column: "${thisField.colDO.propName}", can not find parent matchColumn: "${parentMatchColumn}"`
 				})
 			}
 		}

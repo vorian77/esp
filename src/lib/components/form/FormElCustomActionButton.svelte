@@ -17,9 +17,9 @@
 	let field = $derived(parms.field) as FieldCustomActionButton
 	let disabled = $derived(!dm.isStatusValidNode(parms.dataObjId))
 
-	async function action() {
+	async function action(): Promise<MethodResult> {
 		sm.app.setTreeLevelIdxCurrent(dataObj.treeLevelIdx)
-		await sm.triggerAction(
+		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: field.action.codeAction,
 				data: {

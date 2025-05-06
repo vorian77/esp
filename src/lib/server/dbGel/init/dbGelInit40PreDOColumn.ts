@@ -191,7 +191,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'json',
-		exprStorageKey: 'avatar_<fSysRandom10>',
+		exprStorageKey: 'avatar_<function,fSysRandom10>',
 		header: 'Avatar',
 		name: 'avatar'
 	})
@@ -1300,6 +1300,42 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'str',
+		header: 'Code',
+		name: 'errCode'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'str',
+		header: 'File',
+		name: 'errFile'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'str',
+		header: 'Function',
+		name: 'errFunction'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'str',
+		header: 'Message - System',
+		name: 'errMsgSystem'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'str',
+		header: 'Message - User',
+		name: 'errMsgUser'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'int16',
+		header: 'Status',
+		name: 'errStatus'
+	})
+	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'Expression',
 		name: 'expr',
@@ -1453,7 +1489,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'json',
-		exprStorageKey: 'file_<fSysRandom10>',
+		exprStorageKey: 'file_<function,fSysRandom10>',
 		header: 'File',
 		name: 'file'
 	})
@@ -1487,13 +1523,11 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'bool',
 		header: 'Has Alternate Open',
 		name: 'hasAltOpen',
-		togglePresetTrue: false,
-		toggleValueFalse: 'No',
-		toggleValueTrue: 'Yes'
+		togglePresetTrue: false
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_client_atlantic_impact',
-		codeDataType: 'bool',
+		codeDataType: 'str',
 		header: 'Has Drivers License',
 		name: 'hasDriversLicense',
 		togglePresetTrue: false,
@@ -1505,9 +1539,7 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'bool',
 		header: 'Has Management Columns',
 		name: 'hasMgmt',
-		togglePresetTrue: true,
-		toggleValueFalse: 'No',
-		toggleValueTrue: 'Yes'
+		togglePresetTrue: true
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
@@ -1617,6 +1649,12 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'bool',
 		header: 'Active',
 		name: 'isActive'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'bool',
+		header: 'Closed',
+		name: 'isClosed'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',

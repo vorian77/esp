@@ -10,20 +10,19 @@ import {
 	DataObjSort,
 	type DataRecord,
 	DataRow,
-	debug,
 	memberOfEnum,
+	MethodResult,
+	MethodResultError,
 	nbrRequired,
 	ParmsValues,
-	ParmsValuesType,
 	required,
-	ResponseBody,
-	strOptional,
 	strRequired,
 	User,
 	valueOrDefault
 } from '$utils/types'
+import { QueryManagerSource, QuerySourceRaw, type RawDataList } from '$lib/query/types.query'
 import { RawDataObj } from '$comps/dataObj/types.rawDataObj.svelte'
-import { apiFetchFunction, ApiFunction } from '$routes/api/api'
+import { apiError, apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
 import { State, StateParms, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import { App } from '$comps/app/types.app.svelte'
@@ -53,15 +52,12 @@ export enum TokenApiBlobAction {
 	upload = 'upload'
 }
 
-export class TokenApiFetchError extends TokenApi {
-	fileName: string
-	functionName: string
-	message: string
-	constructor(fileName: string, functionName: string, message: string) {
+export class TokenApiError extends TokenApi {
+	error: MethodResultError
+	constructor(obj: any) {
+		const clazz = 'TokenApiError'
 		super()
-		this.fileName = fileName
-		this.functionName = functionName
-		this.message = message
+		this.error = new MethodResultError(obj)
 	}
 }
 
@@ -85,7 +81,7 @@ export class TokenApiBlobParmUpload {
 	key: string
 	urlOld?: string
 	constructor(obj: any) {
-		const clazz = 'TokenApiFileParmUpload'
+		const clazz = 'TokenApiBlobParmUpload'
 		obj = valueOrDefault(obj, {})
 		this.file = required(obj.file, clazz, 'file')
 		this.fileType = memberOfEnum(
@@ -115,12 +111,14 @@ export class TokenApiDataObjId extends TokenApi {
 }
 
 export class TokenApiDbDataObjSource {
-	replacements: DataRecord = {}
-	sources: DataRecord = {}
+	replacements: DataRecord
+	sources: DataRecord
 	typesReplace = ['exprFilter', 'parent']
 	typesSource = ['dataObjId', 'dataObjName', 'rawDataObj']
 	constructor(obj: any) {
 		const clazz = 'TokenApiDbDataObjSource'
+		this.replacements = valueOrDefault(obj?.replacements, {})
+		this.sources = valueOrDefault(obj?.sources, {})
 		this.updateReplacements(obj)
 		this.updateSources(obj)
 		required(
@@ -178,48 +176,78 @@ export class TokenApiIds extends TokenApi {
 }
 
 export class TokenApiQuery extends TokenApi {
-	dataObjSource: TokenApiDbDataObjSource
+	evalExprContext: string
 	queryData: TokenApiQueryData
+	queryManagerSource: QueryManagerSource = QueryManagerSource.gel
+	querySourceRaw: QuerySourceRaw
 	queryType: TokenApiQueryType
-	constructor(
-		queryType: TokenApiQueryType,
-		dataObjSource: TokenApiDbDataObjSource,
-		queryData: TokenApiQueryData
-	) {
-		const clazz = 'TokenApiDb'
+	constructor(obj: any) {
+		const clazz = 'TokenApiQuery'
 		super()
-		this.dataObjSource = dataObjSource
-		this.queryData = queryData
-		this.queryType = queryType
+		obj = valueOrDefault(obj, {})
+		this.evalExprContext = strRequired(obj.evalExprContext, clazz, 'evalExprContext')
+		this.queryData = TokenApiQueryData.load(obj.queryData)
+		this.querySourceRaw = new QuerySourceRaw(obj.querySourceRaw)
+		this.queryType = required(obj.queryType, clazz, 'queryType')
+	}
+}
+
+export class TokenApiQuerySource extends TokenApi {
+	evalExprContext: string
+	queryType: TokenApiQueryType
+	sm: State
+	sourceQueryData: DataRecord
+	sourceQuerySource: DataRecord
+	constructor(obj: any) {
+		const clazz = 'TokenApiQuerySource'
+		obj = valueOrDefault(obj, {})
+		super()
+		this.evalExprContext = strRequired(obj.evalExprContext, clazz, 'evalExprContext')
+		this.queryType = required(obj.queryType, clazz, 'queryType')
+		this.sm = required(obj.sm, clazz, 'sm')
+		this.sourceQueryData = required(obj.sourceQueryData, clazz, 'sourceQueryData')
+		this.sourceQuerySource = required(obj.sourceQuerySource, clazz, 'sourceQuerySource')
 	}
 }
 
 export class TokenApiQueryData {
 	attrAccessFilter: string = ''
-	dataTab?: DataObjData
+	dataTab: DataObjData
+	dataTree: TokenApiQueryDataTree
 	dbExpr?: string
+	rawDataList: RawDataList = []
 	record: DataRecord
 	system: DataRecord
-	tree: TokenApiQueryDataTree
 	user: User
 	constructor(data: any) {
 		data = valueOrDefault(data, {})
-		this.dataTab = this.dataSet(data, 'dataTab', undefined)
+		this.dataTab = this.dataSet(data, 'dataTab', new DataObjData())
+		this.dataTree = this.dataSet(data, 'dataTree', [])
 		this.dbExpr = this.dataSet(data, 'dbExpr', '')
+		this.rawDataList = this.dataSet(data, 'rawDataList', [])
 		this.record = this.dataSet(data, 'record', {})
 		this.system = this.dataSet(data, 'system', {})
-		this.tree = this.dataSet(data, 'tree', [])
 		this.user = this.dataSet(data, 'user', {})
 	}
 	static load(currData: TokenApiQueryData) {
 		const newData = new TokenApiQueryData(currData)
-		newData.attrAccessFilter = currData.attrAccessFilter
-		newData.dataTab = currData.dataTab ? DataObjData.load(currData.dataTab) : undefined
-		newData.tree = new TokenApiQueryDataTree(currData.tree.levels)
+		newData.attrAccessFilter = valueOrDefault(currData?.attrAccessFilter, '')
+		let result: MethodResult = currData?.dataTab
+			? DataObjData.load(currData.dataTab)
+			: new MethodResult(new DataObjData())
+		if (result.error) {
+			error(500, {
+				file: FILENAME,
+				function: 'TokenApiQueryData.load',
+				msg: `Invalid dataTab: ${currData.dataTab}`
+			})
+		}
+		newData.dataTab = result.data as DataObjData
+		newData.dataTree = new TokenApiQueryDataTree(currData.dataTree.levels)
 		return newData
 	}
 	dataSet(data: any, key: string, defaultVal: any) {
-		return Object.hasOwn(data, key) && data !== undefined ? data[key] : defaultVal
+		return data[key] === undefined ? defaultVal : data[key]
 	}
 	getParms() {
 		return this.dataTab ? this.dataTab.getParms() : {}
@@ -239,14 +267,14 @@ export class TokenApiQueryData {
 				)
 			} else {
 				if (
-					rawDataObj?.exprWith &&
-					rawDataObj?.exprWith?.indexOf('OR <attributeAccessFilter>') > -1
+					rawDataObj?.rawQuerySource.exprWith &&
+					rawDataObj?.rawQuerySource.exprWith?.indexOf('OR <attributeAccessFilter>') > -1
 				) {
 					this.setAttrsAccessFilter('')
 				}
 				if (
-					rawDataObj?.exprWith &&
-					rawDataObj?.exprWith?.indexOf('UNION <attributeAccessFilter>') > -1
+					rawDataObj?.rawQuerySource.exprWith &&
+					rawDataObj?.rawQuerySource.exprWith?.indexOf('UNION <attributeAccessFilter>') > -1
 				) {
 					this.setAttrsAccessFilter('{}')
 				}
@@ -261,10 +289,10 @@ export class TokenApiQueryData {
 
 	updateTableData(table: string, dataRow: DataRow) {
 		this.record = dataRow.record
-		let idx = this.tree.levels.length - 1
+		let idx = this.dataTree.levels.length - 1
 		while (idx > -1) {
-			if (this.tree.levels[idx].table === table) {
-				this.tree.levels[idx].dataRow = dataRow
+			if (this.dataTree.levels[idx].table === table) {
+				this.dataTree.levels[idx].dataRow = dataRow
 				idx = -1
 			}
 		}
@@ -302,9 +330,10 @@ export class TokenApiQueryDataTree {
 				error(500, {
 					file: FILENAME,
 					function: 'TokenApiQueryDataTree.setValue',
-					message: `Field ${fieldName} not found in data tree - table: ${table}; record: ${JSON.stringify(
+					msgSystem: `Field ${fieldName} not found in data tree - table: ${table}; record: ${JSON.stringify(
 						dataRow?.record
-					)}`
+					)}`,
+					msgUser: `Field ${fieldName} not found in data tree - table: ${table}`
 				})
 			}
 		}
@@ -359,14 +388,14 @@ export class TokenApiUserName extends TokenApi {
 }
 
 export class TokenApiUserPref extends TokenApi {
-	data: any
 	idFeature: string
 	idUser: string
-	constructor(idUser: string, idFeature: string, data: any | undefined = undefined) {
+	prefData: any
+	constructor(idUser: string, idFeature: string, prefData: any | undefined = undefined) {
 		super()
-		this.data = data
 		this.idFeature = idFeature
 		this.idUser = idUser
+		this.prefData = prefData
 	}
 }
 
@@ -413,16 +442,11 @@ export class TokenAppDoQuery extends TokenApp {
 		if (this.dataObjId) {
 			return this.dataObjId
 		} else {
-			const result: DataRecord = await apiFetchFunction(
+			const result: MethodResult = await apiFetchFunction(
 				ApiFunction.dbGelGetDataObjId,
-				new TokenApiFetchError(
-					FILENAME,
-					'TokenAppDoQuery.getDataObjId',
-					`Error retrieving dataObj for dataObjName: ${this.dataObjName}`
-				),
 				new TokenApiId(this.dataObjName!)
 			)
-			return result.id
+			return result.data.id
 		}
 	}
 }

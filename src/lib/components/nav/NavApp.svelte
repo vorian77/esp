@@ -1,5 +1,12 @@
 <script lang="ts">
-	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, required } from '$utils/types'
+	import {
+		CodeAction,
+		CodeActionClass,
+		CodeActionType,
+		ContextKey,
+		MethodResult,
+		required
+	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import { TokenAppStateTriggerAction, TokenAppUserActionConfirmType } from '$utils/types.token'
@@ -15,8 +22,8 @@
 
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 
-	const back = async () => {
-		await sm.triggerAction(
+	const back = async (): Promise<MethodResult> => {
+		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_nav,

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { ContextKey, DataManager, DataObj, required } from '$utils/types'
+	import { ContextKey, DataManager, DataObj, FileStorage, required } from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldFile, FileStorage } from '$comps/form/fieldFile'
+	import { FieldFile } from '$comps/form/fieldFile'
 	import { FieldValueType } from '$comps/form/field.svelte'
 	import { getToastStore } from '@skeletonlabs/skeleton'
 	import {
@@ -74,6 +74,11 @@
 		if (files && files.length > 0) {
 			isSourceStorage = false
 			urlCurrent = URL.createObjectURL(files[0])
+
+			let result: MethodResult = field.getKey()
+			if (result.error) return result
+			const key = result.data
+
 			await dm.setFieldValue(
 				parms.dataObjId,
 				parms.row,
@@ -81,7 +86,7 @@
 				new TokenApiBlobParmUpload({
 					file: files[0],
 					fileType: files[0].type.includes('pdf') ? TokenApiBlobType.pdf : TokenApiBlobType.image,
-					key: field.getKey(),
+					key,
 					urlOld
 				})
 			)

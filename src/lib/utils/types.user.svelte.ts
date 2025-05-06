@@ -1,44 +1,26 @@
 import { State } from '$comps/app/types.appState.svelte'
-import {
-	Attr,
-	DataObjData,
-	DataObjRenderPlatform,
-	type DataRecord,
-	Node,
-	NodeData,
-	ParmsValues
-} from '$utils/types'
+import { Attr, AttrObjAction, DataObjRenderPlatform, type DataRecord, Node } from '$utils/types'
 import {
 	arrayOfClass,
 	booleanOrFalse,
 	booleanRequired,
 	classOptional,
-	CodeAction,
-	CodeActionClass,
-	CodeActionType,
+	FileStorage,
 	getArray,
 	memberOfEnum,
+	MethodResult,
 	required,
-	strRequired,
-	valueOrDefault
+	strRequired
 } from '$utils/utils'
 import { DataObj, ParmsValuesType } from '$utils/types'
-import {
-	TokenApiQueryType,
-	TokenAppDo,
-	TokenAppDoQuery,
-	TokenAppModalReturnType,
-	TokenAppModalSelect,
-	TokenAppNode,
-	TokenAppStateTriggerAction
-} from '$utils/types.token'
-import { FileStorage } from '$comps/form/fieldFile'
+import { TokenApiQueryType, TokenAppDoQuery, TokenAppNode } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$utils/types.user.ts'
 
 export class User {
 	attrs: Attr[]
+	attrsObjAction: AttrObjAction[]
 	avatar?: FileStorage
 	dbBranch: string
 	firstName: string
@@ -66,6 +48,7 @@ export class User {
 	constructor(obj: any) {
 		const clazz = 'User'
 		this.attrs = arrayOfClass(Attr, obj._attrs)
+		this.attrsObjAction = arrayOfClass(AttrObjAction, obj._attrsObjAction)
 		this.avatar = classOptional(FileStorage, obj.avatar)
 		this.dbBranch = required(obj.dbBranch, clazz, 'dbBranch')
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
@@ -222,14 +205,15 @@ export class UserResourceTask extends UserResource {
 		}
 	}
 
-	async loadPage(sm: State) {
+	async loadPage(sm: State): Promise<MethodResult> {
 		if (this.pageDataObjId) {
 			const token = new TokenAppDoQuery({
 				dataObjId: this.pageDataObjId,
 				queryType: TokenApiQueryType.retrieve
 			})
 
-			await sm.app.addTreeDataObj(sm, token)
+			let result: MethodResult = await sm.app.addTreeDataObj(sm, token)
+			if (result.error) return result
 
 			this.dataObjPage = sm.app.getCurrTab()?.dataObj
 
@@ -238,6 +222,7 @@ export class UserResourceTask extends UserResource {
 				sm.dm.nodeAdd(this.dataObjPage)
 			}
 		}
+		return new MethodResult()
 	}
 	async togglePinToDash() {
 		this.isPinToDash = !this.isPinToDash
@@ -357,13 +342,13 @@ export enum UserTypeResourceType {
 	
 		async function getUserESP() {
 			const responsePromise = await dbESPAPI(HTMLMETHOD.GET, 'ws_cm_ssr_user', { userId })
-			const response: ResponseBody = await responsePromise.json()
+			const response: MethodResult = await responsePromise.json()
 	
 			if (!response.success) {
-				throw error(500, {
+				error(500, {
 					file: FILENAME,
 					function: 'getUserESP',
-					message: `Unable to retrieve user: ${userId}`
+					msg: `Unable to retrieve user: ${userId}`
 				})
 			}
 	
@@ -375,10 +360,10 @@ export enum UserTypeResourceType {
 	
 			// apps
 			if (user.apps === '') {
-				throw error(500, {
+				error(500, {
 					file: FILENAME,
 					function: 'fetchUser',
-					message: `No apps defined for user: ${user.per_name_full} id: ${user.user_id}`
+					msg: `No apps defined for user: ${user.per_name_full} id: ${user.user_id}`
 				})
 			}
 			const appsList = user.apps.split(',')

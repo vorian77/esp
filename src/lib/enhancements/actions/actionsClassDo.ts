@@ -1,3 +1,4 @@
+import { AppLevel, AppLevelTab } from '$comps/app/types.app.svelte'
 import { State, StateParms, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import {
 	userActionStateChangeDataObj,
@@ -9,12 +10,11 @@ import {
 	CodeActionClass,
 	CodeActionType,
 	DataRecordStatus,
-	memberOfEnum,
+	MethodResult,
 	ParmsValues,
 	ParmsValuesType,
 	required
 } from '$utils/types'
-import { AppLevel, AppLevelTab } from '$comps/app/types.app.svelte'
 import {
 	Token,
 	TokenApiQueryType,
@@ -23,16 +23,19 @@ import {
 	TokenAppModalReturnType,
 	TokenAppStateTriggerAction
 } from '$utils/types.token'
-import { queryTypeTab } from '$comps/app/types.appQuery'
-import { error } from '@sveltejs/kit'
+import { clientQueryExpr } from '$lib/query/queryManagerClient'
 
 const FILENAME = '/$enhance/actions/actionClassDO.ts'
 
 let currLevel: AppLevel | undefined
 let currTab: AppLevelTab | undefined
 let parentTab: AppLevelTab | undefined
+let result: MethodResult
 
-export default async function action(sm: State, parmsAction: TokenAppStateTriggerAction) {
+export default async function action(
+	sm: State,
+	parmsAction: TokenAppStateTriggerAction
+): Promise<MethodResult> {
 	const actionType = parmsAction.codeAction.actionType
 	const token: Token = required(parmsAction.data.token, FILENAME, 'token')
 	const value = parmsAction.data.value
@@ -40,7 +43,9 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 
 	switch (actionType) {
 		case CodeActionType.doDetailDelete:
-			await sm.app.saveDetail(sm, actionType, token as TokenAppDo)
+			result = await sm.app.saveDetail(sm, actionType)
+			if (result.error) return result
+
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
@@ -53,16 +58,11 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			if (currTab && currTab.dataObj) {
 				currRecordId = currTab.getCurrRecordValue('id')
 				if (currRecordId) {
+					const evalExprContext = `${FILENAME}.action.${actionType}`
 					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {isOpen := true}`
-					await sm.triggerAction(
-						new TokenAppStateTriggerAction({
-							codeAction: CodeAction.init(
-								CodeActionClass.ct_sys_code_action_class_utils,
-								CodeActionType.dbexpression
-							),
-							data: { value: { expr } }
-						})
-					)
+					result = await clientQueryExpr(expr, evalExprContext)
+					if (result.error) return result
+
 					// currTab.dataObj.data.rowsRetrieved.setDetailRecordValue('isReadDisplay', 'No')
 					await userActionStateChangeDataObj(sm, parmsAction)
 				}
@@ -78,13 +78,12 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			if (parentTab && parentTab.dataObj) {
 				parentTab.dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
 			}
-			await queryTypeTab(
-				sm,
-				sm.app.getCurrTab(),
-				parmsAction.codeAction.actionType,
-				TokenApiQueryType.preset
-			)
-			await userActionStateChangeDataObj(sm, parmsAction)
+			currTab = sm.app.getCurrTab()
+			if (currTab && currTab.dataObj) {
+				result = await currTab.query(sm, TokenApiQueryType.preset)
+				if (result.error) return result
+				await userActionStateChangeDataObj(sm, parmsAction)
+			}
 			break
 
 		case CodeActionType.doDetailProcessExecute:
@@ -92,9 +91,10 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doDetailSave:
-			if (await sm.app.saveDetail(sm, actionType, token as TokenAppDo)) {
-				await userActionStateChangeDataObj(sm, parmsAction)
-			}
+			result = await sm.app.saveDetail(sm, actionType)
+			if (result.error) return result
+
+			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.doDetailSaveAs:
@@ -103,7 +103,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doEmbedListConfigEdit:
-			await sm.openModalEmbedListConfig(
+			return await sm.openModalEmbedListConfig(
 				token as TokenAppDo,
 				TokenApiQueryType.retrieve,
 				fModalCloseUpdateEmbedListConfig
@@ -119,7 +119,10 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doEmbedListSelect:
-			await sm.openModalEmbedListSelect(token as TokenAppDo, fModalCloseUpdateEmbedListSelect)
+			return await sm.openModalEmbedListSelect(
+				token as TokenAppDo,
+				fModalCloseUpdateEmbedListSelect
+			)
 			break
 
 		case CodeActionType.doListDetailEdit:
@@ -127,7 +130,8 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doListDetailNew:
-			await userActionTreeNodeChildren(sm, token, TokenApiQueryType.preset, parmsAction)
+			result = await userActionTreeNodeChildren(sm, token, TokenApiQueryType.preset, parmsAction)
+			if (result.error) return result
 			break
 
 		case CodeActionType.doListDownload:
@@ -136,24 +140,25 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doListSelfRefresh:
-			await queryTypeTab(
-				sm,
-				sm.app.getCurrTab(),
-				parmsAction.codeAction.actionType,
-				TokenApiQueryType.retrieve
-			)
-			await userActionStateChangeDataObj(sm, parmsAction)
+			currTab = sm.app.getCurrTab()
+			if (currTab && currTab.dataObj) {
+				result = await currTab.query(sm, TokenApiQueryType.retrieve)
+				if (result.error) return result
+				await userActionStateChangeDataObj(sm, parmsAction)
+			}
 			break
 
 		case CodeActionType.doListSelfSave:
-			const rtn = await sm.app.saveList(sm)
+			result = await sm.app.saveList(sm)
+			if (result.error) return result
 			await userActionStateChangeDataObj(sm, parmsAction)
-
 			break
 
 		case CodeActionType.doOpen:
 			if (!parmsAction.isMultiTree) sm.newApp()
-			await sm.app.addTreeDataObj(sm, token as TokenAppDoQuery)
+			result = await sm.app.addTreeDataObj(sm, token as TokenAppDoQuery)
+			if (result.error) return result
+
 			parmsAction.setMenuClose()
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
@@ -178,29 +183,27 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 					const status = currTab?.dataObj.data?.rowsRetrieved?.getDetailRowStatus()
 					switch (status) {
 						case DataRecordStatus.preset:
-							await queryTypeTab(
-								sm,
-								currTab,
-								parmsAction.codeAction.actionType,
-								TokenApiQueryType.preset
-							)
+							result = await currTab.query(sm, TokenApiQueryType.preset)
+							if (result.error) return result
+
 							await userActionStateChangeDataObj(sm, parmsAction)
 							break
 						case DataRecordStatus.retrieved:
 						case DataRecordStatus.update:
-							await queryTypeTab(
-								sm,
-								currTab,
-								parmsAction.codeAction.actionType,
-								TokenApiQueryType.retrieve
-							)
+							result = await currTab.query(sm, TokenApiQueryType.retrieve)
+							if (result.error) return result
+
 							await userActionStateChangeDataObj(sm, parmsAction)
 							break
+
 						default:
-							error(500, {
-								file: FILENAME,
-								function: `default.actionType: ${actionType}`,
-								message: `No case defined for DataRecordStatus: ${status} `
+							return new MethodResult({
+								success: false,
+								error: {
+									file: FILENAME,
+									function: `default.actionType: ${actionType}`,
+									msg: `No case defined for DataRecordStatus: ${status} `
+								}
 							})
 					}
 				}
@@ -208,29 +211,36 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		default:
-			error(500, {
-				file: FILENAME,
-				function: 'default',
-				message: `No case defined for actionType: ${actionType}`
+			return new MethodResult({
+				success: false,
+				error: {
+					file: FILENAME,
+					function: `default`,
+					msg: `No case defined for actionType: ${actionType}`
+				}
 			})
 	}
 
 	async function fModalCloseUpdateEmbedListConfig(
 		returnType: TokenAppModalReturnType,
 		data?: ParmsValues
-	) {
+	): Promise<MethodResult> {
+		let result: MethodResult
 		currLevel = sm.app.getCurrLevel()
 		if (currLevel) {
 			currTab = currLevel.getCurrTab()
-			await queryTypeTab(sm, currTab, parmsAction.codeAction.actionType, TokenApiQueryType.retrieve)
+			result = await currTab.query(sm, TokenApiQueryType.retrieve)
+
+			if (result.error) return result
 			await userActionStateChangeDataObj(sm, parmsAction)
 		}
+		return new MethodResult()
 	}
 
 	async function fModalCloseUpdateEmbedListSelect(
 		returnType: TokenAppModalReturnType,
 		data?: ParmsValues
-	) {
+	): Promise<MethodResult> {
 		if (returnType === TokenAppModalReturnType.complete) {
 			currLevel = sm.app.getCurrLevel()
 			if (currLevel) {
@@ -242,15 +252,14 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 					)
 					if (idx > -1) {
 						currTab.dataObj.data.fields[idx].data.parms.update(data?.valueGetAll())
-						currTab.dataObj.data.fields[idx].data.parms.valueSet(
-							ParmsValuesType.embedListSave,
-							true
-						)
-						await sm.app.saveList(sm)
+						let result: MethodResult = await sm.app.saveList(sm)
+						if (result.error) return result
 					}
 				}
 			}
 			await userActionStateChangeDataObj(sm, parmsAction)
 		}
+		return new MethodResult()
 	}
+	return new MethodResult()
 }

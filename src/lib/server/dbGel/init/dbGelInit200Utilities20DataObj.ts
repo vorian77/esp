@@ -4,7 +4,7 @@ import {
 	booleanOrDefaultJSON,
 	sectionHeader,
 	valueOrDefaultParm
-} from '$routes/api/dbGel/dbGel'
+} from '$routes/api/db/dbGel/dbGel'
 import { debug } from '$utils/types'
 
 export async function addDataObj(data: any) {
@@ -27,6 +27,7 @@ export async function addDataObj(data: any) {
 			exprFilter: e.optional(e.str),
 			exprSort: e.optional(e.str),
 			exprWith: e.optional(e.str),
+			exprUnions: e.optional(e.array(e.str)),
 			fields: e.optional(e.array(e.json)),
 			header: e.optional(e.str),
 			isInitialValidationSilent: e.optional(e.bool),
@@ -283,6 +284,9 @@ export async function addDataObj(data: any) {
 				exprFilter: p.exprFilter,
 				exprSort: p.exprSort,
 				exprWith: p.exprWith,
+				exprUnions: e.for(e.array_unpack(p.exprUnions), (eu) => {
+					return eu
+				}),
 				header: p.header,
 				isInitialValidationSilent: valueOrDefaultParm(p.isInitialValidationSilent, false),
 				isListEdit: valueOrDefaultParm(p.isListEdit, false),
@@ -298,7 +302,6 @@ export async function addDataObj(data: any) {
 				parentFilterExpr: p.parentFilterExpr,
 				parentTable: e.select(e.sys_db.getTable(p.parentTable)),
 				processType: e.select(e.sys_core.getCode('ct_sys_do_dynamic_process_type', p.processType)),
-
 				queryRiders: e.for(e.array_unpack(p.queryRiders), (qr) => {
 					return e.insert(e.sys_core.SysDataObjQueryRider, {
 						codeFunction: e.sys_core.getCode(
@@ -332,7 +335,6 @@ export async function addDataObj(data: any) {
 						userMsg: e.cast(e.str, e.json_get(qr, 'userMsg'))
 					})
 				}),
-
 				subHeader: p.subHeader,
 				tables: e.for(e.array_unpack(p.tables), (t) => {
 					return e.insert(e.sys_core.SysDataObjTable, {
@@ -486,6 +488,7 @@ export async function addDataObjFieldItems(data: any) {
 			exprFilter: e.optional(e.str),
 			exprSort: e.optional(e.str),
 			exprWith: e.optional(e.str),
+			exprUnions: e.optional(e.array(e.str)),
 			name: e.str,
 			props: e.array(e.json),
 			owner: e.str,
@@ -500,6 +503,9 @@ export async function addDataObjFieldItems(data: any) {
 				exprFilter: p.exprFilter,
 				exprSort: p.exprSort,
 				exprWith: p.exprWith,
+				exprUnions: e.for(e.array_unpack(p.exprUnions), (eu) => {
+					return eu
+				}),
 				modifiedBy: CREATOR,
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),

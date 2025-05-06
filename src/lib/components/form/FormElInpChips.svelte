@@ -8,19 +8,15 @@
 		DataObj,
 		DataObjCardinality,
 		type DataRecord,
+		MethodResult,
 		ParmsValues,
 		ParmsValuesType,
 		required
 	} from '$utils/types'
 	import { PropLinkItems } from '$comps/dataObj/types.rawDataObj.svelte'
 	import { getContext } from 'svelte'
+	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import {
-		State,
-		StateSurfaceEmbedShell,
-		StateTriggerToken
-	} from '$comps/app/types.appState.svelte'
-	import {
-		TokenApiUserPref,
 		TokenAppDo,
 		TokenAppModalSelect,
 		TokenAppModalReturnType,
@@ -62,9 +58,9 @@
 
 	let displayValue: string = $derived(field.linkItems.getDisplayValueList(fieldValue))
 
-	async function onClick(event: Event) {
+	async function onClick(event: Event): Promise<MethodResult> {
 		const gridParms = field.linkItems.getGridParms()
-		await sm.triggerAction(
+		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_modal,

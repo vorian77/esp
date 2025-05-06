@@ -1,8 +1,12 @@
 import { State } from '$comps/app/types.appState.svelte'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
+import { clientQueryExpr } from '$lib/query/queryManagerClient'
+import type { DataRecord } from '$utils/types'
 import {
 	CodeAction,
 	CodeActionClass,
 	CodeActionType,
+	MethodResult,
 	required,
 	setDataRecordValuesForSave,
 	strRequired
@@ -13,8 +17,6 @@ import {
 	TokenAppDoQuery,
 	TokenAppStateTriggerAction
 } from '$utils/types.token'
-import type { DataRecord, ResponseBody } from '$utils/types'
-import { apiFetchFunctionRaw, ApiFunction } from '$routes/api/api'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/types.actionsClassAuth.ts'
@@ -29,8 +31,8 @@ export class AuthAction {
 			'msgFail'
 		)
 	}
-	async execute(authProcess: AuthProcess): Promise<boolean> {
-		return false
+	async execute(authProcess: AuthProcess): Promise<MethodResult> {
+		return new MethodResult({ success: false })
 	}
 }
 
@@ -41,28 +43,24 @@ export class AuthActionDB extends AuthAction {
 		super(parms)
 		this.dbExpr = strRequired(parms.dbExpr, clazz, 'dbExpr')
 	}
-	async execute(authProcess: AuthProcess): Promise<boolean> {
+	async execute(authProcess: AuthProcess): Promise<MethodResult> {
 		let resultRecord: any = {}
+		const evalExprContext = 'AuthActionDB.execute'
 
-		let exprParms: DataRecord = {
-			dbExpr: this.dbExpr,
+		const result: MethodResult = await clientQueryExpr(this.dbExpr, evalExprContext, {
 			record: setDataRecordValuesForSave(authProcess.parms)
-		}
+		})
+		if (result.error) return result
 
-		const result: ResponseBody = await apiFetchFunctionRaw(
-			ApiFunction.dbGelProcessExpression,
-			new TokenApiQueryData(exprParms)
-		)
+		resultRecord = result.getResultExpr()
 
-		resultRecord = result.data.data[0]
-
-		if (!result.success || !resultRecord) {
+		if (result.error || !resultRecord) {
 			alert(this.msgFail)
-			return false
+			return new MethodResult({ success: false })
 		}
 
 		authProcess.parmsUpdate(resultRecord)
-		return true
+		return new MethodResult()
 	}
 }
 
@@ -73,9 +71,9 @@ export class AuthActionDataObj extends AuthAction {
 		super(parms)
 		this.dataObjName = strRequired(parms.dataObjName, clazz, 'dataObjName')
 	}
-	async execute(authProcess: AuthProcess): Promise<boolean> {
+	async execute(authProcess: AuthProcess): Promise<MethodResult> {
 		const sm = authProcess.getState()
-		await sm.triggerAction(
+		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_do,
@@ -89,7 +87,6 @@ export class AuthActionDataObj extends AuthAction {
 				}
 			})
 		)
-		return true
 	}
 }
 
@@ -100,7 +97,7 @@ export class AuthActionLogic extends AuthAction {
 		super(parms)
 		this.logic = required(parms.logic, clazz, 'func')
 	}
-	async execute(authProcess: AuthProcess): Promise<boolean> {
+	async execute(authProcess: AuthProcess): Promise<MethodResult> {
 		return await this.logic(authProcess, this)
 	}
 }
@@ -126,7 +123,7 @@ export class AuthProcess {
 			error(500, {
 				file: FILENAME,
 				function: 'AuthProcess.getState',
-				message: `state manager not yet set`
+				msg: `state manager not yet set`
 			})
 		}
 	}

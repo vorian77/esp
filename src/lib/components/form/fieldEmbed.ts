@@ -1,16 +1,17 @@
-import { State } from '$comps/app/types.appState.svelte'
-import { Field, FieldClassType, FieldEmbedType, PropsFieldCreate } from '$comps/form/field.svelte'
+import { RawDataObj, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
+import { Field, FieldClassType, PropsFieldCreate, PropsFieldInit } from '$comps/form/field.svelte'
+import { DbTable } from '$lib/query/types.query'
 import {
 	arrayOfClass,
 	DataObj,
 	DataObjAction,
 	DataObjData,
-	DBTable,
+	FieldEmbedType,
+	MethodResult,
 	required,
 	strOptional,
 	strRequired
 } from '$utils/types'
-import { RawDataObj, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
 import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
@@ -18,16 +19,15 @@ const FILENAME = '$comps/form/fieldEmbed.ts'
 
 export class FieldEmbed extends Field {
 	columnBacklink?: string
-
 	data: DataObjData = new DataObjData()
 	dataObjEmbed?: DataObj
 	dataObjIdEmbed: string
 	dataObjIdParent: string
 	embedFieldName: string
 	embedFieldNameRaw: string
-	embedTable: DBTable
+	embedTable: DbTable
 	embedType: FieldEmbedType
-	parentTable: DBTable
+	parentTable: DbTable
 	constructor(
 		rawDataObjParent: RawDataObj,
 		propRawEmbed: RawDataObjPropDisplay,
@@ -45,10 +45,10 @@ export class FieldEmbed extends Field {
 		this.dataObjIdEmbed = strRequired(dataEmbed.rawDataObj?.id, clazz, 'dataObjIdEmbed')
 		this.embedFieldName = strRequired(propRawEmbed.propName, clazz, 'embedFieldName')
 		this.embedFieldNameRaw = strRequired(propRawEmbed.propNameRaw, clazz, 'embedFieldNameRaw')
-		this.embedTable = new DBTable(FieldEmbed.getTable(dataEmbed.rawDataObj))
+		this.embedTable = new DbTable(FieldEmbed.getTableRaw(dataEmbed.rawDataObj))
 
 		this.dataObjIdParent = strRequired(rawDataObjParent.id, clazz, 'dataObjIdParent')
-		this.parentTable = new DBTable(FieldEmbed.getTable(rawDataObjParent))
+		this.parentTable = new DbTable(FieldEmbed.getTableRaw(rawDataObjParent))
 	}
 	getFieldServer(data: DataObjData, fieldName: string) {
 		return required(
@@ -57,12 +57,13 @@ export class FieldEmbed extends Field {
 			'fieldServer'
 		)
 	}
-	static getTable(rawDataObj?: RawDataObj) {
-		if (rawDataObj && rawDataObj.tables) return rawDataObj.tables[0].table
+	static getTableRaw(rawDataObj?: RawDataObj) {
+		const tableRoot = rawDataObj?.tableGroup?.getTable(0)
+		if (tableRoot) return tableRoot
 		error(500, {
 			file: FILENAME,
 			function: 'getTable',
-			message: `Cannot determine root table of dataObj: ${rawDataObj?.name}`
+			msg: `Cannot find root table of dataObj: ${rawDataObj?.name}`
 		})
 	}
 
@@ -71,36 +72,46 @@ export class FieldEmbed extends Field {
 		propRaw: RawDataObjPropDisplay,
 		dataEmbed: DataObjData,
 		FieldEmbedClass: any
-	) {
-		return new FieldEmbedClass(rawDataObjParent, propRaw, dataEmbed)
+	): MethodResult {
+		return new MethodResult(new FieldEmbedClass(rawDataObjParent, propRaw, dataEmbed))
 	}
 
 	static async initFieldClient(
-		sm: State,
+		propsFieldInit: PropsFieldInit,
 		propsRaw: PropsFieldCreate,
-		dataObjParent: DataObj,
 		FieldEmbedClass: any
-	) {
+	): Promise<MethodResult> {
 		const clazz = `${FILENAME}.initFieldClient`
-		const rawDataObjParent = required(dataObjParent.data.rawDataObj, clazz, 'rawDataObjParent')
-		const fieldsEmbedded = required(dataObjParent.data.fields, clazz, 'fields')
+		const rawDataObjParent = required(
+			propsFieldInit.data.rawDataObj,
+			clazz,
+			'propsFieldInit.data.rawDataObj'
+		)
+		const fieldsEmbedded = required(propsFieldInit.data.fields, clazz, 'propsFieldInit.data.fields')
 		const fieldEmbedServer: FieldEmbed = required(
 			fieldsEmbedded.find((p: FieldEmbed) => p.embedFieldNameRaw === propsRaw.propRaw.propNameRaw),
 			clazz,
 			'fieldEmbedServer'
 		)
-		const newField = FieldEmbed.initField(
+
+		let result: MethodResult = FieldEmbed.initField(
 			rawDataObjParent,
 			propsRaw.propRaw,
 			fieldEmbedServer.data,
 			FieldEmbedClass
 		)
-		newField.dataObjEmbed = await DataObj.init(sm, newField.data)
+		if (result.error) return result
+		const newField: FieldEmbed = result.data
+
+		result = await DataObj.init(propsFieldInit.sm, newField.data)
+		if (result.error) return result
+		newField.dataObjEmbed = result.data as DataObj
+
 		newField.dataObjEmbed.embedFieldSet(newField)
-		return newField
+		return new MethodResult(newField)
 	}
 
-	static initFieldsLoad(fields: FieldEmbed[], dataObjDataParent: DataObjData) {
+	static initFieldsLoad(fields: FieldEmbed[], dataObjDataParent: DataObjData): MethodResult {
 		const clazz = `${FILENAME}.initFieldsLoad`
 		let newFields: FieldEmbed[] = []
 		if (dataObjDataParent.rawDataObj) {
@@ -123,17 +134,17 @@ export class FieldEmbed extends Field {
 					FieldEmbedClass = FieldEmbedListSelect
 				}
 
-				newFields.push(
-					FieldEmbed.initField(
-						rawDataObjParent,
-						propRawEmbed,
-						DataObjData.load(field.data),
-						FieldEmbedClass
-					)
-				)
+				let result: MethodResult = DataObjData.load(field.data)
+				if (result.error) return result
+				const fieldData: DataObjData = result.data
+
+				result = FieldEmbed.initField(rawDataObjParent, propRawEmbed, fieldData, FieldEmbedClass)
+				if (result.error) return result
+				const newField: FieldEmbed = result.data
+				newFields.push(newField)
 			})
 		}
-		return newFields
+		return new MethodResult(newFields)
 	}
 
 	static async initFieldServer(
@@ -146,15 +157,19 @@ export class FieldEmbed extends Field {
 		const clazz = `${FILENAME}.initFieldServer`
 		const dataObjIdEmbed = strRequired(propRaw.fieldEmbed?.id, clazz, 'dataObjIdEmbed')
 		const embedTable = propRaw.link?.getTableObj()
-		const parentTable = this.getTable(rawDataObjParent)
+		const parentTable = required(this.getTableRaw(rawDataObjParent), clazz, 'parentTable')
 		const detached = embedTable === parentTable.object ? 'DETACHED' : ''
-		const rawDataObjEmbed = await fGetRawDataObj(
+
+		let result: MethodResult = await fGetRawDataObj(
 			new TokenApiDbDataObjSource({
 				dataObjId: dataObjIdEmbed,
 				exprFilter: `.id IN (SELECT ${detached} ${parentTable.object} FILTER .id = <tree,uuid,${parentTable.name}.id>).${propRaw.propNameRaw}.id`
 			}),
 			queryData
 		)
+		if (result.error) return result
+		const rawDataObjEmbed = result.data as RawDataObj
+
 		const dataEmbed = new DataObjData(rawDataObjEmbed)
 		return FieldEmbed.initField(rawDataObjParent, propRaw, dataEmbed, FieldEmbedClass)
 	}
@@ -220,5 +235,38 @@ export class FieldEmbedListSelect extends FieldEmbed {
 			'dataObjListID'
 		)
 		this.exprFilter = `SELECT ${this.embedTable.object} FILTER .id IN <parms,uuidlist,listIdsSelected>`
+	}
+}
+
+export class FieldEmbedShell extends Field {
+	classType: FieldClassType = FieldClassType.embedShell
+	fields: FieldEmbed[] = []
+	// stateShell: StateSurfaceEmbedShell
+	constructor(props: PropsFieldCreate) {
+		const clazz = 'FieldEmbedShell'
+		super(props)
+		const dataObj = required(props.parms.dataObj, clazz, 'dataObj')
+
+		// this.stateShell = new StateSurfaceEmbedShell({
+		// 	action: CodeActionType.embedShell,
+		// 	dataObjState: dataObj,
+		// 	embedField: this
+		// })
+	}
+	addField(field: FieldEmbed) {
+		this.fields.push(field)
+	}
+
+	async init(props: PropsFieldInit): Promise<MethodResult> {
+		const EMBED_FIELD_TYPES = [FieldEmbedListConfig, FieldEmbedListEdit, FieldEmbedListSelect]
+		props.fields.forEach((field) => {
+			EMBED_FIELD_TYPES.forEach((type) => {
+				if (field instanceof type) {
+					this.addField(field)
+				}
+			})
+		})
+		// await this.stateShell.app.addLevelEmbedShellForm(this)
+		return new MethodResult()
 	}
 }

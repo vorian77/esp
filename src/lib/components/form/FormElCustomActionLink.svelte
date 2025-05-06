@@ -1,11 +1,9 @@
 <script lang="ts">
-	import { ContextKey, DataManager, DataObj, type DataRecord, required } from '$utils/types'
-	import { getContext } from 'svelte'
 	import { State } from '$comps/app/types.appState.svelte'
-	import { TokenAppDo, TokenAppStateTriggerAction } from '$utils/types.token'
 	import { FieldCustomActionLink } from '$comps/form/fieldCustom'
-	import { goto } from '$app/navigation'
-	import DataViewer from '$utils/DataViewer.svelte'
+	import { ContextKey, DataManager, DataObj, type DataRecord, required } from '$utils/types'
+	import { TokenAppDo, TokenAppStateTriggerAction } from '$utils/types.token'
+	import { getContext } from 'svelte'
 
 	const FILENAME = '/$comps/form/FormElCustomActionLink.svelte'
 
@@ -18,9 +16,9 @@
 	let field = $derived(parms.field) as FieldCustomActionLink
 	let prefix = $derived(field.prefix ? field.prefix + ' ' : '')
 
-	async function action() {
+	async function action(): Promise<MethodResult> {
 		sm.app.setTreeLevelIdxCurrent(dataObj.treeLevelIdx)
-		await sm.triggerAction(
+		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: field.action.codeAction,
 				data: {

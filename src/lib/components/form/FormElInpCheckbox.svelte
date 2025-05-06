@@ -1,11 +1,9 @@
 <script lang="ts">
-	import { ContextKey, DataManager, DataObj, required } from '$utils/types'
-	import { getContext } from 'svelte'
-	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import { FieldAccess, FieldValueType } from '$comps/form/field.svelte'
-	import { DataObjCardinality, getArray } from '$utils/types'
+	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import FormLabel from '$comps/form/FormLabel.svelte'
-	import DataViewer from '$utils/DataViewer.svelte'
+	import { ContextKey, DataManager, DataObj, DataObjCardinality, required } from '$utils/types'
+	import { getContext } from 'svelte'
 
 	const FILENAME = '$comps/form/FormElInpCheckbox.svelte'
 

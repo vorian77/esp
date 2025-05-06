@@ -1,12 +1,6 @@
 <script lang="ts">
+	import { State, StateSurfacePopup, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import {
-		State,
-		StateSurfaceEmbedShell,
-		StateSurfacePopup,
-		StateTriggerToken
-	} from '$comps/app/types.appState.svelte'
-	import {
-		TokenApiUserPref,
 		TokenAppDo,
 		TokenAppModalSelect,
 		TokenAppModalReturnType,
@@ -40,7 +34,6 @@
 		ParmsUser,
 		ParmsUserDataType,
 		required,
-		type ResponseBody,
 		strRequired
 	} from '$utils/types'
 	import { getContext } from 'svelte'
@@ -165,7 +158,7 @@
 			error(500, {
 				file: FILENAME,
 				function: 'fGridCallbackUpdateValue',
-				message: `Row not found for id: ${data.id}`
+				msg: `Row not found for id: ${data.id}`
 			})
 		}
 	}
@@ -289,7 +282,7 @@
 					error(500, {
 						file: FILENAME,
 						function: 'initGridColumns',
-						message: `No case defined for PropDataType: ${field.colDO.colDB.codeDataType}`
+						msg: `No case defined for PropDataType: ${field.colDO.colDB.codeDataType}`
 					})
 			}
 		}
@@ -324,7 +317,7 @@
 			await onCellClickedSelectItems()
 		}
 
-		async function onCellClickedSelectItems() {
+		async function onCellClickedSelectItems(): Promise<MethodResult> {
 			const fieldName = field.colDO.propName
 			const listIdsSelected = Array.isArray(event.data[fieldName])
 				? event.data[fieldName]
@@ -333,7 +326,7 @@
 					: [event.data[fieldName]]
 			const gridParms = fieldProcess.linkItems.getGridParms()
 
-			await sm.triggerAction(
+			return await sm.triggerAction(
 				new TokenAppStateTriggerAction({
 					codeAction: CodeAction.init(
 						CodeActionClass.ct_sys_code_action_class_modal,

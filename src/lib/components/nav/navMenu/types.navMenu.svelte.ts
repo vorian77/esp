@@ -1,3 +1,4 @@
+import { queryClientTest } from '$lib/query/queryClientTest'
 import {
 	booleanOrDefault,
 	CodeAction,
@@ -6,6 +7,7 @@ import {
 	DataObjRenderPlatform,
 	type DataRecord,
 	memberOfEnum,
+	MethodResult,
 	Node,
 	RawMenu,
 	required,
@@ -23,7 +25,7 @@ import {
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
-import { adminDbReset } from '$utils/utils.sys'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = 'src/lib/components/navMenu/types.navMenu.ts'
@@ -107,7 +109,7 @@ export class NavMenuData {
 		}
 	}
 
-	async activateLink(item: NavMenuDataCompItem) {
+	async activateLink(item: NavMenuDataCompItem): Promise<MethodResult> {
 		const content = item.content
 		let node
 		if (content) {
@@ -117,25 +119,23 @@ export class NavMenuData {
 					break
 
 				case NavMenuContentType.dataObjApp:
-					await this.triggerAction(
+					return await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_do,
 						CodeActionType.doOpen,
 						{ token: content.value as TokenAppDoQuery },
 						{ navLayout: StateNavLayout.layoutApp }
 					)
-					break
 
 				case NavMenuContentType.dataObjDrawer:
-					await this.triggerAction(
+					return await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_nav,
 						CodeActionType.openDataObjDrawer,
 						{ token: content.value as TokenAppDoQuery },
 						{}
 					)
-					break
 
 				case NavMenuContentType.dataObjModal:
-					await this.sm.triggerAction(
+					return await this.sm.triggerAction(
 						new TokenAppStateTriggerAction({
 							codeAction: CodeAction.init(
 								CodeActionClass.ct_sys_code_action_class_nav,
@@ -146,11 +146,10 @@ export class NavMenuData {
 							stateParms: new StateParms({ navLayout: StateNavLayout.layoutApp })
 						})
 					)
-					break
 
 				case NavMenuContentType.node:
 					node = content.value as Node
-					await this.triggerAction(
+					return await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_nav,
 						CodeActionType.openNode,
 						{
@@ -162,23 +161,21 @@ export class NavMenuData {
 						},
 						{ navLayout: StateNavLayout.layoutApp }
 					)
-					// parmsState: { programId: this.getProgramId(node) },
-					break
+				// parmsState: { programId: this.getProgramId(node) },
 
 				case NavMenuContentType.page:
-					await this.triggerAction(
+					return await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_nav,
 						CodeActionType.navPage,
 						{ value: content.value },
 						{}
 					)
-					break
 
 				case NavMenuContentType.task:
 					const task: UserResourceTask = content.value as UserResourceTask
 					const taskTokenNode = await task.getTokenNode(this.sm)
 					if (taskTokenNode) {
-						await this.triggerAction(
+						return await this.triggerAction(
 							CodeActionClass.ct_sys_code_action_class_nav,
 							CodeActionType.openNode,
 							{ token: taskTokenNode },
@@ -190,13 +187,17 @@ export class NavMenuData {
 					break
 
 				default:
-					error(500, {
-						file: FILENAME,
-						function: 'activateLink',
-						message: `No case defined for item type: ${content.codeType}`
+					return new MethodResult({
+						success: false,
+						error: {
+							file: FILENAME,
+							function: 'activateLink',
+							msg: `No case defined for item type: ${content.codeType}`
+						}
 					})
 			}
 		}
+		return new MethodResult()
 	}
 
 	getId() {
@@ -238,9 +239,9 @@ export class NavMenuData {
 		actionType: CodeActionType,
 		dataAction: DataRecord,
 		dataState: DataRecord
-	) {
+	): Promise<MethodResult> {
 		dataState.navLayout = StateNavLayout.layoutApp
-		await this.sm.triggerAction(
+		return await this.sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(actionClass, actionType),
 				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
@@ -249,8 +250,8 @@ export class NavMenuData {
 			})
 		)
 	}
-	async triggerActionDataObjApp(dataObjName: string) {
-		await this.triggerAction(
+	async triggerActionDataObjApp(dataObjName: string): Promise<MethodResult> {
+		return await this.triggerAction(
 			CodeActionClass.ct_sys_code_action_class_do,
 			CodeActionType.doOpen,
 			{
@@ -380,18 +381,6 @@ export class NavMenuDataCompGroup extends NavMenuDataComp {
 		)
 		return this.items[this.items.length - 1]
 	}
-	activateLinkByLabel(labelText: string) {
-		const item = this.items.find((i) => i.label.text === labelText)
-		if (item) {
-			this.navMenu.activateLink(item)
-		} else {
-			error(500, {
-				file: `${FILENAME}.NavMenuDataCompGroup`,
-				function: 'activateLink',
-				message: `Item not found: ${labelText}`
-			})
-		}
-	}
 }
 
 export class NavMenuDataCompItem extends NavMenuDataComp {
@@ -412,7 +401,7 @@ export class NavMenuDataCompItem extends NavMenuDataComp {
 		this.isRoot = booleanOrDefault(obj.isRoot, false)
 		this.label = required(obj.label, clazz, 'label')
 	}
-	click = async () => {
+	click = async (): Promise<MethodResult> => {
 		if (this.hasChildren) {
 			if (this.navMenu.isOpen) {
 				this.isOpen = !this.isOpen
@@ -421,8 +410,9 @@ export class NavMenuDataCompItem extends NavMenuDataComp {
 				this.navMenu.openToggle()
 			}
 		} else {
-			await this.navMenu.activateLink(this)
+			return await this.navMenu.activateLink(this)
 		}
+		return new MethodResult()
 	}
 }
 
@@ -457,6 +447,12 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 
 		if (['user_sys'].includes(this.user.userName)) {
 			this.addItem({
+				content: new NavMenuContent(NavMenuContentType.functionAsync, queryClientTest),
+				icon: 'Database',
+				isRoot: true,
+				label: new NavMenuLabel('Admin - Query Manager Test')
+			})
+			this.addItem({
 				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminResetDb),
 				icon: 'RotateCcw',
 				isRoot: true,
@@ -467,9 +463,10 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 	addItem(obj: any) {
 		this.items.addItem(obj)
 	}
-	async adminResetDb(navMenu: NavMenuData) {
-		await adminDbReset()
-		await navMenu.sm.resetUser(true)
+
+	async adminResetDb(navMenu: NavMenuData): Promise<MethodResult> {
+		await apiFetchFunction(ApiFunction.dbGelInit)
+		return await navMenu.sm.resetUser(true)
 	}
 }
 

@@ -1,5 +1,5 @@
 import e from '$db/gel/edgeql-js'
-import { client, sectionHeader } from '$routes/api/dbGel/dbGel'
+import { client, sectionHeader } from '$routes/api/db/dbGel/dbGel'
 import { debug } from '$utils/types'
 
 export async function MoedPBulkPart(params: any) {
@@ -147,8 +147,8 @@ export async function MoedBulkDataMsg(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_core.SysMsg, {
-				attrs: e.sys_core.getAttr('sys_client_moed', e.cast(e.str, i[3]), 'at_sys_msg_receive'),
 				date: e.cal.to_local_date(e.cast(e.str, i[1])),
+				recipients: e.sys_core.getAttrObj('sys_client_moed', e.cast(e.str, i[3])),
 				sender: e.assert_single(
 					e.select(e.org_client_moed.MoedParticipant, (part) => ({
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))

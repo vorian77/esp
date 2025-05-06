@@ -1,37 +1,34 @@
 import { State } from '$comps/app/types.appState.svelte'
 import {
 	arrayOfClass,
+	Attr,
 	booleanOrDefault,
 	booleanOrFalse,
 	booleanRequired,
+	classOptional,
 	CodeAction,
 	DataObjCardinality,
 	DataObjData,
 	DataObjSort,
-	DataObjTable,
 	DataObjType,
-	DBTable,
 	debug,
+	FieldEmbedType,
 	getArray,
 	getDataRecordValueKey,
 	isNumber,
 	memberOfEnum,
 	memberOfEnumIfExists,
 	memberOfEnumOrDefault,
-	memberOfEnumList,
 	nbrOrDefault,
 	nbrOptional,
 	nbrRequired,
-	classOptional,
-	Attr,
 	override,
 	ParmsValuesType,
 	required,
-	ResponseBody,
 	strOptional,
 	strRequired,
-	User,
-	valueOrDefault
+	valueOrDefault,
+	MethodResult
 } from '$utils/types'
 import {
 	DataObjComponent,
@@ -45,17 +42,18 @@ import {
 	UserActionShow,
 	UserActionTrigger
 } from '$comps/other/types.userAction.svelte'
-import { queryDataPre } from '$comps/app/types.appQuery'
 import {
-	Field,
-	FieldAccess,
-	FieldColor,
-	FieldColumnItem,
-	FieldEmbedType
-} from '$comps/form/field.svelte'
+	DbTable,
+	DbTableQueryGroup,
+	QuerySource,
+	QuerySourceRaw,
+	QuerySourceTableRaw,
+	QuerySourceType
+} from '$lib/query/types.query'
+import { clientQueryExpr } from '$lib/query/queryManagerClient'
+import { FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
-import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-import { TokenApiFetchError, TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
+import { TokenApiQueryDataTree, TokenApiQueryType } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
@@ -70,9 +68,6 @@ export class RawDataObj {
 	codeListEditPresetType?: DataObjListEditPresetType
 	crumbs: string[] = []
 	description?: string
-	exprFilter?: string
-	exprSort?: string
-	exprWith?: string
 	header: string
 	id: string
 	isInitialValidationSilent: boolean
@@ -80,14 +75,11 @@ export class RawDataObj {
 	isListSuppressFilterSort: boolean
 	isListSuppressSelect: boolean
 	isRetrieveReadonly: boolean
-	listEditPresetExpr?: string
 	listReorderColumn?: string
 	name: string
 	ownerId: string
 	processType?: DataObjProcessType
-	queryRiders: RawDataObjQueryRider[] = []
 	rawActions: RawDataObjAction[] = []
-	rawParent?: RawDataObjParent
 	rawPropsDisplay: RawDataObjPropDisplay[] = []
 	rawPropsRepParmItems: RawDataObjPropDB[] = []
 	rawPropsSaveInsert: RawDataObjPropDB[] = []
@@ -95,8 +87,9 @@ export class RawDataObj {
 	rawPropsSelect: RawDataObjPropDB[] = []
 	rawPropsSelectPreset: RawDataObjPropDB[] = []
 	rawPropsSort: RawDataObjPropDB[] = []
+	rawQuerySource: QuerySourceRaw
 	subHeader?: string
-	tables: DataObjTable[] = []
+	tableGroup: DbTableQueryGroup
 	constructor(obj: any) {
 		const clazz = `${obj.name}.RawDataObj`
 		obj = valueOrDefault(obj, {})
@@ -145,9 +138,6 @@ export class RawDataObj {
 		)
 		this.crumbs = this.initCrumbs(obj._propsCrumb)
 		this.description = strOptional(obj.description, clazz, 'description')
-		this.exprFilter = strOptional(obj.exprFilter, clazz, 'exprFilter')
-		this.exprSort = strOptional(obj.exprSort, clazz, 'exprSort')
-		this.exprWith = strOptional(obj.exprWith, clazz, 'exprWith')
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.isInitialValidationSilent = booleanOrDefault(obj.isInitialValidationSilent, false)
@@ -155,7 +145,6 @@ export class RawDataObj {
 		this.isListSuppressFilterSort = booleanOrDefault(obj.isListSuppressFilterSort, false)
 		this.isListSuppressSelect = booleanOrDefault(obj.isListSuppressSelect, false)
 		this.isRetrieveReadonly = booleanOrDefault(obj.isRetrieveReadonly, false)
-		this.listEditPresetExpr = strOptional(obj.listEditPresetExpr, clazz, 'listEditPresetExpr')
 		this.listReorderColumn = strOptional(obj._listReorderColumn, clazz, '_listReorderColumn')
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.ownerId = strRequired(obj._ownerId, clazz, '_ownerId')
@@ -166,21 +155,19 @@ export class RawDataObj {
 			'DataObjProcessType',
 			DataObjProcessType
 		)
-		this.queryRiders = arrayOfClass(RawDataObjQueryRider, obj._queryRiders)
 		this.rawActions = arrayOfClass(RawDataObjAction, obj._actionGroup?._dataObjActions)
+		this.rawQuerySource = new QuerySourceRaw(obj._querySource)
 		this.subHeader = strOptional(obj.subHeader, clazz, 'subHeader')
-		this.tables = this.initTables(obj._tables)
 
 		/* dependent properties */
-		this.rawParent = classOptional(RawDataObjParent, obj._parent)
-
-		this.rawPropsDisplay = arrayOfClass(RawDataObjPropDisplay, obj._propsDisplay, this.tables)
+		this.tableGroup = new DbTableQueryGroup(this.rawQuerySource._tables)
+		this.rawPropsDisplay = this.initProps(obj._propsDisplay, RawDataObjPropDisplay)
+		this.rawPropsSaveInsert = this.initProps(obj._propsSaveInsert, RawDataObjPropDB)
+		this.rawPropsSaveUpdate = this.initProps(obj._propsSaveUpdate, RawDataObjPropDB)
+		this.rawPropsSelect = this.initProps(obj._propsSelect, RawDataObjPropDB)
+		this.rawPropsSelectPreset = this.initProps(obj._propsSelectPreset, RawDataObjPropDB)
+		this.rawPropsSort = this.initProps(obj._propsSort, RawDataObjPropDB)
 		this.setFirstVisible(this.rawPropsDisplay)
-		this.rawPropsSaveInsert = this.initProps(obj._propsSaveInsert)
-		this.rawPropsSaveUpdate = this.initProps(obj._propsSaveUpdate)
-		this.rawPropsSelect = this.initProps(obj._propsSelect)
-		this.rawPropsSelectPreset = this.initProps(obj._propsSelectPreset)
-		this.rawPropsSort = this.initProps(obj._propsSort)
 	}
 
 	initCrumbs(crumbFields: any) {
@@ -191,11 +178,11 @@ export class RawDataObj {
 		})
 		return list
 	}
-	initProps(rawProps: any[]) {
+	initProps(rawProps: any[], fClass: any) {
 		rawProps = getArray(rawProps)
 		rawProps = this.initPropsSignatureLink(rawProps, 'createdBy')
 		rawProps = this.initPropsSignatureLink(rawProps, 'modifiedBy')
-		return arrayOfClass(RawDataObjPropDB, rawProps, this.tables)
+		return arrayOfClass(fClass, rawProps, this.tableGroup)
 	}
 
 	initPropsSignatureLink(rawProps: any[], propName: string) {
@@ -212,16 +199,9 @@ export class RawDataObj {
 		})
 		return rawProps
 	}
-	initTables(obj: any) {
-		let newTables: DataObjTable[] = []
-		const rawTables = getArray(obj)
-		rawTables.forEach((rawTable: any, index: number) => {
-			newTables.push(new DataObjTable(rawTable, newTables))
-		})
-		newTables.forEach((t) => {
-			t.setChildren(newTables)
-		})
-		return newTables
+
+	static initTableGroup(rawDataObj: RawDataObj) {
+		rawDataObj.tableGroup = new DbTableQueryGroup(rawDataObj.rawQuerySource._tables)
 	}
 
 	setFirstVisible(rawPropsDisplay: RawDataObjPropDisplay[]) {
@@ -229,7 +209,6 @@ export class RawDataObj {
 		if (idx > -1) rawPropsDisplay[idx].isFirstVisible = true
 	}
 }
-
 export class RawDataObjAction {
 	action: UserAction
 	codeColor: string
@@ -247,45 +226,17 @@ export class RawDataObjDyn extends RawDataObj {
 	constructor(obj: any) {
 		super(obj)
 	}
-	addPropDisplay(rawProp: any, tables: DataObjTable[]) {
-		this.rawPropsDisplay.push(new RawDataObjPropDisplay(valueOrDefault(rawProp, {}), tables))
+	addPropDisplay(rawProp: any, tableGroup: DbTableQueryGroup) {
+		this.rawPropsDisplay.push(new RawDataObjPropDisplay(valueOrDefault(rawProp, {}), tableGroup))
 	}
-	addPropSelect(rawProp: any, tables: DataObjTable[]) {
-		this.rawPropsSelect.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tables))
+	addPropSelect(rawProp: any, tableGroup: DbTableQueryGroup) {
+		this.rawPropsSelect.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tableGroup))
 	}
-	addPropSort(rawProp: any, tables: DataObjTable[]) {
-		this.rawPropsSort.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tables))
+	addPropSort(rawProp: any, tableGroup: DbTableQueryGroup) {
+		this.rawPropsSort.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tableGroup))
 	}
 	build() {
 		return this
-	}
-}
-
-export class RawDataObjParent {
-	_columnName: string
-	_columnIsMultiSelect: boolean
-	_embedType?: FieldEmbedType
-	_filterExpr?: string
-	_table: DBTable
-	constructor(obj: RawDataObjParent) {
-		obj = valueOrDefault(obj, {})
-		const clazz = 'RawDataObjParent'
-		this._columnName = strRequired(obj._columnName, clazz, '_columnName')
-		this._columnIsMultiSelect = booleanRequired(
-			obj._columnIsMultiSelect,
-			clazz,
-			'_columnIsMultiSelect'
-		)
-		this._embedType = memberOfEnumOrDefault(
-			obj._embedType,
-			clazz,
-			'_embedType',
-			'DataObjEmbedType',
-			FieldEmbedType,
-			FieldEmbedType.listEdit
-		)
-		this._filterExpr = strOptional(obj._filterExpr, clazz, '_filterExpr')
-		this._table = new DBTable(obj._table)
 	}
 }
 
@@ -306,7 +257,7 @@ export class RawDataObjProp {
 	propNamePrefixType?: PropNamePrefixType
 	propNamePrefixTypeId: string = ''
 	propNameRaw: string
-	constructor(obj: any, tables: DataObjTable[]) {
+	constructor(obj: any, tableGroup: DbTableQueryGroup) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjProp'
 		this.codeAttrType = obj._codeAttrType
@@ -346,9 +297,9 @@ export class RawDataObjProp {
 		this.propNameRaw = strRequired(obj._propName, clazz, 'propName')
 
 		/* derived properties */
-		if (Array.isArray(tables) && tables.length > 0 && this.indexTable > 0) {
+		if (tableGroup.tables.length > 0 && this.indexTable > 0) {
 			this.propNamePrefixType = PropNamePrefixType.table
-			this.propNamePrefixTypeId = tables[this.indexTable].table.name
+			this.propNamePrefixTypeId = tableGroup.tables[this.indexTable].table.name
 		} else if (this.link) {
 			this.propNamePrefixType = PropNamePrefixType.link
 		} else if (this.linkItemsSource) {
@@ -379,8 +330,8 @@ export class RawDataObjPropDB extends RawDataObjProp {
 	codeDataType: PropDataType
 	isMultiSelect: boolean
 	isSelfReference: boolean
-	constructor(obj: any, tables: DataObjTable[]) {
-		super(obj, tables)
+	constructor(obj: any, tableGroup: DbTableQueryGroup) {
+		super(obj, tableGroup)
 		const clazz = 'RawDataObjPropDB'
 		obj = valueOrDefault(obj, {})
 		this.codeDataSourceValue = memberOfEnumOrDefault(
@@ -405,14 +356,16 @@ export class RawDataObjPropDB extends RawDataObjProp {
 		this.childTableTraversal = this.getChildTableTraversal(
 			this.propNameRaw,
 			this.indexTable,
-			tables
+			tableGroup
 		)
 	}
-	getChildTableTraversal(propName: string, indexTable: number, tables: DataObjTable[]) {
+	getChildTableTraversal(propName: string, indexTable: number, tableGroup: DbTableQueryGroup) {
 		let value = ''
-		if (propName && tables.length > 0 && indexTable > -1) {
-			if (tables[indexTable].traversalFromRoot) value = tables[indexTable].traversalFromRoot
-			if (tables[indexTable].isTableExtension) value += `[IS ${tables[indexTable].table.object}]`
+		if (tableGroup.tables.length > 0 && indexTable > -1) {
+			if (tableGroup.tables[indexTable].traversalFromRoot)
+				value = tableGroup.tables[indexTable].traversalFromRoot
+			if (tableGroup.tables[indexTable].isTableExtension)
+				value += `[IS ${tableGroup.tables[indexTable].table.object}]`
 			if (value) value += '.'
 			value += propName
 		}
@@ -456,8 +409,8 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 	rawFieldAlignmentAlt?: string
 	rawFieldElement?: string
 	width?: number
-	constructor(obj: any, tables: DataObjTable[]) {
-		super(obj, tables)
+	constructor(obj: any, tableGroup: DbTableQueryGroup) {
+		super(obj, tableGroup)
 		const clazz = 'RawDataObjPropDisplay'
 		obj = valueOrDefault(obj, {})
 		this.codeColor = strOptional(obj._codeColor, clazz, 'codeColor')
@@ -621,52 +574,6 @@ export class RawDataObjPropDisplayEmbedListSelect {
 	}
 }
 
-export class RawDataObjQueryRider {
-	_codeFunction?: string
-	_codeQueryType: string
-	_codeTriggerTiming: string
-	_codeType: string
-	_codeUserDestination?: string
-	_codeUserMsgDelivery?: string
-	expr?: string
-	functionParmValue?: string
-	userMsg?: string
-	constructor(obj: any) {
-		const clazz = 'RawDataObjQueryRider'
-		obj = valueOrDefault(obj, {})
-		this._codeFunction = obj._codeFunction
-		this._codeQueryType = strRequired(obj._codeQueryType, clazz, '_codeQueryType')
-		this._codeTriggerTiming = strRequired(obj._codeTriggerTiming, clazz, '_codeTriggerTiming')
-		this._codeType = strRequired(obj._codeType, clazz, '_codeType')
-		this._codeUserDestination = obj._codeUserDestination
-		this._codeUserMsgDelivery = obj._codeUserMsgDelivery
-		this.expr = obj.expr
-		this.functionParmValue = obj.functionParmValue
-		this.userMsg = obj.userMsg
-	}
-}
-
-export class RawDataObjTable {
-	_columnParent?: string
-	_columnsId: string[] = []
-	exprFilterUpdate?: string
-	index: number
-	indexParent?: number
-	isTableExtension: boolean
-	_table: DBTable
-	constructor(obj: any) {
-		const clazz = 'RawDataObjTable'
-		obj = valueOrDefault(obj, {})
-		this._columnParent = strOptional(obj._columnParent, clazz, '_columnParent')
-		this._columnsId = obj._columnsId
-		this.exprFilterUpdate = obj.exprFilterUpdate
-		this.index = nbrRequired(obj.index, clazz, 'index')
-		this.indexParent = nbrOptional(obj.indexParent, clazz, 'indexParent')
-		this.isTableExtension = booleanOrDefault(obj.isTableExtension, false)
-		this._table = new DBTable(obj._table)
-	}
-}
-
 export class RawDBColumn {
 	codeDataType: PropDataType
 	classProps?: string
@@ -756,7 +663,7 @@ export class RawUserAction {
 export class PropLink {
 	exprDisplay: string
 	exprProps: string
-	table?: DBTable
+	table?: DbTable
 	constructor(obj: any) {
 		const clazz = 'PropLink'
 		obj = valueOrDefault(obj, {})
@@ -768,7 +675,7 @@ export class PropLink {
 				return acc
 			}, '') || 'id'
 		this.exprProps = `{ id, display := .${this.exprDisplay} }`
-		this.table = classOptional(DBTable, obj._table)
+		this.table = classOptional(DbTable, obj._table)
 	}
 	getTableObj() {
 		return this.table ? this.table.object : undefined
@@ -886,25 +793,29 @@ export class PropLinkItems {
 		return data
 	}
 
-	async retrieve(sm: State, fieldValue: string | undefined) {
-		// parms
-		let { dataTab, dataTree } = queryDataPre(sm, new DataObjData(), TokenApiQueryType.retrieve)
+	async retrieve(sm: State, fieldValue: string | undefined): Promise<MethodResult> {
+		const clazz = 'PropLinkItems.retrieve'
+		const exprCustom = this.source.getExprSelect(false, fieldValue)
+		const queryType = TokenApiQueryType.retrieve
+
+		const dataTab = new DataObjData()
 		dataTab.parms.valueSet(ParmsValuesType.itemsParmValue, this.source.parmValue)
 		dataTab.parms.valueSet(ParmsValuesType.itemsParmValueList, this.source.parmValueList)
-		dataTab.parms.valueSet(ParmsValuesType.propLinkItemsValueCurrent, fieldValue)
-		dataTab.parms.valueSet(ParmsValuesType.propLinkItemsSourceRaw, this.source.raw)
 
-		// retrieve
-		const result = await apiFetchFunction(
-			ApiFunction.dbGelGetLinkItems,
-			new TokenApiFetchError(
-				FILENAME,
-				'retrieve',
-				`Error retrieving LinkItemsSource: ${this.source.name}`
-			),
-			new TokenApiQueryData({ dataTab, tree: dataTree, user: sm.user })
+		const dataTree: TokenApiQueryDataTree = sm.app.getDataTree(queryType)
+
+		let result: MethodResult = await clientQueryExpr(
+			exprCustom,
+			clazz,
+			{
+				dataTab,
+				dataTree
+			},
+			sm
 		)
-		this.setRawItems(required(result.data, `${FILENAME}.PropLinkItems.retrieve`, 'rawItems'))
+		if (result.error) return result
+		this.setRawItems(required(result.data.rawDataList, clazz, 'rawItems'))
+		return result
 	}
 
 	setRawItems(rawItems: DataRecord[]) {
@@ -914,29 +825,26 @@ export class PropLinkItems {
 
 export class PropLinkItemsSource {
 	displayIdSeparator: string
-	exprFilter: string
 	exprProps: string
-	exprSort: string
-	exprWith?: string
 	name: string
 	parmValue?: string
 	parmValueList: string[] = []
 	props: PropLinkItemsSourceProp[] = []
+	querySource: QuerySource
 	raw: any
-	table?: DBTable
 	constructor(obj: any) {
 		const clazz = 'PropLinkItemsSource'
 		obj = valueOrDefault(obj, {})
 		this.displayIdSeparator = valueOrDefault(obj.displayIdSeparator, ' ')
-		this.exprFilter = valueOrDefault(obj.exprFilter, '')
-		this.exprSort = valueOrDefault(obj.exprSort, '')
-		this.exprWith = valueOrDefault(obj.exprWith, '')
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.parmValue = obj._parmValue || obj._codeAttrType
 		this.parmValueList = getArray(obj._parmValueList)
 		this.props = arrayOfClass(PropLinkItemsSourceProp, obj._props)
 		this.raw = obj
-		this.table = classOptional(DBTable, obj._table)
+		this.querySource = new QuerySource({
+			...obj._querySource,
+			querySourceType: QuerySourceType.expr
+		})
 
 		// derived
 		let props = ''
@@ -956,7 +864,7 @@ export class PropLinkItemsSource {
 
 	getExprSelect(isCompilation: boolean, currVal: string | string[] | undefined) {
 		let expr = ''
-		let filter = this.exprFilter ? `(${this.exprFilter})` : ''
+		let filter = this.querySource.exprFilter ? `(${this.querySource.exprFilter})` : ''
 
 		if (filter && currVal) {
 			let currValFilter = ''
@@ -967,18 +875,18 @@ export class PropLinkItemsSource {
 			} else if (currVal) {
 				currValFilter = `.id = <uuid>'${currVal}'`
 			}
-			if (currValFilter) filter += ` UNION ${currValFilter}`
+			if (currValFilter) filter += ` OR ${currValFilter}`
 		}
 
 		const sort =
-			this.exprSort ||
+			this.querySource.exprSort ||
 			this.getSortProps().reduce((sort, prop) => {
 				if (sort) sort += ' THEN '
 				return (sort += `.${prop.key}`)
 			}, '')
 
-		expr = this.exprWith ? `${this.exprWith} ` : ''
-		expr += `SELECT ${this.table?.object}`
+		expr = this.querySource.exprWith ? `${this.querySource.exprWith} ` : ''
+		expr += `SELECT ${this.querySource.table?.object}`
 		expr += filter ? ` FILTER ${filter}` : ''
 
 		if (isCompilation) {
@@ -992,6 +900,34 @@ export class PropLinkItemsSource {
 
 		return expr
 	}
+	// getExprSelectUnions() {
+	// 	async addScriptRetrieveUnions(query: GelQuery) {
+	// 			let exprWith = query.rawDataObj.rawQuerySource.exprWith || ''
+	// 			exprWith = exprWith ? `WITH ${exprWith} \n` : ''
+
+	// 			let exprUnions = ''
+	// 			query.rawDataObj.rawQuerySource.exprUnions.forEach((item) => {
+	// 				if (exprUnions) exprUnions += ' UNION '
+	// 				exprUnions += `(${item})`
+	// 			})
+	// 			exprUnions = `SELECT { ${exprUnions} }`
+
+	// 			let propsSelect = query.getPropsSelect({ props: query.rawDataObj.rawPropsSelect })
+	// 			let exprSort = query.getSort(query.queryData)
+
+	// 			let expr = exprWith ? `WITH ${exprWith} \n` : ''
+	// 			expr += exprUnions + '\n'
+	// 			expr += propsSelect + '\n'
+	// 			expr += exprSort ? ` ORDER BY ${exprSort} \n` : ''
+
+	// 			this.addScriptNew({
+	// 				dataRows: [],
+	// 				exePost: ScriptExePost.formatData,
+	// 				expr,
+	// 				query
+	// 			})
+	// 		}
+	// }
 
 	getSortProps() {
 		return this.props
@@ -1000,7 +936,7 @@ export class PropLinkItemsSource {
 	}
 
 	getTableObj() {
-		return this.table ? this.table.object : undefined
+		return this.querySource.table ? this.querySource.table.object : undefined
 	}
 
 	setParmValue(parmValue: string) {
@@ -1054,7 +990,7 @@ export class DataObjAttrsAccessGroup {
 					error(500, {
 						file: FILENAME,
 						function: 'DataObjAttrsAccessGroup.constructor',
-						message: `No case defined for codeAttrAccessType: ${codeAttrAccessType}`
+						msg: `No case defined for codeAttrAccessType: ${codeAttrAccessType}`
 					})
 			}
 		})

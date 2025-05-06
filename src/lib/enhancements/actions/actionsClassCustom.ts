@@ -1,38 +1,16 @@
-import {
-	State,
-	StateNavLayout,
-	StateParms,
-	StateTriggerToken
-} from '$comps/app/types.appState.svelte'
-import {
-	userActionError,
-	userActionStateChangeDataObj,
-	userActionStateChangeRaw,
-	userActionTreeNodeChildren
-} from '$comps/other/types.userAction.svelte'
-import { AppLevel, AppLevelTab } from '$comps/app/types.app.svelte'
-import {
-	TokenApiQueryType,
-	TokenAppDo,
-	TokenAppDoQuery,
-	TokenAppStateTriggerAction
-} from '$utils/types.token'
-import {
-	CodeAction,
-	CodeActionClass,
-	CodeActionType,
-	DataObj,
-	DataManager,
-	DataRow,
-	required,
-	strRequired
-} from '$utils/types'
-import { Token, TokenAppIndex, TokenAppNode, TokenAppRow, TokenAppTab } from '$utils/types.token'
+import { State } from '$comps/app/types.appState.svelte'
+import { userActionTreeNodeChildren } from '$comps/other/types.userAction.svelte'
+import { TokenApiQueryType, TokenAppDo, TokenAppStateTriggerAction } from '$utils/types.token'
+import { CodeActionType, DataObj, MethodResult, required } from '$utils/types'
+import { Token } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionClassCustom.ts'
 
-export default async function action(sm: State, parmsAction: TokenAppStateTriggerAction) {
+export default async function action(
+	sm: State,
+	parmsAction: TokenAppStateTriggerAction
+): Promise<MethodResult> {
 	const actionType = parmsAction.codeAction.actionType
 	const token: Token = parmsAction.data.token
 	const tokenAppDo = token as TokenAppDo
@@ -40,6 +18,7 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 	let dm = sm.dm
 	let currTab = required(sm.app.getCurrTab(), FILENAME, 'currTab')
 	let dataObj: DataObj = required(currTab.dataObj, FILENAME, 'dataObj')
+	let result: MethodResult
 
 	switch (actionType) {
 		case CodeActionType.doCustomAIAttdSheetSetAllFullClass:
@@ -67,7 +46,8 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 			break
 
 		case CodeActionType.doCustomSysMsgRootDetailSave:
-			await sm.triggerActionDo(CodeActionType.doDetailSave, tokenAppDo.dataObj)
+			result = await sm.triggerActionDo(CodeActionType.doDetailSave, tokenAppDo.dataObj)
+			if (result.error) return result
 			break
 
 		case CodeActionType.doCustomSysMsgThreadDetailClose:
@@ -88,14 +68,19 @@ export default async function action(sm: State, parmsAction: TokenAppStateTrigge
 
 		case CodeActionType.doCustomSysMsgThreadListForward:
 		case CodeActionType.doCustomSysMsgThreadListReply:
-			await userActionTreeNodeChildren(sm, token, TokenApiQueryType.preset, parmsAction)
+			result = await userActionTreeNodeChildren(sm, token, TokenApiQueryType.preset, parmsAction)
+			if (result.error) return result
 			break
 
 		default:
-			error(500, {
-				file: FILENAME,
-				function: 'default',
-				message: `No case defined for actionType: ${actionType}`
+			return new MethodResult({
+				success: false,
+				error: {
+					file: FILENAME,
+					function: 'default',
+					msg: `No case defined for actionType: ${actionType}`
+				}
 			})
 	}
+	return new MethodResult()
 }

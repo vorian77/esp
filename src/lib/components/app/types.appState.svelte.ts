@@ -1,8 +1,7 @@
 import { App } from '$comps/app/types.app.svelte'
-import { required, strRequired, valueOrDefault } from '$utils/utils'
+import { MethodResult, required, strRequired, valueOrDefault } from '$utils/utils'
 import {
 	booleanOrFalse,
-	booleanRequired,
 	CodeAction,
 	CodeActionClass,
 	CodeActionType,
@@ -13,15 +12,11 @@ import {
 	ParmsValues,
 	ParmsValuesType,
 	NodeType,
-	ResponseBody,
-	strOptional,
 	ToastType,
 	User
 } from '$utils/types'
 import {
-	Token,
 	TokenApiDbDataObjSource,
-	TokenApiFetchError,
 	TokenApiId,
 	TokenApiQueryType,
 	TokenAppDoQuery,
@@ -33,10 +28,9 @@ import {
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
-import { FieldEmbedType } from '$comps/form/field.svelte'
+import { QuerySourceParentRaw } from '$lib/query/types.query'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
-import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
-import { RawDataObjAction, RawDataObjParent } from '$comps/dataObj/types.rawDataObj.svelte'
+import { RawDataObjAction } from '$comps/dataObj/types.rawDataObj.svelte'
 import {
 	Toast,
 	type DrawerSettings,
@@ -83,7 +77,7 @@ export class State {
 		obj = valueOrDefault(obj, {})
 		this.dm = new DataManager(this)
 		this.fActions = this.loadActions()
-		this.navPage = strRequired(obj.navPage, clazz, 'navPage')
+		this.navPage = obj.navPage || '/'
 		this.change(obj)
 	}
 
@@ -148,19 +142,13 @@ export class State {
 	}
 
 	async getActions(fieldGroupName: string) {
-		const actionGroup = await apiFetchFunction(
+		const result: MethodResult = await apiFetchFunction(
 			ApiFunction.dbGelGetDataObjActionGroup,
-			new TokenApiFetchError(
-				FILENAME,
-				'getActions',
-				`Error retrieving data object action field group: ${fieldGroupName}`
-			),
 			new TokenApiId(fieldGroupName)
 		)
-
+		const actionGroup = result.data
 		return actionGroup._dataObjActions.map((doa: any) => {
-			const rawAction = new RawDataObjAction(doa)
-			return new DataObjAction(rawAction)
+			return new DataObjAction(new RawDataObjAction(doa))
 		})
 	}
 
@@ -201,7 +189,7 @@ export class State {
 					error(500, {
 						file: FILENAME,
 						function: 'load action classes',
-						message: `No case defined for actionClass: ${key}`
+						msg: `No case defined for actionClass: ${key}`
 					})
 			}
 		}
@@ -219,10 +207,11 @@ export class State {
 		height: string | undefined,
 		width: string | undefined,
 		meta: DataRecord
-	) {
+	): Promise<MethodResult> {
 		const sm = required(meta.sm, 'State.openDrawer', 'meta.sm')
 		const settings: DrawerSettings = { id, position, height, width, meta }
 		this.storeDrawer.open(settings)
+		return new MethodResult()
 	}
 
 	async openDrawerDataObj(
@@ -231,14 +220,14 @@ export class State {
 		height: string | undefined,
 		width: string | undefined,
 		token: TokenAppDoQuery
-	) {
+	): Promise<MethodResult> {
 		const stateModal = new StateSurfacePopup(this, {
 			navHeader: {
 				isDataObj: true,
 				isDrawerClose: true
 			}
 		})
-		await stateModal.triggerAction(
+		let result: MethodResult = await stateModal.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_do,
@@ -248,10 +237,12 @@ export class State {
 				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
 			})
 		)
-		this.openDrawer(id, position, height, width, {
+		if (result.error) return result
+
+		return this.openDrawer(id, position, height, width, {
 			sm: stateModal,
 			onCloseDrawer: async () => {
-				await this.triggerAction(
+				return await this.triggerAction(
 					new TokenAppStateTriggerAction({
 						codeAction: CodeAction.init(
 							CodeActionClass.ct_sys_code_action_class_nav,
@@ -263,7 +254,7 @@ export class State {
 		})
 	}
 
-	async openModal(sm: StateSurfacePopup, fUpdate?: Function) {
+	async openModal(sm: StateSurfacePopup, fUpdate?: Function): Promise<MethodResult> {
 		new Promise<any>((resolve) => {
 			const modalSettings: ModalSettings = {
 				type: 'component',
@@ -281,27 +272,28 @@ export class State {
 					const modalReturn = response as TokenAppModalReturn
 					if (modalReturn.type === TokenAppModalReturnType.complete) {
 						if (modalReturn.data instanceof ParmsValues) {
-							fUpdate(TokenAppModalReturnType.complete, modalReturn.data)
+							return fUpdate(TokenAppModalReturnType.complete, modalReturn.data)
 						} else {
-							fUpdate(TokenAppModalReturnType.cancel)
+							return fUpdate(TokenAppModalReturnType.cancel)
 						}
 					} else {
-						fUpdate(modalReturn.type || TokenAppModalReturnType.cancel)
+						return fUpdate(modalReturn.type || TokenAppModalReturnType.cancel)
 					}
 				} else {
-					fUpdate(TokenAppModalReturnType.cancel)
+					return fUpdate(TokenAppModalReturnType.cancel)
 				}
 			}
 		})
+		return new MethodResult()
 	}
 
-	async openModalDataObj(token: TokenAppDoQuery, fUpdate?: Function) {
+	async openModalDataObj(token: TokenAppDoQuery, fUpdate?: Function): Promise<MethodResult> {
 		const clazz = `${FILENAME}.openModalDataObj`
 		const stateModal = new StateSurfacePopup(this, {
 			actionsDialog: await this.getActions('doag_dialog_footer_detail'),
 			navHeader: { isDataObj: true }
 		})
-		await stateModal.triggerAction(
+		let result: MethodResult = await stateModal.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_do,
@@ -311,14 +303,16 @@ export class State {
 				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
 			})
 		)
-		await this.openModal(stateModal, fUpdate)
+		if (result.error) return result
+
+		return await this.openModal(stateModal, fUpdate)
 	}
 
 	async openModalEmbedListConfig(
 		token: TokenAppDo,
 		queryType: TokenApiQueryType,
 		fModalCloseUpdate: Function
-	) {
+	): Promise<MethodResult> {
 		const clazz = `${FILENAME}.openModalEmbedListConfig`
 		const dataObjEmbed = token.dataObj
 		const fieldEmbed: FieldEmbedListConfig = required(dataObjEmbed.embedField, clazz, 'fieldEmbed')
@@ -346,7 +340,7 @@ export class State {
 		stateModal.parmsState.valueSet(ParmsValuesType.embedParentId, embedParentId)
 		stateModal.app.virtualModalLevelAdd(dataObjEmbed)
 
-		await stateModal.triggerAction(
+		let result: MethodResult = await stateModal.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_modal,
@@ -356,7 +350,7 @@ export class State {
 					token: new TokenAppModalEmbedField({
 						dataObjSourceModal: new TokenApiDbDataObjSource({
 							dataObjId: fieldEmbed.dataObjModalId,
-							parent: new RawDataObjParent({
+							parent: new QuerySourceParentRaw({
 								_columnName: fieldEmbed.embedFieldNameRaw,
 								_columnIsMultiSelect: true,
 								_filterExpr: `.id = <uuid>`,
@@ -369,22 +363,26 @@ export class State {
 				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
 			})
 		)
+		if (result.error) return result
 
-		await this.openModal(stateModal, fModalCloseUpdate)
+		return await this.openModal(stateModal, fModalCloseUpdate)
 	}
 
-	async openModalEmbedListSelect(token: TokenAppDo, fModalCloseUpdate: Function) {
+	async openModalEmbedListSelect(
+		token: TokenAppDo,
+		fModalCloseUpdate: Function
+	): Promise<MethodResult> {
 		const clazz = `${FILENAME}.openModalEmbedListSelect`
 		const dataObjEmbed = token.dataObj
 		const fieldEmbed: FieldEmbedListSelect = required(dataObjEmbed.embedField, clazz, 'fieldEmbed')
 
-		const dataObjParent = required(
+		const dataObjParent: DataObj = required(
 			this.dm.getDataObj(fieldEmbed.dataObjIdParent),
 			clazz,
 			'dataObjParent'
 		)
 		const dataObjParentRootTable = required(
-			dataObjParent.rootTable,
+			dataObjParent.raw.tableGroup.getTable(0),
 			clazz,
 			'dataObjParentRootTable'
 		)
@@ -406,7 +404,7 @@ export class State {
 			parmsState,
 			stateRoot: this
 		})
-		await stateModal.triggerAction(
+		let result = await stateModal.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_modal,
@@ -416,7 +414,7 @@ export class State {
 					token: new TokenAppModalEmbedField({
 						dataObjSourceModal: new TokenApiDbDataObjSource({
 							dataObjId: fieldEmbed.dataObjListID,
-							parent: new RawDataObjParent({
+							parent: new QuerySourceParentRaw({
 								_columnName: fieldEmbed.embedFieldNameRaw,
 								_columnIsMultiSelect: true,
 								_filterExpr: '.id = <parms,uuid,embedParentId>',
@@ -429,11 +427,12 @@ export class State {
 				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
 			})
 		)
+		if (result.error) return result
 
-		await this.openModal(stateModal, fModalCloseUpdate)
+		return await this.openModal(stateModal, fModalCloseUpdate)
 	}
 
-	async openModalSelect(token: TokenAppModalSelect) {
+	async openModalSelect(token: TokenAppModalSelect): Promise<MethodResult> {
 		const parmsState = new ParmsValues({})
 		parmsState.valueSet(ParmsValuesType.columnDefs, token.columnDefs)
 		parmsState.valueSet(ParmsValuesType.selectLabel, token.selectLabel)
@@ -452,7 +451,7 @@ export class State {
 			parmsState
 		})
 
-		await this.openModal(stateModal, token.fModalClose)
+		return await this.openModal(stateModal, token.fModalClose)
 	}
 
 	openToast(type: ToastType, message: string) {
@@ -468,10 +467,10 @@ export class State {
 		this.storeToast.trigger(t)
 	}
 
-	async resetUser(loadHome: boolean) {
+	async resetUser(loadHome: boolean): Promise<MethodResult> {
 		if (this.user) {
 			if (loadHome) {
-				await this.triggerAction(
+				let result: MethodResult = await this.triggerAction(
 					new TokenAppStateTriggerAction({
 						codeAction: CodeAction.init(
 							CodeActionClass.ct_sys_code_action_class_nav,
@@ -480,8 +479,10 @@ export class State {
 						codeConfirmType: TokenAppUserActionConfirmType.statusChanged
 					})
 				)
+				if (result.error) return result
 			}
 		}
+		return new MethodResult()
 	}
 
 	setDataObjState(dataObj: DataObj) {
@@ -492,12 +493,12 @@ export class State {
 		this.fChangeCallback = f
 	}
 
-	async triggerAction(parms: TokenAppStateTriggerAction) {
-		await this.triggerActionValidate(parms, this.fActions[parms.codeAction.actionClass])
+	async triggerAction(parms: TokenAppStateTriggerAction): Promise<MethodResult> {
+		return await this.triggerActionValidate(parms, this.fActions[parms.codeAction.actionClass])
 	}
 
 	async triggerActionDo(doActionType: CodeActionType, dataObj: DataObj) {
-		await this.triggerAction(
+		return await this.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(CodeActionClass.ct_sys_code_action_class_do, doActionType),
 				data: {
@@ -512,25 +513,25 @@ export class State {
 	async triggerActionValidate(
 		parms: TokenAppStateTriggerAction,
 		fCallback: Function | undefined = undefined
-	) {
+	): Promise<MethodResult> {
 		const codeConfirmType = parms.codeConfirmType
 		if (
 			codeConfirmType === TokenAppUserActionConfirmType.always ||
 			(codeConfirmType === TokenAppUserActionConfirmType.statusChanged && this.dm.isStatusChanged())
 		) {
-			await this.triggerActionValidateAskB4(parms, fCallback)
+			return await this.triggerActionValidateAskB4(parms, fCallback)
 		} else {
-			if (fCallback) {
-				await fCallback(this, parms)
-			}
+			if (fCallback) return await fCallback(this, parms)
 		}
+		return new MethodResult()
 	}
 
-	async triggerActionValidateAskB4(parms: TokenAppStateTriggerAction, fCallback?: Function) {
+	async triggerActionValidateAskB4(
+		parms: TokenAppStateTriggerAction,
+		fCallback?: Function
+	): Promise<MethodResult> {
 		if (this instanceof StateSurfacePopup) {
-			if (confirm(parms.confirm.message)) {
-				discardChanges(this)
-			}
+			if (confirm(parms.confirm.message)) return await discardChanges(this)
 		} else {
 			const modal: ModalSettings = {
 				type: 'confirm',
@@ -539,17 +540,17 @@ export class State {
 				buttonTextCancel: parms.confirm.buttonLabelCancel,
 				buttonTextConfirm: parms.confirm.buttonLabelConfirm,
 				response: async (r: boolean) => {
-					if (r) {
-						discardChanges(this)
-					}
+					if (r) return await discardChanges(this)
 				}
 			}
 			return this.storeModal.trigger(modal)
 		}
-		function discardChanges(sm: State) {
+		return new MethodResult()
+
+		async function discardChanges(sm: State): Promise<MethodResult> {
 			parms.codeConfirmType = TokenAppUserActionConfirmType.none
 			sm.dm.resetStatus()
-			sm.triggerActionValidate(parms, fCallback)
+			return await sm.triggerActionValidate(parms, fCallback)
 		}
 	}
 }
@@ -602,14 +603,11 @@ export class StateSurfaceEmbed extends State {
 }
 
 export class StateSurfaceEmbedShell extends StateSurfaceEmbed {
-	embedField: FieldEmbedShell
-
 	constructor(obj: any) {
 		const clazz = 'StateSurfaceEmbedShell'
 		super(obj)
 		obj = valueOrDefault(obj, {})
 		this.dataObjState = required(obj.dataObjState, clazz, 'dataObjState')
-		this.embedField = required(obj.embedField, clazz, 'embedField')
 		this.nodeType = NodeType.object
 	}
 }

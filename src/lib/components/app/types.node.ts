@@ -74,7 +74,7 @@ export class Node extends NodeHeader {
 				error(500, {
 					file: FILENAME,
 					function: 'Node.getNodeIdAction',
-					message: `No children defined node: ${this.name}`
+					msg: `No children defined node: ${this.name}`
 				})
 			case NodeIdActionAlt.self:
 				return this.id
@@ -82,7 +82,7 @@ export class Node extends NodeHeader {
 				error(500, {
 					file: FILENAME,
 					function: 'Node.getNodeIdAction',
-					message: `Invalid nodeIdActionAlt: ${nodeIdActionAlt}`
+					msg: `Invalid nodeIdActionAlt: ${nodeIdActionAlt}`
 				})
 		}
 	}
@@ -95,7 +95,7 @@ export class Node extends NodeHeader {
 		error(500, {
 			file: FILENAME,
 			function: 'Node.getNodeAction',
-			message: `No default NodeAction defined for node name: ${this.name}`
+			msg: `No default NodeAction defined for node name: ${this.name}`
 		})
 	}
 }

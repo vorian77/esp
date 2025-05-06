@@ -3,7 +3,6 @@ import {
 	booleanOrDefault,
 	booleanOrFalse,
 	booleanRequired,
-	classOptional,
 	debug,
 	memberOfEnum,
 	memberOfEnumIfExists,
@@ -15,14 +14,12 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/utils'
-import { DBTable } from '$utils/types'
+import { QuerySourceTableRaw } from '$lib/query/types.query'
 import { FieldAlignment, FieldElement } from '$comps/form/field.svelte'
 import {
 	PropDataSourceValue,
 	PropDataType,
-	PropLinkItems,
-	PropSortDir,
-	RawDataObjTable
+	PropSortDir
 } from '$comps/dataObj/types.rawDataObj.svelte'
 
 const FILENAME = '$comps/report/types.report.ts'
@@ -84,7 +81,8 @@ export class Rep {
 	header?: string
 	id: string
 	name: string
-	tables: RawDataObjTable[]
+	ownerId: string
+	tables: QuerySourceTableRaw[]
 	constructor(obj: any) {
 		const clazz = 'Rep'
 		obj = valueOrDefault(obj, {})
@@ -99,7 +97,8 @@ export class Rep {
 		this.header = strOptional(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.name = strRequired(obj.name, clazz, 'name')
-		this.tables = arrayOfClass(RawDataObjTable, obj.tables)
+		this.ownerId = strRequired(obj._ownerId, clazz, 'ownerId')
+		this.tables = arrayOfClass(QuerySourceTableRaw, obj.tables)
 	}
 }
 

@@ -1,85 +1,77 @@
 import { ApiFunction } from '$routes/api/api'
-import { debug, getServerResponse } from '$utils/types'
-import { getEnvVar } from '$server/env'
-import { getLinkItems, processDataObj, processExpression } from '$routes/api/dbGel/dbGelProcess'
+import { debug, getServerResponse, getServerResponseMethod } from '$utils/types'
+import { dbQuery } from '$routes/api/db/queryServer'
 import {
 	getDataObjActionGroup,
 	getDataObjId,
-	getFieldEmbedListSelect,
 	getLinkItemsSource,
 	getNodesSystemParents,
 	getNode,
 	getNodesChildren,
-	getTableColumns,
-	getUserByUserId,
 	getUserPref,
-	setUserPref
-} from '$routes/api/dbGel/dbGelUtilities'
+	setUserPref,
+	sysErrorAdd,
+	sysErrorGet
+} from '$routes/api/db/dbGel/dbGelQueries'
 import { dbInit } from '$server/dbGel/init/dbGelInit'
 import { sysSendText } from '$routes/api/apiTwilio'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/routes/api/dbGel/server.ts'
 
-export async function POST({ request }) {
+export async function POST({ cookies, request }) {
 	const requestData = await request.json()
 	const { apiFunction, token } = requestData
 
 	switch (apiFunction) {
 		case ApiFunction.dbGelGetDataObjActionGroup:
-			return getServerResponse(await getDataObjActionGroup(token))
+			return getServerResponseMethod(await getDataObjActionGroup(token))
 
 		case ApiFunction.dbGelGetDataObjId:
-			return getServerResponse(await getDataObjId(token))
-
-		case ApiFunction.dbGelGetFieldEmbedListSelect:
-			return getServerResponse(await getFieldEmbedListSelect(token))
-
-		case ApiFunction.dbGelGetLinkItems:
-			return getServerResponse(await getLinkItems(token))
+			return getServerResponseMethod(await getDataObjId(token))
 
 		case ApiFunction.dbGelGetLinkItemsSource:
-			return getServerResponse(await getLinkItemsSource(token))
+			return getServerResponseMethod(await getLinkItemsSource(token))
 
 		case ApiFunction.dbGelGetNode:
-			return getServerResponse(await getNode(token))
+			return getServerResponseMethod(await getNode(token))
 
 		case ApiFunction.dbGelGetNodesSystemParents:
-			return getServerResponse(await getNodesSystemParents(token))
+			return getServerResponseMethod(await getNodesSystemParents(token))
 
 		case ApiFunction.dbGelGetNodesChildren:
-			return getServerResponse(await getNodesChildren(token))
-
-		case ApiFunction.dbGelGetTableColumns:
-			return getServerResponse(await getTableColumns(token))
+			return getServerResponseMethod(await getNodesChildren(token))
 
 		case ApiFunction.dbGelInit:
 			await dbInit()
 			return getServerResponse({})
 
-		case ApiFunction.dbGelProcessDataObj:
-			return getServerResponse(await processDataObj(token))
+		case ApiFunction.dbQuery:
+			return getServerResponse(await dbQuery(token))
 
-		case ApiFunction.dbGelProcessExpression:
-			return getServerResponse(await processExpression(token))
+		case ApiFunction.sysErrorAdd:
+			return getServerResponseMethod(await sysErrorAdd(token))
 
-		case ApiFunction.sysGetEnvDbBranch:
-			return getServerResponse({ success: true, data: { dbBranch: getEnvVar('EDGEDB_BRANCH') } })
+		case ApiFunction.sysErrorGet:
+			return getServerResponseMethod(await sysErrorGet(token))
+
+		case ApiFunction.sysGetSessionId:
+			return getServerResponseMethod(cookies.get('session_id'))
 
 		case ApiFunction.sysSendText:
 			return getServerResponse(await sysSendText(token))
 
 		case ApiFunction.sysUserPrefGet:
-			return getServerResponse(await getUserPref(token))
+			return getServerResponseMethod(await getUserPref(token))
 
 		case ApiFunction.sysUserPrefSet:
-			return getServerResponse(await setUserPref(token))
+			return getServerResponseMethod(await setUserPref(token))
 
 		default:
 			error(500, {
 				file: FILENAME,
 				function: 'POST',
-				message: `No case defined for ApiFunction: ${apiFunction}`
+				msg: `No case defined for ApiFunction: ${apiFunction}`
 			})
 	}
 }

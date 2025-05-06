@@ -297,6 +297,21 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysDataObj'
 	})
 
+	// init.addTrans('sysDataObjFieldListItems', {
+	// 	props: [[0, 'fullName', 'Name', '.fullName', true, 0]],
+	// 	// exprFilter: `.id IN org_client_moed::MoedParticipant.person.id`,
+	// 	exprFilter: `none`,
+	// 	exprUnions: [
+	// 		`SELECT org_client_moed::MoedParticipant.person`
+	// 		// `SELECT sys_core::SysMsg FILTER <user,uuid,personId> IN .recipients.id`,
+	// 		// `SELECT sys_core::SysMsg FILTER (SELECT sys_core::SysAttrObjAction FILTER .id IN <attrsObjAction,user,aoa_sys_msg_receive>).obj.id IN .recipients.id`
+	// 	],
+
+	// 	name: 'il_sys_msg_recipients_system',
+	// 	owner: 'sys_system'
+	// 	// table: 'SysPerson'
+	// })
+
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'fullName', 'Name', '.fullName', true, 0]],
 		exprFilter: `.id IN org_client_moed::MoedParticipant.person.id`,

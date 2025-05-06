@@ -7,10 +7,11 @@
 		DataObjAction,
 		DataObjSaveMode,
 		type DataRecord,
+		MethodResult,
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { State, StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
+	import { State } from '$comps/app/types.appState.svelte'
 	import { TokenAppDo, TokenAppUserActionConfirmType } from '$utils/types.token'
 	import { flip } from 'svelte/animate'
 	import { error } from '@sveltejs/kit'
@@ -43,8 +44,8 @@
 			: false
 	)
 
-	async function onClick(doa: DataObjAction) {
-		await doa.action.trigger(sm, dataObj)
+	async function onClick(doa: DataObjAction): Promise<MethodResult> {
+		return await doa.action.trigger(sm, dataObj)
 	}
 </script>
 

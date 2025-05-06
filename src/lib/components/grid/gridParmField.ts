@@ -69,7 +69,7 @@ export function cellEditorSelectorParmField(params: ICellEditorParams) {
 			error(500, {
 				file: FILENAME,
 				function: `${FILENAME}.cellEditorSelectorParmField`,
-				message: `No case defined for PropDataType: ${codeDataType}`
+				msg: `No case defined for PropDataType: ${codeDataType}`
 			})
 	}
 }
@@ -133,7 +133,7 @@ export function cellRendererSelectorParmField(params: ICellRendererParams) {
 			error(500, {
 				file: FILENAME,
 				function: `${FILENAME}.cellRendererSelectorParmField`,
-				message: `No case defined for PropDataType: ${codeDataType}`
+				msg: `No case defined for PropDataType: ${codeDataType}`
 			})
 	}
 }

@@ -51,7 +51,7 @@ module app_cm {
   type CmClient extending sys_user::Mgmt {
     agencyId: str;
     codeHighestEducation: sys_core::SysCode;
-    hasDriversLicense: bool;
+    hasDriversLicense: str;
     required owner: sys_core::SysSystem;
     required person: default::SysPerson{
       on source delete allow;

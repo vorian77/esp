@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { apiFetch, ApiFunction } from '$routes/api/api'
-	import { TokenApiFetchError, TokenApiFetchMethod } from '$utils/types.token'
+	import { apiFetch } from '$routes/api/api'
+	import { TokenApiFetchMethod } from '$utils/types.token'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
+	import { MethodResult } from '$utils/types'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import { error } from '@sveltejs/kit'
 
@@ -12,11 +13,10 @@
 	let promise = $derived(getQuote())
 
 	async function getQuote() {
-		return await apiFetch(
-			'/api/quote',
-			TokenApiFetchMethod.get,
-			new TokenApiFetchError(FILENAME, 'getQuote', 'Error retrieving quote.')
-		)
+		const result: MethodResult = await apiFetch('/api/quote', {
+			method: TokenApiFetchMethod.get
+		})
+		if (!result.error) return result.data
 	}
 </script>
 

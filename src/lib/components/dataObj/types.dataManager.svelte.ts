@@ -76,7 +76,7 @@ export class DataManager {
 			error(500, {
 				file: FILENAME,
 				function: 'DataManager.getDataSave',
-				message: `No root node defined.`
+				msg: `No root node defined.`
 			})
 		}
 	}
@@ -368,7 +368,7 @@ export class DataManagerNode {
 		})
 	}
 	async setFieldItemChanged(row: number, field: Field, value: any) {
-		await field.processItemChanges(this.sm, row, value, this)
+		return await field.processItemChanges(this.sm, row, value, this)
 	}
 
 	setStatus() {

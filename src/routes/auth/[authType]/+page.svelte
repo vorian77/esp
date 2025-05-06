@@ -42,8 +42,8 @@
 				if (!dataObj) {
 					error(404, {
 						file: FILENAME,
-						function: 'constructor',
-						message: `Invalid authType: ${authType}`
+						function: 'retrieveForm',
+						msg: `Invalid authType: ${authType}`
 					})
 				}
 				await sm.triggerAction(

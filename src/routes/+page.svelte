@@ -1,11 +1,13 @@
 <script lang="ts">
-	import srcLogo from '$assets/org_logo_sys.png'
-	import srcExFormList from '$assets/ex_form_list.png'
-	import { ArrowRight } from 'lucide-svelte'
 	import { goto } from '$app/navigation'
-	import { DataObjData, type DataRecord, ParmsValuesType, ResponseBody } from '$utils/types'
+	import srcExFormList from '$assets/ex_form_list.png'
+	import srcLogo from '$assets/org_logo_sys.png'
 	import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-	import { TokenApiFetchError, TokenApiQueryData } from '$utils/types.token'
+	import { clientQueryExpr } from '$lib/query/queryManagerClient'
+	import { MethodResult } from '$utils/types'
+	import { TokenApiQueryData } from '$utils/types.token'
+	import { ArrowRight } from 'lucide-svelte'
+	import { State } from '$comps/app/types.appState.svelte'
 
 	const FILENAME = '$routes/+page.svelte'
 
@@ -16,37 +18,39 @@
 	let prospectEmail = $state('')
 
 	async function processEmail() {
+		let msgUser =
+			"Thanks for joining The App Factory email list! We'll send you more information as we get closer to launch."
+		const msgFail = `We're unable to save your email. Please try again.`
+
 		if (prospectEmail.includes('@')) {
-			await saveEmail(prospectEmail)
-			alert(
-				"Thanks for joining The App Factory email list! We'll send you more information as we get closer to launch."
-			)
-			prospectEmail = ''
-		} else {
-			alert('Please enter a valid email address.')
-		}
-	}
-
-	async function saveEmail(email: string) {
-		let dbExpr = `INSERT app_crm::CrmClient { 
+			const exprCustom = `INSERT app_crm::CrmClient { 
 			createdBy := sys_user::getRootUser(),
-			email := '${email}',
+			email := '${prospectEmail}',
 			modifiedBy := sys_user::getRootUser(),
-			name := '${email}',
-			owner := sys_core::getSystemPrime('sys_client_app_factory'),
-		}`
+			name := '${prospectEmail}',
+			owner := sys_core::getSystemPrime('sys_client_app_factory')}`
 
-		return await apiFetchFunction(
-			ApiFunction.dbGelProcessExpression,
-			new TokenApiFetchError(FILENAME, 'saveEmail', 'Error saving email.'),
-			new TokenApiQueryData({ dbExpr })
-		)
+			const evalExprContext = 'processEmail'
+			let result: MethodResult = await clientQueryExpr(exprCustom, evalExprContext)
+			if (result.error) msgUser = msgFail
+		} else {
+			msgUser = msgFail
+		}
+		alert(msgUser)
+		prospectEmail = ''
 	}
+
 	async function dbInit() {
-		return await apiFetchFunction(
-			ApiFunction.dbGelInit,
-			new TokenApiFetchError(FILENAME, 'adminDbReset', 'Unable to reset database.')
-		)
+		await apiFetchFunction(ApiFunction.dbGelInit)
+		// temp for testing
+		// const result: MethodResult = await apiFetch('/api/quote', {
+		// 	method: TokenApiFetchMethod.get
+		// })
+		// const resultReturn: MethodResult = await apiFetch('/api/vercel', {
+		// 	method: TokenApiFetchMethod.post,
+		// 	formData: { fileAction: TokenApiBlobAction.list }
+		// })
+		// console.log('+page.dbInit.resultReturn', resultReturn)
 	}
 </script>
 
@@ -54,7 +58,10 @@
 	<header class="shadow-xs flex justify-between border-b py-2">
 		<img class="ml-4 h-14 sm:h-16" src={srcLogo} alt="The App Factory" />
 		<div class="flex items-center justify-end">
-			<button class="btn text-white variant-filled-primary mr-4" onclick={goto('/auth/login')}>
+			<button
+				class="btn text-white variant-filled-primary mr-4"
+				onclick={() => goto('/auth/login')}
+			>
 				Log in
 			</button>
 			<button class="btn variant-ringed-primary mr-4" onclick={() => goto('/auth/signup')}>

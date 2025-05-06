@@ -1,24 +1,16 @@
-import {
-	State,
-	StateNavContent,
-	StateNavLayout,
-	StateParms,
-	StateTriggerToken
-} from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.appState.svelte'
 import {
 	CodeAction,
 	CodeActionType,
 	DataManager,
 	DataObj,
-	DataObjQueryRiderTriggerTiming,
-	DataObjQueryRiderDestination,
-	DataObjQueryRiderMsgDelivery,
 	DataObjSaveMode,
 	type DataRecord,
 	debug,
 	getDataRecordValueKey,
 	memberOfEnum,
 	memberOfEnumIfExists,
+	MethodResult,
 	required,
 	strRequired,
 	ToastType,
@@ -33,7 +25,7 @@ import {
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
-import { RawDataObjAction, RawUserAction } from '$comps/dataObj/types.rawDataObj.svelte'
+import { RawUserAction } from '$comps/dataObj/types.rawDataObj.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.userAction.ts'
@@ -77,7 +69,7 @@ export class UserAction {
 				error(500, {
 					file: 'UserAction',
 					function: 'getConfirm',
-					message: `No conditional confirm found for triggers: ${confirms.map((c) => c.codeTriggerConfirmConditional).join()}.`
+					msg: `No conditional confirm found for triggers: ${confirms.map((c) => c.codeTriggerConfirmConditional).join()}.`
 				})
 		}
 	}
@@ -105,9 +97,9 @@ export class UserAction {
 		return this.isStatusShow
 	}
 
-	async trigger(sm: State, dataObj: DataObj) {
+	async trigger(sm: State, dataObj: DataObj): Promise<MethodResult> {
 		const { codeConfirmType, confirm } = this.getConfirm(sm, dataObj)
-		await sm.triggerAction(
+		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: this.codeAction,
 				codeConfirmType,
@@ -201,9 +193,11 @@ export async function userActionTreeNodeChildren(
 	token: Token,
 	queryType: TokenApiQueryType,
 	parmsAction: TokenAppStateTriggerAction
-) {
-	await sm.app.addTreeNodeChildren(sm, token as TokenAppDo, queryType)
+): Promise<MethodResult> {
+	let result: MethodResult = await sm.app.addTreeNodeChildren(sm, token as TokenAppDo, queryType)
+	if (result.error) return result
 	await userActionStateChangeDataObj(sm, parmsAction)
+	return result
 }
 
 export class UserActionShow {
@@ -279,7 +273,7 @@ export class UserActionStatusGroup {
 						error(500, {
 							file: FILENAME,
 							function: 'UserActionStatusGroup.addStatus',
-							message: `No case definded for codeExprOp: ${codeExprOp}.`
+							msg: `No case definded for codeExprOp: ${codeExprOp}.`
 						})
 				}
 				break
@@ -327,7 +321,7 @@ export class UserActionStatusGroup {
 				error(500, {
 					file: FILENAME,
 					function: 'UserActionStatusGroup.addStatus',
-					message: `No case definded for userActionTrigger: ${trigger}.`
+					msg: `No case definded for userActionTrigger: ${trigger}.`
 				})
 		}
 		this.statuses.push(new UserActionStatus(trigger, isTriggered, isRequired))

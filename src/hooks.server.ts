@@ -1,20 +1,19 @@
-import { type Handle, type HandleServerError, redirect } from '@sveltejs/kit'
-import { getUserByUserId } from '$routes/api/dbGel/dbGelUtilities'
+import { getUserByUserId } from '$routes/api/db/dbGel/dbGelQueries'
 import { getEnvVar } from '$server/env'
 import { TokenApiUserId } from '$utils/types.token'
-import * as Sentry from '@sentry/sveltekit'
+import { type Handle, redirect } from '@sveltejs/kit'
 
 const FILENAME = 'hooks.server'
 
-Sentry.init({
-	dsn: 'https://cf41cf7f70214be6be23fa4a38cfd0e2@o4505108602945536.ingest.us.sentry.io/4505108606156800',
+// Sentry.init({
+// 	dsn: 'https://cf41cf7f70214be6be23fa4a38cfd0e2@o4505108602945536.ingest.us.sentry.io/4505108606156800',
 
-	// We recommend adjusting this value in production, or using tracesSampler
-	// for finer control
-	tracesSampleRate: 1.0
-})
+// 	// We recommend adjusting this value in production, or using tracesSampler
+// 	// for finer control
+// 	tracesSampleRate: 1.0
+// })
 
-const routesUnprotected = ['/about', '/auth']
+const routesUnprotected = ['/about', '/auth', '/error']
 
 // <todo> - 240206 - possible way to control user reload of a page
 // function beforeNavigate(
@@ -25,8 +24,6 @@ const routesUnprotected = ['/about', '/auth']
 
 // handle - route
 export const handle: Handle = async ({ event, resolve }) => {
-	// const serverHandler: Handle = async ({ event, resolve }) => {
-
 	if (event.url.pathname === '/' || startsWith('/auth')) {
 		if (event.cookies.get('session_id')) {
 			event.cookies.delete('session_id', { path: '/' })
@@ -65,8 +62,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 			status('redirect - invalid sessionId...')
 			redirect(303, '/')
 		}
-		const dbBranch = getEnvVar('EDGEDB_BRANCH')
-		event.locals.rawUser = { ...rawUser, dbBranch }
+		event.locals.rawUser = { ...rawUser, dbBranch: getEnvVar('EDGEDB_BRANCH') }
 	}
 
 	// security protected routes

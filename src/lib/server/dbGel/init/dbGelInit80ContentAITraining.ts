@@ -62,7 +62,6 @@ function initCourse(init: InitDb) {
 				orderDefine: 70,
 				exprCustom: `(SELECT count(app_cm::CmCsfCohort FILTER .cohort.id IN app_cm::CmCourse.cohorts.id))`,
 				headerAlt: 'Enrollments',
-
 				nameCustom: 'customCohortsCount',
 				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
 			}
@@ -388,7 +387,6 @@ function initCohort(init: InitDb) {
 				orderDefine: 70,
 				exprCustom: `(SELECT count(app_cm::CmCsfCohort FILTER .cohort.id = app_cm::CmCohort.id))`,
 				headerAlt: 'Enrollments',
-
 				nameCustom: 'customCohortsCount',
 				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
 			}

@@ -1,6 +1,5 @@
 import { Field, PropsFieldCreate } from '$comps/form/field.svelte'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
-import { type DataRecord } from '$utils/types'
 
 export class FieldCheckbox extends Field {
 	constructor(props: PropsFieldCreate) {

@@ -274,12 +274,6 @@ function initCodeActionsUtils(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system',
 		codeType: 'ct_sys_code_action_class_utils',
-		name: 'dbExpression',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system',
-		codeType: 'ct_sys_code_action_class_utils',
 		name: 'none',
 		order: 0
 	})

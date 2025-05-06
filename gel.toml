@@ -1,0 +1,8 @@
+[instance]
+server-version = "5.2"
+
+[project]
+schema-dir = "./src/db/gel"
+
+[hooks]
+schema.update.after="./src/db/gelGenerate.sh"

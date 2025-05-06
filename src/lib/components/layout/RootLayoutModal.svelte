@@ -9,10 +9,10 @@
 		DataObjAction,
 		DataObjCardinality,
 		type DataRecord,
+		FieldEmbedType,
 		ParmsValuesType
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldEmbedType } from '$comps/form/field.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -75,7 +75,7 @@
 				error(500, {
 					file: FILENAME,
 					function: 'onFooterActionClick',
-					message: `No case defined for Data Object Action type: ${doa.action.codeAction.actionType} `
+					msg: `No case defined for Data Object Action type: ${doa.action.codeAction.actionType} `
 				})
 		}
 	}

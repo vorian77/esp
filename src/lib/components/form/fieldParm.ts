@@ -1,16 +1,23 @@
+import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
 import {
 	Field,
-	FieldClassType,
 	FieldAlignment,
-	PropsFieldInit,
-	PropsFieldCreate
+	FieldClassType,
+	PropsFieldCreate,
+	PropsFieldInit
 } from '$comps/form/field.svelte'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
-import { DataObj, type DataRecord, getDataRecordValueKey } from '$utils/types'
+import { DbTableQueryGroup } from '$lib/query/types.query'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-import { TokenApiFetchError, TokenApiId } from '$utils/types.token'
-import { error } from '@sveltejs/kit'
+import {
+	DataObj,
+	type DataRecord,
+	getDataRecordValueKey,
+	getDataRecordValueKeyData,
+	getDataRecordValueKeyDisplay,
+	MethodResult
+} from '$utils/types'
+import { TokenApiId } from '$utils/types.token'
 
 const FILENAME = '$comps/form/fieldParm.ts/'
 
@@ -22,30 +29,41 @@ export class FieldParm extends Field {
 		const clazz = 'FieldParm'
 		this.isParmValue = true
 	}
-	getField(row: number) {
-		return this.parmFields[row]
-	}
 
-	async init(props: PropsFieldInit) {
-		for (const dataRow of props.dataObj.data.rowsRetrieved.dataRows) {
-			this.parmFields.push(await this.configParmItemsInit(props, dataRow.record, this.parmFields))
+	async init(props: PropsFieldInit): Promise<MethodResult> {
+		for (const dataRow of props.data.rowsRetrieved.dataRows) {
+			let result: MethodResult = await this.configParmItemsInit(
+				props,
+				dataRow.record,
+				this.parmFields
+			)
+			if (result.error) return result
+			const field: Field = result.data
+			this.parmFields.push(field)
 		}
+		return new MethodResult()
 	}
 
-	async configParmItemsInit(props: PropsFieldInit, record: DataRecord, fields: Field[]) {
+	async configParmItemsInit(
+		propsFieldInit: PropsFieldInit,
+		record: DataRecord,
+		fields: Field[]
+	): Promise<MethodResult> {
 		const propParmObj = {
 			_codeAccess: getDataRecordValueKey(record, 'isRequired') ? 'required' : 'optional',
-			_codeFieldElement: getDataRecordValueKey(record, 'codeFieldElement'),
+			_codeFieldElement: getDataRecordValueKeyDisplay(record, 'codeFieldElement'),
 			_column: {
 				_codeAlignment: FieldAlignment.left,
-				_codeDataType: getDataRecordValueKey(record, 'codeDataType'),
+				_codeDataType: getDataRecordValueKeyDisplay(record, 'codeDataType'),
 				header: getDataRecordValueKey(record, 'header'),
 				isFormTag: false,
 				isMultiSelect: getDataRecordValueKey(record, 'isMultiSelect'),
 				placeHolder: ''
 			},
 			_hasItems: getDataRecordValueKey(record, '_hasItems'),
-			_linkItemsSource: await getLinkItemsSource(getDataRecordValueKey(record, 'fieldListItems')),
+			_linkItemsSource: await getLinkItemsSource(
+				getDataRecordValueKeyData(record, 'fieldListItems')
+			),
 			_propName: getDataRecordValueKey(record, 'name'),
 			id: getDataRecordValueKey(record, 'id'),
 			isDisplayable: true,
@@ -53,21 +71,25 @@ export class FieldParm extends Field {
 			isParmValue: true,
 			orderDefine: getDataRecordValueKey(record, 'orderDefine')
 		}
-		const propParm = new RawDataObjPropDisplay(propParmObj, [])
-		const field: Field = await DataObj.fieldsCreateItem(props.sm, props.dataObj, propParm, fields)
-		await field.linkItems?.retrieve(props.sm, record.parmValue)
-		return field
+		const propParm = new RawDataObjPropDisplay(propParmObj, new DbTableQueryGroup([]))
 
-		async function getLinkItemsSource(fieldListItemsName: string) {
-			return await apiFetchFunction(
+		let result: MethodResult = await DataObj.fieldsCreateItem(propsFieldInit, propParm)
+		if (result.error) return result
+		const field: Field = result.data
+
+		if (field.linkItems) {
+			result = await field.linkItems.retrieve(propsFieldInit.sm, record.parmValue)
+			if (result.error) return result
+		}
+
+		return new MethodResult(field)
+
+		async function getLinkItemsSource(fieldListItemId: string) {
+			const result: MethodResult = await apiFetchFunction(
 				ApiFunction.dbGelGetLinkItemsSource,
-				new TokenApiFetchError(
-					FILENAME,
-					'getLinkItemsSource',
-					`Error retrieving link items source id: ${fieldListItemsName}`
-				),
-				new TokenApiId(fieldListItemsName)
+				new TokenApiId(fieldListItemId)
 			)
+			return result.data
 		}
 	}
 

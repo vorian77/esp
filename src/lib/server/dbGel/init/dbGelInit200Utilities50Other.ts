@@ -1,5 +1,5 @@
 import e from '$db/gel/edgeql-js'
-import { client, sectionHeader, valueOrDefaultParm } from '$routes/api/dbGel/dbGel'
+import { client, sectionHeader, valueOrDefaultParm } from '$routes/api/db/dbGel/dbGel'
 import { type DataRecord, debug } from '$utils/types'
 
 export async function addApp(data: any) {
@@ -482,7 +482,7 @@ export async function addUserType(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			attrs: e.optional(e.array(e.json)),
+			attrsAction: e.optional(e.array(e.json)),
 			header: e.str,
 			isSelfSignup: e.optional(e.bool),
 			name: e.str,
@@ -492,13 +492,20 @@ export async function addUserType(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysUserType, {
-				attrs: e.assert_distinct(
-					e.for(e.array_unpack(p.attrs || e.cast(e.array(e.str), e.set())), (attr) => {
-						return e.sys_core.getAttr(
-							e.cast(e.str, e.json_get(attr, 'owner')),
-							e.cast(e.str, e.json_get(attr, 'name')),
-							e.cast(e.str, e.json_get(attr, 'codeAttrType'))
-						)
+				attrsObjAction: e.assert_distinct(
+					e.for(e.array_unpack(p.attrsAction || e.cast(e.array(e.str), e.set())), (attr) => {
+						return e.insert(e.sys_core.SysAttrObjAction, {
+							codeAttrActionType: e.sys_core.getCode(
+								'ct_sys_attr_obj_action',
+								e.cast(e.str, e.json_get(attr, 'codeAttrAccessType'))
+							),
+							obj: e.sys_core.getAttrObj(
+								e.cast(e.str, e.json_get(attr, 'owner')),
+								e.cast(e.str, e.json_get(attr, 'name'))
+							),
+							createdBy: CREATOR,
+							modifiedBy: CREATOR
+						})
 					})
 				),
 				createdBy: CREATOR,

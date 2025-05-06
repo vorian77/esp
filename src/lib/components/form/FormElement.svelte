@@ -12,7 +12,7 @@
 		ValidityError
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { State, StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
+	import { State } from '$comps/app/types.appState.svelte'
 	import FormElCustomActionButton from './FormElCustomActionButton.svelte'
 	import FormElCustomActionLink from './FormElCustomActionLink.svelte'
 	import FormElCustomHeader from '$comps/form/FormElCustomHeader.svelte'
@@ -42,9 +42,9 @@
 	import {
 		FieldEmbedListConfig,
 		FieldEmbedListEdit,
-		FieldEmbedListSelect
+		FieldEmbedListSelect,
+		FieldEmbedShell
 	} from '$comps/form/fieldEmbed'
-	import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
 	import { FieldChips } from '$comps/form/fieldChips'
 	import { FieldFile } from '$comps/form/fieldFile'
 	import { FieldInput } from '$comps/form/fieldInput'

@@ -1,6 +1,6 @@
-import { dbGelQuery } from '$routes/api/dbGel/dbGel'
-import { sectionHeader } from '$routes/api/dbGel/dbGel'
-import { getDBObjectLinks } from '$routes/api/dbGel/dbGelUtilities'
+import { dbGelQuery } from '$routes/api/db/dbGel/dbGel'
+import { sectionHeader } from '$routes/api/db/dbGel/dbGel'
+import { getDBObjectLinks } from '$routes/api/db/dbGel/dbGelQueries'
 import { TokenApiId } from '$utils/types.token'
 import {
 	addDataObj,
@@ -40,16 +40,14 @@ import {
 	MoedPBulkPart
 } from '$server/dbGel/init/dbGelInit200Utilities60OrgMOED'
 import { addAnalytic, addReport } from '$server/dbGel/init/dbGelInit200Utilities40Rep'
-import { required, valueOrDefault } from '$utils/utils.model'
+import { valueOrDefault } from '$utils/utils.model'
 import {
-	arrayOfClass,
 	booleanOrFalse,
 	booleanRequired,
 	type DataRecord,
 	debug,
 	getArray,
 	memberOfEnum,
-	ResponseBody,
 	strRequired
 } from '$utils/types'
 import { error } from '@sveltejs/kit'
@@ -431,7 +429,7 @@ export class InitDb {
 			error(500, {
 				file: FILENAME,
 				function: 'InitDB.addTrans',
-				message: `Unable to find DB initiator: ${name}`
+				msg: `Unable to find DB initiator: ${name}`
 			})
 		}
 	}

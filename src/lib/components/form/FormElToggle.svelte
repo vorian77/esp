@@ -1,12 +1,10 @@
 <script lang="ts">
-	import { ContextKey, DataManager, DataObj, DataObjCardinality, required } from '$utils/types'
-	import { getContext } from 'svelte'
 	import { FieldAccess, FieldValueType } from '$comps/form/field.svelte'
 	import { FieldToggle } from '$comps/form/fieldToggle'
-	import { SlideToggle } from '@skeletonlabs/skeleton'
-	import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
-	import DataViewer from '$utils/DataViewer.svelte'
+	import { ContextKey, DataManager, DataObjCardinality, required } from '$utils/types'
+	import { SlideToggle } from '@skeletonlabs/skeleton'
+	import { getContext } from 'svelte'
 
 	const FILENAME = '$comps/form/FormElToggle.svelte'
 
@@ -22,9 +20,7 @@
 	let valueToggle: boolean = $state(field.getValueBoolean(fieldValue))
 
 	async function onChange(event: Event) {
-		const newValue = field.toggle(valueToggle)
-		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, newValue)
-		valueToggle = field.getValueBoolean(newValue)
+		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, field.getValueDb(valueToggle))
 	}
 </script>
 

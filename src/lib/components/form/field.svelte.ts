@@ -1,47 +1,37 @@
 import { State } from '$comps/app/types.appState.svelte'
 import {
-	booleanRequired,
-	classOptional,
-	DataManagerNode,
-	DataObj,
-	DataObjData,
-	type DataRecord,
-	getArray,
-	getColor,
-	getDataRecordValueType,
-	ParmsValuesType,
-	ResponseBody,
-	required,
-	strRequired
-} from '$utils/types'
-import {
-	booleanOrDefault,
-	memberOfEnum,
-	memberOfEnumOrDefault,
-	memberOfEnumIfExists,
-	valueOrDefault
-} from '$utils/utils'
+	PropLinkItems,
+	RawDataObjPropDisplay,
+	RawDataObjPropDisplayItemChange
+} from '$comps/dataObj/types.rawDataObj.svelte'
 import {
 	Validation,
 	ValidationStatus,
 	ValidationType,
 	Validity,
-	ValidityField,
 	ValidityError,
-	ValidityErrorLevel
+	ValidityErrorLevel,
+	ValidityField
 } from '$comps/form/types.validation'
-import {
-	PropDataType,
-	PropLinkItems,
-	RawDBColumn,
-	RawDataObjPropDB,
-	RawDataObjPropDisplay,
-	RawDataObjPropDisplayItemChange
-} from '$comps/dataObj/types.rawDataObj.svelte'
 import { IconProps } from '$comps/icon/types.icon'
-import { error } from '@sveltejs/kit'
+import {
+	booleanOrDefault,
+	classOptional,
+	DataManagerNode,
+	DataObjData,
+	type DataRecord,
+	getArray,
+	getColor,
+	getDataRecordValueType,
+	memberOfEnum,
+	memberOfEnumIfExists,
+	memberOfEnumOrDefault,
+	MethodResult,
+	required,
+	valueOrDefault
+} from '$utils/types'
 
-const FILENAME = '/$comps/form/field.ts/'
+const FILENAME = '/$comps/form/field.svelte.ts'
 
 export class Field {
 	classType: FieldClassType = FieldClassType.regular
@@ -129,11 +119,17 @@ export class Field {
 		])
 	}
 
-	async init(props: PropsFieldInit) {
+	async init(props: PropsFieldInit): Promise<MethodResult> {
 		// used for async initialization
+		return new MethodResult()
 	}
 
-	async processItemChanges(sm: State, row: number, triggerValueCurrent: any, dmn: DataManagerNode) {
+	async processItemChanges(
+		sm: State,
+		row: number,
+		triggerValueCurrent: any,
+		dmn: DataManagerNode
+	): Promise<MethodResult> {
 		const clazz = 'Field.processItemChanges'
 
 		for (let i = 0; i < this.itemChanges.length; i++) {
@@ -155,57 +151,76 @@ export class Field {
 					return process(this, itemChange)
 
 				case FieldOp.equal:
-					if (valueTriggerArray.includes(triggerValueCurrent)) await process(this, itemChange)
+					if (valueTriggerArray.includes(triggerValueCurrent)) {
+						return await process(this, itemChange)
+					}
 					break
 
 				case FieldOp.notEqual:
-					if (!valueTriggerArray.includes(triggerValueCurrent)) await process(this, itemChange)
+					if (!valueTriggerArray.includes(triggerValueCurrent)) {
+						return await process(this, itemChange)
+					}
 					break
 
 				case FieldOp.notNull:
-					if (!['', null, undefined].includes(triggerValueCurrent)) await process(this, itemChange)
+					if (!['', null, undefined].includes(triggerValueCurrent)) {
+						return await process(this, itemChange)
+					}
 					break
 
 				case FieldOp.null:
-					if (['', null, undefined].includes(triggerValueCurrent)) await process(this, itemChange)
+					if (['', null, undefined].includes(triggerValueCurrent)) {
+						return await process(this, itemChange)
+					}
 					break
 
 				default:
 					const valueTriggerScalar = required(itemChange.valueTriggerScalar, clazz, 'valueScalar')
 					switch (itemChange.codeOp) {
 						case FieldOp.greaterThan:
-							if (triggerValueCurrent > valueTriggerScalar) await process(this, itemChange)
+							if (triggerValueCurrent > valueTriggerScalar) {
+								return await process(this, itemChange)
+							}
 							break
 
 						case FieldOp.greaterThanOrEqual:
-							if (triggerValueCurrent >= valueTriggerScalar) await process(this, itemChange)
+							if (triggerValueCurrent >= valueTriggerScalar) {
+								return await process(this, itemChange)
+							}
 							break
 
 						case FieldOp.lessThan:
-							if (triggerValueCurrent < valueTriggerScalar) await process(this, itemChange)
+							if (triggerValueCurrent < valueTriggerScalar) {
+								return await process(this, itemChange)
+							}
 							break
 
 						case FieldOp.lessThanOrEqual:
-							if (triggerValueCurrent <= valueTriggerScalar) await process(this, itemChange)
+							if (triggerValueCurrent <= valueTriggerScalar) {
+								return await process(this, itemChange)
+							}
 							break
 
 						default:
-							error(500, {
-								file: FILENAME,
-								function: clazz,
-								message: `No case defined for operation: ${itemChange.codeOp}`
+							return new MethodResult({
+								success: false,
+								error: {
+									file: FILENAME,
+									function: clazz,
+									msg: `No case defined for FieldOp: ${itemChange.codeOp}`
+								}
 							})
 					}
 			}
 		}
 
-		async function process(field: Field, itemChange: FieldItemChange) {
+		async function process(field: Field, itemChange: FieldItemChange): Promise<MethodResult> {
 			for (let i = 0; i < itemChange.fields.length; i++) {
 				const field = itemChange.fields[i]
+				let result: MethodResult
 
 				if (itemChange.codeAccess) field.fieldAccess = itemChange.codeAccess
 
-				let retrieveParmKey
 				const targetCurrValue = dmn.recordsDisplay[row][field.colDO.propName]
 
 				switch (itemChange.codeItemChangeAction) {
@@ -221,7 +236,10 @@ export class Field {
 
 					case FieldItemChangeAction.retrieveSelect:
 						field.linkItems?.source.setParmValue(triggerValueCurrent)
-						await field.linkItems?.retrieve(sm, undefined)
+						if (field.linkItems) {
+							result = await field.linkItems.retrieve(sm, undefined)
+							if (result.error) return result
+						}
 						break
 
 					case FieldItemChangeAction.setScalar:
@@ -229,14 +247,19 @@ export class Field {
 						break
 
 					default:
-						error(500, {
-							file: FILENAME,
-							function: clazz,
-							message: `No case defined for FieldItemChangeAction: ${itemChange.codeItemChangeAction}`
+						return new MethodResult({
+							success: false,
+							error: {
+								file: FILENAME,
+								function: clazz,
+								msg: `No case defined for FieldItemChangeAction: ${itemChange.codeItemChangeAction}`
+							}
 						})
 				}
 			}
+			return new MethodResult()
 		}
+		return new MethodResult()
 	}
 
 	setIconProps(obj: any) {
@@ -368,13 +391,6 @@ export enum FieldElement {
 	toggle = 'toggle'
 }
 
-// <todo> 241217 - placing this in FieldEmbed causes a circular reference
-export enum FieldEmbedType {
-	listConfig = 'listConfig',
-	listEdit = 'listEdit',
-	listSelect = 'listSelect'
-}
-
 export class FieldItemChange {
 	codeAccess?: FieldAccess
 	codeItemChangeAction: FieldItemChangeAction
@@ -465,12 +481,14 @@ export enum FieldValueType {
 }
 
 export class PropsFieldInit {
-	dataObj: DataObj
+	data: DataObjData
+	fields: Field[]
 	sm: State
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'PropsField'
-		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
+		this.data = required(obj.data, clazz, 'data')
+		this.fields = required(obj.fields, clazz, 'fields')
 		this.sm = required(obj.sm, clazz, 'sm')
 	}
 }

@@ -3,9 +3,6 @@ import { moedDataApplicant } from '$utils/utils.randomDataGenerator'
 import { ParmsValuesType } from '$utils/types'
 
 export function initContentMOEDSsr(init: InitDb) {
-	initAttrObj(init)
-	initAttr(init)
-
 	// tasks
 	initTaskSsrApp(init)
 	initTaskSsrMsg(init)
@@ -1163,108 +1160,6 @@ function initTaskSsrWelcome(init: InitDb) {
 		pageDataObj: 'data_obj_task_moed_ssr_welcome',
 		orderDefine: 20,
 		owner: 'sys_client_moed'
-	})
-}
-
-function initAttrObj(init: InitDb) {
-	// site
-	init.addTrans('sysAttrObj', {
-		header: 'Eastside YO Center',
-		isGlobalResource: false,
-		name: 'moedOfficeEastside',
-		owner: 'sys_client_moed'
-	})
-	init.addTrans('sysAttrObj', {
-		header: 'Westside YO Center',
-		isGlobalResource: false,
-		name: 'moedOfficeWestside',
-		owner: 'sys_client_moed'
-	})
-
-	// staff
-	init.addTrans('sysAttrObj', {
-		header: 'Staff-Eastside',
-		isGlobalResource: false,
-		name: 'moedStaffEastside',
-		owner: 'sys_client_moed'
-	})
-	init.addTrans('sysAttrObj', {
-		header: 'Staff-Westside',
-		isGlobalResource: false,
-		name: 'moedStaffWestside',
-		owner: 'sys_client_moed'
-	})
-
-	// youth
-	init.addTrans('sysAttrObj', {
-		header: 'Youth-Eastside',
-		isGlobalResource: false,
-		name: 'moedYouthEastside',
-		owner: 'sys_client_moed'
-	})
-	init.addTrans('sysAttrObj', {
-		header: 'Youth-Westside',
-		isGlobalResource: false,
-		name: 'moedYouthWestside',
-		owner: 'sys_client_moed'
-	})
-}
-
-function initAttr(init: InitDb) {
-	// site
-	init.addTrans('sysAttr', {
-		owner: 'sys_client_moed',
-		name: 'moedOfficeEastside',
-		type: 'at_cm_sf_site'
-	})
-	init.addTrans('sysAttr', {
-		owner: 'sys_client_moed',
-		name: 'moedOfficeWestside',
-		type: 'at_cm_sf_site'
-	})
-
-	// staff
-	init.addTrans('sysAttr', {
-		owner: 'sys_client_moed',
-		name: 'moedStaffEastside',
-		type: 'at_sys_msg_receive'
-	})
-	init.addTrans('sysAttr', {
-		owner: 'sys_client_moed',
-		name: 'moedStaffEastside',
-		type: 'at_sys_msg_send'
-	})
-	init.addTrans('sysAttr', {
-		owner: 'sys_client_moed',
-		name: 'moedStaffWestside',
-		type: 'at_sys_msg_receive'
-	})
-	init.addTrans('sysAttr', {
-		owner: 'sys_client_moed',
-		name: 'moedStaffWestside',
-		type: 'at_sys_msg_send'
-	})
-
-	// youth
-	init.addTrans('sysAttr', {
-		owner: 'sys_client_moed',
-		name: 'moedYouthEastside',
-		type: 'at_sys_msg_receive'
-	})
-	init.addTrans('sysAttr', {
-		owner: 'sys_client_moed',
-		name: 'moedYouthEastside',
-		type: 'at_sys_msg_send'
-	})
-	init.addTrans('sysAttr', {
-		owner: 'sys_client_moed',
-		name: 'moedYouthWestside',
-		type: 'at_sys_msg_receive'
-	})
-	init.addTrans('sysAttr', {
-		owner: 'sys_client_moed',
-		name: 'moedYouthWestside',
-		type: 'at_sys_msg_send'
 	})
 }
 

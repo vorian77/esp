@@ -219,7 +219,7 @@ export class GridSettings {
 	setPref(type: ParmsUserDataType, value: any) {
 		this.data[type] = value
 	}
-	load(rawSettings: any, sm: State, dataObj: DataObj) {
+	load(rawSettings: DataRecord, sm: State, dataObj: DataObj) {
 		if (sm.user) this.idUser = sm.user.id
 		rawSettings = valueOrDefault(rawSettings, {})
 		const PREFS: [ParmsUserDataType, Function][] = [

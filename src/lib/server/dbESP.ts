@@ -32,7 +32,7 @@ export async function dbESP(
 						error(500, {
 							file: FILENAME,
 							function: 'dbESP',
-							message: `No value derived for required apiArg: ${i.dbName}`
+							msg: `No value derived for required apiArg: ${i.dbName}`
 						})
 					}
 				}
@@ -74,7 +74,7 @@ export async function dbESP(
 						error(500, {
 							file: FILENAME,
 							function: 'dbESP',
-							message: `No case defined for computed DB action: ${dbAction}`
+							msg: `No case defined for computed DB action: ${dbAction}`
 						})
 				}
 				break
@@ -84,7 +84,7 @@ export async function dbESP(
 			error(500, {
 				file: FILENAME,
 				function: 'dbESP',
-				message: `No case defined for sourceAction.type: ${sourceAction.type}`
+				msg: `No case defined for sourceAction.type: ${sourceAction.type}`
 			})
 	}
 }
@@ -135,7 +135,7 @@ export async function dbESPAPI(
 		error(500, {
 			file: FILENAME,
 			function: 'dbESPAPI',
-			message: `Axios status: ${err.response?.status} stautsText: ${err.response?.statusText} message: ${err.message}`
+			msg: `Axios status: ${err.response?.status} stautsText: ${err.response?.statusText} message: ${err.message}`
 		})
 	}
 }
@@ -233,7 +233,7 @@ function getSqlUpdate(sourceAction: FormSourceActionDirect) {
 		error(500, {
 			file: FILENAME,
 			function: 'getSqlUpdate',
-			message: `No updatabled columns defined for update to table: ${sourceAction.singleTable}`
+			msg: `No updatabled columns defined for update to table: ${sourceAction.singleTable}`
 		})
 	}
 
@@ -265,7 +265,7 @@ function getSQLColValue(item: FormSourceItem, allowNull: boolean) {
 			error(500, {
 				file: FILENAME,
 				function: 'getSQLColValue',
-				message: `Null value submitted for required field: (${item.dbName}).`
+				msg: `Null value submitted for required field: (${item.dbName}).`
 			})
 		}
 	}
@@ -293,7 +293,7 @@ function getSQLColValue(item: FormSourceItem, allowNull: boolean) {
 			error(500, {
 				file: FILENAME,
 				function: 'getSQLColValue',
-				message: `No case defined for item: (${item.dbName}) data type: (${item.dbDataType}).`
+				msg: `No case defined for item: (${item.dbName}) data type: (${item.dbDataType}).`
 			})
 	}
 
@@ -303,7 +303,7 @@ function getSQLColValue(item: FormSourceItem, allowNull: boolean) {
 		error(500, {
 			file: FILENAME,
 			function: 'getSQLColValue',
-			message: `Get value failed for field: ${item.dbName}`
+			msg: `Get value failed for field: ${item.dbName}`
 		})
 	}
 	function quoteVal(val) {
@@ -318,7 +318,7 @@ function getSqlTable(sourceAction: FormSourceActionDirect) {
 		error(500, {
 			file: FILENAME,
 			function: 'getSqlTable',
-			message: `Single table not defined for source action.`
+			msg: `Single table not defined for source action.`
 		})
 	}
 }
@@ -332,7 +332,7 @@ function getSqlStatement(sourceAction: FormSourceActionDirect) {
 			error(500, {
 				file: FILENAME,
 				function: 'getSqlStatement',
-				message: `Cannnot retrieve source. Value for db argument: ${dbName} is null or undefined.`
+				msg: `Cannnot retrieve source. Value for db argument: ${dbName} is null or undefined.`
 			})
 		}
 		sql = sql?.replace(dbName, value)

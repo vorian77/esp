@@ -4,6 +4,17 @@ module sys_core {
     multi attrsAccess: sys_core::SysAttrAccess {
       on source delete delete target;
     };
+    
+    multi attrsObjAccess: sys_core::SysAttrObjAction {
+      on source delete delete target;
+      on target delete allow;
+    };
+    
+    multi attrsObjAction: sys_core::SysAttrObjAction {
+      on source delete delete target;
+      on target delete allow;
+    };
+
     isGlobalResource: bool;
     note: str;
      
@@ -26,7 +37,7 @@ module sys_core {
     orderDefine: default::nonNegative;
   }
 
-  type SysAttr extending sys_user::Mgmt {
+    type SysAttr extending sys_user::Mgmt {
     required obj: sys_core::SysAttrObj;
     required codeAttrType: sys_core::SysCode;
     constraint exclusive on ((.obj, .codeAttrType));
@@ -40,6 +51,16 @@ module sys_core {
   }
 
   type SysAttrObj extending sys_core::SysObjEnt {}
+
+  type SysAttrObjAccess extending sys_user::Mgmt {
+    required obj: sys_core::ObjRootCore;
+    required codeAttrAccessType: sys_core::SysCode;
+  }
+
+  type SysAttrObjAction extending sys_user::Mgmt {
+    required obj: sys_core::ObjRootCore;
+    required codeAttrActionType: sys_core::SysCode;
+  }
   
   type SysObj extending sys_core::ObjRootCore, sys_user::Mgmt {
     isGlobalResourceOld: bool;
@@ -118,11 +139,32 @@ module sys_core {
 
   type SysCodeAction extending sys_core::SysCode {}
 
-  # SysDataObj
-  type SysDataObj extending sys_core::SysObj {
-    tempAttrAccessFilterNullValue: str;
-    actionGroup: sys_core::SysDataObjActionGroup;
+  type SysObjDb extending sys_core::SysObj {
+    exprFilter: str;
+    exprSort: str;
+    exprWith: str;
+    multi exprUnions: str;
     
+    listEditPresetExpr: str;
+    parentColumn: sys_db::SysColumn;
+    parentFilterExpr: str;
+    parentTable: sys_db::SysTable;
+
+    multi queryRiders: sys_core::SysDataObjQueryRider{
+      on source delete delete target;
+      on target delete allow;
+    };
+    
+    table: sys_db::SysTable;
+    multi tables: sys_core::SysDataObjTable {
+      on source delete delete target;
+      on target delete allow;
+    };
+  }
+
+  # SysDataObj
+  type SysDataObj extending sys_core::SysObjDb {
+    actionGroup: sys_core::SysDataObjActionGroup;
     
     required codeCardinality: sys_core::SysCode;
     required codeComponent: sys_core::SysCode;
@@ -137,10 +179,6 @@ module sys_core {
     };
 
     description: str;
-    exprFilter: str;
-    exprSort: str;
-    exprWith: str;
-
 
     isInitialValidationSilent: bool;
     required isListEdit: bool;
@@ -148,26 +186,9 @@ module sys_core {
     isListSuppressSelect: bool;
     isRetrieveReadonly: bool;
     
-    listEditPresetExpr: str;
-    listReorderColumn: sys_db::SysColumn;
-  
-    parentColumn: sys_db::SysColumn;
-    parentFilterExpr: str;
-    parentTable: sys_db::SysTable;
-    
+    listReorderColumn: sys_db::SysColumn;    
     processType: sys_core::SysCode;
-
-    multi queryRiders: sys_core::SysDataObjQueryRider{
-      on source delete delete target;
-      on target delete allow;
-    };
-
     subHeader: str;
-
-    multi tables: sys_core::SysDataObjTable {
-      on source delete delete target;
-      on target delete allow;
-    };
     constraint exclusive on (.name);
   } 
 
@@ -324,18 +345,14 @@ module sys_core {
     constraint exclusive on (.name);
   }
 
-  type SysDataObjFieldListItems extending sys_core::SysObj {
+  type SysDataObjFieldListItems extending sys_core::SysObjDb {
     codeDataTypeDisplay: sys_core::SysCode;
     codeMask: sys_core::SysCode;
     displayIdSeparator: str;
-    exprFilter: str;
-    exprSort: str;
-    exprWith: str;
     multi props: sys_core::SysDataObjFieldListItemsProp {
       on source delete delete target;
       on target delete allow;
     };
-    table: sys_db::SysTable;
     constraint exclusive on (.name);
   }
 
@@ -390,7 +407,7 @@ module sys_core {
       default := true;
     };
     parent: sys_core::SysMsg;
-    multi recipients: default::SysPerson;
+    multi recipients: sys_core::ObjRootCore;
     responses := .<parent[IS sys_core::SysMsg];
     required sender: default::SysPerson;
     required subject: str;
@@ -411,13 +428,13 @@ module sys_core {
     required codeNavType: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
     codeQueryOwnerType: sys_core::SysCode;
-    multi data: sys_core::SysNodeObjData {
-       on target delete delete source;
-    };
     dataObj: sys_core::SysDataObj;
     required isAlwaysRetrieveData: bool;
     required isDynamicChildrenSystemParents: bool;
     required isHideRowManager: bool;
+    multi nodeData: sys_core::SysNodeObjData {
+       on target delete delete source;
+    };
     parent: sys_core::SysNodeObj{
        on source delete delete target;
     };
@@ -516,10 +533,7 @@ module sys_core {
    
   function getSystemPrime(nameSystem: str) -> optional sys_core::SysSystem
     using (select assert_single((select sys_core::SysSystem filter .name = nameSystem))); 
- 
-  function isObjectLink(objName: str, linkName: str) -> optional bool
-    using (select count(schema::ObjectType filter .name = objName and .links.name = linkName) > 0);     
-
+   
   # <todo> migrate itemsList to functions rather than raw selects
   # have to beable to return an array from a function
   # function getItemsListCodeByCodeTypeName() -> array<Code>

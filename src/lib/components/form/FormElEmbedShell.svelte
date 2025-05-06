@@ -7,8 +7,8 @@
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldEmbedShell } from '$comps/form/fieldEmbedShell'
-	import { State, StateNavLayout, StateSurfaceEmbedShell } from '$comps/app/types.appState.svelte'
+	import { FieldEmbedShell } from '$comps/form/fieldEmbed'
+	import { State, StateNavLayout } from '$comps/app/types.appState.svelte'
 	import { TokenAppUserActionConfirmType } from '$utils/types.token'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import Layout from '$comps/layout/RootLayoutApp.svelte'
@@ -23,7 +23,7 @@
 	let dm: DataManager = $derived(sm.dm)
 
 	let field = $state(parms.field) as FieldEmbedShell
-	let stateShell: sm = $derived(field.stateShell)
+	// let stateShell: sm = $derived(field.stateShell)
 	let currLevel = $derived(stateShell.app.getCurrLevel())
 	$inspect('FormElEmbedShell.currLevel', currLevel)
 
@@ -32,9 +32,9 @@
 	// let component: string
 	// let currTab: AppLevelTab
 
-	field.stateShell.setfChangeCallback((obj: DataRecord) => {
-		sm.fChangeCallback(obj)
-	})
+	// field.stateShell.setfChangeCallback((obj: DataRecord) => {
+	// 	sm.fChangeCallback(obj)
+	// })
 
 	// let parmsShell = $derived({
 	// 	...parms,

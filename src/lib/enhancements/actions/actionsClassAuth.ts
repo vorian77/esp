@@ -1,8 +1,14 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { CodeAction, CodeActionClass, CodeActionType, required, strRequired } from '$utils/types'
+import {
+	CodeAction,
+	CodeActionClass,
+	CodeActionType,
+	MethodResult,
+	required,
+	strRequired
+} from '$utils/types'
 import { userActionError } from '$comps/other/types.userAction.svelte'
 import {
-	TokenApiFetchError,
 	TokenApiFetchMethod,
 	TokenApiSysSendText,
 	TokenAppStateTriggerAction
@@ -21,7 +27,10 @@ const FILENAME = '/$enhance/actions/actionClassDoFieldAuth.ts'
 
 let authProcess = new AuthProcess()
 
-export default async function action(sm: State, parms: TokenAppStateTriggerAction) {
+export default async function action(
+	sm: State,
+	parms: TokenAppStateTriggerAction
+): Promise<MethodResult> {
 	const actionType = parms.codeAction.actionType
 	const value = parms.data.value
 	authProcess.reset(sm)
@@ -38,14 +47,12 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 				'userId'
 			)
 
-			await apiFetch(
-				'/',
-				TokenApiFetchMethod.post,
-				new TokenApiFetchError(FILENAME, 'setUserId', `Unable to set user id: ${userId}.`),
-				{ formData: { session_id: userId } }
-			)
+			await apiFetch('/', {
+				method: TokenApiFetchMethod.post,
+				formData: { session_id: userId }
+			})
 
-			await sm.triggerAction(
+			return await sm.triggerAction(
 				new TokenAppStateTriggerAction({
 					codeAction: CodeAction.init(
 						CodeActionClass.ct_sys_code_action_class_nav,
@@ -54,7 +61,6 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 					data: { value: '/home' }
 				})
 			)
-			break
 
 		case CodeActionType.submit:
 			const dataRecord = required(
@@ -182,23 +188,29 @@ export default async function action(sm: State, parms: TokenAppStateTriggerActio
 					break
 
 				default:
-					error(500, {
-						file: FILENAME,
-						function: 'action-submit',
-						message: `No case defined for submit value: ${value}`
+					return new MethodResult({
+						success: false,
+						error: {
+							file: FILENAME,
+							function: 'action-submit',
+							msg: `No case defined for submit value: ${value}`
+						}
 					})
 			}
 			break
 
 		default:
-			error(500, {
-				file: FILENAME,
-				function: 'default',
-				message: `No case defined for actionType: ${actionType}`
+			return new MethodResult({
+				success: false,
+				error: {
+					file: FILENAME,
+					function: 'default',
+					msg: `No case defined for actionType: ${actionType}`
+				}
 			})
 	}
-
 	if (authProcess.actions.length > 0) await authProcess.execute()
+	return new MethodResult()
 }
 
 async function authActionLogicCodeSend(authProcess: AuthProcess, authAction: AuthActionLogic) {
@@ -234,17 +246,20 @@ async function authActionLogicIsNew(authProcess: AuthProcess, authAction: AuthAc
 	return true
 }
 
-async function authActionLogicLogin(authProcess: AuthProcess, authAction: AuthActionLogic) {
+async function authActionLogicLogin(
+	authProcess: AuthProcess,
+	authAction: AuthActionLogic
+): Promise<MethodResult> {
 	const userId = authProcess.parmGet(AuthProcessParm.userId)
 
 	if (!userId) {
 		alert(authAction.msgFail)
-		return false
+		return new MethodResult({ success: false })
 	}
 
 	const sm = authProcess.getState()
 	sm.storeDrawer.close()
-	await sm.triggerAction(
+	return await sm.triggerAction(
 		new TokenAppStateTriggerAction({
 			codeAction: CodeAction.init(
 				CodeActionClass.ct_sys_code_action_class_do_auth,
@@ -253,8 +268,6 @@ async function authActionLogicLogin(authProcess: AuthProcess, authAction: AuthAc
 			data: { value: userId }
 		})
 	)
-
-	return true
 }
 
 export async function codeSend(authProcess: AuthProcess) {
@@ -266,17 +279,18 @@ export async function codeSend(authProcess: AuthProcess) {
 	authProcess.parmSet(AuthProcessParm.securityCodeSystem, securityCodeSystem)
 
 	const sm = authProcess.getState()
+
 	if (sm.isDevMode) {
 		console.log(`auth-securityCodeSystem: ${securityCodeSystem}`)
+		return true
 	} else {
-		await apiFetchFunction(
+		const result: MethodResult = await apiFetchFunction(
 			ApiFunction.sysSendText,
-			new TokenApiFetchError(FILENAME, 'codeSend', 'Error sending security code.'),
 			new TokenApiSysSendText(
 				securityCodeUserName,
 				`${securityCodeSystem} - The App Factory mobile phone number verification code.`
 			)
 		)
+		return result.error === undefined
 	}
-	return true
 }

@@ -1,7 +1,7 @@
-import { apiFetch } from '$routes/api/api'
-import { TokenApiFetchError, TokenApiFetchMethod } from '$utils/types.token'
+import { TokenApiFetchMethod } from '$utils/types.token'
 import { API_NINJAS_SECRET } from '$env/static/private'
 import { getServerResponse } from '$utils/types'
+import { MethodResult } from '$utils/types'
 
 const FILENAME = '/routes/api/quote/+server.ts'
 
@@ -53,36 +53,42 @@ const COLORS = [
 	'#495a8f'
 ]
 
+const DEFAULT_QUOTE = {
+	quote:
+		'If you accept the expectations of others, especially negative ones, then you never will change the outcome.',
+	author: 'Michael Jordon',
+	category: 'inspirational'
+}
+
 export async function GET() {
-	console.log('api.quote.GET')
-	let quotes = []
 	const COLOR = { color: COLORS[Math.floor(Math.random() * COLORS.length)] }
 	const CATEGORY_IDX = Math.floor(Math.random() * (CATEGORIES.length + 1))
 	// const API = 'https://api.api-ninjas.com/v1/quotes?limit=1&category=' + CATEGORIES[CATEGORY_IDX]
 	const API = 'https://api.api-ninjas.com/v1/quotes'
+	let result = {}
 
-	const DEFAULT_QUOTE = {
-		quote:
-			'If you accept the expectations of others, especially negative ones, then you never will change the outcome.',
-		author: 'Michael Jordon',
-		category: 'inspirational'
-	}
-
-	async function getQuote() {
-		const quotesRetrieved = await apiFetch(
-			API,
-			TokenApiFetchMethod.get,
-			new TokenApiFetchError(FILENAME, 'getQuote', `Unable to retrieve quote.`),
-			{
-				headers: {
-					'X-API-KEY': API_NINJAS_SECRET,
-					contentType: 'application/json'
-				}
+	try {
+		const responsePromise: Response = await fetch(API, {
+			method: TokenApiFetchMethod.get,
+			headers: {
+				'X-API-KEY': API_NINJAS_SECRET,
+				contentType: 'application/json'
 			}
-		)
-		return quotesRetrieved.length > 0 ? quotesRetrieved[0] : DEFAULT_QUOTE
+		})
+		const responseResult = await responsePromise.json()
+		const quote =
+			Array.isArray(responseResult) && responseResult.length > 0 ? responseResult[0] : DEFAULT_QUOTE
+		result = { ...quote, ...COLOR }
+	} catch (error: any) {
+		result = {
+			success: false,
+			error: {
+				file: FILENAME,
+				function: 'getQuote',
+				msgSystem: `Unable to retrieve quote - api: ${API}`,
+				msgUser: `Unable to retrieve quote.`
+			}
+		}
 	}
-
-	const quote = await getQuote()
-	return getServerResponse({ ...quote, ...COLOR })
+	return getServerResponse(new MethodResult(result))
 }
