@@ -1,36 +1,10 @@
 import e from '$db/gel/edgeql-js'
 import { client } from '$routes/api/db/dbGel/dbGel'
-import {
-	TokenApiDbTableColumns,
-	TokenApiError,
-	TokenApiId,
-	TokenApiIds,
-	TokenApiUserId,
-	TokenApiUserPref
-} from '$utils/types.token'
-import { MethodResult, required } from '$utils/types'
+import { TokenApiError, TokenApiId, TokenApiIds, TokenApiUserPref } from '$utils/types.token'
+import { MethodResult, required, valueOrDefault } from '$utils/types'
 import { debug } from '$utils/utils.debug'
 
-const shapeAttr = e.shape(e.sys_core.SysAttr, (a) => ({
-	_codeAttrType: a.codeAttrType.name,
-	_obj: a.obj.name,
-	id: true
-}))
-
-const shapeAttrAccess = e.shape(e.sys_core.SysAttrAccess, (aa) => ({
-	_attr: e.select(aa.attr, (a) => ({
-		...shapeAttr(a)
-	})),
-	_codeAttrAccessSource: aa.codeAttrAccessSource.name,
-	_codeAttrAccessType: aa.codeAttrAccessType.name,
-	_codeAttrType: aa.codeAttrType.name
-}))
-
-const shapeAttrObjAction = e.shape(e.sys_core.SysAttrObjAction, (a) => ({
-	_codeAttrActionType: a.codeAttrActionType.name,
-	_obj: a.obj.name,
-	id: true
-}))
+const FILENAME = 'src/routes/api/db/dbGel/dbGelQueries.ts'
 
 const shapeCodeAction = e.shape(e.sys_core.SysCodeAction, (ca) => ({
 	_class: ca.codeType.name,
@@ -65,15 +39,26 @@ const SysDataObjColumnItemChange = e.shape(e.sys_core.SysDataObjColumnItemChange
 }))
 
 const shapeDataObjQueryRider = e.shape(e.sys_core.SysDataObjQueryRider, (qr) => ({
-	_codeFunction: qr.codeFunction.name,
+	_codeQueryAction: qr.codeQueryAction.name,
+	_codeQueryPlatform: qr.codeQueryPlatform.name,
 	_codeQueryType: qr.codeQueryType.name,
 	_codeTriggerTiming: qr.codeTriggerTiming.name,
-	_codeType: qr.codeType.name,
-	_codeUserDestination: qr.codeUserDestination.name,
+	parmValueStr: true
+}))
+const shapeDataObjQueryRiderClient = e.shape(e.sys_core.SysDataObjQueryRider, (qr) => ({
+	...shapeDataObjQueryRider(qr),
+	_codeQueryFunction: qr.codeQueryFunction.name,
 	_codeUserMsgDelivery: qr.codeUserMsgDelivery.name,
+	_navDestination: e.select(qr.navDestination, (nd) => ({
+		...shapeNavDestination(nd)
+	})),
+	userMsg: true,
+	filter: e.op(qr.codeQueryPlatform.name, '=', 'client')
+}))
+const shapeDataObjQueryRiderServer = e.shape(e.sys_core.SysDataObjQueryRider, (qr) => ({
+	...shapeDataObjQueryRider(qr),
 	expr: true,
-	functionParmValue: true,
-	userMsg: true
+	filter: e.op(qr.codeQueryPlatform.name, '=', 'server')
 }))
 
 const shapeDataObjTable = e.shape(e.sys_core.SysDataObjTable, (dot) => ({
@@ -113,6 +98,12 @@ const shapeLinkItemsSource = e.shape(e.sys_core.SysDataObjFieldListItems, (fli) 
 	name: true
 }))
 
+const shapeNavDestination = e.shape(e.sys_core.SysNavDestination, (nd) => ({
+	_codeDestinationType: nd.codeDestinationType.name,
+	_nodeDestination: nd.nodeDestination.name,
+	backCount: true
+}))
+
 const shapeNodeObjAction = e.shape(e.sys_core.SysNodeObjAction, (na) => ({
 	_codeAction: na.codeAction.name,
 	_dataObjId: na.nodeObj.dataObj.id,
@@ -148,7 +139,7 @@ const shapeQuerySource = e.shape(e.sys_core.SysObjDb, (db) => ({
 	exprWith: true,
 	exprUnions: true,
 	id: true,
-	listEditPresetExpr: true,
+	listPresetExpr: true,
 	_parent: e.select({
 		_columnName: db.parentColumn.name,
 		_columnIsMultiSelect: db.parentColumn.isMultiSelect,
@@ -157,8 +148,11 @@ const shapeQuerySource = e.shape(e.sys_core.SysObjDb, (db) => ({
 			...shapeTable(t)
 		}))
 	}),
-	_queryRiders: e.select(db.queryRiders, (qr) => ({
-		...shapeDataObjQueryRider(qr)
+	_queryRidersClient: e.select(db.queryRiders, (qr) => ({
+		...shapeDataObjQueryRiderClient(qr)
+	})),
+	_queryRidersServer: e.select(db.queryRiders, (qr) => ({
+		...shapeDataObjQueryRiderServer(qr)
 	})),
 	_table: e.select(db.table, (t) => ({
 		...shapeTable(t)
@@ -168,13 +162,49 @@ const shapeQuerySource = e.shape(e.sys_core.SysObjDb, (db) => ({
 	}))
 }))
 
-const shapeTable = e.shape(e.sys_db.SysTable, (t) => ({
-	hasMgmt: true,
-	mod: true,
+const shapeObjAttr = e.shape(e.sys_core.SysObjAttr, (o) => ({
+	_codeAttrType: o.codeAttrType.name,
+	id: true,
 	name: true
 }))
 
-const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
+const shapeObjAttrAccess = e.shape(e.sys_core.SysObjAttrAccess, (a) => ({
+	_codeAttrTypeAccess: a.codeAttrTypeAccess.name,
+	_obj: e.select(a.obj, (obj) => ({
+		...shapeObjAttr(obj)
+	}))
+}))
+
+const shapeObjAttrAction = e.shape(e.sys_core.SysObjAttrAction, (a) => ({
+	_codeAttrTypeAction: a.codeAttrTypeAction.name,
+	_obj: e.select(a.obj, (obj) => ({
+		...shapeObjAttr(obj)
+	}))
+}))
+
+const shapeObjAttrExpr = e.shape(e.sys_core.SysObjAttrExpr, (a) => ({
+	_codeAttrTypeAction: a.codeAttrTypeAction.name,
+	expr: true
+}))
+
+const shapeObjAttrTypeApp = e.shape(e.sys_user.SysApp, (a) => ({
+	_appHeader: e.select(a.appHeader, (ah) => ({
+		_codeIcon: ah.codeIcon.name,
+		id: true,
+		header: true,
+		name: true,
+		orderDefine: true
+	})),
+	_nodes: e.select(a.nodes, (n) => ({
+		...shapeNodeObj(n),
+		order_by: n.orderDefine
+	})),
+	_ownerId: a.owner.id,
+	id: true,
+	name: true
+}))
+
+const shapeObjAttrTypeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	_codeIconName: t.codeIcon.name,
 	_codeRenderType: t.codeRenderType.name,
 	_codeStatusObjName: t.codeStatusObj.name,
@@ -189,12 +219,29 @@ const shapeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	description: true,
 	exprShow: true,
 	exprStatus: true,
+	exprWith: true,
 	hasAltOpen: true,
 	header: true,
 	id: true,
 	isPinToDash: true,
 	name: true,
 	noDataMsg: true
+}))
+
+const shapeObjAttrVirtual = e.shape(e.sys_core.SysObjAttrVirtual, (v) => ({
+	expr: true,
+	_attrsAccess: e.select(v.attrsAccess, (a) => ({
+		...shapeObjAttrAccess(a)
+	})),
+	_attrsAction: e.select(v.attrsAction, (a) => ({
+		...shapeObjAttrAction(a)
+	}))
+}))
+
+const shapeTable = e.shape(e.sys_db.SysTable, (t) => ({
+	hasMgmt: true,
+	mod: true,
+	name: true
 }))
 
 const shapeUserAction = e.shape(e.sys_user.SysUserAction, (ua) => ({
@@ -207,16 +254,19 @@ const shapeUserAction = e.shape(e.sys_user.SysUserAction, (ua) => ({
 		confirmTitle: true
 	})),
 	_actionShows: e.select(ua.actionShows, (s) => ({
-		_codeExprOp: s.codeExprOp.name,
 		_codeTriggerShow: s.codeTriggerShow.name,
-		exprField: true,
-		exprValue: true,
+		expr: true,
 		isRequired: true
 	})),
 	_codeAction: e.select(ua.codeAction, (ca) => ({
 		...shapeCodeAction(ca)
 	})),
 	_codeTriggerEnable: ua.codeTriggerEnable.name,
+	_navDestination: e.select(ua.navDestination, (nd) => ({
+		...shapeNavDestination(nd)
+	})),
+	expr: ua.expr,
+	exprWith: ua.exprWith,
 	header: ua.header,
 	name: ua.name
 }))
@@ -242,6 +292,7 @@ export async function getDataObjById(token: TokenApiId) {
 				_name: c.column.name,
 				order_by: c.orderDefine
 			})),
+			_exprCustom: l.exprCustom,
 			_table: e.select(l.linkTable, (t) => ({
 				hasMgmt: true,
 				mod: true,
@@ -279,11 +330,7 @@ export async function getDataObjById(token: TokenApiId) {
 	}))
 
 	const shapeColumnHasItems = e.shape(e.sys_core.SysDataObjColumn, (doc) => ({
-		_hasItems: e.op(
-			e.op('exists', doc.fieldListItems),
-			'or',
-			e.op(e.count(e.select(doc.items)), '>', 0)
-		)
+		_hasItems: e.op('exists', doc.fieldListItems)
 	}))
 
 	const query = e.select(e.sys_core.SysDataObj, (do1) => {
@@ -301,15 +348,12 @@ export async function getDataObjById(token: TokenApiId) {
 			_actionGroup: e.select(do1.actionGroup, (afg) => ({
 				...shapeDataObjActionGroup(afg)
 			})),
-			_attrsAccessGroup: e.select(do1.attrsAccess, (aa) => ({
-				...shapeAttrAccess(aa)
-			})),
 			_codeCardinality: do1.codeCardinality.name,
 			_codeComponent: do1.codeComponent.name,
 			_codeDataObjType: do1.codeDataObjType.name,
 			_codeDoQueryType: do1.codeDoQueryType.name,
 			_codeDoRenderPlatform: do1.codeDoRenderPlatform.name,
-			_codeListEditPresetType: do1.codeListEditPresetType.name,
+			_codeListPresetType: do1.codeListPresetType.name,
 			_listReorderColumn: do1.listReorderColumn.name,
 			_ownerId: do1.owner.id,
 			_processType: do1.processType.name,
@@ -388,12 +432,6 @@ export async function getDataObjById(token: TokenApiId) {
 					_name: ce.column.name,
 					order_by: ce.orderDefine
 				})),
-				_items: e.select(doc.items, (i) => ({
-					itemData: true,
-					itemDisplay: true,
-					order_by: i.orderDefine
-				})),
-
 				headerAlt: true,
 				height: true,
 				inputMaskAlt: true,
@@ -573,6 +611,25 @@ export async function getNodesChildren(token: TokenApiIds) {
 	return await query.run(client, { ids: token.ids })
 }
 
+export async function getObjAttrTypeApp(token: TokenApiIds) {
+	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+		e.select(e.sys_user.SysApp, (a) => ({
+			...shapeObjAttrTypeApp(a),
+			filter: e.op(a.id, 'in', e.array_unpack(ids))
+		}))
+	)
+	return await query.run(client, { ids: token.ids })
+}
+export async function getObjAttrTypeTask(token: TokenApiIds) {
+	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
+		e.select(e.sys_user.SysTask, (a) => ({
+			...shapeObjAttrTypeTask(a),
+			filter: e.op(a.id, 'in', e.array_unpack(ids))
+		}))
+	)
+	return await query.run(client, { ids: token.ids })
+}
+
 export async function getReportUser(repUserId: string) {
 	const shapeRepEl = e.shape(e.sys_rep.SysRepEl, (re) => ({
 		_codeAlignment: re.codeAlignment.name,
@@ -658,69 +715,59 @@ export async function getReportUser(repUserId: string) {
 	return await query.run(client)
 }
 
-export async function getUserByUserId(token: TokenApiUserId) {
-	const query = e.select(e.sys_user.SysUser, (u) => ({
-		_attrs: e.select(u.userTypes.attrs, (a) => ({
-			...shapeAttr(a)
-		})),
-		_attrsObjAction: e.select(u.userTypes.attrsObjAction, (a) => ({
-			...shapeAttrObjAction(a)
-		})),
-		_personId: u.person.id,
-		_preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({
-			_codeType: p.codeType.name,
-			isActive: true,
-			filter: e.op(p.user.id, '=', u.id)
-		})),
-		_resources_app: e.select(e.sys_user.SysApp, (app) => ({
-			_appHeader: e.select(app.appHeader, (ah) => ({
-				_codeIcon: ah.codeIcon.name,
-				id: true,
+export async function getUserByUserId(token: TokenApiId) {
+	try {
+		const query = e.select(e.sys_user.SysUser, (u) => ({
+			_attrsAccess: e.select(u.userTypes.attrsAccess, (a) => ({
+				...shapeObjAttrAccess(a)
+			})),
+			_attrsAction: e.select(u.userTypes.attrsAction, (a) => ({
+				...shapeObjAttrAction(a)
+			})),
+			_attrsExpr: e.select(u.userTypes.attrsExpr, (a) => ({
+				...shapeObjAttrExpr(a)
+			})),
+			_attrsVirtual: e.select(u.userTypes.attrsVirtual, (a) => ({
+				...shapeObjAttrVirtual(a)
+			})),
+			_personId: u.person.id,
+			_preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({
+				_codeType: p.codeType.name,
+				isActive: true,
+				filter: e.op(p.user.id, '=', u.id)
+			})),
+			_system: e.select(e.sys_core.SysSystem, (s) => ({
+				_orgName: s.owner.name,
+				appName: true,
+				file: true,
 				header: true,
+				id: true,
+				logoMarginRight: true,
+				logoWidth: true,
 				name: true,
-				orderDefine: true
+				filter_single: e.op(s, '=', u.defaultSystem)
 			})),
-			_nodes: e.select(app.nodes, (n) => ({
-				...shapeNodeObj(n),
-				order_by: n.orderDefine
-			})),
-			_ownerId: app.owner.id,
+			avatar: u.person.avatar,
+			firstName: u.person.firstName,
+			fullName: u.person.fullName,
 			id: true,
+			lastName: u.person.lastName,
 			name: true,
-			filter: e.op(app.id, 'in', u.userTypes.resources.id),
-			order_by: app.appHeader.orderDefine
-		})),
-		_resources_task: e.select(e.sys_user.SysTask, (res) => ({
-			...shapeTask(res),
-			filter: e.op(
-				e.op(res.id, 'in', u.userTypes.resources.id),
-				'or',
-				e.op(res.isGlobalResource, '=', true)
-			),
-			order_by: res.orderDefine
-		})),
-		_system: e.select(e.sys_core.SysSystem, (s) => ({
-			_orgName: s.owner.name,
-			appName: true,
-			file: true,
-			header: true,
-			id: true,
-			logoMarginRight: true,
-			logoWidth: true,
-			name: true,
-			filter_single: e.op(s, '=', u.defaultSystem)
-		})),
-		avatar: u.person.avatar,
-		firstName: u.person.firstName,
-		fullName: u.person.fullName,
-		id: true,
-		lastName: u.person.lastName,
-		orgs: true,
-		systems: true,
-		userName: true,
-		filter_single: e.op(u.id, '=', e.cast(e.uuid, token.userId))
-	}))
-	return await query.run(client)
+			orgs: true,
+			systems: true,
+			filter_single: e.op(u.id, '=', e.cast(e.uuid, token.id))
+		}))
+		return new MethodResult(await query.run(client))
+	} catch (error) {
+		return new MethodResult({
+			error: {
+				function: FILENAME,
+				file: 'getUserByUserId',
+				msgSystem: JSON.stringify(error),
+				msgUser: 'Unable to retrieve user information'
+			}
+		})
+	}
 }
 
 export async function getUserPref(token: TokenApiUserPref) {
@@ -759,8 +806,8 @@ export async function setUserPref(token: TokenApiUserPref) {
 }
 
 export async function sysErrorAdd(token: TokenApiError) {
-	const clazz = 'SysErrorAdd'
-	const userId = required(token.error.userId, clazz, 'userId')
+	const userId = valueOrDefault(token.error._sessionId, '')
+	console.log('sysErrorAdd.userId', userId)
 	let query = e.insert(e.default.SysError, {
 		errCode: token.error.code,
 		errFile: token.error.file,
@@ -781,6 +828,7 @@ export async function sysErrorAdd(token: TokenApiError) {
 
 export async function sysErrorGet(token: TokenApiId) {
 	const query = e.select(e.default.SysError, (err) => ({
+		_sessionId: err.user.id,
 		code: err.errCode,
 		file: err.errFile,
 		function: err.errFunction,

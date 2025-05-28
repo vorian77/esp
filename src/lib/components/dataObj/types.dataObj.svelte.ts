@@ -3,16 +3,17 @@ import {
 	PropSortDir,
 	RawDataObj,
 	RawDataObjAction,
+	RawDataObjPropDB,
 	RawDataObjPropDisplay,
 	RawDataObjPropDisplayItemChange
 } from '$comps/dataObj/types.rawDataObj.svelte'
+
 import {
 	Field,
 	FieldAccess,
 	FieldColor,
 	FieldElement,
 	FieldItemChange,
-	FieldValueType,
 	PropsFieldCreate,
 	PropsFieldInit
 } from '$comps/form/field.svelte'
@@ -45,6 +46,7 @@ import { UserAction } from '$comps/other/types.userAction.svelte'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
 	CodeAction,
+	debug,
 	getArray,
 	memberOfEnum,
 	memberOfEnumOrDefault,
@@ -68,9 +70,9 @@ export class DataObj {
 	embedField?: FieldEmbed
 	fCallbackUserAction?: Function
 	fields: Field[] = []
-	isMobileMode: boolean = false
 	raw: RawDataObj
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
+	sortModel: DataObjSort
 	treeLevelIdx: number = 0
 	userActions: DataObjAction[] = $state([])
 	userGridSettings: GridSettings
@@ -78,6 +80,7 @@ export class DataObj {
 		const clazz = 'DataObj'
 		this.data = data
 		this.raw = required(data.rawDataObj, clazz, 'rawDataObj')
+		this.sortModel = this.initSortModel(this.raw.rawPropsSort)
 
 		/* dependent properties */
 		this.userGridSettings = new GridSettings(this.raw.id)
@@ -91,7 +94,6 @@ export class DataObj {
 			return userAction.action.trigger(sm, this)
 		} else {
 			return new MethodResult({
-				success: false,
 				error: {
 					file: FILENAME,
 					function: 'DataObj.actionsFieldTrigger',
@@ -176,6 +178,14 @@ export class DataObj {
 				})
 			}
 		}
+	}
+
+	initSortModel(rawPropsSort: RawDataObjPropDB[]) {
+		const newSort = new DataObjSort()
+		rawPropsSort.forEach((item, i) => {
+			newSort.addItem(item.id, item.codeSortDir, i)
+		})
+		return newSort
 	}
 
 	async fieldsCreate(
@@ -316,7 +326,6 @@ export class DataObj {
 
 			default:
 				return new MethodResult({
-					success: false,
 					error: {
 						file: FILENAME,
 						function: 'DataObj.fieldsCreateItem',
@@ -475,11 +484,40 @@ export class DataObjData {
 			DataObjData.reset(f.data)
 		})
 	}
+
+	setValue(key: string, value: any) {
+		switch (key) {
+			case DataObjDataPropName.items:
+				this.items = value
+				break
+
+			case DataObjDataPropName.rawDataObj:
+				this.rawDataObj = value
+				break
+
+			case DataObjDataPropName.rowsRetrieved:
+				this.rowsRetrieved.addRows(value.dataRows)
+				break
+
+			default:
+				error(500, {
+					file: FILENAME,
+					function: 'DataObjData.setValue',
+					msg: `No case defined for DataObjDataPropName: ${key}`
+				})
+		}
+	}
+}
+
+export enum DataObjDataPropName {
+	items = 'items',
+	rawDataObj = 'rawDataObj',
+	rowsRetrieved = 'rowsRetrieved'
 }
 
 export enum DataObjListEditPresetType {
 	insert = 'insert',
-	save = 'save'
+	insertSave = 'insertSave'
 }
 
 export enum DataObjProcessType {
@@ -671,31 +709,6 @@ export function getDataRecordKey(record: DataRecord, key: string) {
 	return undefined
 }
 
-export function getDataRecordValueType(
-	value: any,
-	fieldValueType: FieldValueType,
-	propDataType: PropDataType,
-	isMultiSelect: boolean
-) {
-	switch (propDataType) {
-		case PropDataType.attribute:
-		case PropDataType.link:
-			if (['', undefined, null].includes(value)) {
-				return ''
-			}
-			if (isMultiSelect) {
-				return getArray(value).map((v: any) => {
-					return `${v[fieldValueType]}`
-				})
-			} else {
-				return value[fieldValueType]
-			}
-
-		default:
-			return value
-	}
-}
-
 export function getDataRecordValueKey(record: DataRecord, key: string) {
 	const recordKey = getDataRecordKey(record, key)
 	return recordKey ? record[recordKey] : undefined
@@ -787,6 +800,9 @@ export class ParmsValues {
 		if (parms) newParms.data = parms.data
 		return newParms
 	}
+	reset() {
+		this.data = {}
+	}
 	update(data: DataRecord | undefined) {
 		data = data ? data : {}
 		Object.entries(data).forEach(([key, value]) => {
@@ -826,6 +842,10 @@ export class ParmsValues {
 
 export enum ParmsValuesType {
 	attributeAccessFilter = '<attributeAccessFilter>',
+	queryOwnerOrg = 'queryOwnerOrg',
+	queryOwnerSys = 'queryOwnerSys',
+
+	// other
 	columnDefs = 'columnDefs',
 	customProgramOwnerId = 'customProgramOwnerId',
 	embedFieldName = 'embedFieldName',
@@ -839,8 +859,6 @@ export enum ParmsValuesType {
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listSortModel = 'listSortModel',
 	parentRecordId = 'parentRecordId',
-	queryOwnerIdOrg = 'queryOwnerIdOrg',
-	queryOwnerIdSystem = 'queryOwnerIdSystem',
 	rowData = 'rowData',
 	selectLabel = 'selectLabel',
 	treeAncestorValue = 'treeAncestorValue'

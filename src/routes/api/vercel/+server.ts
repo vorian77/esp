@@ -20,7 +20,6 @@ export async function POST({ request }) {
 				})
 			} catch (error) {
 				result = {
-					success: false,
 					error: {
 						file: FILENAME,
 						function: 'deleteBlob',
@@ -39,7 +38,6 @@ export async function POST({ request }) {
 				result = blobs
 			} catch (error) {
 				result = {
-					success: false,
 					error: {
 						file: FILENAME,
 						function: 'getBlobList',
@@ -59,7 +57,6 @@ export async function POST({ request }) {
 				})
 			} catch (error) {
 				result = {
-					success: false,
 					error: {
 						file: FILENAME,
 						function: 'getBlobList',

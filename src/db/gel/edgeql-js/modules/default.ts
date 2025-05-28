@@ -62,16 +62,13 @@ export type $SysPersonλShape = $.typeutil.flatten<_sys_core.$ObjRootλShape & {
   "zip": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "<person[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is org_client_moed::MoedParticipant]": $.LinkDesc<_org_client_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<contacts[is sys_core::SysObjEnt]": $.LinkDesc<_sys_core.$SysObjEnt, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<contacts[is sys_core::SysAttrObj]": $.LinkDesc<_sys_core.$SysAttrObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is sys_user::SysUser]": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is sys_user::currentUser]": $.LinkDesc<_sys_user.$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<contacts[is sys_core::SysObjAttrEnt]": $.LinkDesc<_sys_core.$SysObjAttrEnt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is app_crm::CrmClient]": $.LinkDesc<_app_crm.$CrmClient, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<sender[is sys_core::SysMsg]": $.LinkDesc<_sys_core.$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<sender": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysPerson = $.ObjectType<"default::SysPerson", $SysPersonλShape, null, [
   ..._sys_core.$ObjRoot['__exclusives__'],

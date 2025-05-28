@@ -8,7 +8,7 @@
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldElement, FieldValueType } from '$comps/form/field.svelte'
+	import { FieldElement } from '$comps/form/field.svelte'
 	import { FieldSelect } from '$comps/form/fieldSelect'
 	import { FieldAccess } from '$comps/form/field.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
@@ -23,10 +23,8 @@
 	let dataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let field = $derived(parms.field) as FieldSelect
 	let fieldId = $derived('field-input-select-' + field.colDO.orderDefine)
-	let fieldValue = $derived.by(() => {
-		const value = dm.getFieldValue(parms.dataObjId, parms.row, parms.field, FieldValueType.data)
-		return Array.isArray(value) ? value[0] : value
-	})
+
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
 	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsAll(fieldValue) : [])
 
 	let classProps = $derived(
@@ -57,7 +55,7 @@
 		<option value={null} class="">Select an option...</option>
 		{#if dataItems}
 			{#each dataItems as { data, display }, index (data)}
-				<option value={data} selected={data === fieldValue}>
+				<option value={data} selected={data === fieldValue?.data}>
 					{display}
 				</option>
 			{/each}

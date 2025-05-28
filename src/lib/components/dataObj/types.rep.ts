@@ -14,7 +14,7 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/utils'
-import { QuerySourceTableRaw } from '$lib/query/types.query'
+import { QuerySourceTableRaw } from '$lib/queryClient/types.queryClient'
 import { FieldAlignment, FieldElement } from '$comps/form/field.svelte'
 import {
 	PropDataSourceValue,

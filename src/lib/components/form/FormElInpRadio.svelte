@@ -2,7 +2,7 @@
 	import { ContextKey, DataManager, DataObj, DataObjCardinality, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldRadio } from '$comps/form/fieldRadio'
-	import { FieldAccess, FieldAlignment, FieldValueType } from '$comps/form/field.svelte'
+	import { FieldAccess, FieldAlignment } from '$comps/form/field.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -14,10 +14,7 @@
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
 	let field = $derived(parms.field) as FieldRadio
-	let fieldValue = $derived.by(() => {
-		const value = dm.getFieldValue(parms.dataObjId, parms.row, parms.field, FieldValueType.data)
-		return Array.isArray(value) ? value[0] : value
-	})
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
 	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsAll(fieldValue) : [])
 
 	let classPropsLabel = $derived(
@@ -51,8 +48,6 @@
 	}
 </script>
 
-<!-- <DataViewer header="dataItems" data={dataItems} /> -->
-
 <FormLabel {parms} />
 
 <fieldset id="input-radio-row-{parms.row}" class={classFieldSet}>
@@ -64,7 +59,7 @@
 						type="radio"
 						name={field.colDO.propName + '-' + parms.row}
 						value={data}
-						checked={fieldValue == data}
+						checked={fieldValue?.data === data}
 						onclick={onClick}
 					/>
 					{display}
@@ -73,3 +68,6 @@
 		{/if}
 	</div>
 </fieldset>
+
+<!-- <DataViewer header="fieldValue" data={fieldValue} /> -->
+<!-- <DataViewer header="dataItems" data={dataItems} /> -->

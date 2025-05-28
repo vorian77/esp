@@ -98,6 +98,7 @@
 					onSelectionChanged,
 					parmStateSelectedIds: sm.parmsState.valueGet(ParmsValuesType.listIdsSelected),
 					rowData: initGridData(),
+					sortModel: dataObj.sortModel,
 					userSettings: dataObj?.userGridSettings
 				})
 			: undefined
@@ -257,7 +258,6 @@
 					defn.cellDataType = 'object'
 					break
 
-				case PropDataType.attribute:
 				case PropDataType.link:
 					if (field.linkItems) {
 						defn.context = { dm, linkItems: field.linkItems, sm }
@@ -290,13 +290,10 @@
 	}
 
 	function initGridData() {
-		const fieldNames = dataObj.fields.map((f) => {
-			return f.colDO.propName
-		})
 		const dataRows = dataRecordsDisplay.map((record) => {
 			const row = {}
 			dataObj.fields.forEach((f) => {
-				row[f.colDO.propName] = f.getValueTypeDisplay(record)
+				row[f.colDO.propName] = record[f.colDO.propName]
 			})
 			return row
 		})
@@ -305,6 +302,7 @@
 			ParmsValuesType.listIds,
 			dataRows.map((r: any) => r.id)
 		)
+
 		return dataRows
 	}
 
@@ -312,18 +310,15 @@
 		let rowNode = event.api.getRowNode(event.data.id)
 		let field = dataObj.fields.find((f) => f.colDO.propName === event.colDef.field)
 		let fieldParm = field instanceof FieldParm ? field.parmFields[event.rowIndex] : undefined
-		let fieldProcess = fieldParm || field
+		let fieldProcess: Field = fieldParm || field
 		if (fieldProcess && fieldProcess.linkItems && fieldProcess.colDO.colDB.isMultiSelect) {
 			await onCellClickedSelectItems()
 		}
 
 		async function onCellClickedSelectItems(): Promise<MethodResult> {
 			const fieldName = field.colDO.propName
-			const listIdsSelected = Array.isArray(event.data[fieldName])
-				? event.data[fieldName]
-				: ['', null, undefined].includes(event.data[fieldName])
-					? []
-					: [event.data[fieldName]]
+			const valueRaw = event.data[fieldName]
+			const listIdsSelected = fieldProcess.linkItems.getValueIds(valueRaw)
 			const gridParms = fieldProcess.linkItems.getGridParms()
 
 			return await sm.triggerAction(
@@ -356,13 +351,14 @@
 						rowIndex: event.rowIndex,
 						colKey: event.colDef.field
 					})
-					const newValue = parms[ParmsValuesType.listIdsSelected]
+					const valueDisplay = parms[ParmsValuesType.listIdsSelected]
+					const valueRaw = fieldProcess.linkItems.getValueRaw(valueDisplay)
 					const fieldName = field.colDO.propName
 
 					// <todo? - 250401 - temporarily use updateData vs setDataValue and manually trigger fGridCallbackUpdateValue
 					// becuse of bug in setDataValue
 					let data = event.data
-					data[fieldName] = newValue
+					data[fieldName] = valueRaw
 					rowNode?.updateData(data)
 					fGridCallbackUpdateValue(fieldName, data)
 

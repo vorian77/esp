@@ -39,7 +39,7 @@ function initDataObjAuthLogin(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'tel',
-				columnName: 'userName',
+				columnName: 'name',
 				headerAlt: 'Mobile Phone Number',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -123,7 +123,7 @@ function initDataObjAuthLoginForgotPw(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'tel',
-				columnName: 'userName',
+				columnName: 'name',
 				headerAlt: 'Mobile Phone Number',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -268,7 +268,7 @@ function initDataObjAuthSignup(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'tel',
-				columnName: 'userName',
+				columnName: 'name',
 				headerAlt: 'Mobile Phone Number',
 				isDisplayable: true,
 				orderDisplay: 40,
@@ -483,17 +483,19 @@ function initDataObjMyAccount(init: InitDb) {
 		owner: 'sys_system',
 		queryRiders: [
 			{
-				codeFunction: 'qrfFileStorage',
+				codeQueryAction: 'customFunction',
+				codeQueryFunction: 'qrfFileStorage',
+				codeQueryPlatform: 'client',
 				codeQueryType: 'save',
 				codeTriggerTiming: 'pre',
-				codeType: 'customFunction',
-				functionParmValue: 'avatar'
+				parmValueStr: 'avatar'
 			},
 			{
-				codeFunction: 'qrfUserUpdate',
+				codeQueryAction: 'customFunction',
+				codeQueryFunction: 'qrfUserUpdate',
+				codeQueryPlatform: 'client',
 				codeQueryType: 'save',
-				codeTriggerTiming: 'post',
-				codeType: 'customFunction'
+				codeTriggerTiming: 'post'
 			}
 		],
 		table: 'SysUser',
@@ -544,7 +546,7 @@ function initDataObjMyAccount(init: InitDb) {
 				orderDefine: 60
 			},
 			{
-				columnName: 'userName',
+				columnName: 'name',
 				headerAlt: 'Mobile Phone Number',
 				isDisplayable: true,
 				orderDisplay: 70,
@@ -683,7 +685,7 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'tel',
-				columnName: 'userName',
+				columnName: 'name',
 				headerAlt: 'Mobile Phone Number',
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -732,12 +734,12 @@ function initDataObjUserPrefType(init: InitDb) {
 		actionGroup: 'doag_embed_list_edit',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		codeListEditPresetType: 'save',
+		codeListPresetType: 'insertSave',
 		exprFilter: `.user.id = <user,uuid,id>`,
 		header: 'My Preferences',
 		isListEdit: true,
 		isListSuppressFilterSort: true,
-		listEditPresetExpr: `WITH 
+		listPresetExpr: `WITH 
 			allPrefs := (SELECT sys_core::SysCode FILTER .codeType.name = 'ct_sys_user_pref_type'),
 			userPrefs := (SELECT sys_user::SysUserPrefType FILTER .user.id = <user,uuid,id>).codeType,
 			newVals := (SELECT allPrefs EXCEPT userPrefs)

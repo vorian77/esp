@@ -1,6 +1,6 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { QueryManager } from '$lib/query/types.query'
-import { QuerySourceType } from '$lib/query/types.query'
+import { QueryManager, QuerySourceType } from '$lib/queryClient/types.queryClient'
+import { QueryRiderClient, QueryRiders } from '$lib/queryClient/types.queryClientRider'
 import {
 	TokenApiQuery,
 	TokenApiQueryData,
@@ -13,7 +13,7 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$lib/queryClient/queryManagerClient.ts'
 
-export async function clientQueryExpr(
+export async function clientQueryExprOld(
 	exprCustom: string,
 	evalExprContext: string,
 	sourceQueryData?: DataRecord,
@@ -37,7 +37,6 @@ export async function clientQueryExpr(
 		return await qmc.query()
 	} else {
 		return new MethodResult({
-			success: false,
 			error: {
 				file: FILENAME,
 				function: clazz,
@@ -48,7 +47,6 @@ export async function clientQueryExpr(
 }
 
 export class QueryManagerClient extends QueryManager {
-	isClient = true
 	constructor(tokenQuerySource: TokenApiQuerySource) {
 		const clazz = `QueryManagerClient.constructor`
 		const queryData = new TokenApiQueryData({
@@ -74,12 +72,29 @@ export class QueryManagerClient extends QueryManager {
 		return new MethodResult(TokenApiQueryData.load(result.data))
 	}
 
+	async queryPost(): Promise<MethodResult> {
+		if (this.queryData.dataTab.rawDataObj) {
+			this.queryRiders = new QueryRiders(
+				QueryRiderClient,
+				this.queryData.dataTab.rawDataObj.rawQuerySource.queryRidersRawClient
+			)
+		}
+		return await super.queryPost()
+	}
+
 	async queryPre(): Promise<MethodResult> {
 		if (this.sm) {
 			this.queryData.dataTab.parms.update(this.sm.parmsState.valueGetAll())
 			this.queryData.dataTab.parms.update(this.sm.parmsTrans.valueGetAll())
 			this.queryData.dataTab.parms.valueSetIfMissing(ParmsValuesType.itemsParmValue, '')
 		}
+		if (this.queryData.dataTab.rawDataObj) {
+			this.queryRiders = new QueryRiders(
+				QueryRiderClient,
+				this.queryData.dataTab.rawDataObj.rawQuerySource.queryRidersRawClient
+			)
+		}
+
 		return await super.queryPre()
 	}
 }

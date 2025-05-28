@@ -5,16 +5,26 @@ import {
 	DataRow,
 	getArray,
 	getDataRecordKey,
+	getValueData,
+	getValueDisplay,
+	isNumber,
 	memberOfEnum,
 	MethodResult,
+	MethodResultError,
+	ObjAttrAction,
+	ObjAttrExpr,
 	ParmsValuesType,
 	required,
 	strRequired,
 	User,
 	valueOrDefault
 } from '$utils/types'
-import { TokenApiQueryData } from '$utils/types.token'
-import { QuerySource, QuerySourceRaw, QuerySourceType } from '$lib/query/types.query'
+import {
+	TokenApiQueryData,
+	TokenApiQueryDataTreeAccessType,
+	TokenApiQueryDataTreeLevel
+} from '$utils/types.token'
+import { QuerySource, QuerySourceRaw, QuerySourceType } from '$lib/queryClient/types.queryClient'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$routes/api/db/dbGel/dbGelGetVal.ts'
@@ -22,172 +32,57 @@ const FILENAME = '$routes/api/db/dbGel/dbGelGetVal.ts'
 export function evalExpr(obj: any): MethodResult {
 	const clazz = 'evalExpr'
 	obj = valueOrDefault(obj, {})
-	const expr = strRequired(obj.expr, clazz, 'expr')
-	const evalExprContext = strRequired(obj.evalExprContext, clazz, 'evalExprContext')
-	const queryData = valueOrDefault(obj.queryData, new TokenApiQueryData({}))
-	const querySource = valueOrDefault(
-		obj.querySource,
-		new QuerySource(new QuerySourceRaw({ querySourceType: QuerySourceType.expr }))
-	)
-	let newExpr = expr
+	let newExpr = strRequired(obj.expr, clazz, 'expr')
 
-	if (newExpr) {
-		let result: MethodResult = evalExprTokens({ expr, evalExprContext, queryData, querySource })
+	let result: MethodResult = evalExprTokens(obj)
+	if (result.error) return result
+	const tokens: ExprToken[] = result.data
+
+	// replace tokens with formatted values
+	tokens.forEach((token) => {
+		let result: MethodResult = token.replace(newExpr)
 		if (result.error) return result
-		let tokens: ExprElementToken[] = result.data
+		newExpr = result.data
+	})
 
-		// replace
-		tokens.forEach((token) => {
-			newExpr = newExpr.replace(token.elRaw, token.valueFormatted)
-		})
+	// special characters - EdgeDB backlink
+	newExpr = newExpr.replace('##', '<')
 
-		// special characters - EdgeDB backlink
-		newExpr = newExpr.replace('##', '<')
-	}
-
-	return new MethodResult({ data: newExpr })
+	return new MethodResult(newExpr)
 }
 
 export function evalExprTokens(obj: any) {
-	/*
-    exprDataItem = <[source],[dataType],[sourceKey]>
-    eg. (SELECT sys_user::getUser(<user,str,userName>))
-  */
 	const clazz = 'evalExprTokens'
 	const regex = /<([a-zA-Z].*?)>/g
+	let tokens: ExprToken[] = []
+
 	obj = valueOrDefault(obj, {})
-	const expr = strRequired(obj.expr, clazz, 'expr')
 	const evalExprContext = strRequired(obj.evalExprContext, clazz, 'evalExprContext')
+	const expr = strRequired(obj.expr, clazz, 'expr')
 	const queryData = valueOrDefault(obj.queryData, new TokenApiQueryData({}))
 	const querySource = valueOrDefault(
 		obj.querySource,
 		new QuerySource(new QuerySourceRaw({ querySourceType: QuerySourceType.expr }))
 	)
-	let result: MethodResult = evalExprTokensItems(expr, queryData, evalExprContext)
-	if (result.error) return result
-	const exprElements: ExprElementItem[] = result.data
-	let tokens: ExprElementToken[] = []
 
-	exprElements.forEach((item) => {
-		const exprParms = new ExprElement({ evalExprContext, expr, item, queryData, querySource })
-		let result: MethodResult = item.getToken()
+	//  build raw tokens
+	const exprTokenRawList = new RawExprTokenList(expr)
+
+	//  build token objects
+	exprTokenRawList.tokens.forEach((tokenRaw) => {
+		let token = new ExprToken({
+			evalExprContext,
+			queryData,
+			querySource,
+			tokenRaw
+		})
+
+		let result: MethodResult = token.setReplace()
 		if (result.error) return result
-		tokens.push(result.data)
+		tokens.push(token)
 	})
 
 	return new MethodResult(tokens)
-}
-
-function evalExprTokensItems(expr: string, queryData: TokenApiQueryData, evalExprContext: string) {
-	const clazz = 'evalExprTokensItems'
-	const regex = /<([a-zA-Z].*?)>/g
-
-	let exprItems: ExprElementItem[] = []
-	const iter = expr.matchAll(regex)
-	for (const match of iter) {
-		const elRaw = match[0]
-		const elData = match[1]
-		const elItems = elData.split(',')
-		const elType = elItems[0]
-
-		switch (elType) {
-			case ExprElementType.attrsObjAccess:
-				break
-			case ExprElementType.attrsObjAction:
-				exprItems.push(
-					new ExprElementItemCustomAttrsObjAction({
-						elRaw,
-						elItems,
-						evalExprContext,
-						queryData,
-						user: queryData.user
-					})
-				)
-				break
-
-			case ExprElementType.function:
-				exprItems.push(
-					new ExprElementItemBaseFunction({ elRaw, elItems, evalExprContext, queryData })
-				)
-				break
-
-			case ExprElementType.literal:
-				exprItems.push(
-					new ExprElementItemBaseLiteral({ elRaw, elItems, evalExprContext, queryData })
-				)
-				break
-
-			case ExprElementType.parms:
-				exprItems.push(
-					new ExprElementItemBaseData({
-						data: queryData.getParms(),
-						elRaw,
-						elItems,
-						evalExprContext,
-						queryData
-					})
-				)
-				break
-
-			case ExprElementType.record:
-				exprItems.push(
-					new ExprElementItemBaseData({
-						data: queryData.record,
-						elRaw,
-						elItems,
-						evalExprContext,
-						queryData
-					})
-				)
-				break
-
-			case ExprElementType.system:
-				exprItems.push(
-					new ExprElementItemBaseData({
-						data: queryData.system,
-						elRaw,
-						elItems,
-						evalExprContext,
-						queryData
-					})
-				)
-				break
-
-			case ExprElementType.tree:
-				exprItems.push(
-					new ExprElementItemBaseTree({
-						elRaw,
-						elItems,
-						evalExprContext,
-						queryData
-					})
-				)
-				break
-
-			case ExprElementType.user:
-				exprItems.push(
-					new ExprElementItemBaseData({
-						data: queryData.user,
-						elRaw,
-						elItems,
-						evalExprContext,
-						queryData
-					})
-				)
-				break
-
-			default:
-			// return new MethodResult({
-			// 	success: false,
-			// 	error: {
-			// 		file: FILENAME,
-			// 		function: clazz,
-			// 		msg: `No case defined for expression element type: ${elType}.`
-			// 	}
-			// })
-		}
-	}
-	return new MethodResult(exprItems)
 }
 
 export function getValDb(codeDataType: PropDataType, valueRaw: any): MethodResult {
@@ -196,11 +91,6 @@ export function getValDb(codeDataType: PropDataType, valueRaw: any): MethodResul
 	let valueDB: any
 
 	switch (codeDataType) {
-		case PropDataType.attribute:
-			dataType = 'attribute'
-			valueDB = valueRaw ? valueRaw : '{}'
-			break
-
 		case PropDataType.bool:
 			dataType = '<bool>'
 			valueDB = [undefined, null].includes(valueRaw) ? false : valueRaw
@@ -236,11 +126,6 @@ export function getValDb(codeDataType: PropDataType, valueRaw: any): MethodResul
 			valueDB = valueRaw
 			break
 
-		case PropDataType.items:
-			dataType = 'items'
-			valueDB = valueRaw ? valueRaw : '{}'
-			break
-
 		case PropDataType.json:
 			dataType = '<json>'
 			valueDB = valueRaw ? getValQuoted(JSON.stringify(valueRaw)) : '{}'
@@ -249,6 +134,11 @@ export function getValDb(codeDataType: PropDataType, valueRaw: any): MethodResul
 		case PropDataType.link:
 			dataType = 'link'
 			valueDB = valueRaw ? valueRaw : '{}'
+			break
+
+		case PropDataType.none:
+			dataType = 'none'
+			valueDB = valueRaw
 			break
 
 		case PropDataType.str:
@@ -281,7 +171,6 @@ export function getValDb(codeDataType: PropDataType, valueRaw: any): MethodResul
 
 		default:
 			return new MethodResult({
-				success: false,
 				error: {
 					file: FILENAME,
 					function: clazz,
@@ -319,229 +208,244 @@ function getUUIDValues(valueRaw?: any) {
 	return rtn
 }
 
-// function getValRaw(exprParms: ExprElement): MethodResult {
-// 	const clazz = `${FILENAME}.getValRaw`
-// 	const fError = (errMsg: string, data?: any) => {
-// 		const errContentSystem = {
-// 			errMsg,
-// 			context: exprParms.evalExprContext,
-// 			item: exprParms.item,
-// 			expr: exprParms.expr,
-// 			data
-// 		}
-// 		const errContentUser = {
-// 			errMsg,
-// 			context: exprParms.evalExprContext
-// 		}
-// 		debug(clazz, 'error: evalParms', errContentSystem)
-// 		return new MethodResult({
-// 			success: false,
-// 			error: {
-// 				file: FILENAME,
-// 				function: clazz,
-// 				msgSystem: `Error in evalParms: ${JSON.stringify(errContentSystem, null, ' ')}`,
-// 				mssgUser: `Error in evalParms: ${JSON.stringify(errContentUser, null, ' ')}`
-// 			}
-// 		})
-// 	}
-
-// 	if (exprParms.item.itemData) {
-// 		const sourceKey = strRequired(exprParms.item.itemData.key, `${FILENAME}.getValRaw`, 'sourceKey')
-// 		const keyParms = sourceKey.split('.')
-
-// 		switch (exprParms.item.elType) {
-// 			case ExprElementType.literal:
-// 				if (keyParms.length === 1) {
-// 					return new MethodResult(keyParms[0])
-// 				} else {
-// 					return fError(`QueryData.getValRaw.literal - invalid keyParms: ${keyParms}`)
-// 				}
-// 			case ExprElementType.parms:
-// 				if (keyParms.length === 1) {
-// 					return getValue(exprParms.queryData.getParms(), keyParms[0])
-// 				} else {
-// 					return fError(`QueryData.getValRaw.parms - invalid keyParms: ${keyParms}`)
-// 				}
-// 			case ExprElementType.record:
-// 				if (keyParms.length === 1) {
-// 					return getValue(exprParms.queryData.record, keyParms[0])
-// 				} else {
-// 					return fError(`QueryData.getValRaw.record - invalid keyParms: ${keyParms}`)
-// 				}
-// 			case ExprElementType.system:
-// 				if (keyParms.length === 1) {
-// 					return getValue(exprParms.queryData.system, keyParms[0])
-// 				} else {
-// 					return fError(`QueryData.getValRaw.system - invalid keyParms: ${keyParms}`)
-// 				}
-// 			case ExprElementType.tree:
-// 				let dataRow: DataRow | undefined = undefined
-// 				let property = ''
-// 				switch (keyParms.length) {
-// 					case 1:
-// 						property = keyParms[0]
-// 						dataRow = exprParms.queryData.dataTree.getDataRow()
-// 						break
-// 					case 2:
-// 						dataRow = exprParms.queryData.dataTree.getDataRow(keyParms[0])
-// 						property = keyParms[1]
-// 						break
-
-// 					default:
-// 						if (keyParms[0] === ParmsValuesType.treeAncestorValue) {
-// 							const levels = exprParms.queryData.dataTree.levels.map((level) => level.table)
-// 							dataRow = exprParms.queryData.dataTree.getDataRowAncestor(parseInt(keyParms[1]))
-// 							property = keyParms.slice(2).join('.')
-// 						} else {
-// 							return fError(`QueryData.getValRaw.system - invalid keyParms: ${keyParms}`)
-// 						}
-// 						break
-// 				}
-// 				return getValue(dataRow?.record, property)
-// 			case ExprElementType.user:
-// 				return getValue(exprParms.queryData.user, sourceKey)
-// 			default:
-// 				return fError(`No case defined for source: ${exprParms.item.elType}`)
-// 		}
-// 	} else if (exprParms.item.itemFunction) {
-// 		const itemF = exprParms.item.itemFunction
-// 		let value
-// 		switch (itemF.type) {
-// 			case ExprElementFunction.fSysRandom10:
-// 				return new MethodResult(parseInt(Math.random().toFixed(10).replace('0.', '')))
-// 			case ExprElementFunction.fSysRate:
-// 				if (itemF.parms.length === 2) {
-// 					const numerator = itemF.parms[0]
-// 					const denominator = parseFloat(itemF.parms[1])
-// 					value = Math.round((denominator !== 0 ? parseFloat(numerator) / denominator : 0) * 100)
-// 				}
-// 				return new MethodResult(value)
-// 			case ExprElementFunction.fSysToday:
-// 				return new MethodResult(`<cal::local_date>'${new Date().toISOString().slice(0, 10)}'`)
-// 		}
-// 		return valueNotFound({})
-// 	} else {
-// 		return new MethodResult({
-// 			success: false,
-// 			error: {
-// 				file: FILENAME,
-// 				function: clazz,
-// 				msg: `No case defined for exprParms.item...`
-// 			}
-// 		})
-// 	}
-
-// 	function getValue(data: DataRecord | undefined, key: string) {
-// 		if (!data) return valueNotFound({})
-// 		const result = getValueNested(data, key)
-// 		return result ? new MethodResult(result[1]) : valueNotFound(data)
-// 	}
-
-// 	function getValueNested(data: DataRecord, key: string) {
-// 		const tokens = key.split('.')
-// 		let currentData = data
-// 		let i = 0
-// 		while (i < tokens.length) {
-// 			const currKey = getDataRecordKey(currentData, tokens[i])
-// 			if (!currKey) return false
-// 			if (currentData.hasOwnProperty(currKey)) {
-// 				currentData = currentData[currKey]
-// 			} else return false
-// 			i++
-// 		}
-// 		return [true, currentData]
-// 	}
-
-// 	function valueNotFound(data: DataRecord) {
-// 		switch (exprParms.item.elDefault) {
-// 			case ExprElementDefault.error:
-// 				return fError(`Value null or not found.`, data)
-// 			case ExprElementDefault.undefined:
-// 				return new MethodResult(undefined)
-// 			default:
-// 				return new MethodResult({
-// 					success: false,
-// 					error: {
-// 						file: FILENAME,
-// 						function: clazz,
-// 						msg: `No case defined for exprParms itemDefault: ${exprParms.item.elDefault}`
-// 					}
-// 				})
-// 		}
-// 	}
-// }
-
-class ExprElement {
+export class ExprToken {
 	evalExprContext: string
-	expr: string
-	item: ExprElementItem
+	exprComposite: string
+	items: ExprTokenItem[] = []
 	queryData: TokenApiQueryData
 	querySource: QuerySource
+	tokenRaw: RawExprToken
 	constructor(obj: any) {
-		const clazz = 'ExprElement'
+		const clazz = 'ExprToken'
 		obj = valueOrDefault(obj, {})
 		this.evalExprContext = strRequired(obj.evalExprContext, clazz, 'evalExprContext')
-		this.expr = strRequired(obj.expr, clazz, 'expr')
-		this.item = required(obj.item, clazz, 'item')
 		this.queryData = required(obj.queryData, clazz, 'queryData')
 		this.querySource = required(obj.querySource, clazz, 'querySource')
-	}
-}
+		this.tokenRaw = required(obj.tokenRaw, clazz, 'tokenRaw')
 
-class ExprElementItem {
-	elDefault: ExprElementDefault = ExprElementDefault.error
-	elItems: string[]
-	elRaw: string
-	elType: ExprElementType
-	evalExprContext: string
-	queryData: TokenApiQueryData
-	constructor(obj: any) {
-		const clazz = 'ExprElementItem'
-		obj = valueOrDefault(obj, {})
-		this.elItems = required(obj.elItems, clazz, 'elItems')
-		this.elRaw = strRequired(obj.elRaw, clazz, 'elRaw')
-		this.elType = memberOfEnum(obj.elItems[0], clazz, 'elType', 'ExprElementType', ExprElementType)
-		this.evalExprContext = strRequired(obj.evalExprContext, clazz, 'evalExprContext')
-		this.queryData = required(obj.queryData, clazz, 'queryData')
+		// derived
+		this.exprComposite = this.tokenRaw.token
+		this.getItem(this.tokenRaw)
 	}
-	error = (errMsg: string, data?: any) => {
-		const clazz = 'ExprElementItem.error'
-		const errContentSystem = {
-			context: this.evalExprContext,
-			data,
-			elementRaw: this.elRaw,
-			elementType: this.elType,
-			errMsg
+
+	getItem(exprTokenRaw: RawExprToken) {
+		const clazz = 'ExprToken.getItem'
+		let exprCompositeItem = [
+			[
+				`${ExprTokenTypeComposite.evalObjAttrMulti}`,
+				`.owner.id = <parms,uuid,queryOwnerSys> AND .codeAttrType.name IN <parms,strList,itemsParmValueList>`
+			],
+			[
+				`${ExprTokenTypeComposite.evalObjAttrSingle}`,
+				`.owner.id = <parms,uuid,queryOwnerSys> AND .codeAttrType.name = <parms,str,itemsParmValue>`
+			],
+			[`${ExprTokenTypeComposite.exprQueryOwnerOrg}`, `.owner.id = <parms,uuid,queryOwnerOrg>`],
+			[`${ExprTokenTypeComposite.exprQueryOwnerSys}`, `.owner.id = <parms,uuid,queryOwnerSys>`]
+		].find((e: any) => e[0] === exprTokenRaw.tokenType)
+
+		if (exprCompositeItem) {
+			this.exprComposite = exprCompositeItem[1]
+			const exprTokenRawList = new RawExprTokenList(this.exprComposite)
+			exprTokenRawList.tokens.forEach((token) => {
+				this.getItem(token)
+			})
+		} else {
+			switch (exprTokenRaw.tokenType) {
+				case ExprTokenTypeItem.attrsAction:
+					this.items.push(
+						new ExprTokenItemAttrAction({
+							data: this.queryData.user,
+							evalExprContext: this.evalExprContext,
+							exprTokenRaw,
+							queryData: this.queryData
+						})
+					)
+					break
+
+				case ExprTokenTypeItem.function:
+					this.items.push(
+						new ExprTokenItemFunction({
+							evalExprContext: this.evalExprContext,
+							exprTokenRaw,
+							queryData: this.queryData
+						})
+					)
+					break
+
+				case ExprTokenTypeItem.literal:
+					this.items.push(
+						new ExprTokenItemLiteral({
+							evalExprContext: this.evalExprContext,
+							exprTokenRaw,
+							queryData: this.queryData
+						})
+					)
+					break
+
+				case ExprTokenTypeItem.parms:
+					this.items.push(
+						new ExprTokenItemData({
+							data: this.queryData.getParms(),
+							evalExprContext: this.evalExprContext,
+							exprTokenRaw,
+							queryData: this.queryData
+						})
+					)
+					break
+
+				case ExprTokenTypeItem.record:
+					this.items.push(
+						new ExprTokenItemData({
+							data: this.queryData.record,
+							evalExprContext: this.evalExprContext,
+							exprTokenRaw,
+							queryData: this.queryData
+						})
+					)
+					break
+
+				case ExprTokenTypeItem.system:
+					this.items.push(
+						new ExprTokenItemData({
+							data: this.queryData.system,
+							evalExprContext: this.evalExprContext,
+							exprTokenRaw,
+							queryData: this.queryData
+						})
+					)
+					break
+
+				case ExprTokenTypeItem.tree:
+					this.items.push(
+						new ExprTokenItemTree({
+							evalExprContext: this.evalExprContext,
+							exprTokenRaw,
+							queryData: this.queryData
+						})
+					)
+					break
+
+				case ExprTokenTypeItem.user:
+					this.items.push(
+						new ExprTokenItemData({
+							data: this.queryData.user,
+							evalExprContext: this.evalExprContext,
+							exprTokenRaw,
+							queryData: this.queryData
+						})
+					)
+					break
+			}
 		}
-		const errContentUser = {
-			context: this.evalExprContext,
-			errMsg
-		}
-		debug(clazz, 'error: evalElement', errContentSystem)
-		return new MethodResult({
-			success: false,
-			error: {
-				file: FILENAME,
-				function: clazz,
-				msgSystem: `Evaluate expression element error: ${JSON.stringify(errContentSystem, null, ' ')}`,
-				mssgUser: `Evaluate expression element error: ${JSON.stringify(errContentUser, null, ' ')}`
+	}
+
+	replace(expr: string): MethodResult {
+		let exprReplace = this.exprComposite
+		this.items.forEach((item) => {
+			if (item.itemReplace) {
+				exprReplace = exprReplace.replace(
+					item.exprTokenRaw.token,
+					item.itemReplace.getValueFormatted()
+				)
 			}
 		})
+		return new MethodResult(expr.replace(this.tokenRaw.token, exprReplace))
 	}
-	getToken(): MethodResult {
+
+	setReplace(): MethodResult {
+		let result: MethodResult = new MethodResult()
+		this.items.forEach((item) => {
+			result = item.setItemReplace()
+			if (result.error) return result
+		})
 		return new MethodResult()
 	}
 }
 
-class ExprElementItemBase extends ExprElementItem {
-	itemData: ExprParmsItemData = new ExprParmsItemData(PropDataType.none, '')
+class ExprTokenItem {
+	elDefault: ExprTokenItemDefault = ExprTokenItemDefault.error
+	exprTokenRaw: RawExprToken
+	evalExprContext: string
+	itemReplace?: ExprTokenItemReplace
+	itemValue: ExprTokenItemValue
+	queryData: TokenApiQueryData
 	constructor(obj: any) {
-		const clazz = 'ExprElementItemData'
+		const clazz = 'ExprTokenItem'
 		obj = valueOrDefault(obj, {})
-		super(obj)
-		this.itemData = new ExprParmsItemData(this.elItems[1], this.elItems[2])
+		this.exprTokenRaw = required(obj.exprTokenRaw, clazz, 'exprTokenRaw')
+		this.evalExprContext = strRequired(obj.evalExprContext, clazz, 'evalExprContext')
+		this.queryData = required(obj.queryData, clazz, 'queryData')
+
+		// derived
+		this.itemValue = this.setItemValue()
 	}
-	getToken(): MethodResult {
+	error(messages: DataRecord, data?: any) {
+		const clazz = 'ExprElementItem.error'
+		const errContentSystem = {
+			context: this.evalExprContext,
+			data,
+			elementRaw: this.exprTokenRaw.token,
+			elementType: this.exprTokenRaw.tokenType
+		}
+		let msgSystem = messages.msgSystem || messages.msg || ''
+		msgSystem += `\nEvaluate expression element error: ${JSON.stringify(errContentSystem, null, ' ')}`
+		const msgUser = messages.msgUser || messages.msg || ''
+		debug('ExprTokenItem', 'error', msgSystem)
+		return new MethodResult({ error: { file: FILENAME, function: clazz, msgSystem, msgUser } })
+	}
+
+	errorMethod(methodResult: MethodResult, data?: any): MethodResult {
+		return this.error(
+			{ msgSystem: methodResult?.error?.msgSystem, msgUser: methodResult?.error?.msgUser },
+			data
+		)
+	}
+
+	getValDb(valRaw: any): MethodResult {
+		let result: MethodResult = getValDb(this.itemValue.dataTypeProp, valRaw)
+		if (result.error) return result
+		this.itemValue.setDataTypeDb(result.data.dataType)
+		return new MethodResult(result.data.valueDB)
+	}
+
+	getValNested(data: DataRecord, key: string): [boolean, any] {
+		const tokens = key.split('.')
+		let currentData = data
+		let i = 0
+		while (i < tokens.length) {
+			const currKey = getDataRecordKey(currentData, tokens[i])
+			if (!currKey) return [false, undefined]
+			if (currentData.hasOwnProperty(currKey)) {
+				currentData = currentData[currKey]
+			} else return [false, undefined]
+			i++
+		}
+		return [true, currentData]
+	}
+
+	getValRaw(): MethodResult {
+		return new MethodResult()
+	}
+
+	getValRawValidate(data: DataRecord | undefined, key: string) {
+		if (!data) return this.valueNotFound({})
+		const parms = key.split('.')
+		if (parms.length === 0) return new MethodResult(this.valueNotFound(data))
+		const result: [boolean, any] = this.getValNested(data, parms[0])
+		if (!result[0]) return this.valueNotFound(data)
+		let rawValue = result[1]
+		if (parms.length === 2) {
+			rawValue =
+				parms[1] === 'data'
+					? getValueData(rawValue)
+					: parms[1] === 'display'
+						? getValueDisplay(rawValue)
+						: result
+		}
+		return new MethodResult(rawValue)
+	}
+
+	setItemReplace(): MethodResult {
 		let result: MethodResult = this.getValRaw()
 		if (result.error) return result
 		let valueRaw = result.data
@@ -550,54 +454,28 @@ class ExprElementItemBase extends ExprElementItem {
 		if (result.error) return result
 		const valueDb = result.data
 
-		return new MethodResult(
-			new ExprElementToken({
-				elRaw: this.elRaw,
-				dataType: this.itemData.dataTypeDb || this.itemData.dataTypeProp,
-				valueDb,
-				valueRaw
-			})
-		)
-	}
+		this.itemReplace = new ExprTokenItemReplace({
+			dataType: this.itemValue.dataTypeDb || this.itemValue.dataTypeProp,
+			valueDb,
+			valueRaw
+		})
 
-	getValDb(valRaw: any): MethodResult {
-		let result: MethodResult = getValDb(this.itemData.dataTypeProp, valRaw)
-		if (result.error) return result
-		this.itemData.setDataTypeDb(result.data.dataType)
-		return new MethodResult(result.data.valueDB)
-	}
-	getValNested(data: DataRecord, key: string) {
-		const tokens = key.split('.')
-		let currentData = data
-		let i = 0
-		while (i < tokens.length) {
-			const currKey = getDataRecordKey(currentData, tokens[i])
-			if (!currKey) return false
-			if (currentData.hasOwnProperty(currKey)) {
-				currentData = currentData[currKey]
-			} else return false
-			i++
-		}
-		return [true, currentData]
-	}
-	getValRaw(): MethodResult {
 		return new MethodResult()
 	}
-	getValRawValidate(data: DataRecord | undefined, key: string) {
-		if (!data) return this.valueNotFound({})
-		const result = this.getValNested(data, key)
-		return result ? new MethodResult(result[1]) : this.valueNotFound(data)
+
+	setItemValue() {
+		return new ExprTokenItemValue(this.exprTokenRaw.parms[0], this.exprTokenRaw.parms.slice(1))
 	}
+
 	valueNotFound(data: DataRecord) {
 		const clazz = 'ExprElementItem.valueNotFound'
 		switch (this.elDefault) {
-			case ExprElementDefault.error:
-				return this.error(`Value null or not found.`, data)
-			case ExprElementDefault.undefined:
+			case ExprTokenItemDefault.error:
+				return this.error({ msg: `Value null or not found.` }, data)
+			case ExprTokenItemDefault.undefined:
 				return new MethodResult(undefined)
 			default:
 				return new MethodResult({
-					success: false,
 					error: {
 						file: FILENAME,
 						function: clazz,
@@ -608,144 +486,166 @@ class ExprElementItemBase extends ExprElementItem {
 	}
 }
 
-class ExprElementItemBaseData extends ExprElementItemBase {
+class ExprTokenItemAttrAction extends ExprTokenItem {
 	data: DataRecord
 	constructor(obj: any) {
-		const clazz = 'ExprElementItemBaseData'
+		const clazz = 'ExprTokenItemAttrAction'
 		obj = valueOrDefault(obj, {})
 		super(obj)
 		this.data = required(obj.data, clazz, 'data')
 	}
 	getValRaw(): MethodResult {
-		if (this.itemData.parms.length === 1) {
-			return this.getValRawValidate(this.data, this.itemData.parms[0])
+		const clazz = 'ExprTokenItemAttrExpr.getValRaw'
+		const attrAction = strRequired(this.itemValue.parms[0], clazz, 'attrAction')
+
+		// user's actions
+		let ids = this.data.attrsAction
+			.filter((a: ObjAttrAction) => a.codeAttrTypeAction === attrAction)
+			.reduce((expr: string, action: ObjAttrAction) => {
+				if (expr) expr += ','
+				return (expr += `"${action.id}"`)
+			}, '')
+		ids = ids ? `<uuid>{${ids}}` : ''
+
+		// actions derived from expressions
+		let exprs = this.data.attrsExpr
+			.filter((a: ObjAttrExpr) => a.codeAttrTypeAction === attrAction)
+			.reduce((expr: string, action: ObjAttrExpr) => {
+				if (expr) expr += ' UNION '
+				return (expr += `(${action.expr})`)
+			}, '')
+		exprs = exprs ? `(${exprs})` : ''
+
+		const expr = ids && exprs ? `(${ids} UNION ${exprs})` : ids ? ids : exprs ? exprs : '<uuid>{}'
+
+		return new MethodResult(expr)
+	}
+	setItemValue() {
+		return new ExprTokenItemValue(PropDataType.none, this.exprTokenRaw.parms.slice(0))
+	}
+}
+
+class ExprTokenItemData extends ExprTokenItem {
+	data: DataRecord
+	constructor(obj: any) {
+		const clazz = 'ExprTokenItemData'
+		obj = valueOrDefault(obj, {})
+		super(obj)
+		this.data = required(obj.data, clazz, 'data')
+	}
+	getValRaw(): MethodResult {
+		if (this.itemValue.parms.length === 1) {
+			return this.getValRawValidate(this.data, this.itemValue.parms[0])
 		} else {
-			return this.error(`Invalid itemData.parms: ${this.itemData.parms}`)
+			return this.error({ msg: `Invalid itemData.parms: ${this.itemValue.parms}` }, this.data)
 		}
 	}
 }
 
-class ExprElementItemBaseFunction extends ExprElementItemBase {
-	itemFunction: ExprParmsItemFunction
+class ExprTokenItemFunction extends ExprTokenItem {
+	functionParms: string[]
+	functionType: ExprTokenItemTypeFunction
 	constructor(obj: any) {
-		const clazz = 'ExprElementItemBaseFunction'
+		const clazz = 'ExprTokenItemFunction'
 		super(obj)
-		this.itemData = new ExprParmsItemData(PropDataType.none, this.elItems[2])
-		this.itemFunction = new ExprParmsItemFunction(this.elItems[1], this.elItems.slice(2))
+		this.functionParms = this.exprTokenRaw.parms.slice(1)
+		this.functionType = memberOfEnum(
+			obj.exprTokenRaw.parms[0],
+			clazz,
+			'functionType',
+			'ExprTokenItemTypeFunction',
+			ExprTokenItemTypeFunction
+		)
+		this.elDefault = ExprTokenItemDefault.undefined
 	}
 	getValDb(valRaw: any): MethodResult {
 		return new MethodResult(valRaw.toString())
 	}
 	getValRaw(): MethodResult {
-		const itemF = this.itemFunction
 		let value
-		switch (itemF.type) {
-			case ExprElementFunction.fSysRandom10:
+		switch (this.functionType) {
+			case ExprTokenItemTypeFunction.fSysRandom10:
 				return new MethodResult(parseInt(Math.random().toFixed(10).replace('0.', '')))
-			case ExprElementFunction.fSysRate:
-				if (itemF.parms.length === 2) {
-					const numerator = itemF.parms[0]
-					const denominator = parseFloat(itemF.parms[1])
+			case ExprTokenItemTypeFunction.fSysRate:
+				if (this.functionParms.length === 2) {
+					const numerator = this.functionParms[0]
+					const denominator = parseFloat(this.functionParms[1])
 					value = Math.round((denominator !== 0 ? parseFloat(numerator) / denominator : 0) * 100)
 				}
 				return new MethodResult(value)
-			case ExprElementFunction.fSysToday:
+			case ExprTokenItemTypeFunction.fSysToday:
 				return new MethodResult(`<cal::local_date>'${new Date().toISOString().slice(0, 10)}'`)
 		}
-		return this.valueNotFound({})
 	}
-	initItemData(dataType: string, parms: string) {
-		return new ExprParmsItemData(PropDataType.none, parms)
+	setItemValue() {
+		return new ExprTokenItemValue(PropDataType.none, this.exprTokenRaw.parms.slice(1))
 	}
 }
 
-class ExprElementItemBaseLiteral extends ExprElementItemBase {
+class ExprTokenItemLiteral extends ExprTokenItem {
 	constructor(obj: any) {
-		const clazz = 'ExprElementItemBaseLiteral'
+		const clazz = 'ExprTokenItemLiteral'
 		super(obj)
 	}
 	getValRaw(): MethodResult {
-		if (this.itemData.parms.length === 1) {
-			return new MethodResult(this.itemData.parms[0])
+		if (this.itemValue.parms.length === 1) {
+			return new MethodResult(this.itemValue.parms[0])
 		} else {
-			return this.error(`Invalid itemData.parms: ${this.itemData.parms}`)
+			return this.error({ msg: `Invalid itemData.parms: ${this.itemValue.parms}` })
 		}
 	}
 }
-class ExprElementItemBaseTree extends ExprElementItemBase {
+class ExprTokenItemTree extends ExprTokenItem {
 	treeParms: string[]
 	constructor(obj: any) {
-		const clazz = 'ExprElementItemBaseTree'
+		const clazz = 'ExprTokenItemTree'
 		super(obj)
-		let treeParmsRaw = strRequired(obj.elItems[2], clazz, 'treeParmsRaw')
-		this.treeParms = treeParmsRaw.split('.')
+		this.treeParms = this.exprTokenRaw.parms[1].split('.')
 	}
 	getValRaw(): MethodResult {
-		let dataRow: DataRow | undefined = undefined
+		let dataRowRecord: DataRecord | undefined = undefined
 		let property = ''
+		let result: MethodResult
 		switch (this.treeParms.length) {
 			case 1:
 				property = this.treeParms[0]
-				dataRow = this.queryData.dataTree.getDataRow()
+				result = this.queryData.dataTree.getDataRowRecord(TokenApiQueryDataTreeAccessType.index, 0)
+				if (result.error) return this.errorMethod(result)
+				dataRowRecord = result.data
 				break
 			case 2:
-				dataRow = this.queryData.dataTree.getDataRow(this.treeParms[0])
+				result = this.queryData.dataTree.getDataRowRecord(
+					TokenApiQueryDataTreeAccessType.table,
+					this.treeParms[0]
+				)
+				if (result.error) return this.errorMethod(result)
+				dataRowRecord = result.data
 				property = this.treeParms[1]
 				break
 			default:
 				if (this.treeParms[0] === ParmsValuesType.treeAncestorValue) {
-					const levels = this.queryData.dataTree.levels.map((level) => level.table)
-					dataRow = this.queryData.dataTree.getDataRowAncestor(parseInt(this.treeParms[1]))
-					property = this.itemData.parms.slice(2).join('.')
+					let result: MethodResult
+					const accessType = this.treeParms[1]
+					const parms = this.treeParms[2]
+
+					result = this.queryData.dataTree.getDataRowRecord(accessType, parms)
+					if (result.error) return this.errorMethod(result)
+					dataRowRecord = result.data
+					property = this.treeParms.slice(3).join('.')
 				} else {
-					return this.error(`Invalid treeParms: ${this.treeParms}`)
+					return this.error({ msg: `Invalid treeParms: ${this.treeParms}` })
 				}
 		}
-		return this.getValRawValidate(dataRow?.record, property)
+		return this.getValRawValidate(dataRowRecord, property)
 	}
 }
 
-class ExprElementItemCustom extends ExprElementItem {
-	constructor(obj: any) {
-		const clazz = 'ExprElementItemCustom'
-		obj = valueOrDefault(obj, {})
-		super(obj)
-	}
-}
-
-class ExprElementItemCustomAttrsObjAction extends ExprElementItemCustom {
-	user: User
-	constructor(obj: any) {
-		const clazz = 'ExprElementItemCustomAttrsObjAction'
-		obj = valueOrDefault(obj, {})
-		super(obj)
-		this.user = required(obj.user, clazz, 'data')
-	}
-	getToken(): MethodResult {
-		debug('ExprElementItemCustomAttrsObjAction.getToken', 'user', this.elItems)
-		const attrActionType = this.elItems[2]
-		let valueDb = this.user.attrsObjAction
-			.filter((a) => a.codeAttrActionType === attrActionType)
-			.map((a) => `"${a.id}"`)
-			.join(',')
-		valueDb = `{${valueDb}}`
-		return new MethodResult(
-			new ExprElementToken({
-				elRaw: this.elRaw,
-				dataType: '<uuid>',
-				valueDb,
-				valueRaw: valueDb
-			})
-		)
-	}
-}
-
-class ExprParmsItemData {
+class ExprTokenItemValue {
 	dataTypeDb?: string
 	dataTypeProp: PropDataType
 	parms: string[]
-	constructor(dataTypeProp: string, parms: string) {
-		const clazz = 'ExprParmsItemData'
+	constructor(dataTypeProp: string, parms: string[]) {
+		const clazz = 'ExprTokenItemValue'
 		this.dataTypeProp = memberOfEnum(
 			dataTypeProp,
 			clazz,
@@ -753,48 +653,49 @@ class ExprParmsItemData {
 			'PropDataType',
 			PropDataType
 		)
-		this.parms = parms.split(',')
+		this.parms = parms
 	}
 	setDataTypeDb(dataTypeDb: string) {
 		this.dataTypeDb = dataTypeDb
 	}
 }
-class ExprParmsItemFunction {
-	parms: string[]
-	type: ExprElementFunction
-	constructor(type: string, parms: string[]) {
-		const clazz = 'ExprParmsItemFunction'
-		this.parms = parms
-		this.type = memberOfEnum(type, clazz, 'type', 'ExprSourceFunction', ExprElementFunction)
-	}
-}
 
-enum ExprElementDefault {
+enum ExprTokenItemDefault {
 	error = 'error',
 	undefined = 'undefined'
 }
 
-export class ExprElementToken {
+export class ExprTokenItemReplace {
 	dataType: string
-	elRaw: string
 	valueDb: any
-	valueFormatted: string
 	valueRaw: any
 	constructor(obj: any) {
-		const clazz = 'ExprElementToken'
+		const clazz = 'ExprTokenItemReplace'
 		obj = valueOrDefault(obj, {})
 		this.dataType = strRequired(obj.dataType, clazz, 'dataTypeDb')
-		this.elRaw = strRequired(obj.elRaw, clazz, 'elRaw')
 		this.valueDb = required(obj.valueDb, clazz, 'valueDB')
-		this.valueFormatted =
-			this.dataType === PropDataType.none ? this.valueRaw : `${this.dataType}${this.valueDb}`
 		this.valueRaw = required(obj.valueRaw, clazz, 'valueRaw')
+	}
+	getValueFormatted() {
+		return this.dataType === PropDataType.none ? this.valueRaw : `${this.dataType}${this.valueDb}`
 	}
 }
 
-enum ExprElementType {
-	attrsObjAccess = 'attrsObjAccess',
-	attrsObjAction = 'attrsObjAction',
+enum ExprTokenTypeComposite {
+	evalObjAttrMulti = `evalObjAttrMulti`,
+	evalObjAttrSingle = `evalObjAttrSingle`,
+	exprQueryOwnerOrg = `exprQueryOwnerOrg`,
+	exprQueryOwnerSys = `exprQueryOwnerSys`
+}
+
+enum ExprTokenItemTypeFunction {
+	fSysRandom10 = 'fSysRandom10',
+	fSysRate = 'fSysRate',
+	fSysToday = 'fSysToday'
+}
+
+enum ExprTokenTypeItem {
+	attrsAction = 'attrsAction',
 	function = 'function',
 	literal = 'literal',
 	parms = 'parms',
@@ -804,8 +705,50 @@ enum ExprElementType {
 	user = 'user'
 }
 
-enum ExprElementFunction {
-	fSysRandom10 = 'fSysRandom10',
-	fSysRate = 'fSysRate',
-	fSysToday = 'fSysToday'
+class RawExprToken {
+	parms: string[]
+	token: string
+	tokenData: string
+	tokenType: string
+	constructor(obj: any) {
+		const clazz = 'RawExprToken'
+		obj = valueOrDefault(obj, {})
+		this.token = strRequired(obj.token, clazz, 'token')
+		this.tokenData = strRequired(obj.tokenData, clazz, 'tokenData')
+		this.tokenType = strRequired(obj.tokenType, clazz, 'tokenType')
+
+		// derived
+		this.parms = this.tokenData.split(',').slice(1)
+	}
+}
+
+class RawExprTokenList {
+	tokens: RawExprToken[] = []
+	constructor(exprRaw: string) {
+		const clazz = 'RawExprTokenList'
+		const regex = /<([a-zA-Z].*?)>/g
+		exprRaw = valueOrDefault(exprRaw, '')
+		/*
+    exprDataItem = <[source],[dataType],[sourceKey]>
+    eg. (SELECT sys_user::getUser(<user,str,name>))
+  */
+		const iter = exprRaw.matchAll(regex)
+		for (const match of iter) {
+			const token = match[0]
+			const tokenData = match[1]
+			const tokenType = tokenData.split(',')[0]
+			if (this.isExprTokenType(tokenType)) {
+				this.tokens.push(new RawExprToken({ token, tokenData, tokenType }))
+			}
+		}
+	}
+	isExprTokenType(tokenType: string) {
+		const isExprTokenTypeEnum = (enumObj: any, tokenType: string) => {
+			return Object.values(enumObj).includes(tokenType)
+		}
+		if (isExprTokenTypeEnum(ExprTokenTypeComposite, tokenType)) return true
+		if (isExprTokenTypeEnum(ExprTokenItemTypeFunction, tokenType)) return true
+		if (isExprTokenTypeEnum(ExprTokenTypeItem, tokenType)) return true
+		return false
+	}
 }

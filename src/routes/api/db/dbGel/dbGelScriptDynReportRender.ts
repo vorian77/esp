@@ -6,7 +6,7 @@ import {
 	DataObjType,
 	MethodResult
 } from '$utils/types'
-import { DbTableQueryGroup } from '$lib/query/types.query'
+import { DbTableQueryGroup } from '$lib/queryClient/types.queryClient'
 import { RawDataObjDyn } from '$comps/dataObj/types.rawDataObj.svelte'
 import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
@@ -33,7 +33,9 @@ export async function dynDOReportRender(
 	addPropsSelect(repUser.report.elements, rawDataObjDyn.tableGroup)
 	addPropsSort(repUser.report.elementsSort, rawDataObjDyn.tableGroup)
 	addFilter(repUser, queryData)
-	return new MethodResult(rawDataObjDyn.build())
+
+	const do1 = rawDataObjDyn.build()
+	return new MethodResult(do1)
 
 	function addFilter(repUser: RepUser, queryData: TokenApiQueryData) {
 		let exprFilter = rawDataObjDyn.rawQuerySource.exprFilter
@@ -87,7 +89,7 @@ export async function dynDOReportRender(
 	function addPropsDisplayColumn(repEl: RepEl) {
 		let result: MethodResult = getFieldColumnCustomName(repEl._codeDataType)
 		if (result.error) return result
-		const customName = result.data as string
+		const customName: string | undefined = result.data
 
 		return new MethodResult({
 			_codeAlignment: repEl._codeAlignment || repEl._column?._codeAlignment,
@@ -129,18 +131,10 @@ export async function dynDOReportRender(
 }
 
 function getFieldColumnCustomName(dataType: string | undefined) {
-	if (!dataType)
-		return new MethodResult({
-			success: false,
-			error: {
-				file: FILENAME,
-				function: 'getFieldColumnCustomName',
-				msg: `No datatype defined`
-			}
-		})
-
 	const f = fName('buildFieldExprColName')
-	let result
+	let result = undefined
+
+	if (!dataType) return new MethodResult(result)
 
 	switch (dataType) {
 		case PropDataType.bool:
@@ -163,7 +157,6 @@ function getFieldColumnCustomName(dataType: string | undefined) {
 
 		default:
 			result = new MethodResult({
-				success: false,
 				error: {
 					file: FILENAME,
 					function: f,
@@ -181,7 +174,12 @@ function getRawDataObj(repUser: RepUser) {
 		_codeComponent: DataObjComponent.FormList,
 		_codeDataObjType: DataObjType.report,
 		_ownerId: repUser.report.ownerId,
-		_tables: repUser.report.tables,
+		_querySource: {
+			_tables: repUser.report.tables,
+			exprFilter: repUser.report.exprFilter,
+			exprSort: repUser.report.exprSort,
+			exprWith: repUser.report.exprWith
+		},
 		description: repUser.descriptionUser || repUser.report.description,
 		exprFilter: repUser.report.exprFilter,
 		exprSort: repUser.report.exprSort,

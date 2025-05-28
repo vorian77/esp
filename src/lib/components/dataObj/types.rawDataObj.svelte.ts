@@ -1,7 +1,6 @@
 import { State } from '$comps/app/types.appState.svelte'
 import {
 	arrayOfClass,
-	Attr,
 	booleanOrDefault,
 	booleanOrFalse,
 	booleanRequired,
@@ -15,6 +14,7 @@ import {
 	FieldEmbedType,
 	getArray,
 	getDataRecordValueKey,
+	getDbExprRaw,
 	isNumber,
 	memberOfEnum,
 	memberOfEnumIfExists,
@@ -47,25 +47,29 @@ import {
 	DbTableQueryGroup,
 	QuerySource,
 	QuerySourceRaw,
-	QuerySourceTableRaw,
 	QuerySourceType
-} from '$lib/query/types.query'
-import { clientQueryExpr } from '$lib/query/queryManagerClient'
-import { FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
+} from '$lib/queryClient/types.queryClient'
+import { clientQueryExprOld } from '$lib/queryClient/types.queryClientManager'
+import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
-import { TokenApiQueryDataTree, TokenApiQueryType } from '$utils/types.token'
+import {
+	NavDestinationType,
+	TokenApiQueryDataTree,
+	TokenApiQueryType,
+	TokenAppNav
+} from '$utils/types.token'
+import { QueryRiderRaw } from '$lib/queryClient/types.queryClientRider'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
 
 export class RawDataObj {
-	attrsAccessGroup: DataObjAttrsAccessGroup
 	codeCardinality: DataObjCardinality
 	codeComponent: DataObjComponent
 	codeDataObjType: DataObjType
 	codeDoQueryType?: DataObjQueryType
 	codeDoRenderPlatform?: DataObjRenderPlatform
-	codeListEditPresetType?: DataObjListEditPresetType
+	codeListPresetType?: DataObjListEditPresetType
 	crumbs: string[] = []
 	description?: string
 	header: string
@@ -93,7 +97,6 @@ export class RawDataObj {
 	constructor(obj: any) {
 		const clazz = `${obj.name}.RawDataObj`
 		obj = valueOrDefault(obj, {})
-		this.attrsAccessGroup = classOptional(DataObjAttrsAccessGroup, obj._attrsAccessGroup)
 		this.codeCardinality = memberOfEnum(
 			obj._codeCardinality,
 			clazz,
@@ -129,10 +132,10 @@ export class RawDataObj {
 			'DataObjRenderPlatform',
 			DataObjRenderPlatform
 		)
-		this.codeListEditPresetType = memberOfEnumIfExists(
-			obj._codeListEditPresetType,
+		this.codeListPresetType = memberOfEnumIfExists(
+			obj._codeListPresetType,
 			clazz,
-			'codeListEditPresetType',
+			'codeListPresetType',
 			'DataObjListEditPresetType',
 			DataObjListEditPresetType
 		)
@@ -191,6 +194,7 @@ export class RawDataObj {
 				p.exprCustom = `(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>)`
 				p.exprPreset = `(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>)`
 				p.exprSave = '(SELECT DETACHED sys_user::SysUser FILTER .id = <user,uuid,id>)'
+				p.isLinkSignature = true
 				p._link = {
 					_columns: [{ _name: 'person' }, { _name: 'fullName' }],
 					_table: { hasMgmt: false, mod: 'sys_user', name: 'SysUser' }
@@ -251,6 +255,7 @@ export class RawDataObjProp {
 	hasItems: boolean
 	id: string
 	indexTable: number
+	isLinkSignature: boolean
 	link?: PropLink
 	linkItemsSource?: PropLinkItemsSource = $state()
 	propName: string
@@ -292,11 +297,13 @@ export class RawDataObjProp {
 		this.hasItems = booleanOrDefault(obj._hasItems, false)
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.indexTable = nbrOrDefault(obj.indexTable, -1)
-		this.link = classOptional(PropLink, obj._link)
+		this.isLinkSignature = booleanOrDefault(obj.isLinkSignature, false)
 		this.linkItemsSource = classOptional(PropLinkItemsSource, obj._linkItemsSource)
 		this.propNameRaw = strRequired(obj._propName, clazz, 'propName')
 
 		/* derived properties */
+		if (obj?._link?._table) this.link = classOptional(PropLink, obj._link)
+
 		if (tableGroup.tables.length > 0 && this.indexTable > 0) {
 			this.propNamePrefixType = PropNamePrefixType.table
 			this.propNamePrefixTypeId = tableGroup.tables[this.indexTable].table.name
@@ -400,7 +407,6 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 	isFirstVisible: boolean = false
 	isParmValue: boolean
 	itemChanges: RawDataObjPropDisplayItemChange[]
-	items: FieldColumnItem[]
 	label: string
 	labelSide: string
 	orderDefine: number
@@ -438,7 +444,6 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		this.isDisplayBlock = booleanOrDefault(obj.isDisplayBlock, true)
 		this.isParmValue = booleanOrDefault(obj.isParmValue, false)
 		this.itemChanges = arrayOfClass(RawDataObjPropDisplayItemChange, obj._itemChanges)
-		this.items = arrayOfClass(FieldColumnItem, obj._items)
 		this.orderDefine = nbrRequired(obj.orderDefine, clazz, 'orderDefine')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
 		this.rawFieldAccess = strRequired(
@@ -640,7 +645,10 @@ export class RawUserAction {
 	actionShows: UserActionShow[]
 	codeAction: CodeAction
 	codeTriggerEnable: UserActionTrigger
+	expr: string
+	exprWith: string
 	header?: string
+	navDestination?: TokenAppNav
 	name: string
 	constructor(obj: any) {
 		const clazz = 'RawUserAction'
@@ -655,26 +663,32 @@ export class RawUserAction {
 			'UserActionTrigger',
 			UserActionTrigger
 		)
+		this.expr = valueOrDefault(obj.expr, '')
+		this.exprWith = valueOrDefault(obj.exprWith, '')
 		this.header = obj.header
 		this.name = strRequired(obj.name, clazz, 'name')
+		this.navDestination = classOptional(TokenAppNav, obj._navDestination)
 	}
 }
 
 export class PropLink {
-	exprDisplay: string
 	exprProps: string
 	table?: DbTable
 	constructor(obj: any) {
 		const clazz = 'PropLink'
 		obj = valueOrDefault(obj, {})
 		const cols = getArray(obj._columns)
-		this.exprDisplay =
-			cols.reduce((acc: string, col: any) => {
-				if (acc) acc += '.'
-				acc += col._name
-				return acc
-			}, '') || 'id'
-		this.exprProps = `{ id, display := .${this.exprDisplay} }`
+		const exprDisplayColumns = cols.reduce((acc: string, col: any) => {
+			if (acc) acc += '.'
+			acc += col._name
+			return acc
+		}, '')
+		const exprDisplay = exprDisplayColumns
+			? `.${exprDisplayColumns}`
+			: obj._exprCustom
+				? obj._exprCustom
+				: `.id`
+		this.exprProps = `{ data := .id, display := ${exprDisplay} }`
 		this.table = classOptional(DbTable, obj._table)
 	}
 	getTableObj() {
@@ -703,35 +717,22 @@ export class PropLinkItems {
 	}
 
 	getDataItemsAll(fieldValue: DataRecord | DataRecord[]) {
-		const fieldValues: DataRecord[] = getArray(fieldValue)
+		const records: DataRecord[] = getArray(fieldValue)
+		const idsSelected = records.map((r) => r.data)
 		let fieldItems: FieldColumnItem[] = []
 		this.rawItems.forEach((item) => {
 			fieldItems.push(
 				new FieldColumnItem(
 					item.data,
 					this.formatDataItemDisplay(item),
-					fieldValues.includes(item.data)
+					idsSelected.includes(item.data)
 				)
 			)
 		})
 		return fieldItems
 	}
 
-	getDataItemsSelected(fieldValue: string | string[]) {
-		if (Array.isArray(fieldValue)) {
-			let fiMulti: FieldColumnItem[] = []
-			fieldValue.forEach((id) => {
-				const item = this.rawItems.find((i) => i.data === id)
-				if (item) fiMulti.push(new FieldColumnItem(id, this.formatDataItemDisplay(item), true))
-			})
-			return fiMulti
-		} else {
-			const item = this.rawItems.find((i) => i.data === fieldValue)
-			if (item) return new FieldColumnItem(fieldValue, this.formatDataItemDisplay(item), true)
-		}
-	}
-
-	getDisplayValueList(idsCurrent: string | string[]) {
+	getDisplayValueListIds(idsCurrent: string | string[]) {
 		const ids = getArray(idsCurrent)
 		let values = ''
 		this.rawItems.forEach((item) => {
@@ -743,9 +744,43 @@ export class PropLinkItems {
 		return values
 	}
 
-	getFieldValueIds(fieldValue: DataRecord | DataRecord[]) {
-		const fieldValues: DataRecord[] = getArray(fieldValue)
-		return fieldValues.map((v) => v.id)
+	getDisplayValueListRecords(records: any[]) {
+		records = getArray(records)
+		const ids = records.map((r) => r.data)
+		return this.getDisplayValueListIds(ids)
+	}
+
+	getValueDisplay(valueRaw: any | any[]) {
+		const valueRawList = getArray(valueRaw)
+		const ids = valueRawList.map((r) => r.data)
+		let values = ''
+		this.rawItems.forEach((item) => {
+			if (ids.includes(item.data)) {
+				if (values) values += ', '
+				values += this.formatDataItemDisplay(item)
+			}
+		})
+		return values
+	}
+
+	getValueIds(valueRaw: any | any[]) {
+		const valueRawList = getArray(valueRaw)
+		const ids = valueRawList.map((r) => r.data)
+		return ids
+	}
+
+	getValueRaw(valueDisplay: string | string[]) {
+		if (Array.isArray(valueDisplay)) {
+			const returnValues = this.rawItems.filter((item) => {
+				return valueDisplay.includes(item.data)
+			})
+			return returnValues
+		} else {
+			const returnValue = this.rawItems.find((item) => {
+				return item.data === valueDisplay
+			})
+			return returnValue
+		}
 	}
 
 	getGridParms() {
@@ -788,12 +823,11 @@ export class PropLinkItems {
 	}
 
 	getValuesSelect() {
-		let data = this.rawItems.map((item) => item.data)
-		data.unshift('')
-		return data
+		const resetItem = { data: '', display: ' ', name: '' }
+		return [null, ...this.rawItems]
 	}
 
-	async retrieve(sm: State, fieldValue: string | undefined): Promise<MethodResult> {
+	async retrieve(sm: State, fieldValue: string | undefined = undefined): Promise<MethodResult> {
 		const clazz = 'PropLinkItems.retrieve'
 		const exprCustom = this.source.getExprSelect(false, fieldValue)
 		const queryType = TokenApiQueryType.retrieve
@@ -804,7 +838,7 @@ export class PropLinkItems {
 
 		const dataTree: TokenApiQueryDataTree = sm.app.getDataTree(queryType)
 
-		let result: MethodResult = await clientQueryExpr(
+		let result: MethodResult = await clientQueryExprOld(
 			exprCustom,
 			clazz,
 			{
@@ -863,7 +897,34 @@ export class PropLinkItemsSource {
 	}
 
 	getExprSelect(isCompilation: boolean, currVal: string | string[] | undefined) {
-		let expr = ''
+		let exprSelect =
+			this.querySource.exprUnions.length > 0
+				? this.getExprSelectUnions()
+				: this.getExprSelectBase(currVal)
+
+		// assemble
+		let expr = getDbExprRaw(this.querySource.exprWith, exprSelect)
+
+		const exprSort =
+			this.querySource.exprSort ||
+			this.getSortProps().reduce((sort, prop) => {
+				if (sort) sort += ' THEN '
+				return (sort += `.${prop.key}`)
+			}, '')
+
+		if (isCompilation) {
+			expr = `(${expr}) ${this.exprProps}`
+			expr += exprSort ? ` ORDER BY ${exprSort}` : ''
+			expr = `(SELECT ${expr})`
+		} else {
+			expr = `SELECT (${expr}) ${this.exprProps}`
+			expr += exprSort ? ` ORDER BY ${exprSort}` : ''
+		}
+
+		return expr
+	}
+
+	getExprSelectBase(currVal: string | string[] | undefined) {
 		let filter = this.querySource.exprFilter ? `(${this.querySource.exprFilter})` : ''
 
 		if (filter && currVal) {
@@ -878,56 +939,19 @@ export class PropLinkItemsSource {
 			if (currValFilter) filter += ` OR ${currValFilter}`
 		}
 
-		const sort =
-			this.querySource.exprSort ||
-			this.getSortProps().reduce((sort, prop) => {
-				if (sort) sort += ' THEN '
-				return (sort += `.${prop.key}`)
-			}, '')
-
-		expr = this.querySource.exprWith ? `${this.querySource.exprWith} ` : ''
-		expr += `SELECT ${this.querySource.table?.object}`
-		expr += filter ? ` FILTER ${filter}` : ''
-
-		if (isCompilation) {
-			expr = `(${expr}) ${this.exprProps}`
-			expr += sort ? ` ORDER BY ${sort}` : ''
-			expr = `(SELECT ${expr})`
-		} else {
-			expr = `SELECT (${expr}) ${this.exprProps}`
-			expr += sort ? ` ORDER BY ${sort}` : ''
-		}
-
-		return expr
+		let exprSelect = `SELECT ${this.querySource.table?.object}`
+		exprSelect += filter ? ` FILTER ${filter}` : ''
+		return exprSelect
 	}
-	// getExprSelectUnions() {
-	// 	async addScriptRetrieveUnions(query: GelQuery) {
-	// 			let exprWith = query.rawDataObj.rawQuerySource.exprWith || ''
-	// 			exprWith = exprWith ? `WITH ${exprWith} \n` : ''
-
-	// 			let exprUnions = ''
-	// 			query.rawDataObj.rawQuerySource.exprUnions.forEach((item) => {
-	// 				if (exprUnions) exprUnions += ' UNION '
-	// 				exprUnions += `(${item})`
-	// 			})
-	// 			exprUnions = `SELECT { ${exprUnions} }`
-
-	// 			let propsSelect = query.getPropsSelect({ props: query.rawDataObj.rawPropsSelect })
-	// 			let exprSort = query.getSort(query.queryData)
-
-	// 			let expr = exprWith ? `WITH ${exprWith} \n` : ''
-	// 			expr += exprUnions + '\n'
-	// 			expr += propsSelect + '\n'
-	// 			expr += exprSort ? ` ORDER BY ${exprSort} \n` : ''
-
-	// 			this.addScriptNew({
-	// 				dataRows: [],
-	// 				exePost: ScriptExePost.formatData,
-	// 				expr,
-	// 				query
-	// 			})
-	// 		}
-	// }
+	getExprSelectUnions() {
+		let exprUnions = ''
+		this.querySource.exprUnions.forEach((item) => {
+			if (exprUnions) exprUnions += ' UNION '
+			exprUnions += `(${item})`
+		})
+		let exprSelect = `{ ${exprUnions} }`
+		return exprSelect
+	}
 
 	getSortProps() {
 		return this.props
@@ -961,138 +985,6 @@ export class PropLinkItemsSourceProp {
 	}
 }
 
-export class DataObjAttrsAccessGroup {
-	attrsAccessForbidden: DataObjAttrsAccessForbidden[] = []
-	attrsAccessPermitted: DataObjAttrsAccessPermitted[] = []
-	attrsAccessRequired: DataObjAttrsAccessRequired[] = []
-	constructor(rawAttrsAccess: any[]) {
-		const clazz = 'DataObjAttrsAccessGroup'
-		rawAttrsAccess = getArray(rawAttrsAccess)
-		rawAttrsAccess.forEach((raa: any) => {
-			const codeAttrAccessType = memberOfEnum(
-				raa._codeAttrAccessType,
-				clazz,
-				'codeAttrAccessType',
-				'DataObjAttrsAccessType',
-				DataObjAttrsAccessType
-			)
-			switch (codeAttrAccessType) {
-				case DataObjAttrsAccessType.forbidden:
-					this.attrsAccessForbidden.push(new DataObjAttrsAccessForbidden(raa))
-					break
-				case DataObjAttrsAccessType.permitted:
-					this.attrsAccessPermitted.push(new DataObjAttrsAccessPermitted(raa))
-					break
-				case DataObjAttrsAccessType.required:
-					this.attrsAccessRequired.push(new DataObjAttrsAccessRequired(raa))
-					break
-				default:
-					error(500, {
-						file: FILENAME,
-						function: 'DataObjAttrsAccessGroup.constructor',
-						msg: `No case defined for codeAttrAccessType: ${codeAttrAccessType}`
-					})
-			}
-		})
-	}
-	eval(attrsRequestor: Attr[]) {
-		// forbidden
-		if (
-			this.attrsAccessForbidden.some((forbidden) => {
-				return attrsRequestor.some((attr) => attr.id === forbidden.attr.id)
-			})
-		) {
-			return new DataObjAttrsAccessEval(true)
-		}
-
-		// required
-		if (
-			!this.attrsAccessRequired.every((required) => {
-				return attrsRequestor.some((attr) => attr.id === required.attr.id)
-			})
-		) {
-			return new DataObjAttrsAccessEval(true)
-		}
-
-		// permitted
-		let permittedIds: string[] = []
-		attrsRequestor.forEach((attr) => {
-			if (
-				this.attrsAccessPermitted.some((permitted) => {
-					return attr.codeAttrType === permitted.attrType
-				})
-			) {
-				permittedIds.push(attr.id)
-			}
-		})
-		return new DataObjAttrsAccessEval(false, permittedIds)
-	}
-}
-
-export class DataObjAttrsAccess {
-	codeAttrAccessSource: DataObjAttrsAccessSource
-	constructor(obj: any) {
-		const clazz = 'DataObjAttrsAccess'
-		obj = valueOrDefault(obj, {})
-		this.codeAttrAccessSource = memberOfEnum(
-			obj._codeAttrAccessSource,
-			clazz,
-			'codeAttrAccessSource',
-			'DataObjAttrsAccessSource',
-			DataObjAttrsAccessSource
-		)
-	}
-}
-export class DataObjAttrsAccessForbidden extends DataObjAttrsAccess {
-	attr: Attr
-	constructor(obj: any) {
-		const clazz = 'DataObjAttrsAccessForbidden'
-		super(obj)
-		obj = valueOrDefault(obj, {})
-		this.attr = new Attr(obj._attr)
-	}
-}
-export class DataObjAttrsAccessPermitted extends DataObjAttrsAccess {
-	attrType: string
-	constructor(obj: any) {
-		const clazz = 'DataObjAttrsAccessPermitted'
-		super(obj)
-		obj = valueOrDefault(obj, {})
-		this.attrType = strRequired(obj._codeAttrType, clazz, 'attrType')
-	}
-}
-export class DataObjAttrsAccessRequired extends DataObjAttrsAccess {
-	attr: Attr
-	constructor(obj: any) {
-		const clazz = 'DataObjAttrsAccessRequired'
-		super(obj)
-		obj = valueOrDefault(obj, {})
-		this.attr = new Attr(obj._attr)
-	}
-	eval(attrsRequestor: Attr[]) {}
-}
-
-export class DataObjAttrsAccessEval {
-	isDenyAccess: boolean
-	permittedObjIds: string[]
-	constructor(isDenyAccess: boolean, permittedObjIds: string[] = []) {
-		const clazz = 'DataObjAttrsAccessEval'
-		this.isDenyAccess = isDenyAccess
-		this.permittedObjIds = permittedObjIds
-	}
-}
-
-export enum DataObjAttrsAccessSource {
-	environment = 'environment',
-	user = 'user'
-}
-
-export enum DataObjAttrsAccessType {
-	forbidden = 'forbidden',
-	permitted = 'permitted',
-	required = 'required'
-}
-
 export enum DataObjQueryType {
 	preset = 'preset',
 	retrieve = 'retrieve',
@@ -1111,7 +1003,6 @@ export enum PropDataSourceValue {
 }
 
 export enum PropDataType {
-	attribute = 'attribute',
 	bool = 'bool',
 	date = 'date',
 	datetime = 'datetime',
@@ -1120,7 +1011,6 @@ export enum PropDataType {
 	int16 = 'int16',
 	int32 = 'int32',
 	int64 = 'int64',
-	items = 'items',
 	json = 'json',
 	link = 'link',
 	literal = 'literal',

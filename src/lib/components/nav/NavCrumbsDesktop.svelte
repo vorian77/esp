@@ -4,7 +4,9 @@
 	import { AppLevelCrumb } from '$comps/app/types.app.svelte'
 	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import {
+		NavDestinationType,
 		TokenAppIndex,
+		TokenAppNav,
 		TokenAppStateTriggerAction,
 		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
@@ -15,15 +17,20 @@
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 	let crumbsList: AppLevelCrumb[] = $derived(sm.app.navCrumbsList())
 
-	async function onClick(index: number): Promise<MethodResult> {
+	async function onClick(crumbList: AppLevelCrumb[], index: number): Promise<MethodResult> {
 		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_nav,
-					CodeActionType.navCrumbs
+					CodeActionType.navDestination
 				),
 				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-				data: { token: new TokenAppIndex({ index }) }
+				data: {
+					token: new TokenAppNav({
+						_codeDestinationType: NavDestinationType.back,
+						backCount: crumbList.length - index - 1
+					})
+				}
 			})
 		)
 	}
@@ -39,7 +46,7 @@
 			{@const lastItem = crumbsList.length - 2}
 			{#if i === 0}
 				<li id="li-crumb-first" class="flex hover:text-nav-hover">
-					<button onclick={() => onClick(i)} onkeyup={() => onClick(i)}>
+					<button onclick={() => onClick(crumbsList, i)} onkeyup={() => onClick(crumbsList, i)}>
 						<svg
 							class="size-5 shrink-0"
 							viewBox="0 0 20 20"
@@ -84,8 +91,8 @@
 					</svg>
 					<button
 						class="ml-4 hover:text-nav-hover"
-						onclick={() => onClick(i)}
-						onkeyup={() => onClick(i)}
+						onclick={() => onClick(crumbsList, i)}
+						onkeyup={() => onClick(crumbsList, i)}
 					>
 						{label}
 					</button>

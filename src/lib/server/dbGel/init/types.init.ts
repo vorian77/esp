@@ -19,8 +19,7 @@ import {
 import {
 	addApp,
 	addAppHeader,
-	addAttr,
-	addAttrObj,
+	addObjAttr,
 	addCode,
 	addCodeAction,
 	addCodeType,
@@ -29,15 +28,17 @@ import {
 	addUser,
 	addUserType,
 	updateDepdDataObjColumnItemChange,
+	updateDepdDataObjQueryRider,
+	updateDepdNavDestinationUserAction,
 	updateDepdNodeAction,
-	updateDepdNodeChild,
-	updateDepdNodeChildrenOld
+	updateDepdNodeChild
 } from '$server/dbGel/init/dbGelInit200Utilities50Other'
 import {
 	MoedBulkCsf,
 	MoedBulkDataDoc,
 	MoedBulkDataMsg,
-	MoedPBulkPart
+	MoedPBulkPart,
+	MoedBulkDataUser
 } from '$server/dbGel/init/dbGelInit200Utilities60OrgMOED'
 import { addAnalytic, addReport } from '$server/dbGel/init/dbGelInit200Utilities40Rep'
 import { valueOrDefault } from '$utils/utils.model'
@@ -97,6 +98,19 @@ export class InitDb {
 				],
 				deleteObj: 'sys_core::SysCodeAction',
 				fCreate: addCodeAction
+			})
+		)
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysObjAttr',
+				dataMap: [
+					['codeAttrType.name', 'code'],
+					['name', 'name'],
+					['owner.name', 'owner']
+				],
+				deleteObj: 'sys_core::SysObjAttr',
+				fCreate: addObjAttr,
+				isResetByTransOnly: true
 			})
 		)
 
@@ -245,7 +259,7 @@ export class InitDb {
 		this.items.push(
 			new InitDbItemObject({
 				altTrans: ['sysDataObj', 'sysDataObjEmbed', 'sysDataObjTask'],
-				name: 'sysDataObjColumnItemChange',
+				name: 'updateDepdDataObjColumnItemChange',
 				dataMap: 'name',
 				deleteObj: 'sys_core::SysDataObjColumnItemChange',
 				deleteObjFilter: `.id IN (SELECT sys_core::SysDataObj FILTER ${TokenExprFilterRecord}).columns.itemChanges.id`,
@@ -255,8 +269,19 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
+				altTrans: ['sysDataObj', 'sysDataObjEmbed', 'sysDataObjTask'],
+				name: 'updateDepdDataObjQueryRider',
+				dataMap: 'name',
+				deleteObj: 'sys_core::SysDataObjQueryRider',
+				deleteObjFilter: `.id IN (SELECT sys_core::SysDataObj FILTER ${TokenExprFilterRecord}).queryRiders.id`,
+				fCreate: updateDepdDataObjQueryRider
+			})
+		)
+
+		this.items.push(
+			new InitDbItemObject({
 				altTrans: ['sysNodeObjProgramObj', 'sysNodeObjProgram', 'sysNodeObjTask'],
-				name: 'sysNodeObjAction',
+				name: 'updateDepdNodeAction',
 				dataMap: 'name',
 				fCreate: updateDepdNodeAction,
 				updateObj: 'sys_core::SysNodeObj',
@@ -266,7 +291,7 @@ export class InitDb {
 		this.items.push(
 			new InitDbItemObject({
 				altTrans: ['sysNodeObjProgramObj', 'sysNodeObjProgram', 'sysNodeObjTask'],
-				name: 'sysNodeObjChild',
+				name: 'updateDepdNodeChild',
 				dataMap: 'name',
 				fCreate: updateDepdNodeChild,
 				updateObj: 'sys_core::SysNodeObj',
@@ -276,12 +301,12 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
-				altTrans: ['sysNodeObjProgramObj', 'sysNodeObjProgram', 'sysNodeObjTask'],
-				name: 'sysNodeObjChildrenOld',
+				altTrans: ['sysUserAction'],
+				name: 'updateDepdNavDestinationUserAction',
 				dataMap: 'name',
-				fCreate: updateDepdNodeChildrenOld,
-				updateObj: 'sys_core::SysNodeObj',
-				updateObjFields: [['childrenOld', '{}']]
+				fCreate: updateDepdNavDestinationUserAction,
+				updateObj: 'sys_user::SysUserAction',
+				updateObjFields: [['navDestination', '{}']]
 			})
 		)
 
@@ -308,42 +333,6 @@ export class InitDb {
 				dataMap: 'name',
 				deleteObj: 'sys_rep::SysRep',
 				fCreate: addReport
-			})
-		)
-
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysAttrObj',
-				dataMap: [
-					['name', 'name'],
-					['owner.name', 'owner']
-				],
-				deleteObj: 'sys_core::SysAttrObj',
-				// exprResets: [
-				// 	`UPDATE sys_core::SysDataObjColumnItemChange SET {valueTargetAttribute := {}, valueTriggerAttributes := {}}`
-				// ],
-				fCreate: addAttrObj
-				// isResetByTransOnly: true,
-				// updateObj: 'sys_core::ObjRoot',
-				// updateObjBypassRecordFilter: true,
-				// updateObjFields: [
-				// 	[
-				// 		'attrs',
-				// 		`.attrs EXCEPT (SELECT sys_core::SysAttr FILTER .obj = (SELECT sys_core::SysAttr FILTER ${TokenExprFilterRecord}))`
-				// 	]
-				// ]
-			})
-		)
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysAttr',
-				dataMap: [
-					['obj.name', 'name'],
-					['obj.owner.name', 'owner'],
-					['codeAttrType.name', 'type']
-				],
-				deleteObj: 'sys_core::SysAttr',
-				fCreate: addAttr
 			})
 		)
 		this.items.push(
@@ -374,7 +363,7 @@ export class InitDb {
 		this.items.push(
 			new InitDbItemObject({
 				name: 'sysUser',
-				dataMap: 'userName',
+				dataMap: 'name',
 				fCreate: addUser
 			})
 		)
@@ -389,10 +378,15 @@ export class InitDb {
 		)
 		this.items.push(
 			new InitDbItem({
+				name: 'MoedBulkDataUser',
+				exprResets: `DELETE sys_user::SysUser FILTER count(.userTypes) = 1 AND 'ut_client_moed_youth' IN .userTypes.name`,
+				fCreate: MoedBulkDataUser
+			})
+		)
+		this.items.push(
+			new InitDbItem({
 				name: 'MoedBulkDataMsg',
-				exprResets: [
-					`DELETE sys_core::SysMsg FILTER .sender IN org_client_moed::MoedParticipant.person UNION .recipients IN org_client_moed::MoedParticipant.person UNION .attrs IN (SELECT sys_core::SysAttr filter .obj.owner.name = 'sys_client_moed') UNION .sender.fullName = 'User System'`
-				],
+				exprResets: [`DELETE sys_core::SysMsg`],
 				fCreate: MoedBulkDataMsg
 			})
 		)
@@ -400,7 +394,7 @@ export class InitDb {
 			new InitDbItem({
 				name: 'MoedBulkCsf',
 				exprResets: [
-					`DELETE app_cm::CmClientServiceFlow FILTER .client IN org_client_moed::MoedParticipant`
+					`DELETE app_cm::CmClientServiceFlow FILTER .client.owner.name = 'sys_client_moed'`
 				],
 				fCreate: MoedBulkCsf
 			})
@@ -412,6 +406,7 @@ export class InitDb {
 				fCreate: MoedBulkDataDoc
 			})
 		)
+
 		this.items.push(
 			new InitDbItem({
 				name: 'MoedBulkDataDelete',

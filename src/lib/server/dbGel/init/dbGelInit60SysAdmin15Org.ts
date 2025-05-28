@@ -1,60 +1,12 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
 export function initAdminOrg(init: InitDb) {
-	initFieldListSelectCodeAttribute(init)
 	initFieldListSelectCodeType(init)
 	initFieldListSelectUserAll(init)
 	initFieldListSelectUserSystem(init)
 
 	initOrg(init)
 	initSystem(init)
-}
-
-function initFieldListSelectCodeAttribute(init: InitDb) {
-	init.addTrans('sysDataObjEmbed', {
-		actionGroup: 'doag_embed_list_select',
-		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		codeDataObjType: 'embed',
-		exprFilter: `.codeType.name = 'ct_sys_attribute_type' AND (.isGlobalResource UNION .owner.id = <tree,uuid,SysSystem.id> UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents)`,
-		header: 'Select Attribute Type(s)',
-		name: 'dofls_sys_admin_org_user_code_attribute',
-		owner: 'sys_system',
-		tables: [{ index: 0, table: 'SysCode' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'name',
-				orderSort: 10,
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'header',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0
-			}
-		]
-	})
-
-	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionGroupModal: 'doag_dialog_footer_list',
-		btnLabelComplete: 'Select Attribute Type(s)',
-		dataObjList: 'dofls_sys_admin_org_user_code_attribute',
-		name: 'fels_sys_admin_code_attribute',
-		owner: 'sys_system'
-	})
 }
 
 function initFieldListSelectCodeType(init: InitDb) {
@@ -149,7 +101,7 @@ function initFieldListSelectUserAll(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'userName',
+				columnName: 'name',
 				orderCrumb: 30,
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -174,7 +126,7 @@ function initFieldListSelectUserSystem(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		exprFilter: `<parms,uuid,queryOwnerIdOrg> IN .orgs.id`,
+		exprFilter: `<parms,uuid,queryOwnerOrg> IN .orgs.id`,
 		header: 'Select Users',
 		name: 'dofls_sys_user_system',
 		owner: 'sys_system',
@@ -211,7 +163,7 @@ function initFieldListSelectUserSystem(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'userName',
+				columnName: 'name',
 				orderCrumb: 30,
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -487,30 +439,18 @@ function initSystem(init: InitDb) {
 				orderDisplay: 70,
 				orderDefine: 70
 			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'embedListSelect',
-				columnName: 'typesCodeType',
-				fieldEmbedListSelect: 'fels_sys_admin_code_type_org_system',
-				indexTable: 0,
-				isDisplayable: true,
-				linkColumns: ['name'],
-				linkTable: 'SysCodeType',
-				orderDisplay: 80,
-				orderDefine: 80
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'embedListSelect',
-				columnName: 'typesAttribute',
-				fieldEmbedListSelect: 'fels_sys_admin_code_attribute',
-				indexTable: 0,
-				isDisplayable: true,
-				linkColumns: ['name'],
-				linkTable: 'SysCode',
-				orderDisplay: 90,
-				orderDefine: 90
-			},
+			// {
+			// 	codeAccess: 'optional',
+			// 	codeFieldElement: 'embedListSelect',
+			// 	columnName: 'typesCodeType',
+			// 	fieldEmbedListSelect: 'fels_sys_admin_code_type_org_system',
+			// 	indexTable: 0,
+			// 	isDisplayable: true,
+			// 	linkColumns: ['name'],
+			// 	linkTable: 'SysCodeType',
+			// 	orderDisplay: 80,
+			// 	orderDefine: 80
+			// },
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'chips',

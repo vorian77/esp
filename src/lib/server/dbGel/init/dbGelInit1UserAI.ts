@@ -1,10 +1,20 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
 export function initUserAI(init: InitDb) {
+	initObjAttr(init)
 	initAppHeaders(init)
 	initApps(init)
 	initUserType(init)
-	initUsers(init)
+	// initUsers(init)
+}
+
+function initObjAttr(init: InitDb) {
+	init.addTrans('sysObjAttr', {
+		code: 'at_sys_user_role',
+		header: 'Role-Instructor',
+		name: 'role_ai_instructor',
+		owner: 'sys_client_atlantic_impact'
+	})
 }
 
 function initAppHeaders(init: InitDb) {
@@ -33,47 +43,79 @@ function initApps(init: InitDb) {
 function initUserType(init: InitDb) {
 	/* Atlantic Impact */
 	init.addTrans('sysUserType', {
+		attrsAccess: [
+			{ access: 'allow', owner: 'sys_system', name: 'app_sys_admin_user' },
+			{ access: 'allow', owner: 'sys_system', name: 'app_sys_reporting' }
+		],
 		header: 'AI-Admin',
 		name: 'ut_client_ai_admin',
-		owner: 'sys_client_atlantic_impact',
-		resources: [
-			// { owner: 'sys_system', name: 'app_sys_admin_user' },
-			{ owner: 'sys_system', name: 'app_sys_reporting' }
-			// { owner: 'sys_system', name: 'task_sys_quote' }
-		]
+		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysUserType', {
+		attrsAccess: [
+			{ access: 'allow', owner: 'sys_client_atlantic_impact', name: 'role_ai_instructor' }
+		],
 		header: 'AI-Instructor',
 		name: 'ut_client_ai_instructor',
-		owner: 'sys_client_atlantic_impact',
-		tags: [{ codeType: 'ct_sys_user_type_tag_role', code: 'utt_role_ai_instructor' }]
+		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysUserType', {
-		header: 'AI-Staff',
-		name: 'ut_client_ai_staff',
-		owner: 'sys_client_atlantic_impact',
-		resources: [
-			{ owner: 'sys_system', name: 'app_sys_reporting' },
-			{ owner: 'sys_client_atlantic_impact', name: 'app_client_ai_staff' },
-			{ owner: 'sys_client_atlantic_impact', name: 'report_ai_cohort_performance' },
-			{ owner: 'sys_client_atlantic_impact', name: 'report_ai_course_performance' },
-			// { owner: 'sys_client_atlantic_impact', name: 'report_ai_cohorts_detail' },
-			// { owner: 'sys_client_atlantic_impact', name: 'report_ai_courses_detail' },
-			// {  owner: 'sys_client_atlantic_impact', name: 'report_ai_partners_detail' },
-			// {  owner: 'sys_client_atlantic_impact', name: 'report_ai_student_attd_detail' },
-			// {  owner: 'sys_client_atlantic_impact', name: 'report_ai_student_docs_detail' },
-			// {  owner: 'sys_client_atlantic_impact', name: 'report_ai_student_notes_detail' },
-			{ owner: 'sys_client_atlantic_impact', name: 'report_ai_student_cohort_attd_summary' },
-			{ owner: 'sys_client_atlantic_impact', name: 'report_ai_student_job_placement_detail' },
+		attrsAccess: [
+			{ access: 'allow', owner: 'sys_system', name: 'app_sys_reporting' },
+
+			{ access: 'allow', owner: 'sys_client_atlantic_impact', name: 'app_client_ai_staff' },
 			{
+				access: 'allow',
+				owner: 'sys_client_atlantic_impact',
+				name: 'report_ai_cohort_performance'
+			},
+			{
+				access: 'allow',
+				owner: 'sys_client_atlantic_impact',
+				name: 'report_ai_course_performance'
+			},
+
+			// { access: 'allow', owner: 'sys_client_atlantic_impact', name: 'report_ai_cohorts_detail' },
+			// { access: 'allow', owner: 'sys_client_atlantic_impact', name: 'report_ai_courses_detail' },
+			// { access: 'allow', owner: 'sys_client_atlantic_impact', name: 'report_ai_partners_detail' },
+			// {
+			// 	access: 'allow',
+			// 	owner: 'sys_client_atlantic_impact',
+			// 	name: 'report_ai_student_attd_detail'
+			// },
+			// {
+			// 	access: 'allow',
+			// 	owner: 'sys_client_atlantic_impact',
+			// 	name: 'report_ai_student_docs_detail'
+			// },
+			// {
+			// 	access: 'allow',
+			// 	owner: 'sys_client_atlantic_impact',
+			// 	name: 'report_ai_student_notes_detail'
+			// },
+			{
+				access: 'allow',
+				owner: 'sys_client_atlantic_impact',
+				name: 'report_ai_student_cohort_attd_summary'
+			},
+			{
+				access: 'allow',
+				owner: 'sys_client_atlantic_impact',
+				name: 'report_ai_student_job_placement_detail'
+			},
+			{
+				access: 'allow',
 				owner: 'sys_client_atlantic_impact',
 				name: 'report_ai_student_school_placement_detail'
 			},
-			{ owner: 'sys_client_atlantic_impact', name: 'report_ai_student_roster' }
-			// { owner: 'sys_client_atlantic_impact', name: 'report_ai_student_service_flow_summary' },
-			// { owner: 'sys_client_atlantic_impact', name: 'task_ai_cohort_attd' }
-			// { owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' }
-		]
+			{ access: 'allow', owner: 'sys_client_atlantic_impact', name: 'report_ai_student_roster' }
+			// { access: 'allow', owner: 'sys_client_atlantic_impact', name: 'report_ai_student_service_flow_summary' },
+			// { access: 'allow', owner: 'sys_client_atlantic_impact', name: 'task_ai_cohort_attd' },
+			// { access: 'allow', owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' },
+		],
+		header: 'AI-Staff',
+		name: 'ut_client_ai_staff',
+		owner: 'sys_client_atlantic_impact'
 	})
 }
 
@@ -85,10 +127,10 @@ function initUsers(init: InitDb) {
 		firstName: 'Anise',
 		isActive: false,
 		lastName: 'Hayes',
+		name: '2482317505',
 		orgs: ['org_client_atlantic_impact'],
-		owner: 'org_client_atlantic_impact',
+		owner: 'sys_client_atlantic_impact',
 		systems: ['sys_client_atlantic_impact'],
-		userName: '2482317505',
 		userTypes: ['ut_client_ai_staff']
 	})
 	init.addTrans('sysUser', {
@@ -97,10 +139,10 @@ function initUsers(init: InitDb) {
 		firstName: 'Erica',
 		isActive: false,
 		lastName: 'Hicks',
+		name: '3136272756',
 		orgs: ['org_client_atlantic_impact'],
-		owner: 'org_client_atlantic_impact',
+		owner: 'sys_client_atlantic_impact',
 		systems: ['sys_client_atlantic_impact'],
-		userName: '3136272756',
 		userTypes: ['ut_client_ai_staff']
 	})
 	init.addTrans('sysUser', {
@@ -109,10 +151,10 @@ function initUsers(init: InitDb) {
 		firstName: 'Matthew',
 		isActive: false,
 		lastName: 'Clayton',
+		name: '3136276210',
 		orgs: ['org_client_atlantic_impact'],
-		owner: 'org_client_atlantic_impact',
+		owner: 'sys_client_atlantic_impact',
 		systems: ['sys_client_atlantic_impact'],
-		userName: '3136276210',
 		userTypes: ['ut_client_ai_admin', 'ut_client_ai_staff']
 	})
 	init.addTrans('sysUser', {
@@ -121,10 +163,10 @@ function initUsers(init: InitDb) {
 		firstName: 'Nino',
 		isActive: false,
 		lastName: 'Tanzini',
+		name: 'ntanzini',
 		orgs: ['org_client_atlantic_impact'],
-		owner: 'org_client_atlantic_impact',
+		owner: 'sys_client_atlantic_impact',
 		systems: ['sys_client_atlantic_impact'],
-		userName: 'ntanzini',
 		userTypes: ['ut_client_ai_instructor']
 	})
 }

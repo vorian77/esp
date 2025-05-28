@@ -22,7 +22,6 @@ import {
 	type DataRecord,
 	getArray,
 	getColor,
-	getDataRecordValueType,
 	memberOfEnum,
 	memberOfEnumIfExists,
 	memberOfEnumOrDefault,
@@ -83,21 +82,6 @@ export class Field {
 
 	getPropName() {
 		return this.isParmValue ? 'parmValue' : this.colDO.propName
-	}
-
-	getValueType(record: DataRecord, fieldValueType: FieldValueType) {
-		return getDataRecordValueType(
-			record[this.colDO.propName],
-			fieldValueType,
-			this.colDO.colDB.codeDataType,
-			this.colDO.colDB.isMultiSelect
-		)
-	}
-	getValueTypeData(record: DataRecord) {
-		return this.getValueType(record, FieldValueType.data)
-	}
-	getValueTypeDisplay(record: DataRecord) {
-		return this.getValueType(record, FieldValueType.display)
 	}
 
 	getValuationInvalid(error: ValidityError, level: ValidityErrorLevel, message: string) {
@@ -203,7 +187,6 @@ export class Field {
 
 						default:
 							return new MethodResult({
-								success: false,
 								error: {
 									file: FILENAME,
 									function: clazz,
@@ -237,7 +220,7 @@ export class Field {
 					case FieldItemChangeAction.retrieveSelect:
 						field.linkItems?.source.setParmValue(triggerValueCurrent)
 						if (field.linkItems) {
-							result = await field.linkItems.retrieve(sm, undefined)
+							result = await field.linkItems.retrieve(sm)
 							if (result.error) return result
 						}
 						break
@@ -248,7 +231,6 @@ export class Field {
 
 					default:
 						return new MethodResult({
-							success: false,
 							error: {
 								file: FILENAME,
 								function: clazz,
@@ -473,11 +455,6 @@ export enum FieldOp {
 	notEqual = 'notEqual',
 	notNull = 'notNull',
 	null = 'null'
-}
-
-export enum FieldValueType {
-	data = 'data',
-	display = 'display'
 }
 
 export class PropsFieldInit {

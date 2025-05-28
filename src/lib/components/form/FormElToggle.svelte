@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FieldAccess, FieldValueType } from '$comps/form/field.svelte'
+	import { FieldAccess } from '$comps/form/field.svelte'
 	import { FieldToggle } from '$comps/form/fieldToggle'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import { ContextKey, DataManager, DataObjCardinality, required } from '$utils/types'
@@ -14,9 +14,7 @@
 
 	let dataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let field = $derived(parms.field) as FieldToggle
-	let fieldValue = $derived(
-		dm.getFieldValue(parms.dataObjId, parms.row, parms.field, FieldValueType.display)
-	)
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
 	let valueToggle: boolean = $state(field.getValueBoolean(fieldValue))
 
 	async function onChange(event: Event) {

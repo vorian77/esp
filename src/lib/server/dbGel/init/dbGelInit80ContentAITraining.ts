@@ -1,5 +1,4 @@
 import { InitDb } from '$server/dbGel/init/types.init'
-import { link } from 'fs'
 
 export function initContentAITraining(init: InitDb) {
 	initCourse(init)
@@ -19,7 +18,7 @@ function initCourse(init: InitDb) {
 		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		exprFilter:
-			'.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).userTypes.owner',
+			'.owner in (SELECT sys_user::SysUser FILTER .name = <user,str,name>).userTypes.owner',
 		header: 'Courses',
 		name: 'data_obj_cm_course_list',
 		owner: 'sys_client_atlantic_impact',
@@ -85,7 +84,7 @@ function initCourse(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerIdSystem>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerSys>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -412,7 +411,7 @@ function initCohort(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerIdSystem>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerSys>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -473,17 +472,17 @@ function initCohort(init: InitDb) {
 				orderDefine: 100,
 				indexTable: 0
 			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'staffInstructor',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0,
-				fieldListItems: 'il_sys_user_by_tag_type',
-				fieldListItemsParmValue: 'utt_role_ai_instructor'
-			},
+			// {
+			// 	codeAccess: 'optional',
+			// 	codeFieldElement: 'select',
+			// 	columnName: 'staffInstructor',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 110,
+			// 	orderDefine: 110,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_sys_user_by_tag_type',
+			// 	fieldListItemsParmValue: 'role_ai_instructor'
+			// },
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
@@ -734,11 +733,12 @@ function initCohortAttd(init: InitDb) {
 		parentTable: 'CmCohort',
 		queryRiders: [
 			{
-				codeFunction: 'qrfFileStorage',
+				codeQueryAction: 'customFunction',
+				codeQueryFunction: 'qrfFileStorage',
+				codeQueryPlatform: 'client',
 				codeQueryType: 'save',
 				codeTriggerTiming: 'pre',
-				codeType: 'customFunction',
-				functionParmValue: 'file'
+				parmValueStr: 'file'
 			}
 		],
 		tables: [{ index: 0, table: 'CmCohortAttd' }],
@@ -948,12 +948,12 @@ function initCohortAttdSheet(init: InitDb) {
 		actionGroup: 'doag_client_ai_cohort_attd_sheet',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		codeListEditPresetType: 'insert',
+		codeListPresetType: 'insert',
 		exprFilter:
 			'.csfCohort.cohort.id = <tree,uuid,CmCohort.id> AND .cohortAttd.id = <tree,uuid,CmCohortAttd.id>',
 		header: 'Attendance Sheet',
 		isListEdit: true,
-		listEditPresetExpr: `WITH
+		listPresetExpr: `WITH
 		csfCohortsInCohort := (SELECT app_cm::CmCsfCohort FILTER .cohort.id = <tree,uuid,CmCohort.id>),
 		csfCohortsWithAttd := (SELECT app_cm::CmCsfCohortAttd FILTER .cohortAttd.id = <tree,uuid,CmCohortAttd.id>).csfCohort,
 		newVals := (SELECT csfCohortsInCohort EXCEPT csfCohortsWithAttd)
@@ -1155,11 +1155,12 @@ function initCohortDoc(init: InitDb) {
 		owner: 'sys_client_atlantic_impact',
 		queryRiders: [
 			{
-				codeFunction: 'qrfFileStorage',
+				codeQueryAction: 'customFunction',
+				codeQueryFunction: 'qrfFileStorage',
+				codeQueryPlatform: 'client',
 				codeQueryType: 'save',
 				codeTriggerTiming: 'pre',
-				codeType: 'customFunction',
-				functionParmValue: 'file'
+				parmValueStr: 'file'
 			}
 		],
 		tables: [{ index: 0, table: 'CmCohortDoc' }],
@@ -1467,7 +1468,7 @@ function initPartner(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter:
-			'.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).userTypes.owner',
+			'.owner in (SELECT sys_user::SysUser FILTER .name = <user,str,name>).userTypes.owner',
 		header: 'Partners',
 		name: 'data_obj_cm_partner_list',
 		owner: 'sys_client_atlantic_impact',
@@ -1577,8 +1578,16 @@ function initPartner(init: InitDb) {
 				orderDefine: 10
 			},
 			{
+				columnName: 'codeAttrType',
+				exprSave: `sys_core::getCodeAttrType('at_cm_partner')`,
+				orderDefine: 15,
+				indexTable: 0,
+				isDisplayable: false,
+				linkTable: 'SysCode'
+			},
+			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerIdSystem>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerSys>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -1845,7 +1854,7 @@ function initPartnerNote(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				codeFieldElement: 'date',
-				codeSortDir: 'DESC',
+				codeSortDir: 'desc',
 				columnName: 'date',
 				orderCrumb: 10,
 				orderSort: 10,

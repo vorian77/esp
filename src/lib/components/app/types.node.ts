@@ -41,7 +41,6 @@ export class Node extends NodeHeader {
 	isAlwaysRetrieveData: boolean
 	isDynamicChildrenSystemParents: boolean
 	isHideRowManager: boolean
-	isMobileMode: boolean
 	ownerId?: string
 	queryOwnerType?: NodeQueryOwnerType
 	constructor(obj: any) {
@@ -54,7 +53,6 @@ export class Node extends NodeHeader {
 		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData)
 		this.isDynamicChildrenSystemParents = booleanOrFalse(obj.isDynamicChildrenSystemParents)
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager)
-		this.isMobileMode = booleanOrFalse(obj.isMobileMode)
 		this.ownerId = strRequired(obj._ownerId, clazz, 'ownerId')
 		this.queryOwnerType = memberOfEnumIfExists(
 			obj._codeQueryOwnerType,

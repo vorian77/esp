@@ -19,7 +19,7 @@ function initError(init: InitDb) {
 			{ columnParent: 'person', indexParent: 1, index: 2, table: 'SysPerson' }
 		],
 		exprFilter: 'none',
-		actionGroup: 'doag_list_error',
+		actionGroup: 'doag_list_edit_download',
 		fields: [
 			{
 				columnName: 'id',
@@ -29,7 +29,7 @@ function initError(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeSortDir: 'DESC',
+				codeSortDir: 'desc',
 				columnName: 'createdAt',
 				indexTable: 0,
 				isDisplayable: true,
@@ -96,7 +96,7 @@ function initError(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'userName',
+				columnName: 'name',
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
@@ -244,7 +244,7 @@ function initError(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'userName',
+				columnName: 'name',
 				indexTable: 1,
 				isDisplayable: true,
 				orderDisplay: 220,

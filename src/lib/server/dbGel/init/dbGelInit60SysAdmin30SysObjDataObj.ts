@@ -376,7 +376,7 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'codeListEditPresetType',
+				columnName: 'codeListPresetType',
 				isDisplayable: true,
 				orderDisplay: 300,
 				orderDefine: 300,
@@ -394,7 +394,7 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
-				columnName: 'listEditPresetExpr',
+				columnName: 'listPresetExpr',
 				isDisplayable: true,
 				orderDisplay: 320,
 				orderDefine: 320,
@@ -1175,18 +1175,6 @@ function initDataObjColumn(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 660,
 				orderDefine: 660
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'embedListConfig',
-				columnName: 'items',
-				fieldEmbedListConfig: 'flec_data_obj_data_obj_column_item_value',
-				indexTable: 0,
-				isDisplayable: true,
-				linkColumns: ['itemDisplay'],
-				linkTable: 'SysDataObjColumnItemValue',
-				orderDefine: 670,
-				orderDisplay: 670
 			},
 			{
 				codeFieldElement: 'tagSection',

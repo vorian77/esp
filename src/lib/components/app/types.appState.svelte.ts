@@ -16,11 +16,13 @@ import {
 	User
 } from '$utils/types'
 import {
+	NavDestinationType,
 	TokenApiDbDataObjSource,
 	TokenApiId,
 	TokenApiQueryType,
 	TokenAppDoQuery,
 	TokenAppDo,
+	TokenAppNav,
 	TokenAppModalEmbedField,
 	TokenAppModalReturn,
 	TokenAppModalReturnType,
@@ -28,7 +30,7 @@ import {
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
-import { QuerySourceParentRaw } from '$lib/query/types.query'
+import { QuerySourceParentRaw } from '$lib/queryClient/types.queryClient'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { RawDataObjAction } from '$comps/dataObj/types.rawDataObj.svelte'
 import {
@@ -246,8 +248,11 @@ export class State {
 					new TokenAppStateTriggerAction({
 						codeAction: CodeAction.init(
 							CodeActionClass.ct_sys_code_action_class_nav,
-							CodeActionType.navHome
-						)
+							CodeActionType.navDestination
+						),
+						data: {
+							token: new TokenAppNav({ _codeDestinationType: NavDestinationType.home })
+						}
 					})
 				)
 			}
@@ -474,9 +479,12 @@ export class State {
 					new TokenAppStateTriggerAction({
 						codeAction: CodeAction.init(
 							CodeActionClass.ct_sys_code_action_class_nav,
-							CodeActionType.navHome
+							CodeActionType.navDestination
 						),
-						codeConfirmType: TokenAppUserActionConfirmType.statusChanged
+						codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+						data: {
+							token: new TokenAppNav({ _codeDestinationType: NavDestinationType.home })
+						}
 					})
 				)
 				if (result.error) return result

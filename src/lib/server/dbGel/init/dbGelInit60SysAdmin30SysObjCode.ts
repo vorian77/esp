@@ -47,29 +47,14 @@ function initCodeType(init: InitDb) {
 				codeAccess: 'readOnly',
 				columnName: 'header',
 				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'order',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'valueDecimal',
-				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'valueInteger',
+				columnName: 'order',
+				isDisplay: false,
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
@@ -77,10 +62,29 @@ function initCodeType(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'valueString',
+				columnName: 'valueDecimal',
+				isDisplay: false,
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'valueInteger',
+				isDisplay: false,
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'valueString',
+				isDisplay: false,
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
 				indexTable: 0
 			}
 		]

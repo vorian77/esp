@@ -1,63 +1,8 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
 export function initAdminSysMetaUserType(init: InitDb) {
-	initFieldListSelectResource(init)
 	initFieldListSelectUser(init)
 	initUserType(init)
-}
-
-function initFieldListSelectResource(init: InitDb) {
-	init.addTrans('sysDataObjEmbed', {
-		actionGroup: 'doag_embed_list_select',
-		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		codeDataObjType: 'embed',
-		exprFilter: `.isGlobalResource UNION .owner.id = <parms,uuid,queryOwnerIdSystem> UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerIdSystem>).systemParents`,
-		header: 'Select Resource(s)',
-		name: 'dofls_sys_admin_sys_user_type_resource',
-		owner: 'sys_system',
-		tables: [{ index: 0, table: 'SysUserTypeResource' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'isGlobalResource',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'name',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				orderSort: 20,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'header',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
-			}
-		]
-	})
-	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionGroupModal: 'doag_dialog_footer_list',
-		btnLabelComplete: 'Select Resource(s)',
-		dataObjList: 'dofls_sys_admin_sys_user_type_resource',
-		name: 'fels_sys_admin_sys_user_type_resource',
-		owner: 'sys_system'
-	})
 }
 
 function initFieldListSelectUser(init: InitDb) {
@@ -66,7 +11,7 @@ function initFieldListSelectUser(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		exprFilter: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerIdSystem>).owner IN .orgs`,
+		exprFilter: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>).owner IN .orgs`,
 		header: 'Select Users',
 		name: 'dofls_sys_sys_admin_user',
 		owner: 'sys_system',
@@ -103,7 +48,7 @@ function initFieldListSelectUser(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'userName',
+				columnName: 'name',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -250,17 +195,17 @@ function initUserType(init: InitDb) {
 				orderDisplay: 80,
 				orderDefine: 80
 			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'embedListSelect',
-				columnName: 'resources',
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
-				fieldEmbedListSelect: 'fels_sys_admin_sys_user_type_resource',
-				indexTable: 0,
-				linkTable: 'SysUserTypeResource'
-			},
+			// {
+			// 	codeAccess: 'optional',
+			// 	codeFieldElement: 'embedListSelect',
+			// 	columnName: 'resources',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 90,
+			// 	orderDefine: 90,
+			// 	fieldEmbedListSelect: 'fels_sys_admin_sys_user_type_resource',
+			// 	indexTable: 0,
+			// 	linkTable: 'SysObjAttrAccess'
+			// },
 
 			/* management */
 			{

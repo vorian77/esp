@@ -1,11 +1,14 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
 export function initUserSystem(init: InitDb) {
+	initObjAttr(init)
 	initAppHeaders(init)
 	initApps(init)
 	initUserType(init)
 	initUsers(init)
 }
+
+function initObjAttr(init: InitDb) {}
 
 function initAppHeaders(init: InitDb) {
 	/* system */
@@ -80,29 +83,28 @@ function initApps(init: InitDb) {
 function initUserType(init: InitDb) {
 	/* system */
 	init.addTrans('sysUserType', {
+		attrsAccess: [
+			{ access: 'allow', owner: 'sys_system', name: 'app_sys_admin_global' },
+			{ access: 'allow', owner: 'sys_system', name: 'app_sys_reporting' },
+			{ access: 'allow', owner: 'sys_system', name: 'task_sys_msg_all' },
+			{ access: 'allow', owner: 'sys_system', name: 'task_sys_msg_unread' },
+			{ access: 'allow', owner: 'sys_system', name: 'task_sys_quote' }
+		],
 		header: 'Admin - Global',
 		name: 'ut_sys_admin_global',
-		owner: 'sys_system',
-		resources: [
-			{ owner: 'sys_system', name: 'app_sys_admin_global' },
-			{ owner: 'sys_system', name: 'task_sys_msg_all' },
-			// { owner: 'sys_system', name: 'task_sys_quote' },
-			{ owner: 'sys_system', name: 'app_sys_reporting' }
-			// { owner: 'sys_client_atlantic_impact', name: 'task_ai_cohort_attd' },
-			// { owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' }
-		]
+		owner: 'sys_system'
 	})
 
 	/* CRM */
 	init.addTrans('sysUserType', {
+		attrsAccess: [
+			{ access: 'allow', owner: 'sys_app_crm', name: 'app_app_crm' },
+			{ access: 'allow', owner: 'sys_app_crm', name: 'report_crm_client_detail' },
+			{ access: 'allow', owner: 'sys_system', name: 'app_sys_reporting' }
+		],
 		header: 'CRM Admin',
 		name: 'ut_app_crm_admin',
-		owner: 'sys_app_crm',
-		resources: [
-			{ owner: 'sys_app_crm', name: 'app_app_crm' },
-			{ owner: 'sys_system', name: 'app_sys_reporting' },
-			{ owner: 'sys_app_crm', name: 'report_crm_client_detail' }
-		]
+		owner: 'sys_app_crm'
 	})
 }
 
@@ -114,10 +116,10 @@ function initUsers(init: InitDb) {
 		firstName: 'Root',
 		isActive: true,
 		lastName: 'User',
+		name: '*ROOTUSER*',
 		orgs: ['org_system'],
-		owner: 'org_system',
+		owner: 'sys_system',
 		systems: ['sys_app_cm', 'sys_app_crm', 'sys_system'],
-		userName: '*ROOTUSER*',
 		userTypes: []
 	})
 
@@ -127,6 +129,7 @@ function initUsers(init: InitDb) {
 		firstName: 'User',
 		isActive: true,
 		lastName: 'System',
+		name: 'user_sys',
 		orgs: [
 			'org_client_atlantic_impact',
 			'org_apps',
@@ -134,7 +137,7 @@ function initUsers(init: InitDb) {
 			'org_client_moed',
 			'org_system'
 		],
-		owner: 'org_system',
+		owner: 'sys_system',
 		systems: [
 			'sys_client_atlantic_impact',
 			'sys_app_crm',
@@ -142,15 +145,15 @@ function initUsers(init: InitDb) {
 			'sys_client_moed',
 			'sys_system'
 		],
-		userName: 'user_sys',
 		userTypes: [
 			'ut_app_crm_admin',
-			'ut_sys_admin_global',
-			// 'ut_client_ai_admin',
+			'ut_client_ai_admin',
 			'ut_client_ai_staff',
+			'ut_client_moed_admin',
 			'ut_client_moed_advocate_east',
 			'ut_client_moed_advocate_west',
-			'ut_client_moed_youth'
+			'ut_client_moed_youth',
+			'ut_sys_admin_global'
 		]
 	})
 
@@ -161,14 +164,14 @@ function initUsers(init: InitDb) {
 		firstName: 'Phyllip',
 		isActive: true,
 		lastName: 'Hall',
+		name: '2487985578',
 		orgs: ['org_client_moed', 'org_system'],
-		owner: 'org_client_app_factory',
+		owner: 'sys_client_app_factory',
 		systems: ['sys_client_atlantic_impact'],
-		userName: '2487985578',
 		userTypes: [
-			'ut_client_moed_admin',
-			'ut_client_moed_advocate_east',
-			'ut_client_moed_advocate_west'
+			// 'ut_client_moed_admin',
+			// 'ut_client_moed_advocate_east',
+			// 'ut_client_moed_advocate_west'
 		]
 	})
 }

@@ -4,29 +4,27 @@ import {
 	RawDataObjPropDB
 } from '$comps/dataObj/types.rawDataObj.svelte'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
-import { DbTable, QuerySource, QuerySourceParent, type RawDataList } from '$lib/query/types.query'
-import { nbrOrDefault, valueOrDefault } from '$lib/utils/utils'
 import {
-	evalExpr,
-	evalExprTokens,
-	ExprElementToken,
-	getUUID,
-	getValDb
-} from '$routes/api/db/dbScriptEval'
+	DbTable,
+	QuerySource,
+	QuerySourceParent,
+	type RawDataList
+} from '$lib/queryClient/types.queryClient'
+import { nbrOrDefault, valueOrDefault } from '$lib/utils/utils'
+import { evalExpr, getUUID, getValDb } from '$routes/api/db/dbScriptEval'
 import {
 	classOptional,
-	DataObjCardinality,
 	DataObjData,
 	type DataRecord,
 	DataRecordStatus,
 	DataRow,
 	DataRows,
+	debug,
 	FieldEmbedType,
 	formatDateTime,
 	MethodResult,
 	ParmsValuesType,
 	PropDataType,
-	PropLinkItemsSource,
 	PropNamePrefixType,
 	required,
 	strRequired
@@ -163,14 +161,20 @@ export class GelQuery {
 		if (filter) filter = 'FILTER ' + filter
 		return filter
 	}
-	getPropsListEditPresetInsert(parms: DataRecord) {
-		const clazz = 'getPropsListEditPresetInsert'
+	getpropsListPresetInsert(parms: DataRecord) {
+		const clazz = 'getpropsListPresetInsert'
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		let properties = ''
 
 		props.forEach((propObj) => {
 			const clazzProp = `${clazz}.${propObj.propName}`
-			const propExpr = strRequired(propObj.exprPreset, clazzProp, 'expr')
+			const exprPreset = strRequired(propObj.exprPreset, clazzProp, 'exprPreset')
+			const propExpr = propObj.link
+				? propObj.isLinkSignature
+					? `{data := ${exprPreset}.id}`
+					: `{data := ${exprPreset}}`
+				: exprPreset
+
 			const prop = `${propObj.propName} := ${propExpr}`
 			properties = this.addItemComma(properties, prop)
 		})
@@ -179,36 +183,24 @@ export class GelQuery {
 		return properties
 	}
 
-	getPropsListEditPresetSave(parms: DataRecord, queryData: TokenApiQueryData) {
-		const clazz = 'getPropsListEditPresetSave'
+	getPropsListPresetSave(parms: DataRecord, queryData: TokenApiQueryData) {
+		const clazz = 'getPropsListPresetSave'
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		let properties = ''
 
 		props.forEach((propObj) => {
-			let propExpr = ''
 			const clazzProp = `${clazz}.${propObj.propName}`
 			const expr = strRequired(propObj.exprPreset, clazzProp, 'expr')
 
-			if (expr) {
-				let result: MethodResult = evalExprTokens({
-					evalExprContext: this.evelExprContext,
-					expr,
-					queryData,
-					querySource: this.querySource
-				})
-				if (result.error) return result
-				const expressions: ExprElementToken[] = result.data
-				if (expressions.length === 1) {
-					const exprToken = expressions[0].elRaw
-					const exprType = expressions[0].dataType
-					const exprValue = expressions[0].valueFormatted
-					propExpr = `${expr.replace(exprToken, exprValue)}`
-				} else {
-					propExpr = `${expr}`
-				}
-			}
-
-			const prop = `${propObj.propNameRaw} := ${propExpr}`
+			let result: MethodResult = evalExpr({
+				expr,
+				evalExprContext: this.evelExprContext,
+				queryData,
+				querySource: this.querySource
+			})
+			if (result.error) return result
+			const exprEvaluated: string = result.data
+			const prop = `${propObj.propNameRaw} := ${exprEvaluated}`
 			properties = this.addItemComma(properties, prop)
 		})
 
@@ -226,14 +218,13 @@ export class GelQuery {
 		let properties: string[] = []
 		let fValues: Function[] = []
 		const indexTable = required(parms.indexTable, clazz, 'indexTable')
-		const action = strRequired(parms.action, clazz, 'action') as LinkSaveAction
 
 		// 1. build props, subObjGroup
 		propsRaw
 			.filter((p) => p.indexTable === indexTable)
 			.forEach((p, idx) => {
 				if (!p.fieldEmbed) {
-					const propDB = `${p.propNameRaw} := ${this.getPropsSavePropExpr(action, idx, p, query, fValues)}`
+					const propDB = `${p.propNameRaw} := ${this.getPropsSavePropExpr(idx, p, query, fValues)}`
 					properties.push(propDB)
 
 					// format values
@@ -246,7 +237,6 @@ export class GelQuery {
 	}
 
 	getPropsSavePropExpr(
-		action: LinkSaveAction,
 		propIdx: number,
 		propObj: RawDataObjPropDB,
 		query: GelQuery,
@@ -257,37 +247,27 @@ export class GelQuery {
 		const clazzProp = `${clazz}.${propObj.propName}`
 
 		let expr =
-			!query.rawDataObj.rawQuerySource.listEditPresetExpr && propObj.exprSave
-				? propObj.exprSave
-				: ''
+			!query.rawDataObj.rawQuerySource.listPresetExpr && propObj.exprSave ? propObj.exprSave : ''
 
 		const setValueFunction = (idx: number, f: Function) => {
 			fValues[idx] = f
 		}
 
 		if (expr) {
-			let result: MethodResult = evalExprTokens({
-				evalExprContext: this.evelExprContext,
+			let result: MethodResult = evalExpr({
 				expr,
+				evalExprContext: this.evelExprContext,
 				queryData: query.queryData,
 				querySource: this.querySource
 			})
 			if (result.error) return result
-			const expressions: ExprElementToken[] = result.data
-			if (expressions.length === 1) {
-				const exprToken = expressions[0].elRaw
-				const exprType = expressions[0].dataType
-				const exprValue = expressions[0].valueFormatted
-				setValueFunction(propIdx, (rawValue: any) => {
-					return exprValue && propObj.isSelfReference ? 'DETACHED ' + exprValue : exprValue
-				})
-				propExpr = `${expr.replace(exprToken, exprValue)}`
-			} else {
-				setValueFunction(propIdx, (rawValue: any) => {
-					return rawValue
-				})
-				propExpr = `${expr}`
-			}
+			const exprEvaluated: string = result.data
+			setValueFunction(propIdx, (rawValue: any) => {
+				return exprEvaluated && propObj.isSelfReference
+					? 'DETACHED ' + exprEvaluated
+					: exprEvaluated
+			})
+			propExpr = `${exprEvaluated}`
 		} else {
 			let item = `json_get(item, '${propObj.propName}')`
 
@@ -295,41 +275,17 @@ export class GelQuery {
 			if (result.error) return result
 			const { dataType, valueDB } = result.data
 
-			let propTableObj = strRequired(
-				this.rawDataObj.tableGroup.getTableObj(propObj.indexTable),
-				clazzProp,
-				'attrLink.table?.object'
-			)
-
 			switch (dataType) {
-				case 'attribute':
-					const attrLinkItemsSource: PropLinkItemsSource = required(
-						propObj.linkItemsSource,
-						clazzProp,
-						'attrLinkItemsSource'
-					)
-					const attrTypes = attrLinkItemsSource.parmValueList.reduce(
-						(acc, val) => acc + (acc ? ',' : '') + `"${val}"`,
-						''
-					)
-					propTableObj =
-						propTableObj === this.getTableRootObj() ? `DETACHED ${propTableObj}` : propTableObj
-					const exprAttrsUneffected = attrTypes
-						? `(SELECT .attrs FILTER .codeAttrType.name NOT IN {${attrTypes}})`
-						: ''
-					const exprAttrsNew = `(FOR attr IN json_array_unpack(item['linkItems_attrs']) UNION ((SELECT sys_core::SysAttr FILTER .id = <uuid>attr)))`
-
-					propExpr =
-						action === LinkSaveAction.INSERT
-							? exprAttrsNew
-							: exprAttrsUneffected
-								? `(${exprAttrsUneffected} UNION ${exprAttrsNew})`
-								: `(${exprAttrsNew})`
-					propExpr = 'DISTINCT ' + propExpr
-
+				case '<cal::local_date>':
+				case '<datetime>':
+				case '<float64>':
+				case '<int16>':
+				case '<int32>':
+				case '<int64>':
 					setValueFunction(propIdx, (rawValue: any) => {
-						return rawValue ? rawValue : getUUID()
+						return rawValue === undefined || rawValue === null ? '' : rawValue.toString()
 					})
+					propExpr = `(SELECT ${dataType}{} IF <str>${item} = '' ELSE ${dataType}<str>${item})`
 					break
 
 				case 'link':
@@ -363,18 +319,6 @@ export class GelQuery {
 					propExpr = `(SELECT ${linkTable} FILTER .id ${filter})`
 					break
 
-				case '<cal::local_date>':
-				case '<datetime>':
-				case '<float64>':
-				case '<int16>':
-				case '<int32>':
-				case '<int64>':
-					setValueFunction(propIdx, (rawValue: any) => {
-						return rawValue === undefined || rawValue === null ? '' : rawValue.toString()
-					})
-					propExpr = `(SELECT ${dataType}{} IF <str>${item} = '' ELSE ${dataType}<str>${item})`
-					break
-
 				default:
 					setValueFunction(propIdx, (rawValue: any) => {
 						return rawValue
@@ -388,7 +332,6 @@ export class GelQuery {
 	getPropsSelect(parms: DataRecord) {
 		const clazz = 'getPropsSelect'
 		let properties = ''
-		const isCardinalityDetail = this.rawDataObj.codeCardinality === DataObjCardinality.detail
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		const processProps = (query: GelQuery) => {
 			props.forEach((prop) => {
@@ -413,7 +356,7 @@ export class GelQuery {
 			if (prop.linkItemsSource) {
 				propValue = `.${propChildTableTraversal} ${prop.linkItemsSource.exprProps}`
 			} else if (prop.link) {
-				propValue = `.${propChildTableTraversal} {data := .id, display := .${prop.link.exprDisplay}}`
+				propValue = `.${propChildTableTraversal} ${prop.link.exprProps}`
 			} else if (prop.exprCustom) {
 				propValue = prop.exprCustom
 			} else if (indexTable > 0) {
@@ -441,7 +384,7 @@ export class GelQuery {
 			if (prop.linkItemsSource) {
 				expr = `${expr} ${prop.linkItemsSource.exprProps}`
 			} else if (prop.link) {
-				expr = `${expr} {data := .id, display := .${prop.link.exprDisplay}}`
+				expr = `${expr} ${prop.link.exprProps}`
 			}
 
 			properties = this.addItemComma(properties, `${prop.propName} := ${expr}`)
@@ -452,7 +395,7 @@ export class GelQuery {
 		return properties
 	}
 
-	getSort(queryData: TokenApiQueryData) {
+	getSort() {
 		let script = ''
 
 		if (this.rawDataObj.rawQuerySource.exprSort) {
@@ -616,8 +559,6 @@ class FormatData {
 				// no change
 				break
 
-			case PropDataType.attribute:
-			case PropDataType.items:
 			case PropDataType.link:
 				if (value && Object.hasOwn(value, 'value')) value = value.value
 				value = prop.isMultiSelect ? (value ? value : []) : value ? value : ''
@@ -709,21 +650,23 @@ class FormatDataSelectPreset extends FormatDataSelect {
 }
 
 class FormatDataUpdate extends FormatData {
-	rowsSave: DataRow[]
+	rowsSave: DataRows
 	constructor(obj: any) {
 		const clazz = 'FormatDataUpdate.constructor'
 		super(obj)
-		const source = obj.source ? obj.source : new DataRows()
-		this.rowsSave = source.getRows()
+		// const source = obj.source ? obj.source : new DataRows()
+		this.rowsSave = obj.rowsSave
 	}
 	processRow(recordRaw: DataRecord): MethodResult {
 		let result: MethodResult = this.prepRecord(recordRaw)
 		if (result.error) return result
 
 		let newStatus: DataRecordStatus = DataRecordStatus.inserted
-		const recordIdx = this.rowsSave.findIndex((dataRow) => dataRow.record.id === recordRaw.id)
+		const recordIdx = this.rowsSave.dataRows.findIndex(
+			(dataRow) => dataRow.record.id === recordRaw.id
+		)
 		if (recordIdx > -1) {
-			const oldStatus = this.rowsSave[recordIdx].status
+			const oldStatus = this.rowsSave.dataRows[recordIdx].status
 			switch (oldStatus) {
 				case DataRecordStatus.delete:
 					newStatus = DataRecordStatus.delete
@@ -736,7 +679,6 @@ class FormatDataUpdate extends FormatData {
 
 				default:
 					return new MethodResult({
-						success: false,
 						error: {
 							file: FILENAME,
 							function: 'ProcessRowUpdate.processRow',

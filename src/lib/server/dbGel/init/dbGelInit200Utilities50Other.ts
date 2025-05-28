@@ -18,6 +18,7 @@ export async function addApp(data: any) {
 				appHeader: e.select(e.sys_user.SysAppHeader, (sah) => ({
 					filter_single: e.op(sah.name, '=', p.appHeader)
 				})),
+				codeAttrType: e.select(e.sys_core.getCodeAttrType('at_sys_app')),
 				createdBy: CREATOR,
 				isGlobalResource: p.isGlobalResource,
 				name: p.name,
@@ -62,45 +63,24 @@ export async function addAppHeader(data: any) {
 	return await query.run(client, data)
 }
 
-export async function addAttr(data: any) {
-	sectionHeader(`addAttr - ${data.name}`)
+export async function addObjAttr(data: any) {
+	sectionHeader(`addObjAttr - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			name: e.str,
-			owner: e.str,
-			type: e.str
-		},
-		(p) => {
-			return e.insert(e.sys_core.SysAttr, {
-				codeAttrType: e.sys_core.getCode('ct_sys_attribute_type', p.type),
-				createdBy: CREATOR,
-				modifiedBy: CREATOR,
-				obj: e.sys_core.getAttrObj(p.owner, p.name)
-			})
-		}
-	)
-	return await query.run(client, data)
-}
-
-export async function addAttrObj(data: any) {
-	sectionHeader(`addAttrObj - ${data.name}`)
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params(
-		{
-			header: e.optional(e.str),
-			isGlobalResource: e.bool,
+			code: e.str,
+			header: e.str,
 			name: e.str,
 			owner: e.str
 		},
 		(p) => {
-			return e.insert(e.sys_core.SysAttrObj, {
+			return e.insert(e.sys_core.SysObjAttr, {
+				codeAttrType: e.sys_core.getCode('ct_sys_obj_attr_type', p.code),
 				createdBy: CREATOR,
 				header: p.header,
-				isGlobalResource: p.isGlobalResource,
+				modifiedBy: CREATOR,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner),
-				modifiedBy: CREATOR
+				owner: e.sys_core.getSystemPrime(p.owner)
 			})
 		}
 	)
@@ -365,6 +345,7 @@ export async function addTask(data: any) {
 			description: e.optional(e.str),
 			exprShow: e.optional(e.str),
 			exprStatus: e.optional(e.str),
+			exprWith: e.optional(e.str),
 			hasAltOpen: e.optional(e.bool),
 			header: e.optional(e.str),
 			isPinToDash: e.optional(e.bool),
@@ -379,12 +360,14 @@ export async function addTask(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysTask, {
+				codeAttrType: e.select(e.sys_core.getCodeAttrType('at_sys_task')),
 				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
 				codeRenderType: e.sys_core.getCode('ct_sys_task_render_type', p.codeRenderType),
 				codeStatusObj: e.sys_core.getCode('ct_sys_task_status_obj', p.codeStatusObj),
 				createdBy: CREATOR,
 				exprShow: p.exprShow,
 				exprStatus: p.exprStatus,
+				exprWith: p.exprWith,
 				hasAltOpen: valueOrDefaultParm(p.hasAltOpen, false),
 				header: p.header,
 				isPinToDash: valueOrDefaultParm(p.isPinToDash, false),
@@ -404,7 +387,7 @@ export async function addTask(data: any) {
 }
 
 export async function addUser(data: any) {
-	sectionHeader(`addUser - ${data.userName}`)
+	sectionHeader(`addUser - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
@@ -413,26 +396,28 @@ export async function addUser(data: any) {
 			firstName: e.str,
 			isActive: e.bool,
 			lastName: e.str,
+			name: e.str,
 			orgs: e.optional(e.array(e.str)),
 			owner: e.str,
 			systems: e.optional(e.array(e.str)),
-			userName: e.str,
 			userTypes: e.optional(e.array(e.str))
 		},
 		(p) => {
 			return e
 				.insert(e.sys_user.SysUser, {
+					codeAttrType: e.select(e.sys_core.getCode('ct_sys_obj_attr_type', 'at_sys_user')),
 					createdBy: CREATOR,
 					defaultOrg: e.select(e.sys_core.getOrg(p.defaultOrg)),
 					defaultSystem: e.select(e.sys_core.getSystemPrime(p.defaultSystem)),
 					isActive: p.isActive,
 					modifiedBy: CREATOR,
+					name: p.name,
 					orgs: e.assert_distinct(
 						e.for(e.array_unpack(p.orgs || e.cast(e.array(e.str), e.set())), (org) => {
 							return e.sys_core.getOrg(org)
 						})
 					),
-					owner: e.select(e.sys_core.getOrg(p.owner)),
+					owner: e.select(e.sys_core.getSystemPrime(p.owner)),
 					person: e.insert(e.default.SysPerson, {
 						firstName: p.firstName,
 						lastName: p.lastName
@@ -442,7 +427,6 @@ export async function addUser(data: any) {
 							return e.sys_core.getSystemPrime(sys)
 						})
 					),
-					userName: p.userName,
 					userTypes: e.assert_distinct(
 						e.for(e.array_unpack(p.userTypes || e.cast(e.array(e.str), e.set())), (ut_parm) => {
 							return e.sys_user.getUserType(ut_parm)
@@ -450,7 +434,7 @@ export async function addUser(data: any) {
 					)
 				})
 				.unlessConflict((user) => ({
-					on: user.userName,
+					on: user.name,
 					else: e.update(user, () => ({
 						set: {
 							orgs: e.assert_distinct(
@@ -458,7 +442,7 @@ export async function addUser(data: any) {
 									return e.sys_core.getOrg(org)
 								})
 							),
-							owner: e.select(e.sys_core.getOrg(p.owner)),
+							owner: e.select(e.sys_core.getSystemPrime(p.owner)),
 							systems: e.assert_distinct(
 								e.for(e.array_unpack(p.systems || e.cast(e.array(e.str), e.set())), (sys) => {
 									return e.sys_core.getSystemPrime(sys)
@@ -482,7 +466,10 @@ export async function addUserType(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
+			attrsAccess: e.optional(e.array(e.json)),
 			attrsAction: e.optional(e.array(e.json)),
+			attrsExpr: e.optional(e.array(e.json)),
+			attrsVirtual: e.optional(e.array(e.json)),
 			header: e.str,
 			isSelfSignup: e.optional(e.bool),
 			name: e.str,
@@ -492,42 +479,133 @@ export async function addUserType(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysUserType, {
-				attrsObjAction: e.assert_distinct(
-					e.for(e.array_unpack(p.attrsAction || e.cast(e.array(e.str), e.set())), (attr) => {
-						return e.insert(e.sys_core.SysAttrObjAction, {
-							codeAttrActionType: e.sys_core.getCode(
-								'ct_sys_attr_obj_action',
-								e.cast(e.str, e.json_get(attr, 'codeAttrAccessType'))
+				attrsAccess: e.assert_distinct(
+					e.for(e.array_unpack(p.attrsAccess || e.cast(e.array(e.str), e.set())), (attr) => {
+						return e.insert(e.sys_core.SysObjAttrAccess, {
+							codeAttrTypeAccess: e.sys_core.getCode(
+								'ct_sys_obj_attr_access',
+								e.cast(e.str, e.json_get(attr, 'access'))
 							),
-							obj: e.sys_core.getAttrObj(
-								e.cast(e.str, e.json_get(attr, 'owner')),
-								e.cast(e.str, e.json_get(attr, 'name'))
+							obj: e.assert_single(
+								e.select(e.sys_core.SysObjAttr, (soa) => ({
+									filter: e.op(
+										e.op(soa.owner.name, '=', e.cast(e.str, attr.owner)),
+										'and',
+										e.op(soa.name, '=', e.cast(e.str, attr.name))
+									)
+								}))
 							),
 							createdBy: CREATOR,
 							modifiedBy: CREATOR
 						})
 					})
 				),
+				attrsAction: e.assert_distinct(
+					e.for(e.array_unpack(p.attrsAction || e.cast(e.array(e.str), e.set())), (attr) => {
+						return e.insert(e.sys_core.SysObjAttrAction, {
+							codeAttrTypeAction: e.sys_core.getCode(
+								'ct_sys_obj_attr_action',
+								e.cast(e.str, e.json_get(attr, 'action'))
+							),
+							obj: e.assert_single(
+								e.select(e.sys_core.SysObjAttr, (soa) => ({
+									filter: e.op(
+										e.op(soa.owner.name, '=', e.cast(e.str, attr.owner)),
+										'and',
+										e.op(soa.name, '=', e.cast(e.str, attr.name))
+									)
+								}))
+							),
+							createdBy: CREATOR,
+							modifiedBy: CREATOR
+						})
+					})
+				),
+				attrsExpr: e.assert_distinct(
+					e.for(e.array_unpack(p.attrsExpr || e.cast(e.array(e.str), e.set())), (attrExpr) => {
+						return e.insert(e.sys_core.SysObjAttrExpr, {
+							codeAttrTypeAction: e.sys_core.getCode(
+								'ct_sys_obj_attr_action',
+								e.cast(e.str, e.json_get(attrExpr, 'action'))
+							),
+							createdBy: CREATOR,
+							expr: e.cast(e.str, e.json_get(attrExpr, 'expr')),
+							modifiedBy: CREATOR
+						})
+					})
+				),
+				attrsVirtual: e.assert_distinct(
+					e.for(
+						e.array_unpack(p.attrsVirtual || e.cast(e.array(e.str), e.set())),
+						(attrVirtual) => {
+							return e.insert(e.sys_core.SysObjAttrVirtual, {
+								attrsAccess: e.assert_distinct(
+									e.for(
+										e.array_unpack(
+											e.cast(e.array(e.json), (e.json, e.json_get(attrVirtual, 'attrsAccess'))) ||
+												e.cast(e.array(e.str), e.set())
+										),
+										(attr) => {
+											return e.insert(e.sys_core.SysObjAttrAccess, {
+												codeAttrTypeAccess: e.sys_core.getCode(
+													'ct_sys_obj_attr_access',
+													e.cast(e.str, e.json_get(attr, 'access'))
+												),
+												obj: e.assert_single(
+													e.select(e.sys_core.SysObjAttr, (soa) => ({
+														filter: e.op(
+															e.op(soa.owner.name, '=', e.cast(e.str, attr.owner)),
+															'and',
+															e.op(soa.name, '=', e.cast(e.str, attr.name))
+														)
+													}))
+												),
+												createdBy: CREATOR,
+												modifiedBy: CREATOR
+											})
+										}
+									)
+								),
+								attrsAction: e.assert_distinct(
+									e.for(
+										e.array_unpack(
+											e.cast(e.array(e.json), (e.json, e.json_get(attrVirtual, 'attrsAction'))) ||
+												e.cast(e.array(e.str), e.set())
+										),
+										(attr) => {
+											return e.insert(e.sys_core.SysObjAttrAction, {
+												codeAttrTypeAction: e.sys_core.getCode(
+													'ct_sys_obj_attr_action',
+													e.cast(e.str, e.json_get(attr, 'action'))
+												),
+												obj: e.assert_single(
+													e.select(e.sys_core.SysObjAttr, (soa) => ({
+														filter: e.op(
+															e.op(soa.owner.name, '=', e.cast(e.str, attr.owner)),
+															'and',
+															e.op(soa.name, '=', e.cast(e.str, attr.name))
+														)
+													}))
+												),
+												createdBy: CREATOR,
+												modifiedBy: CREATOR
+											})
+										}
+									)
+								),
+								expr: e.cast(e.str, e.json_get(attrVirtual, 'expr')),
+								createdBy: CREATOR,
+								modifiedBy: CREATOR
+							})
+						}
+					)
+				),
 				createdBy: CREATOR,
 				header: p.header,
 				isSelfSignup: valueOrDefaultParm(p.isSelfSignup, false),
 				name: p.name,
 				owner: e.sys_core.getSystemPrime(p.owner),
-				modifiedBy: CREATOR,
-				resources: e.assert_distinct(
-					e.for(e.array_unpack(p.resources || e.cast(e.array(e.json), e.set())), (res) => {
-						const resourceOwner = e.cast(e.str, e.json_get(res, 'owner'))
-						const resourceName = e.cast(e.str, e.json_get(res, 'name'))
-						return e.sys_user.getUserTypeResource(resourceOwner, resourceName)
-					})
-				),
-				tags: e.assert_distinct(
-					e.for(e.array_unpack(p.tags || e.cast(e.array(e.str), e.set())), (tag) => {
-						const codeType = e.cast(e.str, e.json_get(tag, 'codeType'))
-						const code = e.cast(e.str, e.json_get(tag, 'code'))
-						return e.sys_core.getCode(codeType, code)
-					})
-				)
+				modifiedBy: CREATOR
 			})
 		}
 	)
@@ -597,15 +675,35 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 										modifiedBy: CREATOR,
 										orderDefine: e.cast(e.int16, e.json_get(t, 'orderDefine')),
 										retrieveParmKey: e.cast(e.str, e.json_get(t, 'retrieveParmKey')),
-										valueTargetAttribute: e.sys_core.getAttrObj(
-											e.cast(
-												e.str,
-												e.json_get(e.cast(e.json, e.json_get(t, 'valueTargetAttribute')), 'owner')
-											),
-											e.cast(
-												e.str,
-												e.json_get(e.cast(e.json, e.json_get(t, 'valueTargetAttribute')), 'name')
-											)
+
+										valueTargetAttribute: e.assert_single(
+											e.select(e.sys_core.SysObjAttr, (soa) => ({
+												filter: e.op(
+													e.op(
+														soa.owner.name,
+														'=',
+														e.cast(
+															e.str,
+															e.json_get(
+																e.cast(e.json, e.json_get(t, 'valueTargetAttribute')),
+																'owner'
+															)
+														)
+													),
+													'and',
+													e.op(
+														soa.name,
+														'=',
+														e.cast(
+															e.str,
+															e.json_get(
+																e.cast(e.json, e.json_get(t, 'valueTargetAttribute')),
+																'name'
+															)
+														)
+													)
+												)
+											}))
 										),
 										valueTargetCode: e.sys_core.getCodeSystem(
 											e.cast(
@@ -628,10 +726,13 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 													e.cast(e.array(e.json), e.json_get(t, 'valueTriggerAttributes'))
 												),
 												(a) => {
-													return e.sys_core.getAttrObj(
-														e.cast(e.str, e.json_get(a, 'owner')),
-														e.cast(e.str, e.json_get(a, 'name'))
-													)
+													return e.select(e.sys_core.SysObjAttr, (soa) => ({
+														filter: e.op(
+															e.op(soa.owner.name, '=', e.cast(e.str, a.owner)),
+															'and',
+															e.op(soa.name, '=', e.cast(e.str, a.name))
+														)
+													}))
 												}
 											)
 										),
@@ -658,6 +759,88 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 		)
 		return await query.run(client, dataUpdate)
 	}
+}
+
+export async function updateDepdDataObjQueryRider(data: any) {
+	sectionHeader(`updateDepdQueryRiders - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const dataUpdate = { name: data.name, qr: data.queryRiders }
+	const query = e.params(
+		{
+			qr: e.optional(e.array(e.json)),
+			name: e.str
+		},
+		(p) => {
+			return e.update(e.sys_core.SysDataObj, (n) => ({
+				filter: e.op(n.name, '=', p.name),
+				set: {
+					queryRiders: e.assert_distinct(
+						e.for(e.array_unpack(p.qr), (qr) => {
+							return e.insert(e.sys_core.SysDataObjQueryRider, {
+								codeQueryAction: e.sys_core.getCode(
+									'ct_sys_do_query_rider_action',
+									e.cast(e.str, e.json_get(qr, 'codeQueryAction'))
+								),
+								codeQueryFunction: e.sys_core.getCode(
+									'ct_sys_do_query_rider_function',
+									e.cast(e.str, e.json_get(qr, 'codeQueryFunction'))
+								),
+								codeQueryPlatform: e.sys_core.getCode(
+									'ct_sys_do_query_rider_platform',
+									e.cast(e.str, e.json_get(qr, 'codeQueryPlatform'))
+								),
+								codeQueryType: e.sys_core.getCode(
+									'ct_sys_do_query_rider_query_type',
+									e.cast(e.str, e.json_get(qr, 'codeQueryType'))
+								),
+								codeTriggerTiming: e.sys_core.getCode(
+									'ct_sys_do_query_rider_trigger_timing',
+									e.cast(e.str, e.json_get(qr, 'codeTriggerTiming'))
+								),
+								codeUserMsgDelivery: e.sys_core.getCode(
+									'ct_sys_do_query_rider_msg_delivery',
+									e.cast(e.str, e.json_get(qr, 'codeUserMsgDelivery'))
+								),
+								createdBy: CREATOR,
+								expr: e.cast(e.str, e.json_get(qr, 'expr')),
+								modifiedBy: CREATOR,
+								navDestination: e.op(
+									e.insert(e.sys_core.SysNavDestination, {
+										codeDestinationType: e.sys_core.getCode(
+											'ct_sys_nav_destination_type',
+											e.cast(
+												e.str,
+												e.json_get(
+													e.cast(e.json, e.json_get(qr, 'navDestination')),
+													'codeDestinationType'
+												)
+											)
+										),
+										nodeDestination: e.sys_core.getNodeObjByName(
+											e.cast(
+												e.str,
+												e.json_get(
+													e.cast(e.json, e.json_get(qr, 'navDestination')),
+													'nodeDestination'
+												)
+											)
+										)
+									}),
+									'if',
+									e.op('exists', e.cast(e.json, e.json_get(qr, 'navDestination'))),
+									'else',
+									e.cast(e.sys_core.SysNavDestination, e.set())
+								),
+								parmValueStr: e.cast(e.str, e.json_get(qr, 'parmValueStr')),
+								userMsg: e.cast(e.str, e.json_get(qr, 'userMsg'))
+							})
+						})
+					)
+				}
+			}))
+		}
+	)
+	return await query.run(client, dataUpdate)
 }
 
 export async function updateDepdNodeAction(data: any) {
@@ -714,22 +897,35 @@ export async function updateDepdNodeChild(data: any) {
 	return await query.run(client, dataUpdate)
 }
 
-export async function updateDepdNodeChildrenOld(data: any) {
-	sectionHeader(`updateDepdNodeChildrenOld - ${data.name}`)
-	const dataUpdate = { name: data.name, childrenOld: data.childrenOld }
+export async function updateDepdNavDestinationUserAction(data: any) {
+	sectionHeader(`updateDepdNavDestinationUserAction - ${data.name}`)
+	const dataUpdate = {
+		navDestination: data.navDestination,
+		name: data.name
+	}
 	const query = e.params(
 		{
-			childrenOld: e.optional(e.array(e.str)),
+			navDestination: e.optional(e.json),
 			name: e.str
 		},
 		(p) => {
-			return e.update(e.sys_core.SysNodeObj, (n) => ({
-				filter: e.op(n.name, '=', p.name),
+			return e.update(e.sys_user.SysUserAction, (a) => ({
+				filter: e.op(a.name, '=', p.name),
 				set: {
-					childrenOld: e.assert_distinct(
-						e.for(e.array_unpack(p.childrenOld), (c) => {
-							return e.sys_core.getNodeObjByName(c)
-						})
+					navDestination: e.op(
+						e.insert(e.sys_core.SysNavDestination, {
+							codeDestinationType: e.sys_core.getCode(
+								'ct_sys_nav_destination_type',
+								e.cast(e.str, e.json_get(p.navDestination, 'codeDestinationType'))
+							),
+							nodeDestination: e.sys_core.getNodeObjByName(
+								e.cast(e.str, e.json_get(p.navDestination, 'nodeDestination'))
+							)
+						}),
+						'if',
+						e.op('exists', p.navDestination),
+						'else',
+						e.cast(e.sys_core.SysNavDestination, e.set())
 					)
 				}
 			}))

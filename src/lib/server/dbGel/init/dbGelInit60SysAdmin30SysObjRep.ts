@@ -796,6 +796,14 @@ function initRep(init: InitDb) {
 				orderDefine: 10
 			},
 			{
+				columnName: 'codeAttrType',
+				exprSave: `sys_core::getCodeAttrType('at_sys_report')`,
+				orderDefine: 15,
+				indexTable: 0,
+				isDisplayable: false,
+				linkTable: 'SysCode'
+			},
+			{
 				columnName: 'owner',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,

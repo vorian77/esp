@@ -11,9 +11,6 @@ export function initPreTable(init: InitDb) {
 		['sys_system', 'sys_db', 'SysTable', true],
 
 		// sys_core
-		['sys_system', 'sys_core', 'SysAttr', true],
-		['sys_system', 'sys_core', 'SysAttrAccess', true],
-		['sys_system', 'sys_core', 'SysAttrObj', true],
 		['sys_system', 'sys_core', 'SysCode', true],
 		['sys_system', 'sys_core', 'SysCodeAction', true],
 		['sys_system', 'sys_core', 'SysCodeType', true],
@@ -22,7 +19,6 @@ export function initPreTable(init: InitDb) {
 		['sys_system', 'sys_core', 'SysDataObjActionGroup', true],
 		['sys_system', 'sys_core', 'SysDataObjColumn', true],
 		['sys_system', 'sys_core', 'SysDataObjColumnItemChange', true],
-		['sys_system', 'sys_core', 'SysDataObjColumnItemValue', true],
 		['sys_system', 'sys_core', 'SysDataObjColumnLink', true],
 		['sys_system', 'sys_core', 'SysDataObjFieldEmbedListConfig', true],
 		['sys_system', 'sys_core', 'SysDataObjFieldEmbedListEdit', true],
@@ -36,7 +32,10 @@ export function initPreTable(init: InitDb) {
 		['sys_system', 'sys_core', 'SysMsg', true],
 		['sys_system', 'sys_core', 'SysNodeObj', true],
 		['sys_system', 'sys_core', 'SysObj', true],
-		['sys_system', 'sys_core', 'SysObjEnt', true],
+		['sys_system', 'sys_core', 'SysObjAttr', true],
+		['sys_system', 'sys_core', 'SysObjAttrAccess', true],
+		['sys_system', 'sys_core', 'SysObjAttrAction', true],
+		['sys_system', 'sys_core', 'SysObjAttrEnt', true],
 		['sys_system', 'sys_core', 'SysObjNote', true],
 		['sys_system', 'sys_core', 'SysOrg', true],
 		['sys_system', 'sys_core', 'SysSystem', true],
@@ -69,8 +68,7 @@ export function initPreTable(init: InitDb) {
 		['sys_system', 'sys_user', 'SysUserActionShow', true],
 		['sys_system', 'sys_user', 'SysUserType', true],
 		['sys_system', 'sys_user', 'SysUserPref', true],
-		['sys_system', 'sys_user', 'SysUserPrefType', true],
-		['sys_system', 'sys_user', 'SysUserTypeResource', false]
+		['sys_system', 'sys_user', 'SysUserPrefType', true]
 	])
 
 	init.addTrans('tablesBulk', [

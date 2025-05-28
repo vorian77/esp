@@ -19,7 +19,6 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system',
 		codeDataType: 'link',
 		header: 't.CodeSingle',
-		isMultiSelect: false,
 		name: 'testCodeSingle'
 	})
 	init.addTrans('sysColumn', {
@@ -171,13 +170,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Attendance Records',
 		isMultiSelect: true,
 		name: 'attds',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'attribute',
-		header: 'Attributes',
-		isMultiSelect: true,
-		name: 'attrs',
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
@@ -379,13 +371,6 @@ export function initPreColumn(init: InitDb) {
 		name: 'codeFieldElement'
 	})
 	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'link',
-		header: 'Function',
-		isMultiSelect: false,
-		name: 'codeFunction'
-	})
-	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Ethnicity',
 		isMultiSelect: false,
@@ -439,7 +424,7 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'link',
 		header: 'List - Edit - Preset Type',
 		isMultiSelect: false,
-		name: 'codeListEditPresetType'
+		name: 'codeListPresetType'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
@@ -496,6 +481,13 @@ export function initPreColumn(init: InitDb) {
 		header: 'Placement Related To Training',
 		isMultiSelect: false,
 		name: 'codePlacementRelated'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'link',
+		header: 'Query Function',
+		isMultiSelect: false,
+		name: 'codeQueryFunction'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
@@ -1508,13 +1500,6 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'str',
-		header: 'Function Parm Value',
-		isMultiSelect: false,
-		name: 'functionParmValue'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'str',
 		header: 'Gender Self Identity',
 		name: 'genderSelfId'
 	})
@@ -1845,13 +1830,6 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
-		codeDataType: 'link',
-		header: 'Items',
-		isMultiSelect: true,
-		name: 'items'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
 		codeDataType: 'str',
 		header: 'Key',
 		name: 'key'
@@ -1885,7 +1863,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		codeDataType: 'str',
 		header: 'List - Edit - Preset Expression',
-		name: 'listEditPresetExpr',
+		name: 'listPresetExpr',
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
@@ -2017,6 +1995,15 @@ export function initPreColumn(init: InitDb) {
 		name: 'obj',
 		owner: 'sys_system'
 	})
+
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Site',
+		isMultiSelect: false,
+		name: 'objAttrCmSite',
+		owner: 'sys_app_cm'
+	})
+
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'link',
@@ -2149,6 +2136,13 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'str',
+		header: 'Parm Value (String)',
+		isMultiSelect: false,
+		name: 'parmValueStr'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'str',
 		header: 'Password',
 		name: 'password',
 		pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$!%*?&])[A-Za-z\\d@#$!%*?&]{8,}$',
@@ -2234,6 +2228,13 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: true,
 		name: 'queryRiders',
 		owner: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'link',
+		header: 'Readers',
+		isMultiSelect: true,
+		name: 'readers'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
@@ -2442,13 +2443,6 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'link',
-		header: 'Attribute Types',
-		isMultiSelect: true,
-		name: 'typesAttribute'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'link',
 		header: 'Code Types',
 		isMultiSelect: true,
 		name: 'typesCodeType'
@@ -2473,12 +2467,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'User Message',
 		isMultiSelect: false,
 		name: 'userMsg'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'str',
-		header: 'User Name',
-		name: 'userName'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',

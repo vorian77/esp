@@ -1,4 +1,4 @@
-import { QuerySource, type RawDataList, ScriptExePost } from '$lib/query/types.query'
+import { QuerySource, type RawDataList, ScriptExePost } from '$lib/queryClient/types.queryClient'
 import { queryJsonMultiple } from '$routes/api/db/dbGel/dbGel'
 import { GelQuery } from '$routes/api/db/dbGel/dbGelScriptQuery'
 import { evalExpr } from '$routes/api/db/dbScriptEval'
@@ -96,15 +96,8 @@ export class ScriptGroup {
 		this.scripts.push(script)
 		return new MethodResult(script)
 	}
-	async query() {
-		let result: MethodResult = await this.queryBuild()
-		if (result.error) return result
-		return await this.queryExe()
-	}
-	async queryBuild(): Promise<MethodResult> {
-		return new MethodResult()
-	}
-	async queryExe() {
+
+	async queryExe(): Promise<MethodResult> {
 		const clazz = 'ScriptGroup.queryExe'
 		let result: MethodResult
 
@@ -150,6 +143,14 @@ export class ScriptGroup {
 
 	async queryExeFormat(script: Script, rawDataList: RawDataList): Promise<MethodResult> {
 		this.queryData.rawDataList = rawDataList
+		return new MethodResult(this.queryData)
+	}
+
+	async queryPost(): Promise<MethodResult> {
+		return new MethodResult(this.queryData)
+	}
+
+	async queryPre(): Promise<MethodResult> {
 		return new MethodResult(this.queryData)
 	}
 }

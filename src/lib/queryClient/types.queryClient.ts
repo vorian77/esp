@@ -1,5 +1,4 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { TokenApiQuery, TokenApiQueryData } from '$utils/types.token'
 import {
 	arrayOfClass,
 	booleanOrDefault,
@@ -7,6 +6,7 @@ import {
 	classOptional,
 	DataObjData,
 	type DataRecord,
+	debug,
 	getArray,
 	memberOfEnum,
 	memberOfEnumOrDefault,
@@ -18,16 +18,47 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
+import {
+	TokenApiDbDataObjSource,
+	TokenApiQuery,
+	TokenApiQueryData,
+	TokenApiQueryType
+} from '$utils/types.token'
 import { FieldEmbedType } from '$utils/utils.sys'
 import {
 	QueryRiderRaw,
-	QueryRiderTriggerTiming,
-	QueryRiders
-} from '$enhance/queryRider/types.queryRider'
-import { TokenApiDbDataObjSource, TokenApiQuerySource, TokenApiQueryType } from '$utils/types.token'
+	QueryRiders,
+	QueryRiderTriggerTiming
+} from '$lib/queryClient/types.queryClientRider'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$lib/query/types.query.ts'
+
+export async function clientQueryExpr(
+	evalExprContext: string,
+	exprCustom: string,
+	sourceQueryData?: DataRecord,
+	sm?: State
+): Promise<MethodResult> {
+	const clazz = 'clientQueryExpr'
+
+	if (!sourceQueryData) sourceQueryData = {}
+	if (sm) {
+		sourceQueryData.dataTree = sm.app.getDataTree(TokenApiQueryType.none)
+		sourceQueryData.user = sm.user
+	}
+	const tokenQuery = new TokenApiQuery({
+		evalExprContext: evalExprContext,
+		querySourceRaw: { exprCustom },
+		queryType: QuerySourceType.expr,
+		queryData: new TokenApiQueryData(sourceQueryData)
+	})
+
+	const result: MethodResult = await apiFetchFunction(ApiFunction.dbQuery, tokenQuery)
+	if (result.error) return result
+	return new MethodResult(TokenApiQueryData.load(result.data))
+}
 
 export class DbTable {
 	hasMgmt: boolean
@@ -114,8 +145,8 @@ export class DbTableQueryGroup {
 }
 
 export class QueryManager {
-	isClient?: boolean
 	queryData: TokenApiQueryData
+	queryRiders?: QueryRiders
 	querySource: QuerySource
 	sm?: State
 	tokenQuery: TokenApiQuery
@@ -125,17 +156,40 @@ export class QueryManager {
 		this.querySource = new QuerySource(tokenQuery.querySourceRaw)
 		this.tokenQuery = tokenQuery
 	}
-
 	async query(): Promise<MethodResult> {
 		// query-pre
 		let result: MethodResult = await this.queryPre()
 		if (result.error) return result
 		this.queryData = result.data as TokenApiQueryData
 
+		// query-riders - pre exe
+		if (this.queryRiders) {
+			result = await this.queryRiders.exe(
+				QueryRiderTriggerTiming.pre,
+				this.tokenQuery.queryType,
+				this.queryData,
+				this.sm
+			)
+			if (result.error) return result
+			this.queryData = result.data as TokenApiQueryData
+		}
+
 		// query-execute
 		result = await this.queryExe()
 		if (result.error) return result
 		this.queryData = result.data as TokenApiQueryData
+
+		// query-riders - post exe
+		if (this.queryRiders) {
+			result = await this.queryRiders.exe(
+				QueryRiderTriggerTiming.post,
+				this.tokenQuery.queryType,
+				this.queryData,
+				this.sm
+			)
+			if (result.error) return result
+			this.queryData = result.data as TokenApiQueryData
+		}
 
 		// query-post
 		result = await this.queryPost()
@@ -149,24 +203,10 @@ export class QueryManager {
 		return new MethodResult(this.queryData)
 	}
 	async queryPost(): Promise<MethodResult> {
-		const clazz = 'QueryManager.queryPost'
-		return await this.querySource.queryRiders.exe(
-			booleanRequired(this.isClient, clazz, 'isClient'),
-			QueryRiderTriggerTiming.post,
-			this.tokenQuery.queryType,
-			this.queryData,
-			this.sm
-		)
+		return new MethodResult(this.queryData)
 	}
 	async queryPre(): Promise<MethodResult> {
-		const clazz = 'QueryManager.queryPre'
-		return await this.querySource.queryRiders.exe(
-			booleanRequired(this.isClient, clazz, 'isClient'),
-			QueryRiderTriggerTiming.pre,
-			this.tokenQuery.queryType,
-			this.queryData,
-			this.sm
-		)
+		return new MethodResult(this.queryData)
 	}
 }
 
@@ -181,24 +221,25 @@ export class QuerySource {
 	exprSort?: string
 	exprWith?: string
 	exprUnions: string[] = []
-	listEditPresetExpr?: string
+	listPresetExpr?: string
 	parent?: QuerySourceParent
-	queryRiders: QueryRiders
+	queryRidersRawClient: QueryRiderRaw[] = []
+	queryRidersRawServer: QueryRiderRaw[] = []
 	querySourceType: QuerySourceType
 	table?: DbTable
 	tableGroup: DbTableQueryGroup
 	constructor(obj: QuerySourceRaw) {
 		const clazz = 'QuerySource'
-		obj = valueOrDefault(obj, {})
 		this.dataObjSource = new TokenApiDbDataObjSource(obj.dataObjSource)
 		this.exprCustom = obj.exprCustom
 		this.exprFilter = obj.exprFilter
 		this.exprSort = obj.exprSort
 		this.exprWith = obj.exprWith
 		this.exprUnions = obj.exprUnions
-		this.listEditPresetExpr = obj.listEditPresetExpr
+		this.listPresetExpr = obj.listPresetExpr
 		this.parent = classOptional(QuerySourceParent, obj._parent)
-		this.queryRiders = new QueryRiders(obj._queryRiders)
+		this.queryRidersRawClient = obj.queryRidersRawClient
+		this.queryRidersRawServer = obj.queryRidersRawServer
 		this.querySourceType = memberOfEnum(
 			obj.querySourceType,
 			clazz,
@@ -218,10 +259,11 @@ export class QuerySourceRaw {
 	exprSort?: string
 	exprWith?: string
 	exprUnions: string[]
-	listEditPresetExpr?: string
+	listPresetExpr?: string
+	queryRidersRawClient: QueryRiderRaw[] = []
+	queryRidersRawServer: QueryRiderRaw[] = []
 	querySourceType?: string
 	_parent?: QuerySourceParentRaw
-	_queryRiders: QueryRiderRaw[] = []
 	_table?: DbTable
 	_tables: QuerySourceTableRaw[] = []
 	constructor(obj: any) {
@@ -233,10 +275,11 @@ export class QuerySourceRaw {
 		this.exprSort = obj.exprSort
 		this.exprWith = obj.exprWith
 		this.exprUnions = getArray(obj.exprUnions)
-		this.listEditPresetExpr = obj.listEditPresetExpr
+		this.listPresetExpr = obj.listPresetExpr
+		this.queryRidersRawClient = arrayOfClass(QueryRiderRaw, obj._queryRidersClient)
+		this.queryRidersRawServer = arrayOfClass(QueryRiderRaw, obj._queryRidersServer)
 		this.querySourceType = obj.querySourceType
 		this._parent = classOptional(QuerySourceParentRaw, obj._parent)
-		this._queryRiders = arrayOfClass(QueryRiderRaw, obj._queryRiders)
 		this._table = classOptional(DbTable, obj._table)
 		this._tables = getArray(obj._tables)
 	}
@@ -289,31 +332,6 @@ export class QuerySourceParentRaw {
 	}
 }
 
-export class QuerySourceQueryRiderRaw {
-	_codeFunction?: string
-	_codeQueryType: string
-	_codeTriggerTiming: string
-	_codeType: string
-	_codeUserDestination?: string
-	_codeUserMsgDelivery?: string
-	expr?: string
-	functionParmValue?: string
-	userMsg?: string
-	constructor(obj: any) {
-		const clazz = 'QuerySourceQueryRiderRaw'
-		obj = valueOrDefault(obj, {})
-		this._codeFunction = obj._codeFunction
-		this._codeQueryType = strRequired(obj._codeQueryType, clazz, '_codeQueryType')
-		this._codeTriggerTiming = strRequired(obj._codeTriggerTiming, clazz, '_codeTriggerTiming')
-		this._codeType = strRequired(obj._codeType, clazz, '_codeType')
-		this._codeUserDestination = obj._codeUserDestination
-		this._codeUserMsgDelivery = obj._codeUserMsgDelivery
-		this.expr = obj.expr
-		this.functionParmValue = obj.functionParmValue
-		this.userMsg = obj.userMsg
-	}
-}
-
 export class QuerySourceTableRaw {
 	_columnParent?: string
 	_columnsId: string[] = []
@@ -335,11 +353,6 @@ export class QuerySourceTableRaw {
 	}
 }
 
-export enum QuerySourceType {
-	dataObj = 'dataObj',
-	expr = 'expr'
-}
-
 export type RawDataList = DataRecord[]
 
 export enum ScriptExePost {
@@ -347,4 +360,9 @@ export enum ScriptExePost {
 	formatData = 'formatData',
 	none = 'none',
 	processRowSelectPreset = 'processRowSelectPreset'
+}
+
+export enum QuerySourceType {
+	dataObj = 'dataObj',
+	expr = 'expr'
 }

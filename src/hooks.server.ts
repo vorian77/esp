@@ -1,6 +1,3 @@
-import { getUserByUserId } from '$routes/api/db/dbGel/dbGelQueries'
-import { getEnvVar } from '$server/env'
-import { TokenApiUserId } from '$utils/types.token'
 import { type Handle, redirect } from '@sveltejs/kit'
 
 const FILENAME = 'hooks.server'
@@ -13,7 +10,7 @@ const FILENAME = 'hooks.server'
 // 	tracesSampleRate: 1.0
 // })
 
-const routesUnprotected = ['/about', '/auth', '/error']
+const routesUnprotected = ['/about', '/api', '/auth', '/error']
 
 // <todo> - 240206 - possible way to control user reload of a page
 // function beforeNavigate(
@@ -49,20 +46,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	// remaining routes require sessionId
 	const sessionId = event.cookies.get('session_id')
-	console.log('hooks.server.sessionId:', sessionId)
-	if (!sessionId) {
+	if (sessionId) {
+		event.locals.sessionId = sessionId
+	} else {
 		status('redirect - no sessionId...')
 		redirect(303, '/')
-	}
-
-	// get user info
-	if (!event.locals.rawUser) {
-		const rawUser = await getUserByUserId(new TokenApiUserId(sessionId))
-		if (!rawUser) {
-			status('redirect - invalid sessionId...')
-			redirect(303, '/')
-		}
-		event.locals.rawUser = { ...rawUser, dbBranch: getEnvVar('EDGEDB_BRANCH') }
 	}
 
 	// security protected routes

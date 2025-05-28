@@ -81,7 +81,6 @@ export async function GET() {
 		result = { ...quote, ...COLOR }
 	} catch (error: any) {
 		result = {
-			success: false,
 			error: {
 				file: FILENAME,
 				function: 'getQuote',

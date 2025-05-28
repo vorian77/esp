@@ -1,4 +1,5 @@
 import e from '$db/gel/edgeql-js'
+import { SysNavDestination } from '$db/gel/edgeql-js/modules/sys_core'
 import {
 	client,
 	booleanOrDefaultJSON,
@@ -10,7 +11,6 @@ import { debug } from '$utils/types'
 export async function addDataObj(data: any) {
 	sectionHeader(`addDataObj - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
-	const actionsQuery = data.actionsQuery && data.actionsQuery.length > 0 ? data.actionsQuery : []
 	const query = e.params(
 		{
 			actionGroup: e.optional(e.str),
@@ -22,7 +22,7 @@ export async function addDataObj(data: any) {
 			codeDataObjType: e.optional(e.str),
 			codeDoQueryType: e.optional(e.str),
 			codeDoRenderPlatform: e.optional(e.str),
-			codeListEditPresetType: e.optional(e.str),
+			codeListPresetType: e.optional(e.str),
 			description: e.optional(e.str),
 			exprFilter: e.optional(e.str),
 			exprSort: e.optional(e.str),
@@ -35,7 +35,7 @@ export async function addDataObj(data: any) {
 			isListSuppressFilterSort: e.optional(e.bool),
 			isListSuppressSelect: e.optional(e.bool),
 			isRetrieveReadonly: e.optional(e.bool),
-			listEditPresetExpr: e.optional(e.str),
+			listPresetExpr: e.optional(e.str),
 			listReorderColumn: e.optional(e.str),
 			name: e.str,
 			owner: e.str,
@@ -50,24 +50,6 @@ export async function addDataObj(data: any) {
 		(p) => {
 			return e.insert(e.sys_core.SysDataObj, {
 				actionGroup: e.select(e.sys_core.getDataObjActionGroup(p.actionGroup)),
-				attrsAccess: e.for(e.array_unpack(p.attrsAccess), (aa) => {
-					return e.insert(e.sys_core.SysAttrAccess, {
-						codeAttrAccessSource: e.sys_core.getCode(
-							'ct_sys_attribute_access_source',
-							e.cast(e.str, e.json_get(aa, 'codeAttrAccessSource'))
-						),
-						codeAttrAccessType: e.sys_core.getCode(
-							'ct_sys_attribute_access_type',
-							e.cast(e.str, e.json_get(aa, 'codeAttrAccessType'))
-						),
-						codeAttrType: e.sys_core.getCode(
-							'ct_sys_attribute_type',
-							e.cast(e.str, e.json_get(aa, 'codeAttrType'))
-						),
-						createdBy: CREATOR,
-						modifiedBy: CREATOR
-					})
-				}),
 				codeCardinality: e.select(e.sys_core.getCode('ct_sys_do_cardinality', p.codeCardinality)),
 				codeComponent: e.select(e.sys_core.getCode('ct_sys_do_component', p.codeComponent)),
 				codeDataObjType: e.op(
@@ -81,8 +63,8 @@ export async function addDataObj(data: any) {
 				codeDoRenderPlatform: e.select(
 					e.sys_core.getCode('ct_sys_do_render_platform', p.codeDoRenderPlatform)
 				),
-				codeListEditPresetType: e.select(
-					e.sys_core.getCode('ct_sys_do_list_edit_preset_type', p.codeListEditPresetType)
+				codeListPresetType: e.select(
+					e.sys_core.getCode('ct_sys_do_list_edit_preset_type', p.codeListPresetType)
 				),
 				columns: e.for(e.array_unpack(p.fields), (f) => {
 					return e.insert(e.sys_core.SysDataObjColumn, {
@@ -293,7 +275,7 @@ export async function addDataObj(data: any) {
 				isListSuppressFilterSort: valueOrDefaultParm(p.isListSuppressFilterSort, false),
 				isListSuppressSelect: valueOrDefaultParm(p.isListSuppressSelect, false),
 				isRetrieveReadonly: valueOrDefaultParm(p.isRetrieveReadonly, false),
-				listEditPresetExpr: p.listEditPresetExpr,
+				listPresetExpr: p.listPresetExpr,
 				listReorderColumn: e.select(e.sys_db.getColumn(p.listReorderColumn)),
 				modifiedBy: CREATOR,
 				name: p.name,
@@ -302,39 +284,6 @@ export async function addDataObj(data: any) {
 				parentFilterExpr: p.parentFilterExpr,
 				parentTable: e.select(e.sys_db.getTable(p.parentTable)),
 				processType: e.select(e.sys_core.getCode('ct_sys_do_dynamic_process_type', p.processType)),
-				queryRiders: e.for(e.array_unpack(p.queryRiders), (qr) => {
-					return e.insert(e.sys_core.SysDataObjQueryRider, {
-						codeFunction: e.sys_core.getCode(
-							'ct_sys_do_query_rider_function',
-							e.cast(e.str, e.json_get(qr, 'codeFunction'))
-						),
-						codeQueryType: e.sys_core.getCode(
-							'ct_sys_do_query_rider_query_type',
-							e.cast(e.str, e.json_get(qr, 'codeQueryType'))
-						),
-						codeTriggerTiming: e.sys_core.getCode(
-							'ct_sys_do_query_rider_trigger_timing',
-							e.cast(e.str, e.json_get(qr, 'codeTriggerTiming'))
-						),
-						codeType: e.sys_core.getCode(
-							'ct_sys_do_query_rider_type',
-							e.cast(e.str, e.json_get(qr, 'codeType'))
-						),
-						codeUserDestination: e.sys_core.getCode(
-							'ct_sys_do_query_rider_user_destination',
-							e.cast(e.str, e.json_get(qr, 'codeUserDestination'))
-						),
-						codeUserMsgDelivery: e.sys_core.getCode(
-							'ct_sys_do_query_rider_msg_delivery',
-							e.cast(e.str, e.json_get(qr, 'codeUserMsgDelivery'))
-						),
-						createdBy: CREATOR,
-						expr: e.cast(e.str, e.json_get(qr, 'expr')),
-						functionParmValue: e.cast(e.str, e.json_get(qr, 'functionParmValue')),
-						modifiedBy: CREATOR,
-						userMsg: e.cast(e.str, e.json_get(qr, 'userMsg'))
-					})
-				}),
 				subHeader: p.subHeader,
 				tables: e.for(e.array_unpack(p.tables), (t) => {
 					return e.insert(e.sys_core.SysDataObjTable, {
@@ -535,8 +484,11 @@ export async function addUserAction(data: any) {
 			actionShows: e.array(e.json),
 			codeAction: e.str,
 			codeTriggerEnable: e.str,
+			expr: e.optional(e.str),
+			exprWith: e.optional(e.str),
 			header: e.optional(e.str),
 			name: e.str,
+			navDestination: e.optional(e.json),
 			owner: e.str
 		},
 		(p) => {
@@ -565,25 +517,22 @@ export async function addUserAction(data: any) {
 				}),
 				actionShows: e.for(e.array_unpack(p.actionShows), (a) => {
 					return e.insert(e.sys_user.SysUserActionShow, {
-						codeExprOp: e.sys_core.getCode('ct_sys_op', e.cast(e.str, e.json_get(a, 'codeExprOp'))),
-						codeTriggerShow: e.select(
-							e.sys_core.getCode(
-								'ct_sys_user_action_trigger',
-								e.cast(e.str, e.json_get(a, 'codeTriggerShow'))
-							)
+						codeTriggerShow: e.sys_core.getCode(
+							'ct_sys_user_action_trigger',
+							e.cast(e.str, e.json_get(a, 'codeTriggerShow'))
 						),
 						createdBy: CREATOR,
-						exprField: e.cast(e.str, e.json_get(a, 'exprField')),
-						exprValue: e.cast(e.str, e.json_get(a, 'exprValue')),
+						expr: e.cast(e.str, e.json_get(a, 'expr')),
 						isRequired: e.cast(e.bool, e.json_get(a, 'isRequired')),
 						modifiedBy: CREATOR
 					})
 				}),
-				codeAction: e.select(e.sys_core.getCodeAction(p.codeAction)),
-				codeTriggerEnable: e.select(
-					e.sys_core.getCode('ct_sys_user_action_trigger', p.codeTriggerEnable)
-				),
+				codeAction: e.sys_core.getCodeAction(p.codeAction),
+				codeAttrType: e.sys_core.getCodeAttrType('at_sys_action_user'),
+				codeTriggerEnable: e.sys_core.getCode('ct_sys_user_action_trigger', p.codeTriggerEnable),
 				createdBy: CREATOR,
+				expr: p.expr,
+				exprWith: p.exprWith,
 				header: p.header,
 				modifiedBy: CREATOR,
 				name: p.name,

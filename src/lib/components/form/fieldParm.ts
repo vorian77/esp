@@ -7,7 +7,7 @@ import {
 	PropsFieldInit
 } from '$comps/form/field.svelte'
 import { ValidityErrorLevel } from '$comps/form/types.validation'
-import { DbTableQueryGroup } from '$lib/query/types.query'
+import { DbTableQueryGroup } from '$lib/queryClient/types.queryClient'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
 	DataObj,
@@ -80,11 +80,13 @@ export class FieldParm extends Field {
 		if (field.linkItems) {
 			result = await field.linkItems.retrieve(propsFieldInit.sm, record.parmValue)
 			if (result.error) return result
+			record.parmValue = field.linkItems.getValueRaw(record.parmValue)
 		}
 
 		return new MethodResult(field)
 
 		async function getLinkItemsSource(fieldListItemId: string) {
+			if (!fieldListItemId) return undefined
 			const result: MethodResult = await apiFetchFunction(
 				ApiFunction.dbGelGetLinkItemsSource,
 				new TokenApiId(fieldListItemId)

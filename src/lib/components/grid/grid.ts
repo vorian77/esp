@@ -8,6 +8,7 @@ import {
 	type ICellRendererParams,
 	type IDateComp,
 	type IDateParams,
+	type KeyCreatorParams,
 	type ValueFormatterParams,
 	type ValueGetterParams,
 	type ValueParserParams,
@@ -21,6 +22,7 @@ import {
 	DataObjSort,
 	type DataRecord,
 	getArray,
+	getValueDisplay,
 	ParmsValuesType,
 	ParmsUser,
 	ParmsUserDataType,
@@ -29,6 +31,7 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
+import { FieldColumnItem } from '$comps/form/field.svelte'
 import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 import { error } from '@sveltejs/kit'
 
@@ -44,6 +47,43 @@ export type ColumnsDefsSelect = {
 	headerName: string
 	hide?: boolean
 }[]
+
+class SelectCellRenderer implements ICellRendererComp {
+	eGui!: HTMLDivElement
+
+	init(params: ICellRendererParams) {
+		const clazz = `${FILENAME}.SelectCellRenderer`
+		const linkItems: PropLinkItems = params.colDef?.context?.linkItems
+		const eGui = (this.eGui = document.createElement('div'))
+		eGui.style.overflow = 'hidden'
+		eGui.style.textOverflow = 'ellipsis'
+
+		const fieldName = params?.colDef?.field
+		if (fieldName) {
+			let valueDisplay = ''
+			const valueData = params.data[fieldName]
+			if (valueData) {
+				if (Array.isArray(valueData)) {
+					const linkItems: PropLinkItems = params.colDef?.context?.linkItems
+					if (linkItems) {
+						valueDisplay = linkItems.getDisplayValueListRecords(valueData)
+					}
+				} else {
+					valueDisplay = valueData ? valueData.display : ''
+				}
+			}
+			eGui.append(valueDisplay)
+		}
+	}
+
+	getGui() {
+		return this.eGui
+	}
+
+	refresh() {
+		return false
+	}
+}
 
 export const columnTypes = {
 	ctBoolean: {
@@ -65,28 +105,32 @@ export const columnTypes = {
 	},
 	ctSelectMulti: {
 		cellEditor: 'agTextCellEditor',
+		cellRenderer: SelectCellRenderer,
 		valueGetter: (params: ValueGetterParams) => {
-			const fieldName = required(params.colDef.field, FILENAME, 'params.colDef.field')
-			const currentValue = params.data[fieldName]
-			const linkItems: PropLinkItems = params.colDef.context.linkItems
-			return linkItems.getDisplayValueList(currentValue)
+			const fieldName = strRequired(params.colDef.field, FILENAME, 'params.colDef.field')
+			const valueRaw = params.data[fieldName]
+			console.log('ctSelectMulti.ctSelectMulti.valueGetter', {
+				params,
+				valueRaw
+			})
+			return valueRaw
 		}
 	},
 	ctSelectSingle: {
 		cellEditor: 'agRichSelectCellEditor',
 		cellEditorParams: {
+			formatValue: (v: FieldColumnItem) => v?.display,
+			parseValue: (v: FieldColumnItem) => v?.display,
 			values: (params: ValueGetterParams) => {
-				const linkItems: PropLinkItems = params.colDef.context.linkItems
-				return linkItems.getValuesSelect()
+				const linkItems: PropLinkItems = params.colDef?.context?.linkItems
+				return linkItems ? linkItems.getValuesSelect() : []
 			}
 		},
-		keyCreator: (params: any) => params.value.data,
-		valueFormatter: (params: ValueFormatterParams) => {
-			const linkItems: PropLinkItems = params.colDef.context.linkItems
-			return linkItems.getDisplayValueList(params.value)
+		cellRenderer: SelectCellRenderer,
+		valueGetter: (params: ValueGetterParams) => {
+			return params.colDef.field ? params.data[params.colDef.field] : null
 		}
 	},
-
 	ctText: {
 		cellEditor: 'agTextCellEditor'
 	},
@@ -115,11 +159,11 @@ const isFalsy = (value: any) => [null, '', undefined].includes(value)
 const isFalsyNumber = (value: any) => isFalsy(value) || Number.isNaN(value)
 
 function getValueParser(params: ValueParserParams, isFalsy: Function) {
-	return isFalsy(params.newValue) ? null : params.newValue
+	return isFalsy(params.newValue) ? null : getValueDisplay(params.newValue)
 }
 function getValueFormatter(params: any, isFalsy: Function) {
 	if (isFalsy(params.value)) return ''
-	return params.value
+	return getValueDisplay(params.value)
 }
 
 export const dataTypeDefinitions = {

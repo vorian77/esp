@@ -38,7 +38,6 @@ export async function sysSendText(token: TokenApiSysSendText) {
 			'Parms: ' +
 			JSON.stringify(parms)
 		result = {
-			success: false,
 			error: {
 				file: FILENAME,
 				function: 'sendText',

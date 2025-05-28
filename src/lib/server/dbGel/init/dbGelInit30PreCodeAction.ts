@@ -115,6 +115,12 @@ function initCodeActionsDoGroupItem(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system',
 		codeType: 'ct_sys_code_action_class_do',
+		name: 'doExpr',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doListDetailEdit',
 		order: 0
 	})
@@ -205,19 +211,7 @@ function initCodeActionsNav(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system',
 		codeType: 'ct_sys_code_action_class_nav',
-		name: 'navBack',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system',
-		codeType: 'ct_sys_code_action_class_nav',
-		name: 'navCrumbs',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system',
-		codeType: 'ct_sys_code_action_class_nav',
-		name: 'navHome',
+		name: 'navDestination',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {

@@ -75,9 +75,9 @@ export default async function action(
 					authProcess.addAction(AuthActionDB, {
 						dbExpr: `WITH 
 						password := <record,str,password>,
-						userName := <record,str,userName>,
+						name := <record,str,name>,
 						SELECT sys_user::SysUser { userId := .id }
-						FILTER .userName = userName AND .password = password AND .isActive = true`
+						FILTER .name = name AND .password = password AND .isActive = true`
 					})
 					authProcess.addAction(AuthActionLogic, {
 						logic: authActionLogicLogin
@@ -89,10 +89,10 @@ export default async function action(
 					authProcess.addAction(AuthActionDB, {
 						dbExpr: `WITH
 						password := <record,str,password>,
-						userName := <record,str,userName>,
+						name := <record,str,name>,
 						user := (
 							UPDATE sys_user::SysUser 
-							FILTER .userName = userName AND .isActive = true
+							FILTER .name = name AND .isActive = true
 							SET { password := password }
 						)
 						SELECT { userId := user.id }`,
@@ -103,9 +103,9 @@ export default async function action(
 				case 'auth_login_forgot_pw_confirm_mobile':
 					authProcess.addAction(AuthActionDB, {
 						dbExpr: `WITH 
-							userName := <record,str,userName>,
+							name := <record,str,name>,
 							SELECT sys_user::SysUser { userId := .id }
-							FILTER .userName = userName AND .isActive = true`,
+							FILTER .name = name AND .isActive = true`,
 						msgFail: 'We could not find an account with your Mobile Phone Number. Please try again.'
 					})
 					authProcess.addAction(AuthActionLogic, { logic: authActionLogicCodeSend })
@@ -117,7 +117,7 @@ export default async function action(
 				// signup
 				case 'auth_signup':
 					authProcess.addAction(AuthActionDB, {
-						dbExpr: `SELECT { isNew := NOT EXISTS (SELECT sys_user::SysUser FILTER .userName = <record,str,userName>) }`
+						dbExpr: `SELECT { isNew := NOT EXISTS (SELECT sys_user::SysUser FILTER .name = <record,str,name>) }`
 					})
 					authProcess.addAction(AuthActionLogic, {
 						logic: authActionLogicIsNew
@@ -131,7 +131,7 @@ export default async function action(
 							firstName := <record,str,firstName>,
 							lastName := <record,str,lastName>,
 							password := <record,str,password>,
-							userName := <record,str,userName>,
+							name := <record,str,name>,
 							userType := <record,str,linkItems_userType>,
 							_userTypes := (SELECT sys_user::SysUserType FILTER .id = <uuid>userType),
 							user := (
@@ -151,7 +151,7 @@ export default async function action(
 										}
 									),
 									systems := _userTypes.owner,
-									userName := userName,
+									name := name,
 									userTypes := _userTypes,
 								}
 							)
@@ -168,13 +168,13 @@ export default async function action(
 						firstName := <record,str,firstName>,
 						lastName := <record,str,lastName>,
 						password := <record,str,password>,
-						userName := <record,str,userName>,
+						name := <record,str,name>,
 						userType := <record,str,linkItems_userType>,
-						_user := (SELECT sys_user::SysUser FILTER .userName = userName),
+						_user := (SELECT sys_user::SysUser FILTER .name = name),
 						_userTypes := (SELECT sys_user::SysUserType FILTER .id = <uuid>userType) ?? _user.userTypes,
 						user := (
 							UPDATE sys_user::SysUser 
-							FILTER .userName = userName AND .isActive = true
+							FILTER .name = name AND .isActive = true
 							SET { 
 								password := password, 
 								userTypes := _userTypes,
@@ -189,7 +189,6 @@ export default async function action(
 
 				default:
 					return new MethodResult({
-						success: false,
 						error: {
 							file: FILENAME,
 							function: 'action-submit',
@@ -201,7 +200,6 @@ export default async function action(
 
 		default:
 			return new MethodResult({
-				success: false,
 				error: {
 					file: FILENAME,
 					function: 'default',
@@ -274,7 +272,7 @@ export async function codeSend(authProcess: AuthProcess) {
 	const min = 100000
 	const max = 999999
 
-	const securityCodeUserName = authProcess.parmGetRequired(AuthProcessParm.userName)
+	const securityCodeName = authProcess.parmGetRequired(AuthProcessParm.name)
 	const securityCodeSystem = Math.floor(Math.random() * (max - min + 1)) + min
 	authProcess.parmSet(AuthProcessParm.securityCodeSystem, securityCodeSystem)
 
@@ -287,7 +285,7 @@ export async function codeSend(authProcess: AuthProcess) {
 		const result: MethodResult = await apiFetchFunction(
 			ApiFunction.sysSendText,
 			new TokenApiSysSendText(
-				securityCodeUserName,
+				securityCodeName,
 				`${securityCodeSystem} - The App Factory mobile phone number verification code.`
 			)
 		)

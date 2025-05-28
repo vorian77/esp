@@ -102,7 +102,7 @@ function initStudent(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerIdSystem>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerSys>))`,
 				orderDefine: 15,
 				indexTable: 0,
 				isDisplayable: false,
@@ -487,15 +487,14 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'attrs',
+				columnName: 'objAttrCmSite',
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				linkColumns: ['header'],
-				linkTable: 'SysAttr'
+				linkTable: 'SysObjAttr'
 			},
-
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeSfEnrollType',
@@ -594,13 +593,13 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'attrs',
+				columnName: 'objAttrCmSite',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_attr_obj_system_type_single',
-				fieldListItemsParmValue: 'at_cm_sf_site'
+				fieldListItems: 'il_sys_obj_attr_type_single',
+				fieldListItemsParmValue: 'at_cm_site'
 			},
 			{
 				codeFieldElement: 'select',
@@ -878,7 +877,7 @@ function initCsfCohort(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_cm_cohort_long_by_userName'
+				fieldListItems: 'il_cm_cohort_long_by_name'
 			},
 			{
 				codeFieldElement: 'select',
@@ -1229,7 +1228,7 @@ function initCsfNote(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				codeFieldElement: 'date',
-				codeSortDir: 'DESC',
+				codeSortDir: 'desc',
 				columnName: 'date',
 				orderCrumb: 10,
 				orderSort: 10,
@@ -1760,7 +1759,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				codeFieldElement: 'date',
-				codeSortDir: 'DESC',
+				codeSortDir: 'desc',
 				columnName: 'date',
 				orderCrumb: 10,
 				orderSort: 10,
@@ -2101,11 +2100,12 @@ function initCsfDocument(init: InitDb) {
 		owner: 'sys_client_atlantic_impact',
 		queryRiders: [
 			{
-				codeFunction: 'qrfFileStorage',
+				codeQueryAction: 'customFunction',
+				codeQueryFunction: 'qrfFileStorage',
+				codeQueryPlatform: 'client',
 				codeQueryType: 'save',
 				codeTriggerTiming: 'pre',
-				codeType: 'customFunction',
-				functionParmValue: 'file'
+				parmValueStr: 'file'
 			}
 		],
 		tables: [{ index: 0, table: 'CmCsfDocument' }],

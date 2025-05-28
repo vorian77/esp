@@ -22,7 +22,6 @@ export const actions = {
 			})
 		} catch (error) {
 			result = {
-				success: false,
 				error: {
 					file: FILENAME,
 					function: 'actions',

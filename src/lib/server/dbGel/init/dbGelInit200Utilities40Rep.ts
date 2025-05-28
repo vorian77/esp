@@ -72,7 +72,6 @@ export async function addReport(data: any) {
 	const query = e.params(
 		{
 			actionGroup: e.str,
-			analytics: e.optional(e.array(e.str)),
 			description: e.optional(e.str),
 			elements: e.optional(e.array(e.json)),
 			exprFilter: e.optional(e.str),
@@ -87,11 +86,7 @@ export async function addReport(data: any) {
 		(p) => {
 			return e.insert(e.sys_rep.SysRep, {
 				actionGroup: e.select(e.sys_core.getDataObjActionGroup(p.actionGroup)),
-				analytics: e.assert_distinct(
-					e.for(e.array_unpack(p.analytics), (a) => {
-						return e.select(e.sys_rep.getAnalytic(a))
-					})
-				),
+				codeAttrType: e.select(e.sys_core.getCodeAttrType('at_sys_report')),
 				createdBy: CREATOR,
 				description: p.description,
 				elements: e.for(e.array_unpack(p.elements), (el) => {

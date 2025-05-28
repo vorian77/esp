@@ -1,20 +1,13 @@
 module sys_core {
-  type ObjRoot {
-    multi attrs: sys_core::SysAttr;
-    multi attrsAccess: sys_core::SysAttrAccess {
-      on source delete delete target;
-    };
-    
-    multi attrsObjAccess: sys_core::SysAttrObjAction {
+  type ObjRoot {    
+    multi attrsAccess: sys_core::SysObjAttrAccess {
       on source delete delete target;
       on target delete allow;
     };
-    
-    multi attrsObjAction: sys_core::SysAttrObjAction {
+    multi attrsAction: sys_core::SysObjAttrAction {
       on source delete delete target;
       on target delete allow;
     };
-
     isGlobalResource: bool;
     note: str;
      
@@ -31,44 +24,31 @@ module sys_core {
 
   type ObjRootCore extending sys_core::ObjRoot {
     codeIcon: sys_core::SysCode;
-    codeObjType: sys_core::SysCode;
     header: str;
     required name: str;
     orderDefine: default::nonNegative;
   }
-
-    type SysAttr extending sys_user::Mgmt {
-    required obj: sys_core::SysAttrObj;
-    required codeAttrType: sys_core::SysCode;
-    constraint exclusive on ((.obj, .codeAttrType));
-  }
-  
-  type SysAttrAccess extending sys_user::Mgmt {
-    required codeAttrAccessSource: sys_core::SysCode;
-    required codeAttrAccessType: sys_core::SysCode;
-    codeAttrType: sys_core::SysCode;
-    attr: sys_core::SysAttr;
-  }
-
-  type SysAttrObj extending sys_core::SysObjEnt {}
-
-  type SysAttrObjAccess extending sys_user::Mgmt {
-    required obj: sys_core::ObjRootCore;
-    required codeAttrAccessType: sys_core::SysCode;
-  }
-
-  type SysAttrObjAction extending sys_user::Mgmt {
-    required obj: sys_core::ObjRootCore;
-    required codeAttrActionType: sys_core::SysCode;
-  }
-  
+    
   type SysObj extending sys_core::ObjRootCore, sys_user::Mgmt {
-    isGlobalResourceOld: bool;
     required owner: sys_core::SysSystem;
     constraint exclusive on ((.owner, .name));
   } 
 
-  type SysObjEnt extending sys_core::SysObj {
+  type SysObjAttr extending sys_core::SysObj {
+    required codeAttrType: sys_core::SysCode;
+  }
+
+  type SysObjAttrAccess extending sys_user::Mgmt {
+    required obj: sys_core::SysObjAttr;
+    required codeAttrTypeAccess: sys_core::SysCode;
+  }
+
+  type SysObjAttrAction extending sys_user::Mgmt {
+    required obj: sys_core::SysObjAttr;
+    required codeAttrTypeAction: sys_core::SysCode;
+  }
+
+  type SysObjAttrEnt extending sys_core::SysObjAttr {
     addr1: str;
     addr2: str;
     city: str;
@@ -86,8 +66,25 @@ module sys_core {
     website: str;
     zip: str;
     trigger sys_user_delete after delete for each do (
-      delete default::SysPerson filter .id not in (app_cm::CmClient.person.id union sys_core::SysObjEnt.contacts.id union sys_user::SysUser.person.id)
+      delete default::SysPerson filter .id not in (app_cm::CmClient.person.id union sys_core::SysObjAttrEnt.contacts.id union sys_user::SysUser.person.id)
     );
+  }
+
+  type SysObjAttrExpr extending sys_user::Mgmt {
+    required codeAttrTypeAction: sys_core::SysCode;
+    required expr: str;
+  }
+  
+  type SysObjAttrVirtual extending sys_user::Mgmt {
+    required expr: str;
+     multi attrsAccess: sys_core::SysObjAttrAccess {
+      on source delete delete target;
+      on target delete allow;
+    };
+    multi attrsAction: sys_core::SysObjAttrAction {
+      on source delete delete target;
+      on target delete allow;
+    };
   }
 
   type SysObjNote extending sys_user::Mgmt {
@@ -108,7 +105,6 @@ module sys_core {
     logoWidth: int16;
     required owner: sys_core::SysOrg;
     multi systemParents: sys_core::SysSystem;
-    multi typesAttribute: sys_core::SysCode;
     multi typesCodeType: sys_core::SysCodeType;
     users := .<systems[is sys_user::SysUser];
     constraint exclusive on ((.owner, .name));
@@ -145,7 +141,7 @@ module sys_core {
     exprWith: str;
     multi exprUnions: str;
     
-    listEditPresetExpr: str;
+    listPresetExpr: str;
     parentColumn: sys_db::SysColumn;
     parentFilterExpr: str;
     parentTable: sys_db::SysTable;
@@ -171,7 +167,7 @@ module sys_core {
     codeDataObjType: sys_core::SysCode;
     codeDoQueryType: sys_core::SysCode;
     codeDoRenderPlatform: sys_core::SysCode;
-    codeListEditPresetType: sys_core::SysCode;
+    codeListPresetType: sys_core::SysCode;
     
     multi columns: sys_core::SysDataObjColumn {
       on source delete delete target;
@@ -264,11 +260,7 @@ module sys_core {
       on source delete delete target;
       on target delete allow;
     };
-    multi items: sys_core::SysDataObjColumnItemValue {
-      on source delete delete target;
-      on target delete allow;
-    };
-    
+       
     multi linkColumns: sys_core::SysDataObjColumnLink{
       on source delete delete target;
       on target delete allow;
@@ -294,23 +286,17 @@ module sys_core {
     required orderDefine: default::nonNegative;
     retrieveParmKey: str;
     
-    valueTargetAttribute: sys_core::SysAttrObj;
+    valueTargetAttribute: sys_core::SysObjAttr;
     valueTargetCode: sys_core::SysCode;
     valueTargetScalar: str;
     
-    multi valueTriggerAttributes: sys_core::SysAttrObj;
+    multi valueTriggerAttributes: sys_core::SysObjAttr;
     multi valueTriggerCodes: sys_core::SysCode;
     valueTriggerScalar: str;
   }
-  
-  type SysDataObjColumnItemValue extending sys_user::Mgmt {
-    required itemData: str;
-    required itemDisplay: str;
-    required orderDefine: default::nonNegative;
-  }
-  
+    
   type SysDataObjColumnLink extending sys_user::Mgmt {
-    required column: sys_db::SysColumn;
+    column: sys_db::SysColumn;
     required orderDefine: default::nonNegative;
   }
 
@@ -366,14 +352,18 @@ module sys_core {
   }
  
   type SysDataObjQueryRider extending sys_user::Mgmt {
-    codeFunction: sys_core::SysCode;
+    required codeQueryAction: sys_core::SysCode;
+    codeQueryFunction: sys_core::SysCode;
+    required codeQueryPlatform: sys_core::SysCode;
     required codeQueryType: sys_core::SysCode;
     required codeTriggerTiming: sys_core::SysCode;
-    required codeType: sys_core::SysCode;
-    codeUserDestination: sys_core::SysCode;
     codeUserMsgDelivery: sys_core::SysCode;
-    functionParmValue: str;
     expr: str;
+    navDestination: sys_core::SysNavDestination{
+      on source delete delete target;
+      on target delete allow;
+    };
+    parmValueStr: str;  
     userMsg: str;
   }
 
@@ -399,20 +389,27 @@ module sys_core {
       default := datetime_of_transaction();
       readonly := true;
     };
-    date: cal::local_date;
+    required isClosed: bool {
+      default := false;
+    };
     required isForward: bool {
       default := false;
     };
-    required isOpen: bool {
-      default := true;
-    };
     parent: sys_core::SysMsg;
-    multi recipients: sys_core::ObjRootCore;
+    multi readers: sys_user::SysUser;
+    multi recipients: sys_core::SysObjAttr;
     responses := .<parent[IS sys_core::SysMsg];
-    required sender: default::SysPerson;
+    required sender: sys_user::SysUser;
     required subject: str;
     thread :=  distinct(.responses union sys_core::SysMsg);
-    threadOpen := (SELECT .thread FILTER .isOpen);
+  }
+
+  type SysNavDestination {
+    backCount: int16;
+    required codeDestinationType: sys_core::SysCode;
+    nodeDestination: sys_core::SysNodeObj{
+      on target delete delete source;
+    };
   }
 
   type SysNodeObj extending sys_core::SysObj {
@@ -472,15 +469,6 @@ module sys_core {
   }
 
   # FUNCTIONS
-  function getAttr(ownerName: str, name: str, codeAttrType: str) -> optional sys_core::SysAttr
-    using (select assert_single((select sys_core::SysAttr filter .obj.owner.name = ownerName and .obj.name = name and .codeAttrType.name = codeAttrType)));
-
-  function getAttrObj(ownerName:str, name: str) -> optional sys_core::SysAttrObj
-    using (select assert_single((select sys_core::SysAttrObj filter .owner.name = ownerName and .name = name)));
-
-  function getCodeType(codeTypeName: str) -> optional sys_core::SysCodeType
-    using (select sys_core::SysCodeType filter .name = codeTypeName);
-
   function getCode(codeTypeName: str,  codeName: str) -> optional sys_core::SysCode
     using (select assert_single(sys_core::SysCode filter 
       .codeType.name = codeTypeName and .name = codeName));
@@ -488,9 +476,15 @@ module sys_core {
   function getCodeAction(codeName: str) -> optional sys_core::SysCodeAction
     using (select assert_single(sys_core::SysCodeAction filter .name = codeName));
       
+  function getCodeAttrType(codeName: str) -> optional sys_core::SysCode
+    using (select assert_single(sys_core::SysCode filter .codeType.name = 'ct_sys_obj_attr_type' AND .name = codeName));
+    
   function getCodeSystem(sysName: str, codeTypeName: str,  codeName: str) -> optional sys_core::SysCode
     using (select assert_single(sys_core::SysCode filter 
       .owner.name = sysName and .codeType.name = codeTypeName and .name = codeName));
+
+  function getCodeType(codeTypeName: str) -> optional sys_core::SysCodeType
+    using (select sys_core::SysCodeType filter .name = codeTypeName);
 
   function getDataObj(dataObjName: str) -> optional sys_core::SysDataObj
     using (select sys_core::SysDataObj filter .name = dataObjName);        
@@ -529,7 +523,7 @@ module sys_core {
     using (select assert_single((select sys_core::SysOrg filter .name = name)));
 
   function getSystem(nameOwner: str, nameSystem: str) -> optional sys_core::SysSystem
-    using (select assert_single((select sys_core::SysSystem filter .owner.name = nameOwner and .name = nameOwner))); 
+    using (select assert_single((select sys_core::SysSystem filter .owner.name = nameOwner and .name = nameSystem))); 
    
   function getSystemPrime(nameSystem: str) -> optional sys_core::SysSystem
     using (select assert_single((select sys_core::SysSystem filter .name = nameSystem))); 
@@ -539,14 +533,3 @@ module sys_core {
   # function getItemsListCodeByCodeTypeName() -> array<Code>
   #     using (select Code );
 }
-
-
-# advanced attribute management
-# WITH
-# attrs := (SELECT to_json($$[${this.attributes.map((attr) => {return `["${attr.owner}","${attr.name}"]`}).join(',')}]$$)),
-# attrObjs := (FOR a IN json_array_unpack(attrs) UNION (SELECT sys_core::getAttr(<str>a[0], <str>a[1]))),
-# filter = this.getExprFilter({ filterCustom: this.attributesObjFilter, record })
-# obj = `UPDATE ${this.attributesObj}`
-# if (filter) obj += ' ' + filter
-# `${obj} SET { attributes := (SELECT .attributes FILTER .obj NOT IN attrObjs) }`
-# return `WITH\n${attrs}\n${attrObjs}\n${obj}`

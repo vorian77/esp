@@ -1,7 +1,7 @@
 import { State } from '$comps/app/types.appState.svelte'
 import { FieldEmbedShell } from '$comps/form/fieldEmbed'
-import { QueryManagerClient } from '$lib/query/queryManagerClient'
-import { QuerySourceRaw, QuerySourceType } from '$lib/query/types.query'
+import { QuerySourceRaw, QuerySourceType } from '$lib/queryClient/types.queryClient'
+import { QueryManagerClient } from '$lib/queryClient/types.queryClientManager'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
 	booleanOrFalse,
@@ -14,6 +14,7 @@ import {
 	type DataRecord,
 	DataRecordStatus,
 	DataRow,
+	getValueDisplay,
 	MethodResult,
 	Node,
 	NodeIdActionAlt,
@@ -26,17 +27,19 @@ import {
 	valueOrDefault
 } from '$utils/types'
 import {
+	NavDestinationType,
 	TokenApiDbDataObjSource,
 	TokenApiId,
 	TokenApiIds,
 	TokenApiQueryData,
 	TokenApiQueryDataTree,
+	TokenApiQueryDataTreeAccessType,
 	TokenApiQuerySource,
 	TokenApiQueryType,
 	TokenAppDo,
 	TokenAppDoQuery,
-	TokenAppIndex,
 	TokenAppModalEmbedField,
+	TokenAppNav,
 	TokenAppNode,
 	TokenAppRow,
 	TokenAppStateTriggerAction,
@@ -281,33 +284,34 @@ export class App {
 		this.getCurrTreeLevel()?.levelAdd(tabs, isVirtual)
 	}
 
-	async navBack(sm: State, backCnt: number): Promise<MethodResult> {
+	async navDestination(sm: State, token: TokenAppNav): Promise<MethodResult> {
 		const currTreeLevel = this.getCurrTreeLevel()
-		if (currTreeLevel) return currTreeLevel.navBack(sm, backCnt)
+		if (currTreeLevel) return await currTreeLevel.navDestination(sm, token)
 		return new MethodResult({
-			success: false,
 			error: {
 				file: FILENAME,
-				function: 'App.navBack',
+				function: 'App.navDestination',
 				msg: `No current tree level`
 			}
 		})
 	}
+
 	navCrumbsList() {
 		return this.getCurrTreeLevel()?.navCrumbsList()
 	}
-	async navCrumbs(sm: State, token: TokenAppIndex): Promise<MethodResult> {
+
+	async navRow(sm: State, token: TokenAppRow): Promise<MethodResult> {
 		const currTreeLevel = this.getCurrTreeLevel()
-		if (currTreeLevel) return currTreeLevel.navCrumbs(sm, token)
+		if (currTreeLevel) return currTreeLevel.navRow(sm, token, this)
 		return new MethodResult({
-			success: false,
 			error: {
 				file: FILENAME,
-				function: 'App.navCrumbs',
+				function: 'App.navRow',
 				msg: `No current tree level`
 			}
 		})
 	}
+
 	navRowStatus() {
 		return this.getCurrTreeLevel()?.navRowStatus()
 	}
@@ -317,24 +321,10 @@ export class App {
 		return new MethodResult()
 	}
 
-	async rowUpdate(sm: State, token: TokenAppRow): Promise<MethodResult> {
-		const currTreeLevel = this.getCurrTreeLevel()
-		if (currTreeLevel) return currTreeLevel.rowUpdate(sm, token, this)
-		return new MethodResult({
-			success: false,
-			error: {
-				file: FILENAME,
-				function: 'App.rowUpdate',
-				msg: `No current tree level`
-			}
-		})
-	}
-
 	async saveDetail(sm: State, codeActionType: CodeActionType): Promise<MethodResult> {
 		const level = this.getCurrTreeLevel()
 		if (level) return level.saveDetail(sm, codeActionType)
 		return new MethodResult({
-			success: false,
 			error: {
 				file: FILENAME,
 				function: 'App.saveDetail',
@@ -346,7 +336,6 @@ export class App {
 		const currTreeLevel = this.getCurrTreeLevel()
 		if (currTreeLevel) return await currTreeLevel.saveList(sm)
 		return new MethodResult({
-			success: false,
 			error: {
 				file: FILENAME,
 				function: 'App.saveList',
@@ -523,7 +512,7 @@ export class AppLevelTab {
 					const value = dataRow.getValue(f)
 					if (value) {
 						if (id) id += ' '
-						id += value
+						id += getValueDisplay(value)
 					}
 				})
 			}
@@ -534,11 +523,13 @@ export class AppLevelTab {
 	listGetDataRow() {
 		const idCurrent = this.dataObj?.data.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
 		const dataRows = this.listGetDataRows()
-		return idCurrent && dataRows
-			? dataRows.find((dataRow) => {
-					return dataRow.record.id === idCurrent
-				})
-			: undefined
+		const val =
+			idCurrent && dataRows
+				? dataRows.find((dataRow) => {
+						return dataRow.record.id === idCurrent
+					})
+				: undefined
+		return val
 	}
 	listGetDataRows(): DataRow[] | [] {
 		let dataRows: DataRow[] = []
@@ -654,7 +645,6 @@ export class AppLevelTab {
 			if (result.error) return result
 		} else {
 			return new MethodResult({
-				success: false,
 				error: {
 					file: FILENAME,
 					function: 'AppLevelTab.queryExe',
@@ -674,12 +664,12 @@ export class AppLevelTab {
 		this.dataObj = result.data as DataObj
 
 		if (this.dataObj && this.dataObj.raw.codeCardinality === DataObjCardinality.list) {
+			this.dataObj.data.parms.reset()
 			this.dataObj.data.parms.valueSetList(
 				ParmsValuesType.listIds,
 				this.dataObj.data.rowsRetrieved.getRows()
 			)
 		}
-
 		return new MethodResult()
 	}
 
@@ -693,12 +683,22 @@ export class AppLevelTab {
 					: 'unknown'
 		evalExprContext = 'dataObj-' + evalExprContext
 
+		let result: MethodResult = this.queryPreData(sm, queryType, evalExprContext)
+		if (result.error) return result
+
+		const tokenQuerySource: TokenApiQuerySource = result.data
+		return new MethodResult(tokenQuerySource)
+	}
+
+	queryPreData(sm: State, queryType: TokenApiQueryType, evalExprContext: string) {
 		// dataTree
 		const dataTree: TokenApiQueryDataTree = sm.app.getDataTree(queryType)
-		sm.parmsState.valueSet(ParmsValuesType.listRecordIdCurrent, dataTree.getValue('', 'id'))
+		sm.parmsState.valueSet(
+			ParmsValuesType.listRecordIdCurrent,
+			dataTree.getValue('id', TokenApiQueryDataTreeAccessType.index, 0)
+		)
 
 		if (this.dataObj?.data) this.queryPreOwnerId(sm, this.dataObj.data.parms)
-
 		const rawQuerySource = this.dataObj ? this.dataObj.raw.rawQuerySource : new QuerySourceRaw({})
 
 		return new MethodResult(
@@ -747,21 +747,21 @@ export class AppLevelTab {
 			const rootTab = treeLevel.levels[0].getCurrTab()
 			if (rootTab && rootTab.node) {
 				if (rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeOrgRecord) {
-					parms.valueSet(ParmsValuesType.queryOwnerIdOrg, rootTab.getCurrRecordValue('id'))
+					parms.valueSet(ParmsValuesType.queryOwnerOrg, rootTab.getCurrRecordValue('id'))
 				} else if (
 					rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemApp &&
 					rootTab.node.ownerId
 				) {
-					parms.valueSet(ParmsValuesType.queryOwnerIdSystem, rootTab.node.ownerId)
+					parms.valueSet(ParmsValuesType.queryOwnerSys, rootTab.node.ownerId)
 				} else if (rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemRecord) {
-					parms.valueSet(ParmsValuesType.queryOwnerIdSystem, rootTab.getCurrRecordValue('id'))
+					parms.valueSet(ParmsValuesType.queryOwnerSys, rootTab.getCurrRecordValue('id'))
 				} else if (
 					rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemUser &&
 					smSource?.user?.systemIdCurrent
 				) {
-					parms.valueSet(ParmsValuesType.queryOwnerIdSystem, smSource.user.systemIdCurrent)
+					parms.valueSet(ParmsValuesType.queryOwnerSys, smSource.user.systemIdCurrent)
 				} else if (smSource?.user?.systemIdCurrent) {
-					parms.valueSet(ParmsValuesType.queryOwnerIdSystem, rootTab.node.ownerId)
+					parms.valueSet(ParmsValuesType.queryOwnerSys, rootTab.node.ownerId)
 				}
 			}
 		}
@@ -819,6 +819,8 @@ export class AppTree {
 		const clazz = 'getDataTree'
 		let dataTree = new TokenApiQueryDataTree()
 		const offset = queryType === TokenApiQueryType.preset ? 1 : 0
+		const levelCnt = this.levels.length - offset
+
 		for (let i = 0; i < this.levels.length - offset; i++) {
 			const level = this.levels[i]
 			const currTab = level.getCurrTab()
@@ -831,10 +833,10 @@ export class AppTree {
 				if (dataRow) {
 					const tableRootName = required(
 						dataObjCurr.raw.tableGroup.getTableName(0),
-						'getDataTree',
+						clazz,
 						'tableRootName'
 					)
-					dataTree.addLevel(tableRootName, dataRow)
+					dataTree.addLevel(dataRow, tableRootName, currTab.node?.name)
 				}
 			}
 		}
@@ -872,34 +874,107 @@ export class AppTree {
 				new TokenAppStateTriggerAction({
 					codeAction: CodeAction.init(
 						CodeActionClass.ct_sys_code_action_class_nav,
-						CodeActionType.navHome
+						CodeActionType.navDestination
 					),
-					codeConfirmType: TokenAppUserActionConfirmType.statusChanged
+					codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+					data: {
+						token: new TokenAppNav({ _codeDestinationType: NavDestinationType.home })
+					}
 				})
 			)
 		} else {
 			const currLevel = this.getCurrLevel()
 			if (currLevel) {
 				const currTab = currLevel.getCurrTab()
-				if (currTab.isAlwaysRetrieveData) return await currTab.query(sm, TokenApiQueryType.retrieve)
+				const nodeName = currTab.node?.name
+				if (nodeName) {
+					await sm.triggerAction(
+						new TokenAppStateTriggerAction({
+							codeAction: CodeAction.init(
+								CodeActionClass.ct_sys_code_action_class_nav,
+								CodeActionType.navNode
+							)
+						})
+					)
+				}
 			}
+
 			return new MethodResult()
 		}
 	}
 
-	async navBack(sm: State, backCnt: number): Promise<MethodResult> {
-		for (let i = 0; i < backCnt; i++) {
+	async navDestination(sm: State, token: TokenAppNav): Promise<MethodResult> {
+		switch (token.codeDestinationType) {
+			case NavDestinationType.back:
+				return await this.navDestinationBack(sm, token)
+			case NavDestinationType.nodeBack:
+				return await this.navDestinationNodeBack(sm, token)
+			case NavDestinationType.nodeForward:
+				return await this.navDestinationNodeForward(sm, token)
+			default:
+				return new MethodResult({
+					error: {
+						file: FILENAME,
+						function: 'AppTree.navDestination',
+						msg: `No case defined for NavDestinationType: ${token.codeDestinationType}`
+					}
+				})
+		}
+	}
+
+	async navDestinationBack(sm: State, token: TokenAppNav): Promise<MethodResult> {
+		for (let i = 0; i < token.backCount; i++) {
 			const currLevel = this.getCurrLevel()
 			if (currLevel) {
 				if (currLevel.tabIdxCurrent > 0) {
 					currLevel.tabIdxSet(0, true)
 				} else {
-					return await this.levelPop(sm)
+					// return await this.levelPop(sm)
+					await this.levelPop(sm)
 				}
 			}
 		}
 		return new MethodResult()
 	}
+
+	async navDestinationNodeBack(sm: State, token: TokenAppNav): Promise<MethodResult> {
+		const clazz = 'AppTree.navDestinationNodeBack'
+		let levelIdx = this.levels.length - 1
+		while (levelIdx > -1) {
+			const currLevel = this.getCurrLevel()
+			if (currLevel) {
+				const currTab = currLevel.getCurrTab()
+				const currNode = required(currTab.node, clazz, 'currTab.node')
+				if (currNode) {
+					if (currNode.name === token.nodeDestination) {
+						currLevel.tabIdxSet(0, true)
+						return new MethodResult()
+					}
+				}
+			}
+			const result: MethodResult = await this.levelPop(sm)
+			if (result.error) return result
+			levelIdx--
+		}
+		return new MethodResult({
+			error: {
+				file: FILENAME,
+				function: 'AppTree.navDestinationNodeBack',
+				msg: `Node not in tree: ${token.nodeDestination}`
+			}
+		})
+	}
+
+	async navDestinationNodeForward(sm: State, token: TokenAppNav): Promise<MethodResult> {
+		return new MethodResult({
+			error: {
+				file: FILENAME,
+				function: 'AppTree.navDestinationNodeForward',
+				msg: `Feature not yet implemented`
+			}
+		})
+	}
+
 	navCrumbsList() {
 		this.crumbs = [new AppLevelCrumb(-1, 'Home')]
 		this.levels.forEach((level, i) => {
@@ -917,9 +992,42 @@ export class AppTree {
 		})
 		return this.crumbs
 	}
-	async navCrumbs(sm: State, token: TokenAppIndex): Promise<MethodResult> {
-		const backCnt = this.crumbs.length - 1 - token.index
-		return await this.navBack(sm, backCnt)
+
+	async navRow(sm: State, token: TokenAppRow, app: App): Promise<MethodResult> {
+		const tabParent = this.getCurrTabParentTab()
+		if (tabParent) {
+			tabParent.listSetIdByAction(token.rowAction)
+			if (tabParent.node?.isDynamicChildrenSystemParents) {
+				const tabCurrent = this.getCurrTab()
+				if (tabCurrent) {
+					await app.addTreeNodeChildrenDynamic()
+					const currLevel = this.getCurrLevel()
+					if (currLevel) {
+						if (!currLevel.tabInList(tabCurrent)) {
+							return await this.levelPop(sm)
+						}
+					}
+				}
+			}
+
+			const currLevel = this.getCurrLevel()
+			if (currLevel) {
+				const currTab = currLevel.getCurrTab()
+				if (currTab.dataObj?.raw.codeCardinality === DataObjCardinality.detail) {
+					const listDataRow = tabParent.listGetDataRow()
+					return await this.tabQueryDetailDataRow(sm, TokenApiQueryType.retrieve, listDataRow)
+				} else {
+					return await currTab.query(sm, TokenApiQueryType.retrieve)
+				}
+			}
+		}
+		return new MethodResult({
+			error: {
+				file: FILENAME,
+				function: 'App.navRow',
+				msg: `No parent tab`
+			}
+		})
 	}
 
 	navRowStatus() {
@@ -941,38 +1049,6 @@ export class AppTree {
 		return new MethodResult()
 	}
 
-	async rowUpdate(sm: State, token: TokenAppRow, app: App): Promise<MethodResult> {
-		const tabParent = this.getCurrTabParentTab()
-		if (tabParent) {
-			tabParent.listSetIdByAction(token.rowAction)
-			if (tabParent.node?.isDynamicChildrenSystemParents) {
-				const tabCurrent = this.getCurrTab()
-				if (tabCurrent) {
-					await app.addTreeNodeChildrenDynamic()
-					const currLevel = this.getCurrLevel()
-					if (currLevel) {
-						if (!currLevel.tabInList(tabCurrent)) {
-							return await this.levelPop(sm)
-						}
-					}
-				}
-			}
-			return await this.tabQueryDetailDataRow(
-				sm,
-				TokenApiQueryType.retrieve,
-				tabParent.listGetDataRow()
-			)
-		}
-		return new MethodResult({
-			success: false,
-			error: {
-				file: FILENAME,
-				function: 'App.rowUpdate',
-				msg: `No parent tab`
-			}
-		})
-	}
-
 	async saveDetail(sm: State, codeActionType: CodeActionType): Promise<MethodResult> {
 		const clazz = `${FILENAME}.saveDetail`
 		const currTab = this.getCurrTab()
@@ -980,7 +1056,7 @@ export class AppTree {
 
 		if (currTab && currTab.dataObj && sm.dm) {
 			currTab.dataObj.data = sm.dm.getDataSave()
-			const tabParent = this.getCurrTabParentTab()
+			let tabParent = this.getCurrTabParentTab()
 
 			if (tabParent && tabParent.dataObj) {
 				switch (codeActionType) {
@@ -1064,22 +1140,36 @@ export class AppTree {
 							if (result.error) return result
 						}
 
-						// parent list
-						const detailIdCurrent = currTab.dataObj.data.rowsRetrieved.getDetailRecordValue('id')
-						let listIdsPre: string[] = tabParent.dataObj.data.parms.valueGet(
-							ParmsValuesType.listIds
-						)
-						result = await tabParent.query(sm, TokenApiQueryType.retrieve)
-						if (result.error) return result
-						let listIdsPost: string[] = []
-						tabParent.dataObj.data.parms.valueGet(ParmsValuesType.listIds).forEach((id: string) => {
-							if (listIdsPre.includes(id) || id === detailIdCurrent) listIdsPost.push(id)
-						})
-						tabParent.dataObj.data.parms.updateList(
-							listIdsPost,
-							currTab.dataObj.data.rowsRetrieved.getDetailRecordValue('id')
-						)
+						// if parent list exists, retrieve
+						tabParent = this.getCurrTabParentTab()
+						if (tabParent?.dataObj?.raw.codeCardinality === DataObjCardinality.list) {
+							const detailIdCurrent = currTab.dataObj.data.rowsRetrieved.getDetailRecordValue('id')
+							let listIdsPre: string[] = tabParent.dataObj.data.parms.valueGet(
+								ParmsValuesType.listIds
+							)
+							result = await tabParent.query(sm, TokenApiQueryType.retrieve)
+							if (result.error) return result
+
+							// set list record id
+							tabParent.dataObj.data.parms.valueSet(
+								ParmsValuesType.listRecordIdCurrent,
+								detailIdCurrent
+							)
+
+							// set list ids
+							let listIdsPost: string[] = []
+							tabParent.dataObj.data.parms
+								.valueGet(ParmsValuesType.listIds)
+								.forEach((id: string) => {
+									if (listIdsPre.includes(id) || id === detailIdCurrent) listIdsPost.push(id)
+								})
+							tabParent.dataObj.data.parms.updateList(
+								listIdsPost,
+								currTab.dataObj.data.rowsRetrieved.getDetailRecordValue('id')
+							)
+						}
 						break
+
 					default:
 						error(500, {
 							file: FILENAME,
@@ -1113,7 +1203,6 @@ export class AppTree {
 
 					default:
 						return new MethodResult({
-							success: false,
 							error: {
 								file: FILENAME,
 								function: 'App.detailUpdate',
@@ -1133,7 +1222,6 @@ export class AppTree {
 			return await currTab.query(sm, TokenApiQueryType.save)
 		}
 		return new MethodResult({
-			success: false,
 			error: {
 				file: FILENAME,
 				function: 'App.saveList',
@@ -1166,7 +1254,6 @@ export class AppTree {
 			}
 		}
 		return new MethodResult({
-			success: false,
 			error: {
 				file: FILENAME,
 				function: 'App.tabQueryDetailData',
@@ -1189,7 +1276,6 @@ export class AppTree {
 			}
 		}
 		return new MethodResult({
-			success: false,
 			error: {
 				file: FILENAME,
 				function: 'App.tabQueryDetailDataRow',

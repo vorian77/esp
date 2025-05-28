@@ -1,34 +1,9 @@
 import { strRequired } from '$utils/utils.model'
-import { apiFetchFunction, ApiFunction } from '$routes/api/api'
+import { arrayOfClass, getArray } from '$utils/utils.array'
 import { valueOrDefault, memberOfEnum } from '$utils/utils.model'
+import exp from 'constants'
 
 const FILENAME = '/$utils/utils.sys.ts'
-
-export class Attr {
-	codeAttrType: string
-	id: string
-	obj: string
-	constructor(obj: any) {
-		const clazz = 'Attr'
-		obj = valueOrDefault(obj, {})
-		this.codeAttrType = strRequired(obj._codeAttrType, clazz, 'codeAttrType')
-		this.id = strRequired(obj.id, clazz, 'id')
-		this.obj = strRequired(obj._obj, clazz, 'obj')
-	}
-}
-
-export class AttrObjAction {
-	codeAttrActionType: string
-	id: string
-	obj: string
-	constructor(obj: any) {
-		const clazz = 'AttrObjAction'
-		obj = valueOrDefault(obj, {})
-		this.codeAttrActionType = strRequired(obj._codeAttrActionType, clazz, 'codeAttrActionType')
-		this.id = strRequired(obj.id, clazz, 'id')
-		this.obj = strRequired(obj._obj, clazz, 'obj')
-	}
-}
 
 export function capitalizeFirstLetter(text: string) {
 	return text.charAt(0).toUpperCase() + text.slice(1)
@@ -78,11 +53,9 @@ export enum CodeActionType {
 
 	doCustomSysMsgRootDetailSave = 'doCustomSysMsgRootDetailSave',
 	doCustomSysMsgThreadDetailClose = 'doCustomSysMsgThreadDetailClose',
-	doCustomSysMsgThreadDetailReply = 'doCustomSysMsgThreadDetailReply',
 	doCustomSysMsgThreadDetailSend = 'doCustomSysMsgThreadDetailSend',
 	doCustomSysMsgThreadListClose = 'doCustomSysMsgThreadListClose',
-	doCustomSysMsgThreadListForward = 'doCustomSysMsgThreadListForward',
-	doCustomSysMsgThreadListReply = 'doCustomSysMsgThreadListReply',
+	doCustomSysMsgThreadReply = 'doCustomSysMsgThreadReply',
 
 	doDetailMsgSetClosed = 'doDetailMsgSetClosed',
 	doDetailMsgSetOpen = 'doDetailMsgSetOpen',
@@ -101,6 +74,8 @@ export enum CodeActionType {
 	doEmbedListConfigNew = 'doEmbedListConfigNew',
 	doEmbedListEditParmValue = 'doEmbedListEditParmValue',
 	doEmbedListSelect = 'doEmbedListSelect',
+
+	doExpr = 'doExpr',
 
 	doListDetailEdit = 'doListDetailEdit',
 	doListDetailNew = 'doListDetailNew',
@@ -121,9 +96,8 @@ export enum CodeActionType {
 	modalOpenSelect = 'modalOpenSelect',
 
 	// nav
-	navBack = 'navBack',
-	navCrumbs = 'navCrumbs',
-	navHome = 'navHome',
+	navDestination = 'navDestination',
+	navNode = 'navNode',
 	navPage = 'navPage',
 	navRow = 'navRow',
 	navTab = 'navTab',
@@ -206,21 +180,57 @@ export function getColor(colorName: string) {
 	return idx > -1 ? colors[idx][1] : ''
 }
 
-export const isNumber = (value: any) => {
-	if ([null, undefined, ''].includes(value)) return false
-	return typeof value === 'number' || !isNaN(value)
+export function getDbExprRaw(exprWith: string | undefined, exprCustom: string | undefined) {
+	exprWith = exprWith ? exprWith.trim() : ''
+	exprWith = exprWith ? 'WITH\n' + exprWith : ''
+	exprCustom = exprCustom ? exprCustom.trim() : ''
+	return exprWith ? exprWith + ' ' + exprCustom : exprCustom
 }
 
-export function isObject(obj: any) {
-	return typeof obj === 'object' && obj !== null && !Array.isArray(obj)
+export function getValueData(value: any) {
+	if (Array.isArray(value)) {
+		let valueReturn: string[] = []
+		value.forEach((v) => {
+			valueReturn.push(getValueData(v))
+		})
+		return valueReturn
+	} else {
+		return isPlainObject(value) ? (Object.hasOwn(value, 'data') ? value.data : value) : value
+	}
+}
+
+export function getValueDisplay(value: any) {
+	if ([null, undefined].includes(value)) return ''
+	if (Array.isArray(value)) {
+		let valueReturn: string[] = []
+		value.forEach((v) => {
+			valueReturn.push(getValueDisplay(v))
+		})
+		return valueReturn
+	} else {
+		return isPlainObject(value) ? (Object.hasOwn(value, 'display') ? value.display : value) : value
+	}
+}
+
+export const isNumber = (value: any) => {
+	return typeof value === 'number' && !isNaN(value)
+}
+
+export function isPlainObject(value: any) {
+	return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
 export class MethodResult {
 	data: any
 	error?: MethodResultError
+	success = true
 	type = 'object'
 	constructor(parms: any = undefined) {
 		parms = valueOrDefault(parms, {})
+
+		if (Object.hasOwn(parms, 'success')) {
+			this.success = parms.success
+		}
 
 		if (Object.hasOwn(parms, 'data') && Object.keys(parms).length === 1) {
 			parms = parms.data
@@ -231,6 +241,7 @@ export class MethodResult {
 			this.data = parms
 		} else {
 			if (Object.hasOwn(parms, 'error')) {
+				this.success = false
 				this.error = new MethodResultError(parms.error)
 				delete parms.error
 			}
@@ -251,9 +262,14 @@ export class MethodResult {
 	getResultExpr() {
 		return this.data.rawDataList ? this.data.rawDataList : undefined
 	}
+	getResultExprValue() {
+		const data = this.getResultExpr()
+		return Array.isArray(data) && data.length > 0 ? data[0] : undefined
+	}
 }
 
 export class MethodResultError {
+	_sessionId?: string
 	code: string
 	file: string
 	function: string
@@ -261,10 +277,10 @@ export class MethodResultError {
 	msgSystem: string
 	msgUser: string
 	status?: number
-	userId?: string
 	constructor(obj: any) {
 		const clazz = 'MethodResultError'
 		obj = valueOrDefault(obj, {})
+		this._sessionId = obj._sessionId
 		this.code = obj.code?.toString() || ''
 		this.file = strRequired(obj.file, clazz, 'file')
 		this.function = strRequired(obj.function, clazz, 'function')
@@ -272,7 +288,130 @@ export class MethodResultError {
 		this.msgSystem = strRequired(obj.msgSystem || obj.msg || obj.message, clazz, 'msgSystem')
 		this.msgUser = strRequired(obj.msgUser || obj.msg || 'unspecified', clazz, 'msgUser')
 		this.status = obj.status
-		this.userId = obj.userId
+	}
+}
+
+export class ObjAttr {
+	codeAttrType: string
+	id: string
+	name: string
+	constructor(rawObjAttr: RawObjAttr) {
+		const clazz = 'ObjAttr'
+		this.codeAttrType = strRequired(rawObjAttr._codeAttrType, clazz, 'codeAttrType')
+		this.id = strRequired(rawObjAttr.id, clazz, 'id')
+		this.name = strRequired(rawObjAttr.name, clazz, 'name')
+	}
+}
+
+export class ObjAttrAccess extends ObjAttr {
+	codeAttrTypeAccess: ObjAttrTypeAccess
+	constructor(rawObjAttrAccess: RawObjAttrAccess) {
+		rawObjAttrAccess = valueOrDefault(rawObjAttrAccess, {})
+		const clazz = 'ObjAttrAccess'
+		super(rawObjAttrAccess._obj)
+		this.codeAttrTypeAccess = memberOfEnum(
+			rawObjAttrAccess._codeAttrTypeAccess,
+			clazz,
+			'codeAttrTypeAccess',
+			'ObjAttrAccessType',
+			ObjAttrTypeAccess
+		)
+	}
+}
+
+export class ObjAttrAction extends ObjAttr {
+	codeAttrTypeAction: string
+	constructor(rawObjAttrAction: RawObjAttrAction) {
+		rawObjAttrAction = valueOrDefault(rawObjAttrAction, {})
+		super(rawObjAttrAction._obj)
+		const clazz = 'ObjAttrAction'
+		this.codeAttrTypeAction = strRequired(
+			rawObjAttrAction._codeAttrTypeAction,
+			clazz,
+			'codeAttrTypeAction'
+		)
+	}
+}
+
+export class ObjAttrExpr {
+	codeAttrTypeAction: string
+	expr: string
+	constructor(obj: any) {
+		obj = valueOrDefault(obj, {})
+		const clazz = 'ObjAttrExpr'
+		this.codeAttrTypeAction = strRequired(obj._codeAttrTypeAction, clazz, 'codeAttrTypeAction')
+		this.expr = strRequired(obj.expr, clazz, 'expr')
+	}
+}
+
+export enum ObjAttrTypeAccess {
+	allow = 'allow',
+	deny = 'deny'
+}
+
+export class ObjAttrVirtual {
+	attrsAccess: ObjAttrAccess[]
+	attrsAction: ObjAttrAction[]
+	expr: string
+	constructor(obj: any) {
+		obj = valueOrDefault(obj, {})
+		const clazz = 'ObjAttrVirtual'
+		this.expr = strRequired(obj.expr, clazz, 'expr')
+		this.attrsAccess = arrayOfClass(ObjAttrAccess, obj._attrsAccess)
+		this.attrsAction = arrayOfClass(ObjAttrAction, obj._attrsAction)
+	}
+}
+
+export class RawObjAttr {
+	_codeAttrType: string
+	id: string
+	name: string
+	constructor(obj: any) {
+		obj = valueOrDefault(obj, {})
+		const clazz = 'RawObjAttr'
+		this._codeAttrType = strRequired(obj._codeAttrType, clazz, '_codeAttrType')
+		this.id = strRequired(obj.id, clazz, 'id')
+		this.name = strRequired(obj.name, clazz, 'name')
+	}
+}
+export class RawObjAttrAccess {
+	_codeAttrTypeAccess: ObjAttrTypeAccess
+	_obj: RawObjAttr
+	constructor(obj: any) {
+		obj = valueOrDefault(obj, {})
+		const clazz = 'RawObjAttrAccess'
+		this._codeAttrTypeAccess = memberOfEnum(
+			obj._codeAttrTypeAccess,
+			clazz,
+			'codeAttrAccessType',
+			'ObjAttrAccessType',
+			ObjAttrTypeAccess
+		)
+		this._obj = new RawObjAttr(obj._obj)
+	}
+}
+
+export class RawObjAttrAction {
+	_codeAttrTypeAction: string
+	_obj: RawObjAttr
+	constructor(obj: any) {
+		obj = valueOrDefault(obj, {})
+		const clazz = 'RawObjAttrAction'
+		this._codeAttrTypeAction = strRequired(obj._codeAttrTypeAction, clazz, '_codeAttrTypeAction')
+		this._obj = new RawObjAttr(obj._obj)
+	}
+}
+
+export class RawObjAttrVirtual {
+	_attrsAccess: RawObjAttrAccess[]
+	_attrsAction: RawObjAttrAction[]
+	expr: string
+	constructor(obj: any) {
+		obj = valueOrDefault(obj, {})
+		const clazz = 'ObjAttrVirtual'
+		this.expr = strRequired(obj.expr, clazz, 'expr')
+		this._attrsAccess = arrayOfClass(RawObjAttrAccess, obj._attrsAccess)
+		this._attrsAction = arrayOfClass(RawObjAttrAction, obj._attrsAction)
 	}
 }
 

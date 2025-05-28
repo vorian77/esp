@@ -58,7 +58,7 @@ module app_cm {
     };
     school: str;
     trigger cm_client_delete after delete for each do (
-      delete default::SysPerson filter .id not in (app_cm::CmClient.person.id union sys_core::SysObjEnt.contacts.id union sys_user::SysUser.person.id)
+      delete default::SysPerson filter .id not in (app_cm::CmClient.person.id union sys_core::SysObjAttrEnt.contacts.id union sys_user::SysUser.person.id)
     );
   }
 
@@ -73,6 +73,7 @@ module app_cm {
     dateStart: cal::local_date;
     dateStartEst: cal::local_date;
     idxDemo: int64;
+    required objAttrCmSite: sys_core::SysObjAttr;
     required programCm: app_cm::CmProgram;
     user: sys_user::SysUser;
   }
@@ -152,7 +153,7 @@ module app_cm {
     note: str;
   }
 
-  type CmPartner extending sys_core::SysObjEnt {}
+  type CmPartner extending sys_core::SysObjAttrEnt {}
   
   type CmProgram extending sys_core::SysObj {}
 

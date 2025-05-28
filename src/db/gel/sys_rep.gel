@@ -9,7 +9,6 @@ module sys_rep {
       on source delete delete target;
       on target delete allow;
     };
-    constraint exclusive on (.name);
   }
   
   type SysAnalyticStatus extending sys_user::Mgmt{
@@ -18,7 +17,7 @@ module sys_rep {
     expr: str;
   }
 
-  type SysRep extending sys_user::SysUserTypeResource {
+  type SysRep extending sys_core::SysObjAttr {
     required actionGroup: sys_core::SysDataObjActionGroup;
     multi analytics: sys_rep::SysAnalytic;
     description: str;
@@ -37,7 +36,6 @@ module sys_rep {
       on source delete delete target;
       on target delete allow;
     };
-    constraint exclusive on (.name);
   }
 
   type SysRepEl extending sys_user::Mgmt{
@@ -114,9 +112,6 @@ module sys_rep {
   }
 
   # FUNCTIONS
-  function getAnalytic(name: str) -> optional sys_rep::SysAnalytic
-    using (select sys_rep::SysAnalytic filter .name = name);
-
   function getReport(name: str) -> optional sys_rep::SysRep
-    using (select sys_rep::SysRep filter .name = name);    
+    using (select assert_single((select sys_rep::SysRep filter .name = name)));    
 }

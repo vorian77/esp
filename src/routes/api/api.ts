@@ -1,13 +1,12 @@
 import { goto } from '$app/navigation'
 import {
-	isObject,
+	isPlainObject,
 	MethodResult,
 	MethodResultError,
 	valueOrDefault,
 	type DataRecord
 } from '$utils/types'
 import { Token, TokenApiError, TokenApiFetchMethod } from '$utils/types.token'
-
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$routes/api/api.ts'
@@ -15,45 +14,45 @@ const FILENAME = '$routes/api/api.ts'
 export enum ApiFunction {
 	dbGelGetDataObjActionGroup = 'dbGelGetDataObjActionGroup',
 	dbGelGetDataObjId = 'dbGelGetDataObjId',
-
-	dbGelInit = 'dbGelInit',
 	dbGelGetLinkItemsSource = 'dbGelGetLinkItemsSource',
 	dbGelGetNode = 'dbGelGetNode',
 	dbGelGetNodesChildren = 'dbGelGetNodesChildren',
 	dbGelGetNodesSystemParents = 'dbGelGetNodesSystemParents',
 
+	dbGelInit = 'dbGelInit',
 	dbQuery = 'dbQuery',
 
 	sysErrorAdd = 'sysErrorAdd',
-	sysErrorGet = 'sysErrorGet',
+
 	sysGetSessionId = 'sysGetSessionId',
 	sysSendText = 'sysSendText',
 	sysUserPrefGet = 'sysUserPrefGet',
 	sysUserPrefSet = 'sysUserPrefSet'
 }
 
-export async function apiError(methodResult: MethodResult) {
+export async function apiErrorCheck(methodResult: MethodResult) {
 	if (methodResult.error) {
-		// get userId
+		// get session id
 		let result: MethodResult = await apiFetchRaw('/api', {
 			body: { apiFunction: ApiFunction.sysGetSessionId }
 		})
-		let userId = isObject(result.data) ? '' : result.data
+		let _sessionId = isPlainObject(result.data) ? '' : result.data
 
 		// save error to db
-		const token = new TokenApiError({ ...methodResult.error, userId })
+		const token = new TokenApiError({ ...methodResult.error, _sessionId })
 		result = await apiFetchRaw('/api', {
 			body: { apiFunction: ApiFunction.sysErrorAdd, token }
 		})
+		const errorId = result.data.id
 
 		// redirect to error page
-		goto(`/error/${result.data.id}`)
+		goto(`/error/${errorId}`)
 	}
 }
 
 export async function apiFetch(server: string, parms: DataRecord = {}) {
 	const result: MethodResult = await apiFetchRaw(server, parms)
-	await apiError(result)
+	await apiErrorCheck(result)
 	return result
 }
 
@@ -105,10 +104,10 @@ export async function apiFetchRaw(server: string, parms: DataRecord = {}) {
 			})
 		}
 	} catch (err: any) {
-		error(500, {
+		error(404, {
 			file: FILENAME,
 			function: 'apiFetchRaw',
-			msg: `Unable to fetch from server: ${server}`
+			msg: `Unable to fetch from server: ${err.message}`
 		})
 	}
 }

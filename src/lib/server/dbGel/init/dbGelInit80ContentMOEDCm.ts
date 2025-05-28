@@ -76,7 +76,7 @@ function initApplicant(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerIdSystem>)`,
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -506,7 +506,7 @@ function initApplicantMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeSortDir: 'DESC',
+				codeSortDir: 'desc',
 				columnName: 'date',
 				headerAlt: 'Date (Demonstration Only)',
 				indexTable: 0,
@@ -571,7 +571,7 @@ function initApplicantMsg(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				codeSortDir: 'DESC',
+				codeSortDir: 'desc',
 				columnName: 'date',
 				headerAlt: 'Date (Demonstration Only)',
 				indexTable: 0,
@@ -660,23 +660,13 @@ function initApplicantMsg(init: InitDb) {
 				nameCustom: 'isRoot'
 			},
 			{
-				codeFieldElement: 'date',
-				columnName: 'date',
-				exprPreset: `<fSysToday>`,
-				headerAlt: 'Date (Demonstration Only)-Default',
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0
 			},
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	columnName: 'createdAt',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 40,
-			// 	orderDefine: 40,
-			// 	indexTable: 0
-			// },
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
@@ -747,19 +737,11 @@ function initApplicantMsg(init: InitDb) {
 			},
 			{
 				columnName: 'parent',
-				// exprSave: `(SELECT DETACHED sys_core::SysMsg FILTER .id = <parms,uuid,${ParmsValuesType.parentRecordId}>)`,
 				exprSave: `(SELECT DETACHED sys_core::SysMsg FILTER .id = <tree,uuid,${ParmsValuesType.treeAncestorValue}.0.id>)`,
 				indexTable: 0,
-				isDisplayable: false,
+				isDisplayable: true,
 				orderDefine: 15,
 				linkTable: 'SysMsg'
-			},
-			{
-				columnName: 'custom_element_str',
-				isDisplayable: false,
-				orderDefine: 20,
-				exprCustom: `.sender.id`,
-				nameCustom: 'recordOwner'
 			},
 			{
 				columnName: 'recipients',
@@ -778,22 +760,14 @@ function initApplicantMsg(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'date',
-				columnName: 'date',
-				exprPreset: `<fSysToday>`,
-				headerAlt: 'Date (Demonstration Only) - Reply',
+				columnName: 'createdAt',
+				exprPreset: `<function,fSysToday>`,
+				headerAlt: 'Date',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
 			},
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	columnName: 'createdAt',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 40,
-			// 	orderDefine: 40,
-			// 	indexTable: 0
-			// },
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
@@ -809,7 +783,6 @@ function initApplicantMsg(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'subject',
-				// exprPreset: `<parms,str,subject>`,
 				exprPreset: `<tree,str,${ParmsValuesType.treeAncestorValue}.0.subject>`,
 				isDisplayable: true,
 				orderDisplay: 70,
@@ -896,16 +869,6 @@ function initCsf(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				linkColumns: ['header']
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				exprCustom: `(SELECT sys_core::SysAttr FILTER .id IN app_cm::CmClientServiceFlow.attrs.id AND .codeAttrType.name = 'at_cm_sf_site').obj.header`,
-				headerAlt: 'Site',
-				nameCustom: 'customSite'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1031,14 +994,13 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'attrs',
-				headerAlt: 'Site',
+				columnName: 'objAttrCmSite',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_attr_obj_system_type_single',
-				fieldListItemsParmValue: 'at_cm_sf_site'
+				fieldListItems: 'il_sys_obj_attr_type_single',
+				fieldListItemsParmValue: 'at_cm_site'
 			},
 			{
 				codeFieldElement: 'select',
@@ -1347,7 +1309,7 @@ function initCsfNote(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				codeFieldElement: 'date',
-				codeSortDir: 'DESC',
+				codeSortDir: 'desc',
 				columnName: 'date',
 				orderCrumb: 10,
 				orderSort: 10,
@@ -1599,11 +1561,12 @@ function initCsfDocument(init: InitDb) {
 		owner: 'sys_client_moed',
 		queryRiders: [
 			{
-				codeFunction: 'qrfFileStorage',
+				codeQueryAction: 'customFunction',
+				codeQueryFunction: 'qrfFileStorage',
+				codeQueryPlatform: 'client',
 				codeQueryType: 'save',
 				codeTriggerTiming: 'pre',
-				codeType: 'customFunction',
-				functionParmValue: 'file'
+				parmValueStr: 'file'
 			}
 		],
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
@@ -1989,13 +1952,13 @@ function initReport(init: InitDb) {
 			{
 				codeFieldElement: 'text',
 				codeReportElementType: 'column',
-				columnName: 'attrs',
+				columnName: 'objAttrCmSite',
 				header: 'Site',
 				indexTable: 2,
 				isDisplay: true,
 				isDisplayable: true,
 				linkColumns: ['header'],
-				linkTable: 'SysAttr',
+				linkTable: 'SysObjAttr',
 				orderDefine: 160,
 				orderDisplay: 160
 			},

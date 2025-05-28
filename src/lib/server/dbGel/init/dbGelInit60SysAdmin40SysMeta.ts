@@ -1,5 +1,5 @@
 import { InitDb } from '$server/dbGel/init/types.init'
-import { initAdminSysMetaUserType as initUserType } from '$server/dbGel/init/dbGelInit60SysAdmin40SysMetaUserType'
+import { initAdminSysMetaUserType } from '$server/dbGel/init/dbGelInit60SysAdmin40SysMetaUserType'
 
 export function initAdminSysMeta(init: InitDb) {
 	initAttribute(init)
@@ -7,7 +7,7 @@ export function initAdminSysMeta(init: InitDb) {
 	initFieldListSelectUserType(init)
 	initSystem(init)
 	initUser(init)
-	initUserType(init)
+	initAdminSysMetaUserType(init)
 }
 
 function initAttribute(init: InitDb) {
@@ -19,7 +19,7 @@ function initAttribute(init: InitDb) {
 		header: 'Attributes',
 		name: 'data_obj_sys_admin_attribute_list_meta',
 		owner: 'sys_system',
-		tables: [{ index: 0, table: 'SysAttr' }],
+		tables: [{ index: 0, table: 'SysObjAttr' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -67,7 +67,7 @@ function initAttribute(init: InitDb) {
 		header: 'Attribute',
 		name: 'data_obj_sys_admin_attribute_detail_meta',
 		owner: 'sys_system',
-		tables: [{ index: 0, table: 'SysAttr' }],
+		tables: [{ index: 0, table: 'SysObjAttr' }],
 		fields: [
 			{
 				columnName: 'id',
@@ -680,7 +680,7 @@ function initFieldListSelectUserType(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		exprFilter: `.isGlobalResource UNION .owner.id = <parms,uuid,queryOwnerIdSystem> UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerIdSystem>).systemParents`,
+		exprFilter: `.isGlobalResource UNION .owner.id = <parms,uuid,queryOwnerSys> UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>).systemParents`,
 		header: 'Select User Types',
 		name: 'dofls_sys_sys_admin_user_type',
 		owner: 'sys_system',
@@ -716,7 +716,7 @@ function initFieldListSelectUserType(init: InitDb) {
 
 function initSystem(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionGroup: 'doag_list',
+		actionGroup: 'doag_list_edit_download',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: '.id IN <user,uuidlist,systemIds>',
@@ -781,7 +781,7 @@ function initSystem(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionGroup: 'doag_detail',
+		actionGroup: 'doag_detail_save',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'System',
@@ -789,11 +789,12 @@ function initSystem(init: InitDb) {
 		owner: 'sys_system',
 		queryRiders: [
 			{
-				codeFunction: 'qrfFileStorage',
+				codeQueryAction: 'customFunction',
+				codeQueryFunction: 'qrfFileStorage',
+				codeQueryPlatform: 'client',
 				codeQueryType: 'save',
 				codeTriggerTiming: 'pre',
-				codeType: 'customFunction',
-				functionParmValue: 'file'
+				parmValueStr: 'file'
 			}
 		],
 		tables: [{ index: 0, table: 'SysSystem' }],
@@ -1027,7 +1028,7 @@ function initUser(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'userName',
+				columnName: 'name',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -1132,7 +1133,7 @@ function initUser(init: InitDb) {
 				indexTable: 1
 			},
 			{
-				columnName: 'userName',
+				columnName: 'name',
 				isDisplayable: true,
 				orderDisplay: 110,
 				orderDefine: 110,

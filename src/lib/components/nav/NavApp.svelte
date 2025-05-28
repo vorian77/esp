@@ -9,7 +9,12 @@
 	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
-	import { TokenAppStateTriggerAction, TokenAppUserActionConfirmType } from '$utils/types.token'
+	import {
+		NavDestinationType,
+		TokenAppNav,
+		TokenAppStateTriggerAction,
+		TokenAppUserActionConfirmType
+	} from '$utils/types.token'
 	import { App, AppLevel, AppLevelCrumb, AppLevelRowStatus } from '$comps/app/types.app.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
@@ -27,16 +32,19 @@
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_nav,
-					CodeActionType.navBack
+					CodeActionType.navDestination
 				),
-				codeConfirmType: TokenAppUserActionConfirmType.statusChanged
+				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+				data: {
+					token: new TokenAppNav({ _codeDestinationType: NavDestinationType.back })
+				}
 			})
 		)
 	}
 </script>
 
 {#if sm.app.treeLevelsIdxCurrent > -1}
-	<div id="layout-app" class="flex justify-between items-center p-3 border-b gap-3">
+	<div id="layout-app" class="flex justify-between items-center p-3 border-b gap-3 bg-neutral-50">
 		<div class="flex flex-grow items-center">
 			<button class="mr-2 flex-none" onclick={back}>
 				<Icon

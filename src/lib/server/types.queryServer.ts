@@ -1,12 +1,20 @@
-import { DataObjData, debug, MethodResult, ParmsValuesType } from '$utils/types'
-import { TokenApiQuery, TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
+import {
+	DataObjData,
+	debug,
+	getArray,
+	MethodResult,
+	ParmsValuesType,
+	strRequired,
+	valueOrDefault
+} from '$utils/types'
+import { TokenApiQuery } from '$utils/types.token'
 import {
 	QueryManager,
 	QueryManagerSource,
-	QuerySource,
-	QuerySourceRaw,
 	QuerySourceType
-} from '$lib/query/types.query'
+} from '$lib/queryClient/types.queryClient'
+import { QueryRiders } from '$lib/queryClient/types.queryClientRider'
+import { QueryRiderServer } from '$server/types.queryServerRider'
 import { ScriptGroup } from '$routes/api/db/dbScript'
 import { ScriptGroupGelDataObj } from '$routes/api/db/dbGel/dbGelScript'
 import { ScriptGroupGelExpr } from '$routes/api/db/dbGel/dbGelScript'
@@ -22,13 +30,17 @@ export async function dbQuery(tokenQuery: TokenApiQuery) {
 	return await qmc.query()
 }
 
-export async function dbQueryExpr(
-	expr: string,
-	evalExprContext: string,
-	queryData: TokenApiQueryData,
-	querySource: QuerySource
-): Promise<MethodResult> {
-	const result: MethodResult = evalExpr({ evalExprContext, expr, queryData, querySource })
+export async function dbQueryExpr(obj: any): Promise<MethodResult> {
+	obj = valueOrDefault(obj, {})
+	const clazz = 'dbQueryExpr'
+	const expr = strRequired(obj.expr, clazz, 'expr')
+	const evalExprContext = strRequired(obj.evalExprContext, clazz, 'evalExprContext')
+	const result: MethodResult = evalExpr({
+		evalExprContext,
+		expr,
+		queryData: obj.queryData,
+		querySource: obj.querySource
+	})
 	if (result.error) return result
 	const exprEval = result.data
 	return await queryJsonMultiple(exprEval)
@@ -36,7 +48,6 @@ export async function dbQueryExpr(
 
 export class QueryManagerServer extends QueryManager {
 	dataReturn = new DataObjData()
-	isClient = false
 	scriptGroup: ScriptGroup
 	constructor(tokenQuery: TokenApiQuery) {
 		super(tokenQuery)
@@ -67,6 +78,16 @@ export class QueryManagerServer extends QueryManager {
 		}
 	}
 	async queryExe(): Promise<MethodResult> {
-		return await this.scriptGroup.query()
+		return await this.scriptGroup.queryExe()
+	}
+
+	async queryPre(): Promise<MethodResult> {
+		let result = await this.scriptGroup.queryPre()
+		if (result.error) return result
+		this.queryRiders = new QueryRiders(
+			QueryRiderServer,
+			getArray(this.scriptGroup.queryData.dataTab.rawDataObj?.rawQuerySource.queryRidersRawServer)
+		)
+		return await super.queryPre()
 	}
 }

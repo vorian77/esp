@@ -16,7 +16,7 @@ module sys_user {
     };
   }
 
-  type SysApp extending sys_user::SysUserTypeResource {
+  type SysApp extending sys_core::SysObjAttr  {
     required appHeader: sys_user::SysAppHeader;
     multi nodes: sys_core::SysNodeObj {
        on target delete allow;
@@ -35,29 +35,28 @@ module sys_user {
   }
 
   # task  
-  type SysTask extending sys_user::SysUserTypeResource {
+  type SysTask extending sys_core::SysObjAttr  {
     codeRenderType: sys_core::SysCode;
     codeStatusObj: sys_core::SysCode;
     description: str;
     exprShow: str;
     exprStatus: str;
+    exprWith: str;
     hasAltOpen: bool;
     isPinToDash: bool;
     noDataMsg: str;
     pageDataObj: sys_core::SysDataObj;
     targetDataObj: sys_core::SysDataObj;
     targetNodeObj: sys_core::SysNodeObj;
-    constraint exclusive on (.name);
   }
   
-  type SysUser extending sys_user::Mgmt {
+  type SysUser extending sys_core::SysObjAttr {
     required defaultOrg: sys_core::SysOrg;
     required defaultSystem: sys_core::SysSystem;
     isActive: bool;
     required multi orgs: sys_core::SysOrg {
       on target delete allow;
     };
-    required owner: sys_core::SysOrg;
     required person: default::SysPerson {
       on source delete allow;
     };
@@ -65,18 +64,17 @@ module sys_user {
       default := (SELECT <str>uuid_generate_v4());
     };
     required multi systems: sys_core::SysSystem;
-    userName: str;
     multi userTypes: sys_user::SysUserType {
       on target delete allow;
     };
     trigger sys_user_delete after delete for each do (
-      delete default::SysPerson filter .id not in (app_cm::CmClient.person.id union sys_core::SysObjEnt.contacts.id union sys_user::SysUser.person.id)
+      delete default::SysPerson filter .id not in (app_cm::CmClient.person.id union sys_core::SysObjAttrEnt.contacts.id union sys_user::SysUser.person.id)
     );
-    constraint exclusive on (.userName);
+    constraint exclusive on (.name);
   }
 
   # action
-  type SysUserAction extending sys_core::SysObj {
+  type SysUserAction extending sys_core::SysObjAttr {
     multi actionConfirms: sys_user::SysUserActionConfirm {
       on source delete delete target;
       on target delete allow;
@@ -87,7 +85,11 @@ module sys_user {
     };
     required codeAction: sys_core::SysCodeAction;
     required codeTriggerEnable: sys_core::SysCode;
-    constraint exclusive on (.name);
+    expr: str;
+    exprWith: str;
+    navDestination: sys_core::SysNavDestination{
+      on target delete allow;
+    };
   }
   type SysUserActionConfirm extending sys_user::Mgmt {
     required codeConfirmType: sys_core::SysCode;
@@ -99,10 +101,8 @@ module sys_user {
   }
 
   type SysUserActionShow extending sys_user::Mgmt {
-    codeExprOp: sys_core::SysCode;
     required codeTriggerShow: sys_core::SysCode;
-    exprField: str;
-    exprValue: str;
+    expr: str;
     required isRequired: bool;
   }
 
@@ -122,17 +122,22 @@ module sys_user {
     constraint exclusive on ((.user, .codeType));
   }
   
+
+  
   # type
   type SysUserType extending sys_core::SysObj {
+    multi attrsExpr: sys_core::SysObjAttrExpr {
+      on source delete delete target;
+      on target delete allow;
+    };
+    multi attrsVirtual: sys_core::SysObjAttrVirtual {
+      on source delete delete target;
+      on target delete allow;
+    };
     isSelfSignup: bool;
-    multi resources: sys_user::SysUserTypeResource;
-    multi tags: sys_core::SysCode;
     users := .<userTypes[is sys_user::SysUser];
     constraint exclusive on ((.name));
   }
-
-  type SysUserTypeResource extending sys_core::SysObj {}
-  
 
   # GLOBALS
   global currentUserId: uuid;
@@ -146,23 +151,20 @@ module sys_user {
     using (select assert_single((select sys_user::SysApp filter .name = name)));
 
   function getRootUser() -> optional sys_user::SysUser
-    using (select assert_single((select sys_user::SysUser filter .userName = '*ROOTUSER*')));
+    using (select assert_single((select sys_user::SysUser filter .name = '*ROOTUSER*')));
   
   function getUserAction(name: str) -> optional sys_user::SysUserAction
-      using (select sys_user::SysUserAction filter .name = name);
+      using (select assert_single((select sys_user::SysUserAction filter .name = name)));
     
   function getUserById(userId: str) -> optional sys_user::SysUser
       using (select sys_user::SysUser filter .id = <uuid>userId);
 
-  function getUserByName(userName: str) -> optional sys_user::SysUser
-      using (select sys_user::SysUser filter .userName = userName);
+  function getUserByName(name: str) -> optional sys_user::SysUser
+      using (select assert_single((select sys_user::SysUser filter .name = name)));
 
   function getUserType(userTypeName: str) -> optional sys_user::SysUserType
     using (select sys_user::SysUserType filter .name = userTypeName);
-
-  function getUserTypeResource(ownerName: str, name: str) -> optional sys_user::SysUserTypeResource
-    using (select assert_single((select sys_user::SysUserTypeResource filter .owner.name = ownerName AND .name = name)));
-}
+  }
 
 
 

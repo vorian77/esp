@@ -1,4 +1,4 @@
-import { DbTable, DbTableQuery, QuerySourceParent } from '$lib/query/types.query'
+import { DbTable, DbTableQuery, QuerySourceParent } from '$lib/queryClient/types.queryClient'
 import { GelQuery, LinkSaveAction } from '$routes/api/db/dbGel/dbGelScriptQuery'
 import {
 	DataRecordStatus,
@@ -131,7 +131,6 @@ export class ScriptTypeSavePrimaryCore extends ScriptTypeSavePrimary {
 
 		function processTable(
 			query: GelQuery,
-
 			dataRows: DataRow[],
 			action: LinkSaveAction,
 			table: DbTableQuery,
@@ -148,7 +147,6 @@ export class ScriptTypeSavePrimaryCore extends ScriptTypeSavePrimary {
 					? query.rawDataObj.rawPropsSaveInsert
 					: query.rawDataObj.rawPropsSaveUpdate
 			let props: string[] = query.getPropsSave(propsRaw, query, dataRows, {
-				action,
 				indexTable: table.index
 			})
 

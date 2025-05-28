@@ -259,12 +259,12 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 		{
 			codeFieldElement: 'text',
 			codeReportElementType: 'column',
-			columnName: 'attrs',
+			columnName: 'objAttrCmSite',
 			indexTable: 1,
 			isDisplay: false,
 			isDisplayable: true,
 			linkColumns: ['header'],
-			linkTable: 'SysAttr',
+			linkTable: 'SysObjAttr',
 			orderDefine: 117,
 			orderDisplay: 117
 		},
@@ -345,7 +345,7 @@ function initFieldListSelectCohorts(init: InitDb) {
 				undefined
 			]
 		],
-		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).userTypes.owner`,
+		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .name = <user,str,name>).userTypes.owner`,
 		name: 'ilr_cm_cohort',
 		owner: 'sys_client_atlantic_impact',
 		table: 'CmCohort'
@@ -357,7 +357,6 @@ const getParms = (obj: any) => {
 	const clazz = `${FILENAME}.getParms`
 	const parms: [string, string | undefined][] = valueOrDefault(obj.parms, [])
 	const dateDataType: string = valueOrDefault(obj.dateDataType, '')
-	const exprFilterCohorts: string | undefined = valueOrDefault(obj.exprFilterCohorts, undefined)
 
 	const parmsList = [
 		{

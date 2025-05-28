@@ -39,7 +39,6 @@ export default async function action(
 
 		default:
 			return new MethodResult({
-				success: false,
 				error: {
 					file: FILENAME,
 					function: `default`,

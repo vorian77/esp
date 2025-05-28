@@ -1,6 +1,6 @@
 import { ApiFunction } from '$routes/api/api'
 import { debug, getServerResponse, getServerResponseMethod } from '$utils/types'
-import { dbQuery } from '$routes/api/db/queryServer'
+import { dbQuery } from '$server/types.queryServer'
 import {
 	getDataObjActionGroup,
 	getDataObjId,
@@ -10,8 +10,7 @@ import {
 	getNodesChildren,
 	getUserPref,
 	setUserPref,
-	sysErrorAdd,
-	sysErrorGet
+	sysErrorAdd
 } from '$routes/api/db/dbGel/dbGelQueries'
 import { dbInit } from '$server/dbGel/init/dbGelInit'
 import { sysSendText } from '$routes/api/apiTwilio'
@@ -52,11 +51,8 @@ export async function POST({ cookies, request }) {
 		case ApiFunction.sysErrorAdd:
 			return getServerResponseMethod(await sysErrorAdd(token))
 
-		case ApiFunction.sysErrorGet:
-			return getServerResponseMethod(await sysErrorGet(token))
-
 		case ApiFunction.sysGetSessionId:
-			return getServerResponseMethod(cookies.get('session_id'))
+			return getServerResponseMethod(cookies.get('session_id') || '')
 
 		case ApiFunction.sysSendText:
 			return getServerResponse(await sysSendText(token))

@@ -64,6 +64,25 @@ export function initPreDataObjActionGroup(init: InitDb) {
 				codeColor: 'primary',
 				isListRowAction: false,
 				orderDefine: 1
+			}
+		],
+		name: 'doag_detail_save',
+		owner: 'sys_system'
+	})
+
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [
+			{
+				action: 'ua_sys_save_detail',
+				codeColor: 'primary',
+				isListRowAction: false,
+				orderDefine: 0
+			},
+			{
+				action: 'ua_sys_save_cancel',
+				codeColor: 'primary',
+				isListRowAction: false,
+				orderDefine: 1
 			},
 			{ action: 'ua_sys_new_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 2 }
 		],
@@ -121,15 +140,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 				orderDefine: 1
 			}
 		],
-		name: 'doag_list_error',
-		owner: 'sys_system'
-	})
-
-	init.addTrans('sysDataObjActionGroup', {
-		actions: [
-			{ action: 'ua_sys_edit_list', codeColor: 'primary', isListRowAction: true, orderDefine: 0 }
-		],
-		name: 'doag_list_task',
+		name: 'doag_list_edit_download',
 		owner: 'sys_system'
 	})
 
@@ -258,19 +269,6 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{ action: 'ua_sys_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
 		],
 		name: 'doag_detail_org_user',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysDataObjActionGroup', {
-		actions: [
-			{ action: 'ua_sys_edit_list', codeColor: 'primary', isListRowAction: true, orderDefine: 0 },
-			{
-				action: 'ua_sys_download_grid',
-				codeColor: 'primary',
-				isListRowAction: false,
-				orderDefine: 1
-			}
-		],
-		name: 'doag_list_org_user',
 		owner: 'sys_system'
 	})
 

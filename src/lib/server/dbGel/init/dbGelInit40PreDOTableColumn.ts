@@ -72,6 +72,6 @@ export function initTableColumn(init: InitDb) {
 		['SysUser', 'createdBy'],
 		['SysUser', 'modifiedAt'],
 		['SysUser', 'modifiedBy'],
-		['SysUser', 'userName']
+		['SysUser', 'name']
 	])
 }

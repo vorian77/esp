@@ -16,7 +16,7 @@ function initClient(init: InitDb) {
 		tables: [{ index: 0, table: 'CrmClient' }],
 		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
 		// exprFilter:
-		// 	'.owner in (SELECT sys_user::SysUser FILTER .userName = <user,str,userName>).userTypes.owner',
+		// 	'.owner in (SELECT sys_user::SysUser FILTER .name = <user,str,name>).userTypes.owner',
 
 		actionGroup: 'doag_list',
 		fields: [
@@ -62,8 +62,16 @@ function initClient(init: InitDb) {
 				orderDefine: 10
 			},
 			{
+				columnName: 'codeAttrType',
+				exprSave: `sys_core::getCodeAttrType('at_crm_client')`,
+				orderDefine: 15,
+				indexTable: 0,
+				isDisplayable: false,
+				linkTable: 'SysCode'
+			},
+			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerIdSystem>))`,
+				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerSys>))`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,

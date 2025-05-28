@@ -15,7 +15,7 @@ export function initContentMOEDCmAdvocate(init: InitDb) {
 
 function initTaskOpenApps(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
-		actionGroup: 'doag_list_task',
+		actionGroup: 'doag_list_edit',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
@@ -159,7 +159,7 @@ function initTaskOpenApps(init: InitDb) {
 
 function initTaskOpenMsgs(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
-		actionGroup: 'doag_list_task',
+		actionGroup: 'doag_list_edit',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
@@ -395,10 +395,13 @@ function initMsgRootDetailNew(init: InitDb) {
 		owner: 'sys_client_moed',
 		queryRiders: [
 			{
+				codeQueryAction: 'appDestination',
+				codeQueryPlatform: 'client',
 				codeQueryType: 'save',
 				codeTriggerTiming: 'post',
-				codeType: 'appDestination',
-				codeUserDestination: 'back'
+				navDestination: {
+					codeDestinationType: 'back'
+				}
 			}
 		],
 		tables: [{ index: 0, table: 'SysMsg' }],
@@ -419,7 +422,7 @@ function initMsgRootDetailNew(init: InitDb) {
 			{
 				codeFieldElement: 'date',
 				columnName: 'date',
-				exprPreset: `<fSysToday>`,
+				exprPreset: `<function,fSysToday>`,
 				headerAlt: 'Date (Demonstration Only)-Default',
 				isDisplayable: true,
 				orderDisplay: 30,
@@ -526,7 +529,7 @@ function initMsgRootDetailEdit(init: InitDb) {
 			{
 				codeFieldElement: 'date',
 				columnName: 'date',
-				exprPreset: `<fSysToday>`,
+				exprPreset: `<function,fSysToday>`,
 				headerAlt: 'Date (Demonstration Only)-Default',
 				isDisplayable: true,
 				orderDisplay: 40,
@@ -650,7 +653,7 @@ function initMsgDetailNew(init: InitDb) {
 			{
 				codeFieldElement: 'date',
 				columnName: 'date',
-				exprPreset: `<fSysToday>`,
+				exprPreset: `<function,fSysToday>`,
 				headerAlt: 'Date (Demonstration Only)-Default',
 				isDisplayable: true,
 				orderDisplay: 70,
@@ -772,7 +775,7 @@ function initMsgDetailReply(init: InitDb) {
 			{
 				codeFieldElement: 'date',
 				columnName: 'date',
-				exprPreset: `<fSysToday>`,
+				exprPreset: `<function,fSysToday>`,
 				headerAlt: 'Date (Demonstration Only)-Default',
 				isDisplayable: true,
 				orderDisplay: 70,

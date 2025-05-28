@@ -12,20 +12,20 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
-		codeListEditPresetType: 'save',
+		codeListPresetType: 'insertSave',
 		exprFilter:
 			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>).parms.id',
 		exprOrder: '.parm.orderDefine',
 		header: 'Parms',
 		isListEdit: true,
 		isListSuppressFilterSort: true,
-		listEditPresetExpr: `
+		listPresetExpr: `
 			WITH 
 			repUser := (SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>),
-			repVals := repUser.report.parms,
-			userVals := repUser.parms.parm, 
-			newVals := (SELECT repVals EXCEPT userVals)
-			SELECT newVals`,
+			repParms := repUser.report.parms,
+			userRepParms := repUser.parms.parm, 
+			newParms := (SELECT repParms EXCEPT userRepParms)
+			SELECT newParms`,
 		name: 'dofls_sys_rep_user_parm',
 		owner: 'sys_system',
 		parentColumn: 'parms',
@@ -196,14 +196,14 @@ function initRepConfig(init: InitDb) {
 		actionGroup: 'doag_list_report',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
-		codeListEditPresetType: 'save',
+		codeListPresetType: 'insertSave',
 		exprFilter: '.user.id = <user,uuid,id>',
 		header: 'My Reports',
-		listEditPresetExpr: `WITH
-		userTypeReps := (SELECT (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).userTypes.resources[IS sys_rep::SysRep]),
-		userReps := (SELECT sys_rep::SysRepUser FILTER .user.id = <user,uuid,id>).report,
-		newVals := (SELECT userTypeReps EXCEPT userReps)
-		SELECT newVals`,
+		listPresetExpr: `WITH
+		repsUserType := (SELECT sys_rep::SysRep FILTER .id IN <user,uuidlist,attrsAccessIdAllow>),
+		repsUserCurrent := (SELECT sys_rep::SysRepUser FILTER .user.id = <user,uuid,id>).report,
+		repsNew := (SELECT repsUserType EXCEPT repsUserCurrent)
+		SELECT repsNew`,
 		name: 'data_obj_sys_rep_my_report_list',
 		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysRepUser' }],

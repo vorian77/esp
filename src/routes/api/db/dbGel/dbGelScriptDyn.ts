@@ -19,7 +19,6 @@ export async function getRawDataObjDynamic(
 
 		default:
 			return new MethodResult({
-				success: false,
 				error: {
 					file: FILENAME,
 					function: 'getRawDataObjDynamic',

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { User } from '$utils/types'
+	import { debug, User } from '$utils/types'
 	import { State, StateNavLayout, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import { getDrawerStore, getModalStore, getToastStore } from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
@@ -14,6 +14,11 @@
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	let { data }: { data: PageData } = $props()
+
+	if (!data.success) goto(`/error/${data.errorId}`)
+
+	let rawUser: any = $state(data.rawUser)
+	let user = new User(rawUser)
 
 	const IS_DEV_MODE = data.environ === 'dev'
 	const FILENAME = '/$routes/home/+layout.svelte'
@@ -30,11 +35,12 @@
 			storeDrawer: getDrawerStore(),
 			storeModal: getModalStore(),
 			storeToast: getToastStore(),
-			user: new User(data.rawUser)
+			user: new User(rawUser)
 		})
 	)
 
 	setContext(ContextKey.stateManager, sm)
+
 	let navMenu: NavMenuData = $state(new NavMenuData({ sm }))
 	let triggerTokens: StateTriggerToken[] = $derived(sm.triggerTokens)
 

@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
-	import { page } from '$app/state'
 	import { MethodResultError } from '$utils/types'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	let { data } = $props()
-	let err = Object.hasOwn(data, 'id') ? new MethodResultError(data) : null
+	let err = $derived(Object.hasOwn(data, 'id') ? new MethodResultError(data) : null)
 </script>
 
 <div class="p-4">
@@ -16,10 +15,10 @@
 
 		{#if err}
 			<p><span class="font-bold">Error Id:</span> {err.id}</p>
+			<p><span class="font-bold">Error Code:</span> {err.code}</p>
 			<p><span class="font-bold">Status Code:</span> {err.status}</p>
 			<p><span class="font-bold">File:</span> {err.file}</p>
 			<p><span class="font-bold">Function:</span> {err.function}</p>
-			<p><span class="font-bold">Error Code:</span> {err.code}</p>
 			<p><span class="font-bold">Message:</span> {err.msgUser}</p>
 		{:else}
 			<h2>Unknown Error</h2>
@@ -30,12 +29,22 @@
 			system administrator or email a screenshot of this page to help@AppFactory.cc.
 		</p>
 
-		<button
-			type="button"
-			class="btn btn-action variant-filled-secondary w-2/5 mt-10"
-			onclick={() => goto('/home')}
-		>
-			Return To Dashboard
-		</button>
+		{#if err && err._sessionId}
+			<button
+				type="button"
+				class="btn btn-action variant-filled-secondary w-2/5 mt-10"
+				onclick={() => goto('/home')}
+			>
+				Return To Dashboard
+			</button>
+		{:else}
+			<button
+				type="button"
+				class="btn btn-action variant-filled-secondary w-2/5 mt-10"
+				onclick={() => goto('/')}
+			>
+				Return
+			</button>
+		{/if}
 	</div>
 </div>

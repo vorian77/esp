@@ -1,5 +1,13 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { Attr, AttrObjAction, DataObjRenderPlatform, type DataRecord, Node } from '$utils/types'
+import {
+	DataObjRenderPlatform,
+	type DataRecord,
+	Node,
+	ObjAttrAccess,
+	ObjAttrAction,
+	ObjAttrExpr,
+	ObjAttrVirtual
+} from '$utils/types'
 import {
 	arrayOfClass,
 	booleanOrFalse,
@@ -10,7 +18,8 @@ import {
 	memberOfEnum,
 	MethodResult,
 	required,
-	strRequired
+	strRequired,
+	valueOrDefault
 } from '$utils/utils'
 import { DataObj, ParmsValuesType } from '$utils/types'
 import { TokenApiQueryType, TokenAppDoQuery, TokenAppNode } from '$utils/types.token'
@@ -19,8 +28,10 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '$utils/types.user.ts'
 
 export class User {
-	attrs: Attr[]
-	attrsObjAction: AttrObjAction[]
+	attrsAccessIdAllow: string[] = []
+	attrsAccessIdDeny: string[] = []
+	attrsAction: ObjAttrAction[] = []
+	attrsExpr: ObjAttrExpr[] = []
 	avatar?: FileStorage
 	dbBranch: string
 	firstName: string
@@ -28,6 +39,7 @@ export class User {
 	id: string
 	initials: string = ''
 	lastName: string
+	name: string
 	orgIds: string[] = []
 	personId: string
 	preferences: UserPrefs
@@ -36,7 +48,6 @@ export class User {
 	system: UserSystem
 	systemIdCurrent: string
 	systemIds: string[] = []
-	userName: string
 
 	// old
 	cm_ssr_disclosure: number | undefined
@@ -46,15 +57,19 @@ export class User {
 	user_id: number | undefined
 
 	constructor(obj: any) {
+		obj = valueOrDefault(obj, {})
 		const clazz = 'User'
-		this.attrs = arrayOfClass(Attr, obj._attrs)
-		this.attrsObjAction = arrayOfClass(AttrObjAction, obj._attrsObjAction)
+		this.attrsAccessIdAllow = getArray(obj._attrsAccessIdAllow)
+		this.attrsAccessIdDeny = getArray(obj._attrsAccessIdDeny)
+		this.attrsAction = arrayOfClass(ObjAttrAction, obj._attrsAction)
+		this.attrsExpr = arrayOfClass(ObjAttrExpr, obj._attrsExpr)
 		this.avatar = classOptional(FileStorage, obj.avatar)
 		this.dbBranch = required(obj.dbBranch, clazz, 'dbBranch')
 		this.firstName = strRequired(obj.firstName, clazz, 'firstName')
 		this.fullName = strRequired(obj.fullName, clazz, 'fullName')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
+		this.name = strRequired(obj.name, clazz, 'name')
 		this.orgIds = obj.orgs.map((o: any) => o.id)
 		this.personId = strRequired(obj._personId, clazz, 'personId')
 		this.preferences = new UserPrefs(obj._preferences)
@@ -63,7 +78,6 @@ export class User {
 		this.system = new UserSystem(obj._system)
 		this.systemIdCurrent = strRequired(obj._system.id, clazz, 'systemIdCurrent')
 		this.systemIds = obj.systems.map((s: any) => s.id)
-		this.userName = strRequired(obj.userName, clazz, 'userName')
 
 		/* derived */
 		this.initials = this.firstName.toUpperCase()[0] + this.lastName.toUpperCase()[0]
@@ -74,6 +88,7 @@ export class User {
 		// this.site = strRequired(obj.site, 'User', 'site')
 		// this.status = strRequired(obj.status, 'User', 'status')
 		// this.user_id = nbrOptional(obj.user_id, 'User')
+		// console.log('User.constructor', this)
 	}
 
 	prefIsActive(prefType: UserPrefType): boolean {
@@ -141,6 +156,7 @@ export class UserResourceTask extends UserResource {
 	description?: string
 	exprShow?: string
 	exprStatus?: string
+	exprWith?: string
 	fDashRefresh?: Function
 	hasAltOpen: boolean
 	isPinToDash: boolean = $state(false)
@@ -164,8 +180,10 @@ export class UserResourceTask extends UserResource {
 		)
 		this.codeStatusObjName = obj._codeStatusObjName
 		this.description = obj.description
-		this.exprShow = obj.exprShow
-		this.exprStatus = obj.exprStatus
+		this.exprShow = valueOrDefault(obj.exprShow, '')
+		this.exprStatus = valueOrDefault(obj.exprStatus, '')
+		this.exprWith = valueOrDefault(obj.exprWith, '')
+		this.fDashRefresh = obj._fDashRefresh
 		this.hasAltOpen = booleanOrFalse(obj.hasAltOpen)
 		this.isPinToDash = booleanOrFalse(obj.isPinToDash)
 		this.noDataMsg = obj.noDataMsg
@@ -178,14 +196,14 @@ export class UserResourceTask extends UserResource {
 
 	async getTokenNode(sm: State) {
 		if (this.targetNodeObj) {
-			sm.parmsState.valueSet(ParmsValuesType.queryOwnerIdSystem, this.ownerId)
+			sm.parmsState.valueSet(ParmsValuesType.queryOwnerSys, this.ownerId)
 			return new TokenAppNode({
 				node: this.targetNodeObj,
 				queryType: TokenApiQueryType.retrieve,
 				renderPlatform: DataObjRenderPlatform.app
 			})
 		} else if (this.targetDataObjId && this.targetDataObjOwnerId) {
-			sm.parmsState.valueSet(ParmsValuesType.queryOwnerIdSystem, this.targetDataObjOwnerId)
+			sm.parmsState.valueSet(ParmsValuesType.queryOwnerSys, this.targetDataObjOwnerId)
 			const dataObjNode = new Node({
 				_codeNodeType: 'program',
 				_dataObjId: this.targetDataObjId,
@@ -256,67 +274,9 @@ export class UserSystem {
 	}
 }
 
-export class UserTypeResourceList {
-	resources: UserTypeResource[] = []
-	constructor() {}
-	addResources(obj: any) {
-		obj = getArray(obj)
-		obj.forEach((r: any) => {
-			this.resources.push(new UserTypeResource(r))
-		})
-	}
-	getResources(type: UserTypeResourceType): UserTypeResource[] {
-		return this.resources.filter((r) => r.codeType === type)
-	}
-	hasResources(type: UserTypeResourceType, names: string | string[]): boolean {
-		names = getArray(names)
-		return this.resources.some((r) => r.codeType === type && names.includes(r.resource.name))
-	}
-}
-
-export class UserTypeResource {
-	codeType: UserTypeResourceType
-	resource: UserTypeResourceItem
-	constructor(obj: any) {
-		const clazz = 'UserTypeResource'
-		this.codeType = memberOfEnum(
-			obj._codeType,
-			clazz,
-			'_codeType',
-			'UserTypeResourceType',
-			UserTypeResourceType
-		)
-		this.resource = new UserTypeResourceItem(obj._resource)
-	}
-}
-
-export class UserTypeResourceItem {
-	codeTypeSubject?: string
-	header?: string
-	icon?: string
-	id: string
-	name: string
-	constructor(obj: any) {
-		const clazz = 'UserTypeResourceItem'
-		this.codeTypeSubject = obj?._codeType
-		this.header = obj.header
-		this.icon = obj._icon
-		this.id = strRequired(obj.id, clazz, 'id')
-		this.name = strRequired(obj.name, clazz, 'name')
-	}
-}
-
 export enum UserResourceTaskRenderType {
 	button = 'button',
 	page = 'page'
-}
-
-export enum UserTypeResourceType {
-	app = 'app',
-	report = 'report',
-	subject = 'subject',
-	system = 'system',
-	task = 'task'
 }
 
 /*  

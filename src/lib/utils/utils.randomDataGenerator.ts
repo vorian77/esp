@@ -4,10 +4,20 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = 'utils.randomDataGenerator.ts'
 
-const recordCount = 100
+const recordCount = 25
 const universalStartDate = '2025-03-20'
 
-const dataItemsPart = {
+// values example
+// ObjAttrCmSite: {
+// 	type: 'list',
+// 	values: [
+// 		[{ type: 'at_cm_site', obj: 'site_moed_office_east' }],
+// 		[{ type: 'at_cm_site', obj: 'site_moed_office_west' }]
+// 	]
+// },
+
+/* participant */
+const dataPart = {
 	addr1: { type: 'list', values: ['123 Main St', '456 Elm St', '789 Oak St'] },
 	addr2: { type: 'list', values: ['Apt 1', 'Apt 2', ''] },
 	birthDate: {
@@ -206,14 +216,9 @@ const recordPart = [
 	'zip'
 ]
 
-const dataItemsServiceFlow = {
-	attrs: {
-		type: 'list',
-		values: [
-			[{ type: 'at_cm_sf_site', obj: 'moedOfficeEastside' }],
-			[{ type: 'at_cm_sf_site', obj: 'moedOfficeWestside' }]
-		]
-	},
+/* service flow */
+const dataServiceFlow = {
+	ObjAttrCmSite: { type: 'list', values: ['site_moed_office_east', 'site_moed_office_west'] },
 	dateCreated: {
 		date: universalStartDate,
 		daysMin: 0,
@@ -269,7 +274,7 @@ const dataItemsServiceFlow = {
 	}
 }
 const recordServiceFlow = [
-	'attrs',
+	'ObjAttrCmSite',
 	'dateCreated',
 	'dateStart',
 	'dateEnd',
@@ -277,8 +282,9 @@ const recordServiceFlow = [
 	'codeOutcome'
 ]
 
-const dataItemsDataDoc = {
-	dateIssued: {
+/* document */
+const dataDoc = {
+	datetimeIssued: {
 		date: universalStartDate,
 		daysMin: 0,
 		daysMax: 14,
@@ -298,26 +304,25 @@ const dataItemsDataDoc = {
 	}
 }
 
-const recordDataDoc = ['dateIssued', 'codeType']
+const recordDoc = ['datetimeIssued', 'codeType']
 
-const dataItemsDataMsg = {
-	date: {
-		date: universalStartDate,
-		daysMin: 0,
-		daysMax: 15,
-		type: 'daysAfterDate'
-	},
+/* user */
+const dataUser = {}
+const recordUser: any[] = []
+
+/* message */
+const dataMsg = {
 	subject: {
 		type: 'list',
 		values: ['Question about my application?', 'Question about documents?', 'More info', 'Help']
 	},
-	attribute: {
+	recipient: {
 		type: 'list',
-		values: ['moedStaffEastside', 'moedStaffWestside']
+		values: ['group_msg_moed_staff_east', 'group_msg_moed_staff_west']
 	}
 }
 
-const recordDataMsg = ['date', 'subject', 'attribute']
+const recordMsg = ['subject', 'recipient']
 
 export class RandomDataGenerator {
 	data: DataRecord = {}
@@ -330,9 +335,7 @@ export class RandomDataGenerator {
 		dataFactor: number
 	) {
 		let newData: any[] = []
-		// const totalRecords = dataFactor !== 0 ? Math.floor(dataFactor * recCnt) : recCnt
 		const totalRecords = dataFactor === 1 ? recCnt : Math.floor(dataFactor * recCnt)
-		// const totalRecords = Math.floor(dataFactor * recCnt)
 		for (let i = 0; i < totalRecords; i++) {
 			let newRow: any[] = []
 			const recIdx = dataFactor === 1 ? i : Math.floor(this.getRandomValue(recCnt))
@@ -368,6 +371,9 @@ export class RandomDataGenerator {
 
 			case 'daysAfterDate':
 				return this.getDaysAfter(type.date, type)
+
+			case 'daysAfterDateTime':
+				return this.getDaysAfter(type.date, type) + 'T00:00:00-00:00'
 
 			case 'daysAfterRefn':
 				// get refn date
@@ -445,19 +451,15 @@ export class RandomDataGenerator {
 	}
 
 	setData() {
-		// this.addData('applicant', recordPart, dataItemsPart, recordCount, 0)
-		// this.addData('serviceFlow', recordServiceFlow, dataItemsServiceFlow, recordCount, 0)
-		// this.addData('dataDoc', recordDataDoc, dataItemsDataDoc, recordCount, 0.75)
-		// this.addData('dataMsg', recordDataMsg, dataItemsDataMsg, recordCount, 0.5)
+		this.addData('applicant', recordPart, dataPart, recordCount, 1)
+		this.addData('dataDoc', recordDoc, dataDoc, recordCount, 0.75)
+		this.addData('dataMsg', recordMsg, dataMsg, recordCount, 0.5)
+		this.addData('serviceFlow', recordServiceFlow, dataServiceFlow, recordCount, 1)
+		this.addData('user', recordUser, dataUser, recordCount, 1)
 
-		this.addData('applicant', recordPart, dataItemsPart, recordCount, 1)
-		this.addData('serviceFlow', recordServiceFlow, dataItemsServiceFlow, recordCount, 1)
-		this.addData('dataDoc', recordDataDoc, dataItemsDataDoc, recordCount, 0.75)
-		this.addData('dataMsg', recordDataMsg, dataItemsDataMsg, recordCount, 0.5)
-
-		// debug('randomDataGenerator', 'serviceFlow', this.data['serviceFlow'])
+		// debug('randomDataGenerator', 'serviceFlow', JSON.stringify(this.data['serviceFlow']))
 		// debug('randomDataGenerator', 'applicant', this.data['applicant'])
-		debug('randomDataGenerator', 'dataMsg', this.data['dataMsg'])
+		// debug('randomDataGenerator', 'dataMsg', this.data['dataMsg'])
 	}
 }
 

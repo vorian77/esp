@@ -1,6 +1,6 @@
 import { RawDataObj, RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
 import { Field, FieldClassType, PropsFieldCreate, PropsFieldInit } from '$comps/form/field.svelte'
-import { DbTable } from '$lib/query/types.query'
+import { DbTable } from '$lib/queryClient/types.queryClient'
 import {
 	arrayOfClass,
 	DataObj,

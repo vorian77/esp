@@ -9,8 +9,15 @@ import {
 	DataObjSaveMode
 } from '$lib/components/dataObj/types.dataObj.svelte'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
-import { getArray, PropDataType, ValidityError, valueHasChanged } from '$utils/types'
-import { Field, FieldAccess, FieldClassType, FieldValueType } from '$comps/form/field.svelte'
+import {
+	getArray,
+	getValueData,
+	isPlainObject,
+	PropDataType,
+	ValidityError,
+	valueHasChanged
+} from '$utils/types'
+import { Field, FieldAccess, FieldClassType } from '$comps/form/field.svelte'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/dataObj/types.dataManager.svelte'
@@ -84,9 +91,10 @@ export class DataManager {
 	getFieldValidity(dataObjId: string, row: number, field: Field) {
 		return this.getNode(dataObjId)?.getFieldValidity(row, field)
 	}
-	getFieldValue(dataObjId: string, row: number, field: Field, fieldValueType: FieldValueType): any {
-		return this.getNode(dataObjId)?.getFieldValue(row, field, fieldValueType)
+	getFieldValue(dataObjId: string, row: number, field: Field): any {
+		return this.getNode(dataObjId)?.getFieldValue(row, field)
 	}
+
 	getNode(dataObjId: string): DataManagerNode | undefined {
 		return dataObjId ? this.nodes.get(dataObjId) : undefined
 	}
@@ -225,16 +233,11 @@ export class DataManagerNode {
 
 	getDataSaveRows(dataRecords: DataRecord[]) {
 		let rowsSave: DataRow[] = []
-		dataRecords.forEach((record) => {
+		dataRecords.forEach((record, i) => {
 			let newRecord: DataRecord = {}
 			Object.entries(record).forEach(([key, value]) => {
 				if (![null, undefined].includes(value)) {
-					const field = this.dataObj.fields.find((f) => f.colDO.propName === key)
-					if (field) {
-						const isLink =
-							field.colDO.link !== undefined || field.colDO.linkItemsSource !== undefined
-						newRecord[key] = isLink ? field.getValueTypeData(record) : value
-					}
+					newRecord[key] = getValueData(value)
 				}
 			})
 			const oldStatus = this.dataObj.data.rowsRetrieved.getRowStatusById(record.id)
@@ -248,9 +251,9 @@ export class DataManagerNode {
 			? this.fieldsValidity.valueGet(this.recordsDisplay[row].id, field.colDO.propName)
 			: undefined
 	}
-	getFieldValue(row: number, field: Field, fieldValueType: FieldValueType) {
+	getFieldValue(row: number, field: Field) {
 		return row < this.recordsDisplay.length
-			? field.getValueType(this.recordsDisplay[row], fieldValueType)
+			? this.recordsDisplay[row][field.colDO.propName]
 			: undefined
 	}
 
@@ -263,49 +266,44 @@ export class DataManagerNode {
 					: DataObjSaveMode.update
 				: DataObjSaveMode.any
 
-		// update row status
-		dataObj.data.rowsRetrieved.getRows().forEach((dataRow) => {
+		// format data
+		let recordsClone: DataRecord[] = []
+		dataObj.data.rowsRetrieved.getRows().forEach((dataRow, i) => {
 			if (dataRow.status === DataRecordStatus.inserted) {
 				dataRow.status = DataRecordStatus.update
 			}
-		})
 
-		let recordsClone: DataRecord[] = []
-		const linkItemFields = dataObj.fields.filter((f) => f.colDO.linkItemsSource)
-		dataObj.data.rowsRetrieved.getRows().forEach((dataRow, rowIdx) => {
+			// set preset
+			if (!dataRow.record.id) {
+				dataRow.status = DataRecordStatus.preset
+				const id = 'preset_' + i
+				dataRow.record.id = id
+				this.fieldsChanged.valueSet(id, 'id', true)
+			}
+
 			if (dataRow.status !== DataRecordStatus.delete) {
 				recordsClone.push({ ...dataRow.record })
-
-				// set link items
-				linkItemFields.forEach((f) => {
-					const propName = f.colDO.propName
-					const items = dataObj.data.items[propName]
-					if (items) f.linkItems?.setRawItems(getArray(items))
-				})
 			}
 		})
 
-		// listEdit
-		if (dataObj.raw.isListEdit) {
-			const presetRows = dataObj.data.rowsRetrieved
-				.getRows()
-				.filter((row) => row.record.id.startsWith('preset_'))
-			presetRows.forEach((row) => {
-				this.fieldsChanged.valueSet(row.record.id + '_new', 'id', true)
-			})
-		}
+		// set link items
+		const linkItemFields = dataObj.fields.filter((f) => f.colDO.linkItemsSource)
+		linkItemFields.forEach((f) => {
+			const propName = f.colDO.propName
+			const items = dataObj.data.items[propName]
+			if (items) f.linkItems?.setRawItems(getArray(items))
+		})
 
 		this.recordsDisplay = recordsClone
 		this.fieldsChanged = new FieldValues()
 		this.fieldsValidity = new FieldValues()
-
 		return dataObj
 	}
 
 	initDataObjItemChanges() {
 		this.recordsDisplay.forEach((record, row) => {
 			this.dataObj.fields.forEach((f) => {
-				this.setFieldItemChanged(row, f, f.getValueTypeData(record))
+				this.setFieldItemChanged(row, f, getValueData(record[f.colDO.propName]))
 			})
 		})
 	}
@@ -319,7 +317,11 @@ export class DataManagerNode {
 
 		this.recordsDisplay.forEach((record, row) => {
 			this.dataObj.fields.forEach((f) => {
-				const v: Validation = f.validate(row, f.getValueTypeData(record), validityErrorLevel)
+				const v: Validation = f.validate(
+					row,
+					getValueData(record[f.colDO.propName]),
+					validityErrorLevel
+				)
 				if (v.status === ValidationStatus.invalid) {
 					this.fieldsValidity.valueSet(
 						record.id,
@@ -334,7 +336,7 @@ export class DataManagerNode {
 	async setFieldVal(row: number, field: Field, value: any) {
 		const recordId = this.recordsDisplay[row].id
 		const fieldName = field.colDO.propName
-		this.recordsDisplay[row][fieldName] = this.setFieldValFormatted(field, value)
+		this.recordsDisplay[row][fieldName] = value
 		this.setFieldValChanged(row, recordId, fieldName, value)
 		this.setFieldValValidity(row, recordId, field)
 		if (this.dataObj.raw.listReorderColumn && this.dataObj.embedField) {
@@ -353,8 +355,8 @@ export class DataManagerNode {
 		}
 	}
 
-	setFieldValFormatted(field: Field, value: any): any {
-		return field.linkItems ? field.linkItems.getDataItemsSelected(value) : value
+	setFieldValRaw(field: Field, value: any): any {
+		return field.linkItems ? field.linkItems.getValueRaw(value) : value
 	}
 
 	setFieldValValidity(row: number, recordId: string, field: Field) {

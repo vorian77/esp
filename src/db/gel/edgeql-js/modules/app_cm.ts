@@ -37,6 +37,7 @@ export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_core.$ObjRoot�
   "dateStart": $.PropertyDesc<_stdcal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateStartEst": $.PropertyDesc<_stdcal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "idxDemo": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
+  "objAttrCmSite": $.LinkDesc<_sys_core.$SysObjAttr, $.Cardinality.One, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfData]": $.LinkDesc<$CmCsfData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfCohort]": $.LinkDesc<$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfDocument]": $.LinkDesc<$CmCsfDocument, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -265,10 +266,10 @@ const $CmGroup = $.makeType<$CmGroup>(_.spec, "71583cb7-ef81-11ef-81e9-d9cbd35b1
 
 const CmGroup: $.$expr_PathNode<$.TypeSet<$CmGroup, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmGroup, $.Cardinality.Many), null);
 
-export type $CmPartnerλShape = $.typeutil.flatten<_sys_core.$SysObjEntλShape & {
+export type $CmPartnerλShape = $.typeutil.flatten<_sys_core.$SysObjAttrEntλShape & {
 }>;
 type $CmPartner = $.ObjectType<"app_cm::CmPartner", $CmPartnerλShape, null, [
-  ..._sys_core.$SysObjEnt['__exclusives__'],
+  ..._sys_core.$SysObjAttrEnt['__exclusives__'],
 ], "app_cm::CmPartner">;
 const $CmPartner = $.makeType<$CmPartner>(_.spec, "f32c35f7-cbb2-11ef-bac4-61c1a4020d70", _.syntax.literal);
 

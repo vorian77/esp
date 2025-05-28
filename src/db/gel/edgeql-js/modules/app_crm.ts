@@ -3,10 +3,10 @@
 import * as $ from "../reflection";
 import * as _ from "../imports";
 import type * as _sys_core from "./sys_core";
-export type $CrmClientλShape = $.typeutil.flatten<_sys_core.$SysObjEntλShape & {
+export type $CrmClientλShape = $.typeutil.flatten<_sys_core.$SysObjAttrEntλShape & {
 }>;
 type $CrmClient = $.ObjectType<"app_crm::CrmClient", $CrmClientλShape, null, [
-  ..._sys_core.$SysObjEnt['__exclusives__'],
+  ..._sys_core.$SysObjAttrEnt['__exclusives__'],
 ], "app_crm::CrmClient">;
 const $CrmClient = $.makeType<$CrmClient>(_.spec, "aaeb566c-d19f-11ef-b643-a97a7d2c9935", _.syntax.literal);
 

@@ -1,4 +1,4 @@
-import { queryClientTest } from '$lib/query/queryClientTest'
+import { queryClientTest } from '$lib/queryClient/queryClientTest'
 import {
 	booleanOrDefault,
 	CodeAction,
@@ -26,6 +26,7 @@ import {
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
+import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = 'src/lib/components/navMenu/types.navMenu.ts'
@@ -188,7 +189,6 @@ export class NavMenuData {
 
 				default:
 					return new MethodResult({
-						success: false,
 						error: {
 							file: FILENAME,
 							function: 'activateLink',
@@ -436,7 +436,7 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 		this.user = required(obj.user, clazz, 'user')
 
 		// info
-		if (['user_sys'].includes(this.user.userName)) {
+		if (['user_sys'].includes(this.user.name)) {
 			this.info.push(new NavMenuInfo('dbBranch', this.user.dbBranch))
 			this.info.push(new NavMenuInfo('Default Organization', this.user.system.orgName))
 			this.info.push(new NavMenuInfo('Default System', this.user.system.name))
@@ -445,7 +445,7 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 		// group - items
 		this.items = new NavMenuDataCompGroup(navMenu, { hideHr: true })
 
-		if (['user_sys'].includes(this.user.userName)) {
+		if (['user_sys'].includes(this.user.name)) {
 			this.addItem({
 				content: new NavMenuContent(NavMenuContentType.functionAsync, queryClientTest),
 				icon: 'Database',
@@ -466,7 +466,8 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 
 	async adminResetDb(navMenu: NavMenuData): Promise<MethodResult> {
 		await apiFetchFunction(ApiFunction.dbGelInit)
-		return await navMenu.sm.resetUser(true)
+		goto('/auth/login')
+		return new MethodResult()
 	}
 }
 

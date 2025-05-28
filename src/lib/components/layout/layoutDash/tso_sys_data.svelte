@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getArray, getColor, UserResourceTask } from '$utils/types'
+	import { getArray, getColor, isPlainObject, UserResourceTask } from '$utils/types'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import { error } from '@sveltejs/kit'
 
@@ -15,13 +15,15 @@
 	let record = data ? data[0] : {}
 
 	let status = []
-	Object.entries(record).forEach((entry) => {
-		if (entry[0] === 'isShowData') {
-			isShowData = entry[1]
-		} else {
-			status.push({ label: entry[1].label, data: entry[1].data, color: entry[1].color })
-		}
-	})
+	if (isPlainObject(record)) {
+		Object.entries(record).forEach((entry) => {
+			if (entry[0] === 'isShowData') {
+				isShowData = entry[1]
+			} else {
+				status.push({ label: entry[1].label, data: entry[1].data, color: entry[1].color })
+			}
+		})
+	}
 </script>
 
 {#if record && isShowData}

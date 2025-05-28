@@ -10,13 +10,14 @@ import {
 	strRequired,
 	ToastType
 } from '$utils/types'
-import { QueryRider, QueryRiderTriggerTiming } from '$enhance/queryRider/types.queryRider'
+import { QueryRider, QueryRiderTriggerTiming } from '$lib/queryClient/types.queryClientRider'
 import { apiFetch } from '$routes/api/api'
 import {
 	TokenApiFetchMethod,
 	TokenApiFileParmDelete,
 	TokenApiBlobParmUpload,
 	TokenApiBlobAction,
+	TokenApiQueryData,
 	TokenApiQueryType
 } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
@@ -29,17 +30,17 @@ let resultReturn: MethodResult
 export async function qrfFileStorage(
 	sm: State,
 	queryRider: QueryRider,
-	dataQuery: DataObjData
+	queryData: TokenApiQueryData
 ): Promise<MethodResult> {
-	const fileKeyData = strRequired(queryRider.functionParmValue, FILENAME, 'fileKeyData')
+	const fileKeyData = strRequired(queryRider.parmValueStr, FILENAME, 'fileKeyData')
 	const fileParm: DataRecord | TokenApiFileParmDelete | TokenApiBlobParmUpload | undefined =
-		dataQuery.rowsSave.getDetailRecordValue(fileKeyData)
+		queryData.dataTab.rowsSave.getDetailRecordValue(fileKeyData)
 	if (!fileParm || queryRider.codeQueryType !== TokenApiQueryType.save) {
-		return new MethodResult(dataQuery)
+		return new MethodResult(queryData)
 	}
 
 	if (queryRider.codeTriggerTiming === QueryRiderTriggerTiming.pre) {
-		fileAction = dataQuery.rowsSave.getDetailRowStatusIs(DataRecordStatus.delete)
+		fileAction = queryData.dataTab.rowsSave.getDetailRowStatusIs(DataRecordStatus.delete)
 			? TokenApiBlobAction.delete
 			: fileParm instanceof TokenApiFileParmDelete
 				? TokenApiBlobAction.delete
@@ -58,9 +59,9 @@ export async function qrfFileStorage(
 					url = fileParm.url
 				}
 				if (url) {
-					resultReturn = await blobDelete(sm, url, true, dataQuery, fileKeyData)
+					resultReturn = await blobDelete(sm, url, true, queryData.dataTab, fileKeyData)
 					if (resultReturn.error) return resultReturn
-					dataQuery.rowsSave.setDetailRecordValue(fileKeyData, undefined)
+					queryData.dataTab.rowsSave.setDetailRecordValue(fileKeyData, undefined)
 				}
 				break
 
@@ -71,10 +72,16 @@ export async function qrfFileStorage(
 			case TokenApiBlobAction.upload:
 				if (fileParm instanceof TokenApiBlobParmUpload) {
 					if (fileParm.urlOld) {
-						resultReturn = await blobDelete(sm, fileParm.urlOld, false, dataQuery, fileKeyData)
+						resultReturn = await blobDelete(
+							sm,
+							fileParm.urlOld,
+							false,
+							queryData.dataTab,
+							fileKeyData
+						)
 						if (resultReturn.error) return resultReturn
 					}
-					resultReturn = await blobUpload(sm, fileParm, dataQuery, fileKeyData)
+					resultReturn = await blobUpload(sm, fileParm, queryData.dataTab, fileKeyData)
 					if (resultReturn.error) return resultReturn
 				}
 				break
@@ -87,7 +94,7 @@ export async function qrfFileStorage(
 				})
 		}
 	}
-	return new MethodResult(dataQuery)
+	return new MethodResult(queryData)
 }
 
 const blobDelete = async function (

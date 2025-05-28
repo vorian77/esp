@@ -42,7 +42,7 @@ async function initConfig(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				columnName: 'testCodeMulti',
+				columnName: 'testCodeSingle',
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
 				fieldListItemsParmValue: 'ct_cm_cohort_attd_duration',
 				indexTable: 0,
@@ -52,7 +52,7 @@ async function initConfig(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				columnName: 'testCodeSingle',
+				columnName: 'testCodeMulti',
 				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
 				fieldListItemsParmValue: 'ct_cm_cohort_attd_duration',
 				indexTable: 0,
@@ -64,8 +64,8 @@ async function initConfig(init: InitDb) {
 				codeAccess: 'optional',
 				columnName: 'testDate',
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDisplay: 80,
+				orderDefine: 80,
 				indexTable: 0
 			},
 			{
@@ -73,24 +73,24 @@ async function initConfig(init: InitDb) {
 				codeFieldElement: 'currency',
 				columnName: 'testNumberFloat',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				columnName: 'testNumberInt',
-				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
-				columnName: 'testText',
+				columnName: 'testNumberInt',
 				isDisplayable: true,
 				orderDisplay: 100,
 				orderDefine: 100,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'optional',
+				columnName: 'testText',
+				isDisplayable: true,
+				orderDisplay: 110,
+				orderDefine: 110,
 				indexTable: 0
 			},
 			{

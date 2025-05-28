@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, required } from '$utils/types'
-	import { TokenAppStateTriggerAction, TokenAppUserActionConfirmType } from '$utils/types.token'
+	import {
+		NavDestinationType,
+		TokenAppNav,
+		TokenAppStateTriggerAction,
+		TokenAppUserActionConfirmType
+	} from '$utils/types.token'
 	import { getContext } from 'svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'
@@ -19,15 +24,18 @@
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
 					CodeActionClass.ct_sys_code_action_class_nav,
-					CodeActionType.navHome
+					CodeActionType.navDestination
 				),
-				codeConfirmType: TokenAppUserActionConfirmType.statusChanged
+				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+				data: {
+					token: new TokenAppNav({ _codeDestinationType: NavDestinationType.home })
+				}
 			})
 		)
 	}
 </script>
 
-<nav class="h-12 flex items-center bg-white p-3 gap-4 border-b">
+<nav class="h-12 flex items-center bg-neutral-50 p-3 gap-4 border-b">
 	<Icon
 		props={new IconProps({
 			isNav: true,

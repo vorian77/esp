@@ -5,7 +5,7 @@
 	import TsoSysData from '$comps/layout/layoutDash/tso_sys_data.svelte'
 	import TsoSysQuote from '$comps/layout/layoutDash/tso_sys_quote.svelte'
 	import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-	import { clientQueryExpr } from '$lib/query/queryManagerClient'
+	import { clientQueryExprOld } from '$lib/queryClient/types.queryClientManager'
 	import {
 		CodeAction,
 		CodeActionClass,
@@ -13,6 +13,7 @@
 		ContextKey,
 		DataObjComponent,
 		type DataRecord,
+		getDbExprRaw,
 		MethodResult,
 		UserResourceTask
 	} from '$utils/types'
@@ -74,15 +75,15 @@
 
 	async function getDataShow(task: UserResourceTask) {
 		let isShow = false
-		// if (task.isPinToDash) {
-		// 	isShow = true
-		// } else if (!task.exprShow) {
-		// 	isShow = false
-		// } else {
-		// 	const result: MethodResult = await getDataDB(task, task.exprShow)
-		// 	if (result.error) return result
-		// 	isShow = result.getResultExpr()[0]
-		// }
+		if (task.isPinToDash) {
+			isShow = true
+		} else if (!task.exprShow) {
+			isShow = false
+		} else {
+			const result: MethodResult = await getDataDB(task, task.exprWith, task.exprShow)
+			if (result.error) return result
+			isShow = result.getResultExpr()[0]
+		}
 		return new MethodResult(isShow)
 	}
 
@@ -91,16 +92,17 @@
 		if (!task.exprStatus) {
 			status = undefined
 		} else {
-			const result: MethodResult = await getDataDB(task, task.exprStatus)
+			const result: MethodResult = await getDataDB(task, task.exprWith, task.exprStatus)
 			if (result.error) return undefined
 			status = result.getResultExpr()
 		}
 		return new MethodResult(status)
 	}
 
-	async function getDataDB(task: UserResourceTask, dbExpr: string) {
+	async function getDataDB(task: UserResourceTask, exprWith: string, exprCustom: string) {
 		const evalExprContext = `${FILENAME}.getDataDB`
-		return await clientQueryExpr(dbExpr, evalExprContext, {}, sm)
+		const exprEval = getDbExprRaw(exprWith, exprCustom)
+		return await clientQueryExprOld(exprEval, evalExprContext, {}, sm)
 	}
 
 	async function onClick(

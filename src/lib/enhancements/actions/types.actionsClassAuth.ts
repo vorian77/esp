@@ -1,6 +1,5 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-import { clientQueryExpr } from '$lib/query/queryManagerClient'
+import { clientQueryExprOld } from '$lib/queryClient/types.queryClientManager'
 import type { DataRecord } from '$utils/types'
 import {
 	CodeAction,
@@ -11,12 +10,7 @@ import {
 	setDataRecordValuesForSave,
 	strRequired
 } from '$utils/types'
-import {
-	TokenApiQueryData,
-	TokenApiQueryType,
-	TokenAppDoQuery,
-	TokenAppStateTriggerAction
-} from '$utils/types.token'
+import { TokenApiQueryType, TokenAppDoQuery, TokenAppStateTriggerAction } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/types.actionsClassAuth.ts'
@@ -26,7 +20,7 @@ export class AuthAction {
 	constructor(parms: DataRecord) {
 		const clazz = 'AuthAction'
 		this.msgFail = strRequired(
-			parms.msgFail || 'Something is wrong with the credentials you entered. Please try again.',
+			parms.msgFail || 'There is a problem with the credentials you entered. Please try again.',
 			clazz,
 			'msgFail'
 		)
@@ -47,19 +41,19 @@ export class AuthActionDB extends AuthAction {
 		let resultRecord: any = {}
 		const evalExprContext = 'AuthActionDB.execute'
 
-		const result: MethodResult = await clientQueryExpr(this.dbExpr, evalExprContext, {
+		const result: MethodResult = await clientQueryExprOld(this.dbExpr, evalExprContext, {
 			record: setDataRecordValuesForSave(authProcess.parms)
 		})
 		if (result.error) return result
 
-		resultRecord = result.getResultExpr()
+		resultRecord = result.getResultExprValue()
 
 		if (result.error || !resultRecord) {
 			alert(this.msgFail)
 			return new MethodResult({ success: false })
 		}
 
-		authProcess.parmsUpdate(resultRecord)
+		authProcess.parmsUpdate({ ...resultRecord })
 		return new MethodResult()
 	}
 }
@@ -113,7 +107,9 @@ export class AuthProcess {
 	async execute() {
 		while (this.actions.length > 0) {
 			const action = this.actions.shift()
-			if (!action || !(await action.execute(this))) return
+			if (!action) return
+			let result: MethodResult = await action.execute(this)
+			if (!result.success) return
 		}
 	}
 	getState() {
@@ -150,8 +146,8 @@ export class AuthProcess {
 
 export enum AuthProcessParm {
 	isNew = 'isNew',
+	name = 'name',
 	securityCodeSystem = 'securityCodeSystem',
 	securityCodeUser = 'securityCodeUser',
-	userId = 'userId',
-	userName = 'userName'
+	userId = 'userId'
 }

@@ -4,11 +4,11 @@ import {
 	CodeAction,
 	CodeActionType,
 	DataObj,
-	DataObjAttrsAccessEval,
 	DataObjRenderPlatform,
 	DataObjData,
 	DataObjSort,
 	type DataRecord,
+	DataRecordStatus,
 	DataRow,
 	memberOfEnum,
 	MethodResult,
@@ -20,9 +20,13 @@ import {
 	User,
 	valueOrDefault
 } from '$utils/types'
-import { QueryManagerSource, QuerySourceRaw, type RawDataList } from '$lib/query/types.query'
-import { RawDataObj } from '$comps/dataObj/types.rawDataObj.svelte'
-import { apiError, apiFetchFunction, ApiFunction } from '$routes/api/api'
+import { UserAction } from '$comps/other/types.userAction.svelte'
+import {
+	QueryManagerSource,
+	QuerySourceRaw,
+	type RawDataList
+} from '$lib/queryClient/types.queryClient'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
 import { State, StateParms, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import { App } from '$comps/app/types.app.svelte'
@@ -34,6 +38,23 @@ import { Process } from '$utils/utils.process'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/types.token.ts'
+
+export class NavDestinationNode {
+	nodeId: string
+	dataId: string
+	constructor(nodeId: string, dataId: string) {
+		const clazz = 'NavDestinationNode'
+		this.nodeId = strRequired(nodeId, clazz, 'nodeId')
+		this.dataId = strRequired(dataId, clazz, 'dataId')
+	}
+}
+
+export enum NavDestinationType {
+	back = 'back',
+	home = 'home',
+	nodeBack = 'nodeBack',
+	nodeForward = 'nodeForward'
+}
 
 export class Token {
 	constructor() {}
@@ -205,7 +226,7 @@ export class TokenApiQuerySource extends TokenApi {
 		this.evalExprContext = strRequired(obj.evalExprContext, clazz, 'evalExprContext')
 		this.queryType = required(obj.queryType, clazz, 'queryType')
 		this.sm = required(obj.sm, clazz, 'sm')
-		this.sourceQueryData = required(obj.sourceQueryData, clazz, 'sourceQueryData')
+		this.sourceQueryData = valueOrDefault(obj.sourceQueryData, {})
 		this.sourceQuerySource = required(obj.sourceQuerySource, clazz, 'sourceQuerySource')
 	}
 }
@@ -252,40 +273,6 @@ export class TokenApiQueryData {
 	getParms() {
 		return this.dataTab ? this.dataTab.getParms() : {}
 	}
-	async setAttrsAccess(rawDataObj: RawDataObj) {
-		if (rawDataObj.attrsAccessGroup) {
-			let attrAccessEval: DataObjAttrsAccessEval = rawDataObj.attrsAccessGroup.eval(this.user.attrs)
-			if (attrAccessEval.permittedObjIds.length > 0) {
-				this.setAttrsAccessFilter(
-					attrAccessEval.isDenyAccess
-						? '.id = <uuid>{}'
-						: `.attrs.id IN (<uuid>{${attrAccessEval.permittedObjIds.reduce((filter, id) => {
-								filter += filter ? ',' : ''
-								filter += `"${id}"`
-								return filter
-							}, '')}})`
-				)
-			} else {
-				if (
-					rawDataObj?.rawQuerySource.exprWith &&
-					rawDataObj?.rawQuerySource.exprWith?.indexOf('OR <attributeAccessFilter>') > -1
-				) {
-					this.setAttrsAccessFilter('')
-				}
-				if (
-					rawDataObj?.rawQuerySource.exprWith &&
-					rawDataObj?.rawQuerySource.exprWith?.indexOf('UNION <attributeAccessFilter>') > -1
-				) {
-					this.setAttrsAccessFilter('{}')
-				}
-			}
-		} else {
-			this.setAttrsAccessFilter('')
-		}
-	}
-	setAttrsAccessFilter(filter: string) {
-		this.attrAccessFilter = filter
-	}
 
 	updateTableData(table: string, dataRow: DataRow) {
 		this.record = dataRow.record
@@ -304,51 +291,86 @@ export class TokenApiQueryDataTree {
 		this.levels = levels
 	}
 
-	addLevel(table: string, dataRow: DataRow) {
-		this.levels.push(new TokenApiQueryDataTreeLevel(table, dataRow))
+	addLevel(dataRow: DataRow, table: string, node: string | undefined) {
+		this.levels.push(new TokenApiQueryDataTreeLevel(dataRow, table, node))
 	}
 
-	getDataRow(table: string | undefined = undefined) {
-		const idx = table ? this.levels.findIndex((t) => t.table === table) : this.levels.length - 1
-		return idx > -1 ? this.levels[idx].dataRow : undefined
-	}
+	getDataRow(
+		accessType: string = TokenApiQueryDataTreeAccessType.index,
+		parm: string | number = 0
+	) {
+		switch (accessType) {
+			case TokenApiQueryDataTreeAccessType.index:
+				let indexBackCnt = typeof parm === 'number' ? parm : parseInt(parm)
+				let indexBack = 0
+				for (let i = this.levels.length - 1; i > -1; i--) {
+					if (this.levels[i].dataRow.status !== DataRecordStatus.preset) {
+						if (indexBack === indexBackCnt) {
+							return new MethodResult(this.levels[i].dataRow)
+						} else {
+							indexBack++
+						}
+					}
+				}
 
-	getDataRowAncestor(ancestor: number) {
-		const idx = this.levels.length - 1 - ancestor
-		return idx > -1 ? this.levels[idx].dataRow : undefined
-	}
-
-	getValue(table: string | undefined, fieldName: string) {
-		const dataRow = this.getDataRow(table)
-		return fieldName && dataRow ? dataRow.getValue(fieldName) : undefined
-	}
-
-	setValue(table: string | undefined, fieldName: string, value: any) {
-		const dataRow = this.getDataRow(table)
-		if (fieldName && dataRow && Object.hasOwn(dataRow.record, fieldName)) {
-			if (!dataRow.setValue(fieldName, value)) {
-				error(500, {
-					file: FILENAME,
-					function: 'TokenApiQueryDataTree.setValue',
-					msgSystem: `Field ${fieldName} not found in data tree - table: ${table}; record: ${JSON.stringify(
-						dataRow?.record
-					)}`,
-					msgUser: `Field ${fieldName} not found in data tree - table: ${table}`
+			case TokenApiQueryDataTreeAccessType.node:
+				for (let i = this.levels.length - 1; i > -1; i--) {
+					if (this.levels[i].node === parm) {
+						return new MethodResult(this.levels[i].dataRow)
+					}
+				}
+			case TokenApiQueryDataTreeAccessType.table:
+				for (let i = this.levels.length - 1; i > -1; i--) {
+					if (this.levels[i].table === parm) {
+						return new MethodResult(this.levels[i].dataRow)
+					}
+				}
+			default:
+				return new MethodResult({
+					error: {
+						file: FILENAME,
+						function: 'TokenApiQueryDataTree.getRecord',
+						msg: `Unable to find record for accessType: ${accessType} - parm: ${parm}`
+					}
 				})
-			}
 		}
 	}
 
-	setDataRow(level: number, dataRow: DataRow) {
-		this.levels[level].dataRow = dataRow
+	getDataRowRecord(
+		accessType: string = TokenApiQueryDataTreeAccessType.index,
+		parm: string | number = 0
+	) {
+		let result: MethodResult = this.getDataRow(accessType, parm)
+		if (result.error) return result
+		let dataRow: DataRow = result.data
+		return new MethodResult(dataRow.record)
 	}
+
+	getValue(
+		propName: string,
+		accessType: string = TokenApiQueryDataTreeAccessType.index,
+		parm: string | number = 0
+	) {
+		let result: MethodResult = this.getDataRow(accessType, parm)
+		if (result.error) return undefined
+		let dataRow: DataRow = result.data
+		return dataRow.getValue(propName)
+	}
+}
+
+export enum TokenApiQueryDataTreeAccessType {
+	index = 'index',
+	node = 'node',
+	table = 'table'
 }
 
 export class TokenApiQueryDataTreeLevel {
 	dataRow: DataRow
+	node: string
 	table: string
-	constructor(table: string, dataRow: DataRow) {
+	constructor(dataRow: DataRow, table: string, node: string | undefined) {
 		this.dataRow = dataRow
+		this.node = valueOrDefault(node, '')
 		this.table = table
 	}
 }
@@ -371,19 +393,11 @@ export class TokenApiSysSendText extends TokenApi {
 	}
 }
 
-export class TokenApiUserId extends TokenApi {
-	userId: string
-	constructor(userId: string) {
+export class TokenApiUser extends TokenApi {
+	name: string
+	constructor(name: string) {
 		super()
-		this.userId = userId
-	}
-}
-
-export class TokenApiUserName extends TokenApi {
-	userName: string
-	constructor(userName: string) {
-		super()
-		this.userName = userName
+		this.name = name
 	}
 }
 
@@ -409,11 +423,17 @@ export class TokenApp extends Token {
 export class TokenAppDo extends TokenApp {
 	actionType: CodeActionType
 	dataObj: DataObj
+	userAction?: UserAction
 	constructor(obj: any) {
 		const clazz = 'TokenAppDo'
 		super(obj)
-		this.actionType = required(obj.actionType, clazz, 'actionType')
+		this.actionType = required(
+			obj.actionType || obj?.userAction?.codeAction?.actionType,
+			clazz,
+			'actionType'
+		)
 		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
+		this.userAction = obj.userAction
 	}
 }
 
@@ -508,6 +528,27 @@ export enum TokenAppModalReturnType {
 	complete = 'complete',
 	delete = 'delete'
 }
+
+export class TokenAppNav extends TokenApp {
+	backCount: number
+	codeDestinationType?: NavDestinationType
+	nodeDestination?: string
+	constructor(obj: any) {
+		const clazz = 'TokenAppNav'
+		super(obj)
+		obj = valueOrDefault(obj, {})
+		this.backCount = valueOrDefault(obj.backCount, 1)
+		this.codeDestinationType = memberOfEnum(
+			obj._codeDestinationType,
+			clazz,
+			'codeDestinationType',
+			'NavDestinationType',
+			NavDestinationType
+		)
+		this.nodeDestination = obj._nodeDestination
+	}
+}
+
 export class TokenAppNode extends TokenApp {
 	node: Node
 	queryType: TokenApiQueryType

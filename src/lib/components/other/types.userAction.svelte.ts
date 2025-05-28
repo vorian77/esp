@@ -1,31 +1,39 @@
-import { State } from '$comps/app/types.appState.svelte'
+import {
+	State,
+	StateNavLayout,
+	StateParms,
+	StateTriggerToken
+} from '$comps/app/types.appState.svelte'
 import {
 	CodeAction,
 	CodeActionType,
 	DataManager,
 	DataObj,
+	DataObjAction,
 	DataObjSaveMode,
 	type DataRecord,
-	debug,
 	getDataRecordValueKey,
+	getDbExprRaw,
 	memberOfEnum,
-	memberOfEnumIfExists,
 	MethodResult,
 	required,
 	strRequired,
-	ToastType,
 	valueOrDefault
 } from '$utils/types'
-import { Field, FieldClassType, FieldOp } from '$comps/form/field.svelte'
+import { Field, FieldClassType } from '$comps/form/field.svelte'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
+	NavDestinationType,
 	Token,
+	TokenApiQueryDataTree,
 	TokenApiQueryType,
 	TokenAppDo,
+	TokenAppNav,
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
 import { RawUserAction } from '$comps/dataObj/types.rawDataObj.svelte'
+import { clientQueryExprOld } from '$lib/queryClient/types.queryClientManager'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.userAction.ts'
@@ -35,20 +43,34 @@ export class UserAction {
 	actionShows: UserActionShow[]
 	codeAction: CodeAction
 	codeTriggerEnable: UserActionTrigger
+	expr: string
+	exprWith: string
 	header?: string
-	isStatusDisabled: boolean = false
-	isStatusShow: boolean = false
 	name: string
+	navDestination?: TokenAppNav
 	constructor(rawAction: RawUserAction, sm: State | undefined = undefined) {
 		const clazz = 'UserAction'
 		this.actionConfirms = rawAction.actionConfirms
 		this.actionShows = rawAction.actionShows
 		this.codeAction = rawAction.codeAction
 		this.codeTriggerEnable = rawAction.codeTriggerEnable
+		this.expr = rawAction.expr
+		this.exprWith = rawAction.exprWith
 		this.header = rawAction.header
 		this.name = rawAction.name
+		this.navDestination = rawAction.navDestination
 	}
-	getConfirm(sm: State, dataObj: DataObj) {
+
+	async dbExe(sm: State, evalExprContext: string, expr: string): Promise<MethodResult> {
+		// let exprCustom = this.exprWith ? 'WITH\n' + this.exprWith : ''
+		// exprCustom = exprCustom ? exprCustom + ' ' + expr : expr
+
+		let exprCustom = getDbExprRaw(this.exprWith, expr)
+		const dataTree: TokenApiQueryDataTree = sm.app.getDataTree(TokenApiQueryType.retrieve)
+		return await clientQueryExprOld(exprCustom, evalExprContext, { dataTree, user: sm.user }, sm)
+	}
+
+	async getConfirm(sm: State, dataObj: DataObj) {
 		const confirms = this.actionConfirms
 		switch (confirms.length) {
 			case 0:
@@ -58,8 +80,8 @@ export class UserAction {
 			default:
 				for (let i = 0; i < confirms.length; i++) {
 					const confirmAction = confirms[i]
-					const sg = new UserActionStatusGroup()
-					sg.addStatus(sm, dataObj, confirmAction.codeTriggerConfirmConditional, true)
+					const sg = new UserActionStatusGroup(this.exprWith)
+					await sg.addStatus(sm, dataObj, confirmAction.codeTriggerConfirmConditional, true)
 					if (sg.isTriggered()) {
 						const codeConfirmType = confirmAction.codeConfirmType
 						const confirm = confirmAction.confirm
@@ -74,37 +96,46 @@ export class UserAction {
 		}
 	}
 
-	isDisabled(sm: State, dataObj: DataObj) {
-		const sg = new UserActionStatusGroup()
-		sg.addStatus(sm, dataObj, this.codeTriggerEnable, true)
-		this.isStatusDisabled = !sg.isTriggered()
-		return this.isStatusDisabled
-	}
-	isShow(sm: State, dataObj: DataObj) {
-		const sg = new UserActionStatusGroup()
-		this.actionShows.forEach((show) => {
-			sg.addStatus(
-				sm,
-				dataObj,
-				show.codeTriggerShow,
-				show.isRequired,
-				show.codeExprOp,
-				show.exprField,
-				show.exprValue
-			)
-		})
-		this.isStatusShow = sg.isTriggered()
-		return this.isStatusShow
+	static async getActionsDisplay(sm: State, dataObj: DataObj) {
+		let actions: UserActionDisplay[] = []
+		for (let i = 0; i < dataObj.userActions.length; i++) {
+			const doa = dataObj.userActions[i]
+			let action = doa.action
+			let sg = new UserActionStatusGroup(action.exprWith)
+			for (let j = 0; j < action.actionShows.length; j++) {
+				let actionShow = action.actionShows[j]
+				await sg.addStatus(
+					sm,
+					dataObj,
+					actionShow.codeTriggerShow,
+					actionShow.isRequired,
+					action,
+					actionShow
+				)
+			}
+			const isStatusShow = sg.isTriggered()
+			if (isStatusShow) {
+				sg = new UserActionStatusGroup(doa.action.exprWith)
+				await sg.addStatus(sm, dataObj, doa.action.codeTriggerEnable, true)
+				actions.push(new UserActionDisplay(doa, !sg.isTriggered()))
+			}
+		}
+		return actions
 	}
 
 	async trigger(sm: State, dataObj: DataObj): Promise<MethodResult> {
-		const { codeConfirmType, confirm } = this.getConfirm(sm, dataObj)
+		const { codeConfirmType, confirm } = await this.getConfirm(sm, dataObj)
 		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: this.codeAction,
 				codeConfirmType,
 				confirm,
-				data: { token: new TokenAppDo({ actionType: this.codeAction.actionType, dataObj }) }
+				data: {
+					token: new TokenAppDo({
+						userAction: this,
+						dataObj
+					})
+				}
 			})
 		)
 	}
@@ -153,11 +184,46 @@ export class UserActionConfirmContent {
 	}
 }
 
+export class UserActionDisplay {
+	actionType: CodeActionType
+	color: string
+	header: string
+	isStatusDisabled: boolean = $state(false)
+	name: string
+	constructor(obj: DataObjAction, isStatusDisabled: boolean) {
+		const clazz = 'UserActionDisplay'
+		this.actionType = obj.action.codeAction.actionType
+		this.header = strRequired(obj.action.header, clazz, 'header')
+		this.isStatusDisabled = isStatusDisabled
+		this.color = strRequired(obj.fieldColor.color, clazz, 'color')
+		this.name = strRequired(obj.action.name, clazz, 'name')
+	}
+	static getDataObjAction(ua: UserAction, doas: DataObjAction[]): DataObjAction | undefined {
+		return doas.find((doa: DataObjAction) => doa.action.name === ua.name)
+	}
+}
+
 export const userActionError = (filename: string, actionType: CodeActionType) =>
 	`${filename}.${actionType}`
 
 export async function userActionStateChange(sm: State, parmsAction: TokenAppStateTriggerAction) {
 	await sm.changeUserAction(parmsAction)
+}
+
+export async function userActionNavDestination(
+	sm: State,
+	parmsAction: TokenAppStateTriggerAction,
+	token: TokenAppNav
+) {
+	if (token) {
+		if (token.codeDestinationType === NavDestinationType.home) {
+			await userActionStateChangeHomeDashboard(sm, parmsAction)
+		} else {
+			const result: MethodResult = await sm.app.navDestination(sm, token)
+			if (result.error) return result
+			await userActionStateChangeDataObj(sm, parmsAction)
+		}
+	}
 }
 
 export async function userActionStateChangeDataObj(
@@ -188,6 +254,17 @@ export async function userActionStateChangeRaw(sm: State, parmsAction: TokenAppS
 	await userActionStateChange(sm, parmsAction)
 }
 
+export async function userActionStateChangeHomeDashboard(
+	sm: State,
+	parmsAction: TokenAppStateTriggerAction
+) {
+	parmsAction.isMultiTree = true
+	parmsAction.stateParms = new StateParms({ navLayout: StateNavLayout.layoutDashboard }, [
+		StateTriggerToken.navDashboard
+	])
+	await userActionStateChangeRaw(sm, parmsAction)
+}
+
 export async function userActionTreeNodeChildren(
 	sm: State,
 	token: Token,
@@ -201,15 +278,12 @@ export async function userActionTreeNodeChildren(
 }
 
 export class UserActionShow {
-	codeExprOp?: FieldOp
 	codeTriggerShow: UserActionTrigger
-	exprField?: string
-	exprValue?: string
+	expr?: UserActionShowExpr
 	isRequired: boolean
 	constructor(obj: any) {
 		const clazz = 'UserActionShow'
 		obj = valueOrDefault(obj, {})
-		this.codeExprOp = memberOfEnumIfExists(obj._codeExprOp, 'codeExprOp', clazz, 'FieldOp', FieldOp)
 		this.codeTriggerShow = memberOfEnum(
 			obj._codeTriggerShow,
 			clazz,
@@ -217,9 +291,19 @@ export class UserActionShow {
 			'UserActionTriggerEnable',
 			UserActionTrigger
 		)
-		this.exprField = obj.exprField
-		this.exprValue = obj.exprValue
+		this.expr =
+			this.codeTriggerShow === UserActionTrigger.expression
+				? new UserActionShowExpr(obj)
+				: undefined
 		this.isRequired = valueOrDefault(obj.isRequired, false)
+	}
+}
+export class UserActionShowExpr {
+	expr: string
+	constructor(obj: any) {
+		const clazz = 'UserActionShowExpr'
+		obj = valueOrDefault(obj, {})
+		this.expr = strRequired(obj.expr, clazz, 'expr')
 	}
 }
 
@@ -235,16 +319,18 @@ export class UserActionStatus {
 }
 
 export class UserActionStatusGroup {
+	exprWith: string
 	statuses: UserActionStatus[] = []
-	constructor() {}
-	addStatus(
+	constructor(exprWith: string) {
+		this.exprWith = exprWith
+	}
+	async addStatus(
 		sm: State,
 		dataObj: DataObj,
 		trigger: UserActionTrigger,
 		isRequired: boolean,
-		codeExprOp: FieldOp | undefined = undefined,
-		exprField: string | undefined = undefined,
-		exprValue: string | undefined = undefined
+		userAction: UserAction | undefined = undefined,
+		userActionShow: UserActionShow | undefined = undefined
 	) {
 		const clazz = 'UserActionStatusGroup'
 		let isTriggered = false
@@ -257,24 +343,14 @@ export class UserActionStatusGroup {
 				break
 
 			case UserActionTrigger.expression:
-				exprField = strRequired(exprField, clazz, 'exprField')
-				codeExprOp = required(codeExprOp, clazz, 'codeExprOp')
-				dataRecord = required(dm.getRecordsDisplayRow(dataObj.raw.id, 0), clazz, 'dataRecord')
-				const currValue = getDataRecordValueKey(dataRecord!, exprField)
-				switch (codeExprOp) {
-					case FieldOp.equal:
-						isTriggered = currValue === exprValue
-						break
-
-					case FieldOp.notEqual:
-						isTriggered = currValue !== exprValue
-
-					default:
-						error(500, {
-							file: FILENAME,
-							function: 'UserActionStatusGroup.addStatus',
-							msg: `No case definded for codeExprOp: ${codeExprOp}.`
-						})
+				if (userAction && userActionShow) {
+					const evalExprContext = `${clazz}.addStatus.expression`
+					let result: MethodResult = await userAction.dbExe(
+						sm,
+						evalExprContext,
+						strRequired(userActionShow.expr?.expr, clazz, 'show')
+					)
+					isTriggered = result.error ? false : valueOrDefault(result.getResultExprValue(), false)
 				}
 				break
 

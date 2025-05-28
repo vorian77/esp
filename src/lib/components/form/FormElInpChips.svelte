@@ -23,7 +23,7 @@
 		TokenAppStateTriggerAction,
 		TokenAppUserActionConfirmType
 	} from '$utils/types.token'
-	import { Field, FieldElement, FieldValueType } from '$comps/form/field.svelte'
+	import { Field, FieldElement } from '$comps/form/field.svelte'
 	import { FieldSelectMulti } from '$comps/form/fieldSelect'
 	import { FieldChips } from '$comps/form/fieldChips'
 	import { FieldAccess } from '$comps/form/field.svelte'
@@ -52,11 +52,12 @@
 		return f
 	}) as FieldChips
 
-	let fieldValue = $derived(
-		dm.getFieldValue(parms.dataObjId, parms.row, field, FieldValueType.data)
+	let propsField = $derived(
+		'w-full text-sm rounded-lg ' + field.getBackgroundColor(field.fieldAccess)
 	)
 
-	let displayValue: string = $derived(field.linkItems.getDisplayValueList(fieldValue))
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
+	let displayValue: string = $derived(field.linkItems.getValueDisplay(fieldValue))
 
 	async function onClick(event: Event): Promise<MethodResult> {
 		const gridParms = field.linkItems.getGridParms()
@@ -72,7 +73,7 @@
 						columnDefs: gridParms.columnDefs,
 						fModalClose,
 						isMultiSelect: field.colDO.colDB.isMultiSelect,
-						listIdsSelected: fieldValue,
+						listIdsSelected: field.linkItems.getValueIds(fieldValue),
 						rowData: gridParms.rowData,
 						selectLabel: field.colDO.label,
 						sortModel: gridParms.sortModel
@@ -85,12 +86,9 @@
 			if (returnType === TokenAppModalReturnType.complete) {
 				if (returnData.data) {
 					const parmsReturn = new ParmsValues(returnData.data)
-					await dm.setFieldValue(
-						parms.dataObjId,
-						parms.row,
-						parms.field,
-						parmsReturn.valueGet(ParmsValuesType.listIdsSelected)
-					)
+					const valueDisplay = parmsReturn.valueGet(ParmsValuesType.listIdsSelected)
+					const valueRaw = field.linkItems.getValueRaw(valueDisplay)
+					await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, valueRaw)
 				}
 			}
 		}
@@ -100,7 +98,7 @@
 {#if field}
 	<FormLabel {parms} />
 	<textarea
-		class={'w-full text-sm rounded-lg'}
+		class={propsField}
 		cols={field.cols}
 		id={field.colDO.propName}
 		name={field.colDO.propName}
@@ -110,5 +108,5 @@
 		value={displayValue}
 	/>
 {/if}
-<!-- <DataViewer header="fieldValue" data={fieldValue} /> -->
+<!-- <DataViewer header="propsBackground" data={propsBackground} /> -->
 <!-- <DataViewer header="displayValue" data={displayValue} /> -->

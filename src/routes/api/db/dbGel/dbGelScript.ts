@@ -1,13 +1,16 @@
 import { RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj.svelte'
-import { FieldValueType } from '$comps/form/field.svelte'
 import {
 	FieldEmbed,
 	FieldEmbedListConfig,
 	FieldEmbedListEdit,
 	FieldEmbedListSelect
 } from '$comps/form/fieldEmbed'
-import { QuerySourceParent, type RawDataList, ScriptExePost } from '$lib/query/types.query'
-import { dbQueryExpr } from '$routes/api/db/queryServer'
+import {
+	QuerySourceParent,
+	type RawDataList,
+	ScriptExePost
+} from '$lib/queryClient/types.queryClient'
+import { dbQueryExpr } from '$server/types.queryServer'
 import { getDataObjById, getDataObjByName } from '$routes/api/db/dbGel/dbGelQueries'
 import { ScriptGroup } from '$routes/api/db/dbScript'
 import { getRawDataObjDynamic } from '$routes/api/db/dbGel/dbGelScriptDyn'
@@ -25,13 +28,15 @@ import { evalExpr } from '$routes/api/db/dbScriptEval'
 import {
 	DataObjCardinality,
 	DataObjData,
+	DataObjDataPropName,
 	DataObjListEditPresetType,
 	DataObjQueryType,
 	type DataRecord,
 	DataRecordStatus,
 	DataRow,
 	DataRows,
-	getDataRecordValueType,
+	debug,
+	getValueData,
 	MethodResult,
 	ParmsValuesType,
 	RawDataObj,
@@ -39,6 +44,7 @@ import {
 	strRequired
 } from '$utils/types'
 import {
+	TokenApiQueryDataTreeAccessType,
 	TokenApiDbDataObjSource,
 	TokenApiId,
 	TokenApiQueryData,
@@ -48,12 +54,6 @@ import { FieldEmbedType } from '$utils/utils.sys'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$routes/api/db/dbGel/dbGelScript.ts'
-
-enum ScriptGroupDataPropName {
-	items = 'items',
-	rawDataObj = 'rawDataObj',
-	rowsRetrieved = 'rowsRetrieved'
-}
 
 export class ScriptGroupGel extends ScriptGroup {}
 
@@ -106,27 +106,17 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 					)
 				}
 
-				let propValueType: string | string[] | undefined = undefined
-				if (prop.propNameRaw !== 'attrs') {
-					propValueType = getDataRecordValueType(
-						record[prop.propName],
-						FieldValueType.data,
-						prop.codeDataType,
-						prop.isMultiSelect
-					)
-				}
-
-				let propValue = `${prop.linkItemsSource.getExprSelect(true, propValueType)}`
+				let exprProp = `${prop.linkItemsSource.getExprSelect(true, getValueData(record[prop.propName]))}`
 				let result: MethodResult = evalExpr({
-					expr: propValue,
+					expr: exprProp,
 					evalExprContext: this.evalExprContext,
 					queryData: query.queryData,
 					querySource: this.querySource
 				})
 				if (result.error) return result
-				propValue = result.data
+				exprProp = result.data
 
-				expr = query.addItemComma(expr, `${prop.propName} := ${propValue}`)
+				expr = query.addItemComma(expr, `${prop.propName} := ${exprProp}`)
 			}
 		})
 
@@ -140,69 +130,55 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		})
 	}
 
-	addScriptPreset(query: GelQuery) {
-		return this.addScript({
-			config: [
-				['propsSelectPreset', { props: query.rawDataObj.rawPropsSelectPreset }],
-				['script', { content: ['propsSelectPreset'] }]
-			],
-			exePost: ScriptExePost.formatData,
-			query
-		})
-	}
-	addScriptPresetListEdit(query: GelQuery) {
-		if (!query.rawDataObj.rawQuerySource.listEditPresetExpr) return
-		switch (query.rawDataObj.codeListEditPresetType) {
+	addScriptListPresetExpr(query: GelQuery) {
+		if (!query.rawDataObj.rawQuerySource.listPresetExpr) return
+		switch (query.rawDataObj.codeListPresetType) {
 			case DataObjListEditPresetType.insert:
-				return this.addScriptPresetListEditInsert(query)
-			case DataObjListEditPresetType.save:
-				return this.addScriptPresetListEditSave(query)
+				return this.addScriptListPresetExprInsert(query)
+			case DataObjListEditPresetType.insertSave:
+				return this.addScriptListPresetExprInsertSave(query)
 			default:
 				error(500, {
 					file: FILENAME,
-					function: 'ScriptGroup.addScriptPresetListEdit',
-					msg: `No case defined for codeListEditPresetType: ${query.rawDataObj.codeListEditPresetType}`
+					function: 'ScriptGroup.addScriptListPresetExpr',
+					msg: `No case defined for codeListPresetType: ${query.rawDataObj.codeListPresetType}`
 				})
 		}
 	}
-	addScriptPresetListEditInsert(query: GelQuery) {
-		const clazz = 'ScriptGroup.addScriptPresetListEditInsert'
+	addScriptListPresetExprInsert(query: GelQuery) {
+		const clazz = 'ScriptGroup.addScriptListPresetExprInsert'
 
 		let result: MethodResult = evalExpr({
-			expr: strRequired(
-				query.rawDataObj.rawQuerySource.listEditPresetExpr,
-				clazz,
-				'listEditPresetExpr'
-			),
+			expr: strRequired(query.rawDataObj.rawQuerySource.listPresetExpr, clazz, 'listPresetExpr'),
 			evalExprContext: this.evalExprContext,
 			queryData: query.queryData,
 			querySource: this.querySource
 		})
 		if (result.error) return result
 
-		const listEditPresetExpr = result.data
+		const listPresetExpr = result.data
 		return this.addScript({
 			config: [
-				['setValue', { key: 'expr', value: listEditPresetExpr }],
-				['propsListEditPresetInsert', { props: query.rawDataObj.rawPropsSelectPreset }],
-				['script', { content: ['expr', 'propsListEditPresetInsert'] }]
+				['setValue', { key: 'expr', value: listPresetExpr }],
+				['propsListPresetInsert', { props: query.rawDataObj.rawPropsSelectPreset }],
+				['script', { content: ['expr', 'propsListPresetInsert'] }]
 			],
 			exePost: ScriptExePost.processRowSelectPreset,
 			query
 		})
 	}
 
-	addScriptPresetListEditSave(query: GelQuery) {
+	addScriptListPresetExprInsertSave(query: GelQuery) {
 		return query.parent
-			? this.addScriptPresetListEditSaveParentWith(query, query.parent)
-			: this.addScriptPresetListEditSaveParentWithOut(query)
+			? this.addScriptListPresetExprInsertSaveParentWith(query, query.parent)
+			: this.addScriptListPresetExprInsertSaveParentWithOut(query)
 	}
-	addScriptPresetListEditSaveParentWith(query: GelQuery, parent: QuerySourceParent) {
-		const clazz = 'ScriptGroup.addScriptPresetListEditSaveParentWith'
-		const listEditPresetExpr = strRequired(
-			query.rawDataObj.rawQuerySource.listEditPresetExpr,
+	addScriptListPresetExprInsertSaveParentWith(query: GelQuery, parent: QuerySourceParent) {
+		const clazz = 'ScriptGroup.addScriptListPresetExprInsertSaveParentWith'
+		const listPresetExpr = strRequired(
+			query.rawDataObj.rawQuerySource.listPresetExpr,
 			clazz,
-			'listEditPresetExpr'
+			'listPresetExpr'
 		)
 		const recordsInsert = 'recordsInsert'
 		const op = parent.columnIsMultiSelect ? '+=' : ':='
@@ -214,7 +190,7 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		return this.addScript({
 			config: [
 				// data
-				['wrap', { key: 'data', open: `SELECT (`, value: listEditPresetExpr }],
+				['wrap', { key: 'data', open: `SELECT (`, value: listPresetExpr }],
 				['wrap', { key: 'data', open: `data := (`, content: ['data'] }],
 				['with', { key: 'data', content: ['data'] }],
 
@@ -247,12 +223,12 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 			query
 		})
 	}
-	addScriptPresetListEditSaveParentWithOut(query: GelQuery) {
-		const clazz = 'ScriptGroup.addScriptPresetListEditSaveParentWithOut'
-		const listEditPresetExpr = strRequired(
-			query.rawDataObj.rawQuerySource.listEditPresetExpr,
+	addScriptListPresetExprInsertSaveParentWithOut(query: GelQuery) {
+		const clazz = 'ScriptGroup.addScriptListPresetExprInsertSaveParentWithOut'
+		const listPresetExpr = strRequired(
+			query.rawDataObj.rawQuerySource.listPresetExpr,
 			clazz,
-			'listEditPresetExpr'
+			'listPresetExpr'
 		)
 		const recordsInsert = 'recordsInsert'
 		const parms = query.queryData.getParms()
@@ -260,7 +236,7 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		return this.addScript({
 			config: [
 				// data
-				['wrap', { key: 'data', open: `SELECT (`, value: listEditPresetExpr }],
+				['wrap', { key: 'data', open: `SELECT (`, value: listPresetExpr }],
 				['wrap', { key: 'data', open: `data := (`, content: ['data'] }],
 				['with', { key: 'data', content: ['data'] }],
 
@@ -280,6 +256,17 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 				['script', { content: ['data', 'loop'] }]
 			],
 			exePost: ScriptExePost.none,
+			query
+		})
+	}
+
+	addScriptPreset(query: GelQuery) {
+		return this.addScript({
+			config: [
+				['propsSelectPreset', { props: query.rawDataObj.rawPropsSelectPreset }],
+				['script', { content: ['propsSelectPreset'] }]
+			],
+			exePost: ScriptExePost.formatData,
 			query
 		})
 	}
@@ -319,12 +306,12 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		exprUnions = `SELECT { ${exprUnions} }`
 
 		let propsSelect = query.getPropsSelect({ props: query.rawDataObj.rawPropsSelect })
-		let exprSort = query.getSort(query.queryData)
+		let exprSort = query.getSort()
 
 		let expr = exprWith ? `WITH ${exprWith} \n` : ''
 		expr += exprUnions + '\n'
 		expr += propsSelect + '\n'
-		expr += exprSort ? ` ORDER BY ${exprSort} \n` : ''
+		expr += exprSort ? ` ${exprSort} \n` : ''
 
 		this.addScriptNew({
 			dataRows: [],
@@ -360,15 +347,18 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 			}
 		})
 	}
-	addScriptSaveItem(query: GelQuery, action: string, dataRows: DataRow[]) {
+	addScriptSaveItem(query: GelQuery, action: string, dataRows: DataRow[]): MethodResult {
 		let config: Config = []
 		let expr: string
+		let result: MethodResult
 		switch (action) {
 			case 'DELETE':
 				config = this.addScriptSaveDelete(query)
 				break
 			case 'INSERT':
-				expr = this.addScriptSaveAction(query, dataRows, LinkSaveAction.INSERT)
+				result = this.addScriptSaveAction(query, dataRows, LinkSaveAction.INSERT)
+				if (result.error) return result
+				expr = result.data
 				if (expr) {
 					this.addScriptNew({
 						dataRows,
@@ -379,7 +369,9 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 				}
 				break
 			case 'UPDATE':
-				expr = this.addScriptSaveAction(query, dataRows, LinkSaveAction.UPDATE)
+				result = this.addScriptSaveAction(query, dataRows, LinkSaveAction.UPDATE)
+				if (result.error) return result
+				expr = result.data
 				if (expr) {
 					this.addScriptNew({
 						dataRows,
@@ -390,10 +382,12 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 				}
 				break
 			default:
-				error(500, {
-					file: FILENAME,
-					function: 'Script.initScriptSaveItem',
-					msg: `No case defined for action: ${action}`
+				return new MethodResult({
+					error: {
+						file: FILENAME,
+						function: 'Script.initScriptSaveItem',
+						msg: `No case defined for action: ${action}`
+					}
 				})
 		}
 		if (config.length > 0) {
@@ -404,10 +398,12 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 				query
 			})
 		}
+		return new MethodResult()
 	}
 
-	addScriptSaveAction(query: GelQuery, dataRows: DataRow[], action: LinkSaveAction): string {
+	addScriptSaveAction(query: GelQuery, dataRows: DataRow[], action: LinkSaveAction): MethodResult {
 		const clazz = 'ScriptGroup.addScriptSaveAction'
+		let result: MethodResult
 		let scriptPrimary: ScriptTypeSavePrimary
 		const isListSelectLinkBackward =
 			query.fieldEmbed instanceof FieldEmbedListSelect && query.fieldEmbed.columnBacklink
@@ -422,17 +418,27 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 				clazz,
 				'query.parent.table.name'
 			)
+			result = query.queryData.dataTree.getDataRow(
+				TokenApiQueryDataTreeAccessType.table,
+				parentTableName
+			)
+			if (result.error) return result
 			scriptPrimary = new ScriptTypeSavePrimaryListSelectLinkBackward({
 				action,
-				dataRows: [query.queryData.dataTree.getDataRow(parentTableName)],
+				dataRows: [result.data],
 				query
 			})
 		} else {
 			// parent
 			if (query.parent) {
+				result = query.queryData.dataTree.getDataRow(
+					TokenApiQueryDataTreeAccessType.table,
+					query.parent.table.name
+				)
+				if (result.error) return result
 				let scriptParent = new ScriptTypeSaveParent({
 					action,
-					dataRows: [query.queryData.dataTree.getDataRow(query.parent.table.name)],
+					dataRows: [result.data],
 					isListSelect: isListSelectLinkForward,
 					query
 				})
@@ -454,7 +460,7 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		}
 		exprPrimary = scriptPrimary.build()
 		let expr = exprParent ? ScriptTypeSave.addItem(exprPrimary, exprParent, ',\n') : exprPrimary
-		return ScriptTypeSave.addItem(expr, scriptPrimary.getExprPropsSelect(), '\n')
+		return new MethodResult(ScriptTypeSave.addItem(expr, scriptPrimary.getExprPropsSelect(), '\n'))
 	}
 
 	// prettier-ignore
@@ -511,7 +517,7 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 					break
 
 				case 'order':
-					element = query.getSort(script.scriptGroup.queryData)
+					element = query.getSort()
 					break
 
 				case 'prop':
@@ -524,12 +530,12 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 					element = `${item.getParm('label')} := (${element})`
 					break
 
-				case 'propsListEditPresetInsert':
-					element = query.getPropsListEditPresetInsert(parms)
+				case 'propsListPresetInsert':
+					element = query.getpropsListPresetInsert(parms)
 					break
 
 				case 'propsListEditPresetSave':
-					element = query.getPropsListEditPresetSave(parms, script.scriptGroup.queryData)
+					element = query.getPropsListPresetSave(parms, script.scriptGroup.queryData)
 					break
 
 				case 'propsSelect':
@@ -582,7 +588,6 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 							break
 						default:
 							return new MethodResult({
-								success: false,
 								error: {
 									file: FILENAME,
 									function: 'Script.build.wrap',
@@ -602,7 +607,6 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 
 				default:
 					return new MethodResult({
-						success: false,
 						error: {
 							file: FILENAME,
 							function: 'Script.build',
@@ -630,7 +634,7 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		return item
 	}
 
-	async queryBuild(): Promise<MethodResult> {
+	async queryPre(): Promise<MethodResult> {
 		const clazz = `${FILENAME}.queryBuild`
 		let result: MethodResult
 		const dataObjSource = required(this.querySource.dataObjSource, clazz, 'dataObjSource')
@@ -642,7 +646,7 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		this.queryData.dataTab.rawDataObj = rawDataObj
 
 		this.queryData.dataTab?.parms.valueSetIfMissing(
-			ParmsValuesType.queryOwnerIdSystem,
+			ParmsValuesType.queryOwnerSys,
 			rawDataObj.ownerId
 		)
 
@@ -654,7 +658,12 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 			} else if (rawDataObj.codeDoQueryType === DataObjQueryType.retrievePreset) {
 				const expr = `SELECT ${rawDataObj.tableGroup.getTableObj(0)} FILTER ${rawDataObj.rawQuerySource.exprFilter}`
 				const evalExprContext = `${this.evalExprContext} - RetrievePreset`
-				result = await dbQueryExpr(expr, evalExprContext, this.queryData, this.querySource)
+				result = await dbQueryExpr({
+					expr,
+					evalExprContext,
+					queryData: this.queryData,
+					querySource: this.querySource
+				})
 				if (result.error) return result
 				const currData: RawDataList = result.data
 				this.queryType = currData.length > 0 ? TokenApiQueryType.retrieve : TokenApiQueryType.preset
@@ -703,7 +712,7 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 					querySource: query.querySource,
 					status: DataRecordStatus.retrieved
 				})
-				this.addScriptPresetListEdit(query)
+				this.addScriptListPresetExpr(query)
 				await this.addScriptRetrieve(query)
 				break
 
@@ -716,14 +725,13 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 					evalExprContext: this.evalExprContext,
 					propsSelect: query.rawDataObj.rawPropsSelect,
 					querySource: query.querySource,
-					rowsSave: fieldEmbedData.rowsSave
+					rowsSave: query.queryData.dataTab.rowsSave
 				})
 				this.addScriptSave(query)
 				break
 
 			default:
 				return new MethodResult({
-					success: false,
 					error: {
 						file: FILENAME,
 						function: 'processQuery.processDataObjQuery',
@@ -761,7 +769,6 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 
 						default:
 							return new MethodResult({
-								success: false,
 								error: {
 									file: FILENAME,
 									function: `processDataObjExecute.${clazz}`,
@@ -813,7 +820,7 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		switch (script.exePost) {
 			case ScriptExePost.dataItems:
 				this.queryExeFormatDataSet(this.queryData.dataTab, query.fieldEmbed?.embedFieldNameRaw, [
-					[ScriptGroupDataPropName.items, rawDataList.length > 0 ? rawDataList[0] : []]
+					[DataObjDataPropName.items, rawDataList.length > 0 ? rawDataList[0] : []]
 				])
 				break
 
@@ -821,8 +828,8 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 				dataRows = query.dataFormat(rawDataList)
 				let dataRow: DataRow = new DataRow(DataRecordStatus.unknown, {})
 				this.queryExeFormatDataSet(this.queryData.dataTab, query.fieldEmbed?.embedFieldNameRaw, [
-					[ScriptGroupDataPropName.rawDataObj, scriptData.rawDataObj],
-					[ScriptGroupDataPropName.rowsRetrieved, dataRows]
+					[DataObjDataPropName.rawDataObj, scriptData.rawDataObj],
+					[DataObjDataPropName.rowsRetrieved, dataRows]
 				])
 
 				if (query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
@@ -834,15 +841,17 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 						clazz,
 						'rootTableName'
 					)
-					this.scripts.forEach((script: Script) => {
-						script.scriptGroup.queryData.updateTableData(rootTableName, dataRow)
-					})
+
+					this.queryData.updateTableData(rootTableName, dataRow)
+
+					// this.scripts.forEach((script: Script) => {
+					// 	script.scriptGroup.queryData.updateTableData(rootTableName, dataRow)
+					// })
 				}
 
 				// add dataItems
 				script.scriptGroup.queryData.dataTab?.parms.update(scriptData.parms.valueGetAll())
 				this.addScriptDataItems(query, query.rawDataObj.rawPropsSelect, dataRow.record)
-
 				break
 
 			case ScriptExePost.none:
@@ -851,14 +860,13 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 			case ScriptExePost.processRowSelectPreset:
 				dataRows = query.dataFormat(rawDataList)
 				this.queryExeFormatDataSet(this.queryData.dataTab, query.fieldEmbed?.embedFieldNameRaw, [
-					[ScriptGroupDataPropName.rawDataObj, scriptData.rawDataObj],
-					[ScriptGroupDataPropName.rowsRetrieved, dataRows]
+					[DataObjDataPropName.rawDataObj, scriptData.rawDataObj],
+					[DataObjDataPropName.rowsRetrieved, dataRows]
 				])
 				break
 
 			default:
 				return new MethodResult({
-					success: false,
 					error: {
 						file: FILENAME,
 						function: clazz,
@@ -872,24 +880,24 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 	queryExeFormatDataSet(
 		dataReturn: DataObjData,
 		fieldEmbedNameRaw: string | undefined,
-		dataItems: [ScriptGroupDataPropName, any][]
+		dataItems: [DataObjDataPropName, any][]
 	) {
 		if (fieldEmbedNameRaw) {
 			const idx = dataReturn.fields.findIndex(
 				(field) => field.embedFieldNameRaw === fieldEmbedNameRaw
 			)
 			if (idx >= 0) {
-				dataItems.forEach((item: [ScriptGroupDataPropName, any]) => {
+				dataItems.forEach((item: [DataObjDataPropName, any]) => {
 					const propName = item[0]
 					const newData = item[1]
-					dataReturn.fields[idx].data[propName] = newData
+					dataReturn.fields[idx].data.setValue(propName, newData)
 				})
 			}
 		} else {
-			dataItems.forEach((item: [ScriptGroupDataPropName, any]) => {
+			dataItems.forEach((item: [DataObjDataPropName, any]) => {
 				const propName = item[0]
 				const newData = item[1]
-				dataReturn[propName] = newData
+				dataReturn.setValue(propName, newData)
 			})
 		}
 	}
@@ -926,7 +934,7 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 }
 
 export class ScriptGroupGelExpr extends ScriptGroupGel {
-	async queryBuild(): Promise<MethodResult> {
+	async queryPre(): Promise<MethodResult> {
 		const clazz = `${FILENAME}.ScriptGroupGelExpr.queryBuild`
 		return super.addScript({
 			expr: strRequired(this.tokenQuery.querySourceRaw.exprCustom, clazz, 'exprCustom')
@@ -969,7 +977,6 @@ export async function getRawDataObj(
 		return new MethodResult(rawDataObj)
 	} else {
 		return new MethodResult({
-			success: false,
 			error: {
 				file: FILENAME,
 				function: 'getRawDataObj',

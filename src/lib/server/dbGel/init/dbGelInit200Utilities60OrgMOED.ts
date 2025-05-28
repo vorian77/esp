@@ -1,4 +1,5 @@
 import e from '$db/gel/edgeql-js'
+import { SysObjAttr } from '$db/gel/edgeql-js/modules/sys_core'
 import { client, sectionHeader } from '$routes/api/db/dbGel/dbGel'
 import { debug } from '$utils/types'
 
@@ -70,17 +71,13 @@ export async function MoedBulkCsf(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.app_cm.CmClientServiceFlow, {
-				attrs: e.assert_distinct(
-					e.for(e.json_array_unpack(i[1]), (a) => {
-						return e.sys_core.getAttr(
-							'sys_client_moed',
-							e.cast(e.str, e.json_get(e.cast(e.json, a), 'obj')),
-							e.cast(e.str, e.json_get(e.cast(e.json, a), 'type'))
-						)
-					})
-				),
 				createdBy: CREATOR,
 				modifiedBy: CREATOR,
+				objAttrCmSite: e.assert_single(
+					e.select(e.sys_core.SysObjAttr, (a) => ({
+						filter_single: e.op(a.name, '=', e.cast(e.str, i[1]))
+					}))
+				),
 				client: e.assert_single(
 					e.select(e.org_client_moed.MoedParticipant, (part) => ({
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
@@ -147,14 +144,44 @@ export async function MoedBulkDataMsg(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_core.SysMsg, {
-				date: e.cal.to_local_date(e.cast(e.str, i[1])),
-				recipients: e.sys_core.getAttrObj('sys_client_moed', e.cast(e.str, i[3])),
-				sender: e.assert_single(
+				recipients: e.select(e.sys_core.SysObjAttr, (soa) => ({
+					filter: e.op(
+						e.op(soa.owner.name, '=', 'sys_client_moed'),
+						'and',
+						e.op(soa.name, '=', e.cast(e.str, i[2]))
+					)
+				})),
+				sender: e.assert_single(e.sys_user.getUserByName(e.op('MOEDYouth', '++', e.to_str(i[0])))),
+				subject: e.cast(e.str, i[1])
+			})
+		})
+	})
+	return await query.run(client, { data: params })
+}
+
+export async function MoedBulkDataUser(params: any) {
+	sectionHeader(`MOED Bulk Data - User`)
+	const CREATOR = e.sys_user.getRootUser()
+	const SENDER = CREATOR.person
+	const query = e.params({ data: e.json }, (params) => {
+		return e.for(e.json_array_unpack(params.data), (i) => {
+			return e.insert(e.sys_user.SysUser, {
+				codeAttrType: e.select(e.sys_core.getCode('ct_sys_obj_attr_type', 'at_sys_user')),
+				createdBy: CREATOR,
+				defaultOrg: e.select(e.sys_core.getOrg('org_client_moed')),
+				defaultSystem: e.select(e.sys_core.getSystemPrime('sys_client_moed')),
+				isActive: false,
+				modifiedBy: CREATOR,
+				name: e.op('MOEDYouth', '++', e.to_str(i[0])),
+				orgs: e.assert_distinct(e.sys_core.getOrg('org_client_moed')),
+				owner: e.select(e.sys_core.getSystemPrime('sys_client_moed')),
+				person: e.assert_single(
 					e.select(e.org_client_moed.MoedParticipant, (part) => ({
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
 					})).person
 				),
-				subject: e.cast(e.str, i[2])
+				systems: e.assert_distinct(e.sys_core.getSystemPrime('sys_client_moed')),
+				userTypes: e.assert_distinct(e.sys_user.getUserType('ut_client_moed_youth'))
 			})
 		})
 	})

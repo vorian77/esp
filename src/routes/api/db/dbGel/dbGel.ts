@@ -46,7 +46,6 @@ export async function queryJsonMultiple(dbExpr: string): Promise<MethodResult> {
 			result = JSON.parse(await client.queryJSON(dbExpr))
 		} catch (e: any) {
 			result = {
-				success: false,
 				error: {
 					file: FILENAME,
 					function: 'queryJsonMultiple',

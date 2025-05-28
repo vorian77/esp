@@ -5,26 +5,17 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"type": "chrome",
+			"request": "launch",
+			"name": "Debug-Chrome",
+			"url": "http://localhost:5175",
+			"webRoot": "${workspaceFolder}"
+		},
+		{
 			"command": "npm run dev",
-			"name": "SvelteKit Server",
+			"name": "Debug-SvelteKit",
 			"request": "launch",
 			"type": "node-terminal"
-		},
-		{
-			"name": "Chrome",
-			"request": "launch",
-			"skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**/*.js"],
-			"type": "chrome",
-			"url": "http://localhost:5173",
-			"webRoot": "${workspaceFolder}"
-		},
-		{
-			"name": "Edge",
-			"request": "launch",
-			"skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**/*.js"],
-			"type": "msedge",
-			"url": "http://localhost:5173",
-			"webRoot": "${workspaceFolder}"
 		}
 	]
 }

@@ -2,7 +2,6 @@
 	import { ContextKey, DataManager, DataObj, FileStorage, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldFile } from '$comps/form/fieldFile'
-	import { FieldValueType } from '$comps/form/field.svelte'
 	import { getToastStore } from '@skeletonlabs/skeleton'
 	import {
 		TokenApiFileParmDelete,
@@ -37,10 +36,8 @@
 		}
 	})
 
-	let field = $derived(parms.field) as FieldCustomActionLink
-	let fieldValue = $derived(
-		dm.getFieldValue(parms.dataObjId, parms.row, parms.field, FieldValueType.display)
-	)
+	let field: FieldCustomActionLink = $derived(parms.field)
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
 	$effect(() => {
 		urlCurrent = fieldValue && fieldValue.url ? fieldValue.url : urlCurrent
 		urlOld = fieldValue && fieldValue?.url ? fieldValue.url : urlOld

@@ -30,7 +30,7 @@ function initTaskCohortAttd(init: InitDb) {
 				codeAlignmentAlt: 'left',
 				codeFieldElement: 'select',
 				columnName: 'custom_element_link',
-				fieldListItems: 'il_cm_cohort_long_by_userName',
+				fieldListItems: 'il_cm_cohort_long_by_name',
 				headerAlt: 'Cohort',
 				isDisplayable: true,
 				itemChanges: [
@@ -115,7 +115,7 @@ function initTaskNewStudent(init: InitDb) {
 			/* CmClient */
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerIdSystem>)`,
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>)`,
 				orderDefine: 60,
 				indexTable: 2,
 				isDisplayable: false,
@@ -438,13 +438,13 @@ function initTaskNewStudent(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'attrs',
+				columnName: 'objAttrCmSite',
 				isDisplayable: true,
 				orderDisplay: 580,
 				orderDefine: 580,
 				indexTable: 1,
-				fieldListItems: 'il_sys_attr_obj_system_type_single',
-				fieldListItemsParmValue: 'at_cm_sf_site'
+				fieldListItems: 'il_sys_obj_attr_type_single',
+				fieldListItemsParmValue: 'at_cm_site'
 			},
 			{
 				codeFieldElement: 'select',
@@ -543,7 +543,7 @@ function initTaskNewStudent(init: InitDb) {
 				orderDisplay: 870,
 				orderDefine: 870,
 				indexTable: 0,
-				fieldListItems: 'il_cm_cohort_long_by_userName'
+				fieldListItems: 'il_cm_cohort_long_by_name'
 			},
 			{
 				codeFieldElement: 'select',

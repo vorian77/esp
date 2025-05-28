@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { FieldAccess, FieldValueType } from '$comps/form/field.svelte'
+	import { FieldAccess } from '$comps/form/field.svelte'
 	import { FieldCheckbox } from '$comps/form/fieldCheckbox'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import { ContextKey, DataManager, DataObj, DataObjCardinality, required } from '$utils/types'
 	import { getContext } from 'svelte'
+	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElInpCheckbox.svelte'
 
@@ -13,8 +14,10 @@
 
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let field = $derived(parms.field) as FieldCheckbox
-	let fieldValue = $state(
-		dm.getFieldValue(parms.dataObjId, parms.row, parms.field, FieldValueType.data)
+
+	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
+	let fieldValueData = $derived(
+		field.colDO.colDB.isMultiSelect ? fieldValue.map((fv) => fv.data) : fieldValue?.data
 	)
 	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsAll(fieldValue) : [])
 
@@ -27,52 +30,44 @@
 	)
 
 	async function onInput(event: Event) {
-		const value = event.target.value
+		let value = event.target.value
+		const idx = dataItems.findIndex((i) => i.data === value)
 
 		if (field.colDO.colDB.isMultiSelect) {
-			const idx = dataItems.findIndex((i) => i.data === value)
 			if (idx >= 0) {
 				let newValues: string[] = []
 				dataItems[idx].selected = !dataItems[idx].selected
 				dataItems.forEach((i) => {
-					if (i.selected) newValues.push(i.data)
+					if (i.selected) {
+						newValues.push(i.data)
+					}
 				})
 				await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, newValues)
 			}
 		} else {
-			await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, !fieldValue)
+			const currentSelected = dataItems[idx].selected
+			value = currentSelected ? null : value
+			await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, value)
 		}
 	}
 </script>
 
 <!-- <DataViewer header="dataItems" data={dataItems} /> -->
+<!-- <DataViewer header="fieldValueData" data={fieldValueData} /> -->
 
-{#if field.colDO.colDB.isMultiSelect}
-	<FormLabel {parms} />
-	<fieldset class="text-sm space-y-2 {classFieldSet}">
-		{#each dataItems as { data, display }, i (data)}
-			<label class="flex gap-1.5 {i === 0 ? 'mt-3' : ''}">
-				<input
-					type="checkbox"
-					bind:group={fieldValue}
-					class="rounded-sm mt-0.5"
-					name={field.colDO.propName}
-					oninput={onInput}
-					value={data}
-				/>
-				{display}
-			</label>
-		{/each}
-	</fieldset>
-{:else}
-	<div class="flex gap-1.5">
-		<FormLabel {parms} />
-		<input
-			type="checkbox"
-			bind:checked={fieldValue}
-			class="rounded-sm mt-0.5"
-			name={field.colDO.propName}
-			oninput={onInput}
-		/>
-	</div>
-{/if}
+<FormLabel {parms} />
+<fieldset class="text-sm space-y-2 {classFieldSet}">
+	{#each dataItems as { data, display }, i (data)}
+		<label class="flex gap-1.5 {i === 0 ? 'mt-3' : ''}">
+			<input
+				type="checkbox"
+				bind:group={fieldValueData}
+				class="rounded-sm mt-0.5"
+				name={field.colDO.propName}
+				oninput={onInput}
+				value={data}
+			/>
+			{display}
+		</label>
+	{/each}
+</fieldset>

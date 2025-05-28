@@ -37,7 +37,7 @@ const $SysAnalyticStatus = $.makeType<$SysAnalyticStatus>(_.spec, "16f93cc7-1880
 
 const SysAnalyticStatus: $.$expr_PathNode<$.TypeSet<$SysAnalyticStatus, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysAnalyticStatus, $.Cardinality.Many), null);
 
-export type $SysRepλShape = $.typeutil.flatten<_sys_user.$SysUserTypeResourceλShape & {
+export type $SysRepλShape = $.typeutil.flatten<_sys_core.$SysObjAttrλShape & {
   "actionGroup": $.LinkDesc<_sys_core.$SysDataObjActionGroup, $.Cardinality.One, {}, false, false,  false, false>;
   "analytics": $.LinkDesc<$SysAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -51,7 +51,7 @@ export type $SysRepλShape = $.typeutil.flatten<_sys_user.$SysUserTypeResourceλ
   "<report": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysRep = $.ObjectType<"sys_rep::SysRep", $SysRepλShape, null, [
-  ..._sys_user.$SysUserTypeResource['__exclusives__'],
+  ..._sys_core.$SysObjAttr['__exclusives__'],
 ], "sys_rep::SysRep">;
 const $SysRep = $.makeType<$SysRep>(_.spec, "170b40bb-1880-11ef-97a9-615fd4c43549", _.syntax.literal);
 
@@ -154,30 +154,6 @@ const $SysRepUserParm = $.makeType<$SysRepUserParm>(_.spec, "17120fc8-1880-11ef-
 
 const SysRepUserParm: $.$expr_PathNode<$.TypeSet<$SysRepUserParm, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysRepUserParm, $.Cardinality.Many), null);
 
-type getAnalyticλFuncExpr<
-  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
-> = $.$expr_Function<
-  $SysAnalytic, $.cardutil.overrideLowerBound<$.cardutil.paramCardinality<P1>, "Zero">
->;
-function getAnalytic<
-  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
->(
-  name: P1,
-): getAnalyticλFuncExpr<P1>;
-function getAnalytic(...args: any[]) {
-  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('sys_rep::getAnalytic', args, _.spec, [
-    {args: [{typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}], returnTypeId: "17011630-1880-11ef-af53-f7b94ac2e26f", returnTypemod: "OptionalType"},
-  ]);
-  return _.syntax.$expressionify({
-    __kind__: $.ExpressionKind.Function,
-    __element__: returnType,
-    __cardinality__: cardinality,
-    __name__: "sys_rep::getAnalytic",
-    __args__: positionalArgs,
-    __namedargs__: namedArgs,
-  }) as any;
-};
-
 type getReportλFuncExpr<
   P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
 > = $.$expr_Function<
@@ -215,7 +191,6 @@ type __defaultExports = {
   "SysRepUser": typeof SysRepUser;
   "SysRepUserAnalytic": typeof SysRepUserAnalytic;
   "SysRepUserParm": typeof SysRepUserParm;
-  "getAnalytic": typeof getAnalytic;
   "getReport": typeof getReport
 };
 const __defaultExports: __defaultExports = {
@@ -227,7 +202,6 @@ const __defaultExports: __defaultExports = {
   "SysRepUser": SysRepUser,
   "SysRepUserAnalytic": SysRepUserAnalytic,
   "SysRepUserParm": SysRepUserParm,
-  "getAnalytic": getAnalytic,
   "getReport": getReport
 };
 export default __defaultExports;
