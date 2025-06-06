@@ -160,18 +160,25 @@ function initUsers(init: InitDb) {
 	/* App Factory */
 	init.addTrans('sysUser', {
 		defaultOrg: 'org_client_app_factory',
-		defaultSystem: 'sys_client_app_factory',
+		defaultSystem: 'sys_client_moed',
 		firstName: 'Phyllip',
 		isActive: true,
 		lastName: 'Hall',
 		name: '2487985578',
 		orgs: ['org_client_moed', 'org_system'],
 		owner: 'sys_client_app_factory',
-		systems: ['sys_client_atlantic_impact'],
+		systems: [
+			'sys_client_atlantic_impact',
+			'sys_client_app_factory',
+			'sys_client_moed',
+			'sys_system'
+		],
 		userTypes: [
-			// 'ut_client_moed_admin',
-			// 'ut_client_moed_advocate_east',
-			// 'ut_client_moed_advocate_west'
+			'ut_sys_admin_global',
+			'ut_app_crm_admin',
+			'ut_client_moed_admin',
+			'ut_client_moed_advocate_east',
+			'ut_client_moed_advocate_west'
 		]
 	})
 }

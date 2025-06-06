@@ -5,7 +5,7 @@
 	import TsoSysData from '$comps/layout/layoutDash/tso_sys_data.svelte'
 	import TsoSysQuote from '$comps/layout/layoutDash/tso_sys_quote.svelte'
 	import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-	import { clientQueryExprOld } from '$lib/queryClient/types.queryClientManager'
+	import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 	import {
 		CodeAction,
 		CodeActionClass,
@@ -102,7 +102,7 @@
 	async function getDataDB(task: UserResourceTask, exprWith: string, exprCustom: string) {
 		const evalExprContext = `${FILENAME}.getDataDB`
 		const exprEval = getDbExprRaw(exprWith, exprCustom)
-		return await clientQueryExprOld(exprEval, evalExprContext, {}, sm)
+		return await clientQueryExpr(evalExprContext, exprEval, {}, sm)
 	}
 
 	async function onClick(

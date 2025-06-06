@@ -1,9 +1,7 @@
 import { InitDb } from '$server/dbGel/init/types.init'
-import { ParmsValuesType } from '$utils/types'
 
 export function initContentMOEDCm(init: InitDb) {
 	initApplicant(init)
-	initApplicantMsg(init)
 	initCsf(init)
 	initCsfNote(init)
 	initCsfDocument(init)
@@ -454,391 +452,12 @@ function initApplicant(init: InitDb) {
 		owner: 'sys_client_moed'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
-		children: [
-			{ node: 'node_obj_moed_msg_list', order: 10 },
-			{ node: 'node_obj_moed_csf_list', order: 20 }
-		],
+		children: [{ node: 'node_obj_moed_csf_list', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_moed_part_detail',
 		header: 'Participant',
 		name: 'node_obj_moed_part_detail',
-		orderDefine: 10,
-		owner: 'sys_client_moed'
-	})
-}
-
-function initApplicantMsg(init: InitDb) {
-	init.addTrans('sysDataObj', {
-		actionGroup: 'doag_list',
-		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		exprFilter:
-			'(SELECT org_client_moed::MoedParticipant FILTER .id = <tree,uuid,MoedParticipant.id>).person IN (.sender UNION .recipients) AND NOT EXISTS .parent',
-		header: 'Messages (Root)',
-		name: 'data_obj_moed_msg_list_root',
-		owner: 'sys_client_moed',
-		tables: [{ index: 0, table: 'SysMsg' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 20,
-				orderDisplay: 20,
-				exprCustom: `NOT EXISTS .parent`,
-				headerAlt: 'Is Root',
-				nameCustom: 'isRoot'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'parent',
-				isDisplayable: false,
-				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				codeSortDir: 'desc',
-				columnName: 'date',
-				headerAlt: 'Date (Demonstration Only)',
-				indexTable: 0,
-				isDisplayable: true,
-				orderCrumb: 10,
-				orderDefine: 50,
-				orderDisplay: 50,
-				orderSort: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'sender',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0,
-				linkColumns: ['fullName']
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'subject',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'note',
-				isDisplay: false,
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
-				indexTable: 0
-			}
-		]
-	})
-
-	init.addTrans('sysDataObj', {
-		actionGroup: 'doag_list',
-		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		exprFilter: '.parent.id = <tree,uuid,id>',
-		header: 'Messages (Thread)',
-		name: 'data_obj_moed_msg_list_child',
-		owner: 'sys_client_moed',
-		tables: [{ index: 0, table: 'SysMsg' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'parent',
-				isDisplayable: true,
-				orderDefine: 20,
-				orderDisplay: 20,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				codeSortDir: 'desc',
-				columnName: 'date',
-				headerAlt: 'Date (Demonstration Only)',
-				indexTable: 0,
-				isDisplayable: true,
-				orderCrumb: 10,
-				orderDefine: 25,
-				orderDisplay: 25,
-				orderSort: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'sender',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0,
-				linkColumns: ['fullName']
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'subject',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'note',
-				isDisplay: false,
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
-			}
-		]
-	})
-
-	init.addTrans('sysDataObj', {
-		actionGroup: 'doag_detail_msg',
-		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
-		header: 'Message',
-		isRetrieveReadonly: true,
-		name: 'data_obj_moed_msg_detail',
-		owner: 'sys_client_moed',
-		tables: [{ index: 0, table: 'SysMsg' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				columnName: 'custom_element_str',
-				isDisplayable: false,
-				orderDefine: 20,
-				exprCustom: `.sender.id`,
-				nameCustom: 'recordOwner'
-			},
-			{
-				columnName: 'recipients',
-				exprSave: `(SELECT org_client_moed::MoedParticipant FILTER .id = <tree,uuid,MoedParticipant.id>).person `,
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 30,
-				linkTable: 'SysPerson'
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40
-			},
-			{
-				codeAccess: 'readOnly',
-				codeAlignmentAlt: 'center',
-				columnName: 'custom_element_str',
-				isDisplayable: true,
-				orderDefine: 50,
-				orderDisplay: 50,
-				exprCustom: `NOT EXISTS .parent`,
-				headerAlt: 'isRoot',
-				nameCustom: 'isRoot'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdAt',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'sender',
-				exprPreset: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
-				exprSave: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
-				indexTable: 0,
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
-				linkColumns: ['fullName'],
-				linkTable: 'SysPerson'
-			},
-			{
-				columnName: 'subject',
-				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'textArea',
-				columnName: 'note',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 140,
-				orderDefine: 140
-			}
-		]
-	})
-
-	init.addTrans('sysDataObj', {
-		actionGroup: 'doag_detail_msg',
-		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
-		header: 'Message',
-		isRetrieveReadonly: true,
-		name: 'data_obj_moed_msg_detail_parent_reply',
-		owner: 'sys_client_moed',
-		tables: [{ index: 0, table: 'SysMsg' }],
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				columnName: 'parent',
-				exprSave: `(SELECT DETACHED sys_core::SysMsg FILTER .id = <tree,uuid,${ParmsValuesType.treeAncestorValue}.0.id>)`,
-				indexTable: 0,
-				isDisplayable: true,
-				orderDefine: 15,
-				linkTable: 'SysMsg'
-			},
-			{
-				columnName: 'recipients',
-				exprSave: `(SELECT DETACHED sys_core::SysMsg FILTER .id = <tree,uuid,${ParmsValuesType.treeAncestorValue}.0.id>).sender`,
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 30,
-				linkTable: 'SysPerson'
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40
-			},
-			{
-				codeFieldElement: 'date',
-				columnName: 'createdAt',
-				exprPreset: `<function,fSysToday>`,
-				headerAlt: 'Date',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'sender',
-				exprPreset: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
-				exprSave: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
-				indexTable: 0,
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				linkColumns: ['fullName'],
-				linkTable: 'SysPerson'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'subject',
-				exprPreset: `<tree,str,${ParmsValuesType.treeAncestorValue}.0.subject>`,
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'textArea',
-				columnName: 'note',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 120,
-				orderDefine: 120
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 130,
-				orderDefine: 130
-			}
-		]
-	})
-
-	init.addTrans('sysNodeObjProgramObj', {
-		children: [{ node: 'node_obj_moed_msg_detail_old', order: 10 }],
-		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
-		dataObj: 'data_obj_moed_msg_list_root',
-		header: 'Messages',
-		isAlwaysRetrieveData: true,
-		name: 'node_obj_moed_msg_list',
-		orderDefine: 10,
-		owner: 'sys_client_moed'
-	})
-	init.addTrans('sysNodeObjProgramObj', {
-		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
-		dataObj: 'data_obj_moed_msg_detail',
-		header: 'Message',
-		name: 'node_obj_moed_msg_detail_old',
 		orderDefine: 10,
 		owner: 'sys_client_moed'
 	})
@@ -868,7 +487,8 @@ function initCsf(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
-				linkColumns: ['header']
+				linkColumns: ['header'],
+				linkTable: 'CmProgram'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -877,7 +497,8 @@ function initCsf(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysObjAttr'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -895,7 +516,8 @@ function initCsf(init: InitDb) {
 				orderDisplay: 55,
 				orderDefine: 55,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -938,7 +560,8 @@ function initCsf(init: InitDb) {
 				orderDisplay: 100,
 				orderDefine: 100,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1325,7 +948,8 @@ function initCsfNote(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1523,7 +1147,8 @@ function initCsfDocument(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				linkColumns: ['name']
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			},
 			{
 				codeFieldElement: 'toggle',

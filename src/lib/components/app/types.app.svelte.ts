@@ -698,7 +698,8 @@ export class AppLevelTab {
 			dataTree.getValue('id', TokenApiQueryDataTreeAccessType.index, 0)
 		)
 
-		if (this.dataObj?.data) this.queryPreOwnerId(sm, this.dataObj.data.parms)
+		this.queryPreOwnerId(sm, sm.parmsState)
+
 		const rawQuerySource = this.dataObj ? this.dataObj.raw.rawQuerySource : new QuerySourceRaw({})
 
 		return new MethodResult(
@@ -824,19 +825,18 @@ export class AppTree {
 		for (let i = 0; i < this.levels.length - offset; i++) {
 			const level = this.levels[i]
 			const currTab = level.getCurrTab()
-			let dataObjCurr: DataObj | undefined = currTab.dataObj
-			if (dataObjCurr) {
+			if (currTab.dataObj) {
 				const dataRow: DataRow | undefined =
-					dataObjCurr.raw.codeCardinality === DataObjCardinality.list
+					currTab.dataObj.raw.codeCardinality === DataObjCardinality.list
 						? currTab.listGetDataRow()
 						: currTab.detailGetDataRow()
 				if (dataRow) {
 					const tableRootName = required(
-						dataObjCurr.raw.tableGroup.getTableName(0),
+						currTab.dataObj.raw.tableGroup.getTableName(0),
 						clazz,
 						'tableRootName'
 					)
-					dataTree.addLevel(dataRow, tableRootName, currTab.node?.name)
+					dataTree.addLevel(dataRow, currTab.dataObj.raw.id, tableRootName, currTab.node?.name)
 				}
 			}
 		}

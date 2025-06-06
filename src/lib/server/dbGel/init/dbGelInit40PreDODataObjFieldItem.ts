@@ -201,7 +201,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 				1
 			]
 		],
-		exprFilter: `.id IN <attrsAction,oaa_sys_msg_send>`,
+		exprFilter: `.id IN <attrsAction,oaa_sys_msg_send,object;user>`,
 		name: 'il_sys_msg_recipients_system',
 		owner: 'sys_system',
 		table: 'SysObjAttr'

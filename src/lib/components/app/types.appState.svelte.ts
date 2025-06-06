@@ -505,19 +505,6 @@ export class State {
 		return await this.triggerActionValidate(parms, this.fActions[parms.codeAction.actionClass])
 	}
 
-	async triggerActionDo(doActionType: CodeActionType, dataObj: DataObj) {
-		return await this.triggerAction(
-			new TokenAppStateTriggerAction({
-				codeAction: CodeAction.init(CodeActionClass.ct_sys_code_action_class_do, doActionType),
-				data: {
-					token: new TokenAppDo({
-						actionType: CodeActionType.doDetailSave,
-						dataObj
-					})
-				}
-			})
-		)
-	}
 	async triggerActionValidate(
 		parms: TokenAppStateTriggerAction,
 		fCallback: Function | undefined = undefined

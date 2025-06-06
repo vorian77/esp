@@ -432,16 +432,6 @@ function initUserAction(init: InitDb) {
 				fieldListItemsParmValue: 'ct_sys_code_action_class'
 			},
 			{
-				codeFieldElement: 'select',
-				columnName: 'codeTriggerEnable',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_user_action_trigger'
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
@@ -459,18 +449,6 @@ function initUserAction(init: InitDb) {
 				indexTable: 0,
 				linkColumns: ['codeConfirmType', 'name'],
 				linkTable: 'SysUserActionConfirm'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'embedListConfig',
-				columnName: 'actionShows',
-				isDisplayable: true,
-				orderDisplay: 160,
-				orderDefine: 160,
-				fieldEmbedListConfig: 'flec_user_action_show',
-				indexTable: 0,
-				linkColumns: ['codeTriggerShow', 'name'],
-				linkTable: 'SysUserActionShow'
 			},
 
 			/* management */

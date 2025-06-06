@@ -729,6 +729,7 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_core::SysObjAttr]": $.LinkDesc<_sys_core.$SysObjAttr, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysNavDestination]": $.LinkDesc<_sys_core.$SysNavDestination, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysSystem]": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_core::SysGridStyle]": $.LinkDesc<_sys_core.$SysGridStyle, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysCodeType]": $.LinkDesc<_sys_core.$SysCodeType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysCodeAction]": $.LinkDesc<_sys_core.$SysCodeAction, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysObjDb]": $.LinkDesc<_sys_core.$SysObjDb, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -748,7 +749,6 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_rep::SysRep]": $.LinkDesc<_sys_rep.$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_user::SysUser]": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_user::SysUserActionConfirm]": $.LinkDesc<_sys_user.$SysUserActionConfirm, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is sys_user::SysUserActionShow]": $.LinkDesc<_sys_user.$SysUserActionShow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is org_client_moed::MoedParticipant]": $.LinkDesc<_org_client_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysObjNote]": $.LinkDesc<_sys_core.$SysObjNote, $.Cardinality.Many, {}, false, false,  false, false>;

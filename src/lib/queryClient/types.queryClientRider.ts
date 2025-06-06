@@ -229,7 +229,6 @@ export class QueryRiderRaw {
 		this.expr = obj.expr
 		this.parmValueStr = obj.parmValueStr
 		this.userMsg = obj.userMsg
-		debug('QueryRiderRaw', 'constructor.this', this)
 	}
 }
 

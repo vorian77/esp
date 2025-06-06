@@ -5,13 +5,13 @@ import {
 	type ICellRendererParams
 } from 'ag-grid-community'
 import { Field, FieldAccess } from '$comps/form/field.svelte'
-import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 import {
 	type DataRecord,
 	getDataRecordValueKey,
 	getDataRecordValueKeyData,
 	getDataRecordValueKeyDisplay,
 	getValueDisplay,
+	PropDataType,
 	required
 } from '$utils/types'
 import { PropLinkItems } from '$comps/dataObj/types.rawDataObj.svelte'

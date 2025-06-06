@@ -1,7 +1,7 @@
 import { QuerySource, type RawDataList, ScriptExePost } from '$lib/queryClient/types.queryClient'
 import { queryJsonMultiple } from '$routes/api/db/dbGel/dbGel'
 import { GelQuery } from '$routes/api/db/dbGel/dbGelScriptQuery'
-import { evalExpr } from '$routes/api/db/dbScriptEval'
+import { evalExpr } from '$utils/utils.evalParserDb'
 import {
 	DataObjData,
 	type DataRecord,
@@ -35,10 +35,10 @@ export class Script {
 		this.query = obj.query
 		this.scriptGroup = required(obj.scriptGroup, clazz, 'scriptGroup')
 	}
-	addItem(buildAction: string, parms: DataRecord = {}) {
+	addItem(buildAction: string, parms: DataRecord = {}): void {
 		this.items.push(new ScriptItem(buildAction, parms))
 	}
-	addComponent(script: string, component: string, separator = '') {
+	addComponent(script: string, component: string, separator = ''): string {
 		if (!script && !component) return ''
 		if (script && !component) return script
 		if (!script && component) return component
@@ -87,7 +87,7 @@ export class ScriptGroup {
 		}
 	}
 
-	addScript(obj: any) {
+	async addScript(obj: any): Promise<MethodResult> {
 		const script = new Script({
 			...obj,
 			evalExprContext: this.evalExprContext,
@@ -105,9 +105,9 @@ export class ScriptGroup {
 			const script: Script = required(this.scripts.shift(), clazz, 'script')
 
 			// eval script expr
-			result = evalExpr({
-				expr: script.expr,
+			result = await evalExpr({
 				evalExprContext: script.evalExprContext,
+				exprRaw: script.expr,
 				queryData: script.query?.queryData || this.queryData,
 				querySource: this.querySource
 			})
@@ -163,7 +163,7 @@ export class ScriptItem {
 		this.action = action
 		this.parms = parms
 	}
-	getParm(key: string) {
+	getParm(key: string): any {
 		return Object.hasOwn(this.parms, key) ? this.parms[key] : undefined
 	}
 }

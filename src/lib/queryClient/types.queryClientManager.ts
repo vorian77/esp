@@ -1,50 +1,11 @@
-import { State } from '$comps/app/types.appState.svelte'
-import { QueryManager, QuerySourceType } from '$lib/queryClient/types.queryClient'
+import { QueryManager } from '$lib/queryClient/types.queryClient'
 import { QueryRiderClient, QueryRiders } from '$lib/queryClient/types.queryClientRider'
-import {
-	TokenApiQuery,
-	TokenApiQueryData,
-	TokenApiQuerySource,
-	TokenApiQueryType
-} from '$utils/types.token'
+import { TokenApiQuery, TokenApiQueryData, TokenApiQuerySource } from '$utils/types.token'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-import { type DataRecord, MethodResult, ParmsValuesType, required } from '$utils/types'
+import { MethodResult, ParmsValuesType, required } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
-const FILENAME = '/$lib/queryClient/queryManagerClient.ts'
-
-export async function clientQueryExprOld(
-	exprCustom: string,
-	evalExprContext: string,
-	sourceQueryData?: DataRecord,
-	sm?: State
-): Promise<MethodResult> {
-	const clazz = 'clientQueryExpr'
-
-	const tokenQuerySource = new TokenApiQuerySource({
-		evalExprContext,
-		queryType: TokenApiQueryType.none,
-		sm: sm || new State({}),
-		sourceQueryData: sourceQueryData || {},
-		sourceQuerySource: {
-			exprCustom,
-			querySourceType: QuerySourceType.expr
-		}
-	})
-
-	let qmc = new QueryManagerClient(tokenQuerySource)
-	if (qmc) {
-		return await qmc.query()
-	} else {
-		return new MethodResult({
-			error: {
-				file: FILENAME,
-				function: clazz,
-				msg: `Unable to create QueryManagerClient`
-			}
-		})
-	}
-}
+const FILENAME = '/$lib/queryClient/querClientManager.ts'
 
 export class QueryManagerClient extends QueryManager {
 	constructor(tokenQuerySource: TokenApiQuerySource) {

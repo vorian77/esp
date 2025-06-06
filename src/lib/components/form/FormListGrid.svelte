@@ -29,23 +29,26 @@
 		DataObjData,
 		DataObjType,
 		type DataRecord,
+		getArray,
+		GridStyle,
 		ParmsValues,
 		ParmsValuesType,
 		ParmsUser,
 		ParmsUserDataType,
+		PropDataType,
 		required,
 		strRequired
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 	import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field.svelte'
 	import { FieldParm } from '$comps/form/fieldParm'
 	import FormElement from '$comps/form/FormElement.svelte'
 	import Grid from '$comps/grid/Grid.svelte'
 	import {
+		addGridParm,
 		getFilteredNodeIds,
 		getSelectedNodeIds,
-		GridCellStyle,
+		getStyles,
 		GridManagerOptions,
 		GridSettings,
 		GridSettingsColumnItem
@@ -86,6 +89,7 @@
 		dataObj
 			? new GridManagerOptions({
 					columnDefs: initGridColumns(),
+					context: { gridStyles: dataObj.raw.gridStyles },
 					fCallbackFilter: fGridCallbackFilter,
 					fCallbackUpdateValue: fGridCallbackUpdateValue,
 					isEmbed: !!dataObj.embedField,
@@ -203,7 +207,6 @@
 
 	function initGridColumnsField(field: Field) {
 		let defn = {}
-		let defnCellStyle = new GridCellStyle()
 		const isEditable =
 			dataObj.raw.isListEdit &&
 			[FieldAccess.optional, FieldAccess.required].includes(field.fieldAccess)
@@ -214,12 +217,22 @@
 		defn.headerName = isEditable ? '✍️ ' + field.colDO.label : field.colDO.label
 		defn.headerTooltip = field.placeHolder
 		defn.singleClickEdit = isEditable ? true : undefined
-		defnCellStyle.addStyle('text-align', field.fieldAlignment)
+		addGridParm(defn, ['context', 'cellStyle', 'text-align'], field.fieldAlignment)
+
+		// gridStyles
+		addGridParm(defn, ['context', 'gridStyles'], field.colDO.gridStyles)
+		defn.cellStyle = (params: CellClassParams) => {
+			let styles = { ...params.colDef.context.cellStyle }
+			const gridStyles: GridStyle[] = getArray(params.colDef.context.gridStyles)
+			const result: MethodResult = getStyles(gridStyles, { value: params.value })
+			return result.error ? styles : { ...styles, ...result.data }
+		}
 
 		if (field instanceof FieldParm) {
 			defn.cellEditorSelector = cellEditorSelectorParmField
 			defn.cellRendererSelector = cellRendererSelectorParmField
-			defn.context = { parmFields: field.parmFields, sm }
+			addGridParm(defn, ['context', 'parmFields'], field.parmFields)
+			addGridParm(defn, ['context', 'sm'], sm)
 		} else {
 			// data type
 			switch (field.colDO.colDB.codeDataType) {
@@ -260,14 +273,18 @@
 
 				case PropDataType.link:
 					if (field.linkItems) {
-						defn.context = { dm, linkItems: field.linkItems, sm }
+						addGridParm(defn, ['context', 'dm'], dm)
+						addGridParm(defn, ['context', 'linkItems'], field.linkItems)
+						addGridParm(defn, ['context', 'sm'], sm)
+
 						defn.editable = !field.colDO.colDB.isMultiSelect
 						defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
 					} else {
 						defn.cellDataType = 'customText'
 					}
-					defnCellStyle.addStyle(
-						'backgroundColor',
+					addGridParm(
+						defn,
+						['context', 'cellStyle', 'backgroundColor'],
 						field.fieldAccess === FieldAccess.required ? 'rgb(219,234,254)' : ''
 					)
 					break
@@ -286,6 +303,7 @@
 					})
 			}
 		}
+
 		return defn
 	}
 

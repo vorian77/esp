@@ -9,6 +9,7 @@ import {
 	memberOfEnumOrDefault,
 	nbrOptional,
 	nbrRequired,
+	PropDataType,
 	RepElementType,
 	strOptional,
 	strRequired,
@@ -16,11 +17,7 @@ import {
 } from '$utils/utils'
 import { QuerySourceTableRaw } from '$lib/queryClient/types.queryClient'
 import { FieldAlignment, FieldElement } from '$comps/form/field.svelte'
-import {
-	PropDataSourceValue,
-	PropDataType,
-	PropSortDir
-} from '$comps/dataObj/types.rawDataObj.svelte'
+import { PropDataSourceValue, PropSortDir } from '$comps/dataObj/types.rawDataObj.svelte'
 
 const FILENAME = '$comps/report/types.report.ts'
 

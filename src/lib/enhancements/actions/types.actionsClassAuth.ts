@@ -1,5 +1,5 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { clientQueryExprOld } from '$lib/queryClient/types.queryClientManager'
+import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 import type { DataRecord } from '$utils/types'
 import {
 	CodeAction,
@@ -41,7 +41,7 @@ export class AuthActionDB extends AuthAction {
 		let resultRecord: any = {}
 		const evalExprContext = 'AuthActionDB.execute'
 
-		const result: MethodResult = await clientQueryExprOld(this.dbExpr, evalExprContext, {
+		const result: MethodResult = await clientQueryExpr(evalExprContext, this.dbExpr, {
 			record: setDataRecordValuesForSave(authProcess.parms)
 		})
 		if (result.error) return result

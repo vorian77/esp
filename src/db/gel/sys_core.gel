@@ -176,6 +176,11 @@ module sys_core {
 
     description: str;
 
+    multi gridStyles: sys_core::SysGridStyle {
+      on source delete delete target;
+      on target delete allow;
+    };
+
     isInitialValidationSilent: bool;
     required isListEdit: bool;
     isListSuppressFilterSort: bool;
@@ -192,6 +197,7 @@ module sys_core {
   type SysDataObjAction extending sys_user::Mgmt {
     required action: sys_user::SysUserAction;
     required codeColor: sys_core::SysCode;
+    headerAlt: str;
     required isListRowAction: bool;
     required orderDefine: default::nonNegative;
   }
@@ -232,6 +238,11 @@ module sys_core {
     exprCustom: str;
     exprPreset: str;
     exprSave: str;
+
+    multi gridStyles: sys_core::SysGridStyle {
+      on source delete delete target;
+      on target delete allow;
+    };
 
     fieldEmbedListConfig: sys_core::SysDataObjFieldEmbedListConfig;
     fieldEmbedListEdit: sys_core::SysDataObjFieldEmbedListEdit;
@@ -384,8 +395,14 @@ module sys_core {
     required expr: str;
   }
   
+  type SysGridStyle {
+    exprTrigger: str;
+    required prop: str;
+    required propValue: str;
+  }
+
   type SysMsg extending sys_core::ObjRoot {
-    required createdAt: datetime {
+    required dateMsg: datetime {
       default := datetime_of_transaction();
       readonly := true;
     };
@@ -398,10 +415,10 @@ module sys_core {
     parent: sys_core::SysMsg;
     multi readers: sys_user::SysUser;
     multi recipients: sys_core::SysObjAttr;
-    responses := .<parent[IS sys_core::SysMsg];
+    replies := .<parent[IS sys_core::SysMsg];
     required sender: sys_user::SysUser;
     required subject: str;
-    thread :=  distinct(.responses union sys_core::SysMsg);
+    thread :=  distinct(.replies union sys_core::SysMsg);
   }
 
   type SysNavDestination {
@@ -493,7 +510,7 @@ module sys_core {
     using (select sys_core::SysDataObjActionGroup filter .name = name);        
       
   function getDataObjColumn(dataObjName: str, columnName: str) -> optional sys_core::SysDataObjColumn
-    using (select assert_single((select sys_core::SysDataObjColumn filter .id in (select sys_core::SysDataObj filter .name = dataObjName).columns.id and .column.name = columnName)));        
+    using (select assert_single((select sys_core::SysDataObjColumn filter .id in (select sys_core::SysDataObj filter .name = dataObjName).columns.id and any(.column.name = columnName union .nameCustom  = columnName))));        
    
   function getDataObjFieldEmbedListConfig(name: str) -> optional sys_core::SysDataObjFieldEmbedListConfig
     using (select sys_core::SysDataObjFieldEmbedListConfig filter .name = name);

@@ -2,9 +2,7 @@ import { InitDb } from '$server/dbGel/init/types.init'
 
 export function initPreDataObjActionGroup(init: InitDb) {
 	init.addTrans('sysDataObjActionGroup', {
-		actions: [
-			{ action: 'ua_sys_save_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 0 }
-		],
+		actions: [{ action: 'ua_sys_save_detail', codeColor: 'primary', orderDefine: 0 }],
 		name: 'doag_auth_my_account',
 		owner: 'sys_system'
 	})
@@ -15,19 +13,23 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_save_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
-			{ action: 'ua_sys_new_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 2 },
-			{ action: 'ua_sys_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 3 }
+			{ action: 'ua_sys_new_detail', codeColor: 'primary', orderDefine: 2 },
+			{ action: 'ua_sys_delete_detail', codeColor: 'error', orderDefine: 3 }
 		],
 		name: 'doag_detail',
+		owner: 'sys_system'
+	})
+
+	init.addTrans('sysDataObjActionGroup', {
+		actions: [],
+		name: 'doag_detail_none',
 		owner: 'sys_system'
 	})
 
@@ -36,16 +38,14 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_save_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
-			{ action: 'ua_sys_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 2 }
+			{ action: 'ua_sys_delete_detail', codeColor: 'error', orderDefine: 2 }
 		],
 		name: 'doag_detail_error',
 		owner: 'sys_system'
@@ -56,13 +56,11 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_save_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			}
 		],
@@ -75,16 +73,14 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_save_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
-			{ action: 'ua_sys_new_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 2 }
+			{ action: 'ua_sys_new_detail', codeColor: 'primary', orderDefine: 2 }
 		],
 		name: 'doag_detail_task_record',
 		owner: 'sys_system'
@@ -92,24 +88,21 @@ export function initPreDataObjActionGroup(init: InitDb) {
 
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
-			{ action: 'ua_sys_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_sys_save_list', codeColor: 'primary', orderDefine: 0 },
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_list',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
 			{
 				action: 'ua_sys_new_detail_list',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 2
 			},
 			{ action: 'ua_sys_edit_list', codeColor: 'primary', isListRowAction: true, orderDefine: 3 },
 			{
 				action: 'ua_sys_download_grid',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 4
 			}
 		],
@@ -136,7 +129,6 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_download_grid',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			}
 		],
@@ -146,9 +138,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 
 	/* dialog */
 	init.addTrans('sysDataObjActionGroup', {
-		actions: [
-			{ action: 'ua_sys_dialog_done', codeColor: 'primary', isListRowAction: false, orderDefine: 0 }
-		],
+		actions: [{ action: 'ua_sys_dialog_done', codeColor: 'primary', orderDefine: 0 }],
 		name: 'doag_dialog_footer_detail',
 		owner: 'sys_system'
 	})
@@ -157,10 +147,9 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_dialog_cancel',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
-			{ action: 'ua_sys_dialog_done', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
+			{ action: 'ua_sys_dialog_done', codeColor: 'primary', orderDefine: 1 }
 		],
 		name: 'doag_dialog_footer_list',
 		owner: 'sys_system'
@@ -170,22 +159,19 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_save_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
 			{
 				action: 'ua_sys_new_detail_dialog_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 2
 			},
-			{ action: 'ua_sys_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 3 }
+			{ action: 'ua_sys_delete_detail', codeColor: 'error', orderDefine: 3 }
 		],
 		name: 'doag_dialog_form_detail',
 		owner: 'sys_system'
@@ -194,17 +180,15 @@ export function initPreDataObjActionGroup(init: InitDb) {
 	/* embed */
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
-			{ action: 'ua_sys_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_sys_save_list', codeColor: 'primary', orderDefine: 0 },
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_list',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
 			{
 				action: 'ua_sys_embed_list_config_new',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 2
 			},
 			{
@@ -219,19 +203,22 @@ export function initPreDataObjActionGroup(init: InitDb) {
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
-			{ action: 'ua_sys_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
-			{ action: 'ua_sys_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
+			{ action: 'ua_sys_save_list', codeColor: 'primary', orderDefine: 0 },
+			{
+				action: 'ua_sys_save_cancel_list',
+				codeColor: 'primary',
+				orderDefine: 1
+			}
 		],
 		name: 'doag_embed_list_edit',
 		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
-			{ action: 'ua_sys_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_sys_save_list', codeColor: 'primary', orderDefine: 0 },
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_list',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
 			{
@@ -263,10 +250,13 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_save_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
-			{ action: 'ua_sys_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
+			{
+				action: 'ua_sys_save_cancel_detail',
+				codeColor: 'primary',
+				orderDefine: 1
+			}
 		],
 		name: 'doag_detail_org_user',
 		owner: 'sys_system'
@@ -278,10 +268,13 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_save_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
-			{ action: 'ua_sys_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
+			{
+				action: 'ua_sys_save_cancel_detail',
+				codeColor: 'primary',
+				orderDefine: 1
+			}
 		],
 		name: 'doag_detail_mobile_save',
 		owner: 'sys_system'
@@ -291,16 +284,14 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_save_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
-			{ action: 'ua_sys_delete_detail', codeColor: 'error', isListRowAction: false, orderDefine: 2 }
+			{ action: 'ua_sys_delete_detail', codeColor: 'error', orderDefine: 2 }
 		],
 		name: 'doag_detail_mobile_save_delete',
 		owner: 'sys_system'
@@ -312,13 +303,11 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_refresh_list',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
 			{
 				action: 'ua_sys_download_grid',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			}
 		],
@@ -330,21 +319,23 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_save_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
-			{ action: 'ua_sys_save_cancel', codeColor: 'primary', isListRowAction: false, orderDefine: 1 }
+			{
+				action: 'ua_sys_save_cancel_detail',
+				codeColor: 'primary',
+				orderDefine: 1
+			}
 		],
 		name: 'doag_detail_report',
 		owner: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
-			{ action: 'ua_sys_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_sys_save_list', codeColor: 'primary', orderDefine: 0 },
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_list',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
 			{ action: 'ua_sys_edit_list', codeColor: 'primary', isListRowAction: true, orderDefine: 2 }
@@ -359,23 +350,20 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_save_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
-			{ action: 'ua_sys_new_detail', codeColor: 'primary', isListRowAction: false, orderDefine: 2 },
+			{ action: 'ua_sys_new_detail', codeColor: 'primary', orderDefine: 2 },
 			{
 				action: 'ua_sys_delete_detail',
 				codeColor: 'error',
-				isListRowAction: false,
 				orderDefine: 3
 			},
-			{ action: 'ua_sys_migrate', codeColor: 'primary', isListRowAction: false, orderDefine: 4 }
+			{ action: 'ua_sys_migrate', codeColor: 'primary', orderDefine: 4 }
 		],
 		name: 'doag_detail_migrate_define',
 		owner: 'sys_system'
@@ -385,7 +373,6 @@ export function initPreDataObjActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_process_execute',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			}
 		],

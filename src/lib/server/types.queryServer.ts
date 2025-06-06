@@ -16,9 +16,9 @@ import {
 import { QueryRiders } from '$lib/queryClient/types.queryClientRider'
 import { QueryRiderServer } from '$server/types.queryServerRider'
 import { ScriptGroup } from '$routes/api/db/dbScript'
-import { ScriptGroupGelDataObj } from '$routes/api/db/dbGel/dbGelScript'
+import { ScriptGroupGelDataObjQuery } from '$routes/api/db/dbGel/dbGelScriptDataObjQuery'
 import { ScriptGroupGelExpr } from '$routes/api/db/dbGel/dbGelScript'
-import { evalExpr } from '$routes/api/db/dbScriptEval'
+import { evalExpr } from '$utils/utils.evalParserDb'
 import { queryJsonMultiple } from '$routes/api/db/dbGel/dbGel'
 import { error } from '@sveltejs/kit'
 
@@ -33,11 +33,11 @@ export async function dbQuery(tokenQuery: TokenApiQuery) {
 export async function dbQueryExpr(obj: any): Promise<MethodResult> {
 	obj = valueOrDefault(obj, {})
 	const clazz = 'dbQueryExpr'
-	const expr = strRequired(obj.expr, clazz, 'expr')
+	const exprRaw = strRequired(obj.expr, clazz, 'expr')
 	const evalExprContext = strRequired(obj.evalExprContext, clazz, 'evalExprContext')
-	const result: MethodResult = evalExpr({
+	const result: MethodResult = await evalExpr({
 		evalExprContext,
-		expr,
+		exprRaw,
 		queryData: obj.queryData,
 		querySource: obj.querySource
 	})
@@ -55,7 +55,7 @@ export class QueryManagerServer extends QueryManager {
 			case QueryManagerSource.gel:
 				switch (this.querySource.querySourceType) {
 					case QuerySourceType.dataObj:
-						this.scriptGroup = new ScriptGroupGelDataObj(tokenQuery)
+						this.scriptGroup = new ScriptGroupGelDataObjQuery(tokenQuery)
 						break
 					case QuerySourceType.expr:
 						this.scriptGroup = new ScriptGroupGelExpr(tokenQuery)

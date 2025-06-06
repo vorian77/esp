@@ -899,20 +899,17 @@ function initCohortAttdSheet(init: InitDb) {
 		order: 0
 	})
 	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
 		codeAction: 'doCustomAIAttdSheetSetAllFullClass',
-		codeTriggerEnable: 'always',
+		codeConfirmType: 'statusChanged',
 		header: 'Set All-Full Class',
 		name: 'ua_client_ai_cohort_attd_sheet_set_all_full_class',
 		owner: 'sys_client_atlantic_impact'
 	})
 
 	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [{ codeTriggerShow: 'always', isRequired: true }],
 		codeAction: 'doCustomAIAttdSheetReset',
-		codeTriggerEnable: 'always',
+		codeConfirmType: 'statusChanged',
+		exprShow: `<statusChanged>`,
 		header: 'Reset',
 		name: 'ua_client_ai_cohort_attd_sheet_reset',
 		owner: 'sys_client_atlantic_impact'
@@ -920,24 +917,26 @@ function initCohortAttdSheet(init: InitDb) {
 
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
-			{ action: 'ua_sys_save_list', codeColor: 'primary', isListRowAction: false, orderDefine: 0 },
+			{ action: 'ua_sys_save_list', codeColor: 'primary', orderDefine: 0 },
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_list',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
 			{
 				action: 'ua_client_ai_cohort_attd_sheet_set_all_full_class',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 2
 			},
 			{
 				action: 'ua_client_ai_cohort_attd_sheet_reset',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 3
+			},
+			{
+				action: 'ua_sys_download_grid',
+				codeColor: 'primary',
+				orderDefine: 4
 			}
 		],
 		name: 'doag_client_ai_cohort_attd_sheet',

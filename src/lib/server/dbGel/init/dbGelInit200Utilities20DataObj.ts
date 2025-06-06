@@ -1,5 +1,4 @@
 import e from '$db/gel/edgeql-js'
-import { SysNavDestination } from '$db/gel/edgeql-js/modules/sys_core'
 import {
 	client,
 	booleanOrDefaultJSON,
@@ -29,6 +28,7 @@ export async function addDataObj(data: any) {
 			exprWith: e.optional(e.str),
 			exprUnions: e.optional(e.array(e.str)),
 			fields: e.optional(e.array(e.json)),
+			gridStyles: e.optional(e.array(e.json)),
 			header: e.optional(e.str),
 			isInitialValidationSilent: e.optional(e.bool),
 			isListEdit: e.optional(e.bool),
@@ -237,6 +237,17 @@ export async function addDataObj(data: any) {
 							e.cast(e.str, e.set())
 						),
 
+						gridStyles: e.for(
+							e.json_array_unpack(e.json_get(f, 'gridStyles') || e.cast(e.array(e.json), e.set())),
+							(gs) => {
+								return e.insert(e.sys_core.SysGridStyle, {
+									exprTrigger: e.cast(e.str, e.json_get(gs, 'exprTrigger')),
+									prop: e.cast(e.str, e.json_get(gs, 'prop')),
+									propValue: e.cast(e.str, e.json_get(gs, 'propValue'))
+								})
+							}
+						),
+
 						headerAlt: e.cast(e.str, e.json_get(f, 'headerAlt')),
 
 						height: e.cast(e.int16, e.json_get(f, 'height')),
@@ -333,7 +344,8 @@ export async function addDataObjActionGroup(data: any) {
 								'ct_sys_tailwind_color',
 								e.cast(e.str, e.json_get(a, 'codeColor'))
 							),
-							isListRowAction: e.cast(e.bool, e.json_get(a, 'isListRowAction')),
+							headerAlt: e.cast(e.str, e.json_get(a, 'headerAlt')),
+							isListRowAction: booleanOrDefaultJSON(a, 'isListRowAction', false),
 							modifiedBy: CREATOR,
 							orderDefine: e.cast(e.int16, e.json_get(a, 'orderDefine'))
 						})
@@ -480,11 +492,13 @@ export async function addUserAction(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			actionConfirms: e.array(e.json),
-			actionShows: e.array(e.json),
+			actionConfirms: e.optional(e.array(e.json)),
 			codeAction: e.str,
-			codeTriggerEnable: e.str,
-			expr: e.optional(e.str),
+			codeConfirmType: e.optional(e.str),
+			exprAction: e.optional(e.str),
+			exprEnable: e.optional(e.str),
+			exprShow: e.optional(e.str),
+			exprShowExpr: e.optional(e.str),
 			exprWith: e.optional(e.str),
 			header: e.optional(e.str),
 			name: e.str,
@@ -493,45 +507,42 @@ export async function addUserAction(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysUserAction, {
-				actionConfirms: e.for(e.array_unpack(p.actionConfirms), (a) => {
-					return e.insert(e.sys_user.SysUserActionConfirm, {
-						codeConfirmType: e.select(
-							e.sys_core.getCode(
-								'ct_sys_user_action_confirm_type',
-								e.cast(e.str, e.json_get(a, 'codeConfirmType'))
-							)
-						),
-						codeTriggerConfirmConditional: e.select(
-							e.sys_core.getCode(
-								'ct_sys_user_action_trigger',
-								e.cast(e.str, e.json_get(a, 'codeTriggerConfirmConditional'))
-							)
-						),
-						confirmButtonLabelCancel: e.cast(e.str, e.json_get(a, 'confirmButtonLabelCancel')),
-						confirmButtonLabelConfirm: e.cast(e.str, e.json_get(a, 'confirmButtonLabelConfirm')),
-						confirmMessage: e.cast(e.str, e.json_get(a, 'confirmMessage')),
-						confirmTitle: e.cast(e.str, e.json_get(a, 'confirmTitle')),
-						createdBy: CREATOR,
-						modifiedBy: CREATOR
-					})
-				}),
-				actionShows: e.for(e.array_unpack(p.actionShows), (a) => {
-					return e.insert(e.sys_user.SysUserActionShow, {
-						codeTriggerShow: e.sys_core.getCode(
-							'ct_sys_user_action_trigger',
-							e.cast(e.str, e.json_get(a, 'codeTriggerShow'))
-						),
-						createdBy: CREATOR,
-						expr: e.cast(e.str, e.json_get(a, 'expr')),
-						isRequired: e.cast(e.bool, e.json_get(a, 'isRequired')),
-						modifiedBy: CREATOR
-					})
-				}),
+				actionConfirms: e.for(
+					e.array_unpack(p.actionConfirms || e.cast(e.array(e.json), e.set())),
+					(a) => {
+						return e.insert(e.sys_user.SysUserActionConfirm, {
+							codeConfirmType: e.select(
+								e.sys_core.getCode(
+									'ct_sys_user_action_confirm_type',
+									e.cast(e.str, e.json_get(a, 'codeConfirmType'))
+								)
+							),
+							codeTriggerConfirmConditional: e.select(
+								e.sys_core.getCode(
+									'ct_sys_user_action_trigger',
+									e.cast(e.str, e.json_get(a, 'codeTriggerConfirmConditional'))
+								)
+							),
+							confirmButtonLabelCancel: e.cast(e.str, e.json_get(a, 'confirmButtonLabelCancel')),
+							confirmButtonLabelConfirm: e.cast(e.str, e.json_get(a, 'confirmButtonLabelConfirm')),
+							confirmMessage: e.cast(e.str, e.json_get(a, 'confirmMessage')),
+							confirmTitle: e.cast(e.str, e.json_get(a, 'confirmTitle')),
+							createdBy: CREATOR,
+							modifiedBy: CREATOR
+						})
+					}
+				),
 				codeAction: e.sys_core.getCodeAction(p.codeAction),
+				codeConfirmType: e.sys_core.getCode(
+					'ct_sys_user_action_confirm_type',
+					e.op(p.codeConfirmType, '??', 'none')
+				),
 				codeAttrType: e.sys_core.getCodeAttrType('at_sys_action_user'),
-				codeTriggerEnable: e.sys_core.getCode('ct_sys_user_action_trigger', p.codeTriggerEnable),
 				createdBy: CREATOR,
-				expr: p.expr,
+				exprAction: p.exprAction,
+				exprEnable: p.exprEnable,
+				exprShow: p.exprShow,
+				exprShowExpr: p.exprShowExpr,
 				exprWith: p.exprWith,
 				header: p.header,
 				modifiedBy: CREATOR,
@@ -549,7 +560,8 @@ export async function updateDataObjColumnCustomEmbedShellFields(data: any) {
 		{
 			dataObjName: e.str,
 			columnName: e.str,
-			customEmbedShellFields: e.array(e.str)
+			customEmbedShellFields: e.array(e.str),
+			gridStyles: e.optional(e.array(e.json))
 		},
 		(p) => {
 			return e.update(e.sys_core.SysDataObj, (d0) => ({
@@ -561,19 +573,7 @@ export async function updateDataObjColumnCustomEmbedShellFields(data: any) {
 							set: {
 								customEmbedShellFields: e.assert_distinct(
 									e.for(e.array_unpack(p.customEmbedShellFields), (f) => {
-										return e.select(e.sys_core.SysDataObjColumn, (c1) => ({
-											filter: e.op(
-												e.op(
-													c1,
-													'in',
-													e.select(e.sys_core.SysDataObj, (d1) => ({
-														filter: e.op(d1.name, '=', p.dataObjName)
-													})).columns
-												),
-												'and',
-												e.op(c1.column.name, '=', f)
-											)
-										}))
+										return e.sys_core.getDataObjColumn(p.dataObjName, f)
 									})
 								)
 							}

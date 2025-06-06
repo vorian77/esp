@@ -1,6 +1,6 @@
 import { Field, PropsFieldCreate } from '$comps/form/field.svelte'
 import { strRequired, valueOrDefault } from '$utils/utils'
-import { evalExpr } from '$routes/api/db/dbScriptEval'
+import { evalExpr } from '$utils/utils.evalParserDb'
 
 const FILENAME = '$comps/Form/fieldFile.ts'
 
@@ -14,6 +14,6 @@ export class FieldFile extends Field {
 		this.width = valueOrDefault(obj.width, 300)
 	}
 	getKey() {
-		return evalExpr({ expr: this.storageKeyExpr, evalExprContext: `${FILENAME}.getKey` })
+		return evalExpr({ exprRaw: this.storageKeyExpr, evalExprContext: `${FILENAME}.getKey` })
 	}
 }

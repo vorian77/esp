@@ -89,13 +89,15 @@ export namespace sys_user {
     "userTypes": SysUserType[];
   }
   export interface SysUserAction extends sys_core.SysObjAttr {
-    "expr"?: string | null;
     "navDestination"?: sys_core.SysNavDestination | null;
     "exprWith"?: string | null;
-    "codeTriggerEnable": sys_core.SysCode;
+    "exprAction"?: string | null;
+    "exprShowExpr"?: string | null;
+    "exprEnable"?: string | null;
+    "exprShow"?: string | null;
+    "codeConfirmType": sys_core.SysCode;
     "codeAction": sys_core.SysCodeAction;
     "actionConfirms": SysUserActionConfirm[];
-    "actionShows": SysUserActionShow[];
   }
   export interface SysUserActionConfirm extends Mgmt {
     "codeConfirmType": sys_core.SysCode;
@@ -104,11 +106,6 @@ export namespace sys_user {
     "confirmButtonLabelConfirm"?: string | null;
     "confirmMessage"?: string | null;
     "confirmTitle"?: string | null;
-  }
-  export interface SysUserActionShow extends Mgmt {
-    "expr"?: string | null;
-    "codeTriggerShow": sys_core.SysCode;
-    "isRequired": boolean;
   }
   export interface SysUserPref extends Mgmt {
     "user": SysUser;
@@ -345,11 +342,13 @@ export namespace sys_core {
     "isRetrieveReadonly"?: boolean | null;
     "subHeader"?: string | null;
     "columns": SysDataObjColumn[];
+    "gridStyles": SysGridStyle[];
     "actionGroup"?: SysDataObjActionGroup | null;
     "listReorderColumn"?: sys_db.SysColumn | null;
     "codeListPresetType"?: SysCode | null;
   }
   export interface SysDataObjAction extends sys_user.Mgmt {
+    "headerAlt"?: string | null;
     "codeColor": SysCode;
     "action": sys_user.SysUserAction;
     "isListRowAction": boolean;
@@ -398,6 +397,7 @@ export namespace sys_core {
     "orderSort"?: number | null;
     "width"?: number | null;
     "column": sys_db.SysColumn;
+    "gridStyles": SysGridStyle[];
     "action"?: sys_user.SysUserAction | null;
     "columnBacklink"?: sys_db.SysColumn | null;
     "fieldEmbedListConfig"?: SysDataObjFieldEmbedListConfig | null;
@@ -479,16 +479,21 @@ export namespace sys_core {
     "expr": string;
     "index": number;
   }
+  export interface SysGridStyle extends std.$Object {
+    "prop": string;
+    "propValue": string;
+    "exprTrigger"?: string | null;
+  }
   export interface SysMsg extends ObjRoot {
     "recipients": SysObjAttr[];
     "readers": sys_user.SysUser[];
     "sender": sys_user.SysUser;
+    "dateMsg": Date;
+    "replies": SysMsg[];
     "parent"?: SysMsg | null;
-    "responses": SysMsg[];
     "thread": SysMsg[];
     "isForward": boolean;
     "subject": string;
-    "createdAt": Date;
     "isClosed": boolean;
   }
   export interface SysNavDestination extends std.$Object {
@@ -1163,7 +1168,6 @@ export interface types {
     "SysUser": sys_user.SysUser;
     "SysUserAction": sys_user.SysUserAction;
     "SysUserActionConfirm": sys_user.SysUserActionConfirm;
-    "SysUserActionShow": sys_user.SysUserActionShow;
     "SysUserPref": sys_user.SysUserPref;
     "SysUserPrefType": sys_user.SysUserPrefType;
     "SysUserType": sys_user.SysUserType;
@@ -1212,6 +1216,7 @@ export interface types {
     "SysDataObjQueryRider": sys_core.SysDataObjQueryRider;
     "SysDataObjTable": sys_core.SysDataObjTable;
     "SysDataObjWith": sys_core.SysDataObjWith;
+    "SysGridStyle": sys_core.SysGridStyle;
     "SysMsg": sys_core.SysMsg;
     "SysNavDestination": sys_core.SysNavDestination;
     "SysNodeObj": sys_core.SysNodeObj;

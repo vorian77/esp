@@ -45,43 +45,6 @@ export default async function action(
 			alert('doCustomAIAttdSheetReset')
 			break
 
-		case CodeActionType.doCustomSysMsgRootDetailSave:
-			result = await sm.triggerActionDo(CodeActionType.doDetailSave, tokenAppDo.dataObj)
-			if (result.error) return result
-			break
-
-		case CodeActionType.doCustomSysMsgThreadDetailClose:
-			alert('doCustomSysMsgThreadDetailClose')
-			break
-
-		case CodeActionType.doCustomSysMsgThreadDetailSend:
-			alert('doCustomSysMsgThreadDetailSend')
-			break
-
-		case CodeActionType.doCustomSysMsgThreadReply:
-			result = await userActionTreeNodeChildren(sm, token, TokenApiQueryType.preset, parmsAction)
-			if (result.error) return result
-			break
-
-		case CodeActionType.doCustomSysMsgThreadListClose:
-			alert('doCustomSysMsgThreadListClose')
-			currTab = sm.app.getCurrTab()
-			if (currTab && currTab.dataObj) {
-				const currRecordId = currTab.getCurrRecordValue('id')
-				if (currRecordId) {
-					const evalExprContext = `${FILENAME}.action.${actionType}`
-					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {isOpen := true}`
-					// result = await clientQueryExpr(expr, evalExprContext)
-					// return await clientQueryExpr(dbExpr, evalExprContext, {}, sm)
-					// if (result.error) return result
-
-					// currTab.dataObj.data.rowsRetrieved.setDetailRecordValue('isReadDisplay', 'No')
-					// await userActionStateChangeDataObj(sm, parmsAction)
-					return new MethodResult()
-				}
-			}
-			break
-
 		default:
 			return new MethodResult({
 				error: {

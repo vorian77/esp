@@ -2,7 +2,6 @@ import { State } from '$comps/app/types.appState.svelte'
 import {
 	DataObj,
 	DataObjCardinality,
-	type DataRecord,
 	DataRecordStatus,
 	DataRow,
 	DataRows,
@@ -10,6 +9,7 @@ import {
 } from '$lib/components/dataObj/types.dataObj.svelte'
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
 import {
+	type DataRecord,
 	getArray,
 	getValueData,
 	isPlainObject,
@@ -53,6 +53,7 @@ export class DataObjStatus {
 }
 
 export class DataManager {
+	fieldChange: boolean = $state(false)
 	nodes: Map<string, DataManagerNode> = new Map<string, DataManagerNode>()
 	objStatus: DataObjStatus = $state(new DataObjStatus())
 	sm: State
@@ -86,6 +87,9 @@ export class DataManager {
 				msg: `No root node defined.`
 			})
 		}
+	}
+	getFieldChange() {
+		return this.fieldChange
 	}
 
 	getFieldValidity(dataObjId: string, row: number, field: Field) {
@@ -123,6 +127,7 @@ export class DataManager {
 		this.reset()
 		this.nodeAdd(dataObj)
 	}
+
 	isStatusChanged() {
 		return this.objStatus.isChanged()
 	}
@@ -151,8 +156,10 @@ export class DataManager {
 		if (node) {
 			await node.setFieldVal(row, field, value)
 			this.setStatus()
+			this.fieldChange = !this.fieldChange
 		}
 	}
+
 	setStatus() {
 		let newStatus = new DataObjStatus()
 		this.nodes.forEach((node) => {
@@ -258,6 +265,10 @@ export class DataManagerNode {
 	}
 
 	initDataObjData(dataObj: DataObj) {
+		dataObj.isDetailPreset =
+			dataObj.data.cardinality === DataObjCardinality.detail &&
+			dataObj.data.rowsRetrieved.getDetailRowStatusIs(DataRecordStatus.preset)
+
 		dataObj.saveMode =
 			dataObj.data.cardinality === DataObjCardinality.detail &&
 			dataObj.data.rowsRetrieved.hasRecord()

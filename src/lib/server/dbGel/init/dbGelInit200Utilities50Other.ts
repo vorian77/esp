@@ -634,126 +634,123 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 			},
 			(p) => {
 				return e.for(e.array_unpack(p.itemChanges), (ic) => {
-					return e.update(e.sys_core.SysDataObjColumn, (sdoc) => ({
-						filter: e.op(
-							e.op(
-								sdoc.id,
-								'in',
-								e.select(e.sys_core.SysDataObj, (sdo) => ({
-									filter: e.op(sdo.name, '=', e.cast(e.str, ic.dataObjName))
-								})).columns.id
-							),
-							'and',
-							e.op(sdoc.column.name, '=', e.cast(e.str, ic.fieldName))
-						),
-						set: {
-							itemChanges: {
-								'+=': e.for(e.array_unpack(e.cast(e.array(e.json), ic.triggers)), (t) => {
-									return e.insert(e.sys_core.SysDataObjColumnItemChange, {
-										codeAccess: e.sys_core.getCode(
-											'ct_sys_do_field_access',
-											e.cast(e.str, e.json_get(t, 'codeAccess'))
-										),
-										codeItemChangeAction: e.sys_core.getCode(
-											'ct_sys_do_field_item_change_action',
-											e.cast(e.str, e.json_get(t, 'codeItemChangeAction'))
-										),
-										codeItemChangeValueType: e.sys_core.getCode(
-											'ct_sys_do_field_item_change_value_type',
-											e.cast(e.str, e.json_get(t, 'codeItemChangeValueType'))
-										),
-										codeOp: e.sys_core.getCode('ct_sys_op', e.cast(e.str, e.json_get(t, 'codeOp'))),
-										columns: e.assert_distinct(
-											e.for(
-												e.array_unpack(e.cast(e.array(e.str), e.json_get(t, 'columns'))),
-												(c) => {
-													return e.sys_core.getDataObjColumn(e.cast(e.str, ic.dataObjName), c)
-												}
-											)
-										),
-										createdBy: CREATOR,
-										modifiedBy: CREATOR,
-										orderDefine: e.cast(e.int16, e.json_get(t, 'orderDefine')),
-										retrieveParmKey: e.cast(e.str, e.json_get(t, 'retrieveParmKey')),
-
-										valueTargetAttribute: e.assert_single(
-											e.select(e.sys_core.SysObjAttr, (soa) => ({
-												filter: e.op(
-													e.op(
-														soa.owner.name,
-														'=',
-														e.cast(
-															e.str,
-															e.json_get(
-																e.cast(e.json, e.json_get(t, 'valueTargetAttribute')),
-																'owner'
-															)
-														)
-													),
-													'and',
-													e.op(
-														soa.name,
-														'=',
-														e.cast(
-															e.str,
-															e.json_get(
-																e.cast(e.json, e.json_get(t, 'valueTargetAttribute')),
-																'name'
-															)
-														)
-													)
+					return e.update(
+						e.sys_core.getDataObjColumn(e.cast(e.str, ic.dataObjName), e.cast(e.str, ic.fieldName)),
+						(sdoc) => ({
+							set: {
+								itemChanges: {
+									'+=': e.for(e.array_unpack(e.cast(e.array(e.json), ic.triggers)), (t) => {
+										return e.insert(e.sys_core.SysDataObjColumnItemChange, {
+											codeAccess: e.sys_core.getCode(
+												'ct_sys_do_field_access',
+												e.cast(e.str, e.json_get(t, 'codeAccess'))
+											),
+											codeItemChangeAction: e.sys_core.getCode(
+												'ct_sys_do_field_item_change_action',
+												e.cast(e.str, e.json_get(t, 'codeItemChangeAction'))
+											),
+											codeItemChangeValueType: e.sys_core.getCode(
+												'ct_sys_do_field_item_change_value_type',
+												e.cast(e.str, e.json_get(t, 'codeItemChangeValueType'))
+											),
+											codeOp: e.sys_core.getCode(
+												'ct_sys_op',
+												e.cast(e.str, e.json_get(t, 'codeOp'))
+											),
+											columns: e.assert_distinct(
+												e.for(
+													e.array_unpack(e.cast(e.array(e.str), e.json_get(t, 'columns'))),
+													(c) => {
+														return e.sys_core.getDataObjColumn(e.cast(e.str, ic.dataObjName), c)
+													}
 												)
-											}))
-										),
-										valueTargetCode: e.sys_core.getCodeSystem(
-											e.cast(
-												e.str,
-												e.json_get(e.cast(e.json, e.json_get(t, 'valueTargetCode')), 'owner')
 											),
-											e.cast(
-												e.str,
-												e.json_get(e.cast(e.json, e.json_get(t, 'valueTargetCode')), 'codeType')
-											),
-											e.cast(
-												e.str,
-												e.json_get(e.cast(e.json, e.json_get(t, 'valueTargetCode')), 'name')
-											)
-										),
-										valueTargetScalar: e.cast(e.str, e.json_get(t, 'valueTargetScalar')),
-										valueTriggerAttributes: e.assert_distinct(
-											e.for(
-												e.array_unpack(
-													e.cast(e.array(e.json), e.json_get(t, 'valueTriggerAttributes'))
-												),
-												(a) => {
-													return e.select(e.sys_core.SysObjAttr, (soa) => ({
-														filter: e.op(
-															e.op(soa.owner.name, '=', e.cast(e.str, a.owner)),
-															'and',
-															e.op(soa.name, '=', e.cast(e.str, a.name))
+											createdBy: CREATOR,
+											modifiedBy: CREATOR,
+											orderDefine: e.cast(e.int16, e.json_get(t, 'orderDefine')),
+											retrieveParmKey: e.cast(e.str, e.json_get(t, 'retrieveParmKey')),
+
+											valueTargetAttribute: e.assert_single(
+												e.select(e.sys_core.SysObjAttr, (soa) => ({
+													filter: e.op(
+														e.op(
+															soa.owner.name,
+															'=',
+															e.cast(
+																e.str,
+																e.json_get(
+																	e.cast(e.json, e.json_get(t, 'valueTargetAttribute')),
+																	'owner'
+																)
+															)
+														),
+														'and',
+														e.op(
+															soa.name,
+															'=',
+															e.cast(
+																e.str,
+																e.json_get(
+																	e.cast(e.json, e.json_get(t, 'valueTargetAttribute')),
+																	'name'
+																)
+															)
 														)
-													}))
-												}
-											)
-										),
-										valueTriggerCodes: e.assert_distinct(
-											e.for(
-												e.array_unpack(e.cast(e.array(e.json), e.json_get(t, 'valueTriggerCodes'))),
-												(c) => {
-													return e.sys_core.getCodeSystem(
-														e.cast(e.str, e.json_get(c, 'owner')),
-														e.cast(e.str, e.json_get(c, 'codeType')),
-														e.cast(e.str, e.json_get(c, 'name'))
 													)
-												}
-											)
-										),
-										valueTriggerScalar: e.cast(e.str, e.json_get(t, 'valueTriggerScalar'))
+												}))
+											),
+											valueTargetCode: e.sys_core.getCodeSystem(
+												e.cast(
+													e.str,
+													e.json_get(e.cast(e.json, e.json_get(t, 'valueTargetCode')), 'owner')
+												),
+												e.cast(
+													e.str,
+													e.json_get(e.cast(e.json, e.json_get(t, 'valueTargetCode')), 'codeType')
+												),
+												e.cast(
+													e.str,
+													e.json_get(e.cast(e.json, e.json_get(t, 'valueTargetCode')), 'name')
+												)
+											),
+											valueTargetScalar: e.cast(e.str, e.json_get(t, 'valueTargetScalar')),
+											valueTriggerAttributes: e.assert_distinct(
+												e.for(
+													e.array_unpack(
+														e.cast(e.array(e.json), e.json_get(t, 'valueTriggerAttributes'))
+													),
+													(a) => {
+														return e.select(e.sys_core.SysObjAttr, (soa) => ({
+															filter: e.op(
+																e.op(soa.owner.name, '=', e.cast(e.str, a.owner)),
+																'and',
+																e.op(soa.name, '=', e.cast(e.str, a.name))
+															)
+														}))
+													}
+												)
+											),
+											valueTriggerCodes: e.assert_distinct(
+												e.for(
+													e.array_unpack(
+														e.cast(e.array(e.json), e.json_get(t, 'valueTriggerCodes'))
+													),
+													(c) => {
+														return e.sys_core.getCodeSystem(
+															e.cast(e.str, e.json_get(c, 'owner')),
+															e.cast(e.str, e.json_get(c, 'codeType')),
+															e.cast(e.str, e.json_get(c, 'name'))
+														)
+													}
+												)
+											),
+											valueTriggerScalar: e.cast(e.str, e.json_get(t, 'valueTriggerScalar'))
+										})
 									})
-								})
+								}
 							}
-						}
-					}))
+						})
+					)
 				})
 			}
 		)
@@ -835,6 +832,36 @@ export async function updateDepdDataObjQueryRider(data: any) {
 								userMsg: e.cast(e.str, e.json_get(qr, 'userMsg'))
 							})
 						})
+					)
+				}
+			}))
+		}
+	)
+	return await query.run(client, dataUpdate)
+}
+
+export async function updateDepdGridStylesDataObj(data: any) {
+	sectionHeader(`updateDepdGridStylesDataObj - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const dataUpdate = { name: data.name, gridStyles: data.gridStyles }
+	const query = e.params(
+		{
+			gridStyles: e.optional(e.array(e.json)),
+			name: e.str
+		},
+		(p) => {
+			return e.update(e.sys_core.SysDataObj, (n) => ({
+				filter: e.op(n.name, '=', p.name),
+				set: {
+					gridStyles: e.for(
+						e.array_unpack(p.gridStyles || e.cast(e.array(e.json), e.set())),
+						(gs) => {
+							return e.insert(e.sys_core.SysGridStyle, {
+								exprTrigger: e.cast(e.str, e.json_get(gs, 'exprTrigger')),
+								prop: e.cast(e.str, e.json_get(gs, 'prop')),
+								propValue: e.cast(e.str, e.json_get(gs, 'propValue'))
+							})
+						}
 					)
 				}
 			}))

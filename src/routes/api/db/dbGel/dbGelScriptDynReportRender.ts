@@ -4,12 +4,12 @@ import {
 	DataObjCardinality,
 	DataObjComponent,
 	DataObjType,
-	MethodResult
+	MethodResult,
+	PropDataType
 } from '$utils/types'
 import { DbTableQueryGroup } from '$lib/queryClient/types.queryClient'
 import { RawDataObjDyn } from '$comps/dataObj/types.rawDataObj.svelte'
 import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
-import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 import { getReportUser } from '$routes/api/db/dbGel/types.dbGel'
 import { error } from '@sveltejs/kit'
 

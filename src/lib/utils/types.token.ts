@@ -10,6 +10,7 @@ import {
 	type DataRecord,
 	DataRecordStatus,
 	DataRow,
+	debug,
 	memberOfEnum,
 	MethodResult,
 	MethodResultError,
@@ -274,15 +275,10 @@ export class TokenApiQueryData {
 		return this.dataTab ? this.dataTab.getParms() : {}
 	}
 
-	updateTableData(table: string, dataRow: DataRow) {
+	updateData(dataObjId: string, dataRow: DataRow) {
 		this.record = dataRow.record
-		let idx = this.dataTree.levels.length - 1
-		while (idx > -1) {
-			if (this.dataTree.levels[idx].table === table) {
-				this.dataTree.levels[idx].dataRow = dataRow
-				idx = -1
-			}
-		}
+		const level = this.dataTree.levels.find((l) => l.dataObjId === dataObjId)
+		if (level) level.dataRow = dataRow
 	}
 }
 export class TokenApiQueryDataTree {
@@ -291,8 +287,8 @@ export class TokenApiQueryDataTree {
 		this.levels = levels
 	}
 
-	addLevel(dataRow: DataRow, table: string, node: string | undefined) {
-		this.levels.push(new TokenApiQueryDataTreeLevel(dataRow, table, node))
+	addLevel(dataRow: DataRow, dataObjId: string, tableName: string, nodeName: string | undefined) {
+		this.levels.push(new TokenApiQueryDataTreeLevel(dataRow, dataObjId, tableName, nodeName))
 	}
 
 	getDataRow(
@@ -312,28 +308,37 @@ export class TokenApiQueryDataTree {
 						}
 					}
 				}
+				break
 
 			case TokenApiQueryDataTreeAccessType.node:
-				for (let i = this.levels.length - 1; i > -1; i--) {
-					if (this.levels[i].node === parm) {
-						return new MethodResult(this.levels[i].dataRow)
-					}
-				}
+				const level = this.levels.find((l) => l.nodeName === parm)
+				if (level) return new MethodResult(level.dataRow)
+				break
+
 			case TokenApiQueryDataTreeAccessType.table:
 				for (let i = this.levels.length - 1; i > -1; i--) {
-					if (this.levels[i].table === parm) {
+					if (this.levels[i].tableName === parm) {
 						return new MethodResult(this.levels[i].dataRow)
 					}
 				}
-			default:
-				return new MethodResult({
-					error: {
-						file: FILENAME,
-						function: 'TokenApiQueryDataTree.getRecord',
-						msg: `Unable to find record for accessType: ${accessType} - parm: ${parm}`
-					}
-				})
+				break
 		}
+		return new MethodResult({
+			error: {
+				file: FILENAME,
+				function: 'TokenApiQueryDataTree.getDataRow',
+				msgSystem: `Unable to find dataRow for accessType: ${accessType} - parm: ${parm} - levels: ${JSON.stringify(
+					this.levels.map((l, index) => {
+						return {
+							dataObjId: l.dataObjId,
+							index,
+							node: l.nodeName
+						}
+					})
+				)}`,
+				msgUser: `Unable to find dataRow for accessType: ${accessType}`
+			}
+		})
 	}
 
 	getDataRowRecord(
@@ -365,13 +370,21 @@ export enum TokenApiQueryDataTreeAccessType {
 }
 
 export class TokenApiQueryDataTreeLevel {
+	dataObjId: string
 	dataRow: DataRow
-	node: string
-	table: string
-	constructor(dataRow: DataRow, table: string, node: string | undefined) {
-		this.dataRow = dataRow
-		this.node = valueOrDefault(node, '')
-		this.table = table
+	nodeName: string
+	tableName: string
+	constructor(
+		dataRow: DataRow,
+		dataObjId: string,
+		tableName: string,
+		nodeName: string | undefined
+	) {
+		const clazz = 'TokenApiQueryDataTreeLevel'
+		this.dataObjId = strRequired(dataObjId, clazz, 'dataObjId')
+		this.dataRow = required(dataRow, clazz, 'dataRow')
+		this.nodeName = valueOrDefault(nodeName, '')
+		this.tableName = strRequired(tableName, clazz, 'tableName')
 	}
 }
 
@@ -647,6 +660,7 @@ export class TokenAppUserAction {
 
 export enum TokenAppUserActionConfirmType {
 	always = 'always',
+	conditional = 'conditional',
 	none = 'none',
 	statusChanged = 'statusChanged',
 	objectValidToContinue = 'objectValidToContinue'

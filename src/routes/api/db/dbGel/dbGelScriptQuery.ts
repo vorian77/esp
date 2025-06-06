@@ -11,7 +11,7 @@ import {
 	type RawDataList
 } from '$lib/queryClient/types.queryClient'
 import { nbrOrDefault, valueOrDefault } from '$lib/utils/utils'
-import { evalExpr, getUUID, getValDb } from '$routes/api/db/dbScriptEval'
+import { evalExpr, EvalValue, getUUID, getValDb } from '$utils/utils.evalParserDb'
 import {
 	classOptional,
 	DataObjData,
@@ -31,6 +31,7 @@ import {
 } from '$utils/types'
 import { TokenApiQueryData } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
+import type { Method } from 'axios'
 
 const FILENAME = '/$routes/api/dbGel/dbGelScriptDQuery.ts'
 
@@ -94,18 +95,23 @@ export class GelQuery {
 		return this.addItem(list, item, ',')
 	}
 
-	dataFormat(rawDataList: RawDataList): DataRows {
+	async dataFormat(rawDataList: RawDataList): Promise<MethodResult> {
 		let dataRows: DataRows = new DataRows()
-		if (this.formatData) dataRows = this.dataFormatData(rawDataList, this.formatData)
-		return dataRows
+		if (this.formatData) {
+			let result: MethodResult = await this.dataFormatData(rawDataList, this.formatData)
+			if (result.error) return result
+			dataRows = result.data as DataRows
+		}
+		return new MethodResult(dataRows)
 	}
-	dataFormatData(rawDataList: RawDataList, formatData: FormatData): DataRows {
+	async dataFormatData(rawDataList: RawDataList, formatData: FormatData): Promise<MethodResult> {
 		let dataRows: DataRows = new DataRows()
-		rawDataList.forEach((record) => {
-			let result: MethodResult = formatData.processRow(record)
+		for (const record of rawDataList) {
+			let result: MethodResult = await formatData.processRow(record)
+			if (result.error) return result
 			dataRows.add(result.data as DataRow)
-		})
-		return dataRows
+		}
+		return new MethodResult(dataRows)
 	}
 	dataFormatSetSelect(obj: DataRecord) {
 		this.formatData = new FormatDataSelect(obj)
@@ -183,18 +189,21 @@ export class GelQuery {
 		return properties
 	}
 
-	getPropsListPresetSave(parms: DataRecord, queryData: TokenApiQueryData) {
+	async getPropsListPresetSave(
+		parms: DataRecord,
+		queryData: TokenApiQueryData
+	): Promise<MethodResult> {
 		const clazz = 'getPropsListPresetSave'
 		const props = required(parms.props, clazz, 'props') as RawDataObjPropDB[]
 		let properties = ''
 
-		props.forEach((propObj) => {
+		for (let propObj of props) {
 			const clazzProp = `${clazz}.${propObj.propName}`
-			const expr = strRequired(propObj.exprPreset, clazzProp, 'expr')
+			const exprRaw = strRequired(propObj.exprPreset, clazzProp, 'exprRaw')
 
-			let result: MethodResult = evalExpr({
-				expr,
+			let result: MethodResult = await evalExpr({
 				evalExprContext: this.evelExprContext,
+				exprRaw,
 				queryData,
 				querySource: this.querySource
 			})
@@ -202,61 +211,66 @@ export class GelQuery {
 			const exprEvaluated: string = result.data
 			const prop = `${propObj.propNameRaw} := ${exprEvaluated}`
 			properties = this.addItemComma(properties, prop)
-		})
+		}
 
 		if (properties) properties = `{\n${properties}\n}`
-		return properties
+		return new MethodResult(properties)
 	}
 
-	getPropsSave(
+	async getPropsSave(
 		propsRaw: RawDataObjPropDB[],
 		query: GelQuery,
 		dataRows: DataRow[],
 		parms: DataRecord
-	) {
+	): Promise<MethodResult> {
 		const clazz = 'getPropsSave'
 		let properties: string[] = []
 		let fValues: Function[] = []
 		const indexTable = required(parms.indexTable, clazz, 'indexTable')
 
 		// 1. build props, subObjGroup
-		propsRaw
-			.filter((p) => p.indexTable === indexTable)
-			.forEach((p, idx) => {
-				if (!p.fieldEmbed) {
-					const propDB = `${p.propNameRaw} := ${this.getPropsSavePropExpr(idx, p, query, fValues)}`
-					properties.push(propDB)
+		propsRaw.filter((p) => p.indexTable === indexTable)
 
-					// format values
-					dataRows.forEach((dataRow) => {
-						dataRow.record[p.propName] = fValues[idx](dataRow.getValue(p.propName))
-					})
-				}
-			})
-		return properties
+		for (let i = 0; i < propsRaw.length; i++) {
+			const p = propsRaw[i]
+			if (!p.fieldEmbed) {
+				let result: MethodResult = await this.getPropsSavePropExpr(i, p, query, fValues)
+				if (result.error) return result
+
+				const propDB = `${p.propNameRaw} := ${result.data}`
+				properties.push(propDB)
+
+				// format values
+				dataRows.forEach((dataRow) => {
+					dataRow.record[p.propName] = fValues[i](dataRow.getValue(p.propName))
+				})
+			}
+		}
+
+		return new MethodResult(properties)
 	}
 
-	getPropsSavePropExpr(
+	async getPropsSavePropExpr(
 		propIdx: number,
 		propObj: RawDataObjPropDB,
 		query: GelQuery,
 		fValues: Function[]
-	) {
+	): Promise<MethodResult> {
 		const clazz = 'getPropsSavePropExpr'
 		let propExpr = ''
 		const clazzProp = `${clazz}.${propObj.propName}`
 
-		let expr =
+		let exprRaw =
 			!query.rawDataObj.rawQuerySource.listPresetExpr && propObj.exprSave ? propObj.exprSave : ''
 
 		const setValueFunction = (idx: number, f: Function) => {
 			fValues[idx] = f
 		}
 
-		if (expr) {
-			let result: MethodResult = evalExpr({
-				expr,
+		if (exprRaw) {
+			let result: MethodResult = await evalExpr({
 				evalExprContext: this.evelExprContext,
+				exprRaw,
 				queryData: query.queryData,
 				querySource: this.querySource
 			})
@@ -273,9 +287,8 @@ export class GelQuery {
 
 			let result: MethodResult = getValDb(propObj.codeDataType, undefined)
 			if (result.error) return result
-			const { dataType, valueDB } = result.data
-
-			switch (dataType) {
+			const evalValue: EvalValue = result.data
+			switch (evalValue.dataTypeDb) {
 				case '<cal::local_date>':
 				case '<datetime>':
 				case '<float64>':
@@ -285,7 +298,7 @@ export class GelQuery {
 					setValueFunction(propIdx, (rawValue: any) => {
 						return rawValue === undefined || rawValue === null ? '' : rawValue.toString()
 					})
-					propExpr = `(SELECT ${dataType}{} IF <str>${item} = '' ELSE ${dataType}<str>${item})`
+					propExpr = `(SELECT ${evalValue.dataTypeDb}{} IF <str>${item} = '' ELSE ${evalValue.dataTypeDb}<str>${item})`
 					break
 
 				case 'link':
@@ -323,10 +336,10 @@ export class GelQuery {
 					setValueFunction(propIdx, (rawValue: any) => {
 						return rawValue
 					})
-					propExpr = `${dataType}${item}`
+					propExpr = `${evalValue.dataTypeDb}${item}`
 			}
 		}
-		return propExpr
+		return new MethodResult(propExpr)
 	}
 
 	getPropsSelect(parms: DataRecord) {
@@ -516,7 +529,7 @@ class FormatData {
 		// derived
 		this.propNames = this.propsSelect.map((prop) => prop.propName)
 	}
-	evalExprCalc(expr: string, DataRecord: DataRecord, propNames: string[]) {
+	async evalExprCalc(expr: string, DataRecord: DataRecord, propNames: string[]) {
 		const clazz = 'evalExprCalc'
 		const regex = /\.\w+/g
 		let newExpr = expr
@@ -528,9 +541,9 @@ class FormatData {
 				newExpr = newExpr.replace(`.${key}`, DataRecord[propName])
 			}
 		}
-		let result: MethodResult = evalExpr({
-			expr: newExpr,
+		let result: MethodResult = await evalExpr({
 			evalExprContext: this.evalExprContext,
+			exprRaw: newExpr,
 			queryData: this.dummyQueryData,
 			querySource: this.querySource
 		})
@@ -590,17 +603,21 @@ class FormatData {
 		}
 	}
 
-	prepRecord(recordRaw: DataRecord) {
-		this.propsSelect.forEach((prop) => {
+	async prepRecord(recordRaw: DataRecord): Promise<MethodResult> {
+		for (const prop of this.propsSelect) {
 			if (prop.codeDataSourceValue === PropDataSourceValue.calculate && prop.exprCustom) {
-				let result: MethodResult = this.evalExprCalc(prop.exprCustom, recordRaw, this.propNames)
+				let result: MethodResult = await this.evalExprCalc(
+					prop.exprCustom,
+					recordRaw,
+					this.propNames
+				)
 				if (result.error) return result
 				recordRaw[prop.propName] = result.data
 			}
-		})
+		}
 		return new MethodResult()
 	}
-	processRow(recordRaw: DataRecord): MethodResult {
+	async processRow(recordRaw: DataRecord): Promise<MethodResult> {
 		return new MethodResult(new DataRow(DataRecordStatus.retrieved, recordRaw))
 	}
 }
@@ -613,12 +630,12 @@ class FormatDataSelect extends FormatData {
 		super(obj)
 		this.status = required(obj.status, clazz, 'status')
 	}
-	processRow(recordRaw: DataRecord) {
-		let result: MethodResult = this.prepRecord(recordRaw)
+	async processRow(recordRaw: DataRecord): Promise<MethodResult> {
+		let result: MethodResult = await this.prepRecord(recordRaw)
 		if (result.error) return result
 		return this.processRowProps(recordRaw, this.status)
 	}
-	processRowProps(recordRaw: DataRecord, status: DataRecordStatus) {
+	processRowProps(recordRaw: DataRecord, status: DataRecordStatus): MethodResult {
 		const clazz = 'FormatDataSelect.processRowProps'
 		let recordReturn: DataRecord = {}
 		this.propsSelect.forEach((prop) => {
@@ -642,8 +659,8 @@ class FormatDataSelectPreset extends FormatDataSelect {
 		const clazz = 'FormatDataSelectPreset.constructor'
 		super(obj)
 	}
-	prepRecord(recordRaw: DataRecord) {
-		let result: MethodResult = super.prepRecord(recordRaw)
+	async prepRecord(recordRaw: DataRecord) {
+		let result: MethodResult = await super.prepRecord(recordRaw)
 		if (result.error) return result
 		return new MethodResult((recordRaw.id = `preset_${++this.rowIndex}`))
 	}
@@ -657,8 +674,8 @@ class FormatDataUpdate extends FormatData {
 		// const source = obj.source ? obj.source : new DataRows()
 		this.rowsSave = obj.rowsSave
 	}
-	processRow(recordRaw: DataRecord): MethodResult {
-		let result: MethodResult = this.prepRecord(recordRaw)
+	async processRow(recordRaw: DataRecord): Promise<MethodResult> {
+		let result: MethodResult = await this.prepRecord(recordRaw)
 		if (result.error) return result
 
 		let newStatus: DataRecordStatus = DataRecordStatus.inserted

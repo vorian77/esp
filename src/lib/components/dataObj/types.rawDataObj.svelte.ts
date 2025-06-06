@@ -10,11 +10,13 @@ import {
 	DataObjData,
 	DataObjSort,
 	DataObjType,
+	type DataRecord,
 	debug,
 	FieldEmbedType,
 	getArray,
 	getDataRecordValueKey,
 	getDbExprRaw,
+	getValueData,
 	isNumber,
 	memberOfEnum,
 	memberOfEnumIfExists,
@@ -24,6 +26,8 @@ import {
 	nbrRequired,
 	override,
 	ParmsValuesType,
+	PropDataType,
+	PropOp,
 	required,
 	strOptional,
 	strRequired,
@@ -33,13 +37,11 @@ import {
 import {
 	DataObjComponent,
 	DataObjListEditPresetType,
-	DataObjProcessType,
-	type DataRecord
+	DataObjProcessType
 } from '$comps/dataObj/types.dataObj.svelte'
 import {
 	UserAction,
 	UserActionConfirm,
-	UserActionShow,
 	UserActionTrigger
 } from '$comps/other/types.userAction.svelte'
 import {
@@ -49,19 +51,31 @@ import {
 	QuerySourceRaw,
 	QuerySourceType
 } from '$lib/queryClient/types.queryClient'
-import { clientQueryExprOld } from '$lib/queryClient/types.queryClientManager'
-import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
+import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
+import { FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import {
-	NavDestinationType,
 	TokenApiQueryDataTree,
 	TokenApiQueryType,
-	TokenAppNav
+	TokenAppNav,
+	TokenAppUserActionConfirmType
 } from '$utils/types.token'
-import { QueryRiderRaw } from '$lib/queryClient/types.queryClientRider'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
+
+export class GridStyle {
+	exprTrigger?: string
+	prop: string
+	propValue: string
+	constructor(obj: any) {
+		const clazz = 'GridStyle'
+		obj = valueOrDefault(obj, {})
+		this.exprTrigger = strOptional(obj.exprTrigger, clazz, 'exprTrigger')
+		this.prop = strRequired(obj.prop, clazz, 'prop')
+		this.propValue = strRequired(obj.propValue, clazz, 'propValue')
+	}
+}
 
 export class RawDataObj {
 	codeCardinality: DataObjCardinality
@@ -72,6 +86,7 @@ export class RawDataObj {
 	codeListPresetType?: DataObjListEditPresetType
 	crumbs: string[] = []
 	description?: string
+	gridStyles: GridStyle[]
 	header: string
 	id: string
 	isInitialValidationSilent: boolean
@@ -141,6 +156,7 @@ export class RawDataObj {
 		)
 		this.crumbs = this.initCrumbs(obj._propsCrumb)
 		this.description = strOptional(obj.description, clazz, 'description')
+		this.gridStyles = arrayOfClass(GridStyle, obj._gridStyles)
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.isInitialValidationSilent = booleanOrDefault(obj.isInitialValidationSilent, false)
@@ -220,7 +236,7 @@ export class RawDataObjAction {
 	constructor(obj: any) {
 		const clazz = 'RawDataObjAction'
 		obj = valueOrDefault(obj, {})
-		this.action = new UserAction(new RawUserAction(obj._action))
+		this.action = new UserAction(new RawUserAction({ ...obj._action, headerAlt: obj.headerAlt }))
 		this.codeColor = obj._codeColor
 		this.isListRowAction = booleanOrFalse(obj.isListRowAction)
 	}
@@ -398,6 +414,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 	fieldEmbedListEdit?: RawDataObjPropDisplayEmbedListEdit
 	fieldEmbedListSelect?: RawDataObjPropDisplayEmbedListSelect
 	fieldEmbedShellFields: string[]
+	gridStyles: GridStyle[]
 	headerAlt?: string
 	height?: number
 	inputMaskAlt?: string
@@ -437,6 +454,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		this.fieldEmbedShellFields = obj._fieldEmbedShellFields
 			? obj._fieldEmbedShellFields.map((f: { _name: string }) => f._name)
 			: []
+		this.gridStyles = arrayOfClass(GridStyle, obj._gridStyles)
 		this.headerAlt = strOptional(obj.headerAlt, clazz, 'headerAlt')
 		this.height = nbrOptional(obj.height, clazz, 'height')
 		this.inputMaskAlt = strOptional(obj.inputMaskAlt, clazz, 'inputMaskAlt')
@@ -465,6 +483,10 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		)
 		this.label = override(obj.headerAlt, this.colDB.header, clazz, 'label')
 		this.labelSide = valueOrDefault(this.colDB.headerSide, this.label)
+		debug('RawDataObjPropDisplay', 'constructor.gridStyles', {
+			prop: this.colDB.header,
+			gridStyles: this.gridStyles
+		})
 	}
 }
 
@@ -642,10 +664,12 @@ export class RawDBColumn {
 
 export class RawUserAction {
 	actionConfirms: UserActionConfirm[]
-	actionShows: UserActionShow[]
 	codeAction: CodeAction
-	codeTriggerEnable: UserActionTrigger
-	expr: string
+	codeConfirmType: TokenAppUserActionConfirmType
+	exprAction: string
+	exprEnable: string
+	exprShow: string
+	exprShowExpr: string
 	exprWith: string
 	header?: string
 	navDestination?: TokenAppNav
@@ -654,18 +678,21 @@ export class RawUserAction {
 		const clazz = 'RawUserAction'
 		obj = valueOrDefault(obj, {})
 		this.actionConfirms = arrayOfClass(UserActionConfirm, obj._actionConfirms)
-		this.actionShows = arrayOfClass(UserActionShow, obj._actionShows)
 		this.codeAction = new CodeAction(obj._codeAction)
-		this.codeTriggerEnable = memberOfEnum(
-			obj._codeTriggerEnable,
+		this.codeConfirmType = memberOfEnumOrDefault(
+			obj._codeConfirmType,
 			clazz,
-			'codeTriggerEnable',
-			'UserActionTrigger',
-			UserActionTrigger
+			'codeConfirmType',
+			'TokenAppUserActionConfirmType',
+			TokenAppUserActionConfirmType,
+			TokenAppUserActionConfirmType.none
 		)
-		this.expr = valueOrDefault(obj.expr, '')
+		this.exprAction = valueOrDefault(obj.exprAction, '')
+		this.exprEnable = valueOrDefault(obj.exprEnable, `<always>`)
+		this.exprShow = valueOrDefault(obj.exprShow, `<always>`)
+		this.exprShowExpr = valueOrDefault(obj.exprShowExpr, '')
 		this.exprWith = valueOrDefault(obj.exprWith, '')
-		this.header = obj.header
+		this.header = obj.headerAlt || obj.header
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.navDestination = classOptional(TokenAppNav, obj._navDestination)
 	}
@@ -779,7 +806,7 @@ export class PropLinkItems {
 			const returnValue = this.rawItems.find((item) => {
 				return item.data === valueDisplay
 			})
-			return returnValue
+			return returnValue || ''
 		}
 	}
 
@@ -838,9 +865,9 @@ export class PropLinkItems {
 
 		const dataTree: TokenApiQueryDataTree = sm.app.getDataTree(queryType)
 
-		let result: MethodResult = await clientQueryExprOld(
-			exprCustom,
+		let result: MethodResult = await clientQueryExpr(
 			clazz,
+			exprCustom,
 			{
 				dataTab,
 				dataTree
@@ -963,8 +990,8 @@ export class PropLinkItemsSource {
 		return this.querySource.table ? this.querySource.table.object : undefined
 	}
 
-	setParmValue(parmValue: string) {
-		this.parmValue = parmValue
+	setParmValue(parmValue: any) {
+		this.parmValue = getValueData(parmValue)
 	}
 }
 
@@ -1000,25 +1027,6 @@ export enum DataObjRenderPlatform {
 export enum PropDataSourceValue {
 	calculate = 'calculate',
 	edgeDB = 'edgeDB'
-}
-
-export enum PropDataType {
-	bool = 'bool',
-	date = 'date',
-	datetime = 'datetime',
-	file = 'file',
-	float64 = 'float64',
-	int16 = 'int16',
-	int32 = 'int32',
-	int64 = 'int64',
-	json = 'json',
-	link = 'link',
-	literal = 'literal',
-	none = 'none',
-	str = 'str',
-	strList = 'strList',
-	uuid = 'uuid',
-	uuidList = 'uuidList'
 }
 
 export enum PropNamePrefixType {

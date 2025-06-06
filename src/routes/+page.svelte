@@ -3,7 +3,7 @@
 	import srcExFormList from '$assets/ex_form_list.png'
 	import srcLogo from '$assets/org_logo_sys.png'
 	import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-	import { clientQueryExprOld } from '$lib/queryClient/types.queryClientManager'
+	import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 	import { MethodResult } from '$utils/types'
 	import { TokenApiQueryData } from '$utils/types.token'
 	import { ArrowRight } from 'lucide-svelte'
@@ -32,7 +32,7 @@
 			owner := sys_core::getSystemPrime('sys_client_app_factory')}`
 
 			const evalExprContext = 'processEmail'
-			let result: MethodResult = await clientQueryExprOld(exprCustom, evalExprContext)
+			let result: MethodResult = await clientQueryExpr(evalExprContext, exprCustom)
 			if (result.error) msgUser = msgFail
 		} else {
 			msgUser = msgFail

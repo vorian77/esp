@@ -1,4 +1,3 @@
-import { queryClientTest } from '$lib/queryClient/queryClientTest'
 import {
 	booleanOrDefault,
 	CodeAction,
@@ -9,6 +8,7 @@ import {
 	memberOfEnum,
 	MethodResult,
 	Node,
+	ParmsValuesType,
 	RawMenu,
 	required,
 	User,
@@ -19,6 +19,7 @@ import {
 import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
 import {
 	Token,
+	TokenApiQueryData,
 	TokenApiQueryType,
 	TokenAppDoQuery,
 	TokenAppNode,
@@ -27,6 +28,7 @@ import {
 } from '$utils/types.token'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { goto } from '$app/navigation'
+import { evalExpr } from '$utils/utils.evalParserDb'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = 'src/lib/components/navMenu/types.navMenu.ts'
@@ -447,16 +449,16 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 
 		if (['user_sys'].includes(this.user.name)) {
 			this.addItem({
-				content: new NavMenuContent(NavMenuContentType.functionAsync, queryClientTest),
+				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminDevTest),
 				icon: 'Database',
 				isRoot: true,
-				label: new NavMenuLabel('Admin - Query Manager Test')
+				label: new NavMenuLabel('Dev - Test')
 			})
 			this.addItem({
-				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminResetDb),
+				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminDbReset),
 				icon: 'RotateCcw',
 				isRoot: true,
-				label: new NavMenuLabel('Admin - Reset DB')
+				label: new NavMenuLabel('Admin - DB Reset')
 			})
 		}
 	}
@@ -464,10 +466,39 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 		this.items.addItem(obj)
 	}
 
-	async adminResetDb(navMenu: NavMenuData): Promise<MethodResult> {
+	async adminDbReset(navMenu: NavMenuData): Promise<MethodResult> {
 		await apiFetchFunction(ApiFunction.dbGelInit)
 		goto('/auth/login')
 		return new MethodResult()
+	}
+
+	async adminDevTest(navMenu: NavMenuData): Promise<MethodResult> {
+		let queryData = new TokenApiQueryData({
+			record: navMenu.sm.user,
+			system: navMenu.sm.user,
+			user: navMenu.sm.user
+		})
+		queryData.dataTab.parms.valueSet(ParmsValuesType.itemsParmValue, 'myParmValue')
+		queryData.dataTab.parms.valueSet(
+			ParmsValuesType.queryOwnerSys,
+			navMenu.sm.user?.systemIdCurrent
+		)
+		queryData.dataTab.parms.valueSet(ParmsValuesType.itemsParmValueList, [])
+
+		let result: MethodResult = await evalExpr({
+			evalExprContext: 'navMenuTest',
+			exprRaw: `(SELECT sys_core::SysObjAttr FILTER .id IN <attrsAction,oaa_sys_msg_send,object,user>)`,
+			// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <function,fSysRandom10>)`,
+			// exprRaw: `(SELECT sys_user::SysUser FILTER .name = <literal,str,user_sys>)`,
+			// exprRaw: `(SELECT sys_user::SysUser FILTER .name = <parms,str,itemsParmValue>)`,
+			// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <record,uuid,id>)`,
+			// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <system,uuid,id>)`,
+			// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
+			// exprRaw: `(SELECT sys_core::SysObjAttr FILTER <evalObjAttrMulti>)`,
+			queryData
+		})
+		console.log('adminDevTest.evalExpr.result:', result)
+		return result
 	}
 }
 

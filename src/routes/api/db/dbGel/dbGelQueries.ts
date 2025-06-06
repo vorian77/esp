@@ -17,6 +17,7 @@ const shapeDataObjActionGroup = e.shape(e.sys_core.SysDataObjActionGroup, (g) =>
 			...shapeUserAction(a)
 		})),
 		_codeColor: i.codeColor.name,
+		headerAlt: true,
 		isListRowAction: i.isListRowAction,
 		order_by: i.orderDefine
 	}))
@@ -80,6 +81,12 @@ const shapeFieldEmbedListSelect = e.shape(e.sys_core.SysDataObjFieldEmbedListSel
 	})),
 	_dataObjListId: fels.dataObjList.id,
 	btnLabelComplete: true
+}))
+
+const shapeGridStyle = e.shape(e.sys_core.SysGridStyle, (gs) => ({
+	exprTrigger: true,
+	prop: true,
+	propValue: true
 }))
 
 const shapeLinkItemsSource = e.shape(e.sys_core.SysDataObjFieldListItems, (fli) => ({
@@ -253,19 +260,17 @@ const shapeUserAction = e.shape(e.sys_user.SysUserAction, (ua) => ({
 		confirmMessage: true,
 		confirmTitle: true
 	})),
-	_actionShows: e.select(ua.actionShows, (s) => ({
-		_codeTriggerShow: s.codeTriggerShow.name,
-		expr: true,
-		isRequired: true
-	})),
 	_codeAction: e.select(ua.codeAction, (ca) => ({
 		...shapeCodeAction(ca)
 	})),
-	_codeTriggerEnable: ua.codeTriggerEnable.name,
+	_codeConfirmType: ua.codeConfirmType.name,
 	_navDestination: e.select(ua.navDestination, (nd) => ({
 		...shapeNavDestination(nd)
 	})),
-	expr: ua.expr,
+	exprAction: ua.exprAction,
+	exprEnable: ua.exprEnable,
+	exprShow: ua.exprShow,
+	exprShowExpr: ua.exprShowExpr,
 	exprWith: ua.exprWith,
 	header: ua.header,
 	name: ua.name
@@ -354,6 +359,9 @@ export async function getDataObjById(token: TokenApiId) {
 			_codeDoQueryType: do1.codeDoQueryType.name,
 			_codeDoRenderPlatform: do1.codeDoRenderPlatform.name,
 			_codeListPresetType: do1.codeListPresetType.name,
+			_gridStyles: e.select(do1.gridStyles, (gs) => ({
+				...shapeGridStyle(gs)
+			})),
 			_listReorderColumn: do1.listReorderColumn.name,
 			_ownerId: do1.owner.id,
 			_processType: do1.processType.name,
@@ -431,6 +439,9 @@ export async function getDataObjById(token: TokenApiId) {
 				_fieldEmbedShellFields: e.select(doc.customEmbedShellFields, (ce) => ({
 					_name: ce.column.name,
 					order_by: ce.orderDefine
+				})),
+				_gridStyles: e.select(doc.gridStyles, (gs) => ({
+					...shapeGridStyle(gs)
 				})),
 				headerAlt: true,
 				height: true,

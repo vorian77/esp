@@ -3,12 +3,15 @@ import { GelQuery, LinkSaveAction } from '$routes/api/db/dbGel/dbGelScriptQuery'
 import {
 	DataRecordStatus,
 	DataRow,
+	MethodResult,
+	MethodResultError,
 	ParmsValuesType,
 	RawDataObj,
 	required,
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
+import type { Method } from 'axios'
 
 export class ScriptTypeSave {
 	action: LinkSaveAction
@@ -32,26 +35,29 @@ export class ScriptTypeSave {
 	static addItemComma(list: string, item: string) {
 		return ScriptTypeSave.addItem(list, item, ',')
 	}
-	build(): string {
-		return ''
+	async build(): Promise<MethodResult> {
+		return new MethodResult('')
 	}
 
 	getExprData(label: string, dataRows: DataRow[]) {
 		const body = `(SELECT to_json($$${JSON.stringify(dataRows.map((row: DataRow) => row.record))}$$))`
 		return `${label} := ${body}`
 	}
-	getExprSave() {
+	async getExprSave(): Promise<MethodResult> {
 		let label = this.getLabelSave(this.tableKey)
-		let exprCore = this.getExprSaveCore()
+		let result: MethodResult = await this.getExprSaveCore()
+		if (result.error) return result
+		let exprCore = result.data
+
 		let exprBody = this.getExprSaveBody(this.getLabelData(this.tableKey), exprCore)
 		let exprSave = `${label} := ${exprBody}`
-		return exprSave
+		return new MethodResult(exprSave)
 	}
 	getExprSaveBody(label: string, exprCore: string) {
 		return `(FOR item IN json_array_unpack(${label}) UNION (\n${exprCore}))`
 	}
-	getExprSaveCore(): string {
-		return ''
+	async getExprSaveCore(): Promise<MethodResult> {
+		return new MethodResult('')
 	}
 	getLabelData(table: DbTable) {
 		return `data_${table.name}`
@@ -76,14 +82,14 @@ export class ScriptTypeSaveParent extends ScriptTypeSave {
 		this.tableChild = required(rawDataObj.tableGroup.getTable(0), clazz, 'tableChild')
 		this.tableKey = this.queryParent.table
 	}
-	build() {
+	async build(): Promise<MethodResult> {
 		const label = this.getLabelData(this.tableKey)
 		const exprUpdate = `UPDATE ${this.queryParent.table.object}`
 		const exprFilter = `FILTER .id = <uuid>"${this.id}"`
 		const operator = this.isListSelect ? ':=' : '+='
 		const exprProp = `SET {${this.queryParent.columnName} ${operator} ${this.getLabelSave(this.tableChild)}}`
 		const expr = `${label} := (\n${exprUpdate}\n${exprFilter}\n${exprProp}\n)`
-		return expr
+		return new MethodResult(expr)
 	}
 }
 
@@ -92,19 +98,12 @@ export class ScriptTypeSavePrimary extends ScriptTypeSave {
 		const clazz = 'ScriptTypeSavePrimary'
 		super(obj)
 	}
-	build() {
-		return ''
-	}
 	getExprPropsSelect() {
 		const exprPropsSelect = this.query.getPropsSelect({
 			props: this.query.rawDataObj.rawPropsSelect
 		})
 		let expr = `SELECT ${this.getLabelSave(this.tableKey)} \n${exprPropsSelect}`
 		return expr
-	}
-
-	getExprSaveCore(): string {
-		return ''
 	}
 }
 
@@ -113,42 +112,56 @@ export class ScriptTypeSavePrimaryCore extends ScriptTypeSavePrimary {
 		const clazz = 'ScriptTypeSavePrimaryCore'
 		super(obj)
 	}
-	build() {
-		let exprSave = this.getExprSave()
+	async build(): Promise<MethodResult> {
+		let result: MethodResult = await this.getExprSave()
+		if (result.error) return result
+		let exprSave = result.data
+
 		let exprData = this.getExprData(this.getLabelData(this.tableKey), this.dataRows)
 		let expr = 'WITH\n' + ScriptTypeSave.addItem(exprData, exprSave, ',\n')
-		return expr
+		return new MethodResult(expr)
 	}
-	getExprSaveCore(): string {
+
+	async getExprSaveCore(): Promise<MethodResult> {
 		const clazz = 'ScriptTypeSavePrimaryCore.getExprSaveCore'
 		let expr = ''
 		const tables = this.tables
 
 		if (tables.length > 0) {
-			processTable(this.query, this.dataRows, this.action, tables[0], tables)
+			let result: MethodResult = await processTable(
+				this.query,
+				this.dataRows,
+				this.action,
+				tables[0],
+				tables
+			)
+			if (result.error) return result
 			expr = tables[0].script
 		}
 
-		function processTable(
+		async function processTable(
 			query: GelQuery,
 			dataRows: DataRow[],
 			action: LinkSaveAction,
 			table: DbTableQuery,
 			tables: DbTableQuery[]
-		) {
+		): Promise<MethodResult> {
 			// post-order traversal
-			table.indexesChildren.forEach((i) => {
-				processTable(query, dataRows, action, tables[i], tables)
-			})
+			for (let i of table.indexesChildren) {
+				let result: MethodResult = await processTable(query, dataRows, action, tables[i], tables)
+				if (result.error) return result
+			}
 
 			// add props-primary
 			const propsRaw =
 				action === LinkSaveAction.INSERT
 					? query.rawDataObj.rawPropsSaveInsert
 					: query.rawDataObj.rawPropsSaveUpdate
-			let props: string[] = query.getPropsSave(propsRaw, query, dataRows, {
+			let result: MethodResult = await query.getPropsSave(propsRaw, query, dataRows, {
 				indexTable: table.index
 			})
+			if (result.error) return result
+			let props: string[] = result.data
 
 			// add props-links
 			table.indexesChildren.forEach((i) => {
@@ -181,8 +194,9 @@ export class ScriptTypeSavePrimaryCore extends ScriptTypeSavePrimary {
 						break
 				}
 			}
+			return new MethodResult()
 		}
-		return expr
+		return new MethodResult(expr)
 	}
 }
 
@@ -219,12 +233,12 @@ export class ScriptTypeSavePrimaryListSelectLinkBackward extends ScriptTypeSaveP
 		this.idsRemove = listIds.filter((id: string) => !listIdsSelected.includes(id))
 		this.tableParent = required(this.query.fieldEmbed?.parentTable, clazz, 'tableParent')
 	}
-	build() {
+	async build(): Promise<MethodResult> {
 		let exprAdd: string = this.buildExpr(BackwardLinkFilterType.union, this.idsAdd)
 		let exprRemove: string = this.buildExpr(BackwardLinkFilterType.except, this.idsRemove)
 		let expr = ScriptTypeSave.addItem(exprAdd, exprRemove, ',\n')
 		if (expr) expr = `WITH\n${expr}`
-		return expr
+		return new MethodResult(expr)
 	}
 	buildExpr(filterType: BackwardLinkFilterType, ids: string[]) {
 		if (ids.length === 0) return ''
@@ -295,9 +309,9 @@ export class ScriptTypeSavePrimaryListSelectLinkForward extends ScriptTypeSavePr
 	constructor(obj: any) {
 		super(obj)
 	}
-	build() {
+	async build(): Promise<MethodResult> {
 		let label = this.getLabelSave(this.tableKey)
 		let select = `(SELECT ${this.tableKey.object} FILTER .id IN <parms,uuidlist,listIdsSelected>)`
-		return `WITH\n${label} := ${select}`
+		return new MethodResult(`WITH\n${label} := ${select}`)
 	}
 }

@@ -1,24 +1,22 @@
 import { InitDb } from '$server/dbGel/init/types.init'
-import { ParmsValuesType } from '$utils/types'
 
 const exprCustomObjAttr = `[IS sys_user::SysUser].person.fullName ?? .header ?? .name`
 
 const exprMsgsFromMe = `(SELECT DETACHED sys_core::SysMsg FILTER <user,uuid,id> = .sender.id)`
-const exprMsgsToMe = `((SELECT DETACHED sys_core::SysMsg FILTER <user,uuid,id> IN .recipients.id) UNION (SELECT DETACHED sys_core::SysMsg FILTER <attrsAction,oaa_sys_msg_receive> IN .recipients.id))`
+const exprMsgsToMe = `((SELECT DETACHED sys_core::SysMsg FILTER <user,uuid,id> IN .recipients.id) UNION (SELECT DETACHED sys_core::SysMsg FILTER <attrsAction,oaa_sys_msg_receive,object> IN .recipients.id))`
 const exprMsgsToMeRead = `(SELECT DETACHED sys_core::SysMsg FILTER .id IN ${exprMsgsToMe}.id AND <user,uuid,id> IN .readers.id)`
 const exprMsgsToMeUnread = `(SELECT DETACHED sys_core::SysMsg FILTER .id IN ${exprMsgsToMe}.id AND <user,uuid,id> NOT IN .readers.id)`
 const exprMsgsMine = `(${exprMsgsFromMe} UNION ${exprMsgsToMe})`
 const exprMsgsMineRoot = `(SELECT ${exprMsgsMine} FILTER NOT EXISTS .parent)`
 
 const exprMsgRoot = `(SELECT DETACHED sys_core::SysMsg FILTER .id = <tree,uuid,treeAncestorValue.node.node_obj_task_sys_msg_root_list_all.id>)`
-const exprMsgRootHasReply = `(SELECT <user,uuid,id> IN ${exprMsgRoot}.responses.sender.id)`
+const exprMsgRootHasReply = `(SELECT <user,uuid,id> IN ${exprMsgRoot}.replies.sender.id)`
 const exprMsgsThread = `(SELECT ${exprMsgRoot}.thread)`
 
 const exprReadersSetRead = `SET {readers := distinct(.readers UNION (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>))}`
 const exprReadersSetUnread = `SET {readers := distinct(.readers EXCEPT (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>))}`
 
 export function initContentSysMsg(init: InitDb) {
-	initCodeAction(init)
 	initUserAction(init)
 	initActionGroup(init)
 	initDataObj(init)
@@ -26,66 +24,13 @@ export function initContentSysMsg(init: InitDb) {
 	initTask(init)
 }
 
-function initCodeAction(init: InitDb) {
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_app_cm',
-		codeType: 'ct_sys_code_action_class_custom',
-		name: 'doCustomSysMsgRootDetailSave',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_app_cm',
-		codeType: 'ct_sys_code_action_class_custom',
-		name: 'doCustomSysMsgThreadDetailClose',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_app_cm',
-		codeType: 'ct_sys_code_action_class_custom',
-		name: 'doCustomSysMsgThreadDetailSend',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_app_cm',
-		codeType: 'ct_sys_code_action_class_custom',
-		name: 'doCustomSysMsgThreadListClose',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_app_cm',
-		codeType: 'ct_sys_code_action_class_custom',
-		name: 'doCustomSysMsgThreadReply',
-		order: 0
-	})
-}
-
 function initUserAction(init: InitDb) {
 	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [
-			{ codeTriggerShow: 'statusChanged', isRequired: true },
-			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
-			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
-		],
-		codeAction: 'doCustomSysMsgRootDetailSave',
-		codeTriggerEnable: 'statusValid',
-		header: 'Send',
-		name: 'ua_sys_msg_root_detail_send',
-		owner: 'sys_system'
-	})
-
-	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [
-			{
-				codeTriggerShow: 'expression',
-				expr: `SELECT <tree,uuid,id> IN ${exprMsgsToMeUnread}.id`,
-				isRequired: true
-			}
-		],
 		codeAction: 'doExpr',
-		codeTriggerEnable: 'always',
-		expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,id> ${exprReadersSetRead}`,
+		codeConfirmType: 'statusChanged',
+		exprAction: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,id> ${exprReadersSetRead}`,
+		exprShow: `<expression>`,
+		exprShowExpr: `SELECT <tree,uuid,id> IN ${exprMsgsToMeUnread}.id`,
 		header: 'Mark as Read',
 		name: 'ua_sys_msg_thread_detail_mark_read',
 		navDestination: {
@@ -96,17 +41,11 @@ function initUserAction(init: InitDb) {
 	})
 
 	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [
-			{
-				codeTriggerShow: 'expression',
-				expr: `SELECT NOT ${exprMsgRootHasReply} AND <tree,uuid,id> IN ${exprMsgsToMeRead}.id`,
-				isRequired: true
-			}
-		],
 		codeAction: 'doExpr',
-		codeTriggerEnable: 'always',
-		expr: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,id> ${exprReadersSetUnread}`,
+		codeConfirmType: 'statusChanged',
+		exprAction: `UPDATE sys_core::SysMsg FILTER .id = <tree,uuid,id> ${exprReadersSetUnread}`,
+		exprShow: `<expression>`,
+		exprShowExpr: `SELECT NOT ${exprMsgRootHasReply} AND <tree,uuid,id> IN ${exprMsgsToMeRead}.id`,
 		header: 'Mark as Unread',
 		name: 'ua_sys_msg_thread_detail_mark_unread',
 		navDestination: {
@@ -117,46 +56,21 @@ function initUserAction(init: InitDb) {
 	})
 
 	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'none', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [
-			{ codeTriggerShow: 'statusChanged', isRequired: true },
-			{ codeTriggerShow: 'saveModeInsert', isRequired: false },
-			{ codeTriggerShow: 'saveModeUpdate', isRequired: false }
-		],
-		codeAction: 'doCustomSysMsgThreadDetailSend',
-		codeTriggerEnable: 'statusValid',
-		header: 'Send',
-		name: 'ua_sys_msg_thread_detail_send',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [
-			{
-				codeTriggerShow: 'expression',
-				expr: `SELECT <tree,uuid,id> IN ${exprMsgsToMe}.id`,
-				isRequired: true
-			}
-		],
-		codeAction: 'doCustomSysMsgThreadReply',
-		codeTriggerEnable: 'always',
+		codeAction: 'doListDetailNew',
+		codeConfirmType: 'statusChanged',
+		exprShow: `<expression>`,
+		exprShowExpr: `SELECT <tree,uuid,id> IN ${exprMsgsToMe}.id`,
 		header: 'Reply',
 		name: 'ua_sys_msg_thread_detail_view_reply',
 		owner: 'sys_system'
 	})
 
 	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [
-			{
-				codeTriggerShow: 'expression',
-				expr: `SELECT count(${exprMsgsThread} INTERSECT ${exprMsgsToMeUnread}) > 0`,
-				isRequired: true
-			}
-		],
 		codeAction: 'doExpr',
-		codeTriggerEnable: 'always',
-		expr: `UPDATE sys_core::SysMsg FILTER .id IN (${exprMsgsThread} INTERSECT ${exprMsgsToMe}).id ${exprReadersSetRead}`,
+		codeConfirmType: 'statusChanged',
+		exprAction: `UPDATE sys_core::SysMsg FILTER .id IN (${exprMsgsThread} INTERSECT ${exprMsgsToMe}).id ${exprReadersSetRead}`,
+		exprShow: `<expression>`,
+		exprShowExpr: `SELECT count(${exprMsgsThread} INTERSECT ${exprMsgsToMeUnread}) > 0`,
 		header: 'Mark as Read',
 		name: 'ua_sys_msg_thread_list_mark_read',
 		navDestination: {
@@ -166,17 +80,11 @@ function initUserAction(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [
-			{
-				codeTriggerShow: 'expression',
-				expr: `SELECT NOT ${exprMsgRootHasReply} AND count((SELECT sys_core::SysMsg FILTER .id IN (${exprMsgsThread} INTERSECT ${exprMsgsToMeRead}).id)) > 0`,
-				isRequired: true
-			}
-		],
 		codeAction: 'doExpr',
-		codeTriggerEnable: 'always',
-		expr: `UPDATE sys_core::SysMsg FILTER .id IN (${exprMsgsThread} INTERSECT ${exprMsgsToMe}).id ${exprReadersSetUnread}`,
+		codeConfirmType: 'statusChanged',
+		exprAction: `UPDATE sys_core::SysMsg FILTER .id IN (${exprMsgsThread} INTERSECT ${exprMsgsToMe}).id ${exprReadersSetUnread}`,
+		exprShow: `<expression>`,
+		exprShowExpr: `SELECT NOT ${exprMsgRootHasReply} AND count((SELECT sys_core::SysMsg FILTER .id IN (${exprMsgsThread} INTERSECT ${exprMsgsToMeRead}).id)) > 0`,
 		header: 'Mark as Unread',
 		name: 'ua_sys_msg_thread_list_mark_unread',
 		navDestination: {
@@ -187,16 +95,10 @@ function initUserAction(init: InitDb) {
 	})
 
 	init.addTrans('sysUserAction', {
-		actionConfirms: [{ codeConfirmType: 'statusChanged', codeTriggerConfirmConditional: 'none' }],
-		actionShows: [
-			{
-				codeTriggerShow: 'expression',
-				expr: `SELECT count(${exprMsgsThread} INTERSECT ${exprMsgsToMe}) > 0 `,
-				isRequired: true
-			}
-		],
-		codeAction: 'doCustomSysMsgThreadReply',
-		codeTriggerEnable: 'always',
+		codeAction: 'doListDetailNew',
+		codeConfirmType: 'statusChanged',
+		exprShow: `<expression>`,
+		exprShowExpr: `SELECT count(${exprMsgsThread} INTERSECT ${exprMsgsToMe}) > 0`,
 		header: 'Reply',
 		name: 'ua_sys_msg_thread_list_reply',
 		owner: 'sys_system'
@@ -207,15 +109,15 @@ function initActionGroup(init: InitDb) {
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [
 			{
-				action: 'ua_sys_msg_root_detail_send',
+				action: 'ua_sys_save_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
+				headerAlt: 'Send',
 				orderDefine: 0
 			},
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
+				headerAlt: 'Cancel Send',
 				orderDefine: 1
 			}
 		],
@@ -228,20 +130,14 @@ function initActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_save_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
+				headerAlt: 'Send',
 				orderDefine: 0
 			},
 			{
-				action: 'ua_sys_save_cancel',
+				action: 'ua_sys_save_cancel_detail',
 				codeColor: 'primary',
-				isListRowAction: false,
+				headerAlt: 'Cancel Send',
 				orderDefine: 1
-			},
-			{
-				action: 'ua_sys_msg_thread_detail_send',
-				codeColor: 'primary',
-				isListRowAction: false,
-				orderDefine: 2
 			}
 		],
 		name: 'doag_detail_sys_msg_thread_detail_reply',
@@ -253,19 +149,16 @@ function initActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_msg_thread_detail_view_reply',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 0
 			},
 			{
 				action: 'ua_sys_msg_thread_detail_mark_read',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
 			{
 				action: 'ua_sys_msg_thread_detail_mark_unread',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 2
 			}
 		],
@@ -279,19 +172,16 @@ function initActionGroup(init: InitDb) {
 			{
 				action: 'ua_sys_msg_thread_list_reply',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 1
 			},
 			{
 				action: 'ua_sys_msg_thread_list_mark_read',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 2
 			},
 			{
 				action: 'ua_sys_msg_thread_list_mark_unread',
 				codeColor: 'primary',
-				isListRowAction: false,
 				orderDefine: 3
 			}
 		],
@@ -307,6 +197,13 @@ function initDataObj(init: InitDb) {
 		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
 		exprFilter: `.id IN ${exprMsgsMineRoot}.id`,
+		gridStyles: [
+			{
+				exprTrigger: `<record,str,isUnread> === 'Yes'`,
+				prop: 'font-weight',
+				propValue: 'bold'
+			}
+		],
 		header: 'My Messages',
 		name: 'data_obj_task_sys_msg_root_list_all',
 		owner: 'sys_system',
@@ -322,7 +219,16 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
 				columnName: 'custom_element_str',
+				gridStyles: [
+					{
+						exprTrigger: `<value,str> === 'Yes'`,
+						prop: 'color',
+						propValue: 'green'
+					}
+				],
+				isDisplay: false,
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
@@ -332,13 +238,15 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
 				columnName: 'custom_element_int',
+				isDisplay: false,
 				isDisplayable: true,
 				orderDisplay: 32,
 				orderDefine: 32,
-				exprCustom: `count(.responses)`,
-				headerAlt: 'Responses',
-				nameCustom: 'customResponses'
+				exprCustom: `count(.replies)`,
+				headerAlt: 'Replies',
+				nameCustom: 'customReplies'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -346,7 +254,7 @@ function initDataObj(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 34,
 				orderDefine: 34,
-				exprCustom: `min(cal::to_local_date(.thread.createdAt, 'UTC'))`,
+				exprCustom: `min(cal::to_local_date(.thread.dateMsg, 'UTC'))`,
 				headerAlt: 'Oldest',
 				nameCustom: 'customDateOldest'
 			},
@@ -356,7 +264,7 @@ function initDataObj(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 36,
 				orderDefine: 36,
-				exprCustom: `max(cal::to_local_date(.thread.createdAt, 'UTC'))`,
+				exprCustom: `max(cal::to_local_date(.thread.dateMsg, 'UTC'))`,
 				headerAlt: 'Newest',
 				nameCustom: 'customDateNewest'
 			},
@@ -420,11 +328,25 @@ function initDataObj(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
+				codeAccess: 'readOnly',
+				columnName: 'sender',
+				exprCustom: exprCustomObjAttr,
+				exprPreset: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
+				exprSave: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
+				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 20,
-				orderDefine: 20
+				orderDefine: 20,
+				linkTable: 'SysObjAttr'
+			},
+			{
+				codeFieldElement: 'chips',
+				columnName: 'recipients',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0,
+				fieldListItems: 'il_sys_msg_recipients_system'
 			},
 			{
 				columnName: 'subject',
@@ -434,40 +356,12 @@ function initDataObj(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeAccess: 'readOnly',
-				columnName: 'sender',
-				exprCustom: exprCustomObjAttr,
-				exprPreset: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
-				exprSave: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
-				indexTable: 0,
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				linkTable: 'SysObjAttr'
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60
-			},
-			{
-				codeFieldElement: 'chips',
-				columnName: 'recipients',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0,
-				fieldListItems: 'il_sys_msg_recipients_system'
-			},
-			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 50,
+				orderDefine: 50,
 				indexTable: 0
 			}
 		]
@@ -486,7 +380,7 @@ function initDataObj(init: InitDb) {
 				codeQueryPlatform: 'server',
 				codeQueryType: 'save',
 				codeTriggerTiming: 'post',
-				expr: `UPDATE ${exprMsgRoot} ${exprReadersSetRead}`
+				expr: `UPDATE (SELECT DETACHED sys_core::SysMsg FILTER .id = <tree,uuid,treeAncestorValue.node.node_obj_task_sys_msg_root_list_all.id>) ${exprReadersSetRead}`
 			},
 			{
 				codeQueryAction: 'appDestination',
@@ -510,10 +404,10 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				columnName: 'parent',
-				exprSave: `(SELECT DETACHED sys_core::SysMsg FILTER .id = <tree,uuid,treeAncestorValue.index.0.id>)`,
+				exprSave: `(SELECT DETACHED sys_core::SysMsg FILTER .id = <tree,uuid,treeAncestorValue.node.node_obj_task_sys_msg_root_list_all.id>)`,
 				isDisplayable: false,
-				orderDefine: 30,
-				orderDisplay: 30,
+				orderDefine: 20,
+				orderDisplay: 20,
 				indexTable: 0,
 				linkTable: 'SysMsg'
 			},
@@ -521,8 +415,8 @@ function initDataObj(init: InitDb) {
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_start',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40
+				orderDisplay: 30,
+				orderDefine: 30
 			},
 			{
 				codeAccess: 'readOnly',
@@ -532,8 +426,8 @@ function initDataObj(init: InitDb) {
 				exprSave: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
+				orderDisplay: 40,
+				orderDefine: 40,
 				linkTable: 'SysObjAttr'
 			},
 			{
@@ -544,9 +438,16 @@ function initDataObj(init: InitDb) {
 				exprSave: `(SELECT sys_core::SysObjAttr FILTER .id = <tree,uuid,treeAncestorValue.index.0.sender.data>)`,
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
+				orderDisplay: 50,
+				orderDefine: 50,
 				linkTable: 'SysObjAttr'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
 			},
 			{
 				codeAccess: 'readOnly',
@@ -559,19 +460,12 @@ function initDataObj(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80
-			},
-			{
 				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90,
+				orderDisplay: 80,
+				orderDefine: 80,
 				indexTable: 0
 			}
 		]
@@ -602,6 +496,7 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
 				columnName: 'custom_element_str',
 				isDisplayable: true,
 				orderDisplay: 30,
@@ -612,17 +507,19 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
 				columnName: 'custom_element_int',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
-				exprCustom: `count(.responses)`,
-				headerAlt: 'Responses',
-				nameCustom: 'customResponses'
+				exprCustom: `count(.replies)`,
+				headerAlt: 'Replies',
+				nameCustom: 'customReplies'
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'createdAt',
+				codeAlignment: 'center',
+				columnName: 'dateMsg',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
@@ -641,18 +538,11 @@ function initDataObj(init: InitDb) {
 				linkTable: 'SysObjAttr'
 			},
 			{
-				columnName: 'subject',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80
+				orderDisplay: 70,
+				orderDefine: 70
 			},
 			{
 				codeAccess: 'readOnly',
@@ -660,9 +550,16 @@ function initDataObj(init: InitDb) {
 				exprCustom: exprCustomObjAttr,
 				indexTable: 0,
 				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				linkTable: 'SysObjAttr'
+			},
+			{
+				columnName: 'subject',
+				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
-				linkTable: 'SysObjAttr'
+				indexTable: 0
 			},
 			{
 				codeAccess: 'optional',
@@ -681,6 +578,13 @@ function initDataObj(init: InitDb) {
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: `.id IN ${exprMsgsThread}.id`,
+		gridStyles: [
+			{
+				exprTrigger: `<record,str,isUnread> === 'Yes'`,
+				prop: 'font-weight',
+				propValue: 'bold'
+			}
+		],
 		header: 'Message Thread',
 		name: 'data_obj_sys_msg_thread_list',
 		owner: 'sys_system',
@@ -690,11 +594,14 @@ function initDataObj(init: InitDb) {
 				columnName: 'id',
 				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 10
+				orderDefine: 10,
+				orderDisplay: 10
 			},
 			{
 				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
 				columnName: 'custom_element_str',
+				isDisplay: false,
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
@@ -704,18 +611,20 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
 				columnName: 'custom_element_int',
+				isDisplay: false,
 				isDisplayable: true,
 				orderDisplay: 32,
 				orderDefine: 32,
-				exprCustom: `count(.responses)`,
-				headerAlt: 'Responses',
-				nameCustom: 'customResponses'
+				exprCustom: `count(.replies)`,
+				headerAlt: 'Replies',
+				nameCustom: 'customReplies'
 			},
 			{
 				codeAccess: 'readOnly',
 				codeSortDir: 'desc',
-				columnName: 'createdAt',
+				columnName: 'dateMsg',
 				indexTable: 0,
 				isDisplayable: true,
 				orderCrumb: 10,
@@ -795,7 +704,7 @@ function initNodeObj(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		actions: [
-			{ action: 'doCustomSysMsgThreadReply', node: 'node_obj_sys_msg_thread_detail_reply' },
+			{ action: 'doListDetailNew', node: 'node_obj_sys_msg_thread_detail_reply' },
 			{ action: 'doListDetailEdit', node: 'node_obj_sys_msg_thread_detail_view' }
 		],
 		codeIcon: 'Mail',
@@ -820,9 +729,7 @@ function initNodeObj(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
-		actions: [
-			{ action: 'doCustomSysMsgThreadReply', node: 'node_obj_sys_msg_thread_detail_reply' }
-		],
+		actions: [{ action: 'doListDetailNew', node: 'node_obj_sys_msg_thread_detail_reply' }],
 		codeIcon: 'Mail',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_msg_thread_detail_view',
@@ -855,8 +762,8 @@ function initTask(init: InitDb) {
 		exprShow: `SELECT count(msgsToMeUnread) > 0`,
 		exprStatus: `SELECT {
 			msgsUnread := {label := 'Unread', data := count(msgsToMeUnread), color := 'green' },
-			msgsUnreadOldest := {label := 'Unread-Oldest', data := min(cal::to_local_date(msgsToMeUnread.thread.createdAt, 'UTC')), color := 'green' },
-			msgsUnreadNewest := {label := 'Unread-Newest', data := max(cal::to_local_date(msgsToMeUnread.thread.createdAt, 'UTC')), color := 'green' },
+			msgsUnreadOldest := {label := 'Unread-Oldest', data := min(cal::to_local_date(msgsToMeUnread.thread.dateMsg, 'UTC')), color := 'green' },
+			msgsUnreadNewest := {label := 'Unread-Newest', data := max(cal::to_local_date(msgsToMeUnread.thread.dateMsg, 'UTC')), color := 'green' },
 			msgsTotal := {label := 'Total', data := count(msgsMineRoot), color := 'green' },
 		}`,
 		exprWith: `msgsMineRoot := ${exprMsgsMineRoot}, msgsToMeUnread := ${exprMsgsToMeUnread}`,

@@ -46,13 +46,15 @@ import { UserAction } from '$comps/other/types.userAction.svelte'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
 	CodeAction,
+	type DataRecord,
 	debug,
 	getArray,
+	getDataRecordValueKey,
 	memberOfEnum,
 	memberOfEnumOrDefault,
 	MethodResult,
-	PropDataType,
 	required,
+	setDataRecordValue,
 	UserPrefType,
 	valueOrDefault
 } from '$utils/types'
@@ -70,6 +72,7 @@ export class DataObj {
 	embedField?: FieldEmbed
 	fCallbackUserAction?: Function
 	fields: Field[] = []
+	isDetailPreset: boolean = false
 	raw: RawDataObj
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
 	sortModel: DataObjSort
@@ -570,8 +573,6 @@ export enum DataObjType {
 	taskTarget = 'taskTarget'
 }
 
-export type DataRecord = Record<string, any>
-
 export enum DataRecordStatus {
 	delete = 'delete',
 	inserted = 'inserted',
@@ -698,57 +699,6 @@ export class DataRows {
 			})
 		})
 	}
-}
-
-export function getDataRecordKey(record: DataRecord, key: string) {
-	for (const [k, v] of Object.entries(record)) {
-		if (k.endsWith(key)) {
-			return k
-		}
-	}
-	return undefined
-}
-
-export function getDataRecordValueKey(record: DataRecord, key: string) {
-	const recordKey = getDataRecordKey(record, key)
-	return recordKey ? record[recordKey] : undefined
-}
-export function getDataRecordValueKeyData(record: DataRecord, key: string) {
-	const val = getDataRecordValueKey(record, key)
-	return val
-		? Object.hasOwn(val, 'data') && Object.hasOwn(val, 'display')
-			? val.data
-			: val
-		: undefined
-}
-export function getDataRecordValueKeyDisplay(record: DataRecord, key: string) {
-	const val = getDataRecordValueKey(record, key)
-	return val
-		? Object.hasOwn(val, 'data') && Object.hasOwn(val, 'display')
-			? val.display
-			: val
-		: undefined
-}
-export function setDataRecordValue(record: DataRecord, key: string, value: any) {
-	const recordKey = getDataRecordKey(record, key)
-	if (recordKey) record[recordKey] = value
-	return recordKey
-}
-
-export function setDataRecordValuesForSave(record: DataRecord) {
-	Object.entries(record).forEach(([key, value]) => {
-		const isLink = Object.hasOwn(value, 'data')
-		if (isLink) {
-			let saveValue = value.data
-			if (Array.isArray(saveValue)) {
-				saveValue = saveValue.map((v) => {
-					return v.data
-				})
-			}
-			record[key] = saveValue
-		}
-	})
-	return record
 }
 
 export class ParmsUser {

@@ -79,13 +79,12 @@ module sys_user {
       on source delete delete target;
       on target delete allow;
     };
-    multi actionShows: sys_user::SysUserActionShow {
-      on source delete delete target;
-      on target delete allow;
-    };
     required codeAction: sys_core::SysCodeAction;
-    required codeTriggerEnable: sys_core::SysCode;
-    expr: str;
+    required codeConfirmType: sys_core::SysCode;
+    exprAction: str;
+    exprEnable: str;
+    exprShow: str;
+    exprShowExpr: str;
     exprWith: str;
     navDestination: sys_core::SysNavDestination{
       on target delete allow;
@@ -98,12 +97,6 @@ module sys_user {
     confirmButtonLabelConfirm: str;
     confirmMessage: str;
     confirmTitle: str;
-  }
-
-  type SysUserActionShow extending sys_user::Mgmt {
-    required codeTriggerShow: sys_core::SysCode;
-    expr: str;
-    required isRequired: bool;
   }
 
   # preference

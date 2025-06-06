@@ -72,13 +72,6 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
-		header: 'Action - Shows',
-		isMultiSelect: true,
-		name: 'actionShows',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
 		header: 'Action - Submits',
 		isMultiSelect: true,
 		name: 'actionSubmits',
@@ -591,13 +584,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Trigger - Conditional Confirm',
 		isMultiSelect: false,
 		name: 'codeTriggerConfirmConditional',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Action - Trigger Enable',
-		isMultiSelect: false,
-		name: 'codeTriggerEnable',
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
@@ -1187,6 +1173,15 @@ export function initPreColumn(init: InitDb) {
 		header: 'Issued Date',
 		inputMask: 'date',
 		name: 'dateIssued'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeAlignment: 'center',
+		codeDataType: 'datetime',
+		header: 'Date',
+		isExcludeInsert: true,
+		isExcludeUpdate: true,
+		name: 'dateMsg'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',

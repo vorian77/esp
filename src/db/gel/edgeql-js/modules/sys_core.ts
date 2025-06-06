@@ -124,6 +124,7 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<codeIcon[is app_cm::CmCourse]": $.LinkDesc<_app_cm.$CmCourse, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeDestinationType[is sys_core::SysNavDestination]": $.LinkDesc<$SysNavDestination, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeQueryPlatform[is sys_core::SysDataObjQueryRider]": $.LinkDesc<$SysDataObjQueryRider, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeConfirmType[is sys_user::SysUserAction]": $.LinkDesc<_sys_user.$SysUserAction, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeAttrType[is sys_core::SysObjAttr]": $.LinkDesc<$SysObjAttr, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeIcon[is sys_core::SysSystem]": $.LinkDesc<$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
   "<testCodeSingle[is sys_core::SysSystem]": $.LinkDesc<$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -207,8 +208,6 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<codeIcon[is app_crm::CrmClient]": $.LinkDesc<_app_crm.$CrmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTriggerConfirmConditional[is sys_user::SysUserActionConfirm]": $.LinkDesc<_sys_user.$SysUserActionConfirm, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeConfirmType[is sys_user::SysUserActionConfirm]": $.LinkDesc<_sys_user.$SysUserActionConfirm, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeTriggerShow[is sys_user::SysUserActionShow]": $.LinkDesc<_sys_user.$SysUserActionShow, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeTriggerEnable[is sys_user::SysUserAction]": $.LinkDesc<_sys_user.$SysUserAction, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeHighestEducation[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeHighestEducation[is org_client_moed::MoedParticipant]": $.LinkDesc<_org_client_moed.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeDisabilityStatus[is SysPerson]": $.LinkDesc<_default.$SysPerson, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -383,8 +382,6 @@ export type $SysCodeλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user
   "<codeStatus": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeStatusObj": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTriggerConfirmConditional": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeTriggerEnable": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<codeTriggerShow": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTriggerTiming": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeType": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeUserMsgDelivery": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -479,6 +476,7 @@ export type $SysDataObjλShape = $.typeutil.flatten<$SysObjDbλShape & {
   "isRetrieveReadonly": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "subHeader": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "columns": $.LinkDesc<$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
+  "gridStyles": $.LinkDesc<$SysGridStyle, $.Cardinality.Many, {}, false, false,  false, false>;
   "actionGroup": $.LinkDesc<$SysDataObjActionGroup, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "listReorderColumn": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeListPresetType": $.LinkDesc<$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
@@ -505,6 +503,7 @@ const $SysDataObj = $.makeType<$SysDataObj>(_.spec, "503b00ed-b3c2-11ee-8d94-1fc
 const SysDataObj: $.$expr_PathNode<$.TypeSet<$SysDataObj, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysDataObj, $.Cardinality.Many), null);
 
 export type $SysDataObjActionλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
+  "headerAlt": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "codeColor": $.LinkDesc<$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "action": $.LinkDesc<_sys_user.$SysUserAction, $.Cardinality.One, {}, false, false,  false, false>;
   "isListRowAction": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
@@ -575,6 +574,7 @@ export type $SysDataObjColumnλShape = $.typeutil.flatten<_sys_user.$MgmtλShape
   "orderSort": $.PropertyDesc<_default.$nonNegative, $.Cardinality.AtMostOne, false, false, false, false>;
   "width": $.PropertyDesc<_std.$int16, $.Cardinality.AtMostOne, false, false, false, false>;
   "column": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.One, {}, false, false,  false, false>;
+  "gridStyles": $.LinkDesc<$SysGridStyle, $.Cardinality.Many, {}, false, false,  false, false>;
   "action": $.LinkDesc<_sys_user.$SysUserAction, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "columnBacklink": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "fieldEmbedListConfig": $.LinkDesc<$SysDataObjFieldEmbedListConfig, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
@@ -763,22 +763,37 @@ const $SysDataObjWith = $.makeType<$SysDataObjWith>(_.spec, "c9893a7f-19bf-11ef-
 
 const SysDataObjWith: $.$expr_PathNode<$.TypeSet<$SysDataObjWith, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysDataObjWith, $.Cardinality.Many), null);
 
+export type $SysGridStyleλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
+  "prop": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "propValue": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
+  "exprTrigger": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "<gridStyles[is sys_core::SysDataObj]": $.LinkDesc<$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<gridStyles[is sys_core::SysDataObjColumn]": $.LinkDesc<$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<gridStyles": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+}>;
+type $SysGridStyle = $.ObjectType<"sys_core::SysGridStyle", $SysGridStyleλShape, null, [
+  ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
+], "sys_core::SysGridStyle">;
+const $SysGridStyle = $.makeType<$SysGridStyle>(_.spec, "e517747c-3ff0-11f0-b954-b9ac690c8147", _.syntax.literal);
+
+const SysGridStyle: $.$expr_PathNode<$.TypeSet<$SysGridStyle, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysGridStyle, $.Cardinality.Many), null);
+
 export type $SysMsgλShape = $.typeutil.flatten<$ObjRootλShape & {
   "recipients": $.LinkDesc<$SysObjAttr, $.Cardinality.Many, {}, false, false,  false, false>;
   "readers": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "sender": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
+  "dateMsg": $.PropertyDesc<_std.$datetime, $.Cardinality.One, false, false, true, true>;
+  "replies": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, true,  false, false>;
   "parent": $.LinkDesc<$SysMsg, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "responses": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, true,  false, false>;
   "thread": $.LinkDesc<$SysMsg, $.Cardinality.AtLeastOne, {}, false, true,  false, false>;
   "isForward": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
   "subject": $.PropertyDesc<_std.$str, $.Cardinality.One, false, false, false, false>;
-  "createdAt": $.PropertyDesc<_std.$datetime, $.Cardinality.One, false, false, true, true>;
   "isClosed": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, true>;
-  "<parent[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<responses[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<thread[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<parent[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<replies[is sys_core::SysMsg]": $.LinkDesc<$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<parent": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<responses": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<replies": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<thread": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysMsg = $.ObjectType<"sys_core::SysMsg", $SysMsgλShape, null, [
@@ -1603,7 +1618,7 @@ function getObj(...args: any[]) {
 
 
 
-export { $ObjRoot, ObjRoot, $ObjRootCore, ObjRootCore, $SysObj, SysObj, $SysObjAttr, SysObjAttr, $SysObjAttrEnt, SysObjAttrEnt, $SysCode, SysCode, $SysCodeAction, SysCodeAction, $SysCodeType, SysCodeType, $SysObjDb, SysObjDb, $SysDataObj, SysDataObj, $SysDataObjAction, SysDataObjAction, $SysDataObjActionGroup, SysDataObjActionGroup, $SysDataObjColumn, SysDataObjColumn, $SysDataObjColumnItemChange, SysDataObjColumnItemChange, $SysDataObjColumnLink, SysDataObjColumnLink, $SysDataObjFieldEmbedListConfig, SysDataObjFieldEmbedListConfig, $SysDataObjFieldEmbedListEdit, SysDataObjFieldEmbedListEdit, $SysDataObjFieldEmbedListSelect, SysDataObjFieldEmbedListSelect, $SysDataObjFieldListItems, SysDataObjFieldListItems, $SysDataObjFieldListItemsProp, SysDataObjFieldListItemsProp, $SysDataObjQueryRider, SysDataObjQueryRider, $SysDataObjTable, SysDataObjTable, $SysDataObjWith, SysDataObjWith, $SysMsg, SysMsg, $SysNavDestination, SysNavDestination, $SysNodeObj, SysNodeObj, $SysNodeObjAction, SysNodeObjAction, $SysNodeObjChild, SysNodeObjChild, $SysNodeObjData, SysNodeObjData, $SysNotify, SysNotify, $SysObjAttrAccess, SysObjAttrAccess, $SysObjAttrAction, SysObjAttrAction, $SysObjAttrExpr, SysObjAttrExpr, $SysObjAttrVirtual, SysObjAttrVirtual, $SysObjNote, SysObjNote, $SysOrg, SysOrg, $SysSystem, SysSystem };
+export { $ObjRoot, ObjRoot, $ObjRootCore, ObjRootCore, $SysObj, SysObj, $SysObjAttr, SysObjAttr, $SysObjAttrEnt, SysObjAttrEnt, $SysCode, SysCode, $SysCodeAction, SysCodeAction, $SysCodeType, SysCodeType, $SysObjDb, SysObjDb, $SysDataObj, SysDataObj, $SysDataObjAction, SysDataObjAction, $SysDataObjActionGroup, SysDataObjActionGroup, $SysDataObjColumn, SysDataObjColumn, $SysDataObjColumnItemChange, SysDataObjColumnItemChange, $SysDataObjColumnLink, SysDataObjColumnLink, $SysDataObjFieldEmbedListConfig, SysDataObjFieldEmbedListConfig, $SysDataObjFieldEmbedListEdit, SysDataObjFieldEmbedListEdit, $SysDataObjFieldEmbedListSelect, SysDataObjFieldEmbedListSelect, $SysDataObjFieldListItems, SysDataObjFieldListItems, $SysDataObjFieldListItemsProp, SysDataObjFieldListItemsProp, $SysDataObjQueryRider, SysDataObjQueryRider, $SysDataObjTable, SysDataObjTable, $SysDataObjWith, SysDataObjWith, $SysGridStyle, SysGridStyle, $SysMsg, SysMsg, $SysNavDestination, SysNavDestination, $SysNodeObj, SysNodeObj, $SysNodeObjAction, SysNodeObjAction, $SysNodeObjChild, SysNodeObjChild, $SysNodeObjData, SysNodeObjData, $SysNotify, SysNotify, $SysObjAttrAccess, SysObjAttrAccess, $SysObjAttrAction, SysObjAttrAction, $SysObjAttrExpr, SysObjAttrExpr, $SysObjAttrVirtual, SysObjAttrVirtual, $SysObjNote, SysObjNote, $SysOrg, SysOrg, $SysSystem, SysSystem };
 
 type __defaultExports = {
   "ObjRoot": typeof ObjRoot;
@@ -1629,6 +1644,7 @@ type __defaultExports = {
   "SysDataObjQueryRider": typeof SysDataObjQueryRider;
   "SysDataObjTable": typeof SysDataObjTable;
   "SysDataObjWith": typeof SysDataObjWith;
+  "SysGridStyle": typeof SysGridStyle;
   "SysMsg": typeof SysMsg;
   "SysNavDestination": typeof SysNavDestination;
   "SysNodeObj": typeof SysNodeObj;
@@ -1687,6 +1703,7 @@ const __defaultExports: __defaultExports = {
   "SysDataObjQueryRider": SysDataObjQueryRider,
   "SysDataObjTable": SysDataObjTable,
   "SysDataObjWith": SysDataObjWith,
+  "SysGridStyle": SysGridStyle,
   "SysMsg": SysMsg,
   "SysNavDestination": SysNavDestination,
   "SysNodeObj": SysNodeObj,

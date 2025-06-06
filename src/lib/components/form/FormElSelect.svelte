@@ -40,7 +40,9 @@
 		const target = event.currentTarget as HTMLSelectElement
 		let value = target.value
 		if (field.colDO.colDB.isMultiSelect) value = value ? [value] : []
-		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, value)
+		const valueRaw = field.linkItems.getValueRaw(value)
+		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, valueRaw)
+		// await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, value)
 	}
 </script>
 

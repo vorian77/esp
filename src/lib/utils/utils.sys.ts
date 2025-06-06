@@ -2,6 +2,7 @@ import { strRequired } from '$utils/utils.model'
 import { arrayOfClass, getArray } from '$utils/utils.array'
 import { valueOrDefault, memberOfEnum } from '$utils/utils.model'
 import exp from 'constants'
+import type { Method } from 'axios'
 
 const FILENAME = '/$utils/utils.sys.ts'
 
@@ -50,12 +51,6 @@ export enum CodeActionType {
 	// dataObj - custom
 	doCustomAIAttdSheetSetAllFullClass = 'doCustomAIAttdSheetSetAllFullClass',
 	doCustomAIAttdSheetReset = 'doCustomAIAttdSheetReset',
-
-	doCustomSysMsgRootDetailSave = 'doCustomSysMsgRootDetailSave',
-	doCustomSysMsgThreadDetailClose = 'doCustomSysMsgThreadDetailClose',
-	doCustomSysMsgThreadDetailSend = 'doCustomSysMsgThreadDetailSend',
-	doCustomSysMsgThreadListClose = 'doCustomSysMsgThreadListClose',
-	doCustomSysMsgThreadReply = 'doCustomSysMsgThreadReply',
 
 	doDetailMsgSetClosed = 'doDetailMsgSetClosed',
 	doDetailMsgSetOpen = 'doDetailMsgSetOpen',
@@ -112,11 +107,65 @@ export enum CodeActionType {
 	page = 'page' // auth, nav,
 }
 
+export function compareValues(
+	value1: any,
+	value2: any,
+	codeDataType: PropDataType,
+	codeOp: PropOp
+): MethodResult {
+	let expr = `${getValueType(value1, codeDataType)} ${getOp(codeOp)} ${getValueType(value2, codeDataType)}`
+	let evalResult = eval(expr)
+	return new MethodResult(evalResult)
+
+	function getOp(op: PropOp) {
+		switch (op) {
+			case PropOp.greaterThan:
+				return '>'
+			case PropOp.greaterThanOrEqual:
+				return '>='
+			case PropOp.lessThan:
+				return '<'
+			case PropOp.lessThanOrEqual:
+				return '<='
+			case PropOp.notNull:
+				return '!== null'
+			case PropOp.null:
+				return '=== null'
+			case PropOp.equal:
+				return '==='
+			case PropOp.notEqual:
+				return '!=='
+		}
+	}
+	function getValueType(value: any, codeDataType: PropDataType): string {
+		if (value === null || value === undefined) return value
+		switch (codeDataType) {
+			case PropDataType.str:
+				return `'${value}'`
+			default:
+				return value
+		}
+	}
+}
+
+export function compareValuesRecord(
+	record: DataRecord,
+	key: string,
+	codeDataType: PropDataType,
+	codeOp: PropOp,
+	value2: any
+): MethodResult {
+	const value1 = getDataRecordValueKey(record, key)
+	return compareValues(value1, value2, codeDataType, codeOp)
+}
+
 export enum ContextKey {
 	cancelForm = 'cancelForm',
 	dataManager = 'dataManager',
 	stateManager = 'stateManager'
 }
+
+export type DataRecord = Record<string, any>
 
 export async function encrypt(text: string) {
 	// let salt = bcrypt.genSaltSync(10)
@@ -178,6 +227,36 @@ export function getColor(colorName: string) {
 	]
 	const idx = colors.findIndex((c) => c[0] === colorName)
 	return idx > -1 ? colors[idx][1] : ''
+}
+
+export function getDataRecordKey(record: DataRecord, key: string) {
+	for (const [k, v] of Object.entries(record)) {
+		if (k.endsWith(key)) {
+			return k
+		}
+	}
+	return undefined
+}
+
+export function getDataRecordValueKey(record: DataRecord, key: string) {
+	const recordKey = getDataRecordKey(record, key)
+	return recordKey ? record[recordKey] : undefined
+}
+export function getDataRecordValueKeyData(record: DataRecord, key: string) {
+	const val = getDataRecordValueKey(record, key)
+	return val
+		? Object.hasOwn(val, 'data') && Object.hasOwn(val, 'display')
+			? val.data
+			: val
+		: undefined
+}
+export function getDataRecordValueKeyDisplay(record: DataRecord, key: string) {
+	const val = getDataRecordValueKey(record, key)
+	return val
+		? Object.hasOwn(val, 'data') && Object.hasOwn(val, 'display')
+			? val.display
+			: val
+		: undefined
 }
 
 export function getDbExprRaw(exprWith: string | undefined, exprCustom: string | undefined) {
@@ -362,6 +441,37 @@ export class ObjAttrVirtual {
 	}
 }
 
+export enum PropDataType {
+	bool = 'bool',
+	date = 'date',
+	datetime = 'datetime',
+	file = 'file',
+	float64 = 'float64',
+	int16 = 'int16',
+	int32 = 'int32',
+	int64 = 'int64',
+	json = 'json',
+	link = 'link',
+	literal = 'literal',
+	none = 'none',
+	str = 'str',
+	strList = 'strList',
+	uuid = 'uuid',
+	uuidList = 'uuidList'
+}
+
+export enum PropOp {
+	any = 'any',
+	equal = 'equal',
+	greaterThan = 'greaterThan',
+	greaterThanOrEqual = 'greaterThanOrEqual',
+	lessThan = 'lessThan',
+	lessThanOrEqual = 'lessThanOrEqual',
+	notEqual = 'notEqual',
+	notNull = 'notNull',
+	null = 'null'
+}
+
 export class RawObjAttr {
 	_codeAttrType: string
 	id: string
@@ -413,6 +523,28 @@ export class RawObjAttrVirtual {
 		this._attrsAccess = arrayOfClass(RawObjAttrAccess, obj._attrsAccess)
 		this._attrsAction = arrayOfClass(RawObjAttrAction, obj._attrsAction)
 	}
+}
+
+export function setDataRecordValue(record: DataRecord, key: string, value: any) {
+	const recordKey = getDataRecordKey(record, key)
+	if (recordKey) record[recordKey] = value
+	return recordKey
+}
+
+export function setDataRecordValuesForSave(record: DataRecord) {
+	Object.entries(record).forEach(([key, value]) => {
+		const isLink = Object.hasOwn(value, 'data')
+		if (isLink) {
+			let saveValue = value.data
+			if (Array.isArray(saveValue)) {
+				saveValue = saveValue.map((v) => {
+					return v.data
+				})
+			}
+			record[key] = saveValue
+		}
+	})
+	return record
 }
 
 export enum ToastType {

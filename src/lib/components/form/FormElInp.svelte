@@ -5,13 +5,13 @@
 		DataObjCardinality,
 		type DataRecord,
 		getValueDisplay,
+		PropDataType,
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { Field, FieldAlignment, FieldElement } from '$comps/form/field.svelte'
 	import { FieldAccess } from '$comps/form/field.svelte'
 	import { FieldInput } from '$comps/form/fieldInput'
-	import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'

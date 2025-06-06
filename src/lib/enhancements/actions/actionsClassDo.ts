@@ -1,10 +1,8 @@
 import { AppLevel, AppLevelTab } from '$comps/app/types.app.svelte'
 import { State, StateParms, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import {
-	UserAction,
 	userActionStateChangeDataObj,
 	userActionStateChangeRaw,
-	userActionStateChangeHomeDashboard,
 	userActionNavDestination,
 	userActionTreeNodeChildren
 } from '$comps/other/types.userAction.svelte'
@@ -27,7 +25,7 @@ import {
 	TokenAppModalReturnType,
 	TokenAppStateTriggerAction
 } from '$utils/types.token'
-import { clientQueryExprOld } from '$lib/queryClient/types.queryClientManager'
+import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionClassDO.ts'
@@ -65,7 +63,7 @@ export default async function action(
 				if (currRecordId) {
 					const evalExprContext = `${FILENAME}.action.${actionType}`
 					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {isOpen := true}`
-					result = await clientQueryExprOld(expr, evalExprContext)
+					result = await clientQueryExpr(evalExprContext, expr)
 					if (result.error) return result
 
 					// currTab.dataObj.data.rowsRetrieved.setDetailRecordValue('isReadDisplay', 'No')
@@ -131,14 +129,15 @@ export default async function action(
 
 		case CodeActionType.doExpr:
 			const tokenAppDo = token as TokenAppDo
-			if (tokenAppDo.userAction && tokenAppDo.userAction.expr) {
+			if (tokenAppDo.userAction && tokenAppDo.userAction.exprAction) {
 				const evalExprContext = `${FILENAME}.action.${actionType}`
-				await tokenAppDo.userAction.dbExe(sm, evalExprContext, tokenAppDo.userAction.expr)
+				await tokenAppDo.userAction.dbExe(sm, evalExprContext, tokenAppDo.userAction.exprAction)
 			}
 			break
 
 		case CodeActionType.doListDetailEdit:
-			await userActionTreeNodeChildren(sm, token, TokenApiQueryType.retrieve, parmsAction)
+			result = await userActionTreeNodeChildren(sm, token, TokenApiQueryType.retrieve, parmsAction)
+			if (result.error) return result
 			break
 
 		case CodeActionType.doListDetailNew:

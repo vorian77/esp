@@ -20,12 +20,15 @@ import {
 	DataManagerNode,
 	DataObjData,
 	type DataRecord,
+	debug,
 	getArray,
 	getColor,
+	getValueData,
 	memberOfEnum,
 	memberOfEnumIfExists,
 	memberOfEnumOrDefault,
 	MethodResult,
+	PropOp,
 	required,
 	valueOrDefault
 } from '$utils/types'
@@ -116,6 +119,8 @@ export class Field {
 	): Promise<MethodResult> {
 		const clazz = 'Field.processItemChanges'
 
+		triggerValueCurrent = getValueData(triggerValueCurrent)
+
 		for (let i = 0; i < this.itemChanges.length; i++) {
 			const itemChange = this.itemChanges[i]
 
@@ -131,28 +136,28 @@ export class Field {
 						: getArray(itemChange.valueTargetScalar)
 
 			switch (itemChange.codeOp) {
-				case FieldOp.any:
+				case PropOp.any:
 					return process(this, itemChange)
 
-				case FieldOp.equal:
+				case PropOp.equal:
 					if (valueTriggerArray.includes(triggerValueCurrent)) {
 						return await process(this, itemChange)
 					}
 					break
 
-				case FieldOp.notEqual:
+				case PropOp.notEqual:
 					if (!valueTriggerArray.includes(triggerValueCurrent)) {
 						return await process(this, itemChange)
 					}
 					break
 
-				case FieldOp.notNull:
+				case PropOp.notNull:
 					if (!['', null, undefined].includes(triggerValueCurrent)) {
 						return await process(this, itemChange)
 					}
 					break
 
-				case FieldOp.null:
+				case PropOp.null:
 					if (['', null, undefined].includes(triggerValueCurrent)) {
 						return await process(this, itemChange)
 					}
@@ -161,25 +166,25 @@ export class Field {
 				default:
 					const valueTriggerScalar = required(itemChange.valueTriggerScalar, clazz, 'valueScalar')
 					switch (itemChange.codeOp) {
-						case FieldOp.greaterThan:
+						case PropOp.greaterThan:
 							if (triggerValueCurrent > valueTriggerScalar) {
 								return await process(this, itemChange)
 							}
 							break
 
-						case FieldOp.greaterThanOrEqual:
+						case PropOp.greaterThanOrEqual:
 							if (triggerValueCurrent >= valueTriggerScalar) {
 								return await process(this, itemChange)
 							}
 							break
 
-						case FieldOp.lessThan:
+						case PropOp.lessThan:
 							if (triggerValueCurrent < valueTriggerScalar) {
 								return await process(this, itemChange)
 							}
 							break
 
-						case FieldOp.lessThanOrEqual:
+						case PropOp.lessThanOrEqual:
 							if (triggerValueCurrent <= valueTriggerScalar) {
 								return await process(this, itemChange)
 							}
@@ -190,7 +195,7 @@ export class Field {
 								error: {
 									file: FILENAME,
 									function: clazz,
-									msg: `No case defined for FieldOp: ${itemChange.codeOp}`
+									msg: `No case defined for PropOp: ${itemChange.codeOp}`
 								}
 							})
 					}
@@ -377,7 +382,7 @@ export class FieldItemChange {
 	codeAccess?: FieldAccess
 	codeItemChangeAction: FieldItemChangeAction
 	codeItemChangeValueType?: FieldItemChangeValueType
-	codeOp: FieldOp
+	codeOp: PropOp
 	fields: Field[] = []
 	retrieveParmKey?: string
 	valueTargetIdAttribute?: string
@@ -409,7 +414,7 @@ export class FieldItemChange {
 			'FieldItemChangeValueType',
 			FieldItemChangeValueType
 		)
-		this.codeOp = memberOfEnum(target._codeOp, clazz, 'codeOp', 'FieldOp', FieldOp)
+		this.codeOp = memberOfEnum(target._codeOp, clazz, 'codeOp', 'PropOp', PropOp)
 		target._columns.forEach((c) => {
 			this.fields.push(
 				required(
@@ -443,18 +448,6 @@ export enum FieldItemChangeValueType {
 	attribute = 'attribute',
 	code = 'code',
 	scalar = 'scalar'
-}
-
-export enum FieldOp {
-	any = 'any',
-	equal = 'equal',
-	greaterThan = 'greaterThan',
-	greaterThanOrEqual = 'greaterThanOrEqual',
-	lessThan = 'lessThan',
-	lessThanOrEqual = 'lessThanOrEqual',
-	notEqual = 'notEqual',
-	notNull = 'notNull',
-	null = 'null'
 }
 
 export class PropsFieldInit {

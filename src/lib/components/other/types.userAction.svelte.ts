@@ -20,6 +20,7 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
+import { EvalParser, EvalParserToken, type EvalParserTokenParm } from '$utils/utils.evalParser'
 import { Field, FieldClassType } from '$comps/form/field.svelte'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
@@ -33,17 +34,129 @@ import {
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
 import { RawUserAction } from '$comps/dataObj/types.rawDataObj.svelte'
-import { clientQueryExprOld } from '$lib/queryClient/types.queryClientManager'
+import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.userAction.ts'
 
+export class EvalParserUserAction extends EvalParser {
+	action: UserAction
+	dataObj: DataObj
+	sm: State
+	constructor(obj: any) {
+		const clazz = 'EvalParserUserAction'
+		obj = valueOrDefault(obj, {})
+		super({ exprRaw: obj.exprRaw })
+		this.action = required(obj.action, clazz, 'action')
+		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
+		this.sm = required(obj.sm, clazz, 'sm')
+	}
+
+	addToken(parm: EvalParserTokenParm): EvalParserToken {
+		return new EvalParserToken(parm)
+	}
+
+	async evalTokenAsync(tokenRoot: EvalParserToken): Promise<MethodResult> {
+		const clazz = 'EvalParserUserAction.evalToken'
+		let isTriggered = false
+		const dm: DataManager = required(this.sm.dm, clazz, 'state.dataManager')
+		let dataRecord: DataRecord | undefined
+
+		switch (tokenRoot.content) {
+			case UserActionTrigger.always:
+				return new MethodResult(true)
+
+			case UserActionTrigger.expression:
+				const evalExprContext = `${clazz}.expression`
+				const expr = this.action.exprShowExpr
+				if (expr) {
+					let result: MethodResult = await this.action.dbExe(this.sm, evalExprContext, expr)
+					if (result.error) return result
+					const value = result.getResultExprValue()
+					if (typeof value === 'boolean') {
+						return new MethodResult(value)
+					} else {
+						return new MethodResult({
+							error: {
+								file: FILENAME,
+								function: evalExprContext,
+								msgSystem: `Expression does not evaluate to boolean: ${expr}`,
+								msgUser: `Invalid expression.`
+							}
+						})
+					}
+				} else {
+					return new MethodResult({
+						error: {
+							file: FILENAME,
+							function: evalExprContext,
+							msg: `No exprShowExpr defined for trigger: 'expression'`
+						}
+					})
+				}
+
+			case UserActionTrigger.detailPreset:
+				return new MethodResult(this.dataObj.isDetailPreset)
+
+			case UserActionTrigger.never:
+				return new MethodResult(false)
+
+			case UserActionTrigger.recordOwner:
+				dataRecord = dm.getRecordsDisplayRow(this.dataObj.raw.id, 0)
+				if (dataRecord && this.sm.user) {
+					const recordOwner = getDataRecordValueKey(dataRecord, 'recordOwner')
+					isTriggered = !recordOwner ? true : recordOwner === this.sm.user.personId
+				} else {
+					isTriggered = false
+				}
+				return new MethodResult(isTriggered)
+
+			case UserActionTrigger.statusChanged:
+				return new MethodResult(dm.isStatusChanged())
+
+			case UserActionTrigger.statusValid:
+				return new MethodResult(dm.isStatusValid())
+
+			case UserActionTrigger.rootDataObj:
+				return new MethodResult(!this.dataObj.embedField)
+
+			case UserActionTrigger.saveModeInsert:
+				return new MethodResult(this.dataObj.saveMode === DataObjSaveMode.insert)
+
+			case UserActionTrigger.saveModeUpdate:
+				return new MethodResult(this.dataObj.saveMode === DataObjSaveMode.update)
+
+			default:
+				error(500, {
+					file: FILENAME,
+					function: clazz,
+					msg: `No case definded for UserActionTrigger: ${tokenRoot.content}.`
+				})
+		}
+	}
+
+	isToken(tokenContent: string): boolean {
+		return Object.values(UserActionTrigger).includes(tokenContent as UserActionTrigger)
+	}
+
+	async isTriggered(): Promise<MethodResult> {
+		if (this.exprRaw === '') return new MethodResult(true)
+		const result: MethodResult = await this.getExprAsync()
+		if (result.error) return result
+		const exprParsed: string = result.data
+		const isTriggered = eval(exprParsed)
+		return new MethodResult(isTriggered)
+	}
+}
+
 export class UserAction {
 	actionConfirms: UserActionConfirm[]
-	actionShows: UserActionShow[]
 	codeAction: CodeAction
-	codeTriggerEnable: UserActionTrigger
-	expr: string
+	codeConfirmType: TokenAppUserActionConfirmType
+	exprAction: string
+	exprEnable: string
+	exprShow: string
+	exprShowExpr: string
 	exprWith: string
 	header?: string
 	name: string
@@ -51,10 +164,12 @@ export class UserAction {
 	constructor(rawAction: RawUserAction, sm: State | undefined = undefined) {
 		const clazz = 'UserAction'
 		this.actionConfirms = rawAction.actionConfirms
-		this.actionShows = rawAction.actionShows
 		this.codeAction = rawAction.codeAction
-		this.codeTriggerEnable = rawAction.codeTriggerEnable
-		this.expr = rawAction.expr
+		this.codeConfirmType = rawAction.codeConfirmType
+		this.exprAction = rawAction.exprAction
+		this.exprEnable = rawAction.exprEnable
+		this.exprShow = rawAction.exprShow
+		this.exprShowExpr = rawAction.exprShowExpr
 		this.exprWith = rawAction.exprWith
 		this.header = rawAction.header
 		this.name = rawAction.name
@@ -62,74 +177,98 @@ export class UserAction {
 	}
 
 	async dbExe(sm: State, evalExprContext: string, expr: string): Promise<MethodResult> {
-		// let exprCustom = this.exprWith ? 'WITH\n' + this.exprWith : ''
-		// exprCustom = exprCustom ? exprCustom + ' ' + expr : expr
-
 		let exprCustom = getDbExprRaw(this.exprWith, expr)
 		const dataTree: TokenApiQueryDataTree = sm.app.getDataTree(TokenApiQueryType.retrieve)
-		return await clientQueryExprOld(exprCustom, evalExprContext, { dataTree, user: sm.user }, sm)
+		return await clientQueryExpr(evalExprContext, exprCustom, { dataTree, user: sm.user }, sm)
 	}
 
-	async getConfirm(sm: State, dataObj: DataObj) {
-		const confirms = this.actionConfirms
-		switch (confirms.length) {
-			case 0:
-				return { codeConfirmType: TokenAppUserActionConfirmType.none, confirm: undefined }
-			case 1:
-				return { codeConfirmType: confirms[0].codeConfirmType, confirm: confirms[0].confirm }
-			default:
+	async getConfirm(sm: State, dataObj: DataObj): Promise<MethodResult> {
+		switch (this.codeConfirmType) {
+			case TokenAppUserActionConfirmType.conditional:
+				const confirms = this.actionConfirms
 				for (let i = 0; i < confirms.length; i++) {
 					const confirmAction = confirms[i]
-					const sg = new UserActionStatusGroup(this.exprWith)
-					await sg.addStatus(sm, dataObj, confirmAction.codeTriggerConfirmConditional, true)
-					if (sg.isTriggered()) {
-						const codeConfirmType = confirmAction.codeConfirmType
-						const confirm = confirmAction.confirm
-						return { codeConfirmType, confirm }
+					const parser = new EvalParserUserAction({
+						action: this,
+						dataObj,
+						exprRaw: `<${confirmAction.codeTriggerConfirmConditional}>`,
+						sm
+					})
+					let result: MethodResult = await parser.isTriggered()
+					if (result.error) return result
+					let isTriggered = result.data
+					if (isTriggered) {
+						return new MethodResult({
+							codeConfirmType: confirmAction.codeConfirmType,
+							confirm: confirmAction.confirm
+						})
 					}
 				}
-				error(500, {
-					file: 'UserAction',
-					function: 'getConfirm',
-					msg: `No conditional confirm found for triggers: ${confirms.map((c) => c.codeTriggerConfirmConditional).join()}.`
+				return new MethodResult({
+					error: {
+						file: FILENAME,
+						function: 'getConfirm',
+						msg: `No conditional confirm found for triggers: ${confirms.map((c) => c.codeTriggerConfirmConditional).join()}.`
+					}
+				})
+
+			default:
+				return new MethodResult({
+					codeConfirmType: this.codeConfirmType,
+					confirm: new UserActionConfirmContent({
+						codeConfirmType: this.codeConfirmType,
+						codeTriggerConfirmConditional: UserActionTrigger.none
+					})
 				})
 		}
 	}
 
-	static async getActionsDisplay(sm: State, dataObj: DataObj) {
+	static async getActionsDisplay(sm: State, dataObj: DataObj): Promise<MethodResult> {
 		let actions: UserActionDisplay[] = []
 		for (let i = 0; i < dataObj.userActions.length; i++) {
 			const doa = dataObj.userActions[i]
 			let action = doa.action
-			let sg = new UserActionStatusGroup(action.exprWith)
-			for (let j = 0; j < action.actionShows.length; j++) {
-				let actionShow = action.actionShows[j]
-				await sg.addStatus(
-					sm,
-					dataObj,
-					actionShow.codeTriggerShow,
-					actionShow.isRequired,
-					action,
-					actionShow
-				)
+			if (action.name === 'ua_sys_save_detail') {
+				action = action
 			}
-			const isStatusShow = sg.isTriggered()
-			if (isStatusShow) {
-				sg = new UserActionStatusGroup(doa.action.exprWith)
-				await sg.addStatus(sm, dataObj, doa.action.codeTriggerEnable, true)
-				actions.push(new UserActionDisplay(doa, !sg.isTriggered()))
+			let parser = new EvalParserUserAction({
+				action,
+				dataObj,
+				exprRaw: action.exprShow,
+				sm
+			})
+			let result: MethodResult = await parser.isTriggered()
+			if (result.error) return result
+			let isTriggered = result.data
+			if (isTriggered) {
+				let parser = new EvalParserUserAction({
+					action: doa.action,
+					dataObj,
+					exprRaw: doa.action.exprEnable,
+					sm
+				})
+				let result: MethodResult = await parser.isTriggered()
+				if (result.error) return result
+				isTriggered = result.data
+				const actionDisplay = new UserActionDisplay(doa, !isTriggered)
+				actions.push(actionDisplay)
 			}
 		}
-		return actions
+		return new MethodResult(actions)
 	}
 
 	async trigger(sm: State, dataObj: DataObj): Promise<MethodResult> {
-		const { codeConfirmType, confirm } = await this.getConfirm(sm, dataObj)
+		const result: MethodResult = await this.getConfirm(sm, dataObj)
+		if (result.error) return result
+		const confirmData: {
+			codeConfirmType: TokenAppUserActionConfirmType
+			confirm: UserActionConfirmContent
+		} = result.data
 		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: this.codeAction,
-				codeConfirmType,
-				confirm,
+				codeConfirmType: confirmData.codeConfirmType,
+				confirm: confirmData.confirm,
 				data: {
 					token: new TokenAppDo({
 						userAction: this,
@@ -277,147 +416,12 @@ export async function userActionTreeNodeChildren(
 	return result
 }
 
-export class UserActionShow {
-	codeTriggerShow: UserActionTrigger
-	expr?: UserActionShowExpr
-	isRequired: boolean
-	constructor(obj: any) {
-		const clazz = 'UserActionShow'
-		obj = valueOrDefault(obj, {})
-		this.codeTriggerShow = memberOfEnum(
-			obj._codeTriggerShow,
-			clazz,
-			'codeTriggerShow',
-			'UserActionTriggerEnable',
-			UserActionTrigger
-		)
-		this.expr =
-			this.codeTriggerShow === UserActionTrigger.expression
-				? new UserActionShowExpr(obj)
-				: undefined
-		this.isRequired = valueOrDefault(obj.isRequired, false)
-	}
-}
-export class UserActionShowExpr {
-	expr: string
-	constructor(obj: any) {
-		const clazz = 'UserActionShowExpr'
-		obj = valueOrDefault(obj, {})
-		this.expr = strRequired(obj.expr, clazz, 'expr')
-	}
-}
-
-export class UserActionStatus {
-	isTriggered: boolean
-	isRequired: boolean
-	trigger: UserActionTrigger
-	constructor(trigger: UserActionTrigger, isTriggered: boolean, isRequired: boolean) {
-		this.isTriggered = isTriggered
-		this.isRequired = isRequired
-		this.trigger = trigger
-	}
-}
-
-export class UserActionStatusGroup {
-	exprWith: string
-	statuses: UserActionStatus[] = []
-	constructor(exprWith: string) {
-		this.exprWith = exprWith
-	}
-	async addStatus(
-		sm: State,
-		dataObj: DataObj,
-		trigger: UserActionTrigger,
-		isRequired: boolean,
-		userAction: UserAction | undefined = undefined,
-		userActionShow: UserActionShow | undefined = undefined
-	) {
-		const clazz = 'UserActionStatusGroup'
-		let isTriggered = false
-		const dm: DataManager = required(sm.dm, clazz, 'state.dataManager')
-		let dataRecord: DataRecord | undefined
-
-		switch (trigger) {
-			case UserActionTrigger.always:
-				isTriggered = true
-				break
-
-			case UserActionTrigger.expression:
-				if (userAction && userActionShow) {
-					const evalExprContext = `${clazz}.addStatus.expression`
-					let result: MethodResult = await userAction.dbExe(
-						sm,
-						evalExprContext,
-						strRequired(userActionShow.expr?.expr, clazz, 'show')
-					)
-					isTriggered = result.error ? false : valueOrDefault(result.getResultExprValue(), false)
-				}
-				break
-
-			case UserActionTrigger.never:
-				isTriggered = false
-				break
-			case UserActionTrigger.notRecordOwner:
-				dataRecord = dm.getRecordsDisplayRow(dataObj.raw.id, 0)
-				if (dataRecord && sm.user) {
-					const recordOwner = getDataRecordValueKey(dataRecord, 'recordOwner')
-					isTriggered = !recordOwner ? false : recordOwner !== sm.user.personId
-				} else {
-					isTriggered = false
-				}
-				break
-			case UserActionTrigger.notStatusChanged:
-				isTriggered = !dm.isStatusChanged()
-				break
-			case UserActionTrigger.recordOwner:
-				dataRecord = dm.getRecordsDisplayRow(dataObj.raw.id, 0)
-				if (dataRecord && sm.user) {
-					const recordOwner = getDataRecordValueKey(dataRecord, 'recordOwner')
-					isTriggered = !recordOwner ? true : recordOwner === sm.user.personId
-				} else {
-					isTriggered = false
-				}
-				break
-			case UserActionTrigger.statusChanged:
-				isTriggered = dm.isStatusChanged()
-				break
-			case UserActionTrigger.statusValid:
-				isTriggered = dm.isStatusValid()
-				break
-			case UserActionTrigger.rootDataObj:
-				isTriggered = !dataObj.embedField
-				break
-			case UserActionTrigger.saveModeInsert:
-				isTriggered = dataObj.saveMode === DataObjSaveMode.insert
-				break
-			case UserActionTrigger.saveModeUpdate:
-				isTriggered = dataObj.saveMode === DataObjSaveMode.update
-				break
-			default:
-				error(500, {
-					file: FILENAME,
-					function: 'UserActionStatusGroup.addStatus',
-					msg: `No case definded for userActionTrigger: ${trigger}.`
-				})
-		}
-		this.statuses.push(new UserActionStatus(trigger, isTriggered, isRequired))
-	}
-	isTriggered() {
-		const someRequiredNotTriggered = this.statuses.some((s) => s.isRequired && !s.isTriggered)
-		const notRequiredCount = this.statuses.filter((s) => !s.isRequired).length
-		const optionalIsTriggered =
-			this.statuses.filter((s) => !s.isRequired).length === 0 ||
-			this.statuses.some((s) => !s.isRequired && s.isTriggered)
-		return !someRequiredNotTriggered && optionalIsTriggered
-	}
-}
 export enum UserActionTrigger {
 	always = 'always',
+	detailPreset = 'detailPreset',
 	expression = 'expression',
 	never = 'never',
 	none = 'none',
-	notRecordOwner = 'notRecordOwner',
-	notStatusChanged = 'notStatusChanged',
 	statusChanged = 'statusChanged',
 	objectValidToContinue = 'objectValidToContinue',
 	statusValid = 'statusValid',

@@ -29,6 +29,7 @@ import {
 	addUserType,
 	updateDepdDataObjColumnItemChange,
 	updateDepdDataObjQueryRider,
+	updateDepdGridStylesDataObj,
 	updateDepdNavDestinationUserAction,
 	updateDepdNodeAction,
 	updateDepdNodeChild
@@ -280,6 +281,17 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
+				altTrans: ['sysDataObj', 'sysDataObjEmbed', 'sysDataObjTask'],
+				name: 'updateDepdGridStylesDataObj',
+				dataMap: 'name',
+				deleteObj: 'sys_core::SysGridStyle',
+				deleteObjFilter: `.id IN (SELECT sys_core::SysDataObj FILTER ${TokenExprFilterRecord}).gridStyles.id`,
+				fCreate: updateDepdGridStylesDataObj
+			})
+		)
+
+		this.items.push(
+			new InitDbItemObject({
 				altTrans: ['sysNodeObjProgramObj', 'sysNodeObjProgram', 'sysNodeObjTask'],
 				name: 'updateDepdNodeAction',
 				dataMap: 'name',
@@ -379,7 +391,7 @@ export class InitDb {
 		this.items.push(
 			new InitDbItem({
 				name: 'MoedBulkDataUser',
-				exprResets: `DELETE sys_user::SysUser FILTER count(.userTypes) = 1 AND 'ut_client_moed_youth' IN .userTypes.name`,
+				exprResets: `DELETE sys_user::SysUser FILTER .name LIKE 'MOED%'`,
 				fCreate: MoedBulkDataUser
 			})
 		)

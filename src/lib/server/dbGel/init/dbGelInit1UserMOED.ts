@@ -23,6 +23,12 @@ function initObjAttr(init: InitDb) {
 	})
 	init.addTrans('sysObjAttr', {
 		code: 'at_sys_group_msg',
+		header: 'MOED Administrators',
+		name: 'group_msg_moed_admin',
+		owner: 'sys_client_moed'
+	})
+	init.addTrans('sysObjAttr', {
+		code: 'at_sys_group_msg',
 		header: 'Eastside Staff',
 		name: 'group_msg_moed_staff_east',
 		owner: 'sys_client_moed'
@@ -93,6 +99,18 @@ function initUserType(init: InitDb) {
 			{ access: 'allow', owner: 'sys_system', name: 'app_sys_admin_user' },
 			{ access: 'allow', owner: 'sys_system', name: 'app_sys_reporting' },
 			{ access: 'allow', owner: 'sys_system', name: 'task_sys_quote' }
+		],
+		attrsAction: [
+			{
+				action: 'oaa_sys_msg_receive',
+				owner: 'sys_client_moed',
+				name: 'group_msg_moed_admin'
+			},
+			{
+				action: 'oaa_sys_msg_send',
+				owner: 'sys_client_moed',
+				name: 'group_msg_moed_admin'
+			}
 		],
 		header: 'MOED-Administrator',
 		name: 'ut_client_moed_admin',
@@ -220,10 +238,10 @@ function initUsers(init: InitDb) {
 		owner: 'sys_client_moed',
 		systems: ['sys_client_moed'],
 		userTypes: [
-			'ut_client_moed_admin',
+			// 'ut_client_moed_admin',
 			'ut_client_moed_advocate_east',
-			'ut_client_moed_advocate_west',
-			'ut_client_moed_youth'
+			'ut_client_moed_advocate_west'
+			// 'ut_client_moed_youth'
 		]
 	})
 	init.addTrans('sysUser', {
@@ -237,7 +255,7 @@ function initUsers(init: InitDb) {
 		owner: 'sys_client_moed',
 		systems: ['sys_client_moed'],
 		userTypes: [
-			'ut_client_moed_admin',
+			// 'ut_client_moed_admin',
 			'ut_client_moed_advocate_east',
 			'ut_client_moed_advocate_west'
 		]
@@ -253,7 +271,7 @@ function initUsers(init: InitDb) {
 		owner: 'sys_client_moed',
 		systems: ['sys_client_moed'],
 		userTypes: [
-			'ut_client_moed_admin',
+			// 'ut_client_moed_admin',
 			'ut_client_moed_advocate_east',
 			'ut_client_moed_advocate_west'
 		]

@@ -24,6 +24,7 @@
 		type Module,
 		type NewValueParams,
 		type PostSortRowsParams,
+		type RowClassParams,
 		type RowNode,
 		type RowNodeSelectedEvent,
 		type SelectionChangedEvent,
@@ -37,23 +38,28 @@
 	import {
 		columnTypes,
 		dataTypeDefinitions,
+		getStyles,
 		GridManagerOptions,
 		GridSettings,
 		GridSettingsColumns
 	} from '$comps/grid/grid'
 	import {
+		compareValuesRecord,
 		DataObj,
 		DataObjData,
 		DataObjSort,
 		DataObjSortItem,
+		getArray,
+		GridStyle,
+		MethodResult,
 		ParmsValuesType,
 		ParmsUser,
 		ParmsUserDataType,
+		PropDataType,
 		required,
 		strRequired
 	} from '$utils/types'
 	import { ParmsValues } from '$utils/types'
-	import { PropDataType } from '$comps/dataObj/types.rawDataObj.svelte'
 	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field.svelte'
 	import { State, StateSurfacePopup } from '$comps/app/types.appState.svelte'
 	import ListFilter from '$comps/form/ListFilter.svelte'
@@ -107,6 +113,7 @@
 			},
 			columnDefs: options.columnDefs,
 			columnTypes,
+			context: options.context,
 			dataTypeDefinitions,
 			defaultColDef: {
 				autoHeaderHeight: true,
@@ -118,6 +125,7 @@
 				wrapHeaderText: false
 			},
 			getRowId: (params: GetRowIdParams) => params.data.id,
+			getRowStyle,
 			onCellClicked: options.onCellClicked,
 			onCellValueChanged,
 			onFilterChanged: onFilterChanged,
@@ -126,6 +134,7 @@
 			onSelectionChanged,
 			postSortRows: onSort,
 			rowData,
+			rowDragManaged: options.listReorderColumn ? true : false,
 			rowSelection: {
 				mode: options.isSuppressSelect
 					? undefined
@@ -135,7 +144,6 @@
 				checkboxes: options.isPopup,
 				enableClickSelection: !(options.isPopup || options.isSuppressSelect)
 			},
-			rowDragManaged: options.listReorderColumn ? true : false,
 			sideBar: {
 				toolPanels: [
 					{
@@ -159,6 +167,12 @@
 			suppressSetFilterByDefault: true
 		}
 
+		// <todo> 241115 - bug - createGrid makes options.userSettings.listSortModel undefined
+		const rawSort =
+			options.userSettings.getPref(ParmsUserDataType.listSortModel) || options.sortModel
+
+		api = createGrid(eGui, gridOptions)
+
 		function autoSizeStrategy(columnDefs: ColDef) {
 			const avgColW = 150
 			const colCntVisible = columnDefs.reduce((acc, col) => {
@@ -175,12 +189,6 @@
 			// })
 			return strategy
 		}
-
-		// <todo> 241115 - bug - createGrid makes options.userSettings.listSortModel undefined
-		const rawSort =
-			options.userSettings.getPref(ParmsUserDataType.listSortModel) || options.sortModel
-
-		api = createGrid(eGui, gridOptions)
 
 		if (options.isPopup) {
 			const selectedIds = options.parmStateSelectedIds
@@ -214,22 +222,10 @@
 		}
 	})
 
-	async function saveUserSettings() {
-		if (options?.userSettings?.idUser) {
-			// set columns state
-			options.userSettings.setPref(
-				ParmsUserDataType.listColumnsModel,
-				new GridSettingsColumns(api.getAllGridColumns())
-			)
-			await apiFetchFunction(
-				ApiFunction.sysUserPrefSet,
-				new TokenApiUserPref(
-					options.userSettings.idUser,
-					options.userSettings.idFeature,
-					options.userSettings
-				)
-			)
-		}
+	function getRowStyle(params: RowClassParams) {
+		const gridStyles: GridStyle[] = getArray(params.context.gridStyles)
+		const result: MethodResult = getStyles(gridStyles, params.data)
+		return result.error ? {} : result.data
 	}
 
 	function onCellValueChanged(event: NewValueParams) {
@@ -304,6 +300,24 @@
 	function onSelectionChanged(event: SelectionChangedEvent) {
 		if (options.onSelectionChanged) options.onSelectionChanged(event)
 		updateCounters()
+	}
+
+	async function saveUserSettings() {
+		if (options?.userSettings?.idUser) {
+			// set columns state
+			options.userSettings.setPref(
+				ParmsUserDataType.listColumnsModel,
+				new GridSettingsColumns(api.getAllGridColumns())
+			)
+			await apiFetchFunction(
+				ApiFunction.sysUserPrefSet,
+				new TokenApiUserPref(
+					options.userSettings.idUser,
+					options.userSettings.idFeature,
+					options.userSettings
+				)
+			)
+		}
 	}
 
 	function setGridColumnsProp(

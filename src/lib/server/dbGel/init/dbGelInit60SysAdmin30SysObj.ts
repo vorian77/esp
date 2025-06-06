@@ -28,7 +28,7 @@ export function initAdminSysObj(init: InitDb) {
 
 async function initSystemObject(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionGroup: 'doag_list',
+		actionGroup: 'doag_list_edit_download',
 		codeCardinality: 'list',
 		codeComponent: 'FormList',
 		exprFilter: 'none',
@@ -58,7 +58,7 @@ async function initSystemObject(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		actionGroup: 'doag_detail',
+		actionGroup: 'doag_detail_none',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
 		header: 'System (Object)',

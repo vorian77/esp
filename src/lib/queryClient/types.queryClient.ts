@@ -50,7 +50,7 @@ export async function clientQueryExpr(
 	}
 	const tokenQuery = new TokenApiQuery({
 		evalExprContext: evalExprContext,
-		querySourceRaw: { exprCustom },
+		querySourceRaw: { exprCustom, querySourceType: QuerySourceType.expr },
 		queryType: QuerySourceType.expr,
 		queryData: new TokenApiQueryData(sourceQueryData)
 	})
