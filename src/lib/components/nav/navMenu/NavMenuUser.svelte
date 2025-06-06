@@ -17,7 +17,7 @@
 </script>
 
 {#if data.user}
-	<hr class="sm:mt-32 my-2" />
+	<hr class="my-2" />
 	<button
 		class="flex items-center hover:-translate-y-0.5 transition-transform"
 		onclick={() => data.navMenu.triggerActionDataObjApp('data_obj_task_sys_auth_my_account')}

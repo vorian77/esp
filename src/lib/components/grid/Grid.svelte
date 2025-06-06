@@ -309,6 +309,7 @@
 				ParmsUserDataType.listColumnsModel,
 				new GridSettingsColumns(api.getAllGridColumns())
 			)
+
 			await apiFetchFunction(
 				ApiFunction.sysUserPrefSet,
 				new TokenApiUserPref(

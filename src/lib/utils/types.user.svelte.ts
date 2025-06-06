@@ -88,7 +88,11 @@ export class User {
 		// this.site = strRequired(obj.site, 'User', 'site')
 		// this.status = strRequired(obj.status, 'User', 'status')
 		// this.user_id = nbrOptional(obj.user_id, 'User')
-		// console.log('User.constructor', this)
+
+		// <todo> - 250606 - allow users to toggle preferences
+		this.preferences = new UserPrefs([
+			{ _codeType: UserPrefType.remember_list_settings, isActive: true }
+		])
 	}
 
 	prefIsActive(prefType: UserPrefType): boolean {
@@ -128,7 +132,6 @@ class UserPrefItem {
 }
 
 export enum UserPrefType {
-	notifications_auto_retrieve = 'notifications_auto_retrieve',
 	remember_list_settings = 'remember_list_settings'
 }
 

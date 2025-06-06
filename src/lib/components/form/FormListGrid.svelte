@@ -30,6 +30,7 @@
 		DataObjType,
 		type DataRecord,
 		getArray,
+		getValueDisplay,
 		GridStyle,
 		ParmsValues,
 		ParmsValuesType,
@@ -218,6 +219,10 @@
 		defn.headerTooltip = field.placeHolder
 		defn.singleClickEdit = isEditable ? true : undefined
 		addGridParm(defn, ['context', 'cellStyle', 'text-align'], field.fieldAlignment)
+
+		defn.getQuickFilterText = (params) => {
+			return getValueDisplay(params.value)
+		}
 
 		// gridStyles
 		addGridParm(defn, ['context', 'gridStyles'], field.colDO.gridStyles)

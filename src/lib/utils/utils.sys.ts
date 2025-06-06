@@ -243,20 +243,10 @@ export function getDataRecordValueKey(record: DataRecord, key: string) {
 	return recordKey ? record[recordKey] : undefined
 }
 export function getDataRecordValueKeyData(record: DataRecord, key: string) {
-	const val = getDataRecordValueKey(record, key)
-	return val
-		? Object.hasOwn(val, 'data') && Object.hasOwn(val, 'display')
-			? val.data
-			: val
-		: undefined
+	return getValueData(getDataRecordValueKey(record, key))
 }
 export function getDataRecordValueKeyDisplay(record: DataRecord, key: string) {
-	const val = getDataRecordValueKey(record, key)
-	return val
-		? Object.hasOwn(val, 'data') && Object.hasOwn(val, 'display')
-			? val.display
-			: val
-		: undefined
+	return getValueDisplay(getDataRecordValueKey(record, key))
 }
 
 export function getDbExprRaw(exprWith: string | undefined, exprCustom: string | undefined) {

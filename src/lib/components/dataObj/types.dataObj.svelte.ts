@@ -163,7 +163,7 @@ export class DataObj {
 						new TokenApiUserPref(sm.user.id, dataObj.raw.id)
 					)
 					rawSettings = result.data
-					rawSettings = rawSettings.prefData ? rawSettings.prefData : {}
+					rawSettings = rawSettings.prefData ? JSON.parse(rawSettings.prefData).data : {}
 				}
 			}
 			return dataObj.userGridSettings.load(rawSettings, sm, dataObj)

@@ -447,6 +447,19 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 		// group - items
 		this.items = new NavMenuDataCompGroup(navMenu, { hideHr: true })
 
+		// this.addItem({
+		// 	content: new NavMenuContent(
+		// 		NavMenuContentType.dataObjApp,
+		// 		new TokenAppDoQuery({
+		// 			dataObjName: 'data_obj_task_sys_auth_my_account',
+		// 			queryType: TokenApiQueryType.retrieve
+		// 		})
+		// 	),
+		// 	icon: 'settings2',
+		// 	isRoot: true,
+		// 	label: new NavMenuLabel('My Preferences')
+		// })
+
 		if (['user_sys'].includes(this.user.name)) {
 			this.addItem({
 				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminDevTest),
