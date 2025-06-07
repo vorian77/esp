@@ -19,6 +19,7 @@
 	import ContentFormDetailApp from '$comps/form/ContentFormDetailApp.svelte'
 	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
 	import ContentFormListApp from '$comps/form/ContentFormListApp.svelte'
+	import ContentFormListSelectApp from '$comps/form/ContentFormListSelectApp.svelte'
 	import GridSelect from '$comps/grid/GridSelect.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -30,6 +31,7 @@
 		FormDetail: ContentFormDetailApp,
 		FormDetailRepConfig: ContentFormDetailRepConfig,
 		FormList: ContentFormListApp,
+		FormListSelect: ContentFormListSelectApp,
 		ModalSelect: GridSelect
 	}
 

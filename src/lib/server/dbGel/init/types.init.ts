@@ -32,7 +32,8 @@ import {
 	updateDepdGridStylesDataObj,
 	updateDepdNavDestinationUserAction,
 	updateDepdNodeAction,
-	updateDepdNodeChild
+	updateDepdNodeChild,
+	updateSystemNodesConfig
 } from '$server/dbGel/init/dbGelInit200Utilities50Other'
 import {
 	MoedBulkCsf,
@@ -319,6 +320,19 @@ export class InitDb {
 				fCreate: updateDepdNavDestinationUserAction,
 				updateObj: 'sys_user::SysUserAction',
 				updateObjFields: [['navDestination', '{}']]
+			})
+		)
+
+		this.items.push(
+			new InitDbItemObject({
+				name: 'updateSystemNodesConfig',
+				dataMap: 'name',
+				fCreate: updateSystemNodesConfig,
+				updateObj: 'sys_core::SysSystem',
+				updateObjFields: [
+					['nodesConfigClient', '{}'],
+					['nodesConfigSystem', '{}']
+				]
 			})
 		)
 

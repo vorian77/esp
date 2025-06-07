@@ -567,6 +567,8 @@ export namespace sys_core {
     "logoMarginRight"?: number | null;
     "logoWidth"?: number | null;
     "owner": SysOrg;
+    "nodesConfigClient": SysNodeObj[];
+    "nodesConfigSystem": SysNodeObj[];
     "typesCodeType": SysCodeType[];
     "users": sys_user.SysUser[];
   }
