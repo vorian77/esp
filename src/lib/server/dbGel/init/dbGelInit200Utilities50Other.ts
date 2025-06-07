@@ -960,3 +960,37 @@ export async function updateDepdNavDestinationUserAction(data: any) {
 	)
 	return await query.run(client, dataUpdate)
 }
+
+export async function updateSystemNodesConfig(data: any) {
+	sectionHeader(`updateSystemNodesConfig - ${data.name}`)
+	const dataUpdate = {
+		name: data.name,
+		nodesConfigClient: data.nodesConfigClient,
+		nodesConfigSystem: data.nodesConfigSystem
+	}
+	const query = e.params(
+		{
+			name: e.str,
+			nodesConfigClient: e.optional(e.array(e.str)),
+			nodesConfigSystem: e.optional(e.array(e.str))
+		},
+		(p) => {
+			return e.update(e.sys_core.SysSystem, (n) => ({
+				filter: e.op(n.name, '=', p.name),
+				set: {
+					nodesConfigClient: e.assert_distinct(
+						e.for(e.array_unpack(p.nodesConfigClient), (nodeName) => {
+							return e.sys_core.getNodeObjByName(nodeName)
+						})
+					),
+					nodesConfigSystem: e.assert_distinct(
+						e.for(e.array_unpack(p.nodesConfigSystem), (nodeName) => {
+							return e.sys_core.getNodeObjByName(nodeName)
+						})
+					)
+				}
+			}))
+		}
+	)
+	return await query.run(client, dataUpdate)
+}

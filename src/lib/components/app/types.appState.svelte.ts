@@ -554,6 +554,7 @@ export enum StateNavContent {
 	FormDetail = 'FormDetail',
 	FormDetailReportConrig = 'FormDetailReportConrig',
 	FormList = 'FormList',
+	FormListSelect = 'FormListSelect',
 	ModalSelect = 'ModalSelect'
 }
 

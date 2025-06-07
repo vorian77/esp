@@ -103,6 +103,12 @@ module sys_core {
     file: json;
     logoMarginRight: float64;
     logoWidth: int16;
+    multi nodesConfigClient: sys_core::SysNodeObj{
+      on target delete allow;
+    };
+    multi nodesConfigSystem: sys_core::SysNodeObj{
+      on target delete allow;
+    };
     required owner: sys_core::SysOrg;
     multi systemParents: sys_core::SysSystem;
     multi typesCodeType: sys_core::SysCodeType;

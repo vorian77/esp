@@ -226,6 +226,11 @@ function initDataObj(init: InitDb) {
 						exprTrigger: `<value,str> === 'Yes'`,
 						prop: 'color',
 						propValue: 'green'
+					},
+					{
+						exprTrigger: `<value,str> === 'Yes'`,
+						prop: 'background-color',
+						propValue: 'yellow'
 					}
 				],
 				isDisplay: false,
