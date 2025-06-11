@@ -67,10 +67,3 @@
 
 <!-- <DataViewer header="fieldValue" data={fieldValue} /> -->
 <!-- <DataViewer header="dataItems" data={dataItems} /> -->
-
-<style>
-	select option {
-		background: white;
-		color: black;
-	}
-</style>

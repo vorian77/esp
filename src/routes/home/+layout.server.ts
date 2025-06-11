@@ -13,7 +13,7 @@ export async function load({ locals }) {
 	if (result.error) return returnError(result)
 	let rawUser: any = result.data
 
-	rawUser.dbBranch = getEnvVar('EDGEDB_BRANCH')
+	rawUser.dbBranch = getEnvVar('GEL_BRANCH')
 
 	const rawUserAttr = new RawUserAttr(rawUser)
 	result = await rawUserAttr.setAttrs(rawUser)

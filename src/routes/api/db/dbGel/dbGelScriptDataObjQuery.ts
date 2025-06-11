@@ -229,9 +229,15 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 		let result: MethodResult
 
 		switch (script.exePost) {
-			case ScriptExePost.dataItems:
+			case ScriptExePost.dataItemsFields:
 				this.queryExeFormatDataSet(this.queryData.dataTab, query.fieldEmbed?.embedFieldNameRaw, [
-					[DataObjDataPropName.items, rawDataList.length > 0 ? rawDataList[0] : []]
+					[DataObjDataPropName.itemsField, rawDataList.length > 0 ? rawDataList[0] : []]
+				])
+				break
+
+			case ScriptExePost.dataItemsSelect:
+				this.queryExeFormatDataSet(this.queryData.dataTab, query.fieldEmbed?.embedFieldNameRaw, [
+					[DataObjDataPropName.itemsSelect, rawDataList.length > 0 ? rawDataList : []]
 				])
 				break
 
@@ -254,12 +260,20 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 					this.queryData.updateData(dataObjId, dataRow)
 				}
 
-				// add dataItems
 				script.scriptGroup.queryData.dataTab?.parms.update(scriptData.parms.valueGetAll())
-				result = await this.addScriptDataItems(
+
+				// add dataItems - field
+				result = await this.addScriptDataItemsFields(
 					query,
 					query.rawDataObj.rawPropsSelect,
 					dataRow.record
+				)
+				if (result.error) return result
+
+				// add dataItems - select
+				result = await this.addScriptDataItemsSelectList(
+					query,
+					query.rawDataObj.selectListItemsSource
 				)
 				if (result.error) return result
 				break

@@ -15,7 +15,7 @@ export enum ApiFunction {
 	dbGelGetDataObjActionGroup = 'dbGelGetDataObjActionGroup',
 	dbGelGetDataObjId = 'dbGelGetDataObjId',
 	dbGelGetLinkItemsSource = 'dbGelGetLinkItemsSource',
-	dbGelGetNode = 'dbGelGetNode',
+	dbGelGetNodeByNodeId = 'dbGelGetNodeByNodeId',
 	dbGelGetNodesChildren = 'dbGelGetNodesChildren',
 	dbGelGetNodesSystemParents = 'dbGelGetNodesSystemParents',
 

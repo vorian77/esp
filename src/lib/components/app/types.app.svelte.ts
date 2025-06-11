@@ -65,7 +65,7 @@ export class App {
 			label: 'modalEmbedField',
 			treeLevelIdx: this.treeLevelsIdxCurrent
 		})
-		let result: MethodResult = await newTab.query(sm, token.queryType)
+		let result: MethodResult = await newTab.queryDataObj(sm, token.queryType)
 		if (result.error) return result
 		this.levelAdd([newTab], true)
 		return result
@@ -115,7 +115,7 @@ export class App {
 			dataObjId: await token.getDataObjId(),
 			treeLevelIdx: this.treeLevels.length
 		})
-		let result: MethodResult = await newTab.query(sm, token.queryType)
+		let result: MethodResult = await newTab.queryDataObj(sm, token.queryType)
 		if (result.error) return result
 		this.addTree([newTab])
 		return result
@@ -128,7 +128,7 @@ export class App {
 			label: 'modalEmbedField',
 			treeLevelIdx: this.treeLevels.length
 		})
-		let result = await newTab.query(sm, token.queryType)
+		let result = await newTab.queryDataObj(sm, token.queryType)
 		if (result.error) return result
 		this.addTree([newTab])
 		return result
@@ -138,7 +138,7 @@ export class App {
 		let newTab = new AppLevelTab({
 			...this.addTreeNodeParmsList(token.node, false)
 		})
-		let result: MethodResult = await newTab.query(sm, token.queryType)
+		let result: MethodResult = await newTab.queryDataObj(sm, token.queryType)
 		if (result.error) return result
 		this.addTree([newTab])
 		return result
@@ -147,7 +147,8 @@ export class App {
 	async addTreeNodeChildren(
 		sm: State,
 		token: TokenAppDo,
-		queryType: TokenApiQueryType
+		queryType: TokenApiQueryType,
+		nodeIdChild: string
 	): Promise<MethodResult> {
 		const clazz = 'addTreeNodeChildren'
 		const currTreeLevel = this.getCurrTreeLevel()
@@ -164,9 +165,10 @@ export class App {
 
 				// new level
 				const tabs: AppLevelTab[] = []
-				const nodeParent: Node = required(currTab.node, clazz, 'node')
-				const nodeIdChild = nodeParent.getNodeIdAction(token.actionType, NodeIdActionAlt.firstChild)
-				const nodeLevelRoot = new Node(await getNode(nodeIdChild))
+
+				result = await getNodeByNodeId(nodeIdChild)
+				if (result.error) return result
+				const nodeLevelRoot = new Node(result.data)
 
 				if (nodeLevelRoot) {
 					// create root tab
@@ -180,7 +182,7 @@ export class App {
 						treeLevelIdx: currTab.treeLevelIdx
 					}
 					let newTab = new AppLevelTab(nodeParms)
-					result = await newTab.query(sm, queryType)
+					result = await newTab.queryDataObj(sm, queryType)
 					if (result.error) return result
 
 					tabs.push(newTab)
@@ -227,6 +229,45 @@ export class App {
 				currLevel.setDynamicTabs(dynamicTabs)
 			}
 		}
+	}
+
+	async addTreeNodeChildrenTypeList(
+		sm: State,
+		token: TokenAppDo,
+		queryType: TokenApiQueryType
+	): Promise<MethodResult> {
+		const clazz = 'addTreeNodeChildrenTypeList'
+		const currTreeLevel = this.getCurrTreeLevel()
+		if (currTreeLevel) {
+			const currTab = currTreeLevel.getCurrTab()
+			if (currTab) {
+				const nodeParent: Node = required(currTab.node, clazz, 'node')
+				const nodeIdChild = nodeParent.getNodeIdAction(token.actionType, NodeIdActionAlt.firstChild)
+				return await this.addTreeNodeChildren(sm, token, queryType, nodeIdChild)
+			}
+		}
+		return new MethodResult({
+			error: {
+				file: FILENAME,
+				function: 'App.addTreeNodeChildrenTypeList',
+				msg: `No current tree level or tab`
+			}
+		})
+	}
+
+	async addTreeNodeChildrenTypeObjConfig(
+		sm: State,
+		token: TokenAppDo,
+		queryType: TokenApiQueryType
+	): Promise<MethodResult> {
+		const clazz = 'addTreeNodeChildrenTypeObjConfig'
+		const nodeObjConfigRecord: DataRecord = required(
+			sm.parmsState.valueGet(ParmsValuesType.selectListRecord),
+			clazz,
+			'nodeObjConfigRecord'
+		)
+		const nodeIdChild = strRequired(nodeObjConfigRecord._nodeObjId, clazz, 'nodeIdChild')
+		return await this.addTreeNodeChildren(sm, token, queryType, nodeIdChild)
 	}
 
 	addTreeNodeParmsList(node: Node, isDynamic: boolean) {
@@ -492,8 +533,8 @@ export class AppLevelTab {
 	getCurrRecordValue(key: string) {
 		if (this.dataObj) {
 			if (this.dataObj.raw.codeCardinality === DataObjCardinality.list) {
-				const listRowIdx = this.listGetRowIdx()
-				return this.dataObj.data.rowsRetrieved.getRowValue(listRowIdx, key)
+				const idCurrent = this.dataObj?.data.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
+				return this.dataObj.data.rowsRetrieved.getRowValueById(idCurrent, key)
 			} else {
 				return this.dataObj.data.rowsRetrieved.getDetailRecordValue(key)
 			}
@@ -616,15 +657,54 @@ export class AppLevelTab {
 			: false
 	}
 
-	async nodeRetrieve(actionType: CodeActionType) {
-		if (this.node) {
-			this.node = await getNode(this.node.getNodeIdAction(actionType, NodeIdActionAlt.self))
-			error(500, {
-				file: FILENAME,
-				function: 'AppLevelTab.nodeRetrieve',
-				msg: `No node defined for tab: ${this.label}`
-			})
+	async nodeRetrieve(actionType: CodeActionType): Promise<MethodResult> {
+		return this.node
+			? await getNodeByNodeId(this.node.getNodeIdAction(actionType, NodeIdActionAlt.self))
+			: new MethodResult({
+					error: {
+						file: FILENAME,
+						function: 'AppLevelTab.nodeRetrieve',
+						msg: `No node defined for tab: ${this.label}`
+					}
+				})
+	}
+
+	async queryData(sm: State, queryType: TokenApiQueryType): Promise<MethodResult> {
+		let result: MethodResult = await this.query(sm, queryType)
+		if (result.error) return result
+		const queryData: TokenApiQueryData = result.data
+
+		// success
+		result = DataObjData.load(queryData.dataTab)
+		if (result.error) return result
+		let dataObjData: DataObjData = result.data as DataObjData
+		if (this.dataObj) this.dataObj.data = dataObjData
+		return new MethodResult(dataObjData)
+	}
+
+	async queryDataObj(sm: State, queryType: TokenApiQueryType): Promise<MethodResult> {
+		let result: MethodResult = await this.query(sm, queryType)
+		if (result.error) return result
+		const queryData: TokenApiQueryData = result.data
+
+		// success
+		result = DataObjData.load(queryData.dataTab)
+		if (result.error) return result
+		let dataObjData: DataObjData = result.data as DataObjData
+
+		result = await DataObj.init(sm, dataObjData, queryType)
+		if (result.error) return result
+		this.dataObj = result.data as DataObj
+
+		if (this.dataObj && this.dataObj.raw.codeCardinality === DataObjCardinality.list) {
+			this.dataObj.data.parms.reset()
+			this.dataObj.data.parms.valueSetList(
+				ParmsValuesType.listIds,
+				this.dataObj.data.rowsRetrieved.getRows()
+			)
 		}
+
+		return new MethodResult()
 	}
 
 	async query(sm: State, queryType: TokenApiQueryType): Promise<MethodResult> {
@@ -641,8 +721,7 @@ export class AppLevelTab {
 		let result: MethodResult
 		const qmc = new QueryManagerClient(tokenQuerySource)
 		if (qmc) {
-			result = await qmc.query()
-			if (result.error) return result
+			return await qmc.query()
 		} else {
 			return new MethodResult({
 				error: {
@@ -652,14 +731,18 @@ export class AppLevelTab {
 				}
 			})
 		}
+	}
 
-		// successful
-		const queryData: TokenApiQueryData = result.data
-		result = DataObjData.load(queryData.dataTab)
+	async queryPost(
+		sm: State,
+		queryType: TokenApiQueryType,
+		queryData: TokenApiQueryData
+	): Promise<MethodResult> {
+		let result: MethodResult = DataObjData.load(queryData.dataTab)
 		if (result.error) return result
 		let dataObjData: DataObjData = result.data as DataObjData
 
-		result = await DataObj.init(tokenQuerySource.sm, dataObjData, tokenQuerySource.queryType)
+		result = await DataObj.init(sm, dataObjData, queryType)
 		if (result.error) return result
 		this.dataObj = result.data as DataObj
 
@@ -670,6 +753,7 @@ export class AppLevelTab {
 				this.dataObj.data.rowsRetrieved.getRows()
 			)
 		}
+
 		return new MethodResult()
 	}
 
@@ -780,12 +864,8 @@ export enum AppRowActionType {
 	last = 'last'
 }
 
-async function getNode(nodeId: string) {
-	const result: MethodResult = await apiFetchFunction(
-		ApiFunction.dbGelGetNode,
-		new TokenApiId(nodeId)
-	)
-	return result.data
+async function getNodeByNodeId(nodeId: string) {
+	return await apiFetchFunction(ApiFunction.dbGelGetNodeByNodeId, new TokenApiId(nodeId))
 }
 
 async function getNodesChildren(nodeIdList: string[]) {
@@ -1017,7 +1097,7 @@ export class AppTree {
 					const listDataRow = tabParent.listGetDataRow()
 					return await this.tabQueryDetailDataRow(sm, TokenApiQueryType.retrieve, listDataRow)
 				} else {
-					return await currTab.query(sm, TokenApiQueryType.retrieve)
+					return await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
 				}
 			}
 		}
@@ -1043,7 +1123,7 @@ export class AppTree {
 			currLevel.tabIdxSet(token.index)
 			const currTab = currLevel.getCurrTab()
 			if (!currTab.isRetrieved) {
-				return await currTab.query(sm, TokenApiQueryType.retrieve)
+				return await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
 			}
 		}
 		return new MethodResult()
@@ -1095,7 +1175,7 @@ export class AppTree {
 								)
 								if (result.error) return result
 
-								result = await tabParent.query(sm, TokenApiQueryType.retrieve)
+								result = await tabParent.queryDataObj(sm, TokenApiQueryType.retrieve)
 								if (result.error) return result
 
 								tabParent.dataObj.data.parms.updateList(
@@ -1117,7 +1197,7 @@ export class AppTree {
 								)
 								if (result.error) return result
 
-								result = await tabParent.query(sm, TokenApiQueryType.retrieve)
+								result = await tabParent.queryDataObj(sm, TokenApiQueryType.retrieve)
 								if (result.error) return result
 
 								result = await this.levelPop(sm)
@@ -1131,7 +1211,8 @@ export class AppTree {
 						if (result.error) return result
 
 						if (currTab.nodeIsDifferent(CodeActionType.doListDetailEdit)) {
-							await currTab.nodeRetrieve(CodeActionType.doListDetailEdit)
+							result = await currTab.nodeRetrieve(CodeActionType.doListDetailEdit)
+							if (result.error) return result
 							result = await this.tabQueryDetailData(
 								sm,
 								TokenApiQueryType.retrieve,
@@ -1147,7 +1228,7 @@ export class AppTree {
 							let listIdsPre: string[] = tabParent.dataObj.data.parms.valueGet(
 								ParmsValuesType.listIds
 							)
-							result = await tabParent.query(sm, TokenApiQueryType.retrieve)
+							result = await tabParent.queryDataObj(sm, TokenApiQueryType.retrieve)
 							if (result.error) return result
 
 							// set list record id
@@ -1219,7 +1300,7 @@ export class AppTree {
 		const currTab = this.getCurrTab()
 		if (currTab && currTab.dataObj && sm.dm) {
 			currTab.dataObj.data = sm.dm.getDataSave()
-			return await currTab.query(sm, TokenApiQueryType.save)
+			return await currTab.queryDataObj(sm, TokenApiQueryType.save)
 		}
 		return new MethodResult({
 			error: {
@@ -1250,7 +1331,7 @@ export class AppTree {
 			const currTab = currLevel.getCurrTab()
 			if (currTab.dataObj) {
 				currTab.dataObj.data = data
-				return await currTab.query(sm, queryType)
+				return await currTab.queryDataObj(sm, queryType)
 			}
 		}
 		return new MethodResult({

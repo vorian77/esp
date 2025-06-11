@@ -44,6 +44,9 @@ export async function addDataObj(data: any) {
 			parentTable: e.optional(e.str),
 			processType: e.optional(e.str),
 			queryRiders: e.optional(e.array(e.json)),
+			selectListItems: e.optional(e.str),
+			selectListItemsHeader: e.optional(e.str),
+			selectListItemsParmValue: e.optional(e.str),
 			subHeader: e.optional(e.str),
 			tables: e.optional(e.array(e.json))
 		},
@@ -295,6 +298,9 @@ export async function addDataObj(data: any) {
 				parentFilterExpr: p.parentFilterExpr,
 				parentTable: e.select(e.sys_db.getTable(p.parentTable)),
 				processType: e.select(e.sys_core.getCode('ct_sys_do_dynamic_process_type', p.processType)),
+				selectListItems: e.select(e.sys_core.getDataObjFieldListItems(p.selectListItems)),
+				selectListItemsHeader: p.selectListItemsHeader,
+				selectListItemsParmValue: p.selectListItemsParmValue,
 				subHeader: p.subHeader,
 				tables: e.for(e.array_unpack(p.tables), (t) => {
 					return e.insert(e.sys_core.SysDataObjTable, {
@@ -537,7 +543,7 @@ export async function addUserAction(data: any) {
 					'ct_sys_user_action_confirm_type',
 					e.op(p.codeConfirmType, '??', 'none')
 				),
-				codeAttrType: e.sys_core.getCodeAttrType('at_sys_action_user'),
+				codeAttrType: e.sys_core.getCodeAttrType('at_sys_user_action'),
 				createdBy: CREATOR,
 				exprAction: p.exprAction,
 				exprEnable: p.exprEnable,

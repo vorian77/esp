@@ -721,7 +721,6 @@ function initSystem(init: InitDb) {
 		codeComponent: 'FormList',
 		exprFilter: '.id IN <user,uuidlist,systemIds>',
 		header: 'Systems',
-		isListEdit: false,
 		name: 'data_obj_sys_admin_system_list_meta',
 		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],
@@ -957,7 +956,7 @@ function initSystem(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgram', {
-		children: [{ node: 'node_obj_sys_admin_system_detail_meta', order: 10 }],
+		children: [{ node: 'node_obj_sys_admin_attr_obj_list_system', order: 10 }],
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
 		codeQueryOwnerType: 'queryOwnerTypeSystemRecord',
@@ -1049,6 +1048,7 @@ function initUser(init: InitDb) {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
 		codeComponent: 'FormDetail',
+		exprFilter: `.id = <tree,uuid,SysObjAttr.id>`,
 		header: 'User',
 		name: 'data_obj_sys_admin_user_detail_meta',
 		owner: 'sys_system',
@@ -1065,7 +1065,7 @@ function initUser(init: InitDb) {
 			},
 			{
 				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).owner`,
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				indexTable: 0,
 				isDisplayable: false,
 				linkTable: 'SysOrg',

@@ -40,7 +40,7 @@ export default async function action(
 		case CodeActionType.navNode:
 			currTab = sm.app.getCurrTab()
 			if (currTab && currTab.isAlwaysRetrieveData) {
-				result = await currTab.query(sm, TokenApiQueryType.retrieve)
+				result = await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
 				if (result.error) return result
 			}
 			await userActionStateChangeDataObj(sm, parmsAction)

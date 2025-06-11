@@ -16,22 +16,22 @@
 		StateSurfacePopup,
 		StateTriggerToken
 	} from '$comps/app/types.appState.svelte'
-	import ContentFormDetailApp from '$comps/form/ContentFormDetailApp.svelte'
+	import ContentFormDetail from '$comps/form/ContentFormDetail.svelte'
 	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
-	import ContentFormListApp from '$comps/form/ContentFormListApp.svelte'
-	import ContentFormListSelectApp from '$comps/form/ContentFormListSelectApp.svelte'
+	import ContentFormList from '$comps/form/ContentFormList.svelte'
+	import ContentFormListSelect from '$comps/form/ContentFormListSelect.svelte'
 	import GridSelect from '$comps/grid/GridSelect.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
-	import DataViewer from '$utils/DataViewer.svelte'
 	import NavRow from '$comps/nav/NavRow.svelte'
+	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/layout/LayoutContent.svelte'
 
 	const componentsContent: Record<StateNavContent, any> = {
-		FormDetail: ContentFormDetailApp,
+		FormDetail: ContentFormDetail,
 		FormDetailRepConfig: ContentFormDetailRepConfig,
-		FormList: ContentFormListApp,
-		FormListSelect: ContentFormListSelectApp,
+		FormList: ContentFormList,
+		FormListSelect: ContentFormListSelect,
 		ModalSelect: GridSelect
 	}
 

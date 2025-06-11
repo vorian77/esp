@@ -32,7 +32,7 @@ export async function evalExpr(obj: any): Promise<MethodResult> {
 		obj.querySource,
 		new QuerySource(new QuerySourceRaw({ querySourceType: QuerySourceType.expr }))
 	)
-	let parser = new EvalParserDb({ evalExprContext: 'navMenuTest', exprRaw, queryData })
+	let parser = new EvalParserDb({ evalExprContext, exprRaw, queryData })
 	return await parser.getExprAsync()
 }
 
@@ -107,7 +107,7 @@ class EvalParserDb extends EvalParser {
 					break
 
 				case ExprTokenItemType.parms:
-					item = new ExprTokenItemData({ data: parser.queryData.getParms(), parser, token })
+					item = new ExprTokenItemParms({ data: parser.queryData.getParms(), parser, token })
 					break
 
 				case ExprTokenItemType.record:
@@ -246,35 +246,26 @@ class ExprTokenItem {
 		return new MethodResult()
 	}
 
-	getValRawValidate(data: DataRecord | undefined, key: string) {
+	getValRawValidate(data: DataRecord | undefined, parm: string, isAllowMissing: boolean) {
 		if (!data) return this.valueNotFound({})
-		const parms = key.split('.')
-		if (parms.length === 0) return new MethodResult(this.valueNotFound(data))
-		const result: [boolean, any] = this.getVaRawValidatelNested(data, parms[0])
+		const keys = parm.split('.')
+		if (keys.length === 0) return new MethodResult(this.valueNotFound(data))
+		const result: [boolean, any] = this.getVaRawValidatelNested(data, keys, isAllowMissing)
 		if (!result[0]) return this.valueNotFound(data)
 		let rawValue = result[1]
-		if (parms.length === 2) {
-			rawValue =
-				parms[1] === 'data'
-					? getValueData(rawValue)
-					: parms[1] === 'display'
-						? getValueDisplay(rawValue)
-						: result
-		}
 		return new MethodResult(rawValue)
 	}
 
-	getVaRawValidatelNested(data: DataRecord, key: string): [boolean, any] {
-		const tokens = key.split('.')
+	getVaRawValidatelNested(
+		data: DataRecord,
+		keys: string[],
+		isAllowMissing: boolean
+	): [boolean, any] {
 		let currentData = data
-		let i = 0
-		while (i < tokens.length) {
-			const currKey = getDataRecordKey(currentData, tokens[i])
-			if (!currKey) return [false, undefined]
-			if (currentData.hasOwnProperty(currKey)) {
-				currentData = currentData[currKey]
-			} else return [false, undefined]
-			i++
+		for (let i = 0; i < keys.length; i++) {
+			const currKey = getDataRecordKey(currentData, keys[i])
+			if (!currKey) return isAllowMissing ? [true, ''] : [false, undefined]
+			currentData = currentData[currKey]
 		}
 		return [true, currentData]
 	}
@@ -389,7 +380,7 @@ class ExprTokenItemData extends ExprTokenItem {
 	}
 	getValRaw(): MethodResult {
 		if (this.itemValue.parms.length === 1) {
-			return this.getValRawValidate(this.data, this.itemValue.parms[0])
+			return this.getValRawValidate(this.data, this.itemValue.parms[0], false)
 		} else {
 			return this.error({ msg: `Invalid itemData.parms: ${this.itemValue.parms}` }, this.data)
 		}
@@ -444,6 +435,24 @@ class ExprTokenItemLiteral extends ExprTokenItem {
 			return new MethodResult(this.itemValue.parms[0])
 		} else {
 			return this.error({ msg: `Invalid itemData.parms: ${this.itemValue.parms}` })
+		}
+	}
+}
+
+class ExprTokenItemParms extends ExprTokenItem {
+	data: DataRecord
+	constructor(obj: any) {
+		const clazz = 'ExprTokenItemParms'
+		obj = valueOrDefault(obj, {})
+		super(obj)
+		this.data = required(obj.data, clazz, 'data')
+	}
+	getValRaw(): MethodResult {
+		if (this.itemValue.parms.length === 1) {
+			const key = this.itemValue.parms[0]
+			return this.getValRawValidate(this.data, key, true)
+		} else {
+			return this.error({ msg: `Invalid itemData.parms: ${this.itemValue.parms}` }, this.data)
 		}
 	}
 }
@@ -507,7 +516,7 @@ class ExprTokenItemTree extends ExprTokenItem {
 					return this.error({ msg: `Invalid treeParms: ${this.treeParms}` })
 				}
 		}
-		return this.getValRawValidate(dataRowRecord, property)
+		return this.getValRawValidate(dataRowRecord, property, false)
 	}
 }
 

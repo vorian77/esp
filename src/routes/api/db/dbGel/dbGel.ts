@@ -1,15 +1,15 @@
 import e from '$db/gel/edgeql-js'
 import { createClient } from 'gel'
-import { EDGEDB_BRANCH, EDGEDB_INSTANCE, EDGEDB_SECRET_KEY } from '$env/static/private'
+import { GEL_BRANCH, GEL_INSTANCE, GEL_SECRET_KEY } from '$env/static/private'
 import { debug, MethodResult, type DataRecord } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = 'routes/api/dbGel/dbGel.ts'
 
 export const client = createClient({
-	branch: EDGEDB_BRANCH,
-	instanceName: EDGEDB_INSTANCE,
-	secretKey: EDGEDB_SECRET_KEY
+	branch: GEL_BRANCH,
+	instanceName: GEL_INSTANCE,
+	secretKey: GEL_SECRET_KEY
 })
 
 export function booleanOrDefaultJSON(jsonObj: any, val: string, valDefault: boolean) {

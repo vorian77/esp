@@ -1,5 +1,6 @@
 import { State } from '$comps/app/types.appState.svelte'
 import {
+	PropLinkItems,
 	PropSortDir,
 	RawDataObj,
 	RawDataObjAction,
@@ -45,6 +46,7 @@ import { GridSettings } from '$comps/grid/grid'
 import { UserAction } from '$comps/other/types.userAction.svelte'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
+	classOptional,
 	CodeAction,
 	type DataRecord,
 	debug,
@@ -75,6 +77,7 @@ export class DataObj {
 	isDetailPreset: boolean = false
 	raw: RawDataObj
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
+	selectListItems?: PropLinkItems
 	sortModel: DataObjSort
 	treeLevelIdx: number = 0
 	userActions: DataObjAction[] = $state([])
@@ -83,9 +86,11 @@ export class DataObj {
 		const clazz = 'DataObj'
 		this.data = data
 		this.raw = required(data.rawDataObj, clazz, 'rawDataObj')
+
 		this.sortModel = this.initSortModel(this.raw.rawPropsSort)
 
 		/* dependent properties */
+		this.selectListItems = classOptional(PropLinkItems, this.raw.selectListItemsSource?.raw)
 		this.userGridSettings = new GridSettings(this.raw.id)
 	}
 
@@ -401,6 +406,7 @@ export enum DataObjCardinality {
 export enum DataObjComponent {
 	Home = 'Home',
 	FormList = 'FormList',
+	FormListSelect = 'FormListSelect',
 	FormDetail = 'FormDetail',
 	FormDetailRepConfig = 'FormDetailRepConfig',
 	ProcessStatus = 'ProcessStatus',
@@ -410,7 +416,8 @@ export enum DataObjComponent {
 export class DataObjData {
 	cardinality?: DataObjCardinality
 	fields: FieldEmbed[] = []
-	items: DataRecord = {}
+	itemsFields: DataRecord = {}
+	itemsSelect: DataRecord[] = []
 	parms: ParmsValues = new ParmsValues()
 	rawDataObj?: RawDataObj
 	rowsRetrieved: DataRows = new DataRows()
@@ -468,7 +475,8 @@ export class DataObjData {
 		if (result.error) return result
 		data.fields = result.data
 
-		data.items = { ...source.items }
+		data.itemsFields = { ...source.itemsFields }
+		data.itemsSelect = source.itemsSelect
 		data.parms = ParmsValues.load(source.parms)
 		data.rowsRetrieved = DataRows.load(source.rowsRetrieved)
 		data.rowsSave = DataRows.load(source.rowsSave)
@@ -490,8 +498,12 @@ export class DataObjData {
 
 	setValue(key: string, value: any) {
 		switch (key) {
-			case DataObjDataPropName.items:
-				this.items = value
+			case DataObjDataPropName.itemsField:
+				this.itemsFields = value
+				break
+
+			case DataObjDataPropName.itemsSelect:
+				this.itemsSelect = value
 				break
 
 			case DataObjDataPropName.rawDataObj:
@@ -513,7 +525,8 @@ export class DataObjData {
 }
 
 export enum DataObjDataPropName {
-	items = 'items',
+	itemsField = 'itemsField',
+	itemsSelect = 'itemsSelect',
 	rawDataObj = 'rawDataObj',
 	rowsRetrieved = 'rowsRetrieved'
 }
@@ -811,5 +824,7 @@ export enum ParmsValuesType {
 	parentRecordId = 'parentRecordId',
 	rowData = 'rowData',
 	selectLabel = 'selectLabel',
+	selectListId = 'selectListId',
+	selectListRecord = 'selectListRecord',
 	treeAncestorValue = 'treeAncestorValue'
 }

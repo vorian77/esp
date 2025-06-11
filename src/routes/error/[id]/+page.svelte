@@ -9,7 +9,7 @@
 
 <div class="p-4">
 	<div
-		class="p-8 flex flex-col items-center justify-center h-1/2 border-2 border-gray-500 rounded-lg"
+		class="p-8 flex flex-col items-center justify-center h-1/2 border-2 border-neutral-300 rounded-lg"
 	>
 		<span class="text-4xl font-bold mb-8">Oops, something went wrong!</span>
 

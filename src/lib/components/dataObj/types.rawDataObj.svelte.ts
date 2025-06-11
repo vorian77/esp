@@ -107,6 +107,7 @@ export class RawDataObj {
 	rawPropsSelectPreset: RawDataObjPropDB[] = []
 	rawPropsSort: RawDataObjPropDB[] = []
 	rawQuerySource: QuerySourceRaw
+	selectListItemsSource?: PropLinkItemsSource
 	subHeader?: string
 	tableGroup: DbTableQueryGroup
 	constructor(obj: any) {
@@ -176,6 +177,7 @@ export class RawDataObj {
 		)
 		this.rawActions = arrayOfClass(RawDataObjAction, obj._actionGroup?._dataObjActions)
 		this.rawQuerySource = new QuerySourceRaw(obj._querySource)
+		this.selectListItemsSource = classOptional(PropLinkItemsSource, obj._selectListItems)
 		this.subHeader = strOptional(obj.subHeader, clazz, 'subHeader')
 
 		/* dependent properties */
@@ -483,10 +485,6 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		)
 		this.label = override(obj.headerAlt, this.colDB.header, clazz, 'label')
 		this.labelSide = valueOrDefault(this.colDB.headerSide, this.label)
-		debug('RawDataObjPropDisplay', 'constructor.gridStyles', {
-			prop: this.colDB.header,
-			gridStyles: this.gridStyles
-		})
 	}
 }
 
@@ -860,6 +858,7 @@ export class PropLinkItems {
 		const queryType = TokenApiQueryType.retrieve
 
 		const dataTab = new DataObjData()
+		dataTab.parms.update(sm.parmsState.valueGetAll())
 		dataTab.parms.valueSet(ParmsValuesType.itemsParmValue, this.source.parmValue)
 		dataTab.parms.valueSet(ParmsValuesType.itemsParmValueList, this.source.parmValueList)
 
@@ -887,6 +886,7 @@ export class PropLinkItems {
 export class PropLinkItemsSource {
 	displayIdSeparator: string
 	exprProps: string
+	header?: string
 	name: string
 	parmValue?: string
 	parmValueList: string[] = []
@@ -897,6 +897,7 @@ export class PropLinkItemsSource {
 		const clazz = 'PropLinkItemsSource'
 		obj = valueOrDefault(obj, {})
 		this.displayIdSeparator = valueOrDefault(obj.displayIdSeparator, ' ')
+		this.header = strOptional(obj._header, clazz, 'header')
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.parmValue = obj._parmValue || obj._codeAttrType
 		this.parmValueList = getArray(obj._parmValueList)
@@ -911,12 +912,11 @@ export class PropLinkItemsSource {
 		let props = ''
 		let display = ''
 		this.props.forEach((p: PropLinkItemsSourceProp) => {
-			if (display) {
-				display += ' ++ '
+			if (p.isDisplayId) {
+				if (display) display += ' ++ '
 				if (this.displayIdSeparator) display += `"${this.displayIdSeparator}" ++ `
+				display += p.expr
 			}
-			display += p.expr
-
 			if (props) props += ', '
 			props += `${p.key} := ${p.expr}`
 		})

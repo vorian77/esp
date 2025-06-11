@@ -356,7 +356,8 @@ export class QuerySourceTableRaw {
 export type RawDataList = DataRecord[]
 
 export enum ScriptExePost {
-	dataItems = 'dataItems',
+	dataItemsFields = 'dataItemsFields',
+	dataItemsSelect = 'dataItemsSelect',
 	formatData = 'formatData',
 	none = 'none',
 	processRowSelectPreset = 'processRowSelectPreset'
