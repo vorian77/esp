@@ -25,15 +25,6 @@ module sys_user {
 
   type SysAppHeader extending sys_core::SysObj {}
 
-  type SysCodeType extending sys_core::SysObj {
-    parent: sys_core::SysCodeType;
-    order: default::nonNegative;
-    valueDecimal: float64;
-    valueInteger: int64;
-    valueString: str;
-    constraint exclusive on ((.name));
-  }
-
   # task  
   type SysTask extending sys_core::SysObjAttr  {
     codeRenderType: sys_core::SysCode;
@@ -51,6 +42,9 @@ module sys_user {
   }
   
   type SysUser extending sys_core::SysObjAttr {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCode('ct_sys_obj_attr_type', 'at_sys_user');
+    };
     required defaultOrg: sys_core::SysOrg;
     required defaultSystem: sys_core::SysSystem;
     isActive: bool;

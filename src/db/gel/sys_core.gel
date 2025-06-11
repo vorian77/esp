@@ -31,7 +31,7 @@ module sys_core {
     
   type SysObj extending sys_core::ObjRootCore, sys_user::Mgmt {
     required owner: sys_core::SysSystem;
-    constraint exclusive on ((.owner, .name));
+    # constraint exclusive on ((.owner, .name));
   } 
 
   type SysObjAttr extending sys_core::SysObj {
@@ -103,11 +103,8 @@ module sys_core {
     file: json;
     logoMarginRight: float64;
     logoWidth: int16;
-    multi nodesConfigClient: sys_core::SysNodeObj{
-      on target delete allow;
-    };
-    multi nodesConfigSystem: sys_core::SysNodeObj{
-      on target delete allow;
+    multi nodesConfig: sys_core::SysNodeObjConfig{
+      on source delete allow;
     };
     required owner: sys_core::SysOrg;
     multi systemParents: sys_core::SysSystem;
@@ -115,7 +112,6 @@ module sys_core {
     users := .<systems[is sys_user::SysUser];
     constraint exclusive on ((.owner, .name));
   }
-
 
   # other sys_core objects
   type SysCodeType extending sys_core::SysObj {
@@ -127,8 +123,10 @@ module sys_core {
     constraint exclusive on ((.name));
   }
 
-  type SysCode extending sys_core::ObjRootCore, sys_user::Mgmt {
-    required owner: sys_core::SysSystem;
+  type SysCode extending sys_core::SysObjAttr {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCode('ct_sys_obj_attr_type', 'at_sys_code');
+    };
     parent: sys_core::SysCode;
     required codeType: sys_core::SysCodeType;
     multi codeTypeFamily: sys_core::SysCodeType;
@@ -138,6 +136,9 @@ module sys_core {
     valueString: str;
     constraint exclusive on ((.owner, .codeType, .name));
   }
+
+
+
 
   type SysCodeAction extending sys_core::SysCode {}
 
@@ -195,6 +196,9 @@ module sys_core {
     
     listReorderColumn: sys_db::SysColumn;    
     processType: sys_core::SysCode;
+    selectListItems: sys_core::SysDataObjFieldListItems;
+    selectListItemsHeader: str;
+    selectListItemsParmValue: str;
     subHeader: str;
     constraint exclusive on (.name);
   } 
@@ -442,9 +446,6 @@ module sys_core {
     multi children: sys_core::SysNodeObjChild{
       on source delete allow;
     };
-    multi childrenOld: sys_core::SysNodeObj{
-      on source delete allow;
-    };
     required codeNavType: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
     codeQueryOwnerType: sys_core::SysCode;
@@ -474,6 +475,14 @@ module sys_core {
       on target delete delete source;
     };
     required orderDefine: default::nonNegative;
+  }
+  
+  type SysNodeObjConfig {
+    required codeAttrType: sys_core::SysCode;
+    required nodeObj: sys_core::SysNodeObj{
+      on target delete delete source;
+    };
+    constraint exclusive on ((.codeAttrType, .nodeObj));
   }
     
   type SysNodeObjData {

@@ -1,11 +1,25 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
 export function initUserMOED(init: InitDb) {
+	initConfigNodes(init)
 	initObjAttr(init)
 	initAppHeaders(init)
 	initApps(init)
 	initUserType(init)
 	initUsers(init)
+}
+
+function initConfigNodes(init: InitDb) {
+	init.addTrans('updateSystemNodesConfig', {
+		name: 'sys_client_moed',
+		nodesConfig: [
+			{ codeAttrType: 'at_cm_site', node: 'node_obj_sys_admin_attr_obj_detail' },
+			{ codeAttrType: 'at_sys_code', node: 'node_obj_sys_admin_code_detail_meta' },
+			{ codeAttrType: 'at_sys_msg_group', node: 'node_obj_sys_admin_attr_obj_detail' },
+			{ codeAttrType: 'at_sys_user', node: 'node_obj_sys_admin_user_detail_meta' }
+			// { codeAttrType: 'at_sys_user_type', node: 'node_obj_sys_admin_user_type_detail' }
+		]
+	})
 }
 
 function initObjAttr(init: InitDb) {
@@ -22,31 +36,31 @@ function initObjAttr(init: InitDb) {
 		owner: 'sys_client_moed'
 	})
 	init.addTrans('sysObjAttr', {
-		code: 'at_sys_group_msg',
+		code: 'at_sys_msg_group',
 		header: 'MOED Administrators',
 		name: 'group_msg_moed_admin',
 		owner: 'sys_client_moed'
 	})
 	init.addTrans('sysObjAttr', {
-		code: 'at_sys_group_msg',
+		code: 'at_sys_msg_group',
 		header: 'Eastside Staff',
 		name: 'group_msg_moed_staff_east',
 		owner: 'sys_client_moed'
 	})
 	init.addTrans('sysObjAttr', {
-		code: 'at_sys_group_msg',
+		code: 'at_sys_msg_group',
 		header: 'Westside Staff',
 		name: 'group_msg_moed_staff_west',
 		owner: 'sys_client_moed'
 	})
 	init.addTrans('sysObjAttr', {
-		code: 'at_sys_group_msg',
+		code: 'at_sys_msg_group',
 		header: 'Eastside Youth Applicants',
 		name: 'group_msg_moed_youth_applicants_east',
 		owner: 'sys_client_moed'
 	})
 	init.addTrans('sysObjAttr', {
-		code: 'at_sys_group_msg',
+		code: 'at_sys_msg_group',
 		header: 'Westside Youth Applicants',
 		name: 'group_msg_moed_youth_applicants_west',
 		owner: 'sys_client_moed'

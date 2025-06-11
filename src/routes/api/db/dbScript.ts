@@ -77,14 +77,6 @@ export class ScriptGroup {
 
 		// derived
 		DataObjData.reset(this.queryData.dataTab)
-
-		if (this.queryData.dataTab.fields.length > 0) {
-			debug(
-				'ScriptGroup.constructor',
-				'queryData.fields[0].parms.data',
-				this.queryData.dataTab.fields[0].data.parms.data
-			)
-		}
 	}
 
 	async addScript(obj: any): Promise<MethodResult> {

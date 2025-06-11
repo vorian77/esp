@@ -13,7 +13,6 @@
 		ParmsValuesType,
 		required
 	} from '$utils/types'
-	import { PropLinkItems } from '$comps/dataObj/types.rawDataObj.svelte'
 	import { getContext } from 'svelte'
 	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import {

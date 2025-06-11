@@ -12,6 +12,7 @@ import { initAdminSysObjTask } from '$server/dbGel/init/dbGelInit60SysAdmin30Sys
 import { initAdminSysObjUserAction } from '$server/dbGel/init/dbGelInit60SysAdmin30SysObjUserAction'
 
 export function initAdminSysObj(init: InitDb) {
+	initAttrObject(init)
 	initSystemObject(init)
 	initAdminSysObjApp(init)
 	initAdminSysObjCode(init)
@@ -26,6 +27,184 @@ export function initAdminSysObj(init: InitDb) {
 	initAdminSysObjUserAction(init)
 }
 
+async function initAttrObject(init: InitDb) {
+	init.addTrans('sysDataObj', {
+		actionGroup: 'doag_list_node_config',
+		codeCardinality: 'list',
+		codeComponent: 'FormListSelect',
+		exprFilter: `.owner.id = <parms,uuid,queryOwnerSys> AND .codeAttrType.id = (SELECT sys_core::SysNodeObjConfig FILTER .id = <parms,uuid,selectListId>).codeAttrType.id`,
+		header: 'Attribute Objects',
+		name: 'data_obj_sys_admin_attr_obj_list_system',
+		owner: 'sys_system',
+		selectListItems: 'il_sys_node_obj_config_by_system',
+		selectListItemsHeader: 'Object Type',
+		tables: [{ index: 0, table: 'SysObjAttr' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'name',
+				indexTable: 0,
+				isDisplayable: true,
+				orderCrumb: 10,
+				orderDisplay: 30,
+				orderDefine: 30,
+				orderSort: 10
+			}
+		]
+	})
+
+	init.addTrans('sysDataObj', {
+		actionGroup: 'doag_detail',
+		codeCardinality: 'detail',
+		codeComponent: 'FormDetail',
+		header: 'Attribute Object',
+		name: 'data_obj_sys_admin_attr_obj_detail',
+		owner: 'sys_system',
+		tables: [{ index: 0, table: 'SysObjAttr' }],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				columnName: 'owner',
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>)`,
+				orderDefine: 20,
+				indexTable: 0,
+				isDisplayable: false,
+				linkTable: 'SysSystem'
+			},
+			{
+				columnName: 'codeAttrType',
+				exprSave: `(SELECT sys_core::SysCode FILTER .id = <parms,uuid,selectListRecord._codeAttrTypeId>)`,
+				orderDefine: 30,
+				indexTable: 0,
+				isDisplayable: false,
+				linkTable: 'SysCode'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40
+			},
+			{
+				columnName: 'name',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			},
+			{
+				columnName: 'header',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 70,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70
+			},
+
+			/* management */
+			{
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_start',
+				headerAlt: 'Meta',
+				isDisplayable: true,
+				orderDisplay: 1000,
+				orderDefine: 1000
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 1010,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				isDisplayable: true,
+				orderDisplay: 1020,
+				orderDefine: 1020,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				isDisplayable: true,
+				orderDisplay: 1030,
+				orderDefine: 1030,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				isDisplayable: true,
+				orderDisplay: 1040,
+				orderDefine: 1040,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: true,
+				orderDisplay: 1050,
+				orderDefine: 1050,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 1060,
+				orderDefine: 1060
+			},
+			{
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_end',
+				isDisplayable: true,
+				orderDisplay: 1070,
+				orderDefine: 1070
+			}
+		]
+	})
+	init.addTrans('sysNodeObjProgramObj', {
+		codeIcon: 'settings2',
+		codeNodeType: 'program_object',
+		dataObj: 'data_obj_sys_admin_attr_obj_list_system',
+		header: 'Attribute Objects',
+		isAlwaysRetrieveData: true,
+		name: 'node_obj_sys_admin_attr_obj_list_system',
+		orderDefine: 10,
+		owner: 'sys_system'
+	})
+
+	init.addTrans('sysNodeObjProgramObj', {
+		codeIcon: 'AppWindow',
+		codeNodeType: 'program_object',
+		dataObj: 'data_obj_sys_admin_attr_obj_detail',
+		header: 'Attribute Object',
+		name: 'node_obj_sys_admin_attr_obj_detail',
+		orderDefine: 10,
+		owner: 'sys_system'
+	})
+}
+
 async function initSystemObject(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list_edit_download',
@@ -33,7 +212,6 @@ async function initSystemObject(init: InitDb) {
 		codeComponent: 'FormList',
 		exprFilter: 'none',
 		header: 'Systems (Objects)',
-		isListEdit: false,
 		name: 'data_obj_sys_admin_system_list_obj',
 		owner: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],

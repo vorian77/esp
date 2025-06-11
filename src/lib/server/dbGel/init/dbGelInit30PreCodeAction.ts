@@ -127,7 +127,19 @@ function initCodeActionsDoGroupItem(init: InitDb) {
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system',
 		codeType: 'ct_sys_code_action_class_do',
+		name: 'doListDetailEditNodeConfig',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system',
+		codeType: 'ct_sys_code_action_class_do',
 		name: 'doListDetailNew',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system',
+		codeType: 'ct_sys_code_action_class_do',
+		name: 'doListDetailNewNodeConfig',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {

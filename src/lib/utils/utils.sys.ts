@@ -52,9 +52,6 @@ export enum CodeActionType {
 	doCustomAIAttdSheetSetAllFullClass = 'doCustomAIAttdSheetSetAllFullClass',
 	doCustomAIAttdSheetReset = 'doCustomAIAttdSheetReset',
 
-	doDetailMsgSetClosed = 'doDetailMsgSetClosed',
-	doDetailMsgSetOpen = 'doDetailMsgSetOpen',
-
 	// dataObj - system
 	doDetailDelete = 'doDetailDelete',
 
@@ -73,12 +70,15 @@ export enum CodeActionType {
 	doExpr = 'doExpr',
 
 	doListDetailEdit = 'doListDetailEdit',
+	doListDetailEditNodeConfig = 'doListDetailEditNodeConfig',
 	doListDetailNew = 'doListDetailNew',
+	doListDetailNewNodeConfig = 'doListDetailNewNodeConfig',
 	doListDownload = 'doListDownload',
 	doListSelfRefresh = 'doListSelfRefresh',
 	doListSelfSave = 'doListSelfSave',
 	doOpen = 'doOpen',
 	doOpenLink = 'doOpenLink',
+	doRetrieveData = 'doRetrieveData',
 	doSaveCancel = 'doSaveCancel',
 
 	embedShell = 'embedShell',

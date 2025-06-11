@@ -965,27 +965,26 @@ export async function updateSystemNodesConfig(data: any) {
 	sectionHeader(`updateSystemNodesConfig - ${data.name}`)
 	const dataUpdate = {
 		name: data.name,
-		nodesConfigClient: data.nodesConfigClient,
-		nodesConfigSystem: data.nodesConfigSystem
+		nodesConfig: data.nodesConfig
 	}
 	const query = e.params(
 		{
 			name: e.str,
-			nodesConfigClient: e.optional(e.array(e.str)),
-			nodesConfigSystem: e.optional(e.array(e.str))
+			nodesConfig: e.optional(e.array(e.json))
 		},
 		(p) => {
 			return e.update(e.sys_core.SysSystem, (n) => ({
 				filter: e.op(n.name, '=', p.name),
 				set: {
-					nodesConfigClient: e.assert_distinct(
-						e.for(e.array_unpack(p.nodesConfigClient), (nodeName) => {
-							return e.sys_core.getNodeObjByName(nodeName)
-						})
-					),
-					nodesConfigSystem: e.assert_distinct(
-						e.for(e.array_unpack(p.nodesConfigSystem), (nodeName) => {
-							return e.sys_core.getNodeObjByName(nodeName)
+					nodesConfig: e.assert_distinct(
+						e.for(e.array_unpack(p.nodesConfig), (nc) => {
+							return e.insert(e.sys_core.SysNodeObjConfig, {
+								codeAttrType: e.sys_core.getCode(
+									'ct_sys_obj_attr_type',
+									e.cast(e.str, e.json_get(nc, 'codeAttrType'))
+								),
+								nodeObj: e.sys_core.getNodeObjByName(e.cast(e.str, e.json_get(nc, 'node')))
+							})
 						})
 					)
 				}

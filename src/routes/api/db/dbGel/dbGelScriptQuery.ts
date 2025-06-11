@@ -229,10 +229,9 @@ export class GelQuery {
 		const indexTable = required(parms.indexTable, clazz, 'indexTable')
 
 		// 1. build props, subObjGroup
-		propsRaw.filter((p) => p.indexTable === indexTable)
-
-		for (let i = 0; i < propsRaw.length; i++) {
-			const p = propsRaw[i]
+		const propsSave = propsRaw.filter((p) => p.indexTable === indexTable)
+		for (let i = 0; i < propsSave.length; i++) {
+			const p = propsSave[i]
 			if (!p.fieldEmbed) {
 				let result: MethodResult = await this.getPropsSavePropExpr(i, p, query, fValues)
 				if (result.error) return result

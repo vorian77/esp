@@ -47,7 +47,6 @@ export class QueryManagerClient extends QueryManager {
 		if (this.sm) {
 			this.queryData.dataTab.parms.update(this.sm.parmsState.valueGetAll())
 			this.queryData.dataTab.parms.update(this.sm.parmsTrans.valueGetAll())
-			this.queryData.dataTab.parms.valueSetIfMissing(ParmsValuesType.itemsParmValue, '')
 		}
 		if (this.queryData.dataTab.rawDataObj) {
 			this.queryRiders = new QueryRiders(

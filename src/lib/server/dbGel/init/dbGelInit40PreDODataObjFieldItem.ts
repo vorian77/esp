@@ -228,6 +228,19 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysNodeObj'
 	})
 
+	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter:
+			'.id IN (SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>).nodesConfig.id',
+		props: [
+			[0, '_codeAttrTypeName', 'Attribute Type', '.codeAttrType.header', true, 0],
+			[1, '_codeAttrTypeId', 'Attribute Type Id', '.codeAttrType.id', false, null],
+			[2, '_nodeObjId', 'Node Object Id', '.nodeObj.id', false, null]
+		],
+		name: 'il_sys_node_obj_config_by_system',
+		owner: 'sys_system',
+		table: 'SysNodeObjConfig'
+	})
+
 	/* sys-objAttr */
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [

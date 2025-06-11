@@ -158,12 +158,12 @@ export class FieldEmbed extends Field {
 		const dataObjIdEmbed = strRequired(propRaw.fieldEmbed?.id, clazz, 'dataObjIdEmbed')
 		const embedTable = propRaw.link?.getTableObj()
 		const parentTable = required(this.getTableRaw(rawDataObjParent), clazz, 'parentTable')
-		const detached = embedTable === parentTable.object ? 'DETACHED' : ''
+		const detached = embedTable === parentTable.object ? 'DETACHED ' : ''
 
 		let result: MethodResult = await fGetRawDataObj(
 			new TokenApiDbDataObjSource({
 				dataObjId: dataObjIdEmbed,
-				exprFilter: `.id IN (SELECT ${detached} ${parentTable.object} FILTER .id = <tree,uuid,${parentTable.name}.id>).${propRaw.propNameRaw}.id`
+				exprFilter: `.id IN (SELECT ${detached}${parentTable.object} FILTER .id = <tree,uuid,treeAncestorValue.index.0.id>).${propRaw.propNameRaw}.id`
 			}),
 			queryData
 		)

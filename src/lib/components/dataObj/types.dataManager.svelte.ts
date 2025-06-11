@@ -301,7 +301,7 @@ export class DataManagerNode {
 		const linkItemFields = dataObj.fields.filter((f) => f.colDO.linkItemsSource)
 		linkItemFields.forEach((f) => {
 			const propName = f.colDO.propName
-			const items = dataObj.data.items[propName]
+			const items = dataObj.data.itemsFields[propName]
 			if (items) f.linkItems?.setRawItems(getArray(items))
 		})
 

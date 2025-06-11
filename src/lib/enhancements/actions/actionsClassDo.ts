@@ -13,9 +13,7 @@ import {
 	DataRecordStatus,
 	MethodResult,
 	ParmsValues,
-	ParmsValuesType,
-	required,
-	strRequired
+	ParmsValuesType
 } from '$utils/types'
 import {
 	Token,
@@ -25,7 +23,6 @@ import {
 	TokenAppModalReturnType,
 	TokenAppStateTriggerAction
 } from '$utils/types.token'
-import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionClassDO.ts'
@@ -40,36 +37,29 @@ export default async function action(
 	parmsAction: TokenAppStateTriggerAction
 ): Promise<MethodResult> {
 	const actionType = parmsAction.codeAction.actionType
-	const token: Token = required(parmsAction.data.token, FILENAME, 'token')
+	const token: Token = parmsAction.data.token
+	let tokenAppDo: TokenAppDo
 	const value = parmsAction.data.value
-	let currRecordId: string
+
+	const actionError = (msg: string) => {
+		return new MethodResult({
+			error: {
+				file: FILENAME,
+				function: `action.${actionType}`,
+				msg
+			}
+		})
+	}
+
+	const actionErrorToken = () => {
+		return actionError(`Invalid token type. Expected TokenAppDo.`)
+	}
 
 	switch (actionType) {
 		case CodeActionType.doDetailDelete:
 			result = await sm.app.saveDetail(sm, actionType)
 			if (result.error) return result
-
 			await userActionStateChangeDataObj(sm, parmsAction)
-			break
-
-		case CodeActionType.doDetailMsgSetClosed:
-			alert('doDetailMsgSetClosed')
-			break
-
-		case CodeActionType.doDetailMsgSetOpen:
-			currTab = sm.app.getCurrTab()
-			if (currTab && currTab.dataObj) {
-				currRecordId = currTab.getCurrRecordValue('id')
-				if (currRecordId) {
-					const evalExprContext = `${FILENAME}.action.${actionType}`
-					const expr = `UPDATE sys_core::SysMsg FILTER .id = <uuid>'${currRecordId}' SET {isOpen := true}`
-					result = await clientQueryExpr(evalExprContext, expr)
-					if (result.error) return result
-
-					// currTab.dataObj.data.rowsRetrieved.setDetailRecordValue('isReadDisplay', 'No')
-					await userActionStateChangeDataObj(sm, parmsAction)
-				}
-			}
 			break
 
 		case CodeActionType.doDetailMigrate:
@@ -83,7 +73,7 @@ export default async function action(
 			}
 			currTab = sm.app.getCurrTab()
 			if (currTab && currTab.dataObj) {
-				result = await currTab.query(sm, TokenApiQueryType.preset)
+				result = await currTab.queryDataObj(sm, TokenApiQueryType.preset)
 				if (result.error) return result
 				await userActionStateChangeDataObj(sm, parmsAction)
 			}
@@ -96,54 +86,79 @@ export default async function action(
 		case CodeActionType.doDetailSave:
 			result = await sm.app.saveDetail(sm, actionType)
 			if (result.error) return result
-
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.doDetailSaveAs:
-			await sm.app.tabDuplicate(sm, token as TokenAppDo)
+			if (!(token instanceof TokenAppDo)) return actionErrorToken()
+			await sm.app.tabDuplicate(sm, token)
 			await userActionStateChangeDataObj(sm, parmsAction)
 			break
 
 		case CodeActionType.doEmbedListConfigEdit:
+			if (!(token instanceof TokenAppDo)) return actionErrorToken()
 			return await sm.openModalEmbedListConfig(
-				token as TokenAppDo,
+				token,
 				TokenApiQueryType.retrieve,
 				fModalCloseUpdateEmbedListConfig
 			)
 			break
 
 		case CodeActionType.doEmbedListConfigNew:
+			if (!(token instanceof TokenAppDo)) return actionErrorToken()
 			await sm.openModalEmbedListConfig(
-				token as TokenAppDo,
+				token,
 				TokenApiQueryType.preset,
 				fModalCloseUpdateEmbedListConfig
 			)
 			break
 
 		case CodeActionType.doEmbedListSelect:
-			return await sm.openModalEmbedListSelect(
-				token as TokenAppDo,
-				fModalCloseUpdateEmbedListSelect
-			)
+			if (!(token instanceof TokenAppDo)) return actionErrorToken()
+			return await sm.openModalEmbedListSelect(token, fModalCloseUpdateEmbedListSelect)
 
 		case CodeActionType.doExpr:
-			const tokenAppDo = token as TokenAppDo
-			if (tokenAppDo.userAction && tokenAppDo.userAction.exprAction) {
-				const evalExprContext = `${FILENAME}.action.${actionType}`
-				await tokenAppDo.userAction.dbExe(sm, evalExprContext, tokenAppDo.userAction.exprAction)
+			if (token instanceof TokenAppDo) {
+				if (token.userAction && token.userAction.exprAction) {
+					const evalExprContext = `${FILENAME}.action.${actionType}`
+					await token.userAction.dbExe(sm, evalExprContext, token.userAction.exprAction)
+				}
+			} else {
+				return actionErrorToken()
 			}
 			break
 
 		case CodeActionType.doListDetailEdit:
+			if (!token) return actionErrorToken()
 			result = await userActionTreeNodeChildren(sm, token, TokenApiQueryType.retrieve, parmsAction)
 			if (result.error) return result
 			break
 
+		case CodeActionType.doListDetailEditNodeConfig:
+			result = await sm.app.addTreeNodeChildrenTypeObjConfig(
+				sm,
+				token as TokenAppDo,
+				TokenApiQueryType.retrieve
+			)
+			if (result.error) return result
+			await userActionStateChangeDataObj(sm, parmsAction)
+			return result
+
 		case CodeActionType.doListDetailNew:
+			if (!token) return actionErrorToken()
 			result = await userActionTreeNodeChildren(sm, token, TokenApiQueryType.preset, parmsAction)
 			if (result.error) return result
 			break
+
+		case CodeActionType.doListDetailNewNodeConfig:
+			result = await sm.app.addTreeNodeChildrenTypeObjConfig(
+				sm,
+				token as TokenAppDo,
+				TokenApiQueryType.preset
+			)
+			if (result.error) return result
+			await userActionStateChangeDataObj(sm, parmsAction)
+			return result
 
 		case CodeActionType.doListDownload:
 			parmsAction.stateParms = new StateParms({}, [StateTriggerToken.listDownload])
@@ -153,7 +168,7 @@ export default async function action(
 		case CodeActionType.doListSelfRefresh:
 			currTab = sm.app.getCurrTab()
 			if (currTab && currTab.dataObj) {
-				result = await currTab.query(sm, TokenApiQueryType.retrieve)
+				result = await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
 				if (result.error) return result
 				await userActionStateChangeDataObj(sm, parmsAction)
 			}
@@ -166,8 +181,9 @@ export default async function action(
 			break
 
 		case CodeActionType.doOpen:
+			if (!(token instanceof TokenAppDoQuery)) return actionErrorToken()
 			if (!parmsAction.isMultiTree) sm.newApp()
-			result = await sm.app.addTreeDataObj(sm, token as TokenAppDoQuery)
+			result = await sm.app.addTreeDataObj(sm, token)
 			if (result.error) return result
 
 			parmsAction.setMenuClose()
@@ -186,6 +202,14 @@ export default async function action(
 			await action(sm, parmsAction)
 			break
 
+		case CodeActionType.doRetrieveData:
+			currTab = sm.app.getCurrTab()
+			if (currTab && currTab.dataObj) {
+				return await currTab.queryData(sm, TokenApiQueryType.retrieve)
+			} else {
+				return actionError(`No current tab or data object found.`)
+			}
+
 		case CodeActionType.doSaveCancel:
 			currLevel = sm.app.getCurrLevel()
 			if (currLevel) {
@@ -194,13 +218,13 @@ export default async function action(
 					const status = currTab?.dataObj.data?.rowsRetrieved?.getDetailRowStatus()
 					switch (status) {
 						case DataRecordStatus.preset:
-							result = await currTab.query(sm, TokenApiQueryType.preset)
+							result = await currTab.queryDataObj(sm, TokenApiQueryType.preset)
 							if (result.error) return result
 							await userActionStateChangeDataObj(sm, parmsAction)
 							break
 						case DataRecordStatus.retrieved:
 						case DataRecordStatus.update:
-							result = await currTab.query(sm, TokenApiQueryType.retrieve)
+							result = await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
 							if (result.error) return result
 							await userActionStateChangeDataObj(sm, parmsAction)
 							break
@@ -241,7 +265,7 @@ export default async function action(
 		currLevel = sm.app.getCurrLevel()
 		if (currLevel) {
 			currTab = currLevel.getCurrTab()
-			result = await currTab.query(sm, TokenApiQueryType.retrieve)
+			result = await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
 
 			if (result.error) return result
 			await userActionStateChangeDataObj(sm, parmsAction)
@@ -271,7 +295,9 @@ export default async function action(
 			}
 			await userActionStateChangeDataObj(sm, parmsAction)
 		}
+
 		return new MethodResult()
 	}
+
 	return new MethodResult()
 }

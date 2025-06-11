@@ -57,15 +57,7 @@ export namespace sys_user {
     "appHeader": SysAppHeader;
   }
   export interface SysAppHeader extends sys_core.SysObj {}
-  export interface SysCodeType extends sys_core.SysObj {
-    "parent"?: sys_core.SysCodeType | null;
-    "order"?: number | null;
-    "valueDecimal"?: number | null;
-    "valueInteger"?: number | null;
-    "valueString"?: string | null;
-  }
   export interface SysTask extends sys_core.SysObjAttr {
-    "exprWith"?: string | null;
     "codeRenderType"?: sys_core.SysCode | null;
     "codeStatusObj"?: sys_core.SysCode | null;
     "pageDataObj"?: sys_core.SysDataObj | null;
@@ -74,6 +66,7 @@ export namespace sys_user {
     "description"?: string | null;
     "exprShow"?: string | null;
     "exprStatus"?: string | null;
+    "exprWith"?: string | null;
     "hasAltOpen"?: boolean | null;
     "isPinToDash"?: boolean | null;
     "noDataMsg"?: string | null;
@@ -85,19 +78,20 @@ export namespace sys_user {
     "systems": sys_core.SysSystem[];
     "isActive"?: boolean | null;
     "password": string;
-    "person": $default.SysPerson;
     "userTypes": SysUserType[];
+    "person": $default.SysPerson;
+    "codeAttrType": sys_core.SysCode;
   }
   export interface SysUserAction extends sys_core.SysObjAttr {
-    "navDestination"?: sys_core.SysNavDestination | null;
-    "exprWith"?: string | null;
-    "exprAction"?: string | null;
-    "exprShowExpr"?: string | null;
-    "exprEnable"?: string | null;
-    "exprShow"?: string | null;
     "codeConfirmType": sys_core.SysCode;
     "codeAction": sys_core.SysCodeAction;
+    "navDestination"?: sys_core.SysNavDestination | null;
     "actionConfirms": SysUserActionConfirm[];
+    "exprAction"?: string | null;
+    "exprEnable"?: string | null;
+    "exprShow"?: string | null;
+    "exprShowExpr"?: string | null;
+    "exprWith"?: string | null;
   }
   export interface SysUserActionConfirm extends Mgmt {
     "codeConfirmType": sys_core.SysCode;
@@ -118,10 +112,10 @@ export namespace sys_user {
     "isActive": boolean;
   }
   export interface SysUserType extends sys_core.SysObj {
+    "attrsExpr": sys_core.SysObjAttrExpr[];
+    "attrsVirtual": sys_core.SysObjAttrVirtual[];
     "isSelfSignup"?: boolean | null;
     "users": SysUser[];
-    "attrsVirtual": sys_core.SysObjAttrVirtual[];
-    "attrsExpr": sys_core.SysObjAttrExpr[];
   }
   export interface currentUser extends SysUser {}
 }
@@ -130,15 +124,16 @@ export namespace app_cm {
     "codeHighestEducation"?: sys_core.SysCode | null;
     "owner": sys_core.SysSystem;
     "agencyId"?: string | null;
+    "hasDriversLicense"?: string | null;
     "school"?: string | null;
     "person": $default.SysPerson;
-    "hasDriversLicense"?: string | null;
   }
   export interface CmClientServiceFlow extends sys_core.ObjRoot, sys_user.Mgmt {
     "client": CmClient;
     "codeSfEligibilityStatus"?: sys_core.SysCode | null;
     "codeSfEnrollType"?: sys_core.SysCode | null;
     "codeSfOutcome"?: sys_core.SysCode | null;
+    "objAttrCmSite": sys_core.SysObjAttr;
     "programCm": CmProgram;
     "user"?: sys_user.SysUser | null;
     "dateCreated": gel.LocalDate;
@@ -147,7 +142,6 @@ export namespace app_cm {
     "dateStart"?: gel.LocalDate | null;
     "dateStartEst"?: gel.LocalDate | null;
     "idxDemo"?: number | null;
-    "objAttrCmSite": sys_core.SysObjAttr;
   }
   export interface CmCohort extends sys_core.SysObj {
     "codeStatus"?: sys_core.SysCode | null;
@@ -274,9 +268,9 @@ export namespace sys_core {
   }
   export interface ObjRootCore extends ObjRoot {
     "header"?: string | null;
+    "name": string;
     "orderDefine"?: number | null;
     "codeIcon"?: SysCode | null;
-    "name": string;
   }
   export interface SysObj extends ObjRootCore, sys_user.Mgmt {
     "owner": SysSystem;
@@ -296,7 +290,7 @@ export namespace sys_core {
     "website"?: string | null;
     "zip"?: string | null;
   }
-  export interface SysCode extends ObjRootCore, sys_user.Mgmt {
+  export interface SysCode extends SysObjAttr {
     "parent"?: SysCode | null;
     "order"?: number | null;
     "valueDecimal"?: number | null;
@@ -304,7 +298,7 @@ export namespace sys_core {
     "valueString"?: string | null;
     "codeType": SysCodeType;
     "codeTypeFamily": SysCodeType[];
-    "owner": SysSystem;
+    "codeAttrType": SysCode;
   }
   export interface SysCodeAction extends SysCode {}
   export interface SysCodeType extends SysObj {
@@ -317,15 +311,15 @@ export namespace sys_core {
   export interface SysObjDb extends SysObj {
     "exprFilter"?: string | null;
     "exprSort"?: string | null;
+    "exprUnions": string[];
     "exprWith"?: string | null;
+    "listPresetExpr"?: string | null;
     "parentFilterExpr"?: string | null;
     "parentColumn"?: sys_db.SysColumn | null;
     "parentTable"?: sys_db.SysTable | null;
     "queryRiders": SysDataObjQueryRider[];
-    "tables": SysDataObjTable[];
-    "exprUnions": string[];
     "table"?: sys_db.SysTable | null;
-    "listPresetExpr"?: string | null;
+    "tables": SysDataObjTable[];
   }
   export interface SysDataObj extends SysObjDb {
     "codeCardinality": SysCode;
@@ -333,7 +327,9 @@ export namespace sys_core {
     "codeDataObjType"?: SysCode | null;
     "codeDoQueryType"?: SysCode | null;
     "codeDoRenderPlatform"?: SysCode | null;
+    "codeListPresetType"?: SysCode | null;
     "processType"?: SysCode | null;
+    "gridStyles": SysGridStyle[];
     "description"?: string | null;
     "isInitialValidationSilent"?: boolean | null;
     "isListEdit": boolean;
@@ -342,15 +338,16 @@ export namespace sys_core {
     "isRetrieveReadonly"?: boolean | null;
     "subHeader"?: string | null;
     "columns": SysDataObjColumn[];
-    "gridStyles": SysGridStyle[];
     "actionGroup"?: SysDataObjActionGroup | null;
     "listReorderColumn"?: sys_db.SysColumn | null;
-    "codeListPresetType"?: SysCode | null;
+    "selectListItems"?: SysDataObjFieldListItems | null;
+    "selectListItemsParmValue"?: string | null;
+    "selectListItemsHeader"?: string | null;
   }
   export interface SysDataObjAction extends sys_user.Mgmt {
-    "headerAlt"?: string | null;
     "codeColor": SysCode;
     "action": sys_user.SysUserAction;
+    "headerAlt"?: string | null;
     "isListRowAction": boolean;
     "orderDefine": number;
   }
@@ -358,6 +355,7 @@ export namespace sys_core {
     "dataObjActions": SysDataObjAction[];
   }
   export interface SysDataObjColumn extends sys_user.Mgmt {
+    "nameCustom"?: string | null;
     "codeAccess"?: SysCode | null;
     "codeAlignmentAlt"?: SysCode | null;
     "codeColor"?: SysCode | null;
@@ -365,6 +363,7 @@ export namespace sys_core {
     "codeFieldElement"?: SysCode | null;
     "codeSortDir"?: SysCode | null;
     "customEmbedShellFields": SysDataObjColumn[];
+    "gridStyles": SysGridStyle[];
     "customColActionValue"?: string | null;
     "customColAlign"?: string | null;
     "customColIsSubHeader"?: boolean | null;
@@ -390,14 +389,12 @@ export namespace sys_core {
     "isExcludeInsert": boolean;
     "isExcludeSelect": boolean;
     "isExcludeUpdate": boolean;
-    "nameCustom"?: string | null;
     "orderCrumb"?: number | null;
     "orderDefine": number;
     "orderDisplay"?: number | null;
     "orderSort"?: number | null;
     "width"?: number | null;
     "column": sys_db.SysColumn;
-    "gridStyles": SysGridStyle[];
     "action"?: sys_user.SysUserAction | null;
     "columnBacklink"?: sys_db.SysColumn | null;
     "fieldEmbedListConfig"?: SysDataObjFieldEmbedListConfig | null;
@@ -416,16 +413,16 @@ export namespace sys_core {
     "valueTargetCode"?: SysCode | null;
     "valueTriggerCodes": SysCode[];
     "columns": SysDataObjColumn[];
+    "valueTargetAttribute"?: SysObjAttr | null;
+    "valueTriggerAttributes": SysObjAttr[];
     "orderDefine": number;
     "retrieveParmKey"?: string | null;
     "valueTargetScalar"?: string | null;
     "valueTriggerScalar"?: string | null;
-    "valueTargetAttribute"?: SysObjAttr | null;
-    "valueTriggerAttributes": SysObjAttr[];
   }
   export interface SysDataObjColumnLink extends sys_user.Mgmt {
-    "orderDefine": number;
     "column"?: sys_db.SysColumn | null;
+    "orderDefine": number;
   }
   export interface SysDataObjFieldEmbedListConfig extends SysObj {
     "dataObjEmbed": SysDataObj;
@@ -455,15 +452,15 @@ export namespace sys_core {
     "orderSort"?: number | null;
   }
   export interface SysDataObjQueryRider extends sys_user.Mgmt {
-    "navDestination"?: SysNavDestination | null;
     "codeQueryAction": SysCode;
     "codeQueryFunction"?: SysCode | null;
     "codeQueryPlatform": SysCode;
-    "parmValueStr"?: string | null;
     "codeQueryType": SysCode;
     "codeTriggerTiming": SysCode;
     "codeUserMsgDelivery"?: SysCode | null;
+    "navDestination"?: SysNavDestination | null;
     "expr"?: string | null;
+    "parmValueStr"?: string | null;
     "userMsg"?: string | null;
   }
   export interface SysDataObjTable extends sys_user.Mgmt {
@@ -480,21 +477,21 @@ export namespace sys_core {
     "index": number;
   }
   export interface SysGridStyle extends std.$Object {
+    "exprTrigger"?: string | null;
     "prop": string;
     "propValue": string;
-    "exprTrigger"?: string | null;
   }
   export interface SysMsg extends ObjRoot {
-    "recipients": SysObjAttr[];
+    "parent"?: SysMsg | null;
+    "replies": SysMsg[];
+    "thread": SysMsg[];
     "readers": sys_user.SysUser[];
+    "recipients": SysObjAttr[];
     "sender": sys_user.SysUser;
     "dateMsg": Date;
-    "replies": SysMsg[];
-    "parent"?: SysMsg | null;
-    "thread": SysMsg[];
+    "isClosed": boolean;
     "isForward": boolean;
     "subject": string;
-    "isClosed": boolean;
   }
   export interface SysNavDestination extends std.$Object {
     "codeDestinationType": SysCode;
@@ -506,7 +503,7 @@ export namespace sys_core {
     "codeNodeType": SysCode;
     "codeQueryOwnerType"?: SysCode | null;
     "dataObj"?: SysDataObj | null;
-    "childrenOld": SysNodeObj[];
+    "nodeData": SysNodeObjData[];
     "parent"?: SysNodeObj | null;
     "isAlwaysRetrieveData": boolean;
     "isDynamicChildrenSystemParents": boolean;
@@ -514,7 +511,6 @@ export namespace sys_core {
     "page"?: string | null;
     "actions": SysNodeObjAction[];
     "children": SysNodeObjChild[];
-    "nodeData": SysNodeObjData[];
   }
   export interface SysNodeObjAction extends std.$Object {
     "codeAction": SysCodeAction;
@@ -523,6 +519,10 @@ export namespace sys_core {
   export interface SysNodeObjChild extends std.$Object {
     "nodeObj": SysNodeObj;
     "orderDefine": number;
+  }
+  export interface SysNodeObjConfig extends std.$Object {
+    "codeAttrType": SysCode;
+    "nodeObj": SysNodeObj;
   }
   export interface SysNodeObjData extends std.$Object {
     "codeAction": SysCodeAction;
@@ -536,12 +536,12 @@ export namespace sys_core {
     "msg"?: string | null;
   }
   export interface SysObjAttrAccess extends sys_user.Mgmt {
-    "obj": SysObjAttr;
     "codeAttrTypeAccess": SysCode;
+    "obj": SysObjAttr;
   }
   export interface SysObjAttrAction extends sys_user.Mgmt {
-    "obj": SysObjAttr;
     "codeAttrTypeAction": SysCode;
+    "obj": SysObjAttr;
   }
   export interface SysObjAttrExpr extends sys_user.Mgmt {
     "codeAttrTypeAction": SysCode;
@@ -561,30 +561,29 @@ export namespace sys_core {
     "users": sys_user.SysUser[];
   }
   export interface SysSystem extends ObjRootCore, sys_user.Mgmt {
+    "typesCodeType": SysCodeType[];
     "systemParents": SysSystem[];
     "appName"?: string | null;
     "file"?: unknown | null;
     "logoMarginRight"?: number | null;
     "logoWidth"?: number | null;
     "owner": SysOrg;
-    "nodesConfigClient": SysNodeObj[];
-    "nodesConfigSystem": SysNodeObj[];
-    "typesCodeType": SysCodeType[];
     "users": sys_user.SysUser[];
+    "nodesConfig": SysNodeObjConfig[];
   }
 }
 export namespace $default {
   export interface SysError extends std.$Object {
-    "createdAt": Date;
     "user"?: sys_user.SysUser | null;
+    "createdAt": Date;
+    "errCode"?: string | null;
     "errFile": string;
     "errFunction": string;
     "errMsgSystem": string;
     "errMsgUser": string;
+    "errStatus"?: number | null;
     "isClosed": boolean;
     "note"?: string | null;
-    "errCode"?: string | null;
-    "errStatus"?: number | null;
   }
   export interface SysPerson extends sys_core.ObjRoot {
     "codeDisabilityStatus"?: sys_core.SysCode | null;
@@ -1054,9 +1053,9 @@ export namespace sys_migr {
 }
 export namespace sys_rep {
   export interface SysAnalytic extends sys_core.SysObj {
-    "description"?: string | null;
     "parms": SysRepParm[];
     "statuses": SysAnalyticStatus[];
+    "description"?: string | null;
   }
   export interface SysAnalyticStatus extends sys_user.Mgmt {
     "codeStatus": sys_core.SysCode;
@@ -1065,12 +1064,12 @@ export namespace sys_rep {
   }
   export interface SysRep extends sys_core.SysObjAttr {
     "actionGroup": sys_core.SysDataObjActionGroup;
-    "analytics": SysAnalytic[];
     "description"?: string | null;
     "exprFilter"?: string | null;
     "exprSort"?: string | null;
     "exprWith"?: string | null;
     "tables": sys_core.SysDataObjTable[];
+    "analytics": SysAnalytic[];
     "elements": SysRepEl[];
     "parms": SysRepParm[];
   }
@@ -1165,7 +1164,6 @@ export interface types {
     "Mgmt": sys_user.Mgmt;
     "SysApp": sys_user.SysApp;
     "SysAppHeader": sys_user.SysAppHeader;
-    "SysCodeType": sys_user.SysCodeType;
     "SysTask": sys_user.SysTask;
     "SysUser": sys_user.SysUser;
     "SysUserAction": sys_user.SysUserAction;
@@ -1224,6 +1222,7 @@ export interface types {
     "SysNodeObj": sys_core.SysNodeObj;
     "SysNodeObjAction": sys_core.SysNodeObjAction;
     "SysNodeObjChild": sys_core.SysNodeObjChild;
+    "SysNodeObjConfig": sys_core.SysNodeObjConfig;
     "SysNodeObjData": sys_core.SysNodeObjData;
     "SysNotify": sys_core.SysNotify;
     "SysObjAttrAccess": sys_core.SysObjAttrAccess;

@@ -410,7 +410,11 @@ export async function userActionTreeNodeChildren(
 	queryType: TokenApiQueryType,
 	parmsAction: TokenAppStateTriggerAction
 ): Promise<MethodResult> {
-	let result: MethodResult = await sm.app.addTreeNodeChildren(sm, token as TokenAppDo, queryType)
+	let result: MethodResult = await sm.app.addTreeNodeChildrenTypeList(
+		sm,
+		token as TokenAppDo,
+		queryType
+	)
 	if (result.error) return result
 	await userActionStateChangeDataObj(sm, parmsAction)
 	return result

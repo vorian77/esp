@@ -329,10 +329,7 @@ export class InitDb {
 				dataMap: 'name',
 				fCreate: updateSystemNodesConfig,
 				updateObj: 'sys_core::SysSystem',
-				updateObjFields: [
-					['nodesConfigClient', '{}'],
-					['nodesConfigSystem', '{}']
-				]
+				updateObjFields: [['nodesConfig', '{}']]
 			})
 		)
 

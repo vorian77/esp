@@ -6,7 +6,7 @@ import {
 	getDataObjId,
 	getLinkItemsSource,
 	getNodesSystemParents,
-	getNode,
+	getNodeByNodeId,
 	getNodesChildren,
 	getUserPref,
 	setUserPref,
@@ -32,8 +32,8 @@ export async function POST({ cookies, request }) {
 		case ApiFunction.dbGelGetLinkItemsSource:
 			return getServerResponseMethod(await getLinkItemsSource(token))
 
-		case ApiFunction.dbGelGetNode:
-			return getServerResponseMethod(await getNode(token))
+		case ApiFunction.dbGelGetNodeByNodeId:
+			return getServerResponseMethod(await getNodeByNodeId(token))
 
 		case ApiFunction.dbGelGetNodesSystemParents:
 			return getServerResponseMethod(await getNodesSystemParents(token))

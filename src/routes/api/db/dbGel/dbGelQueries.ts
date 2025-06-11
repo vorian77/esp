@@ -368,6 +368,11 @@ export async function getDataObjById(token: TokenApiId) {
 			_querySource: e.select(do1, (do1) => ({
 				...shapeQuerySource(do1)
 			})),
+			_selectListItems: e.select(do1.selectListItems, (sli) => ({
+				_header: do1.selectListItemsHeader,
+				_parmValue: do1.selectListItemsParmValue,
+				...shapeLinkItemsSource(sli)
+			})),
 
 			/* props */
 			_propsCrumb: e.select(do1.columns, (doc) => ({
@@ -586,8 +591,8 @@ export async function getLinkItemsSource(token: TokenApiId) {
 	return await query.run(client)
 }
 
-export async function getNode(token: TokenApiId) {
-	let query = e.select(e.sys_core.SysNodeObj, (n: any) => ({
+export async function getNodeByNodeId(token: TokenApiId) {
+	let query = e.select(e.sys_core.SysNodeObj, (n) => ({
 		...shapeNodeObj(n),
 		filter_single: e.op(n.id, '=', e.cast(e.uuid, token.id))
 	}))

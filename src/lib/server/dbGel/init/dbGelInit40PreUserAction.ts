@@ -95,6 +95,15 @@ export function initPreUserAction(init: InitDb) {
 	})
 
 	init.addTrans('sysUserAction', {
+		codeAction: 'doListDetailEditNodeConfig',
+		codeConfirmType: 'statusChanged',
+		exprShow: `<never>`,
+		header: 'Edit',
+		name: 'ua_sys_edit_list_node_config',
+		owner: 'sys_system'
+	})
+
+	init.addTrans('sysUserAction', {
 		codeAction: 'doEmbedListConfigEdit',
 		codeConfirmType: 'statusChanged',
 		exprShow: `<never>`,
@@ -164,6 +173,14 @@ export function initPreUserAction(init: InitDb) {
 		exprShow: `!<statusChanged>`,
 		header: 'New',
 		name: 'ua_sys_new_detail_list',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysUserAction', {
+		codeAction: 'doListDetailNewNodeConfig',
+		codeConfirmType: 'statusChanged',
+		exprShow: `!<statusChanged>`,
+		header: 'New',
+		name: 'ua_sys_new_detail_list_node_config',
 		owner: 'sys_system'
 	})
 

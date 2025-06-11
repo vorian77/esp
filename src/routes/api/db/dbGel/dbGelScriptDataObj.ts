@@ -1,4 +1,8 @@
-import { RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj.svelte'
+import {
+	PropLinkItemsSource,
+	RawDataObj,
+	RawDataObjPropDB
+} from '$comps/dataObj/types.rawDataObj.svelte'
 import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { QuerySourceParent, ScriptExePost } from '$lib/queryClient/types.queryClient'
 import { GelQuery, LinkSaveAction } from '$routes/api/db/dbGel/dbGelScriptQuery'
@@ -62,36 +66,51 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 
 	async addScriptDataItems(
 		query: GelQuery,
+		linkItemsSource: PropLinkItemsSource,
+		currentValue: any = undefined
+	): Promise<MethodResult> {
+		const clazz = 'addScriptDataItemsFields'
+		let expr = ''
+
+		if (linkItemsSource.parmValue) {
+			query.queryData?.dataTab?.parms.valueSet(
+				ParmsValuesType.itemsParmValue,
+				linkItemsSource.parmValue
+			)
+		}
+		if (linkItemsSource.parmValueList) {
+			query.queryData?.dataTab?.parms.valueSet(
+				ParmsValuesType.itemsParmValueList,
+				linkItemsSource.parmValueList
+			)
+		}
+
+		let exprProp = `${linkItemsSource.getExprSelect(true, currentValue)}`
+		return await evalExpr({
+			evalExprContext: this.evalExprContext,
+			exprRaw: exprProp,
+			queryData: query.queryData,
+			querySource: this.querySource
+		})
+	}
+
+	async addScriptDataItemsFields(
+		query: GelQuery,
 		props: RawDataObjPropDB[],
 		record: DataRecord
 	): Promise<MethodResult> {
-		const clazz = 'getPropsSelectDataItems'
+		const clazz = 'addScriptDataItemsFields'
 		let expr = ''
 
 		for (let prop of props) {
 			if (prop.linkItemsSource) {
-				if (prop.linkItemsSource.parmValue) {
-					query.queryData?.dataTab?.parms.valueSet(
-						ParmsValuesType.itemsParmValue,
-						prop.linkItemsSource.parmValue
-					)
-				}
-				if (prop.linkItemsSource.parmValueList) {
-					query.queryData?.dataTab?.parms.valueSet(
-						ParmsValuesType.itemsParmValueList,
-						prop.linkItemsSource.parmValueList
-					)
-				}
-
-				let exprProp = `${prop.linkItemsSource.getExprSelect(true, getValueData(record[prop.propName]))}`
-				let result: MethodResult = await evalExpr({
-					evalExprContext: this.evalExprContext,
-					exprRaw: exprProp,
-					queryData: query.queryData,
-					querySource: this.querySource
-				})
+				let result: MethodResult = await this.addScriptDataItems(
+					query,
+					prop.linkItemsSource,
+					getValueData(record[prop.propName])
+				)
 				if (result.error) return result
-				exprProp = result.data
+				let exprProp = result.data
 				expr = query.addItemComma(expr, `${prop.propName} := ${exprProp}`)
 			}
 		}
@@ -100,10 +119,29 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		expr = `SELECT {\n${expr}\n}`
 		await this.addScriptExpr({
 			dataRows: [],
-			exePost: ScriptExePost.dataItems,
+			exePost: ScriptExePost.dataItemsFields,
 			expr,
 			query
 		})
+		return new MethodResult()
+	}
+
+	async addScriptDataItemsSelectList(
+		query: GelQuery,
+		linkItemsSource: PropLinkItemsSource | undefined
+	) {
+		if (linkItemsSource) {
+			let result: MethodResult = await this.addScriptDataItems(query, linkItemsSource)
+			if (result.error) return result
+			let expr = result.data || `dummy:= <str>{}`
+			expr = expr = `SELECT {\n${expr}\n}`
+			await this.addScriptExpr({
+				dataRows: [],
+				exePost: ScriptExePost.dataItemsSelect,
+				expr,
+				query
+			})
+		}
 		return new MethodResult()
 	}
 
@@ -319,7 +357,7 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 			const dataRows = dataRowsSaved.dataRows.filter((row: DataRow) =>
 				statuses.includes(row.status)
 			)
-			if (query.fieldEmbed && action == 'DELETE') return new MethodResult()
+			if (query.fieldEmbed && action == 'DELETE') continue
 			if (
 				dataRows.length > 0 ||
 				(query.fieldEmbed instanceof FieldEmbedListSelect && action == 'UPDATE')
