@@ -55,7 +55,7 @@ import {
 } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
-const FILENAME = '/server/dbGel/init/types.init.ts'
+const FILENAME = '/server/dbGel/init/types.init'
 const TokenExprFilterRecord = '<ExprFilterRecord>'
 
 type Link = [string, string]
