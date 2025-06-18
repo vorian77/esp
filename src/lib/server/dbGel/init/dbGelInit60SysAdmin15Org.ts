@@ -13,7 +13,6 @@ function initFieldListSelectCodeType(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		exprFilter: `.owner.id = <tree,uuid,SysSystem.id> 
 		UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents
@@ -62,7 +61,6 @@ function initFieldListSelectUserAll(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		exprFilter: 'none',
 		header: 'Select Users',
@@ -124,7 +122,6 @@ function initFieldListSelectUserSystem(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		exprFilter: `<parms,uuid,queryOwnerOrg> IN .orgs.id`,
 		header: 'Select Users',
@@ -186,7 +183,6 @@ function initOrg(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		header: 'Organizations',
 		exprFilter: 'none',
 		name: 'data_obj_sys_admin_org_list',
@@ -215,7 +211,6 @@ function initOrg(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Organization',
 		name: 'data_obj_sys_admin_org_detail',
 		owner: 'sys_system',
@@ -315,6 +310,7 @@ function initOrg(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgram', {
 		children: [{ node: 'node_obj_sys_admin_org_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program',
 		codeQueryOwnerType: 'queryOwnerTypeOrgRecord',
@@ -326,6 +322,7 @@ function initOrg(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_admin_system_list_user', order: 10 }],
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_org_detail',
@@ -340,7 +337,6 @@ function initSystem(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		header: 'Systems',
 		exprFilter: '.owner.id = <tree,uuid,SysOrg.id>',
 		name: 'data_obj_sys_admin_system_list_user',
@@ -377,7 +373,6 @@ function initSystem(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'System',
 		name: 'data_obj_sys_admin_system_detail_user',
 		owner: 'sys_system',
@@ -529,6 +524,7 @@ function initSystem(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_admin_system_detail_user', order: 10 }],
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		codeQueryOwnerType: 'queryOwnerTypeOrgRecord',
@@ -539,6 +535,7 @@ function initSystem(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_system_detail_user',

@@ -15,7 +15,6 @@ function initFieldListSelectAnalytics(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		exprFilter: 'none',
 		header: 'Select Analytics',
@@ -54,7 +53,7 @@ function initFieldListSelectAnalytics(init: InitDb) {
 function initAnalytic(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
-		codeComponent: 'FormList',
+
 		codeCardinality: 'list',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Analytics',
@@ -100,7 +99,6 @@ function initAnalytic(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Analytic',
 		name: 'data_obj_sys_analytic_detail',
 		owner: 'sys_system',
@@ -224,6 +222,7 @@ function initAnalytic(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_analytic_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_analytic_list',
@@ -237,6 +236,7 @@ function initAnalytic(init: InitDb) {
 			{ node: 'node_obj_sys_analytic_parm_list', order: 10 },
 			{ node: 'node_obj_sys_analytic_status_list', order: 20 }
 		],
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_analytic_detail',
@@ -250,7 +250,7 @@ function initAnalytic(init: InitDb) {
 function initAnalyticParm(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
-		codeComponent: 'FormList',
+
 		codeCardinality: 'list',
 		exprFilter:
 			'.id IN (SELECT sys_rep::SysAnalytic FILTER .id = <tree,uuid,SysAnalytic.id>).parms.id',
@@ -359,7 +359,6 @@ function initAnalyticParm(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Parm',
 		name: 'data_obj_sys_analytic_parm_detail',
 		owner: 'sys_system',
@@ -534,6 +533,7 @@ function initAnalyticParm(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_analytic_parm_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_analytic_parm_list',
@@ -543,6 +543,7 @@ function initAnalyticParm(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_analytic_parm_detail',
@@ -556,7 +557,7 @@ function initAnalyticParm(init: InitDb) {
 function initAnalyticStatus(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
-		codeComponent: 'FormList',
+
 		codeCardinality: 'list',
 		exprFilter:
 			'.id IN (SELECT sys_rep::SysAnalytic FILTER .id = <tree,uuid,SysAnalytic.id>).statuses.id',
@@ -607,7 +608,6 @@ function initAnalyticStatus(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Status',
 		name: 'data_obj_sys_analytic_status_detail',
 		owner: 'sys_system',
@@ -715,6 +715,7 @@ function initAnalyticStatus(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_analytic_status_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_analytic_status_list',
@@ -724,6 +725,7 @@ function initAnalyticStatus(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_analytic_status_detail',
@@ -737,7 +739,7 @@ function initAnalyticStatus(init: InitDb) {
 function initRep(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
-		codeComponent: 'FormList',
+
 		codeCardinality: 'list',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Reports',
@@ -783,7 +785,6 @@ function initRep(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Report',
 		name: 'data_obj_sys_rep_detail',
 		owner: 'sys_system',
@@ -978,6 +979,7 @@ function initRep(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_rep_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_list',
@@ -992,6 +994,7 @@ function initRep(init: InitDb) {
 			{ node: 'node_obj_sys_rep_el_list', order: 20 },
 			{ node: 'node_obj_sys_rep_user_list', order: 30 }
 		],
+		codeComponent: 'FormDetail',
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_detail',
@@ -1005,7 +1008,7 @@ function initRep(init: InitDb) {
 function initRepEl(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
-		codeComponent: 'FormList',
+
 		codeCardinality: 'list',
 		exprFilter: '.id IN (SELECT sys_rep::SysRep FILTER .id = <tree,uuid,SysRep.id>).elements.id',
 		header: 'Elements',
@@ -1142,7 +1145,6 @@ function initRepEl(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Element',
 		name: 'data_obj_sys_rep_el_detail',
 		owner: 'sys_system',
@@ -1510,6 +1512,7 @@ function initRepEl(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_rep_el_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_element_list',
@@ -1519,6 +1522,7 @@ function initRepEl(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_el_detail',
@@ -1532,7 +1536,7 @@ function initRepEl(init: InitDb) {
 function initRepParm(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
-		codeComponent: 'FormList',
+
 		codeCardinality: 'list',
 		exprFilter: '.id IN (SELECT sys_rep::SysRep FILTER .id = <tree,uuid,SysRep.id>).parms.id',
 		header: 'Parms',
@@ -1646,7 +1650,6 @@ function initRepParm(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Parm',
 		name: 'data_obj_sys_rep_parm_detail',
 		owner: 'sys_system',
@@ -1864,6 +1867,7 @@ function initRepParm(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_rep_parm_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_parm_list',
@@ -1873,6 +1877,7 @@ function initRepParm(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_parm_detail',
@@ -1886,7 +1891,7 @@ function initRepParm(init: InitDb) {
 function initRepUser(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
-		codeComponent: 'FormList',
+
 		codeCardinality: 'list',
 		exprFilter: '.report.id = <tree,uuid,SysRep.id>',
 		header: 'Users',
@@ -1933,7 +1938,6 @@ function initRepUser(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'User',
 		name: 'data_obj_sys_rep_user_detail',
 		owner: 'sys_system',
@@ -2068,6 +2072,7 @@ function initRepUser(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_rep_user_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_user_list',
@@ -2077,6 +2082,7 @@ function initRepUser(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_user_detail',

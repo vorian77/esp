@@ -6,6 +6,7 @@ import {
 	CodeActionClass,
 	CodeActionType,
 	MethodResult,
+	NodeObjComponent,
 	required,
 	setDataRecordValuesForSave,
 	strRequired
@@ -75,6 +76,7 @@ export class AuthActionDataObj extends AuthAction {
 				),
 				data: {
 					token: new TokenAppDoQuery({
+						codeComponent: NodeObjComponent.FormDetail,
 						dataObjName: this.dataObjName,
 						queryType: TokenApiQueryType.preset
 					})

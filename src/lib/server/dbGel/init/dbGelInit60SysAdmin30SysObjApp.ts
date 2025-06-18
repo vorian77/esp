@@ -10,7 +10,6 @@ function initFieldListSelectNodes(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		exprFilter: `.codeNodeType = (SELECT sys_core::getCode('ct_sys_node_obj_type', 'program')) AND (.owner.id = <tree,uuid,SysSystem.id> UNION .isGlobalResource)`,
 		header: 'Select Node(s)',
@@ -49,7 +48,6 @@ function initApp(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		header: 'Apps',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		name: 'data_obj_sys_app_list',
@@ -86,7 +84,6 @@ function initApp(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'App',
 		name: 'data_obj_sys_app_detail',
 		owner: 'sys_system',
@@ -226,6 +223,7 @@ function initApp(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_app_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_app_list',
@@ -236,6 +234,7 @@ function initApp(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_app_detail',
@@ -250,7 +249,6 @@ function initAppHeader(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		header: 'App Headers',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		name: 'data_obj_sys_app_header_list',
@@ -313,7 +311,6 @@ function initAppHeader(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'App Header',
 		name: 'data_obj_sys_app_header_detail',
 		owner: 'sys_system',
@@ -457,6 +454,7 @@ function initAppHeader(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_app_header_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_app_header_list',
@@ -467,6 +465,7 @@ function initAppHeader(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_app_header_detail',

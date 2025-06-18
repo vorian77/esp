@@ -25,10 +25,9 @@ import { Field, FieldClassType } from '$comps/form/field.svelte'
 import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
 	NavDestinationType,
-	Token,
-	TokenApiQueryDataTree,
 	TokenApiQueryType,
-	TokenAppDo,
+	TokenAppDoBase,
+	TokenAppDoQuery,
 	TokenAppNav,
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
@@ -178,8 +177,7 @@ export class UserAction {
 
 	async dbExe(sm: State, evalExprContext: string, expr: string): Promise<MethodResult> {
 		let exprCustom = getDbExprRaw(this.exprWith, expr)
-		const dataTree: TokenApiQueryDataTree = sm.app.getDataTree(TokenApiQueryType.retrieve)
-		return await clientQueryExpr(evalExprContext, exprCustom, { dataTree, user: sm.user }, sm)
+		return await clientQueryExpr(evalExprContext, exprCustom, {}, sm)
 	}
 
 	async getConfirm(sm: State, dataObj: DataObj): Promise<MethodResult> {
@@ -270,7 +268,7 @@ export class UserAction {
 				codeConfirmType: confirmData.codeConfirmType,
 				confirm: confirmData.confirm,
 				data: {
-					token: new TokenAppDo({
+					token: new TokenAppDoBase({
 						userAction: this,
 						dataObj
 					})
@@ -360,36 +358,37 @@ export async function userActionNavDestination(
 		} else {
 			const result: MethodResult = await sm.app.navDestination(sm, token)
 			if (result.error) return result
-			await userActionStateChangeDataObj(sm, parmsAction)
+			await userActionStateChangeTab(sm, parmsAction)
 		}
 	}
 }
 
-export async function userActionStateChangeDataObj(
-	sm: State,
-	parmsAction: TokenAppStateTriggerAction
-) {
-	const clazz = 'userActionStateChangeDataObj'
-	let currTab = sm.app.getCurrTab()
-	if (currTab && currTab.dataObj) {
-		sm.dm.init(currTab.dataObj)
-		currTab.dataObj.fields
-			.filter((f) => f.classType === FieldClassType.embed)
-			.forEach((f: Field) => {
-				if (f instanceof FieldEmbed) {
-					sm.dm.nodeAdd(required(f.dataObjEmbed, clazz, 'f.dataObjEmbed'))
-				}
-			})
-		parmsAction.updateStateParms({
-			navContent: currTab.dataObj.raw.codeComponent,
-			navLayoutParms: { dataObjId: currTab.dataObj.raw.id }
-		})
-
-		await userActionStateChange(sm, parmsAction)
-	}
+export async function userActionStateChangeRaw(sm: State, parmsAction: TokenAppStateTriggerAction) {
+	await userActionStateChange(sm, parmsAction)
 }
 
-export async function userActionStateChangeRaw(sm: State, parmsAction: TokenAppStateTriggerAction) {
+export async function userActionStateChangeTab(sm: State, parmsAction: TokenAppStateTriggerAction) {
+	const clazz = 'userActionStateChangeTab'
+	let navLayoutParms: DataRecord = { target: parmsAction.target }
+	let currTab = sm.app.getCurrTab()
+	if (currTab) {
+		if (currTab.node) navLayoutParms.node = currTab.node
+		if (currTab.dataObj) {
+			sm.dm.init(currTab.dataObj)
+			currTab.dataObj.fields
+				.filter((f) => f.classType === FieldClassType.embed)
+				.forEach((f: Field) => {
+					if (f instanceof FieldEmbed) {
+						sm.dm.nodeAdd(required(f.dataObjEmbed, clazz, 'f.dataObjEmbed'))
+					}
+				})
+			navLayoutParms.dataObjId = currTab.dataObj.raw.id
+		}
+		parmsAction.updateStateParms({
+			navContent: currTab.codeComponent,
+			navLayoutParms
+		})
+	}
 	await userActionStateChange(sm, parmsAction)
 }
 
@@ -406,17 +405,14 @@ export async function userActionStateChangeHomeDashboard(
 
 export async function userActionTreeNodeChildren(
 	sm: State,
-	token: Token,
+	actionType: CodeActionType,
+	token: TokenAppDoBase,
 	queryType: TokenApiQueryType,
 	parmsAction: TokenAppStateTriggerAction
 ): Promise<MethodResult> {
-	let result: MethodResult = await sm.app.addTreeNodeChildrenTypeList(
-		sm,
-		token as TokenAppDo,
-		queryType
-	)
+	let result: MethodResult = await sm.app.addTreeNodeChildren(sm, actionType, token, queryType)
 	if (result.error) return result
-	await userActionStateChangeDataObj(sm, parmsAction)
+	await userActionStateChangeTab(sm, parmsAction)
 	return result
 }
 

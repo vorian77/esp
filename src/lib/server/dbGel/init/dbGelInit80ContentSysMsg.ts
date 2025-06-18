@@ -194,7 +194,6 @@ function initDataObj(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
 		exprFilter: `.id IN ${exprMsgsMineRoot}.id`,
 		gridStyles: [
@@ -202,6 +201,11 @@ function initDataObj(init: InitDb) {
 				exprTrigger: `<record,str,isUnread> === 'Yes'`,
 				prop: 'font-weight',
 				propValue: 'bold'
+			},
+			{
+				exprTrigger: `<record,str,isUnread> === 'Yes'`,
+				prop: 'background-color',
+				propValue: 'whitesmoke'
 			}
 		],
 		header: 'My Messages',
@@ -221,18 +225,6 @@ function initDataObj(init: InitDb) {
 				codeAccess: 'readOnly',
 				codeAlignmentAlt: 'center',
 				columnName: 'custom_element_str',
-				gridStyles: [
-					{
-						exprTrigger: `<value,str> === 'Yes'`,
-						prop: 'color',
-						propValue: 'green'
-					},
-					{
-						exprTrigger: `<value,str> === 'Yes'`,
-						prop: 'background-color',
-						propValue: 'yellow'
-					}
-				],
 				isDisplay: false,
 				isDisplayable: true,
 				orderDisplay: 20,
@@ -307,7 +299,6 @@ function initDataObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail_sys_msg_root_send',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'New Message',
 		isRetrieveReadonly: true,
 		name: 'data_obj_sys_msg_root_detail_new',
@@ -375,7 +366,6 @@ function initDataObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail_sys_msg_thread_detail_reply',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Reply',
 		name: 'data_obj_sys_msg_thread_detail_reply',
 		owner: 'sys_system',
@@ -479,7 +469,6 @@ function initDataObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail_sys_msg_thread_detail_view',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'View',
 		isRetrieveReadonly: true,
 		name: 'data_obj_sys_msg_thread_detail_view',
@@ -581,13 +570,17 @@ function initDataObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list_sys_msg_thread',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: `.id IN ${exprMsgsThread}.id`,
 		gridStyles: [
 			{
 				exprTrigger: `<record,str,isUnread> === 'Yes'`,
 				prop: 'font-weight',
 				propValue: 'bold'
+			},
+			{
+				exprTrigger: `<record,str,isUnread> === 'Yes'`,
+				prop: 'background-color',
+				propValue: 'whitesmoke'
 			}
 		],
 		header: 'Message Thread',
@@ -684,6 +677,7 @@ function initNodeObj(init: InitDb) {
 			{ action: 'doListDetailEdit', node: 'node_obj_sys_msg_thread_list' },
 			{ action: 'doListDetailNew', node: 'node_obj_sys_msg_root_detail_new' }
 		],
+		codeComponent: 'FormList',
 		codeIcon: 'Mail',
 		codeNavType: 'task',
 		codeNodeType: 'program',
@@ -697,6 +691,7 @@ function initNodeObj(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'Mail',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_msg_root_detail_new',
@@ -712,6 +707,7 @@ function initNodeObj(init: InitDb) {
 			{ action: 'doListDetailNew', node: 'node_obj_sys_msg_thread_detail_reply' },
 			{ action: 'doListDetailEdit', node: 'node_obj_sys_msg_thread_detail_view' }
 		],
+		codeComponent: 'FormList',
 		codeIcon: 'Mail',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_msg_thread_list',
@@ -723,6 +719,7 @@ function initNodeObj(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'Mail',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_msg_thread_detail_reply',
@@ -735,6 +732,7 @@ function initNodeObj(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		actions: [{ action: 'doListDetailNew', node: 'node_obj_sys_msg_thread_detail_reply' }],
+		codeComponent: 'FormDetail',
 		codeIcon: 'Mail',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_msg_thread_detail_view',

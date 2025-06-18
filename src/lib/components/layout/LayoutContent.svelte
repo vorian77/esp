@@ -19,7 +19,7 @@
 	import ContentFormDetail from '$comps/form/ContentFormDetail.svelte'
 	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
 	import ContentFormList from '$comps/form/ContentFormList.svelte'
-	import ContentFormListSelect from '$comps/form/ContentFormListSelect.svelte'
+	import ContentSelectList from '$comps/form/ContentSelectList.svelte'
 	import GridSelect from '$comps/grid/GridSelect.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import NavRow from '$comps/nav/NavRow.svelte'
@@ -31,8 +31,8 @@
 		FormDetail: ContentFormDetail,
 		FormDetailRepConfig: ContentFormDetailRepConfig,
 		FormList: ContentFormList,
-		FormListSelect: ContentFormListSelect,
-		ModalSelect: GridSelect
+		ModalSelect: GridSelect,
+		SelectList: ContentSelectList
 	}
 
 	let { parms }: DataRecord = $props()

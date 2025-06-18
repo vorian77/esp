@@ -1,5 +1,5 @@
 import { App } from '$comps/app/types.app.svelte'
-import { MethodResult, required, strRequired, valueOrDefault } from '$utils/utils'
+import { MethodResult, required, valueOrDefault } from '$utils/utils'
 import {
 	booleanOrFalse,
 	CodeAction,
@@ -9,19 +9,28 @@ import {
 	DataObj,
 	DataObjAction,
 	type DataRecord,
+	hashString,
+	NodeQueryOwnerType,
 	ParmsValues,
 	ParmsValuesType,
 	NodeType,
 	ToastType,
-	User
+	User,
+	UserParm,
+	UserParmItemSource,
+	UserParmItemType,
+	UserPrefType
 } from '$utils/types'
 import {
 	NavDestinationType,
 	TokenApiDbDataObjSource,
 	TokenApiId,
+	TokenApiQueryDataTree,
+	TokenApiQueryDataTreeAccessType,
 	TokenApiQueryType,
+	TokenApiUserParmsGet,
+	TokenAppDoBase,
 	TokenAppDoQuery,
-	TokenAppDo,
 	TokenAppNav,
 	TokenAppModalEmbedField,
 	TokenAppModalReturn,
@@ -33,12 +42,7 @@ import {
 import { QuerySourceParentRaw } from '$lib/queryClient/types.queryClient'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { RawDataObjAction } from '$comps/dataObj/types.rawDataObj.svelte'
-import {
-	Toast,
-	type DrawerSettings,
-	type ModalSettings,
-	type ToastSettings
-} from '@skeletonlabs/skeleton'
+import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import fActionsClassCustom from '$enhance/actions/actionsClassCustom'
 import fActionsClassDo from '$enhance/actions/actionsClassDo'
@@ -47,6 +51,7 @@ import fActionsClassModal from '$enhance/actions/actionsClassModal'
 import fActionsClassNav from '$enhance/actions/actionsClassNav'
 import fActionsClassUtils from '$enhance/actions/actionsClassUtils'
 import { error } from '@sveltejs/kit'
+import type { Method } from 'axios'
 
 const FILENAME = '/$comps/app/types.appState.ts'
 
@@ -74,6 +79,7 @@ export class State {
 	storeToast: any
 	triggerTokens: StateTriggerToken[] = $state([])
 	user?: User = $state()
+	userParm?: UserParm
 	constructor(obj: any) {
 		const clazz = 'State'
 		obj = valueOrDefault(obj, {})
@@ -152,6 +158,49 @@ export class State {
 		return actionGroup._dataObjActions.map((doa: any) => {
 			return new DataObjAction(new RawDataObjAction(doa))
 		})
+	}
+
+	getStateData(queryType: TokenApiQueryType) {
+		const dataTree: TokenApiQueryDataTree = this.app.getDataTree(queryType)
+		this.parmsState.valueSet(
+			ParmsValuesType.listRecordIdCurrent,
+			dataTree.getValue('id', TokenApiQueryDataTreeAccessType.index, 0)
+		)
+		this.getStateDataOwnerId()
+		return dataTree
+	}
+
+	getStateDataOwnerId() {
+		const smSource = this.stateRoot || this
+		const treeLevel = smSource.app.getCurrTreeLevel()
+		if (treeLevel && treeLevel.levels.length > 0) {
+			const rootTab = treeLevel.levels[0].getCurrTab()
+			if (rootTab && rootTab.node) {
+				if (rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeOrgRecord) {
+					smSource.parmsState.valueSet(
+						ParmsValuesType.queryOwnerOrg,
+						rootTab.getCurrRecordValue('id')
+					)
+				} else if (
+					rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemApp &&
+					rootTab.node.ownerId
+				) {
+					smSource.parmsState.valueSet(ParmsValuesType.queryOwnerSys, rootTab.node.ownerId)
+				} else if (rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemRecord) {
+					smSource.parmsState.valueSet(
+						ParmsValuesType.queryOwnerSys,
+						rootTab.getCurrRecordValue('id')
+					)
+				} else if (
+					rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemUser &&
+					smSource?.user?.systemIdCurrent
+				) {
+					smSource.parmsState.valueSet(ParmsValuesType.queryOwnerSys, smSource.user.systemIdCurrent)
+				} else if (smSource?.user?.systemIdCurrent) {
+					smSource.parmsState.valueSet(ParmsValuesType.queryOwnerSys, rootTab.node.ownerId)
+				}
+			}
+		}
 	}
 
 	getTasksDash(fCallBack: Function) {
@@ -314,7 +363,7 @@ export class State {
 	}
 
 	async openModalEmbedListConfig(
-		token: TokenAppDo,
+		token: TokenAppDoBase,
 		queryType: TokenApiQueryType,
 		fModalCloseUpdate: Function
 	): Promise<MethodResult> {
@@ -374,7 +423,7 @@ export class State {
 	}
 
 	async openModalEmbedListSelect(
-		token: TokenAppDo,
+		token: TokenAppDoBase,
 		fModalCloseUpdate: Function
 	): Promise<MethodResult> {
 		const clazz = `${FILENAME}.openModalEmbedListSelect`
@@ -548,14 +597,61 @@ export class State {
 			return await sm.triggerActionValidate(parms, fCallback)
 		}
 	}
+
+	async userParmInit(
+		idFeature: any,
+		items: UserParmItemSource | UserParmItemSource[]
+	): Promise<MethodResult> {
+		if (this.user && !this.user.prefIsActive(UserPrefType.disable_remember_feature_settings)) {
+			const idHash = typeof idFeature === 'number' ? idFeature : hashString(idFeature)
+			let result: MethodResult = await apiFetchFunction(
+				ApiFunction.sysUserParmsGet,
+				new TokenApiUserParmsGet(this.user.id, idHash)
+			)
+			if (result.error) return result
+			this.userParm = new UserParm(idHash, items, this.user, result.data)
+		}
+		return new MethodResult()
+	}
+
+	userParmGet(type: UserParmItemType): MethodResult {
+		return this.userParm
+			? this.userParm.itemDataGet(type)
+			: new MethodResult({
+					error: {
+						file: FILENAME,
+						function: 'userParmGet',
+						msg: `UserParm not defined for type: ${type}`
+					}
+				})
+	}
+
+	userParmGetOrDefault(type: UserParmItemType, defaultValue: any): any {
+		const result: MethodResult = this.userParmGet(type)
+		return result.error ? defaultValue : result.data
+	}
+
+	async userParmSave() {
+		if (
+			this.user &&
+			!this.user.prefIsActive(UserPrefType.disable_remember_feature_settings) &&
+			this.userParm
+		) {
+			await this.userParm.parmsSave()
+		}
+	}
+
+	userParmSet(type: UserParmItemType, data: any) {
+		if (this.userParm) this.userParm.itemDataSet(type, data)
+	}
 }
 
 export enum StateNavContent {
 	FormDetail = 'FormDetail',
 	FormDetailReportConrig = 'FormDetailReportConrig',
 	FormList = 'FormList',
-	FormListSelect = 'FormListSelect',
-	ModalSelect = 'ModalSelect'
+	ModalSelect = 'ModalSelect',
+	SelectList = 'SelectList'
 }
 
 export class StateNavHeader {

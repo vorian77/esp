@@ -2,9 +2,9 @@ import { RepEl, RepUser } from '$comps/dataObj/types.rep'
 import {
 	debug,
 	DataObjCardinality,
-	DataObjComponent,
 	DataObjType,
 	MethodResult,
+	NodeObjComponent,
 	PropDataType
 } from '$utils/types'
 import { DbTableQueryGroup } from '$lib/queryClient/types.queryClient'
@@ -171,7 +171,6 @@ function getRawDataObj(repUser: RepUser) {
 	return new RawDataObjDyn({
 		_actionGroup: repUser.report.actionGroup,
 		_codeCardinality: DataObjCardinality.list,
-		_codeComponent: DataObjComponent.FormList,
 		_codeDataObjType: DataObjType.report,
 		_ownerId: repUser.report.ownerId,
 		_querySource: {

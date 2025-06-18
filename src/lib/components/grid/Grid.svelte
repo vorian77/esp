@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-	import {
-		TokenApiUserPref,
-		TokenAppModalReturnType,
-		TokenAppUserActionConfirmType
-	} from '$utils/types.token'
+	import { TokenAppModalReturnType, TokenAppUserActionConfirmType } from '$utils/types.token'
 	import {
 		createGrid,
 		type CellClickedEvent,
@@ -40,11 +36,11 @@
 		dataTypeDefinitions,
 		getStyles,
 		GridManagerOptions,
-		GridSettings,
 		GridSettingsColumns
 	} from '$comps/grid/grid'
 	import {
 		compareValuesRecord,
+		ContextKey,
 		DataObj,
 		DataObjData,
 		DataObjSort,
@@ -53,12 +49,12 @@
 		GridStyle,
 		MethodResult,
 		ParmsValuesType,
-		ParmsUser,
-		ParmsUserDataType,
 		PropDataType,
 		required,
-		strRequired
+		strRequired,
+		UserParmItemType
 	} from '$utils/types'
+	import { getContext } from 'svelte'
 	import { ParmsValues } from '$utils/types'
 	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field.svelte'
 	import { State, StateSurfacePopup } from '$comps/app/types.appState.svelte'
@@ -66,6 +62,8 @@
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
+	import { Smartphone } from 'lucide-svelte'
+	import { list } from '@vercel/blob'
 
 	LicenseManager.setLicenseKey(
 		'Using_this_{AG_Charts_and_AG_Grid}_Enterprise_key_{AG-069958}_in_excess_of_the_licence_granted_is_not_permitted___Please_report_misuse_to_legal@ag-grid.com___For_help_with_changing_this_key_please_contact_info@ag-grid.com___{App_Factory}_is_granted_a_{Single_Application}_Developer_License_for_the_application_{AppFactory}_only_for_{1}_Front-End_JavaScript_developer___All_Front-End_JavaScript_developers_working_on_{AppFactory}_need_to_be_licensed___{AppFactory}_has_been_granted_a_Deployment_License_Add-on_for_{1}_Production_Environment___This_key_works_with_{AG_Charts_and_AG_Grid}_Enterprise_versions_released_before_{22_October_2025}____[v3]_[0102]_MTc2MTA4NzYwMDAwMA==38662b93f270b810aa21446e810c2c8e'
@@ -73,8 +71,7 @@
 
 	const FILENAME = '$comps/other/ListBox.svelte'
 
-	// export let api: GridApi
-	// export let options: GridManagerOptions
+	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 
 	let {
 		api = $bindable(),
@@ -84,6 +81,8 @@
 
 	let eGui: HTMLElement
 	let isSuppressFilterSort: boolean = $state(false)
+	let listFilterModel = $derived(sm.userParmGetOrDefault(UserParmItemType.listFilterModel, ''))
+	let listFilterQuick = $derived(sm.userParmGetOrDefault(UserParmItemType.listFilterQuick, ''))
 	let rowCountFiltered: number = $state()
 	let rowCountSelected: number = $state()
 	let rowData: any[]
@@ -108,6 +107,7 @@
 		styleMaxHeight = isSuppressFilterSort ? '100%' : 'calc(100% - 70px)'
 
 		const gridOptions = {
+			alwaysMultiSort: true,
 			autoSizeStrategy: {
 				type: autoSizeStrategy(options.columnDefs)
 			},
@@ -168,8 +168,8 @@
 		}
 
 		// <todo> 241115 - bug - createGrid makes options.userSettings.listSortModel undefined
-		const rawSort =
-			options.userSettings.getPref(ParmsUserDataType.listSortModel) || options.sortModel
+		// const rawSort =
+		const rawSort = sm.userParmGetOrDefault(UserParmItemType.listSortModel, options.sortModel)
 
 		api = createGrid(eGui, gridOptions)
 
@@ -179,8 +179,10 @@
 				return acc + (col.hide ? 0 : 1)
 			}, 0)
 
-			const strategy =
-				colCntVisible * avgColW > eGui.offsetWidth ? 'fitCellContents' : 'fitGridWidth'
+			// const strategy =
+			// 	colCntVisible * avgColW > eGui.offsetWidth ? 'fitCellContents' : 'fitGridWidth'
+
+			const strategy = 'fitProvidedWidth'
 
 			// console.log('Grid.autoSizeStrategy:', {
 			// 	gridWidth: eGui.offsetWidth,
@@ -212,8 +214,8 @@
 
 		// apply user settings - sort first because it triggers filter
 		settingSortSet(rawSort)
-		settingsFilterQuickSet(options.userSettings.getPref(ParmsUserDataType.listFilterQuick))
-		api.setFilterModel(options.userSettings.getPref(ParmsUserDataType.listFilterModel))
+		settingsFilterQuickSet(listFilterQuick)
+		api.setFilterModel(listFilterModel)
 		updateCounters()
 
 		return () => {
@@ -235,10 +237,10 @@
 	function onFilterChanged(event: FilterChangedEvent) {
 		switch (event.source) {
 			case 'columnFilter':
-				options.userSettings.setPref(ParmsUserDataType.listFilterModel, event.api.getFilterModel())
+				sm.userParmSet(UserParmItemType.listFilterModel, event.api.getFilterModel())
 				break
 			case 'quickFilter':
-				options.userSettings.setPref(ParmsUserDataType.listFilterQuick, event.api.getQuickFilter())
+				sm.userParmSet(UserParmItemType.listFilterQuick, event.api.getQuickFilter())
 				break
 		}
 		onFilterChangedDeselect()
@@ -294,7 +296,7 @@
 	}
 
 	function onSort(event: PostSortRowsParams) {
-		options.userSettings.setPref(ParmsUserDataType.listSortModel, settingSortGet())
+		sm.userParmSet(UserParmItemType.listSortModel, settingSortGet())
 	}
 
 	function onSelectionChanged(event: SelectionChangedEvent) {
@@ -303,22 +305,11 @@
 	}
 
 	async function saveUserSettings() {
-		if (options?.userSettings?.idUser) {
-			// set columns state
-			options.userSettings.setPref(
-				ParmsUserDataType.listColumnsModel,
-				new GridSettingsColumns(api.getAllGridColumns())
-			)
-
-			await apiFetchFunction(
-				ApiFunction.sysUserPrefSet,
-				new TokenApiUserPref(
-					options.userSettings.idUser,
-					options.userSettings.idFeature,
-					options.userSettings
-				)
-			)
-		}
+		sm.userParmSet(
+			UserParmItemType.listColumnsModel,
+			new GridSettingsColumns(api.getAllGridColumns())
+		)
+		await sm.userParmSave()
 	}
 
 	function setGridColumnsProp(
@@ -389,7 +380,7 @@
 	<div class="grow flex flex-col gap-3">
 		<ListFilter
 			isHideFilter={isSuppressFilterSort}
-			filter={options.userSettings.getPref(ParmsUserDataType.listFilterQuick)}
+			filter={listFilterQuick}
 			{rowCountFiltered}
 			{rowCountSelected}
 			fSetFilter={settingsFilterQuickSet}

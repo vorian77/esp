@@ -4,6 +4,7 @@
 		DataManager,
 		DataObjCardinality,
 		type DataRecord,
+		NodeObjComponent,
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
@@ -28,7 +29,7 @@
 	<LayoutContent
 		parms={{
 			...parms,
-			navContent: dataObjEmbed.raw.codeComponent,
+			navContent: NodeObjComponent.FormList,
 			dataObj: dataObjEmbed,
 			dataObjId: dataObjEmbed.raw.id
 		}}

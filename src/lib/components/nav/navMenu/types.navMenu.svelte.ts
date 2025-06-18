@@ -8,17 +8,16 @@ import {
 	memberOfEnum,
 	MethodResult,
 	Node,
+	NodeObjComponent,
 	ParmsValuesType,
 	RawMenu,
 	required,
 	User,
 	UserResourceTask,
-	UserResourceTaskRenderType,
 	valueOrDefault
 } from '$utils/types'
 import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
 import {
-	Token,
 	TokenApiQueryData,
 	TokenApiQueryType,
 	TokenAppDoQuery,
@@ -252,12 +251,16 @@ export class NavMenuData {
 			})
 		)
 	}
-	async triggerActionDataObjApp(dataObjName: string): Promise<MethodResult> {
+	async triggerActionDataObjApp(
+		dataObjName: string,
+		codeComponent: NodeObjComponent
+	): Promise<MethodResult> {
 		return await this.triggerAction(
 			CodeActionClass.ct_sys_code_action_class_do,
 			CodeActionType.doOpen,
 			{
 				token: new TokenAppDoQuery({
+					codeComponent,
 					dataObjName,
 					queryType: TokenApiQueryType.retrieve
 				})
@@ -447,18 +450,19 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 		// group - items
 		this.items = new NavMenuDataCompGroup(navMenu, { hideHr: true })
 
-		// this.addItem({
-		// 	content: new NavMenuContent(
-		// 		NavMenuContentType.dataObjApp,
-		// 		new TokenAppDoQuery({
-		// 			dataObjName: 'data_obj_task_sys_auth_my_account',
-		// 			queryType: TokenApiQueryType.retrieve
-		// 		})
-		// 	),
-		// 	icon: 'settings2',
-		// 	isRoot: true,
-		// 	label: new NavMenuLabel('My Preferences')
-		// })
+		this.addItem({
+			content: new NavMenuContent(
+				NavMenuContentType.dataObjApp,
+				new TokenAppDoQuery({
+					codeComponent: NodeObjComponent.FormList,
+					dataObjName: 'data_obj_auth_user_pref_list',
+					queryType: TokenApiQueryType.retrieve
+				})
+			),
+			icon: 'settings2',
+			isRoot: true,
+			label: new NavMenuLabel('My Preferences')
+		})
 
 		if (['user_sys'].includes(this.user.name)) {
 			this.addItem({

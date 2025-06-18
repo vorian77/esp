@@ -136,29 +136,6 @@ export function initPreDataObjActionGroup(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysDataObjActionGroup', {
-		actions: [
-			{
-				action: 'ua_sys_new_detail_list_node_config',
-				codeColor: 'primary',
-				orderDefine: 0
-			},
-			{
-				action: 'ua_sys_edit_list_node_config',
-				codeColor: 'primary',
-				isListRowAction: true,
-				orderDefine: 1
-			},
-			{
-				action: 'ua_sys_download_grid',
-				codeColor: 'primary',
-				orderDefine: 2
-			}
-		],
-		name: 'doag_list_node_config',
-		owner: 'sys_system'
-	})
-
 	/* dialog */
 	init.addTrans('sysDataObjActionGroup', {
 		actions: [{ action: 'ua_sys_dialog_done', codeColor: 'primary', orderDefine: 0 }],

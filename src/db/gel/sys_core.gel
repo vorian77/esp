@@ -104,7 +104,7 @@ module sys_core {
     logoMarginRight: float64;
     logoWidth: int16;
     multi nodesConfig: sys_core::SysNodeObjConfig{
-      on source delete allow;
+      on target delete allow;
     };
     required owner: sys_core::SysOrg;
     multi systemParents: sys_core::SysSystem;
@@ -137,9 +137,6 @@ module sys_core {
     constraint exclusive on ((.owner, .codeType, .name));
   }
 
-
-
-
   type SysCodeAction extending sys_core::SysCode {}
 
   type SysObjDb extending sys_core::SysObj {
@@ -170,7 +167,6 @@ module sys_core {
     actionGroup: sys_core::SysDataObjActionGroup;
     
     required codeCardinality: sys_core::SysCode;
-    required codeComponent: sys_core::SysCode;
     codeDataObjType: sys_core::SysCode;
     codeDoQueryType: sys_core::SysCode;
     codeDoRenderPlatform: sys_core::SysCode;
@@ -196,9 +192,6 @@ module sys_core {
     
     listReorderColumn: sys_db::SysColumn;    
     processType: sys_core::SysCode;
-    selectListItems: sys_core::SysDataObjFieldListItems;
-    selectListItemsHeader: str;
-    selectListItemsParmValue: str;
     subHeader: str;
     constraint exclusive on (.name);
   } 
@@ -236,6 +229,7 @@ module sys_core {
     customColAlign: str;
     customColIsSubHeader: bool;
     customColLabel: str;
+    customColCodeComponent: sys_core::SysCode;
     customColPrefix: str;
     customColRawHTML: str;
     customColSize: str;
@@ -446,12 +440,12 @@ module sys_core {
     multi children: sys_core::SysNodeObjChild{
       on source delete allow;
     };
+    codeComponent: sys_core::SysCode;
     required codeNavType: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
     codeQueryOwnerType: sys_core::SysCode;
     dataObj: sys_core::SysDataObj;
     required isAlwaysRetrieveData: bool;
-    required isDynamicChildrenSystemParents: bool;
     required isHideRowManager: bool;
     multi nodeData: sys_core::SysNodeObjData {
        on target delete delete source;
@@ -460,6 +454,9 @@ module sys_core {
        on source delete delete target;
     };
     page: str;
+    selectListItems: sys_core::SysDataObjFieldListItems;
+    selectListItemsHeader: str;
+    selectListItemsParmValue: str;
     constraint exclusive on (.name);
   }
 

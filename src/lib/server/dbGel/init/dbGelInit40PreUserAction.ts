@@ -71,8 +71,8 @@ export function initPreUserAction(init: InitDb) {
 	})
 
 	init.addTrans('sysUserAction', {
-		codeAction: 'doOpenLink',
-		name: 'ua_ca_sys_do_open_link',
+		codeAction: 'doOpenCustom',
+		name: 'ua_ca_sys_do_open_custom',
 		owner: 'sys_system'
 	})
 
@@ -93,16 +93,6 @@ export function initPreUserAction(init: InitDb) {
 		name: 'ua_sys_edit_list',
 		owner: 'sys_system'
 	})
-
-	init.addTrans('sysUserAction', {
-		codeAction: 'doListDetailEditNodeConfig',
-		codeConfirmType: 'statusChanged',
-		exprShow: `<never>`,
-		header: 'Edit',
-		name: 'ua_sys_edit_list_node_config',
-		owner: 'sys_system'
-	})
-
 	init.addTrans('sysUserAction', {
 		codeAction: 'doEmbedListConfigEdit',
 		codeConfirmType: 'statusChanged',
@@ -111,7 +101,6 @@ export function initPreUserAction(init: InitDb) {
 		name: 'ua_sys_embed_list_config_edit',
 		owner: 'sys_system'
 	})
-
 	init.addTrans('sysUserAction', {
 		codeAction: 'doEmbedListConfigNew',
 		codeConfirmType: 'statusChanged',
@@ -120,7 +109,6 @@ export function initPreUserAction(init: InitDb) {
 		name: 'ua_sys_embed_list_config_new',
 		owner: 'sys_system'
 	})
-
 	init.addTrans('sysUserAction', {
 		codeAction: 'doEmbedListEditParmValue',
 		codeConfirmType: 'statusChanged',
@@ -176,21 +164,11 @@ export function initPreUserAction(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysUserAction', {
-		codeAction: 'doListDetailNewNodeConfig',
-		codeConfirmType: 'statusChanged',
-		exprShow: `!<statusChanged>`,
-		header: 'New',
-		name: 'ua_sys_new_detail_list_node_config',
-		owner: 'sys_system'
-	})
-
-	init.addTrans('sysUserAction', {
 		codeAction: 'doDetailProcessExecute',
 		header: 'Execute',
 		name: 'ua_sys_process_execute',
 		owner: 'sys_system'
 	})
-
 	init.addTrans('sysUserAction', {
 		codeAction: 'doListSelfRefresh',
 		codeConfirmType: 'statusChanged',

@@ -9,7 +9,6 @@ function initDataObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Data Objects',
 		name: 'data_obj_sys_admin_data_obj_list',
@@ -38,7 +37,6 @@ function initDataObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Data Object',
 		name: 'data_obj_sys_admin_data_obj_detail',
 		owner: 'sys_system',
@@ -81,16 +79,6 @@ function initDataObj(init: InitDb) {
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmValue: 'ct_sys_do_cardinality'
-			},
-			{
-				codeFieldElement: 'radio',
-				columnName: 'codeComponent',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_do_component'
 			},
 			{
 				codeFieldElement: 'select',
@@ -475,6 +463,7 @@ function initDataObj(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_list',
@@ -486,6 +475,7 @@ function initDataObj(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_column_list', order: 10 }],
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_detail',
@@ -500,7 +490,6 @@ function initDataObjColumn(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter:
 			'.id IN (SELECT sys_core::SysDataObj FILTER .id = <tree,uuid,SysDataObj.id>).columns.id',
 		header: 'Columns',
@@ -602,7 +591,6 @@ function initDataObjColumn(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Column',
 		name: 'data_obj_sys_admin_data_obj_column_detail',
 		owner: 'sys_system',
@@ -1383,6 +1371,7 @@ function initDataObjColumn(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_column_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_column_list',
@@ -1393,6 +1382,7 @@ function initDataObjColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_column_detail',

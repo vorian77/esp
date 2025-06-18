@@ -9,7 +9,7 @@ export function initAdminSysTools(init: InitDb) {
 function initError(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		owner: 'sys_system',
-		codeComponent: 'FormList',
+
 		codeCardinality: 'list',
 		name: 'data_obj_sys_admin_tool_error_list',
 		header: 'Errors',
@@ -131,7 +131,7 @@ function initError(init: InitDb) {
 
 	init.addTrans('sysDataObj', {
 		owner: 'sys_system',
-		codeComponent: 'FormDetail',
+
 		codeCardinality: 'detail',
 		name: 'data_obj_sys_admin_tool_error_detail',
 		header: 'Error',
@@ -301,6 +301,7 @@ function initError(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_admin_tool_error_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_tool_error_list',
@@ -310,6 +311,7 @@ function initError(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_tool_error_detail',

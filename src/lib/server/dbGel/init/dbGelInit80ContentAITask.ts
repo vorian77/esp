@@ -9,7 +9,6 @@ function initTaskCohortAttd(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_detail_mobile_save',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskTarget',
 		codeDoQueryType: 'preset',
 		codeDoRenderPlatform: 'app',
@@ -82,7 +81,6 @@ function initTaskNewStudent(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_detail_task_record',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskTarget',
 		codeDoQueryType: 'preset',
 		codeDoRenderPlatform: 'app',

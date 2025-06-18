@@ -9,7 +9,6 @@ function initTaskOpenApps(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_list_edit',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'taskTarget',
 		exprFilter: `.owner.name = 'sys_client_moed' AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_moed::MoedParticipant).dateStart AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_moed::MoedParticipant).dateEnd`,
 		header: 'Open Applications',
@@ -115,6 +114,7 @@ function initTaskOpenApps(init: InitDb) {
 
 	init.addTrans('sysNodeObjTask', {
 		children: [{ node: 'node_obj_moed_part_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNavType: 'task',
 		codeNodeType: 'program',

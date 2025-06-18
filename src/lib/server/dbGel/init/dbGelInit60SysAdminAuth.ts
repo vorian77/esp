@@ -11,12 +11,11 @@ export function initSysAuth(init: InitDb) {
 
 	initDataObjMyAccount(init)
 	initDataObjResetPasswordAccount(init)
-	initDataObjUserPrefType(init)
+	initDataObjUserPref(init)
 }
 
 function initDataObjAuthLogin(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		codeDoQueryType: 'preset',
 		header: 'Log in',
@@ -72,8 +71,9 @@ function initDataObjAuthLogin(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: 'ua_ca_sys_do_open_link',
+					action: 'ua_ca_sys_do_open_custom',
 					label: 'Forgot Password?',
+					codeComponent: 'FormDetail',
 					value: 'data_obj_auth_login_forgot_pw'
 				},
 				isDisplayable: true,
@@ -86,8 +86,9 @@ function initDataObjAuthLogin(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: 'ua_ca_sys_do_open_link',
+					action: 'ua_ca_sys_do_open_custom',
 					label: 'Sign up',
+					codeComponent: 'FormDetail',
 					prefix: 'Need an account?',
 					value: 'data_obj_auth_signup'
 				},
@@ -101,7 +102,6 @@ function initDataObjAuthLogin(init: InitDb) {
 
 function initDataObjAuthLoginForgotPw(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		codeDoQueryType: 'preset',
 		header: 'Reset Password',
@@ -162,6 +162,36 @@ function initDataObjAuthLoginForgotPw(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50
+			},
+			{
+				codeColor: 'primary',
+				codeFieldElement: 'customActionLink',
+				columnName: 'custom_element',
+				customElement: {
+					action: 'ua_ca_sys_do_open_custom',
+					label: 'Log in',
+					codeComponent: 'FormDetail',
+					prefix: 'Already have an account?',
+					value: 'data_obj_auth_login'
+				},
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				codeColor: 'primary',
+				codeFieldElement: 'customActionLink',
+				columnName: 'custom_element',
+				customElement: {
+					action: 'ua_ca_sys_do_open_custom',
+					label: 'Sign up',
+					codeComponent: 'FormDetail',
+					prefix: 'Need an account?',
+					value: 'data_obj_auth_signup'
+				},
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70
 			}
 		]
 	})
@@ -169,7 +199,6 @@ function initDataObjAuthLoginForgotPw(init: InitDb) {
 
 function initDataObjAuthLoginVerify(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_login_verify',
@@ -238,7 +267,6 @@ function initDataObjAuthLoginVerify(init: InitDb) {
 
 function initDataObjAuthSignup(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		codeDoQueryType: 'preset',
 		header: 'Sign up',
@@ -320,8 +348,9 @@ function initDataObjAuthSignup(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: 'ua_ca_sys_do_open_link',
+					action: 'ua_ca_sys_do_open_custom',
 					label: 'Log in',
+					codeComponent: 'FormDetail',
 					prefix: 'Already have an account?',
 					value: 'data_obj_auth_login'
 				},
@@ -335,7 +364,6 @@ function initDataObjAuthSignup(init: InitDb) {
 
 function initDataObjAuthSignupVerifyMobileInsert(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_signup_verify_mobile_insert',
@@ -404,7 +432,6 @@ function initDataObjAuthSignupVerifyMobileInsert(init: InitDb) {
 
 function initDataObjAuthSignupVerifyMobileUpdate(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_signup_verify_mobile_update',
@@ -475,7 +502,6 @@ function initDataObjMyAccount(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_auth_my_account',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskTarget',
 		exprFilter: '.id = <user,uuid,id>',
 		header: 'My Account',
@@ -649,8 +675,9 @@ function initDataObjMyAccount(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: 'ua_ca_sys_do_open_link',
+					action: 'ua_ca_sys_do_open_custom',
 					label: 'Reset Password?',
+					codeComponent: 'FormDetail',
 					value: 'data_obj_auth_reset_password_account'
 				},
 				isDisplayable: true,
@@ -663,7 +690,6 @@ function initDataObjMyAccount(init: InitDb) {
 
 function initDataObjResetPasswordAccount(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		codeDoQueryType: 'preset',
 		header: 'Reset Password',
@@ -708,6 +734,7 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 				customElement: {
 					action: 'ua_ca_sys_auth_submit',
 					label: 'Confirm Mobile Phone Number',
+					codeComponent: 'FormDetail',
 					value: 'data_obj_auth_reset_password_account'
 				},
 				isDisplayable: true,
@@ -729,25 +756,24 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 	})
 }
 
-function initDataObjUserPrefType(init: InitDb) {
+function initDataObjUserPref(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_embed_list_edit',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeListPresetType: 'insertSave',
 		exprFilter: `.user.id = <user,uuid,id>`,
 		header: 'My Preferences',
 		isListEdit: true,
 		isListSuppressFilterSort: true,
 		listPresetExpr: `WITH 
-			allPrefs := (SELECT sys_core::SysCode FILTER .codeType.name = 'ct_sys_user_pref_type'),
-			userPrefs := (SELECT sys_user::SysUserPrefType FILTER .user.id = <user,uuid,id>).codeType,
-			newVals := (SELECT allPrefs EXCEPT userPrefs)
+			allTypes := (SELECT sys_core::SysCode FILTER .codeType.name = 'ct_sys_user_pref_type'),
+			userTypes := (SELECT sys_user::SysUserPref FILTER .user.id = <user,uuid,id>).codeType,
+			newVals := (SELECT allTypes EXCEPT userTypes)
 			SELECT newVals`,
-		name: 'data_obj_auth_user_pref_type',
+		name: 'data_obj_auth_user_pref_list',
 		owner: 'sys_system',
 		tables: [
-			{ index: 0, table: 'SysUserPrefType' },
+			{ index: 0, table: 'SysUserPref' },
 			{ columnParent: 'codeType', indexParent: 0, index: 1, table: 'SysCode' }
 		],
 		fields: [

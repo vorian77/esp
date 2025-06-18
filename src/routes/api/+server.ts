@@ -5,12 +5,11 @@ import {
 	getDataObjActionGroup,
 	getDataObjId,
 	getLinkItemsSource,
-	getNodesSystemParents,
 	getNodeByNodeId,
 	getNodesChildren,
-	getUserPref,
-	setUserPref,
-	sysErrorAdd
+	sysErrorAdd,
+	sysUserParmsGet,
+	sysUserParmsSet
 } from '$routes/api/db/dbGel/dbGelQueries'
 import { dbInit } from '$server/dbGel/init/dbGelInit'
 import { sysSendText } from '$routes/api/apiTwilio'
@@ -35,9 +34,6 @@ export async function POST({ cookies, request }) {
 		case ApiFunction.dbGelGetNodeByNodeId:
 			return getServerResponseMethod(await getNodeByNodeId(token))
 
-		case ApiFunction.dbGelGetNodesSystemParents:
-			return getServerResponseMethod(await getNodesSystemParents(token))
-
 		case ApiFunction.dbGelGetNodesChildren:
 			return getServerResponseMethod(await getNodesChildren(token))
 
@@ -57,11 +53,11 @@ export async function POST({ cookies, request }) {
 		case ApiFunction.sysSendText:
 			return getServerResponse(await sysSendText(token))
 
-		case ApiFunction.sysUserPrefGet:
-			return getServerResponseMethod(await getUserPref(token))
+		case ApiFunction.sysUserParmsGet:
+			return getServerResponseMethod(await sysUserParmsGet(token))
 
-		case ApiFunction.sysUserPrefSet:
-			return getServerResponseMethod(await setUserPref(token))
+		case ApiFunction.sysUserParmsSet:
+			return getServerResponseMethod(await sysUserParmsSet(token))
 
 		default:
 			error(500, {

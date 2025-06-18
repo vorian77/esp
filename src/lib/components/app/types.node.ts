@@ -1,10 +1,13 @@
+import { PropLinkItems } from '$comps/dataObj/types.rawDataObj.svelte'
 import {
 	arrayOfClass,
 	booleanOrFalse,
+	classOptional,
 	CodeActionType,
 	getArray,
 	memberOfEnum,
 	memberOfEnumIfExists,
+	NodeObjComponent,
 	nbrRequired,
 	strRequired,
 	valueOrDefault
@@ -37,21 +40,28 @@ export class NodeHeader {
 export class Node extends NodeHeader {
 	actions: NodeAction[]
 	children: string[]
+	codeComponent: NodeObjComponent
 	dataObjId: string
 	isAlwaysRetrieveData: boolean
-	isDynamicChildrenSystemParents: boolean
 	isHideRowManager: boolean
 	ownerId?: string
 	queryOwnerType?: NodeQueryOwnerType
+	selectListItems?: PropLinkItems
 	constructor(obj: any) {
 		const clazz = 'Node'
 		obj = valueOrDefault(obj, {})
 		super(obj)
 		this.actions = arrayOfClass(NodeAction, obj._actions)
 		this.children = getArray(obj._children).map((c: any) => c._nodeObjId)
+		this.codeComponent = memberOfEnum(
+			obj._codeComponent,
+			clazz,
+			'codeComponent',
+			'NodeObjComponent',
+			NodeObjComponent
+		)
 		this.dataObjId = strRequired(obj._dataObjId || '', clazz, 'dataObjId')
 		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData)
-		this.isDynamicChildrenSystemParents = booleanOrFalse(obj.isDynamicChildrenSystemParents)
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager)
 		this.ownerId = strRequired(obj._ownerId, clazz, 'ownerId')
 		this.queryOwnerType = memberOfEnumIfExists(
@@ -61,6 +71,7 @@ export class Node extends NodeHeader {
 			'NodeQueryOwnerType',
 			NodeQueryOwnerType
 		)
+		this.selectListItems = classOptional(PropLinkItems, obj._selectListItems)
 	}
 
 	getNodeIdAction(actionType: CodeActionType, nodeIdActionAlt: NodeIdActionAlt): string {
@@ -72,7 +83,7 @@ export class Node extends NodeHeader {
 				error(500, {
 					file: FILENAME,
 					function: 'Node.getNodeIdAction',
-					msg: `No children defined node: ${this.name}`
+					msg: `No children defined for node: ${this.name}`
 				})
 			case NodeIdActionAlt.self:
 				return this.id

@@ -7,7 +7,6 @@ function initDataObjFieldListItems(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Field List Items',
 		name: 'data_obj_sys_admin_data_obj_field_list_items_list',
@@ -98,7 +97,6 @@ function initDataObjFieldListItems(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Field List Item',
 		name: 'data_obj_sys_admin_data_obj_field_list_items_detail',
 		owner: 'sys_system',
@@ -299,6 +297,7 @@ function initDataObjFieldListItems(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_field_list_items_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_field_list_items_list',
@@ -309,6 +308,7 @@ function initDataObjFieldListItems(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_data_obj_field_list_items_detail',

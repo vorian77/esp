@@ -47,7 +47,7 @@
 		'inline-flex items-center rounded-md px-4 py-2 text-sm font-normal text-gray-900 hover:bg-gray-300'
 </script>
 
-{#if currLevel && dataObj}
+{#if currLevel}
 	<div id="layout-tab" class="h-full flex flex-col">
 		{#if currLevel.tabs.length > 1}
 			<div class="p-3 sm:ml-1 mr-1 mt-1 bg-neutral-100 rounded-md">
@@ -78,6 +78,7 @@
 						{@const hidden = isHideChildTabs && !isCurrent}
 						{@const label = tab.label}
 						{@const classItem = isCurrent ? classItemCurrent : classItemNotCurrent}
+
 						{#if !tab.isVirtual}
 							<button {name} {hidden} class={classItem} onclick={() => onClick(idx)}>
 								{label}

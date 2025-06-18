@@ -42,11 +42,16 @@ export async function clientQueryExpr(
 	sm?: State
 ): Promise<MethodResult> {
 	const clazz = 'clientQueryExpr'
+	let result: MethodResult
 
 	if (!sourceQueryData) sourceQueryData = {}
 	if (sm) {
-		sourceQueryData.dataTree = sm.app.getDataTree(TokenApiQueryType.none)
+		sourceQueryData.dataTree = sm.getStateData(TokenApiQueryType.none)
 		sourceQueryData.user = sm.user
+		if (sourceQueryData.dataTab) {
+			sourceQueryData.dataTab.parms.update(sm.parmsState.valueGetAll())
+			sourceQueryData.dataTab.parms.update(sm.parmsTrans.valueGetAll())
+		}
 	}
 	const tokenQuery = new TokenApiQuery({
 		evalExprContext: evalExprContext,
@@ -55,7 +60,7 @@ export async function clientQueryExpr(
 		queryData: new TokenApiQueryData(sourceQueryData)
 	})
 
-	const result: MethodResult = await apiFetchFunction(ApiFunction.dbQuery, tokenQuery)
+	result = await apiFetchFunction(ApiFunction.dbQuery, tokenQuery)
 	if (result.error) return result
 	return new MethodResult(TokenApiQueryData.load(result.data))
 }

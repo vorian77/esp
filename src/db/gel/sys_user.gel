@@ -51,11 +51,19 @@ module sys_user {
     required multi orgs: sys_core::SysOrg {
       on target delete allow;
     };
-    required person: default::SysPerson {
-      on source delete allow;
+    multi parms: sys_user::SysUserParm {
+      on source delete delete target;
+      on target delete allow;
     };
     required password: str {
       default := (SELECT <str>uuid_generate_v4());
+    };
+    required person: default::SysPerson {
+      on source delete allow;
+    };
+    multi preferences: sys_user::SysUserPref {
+      on source delete delete target;
+      on target delete allow;
     };
     required multi systems: sys_core::SysSystem;
     multi userTypes: sys_user::SysUserType {
@@ -93,23 +101,25 @@ module sys_user {
     confirmTitle: str;
   }
 
-  # preference
-  type SysUserPref extending sys_user::Mgmt {
+
+  type SysUserParm  {
+    required codeType: sys_core::SysCode;
+    required idFeature: int64;
+    required parmData: json;
     required user: sys_user::SysUser {
       on target delete delete source;
     };
-    required idFeature: uuid;
-    required prefData: json;
-    constraint exclusive on ((.user, .idFeature));
-  }
-  type SysUserPrefType extending sys_user::Mgmt {
-    required codeType: sys_core::SysCode;
-    required isActive: bool;
-    required user: sys_user::SysUser;
-    constraint exclusive on ((.user, .codeType));
+    constraint exclusive on ((.user, .idFeature, .codeType));
   }
   
-
+  type SysUserPref extending sys_user::Mgmt {
+    required codeType: sys_core::SysCode;
+    required isActive: bool;
+    required user: sys_user::SysUser {
+      on target delete delete source;
+    };
+    constraint exclusive on ((.user, .codeType));
+  } 
   
   # type
   type SysUserType extending sys_core::SysObj {

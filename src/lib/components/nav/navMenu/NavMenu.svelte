@@ -8,6 +8,7 @@
 	import { NavMenuData } from '$comps/nav/navMenu/types.navMenu.svelte'
 	import { Tween } from 'svelte/motion'
 	import { cubicOut } from 'svelte/easing'
+	import { error } from '@sveltejs/kit'
 
 	const FILENAME = '/$comps/nav/navMenu/NavMenu.svelte'
 

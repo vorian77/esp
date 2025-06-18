@@ -325,11 +325,12 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
+				altTrans: ['sysSystem'],
+				deleteObj: 'sys_core::SysNodeObjConfig',
+				deleteObjFilter: `.id IN (SELECT sys_core::SysSystem FILTER ${TokenExprFilterRecord}).nodesConfig.id`,
 				name: 'updateSystemNodesConfig',
 				dataMap: 'name',
-				fCreate: updateSystemNodesConfig,
-				updateObj: 'sys_core::SysSystem',
-				updateObjFields: [['nodesConfig', '{}']]
+				fCreate: updateSystemNodesConfig
 			})
 		)
 
@@ -387,6 +388,7 @@ export class InitDb {
 			new InitDbItemObject({
 				name: 'sysUser',
 				dataMap: 'name',
+				exprResets: `DELETE sys_user::SysUserParm`,
 				fCreate: addUser
 			})
 		)

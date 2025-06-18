@@ -15,7 +15,6 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		header: 'Data Object Actions',
 		listReorderColumn: 'orderDefine',
@@ -99,7 +98,6 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
 		header: 'Data Object Action',
 		name: 'doflc_sys_admin_data_obj_action_detail',
@@ -239,7 +237,6 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		exprFilter: `.id IN (SELECT sys_core::SysDataObjColumn FILTER .id = <parms,uuid,embedParentId>).linkColumns.id`,
 		header: 'Data Object Link Columns',
@@ -305,7 +302,6 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
 		header: 'Data Object Link Column',
 		name: 'doflc_sys_admin_data_obj_column_link_detail',
@@ -413,7 +409,6 @@ async function initFieldListConfigDataObjFieldListItemsProp(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		header: 'Props',
 		name: 'doflc_sys_admin_data_obj_field_list_items_prop_list',
@@ -481,7 +476,6 @@ async function initFieldListConfigDataObjFieldListItemsProp(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
 		header: 'Prop',
 		name: 'doflc_sys_admin_data_obj_field_list_items_prop_detail',
@@ -568,7 +562,6 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		header: 'Data Object - Tables',
 		name: 'doflc_sys_admin_data_obj_table_list',
@@ -642,7 +635,6 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
 		header: 'Data Object - Table',
 		name: 'doflc_sys_admin_data_obj_table_detail',
@@ -825,7 +817,6 @@ async function initFieldListConfigUserActionConfirm(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		header: 'User Action - Confirms',
 		name: 'doflc_sys_admin_user_action_confirm_list',
@@ -866,7 +857,6 @@ async function initFieldListConfigUserActionConfirm(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
 		header: 'User Action - Confirm',
 		name: 'doflc_sys_admin_user_action_confirm_detail',

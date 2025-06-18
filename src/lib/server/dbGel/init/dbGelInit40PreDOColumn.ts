@@ -1675,12 +1675,6 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'bool',
-		header: 'Dynamic Children - Parent Systems',
-		name: 'isDynamicChildrenSystemParents'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'bool',
 		header: 'Exclude-Insert',
 		name: 'isExcludeInsert'
 	})

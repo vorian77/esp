@@ -19,7 +19,7 @@ export type $MgmtλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c2
 }>;
 type $Mgmt = $.ObjectType<"sys_user::Mgmt", $MgmtλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
-], "app_cm::CmClient" | "app_cm::CmClientServiceFlow" | "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCohortAttd" | "app_cm::CmCohortDoc" | "app_cm::CmCourse" | "app_cm::CmCsfData" | "app_cm::CmCsfCohort" | "app_cm::CmCsfCohortAttd" | "app_cm::CmCsfDocument" | "app_cm::CmCsfGroup" | "app_cm::CmCsfJobPlacement" | "app_cm::CmCsfNote" | "app_cm::CmCsfSchoolPlacement" | "app_cm::CmGroup" | "sys_core::SysObjAttr" | "sys_core::SysObjAttrEnt" | "app_cm::CmPartner" | "app_cm::CmProgram" | "app_crm::CrmClient" | "org_client_moed::MoedPartData" | "org_client_moed::MoedParticipant" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysObjDb" | "sys_core::SysDataObj" | "sys_core::SysDataObjAction" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjColumn" | "sys_core::SysDataObjColumnItemChange" | "sys_core::SysDataObjColumnLink" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysDataObjQueryRider" | "sys_core::SysDataObjTable" | "sys_core::SysDataObjWith" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjAttrAccess" | "sys_core::SysObjAttrAction" | "sys_core::SysObjAttrExpr" | "sys_core::SysObjAttrVirtual" | "sys_core::SysObjNote" | "sys_core::SysOrg" | "sys_core::SysSystem" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_migr::SysMigrSourceColumn" | "sys_migr::SysMigrSourceTable" | "sys_migr::SysMigrTargetColumn" | "sys_migr::SysMigrTargetTable" | "sys_rep::SysAnalytic" | "sys_rep::SysAnalyticStatus" | "sys_rep::SysRep" | "sys_rep::SysRepEl" | "sys_rep::SysRepParm" | "sys_rep::SysRepUser" | "sys_rep::SysRepUserAnalytic" | "sys_rep::SysRepUserParm" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysTask" | "sys_user::SysUser" | "sys_user::SysUserAction" | "sys_user::SysUserActionConfirm" | "sys_user::SysUserPref" | "sys_user::SysUserPrefType" | "sys_user::SysUserType" | "sys_user::currentUser">;
+], "app_cm::CmClient" | "app_cm::CmClientServiceFlow" | "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCohortAttd" | "app_cm::CmCohortDoc" | "app_cm::CmCourse" | "app_cm::CmCsfData" | "app_cm::CmCsfCohort" | "app_cm::CmCsfCohortAttd" | "app_cm::CmCsfDocument" | "app_cm::CmCsfGroup" | "app_cm::CmCsfJobPlacement" | "app_cm::CmCsfNote" | "app_cm::CmCsfSchoolPlacement" | "app_cm::CmGroup" | "sys_core::SysObjAttr" | "sys_core::SysObjAttrEnt" | "app_cm::CmPartner" | "app_cm::CmProgram" | "app_crm::CrmClient" | "org_client_moed::MoedPartData" | "org_client_moed::MoedParticipant" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysObjDb" | "sys_core::SysDataObj" | "sys_core::SysDataObjAction" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjColumn" | "sys_core::SysDataObjColumnItemChange" | "sys_core::SysDataObjColumnLink" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysDataObjQueryRider" | "sys_core::SysDataObjTable" | "sys_core::SysDataObjWith" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjAttrAccess" | "sys_core::SysObjAttrAction" | "sys_core::SysObjAttrExpr" | "sys_core::SysObjAttrVirtual" | "sys_core::SysObjNote" | "sys_core::SysOrg" | "sys_core::SysSystem" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_migr::SysMigrSourceColumn" | "sys_migr::SysMigrSourceTable" | "sys_migr::SysMigrTargetColumn" | "sys_migr::SysMigrTargetTable" | "sys_rep::SysAnalytic" | "sys_rep::SysAnalyticStatus" | "sys_rep::SysRep" | "sys_rep::SysRepEl" | "sys_rep::SysRepParm" | "sys_rep::SysRepUser" | "sys_rep::SysRepUserAnalytic" | "sys_rep::SysRepUserParm" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysTask" | "sys_user::SysUser" | "sys_user::SysUserAction" | "sys_user::SysUserActionConfirm" | "sys_user::SysUserPref" | "sys_user::SysUserType" | "sys_user::currentUser">;
 const $Mgmt = $.makeType<$Mgmt>(_.spec, "5029d127-b3c2-11ee-a4fe-a73f30dac3e0", _.syntax.literal);
 
 const Mgmt: $.$expr_PathNode<$.TypeSet<$Mgmt, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($Mgmt, $.Cardinality.Many), null);
@@ -77,6 +77,8 @@ export type $SysUserλShape = $.typeutil.flatten<Omit<_sys_core.$SysObjAttrλSha
   "userTypes": $.LinkDesc<$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
   "person": $.LinkDesc<_default.$SysPerson, $.Cardinality.One, {}, false, false,  false, false>;
   "codeAttrType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, true>;
+  "preferences": $.LinkDesc<$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
+  "parms": $.LinkDesc<$SysUserParm, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_user::Mgmt]": $.LinkDesc<$Mgmt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysDataObjColumn]": $.LinkDesc<_sys_core.$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysObj]": $.LinkDesc<_sys_core.$SysObj, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -207,9 +209,6 @@ export type $SysUserλShape = $.typeutil.flatten<Omit<_sys_core.$SysObjAttrλSha
   "<sender[is sys_core::SysMsg]": $.LinkDesc<_sys_core.$SysMsg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<users[is sys_core::SysOrg]": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.Many, {}, false, false,  false, false>;
   "<users[is sys_core::SysSystem]": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<modifiedBy[is sys_user::SysUserPrefType]": $.LinkDesc<$SysUserPrefType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<createdBy[is sys_user::SysUserPrefType]": $.LinkDesc<$SysUserPrefType, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<user[is sys_user::SysUserPrefType]": $.LinkDesc<$SysUserPrefType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysDataObjColumnItemChange]": $.LinkDesc<_sys_core.$SysDataObjColumnItemChange, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysDataObjColumnItemChange]": $.LinkDesc<_sys_core.$SysDataObjColumnItemChange, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysDataObjAction]": $.LinkDesc<_sys_core.$SysDataObjAction, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -231,14 +230,15 @@ export type $SysUserλShape = $.typeutil.flatten<Omit<_sys_core.$SysObjAttrλSha
   "<modifiedBy[is sys_rep::SysRepUser]": $.LinkDesc<_sys_rep.$SysRepUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_rep::SysRepUser]": $.LinkDesc<_sys_rep.$SysRepUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<user[is sys_rep::SysRepUser]": $.LinkDesc<_sys_rep.$SysRepUser, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<modifiedBy[is sys_user::SysUserPref]": $.LinkDesc<$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<createdBy[is sys_user::SysUserPref]": $.LinkDesc<$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<user[is sys_user::SysUserPref]": $.LinkDesc<$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
   "<users[is sys_user::SysUserType]": $.LinkDesc<$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysCode]": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysCode]": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy[is sys_core::SysCodeAction]": $.LinkDesc<_sys_core.$SysCodeAction, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy[is sys_core::SysCodeAction]": $.LinkDesc<_sys_core.$SysCodeAction, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<user[is sys_user::SysUserParm]": $.LinkDesc<$SysUserParm, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<modifiedBy[is sys_user::SysUserPref]": $.LinkDesc<$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<createdBy[is sys_user::SysUserPref]": $.LinkDesc<$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<user[is sys_user::SysUserPref]": $.LinkDesc<$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
   "<createdBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<modifiedBy": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<readers": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -293,31 +293,38 @@ const $SysUserActionConfirm = $.makeType<$SysUserActionConfirm>(_.spec, "6f54723
 
 const SysUserActionConfirm: $.$expr_PathNode<$.TypeSet<$SysUserActionConfirm, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserActionConfirm, $.Cardinality.Many), null);
 
-export type $SysUserPrefλShape = $.typeutil.flatten<$MgmtλShape & {
+export type $SysUserParmλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
+  "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
   "user": $.LinkDesc<$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
-  "idFeature": $.PropertyDesc<_std.$uuid, $.Cardinality.One, false, false, false, false>;
-  "prefData": $.PropertyDesc<_std.$json, $.Cardinality.One, false, false, false, false>;
+  "idFeature": $.PropertyDesc<_std.$int64, $.Cardinality.One, false, false, false, false>;
+  "parmData": $.PropertyDesc<_std.$json, $.Cardinality.One, false, false, false, false>;
+  "<parms[is sys_user::SysUser]": $.LinkDesc<$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<parms[is sys_user::currentUser]": $.LinkDesc<$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<parms": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+}>;
+type $SysUserParm = $.ObjectType<"sys_user::SysUserParm", $SysUserParmλShape, null, [
+  ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
+  {user: {__element__: $SysUser, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },idFeature: {__element__: _std.$int64, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },codeType: {__element__: _sys_core.$SysCode, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+], "sys_user::SysUserParm">;
+const $SysUserParm = $.makeType<$SysUserParm>(_.spec, "6659a32d-49e0-11f0-ae87-fb1b0d29d2e5", _.syntax.literal);
+
+const SysUserParm: $.$expr_PathNode<$.TypeSet<$SysUserParm, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserParm, $.Cardinality.Many), null);
+
+export type $SysUserPrefλShape = $.typeutil.flatten<$MgmtλShape & {
+  "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "isActive": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
+  "user": $.LinkDesc<$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
+  "<preferences[is sys_user::SysUser]": $.LinkDesc<$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<preferences[is sys_user::currentUser]": $.LinkDesc<$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<preferences": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysUserPref = $.ObjectType<"sys_user::SysUserPref", $SysUserPrefλShape, null, [
   ...$Mgmt['__exclusives__'],
-  {user: {__element__: $SysUser, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },idFeature: {__element__: _std.$uuid, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
+  {user: {__element__: $SysUser, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },codeType: {__element__: _sys_core.$SysCode, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
 ], "sys_user::SysUserPref">;
-const $SysUserPref = $.makeType<$SysUserPref>(_.spec, "f2cf8725-8191-11ef-8308-1129be87a656", _.syntax.literal);
+const $SysUserPref = $.makeType<$SysUserPref>(_.spec, "5ce484d2-4935-11f0-a102-09ad96736a1d", _.syntax.literal);
 
 const SysUserPref: $.$expr_PathNode<$.TypeSet<$SysUserPref, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserPref, $.Cardinality.Many), null);
-
-export type $SysUserPrefTypeλShape = $.typeutil.flatten<$MgmtλShape & {
-  "codeType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
-  "user": $.LinkDesc<$SysUser, $.Cardinality.One, {}, false, false,  false, false>;
-  "isActive": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
-}>;
-type $SysUserPrefType = $.ObjectType<"sys_user::SysUserPrefType", $SysUserPrefTypeλShape, null, [
-  ...$Mgmt['__exclusives__'],
-  {user: {__element__: $SysUser, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },codeType: {__element__: _sys_core.$SysCode, __cardinality__: $.Cardinality.One | $.Cardinality.AtMostOne },},
-], "sys_user::SysUserPrefType">;
-const $SysUserPrefType = $.makeType<$SysUserPrefType>(_.spec, "a122bd35-81b6-11ef-af91-1f40ff0574f6", _.syntax.literal);
-
-const SysUserPrefType: $.$expr_PathNode<$.TypeSet<$SysUserPrefType, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysUserPrefType, $.Cardinality.Many), null);
 
 export type $SysUserTypeλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "attrsExpr": $.LinkDesc<_sys_core.$SysObjAttrExpr, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -500,7 +507,7 @@ const $sys_user__globals: {  currentUser: _.syntax.$expr_Global<
 
 
 
-export { $Mgmt, Mgmt, $SysApp, SysApp, $SysAppHeader, SysAppHeader, $SysTask, SysTask, $SysUser, SysUser, $SysUserAction, SysUserAction, $SysUserActionConfirm, SysUserActionConfirm, $SysUserPref, SysUserPref, $SysUserPrefType, SysUserPrefType, $SysUserType, SysUserType, $currentUser, currentUser };
+export { $Mgmt, Mgmt, $SysApp, SysApp, $SysAppHeader, SysAppHeader, $SysTask, SysTask, $SysUser, SysUser, $SysUserAction, SysUserAction, $SysUserActionConfirm, SysUserActionConfirm, $SysUserParm, SysUserParm, $SysUserPref, SysUserPref, $SysUserType, SysUserType, $currentUser, currentUser };
 
 type __defaultExports = {
   "Mgmt": typeof Mgmt;
@@ -510,8 +517,8 @@ type __defaultExports = {
   "SysUser": typeof SysUser;
   "SysUserAction": typeof SysUserAction;
   "SysUserActionConfirm": typeof SysUserActionConfirm;
+  "SysUserParm": typeof SysUserParm;
   "SysUserPref": typeof SysUserPref;
-  "SysUserPrefType": typeof SysUserPrefType;
   "SysUserType": typeof SysUserType;
   "currentUser": typeof currentUser;
   "getApp": typeof getApp;
@@ -530,8 +537,8 @@ const __defaultExports: __defaultExports = {
   "SysUser": SysUser,
   "SysUserAction": SysUserAction,
   "SysUserActionConfirm": SysUserActionConfirm,
+  "SysUserParm": SysUserParm,
   "SysUserPref": SysUserPref,
-  "SysUserPrefType": SysUserPrefType,
   "SysUserType": SysUserType,
   "currentUser": currentUser,
   "getApp": getApp,

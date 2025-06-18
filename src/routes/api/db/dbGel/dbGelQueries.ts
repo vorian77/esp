@@ -1,6 +1,12 @@
 import e from '$db/gel/edgeql-js'
 import { client } from '$routes/api/db/dbGel/dbGel'
-import { TokenApiError, TokenApiId, TokenApiIds, TokenApiUserPref } from '$utils/types.token'
+import {
+	TokenApiError,
+	TokenApiId,
+	TokenApiIds,
+	TokenApiUserParmsGet,
+	TokenApiUserParmsSet
+} from '$utils/types.token'
 import { MethodResult, required, valueOrDefault } from '$utils/types'
 import { debug } from '$utils/utils.debug'
 
@@ -124,15 +130,20 @@ const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 		_nodeObjId: c.nodeObj.id,
 		order_by: c.orderDefine
 	})),
+	_codeComponent: n.codeComponent.name,
 	_codeIcon: n.codeIcon.name,
 	_codeNodeType: n.codeNodeType.name,
 	_codeQueryOwnerType: n.codeQueryOwnerType.name,
 	_dataObjId: n.dataObj.id,
 	_ownerId: n.owner.id,
+	_selectListItems: e.select(n.selectListItems, (sli) => ({
+		_header: n.selectListItemsHeader,
+		_parmValue: n.selectListItemsParmValue,
+		...shapeLinkItemsSource(sli)
+	})),
 	header: true,
 	id: true,
 	isAlwaysRetrieveData: true,
-	isDynamicChildrenSystemParents: true,
 	isHideRowManager: true,
 	name: true,
 	orderDefine: true,
@@ -354,7 +365,6 @@ export async function getDataObjById(token: TokenApiId) {
 				...shapeDataObjActionGroup(afg)
 			})),
 			_codeCardinality: do1.codeCardinality.name,
-			_codeComponent: do1.codeComponent.name,
 			_codeDataObjType: do1.codeDataObjType.name,
 			_codeDoQueryType: do1.codeDoQueryType.name,
 			_codeDoRenderPlatform: do1.codeDoRenderPlatform.name,
@@ -367,11 +377,6 @@ export async function getDataObjById(token: TokenApiId) {
 			_processType: do1.processType.name,
 			_querySource: e.select(do1, (do1) => ({
 				...shapeQuerySource(do1)
-			})),
-			_selectListItems: e.select(do1.selectListItems, (sli) => ({
-				_header: do1.selectListItemsHeader,
-				_parmValue: do1.selectListItemsParmValue,
-				...shapeLinkItemsSource(sli)
 			})),
 
 			/* props */
@@ -418,6 +423,7 @@ export async function getDataObjById(token: TokenApiId) {
 					_action: e.select(c.action, (a) => ({
 						...shapeUserAction(a)
 					})),
+					_customColCodeComponent: c.customColCodeComponent.name,
 					customColActionValue: true,
 					customColAlign: true,
 					customColIsSubHeader: true,
@@ -599,24 +605,6 @@ export async function getNodeByNodeId(token: TokenApiId) {
 	return await query.run(client)
 }
 
-export async function getNodesSystemParents(token: TokenApiId) {
-	const query = e.select(e.sys_core.SysNodeObj, (n) => ({
-		...shapeNodeObj(n),
-		filter: e.op(
-			e.op(n.codeNodeType.name, '=', 'system'),
-			'and',
-			e.op(
-				n.owner,
-				'in',
-				e.select(e.sys_core.SysSystem, (s) => ({
-					filter: e.op(s.id, '=', e.cast(e.uuid, token.id))
-				})).systemParents
-			)
-		)
-	}))
-	return await query.run(client)
-}
-
 export async function getNodesChildren(token: TokenApiIds) {
 	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
 		e.select(e.sys_core.SysNodeObj, (n) => ({
@@ -747,10 +735,9 @@ export async function getUserByUserId(token: TokenApiId) {
 				...shapeObjAttrVirtual(a)
 			})),
 			_personId: u.person.id,
-			_preferences: e.select(e.sys_user.SysUserPrefType, (p) => ({
+			_preferences: e.select(e.sys_user.SysUserPref, (p) => ({
 				_codeType: p.codeType.name,
-				isActive: true,
-				filter: e.op(p.user.id, '=', u.id)
+				filter: e.op(p.isActive, '=', true)
 			})),
 			_system: e.select(e.sys_core.SysSystem, (s) => ({
 				_orgName: s.owner.name,
@@ -784,41 +771,6 @@ export async function getUserByUserId(token: TokenApiId) {
 			}
 		})
 	}
-}
-
-export async function getUserPref(token: TokenApiUserPref) {
-	const query = e.select(e.sys_user.SysUserPref, (p) => ({
-		prefData: true,
-		idFeature: true, // "data" returns corrupted w/o another property in the select
-		filter_single: e.op(
-			e.op(p.user, '=', e.sys_user.getUserById(token.idUser)),
-			'and',
-			e.op(p.idFeature, '=', e.cast(e.uuid, token.idFeature))
-		)
-	}))
-	return await query.run(client)
-}
-
-export async function setUserPref(token: TokenApiUserPref) {
-	const CREATOR = e.sys_user.getUserById(token.idUser)
-	const query = e
-		.insert(e.sys_user.SysUserPref, {
-			prefData: e.cast(e.json, JSON.stringify(token.prefData)),
-			idFeature: e.cast(e.uuid, token.idFeature),
-			user: e.select(e.sys_user.getUserById(token.idUser)),
-			createdBy: CREATOR,
-			modifiedBy: CREATOR
-		})
-		.unlessConflict((pref) => ({
-			on: e.tuple([pref.idFeature, pref.user]),
-			else: e.update(pref, () => ({
-				set: {
-					prefData: e.cast(e.json, JSON.stringify(token.prefData)),
-					modifiedBy: CREATOR
-				}
-			}))
-		}))
-	return await query.run(client)
 }
 
 export async function sysErrorAdd(token: TokenApiError) {
@@ -855,4 +807,49 @@ export async function sysErrorGet(token: TokenApiId) {
 		filter_single: e.op(err.id, '=', e.cast(e.uuid, token.id))
 	}))
 	return await query.run(client)
+}
+
+export async function sysUserParmsGet(token: TokenApiUserParmsGet) {
+	const query = e.select(e.sys_user.SysUserParm, (p) => ({
+		_codeType: p.codeType.name,
+		parmData: true,
+		filter: e.op(
+			e.op(p.user, '=', e.sys_user.getUserById(token.idUser)),
+			'and',
+			e.op(p.idFeature, '=', e.cast(e.int64, token.idFeature))
+		)
+	}))
+	return await query.run(client)
+}
+
+export async function sysUserParmsSet(data: any) {
+	debug('sysUserParmsSet', 'data', data)
+	const query = e.params(
+		{
+			items: e.array(e.json)
+		},
+		(p) => {
+			return e.for(e.array_unpack(p.items), (item) => {
+				return e
+					.insert(e.sys_user.SysUserParm, {
+						codeType: e.sys_core.getCode(
+							'ct_sys_feature_parm_type',
+							e.cast(e.str, e.json_get(item, 'type'))
+						),
+						idFeature: e.cast(e.int64, e.json_get(item, 'idFeature')),
+						parmData: e.cast(e.json, e.json_get(item, 'data')),
+						user: e.select(e.sys_user.getUserById(e.cast(e.str, e.json_get(item, 'idUser'))))
+					})
+					.unlessConflict((parm) => ({
+						on: e.tuple([parm.user, parm.idFeature, parm.codeType]),
+						else: e.update(parm, () => ({
+							set: {
+								parmData: e.cast(e.json, e.json_get(item, 'data'))
+							}
+						}))
+					}))
+			})
+		}
+	)
+	return await query.run(client, data)
 }

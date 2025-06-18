@@ -17,7 +17,6 @@ export enum ApiFunction {
 	dbGelGetLinkItemsSource = 'dbGelGetLinkItemsSource',
 	dbGelGetNodeByNodeId = 'dbGelGetNodeByNodeId',
 	dbGelGetNodesChildren = 'dbGelGetNodesChildren',
-	dbGelGetNodesSystemParents = 'dbGelGetNodesSystemParents',
 
 	dbGelInit = 'dbGelInit',
 	dbQuery = 'dbQuery',
@@ -26,8 +25,8 @@ export enum ApiFunction {
 
 	sysGetSessionId = 'sysGetSessionId',
 	sysSendText = 'sysSendText',
-	sysUserPrefGet = 'sysUserPrefGet',
-	sysUserPrefSet = 'sysUserPrefSet'
+	sysUserParmsGet = 'sysUserParmsGet',
+	sysUserParmsSet = 'sysUserParmsSet'
 }
 
 export async function apiErrorCheck(methodResult: MethodResult) {

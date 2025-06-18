@@ -10,7 +10,6 @@ function initFieldListSelectCode(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		exprFilter: 'none',
 		header: 'Select Codes',
@@ -60,7 +59,6 @@ function initFieldListSelectCodeTypeFamily(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		exprFilter:
 			'.parent = (SELECT sys_core::SysCode FILTER .id = <tree,uuid,SysCode.id,undefined>).codeType',
@@ -100,7 +98,6 @@ function initFieldListSelectColumn(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		exprFilter: 'none',
 		header: 'Select Columns',

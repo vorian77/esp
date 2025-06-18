@@ -62,7 +62,7 @@
 	// 	if (currLevel) {
 	// 		currTab = currLevel.getCurrTab()
 	// 		dataObj = currTab.dataObj
-	// 		component = dataObj.raw.codeComponent
+	// 		component = NodeObjComponent.FormList
 	// 		dataObjData = currTab.data
 	// 	}
 	// }

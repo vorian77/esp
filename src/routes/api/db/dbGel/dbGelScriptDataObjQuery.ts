@@ -269,13 +269,6 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 					dataRow.record
 				)
 				if (result.error) return result
-
-				// add dataItems - select
-				result = await this.addScriptDataItemsSelectList(
-					query,
-					query.rawDataObj.selectListItemsSource
-				)
-				if (result.error) return result
 				break
 
 			case ScriptExePost.none:

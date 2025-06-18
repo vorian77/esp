@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { State, StateSurfacePopup, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import {
-		TokenAppDo,
 		TokenAppModalSelect,
 		TokenAppModalReturnType,
 		TokenAppStateTriggerAction,
@@ -27,18 +26,22 @@
 		DataManager,
 		DataObj,
 		DataObjData,
+		DataObjSort,
 		DataObjType,
 		type DataRecord,
 		getArray,
+		getValueData,
 		getValueDisplay,
 		GridStyle,
+		isPlainObjectEmpty,
+		MethodResult,
 		ParmsValues,
 		ParmsValuesType,
-		ParmsUser,
-		ParmsUserDataType,
 		PropDataType,
 		required,
-		strRequired
+		strRequired,
+		UserParmItemSource,
+		UserParmItemType
 	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field.svelte'
@@ -51,7 +54,7 @@
 		getSelectedNodeIds,
 		getStyles,
 		GridManagerOptions,
-		GridSettings,
+		GridSettingsColumns,
 		GridSettingsColumnItem
 	} from '$comps/grid/grid'
 	import {
@@ -77,6 +80,7 @@
 
 	let gridApi: GridApi = $state()
 	let isPopup = $derived(sm instanceof StateSurfacePopup)
+	let gridOptions: GridManagerOptions | undefined = $state(undefined)
 
 	$effect(() => {
 		if (sm.consumeTriggerToken(StateTriggerToken.listDownload)) {
@@ -86,28 +90,89 @@
 		}
 	})
 
-	let gridOptions: GridManagerOptions | undefined = $state(
-		dataObj
-			? new GridManagerOptions({
-					columnDefs: initGridColumns(),
-					context: { gridStyles: dataObj.raw.gridStyles },
-					fCallbackFilter: fGridCallbackFilter,
-					fCallbackUpdateValue: fGridCallbackUpdateValue,
-					isEmbed: !!dataObj.embedField,
-					isPopup,
-					isSelectMulti: isPopup,
-					isSuppressFilterSort: dataObj.raw.isListSuppressFilterSort,
-					isSuppressSelect: dataObj.raw.isListSuppressSelect,
-					listReorderColumn: dataObj.raw.listReorderColumn,
-					onCellClicked,
-					onSelectionChanged,
-					parmStateSelectedIds: sm.parmsState.valueGet(ParmsValuesType.listIdsSelected),
-					rowData: initGridData(),
-					sortModel: dataObj.sortModel,
-					userSettings: dataObj?.userGridSettings
+	let initParmsPromise = initParms()
+
+	async function initParms(): Promise<MethodResult> {
+		if (parms.dataObjId) {
+			let result: MethodResult = await sm.userParmInit(parms.dataObjId, [
+				new UserParmItemSource(
+					UserParmItemType.listColumnsModel,
+					(data: any) => {
+						return data ? new GridSettingsColumns(data.columns) : new GridSettingsColumns()
+					},
+					(data: any) => {
+						return data
+					}
+				),
+				new UserParmItemSource(
+					UserParmItemType.listFilterModel,
+					(data: any) => {
+						return data ? data : {}
+					},
+					(data: any) => {
+						return {
+							data
+						}
+					}
+				),
+				new UserParmItemSource(
+					UserParmItemType.listFilterQuick,
+					(data: any) => {
+						return isPlainObjectEmpty(data) ? '' : data.data
+					},
+					(data: any) => {
+						return {
+							data
+						}
+					}
+				),
+				new UserParmItemSource(UserParmItemType.listSortModel, listSortModelGet, (data: any) => {
+					return data
 				})
-			: undefined
-	)
+			])
+			if (result.error) return result
+			gridOptions = dataObj
+				? new GridManagerOptions({
+						columnDefs: initGridColumns(),
+						context: { gridStyles: dataObj.raw.gridStyles },
+						fCallbackFilter: fGridCallbackFilter,
+						fCallbackUpdateValue: fGridCallbackUpdateValue,
+						isEmbed: !!dataObj.embedField,
+						isPopup,
+						isSelectMulti: isPopup,
+						isSuppressFilterSort: dataObj.raw.isListSuppressFilterSort,
+						isSuppressSelect: dataObj.raw.isListSuppressSelect,
+						listReorderColumn: dataObj.raw.listReorderColumn,
+						onCellClicked,
+						onSelectionChanged,
+						parmStateSelectedIds: sm.parmsState.valueGet(ParmsValuesType.listIdsSelected),
+						rowData: initGridData(),
+						sortModel: dataObj.sortModel
+					})
+				: undefined
+			return new MethodResult()
+		} else {
+			return new MethodResult()
+		}
+	}
+
+	function listSortModelGet(data: any) {
+		let sortObj = new DataObjSort()
+		if (dataObj.raw.listReorderColumn) {
+			let sortFields = dataObj.fields.filter(
+				(f) => f.colDO.isDisplayable && f.colDO.orderSort !== undefined
+			)
+			sortFields.sort((a, b) => a.colDO.orderSort! - b.colDO.orderSort!)
+			sortFields.forEach((f, i) => {
+				sortObj.addItem(f.colDO.propName, f.colDO.codeSortDir, i)
+			})
+			return sortObj
+		}
+		if (data || data?.sortItems.length > 0) {
+			return sortObj.load(data.sortItems)
+		}
+		return undefined
+	}
 
 	async function gridDownload() {
 		let data: string = ''
@@ -171,8 +236,10 @@
 
 	function initGridColumns() {
 		let columnDefs: ColDef[] = []
-		const fieldsSettings =
-			dataObj.userGridSettings.getPref(ParmsUserDataType.listColumnsModel)?.columns || []
+
+		let fieldsSettings = sm.userParmGetOrDefault(UserParmItemType.listColumnsModel, undefined)
+		fieldsSettings = fieldsSettings ? fieldsSettings.columns : []
+
 		const fieldsCore = dataObj.fields.filter(
 			(f) => f.colDO.isDisplayable || f.colDO.propName === 'id'
 		)
@@ -215,14 +282,11 @@
 		// core
 		defn.editable = isEditable
 		defn.field = field.colDO.propName
+
 		defn.headerName = isEditable ? '✍️ ' + field.colDO.label : field.colDO.label
 		defn.headerTooltip = field.placeHolder
 		defn.singleClickEdit = isEditable ? true : undefined
 		addGridParm(defn, ['context', 'cellStyle', 'text-align'], field.fieldAlignment)
-
-		defn.getQuickFilterText = (params) => {
-			return getValueDisplay(params.value)
-		}
 
 		// gridStyles
 		addGridParm(defn, ['context', 'gridStyles'], field.colDO.gridStyles)
@@ -247,7 +311,6 @@
 
 				case PropDataType.date:
 					defn.cellDataType = 'customDateString'
-
 					break
 
 				case PropDataType.datetime:
@@ -285,7 +348,7 @@
 						defn.editable = !field.colDO.colDB.isMultiSelect
 						defn.type = field.colDO.colDB.isMultiSelect ? 'ctSelectMulti' : 'ctSelectSingle'
 					} else {
-						defn.cellDataType = 'customText'
+						defn.cellDataType = 'customLink'
 					}
 					addGridParm(
 						defn,
@@ -308,7 +371,6 @@
 					})
 			}
 		}
-
 		return defn
 	}
 
@@ -409,6 +471,12 @@
 	}
 </script>
 
-{#if gridOptions}
-	<Grid bind:api={gridApi} options={gridOptions} {parms} />
-{/if}
+{#await initParmsPromise}
+	Loading user parms...
+{:then value}
+	{#if gridOptions}
+		<Grid bind:api={gridApi} options={gridOptions} {parms} />
+	{/if}
+{:catch error}
+	<DataViewer header="promise-error" data={error} />
+{/await}

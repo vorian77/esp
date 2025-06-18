@@ -274,22 +274,26 @@ export async function addNode(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
+			codeComponent: e.optional(e.str),
 			codeIcon: e.str,
 			codeNavType: e.optional(e.str) || 'tree',
 			codeNodeType: e.str,
 			codeQueryOwnerType: e.optional(e.str),
-			dataObj: e.str,
+			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
 			isAlwaysRetrieveData: e.optional(e.bool),
-			isDynamicChildrenSystemParents: e.optional(e.bool),
 			isHideRowManager: e.optional(e.bool),
 			name: e.str,
 			orderDefine: e.int16,
 			owner: e.str,
-			page: e.optional(e.str)
+			page: e.optional(e.str),
+			selectListItems: e.optional(e.str),
+			selectListItemsHeader: e.optional(e.str),
+			selectListItemsParmValue: e.optional(e.str)
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysNodeObj, {
+				codeComponent: e.select(e.sys_core.getCode('ct_sys_do_component', p.codeComponent)),
 				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
 				codeNavType: e.sys_core.getCode(
 					'ct_sys_node_obj_nav_type',
@@ -301,13 +305,15 @@ export async function addNode(data: any) {
 				createdBy: CREATOR,
 				header: p.header,
 				isAlwaysRetrieveData: valueOrDefaultParm(p.isAlwaysRetrieveData, false),
-				isDynamicChildrenSystemParents: valueOrDefaultParm(p.isDynamicChildrenSystemParents, false),
 				isHideRowManager: valueOrDefaultParm(p.isHideRowManager, false),
 				modifiedBy: CREATOR,
 				name: p.name,
 				orderDefine: p.orderDefine,
 				owner: e.sys_core.getSystemPrime(p.owner),
-				page: p.page
+				page: p.page,
+				selectListItems: e.select(e.sys_core.getDataObjFieldListItems(p.selectListItems)),
+				selectListItemsHeader: p.selectListItemsHeader,
+				selectListItemsParmValue: p.selectListItemsParmValue
 			})
 		}
 	)

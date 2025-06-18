@@ -4,7 +4,7 @@
 	import NavMenuHeader from '$comps/nav/navMenu/NavMenuHeader.svelte'
 	import NavMenuInfo from '$comps/nav/navMenu/NavMenuInfo.svelte'
 	import NavMenuHr from '$comps/nav/navMenu/NavMenuHr.svelte'
-	import { User } from '$utils/types'
+	import { NodeObjComponent, User } from '$utils/types'
 	import { Avatar } from '@skeletonlabs/skeleton'
 	import { fade } from 'svelte/transition'
 	import Icon from '$comps/icon/Icon.svelte'
@@ -20,7 +20,11 @@
 	<hr class="my-2" />
 	<button
 		class="flex items-center hover:-translate-y-0.5 transition-transform"
-		onclick={() => data.navMenu.triggerActionDataObjApp('data_obj_task_sys_auth_my_account')}
+		onclick={() =>
+			data.navMenu.triggerActionDataObjApp(
+				'data_obj_task_sys_auth_my_account',
+				NodeObjComponent.FormDetail
+			)}
 	>
 		<div class="h-9 w-9 rounded-full place-content-center bg-neutral-200 text-center">
 			{#if data.user.avatar}

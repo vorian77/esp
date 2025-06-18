@@ -16,7 +16,6 @@ function initTaskSsrApp(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_detail_mobile_save',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskTarget',
 		codeDoQueryType: 'retrievePreset',
 		codeDoRenderPlatform: 'app',
@@ -453,7 +452,7 @@ function initTaskSsrApp(init: InitDb) {
 function initTaskSsrDoc(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		owner: 'sys_client_moed',
-		codeComponent: 'FormList',
+
 		codeCardinality: 'list',
 		codeDataObjType: 'taskTarget',
 		name: 'data_obj_task_moed_ssr_doc_list',
@@ -501,7 +500,6 @@ function initTaskSsrDoc(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		actionGroup: 'doag_detail_mobile_save_delete',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskTarget',
 		codeDoQueryType: 'retrievePreset',
 		codeDoRenderPlatform: 'app',
@@ -617,6 +615,7 @@ function initTaskSsrDoc(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjTask', {
 		children: [{ node: 'node_obj_task_moed_ssr_doc_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNavType: 'task',
 		codeNodeType: 'program',
@@ -627,6 +626,7 @@ function initTaskSsrDoc(init: InitDb) {
 		owner: 'sys_client_moed'
 	})
 	init.addTrans('sysNodeObjTask', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNavType: 'task',
 		codeNodeType: 'program_object',
@@ -663,7 +663,6 @@ FILTER .parent.name = 'ct_cm_doc_type' ORDER BY .order asc`,
 function initTaskSsrWelcome(init: InitDb) {
 	init.addTrans('sysDataObjTask', {
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		codeDataObjType: 'taskPage',
 		exprFilter: `.id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id`,
 		header: 'Welcome',

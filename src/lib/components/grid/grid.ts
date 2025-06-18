@@ -23,20 +23,18 @@ import {
 	type DataRecord,
 	evalExprRecord,
 	getArray,
+	getValueData,
 	getValueDisplay,
 	GridStyle,
 	MethodResult,
-	ParmsValuesType,
-	ParmsUser,
-	ParmsUserDataType,
 	PropLinkItems,
 	required,
 	strRequired,
-	valueOrDefault
+	valueOrDefault,
+	UserParmItemType
 } from '$utils/types'
 import { FieldColumnItem } from '$comps/form/field.svelte'
 import { error } from '@sveltejs/kit'
-import type { Method } from 'axios'
 
 LicenseManager.setLicenseKey(
 	'Using_this_{AG_Charts_and_AG_Grid}_Enterprise_key_{AG-069958}_in_excess_of_the_licence_granted_is_not_permitted___Please_report_misuse_to_legal@ag-grid.com___For_help_with_changing_this_key_please_contact_info@ag-grid.com___{App_Factory}_is_granted_a_{Single_Application}_Developer_License_for_the_application_{AppFactory}_only_for_{1}_Front-End_JavaScript_developer___All_Front-End_JavaScript_developers_working_on_{AppFactory}_need_to_be_licensed___{AppFactory}_has_been_granted_a_Deployment_License_Add-on_for_{1}_Production_Environment___This_key_works_with_{AG_Charts_and_AG_Grid}_Enterprise_versions_released_before_{22_October_2025}____[v3]_[0102]_MTc2MTA4NzYwMDAwMA==38662b93f270b810aa21446e810c2c8e'
@@ -135,7 +133,7 @@ export const columnTypes = {
 		cellEditor: 'agRichSelectCellEditor',
 		cellEditorParams: {
 			formatValue: (v: FieldColumnItem) => v?.display,
-			parseValue: (v: FieldColumnItem) => v?.display,
+			parseValue: (v: FieldColumnItem) => v?.data,
 			values: (params: ValueGetterParams) => {
 				const linkItems: PropLinkItems = params.colDef?.context?.linkItems
 				return linkItems ? linkItems.getValuesSelect() : []
@@ -194,11 +192,10 @@ const isFalsy = (value: any) => [null, '', undefined].includes(value)
 const isFalsyNumber = (value: any) => isFalsy(value) || Number.isNaN(value)
 
 function getValueParser(params: ValueParserParams, isFalsy: Function) {
-	return isFalsy(params.newValue) ? null : getValueDisplay(params.newValue)
+	return isFalsy(params.newValue) ? null : getValueData(params.newValue)
 }
 function getValueFormatter(params: any, isFalsy: Function) {
-	if (isFalsy(params.value)) return ''
-	return getValueDisplay(params.value)
+	return isFalsy(params.value) ? '' : getValueDisplay(params.value)
 }
 
 export const dataTypeDefinitions = {
@@ -206,6 +203,12 @@ export const dataTypeDefinitions = {
 		baseDataType: 'boolean',
 		columnTypes: ['ctBoolean'],
 		extendsDataType: 'boolean'
+	},
+	customLink: {
+		baseDataType: 'object',
+		extendsDataType: 'object',
+		valueFormatter: (params: any) => getValueFormatter(params, isFalsy),
+		valueParser: (params: any) => getValueParser(params, isFalsy)
 	},
 	customDateString: {
 		baseDataType: 'dateString',
@@ -272,70 +275,6 @@ export const dataTypeDefinitions = {
 	}
 }
 
-export class GridSettings {
-	idFeature: string
-	idUser?: string
-	data: DataRecord = {}
-	constructor(idFeature: string) {
-		const clazz = 'GridSettings'
-		this.idFeature = required(idFeature, clazz, 'idFeature')
-		this.data[ParmsUserDataType.listColumnsModel] = new GridSettingsColumns()
-		this.data[ParmsUserDataType.listFilterModel] = {}
-		this.data[ParmsUserDataType.listFilterQuick] = ''
-		this.data[ParmsUserDataType.listSortModel] = undefined
-	}
-	getPref(type: ParmsUserDataType) {
-		return this.data[type]
-	}
-	setPref(type: ParmsUserDataType, value: any) {
-		this.data[type] = value
-	}
-	load(rawSettings: DataRecord, sm: State, dataObj: DataObj) {
-		if (sm.user) this.idUser = sm.user.id
-		rawSettings = valueOrDefault(rawSettings, {})
-		const PREFS: [ParmsUserDataType, Function][] = [
-			[ParmsUserDataType.listColumnsModel, initPrefsColumnsModel],
-			[ParmsUserDataType.listFilterModel, initPrefsFilterModel],
-			[ParmsUserDataType.listFilterQuick, initPrefsFilterQuick],
-			[ParmsUserDataType.listSortModel, initPrefsSortModel]
-		]
-		PREFS.forEach((p) => {
-			const parmType = p[0]
-			const parmFunction = p[1]
-			const rawPref = Object.hasOwn(rawSettings, parmType) ? rawSettings[parmType] : undefined
-			this.data[parmType] = parmFunction(rawPref)
-		})
-
-		function initPrefsColumnsModel(rawPref: any) {
-			return rawPref ? new GridSettingsColumns(rawPref.columns) : undefined
-		}
-		function initPrefsFilterModel(rawPref: any) {
-			return rawPref ? rawPref : {}
-		}
-		function initPrefsFilterQuick(rawPref: any) {
-			return rawPref ? rawPref : ''
-		}
-		function initPrefsSortModel(rawPref: any) {
-			let sortObj = new DataObjSort()
-			if (dataObj.raw.listReorderColumn) {
-				let sortFields = dataObj.fields.filter(
-					(f) => f.colDO.isDisplayable && f.colDO.orderSort !== undefined
-				)
-				sortFields.sort((a, b) => a.colDO.orderSort! - b.colDO.orderSort!)
-				sortFields.forEach((f, i) => {
-					sortObj.addItem(f.colDO.propName, f.colDO.codeSortDir, i)
-				})
-				return sortObj
-			}
-			if (rawPref || rawPref?.sortItems.length > 0) {
-				return sortObj.load(rawPref.sortItems)
-			}
-			return undefined
-		}
-		return this
-	}
-}
-
 export class GridSettingsColumns {
 	columns: GridSettingsColumnItem[] = []
 	constructor(rawColumns: any | undefined = []) {
@@ -384,7 +323,6 @@ export class GridManagerOptions {
 	parmStateSelectedIds: []
 	rowData: any[]
 	sortModel: DataObjSort
-	userSettings: GridSettings
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'GridManagerOptions'
@@ -403,7 +341,6 @@ export class GridManagerOptions {
 		this.parmStateSelectedIds = obj.parmStateSelectedIds || []
 		this.rowData = required(obj.rowData, clazz, 'rowData')
 		this.sortModel = valueOrDefault(obj.sortModel, new DataObjSort())
-		this.userSettings = valueOrDefault(obj.userSettings, new GridSettings(''))
 	}
 }
 

@@ -11,10 +11,10 @@
 		CodeActionClass,
 		CodeActionType,
 		ContextKey,
-		DataObjComponent,
 		type DataRecord,
 		getDbExprRaw,
 		MethodResult,
+		NodeObjComponent,
 		UserResourceTask
 	} from '$utils/types'
 	import {
@@ -159,7 +159,7 @@
 						{#if task.dataObjPage}
 							<FormDetail
 								parms={{
-									component: DataObjComponent.FormDetail,
+									component: NodeObjComponent.FormDetail,
 									dataObjId: task.pageDataObjId,
 									isFixedHeight: true
 								}}

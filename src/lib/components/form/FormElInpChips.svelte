@@ -16,7 +16,6 @@
 	import { getContext } from 'svelte'
 	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
 	import {
-		TokenAppDo,
 		TokenAppModalSelect,
 		TokenAppModalReturnType,
 		TokenAppStateTriggerAction,

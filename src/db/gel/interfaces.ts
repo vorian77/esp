@@ -81,6 +81,8 @@ export namespace sys_user {
     "userTypes": SysUserType[];
     "person": $default.SysPerson;
     "codeAttrType": sys_core.SysCode;
+    "preferences": SysUserPref[];
+    "parms": SysUserParm[];
   }
   export interface SysUserAction extends sys_core.SysObjAttr {
     "codeConfirmType": sys_core.SysCode;
@@ -101,15 +103,16 @@ export namespace sys_user {
     "confirmMessage"?: string | null;
     "confirmTitle"?: string | null;
   }
-  export interface SysUserPref extends Mgmt {
-    "user": SysUser;
-    "idFeature": string;
-    "prefData": unknown;
-  }
-  export interface SysUserPrefType extends Mgmt {
+  export interface SysUserParm extends std.$Object {
     "codeType": sys_core.SysCode;
     "user": SysUser;
+    "idFeature": number;
+    "parmData": unknown;
+  }
+  export interface SysUserPref extends Mgmt {
+    "codeType": sys_core.SysCode;
     "isActive": boolean;
+    "user": SysUser;
   }
   export interface SysUserType extends sys_core.SysObj {
     "attrsExpr": sys_core.SysObjAttrExpr[];
@@ -323,7 +326,6 @@ export namespace sys_core {
   }
   export interface SysDataObj extends SysObjDb {
     "codeCardinality": SysCode;
-    "codeComponent": SysCode;
     "codeDataObjType"?: SysCode | null;
     "codeDoQueryType"?: SysCode | null;
     "codeDoRenderPlatform"?: SysCode | null;
@@ -340,9 +342,6 @@ export namespace sys_core {
     "columns": SysDataObjColumn[];
     "actionGroup"?: SysDataObjActionGroup | null;
     "listReorderColumn"?: sys_db.SysColumn | null;
-    "selectListItems"?: SysDataObjFieldListItems | null;
-    "selectListItemsParmValue"?: string | null;
-    "selectListItemsHeader"?: string | null;
   }
   export interface SysDataObjAction extends sys_user.Mgmt {
     "codeColor": SysCode;
@@ -404,6 +403,7 @@ export namespace sys_core {
     "itemChanges": SysDataObjColumnItemChange[];
     "linkColumns": SysDataObjColumnLink[];
     "linkTable"?: sys_db.SysTable | null;
+    "customColCodeComponent"?: SysCode | null;
   }
   export interface SysDataObjColumnItemChange extends sys_user.Mgmt {
     "codeAccess"?: SysCode | null;
@@ -506,11 +506,14 @@ export namespace sys_core {
     "nodeData": SysNodeObjData[];
     "parent"?: SysNodeObj | null;
     "isAlwaysRetrieveData": boolean;
-    "isDynamicChildrenSystemParents": boolean;
     "isHideRowManager": boolean;
     "page"?: string | null;
     "actions": SysNodeObjAction[];
     "children": SysNodeObjChild[];
+    "codeComponent"?: SysCode | null;
+    "selectListItems"?: SysDataObjFieldListItems | null;
+    "selectListItemsHeader"?: string | null;
+    "selectListItemsParmValue"?: string | null;
   }
   export interface SysNodeObjAction extends std.$Object {
     "codeAction": SysCodeAction;
@@ -1168,8 +1171,8 @@ export interface types {
     "SysUser": sys_user.SysUser;
     "SysUserAction": sys_user.SysUserAction;
     "SysUserActionConfirm": sys_user.SysUserActionConfirm;
+    "SysUserParm": sys_user.SysUserParm;
     "SysUserPref": sys_user.SysUserPref;
-    "SysUserPrefType": sys_user.SysUserPrefType;
     "SysUserType": sys_user.SysUserType;
     "currentUser": sys_user.currentUser;
   };

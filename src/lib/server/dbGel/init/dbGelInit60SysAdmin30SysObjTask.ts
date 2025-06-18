@@ -8,7 +8,6 @@ function initTask(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Tasks',
 		name: 'data_obj_sys_admin_task_list',
@@ -62,7 +61,6 @@ function initTask(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Task',
 		name: 'data_obj_sys_admin_task_detail',
 		owner: 'sys_system',
@@ -353,6 +351,7 @@ function initTask(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_admin_task_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_task_list',
@@ -364,6 +363,7 @@ function initTask(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		codeIcon: 'AppWindow',
+		codeComponent: 'FormDetail',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_task_detail',
 		header: 'Task',

@@ -1,9 +1,13 @@
 <script lang="ts">
-	import { ContextKey, DataManager, type DataRecord, required } from '$utils/types'
+	import { ContextKey, DataManager, type DataRecord, required, strRequired } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { State } from '$comps/app/types.appState.svelte'
 	import { FieldCustomActionButton } from '$comps/form/fieldCustom'
-	import { TokenAppDo, TokenAppStateTriggerAction } from '$utils/types.token'
+	import {
+		TokenApiQueryType,
+		TokenAppDoQuery,
+		TokenAppStateTriggerAction
+	} from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/form/FormElCustomActionButton.svelte'
@@ -24,11 +28,11 @@
 				codeAction: field.action.codeAction,
 				data: {
 					dataRecord: $state.snapshot(dataRecord),
-					token: new TokenAppDo({
-						actionType: field.action.codeAction.actionType,
-						dataObj
-					}),
-					value: field.value
+					token: new TokenAppDoQuery({
+						codeComponent: strRequired(field.codeComponent, FILENAME, 'codeComponent'),
+						dataObjName: field.value,
+						queryType: TokenApiQueryType.preset
+					})
 				},
 				fCallback: dataObj.fCallbackUserAction
 			})

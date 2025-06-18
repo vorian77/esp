@@ -15,7 +15,7 @@ export function initContentAITraining(init: InitDb) {
 function initCourse(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
-		codeComponent: 'FormList',
+
 		codeCardinality: 'list',
 		exprFilter:
 			'.owner in (SELECT sys_user::SysUser FILTER .name = <user,str,name>).userTypes.owner',
@@ -70,7 +70,6 @@ function initCourse(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Course',
 		name: 'data_obj_cm_course_detail',
 		owner: 'sys_client_atlantic_impact',
@@ -294,6 +293,7 @@ function initCourse(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgram', {
 		children: [{ node: 'node_obj_cm_course_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'BookOpen',
 		codeNodeType: 'program',
 		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
@@ -305,6 +305,7 @@ function initCourse(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_cm_cohort_list', order: 10 }],
+		codeComponent: 'FormDetail',
 		codeIcon: 'BookOpen',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_course_detail',
@@ -319,7 +320,6 @@ function initCohort(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.id in (SELECT app_cm::CmCourse FILTER .id = <tree,uuid,CmCourse.id>).cohorts.id',
 		header: 'Cohorts',
 		name: 'data_obj_cm_cohort_list',
@@ -395,7 +395,6 @@ function initCohort(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Cohort',
 		name: 'data_obj_cm_cohort_detail',
 		owner: 'sys_client_atlantic_impact',
@@ -566,6 +565,7 @@ function initCohort(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_cm_cohort_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_list',
@@ -580,6 +580,7 @@ function initCohort(init: InitDb) {
 			{ node: 'node_obj_cm_cohort_attd_list', order: 20 },
 			{ node: 'node_obj_cm_cohort_doc_list', order: 30 }
 		],
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_detail',
@@ -594,7 +595,6 @@ function initCohortStudentRoster(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_report_render',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.cohort.id = <tree,uuid,CmCohort.id>',
 		header: 'Student Roster',
 		name: 'data_obj_cm_student_roster_list_by_cohort',
@@ -644,6 +644,7 @@ function initCohortStudentRoster(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_student_roster_list_by_cohort',
@@ -658,7 +659,6 @@ function initCohortAttd(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.cohortId = <tree,uuid,CmCohort.id>',
 		header: 'Attendance Days',
 		name: 'data_obj_cm_cohort_attd_list',
@@ -725,7 +725,6 @@ function initCohortAttd(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Attendance Day',
 		name: 'data_obj_cm_cohort_attd_detail',
 		owner: 'sys_client_atlantic_impact',
@@ -865,6 +864,7 @@ function initCohortAttd(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_cm_cohort_attd_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_attd_list',
@@ -875,6 +875,7 @@ function initCohortAttd(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_cm_cohort_attd_sheet', order: 10 }],
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_attd_detail',
@@ -946,7 +947,6 @@ function initCohortAttdSheet(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_client_ai_cohort_attd_sheet',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeListPresetType: 'insert',
 		exprFilter:
 			'.csfCohort.cohort.id = <tree,uuid,CmCohort.id> AND .cohortAttd.id = <tree,uuid,CmCohortAttd.id>',
@@ -1077,6 +1077,7 @@ function initCohortAttdSheet(init: InitDb) {
 		]
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_attd_sheet',
@@ -1091,7 +1092,6 @@ function initCohortDoc(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.cohort.id = <tree,uuid,CmCohort.id>',
 		header: 'Documents',
 		name: 'data_obj_cm_cohort_doc_list',
@@ -1148,7 +1148,6 @@ function initCohortDoc(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Document',
 		name: 'data_obj_cm_cohort_doc_detail',
 		owner: 'sys_client_atlantic_impact',
@@ -1298,6 +1297,7 @@ function initCohortDoc(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_cm_cohort_doc_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_doc_list',
@@ -1307,6 +1307,7 @@ function initCohortDoc(init: InitDb) {
 		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_cohort_doc_detail',
@@ -1321,7 +1322,6 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		header: 'Contacts',
 		name: 'doflc_cm_partner_contact_list',
@@ -1376,7 +1376,6 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		codeDataObjType: 'embed',
 		header: 'Contact',
 		name: 'doflc_cm_partner_contact_detail',
@@ -1465,7 +1464,6 @@ function initPartner(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter:
 			'.owner in (SELECT sys_user::SysUser FILTER .name = <user,str,name>).userTypes.owner',
 		header: 'Partners',
@@ -1564,7 +1562,6 @@ function initPartner(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Partner',
 		name: 'data_obj_cm_partner_detail',
 		owner: 'sys_client_atlantic_impact',
@@ -1809,6 +1806,7 @@ function initPartner(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgram', {
 		children: [{ node: 'node_obj_cm_partner_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'Handshake',
 		codeNodeType: 'program',
 		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
@@ -1821,6 +1819,7 @@ function initPartner(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_cm_partner_note_list', order: 10 }],
+		codeComponent: 'FormDetail',
 		codeIcon: 'Handshake',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_partner_detail',
@@ -1835,7 +1834,6 @@ function initPartnerNote(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.id IN (SELECT app_cm::CmPartner FILTER .id = <tree,uuid,CmPartner.id>).notes.id',
 		header: 'Notes',
 		name: 'data_obj_cm_partner_note_list',
@@ -1885,7 +1883,7 @@ function initPartnerNote(init: InitDb) {
 
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
-		codeComponent: 'FormDetail',
+
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_partner_note_detail',
 		header: 'Note',
@@ -2010,6 +2008,7 @@ function initPartnerNote(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_cm_partner_note_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_partner_note_list',
@@ -2019,6 +2018,7 @@ function initPartnerNote(init: InitDb) {
 		owner: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_cm_partner_note_detail',

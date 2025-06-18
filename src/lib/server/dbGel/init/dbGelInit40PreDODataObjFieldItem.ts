@@ -234,7 +234,8 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		props: [
 			[0, '_codeAttrTypeName', 'Attribute Type', '.codeAttrType.header', true, 0],
 			[1, '_codeAttrTypeId', 'Attribute Type Id', '.codeAttrType.id', false, null],
-			[2, '_nodeObjId', 'Node Object Id', '.nodeObj.id', false, null]
+			[2, '_nodeObjId', 'Node Object Id', '.nodeObj.id', false, null],
+			[3, '_dataObjId', 'Data Object Id', '.nodeObj.dataObj.id', false, null]
 		],
 		name: 'il_sys_node_obj_config_by_system',
 		owner: 'sys_system',

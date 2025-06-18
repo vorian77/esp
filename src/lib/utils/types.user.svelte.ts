@@ -2,6 +2,7 @@ import { State } from '$comps/app/types.appState.svelte'
 import {
 	DataObjRenderPlatform,
 	type DataRecord,
+	debug,
 	Node,
 	ObjAttrAccess,
 	ObjAttrAction,
@@ -10,13 +11,14 @@ import {
 } from '$utils/types'
 import {
 	arrayOfClass,
+	arrayOfEnums,
 	booleanOrFalse,
-	booleanRequired,
 	classOptional,
 	FileStorage,
 	getArray,
 	memberOfEnum,
 	MethodResult,
+	NodeObjComponent,
 	required,
 	strRequired,
 	valueOrDefault
@@ -42,7 +44,7 @@ export class User {
 	name: string
 	orgIds: string[] = []
 	personId: string
-	preferences: UserPrefs
+	preferences: UserPrefType[]
 	resources_app: any[] = []
 	resources_task: UserResourceTask[] = $state([])
 	system: UserSystem
@@ -72,7 +74,13 @@ export class User {
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.orgIds = obj.orgs.map((o: any) => o.id)
 		this.personId = strRequired(obj._personId, clazz, 'personId')
-		this.preferences = new UserPrefs(obj._preferences)
+		this.preferences = arrayOfEnums(
+			clazz,
+			getArray(obj._preferences.map((p: any) => p._codeType)),
+			'preferences',
+			'UserPrefType',
+			UserPrefType
+		)
 		this.resources_app = obj._resources_app
 		this.resources_task = arrayOfClass(UserResourceTask, obj._resources_task)
 		this.system = new UserSystem(obj._system)
@@ -88,15 +96,10 @@ export class User {
 		// this.site = strRequired(obj.site, 'User', 'site')
 		// this.status = strRequired(obj.status, 'User', 'status')
 		// this.user_id = nbrOptional(obj.user_id, 'User')
-
-		// <todo> - 250606 - allow users to toggle preferences
-		this.preferences = new UserPrefs([
-			{ _codeType: UserPrefType.remember_list_settings, isActive: true }
-		])
 	}
 
 	prefIsActive(prefType: UserPrefType): boolean {
-		return this.preferences.isActive(prefType)
+		return this.preferences.includes(prefType)
 	}
 
 	setName() {
@@ -110,29 +113,9 @@ export class User {
 	}
 }
 
-export class UserPrefs {
-	items: UserPrefItem[] = []
-	constructor(obj: any) {
-		this.items = arrayOfClass(UserPrefItem, obj)
-	}
-	isActive(prefType: UserPrefType): boolean {
-		const pref = this.items.find((i) => i.codeType === prefType)
-		return pref ? pref.isActive : false
-	}
-}
-
-class UserPrefItem {
-	codeType: UserPrefType
-	isActive: boolean
-	constructor(obj: any) {
-		const clazz = 'UserPref'
-		this.codeType = memberOfEnum(obj._codeType, clazz, 'codeType', 'UserPrefType', UserPrefType)
-		this.isActive = booleanRequired(obj.isActive, clazz, 'isActive')
-	}
-}
-
 export enum UserPrefType {
-	remember_list_settings = 'remember_list_settings'
+	disable_notifications_offline = 'disable_notifications_offline',
+	disable_remember_feature_settings = 'disable_remember_feature_settings'
 }
 
 export class UserResource {
@@ -229,6 +212,7 @@ export class UserResourceTask extends UserResource {
 	async loadPage(sm: State): Promise<MethodResult> {
 		if (this.pageDataObjId) {
 			const token = new TokenAppDoQuery({
+				codeComponent: NodeObjComponent.FormDetail,
 				dataObjId: this.pageDataObjId,
 				queryType: TokenApiQueryType.retrieve
 			})

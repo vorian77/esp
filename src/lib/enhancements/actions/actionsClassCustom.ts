@@ -1,5 +1,5 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { TokenApiQueryType, TokenAppDo, TokenAppStateTriggerAction } from '$utils/types.token'
+import { TokenAppStateTriggerAction } from '$utils/types.token'
 import { CodeActionType, DataObj, MethodResult, required } from '$utils/types'
 import { Token } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
@@ -12,7 +12,6 @@ export default async function action(
 ): Promise<MethodResult> {
 	const actionType = parmsAction.codeAction.actionType
 	const token: Token = parmsAction.data.token
-	const tokenAppDo = token as TokenAppDo
 
 	let dm = sm.dm
 	let currTab = required(sm.app.getCurrTab(), FILENAME, 'currTab')

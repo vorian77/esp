@@ -8,7 +8,6 @@ function initNodeObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Node Objects',
 		listReorderColumn: 'orderDefine',
@@ -105,7 +104,6 @@ function initNodeObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Node Object',
 		name: 'data_obj_sys_admin_node_obj_detail',
 		owner: 'sys_system',
@@ -179,15 +177,6 @@ function initNodeObj(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isDynamicChildrenSystemParents',
-				exprPreset: `(SELECT false)`,
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
 				indexTable: 0
 			},
 			{
@@ -362,6 +351,7 @@ function initNodeObj(init: InitDb) {
 
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_admin_node_obj_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_node_obj_list',
@@ -372,6 +362,7 @@ function initNodeObj(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_admin_node_obj_detail',

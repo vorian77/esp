@@ -1,12 +1,20 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { AppLevel, AppLevelTab } from '$comps/app/types.app.svelte'
+import { AppLevelTab } from '$comps/app/types.app.svelte'
 import {
 	userActionError,
-	userActionStateChangeDataObj,
+	userActionStateChangeTab,
 	userActionStateChangeHomeDashboard,
 	userActionNavDestination
 } from '$comps/other/types.userAction.svelte'
-import { CodeActionType, MethodResult, strRequired } from '$utils/types'
+import {
+	CodeActionType,
+	DataObjRenderPlatform,
+	MethodResult,
+	Node,
+	ParmsValuesType,
+	required,
+	strRequired
+} from '$utils/types'
 import {
 	Token,
 	TokenApiQueryType,
@@ -31,6 +39,7 @@ export default async function action(
 	const actionType = parmsAction.codeAction.actionType
 	const token: Token = parmsAction.data.token
 	let result: MethodResult
+	let clazz = `${FILENAME}.${actionType}`
 
 	switch (actionType) {
 		case CodeActionType.navDestination:
@@ -43,7 +52,7 @@ export default async function action(
 				result = await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
 				if (result.error) return result
 			}
-			await userActionStateChangeDataObj(sm, parmsAction)
+			await userActionStateChangeTab(sm, parmsAction)
 			break
 
 		case CodeActionType.navPage:
@@ -53,14 +62,29 @@ export default async function action(
 		case CodeActionType.navRow:
 			result = await sm.app.navRow(sm, token as TokenAppRow)
 			if (result.error) return result
-			await userActionStateChangeDataObj(sm, parmsAction)
+			await userActionStateChangeTab(sm, parmsAction)
+			break
+
+		case CodeActionType.navSelectList:
+			currTab = sm.app.getCurrTab()
+			if (currTab) {
+				const selectListRecord = required(
+					sm.parmsState.valueGet(ParmsValuesType.selectListRecord),
+					clazz,
+					'selectListRecord'
+				)
+				currTab.dataObjId = strRequired(selectListRecord._dataObjId, clazz, '_dataObjId')
+				result = await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
+				if (result.error) return result
+				await userActionStateChangeTab(sm, parmsAction)
+			}
 			break
 
 		case CodeActionType.navTab:
 			if (token instanceof TokenAppTab) {
 				result = await token.app.navTab(sm, token)
 				if (result.error) return result
-				await userActionStateChangeDataObj(sm, parmsAction)
+				await userActionStateChangeTab(sm, parmsAction)
 			}
 			break
 
@@ -76,7 +100,7 @@ export default async function action(
 			if (result.error) return result
 
 			parmsAction.setMenuClose()
-			await userActionStateChangeDataObj(sm, parmsAction)
+			await userActionStateChangeTab(sm, parmsAction)
 			break
 
 		case CodeActionType.openDataObjModal:
@@ -87,7 +111,7 @@ export default async function action(
 			if (result.error) return result
 
 			parmsAction.setMenuClose()
-			await userActionStateChangeDataObj(sm, parmsAction)
+			await userActionStateChangeTab(sm, parmsAction)
 			break
 
 		case CodeActionType.openNode:
@@ -96,7 +120,7 @@ export default async function action(
 			if (result.error) return result
 
 			parmsAction.setMenuClose()
-			await userActionStateChangeDataObj(sm, parmsAction)
+			await userActionStateChangeTab(sm, parmsAction)
 			break
 
 		default:

@@ -1,7 +1,14 @@
 <script lang="ts">
 	import srcLogo from '$assets/org_logo_sys.png'
 	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
-	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, Node } from '$utils/types'
+	import {
+		CodeAction,
+		CodeActionClass,
+		CodeActionType,
+		ContextKey,
+		Node,
+		NodeObjComponent
+	} from '$utils/types'
 	import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
 	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
 	import {
@@ -38,8 +45,8 @@
 					login: 'data_obj_auth_login',
 					signup: 'data_obj_auth_signup'
 				}
-				const dataObj = dataObjects[authType]
-				if (!dataObj) {
+				const dataObjName = dataObjects[authType]
+				if (!dataObjName) {
 					error(404, {
 						file: FILENAME,
 						function: 'retrieveForm',
@@ -54,7 +61,8 @@
 						),
 						data: {
 							token: new TokenAppDoQuery({
-								dataObjName: dataObj,
+								codeComponent: NodeObjComponent.FormDetail,
+								dataObjName,
 								queryType: TokenApiQueryType.preset
 							})
 						},

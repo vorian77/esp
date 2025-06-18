@@ -10,7 +10,6 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_edit_parm_value',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeDataObjType: 'embed',
 		codeListPresetType: 'insertSave',
 		exprFilter:
@@ -195,7 +194,6 @@ function initRepConfig(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list_report',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeListPresetType: 'insertSave',
 		exprFilter: '.user.id = <user,uuid,id>',
 		header: 'My Reports',
@@ -514,6 +512,7 @@ function initRepConfig(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgram', {
 		children: [{ node: 'node_obj_sys_rep_my_report_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program',
 		dataObj: 'data_obj_sys_rep_my_report_list',
@@ -524,6 +523,7 @@ function initRepConfig(init: InitDb) {
 	})
 	init.addTrans('sysNodeObjProgramObj', {
 		children: [{ node: 'node_obj_sys_rep_render', order: 10 }],
+		codeComponent: 'FormDetail',
 		codeIcon: 'FileChartColumnIncreasing',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_sys_rep_my_report_detail',
@@ -536,7 +536,6 @@ function initRepConfig(init: InitDb) {
 
 function initRepRender(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormList',
 		codeCardinality: 'list',
 		header: 'Run',
 		name: 'data_obj_dyn_sys_rep_render',
@@ -555,6 +554,7 @@ function initRepRender(init: InitDb) {
 	})
 
 	init.addTrans('sysNodeObjProgramObj', {
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'program_object',
 		dataObj: 'data_obj_dyn_sys_rep_render',
