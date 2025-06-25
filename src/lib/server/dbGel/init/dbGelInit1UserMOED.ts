@@ -270,7 +270,7 @@ function initUsers(init: InitDb) {
 		owner: 'sys_client_moed',
 		systems: ['sys_client_moed'],
 		userTypes: [
-			// 'ut_client_moed_admin',
+			'ut_client_moed_admin',
 			'ut_client_moed_advocate_east',
 			'ut_client_moed_advocate_west'
 		]
@@ -286,7 +286,7 @@ function initUsers(init: InitDb) {
 		owner: 'sys_client_moed',
 		systems: ['sys_client_moed'],
 		userTypes: [
-			// 'ut_client_moed_admin',
+			'ut_client_moed_admin',
 			'ut_client_moed_advocate_east',
 			'ut_client_moed_advocate_west'
 		]
