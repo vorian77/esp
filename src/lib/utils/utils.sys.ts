@@ -1,8 +1,6 @@
 import { strRequired } from '$utils/utils.model'
 import { arrayOfClass, getArray } from '$utils/utils.array'
 import { valueOrDefault, memberOfEnum } from '$utils/utils.model'
-import exp from 'constants'
-import type { Method } from 'axios'
 
 const FILENAME = '/$utils/utils.sys.ts'
 
@@ -74,8 +72,6 @@ export enum CodeActionType {
 	doListDownload = 'doListDownload',
 	doListSelfRefresh = 'doListSelfRefresh',
 	doListSelfSave = 'doListSelfSave',
-	doOpen = 'doOpen',
-	doOpenCustom = 'doOpenCustom',
 	doSaveCancel = 'doSaveCancel',
 
 	embedShell = 'embedShell',
@@ -94,9 +90,13 @@ export enum CodeActionType {
 	navRow = 'navRow',
 	navSelectList = 'navNodeSelect',
 	navTab = 'navTab',
-	openDataObjDrawer = 'openDataObjDrawer',
-	openDataObjModal = 'openDataObjModal',
+	openDashboard = 'openDashboard',
+
 	openNode = 'openNode',
+	openNodeFreeApp = 'openNodeFreeApp',
+	openNodeFreeAppCustom = 'openNodeFreeAppCustom',
+	openNodeFreeDrawer = 'openNodeFreeDrawer',
+	openNodeFreeModal = 'openNodeFreeModal',
 
 	// utils
 
@@ -353,11 +353,11 @@ export class MethodResult {
 			}
 		}
 	}
-	getResultExpr() {
+	getResultRawList() {
 		return this.data.rawDataList ? this.data.rawDataList : undefined
 	}
-	getResultExprValue() {
-		const data = this.getResultExpr()
+	getResultRawListValue() {
+		const data = this.getResultRawList()
 		return Array.isArray(data) && data.length > 0 ? data[0] : undefined
 	}
 }
@@ -386,13 +386,11 @@ export class MethodResultError {
 }
 
 export enum NodeObjComponent {
-	Home = 'Home',
 	FormList = 'FormList',
 	FormDetail = 'FormDetail',
 	FormDetailRepConfig = 'FormDetailRepConfig',
 	ProcessStatus = 'ProcessStatus',
-	SelectList = 'SelectList',
-	Tree = 'Tree'
+	SelectList = 'SelectList'
 }
 
 export class ObjAttr {

@@ -1,12 +1,6 @@
 import e from '$db/gel/edgeql-js'
 import { client } from '$routes/api/db/dbGel/dbGel'
-import {
-	TokenApiError,
-	TokenApiId,
-	TokenApiIds,
-	TokenApiUserParmsGet,
-	TokenApiUserParmsSet
-} from '$utils/types.token'
+import { TokenApiError, TokenApiId, TokenApiIds, TokenApiUserParmsGet } from '$utils/types.token'
 import { MethodResult, required, valueOrDefault } from '$utils/types'
 import { debug } from '$utils/utils.debug'
 
@@ -122,6 +116,7 @@ const shapeNodeObjAction = e.shape(e.sys_core.SysNodeObjAction, (na) => ({
 	_dataObjId: na.nodeObj.dataObj.id,
 	_nodeObjId: na.nodeObj.id
 }))
+
 const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 	_actions: e.select(n.actions, (a) => ({
 		...shapeNodeObjAction(a)
@@ -131,9 +126,11 @@ const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 		order_by: c.orderDefine
 	})),
 	_codeComponent: n.codeComponent.name,
-	_codeIcon: n.codeIcon.name,
 	_codeNodeType: n.codeNodeType.name,
+	_codeIcon: n.codeIcon.name,
 	_codeQueryOwnerType: n.codeQueryOwnerType.name,
+	_codeQueryType: n.codeQueryType.name,
+	_codeRenderPlatform: n.codeRenderPlatform.name,
 	_dataObjId: n.dataObj.id,
 	_ownerId: n.owner.id,
 	_selectListItems: e.select(n.selectListItems, (sli) => ({
@@ -215,7 +212,7 @@ const shapeObjAttrTypeApp = e.shape(e.sys_user.SysApp, (a) => ({
 	})),
 	_nodes: e.select(a.nodes, (n) => ({
 		...shapeNodeObj(n),
-		order_by: n.orderDefine
+		order_by: n.header
 	})),
 	_ownerId: a.owner.id,
 	id: true,
@@ -224,16 +221,15 @@ const shapeObjAttrTypeApp = e.shape(e.sys_user.SysApp, (a) => ({
 
 const shapeObjAttrTypeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	_codeIconName: t.codeIcon.name,
-	_codeRenderType: t.codeRenderType.name,
-	_codeStatusObjName: t.codeStatusObj.name,
-	_ownerId: t.owner.id,
-	_pageDataObjId: t.pageDataObj.id,
-	_targetDataObjId: t.targetDataObj.id,
-	_targetDataObjOwnerId: t.targetDataObj.owner.id,
-	_targetDataObjRenderPlatform: t.targetDataObj.codeDoRenderPlatform.name,
-	_targetNodeObj: e.select(t.targetNodeObj, (n) => ({
+	_codeTaskStatusObjName: t.codeTaskStatusObj.name,
+	_codeTaskTypeName: t.codeTaskType.name,
+	_codeTaskType: t.codeTaskType.name,
+	_dataObjId: t.nodeObj.dataObj.id,
+	_isHTMLPage: e.op('exists', t.nodeObj.dataObj.columns.customColRawHTML),
+	_nodeObj: e.select(t.nodeObj, (n) => ({
 		...shapeNodeObj(n)
 	})),
+	_ownerId: t.owner.id,
 	description: true,
 	exprShow: true,
 	exprStatus: true,
@@ -241,7 +237,6 @@ const shapeObjAttrTypeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	hasAltOpen: true,
 	header: true,
 	id: true,
-	isPinToDash: true,
 	name: true,
 	noDataMsg: true
 }))
@@ -365,9 +360,6 @@ export async function getDataObjById(token: TokenApiId) {
 				...shapeDataObjActionGroup(afg)
 			})),
 			_codeCardinality: do1.codeCardinality.name,
-			_codeDataObjType: do1.codeDataObjType.name,
-			_codeDoQueryType: do1.codeDoQueryType.name,
-			_codeDoRenderPlatform: do1.codeDoRenderPlatform.name,
 			_codeListPresetType: do1.codeListPresetType.name,
 			_gridStyles: e.select(do1.gridStyles, (gs) => ({
 				...shapeGridStyle(gs)
@@ -605,6 +597,14 @@ export async function getNodeByNodeId(token: TokenApiId) {
 	return await query.run(client)
 }
 
+export async function getNodeByNodeName(token: TokenApiId) {
+	let query = e.select(e.sys_core.SysNodeObj, (n) => ({
+		...shapeNodeObj(n),
+		filter_single: e.op(n.name, '=', e.cast(e.str, token.id))
+	}))
+	return await query.run(client)
+}
+
 export async function getNodesChildren(token: TokenApiIds) {
 	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
 		e.select(e.sys_core.SysNodeObj, (n) => ({
@@ -628,6 +628,7 @@ export async function getObjAttrTypeTask(token: TokenApiIds) {
 	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
 		e.select(e.sys_user.SysTask, (a) => ({
 			...shapeObjAttrTypeTask(a),
+			order_by: a.header,
 			filter: e.op(a.id, 'in', e.array_unpack(ids))
 		}))
 	)
@@ -719,7 +720,7 @@ export async function getReportUser(repUserId: string) {
 	return await query.run(client)
 }
 
-export async function getUserByUserId(token: TokenApiId) {
+export async function getUserByUserId(token: TokenApiId): Promise<MethodResult> {
 	try {
 		const query = e.select(e.sys_user.SysUser, (u) => ({
 			_attrsAccess: e.select(u.userTypes.attrsAccess, (a) => ({

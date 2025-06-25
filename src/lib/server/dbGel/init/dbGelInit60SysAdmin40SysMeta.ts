@@ -311,21 +311,21 @@ function initAttribute(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_attribute_detail_meta', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_attribute_list_meta',
 		header: 'Attributes',
 		name: 'node_obj_sys_admin_attribute_list_meta',
 		orderDefine: 10,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_attribute_detail_meta',
 		header: 'Attribute',
 		name: 'node_obj_sys_admin_attribute_detail_meta',
@@ -651,21 +651,21 @@ function initCode(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_code_detail_meta', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_code_list_meta',
 		header: 'Codes',
 		name: 'node_obj_sys_admin_code_list_meta',
 		orderDefine: 20,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_code_detail_meta',
 		header: 'Code',
 		name: 'node_obj_sys_admin_code_detail_meta',
@@ -678,7 +678,7 @@ function initFieldListSelectUserType(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeDataObjType: 'embed',
+		codeDataObjType: 'doEmbed',
 		exprFilter: `.isGlobalResource UNION .owner.id = <parms,uuid,queryOwnerSys> UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>).systemParents`,
 		header: 'Select User Types',
 		name: 'dofls_sys_sys_admin_user_type',
@@ -777,11 +777,11 @@ function initSystem(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgram', {
+	init.addTrans('sysNodeObjApp', {
 		children: [{ node: 'node_obj_select_list_attr_obj', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program',
+		codeNodeType: 'nodeApp',
 		codeQueryOwnerType: 'queryOwnerTypeSystemRecord',
 		dataObj: 'data_obj_sys_admin_system_list_meta',
 		header: 'Systems',
@@ -790,10 +790,10 @@ function initSystem(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgram', {
+	init.addTrans('sysNodeObjApp', {
 		codeComponent: 'SelectList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		header: 'System Objects',
 		name: 'node_obj_select_list_attr_obj',
 		orderDefine: 10,
@@ -1048,11 +1048,11 @@ function initUser(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_user_detail_meta', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_user_list_meta',
 		header: 'Users',
 		name: 'node_obj_sys_admin_user_list_meta',
@@ -1060,10 +1060,10 @@ function initUser(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_user_detail_meta',
 		header: 'User',
 		name: 'node_obj_sys_admin_user_detail_meta',

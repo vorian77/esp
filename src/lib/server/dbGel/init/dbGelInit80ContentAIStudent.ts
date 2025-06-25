@@ -433,11 +433,11 @@ function initStudent(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgram', {
+	init.addTrans('sysNodeObjApp', {
 		children: [{ node: 'node_obj_cm_student_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'UsersRound',
-		codeNodeType: 'program',
+		codeNodeType: 'nodeApp',
 		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
 		dataObj: 'data_obj_cm_student_list',
 		header: 'Students',
@@ -445,11 +445,11 @@ function initStudent(init: InitDb) {
 		orderDefine: 30,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_service_flow_list', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'UsersRound',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_student_detail',
 		header: 'Student',
 		name: 'node_obj_cm_student_detail',
@@ -760,18 +760,18 @@ function initCsf(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_service_flow_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_client_service_flow_list',
 		header: 'Service Flows',
 		name: 'node_obj_cm_service_flow_list',
 		orderDefine: 10,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [
 			{ node: 'node_obj_cm_csf_cohort_list', order: 10 },
 			{ node: 'node_obj_cm_csf_note_list', order: 20 },
@@ -781,7 +781,7 @@ function initCsf(init: InitDb) {
 		],
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_client_service_flow_detail',
 		header: 'Service Flow',
 		name: 'node_obj_cm_service_flow_detail',
@@ -973,22 +973,22 @@ function initCsfCohort(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_csf_cohort_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_csf_cohort_list',
 		header: 'Cohorts',
 		name: 'node_obj_cm_csf_cohort_list',
 		orderDefine: 10,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_csf_cohort_attd_student_list', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_csf_cohort_detail',
 		header: 'Cohort',
 		name: 'node_obj_cm_csf_cohort_detail',
@@ -1191,21 +1191,21 @@ function initCsfCohortAttdStudent(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_csf_cohort_attd_student_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_csf_cohort_attd_student_list',
 		header: 'Attendance Records',
 		name: 'node_obj_cm_csf_cohort_attd_student_list',
 		orderDefine: 10,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_csf_cohort_attd_student_detail',
 		header: 'Attendance',
 		name: 'node_obj_cm_csf_cohort_attd_student_detail',
@@ -1395,21 +1395,21 @@ function initCsfNote(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_csf_note_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_csf_note_list',
 		header: 'Case Notes',
 		name: 'node_obj_cm_csf_note_list',
 		orderDefine: 20,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_csf_note_detail',
 		header: 'Case Note',
 		name: 'node_obj_cm_csf_note_detail',
@@ -1725,21 +1725,21 @@ function initCsfJobPlacement(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_csf_job_placement_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_csf_job_placement_list',
 		header: 'Job Placements',
 		name: 'node_obj_cm_csf_job_placement_list',
 		orderDefine: 30,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_csf_job_placement_detail',
 		header: 'Job Placement',
 		name: 'node_obj_cm_csf_job_placement_detail',
@@ -2003,21 +2003,21 @@ function initCsfSchoolPlacement(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_csf_school_placement_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_csf_school_placement_list',
 		header: 'School Placements',
 		name: 'node_obj_cm_csf_school_placement_list',
 		orderDefine: 40,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_csf_school_placement_detail',
 		header: 'School Placement',
 		name: 'node_obj_cm_csf_school_placement_detail',
@@ -2268,21 +2268,21 @@ function initCsfDocument(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_csf_document_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_csf_document_list',
 		header: 'Documents',
 		name: 'node_obj_cm_csf_document_list',
 		orderDefine: 50,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_csf_document_detail',
 		header: 'Document',
 		name: 'node_obj_cm_csf_document_detail',
@@ -2291,7 +2291,7 @@ function initCsfDocument(init: InitDb) {
 	})
 }
 
-// init.addTrans('sysNodeObjProgramObj', {
+// init.addTrans('sysNodeObjAppObj', {
 // codeComponent: 'FormList',
 // 	codeIcon: 'AppWindow',
 // 	dataObj: 'data_obj_cm_csf_job_placement_list',
@@ -2302,7 +2302,7 @@ function initCsfDocument(init: InitDb) {
 // 	owner: 'sys_client_atlantic_impact',
 //
 // })
-// init.addTrans('sysNodeObjProgramObj', {
+// init.addTrans('sysNodeObjAppObj', {
 // codeComponent: 'FormDetail',
 // 	codeIcon: 'AppWindow',
 // 	dataObj: 'data_obj_cm_csf_job_placement_detail',

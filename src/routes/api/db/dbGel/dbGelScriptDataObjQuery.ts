@@ -14,7 +14,6 @@ import {
 	DataObjCardinality,
 	DataObjData,
 	DataObjDataPropName,
-	DataObjQueryType,
 	DataRecordStatus,
 	DataRow,
 	DataRows,
@@ -58,12 +57,14 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 			rawDataObj.ownerId
 		)
 
-		if (this.queryType !== TokenApiQueryType.save) {
-			if (rawDataObj.codeDoQueryType === DataObjQueryType.preset) {
+		debug('dbGelScriptDataObjQuery.queryPre', 'queryData.node', this.queryData.node)
+
+		if (this.queryType !== TokenApiQueryType.save && this.queryData.node) {
+			if (this.queryData.node.codeQueryType === TokenApiQueryType.preset) {
 				this.queryType = TokenApiQueryType.preset
-			} else if (rawDataObj.codeDoQueryType === DataObjQueryType.retrieve) {
+			} else if (this.queryData.node.codeQueryType === TokenApiQueryType.retrieve) {
 				this.queryType = TokenApiQueryType.retrieve
-			} else if (rawDataObj.codeDoQueryType === DataObjQueryType.retrievePreset) {
+			} else if (this.queryData.node.codeQueryType === TokenApiQueryType.retrievePreset) {
 				const expr = `SELECT ${rawDataObj.tableGroup.getTableObj(0)} FILTER ${rawDataObj.rawQuerySource.exprFilter}`
 				const evalExprContext = `${this.evalExprContext} - RetrievePreset`
 				result = await dbQueryExpr({
@@ -257,7 +258,7 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 
 					// set embedded parent tree records
 					const dataObjId = strRequired(this.queryData.dataTab.rawDataObj?.id, clazz, 'dataObjId')
-					this.queryData.updateData(dataObjId, dataRow)
+					this.queryData.dataUpdate(dataObjId, dataRow)
 				}
 
 				script.scriptGroup.queryData.dataTab?.parms.update(scriptData.parms.valueGetAll())

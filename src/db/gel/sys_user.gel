@@ -27,18 +27,15 @@ module sys_user {
 
   # task  
   type SysTask extending sys_core::SysObjAttr  {
-    codeRenderType: sys_core::SysCode;
-    codeStatusObj: sys_core::SysCode;
+    codeTaskStatusObj: sys_core::SysCode;
+    required codeTaskType: sys_core::SysCode;
     description: str;
     exprShow: str;
     exprStatus: str;
     exprWith: str;
     hasAltOpen: bool;
-    isPinToDash: bool;
     noDataMsg: str;
-    pageDataObj: sys_core::SysDataObj;
-    targetDataObj: sys_core::SysDataObj;
-    targetNodeObj: sys_core::SysNodeObj;
+    nodeObj: sys_core::SysNodeObj;
   }
   
   type SysUser extending sys_core::SysObjAttr {

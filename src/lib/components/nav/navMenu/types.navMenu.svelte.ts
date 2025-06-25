@@ -3,23 +3,27 @@ import {
 	CodeAction,
 	CodeActionClass,
 	CodeActionType,
-	DataObjRenderPlatform,
 	type DataRecord,
+	getArray,
+	isPlainObjectEmpty,
 	memberOfEnum,
+	memberOfEnumIfExists,
 	MethodResult,
 	Node,
-	NodeObjComponent,
 	ParmsValuesType,
 	RawMenu,
 	required,
 	User,
-	UserResourceTask,
+	UserParmItemSource,
+	UserParmItemType,
+	UserResourceTaskItem,
 	valueOrDefault
 } from '$utils/types'
 import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
 import {
+	Token,
+	TokenApiId,
 	TokenApiQueryData,
-	TokenApiQueryType,
 	TokenAppDoQuery,
 	TokenAppNode,
 	TokenAppStateTriggerAction,
@@ -45,93 +49,28 @@ export class NavMenuData {
 	idIndex = -1
 	isOpen = $state(true)
 	items: NavMenuDataComp[] = []
-	sm: State
-	width: any = $state()
+	itemsNamed: NavMenuNamedItems = new NavMenuNamedItems()
+	sm?: State
+	width: number = $state(250)
 	widthClosed = 70
 	widthOpen = 250
-	constructor(obj: any) {
+	constructor() {
 		const clazz = 'NavMenuData'
-		obj = valueOrDefault(obj, {})
-		this.sm = obj.sm
-		this.width = this.widthOpen
-
-		if (this.sm && this.sm.user) {
-			// org
-			this.items.push(new NavMenuDataCompOrg(this, { user: this.sm.user }))
-
-			// apps
-			const rawMenu = new RawMenu(this.sm.user.resources_app)
-			if (rawMenu.apps.length === 1) {
-				const itemGroupSingleProgram = new NavMenuDataCompGroup(this, {
-					header: 'My Apps',
-					hideHr: true
-				})
-				rawMenu.apps[0].nodes.forEach((n) => {
-					itemGroupSingleProgram.addItem({
-						content: new NavMenuContent(NavMenuContentType.node, n),
-						icon: n.icon,
-						isRoot: true,
-						label: new NavMenuLabel(n.label)
-					})
-				})
-				this.items.push(itemGroupSingleProgram)
-			} else if (rawMenu.apps.length > 1) {
-				this.items.push(new NavMenuDataCompApps(this, { rawMenu }))
-			}
-
-			// item - group - My Tasks
-			const itemGroupTasks = new NavMenuDataCompGroup(this, { header: 'My Tasks' })
-			this.sm.user.resources_task
-				.filter((task) => !task.exprShow)
-				.forEach((task) => {
-					itemGroupTasks.addItem({
-						content: new NavMenuContent(NavMenuContentType.task, task),
-						icon: task.codeIconName,
-						isRoot: true,
-						label: new NavMenuLabel(task.header!)
-					})
-				})
-			this.items.push(itemGroupTasks)
-
-			// user
-			this.items.push(new NavMenuDataCompUser(this, { user: this.sm.user }))
-
-			// item - group - default items
-			const itemDefault = new NavMenuDataCompGroup(this, {})
-			// logout
-			itemDefault.addItem(
-				new NavMenuDataCompItem(this, {
-					content: new NavMenuContent(NavMenuContentType.page, '/'),
-					icon: 'LogOut',
-					isRoot: true,
-					label: new NavMenuLabel('Logout')
-				})
-			)
-			this.items.push(itemDefault)
-		}
 	}
 
 	async activateLink(item: NavMenuDataCompItem): Promise<MethodResult> {
 		const content = item.content
 		let node
-		if (content) {
+		if (this.sm && content) {
 			switch (content.codeType) {
 				case NavMenuContentType.functionAsync:
 					await content.value(this)
 					break
 
-				case NavMenuContentType.dataObjApp:
-					return await this.triggerAction(
-						CodeActionClass.ct_sys_code_action_class_do,
-						CodeActionType.doOpen,
-						{ token: content.value as TokenAppDoQuery },
-						{ navLayout: StateNavLayout.layoutApp }
-					)
-
 				case NavMenuContentType.dataObjDrawer:
 					return await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_nav,
-						CodeActionType.openDataObjDrawer,
+						CodeActionType.openNodeFreeDrawer,
 						{ token: content.value as TokenAppDoQuery },
 						{}
 					)
@@ -141,7 +80,7 @@ export class NavMenuData {
 						new TokenAppStateTriggerAction({
 							codeAction: CodeAction.init(
 								CodeActionClass.ct_sys_code_action_class_nav,
-								CodeActionType.openDataObjModal
+								CodeActionType.openNodeFreeModal
 							),
 							codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
 							data: { token: content.value as TokenAppDoQuery },
@@ -154,16 +93,20 @@ export class NavMenuData {
 					return await this.triggerAction(
 						CodeActionClass.ct_sys_code_action_class_nav,
 						CodeActionType.openNode,
-						{
-							token: new TokenAppNode({
-								node,
-								queryType: TokenApiQueryType.retrieve,
-								renderPlatform: DataObjRenderPlatform.app
-							})
-						},
+						{ token: new TokenAppNode({ node }) },
 						{ navLayout: StateNavLayout.layoutApp }
 					)
-				// parmsState: { programId: this.getProgramId(node) },
+
+				case NavMenuContentType.nodeFree:
+					const tokenNodeFree = content.value as TokenApiId
+					return await this.triggerAction(
+						CodeActionClass.ct_sys_code_action_class_nav,
+						CodeActionType.openNodeFreeApp,
+						// CodeActionType.openNodeFreeDrawer,
+						// CodeActionType.openNodeFreeModal,
+						{ token: tokenNodeFree },
+						{ navLayout: StateNavLayout.layoutApp }
+					)
 
 				case NavMenuContentType.page:
 					return await this.triggerAction(
@@ -174,8 +117,8 @@ export class NavMenuData {
 					)
 
 				case NavMenuContentType.task:
-					const task: UserResourceTask = content.value as UserResourceTask
-					const taskTokenNode = await task.getTokenNode(this.sm)
+					const task: UserResourceTaskItem = content.value as UserResourceTaskItem
+					const taskTokenNode = task.getTokenNode(this.sm)
 					if (taskTokenNode) {
 						return await this.triggerAction(
 							CodeActionClass.ct_sys_code_action_class_nav,
@@ -184,7 +127,14 @@ export class NavMenuData {
 							{}
 						)
 					} else {
-						await task.togglePinToDash()
+						await task.togglePinToDash(this.sm)
+						const itemGroup = this.itemsNamed.find(
+							NavMenuNamedItemType.groupWidgets
+						) as NavMenuDataCompGroup
+						if (itemGroup) {
+							const itemTask = itemGroup.itemFindContent(task.name)
+							if (itemTask) itemTask.toggleHighlighted()
+						}
 					}
 					break
 
@@ -201,17 +151,14 @@ export class NavMenuData {
 		return new MethodResult()
 	}
 
+	async activateLinkByNamedItem(itemType: NavMenuNamedItemType) {
+		const item: any = this.itemsNamed.find(itemType)
+		if (item) item.navMenu.activateLink(item)
+	}
+
 	getId() {
 		this.idIndex++
 		return this.idIndex
-	}
-
-	getItem(itemId: number): NavMenuDataComp | undefined {
-		for (let i of this.items) {
-			const item = i.getItem(itemId)
-			if (item) return item
-		}
-		return undefined
 	}
 
 	getItemClassName(item: any) {
@@ -230,9 +177,127 @@ export class NavMenuData {
 		}
 	}
 
+	async init(sm: State): Promise<MethodResult> {
+		const clazz = 'NavMenuData.init'
+		let result: MethodResult
+		this.sm = sm
+		this.items = []
+
+		await this.sm.userParmItemsAdd(UserParmItemType.menuWidgetsPinned, [
+			new UserParmItemSource(
+				UserParmItemType.menuWidgetsPinned,
+				(data: any) => {
+					return isPlainObjectEmpty(data) ? [] : data
+				},
+				(data: any) => {
+					return isPlainObjectEmpty(data) ? [] : data
+				}
+			)
+		])
+
+		if (this.sm && this.sm.user) {
+			// org
+			this.itemAdd(this.items, new NavMenuDataCompOrg(this, { user: this.sm.user }))
+
+			// apps
+			const rawMenu = new RawMenu(this.sm.user.resources_app)
+			if (rawMenu.apps.length === 1) {
+				const itemGroupSingleProgram = new NavMenuDataCompGroup(this, {
+					header: 'My Apps',
+					hideHr: true
+				})
+				rawMenu.apps[0].nodes.forEach((n) => {
+					itemGroupSingleProgram.itemAdd({
+						content: new NavMenuContent(NavMenuContentType.node, n),
+						icon: n.icon,
+						isRoot: true,
+						label: new NavMenuLabel(n.label)
+					})
+				})
+				this.itemAdd(this.items, itemGroupSingleProgram)
+			} else if (rawMenu.apps.length > 1) {
+				this.itemAdd(this.items, new NavMenuDataCompApps(this, { rawMenu }))
+			}
+
+			// item - group - My Tasks
+			const itemGroupTasks = new NavMenuDataCompGroup(this, { header: 'My Tasks' })
+			result = this.sm.user.resources_tasks.getTasksMenuTasks(this.sm)
+			if (result.success) {
+				let tasks: UserResourceTaskItem[] = getArray(result.data)
+				tasks.forEach((task) => {
+					itemGroupTasks.itemAdd({
+						content: new NavMenuContent(NavMenuContentType.task, task),
+						icon: task.codeIconName,
+						isRoot: true,
+						label: new NavMenuLabel(task.header!)
+					})
+				})
+			}
+			this.itemAdd(this.items, itemGroupTasks)
+
+			// item - group - My Widgets
+			const itemGroupWidgets = new NavMenuDataCompGroup(this, { header: 'My Widgets' })
+			result = this.sm.user.resources_tasks.getTasksMenuWidgets(this.sm)
+			if (result.success) {
+				let tasks: UserResourceTaskItem[] = getArray(result.data)
+				tasks.forEach((task) => {
+					itemGroupWidgets.itemAdd({
+						content: new NavMenuContent(NavMenuContentType.task, task),
+						icon: task.codeIconName,
+						isRoot: true,
+						isHighlighted: task.isPinned,
+						label: new NavMenuLabel(task.header!)
+					})
+				})
+			}
+			this.itemAddNamed(this.items, itemGroupWidgets, NavMenuNamedItemType.groupWidgets)
+
+			// user
+			this.itemAdd(this.items, new NavMenuDataCompUser(this, { user: this.sm.user }))
+
+			// item - group - default items
+			const itemDefault = new NavMenuDataCompGroup(this, {})
+
+			// logout
+			itemDefault.itemAdd(
+				new NavMenuDataCompItem(this, {
+					content: new NavMenuContent(NavMenuContentType.page, '/'),
+					icon: 'LogOut',
+					isRoot: true,
+					label: new NavMenuLabel('Logout')
+				})
+			)
+			this.itemAdd(this.items, itemDefault)
+		}
+		return new MethodResult()
+	}
+
+	itemAdd(items: NavMenuDataComp[], newItem: NavMenuDataComp) {
+		const newItemIdx = items.push(newItem) - 1
+		return items[newItemIdx]
+	}
+
+	itemAddNamed(items: NavMenuDataComp[], newItem: NavMenuDataComp, itemType: NavMenuNamedItemType) {
+		const item = this.itemAdd(items, newItem)
+		this.itemsNamed.add(itemType, item)
+		return item
+	}
+
+	openSet(newWidth: number) {
+		if (this.sm) {
+			this.width = newWidth
+			if (this.sm.navMenuWidthValue.current !== newWidth) {
+				this.sm.menuWidthToggle()
+			}
+			this.isOpen = this.width === this.widthOpen
+		}
+	}
+
 	openToggle = () => {
-		this.isOpen = !this.isOpen
-		this.width = this.isOpen ? this.widthOpen : this.widthClosed
+		if (this.sm) {
+			this.width = this.sm.menuWidthToggle()
+			this.isOpen = this.width === this.widthOpen
+		}
 	}
 
 	async triggerAction(
@@ -242,31 +307,23 @@ export class NavMenuData {
 		dataState: DataRecord
 	): Promise<MethodResult> {
 		dataState.navLayout = StateNavLayout.layoutApp
-		return await this.sm.triggerAction(
-			new TokenAppStateTriggerAction({
-				codeAction: CodeAction.init(actionClass, actionType),
-				codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-				data: dataAction,
-				stateParms: new StateParms(dataState)
-			})
-		)
-	}
-	async triggerActionDataObjApp(
-		dataObjName: string,
-		codeComponent: NodeObjComponent
-	): Promise<MethodResult> {
-		return await this.triggerAction(
-			CodeActionClass.ct_sys_code_action_class_do,
-			CodeActionType.doOpen,
-			{
-				token: new TokenAppDoQuery({
-					codeComponent,
-					dataObjName,
-					queryType: TokenApiQueryType.retrieve
+		if (this.sm) {
+			return await this.sm.triggerAction(
+				new TokenAppStateTriggerAction({
+					codeAction: CodeAction.init(actionClass, actionType),
+					codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+					data: dataAction,
+					stateParms: new StateParms(dataState)
 				})
-			},
-			{ navLayout: StateNavLayout.layoutApp }
-		)
+			)
+		}
+		return new MethodResult({
+			error: {
+				file: FILENAME,
+				function: 'triggerAction',
+				msg: 'State manager (sm) is not defined.'
+			}
+		})
 	}
 }
 
@@ -286,7 +343,6 @@ export class NavMenuContent {
 	}
 }
 export enum NavMenuContentType {
-	dataObjApp = 'dataObjApp',
 	dataObjDrawer = 'dataObjDrawer',
 	dataObjModal = 'dataObjModal',
 	functionAsync = 'functionAsync',
@@ -294,6 +350,7 @@ export enum NavMenuContentType {
 	info = 'info',
 	page = 'page',
 	node = 'node',
+	nodeFree = 'nodeFree',
 	nodeHeader = 'nodeHeader',
 	task = 'task'
 }
@@ -301,17 +358,23 @@ export enum NavMenuContentType {
 export class NavMenuDataComp {
 	content?: NavMenuContent
 	id: number
+	name?: NavMenuNamedItemType
 	navMenu: NavMenuData
 	parent?: NavMenuDataComp
 	constructor(navMenu: NavMenuData, obj: any) {
+		const clazz = 'NavMenuDataComp'
 		obj = valueOrDefault(obj, {})
 		this.content = obj.content
 		this.id = navMenu.getId()
+		this.name = memberOfEnumIfExists(
+			obj.name,
+			'name',
+			clazz,
+			'NavMenuItemType',
+			NavMenuNamedItemType
+		)
 		this.navMenu = navMenu
 		this.parent = obj.parent
-	}
-	getItem(itemId: number): NavMenuDataComp | undefined {
-		return itemId === this.id ? this : undefined
 	}
 }
 
@@ -342,7 +405,7 @@ export class NavMenuDataCompAppsItem extends NavMenuDataComp {
 		})
 
 		// header
-		const header = this.group.addItem({
+		const header = this.group.itemAdd({
 			...obj,
 			content: new NavMenuContent(NavMenuContentType.nodeHeader, obj.header),
 			hasChildren: true,
@@ -355,7 +418,7 @@ export class NavMenuDataCompAppsItem extends NavMenuDataComp {
 
 		// children
 		obj.nodes.forEach((n: any) => {
-			this.group.addItem({
+			this.group.itemAdd({
 				...obj,
 				content: new NavMenuContent(NavMenuContentType.node, n),
 				parent: header,
@@ -377,14 +440,19 @@ export class NavMenuDataCompGroup extends NavMenuDataComp {
 		this.header = obj.header
 		this.hideHr = booleanOrDefault(obj.hideHr, false)
 	}
-	addItem(obj: any) {
-		this.items.push(
+	itemAdd(obj: any) {
+		return this.navMenu.itemAdd(
+			this.items,
 			new NavMenuDataCompItem(this.navMenu, {
 				...obj,
 				parent: obj.parent || this
 			})
 		)
-		return this.items[this.items.length - 1]
+	}
+	itemFindContent(itemName: string): NavMenuDataCompItem | undefined {
+		return this.items.find((i) => {
+			return i.content?.value?.name === itemName
+		})
 	}
 }
 
@@ -392,6 +460,8 @@ export class NavMenuDataCompItem extends NavMenuDataComp {
 	hasChildren: boolean
 	icon?: string
 	indent: number
+	isHighlighted: boolean = $state(false)
+	isHidden: boolean
 	isOpen: boolean = $state(false)
 	isRoot: boolean
 	label: NavMenuLabel
@@ -402,6 +472,8 @@ export class NavMenuDataCompItem extends NavMenuDataComp {
 		this.hasChildren = booleanOrDefault(obj.hasChildren, false)
 		this.icon = obj.icon
 		this.indent = valueOrDefault(obj.indent, 0)
+		this.isHidden = booleanOrDefault(obj.isHidden, false)
+		this.isHighlighted = booleanOrDefault(obj.isHighlighted, false)
 		this.isOpen = booleanOrDefault(obj.isOpen, false)
 		this.isRoot = booleanOrDefault(obj.isRoot, false)
 		this.label = required(obj.label, clazz, 'label')
@@ -419,6 +491,9 @@ export class NavMenuDataCompItem extends NavMenuDataComp {
 		}
 		return new MethodResult()
 	}
+	toggleHighlighted() {
+		this.isHighlighted = !this.isHighlighted
+	}
 }
 
 export class NavMenuDataCompOrg extends NavMenuDataComp {
@@ -433,54 +508,72 @@ export class NavMenuDataCompOrg extends NavMenuDataComp {
 export class NavMenuDataCompUser extends NavMenuDataComp {
 	info: NavMenuInfo[] = []
 	items: NavMenuDataCompGroup
-	user: User
 	constructor(navMenu: NavMenuData, obj: any) {
 		super(navMenu, obj)
 		const clazz = 'NavMenuDataCompUser'
 		obj = valueOrDefault(obj, {})
-		this.user = required(obj.user, clazz, 'user')
-
-		// info
-		if (['user_sys'].includes(this.user.name)) {
-			this.info.push(new NavMenuInfo('dbBranch', this.user.dbBranch))
-			this.info.push(new NavMenuInfo('Default Organization', this.user.system.orgName))
-			this.info.push(new NavMenuInfo('Default System', this.user.system.name))
-		}
 
 		// group - items
 		this.items = new NavMenuDataCompGroup(navMenu, { hideHr: true })
 
-		this.addItem({
+		this.itemAddNamed(
+			{
+				content: new NavMenuContent(
+					NavMenuContentType.nodeFree,
+					new TokenApiId('node_obj_task_sys_auth_my_account')
+				),
+				icon: 'settings2',
+				isHidden: true,
+				isRoot: true,
+				label: new NavMenuLabel('My Account')
+			},
+			NavMenuNamedItemType.itemMyAccount
+		)
+
+		this.itemAdd({
 			content: new NavMenuContent(
-				NavMenuContentType.dataObjApp,
-				new TokenAppDoQuery({
-					codeComponent: NodeObjComponent.FormList,
-					dataObjName: 'data_obj_auth_user_pref_list',
-					queryType: TokenApiQueryType.retrieve
-				})
+				NavMenuContentType.nodeFree,
+				new TokenApiId('node_obj_auth_user_pref_list')
 			),
 			icon: 'settings2',
 			isRoot: true,
 			label: new NavMenuLabel('My Preferences')
 		})
 
-		if (['user_sys'].includes(this.user.name)) {
-			this.addItem({
+		// user_sys - features
+		if (
+			this.navMenu.sm &&
+			this.navMenu.sm.user &&
+			this.navMenu.sm.isDevMode &&
+			['user_sys'].includes(this.navMenu.sm.user.name)
+		) {
+			const user = this.navMenu.sm.user
+			this.itemAdd({
 				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminDevTest),
 				icon: 'Database',
 				isRoot: true,
 				label: new NavMenuLabel('Dev - Test')
 			})
-			this.addItem({
+			this.itemAdd({
 				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminDbReset),
 				icon: 'RotateCcw',
 				isRoot: true,
 				label: new NavMenuLabel('Admin - DB Reset')
 			})
+
+			this.info.push(new NavMenuInfo('dbBranch', user.dbBranch))
+			this.info.push(new NavMenuInfo('Default Organization', user.system.orgName))
+			this.info.push(new NavMenuInfo('Default System', user.system.name))
 		}
 	}
-	addItem(obj: any) {
-		this.items.addItem(obj)
+	itemAdd(obj: any) {
+		return this.items.itemAdd(obj)
+	}
+
+	itemAddNamed(obj: any, itemType: NavMenuNamedItemType) {
+		const newItem = this.itemAdd(obj)
+		this.navMenu.itemsNamed.add(itemType, newItem)
+		return newItem
 	}
 
 	async adminDbReset(navMenu: NavMenuData): Promise<MethodResult> {
@@ -490,32 +583,42 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 	}
 
 	async adminDevTest(navMenu: NavMenuData): Promise<MethodResult> {
-		let queryData = new TokenApiQueryData({
-			record: navMenu.sm.user,
-			system: navMenu.sm.user,
-			user: navMenu.sm.user
-		})
-		queryData.dataTab.parms.valueSet(ParmsValuesType.itemsParmValue, 'myParmValue')
-		queryData.dataTab.parms.valueSet(
-			ParmsValuesType.queryOwnerSys,
-			navMenu.sm.user?.systemIdCurrent
-		)
-		queryData.dataTab.parms.valueSet(ParmsValuesType.itemsParmValueList, [])
+		if (navMenu.sm) {
+			let queryData = new TokenApiQueryData({
+				record: navMenu.sm.user,
+				system: navMenu.sm.user,
+				user: navMenu.sm.user
+			})
+			queryData.dataTab.parms.valueSet(ParmsValuesType.itemsParmValue, 'myParmValue')
+			queryData.dataTab.parms.valueSet(
+				ParmsValuesType.queryOwnerSys,
+				navMenu.sm.user?.systemIdCurrent
+			)
+			queryData.dataTab.parms.valueSet(ParmsValuesType.itemsParmValueList, [])
 
-		let result: MethodResult = await evalExpr({
-			evalExprContext: 'navMenuTest',
-			exprRaw: `(SELECT sys_core::SysObjAttr FILTER .id IN <attrsAction,oaa_sys_msg_send,object,user>)`,
-			// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <function,fSysRandom10>)`,
-			// exprRaw: `(SELECT sys_user::SysUser FILTER .name = <literal,str,user_sys>)`,
-			// exprRaw: `(SELECT sys_user::SysUser FILTER .name = <parms,str,itemsParmValue>)`,
-			// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <record,uuid,id>)`,
-			// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <system,uuid,id>)`,
-			// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
-			// exprRaw: `(SELECT sys_core::SysObjAttr FILTER <evalObjAttrMulti>)`,
-			queryData
-		})
-		console.log('adminDevTest.evalExpr.result:', result)
-		return result
+			let result: MethodResult = await evalExpr({
+				evalExprContext: 'navMenuTest',
+				exprRaw: `(SELECT sys_core::SysObjAttr FILTER .id IN <attrsAction,oaa_sys_msg_send,object,user>)`,
+				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <function,fSysRandom10>)`,
+				// exprRaw: `(SELECT sys_user::SysUser FILTER .name = <literal,str,user_sys>)`,
+				// exprRaw: `(SELECT sys_user::SysUser FILTER .name = <parms,str,itemsParmValue>)`,
+				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <record,uuid,id>)`,
+				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <system,uuid,id>)`,
+				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
+				// exprRaw: `(SELECT sys_core::SysObjAttr FILTER <evalObjAttrMulti>)`,
+				queryData
+			})
+			console.log('adminDevTest.evalExpr.result:', result)
+			return result
+		} else {
+			return new MethodResult({
+				error: {
+					file: FILENAME,
+					function: 'adminDevTest',
+					msg: 'State manager (sm) is not defined.'
+				}
+			})
+		}
 	}
 }
 
@@ -528,11 +631,45 @@ export class NavMenuInfo {
 	}
 }
 
+class NavMenuNamedItems {
+	items: NavMenuNamedItem[] = []
+	add(itemType: NavMenuNamedItemType, itemNew: NavMenuDataComp) {
+		let itemOld = this.find(itemType)
+		if (!itemOld) this.items.push(new NavMenuNamedItem(itemType, itemNew))
+	}
+	find(itemType: NavMenuNamedItemType): NavMenuDataComp | undefined {
+		return this.items.find((i) => i.itemType === itemType)?.item
+	}
+}
+
+class NavMenuNamedItem {
+	item: NavMenuDataComp
+	itemType: NavMenuNamedItemType
+	constructor(itemType: NavMenuNamedItemType, item: NavMenuDataComp) {
+		this.item = item
+		this.itemType = itemType
+	}
+}
+
+export enum NavMenuNamedItemType {
+	groupWidgets = 'groupWidgets',
+	itemMyAccount = 'itemMyAccount'
+}
+
 export class NavMenuLabel {
 	text: string
 	tooltip?: string
 	constructor(text: string, tooltip?: string) {
 		this.text = text
 		this.tooltip = tooltip
+	}
+}
+
+export class NavMenuSize {
+	isOpen: boolean = false
+	width: number = 0
+	toggle() {
+		this.isOpen = !this.isOpen
+		this.width = this.isOpen ? 250 : 70
 	}
 }

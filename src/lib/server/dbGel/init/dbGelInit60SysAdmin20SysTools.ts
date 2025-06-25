@@ -299,21 +299,21 @@ function initError(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_tool_error_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_tool_error_list',
 		header: 'Errors',
 		name: 'node_obj_sys_admin_tool_error_list',
 		orderDefine: 50,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_tool_error_detail',
 		header: 'Error',
 		name: 'node_obj_sys_admin_tool_error_detail',

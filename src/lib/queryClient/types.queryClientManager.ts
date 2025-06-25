@@ -54,7 +54,6 @@ export class QueryManagerClient extends QueryManager {
 				this.queryData.dataTab.rawDataObj.rawQuerySource.queryRidersRawClient
 			)
 		}
-
 		return await super.queryPre()
 	}
 }

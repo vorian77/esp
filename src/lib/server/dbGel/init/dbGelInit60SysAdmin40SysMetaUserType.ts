@@ -9,7 +9,7 @@ function initFieldListSelectUser(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeDataObjType: 'embed',
+		codeDataObjType: 'doEmbed',
 		exprFilter: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>).owner IN .orgs`,
 		header: 'Select Users',
 		name: 'dofls_sys_sys_admin_user',
@@ -269,11 +269,11 @@ function initUserType(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_user_type_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_user_type_list',
 		header: 'User Types',
 		name: 'node_obj_sys_admin_user_type_list',
@@ -281,10 +281,10 @@ function initUserType(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_user_type_detail',
 		header: 'User Type',
 		name: 'node_obj_sys_admin_user_type_detail',

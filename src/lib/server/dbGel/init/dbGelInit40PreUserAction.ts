@@ -71,12 +71,6 @@ export function initPreUserAction(init: InitDb) {
 	})
 
 	init.addTrans('sysUserAction', {
-		codeAction: 'doOpenCustom',
-		name: 'ua_ca_sys_do_open_custom',
-		owner: 'sys_system'
-	})
-
-	init.addTrans('sysUserAction', {
 		codeAction: 'doListDownload',
 		codeConfirmType: 'statusChanged',
 		exprShow: `!<statusChanged>`,
@@ -134,6 +128,17 @@ export function initPreUserAction(init: InitDb) {
 		exprShow: `!<statusChanged>`,
 		header: 'Migrate',
 		name: 'ua_sys_migrate',
+		owner: 'sys_system'
+	})
+
+	init.addTrans('sysUserAction', {
+		codeAction: 'openNodeFree',
+		name: 'ua_ca_sys_nav_open_node_free',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysUserAction', {
+		codeAction: 'openNodeFreeAppCustom',
+		name: 'ua_ca_sys_nav_open_node_free_custom',
 		owner: 'sys_system'
 	})
 

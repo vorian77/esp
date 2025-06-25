@@ -295,11 +295,11 @@ function initDataObjFieldListItems(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_field_list_items_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_field_list_items_list',
 		header: 'Field List Items',
 		name: 'node_obj_sys_admin_data_obj_field_list_items_list',
@@ -307,10 +307,10 @@ function initDataObjFieldListItems(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_field_list_items_detail',
 		header: 'Item',
 		name: 'node_obj_sys_admin_data_obj_field_list_items_detail',

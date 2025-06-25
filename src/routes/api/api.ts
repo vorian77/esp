@@ -16,6 +16,7 @@ export enum ApiFunction {
 	dbGelGetDataObjId = 'dbGelGetDataObjId',
 	dbGelGetLinkItemsSource = 'dbGelGetLinkItemsSource',
 	dbGelGetNodeByNodeId = 'dbGelGetNodeByNodeId',
+	dbGelGetNodeByNodeName = 'dbGelGetNodeByNodeName',
 	dbGelGetNodesChildren = 'dbGelGetNodesChildren',
 
 	dbGelInit = 'dbGelInit',
@@ -24,6 +25,7 @@ export enum ApiFunction {
 	sysErrorAdd = 'sysErrorAdd',
 
 	sysGetSessionId = 'sysGetSessionId',
+	sysGetUserByUserId = 'sysGetUserByUserId',
 	sysSendText = 'sysSendText',
 	sysUserParmsGet = 'sysUserParmsGet',
 	sysUserParmsSet = 'sysUserParmsSet'

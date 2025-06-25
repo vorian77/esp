@@ -16,7 +16,7 @@
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
 
 	let currTab = $derived(sm.app.getCurrTab())
-	let isHideRowManager = $state(currTab ? currTab?.isHideRowManager : false)
+	let isHideRowManager = $state(currTab ? currTab.node.isHideRowManager : false)
 	let rowStatus: AppLevelRowStatus = $derived(sm.app.navRowStatus())
 
 	async function onChange(rowAction: AppRowActionType): Promise<MethodResult> {

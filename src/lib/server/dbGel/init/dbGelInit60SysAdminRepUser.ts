@@ -10,7 +10,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_edit_parm_value',
 		codeCardinality: 'list',
-		codeDataObjType: 'embed',
+		codeDataObjType: 'doEmbed',
 		codeListPresetType: 'insertSave',
 		exprFilter:
 			'.id in (SELECT sys_rep::SysRepUser FILTER .id = <tree,uuid,SysRepUser.id>).parms.id',
@@ -510,22 +510,22 @@ function initRepConfig(init: InitDb) {
 		columnName: 'custom_embed_shell',
 		customEmbedShellFields: ['parms']
 	})
-	init.addTrans('sysNodeObjProgram', {
+	init.addTrans('sysNodeObjApp', {
 		children: [{ node: 'node_obj_sys_rep_my_report_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'FileChartColumnIncreasing',
-		codeNodeType: 'program',
+		codeNodeType: 'nodeApp',
 		dataObj: 'data_obj_sys_rep_my_report_list',
 		header: 'My Reports',
 		name: 'node_obj_sys_rep_my_report_list',
 		orderDefine: 40,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_rep_render', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'FileChartColumnIncreasing',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_rep_my_report_detail',
 		header: 'Config',
 		name: 'node_obj_sys_rep_my_report_detail',
@@ -553,10 +553,10 @@ function initRepRender(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_dyn_sys_rep_render',
 		header: 'Run',
 		isAlwaysRetrieveData: true,

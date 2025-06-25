@@ -171,7 +171,6 @@ function getRawDataObj(repUser: RepUser) {
 	return new RawDataObjDyn({
 		_actionGroup: repUser.report.actionGroup,
 		_codeCardinality: DataObjCardinality.list,
-		_codeDataObjType: DataObjType.report,
 		_ownerId: repUser.report.ownerId,
 		_querySource: {
 			_tables: repUser.report.tables,

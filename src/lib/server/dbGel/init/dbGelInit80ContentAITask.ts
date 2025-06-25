@@ -6,12 +6,9 @@ export function initContentAITask(init: InitDb) {
 }
 
 function initTaskCohortAttd(init: InitDb) {
-	init.addTrans('sysDataObjTask', {
+	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail_mobile_save',
 		codeCardinality: 'detail',
-		codeDataObjType: 'taskTarget',
-		codeDoQueryType: 'preset',
-		codeDoRenderPlatform: 'app',
 		exprFilter: 'none',
 		header: 'Cohort Attendance',
 		name: 'data_obj_task_ai_cohort_attd',
@@ -64,26 +61,30 @@ function initTaskCohortAttd(init: InitDb) {
 		]
 	})
 
+	init.addTrans('sysNodeObjTask', {
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeTask',
+		codeQueryType: 'preset',
+		dataObj: 'data_obj_task_ai_cohort_attd',
+		name: 'node_obj_task_ai_cohort_attd',
+		owner: 'sys_client_atlantic_impact'
+	})
+
 	init.addTrans('sysTask', {
 		codeIcon: 'ClipboardPen',
-		codeRenderType: 'button',
+		codeTaskType: 'taskManual',
 		header: 'Cohort Attendance',
-		isPinToDash: false,
 		isGlobalResource: false,
 		name: 'task_ai_cohort_attd',
-		targetDataObj: 'data_obj_task_ai_cohort_attd',
-		orderDefine: 20,
+		nodeObj: 'node_obj_task_ai_cohort_attd',
 		owner: 'sys_client_atlantic_impact'
 	})
 }
 
 function initTaskNewStudent(init: InitDb) {
-	init.addTrans('sysDataObjTask', {
+	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail_task_record',
 		codeCardinality: 'detail',
-		codeDataObjType: 'taskTarget',
-		codeDoQueryType: 'preset',
-		codeDoRenderPlatform: 'app',
 		exprFilter: 'none',
 		header: 'New Student',
 		name: 'data_obj_task_ai_new_student',
@@ -570,15 +571,22 @@ function initTaskNewStudent(init: InitDb) {
 		]
 	})
 
+	init.addTrans('sysNodeObjTask', {
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeTask',
+		codeQueryType: 'preset',
+		dataObj: 'data_obj_task_ai_new_student',
+		name: 'node_obj_task_ai_new_student',
+		owner: 'sys_client_atlantic_impact'
+	})
+
 	init.addTrans('sysTask', {
 		codeIcon: 'ClipboardPen',
-		codeRenderType: 'button',
+		codeTaskType: 'taskManual',
 		header: 'New Student',
-		isPinToDash: false,
 		isGlobalResource: false,
 		name: 'task_ai_new_student',
-		targetDataObj: 'data_obj_task_ai_new_student',
-		orderDefine: 10,
+		nodeObj: 'node_obj_task_ai_new_student',
 		owner: 'sys_client_atlantic_impact'
 	})
 }

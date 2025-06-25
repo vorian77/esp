@@ -18,8 +18,6 @@ export async function addDataObj(data: any) {
 			attrsSource: e.optional(e.array(e.json)),
 			codeCardinality: e.str,
 			codeDataObjType: e.optional(e.str),
-			codeDoQueryType: e.optional(e.str),
-			codeDoRenderPlatform: e.optional(e.str),
 			codeListPresetType: e.optional(e.str),
 			description: e.optional(e.str),
 			exprFilter: e.optional(e.str),
@@ -55,11 +53,7 @@ export async function addDataObj(data: any) {
 					'if',
 					e.op('exists', p.codeDataObjType),
 					'else',
-					e.sys_core.getCode('ct_sys_do_type', 'default')
-				),
-				codeDoQueryType: e.select(e.sys_core.getCode('ct_sys_do_query_type', p.codeDoQueryType)),
-				codeDoRenderPlatform: e.select(
-					e.sys_core.getCode('ct_sys_do_render_platform', p.codeDoRenderPlatform)
+					e.sys_core.getCode('ct_sys_do_type', 'doDefault')
 				),
 				codeListPresetType: e.select(
 					e.sys_core.getCode('ct_sys_do_list_edit_preset_type', p.codeListPresetType)

@@ -1,31 +1,47 @@
-import { type DataRecord, getArray, MethodResult, User } from '$utils/types'
+import { type DataRecord, getArray, hashString, MethodResult, User } from '$utils/types'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-import { TokenApiUserParmsSet } from '$utils/types.token'
+import { TokenApiUserParmsGet, TokenApiUserParmsSet } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = 'utils.parmsUser.ts'
 
 export class UserParm {
-	idFeature: number
 	items: UserParmItem[] = []
 	user: User
-	constructor(
-		idFeature: number,
-		itemsSource: UserParmItemSource | UserParmItemSource[],
-		user: User,
-		parmsDataRaw: DataRecord[]
-	) {
-		this.idFeature = idFeature
+	constructor(user: User) {
 		this.user = user
-
-		// derived
-		this.items = getArray(itemsSource).map((source) => {
-			return new UserParmItem(this.user.id, source, getArray(parmsDataRaw))
-		})
 	}
 
-	itemDataGet(type: UserParmItemType): MethodResult {
-		const item = this.items.find((p) => p.source.type === type)
+	getIdFeatureHash(idFeature: any) {
+		return typeof idFeature === 'number' ? idFeature : hashString(idFeature)
+	}
+
+	async itemsAdd(idFeatureSource: any, itemsSource: UserParmItemSource | UserParmItemSource[]) {
+		itemsSource = getArray(itemsSource)
+		const idFeature = this.getIdFeatureHash(idFeatureSource)
+
+		let result: MethodResult = await apiFetchFunction(
+			ApiFunction.sysUserParmsGet,
+			new TokenApiUserParmsGet(this.user.id, idFeature)
+		)
+		if (result.error) return result
+		const parmsDataRaw: DataRecord[] = getArray(result.data)
+
+		for (let i = 0; i < itemsSource.length; i++) {
+			let item = this.itemFind(idFeature, itemsSource[i].type)
+			if (!item) {
+				this.items.push(new UserParmItem(this.user.id, idFeature, itemsSource[i], parmsDataRaw))
+			} else {
+				item.dataSetInit(parmsDataRaw)
+			}
+		}
+
+		return new MethodResult()
+	}
+
+	itemDataGet(idFeatureSource: any, type: UserParmItemType): MethodResult {
+		const idFeature = this.getIdFeatureHash(idFeatureSource)
+		let item = this.itemFind(idFeature, type)
 		return item
 			? item.source.parmsGet(item.data)
 			: new MethodResult({
@@ -37,35 +53,55 @@ export class UserParm {
 				})
 	}
 
-	itemDataSet(type: UserParmItemType, data: any) {
-		let item = this.items.find((p) => p.source.type === type)
+	itemDataSet(idFeatureSource: any, type: UserParmItemType, data: any) {
+		const idFeature = this.getIdFeatureHash(idFeatureSource)
+		let item = this.itemFind(idFeature, type)
 		if (item) item.dataSet(data)
 	}
 
-	async parmsSave() {
-		const saveData = this.items.map((item) => {
-			return new UserParmItemSave(this.idFeature, item)
-		})
-		console.log('UserParm.parmsSave', saveData)
-		await apiFetchFunction(ApiFunction.sysUserParmsSet, new TokenApiUserParmsSet(saveData))
+	async parmsSave(idFeatureSource: any): Promise<MethodResult> {
+		const idFeature = this.getIdFeatureHash(idFeatureSource)
+		const saveData = this.items
+			.filter((i) => {
+				return i.idFeature === idFeature
+			})
+			.map((item) => {
+				return new UserParmItemSave(idFeature, item)
+			})
+		return await apiFetchFunction(ApiFunction.sysUserParmsSet, new TokenApiUserParmsSet(saveData))
+	}
+
+	itemFind(idFeature: number, type: UserParmItemType): UserParmItem | undefined {
+		if (!idFeature) return undefined
+		return this.items.find((p) => p.idFeature === idFeature && p.source.type === type)
 	}
 }
 
 export class UserParmItem {
-	data: DataRecord
+	data: DataRecord = {}
+	idFeature: number
 	idUser: string
 	source: UserParmItemSource
-	constructor(idUser: string, source: UserParmItemSource, parmsDataRaw: DataRecord[]) {
+	constructor(
+		idUser: string,
+		idFeature: number,
+		source: UserParmItemSource,
+		parmsDataRaw: DataRecord[]
+	) {
 		const clazz = 'UserParmItem'
+		this.idFeature = idFeature
 		this.idUser = idUser
 		this.source = source
 
 		// derived
-		const parmsDataRawType = parmsDataRaw.find((p) => p._codeType === source.type)
-		this.data = parmsDataRawType ? parmsDataRawType.parmData : {}
+		this.dataSetInit(parmsDataRaw)
 	}
 	dataSet(data: any) {
 		this.data = data ? this.source.dataSet(data) : {}
+	}
+	dataSetInit(parmsDataRaw: DataRecord[]) {
+		const parmsDataRawType = parmsDataRaw.find((p) => p._codeType === this.source.type)
+		this.data = parmsDataRawType ? parmsDataRawType.parmData : {}
 	}
 }
 
@@ -113,5 +149,6 @@ export enum UserParmItemType {
 	listFilterModel = 'listFilterModel',
 	listFilterQuick = 'listFilterQuick',
 	listSortModel = 'listSortModel',
+	menuWidgetsPinned = 'menuWidgetsPinned',
 	selectList = 'selectList'
 }

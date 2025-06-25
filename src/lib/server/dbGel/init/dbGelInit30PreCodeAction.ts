@@ -148,18 +148,7 @@ function initCodeActionsDoGroupItem(init: InitDb) {
 		name: 'doListSelfSave',
 		order: 0
 	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system',
-		codeType: 'ct_sys_code_action_class_do',
-		name: 'doOpen',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system',
-		codeType: 'ct_sys_code_action_class_do',
-		name: 'doOpenCustom',
-		order: 0
-	})
+
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system',
 		codeType: 'ct_sys_code_action_class_do',
@@ -238,22 +227,23 @@ function initCodeActionsNav(init: InitDb) {
 		name: 'navTab',
 		order: 0
 	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system',
-		codeType: 'ct_sys_code_action_class_nav',
-		name: 'openDrawerDataObj',
-		order: 0
-	})
-	init.addTrans('sysCodeAction', {
-		owner: 'sys_system',
-		codeType: 'ct_sys_code_action_class_nav',
-		name: 'openModalDataObj',
-		order: 0
-	})
+
 	init.addTrans('sysCodeAction', {
 		owner: 'sys_system',
 		codeType: 'ct_sys_code_action_class_nav',
 		name: 'openNode',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system',
+		codeType: 'ct_sys_code_action_class_nav',
+		name: 'openNodeFree',
+		order: 0
+	})
+	init.addTrans('sysCodeAction', {
+		owner: 'sys_system',
+		codeType: 'ct_sys_code_action_class_nav',
+		name: 'openNodeFreeAppCustom',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {

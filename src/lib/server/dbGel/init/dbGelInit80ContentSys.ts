@@ -7,13 +7,11 @@ export function initContentSys(init: InitDb) {
 function initTaskQuote(init: InitDb) {
 	init.addTrans('sysTask', {
 		codeIcon: 'Quote',
-		codeRenderType: 'button',
-		codeStatusObj: 'tso_sys_quote',
+		codeTaskStatusObj: 'tso_sys_quote',
+		codeTaskType: 'taskWidget',
 		header: 'Quote',
-		isPinToDash: false,
 		isGlobalResource: true,
 		name: 'task_sys_quote',
-		orderDefine: 0,
 		owner: 'sys_system'
 	})
 }

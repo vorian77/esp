@@ -24,6 +24,7 @@ import {
 	nbrOrDefault,
 	nbrOptional,
 	nbrRequired,
+	NodeRenderPlatform,
 	override,
 	ParmsValuesType,
 	PropDataType,
@@ -46,7 +47,7 @@ import {
 import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 import { FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
-import { TokenAppNav, TokenAppUserActionConfirmType } from '$utils/types.token'
+import { TokenApiQueryType, TokenAppNav, TokenAppUserActionConfirmType } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
@@ -66,9 +67,6 @@ export class GridStyle {
 
 export class RawDataObj {
 	codeCardinality: DataObjCardinality
-	codeDataObjType: DataObjType
-	codeDoQueryType?: DataObjQueryType
-	codeDoRenderPlatform?: DataObjRenderPlatform
 	codeListPresetType?: DataObjListEditPresetType
 	crumbs: string[] = []
 	description?: string
@@ -104,27 +102,6 @@ export class RawDataObj {
 			'codeCardinality',
 			'DataObjCardinality',
 			DataObjCardinality
-		)
-		this.codeDataObjType = memberOfEnum(
-			obj._codeDataObjType,
-			clazz,
-			'codeDataObjType',
-			'DataObjType',
-			DataObjType
-		)
-		this.codeDoQueryType = memberOfEnumIfExists(
-			obj._codeDoQueryType,
-			clazz,
-			'codeDoQueryType',
-			'DataObjQueryType',
-			DataObjQueryType
-		)
-		this.codeDoRenderPlatform = memberOfEnumIfExists(
-			obj._codeDoRenderPlatform,
-			clazz,
-			'codeDoRenderPlatform',
-			'DataObjRenderPlatform',
-			DataObjRenderPlatform
 		)
 		this.codeListPresetType = memberOfEnumIfExists(
 			obj._codeListPresetType,
@@ -981,18 +958,6 @@ export class PropLinkItemsSourceProp {
 		this.key = strRequired(obj.key, clazz, 'key')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
 	}
-}
-
-export enum DataObjQueryType {
-	preset = 'preset',
-	retrieve = 'retrieve',
-	retrievePreset = 'retrievePreset'
-}
-
-export enum DataObjRenderPlatform {
-	app = 'app',
-	drawerBottom = 'drawerBottom',
-	modal = 'modal'
 }
 
 export enum PropDataSourceValue {

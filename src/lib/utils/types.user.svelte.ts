@@ -1,6 +1,6 @@
 import { State } from '$comps/app/types.appState.svelte'
 import {
-	DataObjRenderPlatform,
+	NodeRenderPlatform,
 	type DataRecord,
 	debug,
 	Node,
@@ -16,15 +16,18 @@ import {
 	classOptional,
 	FileStorage,
 	getArray,
+	getDbExprRaw,
 	memberOfEnum,
 	MethodResult,
 	NodeObjComponent,
 	required,
 	strRequired,
+	UserParmItemType,
 	valueOrDefault
 } from '$utils/utils'
 import { DataObj, ParmsValuesType } from '$utils/types'
 import { TokenApiQueryType, TokenAppDoQuery, TokenAppNode } from '$utils/types.token'
+import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$utils/types.user.ts'
@@ -46,7 +49,7 @@ export class User {
 	personId: string
 	preferences: UserPrefType[]
 	resources_app: any[] = []
-	resources_task: UserResourceTask[] = $state([])
+	resources_tasks: UserResourceTasks
 	system: UserSystem
 	systemIdCurrent: string
 	systemIds: string[] = []
@@ -82,7 +85,7 @@ export class User {
 			UserPrefType
 		)
 		this.resources_app = obj._resources_app
-		this.resources_task = arrayOfClass(UserResourceTask, obj._resources_task)
+		this.resources_tasks = new UserResourceTasks(obj)
 		this.system = new UserSystem(obj._system)
 		this.systemIdCurrent = strRequired(obj._system.id, clazz, 'systemIdCurrent')
 		this.systemIds = obj.systems.map((s: any) => s.id)
@@ -104,12 +107,6 @@ export class User {
 
 	setName() {
 		this.fullName = `${this.firstName} ${this.lastName}`
-	}
-	getTasksDash(fDashRefresh: Function) {
-		this.resources_task.forEach((r) => {
-			r.fDashRefresh = fDashRefresh
-		})
-		return this.resources_task.filter((task: UserResourceTask) => task.isPinToDash || task.exprShow)
 	}
 }
 
@@ -134,110 +131,220 @@ export class UserResource {
 	}
 }
 
-export class UserResourceTask extends UserResource {
-	codeRenderType: UserResourceTaskRenderType
-	codeStatusObjName?: string
+export class UserResourceTaskItem extends UserResource {
+	codeTaskStatusObjName?: string
+	codeTaskType: UserResourceTaskItemType
 	data: DataRecord = {}
+	dataObjId?: string
 	dataObjPage?: DataObj
 	description?: string
 	exprShow?: string
 	exprStatus?: string
-	exprWith?: string
-	fDashRefresh?: Function
+	exprWith: string
 	hasAltOpen: boolean
-	isPinToDash: boolean = $state(false)
-	isRecreate: boolean = $state(false)
-	isShow: boolean = $state(false)
+	isHTMLPage: boolean
+	isPinned: boolean = false
 	noDataMsg?: string
+	nodeObj?: Node
 	ownerId: string
-	pageDataObjId?: string
-	targetDataObjId?: string
-	targetDataObjOwnerId?: string
-	targetNodeObj?: Node
+	refreshToggle: boolean = $state(false)
 	constructor(obj: any) {
 		super(obj)
-		const clazz = 'UserResourceTask'
-		this.codeRenderType = memberOfEnum(
-			obj._codeRenderType,
+		const clazz = 'UserResourceTaskItem'
+		this.codeTaskStatusObjName = obj._codeTaskStatusObjName
+		this.codeTaskType = memberOfEnum(
+			obj._codeTaskTypeName,
 			clazz,
-			'codeRender',
-			'UserResourceTaskRenderType',
-			UserResourceTaskRenderType
+			'codeTaskType',
+			'UserResourceTaskItemType',
+			UserResourceTaskItemType
 		)
-		this.codeStatusObjName = obj._codeStatusObjName
+		this.dataObjId = obj._dataObjId
 		this.description = obj.description
 		this.exprShow = valueOrDefault(obj.exprShow, '')
 		this.exprStatus = valueOrDefault(obj.exprStatus, '')
 		this.exprWith = valueOrDefault(obj.exprWith, '')
-		this.fDashRefresh = obj._fDashRefresh
 		this.hasAltOpen = booleanOrFalse(obj.hasAltOpen)
-		this.isPinToDash = booleanOrFalse(obj.isPinToDash)
+		this.isHTMLPage = booleanOrFalse(obj._isHTMLPage)
 		this.noDataMsg = obj.noDataMsg
+		this.nodeObj = classOptional(Node, obj._nodeObj)
 		this.ownerId = strRequired(obj._ownerId, clazz, 'ownerId')
-		this.pageDataObjId = obj._pageDataObjId
-		this.targetDataObjId = obj._targetDataObjId
-		this.targetDataObjOwnerId = obj._targetDataObjOwnerId
-		this.targetNodeObj = classOptional(Node, obj._targetNodeObj)
+	}
+	async getDataDB(sm: State, exprCustom: string) {
+		const evalExprContext = `${FILENAME}.getDataDB`
+		const exprEval = getDbExprRaw(this.exprWith, exprCustom)
+		return await clientQueryExpr(evalExprContext, exprEval, {}, sm)
 	}
 
-	async getTokenNode(sm: State) {
-		if (this.targetNodeObj) {
+	async getShowDashboard(sm: State): Promise<MethodResult> {
+		let isShow = false
+
+		if (this.exprShow) {
+			const result: MethodResult = await this.getDataDB(sm, this.exprShow)
+			if (result.error) return result
+			isShow = result.getResultRawListValue()
+		} else {
+			let result: MethodResult = sm.userParmGet(
+				UserParmItemType.menuWidgetsPinned,
+				UserParmItemType.menuWidgetsPinned
+			)
+			if (result.error) return result
+			let taskIdsPinned: string[] = result.data
+			isShow = taskIdsPinned.includes(this.id)
+		}
+
+		return new MethodResult(isShow)
+	}
+	async getStatus(sm: State): Promise<MethodResult> {
+		let status = undefined
+		if (!this.exprStatus) {
+			status = undefined
+		} else {
+			const result: MethodResult = await this.getDataDB(sm, this.exprStatus)
+			if (result.error) return result
+			status = result.getResultRawList()
+		}
+		return new MethodResult(status)
+	}
+
+	getTokenNode(sm: State) {
+		if (this.nodeObj) {
 			sm.parmsState.valueSet(ParmsValuesType.queryOwnerSys, this.ownerId)
-			return new TokenAppNode({
-				node: this.targetNodeObj,
-				queryType: TokenApiQueryType.retrieve,
-				renderPlatform: DataObjRenderPlatform.app
-			})
-		} else if (this.targetDataObjId && this.targetDataObjOwnerId) {
-			sm.parmsState.valueSet(ParmsValuesType.queryOwnerSys, this.targetDataObjOwnerId)
-			const dataObjNode = new Node({
-				_codeNodeType: 'program',
-				_dataObjId: this.targetDataObjId,
-				_ownerId: this.ownerId,
-				header: this.header,
-				icon: this.codeIconName,
-				id: this.targetDataObjId,
-				name: this.name
-			})
-			return new TokenAppNode({
-				node: dataObjNode,
-				queryType: TokenApiQueryType.autonomous,
-				renderPlatform: DataObjRenderPlatform.app
-			})
+			return new TokenAppNode({ node: this.nodeObj })
 		} else {
 			return undefined
 		}
 	}
 
 	async loadPage(sm: State): Promise<MethodResult> {
-		if (this.pageDataObjId) {
-			const token = new TokenAppDoQuery({
-				codeComponent: NodeObjComponent.FormDetail,
-				dataObjId: this.pageDataObjId,
-				queryType: TokenApiQueryType.retrieve
-			})
+		if (this.isHTMLPage && this.nodeObj) {
+			const token = this.getTokenNode(sm)
+			if (!token)
+				return new MethodResult({
+					error: {
+						file: FILENAME,
+						function: 'UserResourceTaskItem.loadPage',
+						msg: `No nodeObj defined for task: ${this.name}`
+					}
+				})
 
-			let result: MethodResult = await sm.app.addTreeDataObj(sm, token)
+			let result: MethodResult = await sm.app.addTreeNode(sm, token)
 			if (result.error) return result
 
-			this.dataObjPage = sm.app.getCurrTab()?.dataObj
-
-			if (this.dataObjPage) {
-				if (this.fDashRefresh) this.dataObjPage.setCallbackUserAction(this.fDashRefresh)
-				sm.dm.nodeAdd(this.dataObjPage)
-			}
+			this.setDataObjPage(sm.app.getCurrTab()?.dataObj)
+			if (this.dataObjPage) sm.dm.nodeAdd(this.dataObjPage)
 		}
 		return new MethodResult()
 	}
-	async togglePinToDash() {
-		this.isPinToDash = !this.isPinToDash
-		if (this.fDashRefresh) await this.fDashRefresh()
+
+	setDataObjPage(dataObj?: DataObj) {
+		if (dataObj) this.dataObjPage = dataObj
 	}
-	toggleRecreate() {
-		this.isRecreate = !this.isRecreate
+
+	async togglePinToDash(sm: State): Promise<MethodResult> {
+		let result: MethodResult = sm.userParmGet(
+			UserParmItemType.menuWidgetsPinned,
+			UserParmItemType.menuWidgetsPinned
+		)
+		if (result.error) return result
+		let taskIdsPinned: string[] = result.data
+
+		if (taskIdsPinned.includes(this.id)) {
+			taskIdsPinned = taskIdsPinned.filter((t) => t !== this.id)
+		} else {
+			taskIdsPinned.push(this.id)
+		}
+
+		sm.userParmSet(
+			UserParmItemType.menuWidgetsPinned,
+			UserParmItemType.menuWidgetsPinned,
+			taskIdsPinned
+		)
+		await sm.userParmSave(UserParmItemType.menuWidgetsPinned)
+		await sm.triggerActionDashboard()
+
+		return new MethodResult()
 	}
-	setShow(isShow: boolean) {
-		this.isShow = isShow
+
+	toggleRefresh() {
+		this.refreshToggle = !this.refreshToggle
+	}
+}
+
+export enum UserResourceTaskItemType {
+	taskAutomated = 'taskAutomated',
+	taskManual = 'taskManual',
+	taskWidget = 'taskWidget'
+}
+
+export class UserResourceTasks {
+	tasks: UserResourceTaskItem[] = []
+	constructor(obj: any) {
+		const clazz = 'UserResourceTasks'
+		this.tasks = arrayOfClass(UserResourceTaskItem, obj._resources_task)
+	}
+	async getTasksDashboard(sm: State): Promise<MethodResult> {
+		let tasks: UserResourceTaskItem[] = []
+
+		for (let i = 0; i < this.tasks.length; i++) {
+			let task = this.tasks[i]
+			let result: MethodResult = await task.getShowDashboard(sm)
+			if (result.error) {
+				console.error('getTasksDashboard.error:', result.error)
+				return result
+			}
+			let isShow = result.data
+
+			if (isShow) {
+				if (task.isHTMLPage) {
+					let result = await task.loadPage(sm)
+					if (result.error) {
+						console.error('getTasksDashboard.error:', result.error)
+						return result
+					}
+				}
+
+				let result: MethodResult = await task.getStatus(sm)
+				if (result.error) {
+					console.error('getTasksDashboard.error:', result.error)
+					return result
+				}
+				task.data = result.data
+
+				tasks.push(task)
+			}
+		}
+		return new MethodResult(tasks)
+	}
+
+	getTasksMenuTasks(sm: State): MethodResult {
+		let tasks: UserResourceTaskItem[] = []
+		for (let i = 0; i < this.tasks.length; i++) {
+			let task = this.tasks[i]
+			if (task.codeTaskType === UserResourceTaskItemType.taskManual) tasks.push(task)
+		}
+		return new MethodResult(tasks)
+	}
+
+	getTasksMenuWidgets(sm: State): MethodResult {
+		let tasks: UserResourceTaskItem[] = []
+
+		// get tasks - pinned
+		let result: MethodResult = sm.userParmGet(
+			UserParmItemType.menuWidgetsPinned,
+			UserParmItemType.menuWidgetsPinned
+		)
+		if (result.error) return result
+		let taskIdsPinned: string[] = result.data
+
+		for (let i = 0; i < this.tasks.length; i++) {
+			let task = this.tasks[i]
+			if (task.codeTaskType === UserResourceTaskItemType.taskWidget) {
+				task.isPinned = taskIdsPinned.includes(task.id)
+				tasks.push(task)
+			}
+		}
+		return new MethodResult(tasks)
 	}
 }
 
@@ -259,11 +366,6 @@ export class UserSystem {
 		this.orgName = strRequired(obj._orgName, clazz, 'orgName')
 		this.urlLogo = obj.file?.url
 	}
-}
-
-export enum UserResourceTaskRenderType {
-	button = 'button',
-	page = 'page'
 }
 
 /*  

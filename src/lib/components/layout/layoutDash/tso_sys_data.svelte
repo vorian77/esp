@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getArray, getColor, isPlainObject, UserResourceTask } from '$utils/types'
+	import { getArray, getColor, isPlainObject, UserResourceTaskItem } from '$utils/types'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import { error } from '@sveltejs/kit'
 
@@ -7,7 +7,7 @@
 	const classLabel = 'text-lg text-gray-500'
 	const classData = 'ml-2 text-lg text-gray-700 text-green-500'
 
-	export let task: UserResourceTask
+	export let task: UserResourceTaskItem
 	export let onclick: Function
 	export let data: any
 

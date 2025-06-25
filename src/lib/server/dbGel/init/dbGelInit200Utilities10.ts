@@ -59,31 +59,6 @@ export async function codesBulk(params: any) {
 	return await query.run(client, { data: params })
 }
 
-export async function nodeObjPagesBulk(params: any) {
-	sectionHeader('Node Pages')
-	const CREATOR = e.sys_user.getRootUser()
-	const query = e.params({ data: e.json }, (params) => {
-		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.insert(e.sys_core.SysNodeObj, {
-				owner: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[0]))),
-				parent: e.select(e.sys_core.getNodeObjByName(e.cast(e.str, i[1]))),
-				codeNavType: e.select(e.sys_core.getCode('ct_sys_node_obj_nav_type', 'tree')),
-				codeNodeType: e.select(e.sys_core.getCode('ct_sys_node_obj_type', 'page')),
-				name: e.cast(e.str, i[2]),
-				header: e.cast(e.str, i[3]),
-				isAlwaysRetrieveData: false,
-				orderDefine: e.cast(e.int64, i[4]),
-				codeIcon: e.select(e.sys_core.getCode('ct_sys_icon', e.cast(e.str, i[5]))),
-				page: e.cast(e.str, i[6]),
-				createdBy: CREATOR,
-				modifiedBy: CREATOR,
-				isHideRowManager: e.cast(e.bool, false)
-			})
-		})
-	})
-	return await query.run(client, { data: params })
-}
-
 export async function tablesBulk(data: any) {
 	sectionHeader('Tables')
 	const CREATOR = e.sys_user.getRootUser()

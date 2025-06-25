@@ -11,7 +11,7 @@
 	} from '$utils/types'
 	import {
 		TokenApiQueryType,
-		TokenAppDoQuery,
+		TokenAppDoCustom,
 		TokenAppStateTriggerAction
 	} from '$utils/types.token'
 	import { getContext } from 'svelte'
@@ -25,28 +25,23 @@
 
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let dataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
-	let field = $derived(parms.field) as FieldCustomActionLink
-	let prefix = $derived(field.prefix ? field.prefix + ' ' : '')
+	let fieldCustom = $derived(parms.field) as FieldCustomActionLink
+	let prefix = $derived(fieldCustom.prefix ? fieldCustom.prefix + ' ' : '')
 
 	async function action(): Promise<MethodResult> {
 		sm.app.setTreeLevelIdxCurrent(dataObj.treeLevelIdx)
 		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
-				codeAction: field.action.codeAction,
+				codeAction: fieldCustom.action.codeAction,
 				data: {
 					dataRecord: $state.snapshot(dataRecord),
-					token: new TokenAppDoQuery({
-						codeComponent: strRequired(field.codeComponent, FILENAME, 'codeComponent'),
-						dataObjName: field.value,
-						queryType: TokenApiQueryType.preset
-					})
-				},
-				fCallback: dataObj.fCallbackUserAction
+					token: new TokenAppDoCustom({ fieldCustom })
+				}
 			})
 		)
 	}
 </script>
 
 <div class="btn btn-action w-full text-sm" onclick={() => action()}>
-	<p>{prefix}<span class="text-blue-500">{field.colDO.label}</span></p>
+	<p>{prefix}<span class="text-blue-500">{fieldCustom.colDO.label}</span></p>
 </div>

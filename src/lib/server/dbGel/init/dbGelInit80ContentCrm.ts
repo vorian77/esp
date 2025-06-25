@@ -181,21 +181,21 @@ function initClient(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_app_crm_client_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_app_crm_client_list',
 		header: 'Clients',
 		name: 'node_obj_app_crm_client_list',
 		orderDefine: 10,
 		owner: 'sys_app_crm'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_app_crm_client_detail',
 		header: 'Client',
 		name: 'node_obj_app_crm_client_detail',

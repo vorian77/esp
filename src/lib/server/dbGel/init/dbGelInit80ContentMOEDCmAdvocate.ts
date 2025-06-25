@@ -6,10 +6,9 @@ export function initContentMOEDCmAdvocate(init: InitDb) {
 }
 
 function initTaskOpenApps(init: InitDb) {
-	init.addTrans('sysDataObjTask', {
+	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list_edit',
 		codeCardinality: 'list',
-		codeDataObjType: 'taskTarget',
 		exprFilter: `.owner.name = 'sys_client_moed' AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_moed::MoedParticipant).dateStart AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_moed::MoedParticipant).dateEnd`,
 		header: 'Open Applications',
 		name: 'data_obj_task_moed_part_list_apps_open',
@@ -115,21 +114,17 @@ function initTaskOpenApps(init: InitDb) {
 	init.addTrans('sysNodeObjTask', {
 		children: [{ node: 'node_obj_moed_part_detail', order: 10 }],
 		codeComponent: 'FormList',
-		codeIcon: 'AppWindow',
-		codeNavType: 'task',
-		codeNodeType: 'program',
+		codeNodeType: 'nodeTask',
+		codeQueryType: 'retrieve',
 		dataObj: 'data_obj_task_moed_part_list_apps_open',
-		header: 'Open Applications',
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_task_moed_part_list_apps_open',
-		orderDefine: 10,
 		owner: 'sys_client_moed'
 	})
 
 	init.addTrans('sysTask', {
-		codeIcon: 'Activity',
-		codeRenderType: 'button',
-		codeStatusObj: 'tso_sys_data',
+		codeTaskStatusObj: 'tso_sys_data',
+		codeTaskType: 'taskAutomated',
 		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client IN org_client_moed::MoedParticipant AND NOT EXISTS .dateStart AND NOT EXISTS .dateEnd)) > 0`,
 		exprStatus: `WITH 
   	sfs := (SELECT app_cm::CmClientServiceFlow FILTER .client IN org_client_moed::MoedParticipant),
@@ -140,11 +135,8 @@ function initTaskOpenApps(init: InitDb) {
       openGT14 := {label := 'Open 15 or more days', data := count(sfsOpen FILTER .days_open > 14), color := 'red'},
 		}`,
 		header: 'Open Applications',
-		isPinToDash: false,
-		isGlobalResource: false,
 		name: 'task_moed_part_apps_open',
-		targetNodeObj: 'node_obj_task_moed_part_list_apps_open',
-		orderDefine: 10,
+		nodeObj: 'node_obj_task_moed_part_list_apps_open',
 		owner: 'sys_client_moed'
 	})
 }

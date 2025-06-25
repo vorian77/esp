@@ -189,11 +189,11 @@ async function initAttrObject(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_attr_obj_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'settings2',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_attr_obj_list',
 		header: 'Attribute Objects',
 		isAlwaysRetrieveData: true,
@@ -202,10 +202,10 @@ async function initAttrObject(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_attr_obj_detail',
 		header: 'Attribute Object',
 		name: 'node_obj_sys_admin_attr_obj_detail',
@@ -331,11 +331,11 @@ async function initSystemObject(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgram', {
+	init.addTrans('sysNodeObjApp', {
 		children: [{ node: 'node_obj_sys_admin_system_detail_obj', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program',
+		codeNodeType: 'nodeApp',
 		codeQueryOwnerType: 'queryOwnerTypeSystemRecord',
 		dataObj: 'data_obj_sys_admin_system_list_obj',
 		header: 'Systems (Objects)',
@@ -344,7 +344,7 @@ async function initSystemObject(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [
 			{ node: 'node_obj_sys_analytic_list', order: 10 },
 			{ node: 'node_obj_sys_app_header_list', order: 20 },
@@ -368,7 +368,7 @@ async function initSystemObject(init: InitDb) {
 		],
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_system_detail_obj',
 		header: 'System (Object)',
 		name: 'node_obj_sys_admin_system_detail_obj',

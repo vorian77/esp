@@ -11,7 +11,7 @@
 	© {currentYear}
 	{#if navMenu?.isOpen}
 		<span in:fade={navMenu.fadeIn} out:fade={navMenu.fadeOut}>
-			The App Factory. All rights reserved.
+			AppFactory. All rights reserved.
 		</span>
 	{/if}
 </p>

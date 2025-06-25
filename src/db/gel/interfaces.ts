@@ -58,18 +58,15 @@ export namespace sys_user {
   }
   export interface SysAppHeader extends sys_core.SysObj {}
   export interface SysTask extends sys_core.SysObjAttr {
-    "codeRenderType"?: sys_core.SysCode | null;
-    "codeStatusObj"?: sys_core.SysCode | null;
-    "pageDataObj"?: sys_core.SysDataObj | null;
-    "targetDataObj"?: sys_core.SysDataObj | null;
-    "targetNodeObj"?: sys_core.SysNodeObj | null;
     "description"?: string | null;
     "exprShow"?: string | null;
     "exprStatus"?: string | null;
     "exprWith"?: string | null;
     "hasAltOpen"?: boolean | null;
-    "isPinToDash"?: boolean | null;
     "noDataMsg"?: string | null;
+    "codeTaskType": sys_core.SysCode;
+    "codeTaskStatusObj"?: sys_core.SysCode | null;
+    "nodeObj"?: sys_core.SysNodeObj | null;
   }
   export interface SysUser extends sys_core.SysObjAttr {
     "defaultOrg": sys_core.SysOrg;
@@ -327,8 +324,6 @@ export namespace sys_core {
   export interface SysDataObj extends SysObjDb {
     "codeCardinality": SysCode;
     "codeDataObjType"?: SysCode | null;
-    "codeDoQueryType"?: SysCode | null;
-    "codeDoRenderPlatform"?: SysCode | null;
     "codeListPresetType"?: SysCode | null;
     "processType"?: SysCode | null;
     "gridStyles": SysGridStyle[];
@@ -499,21 +494,20 @@ export namespace sys_core {
     "backCount"?: number | null;
   }
   export interface SysNodeObj extends SysObj {
-    "codeNavType": SysCode;
     "codeNodeType": SysCode;
     "codeQueryOwnerType"?: SysCode | null;
     "dataObj"?: SysDataObj | null;
-    "nodeData": SysNodeObjData[];
-    "parent"?: SysNodeObj | null;
     "isAlwaysRetrieveData": boolean;
     "isHideRowManager": boolean;
     "page"?: string | null;
     "actions": SysNodeObjAction[];
     "children": SysNodeObjChild[];
-    "codeComponent"?: SysCode | null;
     "selectListItems"?: SysDataObjFieldListItems | null;
     "selectListItemsHeader"?: string | null;
     "selectListItemsParmValue"?: string | null;
+    "codeComponent": SysCode;
+    "codeQueryType"?: SysCode | null;
+    "codeRenderPlatform"?: SysCode | null;
   }
   export interface SysNodeObjAction extends std.$Object {
     "codeAction": SysCodeAction;
@@ -526,10 +520,6 @@ export namespace sys_core {
   export interface SysNodeObjConfig extends std.$Object {
     "codeAttrType": SysCode;
     "nodeObj": SysNodeObj;
-  }
-  export interface SysNodeObjData extends std.$Object {
-    "codeAction": SysCodeAction;
-    "dataObj": SysDataObj;
   }
   export interface SysNotify extends SysObj {
     "codeNotifyType": SysCode;
@@ -1226,7 +1216,6 @@ export interface types {
     "SysNodeObjAction": sys_core.SysNodeObjAction;
     "SysNodeObjChild": sys_core.SysNodeObjChild;
     "SysNodeObjConfig": sys_core.SysNodeObjConfig;
-    "SysNodeObjData": sys_core.SysNodeObjData;
     "SysNotify": sys_core.SysNotify;
     "SysObjAttrAccess": sys_core.SysObjAttrAccess;
     "SysObjAttrAction": sys_core.SysObjAttrAction;

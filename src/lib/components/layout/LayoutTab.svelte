@@ -61,7 +61,7 @@
 						onchange={(event) => onClick(Number(event.currentTarget.value))}
 					>
 						{#each currLevel.tabs as tab, idx}
-							{@const label = tab.label}
+							{@const label = tab.node.label}
 							{#if !tab.isVirtual}
 								<option value={idx} selected={idx === currLevel.tabIdxCurrent}>
 									{label}
@@ -76,7 +76,7 @@
 						{@const name = 'tab' + idx}
 						{@const isCurrent = idx === currLevel.tabIdxCurrent}
 						{@const hidden = isHideChildTabs && !isCurrent}
-						{@const label = tab.label}
+						{@const label = tab.node.label}
 						{@const classItem = isCurrent ? classItemCurrent : classItemNotCurrent}
 
 						{#if !tab.isVirtual}

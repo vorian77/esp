@@ -25,9 +25,12 @@
 	let Component = $derived(componentsLayout[sm.navLayout])
 </script>
 
+<!-- <DataViewer header="navLayout" data={sm.navLayout} /> -->
+<!-- <DataViewer header="keyTrigger" data={sm.keyTrigger} /> -->
+
 {#if Component}
 	<div class="h-full max-h-full w-full">
-		{#key sm.navLayoutParms}
+		{#key sm.keyTrigger}
 			<Component parms={sm.navLayoutParms} />
 		{/key}
 	</div>

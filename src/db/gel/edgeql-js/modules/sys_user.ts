@@ -47,18 +47,15 @@ const $SysAppHeader = $.makeType<$SysAppHeader>(_.spec, "64f1500c-8962-11ef-9a4b
 const SysAppHeader: $.$expr_PathNode<$.TypeSet<$SysAppHeader, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysAppHeader, $.Cardinality.Many), null);
 
 export type $SysTaskλShape = $.typeutil.flatten<_sys_core.$SysObjAttrλShape & {
-  "codeRenderType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "codeStatusObj": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "pageDataObj": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "targetDataObj": $.LinkDesc<_sys_core.$SysDataObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "targetNodeObj": $.LinkDesc<_sys_core.$SysNodeObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprShow": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprStatus": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprWith": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "hasAltOpen": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
-  "isPinToDash": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "noDataMsg": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "codeTaskType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "codeTaskStatusObj": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "nodeObj": $.LinkDesc<_sys_core.$SysNodeObj, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
 }>;
 type $SysTask = $.ObjectType<"sys_user::SysTask", $SysTaskλShape, null, [
   ..._sys_core.$SysObjAttr['__exclusives__'],

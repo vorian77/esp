@@ -94,7 +94,7 @@
 
 	async function initParms(): Promise<MethodResult> {
 		if (parms.dataObjId) {
-			let result: MethodResult = await sm.userParmInit(parms.dataObjId, [
+			let result: MethodResult = await sm.userParmItemsAdd(parms.dataObjId, [
 				new UserParmItemSource(
 					UserParmItemType.listColumnsModel,
 					(data: any) => {
@@ -135,6 +135,7 @@
 				? new GridManagerOptions({
 						columnDefs: initGridColumns(),
 						context: { gridStyles: dataObj.raw.gridStyles },
+						dataObjId: parms.dataObjId,
 						fCallbackFilter: fGridCallbackFilter,
 						fCallbackUpdateValue: fGridCallbackUpdateValue,
 						isEmbed: !!dataObj.embedField,
@@ -237,7 +238,11 @@
 	function initGridColumns() {
 		let columnDefs: ColDef[] = []
 
-		let fieldsSettings = sm.userParmGetOrDefault(UserParmItemType.listColumnsModel, undefined)
+		let fieldsSettings = sm.userParmGetOrDefault(
+			dataObj.raw.id,
+			UserParmItemType.listColumnsModel,
+			undefined
+		)
 		fieldsSettings = fieldsSettings ? fieldsSettings.columns : []
 
 		const fieldsCore = dataObj.fields.filter(

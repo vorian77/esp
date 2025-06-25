@@ -5,7 +5,7 @@
 	import { FieldCustomActionButton } from '$comps/form/fieldCustom'
 	import {
 		TokenApiQueryType,
-		TokenAppDoQuery,
+		TokenAppDoCustom,
 		TokenAppStateTriggerAction
 	} from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -18,23 +18,18 @@
 
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let dataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
-	let field = $derived(parms.field) as FieldCustomActionButton
+	let fieldCustom = $derived(parms.field) as FieldCustomActionButton
 	let disabled = $derived(!dm.isStatusValidNode(parms.dataObjId))
 
 	async function action(): Promise<MethodResult> {
 		sm.app.setTreeLevelIdxCurrent(dataObj.treeLevelIdx)
 		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
-				codeAction: field.action.codeAction,
+				codeAction: fieldCustom.action.codeAction,
 				data: {
 					dataRecord: $state.snapshot(dataRecord),
-					token: new TokenAppDoQuery({
-						codeComponent: strRequired(field.codeComponent, FILENAME, 'codeComponent'),
-						dataObjName: field.value,
-						queryType: TokenApiQueryType.preset
-					})
-				},
-				fCallback: dataObj.fCallbackUserAction
+					token: new TokenAppDoCustom({ fieldCustom })
+				}
 			})
 		)
 	}
@@ -42,9 +37,9 @@
 
 <button
 	class="w-full btn btn-action text-white"
-	style:background-color={field.fieldColor.color}
+	style:background-color={fieldCustom.fieldColor.color}
 	{disabled}
 	onclick={() => action()}
 >
-	{field.colDO.label}
+	{fieldCustom.colDO.label}
 </button>

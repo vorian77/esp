@@ -291,11 +291,11 @@ function initCourse(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgram', {
+	init.addTrans('sysNodeObjApp', {
 		children: [{ node: 'node_obj_cm_course_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'BookOpen',
-		codeNodeType: 'program',
+		codeNodeType: 'nodeApp',
 		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
 		dataObj: 'data_obj_cm_course_list',
 		header: 'Courses',
@@ -303,11 +303,11 @@ function initCourse(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_cohort_list', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'BookOpen',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_course_detail',
 		header: 'Course',
 		name: 'node_obj_cm_course_detail',
@@ -563,18 +563,18 @@ function initCohort(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_cohort_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_cohort_list',
 		header: 'Cohorts',
 		name: 'node_obj_cm_cohort_list',
 		orderDefine: 10,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [
 			{ node: 'node_obj_cm_student_roster_list_by_cohort', order: 10 },
 			{ node: 'node_obj_cm_cohort_attd_list', order: 20 },
@@ -582,7 +582,7 @@ function initCohort(init: InitDb) {
 		],
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_cohort_detail',
 		header: 'Cohort',
 		name: 'node_obj_cm_cohort_detail',
@@ -643,10 +643,10 @@ function initCohortStudentRoster(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_student_roster_list_by_cohort',
 		header: 'Student Roster',
 		name: 'node_obj_cm_student_roster_list_by_cohort',
@@ -862,22 +862,22 @@ function initCohortAttd(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_cohort_attd_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_cohort_attd_list',
 		header: 'Attendance Days',
 		name: 'node_obj_cm_cohort_attd_list',
 		orderDefine: 20,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_cohort_attd_sheet', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_cohort_attd_detail',
 		header: 'Attendance Day',
 		name: 'node_obj_cm_cohort_attd_detail',
@@ -1076,10 +1076,10 @@ function initCohortAttdSheet(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_cohort_attd_sheet',
 		header: 'Attendance Sheet',
 		name: 'node_obj_cm_cohort_attd_sheet',
@@ -1295,21 +1295,21 @@ function initCohortDoc(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_cohort_doc_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_cohort_doc_list',
 		header: 'Documents',
 		name: 'node_obj_cm_cohort_doc_list',
 		orderDefine: 40,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_cohort_doc_detail',
 		header: 'Document',
 		name: 'node_obj_cm_cohort_doc_detail',
@@ -1322,7 +1322,7 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
-		codeDataObjType: 'embed',
+		codeDataObjType: 'doEmbed',
 		header: 'Contacts',
 		name: 'doflc_cm_partner_contact_list',
 		owner: 'sys_client_atlantic_impact',
@@ -1376,7 +1376,7 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_dialog_form_detail',
 		codeCardinality: 'detail',
-		codeDataObjType: 'embed',
+		codeDataObjType: 'doEmbed',
 		header: 'Contact',
 		name: 'doflc_cm_partner_contact_detail',
 		owner: 'sys_client_atlantic_impact',
@@ -1804,11 +1804,11 @@ function initPartner(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgram', {
+	init.addTrans('sysNodeObjApp', {
 		children: [{ node: 'node_obj_cm_partner_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'Handshake',
-		codeNodeType: 'program',
+		codeNodeType: 'nodeApp',
 		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
 		dataObj: 'data_obj_cm_partner_list',
 		header: 'Partners',
@@ -1817,11 +1817,11 @@ function initPartner(init: InitDb) {
 		owner: 'sys_client_atlantic_impact'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_partner_note_list', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'Handshake',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_partner_detail',
 		header: 'Partner',
 		name: 'node_obj_cm_partner_detail',
@@ -2006,21 +2006,21 @@ function initPartnerNote(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_cm_partner_note_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_partner_note_list',
 		header: 'Notes',
 		name: 'node_obj_cm_partner_note_list',
 		orderDefine: 10,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_cm_partner_note_detail',
 		header: 'Note',
 		name: 'node_obj_cm_partner_note_detail',

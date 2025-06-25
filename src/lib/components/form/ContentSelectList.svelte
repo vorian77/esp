@@ -59,11 +59,11 @@
 		return hashString([queryOwnerSysId, nodeId])
 	})
 
-	let dataObjId = $state(sm.app.getCurrTab()?.dataObjId)
+	let dataObjId = $state(sm.app.getCurrTab()?.node.dataObjId)
 
 	$effect.pre(async () => {
 		async function initParms(): Promise<MethodResult> {
-			let result: MethodResult = await sm.userParmInit(idFeature, [
+			let result: MethodResult = await sm.userParmItemsAdd(idFeature, [
 				new UserParmItemSource(
 					UserParmItemType.selectList,
 					(data: any) => {
@@ -78,7 +78,7 @@
 			])
 			if (result.error) return result
 
-			result = sm.userParmGet(UserParmItemType.selectList)
+			result = sm.userParmGet(idFeature, UserParmItemType.selectList)
 			if (result.error) return result
 
 			if (!isPlainObjectEmpty(result.data)) {
@@ -95,8 +95,8 @@
 
 	async function onChange(event: Event) {
 		selectId = event.target.value
-		sm.userParmSet(UserParmItemType.selectList, selectId)
-		await sm.userParmSave()
+		sm.userParmSet(idFeature, UserParmItemType.selectList, selectId)
+		await sm.userParmSave(idFeature, UserParmItemType.selectList)
 		await retrieveList(selectId)
 	}
 

@@ -9,11 +9,9 @@ import {
 	DataObj,
 	DataObjAction,
 	type DataRecord,
-	hashString,
 	NodeQueryOwnerType,
 	ParmsValues,
 	ParmsValuesType,
-	NodeType,
 	ToastType,
 	User,
 	UserParm,
@@ -28,17 +26,17 @@ import {
 	TokenApiQueryDataTree,
 	TokenApiQueryDataTreeAccessType,
 	TokenApiQueryType,
-	TokenApiUserParmsGet,
-	TokenAppDoBase,
-	TokenAppDoQuery,
-	TokenAppNav,
+	TokenAppActionTrigger,
 	TokenAppModalEmbedField,
 	TokenAppModalReturn,
 	TokenAppModalReturnType,
 	TokenAppModalSelect,
+	TokenAppNav,
+	TokenAppNode,
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
+import { NavMenuData } from '$comps/nav/navMenu/types.navMenu.svelte'
 import { QuerySourceParentRaw } from '$lib/queryClient/types.queryClient'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { RawDataObjAction } from '$comps/dataObj/types.rawDataObj.svelte'
@@ -50,8 +48,9 @@ import fActionsClassDoFieldAuth from '$enhance/actions/actionsClassAuth'
 import fActionsClassModal from '$enhance/actions/actionsClassModal'
 import fActionsClassNav from '$enhance/actions/actionsClassNav'
 import fActionsClassUtils from '$enhance/actions/actionsClassUtils'
+import { Tween } from 'svelte/motion'
+import { cubicOut } from 'svelte/easing'
 import { error } from '@sveltejs/kit'
-import type { Method } from 'axios'
 
 const FILENAME = '/$comps/app/types.appState.ts'
 
@@ -62,14 +61,18 @@ export class State {
 	fActions: Record<string, Function> = {}
 	fChangeCallback?: Function
 	isDevMode: boolean = false
-
-	// old
-	nodeType: NodeType = NodeType.home
-
+	keyTrigger: number = $state(0)
 	navContent?: StateNavContent = $state()
 	navHeader: StateNavHeader = new StateNavHeader({})
 	navLayout?: StateNavLayout = $state()
 	navLayoutParms?: DataRecord = $state()
+	navMenuData: NavMenuData = new NavMenuData()
+	navMenuWidthValue: any = $state(
+		new Tween(250, {
+			duration: 500,
+			easing: cubicOut
+		})
+	)
 	navPage: string
 	parmsState: ParmsValues = new ParmsValues()
 	parmsTrans: ParmsValues = new ParmsValues()
@@ -89,6 +92,23 @@ export class State {
 		this.change(obj)
 	}
 
+	menuWidthSet(width: number) {
+		if (width > 0) {
+			this.navMenuWidthValue = new Tween(width, {
+				duration: 500,
+				easing: cubicOut
+			})
+		}
+	}
+	menuWidthToggle() {
+		if (this.navMenuWidthValue.current === 250) {
+			this.menuWidthSet(70)
+		} else {
+			this.menuWidthSet(250)
+		}
+		return this.navMenuWidthValue.current
+	}
+
 	change(obj: DataRecord) {
 		this.app = this.changeParm(obj, 'app', this.app)
 		this.fChangeCallback = this.changeParm(obj, 'fChangeCallback', this.fChangeCallback)
@@ -97,7 +117,6 @@ export class State {
 		this.navLayout = this.changeParm(obj, 'navLayout', this.navLayout)
 		this.navLayoutParms = this.changeParm(obj, 'navLayoutParms', this.navLayoutParms)
 		this.navPage = this.changeParm(obj, 'navPage', this.navPage)
-		this.nodeType = this.changeParm(obj, 'nodeType', this.nodeType)
 		this.stateRoot = this.changeParm(obj, 'stateRoot', this.stateRoot)
 		this.storeDrawer = this.changeParm(obj, 'storeDrawer', this.storeDrawer)
 		this.storeModal = this.changeParm(obj, 'storeModal', this.storeModal)
@@ -110,6 +129,8 @@ export class State {
 		this.triggerTokens = valueOrDefault(obj.triggerTokens, [])
 
 		if (this.fChangeCallback) this.fChangeCallback(obj)
+
+		this.keyTrigger = Math.random()
 	}
 	changeParm(obj: any, key: string, defaultValue: any) {
 		return Object.hasOwn(obj, key) ? obj[key] : defaultValue
@@ -203,11 +224,6 @@ export class State {
 		}
 	}
 
-	getTasksDash(fCallBack: Function) {
-		this.newApp({ isMultiTree: true })
-		return this.user ? this.user.getTasksDash(fCallBack) : []
-	}
-
 	loadActions() {
 		let fActions: Record<string, Function> = {}
 		for (const key of Object.keys(CodeActionClass)) {
@@ -265,12 +281,11 @@ export class State {
 		return new MethodResult()
 	}
 
-	async openDrawerDataObj(
-		id: string,
+	async openDrawerNode(
+		token: TokenAppNode,
 		position: 'left' | 'right' | 'top' | 'bottom' | undefined,
 		height: string | undefined,
-		width: string | undefined,
-		token: TokenAppDoQuery
+		width: string | undefined
 	): Promise<MethodResult> {
 		const stateModal = new StateSurfacePopup(this, {
 			navHeader: {
@@ -281,8 +296,8 @@ export class State {
 		let result: MethodResult = await stateModal.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
-					CodeActionClass.ct_sys_code_action_class_do,
-					CodeActionType.doOpen
+					CodeActionClass.ct_sys_code_action_class_nav,
+					CodeActionType.openNode
 				),
 				data: { token },
 				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
@@ -290,7 +305,7 @@ export class State {
 		)
 		if (result.error) return result
 
-		return this.openDrawer(id, position, height, width, {
+		return this.openDrawer(token.node.id, position, height, width, {
 			sm: stateModal,
 			onCloseDrawer: async () => {
 				return await this.triggerAction(
@@ -341,8 +356,8 @@ export class State {
 		return new MethodResult()
 	}
 
-	async openModalDataObj(token: TokenAppDoQuery, fUpdate?: Function): Promise<MethodResult> {
-		const clazz = `${FILENAME}.openModalDataObj`
+	async openModalNode(token: TokenAppNode, fUpdate?: Function): Promise<MethodResult> {
+		const clazz = `${FILENAME}.openModalNode`
 		const stateModal = new StateSurfacePopup(this, {
 			actionsDialog: await this.getActions('doag_dialog_footer_detail'),
 			navHeader: { isDataObj: true }
@@ -350,8 +365,8 @@ export class State {
 		let result: MethodResult = await stateModal.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
-					CodeActionClass.ct_sys_code_action_class_do,
-					CodeActionType.doOpen
+					CodeActionClass.ct_sys_code_action_class_nav,
+					CodeActionType.openNode
 				),
 				data: { token },
 				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
@@ -363,19 +378,13 @@ export class State {
 	}
 
 	async openModalEmbedListConfig(
-		token: TokenAppDoBase,
+		token: TokenAppActionTrigger,
 		queryType: TokenApiQueryType,
 		fModalCloseUpdate: Function
 	): Promise<MethodResult> {
 		const clazz = `${FILENAME}.openModalEmbedListConfig`
 		const dataObjEmbed = token.dataObj
 		const fieldEmbed: FieldEmbedListConfig = required(dataObjEmbed.embedField, clazz, 'fieldEmbed')
-
-		const dataObjParent = required(
-			this.dm.getDataObj(fieldEmbed.dataObjIdParent),
-			clazz,
-			'dataObjParent'
-		)
 		const dataObjParentRootTable = fieldEmbed.parentTable
 		const embedParentId = this.dm.getRecordId(fieldEmbed.dataObjIdParent, 0)
 
@@ -423,7 +432,7 @@ export class State {
 	}
 
 	async openModalEmbedListSelect(
-		token: TokenAppDoBase,
+		token: TokenAppActionTrigger,
 		fModalCloseUpdate: Function
 	): Promise<MethodResult> {
 		const clazz = `${FILENAME}.openModalEmbedListSelect`
@@ -521,27 +530,6 @@ export class State {
 		this.storeToast.trigger(t)
 	}
 
-	async resetUser(loadHome: boolean): Promise<MethodResult> {
-		if (this.user) {
-			if (loadHome) {
-				let result: MethodResult = await this.triggerAction(
-					new TokenAppStateTriggerAction({
-						codeAction: CodeAction.init(
-							CodeActionClass.ct_sys_code_action_class_nav,
-							CodeActionType.navDestination
-						),
-						codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-						data: {
-							token: new TokenAppNav({ _codeDestinationType: NavDestinationType.home })
-						}
-					})
-				)
-				if (result.error) return result
-			}
-		}
-		return new MethodResult()
-	}
-
 	setDataObjState(dataObj: DataObj) {
 		this.dataObjState = dataObj
 	}
@@ -552,6 +540,17 @@ export class State {
 
 	async triggerAction(parms: TokenAppStateTriggerAction): Promise<MethodResult> {
 		return await this.triggerActionValidate(parms, this.fActions[parms.codeAction.actionClass])
+	}
+
+	async triggerActionDashboard() {
+		await this.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_nav,
+					CodeActionType.openDashboard
+				)
+			})
+		)
 	}
 
 	async triggerActionValidate(
@@ -598,25 +597,43 @@ export class State {
 		}
 	}
 
-	async userParmInit(
-		idFeature: any,
-		items: UserParmItemSource | UserParmItemSource[]
-	): Promise<MethodResult> {
-		if (this.user && !this.user.prefIsActive(UserPrefType.disable_remember_feature_settings)) {
-			const idHash = typeof idFeature === 'number' ? idFeature : hashString(idFeature)
-			let result: MethodResult = await apiFetchFunction(
-				ApiFunction.sysUserParmsGet,
-				new TokenApiUserParmsGet(this.user.id, idHash)
-			)
-			if (result.error) return result
-			this.userParm = new UserParm(idHash, items, this.user, result.data)
+	async userCurrInit(): Promise<MethodResult> {
+		let result: MethodResult = await apiFetchFunction(ApiFunction.sysGetUserByUserId)
+		if (result.error) return result
+		const rawUser: any = result.data
+
+		this.user = new User(rawUser)
+		this.userParm = new UserParm(this.user)
+		await this.navMenuData.init(this)
+		this.navLayout = StateNavLayout.layoutDashboard
+
+		return new MethodResult()
+	}
+	async userCurrReset(): Promise<MethodResult> {
+		if (this.user) {
+			await this.userCurrInit()
+			await this.triggerActionDashboard()
 		}
 		return new MethodResult()
 	}
 
-	userParmGet(type: UserParmItemType): MethodResult {
+	async userParmItemsAdd(
+		idFeatureSource: any,
+		items: UserParmItemSource | UserParmItemSource[]
+	): Promise<MethodResult> {
+		if (
+			this.user &&
+			this.userParm &&
+			!this.user.prefIsActive(UserPrefType.disable_remember_feature_settings)
+		) {
+			return await this.userParm.itemsAdd(idFeatureSource, items)
+		}
+		return new MethodResult()
+	}
+
+	userParmGet(idFeatureSource: any, type: UserParmItemType): MethodResult {
 		return this.userParm
-			? this.userParm.itemDataGet(type)
+			? this.userParm.itemDataGet(idFeatureSource, type)
 			: new MethodResult({
 					error: {
 						file: FILENAME,
@@ -626,23 +643,23 @@ export class State {
 				})
 	}
 
-	userParmGetOrDefault(type: UserParmItemType, defaultValue: any): any {
-		const result: MethodResult = this.userParmGet(type)
+	userParmGetOrDefault(idFeature: number, type: UserParmItemType, defaultValue: any): any {
+		const result: MethodResult = this.userParmGet(idFeature, type)
 		return result.error ? defaultValue : result.data
 	}
 
-	async userParmSave() {
+	async userParmSave(idFeatureSource: any): Promise<void> {
 		if (
 			this.user &&
 			!this.user.prefIsActive(UserPrefType.disable_remember_feature_settings) &&
 			this.userParm
 		) {
-			await this.userParm.parmsSave()
+			await this.userParm.parmsSave(idFeatureSource)
 		}
 	}
 
-	userParmSet(type: UserParmItemType, data: any) {
-		if (this.userParm) this.userParm.itemDataSet(type, data)
+	userParmSet(idFeatureSource: any, type: UserParmItemType, data: any) {
+		if (this.userParm) this.userParm.itemDataSet(idFeatureSource, type, data)
 	}
 }
 
@@ -700,7 +717,6 @@ export class StateSurfaceEmbedShell extends StateSurfaceEmbed {
 		super(obj)
 		obj = valueOrDefault(obj, {})
 		this.dataObjState = required(obj.dataObjState, clazz, 'dataObjState')
-		this.nodeType = NodeType.object
 	}
 }
 

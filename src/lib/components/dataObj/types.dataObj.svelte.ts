@@ -66,7 +66,6 @@ export class DataObj {
 	data: DataObjData = $state(new DataObjData())
 	dataItems: DataItems = {}
 	embedField?: FieldEmbed
-	fCallbackUserAction?: Function
 	fields: Field[] = []
 	isDetailPreset: boolean = false
 	raw: RawDataObj
@@ -342,9 +341,7 @@ export class DataObj {
 	print() {
 		alert('Print functionality for this object has not yet been implemented.')
 	}
-	setCallbackUserAction(fCallback: Function) {
-		this.fCallbackUserAction = fCallback
-	}
+
 	setTreeLevelIdx(idx: number) {
 		this.treeLevelIdx = idx
 	}
@@ -542,11 +539,8 @@ export class DataObjSortItem {
 }
 
 export enum DataObjType {
-	default = 'default',
-	embed = 'embed',
-	report = 'report',
-	taskPage = 'taskPage',
-	taskTarget = 'taskTarget'
+	doDefault = 'doDefault',
+	doEmbed = 'doEmbed'
 }
 
 export enum DataRecordStatus {

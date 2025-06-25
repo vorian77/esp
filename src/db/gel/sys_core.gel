@@ -168,8 +168,6 @@ module sys_core {
     
     required codeCardinality: sys_core::SysCode;
     codeDataObjType: sys_core::SysCode;
-    codeDoQueryType: sys_core::SysCode;
-    codeDoRenderPlatform: sys_core::SysCode;
     codeListPresetType: sys_core::SysCode;
     
     multi columns: sys_core::SysDataObjColumn {
@@ -440,19 +438,14 @@ module sys_core {
     multi children: sys_core::SysNodeObjChild{
       on source delete allow;
     };
-    codeComponent: sys_core::SysCode;
-    required codeNavType: sys_core::SysCode;
+    required codeComponent: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
     codeQueryOwnerType: sys_core::SysCode;
+    codeQueryType: sys_core::SysCode;
+    codeRenderPlatform: sys_core::SysCode;
     dataObj: sys_core::SysDataObj;
     required isAlwaysRetrieveData: bool;
     required isHideRowManager: bool;
-    multi nodeData: sys_core::SysNodeObjData {
-       on target delete delete source;
-    };
-    parent: sys_core::SysNodeObj{
-       on source delete delete target;
-    };
     page: str;
     selectListItems: sys_core::SysDataObjFieldListItems;
     selectListItemsHeader: str;
@@ -482,13 +475,6 @@ module sys_core {
     constraint exclusive on ((.codeAttrType, .nodeObj));
   }
     
-  type SysNodeObjData {
-    required dataObj: sys_core::SysDataObj{
-      on target delete delete source;
-    };
-    required codeAction: sys_core::SysCodeAction;
-  }
-
   type SysNotify extending sys_core::SysObj {
     required codeNotifyType: sys_core::SysCode;
     required exprCron: str;

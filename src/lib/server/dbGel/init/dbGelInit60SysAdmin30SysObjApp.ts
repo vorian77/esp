@@ -10,8 +10,8 @@ function initFieldListSelectNodes(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeDataObjType: 'embed',
-		exprFilter: `.codeNodeType = (SELECT sys_core::getCode('ct_sys_node_obj_type', 'program')) AND (.owner.id = <tree,uuid,SysSystem.id> UNION .isGlobalResource)`,
+		codeDataObjType: 'doEmbed',
+		exprFilter: `.codeNodeType = (SELECT sys_core::getCode('ct_sys_node_obj_type', 'app')) AND (.owner.id = <tree,uuid,SysSystem.id> UNION .isGlobalResource)`,
 		header: 'Select Node(s)',
 		name: 'dofls_sys_admin_sys_node',
 		owner: 'sys_system',
@@ -221,11 +221,11 @@ function initApp(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_app_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_app_list',
 		header: 'Apps',
 		name: 'node_obj_sys_app_list',
@@ -233,10 +233,10 @@ function initApp(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_app_detail',
 		header: 'App',
 		name: 'node_obj_sys_app_detail',
@@ -452,11 +452,11 @@ function initAppHeader(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_app_header_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_app_header_list',
 		header: 'App Headers',
 		name: 'node_obj_sys_app_header_list',
@@ -464,10 +464,10 @@ function initAppHeader(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_app_header_detail',
 		header: 'App Header',
 		name: 'node_obj_sys_app_header_detail',

@@ -121,28 +121,6 @@ function initDataObj(init: InitDb) {
 				indexTable: 0
 			},
 			{
-				codeAccess: 'optional',
-				codeFieldElement: 'radio',
-				columnName: 'codeDoQueryType',
-				isDisplayable: true,
-				orderDisplay: 68,
-				orderDefine: 68,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_do_query_type'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'radio',
-				columnName: 'codeDoRenderPlatform',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_do_render_platform'
-			},
-			{
 				codeFieldElement: 'toggle',
 				columnName: 'isInitialValidationSilent',
 				isDisplayable: true,
@@ -461,11 +439,11 @@ function initDataObj(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_list',
 		header: 'Data Objects',
 		name: 'node_obj_sys_admin_data_obj_list',
@@ -473,11 +451,11 @@ function initDataObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_column_list', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_detail',
 		header: 'Data Object',
 		name: 'node_obj_sys_admin_data_obj_detail',
@@ -1369,11 +1347,11 @@ function initDataObjColumn(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_column_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_column_list',
 		header: 'Columns',
 		name: 'node_obj_sys_admin_data_obj_column_list',
@@ -1381,10 +1359,10 @@ function initDataObjColumn(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_column_detail',
 		header: 'Column',
 		name: 'node_obj_sys_admin_data_obj_column_detail',

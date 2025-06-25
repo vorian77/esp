@@ -217,11 +217,11 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_field_embed_list_config_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_config_list',
 		header: 'Embed List Configs',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_config_list',
@@ -229,10 +229,10 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_config_detail',
 		header: 'Config',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_config_detail',
@@ -399,11 +399,11 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_field_embed_list_edit_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_edit_list',
 		header: 'Embed List Edits',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_edit_list',
@@ -411,10 +411,10 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_edit_detail',
 		header: 'Config',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_edit_detail',
@@ -619,11 +619,11 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_field_embed_list_select_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_select_list',
 		header: 'Embed List Selects',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_select_list',
@@ -631,10 +631,10 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_field_embed_list_select_detail',
 		header: 'Config',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_select_detail',

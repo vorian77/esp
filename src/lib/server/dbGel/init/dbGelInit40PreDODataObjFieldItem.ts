@@ -215,9 +215,9 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		table: 'SysColumn'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
-		exprFilter: '.codeNavType.name = <parms,str,itemsParmValue> ',
+		exprFilter: '.codeNodeType.name = <parms,str,itemsParmValue> ',
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		name: 'il_sys_node_obj_by_nav_type',
+		name: 'il_sys_node_obj_by_node_type',
 		owner: 'sys_system',
 		table: 'SysNodeObj'
 	})
@@ -309,15 +309,6 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		owner: 'sys_system',
 		table: 'SysTable'
 	})
-
-	init.addTrans('sysDataObjFieldListItems', {
-		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter: `.id IN ((SELECT sys_core::SysObj [IS sys_core::SysNodeObj] FILTER .codeNodeType.name = 'taskTarget') UNION (SELECT sys_core::SysObj [IS sys_core::SysDataObj] FILTER .codeDataObjType.name = 'taskTarget')).id`,
-		name: 'il_sys_task_obj',
-		owner: 'sys_system',
-		table: 'SysObj'
-	})
-
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [
 			[0, '_firstName', 'First Name', '.person.firstName', true, 1],
@@ -373,7 +364,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter: `sys_core::SysObj IN (SELECT 
 			(sys_core::SysObj[is sys_core::SysOrg]) UNION
-			(SELECT (sys_core::SysObj[is sys_core::SysNodeObj]) FILTER .codeNodeType.name = 'program')
+			(SELECT (sys_core::SysObj[is sys_core::SysNodeObj]) FILTER .codeNodeType.name = 'app')
 			)`,
 		name: 'il_sys_user_type_resource',
 		owner: 'sys_system',

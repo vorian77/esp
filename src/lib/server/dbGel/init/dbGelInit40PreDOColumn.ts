@@ -343,20 +343,6 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Query Type',
-		isMultiSelect: false,
-		name: 'codeDoQueryType',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Render Platform',
-		isMultiSelect: false,
-		name: 'codeDoRenderPlatform',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'link',
 		header: 'Field Element',
@@ -435,13 +421,6 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
-		header: 'Navigation Type',
-		isMultiSelect: false,
-		name: 'codeNavType',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
 		header: 'Node Type',
 		isMultiSelect: false,
 		name: 'codeNodeType',
@@ -502,13 +481,6 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'codeRace',
 		owner: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'link',
-		header: 'Render Type',
-		isMultiSelect: false,
-		name: 'codeRenderType'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
@@ -576,7 +548,7 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Status Object',
-		name: 'codeStatusObj',
+		name: 'codeTaskStatusObj',
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
@@ -1639,12 +1611,6 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'bool',
-		header: 'Always Pin To Dashboard',
-		name: 'isPinToDash'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'bool',
 		header: 'Always Retrieve Data',
 		name: 'isAlwaysRetrieveData'
 	})
@@ -1959,6 +1925,13 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
+		header: 'Node Object',
+		isMultiSelect: false,
+		name: 'nodeObj',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
 		header: 'Nodes',
 		isMultiSelect: true,
 		name: 'nodes',
@@ -2066,13 +2039,6 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Page',
 		name: 'page'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'link',
-		header: 'Page Data Object',
-		isMultiSelect: false,
-		name: 'pageDataObj'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
@@ -2357,20 +2323,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Target Tables',
 		isMultiSelect: true,
 		name: 'tablesTarget',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Target - Data Object',
-		isMultiSelect: false,
-		name: 'targetDataObj',
-		owner: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Target - Node Object',
-		isMultiSelect: false,
-		name: 'targetNodeObj',
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {

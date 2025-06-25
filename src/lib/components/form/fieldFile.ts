@@ -13,7 +13,7 @@ export class FieldFile extends Field {
 		this.storageKeyExpr = strRequired(obj.colDB.exprStorageKey, 'FieldFile', 'storageKeyExpr')
 		this.width = valueOrDefault(obj.width, 300)
 	}
-	getKey() {
-		return evalExpr({ exprRaw: this.storageKeyExpr, evalExprContext: `${FILENAME}.getKey` })
+	async getKey() {
+		return await evalExpr({ exprRaw: this.storageKeyExpr, evalExprContext: `${FILENAME}.getKey` })
 	}
 }

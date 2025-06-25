@@ -191,10 +191,9 @@ function initActionGroup(init: InitDb) {
 }
 
 function initDataObj(init: InitDb) {
-	init.addTrans('sysDataObjTask', {
+	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeDataObjType: 'taskTarget',
 		exprFilter: `.id IN ${exprMsgsMineRoot}.id`,
 		gridStyles: [
 			{
@@ -678,22 +677,19 @@ function initNodeObj(init: InitDb) {
 			{ action: 'doListDetailNew', node: 'node_obj_sys_msg_root_detail_new' }
 		],
 		codeComponent: 'FormList',
-		codeIcon: 'Mail',
-		codeNavType: 'task',
-		codeNodeType: 'program',
+		codeNodeType: 'nodeTask',
 		codeQueryOwnerType: 'queryOwnerTypeSystemUser',
+		codeQueryType: 'retrieve',
 		dataObj: 'data_obj_task_sys_msg_root_list_all',
-		header: 'Messages',
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_task_sys_msg_root_list_all',
-		orderDefine: 10,
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'Mail',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_msg_root_detail_new',
 		header: 'New Root Message',
 		isAlwaysRetrieveData: true,
@@ -702,14 +698,14 @@ function initNodeObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		actions: [
 			{ action: 'doListDetailNew', node: 'node_obj_sys_msg_thread_detail_reply' },
 			{ action: 'doListDetailEdit', node: 'node_obj_sys_msg_thread_detail_view' }
 		],
 		codeComponent: 'FormList',
 		codeIcon: 'Mail',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_msg_thread_list',
 		header: 'Message Thread',
 		isAlwaysRetrieveData: true,
@@ -718,10 +714,10 @@ function initNodeObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'Mail',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_msg_thread_detail_reply',
 		header: 'Message Detail-Reply',
 		isAlwaysRetrieveData: true,
@@ -730,11 +726,11 @@ function initNodeObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		actions: [{ action: 'doListDetailNew', node: 'node_obj_sys_msg_thread_detail_reply' }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'Mail',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_msg_thread_detail_view',
 		header: 'Message Detail-View',
 		isAlwaysRetrieveData: true,
@@ -747,21 +743,18 @@ function initNodeObj(init: InitDb) {
 function initTask(init: InitDb) {
 	init.addTrans('sysTask', {
 		codeIcon: 'Mail',
-		codeRenderType: 'button',
+		codeTaskType: 'taskManual',
 		exprWith: `msgsMineRoot := ${exprMsgsMineRoot}, msgsToMeUnread := ${exprMsgsToMeUnread}`,
 		header: 'Messages',
-		isPinToDash: false,
 		isGlobalResource: true,
 		name: 'task_sys_msg_all',
-		orderDefine: 0,
-		owner: 'sys_system',
-		targetNodeObj: 'node_obj_task_sys_msg_root_list_all'
+		nodeObj: 'node_obj_task_sys_msg_root_list_all',
+		owner: 'sys_system'
 	})
 
 	init.addTrans('sysTask', {
-		codeIcon: 'Mail',
-		codeRenderType: 'button',
-		codeStatusObj: 'tso_sys_data',
+		codeTaskStatusObj: 'tso_sys_data',
+		codeTaskType: 'taskAutomated',
 		exprShow: `SELECT count(msgsToMeUnread) > 0`,
 		exprStatus: `SELECT {
 			msgsUnread := {label := 'Unread', data := count(msgsToMeUnread), color := 'green' },
@@ -771,11 +764,9 @@ function initTask(init: InitDb) {
 		}`,
 		exprWith: `msgsMineRoot := ${exprMsgsMineRoot}, msgsToMeUnread := ${exprMsgsToMeUnread}`,
 		header: 'Messages',
-		isPinToDash: false,
 		isGlobalResource: true,
 		name: 'task_sys_msg_unread',
-		orderDefine: 0,
-		owner: 'sys_system',
-		targetNodeObj: 'node_obj_task_sys_msg_root_list_all'
+		nodeObj: 'node_obj_task_sys_msg_root_list_all',
+		owner: 'sys_system'
 	})
 }

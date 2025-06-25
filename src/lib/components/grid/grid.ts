@@ -310,6 +310,7 @@ export class GridSettingsColumnItem {
 export class GridManagerOptions {
 	columnDefs: ColDef[]
 	context: DataRecord
+	dataObjId: string | undefined
 	fCallbackFilter: Function
 	fCallbackUpdateValue: Function
 	isEmbed: boolean
@@ -328,6 +329,7 @@ export class GridManagerOptions {
 		const clazz = 'GridManagerOptions'
 		this.columnDefs = required(obj.columnDefs, clazz, 'columnDefs')
 		this.context = valueOrDefault(obj.context, {})
+		this.dataObjId = valueOrDefault(obj.dataObjId, undefined)
 		this.fCallbackFilter = obj.fCallbackFilter
 		this.fCallbackUpdateValue = obj.fCallbackUpdateValue
 		this.isEmbed = booleanOrFalse(obj.isEmbed)

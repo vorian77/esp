@@ -12,7 +12,7 @@
 	import { IconProps } from '$comps/icon/types.icon'
 
 	const FILENAME = '$routes/nav/NavAppMobile.svelte'
-	const DEFAULT_APP_NAME = 'The App Factory'
+	const DEFAULT_APP_NAME = 'AppFactory'
 
 	let { toggleMobileMenuHide }: { toggleMobileMenuHide: Function } = $props()
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')

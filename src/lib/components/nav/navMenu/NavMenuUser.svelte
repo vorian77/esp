@@ -1,10 +1,13 @@
 <script lang="ts">
-	import { NavMenuDataCompUser } from '$comps/nav/navMenu/types.navMenu.svelte'
+	import {
+		NavMenuDataCompUser,
+		NavMenuNamedItemType
+	} from '$comps/nav/navMenu/types.navMenu.svelte'
 	import NavMenuGroup from '$comps/nav/navMenu/NavMenuGroup.svelte'
 	import NavMenuHeader from '$comps/nav/navMenu/NavMenuHeader.svelte'
 	import NavMenuInfo from '$comps/nav/navMenu/NavMenuInfo.svelte'
 	import NavMenuHr from '$comps/nav/navMenu/NavMenuHr.svelte'
-	import { NodeObjComponent, User } from '$utils/types'
+	import { NodeObjComponent, PropDataSourceValue, User } from '$utils/types'
 	import { Avatar } from '@skeletonlabs/skeleton'
 	import { fade } from 'svelte/transition'
 	import Icon from '$comps/icon/Icon.svelte'
@@ -13,39 +16,41 @@
 
 	const FILENAME = '/$comps/app/navMenu/NavMenuOrg.svelte'
 
-	let { data }: { data: NavMenuDataCompUser } = $props()
+	let props = $props()
+	let navMenuUser: NavMenuDataCompUser = $state(props.data)
+	let user: User = $derived(navMenuUser.navMenu.sm.user)
 </script>
 
-{#if data.user}
+{#if navMenuUser && user}
 	<hr class="my-2" />
 	<button
 		class="flex items-center hover:-translate-y-0.5 transition-transform"
-		onclick={() =>
-			data.navMenu.triggerActionDataObjApp(
-				'data_obj_task_sys_auth_my_account',
-				NodeObjComponent.FormDetail
-			)}
+		onclick={() => navMenuUser.navMenu.activateLinkByNamedItem(NavMenuNamedItemType.itemMyAccount)}
 	>
 		<div class="h-9 w-9 rounded-full place-content-center bg-neutral-200 text-center">
-			{#if data.user.avatar}
-				<img class="rounded-full" src={data.user.avatar?.url} />
+			{#if user.avatar}
+				<img class="rounded-full" src={user.avatar?.url} />
 			{:else}
-				{data.user.initials}
+				{user.initials}
 			{/if}
 		</div>
 
-		{#if data.navMenu.isOpen}
-			<span class="ml-1" in:fade={data.navMenu.fadeIn} out:fade={data.navMenu.fadeOut}>
-				{data.user.fullName}
+		{#if navMenuUser.navMenu.isOpen}
+			<span
+				class="ml-1"
+				in:fade={navMenuUser.navMenu.fadeIn}
+				out:fade={navMenuUser.navMenu.fadeOut}
+			>
+				{user.fullName}
 			</span>
 		{/if}
 	</button>
 
-	<div class="mt-3 {data.navMenu.isOpen ? '' : 'justify-items-center'} ">
-		<NavMenuGroup data={data.items} />
+	<div class="mt-3 {navMenuUser.navMenu.isOpen ? '' : 'justify-items-center'} ">
+		<NavMenuGroup data={navMenuUser.items} />
 	</div>
 
-	{#each data.info as info}
-		<NavMenuInfo navMenu={data.navMenu} {info} />
+	{#each navMenuUser.info as info}
+		<NavMenuInfo navMenu={navMenuUser.navMenu} {info} />
 	{/each}
 {/if}

@@ -10,7 +10,7 @@ function initFieldListSelectCode(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeDataObjType: 'embed',
+		codeDataObjType: 'doEmbed',
 		exprFilter: 'none',
 		header: 'Select Codes',
 		name: 'dofls_sys_admin_sys_code',
@@ -59,7 +59,7 @@ function initFieldListSelectCodeTypeFamily(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeDataObjType: 'embed',
+		codeDataObjType: 'doEmbed',
 		exprFilter:
 			'.parent = (SELECT sys_core::SysCode FILTER .id = <tree,uuid,SysCode.id,undefined>).codeType',
 		header: 'Select Code Types',
@@ -98,7 +98,7 @@ function initFieldListSelectColumn(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeDataObjType: 'embed',
+		codeDataObjType: 'doEmbed',
 		exprFilter: 'none',
 		header: 'Select Columns',
 		name: 'dofls_sys_admin_sys_column',

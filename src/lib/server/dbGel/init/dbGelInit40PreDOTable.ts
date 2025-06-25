@@ -34,7 +34,6 @@ export function initPreTable(init: InitDb) {
 		['sys_system', 'sys_core', 'SysNodeObjAction', false],
 		['sys_system', 'sys_core', 'SysNodeObjChild', false],
 		['sys_system', 'sys_core', 'SysNodeObjConfig', false],
-		['sys_system', 'sys_core', 'SysNodeObjData', false],
 		['sys_system', 'sys_core', 'SysObj', true],
 		['sys_system', 'sys_core', 'SysObjAttr', true],
 		['sys_system', 'sys_core', 'SysObjAttrAccess', true],

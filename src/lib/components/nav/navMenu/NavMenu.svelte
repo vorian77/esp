@@ -6,49 +6,43 @@
 	import NavMenuOrg from '$comps/nav/navMenu/NavMenuOrg.svelte'
 	import NavMenuUser from '$comps/nav/navMenu/NavMenuUser.svelte'
 	import { NavMenuData } from '$comps/nav/navMenu/types.navMenu.svelte'
-	import { Tween } from 'svelte/motion'
-	import { cubicOut } from 'svelte/easing'
+	import DataViewer from '$utils/DataViewer.svelte'
 	import { error } from '@sveltejs/kit'
 
 	const FILENAME = '/$comps/nav/navMenu/NavMenu.svelte'
 
-	let { navMenu }: { navMenu: NavMenuData } = $props()
-
-	let widthValue = new Tween(0, {
-		duration: 500,
-		easing: cubicOut
-	})
-
-	$effect(() => {
-		widthValue.target = navMenu?.width ? navMenu.width : 0
-	})
+	let { navMenuData, widthValue } = $props()
 </script>
 
-<nav
-	class="h-full flex flex-col justify-between text-sm p-3 bg-neutral-50 border-r"
-	style="width: {widthValue.current}px;"
->
-	<div>
-		{#if navMenu}
-			{#each navMenu?.items as item}
-				<ul>
-					<div class="mb-6 flex flex-col {navMenu?.isOpen ? '' : 'items-center '}">
-						{#if navMenu.getItemClassName(item) === 'NavMenuDataCompApps'}
-							<NavMenuApps data={item} />
-						{:else if navMenu.getItemClassName(item) === 'NavMenuDataCompItem'}
-							<NavMenuItem {item} />
-						{:else if navMenu.getItemClassName(item) === 'NavMenuDataCompGroup'}
-							<NavMenuGroup data={item} />
-						{:else if navMenu.getItemClassName(item) === 'NavMenuDataCompOrg'}
-							<NavMenuOrg data={item} />
-						{:else if navMenu.getItemClassName(item) === 'NavMenuDataCompUser'}
-							<NavMenuUser data={item} />
-						{/if}
-					</div>
-				</ul>
-			{/each}
-		{/if}
-	</div>
+{#if widthValue}
+	<nav
+		class="h-full flex flex-col justify-between text-sm p-3 bg-neutral-50 border-r"
+		style="width: {widthValue.current}px;"
+	>
+		<div>
+			{#if navMenuData}
+				{#each navMenuData?.items as item}
+					<ul>
+						<div class="mb-6 flex flex-col {navMenuData?.isOpen ? '' : 'items-center '}">
+							{#if navMenuData.getItemClassName(item) === 'NavMenuDataCompApps'}
+								<NavMenuApps data={item} />
+							{:else if navMenuData.getItemClassName(item) === 'NavMenuDataCompItem'}
+								<NavMenuItem {item} />
+							{:else if navMenuData.getItemClassName(item) === 'NavMenuDataCompGroup'}
+								<NavMenuGroup data={item} />
+							{:else if navMenuData.getItemClassName(item) === 'NavMenuDataCompOrg'}
+								<NavMenuOrg data={item} />
+							{:else if navMenuData.getItemClassName(item) === 'NavMenuDataCompUser'}
+								<NavMenuUser data={item} />
+							{/if}
+						</div>
+					</ul>
+				{/each}
+			{:else}
+				No menu data available.
+			{/if}
+		</div>
 
-	<NavMenuCopyright {navMenu} />
-</nav>
+		<NavMenuCopyright navMenu={navMenuData} />
+	</nav>
+{/if}

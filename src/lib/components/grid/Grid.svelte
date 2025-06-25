@@ -81,8 +81,13 @@
 
 	let eGui: HTMLElement
 	let isSuppressFilterSort: boolean = $state(false)
-	let listFilterModel = $derived(sm.userParmGetOrDefault(UserParmItemType.listFilterModel, ''))
-	let listFilterQuick = $derived(sm.userParmGetOrDefault(UserParmItemType.listFilterQuick, ''))
+	let listFilterModel = $derived(
+		sm.userParmGetOrDefault(options.dataObjId, UserParmItemType.listFilterModel, '')
+	)
+	let listFilterQuick = $derived(
+		sm.userParmGetOrDefault(options.dataObjId, UserParmItemType.listFilterQuick, '')
+	)
+
 	let rowCountFiltered: number = $state()
 	let rowCountSelected: number = $state()
 	let rowData: any[]
@@ -169,7 +174,11 @@
 
 		// <todo> 241115 - bug - createGrid makes options.userSettings.listSortModel undefined
 		// const rawSort =
-		const rawSort = sm.userParmGetOrDefault(UserParmItemType.listSortModel, options.sortModel)
+		const rawSort = sm.userParmGetOrDefault(
+			options.dataObjId,
+			UserParmItemType.listSortModel,
+			options.sortModel
+		)
 
 		api = createGrid(eGui, gridOptions)
 
@@ -179,10 +188,10 @@
 				return acc + (col.hide ? 0 : 1)
 			}, 0)
 
-			// const strategy =
-			// 	colCntVisible * avgColW > eGui.offsetWidth ? 'fitCellContents' : 'fitGridWidth'
+			const strategy =
+				colCntVisible * avgColW > eGui.offsetWidth ? 'fitCellContents' : 'fitGridWidth'
 
-			const strategy = 'fitProvidedWidth'
+			// const strategy = 'fitProvidedWidth'
 
 			// console.log('Grid.autoSizeStrategy:', {
 			// 	gridWidth: eGui.offsetWidth,
@@ -237,10 +246,18 @@
 	function onFilterChanged(event: FilterChangedEvent) {
 		switch (event.source) {
 			case 'columnFilter':
-				sm.userParmSet(UserParmItemType.listFilterModel, event.api.getFilterModel())
+				sm.userParmSet(
+					options.dataObjId,
+					UserParmItemType.listFilterModel,
+					event.api.getFilterModel()
+				)
 				break
 			case 'quickFilter':
-				sm.userParmSet(UserParmItemType.listFilterQuick, event.api.getQuickFilter())
+				sm.userParmSet(
+					options.dataObjId,
+					UserParmItemType.listFilterQuick,
+					event.api.getQuickFilter()
+				)
 				break
 		}
 		onFilterChangedDeselect()
@@ -296,7 +313,7 @@
 	}
 
 	function onSort(event: PostSortRowsParams) {
-		sm.userParmSet(UserParmItemType.listSortModel, settingSortGet())
+		sm.userParmSet(options.dataObjId, UserParmItemType.listSortModel, settingSortGet())
 	}
 
 	function onSelectionChanged(event: SelectionChangedEvent) {
@@ -306,10 +323,16 @@
 
 	async function saveUserSettings() {
 		sm.userParmSet(
+			options.dataObjId,
 			UserParmItemType.listColumnsModel,
 			new GridSettingsColumns(api.getAllGridColumns())
 		)
-		await sm.userParmSave()
+		await sm.userParmSave(options.dataObjId, [
+			UserParmItemType.listColumnsModel,
+			UserParmItemType.listFilterModel,
+			UserParmItemType.listFilterQuick,
+			UserParmItemType.listSortModel
+		])
 	}
 
 	function setGridColumnsProp(
