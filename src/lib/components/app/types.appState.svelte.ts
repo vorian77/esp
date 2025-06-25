@@ -621,12 +621,12 @@ export class State {
 		idFeatureSource: any,
 		items: UserParmItemSource | UserParmItemSource[]
 	): Promise<MethodResult> {
-		if (
-			this.user &&
-			this.userParm &&
-			!this.user.prefIsActive(UserPrefType.disable_remember_feature_settings)
-		) {
-			return await this.userParm.itemsAdd(idFeatureSource, items)
+		if (this.user && this.userParm) {
+			return await this.userParm.itemsAdd(
+				idFeatureSource,
+				items,
+				!this.user.prefIsActive(UserPrefType.disable_remember_feature_settings)
+			)
 		}
 		return new MethodResult()
 	}
@@ -651,8 +651,8 @@ export class State {
 	async userParmSave(idFeatureSource: any): Promise<void> {
 		if (
 			this.user &&
-			!this.user.prefIsActive(UserPrefType.disable_remember_feature_settings) &&
-			this.userParm
+			this.userParm &&
+			!this.user.prefIsActive(UserPrefType.disable_remember_feature_settings)
 		) {
 			await this.userParm.parmsSave(idFeatureSource)
 		}

@@ -68,7 +68,7 @@ function initUserType(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: `.owner.id = <tree,uuid,SysSystem.id> AND .codeAttrType.id = <parms,uuid,selectListRecord._codeAttrTypeId>`,
 		header: 'User Types',
 		name: 'data_obj_sys_admin_user_type_list',
 		owner: 'sys_system',

@@ -16,16 +16,23 @@ export class UserParm {
 		return typeof idFeature === 'number' ? idFeature : hashString(idFeature)
 	}
 
-	async itemsAdd(idFeatureSource: any, itemsSource: UserParmItemSource | UserParmItemSource[]) {
+	async itemsAdd(
+		idFeatureSource: any,
+		itemsSource: UserParmItemSource | UserParmItemSource[],
+		retrieveCurrentParms: boolean
+	) {
 		itemsSource = getArray(itemsSource)
 		const idFeature = this.getIdFeatureHash(idFeatureSource)
+		let parmsDataRaw: DataRecord[] = []
 
-		let result: MethodResult = await apiFetchFunction(
-			ApiFunction.sysUserParmsGet,
-			new TokenApiUserParmsGet(this.user.id, idFeature)
-		)
-		if (result.error) return result
-		const parmsDataRaw: DataRecord[] = getArray(result.data)
+		if (retrieveCurrentParms) {
+			let result: MethodResult = await apiFetchFunction(
+				ApiFunction.sysUserParmsGet,
+				new TokenApiUserParmsGet(this.user.id, idFeature)
+			)
+			if (result.error) return result
+			parmsDataRaw = getArray(result.data)
+		}
 
 		for (let i = 0; i < itemsSource.length; i++) {
 			let item = this.itemFind(idFeature, itemsSource[i].type)

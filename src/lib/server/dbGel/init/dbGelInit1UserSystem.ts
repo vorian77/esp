@@ -174,11 +174,14 @@ function initUsers(init: InitDb) {
 			'sys_system'
 		],
 		userTypes: [
-			// 'ut_sys_admin_global',
 			// 'ut_app_crm_admin',
-			'ut_client_moed_admin'
-			// 'ut_client_moed_advocate_east',
-			// 'ut_client_moed_advocate_west'
+			// 'ut_client_ai_admin',
+			'ut_client_ai_staff',
+			'ut_client_moed_admin',
+			'ut_client_moed_advocate_east',
+			'ut_client_moed_advocate_west',
+			'ut_client_moed_youth',
+			'ut_sys_admin_global'
 		]
 	})
 }

@@ -338,7 +338,7 @@ function initCode(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: `.owner.id = <tree,uuid,SysSystem.id> AND .codeAttrType.id = <parms,uuid,selectListRecord._codeAttrTypeId>`,
 		header: 'Codes',
 		name: 'data_obj_sys_admin_code_list_meta',
 		owner: 'sys_system',
@@ -807,7 +807,7 @@ function initUser(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: `.owner = (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).owner`,
+		exprFilter: `.owner.id = <tree,uuid,SysSystem.id> AND .codeAttrType.id = <parms,uuid,selectListRecord._codeAttrTypeId>`,
 		header: 'Users',
 		name: 'data_obj_sys_admin_user_list_meta',
 		owner: 'sys_system',
@@ -864,7 +864,7 @@ function initUser(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		exprFilter: `.id = <tree,uuid,SysObjAttr.id>`,
+		// exprFilter: `.id = <tree,uuid,SysObjAttr.id>`,
 		header: 'User',
 		name: 'data_obj_sys_admin_user_detail_meta',
 		owner: 'sys_system',

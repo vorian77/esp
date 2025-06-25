@@ -119,7 +119,7 @@ module sys_user {
   } 
   
   # type
-  type SysUserType extending sys_core::SysObj {
+  type SysUserType extending sys_core::SysObjAttr {
     multi attrsExpr: sys_core::SysObjAttrExpr {
       on source delete delete target;
       on target delete allow;
@@ -127,6 +127,9 @@ module sys_user {
     multi attrsVirtual: sys_core::SysObjAttrVirtual {
       on source delete delete target;
       on target delete allow;
+    };
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCode('ct_sys_obj_attr_type', 'at_sys_user_type');
     };
     isSelfSignup: bool;
     users := .<userTypes[is sys_user::SysUser];

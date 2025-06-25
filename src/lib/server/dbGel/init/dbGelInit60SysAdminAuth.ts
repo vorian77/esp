@@ -832,6 +832,15 @@ function initUserPref(init: InitDb) {
 			SELECT newVals`,
 		name: 'data_obj_auth_user_pref_list',
 		owner: 'sys_system',
+		queryRiders: [
+			{
+				codeQueryAction: 'customFunction',
+				codeQueryFunction: 'qrfUserUpdate',
+				codeQueryPlatform: 'client',
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post'
+			}
+		],
 		tables: [
 			{ index: 0, table: 'SysUserPref' },
 			{ columnParent: 'codeType', indexParent: 0, index: 1, table: 'SysCode' }

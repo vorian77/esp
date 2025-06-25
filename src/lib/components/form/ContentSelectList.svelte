@@ -101,13 +101,13 @@
 	}
 
 	async function retrieveList(selectId: string) {
-		sm.parmsState.valueSet(ParmsValuesType.selectListId, selectId)
-
-		dataItems.forEach((item) => {
-			item.selected = item.data === selectId
-		})
-
 		if (selectId) {
+			sm.parmsState.valueSet(ParmsValuesType.selectListId, selectId)
+
+			dataItems.forEach((item) => {
+				item.selected = item.data === selectId
+			})
+
 			const record = dataItems.find((item) => item.data === selectId)
 			if (record) {
 				sm.parmsState.valueSet(ParmsValuesType.selectListRecord, record)
@@ -131,8 +131,13 @@
 {#if selectListItems}
 	<div class="h-full">
 		<label class="text-sm" for={fieldId}>{selectListItems.source.header}</label>
-
-		<select class={classProps} name="object-type" id={fieldId} onchange={onChange}>
+		<select
+			class={classProps}
+			name="object-type"
+			id={fieldId}
+			onchange={onChange}
+			bind:value={selectId}
+		>
 			<option value={null}>Select an option...</option>
 			{#if dataItems}
 				{#each dataItems as { data, display, selected }, index (data)}

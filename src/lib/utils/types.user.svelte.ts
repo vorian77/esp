@@ -336,6 +336,7 @@ export class UserResourceTasks {
 		)
 		if (result.error) return result
 		let taskIdsPinned: string[] = result.data
+		// let taskIdsPinned: string[] = []
 
 		for (let i = 0; i < this.tasks.length; i++) {
 			let task = this.tasks[i]

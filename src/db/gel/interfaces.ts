@@ -111,11 +111,12 @@ export namespace sys_user {
     "isActive": boolean;
     "user": SysUser;
   }
-  export interface SysUserType extends sys_core.SysObj {
+  export interface SysUserType extends sys_core.SysObjAttr {
     "attrsExpr": sys_core.SysObjAttrExpr[];
     "attrsVirtual": sys_core.SysObjAttrVirtual[];
     "isSelfSignup"?: boolean | null;
     "users": SysUser[];
+    "codeAttrType": sys_core.SysCode;
   }
   export interface currentUser extends SysUser {}
 }
