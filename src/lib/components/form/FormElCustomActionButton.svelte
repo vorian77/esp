@@ -1,9 +1,13 @@
 <script lang="ts">
-	import { ContextKey, DataManager, type DataRecord, required } from '$utils/types'
+	import { ContextKey, DataManager, type DataRecord, required, strRequired } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { State } from '$comps/app/types.appState.svelte'
 	import { FieldCustomActionButton } from '$comps/form/fieldCustom'
-	import { TokenAppDo, TokenAppStateTriggerAction } from '$utils/types.token'
+	import {
+		TokenApiQueryType,
+		TokenAppDoCustom,
+		TokenAppStateTriggerAction
+	} from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$comps/form/FormElCustomActionButton.svelte'
@@ -14,23 +18,18 @@
 
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 	let dataRecord = $derived(dm.getRecordsDisplayRow(parms.dataObjId, 0))
-	let field = $derived(parms.field) as FieldCustomActionButton
+	let fieldCustom = $derived(parms.field) as FieldCustomActionButton
 	let disabled = $derived(!dm.isStatusValidNode(parms.dataObjId))
 
 	async function action(): Promise<MethodResult> {
 		sm.app.setTreeLevelIdxCurrent(dataObj.treeLevelIdx)
 		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
-				codeAction: field.action.codeAction,
+				codeAction: fieldCustom.action.codeAction,
 				data: {
 					dataRecord: $state.snapshot(dataRecord),
-					token: new TokenAppDo({
-						actionType: field.action.codeAction.actionType,
-						dataObj
-					}),
-					value: field.value
-				},
-				fCallback: dataObj.fCallbackUserAction
+					token: new TokenAppDoCustom({ fieldCustom })
+				}
 			})
 		)
 	}
@@ -38,9 +37,9 @@
 
 <button
 	class="w-full btn btn-action text-white"
-	style:background-color={field.fieldColor.color}
+	style:background-color={fieldCustom.fieldColor.color}
 	{disabled}
 	onclick={() => action()}
 >
-	{field.colDO.label}
+	{fieldCustom.colDO.label}
 </button>

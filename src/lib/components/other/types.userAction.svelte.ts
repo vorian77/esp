@@ -1,3 +1,4 @@
+import { getNodeByNodeName } from '$comps/app/types.app.svelte'
 import {
 	State,
 	StateNavLayout,
@@ -6,6 +7,7 @@ import {
 } from '$comps/app/types.appState.svelte'
 import {
 	CodeAction,
+	CodeActionClass,
 	CodeActionType,
 	DataManager,
 	DataObj,
@@ -16,6 +18,7 @@ import {
 	getDbExprRaw,
 	memberOfEnum,
 	MethodResult,
+	Node,
 	required,
 	strRequired,
 	valueOrDefault
@@ -26,10 +29,11 @@ import { FieldEmbed } from '$comps/form/fieldEmbed'
 import {
 	NavDestinationType,
 	Token,
-	TokenApiQueryDataTree,
+	TokenApiId,
 	TokenApiQueryType,
-	TokenAppDo,
+	TokenAppActionTrigger,
 	TokenAppNav,
+	TokenAppNode,
 	TokenAppStateTriggerAction,
 	TokenAppUserActionConfirmType
 } from '$utils/types.token'
@@ -38,6 +42,20 @@ import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.userAction.ts'
+
+export const actionError = (actionType: string, msg: string) => {
+	return new MethodResult({
+		error: {
+			file: FILENAME,
+			function: `action.${actionType}`,
+			msg
+		}
+	})
+}
+
+export const actionErrorToken = (actionType: string) => {
+	return actionError(actionType, `Invalid token type. Expected TokenAppDo.`)
+}
 
 export class EvalParserUserAction extends EvalParser {
 	action: UserAction
@@ -72,7 +90,7 @@ export class EvalParserUserAction extends EvalParser {
 				if (expr) {
 					let result: MethodResult = await this.action.dbExe(this.sm, evalExprContext, expr)
 					if (result.error) return result
-					const value = result.getResultExprValue()
+					const value = result.getResultRawListValue()
 					if (typeof value === 'boolean') {
 						return new MethodResult(value)
 					} else {
@@ -178,8 +196,7 @@ export class UserAction {
 
 	async dbExe(sm: State, evalExprContext: string, expr: string): Promise<MethodResult> {
 		let exprCustom = getDbExprRaw(this.exprWith, expr)
-		const dataTree: TokenApiQueryDataTree = sm.app.getDataTree(TokenApiQueryType.retrieve)
-		return await clientQueryExpr(evalExprContext, exprCustom, { dataTree, user: sm.user }, sm)
+		return await clientQueryExpr(evalExprContext, exprCustom, {}, sm)
 	}
 
 	async getConfirm(sm: State, dataObj: DataObj): Promise<MethodResult> {
@@ -270,9 +287,9 @@ export class UserAction {
 				codeConfirmType: confirmData.codeConfirmType,
 				confirm: confirmData.confirm,
 				data: {
-					token: new TokenAppDo({
-						userAction: this,
-						dataObj
+					token: new TokenAppActionTrigger({
+						dataObj,
+						userAction: this
 					})
 				}
 			})
@@ -342,6 +359,16 @@ export class UserActionDisplay {
 	}
 }
 
+export async function getTokenNode(
+	actionType: CodeActionType,
+	token: Token
+): Promise<MethodResult> {
+	if (!(token instanceof TokenApiId)) return actionErrorToken(actionType)
+	let result: MethodResult = await getNodeByNodeName(token.id)
+	if (result.error) return result
+	return new MethodResult(new TokenAppNode({ node: new Node(result.data) }))
+}
+
 export const userActionError = (filename: string, actionType: CodeActionType) =>
 	`${filename}.${actionType}`
 
@@ -356,36 +383,12 @@ export async function userActionNavDestination(
 ) {
 	if (token) {
 		if (token.codeDestinationType === NavDestinationType.home) {
-			await userActionStateChangeHomeDashboard(sm, parmsAction)
+			await sm.triggerActionDashboard()
 		} else {
 			const result: MethodResult = await sm.app.navDestination(sm, token)
 			if (result.error) return result
-			await userActionStateChangeDataObj(sm, parmsAction)
+			await userActionStateChangeTab(sm, parmsAction)
 		}
-	}
-}
-
-export async function userActionStateChangeDataObj(
-	sm: State,
-	parmsAction: TokenAppStateTriggerAction
-) {
-	const clazz = 'userActionStateChangeDataObj'
-	let currTab = sm.app.getCurrTab()
-	if (currTab && currTab.dataObj) {
-		sm.dm.init(currTab.dataObj)
-		currTab.dataObj.fields
-			.filter((f) => f.classType === FieldClassType.embed)
-			.forEach((f: Field) => {
-				if (f instanceof FieldEmbed) {
-					sm.dm.nodeAdd(required(f.dataObjEmbed, clazz, 'f.dataObjEmbed'))
-				}
-			})
-		parmsAction.updateStateParms({
-			navContent: currTab.dataObj.raw.codeComponent,
-			navLayoutParms: { dataObjId: currTab.dataObj.raw.id }
-		})
-
-		await userActionStateChange(sm, parmsAction)
 	}
 }
 
@@ -393,30 +396,42 @@ export async function userActionStateChangeRaw(sm: State, parmsAction: TokenAppS
 	await userActionStateChange(sm, parmsAction)
 }
 
-export async function userActionStateChangeHomeDashboard(
-	sm: State,
-	parmsAction: TokenAppStateTriggerAction
-) {
-	parmsAction.isMultiTree = true
-	parmsAction.stateParms = new StateParms({ navLayout: StateNavLayout.layoutDashboard }, [
-		StateTriggerToken.navDashboard
-	])
-	await userActionStateChangeRaw(sm, parmsAction)
+export async function userActionStateChangeTab(sm: State, parmsAction: TokenAppStateTriggerAction) {
+	const clazz = 'userActionStateChangeTab'
+	let navLayoutParms: DataRecord = { target: parmsAction.target }
+
+	let currTab = sm.app.getCurrTab()
+	if (currTab) {
+		navLayoutParms.node = currTab.node
+		if (currTab.dataObj) {
+			sm.dm.init(currTab.dataObj)
+			currTab.dataObj.fields
+				.filter((f) => f.classType === FieldClassType.embed)
+				.forEach((f: Field) => {
+					if (f instanceof FieldEmbed) {
+						sm.dm.nodeAdd(required(f.dataObjEmbed, clazz, 'f.dataObjEmbed'))
+					}
+				})
+			navLayoutParms.dataObjId = currTab.dataObj.raw.id
+		}
+		parmsAction.updateStateParmsData({
+			navContent: currTab.node.codeComponent,
+			navLayoutParms
+		})
+	}
+	await userActionStateChange(sm, parmsAction)
 }
 
 export async function userActionTreeNodeChildren(
 	sm: State,
-	token: Token,
+	actionType: CodeActionType,
+	token: TokenAppActionTrigger,
 	queryType: TokenApiQueryType,
 	parmsAction: TokenAppStateTriggerAction
 ): Promise<MethodResult> {
-	let result: MethodResult = await sm.app.addTreeNodeChildrenTypeList(
-		sm,
-		token as TokenAppDo,
-		queryType
-	)
+	let result: MethodResult = await sm.app.addTreeNodeChildren(sm, actionType, token, queryType)
 	if (result.error) return result
-	await userActionStateChangeDataObj(sm, parmsAction)
+	await userActionStateChangeTab(sm, parmsAction)
 	return result
 }
 

@@ -34,7 +34,6 @@ export function initPreTable(init: InitDb) {
 		['sys_system', 'sys_core', 'SysNodeObjAction', false],
 		['sys_system', 'sys_core', 'SysNodeObjChild', false],
 		['sys_system', 'sys_core', 'SysNodeObjConfig', false],
-		['sys_system', 'sys_core', 'SysNodeObjData', false],
 		['sys_system', 'sys_core', 'SysObj', true],
 		['sys_system', 'sys_core', 'SysObjAttr', true],
 		['sys_system', 'sys_core', 'SysObjAttrAccess', true],
@@ -70,8 +69,7 @@ export function initPreTable(init: InitDb) {
 		['sys_system', 'sys_user', 'SysUserAction', true],
 		['sys_system', 'sys_user', 'SysUserActionConfirm', true],
 		['sys_system', 'sys_user', 'SysUserType', true],
-		['sys_system', 'sys_user', 'SysUserPref', true],
-		['sys_system', 'sys_user', 'SysUserPrefType', true]
+		['sys_system', 'sys_user', 'SysUserPref', true]
 	])
 
 	init.addTrans('tablesBulk', [

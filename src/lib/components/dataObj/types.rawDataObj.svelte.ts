@@ -24,6 +24,7 @@ import {
 	nbrOrDefault,
 	nbrOptional,
 	nbrRequired,
+	NodeRenderPlatform,
 	override,
 	ParmsValuesType,
 	PropDataType,
@@ -34,16 +35,8 @@ import {
 	valueOrDefault,
 	MethodResult
 } from '$utils/types'
-import {
-	DataObjComponent,
-	DataObjListEditPresetType,
-	DataObjProcessType
-} from '$comps/dataObj/types.dataObj.svelte'
-import {
-	UserAction,
-	UserActionConfirm,
-	UserActionTrigger
-} from '$comps/other/types.userAction.svelte'
+import { DataObjListEditPresetType, DataObjProcessType } from '$comps/dataObj/types.dataObj.svelte'
+import { UserAction, UserActionConfirm } from '$comps/other/types.userAction.svelte'
 import {
 	DbTable,
 	DbTableQueryGroup,
@@ -54,12 +47,7 @@ import {
 import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 import { FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
-import {
-	TokenApiQueryDataTree,
-	TokenApiQueryType,
-	TokenAppNav,
-	TokenAppUserActionConfirmType
-} from '$utils/types.token'
+import { TokenApiQueryType, TokenAppNav, TokenAppUserActionConfirmType } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
@@ -79,10 +67,6 @@ export class GridStyle {
 
 export class RawDataObj {
 	codeCardinality: DataObjCardinality
-	codeComponent: DataObjComponent
-	codeDataObjType: DataObjType
-	codeDoQueryType?: DataObjQueryType
-	codeDoRenderPlatform?: DataObjRenderPlatform
 	codeListPresetType?: DataObjListEditPresetType
 	crumbs: string[] = []
 	description?: string
@@ -107,7 +91,6 @@ export class RawDataObj {
 	rawPropsSelectPreset: RawDataObjPropDB[] = []
 	rawPropsSort: RawDataObjPropDB[] = []
 	rawQuerySource: QuerySourceRaw
-	selectListItemsSource?: PropLinkItemsSource
 	subHeader?: string
 	tableGroup: DbTableQueryGroup
 	constructor(obj: any) {
@@ -119,34 +102,6 @@ export class RawDataObj {
 			'codeCardinality',
 			'DataObjCardinality',
 			DataObjCardinality
-		)
-		this.codeComponent = memberOfEnum(
-			obj._codeComponent,
-			clazz,
-			'codeComponent',
-			'DataObjComponent',
-			DataObjComponent
-		)
-		this.codeDataObjType = memberOfEnum(
-			obj._codeDataObjType,
-			clazz,
-			'codeDataObjType',
-			'DataObjType',
-			DataObjType
-		)
-		this.codeDoQueryType = memberOfEnumIfExists(
-			obj._codeDoQueryType,
-			clazz,
-			'codeDoQueryType',
-			'DataObjQueryType',
-			DataObjQueryType
-		)
-		this.codeDoRenderPlatform = memberOfEnumIfExists(
-			obj._codeDoRenderPlatform,
-			clazz,
-			'codeDoRenderPlatform',
-			'DataObjRenderPlatform',
-			DataObjRenderPlatform
 		)
 		this.codeListPresetType = memberOfEnumIfExists(
 			obj._codeListPresetType,
@@ -177,7 +132,6 @@ export class RawDataObj {
 		)
 		this.rawActions = arrayOfClass(RawDataObjAction, obj._actionGroup?._dataObjActions)
 		this.rawQuerySource = new QuerySourceRaw(obj._querySource)
-		this.selectListItemsSource = classOptional(PropLinkItemsSource, obj._selectListItems)
 		this.subHeader = strOptional(obj.subHeader, clazz, 'subHeader')
 
 		/* dependent properties */
@@ -524,6 +478,7 @@ export class RawDataObjPropDisplayItemChange {
 }
 
 export class RawDataObjPropDisplayCustom {
+	_customColCodeComponent?: string
 	action?: UserAction
 	customColActionValue?: string
 	customColAlign?: string
@@ -537,6 +492,11 @@ export class RawDataObjPropDisplayCustom {
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjPropDisplayCustom'
+		this._customColCodeComponent = strOptional(
+			obj._customColCodeComponent,
+			clazz,
+			'_customColCodeComponent'
+		)
 		if (obj._action) {
 			this.action = new UserAction(new RawUserAction(obj._action))
 		}
@@ -855,24 +815,12 @@ export class PropLinkItems {
 	async retrieve(sm: State, fieldValue: string | undefined = undefined): Promise<MethodResult> {
 		const clazz = 'PropLinkItems.retrieve'
 		const exprCustom = this.source.getExprSelect(false, fieldValue)
-		const queryType = TokenApiQueryType.retrieve
 
 		const dataTab = new DataObjData()
-		dataTab.parms.update(sm.parmsState.valueGetAll())
 		dataTab.parms.valueSet(ParmsValuesType.itemsParmValue, this.source.parmValue)
 		dataTab.parms.valueSet(ParmsValuesType.itemsParmValueList, this.source.parmValueList)
 
-		const dataTree: TokenApiQueryDataTree = sm.app.getDataTree(queryType)
-
-		let result: MethodResult = await clientQueryExpr(
-			clazz,
-			exprCustom,
-			{
-				dataTab,
-				dataTree
-			},
-			sm
-		)
+		let result: MethodResult = await clientQueryExpr(clazz, exprCustom, { dataTab }, sm)
 		if (result.error) return result
 		this.setRawItems(required(result.data.rawDataList, clazz, 'rawItems'))
 		return result
@@ -1010,18 +958,6 @@ export class PropLinkItemsSourceProp {
 		this.key = strRequired(obj.key, clazz, 'key')
 		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
 	}
-}
-
-export enum DataObjQueryType {
-	preset = 'preset',
-	retrieve = 'retrieve',
-	retrievePreset = 'retrievePreset'
-}
-
-export enum DataObjRenderPlatform {
-	app = 'app',
-	drawerBottom = 'drawerBottom',
-	modal = 'modal'
 }
 
 export enum PropDataSourceValue {

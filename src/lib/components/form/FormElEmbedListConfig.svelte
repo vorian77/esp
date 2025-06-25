@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ContextKey, DataManager, required } from '$utils/types'
+	import { ContextKey, DataManager, NodeObjComponent, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldEmbedListConfig } from '$comps/form/fieldEmbed'
 	import FormLabel from '$comps/form/FormLabel.svelte'
@@ -23,7 +23,7 @@
 	<LayoutContent
 		parms={{
 			...parms,
-			navContent: dataObjEmbed.raw.codeComponent,
+			navContent: NodeObjComponent.FormList,
 			dataObj: dataObjEmbed,
 			dataObjId: dataObjEmbed.raw.id
 		}}

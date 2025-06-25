@@ -10,7 +10,6 @@ function initCodeType(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Code Types',
 		name: 'data_obj_sys_admin_code_type_list',
@@ -93,7 +92,6 @@ function initCodeType(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Code Type',
 		name: 'data_obj_sys_admin_code_type_detail',
 		owner: 'sys_system',
@@ -267,20 +265,22 @@ function initCodeType(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_code_type_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_code_type_list',
 		header: 'Code Types',
 		name: 'node_obj_sys_admin_code_type_list',
 		orderDefine: 30,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_code_list_codeType', order: 10 }],
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_code_type_detail',
 		header: 'Code Type',
 		name: 'node_obj_sys_admin_code_type_detail',
@@ -293,7 +293,6 @@ function initCodeTypeCode(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.codeType.id = <tree,uuid,SysCodeType.id>',
 		header: 'Codes',
 		name: 'data_obj_sys_admin_code_list_codeType',
@@ -380,7 +379,6 @@ function initCodeTypeCode(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Code',
 		name: 'data_obj_sys_admin_code_detail_codeType',
 		owner: 'sys_system',
@@ -598,19 +596,21 @@ function initCodeTypeCode(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_code_detail_codeType', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_code_list_codeType',
 		header: 'Codes',
 		name: 'node_obj_sys_admin_code_list_codeType',
 		orderDefine: 15,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_code_detail_codeType',
 		header: 'Code',
 		name: 'node_obj_sys_admin_code_detail_codeType',
@@ -623,7 +623,6 @@ function initCode(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Codes',
 		name: 'data_obj_sys_admin_code_list',
@@ -721,7 +720,6 @@ function initCode(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Code',
 		name: 'data_obj_sys_admin_code_detail',
 		owner: 'sys_system',
@@ -947,19 +945,21 @@ function initCode(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_code_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_code_list',
 		header: 'Codes',
 		name: 'node_obj_sys_admin_code_list',
 		orderDefine: 40,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_code_detail',
 		header: 'Code',
 		name: 'node_obj_sys_admin_code_detail',

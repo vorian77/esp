@@ -1,4 +1,5 @@
 <script lang="ts">
+	import DataViewer from '$utils/DataViewer.svelte'
 	let { filter, fSetFilter, isHideFilter, rowCountFiltered, rowCountSelected }: DataRecord =
 		$props()
 </script>

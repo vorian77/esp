@@ -108,10 +108,10 @@ function initUserType(init: InitDb) {
 				owner: 'sys_client_atlantic_impact',
 				name: 'report_ai_student_school_placement_detail'
 			},
-			{ access: 'allow', owner: 'sys_client_atlantic_impact', name: 'report_ai_student_roster' }
+			{ access: 'allow', owner: 'sys_client_atlantic_impact', name: 'report_ai_student_roster' },
 			// { access: 'allow', owner: 'sys_client_atlantic_impact', name: 'report_ai_student_service_flow_summary' },
-			// { access: 'allow', owner: 'sys_client_atlantic_impact', name: 'task_ai_cohort_attd' },
-			// { access: 'allow', owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' },
+			{ access: 'allow', owner: 'sys_client_atlantic_impact', name: 'task_ai_cohort_attd' },
+			{ access: 'allow', owner: 'sys_client_atlantic_impact', name: 'task_ai_new_student' }
 		],
 		header: 'AI-Staff',
 		name: 'ut_client_ai_staff',

@@ -8,7 +8,6 @@ async function initConfig(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: 'none',
 		header: 'Systems (Config)',
 		isListEdit: true,
@@ -107,7 +106,6 @@ async function initConfig(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'System (Config)',
 		name: 'data_obj_sys_admin_system_detail_config',
 		owner: 'sys_system',
@@ -192,10 +190,11 @@ async function initConfig(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgram', {
+	init.addTrans('sysNodeObjApp', {
 		children: [{ node: 'node_obj_sys_admin_system_detail_config', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program',
+		codeNodeType: 'nodeApp',
 		dataObj: 'data_obj_sys_admin_system_list_config',
 		header: 'Systems (Config)',
 		name: 'node_obj_sys_admin_system_list_config',
@@ -203,9 +202,10 @@ async function initConfig(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_system_detail_config',
 		header: 'Organization',
 		name: 'node_obj_sys_admin_system_detail_config',

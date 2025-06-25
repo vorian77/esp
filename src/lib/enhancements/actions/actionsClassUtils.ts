@@ -18,7 +18,7 @@ export default async function action(
 			return new MethodResult({
 				error: {
 					file: FILENAME,
-					function: 'default',
+					function: 'action',
 					msg: `No case defined for actionType: ${actionType}`
 				}
 			})

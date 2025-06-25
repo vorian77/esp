@@ -36,7 +36,7 @@
 		}
 	})
 
-	let field: FieldCustomActionLink = $derived(parms.field)
+	let field: FieldFile = $derived(parms.field)
 	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
 	$effect(() => {
 		urlCurrent = fieldValue && fieldValue.url ? fieldValue.url : urlCurrent
@@ -72,7 +72,7 @@
 			isSourceStorage = false
 			urlCurrent = URL.createObjectURL(files[0])
 
-			let result: MethodResult = field.getKey()
+			let result: MethodResult = await field.getKey()
 			if (result.error) return result
 			const key = result.data
 

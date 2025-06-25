@@ -9,7 +9,6 @@ function initDataObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Data Objects',
 		name: 'data_obj_sys_admin_data_obj_list',
@@ -38,7 +37,6 @@ function initDataObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Data Object',
 		name: 'data_obj_sys_admin_data_obj_detail',
 		owner: 'sys_system',
@@ -83,16 +81,6 @@ function initDataObj(init: InitDb) {
 				fieldListItemsParmValue: 'ct_sys_do_cardinality'
 			},
 			{
-				codeFieldElement: 'radio',
-				columnName: 'codeComponent',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_do_component'
-			},
-			{
 				codeFieldElement: 'select',
 				columnName: 'codeDataObjType',
 				isDisplayable: true,
@@ -131,28 +119,6 @@ function initDataObj(init: InitDb) {
 				orderDisplay: 64,
 				orderDefine: 64,
 				indexTable: 0
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'radio',
-				columnName: 'codeDoQueryType',
-				isDisplayable: true,
-				orderDisplay: 68,
-				orderDefine: 68,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_do_query_type'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'radio',
-				columnName: 'codeDoRenderPlatform',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_do_render_platform'
 			},
 			{
 				codeFieldElement: 'toggle',
@@ -473,10 +439,11 @@ function initDataObj(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_list',
 		header: 'Data Objects',
 		name: 'node_obj_sys_admin_data_obj_list',
@@ -484,10 +451,11 @@ function initDataObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_column_list', order: 10 }],
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_detail',
 		header: 'Data Object',
 		name: 'node_obj_sys_admin_data_obj_detail',
@@ -500,7 +468,6 @@ function initDataObjColumn(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter:
 			'.id IN (SELECT sys_core::SysDataObj FILTER .id = <tree,uuid,SysDataObj.id>).columns.id',
 		header: 'Columns',
@@ -602,7 +569,6 @@ function initDataObjColumn(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Column',
 		name: 'data_obj_sys_admin_data_obj_column_detail',
 		owner: 'sys_system',
@@ -1381,10 +1347,11 @@ function initDataObjColumn(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_column_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_column_list',
 		header: 'Columns',
 		name: 'node_obj_sys_admin_data_obj_column_list',
@@ -1392,9 +1359,10 @@ function initDataObjColumn(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_column_detail',
 		header: 'Column',
 		name: 'node_obj_sys_admin_data_obj_column_detail',

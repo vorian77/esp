@@ -32,7 +32,12 @@ export function arrayOfEnums(
 	values = getArray(values)
 	const enums = []
 	for (const val of values) {
-		enums.push(memberOfEnum(val, className, fieldName, enumName, enumObj))
+		try {
+			const enumValue = memberOfEnum(val, className, fieldName, enumName, enumObj)
+			enums.push(enumValue)
+		} catch (e) {
+			console.error('arrayOfEnums.error', e)
+		}
 	}
 	return enums
 }

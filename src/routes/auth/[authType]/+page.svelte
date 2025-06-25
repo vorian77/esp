@@ -1,10 +1,18 @@
 <script lang="ts">
 	import srcLogo from '$assets/org_logo_sys.png'
 	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
-	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, Node } from '$utils/types'
+	import {
+		CodeAction,
+		CodeActionClass,
+		CodeActionType,
+		ContextKey,
+		Node,
+		NodeObjComponent
+	} from '$utils/types'
 	import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
 	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
 	import {
+		TokenApiId,
 		TokenApiQueryType,
 		TokenAppDoQuery,
 		TokenAppStateTriggerAction
@@ -28,36 +36,33 @@
 		storeToast: getToastStore()
 	})
 
-	let promise = $state(retrieveForm())
+	let promise = $state(loadForm())
 
-	async function retrieveForm() {
+	async function loadForm() {
+		const clazz = `loadForm`
 		if (sm) {
 			const authType = data.authType
 			if (authType) {
-				const dataObjects = {
-					login: 'data_obj_auth_login',
-					signup: 'data_obj_auth_signup'
+				const nodeObjects = {
+					login: 'node_obj_auth_login',
+					signup: 'node_obj_auth_signup'
 				}
-				const dataObj = dataObjects[authType]
-				if (!dataObj) {
+				const nodeObjName = nodeObjects[authType]
+				if (!nodeObjName) {
 					error(404, {
 						file: FILENAME,
-						function: 'retrieveForm',
+						function: clazz,
 						msg: `Invalid authType: ${authType}`
 					})
 				}
-				await sm.triggerAction(
+
+				return await sm.triggerAction(
 					new TokenAppStateTriggerAction({
 						codeAction: CodeAction.init(
-							CodeActionClass.ct_sys_code_action_class_do,
-							CodeActionType.doOpen
+							CodeActionClass.ct_sys_code_action_class_nav,
+							CodeActionType.openNodeFreeApp
 						),
-						data: {
-							token: new TokenAppDoQuery({
-								dataObjName: dataObj,
-								queryType: TokenApiQueryType.preset
-							})
-						},
+						data: { token: new TokenApiId(nodeObjName) },
 						stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
 					})
 				)
@@ -89,7 +94,7 @@
 		class="w-full h-full sm:h-[70%] sm:w-[50%] md:w-[375px] bg-white border-2 rounded-lg shawdow-2xl p-4 flex flex-col items-center justify-center"
 	>
 		<button onclick={() => goto('/')}>
-			<img class="h-16 mb-4" src={srcLogo} alt="The App Factory" />
+			<img class="h-16 mb-4" src={srcLogo} alt="AppFactory" />
 		</button>
 
 		{#if sm}

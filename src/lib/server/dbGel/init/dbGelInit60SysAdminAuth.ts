@@ -1,24 +1,22 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
 export function initSysAuth(init: InitDb) {
-	initDataObjAuthLogin(init)
-	initDataObjAuthLoginForgotPw(init)
-	initDataObjAuthLoginVerify(init)
+	initAuthLogin(init)
+	initAuthLoginForgotPw(init)
+	initAuthLoginVerify(init)
 
-	initDataObjAuthSignup(init)
-	initDataObjAuthSignupVerifyMobileInsert(init)
-	initDataObjAuthSignupVerifyMobileUpdate(init)
+	initAuthSignup(init)
+	initAuthSignupVerifyMobileInsert(init)
+	initAuthSignupVerifyMobileUpdate(init)
 
-	initDataObjMyAccount(init)
-	initDataObjResetPasswordAccount(init)
-	initDataObjUserPrefType(init)
+	initMyAccount(init)
+	initResetPasswordAccount(init)
+	initUserPref(init)
 }
 
-function initDataObjAuthLogin(init: InitDb) {
+function initAuthLogin(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		codeDoQueryType: 'preset',
 		header: 'Log in',
 		name: 'data_obj_auth_login',
 		owner: 'sys_system',
@@ -72,9 +70,10 @@ function initDataObjAuthLogin(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: 'ua_ca_sys_do_open_link',
+					action: 'ua_ca_sys_nav_open_node_free_custom',
 					label: 'Forgot Password?',
-					value: 'data_obj_auth_login_forgot_pw'
+					codeComponent: 'FormDetail',
+					value: 'node_obj_auth_login_forgot_pw'
 				},
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -86,10 +85,11 @@ function initDataObjAuthLogin(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: 'ua_ca_sys_do_open_link',
+					action: 'ua_ca_sys_nav_open_node_free_custom',
 					label: 'Sign up',
+					codeComponent: 'FormDetail',
 					prefix: 'Need an account?',
-					value: 'data_obj_auth_signup'
+					value: 'node_obj_auth_signup'
 				},
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -97,13 +97,19 @@ function initDataObjAuthLogin(init: InitDb) {
 			}
 		]
 	})
+	init.addTrans('sysNodeObjFree', {
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeFree',
+		codeQueryType: 'preset',
+		dataObj: 'data_obj_auth_login',
+		name: 'node_obj_auth_login',
+		owner: 'sys_system'
+	})
 }
 
-function initDataObjAuthLoginForgotPw(init: InitDb) {
+function initAuthLoginForgotPw(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		codeDoQueryType: 'preset',
 		header: 'Reset Password',
 		name: 'data_obj_auth_login_forgot_pw',
 		owner: 'sys_system',
@@ -162,14 +168,52 @@ function initDataObjAuthLoginForgotPw(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50
+			},
+			{
+				codeColor: 'primary',
+				codeFieldElement: 'customActionLink',
+				columnName: 'custom_element',
+				customElement: {
+					action: 'ua_ca_sys_nav_open_node_free_custom',
+					label: 'Log in',
+					codeComponent: 'FormDetail',
+					prefix: 'Already have an account?',
+					value: 'node_obj_auth_login'
+				},
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				codeColor: 'primary',
+				codeFieldElement: 'customActionLink',
+				columnName: 'custom_element',
+				customElement: {
+					action: 'ua_ca_sys_nav_open_node_free_custom',
+					label: 'Sign up',
+					codeComponent: 'FormDetail',
+					prefix: 'Need an account?',
+					value: 'node_obj_auth_signup'
+				},
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70
 			}
 		]
 	})
+
+	init.addTrans('sysNodeObjFree', {
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeFree',
+		codeQueryType: 'preset',
+		dataObj: 'data_obj_auth_login_forgot_pw',
+		name: 'node_obj_auth_login_forgot_pw',
+		owner: 'sys_system'
+	})
 }
 
-function initDataObjAuthLoginVerify(init: InitDb) {
+function initAuthLoginVerify(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_login_verify',
@@ -234,13 +278,19 @@ function initDataObjAuthLoginVerify(init: InitDb) {
 			}
 		]
 	})
+	init.addTrans('sysNodeObjFree', {
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeFree',
+		codeQueryType: 'preset',
+		dataObj: 'data_obj_auth_login_verify',
+		name: 'node_obj_auth_login_verify',
+		owner: 'sys_system'
+	})
 }
 
-function initDataObjAuthSignup(init: InitDb) {
+function initAuthSignup(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		codeDoQueryType: 'preset',
 		header: 'Sign up',
 		name: 'data_obj_auth_signup',
 		owner: 'sys_system',
@@ -320,10 +370,11 @@ function initDataObjAuthSignup(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: 'ua_ca_sys_do_open_link',
+					action: 'ua_ca_sys_nav_open_node_free_custom',
 					label: 'Log in',
+					codeComponent: 'FormDetail',
 					prefix: 'Already have an account?',
-					value: 'data_obj_auth_login'
+					value: 'node_obj_auth_login'
 				},
 				isDisplayable: true,
 				orderDisplay: 90,
@@ -331,11 +382,18 @@ function initDataObjAuthSignup(init: InitDb) {
 			}
 		]
 	})
+	init.addTrans('sysNodeObjFree', {
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeFree',
+		codeQueryType: 'preset',
+		dataObj: 'data_obj_auth_signup',
+		name: 'node_obj_auth_signup',
+		owner: 'sys_system'
+	})
 }
 
-function initDataObjAuthSignupVerifyMobileInsert(init: InitDb) {
+function initAuthSignupVerifyMobileInsert(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_signup_verify_mobile_insert',
@@ -400,11 +458,18 @@ function initDataObjAuthSignupVerifyMobileInsert(init: InitDb) {
 			}
 		]
 	})
+	init.addTrans('sysNodeObjFree', {
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeFree',
+		codeQueryType: 'preset',
+		dataObj: 'data_obj_auth_signup_verify_mobile_insert',
+		name: 'node_obj_auth_signup_verify_mobile_insert',
+		owner: 'sys_system'
+	})
 }
 
-function initDataObjAuthSignupVerifyMobileUpdate(init: InitDb) {
+function initAuthSignupVerifyMobileUpdate(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_signup_verify_mobile_update',
@@ -469,14 +534,20 @@ function initDataObjAuthSignupVerifyMobileUpdate(init: InitDb) {
 			}
 		]
 	})
+	init.addTrans('sysNodeObjFree', {
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeFree',
+		codeQueryType: 'preset',
+		dataObj: 'data_obj_auth_signup_verify_mobile_update',
+		name: 'node_obj_auth_signup_verify_mobile_update',
+		owner: 'sys_system'
+	})
 }
 
-function initDataObjMyAccount(init: InitDb) {
-	init.addTrans('sysDataObjTask', {
+function initMyAccount(init: InitDb) {
+	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_auth_my_account',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
-		codeDataObjType: 'taskTarget',
 		exprFilter: '.id = <user,uuid,id>',
 		header: 'My Account',
 		name: 'data_obj_task_sys_auth_my_account',
@@ -649,9 +720,10 @@ function initDataObjMyAccount(init: InitDb) {
 				codeFieldElement: 'customActionLink',
 				columnName: 'custom_element',
 				customElement: {
-					action: 'ua_ca_sys_do_open_link',
+					action: 'ua_ca_sys_nav_open_node_free_custom',
 					label: 'Reset Password?',
-					value: 'data_obj_auth_reset_password_account'
+					codeComponent: 'FormDetail',
+					value: 'node_obj_auth_reset_password_account'
 				},
 				isDisplayable: true,
 				orderDisplay: 1060,
@@ -659,13 +731,19 @@ function initDataObjMyAccount(init: InitDb) {
 			}
 		]
 	})
+	init.addTrans('sysNodeObjFree', {
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeFree',
+		codeQueryType: 'retrieve',
+		dataObj: 'data_obj_task_sys_auth_my_account',
+		name: 'node_obj_task_sys_auth_my_account',
+		owner: 'sys_system'
+	})
 }
 
-function initDataObjResetPasswordAccount(init: InitDb) {
+function initResetPasswordAccount(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		codeComponent: 'FormDetail',
 		codeCardinality: 'detail',
-		codeDoQueryType: 'preset',
 		header: 'Reset Password',
 		name: 'data_obj_auth_reset_password_account',
 		owner: 'sys_system',
@@ -708,6 +786,7 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 				customElement: {
 					action: 'ua_ca_sys_auth_submit',
 					label: 'Confirm Mobile Phone Number',
+					codeComponent: 'FormDetail',
 					value: 'data_obj_auth_reset_password_account'
 				},
 				isDisplayable: true,
@@ -727,27 +806,34 @@ function initDataObjResetPasswordAccount(init: InitDb) {
 			}
 		]
 	})
+	init.addTrans('sysNodeObjFree', {
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeFree',
+		codeQueryType: 'preset',
+		dataObj: 'data_obj_auth_reset_password_account',
+		name: 'node_obj_auth_reset_password_account',
+		owner: 'sys_system'
+	})
 }
 
-function initDataObjUserPrefType(init: InitDb) {
+function initUserPref(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_embed_list_edit',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		codeListPresetType: 'insertSave',
 		exprFilter: `.user.id = <user,uuid,id>`,
 		header: 'My Preferences',
 		isListEdit: true,
 		isListSuppressFilterSort: true,
 		listPresetExpr: `WITH 
-			allPrefs := (SELECT sys_core::SysCode FILTER .codeType.name = 'ct_sys_user_pref_type'),
-			userPrefs := (SELECT sys_user::SysUserPrefType FILTER .user.id = <user,uuid,id>).codeType,
-			newVals := (SELECT allPrefs EXCEPT userPrefs)
+			allTypes := (SELECT sys_core::SysCode FILTER .codeType.name = 'ct_sys_user_pref_type'),
+			userTypes := (SELECT sys_user::SysUserPref FILTER .user.id = <user,uuid,id>).codeType,
+			newVals := (SELECT allTypes EXCEPT userTypes)
 			SELECT newVals`,
-		name: 'data_obj_auth_user_pref_type',
+		name: 'data_obj_auth_user_pref_list',
 		owner: 'sys_system',
 		tables: [
-			{ index: 0, table: 'SysUserPrefType' },
+			{ index: 0, table: 'SysUserPref' },
 			{ columnParent: 'codeType', indexParent: 0, index: 1, table: 'SysCode' }
 		],
 		fields: [
@@ -826,5 +912,13 @@ function initDataObjUserPrefType(init: InitDb) {
 				orderDefine: 1040
 			}
 		]
+	})
+	init.addTrans('sysNodeObjFree', {
+		codeComponent: 'FormList',
+		codeNodeType: 'nodeFree',
+		codeQueryType: 'retrieve',
+		dataObj: 'data_obj_auth_user_pref_list',
+		name: 'node_obj_auth_user_pref_list',
+		owner: 'sys_system'
 	})
 }

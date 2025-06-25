@@ -1,5 +1,5 @@
 import { State } from '$comps/app/types.appState.svelte'
-import { userActionStateChangeDataObj } from '$comps/other/types.userAction.svelte'
+import { userActionStateChangeTab } from '$comps/other/types.userAction.svelte'
 import { TokenAppStateTriggerAction } from '$utils/types.token'
 import { CodeActionType, MethodResult } from '$utils/types'
 import { Token, TokenAppModalEmbedField, TokenAppModalSelect } from '$utils/types.token'
@@ -22,14 +22,13 @@ export default async function action(
 		case CodeActionType.modalOpenEmbedFieldLevel:
 			result = await sm.app.addLevelEmbedFieldModal(sm, token as TokenAppModalEmbedField)
 			if (result.error) return result
-			await userActionStateChangeDataObj(sm, parms)
+			await userActionStateChangeTab(sm, parms)
 			break
 
 		case CodeActionType.modalOpenEmbedFieldTree:
 			result = await sm.app.addTreeEmbedFieldModal(sm, token as TokenAppModalEmbedField)
 			if (result.error) return result
-
-			await userActionStateChangeDataObj(sm, parms)
+			await userActionStateChangeTab(sm, parms)
 			break
 
 		case CodeActionType.modalOpenSelect:

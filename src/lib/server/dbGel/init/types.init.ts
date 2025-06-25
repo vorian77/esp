@@ -173,7 +173,7 @@ export class InitDb {
 				name: 'sysDataObjEmbed',
 				dataMap: 'name',
 				deleteObj: 'sys_core::SysDataObj',
-				deleteObjFilter: `.codeDataObjType.name = 'embed'`,
+				deleteObjFilter: `.codeDataObjType.name = 'doEmbed'`,
 				fCreate: addDataObj
 			})
 		)
@@ -204,20 +204,10 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
-				name: 'sysDataObjTask',
-				dataMap: 'name',
-				deleteObj: 'sys_core::SysDataObj',
-				deleteObjFilter: `.codeDataObjType.name IN {'taskPage', 'taskTarget'}`,
-				fCreate: addDataObj
-			})
-		)
-
-		this.items.push(
-			new InitDbItemObject({
 				name: 'sysDataObj',
 				dataMap: 'name',
 				deleteObj: 'sys_core::SysDataObj',
-				deleteObjFilter: `.codeDataObjType.name IN {'default'}`,
+				deleteObjFilter: `.codeDataObjType.name IN {'doDefault'}`,
 				fCreate: addDataObj
 			})
 		)
@@ -231,19 +221,28 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
-				name: 'sysNodeObjProgramObj',
+				name: 'sysNodeObjFree',
 				dataMap: 'name',
 				deleteObj: 'sys_core::SysNodeObj',
-				deleteObjFilter: `.codeNodeType.name = 'program_object' AND .codeNavType.name = 'tree'`,
+				deleteObjFilter: `.codeNodeType.name = 'nodeFree'`,
 				fCreate: addNode
 			})
 		)
 		this.items.push(
 			new InitDbItemObject({
-				name: 'sysNodeObjProgram',
+				name: 'sysNodeObjAppObj',
 				dataMap: 'name',
 				deleteObj: 'sys_core::SysNodeObj',
-				deleteObjFilter: `.codeNodeType.name = 'program' AND .codeNavType.name = 'tree'`,
+				deleteObjFilter: `.codeNodeType.name = 'nodeAppObj'`,
+				fCreate: addNode
+			})
+		)
+		this.items.push(
+			new InitDbItemObject({
+				name: 'sysNodeObjApp',
+				dataMap: 'name',
+				deleteObj: 'sys_core::SysNodeObj',
+				deleteObjFilter: `.codeNodeType.name = 'nodeApp'`,
 				fCreate: addNode
 			})
 		)
@@ -253,14 +252,14 @@ export class InitDb {
 				name: 'sysNodeObjTask',
 				dataMap: 'name',
 				deleteObj: 'sys_core::SysNodeObj',
-				deleteObjFilter: `.codeNavType.name = 'task'`,
+				deleteObjFilter: `.codeNodeType.name = 'nodeTask'`,
 				fCreate: addNode
 			})
 		)
 
 		this.items.push(
 			new InitDbItemObject({
-				altTrans: ['sysDataObj', 'sysDataObjEmbed', 'sysDataObjTask'],
+				altTrans: ['sysDataObj', 'sysDataObjEmbed'],
 				name: 'updateDepdDataObjColumnItemChange',
 				dataMap: 'name',
 				deleteObj: 'sys_core::SysDataObjColumnItemChange',
@@ -271,7 +270,7 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
-				altTrans: ['sysDataObj', 'sysDataObjEmbed', 'sysDataObjTask'],
+				altTrans: ['sysDataObj', 'sysDataObjEmbed'],
 				name: 'updateDepdDataObjQueryRider',
 				dataMap: 'name',
 				deleteObj: 'sys_core::SysDataObjQueryRider',
@@ -282,7 +281,7 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
-				altTrans: ['sysDataObj', 'sysDataObjEmbed', 'sysDataObjTask'],
+				altTrans: ['sysDataObj', 'sysDataObjEmbed'],
 				name: 'updateDepdGridStylesDataObj',
 				dataMap: 'name',
 				deleteObj: 'sys_core::SysGridStyle',
@@ -293,7 +292,7 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
-				altTrans: ['sysNodeObjProgramObj', 'sysNodeObjProgram', 'sysNodeObjTask'],
+				altTrans: ['sysNodeObjAppObj', 'sysNodeObjApp', 'sysNodeObjTask'],
 				name: 'updateDepdNodeAction',
 				dataMap: 'name',
 				fCreate: updateDepdNodeAction,
@@ -303,7 +302,7 @@ export class InitDb {
 		)
 		this.items.push(
 			new InitDbItemObject({
-				altTrans: ['sysNodeObjProgramObj', 'sysNodeObjProgram', 'sysNodeObjTask'],
+				altTrans: ['sysNodeObjAppObj', 'sysNodeObjApp', 'sysNodeObjTask'],
 				name: 'updateDepdNodeChild',
 				dataMap: 'name',
 				fCreate: updateDepdNodeChild,
@@ -325,11 +324,12 @@ export class InitDb {
 
 		this.items.push(
 			new InitDbItemObject({
+				altTrans: ['sysSystem'],
+				deleteObj: 'sys_core::SysNodeObjConfig',
+				deleteObjFilter: `.id IN (SELECT sys_core::SysSystem FILTER ${TokenExprFilterRecord}).nodesConfig.id`,
 				name: 'updateSystemNodesConfig',
 				dataMap: 'name',
-				fCreate: updateSystemNodesConfig,
-				updateObj: 'sys_core::SysSystem',
-				updateObjFields: [['nodesConfig', '{}']]
+				fCreate: updateSystemNodesConfig
 			})
 		)
 
@@ -387,6 +387,7 @@ export class InitDb {
 			new InitDbItemObject({
 				name: 'sysUser',
 				dataMap: 'name',
+				exprResets: `DELETE sys_user::SysUserParm`,
 				fCreate: addUser
 			})
 		)

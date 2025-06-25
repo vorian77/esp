@@ -15,11 +15,17 @@
 </script>
 
 {#if item}
+	{@const menuOpen = item.navMenu.isOpen}
+	{@const classIndent = ['', 'ml-[18px]', 'ml-[32px]'][item.indent]}
+	{@const isApps = item instanceof NavMenuDataCompAppsItem}
+	{@const isItem = item instanceof NavMenuDataCompItem}
+	{@const isGroup = item.isGroup}
+	{@const isOrg = item.isOrg}
+	{@const isUser = item.isUser}
 	{@const showItem = item.parent instanceof NavMenuDataCompItem ? item.parent.isOpen : true}
 	{@const showIcon = item.isRoot && item.icon}
 	{@const showToggle = item.isRoot && item.hasChildren}
 	{@const classMB = showToggle ? 'mb-1' : 'mb-3'}
-
 	{#if showItem}
 		<li class="{classIndent} {classMB}  ">
 			<button
@@ -40,11 +46,11 @@
 					</div>
 				{/if}
 
-				{#if item.navMenu.isOpen}
+				{#if menuOpen}
 					<div
-						class="grow text-left {showIcon
-							? 'ml-1'
-							: ''}  hover:-translate-y-0.5 transition-transform"
+						class="grow text-left {showIcon ? 'ml-1' : ''} 
+							{item.isHighlighted ? 'font-semibold' : ''} 
+							hover:-translate-y-0.5 transition-transform"
 					>
 						<span in:fade={item.navMenu.fadeIn} out:fade={item.navMenu.fadeOut}>
 							{item.label.text}

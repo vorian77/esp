@@ -10,7 +10,6 @@ function initCodeAction(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Code Actions',
 		name: 'data_obj_sys_admin_code_action_list',
@@ -50,7 +49,6 @@ function initCodeAction(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Code Action',
 		name: 'data_obj_sys_admin_code_action_detail',
 		owner: 'sys_system',
@@ -165,19 +163,21 @@ function initCodeAction(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_code_action_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_code_action_list',
 		header: 'Code Actions',
 		name: 'node_obj_sys_admin_code_action_list',
 		orderDefine: 45,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_code_action_detail',
 		header: 'Code Action',
 		name: 'node_obj_sys_admin_code_action_detail',
@@ -190,7 +190,6 @@ function initDataObjActionGroup(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Data Object Action Groups',
 		name: 'data_obj_sys_admin_data_obj_action_group_list',
@@ -219,7 +218,6 @@ function initDataObjActionGroup(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Data Object Action Group',
 		name: 'data_obj_sys_admin_data_obj_action_group_detail',
 		owner: 'sys_system',
@@ -324,10 +322,11 @@ function initDataObjActionGroup(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_action_group_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_action_group_list',
 		header: 'Data Object Action Groups',
 		name: 'node_obj_sys_admin_data_obj_action_group_list',
@@ -335,9 +334,10 @@ function initDataObjActionGroup(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_data_obj_action_group_detail',
 		header: 'Data Object Action Group',
 		name: 'node_obj_sys_admin_data_obj_action_group_detail',
@@ -350,7 +350,6 @@ function initUserAction(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'User Actions',
 		name: 'data_obj_sys_admin_user_action_list',
@@ -379,7 +378,6 @@ function initUserAction(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'User Action',
 		name: 'data_obj_sys_admin_user_action_detail',
 		owner: 'sys_system',
@@ -516,10 +514,11 @@ function initUserAction(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_user_action_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_user_action_list',
 		header: 'User Actions',
 		name: 'node_obj_sys_admin_user_action_list',
@@ -527,9 +526,10 @@ function initUserAction(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_user_action_detail',
 		header: 'User Action',
 		name: 'node_obj_sys_admin_user_action_detail',

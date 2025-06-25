@@ -4,7 +4,6 @@ import {
 	CodeAction,
 	CodeActionType,
 	DataObj,
-	DataObjRenderPlatform,
 	DataObjData,
 	DataObjSort,
 	type DataRecord,
@@ -12,15 +11,20 @@ import {
 	DataRow,
 	debug,
 	memberOfEnum,
+	memberOfEnumIfExists,
 	MethodResult,
 	MethodResultError,
 	nbrRequired,
+	Node,
+	NodeObjComponent,
 	ParmsValues,
 	required,
 	strRequired,
 	User,
+	UserParmItemSave,
 	valueOrDefault
 } from '$utils/types'
+import { FieldCustomAction } from '$comps/form/fieldCustom'
 import { UserAction } from '$comps/other/types.userAction.svelte'
 import {
 	QueryManagerSource,
@@ -32,7 +36,6 @@ import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
 import { State, StateParms, StateTriggerToken } from '$comps/app/types.appState.svelte'
 import { App } from '$comps/app/types.app.svelte'
 import { AppRowActionType } from '$comps/app/types.app.svelte'
-import { Node } from '$comps/app/types.node'
 import { FieldColumnItem } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { Process } from '$utils/utils.process'
@@ -53,8 +56,7 @@ export class NavDestinationNode {
 export enum NavDestinationType {
 	back = 'back',
 	home = 'home',
-	nodeBack = 'nodeBack',
-	nodeForward = 'nodeForward'
+	nodeBack = 'nodeBack'
 }
 
 export class Token {
@@ -237,6 +239,7 @@ export class TokenApiQueryData {
 	dataTab: DataObjData
 	dataTree: TokenApiQueryDataTree
 	dbExpr?: string
+	node?: Node
 	rawDataList: RawDataList = []
 	record: DataRecord
 	system: DataRecord
@@ -246,6 +249,7 @@ export class TokenApiQueryData {
 		this.dataTab = this.dataSet(data, 'dataTab', new DataObjData())
 		this.dataTree = this.dataSet(data, 'dataTree', [])
 		this.dbExpr = this.dataSet(data, 'dbExpr', '')
+		this.node = this.dataSet(data, 'node', undefined)
 		this.rawDataList = this.dataSet(data, 'rawDataList', [])
 		this.record = this.dataSet(data, 'record', {})
 		this.system = this.dataSet(data, 'system', {})
@@ -271,14 +275,13 @@ export class TokenApiQueryData {
 	dataSet(data: any, key: string, defaultVal: any) {
 		return data[key] === undefined ? defaultVal : data[key]
 	}
-	getParms() {
-		return this.dataTab ? this.dataTab.getParms() : {}
-	}
-
-	updateData(dataObjId: string, dataRow: DataRow) {
+	dataUpdate(dataObjId: string, dataRow: DataRow) {
 		this.record = dataRow.record
 		const level = this.dataTree.levels.find((l) => l.dataObjId === dataObjId)
 		if (level) level.dataRow = dataRow
+	}
+	getParms() {
+		return this.dataTab ? this.dataTab.getParms() : {}
 	}
 }
 export class TokenApiQueryDataTree {
@@ -389,10 +392,9 @@ export class TokenApiQueryDataTreeLevel {
 }
 
 export enum TokenApiQueryType {
-	autonomous = 'autonomous',
-	none = 'none',
 	preset = 'preset',
 	retrieve = 'retrieve',
+	retrievePreset = 'retrievePreset',
 	save = 'save'
 }
 
@@ -414,15 +416,21 @@ export class TokenApiUser extends TokenApi {
 	}
 }
 
-export class TokenApiUserPref extends TokenApi {
-	idFeature: string
+export class TokenApiUserParmsGet extends TokenApi {
+	idFeature: number
 	idUser: string
-	prefData: any
-	constructor(idUser: string, idFeature: string, prefData: any | undefined = undefined) {
+	constructor(idUser: string, idFeature: number) {
 		super()
 		this.idFeature = idFeature
 		this.idUser = idUser
-		this.prefData = prefData
+	}
+}
+
+export class TokenApiUserParmsSet extends TokenApi {
+	items: UserParmItemSave[]
+	constructor(items: UserParmItemSave[]) {
+		super()
+		this.items = items
 	}
 }
 
@@ -433,41 +441,47 @@ export class TokenApp extends Token {
 	}
 }
 
-export class TokenAppDo extends TokenApp {
-	actionType: CodeActionType
+export class TokenAppActionTrigger extends TokenApp {
 	dataObj: DataObj
-	userAction?: UserAction
+	userAction: UserAction
 	constructor(obj: any) {
-		const clazz = 'TokenAppDo'
+		const clazz = 'TokenAppActionTrigger'
 		super(obj)
-		this.actionType = required(
-			obj.actionType || obj?.userAction?.codeAction?.actionType,
-			clazz,
-			'actionType'
-		)
 		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
-		this.userAction = obj.userAction
+		this.userAction = required(obj.userAction, clazz, 'userAction')
+	}
+}
+
+export class TokenAppDoCustom extends TokenApp {
+	fieldCustom: FieldCustomAction
+	constructor(obj: any) {
+		const clazz = 'TokenAppDoCustom'
+		super(obj)
+		this.fieldCustom = required(obj.fieldCustom, clazz, 'fieldCustom')
 	}
 }
 
 export class TokenAppDoQuery extends TokenApp {
+	codeComponent: NodeObjComponent
 	dataObjId?: string
 	dataObjName?: string
 	queryType: TokenApiQueryType
-	renderPlatform: DataObjRenderPlatform
 	source: string
 	constructor(obj: any) {
-		const clazz = 'TokenAppDo'
+		const clazz = 'TokenAppDoQuery'
 		super(obj)
+		this.codeComponent = memberOfEnum(
+			obj.codeComponent,
+			clazz,
+			'codeComponent',
+			'NodeObjComponent',
+			NodeObjComponent
+		)
 		this.dataObjId = obj.dataObjId
 		this.dataObjName = obj.dataObjName
 		this.queryType = required(obj.queryType, clazz, 'queryType')
-		/* todo: add specification of render platform */
-		this.renderPlatform = required(
-			obj.renderPlatform || DataObjRenderPlatform.app,
-			clazz,
-			'renderPlatform'
-		)
+
+		// derived
 		this.source = strRequired(this.dataObjId || this.dataObjName, clazz, 'dataObjId or dataObjName')
 	}
 
@@ -564,26 +578,10 @@ export class TokenAppNav extends TokenApp {
 
 export class TokenAppNode extends TokenApp {
 	node: Node
-	queryType: TokenApiQueryType
-	renderPlatform: DataObjRenderPlatform
 	constructor(obj: any) {
 		const clazz = 'TokenAppNode'
 		super(obj)
 		this.node = required(obj.node, clazz, 'node')
-		this.queryType = required(obj.queryType, clazz, 'queryType')
-		this.renderPlatform = required(obj.renderPlatform, clazz, 'renderPlatform')
-	}
-}
-export class TokenAppProcess extends TokenApp {
-	dataObjSource: TokenApiDbDataObjSource
-	process: Process
-	constructor(obj: any) {
-		const clazz = 'TokenAppProcess'
-		super(obj)
-		this.dataObjSource = new TokenApiDbDataObjSource({
-			dataObjName: strRequired(obj.dataObjNameProcess, clazz, 'dataObjNameProcess')
-		})
-		this.process = required(obj.process, clazz, 'process')
 	}
 }
 
@@ -604,6 +602,7 @@ export class TokenAppStateTriggerAction extends TokenApp {
 	fCallback: Function | undefined = undefined
 	isMultiTree: boolean
 	stateParms: StateParms
+	target?: TokenAppStateTriggerActionTarget
 	transParms: ParmsValues
 	constructor(obj: any) {
 		const clazz = 'TokenAppStateTriggerAction'
@@ -616,24 +615,40 @@ export class TokenAppStateTriggerAction extends TokenApp {
 		this.fCallback = obj.fCallback
 		this.isMultiTree = booleanOrFalse(obj.isMultiTree)
 		this.stateParms = obj.stateParms || new StateParms({})
+		this.target =
+			memberOfEnumIfExists(
+				obj.target,
+				'target',
+				clazz,
+				'TokenAppStateTriggerActionTarget',
+				TokenAppStateTriggerActionTarget
+			) || TokenAppStateTriggerActionTarget.node
 		this.transParms = new ParmsValues(obj.transParms)
 	}
-	setMenuClose() {
-		this.updateStateParms({}, [StateTriggerToken.menuClose])
-	}
+
 	setTransParms(data: DataRecord) {
 		this.transParms = new ParmsValues(data)
 	}
-	updateStateParms(parms: DataRecord, triggerTokens: StateTriggerToken[] = []) {
+	updateStateParmsData(parms: DataRecord) {
 		for (const key in parms) {
 			this.stateParms.data[key] = parms[key]
 		}
+	}
+	updateStateParmsTokens(triggerTokens: StateTriggerToken[]) {
 		triggerTokens.forEach((triggerToken: StateTriggerToken) => {
 			if (!this.stateParms.triggerTokens.find((tt) => tt === triggerToken)) {
 				this.stateParms.triggerTokens.push(triggerToken)
 			}
 		})
 	}
+	updateStateParmsTokensMenuClose() {
+		this.updateStateParmsTokens([StateTriggerToken.menuClose])
+	}
+}
+
+export enum TokenAppStateTriggerActionTarget {
+	dataObj = 'dataObj',
+	node = 'node'
 }
 
 export class TokenAppTab extends TokenApp {

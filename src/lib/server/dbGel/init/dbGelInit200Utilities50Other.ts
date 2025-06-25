@@ -274,40 +274,45 @@ export async function addNode(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			codeIcon: e.str,
-			codeNavType: e.optional(e.str) || 'tree',
+			codeComponent: e.str,
+			codeIcon: e.optional(e.str),
 			codeNodeType: e.str,
 			codeQueryOwnerType: e.optional(e.str),
-			dataObj: e.str,
+			codeQueryType: e.optional(e.str),
+			codeRenderPlatform: e.optional(e.str),
+			dataObj: e.optional(e.str),
 			header: e.optional(e.str),
 			isAlwaysRetrieveData: e.optional(e.bool),
-			isDynamicChildrenSystemParents: e.optional(e.bool),
 			isHideRowManager: e.optional(e.bool),
 			name: e.str,
-			orderDefine: e.int16,
+			orderDefine: e.optional(e.int16),
 			owner: e.str,
-			page: e.optional(e.str)
+			page: e.optional(e.str),
+			selectListItems: e.optional(e.str),
+			selectListItemsHeader: e.optional(e.str),
+			selectListItemsParmValue: e.optional(e.str)
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysNodeObj, {
+				codeComponent: e.select(e.sys_core.getCode('ct_sys_do_component', p.codeComponent)),
 				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
-				codeNavType: e.sys_core.getCode(
-					'ct_sys_node_obj_nav_type',
-					valueOrDefaultParm(p.codeNavType, 'tree')
-				),
 				codeNodeType: e.sys_core.getCode('ct_sys_node_obj_type', p.codeNodeType),
 				codeQueryOwnerType: e.sys_core.getCode('ct_sys_query_owner_type', p.codeQueryOwnerType),
+				codeQueryType: e.sys_core.getCode('ct_sys_query_type', p.codeQueryType),
+				codeRenderPlatform: e.sys_core.getCode('ct_sys_do_render_platform', p.codeRenderPlatform),
 				dataObj: e.sys_core.getDataObj(p.dataObj),
 				createdBy: CREATOR,
 				header: p.header,
 				isAlwaysRetrieveData: valueOrDefaultParm(p.isAlwaysRetrieveData, false),
-				isDynamicChildrenSystemParents: valueOrDefaultParm(p.isDynamicChildrenSystemParents, false),
 				isHideRowManager: valueOrDefaultParm(p.isHideRowManager, false),
 				modifiedBy: CREATOR,
 				name: p.name,
 				orderDefine: p.orderDefine,
 				owner: e.sys_core.getSystemPrime(p.owner),
-				page: p.page
+				page: p.page,
+				selectListItems: e.select(e.sys_core.getDataObjFieldListItems(p.selectListItems)),
+				selectListItemsHeader: p.selectListItemsHeader,
+				selectListItemsParmValue: p.selectListItemsParmValue
 			})
 		}
 	)
@@ -339,47 +344,39 @@ export async function addTask(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			codeIcon: e.str,
-			codeRenderType: e.str,
-			codeStatusObj: e.optional(e.str),
+			codeIcon: e.optional(e.str),
+			codeTaskStatusObj: e.optional(e.str),
+			codeTaskType: e.str,
 			description: e.optional(e.str),
 			exprShow: e.optional(e.str),
 			exprStatus: e.optional(e.str),
 			exprWith: e.optional(e.str),
 			hasAltOpen: e.optional(e.bool),
 			header: e.optional(e.str),
-			isPinToDash: e.optional(e.bool),
-			isGlobalResource: e.bool,
+			isGlobalResource: e.optional(e.bool),
 			name: e.str,
 			noDataMsg: e.optional(e.str),
-			pageDataObj: e.optional(e.str),
-			targetDataObj: e.optional(e.str),
-			targetNodeObj: e.optional(e.str),
-			orderDefine: e.int16,
+			nodeObj: e.optional(e.str),
 			owner: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysTask, {
 				codeAttrType: e.select(e.sys_core.getCodeAttrType('at_sys_task')),
 				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
-				codeRenderType: e.sys_core.getCode('ct_sys_task_render_type', p.codeRenderType),
-				codeStatusObj: e.sys_core.getCode('ct_sys_task_status_obj', p.codeStatusObj),
+				codeTaskStatusObj: e.sys_core.getCode('ct_sys_task_status_obj', p.codeTaskStatusObj),
+				codeTaskType: e.sys_core.getCode('ct_sys_task_type', p.codeTaskType),
 				createdBy: CREATOR,
 				exprShow: p.exprShow,
 				exprStatus: p.exprStatus,
 				exprWith: p.exprWith,
 				hasAltOpen: valueOrDefaultParm(p.hasAltOpen, false),
 				header: p.header,
-				isPinToDash: valueOrDefaultParm(p.isPinToDash, false),
-				isGlobalResource: p.isGlobalResource,
+				isGlobalResource: valueOrDefaultParm(p.isGlobalResource, false),
 				modifiedBy: CREATOR,
 				name: p.name,
 				noDataMsg: p.noDataMsg,
-				orderDefine: p.orderDefine,
-				owner: e.sys_core.getSystemPrime(p.owner),
-				pageDataObj: e.sys_core.getDataObj(p.pageDataObj),
-				targetDataObj: e.sys_core.getDataObj(p.targetDataObj),
-				targetNodeObj: e.sys_core.getNodeObjByName(p.targetNodeObj)
+				nodeObj: e.sys_core.getNodeObjByName(p.nodeObj),
+				owner: e.sys_core.getSystemPrime(p.owner)
 			})
 		}
 	)

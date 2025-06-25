@@ -11,11 +11,8 @@ export async function qrfUserUpdate(
 	queryRider: QueryRider,
 	queryData: TokenApiQueryData
 ): Promise<MethodResult> {
-	if (
-		queryData.dataTab.rowsSave.getDetailRowStatusIs(DataRecordStatus.update) &&
-		queryRider.codeTriggerTiming === QueryRiderTriggerTiming.post
-	) {
-		return sm.resetUser(false)
+	if (queryRider.codeTriggerTiming === QueryRiderTriggerTiming.post) {
+		return sm.userCurrReset()
 	}
 	return new MethodResult(queryData)
 }

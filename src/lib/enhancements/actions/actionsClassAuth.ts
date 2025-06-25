@@ -19,7 +19,7 @@ import {
 	AuthProcessParm,
 	AuthActionDB,
 	AuthActionLogic,
-	AuthActionDataObj
+	AuthActionNodeObj
 } from '$enhance/actions/types.actionsClassAuth'
 import { error } from '@sveltejs/kit'
 
@@ -31,8 +31,9 @@ export default async function action(
 	sm: State,
 	parms: TokenAppStateTriggerAction
 ): Promise<MethodResult> {
+	const clazz = `${FILENAME}.${parms.codeAction.actionType}`
 	const actionType = parms.codeAction.actionType
-	const value = parms.data.value
+
 	authProcess.reset(sm)
 
 	switch (actionType) {
@@ -41,8 +42,9 @@ export default async function action(
 			break
 
 		case CodeActionType.setUserId:
+			const valueSetUserId = strRequired(parms.data?.value, clazz, 'value')
 			const userId = strRequired(
-				value,
+				valueSetUserId,
 				userActionError(FILENAME, CodeActionType.setUserId),
 				'userId'
 			)
@@ -69,7 +71,8 @@ export default async function action(
 				'dataRecord'
 			)
 			authProcess.parmsUpdate(dataRecord)
-			switch (value) {
+			const valueSubmit = strRequired(parms.data?.token?.fieldCustom?.value, clazz, 'value')
+			switch (valueSubmit) {
 				// login
 				case 'auth_login':
 					authProcess.addAction(AuthActionDB, {
@@ -109,8 +112,8 @@ export default async function action(
 						msgFail: 'We could not find an account with your Mobile Phone Number. Please try again.'
 					})
 					authProcess.addAction(AuthActionLogic, { logic: authActionLogicCodeSend })
-					authProcess.addAction(AuthActionDataObj, {
-						dataObjName: 'data_obj_auth_login_verify'
+					authProcess.addAction(AuthActionNodeObj, {
+						nodeObjName: 'node_obj_auth_login_verify'
 					})
 					break
 
@@ -192,7 +195,7 @@ export default async function action(
 						error: {
 							file: FILENAME,
 							function: 'action-submit',
-							msg: `No case defined for submit value: ${value}`
+							msg: `No case defined for submit value: ${valueSubmit}`
 						}
 					})
 			}
@@ -202,7 +205,7 @@ export default async function action(
 			return new MethodResult({
 				error: {
 					file: FILENAME,
-					function: 'default',
+					function: 'action',
 					msg: `No case defined for actionType: ${actionType}`
 				}
 			})
@@ -211,7 +214,10 @@ export default async function action(
 	return new MethodResult()
 }
 
-async function authActionLogicCodeSend(authProcess: AuthProcess, authAction: AuthActionLogic) {
+async function authActionLogicCodeSend(
+	authProcess: AuthProcess,
+	authAction: AuthActionLogic
+): Promise<MethodResult> {
 	return codeSend(authProcess)
 }
 
@@ -219,13 +225,14 @@ async function authActionLogicCodeVerify(authProcess: AuthProcess, authAction: A
 	const securityCodeSystem = authProcess
 		.parmGetRequired(AuthProcessParm.securityCodeSystem)
 		.toString()
+
 	const securityCodeUser = authProcess.parmGetRequired(AuthProcessParm.securityCodeUser)
-	if (securityCodeUser === '999999') return true
+	if (securityCodeUser === '999999') new MethodResult(true) // todo - this should check if in dev mode
 	if (securityCodeUser !== securityCodeSystem) {
 		alert('The security code you entered is not correct. Please try again.')
-		return false
+		return new MethodResult(false)
 	}
-	return true
+	return new MethodResult(true)
 }
 
 async function authActionLogicIsNew(authProcess: AuthProcess, authAction: AuthActionLogic) {
@@ -235,11 +242,11 @@ async function authActionLogicIsNew(authProcess: AuthProcess, authAction: AuthAc
 	}
 
 	const isNew = authProcess.parmGet(AuthProcessParm.isNew)
-	const dataObjName = isNew
-		? 'data_obj_auth_signup_verify_mobile_insert'
-		: 'data_obj_auth_signup_verify_mobile_update'
+	const nodeObjName = isNew
+		? 'node_obj_auth_signup_verify_mobile_insert'
+		: 'node_obj_auth_signup_verify_mobile_update'
 	authProcess.addAction(AuthActionLogic, { logic: authActionLogicCodeSend })
-	authProcess.addAction(AuthActionDataObj, { dataObjName })
+	authProcess.addAction(AuthActionNodeObj, { nodeObjName })
 
 	return true
 }
@@ -257,7 +264,9 @@ async function authActionLogicLogin(
 
 	const sm = authProcess.getState()
 	sm.storeDrawer.close()
-	return await sm.triggerAction(
+
+	return await action(
+		sm,
 		new TokenAppStateTriggerAction({
 			codeAction: CodeAction.init(
 				CodeActionClass.ct_sys_code_action_class_do_auth,
@@ -268,7 +277,7 @@ async function authActionLogicLogin(
 	)
 }
 
-export async function codeSend(authProcess: AuthProcess) {
+export async function codeSend(authProcess: AuthProcess): Promise<MethodResult> {
 	const min = 100000
 	const max = 999999
 
@@ -278,17 +287,19 @@ export async function codeSend(authProcess: AuthProcess) {
 
 	const sm = authProcess.getState()
 
+	let returnValue: boolean = false
 	if (sm.isDevMode) {
 		console.log(`auth-securityCodeSystem: ${securityCodeSystem}`)
-		return true
+		returnValue = true
 	} else {
 		const result: MethodResult = await apiFetchFunction(
 			ApiFunction.sysSendText,
 			new TokenApiSysSendText(
 				securityCodeName,
-				`${securityCodeSystem} - The App Factory mobile phone number verification code.`
+				`${securityCodeSystem} - AppFactory mobile phone number verification code.`
 			)
 		)
-		return result.error === undefined
+		returnValue = result.error === undefined
 	}
+	return new MethodResult(returnValue)
 }

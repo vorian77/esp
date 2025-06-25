@@ -11,7 +11,6 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
-import type { Method } from 'axios'
 
 export class ScriptTypeSave {
 	action: LinkSaveAction

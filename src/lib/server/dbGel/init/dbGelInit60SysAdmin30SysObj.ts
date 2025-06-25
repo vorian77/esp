@@ -10,6 +10,7 @@ import { initAdminSysObjNodeObj } from '$server/dbGel/init/dbGelInit60SysAdmin30
 import { initAdminSysObjRep } from '$server/dbGel/init/dbGelInit60SysAdmin30SysObjRep'
 import { initAdminSysObjTask } from '$server/dbGel/init/dbGelInit60SysAdmin30SysObjTask'
 import { initAdminSysObjUserAction } from '$server/dbGel/init/dbGelInit60SysAdmin30SysObjUserAction'
+import { is } from '$db/gel/edgeql-js'
 
 export function initAdminSysObj(init: InitDb) {
 	initAttrObject(init)
@@ -29,15 +30,13 @@ export function initAdminSysObj(init: InitDb) {
 
 async function initAttrObject(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		actionGroup: 'doag_list_node_config',
+		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormListSelect',
-		exprFilter: `.owner.id = <parms,uuid,queryOwnerSys> AND .codeAttrType.id = (SELECT sys_core::SysNodeObjConfig FILTER .id = <parms,uuid,selectListId>).codeAttrType.id`,
+		codeComponent: 'SelectList',
+		exprFilter: `.owner.id = <tree,uuid,SysSystem.id> AND .codeAttrType.id = <parms,uuid,selectListRecord._codeAttrTypeId>`,
 		header: 'Attribute Objects',
-		name: 'data_obj_sys_admin_attr_obj_list_system',
+		name: 'data_obj_sys_admin_attr_obj_list',
 		owner: 'sys_system',
-		selectListItems: 'il_sys_node_obj_config_by_system',
-		selectListItemsHeader: 'Object Type',
 		tables: [{ index: 0, table: 'SysObjAttr' }],
 		fields: [
 			{
@@ -52,9 +51,17 @@ async function initAttrObject(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: true,
 				orderCrumb: 10,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 20,
+				orderDefine: 20,
 				orderSort: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'header',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30
 			}
 		]
 	})
@@ -62,7 +69,6 @@ async function initAttrObject(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Attribute Object',
 		name: 'data_obj_sys_admin_attr_obj_detail',
 		owner: 'sys_system',
@@ -183,20 +189,23 @@ async function initAttrObject(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
+		children: [{ node: 'node_obj_sys_admin_attr_obj_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'settings2',
-		codeNodeType: 'program_object',
-		dataObj: 'data_obj_sys_admin_attr_obj_list_system',
+		codeNodeType: 'nodeAppObj',
+		dataObj: 'data_obj_sys_admin_attr_obj_list',
 		header: 'Attribute Objects',
 		isAlwaysRetrieveData: true,
-		name: 'node_obj_sys_admin_attr_obj_list_system',
+		name: 'node_obj_sys_admin_attr_obj_list',
 		orderDefine: 10,
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_attr_obj_detail',
 		header: 'Attribute Object',
 		name: 'node_obj_sys_admin_attr_obj_detail',
@@ -209,7 +218,6 @@ async function initSystemObject(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list_edit_download',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: 'none',
 		header: 'Systems (Objects)',
 		name: 'data_obj_sys_admin_system_list_obj',
@@ -238,7 +246,6 @@ async function initSystemObject(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail_none',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'System (Object)',
 		name: 'data_obj_sys_admin_system_detail_obj',
 		owner: 'sys_system',
@@ -324,10 +331,11 @@ async function initSystemObject(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgram', {
+	init.addTrans('sysNodeObjApp', {
 		children: [{ node: 'node_obj_sys_admin_system_detail_obj', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program',
+		codeNodeType: 'nodeApp',
 		codeQueryOwnerType: 'queryOwnerTypeSystemRecord',
 		dataObj: 'data_obj_sys_admin_system_list_obj',
 		header: 'Systems (Objects)',
@@ -336,7 +344,7 @@ async function initSystemObject(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [
 			{ node: 'node_obj_sys_analytic_list', order: 10 },
 			{ node: 'node_obj_sys_app_header_list', order: 20 },
@@ -358,8 +366,9 @@ async function initSystemObject(init: InitDb) {
 			{ node: 'node_obj_sys_admin_task_list', order: 180 },
 			{ node: 'node_obj_sys_admin_user_action_list', order: 190 }
 		],
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_system_detail_obj',
 		header: 'System (Object)',
 		name: 'node_obj_sys_admin_system_detail_obj',

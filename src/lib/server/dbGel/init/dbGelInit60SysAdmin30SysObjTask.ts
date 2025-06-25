@@ -8,7 +8,6 @@ function initTask(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Tasks',
 		name: 'data_obj_sys_admin_task_list',
@@ -62,7 +61,6 @@ function initTask(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Task',
 		name: 'data_obj_sys_admin_task_detail',
 		owner: 'sys_system',
@@ -127,27 +125,6 @@ function initTask(init: InitDb) {
 				orderDefine: 90
 			},
 			{
-				codeFieldElement: 'select',
-				columnName: 'codeRenderType',
-				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_task_render_type'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'pageDataObj',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
-				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'taskPage'
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
@@ -197,15 +174,6 @@ function initTask(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'toggle',
-				columnName: 'isPinToDash',
-				exprPreset: `(SELECT false)`,
-				indexTable: 0,
-				isDisplayable: true,
-				orderDisplay: 170,
-				orderDefine: 170
-			},
-			{
-				codeFieldElement: 'toggle',
 				columnName: 'hasAltOpen',
 				exprPreset: `(SELECT false)`,
 				indexTable: 0,
@@ -230,29 +198,18 @@ function initTask(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'targetDataObj',
-				isDisplayable: true,
-				orderDisplay: 210,
-				orderDefine: 210,
-				indexTable: 0,
-				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'taskTarget'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'targetNodeObj',
+				columnName: 'nodeObj',
 				isDisplayable: true,
 				orderDisplay: 220,
 				orderDefine: 220,
 				indexTable: 0,
-				fieldListItems: 'il_sys_node_obj_by_nav_type',
-				fieldListItemsParmValue: 'task'
+				fieldListItems: 'il_sys_node_obj_by_node_type',
+				fieldListItemsParmValue: 'nodeTask'
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
-				columnName: 'codeStatusObj',
+				columnName: 'codeTaskStatusObj',
 				isDisplayable: true,
 				orderDisplay: 230,
 				orderDefine: 230,
@@ -351,10 +308,11 @@ function initTask(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_task_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_task_list',
 		header: 'Tasks',
 		name: 'node_obj_sys_admin_task_list',
@@ -362,9 +320,10 @@ function initTask(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_task_detail',
 		header: 'Task',
 		name: 'node_obj_sys_admin_task_detail',

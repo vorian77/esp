@@ -8,7 +8,6 @@ function initNodeObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
 		header: 'Node Objects',
 		listReorderColumn: 'orderDefine',
@@ -21,17 +20,6 @@ function initNodeObj(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'codeNavType',
-				isDisplayable: true,
-				isExcludeUpdate: true,
-				orderDisplay: 20,
-				orderDefine: 20,
-				indexTable: 0,
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -105,7 +93,6 @@ function initNodeObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Node Object',
 		name: 'data_obj_sys_admin_node_obj_detail',
 		owner: 'sys_system',
@@ -131,16 +118,6 @@ function initNodeObj(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'codeNavType',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_node_obj_nav_type'
 			},
 			{
 				codeFieldElement: 'select',
@@ -179,15 +156,6 @@ function initNodeObj(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isDynamicChildrenSystemParents',
-				exprPreset: `(SELECT false)`,
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
 				indexTable: 0
 			},
 			{
@@ -270,7 +238,7 @@ function initNodeObj(init: InitDb) {
 				orderDefine: 180,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'default'
+				fieldListItemsParmValue: 'doDefault'
 			},
 			{
 				codeAccess: 'optional',
@@ -360,10 +328,11 @@ function initNodeObj(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_node_obj_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_node_obj_list',
 		header: 'Node Objects',
 		name: 'node_obj_sys_admin_node_obj_list',
@@ -371,9 +340,10 @@ function initNodeObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_node_obj_detail',
 		header: 'Node Object',
 		name: 'node_obj_sys_admin_node_obj_detail',

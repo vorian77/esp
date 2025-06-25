@@ -1,5 +1,13 @@
 import { Field, FieldAccess, FieldColor, PropsFieldCreate } from '$comps/form/field.svelte'
-import { CodeAction, required, strRequired, valueOrDefault } from '$utils/types'
+import {
+	CodeAction,
+	memberOfEnum,
+	memberOfEnumIfExists,
+	NodeObjComponent,
+	required,
+	strRequired,
+	valueOrDefault
+} from '$utils/types'
 import {
 	PropNamePrefixType,
 	RawDataObjPropDisplayCustom
@@ -28,6 +36,7 @@ export class FieldCustom extends Field {
 
 export class FieldCustomAction extends FieldCustom {
 	action: UserAction
+	codeComponent?: NodeObjComponent
 	value: string
 	constructor(props: PropsFieldCreate) {
 		const clazz = 'FieldCustomAction'
@@ -38,6 +47,13 @@ export class FieldCustomAction extends FieldCustom {
 			'customCol'
 		)
 		this.action = required(customCol.action, clazz, 'action')
+		this.codeComponent = memberOfEnumIfExists(
+			customCol._customColCodeComponent,
+			'codeComponent',
+			clazz,
+			'NodeObjComponent',
+			NodeObjComponent
+		)
 		this.value = valueOrDefault(customCol.customColActionValue, '')
 	}
 }

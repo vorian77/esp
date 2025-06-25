@@ -1,8 +1,6 @@
 import { strRequired } from '$utils/utils.model'
 import { arrayOfClass, getArray } from '$utils/utils.array'
 import { valueOrDefault, memberOfEnum } from '$utils/utils.model'
-import exp from 'constants'
-import type { Method } from 'axios'
 
 const FILENAME = '/$utils/utils.sys.ts'
 
@@ -70,15 +68,10 @@ export enum CodeActionType {
 	doExpr = 'doExpr',
 
 	doListDetailEdit = 'doListDetailEdit',
-	doListDetailEditNodeConfig = 'doListDetailEditNodeConfig',
 	doListDetailNew = 'doListDetailNew',
-	doListDetailNewNodeConfig = 'doListDetailNewNodeConfig',
 	doListDownload = 'doListDownload',
 	doListSelfRefresh = 'doListSelfRefresh',
 	doListSelfSave = 'doListSelfSave',
-	doOpen = 'doOpen',
-	doOpenLink = 'doOpenLink',
-	doRetrieveData = 'doRetrieveData',
 	doSaveCancel = 'doSaveCancel',
 
 	embedShell = 'embedShell',
@@ -95,10 +88,15 @@ export enum CodeActionType {
 	navNode = 'navNode',
 	navPage = 'navPage',
 	navRow = 'navRow',
+	navSelectList = 'navNodeSelect',
 	navTab = 'navTab',
-	openDataObjDrawer = 'openDataObjDrawer',
-	openDataObjModal = 'openDataObjModal',
+	openDashboard = 'openDashboard',
+
 	openNode = 'openNode',
+	openNodeFreeApp = 'openNodeFreeApp',
+	openNodeFreeAppCustom = 'openNodeFreeAppCustom',
+	openNodeFreeDrawer = 'openNodeFreeDrawer',
+	openNodeFreeModal = 'openNodeFreeModal',
 
 	// utils
 
@@ -281,12 +279,39 @@ export function getValueDisplay(value: any) {
 	}
 }
 
+export function hashString(idFeature: string | string[]): number {
+	idFeature = getArray(idFeature)
+	const str = idFeature
+		.map((f) => {
+			if (!f) {
+				return ''
+			} else {
+				return f.toString().trim()
+			}
+		})
+		.join('|')
+	let hash = 0
+	for (let i = 0; i < str.length; i++) {
+		hash = (hash << 5) - hash + str.charCodeAt(i)
+		hash |= 0 // Convert to 32-bit integer
+	}
+	return hash
+}
+
 export const isNumber = (value: any) => {
 	return typeof value === 'number' && !isNaN(value)
 }
 
-export function isPlainObject(value: any) {
-	return typeof value === 'object' && value !== null && !Array.isArray(value)
+export function isPlainObject(obj: any) {
+	if (!obj || typeof obj !== 'object') return false
+	if (obj.constructor === Object) return true
+	if (Object.getPrototypeOf(obj) === null) return true
+	if (Object.getPrototypeOf(obj) === Object.prototype) return true
+	return false
+}
+
+export function isPlainObjectEmpty(obj: any) {
+	return isPlainObject(obj) && Object.keys(obj).length === 0
 }
 
 export class MethodResult {
@@ -328,11 +353,11 @@ export class MethodResult {
 			}
 		}
 	}
-	getResultExpr() {
+	getResultRawList() {
 		return this.data.rawDataList ? this.data.rawDataList : undefined
 	}
-	getResultExprValue() {
-		const data = this.getResultExpr()
+	getResultRawListValue() {
+		const data = this.getResultRawList()
 		return Array.isArray(data) && data.length > 0 ? data[0] : undefined
 	}
 }
@@ -358,6 +383,14 @@ export class MethodResultError {
 		this.msgUser = strRequired(obj.msgUser || obj.msg || 'unspecified', clazz, 'msgUser')
 		this.status = obj.status
 	}
+}
+
+export enum NodeObjComponent {
+	FormList = 'FormList',
+	FormDetail = 'FormDetail',
+	FormDetailRepConfig = 'FormDetailRepConfig',
+	ProcessStatus = 'ProcessStatus',
+	SelectList = 'SelectList'
 }
 
 export class ObjAttr {

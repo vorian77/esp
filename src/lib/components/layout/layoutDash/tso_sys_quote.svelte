@@ -9,14 +9,22 @@
 
 	const FILENAME = '$comps/nav/navDash/tso_sys_quote.svelte'
 
-	let quote: any = $state()
+	let { task }: { task: UserResourceTaskItem } = $props()
+	let toggleReferesh = $derived(task.refreshToggle)
+
 	let promise = $derived(getQuote())
+
+	$effect(() => {
+		if (toggleReferesh || !toggleReferesh) {
+			promise = getQuote()
+		}
+	})
 
 	async function getQuote() {
 		const result: MethodResult = await apiFetch('/api/quote', {
 			method: TokenApiFetchMethod.get
 		})
-		if (!result.error) return result.data
+		return result.error ? { color: '#1979a9', quote: 'Unable to retrieve quote.' } : result.data
 	}
 </script>
 

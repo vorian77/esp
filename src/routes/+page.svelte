@@ -19,7 +19,7 @@
 
 	async function processEmail() {
 		let msgUser =
-			"Thanks for joining The App Factory email list! We'll send you more information as we get closer to launch."
+			"Thanks for joining AppFactory email list! We'll send you more information as we get closer to launch."
 		const msgFail = `We're unable to save your email. Please try again.`
 
 		if (prospectEmail.includes('@')) {
@@ -57,7 +57,7 @@
 
 <div class="bg-white h-full overflow-y-auto">
 	<header class="shadow-xs flex justify-between border-b py-2">
-		<img class="ml-4 h-14 sm:h-16" src={srcLogo} alt="The App Factory" />
+		<img class="ml-4 h-14 sm:h-16" src={srcLogo} alt="AppFactory" />
 		<div class="flex items-center justify-end">
 			<button
 				class="btn text-white variant-filled-primary mr-4"
@@ -85,12 +85,12 @@
 	>
 		<div class="flex flex-col border-0 border-red-400">
 			<p class="text-3xl font-bold mb-2">
-				The App Factory makes enterprise-class data management easy, fast, and affordable
+				AppFactory makes enterprise-class data management easy, fast, and affordable
 			</p>
 			<div class="flex flex-col gap-4 text-lg text-gray-500">
 				<p>
-					The App Factory is a low-code SaaS framework that compiles descriptions of business
-					workflows into robust, secure data management applets customized for every user in your
+					AppFactory is a low-code SaaS framework that compiles descriptions of business workflows
+					into robust, secure data management applets customized for every user in your
 					organization.
 				</p>
 				<p>

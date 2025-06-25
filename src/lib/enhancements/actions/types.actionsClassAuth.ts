@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
 import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 import type { DataRecord } from '$utils/types'
 import {
@@ -10,7 +10,7 @@ import {
 	setDataRecordValuesForSave,
 	strRequired
 } from '$utils/types'
-import { TokenApiQueryType, TokenAppDoQuery, TokenAppStateTriggerAction } from '$utils/types.token'
+import { TokenApiId, TokenAppStateTriggerAction } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/types.actionsClassAuth.ts'
@@ -46,7 +46,7 @@ export class AuthActionDB extends AuthAction {
 		})
 		if (result.error) return result
 
-		resultRecord = result.getResultExprValue()
+		resultRecord = result.getResultRawListValue()
 
 		if (result.error || !resultRecord) {
 			alert(this.msgFail)
@@ -58,27 +58,23 @@ export class AuthActionDB extends AuthAction {
 	}
 }
 
-export class AuthActionDataObj extends AuthAction {
-	dataObjName: string
+export class AuthActionNodeObj extends AuthAction {
+	nodeObjName: string
 	constructor(parms: DataRecord) {
-		const clazz = 'AuthActionDataObj'
+		const clazz = 'AuthActionNodeObj'
 		super(parms)
-		this.dataObjName = strRequired(parms.dataObjName, clazz, 'dataObjName')
+		this.nodeObjName = strRequired(parms.nodeObjName, clazz, 'nodeObjName')
 	}
 	async execute(authProcess: AuthProcess): Promise<MethodResult> {
 		const sm = authProcess.getState()
 		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: CodeAction.init(
-					CodeActionClass.ct_sys_code_action_class_do,
-					CodeActionType.doOpen
+					CodeActionClass.ct_sys_code_action_class_nav,
+					CodeActionType.openNodeFreeApp
 				),
-				data: {
-					token: new TokenAppDoQuery({
-						dataObjName: this.dataObjName,
-						queryType: TokenApiQueryType.preset
-					})
-				}
+				data: { token: new TokenApiId(this.nodeObjName) },
+				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
 			})
 		)
 	}

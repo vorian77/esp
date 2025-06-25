@@ -47,7 +47,7 @@
 		'inline-flex items-center rounded-md px-4 py-2 text-sm font-normal text-gray-900 hover:bg-gray-300'
 </script>
 
-{#if currLevel && dataObj}
+{#if currLevel}
 	<div id="layout-tab" class="h-full flex flex-col">
 		{#if currLevel.tabs.length > 1}
 			<div class="p-3 sm:ml-1 mr-1 mt-1 bg-neutral-100 rounded-md">
@@ -61,7 +61,7 @@
 						onchange={(event) => onClick(Number(event.currentTarget.value))}
 					>
 						{#each currLevel.tabs as tab, idx}
-							{@const label = tab.label}
+							{@const label = tab.node.label}
 							{#if !tab.isVirtual}
 								<option value={idx} selected={idx === currLevel.tabIdxCurrent}>
 									{label}
@@ -76,8 +76,9 @@
 						{@const name = 'tab' + idx}
 						{@const isCurrent = idx === currLevel.tabIdxCurrent}
 						{@const hidden = isHideChildTabs && !isCurrent}
-						{@const label = tab.label}
+						{@const label = tab.node.label}
 						{@const classItem = isCurrent ? classItemCurrent : classItemNotCurrent}
+
 						{#if !tab.isVirtual}
 							<button {name} {hidden} class={classItem} onclick={() => onClick(idx)}>
 								{label}

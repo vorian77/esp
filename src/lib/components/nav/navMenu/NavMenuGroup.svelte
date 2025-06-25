@@ -24,8 +24,10 @@
 		{/if}
 		<ul role="list" class="flex flex-col">
 			{#each data.items as item}
-				{#if !(item.parent instanceof NavMenuDataCompItem) || data.navMenu.isOpen}
-					<NavMenuItem {item} />
+				{#if !item.isHidden}
+					{#if !(item.parent instanceof NavMenuDataCompItem) || data.navMenu.isOpen}
+						<NavMenuItem {item} />
+					{/if}
 				{/if}
 			{/each}
 		</ul>

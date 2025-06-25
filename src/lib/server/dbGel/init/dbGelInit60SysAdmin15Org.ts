@@ -13,8 +13,7 @@ function initFieldListSelectCodeType(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		codeDataObjType: 'embed',
+		codeDataObjType: 'doEmbed',
 		exprFilter: `.owner.id = <tree,uuid,SysSystem.id> 
 		UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents
 		UNION .owner = (SELECT sys_core::SysSystem FILTER .name = 'sys_system')`,
@@ -62,8 +61,7 @@ function initFieldListSelectUserAll(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		codeDataObjType: 'embed',
+		codeDataObjType: 'doEmbed',
 		exprFilter: 'none',
 		header: 'Select Users',
 		name: 'dofls_sys_user_all',
@@ -124,8 +122,7 @@ function initFieldListSelectUserSystem(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
-		codeDataObjType: 'embed',
+		codeDataObjType: 'doEmbed',
 		exprFilter: `<parms,uuid,queryOwnerOrg> IN .orgs.id`,
 		header: 'Select Users',
 		name: 'dofls_sys_user_system',
@@ -186,7 +183,6 @@ function initOrg(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		header: 'Organizations',
 		exprFilter: 'none',
 		name: 'data_obj_sys_admin_org_list',
@@ -215,7 +211,6 @@ function initOrg(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'Organization',
 		name: 'data_obj_sys_admin_org_detail',
 		owner: 'sys_system',
@@ -313,10 +308,11 @@ function initOrg(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgram', {
+	init.addTrans('sysNodeObjApp', {
 		children: [{ node: 'node_obj_sys_admin_org_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program',
+		codeNodeType: 'nodeApp',
 		codeQueryOwnerType: 'queryOwnerTypeOrgRecord',
 		dataObj: 'data_obj_sys_admin_org_list',
 		header: 'Organizations',
@@ -324,10 +320,11 @@ function initOrg(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_system_list_user', order: 10 }],
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_org_detail',
 		header: 'Organization',
 		name: 'node_obj_sys_admin_org_detail',
@@ -340,7 +337,6 @@ function initSystem(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'FormList',
 		header: 'Systems',
 		exprFilter: '.owner.id = <tree,uuid,SysOrg.id>',
 		name: 'data_obj_sys_admin_system_list_user',
@@ -377,7 +373,6 @@ function initSystem(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
 		header: 'System',
 		name: 'data_obj_sys_admin_system_detail_user',
 		owner: 'sys_system',
@@ -527,10 +522,11 @@ function initSystem(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_sys_admin_system_detail_user', order: 10 }],
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		codeQueryOwnerType: 'queryOwnerTypeOrgRecord',
 		dataObj: 'data_obj_sys_admin_system_list_user',
 		header: 'Systems',
@@ -538,9 +534,10 @@ function initSystem(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_sys_admin_system_detail_user',
 		header: 'System',
 		name: 'node_obj_sys_admin_system_detail_user',

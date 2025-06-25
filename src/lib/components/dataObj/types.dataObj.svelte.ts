@@ -1,6 +1,5 @@
 import { State } from '$comps/app/types.appState.svelte'
 import {
-	PropLinkItems,
 	PropSortDir,
 	RawDataObj,
 	RawDataObjAction,
@@ -8,7 +7,6 @@ import {
 	RawDataObjPropDisplay,
 	RawDataObjPropDisplayItemChange
 } from '$comps/dataObj/types.rawDataObj.svelte'
-
 import {
 	Field,
 	FieldAccess,
@@ -42,25 +40,21 @@ import { FieldSelect } from '$comps/form/fieldSelect'
 import { FieldTagDetails, FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 import { FieldTextarea } from '$comps/form/fieldTextarea'
 import { FieldToggle } from '$comps/form/fieldToggle'
-import { GridSettings } from '$comps/grid/grid'
 import { UserAction } from '$comps/other/types.userAction.svelte'
-import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
-	classOptional,
 	CodeAction,
 	type DataRecord,
-	debug,
 	getArray,
 	getDataRecordValueKey,
 	memberOfEnum,
 	memberOfEnumOrDefault,
 	MethodResult,
+	ParmsValues,
 	required,
 	setDataRecordValue,
-	UserPrefType,
-	valueOrDefault
+	UserPrefType
 } from '$utils/types'
-import { TokenApiQueryType, TokenApiUserPref } from '$utils/types.token'
+import { TokenApiQueryType } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.dataObj.svelte.ts'
@@ -72,26 +66,19 @@ export class DataObj {
 	data: DataObjData = $state(new DataObjData())
 	dataItems: DataItems = {}
 	embedField?: FieldEmbed
-	fCallbackUserAction?: Function
 	fields: Field[] = []
 	isDetailPreset: boolean = false
 	raw: RawDataObj
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
-	selectListItems?: PropLinkItems
 	sortModel: DataObjSort
 	treeLevelIdx: number = 0
 	userActions: DataObjAction[] = $state([])
-	userGridSettings: GridSettings
 	constructor(data: DataObjData) {
 		const clazz = 'DataObj'
 		this.data = data
 		this.raw = required(data.rawDataObj, clazz, 'rawDataObj')
 
 		this.sortModel = this.initSortModel(this.raw.rawPropsSort)
-
-		/* dependent properties */
-		this.selectListItems = classOptional(PropLinkItems, this.raw.selectListItemsSource?.raw)
-		this.userGridSettings = new GridSettings(this.raw.id)
 	}
 
 	async actionsFieldTrigger(sm: State, codeAction: CodeAction): Promise<MethodResult> {
@@ -122,7 +109,6 @@ export class DataObj {
 		const clazz = 'DataObj.init'
 		const dataObj = new DataObj(data)
 		dataObj.data = data
-		dataObj.userGridSettings = await initPrefs(sm, dataObj)
 
 		const propsFieldInit = new PropsFieldInit({
 			data: dataObj.data,
@@ -157,21 +143,6 @@ export class DataObj {
 					field.itemChanges.push(new FieldItemChange(target, fields))
 				})
 			})
-		}
-		async function initPrefs(sm: State, dataObj: DataObj) {
-			let rawSettings: DataRecord = {}
-			if (sm?.user) {
-				if (sm.user.prefIsActive(UserPrefType.remember_list_settings)) {
-					// attempt to retrieve user preferences from DB
-					const result: MethodResult = await apiFetchFunction(
-						ApiFunction.sysUserPrefGet,
-						new TokenApiUserPref(sm.user.id, dataObj.raw.id)
-					)
-					rawSettings = result.data
-					rawSettings = rawSettings.prefData ? JSON.parse(rawSettings.prefData).data : {}
-				}
-			}
-			return dataObj.userGridSettings.load(rawSettings, sm, dataObj)
 		}
 
 		function initRetrieveReadonly(dataObj: DataObj, queryType: TokenApiQueryType) {
@@ -370,9 +341,7 @@ export class DataObj {
 	print() {
 		alert('Print functionality for this object has not yet been implemented.')
 	}
-	setCallbackUserAction(fCallback: Function) {
-		this.fCallbackUserAction = fCallback
-	}
+
 	setTreeLevelIdx(idx: number) {
 		this.treeLevelIdx = idx
 	}
@@ -402,15 +371,6 @@ export class DataObjActionProxy {
 export enum DataObjCardinality {
 	list = 'list',
 	detail = 'detail'
-}
-export enum DataObjComponent {
-	Home = 'Home',
-	FormList = 'FormList',
-	FormListSelect = 'FormListSelect',
-	FormDetail = 'FormDetail',
-	FormDetailRepConfig = 'FormDetailRepConfig',
-	ProcessStatus = 'ProcessStatus',
-	Tree = 'Tree'
 }
 
 export class DataObjData {
@@ -579,11 +539,8 @@ export class DataObjSortItem {
 }
 
 export enum DataObjType {
-	default = 'default',
-	embed = 'embed',
-	report = 'report',
-	taskPage = 'taskPage',
-	taskTarget = 'taskTarget'
+	doDefault = 'doDefault',
+	doEmbed = 'doEmbed'
 }
 
 export enum DataRecordStatus {
@@ -712,119 +669,4 @@ export class DataRows {
 			})
 		})
 	}
-}
-
-export class ParmsUser {
-	data: ParmsUserData[] = []
-	constructor() {}
-	parmGet(id: string, type: ParmsUserDataType) {
-		let idx = this.data.findIndex((p) => p.id === id && p.type === type)
-		return idx > -1 ? this.data[idx].value : undefined
-	}
-	parmSet(id: string, type: ParmsUserDataType, value: any) {
-		let idx = this.data.findIndex((p) => p.id === id && p.type === type)
-		if (idx > -1) {
-			this.data[idx].value = value
-		} else {
-			this.data.push(new ParmsUserData(id, type, value))
-		}
-	}
-	reset() {
-		this.data = []
-	}
-}
-export class ParmsUserData {
-	id: string
-	type: ParmsUserDataType
-	value: any
-	constructor(id: string, type: ParmsUserDataType, value: any) {
-		this.id = id
-		this.type = type
-		this.value = value
-	}
-}
-export enum ParmsUserDataType {
-	listColumnsModel = 'listColumnsModel',
-	listFilterModel = 'listFilterModel',
-	listFilterQuick = 'listFilterQuick',
-	listSortModel = 'listSortModel'
-}
-
-export class ParmsValues {
-	data: DataRecord = {}
-	constructor(data?: DataRecord) {
-		this.data = valueOrDefault(data, {})
-	}
-	hasOwn(key: string) {
-		return Object.hasOwn(this.data, key)
-	}
-	static load(parms: ParmsValues) {
-		const newParms = new ParmsValues()
-		if (parms) newParms.data = parms.data
-		return newParms
-	}
-	reset() {
-		this.data = {}
-	}
-	update(data: DataRecord | undefined) {
-		data = data ? data : {}
-		Object.entries(data).forEach(([key, value]) => {
-			this.data[key] = value
-		})
-	}
-	updateList(listIds: string[], recordId: string, recordIdAlt: string = '') {
-		this.valueSet(ParmsValuesType.listIds, listIds)
-		this.valueSet(ParmsValuesType.listRecordIdCurrent, recordIdAlt ? recordIdAlt : recordId)
-	}
-	valueExists(key: string) {
-		return Object.hasOwn(this.data, key)
-	}
-	valueGet(key: string) {
-		return this.data[key]
-	}
-	valueGetAll() {
-		let newParms: DataRecord = {}
-		Object.entries(this.data).forEach(([key, value]) => {
-			newParms[key] = value
-		})
-		return newParms
-	}
-	valueSet(key: string, value: any) {
-		this.data[key] = value
-	}
-	valueSetDefault(key: string, parms: DataRecord, defaultValue: any) {
-		this.valueSet(key, Object.hasOwn(parms, key) ? parms[key] : defaultValue)
-	}
-	valueSetIfMissing(key: string, value: any) {
-		if (!this.valueExists(key)) this.valueSet(key, value)
-	}
-	valueSetList(key: string, dataRows?: DataRow[]) {
-		this.valueSet(key, dataRows ? dataRows.map((row) => row.record.id) : [])
-	}
-}
-
-export enum ParmsValuesType {
-	attributeAccessFilter = '<attributeAccessFilter>',
-	queryOwnerOrg = 'queryOwnerOrg',
-	queryOwnerSys = 'queryOwnerSys',
-
-	// other
-	columnDefs = 'columnDefs',
-	customProgramOwnerId = 'customProgramOwnerId',
-	embedFieldName = 'embedFieldName',
-	embedParentId = 'embedParentId',
-	fieldListItems = 'fieldListItems',
-	isMultiSelect = 'isMultiSelect',
-	itemsParmValue = 'itemsParmValue',
-	itemsParmValueList = 'itemsParmValueList',
-	listIds = 'listIds',
-	listIdsSelected = 'listIdsSelected',
-	listRecordIdCurrent = 'listRecordIdCurrent',
-	listSortModel = 'listSortModel',
-	parentRecordId = 'parentRecordId',
-	rowData = 'rowData',
-	selectLabel = 'selectLabel',
-	selectListId = 'selectListId',
-	selectListRecord = 'selectListRecord',
-	treeAncestorValue = 'treeAncestorValue'
 }

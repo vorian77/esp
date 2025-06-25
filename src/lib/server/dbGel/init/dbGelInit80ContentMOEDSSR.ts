@@ -13,13 +13,9 @@ export function initContentMOEDSsr(init: InitDb) {
 }
 
 function initTaskSsrApp(init: InitDb) {
-	init.addTrans('sysDataObjTask', {
+	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail_mobile_save',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
-		codeDataObjType: 'taskTarget',
-		codeDoQueryType: 'retrievePreset',
-		codeDoRenderPlatform: 'app',
 		exprFilter: '.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
 		header: 'My Application',
 		name: 'data_obj_task_moed_ssr_app',
@@ -425,10 +421,18 @@ function initTaskSsrApp(init: InitDb) {
 		]
 	})
 
+	init.addTrans('sysNodeObjTask', {
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeTask',
+		codeQueryType: 'retrievePreset',
+		dataObj: 'data_obj_task_moed_ssr_app',
+		name: 'node_obj_task_moed_ssr_app',
+		owner: 'sys_client_moed'
+	})
+
 	init.addTrans('sysTask', {
-		codeIcon: 'ClipboardPen',
-		codeRenderType: 'button',
-		codeStatusObj: 'tso_sys_data',
+		codeTaskStatusObj: 'tso_sys_data',
+		codeTaskType: 'taskAutomated',
 		description: 'First step to my future.',
 		exprShow: `SELECT count((SELECT sys_user::SysUser FILTER .id = <user,uuid,id> AND .person.isLegalAgreed = true)) > 0`,
 		exprStatus: `WITH
@@ -440,22 +444,17 @@ function initTaskSsrApp(init: InitDb) {
   		lastUpdateBy := {label := 'Last Update By', data := sf.modifiedBy.person.fullName, color := 'black'}
 		}`,
 		header: 'My Application',
-		isPinToDash: false,
-		isGlobalResource: false,
 		name: 'task_moed_ssr_app',
 		noDataMsg: 'Click to start application',
-		targetDataObj: 'data_obj_task_moed_ssr_app',
-		orderDefine: 30,
+		nodeObj: 'node_obj_task_moed_ssr_app',
 		owner: 'sys_client_moed'
 	})
 }
 
 function initTaskSsrDoc(init: InitDb) {
-	init.addTrans('sysDataObjTask', {
+	init.addTrans('sysDataObj', {
 		owner: 'sys_client_moed',
-		codeComponent: 'FormList',
 		codeCardinality: 'list',
-		codeDataObjType: 'taskTarget',
 		name: 'data_obj_task_moed_ssr_doc_list',
 		header: 'My Documents',
 		tables: [{ index: 0, table: 'CmCsfDocument' }],
@@ -498,13 +497,19 @@ function initTaskSsrDoc(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysDataObjTask', {
+	init.addTrans('sysNodeObjTask', {
+		children: [{ node: 'node_obj_task_moed_ssr_doc_detail', order: 10 }],
+		codeComponent: 'FormList',
+		codeNodeType: 'nodeTask',
+		codeQueryType: 'retrieve',
+		dataObj: 'data_obj_task_moed_ssr_doc_list',
+		name: 'node_obj_task_moed_ssr_doc_list',
+		owner: 'sys_client_moed'
+	})
+
+	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail_mobile_save_delete',
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
-		codeDataObjType: 'taskTarget',
-		codeDoQueryType: 'retrievePreset',
-		codeDoRenderPlatform: 'app',
 		exprFilter:
 			'.csf.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person AND <parms,str,itemsParmValue> IN .codeType.codeTypeFamily.name LIMIT 1',
 		header: 'My Document',
@@ -615,32 +620,19 @@ function initTaskSsrDoc(init: InitDb) {
 			}
 		]
 	})
+
 	init.addTrans('sysNodeObjTask', {
-		children: [{ node: 'node_obj_task_moed_ssr_doc_detail', order: 10 }],
-		codeIcon: 'AppWindow',
-		codeNavType: 'task',
-		codeNodeType: 'program',
-		dataObj: 'data_obj_task_moed_ssr_doc_list',
-		header: 'Documents',
-		name: 'node_obj_task_moed_ssr_doc_list',
-		orderDefine: 30,
-		owner: 'sys_client_moed'
-	})
-	init.addTrans('sysNodeObjTask', {
-		codeIcon: 'AppWindow',
-		codeNavType: 'task',
-		codeNodeType: 'program_object',
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeTask',
+		codeQueryType: 'retrievePreset',
 		dataObj: 'data_obj_task_moed_ssr_doc_detail',
-		header: 'Document',
 		name: 'node_obj_task_moed_ssr_doc_detail',
-		orderDefine: 10,
 		owner: 'sys_client_moed'
 	})
 
 	init.addTrans('sysTask', {
-		codeIcon: 'ImageUp',
-		codeRenderType: 'button',
-		codeStatusObj: 'tso_moed_ssr_doc',
+		codeTaskStatusObj: 'tso_moed_ssr_doc',
+		codeTaskType: 'taskAutomated',
 		description: 'Step 2: to help speed up my application processing.',
 		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person)) > 0`,
 		exprStatus: `SELECT sys_core::SysCodeType { 
@@ -651,20 +643,15 @@ function initTaskSsrDoc(init: InitDb) {
 FILTER .parent.name = 'ct_cm_doc_type' ORDER BY .order asc`,
 		hasAltOpen: true,
 		header: 'My Eligibility Documents',
-		isPinToDash: false,
-		isGlobalResource: false,
 		name: 'task_moed_ssr_app_doc',
-		targetDataObj: 'data_obj_task_moed_ssr_doc_detail',
-		orderDefine: 40,
+		nodeObj: 'node_obj_task_moed_ssr_doc_detail',
 		owner: 'sys_client_moed'
 	})
 }
 
 function initTaskSsrWelcome(init: InitDb) {
-	init.addTrans('sysDataObjTask', {
+	init.addTrans('sysDataObj', {
 		codeCardinality: 'detail',
-		codeComponent: 'FormDetail',
-		codeDataObjType: 'taskPage',
 		exprFilter: `.id = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person.id`,
 		header: 'Welcome',
 		isInitialValidationSilent: true,
@@ -685,7 +672,7 @@ function initTaskSsrWelcome(init: InitDb) {
 				codeQueryType: 'save',
 				codeTriggerTiming: 'post',
 				navDestination: {
-					codeDestinationType: 'back'
+					codeDestinationType: 'home'
 				}
 			}
 		],
@@ -780,16 +767,22 @@ function initTaskSsrWelcome(init: InitDb) {
 			}
 		]
 	})
+
+	init.addTrans('sysNodeObjTask', {
+		codeComponent: 'FormDetail',
+		codeNodeType: 'nodeTask',
+		codeQueryType: 'retrieve',
+		dataObj: 'data_obj_task_moed_ssr_welcome',
+		name: 'node_obj_task_moed_ssr_welcome',
+		owner: 'sys_client_moed'
+	})
+
 	init.addTrans('sysTask', {
-		codeIcon: 'ClipboardPen',
-		codeRenderType: 'page',
+		codeTaskType: 'taskAutomated',
 		exprShow: `SELECT count((SELECT sys_user::SysUser FILTER .id = <user,uuid,id> AND ((.person.isLegalAgreed = false) ?? (.person.isLegalAgreed ?= <bool>{})))) > 0`,
 		header: 'Welcome',
-		isPinToDash: false,
-		isGlobalResource: false,
 		name: 'task_moed_ssr_welcome',
-		pageDataObj: 'data_obj_task_moed_ssr_welcome',
-		orderDefine: 20,
+		nodeObj: 'node_obj_task_moed_ssr_welcome',
 		owner: 'sys_client_moed'
 	})
 }

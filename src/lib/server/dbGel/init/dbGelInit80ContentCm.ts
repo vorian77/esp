@@ -9,7 +9,7 @@ export function initContentCm(init: InitDb) {
 function initProgram(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		owner: 'sys_app_cm',
-		codeComponent: 'FormList',
+
 		codeCardinality: 'list',
 		name: 'data_obj_app_cm_program_list',
 		header: 'Programs',
@@ -46,7 +46,7 @@ function initProgram(init: InitDb) {
 
 	init.addTrans('sysDataObj', {
 		owner: 'sys_app_cm',
-		codeComponent: 'FormDetail',
+
 		codeCardinality: 'detail',
 		name: 'data_obj_app_cm_program_detail',
 		header: 'Program',
@@ -170,10 +170,11 @@ function initProgram(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
 		children: [{ node: 'node_obj_app_cm_program_detail', order: 10 }],
+		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_app_cm_program_list',
 		header: 'Programs',
 		name: 'node_obj_app_cm_program_list',
@@ -181,9 +182,10 @@ function initProgram(init: InitDb) {
 		owner: 'sys_app_cm'
 	})
 
-	init.addTrans('sysNodeObjProgramObj', {
+	init.addTrans('sysNodeObjAppObj', {
+		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'program_object',
+		codeNodeType: 'nodeAppObj',
 		dataObj: 'data_obj_app_cm_program_detail',
 		header: 'Program',
 		name: 'node_obj_app_cm_program_detail',

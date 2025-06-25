@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getArray, ParmsValuesType, UserResourceTask } from '$utils/types'
+	import { getArray, ParmsValuesType, UserResourceTaskItem } from '$utils/types'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import { error } from '@sveltejs/kit'
 
@@ -8,7 +8,8 @@
 	const classButton = 'rounded-md text-base p-2 text-white text-right'
 	const classData = '-ml-2 text-base '
 
-	let { data, onClick, task }: { data: any; onClick: Function; task: UserResourceTask } = $props()
+	let { data, onClick, task }: { data: any; onClick: Function; task: UserResourceTaskItem } =
+		$props()
 
 	let docTypes = data
 

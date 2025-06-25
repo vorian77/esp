@@ -11,7 +11,7 @@
 	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { State } from '$comps/app/types.appState.svelte'
-	import { TokenAppDo, TokenAppUserActionConfirmType } from '$utils/types.token'
+	import { TokenAppUserActionConfirmType } from '$utils/types.token'
 	import { UserAction, UserActionDisplay } from '$comps/other/types.userAction.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'

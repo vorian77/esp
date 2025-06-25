@@ -1,16 +1,32 @@
-import { State } from '$comps/app/types.appState.svelte'
-import { AppLevel, AppLevelTab } from '$comps/app/types.app.svelte'
 import {
+	State,
+	StateNavLayout,
+	StateParms,
+	StateTriggerToken
+} from '$comps/app/types.appState.svelte'
+import { AppLevelNode } from '$comps/app/types.app.svelte'
+import {
+	actionErrorToken,
+	getTokenNode,
+	userActionStateChangeRaw,
 	userActionError,
-	userActionStateChangeDataObj,
-	userActionStateChangeHomeDashboard,
+	userActionStateChangeTab,
 	userActionNavDestination
 } from '$comps/other/types.userAction.svelte'
-import { CodeActionType, MethodResult, strRequired } from '$utils/types'
+import {
+	CodeAction,
+	CodeActionClass,
+	CodeActionType,
+	MethodResult,
+	ParmsValuesType,
+	required,
+	strRequired
+} from '$utils/types'
 import {
 	Token,
+	TokenApiId,
 	TokenApiQueryType,
-	TokenAppDoQuery,
+	TokenAppDoCustom,
 	TokenAppNav,
 	TokenAppNode,
 	TokenAppRow,
@@ -22,7 +38,7 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionClassNav.ts'
 
-let currTab: AppLevelTab | undefined
+let currTab: AppLevelNode | undefined
 
 export default async function action(
 	sm: State,
@@ -31,6 +47,7 @@ export default async function action(
 	const actionType = parmsAction.codeAction.actionType
 	const token: Token = parmsAction.data.token
 	let result: MethodResult
+	let clazz = `${FILENAME}.${actionType}`
 
 	switch (actionType) {
 		case CodeActionType.navDestination:
@@ -39,11 +56,11 @@ export default async function action(
 
 		case CodeActionType.navNode:
 			currTab = sm.app.getCurrTab()
-			if (currTab && currTab.isAlwaysRetrieveData) {
+			if (currTab && currTab.node.isAlwaysRetrieveData) {
 				result = await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
 				if (result.error) return result
 			}
-			await userActionStateChangeDataObj(sm, parmsAction)
+			await userActionStateChangeTab(sm, parmsAction)
 			break
 
 		case CodeActionType.navPage:
@@ -53,57 +70,107 @@ export default async function action(
 		case CodeActionType.navRow:
 			result = await sm.app.navRow(sm, token as TokenAppRow)
 			if (result.error) return result
-			await userActionStateChangeDataObj(sm, parmsAction)
+			await userActionStateChangeTab(sm, parmsAction)
+			break
+
+		case CodeActionType.navSelectList:
+			currTab = sm.app.getCurrTab()
+			if (currTab) {
+				const selectListRecord = required(
+					sm.parmsState.valueGet(ParmsValuesType.selectListRecord),
+					clazz,
+					'selectListRecord'
+				)
+				currTab.node.dataObjId = strRequired(selectListRecord._dataObjId, clazz, '_dataObjId')
+				result = await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
+				if (result.error) return result
+				await userActionStateChangeTab(sm, parmsAction)
+			}
 			break
 
 		case CodeActionType.navTab:
 			if (token instanceof TokenAppTab) {
 				result = await token.app.navTab(sm, token)
 				if (result.error) return result
-				await userActionStateChangeDataObj(sm, parmsAction)
+				await userActionStateChangeTab(sm, parmsAction)
 			}
 			break
 
-		case CodeActionType.openDataObjDrawer:
-			const tokenDataObjDrawer = token as TokenAppDoQuery
-			result = await sm.openDrawerDataObj(
-				tokenDataObjDrawer.source,
-				'bottom',
-				'h-[70%]',
-				undefined,
-				tokenDataObjDrawer
-			)
-			if (result.error) return result
-
-			parmsAction.setMenuClose()
-			await userActionStateChangeDataObj(sm, parmsAction)
-			break
-
-		case CodeActionType.openDataObjModal:
-			const tokenDataObjModal = token as TokenAppDoQuery
-			result = await sm.openModalDataObj(tokenDataObjModal, async () =>
-				userActionStateChangeHomeDashboard(sm, parmsAction)
-			)
-			if (result.error) return result
-
-			parmsAction.setMenuClose()
-			await userActionStateChangeDataObj(sm, parmsAction)
+		case CodeActionType.openDashboard:
+			parmsAction.isMultiTree = true
+			parmsAction.stateParms = new StateParms({ navLayout: StateNavLayout.layoutDashboard }, [
+				StateTriggerToken.navDashboard
+			])
+			await userActionStateChangeRaw(sm, parmsAction)
 			break
 
 		case CodeActionType.openNode:
+			if (!(token instanceof TokenAppNode)) return actionErrorToken(actionType)
 			if (!parmsAction.isMultiTree) sm.newApp()
-			result = await sm.app.addTreeNode(sm, token as TokenAppNode)
+			result = await sm.app.addTreeNode(sm, token)
 			if (result.error) return result
 
-			parmsAction.setMenuClose()
-			await userActionStateChangeDataObj(sm, parmsAction)
+			parmsAction.updateStateParmsTokensMenuClose()
+			await userActionStateChangeTab(sm, parmsAction)
+			break
+
+		case CodeActionType.openNodeFreeApp:
+			if (!(token instanceof TokenApiId)) return actionErrorToken(actionType)
+			result = await getTokenNode(actionType, token)
+			if (result.error) return result
+
+			parmsAction.codeAction = CodeAction.init(
+				CodeActionClass.ct_sys_code_action_class_nav,
+				CodeActionType.openNode
+			)
+			parmsAction.data.token = result.data as TokenAppNode
+
+			await action(sm, parmsAction)
+			break
+
+		case CodeActionType.openNodeFreeAppCustom:
+			if (!(token instanceof TokenAppDoCustom)) return actionErrorToken(actionType)
+			parmsAction.codeAction = CodeAction.init(
+				CodeActionClass.ct_sys_code_action_class_nav,
+				CodeActionType.openNodeFreeApp
+			)
+			parmsAction.data.token = new TokenApiId(token.fieldCustom.value)
+			parmsAction.stateParms = new StateParms({ navLayout: StateNavLayout.layoutContent })
+
+			await action(sm, parmsAction)
+			break
+
+		case CodeActionType.openNodeFreeDrawer:
+			if (!(token instanceof TokenApiId)) return actionErrorToken(actionType)
+			result = await getTokenNode(actionType, token)
+			if (result.error) return result
+
+			result = await sm.openDrawerNode(result.data as TokenAppNode, 'bottom', 'h-[70%]', undefined)
+			if (result.error) return result
+
+			parmsAction.updateStateParmsTokensMenuClose()
+			await userActionStateChangeTab(sm, parmsAction)
+			break
+
+		case CodeActionType.openNodeFreeModal:
+			if (!(token instanceof TokenApiId)) return actionErrorToken(actionType)
+			result = await getTokenNode(actionType, token)
+			if (result.error) return result
+
+			result = await sm.openModalNode(result.data as TokenAppNode, async () =>
+				sm.triggerActionDashboard()
+			)
+			if (result.error) return result
+
+			parmsAction.updateStateParmsTokensMenuClose()
+			await userActionStateChangeTab(sm, parmsAction)
 			break
 
 		default:
 			return new MethodResult({
 				error: {
 					file: FILENAME,
-					function: 'default',
+					function: 'action',
 					msg: `No case defined for actionType: ${actionType}`
 				}
 			})

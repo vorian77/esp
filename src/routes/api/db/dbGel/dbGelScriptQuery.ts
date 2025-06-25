@@ -31,7 +31,6 @@ import {
 } from '$utils/types'
 import { TokenApiQueryData } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
-import type { Method } from 'axios'
 
 const FILENAME = '/$routes/api/dbGel/dbGelScriptDQuery.ts'
 

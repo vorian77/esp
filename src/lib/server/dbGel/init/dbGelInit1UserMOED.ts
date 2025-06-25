@@ -13,10 +13,10 @@ function initConfigNodes(init: InitDb) {
 	init.addTrans('updateSystemNodesConfig', {
 		name: 'sys_client_moed',
 		nodesConfig: [
-			{ codeAttrType: 'at_cm_site', node: 'node_obj_sys_admin_attr_obj_detail' },
-			{ codeAttrType: 'at_sys_code', node: 'node_obj_sys_admin_code_detail_meta' },
-			{ codeAttrType: 'at_sys_msg_group', node: 'node_obj_sys_admin_attr_obj_detail' },
-			{ codeAttrType: 'at_sys_user', node: 'node_obj_sys_admin_user_detail_meta' }
+			{ codeAttrType: 'at_cm_site', node: 'node_obj_sys_admin_attr_obj_list' },
+			// { codeAttrType: 'at_sys_code', node: 'node_obj_sys_admin_code_detail_meta' },
+			{ codeAttrType: 'at_sys_msg_group', node: 'node_obj_sys_admin_attr_obj_list' }
+			// { codeAttrType: 'at_sys_user', node: 'node_obj_sys_admin_user_detail_meta' }
 			// { codeAttrType: 'at_sys_user_type', node: 'node_obj_sys_admin_user_type_detail' }
 		]
 	})
@@ -112,6 +112,7 @@ function initUserType(init: InitDb) {
 		attrsAccess: [
 			{ access: 'allow', owner: 'sys_system', name: 'app_sys_admin_user' },
 			{ access: 'allow', owner: 'sys_system', name: 'app_sys_reporting' },
+			{ access: 'allow', owner: 'sys_system', name: 'task_sys_msg_all' },
 			{ access: 'allow', owner: 'sys_system', name: 'task_sys_quote' }
 		],
 		attrsAction: [
