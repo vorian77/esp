@@ -73,43 +73,39 @@
 	Loading tasks...
 {:then result}
 	{@const tasks = result.error ? [] : result.data}
-	{#if tasks}
-		{#if tasks.length === 0}
-			<h1 class="p-4">None of your ({tasks.length}) tasks are pinned or triggered.</h1>
-		{:else}
-			<div class="h-full flex flex-col overflow-y-auto gap-3 p-4 bg-neutral-100">
-				{#each tasks as task}
-					{@const isButton = !task.dataObjPage && !task.hasAltOpen}
-					<div
-						class="bg-white rounded-lg p-4 flex flex-col items-center border shadow-md {isButton
-							? 'cursor-pointer hover:bg-gray-100'
-							: ''}"
-						onclick={task.hasAltOpen ? undefined : () => onClick(task)}
-					>
-						{#if task.dataObjPage}
-							<FormDetail
-								parms={{
-									component: NodeObjComponent.FormDetail,
-									dataObjId: task.dataObjId,
-									isFixedHeight: true
-								}}
-							/>
-						{:else}
-							{@const Component = task.codeTaskStatusObjName
-								? StatusType[task.codeTaskStatusObjName]
-								: undefined}
-							<h5 class="mb-6 text-4xl font-bold tracking-tight text-blue-400">
-								{task.header}
-							</h5>
-							{#if Component}
-								<Component {task} {onClick} data={task.data} />
-							{/if}
+	{#if tasks && tasks.length > 0}
+		<div class="h-full flex flex-col overflow-y-auto gap-3 p-4 bg-neutral-100">
+			{#each tasks as task}
+				{@const isButton = !task.dataObjPage && !task.hasAltOpen}
+				<div
+					class="bg-white rounded-lg p-4 flex flex-col items-center border shadow-md {isButton
+						? 'cursor-pointer hover:bg-gray-100'
+						: ''}"
+					onclick={task.hasAltOpen ? undefined : () => onClick(task)}
+				>
+					{#if task.dataObjPage}
+						<FormDetail
+							parms={{
+								component: NodeObjComponent.FormDetail,
+								dataObjId: task.dataObjId,
+								isFixedHeight: true
+							}}
+						/>
+					{:else}
+						{@const Component = task.codeTaskStatusObjName
+							? StatusType[task.codeTaskStatusObjName]
+							: undefined}
+						<h5 class="mb-6 text-4xl font-bold tracking-tight text-blue-400">
+							{task.header}
+						</h5>
+						{#if Component}
+							<Component {task} {onClick} data={task.data} />
 						{/if}
-					</div>
-				{/each}
-			</div>
-		{/if}
+					{/if}
+				</div>
+			{/each}
+		</div>
 	{:else}
-		<h1 class="p-4">You have no tasks.</h1>
+		<h1 class="p-4">You have no tasks that are pinned or triggered.</h1>
 	{/if}
 {/await}
