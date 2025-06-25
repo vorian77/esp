@@ -23,8 +23,6 @@
 	let elContent: any = $state()
 	let contentH: number = $state()
 
-	let dr = $derived(dm.getRecordsDisplayRow(parms.dataObjId, parms.row))
-
 	$effect(() => {
 		handleResize()
 	})

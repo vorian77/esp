@@ -100,7 +100,7 @@ function initAuthLogin(init: InitDb) {
 	init.addTrans('sysNodeObjFree', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
-		codeQueryType: 'preset',
+		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_auth_login',
 		name: 'node_obj_auth_login',
 		owner: 'sys_system'
@@ -205,7 +205,8 @@ function initAuthLoginForgotPw(init: InitDb) {
 	init.addTrans('sysNodeObjFree', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
-		codeQueryType: 'preset',
+		codeQueryTypeAlt: 'retrieveToPreset',
+
 		dataObj: 'data_obj_auth_login_forgot_pw',
 		name: 'node_obj_auth_login_forgot_pw',
 		owner: 'sys_system'
@@ -281,7 +282,8 @@ function initAuthLoginVerify(init: InitDb) {
 	init.addTrans('sysNodeObjFree', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
-		codeQueryType: 'preset',
+		codeQueryTypeAlt: 'retrieveToPreset',
+
 		dataObj: 'data_obj_auth_login_verify',
 		name: 'node_obj_auth_login_verify',
 		owner: 'sys_system'
@@ -385,7 +387,7 @@ function initAuthSignup(init: InitDb) {
 	init.addTrans('sysNodeObjFree', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
-		codeQueryType: 'preset',
+		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_auth_signup',
 		name: 'node_obj_auth_signup',
 		owner: 'sys_system'
@@ -461,7 +463,7 @@ function initAuthSignupVerifyMobileInsert(init: InitDb) {
 	init.addTrans('sysNodeObjFree', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
-		codeQueryType: 'preset',
+		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_auth_signup_verify_mobile_insert',
 		name: 'node_obj_auth_signup_verify_mobile_insert',
 		owner: 'sys_system'
@@ -537,7 +539,7 @@ function initAuthSignupVerifyMobileUpdate(init: InitDb) {
 	init.addTrans('sysNodeObjFree', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
-		codeQueryType: 'preset',
+		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_auth_signup_verify_mobile_update',
 		name: 'node_obj_auth_signup_verify_mobile_update',
 		owner: 'sys_system'
@@ -734,7 +736,6 @@ function initMyAccount(init: InitDb) {
 	init.addTrans('sysNodeObjFree', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
-		codeQueryType: 'retrieve',
 		dataObj: 'data_obj_task_sys_auth_my_account',
 		name: 'node_obj_task_sys_auth_my_account',
 		owner: 'sys_system'
@@ -809,7 +810,7 @@ function initResetPasswordAccount(init: InitDb) {
 	init.addTrans('sysNodeObjFree', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
-		codeQueryType: 'preset',
+		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_auth_reset_password_account',
 		name: 'node_obj_auth_reset_password_account',
 		owner: 'sys_system'
@@ -925,7 +926,6 @@ function initUserPref(init: InitDb) {
 	init.addTrans('sysNodeObjFree', {
 		codeComponent: 'FormList',
 		codeNodeType: 'nodeFree',
-		codeQueryType: 'retrieve',
 		dataObj: 'data_obj_auth_user_pref_list',
 		name: 'node_obj_auth_user_pref_list',
 		owner: 'sys_system'

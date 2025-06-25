@@ -130,7 +130,7 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'toggle',
-				columnName: 'isRetrieveReadonly',
+				columnName: 'isFormReadonly',
 				isDisplayable: true,
 				orderDisplay: 74,
 				orderDefine: 74,

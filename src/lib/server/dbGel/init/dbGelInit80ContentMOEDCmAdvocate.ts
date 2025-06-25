@@ -115,7 +115,6 @@ function initTaskOpenApps(init: InitDb) {
 		children: [{ node: 'node_obj_moed_part_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeNodeType: 'nodeTask',
-		codeQueryType: 'retrieve',
 		dataObj: 'data_obj_task_moed_part_list_apps_open',
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_task_moed_part_list_apps_open',

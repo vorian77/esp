@@ -424,7 +424,7 @@ function initTaskSsrApp(init: InitDb) {
 	init.addTrans('sysNodeObjTask', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeTask',
-		codeQueryType: 'retrievePreset',
+		codeQueryTypeAlt: 'retrieveThenPreset',
 		dataObj: 'data_obj_task_moed_ssr_app',
 		name: 'node_obj_task_moed_ssr_app',
 		owner: 'sys_client_moed'
@@ -501,7 +501,6 @@ function initTaskSsrDoc(init: InitDb) {
 		children: [{ node: 'node_obj_task_moed_ssr_doc_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeNodeType: 'nodeTask',
-		codeQueryType: 'retrieve',
 		dataObj: 'data_obj_task_moed_ssr_doc_list',
 		name: 'node_obj_task_moed_ssr_doc_list',
 		owner: 'sys_client_moed'
@@ -624,7 +623,7 @@ function initTaskSsrDoc(init: InitDb) {
 	init.addTrans('sysNodeObjTask', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeTask',
-		codeQueryType: 'retrievePreset',
+		codeQueryTypeAlt: 'retrieveThenPreset',
 		dataObj: 'data_obj_task_moed_ssr_doc_detail',
 		name: 'node_obj_task_moed_ssr_doc_detail',
 		owner: 'sys_client_moed'
@@ -771,7 +770,6 @@ function initTaskSsrWelcome(init: InitDb) {
 	init.addTrans('sysNodeObjTask', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeTask',
-		codeQueryType: 'retrieve',
 		dataObj: 'data_obj_task_moed_ssr_welcome',
 		name: 'node_obj_task_moed_ssr_welcome',
 		owner: 'sys_client_moed'

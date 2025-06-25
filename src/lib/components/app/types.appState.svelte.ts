@@ -182,7 +182,9 @@ export class State {
 	}
 
 	getStateData(queryType: TokenApiQueryType) {
-		const dataTree: TokenApiQueryDataTree = this.app.getDataTree(queryType)
+		const dataTree: TokenApiQueryDataTree = this.stateRoot
+			? this.stateRoot.app.getDataTree(queryType)
+			: this.app.getDataTree(queryType)
 		this.parmsState.valueSet(
 			ParmsValuesType.listRecordIdCurrent,
 			dataTree.getValue('id', TokenApiQueryDataTreeAccessType.index, 0)

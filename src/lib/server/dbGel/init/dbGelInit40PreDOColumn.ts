@@ -1659,6 +1659,12 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'bool',
+		header: 'Form Readonly',
+		name: 'isFormReadonly'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'bool',
 		header: 'Form Tag',
 		name: 'isFormTag'
 	})
@@ -1734,12 +1740,6 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'bool',
 		header: 'Required',
 		name: 'isRequired'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'bool',
-		header: 'Retrieve Readonly',
-		name: 'isRetrieveReadonly'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',

@@ -147,7 +147,7 @@ export class DataObj {
 
 		function initRetrieveReadonly(dataObj: DataObj, queryType: TokenApiQueryType) {
 			if (
-				dataObj.raw.isRetrieveReadonly &&
+				dataObj.raw.isFormReadonly &&
 				[TokenApiQueryType.retrieve, TokenApiQueryType.save].includes(queryType)
 			) {
 				dataObj.fields.forEach((field) => {

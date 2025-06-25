@@ -16,6 +16,8 @@
 	let { parms, dataObj, el }: { parms: DataRecord; dataObj: DataObj; el: DetailEl } = $props()
 </script>
 
+<!-- <p>field: {el.field.colDO.label}</p> -->
+
 {#if el instanceof DetailElField}
 	<FormDetailElField {parms} {dataObj} {el} />
 {/if}

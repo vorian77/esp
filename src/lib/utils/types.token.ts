@@ -398,6 +398,11 @@ export enum TokenApiQueryType {
 	save = 'save'
 }
 
+export enum TokenApiQueryTypeAlt {
+	retrieveThenPreset = 'retrieveThenPreset',
+	retrieveToPreset = 'retrieveToPreset'
+}
+
 export class TokenApiSysSendText extends TokenApi {
 	phoneMobile: string
 	message: string

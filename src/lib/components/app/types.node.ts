@@ -12,7 +12,7 @@ import {
 	strRequired,
 	valueOrDefault
 } from '$utils/utils'
-import { TokenApiQueryType } from '$utils/types.token'
+import { TokenApiQueryType, TokenApiQueryTypeAlt } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/lib/components/nav/types.node.ts'
@@ -41,7 +41,7 @@ export class Node extends NodeHeader {
 	children: string[]
 	codeComponent: NodeObjComponent
 	codeNodeType: NodeType
-	codeQueryType: TokenApiQueryType
+	codeQueryTypeAlt?: TokenApiQueryTypeAlt
 	codeRenderPlatform: NodeRenderPlatform
 	dataObjId: string
 	isAlwaysRetrieveData: boolean
@@ -63,13 +63,12 @@ export class Node extends NodeHeader {
 			NodeObjComponent
 		)
 		this.codeNodeType = memberOfEnum(obj._codeNodeType, clazz, 'codeNodeType', 'NodeType', NodeType)
-		this.codeQueryType = memberOfEnumOrDefault(
-			obj._codeQueryType,
+		this.codeQueryTypeAlt = memberOfEnumIfExists(
+			obj._codeQueryTypeAlt,
+			'codeQueryTypeAlt',
 			clazz,
-			'codeQueryType',
-			'TokenApiQueryType',
-			TokenApiQueryType,
-			TokenApiQueryType.retrieve
+			'TokenApiQueryTypeAlt',
+			TokenApiQueryTypeAlt
 		)
 		this.codeRenderPlatform = memberOfEnumOrDefault(
 			obj._codeRenderPlatform,

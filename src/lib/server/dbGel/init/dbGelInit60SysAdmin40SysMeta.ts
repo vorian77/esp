@@ -1,5 +1,5 @@
 import { InitDb } from '$server/dbGel/init/types.init'
-import { initAdminSysMetaUserType } from '$server/dbGel/init/dbGelInit60SysAdmin40SysMetaUserType'
+import { initAdminSysMetaUserType as initUserType } from '$server/dbGel/init/dbGelInit60SysAdmin40SysMetaUserType'
 
 export function initAdminSysMeta(init: InitDb) {
 	initAttribute(init)
@@ -7,7 +7,7 @@ export function initAdminSysMeta(init: InitDb) {
 	initFieldListSelectUserType(init)
 	initSystem(init)
 	initUser(init)
-	initAdminSysMetaUserType(init)
+	initUserType(init)
 }
 
 function initAttribute(init: InitDb) {
@@ -679,7 +679,7 @@ function initFieldListSelectUserType(init: InitDb) {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeDataObjType: 'doEmbed',
-		exprFilter: `.isGlobalResource UNION .owner.id = <parms,uuid,queryOwnerSys> UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>).systemParents`,
+		exprFilter: `.isGlobalResource UNION .owner.id = <tree,uuid,SysSystem.id>  UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents`,
 		header: 'Select User Types',
 		name: 'dofls_sys_sys_admin_user_type',
 		owner: 'sys_system',
@@ -864,7 +864,6 @@ function initUser(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
 		codeCardinality: 'detail',
-		// exprFilter: `.id = <tree,uuid,SysObjAttr.id>`,
 		header: 'User',
 		name: 'data_obj_sys_admin_user_detail_meta',
 		owner: 'sys_system',

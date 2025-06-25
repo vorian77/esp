@@ -158,7 +158,7 @@ export class App {
 		let newTab = new AppLevelNode({
 			...this.getLevelNodeParmsNode(token.node)
 		})
-		let result: MethodResult = await newTab.queryTab(sm, token.node.codeQueryType)
+		let result: MethodResult = await newTab.queryTab(sm, TokenApiQueryType.retrieve)
 		if (result.error) return result
 		this.addTree([newTab])
 		return result
@@ -366,9 +366,6 @@ export class App {
 	}
 
 	async saveDetail(sm: State, codeActionType: CodeActionType): Promise<MethodResult> {
-		this.info = this.info + '*'
-		this.getInfo()
-
 		const level = this.getCurrTreeLevel()
 		if (level) return level.saveDetail(sm, codeActionType)
 		return new MethodResult({

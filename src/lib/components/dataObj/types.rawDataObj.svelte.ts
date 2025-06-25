@@ -73,11 +73,11 @@ export class RawDataObj {
 	gridStyles: GridStyle[]
 	header: string
 	id: string
+	isFormReadonly: boolean
 	isInitialValidationSilent: boolean
 	isListEdit: boolean
 	isListSuppressFilterSort: boolean
 	isListSuppressSelect: boolean
-	isRetrieveReadonly: boolean
 	listReorderColumn?: string
 	name: string
 	ownerId: string
@@ -115,11 +115,11 @@ export class RawDataObj {
 		this.gridStyles = arrayOfClass(GridStyle, obj._gridStyles)
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
+		this.isFormReadonly = booleanOrDefault(obj.isRetrieveReadonly, false)
 		this.isInitialValidationSilent = booleanOrDefault(obj.isInitialValidationSilent, false)
 		this.isListEdit = booleanRequired(obj.isListEdit, clazz, 'isListEdit')
 		this.isListSuppressFilterSort = booleanOrDefault(obj.isListSuppressFilterSort, false)
 		this.isListSuppressSelect = booleanOrDefault(obj.isListSuppressSelect, false)
-		this.isRetrieveReadonly = booleanOrDefault(obj.isRetrieveReadonly, false)
 		this.listReorderColumn = strOptional(obj._listReorderColumn, clazz, '_listReorderColumn')
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.ownerId = strRequired(obj._ownerId, clazz, '_ownerId')

@@ -333,11 +333,11 @@ export namespace sys_core {
     "isListEdit": boolean;
     "isListSuppressFilterSort"?: boolean | null;
     "isListSuppressSelect"?: boolean | null;
-    "isRetrieveReadonly"?: boolean | null;
     "subHeader"?: string | null;
     "columns": SysDataObjColumn[];
     "actionGroup"?: SysDataObjActionGroup | null;
     "listReorderColumn"?: sys_db.SysColumn | null;
+    "isFormReadonly"?: boolean | null;
   }
   export interface SysDataObjAction extends sys_user.Mgmt {
     "codeColor": SysCode;
@@ -507,8 +507,9 @@ export namespace sys_core {
     "selectListItemsHeader"?: string | null;
     "selectListItemsParmValue"?: string | null;
     "codeComponent": SysCode;
-    "codeQueryType"?: SysCode | null;
     "codeRenderPlatform"?: SysCode | null;
+    "isRetrievePreset"?: boolean | null;
+    "codeQueryTypeAlt"?: SysCode | null;
   }
   export interface SysNodeObjAction extends std.$Object {
     "codeAction": SysCodeAction;

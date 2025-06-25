@@ -28,7 +28,8 @@ import {
 	TokenApiDbDataObjSource,
 	TokenApiId,
 	TokenApiQueryData,
-	TokenApiQueryType
+	TokenApiQueryType,
+	TokenApiQueryTypeAlt
 } from '$utils/types.token'
 import { FieldEmbedType } from '$utils/utils.sys'
 import { ScriptGroupGelDataObj } from '$routes/api/db/dbGel/dbGelScriptDataObj'
@@ -57,14 +58,8 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 			rawDataObj.ownerId
 		)
 
-		debug('dbGelScriptDataObjQuery.queryPre', 'queryData.node', this.queryData.node)
-
-		if (this.queryType !== TokenApiQueryType.save && this.queryData.node) {
-			if (this.queryData.node.codeQueryType === TokenApiQueryType.preset) {
-				this.queryType = TokenApiQueryType.preset
-			} else if (this.queryData.node.codeQueryType === TokenApiQueryType.retrieve) {
-				this.queryType = TokenApiQueryType.retrieve
-			} else if (this.queryData.node.codeQueryType === TokenApiQueryType.retrievePreset) {
+		if (this.queryType === TokenApiQueryType.retrieve && this.queryData?.node?.codeQueryTypeAlt) {
+			if (this.queryData.node.codeQueryTypeAlt === TokenApiQueryTypeAlt.retrieveThenPreset) {
 				const expr = `SELECT ${rawDataObj.tableGroup.getTableObj(0)} FILTER ${rawDataObj.rawQuerySource.exprFilter}`
 				const evalExprContext = `${this.evalExprContext} - RetrievePreset`
 				result = await dbQueryExpr({
@@ -76,6 +71,8 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 				if (result.error) return result
 				const currData: RawDataList = result.data
 				this.queryType = currData.length > 0 ? TokenApiQueryType.retrieve : TokenApiQueryType.preset
+			} else if (this.queryData.node.codeQueryTypeAlt === TokenApiQueryTypeAlt.retrieveToPreset) {
+				this.queryType = TokenApiQueryType.preset
 			}
 		}
 
@@ -253,7 +250,10 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 					[DataObjDataPropName.rowsRetrieved, dataRows]
 				])
 
-				if (query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
+				if (
+					query.rawDataObj.codeCardinality === DataObjCardinality.detail &&
+					this.queryType !== TokenApiQueryType.retrieve
+				) {
 					dataRow = required(dataRows.getDetailRow(), clazz, 'dataRow')
 
 					// set embedded parent tree records

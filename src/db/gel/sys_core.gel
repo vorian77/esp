@@ -182,11 +182,11 @@ module sys_core {
       on target delete allow;
     };
 
+    isFormReadonly: bool;
     isInitialValidationSilent: bool;
     required isListEdit: bool;
     isListSuppressFilterSort: bool;
     isListSuppressSelect: bool;
-    isRetrieveReadonly: bool;
     
     listReorderColumn: sys_db::SysColumn;    
     processType: sys_core::SysCode;
@@ -441,11 +441,12 @@ module sys_core {
     required codeComponent: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
     codeQueryOwnerType: sys_core::SysCode;
-    codeQueryType: sys_core::SysCode;
+    codeQueryTypeAlt: sys_core::SysCode;
     codeRenderPlatform: sys_core::SysCode;
     dataObj: sys_core::SysDataObj;
     required isAlwaysRetrieveData: bool;
     required isHideRowManager: bool;
+    isRetrievePreset: bool;
     page: str;
     selectListItems: sys_core::SysDataObjFieldListItems;
     selectListItemsHeader: str;

@@ -64,7 +64,7 @@ function initTaskCohortAttd(init: InitDb) {
 	init.addTrans('sysNodeObjTask', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeTask',
-		codeQueryType: 'preset',
+		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_task_ai_cohort_attd',
 		name: 'node_obj_task_ai_cohort_attd',
 		owner: 'sys_client_atlantic_impact'
@@ -574,7 +574,7 @@ function initTaskNewStudent(init: InitDb) {
 	init.addTrans('sysNodeObjTask', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeTask',
-		codeQueryType: 'preset',
+		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_task_ai_new_student',
 		name: 'node_obj_task_ai_new_student',
 		owner: 'sys_client_atlantic_impact'
