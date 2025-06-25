@@ -692,7 +692,7 @@ function initTaskSsrWelcome(init: InitDb) {
 			<h1 class="text-green-400 text-3xl">Welcome</h1>
 
 			<div class="flex justify-center items-center mt-0">
-				<img class="w-60" src="src/lib/assets/org_logo_moed.png" alt="Logo" />
+				<img class="w-60" src="/src/lib/assets/org_logo_moed.png" alt="Logo" />
 			</div>
 
 			<p> <span class="font-bold">Youth Opportunity (YO) Baltimore</span> serves individuals between the ages of 18 and 24 who are out of school and/or looking for employment or connections to college. Operating out of two locations - one in West Baltimore and one in East Baltimore - YO embraces a model that offers a full range of services that lead to your success.</p>
