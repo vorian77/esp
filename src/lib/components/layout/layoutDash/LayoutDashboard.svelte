@@ -69,7 +69,7 @@
 	}
 </script>
 
-Test
+Test1
 {#await promise}
 	Loading tasks...
 {:then result}
