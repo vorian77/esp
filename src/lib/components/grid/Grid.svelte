@@ -133,7 +133,7 @@
 			getRowStyle,
 			onCellClicked: options.onCellClicked,
 			onCellValueChanged,
-			onFilterChanged: onFilterChanged,
+			onFilterChanged,
 			onRowDragEnd,
 			onRowDragMove,
 			onSelectionChanged,
@@ -260,7 +260,7 @@
 				)
 				break
 		}
-		onFilterChangedDeselect()
+		// onFilterChangedDeselect()
 		updateCounters()
 		if (options.fCallbackFilter) options.fCallbackFilter(event)
 	}
@@ -395,7 +395,7 @@
 
 	function updateCounters() {
 		rowCountFiltered = api.getDisplayedRowCount()
-		if (options.isPopup) rowCountSelected = api.getSelectedNodes().length
+		if (options.isPopup) rowCountSelected = api.getSelectedRows().length
 	}
 </script>
 

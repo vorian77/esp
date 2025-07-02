@@ -153,7 +153,11 @@ module app_cm {
     note: str;
   }
 
-  type CmPartner extending sys_core::SysObjAttrEnt {}
+  type CmPartner extending sys_core::SysObjAttrEnt {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_cm_partner');
+    };
+  }
   
   type CmProgram extending sys_core::SysObj {}
 

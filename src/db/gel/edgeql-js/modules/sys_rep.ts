@@ -7,17 +7,18 @@ import type * as _std from "./std";
 import type * as _sys_user from "./sys_user";
 import type * as _sys_db from "./sys_db";
 import type * as _default from "./default";
-export type $SysAnalyticλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
+export type $SysAnalyticλShape = $.typeutil.flatten<Omit<_sys_core.$SysObjAttrλShape, "codeAttrType"> & {
   "parms": $.LinkDesc<$SysRepParm, $.Cardinality.Many, {}, false, false,  false, false>;
   "statuses": $.LinkDesc<$SysAnalyticStatus, $.Cardinality.Many, {}, false, false,  false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "codeAttrType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, true>;
   "<analytics[is sys_rep::SysRep]": $.LinkDesc<$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;
   "<analytic[is sys_rep::SysRepUserAnalytic]": $.LinkDesc<$SysRepUserAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
   "<analytic": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<analytics": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysAnalytic = $.ObjectType<"sys_rep::SysAnalytic", $SysAnalyticλShape, null, [
-  ..._sys_core.$SysObj['__exclusives__'],
+  ..._sys_core.$SysObjAttr['__exclusives__'],
 ], "sys_rep::SysAnalytic">;
 const $SysAnalytic = $.makeType<$SysAnalytic>(_.spec, "17011630-1880-11ef-af53-f7b94ac2e26f", _.syntax.literal);
 
@@ -37,7 +38,7 @@ const $SysAnalyticStatus = $.makeType<$SysAnalyticStatus>(_.spec, "16f93cc7-1880
 
 const SysAnalyticStatus: $.$expr_PathNode<$.TypeSet<$SysAnalyticStatus, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysAnalyticStatus, $.Cardinality.Many), null);
 
-export type $SysRepλShape = $.typeutil.flatten<_sys_core.$SysObjAttrλShape & {
+export type $SysRepλShape = $.typeutil.flatten<Omit<_sys_core.$SysObjAttrλShape, "codeAttrType"> & {
   "actionGroup": $.LinkDesc<_sys_core.$SysDataObjActionGroup, $.Cardinality.One, {}, false, false,  false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprFilter": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -47,6 +48,7 @@ export type $SysRepλShape = $.typeutil.flatten<_sys_core.$SysObjAttrλShape & {
   "analytics": $.LinkDesc<$SysAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
   "elements": $.LinkDesc<$SysRepEl, $.Cardinality.Many, {}, false, false,  false, false>;
   "parms": $.LinkDesc<$SysRepParm, $.Cardinality.Many, {}, false, false,  false, false>;
+  "codeAttrType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, true>;
   "<report[is sys_rep::SysRepUser]": $.LinkDesc<$SysRepUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<report": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

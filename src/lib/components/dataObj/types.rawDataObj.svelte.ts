@@ -13,6 +13,7 @@ import {
 	type DataRecord,
 	debug,
 	FieldEmbedType,
+	FileStorage,
 	getArray,
 	getDataRecordValueKey,
 	getDbExprRaw,
@@ -445,6 +446,8 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 export class RawDataObjPropDisplayItemChange {
 	_codeAccess?: string
 	_codeItemChangeAction: string
+	_codeItemChangeRecordStatus?: string
+	_codeItemChangeTriggerType: string
 	_codeItemChangeValueType?: string
 	_codeOp?: string
 	_columns: string[]
@@ -464,8 +467,14 @@ export class RawDataObjPropDisplayItemChange {
 			clazz,
 			'_codeItemChangeAction'
 		)
+		this._codeItemChangeRecordStatus = obj._codeItemChangeRecordStatus
+		this._codeItemChangeTriggerType = strRequired(
+			obj._codeItemChangeTriggerType,
+			clazz,
+			'_codeItemChangeTriggerType'
+		)
 		this._codeItemChangeValueType = obj._codeItemChangeValueType
-		this._codeOp = strRequired(obj._codeOp, clazz, '_codeOp')
+		this._codeOp = obj._codeOp
 		this._columns = getArray(obj._columns)
 		this._valueTargetIdAttribute = obj._valueTargetIdAttribute
 		this._valueTargetIdCode = obj._valueTargetIdCode
@@ -482,6 +491,7 @@ export class RawDataObjPropDisplayCustom {
 	action?: UserAction
 	customColActionValue?: string
 	customColAlign?: string
+	customColFile?: any
 	customColIsSubHeader?: boolean
 	customColLabel?: string
 	customColPrefix?: string
@@ -502,6 +512,7 @@ export class RawDataObjPropDisplayCustom {
 		}
 		this.customColActionValue = strOptional(obj.customColActionValue, clazz, 'customColActionValue')
 		this.customColAlign = strOptional(obj.customColAlign, clazz, 'customColAlign')
+		this.customColFile = classOptional(FileStorage, obj.customColFile)
 		this.customColIsSubHeader = obj.customColIsSubHeader
 		this.customColLabel = strOptional(obj.customColLabel, clazz, 'customColLabel')
 		this.customColPrefix = strOptional(obj.customColPrefix, clazz, 'customColPrefix')

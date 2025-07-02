@@ -57,18 +57,33 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/server/dbGel/init/types.init.ts'
 const TokenExprFilterRecord = '<ExprFilterRecord>'
+const isResetOnly = false
 
 type Link = [string, string]
 type Reset = [Function, Link]
 
+let itemsExcludeList = [
+	'sysCode',
+	'sysCodeAction',
+	'sysCodeType',
+	'sysColumn',
+	'sysDataObjActionGroup',
+	'sysDataObjFieldListItems',
+	'sysUserAction',
+	'tableColumnsBulk',
+	'tablesBulk'
+]
+
 export class InitDb {
 	isFullDbReset: boolean
 	items: InitDbItem[] = []
+	itemsExclude: string[]
 	reset: ResetDb = new ResetDb()
 	constructor(isFullDbReset: boolean = false) {
 		this.isFullDbReset = isFullDbReset
+		this.itemsExclude = this.isFullDbReset ? [] : itemsExcludeList
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysCodeType',
 				dataMap: 'name',
@@ -78,7 +93,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysCode',
 				dataMap: [
@@ -91,7 +106,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysCodeAction',
 				dataMap: [
@@ -102,7 +117,7 @@ export class InitDb {
 				fCreate: addCodeAction
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysObjAttr',
 				dataMap: [
@@ -116,7 +131,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysColumn',
 				dataMap: 'name',
@@ -124,7 +139,7 @@ export class InitDb {
 				fCreate: addColumn
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItemBulk({
 				name: 'tablesBulk',
 				dataMap: ['.name', 2],
@@ -132,7 +147,7 @@ export class InitDb {
 				fCreate: tablesBulk
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItemBulk({
 				name: 'tableColumnsBulk',
 				dataMap: ['.name', 0],
@@ -140,7 +155,7 @@ export class InitDb {
 				fCreate: tableColumnsBulk
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysUserAction',
 				dataMap: 'name',
@@ -149,7 +164,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysDataObjActionGroup',
 				dataMap: 'name',
@@ -158,7 +173,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysDataObjFieldListItems',
 				dataMap: 'name',
@@ -168,7 +183,7 @@ export class InitDb {
 		)
 
 		// embed
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysDataObjEmbed',
 				dataMap: 'name',
@@ -177,7 +192,7 @@ export class InitDb {
 				fCreate: addDataObj
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysDataObjFieldEmbedListConfig',
 				dataMap: 'name',
@@ -185,7 +200,7 @@ export class InitDb {
 				fCreate: addDataObjFieldEmbedListConfig
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysDataObjFieldEmbedListEdit',
 				dataMap: 'name',
@@ -193,7 +208,7 @@ export class InitDb {
 				fCreate: addDataObjFieldEmbedListEdit
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysDataObjFieldEmbedListSelect',
 				dataMap: 'name',
@@ -202,7 +217,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysDataObj',
 				dataMap: 'name',
@@ -212,52 +227,45 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItem({
 				name: 'updateDataObjColumnCustomEmbedShellFields',
 				fCreate: updateDataObjColumnCustomEmbedShellFields
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
-				name: 'sysNodeObjFree',
+				name: 'sysNodeObj',
 				dataMap: 'name',
 				deleteObj: 'sys_core::SysNodeObj',
-				deleteObjFilter: `.codeNodeType.name = 'nodeFree'`,
-				fCreate: addNode
-			})
-		)
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysNodeObjAppObj',
-				dataMap: 'name',
-				deleteObj: 'sys_core::SysNodeObj',
-				deleteObjFilter: `.codeNodeType.name = 'nodeAppObj'`,
-				fCreate: addNode
-			})
-		)
-		this.items.push(
-			new InitDbItemObject({
-				name: 'sysNodeObjApp',
-				dataMap: 'name',
-				deleteObj: 'sys_core::SysNodeObj',
-				deleteObjFilter: `.codeNodeType.name = 'nodeApp'`,
 				fCreate: addNode
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
-				name: 'sysNodeObjTask',
+				altTrans: ['sysNodeObj'],
+				name: 'updateDepdNodeAction',
 				dataMap: 'name',
-				deleteObj: 'sys_core::SysNodeObj',
-				deleteObjFilter: `.codeNodeType.name = 'nodeTask'`,
-				fCreate: addNode
+				fCreate: updateDepdNodeAction,
+				updateObj: 'sys_core::SysNodeObj',
+				updateObjFields: [['actions', '{}']]
 			})
 		)
 
-		this.items.push(
+		this.addItem(
+			new InitDbItemObject({
+				altTrans: ['sysNodeObj'],
+				name: 'updateDepdNodeChild',
+				dataMap: 'name',
+				fCreate: updateDepdNodeChild,
+				updateObj: 'sys_core::SysNodeObj',
+				updateObjFields: [['children', '{}']]
+			})
+		)
+
+		this.addItem(
 			new InitDbItemObject({
 				altTrans: ['sysDataObj', 'sysDataObjEmbed'],
 				name: 'updateDepdDataObjColumnItemChange',
@@ -268,7 +276,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				altTrans: ['sysDataObj', 'sysDataObjEmbed'],
 				name: 'updateDepdDataObjQueryRider',
@@ -279,7 +287,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				altTrans: ['sysDataObj', 'sysDataObjEmbed'],
 				name: 'updateDepdGridStylesDataObj',
@@ -290,28 +298,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
-			new InitDbItemObject({
-				altTrans: ['sysNodeObjAppObj', 'sysNodeObjApp', 'sysNodeObjTask'],
-				name: 'updateDepdNodeAction',
-				dataMap: 'name',
-				fCreate: updateDepdNodeAction,
-				updateObj: 'sys_core::SysNodeObj',
-				updateObjFields: [['actions', '{}']]
-			})
-		)
-		this.items.push(
-			new InitDbItemObject({
-				altTrans: ['sysNodeObjAppObj', 'sysNodeObjApp', 'sysNodeObjTask'],
-				name: 'updateDepdNodeChild',
-				dataMap: 'name',
-				fCreate: updateDepdNodeChild,
-				updateObj: 'sys_core::SysNodeObj',
-				updateObjFields: [['children', '{}']]
-			})
-		)
-
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				altTrans: ['sysUserAction'],
 				name: 'updateDepdNavDestinationUserAction',
@@ -322,7 +309,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				altTrans: ['sysSystem'],
 				deleteObj: 'sys_core::SysNodeObjConfig',
@@ -333,7 +320,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysTask',
 				dataMap: 'name',
@@ -342,7 +329,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysAnalytic',
 				dataMap: 'name',
@@ -350,7 +337,7 @@ export class InitDb {
 				fCreate: addAnalytic
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysRep',
 				dataMap: 'name',
@@ -358,7 +345,7 @@ export class InitDb {
 				fCreate: addReport
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysAppHeader',
 				dataMap: 'name',
@@ -366,7 +353,7 @@ export class InitDb {
 				fCreate: addAppHeader
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysApp',
 				dataMap: 'name',
@@ -375,7 +362,7 @@ export class InitDb {
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysUserType',
 				dataMap: 'name',
@@ -383,7 +370,7 @@ export class InitDb {
 				fCreate: addUserType
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItemObject({
 				name: 'sysUser',
 				dataMap: 'name',
@@ -393,28 +380,28 @@ export class InitDb {
 		)
 
 		/* MOED demo */
-		this.items.push(
+		this.addItem(
 			new InitDbItem({
 				name: 'MoedPBulkPart',
-				exprResets: `DELETE org_client_moed::MoedParticipant`,
+				exprResets: `DELETE org_client_city_baltimore::MoedParticipant`,
 				fCreate: MoedPBulkPart
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItem({
 				name: 'MoedBulkDataUser',
 				exprResets: `DELETE sys_user::SysUser FILTER .name LIKE 'MOED%'`,
 				fCreate: MoedBulkDataUser
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItem({
 				name: 'MoedBulkDataMsg',
 				exprResets: [`DELETE sys_core::SysMsg`],
 				fCreate: MoedBulkDataMsg
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItem({
 				name: 'MoedBulkCsf',
 				exprResets: [
@@ -423,33 +410,41 @@ export class InitDb {
 				fCreate: MoedBulkCsf
 			})
 		)
-		this.items.push(
+		this.addItem(
 			new InitDbItem({
 				name: 'MoedBulkDataDoc',
-				exprResets: `DELETE app_cm::CmCsfDocument FILTER .csf.client IN org_client_moed::MoedParticipant`,
+				exprResets: `DELETE app_cm::CmCsfDocument FILTER .csf.client IN org_client_city_baltimore::MoedParticipant`,
 				fCreate: MoedBulkDataDoc
 			})
 		)
 
-		this.items.push(
+		this.addItem(
 			new InitDbItem({
 				name: 'MoedBulkDataDelete',
 				exprResets:
-					'DELETE app_cm::CmCsfData FILTER .csf.client IN org_client_moed::MoedParticipant'
+					'DELETE app_cm::CmCsfData FILTER .csf.client IN org_client_city_baltimore::MoedParticipant'
 			})
 		)
 	}
 
+	addItem(item: InitDbItem) {
+		if (!this.itemsExclude.includes(item.name)) {
+			this.items.push(item)
+		}
+	}
+
 	addTrans(name: string, data: any) {
-		const item = this.items.find((i) => i.name === name)
-		if (item) {
-			item.addTrans(name, data)
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'InitDB.addTrans',
-				msg: `Unable to find DB initiator: ${name}`
-			})
+		if (!this.itemsExclude.includes(name)) {
+			const item = this.items.find((i) => i.name === name)
+			if (item) {
+				item.addTrans(name, data)
+			} else {
+				error(500, {
+					file: FILENAME,
+					function: 'InitDB.addTrans',
+					msg: `Unable to find DB initiator: ${name}`
+				})
+			}
 		}
 	}
 
@@ -457,7 +452,7 @@ export class InitDb {
 		debug('InitDb', 'execute')
 		this.setAltTrans()
 		await this.executeReset()
-		await this.executeCreate()
+		if (!isResetOnly) await this.executeCreate()
 	}
 
 	async executeCreate() {

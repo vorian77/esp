@@ -140,11 +140,10 @@ export default async function action(
 							user := (
   							INSERT sys_user::SysUser {
 									createdBy := 	sys_user::getRootUser(),
-									defaultOrg := _userTypes.owner.owner,
 									defaultSystem := _userTypes.owner,
 									isActive := true,
 									modifiedBy := 	sys_user::getRootUser(),
-									orgs := _userTypes.owner.owner,
+									org := _userTypes.owner.owner,
 									owner := _userTypes.owner.owner,
 									password := password,
 									person := (

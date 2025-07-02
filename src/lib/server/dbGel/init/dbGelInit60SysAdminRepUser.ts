@@ -510,7 +510,7 @@ function initRepConfig(init: InitDb) {
 		columnName: 'custom_embed_shell',
 		customEmbedShellFields: ['parms']
 	})
-	init.addTrans('sysNodeObjApp', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_rep_my_report_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'FileChartColumnIncreasing',
@@ -521,7 +521,7 @@ function initRepConfig(init: InitDb) {
 		orderDefine: 40,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_rep_render', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'FileChartColumnIncreasing',
@@ -553,7 +553,7 @@ function initRepRender(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',

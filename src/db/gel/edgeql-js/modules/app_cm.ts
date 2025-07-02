@@ -19,7 +19,7 @@ export type $CmClientλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
 }>;
 type $CmClient = $.ObjectType<"app_cm::CmClient", $CmClientλShape, null, [
   ..._sys_user.$Mgmt['__exclusives__'],
-], "app_cm::CmClient" | "org_client_moed::MoedParticipant">;
+], "app_cm::CmClient" | "org_client_city_baltimore::MoedParticipant">;
 const $CmClient = $.makeType<$CmClient>(_.spec, "508d4869-b3c2-11ee-ac7f-9da0574a2000", _.syntax.literal);
 
 const CmClient: $.$expr_PathNode<$.TypeSet<$CmClient, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmClient, $.Cardinality.Many), null);
@@ -267,6 +267,7 @@ const $CmGroup = $.makeType<$CmGroup>(_.spec, "71583cb7-ef81-11ef-81e9-d9cbd35b1
 const CmGroup: $.$expr_PathNode<$.TypeSet<$CmGroup, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmGroup, $.Cardinality.Many), null);
 
 export type $CmPartnerλShape = $.typeutil.flatten<_sys_core.$SysObjAttrEntλShape & {
+  "codeAttrType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, true>;
 }>;
 type $CmPartner = $.ObjectType<"app_cm::CmPartner", $CmPartnerλShape, null, [
   ..._sys_core.$SysObjAttrEnt['__exclusives__'],

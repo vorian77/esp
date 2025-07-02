@@ -48,19 +48,17 @@ function initApps(init: InitDb) {
 		name: 'app_sys_admin_global',
 		owner: 'sys_system',
 		nodes: [
-			'node_obj_sys_admin_org_list',
-			'node_obj_sys_admin_system_list_config',
-			'node_obj_sys_admin_system_list_obj',
-			'node_obj_sys_admin_system_list_meta',
+			'node_obj_admin_org_list_global',
+			'node_obj_admin_system_list_build',
 			'node_obj_sys_admin_tool_error_list'
 		]
 	})
 	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_sys_admin',
 		isGlobalResource: true,
-		name: 'app_sys_admin_user',
+		name: 'app_sys_admin_customer',
 		owner: 'sys_system',
-		nodes: ['node_obj_sys_admin_system_list_meta']
+		nodes: ['node_obj_admin_org_list_customer']
 	})
 	init.addTrans('sysApp', {
 		appHeader: 'app_hdr_sys_reporting',
@@ -92,7 +90,7 @@ function initUserType(init: InitDb) {
 		],
 		header: 'Admin - Global',
 		name: 'ut_sys_admin_global',
-		owner: 'sys_system'
+		owner: 'org_system'
 	})
 
 	/* CRM */
@@ -104,40 +102,30 @@ function initUserType(init: InitDb) {
 		],
 		header: 'CRM Admin',
 		name: 'ut_app_crm_admin',
-		owner: 'sys_app_crm'
+		owner: 'org_apps'
 	})
 }
 
 function initUsers(init: InitDb) {
 	/* system */
 	init.addTrans('sysUser', {
-		defaultOrg: 'org_system',
 		defaultSystem: 'sys_system',
 		firstName: 'Root',
 		isActive: true,
 		lastName: 'User',
 		name: '*ROOTUSER*',
-		orgs: ['org_system'],
-		owner: 'sys_system',
+		owner: 'org_system',
 		systems: ['sys_app_cm', 'sys_app_crm', 'sys_system'],
 		userTypes: []
 	})
 
 	init.addTrans('sysUser', {
-		defaultOrg: 'org_system',
 		defaultSystem: 'sys_system',
 		firstName: 'User',
 		isActive: true,
 		lastName: 'System',
 		name: 'user_sys',
-		orgs: [
-			'org_client_atlantic_impact',
-			'org_apps',
-			'org_client_app_factory',
-			'org_client_moed',
-			'org_system'
-		],
-		owner: 'sys_system',
+		owner: 'org_system',
 		systems: [
 			'sys_client_atlantic_impact',
 			'sys_app_crm',
@@ -149,24 +137,22 @@ function initUsers(init: InitDb) {
 			'ut_app_crm_admin',
 			'ut_client_ai_admin',
 			'ut_client_ai_staff',
-			'ut_client_moed_admin',
-			'ut_client_moed_advocate_east',
-			'ut_client_moed_advocate_west',
-			'ut_client_moed_youth',
+			'ut_client_baltimore_moed_admin',
+			'ut_client_baltimore_moed_advocate_east',
+			'ut_client_baltimore_moed_advocate_west',
+			'ut_client_baltimore_moed_youth',
 			'ut_sys_admin_global'
 		]
 	})
 
 	/* App Factory */
 	init.addTrans('sysUser', {
-		defaultOrg: 'org_client_app_factory',
 		defaultSystem: 'sys_client_moed',
 		firstName: 'Phyllip',
 		isActive: true,
 		lastName: 'Hall',
 		name: '2487985578',
-		orgs: ['org_client_moed', 'org_system'],
-		owner: 'sys_client_app_factory',
+		owner: 'org_client_app_factory',
 		systems: [
 			'sys_client_atlantic_impact',
 			'sys_client_app_factory',
@@ -177,10 +163,10 @@ function initUsers(init: InitDb) {
 			// 'ut_app_crm_admin',
 			// 'ut_client_ai_admin',
 			'ut_client_ai_staff',
-			'ut_client_moed_admin',
-			'ut_client_moed_advocate_east',
-			'ut_client_moed_advocate_west',
-			'ut_client_moed_youth',
+			'ut_client_baltimore_moed_admin',
+			'ut_client_baltimore_moed_advocate_east',
+			'ut_client_baltimore_moed_advocate_west',
+			'ut_client_baltimore_moed_youth',
 			'ut_sys_admin_global'
 		]
 	})

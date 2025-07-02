@@ -107,7 +107,7 @@ export default async function action(
 		case CodeActionType.openNode:
 			if (!(token instanceof TokenAppNode)) return actionErrorToken(actionType)
 			if (!parmsAction.isMultiTree) sm.newApp()
-			result = await sm.app.addTreeNode(sm, token)
+			result = await sm.app.treeNodeAdd(sm, token)
 			if (result.error) return result
 
 			parmsAction.updateStateParmsTokensMenuClose()

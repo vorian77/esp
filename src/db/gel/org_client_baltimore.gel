@@ -1,0 +1,21 @@
+module org_client_city_baltimore {
+  type MoedParticipant extending app_cm::CmClient {    
+    consentDisclaimer: bool;
+    idxDemo: int64;
+  }
+
+  type MoedPartData extending sys_core::SysObj {
+    participant: org_client_city_baltimore::MoedParticipant;
+  }
+
+  # type MoedPartDoc extending org_client_city_baltimore::MoedPartData {
+  #   required codeType: sys_core::SysCode;
+  #   required date: cal::local_date;
+  #   file: json;
+  # }
+
+  # type MoedPartNote extending org_client_city_baltimore::MoedPartData {
+  #   required date: cal::local_date;
+  #   required codeType: sys_core::SysCode;
+  # }
+}

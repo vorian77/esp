@@ -22,7 +22,7 @@
 	let disabled = $derived(!dm.isStatusValidNode(parms.dataObjId))
 
 	async function action(): Promise<MethodResult> {
-		sm.app.setTreeLevelIdxCurrent(dataObj.treeLevelIdx)
+		sm.app.setTreeIdxCurrent(dataObj.treeLevelIdx)
 		return await sm.triggerAction(
 			new TokenAppStateTriggerAction({
 				codeAction: fieldCustom.action.codeAction,

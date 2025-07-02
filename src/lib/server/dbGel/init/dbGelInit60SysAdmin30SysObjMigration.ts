@@ -150,7 +150,7 @@ function initMigr(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_migr_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -161,7 +161,7 @@ function initMigr(init: InitDb) {
 		orderDefine: 140,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [
 			{ node: 'node_obj_sys_admin_migr_source_table_list', order: 10 },
 			{ node: 'node_obj_sys_admin_migr_target_table_list', order: 20 }
@@ -335,7 +335,7 @@ function initMigrSourceTable(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_migr_source_table_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -347,7 +347,7 @@ function initMigrSourceTable(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_migr_source_column_list', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
@@ -501,7 +501,7 @@ function initMigrSourceColumn(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_migr_source_column_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -513,7 +513,7 @@ function initMigrSourceColumn(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
@@ -734,7 +734,7 @@ function initMigrTargetTable(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_migr_target_table_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -746,7 +746,7 @@ function initMigrTargetTable(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_migr_target_column_list', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
@@ -963,7 +963,7 @@ function initMigrTargetColumn(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_migr_target_column_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -975,7 +975,7 @@ function initMigrTargetColumn(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',

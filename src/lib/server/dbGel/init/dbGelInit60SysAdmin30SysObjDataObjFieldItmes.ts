@@ -295,7 +295,7 @@ function initDataObjFieldListItems(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_field_list_items_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -307,7 +307,7 @@ function initDataObjFieldListItems(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',

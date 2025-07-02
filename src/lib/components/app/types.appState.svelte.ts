@@ -195,7 +195,7 @@ export class State {
 
 	getStateDataOwnerId() {
 		const smSource = this.stateRoot || this
-		const treeLevel = smSource.app.getCurrTreeLevel()
+		const treeLevel = smSource.app.getCurrTree()
 		if (treeLevel && treeLevel.levels.length > 0) {
 			const rootTab = treeLevel.levels[0].getCurrTab()
 			if (rootTab && rootTab.node) {

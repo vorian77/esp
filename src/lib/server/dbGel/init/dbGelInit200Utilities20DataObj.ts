@@ -533,7 +533,7 @@ export async function addUserAction(data: any) {
 					'ct_sys_user_action_confirm_type',
 					e.op(p.codeConfirmType, '??', 'none')
 				),
-				codeAttrType: e.sys_core.getCodeAttrType('at_sys_user_action'),
+				codeAttrType: e.sys_core.getCodeAttrType('at_user_user_action'),
 				createdBy: CREATOR,
 				exprAction: p.exprAction,
 				exprEnable: p.exprEnable,

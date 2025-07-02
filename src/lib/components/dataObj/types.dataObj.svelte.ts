@@ -23,6 +23,7 @@ import {
 	FieldCustomActionLink,
 	FieldCustomHeader,
 	FieldCustomHTML,
+	FieldCustomImage,
 	FieldCustomText
 } from '$comps/form/fieldCustom'
 import {
@@ -241,6 +242,10 @@ export class DataObj {
 				newField = new FieldCustomHTML(props)
 				break
 
+			case FieldElement.customImage:
+				newField = new FieldCustomImage(props)
+				break
+
 			case FieldElement.customText:
 				newField = new FieldCustomText(props)
 				break
@@ -395,31 +400,36 @@ export class DataObjData {
 			this.rawDataObj = rawDataObj
 		}
 	}
-
 	getFieldEmbedData(field: FieldEmbed | undefined, evalExprContext: string): DataObjData {
-		return this.getFieldEmbedDataExe(this, field, evalExprContext)
+		if (!field) return this
+		const embedData = this.getFieldEmbedDataExe(field, this.fields, evalExprContext)
+		if (embedData) {
+			return embedData
+		} else {
+			error(500, {
+				file: FILENAME,
+				function: 'dataObjData.getFieldEmbedData',
+				msg: `Could not find field embed data for field: ${field.colDO.propNameRaw} in context: ${evalExprContext}`
+			})
+		}
 	}
 
 	private getFieldEmbedDataExe(
-		data: DataObjData,
-		field: FieldEmbed | undefined,
+		field: FieldEmbed,
+		fields: FieldEmbed[],
 		evalExprContext: string
-	): DataObjData {
-		if (!field) return data
-		for (let i = 0; i < data.fields.length; i++) {
-			let fieldCurrent = data.fields[i]
+	): DataObjData | undefined {
+		for (let i = 0; i < fields.length; i++) {
+			let fieldCurrent = fields[i]
 			if (fieldCurrent.colDO.id === field.colDO.id) return fieldCurrent.data
-			return this.getFieldEmbedDataExe(fieldCurrent.data, field, evalExprContext)
+			const newData = this.getFieldEmbedDataExe(field, fieldCurrent.data.fields, evalExprContext)
+			if (newData) return newData
 		}
-		error(500, {
-			file: FILENAME,
-			function: 'dataObjData.getFieldEmbedDataExe',
-			msg: evalExprContext
-		})
 	}
 
 	getFieldEmbedFields(field: FieldEmbed | undefined, evalExprContext: string): FieldEmbed[] {
-		const dataField = this.getFieldEmbedDataExe(this, field, evalExprContext)
+		if (!field) return this.fields
+		const dataField = this.getFieldEmbedDataExe(field, this.fields, evalExprContext)
 		return dataField ? dataField.fields : []
 	}
 

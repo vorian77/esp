@@ -1,15 +1,15 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
-import { initAdminOrg } from '$server/dbGel/init/dbGelInit60SysAdmin15Org'
-import { initAdminSysConfig } from '$server/dbGel/init/dbGelInit60SysAdmin20SysConfig'
+import { initAdminSysTools } from '$server/dbGel/init/dbGelInit60SysAdmin10Tools'
+import { initAdminOrgCustomer } from '$server/dbGel/init/dbGelInit60SysAdmin20OrgCustomer'
+import { initAdminOrgGlobal } from '$server/dbGel/init/dbGelInit60SysAdmin20OrgGlobal'
 import { initAdminSysObj } from '$server/dbGel/init/dbGelInit60SysAdmin30SysObj'
-import { initAdminSysMeta } from '$server/dbGel/init/dbGelInit60SysAdmin40SysMeta'
-import { initAdminSysTools } from '$server/dbGel/init/dbGelInit60SysAdmin20SysTools'
+import { initAdminSysObjBuild } from '$server/dbGel/init/dbGelInit60SysAdmin40SystemsBuild'
 
 export function initSysAdmin(init: InitDb) {
-	initAdminOrg(init)
-	initAdminSysConfig(init)
-	initAdminSysObj(init)
-	initAdminSysMeta(init)
 	initAdminSysTools(init)
+	initAdminOrgCustomer(init)
+	initAdminOrgGlobal(init)
+	initAdminSysObj(init)
+	initAdminSysObjBuild(init)
 }

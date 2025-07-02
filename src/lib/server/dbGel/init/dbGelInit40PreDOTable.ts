@@ -39,7 +39,10 @@ export function initPreTable(init: InitDb) {
 		['sys_system', 'sys_core', 'SysObjAttrAccess', true],
 		['sys_system', 'sys_core', 'SysObjAttrAction', true],
 		['sys_system', 'sys_core', 'SysObjAttrEnt', true],
+		['sys_system', 'sys_core', 'SysObjAttrExpr', true],
+		['sys_system', 'sys_core', 'SysObjAttrVirtual', true],
 		['sys_system', 'sys_core', 'SysObjNote', true],
+		['sys_system', 'sys_core', 'SysObjOrg', true],
 		['sys_system', 'sys_core', 'SysOrg', true],
 		['sys_system', 'sys_core', 'SysSystem', true],
 
@@ -97,10 +100,10 @@ export function initPreTable(init: InitDb) {
 
 	init.addTrans('tablesBulk', [
 		// MOED
-		['sys_client_moed', 'org_client_moed', 'MoedDoc', true],
-		['sys_client_moed', 'org_client_moed', 'MoedMessage', true],
-		['sys_client_moed', 'org_client_moed', 'MoedPartDoc', true],
-		['sys_client_moed', 'org_client_moed', 'MoedPartNote', true],
-		['sys_client_moed', 'org_client_moed', 'MoedParticipant', true]
+		['sys_client_moed', 'org_client_city_baltimore', 'MoedDoc', true],
+		['sys_client_moed', 'org_client_city_baltimore', 'MoedMessage', true],
+		['sys_client_moed', 'org_client_city_baltimore', 'MoedPartDoc', true],
+		['sys_client_moed', 'org_client_city_baltimore', 'MoedPartNote', true],
+		['sys_client_moed', 'org_client_city_baltimore', 'MoedParticipant', true]
 	])
 }

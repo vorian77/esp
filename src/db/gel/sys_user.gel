@@ -18,15 +18,26 @@ module sys_user {
 
   type SysApp extending sys_core::SysObjAttr  {
     required appHeader: sys_user::SysAppHeader;
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_sys_app');
+    };
     multi nodes: sys_core::SysNodeObj {
        on target delete allow;
     };
+    constraint exclusive on ((.owner, .name));
   }
 
-  type SysAppHeader extending sys_core::SysObj {}
+  type SysAppHeader extending sys_core::SysObjAttrEnt {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_sys_app_header');
+    };
+  }
 
   # task  
   type SysTask extending sys_core::SysObjAttr  {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_user_task');
+    };
     codeTaskStatusObj: sys_core::SysCode;
     required codeTaskType: sys_core::SysCode;
     description: str;
@@ -36,18 +47,12 @@ module sys_user {
     hasAltOpen: bool;
     noDataMsg: str;
     nodeObj: sys_core::SysNodeObj;
+    constraint exclusive on ((.owner, .name));
   }
   
-  type SysUser extending sys_core::SysObjAttr {
-    overloaded required codeAttrType: sys_core::SysCode {
-      default := sys_core::getCode('ct_sys_obj_attr_type', 'at_sys_user');
-    };
-    required defaultOrg: sys_core::SysOrg;
+  type SysUser extending sys_core::SysObjOrg {
     required defaultSystem: sys_core::SysSystem;
     isActive: bool;
-    required multi orgs: sys_core::SysOrg {
-      on target delete allow;
-    };
     multi parms: sys_user::SysUserParm {
       on source delete delete target;
       on target delete allow;
@@ -79,6 +84,9 @@ module sys_user {
       on target delete allow;
     };
     required codeAction: sys_core::SysCodeAction;
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_user_user_action');
+    };
     required codeConfirmType: sys_core::SysCode;
     exprAction: str;
     exprEnable: str;
@@ -88,6 +96,7 @@ module sys_user {
     navDestination: sys_core::SysNavDestination{
       on target delete allow;
     };
+    constraint exclusive on ((.owner, .name));
   }
   type SysUserActionConfirm extending sys_user::Mgmt {
     required codeConfirmType: sys_core::SysCode;
@@ -119,7 +128,7 @@ module sys_user {
   } 
   
   # type
-  type SysUserType extending sys_core::SysObjAttr {
+  type SysUserType extending sys_core::SysObjOrg {
     multi attrsExpr: sys_core::SysObjAttrExpr {
       on source delete delete target;
       on target delete allow;
@@ -127,9 +136,6 @@ module sys_user {
     multi attrsVirtual: sys_core::SysObjAttrVirtual {
       on source delete delete target;
       on target delete allow;
-    };
-    overloaded required codeAttrType: sys_core::SysCode {
-      default := sys_core::getCode('ct_sys_obj_attr_type', 'at_sys_user_type');
     };
     isSelfSignup: bool;
     users := .<userTypes[is sys_user::SysUser];

@@ -38,6 +38,7 @@
 
 	let field: FieldFile = $derived(parms.field)
 	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
+	$inspect('FormElFile', { fieldValue })
 	$effect(() => {
 		urlCurrent = fieldValue && fieldValue.url ? fieldValue.url : urlCurrent
 		urlOld = fieldValue && fieldValue?.url ? fieldValue.url : urlOld

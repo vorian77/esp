@@ -20,6 +20,7 @@ import {
 	DataManagerNode,
 	DataObjData,
 	type DataRecord,
+	DataRecordStatus,
 	debug,
 	getArray,
 	getColor,
@@ -135,79 +136,106 @@ export class Field {
 						? itemChange.valueTriggerIdsCode
 						: getArray(itemChange.valueTargetScalar)
 
-			switch (itemChange.codeOp) {
-				case PropOp.any:
-					return process(this, itemChange)
-
-				case PropOp.equal:
-					if (valueTriggerArray.includes(triggerValueCurrent)) {
-						return await process(this, itemChange)
+			switch (itemChange.codeItemChangeTriggerType) {
+				case FieldItemChangeTriggerType.itemChangeTypeRecordStatus:
+					if (
+						itemChange.codeItemChangeRecordStatus &&
+						dmn.dataObj.data.rowsRetrieved.getDetailRowStatusIs(
+							itemChange.codeItemChangeRecordStatus
+						)
+					) {
+						return process(this, itemChange)
 					}
 					break
 
-				case PropOp.notEqual:
-					if (!valueTriggerArray.includes(triggerValueCurrent)) {
-						return await process(this, itemChange)
-					}
-					break
-
-				case PropOp.notNull:
-					if (!['', null, undefined].includes(triggerValueCurrent)) {
-						return await process(this, itemChange)
-					}
-					break
-
-				case PropOp.null:
-					if (['', null, undefined].includes(triggerValueCurrent)) {
-						return await process(this, itemChange)
-					}
-					break
-
-				default:
-					const valueTriggerScalar = required(itemChange.valueTriggerScalar, clazz, 'valueScalar')
+				case FieldItemChangeTriggerType.itemChangeTypeOp:
 					switch (itemChange.codeOp) {
-						case PropOp.greaterThan:
-							if (triggerValueCurrent > valueTriggerScalar) {
+						case PropOp.any:
+							return process(this, itemChange)
+
+						case PropOp.equal:
+							if (valueTriggerArray.includes(triggerValueCurrent)) {
 								return await process(this, itemChange)
 							}
 							break
 
-						case PropOp.greaterThanOrEqual:
-							if (triggerValueCurrent >= valueTriggerScalar) {
+						case PropOp.notEqual:
+							if (!valueTriggerArray.includes(triggerValueCurrent)) {
 								return await process(this, itemChange)
 							}
 							break
 
-						case PropOp.lessThan:
-							if (triggerValueCurrent < valueTriggerScalar) {
+						case PropOp.notNull:
+							if (!['', null, undefined].includes(triggerValueCurrent)) {
 								return await process(this, itemChange)
 							}
 							break
 
-						case PropOp.lessThanOrEqual:
-							if (triggerValueCurrent <= valueTriggerScalar) {
+						case PropOp.null:
+							if (['', null, undefined].includes(triggerValueCurrent)) {
 								return await process(this, itemChange)
 							}
 							break
 
 						default:
-							return new MethodResult({
-								error: {
-									file: FILENAME,
-									function: clazz,
-									msg: `No case defined for PropOp: ${itemChange.codeOp}`
-								}
-							})
+							const valueTriggerScalar = required(
+								itemChange.valueTriggerScalar,
+								clazz,
+								'valueScalar'
+							)
+							switch (itemChange.codeOp) {
+								case PropOp.greaterThan:
+									if (triggerValueCurrent > valueTriggerScalar) {
+										return await process(this, itemChange)
+									}
+									break
+
+								case PropOp.greaterThanOrEqual:
+									if (triggerValueCurrent >= valueTriggerScalar) {
+										return await process(this, itemChange)
+									}
+									break
+
+								case PropOp.lessThan:
+									if (triggerValueCurrent < valueTriggerScalar) {
+										return await process(this, itemChange)
+									}
+									break
+
+								case PropOp.lessThanOrEqual:
+									if (triggerValueCurrent <= valueTriggerScalar) {
+										return await process(this, itemChange)
+									}
+									break
+
+								default:
+									return new MethodResult({
+										error: {
+											file: FILENAME,
+											function: clazz,
+											msg: `No case defined for PropOp: ${itemChange.codeOp}`
+										}
+									})
+							}
 					}
+
+				default:
+					return new MethodResult({
+						error: {
+							file: FILENAME,
+							function: clazz,
+							msg: `No case defined for codeItemChangeTriggerType: ${itemChange.codeItemChangeTriggerType}`
+						}
+					})
 			}
 		}
 
 		async function process(field: Field, itemChange: FieldItemChange): Promise<MethodResult> {
+			if (itemChange.codeAccess) field.fieldAccess = itemChange.codeAccess
+
 			for (let i = 0; i < itemChange.fields.length; i++) {
 				const field = itemChange.fields[i]
 				let result: MethodResult
-
-				if (itemChange.codeAccess) field.fieldAccess = itemChange.codeAccess
 
 				const targetCurrValue = dmn.recordsDisplay[row][field.colDO.propName]
 
@@ -353,6 +381,7 @@ export enum FieldElement {
 	customActionLink = 'customActionLink',
 	customHeader = 'customHeader',
 	customHTML = 'customHTML',
+	customImage = 'customImage',
 	customText = 'customText',
 	date = 'date',
 	email = 'email',
@@ -381,8 +410,10 @@ export enum FieldElement {
 export class FieldItemChange {
 	codeAccess?: FieldAccess
 	codeItemChangeAction: FieldItemChangeAction
+	codeItemChangeRecordStatus?: DataRecordStatus
+	codeItemChangeTriggerType: FieldItemChangeTriggerType
 	codeItemChangeValueType?: FieldItemChangeValueType
-	codeOp: PropOp
+	codeOp?: PropOp
 	fields: Field[] = []
 	retrieveParmKey?: string
 	valueTargetIdAttribute?: string
@@ -407,6 +438,20 @@ export class FieldItemChange {
 			'FieldItemChangeAction',
 			FieldItemChangeAction
 		)
+		this.codeItemChangeRecordStatus = memberOfEnumIfExists(
+			target._codeItemChangeRecordStatus,
+			'codeItemChangeRecordStatus',
+			clazz,
+			'DataRecordStatus',
+			DataRecordStatus
+		)
+		this.codeItemChangeTriggerType = memberOfEnum(
+			target._codeItemChangeTriggerType,
+			clazz,
+			'codeItemChangeTriggerType',
+			'FieldItemChangeTriggerType',
+			FieldItemChangeTriggerType
+		)
 		this.codeItemChangeValueType = memberOfEnumIfExists(
 			target._codeItemChangeValueType,
 			'codeItemChangeValueType',
@@ -414,7 +459,7 @@ export class FieldItemChange {
 			'FieldItemChangeValueType',
 			FieldItemChangeValueType
 		)
-		this.codeOp = memberOfEnum(target._codeOp, clazz, 'codeOp', 'PropOp', PropOp)
+		this.codeOp = memberOfEnumIfExists(target._codeOp, 'codeOp', clazz, 'PropOp', PropOp)
 		target._columns.forEach((c) => {
 			this.fields.push(
 				required(
@@ -442,6 +487,11 @@ export enum FieldItemChangeAction {
 	retrieveEmbed = 'retrieveEmbed',
 	retrieveSelect = 'retrieveSelect',
 	setScalar = 'setScalar'
+}
+
+export enum FieldItemChangeTriggerType {
+	itemChangeTypeOp = 'itemChangeTypeOp',
+	itemChangeTypeRecordStatus = 'itemChangeTypeRecordStatus'
 }
 
 export enum FieldItemChangeValueType {

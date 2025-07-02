@@ -163,7 +163,7 @@ function initCodeAction(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_code_action_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -174,7 +174,7 @@ function initCodeAction(init: InitDb) {
 		orderDefine: 45,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
@@ -322,7 +322,7 @@ function initDataObjActionGroup(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_action_group_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -334,7 +334,7 @@ function initDataObjActionGroup(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
@@ -514,7 +514,7 @@ function initUserAction(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_user_action_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -526,7 +526,7 @@ function initUserAction(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',

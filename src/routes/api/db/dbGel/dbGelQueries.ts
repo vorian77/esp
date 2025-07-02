@@ -26,6 +26,8 @@ const shapeDataObjActionGroup = e.shape(e.sys_core.SysDataObjActionGroup, (g) =>
 const SysDataObjColumnItemChange = e.shape(e.sys_core.SysDataObjColumnItemChange, (t) => ({
 	_codeAccess: t.codeAccess.name,
 	_codeItemChangeAction: t.codeItemChangeAction.name,
+	_codeItemChangeRecordStatus: t.codeItemChangeRecordStatus.name,
+	_codeItemChangeTriggerType: t.codeItemChangeTriggerType.name,
 	_codeItemChangeValueType: t.codeItemChangeValueType.name,
 	_codeOp: t.codeOp.name,
 	_columns: t.columns.column.name,
@@ -111,12 +113,6 @@ const shapeNavDestination = e.shape(e.sys_core.SysNavDestination, (nd) => ({
 	backCount: true
 }))
 
-const shapeNodeObjAction = e.shape(e.sys_core.SysNodeObjAction, (na) => ({
-	_codeAction: na.codeAction.name,
-	_dataObjId: na.nodeObj.dataObj.id,
-	_nodeObjId: na.nodeObj.id
-}))
-
 const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 	_actions: e.select(n.actions, (a) => ({
 		...shapeNodeObjAction(a)
@@ -144,8 +140,13 @@ const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 	isHideRowManager: true,
 	name: true,
 	orderDefine: true,
-	page: true,
-	order_by: n.orderDefine
+	page: true
+}))
+
+const shapeNodeObjAction = e.shape(e.sys_core.SysNodeObjAction, (na) => ({
+	_codeAction: na.codeAction.name,
+	_dataObjId: na.nodeObj.dataObj.id,
+	_nodeObjId: na.nodeObj.id
 }))
 
 const shapeQuerySource = e.shape(e.sys_core.SysObjDb, (db) => ({
@@ -418,6 +419,7 @@ export async function getDataObjById(token: TokenApiId) {
 					_customColCodeComponent: c.customColCodeComponent.name,
 					customColActionValue: true,
 					customColAlign: true,
+					customColFile: true,
 					customColIsSubHeader: true,
 					customColLabel: true,
 					customColPrefix: true,
@@ -605,14 +607,19 @@ export async function getNodeByNodeName(token: TokenApiId) {
 	return await query.run(client)
 }
 
-export async function getNodesChildren(token: TokenApiIds) {
-	const query = e.params({ ids: e.array(e.uuid) }, ({ ids }) =>
-		e.select(e.sys_core.SysNodeObj, (n) => ({
-			...shapeNodeObj(n),
-			filter: e.op(n.id, 'in', e.array_unpack(ids))
-		}))
-	)
-	return await query.run(client, { ids: token.ids })
+export async function getNodesChildren(token: TokenApiId) {
+	const query = e.select(e.sys_core.SysNodeObj, (n) => {
+		return {
+			_children: e.select(n.children, (c) => ({
+				_node: e.select(c.nodeObj, (node) => ({
+					...shapeNodeObj(node)
+				})),
+				order_by: c.orderDefine
+			})),
+			filter_single: e.op(n.id, '=', e.cast(e.uuid, token.id))
+		}
+	})
+	return await query.run(client)
 }
 
 export async function getObjAttrTypeApp(token: TokenApiIds) {
@@ -757,7 +764,6 @@ export async function getUserByUserId(token: TokenApiId): Promise<MethodResult> 
 			id: true,
 			lastName: u.person.lastName,
 			name: true,
-			orgs: true,
 			systems: true,
 			filter_single: e.op(u.id, '=', e.cast(e.uuid, token.id))
 		}))
@@ -776,7 +782,6 @@ export async function getUserByUserId(token: TokenApiId): Promise<MethodResult> 
 
 export async function sysErrorAdd(token: TokenApiError) {
 	const userId = valueOrDefault(token.error._sessionId, '')
-	console.log('sysErrorAdd.userId', userId)
 	let query = e.insert(e.default.SysError, {
 		errCode: token.error.code,
 		errFile: token.error.file,
@@ -824,7 +829,6 @@ export async function sysUserParmsGet(token: TokenApiUserParmsGet) {
 }
 
 export async function sysUserParmsSet(data: any) {
-	debug('sysUserParmsSet', 'data', data)
 	const query = e.params(
 		{
 			items: e.array(e.json)

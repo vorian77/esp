@@ -83,11 +83,11 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 			querySource: this.querySource,
 			rawDataObj
 		})
-		return await this.queryBuilScripts(query, this.queryType)
+		return await this.queryBuildScripts(query, this.queryType)
 	}
 
-	async queryBuilScripts(query: GelQuery, queryType: TokenApiQueryType): Promise<MethodResult> {
-		const clazz = 'queryBuilScripts'
+	async queryBuildScripts(query: GelQuery, queryType: TokenApiQueryType): Promise<MethodResult> {
+		const clazz = 'queryBuildScripts'
 		let result: MethodResult
 		let fieldEmbedData: DataObjData = this.queryData.dataTab.getFieldEmbedData(
 			query.fieldEmbed,
@@ -96,7 +96,7 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 
 		switch (queryType) {
 			case TokenApiQueryType.preset:
-				result = await this.queryBuilScriptsFields(fieldEmbedData, query)
+				result = await this.queryBuildScriptsFields(fieldEmbedData, query)
 				if (result.error) return result
 
 				query.dataFormatSetSelectPreset({
@@ -109,7 +109,7 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 				break
 
 			case TokenApiQueryType.retrieve:
-				result = await this.queryBuilScriptsFields(fieldEmbedData, query)
+				result = await this.queryBuildScriptsFields(fieldEmbedData, query)
 				if (result.error) return result
 
 				query.dataFormatSetSelect({
@@ -188,7 +188,7 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 				let fieldQueryData = TokenApiQueryData.load(this.queryData)
 				fieldQueryData.dataTab = fieldEmbed.data
 
-				await this.queryBuilScripts(
+				await this.queryBuildScripts(
 					new GelQuery({
 						evalExprContext: `${this.evalExprContext} - fieldEmbed: ${fieldEmbed.embedFieldNameRaw}`,
 						fieldEmbed,
@@ -203,11 +203,11 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 		return new MethodResult()
 	}
 
-	async queryBuilScriptsFields(
+	async queryBuildScriptsFields(
 		fieldEmbedData: DataObjData,
 		query: GelQuery
 	): Promise<MethodResult> {
-		let result: MethodResult = await this.queryBuilScriptsFieldsEmbeded(
+		let result: MethodResult = await this.queryBuildScriptsFieldsEmbeded(
 			query.rawDataObj,
 			this.queryData
 		)
@@ -323,8 +323,8 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 		}
 	}
 
-	async queryBuilScriptsFieldsEmbeded(rawDataObjParent: RawDataObj, queryData: TokenApiQueryData) {
-		const clazz = `${FILENAME}.ScriptGroupGelDataObjQuery.queryBuilScriptsFieldsEmbeded`
+	async queryBuildScriptsFieldsEmbeded(rawDataObjParent: RawDataObj, queryData: TokenApiQueryData) {
+		const clazz = `${FILENAME}.ScriptGroupGelDataObjQuery.queryBuildScriptsFieldsEmbeded`
 		let fields: FieldEmbed[] = []
 
 		for (let i = 0; i < rawDataObjParent.rawPropsDisplay.length; i++) {

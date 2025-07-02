@@ -86,7 +86,6 @@ export async function addReport(data: any) {
 		(p) => {
 			return e.insert(e.sys_rep.SysRep, {
 				actionGroup: e.select(e.sys_core.getDataObjActionGroup(p.actionGroup)),
-				codeAttrType: e.select(e.sys_core.getCodeAttrType('at_sys_report')),
 				createdBy: CREATOR,
 				description: p.description,
 				elements: e.for(e.array_unpack(p.elements), (el) => {

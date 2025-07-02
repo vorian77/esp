@@ -4,6 +4,7 @@ import * as $ from "../reflection";
 import * as _ from "../imports";
 import type * as _sys_core from "./sys_core";
 export type $CrmClientλShape = $.typeutil.flatten<_sys_core.$SysObjAttrEntλShape & {
+  "codeAttrType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, true>;
 }>;
 type $CrmClient = $.ObjectType<"app_crm::CrmClient", $CrmClientλShape, null, [
   ..._sys_core.$SysObjAttrEnt['__exclusives__'],

@@ -7,13 +7,14 @@ import type * as _std from "./std";
 import type * as _sys_user from "./sys_user";
 import type * as _sys_db from "./sys_db";
 import type * as _default from "./default";
-export type $SysMigrλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
+export type $SysMigrλShape = $.typeutil.flatten<Omit<_sys_core.$SysObjAttrλShape, "codeAttrType"> & {
   "tablesSource": $.LinkDesc<$SysMigrSourceTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "tablesTarget": $.LinkDesc<$SysMigrTargetTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "codeAttrType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, true>;
 }>;
 type $SysMigr = $.ObjectType<"sys_migr::SysMigr", $SysMigrλShape, null, [
-  ..._sys_core.$SysObj['__exclusives__'],
+  ..._sys_core.$SysObjAttr['__exclusives__'],
 ], "sys_migr::SysMigr">;
 const $SysMigr = $.makeType<$SysMigr>(_.spec, "801761ea-0ebc-11ef-a650-79ab8a1ff5be", _.syntax.literal);
 

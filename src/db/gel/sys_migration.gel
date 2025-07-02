@@ -1,5 +1,8 @@
 module sys_migr {
-  type SysMigr extending sys_core::SysObj{
+  type SysMigr extending sys_core::SysObjAttr{
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_migr_migration');
+    };
     description: str;
     multi tablesSource: sys_migr::SysMigrSourceTable{
       on source delete delete target;

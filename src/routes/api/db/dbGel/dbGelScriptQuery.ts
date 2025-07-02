@@ -414,7 +414,9 @@ export class GelQuery {
 		} else {
 			this.rawDataObj.rawPropsSort.forEach((prop) => {
 				if (script) script += ' THEN '
-				script += `.${prop.propName} ${prop.codeSortDir}`
+				let propName = prop.propName
+				if (prop.link) propName += '.display'
+				script += `.${propName} ${prop.codeSortDir}`
 			})
 		}
 
