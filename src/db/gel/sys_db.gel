@@ -1,7 +1,10 @@
 module sys_db {
-  type SysColumn extending sys_core::SysObj {
+  type SysColumn extending sys_core::SysObjAttrEnt {
     classProps: str;
     required codeAlignment: sys_core::SysCode;
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_db_column');
+    };
     required codeDataType: sys_core::SysCode;
     exprStorageKey: str;
     headerSide: str;
@@ -30,7 +33,10 @@ module sys_db {
     constraint exclusive on (.name);
   }
 
-  type SysTable extending sys_core::SysObj {
+  type SysTable extending sys_core::SysObjAttrEnt {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_db_table');
+    };
     multi columns: sys_db::SysColumn {
       on source delete allow;
     };

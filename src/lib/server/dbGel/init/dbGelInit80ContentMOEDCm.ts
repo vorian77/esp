@@ -1,6 +1,9 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
 export function initContentMOEDCm(init: InitDb) {
+	initObjAttr(init)
+
+	// features
 	initApplicant(init)
 	initCsf(init)
 	initCsfNote(init)
@@ -9,6 +12,51 @@ export function initContentMOEDCm(init: InitDb) {
 	// reports
 	initAnalytic(init)
 	initReport(init)
+}
+
+function initObjAttr(init: InitDb) {
+	init.addTrans('sysObjAttr', {
+		code: 'at_cm_site',
+		header: 'Eastside Office',
+		name: 'site_moed_office_east',
+		owner: 'sys_client_moed'
+	})
+	init.addTrans('sysObjAttr', {
+		code: 'at_cm_site',
+		header: 'Westside Office',
+		name: 'site_moed_office_west',
+		owner: 'sys_client_moed'
+	})
+	init.addTrans('sysObjAttr', {
+		code: 'at_sys_msg_group',
+		header: 'MOED Administrators',
+		name: 'group_msg_moed_admin',
+		owner: 'sys_client_moed'
+	})
+	init.addTrans('sysObjAttr', {
+		code: 'at_sys_msg_group',
+		header: 'Eastside Staff',
+		name: 'group_msg_moed_staff_east',
+		owner: 'sys_client_moed'
+	})
+	init.addTrans('sysObjAttr', {
+		code: 'at_sys_msg_group',
+		header: 'Westside Staff',
+		name: 'group_msg_moed_staff_west',
+		owner: 'sys_client_moed'
+	})
+	init.addTrans('sysObjAttr', {
+		code: 'at_sys_msg_group',
+		header: 'Eastside Youth Applicants',
+		name: 'group_msg_moed_youth_applicants_east',
+		owner: 'sys_client_moed'
+	})
+	init.addTrans('sysObjAttr', {
+		code: 'at_sys_msg_group',
+		header: 'Westside Youth Applicants',
+		name: 'group_msg_moed_youth_applicants_west',
+		owner: 'sys_client_moed'
+	})
 }
 
 function initApplicant(init: InitDb) {
@@ -176,6 +224,7 @@ function initApplicant(init: InitDb) {
 					{
 						codeAccess: 'required',
 						codeItemChangeAction: 'none',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeItemChangeValueType: 'code',
 						codeOp: 'equal',
 						columns: ['genderSelfId'],
@@ -191,6 +240,7 @@ function initApplicant(init: InitDb) {
 					{
 						codeAccess: 'hidden',
 						codeItemChangeAction: 'reset',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeItemChangeValueType: 'code',
 						codeOp: 'notEqual',
 						columns: ['genderSelfId'],
@@ -267,6 +317,7 @@ function initApplicant(init: InitDb) {
 					{
 						codeAccess: 'required',
 						codeItemChangeAction: 'none',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeOp: 'notEqual',
 						columns: ['addr1', 'city', 'codeState', 'zip'],
 						orderDefine: 0,
@@ -281,6 +332,7 @@ function initApplicant(init: InitDb) {
 					{
 						codeAccess: 'optional',
 						codeItemChangeAction: 'none',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeOp: 'notEqual',
 						columns: ['addr2'],
 						orderDefine: 0,
@@ -296,6 +348,7 @@ function initApplicant(init: InitDb) {
 						codeAccess: 'hidden',
 						codeOp: 'equal',
 						codeItemChangeAction: 'reset',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						columns: ['addr1', 'addr2', 'city', 'codeState', 'zip'],
 						orderDefine: 1,
 						valueTriggerCodes: [
@@ -439,7 +492,7 @@ function initApplicant(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjApp', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_moed_part_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -451,7 +504,7 @@ function initApplicant(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_client_moed'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_moed_csf_list', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
@@ -593,7 +646,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				columnName: 'client',
-				exprSave: `(SELECT org_client_moed::MoedParticipant FILTER .id = <tree,uuid,MoedParticipant.id>)`,
+				exprSave: `(SELECT org_client_city_baltimore::MoedParticipant FILTER .id = <tree,uuid,MoedParticipant.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -701,6 +754,7 @@ function initCsf(init: InitDb) {
 					{
 						codeAccess: 'required',
 						codeItemChangeAction: 'none',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeItemChangeValueType: 'code',
 						codeOp: 'equal',
 						columns: ['dateStart'],
@@ -716,6 +770,7 @@ function initCsf(init: InitDb) {
 					{
 						codeAccess: 'readOnly',
 						codeItemChangeAction: 'reset',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeItemChangeValueType: 'code',
 						codeOp: 'notEqual',
 						columns: ['dateStart'],
@@ -731,6 +786,7 @@ function initCsf(init: InitDb) {
 					{
 						codeAccess: 'required',
 						codeItemChangeAction: 'none',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeItemChangeValueType: 'code',
 						codeOp: 'equal',
 						columns: ['dateEnd'],
@@ -746,6 +802,7 @@ function initCsf(init: InitDb) {
 					{
 						codeAccess: 'readOnly',
 						codeItemChangeAction: 'reset',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeItemChangeValueType: 'code',
 						codeOp: 'notEqual',
 						columns: ['dateEnd'],
@@ -780,6 +837,7 @@ function initCsf(init: InitDb) {
 					{
 						codeAccess: 'required',
 						codeItemChangeAction: 'none',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeOp: 'notNull',
 						columns: ['codeSfOutcome'],
 						orderDefine: 0
@@ -788,6 +846,7 @@ function initCsf(init: InitDb) {
 						codeAccess: 'hidden',
 						codeOp: 'null',
 						codeItemChangeAction: 'reset',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						columns: ['codeSfOutcome'],
 						orderDefine: 1
 					}
@@ -888,7 +947,7 @@ function initCsf(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_moed_csf_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -899,7 +958,7 @@ function initCsf(init: InitDb) {
 		orderDefine: 20,
 		owner: 'sys_client_moed'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [
 			{ node: 'node_obj_moed_csf_note_list', order: 10 },
 			{ node: 'node_obj_moed_csf_doc_list', order: 20 }
@@ -1096,7 +1155,7 @@ function initCsfNote(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_moed_csf_note_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -1107,7 +1166,7 @@ function initCsfNote(init: InitDb) {
 		orderDefine: 20,
 		owner: 'sys_client_moed'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
@@ -1348,7 +1407,7 @@ function initCsfDocument(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_moed_csf_doc_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -1359,7 +1418,7 @@ function initCsfDocument(init: InitDb) {
 		orderDefine: 30,
 		owner: 'sys_client_moed'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
@@ -1396,7 +1455,7 @@ function initAnalytic(init: InitDb) {
 function initReport(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
-		exprFilter: '.client IN org_client_moed::MoedParticipant',
+		exprFilter: '.client IN org_client_city_baltimore::MoedParticipant',
 		header: 'Self Service Registration - Student Status',
 		name: 'report_moed_self_serv_student_status',
 		owner: 'sys_client_moed',

@@ -97,7 +97,7 @@ function initAuthLogin(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjFree', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
 		codeQueryTypeAlt: 'retrieveToPreset',
@@ -202,7 +202,7 @@ function initAuthLoginForgotPw(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjFree', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
 		codeQueryTypeAlt: 'retrieveToPreset',
@@ -279,7 +279,7 @@ function initAuthLoginVerify(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjFree', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
 		codeQueryTypeAlt: 'retrieveToPreset',
@@ -384,7 +384,7 @@ function initAuthSignup(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjFree', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
 		codeQueryTypeAlt: 'retrieveToPreset',
@@ -460,7 +460,7 @@ function initAuthSignupVerifyMobileInsert(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjFree', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
 		codeQueryTypeAlt: 'retrieveToPreset',
@@ -536,7 +536,7 @@ function initAuthSignupVerifyMobileUpdate(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjFree', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
 		codeQueryTypeAlt: 'retrieveToPreset',
@@ -733,7 +733,7 @@ function initMyAccount(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjFree', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
 		dataObj: 'data_obj_task_sys_auth_my_account',
@@ -807,7 +807,7 @@ function initResetPasswordAccount(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjFree', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeFree',
 		codeQueryTypeAlt: 'retrieveToPreset',
@@ -923,7 +923,7 @@ function initUserPref(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjFree', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormList',
 		codeNodeType: 'nodeFree',
 		dataObj: 'data_obj_auth_user_pref_list',

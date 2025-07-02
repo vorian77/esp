@@ -181,6 +181,8 @@ export enum NodeType {
 	nodeAppObj = 'nodeAppObj',
 	nodeEmbed = 'nodeEmbed',
 	nodeFree = 'nodeFree',
+	nodeObjConfigList = 'nodeObjConfigList',
+	nodeObjConfigSelect = 'nodeObjConfigSelect',
 	nodeTask = 'nodeTask'
 }
 

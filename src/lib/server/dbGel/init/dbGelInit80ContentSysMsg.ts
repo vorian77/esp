@@ -1,6 +1,7 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
-const exprCustomObjAttr = `[IS sys_user::SysUser].person.fullName ?? .header ?? .name`
+const exprCustomObjRecipients = `[IS sys_user::SysUser].person.fullName ?? [IS sys_core::SysObjAttr].header ?? [IS sys_core::SysObjAttr].name`
+const exprCustomSender = `.person.fullName`
 
 const exprMsgsFromMe = `(SELECT DETACHED sys_core::SysMsg FILTER <user,uuid,id> = .sender.id)`
 const exprMsgsToMe = `((SELECT DETACHED sys_core::SysMsg FILTER <user,uuid,id> IN .recipients.id) UNION (SELECT DETACHED sys_core::SysMsg FILTER <attrsAction,oaa_sys_msg_receive,object> IN .recipients.id))`
@@ -267,7 +268,7 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
-				exprCustom: exprCustomObjAttr,
+				exprCustom: exprCustomSender,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -277,7 +278,7 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'recipients',
-				exprCustom: exprCustomObjAttr,
+				exprCustom: exprCustomObjRecipients,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -325,7 +326,7 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
-				exprCustom: exprCustomObjAttr,
+				exprCustom: exprCustomSender,
 				exprPreset: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				exprSave: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				indexTable: 0,
@@ -415,7 +416,7 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
-				exprCustom: exprCustomObjAttr,
+				exprCustom: exprCustomSender,
 				exprPreset: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				exprSave: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				indexTable: 0,
@@ -427,7 +428,7 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'recipients',
-				exprCustom: exprCustomObjAttr,
+				exprCustom: exprCustomObjRecipients,
 				exprPreset: `(SELECT sys_core::SysObjAttr FILTER .id = <tree,uuid,treeAncestorValue.index.0.sender.data>)`,
 				exprSave: `(SELECT sys_core::SysObjAttr FILTER .id = <tree,uuid,treeAncestorValue.index.0.sender.data>)`,
 				indexTable: 0,
@@ -521,7 +522,7 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
-				exprCustom: exprCustomObjAttr,
+				exprCustom: exprCustomSender,
 				exprPreset: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
 				exprSave: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
 				indexTable: 0,
@@ -540,7 +541,7 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'recipients',
-				exprCustom: exprCustomObjAttr,
+				exprCustom: exprCustomObjRecipients,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 80,
@@ -632,7 +633,7 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
-				exprCustom: exprCustomObjAttr,
+				exprCustom: exprCustomSender,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -642,7 +643,7 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'recipients',
-				exprCustom: exprCustomObjAttr,
+				exprCustom: exprCustomObjRecipients,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 60,
@@ -671,7 +672,7 @@ function initDataObj(init: InitDb) {
 }
 
 function initNodeObj(init: InitDb) {
-	init.addTrans('sysNodeObjTask', {
+	init.addTrans('sysNodeObj', {
 		actions: [
 			{ action: 'doListDetailEdit', node: 'node_obj_sys_msg_thread_list' },
 			{ action: 'doListDetailNew', node: 'node_obj_sys_msg_root_detail_new' }
@@ -685,7 +686,7 @@ function initNodeObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'Mail',
 		codeNodeType: 'nodeAppObj',
@@ -697,7 +698,7 @@ function initNodeObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		actions: [
 			{ action: 'doListDetailNew', node: 'node_obj_sys_msg_thread_detail_reply' },
 			{ action: 'doListDetailEdit', node: 'node_obj_sys_msg_thread_detail_view' }
@@ -713,7 +714,7 @@ function initNodeObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'Mail',
 		codeNodeType: 'nodeAppObj',
@@ -725,7 +726,7 @@ function initNodeObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		actions: [{ action: 'doListDetailNew', node: 'node_obj_sys_msg_thread_detail_reply' }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'Mail',

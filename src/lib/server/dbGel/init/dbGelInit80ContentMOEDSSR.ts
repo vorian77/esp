@@ -230,6 +230,7 @@ function initTaskSsrApp(init: InitDb) {
 					{
 						codeAccess: 'required',
 						codeItemChangeAction: 'none',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeItemChangeValueType: 'code',
 						codeOp: 'equal',
 						columns: ['genderSelfId'],
@@ -245,6 +246,7 @@ function initTaskSsrApp(init: InitDb) {
 					{
 						codeAccess: 'hidden',
 						codeItemChangeAction: 'reset',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeItemChangeValueType: 'code',
 						codeOp: 'notEqual',
 						columns: ['genderSelfId'],
@@ -307,6 +309,7 @@ function initTaskSsrApp(init: InitDb) {
 					{
 						codeAccess: 'required',
 						codeItemChangeAction: 'none',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeOp: 'notEqual',
 						columns: ['addr1', 'city', 'codeState', 'zip'],
 						orderDefine: 0,
@@ -321,6 +324,7 @@ function initTaskSsrApp(init: InitDb) {
 					{
 						codeAccess: 'optional',
 						codeItemChangeAction: 'none',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeOp: 'notEqual',
 						columns: ['addr2'],
 						orderDefine: 0,
@@ -336,6 +340,7 @@ function initTaskSsrApp(init: InitDb) {
 						codeAccess: 'hidden',
 						codeOp: 'equal',
 						codeItemChangeAction: 'reset',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						columns: ['addr1', 'addr2', 'city', 'codeState', 'zip'],
 						orderDefine: 1,
 						valueTriggerCodes: [
@@ -421,7 +426,7 @@ function initTaskSsrApp(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjTask', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeTask',
 		codeQueryTypeAlt: 'retrieveThenPreset',
@@ -497,7 +502,7 @@ function initTaskSsrDoc(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjTask', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_task_moed_ssr_doc_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeNodeType: 'nodeTask',
@@ -620,7 +625,7 @@ function initTaskSsrDoc(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjTask', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeTask',
 		codeQueryTypeAlt: 'retrieveThenPreset',
@@ -690,12 +695,6 @@ function initTaskSsrWelcome(init: InitDb) {
 					rawHTML: `
 		<div class="flex flex-col justify-center gap-4 text-center">
 			<h1 class="text-green-400 text-3xl">Welcome</h1>
-
-			<div class="flex justify-center items-center mt-0">
-				<img class="w-60" src="/src/lib/assets/org_logo_moed.png" alt="Logo" />
-			</div>
-
-			<p> <span class="font-bold">Youth Opportunity (YO) Baltimore</span> serves individuals between the ages of 18 and 24 who are out of school and/or looking for employment or connections to college. Operating out of two locations - one in West Baltimore and one in East Baltimore - YO embraces a model that offers a full range of services that lead to your success.</p>
 		</div>`
 				},
 				isDisplayable: true,
@@ -703,19 +702,44 @@ function initTaskSsrWelcome(init: InitDb) {
 				orderDefine: 20
 			},
 			{
-				codeFieldElement: 'tagSection',
-				columnName: 'custom_section_start',
+				codeFieldElement: 'customImage',
+				columnName: 'custom_element',
+				customElement: {
+					align: 'center',
+					label: 'logo',
+					size: '60'
+				},
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30
+			},
+			{
+				codeFieldElement: 'customHTML',
+				columnName: 'custom_element',
+				customElement: {
+					rawHTML: `
+		<div class="flex flex-col justify-center gap-4 text-center">
+			<p> <span class="font-bold">Youth Opportunity (YO) Baltimore</span> serves individuals between the ages of 18 and 24 who are out of school and/or looking for employment or connections to college. Operating out of two locations - one in West Baltimore and one in East Baltimore - YO embraces a model that offers a full range of services that lead to your success.</p>
+		</div>`
+				},
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_start',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50
 			},
 			{
 				codeFieldElement: 'tagDetails',
 				columnName: 'custom_details_start',
 				headerAlt: 'Consent To Disclose Personal Information',
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40
+				orderDisplay: 60,
+				orderDefine: 60
 			},
 			{
 				codeFieldElement: 'customText',
@@ -725,15 +749,15 @@ function initTaskSsrWelcome(init: InitDb) {
 					label: `By registering with Baltimore City Mayor's Office of Employment Development Youth Opportunity Program you agree that the Career Partners can see and use the information contained within your application in order to better provide assistance to you in determining eligibility for assistance in obtaining employment, training for employment, education, or other services. Personal information such as social security number, race, ethnicity, sexual orientation and disability status is being requested for federal record keeping and reporting requirements only and is kept confidential.`
 				},
 				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50
+				orderDisplay: 70,
+				orderDefine: 70
 			},
 			{
 				codeFieldElement: 'tagDetails',
 				columnName: 'custom_details_end',
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60
+				orderDisplay: 80,
+				orderDefine: 80
 			},
 			{
 				codeFieldElement: 'toggle',
@@ -741,16 +765,16 @@ function initTaskSsrWelcome(init: InitDb) {
 				headerAlt:
 					"I confirm that I have read, consent and agree to YO Baltimore's Consent to Disclose Personal Information.",
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
+				orderDisplay: 90,
+				orderDefine: 90,
 				indexTable: 0
 			},
 			{
 				codeFieldElement: 'tagSection',
 				columnName: 'custom_section_end',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80
+				orderDisplay: 100,
+				orderDefine: 100
 			},
 			{
 				codeColor: 'secondary',
@@ -761,13 +785,13 @@ function initTaskSsrWelcome(init: InitDb) {
 					label: 'Get Started!'
 				},
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90
+				orderDisplay: 110,
+				orderDefine: 110
 			}
 		]
 	})
 
-	init.addTrans('sysNodeObjTask', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeTask',
 		dataObj: 'data_obj_task_moed_ssr_welcome',

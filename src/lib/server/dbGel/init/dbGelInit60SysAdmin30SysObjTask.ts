@@ -308,7 +308,7 @@ function initTask(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_task_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -320,7 +320,7 @@ function initTask(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeIcon: 'AppWindow',
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeAppObj',

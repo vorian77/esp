@@ -8,7 +8,7 @@ export async function MoedPBulkPart(params: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
-			return e.insert(e.org_client_moed.MoedParticipant, {
+			return e.insert(e.org_client_city_baltimore.MoedParticipant, {
 				createdBy: CREATOR,
 				idxDemo: e.cast(e.int64, i[0]),
 				modifiedBy: CREATOR,
@@ -79,7 +79,7 @@ export async function MoedBulkCsf(params: any) {
 					}))
 				),
 				client: e.assert_single(
-					e.select(e.org_client_moed.MoedParticipant, (part) => ({
+					e.select(e.org_client_city_baltimore.MoedParticipant, (part) => ({
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
 					}))
 				),
@@ -119,7 +119,7 @@ export async function MoedBulkDataDoc(params: any) {
 				csf: e.assert_single(
 					e.select(e.app_cm.CmClientServiceFlow, (sf) => ({
 						filter_single: e.op(
-							sf.client.is(e.org_client_moed.MoedParticipant).idxDemo,
+							sf.client.is(e.org_client_city_baltimore.MoedParticipant).idxDemo,
 							'=',
 							e.cast(e.int64, i[0])
 						)
@@ -166,22 +166,19 @@ export async function MoedBulkDataUser(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_user.SysUser, {
-				codeAttrType: e.select(e.sys_core.getCode('ct_sys_obj_attr_type', 'at_sys_user')),
 				createdBy: CREATOR,
-				defaultOrg: e.select(e.sys_core.getOrg('org_client_moed')),
 				defaultSystem: e.select(e.sys_core.getSystemPrime('sys_client_moed')),
 				isActive: false,
 				modifiedBy: CREATOR,
 				name: e.op('MOEDYouth', '++', e.to_str(i[0])),
-				orgs: e.assert_distinct(e.sys_core.getOrg('org_client_moed')),
-				owner: e.select(e.sys_core.getSystemPrime('sys_client_moed')),
+				owner: e.sys_core.getOrg('org_client_city_baltimore'),
 				person: e.assert_single(
-					e.select(e.org_client_moed.MoedParticipant, (part) => ({
+					e.select(e.org_client_city_baltimore.MoedParticipant, (part) => ({
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
 					})).person
 				),
 				systems: e.assert_distinct(e.sys_core.getSystemPrime('sys_client_moed')),
-				userTypes: e.assert_distinct(e.sys_user.getUserType('ut_client_moed_youth'))
+				userTypes: e.assert_distinct(e.sys_user.getUserType('ut_client_baltimore_moed_youth'))
 			})
 		})
 	})

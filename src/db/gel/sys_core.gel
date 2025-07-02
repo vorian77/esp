@@ -8,7 +8,9 @@ module sys_core {
       on source delete delete target;
       on target delete allow;
     };
-    isGlobalResource: bool;
+    isGlobalResource: bool {
+      default := false;
+    };
     note: str;
      
     # test fields
@@ -31,7 +33,6 @@ module sys_core {
     
   type SysObj extending sys_core::ObjRootCore, sys_user::Mgmt {
     required owner: sys_core::SysSystem;
-    # constraint exclusive on ((.owner, .name));
   } 
 
   type SysObjAttr extending sys_core::SysObj {
@@ -39,13 +40,13 @@ module sys_core {
   }
 
   type SysObjAttrAccess extending sys_user::Mgmt {
-    required obj: sys_core::SysObjAttr;
     required codeAttrTypeAccess: sys_core::SysCode;
+    required obj: sys_core::SysObjAttr;
   }
 
   type SysObjAttrAction extending sys_user::Mgmt {
-    required obj: sys_core::SysObjAttr;
     required codeAttrTypeAction: sys_core::SysCode;
+    required obj: sys_core::SysObjAttr;
   }
 
   type SysObjAttrEnt extending sys_core::SysObjAttr {
@@ -68,6 +69,7 @@ module sys_core {
     trigger sys_user_delete after delete for each do (
       delete default::SysPerson filter .id not in (app_cm::CmClient.person.id union sys_core::SysObjAttrEnt.contacts.id union sys_user::SysUser.person.id)
     );
+    constraint exclusive on ((.owner, .name));
   }
 
   type SysObjAttrExpr extending sys_user::Mgmt {
@@ -76,8 +78,7 @@ module sys_core {
   }
   
   type SysObjAttrVirtual extending sys_user::Mgmt {
-    required expr: str;
-     multi attrsAccess: sys_core::SysObjAttrAccess {
+    multi attrsAccess: sys_core::SysObjAttrAccess {
       on source delete delete target;
       on target delete allow;
     };
@@ -85,6 +86,7 @@ module sys_core {
       on source delete delete target;
       on target delete allow;
     };
+    required expr: str;
   }
 
   type SysObjNote extending sys_user::Mgmt {
@@ -92,9 +94,14 @@ module sys_core {
     required codeType: sys_core::SysCode;
     note: str;
   }
-
+  
+  type SysObjOrg extending sys_core::ObjRootCore, sys_user::Mgmt {
+    required owner: sys_core::SysOrg;
+    constraint exclusive on ((.owner, .name));
+  } 
+  
   type SysOrg extending sys_core::ObjRootCore, sys_user::Mgmt {
-    users := .<orgs[is sys_user::SysUser];
+    users := .<owner[is sys_user::SysUser];
     constraint exclusive on (.name);
   }
 
@@ -125,7 +132,7 @@ module sys_core {
 
   type SysCode extending sys_core::SysObjAttr {
     overloaded required codeAttrType: sys_core::SysCode {
-      default := sys_core::getCode('ct_sys_obj_attr_type', 'at_sys_code');
+      default := sys_core::getCodeAttrType('at_sys_code');
     };
     parent: sys_core::SysCode;
     required codeType: sys_core::SysCodeType;
@@ -137,9 +144,14 @@ module sys_core {
     constraint exclusive on ((.owner, .codeType, .name));
   }
 
-  type SysCodeAction extending sys_core::SysCode {}
+  type SysCodeAction extending sys_core::SysCode {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_sys_code_action');
+    };
+    constraint exclusive on ((.owner, .codeType, .name));
+  }
 
-  type SysObjDb extending sys_core::SysObj {
+  type SysObjDb extending sys_core::SysObjAttrEnt {
     exprFilter: str;
     exprSort: str;
     exprWith: str;
@@ -165,7 +177,9 @@ module sys_core {
   # SysDataObj
   type SysDataObj extending sys_core::SysObjDb {
     actionGroup: sys_core::SysDataObjActionGroup;
-    
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_sys_data_obj');
+    };
     required codeCardinality: sys_core::SysCode;
     codeDataObjType: sys_core::SysCode;
     codeListPresetType: sys_core::SysCode;
@@ -202,7 +216,10 @@ module sys_core {
     required isListRowAction: bool;
     required orderDefine: default::nonNegative;
   }
-  type SysDataObjActionGroup extending sys_core::SysObj {
+  type SysDataObjActionGroup extending sys_core::SysObjAttrEnt {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_sys_data_obj_action_group');
+    };
     multi dataObjActions: sys_core::SysDataObjAction {
       on source delete delete target;
       on target delete allow;
@@ -225,6 +242,7 @@ module sys_core {
 
     customColActionValue: str;
     customColAlign: str;
+    customColFile: json;
     customColIsSubHeader: bool;
     customColLabel: str;
     customColCodeComponent: sys_core::SysCode;
@@ -246,9 +264,15 @@ module sys_core {
       on target delete allow;
     };
 
-    fieldEmbedListConfig: sys_core::SysDataObjFieldEmbedListConfig;
-    fieldEmbedListEdit: sys_core::SysDataObjFieldEmbedListEdit;
-    fieldEmbedListSelect: sys_core::SysDataObjFieldEmbedListSelect;
+    fieldEmbedListConfig: sys_core::SysDataObjFieldEmbedListConfig{
+      on target delete allow;
+    };
+    fieldEmbedListEdit: sys_core::SysDataObjFieldEmbedListEdit{
+      on target delete allow;
+    };
+    fieldEmbedListSelect: sys_core::SysDataObjFieldEmbedListSelect{
+      on target delete allow;
+    };
    
     fieldListItems: sys_core::SysDataObjFieldListItems;
     fieldListItemsParmValue: str;
@@ -294,8 +318,10 @@ module sys_core {
     codeAccess: sys_core::SysCode;
     required codeItemChangeAction: sys_core::SysCode;
     codeItemChangeValueType: sys_core::SysCode;
-    required codeOp: sys_core::SysCode;
-    required multi columns: sys_core::SysDataObjColumn;
+    codeOp: sys_core::SysCode;
+    codeItemChangeRecordStatus: sys_core::SysCode; 
+    required codeItemChangeTriggerType: sys_core::SysCode; 
+    multi columns: sys_core::SysDataObjColumn;
     required orderDefine: default::nonNegative;
     retrieveParmKey: str;
     
@@ -313,10 +339,13 @@ module sys_core {
     required orderDefine: default::nonNegative;
   }
 
-  type SysDataObjFieldEmbedListConfig extending sys_core::SysObj {
+  type SysDataObjFieldEmbedListConfig extending sys_core::SysObjAttrEnt {
     required actionGroupModal: sys_core::SysDataObjActionGroup {
       on target delete allow;
-    }
+    };
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_sys_data_obj_field_embed_list_config');
+    };
     required dataObjEmbed: sys_core::SysDataObj {
       on source delete allow;
     };
@@ -326,17 +355,23 @@ module sys_core {
     constraint exclusive on (.name);
   }
 
-  type SysDataObjFieldEmbedListEdit extending sys_core::SysObj {
-      required dataObjEmbed: sys_core::SysDataObj {
-        on source delete allow;
-      };
+  type SysDataObjFieldEmbedListEdit extending sys_core::SysObjAttrEnt {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_sys_data_obj_field_embed_list_edit');
+    };
+    required dataObjEmbed: sys_core::SysDataObj {
+      on source delete allow;
+    };
     constraint exclusive on (.name);
   }
 
-  type SysDataObjFieldEmbedListSelect extending sys_core::SysObj {
+  type SysDataObjFieldEmbedListSelect extending sys_core::SysObjAttrEnt {
     required actionGroupModal: sys_core::SysDataObjActionGroup {
       on target delete allow;
     }
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_sys_data_obj_field_embed_list_select');
+    };
     required btnLabelComplete: str;
     required dataObjList: sys_core::SysDataObj {
       on source delete allow;
@@ -345,6 +380,9 @@ module sys_core {
   }
 
   type SysDataObjFieldListItems extending sys_core::SysObjDb {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_sys_data_obj_field_list_item');
+    };
     codeDataTypeDisplay: sys_core::SysCode;
     codeMask: sys_core::SysCode;
     displayIdSeparator: str;
@@ -416,7 +454,7 @@ module sys_core {
     };
     parent: sys_core::SysMsg;
     multi readers: sys_user::SysUser;
-    multi recipients: sys_core::SysObjAttr;
+    multi recipients: sys_core::ObjRoot;
     replies := .<parent[IS sys_core::SysMsg];
     required sender: sys_user::SysUser;
     required subject: str;
@@ -431,12 +469,15 @@ module sys_core {
     };
   }
 
-  type SysNodeObj extending sys_core::SysObj {
+  type SysNodeObj extending sys_core::SysObjAttrEnt {
     multi actions: sys_core::SysNodeObjAction{
       on source delete allow;
     };
     multi children: sys_core::SysNodeObjChild{
       on source delete allow;
+    };
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_sys_node_obj');
     };
     required codeComponent: sys_core::SysCode;
     required codeNodeType: sys_core::SysCode;
@@ -473,7 +514,6 @@ module sys_core {
     required nodeObj: sys_core::SysNodeObj{
       on target delete delete source;
     };
-    constraint exclusive on ((.codeAttrType, .nodeObj));
   }
     
   type SysNotify extending sys_core::SysObj {

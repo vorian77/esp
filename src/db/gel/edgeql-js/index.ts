@@ -14,7 +14,7 @@ import _sys_user from "./modules/sys_user";
 import _app_cm from "./modules/app_cm";
 import _sys_core from "./modules/sys_core";
 import _app_crm from "./modules/app_crm";
-import _org_client_moed from "./modules/org_client_moed";
+import _org_client_city_baltimore from "./modules/org_client_city_baltimore";
 import _sys_db from "./modules/sys_db";
 import _sys_migr from "./modules/sys_migr";
 import _sys_rep from "./modules/sys_rep";
@@ -33,7 +33,7 @@ const ExportDefault: typeof _std &
   "app_cm": typeof _app_cm;
   "sys_core": typeof _sys_core;
   "app_crm": typeof _app_crm;
-  "org_client_moed": typeof _org_client_moed;
+  "org_client_city_baltimore": typeof _org_client_city_baltimore;
   "sys_db": typeof _sys_db;
   "sys_migr": typeof _sys_migr;
   "sys_rep": typeof _sys_rep;
@@ -52,7 +52,7 @@ const ExportDefault: typeof _std &
   "app_cm": _app_cm,
   "sys_core": _sys_core,
   "app_crm": _app_crm,
-  "org_client_moed": _org_client_moed,
+  "org_client_city_baltimore": _org_client_city_baltimore,
   "sys_db": _sys_db,
   "sys_migr": _sys_migr,
   "sys_rep": _sys_rep,

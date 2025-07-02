@@ -439,7 +439,7 @@ function initDataObj(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -451,7 +451,7 @@ function initDataObj(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_column_list', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
@@ -574,6 +574,16 @@ function initDataObjColumn(init: InitDb) {
 		owner: 'sys_system',
 		parentColumn: 'columns',
 		parentTable: 'SysDataObj',
+		queryRiders: [
+			{
+				codeQueryAction: 'customFunction',
+				codeQueryFunction: 'qrfFileStorage',
+				codeQueryPlatform: 'client',
+				codeQueryType: 'save',
+				codeTriggerTiming: 'pre',
+				parmValueStr: 'customColFile'
+			}
+		],
 		tables: [{ index: 0, table: 'SysDataObjColumn' }],
 		fields: [
 			{
@@ -1094,11 +1104,21 @@ function initDataObjColumn(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeAccess: 'optional',
+				codeFieldElement: 'file',
+				columnName: 'customColFile',
+				isDisplayable: true,
+				orderDisplay: 595,
+				orderDefine: 595,
+				indexTable: 0,
+				width: 200
+			},
+			{
 				codeFieldElement: 'tagSection',
 				columnName: 'custom_section_end',
 				isDisplayable: true,
-				orderDisplay: 595,
-				orderDefine: 595
+				orderDisplay: 600,
+				orderDefine: 600
 			},
 
 			/* Display element - list items */
@@ -1347,7 +1367,7 @@ function initDataObjColumn(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_admin_data_obj_column_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -1359,7 +1379,7 @@ function initDataObjColumn(init: InitDb) {
 		owner: 'sys_system'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',

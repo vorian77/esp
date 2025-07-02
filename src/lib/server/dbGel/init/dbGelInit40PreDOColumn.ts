@@ -166,13 +166,33 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
-		codeDataType: 'attributeAccess',
-		header: 'Attribute Accesses',
+		codeDataType: 'link',
+		header: 'Attributes Access',
 		isMultiSelect: true,
 		name: 'attrsAccess',
 		owner: 'sys_system'
 	})
-
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Attributes Action',
+		isMultiSelect: true,
+		name: 'attrsAction',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Attribute Expressions',
+		isMultiSelect: true,
+		name: 'attrsExpr',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Virtual Attributes',
+		isMultiSelect: true,
+		name: 'attrsVirtual',
+		owner: 'sys_system'
+	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'json',
@@ -265,6 +285,20 @@ export function initPreColumn(init: InitDb) {
 		name: 'codeAttrType'
 	})
 	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'link',
+		header: 'Attribute Type Access',
+		isMultiSelect: false,
+		name: 'codeAttrTypeAccess'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
+		codeDataType: 'link',
+		header: 'Attribute Type Action',
+		isMultiSelect: false,
+		name: 'codeAttrTypeAction'
+	})
+	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Cardinality',
 		isMultiSelect: false,
@@ -327,7 +361,6 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'codeDataTypeDisplay'
 	})
-
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'link',
@@ -1003,6 +1036,13 @@ export function initPreColumn(init: InitDb) {
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
+		codeDataType: 'json',
+		exprStorageKey: 'file_<function,fSysRandom10>',
+		header: 'Custom - File',
+		name: 'customColFile'
+	})
+	init.addTrans('sysColumn', {
+		owner: 'sys_system',
 		codeDataType: 'bool',
 		header: 'Custom - Sub-Header',
 		name: 'customColIsSubHeader'
@@ -1170,12 +1210,6 @@ export function initPreColumn(init: InitDb) {
 		header: 'Estimated Start Date',
 		inputMask: 'date',
 		name: 'dateStartEst'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'link',
-		header: 'Default Organization',
-		name: 'defaultOrg'
 	})
 	init.addTrans('sysColumn', {
 		owner: 'sys_system',
@@ -1938,6 +1972,13 @@ export function initPreColumn(init: InitDb) {
 		owner: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Configuration Nodes',
+		isMultiSelect: true,
+		name: 'nodesConfig',
+		owner: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
 		owner: 'sys_system',
 		codeDataType: 'str',
 		header: 'Note',
@@ -1957,7 +1998,6 @@ export function initPreColumn(init: InitDb) {
 		name: 'obj',
 		owner: 'sys_system'
 	})
-
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
 		header: 'Site',
@@ -2019,13 +2059,6 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'int16',
 		header: 'Order - Sort',
 		name: 'orderSort'
-	})
-	init.addTrans('sysColumn', {
-		owner: 'sys_system',
-		codeDataType: 'link',
-		header: 'Organizations',
-		isMultiSelect: true,
-		name: 'orgs'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',

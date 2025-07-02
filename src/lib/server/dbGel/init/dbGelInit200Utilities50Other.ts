@@ -18,7 +18,6 @@ export async function addApp(data: any) {
 				appHeader: e.select(e.sys_user.SysAppHeader, (sah) => ({
 					filter_single: e.op(sah.name, '=', p.appHeader)
 				})),
-				codeAttrType: e.select(e.sys_core.getCodeAttrType('at_sys_app')),
 				createdBy: CREATOR,
 				isGlobalResource: p.isGlobalResource,
 				name: p.name,
@@ -361,7 +360,7 @@ export async function addTask(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysTask, {
-				codeAttrType: e.select(e.sys_core.getCodeAttrType('at_sys_task')),
+				codeAttrType: e.select(e.sys_core.getCodeAttrType('at_user_task')),
 				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
 				codeTaskStatusObj: e.sys_core.getCode('ct_sys_task_status_obj', p.codeTaskStatusObj),
 				codeTaskType: e.sys_core.getCode('ct_sys_task_type', p.codeTaskType),
@@ -388,13 +387,11 @@ export async function addUser(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			defaultOrg: e.str,
 			defaultSystem: e.str,
 			firstName: e.str,
 			isActive: e.bool,
 			lastName: e.str,
 			name: e.str,
-			orgs: e.optional(e.array(e.str)),
 			owner: e.str,
 			systems: e.optional(e.array(e.str)),
 			userTypes: e.optional(e.array(e.str))
@@ -402,19 +399,12 @@ export async function addUser(data: any) {
 		(p) => {
 			return e
 				.insert(e.sys_user.SysUser, {
-					codeAttrType: e.select(e.sys_core.getCode('ct_sys_obj_attr_type', 'at_sys_user')),
 					createdBy: CREATOR,
-					defaultOrg: e.select(e.sys_core.getOrg(p.defaultOrg)),
-					defaultSystem: e.select(e.sys_core.getSystemPrime(p.defaultSystem)),
+					defaultSystem: e.sys_core.getSystemPrime(p.defaultSystem),
 					isActive: p.isActive,
 					modifiedBy: CREATOR,
 					name: p.name,
-					orgs: e.assert_distinct(
-						e.for(e.array_unpack(p.orgs || e.cast(e.array(e.str), e.set())), (org) => {
-							return e.sys_core.getOrg(org)
-						})
-					),
-					owner: e.select(e.sys_core.getSystemPrime(p.owner)),
+					owner: e.sys_core.getOrg(p.owner),
 					person: e.insert(e.default.SysPerson, {
 						firstName: p.firstName,
 						lastName: p.lastName
@@ -434,12 +424,7 @@ export async function addUser(data: any) {
 					on: user.name,
 					else: e.update(user, () => ({
 						set: {
-							orgs: e.assert_distinct(
-								e.for(e.array_unpack(p.orgs || e.cast(e.array(e.str), e.set())), (org) => {
-									return e.sys_core.getOrg(org)
-								})
-							),
-							owner: e.select(e.sys_core.getSystemPrime(p.owner)),
+							owner: e.sys_core.getOrg(p.owner),
 							systems: e.assert_distinct(
 								e.for(e.array_unpack(p.systems || e.cast(e.array(e.str), e.set())), (sys) => {
 									return e.sys_core.getSystemPrime(sys)
@@ -601,7 +586,7 @@ export async function addUserType(data: any) {
 				header: p.header,
 				isSelfSignup: valueOrDefaultParm(p.isSelfSignup, false),
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner),
+				owner: e.sys_core.getOrg(p.owner),
 				modifiedBy: CREATOR
 			})
 		}
@@ -645,6 +630,14 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 											codeItemChangeAction: e.sys_core.getCode(
 												'ct_sys_do_field_item_change_action',
 												e.cast(e.str, e.json_get(t, 'codeItemChangeAction'))
+											),
+											codeItemChangeRecordStatus: e.sys_core.getCode(
+												'ct_sys_record_status',
+												e.cast(e.str, e.json_get(t, 'codeItemChangeRecordStatus'))
+											),
+											codeItemChangeTriggerType: e.sys_core.getCode(
+												'ct_sys_do_field_item_change_trigger_type',
+												e.cast(e.str, e.json_get(t, 'codeItemChangeTriggerType'))
 											),
 											codeItemChangeValueType: e.sys_core.getCode(
 												'ct_sys_do_field_item_change_value_type',

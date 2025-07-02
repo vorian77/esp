@@ -32,6 +32,7 @@ function initTaskCohortAttd(init: InitDb) {
 				itemChanges: [
 					{
 						codeItemChangeAction: 'retrieveSelect',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeOp: 'any',
 						columns: ['cohortAttd'],
 						orderDefine: 0
@@ -61,7 +62,7 @@ function initTaskCohortAttd(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjTask', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeTask',
 		codeQueryTypeAlt: 'retrieveToPreset',
@@ -571,7 +572,7 @@ function initTaskNewStudent(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjTask', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeNodeType: 'nodeTask',
 		codeQueryTypeAlt: 'retrieveToPreset',

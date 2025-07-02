@@ -78,11 +78,11 @@ function dbInitAll(initDb: InitDb) {
 export function initFeature(initDb: InitDb) {
 	// initContentAITraining(initDb)
 	// initContentCm(initDb)
-	// initSysAdmin(initDb)
+	initSysAdmin(initDb)
 	// initSysAuth(initDb)
 	// initContentSys(initDb)
-	// initContentSysMsg(initDb)
-	// initContentMOEDSsr(initDb)
+	initContentSysMsg(initDb)
+	initContentMOEDSsr(initDb)
 	// initContentMOEDCm(initDb)
 	// initContentMOEDCmAdvocate(initDb)
 }

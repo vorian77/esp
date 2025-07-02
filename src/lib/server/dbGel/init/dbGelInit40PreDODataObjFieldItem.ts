@@ -124,7 +124,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		exprFilter:
 			'.id = (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).typesCodeType.id',
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		name: 'il_sys_codeType_meta',
+		name: 'il_sys_codeType_typesCodeType',
 		owner: 'sys_system',
 		table: 'SysCodeType'
 	})
@@ -275,6 +275,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		owner: 'sys_system',
 		table: 'SysOrg'
 	})
+
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter: `.id IN (SELECT (SELECT sys_rep::SysRep FILTER .id = <tree,uuid,SysRep.id>).tables.table.columns.id)
@@ -292,12 +293,19 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		name: 'il_sys_system',
+		name: 'il_sys_system_all',
 		owner: 'sys_system',
 		table: 'SysSystem'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
-		exprFilter: '.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.owner.id = <tree,uuid,SysOrg.id>',
+		props: [[0, 'name', 'Name', '.name', true, 0]],
+		name: 'il_sys_system_by_org',
+		owner: 'sys_system',
+		table: 'SysSystem'
+	})
+	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter: '.id IN (SELECT sys_user::SysUser FILTER .id = <tree,uuid,id>).systems.id',
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		name: 'il_sys_system_by_user',
 		owner: 'sys_system',
@@ -347,7 +355,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldListItems', {
-		exprFilter: `.id IN (<tree,uuid,SysOrg.id> UNION (SELECT DETACHED sys_user::SysUser FILTER .id = <tree,uuid,SysUser.id,undefined>).orgs.id)`,
+		exprFilter: `.id IN (<tree,uuid,SysOrg.id> UNION (SELECT DETACHED sys_user::SysUser FILTER .id = <tree,uuid,SysUser.id,undefined>).org.id)`,
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		name: 'il_sys_user_org',
 		owner: 'sys_system',

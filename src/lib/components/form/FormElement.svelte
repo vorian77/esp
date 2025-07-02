@@ -17,6 +17,7 @@
 	import FormElCustomActionLink from './FormElCustomActionLink.svelte'
 	import FormElCustomHeader from '$comps/form/FormElCustomHeader.svelte'
 	import FormElCustomHTML from '$comps/form/FormElCustomHTML.svelte'
+	import FormElCustomImage from '$comps/form/FormElCustomImage.svelte'
 	import FormElCustomText from '$comps/form/FormElCustomText.svelte'
 	import FormElFile from '$comps/form/FormElFile.svelte'
 	import FormElInp from '$comps/form/FormElInp.svelte'
@@ -37,6 +38,7 @@
 		FieldCustomActionButton,
 		FieldCustomActionLink,
 		FieldCustomHeader,
+		FieldCustomImage,
 		FieldCustomText
 	} from '$comps/form/fieldCustom'
 	import {
@@ -62,6 +64,7 @@
 		FieldCustomActionLink: FormElCustomActionLink,
 		FieldCustomHeader: FormElCustomHeader,
 		FieldCustomHTML: FormElCustomHTML,
+		FieldCustomImage: FormElCustomImage,
 		FieldCustomText: FormElCustomText,
 		FieldChips: FormElInpChips,
 		FieldCheckbox: FormElInpCheckbox,

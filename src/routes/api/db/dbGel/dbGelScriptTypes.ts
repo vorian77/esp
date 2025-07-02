@@ -3,8 +3,8 @@ import { GelQuery, LinkSaveAction } from '$routes/api/db/dbGel/dbGelScriptQuery'
 import {
 	DataRecordStatus,
 	DataRow,
+	debug,
 	MethodResult,
-	MethodResultError,
 	ParmsValuesType,
 	RawDataObj,
 	required,
@@ -76,7 +76,7 @@ export class ScriptTypeSaveParent extends ScriptTypeSave {
 		super(obj)
 		const rawDataObj: RawDataObj = required(obj.query.rawDataObj, clazz, 'rawDataObj')
 		this.id = required(obj.dataRows[0].record.id, clazz, 'id')
-		this.isListSelect = required(obj.isListSelect, clazz, 'isListSelect	')
+		this.isListSelect = required(obj.isListSelect, clazz, 'isListSelect')
 		this.queryParent = required(obj.query.parent, clazz, 'parent')
 		this.tableChild = required(rawDataObj.tableGroup.getTable(0), clazz, 'tableChild')
 		this.tableKey = this.queryParent.table
@@ -101,7 +101,8 @@ export class ScriptTypeSavePrimary extends ScriptTypeSave {
 		const exprPropsSelect = this.query.getPropsSelect({
 			props: this.query.rawDataObj.rawPropsSelect
 		})
-		let expr = `SELECT ${this.getLabelSave(this.tableKey)} \n${exprPropsSelect}`
+		const exprSort = this.query.getSort()
+		let expr = `SELECT ${this.getLabelSave(this.tableKey)} \n${exprPropsSelect}\n${exprSort}`
 		return expr
 	}
 }
@@ -210,6 +211,7 @@ export class ScriptTypeSavePrimaryListSelectLinkBackward extends ScriptTypeSaveP
 	idParent: string
 	idsAdd: string[]
 	idsRemove: string[]
+	idsSelected: string[]
 	tableParent: DbTable
 	constructor(obj: any) {
 		super(obj)
@@ -227,9 +229,9 @@ export class ScriptTypeSavePrimaryListSelectLinkBackward extends ScriptTypeSaveP
 		)
 		const parms = required(this.query.queryData?.dataTab?.parms, clazz, 'queryData.dataTab.parms')
 		const listIds = parms.valueGet(ParmsValuesType.listIds)
-		const listIdsSelected = parms.valueGet(ParmsValuesType.listIdsSelected)
-		this.idsAdd = listIdsSelected.filter((id: string) => !listIds.includes(id))
-		this.idsRemove = listIds.filter((id: string) => !listIdsSelected.includes(id))
+		this.idsSelected = parms.valueGet(ParmsValuesType.listIdsSelected)
+		this.idsAdd = this.idsSelected.filter((id: string) => !listIds.includes(id))
+		this.idsRemove = listIds.filter((id: string) => !this.idsSelected.includes(id))
 		this.tableParent = required(this.query.fieldEmbed?.parentTable, clazz, 'tableParent')
 	}
 	async build(): Promise<MethodResult> {
@@ -279,21 +281,14 @@ export class ScriptTypeSavePrimaryListSelectLinkBackward extends ScriptTypeSaveP
 		const exprPropsSelect = this.query.getPropsSelect({
 			props: this.query.rawDataObj.rawPropsSelect
 		})
-
-		const exprSelectAdd =
-			this.idsAdd.length > 0
-				? this.buildExprLabel(BackwardLinkFilterType.union, this.getLabelSave(this.tableKey))
-				: ''
-		const exprSelectRemove =
-			this.idsRemove.length > 0
-				? this.buildExprLabel(BackwardLinkFilterType.except, this.getLabelSave(this.tableKey))
-				: ''
-		const exprSelectList = `(SELECT ${this.tableParent.object} FILTER .id = <uuid>"${this.idParent}").${this.columnEmbed}`
-		let exprSelect = ScriptTypeSave.addItem(exprSelectList, exprSelectAdd, ' UNION ')
-		exprSelect = ScriptTypeSave.addItem(exprSelect, exprSelectRemove, ' EXCEPT ')
-		exprSelect = `SELECT DISTINCT(${exprSelect})`
-		const expr = `${exprSelect}\n${exprPropsSelect}`
-		return expr
+		let idsFilter = this.idsSelected.reduce((acc: string, id: string) => {
+			if (acc) acc += ','
+			return acc + `"${id}"`
+		}, '')
+		idsFilter = `<uuid>{${idsFilter}}`
+		const exprSelectList = `SELECT (SELECT ${this.tableKey.object} FILTER .id IN ${idsFilter})`
+		const exprSort = this.query.getSort()
+		return `${exprSelectList}\n${exprPropsSelect}\n${exprSort}`
 	}
 }
 

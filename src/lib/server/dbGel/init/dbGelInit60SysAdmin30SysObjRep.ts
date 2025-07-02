@@ -220,7 +220,7 @@ function initAnalytic(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_analytic_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -231,7 +231,7 @@ function initAnalytic(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [
 			{ node: 'node_obj_sys_analytic_parm_list', order: 10 },
 			{ node: 'node_obj_sys_analytic_status_list', order: 20 }
@@ -531,7 +531,7 @@ function initAnalyticParm(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_analytic_parm_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -542,7 +542,7 @@ function initAnalyticParm(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
@@ -713,7 +713,7 @@ function initAnalyticStatus(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_analytic_status_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -724,7 +724,7 @@ function initAnalyticStatus(init: InitDb) {
 		orderDefine: 20,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
@@ -795,14 +795,6 @@ function initRep(init: InitDb) {
 				indexTable: 0,
 				isDisplayable: false,
 				orderDefine: 10
-			},
-			{
-				columnName: 'codeAttrType',
-				exprSave: `sys_core::getCodeAttrType('at_sys_report')`,
-				orderDefine: 15,
-				indexTable: 0,
-				isDisplayable: false,
-				linkTable: 'SysCode'
 			},
 			{
 				columnName: 'owner',
@@ -977,7 +969,7 @@ function initRep(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_rep_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'FileChartColumnIncreasing',
@@ -988,7 +980,7 @@ function initRep(init: InitDb) {
 		orderDefine: 150,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [
 			{ node: 'node_obj_sys_rep_parm_list', order: 10 },
 			{ node: 'node_obj_sys_rep_el_list', order: 20 },
@@ -1510,7 +1502,7 @@ function initRepEl(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_rep_el_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -1521,7 +1513,7 @@ function initRepEl(init: InitDb) {
 		orderDefine: 20,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
@@ -1865,7 +1857,7 @@ function initRepParm(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_rep_parm_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -1876,7 +1868,7 @@ function initRepParm(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
@@ -2070,7 +2062,7 @@ function initRepUser(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_sys_rep_user_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -2081,7 +2073,7 @@ function initRepUser(init: InitDb) {
 		orderDefine: 30,
 		owner: 'sys_system'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',

@@ -291,7 +291,7 @@ function initCourse(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjApp', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_course_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'BookOpen',
@@ -303,7 +303,7 @@ function initCourse(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_cohort_list', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'BookOpen',
@@ -563,7 +563,7 @@ function initCohort(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_cohort_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -574,7 +574,7 @@ function initCohort(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [
 			{ node: 'node_obj_cm_student_roster_list_by_cohort', order: 10 },
 			{ node: 'node_obj_cm_cohort_attd_list', order: 20 },
@@ -643,7 +643,7 @@ function initCohortStudentRoster(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
@@ -862,7 +862,7 @@ function initCohortAttd(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_cohort_attd_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -873,7 +873,7 @@ function initCohortAttd(init: InitDb) {
 		orderDefine: 20,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_cohort_attd_sheet', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
@@ -1076,7 +1076,7 @@ function initCohortAttdSheet(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
@@ -1295,7 +1295,7 @@ function initCohortDoc(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_cohort_doc_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -1306,7 +1306,7 @@ function initCohortDoc(init: InitDb) {
 		orderDefine: 40,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
@@ -1487,17 +1487,17 @@ function initPartner(init: InitDb) {
 				orderDefine: 20,
 				orderSort: 10
 			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'codeObjType',
-				headerAlt: 'Partner Type',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0,
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
-			},
+			// {
+			// 	codeAccess: 'readOnly',
+			// 	columnName: 'codeObjType',
+			// 	headerAlt: 'Partner Type',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 30,
+			// 	orderDefine: 30,
+			// 	indexTable: 0,
+			// 	linkColumns: ['name'],
+			// 	linkTable: 'SysCode'
+			// },
 			{
 				codeAccess: 'readOnly',
 				columnName: 'addr1',
@@ -1574,14 +1574,6 @@ function initPartner(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'codeAttrType',
-				exprSave: `sys_core::getCodeAttrType('at_cm_partner')`,
-				orderDefine: 15,
-				indexTable: 0,
-				isDisplayable: false,
-				linkTable: 'SysCode'
-			},
-			{
 				columnName: 'owner',
 				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerSys>))`,
 				orderDefine: 20,
@@ -1604,17 +1596,17 @@ function initPartner(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0
 			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'codeObjType',
-				headerAlt: 'Partner Type',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-				fieldListItemsParmValue: 'ct_cm_partner_type'
-			},
+			// {
+			// 	codeFieldElement: 'select',
+			// 	columnName: 'codeObjType',
+			// 	headerAlt: 'Partner Type',
+			// 	isDisplayable: true,
+			// 	orderDisplay: 50,
+			// 	orderDefine: 50,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_sys_code_order_index_by_codeType_name',
+			// 	fieldListItemsParmValue: 'ct_cm_partner_type'
+			// },
 			{
 				codeAccess: 'optional',
 				columnName: 'website',
@@ -1804,7 +1796,7 @@ function initPartner(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObjApp', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_partner_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'Handshake',
@@ -1817,7 +1809,7 @@ function initPartner(init: InitDb) {
 		owner: 'sys_client_atlantic_impact'
 	})
 
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_partner_note_list', order: 10 }],
 		codeComponent: 'FormDetail',
 		codeIcon: 'Handshake',
@@ -2006,7 +1998,7 @@ function initPartnerNote(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_partner_note_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -2017,7 +2009,7 @@ function initPartnerNote(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_client_atlantic_impact'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',

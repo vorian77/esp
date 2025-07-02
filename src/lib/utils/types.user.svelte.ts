@@ -45,7 +45,6 @@ export class User {
 	initials: string = ''
 	lastName: string
 	name: string
-	orgIds: string[] = []
 	personId: string
 	preferences: UserPrefType[]
 	resources_app: any[] = []
@@ -75,7 +74,6 @@ export class User {
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
 		this.name = strRequired(obj.name, clazz, 'name')
-		this.orgIds = obj.orgs.map((o: any) => o.id)
 		this.personId = strRequired(obj._personId, clazz, 'personId')
 		this.preferences = arrayOfEnums(
 			clazz,
@@ -228,7 +226,7 @@ export class UserResourceTaskItem extends UserResource {
 					}
 				})
 
-			let result: MethodResult = await sm.app.addTreeNode(sm, token)
+			let result: MethodResult = await sm.app.treeNodeAdd(sm, token)
 			if (result.error) return result
 
 			this.setDataObjPage(sm.app.getCurrTab()?.dataObj)

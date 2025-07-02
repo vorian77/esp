@@ -62,14 +62,6 @@ function initClient(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'codeAttrType',
-				exprSave: `sys_core::getCodeAttrType('at_crm_client')`,
-				orderDefine: 15,
-				indexTable: 0,
-				isDisplayable: false,
-				linkTable: 'SysCode'
-			},
-			{
 				columnName: 'owner',
 				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerSys>))`,
 				orderDefine: 20,
@@ -181,7 +173,7 @@ function initClient(init: InitDb) {
 			}
 		]
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_app_crm_client_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
@@ -192,7 +184,7 @@ function initClient(init: InitDb) {
 		orderDefine: 10,
 		owner: 'sys_app_crm'
 	})
-	init.addTrans('sysNodeObjAppObj', {
+	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
