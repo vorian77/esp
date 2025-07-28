@@ -15,7 +15,7 @@
 		StateNavHeader,
 		StateSurfacePopup,
 		StateTriggerToken
-	} from '$comps/app/types.appState.svelte'
+	} from '$comps/app/types.state.svelte'
 	import ContentFormDetail from '$comps/form/ContentFormDetail.svelte'
 	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
 	import ContentFormList from '$comps/form/ContentFormList.svelte'
@@ -94,7 +94,6 @@
 				{/if}
 			</div>
 		{/if}
-
 		<div class="h-full">
 			<Component {parms} />
 		</div>

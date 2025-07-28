@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import {
 	NodeRenderPlatform,
 	type DataRecord,
@@ -207,7 +207,6 @@ export class UserResourceTaskItem extends UserResource {
 
 	getTokenNode(sm: State) {
 		if (this.nodeObj) {
-			sm.parmsState.valueSet(ParmsValuesType.queryOwnerSys, this.ownerId)
 			return new TokenAppNode({ node: this.nodeObj })
 		} else {
 			return undefined
@@ -230,7 +229,7 @@ export class UserResourceTaskItem extends UserResource {
 			if (result.error) return result
 
 			this.setDataObjPage(sm.app.getCurrTab()?.dataObj)
-			if (this.dataObjPage) sm.dm.nodeAdd(this.dataObjPage)
+			if (this.dataObjPage) await sm.dm.nodeAdd(this.dataObjPage)
 		}
 		return new MethodResult()
 	}
@@ -359,8 +358,8 @@ export class UserSystem {
 		const clazz = 'UserOrg'
 		this.appName = obj.appName
 		this.id = strRequired(obj.id, clazz, 'id')
-		this.logoMarginRight = required(obj.logoMarginRight, clazz, 'logoMarginRight')
-		this.logoWidth = required(obj.logoWidth, clazz, 'logoWidth')
+		this.logoMarginRight = valueOrDefault(obj.logoMarginRight, 0)
+		this.logoWidth = valueOrDefault(obj.logoWidth, 50)
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.orgName = strRequired(obj._orgName, clazz, 'orgName')
 		this.urlLogo = obj.file?.url

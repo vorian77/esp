@@ -9,6 +9,7 @@ import {
 	memberOfEnumIfExists,
 	memberOfEnumOrDefault,
 	NodeObjComponent,
+	strOptional,
 	strRequired,
 	valueOrDefault
 } from '$utils/utils'
@@ -46,9 +47,8 @@ export class Node extends NodeHeader {
 	dataObjId: string
 	isAlwaysRetrieveData: boolean
 	isHideRowManager: boolean
-	ownerId: string
-	queryOwnerType?: NodeQueryOwnerType
 	selectListItems?: PropLinkItems
+	systemIdQuerySource?: string
 	constructor(obj: any) {
 		const clazz = 'Node'
 		obj = valueOrDefault(obj, {})
@@ -81,15 +81,8 @@ export class Node extends NodeHeader {
 		this.dataObjId = obj._dataObjId
 		this.isAlwaysRetrieveData = booleanOrFalse(obj.isAlwaysRetrieveData)
 		this.isHideRowManager = booleanOrFalse(obj.isHideRowManager)
-		this.ownerId = strRequired(obj._ownerId, clazz, 'ownerId')
-		this.queryOwnerType = memberOfEnumIfExists(
-			obj._codeQueryOwnerType,
-			'queryOwnerType',
-			clazz,
-			'NodeQueryOwnerType',
-			NodeQueryOwnerType
-		)
 		this.selectListItems = classOptional(PropLinkItems, obj._selectListItems)
+		this.systemIdQuerySource = strOptional(obj._systemIdQuerySource, clazz, 'systemIdQuerySource')
 	}
 
 	getNodeIdAction(actionType: CodeActionType, nodeIdActionAlt: NodeIdActionAlt): string {
@@ -161,13 +154,6 @@ export class NodeEmbed extends Node {
 		obj.name = 'nodeEmbedName'
 		super(obj)
 	}
-}
-
-export enum NodeQueryOwnerType {
-	queryOwnerTypeOrgRecord = 'queryOwnerTypeOrgRecord',
-	queryOwnerTypeSystemApp = 'queryOwnerTypeSystemApp',
-	queryOwnerTypeSystemRecord = 'queryOwnerTypeSystemRecord',
-	queryOwnerTypeSystemUser = 'queryOwnerTypeSystemUser'
 }
 
 export enum NodeRenderPlatform {

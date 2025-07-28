@@ -15,13 +15,11 @@ export function initContentAITraining(init: InitDb) {
 function initCourse(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
-
 		codeCardinality: 'list',
-		exprFilter:
-			'.owner in (SELECT sys_user::SysUser FILTER .name = <user,str,name>).userTypes.owner',
+		exprFilter: `.ownerSys.id IN <user,uuidlist,systemIds>`,
 		header: 'Courses',
 		name: 'data_obj_cm_course_list',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCourse' }],
 		fields: [
 			{
@@ -72,7 +70,7 @@ function initCourse(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Course',
 		name: 'data_obj_cm_course_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCourse' }],
 		fields: [
 			{
@@ -82,13 +80,13 @@ function initCourse(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerSys>))`,
+				codeFieldElement: 'selectOwnerSys',
+				columnName: 'ownerSys',
 				orderDefine: 20,
+				orderDisplay: 20,
 				indexTable: 0,
-				isDisplayable: false,
-				isExcludeUpdate: true,
-				linkTable: 'SysSystem'
+				isDisplayable: true,
+				fieldListItems: 'il_sys_system_by_user'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -296,12 +294,12 @@ function initCourse(init: InitDb) {
 		codeComponent: 'FormList',
 		codeIcon: 'BookOpen',
 		codeNodeType: 'nodeApp',
-		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
 		dataObj: 'data_obj_cm_course_list',
 		header: 'Courses',
 		name: 'node_obj_cm_course_list',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact',
+		systemQuerySource: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_cohort_list', order: 10 }],
@@ -312,7 +310,7 @@ function initCourse(init: InitDb) {
 		header: 'Course',
 		name: 'node_obj_cm_course_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
@@ -323,7 +321,7 @@ function initCohort(init: InitDb) {
 		exprFilter: '.id in (SELECT app_cm::CmCourse FILTER .id = <tree,uuid,CmCourse.id>).cohorts.id',
 		header: 'Cohorts',
 		name: 'data_obj_cm_cohort_list',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCohort' }],
 		fields: [
 			{
@@ -397,7 +395,7 @@ function initCohort(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Cohort',
 		name: 'data_obj_cm_cohort_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		parentColumn: 'cohorts',
 		parentTable: 'CmCourse',
 		tables: [{ index: 0, table: 'CmCohort' }],
@@ -409,13 +407,13 @@ function initCohort(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerSys>))`,
+				codeFieldElement: 'selectOwnerSys',
+				columnName: 'ownerSys',
 				orderDefine: 20,
+				orderDisplay: 20,
 				indexTable: 0,
-				isDisplayable: false,
-				isExcludeUpdate: true,
-				linkTable: 'SysSystem'
+				isDisplayable: true,
+				fieldListItems: 'il_sys_system_by_user'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -572,7 +570,7 @@ function initCohort(init: InitDb) {
 		header: 'Cohorts',
 		name: 'node_obj_cm_cohort_list',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		children: [
@@ -587,7 +585,7 @@ function initCohort(init: InitDb) {
 		header: 'Cohort',
 		name: 'node_obj_cm_cohort_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
@@ -598,7 +596,7 @@ function initCohortStudentRoster(init: InitDb) {
 		exprFilter: '.cohort.id = <tree,uuid,CmCohort.id>',
 		header: 'Student Roster',
 		name: 'data_obj_cm_student_roster_list_by_cohort',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfCohort' },
 			{ columnParent: 'csf', indexParent: 0, index: 1, table: 'CmClientServiceFlow' },
@@ -651,7 +649,7 @@ function initCohortStudentRoster(init: InitDb) {
 		header: 'Student Roster',
 		name: 'node_obj_cm_student_roster_list_by_cohort',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
@@ -662,7 +660,7 @@ function initCohortAttd(init: InitDb) {
 		exprFilter: '.cohortId = <tree,uuid,CmCohort.id>',
 		header: 'Attendance Days',
 		name: 'data_obj_cm_cohort_attd_list',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCohortAttd' }],
 		fields: [
 			{
@@ -727,7 +725,7 @@ function initCohortAttd(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Attendance Day',
 		name: 'data_obj_cm_cohort_attd_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		parentColumn: 'cohortAttds',
 		parentTable: 'CmCohort',
 		queryRiders: [
@@ -871,7 +869,7 @@ function initCohortAttd(init: InitDb) {
 		header: 'Attendance Days',
 		name: 'node_obj_cm_cohort_attd_list',
 		orderDefine: 20,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_cohort_attd_sheet', order: 10 }],
@@ -882,19 +880,19 @@ function initCohortAttd(init: InitDb) {
 		header: 'Attendance Day',
 		name: 'node_obj_cm_cohort_attd_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
 function initCohortAttdSheet(init: InitDb) {
 	init.addTrans('sysCodeAction', {
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		codeType: 'ct_sys_code_action_class_custom',
 		name: 'doCustomAIAttdSheetSetAllFullClass',
 		order: 0
 	})
 	init.addTrans('sysCodeAction', {
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		codeType: 'ct_sys_code_action_class_custom',
 		name: 'doCustomAIAttdSheetReset',
 		order: 0
@@ -904,7 +902,7 @@ function initCohortAttdSheet(init: InitDb) {
 		codeConfirmType: 'statusChanged',
 		header: 'Set All-Full Class',
 		name: 'ua_client_ai_cohort_attd_sheet_set_all_full_class',
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 
 	init.addTrans('sysUserAction', {
@@ -913,7 +911,7 @@ function initCohortAttdSheet(init: InitDb) {
 		exprShow: `<statusChanged>`,
 		header: 'Reset',
 		name: 'ua_client_ai_cohort_attd_sheet_reset',
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 
 	init.addTrans('sysDataObjActionGroup', {
@@ -941,7 +939,7 @@ function initCohortAttdSheet(init: InitDb) {
 			}
 		],
 		name: 'doag_client_ai_cohort_attd_sheet',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysDataObj', {
@@ -958,7 +956,7 @@ function initCohortAttdSheet(init: InitDb) {
 		newVals := (SELECT csfCohortsInCohort EXCEPT csfCohortsWithAttd)
 		SELECT newVals`,
 		name: 'data_obj_cm_cohort_attd_sheet',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfCohortAttd' },
 			{ columnParent: 'csfCohort', indexParent: 0, index: 1, table: 'CmCsfCohort' },
@@ -1084,7 +1082,7 @@ function initCohortAttdSheet(init: InitDb) {
 		header: 'Attendance Sheet',
 		name: 'node_obj_cm_cohort_attd_sheet',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
@@ -1095,7 +1093,7 @@ function initCohortDoc(init: InitDb) {
 		exprFilter: '.cohort.id = <tree,uuid,CmCohort.id>',
 		header: 'Documents',
 		name: 'data_obj_cm_cohort_doc_list',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCohortDoc' }],
 		fields: [
 			{
@@ -1150,7 +1148,7 @@ function initCohortDoc(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Document',
 		name: 'data_obj_cm_cohort_doc_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		queryRiders: [
 			{
 				codeQueryAction: 'customFunction',
@@ -1304,7 +1302,7 @@ function initCohortDoc(init: InitDb) {
 		header: 'Documents',
 		name: 'node_obj_cm_cohort_doc_list',
 		orderDefine: 40,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -1314,7 +1312,7 @@ function initCohortDoc(init: InitDb) {
 		header: 'Document',
 		name: 'node_obj_cm_cohort_doc_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
@@ -1325,7 +1323,7 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Contacts',
 		name: 'doflc_cm_partner_contact_list',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'SysPerson' }],
 		fields: [
 			{
@@ -1379,7 +1377,7 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Contact',
 		name: 'doflc_cm_partner_contact_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'SysPerson' }],
 		fields: [
 			{
@@ -1456,7 +1454,7 @@ function initFieldListConfigPartnerContact(init: InitDb) {
 		dataObjEmbed: 'doflc_cm_partner_contact_list',
 		dataObjModal: 'doflc_cm_partner_contact_detail',
 		name: 'flec_cm_partner_contact',
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
@@ -1464,11 +1462,10 @@ function initPartner(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter:
-			'.owner in (SELECT sys_user::SysUser FILTER .name = <user,str,name>).userTypes.owner',
+		exprFilter: `.ownerSys.id IN <user,uuidlist,systemIds>`,
 		header: 'Partners',
 		name: 'data_obj_cm_partner_list',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmPartner' }],
 		fields: [
 			{
@@ -1487,17 +1484,6 @@ function initPartner(init: InitDb) {
 				orderDefine: 20,
 				orderSort: 10
 			},
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	columnName: 'codeObjType',
-			// 	headerAlt: 'Partner Type',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 30,
-			// 	orderDefine: 30,
-			// 	indexTable: 0,
-			// 	linkColumns: ['name'],
-			// 	linkTable: 'SysCode'
-			// },
 			{
 				codeAccess: 'readOnly',
 				columnName: 'addr1',
@@ -1564,7 +1550,7 @@ function initPartner(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Partner',
 		name: 'data_obj_cm_partner_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmPartner' }],
 		fields: [
 			{
@@ -1574,13 +1560,13 @@ function initPartner(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerSys>))`,
+				codeFieldElement: 'selectOwnerSys',
+				columnName: 'ownerSys',
 				orderDefine: 20,
+				orderDisplay: 20,
 				indexTable: 0,
-				isDisplayable: false,
-				isExcludeUpdate: true,
-				linkTable: 'SysSystem'
+				isDisplayable: true,
+				fieldListItems: 'il_sys_system_by_user'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1596,17 +1582,6 @@ function initPartner(init: InitDb) {
 				orderDefine: 40,
 				indexTable: 0
 			},
-			// {
-			// 	codeFieldElement: 'select',
-			// 	columnName: 'codeObjType',
-			// 	headerAlt: 'Partner Type',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 50,
-			// 	orderDefine: 50,
-			// 	indexTable: 0,
-			// 	fieldListItems: 'il_sys_code_order_index_by_codeType_name',
-			// 	fieldListItemsParmValue: 'ct_cm_partner_type'
-			// },
 			{
 				codeAccess: 'optional',
 				columnName: 'website',
@@ -1716,7 +1691,6 @@ function initPartner(init: InitDb) {
 				fieldEmbedListConfig: 'flec_cm_partner_contact',
 				indexTable: 0,
 				isDisplayable: true,
-				linkColumns: ['fullName'],
 				linkTable: 'SysPerson',
 				orderDefine: 190,
 				orderDisplay: 190
@@ -1801,12 +1775,12 @@ function initPartner(init: InitDb) {
 		codeComponent: 'FormList',
 		codeIcon: 'Handshake',
 		codeNodeType: 'nodeApp',
-		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
 		dataObj: 'data_obj_cm_partner_list',
 		header: 'Partners',
 		name: 'node_obj_cm_partner_list',
 		orderDefine: 20,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact',
+		systemQuerySource: 'sys_client_atlantic_impact'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -1818,7 +1792,7 @@ function initPartner(init: InitDb) {
 		header: 'Partner',
 		name: 'node_obj_cm_partner_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
@@ -1829,7 +1803,7 @@ function initPartnerNote(init: InitDb) {
 		exprFilter: '.id IN (SELECT app_cm::CmPartner FILTER .id = <tree,uuid,CmPartner.id>).notes.id',
 		header: 'Notes',
 		name: 'data_obj_cm_partner_note_list',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		parentColumn: 'notes',
 		parentTable: 'CmPartner',
 		tables: [{ index: 0, table: 'SysObjNote' }],
@@ -1879,7 +1853,7 @@ function initPartnerNote(init: InitDb) {
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_partner_note_detail',
 		header: 'Note',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		parentColumn: 'notes',
 		parentTable: 'CmPartner',
 		tables: [{ index: 0, table: 'SysObjNote' }],
@@ -2007,7 +1981,7 @@ function initPartnerNote(init: InitDb) {
 		header: 'Notes',
 		name: 'node_obj_cm_partner_note_list',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -2017,6 +1991,6 @@ function initPartnerNote(init: InitDb) {
 		header: 'Note',
 		name: 'node_obj_cm_partner_note_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }

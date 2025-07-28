@@ -8,11 +8,11 @@ function initNodeObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Node Objects',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_admin_node_obj_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysNodeObj' }],
 		fields: [
 			{
@@ -95,7 +95,7 @@ function initNodeObj(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Node Object',
 		name: 'data_obj_sys_admin_node_obj_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysNodeObj' }],
 		fields: [
 			{
@@ -105,7 +105,7 @@ function initNodeObj(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -131,23 +131,13 @@ function initNodeObj(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'codeQueryOwnerType',
+				columnName: 'codeComponent',
 				isDisplayable: true,
 				orderDisplay: 55,
 				orderDefine: 55,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_query_owner_type'
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'select',
-				columnName: 'parent',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0,
-				fieldListItems: 'il_sys_node_obj_order_name'
+				fieldListItemsParmValue: 'ct_sys_node_component'
 			},
 			{
 				codeFieldElement: 'toggle',
@@ -258,7 +248,7 @@ function initNodeObj(init: InitDb) {
 			{
 				columnName: 'orderDefine',
 				orderDefine: 210,
-				exprPreset: `(SELECT (count((SELECT sys_core::SysNodeObj FILTER .owner.id = <tree,uuid,SysSystem.id>)) + 1))`,
+				exprPreset: `(SELECT (count((SELECT sys_core::SysNodeObj FILTER .ownerSys.id = <tree,uuid,SysSystem.id>)) + 1))`,
 				indexTable: 0,
 				isDisplayable: false
 			},
@@ -337,7 +327,7 @@ function initNodeObj(init: InitDb) {
 		header: 'Node Objects',
 		name: 'node_obj_sys_admin_node_obj_list',
 		orderDefine: 130,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -348,6 +338,6 @@ function initNodeObj(init: InitDb) {
 		header: 'Node Object',
 		name: 'node_obj_sys_admin_node_obj_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

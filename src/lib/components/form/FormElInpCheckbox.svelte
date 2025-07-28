@@ -42,12 +42,12 @@
 						newValues.push(i.data)
 					}
 				})
-				await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, newValues)
+				await dm.setFieldValueAsync(parms.dataObjId, parms.row, parms.field, newValues)
 			}
 		} else {
 			const currentSelected = dataItems[idx].selected
 			value = currentSelected ? null : value
-			await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, value)
+			await dm.setFieldValueAsync(parms.dataObjId, parms.row, parms.field, value)
 		}
 	}
 </script>
@@ -63,7 +63,7 @@
 				type="checkbox"
 				bind:group={fieldValueData}
 				class="rounded-sm mt-0.5"
-				name={field.colDO.propName}
+				name={field.getValueKey()}
 				oninput={onInput}
 				value={data}
 			/>

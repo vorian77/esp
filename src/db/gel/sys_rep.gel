@@ -3,7 +3,6 @@ module sys_rep {
     overloaded required codeAttrType: sys_core::SysCode {
       default := sys_core::getCodeAttrType('at_rep_analytic');
     };
-    description: str;
     multi parms: sys_rep::SysRepParm {
       on source delete delete target;
       on target delete allow;
@@ -26,7 +25,6 @@ module sys_rep {
       default := sys_core::getCodeAttrType('at_rep_report');
     };
     multi analytics: sys_rep::SysAnalytic;
-    description: str;
     multi elements: sys_rep::SysRepEl {
       on source delete delete target;
       on target delete allow;
@@ -42,7 +40,7 @@ module sys_rep {
       on source delete delete target;
       on target delete allow;
     };
-    constraint exclusive on ((.owner, .name));
+    constraint exclusive on ((.ownerSys, .name));
   }
 
   type SysRepEl extending sys_user::Mgmt{

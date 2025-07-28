@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Drawer, getDrawerStore } from '@skeletonlabs/skeleton'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
-	import { State } from '$comps/app/types.appState.svelte'
+	import { State } from '$comps/app/types.state.svelte'
 	import { getContext, setContext } from 'svelte'
 	import { ContextKey } from '$utils/types'
 

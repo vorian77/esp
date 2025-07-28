@@ -5,6 +5,7 @@
 		DataObjCardinality,
 		type DataRecord,
 		NodeObjComponent,
+		ParmsValuesType,
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
@@ -20,7 +21,8 @@
 	let dm: DataManager = $derived(sm.dm)
 
 	let fieldEmbed = $derived(parms.field) as FieldEmbedListEdit
-	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.dataObjIdEmbed)
+	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.rawFieldEmbedList.embedDataObjId)
+	dataObjEmbed.data.parmsFormList.valueSet(ParmsValuesType.isEmbedSaveWithParent, true)
 </script>
 
 <FormLabel {parms} />

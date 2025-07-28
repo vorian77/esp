@@ -10,10 +10,10 @@ function initCodeAction(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Code Actions',
 		name: 'data_obj_sys_admin_code_action_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysCodeAction' }],
 		fields: [
 			{
@@ -51,7 +51,7 @@ function initCodeAction(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Code Action',
 		name: 'data_obj_sys_admin_code_action_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysCodeAction' }],
 		fields: [
 			{
@@ -61,7 +61,7 @@ function initCodeAction(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -172,7 +172,7 @@ function initCodeAction(init: InitDb) {
 		header: 'Code Actions',
 		name: 'node_obj_sys_admin_code_action_list',
 		orderDefine: 45,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -182,7 +182,7 @@ function initCodeAction(init: InitDb) {
 		header: 'Code Action',
 		name: 'node_obj_sys_admin_code_action_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -190,10 +190,10 @@ function initDataObjActionGroup(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Data Object Action Groups',
 		name: 'data_obj_sys_admin_data_obj_action_group_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjActionGroup' }],
 		fields: [
 			{
@@ -220,7 +220,7 @@ function initDataObjActionGroup(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Data Object Action Group',
 		name: 'data_obj_sys_admin_data_obj_action_group_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjActionGroup' }],
 		fields: [
 			{
@@ -230,7 +230,7 @@ function initDataObjActionGroup(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -248,13 +248,12 @@ function initDataObjActionGroup(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'dataObjActions',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
 				fieldEmbedListConfig: 'flec_data_obj_action',
 				indexTable: 0,
-				linkColumns: ['action', 'name'],
-				linkTable: 'SysDataObjAction'
+				isDisplayable: true,
+				linkTable: 'SysDataObjAction',
+				orderDefine: 40,
+				orderDisplay: 40
 			},
 
 			/* management */
@@ -331,7 +330,7 @@ function initDataObjActionGroup(init: InitDb) {
 		header: 'Data Object Action Groups',
 		name: 'node_obj_sys_admin_data_obj_action_group_list',
 		orderDefine: 70,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -342,7 +341,7 @@ function initDataObjActionGroup(init: InitDb) {
 		header: 'Data Object Action Group',
 		name: 'node_obj_sys_admin_data_obj_action_group_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -350,10 +349,10 @@ function initUserAction(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'User Actions',
 		name: 'data_obj_sys_admin_user_action_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysUserAction' }],
 		fields: [
 			{
@@ -380,7 +379,7 @@ function initUserAction(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'User Action',
 		name: 'data_obj_sys_admin_user_action_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysUserAction' }],
 		fields: [
 			{
@@ -390,7 +389,7 @@ function initUserAction(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -426,8 +425,17 @@ function initUserAction(init: InitDb) {
 				orderDisplay: 60,
 				orderDefine: 60,
 				indexTable: 0,
-				fieldListItems: 'il_sys_codeAction_order_name_by_codeType_name',
-				fieldListItemsParmValue: 'ct_sys_code_action_class'
+				fieldListItems: 'il_sys_codeAction_order_name'
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeConfirmType',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmValue: 'ct_sys_user_action_confirm_type'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -440,13 +448,12 @@ function initUserAction(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'actionConfirms',
-				isDisplayable: true,
-				orderDisplay: 150,
-				orderDefine: 150,
 				fieldEmbedListConfig: 'flec_user_action_confirm',
 				indexTable: 0,
-				linkColumns: ['codeConfirmType', 'name'],
-				linkTable: 'SysUserActionConfirm'
+				isDisplayable: true,
+				linkTable: 'SysUserActionConfirm',
+				orderDefine: 150,
+				orderDisplay: 150
 			},
 
 			/* management */
@@ -523,7 +530,7 @@ function initUserAction(init: InitDb) {
 		header: 'User Actions',
 		name: 'node_obj_sys_admin_user_action_list',
 		orderDefine: 190,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -534,6 +541,6 @@ function initUserAction(init: InitDb) {
 		header: 'User Action',
 		name: 'node_obj_sys_admin_user_action_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

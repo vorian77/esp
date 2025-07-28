@@ -57,7 +57,7 @@
 	import { getContext } from 'svelte'
 	import { ParmsValues } from '$utils/types'
 	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field.svelte'
-	import { State, StateSurfacePopup } from '$comps/app/types.appState.svelte'
+	import { State, StateSurfacePopup } from '$comps/app/types.state.svelte'
 	import ListFilter from '$comps/form/ListFilter.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import { error } from '@sveltejs/kit'
@@ -202,7 +202,7 @@
 		}
 
 		if (options.isPopup) {
-			const selectedIds = options.parmStateSelectedIds
+			const selectedIds = sm.parmsState.valueGet(ParmsValuesType.listIdsSelected)
 			if (options.isSelectMulti) {
 				const selected: IRowNode[] = []
 				const deselected: IRowNode[] = []
@@ -240,7 +240,9 @@
 	}
 
 	function onCellValueChanged(event: NewValueParams) {
-		if (options.fCallbackUpdateValue) options.fCallbackUpdateValue(event.colDef.field, event.data)
+		if (options.fCallbackUpdateValue) {
+			options.fCallbackUpdateValue(event.colDef.field, event.data)
+		}
 	}
 
 	function onFilterChanged(event: FilterChangedEvent) {

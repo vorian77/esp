@@ -15,7 +15,7 @@
 	let dm: DataManager = $derived(sm.dm)
 
 	let dataObj: DataObj = $derived(required(dm.getDataObj(parms.dataObjId), FILENAME, 'dataObj'))
-	let elements: DetailEl[] = $state(getDetailElements(dataObj))
+	let elements: DetailEl[] = $state(getDetailElements(dataObj.fields))
 
 	let actions: DataObjActionsObj
 

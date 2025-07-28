@@ -56,7 +56,7 @@
 
 	async function onChange(event: Event) {
 		const target = event.currentTarget as HTMLSelectElement
-		await dm.setFieldValue(parms.dataObjId, parms.row, field, target.value)
+		await dm.setFieldValueAsync(parms.dataObjId, parms.row, field, target.value)
 	}
 
 	async function onDoubleClick(event: MouseEvent) {
@@ -68,7 +68,7 @@
 			const month = dateMonth < 10 ? '0' + dateMonth : dateMonth.toString()
 			const day = dateDay < 10 ? '0' + dateDay : dateDay.toString()
 			const value = year + '-' + month + '-' + day
-			await dm.setFieldValue(parms.dataObjId, parms.row, field, value)
+			await dm.setFieldValueAsync(parms.dataObjId, parms.row, field, value)
 		}
 	}
 	function setIconProps() {
@@ -150,7 +150,7 @@
 		// 	completed: event.detail.completed
 		// })
 		const target = event.currentTarget as HTMLSelectElement
-		await dm.setFieldValue(parms.dataObjId, parms.row, field, event.detail.masked)
+		await dm.setFieldValueAsync(parms.dataObjId, parms.row, field, event.detail.masked)
 	}
 </script>
 
@@ -158,10 +158,10 @@
 	<input
 		class={classPropsInput}
 		hidden={field.fieldAccess === FieldAccess.hidden}
-		id={field.colDO.propName}
+		id={field.getValueKey()}
 		max={field.maxValue?.toString() || ''}
 		min={field.minValue?.toString() || ''}
-		name={field.colDO.propName}
+		name={field.getValueKey()}
 		ondblclick={onDoubleClick}
 		oninput={onChange}
 		{placeholder}

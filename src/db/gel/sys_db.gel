@@ -15,6 +15,7 @@ module sys_db {
     isFormTag: bool;
     required isMultiSelect: bool;
     required isSelfReference: bool;
+
     matchColumn: str;
     maxLength: default::nonNegative;
     maxValue: float64;

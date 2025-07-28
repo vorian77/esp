@@ -9,10 +9,10 @@ function initColumn(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Columns',
 		name: 'data_obj_sys_admin_column_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysColumn' }],
 		fields: [
 			{
@@ -47,7 +47,7 @@ function initColumn(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Column',
 		name: 'data_obj_sys_admin_column_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysColumn' }],
 		fields: [
 			{
@@ -57,7 +57,7 @@ function initColumn(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -544,7 +544,7 @@ function initColumn(init: InitDb) {
 		header: 'Columns',
 		name: 'node_obj_sys_admin_column_list',
 		orderDefine: 50,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -555,7 +555,7 @@ function initColumn(init: InitDb) {
 		header: 'Column',
 		name: 'node_obj_sys_admin_column_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -564,10 +564,10 @@ function initTable(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Tables',
 		name: 'data_obj_sys_admin_table_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysTable' }],
 		fields: [
 			{
@@ -610,7 +610,7 @@ function initTable(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Table',
 		name: 'data_obj_sys_admin_table_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysTable' }],
 		fields: [
 			{
@@ -620,7 +620,7 @@ function initTable(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -750,7 +750,7 @@ function initTable(init: InitDb) {
 		header: 'Tables',
 		name: 'node_obj_sys_admin_table_list',
 		orderDefine: 160,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -761,6 +761,6 @@ function initTable(init: InitDb) {
 		header: 'Table',
 		name: 'node_obj_sys_admin_table_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

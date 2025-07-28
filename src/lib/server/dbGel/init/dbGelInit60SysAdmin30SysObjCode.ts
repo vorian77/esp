@@ -11,10 +11,10 @@ function initCustomerCode(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: `.owner.id = <tree,uuid,SysSystem.id>`,
+		exprFilter: `.ownerSys.id = <tree,uuid,SysSystem.id>`,
 		header: 'Codes',
 		name: 'data_obj_admin_code_list_customer',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -102,7 +102,7 @@ function initCustomerCode(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Code',
 		name: 'data_obj_admin_code_detail_customer',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -112,7 +112,7 @@ function initCustomerCode(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -334,7 +334,7 @@ function initCustomerCode(init: InitDb) {
 		header: 'Codes',
 		name: 'node_obj_admin_code_list_customer',
 		orderDefine: 20,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -344,7 +344,7 @@ function initCustomerCode(init: InitDb) {
 		header: 'Code',
 		name: 'node_obj_admin_code_detail_customer',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -352,10 +352,10 @@ function initGlobalCode(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Codes',
 		name: 'data_obj_admin_code_list_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -451,7 +451,7 @@ function initGlobalCode(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Code',
 		name: 'data_obj_admin_code_detail_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -461,7 +461,7 @@ function initGlobalCode(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -684,7 +684,7 @@ function initGlobalCode(init: InitDb) {
 		header: 'Codes',
 		name: 'node_obj_admin_code_list_global',
 		orderDefine: 40,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -694,7 +694,7 @@ function initGlobalCode(init: InitDb) {
 		header: 'Code',
 		name: 'node_obj_admin_code_detail_global',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -702,10 +702,10 @@ function initGlobalCodeType(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Code Types',
 		name: 'data_obj_admin_code_type_list_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysCodeType' }],
 		fields: [
 			{
@@ -786,7 +786,7 @@ function initGlobalCodeType(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Code Type',
 		name: 'data_obj_admin_code_type_detail_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysCodeType' }],
 		fields: [
 			{
@@ -796,7 +796,7 @@ function initGlobalCodeType(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -966,7 +966,7 @@ function initGlobalCodeType(init: InitDb) {
 		header: 'Code Types',
 		name: 'node_obj_admin_code_type_list_global',
 		orderDefine: 30,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_admin_code_list_codeType_global', order: 10 }],
@@ -977,7 +977,7 @@ function initGlobalCodeType(init: InitDb) {
 		header: 'Code Type',
 		name: 'node_obj_admin_code_type_detail_global',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -988,7 +988,7 @@ function initGlobalCodeTypeCode(init: InitDb) {
 		exprFilter: '.codeType.id = <tree,uuid,SysCodeType.id>',
 		header: 'Codes',
 		name: 'data_obj_admin_code_list_codeType_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -1073,7 +1073,7 @@ function initGlobalCodeTypeCode(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Code',
 		name: 'data_obj_admin_code_detail_codeType_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysCode' }],
 		fields: [
 			{
@@ -1109,7 +1109,7 @@ function initGlobalCodeTypeCode(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
@@ -1297,7 +1297,7 @@ function initGlobalCodeTypeCode(init: InitDb) {
 		header: 'Codes',
 		name: 'node_obj_admin_code_list_codeType_global',
 		orderDefine: 15,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -1307,6 +1307,6 @@ function initGlobalCodeTypeCode(init: InitDb) {
 		header: 'Code',
 		name: 'node_obj_admin_code_detail_codeType_global',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

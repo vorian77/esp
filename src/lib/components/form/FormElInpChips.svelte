@@ -10,13 +10,15 @@
 		type DataRecord,
 		MethodResult,
 		ParmsValues,
+		ParmsValuesFormList,
 		ParmsValuesType,
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import { State, StateTriggerToken } from '$comps/app/types.state.svelte'
 	import {
 		TokenAppModalSelect,
+		TokenAppModalReturn,
 		TokenAppModalReturnType,
 		TokenAppStateTriggerAction,
 		TokenAppUserActionConfirmType
@@ -80,13 +82,13 @@
 			})
 		)
 
-		async function fModalClose(returnType: TokenAppModalReturnType, returnData?: ParmsValues) {
-			if (returnType === TokenAppModalReturnType.complete) {
-				if (returnData.data) {
-					const parmsReturn = new ParmsValues(returnData.data)
+		async function fModalClose(token: TokenAppModalReturn) {
+			if (token.type === TokenAppModalReturnType.complete) {
+				const parmsReturn: ParmsValues = token.parmsState || undefined
+				if (parmsReturn) {
 					const valueDisplay = parmsReturn.valueGet(ParmsValuesType.listIdsSelected)
 					const valueRaw = field.linkItems.getValueRaw(valueDisplay)
-					await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, valueRaw)
+					await dm.setFieldValueAsync(parms.dataObjId, parms.row, parms.field, valueRaw)
 				}
 			}
 		}
@@ -98,8 +100,8 @@
 	<textarea
 		class={propsField}
 		cols={field.cols}
-		id={field.colDO.propName}
-		name={field.colDO.propName}
+		id={field.getValueKey()}
+		name={field.getValueKey()}
 		onclick={onClick}
 		readonly={true}
 		rows={field.rows}

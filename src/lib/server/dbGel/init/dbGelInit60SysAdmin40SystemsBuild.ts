@@ -12,7 +12,7 @@ async function initConfig(init: InitDb) {
 		header: 'Systems (Build)',
 		isListEdit: true,
 		name: 'data_obj_admin_system_list_build',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
@@ -116,7 +116,7 @@ async function initConfig(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'System (Config)',
 		name: 'data_obj_admin_system_detail_build',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
@@ -207,7 +207,7 @@ async function initConfig(init: InitDb) {
 		header: 'Systems (Build)',
 		name: 'node_obj_admin_system_list_build',
 		orderDefine: 20,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -218,6 +218,6 @@ async function initConfig(init: InitDb) {
 		header: 'Organization',
 		name: 'node_obj_admin_system_detail_build',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

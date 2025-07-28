@@ -1,4 +1,5 @@
 import { InitDb } from '$server/dbGel/init/types.init'
+import { link } from 'fs'
 
 export function initAdminSysObjDataObj(init: InitDb) {
 	initDataObj(init)
@@ -9,10 +10,10 @@ function initDataObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Data Objects',
 		name: 'data_obj_sys_admin_data_obj_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObj' }],
 		fields: [
 			{
@@ -30,6 +31,28 @@ function initDataObj(init: InitDb) {
 				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeCardinality',
+				isDisplayable: true,
+				isExcludeUpdate: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeDataObjType',
+				isDisplayable: true,
+				isExcludeUpdate: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
 			}
 		]
 	})
@@ -39,7 +62,7 @@ function initDataObj(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Data Object',
 		name: 'data_obj_sys_admin_data_obj_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObj' }],
 		fields: [
 			{
@@ -49,7 +72,7 @@ function initDataObj(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -281,11 +304,12 @@ function initDataObj(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'tables',
-				isDisplayable: true,
-				orderDisplay: 230,
-				orderDefine: 230,
 				fieldEmbedListConfig: 'flec_data_obj_table',
-				indexTable: 0
+				indexTable: 0,
+				isDisplayable: true,
+				linkTable: 'SysDataObjTable',
+				orderDefine: 230,
+				orderDisplay: 230
 			},
 
 			/* list */
@@ -448,7 +472,7 @@ function initDataObj(init: InitDb) {
 		header: 'Data Objects',
 		name: 'node_obj_sys_admin_data_obj_list',
 		orderDefine: 60,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -460,7 +484,7 @@ function initDataObj(init: InitDb) {
 		header: 'Data Object',
 		name: 'node_obj_sys_admin_data_obj_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -473,7 +497,7 @@ function initDataObjColumn(init: InitDb) {
 		header: 'Columns',
 		listReorderColumn: 'orderDefine',
 		name: 'data_obj_sys_admin_data_obj_column_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		parentColumn: 'columns',
 		parentTable: 'SysDataObj',
 		tables: [{ index: 0, table: 'SysDataObjColumn' }],
@@ -571,7 +595,7 @@ function initDataObjColumn(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Column',
 		name: 'data_obj_sys_admin_data_obj_column_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		parentColumn: 'columns',
 		parentTable: 'SysDataObj',
 		queryRiders: [
@@ -1276,13 +1300,11 @@ function initDataObjColumn(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'linkColumns',
-				isDisplayable: true,
-				orderDisplay: 910,
-				orderDefine: 910,
 				fieldEmbedListConfig: 'flec_data_obj_column_link',
 				indexTable: 0,
-				linkColumns: ['column', 'name'],
-				linkTable: 'SysDataObjColumnLink'
+				linkTable: 'SysDataObjColumnLink',
+				orderDefine: 910,
+				orderDisplay: 910
 			},
 			{
 				codeAccess: 'optional',
@@ -1376,7 +1398,7 @@ function initDataObjColumn(init: InitDb) {
 		header: 'Columns',
 		name: 'node_obj_sys_admin_data_obj_column_list',
 		orderDefine: 20,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -1387,6 +1409,6 @@ function initDataObjColumn(init: InitDb) {
 		header: 'Column',
 		name: 'node_obj_sys_admin_data_obj_column_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

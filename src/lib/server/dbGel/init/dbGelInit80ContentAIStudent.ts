@@ -15,10 +15,10 @@ function initStudent(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: `.owner.name = 'sys_client_atlantic_impact'`,
+		exprFilter: `.ownerSys.name = 'sys_client_atlantic_impact'`,
 		header: 'Students',
 		name: 'data_obj_cm_student_list',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		subHeader: 'All students.',
 		tables: [
 			{ index: 0, table: 'CmClient' },
@@ -83,11 +83,10 @@ function initStudent(init: InitDb) {
 
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
-
 		codeCardinality: 'detail',
 		header: 'Student',
 		name: 'data_obj_cm_student_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmClient' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -100,13 +99,13 @@ function initStudent(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerSys>))`,
+				codeFieldElement: 'selectOwnerSys',
+				columnName: 'ownerSys',
 				orderDefine: 15,
+				orderDisplay: 15,
 				indexTable: 0,
-				isDisplayable: false,
-				isExcludeUpdate: true,
-				linkTable: 'SysSystem'
+				isDisplayable: true,
+				fieldListItems: 'il_sys_system_by_user'
 			},
 			{
 				codeFieldElement: 'customHeader',
@@ -232,7 +231,7 @@ function initStudent(init: InitDb) {
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'hasDriversLicense',
-				exprPreset: `(SELECT false)`,
+				exprPreset: `(SELECT "No")`,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 81,
@@ -438,12 +437,12 @@ function initStudent(init: InitDb) {
 		codeComponent: 'FormList',
 		codeIcon: 'UsersRound',
 		codeNodeType: 'nodeApp',
-		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
 		dataObj: 'data_obj_cm_student_list',
 		header: 'Students',
 		name: 'node_obj_cm_student_list',
 		orderDefine: 30,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact',
+		systemQuerySource: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_service_flow_list', order: 10 }],
@@ -454,14 +453,13 @@ function initStudent(init: InitDb) {
 		header: 'Student',
 		name: 'node_obj_cm_student_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
 function initCsf(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_client_atlantic_impact',
-
+		ownerSys: 'sys_client_atlantic_impact',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_client_service_flow_list',
 		header: 'Service Flows',
@@ -477,14 +475,13 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'programCm',
-				orderCrumb: 10,
+				columnName: 'objAttrCmProgram',
+				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
-				indexTable: 0,
 				linkColumns: ['header'],
-				linkTable: 'CmProgram'
+				linkTable: 'SysObjAttr'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -553,8 +550,7 @@ function initCsf(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_client_atlantic_impact',
-
+		ownerSys: 'sys_client_atlantic_impact',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_client_service_flow_detail',
 		header: 'Service Flow',
@@ -585,12 +581,13 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'programCm',
+				columnName: 'objAttrCmProgram',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_cm_program'
+				fieldListItems: 'il_sys_obj_attr_type_single',
+				fieldListItemsParmValue: 'at_cm_program'
 			},
 			{
 				codeFieldElement: 'select',
@@ -771,7 +768,7 @@ function initCsf(init: InitDb) {
 		header: 'Service Flows',
 		name: 'node_obj_cm_service_flow_list',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		children: [
@@ -788,14 +785,13 @@ function initCsf(init: InitDb) {
 		header: 'Service Flow',
 		name: 'node_obj_cm_service_flow_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
 function initCsfCohort(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_client_atlantic_impact',
-
+		ownerSys: 'sys_client_atlantic_impact',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_csf_cohort_list',
 		header: 'Cohorts',
@@ -845,8 +841,7 @@ function initCsfCohort(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_client_atlantic_impact',
-
+		ownerSys: 'sys_client_atlantic_impact',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_csf_cohort_detail',
 		header: 'Cohort',
@@ -865,7 +860,7 @@ function initCsfCohort(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['programCm', 'name'],
+				linkColumns: ['objAttrCmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -984,7 +979,7 @@ function initCsfCohort(init: InitDb) {
 		header: 'Cohorts',
 		name: 'node_obj_cm_csf_cohort_list',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_cm_csf_cohort_attd_student_list', order: 10 }],
@@ -995,14 +990,13 @@ function initCsfCohort(init: InitDb) {
 		header: 'Cohort',
 		name: 'node_obj_cm_csf_cohort_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
 function initCsfCohortAttdStudent(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_client_atlantic_impact',
-
+		ownerSys: 'sys_client_atlantic_impact',
 		codeCardinality: 'list',
 		exprFilter: '.csfCohort.id = <tree,uuid,CmCsfCohort.id>',
 		name: 'data_obj_cm_csf_cohort_attd_student_list',
@@ -1057,7 +1051,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Attendance',
 		name: 'data_obj_cm_csf_cohort_attd_student_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCsfCohortAttd' }],
 		fields: [
 			{
@@ -1202,7 +1196,7 @@ function initCsfCohortAttdStudent(init: InitDb) {
 		header: 'Attendance Records',
 		name: 'node_obj_cm_csf_cohort_attd_student_list',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -1212,14 +1206,13 @@ function initCsfCohortAttdStudent(init: InitDb) {
 		header: 'Attendance',
 		name: 'node_obj_cm_csf_cohort_attd_student_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
 function initCsfNote(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_client_atlantic_impact',
-
+		ownerSys: 'sys_client_atlantic_impact',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_csf_note_list',
 		header: 'Case Notes',
@@ -1267,8 +1260,7 @@ function initCsfNote(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_client_atlantic_impact',
-
+		ownerSys: 'sys_client_atlantic_impact',
 		codeCardinality: 'detail',
 		name: 'data_obj_cm_csf_note_detail',
 		header: 'Case Note',
@@ -1287,7 +1279,7 @@ function initCsfNote(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['programCm', 'name'],
+				linkColumns: ['objAttrCmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1406,7 +1398,7 @@ function initCsfNote(init: InitDb) {
 		header: 'Case Notes',
 		name: 'node_obj_cm_csf_note_list',
 		orderDefine: 20,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -1416,19 +1408,18 @@ function initCsfNote(init: InitDb) {
 		header: 'Case Note',
 		name: 'node_obj_cm_csf_note_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
 function initCsfJobPlacement(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
-
 		codeCardinality: 'list',
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
 		header: 'Job Placements',
 		name: 'data_obj_cm_csf_job_placement_list',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCsfJobPlacement' }],
 		fields: [
 			{
@@ -1474,7 +1465,7 @@ function initCsfJobPlacement(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Job Placement',
 		name: 'data_obj_cm_csf_job_placement_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCsfJobPlacement' }],
 		fields: [
 			{
@@ -1489,7 +1480,7 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['programCm', 'name'],
+				linkColumns: ['objAttrCmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1736,7 +1727,7 @@ function initCsfJobPlacement(init: InitDb) {
 		header: 'Job Placements',
 		name: 'node_obj_cm_csf_job_placement_list',
 		orderDefine: 30,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -1746,19 +1737,18 @@ function initCsfJobPlacement(init: InitDb) {
 		header: 'Job Placement',
 		name: 'node_obj_cm_csf_job_placement_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
 function initCsfSchoolPlacement(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
-
 		codeCardinality: 'list',
 		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
 		header: 'School Placements',
 		name: 'data_obj_cm_csf_school_placement_list',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCsfSchoolPlacement' }],
 		fields: [
 			{
@@ -1837,7 +1827,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'School Placement',
 		name: 'data_obj_cm_csf_school_placement_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCsfSchoolPlacement' }],
 		fields: [
 			{
@@ -1852,7 +1842,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['programCm', 'name'],
+				linkColumns: ['objAttrCmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -2014,7 +2004,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 		header: 'School Placements',
 		name: 'node_obj_cm_csf_school_placement_list',
 		orderDefine: 40,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -2024,14 +2014,13 @@ function initCsfSchoolPlacement(init: InitDb) {
 		header: 'School Placement',
 		name: 'node_obj_cm_csf_school_placement_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
 function initCsfDocument(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_client_atlantic_impact',
-
+		ownerSys: 'sys_client_atlantic_impact',
 		codeCardinality: 'list',
 		name: 'data_obj_cm_csf_document_list',
 		header: 'Documents',
@@ -2105,11 +2094,10 @@ function initCsfDocument(init: InitDb) {
 
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
-
 		codeCardinality: 'detail',
 		header: 'Document',
 		name: 'data_obj_cm_csf_document_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		queryRiders: [
 			{
 				codeQueryAction: 'customFunction',
@@ -2134,7 +2122,7 @@ function initCsfDocument(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['programCm', 'name'],
+				linkColumns: ['objAttrCmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -2279,7 +2267,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Documents',
 		name: 'node_obj_cm_csf_document_list',
 		orderDefine: 50,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -2289,7 +2277,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Document',
 		name: 'node_obj_cm_csf_document_detail',
 		orderDefine: 10,
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
@@ -2301,7 +2289,7 @@ function initCsfDocument(init: InitDb) {
 // 	isHideRowManager: false,
 // 	name: 'node_obj_cm_csf_job_placement_list',
 // 	orderDefine: 30,
-// 	owner: 'sys_client_atlantic_impact',
+// 	ownerSys: 'sys_client_atlantic_impact',
 //
 // })
 // init.addTrans('sysNodeObj', {
@@ -2312,6 +2300,6 @@ function initCsfDocument(init: InitDb) {
 // 	isHideRowManager: false,
 // 	name: 'node_obj_cm_csf_job_placement_detail',
 // 	orderDefine: 10,
-// 	owner: 'sys_client_atlantic_impact',
+// 	ownerSys: 'sys_client_atlantic_impact',
 //
 // })

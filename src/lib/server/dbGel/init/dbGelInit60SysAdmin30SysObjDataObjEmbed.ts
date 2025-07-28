@@ -1,4 +1,6 @@
 import { InitDb } from '$server/dbGel/init/types.init'
+import { DataObjType } from '$utils/types'
+
 export function initAdminSysObjDataObjEmbed(init: InitDb) {
 	initDataObjFielEmbedListConfig(init)
 	initDataObjFieldEmbedListEdit(init)
@@ -9,10 +11,10 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Embed List Configs',
 		name: 'data_obj_sys_admin_data_obj_field_embed_list_config_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjFieldEmbedListConfig' }],
 		fields: [
 			{
@@ -70,7 +72,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Embed List Config',
 		name: 'data_obj_sys_admin_data_obj_field_embed_list_config_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjFieldEmbedListConfig' }],
 		fields: [
 			{
@@ -80,7 +82,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -132,7 +134,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDefine: 80,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'embed'
+				fieldListItemsParmValue: DataObjType.doEmbed
 			},
 			{
 				codeFieldElement: 'select',
@@ -142,7 +144,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 				orderDefine: 90,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'embed'
+				fieldListItemsParmValue: DataObjType.doEmbed
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -226,7 +228,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 		header: 'Embed List Configs',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_config_list',
 		orderDefine: 90,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -237,7 +239,7 @@ function initDataObjFielEmbedListConfig(init: InitDb) {
 		header: 'Config',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_config_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -245,10 +247,10 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Embed List Edit',
 		name: 'data_obj_sys_admin_data_obj_field_embed_list_edit_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjFieldEmbedListEdit' }],
 		fields: [
 			{
@@ -285,7 +287,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Embed List Edit',
 		name: 'data_obj_sys_admin_data_obj_field_embed_list_edit_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjFieldEmbedListEdit' }],
 		fields: [
 			{
@@ -295,7 +297,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -324,7 +326,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 				orderDefine: 50,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'embed'
+				fieldListItemsParmValue: DataObjType.doEmbed
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -408,7 +410,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 		header: 'Embed List Edits',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_edit_list',
 		orderDefine: 100,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -419,7 +421,7 @@ function initDataObjFieldEmbedListEdit(init: InitDb) {
 		header: 'Config',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_edit_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -427,10 +429,10 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Embed List Selects',
 		name: 'data_obj_sys_admin_data_obj_field_embed_list_select_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjFieldEmbedListSelect' }],
 		fields: [
 			{
@@ -475,7 +477,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Embed List Select',
 		name: 'data_obj_sys_admin_data_obj_field_embed_list_select_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjFieldEmbedListSelect' }],
 		fields: [
 			{
@@ -485,7 +487,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -544,7 +546,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 				orderDefine: 90,
 				indexTable: 0,
 				fieldListItems: 'il_sys_data_obj_by_type',
-				fieldListItemsParmValue: 'embed'
+				fieldListItemsParmValue: DataObjType.doEmbed
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -628,7 +630,7 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 		header: 'Embed List Selects',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_select_list',
 		orderDefine: 110,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -639,6 +641,6 @@ function initDataObjFieldEmbedListSelect(init: InitDb) {
 		header: 'Config',
 		name: 'node_obj_sys_admin_data_obj_field_embed_list_select_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

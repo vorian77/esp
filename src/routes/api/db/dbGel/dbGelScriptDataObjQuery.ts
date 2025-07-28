@@ -1,5 +1,5 @@
 import {
-	FieldEmbed,
+	FieldEmbedList,
 	FieldEmbedListConfig,
 	FieldEmbedListEdit,
 	FieldEmbedListSelect
@@ -19,19 +19,23 @@ import {
 	DataRows,
 	debug,
 	MethodResult,
+	ParmsValuesFormList,
 	ParmsValuesType,
 	RawDataObj,
+	RawFieldEmbedList,
 	required,
-	strRequired
+	strRequired,
+	valueOrDefault
 } from '$utils/types'
 import {
+	Token,
 	TokenApiDbDataObjSource,
 	TokenApiId,
 	TokenApiQueryData,
 	TokenApiQueryType,
 	TokenApiQueryTypeAlt
 } from '$utils/types.token'
-import { FieldEmbedType } from '$utils/utils.sys'
+import { FieldEmbedListType } from '$utils/utils.sys'
 import { ScriptGroupGelDataObj } from '$routes/api/db/dbGel/dbGelScriptDataObj'
 import { error } from '@sveltejs/kit'
 
@@ -51,12 +55,6 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 		if (result.error) return result
 		let rawDataObj: RawDataObj = required(result.data, clazz, 'rawDataObj')
 		this.queryData.dataTab.rawDataObj = rawDataObj
-
-		// set default queryOwnerSys
-		this.queryData.dataTab?.parms.valueSetIfMissing(
-			ParmsValuesType.queryOwnerSys,
-			rawDataObj.ownerId
-		)
 
 		if (this.queryType === TokenApiQueryType.retrieve && this.queryData?.node?.codeQueryTypeAlt) {
 			if (this.queryData.node.codeQueryTypeAlt === TokenApiQueryTypeAlt.retrieveThenPreset) {
@@ -89,10 +87,7 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 	async queryBuildScripts(query: GelQuery, queryType: TokenApiQueryType): Promise<MethodResult> {
 		const clazz = 'queryBuildScripts'
 		let result: MethodResult
-		let fieldEmbedData: DataObjData = this.queryData.dataTab.getFieldEmbedData(
-			query.fieldEmbed,
-			this.evalExprContext
-		)
+		let fieldEmbedData: DataObjData = this.queryData.dataTab.getFieldEmbedData(query.fieldEmbed)
 
 		switch (queryType) {
 			case TokenApiQueryType.preset:
@@ -123,10 +118,7 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 				break
 
 			case TokenApiQueryType.save:
-				fieldEmbedData.fields = this.queryData.dataTab.getFieldEmbedFields(
-					query.fieldEmbed,
-					this.evalExprContext
-				)
+				fieldEmbedData.fields = this.queryData.dataTab.getFieldEmbedFields(query.fieldEmbed)
 				query.dataFormatSetUpdate({
 					evalExprContext: this.evalExprContext,
 					propsSelect: query.rawDataObj.rawPropsSelect,
@@ -150,51 +142,52 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 		// embedded fields
 		const EMBED_QUERY_TYPES = [TokenApiQueryType.retrieve, TokenApiQueryType.save]
 		if (EMBED_QUERY_TYPES.includes(queryType)) {
-			const recordStatus = fieldEmbedData.rowsRetrieved.getDetailRowStatus()
+			const recordStatusSave = query.queryData.dataTab.rowsSave.getDetailRowStatus()
 			for (let i = 0; i < fieldEmbedData.fields.length; i++) {
-				const fieldEmbed: FieldEmbed = fieldEmbedData.fields[i]
-				let queryTypeEmbed = queryType
-				if (queryType === TokenApiQueryType.retrieve || recordStatus === DataRecordStatus.preset) {
-					queryTypeEmbed = TokenApiQueryType.retrieve
-				} else {
-					// save && !preset > assume retrieve
-					queryTypeEmbed = TokenApiQueryType.retrieve
-					switch (fieldEmbed.embedType) {
-						case FieldEmbedType.listConfig:
-							queryTypeEmbed = TokenApiQueryType.save
-							break
+				const fieldEmbedList: FieldEmbedList = fieldEmbedData.fields[i]
 
-						case FieldEmbedType.listEdit:
-							queryTypeEmbed = TokenApiQueryType.save
-							break
+				let queryTypeEmbed =
+					queryType === TokenApiQueryType.save &&
+					fieldEmbedList.embedData.parmsFormList.valueGet(ParmsValuesType.isEmbedSaveWithParent)
+						? TokenApiQueryType.save
+						: TokenApiQueryType.retrieve
+				if (
+					queryTypeEmbed === TokenApiQueryType.save &&
+					!(fieldEmbedList.embedData.rawDataObj instanceof RawDataObj)
+				) {
+					// preserve save data
+					const parmsFormList: ParmsValuesFormList = fieldEmbedList.embedData.parmsFormList
+					const rowsSave: DataRows = fieldEmbedList.embedData.rowsSave
 
-						case FieldEmbedType.listSelect:
-							if (fieldEmbed.data.parms.hasOwn('listIdsSelected')) {
-								queryTypeEmbed = TokenApiQueryType.save
-							}
-							break
+					// create new embedData
+					let result: MethodResult = await FieldEmbedList.getEmbedData(
+						fieldEmbedList._parentPropRaw,
+						this.queryData,
+						getRawDataObj
+					)
+					if (result.error) return result
+					let embedData: DataObjData = result.data
+					fieldEmbedList.embedData = embedData
 
-						default:
-							return new MethodResult({
-								error: {
-									file: FILENAME,
-									function: `processDataObjExecute.${clazz}`,
-									msg: `No case defined for field.embedType: ${fieldEmbed.embedType}`
-								}
-							})
-					}
+					// restore parms and rowsSave
+					embedData.parmsFormList = parmsFormList
+					embedData.rowsSave = rowsSave
+
+					debug('ScriptGroupGelDataObjQuery', 'queryBuildScripts.save', {
+						recordStatusSave,
+						rawDataObj: fieldEmbedList.embedData.rawDataObj
+					})
 				}
-
 				let fieldQueryData = TokenApiQueryData.load(this.queryData)
-				fieldQueryData.dataTab = fieldEmbed.data
+				fieldQueryData.dataTab = fieldEmbedList.embedData
 
 				await this.queryBuildScripts(
 					new GelQuery({
-						evalExprContext: `${this.evalExprContext} - fieldEmbed: ${fieldEmbed.embedFieldNameRaw}`,
-						fieldEmbed,
+						evalExprContext: `${this.evalExprContext} - embedList: ${fieldEmbedList.embedData.rawDataObj?.name}`,
+						fieldEmbed: fieldEmbedList,
 						queryData: fieldQueryData,
 						querySource: this.querySource,
-						rawDataObj: fieldEmbed.data.rawDataObj
+						rawDataObj: fieldEmbedList.embedData.rawDataObj
 					}),
 					queryTypeEmbed
 				)
@@ -203,40 +196,82 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 		return new MethodResult()
 	}
 
-	async queryBuildScriptsFields(
-		fieldEmbedData: DataObjData,
-		query: GelQuery
-	): Promise<MethodResult> {
+	async queryBuildScriptsFields(data: DataObjData, query: GelQuery): Promise<MethodResult> {
 		let result: MethodResult = await this.queryBuildScriptsFieldsEmbeded(
 			query.rawDataObj,
 			this.queryData
 		)
 		if (result.error) return result
-		fieldEmbedData.fields = result.data
+		data.fields = result.data
 		return new MethodResult()
+	}
+
+	async queryBuildScriptsFieldsEmbeded(rawDataObjParent: RawDataObj, queryData: TokenApiQueryData) {
+		let fields: FieldEmbedList[] = []
+		const parentDataObjId = strRequired(rawDataObjParent.id, FILENAME, 'rawDataObjParent.id')
+		for (let i = 0; i < rawDataObjParent.rawPropsDisplay.length; i++) {
+			const propRaw = rawDataObjParent.rawPropsDisplay[i]
+			let FieldEmbedListClass: any = undefined
+			if (propRaw.rawFieldEmbedList && propRaw.fieldEmbedListType) {
+				if (propRaw.fieldEmbedListType === FieldEmbedListType.listConfig) {
+					FieldEmbedListClass = FieldEmbedListConfig
+				} else if (propRaw.fieldEmbedListType === FieldEmbedListType.listEdit) {
+					FieldEmbedListClass = FieldEmbedListEdit
+				} else if (propRaw.fieldEmbedListType === FieldEmbedListType.listSelect) {
+					FieldEmbedListClass = FieldEmbedListSelect
+				}
+
+				if (FieldEmbedListClass) {
+					let result: MethodResult = await FieldEmbedList.getEmbedData(
+						propRaw,
+						queryData,
+						getRawDataObj
+					)
+					if (result.error) return result
+					const embedData: DataObjData = result.data
+
+					// create field
+					const fieldEmbed: FieldEmbedList = new FieldEmbedListClass(
+						parentDataObjId,
+						propRaw,
+						embedData
+					)
+
+					fields.push(fieldEmbed)
+				}
+			}
+		}
+		return new MethodResult(fields)
 	}
 
 	async queryExeFormat(script: Script, rawDataList: RawDataList): Promise<MethodResult> {
 		const clazz = 'ScriptGroupDo.queryExeFormat'
 		const query: GelQuery = required(script.query, clazz, 'script.query')
-		const scriptData: DataObjData = this.queryData.dataTab.getFieldEmbedData(
-			query.fieldEmbed,
-			this.evalExprContext
-		)
+		const scriptData: DataObjData = this.queryData.dataTab.getFieldEmbedData(query.fieldEmbed)
 		let dataRows: DataRows = new DataRows()
 		let result: MethodResult
 
+		if (scriptData?.rawDataObj?.codeCardinality === DataObjCardinality.list) {
+			scriptData.parmsFormList = new ParmsValuesFormList({
+				listIds: scriptData.rowsRetrieved.getRowsIds()
+			})
+		}
+
 		switch (script.exePost) {
 			case ScriptExePost.dataItemsFields:
-				this.queryExeFormatDataSet(this.queryData.dataTab, query.fieldEmbed?.embedFieldNameRaw, [
-					[DataObjDataPropName.itemsField, rawDataList.length > 0 ? rawDataList[0] : []]
-				])
+				this.queryExeFormatDataSet(
+					this.queryData.dataTab,
+					query.fieldEmbed?.rawFieldEmbedList.embedPropName,
+					[[DataObjDataPropName.itemsField, rawDataList.length > 0 ? rawDataList[0] : []]]
+				)
 				break
 
 			case ScriptExePost.dataItemsSelect:
-				this.queryExeFormatDataSet(this.queryData.dataTab, query.fieldEmbed?.embedFieldNameRaw, [
-					[DataObjDataPropName.itemsSelect, rawDataList.length > 0 ? rawDataList : []]
-				])
+				this.queryExeFormatDataSet(
+					this.queryData.dataTab,
+					query.fieldEmbed?.rawFieldEmbedList.embedPropName,
+					[[DataObjDataPropName.itemsSelect, rawDataList.length > 0 ? rawDataList : []]]
+				)
 				break
 
 			case ScriptExePost.formatData:
@@ -245,15 +280,16 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 				dataRows = result.data
 
 				let dataRow: DataRow = new DataRow(DataRecordStatus.unknown, {})
-				this.queryExeFormatDataSet(this.queryData.dataTab, query.fieldEmbed?.embedFieldNameRaw, [
-					[DataObjDataPropName.rawDataObj, scriptData.rawDataObj],
-					[DataObjDataPropName.rowsRetrieved, dataRows]
-				])
+				this.queryExeFormatDataSet(
+					this.queryData.dataTab,
+					query.fieldEmbed?.rawFieldEmbedList.embedPropName,
+					[
+						[DataObjDataPropName.rawDataObj, scriptData.rawDataObj],
+						[DataObjDataPropName.rowsRetrieved, dataRows]
+					]
+				)
 
-				if (
-					query.rawDataObj.codeCardinality === DataObjCardinality.detail &&
-					this.queryType !== TokenApiQueryType.retrieve
-				) {
+				if (query.rawDataObj.codeCardinality === DataObjCardinality.detail) {
 					dataRow = required(dataRows.getDetailRow(), clazz, 'dataRow')
 
 					// set embedded parent tree records
@@ -280,10 +316,14 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 				if (result.error) return result
 				dataRows = result.data
 
-				this.queryExeFormatDataSet(this.queryData.dataTab, query.fieldEmbed?.embedFieldNameRaw, [
-					[DataObjDataPropName.rawDataObj, scriptData.rawDataObj],
-					[DataObjDataPropName.rowsRetrieved, dataRows]
-				])
+				this.queryExeFormatDataSet(
+					this.queryData.dataTab,
+					query.fieldEmbed?.rawFieldEmbedList.embedPropName,
+					[
+						[DataObjDataPropName.rawDataObj, scriptData.rawDataObj],
+						[DataObjDataPropName.rowsRetrieved, dataRows]
+					]
+				)
 				break
 
 			default:
@@ -300,18 +340,18 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 
 	queryExeFormatDataSet(
 		dataReturn: DataObjData,
-		fieldEmbedNameRaw: string | undefined,
+		fieldEmbedName: string | undefined,
 		dataItems: [DataObjDataPropName, any][]
 	) {
-		if (fieldEmbedNameRaw) {
+		if (fieldEmbedName) {
 			const idx = dataReturn.fields.findIndex(
-				(field) => field.embedFieldNameRaw === fieldEmbedNameRaw
+				(field) => field.rawFieldEmbedList.embedPropName === fieldEmbedName
 			)
 			if (idx >= 0) {
 				dataItems.forEach((item: [DataObjDataPropName, any]) => {
 					const propName = item[0]
 					const newData = item[1]
-					dataReturn.fields[idx].data.setValue(propName, newData)
+					dataReturn.fields[idx].embedData.setValue(propName, newData)
 				})
 			}
 		} else {
@@ -322,41 +362,11 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 			})
 		}
 	}
-
-	async queryBuildScriptsFieldsEmbeded(rawDataObjParent: RawDataObj, queryData: TokenApiQueryData) {
-		const clazz = `${FILENAME}.ScriptGroupGelDataObjQuery.queryBuildScriptsFieldsEmbeded`
-		let fields: FieldEmbed[] = []
-
-		for (let i = 0; i < rawDataObjParent.rawPropsDisplay.length; i++) {
-			const propRaw = rawDataObjParent.rawPropsDisplay[i]
-			let FieldEmbedClass: any = undefined
-			if (propRaw.fieldEmbedListConfig) {
-				FieldEmbedClass = FieldEmbedListConfig
-			} else if (propRaw.fieldEmbedListEdit) {
-				FieldEmbedClass = FieldEmbedListEdit
-			} else if (propRaw.fieldEmbedListSelect) {
-				FieldEmbedClass = FieldEmbedListSelect
-			}
-			if (FieldEmbedClass) {
-				let result: MethodResult = await FieldEmbed.initFieldServer(
-					rawDataObjParent,
-					queryData,
-					propRaw,
-					FieldEmbedClass,
-					getRawDataObj
-				)
-				if (result.error) return result
-				const fieldEmbed: FieldEmbed = result.data
-				fields.push(fieldEmbed)
-			}
-		}
-		return new MethodResult(fields)
-	}
 }
 
 async function getRawDataObj(
 	dataObjSource: TokenApiDbDataObjSource,
-	queryData: TokenApiQueryData
+	queryData: TokenApiQueryData | undefined
 ): Promise<MethodResult> {
 	let dbDataObj: any
 	let rawDataObj: RawDataObj
@@ -369,15 +379,18 @@ async function getRawDataObj(
 
 	// build rawDataObj
 	rawDataObj = new RawDataObj(dbDataObj)
-	let result: MethodResult = await getRawDataObjDynamic(
-		rawDataObj.processType,
-		queryData,
-		rawDataObj,
-		dataObjSource
-	)
-	if (result.error) return result
-	rawDataObj = result.data as RawDataObj
 
+	// add dynamic processing to rawDataObj
+	if (queryData && rawDataObj.processType) {
+		let result: MethodResult = await getRawDataObjDynamic(
+			rawDataObj.processType,
+			queryData,
+			rawDataObj,
+			dataObjSource
+		)
+		if (result.error) return result
+		rawDataObj = result.data as RawDataObj
+	}
 	// update rawDataObj
 	if (rawDataObj) {
 		if (Object.hasOwn(dataObjSource.replacements, 'exprFilter')) {

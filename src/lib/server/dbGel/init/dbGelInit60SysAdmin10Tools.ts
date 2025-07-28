@@ -9,8 +9,7 @@ export function initAdminSysTools(init: InitDb) {
 
 function initError(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_system',
-
+		ownerSys: 'sys_system',
 		codeCardinality: 'list',
 		name: 'data_obj_sys_admin_tool_error_list',
 		header: 'Errors',
@@ -20,7 +19,7 @@ function initError(init: InitDb) {
 			{ columnParent: 'person', indexParent: 1, index: 2, table: 'SysPerson' }
 		],
 		exprFilter: 'none',
-		actionGroup: 'doag_list_edit_download',
+		actionGroup: 'doag_list_error',
 		fields: [
 			{
 				columnName: 'id',
@@ -131,8 +130,7 @@ function initError(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_system',
-
+		ownerSys: 'sys_system',
 		codeCardinality: 'detail',
 		name: 'data_obj_sys_admin_tool_error_detail',
 		header: 'Error',
@@ -185,23 +183,53 @@ function initError(init: InitDb) {
 				columnName: 'errStatus',
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 65,
-				orderDefine: 65
+				orderDisplay: 70,
+				orderDefine: 70
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'errCode',
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70
+				orderDisplay: 80,
+				orderDefine: 80
 			},
 			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80
+				orderDisplay: 90,
+				orderDefine: 90
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'errFile',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 110,
+				orderDefine: 110
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'errFunction',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 120,
+				orderDefine: 120
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 130,
+				orderDefine: 130
 			},
 			{
 				codeAccess: 'readOnly',
@@ -209,8 +237,8 @@ function initError(init: InitDb) {
 				columnName: 'errMsgSystem',
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 90,
-				orderDefine: 90
+				orderDisplay: 140,
+				orderDefine: 140
 			},
 			{
 				codeAccess: 'readOnly',
@@ -218,15 +246,15 @@ function initError(init: InitDb) {
 				columnName: 'errMsgUser',
 				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100
+				orderDisplay: 150,
+				orderDefine: 150
 			},
 			{
 				codeFieldElement: 'tagSection',
 				columnName: 'custom_section_end',
 				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110
+				orderDisplay: 160,
+				orderDefine: 160
 			},
 			{
 				codeFieldElement: 'tagSection',
@@ -304,12 +332,12 @@ function initError(init: InitDb) {
 		children: [{ node: 'node_obj_sys_admin_tool_error_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'nodeAppObj',
+		codeNodeType: 'nodeApp',
 		dataObj: 'data_obj_sys_admin_tool_error_list',
 		header: 'Errors',
 		name: 'node_obj_sys_admin_tool_error_list',
 		orderDefine: 1000,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -319,7 +347,7 @@ function initError(init: InitDb) {
 		header: 'Error',
 		name: 'node_obj_sys_admin_tool_error_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -331,7 +359,7 @@ function initFieldListSelectSystem(init: InitDb) {
 		exprFilter: 'none',
 		header: 'Select System(s)',
 		name: 'dofls_admin_system',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
@@ -365,7 +393,7 @@ function initFieldListSelectSystem(init: InitDb) {
 		btnLabelComplete: 'Select System(s)',
 		dataObjList: 'dofls_admin_system',
 		name: 'fels_admin_system',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -377,7 +405,7 @@ function initFieldListSelectUserAll(init: InitDb) {
 		exprFilter: 'none',
 		header: 'Select Users',
 		name: 'dofls_sys_user',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [
 			{ index: 0, table: 'SysUser' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -391,8 +419,7 @@ function initFieldListSelectUserAll(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'owner',
-				headerAlt: 'Organization',
+				columnName: 'ownerOrg',
 				indexTable: 0,
 				isDisplayable: true,
 				linkColumns: ['header'],
@@ -436,6 +463,6 @@ function initFieldListSelectUserAll(init: InitDb) {
 		btnLabelComplete: 'Select User(s)',
 		dataObjList: 'dofls_sys_user',
 		name: 'fels_sys_user',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

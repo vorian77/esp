@@ -31,7 +31,7 @@ export async function addColumn(data: any) {
 			minLength: e.optional(e.int16),
 			minValue: e.optional(e.float64),
 			name: e.str,
-			owner: e.str,
+			ownerSys: e.str,
 			pattern: e.optional(e.str),
 			patternMsg: e.optional(e.str),
 			patternReplacement: e.optional(e.str),
@@ -45,7 +45,7 @@ export async function addColumn(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_db.SysColumn, {
-				owner: e.sys_core.getSystemPrime(p.owner),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				classProps: p.classProps,
 				codeAlignment: e.select(
 					e.sys_core.getCode(

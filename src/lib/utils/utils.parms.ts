@@ -1,6 +1,7 @@
 import type { DataRecord } from '$utils/types'
 import { DataRow, valueOrDefault } from '$utils/types'
 import { error } from '@sveltejs/kit'
+import { list } from '@vercel/blob'
 
 export class ParmsValues {
 	data: DataRecord = {}
@@ -24,10 +25,6 @@ export class ParmsValues {
 			this.data[key] = value
 		})
 	}
-	updateList(listIds: string[], recordId: string, recordIdAlt: string = '') {
-		this.valueSet(ParmsValuesType.listIds, listIds)
-		this.valueSet(ParmsValuesType.listRecordIdCurrent, recordIdAlt ? recordIdAlt : recordId)
-	}
 	valueExists(key: string) {
 		return Object.hasOwn(this.data, key)
 	}
@@ -50,9 +47,26 @@ export class ParmsValues {
 	valueSetIfMissing(key: string, value: any) {
 		if (!this.valueExists(key)) this.valueSet(key, value)
 	}
-	valueSetList(key: string, dataRows?: DataRow[]) {
-		this.valueSet(key, dataRows ? dataRows.map((row) => row.record.id) : [])
+}
+
+export class ParmsValuesFormList extends ParmsValues {
+	constructor(data: ParmsValuesFormListType) {
+		data.listIds = data.listIds || []
+		data.listIdsSelected = data.listIdsSelected || []
+		data.listRecordIdCurrent = data.listRecordIdCurrent || ''
+		super(data)
 	}
+	static load(parms: ParmsValues) {
+		const newParms = new ParmsValuesFormList(parms.data as ParmsValuesFormListType)
+		if (parms) newParms.data = parms.data
+		return newParms
+	}
+}
+
+export type ParmsValuesFormListType = {
+	listIds?: string[]
+	listIdsSelected?: string[]
+	listRecordIdCurrent?: string
 }
 
 export enum ParmsValuesType {
@@ -62,6 +76,8 @@ export enum ParmsValuesType {
 	embedFieldName = 'embedFieldName',
 	embedParentId = 'embedParentId',
 	fieldListItems = 'fieldListItems',
+	isEmbedSaveWithParent = 'isEmbedSaveWithParent',
+	isModalCloseOnEmptyList = 'isModalCloseOnEmptyList',
 	isMultiSelect = 'isMultiSelect',
 	itemsParmValue = 'itemsParmValue',
 	itemsParmValueList = 'itemsParmValueList',
@@ -70,11 +86,10 @@ export enum ParmsValuesType {
 	listRecordIdCurrent = 'listRecordIdCurrent',
 	listSortModel = 'listSortModel',
 	parentRecordId = 'parentRecordId',
-	queryOwnerOrg = 'queryOwnerOrg',
-	queryOwnerSys = 'queryOwnerSys',
 	rowData = 'rowData',
-	selectLabel = 'selectLabel',
 	selectListId = 'selectListId',
 	selectListRecord = 'selectListRecord',
+	systemIdQuerySource = 'systemIdQuerySource',
+	tokenAppModalSelect = 'tokenAppModalSelect',
 	treeAncestorValue = 'treeAncestorValue'
 }

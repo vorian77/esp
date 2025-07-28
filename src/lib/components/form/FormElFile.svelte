@@ -38,7 +38,7 @@
 
 	let field: FieldFile = $derived(parms.field)
 	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
-	$inspect('FormElFile', { fieldValue })
+
 	$effect(() => {
 		urlCurrent = fieldValue && fieldValue.url ? fieldValue.url : urlCurrent
 		urlOld = fieldValue && fieldValue?.url ? fieldValue.url : urlOld
@@ -55,7 +55,7 @@
 		isSourceStorage = false
 		urlCurrent = undefined
 		if (urlOld) {
-			await dm.setFieldValue(
+			await dm.setFieldValueAsync(
 				parms.dataObjId,
 				parms.row,
 				parms.field,
@@ -64,7 +64,7 @@
 				})
 			)
 		} else {
-			await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, null)
+			await dm.setFieldValueAsync(parms.dataObjId, parms.row, parms.field, null)
 		}
 	}
 
@@ -77,7 +77,7 @@
 			if (result.error) return result
 			const key = result.data
 
-			await dm.setFieldValue(
+			await dm.setFieldValueAsync(
 				parms.dataObjId,
 				parms.row,
 				parms.field,
@@ -165,8 +165,8 @@
 			bind:this={elInput}
 			class="input"
 			hidden={true}
-			id={field.colDO.propNamDBe}
-			name={field.colDO.propName}
+			id={field.getValueKey()}
+			name={field.getValueKey()}
 			onchange={() => onNew(event)}
 			type="file"
 		/>

@@ -1,7 +1,6 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 
 const exprCustomObjRecipients = `[IS sys_user::SysUser].person.fullName ?? [IS sys_core::SysObjAttr].header ?? [IS sys_core::SysObjAttr].name`
-const exprCustomSender = `.person.fullName`
 
 const exprMsgsFromMe = `(SELECT DETACHED sys_core::SysMsg FILTER <user,uuid,id> = .sender.id)`
 const exprMsgsToMe = `((SELECT DETACHED sys_core::SysMsg FILTER <user,uuid,id> IN .recipients.id) UNION (SELECT DETACHED sys_core::SysMsg FILTER <attrsAction,oaa_sys_msg_receive,object> IN .recipients.id))`
@@ -38,7 +37,7 @@ function initUserAction(init: InitDb) {
 			codeDestinationType: 'nodeBack',
 			nodeDestination: 'node_obj_task_sys_msg_root_list_all'
 		},
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysUserAction', {
@@ -53,7 +52,7 @@ function initUserAction(init: InitDb) {
 			codeDestinationType: 'nodeBack',
 			nodeDestination: 'node_obj_task_sys_msg_root_list_all'
 		},
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysUserAction', {
@@ -63,7 +62,7 @@ function initUserAction(init: InitDb) {
 		exprShowExpr: `SELECT <tree,uuid,id> IN ${exprMsgsToMe}.id`,
 		header: 'Reply',
 		name: 'ua_sys_msg_thread_detail_view_reply',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysUserAction', {
@@ -78,7 +77,7 @@ function initUserAction(init: InitDb) {
 			codeDestinationType: 'nodeBack',
 			nodeDestination: 'node_obj_task_sys_msg_root_list_all'
 		},
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysUserAction', {
 		codeAction: 'doExpr',
@@ -92,7 +91,7 @@ function initUserAction(init: InitDb) {
 			codeDestinationType: 'nodeBack',
 			nodeDestination: 'node_obj_task_sys_msg_root_list_all'
 		},
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysUserAction', {
@@ -102,7 +101,7 @@ function initUserAction(init: InitDb) {
 		exprShowExpr: `SELECT count(${exprMsgsThread} INTERSECT ${exprMsgsToMe}) > 0`,
 		header: 'Reply',
 		name: 'ua_sys_msg_thread_list_reply',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -123,7 +122,7 @@ function initActionGroup(init: InitDb) {
 			}
 		],
 		name: 'doag_detail_sys_msg_root_send',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysDataObjActionGroup', {
@@ -142,7 +141,7 @@ function initActionGroup(init: InitDb) {
 			}
 		],
 		name: 'doag_detail_sys_msg_thread_detail_reply',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysDataObjActionGroup', {
@@ -164,7 +163,7 @@ function initActionGroup(init: InitDb) {
 			}
 		],
 		name: 'doag_detail_sys_msg_thread_detail_view',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysDataObjActionGroup', {
@@ -187,7 +186,7 @@ function initActionGroup(init: InitDb) {
 			}
 		],
 		name: 'doag_list_sys_msg_thread',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -210,7 +209,7 @@ function initDataObj(init: InitDb) {
 		],
 		header: 'My Messages',
 		name: 'data_obj_task_sys_msg_root_list_all',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -268,11 +267,11 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
-				exprCustom: exprCustomSender,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
+				linkColumns: ['person', 'fullName'],
 				linkTable: 'SysObjAttr'
 			},
 			{
@@ -302,7 +301,7 @@ function initDataObj(init: InitDb) {
 		header: 'New Message',
 		isFormReadonly: true,
 		name: 'data_obj_sys_msg_root_detail_new',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		queryRiders: [
 			{
 				codeQueryAction: 'appDestination',
@@ -326,13 +325,13 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
-				exprCustom: exprCustomSender,
 				exprPreset: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				exprSave: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
+				linkColumns: ['person', 'fullName'],
 				linkTable: 'SysObjAttr'
 			},
 			{
@@ -368,7 +367,7 @@ function initDataObj(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Reply',
 		name: 'data_obj_sys_msg_thread_detail_reply',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		queryRiders: [
 			{
 				codeQueryAction: 'dbExpr',
@@ -416,21 +415,21 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
-				exprCustom: exprCustomSender,
 				exprPreset: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				exprSave: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
+				linkColumns: ['person', 'fullName'],
 				linkTable: 'SysObjAttr'
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'recipients',
 				exprCustom: exprCustomObjRecipients,
-				exprPreset: `(SELECT sys_core::SysObjAttr FILTER .id = <tree,uuid,treeAncestorValue.index.0.sender.data>)`,
-				exprSave: `(SELECT sys_core::SysObjAttr FILTER .id = <tree,uuid,treeAncestorValue.index.0.sender.data>)`,
+				exprPreset: `(SELECT sys_core::ObjRoot FILTER .id = <tree,uuid,treeAncestorValue.index.0.sender.data>)`,
+				exprSave: `(SELECT sys_core::ObjRoot FILTER .id = <tree,uuid,treeAncestorValue.index.0.sender.data>)`,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 50,
@@ -472,7 +471,7 @@ function initDataObj(init: InitDb) {
 		header: 'View',
 		isFormReadonly: true,
 		name: 'data_obj_sys_msg_thread_detail_view',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -522,13 +521,13 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
-				exprCustom: exprCustomSender,
 				exprPreset: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
 				exprSave: `(SELECT default::SysPerson FILTER .id = <user,uuid,personId>)`,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
+				linkColumns: ['person', 'fullName'],
 				linkTable: 'SysObjAttr'
 			},
 			{
@@ -585,7 +584,7 @@ function initDataObj(init: InitDb) {
 		],
 		header: 'Message Thread',
 		name: 'data_obj_sys_msg_thread_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysMsg' }],
 		fields: [
 			{
@@ -633,11 +632,11 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'sender',
-				exprCustom: exprCustomSender,
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
+				linkColumns: ['person', 'fullName'],
 				linkTable: 'SysObjAttr'
 			},
 			{
@@ -679,11 +678,10 @@ function initNodeObj(init: InitDb) {
 		],
 		codeComponent: 'FormList',
 		codeNodeType: 'nodeTask',
-		codeQueryOwnerType: 'queryOwnerTypeSystemUser',
 		dataObj: 'data_obj_task_sys_msg_root_list_all',
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_task_sys_msg_root_list_all',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -695,7 +693,7 @@ function initNodeObj(init: InitDb) {
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_sys_msg_root_detail_new',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -711,7 +709,7 @@ function initNodeObj(init: InitDb) {
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_sys_msg_thread_list',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -723,7 +721,7 @@ function initNodeObj(init: InitDb) {
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_sys_msg_thread_detail_reply',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -736,7 +734,7 @@ function initNodeObj(init: InitDb) {
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_sys_msg_thread_detail_view',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -749,7 +747,7 @@ function initTask(init: InitDb) {
 		isGlobalResource: true,
 		name: 'task_sys_msg_all',
 		nodeObj: 'node_obj_task_sys_msg_root_list_all',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysTask', {
@@ -767,6 +765,6 @@ function initTask(init: InitDb) {
 		isGlobalResource: true,
 		name: 'task_sys_msg_unread',
 		nodeObj: 'node_obj_task_sys_msg_root_list_all',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

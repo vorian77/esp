@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import {
 	arrayOfClass,
 	booleanOrDefault,
@@ -25,7 +25,7 @@ import {
 	TokenApiQueryData,
 	TokenApiQueryType
 } from '$utils/types.token'
-import { FieldEmbedType } from '$utils/utils.sys'
+import { FieldEmbedListType } from '$utils/utils.sys'
 import {
 	QueryRiderRaw,
 	QueryRiders,
@@ -46,7 +46,7 @@ export async function clientQueryExpr(
 
 	if (!sourceQueryData) sourceQueryData = {}
 	if (sm) {
-		sourceQueryData.dataTree = sm.getStateData(TokenApiQueryType.retrieve)
+		sourceQueryData.dataTree = sm.getStateData()
 		sourceQueryData.user = sm.user
 		if (sourceQueryData.dataTab) {
 			sourceQueryData.dataTab.parms.update(sm.parmsState.valueGetAll())
@@ -66,6 +66,7 @@ export async function clientQueryExpr(
 }
 
 export class DbTable {
+	_rawObj: any
 	hasMgmt: boolean
 	mod: string
 	name: string
@@ -77,6 +78,7 @@ export class DbTable {
 		this.mod = strRequired(obj.mod, clazz, 'module')
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.object = this.mod + '::' + this.name
+		this._rawObj = obj
 	}
 }
 export class DbTableQuery {
@@ -135,6 +137,9 @@ export class DbTableQueryGroup {
 	getTable(indexTable: number) {
 		const tableQuery = this.getTableQuery(indexTable)
 		return tableQuery ? tableQuery.table : undefined
+	}
+	getTableRoot() {
+		return this.getTable(0)
 	}
 	getTableQuery(indexTable: number) {
 		return this.tables.find((table) => table.index === indexTable)
@@ -223,6 +228,7 @@ export class QuerySource {
 	dataObjSource?: TokenApiDbDataObjSource
 	exprCustom?: string
 	exprFilter?: string
+	exprFilterExcept?: string
 	exprSort?: string
 	exprWith?: string
 	exprUnions: string[] = []
@@ -238,6 +244,7 @@ export class QuerySource {
 		this.dataObjSource = new TokenApiDbDataObjSource(obj.dataObjSource)
 		this.exprCustom = obj.exprCustom
 		this.exprFilter = obj.exprFilter
+		this.exprFilterExcept = obj.exprFilterExcept
 		this.exprSort = obj.exprSort
 		this.exprWith = obj.exprWith
 		this.exprUnions = obj.exprUnions
@@ -261,6 +268,7 @@ export class QuerySourceRaw {
 	dataObjSource?: TokenApiDbDataObjSource
 	exprCustom?: string
 	exprFilter?: string
+	exprFilterExcept?: string
 	exprSort?: string
 	exprWith?: string
 	exprUnions: string[]
@@ -277,6 +285,7 @@ export class QuerySourceRaw {
 		this.dataObjSource = obj.dataObjSource
 		this.exprCustom = obj.exprCustom
 		this.exprFilter = obj.exprFilter
+		this.exprFilterExcept = obj.exprFilterExcept
 		this.exprSort = obj.exprSort
 		this.exprWith = obj.exprWith
 		this.exprUnions = getArray(obj.exprUnions)
@@ -312,7 +321,7 @@ export class QuerySourceParent {
 export class QuerySourceParentRaw {
 	_columnName: string
 	_columnIsMultiSelect: boolean
-	_embedType?: FieldEmbedType
+	_embedType?: FieldEmbedListType
 	_filterExpr?: string
 	_table: DbTable
 	constructor(obj: QuerySourceParentRaw) {
@@ -329,8 +338,8 @@ export class QuerySourceParentRaw {
 			clazz,
 			'_embedType',
 			'DataObjEmbedType',
-			FieldEmbedType,
-			FieldEmbedType.listEdit
+			FieldEmbedListType,
+			FieldEmbedListType.listEdit
 		)
 		this._filterExpr = strOptional(obj._filterExpr, clazz, '_filterExpr')
 		this._table = new DbTable(obj._table)

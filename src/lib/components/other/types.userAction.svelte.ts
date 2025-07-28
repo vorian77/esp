@@ -1,10 +1,5 @@
 import { getNodeByNodeName } from '$comps/app/types.app.svelte'
-import {
-	State,
-	StateNavLayout,
-	StateParms,
-	StateTriggerToken
-} from '$comps/app/types.appState.svelte'
+import { State, StateNavLayout, StateParms, StateTriggerToken } from '$comps/app/types.state.svelte'
 import {
 	CodeAction,
 	CodeActionClass,
@@ -14,18 +9,18 @@ import {
 	DataObjAction,
 	DataObjSaveMode,
 	type DataRecord,
-	getDataRecordValueKey,
 	getDbExprRaw,
 	memberOfEnum,
 	MethodResult,
 	Node,
+	recordValueGet,
 	required,
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
 import { EvalParser, EvalParserToken, type EvalParserTokenParm } from '$utils/utils.evalParser'
 import { Field, FieldClassType } from '$comps/form/field.svelte'
-import { FieldEmbed } from '$comps/form/fieldEmbed'
+import { FieldEmbedList } from '$comps/form/fieldEmbed'
 import {
 	NavDestinationType,
 	Token,
@@ -122,7 +117,7 @@ export class EvalParserUserAction extends EvalParser {
 			case UserActionTrigger.recordOwner:
 				dataRecord = dm.getRecordsDisplayRow(this.dataObj.raw.id, 0)
 				if (dataRecord && this.sm.user) {
-					const recordOwner = getDataRecordValueKey(dataRecord, 'recordOwner')
+					const recordOwner = recordValueGet(dataRecord, 'recordOwner')
 					isTriggered = !recordOwner ? true : recordOwner === this.sm.user.personId
 				} else {
 					isTriggered = false
@@ -387,6 +382,7 @@ export async function userActionNavDestination(
 		} else {
 			const result: MethodResult = await sm.app.navDestination(sm, token)
 			if (result.error) return result
+			const dataTree = sm.app.getDataTree()
 			await userActionStateChangeTab(sm, parmsAction)
 		}
 	}
@@ -404,14 +400,13 @@ export async function userActionStateChangeTab(sm: State, parmsAction: TokenAppS
 	if (currTab) {
 		navLayoutParms.node = currTab.node
 		if (currTab.dataObj) {
-			sm.dm.init(currTab.dataObj)
-			currTab.dataObj.fields
-				.filter((f) => f.classType === FieldClassType.embed)
-				.forEach((f: Field) => {
-					if (f instanceof FieldEmbed) {
-						sm.dm.nodeAdd(required(f.dataObjEmbed, clazz, 'f.dataObjEmbed'))
-					}
-				})
+			await sm.dm.init(currTab.dataObj)
+			const embedFields = currTab.dataObj.fields.filter((f) => f.classType === FieldClassType.embed)
+			for (const f of embedFields) {
+				if (f instanceof FieldEmbedList) {
+					await sm.dm.nodeAdd(required(f.embedDataObj, clazz, 'f.dataObjEmbed'))
+				}
+			}
 			navLayoutParms.dataObjId = currTab.dataObj.raw.id
 		}
 		parmsAction.updateStateParmsData({

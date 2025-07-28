@@ -1,4 +1,5 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
+
 import {
 	DataObj,
 	DataObjCardinality,
@@ -10,10 +11,14 @@ import {
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
 import {
 	type DataRecord,
+	EligibilityType,
 	getArray,
 	getValueData,
-	isPlainObject,
+	ParmsValuesFormList,
 	PropDataType,
+	recordValueGet,
+	recordValueGetData,
+	recordValueSet,
 	ValidityError,
 	valueHasChanged
 } from '$utils/types'
@@ -75,9 +80,9 @@ export class DataManager {
 			let data = nodeRoot.dataObj.data
 			data.rowsSave = nodeRoot.getDataSave()
 			data.fields.forEach((field) => {
-				const dataObjId = field.dataObjIdEmbed
+				const dataObjId = field.rawFieldEmbedList.embedDataObjId
 				const node = this.getNode(dataObjId)
-				if (node) field.data.rowsSave = node.getDataSave()
+				if (node) field.embedData.rowsSave = node.getDataSave()
 			})
 			return data
 		} else {
@@ -99,6 +104,10 @@ export class DataManager {
 		return this.getNode(dataObjId)?.getFieldValue(row, field)
 	}
 
+	getValue(dataObjId: string, row: number, propName: string): any {
+		return this.getNode(dataObjId)?.valueGet(row, propName)
+	}
+
 	getNode(dataObjId: string): DataManagerNode | undefined {
 		return dataObjId ? this.nodes.get(dataObjId) : undefined
 	}
@@ -108,7 +117,7 @@ export class DataManager {
 		return mapEntry ? mapEntry[1] : undefined
 	}
 	getRecordId(dataObjId: string, row: number): string | undefined {
-		return this.getNode(dataObjId)?.recordsDisplay[row].id
+		return this.getNode(dataObjId)?.valueGet(row, 'id')
 	}
 
 	getRecordsDisplayList(dataObjId: string): DataRecord[] {
@@ -123,9 +132,9 @@ export class DataManager {
 		return this.getNode(dataObjId)?.recordsDisplay[row]
 	}
 
-	init(dataObj: DataObj) {
+	async init(dataObj: DataObj) {
 		this.reset()
-		this.nodeAdd(dataObj)
+		await this.nodeAdd(dataObj)
 	}
 
 	isStatusChanged() {
@@ -139,8 +148,11 @@ export class DataManager {
 		return this.getNode(dataObjId)?.objStatus.isValid()
 	}
 
-	nodeAdd(dataObj: DataObj) {
-		this.nodes.set(dataObj.raw.id, new DataManagerNode(this.sm, dataObj))
+	async nodeAdd(dataObj: DataObj) {
+		const newNode = new DataManagerNode(this.sm, dataObj)
+		await newNode.initDataObjItemChanges()
+		newNode.initDataObjValidate()
+		this.nodes.set(dataObj.raw.id, newNode)
 		this.setStatus()
 	}
 	reset() {
@@ -151,12 +163,37 @@ export class DataManager {
 	resetStatus() {
 		this.objStatus.reset()
 	}
-	async setFieldValue(dataObjId: string, row: number, field: Field, value: any) {
+	async setFieldValueAsync(
+		dataObjId: string,
+		row: number,
+		field: Field,
+		value: any,
+		fCallback?: Function
+	) {
 		const node = this.getNode(dataObjId)
 		if (node) {
-			await node.setFieldVal(row, field, value)
-			this.setStatus()
-			this.fieldChange = !this.fieldChange
+			await node.setFieldValAsync(row, field, value)
+			this.setFieldValuePost(node, row, field, fCallback)
+			if (fCallback) await fCallback(this, dataObjId, row, field)
+		}
+	}
+
+	setFieldValuePost(node: DataManagerNode, row: number, field: Field, fCallback?: Function) {
+		this.setStatus()
+		this.fieldChange = !this.fieldChange
+	}
+
+	setFieldValueSync(
+		dataObjId: string,
+		row: number,
+		field: Field,
+		value: any,
+		fCallback?: Function
+	) {
+		const node = this.getNode(dataObjId)
+		if (node) {
+			node.setFieldValProcess(row, field, value)
+			this.setFieldValuePost(node, row, field, fCallback)
 		}
 	}
 
@@ -180,8 +217,6 @@ export class DataManagerNode {
 	constructor(sm: State, dataObj: DataObj) {
 		this.dataObj = this.initDataObjData(dataObj)
 		this.sm = sm
-		this.initDataObjItemChanges()
-		this.initDataObjValidate()
 	}
 
 	filterList(filter: string) {
@@ -190,19 +225,17 @@ export class DataManagerNode {
 		const records: DataRecord[] = [...this.recordsDisplay, ...this.recordsHidden]
 		records.filter((record) => {
 			this.dataObj.fields.forEach((field) => {
-				const propName = field.colDO.propName
+				const key = field.getValueKey()
 				const dataType = field.colDO.colDB.codeDataType
+				const value = recordValueGet(record, key)
 				switch (dataType) {
 					case PropDataType.bool:
-						if (
-							(record[propName] && search === 'true') ||
-							(!record[propName] && search === 'false')
-						)
+						if ((value && search === 'true') || (!value && search === 'false'))
 							filteredIds.push(record.id)
 						break
 
 					case PropDataType.date:
-						const date = new Date(record[propName])
+						const date = new Date(value)
 						const filterDate = new Date(filter)
 						if (date.toDateString() === filterDate.toDateString()) {
 							filteredIds.push(record.id)
@@ -212,13 +245,13 @@ export class DataManagerNode {
 					case PropDataType.int16:
 					case PropDataType.int32:
 					case PropDataType.int64:
-						if (record[propName].toString().includes(search)) {
+						if (value.toString().includes(search)) {
 							filteredIds.push(record.id)
 						}
 						break
 
 					case PropDataType.str:
-						if (record[propName].toString().toLowerCase().includes(search)) {
+						if (value.toString().toLowerCase().includes(search)) {
 							filteredIds.push(record.id)
 						}
 						break
@@ -255,13 +288,11 @@ export class DataManagerNode {
 
 	getFieldValidity(row: number, field: Field) {
 		return row < this.recordsDisplay.length
-			? this.fieldsValidity.valueGet(this.recordsDisplay[row].id, field.colDO.propName)
+			? this.fieldsValidity.valueGet(this.valueGet(row, 'id'), field.getValueKey())
 			: undefined
 	}
 	getFieldValue(row: number, field: Field) {
-		return row < this.recordsDisplay.length
-			? this.recordsDisplay[row][field.colDO.propName]
-			: undefined
+		return this.valueGet(row, field.getValueKey())
 	}
 
 	initDataObjData(dataObj: DataObj) {
@@ -300,8 +331,7 @@ export class DataManagerNode {
 		// set link items
 		const linkItemFields = dataObj.fields.filter((f) => f.colDO.linkItemsSource)
 		linkItemFields.forEach((f) => {
-			const propName = f.colDO.propName
-			const items = dataObj.data.itemsFields[propName]
+			const items = recordValueGet(dataObj.data.itemsFields, f.getValueKey())
 			if (items) f.linkItems?.setRawItems(getArray(items))
 		})
 
@@ -311,12 +341,12 @@ export class DataManagerNode {
 		return dataObj
 	}
 
-	initDataObjItemChanges() {
-		this.recordsDisplay.forEach((record, row) => {
-			this.dataObj.fields.forEach((f) => {
-				this.setFieldItemChanged(row, f, getValueData(record[f.colDO.propName]))
-			})
-		})
+	async initDataObjItemChanges() {
+		for (const [row, record] of this.recordsDisplay.entries()) {
+			for (const f of this.dataObj.fields) {
+				await this.setFieldItemChanged(row, f, recordValueGetData(record, f.getValueKey()))
+			}
+		}
 	}
 
 	initDataObjValidate() {
@@ -330,7 +360,7 @@ export class DataManagerNode {
 			this.dataObj.fields.forEach((f) => {
 				const v: Validation = f.validate(
 					row,
-					getValueData(record[f.colDO.propName]),
+					recordValueGetData(record, f.getValueKey()),
 					validityErrorLevel
 				)
 				if (v.status === ValidationStatus.invalid) {
@@ -344,58 +374,74 @@ export class DataManagerNode {
 		})
 	}
 
-	async setFieldVal(row: number, field: Field, value: any) {
-		const recordId = this.recordsDisplay[row].id
-		const fieldName = field.colDO.propName
-		this.recordsDisplay[row][fieldName] = value
-		this.setFieldValChanged(row, recordId, fieldName, value)
-		this.setFieldValValidity(row, recordId, field)
+	async setFieldItemChanged(row: number, field: Field, value: any) {
+		return await field.processItemChanges(this.sm, row, value, this)
+	}
+
+	async setFieldValAsync(row: number, field: Field, value: any) {
+		this.setFieldValProcess(row, field, value)
+		await this.setFieldItemChanged(row, field, value)
+	}
+
+	setFieldValProcess(row: number, field: Field, value: any) {
+		const recordId = this.valueGet(row, 'id')
+		const key = field.getValueKey()
+		this.valueSet(row, key, value)
+		this.setFieldValDataChanged(recordId, key, value)
+		this.setFieldValDataValidity(row, recordId, field)
 		if (this.dataObj.raw.listReorderColumn && this.dataObj.embedField) {
 			const reorderColumn = this.dataObj.raw.listReorderColumn
 			this.recordsDisplay.sort((a, b) => a[reorderColumn] - b[reorderColumn])
 		}
-		await this.setFieldItemChanged(row, field, value)
 	}
-	setFieldValChanged(row: number, recordId: string, fieldName: string, value: any) {
-		const valueInitial = this.dataObj.data.rowsRetrieved.getRowValueById(recordId, fieldName)
+
+	setFieldValDataChanged(recordId: string, key: string, value: any) {
+		const valueInitial = this.dataObj.data.rowsRetrieved.getRowValueById(recordId, key)
 		const hasChanged = valueHasChanged(valueInitial, value)
 		if (hasChanged) {
-			this.fieldsChanged.valueSet(recordId, fieldName, hasChanged)
+			this.fieldsChanged.valueSet(recordId, key, hasChanged)
 		} else {
-			this.fieldsChanged.valueDrop(recordId, fieldName)
+			this.fieldsChanged.valueDrop(recordId, key)
 		}
 	}
 
-	setFieldValRaw(field: Field, value: any): any {
-		return field.linkItems ? field.linkItems.getValueRaw(value) : value
-	}
-
-	setFieldValValidity(row: number, recordId: string, field: Field) {
+	setFieldValDataValidity(row: number, recordId: string, field: Field) {
 		const v: Validation = field.validate(
 			row,
-			this.recordsDisplay[row][field.colDO.propName],
+			this.valueGet(row, field.getValueKey()),
 			ValidityErrorLevel.warning
 		)
 		v.validityFields.forEach(({ fieldName, validity }) => {
 			this.fieldsValidity.valueSet(recordId, fieldName, validity)
 		})
 	}
-	async setFieldItemChanged(row: number, field: Field, value: any) {
-		return await field.processItemChanges(this.sm, row, value, this)
-	}
 
 	setStatus() {
 		let newStatus = new DataObjStatus()
-
 		this.recordsDisplay.forEach((r) => {
 			const recordId = r.id
 			this.dataObj.fields.forEach((f) => {
 				if (
 					([FieldClassType.parm, FieldClassType.regular].includes(f.classType) &&
 						[FieldAccess.optional, FieldAccess.required].includes(f.fieldAccess)) ||
-					f.colDO.propName === this.dataObj.raw.listReorderColumn
+					f.getValueKey() === this.dataObj.raw.listReorderColumn
 				) {
-					newStatus.update(this.setStatusField(recordId, f))
+					if (f.colDO.rawfieldEmbedDetailEligibility) {
+						const elig = f.colDO.rawfieldEmbedDetailEligibility
+						elig.nodes.forEach((node) => {
+							if (
+								[EligibilityType.eligibilityExpr, EligibilityType.eligibilityManual].includes(
+									node.codeEligibilityType
+								)
+							) {
+								// const propName = elig.getPropName(node.id)
+								const propName = 'nodeValues.' + node.name + '.valueBoolean'
+								newStatus.update(this.setStatusField(recordId, propName))
+							}
+						})
+					} else {
+						newStatus.update(this.setStatusField(recordId, f.getPropName()))
+					}
 				}
 			})
 		})
@@ -403,19 +449,29 @@ export class DataManagerNode {
 		return newStatus
 	}
 
-	setStatusField(recordId: string, field: Field) {
+	setStatusField(recordId: string, key: string) {
 		const newStatus = new DataObjStatus()
-		const propName = field.colDO.propName
 
 		// changed
-		const isChanged = this.fieldsChanged.valueExists(recordId, propName) || false
+		const isChanged = this.fieldsChanged.valueExists(recordId, key) || false
 		newStatus.setChanged(isChanged)
 
 		// valid
-		const validity = this.fieldsValidity.valueGet(recordId, propName)
+		const validity = this.fieldsValidity.valueGet(recordId, key)
 		newStatus.setValid(validity === undefined || validity.error === ValidityError.none)
 
 		return newStatus
+	}
+
+	valueGet(row: number, key: string) {
+		return row < this.recordsDisplay.length
+			? recordValueGet(this.recordsDisplay[row], key)
+			: undefined
+	}
+	valueSet(row: number, key: string, value: any) {
+		if (row < this.recordsDisplay.length) {
+			this.recordsDisplay[row] = recordValueSet(this.recordsDisplay[row], key, value)
+		}
 	}
 }
 
@@ -433,26 +489,24 @@ export class FieldValue {
 export class FieldValues {
 	values: FieldValue[] = $state([])
 	constructor() {}
-	valueDrop(recordId: string, fieldName: string) {
-		this.values = this.values.filter((v) => v.recordId !== recordId || v.fieldName !== fieldName)
+	valueDrop(recordId: string, key: string) {
+		this.values = this.values.filter((v) => v.recordId !== recordId || v.fieldName !== key)
 	}
-	valueExists(recordId: string, fieldName: string) {
+	valueExists(recordId: string, key: string) {
 		const isExists =
-			this.values.findIndex((v) => v.recordId === recordId && v.fieldName === fieldName) > -1
+			this.values.findIndex((v) => v.recordId === recordId && v.fieldName === key) > -1
 		return isExists
 	}
-	valueGet(recordId: string, fieldName: string) {
-		const value = this.values.find((v) => v.recordId === recordId && v.fieldName === fieldName)
+	valueGet(recordId: string, key: string) {
+		const value = this.values.find((v) => v.recordId === recordId && v.fieldName === key)
 		return value ? value.value : undefined
 	}
-	valueSet(recordId: string, fieldName: string, value: any) {
-		const valueIdx = this.values.findIndex(
-			(v) => v.recordId === recordId && v.fieldName === fieldName
-		)
+	valueSet(recordId: string, key: string, value: any) {
+		const valueIdx = this.values.findIndex((v) => v.recordId === recordId && v.fieldName === key)
 		if (valueIdx > -1) {
 			this.values[valueIdx].value = value
 		} else {
-			this.values.push(new FieldValue(recordId, fieldName, value))
+			this.values.push(new FieldValue(recordId, key, value))
 		}
 	}
 }

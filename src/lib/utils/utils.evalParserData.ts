@@ -1,8 +1,8 @@
 import {
 	debug,
 	type DataRecord,
-	getDataRecordValueKey,
 	MethodResult,
+	recordValueGet,
 	required,
 	strRequired,
 	valueOrDefault
@@ -58,7 +58,7 @@ class EvalParserData extends EvalParser {
 					}
 				})
 		}
-		value = getDataRecordValueKey(this.data, key)
+		value = recordValueGet(this.data, key)
 		if (dataType === 'str') value = `'${value}'`
 		return new MethodResult(value)
 	}

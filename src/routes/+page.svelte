@@ -7,7 +7,7 @@
 	import { MethodResult } from '$utils/types'
 	import { TokenApiQueryData } from '$utils/types.token'
 	import { ArrowRight } from 'lucide-svelte'
-	import { State } from '$comps/app/types.appState.svelte'
+	import { State } from '$comps/app/types.state.svelte'
 
 	const FILENAME = '$routes/+page.svelte'
 
@@ -29,7 +29,7 @@
 			email := '${prospectEmail}',
 			modifiedBy := sys_user::getRootUser(),
 			name := '${prospectEmail}',
-			owner := sys_core::getSystemPrime('sys_client_app_factory')}`
+			ownerSystem := sys_core::getSystemPrime('sys_client_app_factory')}`
 
 			const evalExprContext = 'processEmail'
 			let result: MethodResult = await clientQueryExpr(evalExprContext, exprCustom)

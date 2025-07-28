@@ -8,16 +8,13 @@ export function initContentCrm(init: InitDb) {
 
 function initClient(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_app_crm',
+		ownerSys: 'sys_app_crm',
 
 		codeCardinality: 'list',
 		name: 'data_obj_app_crm_client_list',
 		header: 'Clients',
 		tables: [{ index: 0, table: 'CrmClient' }],
-		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
-		// exprFilter:
-		// 	'.owner in (SELECT sys_user::SysUser FILTER .name = <user,str,name>).userTypes.owner',
-
+		exprFilter: '.ownerSys.id IN <user,uuidlist,systemIds>',
 		actionGroup: 'doag_list',
 		fields: [
 			{
@@ -47,7 +44,7 @@ function initClient(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_app_crm',
+		ownerSys: 'sys_app_crm',
 
 		codeCardinality: 'detail',
 		name: 'data_obj_app_crm_client_detail',
@@ -62,13 +59,13 @@ function initClient(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem Filter .id = (<parms,uuid,queryOwnerSys>))`,
+				codeFieldElement: 'selectOwnerSys',
+				columnName: 'ownerSys',
 				orderDefine: 20,
+				orderDisplay: 20,
 				indexTable: 0,
-				isDisplayable: false,
-				isExcludeUpdate: true,
-				linkTable: 'SysSystem'
+				isDisplayable: true,
+				fieldListItems: 'il_sys_system_by_user'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -177,12 +174,12 @@ function initClient(init: InitDb) {
 		children: [{ node: 'node_obj_app_crm_client_detail', order: 10 }],
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
-		codeNodeType: 'nodeAppObj',
+		codeNodeType: 'nodeApp',
 		dataObj: 'data_obj_app_crm_client_list',
 		header: 'Clients',
 		name: 'node_obj_app_crm_client_list',
 		orderDefine: 10,
-		owner: 'sys_app_crm'
+		ownerSys: 'sys_app_crm'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -192,6 +189,6 @@ function initClient(init: InitDb) {
 		header: 'Client',
 		name: 'node_obj_app_crm_client_detail',
 		orderDefine: 10,
-		owner: 'sys_app_crm'
+		ownerSys: 'sys_app_crm'
 	})
 }

@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import { FieldEmbedShell } from '$comps/form/fieldEmbed'
 import action from '$enhance/actions/actionsClassCustom'
 import { QuerySourceRaw, QuerySourceType } from '$lib/queryClient/types.queryClient'
@@ -23,6 +23,8 @@ import {
 	NodeIdActionAlt,
 	NodeObjComponent,
 	NodeType,
+	ParmsValuesFormList,
+	type ParmsValuesFormListType,
 	ParmsValuesType,
 	required,
 	strRequired,
@@ -54,6 +56,7 @@ export class App {
 	appTrees: AppTree[] = $state([])
 	appTreesIdxCurrent: number = -1
 	info: string = ''
+	systemIdQuerySource: string = ''
 	constructor(obj: DataRecord = {}) {
 		this.isMultiTree = booleanOrFalse(obj.isMultiTree)
 	}
@@ -147,6 +150,7 @@ export class App {
 		})
 		let result = await newTab.queryDataObj(sm, token.queryType)
 		if (result.error) return result
+		newTab.dataObj?.parmsFormListSet(ParmsValuesType.listIdsSelected, token.listIdsSelected)
 		this.treeAdd([newTab])
 		return result
 	}
@@ -191,10 +195,10 @@ export class App {
 		return this.appTreesIdxCurrent >= 0 ? this.appTrees[this.appTreesIdxCurrent] : undefined
 	}
 
-	getDataTree(queryType: TokenApiQueryType) {
+	getDataTree(isDataTreePresetOffset: boolean = false): TokenApiQueryDataTree {
 		const tree = this.getCurrTree()
 		if (tree) {
-			return tree.getDataTree(queryType)
+			return tree.getDataTree(isDataTreePresetOffset)
 		} else {
 			return new TokenApiQueryDataTree()
 		}
@@ -267,6 +271,10 @@ export class App {
 		})
 	}
 
+	setSystemQuerySource(systemId?: string) {
+		this.systemIdQuerySource = systemId || ''
+	}
+
 	setTreeIdxCurrent(treeIdx: number) {
 		this.appTreesIdxCurrent = treeIdx
 		return treeIdx
@@ -281,6 +289,7 @@ export class App {
 		this.setTreeIdxCurrent(this.appTrees.push(newTree) - 1)
 	}
 	async treeNodeAdd(sm: State, token: TokenAppNode): Promise<MethodResult> {
+		this.setSystemQuerySource(token.node.systemIdQuerySource)
 		let newTab = new AppLevelNode({
 			...this.getLevelNodeParmsNode(token.node)
 		})
@@ -303,7 +312,7 @@ export class App {
 			if (currTab) {
 				currTab.update(dataObj)
 				if (queryType === TokenApiQueryType.preset) {
-					currTab?.dataObj?.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
+					currTab.parmsFormListSet(ParmsValuesType.listRecordIdCurrent, '')
 				}
 
 				// build tabs
@@ -509,7 +518,7 @@ export class AppLevelNode {
 	getCurrRecordValue(key: string) {
 		if (this.dataObj) {
 			if (this.dataObj.raw.codeCardinality === DataObjCardinality.list) {
-				const idCurrent = this.dataObj?.data.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
+				const idCurrent = this.parmsFormListGet(ParmsValuesType.listRecordIdCurrent)
 				return this.dataObj.data.rowsRetrieved.getRowValueById(idCurrent, key)
 			} else {
 				return this.dataObj.data.rowsRetrieved.getDetailRecordValue(key)
@@ -526,7 +535,7 @@ export class AppLevelNode {
 	listCrumbLabelId() {
 		let id = ''
 		const crumbFieldNames: string[] = this.dataObj?.raw.crumbs ? this.dataObj?.raw.crumbs : []
-		const idCurrent = this.dataObj?.data.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
+		const idCurrent = this.parmsFormListGet(ParmsValuesType.listRecordIdCurrent)
 		if (crumbFieldNames.length > 0 && idCurrent) {
 			const dataRow = this.listGetDataRow()
 			if (dataRow) {
@@ -543,7 +552,7 @@ export class AppLevelNode {
 	}
 
 	listGetDataRow() {
-		const idCurrent = this.dataObj?.data.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
+		const idCurrent = this.parmsFormListGet(ParmsValuesType.listRecordIdCurrent)
 		const dataRows = this.listGetDataRows()
 		const val =
 			idCurrent && dataRows
@@ -555,7 +564,7 @@ export class AppLevelNode {
 	}
 	listGetDataRows(): DataRow[] | [] {
 		let dataRows: DataRow[] = []
-		const idList: string[] = this.dataObj?.data.parms.valueGet(ParmsValuesType.listIds)
+		const idList: string[] = this.parmsFormListGet(ParmsValuesType.listIds)
 		if (idList) {
 			idList.forEach((id) => {
 				const dataRow = this.dataObj?.data.rowsRetrieved
@@ -568,7 +577,7 @@ export class AppLevelNode {
 	}
 
 	listGetRowIdx() {
-		const idCurrent = this.dataObj?.data.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
+		const idCurrent = this.parmsFormListGet(ParmsValuesType.listRecordIdCurrent)
 		const dataRows = this.listGetDataRows()
 		return idCurrent && dataRows
 			? dataRows.findIndex((dataRow) => {
@@ -583,7 +592,7 @@ export class AppLevelNode {
 		)
 	}
 	listRowStatus() {
-		const idCurrent = this.dataObj?.data.parms.valueGet(ParmsValuesType.listRecordIdCurrent)
+		const idCurrent = this.parmsFormListGet(ParmsValuesType.listRecordIdCurrent)
 		const listDataRows = this.listGetDataRows()
 		if (listDataRows && idCurrent) {
 			const rowIdx = listDataRows.findIndex((dataRow) => {
@@ -632,10 +641,7 @@ export class AppLevelNode {
 						msg: `No case defined for AppRowActionType: ${rowAction}`
 					})
 			}
-			this.dataObj?.data.parms.valueSet(
-				ParmsValuesType.listRecordIdCurrent,
-				listDataRows[rowIdx].record.id
-			)
+			this.parmsFormListSet(ParmsValuesType.listRecordIdCurrent, listDataRows[rowIdx].record.id)
 			return new MethodResult(rowIdx)
 		}
 		return new MethodResult({
@@ -655,6 +661,26 @@ export class AppLevelNode {
 		return await getNodeByNodeId(this.node.getNodeIdAction(actionType, NodeIdActionAlt.self))
 	}
 
+	parmsFormList(): any {
+		return this?.dataObj?.parmsFormList()
+	}
+
+	parmsFormListInit(parms: ParmsValuesFormListType) {
+		this?.dataObj?.parmsFormListInit(parms)
+	}
+
+	parmsFormListGet(parm: ParmsValuesType): any {
+		return this?.dataObj?.parmsFormListGet(parm)
+	}
+
+	parmsFormListSet(parm: ParmsValuesType, value: any) {
+		this.dataObj?.parmsFormListSet(parm, value)
+	}
+
+	parmsFormListUpdate(listIds: string[], recordId: string, recordIdAlt: string = '') {
+		this.parmsFormListInit({ listIds, listRecordIdCurrent: recordIdAlt ? recordIdAlt : recordId })
+	}
+
 	async query(sm: State, queryType: TokenApiQueryType): Promise<MethodResult> {
 		let result: MethodResult = this.queryPre(sm, queryType)
 		if (result.error) return result
@@ -671,21 +697,14 @@ export class AppLevelNode {
 		const queryData: TokenApiQueryData = result.data
 
 		// success
-		result = DataObjData.load(queryData.dataTab)
-		if (result.error) return result
-		let dataObjData: DataObjData = result.data as DataObjData
+		let dataObjData: DataObjData = queryData.dataTab
 
-		result = await DataObj.init(sm, dataObjData, queryType)
+		result = await DataObj.load(sm, dataObjData, queryType)
 		if (result.error) return result
 		this.dataObj = result.data as DataObj
 
-		if (this.dataObj && this.dataObj.raw.codeCardinality === DataObjCardinality.list) {
-			this.dataObj.data.parms.reset()
-			this.dataObj.data.parms.valueSetList(
-				ParmsValuesType.listIds,
-				this.dataObj.data.rowsRetrieved.getRows()
-			)
-		}
+		sm.triggerSave()
+
 		return new MethodResult()
 	}
 
@@ -722,8 +741,13 @@ export class AppLevelNode {
 	}
 
 	queryPreData(sm: State, queryType: TokenApiQueryType, evalExprContext: string) {
-		const dataTree: TokenApiQueryDataTree = sm.getStateData(queryType)
+		const isDataTreePresetOffset =
+			queryType === TokenApiQueryType.preset &&
+			this.node.codeComponent === NodeObjComponent.FormDetail
+		const dataTree: TokenApiQueryDataTree = sm.getStateData(isDataTreePresetOffset)
 		const rawQuerySource = this.dataObj ? this.dataObj.raw.rawQuerySource : new QuerySourceRaw({})
+
+		sm.parmsState.valueSet(ParmsValuesType.systemIdQuerySource, sm.app.systemIdQuerySource)
 
 		return new MethodResult(
 			new TokenApiQuerySource({
@@ -762,6 +786,7 @@ export class AppLevelNode {
 				})
 			}
 		}
+
 		return dataObjSource
 	}
 
@@ -859,10 +884,10 @@ export class AppTree {
 		if (currLevel) return currLevel.getCurrTab()
 	}
 
-	getDataTree(queryType: TokenApiQueryType) {
+	getDataTree(isDataTreePresetOffset: boolean = false): TokenApiQueryDataTree {
 		const clazz = 'getDataTree'
 		let dataTree = new TokenApiQueryDataTree()
-		const offset = queryType === TokenApiQueryType.preset ? 1 : 0
+		const offset = isDataTreePresetOffset ? 1 : 0
 		const levelCnt = this.levels.length - offset
 
 		for (let i = 0; i < this.levels.length - offset; i++) {
@@ -1099,9 +1124,9 @@ export class AppTree {
 								result = await this.levelPop(sm)
 								if (result.error) return result
 							} else {
-								tabParent.dataObj.data.parms.valueSet(
+								tabParent.parmsFormListSet(
 									ParmsValuesType.listRecordIdCurrent,
-									tabParent.dataObj.data.parms.valueGet(ParmsValuesType.listIds)[0]
+									tabParent.parmsFormListGet(ParmsValuesType.listIds)[0]
 								)
 								result = await this.tabQueryDetailDataRow(
 									sm,
@@ -1115,7 +1140,7 @@ export class AppTree {
 							let recordIdOld = currTab.dataObj.data.rowsRetrieved.getDetailRecordValue('id')
 							let recordIdNew = ''
 
-							let listIds: string[] = tabParent.dataObj.data.parms.valueGet(ParmsValuesType.listIds)
+							let listIds: string[] = tabParent.parmsFormListGet(ParmsValuesType.listIds)
 							if (listIds.length > 1) {
 								let idx = listIds.findIndex((id: string) => id === recordIdOld)
 								idx = idx === 0 ? 1 : idx - 1
@@ -1131,11 +1156,12 @@ export class AppTree {
 								result = await tabParent.queryDataObj(sm, TokenApiQueryType.retrieve)
 								if (result.error) return result
 
-								tabParent.dataObj.data.parms.updateList(
+								tabParent.parmsFormListUpdate(
 									listIds.filter((id) => id !== recordIdOld),
 									recordIdOld,
 									recordIdNew
 								)
+
 								result = await this.tabQueryDetailDataRow(
 									sm,
 									TokenApiQueryType.retrieve,
@@ -1177,30 +1203,21 @@ export class AppTree {
 						// if parent list exists, retrieve
 						tabParent = this.getCurrTabParentTab()
 						if (tabParent?.dataObj?.raw.codeCardinality === DataObjCardinality.list) {
-							const detailIdCurrent = currTab.dataObj.data.rowsRetrieved.getDetailRecordValue('id')
-							let listIdsPre: string[] = tabParent.dataObj.data.parms.valueGet(
-								ParmsValuesType.listIds
-							)
+							let listIdsPre: string[] = tabParent.parmsFormListGet(ParmsValuesType.listIds)
 							result = await tabParent.queryDataObj(sm, TokenApiQueryType.retrieve)
 							if (result.error) return result
 
-							// set list record id
-							tabParent.dataObj.data.parms.valueSet(
-								ParmsValuesType.listRecordIdCurrent,
-								detailIdCurrent
-							)
-
-							// set list ids
-							let listIdsPost: string[] = []
-							tabParent.dataObj.data.parms
-								.valueGet(ParmsValuesType.listIds)
-								.forEach((id: string) => {
-									if (listIdsPre.includes(id) || id === detailIdCurrent) listIdsPost.push(id)
-								})
-							tabParent.dataObj.data.parms.updateList(
-								listIdsPost,
-								currTab.dataObj.data.rowsRetrieved.getDetailRecordValue('id')
-							)
+							// update parmsFormList
+							const detailIdCurrent = currTab.dataObj.data.rowsRetrieved.getDetailRecordValue('id')
+							const listIdsRetrieved = tabParent.parmsFormListGet(ParmsValuesType.listIds)
+							const listIdsPost: string[] = listIdsRetrieved.reduce((acc: string[], id: string) => {
+								if (listIdsPre.includes(id) || id === detailIdCurrent) acc.push(id)
+								return acc
+							}, [])
+							tabParent.parmsFormListInit({
+								listIds: listIdsPost,
+								listRecordIdCurrent: detailIdCurrent
+							})
 						}
 						break
 
@@ -1325,14 +1342,13 @@ export class AppTree {
 			const tabNew = new AppLevelNode({
 				node: new NodeEmbed({
 					_codeComponent: NodeObjComponent.FormList,
-					label: dataObjEmbed.raw.header,
-					_ownerId: ''
+					_ownerId: '',
+					label: dataObjEmbed.raw.header
 				}),
 				dataObj: dataObjEmbed,
 				isVirtual: true,
 				treeIdx
 			})
-
 			this.levels[idxLevelCurr].tabIdxRestoreVal = this.levels[idxLevelCurr].tabIdxCurrent
 			this.levels[idxLevelCurr].tabIdxSet(idxTabNew)
 			this.levels[idxLevelCurr].tabs.push(tabNew)

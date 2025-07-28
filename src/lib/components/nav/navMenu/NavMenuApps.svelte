@@ -13,6 +13,8 @@
 
 <div>
 	{#if data}
+		<hr class="my-2" />
+
 		<NavMenuHeader navMenu={data.navMenu} header={'My Apps'} />
 
 		{#each data.apps as app}

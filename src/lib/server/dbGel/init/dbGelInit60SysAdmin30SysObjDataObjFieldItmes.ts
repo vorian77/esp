@@ -7,10 +7,10 @@ function initDataObjFieldListItems(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Field List Items',
 		name: 'data_obj_sys_admin_data_obj_field_list_items_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjFieldListItems' }],
 		fields: [
 			{
@@ -99,7 +99,7 @@ function initDataObjFieldListItems(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Field List Item',
 		name: 'data_obj_sys_admin_data_obj_field_list_items_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjFieldListItems' }],
 		fields: [
 			{
@@ -109,7 +109,7 @@ function initDataObjFieldListItems(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -168,13 +168,12 @@ function initDataObjFieldListItems(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'props',
-				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100,
 				fieldEmbedListConfig: 'flec_data_obj_field_list_items_prop',
 				indexTable: 0,
-				linkColumns: ['key'],
-				linkTable: 'SysDataObjFieldListItemsProp'
+				isDisplayable: true,
+				linkTable: 'SysDataObjFieldListItemsProp',
+				orderDefine: 100,
+				orderDisplay: 100
 			},
 			{
 				codeAccess: 'optional',
@@ -304,7 +303,7 @@ function initDataObjFieldListItems(init: InitDb) {
 		header: 'Field List Items',
 		name: 'node_obj_sys_admin_data_obj_field_list_items_list',
 		orderDefine: 120,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -315,6 +314,6 @@ function initDataObjFieldListItems(init: InitDb) {
 		header: 'Item',
 		name: 'node_obj_sys_admin_data_obj_field_list_items_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

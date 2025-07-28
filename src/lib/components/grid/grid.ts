@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import {
 	type ColDef,
 	type GridApi,
@@ -122,10 +122,6 @@ export const columnTypes = {
 		valueGetter: (params: ValueGetterParams) => {
 			const fieldName = strRequired(params.colDef.field, FILENAME, 'params.colDef.field')
 			const valueRaw = params.data[fieldName]
-			console.log('ctSelectMulti.ctSelectMulti.valueGetter', {
-				params,
-				valueRaw
-			})
 			return valueRaw
 		}
 	},
@@ -321,7 +317,6 @@ export class GridManagerOptions {
 	listReorderColumn: string
 	onCellClicked?: Function
 	onSelectionChanged?: Function
-	parmStateSelectedIds: []
 	rowData: any[]
 	sortModel: DataObjSort
 	constructor(obj: any) {
@@ -340,7 +335,6 @@ export class GridManagerOptions {
 		this.listReorderColumn = obj.listReorderColumn || ''
 		this.onCellClicked = obj.onCellClicked
 		this.onSelectionChanged = obj.onSelectionChanged
-		this.parmStateSelectedIds = obj.parmStateSelectedIds || []
 		this.rowData = required(obj.rowData, clazz, 'rowData')
 		this.sortModel = valueOrDefault(obj.sortModel, new DataObjSort())
 	}

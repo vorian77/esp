@@ -28,7 +28,7 @@
 	parms.isLabelbold = true
 
 	let fieldEmbed = $derived(parms.field) as FieldEmbedListSelect
-	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.dataObjIdEmbed)
+	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.rawFieldEmbedList.embedDataObjId)
 	let iconProps = $state(
 		new IconProps({
 			name: 'SquareMousePointer',

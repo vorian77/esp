@@ -1,5 +1,5 @@
 import { DataObj } from '$utils/types'
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import { ProcessMigrate } from '$utils/utils.process'
 import { error } from '@sveltejs/kit'
 

@@ -1,13 +1,15 @@
-import { DataObj } from '$utils/types'
-import { Field, FieldColor } from '$comps/form/field.svelte'
+import { State } from '$comps/app/types.state.svelte'
+import { DataObj, MethodResult } from '$utils/types'
+import { Field, PropsFieldInit } from '$comps/form/field.svelte'
+import { TokenApiQueryType } from '$utils/types.token'
 
 const FILENAME = '$comps/form/types.fieldGroup.ts'
 
-export function getDetailElements(dataObj: DataObj) {
+export function getDetailElements(fields: Field[]) {
 	let newEls: DetailEl[] = []
 	let currGroup: DetailElGroup | undefined
-	dataObj.fields.forEach((field, idx) => {
-		const propName = field.colDO.propNameRaw.toLowerCase()
+	fields.forEach((field, idx) => {
+		const propName = field.colDO.propName.toLowerCase()
 		switch (propName) {
 			case 'custom_details_end':
 			case 'custom_row_end':

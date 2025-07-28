@@ -1,5 +1,6 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 import { type DataRecord, valueOrDefault } from '$utils/types'
+import { link } from 'fs'
 
 const FILENAME = '$server/dbGel/init/dbGelInit80ContentAIRep.ts'
 
@@ -108,6 +109,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			isDisplay: false,
 			isDisplayable: true,
 			linkColumns: ['name'],
+			linkTable: 'SysCode',
 			orderDefine: 47,
 			orderDisplay: 47
 		},
@@ -119,6 +121,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			isDisplay: false,
 			isDisplayable: true,
 			linkColumns: ['name'],
+			linkTable: 'SysCode',
 			orderDefine: 50,
 			orderDisplay: 50
 		},
@@ -130,6 +133,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			isDisplay: false,
 			isDisplayable: true,
 			linkColumns: ['name'],
+			linkTable: 'SysCode',
 			orderDefine: 55,
 			orderDisplay: 55
 		},
@@ -141,6 +145,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			isDisplay: false,
 			isDisplayable: true,
 			linkColumns: ['name'],
+			linkTable: 'SysCode',
 			orderDefine: 60,
 			orderDisplay: 60
 		},
@@ -222,6 +227,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			isDisplay: false,
 			isDisplayable: true,
 			linkColumns: ['name'],
+			linkTable: 'SysCode',
 			orderDefine: 95,
 			orderDisplay: 95
 		},
@@ -248,13 +254,14 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 		{
 			codeFieldElement: 'text',
 			codeReportElementType: 'column',
-			columnName: 'programCm',
+			columnName: 'objAttrCmProgram',
 			indexTable: 1,
 			isDisplay: false,
 			isDisplayable: true,
 			linkColumns: ['header'],
-			orderDefine: 115,
-			orderDisplay: 115
+			linkTable: 'SysObjAttr',
+			orderDefine: 110,
+			orderDisplay: 110
 		},
 		{
 			codeFieldElement: 'text',
@@ -265,8 +272,8 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			isDisplayable: true,
 			linkColumns: ['header'],
 			linkTable: 'SysObjAttr',
-			orderDefine: 117,
-			orderDisplay: 117
+			orderDefine: 115,
+			orderDisplay: 115
 		},
 		{
 			codeFieldElement: 'text',
@@ -276,6 +283,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			isDisplay: false,
 			isDisplayable: true,
 			linkColumns: ['name'],
+			linkTable: 'SysCode',
 			orderDefine: 120,
 			orderDisplay: 120
 		},
@@ -307,6 +315,7 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 			isDisplay: false,
 			isDisplayable: true,
 			linkColumns: ['name'],
+			linkTable: 'SysCode',
 			orderDefine: 135,
 			orderDisplay: 135
 		},
@@ -345,9 +354,9 @@ function initFieldListSelectCohorts(init: InitDb) {
 				undefined
 			]
 		],
-		exprFilter: `.owner IN (SELECT sys_user::SysUser FILTER .name = <user,str,name>).userTypes.owner`,
+		exprFilter: `.ownerSys.id IN <user,uuidlist,systemIds>`,
 		name: 'ilr_cm_cohort',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		table: 'CmCohort'
 	})
 }
@@ -403,10 +412,10 @@ function initContentAIRepCohortsDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.ownerSys.id IN <user,uuidlist,systemIds>',
 		header: 'Cohorts - Detail',
 		name: 'report_ai_cohorts_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCohort' },
 			{ columnParent: 'course', indexParent: 0, index: 1, table: 'CmCourse' }
@@ -452,10 +461,10 @@ function initContentAIRepCoursesDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.ownerSys.id IN <user,uuidlist,systemIds>',
 		header: 'Courses - Detail',
 		name: 'report_ai_courses_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCourse' }],
 		elements: [
 			{
@@ -525,10 +534,10 @@ function initContentAIRepPartnersDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.ownerSys.id IN <user,uuidlist,systemIds>',
 		header: 'Partners - Detail',
 		name: 'report_ai_partners_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmPartner' }],
 		elements: [
 			{
@@ -665,10 +674,10 @@ function initContentAIRepStudentAttdDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
 		description: 'Cohort attendance detail.',
-		exprFilter: '.csfCohort.csf.client.owner.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.csfCohort.csf.client.ownerSys.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Attendance - Detail',
 		name: 'report_ai_student_attd_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfCohortAttd' },
 			{ columnParent: 'csfCohort', indexParent: 0, index: 1, table: 'CmCsfCohort' },
@@ -794,10 +803,10 @@ function initContentAIRepStudentCaseNotesDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.csf.client.ownerSys.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Case Notes - Detail',
 		name: 'report_ai_student_notes_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfNote' },
 			{ columnParent: 'csf', indexParent: 0, index: 2, table: 'CmClientServiceFlow' },
@@ -854,10 +863,10 @@ function initContentAIRepStudentDocsDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.csf.client.ownerSys.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Documents - Detail',
 		name: 'report_ai_student_docs_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfDocument' },
 			{ columnParent: 'csf', indexParent: 0, index: 1, table: 'CmClientServiceFlow' },
@@ -950,10 +959,10 @@ function initContentAIRepStudentJobPlacementDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.csf.client.ownerSys.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Job Placements - Detail',
 		name: 'report_ai_student_job_placement_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfJobPlacement' },
 			{ columnParent: 'csf', indexParent: 0, index: 1, table: 'CmClientServiceFlow' },
@@ -1128,10 +1137,10 @@ function initContentAIRepStudentSchoolPlacementDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.csf.client.ownerSys.id IN <user,uuidlist,systemIds>',
 		header: 'Student - School Placements - Detail',
 		name: 'report_ai_student_school_placement_detail',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfSchoolPlacement' },
 			{ columnParent: 'csf', indexParent: 0, index: 1, table: 'CmClientServiceFlow' },
@@ -1232,10 +1241,10 @@ function initContentAIRepStudentSchoolPlacementDetail(init: InitDb) {
 function initContentAIRepStudentRoster(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
-		exprFilter: '.client.owner.id IN <user,uuidlist,systemIds> ',
+		exprFilter: '.client.ownerSys.id IN <user,uuidlist,systemIds> ',
 		header: 'Student - Roster',
 		name: 'report_ai_student_roster',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmClientServiceFlow' },
 			{ columnParent: 'client', indexParent: 0, index: 1, table: 'CmClient' },
@@ -1250,7 +1259,7 @@ function initContentAIRepStudentRoster(init: InitDb) {
 function initContentAIRepCohortPerformance(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
-		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.ownerSys.id IN <user,uuidlist,systemIds>',
 		exprWith: `enrolled := (SELECT app_cm::CmCsfCohort),
 completed := (SELECT enrolled FILTER .codeStatus.name = 'Completed'),
 completedPlaced := (SELECT completed FILTER .csf IN app_cm::CmCsfJobPlacement.csf),
@@ -1258,7 +1267,7 @@ completedPlacedRelated := (SELECT completed FILTER .csf IN (SELECT app_cm::CmCsf
 cohortWages := (SELECT completed {cohort, wages := (SELECT app_cm::CmCsfJobPlacement FILTER .csf = completed.csf).wage})`,
 		header: 'Cohort Performance',
 		name: 'report_ai_cohort_performance',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCohort' },
 			{ columnParent: 'course', indexParent: 0, index: 1, table: 'CmCourse' }
@@ -1412,7 +1421,7 @@ cohortWages := (SELECT completed {cohort, wages := (SELECT app_cm::CmCsfJobPlace
 function initContentAIRepCoursePerformance(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
-		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.ownerSys.id IN <user,uuidlist,systemIds>',
 		exprWith: `enrolled := (SELECT app_cm::CmCsfCohort {course := .cohort.course}),
 completed := (SELECT enrolled FILTER .codeStatus.name = 'Completed'),
 completedPlaced := (SELECT completed FILTER .csf IN app_cm::CmCsfJobPlacement.csf),
@@ -1420,7 +1429,7 @@ completedPlacedRelated := (SELECT completed FILTER .csf IN (SELECT app_cm::CmCsf
 cohortWages := (SELECT completed {cohort, wages := (SELECT app_cm::CmCsfJobPlacement FILTER .csf = completed.csf).wage})`,
 		header: 'Course Performance',
 		name: 'report_ai_course_performance',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCourse' }],
 		elements: [
 			{
@@ -1558,10 +1567,10 @@ function initContentAIRepStudentCohortAttdSummary(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
 		description: 'Student cohort attendance summary report.',
-		exprFilter: '.csf.client.owner.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.csf.client.ownerSys.id IN <user,uuidlist,systemIds>',
 		header: 'Student - Cohort Attendance - Summary',
 		name: 'report_ai_student_cohort_attd_summary',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfCohort' },
 			{ columnParent: 'csf', indexParent: 0, index: 1, table: 'CmClientServiceFlow' },
@@ -1651,10 +1660,10 @@ function initContentAIRepStudentServiceFlowSummary(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
 		description: 'Student service flow summary.',
-		exprFilter: '.client.owner.id IN <user,uuidlist,systemIds> ',
+		exprFilter: '.client.ownerSys.id IN <user,uuidlist,systemIds> ',
 		header: 'Student - Service Flow - Summary',
 		name: 'report_ai_student_service_flow_summary',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmClientServiceFlow' },
 			{ columnParent: 'client', indexParent: 0, index: 1, table: 'CmClient' },

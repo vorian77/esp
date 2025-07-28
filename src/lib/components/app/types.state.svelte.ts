@@ -1,5 +1,5 @@
 import { App } from '$comps/app/types.app.svelte'
-import { MethodResult, required, valueOrDefault } from '$utils/utils'
+import { MethodResult, ParmsValuesFormList, required, valueOrDefault } from '$utils/utils'
 import {
 	booleanOrFalse,
 	CodeAction,
@@ -8,10 +8,11 @@ import {
 	DataManager,
 	DataObj,
 	DataObjAction,
+	DataObjCardinality,
 	type DataRecord,
-	NodeQueryOwnerType,
 	ParmsValues,
 	ParmsValuesType,
+	type ParmsValuesFormListType,
 	ToastType,
 	User,
 	UserParm,
@@ -61,12 +62,11 @@ export class State {
 	fActions: Record<string, Function> = {}
 	fChangeCallback?: Function
 	isDevMode: boolean = false
-	keyTrigger: number = $state(0)
 	navContent?: StateNavContent = $state()
 	navHeader: StateNavHeader = new StateNavHeader({})
 	navLayout?: StateNavLayout = $state()
 	navLayoutParms?: DataRecord = $state()
-	navMenuData: NavMenuData = new NavMenuData()
+	navMenuData: NavMenuData = $state(new NavMenuData())
 	navMenuWidthValue: any = $state(
 		new Tween(250, {
 			duration: 500,
@@ -80,6 +80,8 @@ export class State {
 	storeDrawer: any
 	storeModal: any
 	storeToast: any
+	triggerKey: number = $state(0)
+	triggerSaveValue: number = $state(0)
 	triggerTokens: StateTriggerToken[] = $state([])
 	user?: User = $state()
 	userParm?: UserParm
@@ -130,7 +132,7 @@ export class State {
 
 		if (this.fChangeCallback) this.fChangeCallback(obj)
 
-		this.keyTrigger = Math.random()
+		this.triggerKey = Math.random()
 	}
 	changeParm(obj: any, key: string, defaultValue: any) {
 		return Object.hasOwn(obj, key) ? obj[key] : defaultValue
@@ -181,49 +183,11 @@ export class State {
 		})
 	}
 
-	getStateData(queryType: TokenApiQueryType) {
+	getStateData(isDataTreePresetOffset: boolean = false): TokenApiQueryDataTree {
 		const dataTree: TokenApiQueryDataTree = this.stateRoot
-			? this.stateRoot.app.getDataTree(queryType)
-			: this.app.getDataTree(queryType)
-		this.parmsState.valueSet(
-			ParmsValuesType.listRecordIdCurrent,
-			dataTree.getValue('id', TokenApiQueryDataTreeAccessType.index, 0)
-		)
-		this.getStateDataOwnerId()
+			? this.stateRoot.app.getDataTree(isDataTreePresetOffset)
+			: this.app.getDataTree(isDataTreePresetOffset)
 		return dataTree
-	}
-
-	getStateDataOwnerId() {
-		const smSource = this.stateRoot || this
-		const treeLevel = smSource.app.getCurrTree()
-		if (treeLevel && treeLevel.levels.length > 0) {
-			const rootTab = treeLevel.levels[0].getCurrTab()
-			if (rootTab && rootTab.node) {
-				if (rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeOrgRecord) {
-					smSource.parmsState.valueSet(
-						ParmsValuesType.queryOwnerOrg,
-						rootTab.getCurrRecordValue('id')
-					)
-				} else if (
-					rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemApp &&
-					rootTab.node.ownerId
-				) {
-					smSource.parmsState.valueSet(ParmsValuesType.queryOwnerSys, rootTab.node.ownerId)
-				} else if (rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemRecord) {
-					smSource.parmsState.valueSet(
-						ParmsValuesType.queryOwnerSys,
-						rootTab.getCurrRecordValue('id')
-					)
-				} else if (
-					rootTab.node.queryOwnerType === NodeQueryOwnerType.queryOwnerTypeSystemUser &&
-					smSource?.user?.systemIdCurrent
-				) {
-					smSource.parmsState.valueSet(ParmsValuesType.queryOwnerSys, smSource.user.systemIdCurrent)
-				} else if (smSource?.user?.systemIdCurrent) {
-					smSource.parmsState.valueSet(ParmsValuesType.queryOwnerSys, rootTab.node.ownerId)
-				}
-			}
-		}
 	}
 
 	loadActions() {
@@ -341,17 +305,9 @@ export class State {
 			if (fUpdate) {
 				if (response && response !== false) {
 					const modalReturn = response as TokenAppModalReturn
-					if (modalReturn.type === TokenAppModalReturnType.complete) {
-						if (modalReturn.data instanceof ParmsValues) {
-							return fUpdate(TokenAppModalReturnType.complete, modalReturn.data)
-						} else {
-							return fUpdate(TokenAppModalReturnType.cancel)
-						}
-					} else {
-						return fUpdate(modalReturn.type || TokenAppModalReturnType.cancel)
-					}
+					return fUpdate(modalReturn)
 				} else {
-					return fUpdate(TokenAppModalReturnType.cancel)
+					return fUpdate(new TokenAppModalReturn({ type: TokenAppModalReturnType.cancel }))
 				}
 			}
 		})
@@ -387,14 +343,15 @@ export class State {
 		const clazz = `${FILENAME}.openModalEmbedListConfig`
 		const dataObjEmbed = token.dataObj
 		const fieldEmbed: FieldEmbedListConfig = required(dataObjEmbed.embedField, clazz, 'fieldEmbed')
-		const dataObjParentRootTable = fieldEmbed.parentTable
-		const embedParentId = this.dm.getRecordId(fieldEmbed.dataObjIdParent, 0)
+		const parentDataObjTableRoot = fieldEmbed.rawFieldEmbedList.parentTableRoot
+		const parentDataObjId = required(fieldEmbed.parentDataObjId, clazz, 'parentDataObj')
+		const embedParentId = this.dm.getRecordId(parentDataObjId, 0)
 
 		const stateModal = new StateSurfacePopup(this, {
 			actionsDialog: fieldEmbed.actionsModal,
 			app: this.app,
 			embedParentId,
-			embedType: fieldEmbed.embedType,
+			embedType: fieldEmbed.colDO.fieldEmbedListType,
 			navHeader: {
 				isDataObj: true,
 				isRowStatus: true
@@ -403,6 +360,7 @@ export class State {
 		})
 
 		stateModal.parmsState.valueSet(ParmsValuesType.embedParentId, embedParentId)
+		stateModal.parmsState.valueSet(ParmsValuesType.isModalCloseOnEmptyList, true)
 		stateModal.app.virtualModalLevelAdd(dataObjEmbed)
 
 		let result: MethodResult = await stateModal.triggerAction(
@@ -416,10 +374,10 @@ export class State {
 						dataObjSourceModal: new TokenApiDbDataObjSource({
 							dataObjId: fieldEmbed.dataObjModalId,
 							parent: new QuerySourceParentRaw({
-								_columnName: fieldEmbed.embedFieldNameRaw,
+								_columnName: fieldEmbed.rawFieldEmbedList.embedPropName,
 								_columnIsMultiSelect: true,
 								_filterExpr: `.id = <uuid>`,
-								_table: dataObjParentRootTable
+								_table: parentDataObjTableRoot
 							})
 						}),
 						queryType
@@ -441,13 +399,14 @@ export class State {
 		const dataObjEmbed = token.dataObj
 		const fieldEmbed: FieldEmbedListSelect = required(dataObjEmbed.embedField, clazz, 'fieldEmbed')
 
-		const dataObjParent: DataObj = required(
-			this.dm.getDataObj(fieldEmbed.dataObjIdParent),
+		const parentDataObjId = required(fieldEmbed.parentDataObjId, clazz, 'parentDataObj')
+		const parentDataObj: DataObj = required(
+			this.dm.getDataObj(parentDataObjId),
 			clazz,
 			'dataObjParent'
 		)
-		const dataObjParentRootTable = required(
-			dataObjParent.raw.tableGroup.getTable(0),
+		const parentDataObjTableRoot = required(
+			parentDataObj.raw.tableGroup.getTable(0),
 			clazz,
 			'dataObjParentRootTable'
 		)
@@ -455,16 +414,16 @@ export class State {
 		// parms
 		const parmsState = new ParmsValues(dataObjEmbed.data.getParms())
 		parmsState.update(dataObjEmbed.data.parms.valueGetAll())
-		parmsState.valueSet(ParmsValuesType.embedFieldName, fieldEmbed.embedFieldName)
-		parmsState.valueSetList(
+		parmsState.valueSet(ParmsValuesType.embedFieldName, fieldEmbed.rawFieldEmbedList.embedPropName)
+		parmsState.valueSet(
 			ParmsValuesType.listIdsSelected,
-			token.dataObj.data.rowsRetrieved.getRows()
+			token.dataObj.data.rowsRetrieved.getRowsIds()
 		)
 
 		const stateModal = new StateSurfacePopup(this, {
 			actionsDialog: fieldEmbed.actionsModal,
-			embedParentId: this.dm.getRecordId(fieldEmbed.dataObjIdParent, 0),
-			embedType: fieldEmbed.embedType,
+			embedParentId: this.dm.getRecordId(parentDataObjId, 0),
+			embedType: fieldEmbed.colDO.fieldEmbedListType,
 			navHeader: { isDataObj: true },
 			parmsState,
 			stateRoot: this
@@ -480,12 +439,13 @@ export class State {
 						dataObjSourceModal: new TokenApiDbDataObjSource({
 							dataObjId: fieldEmbed.dataObjListID,
 							parent: new QuerySourceParentRaw({
-								_columnName: fieldEmbed.embedFieldNameRaw,
+								_columnName: fieldEmbed.rawFieldEmbedList.embedPropName,
 								_columnIsMultiSelect: true,
 								_filterExpr: '.id = <parms,uuid,embedParentId>',
-								_table: dataObjParentRootTable
+								_table: parentDataObjTableRoot
 							})
 						}),
+						listIdsSelected: token.dataObj.data.rowsRetrieved.getRowsIds(),
 						queryType: TokenApiQueryType.retrieve
 					})
 				},
@@ -499,12 +459,8 @@ export class State {
 
 	async openModalSelect(token: TokenAppModalSelect): Promise<MethodResult> {
 		const parmsState = new ParmsValues({})
-		parmsState.valueSet(ParmsValuesType.columnDefs, token.columnDefs)
-		parmsState.valueSet(ParmsValuesType.selectLabel, token.selectLabel)
+		parmsState.valueSet(ParmsValuesType.tokenAppModalSelect, token)
 		parmsState.valueSet(ParmsValuesType.listIdsSelected, token.listIdsSelected)
-		parmsState.valueSet(ParmsValuesType.listSortModel, token.sortModel)
-		parmsState.valueSet(ParmsValuesType.isMultiSelect, token.isMultiSelect)
-		parmsState.valueSet(ParmsValuesType.rowData, token.rowData)
 
 		const stateModal = new StateSurfacePopup(this, {
 			actionsDialog: await this.getActions('doag_dialog_footer_list'),
@@ -530,6 +486,26 @@ export class State {
 			message
 		}
 		this.storeToast.trigger(t)
+	}
+
+	parmsFormList(): any {
+		const currTab = this.app.getCurrTab()
+		if (currTab) return currTab.parmsFormList()
+	}
+
+	parmsFormListData(parm: ParmsValuesType): any {
+		const currTab = this.app.getCurrTab()
+		if (currTab) return currTab.parmsFormListGet(parm)
+	}
+
+	parmsFormListGet(parm: ParmsValuesType): any {
+		const currTab = this.app.getCurrTab()
+		if (currTab) return currTab.parmsFormListGet(parm)
+	}
+
+	parmsFormListSet(parm: ParmsValuesType, value: any) {
+		const currTab = this.app.getCurrTab()
+		if (currTab) currTab.parmsFormListSet(parm, value)
 	}
 
 	setDataObjState(dataObj: DataObj) {
@@ -559,6 +535,7 @@ export class State {
 		parms: TokenAppStateTriggerAction,
 		fCallback: Function | undefined = undefined
 	): Promise<MethodResult> {
+		const isStatusChanged = this.dm.isStatusChanged()
 		const codeConfirmType = parms.codeConfirmType
 		if (
 			codeConfirmType === TokenAppUserActionConfirmType.always ||
@@ -566,6 +543,7 @@ export class State {
 		) {
 			return await this.triggerActionValidateAskB4(parms, fCallback)
 		} else {
+			this.dm.resetStatus()
 			if (fCallback) return await fCallback(this, parms)
 		}
 		return new MethodResult()
@@ -597,6 +575,10 @@ export class State {
 			sm.dm.resetStatus()
 			return await sm.triggerActionValidate(parms, fCallback)
 		}
+	}
+
+	triggerSave() {
+		this.triggerSaveValue = Math.random()
 	}
 
 	async userCurrInit(): Promise<MethodResult> {
@@ -669,8 +651,7 @@ export enum StateNavContent {
 	FormDetail = 'FormDetail',
 	FormDetailReportConrig = 'FormDetailReportConrig',
 	FormList = 'FormList',
-	ModalSelect = 'ModalSelect',
-	SelectList = 'SelectList'
+	ModalSelect = 'ModalSelect'
 }
 
 export class StateNavHeader {
@@ -738,7 +719,6 @@ export class StateSurfacePopup extends State {
 }
 
 export enum StateTriggerToken {
-	listDownload = 'listDownload',
 	menuClose = 'menuClose',
 	navDashboard = 'navDashboard'
 }

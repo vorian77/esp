@@ -19,7 +19,7 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 		header: 'Data Object Actions',
 		listReorderColumn: 'orderDefine',
 		name: 'doflc_sys_admin_data_obj_action_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjAction' }],
 		fields: [
 			{
@@ -101,7 +101,7 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Data Object Action',
 		name: 'doflc_sys_admin_data_obj_action_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjAction' }],
 		fields: [
 			{
@@ -229,7 +229,7 @@ async function initFieldListConfigDataObjAction(init: InitDb) {
 		dataObjEmbed: 'doflc_sys_admin_data_obj_action_list',
 		dataObjModal: 'doflc_sys_admin_data_obj_action_detail',
 		name: 'flec_data_obj_action',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -242,7 +242,7 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 		header: 'Data Object Link Columns',
 		listReorderColumn: 'orderDefine',
 		name: 'doflc_sys_admin_data_obj_column_link_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjColumnLink' }],
 		fields: [
 			{
@@ -305,7 +305,7 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Data Object Link Column',
 		name: 'doflc_sys_admin_data_obj_column_link_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjColumnLink' }],
 		fields: [
 			{
@@ -401,7 +401,7 @@ async function initFieldListConfigDataObjColumnLink(init: InitDb) {
 		dataObjEmbed: 'doflc_sys_admin_data_obj_column_link_list',
 		dataObjModal: 'doflc_sys_admin_data_obj_column_link_detail',
 		name: 'flec_data_obj_column_link',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -412,7 +412,7 @@ async function initFieldListConfigDataObjFieldListItemsProp(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Props',
 		name: 'doflc_sys_admin_data_obj_field_list_items_prop_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjFieldListItemsProp' }],
 		fields: [
 			{
@@ -479,7 +479,7 @@ async function initFieldListConfigDataObjFieldListItemsProp(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Prop',
 		name: 'doflc_sys_admin_data_obj_field_list_items_prop_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjFieldListItemsProp' }],
 		fields: [
 			{
@@ -554,7 +554,7 @@ async function initFieldListConfigDataObjFieldListItemsProp(init: InitDb) {
 		dataObjEmbed: 'doflc_sys_admin_data_obj_field_list_items_prop_list',
 		dataObjModal: 'doflc_sys_admin_data_obj_field_list_items_prop_detail',
 		name: 'flec_data_obj_field_list_items_prop',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -565,7 +565,7 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Data Object - Tables',
 		name: 'doflc_sys_admin_data_obj_table_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjTable' }],
 		fields: [
 			{
@@ -638,7 +638,7 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Data Object - Table',
 		name: 'doflc_sys_admin_data_obj_table_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysDataObjTable' }],
 		fields: [
 			{
@@ -809,7 +809,7 @@ async function initFieldListConfigDataObjTable(init: InitDb) {
 		dataObjEmbed: 'doflc_sys_admin_data_obj_table_list',
 		dataObjModal: 'doflc_sys_admin_data_obj_table_detail',
 		name: 'flec_data_obj_table',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -820,7 +820,7 @@ async function initFieldListConfigUserActionConfirm(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'User Action - Confirms',
 		name: 'doflc_sys_admin_user_action_confirm_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysUserActionConfirm' }],
 		fields: [
 			{
@@ -860,7 +860,7 @@ async function initFieldListConfigUserActionConfirm(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'User Action - Confirm',
 		name: 'doflc_sys_admin_user_action_confirm_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysUserActionConfirm' }],
 		fields: [
 			{
@@ -993,6 +993,6 @@ async function initFieldListConfigUserActionConfirm(init: InitDb) {
 		dataObjEmbed: 'doflc_sys_admin_user_action_confirm_list',
 		dataObjModal: 'doflc_sys_admin_user_action_confirm_detail',
 		name: 'flec_user_action_confirm',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

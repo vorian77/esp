@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import { State, StateTriggerToken } from '$comps/app/types.state.svelte'
 	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, required } from '$utils/types'
 	import {
 		NavDestinationType,

@@ -9,10 +9,10 @@ function initAttrObj(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Attributes',
 		name: 'data_obj_admin_attr_obj_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttr' }],
 		fields: [
 			{
@@ -59,7 +59,7 @@ function initAttrObj(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Attribute',
 		name: 'data_obj_admin_attr_obj_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttr' }],
 		fields: [
 			{
@@ -69,7 +69,7 @@ function initAttrObj(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -315,7 +315,7 @@ function initAttrObj(init: InitDb) {
 		header: 'Attributes',
 		name: 'node_obj_admin_attr_obj_list',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -325,7 +325,7 @@ function initAttrObj(init: InitDb) {
 		header: 'Attribute',
 		name: 'node_obj_admin_attr_obj_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -333,11 +333,10 @@ async function initAttrObjSimple(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		codeComponent: 'SelectList',
-		exprFilter: `.owner.id = <tree,uuid,SysSystem.id> AND .codeAttrType.id = <parms,uuid,selectListId>`,
+		exprFilter: `.ownerSys.id = <tree,uuid,SysSystem.id> AND .codeAttrType.id = <parms,uuid,selectListId>`,
 		header: 'Attribute Objects',
 		name: 'data_obj_admin_attr_obj_list_simple',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttr' }],
 		fields: [
 			{
@@ -372,7 +371,7 @@ async function initAttrObjSimple(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Attribute Object',
 		name: 'data_obj_admin_attr_obj_detail_simple',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttr' }],
 		fields: [
 			{
@@ -382,8 +381,8 @@ async function initAttrObjSimple(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>)`,
+				columnName: 'ownerSys',
+				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,treeAncestorValue.table.SysSystem>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -500,7 +499,7 @@ async function initAttrObjSimple(init: InitDb) {
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_admin_attr_obj_list_simple',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -511,6 +510,6 @@ async function initAttrObjSimple(init: InitDb) {
 		header: 'Attribute Object',
 		name: 'node_obj_admin_attr_obj_detail_simple',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

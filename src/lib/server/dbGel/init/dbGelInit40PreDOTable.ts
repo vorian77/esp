@@ -11,6 +11,7 @@ export function initPreTable(init: InitDb) {
 		['sys_system', 'sys_db', 'SysTable', true],
 
 		// sys_core
+		['sys_system', 'sys_core', 'ObjRoot', false],
 		['sys_system', 'sys_core', 'SysCode', true],
 		['sys_system', 'sys_core', 'SysCodeAction', true],
 		['sys_system', 'sys_core', 'SysCodeType', true],
@@ -29,6 +30,8 @@ export function initPreTable(init: InitDb) {
 		['sys_system', 'sys_core', 'SysDataObjFieldLinkJoin', true],
 		['sys_system', 'sys_core', 'SysDataObjQueryRider', true],
 		['sys_system', 'sys_core', 'SysDataObjTable', true],
+		['sys_system', 'sys_core', 'SysEligibility', true],
+		['sys_system', 'sys_core', 'SysEligibilityNode', true],
 		['sys_system', 'sys_core', 'SysMsg', true],
 		['sys_system', 'sys_core', 'SysNodeObj', true],
 		['sys_system', 'sys_core', 'SysNodeObjAction', false],
@@ -81,7 +84,7 @@ export function initPreTable(init: InitDb) {
 	])
 
 	init.addTrans('tablesBulk', [
-		// Atlantic Impact
+		// Case Manager
 		['sys_client_atlantic_impact', 'app_cm', 'CmClient', true],
 		['sys_client_atlantic_impact', 'app_cm', 'CmClientServiceFlow', true],
 		['sys_client_atlantic_impact', 'app_cm', 'CmCohort', true],
@@ -91,6 +94,7 @@ export function initPreTable(init: InitDb) {
 		['sys_client_atlantic_impact', 'app_cm', 'CmCsfCohort', true],
 		['sys_client_atlantic_impact', 'app_cm', 'CmCsfCohortAttd', true],
 		['sys_client_atlantic_impact', 'app_cm', 'CmCsfDocument', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmCsfEligibility', true],
 		['sys_client_atlantic_impact', 'app_cm', 'CmCsfJobPlacement', true],
 		['sys_client_atlantic_impact', 'app_cm', 'CmCsfNote', true],
 		['sys_client_atlantic_impact', 'app_cm', 'CmCsfSchoolPlacement', true],
@@ -100,10 +104,10 @@ export function initPreTable(init: InitDb) {
 
 	init.addTrans('tablesBulk', [
 		// MOED
-		['sys_client_moed', 'org_client_city_baltimore', 'MoedDoc', true],
-		['sys_client_moed', 'org_client_city_baltimore', 'MoedMessage', true],
-		['sys_client_moed', 'org_client_city_baltimore', 'MoedPartDoc', true],
-		['sys_client_moed', 'org_client_city_baltimore', 'MoedPartNote', true],
-		['sys_client_moed', 'org_client_city_baltimore', 'MoedParticipant', true]
+		['sys_client_baltimore_moed', 'org_client_baltimore', 'MoedDoc', true],
+		['sys_client_baltimore_moed', 'org_client_baltimore', 'MoedMessage', true],
+		['sys_client_baltimore_moed', 'org_client_baltimore', 'MoedPartDoc', true],
+		['sys_client_baltimore_moed', 'org_client_baltimore', 'MoedPartNote', true],
+		['sys_client_baltimore_moed', 'org_client_baltimore', 'MoedParticipant', true]
 	])
 }

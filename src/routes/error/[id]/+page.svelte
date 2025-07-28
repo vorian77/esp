@@ -37,6 +37,13 @@
 			>
 				Return To Dashboard
 			</button>
+			<button
+				type="button"
+				class="btn btn-action variant-filled-primary w-1/5 mt-3"
+				onclick={() => goto('/')}
+			>
+				Logout
+			</button>
 		{:else}
 			<button
 				type="button"

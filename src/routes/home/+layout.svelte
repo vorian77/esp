@@ -10,7 +10,7 @@
 		UserParmItemSource,
 		UserParmItemType
 	} from '$utils/types'
-	import { State, StateNavLayout, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import { State, StateNavLayout, StateTriggerToken } from '$comps/app/types.state.svelte'
 	import { getDrawerStore, getModalStore, getToastStore } from '@skeletonlabs/skeleton'
 	import {
 		TokenApiId,

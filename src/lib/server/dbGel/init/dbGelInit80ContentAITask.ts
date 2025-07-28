@@ -12,7 +12,7 @@ function initTaskCohortAttd(init: InitDb) {
 		exprFilter: 'none',
 		header: 'Cohort Attendance',
 		name: 'data_obj_task_ai_cohort_attd',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [{ index: 0, table: 'CmCsfCohortAttd' }],
 		fields: [
 			{
@@ -68,7 +68,7 @@ function initTaskCohortAttd(init: InitDb) {
 		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_task_ai_cohort_attd',
 		name: 'node_obj_task_ai_cohort_attd',
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 
 	init.addTrans('sysTask', {
@@ -78,7 +78,7 @@ function initTaskCohortAttd(init: InitDb) {
 		isGlobalResource: false,
 		name: 'task_ai_cohort_attd',
 		nodeObj: 'node_obj_task_ai_cohort_attd',
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }
 
@@ -89,7 +89,7 @@ function initTaskNewStudent(init: InitDb) {
 		exprFilter: 'none',
 		header: 'New Student',
 		name: 'data_obj_task_ai_new_student',
-		owner: 'sys_client_atlantic_impact',
+		ownerSys: 'sys_client_atlantic_impact',
 		tables: [
 			{ index: 0, table: 'CmCsfCohort' },
 			{
@@ -114,14 +114,6 @@ function initTaskNewStudent(init: InitDb) {
 		fields: [
 			/* CmClient */
 			{
-				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>)`,
-				orderDefine: 60,
-				indexTable: 2,
-				isDisplayable: false,
-				linkTable: 'SysSystem'
-			},
-			{
 				columnName: 'createdBy',
 				isDisplayable: false,
 				orderDefine: 70,
@@ -132,6 +124,16 @@ function initTaskNewStudent(init: InitDb) {
 				isDisplayable: false,
 				orderDefine: 80,
 				indexTable: 2
+			},
+
+			{
+				codeFieldElement: 'selectOwnerSys',
+				columnName: 'ownerSys',
+				orderDefine: 90,
+				orderDisplay: 90,
+				indexTable: 2,
+				isDisplayable: true,
+				fieldListItems: 'il_sys_system_by_user'
 			},
 
 			/* SysPerson.personal */
@@ -257,7 +259,7 @@ function initTaskNewStudent(init: InitDb) {
 			{
 				codeFieldElement: 'toggle',
 				columnName: 'hasDriversLicense',
-				exprPreset: `(SELECT false)`,
+				exprPreset: `(SELECT "No")`,
 				indexTable: 2,
 				isDisplayable: true,
 				orderDisplay: 240,
@@ -429,12 +431,13 @@ function initTaskNewStudent(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'programCm',
+				columnName: 'objAttrCmProgram',
 				isDisplayable: true,
 				orderDisplay: 570,
 				orderDefine: 570,
 				indexTable: 1,
-				fieldListItems: 'il_cm_program'
+				fieldListItems: 'il_sys_obj_attr_type_single',
+				fieldListItemsParmValue: 'at_cm_program'
 			},
 			{
 				codeFieldElement: 'select',
@@ -578,7 +581,8 @@ function initTaskNewStudent(init: InitDb) {
 		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_task_ai_new_student',
 		name: 'node_obj_task_ai_new_student',
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact',
+		systemQuerySource: 'sys_client_atlantic_impact'
 	})
 
 	init.addTrans('sysTask', {
@@ -588,6 +592,6 @@ function initTaskNewStudent(init: InitDb) {
 		isGlobalResource: false,
 		name: 'task_ai_new_student',
 		nodeObj: 'node_obj_task_ai_new_student',
-		owner: 'sys_client_atlantic_impact'
+		ownerSys: 'sys_client_atlantic_impact'
 	})
 }

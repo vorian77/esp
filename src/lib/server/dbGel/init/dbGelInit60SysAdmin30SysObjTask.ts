@@ -8,10 +8,10 @@ function initTask(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		header: 'Tasks',
 		name: 'data_obj_sys_admin_task_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysTask' }],
 		fields: [
 			{
@@ -63,7 +63,7 @@ function initTask(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Task',
 		name: 'data_obj_sys_admin_task_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysTask' }],
 		fields: [
 			{
@@ -73,7 +73,7 @@ function initTask(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -196,6 +196,16 @@ function initTask(init: InitDb) {
 				orderDefine: 200
 			},
 			{
+				codeFieldElement: 'select',
+				columnName: 'codeTaskType',
+				isDisplayable: true,
+				orderDisplay: 210,
+				orderDefine: 210,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
+				fieldListItemsParmValue: 'ct_sys_task_type'
+			},
+			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
 				columnName: 'nodeObj',
@@ -206,6 +216,7 @@ function initTask(init: InitDb) {
 				fieldListItems: 'il_sys_node_obj_by_node_type',
 				fieldListItemsParmValue: 'nodeTask'
 			},
+
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'select',
@@ -317,7 +328,7 @@ function initTask(init: InitDb) {
 		header: 'Tasks',
 		name: 'node_obj_sys_admin_task_list',
 		orderDefine: 180,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -328,6 +339,6 @@ function initTask(init: InitDb) {
 		header: 'Task',
 		name: 'node_obj_sys_admin_task_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

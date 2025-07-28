@@ -35,7 +35,7 @@ export async function addDataObj(data: any) {
 			listPresetExpr: e.optional(e.str),
 			listReorderColumn: e.optional(e.str),
 			name: e.str,
-			owner: e.str,
+			ownerSys: e.str,
 			parentColumn: e.optional(e.str),
 			parentFilterExpr: e.optional(e.str),
 			parentTable: e.optional(e.str),
@@ -180,6 +180,9 @@ export async function addDataObj(data: any) {
 							e.json_get(e.json_get(f, 'customElement'), 'value')
 						),
 						customColAlign: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'align')),
+						customColFile: e.to_json(
+							e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'file'))
+						),
 						customColIsSubHeader: booleanOrDefaultJSON(
 							e.json_get(f, 'customElement'),
 							'isSubHeader',
@@ -187,7 +190,7 @@ export async function addDataObj(data: any) {
 						),
 						customColLabel: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'label')),
 						customColCodeComponent: e.sys_core.getCode(
-							'ct_sys_do_component',
+							'ct_sys_node_component',
 							e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'codeComponent'))
 						),
 						customColPrefix: e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'prefix')),
@@ -197,6 +200,10 @@ export async function addDataObj(data: any) {
 						customColSourceKey: e.cast(
 							e.str,
 							e.json_get(e.json_get(f, 'customElement'), 'sourceKey')
+						),
+
+						fieldEmbedDetailEligibility: e.sys_core.getEligibility(
+							e.cast(e.str, e.json_get(f, 'fieldEmbedDetailEligibility'))
 						),
 
 						fieldEmbedListConfig: e.select(
@@ -260,6 +267,10 @@ export async function addDataObj(data: any) {
 
 						orderDisplay: e.cast(e.int16, e.json_get(f, 'orderDisplay')),
 
+						propNameKeyPrefix: e.cast(e.str, e.json_get(f, 'propNameKeyPrefix')),
+
+						propNameKeySuffix: e.cast(e.str, e.json_get(f, 'propNameKeySuffix')),
+
 						width: e.cast(e.int16, e.json_get(f, 'width')),
 
 						createdBy: CREATOR,
@@ -286,7 +297,7 @@ export async function addDataObj(data: any) {
 				listReorderColumn: e.select(e.sys_db.getColumn(p.listReorderColumn)),
 				modifiedBy: CREATOR,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				parentColumn: e.select(e.sys_db.getColumn(p.parentColumn)),
 				parentFilterExpr: p.parentFilterExpr,
 				parentTable: e.select(e.sys_db.getTable(p.parentTable)),
@@ -327,7 +338,7 @@ export async function addDataObjActionGroup(data: any) {
 		{
 			actions: e.json,
 			name: e.str,
-			owner: e.str
+			ownerSys: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObjActionGroup, {
@@ -350,7 +361,7 @@ export async function addDataObjActionGroup(data: any) {
 				createdBy: CREATOR,
 				modifiedBy: CREATOR,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner)
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys)
 			})
 		}
 	)
@@ -367,7 +378,7 @@ export async function addDataObjFieldEmbedListConfig(data: any) {
 			dataObjEmbed: e.str,
 			dataObjModal: e.str,
 			name: e.str,
-			owner: e.str
+			ownerSys: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObjFieldEmbedListConfig, {
@@ -377,7 +388,7 @@ export async function addDataObjFieldEmbedListConfig(data: any) {
 				dataObjModal: e.select(e.sys_core.getDataObj(p.dataObjModal)),
 				modifiedBy: CREATOR,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner)
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys)
 			})
 		}
 	)
@@ -392,7 +403,7 @@ export async function addDataObjFieldEmbedListEdit(data: any) {
 		{
 			dataObjEmbed: e.str,
 			name: e.str,
-			owner: e.str
+			ownerSys: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObjFieldEmbedListEdit, {
@@ -400,7 +411,7 @@ export async function addDataObjFieldEmbedListEdit(data: any) {
 				dataObjEmbed: e.select(e.sys_core.getDataObj(p.dataObjEmbed)),
 				modifiedBy: CREATOR,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner)
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys)
 			})
 		}
 	)
@@ -417,7 +428,7 @@ export async function addDataObjFieldEmbedListSelect(data: any) {
 			btnLabelComplete: e.optional(e.str),
 			dataObjList: e.str,
 			name: e.str,
-			owner: e.str
+			ownerSys: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysDataObjFieldEmbedListSelect, {
@@ -427,7 +438,7 @@ export async function addDataObjFieldEmbedListSelect(data: any) {
 				dataObjList: e.select(e.sys_core.getDataObj(p.dataObjList)),
 				modifiedBy: CREATOR,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner)
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys)
 			})
 		}
 	)
@@ -443,12 +454,13 @@ export async function addDataObjFieldItems(data: any) {
 			codeMask: e.optional(e.str),
 			displayIdSeparator: e.optional(e.str),
 			exprFilter: e.optional(e.str),
+			exprFilterExcept: e.optional(e.str),
 			exprSort: e.optional(e.str),
 			exprWith: e.optional(e.str),
 			exprUnions: e.optional(e.array(e.str)),
 			name: e.str,
 			props: e.array(e.json),
-			owner: e.str,
+			ownerSys: e.str,
 			table: e.optional(e.str)
 		},
 		(p) => {
@@ -458,6 +470,7 @@ export async function addDataObjFieldItems(data: any) {
 				createdBy: CREATOR,
 				displayIdSeparator: p.displayIdSeparator,
 				exprFilter: p.exprFilter,
+				exprFilterExcept: p.exprFilterExcept,
 				exprSort: p.exprSort,
 				exprWith: p.exprWith,
 				exprUnions: e.for(e.array_unpack(p.exprUnions), (eu) => {
@@ -465,7 +478,7 @@ export async function addDataObjFieldItems(data: any) {
 				}),
 				modifiedBy: CREATOR,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				props: e.for(e.array_unpack(p.props), (p) => {
 					return e.insert(e.sys_core.SysDataObjFieldListItemsProp, {
 						orderDefine: e.cast(e.int16, p[0]),
@@ -499,7 +512,7 @@ export async function addUserAction(data: any) {
 			header: e.optional(e.str),
 			name: e.str,
 			navDestination: e.optional(e.json),
-			owner: e.str
+			ownerSys: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysUserAction, {
@@ -543,15 +556,15 @@ export async function addUserAction(data: any) {
 				header: p.header,
 				modifiedBy: CREATOR,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner)
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys)
 			})
 		}
 	)
 	return await query.run(client, data)
 }
 
-export async function updateDataObjColumnCustomEmbedShellFields(data: any) {
-	sectionHeader(`updateDataObjColumnCustomEmbedShellFields - ${data.dataObjName}`)
+export async function updateDataObjColumnCustomElementEmbedShellFields(data: any) {
+	sectionHeader(`updateDataObjColumnCustomElementEmbedShellFields - ${data.dataObjName}`)
 	const query = e.params(
 		{
 			dataObjName: e.str,

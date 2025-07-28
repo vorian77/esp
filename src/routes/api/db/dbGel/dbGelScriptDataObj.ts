@@ -1,8 +1,4 @@
-import {
-	PropLinkItemsSource,
-	RawDataObj,
-	RawDataObjPropDB
-} from '$comps/dataObj/types.rawDataObj.svelte'
+import { PropLinkItemsSource, RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj.svelte'
 import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
 import { QuerySourceParent, ScriptExePost } from '$lib/queryClient/types.queryClient'
 import { GelQuery, LinkSaveAction } from '$routes/api/db/dbGel/dbGelScriptQuery'
@@ -22,9 +18,9 @@ import {
 	DataRecordStatus,
 	DataRow,
 	debug,
-	getValueData,
 	MethodResult,
 	ParmsValuesType,
+	recordValueGetData,
 	required,
 	strRequired
 } from '$utils/types'
@@ -107,11 +103,11 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 				let result: MethodResult = await this.addScriptDataItems(
 					query,
 					prop.linkItemsSource,
-					getValueData(record[prop.propName])
+					recordValueGetData(record, prop.propNameKey)
 				)
 				if (result.error) return result
 				let exprProp = result.data
-				expr = query.addItemComma(expr, `${prop.propName} := ${exprProp}`)
+				expr = query.addItemComma(expr, `${prop.propNameKey} := ${exprProp}`)
 			}
 		}
 
@@ -341,10 +337,7 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 
 	async addScriptSave(query: GelQuery): Promise<MethodResult> {
 		let result: MethodResult
-		const dataQuery = this.queryData.dataTab.getFieldEmbedData(
-			query.fieldEmbed,
-			this.evalExprContext
-		)
+		const dataQuery = this.queryData.dataTab.getFieldEmbedData(query.fieldEmbed)
 		const dataRowsSaved = required(dataQuery.rowsSave, 'ScriptGroup', 'dataQuery.rowsSave')
 		let items: [string, DataRecordStatus[]][] = [
 			['DELETE', [DataRecordStatus.delete]],
@@ -436,9 +429,11 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		let result: MethodResult
 		let scriptPrimary: ScriptTypeSavePrimary
 		const isListSelectLinkBackward =
-			query.fieldEmbed instanceof FieldEmbedListSelect && query.fieldEmbed.columnBacklink
+			query.fieldEmbed instanceof FieldEmbedListSelect &&
+			query.fieldEmbed.rawFieldEmbedList.parentColumnBackLink !== undefined
 		const isListSelectLinkForward =
-			query.fieldEmbed instanceof FieldEmbedListSelect && !query.fieldEmbed.columnBacklink
+			query.fieldEmbed instanceof FieldEmbedListSelect &&
+			query.fieldEmbed.rawFieldEmbedList.parentColumnBackLink === undefined
 		let exprParent = ''
 		let exprPrimary = ''
 

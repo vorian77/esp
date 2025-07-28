@@ -4,6 +4,7 @@ import {
 	CodeActionClass,
 	CodeActionType,
 	type DataRecord,
+	EvalExprCustomComposite,
 	getArray,
 	isPlainObjectEmpty,
 	memberOfEnum,
@@ -19,7 +20,7 @@ import {
 	UserResourceTaskItem,
 	valueOrDefault
 } from '$utils/types'
-import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
+import { State, StateNavLayout, StateParms } from '$comps/app/types.state.svelte'
 import {
 	Token,
 	TokenApiId,
@@ -48,7 +49,7 @@ export class NavMenuData {
 	iconColor = '#daa520'
 	idIndex = -1
 	isOpen = $state(true)
-	items: NavMenuDataComp[] = []
+	items: NavMenuDataComp[] = $state([])
 	itemsNamed: NavMenuNamedItems = new NavMenuNamedItems()
 	sm?: State
 	width: number = $state(250)
@@ -562,8 +563,8 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 			})
 
 			this.info.push(new NavMenuInfo('dbBranch', user.dbBranch))
-			this.info.push(new NavMenuInfo('Default Organization', user.system.orgName))
-			this.info.push(new NavMenuInfo('Default System', user.system.name))
+			this.info.push(new NavMenuInfo('System', user.system.name))
+			this.info.push(new NavMenuInfo('Organization', user.system.orgName))
 		}
 	}
 	itemAdd(obj: any) {
@@ -591,21 +592,21 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 			})
 			queryData.dataTab.parms.valueSet(ParmsValuesType.itemsParmValue, 'myParmValue')
 			queryData.dataTab.parms.valueSet(
-				ParmsValuesType.queryOwnerSys,
+				ParmsValuesType.systemIdQuerySource,
 				navMenu.sm.user?.systemIdCurrent
 			)
 			queryData.dataTab.parms.valueSet(ParmsValuesType.itemsParmValueList, [])
 
 			let result: MethodResult = await evalExpr({
 				evalExprContext: 'navMenuTest',
-				exprRaw: `(SELECT sys_core::SysObjAttr FILTER .id IN <attrsAction,oaa_sys_msg_send,object,user>)`,
+				// exprRaw: `(SELECT sys_core::SysObjAttr FILTER .id IN <attrsAction,oaa_sys_msg_send,object,user>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <function,fSysRandom10>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .name = <literal,str,user_sys>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .name = <parms,str,itemsParmValue>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <record,uuid,id>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <system,uuid,id>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
-				// exprRaw: `(SELECT sys_core::SysObjAttr FILTER <evalObjAttrMulti>)`,
+				exprRaw: `(SELECT sys_core::SysObjAttr FILTER <${EvalExprCustomComposite.evalCustomCompositeObjAttrMulti}>)`,
 				queryData
 			})
 			console.log('adminDevTest.evalExpr.result:', result)

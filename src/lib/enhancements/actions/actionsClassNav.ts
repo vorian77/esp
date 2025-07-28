@@ -1,9 +1,4 @@
-import {
-	State,
-	StateNavLayout,
-	StateParms,
-	StateTriggerToken
-} from '$comps/app/types.appState.svelte'
+import { State, StateNavLayout, StateParms, StateTriggerToken } from '$comps/app/types.state.svelte'
 import { AppLevelNode } from '$comps/app/types.app.svelte'
 import {
 	actionErrorToken,

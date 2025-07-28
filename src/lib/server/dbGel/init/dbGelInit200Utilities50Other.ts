@@ -10,7 +10,7 @@ export async function addApp(data: any) {
 			appHeader: e.str,
 			isGlobalResource: e.bool,
 			name: e.str,
-			owner: e.str,
+			ownerSys: e.str,
 			nodes: e.array(e.str)
 		},
 		(p) => {
@@ -21,7 +21,7 @@ export async function addApp(data: any) {
 				createdBy: CREATOR,
 				isGlobalResource: p.isGlobalResource,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				modifiedBy: CREATOR,
 				nodes: e.assert_distinct(
 					e.for(e.array_unpack(p.nodes), (nodeName) => {
@@ -44,7 +44,7 @@ export async function addAppHeader(data: any) {
 			isGlobalResource: e.bool,
 			name: e.str,
 			orderDefine: e.int16,
-			owner: e.str
+			ownerSys: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysAppHeader, {
@@ -53,7 +53,7 @@ export async function addAppHeader(data: any) {
 				isGlobalResource: p.isGlobalResource,
 				name: p.name,
 				orderDefine: p.orderDefine,
-				owner: e.sys_core.getSystemPrime(p.owner),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				createdBy: CREATOR,
 				modifiedBy: CREATOR
 			})
@@ -70,7 +70,7 @@ export async function addObjAttr(data: any) {
 			code: e.str,
 			header: e.str,
 			name: e.str,
-			owner: e.str
+			ownerSys: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysObjAttr, {
@@ -79,7 +79,7 @@ export async function addObjAttr(data: any) {
 				header: p.header,
 				modifiedBy: CREATOR,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner)
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys)
 			})
 		}
 	)
@@ -91,7 +91,7 @@ export async function addCode(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			owner: e.str,
+			ownerSys: e.str,
 			codeType: e.str,
 			parent: e.optional(e.json),
 			header: e.optional(e.str),
@@ -103,7 +103,7 @@ export async function addCode(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysCode, {
-				owner: e.sys_core.getSystemPrime(p.owner),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				codeType: e.sys_core.getCodeType(p.codeType),
 				parent: e.select(
 					e.sys_core.getCode(
@@ -130,7 +130,7 @@ export async function addCodeAction(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			owner: e.str,
+			ownerSys: e.str,
 			codeType: e.str,
 			parent: e.optional(e.json),
 			header: e.optional(e.str),
@@ -142,7 +142,7 @@ export async function addCodeAction(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysCodeAction, {
-				owner: e.sys_core.getSystemPrime(p.owner),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				codeType: e.sys_core.getCodeType(p.codeType),
 				parent: e.select(
 					e.sys_core.getCode(
@@ -169,7 +169,7 @@ export async function addCodeType(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			owner: e.str,
+			ownerSys: e.str,
 			parent: e.optional(e.str),
 			header: e.optional(e.str),
 			name: e.str,
@@ -177,11 +177,54 @@ export async function addCodeType(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysCodeType, {
-				owner: e.sys_core.getSystemPrime(p.owner),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				parent: e.select(e.sys_core.getCodeType(p.parent)),
 				header: p.header,
 				name: p.name,
 				order: p.order,
+				createdBy: CREATOR,
+				modifiedBy: CREATOR
+			})
+		}
+	)
+	return await query.run(client, data)
+}
+
+export async function addEligibility(data: any) {
+	sectionHeader(`addEligibility - ${data.name}`)
+	const CREATOR = e.sys_user.getRootUser()
+	const query = e.params(
+		{
+			description: e.optional(e.str),
+			header: e.str,
+			name: e.str,
+			nodes: e.array(e.json),
+			ownerSys: e.str
+		},
+		(p) => {
+			return e.insert(e.sys_core.SysEligibility, {
+				codeAttrType: e.select(e.sys_core.getCodeAttrType('at_sys_eligibility')),
+				description: p.description,
+				header: p.header,
+				name: p.name,
+				nodes: e.assert_distinct(
+					e.for(e.array_unpack(p.nodes || e.cast(e.array(e.json), e.set())), (node) => {
+						return e.insert(e.sys_core.SysEligibilityNode, {
+							codeEligibilityType: e.sys_core.getCode(
+								'ct_sys_do_field_eligibility_type',
+								e.cast(e.str, e.json_get(node, 'codeEligibilityType'))
+							),
+							description: e.cast(e.str, e.json_get(node, 'description')),
+							exprState: e.cast(e.str, e.json_get(node, 'exprState')),
+							header: e.cast(e.str, e.json_get(node, 'header')),
+							name: e.cast(e.str, e.json_get(node, 'name')),
+							nodeId: e.cast(e.nonNegative, e.json_get(node, 'nodeId')),
+							nodeIdParent: e.cast(e.nonNegative, e.json_get(node, 'nodeIdParent')),
+							order: e.cast(e.default.nonNegative, e.json_get(node, 'order'))
+						})
+					})
+				),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				createdBy: CREATOR,
 				modifiedBy: CREATOR
 			})
@@ -197,7 +240,7 @@ export async function addMigration(data: any) {
 		{
 			description: e.optional(e.str),
 			name: e.str,
-			owner: e.str,
+			ownerSys: e.str,
 			sourceTables: e.array(e.json),
 			targetTables: e.array(e.json)
 		},
@@ -205,7 +248,7 @@ export async function addMigration(data: any) {
 			return e.insert(e.sys_migr.SysMigr, {
 				description: p.description,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				tablesSource: e.for(e.array_unpack(p.sourceTables), (t) => {
 					return e.insert(e.sys_migr.SysMigrSourceTable, {
 						codeMigrSourceType: e.select(
@@ -276,7 +319,6 @@ export async function addNode(data: any) {
 			codeComponent: e.str,
 			codeIcon: e.optional(e.str),
 			codeNodeType: e.str,
-			codeQueryOwnerType: e.optional(e.str),
 			codeQueryTypeAlt: e.optional(e.str),
 			codeRenderPlatform: e.optional(e.str),
 			dataObj: e.optional(e.str),
@@ -285,18 +327,18 @@ export async function addNode(data: any) {
 			isHideRowManager: e.optional(e.bool),
 			name: e.str,
 			orderDefine: e.optional(e.int16),
-			owner: e.str,
+			ownerSys: e.str,
 			page: e.optional(e.str),
 			selectListItems: e.optional(e.str),
 			selectListItemsHeader: e.optional(e.str),
-			selectListItemsParmValue: e.optional(e.str)
+			selectListItemsParmValue: e.optional(e.str),
+			systemQuerySource: e.optional(e.str)
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysNodeObj, {
-				codeComponent: e.select(e.sys_core.getCode('ct_sys_do_component', p.codeComponent)),
+				codeComponent: e.select(e.sys_core.getCode('ct_sys_node_component', p.codeComponent)),
 				codeIcon: e.sys_core.getCode('ct_sys_icon', p.codeIcon),
 				codeNodeType: e.sys_core.getCode('ct_sys_node_obj_type', p.codeNodeType),
-				codeQueryOwnerType: e.sys_core.getCode('ct_sys_query_owner_type', p.codeQueryOwnerType),
 				codeQueryTypeAlt: e.sys_core.getCode('ct_sys_query_type_alt', p.codeQueryTypeAlt),
 				codeRenderPlatform: e.sys_core.getCode('ct_sys_do_render_platform', p.codeRenderPlatform),
 				dataObj: e.sys_core.getDataObj(p.dataObj),
@@ -307,11 +349,12 @@ export async function addNode(data: any) {
 				modifiedBy: CREATOR,
 				name: p.name,
 				orderDefine: p.orderDefine,
-				owner: e.sys_core.getSystemPrime(p.owner),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				page: p.page,
 				selectListItems: e.select(e.sys_core.getDataObjFieldListItems(p.selectListItems)),
 				selectListItemsHeader: p.selectListItemsHeader,
-				selectListItemsParmValue: p.selectListItemsParmValue
+				selectListItemsParmValue: p.selectListItemsParmValue,
+				systemQuerySource: e.sys_core.getSystemPrime(p.systemQuerySource)
 			})
 		}
 	)
@@ -356,7 +399,7 @@ export async function addTask(data: any) {
 			name: e.str,
 			noDataMsg: e.optional(e.str),
 			nodeObj: e.optional(e.str),
-			owner: e.str
+			ownerSys: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_user.SysTask, {
@@ -375,7 +418,7 @@ export async function addTask(data: any) {
 				name: p.name,
 				noDataMsg: p.noDataMsg,
 				nodeObj: e.sys_core.getNodeObjByName(p.nodeObj),
-				owner: e.sys_core.getSystemPrime(p.owner)
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys)
 			})
 		}
 	)
@@ -387,12 +430,12 @@ export async function addUser(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
-			defaultSystem: e.str,
 			firstName: e.str,
 			isActive: e.bool,
 			lastName: e.str,
 			name: e.str,
-			owner: e.str,
+			ownerOrg: e.str,
+			systemDefault: e.str,
 			systems: e.optional(e.array(e.str)),
 			userTypes: e.optional(e.array(e.str))
 		},
@@ -400,15 +443,15 @@ export async function addUser(data: any) {
 			return e
 				.insert(e.sys_user.SysUser, {
 					createdBy: CREATOR,
-					defaultSystem: e.sys_core.getSystemPrime(p.defaultSystem),
 					isActive: p.isActive,
 					modifiedBy: CREATOR,
 					name: p.name,
-					owner: e.sys_core.getOrg(p.owner),
+					ownerOrg: e.sys_core.getOrg(p.ownerOrg),
 					person: e.insert(e.default.SysPerson, {
 						firstName: p.firstName,
 						lastName: p.lastName
 					}),
+					systemDefault: e.sys_core.getSystemPrime(p.systemDefault),
 					systems: e.assert_distinct(
 						e.for(e.array_unpack(p.systems || e.cast(e.array(e.str), e.set())), (sys) => {
 							return e.sys_core.getSystemPrime(sys)
@@ -424,7 +467,7 @@ export async function addUser(data: any) {
 					on: user.name,
 					else: e.update(user, () => ({
 						set: {
-							owner: e.sys_core.getOrg(p.owner),
+							ownerOrg: e.sys_core.getOrg(p.ownerOrg),
 							systems: e.assert_distinct(
 								e.for(e.array_unpack(p.systems || e.cast(e.array(e.str), e.set())), (sys) => {
 									return e.sys_core.getSystemPrime(sys)
@@ -455,8 +498,9 @@ export async function addUserType(data: any) {
 			header: e.str,
 			isSelfSignup: e.optional(e.bool),
 			name: e.str,
-			owner: e.str,
+			ownerOrg: e.str,
 			resources: e.optional(e.array(e.json)),
+			selfSignupSystem: e.optional(e.str),
 			tags: e.optional(e.array(e.json))
 		},
 		(p) => {
@@ -471,7 +515,7 @@ export async function addUserType(data: any) {
 							obj: e.assert_single(
 								e.select(e.sys_core.SysObjAttr, (soa) => ({
 									filter: e.op(
-										e.op(soa.owner.name, '=', e.cast(e.str, attr.owner)),
+										e.op(soa.ownerSys.name, '=', e.cast(e.str, attr.ownerSys)),
 										'and',
 										e.op(soa.name, '=', e.cast(e.str, attr.name))
 									)
@@ -492,7 +536,7 @@ export async function addUserType(data: any) {
 							obj: e.assert_single(
 								e.select(e.sys_core.SysObjAttr, (soa) => ({
 									filter: e.op(
-										e.op(soa.owner.name, '=', e.cast(e.str, attr.owner)),
+										e.op(soa.ownerSys.name, '=', e.cast(e.str, attr.ownerSys)),
 										'and',
 										e.op(soa.name, '=', e.cast(e.str, attr.name))
 									)
@@ -536,7 +580,7 @@ export async function addUserType(data: any) {
 												obj: e.assert_single(
 													e.select(e.sys_core.SysObjAttr, (soa) => ({
 														filter: e.op(
-															e.op(soa.owner.name, '=', e.cast(e.str, attr.owner)),
+															e.op(soa.ownerSys.name, '=', e.cast(e.str, attr.ownerSys)),
 															'and',
 															e.op(soa.name, '=', e.cast(e.str, attr.name))
 														)
@@ -563,7 +607,7 @@ export async function addUserType(data: any) {
 												obj: e.assert_single(
 													e.select(e.sys_core.SysObjAttr, (soa) => ({
 														filter: e.op(
-															e.op(soa.owner.name, '=', e.cast(e.str, attr.owner)),
+															e.op(soa.ownerSys.name, '=', e.cast(e.str, attr.ownerSys)),
 															'and',
 															e.op(soa.name, '=', e.cast(e.str, attr.name))
 														)
@@ -586,8 +630,9 @@ export async function addUserType(data: any) {
 				header: p.header,
 				isSelfSignup: valueOrDefaultParm(p.isSelfSignup, false),
 				name: p.name,
-				owner: e.sys_core.getOrg(p.owner),
-				modifiedBy: CREATOR
+				ownerOrg: e.sys_core.getOrg(p.ownerOrg),
+				modifiedBy: CREATOR,
+				selfSignupSystem: e.sys_core.getSystemPrime(p.selfSignupSystem)
 			})
 		}
 	)
@@ -664,13 +709,13 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 												e.select(e.sys_core.SysObjAttr, (soa) => ({
 													filter: e.op(
 														e.op(
-															soa.owner.name,
+															soa.ownerSys.name,
 															'=',
 															e.cast(
 																e.str,
 																e.json_get(
 																	e.cast(e.json, e.json_get(t, 'valueTargetAttribute')),
-																	'owner'
+																	'ownerSys'
 																)
 															)
 														),
@@ -692,7 +737,7 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 											valueTargetCode: e.sys_core.getCodeSystem(
 												e.cast(
 													e.str,
-													e.json_get(e.cast(e.json, e.json_get(t, 'valueTargetCode')), 'owner')
+													e.json_get(e.cast(e.json, e.json_get(t, 'valueTargetCode')), 'ownerSys')
 												),
 												e.cast(
 													e.str,
@@ -712,7 +757,7 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 													(a) => {
 														return e.select(e.sys_core.SysObjAttr, (soa) => ({
 															filter: e.op(
-																e.op(soa.owner.name, '=', e.cast(e.str, a.owner)),
+																e.op(soa.ownerSys.name, '=', e.cast(e.str, a.owner)),
 																'and',
 																e.op(soa.name, '=', e.cast(e.str, a.name))
 															)
@@ -727,7 +772,7 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 													),
 													(c) => {
 														return e.sys_core.getCodeSystem(
-															e.cast(e.str, e.json_get(c, 'owner')),
+															e.cast(e.str, e.json_get(c, 'ownerSys')),
 															e.cast(e.str, e.json_get(c, 'codeType')),
 															e.cast(e.str, e.json_get(c, 'name'))
 														)
