@@ -7,9 +7,9 @@ import {
 import { Field, FieldAccess } from '$comps/form/field.svelte'
 import {
 	type DataRecord,
-	getDataRecordValueKey,
-	getDataRecordValueKeyData,
-	getDataRecordValueKeyDisplay,
+	getArray,
+	recordValueGet,
+	recordValueGetDisplay,
 	getValueDisplay,
 	PropDataType,
 	required
@@ -20,29 +20,57 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '$comps/other/gridParmField.ts'
 
 export class CellEditorSelect implements ICellEditorComp {
-	// dummy selector for modal select fields
 	gui!: HTMLElement
 	params!: ICellEditorParams
+	currentValue: any
 
 	init(params: ICellEditorParams) {
 		const clazz = 'CellEditorSelect'
-		this.gui = document.createElement('div')
 		this.params = params
+		this.gui = document.createElement('button')
+		// this.gui = document.createElement('div')
 
-		const parmFields = required(params?.colDef?.context.parmFields, clazz, 'parmFields')
-		const fieldName = getDataRecordValueKey(params.data, 'name')
-		const field = required(
-			parmFields.find((f: Field) => f.colDO.propNameRaw === fieldName),
-			clazz,
-			'field'
-		)
+		this.currentValue = params.value[0]
 
-		let style = 'width: 100%; border: 0; font-size: 14px;'
-		if (field.fieldAccess === FieldAccess.required) {
-			style += ' background-color: rgb(219,234,254);'
-		}
+		// let colDef: any = params.colDef
+		// colDef.cellDataType = 'object'
+		// params.api.setGridOption('columnDefs', colDef)
+		// api.setGridOption('quickFilterText', listFilterQuick)
 
-		this.gui.innerHTML = `<input id="${fieldName}" name="${fieldName}" type="text" style="${style}" readonly value="${getValueDisplay(params.value)}"/>`
+		// const parmFields = required(params?.colDef?.context.parmFields, clazz, 'parmFields')
+		// const fieldName = recordValueGet(params.data, 'name')
+		// const field = required(
+		// 	parmFields.find((f: Field) => f.colDO.propName === fieldName),
+		// 	clazz,
+		// 	'field'
+		// )
+
+		// let style = 'width: 100%; border: 0; font-size: 14px;'
+		// if (field.fieldAccess === FieldAccess.required) {
+		// 	style += ' background-color: rgb(219,234,254);'
+		// }
+
+		this.gui.addEventListener('click', () => {
+			console.log('CellEditorSelect clicked', { params })
+			// Simple prompt (you can replace with custom modal)
+			const userInput = prompt('Enter value:')
+			if (userInput !== null) {
+				// this.currentValue = userInput
+				// Update grid
+				// const parmFields = required(params?.colDef?.context.parmFields, clazz, 'parmFields')
+				// const fieldName = recordValueGet(params.data, 'name')
+				// const field = required(
+				// 	parmFields.find((f: Field) => f.colDO.propName === fieldName),
+				// 	clazz,
+				// 	'field'
+				// )
+				const result = params.node.setDataValue('parmValue', this.currentValue)
+				this.gui.innerHTML = getValueDisplay(this.currentValue)
+			}
+		})
+		// this.gui.innerHTML = `<input id="${fieldName}" name="${fieldName}" type="text" style="${style}" readonly value="${getValueDisplay(params.value)}"/>`
+		// this.gui.innerHTML = `<input id="${fieldName}" name="${fieldName}" type="text" style="${style}" readonly value="${params.value}"/>`
+		this.gui.innerHTML = getValueDisplay(params.value)
 	}
 
 	getGui() {
@@ -50,19 +78,19 @@ export class CellEditorSelect implements ICellEditorComp {
 	}
 
 	getValue() {
-		return getDataRecordValueKey(this.params.data, 'parmValue')
+		return 'phyl hall'
 	}
 
-	afterGuiAttached() {}
-
-	isPopup() {
-		return false
+	refresh(params: ICellEditorParams): boolean {
+		// this.gui.innerHTML = `<input id="${params.colDef.field}" name="${params.colDef.field}" type="text" style="width: 100%; border: 0; font-size: 14px;" readonly value="${getValueDisplay(params.value)}"/>`
+		const t = Date.now()
+		this.gui.innerHTML = `${t}`
+		return true
 	}
 }
 
 export function cellEditorSelectorParmField(params: ICellEditorParams) {
-	const codeDataType = getDataRecordValueKeyDisplay(params.data, 'codeDataType')
-
+	const codeDataType = recordValueGetDisplay(params.data, 'codeDataType')
 	switch (codeDataType) {
 		case PropDataType.date:
 			return {
@@ -92,9 +120,9 @@ export class CellRendererParmField implements ICellRendererComp {
 		this.params = params
 
 		const parmFields = required(params?.colDef?.context.parmFields, clazz, 'parmFields')
-		const fieldName = getDataRecordValueKey(params.data, 'name')
+		const fieldName = recordValueGet(params.data, 'name')
 		const field = required(
-			parmFields.find((f: Field) => f.colDO.propNameRaw === fieldName),
+			parmFields.find((f: Field) => f.colDO.propName === fieldName),
 			clazz,
 			'field'
 		)
@@ -104,7 +132,8 @@ export class CellRendererParmField implements ICellRendererComp {
 			style += ' background-color: rgb(219,234,254);'
 		}
 
-		this.gui.innerHTML = `<input id="${fieldName}" name="${fieldName}" type="text" style="${style}" readonly value="${getValueDisplay(params.value)}"/>`
+		// this.gui.innerHTML = `<input id="${fieldName}" name="${fieldName}" type="text" style="${style}" readonly value="${getValueDisplay(params.value)}"/>`
+		this.gui.innerHTML = `<input id="${fieldName}" name="${fieldName}" type="text" style="${style}" readonly value="Renderer"/>`
 	}
 
 	getGui() {
@@ -115,16 +144,61 @@ export class CellRendererParmField implements ICellRendererComp {
 	}
 }
 
-export class CellRendererParmFieldDate extends CellRendererParmField {}
+export class CellRendererParmFieldDate implements ICellRendererComp {
+	eGui!: HTMLSpanElement
 
-export class CellRendererParmFieldSelect extends CellRendererParmField {
-	getDisplayValue(params: ICellRendererParams) {
-		return getValueDisplay(params.value)
+	init(params: ICellRendererParams) {
+		this.eGui = document.createElement('span')
+		if (params.value !== '' || params.value !== undefined) {
+			const imgForMood =
+				params.value === 'Happy'
+					? 'https://www.ag-grid.com/example-assets/smileys/happy.png'
+					: 'https://www.ag-grid.com/example-assets/smileys/sad.png'
+			this.eGui.innerHTML = `<img width="20px" src="${imgForMood}" />`
+		}
+	}
+
+	getGui() {
+		return this.eGui
+	}
+
+	refresh(params: ICellRendererParams): boolean {
+		return false
+	}
+}
+
+export class CellRendererParmFieldSelect implements ICellRendererComp {
+	eGui!: HTMLSpanElement
+
+	init(params: ICellRendererParams) {
+		this.eGui = document.createElement('span')
+		let valueData: any[] = getArray(params.data.parmValue)
+		let valueDisplay = valueData
+			.map((v: DataRecord) => {
+				return v.display
+			})
+			.join(', ')
+
+		// this.eGui.innerHTML = `Phyll Hall`
+		console.log('CellRendererParmFieldSelect.init', { valueDisplay })
+		this.eGui.innerHTML = `${valueDisplay}`
+		// this.eGui.innerHTML = `Renderer`
+
+		// const t = Date.now()
+		// this.eGui.innerHTML = `${t}`
+	}
+
+	getGui() {
+		return this.eGui
+	}
+
+	refresh(params: ICellRendererParams): boolean {
+		return false
 	}
 }
 
 export function cellRendererSelectorParmField(params: ICellRendererParams) {
-	const codeDataType = getDataRecordValueKeyDisplay(params.data, 'codeDataType')
+	const codeDataType = recordValueGetDisplay(params.data, 'codeDataType')
 	switch (codeDataType) {
 		case PropDataType.date:
 			return {
@@ -137,6 +211,7 @@ export function cellRendererSelectorParmField(params: ICellRendererParams) {
 		case PropDataType.uuidList:
 			return {
 				component: CellRendererParmFieldSelect
+				// component: CellRendererParmFieldDate
 			}
 		default:
 			error(500, {

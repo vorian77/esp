@@ -3,14 +3,14 @@ import {
 	RawDataObj,
 	RawDataObjPropDB
 } from '$comps/dataObj/types.rawDataObj.svelte'
-import { FieldEmbed } from '$comps/form/fieldEmbed'
+import { FieldEmbedList } from '$comps/form/fieldEmbed'
 import {
 	DbTable,
 	QuerySource,
 	QuerySourceParent,
 	type RawDataList
 } from '$lib/queryClient/types.queryClient'
-import { nbrOrDefault, valueOrDefault } from '$lib/utils/utils'
+import { nbrOrDefault, recordValueSet, valueOrDefault } from '$lib/utils/utils'
 import { evalExpr, EvalValue, getUUID, getValDb } from '$utils/utils.evalParserDb'
 import {
 	classOptional,
@@ -19,13 +19,18 @@ import {
 	DataRecordStatus,
 	DataRow,
 	DataRows,
+	type EligibilityNode,
+	EvalExprCustomPreset,
 	debug,
-	FieldEmbedType,
+	FieldEmbedListType,
 	formatDateTime,
 	MethodResult,
 	ParmsValuesType,
 	PropDataType,
-	PropNamePrefixType,
+	PropKeyType,
+	recordHasKey,
+	recordValueGet,
+	recordValueGetData,
 	required,
 	strRequired
 } from '$utils/types'
@@ -36,7 +41,7 @@ const FILENAME = '/$routes/api/dbGel/dbGelScriptDQuery.ts'
 
 export class GelQuery {
 	evelExprContext: string
-	fieldEmbed?: FieldEmbed
+	fieldEmbed?: FieldEmbedList
 	formatData?: FormatData
 	parent?: QuerySourceParent
 	queryData: TokenApiQueryData
@@ -54,37 +59,17 @@ export class GelQuery {
 
 		// derived
 		this.parent = classOptional(QuerySourceParent, this.rawDataObj.rawQuerySource._parent)
-		if (this.fieldEmbed && this.fieldEmbed.embedType === FieldEmbedType.listSelect) {
+		if (
+			this.fieldEmbed &&
+			this.fieldEmbed.colDO.fieldEmbedListType === FieldEmbedListType.listSelect
+		) {
 			this.parent = new QuerySourceParent({
-				_columnName: this.fieldEmbed.embedFieldNameRaw,
+				_columnName: this.fieldEmbed.rawFieldEmbedList.embedPropName,
 				_columnIsMultiSelect: true,
 				_filterExpr: 'none',
-				_table: this.fieldEmbed.parentTable
+				_table: this.fieldEmbed.rawFieldEmbedList.parentTableRoot
 			})
 		}
-	}
-
-	initReturnData(
-		rawDataObj: RawDataObj,
-		queryData: TokenApiQueryData | undefined,
-		fieldEmbed: FieldEmbed | undefined
-	) {
-		const clazz = 'initReturnData'
-		const queryDataSource = required(queryData, clazz, 'queryData')
-		const dataSource = fieldEmbed ? fieldEmbed.data : queryDataSource.dataTab
-		let result: MethodResult = DataObjData.load(dataSource)
-		if (result.error) {
-			error(500, {
-				file: FILENAME,
-				function: 'GelQuery.initReturnData',
-				msg: `Invalid dataSource`
-			})
-		}
-		let returnData: DataObjData = result.data
-		if (!returnData.rawDataObj) returnData.rawDataObj = rawDataObj
-		returnData.reset()
-		returnData.parms.update(queryDataSource.dataTab?.parms.valueGetAll())
-		return returnData
 	}
 
 	addItem(list: string, item: string, separator: string) {
@@ -172,7 +157,7 @@ export class GelQuery {
 		let properties = ''
 
 		props.forEach((propObj) => {
-			const clazzProp = `${clazz}.${propObj.propName}`
+			const clazzProp = `${clazz}.${propObj.propNameKey}`
 			const exprPreset = strRequired(propObj.exprPreset, clazzProp, 'exprPreset')
 			const propExpr = propObj.link
 				? propObj.isLinkSignature
@@ -180,7 +165,7 @@ export class GelQuery {
 					: `{data := ${exprPreset}}`
 				: exprPreset
 
-			const prop = `${propObj.propName} := ${propExpr}`
+			const prop = `${propObj.propNameKey} := ${propExpr}`
 			properties = this.addItemComma(properties, prop)
 		})
 
@@ -197,7 +182,7 @@ export class GelQuery {
 		let properties = ''
 
 		for (let propObj of props) {
-			const clazzProp = `${clazz}.${propObj.propName}`
+			const clazzProp = `${clazz}.${propObj.propNameKey}`
 			const exprRaw = strRequired(propObj.exprPreset, clazzProp, 'exprRaw')
 
 			let result: MethodResult = await evalExpr({
@@ -208,7 +193,7 @@ export class GelQuery {
 			})
 			if (result.error) return result
 			const exprEvaluated: string = result.data
-			const prop = `${propObj.propNameRaw} := ${exprEvaluated}`
+			const prop = `${propObj.propName} := ${exprEvaluated}`
 			properties = this.addItemComma(properties, prop)
 		}
 
@@ -231,16 +216,16 @@ export class GelQuery {
 		const propsSave = propsRaw.filter((p) => p.indexTable === indexTable)
 		for (let i = 0; i < propsSave.length; i++) {
 			const p = propsSave[i]
-			if (!p.fieldEmbed) {
+			if (!p.fieldEmbedListType) {
 				let result: MethodResult = await this.getPropsSavePropExpr(i, p, query, fValues)
 				if (result.error) return result
 
-				const propDB = `${p.propNameRaw} := ${result.data}`
+				const propDB = `${p.propName} := ${result.data}`
 				properties.push(propDB)
 
 				// format values
 				dataRows.forEach((dataRow) => {
-					dataRow.record[p.propName] = fValues[i](dataRow.getValue(p.propName))
+					dataRow.setValue(p.propNameKey, fValues[i](dataRow.getValue(p.propNameKey)))
 				})
 			}
 		}
@@ -256,7 +241,7 @@ export class GelQuery {
 	): Promise<MethodResult> {
 		const clazz = 'getPropsSavePropExpr'
 		let propExpr = ''
-		const clazzProp = `${clazz}.${propObj.propName}`
+		const clazzProp = `${clazz}.${propObj.propNameKey}`
 
 		let exprRaw =
 			!query.rawDataObj.rawQuerySource.listPresetExpr && propObj.exprSave ? propObj.exprSave : ''
@@ -281,7 +266,8 @@ export class GelQuery {
 			})
 			propExpr = `${exprEvaluated}`
 		} else {
-			let item = `json_get(item, '${propObj.propName}')`
+			let item = `json_get(item, '${propObj.propNameKey}')`
+			let linkTable = ''
 
 			let result: MethodResult = getValDb(propObj.codeDataType, undefined)
 			if (result.error) return result
@@ -294,14 +280,23 @@ export class GelQuery {
 				case '<int32>':
 				case '<int64>':
 					setValueFunction(propIdx, (rawValue: any) => {
-						return rawValue === undefined || rawValue === null ? '' : rawValue.toString()
+						return [null, undefined].includes(rawValue) ? '' : rawValue.toString()
 					})
 					propExpr = `(SELECT ${evalValue.dataTypeDb}{} IF <str>${item} = '' ELSE ${evalValue.dataTypeDb}<str>${item})`
 					break
 
-				case 'link':
-					let linkTable = ''
+				case PropDataType.jsonCustomEligibility:
+					if (propObj?.rawfieldEmbedDetailEligibility) {
+						setValueFunction(propIdx, (rawValue: any) => {
+							return rawValue && propObj.rawfieldEmbedDetailEligibility
+								? propObj?.rawfieldEmbedDetailEligibility.formatForServer(rawValue)
+								: getUUID()
+						})
+					}
+					propExpr = `(<json>${item})`
+					break
 
+				case PropDataType.link:
 					if (propObj.linkItemsSource) {
 						linkTable = strRequired(
 							propObj.linkItemsSource.querySource.table?.object,
@@ -309,7 +304,10 @@ export class GelQuery {
 							'linkItemsSource.table'
 						)
 					} else if (propObj.link) {
-						linkTable = strRequired(propObj.link?.table?.object, clazzProp, 'link.table')
+						if (propObj.propName === 'modifiedBy') {
+							debug('dbGelScriptQuery', 'getPropsSavePropExpr.propObj', propObj)
+						}
+						linkTable = strRequired(propObj.link.getTableObj(), clazzProp, 'link.table')
 					}
 
 					linkTable = linkTable === this.getTableRootObj() ? `DETACHED ${linkTable}` : linkTable
@@ -378,7 +376,7 @@ export class GelQuery {
 			}
 
 			propValue = propValue ? ` := ${propValue}` : ''
-			return prop.propName + propValue
+			return prop.propNameKey + propValue
 		}
 	}
 
@@ -394,11 +392,15 @@ export class GelQuery {
 
 			if (prop.linkItemsSource) {
 				expr = `${expr} ${prop.linkItemsSource.exprProps}`
+			} else if (expr.includes(PropDataType.jsonCustomEligibility)) {
+				if (prop.rawfieldEmbedDetailEligibility) {
+					expr = prop.rawfieldEmbedDetailEligibility.getExprPreset()
+				}
 			} else if (prop.link) {
 				expr = `${expr} ${prop.link.exprProps}`
 			}
 
-			properties = this.addItemComma(properties, `${prop.propName} := ${expr}`)
+			properties = this.addItemComma(properties, `${prop.propNameKey} := ${expr}`)
 		})
 
 		if (!properties) properties = `dummy:= <str>{}`
@@ -414,9 +416,9 @@ export class GelQuery {
 		} else {
 			this.rawDataObj.rawPropsSort.forEach((prop) => {
 				if (script) script += ' THEN '
-				let propName = prop.propName
-				if (prop.link) propName += '.display'
-				script += `.${propName} ${prop.codeSortDir}`
+				let key = prop.propNameKey
+				if (prop.link) key += '.display'
+				script += `.${key} ${prop.codeSortDir}`
 			})
 		}
 
@@ -516,6 +518,7 @@ export class ObjTable {
 class FormatData {
 	dummyQueryData: TokenApiQueryData = new TokenApiQueryData({})
 	evalExprContext: string
+	isPreset: boolean = false
 	propNames: string[] = []
 	propsSelect: RawDataObjPropDB[]
 	querySource: QuerySource
@@ -527,7 +530,7 @@ class FormatData {
 		this.querySource = required(obj.querySource, clazz, 'querySource')
 
 		// derived
-		this.propNames = this.propsSelect.map((prop) => prop.propName)
+		this.propNames = this.propsSelect.map((prop) => prop.propNameKey)
 	}
 	async evalExprCalc(expr: string, DataRecord: DataRecord, propNames: string[]) {
 		const clazz = 'evalExprCalc'
@@ -572,9 +575,13 @@ class FormatData {
 				// no change
 				break
 
+			case PropDataType.jsonCustomEligibility:
+				if (prop.rawfieldEmbedDetailEligibility && !this.isPreset) {
+					value = prop.rawfieldEmbedDetailEligibility.formatForClientFromRetrieve(value)
+				}
+				break
+
 			case PropDataType.link:
-				if (value && Object.hasOwn(value, 'value')) value = value.value
-				value = prop.isMultiSelect ? (value ? value : []) : value ? value : ''
 				break
 
 			case PropDataType.none:
@@ -585,7 +592,7 @@ class FormatData {
 				error(500, {
 					file: FILENAME,
 					function: `formatDataForDisplay`,
-					msg: `No case defined for prop: ${prop.propName} - propDataType: ${propDataType}`
+					msg: `No case defined for prop: ${prop.propNameKey} - propDataType: ${propDataType}`
 				})
 		}
 		return value
@@ -599,7 +606,7 @@ class FormatData {
 				return value ? formatDateTime(value) : ''
 
 			default:
-				return value || ['0', 0].includes(value) ? value : null
+				return typeof value === 'boolean' ? value : value || ['0', 0].includes(value) ? value : null
 		}
 	}
 
@@ -612,7 +619,7 @@ class FormatData {
 					this.propNames
 				)
 				if (result.error) return result
-				recordRaw[prop.propName] = result.data
+				recordRaw = recordValueSet(recordRaw, prop.propNameKey, result.data)
 			}
 		}
 		return new MethodResult()
@@ -639,14 +646,22 @@ class FormatDataSelect extends FormatData {
 		const clazz = 'FormatDataSelect.processRowProps'
 		let recordReturn: DataRecord = {}
 		this.propsSelect.forEach((prop) => {
-			if (Object.hasOwn(recordRaw, prop.propName)) {
-				recordReturn[prop.propName] = this.formatDataForDisplay(
-					prop,
-					prop.codeDataType,
-					recordRaw[prop.propName]
+			if (recordHasKey(recordRaw, prop.propNameKey)) {
+				recordReturn = recordValueSet(
+					recordReturn,
+					prop.propNameKey,
+					this.formatDataForDisplay(
+						prop,
+						prop.codeDataType,
+						recordValueGet(recordRaw, prop.propNameKey)
+					)
 				)
 			} else {
-				recordReturn[prop.propName] = this.formatDataForDisplay(prop, prop.codeDataType, undefined)
+				recordReturn = recordValueSet(
+					recordReturn,
+					prop.propNameKey,
+					this.formatDataForDisplay(prop, prop.codeDataType, undefined)
+				)
 			}
 		})
 		return new MethodResult(new DataRow(status, recordReturn))
@@ -658,6 +673,7 @@ class FormatDataSelectPreset extends FormatDataSelect {
 	constructor(obj: any) {
 		const clazz = 'FormatDataSelectPreset.constructor'
 		super(obj)
+		this.isPreset = true
 	}
 	async prepRecord(recordRaw: DataRecord) {
 		let result: MethodResult = await super.prepRecord(recordRaw)
@@ -708,11 +724,15 @@ class FormatDataUpdate extends FormatData {
 	}
 	processRowProps(recordReturn: DataRecord, status: DataRecordStatus): MethodResult {
 		this.propsSelect.forEach((prop) => {
-			if (prop.propNamePrefixType !== PropNamePrefixType.linkItems) {
-				recordReturn[prop.propName] = this.formatDataForDisplay(
-					prop,
-					prop.codeDataType,
-					recordReturn[prop.propName]
+			if (prop.propKeyType !== PropKeyType.linkItems) {
+				recordReturn = recordValueSet(
+					recordReturn,
+					prop.propNameKey,
+					this.formatDataForDisplay(
+						prop,
+						prop.codeDataType,
+						recordValueGet(recordReturn, prop.propNameKey)
+					)
 				)
 			}
 		})

@@ -14,7 +14,7 @@ import type * as _default from "./default";
 import type * as _app_crm from "./app_crm";
 import type * as _sys_migr from "./sys_migr";
 import type * as _sys_test from "./sys_test";
-import type * as _org_client_city_baltimore from "./org_client_city_baltimore";
+import type * as _org_client_baltimore from "./org_client_baltimore";
 import type * as _sys_db from "./sys_db";
 export type $AccessKind = {
   "Select": $.$expr_Literal<$AccessKind>;
@@ -796,8 +796,7 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_user::SysUserPref]": $.LinkDesc<_sys_user.$SysUserPref, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_user::SysUserParm]": $.LinkDesc<_sys_user.$SysUserParm, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_rep::SysAnalytic]": $.LinkDesc<_sys_rep.$SysAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is org_client_city_baltimore::MoedPartData]": $.LinkDesc<_org_client_city_baltimore.$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is org_client_city_baltimore::MoedParticipant]": $.LinkDesc<_org_client_city_baltimore.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is org_client_baltimore::MoedPartData]": $.LinkDesc<_org_client_baltimore.$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldEmbedListEdit]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListEdit, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_user::SysUser]": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldEmbedListSelect]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListSelect, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -809,6 +808,10 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_user::currentUser]": $.LinkDesc<_sys_user.$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_db::SysColumn]": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_db::SysTable]": $.LinkDesc<_sys_db.$SysTable, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is org_client_baltimore::MoedParticipant]": $.LinkDesc<_org_client_baltimore.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_core::SysEligibilityNode]": $.LinkDesc<_sys_core.$SysEligibilityNode, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_core::SysEligibility]": $.LinkDesc<_sys_core.$SysEligibility, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is app_cm::CmCsfEligibility]": $.LinkDesc<_app_cm.$CmCsfEligibility, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<intersection_of": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<subject": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

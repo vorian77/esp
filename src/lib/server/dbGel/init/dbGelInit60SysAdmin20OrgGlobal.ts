@@ -64,29 +64,29 @@ function initConfigNodes(init: InitDb) {
 async function initFieldListItems(init: InitDb) {
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [
-			[0, 'org', 'Organization', '.owner.owner.header', true, 0],
-			[1, 'system', 'System', '.owner.header', true, 1],
+			[0, 'org', 'Organization', '.ownerSys.ownerOrg.header', true, 0],
+			[1, 'system', 'System', '.ownerSys.header', true, 1],
 			[2, 'name', 'Name', '.name', true, 2]
 		],
 		exprFilter: `.codeType.name = <parms,str,itemsParmValue> 
 		AND (.isGlobalResource 
-		UNION .owner.id = <tree,uuid,SysSystem.id>
-		UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents)`,
+		UNION .ownerSys.id = <tree,uuid,SysSystem.id>
+		UNION .ownerSys IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents)`,
 		name: 'il_sys_code_system_org_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		table: 'SysCode'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [
-			[0, 'org', 'Organization', '.owner.owner.header', true, 0],
-			[1, 'system', 'System', '.owner.header', true, 1],
+			[0, 'org', 'Organization', '.ownerSys.ownerOrg.header', true, 0],
+			[1, 'system', 'System', '.ownerSys.header', true, 1],
 			[2, 'name', 'Name', '.name', true, 2]
 		],
 		exprFilter: `.isGlobalResource 
-		UNION .owner.id = <tree,uuid,SysSystem.id>
-		UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents`,
+		UNION .ownerSys.id = <tree,uuid,SysSystem.id>
+		UNION .ownerSys IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents`,
 		name: 'il_sys_node_obj_system_org_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		table: 'SysNodeObj'
 	})
 }
@@ -98,7 +98,7 @@ async function initFieldListConfigAttrAccess(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Attribute Accesses',
 		name: 'doflc_admin_attr_access_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttrAccess' }],
 		fields: [
 			{
@@ -140,7 +140,7 @@ async function initFieldListConfigAttrAccess(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Attribute Access',
 		name: 'doflc_admin_attr_access_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttrAccess' }],
 		fields: [
 			{
@@ -238,7 +238,7 @@ async function initFieldListConfigAttrAccess(init: InitDb) {
 		dataObjEmbed: 'doflc_admin_attr_access_list',
 		dataObjModal: 'doflc_admin_attr_access_detail',
 		name: 'flec_admin_attr_access',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -249,7 +249,7 @@ async function initFieldListConfigAttrAction(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Attribute Actions',
 		name: 'doflc_admin_attr_action_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttrAction' }],
 		fields: [
 			{
@@ -291,7 +291,7 @@ async function initFieldListConfigAttrAction(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Attribute Action',
 		name: 'doflc_admin_attr_action_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttrAction' }],
 		fields: [
 			{
@@ -389,7 +389,7 @@ async function initFieldListConfigAttrAction(init: InitDb) {
 		dataObjEmbed: 'doflc_admin_attr_action_list',
 		dataObjModal: 'doflc_admin_attr_action_detail',
 		name: 'flec_admin_attr_action',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -400,7 +400,7 @@ async function initFieldListConfigAttrsExpr(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Attribute Expressions',
 		name: 'doflc_admin_attrs_expr_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttrExpr' }],
 		fields: [
 			{
@@ -436,7 +436,7 @@ async function initFieldListConfigAttrsExpr(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Attribute Expression',
 		name: 'doflc_admin_attrs_expr_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttrExpr' }],
 		fields: [
 			{
@@ -533,7 +533,7 @@ async function initFieldListConfigAttrsExpr(init: InitDb) {
 		dataObjEmbed: 'doflc_admin_attrs_expr_list',
 		dataObjModal: 'doflc_admin_attrs_expr_detail',
 		name: 'flec_admin_attrs_expr',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -544,7 +544,7 @@ async function initFieldListConfigAttrsVirtual(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Virtual Attributes',
 		name: 'doflc_admin_attrs_virtual_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttrVirtual' }],
 		fields: [
 			{
@@ -553,16 +553,18 @@ async function initFieldListConfigAttrsVirtual(init: InitDb) {
 				isDisplayable: false,
 				orderDefine: 10
 			},
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	columnName: 'codeAttrTypeAction',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 20,
-			// 	orderDefine: 20,
-			// 	indexTable: 0,
-			// 	linkColumns: ['name'],
-			// 	linkTable: 'SysCode'
-			// },
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeAttrTypeAction',
+				indexTable: 0,
+				isDisplayable: true,
+				linkColumns: ['name'],
+				linkTable: 'SysCode',
+				orderCrumb: 10,
+				orderDefine: 20,
+				orderDisplay: 20,
+				orderSort: 10
+			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'expr',
@@ -580,7 +582,7 @@ async function initFieldListConfigAttrsVirtual(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Virtual Attribute',
 		name: 'doflc_admin_attrs_virtual_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttrVirtual' }],
 		fields: [
 			{
@@ -593,21 +595,23 @@ async function initFieldListConfigAttrsVirtual(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'attrsAccess',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
 				fieldEmbedListConfig: 'flec_admin_attr_access',
-				indexTable: 0
+				indexTable: 0,
+				isDisplayable: true,
+				linkTable: 'SysObjAttrAccess',
+				orderDefine: 20,
+				orderDisplay: 20
 			},
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'attrsAction',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
 				fieldEmbedListConfig: 'flec_admin_attr_action',
-				indexTable: 0
+				indexTable: 0,
+				isDisplayable: true,
+				linkTable: 'SysObjAttrAction',
+				orderDefine: 30,
+				orderDisplay: 30
 			},
 			{
 				codeAccess: 'optional',
@@ -688,7 +692,7 @@ async function initFieldListConfigAttrsVirtual(init: InitDb) {
 		dataObjEmbed: 'doflc_admin_attrs_virtual_list',
 		dataObjModal: 'doflc_admin_attrs_virtual_detail',
 		name: 'flec_admin_attrs_virtual',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -699,7 +703,7 @@ async function initFieldListConfigNodesConfig(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Configuration Nodes',
 		name: 'doflc_admin_nodes_config_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysNodeObjConfig' }],
 		fields: [
 			{
@@ -741,7 +745,7 @@ async function initFieldListConfigNodesConfig(init: InitDb) {
 		codeDataObjType: 'doEmbed',
 		header: 'Configuration Node',
 		name: 'doflc_admin_nodes_config_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysNodeObjConfig' }],
 		fields: [
 			{
@@ -776,7 +780,7 @@ async function initFieldListConfigNodesConfig(init: InitDb) {
 		dataObjEmbed: 'doflc_admin_nodes_config_list',
 		dataObjModal: 'doflc_admin_nodes_config_detail',
 		name: 'flec_admin_nodes_config',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -786,11 +790,11 @@ function initFieldListSelectCodeType(init: InitDb) {
 		codeCardinality: 'list',
 		codeDataObjType: 'doEmbed',
 		exprFilter: `.isGlobalResource 
-		UNION .owner.id = <tree,uuid,SysSystem.id>
-		UNION .owner IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents`,
+		UNION .ownerSys.id = <tree,uuid,SysSystem.id>
+		UNION .ownerSys IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).systemParents`,
 		header: 'Select Code Types(s)',
 		name: 'dofls_admin_code_type_org_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysCodeType' }],
 		fields: [
 			{
@@ -809,11 +813,10 @@ function initFieldListSelectCodeType(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'owner',
-				headerAlt: 'Organization',
+				columnName: 'ownerSys',
+				exprCustom: `.header ?? .name`,
 				indexTable: 0,
 				isDisplayable: true,
-				linkColumns: ['header'],
 				linkTable: 'SysSystem',
 				orderCrumb: 10,
 				orderDefine: 30,
@@ -846,7 +849,7 @@ function initFieldListSelectCodeType(init: InitDb) {
 		btnLabelComplete: 'Select Code Type(s)',
 		dataObjList: 'dofls_admin_code_type_org_global',
 		name: 'fels_admin_code_type_org_global',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -858,7 +861,7 @@ function initFieldListSelectSystem(init: InitDb) {
 		exprFilter: '.id NOT IN (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).id',
 		header: 'Select Systems',
 		name: 'dofls_admin_system_org_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
@@ -869,8 +872,7 @@ function initFieldListSelectSystem(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'owner',
-				headerAlt: 'Organization',
+				columnName: 'ownerOrg',
 				indexTable: 0,
 				isDisplayable: true,
 				linkColumns: ['header'],
@@ -898,7 +900,7 @@ function initFieldListSelectSystem(init: InitDb) {
 		btnLabelComplete: 'Select System(s)',
 		dataObjList: 'dofls_admin_system_org_global',
 		name: 'fels_admin_system_org_global',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -910,7 +912,7 @@ function initFieldListSelectUser(init: InitDb) {
 		exprFilter: 'none',
 		header: 'Select Users',
 		name: 'dofls_admin_user_org_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [
 			{ index: 0, table: 'SysUser' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -924,8 +926,7 @@ function initFieldListSelectUser(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'owner',
-				headerAlt: 'Organization',
+				columnName: 'ownerOrg',
 				indexTable: 0,
 				isDisplayable: true,
 				linkColumns: ['header'],
@@ -971,7 +972,7 @@ function initFieldListSelectUser(init: InitDb) {
 		btnLabelComplete: 'Select User(s)',
 		dataObjList: 'dofls_admin_user_org_global',
 		name: 'fels_admin_user_org_global',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -983,7 +984,7 @@ function initFieldListSelectUserType(init: InitDb) {
 		exprFilter: 'none',
 		header: 'Select User Types',
 		name: 'dofls_admin_user_type_org_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysUserType' }],
 		fields: [
 			{
@@ -994,8 +995,7 @@ function initFieldListSelectUserType(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'owner',
-				headerAlt: 'Organization',
+				columnName: 'ownerOrg',
 				indexTable: 0,
 				isDisplayable: true,
 				linkColumns: ['header'],
@@ -1022,7 +1022,7 @@ function initFieldListSelectUserType(init: InitDb) {
 		btnLabelComplete: 'Select UserType(s)',
 		dataObjList: 'dofls_admin_user_type_org_global',
 		name: 'fels_admin_user_type_org_global',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -1033,7 +1033,7 @@ function initNodeObjConfig(init: InitDb) {
 		exprFilter: `.id IN (SELECT sys_core::getSystem('org_system', 'sys_system')).nodesConfig.id`,
 		header: 'Object Types',
 		name: 'data_obj_admin_node_obj_config_list_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysNodeObjConfig' }],
 		fields: [
 			{
@@ -1083,7 +1083,7 @@ function initNodeObjConfig(init: InitDb) {
 		header: 'Object Types',
 		name: 'node_obj_admin_node_obj_config_list_global',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -1094,7 +1094,7 @@ function initOrg(init: InitDb) {
 		header: 'Organizations (Global)',
 		exprFilter: 'none',
 		name: 'data_obj_admin_org_list_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysOrg' }],
 		fields: [
 			{
@@ -1129,7 +1129,7 @@ function initOrg(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Organization',
 		name: 'data_obj_admin_org_detail_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysOrg' }],
 		fields: [
 			{
@@ -1237,12 +1237,11 @@ function initOrg(init: InitDb) {
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeApp',
-		codeQueryOwnerType: 'queryOwnerTypeOrgRecord',
 		dataObj: 'data_obj_admin_org_list_global',
 		header: 'Organizations (Global)',
 		name: 'node_obj_admin_org_list_global',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysNodeObj', {
 		children: [
@@ -1257,7 +1256,7 @@ function initOrg(init: InitDb) {
 		header: 'Organization',
 		name: 'node_obj_admin_org_detail_global',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -1266,9 +1265,9 @@ function initSystem(init: InitDb) {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		header: 'Systems',
-		exprFilter: '.owner.id = <tree,uuid,SysOrg.id>',
+		exprFilter: '.ownerOrg.id = <tree,uuid,SysOrg.id>',
 		name: 'data_obj_admin_system_list_org_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
@@ -1303,7 +1302,7 @@ function initSystem(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'System',
 		name: 'data_obj_admin_system_detail_org_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysSystem' }],
 		fields: [
 			{
@@ -1313,7 +1312,7 @@ function initSystem(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerOrg',
 				exprSave: `(SELECT sys_core::SysOrg FILTER .id = <tree,uuid,SysOrg.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -1365,11 +1364,12 @@ function initSystem(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'nodesConfig',
-				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
 				fieldEmbedListConfig: 'flec_admin_nodes_config',
-				indexTable: 0
+				indexTable: 0,
+				isDisplayable: true,
+				linkTable: 'SysNodeObjConfig',
+				orderDefine: 110,
+				orderDisplay: 110
 			},
 			{
 				codeAccess: 'optional',
@@ -1466,12 +1466,11 @@ function initSystem(init: InitDb) {
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
-		codeQueryOwnerType: 'queryOwnerTypeOrgRecord',
 		dataObj: 'data_obj_admin_system_list_org_global',
 		header: 'Systems',
 		name: 'node_obj_admin_system_list_org_global',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_admin_node_obj_config_list_global', order: 10 }],
@@ -1482,7 +1481,7 @@ function initSystem(init: InitDb) {
 		header: 'System',
 		name: 'node_obj_admin_system_detail_org_global',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -1490,10 +1489,10 @@ function initUser(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysOrg.id>',
+		exprFilter: '.ownerOrg.id = <tree,uuid,SysOrg.id>',
 		header: 'Users',
 		name: 'data_obj_admin_user_list_org_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [
 			{ index: 0, table: 'SysUser' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -1550,7 +1549,7 @@ function initUser(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'User',
 		name: 'data_obj_admin_user_detail_org_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [
 			{ index: 0, table: 'SysUser' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -1563,7 +1562,7 @@ function initUser(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerOrg',
 				exprSave: `(SELECT sys_core::SysOrg FILTER .id = <tree,uuid,SysOrg.id>)`,
 				indexTable: 0,
 				isDisplayable: false,
@@ -1638,7 +1637,7 @@ function initUser(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'defaultSystem',
+				columnName: 'systemDefault',
 				fieldListItems: 'il_sys_system_all',
 				indexTable: 0,
 				// todo: 250701 - unused, but kept for documentation on use of codeItemChangeTriggerType: 'itemChangeTypeRecordStatus'
@@ -1737,7 +1736,7 @@ function initUser(init: InitDb) {
 		header: 'Users',
 		name: 'node_obj_admin_user_list_org_global',
 		orderDefine: 30,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -1748,7 +1747,7 @@ function initUser(init: InitDb) {
 		header: 'User',
 		name: 'node_obj_admin_user_detail_org_global',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -1756,10 +1755,10 @@ function initUserType(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: '.owner.id = <tree,uuid,SysOrg.id>',
+		exprFilter: '.ownerOrg.id = <tree,uuid,SysOrg.id>',
 		header: 'User Types',
 		name: 'data_obj_admin_user_type_list_org_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysUserType' }],
 		fields: [
 			{
@@ -1810,7 +1809,7 @@ function initUserType(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'User Type',
 		name: 'data_obj_admin_user_type_detail_org_global',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysUserType' }],
 		fields: [
 			{
@@ -1820,7 +1819,7 @@ function initUserType(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerOrg',
 				exprSave: `(SELECT sys_core::SysOrg FILTER .id = <tree,uuid,SysOrg.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -1859,20 +1858,76 @@ function initUserType(init: InitDb) {
 				orderDefine: 60
 			},
 			{
-				codeFieldElement: 'toggle',
-				columnName: 'isSelfSignup',
-				exprPreset: `(SELECT false)`,
-				indexTable: 0,
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70
-			},
-			{
 				codeFieldElement: 'tagRow',
 				columnName: 'custom_row_end',
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_start',
+				headerAlt: 'Self Service Signup',
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 120,
+				orderDefine: 120
+			},
+			{
+				codeFieldElement: 'toggle',
+				columnName: 'isSelfSignup',
+				exprPreset: `(SELECT false)`,
+				indexTable: 0,
+				isDisplayable: true,
+				itemChanges: [
+					{
+						codeAccess: 'required',
+						codeItemChangeAction: 'setTargetValue',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
+						codeOp: 'true',
+						columns: ['selfSignupSystem'],
+						orderDefine: 0
+					},
+					{
+						codeAccess: 'hidden',
+						codeItemChangeAction: 'reset',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
+						codeOp: 'false',
+						columns: ['selfSignupSystem'],
+						orderDefine: 1
+					}
+				],
+				orderDisplay: 120,
+				orderDefine: 120
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'selfSignupSystem',
+				fieldListItems: 'il_sys_system_by_org',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 130,
+				orderDisplay: 130
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 140,
+				orderDefine: 140
+			},
+			{
+				codeFieldElement: 'tagSection',
+				columnName: 'custom_section_end',
+				isDisplayable: true,
+				orderDisplay: 150,
+				orderDefine: 150
 			},
 			{
 				codeAccess: 'optional',
@@ -1891,22 +1946,24 @@ function initUserType(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'attrsExpr',
-				isDisplayable: true,
-				orderDisplay: 210,
-				orderDefine: 210,
 				fieldEmbedListConfig: 'flec_admin_attrs_expr',
-				indexTable: 0
+				indexTable: 0,
+				isDisplayable: true,
+				linkTable: 'SysObjAttrExpr',
+				orderDefine: 210,
+				orderDisplay: 210
 			},
 			// todo - 250701 - requires updates to allow a modal to open a modal or tabbed embedded list
 			// {
 			// 	codeAccess: 'optional',
 			// 	codeFieldElement: 'embedListConfig',
 			// 	columnName: 'attrsVirtual',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 100,
-			// 	orderDefine: 100,
 			// 	fieldEmbedListConfig: 'flec_admin_attrs_virtual',
-			// 	indexTable: 0
+			// 	indexTable: 0,
+			// 	isDisplayable: true,
+			// 	linkTable: 'SysObjAttrVirtual',
+			// 	orderDefine: 100,
+			// 	orderDisplay: 100
 			// },
 
 			/* management */
@@ -1983,7 +2040,7 @@ function initUserType(init: InitDb) {
 		header: 'User Types',
 		name: 'node_obj_admin_user_type_list_org_global',
 		orderDefine: 40,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -1994,6 +2051,6 @@ function initUserType(init: InitDb) {
 		header: 'User Type',
 		name: 'node_obj_admin_user_type_detail_org_global',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

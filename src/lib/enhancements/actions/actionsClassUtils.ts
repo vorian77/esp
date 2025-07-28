@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import { TokenAppStateTriggerAction } from '$utils/types.token'
 import { CodeActionType, MethodResult } from '$utils/types'
 import { error } from '@sveltejs/kit'

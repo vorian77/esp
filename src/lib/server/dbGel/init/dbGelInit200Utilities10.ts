@@ -7,17 +7,19 @@ export async function addSystem(data: any) {
 	const CREATOR = e.sys_user.getRootUser()
 	const query = e.params(
 		{
+			appName: e.str,
 			name: e.str,
 			header: e.str,
-			owner: e.str
+			ownerOrg: e.str
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysSystem, {
+				appName: p.appName,
 				createdBy: CREATOR,
 				header: p.header,
 				modifiedBy: CREATOR,
 				name: p.name,
-				owner: e.select(e.sys_core.getOrg(p.owner))
+				ownerOrg: e.sys_core.getOrg(p.ownerOrg)
 			})
 		}
 	)
@@ -30,7 +32,7 @@ export async function codeTypesBulk(params: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_core.SysCodeType, {
-				owner: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[0]))),
+				ownerSys: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[0]))),
 				order: e.cast(e.int16, i[1]),
 				name: e.cast(e.str, i[2]),
 				createdBy: CREATOR,
@@ -48,7 +50,7 @@ export async function codesBulk(params: any) {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_core.SysCode, {
 				codeType: e.select(e.sys_core.getCodeType(e.cast(e.str, i[0]))),
-				owner: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[1]))),
+				ownerSys: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[1]))),
 				name: e.cast(e.str, i[2]),
 				order: e.cast(e.int16, i[3]),
 				createdBy: CREATOR,
@@ -65,7 +67,7 @@ export async function tablesBulk(data: any) {
 	const query = e.params({ data: e.json }, (params) => {
 		return e.for(e.json_array_unpack(params.data), (i) => {
 			return e.insert(e.sys_db.SysTable, {
-				owner: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[0]))),
+				ownerSys: e.select(e.sys_core.getSystemPrime(e.cast(e.str, i[0]))),
 				mod: e.cast(e.str, i[1]),
 				name: e.cast(e.str, i[2]),
 				hasMgmt: e.cast(e.bool, i[3]),

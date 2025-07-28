@@ -1,6 +1,6 @@
 <script lang="ts">
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
-	import { StateSurfacePopup } from '$comps/app/types.appState.svelte'
+	import { StateSurfacePopup } from '$comps/app/types.state.svelte'
 	import { TokenAppModalReturn, TokenAppModalReturnType } from '$utils/types.token'
 	import { getModalStore } from '@skeletonlabs/skeleton'
 	import {
@@ -9,8 +9,10 @@
 		DataObjAction,
 		DataObjCardinality,
 		type DataRecord,
-		FieldEmbedType,
-		ParmsValuesType
+		FieldEmbedListType,
+		ParmsValues,
+		ParmsValuesType,
+		valueOrDefault
 	} from '$utils/types'
 	import { UserAction, UserActionDisplay } from '$comps/other/types.userAction.svelte'
 	import { getContext } from 'svelte'
@@ -29,26 +31,23 @@
 		sm.actionsDialog.map((doa: DataObjAction) => new UserActionDisplay(doa, false))
 	)
 
-	let rowCount: number = $derived.by(() => {
-		let rowCount = undefined
-		const currLevel = sm.app.getCurrLevel()
-		if (currLevel) {
-			const currTab = currLevel.tabs[currLevel.tabIdxCurrent]
-			if (currTab) rowCount = currTab.dataObj?.data?.rowsRetrieved.dataRows.length
-		}
-		return rowCount
-	})
-
 	$effect(() => {
-		if (sm.embedType === FieldEmbedType.listConfig && rowCount === 0) {
-			if ($storeModal[0]?.response) {
-				$storeModal[0].response(
-					new TokenAppModalReturn({
-						data: [],
-						type: TokenAppModalReturnType.close
-					})
-				)
-				storeModal.close()
+		const isCloseOnEmptyList = valueOrDefault(
+			sm.parmsState.valueGet(ParmsValuesType.isModalCloseOnEmptyList),
+			false
+		)
+		if (isCloseOnEmptyList) {
+			const triggerSave = sm.triggerSaveValue
+
+			const currTab = sm.app.getCurrTab()
+			const codeCardinality = currTab?.dataObj?.raw?.codeCardinality
+			const rowCount = currTab?.dataObj?.data?.rowsRetrieved.dataRows.length ?? 0
+
+			if (codeCardinality === DataObjCardinality.list && rowCount === 0) {
+				if ($storeModal[0]?.response) {
+					$storeModal[0].response(new TokenAppModalReturn({ type: TokenAppModalReturnType.close }))
+					storeModal.close()
+				}
 			}
 		}
 	})
@@ -60,10 +59,7 @@
 				case CodeActionType.modalCancel:
 					if ($storeModal[0].response)
 						$storeModal[0].response(
-							new TokenAppModalReturn({
-								data: undefined,
-								type: TokenAppModalReturnType.cancel
-							})
+							new TokenAppModalReturn({ type: TokenAppModalReturnType.cancel })
 						)
 					storeModal.close()
 					break
@@ -72,7 +68,8 @@
 					if ($storeModal[0].response)
 						$storeModal[0].response(
 							new TokenAppModalReturn({
-								data: sm.parmsState,
+								parmsFormList: sm.parmsFormList(),
+								parmsState: sm.parmsState,
 								type: TokenAppModalReturnType.complete
 							})
 						)

@@ -10,6 +10,7 @@ import {
 	DataRecordStatus,
 	DataRow,
 	debug,
+	getArray,
 	memberOfEnum,
 	memberOfEnumIfExists,
 	MethodResult,
@@ -18,6 +19,7 @@ import {
 	Node,
 	NodeObjComponent,
 	ParmsValues,
+	ParmsValuesFormList,
 	required,
 	strRequired,
 	User,
@@ -33,7 +35,7 @@ import {
 } from '$lib/queryClient/types.queryClient'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
-import { State, StateParms, StateTriggerToken } from '$comps/app/types.appState.svelte'
+import { State, StateParms, StateTriggerToken } from '$comps/app/types.state.svelte'
 import { App } from '$comps/app/types.app.svelte'
 import { AppRowActionType } from '$comps/app/types.app.svelte'
 import { FieldColumnItem } from '$comps/form/field.svelte'
@@ -287,7 +289,9 @@ export class TokenApiQueryData {
 export class TokenApiQueryDataTree {
 	levels: TokenApiQueryDataTreeLevel[] = []
 	constructor(levels: TokenApiQueryDataTreeLevel[] = []) {
-		this.levels = levels
+		this.levels = levels.map((levelRaw) => {
+			return TokenApiQueryDataTreeLevel.load(levelRaw)
+		})
 	}
 
 	addLevel(dataRow: DataRow, dataObjId: string, tableName: string, nodeName: string | undefined) {
@@ -335,7 +339,8 @@ export class TokenApiQueryDataTree {
 						return {
 							dataObjId: l.dataObjId,
 							index,
-							node: l.nodeName
+							node: l.nodeName,
+							table: l.tableName
 						}
 					})
 				)}`,
@@ -385,9 +390,21 @@ export class TokenApiQueryDataTreeLevel {
 	) {
 		const clazz = 'TokenApiQueryDataTreeLevel'
 		this.dataObjId = strRequired(dataObjId, clazz, 'dataObjId')
-		this.dataRow = required(dataRow, clazz, 'dataRow')
 		this.nodeName = valueOrDefault(nodeName, '')
 		this.tableName = strRequired(tableName, clazz, 'tableName')
+
+		// derived
+		const dataRowRaw = required(dataRow, clazz, 'dataRow')
+		this.dataRow = new DataRow(dataRowRaw.status, dataRowRaw.record)
+	}
+
+	static load(level: TokenApiQueryDataTreeLevel) {
+		return new TokenApiQueryDataTreeLevel(
+			level.dataRow,
+			level.dataObjId,
+			level.tableName,
+			level.nodeName
+		)
 	}
 }
 
@@ -514,11 +531,13 @@ export class TokenAppIndex extends TokenApp {
 
 export class TokenAppModalEmbedField extends TokenApp {
 	dataObjSourceModal: TokenApiDbDataObjSource
+	listIdsSelected: string[]
 	queryType: TokenApiQueryType
 	constructor(obj: any) {
 		const clazz = 'TokenAppModalEmbedField'
 		super(obj)
 		this.dataObjSourceModal = required(obj.dataObjSourceModal, clazz, 'dataObjSourceModal')
+		this.listIdsSelected = getArray(obj.listIdsSelected)
 		this.queryType = required(obj.queryType, clazz, 'queryType')
 	}
 }
@@ -527,7 +546,7 @@ export class TokenAppModalSelect extends TokenApp {
 	columnDefs: ColumnsDefsSelect
 	fModalClose: Function
 	isMultiSelect: boolean
-	listIdsSelected: FieldColumnItem[]
+	listIdsSelected: string[]
 	rowData: DataRecord[]
 	selectLabel: string
 	sortModel: DataObjSort
@@ -537,7 +556,7 @@ export class TokenAppModalSelect extends TokenApp {
 		this.columnDefs = required(obj.columnDefs, clazz, 'columnDefs')
 		this.fModalClose = required(obj.fModalClose, clazz, 'fModalClose')
 		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
-		this.listIdsSelected = required(obj.listIdsSelected, clazz, 'listIdsSelected')
+		this.listIdsSelected = getArray(obj.listIdsSelected)
 		this.rowData = required(obj.rowData, clazz, 'rowData')
 		this.selectLabel = strRequired(obj.selectLabel, clazz, 'selectLabel')
 		this.sortModel = required(obj.sortModel, clazz, 'sortModel')
@@ -546,12 +565,14 @@ export class TokenAppModalSelect extends TokenApp {
 
 export class TokenAppModalReturn extends TokenApp {
 	type: TokenAppModalReturnType
-	data: any
+	parmsFormList?: ParmsValuesFormList
+	parmsState?: ParmsValues
 	constructor(obj: any) {
 		const clazz = 'TokenAppModalReturn'
 		super(obj)
 		this.type = required(obj.type, clazz, 'type')
-		this.data = obj.data
+		this.parmsFormList = obj.parmsFormList
+		this.parmsState = obj.parmsState
 	}
 }
 export enum TokenAppModalReturnType {

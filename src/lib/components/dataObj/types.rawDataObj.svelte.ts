@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import {
 	arrayOfClass,
 	booleanOrDefault,
@@ -6,16 +6,19 @@ import {
 	booleanRequired,
 	classOptional,
 	CodeAction,
+	DataManager,
+	DataManagerNode,
+	DataObjAction,
 	DataObjCardinality,
 	DataObjData,
 	DataObjSort,
 	DataObjType,
 	type DataRecord,
 	debug,
-	FieldEmbedType,
+	EligibilityType,
+	FieldEmbedListType,
 	FileStorage,
 	getArray,
-	getDataRecordValueKey,
 	getDbExprRaw,
 	getValueData,
 	isNumber,
@@ -25,11 +28,11 @@ import {
 	nbrOrDefault,
 	nbrOptional,
 	nbrRequired,
-	NodeRenderPlatform,
 	override,
+	ParmsValuesFormList,
 	ParmsValuesType,
 	PropDataType,
-	PropOp,
+	recordValueGet,
 	required,
 	strOptional,
 	strRequired,
@@ -46,12 +49,28 @@ import {
 	QuerySourceType
 } from '$lib/queryClient/types.queryClient'
 import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
-import { FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
+import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
+import { FieldToggle } from '$comps/form/fieldToggle'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
-import { TokenApiQueryType, TokenAppNav, TokenAppUserActionConfirmType } from '$utils/types.token'
+import {
+	TokenApiDbDataObjSource,
+	TokenAppNav,
+	TokenAppUserActionConfirmType
+} from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
+
+export type EligibilityNode = {
+	id: string
+	valueBoolean: boolean
+}
+
+export type EligibilityNodeClient = {
+	[key: string]: EligibilityNode
+}
+
+export type EligibilityNodeValues = Record<string, EligibilityNode>
 
 export class GridStyle {
 	exprTrigger?: string
@@ -66,10 +85,347 @@ export class GridStyle {
 	}
 }
 
+export enum PropDataSourceValue {
+	calculate = 'calculate',
+	edgeDB = 'edgeDB'
+}
+
+export enum PropKeyType {
+	custom = 'custom',
+	expr = 'expr',
+	exprCustom = 'exprCustom',
+	link = 'link',
+	linkItems = 'linkItems',
+	table = 'table'
+}
+
+export class PropLink {
+	exprProps: string
+	table?: DbTable
+	constructor(obj: any) {
+		const clazz = 'PropLink'
+		obj = valueOrDefault(obj, {})
+		const cols = getArray(obj._columns)
+		const exprDisplayColumns = cols.reduce((acc: string, col: any) => {
+			if (acc) acc += '.'
+			acc += col._name
+			return acc
+		}, '')
+		const exprDisplay = exprDisplayColumns
+			? `.${exprDisplayColumns}`
+			: obj._exprCustom
+				? obj._exprCustom
+				: `.id`
+		this.exprProps = `{ data := .id, display := ${exprDisplay} }`
+		this.table = classOptional(DbTable, obj._table)
+	}
+	getTableObj() {
+		return this.table ? this.table.object : undefined
+	}
+}
+
+export class PropLinkItems {
+	rawItems: DataRecord[] = $state([])
+	source: PropLinkItemsSource
+	constructor(source: any) {
+		const clazz = 'PropLinkItems'
+		this.source = new PropLinkItemsSource(source)
+	}
+
+	formatDataItemDisplay(record: DataRecord) {
+		let value = ''
+		const displayIdSeparator = this.source.displayIdSeparator
+		this.source.props.forEach((prop) => {
+			if (prop.isDisplayId) {
+				if (value) value += displayIdSeparator
+				value += recordValueGet(record, prop.key)
+			}
+		})
+		return value
+	}
+
+	getDataItemsAll(fieldValue: DataRecord | DataRecord[]) {
+		const records: DataRecord[] = getArray(fieldValue)
+		const idsSelected = records.map((r) => r.data)
+		let fieldItems: FieldColumnItem[] = []
+		this.rawItems.forEach((item) => {
+			fieldItems.push(
+				new FieldColumnItem(
+					item.data,
+					this.formatDataItemDisplay(item),
+					idsSelected.includes(item.data)
+				)
+			)
+		})
+		return fieldItems
+	}
+
+	getDisplayValueListIds(idsCurrent: string | string[]) {
+		const ids = getArray(idsCurrent)
+		let values = ''
+		this.rawItems.forEach((item) => {
+			if (ids.includes(item.data)) {
+				if (values) values += ', '
+				values += this.formatDataItemDisplay(item)
+			}
+		})
+		return values
+	}
+
+	getDisplayValueListRecords(records: any[]) {
+		records = getArray(records)
+		const ids = records.map((r) => r.data)
+		return this.getDisplayValueListIds(ids)
+	}
+
+	getValueDisplay(valueRaw: any | any[]) {
+		const valueRawList = getArray(valueRaw)
+		const ids = valueRawList.map((r) => r.data)
+		let values = ''
+		this.rawItems.forEach((item) => {
+			if (ids.includes(item.data)) {
+				if (values) values += ', '
+				values += this.formatDataItemDisplay(item)
+			}
+		})
+		return values
+	}
+
+	getValueIds(valueRaw: any | any[]) {
+		const valueRawList = valueRaw ? getArray(valueRaw) : []
+		const ids = valueRawList.map((r) => r.data)
+		return ids
+	}
+
+	getValueRaw(valueDisplay: string | string[]) {
+		if (Array.isArray(valueDisplay)) {
+			const returnValues = this.rawItems.filter((item) => {
+				return valueDisplay.includes(item.data)
+			})
+			return returnValues
+		} else {
+			const returnValue = this.rawItems.find((item) => {
+				return item.data === valueDisplay
+			})
+			return returnValue || ''
+		}
+	}
+
+	getGridParms() {
+		let columnDefs: ColumnsDefsSelect = [
+			{
+				field: 'id',
+				headerName: 'ID',
+				hide: true
+			}
+		]
+
+		this.source.props.forEach((prop) => {
+			columnDefs.push({
+				field: prop.key,
+				flex: 1,
+				headerName: prop.header
+			})
+		})
+
+		// rowData
+		let rowData: DataRecord[] = this.getRowData()
+
+		// rawSortObj
+		let sortModel = new DataObjSort()
+		this.source.getSortProps().forEach((prop, i) => {
+			sortModel.addItem(prop.key, 'asc', i)
+		})
+
+		return { columnDefs, rowData, sortModel }
+	}
+
+	getRowData() {
+		return this.rawItems.map((item) => {
+			let row: DataRecord = { id: item.data }
+			this.source.props.forEach((prop) => {
+				row[prop.key] = recordValueGet(item, prop.key)
+			})
+			return row
+		})
+	}
+
+	getValuesSelect() {
+		const resetItem = { data: '', display: ' ', name: '' }
+		return [null, ...this.rawItems]
+	}
+
+	async retrieve(sm: State, fieldValue: string | undefined = undefined): Promise<MethodResult> {
+		const clazz = 'PropLinkItems.retrieve'
+		const exprCustom = this.source.getExprSelect(false, fieldValue)
+
+		const dataTab = new DataObjData()
+		dataTab.parms.valueSet(ParmsValuesType.itemsParmValue, this.source.parmValue)
+		dataTab.parms.valueSet(ParmsValuesType.itemsParmValueList, this.source.parmValueList)
+
+		let result: MethodResult = await clientQueryExpr(clazz, exprCustom, { dataTab }, sm)
+		if (result.error) return result
+		this.setRawItems(required(result.data.rawDataList, clazz, 'rawItems'))
+		return result
+	}
+
+	setRawItems(rawItems: DataRecord[]) {
+		this.rawItems = rawItems
+	}
+}
+
+export class PropLinkItemsSource {
+	displayIdSeparator: string
+	exprProps: string
+	header?: string
+	name: string
+	parmValue?: string
+	parmValueList: string[] = []
+	props: PropLinkItemsSourceProp[] = []
+	querySource: QuerySource
+	raw: any
+	constructor(obj: any) {
+		const clazz = 'PropLinkItemsSource'
+		obj = valueOrDefault(obj, {})
+		this.displayIdSeparator = valueOrDefault(obj.displayIdSeparator, ' ')
+		this.header = strOptional(obj._header, clazz, 'header')
+		this.name = strRequired(obj.name, clazz, 'name')
+		this.parmValue = obj._parmValue || obj._codeAttrType
+		this.parmValueList = getArray(obj._parmValueList)
+		this.props = arrayOfClass(PropLinkItemsSourceProp, obj._props)
+		this.raw = obj
+		this.querySource = new QuerySource({
+			...obj._querySource,
+			querySourceType: QuerySourceType.expr
+		})
+
+		// derived
+		let props = ''
+		let display = ''
+		this.props.forEach((p: PropLinkItemsSourceProp) => {
+			if (p.isDisplayId) {
+				if (display) {
+					display += ' ++ '
+					if (this.displayIdSeparator) display += `"${this.displayIdSeparator}" ++ `
+				}
+				display += p.expr
+			}
+			if (props) props += ', '
+			props += `${p.key} := ${p.expr}`
+		})
+		this.exprProps = `{ data := .id, display := ${display}, ${props} }`
+	}
+
+	getExprSelect(isCompilation: boolean, currVal: string | string[] | undefined) {
+		let exprSelect =
+			this.querySource.exprUnions.length > 0
+				? this.getExprSelectUnions()
+				: this.getExprSelectBase(currVal)
+
+		// assemble
+		let expr = getDbExprRaw(this.querySource.exprWith, exprSelect)
+
+		const exprSort =
+			this.querySource.exprSort ||
+			this.getSortProps().reduce((sort, prop) => {
+				if (sort) sort += ' THEN '
+				return (sort += `.${prop.key}`)
+			}, '')
+
+		if (isCompilation) {
+			expr = `(${expr}) ${this.exprProps}`
+			expr += exprSort ? ` ORDER BY ${exprSort}` : ''
+			expr = `(SELECT ${expr})`
+		} else {
+			expr = `SELECT (${expr}) ${this.exprProps}`
+			expr += exprSort ? ` ORDER BY ${exprSort}` : ''
+		}
+
+		return expr
+	}
+
+	getExprSelectBase(currVal: string | string[] | undefined) {
+		let exprSelectTable = `SELECT ${this.querySource.table?.object}`
+		let filter = this.querySource.exprFilter
+			? `(${exprSelectTable} FILTER ${this.querySource.exprFilter})`
+			: ''
+
+		if (filter) {
+			if (this.querySource.exprFilterExcept) {
+				filter = `${filter} EXCEPT (${this.querySource.exprFilterExcept})`
+			}
+
+			if (currVal && Array.isArray(currVal) ? currVal.length > 0 : currVal) {
+				let currValFilter = ''
+				if (Array.isArray(currVal)) {
+					if (currVal.length > 0) {
+						currValFilter = `.id IN <uuid>{${currVal.map((v: string) => `'${v}'`).join(',')}}`
+					}
+				} else if (currVal) {
+					currValFilter = `.id = <uuid>'${currVal}'`
+				}
+				filter = `${filter} UNION (${exprSelectTable} FILTER ${currValFilter})`
+			}
+
+			filter = `.id IN (SELECT DISTINCT (${filter})).id`
+		}
+
+		let exprSelect = exprSelectTable
+		exprSelect += filter ? ` FILTER ${filter}` : ''
+		return exprSelect
+	}
+	getExprSelectUnions() {
+		let exprUnions = ''
+		this.querySource.exprUnions.forEach((item) => {
+			if (exprUnions) exprUnions += ' UNION '
+			exprUnions += `(${item})`
+		})
+		let exprSelect = `{ ${exprUnions} }`
+		return exprSelect
+	}
+
+	getSortProps() {
+		return this.props
+			.filter((prop) => isNumber(prop.orderSort))
+			.sort((a, b) => a.orderSort! - b.orderSort!)
+	}
+
+	getTableObj() {
+		return this.querySource.table ? this.querySource.table.object : undefined
+	}
+
+	setParmValue(parmValue: any) {
+		this.parmValue = getValueData(parmValue)
+	}
+}
+
+export class PropLinkItemsSourceProp {
+	expr: string
+	header: string
+	isDisplayId: boolean
+	key: string
+	orderSort?: number
+	constructor(obj: any) {
+		const clazz = 'PropLinkItemsSourceProp'
+		obj = valueOrDefault(obj, {})
+		this.expr = strRequired(obj.expr, clazz, 'expr')
+		this.header = strRequired(obj.header, clazz, 'header')
+		this.isDisplayId = booleanRequired(obj.isDisplayId, clazz, 'isDisplayId')
+		this.key = strRequired(obj.key, clazz, 'key')
+		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
+	}
+}
+
+export enum PropSortDir {
+	asc = 'asc',
+	desc = 'desc'
+}
+
 export class RawDataObj {
 	codeCardinality: DataObjCardinality
 	codeListPresetType?: DataObjListEditPresetType
 	crumbs: string[] = []
+	eligibility?: RawFieldEmbedDetailEligibility
 	description?: string
 	gridStyles: GridStyle[]
 	header: string
@@ -207,7 +563,8 @@ export class RawDataObjDyn extends RawDataObj {
 		this.rawPropsDisplay.push(new RawDataObjPropDisplay(valueOrDefault(rawProp, {}), tableGroup))
 	}
 	addPropSelect(rawProp: any, tableGroup: DbTableQueryGroup) {
-		this.rawPropsSelect.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tableGroup))
+		const propSelect = new RawDataObjPropDB(valueOrDefault(rawProp, {}), tableGroup)
+		this.rawPropsSelect.push(propSelect)
 	}
 	addPropSort(rawProp: any, tableGroup: DbTableQueryGroup) {
 		this.rawPropsSort.push(new RawDataObjPropDB(valueOrDefault(rawProp, {}), tableGroup))
@@ -224,17 +581,22 @@ export class RawDataObjProp {
 	exprCustom?: string
 	exprPreset?: string
 	exprSave?: string
-	fieldEmbed?: RawDataObjPropDBFieldEmbed
+	fieldEmbedListType?: FieldEmbedListType
+	fieldEmbedShellFields: string[]
 	hasItems: boolean
 	id: string
 	indexTable: number
 	isLinkSignature: boolean
 	link?: PropLink
 	linkItemsSource?: PropLinkItemsSource = $state()
+	propKeyType?: PropKeyType
+	propKeyTypeId: string = ''
 	propName: string
-	propNamePrefixType?: PropNamePrefixType
-	propNamePrefixTypeId: string = ''
-	propNameRaw: string
+	propNameKey: string
+	propNameKeyPrefix: string
+	propNameKeySuffix: string
+	rawfieldEmbedDetailEligibility?: RawFieldEmbedDetailEligibility
+	rawFieldEmbedList?: RawFieldEmbedList
 	constructor(obj: any, tableGroup: DbTableQueryGroup) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'RawDataObjProp'
@@ -251,56 +613,86 @@ export class RawDataObjProp {
 		this.exprCustom = obj.exprCustom
 		this.exprPreset = obj.exprPreset
 		this.exprSave = obj.exprSave
-		this.fieldEmbed = obj._fieldEmbedListConfig
-			? new RawDataObjPropDBFieldEmbed(
-					FieldEmbedType.listConfig,
-					obj._fieldEmbedListConfig._dataObjEmbedId
-				)
-			: obj._fieldEmbedListEdit
-				? new RawDataObjPropDBFieldEmbed(
-						FieldEmbedType.listEdit,
-						obj._fieldEmbedListEdit._dataObjEmbedId
-					)
-				: obj._fieldEmbedListSelect
-					? new RawDataObjPropDBFieldEmbed(
-							FieldEmbedType.listSelect,
-							obj._fieldEmbedListSelect._dataObjListId
-						)
-					: undefined
 		this.hasItems = booleanOrDefault(obj._hasItems, false)
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.indexTable = nbrOrDefault(obj.indexTable, -1)
 		this.isLinkSignature = booleanOrDefault(obj.isLinkSignature, false)
 		this.linkItemsSource = classOptional(PropLinkItemsSource, obj._linkItemsSource)
-		this.propNameRaw = strRequired(obj._propName, clazz, 'propName')
+		this.propName = strRequired(obj._propName, clazz, 'propName')
+		this.propNameKeyPrefix = valueOrDefault(obj.propNameKeyPrefix, '')
+		this.propNameKeySuffix = valueOrDefault(obj.propNameKeySuffix, '')
+		this.rawfieldEmbedDetailEligibility = classOptional(
+			RawFieldEmbedDetailEligibility,
+			obj._fieldEmbedDetailEligibility
+		)
+		this.fieldEmbedShellFields = obj._fieldEmbedShellFields
+			? obj._fieldEmbedShellFields.map((f: { _name: string }) => f._name)
+			: []
 
 		/* derived properties */
-		if (obj?._link?._table) this.link = classOptional(PropLink, obj._link)
+		this.setFieldEmbedList(
+			RawFieldEmbedList,
+			FieldEmbedListType.listConfig,
+			obj._fieldEmbedListConfig,
+			obj,
+			tableGroup
+		)
+		this.setFieldEmbedList(
+			RawFieldEmbedList,
+			FieldEmbedListType.listEdit,
+			obj._fieldEmbedListEdit,
+			obj,
+			tableGroup
+		)
+		this.setFieldEmbedList(
+			RawFieldEmbedList,
+			FieldEmbedListType.listSelect,
+			obj._fieldEmbedListSelect,
+			obj,
+			tableGroup
+		)
+		if (obj._link?._columns?.length > 0 || obj._link?._table) this.link = new PropLink(obj._link)
 
 		if (tableGroup.tables.length > 0 && this.indexTable > 0) {
-			this.propNamePrefixType = PropNamePrefixType.table
-			this.propNamePrefixTypeId = tableGroup.tables[this.indexTable].table.name
+			this.propKeyType = PropKeyType.table
+			this.propKeyTypeId = tableGroup.tables[this.indexTable].table.name
 		} else if (this.link) {
-			this.propNamePrefixType = PropNamePrefixType.link
+			this.propKeyType = PropKeyType.link
 		} else if (this.linkItemsSource) {
-			this.propNamePrefixType = PropNamePrefixType.linkItems
+			this.propKeyType = PropKeyType.linkItems
 		} else if (this.exprCustom) {
-			this.propNamePrefixType = PropNamePrefixType.exprCustom
+			this.propKeyType = PropKeyType.exprCustom
 		}
-		this.propName = this.getPropNameDB()
+		this.propNameKey = this.getPropNameKey()
 	}
-	setPropNamePrefixType(type: PropNamePrefixType, id: string = '') {
-		this.propNamePrefixType = type
-		this.propNamePrefixTypeId = id
-	}
-	getPropNameDB() {
-		const propNameDB = this.propNamePrefixType
-			? this.propNamePrefixType +
-				(this.propNamePrefixTypeId ? '_' + this.propNamePrefixTypeId : '') +
+
+	getPropNameKey() {
+		let propNameKey = this.propKeyType
+			? this.propKeyType +
+				(this.propKeyTypeId ? '_' + this.propKeyTypeId : '') +
 				'_' +
-				this.propNameRaw
-			: this.propNameRaw
-		return propNameDB
+				this.propName
+			: this.propName
+		propNameKey = this.propNameKeyPrefix ? this.propNameKeyPrefix + '.' + propNameKey : propNameKey
+		propNameKey = this.propNameKeySuffix ? propNameKey + '.' + this.propNameKeySuffix : propNameKey
+		return propNameKey
+	}
+
+	setFieldEmbedList(
+		fClassEmbed: any,
+		fieldEmbedListType: FieldEmbedListType,
+		objRawEmbed: any,
+		obj: any,
+		tableGroup: DbTableQueryGroup
+	): any {
+		if (objRawEmbed) {
+			objRawEmbed._embedPropName = obj._propName
+			objRawEmbed._embedTable = obj._link?._table
+			objRawEmbed._parentColumnBackLink = obj._columnBacklink
+			objRawEmbed._parentTableRoot = tableGroup.getTableRoot()?._rawObj
+			this.rawFieldEmbedList = new fClassEmbed(objRawEmbed)
+			this.fieldEmbedListType = fieldEmbedListType
+		}
 	}
 }
 
@@ -334,7 +726,7 @@ export class RawDataObjPropDB extends RawDataObjProp {
 
 		/* dependent properties */
 		this.childTableTraversal = this.getChildTableTraversal(
-			this.propNameRaw,
+			this.propName,
 			this.indexTable,
 			tableGroup
 		)
@@ -353,24 +745,10 @@ export class RawDataObjPropDB extends RawDataObjProp {
 	}
 }
 
-export class RawDataObjPropDBFieldEmbed {
-	id: string
-	type: FieldEmbedType
-	constructor(type: FieldEmbedType, dataObjId: string) {
-		const clazz = 'RawDataObjPropDBFieldEmbed'
-		this.id = dataObjId
-		this.type = type
-	}
-}
-
 export class RawDataObjPropDisplay extends RawDataObjProp {
 	codeColor?: string
 	colDB: RawDBColumn
 	customCol?: RawDataObjPropDisplayCustom
-	fieldEmbedListConfig?: RawDataObjPropDisplayEmbedListConfig
-	fieldEmbedListEdit?: RawDataObjPropDisplayEmbedListEdit
-	fieldEmbedListSelect?: RawDataObjPropDisplayEmbedListSelect
-	fieldEmbedShellFields: string[]
 	gridStyles: GridStyle[]
 	headerAlt?: string
 	height?: number
@@ -396,21 +774,6 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		this.codeColor = strOptional(obj._codeColor, clazz, 'codeColor')
 		this.colDB = new RawDBColumn(obj._column)
 		this.customCol = classOptional(RawDataObjPropDisplayCustom, obj._customCol)
-		this.fieldEmbedListConfig = classOptional(
-			RawDataObjPropDisplayEmbedListConfig,
-			obj._fieldEmbedListConfig
-		)
-		this.fieldEmbedListEdit = classOptional(
-			RawDataObjPropDisplayEmbedListEdit,
-			obj._fieldEmbedListEdit
-		)
-		this.fieldEmbedListSelect = classOptional(
-			RawDataObjPropDisplayEmbedListSelect,
-			obj._fieldEmbedListSelect
-		)
-		this.fieldEmbedShellFields = obj._fieldEmbedShellFields
-			? obj._fieldEmbedShellFields.map((f: { _name: string }) => f._name)
-			: []
 		this.gridStyles = arrayOfClass(GridStyle, obj._gridStyles)
 		this.headerAlt = strOptional(obj.headerAlt, clazz, 'headerAlt')
 		this.height = nbrOptional(obj.height, clazz, 'height')
@@ -523,56 +886,452 @@ export class RawDataObjPropDisplayCustom {
 	}
 }
 
-export class RawDataObjPropDisplayEmbedListConfig {
-	dataObjEmbedId: string
-	dataObjModalId: string
-	rawActionsModal: RawDataObjAction[]
+export class RawFieldEmbedDetail {
+	_objRaw: any
 	constructor(obj: any) {
+		const clazz = 'RawFieldEmbedDetail'
 		obj = valueOrDefault(obj, {})
-		const clazz = 'RawDataObjPropDisplayEmbedListConfig'
-		this.dataObjEmbedId = strRequired(obj._dataObjEmbedId, clazz, '_dataObjIdEmbed')
-		this.dataObjModalId = strRequired(obj._dataObjModalId, clazz, '_dataObjIdModal')
-		this.rawActionsModal = arrayOfClass(RawDataObjAction, obj._actionGroupModal._dataObjActions)
+		this._objRaw = obj
 	}
 }
 
-export class RawDataObjPropDisplayEmbedListEdit {
-	dataObjEmbedId: string
+export class RawFieldEmbedDetailEligibility extends RawFieldEmbedDetail {
+	description: string
+	header: string
+	name: string
+	nodeIdx: number = 0
+	nodes: RawFieldEmbedDetailEligibilityNode[]
+	renderPropsRaw: RawDataObjPropDisplay[] = []
+	tableGroup: DbTableQueryGroup = new DbTableQueryGroup([])
+	tree: RawFieldEmbedDetailEligibilityNode[]
 	constructor(obj: any) {
+		const clazz = 'RawFieldEmbedDetailEligibility'
 		obj = valueOrDefault(obj, {})
-		const clazz = 'RawDataObjPropDisplayEmbedListEdit'
-		this.dataObjEmbedId = strRequired(obj._dataObjEmbedId, clazz, 'dataObjEmbedId')
-	}
-}
+		super(obj)
+		this.description = strRequired(obj.description, clazz, 'description')
+		this.header = strRequired(obj.header, clazz, 'header')
+		this.name = strRequired(obj.name, clazz, 'name')
+		this.nodes = arrayOfClass(RawFieldEmbedDetailEligibilityNode, obj._nodes)
 
-export class RawDataObjPropDisplayEmbedListSelect {
-	btnLabelComplete?: string
-	dataObjListID: string
-	rawActionsModal: RawDataObjAction[]
-	constructor(obj: any) {
-		const clazz = 'RawDataObjPropDisplayEmbedListSelect'
-		obj = valueOrDefault(obj, {})
-		this.dataObjListID = strRequired(obj._dataObjListId, clazz, '_dataObjId')
-		this.rawActionsModal = arrayOfClass(RawDataObjAction, obj._actionGroupModal._dataObjActions)
-
-		// dependent
-		this.btnLabelComplete = this.initBtnComplete(clazz, obj.btnLabelComplete, this.rawActionsModal)
+		// derived
+		this.tree = this.buildTree(this.nodes)
+		this.buildProps(this.tree)
 	}
-	initBtnComplete(clazz: string, label: string | undefined, rawDataObjActions: RawDataObjAction[]) {
-		const btnLabelComplete = strOptional(label, clazz, 'btnLabelComplete')
-		if (btnLabelComplete) {
-			const dataObjActionDone = rawDataObjActions.find((rdoa) => {
-				return rdoa.action.name === 'ua_sys_dialog_done'
-			})
-			if (dataObjActionDone) dataObjActionDone.action.header = btnLabelComplete
+
+	async computeCallback(dm: DataManager, dataObjId: string, row: number, field: FieldToggle) {
+		const clazz = 'RawFieldEmbedDetailEligibility.computeCallback'
+		if (field.rawFieldEmbedDetailEligibility) {
+			const dmn: DataManagerNode = required(dm.getNode(dataObjId), clazz, 'dmn')
+			const nodeValues: RawFieldEmbedDetailEligibilityNode[] = recordValueGet(
+				dmn.recordsDisplay[row],
+				'nodeValues'
+			)
+			const newEligibility = eval(
+				field.rawFieldEmbedDetailEligibility.computeCallbackProcess(nodeValues)
+			)
+			const fieldValueBoolean = dmn.dataObj.getField('valueBoolean')
+			await dm.setFieldValueAsync(dataObjId, row, fieldValueBoolean, newEligibility)
 		}
-		return btnLabelComplete
+	}
+
+	/**
+	 * Generates a boolean expression string from the eligibility tree
+	 * @returns A string representation of the boolean logic
+	 */
+	computeCallbackProcess(nodeValues: RawFieldEmbedDetailEligibilityNode[]): string {
+		/**
+		 * Recursively traverses a node and its children to build boolean expression
+		 * @param node The current node to process
+		 * @returns String representation of the node's boolean logic
+		 */
+		const computeExprNode = (
+			node: RawFieldEmbedDetailEligibilityNode,
+			nodeValues: DataRecord
+		): string => {
+			const getValue = (
+				node: RawFieldEmbedDetailEligibilityNode,
+				nodeValues: DataRecord
+			): string => {
+				const key = node.name + '.valueBoolean'
+				const value = recordValueGet(nodeValues, key)
+				return value ? value.toString() : 'false' // temp - should not consider groups
+			}
+
+			switch (node.codeEligibilityType) {
+				case EligibilityType.eligibilityExpr:
+				case EligibilityType.eligibilityManual:
+					return getValue(node, nodeValues)
+
+				case EligibilityType.eligibilityGroupAnd:
+					if (node.children.length === 0) {
+						return 'true' // Empty AND group is true
+					}
+					if (node.children.length === 1) {
+						return computeExprNode(node.children[0], nodeValues)
+					}
+					const andExpressions = node.children.map((child) => computeExprNode(child, nodeValues))
+					return `(${andExpressions.join(' && ')})`
+
+				case EligibilityType.eligibilityGroupOr:
+					if (node.children.length === 0) {
+						return 'false' // Empty OR group is false
+					}
+					if (node.children.length === 1) {
+						return computeExprNode(node.children[0], nodeValues)
+					}
+					const orExpressions = node.children.map((child) => computeExprNode(child, nodeValues))
+					return `(${orExpressions.join(' || ')})`
+
+				default:
+					return 'true' // Default fallback
+			}
+		}
+
+		if (this.tree.length === 0) {
+			return 'true'
+		}
+
+		// If multiple root nodes, combine with AND
+		if (this.tree.length === 1) {
+			return computeExprNode(this.tree[0], nodeValues)
+		} else {
+			const expressions = this.tree.map((node) => computeExprNode(node, nodeValues))
+			return `(${expressions.join(' && ')})`
+		}
+	}
+
+	formatForClientFromRetrieve(nodeValueRetrieveSource: string): EligibilityNodeValues {
+		const nodeValuesRetrieve = JSON.parse(nodeValueRetrieveSource) as EligibilityNode[]
+		let nodeValues: EligibilityNodeValues = {}
+		nodeValuesRetrieve.forEach((node) => {
+			if (this.nodes.find((n) => n.id === node.id)) {
+				const name = this.getPropName(node.id)
+				if (name) {
+					nodeValues[name] = {
+						id: node.id,
+						valueBoolean: node.valueBoolean
+					}
+				}
+			}
+		})
+		return nodeValues
+	}
+
+	formatForServer(nodeValues: EligibilityNodeValues): string {
+		if (!nodeValues || typeof nodeValues !== 'object') {
+			return JSON.stringify([])
+		}
+
+		const result: Array<EligibilityNode> = []
+
+		// Iterate through all properties in nodeValues
+		for (const [propName, propValue] of Object.entries(nodeValues)) {
+			// Skip if the property doesn't have the expected structure
+			if (!propValue || typeof propValue !== 'object') {
+				continue
+			}
+
+			// Extract node data and valueBoolean
+			const id = propValue.id
+			const valueBoolean = propValue.valueBoolean
+
+			// Only add if we have valid node data
+			if (id !== undefined && valueBoolean !== undefined) {
+				result.push({ id: id, valueBoolean })
+			}
+		}
+
+		const returnValue = JSON.stringify(result)
+		return returnValue
+	}
+
+	getExprPreset() {
+		const getNodeValueProp = (node: RawFieldEmbedDetailEligibilityNode, value: any) => {
+			return `${node.getPropName()} := { id := <uuid>'${node.id}', valueBoolean := ${value} }`
+		}
+
+		let expr = ''
+
+		this.nodes.forEach((node, i) => {
+			if (
+				[EligibilityType.eligibilityExpr, EligibilityType.eligibilityManual].includes(
+					node.codeEligibilityType
+				)
+			) {
+				if (expr) expr += ', '
+				expr += getNodeValueProp(node, node.exprState || '(SELECT false)')
+			}
+		})
+
+		return `{${expr}}`
+	}
+
+	getExprSelect() {
+		const getNodeValueProp = (node: RawFieldEmbedDetailEligibilityNode, value: any) => {
+			return `${node.getPropName()} := { node := { data := <uuid>'${node.id}' }, valueBoolean := ${value} }`
+		}
+
+		let expr = ''
+
+		this.nodes.forEach((node, i) => {
+			if (
+				[EligibilityType.eligibilityExpr, EligibilityType.eligibilityManual].includes(
+					node.codeEligibilityType
+				)
+			) {
+				if (expr) expr += ', '
+				expr += getNodeValueProp(node, node.exprState || '(SELECT false)')
+			}
+		})
+
+		return `{${expr}}`
+	}
+
+	getPropKey(id: string): string {
+		const node = this.nodes.find((n) => n.id === id)
+		if (node) {
+			// return node.getPropKey()
+		}
+		return ''
+	}
+
+	getPropName(id: string): string {
+		const node = this.nodes.find((n) => n.id === id)
+		if (node) {
+			return node.getPropName()
+		}
+		return ''
+	}
+
+	treeDisplay(tree: RawFieldEmbedDetailEligibilityNode[]): string {
+		const lines: string[] = []
+		const displayNode = (
+			node: RawFieldEmbedDetailEligibilityNode,
+			prefix: string = '',
+			isLast: boolean = true
+		): void => {
+			// Create the current line with tree visualization characters
+			const connector = isLast ? '└── ' : '├── '
+			lines.push(`${prefix}${connector}${node.name} (ID: ${node.nodeId})`)
+
+			// Prepare prefix for children
+			const childPrefix = prefix + (isLast ? '    ' : '│   ')
+
+			// Display children
+			if (node.children && node.children.length > 0) {
+				node.children.forEach((child, index) => {
+					const isLastChild = index === node.children.length - 1
+					displayNode(child, childPrefix, isLastChild)
+				})
+			}
+		}
+
+		// Display all root nodes
+		tree.forEach((rootNode, index) => {
+			const isLastRoot = index === tree.length - 1
+			displayNode(rootNode, '', isLastRoot)
+		})
+
+		return lines.join('\n')
+	}
+
+	buildProps(tree: RawFieldEmbedDetailEligibilityNode[]) {
+		const buildPropsAdd = (obj: any) => {
+			this.nodeIdx++
+			const config = {
+				_codeAccess: obj._codeAccess,
+				_codeFieldElement: obj._codeFieldElement,
+				_column: {
+					_codeDataType: obj._codeDataType || 'none',
+					description: obj.description || '',
+					header: obj.header || obj.name,
+					name: obj.name
+				},
+				_propName: obj.name,
+				headerAlt: obj.header || obj.name,
+				id: `dynamic_raw_prop_${obj.name}_${this.nodeIdx}`,
+				isDisplay: true,
+				isDisplayable: true,
+				orderDefine: this.nodeIdx,
+				propNameKeyPrefix: obj.propNameKeyPrefix,
+				propNameKeySuffix: obj.propNameKeySuffix
+			}
+			const propRaw = new RawDataObjPropDisplay(config, this.tableGroup)
+			this.renderPropsRaw.push(propRaw)
+		}
+
+		const buildPropsAddSectionEnd = () => {
+			return buildPropsAdd({
+				_codeDataType: 'none',
+				_codeFieldElement: 'tagSection',
+				name: 'custom_section_end'
+			})
+		}
+
+		const buildPropsAddSectionStart = (obj: any) => {
+			return buildPropsAdd({
+				_codeDataType: 'none',
+				_codeFieldElement: 'tagSection',
+				header: obj.header,
+				name: 'custom_section_start'
+			})
+		}
+
+		const buildPropsAddToggle = (node: RawFieldEmbedDetailEligibilityNode) => {
+			return buildPropsAdd({
+				_codeAccess: node.exprState ? FieldAccess.readonly : FieldAccess.required,
+				_codeDataType: 'bool',
+				_codeFieldElement: 'toggle',
+				description: node.description,
+				exprPreset: node.exprState,
+				header: node.header,
+				name: node.getPropName(),
+				propNameKeyPrefix: 'nodeValues',
+				propNameKeySuffix: 'valueBoolean'
+			})
+		}
+
+		const build = (node: RawFieldEmbedDetailEligibilityNode | undefined) => {
+			if (!node) return
+
+			// Process the current node
+			this.nodeIdx++
+			switch (node.codeEligibilityType) {
+				case EligibilityType.eligibilityGroupAnd:
+				case EligibilityType.eligibilityGroupOr:
+					buildPropsAddSectionStart({ header: node.header })
+					break
+
+				case EligibilityType.eligibilityExpr:
+				case EligibilityType.eligibilityManual:
+					buildPropsAddToggle(node)
+			}
+
+			// Recursively traverse child nodes
+			if (node.children && node.children.length > 0) {
+				node.children.forEach((child) => build(child))
+				buildPropsAddSectionEnd()
+			}
+		}
+
+		tree.forEach((rootNode) => {
+			build(rootNode)
+		})
+	}
+
+	buildTree(nodes: RawFieldEmbedDetailEligibilityNode[]): RawFieldEmbedDetailEligibilityNode[] {
+		const nodeMap = new Map<number, RawFieldEmbedDetailEligibilityNode>()
+		const rootNodes: RawFieldEmbedDetailEligibilityNode[] = []
+
+		// First pass: create all nodes and store them in a map
+		nodes.forEach((node) => {
+			nodeMap.set(node.nodeId, node)
+		})
+
+		// Second pass: build parent-child relationships
+		nodes.forEach((node) => {
+			const treeNode = nodeMap.get(node.nodeId)!
+
+			if (node.nodeIdParent === undefined || node.nodeIdParent === null) {
+				// Root node
+				rootNodes.push(treeNode)
+			} else {
+				// Child node - find parent and add to its children
+				const parent = nodeMap.get(node.nodeIdParent)
+				if (parent) {
+					parent.children.push(treeNode)
+				}
+			}
+		})
+
+		// Third pass: sort children by order property
+		const sortNodesByOrder = (
+			nodes: RawFieldEmbedDetailEligibilityNode[]
+		): RawFieldEmbedDetailEligibilityNode[] => {
+			return nodes.sort((a, b) => (a.order || 0) - (b.order || 0))
+		}
+
+		// Sort root nodes by order
+		sortNodesByOrder(rootNodes)
+
+		// Recursively sort children at each level
+		const sortChildrenRecursively = (node: RawFieldEmbedDetailEligibilityNode): void => {
+			if (node.children && node.children.length > 0) {
+				sortNodesByOrder(node.children)
+				node.children.forEach(sortChildrenRecursively)
+			}
+		}
+
+		rootNodes.forEach(sortChildrenRecursively)
+
+		return rootNodes
+	}
+}
+
+export class RawFieldEmbedDetailEligibilityNode {
+	children: RawFieldEmbedDetailEligibilityNode[] = []
+	codeEligibilityType: EligibilityType
+	description: string
+	exprState?: string
+	header: string
+	id: string
+	name: string
+	nodeId: number
+	nodeIdParent?: number
+	order: number
+	constructor(obj: any) {
+		const clazz = 'RawFieldEmbedDetailEligibilityNode'
+		obj = valueOrDefault(obj, {})
+		this.codeEligibilityType = memberOfEnum(
+			obj._codeEligibilityType,
+			clazz,
+			'codeEligibilityType',
+			'EligibilityType',
+			EligibilityType
+		)
+		this.description = strRequired(obj.description, clazz, 'description')
+		this.exprState = strOptional(obj.exprState, clazz, 'exprState')
+		this.header = strRequired(obj.header, clazz, 'header')
+		this.id = strRequired(obj.id, clazz, 'id')
+		this.nodeId = nbrRequired(obj.nodeId, clazz, 'nodeId')
+		this.nodeIdParent = nbrOptional(obj.nodeIdParent, clazz, 'nodeIdParent')
+		this.order = nbrRequired(obj.order, clazz, 'order')
+
+		// derived properties
+		this.name = this.getPropName()
+	}
+	getPropName() {
+		return `nodeProp${this.nodeId}`
+	}
+}
+
+export class RawFieldEmbedList {
+	_objRaw: any
+	embedDataObjId: string
+	embedPropName: string
+	embedTable: DbTable
+	parentColumnBackLink?: string
+	parentTableRoot: DbTable
+	constructor(obj: any) {
+		obj = valueOrDefault(obj, {})
+		const clazz = 'RawFieldEmbedList'
+		this._objRaw = obj
+		this.embedDataObjId = strRequired(obj._dataObjEmbedId, clazz, '_dataObjIdEmbed')
+		this.embedPropName = strRequired(obj._embedPropName, clazz, '_embedPropName')
+		this.embedTable = new DbTable(obj._embedTable)
+		this.parentColumnBackLink = strOptional(
+			obj._parentColumnBackLink,
+			clazz,
+			'_parentColumnBackLink'
+		)
+		this.parentTableRoot = new DbTable(obj._parentTableRoot)
 	}
 }
 
 export class RawDBColumn {
 	codeDataType: PropDataType
 	classProps?: string
+	description?: string
 	exprStorageKey?: string
 	header: string
 	headerSide?: string
@@ -606,12 +1365,13 @@ export class RawDBColumn {
 			PropDataType
 		)
 		this.classProps = strOptional(obj.classProps, clazz, 'classProps')
+		this.description = strOptional(obj.description, clazz, 'description')
 		this.exprStorageKey = strOptional(obj.exprStorageKey, clazz, 'exprStorageKey')
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.headerSide = strOptional(obj.headerSide, clazz, 'headerSide')
 		this.inputMask = strOptional(obj.inputMask, clazz, 'inputMask')
 		this.isFormTag = booleanOrFalse(obj.isFormTag)
-		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
+		this.isMultiSelect = booleanOrDefault(obj._isMultiSelect, false)
 		this.matchColumn = strOptional(obj.matchColumn, clazz, 'matchColumn')
 		this.maxLength = nbrOptional(obj.maxLength, clazz, 'maxLength')
 		this.maxValue = nbrOptional(obj.maxValue, clazz, 'maxValue')
@@ -665,327 +1425,4 @@ export class RawUserAction {
 		this.name = strRequired(obj.name, clazz, 'name')
 		this.navDestination = classOptional(TokenAppNav, obj._navDestination)
 	}
-}
-
-export class PropLink {
-	exprProps: string
-	table?: DbTable
-	constructor(obj: any) {
-		const clazz = 'PropLink'
-		obj = valueOrDefault(obj, {})
-		const cols = getArray(obj._columns)
-		const exprDisplayColumns = cols.reduce((acc: string, col: any) => {
-			if (acc) acc += '.'
-			acc += col._name
-			return acc
-		}, '')
-		const exprDisplay = exprDisplayColumns
-			? `.${exprDisplayColumns}`
-			: obj._exprCustom
-				? obj._exprCustom
-				: `.id`
-		this.exprProps = `{ data := .id, display := ${exprDisplay} }`
-		this.table = classOptional(DbTable, obj._table)
-	}
-	getTableObj() {
-		return this.table ? this.table.object : undefined
-	}
-}
-
-export class PropLinkItems {
-	rawItems: DataRecord[] = $state([])
-	source: PropLinkItemsSource
-	constructor(source: any) {
-		const clazz = 'PropLinkItems'
-		this.source = new PropLinkItemsSource(source)
-	}
-
-	formatDataItemDisplay(record: DataRecord) {
-		let value = ''
-		const displayIdSeparator = this.source.displayIdSeparator
-		this.source.props.forEach((prop) => {
-			if (prop.isDisplayId) {
-				if (value) value += displayIdSeparator
-				value += getDataRecordValueKey(record, prop.key)
-			}
-		})
-		return value
-	}
-
-	getDataItemsAll(fieldValue: DataRecord | DataRecord[]) {
-		const records: DataRecord[] = getArray(fieldValue)
-		const idsSelected = records.map((r) => r.data)
-		let fieldItems: FieldColumnItem[] = []
-		this.rawItems.forEach((item) => {
-			fieldItems.push(
-				new FieldColumnItem(
-					item.data,
-					this.formatDataItemDisplay(item),
-					idsSelected.includes(item.data)
-				)
-			)
-		})
-		return fieldItems
-	}
-
-	getDisplayValueListIds(idsCurrent: string | string[]) {
-		const ids = getArray(idsCurrent)
-		let values = ''
-		this.rawItems.forEach((item) => {
-			if (ids.includes(item.data)) {
-				if (values) values += ', '
-				values += this.formatDataItemDisplay(item)
-			}
-		})
-		return values
-	}
-
-	getDisplayValueListRecords(records: any[]) {
-		records = getArray(records)
-		const ids = records.map((r) => r.data)
-		return this.getDisplayValueListIds(ids)
-	}
-
-	getValueDisplay(valueRaw: any | any[]) {
-		const valueRawList = getArray(valueRaw)
-		const ids = valueRawList.map((r) => r.data)
-		let values = ''
-		this.rawItems.forEach((item) => {
-			if (ids.includes(item.data)) {
-				if (values) values += ', '
-				values += this.formatDataItemDisplay(item)
-			}
-		})
-		return values
-	}
-
-	getValueIds(valueRaw: any | any[]) {
-		const valueRawList = getArray(valueRaw)
-		const ids = valueRawList.map((r) => r.data)
-		return ids
-	}
-
-	getValueRaw(valueDisplay: string | string[]) {
-		if (Array.isArray(valueDisplay)) {
-			const returnValues = this.rawItems.filter((item) => {
-				return valueDisplay.includes(item.data)
-			})
-			return returnValues
-		} else {
-			const returnValue = this.rawItems.find((item) => {
-				return item.data === valueDisplay
-			})
-			return returnValue || ''
-		}
-	}
-
-	getGridParms() {
-		let columnDefs: ColumnsDefsSelect = [
-			{
-				field: 'id',
-				headerName: 'ID',
-				hide: true
-			}
-		]
-
-		this.source.props.forEach((prop) => {
-			columnDefs.push({
-				field: prop.key,
-				flex: 1,
-				headerName: prop.header
-			})
-		})
-
-		// rowData
-		let rowData: DataRecord[] = this.getRowData()
-
-		// rawSortObj
-		let sortModel = new DataObjSort()
-		this.source.getSortProps().forEach((prop, i) => {
-			sortModel.addItem(prop.key, 'asc', i)
-		})
-
-		return { columnDefs, rowData, sortModel }
-	}
-
-	getRowData() {
-		return this.rawItems.map((item) => {
-			let row: DataRecord = { id: item.data }
-			this.source.props.forEach((prop) => {
-				row[prop.key] = getDataRecordValueKey(item, prop.key)
-			})
-			return row
-		})
-	}
-
-	getValuesSelect() {
-		const resetItem = { data: '', display: ' ', name: '' }
-		return [null, ...this.rawItems]
-	}
-
-	async retrieve(sm: State, fieldValue: string | undefined = undefined): Promise<MethodResult> {
-		const clazz = 'PropLinkItems.retrieve'
-		const exprCustom = this.source.getExprSelect(false, fieldValue)
-
-		const dataTab = new DataObjData()
-		dataTab.parms.valueSet(ParmsValuesType.itemsParmValue, this.source.parmValue)
-		dataTab.parms.valueSet(ParmsValuesType.itemsParmValueList, this.source.parmValueList)
-
-		let result: MethodResult = await clientQueryExpr(clazz, exprCustom, { dataTab }, sm)
-		if (result.error) return result
-		this.setRawItems(required(result.data.rawDataList, clazz, 'rawItems'))
-		return result
-	}
-
-	setRawItems(rawItems: DataRecord[]) {
-		this.rawItems = rawItems
-	}
-}
-
-export class PropLinkItemsSource {
-	displayIdSeparator: string
-	exprProps: string
-	header?: string
-	name: string
-	parmValue?: string
-	parmValueList: string[] = []
-	props: PropLinkItemsSourceProp[] = []
-	querySource: QuerySource
-	raw: any
-	constructor(obj: any) {
-		const clazz = 'PropLinkItemsSource'
-		obj = valueOrDefault(obj, {})
-		this.displayIdSeparator = valueOrDefault(obj.displayIdSeparator, ' ')
-		this.header = strOptional(obj._header, clazz, 'header')
-		this.name = strRequired(obj.name, clazz, 'name')
-		this.parmValue = obj._parmValue || obj._codeAttrType
-		this.parmValueList = getArray(obj._parmValueList)
-		this.props = arrayOfClass(PropLinkItemsSourceProp, obj._props)
-		this.raw = obj
-		this.querySource = new QuerySource({
-			...obj._querySource,
-			querySourceType: QuerySourceType.expr
-		})
-
-		// derived
-		let props = ''
-		let display = ''
-		this.props.forEach((p: PropLinkItemsSourceProp) => {
-			if (p.isDisplayId) {
-				if (display) display += ' ++ '
-				if (this.displayIdSeparator) display += `"${this.displayIdSeparator}" ++ `
-				display += p.expr
-			}
-			if (props) props += ', '
-			props += `${p.key} := ${p.expr}`
-		})
-		this.exprProps = `{ data := .id, display := ${display}, ${props} }`
-	}
-
-	getExprSelect(isCompilation: boolean, currVal: string | string[] | undefined) {
-		let exprSelect =
-			this.querySource.exprUnions.length > 0
-				? this.getExprSelectUnions()
-				: this.getExprSelectBase(currVal)
-
-		// assemble
-		let expr = getDbExprRaw(this.querySource.exprWith, exprSelect)
-
-		const exprSort =
-			this.querySource.exprSort ||
-			this.getSortProps().reduce((sort, prop) => {
-				if (sort) sort += ' THEN '
-				return (sort += `.${prop.key}`)
-			}, '')
-
-		if (isCompilation) {
-			expr = `(${expr}) ${this.exprProps}`
-			expr += exprSort ? ` ORDER BY ${exprSort}` : ''
-			expr = `(SELECT ${expr})`
-		} else {
-			expr = `SELECT (${expr}) ${this.exprProps}`
-			expr += exprSort ? ` ORDER BY ${exprSort}` : ''
-		}
-
-		return expr
-	}
-
-	getExprSelectBase(currVal: string | string[] | undefined) {
-		let filter = this.querySource.exprFilter ? `(${this.querySource.exprFilter})` : ''
-
-		if (filter && currVal) {
-			let currValFilter = ''
-			if (Array.isArray(currVal)) {
-				if (currVal.length > 0) {
-					currValFilter = `.id IN <uuid>{${currVal.map((v: string) => `'${v}'`).join(',')}}`
-				}
-			} else if (currVal) {
-				currValFilter = `.id = <uuid>'${currVal}'`
-			}
-			if (currValFilter) filter += ` OR ${currValFilter}`
-		}
-
-		let exprSelect = `SELECT ${this.querySource.table?.object}`
-		exprSelect += filter ? ` FILTER ${filter}` : ''
-		return exprSelect
-	}
-	getExprSelectUnions() {
-		let exprUnions = ''
-		this.querySource.exprUnions.forEach((item) => {
-			if (exprUnions) exprUnions += ' UNION '
-			exprUnions += `(${item})`
-		})
-		let exprSelect = `{ ${exprUnions} }`
-		return exprSelect
-	}
-
-	getSortProps() {
-		return this.props
-			.filter((prop) => isNumber(prop.orderSort))
-			.sort((a, b) => a.orderSort! - b.orderSort!)
-	}
-
-	getTableObj() {
-		return this.querySource.table ? this.querySource.table.object : undefined
-	}
-
-	setParmValue(parmValue: any) {
-		this.parmValue = getValueData(parmValue)
-	}
-}
-
-export class PropLinkItemsSourceProp {
-	expr: string
-	header: string
-	isDisplayId: boolean
-	key: string
-	orderSort?: number
-	constructor(obj: any) {
-		const clazz = 'PropLinkItemsSourceProp'
-		obj = valueOrDefault(obj, {})
-		this.expr = strRequired(obj.expr, clazz, 'expr')
-		this.header = strRequired(obj.header, clazz, 'header')
-		this.isDisplayId = booleanRequired(obj.isDisplayId, clazz, 'isDisplayId')
-		this.key = strRequired(obj.key, clazz, 'key')
-		this.orderSort = nbrOptional(obj.orderSort, clazz, 'orderSort')
-	}
-}
-
-export enum PropDataSourceValue {
-	calculate = 'calculate',
-	edgeDB = 'edgeDB'
-}
-
-export enum PropNamePrefixType {
-	custom = 'custom',
-	expr = 'expr',
-	exprCustom = 'exprCustom',
-	link = 'link',
-	linkItems = 'linkItems',
-	table = 'table'
-}
-
-export enum PropSortDir {
-	asc = 'asc',
-	desc = 'desc'
 }

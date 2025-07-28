@@ -21,7 +21,7 @@
 
 	async function onChange(event: Event) {
 		const target = event.currentTarget as HTMLInputElement
-		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, target.value)
+		await dm.setFieldValueAsync(parms.dataObjId, parms.row, parms.field, target.value)
 	}
 	function preventDefault(fn) {
 		return function (event) {
@@ -34,8 +34,8 @@
 <FormLabel {parms} />
 
 <textarea
-	id={field.colDO.propName}
-	name={field.colDO.propName}
+	id={field.getValueKey()}
+	name={field.getValueKey()}
 	rows={field.rows}
 	cols={field.cols}
 	hidden={field.fieldAccess === FieldAccess.hidden}

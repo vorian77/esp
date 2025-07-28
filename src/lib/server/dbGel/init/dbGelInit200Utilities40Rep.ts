@@ -9,7 +9,7 @@ export async function addAnalytic(data: any) {
 			description: e.optional(e.str),
 			header: e.optional(e.str),
 			name: e.str,
-			owner: e.str,
+			ownerSys: e.str,
 			parms: e.optional(e.array(e.json)),
 			statuses: e.optional(e.array(e.json))
 		},
@@ -20,7 +20,7 @@ export async function addAnalytic(data: any) {
 				header: p.header,
 				modifiedBy: CREATOR,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				parms: e.for(e.array_unpack(p.parms), (p) => {
 					return e.insert(e.sys_rep.SysRepParm, {
 						codeDataType: e.sys_core.getCode(
@@ -79,7 +79,7 @@ export async function addReport(data: any) {
 			exprWith: e.optional(e.str),
 			header: e.optional(e.str),
 			name: e.str,
-			owner: e.str,
+			ownerSys: e.str,
 			parms: e.optional(e.array(e.json)),
 			tables: e.optional(e.array(e.json))
 		},
@@ -154,7 +154,7 @@ export async function addReport(data: any) {
 				header: p.header,
 				modifiedBy: CREATOR,
 				name: p.name,
-				owner: e.sys_core.getSystemPrime(p.owner),
+				ownerSys: e.sys_core.getSystemPrime(p.ownerSys),
 				parms: e.for(e.array_unpack(p.parms), (p) => {
 					return e.insert(e.sys_rep.SysRepParm, {
 						codeDataType: e.sys_core.getCode(

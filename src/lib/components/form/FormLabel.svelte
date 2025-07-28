@@ -27,7 +27,7 @@
 <!-- <DataViewer header="label.iconProps" data={iconProps?.name} /> -->
 
 {#if field.fieldAccess !== FieldAccess.hidden}
-	<label for={field.colDO.propName}>
+	<label for={field.getValueKey()}>
 		<div
 			class={classProps}
 			hidden={dataObj.raw.codeCardinality === DataObjCardinality.list ? 'hidden' : ''}
@@ -37,6 +37,11 @@
 				<Icon props={iconProps} />
 			{/if}
 		</div>
+		{#if field.colDO.colDB.description}
+			<div class="text-xs text-gray-500">
+				{field.colDO.colDB.description}
+			</div>
+		{/if}
 		<slot />
 	</label>
 {/if}

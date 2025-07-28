@@ -29,7 +29,7 @@ export class FieldInput extends Field {
 	placeHolder?: string
 	spinStep?: string
 	constructor(props: PropsFieldCreate) {
-		const clazz = `FieldInput: ${props.propRaw.propName}`
+		const clazz = `FieldInput: ${props.propRaw.propNameKey}`
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
 		const fields: Field[] = required(props.parms.fields, clazz, 'fields')
@@ -70,7 +70,7 @@ export class FieldInput extends Field {
 				return undefined
 			}
 			const idxParent = fields.findIndex((f) => {
-				return f.colDO.propName === parentMatchColumn
+				return f.colDO.propNameKey === parentMatchColumn
 			})
 			if (idxParent > -1) {
 				const field = fields[idxParent] as FieldInput
@@ -80,7 +80,7 @@ export class FieldInput extends Field {
 						: ''
 
 				// set parent
-				field.matchColumn = new MatchColumn(thisField.colDO.propName, message)
+				field.matchColumn = new MatchColumn(thisField.getValueKey(), message)
 
 				// return this field's match column
 				return new MatchColumn(parentMatchColumn, message)
@@ -88,7 +88,7 @@ export class FieldInput extends Field {
 				error(500, {
 					file: FILENAME,
 					function: 'FieldInput.initMatchColumn',
-					msg: `For column: "${thisField.colDO.propName}", can not find parent matchColumn: "${parentMatchColumn}"`
+					msg: `For column: "${thisField.getValueKey()}", can not find parent matchColumn: "${parentMatchColumn}"`
 				})
 			}
 		}
@@ -200,7 +200,7 @@ export class FieldInput extends Field {
 			}
 
 			// set validiities
-			let validityFields: [ValidityField] = [new ValidityField(this.colDO.propName, validity)]
+			let validityFields: [ValidityField] = [new ValidityField(this.getValueKey(), validity)]
 			validityFields.push(new ValidityField(matchColumn.index, validity))
 			return new Validation(ValidationType.field, validationStatus, validityFields)
 		}

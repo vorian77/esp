@@ -1,8 +1,15 @@
 <script lang="ts">
-	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, required } from '$utils/types'
+	import {
+		CodeAction,
+		CodeActionClass,
+		CodeActionType,
+		ContextKey,
+		DataObj,
+		required
+	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { AppLevel, AppLevelRowStatus } from '$comps/app/types.app.svelte'
-	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import { State, StateTriggerToken } from '$comps/app/types.state.svelte'
 	import {
 		TokenAppTab,
 		TokenAppStateTriggerAction,
@@ -70,17 +77,18 @@
 						{/each}
 					</select>
 				</div>
-
+				<!-- hide: {isHideChildTabs} -->
 				<div class="hidden sm:block rounded-md">
 					{#each currLevel.tabs as tab, idx}
 						{@const name = 'tab' + idx}
-						{@const isCurrent = idx === currLevel.tabIdxCurrent}
-						{@const hidden = isHideChildTabs && !isCurrent}
 						{@const label = tab.node.label}
-						{@const classItem = isCurrent ? classItemCurrent : classItemNotCurrent}
+						{@const isCurrent = idx === currLevel.tabIdxCurrent}
+						{@const classCurrent = isCurrent ? classItemCurrent : classItemNotCurrent}
+						{@const hidden = isHideChildTabs && !isCurrent ? ' hidden' : ''}
+						{@const classItem = classCurrent + hidden}
 
 						{#if !tab.isVirtual}
-							<button {name} {hidden} class={classItem} onclick={() => onClick(idx)}>
+							<button {name} class={classItem} onclick={() => onClick(idx)}>
 								{label}
 							</button>
 						{/if}

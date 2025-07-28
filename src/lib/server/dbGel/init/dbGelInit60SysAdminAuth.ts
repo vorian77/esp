@@ -19,7 +19,7 @@ function initAuthLogin(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Log in',
 		name: 'data_obj_auth_login',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -103,7 +103,7 @@ function initAuthLogin(init: InitDb) {
 		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_auth_login',
 		name: 'node_obj_auth_login',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -112,7 +112,7 @@ function initAuthLoginForgotPw(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Reset Password',
 		name: 'data_obj_auth_login_forgot_pw',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -209,7 +209,7 @@ function initAuthLoginForgotPw(init: InitDb) {
 
 		dataObj: 'data_obj_auth_login_forgot_pw',
 		name: 'node_obj_auth_login_forgot_pw',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -218,7 +218,7 @@ function initAuthLoginVerify(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_login_verify',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -286,7 +286,7 @@ function initAuthLoginVerify(init: InitDb) {
 
 		dataObj: 'data_obj_auth_login_verify',
 		name: 'node_obj_auth_login_verify',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -295,7 +295,7 @@ function initAuthSignup(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Sign up',
 		name: 'data_obj_auth_signup',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		table: 'SysUser',
 		fields: [
 			{
@@ -390,7 +390,7 @@ function initAuthSignup(init: InitDb) {
 		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_auth_signup',
 		name: 'node_obj_auth_signup',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -399,7 +399,7 @@ function initAuthSignupVerifyMobileInsert(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_signup_verify_mobile_insert',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -466,7 +466,7 @@ function initAuthSignupVerifyMobileInsert(init: InitDb) {
 		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_auth_signup_verify_mobile_insert',
 		name: 'node_obj_auth_signup_verify_mobile_insert',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -475,7 +475,7 @@ function initAuthSignupVerifyMobileUpdate(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Verify Mobile Phone Number',
 		name: 'data_obj_auth_signup_verify_mobile_update',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -542,7 +542,7 @@ function initAuthSignupVerifyMobileUpdate(init: InitDb) {
 		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_auth_signup_verify_mobile_update',
 		name: 'node_obj_auth_signup_verify_mobile_update',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -553,7 +553,7 @@ function initMyAccount(init: InitDb) {
 		exprFilter: '.id = <user,uuid,id>',
 		header: 'My Account',
 		name: 'data_obj_task_sys_auth_my_account',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		queryRiders: [
 			{
 				codeQueryAction: 'customFunction',
@@ -628,7 +628,7 @@ function initMyAccount(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'defaultSystem',
+				columnName: 'systemDefault',
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
@@ -738,7 +738,7 @@ function initMyAccount(init: InitDb) {
 		codeNodeType: 'nodeFree',
 		dataObj: 'data_obj_task_sys_auth_my_account',
 		name: 'node_obj_task_sys_auth_my_account',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -747,7 +747,7 @@ function initResetPasswordAccount(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Reset Password',
 		name: 'data_obj_auth_reset_password_account',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		table: 'SysUser',
 		tables: [
 			{ index: 0, table: 'SysUser' },
@@ -813,7 +813,7 @@ function initResetPasswordAccount(init: InitDb) {
 		codeQueryTypeAlt: 'retrieveToPreset',
 		dataObj: 'data_obj_auth_reset_password_account',
 		name: 'node_obj_auth_reset_password_account',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -832,7 +832,7 @@ function initUserPref(init: InitDb) {
 			newVals := (SELECT allTypes EXCEPT userTypes)
 			SELECT newVals`,
 		name: 'data_obj_auth_user_pref_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		queryRiders: [
 			{
 				codeQueryAction: 'customFunction',
@@ -928,6 +928,6 @@ function initUserPref(init: InitDb) {
 		codeNodeType: 'nodeFree',
 		dataObj: 'data_obj_auth_user_pref_list',
 		name: 'node_obj_auth_user_pref_list',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

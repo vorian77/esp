@@ -9,7 +9,7 @@
 		Node,
 		NodeObjComponent
 	} from '$utils/types'
-	import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
+	import { State, StateNavLayout, StateParms } from '$comps/app/types.state.svelte'
 	import { DataManager } from '$comps/dataObj/types.dataManager.svelte'
 	import {
 		TokenApiId,

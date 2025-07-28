@@ -96,6 +96,8 @@ export class ScriptGroup {
 		while (this.scripts.length > 0) {
 			const script: Script = required(this.scripts.shift(), clazz, 'script')
 
+			debug('ScriptGroup.queryExe', 'pre-eval script', script.expr)
+
 			// eval script expr
 			result = await evalExpr({
 				evalExprContext: script.evalExprContext,

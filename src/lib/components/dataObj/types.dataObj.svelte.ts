@@ -1,5 +1,6 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import {
+	RawFieldEmbedDetailEligibility,
 	PropSortDir,
 	RawDataObj,
 	RawDataObjAction,
@@ -27,7 +28,8 @@ import {
 	FieldCustomText
 } from '$comps/form/fieldCustom'
 import {
-	FieldEmbed,
+	FieldEmbedDetailEligibility,
+	FieldEmbedList,
 	FieldEmbedListConfig,
 	FieldEmbedListEdit,
 	FieldEmbedListSelect,
@@ -37,7 +39,7 @@ import { FieldFile } from '$comps/form/fieldFile'
 import { FieldInput } from '$comps/form/fieldInput'
 import { FieldParm } from '$comps/form/fieldParm'
 import { FieldRadio } from '$comps/form/fieldRadio'
-import { FieldSelect } from '$comps/form/fieldSelect'
+import { FieldSelect, FieldSelectOwner } from '$comps/form/fieldSelect'
 import { FieldTagDetails, FieldTagRow, FieldTagSection } from '$comps/form/fieldTag'
 import { FieldTextarea } from '$comps/form/fieldTextarea'
 import { FieldToggle } from '$comps/form/fieldToggle'
@@ -46,13 +48,18 @@ import {
 	CodeAction,
 	type DataRecord,
 	getArray,
-	getDataRecordValueKey,
 	memberOfEnum,
 	memberOfEnumOrDefault,
 	MethodResult,
 	ParmsValues,
+	ParmsValuesFormList,
+	type ParmsValuesFormListType,
+	ParmsValuesType,
+	recordValueGet,
+	recordValueGetDisplay,
 	required,
-	setDataRecordValue,
+	recordValueSet,
+	strRequired,
 	UserPrefType
 } from '$utils/types'
 import { TokenApiQueryType } from '$utils/types.token'
@@ -66,7 +73,8 @@ export class DataObj {
 	actionsFieldListRowActionIdx: number = -1
 	data: DataObjData = $state(new DataObjData())
 	dataItems: DataItems = {}
-	embedField?: FieldEmbed
+	eligibility?: RawFieldEmbedDetailEligibility
+	embedField?: FieldEmbedList
 	fields: Field[] = []
 	isDetailPreset: boolean = false
 	raw: RawDataObj
@@ -78,7 +86,6 @@ export class DataObj {
 		const clazz = 'DataObj'
 		this.data = data
 		this.raw = required(data.rawDataObj, clazz, 'rawDataObj')
-
 		this.sortModel = this.initSortModel(this.raw.rawPropsSort)
 	}
 
@@ -98,102 +105,87 @@ export class DataObj {
 			})
 		}
 	}
-	embedFieldSet(field: FieldEmbed) {
+
+	embedFieldSet(field: FieldEmbedList) {
 		this.embedField = field
 	}
 
-	static async init(
+	async gridDownload(sm: State) {
+		let data: string = ''
+		let fields: Field[] = []
+		let newRow: string = ''
+
+		// get headers
+		this.fields.forEach((f) => {
+			if (f.colDO.propName === 'id') return
+			fields.push(f)
+			const label = f.colDO.headerAlt ? f.colDO.headerAlt : f.colDO.label
+			newRow += `${label},`
+		})
+		if (fields.length === 0) {
+			alert('Download cancelled. No data to export.')
+			return
+		}
+		data += `${newRow}\n`
+
+		// get data
+		const rowsRetrieved: DataRows = this.data.rowsRetrieved
+		if (rowsRetrieved.dataRows.length === 0) {
+			alert('Download cancelled. No data to export.')
+			return
+		}
+		rowsRetrieved.dataRows.forEach((dataRow) => {
+			const record = dataRow.record
+			newRow = ''
+			fields.forEach((f) => {
+				newRow += `${recordValueGetDisplay(record, f.getValueKey())},`
+			})
+			data += `${newRow}\n`
+		})
+
+		sm.downloadContent(`${this.raw.header}.csv`, 'text/csv', data)
+	}
+
+	static async fieldsCreate(
 		sm: State,
-		data: DataObjData,
-		queryType: TokenApiQueryType = TokenApiQueryType.retrieve
+		dataObj: DataObj,
+		queryType: TokenApiQueryType
 	): Promise<MethodResult> {
-		const clazz = 'DataObj.init'
-		const dataObj = new DataObj(data)
-		dataObj.data = data
+		const clazz = 'DataObj.fieldsCreate'
+		let fields: Field[] = []
 
 		const propsFieldInit = new PropsFieldInit({
 			data: dataObj.data,
 			fields: dataObj.fields,
 			sm
 		})
-
-		let result: MethodResult = await dataObj.fieldsCreate(propsFieldInit, queryType)
-		if (result.error) return result
-		dataObj.fields = result.data
-
-		result = await dataObj.fieldsInit(sm, dataObj)
-		if (result.error) return result
-
-		const rawDataObj = required(data.rawDataObj, clazz, 'rawDataObj')
-		initActionsField()
-
-		initItemChangedTriggers(dataObj.fields)
-		initRetrieveReadonly(dataObj, queryType)
-
-		return new MethodResult(dataObj)
-
-		function initActionsField() {
-			dataObj.userActions = rawDataObj.rawActions.map((rawAction: RawDataObjAction) => {
-				return new DataObjAction(rawAction)
-			})
-			dataObj.actionsFieldListRowActionIdx = dataObj.userActions.findIndex((f) => f.isListRowAction)
-		}
-		function initItemChangedTriggers(fields: Field[]) {
-			fields.forEach((field) => {
-				field.colDO.itemChanges.forEach((target: RawDataObjPropDisplayItemChange) => {
-					field.itemChanges.push(new FieldItemChange(target, fields))
-				})
-			})
-		}
-
-		function initRetrieveReadonly(dataObj: DataObj, queryType: TokenApiQueryType) {
-			if (
-				dataObj.raw.isFormReadonly &&
-				[TokenApiQueryType.retrieve, TokenApiQueryType.save].includes(queryType)
-			) {
-				dataObj.fields.forEach((field) => {
-					if ([FieldAccess.optional, FieldAccess.required].includes(field.fieldAccess)) {
-						field.fieldAccess = FieldAccess.readonly
-					}
-				})
-			}
-		}
-	}
-
-	initSortModel(rawPropsSort: RawDataObjPropDB[]) {
-		const newSort = new DataObjSort()
-		rawPropsSort.forEach((item, i) => {
-			newSort.addItem(item.id, item.codeSortDir, i)
-		})
-		return newSort
-	}
-
-	async fieldsCreate(
-		propsFieldInit: PropsFieldInit,
-		queryType: TokenApiQueryType
-	): Promise<MethodResult> {
-		const clazz = 'DataObj.fieldsCreate'
 		const rawDataObj = required(propsFieldInit.data.rawDataObj, clazz, 'rawDataObj')
 		const rawPropsDisplay = rawDataObj.rawPropsDisplay
-		let fields: Field[] = []
 
 		// create fields
 		for (let i = 0; i < rawPropsDisplay.length; i++) {
 			const p: RawDataObjPropDisplay = rawPropsDisplay[i]
-			if (!(queryType === TokenApiQueryType.preset && p.fieldEmbed)) {
-				let result: MethodResult = await DataObj.fieldsCreateItem(propsFieldInit, p)
+			if (!(queryType === TokenApiQueryType.preset && p.fieldEmbedListType)) {
+				// init base
+				let result: MethodResult = DataObj.fieldsCreateItem(propsFieldInit, p)
 				if (result.error) return result
 				const field: Field = result.data
+
+				// init async
+				result = await field.initAsync(propsFieldInit)
+				if (result.error) return result
+
 				fields.push(field)
 			}
 		}
 		return new MethodResult(fields)
 	}
 
-	static async fieldsCreateItem(propsFieldInit: PropsFieldInit, propRaw: RawDataObjPropDisplay) {
+	static fieldsCreateItem(propsFieldInit: PropsFieldInit, propRaw: RawDataObjPropDisplay) {
+		const clazz = 'DataObj.fieldsCreateItem'
 		let newField: Field
-		let result: MethodResult
 
+		const dataObjId = strRequired(propsFieldInit.data.rawDataObj?.id, clazz, 'dataObjId')
 		const props = new PropsFieldCreate({ propRaw })
 
 		const element = memberOfEnumOrDefault(
@@ -250,22 +242,20 @@ export class DataObj {
 				newField = new FieldCustomText(props)
 				break
 
+			case FieldElement.embedDetailEligibility:
+				newField = new FieldEmbedDetailEligibility(propsFieldInit, propRaw, props)
+				break
+
 			case FieldElement.embedListConfig:
-				result = await FieldEmbed.initFieldClient(propsFieldInit, props, FieldEmbedListConfig)
-				if (result.error) return result
-				newField = result.data
+				newField = new FieldEmbedListConfig(dataObjId, propRaw, propsFieldInit.data)
 				break
 
 			case FieldElement.embedListEdit:
-				result = await FieldEmbed.initFieldClient(propsFieldInit, props, FieldEmbedListEdit)
-				if (result.error) return result
-				newField = result.data
+				newField = new FieldEmbedListEdit(dataObjId, propRaw, propsFieldInit.data)
 				break
 
 			case FieldElement.embedListSelect:
-				result = await FieldEmbed.initFieldClient(propsFieldInit, props, FieldEmbedListSelect)
-				if (result.error) return result
-				newField = result.data
+				newField = new FieldEmbedListSelect(dataObjId, propRaw, propsFieldInit.data)
 				break
 
 			case FieldElement.embedShell:
@@ -286,6 +276,11 @@ export class DataObj {
 
 			case FieldElement.select:
 				newField = new FieldSelect(props)
+				break
+
+			case FieldElement.selectOwnerOrg:
+			case FieldElement.selectOwnerSys:
+				newField = new FieldSelectOwner(props)
 				break
 
 			case FieldElement.tagDetails:
@@ -320,18 +315,21 @@ export class DataObj {
 		return new MethodResult(newField)
 	}
 
-	async fieldsInit(sm: State, dataObj: DataObj) {
-		const props = new PropsFieldInit({ data: dataObj.data, dataObj, fields: dataObj.fields, sm })
-		for (let i = 0; i < dataObj.fields.length; i++) {
-			const field: Field = dataObj.fields[i]
-			let result: MethodResult = await field.init(props)
-			if (result.error) return result
-		}
-		return new MethodResult()
+	static async fieldsCreateItemAsync(
+		propsFieldInit: PropsFieldInit,
+		propRaw: RawDataObjPropDisplay
+	) {
+		let result: MethodResult = DataObj.fieldsCreateItem(propsFieldInit, propRaw)
+		if (result.error) return result
+		const field: Field = result.data
+
+		result = await field.initAsync(propsFieldInit)
+		if (result.error) return result
+		return new MethodResult(field)
 	}
 
 	getField(fieldNameRaw: string) {
-		const field = this.fields.find((f) => f.colDO.propNameRaw === fieldNameRaw)
+		const field = this.fields.find((f) => f.colDO.propName === fieldNameRaw)
 		if (field) {
 			return field
 		} else {
@@ -341,6 +339,79 @@ export class DataObj {
 				msg: `Field ${fieldNameRaw} not found.`
 			})
 		}
+	}
+
+	static async load(
+		sm: State,
+		data: DataObjData,
+		queryType: TokenApiQueryType = TokenApiQueryType.retrieve
+	): Promise<MethodResult> {
+		const clazz = 'DataObj.load'
+		const rawDataObj = required(data.rawDataObj, clazz, 'rawDataObj')
+		const dataObj = new DataObj(data)
+		dataObj.data = data
+
+		let result: MethodResult = await DataObj.fieldsCreate(sm, dataObj, queryType)
+		if (result.error) return result
+		dataObj.fields = result.data
+
+		loadActionsField()
+		loadItemChangedTriggers(dataObj.fields)
+		loadRetrieveReadonly(dataObj, queryType)
+
+		return new MethodResult(dataObj)
+
+		function loadActionsField() {
+			dataObj.userActions = rawDataObj.rawActions.map((rawAction: RawDataObjAction) => {
+				return new DataObjAction(rawAction)
+			})
+			dataObj.actionsFieldListRowActionIdx = dataObj.userActions.findIndex((f) => f.isListRowAction)
+		}
+
+		function loadItemChangedTriggers(fields: Field[]) {
+			fields.forEach((field) => {
+				field.colDO.itemChanges.forEach((target: RawDataObjPropDisplayItemChange) => {
+					field.itemChanges.push(new FieldItemChange(target, fields))
+				})
+			})
+		}
+
+		function loadRetrieveReadonly(dataObj: DataObj, queryType: TokenApiQueryType) {
+			if (
+				dataObj.raw.isFormReadonly &&
+				[TokenApiQueryType.retrieve, TokenApiQueryType.save].includes(queryType)
+			) {
+				dataObj.fields.forEach((field) => {
+					if ([FieldAccess.optional, FieldAccess.required].includes(field.fieldAccess)) {
+						field.fieldAccess = FieldAccess.readonly
+					}
+				})
+			}
+		}
+	}
+
+	initSortModel(rawPropsSort: RawDataObjPropDB[]) {
+		const newSort = new DataObjSort()
+		rawPropsSort.forEach((item, i) => {
+			newSort.addItem(item.id, item.codeSortDir, i)
+		})
+		return newSort
+	}
+
+	parmsFormList(): any {
+		return this.data ? this.data.parmsFormList : undefined
+	}
+
+	parmsFormListInit(parms: ParmsValuesFormListType) {
+		if (this.data) this.data.parmsFormList = new ParmsValuesFormList(parms)
+	}
+
+	parmsFormListGet(parm: ParmsValuesType): any {
+		return this.data ? this.data.parmsFormList.valueGet(parm) : undefined
+	}
+
+	parmsFormListSet(parm: ParmsValuesType, value: any) {
+		this?.data.parmsFormList?.valueSet(parm, value)
 	}
 
 	print() {
@@ -380,10 +451,11 @@ export enum DataObjCardinality {
 
 export class DataObjData {
 	cardinality?: DataObjCardinality
-	fields: FieldEmbed[] = []
+	fields: FieldEmbedList[] = []
 	itemsFields: DataRecord = {}
 	itemsSelect: DataRecord[] = []
 	parms: ParmsValues = new ParmsValues()
+	parmsFormList: ParmsValues = new ParmsValues()
 	rawDataObj?: RawDataObj
 	rowsRetrieved: DataRows = new DataRows()
 	rowsSave: DataRows = new DataRows()
@@ -400,36 +472,22 @@ export class DataObjData {
 			this.rawDataObj = rawDataObj
 		}
 	}
-	getFieldEmbedData(field: FieldEmbed | undefined, evalExprContext: string): DataObjData {
-		if (!field) return this
-		const embedData = this.getFieldEmbedDataExe(field, this.fields, evalExprContext)
-		if (embedData) {
-			return embedData
-		} else {
-			error(500, {
-				file: FILENAME,
-				function: 'dataObjData.getFieldEmbedData',
-				msg: `Could not find field embed data for field: ${field.colDO.propNameRaw} in context: ${evalExprContext}`
-			})
-		}
+	getFieldEmbedData(field: FieldEmbedList | undefined): DataObjData {
+		return field ? field.embedData : this
 	}
 
-	private getFieldEmbedDataExe(
-		field: FieldEmbed,
-		fields: FieldEmbed[],
-		evalExprContext: string
-	): DataObjData | undefined {
-		for (let i = 0; i < fields.length; i++) {
-			let fieldCurrent = fields[i]
-			if (fieldCurrent.colDO.id === field.colDO.id) return fieldCurrent.data
-			const newData = this.getFieldEmbedDataExe(field, fieldCurrent.data.fields, evalExprContext)
-			if (newData) return newData
+	getFieldEmbedFields(field: FieldEmbedList | undefined): FieldEmbedList[] {
+		const getData = (field: FieldEmbedList, fields: FieldEmbedList[]): DataObjData | undefined => {
+			for (let i = 0; i < fields.length; i++) {
+				let fieldCurrent = fields[i]
+				if (fieldCurrent.colDO.id === field.colDO.id) return fieldCurrent.embedData
+				const newData = getData(field, fieldCurrent.embedData.fields)
+				if (newData) return newData
+			}
 		}
-	}
 
-	getFieldEmbedFields(field: FieldEmbed | undefined, evalExprContext: string): FieldEmbed[] {
 		if (!field) return this.fields
-		const dataField = this.getFieldEmbedDataExe(field, this.fields, evalExprContext)
+		const dataField = getData(field, this.fields)
 		return dataField ? dataField.fields : []
 	}
 
@@ -441,28 +499,30 @@ export class DataObjData {
 		if (source.rawDataObj) RawDataObj.initTableGroup(source.rawDataObj)
 		const data = new DataObjData(source.rawDataObj)
 
-		let result: MethodResult = FieldEmbed.initFieldsLoad(source.fields, data)
+		let result: MethodResult = FieldEmbedList.loadFields(source.fields, data)
 		if (result.error) return result
 		data.fields = result.data
 
 		data.itemsFields = { ...source.itemsFields }
 		data.itemsSelect = source.itemsSelect
 		data.parms = ParmsValues.load(source.parms)
+		data.parmsFormList = ParmsValuesFormList.load(source.parmsFormList)
 		data.rowsRetrieved = DataRows.load(source.rowsRetrieved)
 		data.rowsSave = DataRows.load(source.rowsSave)
+
 		return new MethodResult(data)
 	}
 
 	reset() {
 		this.rowsRetrieved.reset()
 		this.fields.forEach((f) => {
-			f.data.rowsRetrieved.reset()
+			f.embedData.rowsRetrieved.reset()
 		})
 	}
 	static reset(data: DataObjData) {
 		data.rowsRetrieved.reset()
 		data.fields.forEach((f) => {
-			DataObjData.reset(f.data)
+			DataObjData.reset(f.embedData)
 		})
 	}
 
@@ -570,10 +630,10 @@ export class DataRow {
 		this.status = status
 	}
 	getValue(key: string) {
-		return getDataRecordValueKey(this.record, key)
+		return recordValueGet(this.record, key)
 	}
 	setValue(key: string, value: any) {
-		return setDataRecordValue(this.record, key, value)
+		this.record = recordValueSet(this.record, key, value)
 	}
 }
 
@@ -631,6 +691,9 @@ export class DataRows {
 	}
 	getRows() {
 		return this.dataRows
+	}
+	getRowsIds() {
+		return this.getRows().map((row) => row.record.id)
 	}
 	hasRecord() {
 		return this.dataRows.length > 0 && Object.keys(this.dataRows[0].record).length > 0

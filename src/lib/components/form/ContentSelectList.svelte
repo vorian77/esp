@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { State } from '$comps/app/types.appState.svelte'
+	import { State } from '$comps/app/types.state.svelte'
 	import { AppLevel } from '$comps/app/types.app.svelte'
 	import {
 		CodeAction,
@@ -54,9 +54,9 @@
 	let dataItems = $derived(getArray(selectListItems?.rawItems))
 
 	let idFeature = $derived.by(() => {
-		const queryOwnerSysId = sm.parmsState.valueGet(ParmsValuesType.queryOwnerSys)
+		const systemIdQuerySource = sm.parmsState.valueGet(ParmsValuesType.systemIdQuerySource)
 		const nodeId = nodeSelect?.id
-		return hashString([queryOwnerSysId, nodeId])
+		return hashString([systemIdQuerySource, nodeId])
 	})
 
 	let dataObjId = $state(sm.app.getCurrTab()?.node.dataObjId)

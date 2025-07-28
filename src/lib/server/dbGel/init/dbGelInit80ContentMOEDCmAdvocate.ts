@@ -9,10 +9,10 @@ function initTaskOpenApps(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list_edit',
 		codeCardinality: 'list',
-		exprFilter: `.owner.name = 'sys_client_moed' AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_city_baltimore::MoedParticipant).dateStart AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_city_baltimore::MoedParticipant).dateEnd`,
+		exprFilter: `.ownerSys.name = 'sys_client_baltimore_moed' AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateStart AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateEnd`,
 		header: 'Open Applications',
 		name: 'data_obj_task_moed_part_list_apps_open',
-		owner: 'sys_client_moed',
+		ownerSys: 'sys_client_baltimore_moed',
 		tables: [
 			{ index: 0, table: 'MoedParticipant' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -51,7 +51,7 @@ function initTaskOpenApps(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
-				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_city_baltimore::MoedParticipant).codeSfEligibilityStatus.name`,
+				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).codeSfEligibilityStatus.name`,
 				headerAlt: 'Elgibility Status',
 				nameCustom: 'customAppStatus'
 			},
@@ -63,7 +63,7 @@ function initTaskOpenApps(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
-				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_city_baltimore::MoedParticipant).dateCreated`,
+				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateCreated`,
 				headerAlt: 'Date Created',
 				nameCustom: 'customDateCreated'
 			},
@@ -75,7 +75,7 @@ function initTaskOpenApps(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
-				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_city_baltimore::MoedParticipant).dateStart`,
+				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateStart`,
 				headerAlt: 'Date Start',
 				nameCustom: 'customDateStart'
 			},
@@ -87,7 +87,7 @@ function initTaskOpenApps(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
-				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_city_baltimore::MoedParticipant).dateEnd`,
+				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateEnd`,
 				headerAlt: 'Date End',
 				nameCustom: 'customDateEnd'
 			},
@@ -101,7 +101,7 @@ function initTaskOpenApps(init: InitDb) {
 				orderDefine: 90,
 				exprCustom: `(with 
   			now := cal::to_local_date(datetime_current(), 'UTC') ,
-  			compare :=<cal::local_date>{} if exists (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_city_baltimore::MoedParticipant).dateEnd else (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_city_baltimore::MoedParticipant).dateStart ?? (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_city_baltimore::MoedParticipant).dateCreated,
+  			compare :=<cal::local_date>{} if exists (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateEnd else (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateStart ?? (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateCreated,
 				dur := now - compare,
 				SELECT std::duration_get(dur, 'day'))`,
 				headerAlt: 'Days Open',
@@ -118,15 +118,16 @@ function initTaskOpenApps(init: InitDb) {
 		dataObj: 'data_obj_task_moed_part_list_apps_open',
 		isAlwaysRetrieveData: true,
 		name: 'node_obj_task_moed_part_list_apps_open',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed',
+		systemQuerySource: 'sys_client_baltimore_moed'
 	})
 
 	init.addTrans('sysTask', {
 		codeTaskStatusObj: 'tso_sys_data',
 		codeTaskType: 'taskAutomated',
-		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client IN org_client_city_baltimore::MoedParticipant AND NOT EXISTS .dateStart AND NOT EXISTS .dateEnd)) > 0`,
+		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client IN org_client_baltimore::MoedParticipant AND NOT EXISTS .dateStart AND NOT EXISTS .dateEnd)) > 0`,
 		exprStatus: `WITH 
-  	sfs := (SELECT app_cm::CmClientServiceFlow FILTER .client IN org_client_city_baltimore::MoedParticipant),
+  	sfs := (SELECT app_cm::CmClientServiceFlow FILTER .client IN org_client_baltimore::MoedParticipant),
   	sfsOpen := (SELECT sfs { days_open := duration_get(cal::to_local_date(datetime_current(), 'UTC') - .dateStart ?? .dateCreated, 'day') } FILTER NOT EXISTS .dateStart AND NOT EXISTS .dateEnd),
   	SELECT {
       openLT6 := {label := 'Open 5 or fewer days', data := count(sfsOpen FILTER .days_open < 6), color := 'green'},
@@ -136,6 +137,6 @@ function initTaskOpenApps(init: InitDb) {
 		header: 'Open Applications',
 		name: 'task_moed_part_apps_open',
 		nodeObj: 'node_obj_task_moed_part_list_apps_open',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 }

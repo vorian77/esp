@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { State } from '$comps/app/types.appState.svelte'
+	import { State } from '$comps/app/types.state.svelte'
 	import { FieldCustomActionLink } from '$comps/form/fieldCustom'
 	import {
 		ContextKey,

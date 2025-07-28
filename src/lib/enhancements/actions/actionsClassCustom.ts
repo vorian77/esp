@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import { TokenAppStateTriggerAction } from '$utils/types.token'
 import { CodeActionType, DataObj, MethodResult, required } from '$utils/types'
 import { Token } from '$utils/types.token'
@@ -27,7 +27,7 @@ export default async function action(
 
 			for (let idx = 0; idx < dataObj.data.rowsRetrieved.dataRows.length; idx++) {
 				// await dm.setFieldValue(dataObj.raw.id, idx, field, 'c5a9eed0-ebc2-11ee-a369-173f8eb5fa89')
-				await dm.setFieldValue(dataObj.raw.id, idx, fieldNote, `value row: ${idx}`)
+				await dm.setFieldValueAsync(dataObj.raw.id, idx, fieldNote, `value row: ${idx}`)
 			}
 			console.log(
 				'currTab.dataObj.data.rowsRetrieved.dataRows:',

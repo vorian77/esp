@@ -7,9 +7,9 @@ import type * as _sys_user from "./sys_user";
 import type * as _sys_core from "./sys_core";
 import type * as _stdcal from "./std/cal";
 import type * as _app_cm from "./app_cm";
-import type * as _org_client_city_baltimore from "./org_client_city_baltimore";
 import type * as _app_crm from "./app_crm";
 import type * as _sys_db from "./sys_db";
+import type * as _org_client_baltimore from "./org_client_baltimore";
 export type $Name = $.ScalarType<"std::str", string>;
 const Name: $.scalarTypeWithConstructor<_std.$str, never> = $.makeType<$.scalarTypeWithConstructor<_std.$str, never>>(_.spec, "5061cd07-b3c2-11ee-b459-95308b4e5073", _.syntax.literal);
 
@@ -64,7 +64,6 @@ export type $SysPersonλShape = $.typeutil.flatten<_sys_core.$ObjRootλShape & {
   "<person[is app_cm::CmClient]": $.LinkDesc<_app_cm.$CmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_core::SysObjAttrEnt]": $.LinkDesc<_sys_core.$SysObjAttrEnt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is sys_user::SysUser]": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<person[is org_client_city_baltimore::MoedParticipant]": $.LinkDesc<_org_client_city_baltimore.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is app_crm::CrmClient]": $.LinkDesc<_app_crm.$CrmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_user::SysAppHeader]": $.LinkDesc<_sys_user.$SysAppHeader, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -79,6 +78,7 @@ export type $SysPersonλShape = $.typeutil.flatten<_sys_core.$ObjRootλShape & {
   "<contacts[is sys_db::SysColumn]": $.LinkDesc<_sys_db.$SysColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_db::SysTable]": $.LinkDesc<_sys_db.$SysTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_core::SysNodeObj]": $.LinkDesc<_sys_core.$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<person[is org_client_baltimore::MoedParticipant]": $.LinkDesc<_org_client_baltimore.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import { arrayOfClass } from '$utils/utils.array'
 import { memberOfEnum, memberOfEnumIfExists, strRequired, valueOrDefault } from '$utils/utils.model'
 import {

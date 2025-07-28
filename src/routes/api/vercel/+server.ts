@@ -64,7 +64,6 @@ export async function POST({ request }) {
 					}
 				}
 			}
-			console.log('vercel.upload.result', result)
 			return getServerResponse(new MethodResult(result))
 
 		default:

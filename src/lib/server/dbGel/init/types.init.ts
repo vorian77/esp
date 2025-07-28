@@ -4,7 +4,7 @@ import { getDBObjectLinks } from '$routes/api/db/dbGel/dbGelQueries'
 import { TokenApiId } from '$utils/types.token'
 import {
 	addDataObj,
-	updateDataObjColumnCustomEmbedShellFields
+	updateDataObjColumnCustomElementEmbedShellFields
 } from '$server/dbGel/init/dbGelInit200Utilities20DataObj'
 import { addColumn, tableColumnsBulk } from '$server/dbGel/init/dbGelInit200Utilities30DB'
 import { tablesBulk } from '$server/dbGel/init/dbGelInit200Utilities10'
@@ -23,6 +23,7 @@ import {
 	addCode,
 	addCodeAction,
 	addCodeType,
+	addEligibility,
 	addNode,
 	addTask,
 	addUser,
@@ -119,11 +120,19 @@ export class InitDb {
 		)
 		this.addItem(
 			new InitDbItemObject({
+				name: 'sysEligibility',
+				dataMap: [['name', 'name']],
+				deleteObj: 'sys_core::SysEligibility',
+				fCreate: addEligibility
+			})
+		)
+		this.addItem(
+			new InitDbItemObject({
 				name: 'sysObjAttr',
 				dataMap: [
 					['codeAttrType.name', 'code'],
 					['name', 'name'],
-					['owner.name', 'owner']
+					['ownerSys.name', 'ownerSys']
 				],
 				deleteObj: 'sys_core::SysObjAttr',
 				fCreate: addObjAttr,
@@ -155,6 +164,7 @@ export class InitDb {
 				fCreate: tableColumnsBulk
 			})
 		)
+
 		this.addItem(
 			new InitDbItemObject({
 				name: 'sysUserAction',
@@ -229,8 +239,8 @@ export class InitDb {
 
 		this.addItem(
 			new InitDbItem({
-				name: 'updateDataObjColumnCustomEmbedShellFields',
-				fCreate: updateDataObjColumnCustomEmbedShellFields
+				name: 'updateDataObjColumnCustomElementEmbedShellFields',
+				fCreate: updateDataObjColumnCustomElementEmbedShellFields
 			})
 		)
 
@@ -383,7 +393,7 @@ export class InitDb {
 		this.addItem(
 			new InitDbItem({
 				name: 'MoedPBulkPart',
-				exprResets: `DELETE org_client_city_baltimore::MoedParticipant`,
+				exprResets: `DELETE org_client_baltimore::MoedParticipant`,
 				fCreate: MoedPBulkPart
 			})
 		)
@@ -405,7 +415,7 @@ export class InitDb {
 			new InitDbItem({
 				name: 'MoedBulkCsf',
 				exprResets: [
-					`DELETE app_cm::CmClientServiceFlow FILTER .client.owner.name = 'sys_client_moed'`
+					`DELETE app_cm::CmClientServiceFlow FILTER .client.ownerSys.name = 'sys_client_baltimore_moed'`
 				],
 				fCreate: MoedBulkCsf
 			})
@@ -413,7 +423,7 @@ export class InitDb {
 		this.addItem(
 			new InitDbItem({
 				name: 'MoedBulkDataDoc',
-				exprResets: `DELETE app_cm::CmCsfDocument FILTER .csf.client IN org_client_city_baltimore::MoedParticipant`,
+				exprResets: `DELETE app_cm::CmCsfDocument FILTER .csf.client IN org_client_baltimore::MoedParticipant`,
 				fCreate: MoedBulkDataDoc
 			})
 		)
@@ -422,7 +432,7 @@ export class InitDb {
 			new InitDbItem({
 				name: 'MoedBulkDataDelete',
 				exprResets:
-					'DELETE app_cm::CmCsfData FILTER .csf.client IN org_client_city_baltimore::MoedParticipant'
+					'DELETE app_cm::CmCsfData FILTER .csf.client IN org_client_baltimore::MoedParticipant'
 			})
 		)
 	}

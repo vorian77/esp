@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import { userActionStateChangeTab } from '$comps/other/types.userAction.svelte'
 import { TokenAppStateTriggerAction } from '$utils/types.token'
 import { CodeActionType, MethodResult } from '$utils/types'

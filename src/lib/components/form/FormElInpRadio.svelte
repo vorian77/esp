@@ -44,7 +44,7 @@
 		const target = event.currentTarget as HTMLInputElement
 		let value = target.value
 		if (field.colDO.colDB.isMultiSelect) value = value ? [value] : []
-		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, value)
+		await dm.setFieldValueAsync(parms.dataObjId, parms.row, parms.field, value)
 	}
 </script>
 
@@ -57,7 +57,7 @@
 				<div class="text-sm {classFormat} {index === 0 ? 'mt-4' : ''}">
 					<input
 						type="radio"
-						name={field.colDO.propName + '-' + parms.row}
+						name={field.getValueKey() + '-' + parms.row}
 						value={data}
 						checked={fieldValue?.data === data}
 						onclick={onClick}

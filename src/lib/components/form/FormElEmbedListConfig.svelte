@@ -14,7 +14,7 @@
 	let dm: DataManager = $derived(sm.dm)
 
 	let fieldEmbed = $derived(parms.field) as FieldEmbedListConfig
-	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.dataObjIdEmbed)
+	let dataObjEmbed: DataObj = dm.getDataObj(fieldEmbed.rawFieldEmbedList.embedDataObjId)
 </script>
 
 <FormLabel {parms} />

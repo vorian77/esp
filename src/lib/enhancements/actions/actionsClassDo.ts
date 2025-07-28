@@ -1,5 +1,5 @@
 import { AppLevel, AppLevelNode } from '$comps/app/types.app.svelte'
-import { State, StateParms, StateTriggerToken } from '$comps/app/types.appState.svelte'
+import { State, StateParms, StateTriggerToken } from '$comps/app/types.state.svelte'
 import {
 	actionError,
 	actionErrorToken,
@@ -12,15 +12,26 @@ import {
 	CodeAction,
 	CodeActionClass,
 	CodeActionType,
+	DataObj,
 	DataRecordStatus,
 	MethodResult,
 	ParmsValues,
-	ParmsValuesType
+	ParmsValuesType,
+	required,
+	strRequired
 } from '$utils/types'
+import {
+	DbTable,
+	DbTableQueryGroup,
+	QuerySource,
+	QuerySourceRaw,
+	QuerySourceType
+} from '$lib/queryClient/types.queryClient'
 import {
 	Token,
 	TokenApiQueryType,
 	TokenAppActionTrigger,
+	TokenAppModalReturn,
 	TokenAppModalReturnType,
 	TokenAppStateTriggerAction
 } from '$utils/types.token'
@@ -54,8 +65,8 @@ export default async function action(
 
 		case CodeActionType.doDetailNew:
 			parentTab = sm.app.getCurrTabParentTab()
-			if (parentTab && parentTab.dataObj) {
-				parentTab.dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, '')
+			if (parentTab) {
+				parentTab.parmsFormListSet(ParmsValuesType.listRecordIdCurrent, '')
 			}
 			currTab = sm.app.getCurrTab()
 			if (currTab && currTab.dataObj) {
@@ -114,6 +125,39 @@ export default async function action(
 			}
 			break
 
+		case CodeActionType.doListDelete:
+			if (token instanceof TokenAppActionTrigger) {
+				// delete list
+				currTab = sm.app.getCurrTab()
+				const tableGroup: DbTableQueryGroup = required(
+					currTab?.dataObj?.data?.rawDataObj?.tableGroup,
+					`${FILENAME}.action.${actionType}`,
+					'tableGroup'
+				)
+				const tableObj = strRequired(
+					tableGroup.getTable(0)?.object,
+					`${FILENAME}.action.${actionType}`,
+					'table'
+				)
+				let exprFilter = strRequired(
+					currTab?.dataObj?.data?.rawDataObj?.rawQuerySource?.exprFilter,
+					`${FILENAME}.action.${actionType}`,
+					'exprFilter'
+				)
+				exprFilter = exprFilter == 'none' ? '' : ` FILTER ${exprFilter}`
+				const exprProcess = `DELETE ${tableObj}${exprFilter}`
+				const evalExprContext = `${FILENAME}.action.${actionType}`
+				await token.userAction.dbExe(sm, evalExprContext, exprProcess)
+
+				// refresh list
+				parmsAction.codeAction = CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_do,
+					CodeActionType.doListSelfRefresh
+				)
+				await action(sm, parmsAction)
+			}
+			break
+
 		case CodeActionType.doListDetailEdit:
 			if (!(token instanceof TokenAppActionTrigger)) return actionErrorToken(actionType)
 			result = await userActionTreeNodeChildren(
@@ -139,8 +183,13 @@ export default async function action(
 			break
 
 		case CodeActionType.doListDownload:
-			parmsAction.stateParms = new StateParms({}, [StateTriggerToken.listDownload])
-			await userActionStateChangeRaw(sm, parmsAction)
+			currTab = sm.app.getCurrTab()
+			const dataObj: DataObj = required(
+				currTab?.dataObj,
+				`${FILENAME}.action.${actionType}`,
+				'dataObj'
+			)
+			await dataObj.gridDownload(sm)
 			break
 
 		case CodeActionType.doListSelfRefresh:
@@ -210,15 +259,13 @@ export default async function action(
 	}
 
 	async function fModalCloseUpdateEmbedListConfig(
-		returnType: TokenAppModalReturnType,
-		data?: ParmsValues
+		token: TokenAppModalReturn
 	): Promise<MethodResult> {
 		let result: MethodResult
 		currLevel = sm.app.getCurrLevel()
 		if (currLevel) {
 			currTab = currLevel.getCurrTab()
 			result = await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
-
 			if (result.error) return result
 			await userActionStateChangeTab(sm, parmsAction)
 		}
@@ -226,20 +273,26 @@ export default async function action(
 	}
 
 	async function fModalCloseUpdateEmbedListSelect(
-		returnType: TokenAppModalReturnType,
-		data?: ParmsValues
+		token: TokenAppModalReturn
 	): Promise<MethodResult> {
-		if (returnType === TokenAppModalReturnType.complete) {
+		if (token.type === TokenAppModalReturnType.complete) {
 			currLevel = sm.app.getCurrLevel()
-			if (currLevel) {
-				const embedFieldName = data?.valueGet(ParmsValuesType.embedFieldName)
+			if (currLevel && token.parmsState && token.parmsFormList) {
+				const embedFieldName = token.parmsState.valueGet(ParmsValuesType.embedFieldName)
 				currTab = currLevel.getCurrTab()
 				if (currTab && currTab.dataObj && embedFieldName) {
 					const idx = currTab.dataObj.data.fields.findIndex(
-						(f) => f.embedFieldName === embedFieldName
+						(f) => f.rawFieldEmbedList.embedPropName === embedFieldName
 					)
 					if (idx > -1) {
-						currTab.dataObj.data.fields[idx].data.parms.update(data?.valueGetAll())
+						currTab.dataObj.data.fields[idx].embedData.parmsFormList.valueSet(
+							ParmsValuesType.isEmbedSaveWithParent,
+							true
+						)
+						currTab.dataObj.data.fields[idx].embedData.parmsFormList.valueSet(
+							ParmsValuesType.listIdsSelected,
+							token.parmsFormList.data.listIdsSelected
+						)
 						let result: MethodResult = await sm.app.saveList(sm)
 						if (result.error) return result
 					}

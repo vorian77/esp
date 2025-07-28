@@ -10,10 +10,10 @@ function initRepClientDetail(init: InitDb) {
 	init.addTrans('sysRep', {
 		actionGroup: 'doag_report_render',
 		description: '',
-		exprFilter: '.owner.id IN <user,uuidlist,systemIds>',
+		exprFilter: '.ownerSys.id IN <user,uuidlist,systemIds>',
 		header: 'Client - Detail',
 		name: 'report_crm_client_detail',
-		owner: 'sys_app_crm',
+		ownerSys: 'sys_app_crm',
 		tables: [{ index: 0, table: 'CrmClient' }],
 		elements: [
 			{

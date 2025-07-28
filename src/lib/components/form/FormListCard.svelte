@@ -1,6 +1,15 @@
 <script lang="ts">
-	import { State } from '$comps/app/types.appState.svelte'
-	import { ContextKey, DataManager, DataObj, ParmsValuesType, required } from '$utils/types'
+	import { State } from '$comps/app/types.state.svelte'
+	import {
+		ContextKey,
+		DataManager,
+		DataObj,
+		ParmsValues,
+		ParmsValuesFormList,
+		ParmsValuesType,
+		recordValueGetDisplay,
+		required
+	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { Field, FieldAccess } from '$comps/form/field.svelte'
 	import ListFilter from '$comps/form/ListFilter.svelte'
@@ -20,7 +29,7 @@
 
 	let fields = $derived.by(() => {
 		const fieldsCore = dataObj.fields.filter(
-			(f) => f.colDO.isDisplayable || f.colDO.propName === 'id'
+			(f) => f.colDO.isDisplayable || f.getValueKey() === 'id'
 		)
 		return fieldsCore
 	})
@@ -37,14 +46,12 @@
 
 	async function onclick(record: DataRecord) {
 		if (record) {
+			dataObj.parmsFormListInit({
+				listIds: dataRecordsDisplay.map((rec) => rec.id),
+				listRecordIdCurrent: record.id
+			})
 			const doa = dataObj.userActions[dataObj.actionsFieldListRowActionIdx]
-			dataObj.data.parms.valueSet(ParmsValuesType.listIds, getListIds())
-			dataObj.data.parms.valueSet(ParmsValuesType.listRecordIdCurrent, record.id)
 			doa.action.trigger(sm, dataObj)
-		}
-
-		function getListIds() {
-			return dataRecordsDisplay.map((rec) => rec.id)
 		}
 	}
 
@@ -75,12 +82,12 @@
 					onclick={async () => onclick(rec)}
 				>
 					{#each fields as field, fieldIdx}
-						{@const fieldName = field.colDO.propName}
-						{@const isDisplayable = field.colDO.propName !== 'id'}
+						{@const key = field.getValueKey()}
+						{@const isDisplayable = key !== 'id'}
 						{#if isDisplayable}
 							<p>
 								<span class="text-gray-400">{field.colDO.labelSide}:</span>
-								{rec[fieldName]}
+								{recordValueGetDisplay(rec, key)}
 							</p>
 						{/if}
 					{/each}

@@ -12,9 +12,9 @@ import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import {
 	DataObj,
 	type DataRecord,
-	getDataRecordValueKey,
-	getDataRecordValueKeyData,
-	getDataRecordValueKeyDisplay,
+	recordValueGet,
+	recordValueGetData,
+	recordValueGetDisplay,
 	MethodResult
 } from '$utils/types'
 import { TokenApiId } from '$utils/types.token'
@@ -30,7 +30,7 @@ export class FieldParm extends Field {
 		this.isParmValue = true
 	}
 
-	async init(props: PropsFieldInit): Promise<MethodResult> {
+	async initAsync(props: PropsFieldInit): Promise<MethodResult> {
 		for (const dataRow of props.data.rowsRetrieved.dataRows) {
 			let result: MethodResult = await this.configParmItemsInit(
 				props,
@@ -50,30 +50,27 @@ export class FieldParm extends Field {
 		fields: Field[]
 	): Promise<MethodResult> {
 		const propParmObj = {
-			_codeAccess: getDataRecordValueKey(record, 'isRequired') ? 'required' : 'optional',
-			_codeFieldElement: getDataRecordValueKeyDisplay(record, 'codeFieldElement'),
+			_codeAccess: recordValueGet(record, 'isRequired') ? 'required' : 'optional',
+			_codeFieldElement: recordValueGetDisplay(record, 'codeFieldElement'),
 			_column: {
 				_codeAlignment: FieldAlignment.left,
-				_codeDataType: getDataRecordValueKeyDisplay(record, 'codeDataType'),
-				header: getDataRecordValueKey(record, 'header'),
+				_codeDataType: recordValueGetDisplay(record, 'codeDataType'),
+				_isMultiSelect: recordValueGet(record, 'isMultiSelect'),
+				header: recordValueGet(record, 'header'),
 				isFormTag: false,
-				isMultiSelect: getDataRecordValueKey(record, 'isMultiSelect'),
 				placeHolder: ''
 			},
-			_hasItems: getDataRecordValueKey(record, '_hasItems'),
-			_linkItemsSource: await getLinkItemsSource(
-				getDataRecordValueKeyData(record, 'fieldListItems')
-			),
-			_propName: getDataRecordValueKey(record, 'name'),
-			id: getDataRecordValueKey(record, 'id'),
+			_hasItems: recordValueGet(record, '_hasItems'),
+			_linkItemsSource: await getLinkItemsSource(recordValueGetData(record, 'fieldListItems')),
+			_propName: recordValueGet(record, 'name'),
+			id: recordValueGet(record, 'id'),
 			isDisplayable: true,
 			isDisplayBlock: true,
 			isParmValue: true,
-			orderDefine: getDataRecordValueKey(record, 'orderDefine')
+			orderDefine: recordValueGet(record, 'orderDefine')
 		}
 		const propParm = new RawDataObjPropDisplay(propParmObj, new DbTableQueryGroup([]))
-
-		let result: MethodResult = await DataObj.fieldsCreateItem(propsFieldInit, propParm)
+		let result: MethodResult = await DataObj.fieldsCreateItemAsync(propsFieldInit, propParm)
 		if (result.error) return result
 		const field: Field = result.data
 

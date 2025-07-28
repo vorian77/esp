@@ -1,16 +1,20 @@
+import { RawFieldEmbedDetailEligibility } from '$comps/dataObj/types.rawDataObj.svelte'
 import { Field, PropsFieldCreate } from '$comps/form/field.svelte'
 import { ValidityError, ValidityErrorLevel } from '$comps/form/types.validation'
 import { valueOrDefault } from '$utils/types'
 
 export class FieldToggle extends Field {
+	eligibilityComputeCallback?: Function
 	continueRequiresTrue: boolean = true
 	presetTrue: boolean
+	rawFieldEmbedDetailEligibility?: RawFieldEmbedDetailEligibility
 	valueFalse: string
 	valueShow: boolean
 	valueTrue: string
 	constructor(props: PropsFieldCreate) {
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
+		this.rawFieldEmbedDetailEligibility = props.propRaw?.rawfieldEmbedDetailEligibility
 		this.continueRequiresTrue = valueOrDefault(obj.colDB.toggleContinueRequiresTrue, false)
 		this.presetTrue = valueOrDefault(obj.colDB.togglePresetTrue, false)
 		this.valueFalse = valueOrDefault(obj.colDB.toggleValueFalse, false)

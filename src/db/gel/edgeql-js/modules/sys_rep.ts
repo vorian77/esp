@@ -3,14 +3,13 @@
 import * as $ from "../reflection";
 import * as _ from "../imports";
 import type * as _sys_core from "./sys_core";
-import type * as _std from "./std";
 import type * as _sys_user from "./sys_user";
+import type * as _std from "./std";
 import type * as _sys_db from "./sys_db";
 import type * as _default from "./default";
 export type $SysAnalyticλShape = $.typeutil.flatten<Omit<_sys_core.$SysObjAttrλShape, "codeAttrType"> & {
   "parms": $.LinkDesc<$SysRepParm, $.Cardinality.Many, {}, false, false,  false, false>;
   "statuses": $.LinkDesc<$SysAnalyticStatus, $.Cardinality.Many, {}, false, false,  false, false>;
-  "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "codeAttrType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, true>;
   "<analytics[is sys_rep::SysRep]": $.LinkDesc<$SysRep, $.Cardinality.Many, {}, false, false,  false, false>;
   "<analytic[is sys_rep::SysRepUserAnalytic]": $.LinkDesc<$SysRepUserAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -40,7 +39,6 @@ const SysAnalyticStatus: $.$expr_PathNode<$.TypeSet<$SysAnalyticStatus, $.Cardin
 
 export type $SysRepλShape = $.typeutil.flatten<Omit<_sys_core.$SysObjAttrλShape, "codeAttrType"> & {
   "actionGroup": $.LinkDesc<_sys_core.$SysDataObjActionGroup, $.Cardinality.One, {}, false, false,  false, false>;
-  "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprFilter": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprSort": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "exprWith": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;

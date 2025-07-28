@@ -2,7 +2,7 @@
 	import { CodeAction, CodeActionClass, CodeActionType, ContextKey, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { AppLevelCrumb } from '$comps/app/types.app.svelte'
-	import { State, StateTriggerToken } from '$comps/app/types.appState.svelte'
+	import { State, StateTriggerToken } from '$comps/app/types.state.svelte'
 	import {
 		NavDestinationType,
 		TokenAppIndex,

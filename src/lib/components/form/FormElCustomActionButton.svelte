@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ContextKey, DataManager, type DataRecord, required, strRequired } from '$utils/types'
 	import { getContext } from 'svelte'
-	import { State } from '$comps/app/types.appState.svelte'
+	import { State } from '$comps/app/types.state.svelte'
 	import { FieldCustomActionButton } from '$comps/form/fieldCustom'
 	import {
 		TokenApiQueryType,

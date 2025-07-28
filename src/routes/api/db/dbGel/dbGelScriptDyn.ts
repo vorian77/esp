@@ -6,13 +6,11 @@ import { error } from '@sveltejs/kit'
 const FILENAME = '$routes/api/db/dbGel/dbGelScriptDyn.ts'
 
 export async function getRawDataObjDynamic(
-	processType: DataObjProcessType | undefined,
+	processType: DataObjProcessType,
 	queryData: TokenApiQueryData,
 	source: any,
 	dataObjSource: TokenApiDbDataObjSource
 ): Promise<MethodResult> {
-	if (!processType) return new MethodResult(source)
-
 	switch (processType) {
 		case DataObjProcessType.reportRender:
 			return await dynDOReportRender(queryData, dataObjSource)

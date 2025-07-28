@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
+	import { State, StateNavLayout, StateParms } from '$comps/app/types.state.svelte'
 	import FormDetail from '$comps/form/FormDetail.svelte'
 	import TsoMoedSsrDoc from '$comps/layout/layoutDash/tso_moed_ssr_doc.svelte'
 	import TsoSysData from '$comps/layout/layoutDash/tso_sys_data.svelte'
@@ -68,6 +68,8 @@
 		return new MethodResult()
 	}
 </script>
+
+<!-- <DataViewer header="sm.dm.objStatus" data={sm.dm.objStatus} /> -->
 
 {#await promise}
 	Loading tasks...

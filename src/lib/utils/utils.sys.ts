@@ -67,6 +67,7 @@ export enum CodeActionType {
 
 	doExpr = 'doExpr',
 
+	doListDelete = 'doListDelete',
 	doListDetailEdit = 'doListDetailEdit',
 	doListDetailNew = 'doListDetailNew',
 	doListDownload = 'doListDownload',
@@ -153,7 +154,7 @@ export function compareValuesRecord(
 	codeOp: PropOp,
 	value2: any
 ): MethodResult {
-	const value1 = getDataRecordValueKey(record, key)
+	const value1 = recordValueGet(record, key)
 	return compareValues(value1, value2, codeDataType, codeOp)
 }
 
@@ -165,6 +166,13 @@ export enum ContextKey {
 
 export type DataRecord = Record<string, any>
 
+export enum EligibilityType {
+	eligibilityManual = 'eligibilityManual',
+	eligibilityExpr = 'eligibilityExpr',
+	eligibilityGroupAnd = 'eligibilityGroupAnd',
+	eligibilityGroupOr = 'eligibilityGroupOr'
+}
+
 export async function encrypt(text: string) {
 	// let salt = bcrypt.genSaltSync(10)
 	// let hash = bcrypt.hashSync(text, salt)
@@ -172,8 +180,17 @@ export async function encrypt(text: string) {
 	return text
 }
 
+export enum EvalExprCustomComposite {
+	evalCustomCompositeObjAttrMulti = `evalCustomCompositeObjAttrMulti`,
+	evalCustomCompositeObjAttrSingle = `evalCustomCompositeObjAttrSingle`
+}
+
+export enum EvalExprCustomPreset {
+	evalCustomPresetEligibility = `evalCustomPresetEligibility`
+}
+
 // <todo> 241217 - placing this in FieldEmbed causes a circular reference
-export enum FieldEmbedType {
+export enum FieldEmbedListType {
 	listConfig = 'listConfig',
 	listEdit = 'listEdit',
 	listSelect = 'listSelect'
@@ -225,26 +242,6 @@ export function getColor(colorName: string) {
 	]
 	const idx = colors.findIndex((c) => c[0] === colorName)
 	return idx > -1 ? colors[idx][1] : ''
-}
-
-export function getDataRecordKey(record: DataRecord, key: string) {
-	for (const [k, v] of Object.entries(record)) {
-		if (k.endsWith(key)) {
-			return k
-		}
-	}
-	return undefined
-}
-
-export function getDataRecordValueKey(record: DataRecord, key: string) {
-	const recordKey = getDataRecordKey(record, key)
-	return recordKey ? record[recordKey] : undefined
-}
-export function getDataRecordValueKeyData(record: DataRecord, key: string) {
-	return getValueData(getDataRecordValueKey(record, key))
-}
-export function getDataRecordValueKeyDisplay(record: DataRecord, key: string) {
-	return getValueDisplay(getDataRecordValueKey(record, key))
 }
 
 export function getDbExprRaw(exprWith: string | undefined, exprCustom: string | undefined) {
@@ -299,7 +296,11 @@ export function hashString(idFeature: string | string[]): number {
 }
 
 export const isNumber = (value: any) => {
-	return typeof value === 'number' && !isNaN(value)
+	return !isNaN(value) && typeof value === 'number'
+}
+
+export const isString = (value: any) => {
+	return typeof value === 'string'
 }
 
 export function isPlainObject(obj: any) {
@@ -389,8 +390,7 @@ export enum NodeObjComponent {
 	FormList = 'FormList',
 	FormDetail = 'FormDetail',
 	FormDetailRepConfig = 'FormDetailRepConfig',
-	ProcessStatus = 'ProcessStatus',
-	SelectList = 'SelectList'
+	ProcessStatus = 'ProcessStatus'
 }
 
 export class ObjAttr {
@@ -474,6 +474,7 @@ export enum PropDataType {
 	int32 = 'int32',
 	int64 = 'int64',
 	json = 'json',
+	jsonCustomEligibility = 'jsonCustomEligibility',
 	link = 'link',
 	literal = 'literal',
 	none = 'none',
@@ -486,13 +487,15 @@ export enum PropDataType {
 export enum PropOp {
 	any = 'any',
 	equal = 'equal',
+	false = 'false',
 	greaterThan = 'greaterThan',
 	greaterThanOrEqual = 'greaterThanOrEqual',
 	lessThan = 'lessThan',
 	lessThanOrEqual = 'lessThanOrEqual',
 	notEqual = 'notEqual',
 	notNull = 'notNull',
-	null = 'null'
+	null = 'null',
+	true = 'true'
 }
 
 export class RawObjAttr {
@@ -548,13 +551,75 @@ export class RawObjAttrVirtual {
 	}
 }
 
-export function setDataRecordValue(record: DataRecord, key: string, value: any) {
-	const recordKey = getDataRecordKey(record, key)
-	if (recordKey) record[recordKey] = value
-	return recordKey
+export function recordHasKey(record: DataRecord, key: string): boolean {
+	return Object.hasOwn(record, key)
 }
 
-export function setDataRecordValuesForSave(record: DataRecord) {
+export function recordKeyGet(record: DataRecord, key: string) {
+	for (const [k, v] of Object.entries(record)) {
+		if (k.endsWith(key)) {
+			return k
+		}
+	}
+	return undefined
+}
+
+export function recordValueGet(record: DataRecord, key: string): any {
+	const keyItems = key.split('.')
+	let current = record
+
+	for (const keyItem of keyItems) {
+		const foundKey = recordKeyGet(current, keyItem)
+		if (!foundKey) return undefined
+		current = current[foundKey]
+	}
+
+	return current
+}
+export function recordValueGetData(record: DataRecord, key: string) {
+	return getValueData(recordValueGet(record, key))
+}
+export function recordValueGetDisplay(record: DataRecord, key: string) {
+	return getValueDisplay(recordValueGet(record, key))
+}
+
+export function recordValueSet(record: DataRecord, key: string, value: any) {
+	const newRecord = JSON.parse(JSON.stringify(record))
+
+	const keyItems = key.split('.')
+	let current = newRecord
+
+	// Navigate/create path to the parent of final key
+	for (let i = 0; i < keyItems.length - 1; i++) {
+		const keyItem = keyItems[i]
+		const existingKey = recordKeyGet(current, keyItem)
+
+		if (existingKey) {
+			// Use existing path
+			if (typeof current[existingKey] !== 'object' || current[existingKey] === null) {
+				current[existingKey] = {} // Replace non-object values
+			}
+			current = current[existingKey]
+		} else {
+			// Create new path with exact key name
+			current[keyItem] = {}
+			current = current[keyItem]
+		}
+	}
+
+	// Set the final value
+	const finalKey = keyItems[keyItems.length - 1]
+	const existingFinalKey = recordKeyGet(current, finalKey)
+
+	if (existingFinalKey) {
+		current[existingFinalKey] = value
+	} else {
+		current[finalKey] = value
+	}
+	return newRecord
+}
+
+export function recordValueSetForSave(record: DataRecord) {
 	Object.entries(record).forEach(([key, value]) => {
 		const isLink = Object.hasOwn(value, 'data')
 		if (isLink) {

@@ -12,7 +12,6 @@ module app_cm {
     courseItemsIncluded: str;
     courseItemsNotIncluded: str;
     courseRequirements: str;  
-    description: str;
     schedule: str;
   }
 
@@ -52,7 +51,7 @@ module app_cm {
     agencyId: str;
     codeHighestEducation: sys_core::SysCode;
     hasDriversLicense: str;
-    required owner: sys_core::SysSystem;
+    required ownerSys: sys_core::SysSystem;
     required person: default::SysPerson{
       on source delete allow;
     };
@@ -73,8 +72,8 @@ module app_cm {
     dateStart: cal::local_date;
     dateStartEst: cal::local_date;
     idxDemo: int64;
+    required objAttrCmProgram: sys_core::SysObjAttr;
     required objAttrCmSite: sys_core::SysObjAttr;
-    required programCm: app_cm::CmProgram;
     user: sys_user::SysUser;
   }
 
@@ -114,6 +113,15 @@ module app_cm {
     note: str;
     isVerifiedByCaseManager: bool;
     isVerifiedByCompliance: bool;
+  }
+
+  type CmCsfEligibility extending app_cm::CmCsfData {
+    eligibility: sys_core::SysEligibility {
+      on target delete allow;
+    };
+    required nodeValues: json;
+    required objAttrCmProgram: sys_core::SysObjAttr;
+    required valueBoolean: bool;
   }
 
   type CmCsfGroup extending app_cm::CmCsfData {

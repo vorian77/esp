@@ -107,7 +107,7 @@ export class RepEl {
 	_codeReportElementType?: RepElementType
 	_codeSortDir?: PropSortDir
 	_column?: RepElColumn
-	_link?: string
+	_link?: any
 	description?: string
 	exprCustom?: string
 	header?: string
@@ -166,11 +166,11 @@ export class RepEl {
 			RepElementType
 		)
 		this._column = obj._column ? new RepElColumn(obj._column) : undefined
-		this.id = strRequired(obj.id, clazz, 'id')
 		this._link = obj._link
 		this.description = strOptional(obj.description, clazz, 'description')
 		this.exprCustom = strOptional(obj.exprCustom, clazz, 'expr')
 		this.header = strOptional(obj.header, clazz, 'header')
+		this.id = strRequired(obj.id, clazz, 'id')
 		this.indexTable = nbrOptional(obj.indexTable, clazz, 'indexTable')
 		this.isDisplay = booleanOrDefault(obj.isDisplay, true)
 		this.isDisplayable = booleanRequired(obj.isDisplayable, clazz, 'isDisplayable')

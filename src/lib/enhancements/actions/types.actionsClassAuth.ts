@@ -1,4 +1,4 @@
-import { State, StateNavLayout, StateParms } from '$comps/app/types.appState.svelte'
+import { State, StateNavLayout, StateParms } from '$comps/app/types.state.svelte'
 import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 import type { DataRecord } from '$utils/types'
 import {
@@ -6,8 +6,8 @@ import {
 	CodeActionClass,
 	CodeActionType,
 	MethodResult,
+	recordValueSetForSave,
 	required,
-	setDataRecordValuesForSave,
 	strRequired
 } from '$utils/types'
 import { TokenApiId, TokenAppStateTriggerAction } from '$utils/types.token'
@@ -42,7 +42,7 @@ export class AuthActionDB extends AuthAction {
 		const evalExprContext = 'AuthActionDB.execute'
 
 		const result: MethodResult = await clientQueryExpr(evalExprContext, this.dbExpr, {
-			record: setDataRecordValuesForSave(authProcess.parms)
+			record: recordValueSetForSave(authProcess.parms)
 		})
 		if (result.error) return result
 

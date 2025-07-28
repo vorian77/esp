@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import {
 	CodeAction,
 	CodeActionClass,
@@ -136,15 +136,13 @@ export default async function action(
 							password := <record,str,password>,
 							name := <record,str,name>,
 							userType := <record,str,linkItems_userType>,
-							_userTypes := (SELECT sys_user::SysUserType FILTER .id = <uuid>userType),
+							_userType := (SELECT sys_user::SysUserType FILTER .id = <uuid>userType),
 							user := (
   							INSERT sys_user::SysUser {
 									createdBy := 	sys_user::getRootUser(),
-									defaultSystem := _userTypes.owner,
 									isActive := true,
 									modifiedBy := 	sys_user::getRootUser(),
-									org := _userTypes.owner.owner,
-									owner := _userTypes.owner.owner,
+									ownerOrg := _userType.ownerOrg,
 									password := password,
 									person := (
 										INSERT default::SysPerson {
@@ -152,9 +150,10 @@ export default async function action(
 											lastName := lastName
 										}
 									),
-									systems := _userTypes.owner,
+									systemDefault := _userType.selfSignupSystem,
+									systems := _userType.selfSignupSystem,
 									name := name,
-									userTypes := _userTypes,
+									userTypes := _userType,
 								}
 							)
 							SELECT { userId := user.id }`,
@@ -173,14 +172,16 @@ export default async function action(
 						name := <record,str,name>,
 						userType := <record,str,linkItems_userType>,
 						_user := (SELECT sys_user::SysUser FILTER .name = name),
-						_userTypes := (SELECT sys_user::SysUserType FILTER .id = <uuid>userType) ?? _user.userTypes,
+						_userType := (SELECT sys_user::SysUserType FILTER .id = <uuid>userType) ?? _user.userTypes,
 						user := (
 							UPDATE sys_user::SysUser 
 							FILTER .name = name AND .isActive = true
 							SET { 
-								password := password, 
-								userTypes := _userTypes,
+								password := password,
 								person := (UPDATE default::SysPerson FILTER .id = _user.person.id SET { firstName := firstName, lastName := lastName })
+								systemDefault := _userType.selfSignupSystem,
+								systems := _userType.selfSignupSystem, 
+								userTypes := _userType
 							}
 						)
 						SELECT { userId := user.id }`,
@@ -237,7 +238,7 @@ async function authActionLogicCodeVerify(authProcess: AuthProcess, authAction: A
 async function authActionLogicIsNew(authProcess: AuthProcess, authAction: AuthActionLogic) {
 	if (!authProcess.parmsHas(AuthProcessParm.isNew)) {
 		alert(authAction.msgFail)
-		return false
+		return new MethodResult(false)
 	}
 
 	const isNew = authProcess.parmGet(AuthProcessParm.isNew)
@@ -247,7 +248,7 @@ async function authActionLogicIsNew(authProcess: AuthProcess, authAction: AuthAc
 	authProcess.addAction(AuthActionLogic, { logic: authActionLogicCodeSend })
 	authProcess.addAction(AuthActionNodeObj, { nodeObjName })
 
-	return true
+	return new MethodResult(true)
 }
 
 async function authActionLogicLogin(

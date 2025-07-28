@@ -8,13 +8,13 @@ export function initContentCm(init: InitDb) {
 
 function initProgram(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_app_cm',
+		ownerSys: 'sys_app_cm',
 
 		codeCardinality: 'list',
 		name: 'data_obj_app_cm_program_list',
 		header: 'Programs',
 		tables: [{ index: 0, table: 'CmProgram' }],
-		exprFilter: '.owner.id IN <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id IN <tree,uuid,SysSystem.id>',
 		actionGroup: 'doag_list',
 		fields: [
 			{
@@ -45,7 +45,7 @@ function initProgram(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_app_cm',
+		ownerSys: 'sys_app_cm',
 
 		codeCardinality: 'detail',
 		name: 'data_obj_app_cm_program_detail',
@@ -60,7 +60,7 @@ function initProgram(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem Filter .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -179,7 +179,7 @@ function initProgram(init: InitDb) {
 		header: 'Programs',
 		name: 'node_obj_app_cm_program_list',
 		orderDefine: 10,
-		owner: 'sys_app_cm'
+		ownerSys: 'sys_app_cm'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -190,6 +190,6 @@ function initProgram(init: InitDb) {
 		header: 'Program',
 		name: 'node_obj_app_cm_program_detail',
 		orderDefine: 10,
-		owner: 'sys_app_cm'
+		ownerSys: 'sys_app_cm'
 	})
 }

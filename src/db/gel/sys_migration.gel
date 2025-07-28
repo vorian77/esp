@@ -3,7 +3,6 @@ module sys_migr {
     overloaded required codeAttrType: sys_core::SysCode {
       default := sys_core::getCodeAttrType('at_migr_migration');
     };
-    description: str;
     multi tablesSource: sys_migr::SysMigrSourceTable{
       on source delete delete target;
       on target delete allow;

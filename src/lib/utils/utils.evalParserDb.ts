@@ -1,10 +1,10 @@
 import {
 	debug,
 	type DataRecord,
+	EvalExprCustomComposite,
 	getArray,
-	getDataRecordKey,
-	getValueData,
-	getValueDisplay,
+	recordKeyGet,
+	isString,
 	memberOfEnum,
 	MethodResult,
 	ObjAttrAction,
@@ -21,6 +21,8 @@ import { EvalParser, EvalParserToken, type EvalParserTokenParm } from '$utils/ut
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$routes/api/db/dbScriptEval.ts'
+
+const DB_EDGE_NULL = '00000000-0000-0000-0000-000000000000'
 
 export async function evalExpr(obj: any): Promise<MethodResult> {
 	const clazz = 'evalExpr'
@@ -62,15 +64,13 @@ class EvalParserDb extends EvalParser {
 
 		let exprCompositeItem = [
 			[
-				`${ExprTokenItemTypeComposite.evalObjAttrMulti}`,
-				`.owner.id = <parms,uuid,queryOwnerSys> AND .codeAttrType.name IN <parms,strList,itemsParmValueList>`
+				`${EvalExprCustomComposite.evalCustomCompositeObjAttrMulti}`,
+				`.ownerSys.id = <parms,uuid,systemIdQuerySource> AND .codeAttrType.name IN <parms,strList,itemsParmValueList>`
 			],
 			[
-				`${ExprTokenItemTypeComposite.evalObjAttrSingle}`,
-				`.owner.id = <parms,uuid,queryOwnerSys> AND .codeAttrType.name = <parms,str,itemsParmValue>`
-			],
-			[`${ExprTokenItemTypeComposite.exprQueryOwnerOrg}`, `.owner.id = <parms,uuid,queryOwnerOrg>`],
-			[`${ExprTokenItemTypeComposite.exprQueryOwnerSys}`, `.owner.id = <parms,uuid,queryOwnerSys>`]
+				`${EvalExprCustomComposite.evalCustomCompositeObjAttrSingle}`,
+				`.ownerSys.id = <parms,uuid,systemIdQuerySource> AND .codeAttrType.name = <parms,str,itemsParmValue>`
+			]
 		].find((e: any) => e[0] === token.type)
 
 		if (exprCompositeItem) {
@@ -108,6 +108,14 @@ class EvalParserDb extends EvalParser {
 
 				case ExprTokenItemType.parms:
 					item = new ExprTokenItemParms({ data: parser.queryData.getParms(), parser, token })
+					break
+
+				case ExprTokenItemType.parmsFormList:
+					item = new ExprTokenItemParms({
+						data: parser.queryData.dataTab.parmsFormList.valueGetAll(),
+						parser,
+						token
+					})
 					break
 
 				case ExprTokenItemType.record:
@@ -155,7 +163,7 @@ class EvalParserDb extends EvalParser {
 	isToken(tokenContent: string): boolean {
 		const tokenType = tokenContent.split(',')[0]
 		if (this.isTokenEnumMember(ExprTokenItemType, tokenType)) return true
-		if (this.isTokenEnumMember(ExprTokenItemTypeComposite, tokenType)) return true
+		if (this.isTokenEnumMember(EvalExprCustomComposite, tokenType)) return true
 		if (this.isTokenEnumMember(ExprTokenItemTypeFunction, tokenType)) return true
 		return false
 	}
@@ -253,6 +261,9 @@ class ExprTokenItem {
 		const result: [boolean, any] = this.getVaRawValidatelNested(data, keys, isAllowMissing)
 		if (!result[0]) return this.valueNotFound(data)
 		let rawValue = result[1]
+		if (isString(rawValue) && rawValue.startsWith('preset_')) {
+			rawValue = DB_EDGE_NULL
+		}
 		return new MethodResult(rawValue)
 	}
 
@@ -263,7 +274,7 @@ class ExprTokenItem {
 	): [boolean, any] {
 		let currentData = data
 		for (let i = 0; i < keys.length; i++) {
-			const currKey = getDataRecordKey(currentData, keys[i])
+			const currKey = recordKeyGet(currentData, keys[i])
 			if (!currKey) return isAllowMissing ? [true, ''] : [false, undefined]
 			currentData = currentData[currKey]
 		}
@@ -349,8 +360,6 @@ class ExprTokenItemAttrAction extends ExprTokenItem {
 		let expr = exprUnion(filterIds, filterUser)
 		expr = exprUnion(expr, filterExpr)
 		expr = expr ? `(${expr})` : '<uuid>{}'
-
-		debug('ExprTokenItemAttrAction.expr', attrAction, expr)
 
 		return new MethodResult(expr)
 
@@ -486,6 +495,7 @@ class ExprTokenItemTree extends ExprTokenItem {
 		let result: MethodResult
 		switch (this.treeParms.length) {
 			case 1:
+				// property in bottom level
 				property = this.treeParms[0]
 				result = this.parser.queryData.dataTree.getDataRowRecord(
 					TokenApiQueryDataTreeAccessType.index,
@@ -525,17 +535,11 @@ enum ExprTokenItemType {
 	function = 'function',
 	literal = 'literal',
 	parms = 'parms',
+	parmsFormList = 'parmsFormList',
 	record = 'record',
 	system = 'system',
 	tree = 'tree',
 	user = 'user'
-}
-
-enum ExprTokenItemTypeComposite {
-	evalObjAttrMulti = `evalObjAttrMulti`,
-	evalObjAttrSingle = `evalObjAttrSingle`,
-	exprQueryOwnerOrg = `exprQueryOwnerOrg`,
-	exprQueryOwnerSys = `exprQueryOwnerSys`
 }
 
 enum ExprTokenItemTypeFunction {
@@ -611,8 +615,13 @@ export function getValDb(codeDataType: PropDataType, valueRaw: any): MethodResul
 			valueDB = valueRaw ? getValQuoted(JSON.stringify(valueRaw)) : '{}'
 			break
 
+		case PropDataType.jsonCustomEligibility:
+			dataType = codeDataType
+			valueDB = valueRaw
+			break
+
 		case PropDataType.link:
-			dataType = 'link'
+			dataType = codeDataType
 			valueDB = valueRaw ? valueRaw : '{}'
 			break
 
@@ -672,7 +681,7 @@ function getValQuoted(val: string) {
 }
 
 export function getUUID(valueRaw?: string) {
-	return valueRaw ? valueRaw : '00000000-0000-0000-0000-000000000000'
+	return valueRaw ? valueRaw : DB_EDGE_NULL
 }
 function getUUIDQuoted(valueRaw?: string) {
 	return getValQuoted(getUUID(valueRaw))

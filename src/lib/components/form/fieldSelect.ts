@@ -11,3 +11,9 @@ export class FieldSelectMulti extends FieldSelect {
 		super(props)
 	}
 }
+
+export class FieldSelectOwner extends Field {
+	constructor(props: PropsFieldCreate) {
+		super(props)
+	}
+}

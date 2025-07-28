@@ -1,19 +1,28 @@
-import { Field, FieldAccess, FieldColor, PropsFieldCreate } from '$comps/form/field.svelte'
+import { State } from '$comps/app/types.state.svelte'
+import {
+	Field,
+	FieldAccess,
+	FieldColor,
+	PropsFieldCreate,
+	PropsFieldInit
+} from '$comps/form/field.svelte'
 import {
 	CodeAction,
+	DataObj,
 	FileStorage,
 	memberOfEnum,
 	memberOfEnumIfExists,
+	MethodResult,
 	NodeObjComponent,
+	RawDataObjPropDisplay,
 	required,
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
-import {
-	PropNamePrefixType,
-	RawDataObjPropDisplayCustom
-} from '$comps/dataObj/types.rawDataObj.svelte'
+import { PropKeyType, RawDataObjPropDisplayCustom } from '$comps/dataObj/types.rawDataObj.svelte'
+import { DetailEl, getDetailElements } from '$comps/form/types.detailElement'
 import { UserAction } from '$comps/other/types.userAction.svelte'
+import { DbTableQueryGroup } from '$lib/queryClient/types.queryClient'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/form/fieldCustom.ts'
@@ -23,12 +32,8 @@ export class FieldCustom extends Field {
 		super(props)
 		const propRaw = valueOrDefault(props.propRaw, {})
 		const clazz = 'FieldCustom'
-		this.colDO.propNamePrefixType = PropNamePrefixType.custom
-		this.colDO.propNamePrefixTypeId = strRequired(
-			propRaw?.orderDefine?.toString(),
-			clazz,
-			'orderDefine'
-		)
+		this.colDO.propKeyType = PropKeyType.custom
+		this.colDO.propKeyTypeId = strRequired(propRaw?.orderDefine?.toString(), clazz, 'orderDefine')
 		this.fieldAccess = FieldAccess.readonly
 		const customCol = required(propRaw.customCol, clazz, 'customCol') as RawDataObjPropDisplayCustom
 		this.colDO.label = customCol.customColLabel ? customCol.customColLabel : this.colDO.label

@@ -217,22 +217,34 @@ export class ScriptTypeSavePrimaryListSelectLinkBackward extends ScriptTypeSaveP
 		super(obj)
 		const clazz = 'ScriptTypeSavePrimaryListSelectLinkBackward'
 		this.columnBacklink = strRequired(
-			this.query.fieldEmbed?.columnBacklink,
+			this.query.fieldEmbed?.rawFieldEmbedList.parentColumnBackLink,
 			clazz,
 			'columnBacklink'
 		)
-		this.columnEmbed = strRequired(this.query.fieldEmbed?.embedFieldNameRaw, clazz, 'columnEmbed')
+		this.columnEmbed = strRequired(
+			this.query.fieldEmbed?.rawFieldEmbedList.embedPropName,
+			clazz,
+			'columnEmbed'
+		)
 		this.idParent = strRequired(
 			this.dataRows.length > 0 ? this.dataRows[0].record.id : undefined,
 			clazz,
 			'idParent'
 		)
-		const parms = required(this.query.queryData?.dataTab?.parms, clazz, 'queryData.dataTab.parms')
-		const listIds = parms.valueGet(ParmsValuesType.listIds)
-		this.idsSelected = parms.valueGet(ParmsValuesType.listIdsSelected)
+		const parmsFormList = required(
+			this.query.queryData?.dataTab?.parmsFormList,
+			clazz,
+			'queryData.dataTab.parmsFormList'
+		)
+		const listIds = parmsFormList.valueGet(ParmsValuesType.listIds)
+		this.idsSelected = parmsFormList.valueGet(ParmsValuesType.listIdsSelected)
 		this.idsAdd = this.idsSelected.filter((id: string) => !listIds.includes(id))
 		this.idsRemove = listIds.filter((id: string) => !this.idsSelected.includes(id))
-		this.tableParent = required(this.query.fieldEmbed?.parentTable, clazz, 'tableParent')
+		this.tableParent = required(
+			this.query.fieldEmbed?.rawFieldEmbedList.parentTableRoot,
+			clazz,
+			'tableParent'
+		)
 	}
 	async build(): Promise<MethodResult> {
 		let exprAdd: string = this.buildExpr(BackwardLinkFilterType.union, this.idsAdd)
@@ -305,7 +317,7 @@ export class ScriptTypeSavePrimaryListSelectLinkForward extends ScriptTypeSavePr
 	}
 	async build(): Promise<MethodResult> {
 		let label = this.getLabelSave(this.tableKey)
-		let select = `(SELECT ${this.tableKey.object} FILTER .id IN <parms,uuidlist,listIdsSelected>)`
+		let select = `(SELECT ${this.tableKey.object} FILTER .id IN <parmsFormList,uuidlist,listIdsSelected>)`
 		return new MethodResult(`WITH\n${label} := ${select}`)
 	}
 }

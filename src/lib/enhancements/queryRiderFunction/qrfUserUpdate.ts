@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import { DataObjData, DataRecordStatus, MethodResult } from '$utils/types'
 import { QueryRider, QueryRiderTriggerTiming } from '$lib/queryClient/types.queryClientRider'
 import { TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'

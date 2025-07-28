@@ -5,7 +5,7 @@ import { error } from '@sveltejs/kit'
 const FILENAME = 'utils.randomDataGenerator.ts'
 
 const recordCount = 25
-const universalStartDate = '2025-03-20'
+const universalStartDate = '2025-07-01'
 
 // values example
 // ObjAttrCmSite: {
@@ -228,16 +228,16 @@ const dataServiceFlow = {
 	dateStart: {
 		daysMin: 0,
 		daysMax: 4,
-		// rate: 0.5,
-		rate: 1.0,
+		rate: 0.5,
+		// rate: 1.0,
 		refn: 'dateCreated',
 		type: 'daysAfterRefn'
 	},
 	dateEnd: {
 		daysMin: 0,
 		daysMax: 4,
-		// rate: 0.25,
-		rate: 0.0,
+		rate: 0.5,
+		// rate: 0.0,
 		refn: 'dateStart',
 		type: 'daysAfterRefn'
 	},

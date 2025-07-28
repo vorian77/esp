@@ -12,9 +12,10 @@
 		ValidityError
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { State } from '$comps/app/types.appState.svelte'
-	import FormElCustomActionButton from './FormElCustomActionButton.svelte'
-	import FormElCustomActionLink from './FormElCustomActionLink.svelte'
+	import { State } from '$comps/app/types.state.svelte'
+
+	import FormElCustomActionButton from '$comps/form/FormElCustomActionButton.svelte'
+	import FormElCustomActionLink from '$comps/form/FormElCustomActionLink.svelte'
 	import FormElCustomHeader from '$comps/form/FormElCustomHeader.svelte'
 	import FormElCustomHTML from '$comps/form/FormElCustomHTML.svelte'
 	import FormElCustomImage from '$comps/form/FormElCustomImage.svelte'
@@ -24,12 +25,13 @@
 	import FormElInpChips from '$comps/form/FormElInpChips.svelte'
 	import FormElInpCheckbox from '$comps/form/FormElInpCheckbox.svelte'
 	import FormElInpRadio from '$comps/form/FormElInpRadio.svelte'
+	import FormElEmbedDetailEligibility from '$comps/form/FormElEmbedDetailEligibility.svelte'
 	import FormElEmbedListConfig from '$comps/form/FormElEmbedListConfig.svelte'
 	import FormElEmbedListEdit from '$comps/form/FormElEmbedListEdit.svelte'
 	import FormElEmbedListSelect from '$comps/form/FormElEmbedListSelect.svelte'
 	import FormElEmbedShell from '$comps/form/FormElEmbedShell.svelte'
-
 	import FormElSelect from '$comps/form/FormElSelect.svelte'
+	import FormElSelectOwner from '$comps/form/FormElSelectOwner.svelte'
 	import FormElTextarea from '$comps/form/FormElTextarea.svelte'
 	import FormElToggle from '$comps/form/FormElToggle.svelte'
 	import { Field, FieldAccess } from '$comps/form/field.svelte'
@@ -52,7 +54,7 @@
 	import { FieldInput } from '$comps/form/fieldInput'
 	import { FieldParm } from '$comps/form/fieldParm'
 	import { FieldRadio } from '$comps/form/fieldRadio'
-	import { FieldSelect } from '$comps/form/fieldSelect'
+	import { FieldSelect, FieldSelectOwner } from '$comps/form/fieldSelect'
 	import { FieldTextarea } from '$comps/form/fieldTextarea'
 	import { FieldToggle } from '$comps/form/fieldToggle'
 	import DataViewer from '$utils/DataViewer.svelte'
@@ -68,6 +70,7 @@
 		FieldCustomText: FormElCustomText,
 		FieldChips: FormElInpChips,
 		FieldCheckbox: FormElInpCheckbox,
+		FieldEmbedDetailEligibility: FormElEmbedDetailEligibility,
 		FieldEmbedListConfig: FormElEmbedListConfig,
 		FieldEmbedListEdit: FormElEmbedListEdit,
 		FieldEmbedListSelect: FormElEmbedListSelect,
@@ -76,6 +79,7 @@
 		FieldInput: FormElInp,
 		FieldRadio: FormElInpRadio,
 		FieldSelect: FormElSelect,
+		FieldSelectOwner: FormElSelectOwner,
 		FieldTextarea: FormElTextarea,
 		FieldToggle: FormElToggle
 	}

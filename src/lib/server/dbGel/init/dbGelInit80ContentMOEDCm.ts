@@ -1,4 +1,5 @@
 import { InitDb } from '$server/dbGel/init/types.init'
+import { PropDataType } from '$utils/types'
 
 export function initContentMOEDCm(init: InitDb) {
 	initObjAttr(init)
@@ -6,12 +7,9 @@ export function initContentMOEDCm(init: InitDb) {
 	// features
 	initApplicant(init)
 	initCsf(init)
-	initCsfNote(init)
 	initCsfDocument(init)
-
-	// reports
-	initAnalytic(init)
-	initReport(init)
+	initCsfEligibility(init)
+	initCsfNote(init)
 }
 
 function initObjAttr(init: InitDb) {
@@ -19,43 +17,43 @@ function initObjAttr(init: InitDb) {
 		code: 'at_cm_site',
 		header: 'Eastside Office',
 		name: 'site_moed_office_east',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 	init.addTrans('sysObjAttr', {
 		code: 'at_cm_site',
 		header: 'Westside Office',
 		name: 'site_moed_office_west',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 	init.addTrans('sysObjAttr', {
 		code: 'at_sys_msg_group',
 		header: 'MOED Administrators',
 		name: 'group_msg_moed_admin',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 	init.addTrans('sysObjAttr', {
 		code: 'at_sys_msg_group',
 		header: 'Eastside Staff',
 		name: 'group_msg_moed_staff_east',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 	init.addTrans('sysObjAttr', {
 		code: 'at_sys_msg_group',
 		header: 'Westside Staff',
 		name: 'group_msg_moed_staff_west',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 	init.addTrans('sysObjAttr', {
 		code: 'at_sys_msg_group',
 		header: 'Eastside Youth Applicants',
 		name: 'group_msg_moed_youth_applicants_east',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 	init.addTrans('sysObjAttr', {
 		code: 'at_sys_msg_group',
 		header: 'Westside Youth Applicants',
 		name: 'group_msg_moed_youth_applicants_west',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 }
 
@@ -63,10 +61,10 @@ function initApplicant(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
-		exprFilter: `.owner.name = 'sys_client_moed'`,
+		exprFilter: `.ownerSys.name = 'sys_client_baltimore_moed'`,
 		header: 'Participants',
 		name: 'data_obj_moed_part_list',
-		owner: 'sys_client_moed',
+		ownerSys: 'sys_client_baltimore_moed',
 		tables: [
 			{ index: 0, table: 'MoedParticipant' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -103,11 +101,10 @@ function initApplicant(init: InitDb) {
 
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail',
-
 		codeCardinality: 'detail',
 		header: 'Participant',
 		name: 'data_obj_moed_part_detail',
-		owner: 'sys_client_moed',
+		ownerSys: 'sys_client_baltimore_moed',
 		tables: [
 			{ index: 0, table: 'MoedParticipant' },
 			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
@@ -120,13 +117,13 @@ function initApplicant(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>)`,
+				codeFieldElement: 'selectOwnerSys',
+				columnName: 'ownerSys',
 				orderDefine: 20,
+				orderDisplay: 20,
 				indexTable: 0,
-				isDisplayable: false,
-				isExcludeUpdate: true,
-				linkTable: 'SysSystem'
+				isDisplayable: true,
+				fieldListItems: 'il_sys_system_by_user'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -231,7 +228,7 @@ function initApplicant(init: InitDb) {
 						orderDefine: 0,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_sys_person_gender',
 								name: 'Prefer to self-identify'
 							}
@@ -247,7 +244,7 @@ function initApplicant(init: InitDb) {
 						orderDefine: 1,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_sys_person_gender',
 								name: 'Prefer to self-identify'
 							}
@@ -323,7 +320,7 @@ function initApplicant(init: InitDb) {
 						orderDefine: 0,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_sys_person_living_arrangements',
 								name: 'I am currently homeless'
 							}
@@ -338,7 +335,7 @@ function initApplicant(init: InitDb) {
 						orderDefine: 0,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_sys_person_living_arrangements',
 								name: 'I am currently homeless'
 							}
@@ -353,7 +350,7 @@ function initApplicant(init: InitDb) {
 						orderDefine: 1,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_sys_person_living_arrangements',
 								name: 'I am currently homeless'
 							}
@@ -497,12 +494,12 @@ function initApplicant(init: InitDb) {
 		codeComponent: 'FormList',
 		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeApp',
-		codeQueryOwnerType: 'queryOwnerTypeSystemApp',
 		dataObj: 'data_obj_moed_part_list',
 		header: 'Participants',
 		name: 'node_obj_moed_part_list',
 		orderDefine: 10,
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed',
+		systemQuerySource: 'sys_client_baltimore_moed'
 	})
 	init.addTrans('sysNodeObj', {
 		children: [{ node: 'node_obj_moed_csf_list', order: 10 }],
@@ -513,14 +510,13 @@ function initApplicant(init: InitDb) {
 		header: 'Participant',
 		name: 'node_obj_moed_part_detail',
 		orderDefine: 10,
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 }
 
 function initCsf(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_client_moed',
-
+		ownerSys: 'sys_client_baltimore_moed',
 		codeCardinality: 'list',
 		name: 'data_obj_moed_csf_list',
 		header: 'Service Flows',
@@ -536,13 +532,13 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'programCm',
+				columnName: 'objAttrCmProgram',
+				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
-				indexTable: 0,
 				linkColumns: ['header'],
-				linkTable: 'CmProgram'
+				linkTable: 'SysObjAttr'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -630,8 +626,7 @@ function initCsf(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObj', {
-		owner: 'sys_client_moed',
-
+		ownerSys: 'sys_client_baltimore_moed',
 		codeCardinality: 'detail',
 		name: 'data_obj_moed_csf_detail',
 		header: 'Service Flow',
@@ -646,7 +641,7 @@ function initCsf(init: InitDb) {
 			},
 			{
 				columnName: 'client',
-				exprSave: `(SELECT org_client_city_baltimore::MoedParticipant FILTER .id = <tree,uuid,MoedParticipant.id>)`,
+				exprSave: `(SELECT org_client_baltimore::MoedParticipant FILTER .id = <tree,uuid,MoedParticipant.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
@@ -662,12 +657,13 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'programCm',
+				columnName: 'objAttrCmProgram',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_cm_program'
+				fieldListItems: 'il_sys_obj_attr_type_single',
+				fieldListItemsParmValue: 'at_cm_program'
 			},
 			{
 				codeFieldElement: 'select',
@@ -761,7 +757,7 @@ function initCsf(init: InitDb) {
 						orderDefine: 0,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_cm_sf_eligibility_status',
 								name: 'Enrolled'
 							}
@@ -777,7 +773,7 @@ function initCsf(init: InitDb) {
 						orderDefine: 1,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_cm_sf_eligibility_status',
 								name: 'Enrolled'
 							}
@@ -793,7 +789,7 @@ function initCsf(init: InitDb) {
 						orderDefine: 0,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_cm_sf_eligibility_status',
 								name: 'Rejected'
 							}
@@ -809,7 +805,7 @@ function initCsf(init: InitDb) {
 						orderDefine: 1,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_cm_sf_eligibility_status',
 								name: 'Rejected'
 							}
@@ -956,12 +952,13 @@ function initCsf(init: InitDb) {
 		header: 'Service Flows',
 		name: 'node_obj_moed_csf_list',
 		orderDefine: 20,
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 	init.addTrans('sysNodeObj', {
 		children: [
-			{ node: 'node_obj_moed_csf_note_list', order: 10 },
-			{ node: 'node_obj_moed_csf_doc_list', order: 20 }
+			{ node: 'node_obj_moed_csf_eligibility_list', order: 10 },
+			{ node: 'node_obj_moed_csf_note_list', order: 20 },
+			{ node: 'node_obj_moed_csf_doc_list', order: 30 }
 		],
 		codeComponent: 'FormDetail',
 		codeIcon: 'AppWindow',
@@ -970,218 +967,13 @@ function initCsf(init: InitDb) {
 		header: 'Service Flow',
 		name: 'node_obj_moed_csf_detail',
 		orderDefine: 10,
-		owner: 'sys_client_moed'
-	})
-}
-
-function initCsfNote(init: InitDb) {
-	init.addTrans('sysDataObj', {
-		owner: 'sys_client_moed',
-
-		codeCardinality: 'list',
-		name: 'data_obj_moed_csf_note_list',
-		header: 'Case Notes',
-		tables: [{ index: 0, table: 'CmCsfNote' }],
-		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
-		actionGroup: 'doag_list',
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				codeFieldElement: 'date',
-				codeSortDir: 'desc',
-				columnName: 'date',
-				orderCrumb: 10,
-				orderSort: 10,
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'codeType',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0,
-				linkColumns: ['name'],
-				linkTable: 'SysCode'
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'note',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0
-			}
-		]
-	})
-
-	init.addTrans('sysDataObj', {
-		owner: 'sys_client_moed',
-
-		codeCardinality: 'detail',
-		name: 'data_obj_moed_csf_note_detail',
-		header: 'Case Note',
-		tables: [{ index: 0, table: 'CmCsfNote' }],
-		actionGroup: 'doag_detail',
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				columnName: 'csf',
-				exprSave: `(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)`,
-				orderDefine: 20,
-				indexTable: 0,
-				isDisplayable: false,
-				linkColumns: ['programCm', 'name'],
-				linkTable: 'CmClientServiceFlow'
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30
-			},
-			{
-				codeFieldElement: 'date',
-				columnName: 'date',
-				orderSort: 10,
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'codeType',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
-				fieldListItemsParmValue: 'ct_cm_case_note_type'
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60
-			},
-			{
-				codeAccess: 'optional',
-				codeFieldElement: 'textArea',
-				columnName: 'note',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
-			},
-
-			/* management */
-			{
-				codeFieldElement: 'tagDetails',
-				columnName: 'custom_details_start',
-				headerAlt: 'Meta',
-				isDisplayable: true,
-				orderDisplay: 1000,
-				orderDefine: 1000
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_start',
-				isDisplayable: true,
-				orderDisplay: 1010,
-				orderDefine: 1010
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdAt',
-				isDisplayable: true,
-				orderDisplay: 1020,
-				orderDefine: 1020,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'createdBy',
-				isDisplayable: true,
-				orderDisplay: 1030,
-				orderDefine: 1030,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedAt',
-				isDisplayable: true,
-				orderDisplay: 1040,
-				orderDefine: 1040,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'modifiedBy',
-				isDisplayable: true,
-				orderDisplay: 1050,
-				orderDefine: 1050,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'tagRow',
-				columnName: 'custom_row_end',
-				isDisplayable: true,
-				orderDisplay: 1060,
-				orderDefine: 1060
-			},
-			{
-				codeFieldElement: 'tagDetails',
-				columnName: 'custom_details_end',
-				isDisplayable: true,
-				orderDisplay: 1070,
-				orderDefine: 1070
-			}
-		]
-	})
-	init.addTrans('sysNodeObj', {
-		children: [{ node: 'node_obj_moed_csf_note_detail', order: 10 }],
-		codeComponent: 'FormList',
-		codeIcon: 'AppWindow',
-		codeNodeType: 'nodeAppObj',
-		dataObj: 'data_obj_moed_csf_note_list',
-		header: 'Case Notes',
-		name: 'node_obj_moed_csf_note_list',
-		orderDefine: 20,
-		owner: 'sys_client_moed'
-	})
-	init.addTrans('sysNodeObj', {
-		codeComponent: 'FormDetail',
-		codeIcon: 'AppWindow',
-		codeNodeType: 'nodeAppObj',
-		dataObj: 'data_obj_moed_csf_note_detail',
-		header: 'Case Note',
-		name: 'node_obj_moed_csf_note_detail',
-		orderDefine: 10,
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 }
 
 function initCsfDocument(init: InitDb) {
 	init.addTrans('sysDataObj', {
-		owner: 'sys_client_moed',
-
+		ownerSys: 'sys_client_baltimore_moed',
 		codeCardinality: 'list',
 		name: 'data_obj_moed_csf_doc_list',
 		header: 'Documents',
@@ -1246,7 +1038,7 @@ function initCsfDocument(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'Document',
 		name: 'data_obj_moed_csf_doc_detail',
-		owner: 'sys_client_moed',
+		ownerSys: 'sys_client_baltimore_moed',
 		queryRiders: [
 			{
 				codeQueryAction: 'customFunction',
@@ -1271,7 +1063,7 @@ function initCsfDocument(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['programCm', 'name'],
+				linkColumns: ['objAttrCmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1416,7 +1208,7 @@ function initCsfDocument(init: InitDb) {
 		header: 'Documents',
 		name: 'node_obj_moed_csf_doc_list',
 		orderDefine: 30,
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
@@ -1426,351 +1218,477 @@ function initCsfDocument(init: InitDb) {
 		header: 'Document',
 		name: 'node_obj_moed_csf_doc_detail',
 		orderDefine: 10,
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 }
 
-function initAnalytic(init: InitDb) {
-	init.addTrans('sysAnalytic', {
-		header: 'MOED Analytic - Self Service Registration',
-		name: 'analytic_moed_self_serv_reg',
-		owner: 'sys_client_moed',
-		statuses: [
+function initCsfEligibility(init: InitDb) {
+	init.addTrans('sysEligibility', {
+		description: 'This is the eligility form for MOED YO.',
+		header: 'MOED YO Eligibility',
+		name: 'elig_moed_csf_yo_eligibility',
+		ownerSys: 'sys_client_baltimore_moed',
+		nodes: [
 			{
-				codeStatus: 'met',
-				expr: '85'
+				codeEligibilityType: 'eligibilityManual',
+				description: 'Description for Node 1 (manual).',
+				header: 'Node 1 (manual)',
+				name: 'node1',
+				nodeId: 1,
+				order: 10
 			},
 			{
-				codeStatus: 'medium',
-				expr: '70'
+				codeEligibilityType: 'eligibilityExpr',
+				description: 'Has Social Security Number.',
+				exprState: `(select exists((select app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id> AND .client.person.ssn != '')))`,
+				header: 'SSN',
+				name: 'node2',
+				nodeId: 2,
+				order: 20
 			},
 			{
-				codeStatus: 'high',
-				expr: '0'
+				codeEligibilityType: 'eligibilityGroupAnd',
+				description: 'Description for Node 3 (Group - And).',
+				header: 'Node 3 (Group - And)',
+				name: 'node3',
+				nodeId: 3,
+				order: 30
+			},
+			{
+				codeEligibilityType: 'eligibilityGroupOr',
+				description: 'Description for Node 4 (Group - Or).',
+				header: 'Node 4 (Group - Or)',
+				name: 'node4',
+				nodeId: 4,
+				nodeIdParent: 3,
+				order: 10
+			},
+			{
+				codeEligibilityType: 'eligibilityManual',
+				description: 'Description for Node 5 (manual).',
+				header: 'Node 5 (manual)',
+				name: 'node4',
+				nodeId: 5,
+				nodeIdParent: 4,
+				order: 10
+			},
+			{
+				codeEligibilityType: 'eligibilityExpr',
+				description: 'Has 1 or more documents.',
+				exprState: `(SELECT count((select app_cm::CmCsfDocument FILTER .csf.id = <tree,uuid,CmClientServiceFlow.id>)) > 0)`,
+				header: 'Documents',
+				name: 'node6',
+				nodeId: 6,
+				nodeIdParent: 4,
+				order: 20
+			},
+			{
+				codeEligibilityType: 'eligibilityGroupAnd',
+				description: 'Description for Node 7 (Group - And).',
+				header: 'Node 7 (Group - And)',
+				name: 'node7',
+				nodeId: 7,
+				nodeIdParent: 3,
+				order: 20
+			},
+			{
+				codeEligibilityType: 'eligibilityManual',
+				description: 'Description for Node 8 (manual).',
+				header: 'Node 8 (manual)',
+				name: 'node8',
+				nodeId: 8,
+				nodeIdParent: 7,
+				order: 10
+			},
+			{
+				codeEligibilityType: 'eligibilityExpr',
+				description: 'Has 1 or more case notes.',
+				exprState: `(SELECT count((select app_cm::CmCsfNote FILTER .csf.id = <tree,uuid,CmClientServiceFlow.id>)) > 0)`,
+				header: 'Notes',
+				name: 'node9',
+				nodeId: 9,
+				nodeIdParent: 7,
+				order: 20
 			}
 		]
 	})
-}
 
-function initReport(init: InitDb) {
-	init.addTrans('sysRep', {
-		actionGroup: 'doag_report_render',
-		exprFilter: '.client IN org_client_city_baltimore::MoedParticipant',
-		header: 'Self Service Registration - Student Status',
-		name: 'report_moed_self_serv_student_status',
-		owner: 'sys_client_moed',
-		tables: [
-			{ index: 0, table: 'CmClientServiceFlow' },
-			{ columnParent: 'client', indexParent: 0, index: 1, table: 'MoedParticipant' },
-			{ columnParent: 'person', indexParent: 1, index: 2, table: 'SysPerson' }
-		],
-		elements: [
+	init.addTrans('sysDataObj', {
+		ownerSys: 'sys_client_baltimore_moed',
+		codeCardinality: 'list',
+		name: 'data_obj_moed_csf_eligibility_list',
+		header: 'Eligibilities',
+		tables: [{ index: 0, table: 'CmCsfEligibility' }],
+		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
+		actionGroup: 'doag_list',
+		fields: [
 			{
-				codeReportElementType: 'column',
 				columnName: 'id',
 				indexTable: 0,
 				isDisplayable: false,
-				orderDefine: 0
+				orderDefine: 10
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'firstName',
-				indexTable: 2,
-				isDisplay: true,
+				codeAccess: 'readOnly',
+				columnName: 'objAttrCmProgram',
 				isDisplayable: true,
-				orderDefine: 10,
-				orderDisplay: 10,
-				orderSort: 20
-			},
-			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'lastName',
-				indexTable: 2,
-				isDisplay: true,
-				isDisplayable: true,
-				orderDefine: 20,
 				orderDisplay: 20,
-				orderSort: 10
+				orderDefine: 20,
+				indexTable: 0,
+				linkColumns: ['header'],
+				linkTable: 'SysObjAttr'
+			}
+		]
+	})
+
+	const eligibilityName = 'elig_moed_csf_yo_eligibility'
+	init.addTrans('sysDataObj', {
+		ownerSys: 'sys_client_baltimore_moed',
+		codeCardinality: 'detail',
+		name: 'data_obj_moed_csf_eligibility_detail',
+		header: 'Eligibility',
+		tables: [{ index: 0, table: 'CmCsfEligibility' }],
+		actionGroup: 'doag_detail',
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'birthDate',
-				indexTable: 2,
-				isDisplay: false,
-				isDisplayable: true,
+				columnName: 'csf',
+				exprSave: `(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)`,
+				orderDefine: 20,
+				indexTable: 0,
+				isDisplayable: false,
+				linkColumns: ['objAttrCmProgram', 'name'],
+				linkTable: 'CmClientServiceFlow'
+			},
+			{
+				columnName: 'eligibility',
+				exprSave: `(SELECT sys_core::getEligibility('${eligibilityName}'))`,
 				orderDefine: 30,
-				orderDisplay: 30
+				indexTable: 0,
+				isDisplayable: false
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'ssn',
-				indexTable: 2,
-				isDisplay: false,
+				codeFieldElement: 'select',
+				columnName: 'objAttrCmProgram',
 				isDisplayable: true,
-				orderDefine: 40,
-				orderDisplay: 40
-			},
-			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'phoneMobile',
-				indexTable: 2,
-				isDisplay: false,
-				isDisplayable: true,
+				orderDisplay: 50,
 				orderDefine: 50,
-				orderDisplay: 50
+				indexTable: 0,
+				fieldListItems: 'il_sys_obj_attr_type_single',
+				fieldListItemsParmValue: 'at_cm_program'
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'email',
-				indexTable: 2,
-				isDisplay: false,
+				codeAccess: 'readOnly',
+				codeFieldElement: 'toggle',
+				columnName: 'valueBoolean',
+				indexTable: 0,
 				isDisplayable: true,
+				orderDisplay: 60,
 				orderDefine: 60,
-				orderDisplay: 60
+				headerAlt: 'Current Eligibility'
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'codeGender',
-				indexTable: 2,
-				isDisplay: false,
+				codeFieldElement: 'embedDetailEligibility',
+				columnName: 'nodeValues',
+				fieldEmbedDetailEligibility: eligibilityName,
+				exprPreset: `<${PropDataType.jsonCustomEligibility}>`,
+				indexTable: 0,
 				isDisplayable: true,
-				linkColumns: ['name'],
 				orderDefine: 70,
 				orderDisplay: 70
 			},
+
+			/* management */
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'genderSelfId',
-				indexTable: 2,
-				isDisplay: false,
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_start',
+				headerAlt: 'Meta',
 				isDisplayable: true,
-				orderDefine: 75,
-				orderDisplay: 75
+				orderDisplay: 1000,
+				orderDefine: 1000
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'codeRace',
-				indexTable: 2,
-				isDisplay: false,
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
 				isDisplayable: true,
-				linkColumns: ['name'],
-				orderDefine: 80,
-				orderDisplay: 80
+				orderDisplay: 1010,
+				orderDefine: 1010
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'codeEthnicity',
-				indexTable: 2,
-				isDisplay: false,
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
 				isDisplayable: true,
-				linkColumns: ['name'],
-				orderDefine: 90,
-				orderDisplay: 90
+				orderDisplay: 1020,
+				orderDefine: 1020,
+				indexTable: 0
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'codeDisabilityStatus',
-				indexTable: 2,
-				isDisplay: false,
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
 				isDisplayable: true,
-				linkColumns: ['name'],
-				orderDefine: 100,
-				orderDisplay: 100
+				orderDisplay: 1030,
+				orderDefine: 1030,
+				indexTable: 0
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'addr1',
-				indexTable: 2,
-				isDisplay: false,
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
 				isDisplayable: true,
-				orderDefine: 110,
-				orderDisplay: 110
+				orderDisplay: 1040,
+				orderDefine: 1040,
+				indexTable: 0
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'addr2',
-				indexTable: 2,
-				isDisplay: false,
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
 				isDisplayable: true,
-				orderDefine: 120,
-				orderDisplay: 120
+				orderDisplay: 1050,
+				orderDefine: 1050,
+				indexTable: 0
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'city',
-				indexTable: 2,
-				isDisplay: false,
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
 				isDisplayable: true,
-				orderDefine: 130,
-				orderDisplay: 130
+				orderDisplay: 1060,
+				orderDefine: 1060
 			},
 			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'codeState',
-				indexTable: 2,
-				isDisplay: false,
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_end',
 				isDisplayable: true,
-				linkColumns: ['name'],
-				orderDefine: 140,
-				orderDisplay: 140
-			},
-			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'zip',
-				indexTable: 2,
-				isDisplay: false,
-				isDisplayable: true,
-				orderDefine: 150,
-				orderDisplay: 150
-			},
-			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'objAttrCmSite',
-				header: 'Site',
-				indexTable: 2,
-				isDisplay: true,
-				isDisplayable: true,
-				linkColumns: ['header'],
-				linkTable: 'SysObjAttr',
-				orderDefine: 160,
-				orderDisplay: 160
-			},
-			{
-				codeFieldElement: 'text',
-				codeReportElementType: 'column',
-				columnName: 'codeSfEligibilityStatus',
-				indexTable: 0,
-				isDisplay: true,
-				isDisplayable: true,
-				linkColumns: ['name'],
-				orderDefine: 170,
-				orderDisplay: 170
-			},
-			{
-				codeFieldElement: 'date',
-				codeReportElementType: 'column',
-				columnName: 'dateCreated',
-				indexTable: 0,
-				isDisplay: true,
-				isDisplayable: true,
-				orderDefine: 180,
-				orderDisplay: 180
-			},
-			{
-				codeFieldElement: 'date',
-				codeReportElementType: 'column',
-				columnName: 'dateStart',
-				indexTable: 0,
-				isDisplay: true,
-				isDisplayable: true,
-				orderDefine: 190,
-				orderDisplay: 190
-			},
-			{
-				codeFieldElement: 'date',
-				codeReportElementType: 'column',
-				columnName: 'dateEnd',
-				indexTable: 0,
-				isDisplay: true,
-				isDisplayable: true,
-				orderDefine: 200,
-				orderDisplay: 200
-			},
-			{
-				codeAlignment: 'right',
-				codeDataType: 'int64',
-				codeFieldElement: 'number',
-				codeReportElementType: 'column',
-				exprCustom: `(SELECT count((SELECT app_cm::CmCsfDocument FILTER .csf = app_cm::CmClientServiceFlow)))`,
-				header: 'Documents - Total',
-				isDisplay: true,
-				isDisplayable: true,
-				nameCustom: 'docCnt',
-				orderDefine: 210,
-				orderDisplay: 210
+				orderDisplay: 1070,
+				orderDefine: 1070
 			}
-			// {
-			// 	codeAlignment: 'right',
-			// 	codeDataType: 'int64',
-			// 	codeFieldElement: 'number',
-			// 	codeReportElementType: 'column',
-			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow)))`,
-			// 	header: 'Messages - Total',
-			// 	isDisplay: true,
-			// 	isDisplayable: true,
-			// 	nameCustom: 'msgCnt',
-			// 	orderDefine: 220,
-			// 	orderDisplay: 220
-			// },
-			// {
-			// 	codeAlignment: 'right',
-			// 	codeDataType: 'int64',
-			// 	codeFieldElement: 'number',
-			// 	codeReportElementType: 'column',
-			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeSfEligibilityStatus.name = 'Sent')))`,
-			// 	header: 'Messages - Sent',
-			// 	isDisplay: true,
-			// 	isDisplayable: true,
-			// 	nameCustom: 'msgSentCnt',
-			// 	orderDefine: 230,
-			// 	orderDisplay: 230
-			// },
-			// {
-			// 	codeAlignment: 'right',
-			// 	codeDataType: 'int64',
-			// 	codeFieldElement: 'number',
-			// 	codeReportElementType: 'column',
-			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeSfEligibilityStatus.name = 'Under review')))`,
-			// 	header: 'Messages - Under review',
-			// 	isDisplay: true,
-			// 	isDisplayable: true,
-			// 	nameCustom: 'msgUrCnt',
-			// 	orderDefine: 240,
-			// 	orderDisplay: 240
-			// },
-			// {
-			// 	codeAlignment: 'right',
-			// 	codeDataType: 'int64',
-			// 	codeFieldElement: 'number',
-			// 	codeReportElementType: 'column',
-			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeSfEligibilityStatus.name = 'replied')))`,
-			// 	header: 'Messages - Replied',
-			// 	isDisplay: true,
-			// 	isDisplayable: true,
-			// 	nameCustom: 'msgRepliedCnt',
-			// 	orderDefine: 250,
-			// 	orderDisplay: 250
-			// },
-			// {
-			// 	codeAlignment: 'right',
-			// 	codeDataType: 'int64',
-			// 	codeFieldElement: 'number',
-			// 	codeReportElementType: 'column',
-			// 	exprCustom: `(SELECT count((SELECT sys_core::SysMsg FILTER .csf = app_cm::CmClientServiceFlow AND .codeSfEligibilityStatus.name = 'Closed')))`,
-			// 	header: 'Messages - Closed',
-			// 	isDisplay: true,
-			// 	isDisplayable: true,
-			// 	nameCustom: 'msgClosedCnt',
-			// 	orderDefine: 260,
-			// 	orderDisplay: 260
-			// }
 		]
+	})
+
+	init.addTrans('sysNodeObj', {
+		children: [{ node: 'node_obj_moed_csf_eligibility_detail', order: 10 }],
+		codeComponent: 'FormList',
+		codeIcon: 'AppWindow',
+		codeNodeType: 'nodeAppObj',
+		dataObj: 'data_obj_moed_csf_eligibility_list',
+		header: 'Eligibilities',
+		name: 'node_obj_moed_csf_eligibility_list',
+		orderDefine: 30,
+		ownerSys: 'sys_client_baltimore_moed'
+	})
+	init.addTrans('sysNodeObj', {
+		codeComponent: 'FormDetail',
+		codeIcon: 'AppWindow',
+		codeNodeType: 'nodeAppObj',
+		dataObj: 'data_obj_moed_csf_eligibility_detail',
+		header: 'Eligibility',
+		name: 'node_obj_moed_csf_eligibility_detail',
+		orderDefine: 10,
+		ownerSys: 'sys_client_baltimore_moed'
+	})
+}
+
+function initCsfNote(init: InitDb) {
+	init.addTrans('sysDataObj', {
+		ownerSys: 'sys_client_baltimore_moed',
+		codeCardinality: 'list',
+		name: 'data_obj_moed_csf_note_list',
+		header: 'Case Notes',
+		tables: [{ index: 0, table: 'CmCsfNote' }],
+		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
+		actionGroup: 'doag_list',
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				codeFieldElement: 'date',
+				codeSortDir: 'desc',
+				columnName: 'date',
+				orderCrumb: 10,
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'codeType',
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysCode'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0
+			}
+		]
+	})
+
+	init.addTrans('sysDataObj', {
+		ownerSys: 'sys_client_baltimore_moed',
+		codeCardinality: 'detail',
+		name: 'data_obj_moed_csf_note_detail',
+		header: 'Case Note',
+		tables: [{ index: 0, table: 'CmCsfNote' }],
+		actionGroup: 'doag_detail',
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				columnName: 'csf',
+				exprSave: `(SELECT app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id>)`,
+				orderDefine: 20,
+				indexTable: 0,
+				isDisplayable: false,
+				linkColumns: ['objAttrCmProgram', 'name'],
+				linkTable: 'CmClientServiceFlow'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30
+			},
+			{
+				codeFieldElement: 'date',
+				columnName: 'date',
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'select',
+				columnName: 'codeType',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				indexTable: 0,
+				fieldListItems: 'il_sys_code_order_name_by_codeType_name_system',
+				fieldListItemsParmValue: 'ct_cm_case_note_type'
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'textArea',
+				columnName: 'note',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				indexTable: 0
+			},
+
+			/* management */
+			{
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_start',
+				headerAlt: 'Meta',
+				isDisplayable: true,
+				orderDisplay: 1000,
+				orderDefine: 1000
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_start',
+				isDisplayable: true,
+				orderDisplay: 1010,
+				orderDefine: 1010
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdAt',
+				isDisplayable: true,
+				orderDisplay: 1020,
+				orderDefine: 1020,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'createdBy',
+				isDisplayable: true,
+				orderDisplay: 1030,
+				orderDefine: 1030,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedAt',
+				isDisplayable: true,
+				orderDisplay: 1040,
+				orderDefine: 1040,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'modifiedBy',
+				isDisplayable: true,
+				orderDisplay: 1050,
+				orderDefine: 1050,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'tagRow',
+				columnName: 'custom_row_end',
+				isDisplayable: true,
+				orderDisplay: 1060,
+				orderDefine: 1060
+			},
+			{
+				codeFieldElement: 'tagDetails',
+				columnName: 'custom_details_end',
+				isDisplayable: true,
+				orderDisplay: 1070,
+				orderDefine: 1070
+			}
+		]
+	})
+	init.addTrans('sysNodeObj', {
+		children: [{ node: 'node_obj_moed_csf_note_detail', order: 10 }],
+		codeComponent: 'FormList',
+		codeIcon: 'AppWindow',
+		codeNodeType: 'nodeAppObj',
+		dataObj: 'data_obj_moed_csf_note_list',
+		header: 'Case Notes',
+		name: 'node_obj_moed_csf_note_list',
+		orderDefine: 20,
+		ownerSys: 'sys_client_baltimore_moed'
+	})
+	init.addTrans('sysNodeObj', {
+		codeComponent: 'FormDetail',
+		codeIcon: 'AppWindow',
+		codeNodeType: 'nodeAppObj',
+		dataObj: 'data_obj_moed_csf_note_detail',
+		header: 'Case Note',
+		name: 'node_obj_moed_csf_note_detail',
+		orderDefine: 10,
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 }

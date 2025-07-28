@@ -10,7 +10,7 @@
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { State } from '$comps/app/types.appState.svelte'
+	import { State } from '$comps/app/types.state.svelte'
 	import { TokenAppUserActionConfirmType } from '$utils/types.token'
 	import { UserAction, UserActionDisplay } from '$comps/other/types.userAction.svelte'
 	import { error } from '@sveltejs/kit'
@@ -46,9 +46,7 @@
 
 	async function onClick(ad: UserActionDisplay): Promise<MethodResult> {
 		const doa: DataObjAction = UserActionDisplay.getDataObjAction(ad, dataObj?.userActions)
-		if (doa) {
-			return await doa.action.trigger(sm, dataObj)
-		}
+		if (doa) return await doa.action.trigger(sm, dataObj)
 	}
 </script>
 

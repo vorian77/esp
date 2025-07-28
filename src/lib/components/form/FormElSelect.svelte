@@ -41,15 +41,14 @@
 		let value = target.value
 		if (field.colDO.colDB.isMultiSelect) value = value ? [value] : []
 		const valueRaw = field.linkItems.getValueRaw(value)
-		await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, valueRaw)
-		// await dm.setFieldValue(parms.dataObjId, parms.row, parms.field, value)
+		await dm.setFieldValueAsync(parms.dataObjId, parms.row, parms.field, valueRaw)
 	}
 </script>
 
 <FormLabel {parms}>
 	<select
 		class={classProps}
-		name={field.colDO.propName}
+		name={field.getValueKey()}
 		id={fieldId}
 		disabled={field.fieldAccess == FieldAccess.readonly}
 		onchange={onChange}

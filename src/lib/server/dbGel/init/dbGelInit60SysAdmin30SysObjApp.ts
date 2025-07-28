@@ -1,4 +1,5 @@
 import { InitDb } from '$server/dbGel/init/types.init'
+import { NodeType } from '$utils/types'
 
 export function initAdminSysObjApp(init: InitDb) {
 	initFieldListSelectNodes(init)
@@ -11,10 +12,10 @@ function initFieldListSelectNodes(init: InitDb) {
 		actionGroup: 'doag_embed_list_select',
 		codeCardinality: 'list',
 		codeDataObjType: 'doEmbed',
-		exprFilter: `.codeNodeType = (SELECT sys_core::getCode('ct_sys_node_obj_type', 'app')) AND (.owner.id = <tree,uuid,SysSystem.id> UNION .isGlobalResource)`,
+		exprFilter: `.codeNodeType = (SELECT sys_core::getCode('ct_sys_node_obj_type','${NodeType.nodeApp}')) AND (.ownerSys.id = <tree,uuid,SysSystem.id> UNION .isGlobalResource)`,
 		header: 'Select Node(s)',
 		name: 'dofls_sys_admin_sys_node',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysNodeObj' }],
 		fields: [
 			{
@@ -40,7 +41,7 @@ function initFieldListSelectNodes(init: InitDb) {
 		btnLabelComplete: 'Select Node(s)',
 		dataObjList: 'dofls_sys_admin_sys_node',
 		name: 'fels_sys_node',
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -49,9 +50,9 @@ function initApp(init: InitDb) {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		header: 'Apps',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		name: 'data_obj_sys_app_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysApp' }],
 		fields: [
 			{
@@ -86,7 +87,7 @@ function initApp(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'App',
 		name: 'data_obj_sys_app_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysApp' }],
 		fields: [
 			{
@@ -96,7 +97,7 @@ function initApp(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -146,14 +147,14 @@ function initApp(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListSelect',
 				columnName: 'nodes',
-				headerAlt: 'Program Nodes',
-				isDisplayable: true,
-				orderDisplay: 80,
-				orderDefine: 80,
 				fieldEmbedListSelect: 'fels_sys_node',
+				headerAlt: 'Program Nodes',
 				indexTable: 0,
+				isDisplayable: true,
 				linkColumns: ['name'],
-				linkTable: 'SysNodeObj'
+				linkTable: 'SysNodeObj',
+				orderDefine: 80,
+				orderDisplay: 80
 			},
 
 			/* management */
@@ -230,7 +231,7 @@ function initApp(init: InitDb) {
 		header: 'Apps',
 		name: 'node_obj_sys_app_list',
 		orderDefine: 25,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -241,7 +242,7 @@ function initApp(init: InitDb) {
 		header: 'App',
 		name: 'node_obj_sys_app_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }
 
@@ -250,9 +251,9 @@ function initAppHeader(init: InitDb) {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		header: 'App Headers',
-		exprFilter: '.owner.id = <tree,uuid,SysSystem.id>',
+		exprFilter: '.ownerSys.id = <tree,uuid,SysSystem.id>',
 		name: 'data_obj_sys_app_header_list',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysAppHeader' }],
 		fields: [
 			{
@@ -313,7 +314,7 @@ function initAppHeader(init: InitDb) {
 		codeCardinality: 'detail',
 		header: 'App Header',
 		name: 'data_obj_sys_app_header_detail',
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysAppHeader' }],
 		fields: [
 			{
@@ -323,7 +324,7 @@ function initAppHeader(init: InitDb) {
 				orderDefine: 10
 			},
 			{
-				columnName: 'owner',
+				columnName: 'ownerSys',
 				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>)`,
 				orderDefine: 20,
 				indexTable: 0,
@@ -461,7 +462,7 @@ function initAppHeader(init: InitDb) {
 		header: 'App Headers',
 		name: 'node_obj_sys_app_header_list',
 		orderDefine: 20,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 
 	init.addTrans('sysNodeObj', {
@@ -472,6 +473,6 @@ function initAppHeader(init: InitDb) {
 		header: 'App Header',
 		name: 'node_obj_sys_app_header_detail',
 		orderDefine: 10,
-		owner: 'sys_system'
+		ownerSys: 'sys_system'
 	})
 }

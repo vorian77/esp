@@ -9,17 +9,17 @@ import type * as _default from "./default";
 import type * as _stdcal from "./std/cal";
 export type $CmClientλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
   "codeHighestEducation": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
-  "owner": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.One, {}, false, false,  false, false>;
   "agencyId": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "hasDriversLicense": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "school": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "person": $.LinkDesc<_default.$SysPerson, $.Cardinality.One, {}, false, false,  false, false>;
+  "ownerSys": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.One, {}, false, false,  false, false>;
   "<client[is app_cm::CmClientServiceFlow]": $.LinkDesc<$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<client": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $CmClient = $.ObjectType<"app_cm::CmClient", $CmClientλShape, null, [
   ..._sys_user.$Mgmt['__exclusives__'],
-], "app_cm::CmClient" | "org_client_city_baltimore::MoedParticipant">;
+], "app_cm::CmClient" | "org_client_baltimore::MoedParticipant">;
 const $CmClient = $.makeType<$CmClient>(_.spec, "508d4869-b3c2-11ee-ac7f-9da0574a2000", _.syntax.literal);
 
 const CmClient: $.$expr_PathNode<$.TypeSet<$CmClient, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmClient, $.Cardinality.Many), null);
@@ -30,7 +30,6 @@ export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_core.$ObjRoot�
   "codeSfEnrollType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "codeSfOutcome": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "objAttrCmSite": $.LinkDesc<_sys_core.$SysObjAttr, $.Cardinality.One, {}, false, false,  false, false>;
-  "programCm": $.LinkDesc<$CmProgram, $.Cardinality.One, {}, false, false,  false, false>;
   "user": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
   "dateCreated": $.PropertyDesc<_stdcal.$local_date, $.Cardinality.One, false, false, false, false>;
   "dateEnd": $.PropertyDesc<_stdcal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -38,6 +37,7 @@ export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_core.$ObjRoot�
   "dateStart": $.PropertyDesc<_stdcal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "dateStartEst": $.PropertyDesc<_stdcal.$local_date, $.Cardinality.AtMostOne, false, false, false, false>;
   "idxDemo": $.PropertyDesc<_std.$int64, $.Cardinality.AtMostOne, false, false, false, false>;
+  "objAttrCmProgram": $.LinkDesc<_sys_core.$SysObjAttr, $.Cardinality.One, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfData]": $.LinkDesc<$CmCsfData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfCohort]": $.LinkDesc<$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfDocument]": $.LinkDesc<$CmCsfDocument, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -45,6 +45,7 @@ export type $CmClientServiceFlowλShape = $.typeutil.flatten<_sys_core.$ObjRoot�
   "<csf[is app_cm::CmCsfNote]": $.LinkDesc<$CmCsfNote, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfGroup]": $.LinkDesc<$CmCsfGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf[is app_cm::CmCsfSchoolPlacement]": $.LinkDesc<$CmCsfSchoolPlacement, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<csf[is app_cm::CmCsfEligibility]": $.LinkDesc<$CmCsfEligibility, $.Cardinality.Many, {}, false, false,  false, false>;
   "<csf": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $CmClientServiceFlow = $.ObjectType<"app_cm::CmClientServiceFlow", $CmClientServiceFlowλShape, null, [
@@ -117,7 +118,6 @@ export type $CmCourseλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
   "courseItemsIncluded": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "courseItemsNotIncluded": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "courseRequirements": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
-  "description": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "schedule": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "cohorts": $.LinkDesc<$CmCohort, $.Cardinality.Many, {}, false, false,  false, false>;
   "codeSector": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
@@ -138,7 +138,7 @@ export type $CmCsfDataλShape = $.typeutil.flatten<_sys_user.$MgmtλShape & {
 }>;
 type $CmCsfData = $.ObjectType<"app_cm::CmCsfData", $CmCsfDataλShape, null, [
   ..._sys_user.$Mgmt['__exclusives__'],
-], "app_cm::CmCsfData" | "app_cm::CmCsfCohort" | "app_cm::CmCsfDocument" | "app_cm::CmCsfGroup" | "app_cm::CmCsfJobPlacement" | "app_cm::CmCsfNote" | "app_cm::CmCsfSchoolPlacement">;
+], "app_cm::CmCsfData" | "app_cm::CmCsfCohort" | "app_cm::CmCsfDocument" | "app_cm::CmCsfEligibility" | "app_cm::CmCsfGroup" | "app_cm::CmCsfJobPlacement" | "app_cm::CmCsfNote" | "app_cm::CmCsfSchoolPlacement">;
 const $CmCsfData = $.makeType<$CmCsfData>(_.spec, "5095b7af-b3c2-11ee-89eb-0347bc6da7fe", _.syntax.literal);
 
 const CmCsfData: $.$expr_PathNode<$.TypeSet<$CmCsfData, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCsfData, $.Cardinality.Many), null);
@@ -187,6 +187,19 @@ type $CmCsfDocument = $.ObjectType<"app_cm::CmCsfDocument", $CmCsfDocumentλShap
 const $CmCsfDocument = $.makeType<$CmCsfDocument>(_.spec, "83671dfe-c9e6-11ee-b733-11d9576c877b", _.syntax.literal);
 
 const CmCsfDocument: $.$expr_PathNode<$.TypeSet<$CmCsfDocument, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCsfDocument, $.Cardinality.Many), null);
+
+export type $CmCsfEligibilityλShape = $.typeutil.flatten<$CmCsfDataλShape & {
+  "eligibility": $.LinkDesc<_sys_core.$SysEligibility, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "objAttrCmProgram": $.LinkDesc<_sys_core.$SysObjAttr, $.Cardinality.One, {}, false, false,  false, false>;
+  "valueBoolean": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
+  "nodeValues": $.PropertyDesc<_std.$json, $.Cardinality.One, false, false, false, false>;
+}>;
+type $CmCsfEligibility = $.ObjectType<"app_cm::CmCsfEligibility", $CmCsfEligibilityλShape, null, [
+  ...$CmCsfData['__exclusives__'],
+], "app_cm::CmCsfEligibility">;
+const $CmCsfEligibility = $.makeType<$CmCsfEligibility>(_.spec, "314b09b7-6636-11f0-a737-b78a6688f8f0", _.syntax.literal);
+
+const CmCsfEligibility: $.$expr_PathNode<$.TypeSet<$CmCsfEligibility, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmCsfEligibility, $.Cardinality.Many), null);
 
 export type $CmCsfGroupλShape = $.typeutil.flatten<$CmCsfDataλShape & {
   "cmGroup": $.LinkDesc<$CmGroup, $.Cardinality.One, {}, false, false,  false, false>;
@@ -277,8 +290,6 @@ const $CmPartner = $.makeType<$CmPartner>(_.spec, "f32c35f7-cbb2-11ef-bac4-61c1a
 const CmPartner: $.$expr_PathNode<$.TypeSet<$CmPartner, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CmPartner, $.Cardinality.Many), null);
 
 export type $CmProgramλShape = $.typeutil.flatten<_sys_core.$SysObjλShape & {
-  "<programCm[is app_cm::CmClientServiceFlow]": $.LinkDesc<$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<programCm": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $CmProgram = $.ObjectType<"app_cm::CmProgram", $CmProgramλShape, null, [
   ..._sys_core.$SysObj['__exclusives__'],
@@ -313,7 +324,7 @@ function getCMTrainingCourse(...args: any[]) {
 
 
 
-export { $CmClient, CmClient, $CmClientServiceFlow, CmClientServiceFlow, $CmCohort, CmCohort, $CmCohortAttd, CmCohortAttd, $CmCohortDoc, CmCohortDoc, $CmCourse, CmCourse, $CmCsfData, CmCsfData, $CmCsfCohort, CmCsfCohort, $CmCsfCohortAttd, CmCsfCohortAttd, $CmCsfDocument, CmCsfDocument, $CmCsfGroup, CmCsfGroup, $CmCsfJobPlacement, CmCsfJobPlacement, $CmCsfNote, CmCsfNote, $CmCsfSchoolPlacement, CmCsfSchoolPlacement, $CmGroup, CmGroup, $CmPartner, CmPartner, $CmProgram, CmProgram };
+export { $CmClient, CmClient, $CmClientServiceFlow, CmClientServiceFlow, $CmCohort, CmCohort, $CmCohortAttd, CmCohortAttd, $CmCohortDoc, CmCohortDoc, $CmCourse, CmCourse, $CmCsfData, CmCsfData, $CmCsfCohort, CmCsfCohort, $CmCsfCohortAttd, CmCsfCohortAttd, $CmCsfDocument, CmCsfDocument, $CmCsfEligibility, CmCsfEligibility, $CmCsfGroup, CmCsfGroup, $CmCsfJobPlacement, CmCsfJobPlacement, $CmCsfNote, CmCsfNote, $CmCsfSchoolPlacement, CmCsfSchoolPlacement, $CmGroup, CmGroup, $CmPartner, CmPartner, $CmProgram, CmProgram };
 
 type __defaultExports = {
   "CmClient": typeof CmClient;
@@ -326,6 +337,7 @@ type __defaultExports = {
   "CmCsfCohort": typeof CmCsfCohort;
   "CmCsfCohortAttd": typeof CmCsfCohortAttd;
   "CmCsfDocument": typeof CmCsfDocument;
+  "CmCsfEligibility": typeof CmCsfEligibility;
   "CmCsfGroup": typeof CmCsfGroup;
   "CmCsfJobPlacement": typeof CmCsfJobPlacement;
   "CmCsfNote": typeof CmCsfNote;
@@ -346,6 +358,7 @@ const __defaultExports: __defaultExports = {
   "CmCsfCohort": CmCsfCohort,
   "CmCsfCohortAttd": CmCsfCohortAttd,
   "CmCsfDocument": CmCsfDocument,
+  "CmCsfEligibility": CmCsfEligibility,
   "CmCsfGroup": CmCsfGroup,
   "CmCsfJobPlacement": CmCsfJobPlacement,
   "CmCsfNote": CmCsfNote,

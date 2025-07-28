@@ -77,14 +77,6 @@ const shapeDataObjTable = e.shape(e.sys_core.SysDataObjTable, (dot) => ({
 	order_by: dot.index
 }))
 
-const shapeFieldEmbedListSelect = e.shape(e.sys_core.SysDataObjFieldEmbedListSelect, (fels) => ({
-	_actionGroupModal: e.select(fels.actionGroupModal, (afg) => ({
-		...shapeDataObjActionGroup(afg)
-	})),
-	_dataObjListId: fels.dataObjList.id,
-	btnLabelComplete: true
-}))
-
 const shapeGridStyle = e.shape(e.sys_core.SysGridStyle, (gs) => ({
 	exprTrigger: true,
 	prop: true,
@@ -124,16 +116,16 @@ const shapeNodeObj = e.shape(e.sys_core.SysNodeObj, (n) => ({
 	_codeComponent: n.codeComponent.name,
 	_codeNodeType: n.codeNodeType.name,
 	_codeIcon: n.codeIcon.name,
-	_codeQueryOwnerType: n.codeQueryOwnerType.name,
 	_codeQueryTypeAlt: n.codeQueryTypeAlt.name,
 	_codeRenderPlatform: n.codeRenderPlatform.name,
 	_dataObjId: n.dataObj.id,
-	_ownerId: n.owner.id,
 	_selectListItems: e.select(n.selectListItems, (sli) => ({
 		_header: n.selectListItemsHeader,
 		_parmValue: n.selectListItemsParmValue,
 		...shapeLinkItemsSource(sli)
 	})),
+	_systemIdNode: n.ownerSys.id,
+	_systemIdQuerySource: n.systemQuerySource.id,
 	header: true,
 	id: true,
 	isAlwaysRetrieveData: true,
@@ -151,6 +143,7 @@ const shapeNodeObjAction = e.shape(e.sys_core.SysNodeObjAction, (na) => ({
 
 const shapeQuerySource = e.shape(e.sys_core.SysObjDb, (db) => ({
 	exprFilter: true,
+	exprFilterExcept: true,
 	exprSort: true,
 	exprWith: true,
 	exprUnions: true,
@@ -215,7 +208,7 @@ const shapeObjAttrTypeApp = e.shape(e.sys_user.SysApp, (a) => ({
 		...shapeNodeObj(n),
 		order_by: n.header
 	})),
-	_ownerId: a.owner.id,
+	_ownerId: a.ownerSys.id,
 	id: true,
 	name: true
 }))
@@ -230,7 +223,7 @@ const shapeObjAttrTypeTask = e.shape(e.sys_user.SysTask, (t) => ({
 	_nodeObj: e.select(t.nodeObj, (n) => ({
 		...shapeNodeObj(n)
 	})),
-	_ownerId: t.owner.id,
+	_ownerId: t.ownerSys.id,
 	description: true,
 	exprShow: true,
 	exprStatus: true,
@@ -296,6 +289,44 @@ export async function getDataObjById(token: TokenApiId) {
 		...shapeColumnHasItems(doc),
 		_codeSortDir: doc.codeSortDir.name,
 		_columnBacklink: doc.columnBacklink.name,
+		_fieldEmbedDetailEligibility: e.select(doc.fieldEmbedDetailEligibility, (elig) => ({
+			_nodes: e.select(elig.nodes, (node) => ({
+				_codeEligibilityType: node.codeEligibilityType.name,
+				description: true,
+				exprState: true,
+				header: true,
+				id: true,
+				name: true,
+				nodeId: true,
+				nodeIdParent: true,
+				order: true
+			})),
+			description: true,
+			header: true,
+			name: true
+		})),
+		_fieldEmbedListConfig: e.select(doc.fieldEmbedListConfig, (fe) => ({
+			_actionGroupModal: e.select(fe.actionGroupModal, (afg) => ({
+				...shapeDataObjActionGroup(afg)
+			})),
+			_dataObjEmbedId: fe.dataObjEmbed.id,
+			_dataObjModalId: fe.dataObjModal.id
+		})),
+		_fieldEmbedListEdit: e.select(doc.fieldEmbedListEdit, (fe) => ({
+			_dataObjEmbedId: fe.dataObjEmbed.id
+		})),
+		_fieldEmbedListSelect: e.select(doc.fieldEmbedListSelect, (fe) => ({
+			_actionGroupModal: e.select(fe.actionGroupModal, (afg) => ({
+				...shapeDataObjActionGroup(afg)
+			})),
+			_dataObjEmbedId: fe.dataObjList.id,
+			_dataObjListId: fe.dataObjList.id,
+			btnLabelComplete: true
+		})),
+		_fieldEmbedShellFields: e.select(doc.customEmbedShellFields, (ce) => ({
+			_name: ce.column.name,
+			order_by: ce.orderDefine
+		})),
 		_itemChanges: e.select(doc.itemChanges, (t) => ({
 			...SysDataObjColumnItemChange(t)
 		})),
@@ -321,22 +352,15 @@ export async function getDataObjById(token: TokenApiId) {
 		exprPreset: true,
 		exprSave: true,
 		id: true,
-		indexTable: true
+		indexTable: true,
+		propNameKeyPrefix: true,
+		propNameKeySuffix: true
 	}))
 
 	const shapePropDB = e.shape(e.sys_core.SysDataObjColumn, (doc) => ({
 		...shapeProp(doc),
 		_codeDataType: doc.column.codeDataType.name,
 		_codeDbDataSourceValue: doc.codeDbDataSourceValue.name,
-		_fieldEmbedListConfig: e.select(doc.fieldEmbedListConfig, (fe) => ({
-			_dataObjEmbedId: fe.dataObjEmbed.id
-		})),
-		_fieldEmbedListEdit: e.select(doc.fieldEmbedListEdit, (fe) => ({
-			_dataObjEmbedId: fe.dataObjEmbed.id
-		})),
-		_fieldEmbedListSelect: e.select(doc.fieldEmbedListSelect, (fe) => ({
-			_dataObjListId: fe.dataObjList.id
-		})),
 		_isMultiSelect: doc.column.isMultiSelect,
 		_isSelfReference: doc.column.isSelfReference
 	}))
@@ -366,7 +390,7 @@ export async function getDataObjById(token: TokenApiId) {
 				...shapeGridStyle(gs)
 			})),
 			_listReorderColumn: do1.listReorderColumn.name,
-			_ownerId: do1.owner.id,
+			_ownerId: do1.ownerSys.id,
 			_processType: do1.processType.name,
 			_querySource: e.select(do1, (do1) => ({
 				...shapeQuerySource(do1)
@@ -384,6 +408,7 @@ export async function getDataObjById(token: TokenApiId) {
 					_codeAlignment: c.codeAlignment.name,
 					_codeDataType: c.codeDataType.name,
 					classProps: true,
+					description: true,
 					exprStorageKey: true,
 					header: true,
 					headerSide: true,
@@ -427,23 +452,6 @@ export async function getDataObjById(token: TokenApiId) {
 					customColSize: true,
 					customColSource: true,
 					customColSourceKey: true
-				})),
-				_fieldEmbedListConfig: e.select(doc.fieldEmbedListConfig, (fe) => ({
-					_actionGroupModal: e.select(fe.actionGroupModal, (afg) => ({
-						...shapeDataObjActionGroup(afg)
-					})),
-					_dataObjEmbedId: fe.dataObjEmbed.id,
-					_dataObjModalId: fe.dataObjModal.id
-				})),
-				_fieldEmbedListEdit: e.select(doc.fieldEmbedListEdit, (fe) => ({
-					_dataObjEmbedId: fe.dataObjEmbed.id
-				})),
-				_fieldEmbedListSelect: e.select(doc.fieldEmbedListSelect, (fe) => ({
-					...shapeFieldEmbedListSelect(fe)
-				})),
-				_fieldEmbedShellFields: e.select(doc.customEmbedShellFields, (ce) => ({
-					_name: ce.column.name,
-					order_by: ce.orderDefine
 				})),
 				_gridStyles: e.select(doc.gridStyles, (gs) => ({
 					...shapeGridStyle(gs)
@@ -660,7 +668,18 @@ export async function getReportUser(repUserId: string) {
 			_columns: e.select(el.linkColumns, (lc) => ({
 				_name: lc.column.name,
 				order_by: lc.orderDefine
-			}))
+			})),
+			_exprCustom: el.exprCustom
+			// _table: {
+			// 	hasMgmt: true,
+			// 	mod: 'sys_core',
+			// 	name: 'SysCode'
+			// }
+			// _table: e.select(el.linkTable, (t) => ({
+			// 	hasMgmt: true,
+			// 	mod: true,
+			// 	name: true
+			// }))
 		})),
 		description: true,
 		exprCustom: true,
@@ -701,7 +720,7 @@ export async function getReportUser(repUserId: string) {
 			_actionGroup: e.select(rep.actionGroup, (afg) => ({
 				...shapeDataObjActionGroup(afg)
 			})),
-			_ownerId: rep.owner.id,
+			_ownerId: rep.ownerSys.id,
 			description: true,
 			elements: e.select(rep.elements, (repE) => ({
 				...shapeRepEl(repE),
@@ -748,7 +767,7 @@ export async function getUserByUserId(token: TokenApiId): Promise<MethodResult> 
 				filter: e.op(p.isActive, '=', true)
 			})),
 			_system: e.select(e.sys_core.SysSystem, (s) => ({
-				_orgName: s.owner.name,
+				_orgName: s.ownerOrg.name,
 				appName: true,
 				file: true,
 				header: true,
@@ -756,7 +775,7 @@ export async function getUserByUserId(token: TokenApiId): Promise<MethodResult> 
 				logoMarginRight: true,
 				logoWidth: true,
 				name: true,
-				filter_single: e.op(s, '=', u.defaultSystem)
+				filter_single: e.op(s, '=', u.systemDefault)
 			})),
 			avatar: u.person.avatar,
 			firstName: u.person.firstName,

@@ -19,7 +19,7 @@ function initTaskSsrApp(init: InitDb) {
 		exprFilter: '.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person',
 		header: 'My Application',
 		name: 'data_obj_task_moed_ssr_app',
-		owner: 'sys_client_moed',
+		ownerSys: 'sys_client_baltimore_moed',
 		queryRiders: [
 			{
 				codeQueryAction: 'userMsg',
@@ -57,10 +57,10 @@ function initTaskSsrApp(init: InitDb) {
 				table: 'SysPerson'
 			},
 			{
-				columnParent: 'programCm',
+				columnParent: 'objAttrCmProgram',
 				indexParent: 0,
 				index: 3,
-				table: 'CmProgram'
+				table: 'SysObjAttr'
 			}
 		],
 		fields: [
@@ -90,13 +90,22 @@ function initTaskSsrApp(init: InitDb) {
 				orderDefine: 30
 			},
 			{
-				columnName: 'programCm',
-				exprSave: `(SELECT assert_single((SELECT app_cm::CmProgram FILTER .name = 'cmp_moed_yo')))`,
+				codeFieldElement: 'selectOwnerSys',
+				columnName: 'ownerSys',
+				orderDefine: 35,
+				orderDisplay: 35,
+				indexTable: 1,
+				isDisplayable: true,
+				fieldListItems: 'il_sys_system_by_user'
+			},
+			{
+				columnName: 'objAttrCmProgram',
+				exprSave: `(SELECT assert_single((SELECT sys_core::SysObjAttr FILTER .name = 'at_cm_program_moed_yo')))`,
 				orderDefine: 40,
 				indexTable: 0,
 				isDisplayable: false,
 				linkColumns: ['name'],
-				linkTable: 'CmProgram'
+				linkTable: 'SysObjAttr'
 			},
 			{
 				columnName: 'codeSfEnrollType',
@@ -114,14 +123,6 @@ function initTaskSsrApp(init: InitDb) {
 				indexTable: 1,
 				isDisplayable: false,
 				orderDefine: 50
-			},
-			{
-				columnName: 'owner',
-				exprSave: `(SELECT sys_core::SysSystem FILTER .id = <parms,uuid,queryOwnerSys>)`,
-				orderDefine: 60,
-				indexTable: 1,
-				isDisplayable: false,
-				linkTable: 'SysSystem'
 			},
 			{
 				columnName: 'createdBy',
@@ -237,7 +238,7 @@ function initTaskSsrApp(init: InitDb) {
 						orderDefine: 0,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_sys_person_gender',
 								name: 'Prefer to self-identify'
 							}
@@ -253,7 +254,7 @@ function initTaskSsrApp(init: InitDb) {
 						orderDefine: 1,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_sys_person_gender',
 								name: 'Prefer to self-identify'
 							}
@@ -315,7 +316,7 @@ function initTaskSsrApp(init: InitDb) {
 						orderDefine: 0,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_sys_person_living_arrangements',
 								name: 'I am currently homeless'
 							}
@@ -330,7 +331,7 @@ function initTaskSsrApp(init: InitDb) {
 						orderDefine: 0,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_sys_person_living_arrangements',
 								name: 'I am currently homeless'
 							}
@@ -345,7 +346,7 @@ function initTaskSsrApp(init: InitDb) {
 						orderDefine: 1,
 						valueTriggerCodes: [
 							{
-								owner: 'sys_client_moed',
+								ownerSys: 'sys_client_baltimore_moed',
 								codeType: 'ct_sys_person_living_arrangements',
 								name: 'I am currently homeless'
 							}
@@ -432,7 +433,8 @@ function initTaskSsrApp(init: InitDb) {
 		codeQueryTypeAlt: 'retrieveThenPreset',
 		dataObj: 'data_obj_task_moed_ssr_app',
 		name: 'node_obj_task_moed_ssr_app',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed',
+		systemQuerySource: 'sys_client_baltimore_moed'
 	})
 
 	init.addTrans('sysTask', {
@@ -452,65 +454,11 @@ function initTaskSsrApp(init: InitDb) {
 		name: 'task_moed_ssr_app',
 		noDataMsg: 'Click to start application',
 		nodeObj: 'node_obj_task_moed_ssr_app',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 }
 
 function initTaskSsrDoc(init: InitDb) {
-	init.addTrans('sysDataObj', {
-		owner: 'sys_client_moed',
-		codeCardinality: 'list',
-		name: 'data_obj_task_moed_ssr_doc_list',
-		header: 'My Documents',
-		tables: [{ index: 0, table: 'CmCsfDocument' }],
-		exprFilter: '.csf.id = <uuid>"78527ffe-13c1-11ef-8756-4f224ba4fd90"',
-		actionGroup: 'doag_list',
-		fields: [
-			{
-				columnName: 'id',
-				indexTable: 0,
-				isDisplayable: false,
-				orderDefine: 10
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'dateIssued',
-				headerAlt: 'Date',
-				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'codeType',
-				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0,
-				linkColumns: ['name']
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'note',
-				orderDefine: 70,
-				isDisplay: false,
-				isDisplayable: true,
-				orderDisplay: 70,
-				indexTable: 0
-			}
-		]
-	})
-
-	init.addTrans('sysNodeObj', {
-		children: [{ node: 'node_obj_task_moed_ssr_doc_detail', order: 10 }],
-		codeComponent: 'FormList',
-		codeNodeType: 'nodeTask',
-		dataObj: 'data_obj_task_moed_ssr_doc_list',
-		name: 'node_obj_task_moed_ssr_doc_list',
-		owner: 'sys_client_moed'
-	})
-
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_detail_mobile_save_delete',
 		codeCardinality: 'detail',
@@ -518,7 +466,7 @@ function initTaskSsrDoc(init: InitDb) {
 			'.csf.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person AND <parms,str,itemsParmValue> IN .codeType.codeTypeFamily.name LIMIT 1',
 		header: 'My Document',
 		name: 'data_obj_task_moed_ssr_doc_detail',
-		owner: 'sys_client_moed',
+		ownerSys: 'sys_client_baltimore_moed',
 		queryRiders: [
 			{
 				codeQueryAction: 'customFunction',
@@ -552,7 +500,7 @@ function initTaskSsrDoc(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['programCm', 'name'],
+				linkColumns: ['objAttrCmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -571,7 +519,6 @@ function initTaskSsrDoc(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				// fieldListItems: 'il_sys_code_family_group_order_name_by_codeType_name_system'
 				fieldListItems: 'il_sys_code_family_group_order_index_by_codeType_name_system'
 			},
 			{
@@ -631,7 +578,8 @@ function initTaskSsrDoc(init: InitDb) {
 		codeQueryTypeAlt: 'retrieveThenPreset',
 		dataObj: 'data_obj_task_moed_ssr_doc_detail',
 		name: 'node_obj_task_moed_ssr_doc_detail',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed',
+		systemQuerySource: 'sys_client_baltimore_moed'
 	})
 
 	init.addTrans('sysTask', {
@@ -649,7 +597,7 @@ FILTER .parent.name = 'ct_cm_doc_type' ORDER BY .order asc`,
 		header: 'My Eligibility Documents',
 		name: 'task_moed_ssr_app_doc',
 		nodeObj: 'node_obj_task_moed_ssr_doc_detail',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 }
 
@@ -660,7 +608,7 @@ function initTaskSsrWelcome(init: InitDb) {
 		header: 'Welcome',
 		isInitialValidationSilent: true,
 		name: 'data_obj_task_moed_ssr_welcome',
-		owner: 'sys_client_moed',
+		ownerSys: 'sys_client_baltimore_moed',
 		queryRiders: [
 			{
 				codeQueryAction: 'userMsg',
@@ -706,6 +654,7 @@ function initTaskSsrWelcome(init: InitDb) {
 				columnName: 'custom_element',
 				customElement: {
 					align: 'center',
+					file: `{"key": "file_2807296732", "url": "https://fsd0o1nvg8ontjdr.public.blob.vercel-storage.com/file_2807296732", "fileName": "YO Baltimore-highres.png", "fileType": "image",  "downloadUrl": "https://fsd0o1nvg8ontjdr.public.blob.vercel-storage.com/file_2807296732?download=1"}`,
 					label: 'logo',
 					size: '60'
 				},
@@ -796,7 +745,7 @@ function initTaskSsrWelcome(init: InitDb) {
 		codeNodeType: 'nodeTask',
 		dataObj: 'data_obj_task_moed_ssr_welcome',
 		name: 'node_obj_task_moed_ssr_welcome',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 
 	init.addTrans('sysTask', {
@@ -805,7 +754,7 @@ function initTaskSsrWelcome(init: InitDb) {
 		header: 'Welcome',
 		name: 'task_moed_ssr_welcome',
 		nodeObj: 'node_obj_task_moed_ssr_welcome',
-		owner: 'sys_client_moed'
+		ownerSys: 'sys_client_baltimore_moed'
 	})
 }
 

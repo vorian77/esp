@@ -9,7 +9,7 @@ async function initMigration() {
 	await addMigration({
 		name: 'migr_extend_SysPerson_with_SysObj',
 		description: `Migrate SysPerson (and it's downstream data) to a new SysPerson that extends by SysObj.`,
-		owner: 'sys_system',
+		ownerSys: 'sys_system',
 		sourceTables: [
 			{
 				name: 'SysPerson',

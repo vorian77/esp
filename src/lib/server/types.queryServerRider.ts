@@ -1,4 +1,4 @@
-import { State } from '$comps/app/types.appState.svelte'
+import { State } from '$comps/app/types.state.svelte'
 import { strRequired, valueOrDefault } from '$utils/utils.model'
 import { debug, MethodResult } from '$utils/types'
 import { TokenApiQueryData } from '$utils/types.token'

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { State, StateNavLayout } from '$comps/app/types.appState.svelte'
+	import { State, StateNavLayout } from '$comps/app/types.state.svelte'
 	import { ContextKey } from '$utils/types'
 	import { setContext } from 'svelte'
 	import LayoutApp from '$comps/layout/LayoutApp.svelte'
@@ -30,7 +30,7 @@
 
 {#if Component}
 	<div class="h-full max-h-full w-full">
-		{#key sm.keyTrigger}
+		{#key sm.triggerKey}
 			<Component parms={sm.navLayoutParms} />
 		{/key}
 	</div>
