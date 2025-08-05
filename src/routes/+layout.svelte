@@ -1,5 +1,5 @@
 <script lang="ts">
-	import '../app.postcss'
+	import '../app.css'
 
 	// overlays
 	import OverlayDrawer from '$comps/overlay/OverlayDrawer.svelte'

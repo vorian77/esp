@@ -19,14 +19,5 @@ export default {
 			}
 		}
 	},
-	plugins: [
-		forms,
-		typography,
-		skeleton({
-			themes: {
-				preset: ['skeleton'],
-				custom: [tailwindThemeESP]
-			}
-		})
-	]
+	plugins: [forms, typography]
 } satisfies Config
