@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ContextKey, DataManager, NodeObjComponent, required } from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldEmbedListConfig } from '$comps/form/fieldEmbed'
+	import { FieldEmbedListConfig } from '$comps/form/fieldEmbed.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import { error } from '@sveltejs/kit'

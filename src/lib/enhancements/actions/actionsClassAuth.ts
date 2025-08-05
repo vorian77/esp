@@ -178,8 +178,8 @@ export default async function action(
 							FILTER .name = name AND .isActive = true
 							SET { 
 								password := password,
-								person := (UPDATE default::SysPerson FILTER .id = _user.person.id SET { firstName := firstName, lastName := lastName })
-								systemDefault := _userType.selfSignupSystem,
+								person := (UPDATE default::SysPerson FILTER .id = _user.person.id SET { firstName := firstName, lastName := lastName }),
+								systemDefault := assert_single(_userType.selfSignupSystem),
 								systems := _userType.selfSignupSystem, 
 								userTypes := _userType
 							}

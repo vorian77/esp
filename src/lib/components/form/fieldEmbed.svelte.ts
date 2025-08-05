@@ -1,6 +1,5 @@
+import { State } from '$comps/app/types.state.svelte'
 import {
-	RawFieldEmbedDetailEligibility,
-	RawFieldEmbedDetailEligibilityNode,
 	RawFieldEmbedList,
 	RawDataObj,
 	RawDataObjPropDisplay
@@ -8,9 +7,9 @@ import {
 import {
 	Field,
 	FieldClassType,
-	FieldElement,
 	PropsFieldCreate,
-	PropsFieldInit
+	PropsFieldInit,
+	FieldItemChangeManagerItem
 } from '$comps/form/field.svelte'
 import {
 	arrayOfClass,
@@ -18,8 +17,11 @@ import {
 	DataObj,
 	DataObjAction,
 	DataObjData,
+	DataObjStatus,
+	type DataRecord,
 	FieldEmbedListType,
 	getArray,
+	getValueData,
 	MethodResult,
 	RawDataObjAction,
 	recordValueGet,
@@ -27,14 +29,33 @@ import {
 	strOptional,
 	strRequired
 } from '$utils/types'
-import { TokenApiDbDataObjSource, TokenApiQueryData } from '$utils/types.token'
+import {
+	Eligibility,
+	type EligibilityNodeItem,
+	EligibilityType
+} from '$comps/form/types.Eligibility'
+import {
+	TokenApiDbDataObjSource,
+	TokenApiId,
+	TokenApiQueryData,
+	TokenApiQueryDataTree,
+	TokenApiQueryDataTreeAccessType
+} from '$utils/types.token'
 import { getDetailElements, DetailEl } from '$comps/form/types.detailElement'
-
+import { FieldToggle } from '$comps/form/fieldToggle'
+import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldEmbed.ts'
 
-export class FieldEmbedDetail extends Field {
+export class FieldEmbed extends Field {
+	constructor(props: PropsFieldCreate) {
+		const clazz = `${FILENAME}.FieldEmbed`
+		super(props)
+	}
+}
+
+export class FieldEmbedDetail extends FieldEmbed {
 	constructor(props: PropsFieldCreate) {
 		const clazz = `${FILENAME}.FieldEmbedDetail`
 		super(props)
@@ -42,36 +63,101 @@ export class FieldEmbedDetail extends Field {
 }
 
 export class FieldEmbedDetailEligibility extends FieldEmbedDetail {
-	_rawField: RawFieldEmbedDetailEligibility
-	elements: DetailEl[] = []
+	elements: DetailEl[] = $state([])
+	eligibility?: Eligibility = $state()
+	sm: State
 	constructor(
 		propsFieldInit: PropsFieldInit,
 		propRaw: RawDataObjPropDisplay,
 		props: PropsFieldCreate
 	) {
-		//
 		super(props)
-		this._rawField = new RawFieldEmbedDetailEligibility(
-			props.propRaw.rawfieldEmbedDetailEligibility?._objRaw
-		)
-		const propName = this._rawField.getPropName('08bfcd8a-6b50-11f0-ba11-c7a0fab21b40')
-		const renderFields = this.initFields(propsFieldInit, propRaw)
-		this.elements = getDetailElements(renderFields)
+		this.sm = propsFieldInit.sm
+	}
+	altProcessInitItemChange = async (dmn: DataManagerNode, row: number, record: DataRecord) => {
+		if (this.eligibility) {
+			await dmn.initDataObjItemChangesFields(row, record, this.eligibility.fields)
+		}
+	}
+	altProcessSetStatus = (dmn: DataManagerNode, recordId: string, newStatus: DataObjStatus) => {
+		const clazz = 'FieldEmbedDetailEligibility.altProcessSetStatus'
+		if (this.eligibility) {
+			this.eligibility.nodes.forEach((node) => {
+				if (
+					[EligibilityType.eligibilityExpr, EligibilityType.eligibilityManual].includes(
+						node.codeEligibilityType
+					)
+				) {
+					const propNameKey = strRequired(node.propNameKey, clazz, 'propNameKey')
+					newStatus.update(dmn.setStatusField(recordId, propNameKey))
+				}
+			})
+		}
 	}
 
-	initFields(propsFieldInit: PropsFieldInit, propRaw: RawDataObjPropDisplay) {
-		let fields: Field[] = []
-		for (let i = 0; i < this._rawField.renderPropsRaw.length; i++) {
-			const p: RawDataObjPropDisplay = this._rawField.renderPropsRaw[i]
-			if (p.rawFieldElement === FieldElement.toggle) {
-				p.rawfieldEmbedDetailEligibility = this._rawField
-			}
-			let result: MethodResult = DataObj.fieldsCreateItem(propsFieldInit, p)
-			if (result.error) return fields
-			const field: Field = result.data
-			fields.push(field)
+	altProcessSave = (valueData: any) => {
+		let valueReturn: EligibilityNodeItem[] = []
+		if (this.eligibility) {
+			this.eligibility.nodes
+				.filter((node) => node.codeEligibilityType === EligibilityType.eligibilityManual)
+				.forEach((node) => {
+					const value = recordValueGet(valueData, node.name)
+					if (value !== undefined) {
+						valueReturn.push(value)
+					}
+				})
 		}
-		return fields
+		return valueReturn
+	}
+
+	async initAsync(props: PropsFieldInit): Promise<MethodResult> {
+		const getCsfId = (): MethodResult => {
+			const dataTree: TokenApiQueryDataTree = props.sm.app.getDataTree(false)
+			const id = dataTree.getValue(
+				'id',
+				TokenApiQueryDataTreeAccessType.table,
+				'CmClientServiceFlow'
+			)
+			return id
+				? new MethodResult(id)
+				: new MethodResult({
+						error: {
+							file: FILENAME,
+							function: 'FieldEmbedDetailEligibility.initAsync',
+							msg: `Unable to find CmClientServiceFlow.id in DataTree.`
+						}
+					})
+		}
+
+		const setDataEligibility = async (csfId: string): Promise<MethodResult> => {
+			let result: MethodResult = await apiFetchFunction(
+				ApiFunction.dbGelGetEligibility,
+				new TokenApiId(csfId)
+			)
+			if (result.error) return result
+			const rawEligibility = result.data
+
+			if (rawEligibility) {
+				this.eligibility = new Eligibility({ ...rawEligibility, sm: this.sm })
+				this.elements = getDetailElements(this.eligibility.fields)
+			} else {
+				this.elements = []
+				this.eligibility = undefined
+			}
+
+			return new MethodResult()
+		}
+
+		// initAsync
+		let result: MethodResult = getCsfId()
+		if (result.error) return result
+		const csfId: string = result.data
+		if (csfId) {
+			result = await setDataEligibility(csfId)
+			if (result.error) return result
+			if (this.eligibility) return await this.eligibility.retrieve(props, csfId)
+		}
+		return new MethodResult()
 	}
 }
 
@@ -86,7 +172,7 @@ export class FieldEmbedList extends Field {
 		parentPropRaw: RawDataObjPropDisplay,
 		embedData: DataObjData
 	) {
-		const clazz = `${FILENAME}.FieldEmbedList`
+		const clazz = 'FieldEmbedList'
 		super(new PropsFieldCreate({ propRaw: parentPropRaw }))
 		this._parentPropRaw = required(parentPropRaw, clazz, 'parentPropRaw')
 		this.classType = FieldClassType.embed

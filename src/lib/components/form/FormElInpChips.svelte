@@ -51,6 +51,7 @@
 		})
 		return f
 	}) as FieldChips
+	$inspect('FormElInputChips', { field })
 
 	let propsField = $derived(
 		'w-full text-sm rounded-lg ' + field.getBackgroundColor(field.fieldAccess)

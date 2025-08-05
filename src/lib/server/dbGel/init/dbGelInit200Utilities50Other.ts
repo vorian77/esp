@@ -1,6 +1,16 @@
 import e from '$db/gel/edgeql-js'
 import { client, sectionHeader, valueOrDefaultParm } from '$routes/api/db/dbGel/dbGel'
-import { type DataRecord, debug } from '$utils/types'
+import {
+	type DataRecord,
+	debug,
+	getArray,
+	memberOfEnum,
+	nbrOptional,
+	nbrRequired,
+	strOptional,
+	strRequired
+} from '$utils/types'
+import { EligibilityType } from '$comps/form/types.Eligibility'
 
 export async function addApp(data: any) {
 	sectionHeader(`addApp - ${data.name}`)
@@ -203,7 +213,6 @@ export async function addEligibility(data: any) {
 		},
 		(p) => {
 			return e.insert(e.sys_core.SysEligibility, {
-				codeAttrType: e.select(e.sys_core.getCodeAttrType('at_sys_eligibility')),
 				description: p.description,
 				header: p.header,
 				name: p.name,
@@ -218,8 +227,9 @@ export async function addEligibility(data: any) {
 							exprState: e.cast(e.str, e.json_get(node, 'exprState')),
 							header: e.cast(e.str, e.json_get(node, 'header')),
 							name: e.cast(e.str, e.json_get(node, 'name')),
-							nodeId: e.cast(e.nonNegative, e.json_get(node, 'nodeId')),
-							nodeIdParent: e.cast(e.nonNegative, e.json_get(node, 'nodeIdParent')),
+							nodeIdx: e.cast(e.nonNegative, e.json_get(node, 'nodeIdx')),
+							nodeIdxDependent: e.cast(e.nonNegative, e.json_get(node, 'nodeIdxDependent')),
+							nodeIdxParent: e.cast(e.nonNegative, e.json_get(node, 'nodeIdxParent')),
 							order: e.cast(e.default.nonNegative, e.json_get(node, 'order'))
 						})
 					})
@@ -634,6 +644,64 @@ export async function addUserType(data: any) {
 				modifiedBy: CREATOR,
 				selfSignupSystem: e.sys_core.getSystemPrime(p.selfSignupSystem)
 			})
+		}
+	)
+	return await query.run(client, data)
+}
+
+export class EligibilityConfigNode {
+	codeEligibilityType: EligibilityType
+	description?: string
+	exprState?: string
+	header: string
+	name: string
+	nodeIdx: number
+	nodeIdxDependent?: number
+	nodeIdxParent?: number
+	order: number
+	constructor(data: DataRecord) {
+		const clazz = 'EligibilityConfigNode'
+		this.codeEligibilityType = memberOfEnum(
+			data.codeEligibilityType,
+			clazz,
+			'codeEligibilityType',
+			'EligibilityType',
+			EligibilityType
+		)
+		this.description = strOptional(data.description, clazz, 'description')
+		this.exprState = strOptional(data.exprState, clazz, 'exprState')
+		this.header = strRequired(data.header, clazz, 'header')
+		this.name = strRequired(data.name, clazz, 'name')
+		this.nodeIdx = nbrRequired(data.nodeIdx, clazz, 'nodeIdx')
+		this.nodeIdxDependent = nbrOptional(data.nodeIdxDependent, clazz, 'nodeIdxDependent')
+		this.nodeIdxParent = nbrOptional(data.nodeIdxParent, clazz, 'nodeIdxParent')
+		this.order = nbrRequired(data.order, clazz, 'order')
+	}
+}
+export async function updateDepdCmProgramEligibility(data: any) {
+	sectionHeader(`updateDepdCmProgramEligibility - ${data.programName}`)
+	const query = e.params(
+		{
+			eligibilityName: e.str,
+			eligibilityOwner: e.str,
+			programName: e.str,
+			programOwner: e.str
+		},
+		(p) => {
+			return e.update(e.app_cm.CmProgram, (cp) => ({
+				filter: e.op(cp.name, '=', p.programName),
+				set: {
+					sysEligibility: e.assert_single(
+						e.select(e.sys_core.SysEligibility, (elig) => ({
+							filter: e.op(
+								e.op(elig.ownerSys.name, '=', p.eligibilityOwner),
+								'and',
+								e.op(elig.name, '=', p.eligibilityName)
+							)
+						}))
+					)
+				}
+			}))
 		}
 	)
 	return await query.run(client, data)

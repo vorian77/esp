@@ -166,13 +166,6 @@ export enum ContextKey {
 
 export type DataRecord = Record<string, any>
 
-export enum EligibilityType {
-	eligibilityManual = 'eligibilityManual',
-	eligibilityExpr = 'eligibilityExpr',
-	eligibilityGroupAnd = 'eligibilityGroupAnd',
-	eligibilityGroupOr = 'eligibilityGroupOr'
-}
-
 export async function encrypt(text: string) {
 	// let salt = bcrypt.genSaltSync(10)
 	// let hash = bcrypt.hashSync(text, salt)
@@ -474,7 +467,6 @@ export enum PropDataType {
 	int32 = 'int32',
 	int64 = 'int64',
 	json = 'json',
-	jsonCustomEligibility = 'jsonCustomEligibility',
 	link = 'link',
 	literal = 'literal',
 	none = 'none',
@@ -576,6 +568,7 @@ export function recordValueGet(record: DataRecord, key: string): any {
 
 	return current
 }
+
 export function recordValueGetData(record: DataRecord, key: string) {
 	return getValueData(recordValueGet(record, key))
 }

@@ -1,6 +1,5 @@
 import { State } from '$comps/app/types.state.svelte'
 import {
-	RawFieldEmbedDetailEligibility,
 	PropSortDir,
 	RawDataObj,
 	RawDataObjAction,
@@ -14,6 +13,7 @@ import {
 	FieldColor,
 	FieldElement,
 	FieldItemChange,
+	FieldItemChangeManager,
 	PropsFieldCreate,
 	PropsFieldInit
 } from '$comps/form/field.svelte'
@@ -34,7 +34,7 @@ import {
 	FieldEmbedListEdit,
 	FieldEmbedListSelect,
 	FieldEmbedShell
-} from '$comps/form/fieldEmbed'
+} from '$comps/form/fieldEmbed.svelte'
 import { FieldFile } from '$comps/form/fieldFile'
 import { FieldInput } from '$comps/form/fieldInput'
 import { FieldParm } from '$comps/form/fieldParm'
@@ -59,8 +59,7 @@ import {
 	recordValueGetDisplay,
 	required,
 	recordValueSet,
-	strRequired,
-	UserPrefType
+	strRequired
 } from '$utils/types'
 import { TokenApiQueryType } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
@@ -73,10 +72,10 @@ export class DataObj {
 	actionsFieldListRowActionIdx: number = -1
 	data: DataObjData = $state(new DataObjData())
 	dataItems: DataItems = {}
-	eligibility?: RawFieldEmbedDetailEligibility
 	embedField?: FieldEmbedList
 	fields: Field[] = []
 	isDetailPreset: boolean = false
+	itemChangeManager: FieldItemChangeManager = $state(new FieldItemChangeManager())
 	raw: RawDataObj
 	saveMode: DataObjSaveMode = DataObjSaveMode.any
 	sortModel: DataObjSort
@@ -184,10 +183,9 @@ export class DataObj {
 	static fieldsCreateItem(propsFieldInit: PropsFieldInit, propRaw: RawDataObjPropDisplay) {
 		const clazz = 'DataObj.fieldsCreateItem'
 		let newField: Field
+		let parentDataObjId: string
 
-		const dataObjId = strRequired(propsFieldInit.data.rawDataObj?.id, clazz, 'dataObjId')
 		const props = new PropsFieldCreate({ propRaw })
-
 		const element = memberOfEnumOrDefault(
 			propRaw.rawFieldElement,
 			'DataObj',
@@ -247,15 +245,18 @@ export class DataObj {
 				break
 
 			case FieldElement.embedListConfig:
-				newField = new FieldEmbedListConfig(dataObjId, propRaw, propsFieldInit.data)
+				parentDataObjId = strRequired(propsFieldInit.data.rawDataObj?.id, clazz, 'dataObjId')
+				newField = new FieldEmbedListConfig(parentDataObjId, propRaw, propsFieldInit.data)
 				break
 
 			case FieldElement.embedListEdit:
-				newField = new FieldEmbedListEdit(dataObjId, propRaw, propsFieldInit.data)
+				parentDataObjId = strRequired(propsFieldInit.data.rawDataObj?.id, clazz, 'dataObjId')
+				newField = new FieldEmbedListEdit(parentDataObjId, propRaw, propsFieldInit.data)
 				break
 
 			case FieldElement.embedListSelect:
-				newField = new FieldEmbedListSelect(dataObjId, propRaw, propsFieldInit.data)
+				parentDataObjId = strRequired(propsFieldInit.data.rawDataObj?.id, clazz, 'dataObjId')
+				newField = new FieldEmbedListSelect(parentDataObjId, propRaw, propsFieldInit.data)
 				break
 
 			case FieldElement.embedShell:
@@ -341,6 +342,14 @@ export class DataObj {
 		}
 	}
 
+	initSortModel(rawPropsSort: RawDataObjPropDB[]) {
+		const newSort = new DataObjSort()
+		rawPropsSort.forEach((item, i) => {
+			newSort.addItem(item.id, item.codeSortDir, i)
+		})
+		return newSort
+	}
+
 	static async load(
 		sm: State,
 		data: DataObjData,
@@ -356,7 +365,7 @@ export class DataObj {
 		dataObj.fields = result.data
 
 		loadActionsField()
-		loadItemChangedTriggers(dataObj.fields)
+		DataObj.loadItemChangedTriggers(dataObj.fields)
 		loadRetrieveReadonly(dataObj, queryType)
 
 		return new MethodResult(dataObj)
@@ -366,14 +375,6 @@ export class DataObj {
 				return new DataObjAction(rawAction)
 			})
 			dataObj.actionsFieldListRowActionIdx = dataObj.userActions.findIndex((f) => f.isListRowAction)
-		}
-
-		function loadItemChangedTriggers(fields: Field[]) {
-			fields.forEach((field) => {
-				field.colDO.itemChanges.forEach((target: RawDataObjPropDisplayItemChange) => {
-					field.itemChanges.push(new FieldItemChange(target, fields))
-				})
-			})
 		}
 
 		function loadRetrieveReadonly(dataObj: DataObj, queryType: TokenApiQueryType) {
@@ -390,12 +391,12 @@ export class DataObj {
 		}
 	}
 
-	initSortModel(rawPropsSort: RawDataObjPropDB[]) {
-		const newSort = new DataObjSort()
-		rawPropsSort.forEach((item, i) => {
-			newSort.addItem(item.id, item.codeSortDir, i)
+	static loadItemChangedTriggers(fields: Field[]) {
+		fields.forEach((field) => {
+			field.colDO.itemChanges.forEach((target: RawDataObjPropDisplayItemChange) => {
+				field.itemChanges.push(new FieldItemChange(target, fields))
+			})
 		})
-		return newSort
 	}
 
 	parmsFormList(): any {

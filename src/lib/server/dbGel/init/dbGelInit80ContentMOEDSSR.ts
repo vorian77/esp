@@ -57,10 +57,10 @@ function initTaskSsrApp(init: InitDb) {
 				table: 'SysPerson'
 			},
 			{
-				columnParent: 'objAttrCmProgram',
+				columnParent: 'cmProgram',
 				indexParent: 0,
 				index: 3,
-				table: 'SysObjAttr'
+				table: 'CmProgram'
 			}
 		],
 		fields: [
@@ -99,13 +99,13 @@ function initTaskSsrApp(init: InitDb) {
 				fieldListItems: 'il_sys_system_by_user'
 			},
 			{
-				columnName: 'objAttrCmProgram',
-				exprSave: `(SELECT assert_single((SELECT sys_core::SysObjAttr FILTER .name = 'at_cm_program_moed_yo')))`,
+				columnName: 'cmProgram',
+				exprSave: `(SELECT assert_single((SELECT app_cm::CmProgram FILTER .name = 'at_cm_program_moed_yo')))`,
 				orderDefine: 40,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['name'],
-				linkTable: 'SysObjAttr'
+				linkColumns: ['header'],
+				linkTable: 'CmProgram'
 			},
 			{
 				columnName: 'codeSfEnrollType',
@@ -150,13 +150,12 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'objAttrCmSite',
+				columnName: 'cmSite',
 				isDisplayable: true,
 				orderDisplay: 210,
 				orderDefine: 210,
 				indexTable: 0,
-				fieldListItems: 'il_sys_obj_attr_type_single',
-				fieldListItemsParmValue: 'at_cm_site'
+				fieldListItems: 'il_cm_site'
 			},
 			{
 				codeFieldElement: 'date',
@@ -500,7 +499,7 @@ function initTaskSsrDoc(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['objAttrCmProgram', 'name'],
+				linkColumns: ['cmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{

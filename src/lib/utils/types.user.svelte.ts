@@ -94,7 +94,7 @@ export class User {
 		// old
 		// this.cm_ssr_disclosure = nbrOptional(obj.cm_ssr_disclosure, 'cm_ssr_disclosure')
 		// this.per_name_full = strRequired(obj.per_name_full, 'User', 'per_name_full')
-		// this.site = strRequired(obj.site, 'User', 'site')
+		// this.site = strRequired(obj.site, 'User', 'cmSite')
 		// this.status = strRequired(obj.status, 'User', 'status')
 		// this.user_id = nbrOptional(obj.user_id, 'User')
 	}

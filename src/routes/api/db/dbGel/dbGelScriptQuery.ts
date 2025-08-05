@@ -3,7 +3,7 @@ import {
 	RawDataObj,
 	RawDataObjPropDB
 } from '$comps/dataObj/types.rawDataObj.svelte'
-import { FieldEmbedList } from '$comps/form/fieldEmbed'
+import { FieldEmbedList } from '$comps/form/fieldEmbed.svelte'
 import {
 	DbTable,
 	QuerySource,
@@ -19,7 +19,6 @@ import {
 	DataRecordStatus,
 	DataRow,
 	DataRows,
-	type EligibilityNode,
 	EvalExprCustomPreset,
 	debug,
 	FieldEmbedListType,
@@ -285,17 +284,6 @@ export class GelQuery {
 					propExpr = `(SELECT ${evalValue.dataTypeDb}{} IF <str>${item} = '' ELSE ${evalValue.dataTypeDb}<str>${item})`
 					break
 
-				case PropDataType.jsonCustomEligibility:
-					if (propObj?.rawfieldEmbedDetailEligibility) {
-						setValueFunction(propIdx, (rawValue: any) => {
-							return rawValue && propObj.rawfieldEmbedDetailEligibility
-								? propObj?.rawfieldEmbedDetailEligibility.formatForServer(rawValue)
-								: getUUID()
-						})
-					}
-					propExpr = `(<json>${item})`
-					break
-
 				case PropDataType.link:
 					if (propObj.linkItemsSource) {
 						linkTable = strRequired(
@@ -304,9 +292,6 @@ export class GelQuery {
 							'linkItemsSource.table'
 						)
 					} else if (propObj.link) {
-						if (propObj.propName === 'modifiedBy') {
-							debug('dbGelScriptQuery', 'getPropsSavePropExpr.propObj', propObj)
-						}
 						linkTable = strRequired(propObj.link.getTableObj(), clazzProp, 'link.table')
 					}
 
@@ -392,10 +377,6 @@ export class GelQuery {
 
 			if (prop.linkItemsSource) {
 				expr = `${expr} ${prop.linkItemsSource.exprProps}`
-			} else if (expr.includes(PropDataType.jsonCustomEligibility)) {
-				if (prop.rawfieldEmbedDetailEligibility) {
-					expr = prop.rawfieldEmbedDetailEligibility.getExprPreset()
-				}
 			} else if (prop.link) {
 				expr = `${expr} ${prop.link.exprProps}`
 			}
@@ -554,7 +535,8 @@ class FormatData {
 		return new MethodResult(Function('return ' + result.data)())
 	}
 
-	formatDataForDisplay(prop: RawDataObjPropDB, propDataType: PropDataType, value: any) {
+	formatDataForDisplay(recordRaw: DataRecord, prop: RawDataObjPropDB, value: any): any {
+		const propDataType = prop.codeDataType
 		switch (propDataType) {
 			// scalar
 			case PropDataType.bool:
@@ -573,12 +555,6 @@ class FormatData {
 			case PropDataType.json:
 				// value = value && Object.entries(value).length > 0 ? value : undefined
 				// no change
-				break
-
-			case PropDataType.jsonCustomEligibility:
-				if (prop.rawfieldEmbedDetailEligibility && !this.isPreset) {
-					value = prop.rawfieldEmbedDetailEligibility.formatForClientFromRetrieve(value)
-				}
 				break
 
 			case PropDataType.link:
@@ -650,17 +626,13 @@ class FormatDataSelect extends FormatData {
 				recordReturn = recordValueSet(
 					recordReturn,
 					prop.propNameKey,
-					this.formatDataForDisplay(
-						prop,
-						prop.codeDataType,
-						recordValueGet(recordRaw, prop.propNameKey)
-					)
+					this.formatDataForDisplay(recordRaw, prop, recordValueGet(recordRaw, prop.propNameKey))
 				)
 			} else {
 				recordReturn = recordValueSet(
 					recordReturn,
 					prop.propNameKey,
-					this.formatDataForDisplay(prop, prop.codeDataType, undefined)
+					this.formatDataForDisplay(recordRaw, prop, undefined)
 				)
 			}
 		})
@@ -722,20 +694,16 @@ class FormatDataUpdate extends FormatData {
 		}
 		return this.processRowProps(recordRaw, newStatus)
 	}
-	processRowProps(recordReturn: DataRecord, status: DataRecordStatus): MethodResult {
+	processRowProps(record: DataRecord, status: DataRecordStatus): MethodResult {
 		this.propsSelect.forEach((prop) => {
 			if (prop.propKeyType !== PropKeyType.linkItems) {
-				recordReturn = recordValueSet(
-					recordReturn,
+				record = recordValueSet(
+					record,
 					prop.propNameKey,
-					this.formatDataForDisplay(
-						prop,
-						prop.codeDataType,
-						recordValueGet(recordReturn, prop.propNameKey)
-					)
+					this.formatDataForDisplay(record, prop, recordValueGet(record, prop.propNameKey))
 				)
 			}
 		})
-		return new MethodResult(new DataRow(status, recordReturn))
+		return new MethodResult(new DataRow(status, record))
 	}
 }

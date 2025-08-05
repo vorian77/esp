@@ -67,6 +67,7 @@ export type $SysPersonλShape = $.typeutil.flatten<_sys_core.$ObjRootλShape & {
   "<contacts[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is app_crm::CrmClient]": $.LinkDesc<_app_crm.$CrmClient, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_user::SysAppHeader]": $.LinkDesc<_sys_user.$SysAppHeader, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<contacts[is app_cm::CmSite]": $.LinkDesc<_app_cm.$CmSite, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_core::SysDataObjFieldEmbedListEdit]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListEdit, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_core::SysDataObjFieldEmbedListConfig]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListConfig, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_core::SysDataObjActionGroup]": $.LinkDesc<_sys_core.$SysDataObjActionGroup, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -79,6 +80,7 @@ export type $SysPersonλShape = $.typeutil.flatten<_sys_core.$ObjRootλShape & {
   "<contacts[is sys_db::SysTable]": $.LinkDesc<_sys_db.$SysTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts[is sys_core::SysNodeObj]": $.LinkDesc<_sys_core.$SysNodeObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person[is org_client_baltimore::MoedParticipant]": $.LinkDesc<_org_client_baltimore.$MoedParticipant, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<contacts[is app_cm::CmProgram]": $.LinkDesc<_app_cm.$CmProgram, $.Cardinality.Many, {}, false, false,  false, false>;
   "<contacts": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<person": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;

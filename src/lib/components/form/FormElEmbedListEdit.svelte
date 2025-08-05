@@ -9,7 +9,7 @@
 		required
 	} from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldEmbedListEdit } from '$comps/form/fieldEmbed'
+	import { FieldEmbedListEdit } from '$comps/form/fieldEmbed.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'

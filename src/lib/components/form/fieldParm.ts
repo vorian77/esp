@@ -18,6 +18,7 @@ import {
 	MethodResult
 } from '$utils/types'
 import { TokenApiId } from '$utils/types.token'
+import { type ValueGetterParams } from 'ag-grid-community'
 
 const FILENAME = '$comps/form/fieldParm.ts/'
 
@@ -30,6 +31,11 @@ export class FieldParm extends Field {
 		this.isParmValue = true
 	}
 
+	listValueGet(params: ValueGetterParams) {
+		console.log('FieldParm.listValueGet', { params })
+		// const value = recordValueGet(record, this.getPropName())
+		// return getValueDisplay(params.data.parmValue)
+	}
 	async initAsync(props: PropsFieldInit): Promise<MethodResult> {
 		for (const dataRow of props.data.rowsRetrieved.dataRows) {
 			let result: MethodResult = await this.configParmItemsInit(
@@ -55,9 +61,9 @@ export class FieldParm extends Field {
 			_column: {
 				_codeAlignment: FieldAlignment.left,
 				_codeDataType: recordValueGetDisplay(record, 'codeDataType'),
-				_isMultiSelect: recordValueGet(record, 'isMultiSelect'),
 				header: recordValueGet(record, 'header'),
 				isFormTag: false,
+				isMultiSelect: recordValueGet(record, 'isMultiSelect'),
 				placeHolder: ''
 			},
 			_hasItems: recordValueGet(record, '_hasItems'),

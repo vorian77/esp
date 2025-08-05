@@ -6,6 +6,7 @@ import { dbQuery } from '$server/types.queryServer'
 import {
 	getDataObjActionGroup,
 	getDataObjId,
+	getEligibility,
 	getLinkItemsSource,
 	getNodeByNodeId,
 	getNodeByNodeName,
@@ -33,6 +34,9 @@ export async function POST({ cookies, request }) {
 
 		case ApiFunction.dbGelGetDataObjId:
 			return getServerResponseMethod(await getDataObjId(token))
+
+		case ApiFunction.dbGelGetEligibility:
+			return getServerResponseMethod(await getEligibility(token))
 
 		case ApiFunction.dbGelGetLinkItemsSource:
 			return getServerResponseMethod(await getLinkItemsSource(token))

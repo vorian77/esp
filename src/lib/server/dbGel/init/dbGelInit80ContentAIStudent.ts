@@ -69,15 +69,6 @@ function initStudent(init: InitDb) {
 				headerAlt: 'Cohorts',
 				nameCustom: '_cohorts'
 			}
-			// {
-			// 	codeAccess: 'readOnly',
-			// 	columnName: 'agencyId',
-			// 	isDisplayable: true,
-			// 	orderDisplay: 70,
-			// 	orderDefine: 70,
-			// 	headerAlt: 'Group',
-			// 	indexTable: 0
-			// }
 		]
 	})
 
@@ -475,23 +466,23 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'objAttrCmProgram',
+				columnName: 'cmProgram',
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				linkColumns: ['header'],
-				linkTable: 'SysObjAttr'
+				linkTable: 'CmProgram'
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'objAttrCmSite',
+				columnName: 'cmSite',
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
 				linkColumns: ['header'],
-				linkTable: 'SysObjAttr'
+				linkTable: 'CmSite'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -581,23 +572,21 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'objAttrCmProgram',
+				columnName: 'cmProgram',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_sys_obj_attr_type_single',
-				fieldListItemsParmValue: 'at_cm_program'
+				fieldListItems: 'il_cm_program'
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'objAttrCmSite',
+				columnName: 'cmSite',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_obj_attr_type_single',
-				fieldListItemsParmValue: 'at_cm_site'
+				fieldListItems: 'il_cm_site'
 			},
 			{
 				codeFieldElement: 'select',
@@ -818,7 +807,6 @@ function initCsfCohort(init: InitDb) {
 				headerAlt: 'Cohort',
 				nameCustom: 'customCohort'
 			},
-
 			{
 				codeAccess: 'readOnly',
 				columnName: 'codeStatus',
@@ -860,7 +848,7 @@ function initCsfCohort(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['objAttrCmProgram', 'name'],
+				linkColumns: ['cmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1279,7 +1267,7 @@ function initCsfNote(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['objAttrCmProgram', 'name'],
+				linkColumns: ['cmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1480,7 +1468,7 @@ function initCsfJobPlacement(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['objAttrCmProgram', 'name'],
+				linkColumns: ['cmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1842,7 +1830,7 @@ function initCsfSchoolPlacement(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['objAttrCmProgram', 'name'],
+				linkColumns: ['cmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -2122,7 +2110,7 @@ function initCsfDocument(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['objAttrCmProgram', 'name'],
+				linkColumns: ['cmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{

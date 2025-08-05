@@ -8,6 +8,7 @@ import { Field, FieldAccess } from '$comps/form/field.svelte'
 import {
 	type DataRecord,
 	getArray,
+	MethodResult,
 	recordValueGet,
 	recordValueGetDisplay,
 	getValueDisplay,
@@ -15,6 +16,7 @@ import {
 	required
 } from '$utils/types'
 import { PropLinkItems } from '$comps/dataObj/types.rawDataObj.svelte'
+import { getValDb } from '$utils/utils.evalParserDb'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/other/gridParmField.ts'
@@ -78,7 +80,9 @@ export class CellEditorSelect implements ICellEditorComp {
 	}
 
 	getValue() {
-		return 'phyl hall'
+		let result: MethodResult = getValDb(PropDataType.uuid, undefined)
+		if (result.error) return result
+		return result.data.value
 	}
 
 	refresh(params: ICellEditorParams): boolean {

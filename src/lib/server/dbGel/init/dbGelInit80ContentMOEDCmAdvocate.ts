@@ -9,7 +9,9 @@ function initTaskOpenApps(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list_edit',
 		codeCardinality: 'list',
-		exprFilter: `.ownerSys.name = 'sys_client_baltimore_moed' AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateStart AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateEnd`,
+		exprFilter: `.ownerSys.name = 'sys_client_baltimore_moed' 
+  		AND NOT EXISTS (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateEnd
+  		AND .id NOT IN (SELECT app_cm::CmCsfEligibility FILTER .valueBoolean = true).csf.client.id`,
 		header: 'Open Applications',
 		name: 'data_obj_task_moed_part_list_apps_open',
 		ownerSys: 'sys_client_baltimore_moed',
@@ -107,6 +109,16 @@ function initTaskOpenApps(init: InitDb) {
 				headerAlt: 'Days Open',
 				nameCustom: 'customAppDaysOpen',
 				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 100,
+				orderDisplay: 100,
+				exprCustom: `(SELECT app_cm::CmCsfEligibility FILTER .csf.client.id = org_client_baltimore::MoedParticipant.id) {data := .id, display := .csf.cmProgram.header ++ ' (' ++ <str>.valueBoolean ++ ')'}`,
+				headerAlt: 'Programs (Eligibility)',
+				nameCustom: 'programsEligibility'
 			}
 		]
 	})
@@ -125,14 +137,15 @@ function initTaskOpenApps(init: InitDb) {
 	init.addTrans('sysTask', {
 		codeTaskStatusObj: 'tso_sys_data',
 		codeTaskType: 'taskAutomated',
-		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client IN org_client_baltimore::MoedParticipant AND NOT EXISTS .dateStart AND NOT EXISTS .dateEnd)) > 0`,
+		exprShow: `SELECT count((SELECT app_cm::CmClientServiceFlow FILTER .client IN org_client_baltimore::MoedParticipant AND NOT EXISTS .dateEnd AND .id NOT IN (((SELECT app_cm::CmCsfEligibility FILTER .valueBoolean = true).csf.id)))) > 0`,
 		exprStatus: `WITH 
   	sfs := (SELECT app_cm::CmClientServiceFlow FILTER .client IN org_client_baltimore::MoedParticipant),
-  	sfsOpen := (SELECT sfs { days_open := duration_get(cal::to_local_date(datetime_current(), 'UTC') - .dateStart ?? .dateCreated, 'day') } FILTER NOT EXISTS .dateStart AND NOT EXISTS .dateEnd),
-  	SELECT {
-      openLT6 := {label := 'Open 5 or fewer days', data := count(sfsOpen FILTER .days_open < 6), color := 'green'},
-      open6To14 := {label := 'Open between 6 and 14 days', data := count(sfsOpen FILTER .days_open > 5 AND .days_open < 15), color := 'yellow'},
-      openGT14 := {label := 'Open 15 or more days', data := count(sfsOpen FILTER .days_open > 14), color := 'red'},
+  	sfsOpen := (SELECT sfs FILTER .id NOT IN (SELECT app_cm::CmCsfEligibility FILTER .valueBoolean = true).csf.id AND NOT EXISTS .dateEnd),
+    sfsData := (SELECT sfsOpen { days_open := duration_get(cal::to_local_date(datetime_current(), 'UTC') - .dateStart ?? .dateCreated, 'day') } ),
+    SELECT {
+      openLT6 := {label := 'Open 5 or fewer days', data := count(sfsData FILTER .days_open < 6), color := 'green'},
+      open6To14 := {label := 'Open between 6 and 14 days', data := count(sfsData FILTER .days_open > 5 AND .days_open < 15), color := 'yellow'},
+      openGT14 := {label := 'Open 15 or more days', data := count(sfsData FILTER .days_open > 14), color := 'red'},
 		}`,
 		header: 'Open Applications',
 		name: 'task_moed_part_apps_open',

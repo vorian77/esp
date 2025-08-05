@@ -11,7 +11,6 @@ import {
 import { Validation, ValidationStatus, ValidityErrorLevel } from '$comps/form/types.validation'
 import {
 	type DataRecord,
-	EligibilityType,
 	getArray,
 	getValueData,
 	ParmsValuesFormList,
@@ -19,6 +18,7 @@ import {
 	recordValueGet,
 	recordValueGetData,
 	recordValueSet,
+	strRequired,
 	ValidityError,
 	valueHasChanged
 } from '$utils/types'
@@ -168,13 +168,13 @@ export class DataManager {
 		row: number,
 		field: Field,
 		value: any,
-		fCallback?: Function
+		callbackSetFieldValue?: Function
 	) {
 		const node = this.getNode(dataObjId)
 		if (node) {
 			await node.setFieldValAsync(row, field, value)
-			this.setFieldValuePost(node, row, field, fCallback)
-			if (fCallback) await fCallback(this, dataObjId, row, field)
+			this.setFieldValuePost(node, row, field, callbackSetFieldValue)
+			if (callbackSetFieldValue) await callbackSetFieldValue(this, dataObjId, row, field)
 		}
 	}
 
@@ -273,11 +273,15 @@ export class DataManagerNode {
 
 	getDataSaveRows(dataRecords: DataRecord[]) {
 		let rowsSave: DataRow[] = []
+
 		dataRecords.forEach((record, i) => {
 			let newRecord: DataRecord = {}
-			Object.entries(record).forEach(([key, value]) => {
-				if (![null, undefined].includes(value)) {
-					newRecord[key] = getValueData(value)
+			this.dataObj.fields.forEach((field) => {
+				const key = field.colDO.propNameKey
+				let valueData = recordValueGetData(record, key)
+				if (field.altProcessSave) valueData = field.altProcessSave(valueData)
+				if (![null, undefined].includes(valueData)) {
+					newRecord[key] = valueData
 				}
 			})
 			const oldStatus = this.dataObj.data.rowsRetrieved.getRowStatusById(record.id)
@@ -343,8 +347,16 @@ export class DataManagerNode {
 
 	async initDataObjItemChanges() {
 		for (const [row, record] of this.recordsDisplay.entries()) {
-			for (const f of this.dataObj.fields) {
-				await this.setFieldItemChanged(row, f, recordValueGetData(record, f.getValueKey()))
+			await this.initDataObjItemChangesFields(row, record, this.dataObj.fields)
+		}
+	}
+
+	async initDataObjItemChangesFields(row: number, record: DataRecord, fields: Field[]) {
+		for (const f of fields) {
+			if (f.itemChanges.length > 0) {
+				await this.setFieldItemChanged(row, f, recordValueGetData(record, f.getValueKey()), true)
+			} else if (f.altProcessInitItemChange) {
+				await f.altProcessInitItemChange(this, row, record)
 			}
 		}
 	}
@@ -374,13 +386,13 @@ export class DataManagerNode {
 		})
 	}
 
-	async setFieldItemChanged(row: number, field: Field, value: any) {
-		return await field.processItemChanges(this.sm, row, value, this)
+	async setFieldItemChanged(row: number, field: Field, value: any, isRetrieve: boolean) {
+		return await this.dataObj.itemChangeManager.add(this.sm, this, field, row, value, isRetrieve)
 	}
 
 	async setFieldValAsync(row: number, field: Field, value: any) {
 		this.setFieldValProcess(row, field, value)
-		await this.setFieldItemChanged(row, field, value)
+		await this.setFieldItemChanged(row, field, value, false)
 	}
 
 	setFieldValProcess(row: number, field: Field, value: any) {
@@ -417,6 +429,7 @@ export class DataManagerNode {
 	}
 
 	setStatus() {
+		const clazz = 'DataManagerNode.setStatus'
 		let newStatus = new DataObjStatus()
 		this.recordsDisplay.forEach((r) => {
 			const recordId = r.id
@@ -426,19 +439,8 @@ export class DataManagerNode {
 						[FieldAccess.optional, FieldAccess.required].includes(f.fieldAccess)) ||
 					f.getValueKey() === this.dataObj.raw.listReorderColumn
 				) {
-					if (f.colDO.rawfieldEmbedDetailEligibility) {
-						const elig = f.colDO.rawfieldEmbedDetailEligibility
-						elig.nodes.forEach((node) => {
-							if (
-								[EligibilityType.eligibilityExpr, EligibilityType.eligibilityManual].includes(
-									node.codeEligibilityType
-								)
-							) {
-								// const propName = elig.getPropName(node.id)
-								const propName = 'nodeValues.' + node.name + '.valueBoolean'
-								newStatus.update(this.setStatusField(recordId, propName))
-							}
-						})
+					if (f.altProcessSetStatus) {
+						f.altProcessSetStatus(this, recordId, newStatus)
 					} else {
 						newStatus.update(this.setStatusField(recordId, f.getPropName()))
 					}

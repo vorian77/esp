@@ -48,7 +48,7 @@
 		FieldEmbedListEdit,
 		FieldEmbedListSelect,
 		FieldEmbedShell
-	} from '$comps/form/fieldEmbed'
+	} from '$comps/form/fieldEmbed.svelte'
 	import { FieldChips } from '$comps/form/fieldChips'
 	import { FieldFile } from '$comps/form/fieldFile'
 	import { FieldInput } from '$comps/form/fieldInput'

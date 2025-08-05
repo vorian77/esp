@@ -31,6 +31,7 @@
 		DataObjType,
 		type DataRecord,
 		getArray,
+		getValueDisplay,
 		isPlainObjectEmpty,
 		MethodResult,
 		ParmsValues,
@@ -42,7 +43,8 @@
 		recordValueSet,
 		strRequired,
 		UserParmItemSource,
-		UserParmItemType
+		UserParmItemType,
+		recordValueGetDisplay
 	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { Field, FieldAccess, FieldColor, FieldElement } from '$comps/form/field.svelte'
@@ -263,9 +265,60 @@
 		}
 
 		if (field instanceof FieldParm) {
-			defn.cellEditorSelector = cellEditorSelectorParmField
-			defn.cellRendererSelector = cellRendererSelectorParmField
+			// defn.cellEditorSelector = cellEditorSelectorParmField
+			// defn.cellRendererSelector = cellRendererSelectorParmField
+
 			addGridParm(defn, ['context', 'parmFields'], field.parmFields)
+			defn.cellDataType = 'object'
+
+			// defn.valueFormatter = (params: any) => {
+			// 	const value = params.value
+			// 	const valueDisplay = getValueDisplay(value)
+			// 	console.log('FormListGrid.initGridColumnsField.valueFormatter', {
+			// 		params,
+			// 		value,
+			// 		valueDisplay
+			// 	})
+			// 	return valueDisplay
+			// }
+
+			defn.valueGetter = (params: any) => {
+				let valueDisplay = getValueDisplay(params.data.parmValue)
+				valueDisplay = Array.isArray(valueDisplay) ? valueDisplay.join(', ') : valueDisplay
+				console.log('FormListGrid.initGridColumnsField.valueGetter', {
+					params,
+					valueDisplay
+				})
+				return valueDisplay
+				// return field.listValueGet(params)
+			}
+
+			// defn.valueGetter = (params: any) => {
+			// 	console.log('FormListGrid.initGridColumnsField.valueGetter', {
+			// 		params,
+			// 		field: field.getValueKey()
+			// 	})
+			// 	return 'valueGetter'
+			// 	// let value = recordValueGet(params.data, field.getValueKey())
+			// 	// return field.parmFields.getValueDisplay(value)
+			// }
+			// defn.valueSetter = (params: NewValueParams) => {
+			// 	console.log('FormListGrid.initGridColumnsField.valueSetter', {
+			// 		field: field.getValueKey(),
+			// 		newValue: params.newValue
+			// 	})
+			// 	params.data[field.getValueKey()] = params.newValue
+			// 	return true
+			// 	// let value = field.parmFields.getValueRaw(params.newValue)
+			// 	// if (value === undefined) {
+			// 	// 	error(500, {
+			// 	// 		file: FILENAME,
+			// 	// 		function: 'initGridColumnsField',
+			// 	// 		msg: `FieldParm value is undefined for field: ${field.getValueKey()}`
+			// 	// 	})
+			// 	// }
+			// 	// return recordValueSet(params.data, field.getValueKey(), value)
+			// }
 		} else {
 			// data type
 			switch (field.colDO.colDB.codeDataType) {
@@ -399,27 +452,27 @@
 					const key = field.getValueKey()
 					const column = event.api.getColumn(key)
 
-					const dataBefore = rowNode.data
+					// const dataBefore = rowNode.data
 					const result = rowNode.setDataValue(key, valueRaw)
-					const dataAfter = rowNode.data
-
-					console.log('FormListGrid.fModalClose', {
-						column: event.api.getColumn(key),
-						columns: event.api.getColumnDefs(),
-						dataBefore,
-						dataAfter,
-						key,
-						result
-					})
+					// const dataAfter = rowNode.data
 
 					// <todo? - 250401 - temporarily use updateData vs setDataValue and manually trigger fGridCallbackUpdateValue
 					// becuse of bug in setDataValue
 					let data = recordValueSet(event.data, key, valueRaw)
-
 					// rowNode?.updateData(data)
+
 					// rowNode?.setData(data)
 
-					// fGridCallbackUpdateValue(key, data)
+					// const result = rowNode.setDataValue(key, valueRaw)
+
+					console.log('FormListGrid.fModalClose', {
+						column: event.api.getColumn(key),
+						columns: event.api.getColumnDefs(),
+						data,
+						key
+					})
+
+					fGridCallbackUpdateValue(key, data)
 
 					// event.api.stopEditing()
 				}

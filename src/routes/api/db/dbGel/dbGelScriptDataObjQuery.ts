@@ -3,7 +3,7 @@ import {
 	FieldEmbedListConfig,
 	FieldEmbedListEdit,
 	FieldEmbedListSelect
-} from '$comps/form/fieldEmbed'
+} from '$comps/form/fieldEmbed.svelte'
 import { type RawDataList, ScriptExePost } from '$lib/queryClient/types.queryClient'
 import { dbQueryExpr } from '$server/types.queryServer'
 import { getDataObjById, getDataObjByName } from '$routes/api/db/dbGel/dbGelQueries'
@@ -38,6 +38,7 @@ import {
 import { FieldEmbedListType } from '$utils/utils.sys'
 import { ScriptGroupGelDataObj } from '$routes/api/db/dbGel/dbGelScriptDataObj'
 import { error } from '@sveltejs/kit'
+import { PropsFieldInit } from '$comps/form/field.svelte'
 
 const FILENAME = '/$routes/api/db/dbGel/dbGelScriptDataObjQuery.ts'
 
@@ -172,11 +173,6 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 					// restore parms and rowsSave
 					embedData.parmsFormList = parmsFormList
 					embedData.rowsSave = rowsSave
-
-					debug('ScriptGroupGelDataObjQuery', 'queryBuildScripts.save', {
-						recordStatusSave,
-						rawDataObj: fieldEmbedList.embedData.rawDataObj
-					})
 				}
 				let fieldQueryData = TokenApiQueryData.load(this.queryData)
 				fieldQueryData.dataTab = fieldEmbedList.embedData
@@ -230,13 +226,11 @@ export class ScriptGroupGelDataObjQuery extends ScriptGroupGelDataObj {
 					if (result.error) return result
 					const embedData: DataObjData = result.data
 
-					// create field
 					const fieldEmbed: FieldEmbedList = new FieldEmbedListClass(
 						parentDataObjId,
 						propRaw,
 						embedData
 					)
-
 					fields.push(fieldEmbed)
 				}
 			}

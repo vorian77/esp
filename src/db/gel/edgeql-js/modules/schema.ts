@@ -750,7 +750,6 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_core::SysObjAttrEnt]": $.LinkDesc<_sys_core.$SysObjAttrEnt, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_crm::CrmClient]": $.LinkDesc<_app_crm.$CrmClient, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is app_cm::CmProgram]": $.LinkDesc<_app_cm.$CmProgram, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmClientServiceFlow]": $.LinkDesc<_app_cm.$CmClientServiceFlow, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmCsfData]": $.LinkDesc<_app_cm.$CmCsfData, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmCsfCohort]": $.LinkDesc<_app_cm.$CmCsfCohort, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -797,6 +796,7 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_user::SysUserParm]": $.LinkDesc<_sys_user.$SysUserParm, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_rep::SysAnalytic]": $.LinkDesc<_sys_rep.$SysAnalytic, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is org_client_baltimore::MoedPartData]": $.LinkDesc<_org_client_baltimore.$MoedPartData, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is app_cm::CmSite]": $.LinkDesc<_app_cm.$CmSite, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldEmbedListEdit]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListEdit, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_user::SysUser]": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldEmbedListSelect]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListSelect, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -812,6 +812,7 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is sys_core::SysEligibilityNode]": $.LinkDesc<_sys_core.$SysEligibilityNode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysEligibility]": $.LinkDesc<_sys_core.$SysEligibility, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmCsfEligibility]": $.LinkDesc<_app_cm.$CmCsfEligibility, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is app_cm::CmProgram]": $.LinkDesc<_app_cm.$CmProgram, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<intersection_of": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<subject": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

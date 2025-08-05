@@ -1,5 +1,5 @@
 import { State } from '$comps/app/types.state.svelte'
-import { FieldEmbedShell } from '$comps/form/fieldEmbed'
+import { FieldEmbedShell } from '$comps/form/fieldEmbed.svelte'
 import action from '$enhance/actions/actionsClassCustom'
 import { QuerySourceRaw, QuerySourceType } from '$lib/queryClient/types.queryClient'
 import { QueryManagerClient } from '$lib/queryClient/types.queryClientManager'
@@ -332,8 +332,7 @@ export class App {
 						break
 
 					default:
-						const nodeCurrent = currTab.node
-						result = await this.treeNodeChildrenTabsAddeBase(sm, actionType, queryType, nodeCurrent)
+						result = await this.treeNodeChildrenTabsAddeBase(sm, actionType, queryType, currNode)
 				}
 				if (result.error) return result
 				const tabs: AppLevelNode[] = result.data
@@ -992,7 +991,6 @@ export class AppTree {
 				if (currLevel.tabIdxCurrent > 0) {
 					currLevel.tabIdxSet(0, true)
 				} else {
-					// return await this.levelPop(sm)
 					await this.levelPop(sm)
 				}
 			}
@@ -1202,7 +1200,11 @@ export class AppTree {
 
 						// if parent list exists, retrieve
 						tabParent = this.getCurrTabParentTab()
-						if (tabParent?.dataObj?.raw.codeCardinality === DataObjCardinality.list) {
+						const currLevel = this.getCurrLevel()
+						if (
+							tabParent?.dataObj?.raw.codeCardinality === DataObjCardinality.list &&
+							currLevel?.tabIdxCurrent === 0
+						) {
 							let listIdsPre: string[] = tabParent.parmsFormListGet(ParmsValuesType.listIds)
 							result = await tabParent.queryDataObj(sm, TokenApiQueryType.retrieve)
 							if (result.error) return result

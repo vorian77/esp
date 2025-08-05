@@ -1,5 +1,6 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 import { EvalExprCustomComposite, NodeType } from '$utils/types'
+import { ExprTokenItemParmModifier } from '$utils/utils.evalParserDb'
 
 // backlink
 // .##csfCohort[is app_cm::CmCsfCohortAttd].cohortAttd.id`,
@@ -69,6 +70,14 @@ export function initPreDataObjFieldItem(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldListItems', {
+		props: [[0, 'header', 'Header', '.header', true, 0]],
+		exprFilter: `.id IN (SELECT sys_core::SysCode FILTER .id = <parms,uuid,itemsParmValue>).codeTypeFamily.id`,
+		name: 'il_sys_code_family_by_code',
+		ownerSys: 'sys_system',
+		table: 'SysCodeType'
+	})
+
+	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
 			'.codeTypeFamily.parent.name = <parms,str,itemsParmValue> AND .ownerSys.id = <parms,uuid,systemIdQuerySource>',
@@ -88,6 +97,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
 			'.ownerSys.id = <tree,uuid,SysSystem.id> AND .codeType.id = <parms,uuid,itemsParmValue>',
+		exprFilterExcept: `SELECT sys_core::SysCode FILTER .id = <tree,uuid,[${ExprTokenItemParmModifier.optional}]SysCode.id>`,
 		name: 'il_sys_code_parent',
 		ownerSys: 'sys_system',
 		table: 'SysCode'
@@ -170,6 +180,14 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		name: 'il_sys_data_obj_by_type',
 		ownerSys: 'sys_system',
 		table: 'SysDataObj'
+	})
+
+	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter: `.ownerSys.id = <tree,uuid,SysSystem.id>`,
+		name: 'il_sys_elig_sys',
+		ownerSys: 'sys_system',
+		props: [[0, 'header', 'Header', '.header ?? .name', true, 0]],
+		table: 'SysEligibility'
 	})
 
 	init.addTrans('sysDataObjFieldListItems', {
@@ -405,5 +423,28 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		name: 'il_cm_course_by_csfId_status',
 		ownerSys: 'sys_app_cm',
 		table: 'CmCsfCohort'
+	})
+
+	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter: `.ownerSys.id = <parms,uuid,systemIdQuerySource>`,
+		name: 'il_cm_program',
+		ownerSys: 'sys_app_cm',
+		props: [[0, 'header', 'Header', '.header ?? .name', true, 0]],
+		table: 'CmProgram'
+	})
+	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter: `.ownerSys.id = <parms,uuid,systemIdQuerySource>`,
+		exprFilterExcept: `SELECT (SELECT app_cm::CmCsfEligibility FILTER .csf.id = <tree,uuid,CmClientServiceFlow.id>).cmProgram`,
+		name: 'il_cm_program_eligibility',
+		ownerSys: 'sys_app_cm',
+		props: [[0, 'header', 'Header', '.header ?? .name', true, 0]],
+		table: 'CmProgram'
+	})
+	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter: `.ownerSys.id = <parms,uuid,systemIdQuerySource>`,
+		name: 'il_cm_site',
+		ownerSys: 'sys_app_cm',
+		props: [[0, 'header', 'Header', '.header ?? .name', true, 0]],
+		table: 'CmSite'
 	})
 }

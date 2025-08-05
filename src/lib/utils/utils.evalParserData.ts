@@ -58,6 +58,7 @@ class EvalParserData extends EvalParser {
 					}
 				})
 		}
+
 		value = recordValueGet(this.data, key)
 		if (dataType === 'str') value = `'${value}'`
 		return new MethodResult(value)
