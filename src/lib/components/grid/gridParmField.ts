@@ -15,7 +15,6 @@ import {
 	PropDataType,
 	required
 } from '$utils/types'
-import { PropLinkItems } from '$comps/dataObj/types.rawDataObj.svelte'
 import { getValDb } from '$utils/utils.evalParserDb'
 import { error } from '@sveltejs/kit'
 

@@ -13,7 +13,7 @@ dependencies:
     version: 8.1.4
   '@sentry/sveltekit':
     specifier: ^8.43.0
-    version: 8.43.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.30.1)(@opentelemetry/instrumentation@0.56.0)(@opentelemetry/sdk-trace-base@1.30.1)(@opentelemetry/semantic-conventions@1.34.0)(@sveltejs/kit@2.20.8)(svelte@5.28.2)(vite@6.3.4)
+    version: 8.43.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.30.1)(@opentelemetry/instrumentation@0.56.0)(@opentelemetry/sdk-trace-base@1.30.1)(@opentelemetry/semantic-conventions@1.36.0)(@sveltejs/kit@2.20.8)(svelte@5.28.2)(vite@6.3.4)
   '@skeletonlabs/skeleton':
     specifier: 2.10.3
     version: 2.10.3(svelte@5.28.2)
@@ -26,12 +26,12 @@ dependencies:
   '@vercel/blob':
     specifier: ^1.0.1
     version: 1.0.1
-  ag-grid-charts-enterprise:
-    specifier: ~32.3.3
-    version: 32.3.3
   ag-grid-community:
-    specifier: ^32.3.3
-    version: 32.3.3
+    specifier: 34.1.1
+    version: 34.1.1
+  ag-grid-enterprise:
+    specifier: 34.1.1
+    version: 34.1.1
   axios:
     specifier: ^1.7.9
     version: 1.7.9
@@ -1084,8 +1084,8 @@ packages:
     engines: {node: '>=14'}
     dev: false
 
-  /@opentelemetry/semantic-conventions@1.34.0:
-    resolution: {integrity: sha512-aKcOkyrorBGlajjRdVoJWHTxfxO1vCNHLJVlSDaRHDIdjU+pX8IYQPvPDkYiujKLbRnWU+1TBwEt0QRgSm4SGA==}
+  /@opentelemetry/semantic-conventions@1.36.0:
+    resolution: {integrity: sha512-TtxJSRD8Ohxp6bKkhrm27JRHAxPczQA7idtcTOMYI+wQRRrfgqxHv1cFbCApcSnNjtXkmzFozn6jQtFrOmbjPQ==}
     engines: {node: '>=14'}
     dev: false
 
@@ -1517,7 +1517,7 @@ packages:
       '@sentry/core': 8.43.0
     dev: false
 
-  /@sentry/opentelemetry@8.43.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.30.1)(@opentelemetry/instrumentation@0.56.0)(@opentelemetry/sdk-trace-base@1.30.1)(@opentelemetry/semantic-conventions@1.34.0):
+  /@sentry/opentelemetry@8.43.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.30.1)(@opentelemetry/instrumentation@0.56.0)(@opentelemetry/sdk-trace-base@1.30.1)(@opentelemetry/semantic-conventions@1.36.0):
     resolution: {integrity: sha512-Ey+z1+JuMsb+LNY5MddJhjJpCnmkVwGZwoc5T/wWfh+5WKnvZ5RSNwaUl71Ho0lpVhhejwuUtaNxc4Ilk1KjhA==}
     engines: {node: '>=14.18'}
     peerDependencies:
@@ -1531,7 +1531,7 @@ packages:
       '@opentelemetry/core': 1.30.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.56.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.30.1(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.34.0
+      '@opentelemetry/semantic-conventions': 1.36.0
       '@sentry/core': 8.43.0
     dev: false
 
@@ -1547,7 +1547,7 @@ packages:
       svelte: 5.28.2
     dev: false
 
-  /@sentry/sveltekit@8.43.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.30.1)(@opentelemetry/instrumentation@0.56.0)(@opentelemetry/sdk-trace-base@1.30.1)(@opentelemetry/semantic-conventions@1.34.0)(@sveltejs/kit@2.20.8)(svelte@5.28.2)(vite@6.3.4):
+  /@sentry/sveltekit@8.43.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.30.1)(@opentelemetry/instrumentation@0.56.0)(@opentelemetry/sdk-trace-base@1.30.1)(@opentelemetry/semantic-conventions@1.36.0)(@sveltejs/kit@2.20.8)(svelte@5.28.2)(vite@6.3.4):
     resolution: {integrity: sha512-mkMkg+401J/yuOSToK+v5Qc4mgQRDd56JkKmIe6G6xEn/Xy0qZErYgV0xQrPsMIDFOx6LrB+F81LD2ZJTvwLZQ==}
     engines: {node: '>=16'}
     peerDependencies:
@@ -1559,7 +1559,7 @@ packages:
     dependencies:
       '@sentry/core': 8.43.0
       '@sentry/node': 8.43.0
-      '@sentry/opentelemetry': 8.43.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.30.1)(@opentelemetry/instrumentation@0.56.0)(@opentelemetry/sdk-trace-base@1.30.1)(@opentelemetry/semantic-conventions@1.34.0)
+      '@sentry/opentelemetry': 8.43.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.30.1)(@opentelemetry/instrumentation@0.56.0)(@opentelemetry/sdk-trace-base@1.30.1)(@opentelemetry/semantic-conventions@1.36.0)
       '@sentry/svelte': 8.43.0(svelte@5.28.2)
       '@sentry/vite-plugin': 2.22.6
       '@sveltejs/kit': 2.20.8(@sveltejs/vite-plugin-svelte@5.0.3)(svelte@5.28.2)(vite@6.3.4)
@@ -1851,39 +1851,56 @@ packages:
     hasBin: true
     dev: false
 
-  /ag-charts-community@10.3.3:
-    resolution: {integrity: sha512-LUlbVS+4sX1UHqZNuE9m3LISr7D4FEO/Y88fwit1fYPTk2l1ZJG/82gFnm5bQ+iG4QgNIwRa2TWm7w2MLnyJlA==}
+  /ag-charts-community@12.1.1:
+    resolution: {integrity: sha512-5RfYXwqUr4yR1KIQAPvCsF9uaNRV6Ghs6Bj9tMn5bHL0xf1EOncEpkzXZjIXpM4yGxYk8UJKRTI3mByPjYRe8A==}
+    requiresBuild: true
     dependencies:
-      ag-charts-locale: 10.3.3
-      ag-charts-types: 10.3.3
+      ag-charts-core: 12.1.1
+      ag-charts-locale: 12.1.1
+      ag-charts-types: 12.1.1
     dev: false
+    optional: true
 
-  /ag-charts-enterprise@10.3.3:
-    resolution: {integrity: sha512-+RZCrgcRfSHdlHVtFlxpQ7h6Om4oB851/625Ujv8cloA1l6DTaBzijza8Vp8yj9XO2U8SCKGL+s3VkNDNtBO+A==}
+  /ag-charts-core@12.1.1:
+    resolution: {integrity: sha512-Kp/fXAtNmHWWo4MTHfYN1O4O5F3wWF5ZhLcjbfrdBcx3rBdbQGw46K/FcclK8Wyer3tmITBG9EZQFO/CDeu4vA==}
+    requiresBuild: true
     dependencies:
-      ag-charts-community: 10.3.3
+      ag-charts-types: 12.1.1
     dev: false
+    optional: true
 
-  /ag-charts-locale@10.3.3:
-    resolution: {integrity: sha512-+ZAQYhkFHbdEwLYP1jZeF44X/8wwSH6SNiTykEIIk6EUuP6mm45X2YfQ0bvyekTkEJlLvFspvRQ+C6mspwLx4w==}
-    dev: false
-
-  /ag-charts-types@10.3.3:
-    resolution: {integrity: sha512-8rmyquaTkwfP4Lzei/W/cbkq9wwEl8+grIo3z97mtxrMIXh9sHJK1oJipd/u08MmBZrca5Jjtn5F1+UNPu/4fQ==}
-    dev: false
-
-  /ag-grid-charts-enterprise@32.3.3:
-    resolution: {integrity: sha512-phP8R6wx2RDWkBHSD3pFmB4wBy2koSnCZjtA0Hy+QT1ovDyaH5R0+SAckChy9lqC6RkMurDerb6QEYgFyNy3IQ==}
+  /ag-charts-enterprise@12.1.1:
+    resolution: {integrity: sha512-kcifzWM1JA+gmXKUcHrFb5P23MAnY+3lyBo9MVziZh0RMH/fHa7wEjgPHyim7/71Lbz9DmJbaYaPwXpLp/4f9Q==}
+    requiresBuild: true
     dependencies:
-      ag-charts-community: 10.3.3
-      ag-charts-enterprise: 10.3.3
-      ag-grid-community: 32.3.3
+      ag-charts-community: 12.1.1
+      ag-charts-core: 12.1.1
+    dev: false
+    optional: true
+
+  /ag-charts-locale@12.1.1:
+    resolution: {integrity: sha512-kpmtZvC12idQcNPnM3BIALmFUXvbb2TtCZtTuXqWdmtT7ykgnQCWWFczLOcM4EsgfnaudATI952JLAeQ/C2wwQ==}
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /ag-charts-types@12.1.1:
+    resolution: {integrity: sha512-VbAOfp1E7+Z/TBufJOIjUYdx70kQRDg49WoluiVKVSB0r0el/uvxARp9xjzx4ByBq9+Xq/V23tJVsRj1MS2A/g==}
     dev: false
 
-  /ag-grid-community@32.3.3:
-    resolution: {integrity: sha512-KhSJ3B6mwRFA4cLjNjOZkDndJBh8o83794ZHl4Q7xP9MJf43oCN9qoZ8pyBanohgpVfLcP0scYYCr9xIlzjdiA==}
+  /ag-grid-community@34.1.1:
+    resolution: {integrity: sha512-ODVvGoMTkyGvMT8b5lzvum5r93bG6CKdJdNrk6u/aYS7oqZ5rUEXJJHC8n8Zq+o76KhFiXMBQrU39xuhz8i+Tg==}
     dependencies:
-      ag-charts-types: 10.3.3
+      ag-charts-types: 12.1.1
+    dev: false
+
+  /ag-grid-enterprise@34.1.1:
+    resolution: {integrity: sha512-r/HPmKM7rU+EnMYjzUUnp7Zlq+C77chUCdcT9oTS4eYPbjS/TF4bZO8laL4Nx/eAnwN5G5tyltIqUnSHpJmqKw==}
+    dependencies:
+      ag-grid-community: 34.1.1
+    optionalDependencies:
+      ag-charts-community: 12.1.1
+      ag-charts-enterprise: 12.1.1
     dev: false
 
   /agent-base@6.0.2:

@@ -41,6 +41,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				orderDefine: 10
 			},
 			{
+				codeAccess: 'readOnly',
 				columnName: 'isRequired',
 				indexTable: 1,
 				isDisplayable: true,
@@ -69,6 +70,7 @@ function initFieldEmbedListEditRepUserParm(init: InitDb) {
 				orderDefine: 40
 			},
 			{
+				codeAccess: 'readOnly',
 				codeFieldElement: 'parm',
 				columnName: 'parmValue',
 				indexTable: 0,
