@@ -1800,10 +1800,11 @@ export function initPreColumn(init: InitDb) {
 		name: 'isOpen'
 	})
 	init.addTrans('sysColumn', {
-		ownerSys: 'sys_system',
+		codeAlignment: 'center',
 		codeDataType: 'bool',
 		header: 'Required',
-		name: 'isRequired'
+		name: 'isRequired',
+		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
 		ownerSys: 'sys_system',

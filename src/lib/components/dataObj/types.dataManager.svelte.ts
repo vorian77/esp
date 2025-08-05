@@ -173,12 +173,12 @@ export class DataManager {
 		const node = this.getNode(dataObjId)
 		if (node) {
 			await node.setFieldValAsync(row, field, value)
-			this.setFieldValuePost(node, row, field, callbackSetFieldValue)
+			this.setFieldValuePost()
 			if (callbackSetFieldValue) await callbackSetFieldValue(this, dataObjId, row, field)
 		}
 	}
 
-	setFieldValuePost(node: DataManagerNode, row: number, field: Field, fCallback?: Function) {
+	setFieldValuePost() {
 		this.setStatus()
 		this.fieldChange = !this.fieldChange
 	}
@@ -193,7 +193,7 @@ export class DataManager {
 		const node = this.getNode(dataObjId)
 		if (node) {
 			node.setFieldValProcess(row, field, value)
-			this.setFieldValuePost(node, row, field, fCallback)
+			this.setFieldValuePost()
 		}
 	}
 
@@ -435,8 +435,9 @@ export class DataManagerNode {
 			const recordId = r.id
 			this.dataObj.fields.forEach((f) => {
 				if (
-					([FieldClassType.parm, FieldClassType.regular].includes(f.classType) &&
+					(f.classType === FieldClassType.regular &&
 						[FieldAccess.optional, FieldAccess.required].includes(f.fieldAccess)) ||
+					f.classType === FieldClassType.parm ||
 					f.getValueKey() === this.dataObj.raw.listReorderColumn
 				) {
 					if (f.altProcessSetStatus) {

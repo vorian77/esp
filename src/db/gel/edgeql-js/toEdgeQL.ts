@@ -1066,12 +1066,11 @@ function renderEdgeQL(
     // CardinalityMismatchError when the query returns more than one result
     return (
       // (expr.__modifiers__.singleton ? `select assert_single((` : ``) +
-      "(" +
+      // + (expr.__modifiers__.singleton ? `))` : ``)
+      ("(" +
       withBlock +
       lines.join(" ") +
-      (modifiers.length ? "\n" + modifiers.join("\n") : "") +
-      ")"
-      // + (expr.__modifiers__.singleton ? `))` : ``)
+      (modifiers.length ? "\n" + modifiers.join("\n") : "") + ")")
     );
   } else if (expr.__kind__ === ExpressionKind.Update) {
     return `(${withBlock}UPDATE ${renderEdgeQL(expr.__scope__, ctx, false)}${

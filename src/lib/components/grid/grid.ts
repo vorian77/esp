@@ -14,11 +14,10 @@ import {
 	type ValueParserParams,
 	type ValueSetterParams
 } from 'ag-grid-community'
-import { LicenseManager } from 'ag-grid-charts-enterprise'
+import { AllEnterpriseModule, LicenseManager, ModuleRegistry } from 'ag-grid-enterprise'
 import {
 	arrayOfClass,
 	booleanOrFalse,
-	DataObj,
 	DataObjSort,
 	type DataRecord,
 	evalExprRecord,
@@ -30,12 +29,12 @@ import {
 	PropLinkItems,
 	required,
 	strRequired,
-	valueOrDefault,
-	UserParmItemType
+	valueOrDefault
 } from '$utils/types'
 import { FieldColumnItem } from '$comps/form/field.svelte'
 import { error } from '@sveltejs/kit'
 
+ModuleRegistry.registerModules([AllEnterpriseModule])
 LicenseManager.setLicenseKey(
 	'Using_this_{AG_Charts_and_AG_Grid}_Enterprise_key_{AG-069958}_in_excess_of_the_licence_granted_is_not_permitted___Please_report_misuse_to_legal@ag-grid.com___For_help_with_changing_this_key_please_contact_info@ag-grid.com___{App_Factory}_is_granted_a_{Single_Application}_Developer_License_for_the_application_{AppFactory}_only_for_{1}_Front-End_JavaScript_developer___All_Front-End_JavaScript_developers_working_on_{AppFactory}_need_to_be_licensed___{AppFactory}_has_been_granted_a_Deployment_License_Add-on_for_{1}_Production_Environment___This_key_works_with_{AG_Charts_and_AG_Grid}_Enterprise_versions_released_before_{22_October_2025}____[v3]_[0102]_MTc2MTA4NzYwMDAwMA==38662b93f270b810aa21446e810c2c8e'
 )

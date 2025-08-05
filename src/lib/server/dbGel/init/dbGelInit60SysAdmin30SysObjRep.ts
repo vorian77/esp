@@ -445,6 +445,7 @@ function initAnalyticParm(init: InitDb) {
 				indexTable: 0
 			},
 			{
+				codeAccess: 'readOnly',
 				codeFieldElement: 'toggle',
 				columnName: 'isRequired',
 				isDisplayable: true,
@@ -1695,6 +1696,7 @@ function initRepParm(init: InitDb) {
 				fieldListItemsParmValue: 'ct_sys_do_field_element'
 			},
 			{
+				codeAccess: 'readOnly',
 				codeFieldElement: 'toggle',
 				columnName: 'isRequired',
 				isDisplayable: true,

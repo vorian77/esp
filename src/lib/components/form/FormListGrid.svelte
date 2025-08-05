@@ -1,12 +1,4 @@
 <script lang="ts">
-	import { State, StateSurfacePopup, StateTriggerToken } from '$comps/app/types.state.svelte'
-	import {
-		TokenAppModalSelect,
-		TokenAppModalReturn,
-		TokenAppModalReturnType,
-		TokenAppStateTriggerAction,
-		TokenAppUserActionConfirmType
-	} from '$utils/types.token'
 	import {
 		type CellClassParams,
 		type CellClickedEvent,
@@ -15,10 +7,18 @@
 		type ICellEditorParams,
 		type NewValueParams,
 		type PostSortRowsParams,
-		type SelectionChangedEvent
+		type SelectionChangedEvent,
+		type ValueGetterParams
 	} from 'ag-grid-community'
-	import 'ag-grid-charts-enterprise'
-	import { LicenseManager } from 'ag-grid-charts-enterprise'
+	import { AllEnterpriseModule, LicenseManager, ModuleRegistry } from 'ag-grid-enterprise'
+	import { State, StateSurfacePopup, StateTriggerToken } from '$comps/app/types.state.svelte'
+	import {
+		TokenAppModalSelect,
+		TokenAppModalReturn,
+		TokenAppModalReturnType,
+		TokenAppStateTriggerAction,
+		TokenAppUserActionConfirmType
+	} from '$utils/types.token'
 	import {
 		CodeAction,
 		CodeActionClass,
@@ -67,6 +67,7 @@
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
+	ModuleRegistry.registerModules([AllEnterpriseModule])
 	LicenseManager.setLicenseKey(
 		'Using_this_{AG_Charts_and_AG_Grid}_Enterprise_key_{AG-069958}_in_excess_of_the_licence_granted_is_not_permitted___Please_report_misuse_to_legal@ag-grid.com___For_help_with_changing_this_key_please_contact_info@ag-grid.com___{App_Factory}_is_granted_a_{Single_Application}_Developer_License_for_the_application_{AppFactory}_only_for_{1}_Front-End_JavaScript_developer___All_Front-End_JavaScript_developers_working_on_{AppFactory}_need_to_be_licensed___{AppFactory}_has_been_granted_a_Deployment_License_Add-on_for_{1}_Production_Environment___This_key_works_with_{AG_Charts_and_AG_Grid}_Enterprise_versions_released_before_{22_October_2025}____[v3]_[0102]_MTc2MTA4NzYwMDAwMA==38662b93f270b810aa21446e810c2c8e'
 	)
@@ -180,14 +181,8 @@
 		const row = dataRecordsDisplay.findIndex((row) => row.id === data.id)
 		const field = dataObj.fields.find((f) => f.getValueKey() === key)
 		if (row > -1 && field) {
-			console.log('FormListGrid.fGridCallbackUpdateValue', {
-				row,
-				field,
-				data
-			})
-
-			await dm.setFieldValueAsync(dataObj.raw.id, row, field, recordValueGet(data, key))
-			console.log('FormListGrid.fGridCallbackUpdateValue', { record: dataRecordsDisplay[row] })
+			const recordValue = recordValueGet(data, key)
+			await dm.setFieldValueAsync(dataObj.raw.id, row, field, recordValue)
 		} else {
 			error(500, {
 				file: FILENAME,
@@ -271,54 +266,11 @@
 			addGridParm(defn, ['context', 'parmFields'], field.parmFields)
 			defn.cellDataType = 'object'
 
-			// defn.valueFormatter = (params: any) => {
-			// 	const value = params.value
-			// 	const valueDisplay = getValueDisplay(value)
-			// 	console.log('FormListGrid.initGridColumnsField.valueFormatter', {
-			// 		params,
-			// 		value,
-			// 		valueDisplay
-			// 	})
-			// 	return valueDisplay
-			// }
-
-			defn.valueGetter = (params: any) => {
+			defn.valueGetter = (params: ValueGetterParams) => {
 				let valueDisplay = getValueDisplay(params.data.parmValue)
 				valueDisplay = Array.isArray(valueDisplay) ? valueDisplay.join(', ') : valueDisplay
-				console.log('FormListGrid.initGridColumnsField.valueGetter', {
-					params,
-					valueDisplay
-				})
 				return valueDisplay
-				// return field.listValueGet(params)
 			}
-
-			// defn.valueGetter = (params: any) => {
-			// 	console.log('FormListGrid.initGridColumnsField.valueGetter', {
-			// 		params,
-			// 		field: field.getValueKey()
-			// 	})
-			// 	return 'valueGetter'
-			// 	// let value = recordValueGet(params.data, field.getValueKey())
-			// 	// return field.parmFields.getValueDisplay(value)
-			// }
-			// defn.valueSetter = (params: NewValueParams) => {
-			// 	console.log('FormListGrid.initGridColumnsField.valueSetter', {
-			// 		field: field.getValueKey(),
-			// 		newValue: params.newValue
-			// 	})
-			// 	params.data[field.getValueKey()] = params.newValue
-			// 	return true
-			// 	// let value = field.parmFields.getValueRaw(params.newValue)
-			// 	// if (value === undefined) {
-			// 	// 	error(500, {
-			// 	// 		file: FILENAME,
-			// 	// 		function: 'initGridColumnsField',
-			// 	// 		msg: `FieldParm value is undefined for field: ${field.getValueKey()}`
-			// 	// 	})
-			// 	// }
-			// 	// return recordValueSet(params.data, field.getValueKey(), value)
-			// }
 		} else {
 			// data type
 			switch (field.colDO.colDB.codeDataType) {
@@ -407,6 +359,7 @@
 		let field = dataObj.fields.find((f) => f.getValueKey() === event.colDef.field)
 		let fieldParm = field instanceof FieldParm ? field.parmFields[event.rowIndex] : undefined
 		let fieldProcess: Field = fieldParm || field
+
 		if (fieldProcess && fieldProcess.linkItems && fieldProcess.colDO.colDB.isMultiSelect) {
 			await onCellClickedSelectItems()
 		}
@@ -443,38 +396,10 @@
 			if (token.type === TokenAppModalReturnType.complete) {
 				const parmsReturn: ParmsValues = token.parmsState || undefined
 				if (parmsReturn) {
-					// event.api.startEditingCell({
-					// 	rowIndex: event.rowIndex,
-					// 	colKey: event.colDef.field
-					// })
 					const valueDisplay = parmsReturn.valueGet(ParmsValuesType.listIdsSelected)
 					const valueRaw = fieldProcess.linkItems.getValueRaw(valueDisplay)
 					const key = field.getValueKey()
-					const column = event.api.getColumn(key)
-
-					// const dataBefore = rowNode.data
-					const result = rowNode.setDataValue(key, valueRaw)
-					// const dataAfter = rowNode.data
-
-					// <todo? - 250401 - temporarily use updateData vs setDataValue and manually trigger fGridCallbackUpdateValue
-					// becuse of bug in setDataValue
-					let data = recordValueSet(event.data, key, valueRaw)
-					// rowNode?.updateData(data)
-
-					// rowNode?.setData(data)
-
-					// const result = rowNode.setDataValue(key, valueRaw)
-
-					console.log('FormListGrid.fModalClose', {
-						column: event.api.getColumn(key),
-						columns: event.api.getColumnDefs(),
-						data,
-						key
-					})
-
-					fGridCallbackUpdateValue(key, data)
-
-					// event.api.stopEditing()
+					rowNode.setDataValue(key, valueRaw)
 				}
 			}
 		}

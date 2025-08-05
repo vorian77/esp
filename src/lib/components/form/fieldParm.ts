@@ -31,11 +31,6 @@ export class FieldParm extends Field {
 		this.isParmValue = true
 	}
 
-	listValueGet(params: ValueGetterParams) {
-		console.log('FieldParm.listValueGet', { params })
-		// const value = recordValueGet(record, this.getPropName())
-		// return getValueDisplay(params.data.parmValue)
-	}
 	async initAsync(props: PropsFieldInit): Promise<MethodResult> {
 		for (const dataRow of props.data.rowsRetrieved.dataRows) {
 			let result: MethodResult = await this.configParmItemsInit(
