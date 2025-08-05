@@ -465,12 +465,12 @@
 
 					// const result = rowNode.setDataValue(key, valueRaw)
 
-					// console.log('FormListGrid.fModalClose', {
-					// 	column: event.api.getColumn(key),
-					// 	columns: event.api.getColumnDefs(),
-					// 	data,
-					// 	key
-					// })
+					console.log('FormListGrid.fModalClose', {
+						column: event.api.getColumn(key),
+						columns: event.api.getColumnDefs(),
+						data,
+						key
+					})
 
 					fGridCallbackUpdateValue(key, data)
 
