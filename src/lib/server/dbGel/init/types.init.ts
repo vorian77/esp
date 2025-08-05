@@ -1,12 +1,10 @@
 import { dbGelQuery } from '$routes/api/db/dbGel/dbGel'
 import { sectionHeader } from '$routes/api/db/dbGel/dbGel'
-import { getDBObjectLinks } from '$routes/api/db/dbGel/dbGelQueries'
-import { TokenApiId } from '$utils/types.token'
 import {
 	addDataObj,
 	updateDataObjColumnCustomElementEmbedShellFields
 } from '$server/dbGel/init/dbGelInit200Utilities20DataObj'
-import { addColumn, tableColumnsBulk } from '$server/dbGel/init/dbGelInit200Utilities30DB'
+import { addColumn, tableColumnsBulk } from '$server/dbGel/init/dbGelInit200Utilities30DColumn'
 import { tablesBulk } from '$server/dbGel/init/dbGelInit200Utilities10'
 import {
 	addDataObjActionGroup,
@@ -28,6 +26,7 @@ import {
 	addTask,
 	addUser,
 	addUserType,
+	updateDepdCmProgramEligibility,
 	updateDepdDataObjColumnItemChange,
 	updateDepdDataObjQueryRider,
 	updateDepdGridStylesDataObj,
@@ -126,6 +125,14 @@ export class InitDb {
 				fCreate: addEligibility
 			})
 		)
+
+		this.addItem(
+			new InitDbItemObject({
+				name: 'updateDepdCmProgramEligibility',
+				fCreate: updateDepdCmProgramEligibility
+			})
+		)
+
 		this.addItem(
 			new InitDbItemObject({
 				name: 'sysObjAttr',

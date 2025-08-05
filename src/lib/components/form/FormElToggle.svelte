@@ -25,7 +25,7 @@
 			parms.row,
 			parms.field,
 			field.getValueDb(valueToggle),
-			field?.rawFieldEmbedDetailEligibility?.computeCallback
+			field.callbackSetFieldValue
 		)
 	}
 </script>

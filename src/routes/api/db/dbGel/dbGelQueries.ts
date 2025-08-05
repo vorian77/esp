@@ -289,22 +289,6 @@ export async function getDataObjById(token: TokenApiId) {
 		...shapeColumnHasItems(doc),
 		_codeSortDir: doc.codeSortDir.name,
 		_columnBacklink: doc.columnBacklink.name,
-		_fieldEmbedDetailEligibility: e.select(doc.fieldEmbedDetailEligibility, (elig) => ({
-			_nodes: e.select(elig.nodes, (node) => ({
-				_codeEligibilityType: node.codeEligibilityType.name,
-				description: true,
-				exprState: true,
-				header: true,
-				id: true,
-				name: true,
-				nodeId: true,
-				nodeIdParent: true,
-				order: true
-			})),
-			description: true,
-			header: true,
-			name: true
-		})),
 		_fieldEmbedListConfig: e.select(doc.fieldEmbedListConfig, (fe) => ({
 			_actionGroupModal: e.select(fe.actionGroupModal, (afg) => ({
 				...shapeDataObjActionGroup(afg)
@@ -591,6 +575,43 @@ export async function getDBObjectLinks(token: TokenApiId) {
 	return await query.run(client)
 }
 
+export async function getEligibility(token: TokenApiId) {
+	let query = e.select(e.sys_core.SysEligibility, (elig) => ({
+		_nodes: e.select(elig.nodes, (node) => ({
+			_codeEligibilityType: node.codeEligibilityType.name,
+			description: true,
+			exprState: true,
+			header: true,
+			id: true,
+			name: true,
+			nodeIdx: true,
+			nodeIdxDependent: true,
+			nodeIdxParent: true,
+			order: true
+		})),
+		description: true,
+		header: true,
+		name: true,
+		filter_single: e.op(
+			elig.id,
+			'=',
+			e.assert_single(
+				e.select(e.app_cm.CmProgram, (p) => ({
+					filter_single: e.op(
+						p.id,
+						'=',
+						e.assert_single(
+							e.select(e.app_cm.CmClientServiceFlow, (csf) => ({
+								filter_single: e.op(csf.id, '=', e.cast(e.uuid, token.id))
+							}))
+						).cmProgram.id
+					)
+				}))
+			).sysEligibility.id
+		)
+	}))
+	return await query.run(client)
+}
 export async function getLinkItemsSource(token: TokenApiId) {
 	const query = e.select(e.sys_core.SysDataObjFieldListItems, (fli) => ({
 		...shapeLinkItemsSource(fli),

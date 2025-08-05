@@ -11,7 +11,7 @@
 	} from '$utils/types'
 	import { getContext } from 'svelte'
 	import { Field } from '$comps/form/field.svelte'
-	import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
+	import { FieldEmbedListSelect } from '$comps/form/fieldEmbed.svelte'
 	import Layout from '$comps/layout/RootLayoutApp.svelte'
 	import LayoutContent from '$comps/layout/LayoutContent.svelte'
 	import FormLabel from '$comps/form/FormLabel.svelte'

@@ -217,13 +217,13 @@ function initReport(init: InitDb) {
 			{
 				codeFieldElement: 'text',
 				codeReportElementType: 'column',
-				columnName: 'objAttrCmSite',
+				columnName: 'cmSite',
 				header: 'Site',
 				indexTable: 2,
 				isDisplay: true,
 				isDisplayable: true,
 				linkColumns: ['header'],
-				linkTable: 'SysObjAttr',
+				linkTable: 'CmSite',
 				orderDefine: 160,
 				orderDisplay: 160
 			},

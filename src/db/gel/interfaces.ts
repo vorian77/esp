@@ -135,7 +135,6 @@ export namespace app_cm {
     "codeSfEligibilityStatus"?: sys_core.SysCode | null;
     "codeSfEnrollType"?: sys_core.SysCode | null;
     "codeSfOutcome"?: sys_core.SysCode | null;
-    "objAttrCmSite": sys_core.SysObjAttr;
     "user"?: sys_user.SysUser | null;
     "dateCreated": gel.LocalDate;
     "dateEnd"?: gel.LocalDate | null;
@@ -143,7 +142,8 @@ export namespace app_cm {
     "dateStart"?: gel.LocalDate | null;
     "dateStartEst"?: gel.LocalDate | null;
     "idxDemo"?: number | null;
-    "objAttrCmProgram": sys_core.SysObjAttr;
+    "cmProgram": CmProgram;
+    "cmSite": CmSite;
   }
   export interface CmCohort extends sys_core.SysObj {
     "codeStatus"?: sys_core.SysCode | null;
@@ -204,15 +204,12 @@ export namespace app_cm {
     "dateIssued": gel.LocalDate;
     "file"?: unknown | null;
     "isShareWithClient"?: boolean | null;
-    "isVerifiedByCaseManager"?: boolean | null;
-    "isVerifiedByCompliance"?: boolean | null;
     "note"?: string | null;
+    "cmEligibilityCategories": sys_core.SysCodeType[];
   }
   export interface CmCsfEligibility extends CmCsfData {
-    "eligibility"?: sys_core.SysEligibility | null;
-    "objAttrCmProgram": sys_core.SysObjAttr;
     "valueBoolean": boolean;
-    "nodeValues": unknown;
+    "eligibilityData": unknown;
   }
   export interface CmCsfGroup extends CmCsfData {
     "cmGroup": CmGroup;
@@ -258,7 +255,13 @@ export namespace app_cm {
   export interface CmPartner extends sys_core.SysObjAttrEnt {
     "codeAttrType": sys_core.SysCode;
   }
-  export interface CmProgram extends sys_core.SysObj {}
+  export interface CmProgram extends sys_core.SysObjAttrEnt {
+    "codeAttrType": sys_core.SysCode;
+    "sysEligibility"?: sys_core.SysEligibility | null;
+  }
+  export interface CmSite extends sys_core.SysObjAttrEnt {
+    "codeAttrType": sys_core.SysCode;
+  }
 }
 export namespace sys_core {
   export interface ObjRoot extends std.$Object {
@@ -416,7 +419,6 @@ export namespace sys_core {
     "customColFile"?: unknown | null;
     "propNameKeyPrefix"?: string | null;
     "propNameKeySuffix"?: string | null;
-    "fieldEmbedDetailEligibility"?: SysEligibility | null;
   }
   export interface SysDataObjColumnItemChange extends sys_user.Mgmt {
     "codeAccess"?: SysCode | null;
@@ -497,13 +499,15 @@ export namespace sys_core {
   }
   export interface SysEligibility extends SysObjAttr {
     "nodes": SysEligibilityNode[];
+    "codeAttrType": SysCode;
   }
   export interface SysEligibilityNode extends ObjRootCore {
     "codeEligibilityType": SysCode;
-    "nodeId": number;
-    "nodeIdParent"?: number | null;
     "order"?: number | null;
     "exprState"?: string | null;
+    "nodeIdx": number;
+    "nodeIdxDependent"?: number | null;
+    "nodeIdxParent"?: number | null;
   }
   export interface SysGridStyle extends std.$Object {
     "exprTrigger"?: string | null;
@@ -1228,6 +1232,7 @@ export interface types {
     "CmGroup": app_cm.CmGroup;
     "CmPartner": app_cm.CmPartner;
     "CmProgram": app_cm.CmProgram;
+    "CmSite": app_cm.CmSite;
   };
   "sys_core": {
     "ObjRoot": sys_core.ObjRoot;

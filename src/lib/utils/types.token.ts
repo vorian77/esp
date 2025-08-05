@@ -40,7 +40,6 @@ import { App } from '$comps/app/types.app.svelte'
 import { AppRowActionType } from '$comps/app/types.app.svelte'
 import { FieldColumnItem } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
-import { Process } from '$utils/utils.process'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/types.token.ts'
@@ -347,16 +346,6 @@ export class TokenApiQueryDataTree {
 				msgUser: `Unable to find dataRow for accessType: ${accessType}`
 			}
 		})
-	}
-
-	getDataRowRecord(
-		accessType: string = TokenApiQueryDataTreeAccessType.index,
-		parm: string | number = 0
-	) {
-		let result: MethodResult = this.getDataRow(accessType, parm)
-		if (result.error) return result
-		let dataRow: DataRow = result.data
-		return new MethodResult(dataRow.record)
 	}
 
 	getValue(

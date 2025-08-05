@@ -6,16 +6,12 @@ import {
 	booleanRequired,
 	classOptional,
 	CodeAction,
-	DataManager,
-	DataManagerNode,
-	DataObjAction,
 	DataObjCardinality,
 	DataObjData,
 	DataObjSort,
 	DataObjType,
 	type DataRecord,
 	debug,
-	EligibilityType,
 	FieldEmbedListType,
 	FileStorage,
 	getArray,
@@ -29,7 +25,6 @@ import {
 	nbrOptional,
 	nbrRequired,
 	override,
-	ParmsValuesFormList,
 	ParmsValuesType,
 	PropDataType,
 	recordValueGet,
@@ -49,28 +44,13 @@ import {
 	QuerySourceType
 } from '$lib/queryClient/types.queryClient'
 import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
-import { Field, FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
-import { FieldToggle } from '$comps/form/fieldToggle'
+import { FieldAccess, FieldColumnItem } from '$comps/form/field.svelte'
+
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
-import {
-	TokenApiDbDataObjSource,
-	TokenAppNav,
-	TokenAppUserActionConfirmType
-} from '$utils/types.token'
+import { TokenAppNav, TokenAppUserActionConfirmType } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
-
-export type EligibilityNode = {
-	id: string
-	valueBoolean: boolean
-}
-
-export type EligibilityNodeClient = {
-	[key: string]: EligibilityNode
-}
-
-export type EligibilityNodeValues = Record<string, EligibilityNode>
 
 export class GridStyle {
 	exprTrigger?: string
@@ -280,7 +260,7 @@ export class PropLinkItemsSource {
 	header?: string
 	name: string
 	parmValue?: string
-	parmValueList: string[] = []
+	parmValueList: string[]
 	props: PropLinkItemsSourceProp[] = []
 	querySource: QuerySource
 	raw: any
@@ -425,7 +405,6 @@ export class RawDataObj {
 	codeCardinality: DataObjCardinality
 	codeListPresetType?: DataObjListEditPresetType
 	crumbs: string[] = []
-	eligibility?: RawFieldEmbedDetailEligibility
 	description?: string
 	gridStyles: GridStyle[]
 	header: string
@@ -595,7 +574,6 @@ export class RawDataObjProp {
 	propNameKey: string
 	propNameKeyPrefix: string
 	propNameKeySuffix: string
-	rawfieldEmbedDetailEligibility?: RawFieldEmbedDetailEligibility
 	rawFieldEmbedList?: RawFieldEmbedList
 	constructor(obj: any, tableGroup: DbTableQueryGroup) {
 		obj = valueOrDefault(obj, {})
@@ -621,10 +599,6 @@ export class RawDataObjProp {
 		this.propName = strRequired(obj._propName, clazz, 'propName')
 		this.propNameKeyPrefix = valueOrDefault(obj.propNameKeyPrefix, '')
 		this.propNameKeySuffix = valueOrDefault(obj.propNameKeySuffix, '')
-		this.rawfieldEmbedDetailEligibility = classOptional(
-			RawFieldEmbedDetailEligibility,
-			obj._fieldEmbedDetailEligibility
-		)
 		this.fieldEmbedShellFields = obj._fieldEmbedShellFields
 			? obj._fieldEmbedShellFields.map((f: { _name: string }) => f._name)
 			: []
@@ -886,425 +860,6 @@ export class RawDataObjPropDisplayCustom {
 	}
 }
 
-export class RawFieldEmbedDetail {
-	_objRaw: any
-	constructor(obj: any) {
-		const clazz = 'RawFieldEmbedDetail'
-		obj = valueOrDefault(obj, {})
-		this._objRaw = obj
-	}
-}
-
-export class RawFieldEmbedDetailEligibility extends RawFieldEmbedDetail {
-	description: string
-	header: string
-	name: string
-	nodeIdx: number = 0
-	nodes: RawFieldEmbedDetailEligibilityNode[]
-	renderPropsRaw: RawDataObjPropDisplay[] = []
-	tableGroup: DbTableQueryGroup = new DbTableQueryGroup([])
-	tree: RawFieldEmbedDetailEligibilityNode[]
-	constructor(obj: any) {
-		const clazz = 'RawFieldEmbedDetailEligibility'
-		obj = valueOrDefault(obj, {})
-		super(obj)
-		this.description = strRequired(obj.description, clazz, 'description')
-		this.header = strRequired(obj.header, clazz, 'header')
-		this.name = strRequired(obj.name, clazz, 'name')
-		this.nodes = arrayOfClass(RawFieldEmbedDetailEligibilityNode, obj._nodes)
-
-		// derived
-		this.tree = this.buildTree(this.nodes)
-		this.buildProps(this.tree)
-	}
-
-	async computeCallback(dm: DataManager, dataObjId: string, row: number, field: FieldToggle) {
-		const clazz = 'RawFieldEmbedDetailEligibility.computeCallback'
-		if (field.rawFieldEmbedDetailEligibility) {
-			const dmn: DataManagerNode = required(dm.getNode(dataObjId), clazz, 'dmn')
-			const nodeValues: RawFieldEmbedDetailEligibilityNode[] = recordValueGet(
-				dmn.recordsDisplay[row],
-				'nodeValues'
-			)
-			const newEligibility = eval(
-				field.rawFieldEmbedDetailEligibility.computeCallbackProcess(nodeValues)
-			)
-			const fieldValueBoolean = dmn.dataObj.getField('valueBoolean')
-			await dm.setFieldValueAsync(dataObjId, row, fieldValueBoolean, newEligibility)
-		}
-	}
-
-	/**
-	 * Generates a boolean expression string from the eligibility tree
-	 * @returns A string representation of the boolean logic
-	 */
-	computeCallbackProcess(nodeValues: RawFieldEmbedDetailEligibilityNode[]): string {
-		/**
-		 * Recursively traverses a node and its children to build boolean expression
-		 * @param node The current node to process
-		 * @returns String representation of the node's boolean logic
-		 */
-		const computeExprNode = (
-			node: RawFieldEmbedDetailEligibilityNode,
-			nodeValues: DataRecord
-		): string => {
-			const getValue = (
-				node: RawFieldEmbedDetailEligibilityNode,
-				nodeValues: DataRecord
-			): string => {
-				const key = node.name + '.valueBoolean'
-				const value = recordValueGet(nodeValues, key)
-				return value ? value.toString() : 'false' // temp - should not consider groups
-			}
-
-			switch (node.codeEligibilityType) {
-				case EligibilityType.eligibilityExpr:
-				case EligibilityType.eligibilityManual:
-					return getValue(node, nodeValues)
-
-				case EligibilityType.eligibilityGroupAnd:
-					if (node.children.length === 0) {
-						return 'true' // Empty AND group is true
-					}
-					if (node.children.length === 1) {
-						return computeExprNode(node.children[0], nodeValues)
-					}
-					const andExpressions = node.children.map((child) => computeExprNode(child, nodeValues))
-					return `(${andExpressions.join(' && ')})`
-
-				case EligibilityType.eligibilityGroupOr:
-					if (node.children.length === 0) {
-						return 'false' // Empty OR group is false
-					}
-					if (node.children.length === 1) {
-						return computeExprNode(node.children[0], nodeValues)
-					}
-					const orExpressions = node.children.map((child) => computeExprNode(child, nodeValues))
-					return `(${orExpressions.join(' || ')})`
-
-				default:
-					return 'true' // Default fallback
-			}
-		}
-
-		if (this.tree.length === 0) {
-			return 'true'
-		}
-
-		// If multiple root nodes, combine with AND
-		if (this.tree.length === 1) {
-			return computeExprNode(this.tree[0], nodeValues)
-		} else {
-			const expressions = this.tree.map((node) => computeExprNode(node, nodeValues))
-			return `(${expressions.join(' && ')})`
-		}
-	}
-
-	formatForClientFromRetrieve(nodeValueRetrieveSource: string): EligibilityNodeValues {
-		const nodeValuesRetrieve = JSON.parse(nodeValueRetrieveSource) as EligibilityNode[]
-		let nodeValues: EligibilityNodeValues = {}
-		nodeValuesRetrieve.forEach((node) => {
-			if (this.nodes.find((n) => n.id === node.id)) {
-				const name = this.getPropName(node.id)
-				if (name) {
-					nodeValues[name] = {
-						id: node.id,
-						valueBoolean: node.valueBoolean
-					}
-				}
-			}
-		})
-		return nodeValues
-	}
-
-	formatForServer(nodeValues: EligibilityNodeValues): string {
-		if (!nodeValues || typeof nodeValues !== 'object') {
-			return JSON.stringify([])
-		}
-
-		const result: Array<EligibilityNode> = []
-
-		// Iterate through all properties in nodeValues
-		for (const [propName, propValue] of Object.entries(nodeValues)) {
-			// Skip if the property doesn't have the expected structure
-			if (!propValue || typeof propValue !== 'object') {
-				continue
-			}
-
-			// Extract node data and valueBoolean
-			const id = propValue.id
-			const valueBoolean = propValue.valueBoolean
-
-			// Only add if we have valid node data
-			if (id !== undefined && valueBoolean !== undefined) {
-				result.push({ id: id, valueBoolean })
-			}
-		}
-
-		const returnValue = JSON.stringify(result)
-		return returnValue
-	}
-
-	getExprPreset() {
-		const getNodeValueProp = (node: RawFieldEmbedDetailEligibilityNode, value: any) => {
-			return `${node.getPropName()} := { id := <uuid>'${node.id}', valueBoolean := ${value} }`
-		}
-
-		let expr = ''
-
-		this.nodes.forEach((node, i) => {
-			if (
-				[EligibilityType.eligibilityExpr, EligibilityType.eligibilityManual].includes(
-					node.codeEligibilityType
-				)
-			) {
-				if (expr) expr += ', '
-				expr += getNodeValueProp(node, node.exprState || '(SELECT false)')
-			}
-		})
-
-		return `{${expr}}`
-	}
-
-	getExprSelect() {
-		const getNodeValueProp = (node: RawFieldEmbedDetailEligibilityNode, value: any) => {
-			return `${node.getPropName()} := { node := { data := <uuid>'${node.id}' }, valueBoolean := ${value} }`
-		}
-
-		let expr = ''
-
-		this.nodes.forEach((node, i) => {
-			if (
-				[EligibilityType.eligibilityExpr, EligibilityType.eligibilityManual].includes(
-					node.codeEligibilityType
-				)
-			) {
-				if (expr) expr += ', '
-				expr += getNodeValueProp(node, node.exprState || '(SELECT false)')
-			}
-		})
-
-		return `{${expr}}`
-	}
-
-	getPropKey(id: string): string {
-		const node = this.nodes.find((n) => n.id === id)
-		if (node) {
-			// return node.getPropKey()
-		}
-		return ''
-	}
-
-	getPropName(id: string): string {
-		const node = this.nodes.find((n) => n.id === id)
-		if (node) {
-			return node.getPropName()
-		}
-		return ''
-	}
-
-	treeDisplay(tree: RawFieldEmbedDetailEligibilityNode[]): string {
-		const lines: string[] = []
-		const displayNode = (
-			node: RawFieldEmbedDetailEligibilityNode,
-			prefix: string = '',
-			isLast: boolean = true
-		): void => {
-			// Create the current line with tree visualization characters
-			const connector = isLast ? '└── ' : '├── '
-			lines.push(`${prefix}${connector}${node.name} (ID: ${node.nodeId})`)
-
-			// Prepare prefix for children
-			const childPrefix = prefix + (isLast ? '    ' : '│   ')
-
-			// Display children
-			if (node.children && node.children.length > 0) {
-				node.children.forEach((child, index) => {
-					const isLastChild = index === node.children.length - 1
-					displayNode(child, childPrefix, isLastChild)
-				})
-			}
-		}
-
-		// Display all root nodes
-		tree.forEach((rootNode, index) => {
-			const isLastRoot = index === tree.length - 1
-			displayNode(rootNode, '', isLastRoot)
-		})
-
-		return lines.join('\n')
-	}
-
-	buildProps(tree: RawFieldEmbedDetailEligibilityNode[]) {
-		const buildPropsAdd = (obj: any) => {
-			this.nodeIdx++
-			const config = {
-				_codeAccess: obj._codeAccess,
-				_codeFieldElement: obj._codeFieldElement,
-				_column: {
-					_codeDataType: obj._codeDataType || 'none',
-					description: obj.description || '',
-					header: obj.header || obj.name,
-					name: obj.name
-				},
-				_propName: obj.name,
-				headerAlt: obj.header || obj.name,
-				id: `dynamic_raw_prop_${obj.name}_${this.nodeIdx}`,
-				isDisplay: true,
-				isDisplayable: true,
-				orderDefine: this.nodeIdx,
-				propNameKeyPrefix: obj.propNameKeyPrefix,
-				propNameKeySuffix: obj.propNameKeySuffix
-			}
-			const propRaw = new RawDataObjPropDisplay(config, this.tableGroup)
-			this.renderPropsRaw.push(propRaw)
-		}
-
-		const buildPropsAddSectionEnd = () => {
-			return buildPropsAdd({
-				_codeDataType: 'none',
-				_codeFieldElement: 'tagSection',
-				name: 'custom_section_end'
-			})
-		}
-
-		const buildPropsAddSectionStart = (obj: any) => {
-			return buildPropsAdd({
-				_codeDataType: 'none',
-				_codeFieldElement: 'tagSection',
-				header: obj.header,
-				name: 'custom_section_start'
-			})
-		}
-
-		const buildPropsAddToggle = (node: RawFieldEmbedDetailEligibilityNode) => {
-			return buildPropsAdd({
-				_codeAccess: node.exprState ? FieldAccess.readonly : FieldAccess.required,
-				_codeDataType: 'bool',
-				_codeFieldElement: 'toggle',
-				description: node.description,
-				exprPreset: node.exprState,
-				header: node.header,
-				name: node.getPropName(),
-				propNameKeyPrefix: 'nodeValues',
-				propNameKeySuffix: 'valueBoolean'
-			})
-		}
-
-		const build = (node: RawFieldEmbedDetailEligibilityNode | undefined) => {
-			if (!node) return
-
-			// Process the current node
-			this.nodeIdx++
-			switch (node.codeEligibilityType) {
-				case EligibilityType.eligibilityGroupAnd:
-				case EligibilityType.eligibilityGroupOr:
-					buildPropsAddSectionStart({ header: node.header })
-					break
-
-				case EligibilityType.eligibilityExpr:
-				case EligibilityType.eligibilityManual:
-					buildPropsAddToggle(node)
-			}
-
-			// Recursively traverse child nodes
-			if (node.children && node.children.length > 0) {
-				node.children.forEach((child) => build(child))
-				buildPropsAddSectionEnd()
-			}
-		}
-
-		tree.forEach((rootNode) => {
-			build(rootNode)
-		})
-	}
-
-	buildTree(nodes: RawFieldEmbedDetailEligibilityNode[]): RawFieldEmbedDetailEligibilityNode[] {
-		const nodeMap = new Map<number, RawFieldEmbedDetailEligibilityNode>()
-		const rootNodes: RawFieldEmbedDetailEligibilityNode[] = []
-
-		// First pass: create all nodes and store them in a map
-		nodes.forEach((node) => {
-			nodeMap.set(node.nodeId, node)
-		})
-
-		// Second pass: build parent-child relationships
-		nodes.forEach((node) => {
-			const treeNode = nodeMap.get(node.nodeId)!
-
-			if (node.nodeIdParent === undefined || node.nodeIdParent === null) {
-				// Root node
-				rootNodes.push(treeNode)
-			} else {
-				// Child node - find parent and add to its children
-				const parent = nodeMap.get(node.nodeIdParent)
-				if (parent) {
-					parent.children.push(treeNode)
-				}
-			}
-		})
-
-		// Third pass: sort children by order property
-		const sortNodesByOrder = (
-			nodes: RawFieldEmbedDetailEligibilityNode[]
-		): RawFieldEmbedDetailEligibilityNode[] => {
-			return nodes.sort((a, b) => (a.order || 0) - (b.order || 0))
-		}
-
-		// Sort root nodes by order
-		sortNodesByOrder(rootNodes)
-
-		// Recursively sort children at each level
-		const sortChildrenRecursively = (node: RawFieldEmbedDetailEligibilityNode): void => {
-			if (node.children && node.children.length > 0) {
-				sortNodesByOrder(node.children)
-				node.children.forEach(sortChildrenRecursively)
-			}
-		}
-
-		rootNodes.forEach(sortChildrenRecursively)
-
-		return rootNodes
-	}
-}
-
-export class RawFieldEmbedDetailEligibilityNode {
-	children: RawFieldEmbedDetailEligibilityNode[] = []
-	codeEligibilityType: EligibilityType
-	description: string
-	exprState?: string
-	header: string
-	id: string
-	name: string
-	nodeId: number
-	nodeIdParent?: number
-	order: number
-	constructor(obj: any) {
-		const clazz = 'RawFieldEmbedDetailEligibilityNode'
-		obj = valueOrDefault(obj, {})
-		this.codeEligibilityType = memberOfEnum(
-			obj._codeEligibilityType,
-			clazz,
-			'codeEligibilityType',
-			'EligibilityType',
-			EligibilityType
-		)
-		this.description = strRequired(obj.description, clazz, 'description')
-		this.exprState = strOptional(obj.exprState, clazz, 'exprState')
-		this.header = strRequired(obj.header, clazz, 'header')
-		this.id = strRequired(obj.id, clazz, 'id')
-		this.nodeId = nbrRequired(obj.nodeId, clazz, 'nodeId')
-		this.nodeIdParent = nbrOptional(obj.nodeIdParent, clazz, 'nodeIdParent')
-		this.order = nbrRequired(obj.order, clazz, 'order')
-
-		// derived properties
-		this.name = this.getPropName()
-	}
-	getPropName() {
-		return `nodeProp${this.nodeId}`
-	}
-}
-
 export class RawFieldEmbedList {
 	_objRaw: any
 	embedDataObjId: string
@@ -1371,7 +926,7 @@ export class RawDBColumn {
 		this.headerSide = strOptional(obj.headerSide, clazz, 'headerSide')
 		this.inputMask = strOptional(obj.inputMask, clazz, 'inputMask')
 		this.isFormTag = booleanOrFalse(obj.isFormTag)
-		this.isMultiSelect = booleanOrDefault(obj._isMultiSelect, false)
+		this.isMultiSelect = booleanOrDefault(obj.isMultiSelect, false)
 		this.matchColumn = strOptional(obj.matchColumn, clazz, 'matchColumn')
 		this.maxLength = nbrOptional(obj.maxLength, clazz, 'maxLength')
 		this.maxValue = nbrOptional(obj.maxValue, clazz, 'maxValue')

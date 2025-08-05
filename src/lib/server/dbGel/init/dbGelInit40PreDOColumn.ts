@@ -243,11 +243,32 @@ export function initPreColumn(init: InitDb) {
 		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Eligibility Categories',
+		isMultiSelect: true,
+		name: 'cmEligibilityCategories',
+		ownerSys: 'sys_app_cm'
+	})
+	init.addTrans('sysColumn', {
 		ownerSys: 'sys_client_atlantic_impact',
 		codeDataType: 'link',
 		header: 'Group',
 		isMultiSelect: false,
 		name: 'cmGroup'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Program',
+		isMultiSelect: false,
+		name: 'cmProgram',
+		ownerSys: 'sys_app_cm'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Site',
+		isMultiSelect: false,
+		name: 'cmSite',
+		ownerSys: 'sys_app_cm'
 	})
 	init.addTrans('sysColumn', {
 		ownerSys: 'sys_system',
@@ -1249,10 +1270,10 @@ export function initPreColumn(init: InitDb) {
 		name: 'elements'
 	})
 	init.addTrans('sysColumn', {
-		ownerSys: 'sys_system',
-		codeDataType: 'link',
-		header: 'Eligibility',
-		name: 'eligibility'
+		codeDataType: 'json',
+		header: 'Eligibility Data',
+		name: 'eligibilityData',
+		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
 		ownerSys: 'sys_system',
@@ -1993,12 +2014,6 @@ export function initPreColumn(init: InitDb) {
 		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysColumn', {
-		codeDataType: 'jsonCustomEligibility',
-		header: 'Node Values',
-		name: 'nodeValues',
-		ownerSys: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
 		ownerSys: 'sys_system',
 		codeDataType: 'str',
 		header: 'Note',
@@ -2017,20 +2032,6 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'obj',
 		ownerSys: 'sys_system'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Program',
-		isMultiSelect: false,
-		name: 'objAttrCmProgram',
-		ownerSys: 'sys_app_cm'
-	})
-	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Site',
-		isMultiSelect: false,
-		name: 'objAttrCmSite',
-		ownerSys: 'sys_app_cm'
 	})
 	init.addTrans('sysColumn', {
 		ownerSys: 'sys_system',
@@ -2351,6 +2352,12 @@ export function initPreColumn(init: InitDb) {
 	init.addTrans('sysColumn', {
 		ownerSys: 'sys_system',
 		codeDataType: 'link',
+		header: 'Eligibility',
+		name: 'sysEligibility'
+	})
+	init.addTrans('sysColumn', {
+		ownerSys: 'sys_system',
+		codeDataType: 'link',
 		header: 'System - Default',
 		name: 'systemDefault'
 	})
@@ -2408,18 +2415,6 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Title',
 		name: 'title'
-	})
-	init.addTrans('sysColumn', {
-		ownerSys: 'sys_app_cm',
-		codeDataType: 'bool',
-		header: 'Verified By Case Manager',
-		name: 'isVerifiedByCaseManager'
-	})
-	init.addTrans('sysColumn', {
-		ownerSys: 'sys_app_cm',
-		codeDataType: 'bool',
-		header: 'Verified By Compliance',
-		name: 'isVerifiedByCompliance'
 	})
 	init.addTrans('sysColumn', {
 		ownerSys: 'sys_system',

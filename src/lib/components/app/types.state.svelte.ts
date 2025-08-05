@@ -39,7 +39,7 @@ import {
 } from '$utils/types.token'
 import { NavMenuData } from '$comps/nav/navMenu/types.navMenu.svelte'
 import { QuerySourceParentRaw } from '$lib/queryClient/types.queryClient'
-import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed'
+import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed.svelte'
 import { RawDataObjAction } from '$comps/dataObj/types.rawDataObj.svelte'
 import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'

@@ -202,10 +202,6 @@ export async function addDataObj(data: any) {
 							e.json_get(e.json_get(f, 'customElement'), 'sourceKey')
 						),
 
-						fieldEmbedDetailEligibility: e.sys_core.getEligibility(
-							e.cast(e.str, e.json_get(f, 'fieldEmbedDetailEligibility'))
-						),
-
 						fieldEmbedListConfig: e.select(
 							e.sys_core.getDataObjFieldEmbedListConfig(
 								e.cast(e.str, e.json_get(f, 'fieldEmbedListConfig'))

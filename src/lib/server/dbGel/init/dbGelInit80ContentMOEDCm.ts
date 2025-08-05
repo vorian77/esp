@@ -1,8 +1,11 @@
 import { InitDb } from '$server/dbGel/init/types.init'
-import { PropDataType } from '$utils/types'
+import { type DataRecord, PropDataType } from '$utils/types'
+import { EligibilityConfigNode } from '$server/dbGel/init/dbGelInit200Utilities50Other'
 
 export function initContentMOEDCm(init: InitDb) {
+	initEligibility(init)
 	initObjAttr(init)
+	initProgram(init)
 
 	// features
 	initApplicant(init)
@@ -12,19 +15,272 @@ export function initContentMOEDCm(init: InitDb) {
 	initCsfNote(init)
 }
 
+function initProgram(init: InitDb) {
+	init.addTrans('updateDepdCmProgramEligibility', {
+		eligibilityName: 'elig_moed_csf_yo',
+		eligibilityOwner: 'sys_client_baltimore_moed',
+		programName: 'at_cm_program_moed_yo',
+		programOwner: 'sys_client_baltimore_moed'
+	})
+	init.addTrans('updateDepdCmProgramEligibility', {
+		eligibilityName: 'elig_moed_csf_yo_academy',
+		eligibilityOwner: 'sys_client_baltimore_moed',
+		programName: 'at_cm_program_moed_yo_academy',
+		programOwner: 'sys_client_baltimore_moed'
+	})
+	init.addTrans('updateDepdCmProgramEligibility', {
+		eligibilityName: 'elig_moed_csf_yo_pact',
+		eligibilityOwner: 'sys_client_baltimore_moed',
+		programName: 'at_cm_program_moed_yo_pact',
+		programOwner: 'sys_client_baltimore_moed'
+	})
+}
+
+function initEligibility(init: InitDb) {
+	class EligibilityConfigYo {
+		nodes: EligibilityConfigNode[] = []
+		constructor() {
+			this.nodes.push(
+				new EligibilityConfigNode({
+					codeEligibilityType: 'eligibilityGroupAnd',
+					header: 'Receipt of Documents Acknowledgement',
+					name: 'node0',
+					nodeIdx: 0,
+					order: 10
+				})
+			)
+
+			this.nodes.push(
+				new EligibilityConfigNode({
+					codeEligibilityType: 'eligibilityManual',
+					description: 'Client has signed the EEO & Grievance form.',
+					header: 'EEO & Grievance',
+					name: 'node1',
+					nodeIdx: 1,
+					nodeIdxParent: 0,
+					order: 20
+				})
+			)
+			this.nodes.push(
+				new EligibilityConfigNode({
+					codeEligibilityType: 'eligibilityManual',
+					description: 'Client has signed the Sexual Harassment form.',
+					header: 'Sexual Harassment',
+					name: 'node2',
+					nodeIdx: 2,
+					nodeIdxParent: 0,
+					order: 30
+				})
+			)
+			this.nodes.push(
+				new EligibilityConfigNode({
+					codeEligibilityType: 'eligibilityManual',
+					description: 'Client has signed the Customer Agreement form.',
+					header: 'Customer Agreement',
+					name: 'node3',
+					nodeIdx: 3,
+					nodeIdxParent: 0,
+					order: 40
+				})
+			)
+
+			const groups = [
+				{
+					category: 'Social Security Number',
+					categoryCodeType: 'ct_moed_doc_type_ssn'
+				},
+				{
+					category: 'Age',
+					categoryCodeType: 'ct_moed_doc_type_age'
+				},
+				{
+					category: 'Address',
+					categoryCodeType: 'ct_moed_doc_type_address'
+				},
+				{
+					category: 'Work Authorization/Citizenship',
+					categoryCodeType: 'ct_moed_doc_type_citizenship'
+				}
+			]
+			const idxOffset = this.nodes.length
+			groups.forEach((group, idx) => {
+				const category = group.category
+				const categoryCodeType = group.categoryCodeType
+				const idxStart = idxOffset + idx * 3
+
+				const nodeGroup = new EligibilityConfigNode({
+					codeEligibilityType: 'eligibilityGroupAnd',
+					header: group.category + ' Verification',
+					name: `node${idxStart}`,
+					nodeIdx: idxStart,
+					order: idxStart * 10
+				})
+				this.nodes.push(nodeGroup)
+
+				const nodeExpr = new EligibilityConfigNode({
+					codeEligibilityType: 'eligibilityExpr',
+					description: `Has one or more verified ${category} eligibility category documents.`,
+					exprState: `(SELECT '${categoryCodeType}' IN (SELECT app_cm::CmCsfDocument FILTER .csf.id = <tree,uuid,CmClientServiceFlow.id>).cmEligibilityCategories.name)`,
+					header: `${category} Category Document(s)`,
+					name: `node${idxStart + 1}`,
+					nodeIdx: idxStart + 1,
+					nodeIdxParent: idxStart,
+					order: (idxStart + 1) * 10
+				})
+				this.nodes.push(nodeExpr)
+
+				const nodeManual = new EligibilityConfigNode({
+					codeEligibilityType: 'eligibilityManual',
+					description: `${category} has been verified by compliance.`,
+					header: category,
+					name: `node${idxStart + 2}`,
+					nodeIdx: idxStart + 2,
+					nodeIdxDependent: idxStart + 1,
+					nodeIdxParent: idxStart,
+					order: (idxStart + 2) * 10
+				})
+				this.nodes.push(nodeManual)
+			})
+		}
+		getNodes() {
+			return this.nodes
+		}
+	}
+	const eligibilityConfigYo = new EligibilityConfigYo()
+
+	init.addTrans('sysEligibility', {
+		description: 'This is the MOED YO eligibility form.',
+		header: 'MOED YO',
+		name: 'elig_moed_csf_yo',
+		ownerSys: 'sys_client_baltimore_moed',
+		nodes: eligibilityConfigYo.getNodes()
+	})
+
+	init.addTrans('sysEligibility', {
+		description: 'This is the MOED YO-Academy eligibility form.',
+		header: 'MOED YO-Academy Eligibility',
+		name: 'elig_moed_csf_yo_academy',
+		ownerSys: 'sys_client_baltimore_moed',
+		nodes: [
+			{
+				codeEligibilityType: 'eligibilityManual',
+				description: 'Description for Node 1 (manual).',
+				header: 'Node 1 (manual)',
+				name: 'node1',
+				nodeIdx: 0,
+				order: 10
+			},
+			{
+				codeEligibilityType: 'eligibilityExpr',
+				description: 'Has Social Security Number.',
+				exprState: `(select exists((select app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id> AND .client.person.ssn != '')))`,
+				header: 'SSN',
+				name: 'node2',
+				nodeIdx: 1,
+				order: 20
+			},
+			{
+				codeEligibilityType: 'eligibilityGroupAnd',
+				description: 'Description for Node 3 (Group - And).',
+				header: 'Node 3 (Group - And)',
+				name: 'node3',
+				nodeIdx: 2,
+				order: 30
+			},
+			{
+				codeEligibilityType: 'eligibilityGroupOr',
+				description: 'Description for Node 4 (Group - Or).',
+				header: 'Node 4 (Group - Or)',
+				name: 'node4',
+				nodeIdx: 3,
+				nodeIdxParent: 2,
+				order: 10
+			},
+			{
+				codeEligibilityType: 'eligibilityManual',
+				description: 'Description for Node 5 (manual).',
+				header: 'Node 5 (manual)',
+				name: 'node5',
+				nodeIdx: 4,
+				nodeIdxParent: 3,
+				order: 10
+			},
+			{
+				codeEligibilityType: 'eligibilityExpr',
+				description: 'Has 1 or more documents.',
+				exprState: `(SELECT count((select app_cm::CmCsfDocument FILTER .csf.id = <tree,uuid,CmClientServiceFlow.id>)) > 0)`,
+				header: 'Documents',
+				name: 'node6',
+				nodeIdx: 5,
+				nodeIdxParent: 3,
+				order: 20
+			},
+			{
+				codeEligibilityType: 'eligibilityGroupAnd',
+				description: 'Description for Node 7 (Group - And).',
+				header: 'Node 7 (Group - And)',
+				name: 'node7',
+				nodeIdx: 6,
+				nodeIdxParent: 2,
+				order: 20
+			},
+			{
+				codeEligibilityType: 'eligibilityManual',
+				description: 'Description for Node 8 (manual).',
+				header: 'Node 8 (manual)',
+				name: 'node8',
+				nodeIdx: 7,
+				nodeIdxParent: 6,
+				order: 10
+			},
+			{
+				codeEligibilityType: 'eligibilityExpr',
+				description: 'Has 1 or more case notes.',
+				exprState: `(SELECT count((select app_cm::CmCsfNote FILTER .csf.id = <tree,uuid,CmClientServiceFlow.id>)) > 0)`,
+				header: 'Notes',
+				name: 'node9',
+				nodeIdx: 8,
+				nodeIdxParent: 6,
+				order: 20
+			}
+		]
+	})
+
+	init.addTrans('sysEligibility', {
+		description: 'This is the MOED YO-PACT eligibility form.',
+		header: 'MOED YO-PACT',
+		name: 'elig_moed_csf_yo_pact',
+		ownerSys: 'sys_client_baltimore_moed',
+		nodes: [
+			{
+				codeEligibilityType: 'eligibilityManual',
+				description: 'Description for Node 1 (manual).',
+				header: 'Node 1 (manual)',
+				name: 'node1',
+				nodeIdx: 0,
+				order: 10
+			},
+			{
+				codeEligibilityType: 'eligibilityManual',
+				description: 'Description for Node 2 (manual).',
+				header: 'Node 2 (manual)',
+				name: 'node2',
+				nodeIdx: 1,
+				order: 10
+			},
+			{
+				codeEligibilityType: 'eligibilityManual',
+				description: 'Description for Node 3 (manual).',
+				header: 'Node 3 (manual)',
+				name: 'node3',
+				nodeIdx: 2,
+				order: 10
+			}
+		]
+	})
+}
+
 function initObjAttr(init: InitDb) {
-	init.addTrans('sysObjAttr', {
-		code: 'at_cm_site',
-		header: 'Eastside Office',
-		name: 'site_moed_office_east',
-		ownerSys: 'sys_client_baltimore_moed'
-	})
-	init.addTrans('sysObjAttr', {
-		code: 'at_cm_site',
-		header: 'Westside Office',
-		name: 'site_moed_office_west',
-		ownerSys: 'sys_client_baltimore_moed'
-	})
 	init.addTrans('sysObjAttr', {
 		code: 'at_sys_msg_group',
 		header: 'MOED Administrators',
@@ -82,8 +338,8 @@ function initApplicant(init: InitDb) {
 				orderCrumb: 10,
 				orderSort: 20,
 				isDisplayable: true,
-				orderDisplay: 30,
-				orderDefine: 30,
+				orderDisplay: 20,
+				orderDefine: 20,
 				indexTable: 1
 			},
 			{
@@ -92,9 +348,19 @@ function initApplicant(init: InitDb) {
 				orderCrumb: 20,
 				orderSort: 10,
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 1
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 40,
+				orderDisplay: 40,
+				exprCustom: `(SELECT app_cm::CmCsfEligibility FILTER .csf.client.id = org_client_baltimore::MoedParticipant.id) {data := .id, display := .csf.cmProgram.header ++ ' (' ++ <str>.valueBoolean ++ ')'}`,
+				headerAlt: 'Programs (Eligibility)',
+				nameCustom: 'programsEligibility'
 			}
 		]
 	})
@@ -532,13 +798,13 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'objAttrCmProgram',
+				columnName: 'cmProgram',
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
 				linkColumns: ['header'],
-				linkTable: 'SysObjAttr'
+				linkTable: 'CmProgram'
 			},
 			{
 				codeAccess: 'readOnly',
@@ -657,23 +923,21 @@ function initCsf(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'objAttrCmProgram',
+				columnName: 'cmProgram',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_sys_obj_attr_type_single',
-				fieldListItemsParmValue: 'at_cm_program'
+				fieldListItems: 'il_cm_program'
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'objAttrCmSite',
+				columnName: 'cmSite',
 				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_obj_attr_type_single',
-				fieldListItemsParmValue: 'at_cm_site'
+				fieldListItems: 'il_cm_site'
 			},
 			{
 				codeFieldElement: 'select',
@@ -956,7 +1220,7 @@ function initCsf(init: InitDb) {
 	})
 	init.addTrans('sysNodeObj', {
 		children: [
-			{ node: 'node_obj_moed_csf_eligibility_list', order: 10 },
+			{ node: 'node_obj_moed_csf_eligibility_detail', order: 10 },
 			{ node: 'node_obj_moed_csf_note_list', order: 20 },
 			{ node: 'node_obj_moed_csf_doc_list', order: 30 }
 		],
@@ -1007,22 +1271,6 @@ function initCsfDocument(init: InitDb) {
 				linkTable: 'SysCode'
 			},
 			{
-				codeFieldElement: 'toggle',
-				columnName: 'isVerifiedByCaseManager',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 60,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isVerifiedByCompliance',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
-			},
-			{
 				codeAccess: 'readOnly',
 				columnName: 'note',
 				indexTable: 0,
@@ -1063,7 +1311,7 @@ function initCsfDocument(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['objAttrCmProgram', 'name'],
+				linkColumns: ['cmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{
@@ -1085,28 +1333,21 @@ function initCsfDocument(init: InitDb) {
 			{
 				codeFieldElement: 'select',
 				columnName: 'codeType',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0,
 				fieldListItems: 'il_sys_code_family_order_name_by_codeType_name_system',
-				fieldListItemsParmValue: 'ct_cm_doc_type'
-			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isVerifiedByCaseManager',
+				fieldListItemsParmValue: 'ct_cm_doc_type',
+				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 60,
-				orderDefine: 60,
-				indexTable: 0
-			},
-			{
-				codeFieldElement: 'toggle',
-				columnName: 'isVerifiedByCompliance',
-				isDisplayable: true,
-				orderDisplay: 70,
-				orderDefine: 70,
-				indexTable: 0
+				itemChanges: [
+					{
+						codeItemChangeAction: 'retrieveSelect',
+						codeItemChangeTriggerType: 'itemChangeTypeOp',
+						codeOp: 'any',
+						columns: ['cmEligibilityCategories'],
+						orderDefine: 0
+					}
+				],
+				orderDefine: 50,
+				orderDisplay: 50
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -1127,11 +1368,22 @@ function initCsfDocument(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
+				codeFieldElement: 'chips',
+				columnName: 'cmEligibilityCategories',
+				fieldListItems: 'il_sys_code_family_by_code',
+				headerAlt: 'Verified Eligibility Categories',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100
+			},
+			{
+				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 100,
-				orderDefine: 100,
+				orderDisplay: 110,
+				orderDefine: 110,
 				indexTable: 0
 			},
 
@@ -1223,96 +1475,6 @@ function initCsfDocument(init: InitDb) {
 }
 
 function initCsfEligibility(init: InitDb) {
-	init.addTrans('sysEligibility', {
-		description: 'This is the eligility form for MOED YO.',
-		header: 'MOED YO Eligibility',
-		name: 'elig_moed_csf_yo_eligibility',
-		ownerSys: 'sys_client_baltimore_moed',
-		nodes: [
-			{
-				codeEligibilityType: 'eligibilityManual',
-				description: 'Description for Node 1 (manual).',
-				header: 'Node 1 (manual)',
-				name: 'node1',
-				nodeId: 1,
-				order: 10
-			},
-			{
-				codeEligibilityType: 'eligibilityExpr',
-				description: 'Has Social Security Number.',
-				exprState: `(select exists((select app_cm::CmClientServiceFlow FILTER .id = <tree,uuid,CmClientServiceFlow.id> AND .client.person.ssn != '')))`,
-				header: 'SSN',
-				name: 'node2',
-				nodeId: 2,
-				order: 20
-			},
-			{
-				codeEligibilityType: 'eligibilityGroupAnd',
-				description: 'Description for Node 3 (Group - And).',
-				header: 'Node 3 (Group - And)',
-				name: 'node3',
-				nodeId: 3,
-				order: 30
-			},
-			{
-				codeEligibilityType: 'eligibilityGroupOr',
-				description: 'Description for Node 4 (Group - Or).',
-				header: 'Node 4 (Group - Or)',
-				name: 'node4',
-				nodeId: 4,
-				nodeIdParent: 3,
-				order: 10
-			},
-			{
-				codeEligibilityType: 'eligibilityManual',
-				description: 'Description for Node 5 (manual).',
-				header: 'Node 5 (manual)',
-				name: 'node4',
-				nodeId: 5,
-				nodeIdParent: 4,
-				order: 10
-			},
-			{
-				codeEligibilityType: 'eligibilityExpr',
-				description: 'Has 1 or more documents.',
-				exprState: `(SELECT count((select app_cm::CmCsfDocument FILTER .csf.id = <tree,uuid,CmClientServiceFlow.id>)) > 0)`,
-				header: 'Documents',
-				name: 'node6',
-				nodeId: 6,
-				nodeIdParent: 4,
-				order: 20
-			},
-			{
-				codeEligibilityType: 'eligibilityGroupAnd',
-				description: 'Description for Node 7 (Group - And).',
-				header: 'Node 7 (Group - And)',
-				name: 'node7',
-				nodeId: 7,
-				nodeIdParent: 3,
-				order: 20
-			},
-			{
-				codeEligibilityType: 'eligibilityManual',
-				description: 'Description for Node 8 (manual).',
-				header: 'Node 8 (manual)',
-				name: 'node8',
-				nodeId: 8,
-				nodeIdParent: 7,
-				order: 10
-			},
-			{
-				codeEligibilityType: 'eligibilityExpr',
-				description: 'Has 1 or more case notes.',
-				exprState: `(SELECT count((select app_cm::CmCsfNote FILTER .csf.id = <tree,uuid,CmClientServiceFlow.id>)) > 0)`,
-				header: 'Notes',
-				name: 'node9',
-				nodeId: 9,
-				nodeIdParent: 7,
-				order: 20
-			}
-		]
-	})
-
 	init.addTrans('sysDataObj', {
 		ownerSys: 'sys_client_baltimore_moed',
 		codeCardinality: 'list',
@@ -1330,21 +1492,30 @@ function initCsfEligibility(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'objAttrCmProgram',
-				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
+				columnName: 'cmProgram',
 				indexTable: 0,
+				isDisplayable: true,
 				linkColumns: ['header'],
-				linkTable: 'SysObjAttr'
+				linkTable: 'CmProgram',
+				orderDefine: 20,
+				orderDisplay: 20
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'valueBoolean',
+				headerAlt: 'Current Eligibility (computed)',
+				indexTable: 0,
+				isDisplayable: true,
+				orderDefine: 60,
+				orderDisplay: 60
 			}
 		]
 	})
 
-	const eligibilityName = 'elig_moed_csf_yo_eligibility'
 	init.addTrans('sysDataObj', {
 		ownerSys: 'sys_client_baltimore_moed',
 		codeCardinality: 'detail',
+		exprFilter: '.csf.id = <tree,uuid,CmClientServiceFlow.id>',
 		name: 'data_obj_moed_csf_eligibility_detail',
 		header: 'Eligibility',
 		tables: [{ index: 0, table: 'CmCsfEligibility' }],
@@ -1362,26 +1533,26 @@ function initCsfEligibility(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['objAttrCmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
-			{
-				columnName: 'eligibility',
-				exprSave: `(SELECT sys_core::getEligibility('${eligibilityName}'))`,
-				orderDefine: 30,
-				indexTable: 0,
-				isDisplayable: false
-			},
-			{
-				codeFieldElement: 'select',
-				columnName: 'objAttrCmProgram',
-				isDisplayable: true,
-				orderDisplay: 50,
-				orderDefine: 50,
-				indexTable: 0,
-				fieldListItems: 'il_sys_obj_attr_type_single',
-				fieldListItemsParmValue: 'at_cm_program'
-			},
+			// {
+			// 	codeFieldElement: 'select',
+			// 	columnName: 'cmProgram',
+			// 	isDisplayable: true,
+			// 	itemChanges: [
+			// 		{
+			// 			codeItemChangeAction: 'retrieveSelect',
+			// 			codeItemChangeTriggerType: 'itemChangeTypeOp',
+			// 			codeOp: 'any',
+			// 			columns: ['eligibilityData'],
+			// 			orderDefine: 0
+			// 		}
+			// 	],
+			// 	orderDisplay: 50,
+			// 	orderDefine: 50,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_cm_program_eligibility'
+			// },
 			{
 				codeAccess: 'readOnly',
 				codeFieldElement: 'toggle',
@@ -1390,13 +1561,11 @@ function initCsfEligibility(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
-				headerAlt: 'Current Eligibility'
+				headerAlt: 'Current Eligibility (computed)'
 			},
 			{
 				codeFieldElement: 'embedDetailEligibility',
-				columnName: 'nodeValues',
-				fieldEmbedDetailEligibility: eligibilityName,
-				exprPreset: `<${PropDataType.jsonCustomEligibility}>`,
+				columnName: 'eligibilityData',
 				indexTable: 0,
 				isDisplayable: true,
 				orderDefine: 70,
@@ -1468,26 +1637,26 @@ function initCsfEligibility(init: InitDb) {
 		]
 	})
 
-	init.addTrans('sysNodeObj', {
-		children: [{ node: 'node_obj_moed_csf_eligibility_detail', order: 10 }],
-		codeComponent: 'FormList',
-		codeIcon: 'AppWindow',
-		codeNodeType: 'nodeAppObj',
-		dataObj: 'data_obj_moed_csf_eligibility_list',
-		header: 'Eligibilities',
-		name: 'node_obj_moed_csf_eligibility_list',
-		orderDefine: 30,
-		ownerSys: 'sys_client_baltimore_moed'
-	})
+	// init.addTrans('sysNodeObj', {
+	// 	children: [{ node: 'node_obj_moed_csf_eligibility_detail', order: 10 }],
+	// 	codeComponent: 'FormList',
+	// 	codeNodeType: 'nodeAppObj',
+	// 	dataObj: 'data_obj_moed_csf_eligibility_list',
+	// 	header: 'Eligibilities',
+	// 	name: 'node_obj_moed_csf_eligibility_list',
+	// 	orderDefine: 30,
+	// 	ownerSys: 'sys_client_baltimore_moed'
+	// })
 	init.addTrans('sysNodeObj', {
 		codeComponent: 'FormDetail',
-		codeIcon: 'AppWindow',
 		codeNodeType: 'nodeAppObj',
+		codeQueryTypeAlt: 'retrieveThenPreset',
 		dataObj: 'data_obj_moed_csf_eligibility_detail',
 		header: 'Eligibility',
 		name: 'node_obj_moed_csf_eligibility_detail',
 		orderDefine: 10,
-		ownerSys: 'sys_client_baltimore_moed'
+		ownerSys: 'sys_client_baltimore_moed',
+		systemQuerySource: 'sys_client_baltimore_moed'
 	})
 }
 
@@ -1560,7 +1729,7 @@ function initCsfNote(init: InitDb) {
 				orderDefine: 20,
 				indexTable: 0,
 				isDisplayable: false,
-				linkColumns: ['objAttrCmProgram', 'name'],
+				linkColumns: ['cmProgram', 'name'],
 				linkTable: 'CmClientServiceFlow'
 			},
 			{

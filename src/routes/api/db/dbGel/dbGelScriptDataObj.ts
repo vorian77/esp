@@ -1,5 +1,5 @@
 import { PropLinkItemsSource, RawDataObjPropDB } from '$comps/dataObj/types.rawDataObj.svelte'
-import { FieldEmbedListSelect } from '$comps/form/fieldEmbed'
+import { FieldEmbedListSelect } from '$comps/form/fieldEmbed.svelte'
 import { QuerySourceParent, ScriptExePost } from '$lib/queryClient/types.queryClient'
 import { GelQuery, LinkSaveAction } from '$routes/api/db/dbGel/dbGelScriptQuery'
 import {
@@ -19,13 +19,16 @@ import {
 	DataRow,
 	debug,
 	MethodResult,
+	ParmsValues,
 	ParmsValuesType,
+	PropDataType,
 	recordValueGetData,
 	required,
 	strRequired
 } from '$utils/types'
 import { TokenApiQueryDataTreeAccessType } from '$utils/types.token'
 import { ScriptGroupGel } from '$routes/api/db/dbGel/dbGelScript'
+import { getValDb } from '$utils/utils.evalParserDb'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$routes/api/db/dbGel/dbGelScriptDataObj.ts'
@@ -68,20 +71,39 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		const clazz = 'addScriptDataItemsFields'
 		let expr = ''
 
-		if (linkItemsSource.parmValue) {
-			query.queryData?.dataTab?.parms.valueSet(
-				ParmsValuesType.itemsParmValue,
-				linkItemsSource.parmValue
-			)
-		}
-		if (linkItemsSource.parmValueList) {
-			query.queryData?.dataTab?.parms.valueSet(
-				ParmsValuesType.itemsParmValueList,
-				linkItemsSource.parmValueList
-			)
+		const setParm = (
+			parms: ParmsValues | undefined,
+			parmType: ParmsValuesType,
+			newValue: any,
+			codeDataType: PropDataType
+		) => {
+			if (parms) {
+				if (newValue) {
+					parms.valueSet(parmType, newValue)
+				} else {
+					const result: MethodResult = getValDb(codeDataType, undefined)
+					if (result.error) return result
+					const defaultValue = result.data.value
+					parms.valueSet(parmType, defaultValue)
+				}
+			}
 		}
 
+		setParm(
+			query.queryData?.dataTab?.parms,
+			ParmsValuesType.itemsParmValue,
+			linkItemsSource.parmValue,
+			PropDataType.uuid
+		)
+		setParm(
+			query.queryData?.dataTab?.parms,
+			ParmsValuesType.itemsParmValueList,
+			linkItemsSource.parmValueList,
+			PropDataType.uuidList
+		)
+
 		let exprProp = `${linkItemsSource.getExprSelect(true, currentValue)}`
+
 		return await evalExpr({
 			evalExprContext: this.evalExprContext,
 			exprRaw: exprProp,

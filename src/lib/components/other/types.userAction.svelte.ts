@@ -20,7 +20,7 @@ import {
 } from '$utils/types'
 import { EvalParser, EvalParserToken, type EvalParserTokenParm } from '$utils/utils.evalParser'
 import { Field, FieldClassType } from '$comps/form/field.svelte'
-import { FieldEmbedList } from '$comps/form/fieldEmbed'
+import { FieldEmbedList } from '$comps/form/fieldEmbed.svelte'
 import {
 	NavDestinationType,
 	Token,

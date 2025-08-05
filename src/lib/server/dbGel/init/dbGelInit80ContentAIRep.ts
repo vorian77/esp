@@ -254,24 +254,24 @@ const getElementsStudent = (parms: DataRecord = {}) => {
 		{
 			codeFieldElement: 'text',
 			codeReportElementType: 'column',
-			columnName: 'objAttrCmProgram',
+			columnName: 'cmProgram',
 			indexTable: 1,
 			isDisplay: false,
 			isDisplayable: true,
 			linkColumns: ['header'],
-			linkTable: 'SysObjAttr',
+			linkTable: 'CmProgram',
 			orderDefine: 110,
 			orderDisplay: 110
 		},
 		{
 			codeFieldElement: 'text',
 			codeReportElementType: 'column',
-			columnName: 'objAttrCmSite',
+			columnName: 'cmSite',
 			indexTable: 1,
 			isDisplay: false,
 			isDisplayable: true,
 			linkColumns: ['header'],
-			linkTable: 'SysObjAttr',
+			linkTable: 'CmSite',
 			orderDefine: 115,
 			orderDisplay: 115
 		},

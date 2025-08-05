@@ -263,10 +263,6 @@ module sys_core {
       on source delete delete target;
       on target delete allow;
     };
-
-    fieldEmbedDetailEligibility: sys_core::SysEligibility {
-      on target delete allow;
-    };
     
     fieldEmbedListConfig: sys_core::SysDataObjFieldEmbedListConfig{
       on target delete allow;
@@ -449,6 +445,9 @@ module sys_core {
   }
 
   type SysEligibility extending sys_core::SysObjAttr {
+     overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_sys_eligibility');
+    };
     multi nodes: sys_core::SysEligibilityNode {
       on source delete delete target;
       on target delete allow;
@@ -456,10 +455,11 @@ module sys_core {
   }
 
   type SysEligibilityNode extending sys_core::ObjRootCore {
-    required nodeId: default::nonNegative;
-    nodeIdParent: default::nonNegative;
     required codeEligibilityType: sys_core::SysCode;
     exprState: str;
+    required nodeIdx: default::nonNegative;
+    nodeIdxDependent: default::nonNegative;
+    nodeIdxParent: default::nonNegative;
     order: default::nonNegative;
   }
 

@@ -254,7 +254,11 @@ class ExprTokenItem {
 		return new MethodResult()
 	}
 
-	getValRawValidate(data: DataRecord | undefined, parm: string, isAllowMissing: boolean) {
+	getValRawValidate(
+		data: DataRecord | undefined,
+		parm: string,
+		isAllowMissing: boolean
+	): MethodResult {
 		if (!data) return this.valueNotFound({})
 		const keys = parm.split('.')
 		if (keys.length === 0) return new MethodResult(this.valueNotFound(data))
@@ -490,44 +494,82 @@ class ExprTokenItemTree extends ExprTokenItem {
 		this.treeParms = this.token.parms[1].split('.')
 	}
 	getValRaw(): MethodResult {
-		let dataRowRecord: DataRecord | undefined = undefined
 		let property = ''
-		let result: MethodResult
+		let dataType: PropDataType = this.itemValue.dataTypeProp
 		switch (this.treeParms.length) {
 			case 1:
 				// property in bottom level
 				property = this.treeParms[0]
-				result = this.parser.queryData.dataTree.getDataRowRecord(
-					TokenApiQueryDataTreeAccessType.index,
-					0
-				)
-				if (result.error) return this.errorMethod(result)
-				dataRowRecord = result.data
-				break
+				return this.getValueRawRecord(TokenApiQueryDataTreeAccessType.index, 0, property, dataType)
+
 			case 2:
-				result = this.parser.queryData.dataTree.getDataRowRecord(
+				const table: string = this.treeParms[0] // table
+				property = this.treeParms[1] // table.property
+				return this.getValueRawRecord(
 					TokenApiQueryDataTreeAccessType.table,
-					this.treeParms[0]
+					table,
+					property,
+					dataType
 				)
-				if (result.error) return this.errorMethod(result)
-				dataRowRecord = result.data
-				property = this.treeParms[1]
-				break
+
 			default:
 				if (this.treeParms[0] === ParmsValuesType.treeAncestorValue) {
-					let result: MethodResult
 					const accessType = this.treeParms[1]
 					const parms = this.treeParms[2]
-					result = this.parser.queryData.dataTree.getDataRowRecord(accessType, parms)
-					if (result.error) return this.errorMethod(result)
-					dataRowRecord = result.data
 					property = this.treeParms.slice(3).join('.')
+					return this.getValueRawRecord(accessType, parms, property, dataType)
 				} else {
 					return this.error({ msg: `Invalid treeParms: ${this.treeParms}` })
 				}
 		}
-		return this.getValRawValidate(dataRowRecord, property, false)
 	}
+
+	getValueRawRecord(
+		accessType: string = TokenApiQueryDataTreeAccessType.index,
+		parm: string | number = 0,
+		property: string,
+		dataType: PropDataType
+	): MethodResult {
+		const parseParm = (parm: string | number): ExprTokenItemParm => {
+			if (typeof parm === 'string') {
+				const match = parm.match(/^\[(.*?)\](.*)$/)
+				if (match) {
+					const modifier = valueOrDefault(match[1], ExprTokenItemParmModifier.none)
+					const value = match[2]
+					return { modifier, value }
+				}
+			}
+			return { modifier: ExprTokenItemParmModifier.none, value: parm }
+		}
+
+		const parmParsed: ExprTokenItemParm = parseParm(parm)
+		let result: MethodResult = this.parser.queryData.dataTree.getDataRow(
+			accessType,
+			parmParsed.value
+		)
+		if (result.error) {
+			switch (parmParsed.modifier) {
+				case ExprTokenItemParmModifier.optional:
+					result = getValDb(dataType, undefined)
+					if (result.error) return result
+					const valueRaw = result.data.value
+					return new MethodResult(valueRaw)
+
+				default:
+					return result
+			}
+		} else {
+			let dataRowRecord: DataRecord = result.data.record
+			return this.getValRawValidate(dataRowRecord, property, false)
+		}
+	}
+}
+
+type ExprTokenItemParm = { modifier: ExprTokenItemParmModifier; value: string | number }
+
+export enum ExprTokenItemParmModifier {
+	none = 'none',
+	optional = 'optional'
 }
 
 enum ExprTokenItemType {
@@ -615,11 +657,6 @@ export function getValDb(codeDataType: PropDataType, valueRaw: any): MethodResul
 			valueDB = valueRaw ? getValQuoted(JSON.stringify(valueRaw)) : '{}'
 			break
 
-		case PropDataType.jsonCustomEligibility:
-			dataType = codeDataType
-			valueDB = valueRaw
-			break
-
 		case PropDataType.link:
 			dataType = codeDataType
 			valueDB = valueRaw ? valueRaw : '{}'
@@ -685,15 +722,4 @@ export function getUUID(valueRaw?: string) {
 }
 function getUUIDQuoted(valueRaw?: string) {
 	return getValQuoted(getUUID(valueRaw))
-}
-function getUUIDValues(valueRaw?: any) {
-	let list = getArray(valueRaw)
-	list = valueRaw.length > 0 ? list : [getUUID()]
-
-	const rtn = list
-		.map((v: string) => {
-			return `<uuid>${getUUIDQuoted(v)}`
-		})
-		.join(',')
-	return rtn
 }

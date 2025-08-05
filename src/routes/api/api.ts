@@ -14,6 +14,7 @@ const FILENAME = '$routes/api/api.ts'
 export enum ApiFunction {
 	dbGelGetDataObjActionGroup = 'dbGelGetDataObjActionGroup',
 	dbGelGetDataObjId = 'dbGelGetDataObjId',
+	dbGelGetEligibility = 'dbGelGetEligibility',
 	dbGelGetLinkItemsSource = 'dbGelGetLinkItemsSource',
 	dbGelGetNodeByNodeId = 'dbGelGetNodeByNodeId',
 	dbGelGetNodeByNodeName = 'dbGelGetNodeByNodeName',

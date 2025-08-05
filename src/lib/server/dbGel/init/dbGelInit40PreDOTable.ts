@@ -99,7 +99,8 @@ export function initPreTable(init: InitDb) {
 		['sys_client_atlantic_impact', 'app_cm', 'CmCsfNote', true],
 		['sys_client_atlantic_impact', 'app_cm', 'CmCsfSchoolPlacement', true],
 		['sys_client_atlantic_impact', 'app_cm', 'CmPartner', true],
-		['sys_client_atlantic_impact', 'app_cm', 'CmProgram', true]
+		['sys_client_atlantic_impact', 'app_cm', 'CmProgram', true],
+		['sys_client_atlantic_impact', 'app_cm', 'CmSite', true]
 	])
 
 	init.addTrans('tablesBulk', [

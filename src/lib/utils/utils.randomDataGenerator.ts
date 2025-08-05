@@ -8,11 +8,11 @@ const recordCount = 25
 const universalStartDate = '2025-07-01'
 
 // values example
-// ObjAttrCmSite: {
+// site: {
 // 	type: 'list',
 // 	values: [
-// 		[{ type: 'at_cm_site', obj: 'site_moed_office_east' }],
-// 		[{ type: 'at_cm_site', obj: 'site_moed_office_west' }]
+// 		[{ type: 'at_cm_site', obj: 'at_cm_site_moed_office_east' }],
+// 		[{ type: 'at_cm_site', obj: 'at_cm_site_moed_office_west' }]
 // 	]
 // },
 
@@ -218,7 +218,10 @@ const recordPart = [
 
 /* service flow */
 const dataServiceFlow = {
-	ObjAttrCmSite: { type: 'list', values: ['site_moed_office_east', 'site_moed_office_west'] },
+	cmSite: {
+		type: 'list',
+		values: ['at_cm_site_moed_office_east', 'at_cm_site_moed_office_west']
+	},
 	dateCreated: {
 		date: universalStartDate,
 		daysMin: 0,
@@ -274,7 +277,7 @@ const dataServiceFlow = {
 	}
 }
 const recordServiceFlow = [
-	'ObjAttrCmSite',
+	'cmSite',
 	'dateCreated',
 	'dateStart',
 	'dateEnd',

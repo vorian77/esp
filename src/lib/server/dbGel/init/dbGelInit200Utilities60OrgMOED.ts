@@ -73,6 +73,16 @@ export async function MoedBulkCsf(params: any) {
 						filter_single: e.op(part.idxDemo, '=', e.cast(e.int64, i[0]))
 					}))
 				),
+				cmProgram: e.assert_single(
+					e.select(e.app_cm.CmProgram, (a) => ({
+						filter_single: e.op(a.name, '=', 'at_cm_program_moed_yo')
+					}))
+				),
+				cmSite: e.assert_single(
+					e.select(e.app_cm.CmSite, (a) => ({
+						filter_single: e.op(a.name, '=', e.cast(e.str, i[1]))
+					}))
+				),
 				codeSfEligibilityStatus: e.sys_core.getCodeSystem(
 					'sys_client_baltimore_moed',
 					'ct_cm_sf_eligibility_status',
@@ -90,13 +100,7 @@ export async function MoedBulkCsf(params: any) {
 				),
 				dateCreated: e.cal.to_local_date(e.cast(e.str, i[2])),
 				dateStart: e.cal.to_local_date(e.cast(e.str, i[3])),
-				dateEnd: e.cal.to_local_date(e.cast(e.str, i[4])),
-				objAttrCmProgram: e.sys_core.getObjAttr('at_cm_program', 'at_cm_program_moed_yo'),
-				objAttrCmSite: e.assert_single(
-					e.select(e.sys_core.SysObjAttr, (a) => ({
-						filter_single: e.op(a.name, '=', e.cast(e.str, i[1]))
-					}))
-				)
+				dateEnd: e.cal.to_local_date(e.cast(e.str, i[4]))
 			})
 		})
 	})

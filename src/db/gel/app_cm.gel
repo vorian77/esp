@@ -63,6 +63,8 @@ module app_cm {
 
   type CmClientServiceFlow extending sys_core::ObjRoot, sys_user::Mgmt {
     required client: app_cm::CmClient;
+    required cmProgram: app_cm::CmProgram;
+    required cmSite: app_cm::CmSite;
     codeSfEligibilityStatus: sys_core::SysCode;
     codeSfEnrollType: sys_core::SysCode;
     codeSfOutcome: sys_core::SysCode;
@@ -72,8 +74,6 @@ module app_cm {
     dateStart: cal::local_date;
     dateStartEst: cal::local_date;
     idxDemo: int64;
-    required objAttrCmProgram: sys_core::SysObjAttr;
-    required objAttrCmSite: sys_core::SysObjAttr;
     user: sys_user::SysUser;
   }
 
@@ -105,22 +105,17 @@ module app_cm {
   }  
 
   type CmCsfDocument extending app_cm::CmCsfData {
+    multi cmEligibilityCategories: sys_core::SysCodeType;
     required codeType: sys_core::SysCode;
     dateExpires: cal::local_date;
     required dateIssued: cal::local_date;
     file: json;
     isShareWithClient: bool;
     note: str;
-    isVerifiedByCaseManager: bool;
-    isVerifiedByCompliance: bool;
   }
 
   type CmCsfEligibility extending app_cm::CmCsfData {
-    eligibility: sys_core::SysEligibility {
-      on target delete allow;
-    };
-    required nodeValues: json;
-    required objAttrCmProgram: sys_core::SysObjAttr;
+    required eligibilityData: json;
     required valueBoolean: bool;
   }
 
@@ -167,7 +162,20 @@ module app_cm {
     };
   }
   
-  type CmProgram extending sys_core::SysObj {}
+  type CmProgram extending sys_core::SysObjAttrEnt {
+    sysEligibility: sys_core::SysEligibility {
+      on target delete allow;
+    };
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_cm_program');
+    };
+  }
+
+  type CmSite extending sys_core::SysObjAttrEnt {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_cm_site');
+    };
+  }
 
 # FUNCTIONS
 function getCMTrainingCourse(name: str) -> optional app_cm::CmCourse

@@ -431,23 +431,21 @@ function initTaskNewStudent(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'objAttrCmProgram',
+				columnName: 'cmProgram',
 				isDisplayable: true,
 				orderDisplay: 570,
 				orderDefine: 570,
 				indexTable: 1,
-				fieldListItems: 'il_sys_obj_attr_type_single',
-				fieldListItemsParmValue: 'at_cm_program'
+				fieldListItems: 'il_cm_program'
 			},
 			{
 				codeFieldElement: 'select',
-				columnName: 'objAttrCmSite',
+				columnName: 'cmSite',
 				isDisplayable: true,
 				orderDisplay: 580,
 				orderDefine: 580,
 				indexTable: 1,
-				fieldListItems: 'il_sys_obj_attr_type_single',
-				fieldListItemsParmValue: 'at_cm_site'
+				fieldListItems: 'il_cm_site'
 			},
 			{
 				codeFieldElement: 'select',

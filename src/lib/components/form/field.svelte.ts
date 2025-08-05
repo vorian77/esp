@@ -17,8 +17,10 @@ import { IconProps } from '$comps/icon/types.icon'
 import {
 	booleanOrDefault,
 	classOptional,
+	DataManager,
 	DataManagerNode,
 	DataObjData,
+	DataObjStatus,
 	type DataRecord,
 	DataRecordStatus,
 	debug,
@@ -29,6 +31,7 @@ import {
 	memberOfEnumIfExists,
 	memberOfEnumOrDefault,
 	MethodResult,
+	PropDataType,
 	PropOp,
 	recordValueGet,
 	required,
@@ -38,6 +41,20 @@ import {
 const FILENAME = '/$comps/form/field.svelte.ts'
 
 export class Field {
+	altProcessInitItemChange?: (
+		dmn: DataManagerNode,
+		row: number,
+		record: DataRecord
+	) => Promise<void>
+	altProcessItemChange?: (ici: FieldItemChangeManagerItem) => Promise<MethodResult>
+	altProcessSetStatus?: (dmn: DataManagerNode, recordId: string, newStatus: DataObjStatus) => void
+	altProcessSave?: (valueData: any) => any
+	callbackSetFieldValue?: (
+		dm: DataManager,
+		dataObjId: string,
+		row: number,
+		field: Field
+	) => Promise<void>
 	classType: FieldClassType = FieldClassType.regular
 	colDO: RawDataObjPropDisplay
 	fieldAccess: FieldAccess = $state(FieldAccess.hidden)
@@ -117,132 +134,129 @@ export class Field {
 		return new MethodResult()
 	}
 
-	async processItemChanges(
-		sm: State,
-		row: number,
-		triggerValueCurrent: any,
-		dmn: DataManagerNode
-	): Promise<MethodResult> {
-		const clazz = 'Field.processItemChanges'
+	async processItemChange(ici: FieldItemChangeManagerItem): Promise<MethodResult> {
+		const clazz = 'Field.processItemChange'
 
-		triggerValueCurrent = getValueData(triggerValueCurrent)
+		let triggerValueCurrent = getValueData(ici.triggerValue)
 
-		for (let i = 0; i < this.itemChanges.length; i++) {
-			const itemChange = this.itemChanges[i]
+		const itemChange = ici.itemChange
 
-			if (itemChange.retrieveParmKey) {
-				sm.parmsState.valueSet(itemChange.retrieveParmKey, triggerValueCurrent)
-			}
-
-			const valueTriggerArray =
-				itemChange.valueTriggerIdsAttribute.length > 0
-					? itemChange.valueTriggerIdsAttribute
-					: itemChange.valueTriggerIdsCode.length > 0
-						? itemChange.valueTriggerIdsCode
-						: getArray(itemChange.valueTargetScalar)
-
-			if (
-				itemChange.codeItemChangeTriggerType ===
-				FieldItemChangeTriggerType.itemChangeTypeRecordStatus
-			) {
-				if (
-					itemChange.codeItemChangeRecordStatus &&
-					dmn.dataObj.data.rowsRetrieved.getDetailRowStatusIs(itemChange.codeItemChangeRecordStatus)
-				) {
-					return process(this, itemChange)
-				}
-			} else if (
-				itemChange.codeItemChangeTriggerType === FieldItemChangeTriggerType.itemChangeTypeOp
-			) {
-				switch (itemChange.codeOp) {
-					case PropOp.any:
-						return process(this, itemChange)
-
-					case PropOp.equal:
-						if (valueTriggerArray.includes(triggerValueCurrent)) {
-							return await process(this, itemChange)
-						}
-						break
-
-					case PropOp.false:
-						if (triggerValueCurrent === false) {
-							return await process(this, itemChange)
-						}
-						break
-
-					case PropOp.notEqual:
-						if (!valueTriggerArray.includes(triggerValueCurrent)) {
-							return await process(this, itemChange)
-						}
-						break
-
-					case PropOp.notNull:
-						if (!['', null, undefined].includes(triggerValueCurrent)) {
-							return await process(this, itemChange)
-						}
-						break
-
-					case PropOp.null:
-						if (['', null, undefined].includes(triggerValueCurrent)) {
-							return await process(this, itemChange)
-						}
-						break
-
-					case PropOp.true:
-						if (triggerValueCurrent === true) {
-							return await process(this, itemChange)
-						}
-						break
-
-					default:
-						const valueTriggerScalar = required(itemChange.valueTriggerScalar, clazz, 'valueScalar')
-						switch (itemChange.codeOp) {
-							case PropOp.greaterThan:
-								if (triggerValueCurrent > valueTriggerScalar) {
-									return await process(this, itemChange)
-								}
-								break
-
-							case PropOp.greaterThanOrEqual:
-								if (triggerValueCurrent >= valueTriggerScalar) {
-									return await process(this, itemChange)
-								}
-								break
-
-							case PropOp.lessThan:
-								if (triggerValueCurrent < valueTriggerScalar) {
-									return await process(this, itemChange)
-								}
-								break
-
-							case PropOp.lessThanOrEqual:
-								if (triggerValueCurrent <= valueTriggerScalar) {
-									return await process(this, itemChange)
-								}
-								break
-
-							default:
-								return new MethodResult({
-									error: {
-										file: FILENAME,
-										function: clazz,
-										msg: `No case defined for PropOp: ${itemChange.codeOp}`
-									}
-								})
-						}
-				}
-			} else {
-				return new MethodResult({
-					error: {
-						file: FILENAME,
-						function: clazz,
-						msg: `No case defined for codeItemChangeTriggerType: ${itemChange.codeItemChangeTriggerType}`
-					}
-				})
-			}
+		if (itemChange.retrieveParmKey) {
+			ici.sm.parmsState.valueSet(itemChange.retrieveParmKey, ici.triggerValue)
 		}
 
-		async function process(field: Field, itemChange: FieldItemChange): Promise<MethodResult> {
+		const valueTriggerArray =
+			itemChange.valueTriggerIdsAttribute.length > 0
+				? itemChange.valueTriggerIdsAttribute
+				: itemChange.valueTriggerIdsCode.length > 0
+					? itemChange.valueTriggerIdsCode
+					: getArray(itemChange.valueTargetScalar)
+
+		if (
+			itemChange.codeItemChangeTriggerType === FieldItemChangeTriggerType.itemChangeTypeRecordStatus
+		) {
+			if (
+				itemChange.codeItemChangeRecordStatus &&
+				ici.dmn.dataObj.data.rowsRetrieved.getDetailRowStatusIs(
+					itemChange.codeItemChangeRecordStatus
+				)
+			) {
+				return process(this, itemChange)
+			}
+		} else if (
+			itemChange.codeItemChangeTriggerType === FieldItemChangeTriggerType.itemChangeTypeOp
+		) {
+			switch (itemChange.codeOp) {
+				case PropOp.any:
+					return process(this, itemChange)
+
+				case PropOp.equal:
+					if (valueTriggerArray.includes(triggerValueCurrent)) {
+						return await process(this, itemChange)
+					}
+					break
+
+				case PropOp.false:
+					if (triggerValueCurrent === false) {
+						return await process(this, itemChange)
+					}
+					break
+
+				case PropOp.notEqual:
+					if (!valueTriggerArray.includes(triggerValueCurrent)) {
+						return await process(this, itemChange)
+					}
+					break
+
+				case PropOp.notNull:
+					if (!['', null, undefined].includes(triggerValueCurrent)) {
+						return await process(this, itemChange)
+					}
+					break
+
+				case PropOp.null:
+					if (['', null, undefined].includes(triggerValueCurrent)) {
+						return await process(this, itemChange)
+					}
+					break
+
+				case PropOp.true:
+					if (triggerValueCurrent === true) {
+						return await process(this, itemChange)
+					}
+					break
+
+				default:
+					const valueTriggerScalar = required(itemChange.valueTriggerScalar, clazz, 'valueScalar')
+					switch (itemChange.codeOp) {
+						case PropOp.greaterThan:
+							if (triggerValueCurrent > valueTriggerScalar) {
+								return await process(this, itemChange)
+							}
+							break
+
+						case PropOp.greaterThanOrEqual:
+							if (triggerValueCurrent >= valueTriggerScalar) {
+								return await process(this, itemChange)
+							}
+							break
+
+						case PropOp.lessThan:
+							if (triggerValueCurrent < valueTriggerScalar) {
+								return await process(this, itemChange)
+							}
+							break
+
+						case PropOp.lessThanOrEqual:
+							if (triggerValueCurrent <= valueTriggerScalar) {
+								return await process(this, itemChange)
+							}
+							break
+
+						default:
+							return new MethodResult({
+								error: {
+									file: FILENAME,
+									function: clazz,
+									msg: `No case defined for PropOp: ${itemChange.codeOp}`
+								}
+							})
+					}
+			}
+		} else {
+			return new MethodResult({
+				error: {
+					file: FILENAME,
+					function: clazz,
+					msg: `No case defined for codeItemChangeTriggerType: ${itemChange.codeItemChangeTriggerType}`
+				}
+			})
+		}
+
+		async function process(
+			fieldTrigger: Field,
+			itemChange: FieldItemChange
+		): Promise<MethodResult> {
 			for (let i = 0; i < itemChange.fields.length; i++) {
 				const field = itemChange.fields[i]
 				let result: MethodResult
@@ -251,43 +265,73 @@ export class Field {
 					field.fieldAccess = itemChange.codeAccess
 				}
 
-				const targetCurrValue = recordValueGet(dmn.recordsDisplay[row], field.getValueKey())
+				const targetCurrValue = recordValueGet(ici.dmn.recordsDisplay[ici.row], field.getValueKey())
 
-				switch (itemChange.codeItemChangeAction) {
-					case FieldItemChangeAction.none:
-						break
+				if (field.altProcessItemChange) {
+					field.altProcessItemChange(ici)
+				} else {
+					switch (itemChange.codeItemChangeAction) {
+						case FieldItemChangeAction.none:
+							break
 
-					case FieldItemChangeAction.reset:
-						await dmn.setFieldValAsync(row, field, null)
-						break
+						case FieldItemChangeAction.reset:
+							await ici.dmn.setFieldValAsync(ici.row, field, null)
+							break
 
-					case FieldItemChangeAction.retrieveEmbed:
-						break
+						case FieldItemChangeAction.retrieveEmbed:
+							break
 
-					case FieldItemChangeAction.retrieveSelect:
-						field.linkItems?.source.setParmValue(triggerValueCurrent)
-						if (field.linkItems) {
-							result = await field.linkItems.retrieve(sm)
-							if (result.error) return result
-						}
-						break
-
-					case FieldItemChangeAction.setScalar:
-						await dmn.setFieldValAsync(row, field, itemChange.valueTargetScalar)
-						break
-
-					case FieldItemChangeAction.setTargetValue:
-						await dmn.setFieldValAsync(row, field, targetCurrValue)
-						break
-
-					default:
-						return new MethodResult({
-							error: {
-								file: FILENAME,
-								function: clazz,
-								msg: `No case defined for FieldItemChangeAction: ${itemChange.codeItemChangeAction}`
+						case FieldItemChangeAction.retrieveSelect:
+							if (!ici.isRetrieve) await ici.dmn.setFieldValAsync(ici.row, field, null)
+							field.linkItems?.source.setParmValue(triggerValueCurrent)
+							if (field.linkItems) {
+								result = await field.linkItems.retrieve(ici.sm)
+								if (result.error) return result
 							}
-						})
+							break
+
+						case FieldItemChangeAction.setScalar:
+							let valueScalar: any
+							switch (field.colDO.colDB.codeDataType) {
+								case PropDataType.bool:
+									valueScalar = itemChange.valueTargetScalar === 'true' ? true : false
+									break
+
+								case PropDataType.int16:
+								case PropDataType.int32:
+								case PropDataType.int64:
+									valueScalar = Number(itemChange.valueTargetScalar)
+									break
+
+								case PropDataType.str:
+									valueScalar = itemChange.valueTargetScalar
+									break
+
+								default:
+									return new MethodResult({
+										error: {
+											file: FILENAME,
+											function: clazz,
+											msg: `No case defined for PropDataType: ${field.colDO.colDB.codeDataType}`
+										}
+									})
+							}
+							await ici.dmn.setFieldValAsync(ici.row, field, valueScalar)
+							break
+
+						case FieldItemChangeAction.setTargetValue:
+							await ici.dmn.setFieldValAsync(ici.row, field, targetCurrValue)
+							break
+
+						default:
+							return new MethodResult({
+								error: {
+									file: FILENAME,
+									function: clazz,
+									msg: `No case defined for FieldItemChangeAction: ${itemChange.codeItemChangeAction}`
+								}
+							})
+					}
 				}
 			}
 			return new MethodResult()
@@ -511,6 +555,66 @@ export enum FieldItemChangeAction {
 	setTargetValue = 'setTargetValue'
 }
 
+export class FieldItemChangeManager {
+	items: FieldItemChangeManagerItem[] = []
+	constructor() {}
+	async add(
+		sm: State,
+		dmn: DataManagerNode,
+		field: Field,
+		row: number,
+		triggerValue: any,
+		isRetrieve: boolean
+	) {
+		if (field.itemChanges.length > 0) {
+			field.itemChanges.forEach((itemChange) => {
+				this.items.push(
+					new FieldItemChangeManagerItem(sm, dmn, row, field, itemChange, triggerValue, isRetrieve)
+				)
+			})
+			return await this.process()
+		}
+		return new MethodResult()
+	}
+	async process(): Promise<MethodResult> {
+		while (this.items.length > 0) {
+			const item = this.items.shift()
+			if (item) {
+				const result = await item.field.processItemChange(item)
+				if (result.error) return result
+			}
+		}
+		return new MethodResult()
+	}
+}
+
+export class FieldItemChangeManagerItem {
+	sm: State
+	dmn: DataManagerNode
+	field: Field
+	isRetrieve: boolean
+	itemChange: FieldItemChange
+	row: number
+	triggerValue: any
+	constructor(
+		sm: State,
+		dmn: DataManagerNode,
+		row: number,
+		field: Field,
+		itemChange: FieldItemChange,
+		triggerValue: any,
+		isRetrieve: boolean
+	) {
+		this.dmn = dmn
+		this.field = field
+		this.isRetrieve = isRetrieve
+		this.itemChange = itemChange
+		this.row = row
+		this.sm = sm
+		this.triggerValue = triggerValue
+	}
+}
+
 export enum FieldItemChangeTriggerType {
 	itemChangeTypeOp = 'itemChangeTypeOp',
 	itemChangeTypeRecordStatus = 'itemChangeTypeRecordStatus'
@@ -529,8 +633,8 @@ export class PropsFieldInit {
 	constructor(obj: any) {
 		obj = valueOrDefault(obj, {})
 		const clazz = 'PropsField'
-		this.data = required(obj.data, clazz, 'data')
-		this.fields = required(obj.fields, clazz, 'fields')
+		this.data = valueOrDefault(obj.data, new DataObjData())
+		this.fields = valueOrDefault(obj.fields, [])
 		this.sm = required(obj.sm, clazz, 'sm')
 	}
 }
