@@ -430,6 +430,7 @@ function initStudent(init: InitDb) {
 		codeNodeType: 'nodeApp',
 		dataObj: 'data_obj_cm_student_list',
 		header: 'Students',
+		isAlwaysRetrieveData: true,
 		name: 'node_obj_cm_student_list',
 		orderDefine: 30,
 		ownerSys: 'sys_client_atlantic_impact',

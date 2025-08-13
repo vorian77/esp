@@ -415,7 +415,7 @@ function initApplicant(init: InitDb) {
 			{
 				codeFieldElement: 'date',
 				columnName: 'birthDate',
-				headerAlt: 'Birth Date (yyyy-mm-dd)',
+				headerAlt: 'Birth Date',
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
@@ -762,6 +762,7 @@ function initApplicant(init: InitDb) {
 		codeNodeType: 'nodeApp',
 		dataObj: 'data_obj_moed_part_list',
 		header: 'Participants',
+		isAlwaysRetrieveData: true,
 		name: 'node_obj_moed_part_list',
 		orderDefine: 10,
 		ownerSys: 'sys_client_baltimore_moed',

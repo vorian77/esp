@@ -38,7 +38,7 @@
 			{/if}
 		</div>
 		{#if field.colDO.colDB.description}
-			<div class="text-xs text-gray-500">
+			<div class="text-xs text-desc">
 				{field.colDO.colDB.description}
 			</div>
 		{/if}

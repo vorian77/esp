@@ -7,7 +7,7 @@
 
 {#if navMenu.isOpen}
 	<h4 class="" in:fade={navMenu.fadeIn} out:fade={navMenu.fadeOut}>
-		<span class="mb-1 text-gray-500">
+		<span class="mb-1 text-desc">
 			{info.label}:
 		</span>
 		{info.value}

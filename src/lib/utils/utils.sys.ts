@@ -82,6 +82,7 @@ export enum CodeActionType {
 	modalDone = 'modalDone',
 	modalOpenEmbedFieldLevel = 'modalOpenEmbedFieldLevel',
 	modalOpenEmbedFieldTree = 'modalOpenEmbedFieldTree',
+	modalOpenDate = 'modalOpenDate',
 	modalOpenSelect = 'modalOpenSelect',
 
 	// nav
@@ -211,30 +212,6 @@ export class FileStorage {
 		this.key = strRequired(obj.key, clazz, 'key')
 		this.url = strRequired(obj.url, clazz, 'url')
 	}
-}
-
-export function getColor(colorName: string) {
-	const colorError = '#ef4444'
-	const colorPrimary = '#60a5fa'
-	const colorSecondary = '#22c55e'
-	const colors = [
-		['amber', '#b45309'],
-		['defaultBorder', '#e5e7eb'],
-		['black', '#000000'],
-		['blue', colorPrimary],
-		['error', colorError],
-		['gray', '#e5e7eb'],
-		['green', colorSecondary],
-		['orange', '#f97316'],
-		['primary', colorPrimary],
-		['purple', '#d8b4fe'],
-		['red', colorError],
-		['secondary', colorSecondary],
-		['white', '#FFFFFF'],
-		['yellow', '#fde047']
-	]
-	const idx = colors.findIndex((c) => c[0] === colorName)
-	return idx > -1 ? colors[idx][1] : ''
 }
 
 export function getDbExprRaw(exprWith: string | undefined, exprCustom: string | undefined) {
@@ -630,33 +607,98 @@ export function recordValueSetForSave(record: DataRecord) {
 
 export enum ToastType {
 	error = 'error',
+	info = 'info',
 	success = 'success',
 	warning = 'warning'
 }
 
 export function valueHasChanged(vSource: any, vCurrent: any): boolean {
-	if (typeof vSource == 'boolean' || typeof vCurrent === 'boolean') {
-		return noVal(vSource) ? true : vSource !== vCurrent
-	} else if (noVal(vSource)) {
-		return !noVal(vCurrent)
-	} else if (noVal(vCurrent)) {
-		return !noVal(vSource)
-	} else if (Array.isArray(vSource) || Array.isArray(vCurrent)) {
-		if (!Array.isArray(vSource) || !Array.isArray(vCurrent)) return true
-		return vSource.sort().toString() !== vCurrent.sort().toString()
-	} else if (typeof vSource === 'object' || typeof vCurrent === 'object') {
-		if (typeof vSource !== 'object' || typeof vCurrent !== 'object') return true
-		if (Object.entries(vSource).length !== Object.entries(vCurrent).length) return true
-		for (const [key, value] of Object.entries(vSource)) {
-			if (!Object.hasOwn(vCurrent, key)) return true
-			if (valueHasChanged(value, vCurrent[key])) return true
-		}
-		return false
-	} else {
-		return vCurrent.toString() !== vSource.toString()
+	// Handle null/undefined cases first
+	if (isNoValue(vSource) && isNoValue(vCurrent)) return false
+	if (isNoValue(vSource) || isNoValue(vCurrent)) return true
+
+	// Different types are always different
+	if (typeof vSource !== typeof vCurrent) return true
+
+	// Handle primitives
+	if (typeof vSource !== 'object' || vSource === null || vCurrent === null) {
+		return vSource !== vCurrent
 	}
 
-	function noVal(value: any) {
-		return [undefined, null, ''].includes(value) || (Array.isArray(value) && value.length === 0)
+	// Handle arrays
+	if (Array.isArray(vSource)) {
+		if (!Array.isArray(vCurrent)) return true
+		if (vSource.length !== vCurrent.length) return true
+		return vSource.some((item, index) => valueHasChanged(item, vCurrent[index]))
 	}
+
+	// Handle dates
+	if (vSource instanceof Date) {
+		if (!(vCurrent instanceof Date)) return true
+		return vSource.getTime() !== vCurrent.getTime()
+	}
+
+	// Handle RegExp
+	if (vSource instanceof RegExp) {
+		if (!(vCurrent instanceof RegExp)) return true
+		return vSource.toString() !== vCurrent.toString()
+	}
+
+	// Handle plain objects
+	if (vSource.constructor === Object && vCurrent.constructor === Object) {
+		const sourceKeys = Object.keys(vSource)
+		const currentKeys = Object.keys(vCurrent)
+
+		// Different number of keys
+		if (sourceKeys.length !== currentKeys.length) return true
+
+		// Check if all keys and values match
+		return sourceKeys.some((key) => {
+			if (!Object.hasOwn(vCurrent, key)) return true
+			return valueHasChanged(vSource[key], vCurrent[key])
+		})
+	}
+
+	// For other object types, use strict equality
+	return vSource !== vCurrent
+}
+
+function isNoValue(value: any): boolean {
+	return (
+		value === undefined ||
+		value === null ||
+		value === '' ||
+		(Array.isArray(value) && value.length === 0)
+	)
+}
+
+// Alternative: More comprehensive deep equality check
+export function deepEqual(a: any, b: any): boolean {
+	if (a === b) return true
+
+	if (a == null || b == null) return false
+
+	if (typeof a !== typeof b) return false
+
+	if (typeof a !== 'object') return false
+
+	if (Array.isArray(a)) {
+		if (!Array.isArray(b) || a.length !== b.length) return false
+		return a.every((item, index) => deepEqual(item, b[index]))
+	}
+
+	if (a instanceof Date && b instanceof Date) {
+		return a.getTime() === b.getTime()
+	}
+
+	if (a instanceof RegExp && b instanceof RegExp) {
+		return a.toString() === b.toString()
+	}
+
+	const keysA = Object.keys(a)
+	const keysB = Object.keys(b)
+
+	if (keysA.length !== keysB.length) return false
+
+	return keysA.every((key) => Object.hasOwn(b, key) && deepEqual(a[key], b[key]))
 }

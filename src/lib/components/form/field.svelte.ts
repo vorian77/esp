@@ -25,7 +25,6 @@ import {
 	DataRecordStatus,
 	debug,
 	getArray,
-	getColor,
 	getValueData,
 	memberOfEnum,
 	memberOfEnumIfExists,
@@ -95,11 +94,14 @@ export class Field {
 	}
 
 	getBackgroundColor(fieldAccess: FieldAccess) {
-		return fieldAccess === FieldAccess.required
-			? 'bg-blue-100'
-			: fieldAccess == FieldAccess.readonly
-				? 'bg-gray-200'
-				: 'bg-white'
+		return (
+			' ' +
+			(fieldAccess === FieldAccess.required
+				? 'bg-blue-100'
+				: fieldAccess == FieldAccess.readonly
+					? 'bg-gray-200'
+					: 'bg-white')
+		)
 	}
 
 	getPropName() {
@@ -401,12 +403,39 @@ export enum FieldClassType {
 }
 
 export class FieldColor {
-	color: string
+	hexColor: string
+	hexText: string
 	name: string
-	constructor(parmColor: string | undefined, defaultColor: string) {
-		this.name = parmColor || defaultColor
-		this.color = getColor(this.name)
+	constructor(name: string, hexColor: string, hexText: string) {
+		this.hexColor = hexColor
+		this.hexText = hexText
+		this.name = name
 	}
+}
+export function getFieldColor(colorName: string): FieldColor {
+	const colorError = '#ef4444'
+	const colorPrimary = '#60a5fa'
+	const colorSecondary = '#22c55e'
+	const colors = [
+		['amber', '#b45309', '#FFFFFF'],
+		['defaultBorder', '#e5e7eb', '#FFFFFF'],
+		['black', '#000000', '#FFFFFF'],
+		['blue', colorPrimary, '#FFFFFF'],
+		['error', colorError, '#FFFFFF'],
+		['gray', '#e5e7eb', '#000000'],
+		['green', colorSecondary, '#FFFFFF'],
+		['orange', '#f97316', '#FFFFFF'],
+		['primary', colorPrimary, '#FFFFFF'],
+		['purple', '#d8b4fe', '#FFFFFF'],
+		['red', colorError, '#FFFFFF'],
+		['secondary', colorSecondary, '#FFFFFF'],
+		['white', '#FFFFFF', '#000000'],
+		['yellow', '#fde047', '#FFFFFF']
+	]
+	const idx = colors.findIndex((c) => c[0] === colorName)
+	return idx > -1
+		? new FieldColor(colors[idx][0], colors[idx][1], colors[idx][2])
+		: getFieldColor('black')
 }
 
 export class FieldColumnItem {

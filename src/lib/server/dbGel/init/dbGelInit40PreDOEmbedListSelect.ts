@@ -47,7 +47,7 @@ function initFieldListSelectCode(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list_select',
 		btnLabelComplete: 'Select Code(s)',
 		dataObjList: 'dofls_sys_admin_sys_code',
 		name: 'fels_sys_code',
@@ -86,7 +86,7 @@ function initFieldListSelectCodeTypeFamily(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list_select',
 		btnLabelComplete: 'Select Code Type(s)',
 		dataObjList: 'dofls_sys_admin_sys_code_type_family',
 		name: 'fels_sys_code_type_family',
@@ -125,7 +125,7 @@ function initFieldListSelectColumn(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list_select',
 		btnLabelComplete: 'Select Column(s)',
 		dataObjList: 'dofls_sys_admin_sys_column',
 		name: 'fels_sys_column',

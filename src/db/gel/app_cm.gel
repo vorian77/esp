@@ -117,6 +117,9 @@ module app_cm {
   type CmCsfEligibility extending app_cm::CmCsfData {
     required eligibilityData: json;
     required valueBoolean: bool;
+    overloaded required csf: app_cm::CmClientServiceFlow{
+      on target delete delete source;
+    };
   }
 
   type CmCsfGroup extending app_cm::CmCsfData {

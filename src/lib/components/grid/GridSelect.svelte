@@ -4,9 +4,11 @@
 	import { getContext } from 'svelte'
 	import { PropSortDir } from '$comps/dataObj/types.rawDataObj.svelte'
 	import Grid from '$comps/grid/Grid.svelte'
+	import { type RowClickedEvent, type SelectionChangedEvent } from 'ag-grid-community'
 	import { getSelectedNodeIds, GridManagerOptions } from '$comps/grid/grid'
 	import { TokenAppModalSelect } from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
+	import { consoleLoggingIntegration } from '@sentry/sveltekit'
 
 	const FILENAME = '$comps/selectMulti/GridSelect.svelte'
 
@@ -26,7 +28,6 @@
 			sortModel: token.sortModel
 		})
 	)
-
 	function onSelectionChanged(event: SelectionChangedEvent) {
 		sm.parmsState.valueSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, 'id'))
 	}

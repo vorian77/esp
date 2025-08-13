@@ -51,7 +51,6 @@
 		})
 		return f
 	}) as FieldChips
-	$inspect('FormElInputChips', { field })
 
 	let propsField = $derived(
 		'w-full text-sm rounded-lg ' + field.getBackgroundColor(field.fieldAccess)
@@ -72,7 +71,7 @@
 				data: {
 					token: new TokenAppModalSelect({
 						columnDefs: gridParms.columnDefs,
-						fModalClose,
+						fModalReturn,
 						isMultiSelect: field.colDO.colDB.isMultiSelect,
 						listIdsSelected: field.linkItems.getValueIds(fieldValue),
 						rowData: gridParms.rowData,
@@ -83,9 +82,9 @@
 			})
 		)
 
-		async function fModalClose(token: TokenAppModalReturn) {
-			if (token.type === TokenAppModalReturnType.complete) {
-				const parmsReturn: ParmsValues = token.parmsState || undefined
+		async function fModalReturn(modalReturn: TokenAppModalReturn) {
+			if (modalReturn.type === TokenAppModalReturnType.complete) {
+				const parmsReturn: ParmsValues = modalReturn.parmsState || undefined
 				if (parmsReturn) {
 					const valueDisplay = parmsReturn.valueGet(ParmsValuesType.listIdsSelected)
 					const valueRaw = field.linkItems.getValueRaw(valueDisplay)

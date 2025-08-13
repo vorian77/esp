@@ -37,7 +37,7 @@ function initFieldListSelectNodes(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list_select',
 		btnLabelComplete: 'Select Node(s)',
 		dataObjList: 'dofls_sys_admin_sys_node',
 		name: 'fels_sys_node',

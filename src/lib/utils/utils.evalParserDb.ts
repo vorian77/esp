@@ -309,73 +309,133 @@ class ExprTokenItem {
 }
 
 class ExprTokenItemAttrAction extends ExprTokenItem {
-	data: DataRecord
+	userData: DataRecord
 	constructor(obj: any) {
 		const clazz = 'ExprTokenItemAttrAction'
 		obj = valueOrDefault(obj, {})
 		super(obj)
-		this.data = required(obj.data, clazz, 'data')
+		this.userData = required(obj.data, clazz, 'data')
 	}
+
 	getValRaw(): MethodResult {
 		const clazz = 'ExprTokenItemAttrAction.getValRaw'
-		const attrAction = strRequired(this.itemValue.parms[0], clazz, 'attrAction')
-		const types: string[] = this.itemValue.parms.slice(1)[0].split(';')
 
+		// Parse attrAction string into actionsConfiged
+		const parseAttrAction = (attrActionStr: string): ExprTokenItemAttrActionConfigured[] => {
+			// Remove surrounding brackets
+			const cleanStr = attrActionStr.slice(1, -1).trim()
+
+			// Split into entries using semicolon
+			const entries = cleanStr
+				.split(';')
+				.map((entry) => entry.trim())
+				.filter(Boolean)
+
+			const result: ExprTokenItemAttrActionConfigured[] = entries.map((entry) => {
+				const parts = entry.split('.').map((part) => part.trim())
+				if (parts.length === 2) {
+					const [attrAction, typeStr] = parts
+					const typeLower = typeStr.toLowerCase()
+					let typeEnum: ExprTokenItemAttrActionType
+
+					switch (typeLower) {
+						case 'object':
+							typeEnum = ExprTokenItemAttrActionType.object
+							break
+						case 'user':
+							typeEnum = ExprTokenItemAttrActionType.user
+							break
+						default:
+							throw new Error(`Unknown type: ${typeStr}`)
+					}
+
+					return { attrAction, type: typeEnum }
+				}
+				// If format unexpectedly doesn't match, return null or throw error
+				throw new Error(`Invalid entry format: ${entry}`)
+			})
+
+			return result
+		}
+
+		// Extract attrAction string
+		const attrActionStr = strRequired(this.itemValue.parms[0], clazz, 'attrAction')
+
+		// Parse actions config
+		const actionsConfiged = parseAttrAction(attrActionStr)
+
+		// Initialize filters
 		let filterIds = ''
 		let filterUser = ''
+		let filterExpr = ''
 
-		for (const type of types) {
-			switch (type) {
+		// Process each action configuration
+		for (const ac of actionsConfiged) {
+			switch (ac.type) {
 				case ExprTokenItemAttrActionType.object:
-					let ids = this.data.attrsAction
-						.filter((a: ObjAttrAction) => a.codeAttrTypeAction === attrAction)
+					// Build object IDs filter
+					const ids = this.userData.attrsAction
+						.filter((a: ObjAttrAction) => a.codeAttrTypeAction === ac.attrAction)
 						.reduce((expr: string, action: ObjAttrAction) => {
 							if (expr) expr += ','
 							return (expr += `"${action.id}"`)
 						}, '')
-					filterIds = ids ? `<uuid>{${ids}}` : ''
+					filterIds = filterIds ? `${filterIds},${ids}` : ids
 					break
 
 				case ExprTokenItemAttrActionType.user:
-					filterUser = `(SELECT sys_user::SysUser FILTER .userTypes.attrsAction.codeAttrTypeAction.name = '${attrAction}').id`
+					// Build user filter
+					const newFilterUser = `(SELECT sys_user::SysUser FILTER .userTypes.attrsAction.codeAttrTypeAction.name = '${ac.attrAction}').id`
+					filterUser = filterUser ? `${filterUser} UNION ${newFilterUser}` : newFilterUser
 					break
 
 				default:
+					// Handle unknown types
 					return new MethodResult({
 						error: {
 							file: FILENAME,
 							function: clazz,
-							msgSystem: `No case defined for ExprTokenItemAttrActionType: ${type} - token: ${this.token.raw}.`,
+							msgSystem: `No case defined for ExprTokenItemAttrActionConfigured.type: ${ac.type} - token: ${this.token.raw}.`,
 							msgUser: `Unable to evaluate expression.`
 						}
 					})
 			}
+
+			// Filter attrsExpr where codeAttrTypeAction matches one of the attrAction names
+			const relevantExprs = this.userData.attrsExpr
+				.filter((a: ObjAttrAction) => a.codeAttrTypeAction === ac.attrAction)
+				.reduce((expr: string, e: ObjAttrExpr) => {
+					if (expr) expr += ' UNION '
+					return `${expr} (${e.expr})`
+				}, '')
+			filterExpr = filterExpr ? `${filterExpr} UNION ${relevantExprs}` : relevantExprs
 		}
 
-		// actions derived from expressions
-		let filterExpr = this.data.attrsExpr
-			.filter((a: ObjAttrExpr) => a.codeAttrTypeAction === attrAction)
-			.reduce((expr: string, action: ObjAttrExpr) => {
-				if (expr) expr += ' UNION '
-				return (expr += `(${action.expr})`)
-			}, '')
-		filterExpr = filterExpr ? `(${filterExpr})` : ''
+		// Combine all filters
+		filterIds = filterIds ? `<uuid>{${filterIds}}` : ''
 
 		let expr = exprUnion(filterIds, filterUser)
 		expr = exprUnion(expr, filterExpr)
-		expr = expr ? `(${expr})` : '<uuid>{}'
+		expr = expr || '<uuid>{}'
 
 		return new MethodResult(expr)
 
+		// Helper to union expressions
 		function exprUnion(expr1: string, expr2: string): string {
 			if (!expr1) return expr2
 			if (!expr2) return expr1
-			return `${expr1} UNION ${expr2}`
+			return `(${expr1} UNION ${expr2})`
 		}
 	}
+
 	setItemValue() {
 		return new ExprTokenItemValue(PropDataType.none, this.token.parms.slice(0))
 	}
+}
+
+type ExprTokenItemAttrActionConfigured = {
+	attrAction: string
+	type: ExprTokenItemAttrActionType
 }
 
 enum ExprTokenItemAttrActionType {
@@ -500,6 +560,9 @@ class ExprTokenItemTree extends ExprTokenItem {
 			case 1:
 				// property in bottom level
 				property = this.treeParms[0]
+				if (property === '[optional]id') {
+					property = 'id'
+				}
 				return this.getValueRawRecord(TokenApiQueryDataTreeAccessType.index, 0, property, dataType)
 
 			case 2:

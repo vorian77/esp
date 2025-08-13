@@ -35,7 +35,7 @@
 	}
 </script>
 
-<nav class="h-12 flex items-center bg-neutral-50 p-3 gap-4 border-b">
+<nav class="h-12 flex items-center bg-neutral-50 p-3 gap-4 border-square border-b-0">
 	<Icon
 		props={new IconProps({
 			isNav: true,

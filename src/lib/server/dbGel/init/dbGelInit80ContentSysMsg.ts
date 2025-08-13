@@ -3,9 +3,10 @@ import { InitDb } from '$server/dbGel/init/types.init'
 const exprCustomObjRecipients = `[IS sys_user::SysUser].person.fullName ?? [IS sys_core::SysObjAttr].header ?? [IS sys_core::SysObjAttr].name`
 
 const exprMsgsFromMe = `(SELECT DETACHED sys_core::SysMsg FILTER <user,uuid,id> = .sender.id)`
-const exprMsgsToMe = `((SELECT DETACHED sys_core::SysMsg FILTER <user,uuid,id> IN .recipients.id) UNION (SELECT DETACHED sys_core::SysMsg FILTER <attrsAction,oaa_sys_msg_receive,object> IN .recipients.id))`
+const exprMsgsToMe = `((SELECT DETACHED sys_core::SysMsg FILTER <user,uuid,id> IN .recipients.id) UNION (SELECT DETACHED sys_core::SysMsg FILTER <attrsAction,[oaa_sys_msg_receive.object]> IN .recipients.id))`
 const exprMsgsToMeRead = `(SELECT DETACHED sys_core::SysMsg FILTER .id IN ${exprMsgsToMe}.id AND <user,uuid,id> IN .readers.id)`
 const exprMsgsToMeUnread = `(SELECT DETACHED sys_core::SysMsg FILTER .id IN ${exprMsgsToMe}.id AND <user,uuid,id> NOT IN .readers.id)`
+
 const exprMsgsMine = `(${exprMsgsFromMe} UNION ${exprMsgsToMe})`
 const exprMsgsMineRoot = `(SELECT ${exprMsgsMine} FILTER NOT EXISTS .parent)`
 
@@ -228,7 +229,8 @@ function initDataObj(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
-				exprCustom: `'Yes' IF .id IN ${exprMsgsToMeUnread}.id ELSE 'No' IF .id IN ${exprMsgsToMeRead}.id ELSE ''`,
+				// exprCustom: `'Yes' IF .id IN ${exprMsgsToMeUnread}.id OR .id IN ${exprMsgsToMeUnread}.replies.id ELSE 'No' IF .id IN ${exprMsgsToMeRead}.id OR .id IN ${exprMsgsToMeRead}.replies.id ELSE ''`,
+				exprCustom: `'Yes' IF .id IN ${exprMsgsToMeUnread}.id OR EXISTS (.replies.id INTERSECT ${exprMsgsToMeUnread}.id) ELSE 'No'`,
 				headerAlt: 'Unread',
 				nameCustom: 'isUnread'
 			},

@@ -40,9 +40,12 @@ import { App } from '$comps/app/types.app.svelte'
 import { AppRowActionType } from '$comps/app/types.app.svelte'
 import { FieldColumnItem } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
+import { getLocalTimeZone, today } from '@internationalized/date'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/types.token.ts'
+
+export type FunctionModalReturn = (modalReturn: TokenAppModalReturn) => void
 
 export class NavDestinationNode {
 	nodeId: string
@@ -518,6 +521,55 @@ export class TokenAppIndex extends TokenApp {
 	}
 }
 
+export class TokenAppModalConfig extends TokenApp {
+	type: TokenAppModalConfigType
+	constructor(obj: any) {
+		const clazz = 'TokenAppModalConfig'
+		super(obj)
+		this.type = memberOfEnum(
+			obj.type,
+			clazz,
+			'type',
+			'TokenAppModalConfigType',
+			TokenAppModalConfigType
+		)
+	}
+}
+
+export class TokenAppModalConfigConfirm extends TokenAppModalConfig {
+	fModalReturn?: FunctionModalReturn
+	body: string
+	buttonTextCancel: string
+	buttonTextConfirm: string
+	title: string
+	constructor(obj: any) {
+		const clazz = 'TokenAppModalConfigConfirm'
+		super(obj)
+		this.body = strRequired(obj.body, clazz, 'body')
+		this.buttonTextCancel = strRequired(obj.buttonTextCancel, clazz, 'buttonTextCancel')
+		this.buttonTextConfirm = strRequired(obj.buttonTextConfirm, clazz, 'buttonTextConfirm')
+		this.fModalReturn = obj.fModalReturn
+		this.title = strRequired(obj.title, clazz, 'title')
+	}
+}
+
+export class TokenAppModalConfigDate extends TokenAppModalConfig {
+	fModalReturn?: FunctionModalReturn
+	date: any
+	constructor(obj: any) {
+		const clazz = 'TokenAppModalConfigDate'
+		super(obj)
+		this.date = required(obj.date, clazz, 'date')
+		this.fModalReturn = obj.fModalReturn
+	}
+}
+
+export enum TokenAppModalConfigType {
+	confirm = 'confirm',
+	date = 'date',
+	layout = 'layout'
+}
+
 export class TokenAppModalEmbedField extends TokenApp {
 	dataObjSourceModal: TokenApiDbDataObjSource
 	listIdsSelected: string[]
@@ -531,9 +583,26 @@ export class TokenAppModalEmbedField extends TokenApp {
 	}
 }
 
-export class TokenAppModalSelect extends TokenApp {
+export class TokenAppModal extends TokenApp {
+	fModalReturn: FunctionModalReturn
+	constructor(obj: any) {
+		const clazz = 'TokenAppModal'
+		super(obj)
+		this.fModalReturn = required(obj.fModalReturn, clazz, 'fModalReturn')
+	}
+}
+
+export class TokenAppModalDate extends TokenAppModal {
+	date: string
+	constructor(obj: any) {
+		const clazz = 'TokenAppModalDate'
+		super(obj)
+		this.date = required(obj.date || today(getLocalTimeZone()).toString(), clazz, 'date')
+	}
+}
+
+export class TokenAppModalSelect extends TokenAppModal {
 	columnDefs: ColumnsDefsSelect
-	fModalClose: Function
 	isMultiSelect: boolean
 	listIdsSelected: string[]
 	rowData: DataRecord[]
@@ -543,7 +612,6 @@ export class TokenAppModalSelect extends TokenApp {
 		const clazz = 'TokenAppModalSelect'
 		super(obj)
 		this.columnDefs = required(obj.columnDefs, clazz, 'columnDefs')
-		this.fModalClose = required(obj.fModalClose, clazz, 'fModalClose')
 		this.isMultiSelect = booleanRequired(obj.isMultiSelect, clazz, 'isMultiSelect')
 		this.listIdsSelected = getArray(obj.listIdsSelected)
 		this.rowData = required(obj.rowData, clazz, 'rowData')
@@ -566,9 +634,7 @@ export class TokenAppModalReturn extends TokenApp {
 }
 export enum TokenAppModalReturnType {
 	cancel = 'cancel',
-	close = 'close',
-	complete = 'complete',
-	delete = 'delete'
+	complete = 'complete'
 }
 
 export class TokenAppNav extends TokenApp {

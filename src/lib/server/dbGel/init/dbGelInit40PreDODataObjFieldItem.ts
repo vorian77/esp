@@ -60,16 +60,6 @@ export function initPreDataObjFieldItem(init: InitDb) {
 
 	/* code family - system */
 	init.addTrans('sysDataObjFieldListItems', {
-		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter:
-			'<parms,str,itemsParmValue> IN .codeTypeFamily.name AND .ownerSys.id = <parms,uuid,systemIdQuerySource>',
-		exprSort: '.order',
-		name: 'il_sys_code_family_group_order_index_by_codeType_name_system',
-		ownerSys: 'sys_system',
-		table: 'SysCode'
-	})
-
-	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'header', 'Header', '.header', true, 0]],
 		exprFilter: `.id IN (SELECT sys_core::SysCode FILTER .id = <parms,uuid,itemsParmValue>).codeTypeFamily.id`,
 		name: 'il_sys_code_family_by_code',
@@ -88,17 +78,19 @@ export function initPreDataObjFieldItem(init: InitDb) {
 
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		exprFilter: '.codeType.id = <tree,uuid,SysCodeType.id>',
-		name: 'il_sys_code_order_name_by_codeType_id',
+		exprFilter:
+			'.ownerSys.id = <tree,uuid,SysSystem.id> AND .codeType.id = <parms,uuid,itemsParmValue>',
+		exprFilterExcept: `SELECT sys_core::SysCode FILTER .id = <tree,uuid,[${ExprTokenItemParmModifier.optional}]SysCode.id>`,
+		name: 'il_sys_code_parent_code',
 		ownerSys: 'sys_system',
 		table: 'SysCode'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
 		props: [[0, 'name', 'Name', '.name', true, 0]],
 		exprFilter:
-			'.ownerSys.id = <tree,uuid,SysSystem.id> AND .codeType.id = <parms,uuid,itemsParmValue>',
+			'.ownerSys.id = <tree,uuid,SysSystem.id> AND .codeType.id = <tree,uuid,SysCodeType.id>',
 		exprFilterExcept: `SELECT sys_core::SysCode FILTER .id = <tree,uuid,[${ExprTokenItemParmModifier.optional}]SysCode.id>`,
-		name: 'il_sys_code_parent',
+		name: 'il_sys_code_parent_code_type',
 		ownerSys: 'sys_system',
 		table: 'SysCode'
 	})
@@ -201,7 +193,7 @@ export function initPreDataObjFieldItem(init: InitDb) {
 				0
 			]
 		],
-		exprFilter: `.id IN <attrsAction,oaa_sys_msg_send,object;user>`,
+		exprFilter: `.id IN <attrsAction,[oaa_sys_msg_send_object.object;oaa_sys_msg_send_user.user]>`,
 		name: 'il_sys_msg_recipients_system',
 		ownerSys: 'sys_system',
 		table: 'ObjRoot'

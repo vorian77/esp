@@ -44,7 +44,10 @@
 </script>
 
 {#if sm.app.appTreesIdxCurrent > -1}
-	<div id="layout-app" class="flex justify-between items-center p-3 border-b gap-3 bg-neutral-50">
+	<div
+		id="layout-app"
+		class="flex justify-between items-center p-3 border-square sm:border-l-0 gap-3 bg-neutral-50"
+	>
 		<div class="flex flex-grow items-center">
 			<button class="mr-2 flex-none" onclick={back}>
 				<Icon

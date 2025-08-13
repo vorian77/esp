@@ -38,7 +38,6 @@ import {
 import { FieldEmbedListType } from '$utils/utils.sys'
 import { ScriptGroupGelDataObj } from '$routes/api/db/dbGel/dbGelScriptDataObj'
 import { error } from '@sveltejs/kit'
-import { PropsFieldInit } from '$comps/form/field.svelte'
 
 const FILENAME = '/$routes/api/db/dbGel/dbGelScriptDataObjQuery.ts'
 

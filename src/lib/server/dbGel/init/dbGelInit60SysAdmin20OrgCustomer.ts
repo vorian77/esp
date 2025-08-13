@@ -74,8 +74,8 @@ function initFieldListSelectUser(init: InitDb) {
 		]
 	})
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionGroupModal: 'doag_dialog_footer_list',
-		btnLabelComplete: 'Select User(s)',
+		actionGroupModal: 'doag_dialog_footer_list_select',
+		btnLabelComplete: 'Select',
 		dataObjList: 'dofls_admin_user_org_customer',
 		name: 'fels_admin_user_org_customer',
 		ownerSys: 'sys_system'
@@ -124,7 +124,7 @@ function initFieldListSelectUserType(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list_select',
 		btnLabelComplete: 'Select UserType(s)',
 		dataObjList: 'dofls_admin_user_type_org_customer',
 		name: 'fels_admin_user_type_org_customer',

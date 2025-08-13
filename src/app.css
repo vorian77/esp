@@ -1,0 +1,119 @@
+@import '@fontsource-variable/ibm-plex-sans';
+
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+/* @plugin '@tailwindcss/typography'; */
+
+@import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton/optional/presets';
+@source "../node_modules/@skeletonlabs/skeleton-svelte/dist";
+
+/* Add your theme import for your theme: "tailwind-theme-esp" here */
+@import '../tailwind-theme-esp';
+
+html {
+	height: 100%;
+	background-color: white;
+}
+
+@utility border-base {
+	border-color: var(--border-default-color);
+	border-width: var(--border-default-width);
+}
+
+@utility border-rounded {
+	@apply border-base;
+	border-radius: var(--radius-lg);
+}
+
+@utility border-square {
+	@apply border-base;
+	border-color: var(--border-default-color);
+}
+
+@utility border-rounded-b {
+	@apply border-base;
+	border-bottom-color: var(--border-default-color);
+}
+
+@utility border-rounded-r {
+	@apply border-base;
+	border-right-color: var(--border-default-color);
+}
+
+@utility text-desc {
+	color: var(--text-color-desc);
+}
+
+@utility text-nav {
+	color: var(--text-color-nav);
+}
+
+@utility text-nav-hover {
+	@variant hover {
+		color: var(--text-color-nav-hover);
+	}
+}
+
+.btn {
+	padding: 0.5rem;
+}
+
+.btn-action {
+	border-radius: 8px;
+	transition-property: transform;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 150ms;
+	@variant hover {
+		transform: translateY(-0.125rem);
+	}
+}
+
+.esp-card {
+	background-color: white;
+}
+
+.esp-card-space-y {
+	background-color: white;
+}
+
+.esp-card-space-y > :not(:last-child) {
+	margin-bottom: var(--spacing-5);
+}
+
+input {
+	padding: 0.5rem;
+}
+
+fieldset {
+	border-width: 1px;
+	border-color: var(--border-default-color);
+	border-radius: var(--radius-lg);
+	padding-block: var(--spacing-1);
+	padding-inline: var(--spacing-3);
+}
+
+.fieldsetDetailOptional {
+	background-color: white;
+}
+
+.fieldsetDetailRequired {
+	background-color: var(--color-blue-100);
+}
+
+.fieldsetList {
+	background-color: transparent;
+	border-width: 0;
+}
+
+h1 {
+	font-weight: 600;
+}
+
+hr {
+	border-color: var(--border-default-color);
+}
+
+select {
+	padding: 0.5rem;
+}

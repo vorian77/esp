@@ -6,7 +6,7 @@
 </script>
 
 {#if navMenu.isOpen}
-	<h2 class="mb-1 text-gray-500" in:fade={navMenu.fadeIn} out:fade={navMenu.fadeOut}>
+	<h2 class="mb-1 text-desc" in:fade={navMenu.fadeIn} out:fade={navMenu.fadeOut}>
 		{header}
 	</h2>
 {/if}

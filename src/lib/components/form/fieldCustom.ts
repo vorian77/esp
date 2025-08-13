@@ -1,28 +1,20 @@
-import { State } from '$comps/app/types.state.svelte'
 import {
 	Field,
 	FieldAccess,
 	FieldColor,
-	PropsFieldCreate,
-	PropsFieldInit
+	getFieldColor,
+	PropsFieldCreate
 } from '$comps/form/field.svelte'
 import {
-	CodeAction,
-	DataObj,
 	FileStorage,
-	memberOfEnum,
 	memberOfEnumIfExists,
-	MethodResult,
 	NodeObjComponent,
-	RawDataObjPropDisplay,
 	required,
 	strRequired,
 	valueOrDefault
 } from '$utils/types'
 import { PropKeyType, RawDataObjPropDisplayCustom } from '$comps/dataObj/types.rawDataObj.svelte'
-import { DetailEl, getDetailElements } from '$comps/form/types.detailElement'
 import { UserAction } from '$comps/other/types.userAction.svelte'
-import { DbTableQueryGroup } from '$lib/queryClient/types.queryClient'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/form/fieldCustom.ts'
@@ -74,7 +66,7 @@ export class FieldCustomActionButton extends FieldCustomAction {
 			clazz,
 			'customCol'
 		) as RawDataObjPropDisplayCustom
-		this.fieldColor = new FieldColor(this.colDO.codeColor, 'blue')
+		this.fieldColor = getFieldColor(this.colDO.codeColor || 'blue')
 	}
 }
 export class FieldCustomActionLink extends FieldCustomAction {

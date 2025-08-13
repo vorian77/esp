@@ -14,6 +14,7 @@
 	let dataObj: DataObj = $derived(dm.getDataObj(parms.dataObjId))
 
 	let field = $derived(parms.field) as FieldRadio
+	$inspect('FormElInputRadio.field', field)
 	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, field))
 	let dataItems = $derived(field.linkItems ? field.linkItems.getDataItemsAll(fieldValue) : [])
 

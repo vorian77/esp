@@ -36,7 +36,7 @@
 	}
 </script>
 
-<nav class="flex rounded-md border border-neutral-300 bg-white" aria-label="Breadcrumb">
+<nav class="flex border-rounded bg-white" aria-label="Breadcrumb">
 	<ol
 		role="list"
 		class=" flex w-full max-w-(--breakpoint-xl) text-sm font-medium text-nav space-x-4 px-4 sm:px-6 lg:px-8"

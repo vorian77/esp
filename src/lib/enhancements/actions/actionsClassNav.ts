@@ -22,6 +22,7 @@ import {
 	TokenApiId,
 	TokenApiQueryType,
 	TokenAppDoCustom,
+	TokenAppModalReturn,
 	TokenAppNav,
 	TokenAppNode,
 	TokenAppRow,
@@ -152,8 +153,9 @@ export default async function action(
 			result = await getTokenNode(actionType, token)
 			if (result.error) return result
 
-			result = await sm.openModalNode(result.data as TokenAppNode, async () =>
-				sm.triggerActionDashboard()
+			result = await sm.openModalNode(
+				result.data as TokenAppNode,
+				async (modalReturn: TokenAppModalReturn) => sm.triggerActionDashboard()
 			)
 			if (result.error) return result
 

@@ -599,7 +599,7 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 
 			let result: MethodResult = await evalExpr({
 				evalExprContext: 'navMenuTest',
-				// exprRaw: `(SELECT sys_core::SysObjAttr FILTER .id IN <attrsAction,oaa_sys_msg_send,object,user>)`,
+				// exprRaw: `(SELECT sys_core::SysObjAttr FILTER .id IN <attrsAction,[oaa_sys_msg_send_object.object; oaa_sys_msg_send_user.user]>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <function,fSysRandom10>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .name = <literal,str,user_sys>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .name = <parms,str,itemsParmValue>)`,

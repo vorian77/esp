@@ -112,7 +112,7 @@ export class FieldEmbedDetailEligibility extends FieldEmbedDetail {
 
 	async initAsync(props: PropsFieldInit): Promise<MethodResult> {
 		const getCsfId = (): MethodResult => {
-			const dataTree: TokenApiQueryDataTree = props.sm.app.getDataTree(false)
+			const dataTree: TokenApiQueryDataTree = props.sm.appGetDataTree(false)
 			const id = dataTree.getValue(
 				'id',
 				TokenApiQueryDataTreeAccessType.table,

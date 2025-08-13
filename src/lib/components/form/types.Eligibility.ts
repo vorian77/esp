@@ -19,11 +19,10 @@ import {
 	valueOrDefault,
 	MethodResult
 } from '$utils/types'
-import { Field, PropsFieldInit, FieldItemChangeManagerItem } from '$comps/form/field.svelte'
+import { Field, PropsFieldInit } from '$comps/form/field.svelte'
 import { DbTableQueryGroup } from '$lib/queryClient/types.queryClient'
 import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 import { FieldAccess } from '$comps/form/field.svelte'
-import { TokenApiQueryDataTree, TokenApiQueryDataTreeAccessType } from '$utils/types.token'
 import { FieldToggle } from '$comps/form/fieldToggle'
 import { error } from '@sveltejs/kit'
 

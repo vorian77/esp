@@ -30,7 +30,7 @@
 
 <button
 	type="button"
-	class="btn btn-action variant-filled-primary w-full mt-2"
+	class="btn btn-action preset-filled-primary-500 w-full mt-2"
 	onclick={onFormSubmitted}>Build Form Definition</button
 >
 

@@ -34,7 +34,7 @@
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/ContentSelectList.svelte'
-	const classProps = `w-full text-sm rounded-lg bg-white border-neutral-300`
+	const classProps = `w-full text-sm bg-white border-rounded`
 	const fieldId = 'select-data-items'
 
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')

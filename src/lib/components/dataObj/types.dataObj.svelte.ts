@@ -14,6 +14,7 @@ import {
 	FieldElement,
 	FieldItemChange,
 	FieldItemChangeManager,
+	getFieldColor,
 	PropsFieldCreate,
 	PropsFieldInit
 } from '$comps/form/field.svelte'
@@ -27,6 +28,7 @@ import {
 	FieldCustomImage,
 	FieldCustomText
 } from '$comps/form/fieldCustom'
+import { FieldInputDate } from '$comps/form/fieldInputDate'
 import {
 	FieldEmbedDetailEligibility,
 	FieldEmbedList,
@@ -198,7 +200,6 @@ export class DataObj {
 		switch (element) {
 			// input
 			case FieldElement.currency:
-			case FieldElement.date:
 			case FieldElement.email:
 			case FieldElement.number:
 			case FieldElement.percentage:
@@ -238,6 +239,12 @@ export class DataObj {
 
 			case FieldElement.customText:
 				newField = new FieldCustomText(props)
+				break
+
+			case FieldElement.date:
+				newField = new FieldInputDate(
+					new PropsFieldCreate({ propRaw, fields: propsFieldInit.fields })
+				)
 				break
 
 			case FieldElement.embedDetailEligibility:
@@ -407,11 +414,7 @@ export class DataObj {
 		if (this.data) this.data.parmsFormList = new ParmsValuesFormList(parms)
 	}
 
-	parmsFormListGet(parm: ParmsValuesType): any {
-		return this.data ? this.data.parmsFormList.valueGet(parm) : undefined
-	}
-
-	parmsFormListSet(parm: ParmsValuesType, value: any) {
+	parmsFormListParmSet(parm: ParmsValuesType, value: any) {
 		this?.data.parmsFormList?.valueSet(parm, value)
 	}
 
@@ -431,7 +434,7 @@ export class DataObjAction {
 	constructor(rawAction: RawDataObjAction) {
 		const clazz = 'DataObjAction'
 		this.action = new UserAction(rawAction.action)
-		this.fieldColor = new FieldColor(rawAction.codeColor, 'blue')
+		this.fieldColor = getFieldColor(rawAction.codeColor || 'blue')
 		this.isListRowAction = rawAction.isListRowAction
 	}
 }

@@ -79,7 +79,6 @@ export function initPreUserAction(init: InitDb) {
 		name: 'ua_sys_dialog_cancel',
 		ownerSys: 'sys_system'
 	})
-
 	init.addTrans('sysUserAction', {
 		codeAction: 'modalDone',
 		codeConfirmType: 'statusChanged',
@@ -87,7 +86,13 @@ export function initPreUserAction(init: InitDb) {
 		name: 'ua_sys_dialog_done',
 		ownerSys: 'sys_system'
 	})
-
+	init.addTrans('sysUserAction', {
+		codeAction: 'modalDone',
+		codeConfirmType: 'statusChanged',
+		header: 'Select',
+		name: 'ua_sys_dialog_select',
+		ownerSys: 'sys_system'
+	})
 	init.addTrans('sysUserAction', {
 		codeAction: 'doListDownload',
 		codeConfirmType: 'statusChanged',

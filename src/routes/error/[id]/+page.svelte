@@ -8,9 +8,7 @@
 </script>
 
 <div class="p-4">
-	<div
-		class="p-8 flex flex-col items-center justify-center h-1/2 border-2 border-neutral-300 rounded-lg"
-	>
+	<div class="p-8 flex flex-col items-center justify-center h-1/2 border-rounded">
 		<span class="text-4xl font-bold mb-8">Oops, something went wrong!</span>
 
 		{#if err}
@@ -32,14 +30,14 @@
 		{#if err && err._sessionId}
 			<button
 				type="button"
-				class="btn btn-action variant-filled-secondary w-2/5 mt-10"
+				class="btn btn-action preset-filled-secondary-500 w-2/5 mt-10"
 				onclick={() => goto('/home')}
 			>
 				Return To Dashboard
 			</button>
 			<button
 				type="button"
-				class="btn btn-action variant-filled-primary w-1/5 mt-3"
+				class="btn btn-action preset-filled-primary-500 w-1/5 mt-3"
 				onclick={() => goto('/')}
 			>
 				Logout
@@ -47,7 +45,7 @@
 		{:else}
 			<button
 				type="button"
-				class="btn btn-action variant-filled-secondary w-2/5 mt-10"
+				class="btn btn-action preset-filled-secondary-500 w-2/5 mt-10"
 				onclick={() => goto('/')}
 			>
 				Return

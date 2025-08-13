@@ -75,7 +75,7 @@ function initUserType(init: InitDb) {
 				name: 'group_msg_moed_admin'
 			},
 			{
-				action: 'oaa_sys_msg_send',
+				action: 'oaa_sys_msg_send_object',
 				ownerSys: 'sys_client_baltimore_moed',
 				name: 'group_msg_moed_admin'
 			}
@@ -100,15 +100,15 @@ function initUserType(init: InitDb) {
 				name: 'group_msg_moed_staff_east'
 			},
 			{
-				action: 'oaa_sys_msg_send',
+				action: 'oaa_sys_msg_send_object',
 				ownerSys: 'sys_client_baltimore_moed',
 				name: 'group_msg_moed_youth_applicants_east'
 			}
 		],
 		attrsExpr: [
 			{
-				action: 'oaa_sys_msg_send',
-				expr: `SELECT (SELECT sys_user::SysUser FILTER .person IN (SELECT app_cm::CmClientServiceFlow FILTER .cmSite.name = 'at_cm_site_moed_office_east').client.person).id`
+				action: 'oaa_sys_msg_send_user',
+				expr: `SELECT (SELECT sys_user::SysUser FILTER .person IN (SELECT app_cm::CmClientServiceFlow FILTER .cmSite.name ?= 'at_cm_site_moed_office_east').client.person).id`
 			}
 		],
 		header: 'MOED-Staff-Eastside',
@@ -131,15 +131,15 @@ function initUserType(init: InitDb) {
 				name: 'group_msg_moed_staff_west'
 			},
 			{
-				action: 'oaa_sys_msg_send',
+				action: 'oaa_sys_msg_send_object',
 				ownerSys: 'sys_client_baltimore_moed',
 				name: 'group_msg_moed_youth_applicants_west'
 			}
 		],
 		attrsExpr: [
 			{
-				action: 'oaa_sys_msg_send',
-				expr: `SELECT (SELECT sys_user::SysUser FILTER .person IN (SELECT app_cm::CmClientServiceFlow FILTER .cmSite.name = 'at_cm_site_moed_office_west').client.person).id`
+				action: 'oaa_sys_msg_send_user',
+				expr: `SELECT (SELECT sys_user::SysUser FILTER .person IN (SELECT app_cm::CmClientServiceFlow FILTER .cmSite.name ?= 'at_cm_site_moed_office_west').client.person).id`
 			}
 		],
 		header: 'MOED-Staff-Westside',
@@ -156,7 +156,7 @@ function initUserType(init: InitDb) {
 		],
 		attrsVirtual: [
 			{
-				expr: `SELECT (SELECT app_cm::CmClientServiceFlow FILTER .client.person.id = <user,uuid,personId>).cmSite.name = 'at_cm_site_moed_office_east'`,
+				expr: `SELECT (SELECT app_cm::CmClientServiceFlow FILTER .client.person.id = <user,uuid,personId>).cmSite.name ?= 'at_cm_site_moed_office_east'`,
 				attrsAction: [
 					{
 						action: 'oaa_sys_msg_receive',
@@ -164,14 +164,14 @@ function initUserType(init: InitDb) {
 						name: 'group_msg_moed_youth_applicants_east'
 					},
 					{
-						action: 'oaa_sys_msg_send',
+						action: 'oaa_sys_msg_send_object',
 						ownerSys: 'sys_client_baltimore_moed',
 						name: 'group_msg_moed_staff_east'
 					}
 				]
 			},
 			{
-				expr: `SELECT (SELECT app_cm::CmClientServiceFlow FILTER .client.person.id = <user,uuid,personId>).cmSite.name = 'at_cm_site_moed_office_west'`,
+				expr: `SELECT (SELECT app_cm::CmClientServiceFlow FILTER .client.person.id = <user,uuid,personId>).cmSite.name ?= 'at_cm_site_moed_office_west'`,
 				attrsAction: [
 					{
 						action: 'oaa_sys_msg_receive',
@@ -179,7 +179,7 @@ function initUserType(init: InitDb) {
 						name: 'group_msg_moed_youth_applicants_west'
 					},
 					{
-						action: 'oaa_sys_msg_send',
+						action: 'oaa_sys_msg_send_object',
 						ownerSys: 'sys_client_baltimore_moed',
 						name: 'group_msg_moed_staff_west'
 					}

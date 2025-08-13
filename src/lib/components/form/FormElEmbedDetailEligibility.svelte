@@ -16,12 +16,12 @@
 	let fieldHeader = $derived(fieldEligibility?.eligibility?.header || '')
 	let fieldDescription = $derived(fieldEligibility?.eligibility?.description || '')
 	let classHeader = $derived(`label flex text-md font-bold mt-2`)
-	let classDescription = $derived(`text-sm text-gray-500 `)
+	let classDescription = $derived(`text-sm text-desc`)
 </script>
 
 <div
-	class="flex-grow overflow-y-auto rounded-md p-3 {fieldEligibility.elements.length > 0
-		? 'border'
+	class="flex-grow overflow-y-auto p-3 {fieldEligibility.elements.length > 0
+		? 'border-rounded'
 		: ''}"
 >
 	{#if fieldHeader || fieldDescription}

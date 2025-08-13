@@ -80,7 +80,7 @@
 <FormLabel {parms} />
 shell.out
 <!-- {#if parmsShell.dataObj}
-	<div class="border-0 border-red-300 px-4 pb-4">
+	<div class="border-rounded px-4 pb-4">
 		<LayoutTab parms={parmsShell} />
 	</div>
 {/if} -->

@@ -17,6 +17,7 @@
 		type Module,
 		type NewValueParams,
 		type PostSortRowsParams,
+		type RowClickedEvent,
 		type RowClassParams,
 		type RowNode,
 		type RowNodeSelectedEvent,
@@ -55,7 +56,7 @@
 	import { getContext } from 'svelte'
 	import { ParmsValues } from '$utils/types'
 	import { FieldAccess, FieldColor, FieldElement } from '$comps/form/field.svelte'
-	import { State, StateSurfacePopup } from '$comps/app/types.state.svelte'
+	import { State, StateSurfaceOverlay } from '$comps/app/types.state.svelte'
 	import ListFilter from '$comps/form/ListFilter.svelte'
 	import DataObjActionsObj from '$comps/dataObj/DataObjActionsObj.svelte'
 	import { error } from '@sveltejs/kit'
@@ -133,6 +134,7 @@
 			onCellClicked: options.onCellClicked,
 			onCellValueChanged,
 			onFilterChanged,
+			onRowClicked,
 			onRowDragEnd,
 			onRowDragMove,
 			onSelectionChanged,
@@ -317,9 +319,17 @@
 		sm.userParmSet(options.dataObjId, UserParmItemType.listSortModel, settingSortGet())
 	}
 
+	function onRowClicked(event: RowClickedEvent) {
+		if (options.onRowClicked) {
+			options.onRowClicked(event)
+		}
+	}
+
 	function onSelectionChanged(event: SelectionChangedEvent) {
-		if (options.onSelectionChanged) options.onSelectionChanged(event)
-		updateCounters()
+		if (options.onSelectionChanged) {
+			options.onSelectionChanged(event)
+			updateCounters()
+		}
 	}
 
 	async function saveUserSettings() {

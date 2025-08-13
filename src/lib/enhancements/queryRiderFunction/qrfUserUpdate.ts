@@ -1,7 +1,7 @@
 import { State } from '$comps/app/types.state.svelte'
-import { DataObjData, DataRecordStatus, MethodResult } from '$utils/types'
+import { MethodResult } from '$utils/types'
 import { QueryRider, QueryRiderTriggerTiming } from '$lib/queryClient/types.queryClientRider'
-import { TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
+import { TokenApiQueryData } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/queryRiderFunctions/qrfUserUpdate.ts'

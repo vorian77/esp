@@ -3,6 +3,8 @@ import { moedDataApplicant } from '$utils/utils.randomDataGenerator'
 import { debug } from '$utils/types'
 
 export function initContentMOEDSsr(init: InitDb) {
+	initDocFieldListItems(init)
+
 	// tasks
 	initTaskSsrApp(init)
 	initTaskSsrDoc(init)
@@ -10,6 +12,18 @@ export function initContentMOEDSsr(init: InitDb) {
 
 	// demo data
 	initDemoData(init)
+}
+
+function initDocFieldListItems(init: InitDb) {
+	init.addTrans('sysDataObjFieldListItems', {
+		props: [[0, 'name', 'Name', '.name', true, 0]],
+		exprFilter:
+			'<parms,str,itemsParmValueField.codeType> IN .codeTypeFamily.name AND .ownerSys.id = <parms,uuid,systemIdQuerySource>',
+		exprSort: '.order',
+		name: 'il_moed_code_family_group_ssr_doc',
+		ownerSys: 'sys_system',
+		table: 'SysCode'
+	})
 }
 
 function initTaskSsrApp(init: InitDb) {
@@ -21,6 +35,13 @@ function initTaskSsrApp(init: InitDb) {
 		name: 'data_obj_task_moed_ssr_app',
 		ownerSys: 'sys_client_baltimore_moed',
 		queryRiders: [
+			{
+				codeQueryAction: 'customFunction',
+				codeQueryFunction: 'qrfUserUpdate',
+				codeQueryPlatform: 'client',
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post'
+			},
 			{
 				codeQueryAction: 'userMsg',
 				codeQueryPlatform: 'client',
@@ -158,9 +179,11 @@ function initTaskSsrApp(init: InitDb) {
 				fieldListItems: 'il_cm_site'
 			},
 			{
+				codeAccess: 'readOnly',
 				codeFieldElement: 'date',
 				columnName: 'dateCreated',
-				headerAlt: 'Application Date (yyyy-mm-dd)',
+				exprPreset: `(SELECT to_str(cal::to_local_date(datetime_current(), 'UTC'), 'YYYY-MM-DD'))`,
+				headerAlt: 'Application Date',
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 215,
@@ -185,7 +208,7 @@ function initTaskSsrApp(init: InitDb) {
 			{
 				codeFieldElement: 'date',
 				columnName: 'birthDate',
-				headerAlt: 'Birth Date (yyyy-mm-dd)',
+				headerAlt: 'Birth Date',
 				isDisplayable: true,
 				orderDisplay: 240,
 				orderDefine: 240,
@@ -462,7 +485,7 @@ function initTaskSsrDoc(init: InitDb) {
 		actionGroup: 'doag_detail_mobile_save_delete',
 		codeCardinality: 'detail',
 		exprFilter:
-			'.csf.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person AND <parms,str,itemsParmValue> IN .codeType.codeTypeFamily.name LIMIT 1',
+			'.csf.client.person = (SELECT sys_user::SysUser FILTER .id = <user,uuid,id>).person AND <parms,str,itemsParmValueField.codeType> IN .codeType.codeTypeFamily.name LIMIT 1',
 		header: 'My Document',
 		name: 'data_obj_task_moed_ssr_doc_detail',
 		ownerSys: 'sys_client_baltimore_moed',
@@ -505,6 +528,7 @@ function initTaskSsrDoc(init: InitDb) {
 			{
 				codeFieldElement: 'date',
 				columnName: 'dateIssued',
+				exprPreset: `(SELECT to_str(cal::to_local_date(datetime_current(), 'UTC'), 'YYYY-MM-DD'))`,
 				headerAlt: 'Date',
 				isDisplayable: true,
 				orderDisplay: 40,
@@ -518,7 +542,7 @@ function initTaskSsrDoc(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_family_group_order_index_by_codeType_name_system'
+				fieldListItems: 'il_moed_code_family_group_ssr_doc'
 			},
 			{
 				codeFieldElement: 'file',

@@ -27,7 +27,7 @@
 
 <FormLabel {parms} />
 
-<div class="h-80 border rounded-md">
+<div class="h-80 border-rounded">
 	<LayoutContent
 		parms={{
 			...parms,

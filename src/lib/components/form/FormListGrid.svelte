@@ -7,12 +7,13 @@
 		type ICellEditorParams,
 		type NewValueParams,
 		type PostSortRowsParams,
-		type SelectionChangedEvent,
+		type RowClickedEvent,
 		type ValueGetterParams
 	} from 'ag-grid-community'
 	import { AllEnterpriseModule, LicenseManager, ModuleRegistry } from 'ag-grid-enterprise'
-	import { State, StateSurfacePopup, StateTriggerToken } from '$comps/app/types.state.svelte'
+	import { State, StateSurfaceOverlay, StateTriggerToken } from '$comps/app/types.state.svelte'
 	import {
+		TokenAppModalDate,
 		TokenAppModalSelect,
 		TokenAppModalReturn,
 		TokenAppModalReturnType,
@@ -60,10 +61,6 @@
 		GridSettingsColumns,
 		GridSettingsColumnItem
 	} from '$comps/grid/grid'
-	import {
-		cellEditorSelectorParmField,
-		cellRendererSelectorParmField
-	} from '$comps/grid/gridParmField'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
 
@@ -84,7 +81,7 @@
 
 	let gridApi: GridApi = $state()
 
-	let isPopup = $derived(sm instanceof StateSurfacePopup)
+	let isPopup = $derived(sm instanceof StateSurfaceOverlay)
 	let gridOptions: GridManagerOptions | undefined = $state(undefined)
 
 	let initParmsPromise = initParms()
@@ -143,6 +140,7 @@
 						isSuppressSelect: dataObj.raw.isListSuppressSelect,
 						listReorderColumn: dataObj.raw.listReorderColumn,
 						onCellClicked,
+						onRowClicked,
 						onSelectionChanged,
 						rowData: initGridData(),
 						sortModel: dataObj.sortModel
@@ -174,7 +172,10 @@
 
 	function fGridCallbackFilter(event: FilterChangedEvent) {
 		dataObjData.rowsRetrieved.syncFields(dataRecordsDisplay, ['selected'])
-		dataObj.parmsFormListSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, 'id'))
+		dataObj.parmsFormListParmSet(
+			ParmsValuesType.listIdsSelected,
+			getSelectedNodeIds(event.api, 'id')
+		)
 	}
 
 	async function fGridCallbackUpdateValue(key: string, data: DataRecord) {
@@ -260,12 +261,8 @@
 		}
 
 		if (field instanceof FieldParm) {
-			// defn.cellEditorSelector = cellEditorSelectorParmField
-			// defn.cellRendererSelector = cellRendererSelectorParmField
-
 			addGridParm(defn, ['context', 'parmFields'], field.parmFields)
 			defn.cellDataType = 'object'
-
 			defn.valueGetter = (params: ValueGetterParams) => {
 				let valueDisplay = getValueDisplay(params.data.parmValue)
 				valueDisplay = Array.isArray(valueDisplay) ? valueDisplay.join(', ') : valueDisplay
@@ -355,62 +352,24 @@
 	}
 
 	async function onCellClicked(event: CellClickedEvent) {
-		let rowNode = event.api.getRowNode(event.data.id)
-		let field = dataObj.fields.find((f) => f.getValueKey() === event.colDef.field)
-		let fieldParm = field instanceof FieldParm ? field.parmFields[event.rowIndex] : undefined
-		let fieldProcess: Field = fieldParm || field
+		const { api, data, colDef, rowIndex } = event
+		const rowNode = api.getRowNode(data.id)
+		const field = dataObj.fields.find((f) => f.getValueKey() === colDef.field)
+		const fieldParm = field instanceof FieldParm ? field.parmFields[rowIndex] : undefined
 
-		if (fieldProcess && fieldProcess.linkItems && fieldProcess.colDO.colDB.isMultiSelect) {
-			await onCellClickedSelectItems()
-		}
+		if (!fieldParm) return
 
-		async function onCellClickedSelectItems(): Promise<MethodResult> {
-			const key = field.getValueKey()
-			const valueRaw = recordValueGet(event.data, key)
-			const listIdsSelected = fieldProcess.linkItems.getValueIds(valueRaw)
-			const gridParms = fieldProcess.linkItems.getGridParms()
+		const valueRaw = recordValueGet(data, field.getValueKey())
+		const fUpdateValue = async (valueSave: any) =>
+			rowNode.setDataValue(field.getValueKey(), valueSave)
 
-			return await sm.triggerAction(
-				new TokenAppStateTriggerAction({
-					codeAction: CodeAction.init(
-						CodeActionClass.ct_sys_code_action_class_modal,
-						CodeActionType.modalOpenSelect
-					),
-					codeConfirmType: TokenAppUserActionConfirmType.none,
-					data: {
-						token: new TokenAppModalSelect({
-							columnDefs: gridParms.columnDefs,
-							fModalClose,
-							isMultiSelect: fieldProcess.colDO.colDB.isMultiSelect,
-							listIdsSelected,
-							rowData: gridParms.rowData,
-							selectLabel: fieldProcess.colDO.label,
-							sortModel: gridParms.sortModel
-						})
-					}
-				})
-			)
-		}
-
-		async function fModalClose(token: TokenAppModalReturn) {
-			if (token.type === TokenAppModalReturnType.complete) {
-				const parmsReturn: ParmsValues = token.parmsState || undefined
-				if (parmsReturn) {
-					const valueDisplay = parmsReturn.valueGet(ParmsValuesType.listIdsSelected)
-					const valueRaw = fieldProcess.linkItems.getValueRaw(valueDisplay)
-					const key = field.getValueKey()
-					rowNode.setDataValue(key, valueRaw)
-				}
-			}
-		}
+		await sm.openModalField(fieldParm, valueRaw, fUpdateValue)
 	}
 
-	async function onSelectionChanged(event: SelectionChangedEvent) {
+	async function onRowClicked(event: RowClickedEvent) {
 		if (dataObj.actionsFieldListRowActionIdx < 0 || dataObj.raw.isListEdit) {
 			return
-		} else if (isPopup) {
-			dataObj.parmsFormListSet(ParmsValuesType.listIdsSelected, getSelectedNodeIds(event.api, 'id'))
-		} else {
+		} else if (!isPopup) {
 			const record = event.api.getSelectedRows()[0]
 			if (record) {
 				dataObj.data.parmsFormList = new ParmsValuesFormList({
@@ -421,6 +380,12 @@
 				doa.action.trigger(sm, dataObj)
 			}
 		}
+	}
+	function onSelectionChanged(event: SelectionChangedEvent) {
+		dataObj.parmsFormListParmSet(
+			ParmsValuesType.listIdsSelected,
+			getSelectedNodeIds(event.api, 'id')
+		)
 	}
 </script>
 

@@ -42,7 +42,7 @@ function initFieldListSelectAnalytics(init: InitDb) {
 	})
 
 	init.addTrans('sysDataObjFieldEmbedListSelect', {
-		actionGroupModal: 'doag_dialog_footer_list',
+		actionGroupModal: 'doag_dialog_footer_list_select',
 		btnLabelComplete: 'Select Analytic(s)',
 		dataObjList: 'dofls_sys_rep_analytic',
 		name: 'fels_sys_rep_analytic',

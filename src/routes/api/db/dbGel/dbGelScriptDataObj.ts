@@ -69,7 +69,6 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		currentValue: any = undefined
 	): Promise<MethodResult> {
 		const clazz = 'addScriptDataItemsFields'
-		let expr = ''
 
 		const setParm = (
 			parms: ParmsValues | undefined,
@@ -83,8 +82,8 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 				} else {
 					const result: MethodResult = getValDb(codeDataType, undefined)
 					if (result.error) return result
-					const defaultValue = result.data.value
-					parms.valueSet(parmType, defaultValue)
+					const nullValue = result.data.value
+					parms.valueSet(parmType, nullValue)
 				}
 			}
 		}
@@ -512,7 +511,8 @@ export class ScriptGroupGelDataObj extends ScriptGroupGel {
 		exprPrimary = result.data
 
 		let expr = exprParent ? ScriptTypeSave.addItem(exprPrimary, exprParent, ',\n') : exprPrimary
-		return new MethodResult(ScriptTypeSave.addItem(expr, scriptPrimary.getExprPropsSelect(), '\n'))
+		expr = ScriptTypeSave.addItem(expr, scriptPrimary.getExprPropsSelect(), '\n')
+		return new MethodResult(expr)
 	}
 
 	// prettier-ignore
