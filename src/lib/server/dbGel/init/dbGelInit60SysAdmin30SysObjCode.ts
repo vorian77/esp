@@ -160,7 +160,7 @@ function initCustomerCode(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_parent'
+				fieldListItems: 'il_sys_code_parent_code'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -510,7 +510,7 @@ function initGlobalCode(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_parent'
+				fieldListItems: 'il_sys_code_parent_code'
 			},
 			{
 				codeFieldElement: 'tagRow',
@@ -818,7 +818,7 @@ function initGlobalCodeType(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_sys_codeType_order_name'
+				fieldListItems: 'il_sys_code_parent'
 			},
 			{
 				columnName: 'name',
@@ -1124,7 +1124,7 @@ function initGlobalCodeTypeCode(init: InitDb) {
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_order_name_by_codeType_id'
+				fieldListItems: 'il_sys_code_parent_code_type'
 			},
 			{
 				codeFieldElement: 'tagRow',

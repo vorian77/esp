@@ -56,22 +56,22 @@
 </script>
 
 <div class="bg-white h-full overflow-y-auto">
-	<header class="shadow-xs flex justify-between border-b py-2">
+	<header class="shadow-xs flex justify-between border-rounded-b py-2">
 		<img class="ml-4 h-14 sm:h-16" src={srcLogo} alt="AppFactory" />
 		<div class="flex items-center justify-end">
 			<button
-				class="btn text-white variant-filled-primary mr-4"
+				class="btn text-white preset-filled-primary-500 mr-4"
 				onclick={() => goto('/auth/login')}
 			>
 				Log in
 			</button>
-			<button class="btn variant-ringed-primary mr-4" onclick={() => goto('/auth/signup')}>
+			<button class="btn preset-outlined-primary-500 mr-4" onclick={() => goto('/auth/signup')}>
 				Sign up
 			</button>
 			{#if IS_DEV_MODE}
 				<button
 					type="button"
-					class="btn btn-action variant-filled-error w-full mr-2"
+					class="btn btn-action preset-filled-error-500 text-white p-2 w-full mr-2"
 					onclick={dbInit}
 				>
 					Admin (DB Init)
@@ -80,10 +80,8 @@
 		</div>
 	</header>
 
-	<div
-		class="py-4 px-6 md:px-20 flex flex-col items-center md:flex-row gap-10 border-0 border-green-400"
-	>
-		<div class="flex flex-col border-0 border-red-400">
+	<div class="py-4 px-6 md:px-20 flex flex-col items-center md:flex-row gap-10">
+		<div class="flex flex-col">
 			<p class="text-3xl font-bold mb-2">
 				AppFactory makes enterprise-class data management easy, fast, and affordable
 			</p>
@@ -127,11 +125,9 @@
 				<p>We're launching publicly this fall!</p>
 				<p>Join our email list for more information.</p>
 			</div>
-			<div
-				class="w-full flex flex-row justify-between text-sm border border-neutral-300 rounded-xl p-2 mt-6"
-			>
+			<div class="w-full flex flex-row justify-between text-sm border-rounded p-2 mt-6">
 				<input
-					class="grow border-0"
+					class="grow"
 					type="email"
 					bind:value={prospectEmail}
 					placeholder="Your email address"
@@ -150,6 +146,6 @@
 			</div>
 		</div>
 
-		<img class="md:w-[55%] p-1 border" src={srcExFormList} alt="Example list form" />
+		<img class="md:w-[55%] p-1 border-rounded" src={srcExFormList} alt="Example list form" />
 	</div>
 </div>

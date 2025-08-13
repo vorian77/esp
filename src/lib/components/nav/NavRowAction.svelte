@@ -6,11 +6,19 @@
 	let {
 		action,
 		icon,
-		onChange
+		onChange,
+		disabled
 	}: { action: AppRowActionType; icon: string; onChange: (action: AppRowActionType) => {} } =
 		$props()
+	let color = $derived(disabled ? '#BFBFBF' : '#737373')
 </script>
 
-<div role="button" tabindex="0" onclick={() => onChange(action)} onkeyup={() => onChange(action)}>
-	<Icon props={new IconProps({ isNav: true, name: icon, size: 26, strokeWidth: 2 })} />
+<div
+	role="button"
+	tabindex="0"
+	onclick={() => onChange(action)}
+	onkeyup={() => onChange(action)}
+	{disabled}
+>
+	<Icon props={new IconProps({ isNav: true, name: icon, size: 26, strokeWidth: 2, color })} />
 </div>

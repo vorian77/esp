@@ -147,7 +147,7 @@ export function initPreDataObjActionGroup(init: InitDb) {
 
 	/* dialog */
 	init.addTrans('sysDataObjActionGroup', {
-		actions: [{ action: 'ua_sys_dialog_done', codeColor: 'primary', orderDefine: 0 }],
+		actions: [{ action: 'ua_sys_dialog_done', codeColor: 'black', orderDefine: 0 }],
 		name: 'doag_dialog_footer_detail',
 		ownerSys: 'sys_system'
 	})
@@ -155,12 +155,12 @@ export function initPreDataObjActionGroup(init: InitDb) {
 		actions: [
 			{
 				action: 'ua_sys_dialog_cancel',
-				codeColor: 'primary',
+				codeColor: 'gray',
 				orderDefine: 0
 			},
-			{ action: 'ua_sys_dialog_done', codeColor: 'primary', orderDefine: 1 }
+			{ action: 'ua_sys_dialog_select', codeColor: 'black', orderDefine: 1 }
 		],
-		name: 'doag_dialog_footer_list',
+		name: 'doag_dialog_footer_list_select',
 		ownerSys: 'sys_system'
 	})
 	init.addTrans('sysDataObjActionGroup', {

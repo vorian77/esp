@@ -37,7 +37,7 @@
 
 <button
 	class="w-full btn btn-action text-white"
-	style:background-color={fieldCustom.fieldColor.color}
+	style:background-color={fieldCustom.fieldColor.hexColor}
 	{disabled}
 	onclick={() => action()}
 >

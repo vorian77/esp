@@ -1,4 +1,4 @@
-import { Field, FieldColor, PropsFieldCreate } from '$comps/form/field.svelte'
+import { Field, FieldColor, getFieldColor, PropsFieldCreate } from '$comps/form/field.svelte'
 import { strOptional, nbrRequired } from '$utils/utils'
 
 export class FieldTag extends Field {
@@ -29,7 +29,7 @@ export class FieldTagSection extends FieldTag {
 	constructor(props: PropsFieldCreate) {
 		super(props)
 		const clazz = 'FieldTagSection'
-		this.fieldColor = new FieldColor(props.propRaw.codeColor, 'defaultBorder')
+		this.fieldColor = getFieldColor(props.propRaw.codeColor || 'defaultBorder')
 		this.legend = strOptional(props.propRaw.headerAlt, clazz, 'legend')
 	}
 }

@@ -62,9 +62,10 @@
 			{/if}
 			{#each actionsDisplay as ad (ad.name)}
 				<button
-					class="btn btn-action text-sm text-white"
+					class="btn btn-action text-white"
 					disabled={ad.isStatusDisabled}
-					style:background-color={ad.color}
+					style:background-color={ad.fieldColor.hexColor}
+					style:color={ad.fieldColor.hexText}
 					onclick={async () => onClick(ad)}
 				>
 					{ad.header}

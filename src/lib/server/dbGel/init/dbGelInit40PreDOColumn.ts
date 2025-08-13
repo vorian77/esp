@@ -320,6 +320,7 @@ export function initPreColumn(init: InitDb) {
 		name: 'codeAttrTypeAction'
 	})
 	init.addTrans('sysColumn', {
+		codeAlignment: 'center',
 		codeDataType: 'link',
 		header: 'Cardinality',
 		isMultiSelect: false,

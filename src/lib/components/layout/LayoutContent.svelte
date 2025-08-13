@@ -13,9 +13,10 @@
 		State,
 		StateNavContent,
 		StateNavHeader,
-		StateSurfacePopup,
+		StateSurfaceOverlay,
 		StateTriggerToken
 	} from '$comps/app/types.state.svelte'
+
 	import ContentFormDetail from '$comps/form/ContentFormDetail.svelte'
 	import ContentFormDetailRepConfig from '$comps/form/ContentFormDetailRepConfig.svelte'
 	import ContentFormList from '$comps/form/ContentFormList.svelte'
@@ -68,7 +69,7 @@
 	}
 </script>
 
-<div class="h-full max-h-full flex flex-col p-3 {headerObj ? 'border p-3 rounded-md' : ''} ">
+<div class="h-full max-h-full flex flex-col p-3 {headerObj ? 'border-rounded p-3 ' : ''} ">
 	{#if Component}
 		{#if headerObj}
 			<div class="mb-4">
@@ -81,7 +82,7 @@
 						{#if sm.navHeader.isDrawerClose}
 							<button
 								type="button"
-								class="btn-icon btn-icon-sm variant-filled-error"
+								class="btn-icon btn-icon-sm preset-filled-error-500"
 								onclick={cancel}
 							>
 								X
@@ -90,7 +91,7 @@
 					</div>
 				</div>
 				{#if headerObjSub}
-					<h4 class="mt-1 h4 text-gray-500">{headerObjSub}</h4>
+					<h4 class="mt-1 h4 text-desc">{headerObjSub}</h4>
 				{/if}
 			</div>
 		{/if}

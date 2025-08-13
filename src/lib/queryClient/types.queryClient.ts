@@ -46,7 +46,7 @@ export async function clientQueryExpr(
 
 	if (!sourceQueryData) sourceQueryData = {}
 	if (sm) {
-		sourceQueryData.dataTree = sm.getStateData()
+		sourceQueryData.dataTree = sm.appGetDataTree()
 		sourceQueryData.user = sm.user
 		if (sourceQueryData.dataTab) {
 			sourceQueryData.dataTab.parms.update(sm.parmsState.valueGetAll())

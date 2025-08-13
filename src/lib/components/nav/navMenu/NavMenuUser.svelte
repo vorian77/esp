@@ -8,7 +8,7 @@
 	import NavMenuInfo from '$comps/nav/navMenu/NavMenuInfo.svelte'
 	import NavMenuHr from '$comps/nav/navMenu/NavMenuHr.svelte'
 	import { NodeObjComponent, PropDataSourceValue, User } from '$utils/types'
-	import { Avatar } from '@skeletonlabs/skeleton'
+	import { Avatar } from '@skeletonlabs/skeleton-svelte'
 	import { fade } from 'svelte/transition'
 	import Icon from '$comps/icon/Icon.svelte'
 	import { IconProps } from '$comps/icon/types.icon'

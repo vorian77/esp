@@ -2,7 +2,12 @@ import { State } from '$comps/app/types.state.svelte'
 import { userActionStateChangeTab } from '$comps/other/types.userAction.svelte'
 import { TokenAppStateTriggerAction } from '$utils/types.token'
 import { CodeActionType, MethodResult } from '$utils/types'
-import { Token, TokenAppModalEmbedField, TokenAppModalSelect } from '$utils/types.token'
+import {
+	Token,
+	TokenAppModalEmbedField,
+	TokenAppModalDate,
+	TokenAppModalSelect
+} from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$enhance/actions/actionClassModal.ts'
@@ -29,6 +34,11 @@ export default async function action(
 			result = await sm.app.addTreeEmbedFieldModal(sm, token as TokenAppModalEmbedField)
 			if (result.error) return result
 			await userActionStateChangeTab(sm, parms)
+			break
+
+		case CodeActionType.modalOpenDate:
+			result = await sm.openModalDate(token as TokenAppModalDate)
+			if (result.error) return result
 			break
 
 		case CodeActionType.modalOpenSelect:

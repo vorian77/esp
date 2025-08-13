@@ -1,31 +1,26 @@
 <script lang="ts">
+	import { State } from '$comps/app/types.state.svelte'
 	import RootLayoutApp from '$comps/layout/RootLayoutApp.svelte'
-	import { StateSurfacePopup } from '$comps/app/types.state.svelte'
 	import { TokenAppModalReturn, TokenAppModalReturnType } from '$utils/types.token'
-	import { getModalStore } from '@skeletonlabs/skeleton'
 	import {
 		CodeActionType,
-		ContextKey,
+		DataObj,
 		DataObjAction,
 		DataObjCardinality,
-		type DataRecord,
-		FieldEmbedListType,
 		ParmsValues,
 		ParmsValuesType,
 		valueOrDefault
 	} from '$utils/types'
-	import { UserAction, UserActionDisplay } from '$comps/other/types.userAction.svelte'
-	import { getContext } from 'svelte'
+	import { UserActionDisplay } from '$comps/other/types.userAction.svelte'
 	import { error } from '@sveltejs/kit'
 	import DataViewer from '$utils/DataViewer.svelte'
-	import User from '$routes/home/User.svelte'
 
-	const FILENAME = '/$comps/layout/RootLayoutModal.svelte'
-	const storeModal = getModalStore()
+	const FILENAME = '/$comps/overlay/OverlayModalLayout.svelte'
 
-	let { parent } = $props()
-
-	let sm: StateSurfacePopup = $state($storeModal[0] ? $storeModal[0].meta.sm : undefined)
+	let { handleClose, sm }: { handleClose: Function; sm: State } = $props()
+	let dm: DataManager = $derived(sm.dm)
+	let dataObjEmbedId = $derived(sm.parmsState.valueGet(ParmsValuesType.embedDataObjId))
+	let dataObjEmbed: DataObj = $derived(dm.getDataObj(dataObjEmbedId))
 
 	let actionsDialog: UserActionDisplay[] = $state(
 		sm.actionsDialog.map((doa: DataObjAction) => new UserActionDisplay(doa, false))
@@ -44,10 +39,7 @@
 			const rowCount = currTab?.dataObj?.data?.rowsRetrieved.dataRows.length ?? 0
 
 			if (codeCardinality === DataObjCardinality.list && rowCount === 0) {
-				if ($storeModal[0]?.response) {
-					$storeModal[0].response(new TokenAppModalReturn({ type: TokenAppModalReturnType.close }))
-					storeModal.close()
-				}
+				handleClose(new TokenAppModalReturn({ type: TokenAppModalReturnType.complete }))
 			}
 		}
 	})
@@ -57,23 +49,17 @@
 		if (doa) {
 			switch (doa.action.codeAction.actionType) {
 				case CodeActionType.modalCancel:
-					if ($storeModal[0].response)
-						$storeModal[0].response(
-							new TokenAppModalReturn({ type: TokenAppModalReturnType.cancel })
-						)
-					storeModal.close()
+					handleClose(new TokenAppModalReturn({ type: TokenAppModalReturnType.cancel }))
 					break
 
 				case CodeActionType.modalDone:
-					if ($storeModal[0].response)
-						$storeModal[0].response(
-							new TokenAppModalReturn({
-								parmsFormList: sm.parmsFormList(),
-								parmsState: sm.parmsState,
-								type: TokenAppModalReturnType.complete
-							})
-						)
-					storeModal.close()
+					handleClose(
+						new TokenAppModalReturn({
+							parmsFormList: dataObjEmbed ? dataObjEmbed.parmsFormList() : {},
+							parmsState: sm.parmsState,
+							type: TokenAppModalReturnType.complete
+						})
+					)
 					break
 
 				default:
@@ -96,7 +82,8 @@
 				<button
 					disabled={ad.isStatusDisabled}
 					class="btn btn-action text-white"
-					style:background-color={ad.color}
+					style:background-color={ad.fieldColor.hexColor}
+					style:color={ad.fieldColor.hexText}
 					onclick={async () => await onFooterActionClick(ad)}
 				>
 					{ad.header}

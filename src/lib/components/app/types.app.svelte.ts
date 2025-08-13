@@ -150,7 +150,7 @@ export class App {
 		})
 		let result = await newTab.queryDataObj(sm, token.queryType)
 		if (result.error) return result
-		newTab.dataObj?.parmsFormListSet(ParmsValuesType.listIdsSelected, token.listIdsSelected)
+		newTab.dataObjParmsFormListParmSet(ParmsValuesType.listIdsSelected, token.listIdsSelected)
 		this.treeAdd([newTab])
 		return result
 	}
@@ -312,7 +312,7 @@ export class App {
 			if (currTab) {
 				currTab.update(dataObj)
 				if (queryType === TokenApiQueryType.preset) {
-					currTab.parmsFormListSet(ParmsValuesType.listRecordIdCurrent, '')
+					currTab.dataObjParmsFormListParmSet(ParmsValuesType.listRecordIdCurrent, '')
 				}
 
 				// build tabs
@@ -510,6 +510,25 @@ export class AppLevelNode {
 		this.treeIdx = required(obj.treeIdx, clazz, 'treeIdx')
 	}
 
+	dataObjParmsFormListInit(parms: ParmsValuesFormListType) {
+		this?.dataObj?.parmsFormListInit(parms)
+	}
+
+	dataObjParmsFormListParmGet(parm: ParmsValuesType): any {
+		return this.dataObj ? this.dataObj.data.parmsFormList.valueGet(parm) : undefined
+	}
+
+	dataObjParmsFormListParmSet(parm: ParmsValuesType, value: any) {
+		this.dataObj?.parmsFormListParmSet(parm, value)
+	}
+
+	dataObjParmsFormListUpdate(listIds: string[], recordId: string, recordIdAlt: string = '') {
+		this.dataObjParmsFormListInit({
+			listIds,
+			listRecordIdCurrent: recordIdAlt ? recordIdAlt : recordId
+		})
+	}
+
 	detailGetDataRow(): DataRow | undefined {
 		return this.dataObj?.data.rowsRetrieved.getDetailRow()
 	}
@@ -517,7 +536,7 @@ export class AppLevelNode {
 	getCurrRecordValue(key: string) {
 		if (this.dataObj) {
 			if (this.dataObj.raw.codeCardinality === DataObjCardinality.list) {
-				const idCurrent = this.parmsFormListGet(ParmsValuesType.listRecordIdCurrent)
+				const idCurrent = this.dataObjParmsFormListParmGet(ParmsValuesType.listRecordIdCurrent)
 				return this.dataObj.data.rowsRetrieved.getRowValueById(idCurrent, key)
 			} else {
 				return this.dataObj.data.rowsRetrieved.getDetailRecordValue(key)
@@ -534,7 +553,7 @@ export class AppLevelNode {
 	listCrumbLabelId() {
 		let id = ''
 		const crumbFieldNames: string[] = this.dataObj?.raw.crumbs ? this.dataObj?.raw.crumbs : []
-		const idCurrent = this.parmsFormListGet(ParmsValuesType.listRecordIdCurrent)
+		const idCurrent = this.dataObjParmsFormListParmGet(ParmsValuesType.listRecordIdCurrent)
 		if (crumbFieldNames.length > 0 && idCurrent) {
 			const dataRow = this.listGetDataRow()
 			if (dataRow) {
@@ -551,7 +570,7 @@ export class AppLevelNode {
 	}
 
 	listGetDataRow() {
-		const idCurrent = this.parmsFormListGet(ParmsValuesType.listRecordIdCurrent)
+		const idCurrent = this.dataObjParmsFormListParmGet(ParmsValuesType.listRecordIdCurrent)
 		const dataRows = this.listGetDataRows()
 		const val =
 			idCurrent && dataRows
@@ -563,7 +582,7 @@ export class AppLevelNode {
 	}
 	listGetDataRows(): DataRow[] | [] {
 		let dataRows: DataRow[] = []
-		const idList: string[] = this.parmsFormListGet(ParmsValuesType.listIds)
+		const idList: string[] = this.dataObjParmsFormListParmGet(ParmsValuesType.listIds)
 		if (idList) {
 			idList.forEach((id) => {
 				const dataRow = this.dataObj?.data.rowsRetrieved
@@ -576,7 +595,7 @@ export class AppLevelNode {
 	}
 
 	listGetRowIdx() {
-		const idCurrent = this.parmsFormListGet(ParmsValuesType.listRecordIdCurrent)
+		const idCurrent = this.dataObjParmsFormListParmGet(ParmsValuesType.listRecordIdCurrent)
 		const dataRows = this.listGetDataRows()
 		return idCurrent && dataRows
 			? dataRows.findIndex((dataRow) => {
@@ -591,7 +610,7 @@ export class AppLevelNode {
 		)
 	}
 	listRowStatus() {
-		const idCurrent = this.parmsFormListGet(ParmsValuesType.listRecordIdCurrent)
+		const idCurrent = this.dataObjParmsFormListParmGet(ParmsValuesType.listRecordIdCurrent)
 		const listDataRows = this.listGetDataRows()
 		if (listDataRows && idCurrent) {
 			const rowIdx = listDataRows.findIndex((dataRow) => {
@@ -640,7 +659,10 @@ export class AppLevelNode {
 						msg: `No case defined for AppRowActionType: ${rowAction}`
 					})
 			}
-			this.parmsFormListSet(ParmsValuesType.listRecordIdCurrent, listDataRows[rowIdx].record.id)
+			this.dataObjParmsFormListParmSet(
+				ParmsValuesType.listRecordIdCurrent,
+				listDataRows[rowIdx].record.id
+			)
 			return new MethodResult(rowIdx)
 		}
 		return new MethodResult({
@@ -658,26 +680,6 @@ export class AppLevelNode {
 
 	async nodeRetrieve(actionType: CodeActionType): Promise<MethodResult> {
 		return await getNodeByNodeId(this.node.getNodeIdAction(actionType, NodeIdActionAlt.self))
-	}
-
-	parmsFormList(): any {
-		return this?.dataObj?.parmsFormList()
-	}
-
-	parmsFormListInit(parms: ParmsValuesFormListType) {
-		this?.dataObj?.parmsFormListInit(parms)
-	}
-
-	parmsFormListGet(parm: ParmsValuesType): any {
-		return this?.dataObj?.parmsFormListGet(parm)
-	}
-
-	parmsFormListSet(parm: ParmsValuesType, value: any) {
-		this.dataObj?.parmsFormListSet(parm, value)
-	}
-
-	parmsFormListUpdate(listIds: string[], recordId: string, recordIdAlt: string = '') {
-		this.parmsFormListInit({ listIds, listRecordIdCurrent: recordIdAlt ? recordIdAlt : recordId })
 	}
 
 	async query(sm: State, queryType: TokenApiQueryType): Promise<MethodResult> {
@@ -743,7 +745,8 @@ export class AppLevelNode {
 		const isDataTreePresetOffset =
 			queryType === TokenApiQueryType.preset &&
 			this.node.codeComponent === NodeObjComponent.FormDetail
-		const dataTree: TokenApiQueryDataTree = sm.getStateData(isDataTreePresetOffset)
+		const dataTree: TokenApiQueryDataTree = sm.appGetDataTree(isDataTreePresetOffset)
+
 		const rawQuerySource = this.dataObj ? this.dataObj.raw.rawQuerySource : new QuerySourceRaw({})
 
 		sm.parmsState.valueSet(ParmsValuesType.systemIdQuerySource, sm.app.systemIdQuerySource)
@@ -1122,9 +1125,9 @@ export class AppTree {
 								result = await this.levelPop(sm)
 								if (result.error) return result
 							} else {
-								tabParent.parmsFormListSet(
+								tabParent.dataObjParmsFormListParmSet(
 									ParmsValuesType.listRecordIdCurrent,
-									tabParent.parmsFormListGet(ParmsValuesType.listIds)[0]
+									tabParent.dataObjParmsFormListParmGet(ParmsValuesType.listIds)[0]
 								)
 								result = await this.tabQueryDetailDataRow(
 									sm,
@@ -1138,7 +1141,7 @@ export class AppTree {
 							let recordIdOld = currTab.dataObj.data.rowsRetrieved.getDetailRecordValue('id')
 							let recordIdNew = ''
 
-							let listIds: string[] = tabParent.parmsFormListGet(ParmsValuesType.listIds)
+							let listIds: string[] = tabParent.dataObjParmsFormListParmGet(ParmsValuesType.listIds)
 							if (listIds.length > 1) {
 								let idx = listIds.findIndex((id: string) => id === recordIdOld)
 								idx = idx === 0 ? 1 : idx - 1
@@ -1154,7 +1157,7 @@ export class AppTree {
 								result = await tabParent.queryDataObj(sm, TokenApiQueryType.retrieve)
 								if (result.error) return result
 
-								tabParent.parmsFormListUpdate(
+								tabParent.dataObjParmsFormListUpdate(
 									listIds.filter((id) => id !== recordIdOld),
 									recordIdOld,
 									recordIdNew
@@ -1205,18 +1208,22 @@ export class AppTree {
 							tabParent?.dataObj?.raw.codeCardinality === DataObjCardinality.list &&
 							currLevel?.tabIdxCurrent === 0
 						) {
-							let listIdsPre: string[] = tabParent.parmsFormListGet(ParmsValuesType.listIds)
+							let listIdsPre: string[] = tabParent.dataObjParmsFormListParmGet(
+								ParmsValuesType.listIds
+							)
 							result = await tabParent.queryDataObj(sm, TokenApiQueryType.retrieve)
 							if (result.error) return result
 
 							// update parmsFormList
 							const detailIdCurrent = currTab.dataObj.data.rowsRetrieved.getDetailRecordValue('id')
-							const listIdsRetrieved = tabParent.parmsFormListGet(ParmsValuesType.listIds)
+							const listIdsRetrieved = tabParent.dataObjParmsFormListParmGet(
+								ParmsValuesType.listIds
+							)
 							const listIdsPost: string[] = listIdsRetrieved.reduce((acc: string[], id: string) => {
 								if (listIdsPre.includes(id) || id === detailIdCurrent) acc.push(id)
 								return acc
 							}, [])
-							tabParent.parmsFormListInit({
+							tabParent.dataObjParmsFormListInit({
 								listIds: listIdsPost,
 								listRecordIdCurrent: detailIdCurrent
 							})
@@ -1356,6 +1363,7 @@ export class AppTree {
 			this.levels[idxLevelCurr].tabs.push(tabNew)
 		}
 	}
+
 	virtualModalLevelRestore() {
 		this.levels = this.levels.filter((level) => !level.isVirtual)
 		this.levels.forEach((level) => {

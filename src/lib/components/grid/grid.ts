@@ -74,6 +74,7 @@ class SelectCellRenderer implements ICellRendererComp {
 		if (fieldName) {
 			let valueDisplay = ''
 			const valueData = params.data[fieldName]
+
 			if (valueData) {
 				if (Array.isArray(valueData)) {
 					const linkItems: PropLinkItems = params.colDef?.context?.linkItems
@@ -81,7 +82,7 @@ class SelectCellRenderer implements ICellRendererComp {
 						valueDisplay = linkItems.getDisplayValueListRecords(valueData)
 					}
 				} else {
-					valueDisplay = valueData ? valueData.display : ''
+					valueDisplay = getValueDisplay(valueData)
 				}
 			}
 			eGui.append(valueDisplay)
@@ -136,7 +137,21 @@ export const columnTypes = {
 		},
 		cellRenderer: SelectCellRenderer,
 		valueGetter: (params: ValueGetterParams) => {
-			return params.colDef.field ? params.data[params.colDef.field] : null
+			const field = params.colDef.field
+			const valueRaw = field ? params.data[field] : null
+			const valueDisplay = getValueDisplay(valueRaw)
+			return valueDisplay
+		},
+		valueSetter: (params: ValueSetterParams) => {
+			const valueId = params.newValue
+			const linkItems: PropLinkItems = params.colDef?.context?.linkItems
+			const valueSave = linkItems.getValueRaw(valueId)
+			if (params.colDef.field) {
+				params.data[params.colDef.field] = valueSave
+
+				return true
+			}
+			return false
 		}
 	},
 	ctText: {
@@ -315,6 +330,7 @@ export class GridManagerOptions {
 	isSuppressSelect: boolean
 	listReorderColumn: string
 	onCellClicked?: Function
+	onRowClicked?: Function
 	onSelectionChanged?: Function
 	rowData: any[]
 	sortModel: DataObjSort
@@ -333,6 +349,7 @@ export class GridManagerOptions {
 		this.isSuppressSelect = booleanOrFalse(obj.isSuppressSelect)
 		this.listReorderColumn = obj.listReorderColumn || ''
 		this.onCellClicked = obj.onCellClicked
+		this.onRowClicked = obj.onRowClicked
 		this.onSelectionChanged = obj.onSelectionChanged
 		this.rowData = required(obj.rowData, clazz, 'rowData')
 		this.sortModel = valueOrDefault(obj.sortModel, new DataObjSort())

@@ -24,6 +24,7 @@
 	import FormElInp from '$comps/form/FormElInp.svelte'
 	import FormElInpChips from '$comps/form/FormElInpChips.svelte'
 	import FormElInpCheckbox from '$comps/form/FormElInpCheckbox.svelte'
+	import FormElInpDate from '$comps/form/FormElInpDate.svelte'
 	import FormElInpRadio from '$comps/form/FormElInpRadio.svelte'
 	import FormElEmbedDetailEligibility from '$comps/form/FormElEmbedDetailEligibility.svelte'
 	import FormElEmbedListConfig from '$comps/form/FormElEmbedListConfig.svelte'
@@ -77,6 +78,7 @@
 		FieldEmbedShell: FormElEmbedShell,
 		FieldFile: FormElFile,
 		FieldInput: FormElInp,
+		FieldInputDate: FormElInpDate,
 		FieldRadio: FormElInpRadio,
 		FieldSelect: FormElSelect,
 		FieldSelectOwner: FormElSelectOwner,

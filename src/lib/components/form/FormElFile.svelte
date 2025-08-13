@@ -2,7 +2,6 @@
 	import { ContextKey, DataManager, DataObj, FileStorage, required } from '$utils/types'
 	import { getContext } from 'svelte'
 	import { FieldFile } from '$comps/form/fieldFile'
-	import { getToastStore } from '@skeletonlabs/skeleton'
 	import {
 		TokenApiFileParmDelete,
 		TokenApiBlobParmUpload,
@@ -12,8 +11,6 @@
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '$comps/form/FormElFile.svelte'
-
-	const toastStore = getToastStore()
 
 	let { parms }: DataRecord = $props()
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
@@ -140,20 +137,20 @@
 
 		<div class="flex mt-2">
 			<button
-				class="btn btn-action variant-filled-primary {chooseBtnWidth}"
+				class="btn btn-action preset-filled-primary-500 {chooseBtnWidth}"
 				onclick={() => elInput.click()}
 			>
 				{labelSelect}
 			</button>
 
 			{#if urlCurrent}
-				<button class="btn btn-action variant-filled-error ml-2 w-1/4" onclick={onDelete}>
+				<button class="btn btn-action preset-filled-error-500 ml-2 w-1/4" onclick={onDelete}>
 					{labelDelete}
 				</button>
 			{/if}
 
 			{#if isSourceStorage}
-				<button class="btn btn-action variant-filled-primary ml-2 w-1/4" onclick={onDownload}>
+				<button class="btn btn-action preset-filled-primary-500 ml-2 w-1/4" onclick={onDownload}>
 					Download
 				</button>
 			{/if}
@@ -174,8 +171,8 @@
 
 	{#if fieldValue && fieldValue.fileName && fieldValue.fileType}
 		<div class="text-sm mt-1">
-			<span class="text-gray-400">File Name:</span>
-			{fieldValue.fileName} <span class="ml-2 text-gray-400">File Type:</span>
+			<span class="text-desc">File Name:</span>
+			{fieldValue.fileName} <span class="ml-2 text-desc">File Type:</span>
 			{fieldValue.fileType}
 		</div>
 	{/if}

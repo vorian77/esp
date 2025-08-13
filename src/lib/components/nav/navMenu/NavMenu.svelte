@@ -18,9 +18,9 @@
 <!-- <DataViewer header="NavMenu.user.preferences" data={reactiveNavMenuData.sm.user?.preferences} /> -->
 
 {#if widthValue}
-	<div class="h-full overflow-y-auto overflow-x-hidden">
+	<div class="h-full overflow-y-auto overflow-x-hidden bg-neutral-50">
 		<nav
-			class="h-full flex flex-col justify-between text-sm p-3 bg-neutral-50 border-r"
+			class="h-full flex flex-col justify-between text-sm p-3 border-square"
 			style="width: {widthValue.current}px;"
 		>
 			{#if navMenuData}

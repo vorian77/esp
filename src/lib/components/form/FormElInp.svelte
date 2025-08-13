@@ -33,7 +33,7 @@
 	let classPropsInput = $derived.by(() => {
 		let clazz =
 			parms.dataObj.raw.codeCardinality === DataObjCardinality.detail
-				? 'input text-sm text-black ' + field.getBackgroundColor(field.fieldAccess)
+				? 'input text-sm text-black' + field.getBackgroundColor(field.fieldAccess)
 				: 'w-full border-none bg-transparent text-black'
 		clazz +=
 			field.fieldAlignment === FieldAlignment.left
@@ -59,18 +59,6 @@
 		await dm.setFieldValueAsync(parms.dataObjId, parms.row, field, target.value)
 	}
 
-	async function onDoubleClick(event: MouseEvent) {
-		if (field.colDO.colDB.codeDataType === PropDataType.date) {
-			const date = new Date()
-			const year = date.getFullYear().toString()
-			const dateMonth = date.getMonth() + 1
-			const dateDay = date.getDate()
-			const month = dateMonth < 10 ? '0' + dateMonth : dateMonth.toString()
-			const day = dateDay < 10 ? '0' + dateDay : dateDay.toString()
-			const value = year + '-' + month + '-' + day
-			await dm.setFieldValueAsync(parms.dataObjId, parms.row, field, value)
-		}
-	}
 	function setIconProps() {
 		let iconProps: IconProps = undefined
 		let iconName =
@@ -162,7 +150,6 @@
 		max={field.maxValue?.toString() || ''}
 		min={field.minValue?.toString() || ''}
 		name={field.getValueKey()}
-		ondblclick={onDoubleClick}
 		oninput={onChange}
 		{placeholder}
 		readonly={field.fieldAccess === FieldAccess.readonly}

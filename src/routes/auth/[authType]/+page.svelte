@@ -1,6 +1,5 @@
 <script lang="ts">
 	import srcLogo from '$assets/org_logo_sys.png'
-	import { getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
 	import {
 		CodeAction,
 		CodeActionClass,
@@ -31,9 +30,7 @@
 
 	let sm: State = new State({
 		isDevMode: IS_DEV_MODE,
-		navPage: '/auth',
-		storeDrawer: getDrawerStore(),
-		storeToast: getToastStore()
+		navPage: '/auth'
 	})
 
 	let promise = $state(loadForm())
@@ -91,7 +88,7 @@
 
 <div class="h-screen flex flex-col items-center justify-center">
 	<div
-		class="w-full h-full sm:h-[70%] sm:w-[50%] md:w-[375px] bg-white border-2 rounded-lg shawdow-2xl p-4 flex flex-col items-center justify-center"
+		class="w-full h-full sm:h-[70%] sm:w-[50%] md:w-[375px] bg-white border-rounded shawdow-2xl p-4 flex flex-col items-center justify-center"
 	>
 		<button onclick={() => goto('/')}>
 			<img class="h-16 mb-4" src={srcLogo} alt="AppFactory" />
@@ -104,7 +101,7 @@
 		{#if IS_DEV_MODE}
 			<button
 				type="button"
-				class="btn btn-action variant-filled-secondary w-full"
+				class="btn btn-action preset-filled-secondary-500 w-full"
 				onclick={expressLogin}
 			>
 				Dev Login

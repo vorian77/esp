@@ -263,7 +263,6 @@ async function authActionLogicLogin(
 	}
 
 	const sm = authProcess.getState()
-	sm.storeDrawer.close()
 
 	return await action(
 		sm,

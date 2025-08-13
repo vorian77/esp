@@ -70,15 +70,11 @@
 		rowCountFiltered={dm.getRecordsDisplayListCount(parms.dataObjId)}
 		rowCountSelected={undefined}
 	/>
-	<div
-		bind:this={elContent}
-		class="mt-3 flex flex-col border rounded-lg"
-		style="height: {contentH}px"
-	>
+	<div bind:this={elContent} class="mt-3 flex flex-col border-rounded" style="height: {contentH}px">
 		<div class="overflow-y-auto">
 			{#each dataRecordsDisplay as rec, recIdx (rec.id)}
 				<button
-					class="w-full text-left p-4 border-b cursor-pointer hover:bg-gray-100"
+					class="w-full text-left p-4 border-rounded-b cursor-pointer hover:bg-gray-100"
 					onclick={async () => onclick(rec)}
 				>
 					{#each fields as field, fieldIdx}
@@ -86,7 +82,7 @@
 						{@const isDisplayable = key !== 'id'}
 						{#if isDisplayable}
 							<p>
-								<span class="text-gray-400">{field.colDO.labelSide}:</span>
+								<span class="text-desc">{field.colDO.labelSide}:</span>
 								{recordValueGetDisplay(rec, key)}
 							</p>
 						{/if}

@@ -19,7 +19,7 @@ import {
 	valueOrDefault
 } from '$utils/types'
 import { EvalParser, EvalParserToken, type EvalParserTokenParm } from '$utils/utils.evalParser'
-import { Field, FieldClassType } from '$comps/form/field.svelte'
+import { Field, FieldClassType, FieldColor, getFieldColor } from '$comps/form/field.svelte'
 import { FieldEmbedList } from '$comps/form/fieldEmbed.svelte'
 import {
 	NavDestinationType,
@@ -337,7 +337,7 @@ export class UserActionConfirmContent {
 
 export class UserActionDisplay {
 	actionType: CodeActionType
-	color: string
+	fieldColor: FieldColor
 	header: string
 	isStatusDisabled: boolean = $state(false)
 	name: string
@@ -346,7 +346,7 @@ export class UserActionDisplay {
 		this.actionType = obj.action.codeAction.actionType
 		this.header = strRequired(obj.action.header, clazz, 'header')
 		this.isStatusDisabled = isStatusDisabled
-		this.color = strRequired(obj.fieldColor.color, clazz, 'color')
+		this.fieldColor = required(obj.fieldColor, clazz, 'fieldColor')
 		this.name = strRequired(obj.action.name, clazz, 'name')
 	}
 	static getDataObjAction(ua: UserAction, doas: DataObjAction[]): DataObjAction | undefined {
@@ -382,7 +382,6 @@ export async function userActionNavDestination(
 		} else {
 			const result: MethodResult = await sm.app.navDestination(sm, token)
 			if (result.error) return result
-			const dataTree = sm.app.getDataTree()
 			await userActionStateChangeTab(sm, parmsAction)
 		}
 	}

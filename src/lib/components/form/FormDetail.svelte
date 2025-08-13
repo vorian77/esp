@@ -42,7 +42,7 @@
 	class="h-full w-full flex flex-col sm:flex-row"
 	style="height: {contentH}"
 >
-	<div class="flex-grow overflow-y-auto rounded-md p-3 border">
+	<div class="flex-grow overflow-y-auto border-rounded p-3">
 		{#each elements as el}
 			<FormDetailEl {parms} {dataObj} {el} />
 		{/each}

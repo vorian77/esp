@@ -1,5 +1,5 @@
 import { App } from '$comps/app/types.app.svelte'
-import { MethodResult, ParmsValuesFormList, required, valueOrDefault } from '$utils/utils'
+import { MethodResult, required, valueOrDefault } from '$utils/utils'
 import {
 	booleanOrFalse,
 	CodeAction,
@@ -13,6 +13,7 @@ import {
 	ParmsValues,
 	ParmsValuesType,
 	type ParmsValuesFormListType,
+	PropDataType,
 	ToastType,
 	User,
 	UserParm,
@@ -21,16 +22,21 @@ import {
 	UserPrefType
 } from '$utils/types'
 import {
+	type FunctionModalReturn,
 	NavDestinationType,
 	TokenApiDbDataObjSource,
 	TokenApiId,
 	TokenApiQueryDataTree,
-	TokenApiQueryDataTreeAccessType,
 	TokenApiQueryType,
 	TokenAppActionTrigger,
+	TokenAppModalConfig,
+	TokenAppModalConfigConfirm,
+	TokenAppModalConfigDate,
+	TokenAppModalConfigType,
 	TokenAppModalEmbedField,
 	TokenAppModalReturn,
 	TokenAppModalReturnType,
+	TokenAppModalDate,
 	TokenAppModalSelect,
 	TokenAppNav,
 	TokenAppNode,
@@ -39,9 +45,9 @@ import {
 } from '$utils/types.token'
 import { NavMenuData } from '$comps/nav/navMenu/types.navMenu.svelte'
 import { QuerySourceParentRaw } from '$lib/queryClient/types.queryClient'
+import { Field } from '$comps/form/field.svelte'
 import { FieldEmbedListConfig, FieldEmbedListSelect } from '$comps/form/fieldEmbed.svelte'
 import { RawDataObjAction } from '$comps/dataObj/types.rawDataObj.svelte'
-import { type DrawerSettings, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton'
 import { apiFetchFunction, ApiFunction } from '$routes/api/api'
 import fActionsClassCustom from '$enhance/actions/actionsClassCustom'
 import fActionsClassDo from '$enhance/actions/actionsClassDo'
@@ -59,6 +65,7 @@ export class State {
 	app: App = $state(new App())
 	dm: DataManager
 	dataObjState?: DataObj
+	dataTreeParent?: TokenApiQueryDataTree
 	fActions: Record<string, Function> = {}
 	fChangeCallback?: Function
 	isDevMode: boolean = false
@@ -74,12 +81,13 @@ export class State {
 		})
 	)
 	navPage: string
+	overlayModalConfig?: TokenAppModalConfig
+	overlayModalFunctionReturn?: FunctionModalReturn
+	overlayModalOpen: boolean = $state(false)
+	overlayState?: State = $state()
+	overlayToaster?: any
 	parmsState: ParmsValues = new ParmsValues()
 	parmsTrans: ParmsValues = new ParmsValues()
-	stateRoot?: State
-	storeDrawer: any
-	storeModal: any
-	storeToast: any
 	triggerKey: number = $state(0)
 	triggerSaveValue: number = $state(0)
 	triggerTokens: StateTriggerToken[] = $state([])
@@ -94,35 +102,26 @@ export class State {
 		this.change(obj)
 	}
 
-	menuWidthSet(width: number) {
-		if (width > 0) {
-			this.navMenuWidthValue = new Tween(width, {
-				duration: 500,
-				easing: cubicOut
-			})
-		}
-	}
-	menuWidthToggle() {
-		if (this.navMenuWidthValue.current === 250) {
-			this.menuWidthSet(70)
-		} else {
-			this.menuWidthSet(250)
-		}
-		return this.navMenuWidthValue.current
+	appGetDataTree(isDataTreePresetOffset: boolean = false): TokenApiQueryDataTree {
+		return this.dataTreeParent ? this.dataTreeParent : this.app.getDataTree(isDataTreePresetOffset)
 	}
 
 	change(obj: DataRecord) {
 		this.app = this.changeParm(obj, 'app', this.app)
+		this.dataTreeParent = this.changeParm(obj, 'dataTreeParent', this.dataTreeParent)
 		this.fChangeCallback = this.changeParm(obj, 'fChangeCallback', this.fChangeCallback)
 		this.isDevMode = this.changeParm(obj, 'isDevMode', this.isDevMode)
 		this.navContent = this.changeParm(obj, 'navContent', this.navContent)
 		this.navLayout = this.changeParm(obj, 'navLayout', this.navLayout)
 		this.navLayoutParms = this.changeParm(obj, 'navLayoutParms', this.navLayoutParms)
 		this.navPage = this.changeParm(obj, 'navPage', this.navPage)
-		this.stateRoot = this.changeParm(obj, 'stateRoot', this.stateRoot)
-		this.storeDrawer = this.changeParm(obj, 'storeDrawer', this.storeDrawer)
-		this.storeModal = this.changeParm(obj, 'storeModal', this.storeModal)
-		this.storeToast = this.changeParm(obj, 'storeToast', this.storeToast)
+		this.overlayModalFunctionReturn = this.changeParm(
+			obj,
+			'overlayModalFunctionReturn',
+			this.overlayModalFunctionReturn
+		)
+		this.overlayModalConfig = this.changeParm(obj, 'overlayModalConfig', this.overlayModalConfig)
+		this.overlayToaster = this.changeParm(obj, 'overlayToaster', this.overlayToaster)
 		this.user = this.changeParm(obj, 'user', this.user)
 
 		if (Object.hasOwn(obj, 'navHeader')) this.navHeader = new StateNavHeader(obj.navHeader)
@@ -144,10 +143,6 @@ export class State {
 			triggerTokens: parmsAction.stateParms.triggerTokens
 		})
 		if (parmsAction.fCallback) await parmsAction.fCallback()
-	}
-
-	closeModal() {
-		this.storeModal.close()
 	}
 
 	consumeTriggerToken(triggerToken: StateTriggerToken) {
@@ -181,13 +176,6 @@ export class State {
 		return actionGroup._dataObjActions.map((doa: any) => {
 			return new DataObjAction(new RawDataObjAction(doa))
 		})
-	}
-
-	getStateData(isDataTreePresetOffset: boolean = false): TokenApiQueryDataTree {
-		const dataTree: TokenApiQueryDataTree = this.stateRoot
-			? this.stateRoot.app.getDataTree(isDataTreePresetOffset)
-			: this.app.getDataTree(isDataTreePresetOffset)
-		return dataTree
 	}
 
 	loadActions() {
@@ -229,6 +217,23 @@ export class State {
 		return fActions
 	}
 
+	menuWidthSet(width: number) {
+		if (width > 0) {
+			this.navMenuWidthValue = new Tween(width, {
+				duration: 500,
+				easing: cubicOut
+			})
+		}
+	}
+	menuWidthToggle() {
+		if (this.navMenuWidthValue.current === 250) {
+			this.menuWidthSet(70)
+		} else {
+			this.menuWidthSet(250)
+		}
+		return this.navMenuWidthValue.current
+	}
+
 	newApp(parms: DataRecord = {}) {
 		this.app = new App(parms)
 		this.dm.reset()
@@ -242,8 +247,7 @@ export class State {
 		meta: DataRecord
 	): Promise<MethodResult> {
 		const sm = required(meta.sm, 'State.openDrawer', 'meta.sm')
-		const settings: DrawerSettings = { id, position, height, width, meta }
-		this.storeDrawer.open(settings)
+		const settings: any = { id, position, height, width, meta }
 		return new MethodResult()
 	}
 
@@ -253,7 +257,7 @@ export class State {
 		height: string | undefined,
 		width: string | undefined
 	): Promise<MethodResult> {
-		const stateModal = new StateSurfacePopup(this, {
+		const stateModal = new StateSurfaceOverlay(this, {
 			navHeader: {
 				isDataObj: true,
 				isDrawerClose: true
@@ -289,56 +293,16 @@ export class State {
 		})
 	}
 
-	async openModal(sm: StateSurfacePopup, fUpdate?: Function): Promise<MethodResult> {
-		new Promise<any>((resolve) => {
-			const modalSettings: ModalSettings = {
-				type: 'component',
-				component: 'rootLayoutModal',
-				meta: { sm },
-				response: async (r: any) => {
-					resolve(r)
-				}
-			}
-			sm.storeModal.trigger(modalSettings)
-		}).then(async (response) => {
-			sm.app.virtualModalLevelRestore()
-			if (fUpdate) {
-				if (response && response !== false) {
-					const modalReturn = response as TokenAppModalReturn
-					return fUpdate(modalReturn)
-				} else {
-					return fUpdate(new TokenAppModalReturn({ type: TokenAppModalReturnType.cancel }))
-				}
-			}
-		})
+	async openModal(overlayState: StateSurfaceOverlay): Promise<MethodResult> {
+		this.overlayState = overlayState
+		this.overlayState.overlayModalOpen = true
 		return new MethodResult()
-	}
-
-	async openModalNode(token: TokenAppNode, fUpdate?: Function): Promise<MethodResult> {
-		const clazz = `${FILENAME}.openModalNode`
-		const stateModal = new StateSurfacePopup(this, {
-			actionsDialog: await this.getActions('doag_dialog_footer_detail'),
-			navHeader: { isDataObj: true }
-		})
-		let result: MethodResult = await stateModal.triggerAction(
-			new TokenAppStateTriggerAction({
-				codeAction: CodeAction.init(
-					CodeActionClass.ct_sys_code_action_class_nav,
-					CodeActionType.openNode
-				),
-				data: { token },
-				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
-			})
-		)
-		if (result.error) return result
-
-		return await this.openModal(stateModal, fUpdate)
 	}
 
 	async openModalEmbedListConfig(
 		token: TokenAppActionTrigger,
 		queryType: TokenApiQueryType,
-		fModalCloseUpdate: Function
+		fModalReturn: FunctionModalReturn
 	): Promise<MethodResult> {
 		const clazz = `${FILENAME}.openModalEmbedListConfig`
 		const dataObjEmbed = token.dataObj
@@ -347,7 +311,7 @@ export class State {
 		const parentDataObjId = required(fieldEmbed.parentDataObjId, clazz, 'parentDataObj')
 		const embedParentId = this.dm.getRecordId(parentDataObjId, 0)
 
-		const stateModal = new StateSurfacePopup(this, {
+		const stateModal = new StateSurfaceOverlay(this, {
 			actionsDialog: fieldEmbed.actionsModal,
 			app: this.app,
 			embedParentId,
@@ -356,9 +320,14 @@ export class State {
 				isDataObj: true,
 				isRowStatus: true
 			},
-			stateRoot: this
+			overlayModalConfig: new TokenAppModalConfig({ type: TokenAppModalConfigType.layout }),
+			overlayModalFunctionReturn: fModalReturn
 		})
 
+		stateModal.parmsState.valueSet(
+			ParmsValuesType.embedDataObjId,
+			required(dataObjEmbed.raw.id, clazz, 'dataObjEmbedId')
+		)
 		stateModal.parmsState.valueSet(ParmsValuesType.embedParentId, embedParentId)
 		stateModal.parmsState.valueSet(ParmsValuesType.isModalCloseOnEmptyList, true)
 		stateModal.app.virtualModalLevelAdd(dataObjEmbed)
@@ -388,17 +357,17 @@ export class State {
 		)
 		if (result.error) return result
 
-		return await this.openModal(stateModal, fModalCloseUpdate)
+		return await this.openModal(stateModal)
 	}
 
 	async openModalEmbedListSelect(
 		token: TokenAppActionTrigger,
-		fModalCloseUpdate: Function
+		fModalReturn: FunctionModalReturn
 	): Promise<MethodResult> {
 		const clazz = `${FILENAME}.openModalEmbedListSelect`
 		const dataObjEmbed = token.dataObj
+		const listIdsSelected = dataObjEmbed.data.rowsRetrieved.getRowsIds()
 		const fieldEmbed: FieldEmbedListSelect = required(dataObjEmbed.embedField, clazz, 'fieldEmbed')
-
 		const parentDataObjId = required(fieldEmbed.parentDataObjId, clazz, 'parentDataObj')
 		const parentDataObj: DataObj = required(
 			this.dm.getDataObj(parentDataObjId),
@@ -414,19 +383,22 @@ export class State {
 		// parms
 		const parmsState = new ParmsValues(dataObjEmbed.data.getParms())
 		parmsState.update(dataObjEmbed.data.parms.valueGetAll())
-		parmsState.valueSet(ParmsValuesType.embedFieldName, fieldEmbed.rawFieldEmbedList.embedPropName)
 		parmsState.valueSet(
-			ParmsValuesType.listIdsSelected,
-			token.dataObj.data.rowsRetrieved.getRowsIds()
+			ParmsValuesType.embedDataObjId,
+			required(dataObjEmbed.raw.id, clazz, 'dataObjEmbedId')
 		)
+		parmsState.valueSet(ParmsValuesType.embedFieldName, fieldEmbed.rawFieldEmbedList.embedPropName)
+		parmsState.valueSet(ParmsValuesType.listIdsSelected, listIdsSelected)
 
-		const stateModal = new StateSurfacePopup(this, {
+		const stateModal = new StateSurfaceOverlay(this, {
 			actionsDialog: fieldEmbed.actionsModal,
+			dataTreeParent: this.app.getDataTree(),
 			embedParentId: this.dm.getRecordId(parentDataObjId, 0),
 			embedType: fieldEmbed.colDO.fieldEmbedListType,
 			navHeader: { isDataObj: true },
-			parmsState,
-			stateRoot: this
+			overlayModalConfig: new TokenAppModalConfig({ type: TokenAppModalConfigType.layout }),
+			overlayModalFunctionReturn: fModalReturn,
+			parmsState
 		})
 		let result = await stateModal.triggerAction(
 			new TokenAppStateTriggerAction({
@@ -438,6 +410,7 @@ export class State {
 					token: new TokenAppModalEmbedField({
 						dataObjSourceModal: new TokenApiDbDataObjSource({
 							dataObjId: fieldEmbed.dataObjListID,
+							listIdsSelected,
 							parent: new QuerySourceParentRaw({
 								_columnName: fieldEmbed.rawFieldEmbedList.embedPropName,
 								_columnIsMultiSelect: true,
@@ -445,7 +418,6 @@ export class State {
 								_table: parentDataObjTableRoot
 							})
 						}),
-						listIdsSelected: token.dataObj.data.rowsRetrieved.getRowsIds(),
 						queryType: TokenApiQueryType.retrieve
 					})
 				},
@@ -454,58 +426,149 @@ export class State {
 		)
 		if (result.error) return result
 
-		return await this.openModal(stateModal, fModalCloseUpdate)
+		return await this.openModal(stateModal)
+	}
+
+	async openModalDate(token: TokenAppModalDate): Promise<MethodResult> {
+		return await this.openModal(
+			new StateSurfaceOverlay(this, {
+				overlayModalConfig: new TokenAppModalConfigDate({
+					date: token.date,
+					type: TokenAppModalConfigType.date
+				}),
+				overlayModalFunctionReturn: token.fModalReturn
+			})
+		)
+	}
+
+	async openModalField(
+		field: Field,
+		valueRaw: any,
+		fUpdateValue: (valueSave: any) => Promise<void>
+	) {
+		const triggerModalAction = (actionType: CodeActionType, data: DataRecord) => {
+			return this.triggerAction(
+				new TokenAppStateTriggerAction({
+					codeAction: CodeAction.init(CodeActionClass.ct_sys_code_action_class_modal, actionType),
+					codeConfirmType: TokenAppUserActionConfirmType.none,
+					data
+				})
+			)
+		}
+
+		const openModalDate = async (fModalReturn: Function) => {
+			return triggerModalAction(CodeActionType.modalOpenDate, {
+				token: new TokenAppModalDate({ date: valueRaw, fModalReturn })
+			})
+		}
+
+		const openModalSelect = async (fModalReturn: Function) => {
+			if (field.linkItems) {
+				const listIdsSelected = field.linkItems.getValueIds(valueRaw)
+				const gridParms = field.linkItems.getGridParms()
+
+				return triggerModalAction(CodeActionType.modalOpenSelect, {
+					token: new TokenAppModalSelect({
+						columnDefs: gridParms.columnDefs,
+						fModalReturn,
+						isMultiSelect: field.colDO.colDB.isMultiSelect, // Fixed: Use full path
+						listIdsSelected,
+						rowData: gridParms.rowData,
+						selectLabel: field.colDO.label,
+						sortModel: gridParms.sortModel
+					})
+				})
+			}
+		}
+		const createModalHandler = (getValueSave: (parmsReturn: ParmsValues) => any) => {
+			return async (modalReturn: TokenAppModalReturn) => {
+				if (modalReturn.type === TokenAppModalReturnType.complete && modalReturn.parmsState) {
+					const valueSave = getValueSave(modalReturn.parmsState)
+					await fUpdateValue(valueSave)
+				}
+			}
+		}
+
+		// Handle different fields
+		const fieldDataType = field.colDO.colDB.codeDataType
+		const isMultiSelect = field.colDO.colDB.isMultiSelect
+
+		if (fieldDataType === PropDataType.date) {
+			return await openModalDate(
+				createModalHandler((parmsReturn) => parmsReturn.valueGet(ParmsValuesType.modalDate))
+			)
+		} else if (field.linkItems && isMultiSelect) {
+			return await openModalSelect(
+				createModalHandler((parmsReturn) => {
+					const valueDisplay = parmsReturn.valueGet(ParmsValuesType.listIdsSelected)
+					return field?.linkItems?.getValueRaw(valueDisplay)
+				})
+			)
+		}
+	}
+
+	async openModalNode(
+		token: TokenAppNode,
+		fModalReturn?: FunctionModalReturn
+	): Promise<MethodResult> {
+		const clazz = `${FILENAME}.openModalNode`
+		const stateModal = new StateSurfaceOverlay(this, {
+			actionsDialog: await this.getActions('doag_dialog_footer_detail'),
+			overlayModalConfig: new TokenAppModalConfig({ type: TokenAppModalConfigType.layout }),
+			overlayModalFunctionReturn: fModalReturn,
+			navHeader: { isDataObj: true }
+		})
+		let result: MethodResult = await stateModal.triggerAction(
+			new TokenAppStateTriggerAction({
+				codeAction: CodeAction.init(
+					CodeActionClass.ct_sys_code_action_class_nav,
+					CodeActionType.openNode
+				),
+				data: { token },
+				stateParms: new StateParms({ navLayout: StateNavLayout.layoutContent })
+			})
+		)
+		if (result.error) return result
+
+		return await this.openModal(stateModal)
 	}
 
 	async openModalSelect(token: TokenAppModalSelect): Promise<MethodResult> {
 		const parmsState = new ParmsValues({})
 		parmsState.valueSet(ParmsValuesType.tokenAppModalSelect, token)
 		parmsState.valueSet(ParmsValuesType.listIdsSelected, token.listIdsSelected)
-
-		const stateModal = new StateSurfacePopup(this, {
-			actionsDialog: await this.getActions('doag_dialog_footer_list'),
+		const stateModal = new StateSurfaceOverlay(this, {
+			actionsDialog: await this.getActions('doag_dialog_footer_list_select'),
 			navContent: StateNavContent.ModalSelect,
 			navHeader: {
 				headerText: `Select Value${token.isMultiSelect ? '(s)' : ''} For: ${token.selectLabel}`
 			},
 			navLayout: StateNavLayout.layoutContent,
+			overlayModalConfig: new TokenAppModalConfig({ type: TokenAppModalConfigType.layout }),
+			overlayModalFunctionReturn: token.fModalReturn,
 			parmsState
 		})
 
-		return await this.openModal(stateModal, token.fModalClose)
+		return await this.openModal(stateModal)
 	}
 
-	openToast(type: ToastType, message: string) {
-		const background = {
-			success: 'variant-filled-secondary',
-			warning: 'variant-filled-warning',
-			error: 'variant-filled-error'
+	openToast(type: ToastType, title: string) {
+		if (this.overlayToaster) {
+			switch (type) {
+				case ToastType.error:
+					this.overlayToaster.error({ title })
+					break
+				case ToastType.info:
+					this.overlayToaster.info({ title })
+					break
+				case ToastType.success:
+					this.overlayToaster.success({ title })
+					break
+				case ToastType.warning:
+					this.overlayToaster.warning({ title })
+					break
+			}
 		}
-		const t: ToastSettings = {
-			background: background[type],
-			message
-		}
-		this.storeToast.trigger(t)
-	}
-
-	parmsFormList(): any {
-		const currTab = this.app.getCurrTab()
-		if (currTab) return currTab.parmsFormList()
-	}
-
-	parmsFormListData(parm: ParmsValuesType): any {
-		const currTab = this.app.getCurrTab()
-		if (currTab) return currTab.parmsFormListGet(parm)
-	}
-
-	parmsFormListGet(parm: ParmsValuesType): any {
-		const currTab = this.app.getCurrTab()
-		if (currTab) return currTab.parmsFormListGet(parm)
-	}
-
-	parmsFormListSet(parm: ParmsValuesType, value: any) {
-		const currTab = this.app.getCurrTab()
-		if (currTab) currTab.parmsFormListSet(parm, value)
 	}
 
 	setDataObjState(dataObj: DataObj) {
@@ -553,27 +616,36 @@ export class State {
 		parms: TokenAppStateTriggerAction,
 		fCallback?: Function
 	): Promise<MethodResult> {
-		if (this instanceof StateSurfacePopup) {
-			if (confirm(parms.confirm.message)) return await discardChanges(this)
-		} else {
-			const modal: ModalSettings = {
-				type: 'confirm',
-				title: parms.confirm.title,
-				body: parms.confirm.message,
-				buttonTextCancel: parms.confirm.buttonLabelCancel,
-				buttonTextConfirm: parms.confirm.buttonLabelConfirm,
-				response: async (r: boolean) => {
-					if (r) return await discardChanges(this)
-				}
-			}
-			return this.storeModal.trigger(modal)
-		}
-		return new MethodResult()
-
-		async function discardChanges(sm: State): Promise<MethodResult> {
+		const discardChanges = async (sm: State): Promise<MethodResult> => {
 			parms.codeConfirmType = TokenAppUserActionConfirmType.none
 			sm.dm.resetStatus()
 			return await sm.triggerActionValidate(parms, fCallback)
+		}
+		const fModalReturn = async (modalReturn: TokenAppModalReturn): Promise<MethodResult> => {
+			if (modalReturn.type === TokenAppModalReturnType.complete) {
+				return await discardChanges(this)
+			}
+			return new MethodResult()
+		}
+
+		if (this instanceof StateSurfaceOverlay) {
+			if (confirm(parms.confirm.message)) {
+				return await discardChanges(this)
+			}
+			return new MethodResult()
+		} else {
+			return await this.openModal(
+				new StateSurfaceOverlay(this, {
+					overlayModalConfig: new TokenAppModalConfigConfirm({
+						body: parms.confirm.message,
+						buttonTextCancel: parms.confirm.buttonLabelCancel,
+						buttonTextConfirm: parms.confirm.buttonLabelConfirm,
+						title: parms.confirm.title,
+						type: TokenAppModalConfigType.confirm
+					}),
+					overlayModalFunctionReturn: fModalReturn
+				})
+			)
 		}
 	}
 
@@ -587,16 +659,15 @@ export class State {
 		const rawUser: any = result.data
 
 		this.user = new User(rawUser)
+		console.log('State.UserCurrInit:', this.user)
 		this.userParm = new UserParm(this.user)
 		await this.navMenuData.init(this)
-		this.navLayout = StateNavLayout.layoutDashboard
 
 		return new MethodResult()
 	}
 	async userCurrReset(): Promise<MethodResult> {
 		if (this.user) {
 			await this.userCurrInit()
-			await this.triggerActionDashboard()
 		}
 		return new MethodResult()
 	}
@@ -703,17 +774,14 @@ export class StateSurfaceEmbedShell extends StateSurfaceEmbed {
 	}
 }
 
-export class StateSurfacePopup extends State {
+export class StateSurfaceOverlay extends State {
 	actionsDialog: DataObjAction[] = []
 	constructor(stateParent: State, obj: any) {
-		const clazz = 'StateSurfacePopup'
+		const clazz = 'StateSurfaceOverlay'
 		obj.navPage = stateParent.navPage
 		super(obj)
 		obj = valueOrDefault(obj, {})
 		this.actionsDialog = valueOrDefault(obj.actionsDialog, [])
-		this.storeDrawer = stateParent.storeDrawer
-		this.storeModal = stateParent.storeModal
-		this.storeToast = stateParent.storeToast
 		this.user = stateParent.user
 	}
 }

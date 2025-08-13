@@ -7,7 +7,7 @@
 {#if !isHideFilter}
 	<div class="flex justify-between">
 		<button
-			class="btn btn-action variant-soft-primary mr-4 {filter === '' ? 'hidden' : ''}"
+			class="btn btn-action preset-tonal-primary mr-4 {filter === '' ? 'hidden' : ''}"
 			onclick={() => {
 				filter = ''
 				fSetFilter('')
@@ -17,7 +17,7 @@
 		</button>
 
 		<input
-			class="w-full text-sm border border-neutral-300 rounded-md p-4"
+			class="w-full text-sm border-rounded p-4"
 			type="text"
 			id="search-text-"
 			bind:value={filter}

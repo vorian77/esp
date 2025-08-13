@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { Switch } from '@skeletonlabs/skeleton-svelte'
 	import { FieldAccess } from '$comps/form/field.svelte'
 	import { FieldToggle } from '$comps/form/fieldToggle'
 	import FormLabel from '$comps/form/FormLabel.svelte'
 	import { ContextKey, DataManager, DataObjCardinality, required } from '$utils/types'
-	import { SlideToggle } from '@skeletonlabs/skeleton'
 	import { getContext } from 'svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 	import { error } from '@sveltejs/kit'
@@ -28,6 +28,19 @@
 			field.callbackSetFieldValue
 		)
 	}
+
+	// Handle the change in state when toggled.
+	async function handleModeChange(checked: boolean) {
+		valueToggle = checked
+		console.log({ valueToggle })
+		await dm.setFieldValueAsync(
+			parms.dataObjId,
+			parms.row,
+			parms.field,
+			field.getValueDb(valueToggle),
+			field.callbackSetFieldValue
+		)
+	}
 </script>
 
 <!-- <DataViewer header="value" data={{ fieldValue, valueToggle }} /> -->
@@ -37,15 +50,13 @@
 </div>
 
 <div class={dataObj.raw.codeCardinality === DataObjCardinality.detail ? '' : 'text-center'}>
-	<SlideToggle
-		active="bg-primary-500"
+	<Switch
+		controlActive="bg-primary-500"
 		bind:checked={valueToggle}
 		name={field.getValueKey()}
-		onclick={onChange}
-		disabled={field.fieldAccess === FieldAccess.readonly}
+		onCheckedChange={onChange}
 	>
-		{#if field.valueShow}
-			{fieldValue}
-		{/if}
-	</SlideToggle>
+		{#snippet inactiveChild()}{/snippet}
+		{#snippet activeChild()}{/snippet}
+	</Switch>
 </div>

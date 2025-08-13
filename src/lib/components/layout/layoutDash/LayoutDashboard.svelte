@@ -80,7 +80,7 @@
 			{#each tasks as task}
 				{@const isButton = !task.dataObjPage && !task.hasAltOpen}
 				<div
-					class="bg-white rounded-lg p-4 flex flex-col items-center border shadow-md {isButton
+					class="bg-white border-rounded p-4 flex flex-col items-center shadow-md {isButton
 						? 'cursor-pointer hover:bg-gray-100'
 						: ''}"
 					onclick={task.hasAltOpen ? undefined : () => onClick(task)}

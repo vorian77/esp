@@ -58,7 +58,7 @@ export default async function action(
 		case CodeActionType.doDetailNew:
 			parentTab = sm.app.getCurrTabParentTab()
 			if (parentTab) {
-				parentTab.parmsFormListSet(ParmsValuesType.listRecordIdCurrent, '')
+				parentTab.dataObjParmsFormListParmSet(ParmsValuesType.listRecordIdCurrent, '')
 			}
 			currTab = sm.app.getCurrTab()
 			if (currTab && currTab.dataObj) {
@@ -89,7 +89,7 @@ export default async function action(
 			return await sm.openModalEmbedListConfig(
 				token,
 				TokenApiQueryType.retrieve,
-				fModalCloseUpdateEmbedListConfig
+				fModalReturnEmbedListConfig
 			)
 			break
 
@@ -98,13 +98,13 @@ export default async function action(
 			await sm.openModalEmbedListConfig(
 				token,
 				TokenApiQueryType.preset,
-				fModalCloseUpdateEmbedListConfig
+				fModalReturnEmbedListConfig
 			)
 			break
 
 		case CodeActionType.doEmbedListSelect:
 			if (!(token instanceof TokenAppActionTrigger)) return actionErrorToken(actionType)
-			return await sm.openModalEmbedListSelect(token, fModalCloseUpdateEmbedListSelect)
+			return await sm.openModalEmbedListSelect(token, fModalReturneEmbedListSelect)
 
 		case CodeActionType.doExpr:
 			if (token instanceof TokenAppActionTrigger) {
@@ -250,27 +250,30 @@ export default async function action(
 		await userActionNavDestination(sm, parmsAction, token.userAction.navDestination)
 	}
 
-	async function fModalCloseUpdateEmbedListConfig(
-		token: TokenAppModalReturn
+	async function fModalReturnEmbedListConfig(
+		modalReturn: TokenAppModalReturn
 	): Promise<MethodResult> {
-		let result: MethodResult
-		currLevel = sm.app.getCurrLevel()
-		if (currLevel) {
-			currTab = currLevel.getCurrTab()
-			result = await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
-			if (result.error) return result
-			await userActionStateChangeTab(sm, parmsAction)
+		if (modalReturn.type === TokenAppModalReturnType.complete) {
+			let result: MethodResult
+			sm.app.virtualModalLevelRestore()
+			currLevel = sm.app.getCurrLevel()
+			if (currLevel) {
+				currTab = currLevel.getCurrTab()
+				result = await currTab.queryDataObj(sm, TokenApiQueryType.retrieve)
+				if (result.error) return result
+				await userActionStateChangeTab(sm, parmsAction)
+			}
 		}
 		return new MethodResult()
 	}
 
-	async function fModalCloseUpdateEmbedListSelect(
-		token: TokenAppModalReturn
+	async function fModalReturneEmbedListSelect(
+		modalReturn: TokenAppModalReturn
 	): Promise<MethodResult> {
-		if (token.type === TokenAppModalReturnType.complete) {
+		if (modalReturn.type === TokenAppModalReturnType.complete) {
 			currLevel = sm.app.getCurrLevel()
-			if (currLevel && token.parmsState && token.parmsFormList) {
-				const embedFieldName = token.parmsState.valueGet(ParmsValuesType.embedFieldName)
+			if (currLevel && modalReturn.parmsState && modalReturn.parmsFormList) {
+				const embedFieldName = modalReturn.parmsState.valueGet(ParmsValuesType.embedFieldName)
 				currTab = currLevel.getCurrTab()
 				if (currTab && currTab.dataObj && embedFieldName) {
 					const idx = currTab.dataObj.data.fields.findIndex(
@@ -283,7 +286,7 @@ export default async function action(
 						)
 						currTab.dataObj.data.fields[idx].embedData.parmsFormList.valueSet(
 							ParmsValuesType.listIdsSelected,
-							token.parmsFormList.data.listIdsSelected
+							modalReturn.parmsFormList.data.listIdsSelected
 						)
 						let result: MethodResult = await sm.app.saveList(sm)
 						if (result.error) return result
@@ -292,7 +295,6 @@ export default async function action(
 			}
 			await userActionStateChangeTab(sm, parmsAction)
 		}
-
 		return new MethodResult()
 	}
 

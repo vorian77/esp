@@ -6,15 +6,17 @@
 		debug,
 		isPlainObjectEmpty,
 		MethodResult,
+		ToastType,
 		User,
 		UserParmItemSource,
 		UserParmItemType
 	} from '$utils/types'
 	import { State, StateNavLayout, StateTriggerToken } from '$comps/app/types.state.svelte'
-	import { getDrawerStore, getModalStore, getToastStore } from '@skeletonlabs/skeleton'
 	import {
 		TokenApiId,
 		TokenApiQueryType,
+		TokenAppModalReturn,
+		TokenAppModalReturnType,
 		TokenAppStateTriggerAction,
 		TokenAppStateTriggerActionTarget
 	} from '$utils/types.token'
@@ -28,6 +30,9 @@
 	import { goto } from '$app/navigation'
 	import { setContext } from 'svelte'
 	import { ContextKey } from '$utils/utils.sys'
+	import { Toaster, createToaster } from '@skeletonlabs/skeleton-svelte'
+	const toaster = createToaster()
+	import OverlayModal from '$comps/overlay/OverlayModal.svelte'
 	import DataViewer from '$utils/DataViewer.svelte'
 
 	const FILENAME = '/$routes/home/+layout.svelte'
@@ -45,11 +50,10 @@
 	let sm: State = $state(
 		new State({
 			isDevMode: IS_DEV_MODE,
-			storeDrawer: getDrawerStore(),
-			storeModal: getModalStore(),
-			storeToast: getToastStore()
+			overlayToaster: createToaster()
 		})
 	)
+
 	setContext(ContextKey.stateManager, sm)
 
 	let promise = launch()
@@ -80,15 +84,33 @@
 	})
 
 	async function launch(): Promise<MethodResult> {
-		return await sm.userCurrInit()
+		let result: MethodResult = await sm.userCurrInit()
+		if (result.error) return result
+		sm.navLayout = StateNavLayout.layoutDashboard
+		return new MethodResult()
 	}
 
 	function menuToggleMobileHide() {
 		isMobileMenuHide = !isMobileMenuHide
 	}
+
+	async function onClose(modalReturn: TokenAppModalReturn) {
+		sm.overlayState.overlayModalOpen = false
+		if (sm.overlayState.overlayModalFunctionReturn) {
+			await sm.overlayState.overlayModalFunctionReturn(modalReturn)
+		}
+	}
 </script>
 
 <svelte:window bind:innerWidth />
+
+{#if sm?.overlayToaster}
+	<Toaster toaster={sm.overlayToaster} />
+{/if}
+
+{#if sm?.overlayState?.overlayModalOpen}
+	<OverlayModal {sm} {onClose} />
+{/if}
 
 {#await promise}
 	Loading user...

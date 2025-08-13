@@ -13,7 +13,7 @@
 	}: { parms: DataRecord; dataObj: DataObj; elSection: DetailElGroupSection } = $props()
 </script>
 
-<fieldset class="p-3 mb-3 border" style:border-color={elSection.field.fieldColor.color}>
+<fieldset class="mb-3" style:border-color={elSection.field.fieldColor.color}>
 	{#if elSection.label}
 		<legend class="text-lg font-medium">{elSection.label}</legend>
 	{/if}

@@ -22,6 +22,8 @@ module sys_core {
     testNumberFloat: float64;
     testNumberInt: int64;
     testText: str;
+
+    teststr: str;
   }
 
   type ObjRootCore extending sys_core::ObjRoot {

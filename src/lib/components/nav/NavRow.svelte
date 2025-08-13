@@ -34,7 +34,53 @@
 </script>
 
 {#if rowStatus && rowStatus.show && !isHideRowManager}
-	<div class="flex flex-row p-2 h-[46px] items-center rounded-md border bg-white">
+	{@const isDisabledLeft = rowStatus.rowCurrentDisplay === 1 ? 'disabled' : ''}
+	{@const isDisabledRight = rowStatus.rowCurrentDisplay === rowStatus.rowCount ? 'disabled' : ''}
+	<div class="flex flex-row p-2 h-[46px] items-center border-rounded bg-white">
+		<div class="flex flex-row">
+			<div>
+				<NavRowAction
+					action={AppRowActionType.first}
+					icon={'ChevronFirst'}
+					{onChange}
+					disabled={isDisabledLeft}
+				/>
+			</div>
+			<div class="-ml-2">
+				<NavRowAction
+					action={AppRowActionType.left}
+					icon={'ChevronLeft'}
+					{onChange}
+					disabled={isDisabledLeft}
+				/>
+			</div>
+		</div>
+		<div class="text-sm font-medium text-nav">
+			{rowStatus.status}
+		</div>
+		<div class="flex flex-row">
+			<div>
+				<NavRowAction
+					action={AppRowActionType.right}
+					icon={'ChevronRight'}
+					{onChange}
+					disabled={isDisabledRight}
+				/>
+			</div>
+			<div class="-ml-2">
+				<NavRowAction
+					action={AppRowActionType.last}
+					icon={'ChevronLast'}
+					{onChange}
+					disabled={isDisabledRight}
+				/>
+			</div>
+		</div>
+	</div>
+{/if}
+
+<!-- {#if rowStatus && rowStatus.show && !isHideRowManager}
+	<div class="flex flex-row p-2 h-[46px] items-center border-rounded bg-white">
 		<div class="flex flex-row">
 			<div class={rowStatus.rowCurrentDisplay === 1 ? 'hidden' : ''}>
 				<NavRowAction action={AppRowActionType.first} icon={'ChevronFirst'} {onChange} />
@@ -55,4 +101,4 @@
 			</div>
 		</div>
 	</div>
-{/if}
+{/if} -->

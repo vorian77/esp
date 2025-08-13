@@ -37,8 +37,8 @@ export class RawUserAttr {
 		if (result.error) return result
 
 		// set attrs unique set
-		this._attrsAccess = this.setAttrsType(RawObjAttrAccess, this._attrsAccess)
-		this._attrsAction = this.setAttrsType(RawObjAttrAction, this._attrsAction)
+		rawUser._attrsAccess = this.setAttrsType(RawObjAttrAccess, this._attrsAccess)
+		rawUser._attrsAction = this.setAttrsType(RawObjAttrAction, this._attrsAction)
 
 		// set resources
 		result = await this.setAttrsResources(rawUser, user)
@@ -49,11 +49,11 @@ export class RawUserAttr {
 	}
 
 	async setAttrsResources(rawUser: RawUserAttr, user: User): Promise<MethodResult> {
-		rawUser._attrsAccessIdDeny = this._attrsAccess
+		rawUser._attrsAccessIdDeny = rawUser._attrsAccess
 			.filter((a: RawObjAttrAccess) => a._codeAttrTypeAccess === ObjAttrTypeAccess.deny)
 			.map((a) => a._obj.id)
 
-		rawUser._attrsAccessIdAllow = this._attrsAccess
+		rawUser._attrsAccessIdAllow = rawUser._attrsAccess
 			.filter(
 				(a: RawObjAttrAccess) =>
 					a._codeAttrTypeAccess === ObjAttrTypeAccess.allow &&
