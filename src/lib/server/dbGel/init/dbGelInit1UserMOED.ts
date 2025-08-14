@@ -66,7 +66,12 @@ function initUserType(init: InitDb) {
 			{ access: 'allow', ownerSys: 'sys_system', name: 'app_sys_admin_customer' },
 			{ access: 'allow', ownerSys: 'sys_system', name: 'app_sys_reporting' },
 			{ access: 'allow', ownerSys: 'sys_system', name: 'task_sys_msg_all' },
-			{ access: 'allow', ownerSys: 'sys_system', name: 'task_sys_quote' }
+			{ access: 'allow', ownerSys: 'sys_system', name: 'task_sys_quote' },
+			{
+				access: 'allow',
+				ownerSys: 'sys_client_baltimore_moed',
+				name: 'task_moed_part_compliance_review'
+			}
 		],
 		attrsAction: [
 			{

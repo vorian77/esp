@@ -123,7 +123,7 @@ function initUsers(init: InitDb) {
 		firstName: 'User',
 		isActive: true,
 		lastName: 'System',
-		name: 'user_sys',
+		name: '7347093451',
 		ownerOrg: 'org_system',
 		systemDefault: 'sys_system',
 		systems: [

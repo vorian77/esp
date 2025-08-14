@@ -243,18 +243,25 @@ export function initPreColumn(init: InitDb) {
 		ownerSys: 'sys_client_atlantic_impact'
 	})
 	init.addTrans('sysColumn', {
-		codeDataType: 'link',
-		header: 'Eligibility Categories',
-		isMultiSelect: true,
-		name: 'cmEligibilityCategories',
-		ownerSys: 'sys_app_cm'
-	})
-	init.addTrans('sysColumn', {
 		ownerSys: 'sys_client_atlantic_impact',
 		codeDataType: 'link',
 		header: 'Group',
 		isMultiSelect: false,
 		name: 'cmGroup'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Advocate Eligibility Verification',
+		isMultiSelect: true,
+		name: 'cmMoedEligVerifyAdvocate',
+		ownerSys: 'sys_app_cm'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Compliance Eligibility Verification',
+		isMultiSelect: true,
+		name: 'cmMoedEligVerifyCompliance',
+		ownerSys: 'sys_app_cm'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',

@@ -205,7 +205,8 @@ export namespace app_cm {
     "file"?: unknown | null;
     "isShareWithClient"?: boolean | null;
     "note"?: string | null;
-    "cmEligibilityCategories": sys_core.SysCodeType[];
+    "cmMoedEligVerifyAdvocate": sys_core.SysCodeType[];
+    "cmMoedEligVerifyCompliance": sys_core.SysCodeType[];
   }
   export interface CmCsfEligibility extends CmCsfData {
     "valueBoolean": boolean;

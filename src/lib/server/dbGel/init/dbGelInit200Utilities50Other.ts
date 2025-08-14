@@ -7,6 +7,7 @@ import {
 	memberOfEnum,
 	nbrOptional,
 	nbrRequired,
+	required,
 	strOptional,
 	strRequired
 } from '$utils/types'
@@ -671,11 +672,16 @@ export class EligibilityConfigNode {
 		this.description = strOptional(data.description, clazz, 'description')
 		this.exprState = strOptional(data.exprState, clazz, 'exprState')
 		this.header = strRequired(data.header, clazz, 'header')
-		this.name = strRequired(data.name, clazz, 'name')
 		this.nodeIdx = nbrRequired(data.nodeIdx, clazz, 'nodeIdx')
 		this.nodeIdxDependent = nbrOptional(data.nodeIdxDependent, clazz, 'nodeIdxDependent')
-		this.nodeIdxParent = nbrOptional(data.nodeIdxParent, clazz, 'nodeIdxParent')
-		this.order = nbrRequired(data.order, clazz, 'order')
+
+		// derived
+		const nodes: EligibilityConfigNode[] = required(data.nodes, clazz, 'nodes')
+		this.nodeIdxParent = nodes.find((n) => data.parent === n.header)?.nodeIdx
+		this.name = `node${this.nodeIdx}`
+		this.order = this.nodeIdx * 10
+
+		debug('EligibilityConfigNode', 'constructor', this)
 	}
 }
 export async function updateDepdCmProgramEligibility(data: any) {
