@@ -11,7 +11,9 @@
 		"devServer": "npx vite dev --port 3000",
 		"format": "prettier --plugin-search-dir . --write .",
 		"lint": "prettier --plugin-search-dir . --check .",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"notion-mcp": "npx @notionhq/notion-mcp-server",
+		"notion-mcp-http": "npx @notionhq/notion-mcp-server --transport http --port 3001"
 	},
 	"devDependencies": {
 		"@gel/generate": "^0.6.4",
@@ -41,6 +43,7 @@
 	"dependencies": {
 		"@floating-ui/dom": "^1.7.3",
 		"@fontsource-variable/ibm-plex-sans": "^5.2.6",
+		"@notionhq/notion-mcp-server": "^1.9.0",
 		"@sendgrid/mail": "^8.1.5",
 		"@sentry/sveltekit": "^10.1.0",
 		"@skeletonlabs/skeleton-svelte": "^1.3.1",
