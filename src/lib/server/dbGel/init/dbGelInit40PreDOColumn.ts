@@ -2329,7 +2329,7 @@ export function initPreColumn(init: InitDb) {
 		ownerSys: 'sys_system',
 		codeDataType: 'str',
 		header: 'Social Security Number',
-		inputMask: '###-##-####',
+		inputMask: 'ssn',
 		name: 'ssn'
 	})
 	init.addTrans('sysColumn', {

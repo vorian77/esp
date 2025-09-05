@@ -373,7 +373,7 @@ export class Field {
 		this.iconProps = new IconProps(obj)
 	}
 
-	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel): Validation {
+	validate(row: number, value: any, validityErrorLevel: ValidityErrorLevel): Validation {
 		// only validate displayable fields
 		if (!this.colDO.isDisplay) {
 			return this.getValuationValid()
@@ -384,6 +384,8 @@ export class Field {
 			return this.getValuationValid()
 		}
 
+		value = getValueData(value)
+
 		// optional & null/undefined
 		if (
 			this.fieldAccess === FieldAccess.optional &&
@@ -392,12 +394,23 @@ export class Field {
 			return this.getValuationValid()
 		}
 
-		// required & missing data
-		if ([null, undefined, ''].includes(value) || (Array.isArray(value) && value.length === 0)) {
+		/* pattern */
+		let patternValid = true
+		if (this.colDO.colDB.pattern) {
+			const regex = new RegExp(this.colDO.colDB.pattern)
+			patternValid = regex.test(getValueData(value))
+		}
+
+		// required & (missing data  or does not pass pattern test)
+		if (
+			[null, undefined, ''].includes(value) ||
+			(Array.isArray(value) && value.length === 0) ||
+			!patternValid
+		) {
 			return this.getValuationInvalid(
 				ValidityError.required,
-				missingDataErrorLevel,
-				`"${this.colDO.label}" is required.`
+				validityErrorLevel,
+				this.colDO.colDB.patternMsg || `"${this.colDO.label}" is required.`
 			)
 		}
 
@@ -440,6 +453,7 @@ export class FieldColor {
 		this.name = name
 	}
 }
+
 export function getFieldColor(colorName: string): FieldColor {
 	const colorError = '#ef4444'
 	const colorPrimary = '#60a5fa'
@@ -527,6 +541,14 @@ export enum FieldElement {
 	textArea = 'textArea',
 	textHide = 'textHide',
 	toggle = 'toggle'
+}
+
+export enum FieldInputMask {
+	currency = 'currency',
+	date = 'date',
+	email = 'email',
+	phone = 'phone',
+	ssn = 'ssn'
 }
 
 export class FieldItemChange {

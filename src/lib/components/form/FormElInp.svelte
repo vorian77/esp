@@ -54,11 +54,6 @@
 			: ''
 	)
 
-	async function onChange(event: Event) {
-		const target = event.currentTarget as HTMLSelectElement
-		await dm.setFieldValueAsync(parms.dataObjId, parms.row, field, target.value)
-	}
-
 	function setIconProps() {
 		let iconProps: IconProps = undefined
 		let iconName =
@@ -83,30 +78,12 @@
 		iconProps = setIconProps()
 	}
 
-	const imCurrency: MaskInputOptions = {
-		preProcess: (val) => val.replace(/[$,]/g, ''),
-		postProcess: (val) => {
-			if (!val) return ''
-
-			const sub = 3 - (val.includes('.') ? val.length - val.indexOf('.') : 0)
-
-			return Intl.NumberFormat('en-US', {
-				style: 'currency',
-				currency: 'USD'
-			})
-				.format(val)
-				.slice(0, sub ? -sub : undefined)
-		}
-	}
-
 	const imDate: MaskInputOptions = {
-		mask: '####-##-##'
+		// mask: '####-##-##'
 		// preProcess: (val) => val.replace(/[^0-9]/g, ''),
 		// postProcess: (val) => {
 		// 	if (!val) return ''
-
 		// 	const sub = 10 - val.length
-
 		// 	return val
 		// 		.split('')
 		// 		.map((c, i) => (i === 2 || i === 4 ? c + '/' : c))
@@ -115,30 +92,15 @@
 		// }
 	}
 
-	const inputMask = $derived.by(() => {
-		if (field.inputMask) {
-			switch (field.inputMask) {
-				case 'currency':
-					return imCurrency
-				case 'date':
-					return '####-##-##'
-				case 'phone':
-					return '(###) ###-####'
-				default:
-					return field.inputMask
-			}
-		} else {
-			return ''
-		}
-	})
+	let inputMask = $derived(field.inputMaskAlt || field.inputMask || '')
+
 	const onMaska = async (event: CustomEvent<MaskaDetail>) => {
-		// console.log('FormElInp.svelte onMaska', {
-		// 	masked: event.detail.masked,
-		// 	unmasked: event.detail.unmasked,
-		// 	completed: event.detail.completed
-		// })
-		const target = event.currentTarget as HTMLSelectElement
-		await dm.setFieldValueAsync(parms.dataObjId, parms.row, field, event.detail.masked)
+		const valueMasked = {
+			data: event.detail.unmasked, // raw for APIs/DB
+			display: event.detail.masked // formatted for UI
+		}
+
+		await dm.setFieldValueAsync(parms.dataObjId, parms.row, field, valueMasked)
 	}
 </script>
 
@@ -150,21 +112,14 @@
 		max={field.maxValue?.toString() || ''}
 		min={field.minValue?.toString() || ''}
 		name={field.getValueKey()}
-		oninput={onChange}
 		{placeholder}
 		readonly={field.fieldAccess === FieldAccess.readonly}
 		step={field.spinStep?.toString() || ''}
 		type={fieldInputType || field.FieldElement}
 		value={fieldValueDisplay}
+		use:maska={inputMask}
+		onmaska={onMaska}
+		inputmode={field.inputMaskType === 'currency' ? 'decimal' : undefined}
 	/>
 </FormLabel>
-
-<!-- <DataViewer header="fieldValueDisplay" data={fieldValueDisplay} /> -->
-<!-- use:maska
-data-maska={inputMask}
-onmaska={onMaska} -->
-
-<!-- <details>
-	<summary>Money, via hooks (pre v3 variant)</summary>
-	<input class="money" data-maska="0.99" data-maska-tokens="0:\d:multiple|9:\d:optional">
-</details> -->
+<!-- <DataViewer header="fieldValue" data={fieldValue} /> -->
