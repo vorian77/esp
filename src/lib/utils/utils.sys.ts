@@ -221,6 +221,16 @@ export function getDbExprRaw(exprWith: string | undefined, exprCustom: string | 
 	return exprWith ? exprWith + ' ' + exprCustom : exprCustom
 }
 
+export function getStrArrayFromString(arrayStr: readonly string[]): string {
+	return arrayStr
+		.filter((s) => s != null)
+		.map((item) => {
+			const val = String(item).trim()
+			return `'${val.replace(/'/g, "''")}'`
+		})
+		.join(',')
+}
+
 export function getValueData(value: any) {
 	if (Array.isArray(value)) {
 		let valueReturn: string[] = []

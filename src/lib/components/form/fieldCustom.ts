@@ -15,6 +15,7 @@ import {
 } from '$utils/types'
 import { PropKeyType, RawDataObjPropDisplayCustom } from '$comps/dataObj/types.rawDataObj.svelte'
 import { UserAction } from '$comps/other/types.userAction.svelte'
+import { TokenApp } from '$utils/types.token'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/form/fieldCustom.ts'
@@ -148,5 +149,14 @@ export class FieldCustomText extends FieldCustom {
 			'customCol'
 		) as RawDataObjPropDisplayCustom
 		this.align = valueOrDefault(customCol.customColAlign, '')
+	}
+}
+
+export class TokenAppDoCustom extends TokenApp {
+	fieldCustom: FieldCustomAction
+	constructor(obj: any) {
+		const clazz = 'TokenAppDoCustom'
+		super(obj)
+		this.fieldCustom = required(obj.fieldCustom, clazz, 'fieldCustom')
 	}
 }

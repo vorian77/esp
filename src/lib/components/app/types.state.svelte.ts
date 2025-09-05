@@ -659,7 +659,6 @@ export class State {
 		const rawUser: any = result.data
 
 		this.user = new User(rawUser)
-		console.log('State.UserCurrInit:', this.user)
 		this.userParm = new UserParm(this.user)
 		await this.navMenuData.init(this)
 

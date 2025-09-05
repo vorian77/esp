@@ -14,8 +14,6 @@ export async function addDataObj(data: any) {
 		{
 			actionGroup: e.optional(e.str),
 			actionsQuery: e.optional(e.array(e.json)),
-			attrsAccess: e.optional(e.array(e.json)),
-			attrsSource: e.optional(e.array(e.json)),
 			codeCardinality: e.str,
 			codeDataObjType: e.optional(e.str),
 			codeListPresetType: e.optional(e.str),
@@ -25,7 +23,7 @@ export async function addDataObj(data: any) {
 			exprWith: e.optional(e.str),
 			exprUnions: e.optional(e.array(e.str)),
 			fields: e.optional(e.array(e.json)),
-			gridStyles: e.optional(e.array(e.json)),
+			formStyles: e.optional(e.array(e.json)),
 			header: e.optional(e.str),
 			isFormReadonly: e.optional(e.bool),
 			isInitialValidationSilent: e.optional(e.bool),
@@ -236,13 +234,13 @@ export async function addDataObj(data: any) {
 							e.cast(e.str, e.set())
 						),
 
-						gridStyles: e.for(
-							e.json_array_unpack(e.json_get(f, 'gridStyles') || e.cast(e.array(e.json), e.set())),
+						fieldStyles: e.for(
+							e.json_array_unpack(e.json_get(f, 'fieldStyles') || e.cast(e.array(e.json), e.set())),
 							(gs) => {
-								return e.insert(e.sys_core.SysGridStyle, {
+								return e.insert(e.sys_core.SysDataObjStyle, {
 									exprTrigger: e.cast(e.str, e.json_get(gs, 'exprTrigger')),
-									prop: e.cast(e.str, e.json_get(gs, 'prop')),
-									propValue: e.cast(e.str, e.json_get(gs, 'propValue'))
+									styleProp: e.cast(e.str, e.json_get(gs, 'styleProp')),
+									styleValue: e.cast(e.str, e.json_get(gs, 'styleValue'))
 								})
 							}
 						),
@@ -565,8 +563,7 @@ export async function updateDataObjColumnCustomElementEmbedShellFields(data: any
 		{
 			dataObjName: e.str,
 			columnName: e.str,
-			customEmbedShellFields: e.array(e.str),
-			gridStyles: e.optional(e.array(e.json))
+			customEmbedShellFields: e.array(e.str)
 		},
 		(p) => {
 			return e.update(e.sys_core.SysDataObj, (d0) => ({

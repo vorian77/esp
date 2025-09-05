@@ -1,6 +1,5 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 import { type DataRecord, valueOrDefault } from '$utils/types'
-import { link } from 'fs'
 
 const FILENAME = '$server/dbGel/init/dbGelInit80ContentAIRep.ts'
 

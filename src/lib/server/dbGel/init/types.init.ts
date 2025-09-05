@@ -29,7 +29,7 @@ import {
 	updateDepdCmProgramEligibility,
 	updateDepdDataObjColumnItemChange,
 	updateDepdDataObjQueryRider,
-	updateDepdGridStylesDataObj,
+	updateDepdDataObjStyles,
 	updateDepdNavDestinationUserAction,
 	updateDepdNodeAction,
 	updateDepdNodeChild,
@@ -307,11 +307,11 @@ export class InitDb {
 		this.addItem(
 			new InitDbItemObject({
 				altTrans: ['sysDataObj', 'sysDataObjEmbed'],
-				name: 'updateDepdGridStylesDataObj',
+				name: 'updateDepdDataObjStyles',
 				dataMap: 'name',
-				deleteObj: 'sys_core::SysGridStyle',
-				deleteObjFilter: `.id IN (SELECT sys_core::SysDataObj FILTER ${TokenExprFilterRecord}).gridStyles.id`,
-				fCreate: updateDepdGridStylesDataObj
+				deleteObj: 'sys_core::SysDataObjStyle',
+				deleteObjFilter: `.id IN (SELECT sys_core::SysDataObj FILTER ${TokenExprFilterRecord}).formStyles.id`,
+				fCreate: updateDepdDataObjStyles
 			})
 		)
 

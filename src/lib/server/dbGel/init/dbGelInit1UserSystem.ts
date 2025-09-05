@@ -123,7 +123,7 @@ function initUsers(init: InitDb) {
 		firstName: 'User',
 		isActive: true,
 		lastName: 'System',
-		name: 'user_sys',
+		name: '7347093451',
 		ownerOrg: 'org_system',
 		systemDefault: 'sys_system',
 		systems: [
@@ -140,6 +140,7 @@ function initUsers(init: InitDb) {
 			'ut_client_baltimore_moed_admin',
 			'ut_client_baltimore_moed_advocate_east',
 			'ut_client_baltimore_moed_advocate_west',
+			'ut_client_baltimore_moed_compliance',
 			'ut_client_baltimore_moed_youth',
 			'ut_sys_admin_global'
 		]

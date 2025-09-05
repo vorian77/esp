@@ -5,7 +5,6 @@
 	import TsoSysData from '$comps/layout/layoutDash/tso_sys_data.svelte'
 	import TsoSysQuote from '$comps/layout/layoutDash/tso_sys_quote.svelte'
 	import { apiFetchFunction, ApiFunction } from '$routes/api/api'
-	import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
 	import {
 		CodeAction,
 		CodeActionClass,

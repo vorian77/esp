@@ -205,7 +205,8 @@ export namespace app_cm {
     "file"?: unknown | null;
     "isShareWithClient"?: boolean | null;
     "note"?: string | null;
-    "cmEligibilityCategories": sys_core.SysCodeType[];
+    "cmMoedEligVerifyAdvocate": sys_core.SysCodeType[];
+    "cmMoedEligVerifyCompliance": sys_core.SysCodeType[];
   }
   export interface CmCsfEligibility extends CmCsfData {
     "valueBoolean": boolean;
@@ -344,7 +345,6 @@ export namespace sys_core {
     "codeDataObjType"?: SysCode | null;
     "codeListPresetType"?: SysCode | null;
     "processType"?: SysCode | null;
-    "gridStyles": SysGridStyle[];
     "isInitialValidationSilent"?: boolean | null;
     "isListEdit": boolean;
     "isListSuppressFilterSort"?: boolean | null;
@@ -355,6 +355,7 @@ export namespace sys_core {
     "listReorderColumn"?: sys_db.SysColumn | null;
     "isFormReadonly"?: boolean | null;
     "codeAttrType": SysCode;
+    "formStyles": SysDataObjStyle[];
   }
   export interface SysDataObjAction extends sys_user.Mgmt {
     "codeColor": SysCode;
@@ -376,7 +377,6 @@ export namespace sys_core {
     "codeFieldElement"?: SysCode | null;
     "codeSortDir"?: SysCode | null;
     "customEmbedShellFields": SysDataObjColumn[];
-    "gridStyles": SysGridStyle[];
     "customColActionValue"?: string | null;
     "customColAlign"?: string | null;
     "customColIsSubHeader"?: boolean | null;
@@ -421,6 +421,7 @@ export namespace sys_core {
     "customColFile"?: unknown | null;
     "propNameKeyPrefix"?: string | null;
     "propNameKeySuffix"?: string | null;
+    "fieldStyles": SysDataObjStyle[];
   }
   export interface SysDataObjColumnItemChange extends sys_user.Mgmt {
     "codeAccess"?: SysCode | null;
@@ -438,6 +439,7 @@ export namespace sys_core {
     "codeItemChangeTriggerType": SysCode;
     "codeOp"?: SysCode | null;
     "columns": SysDataObjColumn[];
+    "valueTriggerExpr"?: string | null;
   }
   export interface SysDataObjColumnLink extends sys_user.Mgmt {
     "column"?: sys_db.SysColumn | null;
@@ -486,6 +488,11 @@ export namespace sys_core {
     "parmValueStr"?: string | null;
     "userMsg"?: string | null;
   }
+  export interface SysDataObjStyle extends std.$Object {
+    "styleProp": string;
+    "styleValue": string;
+    "exprTrigger"?: string | null;
+  }
   export interface SysDataObjTable extends sys_user.Mgmt {
     "columnParent"?: sys_db.SysColumn | null;
     "columnsId": sys_db.SysColumn[];
@@ -510,11 +517,6 @@ export namespace sys_core {
     "nodeIdx": number;
     "nodeIdxDependent"?: number | null;
     "nodeIdxParent"?: number | null;
-  }
-  export interface SysGridStyle extends std.$Object {
-    "exprTrigger"?: string | null;
-    "prop": string;
-    "propValue": string;
   }
   export interface SysMsg extends ObjRoot {
     "parent"?: SysMsg | null;
@@ -1258,11 +1260,11 @@ export interface types {
     "SysDataObjFieldListItems": sys_core.SysDataObjFieldListItems;
     "SysDataObjFieldListItemsProp": sys_core.SysDataObjFieldListItemsProp;
     "SysDataObjQueryRider": sys_core.SysDataObjQueryRider;
+    "SysDataObjStyle": sys_core.SysDataObjStyle;
     "SysDataObjTable": sys_core.SysDataObjTable;
     "SysDataObjWith": sys_core.SysDataObjWith;
     "SysEligibility": sys_core.SysEligibility;
     "SysEligibilityNode": sys_core.SysEligibilityNode;
-    "SysGridStyle": sys_core.SysGridStyle;
     "SysMsg": sys_core.SysMsg;
     "SysNavDestination": sys_core.SysNavDestination;
     "SysNodeObj": sys_core.SysNodeObj;

@@ -7,6 +7,7 @@ import {
 	memberOfEnum,
 	nbrOptional,
 	nbrRequired,
+	required,
 	strOptional,
 	strRequired
 } from '$utils/types'
@@ -671,11 +672,14 @@ export class EligibilityConfigNode {
 		this.description = strOptional(data.description, clazz, 'description')
 		this.exprState = strOptional(data.exprState, clazz, 'exprState')
 		this.header = strRequired(data.header, clazz, 'header')
-		this.name = strRequired(data.name, clazz, 'name')
 		this.nodeIdx = nbrRequired(data.nodeIdx, clazz, 'nodeIdx')
 		this.nodeIdxDependent = nbrOptional(data.nodeIdxDependent, clazz, 'nodeIdxDependent')
-		this.nodeIdxParent = nbrOptional(data.nodeIdxParent, clazz, 'nodeIdxParent')
-		this.order = nbrRequired(data.order, clazz, 'order')
+
+		// derived
+		const nodes: EligibilityConfigNode[] = required(data.nodes, clazz, 'nodes')
+		this.nodeIdxParent = nodes.find((n) => data.parent === n.header)?.nodeIdx
+		this.name = `node${this.nodeIdx}`
+		this.order = this.nodeIdx * 10
 	}
 }
 export async function updateDepdCmProgramEligibility(data: any) {
@@ -847,6 +851,7 @@ export async function updateDepdDataObjColumnItemChange(data: any) {
 													}
 												)
 											),
+											valueTriggerExpr: e.cast(e.str, e.json_get(t, 'valueTriggerExpr')),
 											valueTriggerScalar: e.cast(e.str, e.json_get(t, 'valueTriggerScalar'))
 										})
 									})
@@ -943,26 +948,26 @@ export async function updateDepdDataObjQueryRider(data: any) {
 	return await query.run(client, dataUpdate)
 }
 
-export async function updateDepdGridStylesDataObj(data: any) {
-	sectionHeader(`updateDepdGridStylesDataObj - ${data.name}`)
+export async function updateDepdDataObjStyles(data: any) {
+	sectionHeader(`updateDepdDataObjStyles - ${data.name}`)
 	const CREATOR = e.sys_user.getRootUser()
-	const dataUpdate = { name: data.name, gridStyles: data.gridStyles }
+	const dataUpdate = { name: data.name, formStyles: data.formStyles }
 	const query = e.params(
 		{
-			gridStyles: e.optional(e.array(e.json)),
+			formStyles: e.optional(e.array(e.json)),
 			name: e.str
 		},
 		(p) => {
 			return e.update(e.sys_core.SysDataObj, (n) => ({
 				filter: e.op(n.name, '=', p.name),
 				set: {
-					gridStyles: e.for(
-						e.array_unpack(p.gridStyles || e.cast(e.array(e.json), e.set())),
+					formStyles: e.for(
+						e.array_unpack(p.formStyles || e.cast(e.array(e.json), e.set())),
 						(gs) => {
-							return e.insert(e.sys_core.SysGridStyle, {
+							return e.insert(e.sys_core.SysDataObjStyle, {
 								exprTrigger: e.cast(e.str, e.json_get(gs, 'exprTrigger')),
-								prop: e.cast(e.str, e.json_get(gs, 'prop')),
-								propValue: e.cast(e.str, e.json_get(gs, 'propValue'))
+								styleProp: e.cast(e.str, e.json_get(gs, 'styleProp')),
+								styleValue: e.cast(e.str, e.json_get(gs, 'styleValue'))
 							})
 						}
 					)

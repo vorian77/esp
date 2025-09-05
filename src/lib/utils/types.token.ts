@@ -26,7 +26,6 @@ import {
 	UserParmItemSave,
 	valueOrDefault
 } from '$utils/types'
-import { FieldCustomAction } from '$comps/form/fieldCustom'
 import { UserAction } from '$comps/other/types.userAction.svelte'
 import {
 	QueryManagerSource,
@@ -38,7 +37,6 @@ import { UserActionConfirmContent } from '$comps/other/types.userAction.svelte'
 import { State, StateParms, StateTriggerToken } from '$comps/app/types.state.svelte'
 import { App } from '$comps/app/types.app.svelte'
 import { AppRowActionType } from '$comps/app/types.app.svelte'
-import { FieldColumnItem } from '$comps/form/field.svelte'
 import { type ColumnsDefsSelect } from '$comps/grid/grid'
 import { getLocalTimeZone, today } from '@internationalized/date'
 import { error } from '@sveltejs/kit'
@@ -463,15 +461,6 @@ export class TokenAppActionTrigger extends TokenApp {
 		super(obj)
 		this.dataObj = required(obj.dataObj, clazz, 'dataObj')
 		this.userAction = required(obj.userAction, clazz, 'userAction')
-	}
-}
-
-export class TokenAppDoCustom extends TokenApp {
-	fieldCustom: FieldCustomAction
-	constructor(obj: any) {
-		const clazz = 'TokenAppDoCustom'
-		super(obj)
-		this.fieldCustom = required(obj.fieldCustom, clazz, 'fieldCustom')
 	}
 }
 

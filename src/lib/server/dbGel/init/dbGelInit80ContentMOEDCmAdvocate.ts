@@ -2,7 +2,159 @@ import { InitDb } from '$server/dbGel/init/types.init'
 import { ParmsValuesType } from '$utils/types'
 
 export function initContentMOEDCmAdvocate(init: InitDb) {
+	initTaskComplianceReady(init)
 	initTaskOpenApps(init)
+}
+
+const exprServiceFlowComplianceReady = `(WITH 
+	docTypes := (SELECT sys_core::SysCodeType FILTER .ownerSys.name = 'sys_client_baltimore_moed' AND .parent.name = 'ct_cm_doc_type'),
+	SELECT app_cm::CmClientServiceFlow
+	FILTER 
+		count(DISTINCT (.<csf[IS app_cm::CmCsfDocument].cmMoedEligVerifyAdvocate INTERSECT docTypes)) = count(docTypes)
+		AND count(DISTINCT (.<csf[IS app_cm::CmCsfDocument].cmMoedEligVerifyCompliance INTERSECT docTypes)) < count(docTypes)
+	)`
+
+function initTaskComplianceReady(init: InitDb) {
+	init.addTrans('sysDataObj', {
+		actionGroup: 'doag_list_edit',
+		codeCardinality: 'list',
+		exprFilter: `any(.id IN ${exprServiceFlowComplianceReady}.client.id)`,
+		header: 'Applications Ready For Compliance Review',
+		name: 'data_obj_task_moed_part_list_compliance_review',
+		ownerSys: 'sys_client_baltimore_moed',
+		tables: [
+			{ index: 0, table: 'MoedParticipant' },
+			{ columnParent: 'person', indexParent: 0, index: 1, table: 'SysPerson' }
+		],
+		fields: [
+			{
+				columnName: 'id',
+				indexTable: 0,
+				isDisplayable: false,
+				orderDefine: 10
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'firstName',
+				orderCrumb: 10,
+				orderSort: 20,
+				isDisplayable: true,
+				orderDisplay: 30,
+				orderDefine: 30,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'lastName',
+				orderCrumb: 20,
+				orderSort: 10,
+				isDisplayable: true,
+				orderDisplay: 40,
+				orderDefine: 40,
+				indexTable: 1
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'left',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDisplay: 50,
+				orderDefine: 50,
+				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).codeSfEligibilityStatus.name`,
+				headerAlt: 'Elgibility Status',
+				nameCustom: 'customAppStatus'
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				codeFieldElement: 'date',
+				columnName: 'custom_element_date',
+				isDisplayable: true,
+				orderDisplay: 60,
+				orderDefine: 60,
+				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateCreated`,
+				headerAlt: 'Date Created',
+				nameCustom: 'customDateCreated'
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				codeFieldElement: 'date',
+				columnName: 'custom_element_date',
+				isDisplayable: true,
+				orderDisplay: 70,
+				orderDefine: 70,
+				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateStart`,
+				headerAlt: 'Date Start',
+				nameCustom: 'customDateStart'
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'center',
+				codeFieldElement: 'date',
+				columnName: 'custom_element_date',
+				isDisplayable: true,
+				orderDisplay: 80,
+				orderDefine: 80,
+				exprCustom: `(SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateEnd`,
+				headerAlt: 'Date End',
+				nameCustom: 'customDateEnd'
+			},
+			{
+				codeAccess: 'readOnly',
+				codeAlignmentAlt: 'right',
+				codeFieldElement: 'number',
+				columnName: 'custom_element_int',
+				isDisplayable: true,
+				orderDisplay: 90,
+				orderDefine: 90,
+				exprCustom: `(with 
+  			now := cal::to_local_date(datetime_current(), 'UTC') ,
+  			compare :=<cal::local_date>{} if exists (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateEnd else (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateStart ?? (SELECT app_cm::CmClientServiceFlow FILTER .client = org_client_baltimore::MoedParticipant).dateCreated,
+				dur := now - compare,
+				SELECT std::duration_get(dur, 'day'))`,
+				headerAlt: 'Days Open',
+				nameCustom: 'customAppDaysOpen',
+				pattern: '[-+]?[0-9]*[.,]?[0-9]+'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 100,
+				orderDisplay: 100,
+				exprCustom: `(SELECT app_cm::CmCsfEligibility FILTER .csf.client.id = org_client_baltimore::MoedParticipant.id) {data := .id, display := .csf.cmProgram.header ++ ' (' ++ <str>.valueBoolean ++ ')'}`,
+				headerAlt: 'Programs (Eligibility)',
+				nameCustom: 'programsEligibility'
+			}
+		]
+	})
+
+	init.addTrans('sysNodeObj', {
+		children: [{ node: 'node_obj_moed_part_detail', order: 10 }],
+		codeComponent: 'FormList',
+		codeNodeType: 'nodeTask',
+		dataObj: 'data_obj_task_moed_part_list_compliance_review',
+		isAlwaysRetrieveData: true,
+		name: 'node_obj_task_moed_part_list_compliance_review',
+		ownerSys: 'sys_client_baltimore_moed',
+		systemQuerySource: 'sys_client_baltimore_moed'
+	})
+
+	init.addTrans('sysTask', {
+		codeTaskStatusObj: 'tso_sys_data',
+		codeTaskType: 'taskAutomated',
+		exprShow: `SELECT count(${exprServiceFlowComplianceReady}) > 0`,
+		exprStatus: `WITH 
+  	sfs := ${exprServiceFlowComplianceReady},
+    SELECT {
+      applicantCnt := {label := 'Applicant Count', data := count(sfs), color := 'green'},
+		}`,
+		header: 'Applicants Ready For Compliance Review',
+		name: 'task_moed_part_compliance_review',
+		nodeObj: 'node_obj_task_moed_part_list_compliance_review',
+		ownerSys: 'sys_client_baltimore_moed'
+	})
 }
 
 function initTaskOpenApps(init: InitDb) {
@@ -116,6 +268,50 @@ function initTaskOpenApps(init: InitDb) {
 				isDisplayable: true,
 				orderDefine: 100,
 				orderDisplay: 100,
+				exprCustom: `(SELECT 'Yes' if EXISTS (SELECT app_cm::CmClientServiceFlow
+					FILTER 
+						.client.id = org_client_baltimore::MoedParticipant.id
+						AND count(.<csf[IS app_cm::CmCsfDocument].cmMoedEligVerifyAdvocate.name) = 4
+						AND count(
+							.<csf[IS app_cm::CmCsfDocument].cmMoedEligVerifyAdvocate.name 
+							INTERSECT {
+								'ct_moed_doc_type_ssn',
+								'ct_moed_doc_type_age', 
+								'ct_moed_doc_type_address',
+								'ct_moed_doc_type_citizenship'
+							}
+						) = 4) else 'No')`,
+				headerAlt: 'Advocate-Eligibility Verified',
+				nameCustom: 'eligibilityVerifiedAdvocate'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 110,
+				orderDisplay: 110,
+				exprCustom: `(SELECT 'Yes' if EXISTS (SELECT app_cm::CmClientServiceFlow
+					FILTER 
+						.client.id = org_client_baltimore::MoedParticipant.id
+						AND count(.<csf[IS app_cm::CmCsfDocument].cmMoedEligVerifyCompliance.name) = 4
+						AND count(
+							.<csf[IS app_cm::CmCsfDocument].cmMoedEligVerifyCompliance.name 
+							INTERSECT {
+								'ct_moed_doc_type_ssn',
+								'ct_moed_doc_type_age', 
+								'ct_moed_doc_type_address',
+								'ct_moed_doc_type_citizenship'
+							}
+						) = 4) else 'No')`,
+				headerAlt: 'Compliance-Eligibility Verified',
+				nameCustom: 'eligibilityVerifiedCompliance'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 120,
+				orderDisplay: 120,
 				exprCustom: `(SELECT app_cm::CmCsfEligibility FILTER .csf.client.id = org_client_baltimore::MoedParticipant.id) {data := .id, display := .csf.cmProgram.header ++ ' (' ++ <str>.valueBoolean ++ ')'}`,
 				headerAlt: 'Programs (Eligibility)',
 				nameCustom: 'programsEligibility'

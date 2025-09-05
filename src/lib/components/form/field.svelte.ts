@@ -36,6 +36,10 @@ import {
 	required,
 	valueOrDefault
 } from '$utils/types'
+import { clientQueryExpr } from '$lib/queryClient/types.queryClient'
+import { evalExpr } from '$utils/utils.evalParserDb'
+import { TokenApiQueryData } from '$utils/types.token'
+import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/form/field.svelte.ts'
 
@@ -164,6 +168,30 @@ export class Field {
 				)
 			) {
 				return process(this, itemChange)
+			}
+		} else if (
+			itemChange.codeItemChangeTriggerType === FieldItemChangeTriggerType.itemChangeTypeExpr
+		) {
+			const evalExprContext = 'processItemChange'
+			// get trigger expression
+			let result: MethodResult = await evalExpr({
+				evalExprContext,
+				exprRaw: required(itemChange.valueTriggerExpr, clazz, 'valueTriggerExpr'),
+				queryData: new TokenApiQueryData({
+					user: ici.sm.user
+				})
+			})
+			if (result.error) return result
+
+			// execute expression
+			const exprCustom = result.data
+			result = await clientQueryExpr(clazz, exprCustom, {}, ici.sm)
+			if (result.error) return result
+			const resultValue: boolean = result.getResultRawListValue()
+
+			// process
+			if (resultValue) {
+				return await process(this, itemChange)
 			}
 		} else if (
 			itemChange.codeItemChangeTriggerType === FieldItemChangeTriggerType.itemChangeTypeOp
@@ -513,6 +541,7 @@ export class FieldItemChange {
 	valueTargetIdAttribute?: string
 	valueTargetIdCode?: string
 	valueTargetScalar?: string
+	valueTriggerExpr?: string
 	valueTriggerIdsAttribute: string[]
 	valueTriggerIdsCode: string[]
 	valueTriggerScalar?: string
@@ -569,6 +598,7 @@ export class FieldItemChange {
 		this.valueTargetIdAttribute = target._valueTargetIdAttribute
 		this.valueTargetIdCode = target._valueTargetIdCode
 		this.valueTargetScalar = target.valueTargetScalar
+		this.valueTriggerExpr = target.valueTriggerExpr
 		this.valueTriggerIdsAttribute = target._valueTriggerIdsAttribute
 		this.valueTriggerIdsCode = target._valueTriggerIdsCode
 		this.valueTriggerScalar = target.valueTriggerScalar
@@ -645,6 +675,7 @@ export class FieldItemChangeManagerItem {
 }
 
 export enum FieldItemChangeTriggerType {
+	itemChangeTypeExpr = 'itemChangeTypeExpr',
 	itemChangeTypeOp = 'itemChangeTypeOp',
 	itemChangeTypeRecordStatus = 'itemChangeTypeRecordStatus'
 }

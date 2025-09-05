@@ -105,7 +105,8 @@ module app_cm {
   }  
 
   type CmCsfDocument extending app_cm::CmCsfData {
-    multi cmEligibilityCategories: sys_core::SysCodeType;
+    multi cmMoedEligVerifyAdvocate: sys_core::SysCodeType;
+    multi cmMoedEligVerifyCompliance: sys_core::SysCodeType;
     required codeType: sys_core::SysCode;
     dateExpires: cal::local_date;
     required dateIssued: cal::local_date;

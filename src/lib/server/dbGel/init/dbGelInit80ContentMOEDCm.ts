@@ -40,51 +40,48 @@ function initEligibility(init: InitDb) {
 	class EligibilityConfigYo {
 		nodes: EligibilityConfigNode[] = []
 		constructor() {
-			this.nodes.push(
-				new EligibilityConfigNode({
-					codeEligibilityType: 'eligibilityGroupAnd',
-					header: 'Receipt of Documents Acknowledgement',
-					name: 'node0',
-					nodeIdx: 0,
-					order: 10
-				})
-			)
+			let nodeIdx = -1
+			const addNode = (data: DataRecord) => {
+				nodeIdx++
+				data.nodeIdx = nodeIdx
+				data.nodes = this.nodes
+				this.nodes.push(new EligibilityConfigNode(data))
+			}
 
-			this.nodes.push(
-				new EligibilityConfigNode({
-					codeEligibilityType: 'eligibilityManual',
-					description: 'Client has signed the EEO & Grievance form.',
-					header: 'EEO & Grievance',
-					name: 'node1',
-					nodeIdx: 1,
-					nodeIdxParent: 0,
-					order: 20
-				})
-			)
-			this.nodes.push(
-				new EligibilityConfigNode({
-					codeEligibilityType: 'eligibilityManual',
-					description: 'Client has signed the Sexual Harassment form.',
-					header: 'Sexual Harassment',
-					name: 'node2',
-					nodeIdx: 2,
-					nodeIdxParent: 0,
-					order: 30
-				})
-			)
-			this.nodes.push(
-				new EligibilityConfigNode({
-					codeEligibilityType: 'eligibilityManual',
-					description: 'Client has signed the Customer Agreement form.',
-					header: 'Customer Agreement',
-					name: 'node3',
-					nodeIdx: 3,
-					nodeIdxParent: 0,
-					order: 40
-				})
-			)
+			const headerAcknowledge = 'Receipt of Documents Acknowledgement'
+			addNode({
+				codeEligibilityType: 'eligibilityGroupAnd',
+				header: headerAcknowledge
+			})
 
-			const groups = [
+			addNode({
+				codeEligibilityType: 'eligibilityManual',
+				description: 'Client has signed the EEO & Grievance form.',
+				header: 'EEO & Grievance',
+				parent: headerAcknowledge
+			})
+
+			addNode({
+				codeEligibilityType: 'eligibilityManual',
+				description: 'Client has signed the Sexual Harassment form.',
+				header: 'Sexual Harassment',
+				parent: headerAcknowledge
+			})
+
+			addNode({
+				codeEligibilityType: 'eligibilityManual',
+				description: 'Client has signed the Customer Agreement form.',
+				header: 'Customer Agreement',
+				parent: headerAcknowledge
+			})
+
+			const headerDocs = 'Documentation Verifications'
+			addNode({
+				codeEligibilityType: 'eligibilityGroupAnd',
+				header: headerDocs
+			})
+
+			const docs = [
 				{
 					category: 'Social Security Number',
 					categoryCodeType: 'ct_moed_doc_type_ssn'
@@ -102,44 +99,31 @@ function initEligibility(init: InitDb) {
 					categoryCodeType: 'ct_moed_doc_type_citizenship'
 				}
 			]
-			const idxOffset = this.nodes.length
-			groups.forEach((group, idx) => {
+
+			docs.forEach((group, idx) => {
 				const category = group.category
 				const categoryCodeType = group.categoryCodeType
-				const idxStart = idxOffset + idx * 3
+				const headerEligDocs = 'Eligibility Documents'
 
-				const nodeGroup = new EligibilityConfigNode({
+				addNode({
 					codeEligibilityType: 'eligibilityGroupAnd',
-					header: group.category + ' Verification',
-					name: `node${idxStart}`,
-					nodeIdx: idxStart,
-					order: idxStart * 10
-				})
-				this.nodes.push(nodeGroup)
-
-				const nodeExpr = new EligibilityConfigNode({
-					codeEligibilityType: 'eligibilityExpr',
-					description: `Has one or more verified ${category} eligibility category documents.`,
-					exprState: `(SELECT '${categoryCodeType}' IN (SELECT app_cm::CmCsfDocument FILTER .csf.id = <tree,uuid,CmClientServiceFlow.id>).cmEligibilityCategories.name)`,
-					header: `${category} Category Document(s)`,
-					name: `node${idxStart + 1}`,
-					nodeIdx: idxStart + 1,
-					nodeIdxParent: idxStart,
-					order: (idxStart + 1) * 10
-				})
-				this.nodes.push(nodeExpr)
-
-				const nodeManual = new EligibilityConfigNode({
-					codeEligibilityType: 'eligibilityManual',
-					description: `${category} has been verified by compliance.`,
 					header: category,
-					name: `node${idxStart + 2}`,
-					nodeIdx: idxStart + 2,
-					nodeIdxDependent: idxStart + 1,
-					nodeIdxParent: idxStart,
-					order: (idxStart + 2) * 10
+					parent: headerDocs
 				})
-				this.nodes.push(nodeManual)
+
+				const docVerify = [
+					['an advocate', 'cmMoedEligVerifyAdvocate', 'Advocate'],
+					['the compliance officer', 'cmMoedEligVerifyCompliance', 'Compliance']
+				]
+
+				docVerify.forEach(([verifier, field, type]) => {
+					addNode({
+						codeEligibilityType: 'eligibilityExpr',
+						exprState: `(SELECT '${categoryCodeType}' IN (SELECT app_cm::CmCsfDocument FILTER .csf.id = <tree,uuid,CmClientServiceFlow.id>).${field}.name)`,
+						header: `Verified by ${type}`,
+						parent: category
+					})
+				})
 			})
 		}
 		getNodes() {
@@ -309,6 +293,12 @@ function initObjAttr(init: InitDb) {
 		code: 'at_sys_msg_group',
 		header: 'Westside Youth Applicants',
 		name: 'group_msg_moed_youth_applicants_west',
+		ownerSys: 'sys_client_baltimore_moed'
+	})
+	init.addTrans('sysObjAttr', {
+		code: 'at_user_type_attr_access',
+		header: 'MOED - Compliance Officer',
+		name: 'atutaa_moed_compliance_officer',
 		ownerSys: 'sys_client_baltimore_moed'
 	})
 }
@@ -1259,6 +1249,7 @@ function initCsfDocument(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
+				orderSort: 10,
 				indexTable: 0
 			},
 			{
@@ -1267,6 +1258,7 @@ function initCsfDocument(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
+				orderSort: 20,
 				indexTable: 0,
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1343,7 +1335,7 @@ function initCsfDocument(init: InitDb) {
 						codeItemChangeAction: 'retrieveSelect',
 						codeItemChangeTriggerType: 'itemChangeTypeOp',
 						codeOp: 'any',
-						columns: ['cmEligibilityCategories'],
+						columns: ['cmMoedEligVerifyAdvocate', 'cmMoedEligVerifyCompliance'],
 						orderDefine: 0
 					}
 				],
@@ -1370,9 +1362,8 @@ function initCsfDocument(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'chips',
-				columnName: 'cmEligibilityCategories',
+				columnName: 'cmMoedEligVerifyAdvocate',
 				fieldListItems: 'il_sys_code_family_by_code',
-				headerAlt: 'Verified Eligibility Categories',
 				indexTable: 0,
 				isDisplayable: true,
 				orderDisplay: 100,
@@ -1380,11 +1371,31 @@ function initCsfDocument(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
+				codeFieldElement: 'chips',
+				columnName: 'cmMoedEligVerifyCompliance',
+				fieldListItems: 'il_sys_code_family_by_code',
+				indexTable: 0,
+				isDisplayable: true,
+				itemChanges: [
+					{
+						codeAccess: 'hidden',
+						codeItemChangeAction: 'none',
+						codeItemChangeTriggerType: 'itemChangeTypeExpr',
+						columns: ['cmMoedEligVerifyCompliance'],
+						orderDefine: 0,
+						valueTriggerExpr: `SELECT NOT EXISTS <attrsAccess,sys_core::SysObjAttr,allow,[atutaa_moed_compliance_officer]>`
+					}
+				],
+				orderDisplay: 110,
+				orderDefine: 110
+			},
+			{
+				codeAccess: 'optional',
 				codeFieldElement: 'textArea',
 				columnName: 'note',
 				isDisplayable: true,
-				orderDisplay: 110,
-				orderDefine: 110,
+				orderDisplay: 120,
+				orderDefine: 120,
 				indexTable: 0
 			},
 

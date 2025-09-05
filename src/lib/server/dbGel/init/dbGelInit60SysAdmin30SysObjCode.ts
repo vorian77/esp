@@ -818,7 +818,7 @@ function initGlobalCodeType(init: InitDb) {
 				orderDisplay: 40,
 				orderDefine: 40,
 				indexTable: 0,
-				fieldListItems: 'il_sys_code_parent'
+				fieldListItems: 'il_sys_codeType_parent'
 			},
 			{
 				columnName: 'name',
