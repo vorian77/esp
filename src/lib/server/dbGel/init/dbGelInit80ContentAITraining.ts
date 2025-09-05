@@ -1110,7 +1110,7 @@ function initCohortDoc(init: InitDb) {
 				orderCrumb: 20,
 				orderDefine: 20,
 				orderDisplay: 20,
-				orderSort: 20
+				orderSort: 10
 			},
 			{
 				codeAccess: 'readOnly',
@@ -1120,7 +1120,8 @@ function initCohortDoc(init: InitDb) {
 				linkColumns: ['name'],
 				linkTable: 'SysCode',
 				orderDefine: 30,
-				orderDisplay: 30
+				orderDisplay: 30,
+				orderSort: 20
 			},
 			{
 				codeAccess: 'readOnly',

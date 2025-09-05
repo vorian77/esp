@@ -268,6 +268,50 @@ function initTaskOpenApps(init: InitDb) {
 				isDisplayable: true,
 				orderDefine: 100,
 				orderDisplay: 100,
+				exprCustom: `(SELECT 'Yes' if EXISTS (SELECT app_cm::CmClientServiceFlow
+					FILTER 
+						.client.id = org_client_baltimore::MoedParticipant.id
+						AND count(.<csf[IS app_cm::CmCsfDocument].cmMoedEligVerifyAdvocate.name) = 4
+						AND count(
+							.<csf[IS app_cm::CmCsfDocument].cmMoedEligVerifyAdvocate.name 
+							INTERSECT {
+								'ct_moed_doc_type_ssn',
+								'ct_moed_doc_type_age', 
+								'ct_moed_doc_type_address',
+								'ct_moed_doc_type_citizenship'
+							}
+						) = 4) else 'No')`,
+				headerAlt: 'Advocate-Eligibility Verified',
+				nameCustom: 'eligibilityVerifiedAdvocate'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 110,
+				orderDisplay: 110,
+				exprCustom: `(SELECT 'Yes' if EXISTS (SELECT app_cm::CmClientServiceFlow
+					FILTER 
+						.client.id = org_client_baltimore::MoedParticipant.id
+						AND count(.<csf[IS app_cm::CmCsfDocument].cmMoedEligVerifyCompliance.name) = 4
+						AND count(
+							.<csf[IS app_cm::CmCsfDocument].cmMoedEligVerifyCompliance.name 
+							INTERSECT {
+								'ct_moed_doc_type_ssn',
+								'ct_moed_doc_type_age', 
+								'ct_moed_doc_type_address',
+								'ct_moed_doc_type_citizenship'
+							}
+						) = 4) else 'No')`,
+				headerAlt: 'Compliance-Eligibility Verified',
+				nameCustom: 'eligibilityVerifiedCompliance'
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'custom_element_str',
+				isDisplayable: true,
+				orderDefine: 120,
+				orderDisplay: 120,
 				exprCustom: `(SELECT app_cm::CmCsfEligibility FILTER .csf.client.id = org_client_baltimore::MoedParticipant.id) {data := .id, display := .csf.cmProgram.header ++ ' (' ++ <str>.valueBoolean ++ ')'}`,
 				headerAlt: 'Programs (Eligibility)',
 				nameCustom: 'programsEligibility'

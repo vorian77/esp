@@ -196,16 +196,16 @@ function initDataObj(init: InitDb) {
 		actionGroup: 'doag_list',
 		codeCardinality: 'list',
 		exprFilter: `.id IN ${exprMsgsMineRoot}.id`,
-		gridStyles: [
+		formStyles: [
 			{
 				exprTrigger: `<record,str,isUnread> === 'Yes'`,
-				prop: 'font-weight',
-				propValue: 'bold'
+				styleProp: 'font-weight',
+				styleValue: 'bold'
 			},
 			{
 				exprTrigger: `<record,str,isUnread> === 'Yes'`,
-				prop: 'background-color',
-				propValue: 'whitesmoke'
+				styleProp: 'background-color',
+				styleValue: 'whitesmoke'
 			}
 		],
 		header: 'My Messages',
@@ -229,7 +229,6 @@ function initDataObj(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
-				// exprCustom: `'Yes' IF .id IN ${exprMsgsToMeUnread}.id OR .id IN ${exprMsgsToMeUnread}.replies.id ELSE 'No' IF .id IN ${exprMsgsToMeRead}.id OR .id IN ${exprMsgsToMeRead}.replies.id ELSE ''`,
 				exprCustom: `'Yes' IF .id IN ${exprMsgsToMeUnread}.id OR EXISTS (.replies.id INTERSECT ${exprMsgsToMeUnread}.id) ELSE 'No'`,
 				headerAlt: 'Unread',
 				nameCustom: 'isUnread'
@@ -289,10 +288,10 @@ function initDataObj(init: InitDb) {
 			{
 				codeAccess: 'readOnly',
 				columnName: 'subject',
+				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 80,
 				orderDefine: 80,
-				indexTable: 0
+				orderDisplay: 80
 			}
 		]
 	})
@@ -347,10 +346,10 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				columnName: 'subject',
+				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 40,
 				orderDefine: 40,
-				indexTable: 0
+				orderDisplay: 40
 			},
 			{
 				codeAccess: 'optional',
@@ -551,10 +550,17 @@ function initDataObj(init: InitDb) {
 			},
 			{
 				columnName: 'subject',
+				fieldStyles: [
+					{
+						exprTrigger: `<record,str,value> === 'Test'`,
+						styleProp: 'color',
+						styleValue: 'red'
+					}
+				],
+				indexTable: 0,
 				isDisplayable: true,
-				orderDisplay: 90,
 				orderDefine: 90,
-				indexTable: 0
+				orderDisplay: 90
 			},
 			{
 				codeAccess: 'optional',
@@ -572,16 +578,16 @@ function initDataObj(init: InitDb) {
 		actionGroup: 'doag_list_sys_msg_thread',
 		codeCardinality: 'list',
 		exprFilter: `.id IN ${exprMsgsThread}.id`,
-		gridStyles: [
+		formStyles: [
 			{
 				exprTrigger: `<record,str,isUnread> === 'Yes'`,
-				prop: 'font-weight',
-				propValue: 'bold'
+				styleProp: 'font-weight',
+				styleValue: 'bold'
 			},
 			{
 				exprTrigger: `<record,str,isUnread> === 'Yes'`,
-				prop: 'background-color',
-				propValue: 'whitesmoke'
+				styleProp: 'background-color',
+				styleValue: 'whitesmoke'
 			}
 		],
 		header: 'Message Thread',

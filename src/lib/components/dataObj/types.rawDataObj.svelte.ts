@@ -52,16 +52,16 @@ import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$comps/dataObj/types.rawDataObj.ts'
 
-export class GridStyle {
+export class DataObjStyle {
 	exprTrigger?: string
-	prop: string
-	propValue: string
+	styleProp: string
+	styleValue: string
 	constructor(obj: any) {
-		const clazz = 'GridStyle'
+		const clazz = 'DataObjStyle'
 		obj = valueOrDefault(obj, {})
 		this.exprTrigger = strOptional(obj.exprTrigger, clazz, 'exprTrigger')
-		this.prop = strRequired(obj.prop, clazz, 'prop')
-		this.propValue = strRequired(obj.propValue, clazz, 'propValue')
+		this.styleProp = strRequired(obj.styleProp, clazz, 'styleProp')
+		this.styleValue = strRequired(obj.styleValue, clazz, 'styleValue')
 	}
 }
 
@@ -325,35 +325,51 @@ export class PropLinkItemsSource {
 	}
 
 	getExprSelectBase(currVal: string | string[] | undefined) {
-		let exprSelectTable = `SELECT ${this.querySource.table?.object}`
-		let filter = this.querySource.exprFilter
-			? `(${exprSelectTable} FILTER ${this.querySource.exprFilter})`
-			: ''
-
-		if (filter) {
-			if (this.querySource.exprFilterExcept) {
-				filter = `${filter} EXCEPT (${this.querySource.exprFilterExcept})`
+		if (!this.querySource.table?.object) {
+			return `SELECT <str>{}`
+		} else {
+			let exprSelectTable = this.querySource.table.object
+			// filterCore
+			let filterCore = `SELECT ${exprSelectTable}`
+			if (this.querySource.exprFilter) {
+				filterCore += ` FILTER ${this.querySource.exprFilter}`
 			}
+			filterCore = `(${filterCore})`
 
+			let filterExcept = this.querySource.exprFilterExcept
+				? `(${this.querySource.exprFilterExcept})`
+				: ''
+
+			// filterCurrValue
+			let filterCurrValue = ''
 			if (currVal && Array.isArray(currVal) ? currVal.length > 0 : currVal) {
-				let currValFilter = ''
+				let filterCurrValueIds = ''
 				if (Array.isArray(currVal)) {
 					if (currVal.length > 0) {
-						currValFilter = `.id IN <uuid>{${currVal.map((v: string) => `'${v}'`).join(',')}}`
+						filterCurrValueIds = `.id IN <uuid>{${currVal.map((v: string) => `'${v}'`).join(',')}}`
 					}
 				} else if (currVal) {
-					currValFilter = `.id = <uuid>'${currVal}'`
+					filterCurrValueIds = `.id = <uuid>'${currVal}'`
 				}
-				filter = `${filter} UNION (${exprSelectTable} FILTER ${currValFilter})`
+				filterCurrValue = `(SELECT ${exprSelectTable} FILTER ${filterCurrValueIds})`
 			}
 
-			filter = `.id IN (SELECT DISTINCT (${filter})).id`
+			let exprSelect = ''
+			if (!(filterCore || filterExcept || filterCurrValue)) {
+				exprSelect = `SELECT ${exprSelectTable}`
+			} else if (!(filterExcept || filterCurrValue)) {
+				exprSelect = filterCore
+			} else {
+				let filter = filterCore
+				if (filterExcept) filter += ` EXCEPT ${filterExcept}`
+				if (filterCurrValue) filter += ` UNION ${filterCurrValue}`
+				if (filter) filter = `.id IN (SELECT DISTINCT (${filter})).id`
+				exprSelect = `SELECT ${exprSelectTable} FILTER ${filter}`
+			}
+			return exprSelect
 		}
-
-		let exprSelect = exprSelectTable
-		exprSelect += filter ? ` FILTER ${filter}` : ''
-		return exprSelect
 	}
+
 	getExprSelectUnions() {
 		let exprUnions = ''
 		this.querySource.exprUnions.forEach((item) => {
@@ -406,7 +422,7 @@ export class RawDataObj {
 	codeListPresetType?: DataObjListEditPresetType
 	crumbs: string[] = []
 	description?: string
-	gridStyles: GridStyle[]
+	formStyles: DataObjStyle[]
 	header: string
 	id: string
 	isFormReadonly: boolean
@@ -448,7 +464,7 @@ export class RawDataObj {
 		)
 		this.crumbs = this.initCrumbs(obj._propsCrumb)
 		this.description = strOptional(obj.description, clazz, 'description')
-		this.gridStyles = arrayOfClass(GridStyle, obj._gridStyles)
+		this.formStyles = arrayOfClass(DataObjStyle, obj._formStyles)
 		this.header = strRequired(obj.header, clazz, 'header')
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.isFormReadonly = booleanOrDefault(obj.isRetrieveReadonly, false)
@@ -723,7 +739,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 	codeColor?: string
 	colDB: RawDBColumn
 	customCol?: RawDataObjPropDisplayCustom
-	gridStyles: GridStyle[]
+	fieldStyles: DataObjStyle[]
 	headerAlt?: string
 	height?: number
 	inputMaskAlt?: string
@@ -748,7 +764,7 @@ export class RawDataObjPropDisplay extends RawDataObjProp {
 		this.codeColor = strOptional(obj._codeColor, clazz, 'codeColor')
 		this.colDB = new RawDBColumn(obj._column)
 		this.customCol = classOptional(RawDataObjPropDisplayCustom, obj._customCol)
-		this.gridStyles = arrayOfClass(GridStyle, obj._gridStyles)
+		this.fieldStyles = arrayOfClass(DataObjStyle, obj._fieldStyles)
 		this.headerAlt = strOptional(obj.headerAlt, clazz, 'headerAlt')
 		this.height = nbrOptional(obj.height, clazz, 'height')
 		this.inputMaskAlt = strOptional(obj.inputMaskAlt, clazz, 'inputMaskAlt')
@@ -794,6 +810,7 @@ export class RawDataObjPropDisplayItemChange {
 	_valueTriggerIdsCode: string[]
 	retrieveParmKey?: string
 	valueTargetScalar?: string
+	valueTriggerExpr?: string
 	valueTriggerScalar?: string
 	constructor(obj: any) {
 		const clazz = 'RawDataObjPropDisplayItemChange'
@@ -819,6 +836,7 @@ export class RawDataObjPropDisplayItemChange {
 		this._valueTriggerIdsCode = getArray(obj._valueTriggerIdsCode)
 		this.retrieveParmKey = obj.retrieveParmKey
 		this.valueTargetScalar = obj.valueTargetScalar
+		this.valueTriggerExpr = obj.valueTriggerExpr
 		this.valueTriggerScalar = obj.valueTriggerScalar
 	}
 }

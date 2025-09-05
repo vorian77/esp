@@ -128,7 +128,7 @@
 			gridOptions = dataObj
 				? new GridManagerOptions({
 						columnDefs: initGridColumns(),
-						context: { gridStyles: dataObj.raw.gridStyles },
+						context: { formStyles: dataObj.raw.formStyles },
 						dataObjId: parms.dataObjId,
 						fCallbackFilter: fGridCallbackFilter,
 						fCallbackUpdateValue: fGridCallbackUpdateValue,
@@ -251,12 +251,12 @@
 		defn.singleClickEdit = isEditable ? true : undefined
 		addGridParm(defn, ['context', 'cellStyle', 'text-align'], field.fieldAlignment)
 
-		// gridStyles
-		addGridParm(defn, ['context', 'gridStyles'], field.colDO.gridStyles)
+		// fieldStyles
+		addGridParm(defn, ['context', 'fieldStyles'], field.colDO.fieldStyles)
 		defn.cellStyle = (params: CellClassParams) => {
 			let styles = { ...params.colDef.context.cellStyle }
-			const gridStyles: GridStyle[] = getArray(params.colDef.context.gridStyles)
-			const result: MethodResult = getStyles(gridStyles, { value: params.value })
+			const fieldStyles: GridStyle[] = getArray(params.colDef.context.fieldStyles)
+			const result: MethodResult = getStyles(fieldStyles, { value: params.value })
 			return result.error ? styles : { ...styles, ...result.data }
 		}
 

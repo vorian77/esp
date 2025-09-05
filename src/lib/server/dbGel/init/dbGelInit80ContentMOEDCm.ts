@@ -1,7 +1,6 @@
 import { InitDb } from '$server/dbGel/init/types.init'
 import { type DataRecord, PropDataType } from '$utils/types'
 import { EligibilityConfigNode } from '$server/dbGel/init/dbGelInit200Utilities50Other'
-import type { $0 } from 'gel/dist/primitives/chars'
 
 export function initContentMOEDCm(init: InitDb) {
 	initEligibility(init)
@@ -294,6 +293,12 @@ function initObjAttr(init: InitDb) {
 		code: 'at_sys_msg_group',
 		header: 'Westside Youth Applicants',
 		name: 'group_msg_moed_youth_applicants_west',
+		ownerSys: 'sys_client_baltimore_moed'
+	})
+	init.addTrans('sysObjAttr', {
+		code: 'at_user_type_attr_access',
+		header: 'MOED - Compliance Officer',
+		name: 'atutaa_moed_compliance_officer',
 		ownerSys: 'sys_client_baltimore_moed'
 	})
 }
@@ -1244,6 +1249,7 @@ function initCsfDocument(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 30,
 				orderDefine: 30,
+				orderSort: 10,
 				indexTable: 0
 			},
 			{
@@ -1252,6 +1258,7 @@ function initCsfDocument(init: InitDb) {
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40,
+				orderSort: 20,
 				indexTable: 0,
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1369,6 +1376,16 @@ function initCsfDocument(init: InitDb) {
 				fieldListItems: 'il_sys_code_family_by_code',
 				indexTable: 0,
 				isDisplayable: true,
+				itemChanges: [
+					{
+						codeAccess: 'hidden',
+						codeItemChangeAction: 'none',
+						codeItemChangeTriggerType: 'itemChangeTypeExpr',
+						columns: ['cmMoedEligVerifyCompliance'],
+						orderDefine: 0,
+						valueTriggerExpr: `SELECT NOT EXISTS <attrsAccess,sys_core::SysObjAttr,allow,[atutaa_moed_compliance_officer]>`
+					}
+				],
 				orderDisplay: 110,
 				orderDefine: 110
 			},

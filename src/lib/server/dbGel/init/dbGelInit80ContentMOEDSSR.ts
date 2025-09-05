@@ -499,6 +499,14 @@ function initTaskSsrDoc(init: InitDb) {
 				parmValueStr: 'file'
 			},
 			{
+				codeQueryAction: 'userMsg',
+				codeQueryPlatform: 'client',
+				codeQueryType: 'save',
+				codeTriggerTiming: 'post',
+				userMsg: `Continue to upload your eligibility documents. If they're all uploaded, sit tight - we'll get back with you within a few days. If you have any questions send us a message.`,
+				codeUserMsgDelivery: 'alert'
+			},
+			{
 				codeQueryAction: 'appDestination',
 				codeQueryPlatform: 'client',
 				codeQueryType: 'save',

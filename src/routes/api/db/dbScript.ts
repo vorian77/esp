@@ -13,6 +13,7 @@ import {
 	valueOrDefault
 } from '$utils/types'
 import { TokenApiQuery, TokenApiQueryData, TokenApiQueryType } from '$utils/types.token'
+import { error } from '@sveltejs/kit'
 
 const FILENAME = '/$routes/api/db/dbScript.ts'
 

@@ -727,7 +727,7 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is app_cm::CmCourse]": $.LinkDesc<_app_cm.$CmCourse, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysCodeType]": $.LinkDesc<_sys_core.$SysCodeType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysSystem]": $.LinkDesc<_sys_core.$SysSystem, $.Cardinality.Many, {}, false, false,  false, false>;
-  "<__type__[is sys_core::SysGridStyle]": $.LinkDesc<_sys_core.$SysGridStyle, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_core::SysDataObjStyle]": $.LinkDesc<_sys_core.$SysDataObjStyle, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjActionGroup]": $.LinkDesc<_sys_core.$SysDataObjActionGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjColumn]": $.LinkDesc<_sys_core.$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is sys_core::SysDataObjFieldEmbedListConfig]": $.LinkDesc<_sys_core.$SysDataObjFieldEmbedListConfig, $.Cardinality.Many, {}, false, false,  false, false>;

@@ -3,12 +3,14 @@ import {
 	type DataRecord,
 	EvalExprCustomComposite,
 	getArray,
+	getStrArrayFromString,
 	recordKeyGet,
 	isString,
 	memberOfEnum,
 	MethodResult,
 	ObjAttrAction,
 	ObjAttrExpr,
+	ObjAttrTypeAccess,
 	ParmsValuesType,
 	PropDataType,
 	required,
@@ -94,6 +96,10 @@ class EvalParserDb extends EvalParser {
 			let item: ExprTokenItem | undefined = undefined
 
 			switch (token.type) {
+				case ExprTokenItemType.attrsAccess:
+					item = new ExprTokenItemAttrAccess({ data: parser.queryData.user, parser, token })
+					break
+
 				case ExprTokenItemType.attrsAction:
 					item = new ExprTokenItemAttrAction({ data: parser.queryData.user, parser, token })
 					break
@@ -305,6 +311,46 @@ class ExprTokenItem {
 					}
 				})
 		}
+	}
+}
+
+class ExprTokenItemAttrAccess extends ExprTokenItem {
+	userData: DataRecord
+	constructor(obj: any) {
+		const clazz = 'ExprTokenItemAttrAccess'
+		obj = valueOrDefault(obj, {})
+		super(obj)
+		this.userData = required(obj.data, clazz, 'data')
+	}
+
+	getValRaw(): MethodResult {
+		const clazz = 'ExprTokenItemAttrAccess.getValRaw'
+
+		// table
+		const table = strRequired(this.itemValue.parms[0], clazz, 'tableName')
+
+		// attrsAccessIds
+		const attrAccessType = strRequired(this.itemValue.parms[1], clazz, 'attrAction')
+		const attrsAccessIdsRaw =
+			attrAccessType === ObjAttrTypeAccess.allow
+				? this.userData.attrsAccessIdAllow
+				: attrAccessType === ObjAttrTypeAccess.deny
+					? this.userData.attrsAccessIdDeny
+					: []
+		const attrAccessIds = getStrArrayFromString(attrsAccessIdsRaw)
+
+		// attrNames
+		let attrNamesRaw = strRequired(this.itemValue.parms[2], clazz, 'attrNames')
+		attrNamesRaw = attrNamesRaw.replace(/^\s*\[(.*)]\s*$/, '$1')
+		const attrNames = getStrArrayFromString(attrNamesRaw.split(';'))
+
+		let expr = `(SELECT ${table} FILTER .name IN {${attrNames}} AND .id IN <uuid>{${attrAccessIds}})`
+
+		return new MethodResult(expr)
+	}
+
+	setItemValue() {
+		return new ExprTokenItemValue(PropDataType.none, this.token.parms.slice(0))
 	}
 }
 
@@ -636,6 +682,7 @@ export enum ExprTokenItemParmModifier {
 }
 
 enum ExprTokenItemType {
+	attrsAccess = 'attrsAccess',
 	attrsAction = 'attrsAction',
 	function = 'function',
 	literal = 'literal',

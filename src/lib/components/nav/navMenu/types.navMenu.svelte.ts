@@ -599,6 +599,7 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 
 			let result: MethodResult = await evalExpr({
 				evalExprContext: 'navMenuTest',
+				exprRaw: `<attrsAccess,sys_core::SysObjAttr,allow,[app_sys_reporting;atutaa_moed_compliance_officer;task_moed_part_compliance_review]>.id`,
 				// exprRaw: `(SELECT sys_core::SysObjAttr FILTER .id IN <attrsAction,[oaa_sys_msg_send_object.object; oaa_sys_msg_send_user.user]>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <function,fSysRandom10>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .name = <literal,str,7347093451>)`,
@@ -606,7 +607,7 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <record,uuid,id>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <system,uuid,id>)`,
 				// exprRaw: `(SELECT sys_user::SysUser FILTER .id = <user,uuid,id>)`,
-				exprRaw: `(SELECT sys_core::SysObjAttr FILTER <${EvalExprCustomComposite.evalCustomCompositeObjAttrMulti}>)`,
+				// exprRaw: `(SELECT sys_core::SysObjAttr FILTER <${EvalExprCustomComposite.evalCustomCompositeObjAttrMulti}>)`,
 				queryData
 			})
 			console.log('adminDevTest.evalExpr.result:', result)

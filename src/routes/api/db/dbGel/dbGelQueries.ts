@@ -37,6 +37,7 @@ const SysDataObjColumnItemChange = e.shape(e.sys_core.SysDataObjColumnItemChange
 	_valueTriggerIdsCode: t.valueTriggerCodes.id,
 	retrieveParmKey: true,
 	valueTargetScalar: true,
+	valueTriggerExpr: true,
 	valueTriggerScalar: true,
 	order_by: t.orderDefine
 }))
@@ -77,10 +78,10 @@ const shapeDataObjTable = e.shape(e.sys_core.SysDataObjTable, (dot) => ({
 	order_by: dot.index
 }))
 
-const shapeGridStyle = e.shape(e.sys_core.SysGridStyle, (gs) => ({
+const shapeDataObjStyle = e.shape(e.sys_core.SysDataObjStyle, (gs) => ({
 	exprTrigger: true,
-	prop: true,
-	propValue: true
+	styleProp: true,
+	styleValue: true
 }))
 
 const shapeLinkItemsSource = e.shape(e.sys_core.SysDataObjFieldListItems, (fli) => ({
@@ -370,8 +371,8 @@ export async function getDataObjById(token: TokenApiId) {
 			})),
 			_codeCardinality: do1.codeCardinality.name,
 			_codeListPresetType: do1.codeListPresetType.name,
-			_gridStyles: e.select(do1.gridStyles, (gs) => ({
-				...shapeGridStyle(gs)
+			_formStyles: e.select(do1.formStyles, (gs) => ({
+				...shapeDataObjStyle(gs)
 			})),
 			_listReorderColumn: do1.listReorderColumn.name,
 			_ownerId: do1.ownerSys.id,
@@ -437,8 +438,8 @@ export async function getDataObjById(token: TokenApiId) {
 					customColSource: true,
 					customColSourceKey: true
 				})),
-				_gridStyles: e.select(doc.gridStyles, (gs) => ({
-					...shapeGridStyle(gs)
+				_fieldStyles: e.select(doc.fieldStyles, (gs) => ({
+					...shapeDataObjStyle(gs)
 				})),
 				headerAlt: true,
 				height: true,

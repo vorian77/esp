@@ -106,8 +106,6 @@
 	)
 </script>
 
-<!-- <p>field: {parms.field.colDO.label}</p> -->
-
 <div class={classProps}>
 	<Element {parms} />
 </div>

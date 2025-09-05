@@ -21,7 +21,6 @@ import {
 	Token,
 	TokenApiId,
 	TokenApiQueryType,
-	TokenAppDoCustom,
 	TokenAppModalReturn,
 	TokenAppNav,
 	TokenAppNode,
@@ -29,6 +28,7 @@ import {
 	TokenAppStateTriggerAction,
 	TokenAppTab
 } from '$utils/types.token'
+import { TokenAppDoCustom } from '$comps/form/fieldCustom'
 import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
 

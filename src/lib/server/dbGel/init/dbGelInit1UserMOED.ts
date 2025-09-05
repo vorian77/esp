@@ -197,24 +197,53 @@ function initUserType(init: InitDb) {
 		ownerOrg: 'org_client_baltimore',
 		selfSignupSystem: 'sys_client_baltimore_moed'
 	})
+
+	init.addTrans('sysUserType', {
+		attrsAccess: [
+			{ access: 'allow', ownerSys: 'sys_system', name: 'app_sys_reporting' },
+			{
+				access: 'allow',
+				ownerSys: 'sys_client_baltimore_moed',
+				name: 'atutaa_moed_compliance_officer'
+			},
+			{
+				access: 'allow',
+				ownerSys: 'sys_client_baltimore_moed',
+				name: 'task_moed_part_compliance_review'
+			}
+		],
+		header: 'MOED-Compliance Officer',
+		name: 'ut_client_baltimore_moed_compliance',
+		ownerOrg: 'org_client_baltimore'
+	})
 }
 
 function initUsers(init: InitDb) {
 	/* MOED - admin*/
 	init.addTrans('sysUser', {
-		firstName: 'Test',
+		firstName: 'Advocate-East',
 		isActive: true,
-		lastName: 'user1',
+		lastName: 'Staff-Test',
 		name: '2222222222',
 		ownerOrg: 'org_client_baltimore',
 		systemDefault: 'sys_client_baltimore_moed',
 		systems: ['sys_client_baltimore_moed'],
 		userTypes: [
 			// 'ut_client_baltimore_moed_admin',
-			'ut_client_baltimore_moed_advocate_east',
-			'ut_client_baltimore_moed_advocate_west'
+			'ut_client_baltimore_moed_advocate_east'
+			// 'ut_client_baltimore_moed_advocate_west'
 			// 'ut_client_baltimore_moed_youth'
 		]
+	})
+	init.addTrans('sysUser', {
+		firstName: 'Compliance Officer',
+		isActive: true,
+		lastName: 'Staff-Test',
+		name: '3333333333',
+		ownerOrg: 'org_client_baltimore',
+		systemDefault: 'sys_client_baltimore_moed',
+		systems: ['sys_client_baltimore_moed'],
+		userTypes: ['ut_client_baltimore_moed_compliance']
 	})
 	init.addTrans('sysUser', {
 		firstName: 'Evelyn',

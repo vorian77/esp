@@ -345,23 +345,23 @@ export class GelQuery {
 		function processPropsSelectItem(prop: RawDataObjPropDB, query: GelQuery) {
 			const propChildTableTraversal = prop.childTableTraversal
 			const indexTable = nbrOrDefault(prop.indexTable, -1)
-			let propValue = ''
+			let styleValue = ''
 
 			if (prop.linkItemsSource) {
-				propValue = `.${propChildTableTraversal} ${prop.linkItemsSource.exprProps}`
+				styleValue = `.${propChildTableTraversal} ${prop.linkItemsSource.exprProps}`
 			} else if (prop.link) {
-				propValue = `.${propChildTableTraversal} ${prop.link.exprProps}`
+				styleValue = `.${propChildTableTraversal} ${prop.link.exprProps}`
 			} else if (prop.exprCustom) {
-				propValue = prop.exprCustom
+				styleValue = prop.exprCustom
 			} else if (indexTable > 0) {
 				// scalar - sub-table
-				propValue = `(.${propChildTableTraversal})`
+				styleValue = `(.${propChildTableTraversal})`
 			} else {
 				// scalar - root
 			}
 
-			propValue = propValue ? ` := ${propValue}` : ''
-			return prop.propNameKey + propValue
+			styleValue = styleValue ? ` := ${styleValue}` : ''
+			return prop.propNameKey + styleValue
 		}
 	}
 

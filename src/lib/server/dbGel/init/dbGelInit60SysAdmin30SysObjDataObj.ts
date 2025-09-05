@@ -1,5 +1,4 @@
 import { InitDb } from '$server/dbGel/init/types.init'
-import { link } from 'fs'
 
 export function initAdminSysObjDataObj(init: InitDb) {
 	initDataObj(init)

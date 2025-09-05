@@ -106,16 +106,25 @@ export function initPreDataObjFieldItem(init: InitDb) {
 
 	/* code type */
 	init.addTrans('sysDataObjFieldListItems', {
-		exprFilter:
-			'.id = (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).typesCodeType.id',
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		name: 'il_sys_codeType_typesCodeType',
+		name: 'il_sys_codeType_order_name',
 		ownerSys: 'sys_system',
 		table: 'SysCodeType'
 	})
 	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter: ``,
+		exprFilterExcept: `SELECT sys_core::SysCodeType FILTER .id = <tree,uuid,[${ExprTokenItemParmModifier.optional}]SysCodeType.id>`,
 		props: [[0, 'name', 'Name', '.name', true, 0]],
-		name: 'il_sys_codeType_order_name',
+		name: 'il_sys_codeType_parent',
+		ownerSys: 'sys_system',
+		table: 'SysCodeType'
+	})
+
+	init.addTrans('sysDataObjFieldListItems', {
+		exprFilter:
+			'.id = (SELECT sys_core::SysSystem FILTER .id = <tree,uuid,SysSystem.id>).typesCodeType.id',
+		props: [[0, 'name', 'Name', '.name', true, 0]],
+		name: 'il_sys_codeType_typesCodeType',
 		ownerSys: 'sys_system',
 		table: 'SysCodeType'
 	})
@@ -239,13 +248,6 @@ export function initPreDataObjFieldItem(init: InitDb) {
 		name: 'il_sys_obj_attr_type_single_msg_receive',
 		ownerSys: 'sys_system',
 		table: 'SysObjAttr'
-	})
-
-	init.addTrans('sysDataObjFieldListItems', {
-		props: [[0, 'name', 'Name', '.name', true, 0]],
-		name: 'il_sys_org',
-		ownerSys: 'sys_system',
-		table: 'SysOrg'
 	})
 
 	init.addTrans('sysDataObjFieldListItems', {

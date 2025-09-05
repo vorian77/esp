@@ -2,8 +2,8 @@ import { InitDb } from '$server/dbGel/init/types.init'
 
 export function initAdminOrgGlobal(init: InitDb) {
 	initConfigNodes(init)
-	initFieldListConfigAttrAccess(init)
-	initFieldListConfigAttrAction(init)
+	initFieldListConfigAttrsAccess(init)
+	initFieldListConfigAttrsAction(init)
 	initFieldListConfigAttrsExpr(init)
 	initFieldListConfigAttrsVirtual(init)
 	initFieldListConfigNodesConfig(init)
@@ -91,13 +91,13 @@ async function initFieldListItems(init: InitDb) {
 	})
 }
 
-async function initFieldListConfigAttrAccess(init: InitDb) {
+async function initFieldListConfigAttrsAccess(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeDataObjType: 'doEmbed',
 		header: 'Attribute Accesses',
-		name: 'doflc_admin_attr_access_list',
+		name: 'doflc_admin_attrs_access_list',
 		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttrAccess' }],
 		fields: [
@@ -139,7 +139,7 @@ async function initFieldListConfigAttrAccess(init: InitDb) {
 		codeCardinality: 'detail',
 		codeDataObjType: 'doEmbed',
 		header: 'Attribute Access',
-		name: 'doflc_admin_attr_access_detail',
+		name: 'doflc_admin_attrs_access_detail',
 		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttrAccess' }],
 		fields: [
@@ -153,20 +153,20 @@ async function initFieldListConfigAttrAccess(init: InitDb) {
 				codeFieldElement: 'select',
 				columnName: 'codeAttrTypeAccess',
 				isDisplayable: true,
-				orderDisplay: 2,
+				orderDisplay: 20,
 				orderDefine: 20,
 				indexTable: 0,
 				fieldListItems: 'il_sys_code_order_name_by_codeType_name',
 				fieldListItemsParmValue: 'ct_sys_obj_attr_access'
 			},
 			// {
-			// 	codeAccess: 'optional',
-			// 	codeFieldElement: 'textArea',
-			// 	columnName: 'expr',
+			// 	codeFieldElement: 'select',
+			// 	columnName: 'obj',
 			// 	isDisplayable: true,
-			// 	orderDisplay: 50,
-			// 	orderDefine: 50,
-			// 	indexTable: 0
+			// 	orderDisplay: 30,
+			// 	orderDefine: 30,
+			// 	indexTable: 0,
+			// 	fieldListItems: 'il_sys_obj_attr_type_single'
 			// },
 
 			/* management */
@@ -235,20 +235,20 @@ async function initFieldListConfigAttrAccess(init: InitDb) {
 	})
 	init.addTrans('sysDataObjFieldEmbedListConfig', {
 		actionGroupModal: 'doag_dialog_footer_detail',
-		dataObjEmbed: 'doflc_admin_attr_access_list',
-		dataObjModal: 'doflc_admin_attr_access_detail',
-		name: 'flec_admin_attr_access',
+		dataObjEmbed: 'doflc_admin_attrs_access_list',
+		dataObjModal: 'doflc_admin_attrs_access_detail',
+		name: 'flec_admin_attrs_access',
 		ownerSys: 'sys_system'
 	})
 }
 
-async function initFieldListConfigAttrAction(init: InitDb) {
+async function initFieldListConfigAttrsAction(init: InitDb) {
 	init.addTrans('sysDataObjEmbed', {
 		actionGroup: 'doag_embed_list_config',
 		codeCardinality: 'list',
 		codeDataObjType: 'doEmbed',
 		header: 'Attribute Actions',
-		name: 'doflc_admin_attr_action_list',
+		name: 'doflc_admin_attrs_action_list',
 		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttrAction' }],
 		fields: [
@@ -290,7 +290,7 @@ async function initFieldListConfigAttrAction(init: InitDb) {
 		codeCardinality: 'detail',
 		codeDataObjType: 'doEmbed',
 		header: 'Attribute Action',
-		name: 'doflc_admin_attr_action_detail',
+		name: 'doflc_admin_attrs_action_detail',
 		ownerSys: 'sys_system',
 		tables: [{ index: 0, table: 'SysObjAttrAction' }],
 		fields: [
@@ -386,9 +386,9 @@ async function initFieldListConfigAttrAction(init: InitDb) {
 	})
 	init.addTrans('sysDataObjFieldEmbedListConfig', {
 		actionGroupModal: 'doag_dialog_footer_detail',
-		dataObjEmbed: 'doflc_admin_attr_action_list',
-		dataObjModal: 'doflc_admin_attr_action_detail',
-		name: 'flec_admin_attr_action',
+		dataObjEmbed: 'doflc_admin_attrs_action_list',
+		dataObjModal: 'doflc_admin_attrs_action_detail',
+		name: 'flec_admin_attrs_action',
 		ownerSys: 'sys_system'
 	})
 }
@@ -595,7 +595,7 @@ async function initFieldListConfigAttrsVirtual(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'attrsAccess',
-				fieldEmbedListConfig: 'flec_admin_attr_access',
+				fieldEmbedListConfig: 'flec_admin_attrs_access',
 				indexTable: 0,
 				isDisplayable: true,
 				linkTable: 'SysObjAttrAccess',
@@ -606,7 +606,7 @@ async function initFieldListConfigAttrsVirtual(init: InitDb) {
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
 				columnName: 'attrsAction',
-				fieldEmbedListConfig: 'flec_admin_attr_action',
+				fieldEmbedListConfig: 'flec_admin_attrs_action',
 				indexTable: 0,
 				isDisplayable: true,
 				linkTable: 'SysObjAttrAction',
@@ -1945,14 +1945,26 @@ function initUserType(init: InitDb) {
 			{
 				codeAccess: 'optional',
 				codeFieldElement: 'embedListConfig',
+				columnName: 'attrsAccess',
+				fieldEmbedListConfig: 'flec_admin_attrs_access',
+				indexTable: 0,
+				isDisplayable: true,
+				linkTable: 'SysObjAttrAccess',
+				orderDefine: 210,
+				orderDisplay: 210
+			},
+			{
+				codeAccess: 'optional',
+				codeFieldElement: 'embedListConfig',
 				columnName: 'attrsExpr',
 				fieldEmbedListConfig: 'flec_admin_attrs_expr',
 				indexTable: 0,
 				isDisplayable: true,
 				linkTable: 'SysObjAttrExpr',
-				orderDefine: 210,
-				orderDisplay: 210
+				orderDefine: 230,
+				orderDisplay: 230
 			},
+
 			// todo - 250701 - requires updates to allow a modal to open a modal or tabbed embedded list
 			// {
 			// 	codeAccess: 'optional',

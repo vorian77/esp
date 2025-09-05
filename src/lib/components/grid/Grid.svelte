@@ -44,8 +44,8 @@
 		DataObjData,
 		DataObjSort,
 		DataObjSortItem,
+		DataObjStyle,
 		getArray,
-		GridStyle,
 		MethodResult,
 		ParmsValuesType,
 		PropDataType,
@@ -235,8 +235,8 @@
 	})
 
 	function getRowStyle(params: RowClassParams) {
-		const gridStyles: GridStyle[] = getArray(params.context.gridStyles)
-		const result: MethodResult = getStyles(gridStyles, params.data)
+		const formStyles: DataObjStyle[] = getArray(params.context.formStyles)
+		const result: MethodResult = getStyles(formStyles, params.data)
 		return result.error ? {} : result.data
 	}
 

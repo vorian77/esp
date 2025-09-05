@@ -19,12 +19,12 @@ import {
 	arrayOfClass,
 	booleanOrFalse,
 	DataObjSort,
+	DataObjStyle,
 	type DataRecord,
 	evalExprRecord,
 	getArray,
 	getValueData,
 	getValueDisplay,
-	GridStyle,
 	MethodResult,
 	PropLinkItems,
 	required,
@@ -170,10 +170,13 @@ export const getFilteredNodeIds = (gridApi: GridApi) => {
 	return selectedNodes
 }
 
-export function getStyles(gridStyles: GridStyle[], data: DataRecord): MethodResult {
-	let styles: DataRecord = {}
-	gridStyles.forEach((style: GridStyle) => {
+export function getStyles(stylesSource: DataObjStyle[], data: DataRecord): MethodResult {
+	let stylesReturn: DataRecord = {}
+	stylesSource.forEach((style: DataObjStyle) => {
 		if (style.exprTrigger) {
+			if (style.exprTrigger === `<record,str,value> === 'Test'`) {
+				console.log('Field.cellStyle.trigger:', { style, data })
+			}
 			let result: MethodResult = evalExprRecord({
 				evalExprContext: 'Grid.getRowStyle',
 				exprRaw: style.exprTrigger,
@@ -182,12 +185,12 @@ export function getStyles(gridStyles: GridStyle[], data: DataRecord): MethodResu
 			if (result.error) return result
 			const exprParsed: string = result.data
 			const trigger = eval(exprParsed)
-			if (trigger) styles[style.prop] = style.propValue
+			if (trigger) stylesReturn[style.styleProp] = style.styleValue
 		} else {
-			styles[style.prop] = style.propValue
+			stylesReturn[style.styleProp] = style.styleValue
 		}
 	})
-	return new MethodResult(styles)
+	return new MethodResult(stylesReturn)
 }
 
 export const getSelectedNodeIds = (gridApi: GridApi, idKey: string) => {
