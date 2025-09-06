@@ -1058,6 +1058,14 @@ function initDataObjColumn(init: InitDb) {
 			},
 			{
 				codeFieldElement: 'toggle',
+				columnName: 'customColIsBold',
+				isDisplayable: true,
+				orderDisplay: 545,
+				orderDefine: 545,
+				indexTable: 0
+			},
+			{
+				codeFieldElement: 'toggle',
 				columnName: 'customColIsSubHeader',
 				isDisplayable: true,
 				orderDisplay: 550,

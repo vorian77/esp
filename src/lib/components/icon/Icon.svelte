@@ -6,6 +6,7 @@
 		ArrowLeft,
 		ArrowRight,
 		BookOpen,
+		Bot,
 		CalendarDays,
 		ChartPie,
 		ChevronDown,
@@ -33,11 +34,13 @@
 		Handshake,
 		House,
 		ImageUp,
+		Inbox,
 		LayoutDashboard,
 		ListChecks,
 		LogOut,
 		Mail,
 		Menu,
+		MessageSquareText,
 		Quote,
 		RotateCcw,
 		Settings,
@@ -48,9 +51,11 @@
 		UserRoundCog,
 		UsersRound
 	} from 'lucide-svelte'
-	import DataViewer from '$utils/DataViewer.svelte'
 	import { type DataRecord, PropSortDir } from '$utils/types'
 	import { dataTypeDefinitions } from '$comps/grid/grid'
+	import Tooltip from '$comps/icon/ToolTip.svelte'
+	import { error } from '@sveltejs/kit'
+	import DataViewer from '$utils/DataViewer.svelte'
 
 	/* icons source -  https://lucide.dev/icons/ */
 
@@ -62,6 +67,7 @@
 		arrowleft: ArrowLeft,
 		arrowright: ArrowRight,
 		bookopen: BookOpen,
+		bot: Bot,
 		calendardays: CalendarDays,
 		chartpie: ChartPie,
 		chevrondown: ChevronDown,
@@ -89,11 +95,13 @@
 		handshake: Handshake,
 		house: House,
 		imageup: ImageUp,
+		inbox: Inbox,
 		layoutdashboard: LayoutDashboard,
 		listchecks: ListChecks,
 		logout: LogOut,
 		mail: Mail,
 		menu: Menu,
+		messagesquaretext: MessageSquareText,
 		quote: Quote,
 		rotateccw: RotateCcw,
 		settings: Settings,
@@ -109,7 +117,9 @@
 
 <!-- hover:bg-gray-200 hover:rounded-full -->
 {#if props && IconType}
-	<div class={props.clazz}>
-		<IconType {...props} />
-	</div>
+	<Tooltip content={props.tooltip}>
+		<div class={props.clazz}>
+			<IconType {...props} />
+		</div>
+	</Tooltip>
 {/if}

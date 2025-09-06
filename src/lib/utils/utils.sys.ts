@@ -167,6 +167,12 @@ export enum ContextKey {
 
 export type DataRecord = Record<string, any>
 
+export function elementAppend(element: string, append: string): string {
+	if (!element) return append
+	if (!append) return element
+	return element + ' ' + append
+}
+
 export async function encrypt(text: string) {
 	// let salt = bcrypt.genSaltSync(10)
 	// let hash = bcrypt.hashSync(text, salt)

@@ -245,6 +245,7 @@ module sys_core {
     customColActionValue: str;
     customColAlign: str;
     customColFile: json;
+    customColIsBold: bool;
     customColIsSubHeader: bool;
     customColLabel: str;
     customColCodeComponent: sys_core::SysCode;

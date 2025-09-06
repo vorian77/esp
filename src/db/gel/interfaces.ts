@@ -422,6 +422,7 @@ export namespace sys_core {
     "propNameKeyPrefix"?: string | null;
     "propNameKeySuffix"?: string | null;
     "fieldStyles": SysDataObjStyle[];
+    "customColIsBold"?: boolean | null;
   }
   export interface SysDataObjColumnItemChange extends sys_user.Mgmt {
     "codeAccess"?: SysCode | null;
@@ -658,6 +659,19 @@ export type SysPerson = $default.SysPerson;
 export namespace app_crm {
   export interface CrmClient extends sys_core.SysObjAttrEnt {
     "codeAttrType": sys_core.SysCode;
+  }
+  export interface CrmSuggestion extends sys_core.SysObjAttr {
+    "codeAttrType": sys_core.SysCode;
+    "codeSuggestionImportance": sys_core.SysCode;
+    "codeSuggestionStatus": sys_core.SysCode;
+    "ownerOrg": sys_core.SysOrg;
+    "user"?: sys_user.SysUser | null;
+    "isSuggestionFollowUp": boolean;
+    "suggestionEmail"?: string | null;
+    "suggestionTextBenefit"?: string | null;
+    "suggestionTextOutcome"?: string | null;
+    "suggestionTextProblem"?: string | null;
+    "suggestionTextSolution"?: string | null;
   }
 }
 export namespace cfg {
@@ -1287,6 +1301,7 @@ export interface types {
   };
   "app_crm": {
     "CrmClient": app_crm.CrmClient;
+    "CrmSuggestion": app_crm.CrmSuggestion;
   };
   "cfg": {
     "ConfigObject": cfg.ConfigObject;

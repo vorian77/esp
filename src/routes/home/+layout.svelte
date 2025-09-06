@@ -25,6 +25,7 @@
 	import LayoutDash from '$comps/layout/layoutDash/LayoutDashboard.svelte'
 	import NavMenu from '$comps/nav/navMenu/NavMenu.svelte'
 	import { NavMenuData, NavMenuSize } from '$comps/nav/navMenu/types.navMenu.svelte'
+	import NavAppSystem from '$comps/nav/NavAppSystem.svelte'
 	import NavAppMobile from '$comps/nav/NavAppMobile.svelte'
 	import { page } from '$app/stores'
 	import { goto } from '$app/navigation'
@@ -116,6 +117,8 @@
 	Loading user...
 {:then}
 	<div id="layout" class="h-screen flex flex-col bg-white b">
+		<header id="layout-nav-bar-system" class=""><NavAppSystem /></header>
+
 		<header id="layout-nav-bar-mobile" class="sm:hidden">
 			<NavAppMobile toggleMobileMenuHide={menuToggleMobileHide} />
 		</header>

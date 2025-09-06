@@ -361,7 +361,9 @@ export async function getTokenNode(
 	if (!(token instanceof TokenApiId)) return actionErrorToken(actionType)
 	let result: MethodResult = await getNodeByNodeName(token.id)
 	if (result.error) return result
-	return new MethodResult(new TokenAppNode({ node: new Node(result.data) }))
+	return new MethodResult(
+		new TokenAppNode({ node: new Node(result.data), queryType: token.queryType })
+	)
 }
 
 export const userActionError = (filename: string, actionType: CodeActionType) =>

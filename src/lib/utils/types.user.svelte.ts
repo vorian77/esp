@@ -45,6 +45,7 @@ export class User {
 	initials: string = ''
 	lastName: string
 	name: string
+	orgId: string = ''
 	personId: string
 	preferences: UserPrefType[]
 	resources_app: any[] = []
@@ -74,6 +75,7 @@ export class User {
 		this.id = strRequired(obj.id, clazz, 'id')
 		this.lastName = strRequired(obj.lastName, clazz, 'lastName')
 		this.name = strRequired(obj.name, clazz, 'name')
+		this.orgId = strRequired(obj._orgId, clazz, 'orgId')
 		this.personId = strRequired(obj._personId, clazz, 'personId')
 		this.preferences = arrayOfEnums(
 			clazz,

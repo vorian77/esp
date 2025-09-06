@@ -85,6 +85,7 @@ export class FieldCustomActionLink extends FieldCustomAction {
 }
 
 export class FieldCustomHeader extends FieldCustom {
+	isBold: boolean
 	isSubHeader: boolean
 	size: string
 	source: string
@@ -97,6 +98,7 @@ export class FieldCustomHeader extends FieldCustom {
 			clazz,
 			'customCol'
 		) as RawDataObjPropDisplayCustom
+		this.isBold = valueOrDefault(customCol.customColIsBold, false)
 		this.isSubHeader = valueOrDefault(customCol.customColIsSubHeader, false)
 		this.size = valueOrDefault(customCol.customColSize, '')
 		this.source = valueOrDefault(customCol.customColSource, '')
@@ -140,6 +142,7 @@ export class FieldCustomImage extends FieldCustom {
 
 export class FieldCustomText extends FieldCustom {
 	align: string
+	isBold: boolean
 	constructor(props: PropsFieldCreate) {
 		const clazz = 'FieldCustomText'
 		super(props)
@@ -149,6 +152,7 @@ export class FieldCustomText extends FieldCustom {
 			'customCol'
 		) as RawDataObjPropDisplayCustom
 		this.align = valueOrDefault(customCol.customColAlign, '')
+		this.isBold = valueOrDefault(customCol.customColIsBold, false)
 	}
 }
 

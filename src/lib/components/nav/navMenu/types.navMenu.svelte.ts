@@ -25,6 +25,7 @@ import {
 	Token,
 	TokenApiId,
 	TokenApiQueryData,
+	TokenApiQueryType,
 	TokenAppDoQuery,
 	TokenAppNode,
 	TokenAppStateTriggerAction,
@@ -76,19 +77,6 @@ export class NavMenuData {
 						{}
 					)
 
-				case NavMenuContentType.dataObjModal:
-					return await this.sm.triggerAction(
-						new TokenAppStateTriggerAction({
-							codeAction: CodeAction.init(
-								CodeActionClass.ct_sys_code_action_class_nav,
-								CodeActionType.openNodeFreeModal
-							),
-							codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
-							data: { token: content.value as TokenAppDoQuery },
-							stateParms: new StateParms({ navLayout: StateNavLayout.layoutApp })
-						})
-					)
-
 				case NavMenuContentType.node:
 					node = content.value as Node
 					return await this.triggerAction(
@@ -107,6 +95,19 @@ export class NavMenuData {
 						// CodeActionType.openNodeFreeModal,
 						{ token: tokenNodeFree },
 						{ navLayout: StateNavLayout.layoutApp }
+					)
+
+				case NavMenuContentType.nodeModal:
+					return await this.sm.triggerAction(
+						new TokenAppStateTriggerAction({
+							codeAction: CodeAction.init(
+								CodeActionClass.ct_sys_code_action_class_nav,
+								CodeActionType.openNodeFreeModal
+							),
+							codeConfirmType: TokenAppUserActionConfirmType.statusChanged,
+							data: { token: content.value as TokenApiId },
+							stateParms: new StateParms({ navLayout: StateNavLayout.layoutApp })
+						})
 					)
 
 				case NavMenuContentType.page:
@@ -345,7 +346,6 @@ export class NavMenuContent {
 }
 export enum NavMenuContentType {
 	dataObjDrawer = 'dataObjDrawer',
-	dataObjModal = 'dataObjModal',
 	functionAsync = 'functionAsync',
 	functionNormal = 'functionNormal',
 	info = 'info',
@@ -353,6 +353,7 @@ export enum NavMenuContentType {
 	node = 'node',
 	nodeFree = 'nodeFree',
 	nodeHeader = 'nodeHeader',
+	nodeModal = 'nodeModal',
 	task = 'task'
 }
 
@@ -549,12 +550,21 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 			['7347093451'].includes(this.navMenu.sm.user.name)
 		) {
 			const user = this.navMenu.sm.user
-			this.itemAdd({
-				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminDevTest),
-				icon: 'Database',
-				isRoot: true,
-				label: new NavMenuLabel('Dev - Test')
-			})
+			// this.itemAdd({
+			// 	content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminDevTest),
+			// 	icon: 'Database',
+			// 	isRoot: true,
+			// 	label: new NavMenuLabel('Dev - Test - Eval Expr')
+			// })
+			// this.itemAdd({
+			// 	content: new NavMenuContent(
+			// 		NavMenuContentType.nodeModal,
+			// 		new TokenApiId('node_obj_app_crm_suggestion_detail_modal', TokenApiQueryType.preset)
+			// 	),
+			// 	icon: 'inbox',
+			// 	isRoot: true,
+			// 	label: new NavMenuLabel('Dev - Test - Suggestion')
+			// })
 			this.itemAdd({
 				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminDbReset),
 				icon: 'RotateCcw',

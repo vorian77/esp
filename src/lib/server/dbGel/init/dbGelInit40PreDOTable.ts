@@ -79,8 +79,8 @@ export function initPreTable(init: InitDb) {
 	])
 
 	init.addTrans('tablesBulk', [
-		// customer resource ranager
-		['sys_app_crm', 'app_crm', 'CrmClient', true]
+		['sys_app_crm', 'app_crm', 'CrmClient', true],
+		['sys_app_crm', 'app_crm', 'CrmSuggestion', true]
 	])
 
 	init.addTrans('tablesBulk', [

@@ -185,10 +185,12 @@ export class TokenApiDbTableColumns {
 
 export class TokenApiId extends TokenApi {
 	id: string
-	constructor(id: string) {
+	queryType: TokenApiQueryType
+	constructor(id: string, queryType?: TokenApiQueryType) {
 		const clazz = 'TokenApiId'
 		super()
 		this.id = id
+		this.queryType = valueOrDefault(queryType, TokenApiQueryType.retrieve)
 	}
 }
 
@@ -648,10 +650,12 @@ export class TokenAppNav extends TokenApp {
 
 export class TokenAppNode extends TokenApp {
 	node: Node
+	queryType: TokenApiQueryType
 	constructor(obj: any) {
 		const clazz = 'TokenAppNode'
 		super(obj)
 		this.node = required(obj.node, clazz, 'node')
+		this.queryType = valueOrDefault(obj.queryType, TokenApiQueryType.retrieve)
 	}
 }
 
