@@ -422,6 +422,7 @@ export namespace sys_core {
     "propNameKeyPrefix"?: string | null;
     "propNameKeySuffix"?: string | null;
     "fieldStyles": SysDataObjStyle[];
+    "customColIsBold"?: boolean | null;
   }
   export interface SysDataObjColumnItemChange extends sys_user.Mgmt {
     "codeAccess"?: SysCode | null;
@@ -658,6 +659,19 @@ export type SysPerson = $default.SysPerson;
 export namespace app_crm {
   export interface CrmClient extends sys_core.SysObjAttrEnt {
     "codeAttrType": sys_core.SysCode;
+  }
+  export interface CrmSuggestion extends sys_core.SysObjAttr {
+    "codeAttrType": sys_core.SysCode;
+    "codeSuggestionImportance": sys_core.SysCode;
+    "codeSuggestionStatus": sys_core.SysCode;
+    "ownerOrg": sys_core.SysOrg;
+    "user"?: sys_user.SysUser | null;
+    "isSuggestionFollowUp": boolean;
+    "suggestionEmail"?: string | null;
+    "suggestionTextBenefit"?: string | null;
+    "suggestionTextOutcome"?: string | null;
+    "suggestionTextProblem"?: string | null;
+    "suggestionTextSolution"?: string | null;
   }
 }
 export namespace cfg {
@@ -1026,6 +1040,20 @@ export namespace schema {
   export type TypeModifier = "SetOfType" | "OptionalType" | "SingletonType";
   export type Volatility = "Immutable" | "Stable" | "Volatile" | "Modifying";
 }
+export namespace sys_api {
+  export interface SysApi extends sys_core.SysObjAttr {
+    "codeAttrType": sys_core.SysCode;
+    "tables": SysApiTable[];
+  }
+  export interface SysApiTable extends sys_user.Mgmt {
+    "apiTabLocalMod": string;
+    "apiTabLocalName": string;
+    "apiTabRemoteName": string;
+    "description"?: string | null;
+    "isActive": boolean;
+    "file"?: unknown | null;
+  }
+}
 export namespace sys_db {
   export interface SysColumn extends sys_core.SysObjAttrEnt {
     "codeAlignment": sys_core.SysCode;
@@ -1287,6 +1315,7 @@ export interface types {
   };
   "app_crm": {
     "CrmClient": app_crm.CrmClient;
+    "CrmSuggestion": app_crm.CrmSuggestion;
   };
   "cfg": {
     "ConfigObject": cfg.ConfigObject;
@@ -1391,6 +1420,10 @@ export interface types {
     "TupleExprAlias": schema.TupleExprAlias;
     "TypeModifier": schema.TypeModifier;
     "Volatility": schema.Volatility;
+  };
+  "sys_api": {
+    "SysApi": sys_api.SysApi;
+    "SysApiTable": sys_api.SysApiTable;
   };
   "sys_db": {
     "SysColumn": sys_db.SysColumn;

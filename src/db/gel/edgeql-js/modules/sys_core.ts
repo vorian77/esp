@@ -12,6 +12,7 @@ import type * as _sys_rep from "./sys_rep";
 import type * as _app_crm from "./app_crm";
 import type * as _sys_migr from "./sys_migr";
 import type * as _org_client_baltimore from "./org_client_baltimore";
+import type * as _sys_api from "./sys_api";
 export type $ObjRootλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588λShape & {
   "note": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "testBool": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
@@ -31,7 +32,7 @@ export type $ObjRootλShape = $.typeutil.flatten<_std.$Object_8ce8c71ee4fa5f7384
 }>;
 type $ObjRoot = $.ObjectType<"sys_core::ObjRoot", $ObjRootλShape, null, [
   ..._std.$Object_8ce8c71ee4fa5f73840c22d7eaa58588['__exclusives__'],
-], "sys_core::ObjRoot" | "app_cm::CmClientServiceFlow" | "sys_core::ObjRootCore" | "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCourse" | "app_cm::CmGroup" | "sys_core::SysObjAttr" | "sys_core::SysObjAttrEnt" | "app_cm::CmPartner" | "app_cm::CmProgram" | "app_cm::CmSite" | "app_crm::CrmClient" | "default::SysPerson" | "org_client_baltimore::MoedPartData" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysObjDb" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysEligibility" | "sys_core::SysEligibilityNode" | "sys_core::SysMsg" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjOrg" | "sys_core::SysOrg" | "sys_core::SysSystem" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysTask" | "sys_user::SysUser" | "sys_user::SysUserAction" | "sys_user::SysUserType" | "sys_user::currentUser">;
+], "sys_core::ObjRoot" | "app_cm::CmClientServiceFlow" | "sys_core::ObjRootCore" | "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCourse" | "app_cm::CmGroup" | "sys_core::SysObjAttr" | "sys_core::SysObjAttrEnt" | "app_cm::CmPartner" | "app_cm::CmProgram" | "app_cm::CmSite" | "app_crm::CrmClient" | "app_crm::CrmSuggestion" | "default::SysPerson" | "org_client_baltimore::MoedPartData" | "sys_api::SysApi" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysObjDb" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysEligibility" | "sys_core::SysEligibilityNode" | "sys_core::SysMsg" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjOrg" | "sys_core::SysOrg" | "sys_core::SysSystem" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysTask" | "sys_user::SysUser" | "sys_user::SysUserAction" | "sys_user::SysUserType" | "sys_user::currentUser">;
 const $ObjRoot = $.makeType<$ObjRoot>(_.spec, "50288c7e-b3c2-11ee-9558-af251a93873c", _.syntax.literal);
 
 const ObjRoot: $.$expr_PathNode<$.TypeSet<$ObjRoot, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($ObjRoot, $.Cardinality.Many), null);
@@ -45,7 +46,7 @@ export type $ObjRootCoreλShape = $.typeutil.flatten<$ObjRootλShape & {
 }>;
 type $ObjRootCore = $.ObjectType<"sys_core::ObjRootCore", $ObjRootCoreλShape, null, [
   ...$ObjRoot['__exclusives__'],
-], "sys_core::ObjRootCore" | "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCourse" | "app_cm::CmGroup" | "sys_core::SysObjAttr" | "sys_core::SysObjAttrEnt" | "app_cm::CmPartner" | "app_cm::CmProgram" | "app_cm::CmSite" | "app_crm::CrmClient" | "org_client_baltimore::MoedPartData" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysObjDb" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysEligibility" | "sys_core::SysEligibilityNode" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjOrg" | "sys_core::SysOrg" | "sys_core::SysSystem" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysTask" | "sys_user::SysUser" | "sys_user::SysUserAction" | "sys_user::SysUserType" | "sys_user::currentUser">;
+], "sys_core::ObjRootCore" | "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCourse" | "app_cm::CmGroup" | "sys_core::SysObjAttr" | "sys_core::SysObjAttrEnt" | "app_cm::CmPartner" | "app_cm::CmProgram" | "app_cm::CmSite" | "app_crm::CrmClient" | "app_crm::CrmSuggestion" | "org_client_baltimore::MoedPartData" | "sys_api::SysApi" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysObjDb" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysEligibility" | "sys_core::SysEligibilityNode" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_core::SysObjOrg" | "sys_core::SysOrg" | "sys_core::SysSystem" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysTask" | "sys_user::SysUser" | "sys_user::SysUserAction" | "sys_user::SysUserType" | "sys_user::currentUser">;
 const $ObjRootCore = $.makeType<$ObjRootCore>(_.spec, "8a1a1e1b-cbb3-11ef-a79b-611a8e027a2a", _.syntax.literal);
 
 const ObjRootCore: $.$expr_PathNode<$.TypeSet<$ObjRootCore, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($ObjRootCore, $.Cardinality.Many), null);
@@ -56,7 +57,7 @@ export type $SysObjλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user.
 type $SysObj = $.ObjectType<"sys_core::SysObj", $SysObjλShape, null, [
   ...$ObjRootCore['__exclusives__'],
   ..._sys_user.$Mgmt['__exclusives__'],
-], "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCourse" | "app_cm::CmGroup" | "sys_core::SysObjAttr" | "sys_core::SysObjAttrEnt" | "app_cm::CmPartner" | "app_cm::CmProgram" | "app_cm::CmSite" | "app_crm::CrmClient" | "org_client_baltimore::MoedPartData" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysObjDb" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysEligibility" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysTask" | "sys_user::SysUserAction">;
+], "sys_core::SysObj" | "app_cm::CmCohort" | "app_cm::CmCourse" | "app_cm::CmGroup" | "sys_core::SysObjAttr" | "sys_core::SysObjAttrEnt" | "app_cm::CmPartner" | "app_cm::CmProgram" | "app_cm::CmSite" | "app_crm::CrmClient" | "app_crm::CrmSuggestion" | "org_client_baltimore::MoedPartData" | "sys_api::SysApi" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysCodeType" | "sys_core::SysObjDb" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysEligibility" | "sys_core::SysNodeObj" | "sys_core::SysNotify" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysTask" | "sys_user::SysUserAction">;
 const $SysObj = $.makeType<$SysObj>(_.spec, "502c3231-b3c2-11ee-8bbb-0d7244bf9fbc", _.syntax.literal);
 
 const SysObj: $.$expr_PathNode<$.TypeSet<$SysObj, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysObj, $.Cardinality.Many), null);
@@ -73,7 +74,7 @@ export type $SysObjAttrλShape = $.typeutil.flatten<$SysObjλShape & {
 }>;
 type $SysObjAttr = $.ObjectType<"sys_core::SysObjAttr", $SysObjAttrλShape, null, [
   ...$SysObj['__exclusives__'],
-], "sys_core::SysObjAttr" | "sys_core::SysObjAttrEnt" | "app_cm::CmPartner" | "app_cm::CmProgram" | "app_cm::CmSite" | "app_crm::CrmClient" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysObjDb" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysEligibility" | "sys_core::SysNodeObj" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysTask" | "sys_user::SysUserAction">;
+], "sys_core::SysObjAttr" | "sys_core::SysObjAttrEnt" | "app_cm::CmPartner" | "app_cm::CmProgram" | "app_cm::CmSite" | "app_crm::CrmClient" | "app_crm::CrmSuggestion" | "sys_api::SysApi" | "sys_core::SysCode" | "sys_core::SysCodeAction" | "sys_core::SysObjDb" | "sys_core::SysDataObj" | "sys_core::SysDataObjActionGroup" | "sys_core::SysDataObjFieldEmbedListConfig" | "sys_core::SysDataObjFieldEmbedListEdit" | "sys_core::SysDataObjFieldEmbedListSelect" | "sys_core::SysDataObjFieldListItems" | "sys_core::SysEligibility" | "sys_core::SysNodeObj" | "sys_db::SysColumn" | "sys_db::SysTable" | "sys_migr::SysMigr" | "sys_rep::SysAnalytic" | "sys_rep::SysRep" | "sys_user::SysApp" | "sys_user::SysAppHeader" | "sys_user::SysTask" | "sys_user::SysUserAction">;
 const $SysObjAttr = $.makeType<$SysObjAttr>(_.spec, "4f67b02f-2c0a-11f0-ab5c-178e337ce67d", _.syntax.literal);
 
 const SysObjAttr: $.$expr_PathNode<$.TypeSet<$SysObjAttr, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($SysObjAttr, $.Cardinality.Many), null);
@@ -367,6 +368,16 @@ export type $SysCodeλShape = $.typeutil.flatten<Omit<$SysObjAttrλShape, "codeA
   "<testCodeSingle[is app_cm::CmProgram]": $.LinkDesc<_app_cm.$CmProgram, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeAttrType[is app_cm::CmProgram]": $.LinkDesc<_app_cm.$CmProgram, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeAttrType[is app_cm::CmSite]": $.LinkDesc<_app_cm.$CmSite, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeAttrType[is app_crm::CrmSuggestion]": $.LinkDesc<_app_crm.$CrmSuggestion, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<testCodeMulti[is app_crm::CrmSuggestion]": $.LinkDesc<_app_crm.$CrmSuggestion, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<testCodeSingle[is app_crm::CrmSuggestion]": $.LinkDesc<_app_crm.$CrmSuggestion, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeIcon[is app_crm::CrmSuggestion]": $.LinkDesc<_app_crm.$CrmSuggestion, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeSuggestionImportance[is app_crm::CrmSuggestion]": $.LinkDesc<_app_crm.$CrmSuggestion, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeSuggestionStatus[is app_crm::CrmSuggestion]": $.LinkDesc<_app_crm.$CrmSuggestion, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeAttrType[is sys_api::SysApi]": $.LinkDesc<_sys_api.$SysApi, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<testCodeMulti[is sys_api::SysApi]": $.LinkDesc<_sys_api.$SysApi, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<testCodeSingle[is sys_api::SysApi]": $.LinkDesc<_sys_api.$SysApi, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeIcon[is sys_api::SysApi]": $.LinkDesc<_sys_api.$SysApi, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeAccess": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeAlignment": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeAlignmentAlt": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -422,6 +433,8 @@ export type $SysCodeλShape = $.typeutil.flatten<Omit<$SysObjAttrλShape, "codeA
   "<codeSortDir": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeState": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeStatus": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeSuggestionImportance": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<codeSuggestionStatus": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTaskStatusObj": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTaskType": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<codeTriggerConfirmConditional": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -628,6 +641,7 @@ export type $SysDataObjColumnλShape = $.typeutil.flatten<_sys_user.$MgmtλShape
   "propNameKeyPrefix": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "propNameKeySuffix": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
   "fieldStyles": $.LinkDesc<$SysDataObjStyle, $.Cardinality.Many, {}, false, false,  false, false>;
+  "customColIsBold": $.PropertyDesc<_std.$bool, $.Cardinality.AtMostOne, false, false, false, false>;
   "<columns[is sys_core::SysDataObj]": $.LinkDesc<$SysDataObj, $.Cardinality.Many, {}, false, false,  false, false>;
   "<customEmbedShellFields[is sys_core::SysDataObjColumn]": $.LinkDesc<$SysDataObjColumn, $.Cardinality.Many, {}, false, false,  false, false>;
   "<columns[is sys_core::SysDataObjColumnItemChange]": $.LinkDesc<$SysDataObjColumnItemChange, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -1038,6 +1052,8 @@ export type $SysObjAttrAccessλShape = $.typeutil.flatten<_sys_user.$MgmtλShape
   "<attrsAccess[is sys_core::SysEligibility]": $.LinkDesc<$SysEligibility, $.Cardinality.Many, {}, false, false,  false, false>;
   "<attrsAccess[is sys_core::SysEligibilityNode]": $.LinkDesc<$SysEligibilityNode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<attrsAccess[is app_cm::CmProgram]": $.LinkDesc<_app_cm.$CmProgram, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attrsAccess[is app_crm::CrmSuggestion]": $.LinkDesc<_app_crm.$CrmSuggestion, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attrsAccess[is sys_api::SysApi]": $.LinkDesc<_sys_api.$SysApi, $.Cardinality.Many, {}, false, false,  false, false>;
   "<attrsAccess": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysObjAttrAccess = $.ObjectType<"sys_core::SysObjAttrAccess", $SysObjAttrAccessλShape, null, [
@@ -1096,6 +1112,8 @@ export type $SysObjAttrActionλShape = $.typeutil.flatten<_sys_user.$MgmtλShape
   "<attrsAction[is sys_core::SysEligibilityNode]": $.LinkDesc<$SysEligibilityNode, $.Cardinality.Many, {}, false, false,  false, false>;
   "<attrsAction[is sys_core::SysEligibility]": $.LinkDesc<$SysEligibility, $.Cardinality.Many, {}, false, false,  false, false>;
   "<attrsAction[is app_cm::CmProgram]": $.LinkDesc<_app_cm.$CmProgram, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attrsAction[is app_crm::CrmSuggestion]": $.LinkDesc<_app_crm.$CrmSuggestion, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<attrsAction[is sys_api::SysApi]": $.LinkDesc<_sys_api.$SysApi, $.Cardinality.Many, {}, false, false,  false, false>;
   "<attrsAction": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysObjAttrAction = $.ObjectType<"sys_core::SysObjAttrAction", $SysObjAttrActionλShape, null, [
@@ -1179,6 +1197,7 @@ export type $SysOrgλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_user.
   "<ownerOrg[is sys_user::SysUser]": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<ownerOrg[is sys_user::currentUser]": $.LinkDesc<_sys_user.$currentUser, $.Cardinality.Many, {}, false, false,  false, false>;
   "<ownerOrg[is sys_user::SysUserType]": $.LinkDesc<_sys_user.$SysUserType, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<ownerOrg[is app_crm::CrmSuggestion]": $.LinkDesc<_app_crm.$CrmSuggestion, $.Cardinality.Many, {}, false, false,  false, false>;
   "<ownerOrg": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
 }>;
 type $SysOrg = $.ObjectType<"sys_core::SysOrg", $SysOrgλShape, null, [
@@ -1241,6 +1260,8 @@ export type $SysSystemλShape = $.typeutil.flatten<$ObjRootCoreλShape & _sys_us
   "<ownerSys[is app_cm::CmPartner]": $.LinkDesc<_app_cm.$CmPartner, $.Cardinality.Many, {}, false, false,  false, false>;
   "<ownerSys[is app_cm::CmGroup]": $.LinkDesc<_app_cm.$CmGroup, $.Cardinality.Many, {}, false, false,  false, false>;
   "<ownerSys[is sys_core::SysEligibility]": $.LinkDesc<$SysEligibility, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<ownerSys[is app_crm::CrmSuggestion]": $.LinkDesc<_app_crm.$CrmSuggestion, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<ownerSys[is sys_api::SysApi]": $.LinkDesc<_sys_api.$SysApi, $.Cardinality.Many, {}, false, false,  false, false>;
   "<ownerSys": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<selfSignupSystem": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<systemDefault": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
@@ -1649,33 +1670,6 @@ function getSystem(...args: any[]) {
   }) as any;
 };
 
-type getObjλFuncExpr<
-  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
-  P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
-> = $.$expr_Function<
-  $SysObj, $.cardutil.overrideLowerBound<$.cardutil.multiplyCardinalities<$.cardutil.paramCardinality<P1>, $.cardutil.paramCardinality<P2>>, "Zero">
->;
-function getObj<
-  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
-  P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
->(
-  ownerName: P1,
-  name: P2,
-): getObjλFuncExpr<P1, P2>;
-function getObj(...args: any[]) {
-  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('sys_core::getObj', args, _.spec, [
-    {args: [{typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}, {typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}], returnTypeId: "502c3231-b3c2-11ee-8bbb-0d7244bf9fbc", returnTypemod: "OptionalType"},
-  ]);
-  return _.syntax.$expressionify({
-    __kind__: $.ExpressionKind.Function,
-    __element__: returnType,
-    __cardinality__: cardinality,
-    __name__: "sys_core::getObj",
-    __args__: positionalArgs,
-    __namedargs__: namedArgs,
-  }) as any;
-};
-
 type getObjAttrλFuncExpr<
   P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
   P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
@@ -1805,6 +1799,33 @@ function getObjRootCore(...args: any[]) {
   }) as any;
 };
 
+type getObjλFuncExpr<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+  P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+> = $.$expr_Function<
+  $SysObj, $.cardutil.overrideLowerBound<$.cardutil.multiplyCardinalities<$.cardutil.paramCardinality<P1>, $.cardutil.paramCardinality<P2>>, "Zero">
+>;
+function getObj<
+  P1 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+  P2 extends _.castMaps.orScalarLiteral<$.TypeSet<_std.$str>>,
+>(
+  ownerName: P1,
+  name: P2,
+): getObjλFuncExpr<P1, P2>;
+function getObj(...args: any[]) {
+  const {returnType, cardinality, args: positionalArgs, namedArgs} = _.syntax.$resolveOverload('sys_core::getObj', args, _.spec, [
+    {args: [{typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}, {typeId: "00000000-0000-0000-0000-000000000101", optional: false, setoftype: false, variadic: false}], returnTypeId: "502c3231-b3c2-11ee-8bbb-0d7244bf9fbc", returnTypemod: "OptionalType"},
+  ]);
+  return _.syntax.$expressionify({
+    __kind__: $.ExpressionKind.Function,
+    __element__: returnType,
+    __cardinality__: cardinality,
+    __name__: "sys_core::getObj",
+    __args__: positionalArgs,
+    __namedargs__: namedArgs,
+  }) as any;
+};
+
 
 
 export { $ObjRoot, ObjRoot, $ObjRootCore, ObjRootCore, $SysObj, SysObj, $SysObjAttr, SysObjAttr, $SysObjAttrEnt, SysObjAttrEnt, $SysCode, SysCode, $SysCodeAction, SysCodeAction, $SysCodeType, SysCodeType, $SysObjDb, SysObjDb, $SysDataObj, SysDataObj, $SysDataObjAction, SysDataObjAction, $SysDataObjActionGroup, SysDataObjActionGroup, $SysDataObjColumn, SysDataObjColumn, $SysDataObjColumnItemChange, SysDataObjColumnItemChange, $SysDataObjColumnLink, SysDataObjColumnLink, $SysDataObjFieldEmbedListConfig, SysDataObjFieldEmbedListConfig, $SysDataObjFieldEmbedListEdit, SysDataObjFieldEmbedListEdit, $SysDataObjFieldEmbedListSelect, SysDataObjFieldEmbedListSelect, $SysDataObjFieldListItems, SysDataObjFieldListItems, $SysDataObjFieldListItemsProp, SysDataObjFieldListItemsProp, $SysDataObjQueryRider, SysDataObjQueryRider, $SysDataObjStyle, SysDataObjStyle, $SysDataObjTable, SysDataObjTable, $SysDataObjWith, SysDataObjWith, $SysEligibility, SysEligibility, $SysEligibilityNode, SysEligibilityNode, $SysMsg, SysMsg, $SysNavDestination, SysNavDestination, $SysNodeObj, SysNodeObj, $SysNodeObjAction, SysNodeObjAction, $SysNodeObjChild, SysNodeObjChild, $SysNodeObjConfig, SysNodeObjConfig, $SysNotify, SysNotify, $SysObjAttrAccess, SysObjAttrAccess, $SysObjAttrAction, SysObjAttrAction, $SysObjAttrExpr, SysObjAttrExpr, $SysObjAttrVirtual, SysObjAttrVirtual, $SysObjNote, SysObjNote, $SysObjOrg, SysObjOrg, $SysOrg, SysOrg, $SysSystem, SysSystem };
@@ -1867,12 +1888,12 @@ type __defaultExports = {
   "getSystemPrime": typeof getSystemPrime;
   "getNodeObjById": typeof getNodeObjById;
   "getSystem": typeof getSystem;
-  "getObj": typeof getObj;
   "getObjAttr": typeof getObjAttr;
   "getCodeSystem": typeof getCodeSystem;
   "getEligibility": typeof getEligibility;
   "getEligibilityNode": typeof getEligibilityNode;
-  "getObjRootCore": typeof getObjRootCore
+  "getObjRootCore": typeof getObjRootCore;
+  "getObj": typeof getObj
 };
 const __defaultExports: __defaultExports = {
   "ObjRoot": ObjRoot,
@@ -1932,11 +1953,11 @@ const __defaultExports: __defaultExports = {
   "getSystemPrime": getSystemPrime,
   "getNodeObjById": getNodeObjById,
   "getSystem": getSystem,
-  "getObj": getObj,
   "getObjAttr": getObjAttr,
   "getCodeSystem": getCodeSystem,
   "getEligibility": getEligibility,
   "getEligibilityNode": getEligibilityNode,
-  "getObjRootCore": getObjRootCore
+  "getObjRootCore": getObjRootCore,
+  "getObj": getObj
 };
 export default __defaultExports;

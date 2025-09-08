@@ -121,7 +121,7 @@ function initTaskSsrApp(init: InitDb) {
 			},
 			{
 				columnName: 'cmProgram',
-				exprSave: `(SELECT assert_single((SELECT app_cm::CmProgram FILTER .name = 'at_cm_program_moed_yo')))`,
+				exprSave: `(SELECT assert_single((SELECT app_cm::CmProgram FILTER .name = 'at_app_cm_program_moed_yo')))`,
 				orderDefine: 40,
 				indexTable: 0,
 				isDisplayable: false,
@@ -553,7 +553,7 @@ function initTaskSsrDoc(init: InitDb) {
 				fieldListItems: 'il_moed_code_family_group_ssr_doc'
 			},
 			{
-				codeFieldElement: 'file',
+				codeFieldElement: 'fileImage',
 				columnName: 'file',
 				isDisplayable: true,
 				orderDisplay: 80,

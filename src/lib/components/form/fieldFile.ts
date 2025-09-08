@@ -6,14 +6,28 @@ const FILENAME = '$comps/Form/fieldFile.ts'
 
 export class FieldFile extends Field {
 	storageKeyExpr: string
-	width: number
 	constructor(props: PropsFieldCreate) {
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
 		this.storageKeyExpr = strRequired(obj.colDB.exprStorageKey, 'FieldFile', 'storageKeyExpr')
-		this.width = valueOrDefault(obj.width, 300)
 	}
 	async getKey() {
 		return await evalExpr({ exprRaw: this.storageKeyExpr, evalExprContext: `${FILENAME}.getKey` })
+	}
+}
+
+export class FieldFileData extends FieldFile {
+	constructor(props: PropsFieldCreate) {
+		super(props)
+		const obj = valueOrDefault(props.propRaw, {})
+	}
+}
+
+export class FieldFileImage extends FieldFile {
+	width: number
+	constructor(props: PropsFieldCreate) {
+		super(props)
+		const obj = valueOrDefault(props.propRaw, {})
+		this.width = valueOrDefault(obj.width, 300)
 	}
 }

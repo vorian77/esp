@@ -39,6 +39,7 @@ function initAuthLogin(init: InitDb) {
 				codeFieldElement: 'tel',
 				columnName: 'name',
 				headerAlt: 'Mobile Phone Number',
+				inputMaskAlt: 'phone',
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
@@ -131,6 +132,7 @@ function initAuthLoginForgotPw(init: InitDb) {
 				codeFieldElement: 'tel',
 				columnName: 'name',
 				headerAlt: 'Mobile Phone Number',
+				inputMaskAlt: 'phone',
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,
@@ -322,6 +324,7 @@ function initAuthSignup(init: InitDb) {
 				codeFieldElement: 'tel',
 				columnName: 'name',
 				headerAlt: 'Mobile Phone Number',
+				inputMaskAlt: 'phone',
 				isDisplayable: true,
 				orderDisplay: 40,
 				orderDefine: 40
@@ -621,6 +624,7 @@ function initMyAccount(init: InitDb) {
 			{
 				columnName: 'name',
 				headerAlt: 'Mobile Phone Number',
+				inputMaskAlt: 'phone',
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
@@ -644,7 +648,7 @@ function initMyAccount(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'file',
+				codeFieldElement: 'fileImage',
 				columnName: 'avatar',
 				isDisplayable: true,
 				orderDisplay: 100,
@@ -766,6 +770,7 @@ function initResetPasswordAccount(init: InitDb) {
 				codeFieldElement: 'tel',
 				columnName: 'name',
 				headerAlt: 'Mobile Phone Number',
+				inputMaskAlt: 'phone',
 				isDisplayable: true,
 				orderDisplay: 20,
 				orderDefine: 20,

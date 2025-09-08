@@ -24,7 +24,7 @@
 
 		if (prospectEmail.includes('@')) {
 			const exprCustom = `INSERT app_crm::CrmClient { 
-			codeAttrType := sys_core::getCodeAttrType('at_crm_client'),
+			codeAttrType := sys_core::getCodeAttrType('at_app_crm_client'),
 			createdBy := sys_user::getRootUser(),
 			email := '${prospectEmail}',
 			modifiedBy := sys_user::getRootUser(),

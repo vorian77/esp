@@ -139,6 +139,24 @@ export function initPreColumn(init: InitDb) {
 		name: 'analytics'
 	})
 	init.addTrans('sysColumn', {
+		ownerSys: 'sys_app_api',
+		codeDataType: 'str',
+		header: 'Local - Mod',
+		name: 'apiTabLocalMod'
+	})
+	init.addTrans('sysColumn', {
+		ownerSys: 'sys_app_api',
+		codeDataType: 'str',
+		header: 'Local - Name',
+		name: 'apiTabLocalName'
+	})
+	init.addTrans('sysColumn', {
+		ownerSys: 'sys_app_api',
+		codeDataType: 'str',
+		header: 'Remote - Name',
+		name: 'apiTabRemoteName'
+	})
+	init.addTrans('sysColumn', {
 		ownerSys: 'sys_system',
 		codeDataType: 'link',
 		header: 'Applicant',
@@ -599,6 +617,20 @@ export function initPreColumn(init: InitDb) {
 		isMultiSelect: false,
 		name: 'codeStatus',
 		ownerSys: 'sys_system'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Importance',
+		isMultiSelect: false,
+		name: 'codeSuggestionImportance',
+		ownerSys: 'sys_app_crm'
+	})
+	init.addTrans('sysColumn', {
+		codeDataType: 'link',
+		header: 'Status',
+		isMultiSelect: false,
+		name: 'codeSuggestionStatus',
+		ownerSys: 'sys_app_crm'
 	})
 	init.addTrans('sysColumn', {
 		codeDataType: 'link',
@@ -1068,6 +1100,12 @@ export function initPreColumn(init: InitDb) {
 		exprStorageKey: 'file_<function,fSysRandom10>',
 		header: 'Custom - File',
 		name: 'customColFile'
+	})
+	init.addTrans('sysColumn', {
+		ownerSys: 'sys_system',
+		codeDataType: 'bool',
+		header: 'Custom - Bold',
+		name: 'customColIsBold'
 	})
 	init.addTrans('sysColumn', {
 		ownerSys: 'sys_system',
@@ -1833,6 +1871,12 @@ export function initPreColumn(init: InitDb) {
 		name: 'isShareWithClient'
 	})
 	init.addTrans('sysColumn', {
+		ownerSys: 'sys_app_crm',
+		codeDataType: 'bool',
+		header: 'Follow-UP',
+		name: 'isSuggestionFollowUp'
+	})
+	init.addTrans('sysColumn', {
 		ownerSys: 'sys_system',
 		codeDataType: 'bool',
 		header: 'Is Table Extension',
@@ -2329,7 +2373,7 @@ export function initPreColumn(init: InitDb) {
 		ownerSys: 'sys_system',
 		codeDataType: 'str',
 		header: 'Social Security Number',
-		inputMask: '###-##-####',
+		inputMask: 'ssn',
 		name: 'ssn'
 	})
 	init.addTrans('sysColumn', {
@@ -2357,6 +2401,36 @@ export function initPreColumn(init: InitDb) {
 		codeDataType: 'str',
 		header: 'Subject',
 		name: 'subject'
+	})
+	init.addTrans('sysColumn', {
+		ownerSys: 'sys_app_crm',
+		codeDataType: 'str',
+		header: 'Beneficiaries',
+		name: 'suggestionTextBenefit'
+	})
+	init.addTrans('sysColumn', {
+		ownerSys: 'sys_app_crm',
+		codeDataType: 'str',
+		header: 'Email',
+		name: 'suggestionEmail'
+	})
+	init.addTrans('sysColumn', {
+		ownerSys: 'sys_app_crm',
+		codeDataType: 'str',
+		header: 'Outcomes',
+		name: 'suggestionTextOutcome'
+	})
+	init.addTrans('sysColumn', {
+		ownerSys: 'sys_app_crm',
+		codeDataType: 'str',
+		header: 'Problem',
+		name: 'suggestionTextProblem'
+	})
+	init.addTrans('sysColumn', {
+		ownerSys: 'sys_app_crm',
+		codeDataType: 'str',
+		header: 'Solution',
+		name: 'suggestionTextSolution'
 	})
 	init.addTrans('sysColumn', {
 		ownerSys: 'sys_system',

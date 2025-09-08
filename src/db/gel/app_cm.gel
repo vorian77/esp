@@ -162,7 +162,7 @@ module app_cm {
 
   type CmPartner extending sys_core::SysObjAttrEnt {
     overloaded required codeAttrType: sys_core::SysCode {
-      default := sys_core::getCodeAttrType('at_cm_partner');
+      default := sys_core::getCodeAttrType('at_app_cm_partner');
     };
   }
   
@@ -171,13 +171,13 @@ module app_cm {
       on target delete allow;
     };
     overloaded required codeAttrType: sys_core::SysCode {
-      default := sys_core::getCodeAttrType('at_cm_program');
+      default := sys_core::getCodeAttrType('at_app_cm_program');
     };
   }
 
   type CmSite extending sys_core::SysObjAttrEnt {
     overloaded required codeAttrType: sys_core::SysCode {
-      default := sys_core::getCodeAttrType('at_cm_site');
+      default := sys_core::getCodeAttrType('at_app_cm_site');
     };
   }
 

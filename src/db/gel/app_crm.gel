@@ -1,7 +1,25 @@
 module app_crm {
   type CrmClient extending sys_core::SysObjAttrEnt {
     overloaded required codeAttrType: sys_core::SysCode {
-      default := sys_core::getCodeAttrType('at_crm_client');
+      default := sys_core::getCodeAttrType('at_app_crm_client');
     };
   }
+
+  type CrmSuggestion extending sys_core::SysObjAttr {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_crm_suggestion');
+    };
+    required codeSuggestionImportance: sys_core::SysCode;
+    required codeSuggestionStatus: sys_core::SysCode;
+    required ownerOrg: sys_core::SysOrg;
+    required isSuggestionFollowUp: bool;
+    suggestionEmail: str;
+    suggestionTextBenefit: str;
+    suggestionTextOutcome: str;
+    suggestionTextProblem: str;
+    suggestionTextSolution: str;
+    user: sys_user::SysUser;
+  }
 }
+
+

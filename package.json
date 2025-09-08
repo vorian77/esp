@@ -51,6 +51,7 @@
 		"ag-grid-enterprise": "34.1.1",
 		"axios": "^1.11.0",
 		"bits-ui": "^2.9.2",
+		"d3-dsv": "^3.0.1",
 		"dotenv": "^17.2.1",
 		"gel": "^2.1.1",
 		"latest": "^0.2.0",
@@ -58,6 +59,7 @@
 		"lucide": "^0.536.0",
 		"lucide-svelte": "^0.536.0",
 		"maska": "^3.2.0",
+		"papaparse": "^5.5.3",
 		"svelte-language-server": "^0.17.18",
 		"twilio": "^5.8.0"
 	},

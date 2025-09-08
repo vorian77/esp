@@ -11,8 +11,8 @@ const universalStartDate = '2025-07-01'
 // site: {
 // 	type: 'list',
 // 	values: [
-// 		[{ type: 'at_cm_site', obj: 'at_cm_site_moed_office_east' }],
-// 		[{ type: 'at_cm_site', obj: 'at_cm_site_moed_office_west' }]
+// 		[{ type: 'at_app_cm_site', obj: 'at_app_cm_site_moed_office_east' }],
+// 		[{ type: 'at_app_cm_site', obj: 'at_app_cm_site_moed_office_west' }]
 // 	]
 // },
 
@@ -220,7 +220,7 @@ const recordPart = [
 const dataServiceFlow = {
 	cmSite: {
 		type: 'list',
-		values: ['at_cm_site_moed_office_east', 'at_cm_site_moed_office_west']
+		values: ['at_app_cm_site_moed_office_east', 'at_app_cm_site_moed_office_west']
 	},
 	dateCreated: {
 		date: universalStartDate,

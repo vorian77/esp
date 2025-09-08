@@ -74,7 +74,7 @@ function initApps(init: InitDb) {
 		isGlobalResource: false,
 		name: 'app_app_crm',
 		ownerSys: 'sys_app_crm',
-		nodes: ['node_obj_app_crm_client_list']
+		nodes: ['node_obj_app_crm_client_list', 'node_obj_app_crm_suggestion_list']
 	})
 }
 
@@ -83,6 +83,16 @@ function initUserType(init: InitDb) {
 	init.addTrans('sysUserType', {
 		attrsAccess: [
 			{ access: 'allow', ownerSys: 'sys_system', name: 'app_sys_admin_global' },
+			{
+				access: 'allow',
+				ownerSys: 'sys_system',
+				name: 'atutaa_sys_admin_global'
+			},
+			{
+				access: 'allow',
+				ownerSys: 'sys_system',
+				name: 'atutaa_sys_admin_org'
+			},
 			{ access: 'allow', ownerSys: 'sys_system', name: 'app_sys_reporting' },
 			{ access: 'allow', ownerSys: 'sys_system', name: 'task_sys_msg_all' },
 			{ access: 'allow', ownerSys: 'sys_system', name: 'task_sys_msg_unread' },

@@ -101,6 +101,10 @@ export class DataManager {
 		return this.getNode(dataObjId)?.getFieldValidity(row, field)
 	}
 	getFieldValue(dataObjId: string, row: number, field: Field): any {
+		if (field.colDO.propNameKey === 'name') {
+			const v = this.getNode(dataObjId)?.getFieldValue(row, field)
+			return v
+		}
 		return this.getNode(dataObjId)?.getFieldValue(row, field)
 	}
 
@@ -408,8 +412,12 @@ export class DataManagerNode {
 	}
 
 	setFieldValDataChanged(recordId: string, key: string, value: any) {
-		const valueInitial = this.dataObj.data.rowsRetrieved.getRowValueById(recordId, key)
-		const hasChanged = valueHasChanged(valueInitial, value)
+		let valueInitial = this.dataObj.data.rowsRetrieved.getRowValueById(recordId, key)
+		const valueCurrent = getValueData(value)
+		if (typeof valueCurrent === 'string') {
+			valueInitial = valueInitial ? valueInitial.toString() : valueInitial
+		}
+		const hasChanged = valueHasChanged(valueInitial, valueCurrent)
 		if (hasChanged) {
 			this.fieldsChanged.valueSet(recordId, key, hasChanged)
 		} else {
@@ -471,6 +479,7 @@ export class DataManagerNode {
 			? recordValueGet(this.recordsDisplay[row], key)
 			: undefined
 	}
+
 	valueSet(row: number, key: string, value: any) {
 		if (row < this.recordsDisplay.length) {
 			this.recordsDisplay[row] = recordValueSet(this.recordsDisplay[row], key, value)

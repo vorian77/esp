@@ -999,18 +999,28 @@ function initGlobalCodeTypeCode(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
+				columnName: 'ownerSys',
+				isDisplayable: true,
+				orderDisplay: 20,
+				orderDefine: 20,
+				indexTable: 0,
+				linkColumns: ['name'],
+				linkTable: 'SysSystem'
+			},
+			{
+				codeAccess: 'readOnly',
 				columnName: 'isGlobalResource',
 				isDisplayable: true,
-				orderDisplay: 15,
-				orderDefine: 15,
+				orderDisplay: 30,
+				orderDefine: 30,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
 				columnName: 'parent',
 				isDisplayable: true,
-				orderDisplay: 20,
-				orderDefine: 20,
+				orderDisplay: 40,
+				orderDefine: 40,
 				indexTable: 0,
 				linkColumns: ['name'],
 				linkTable: 'SysCode'
@@ -1021,21 +1031,13 @@ function initGlobalCodeTypeCode(init: InitDb) {
 				orderCrumb: 10,
 				orderSort: 20,
 				isDisplayable: true,
-				orderDisplay: 40,
-				orderDefine: 40,
-				indexTable: 0
-			},
-			{
-				codeAccess: 'readOnly',
-				columnName: 'header',
-				isDisplayable: true,
 				orderDisplay: 50,
 				orderDefine: 50,
 				indexTable: 0
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'order',
+				columnName: 'header',
 				isDisplayable: true,
 				orderDisplay: 60,
 				orderDefine: 60,
@@ -1043,7 +1045,7 @@ function initGlobalCodeTypeCode(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'valueDecimal',
+				columnName: 'order',
 				isDisplayable: true,
 				orderDisplay: 70,
 				orderDefine: 70,
@@ -1051,7 +1053,7 @@ function initGlobalCodeTypeCode(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'valueInteger',
+				columnName: 'valueDecimal',
 				isDisplayable: true,
 				orderDisplay: 80,
 				orderDefine: 80,
@@ -1059,10 +1061,18 @@ function initGlobalCodeTypeCode(init: InitDb) {
 			},
 			{
 				codeAccess: 'readOnly',
-				columnName: 'valueString',
+				columnName: 'valueInteger',
 				isDisplayable: true,
 				orderDisplay: 90,
 				orderDefine: 90,
+				indexTable: 0
+			},
+			{
+				codeAccess: 'readOnly',
+				columnName: 'valueString',
+				isDisplayable: true,
+				orderDisplay: 100,
+				orderDefine: 100,
 				indexTable: 0
 			}
 		]

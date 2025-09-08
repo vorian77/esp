@@ -488,7 +488,7 @@ function initSystem(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'file',
+				codeFieldElement: 'fileImage',
 				columnName: 'file',
 				isDisplayable: true,
 				itemChanges: [

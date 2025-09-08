@@ -430,6 +430,7 @@ export async function getDataObjById(token: TokenApiId) {
 					customColActionValue: true,
 					customColAlign: true,
 					customColFile: true,
+					customColIsBold: true,
 					customColIsSubHeader: true,
 					customColLabel: true,
 					customColPrefix: true,
@@ -783,6 +784,7 @@ export async function getUserByUserId(token: TokenApiId): Promise<MethodResult> 
 			_attrsVirtual: e.select(u.userTypes.attrsVirtual, (a) => ({
 				...shapeObjAttrVirtual(a)
 			})),
+			_orgId: u.ownerOrg.id,
 			_personId: u.person.id,
 			_preferences: e.select(e.sys_user.SysUserPref, (p) => ({
 				_codeType: p.codeType.name,

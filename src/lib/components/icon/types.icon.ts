@@ -9,6 +9,7 @@ export class IconProps {
 	onclick: Function
 	size: number
 	strokeWidth: number
+	tooltip: string
 	constructor(obj: any) {
 		const clazz = 'IconParms'
 		obj = valueOrDefault(obj, {})
@@ -20,6 +21,7 @@ export class IconProps {
 		this.onclick = valueOrDefault(obj.onclick, () => {})
 		this.size = valueOrDefault(obj.size, 24)
 		this.strokeWidth = valueOrDefault(obj.strokeWidth, 1)
+		this.tooltip = valueOrDefault(obj.tooltip, '')
 
 		// derived
 		if (this.isNav) this.clazz += ' text-nav hover:text-nav-hover'

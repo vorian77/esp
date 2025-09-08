@@ -7,16 +7,22 @@ import {
 	ValidityError,
 	ValidityErrorLevel
 } from '$comps/form/types.validation'
-import { Field, FieldAccess, FieldElement, PropsFieldCreate } from '$comps/form/field.svelte'
-import { RawDataObjPropDisplay } from '$comps/dataObj/types.rawDataObj.svelte'
-import { valueOrDefault } from '$utils/utils'
-import { required } from '$utils/types'
+import {
+	Field,
+	FieldAccess,
+	FieldElement,
+	FieldInputMask,
+	PropsFieldCreate
+} from '$comps/form/field.svelte'
+import { getValueData, valueOrDefault } from '$utils/utils'
+import { memberOfEnumIfExists, required } from '$utils/types'
 import { error } from '@sveltejs/kit'
 
 const FILENAME = '$comps/form/fieldInput.ts'
 
 export class FieldInput extends Field {
-	inputMask: string
+	inputMask?: any
+	inputMaskType?: FieldInputMask
 	inputTypeCurrent: string = ''
 	matchColumn?: MatchColumn
 	maxLength?: number
@@ -33,7 +39,13 @@ export class FieldInput extends Field {
 		super(props)
 		const obj = valueOrDefault(props.propRaw, {})
 		const fields: Field[] = required(props.parms.fields, clazz, 'fields')
-		this.inputMask = obj.inputMaskAlt || obj.colDB.inputMask || ''
+		this.inputMaskType = memberOfEnumIfExists(
+			obj.inputMaskAlt || obj.colDB.inputMask,
+			'inputMaskType',
+			clazz,
+			'FieldInputMask',
+			FieldInputMask
+		)
 		this.inputTypeCurrent = this.fieldElement === FieldElement.textHide ? 'password' : 'text'
 		this.matchColumn = initMatchColumn(obj.colDB.matchColumn, this, fields)
 		this.maxLength = obj.colDB.maxLength
@@ -46,17 +58,54 @@ export class FieldInput extends Field {
 		this.placeHolder = obj.colDB.placeHolder
 		this.spinStep = obj.colDB.spinStep
 
-		// set field type defaults
+		switch (this.inputMaskType) {
+			case FieldInputMask.currency:
+				this.inputMask = {
+					preProcess: (val: any) => val.replace(/[$,]/g, ''),
+					postProcess: (val: any) => {
+						if (!val) return ''
+
+						const sub = 3 - (val.includes('.') ? val.length - val.indexOf('.') : 0)
+
+						return Intl.NumberFormat('en-US', {
+							style: 'currency',
+							currency: 'USD'
+						})
+							.format(val)
+							.slice(0, sub ? -sub : undefined)
+					}
+				}
+				if (!this.pattern) {
+					this.pattern = '^(\\d+)(\\.\\d{1,2})?$'
+					this.patternReplacement = '$1$2'
+				}
+				break
+			case FieldInputMask.date:
+				this.inputMask = ''
+				if (!this.pattern) {
+					this.pattern = '^\\d{4}-\\d{2}-\\d{2}$'
+					this.patternReplacement = '$1-$2-$3'
+				}
+				break
+			case FieldInputMask.phone:
+				this.inputMask = '(###) ###-####'
+				if (!this.pattern) {
+					this.pattern = '^(1\\s?)?(\\d{3}|\\(\\d{3}\\))[\\s\\-]?\\d{3}[\\s\\-]?\\d{4}$'
+					this.patternReplacement = '($1) $2-$3'
+				}
+				break
+			case FieldInputMask.ssn:
+				this.inputMask = '###-##-####'
+				if (!this.pattern) {
+					this.pattern = '^(\\d{3})[\\s\\-]?(\\d{2})[\\s\\-]?(\\d{4})$'
+					this.patternReplacement = '$1-$2-$3'
+				}
+		}
+
 		switch (this.fieldElement) {
 			case FieldElement.email:
 				if (!this.pattern) {
 					this.pattern = '^[A-Za-z0-9+_.-]+@(.+)$'
-				}
-				break
-			case FieldElement.tel:
-				if (!this.pattern) {
-					this.pattern = '^(1\\s?)?(\\d{3}|\\(\\d{3}\\))[\\s\\-]?\\d{3}[\\s\\-]?\\d{4}$'
-					this.patternReplacement = '($1) $2-$3'
 				}
 				break
 		}
@@ -103,9 +152,9 @@ export class FieldInput extends Field {
 		return placeholder
 	}
 
-	validate(row: number, value: any, missingDataErrorLevel: ValidityErrorLevel) {
+	validate(row: number, value: any, validityErrorLevel: ValidityErrorLevel) {
 		// base validate
-		let v = super.validate(row, value, missingDataErrorLevel)
+		let v = super.validate(row, value, validityErrorLevel)
 		if ([ValidationStatus.valid, ValidationStatus.invalid].includes(v.status)) return v
 
 		/* minLength */
@@ -113,7 +162,7 @@ export class FieldInput extends Field {
 			if (value.length < this.minLength) {
 				return this.getValuationInvalid(
 					ValidityError.minLength,
-					ValidityErrorLevel.error,
+					validityErrorLevel,
 					`"${this.colDO.label}" must be at least ${this.minLength} character(s). It is currently ${value.length} character(s).`
 				)
 			}
@@ -124,7 +173,7 @@ export class FieldInput extends Field {
 			if (value.length > this.maxLength) {
 				return this.getValuationInvalid(
 					ValidityError.maxLength,
-					ValidityErrorLevel.error,
+					validityErrorLevel,
 					`"${this.colDO.label}" cannot exceed ${this.maxLength} character(s). It is currently ${value.length} character(s).`
 				)
 			}
@@ -138,7 +187,7 @@ export class FieldInput extends Field {
 			if (nbrValue < this.minValue) {
 				return this.getValuationInvalid(
 					ValidityError.minValue,
-					ValidityErrorLevel.error,
+					validityErrorLevel,
 					`"${this.colDO.label}" must be at least ${this.minValue}`
 				)
 			}
@@ -148,7 +197,7 @@ export class FieldInput extends Field {
 			if (nbrValue > this.maxValue) {
 				return this.getValuationInvalid(
 					ValidityError.maxValue,
-					ValidityErrorLevel.error,
+					validityErrorLevel,
 					`"${this.colDO.label}" cannot exceed ${this.maxValue}`
 				)
 			}
@@ -157,10 +206,9 @@ export class FieldInput extends Field {
 		/* pattern */
 		if (this.pattern) {
 			const regex = new RegExp(this.pattern)
-			if (!regex.test(value)) {
-				const errorMsg =
-					this.patternMsg || `The value you entered is not a valid "${this.colDO.label}"`
-				return this.getValuationInvalid(ValidityError.pattern, ValidityErrorLevel.error, errorMsg)
+			if (!regex.test(getValueData(value))) {
+				const errorMsg = this.patternMsg || `Please enter a valid "${this.colDO.label}"`
+				return this.getValuationInvalid(ValidityError.pattern, validityErrorLevel, errorMsg)
 			}
 		}
 

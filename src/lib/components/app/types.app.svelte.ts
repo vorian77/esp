@@ -292,7 +292,7 @@ export class App {
 		let newTab = new AppLevelNode({
 			...this.getLevelNodeParmsNode(token.node)
 		})
-		let result: MethodResult = await newTab.queryTab(sm, TokenApiQueryType.retrieve)
+		let result: MethodResult = await newTab.queryTab(sm, token.queryType)
 		if (result.error) return result
 		this.treeAdd([newTab])
 		return result

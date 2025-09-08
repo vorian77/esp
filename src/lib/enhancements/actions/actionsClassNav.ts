@@ -153,10 +153,11 @@ export default async function action(
 			result = await getTokenNode(actionType, token)
 			if (result.error) return result
 
-			result = await sm.openModalNode(
-				result.data as TokenAppNode,
-				async (modalReturn: TokenAppModalReturn) => sm.triggerActionDashboard()
-			)
+			// result = await sm.openModalNode(
+			// 	result.data as TokenAppNode,
+			// 	async (modalReturn: TokenAppModalReturn) => sm.triggerActionDashboard()
+			// )
+			result = await sm.app.treeNodeAdd(sm, result.data as TokenAppNode)
 			if (result.error) return result
 
 			parmsAction.updateStateParmsTokensMenuClose()

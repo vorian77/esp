@@ -75,7 +75,7 @@ export async function MoedBulkCsf(params: any) {
 				),
 				cmProgram: e.assert_single(
 					e.select(e.app_cm.CmProgram, (a) => ({
-						filter_single: e.op(a.name, '=', 'at_cm_program_moed_yo')
+						filter_single: e.op(a.name, '=', 'at_app_cm_program_moed_yo')
 					}))
 				),
 				cmSite: e.assert_single(

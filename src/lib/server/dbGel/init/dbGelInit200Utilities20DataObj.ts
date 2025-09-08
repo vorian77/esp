@@ -181,6 +181,7 @@ export async function addDataObj(data: any) {
 						customColFile: e.to_json(
 							e.cast(e.str, e.json_get(e.json_get(f, 'customElement'), 'file'))
 						),
+						customColIsBold: booleanOrDefaultJSON(e.json_get(f, 'customElement'), 'isBold', false),
 						customColIsSubHeader: booleanOrDefaultJSON(
 							e.json_get(f, 'customElement'),
 							'isSubHeader',

@@ -847,6 +847,7 @@ export class RawDataObjPropDisplayCustom {
 	customColActionValue?: string
 	customColAlign?: string
 	customColFile?: any
+	customColIsBold?: boolean
 	customColIsSubHeader?: boolean
 	customColLabel?: string
 	customColPrefix?: string
@@ -868,6 +869,7 @@ export class RawDataObjPropDisplayCustom {
 		this.customColActionValue = strOptional(obj.customColActionValue, clazz, 'customColActionValue')
 		this.customColAlign = strOptional(obj.customColAlign, clazz, 'customColAlign')
 		this.customColFile = classOptional(FileStorage, obj.customColFile)
+		this.customColIsBold = obj.customColIsBold
 		this.customColIsSubHeader = obj.customColIsSubHeader
 		this.customColLabel = strOptional(obj.customColLabel, clazz, 'customColLabel')
 		this.customColPrefix = strOptional(obj.customColPrefix, clazz, 'customColPrefix')

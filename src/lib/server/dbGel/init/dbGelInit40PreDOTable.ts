@@ -6,6 +6,10 @@ export function initPreTable(init: InitDb) {
 		['sys_system', 'default', 'SysPerson', false],
 		['sys_system', 'default', 'SysError', false],
 
+		// sys_api
+		['sys_system', 'sys_api', 'SysApi', true],
+		['sys_system', 'sys_api', 'SysApiTable', true],
+
 		// sys_db
 		['sys_system', 'sys_db', 'SysColumn', true],
 		['sys_system', 'sys_db', 'SysTable', true],
@@ -79,8 +83,8 @@ export function initPreTable(init: InitDb) {
 	])
 
 	init.addTrans('tablesBulk', [
-		// customer resource ranager
-		['sys_app_crm', 'app_crm', 'CrmClient', true]
+		['sys_app_crm', 'app_crm', 'CrmClient', true],
+		['sys_app_crm', 'app_crm', 'CrmSuggestion', true]
 	])
 
 	init.addTrans('tablesBulk', [

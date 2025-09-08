@@ -3,6 +3,8 @@
 import * as $ from "../reflection";
 import * as _ from "../imports";
 import type * as _sys_core from "./sys_core";
+import type * as _sys_user from "./sys_user";
+import type * as _std from "./std";
 export type $CrmClientλShape = $.typeutil.flatten<_sys_core.$SysObjAttrEntλShape & {
   "codeAttrType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, true>;
 }>;
@@ -13,14 +15,36 @@ const $CrmClient = $.makeType<$CrmClient>(_.spec, "aaeb566c-d19f-11ef-b643-a97a7
 
 const CrmClient: $.$expr_PathNode<$.TypeSet<$CrmClient, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CrmClient, $.Cardinality.Many), null);
 
+export type $CrmSuggestionλShape = $.typeutil.flatten<Omit<_sys_core.$SysObjAttrλShape, "codeAttrType"> & {
+  "codeAttrType": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, true>;
+  "codeSuggestionImportance": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "codeSuggestionStatus": $.LinkDesc<_sys_core.$SysCode, $.Cardinality.One, {}, false, false,  false, false>;
+  "ownerOrg": $.LinkDesc<_sys_core.$SysOrg, $.Cardinality.One, {}, false, false,  false, false>;
+  "user": $.LinkDesc<_sys_user.$SysUser, $.Cardinality.AtMostOne, {}, false, false,  false, false>;
+  "isSuggestionFollowUp": $.PropertyDesc<_std.$bool, $.Cardinality.One, false, false, false, false>;
+  "suggestionEmail": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "suggestionTextBenefit": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "suggestionTextOutcome": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "suggestionTextProblem": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+  "suggestionTextSolution": $.PropertyDesc<_std.$str, $.Cardinality.AtMostOne, false, false, false, false>;
+}>;
+type $CrmSuggestion = $.ObjectType<"app_crm::CrmSuggestion", $CrmSuggestionλShape, null, [
+  ..._sys_core.$SysObjAttr['__exclusives__'],
+], "app_crm::CrmSuggestion">;
+const $CrmSuggestion = $.makeType<$CrmSuggestion>(_.spec, "d587901b-8b02-11f0-8def-6d3c680cbd03", _.syntax.literal);
+
+const CrmSuggestion: $.$expr_PathNode<$.TypeSet<$CrmSuggestion, $.Cardinality.Many>, null> = _.syntax.$PathNode($.$toSet($CrmSuggestion, $.Cardinality.Many), null);
 
 
-export { $CrmClient, CrmClient };
+
+export { $CrmClient, CrmClient, $CrmSuggestion, CrmSuggestion };
 
 type __defaultExports = {
-  "CrmClient": typeof CrmClient
+  "CrmClient": typeof CrmClient;
+  "CrmSuggestion": typeof CrmSuggestion
 };
 const __defaultExports: __defaultExports = {
-  "CrmClient": CrmClient
+  "CrmClient": CrmClient,
+  "CrmSuggestion": CrmSuggestion
 };
 export default __defaultExports;

@@ -5,6 +5,7 @@ import { initPreCode } from '$server/dbGel/init/dbGelInit30PreCode'
 import { initPreCodeAction } from '$server/dbGel/init/dbGelInit30PreCodeAction'
 import { initPreDataObj } from '$server/dbGel/init/dbGelInit40PreDO'
 import { initSysAdmin } from '$server/dbGel/init/dbGelInit60SysAdmin'
+import { initSysAdminConfigNodes } from '$server/dbGel/init/dbGelInit60SysAdminConfigNodes'
 import { initSysAuth } from '$server/dbGel/init/dbGelInit60SysAdminAuth'
 import { initSysRepUser } from '$server/dbGel/init/dbGelInit60SysAdminRepUser'
 
@@ -12,6 +13,7 @@ import { initSysRepUser } from '$server/dbGel/init/dbGelInit60SysAdminRepUser'
 import { initContentSysMsg } from '$server/dbGel/init/dbGelInit80ContentSysMsg'
 
 // content - app, client
+import { initContentAppApi } from '$server/dbGel/init/dbGelInit80ContentAppApi'
 import { initContentCm } from '$server/dbGel/init/dbGelInit80ContentCm'
 import { initContentCrm } from '$server/dbGel/init/dbGelInit80ContentCrm'
 import { initContentCrmRep } from '$server/dbGel/init/dbGelInit80ContentCrmRep'
@@ -48,12 +50,16 @@ function dbInitAll(initDb: InitDb) {
 	initPreCodeAction(initDb)
 	initPreDataObj(initDb)
 	initSysAdmin(initDb)
+	initSysAdminConfigNodes(initDb)
 	initSysAuth(initDb)
 	initSysRepUser(initDb)
 
 	// content - system
 	initContentSys(initDb)
 	initContentSysMsg(initDb)
+
+	// content - App - API
+	initContentAppApi(initDb)
 
 	// content - CM
 	initContentCm(initDb)
@@ -76,13 +82,16 @@ function dbInitAll(initDb: InitDb) {
 }
 
 export function initFeature(initDb: InitDb) {
+	initSysAdminConfigNodes(initDb)
+	initContentAppApi(initDb)
+
 	// initContentAITraining(initDb)
 	// initContentCm(initDb)
-	initSysAdmin(initDb)
+	// initSysAdmin(initDb)
 	// initSysAuth(initDb)
 	// initContentSys(initDb)
-	initContentSysMsg(initDb)
-	initContentMOEDSsr(initDb)
+	// initContentSysMsg(initDb)
+	// initContentMOEDSsr(initDb)
 	// initContentMOEDCm(initDb)
 	// initContentMOEDCmAdvocate(initDb)
 }
