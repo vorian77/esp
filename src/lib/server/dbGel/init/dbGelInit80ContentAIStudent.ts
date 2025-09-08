@@ -2165,7 +2165,7 @@ function initCsfDocument(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'file',
+				codeFieldElement: 'fileImage',
 				columnName: 'file',
 				isDisplayable: true,
 				orderDisplay: 90,

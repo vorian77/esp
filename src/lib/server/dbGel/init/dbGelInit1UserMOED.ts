@@ -12,8 +12,8 @@ function initConfigNodes(init: InitDb) {
 	init.addTrans('updateSystemNodesConfig', {
 		name: 'sys_client_baltimore_moed',
 		nodesConfig: [
-			{ codeAttrType: 'at_cm_program', node: 'node_obj_cm_program_list' },
-			{ codeAttrType: 'at_cm_site', node: 'node_obj_cm_site_list' },
+			{ codeAttrType: 'at_app_cm_program', node: 'node_obj_cm_program_list' },
+			{ codeAttrType: 'at_app_cm_site', node: 'node_obj_cm_site_list' },
 			{ codeAttrType: 'at_sys_code', node: 'node_obj_admin_code_list_customer' },
 			{ codeAttrType: 'at_sys_msg_group', node: 'node_obj_admin_attr_obj_list_simple' }
 		]
@@ -119,7 +119,7 @@ function initUserType(init: InitDb) {
 		attrsExpr: [
 			{
 				action: 'oaa_sys_msg_send_user',
-				expr: `SELECT (SELECT sys_user::SysUser FILTER .person IN (SELECT app_cm::CmClientServiceFlow FILTER .cmSite.name ?= 'at_cm_site_moed_office_east').client.person).id`
+				expr: `SELECT (SELECT sys_user::SysUser FILTER .person IN (SELECT app_cm::CmClientServiceFlow FILTER .cmSite.name ?= 'at_app_cm_site_moed_office_east').client.person).id`
 			}
 		],
 		header: 'MOED-Staff-Eastside',
@@ -150,7 +150,7 @@ function initUserType(init: InitDb) {
 		attrsExpr: [
 			{
 				action: 'oaa_sys_msg_send_user',
-				expr: `SELECT (SELECT sys_user::SysUser FILTER .person IN (SELECT app_cm::CmClientServiceFlow FILTER .cmSite.name ?= 'at_cm_site_moed_office_west').client.person).id`
+				expr: `SELECT (SELECT sys_user::SysUser FILTER .person IN (SELECT app_cm::CmClientServiceFlow FILTER .cmSite.name ?= 'at_app_cm_site_moed_office_west').client.person).id`
 			}
 		],
 		header: 'MOED-Staff-Westside',
@@ -167,7 +167,7 @@ function initUserType(init: InitDb) {
 		],
 		attrsVirtual: [
 			{
-				expr: `SELECT (SELECT app_cm::CmClientServiceFlow FILTER .client.person.id = <user,uuid,personId>).cmSite.name ?= 'at_cm_site_moed_office_east'`,
+				expr: `SELECT (SELECT app_cm::CmClientServiceFlow FILTER .client.person.id = <user,uuid,personId>).cmSite.name ?= 'at_app_cm_site_moed_office_east'`,
 				attrsAction: [
 					{
 						action: 'oaa_sys_msg_receive',
@@ -182,7 +182,7 @@ function initUserType(init: InitDb) {
 				]
 			},
 			{
-				expr: `SELECT (SELECT app_cm::CmClientServiceFlow FILTER .client.person.id = <user,uuid,personId>).cmSite.name ?= 'at_cm_site_moed_office_west'`,
+				expr: `SELECT (SELECT app_cm::CmClientServiceFlow FILTER .client.person.id = <user,uuid,personId>).cmSite.name ?= 'at_app_cm_site_moed_office_west'`,
 				attrsAction: [
 					{
 						action: 'oaa_sys_msg_receive',

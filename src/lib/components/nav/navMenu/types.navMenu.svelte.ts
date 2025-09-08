@@ -565,6 +565,17 @@ export class NavMenuDataCompUser extends NavMenuDataComp {
 			// 	isRoot: true,
 			// 	label: new NavMenuLabel('Dev - Test - Suggestion')
 			// })
+
+			this.itemAdd({
+				content: new NavMenuContent(
+					NavMenuContentType.nodeModal,
+					new TokenApiId('node_obj_app_api_list', TokenApiQueryType.retrieve)
+				),
+				icon: 'inbox',
+				isRoot: true,
+				label: new NavMenuLabel('Dev - API')
+			})
+
 			this.itemAdd({
 				content: new NavMenuContent(NavMenuContentType.functionAsync, this.adminDbReset),
 				icon: 'RotateCcw',

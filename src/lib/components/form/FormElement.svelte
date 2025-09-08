@@ -20,7 +20,8 @@
 	import FormElCustomHTML from '$comps/form/FormElCustomHTML.svelte'
 	import FormElCustomImage from '$comps/form/FormElCustomImage.svelte'
 	import FormElCustomText from '$comps/form/FormElCustomText.svelte'
-	import FormElFile from '$comps/form/FormElFile.svelte'
+	import FormElFileData from '$comps/form/FormElFileData.svelte'
+	import FormElFileImage from '$comps/form/FormElFileImage.svelte'
 	import FormElInp from '$comps/form/FormElInp.svelte'
 	import FormElInpChips from '$comps/form/FormElInpChips.svelte'
 	import FormElInpCheckbox from '$comps/form/FormElInpCheckbox.svelte'
@@ -51,7 +52,7 @@
 		FieldEmbedShell
 	} from '$comps/form/fieldEmbed.svelte'
 	import { FieldChips } from '$comps/form/fieldChips'
-	import { FieldFile } from '$comps/form/fieldFile'
+	import { FieldFileData, FieldFileImage } from '$comps/form/fieldFile'
 	import { FieldInput } from '$comps/form/fieldInput'
 	import { FieldParm } from '$comps/form/fieldParm'
 	import { FieldRadio } from '$comps/form/fieldRadio'
@@ -76,7 +77,8 @@
 		FieldEmbedListEdit: FormElEmbedListEdit,
 		FieldEmbedListSelect: FormElEmbedListSelect,
 		FieldEmbedShell: FormElEmbedShell,
-		FieldFile: FormElFile,
+		FieldFileData: FormElFileData,
+		FieldFileImage: FormElFileImage,
 		FieldInput: FormElInp,
 		FieldInputDate: FormElInpDate,
 		FieldRadio: FormElInpRadio,

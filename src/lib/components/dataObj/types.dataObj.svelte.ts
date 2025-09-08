@@ -37,7 +37,7 @@ import {
 	FieldEmbedListSelect,
 	FieldEmbedShell
 } from '$comps/form/fieldEmbed.svelte'
-import { FieldFile } from '$comps/form/fieldFile'
+import { FieldFileData, FieldFileImage } from '$comps/form/fieldFile'
 import { FieldInput } from '$comps/form/fieldInput'
 import { FieldParm } from '$comps/form/fieldParm'
 import { FieldRadio } from '$comps/form/fieldRadio'
@@ -270,8 +270,12 @@ export class DataObj {
 				newField = new FieldEmbedShell(new PropsFieldCreate({ propRaw }))
 				break
 
-			case FieldElement.file:
-				newField = new FieldFile(props)
+			case FieldElement.fileData:
+				newField = new FieldFileData(props)
+				break
+
+			case FieldElement.fileImage:
+				newField = new FieldFileImage(props)
 				break
 
 			case FieldElement.parm:

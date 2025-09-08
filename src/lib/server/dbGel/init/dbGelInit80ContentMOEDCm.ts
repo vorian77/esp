@@ -19,19 +19,19 @@ function initProgram(init: InitDb) {
 	init.addTrans('updateDepdCmProgramEligibility', {
 		eligibilityName: 'elig_moed_csf_yo',
 		eligibilityOwner: 'sys_client_baltimore_moed',
-		programName: 'at_cm_program_moed_yo',
+		programName: 'at_app_cm_program_moed_yo',
 		programOwner: 'sys_client_baltimore_moed'
 	})
 	init.addTrans('updateDepdCmProgramEligibility', {
 		eligibilityName: 'elig_moed_csf_yo_academy',
 		eligibilityOwner: 'sys_client_baltimore_moed',
-		programName: 'at_cm_program_moed_yo_academy',
+		programName: 'at_app_cm_program_moed_yo_academy',
 		programOwner: 'sys_client_baltimore_moed'
 	})
 	init.addTrans('updateDepdCmProgramEligibility', {
 		eligibilityName: 'elig_moed_csf_yo_pact',
 		eligibilityOwner: 'sys_client_baltimore_moed',
-		programName: 'at_cm_program_moed_yo_pact',
+		programName: 'at_app_cm_program_moed_yo_pact',
 		programOwner: 'sys_client_baltimore_moed'
 	})
 }
@@ -1351,7 +1351,7 @@ function initCsfDocument(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'file',
+				codeFieldElement: 'fileImage',
 				columnName: 'file',
 				isDisplayable: true,
 				orderDisplay: 90,

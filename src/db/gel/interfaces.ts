@@ -1040,6 +1040,20 @@ export namespace schema {
   export type TypeModifier = "SetOfType" | "OptionalType" | "SingletonType";
   export type Volatility = "Immutable" | "Stable" | "Volatile" | "Modifying";
 }
+export namespace sys_api {
+  export interface SysApi extends sys_core.SysObjAttr {
+    "codeAttrType": sys_core.SysCode;
+    "tables": SysApiTable[];
+  }
+  export interface SysApiTable extends sys_user.Mgmt {
+    "apiTabLocalMod": string;
+    "apiTabLocalName": string;
+    "apiTabRemoteName": string;
+    "description"?: string | null;
+    "isActive": boolean;
+    "file"?: unknown | null;
+  }
+}
 export namespace sys_db {
   export interface SysColumn extends sys_core.SysObjAttrEnt {
     "codeAlignment": sys_core.SysCode;
@@ -1406,6 +1420,10 @@ export interface types {
     "TupleExprAlias": schema.TupleExprAlias;
     "TypeModifier": schema.TypeModifier;
     "Volatility": schema.Volatility;
+  };
+  "sys_api": {
+    "SysApi": sys_api.SysApi;
+    "SysApiTable": sys_api.SysApiTable;
   };
   "sys_db": {
     "SysColumn": sys_db.SysColumn;

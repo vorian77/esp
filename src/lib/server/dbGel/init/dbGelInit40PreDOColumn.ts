@@ -139,6 +139,24 @@ export function initPreColumn(init: InitDb) {
 		name: 'analytics'
 	})
 	init.addTrans('sysColumn', {
+		ownerSys: 'sys_app_api',
+		codeDataType: 'str',
+		header: 'Local - Mod',
+		name: 'apiTabLocalMod'
+	})
+	init.addTrans('sysColumn', {
+		ownerSys: 'sys_app_api',
+		codeDataType: 'str',
+		header: 'Local - Name',
+		name: 'apiTabLocalName'
+	})
+	init.addTrans('sysColumn', {
+		ownerSys: 'sys_app_api',
+		codeDataType: 'str',
+		header: 'Remote - Name',
+		name: 'apiTabRemoteName'
+	})
+	init.addTrans('sysColumn', {
 		ownerSys: 'sys_system',
 		codeDataType: 'link',
 		header: 'Applicant',

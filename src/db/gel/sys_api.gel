@@ -1,0 +1,21 @@
+module sys_api {
+  type SysApi extending sys_core::SysObjAttr {
+    overloaded required codeAttrType: sys_core::SysCode {
+      default := sys_core::getCodeAttrType('at_app_api');
+    };
+    multi tables: sys_api::SysApiTable {
+      on source delete allow;
+    };
+    constraint exclusive on (.name);
+  }
+
+  type SysApiTable extending sys_user::Mgmt {
+    required apiTabLocalMod: str;
+    required apiTabLocalName: str;
+    required apiTabRemoteName: str;
+    description: str;
+    file: json;
+    required isActive: bool;
+    constraint exclusive on ((.apiTabRemoteName, .apiTabLocalMod, .apiTabLocalName));
+  }
+}

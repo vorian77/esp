@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ContextKey, DataManager, DataObj, FileStorage, required } from '$utils/types'
 	import { getContext } from 'svelte'
-	import { FieldFile } from '$comps/form/fieldFile'
+	import { FieldFileImage } from '$comps/form/fieldFile'
 	import {
 		TokenApiFileParmDelete,
 		TokenApiBlobParmUpload,
@@ -10,7 +10,7 @@
 	} from '$utils/types.token'
 	import DataViewer from '$utils/DataViewer.svelte'
 
-	const FILENAME = '$comps/form/FormElFile.svelte'
+	const FILENAME = '$comps/form/FormElFileImage.svelte'
 
 	let { parms }: DataRecord = $props()
 	let sm: State = required(getContext(ContextKey.stateManager), FILENAME, 'sm')
@@ -33,7 +33,7 @@
 		}
 	})
 
-	let field: FieldFile = $derived(parms.field)
+	let field: FieldFileImage = $derived(parms.field)
 	let fieldValue = $derived(dm.getFieldValue(parms.dataObjId, parms.row, parms.field))
 
 	$effect(() => {

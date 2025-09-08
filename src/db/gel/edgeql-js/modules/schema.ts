@@ -16,6 +16,7 @@ import type * as _sys_migr from "./sys_migr";
 import type * as _sys_test from "./sys_test";
 import type * as _org_client_baltimore from "./org_client_baltimore";
 import type * as _sys_db from "./sys_db";
+import type * as _sys_api from "./sys_api";
 export type $AccessKind = {
   "Select": $.$expr_Literal<$AccessKind>;
   "UpdateRead": $.$expr_Literal<$AccessKind>;
@@ -814,6 +815,8 @@ export type $ObjectTypeλShape = $.typeutil.flatten<$SourceλShape & Omit<$Consi
   "<__type__[is app_cm::CmCsfEligibility]": $.LinkDesc<_app_cm.$CmCsfEligibility, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_cm::CmProgram]": $.LinkDesc<_app_cm.$CmProgram, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__[is app_crm::CrmSuggestion]": $.LinkDesc<_app_crm.$CrmSuggestion, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_api::SysApi]": $.LinkDesc<_sys_api.$SysApi, $.Cardinality.Many, {}, false, false,  false, false>;
+  "<__type__[is sys_api::SysApiTable]": $.LinkDesc<_sys_api.$SysApiTable, $.Cardinality.Many, {}, false, false,  false, false>;
   "<__type__": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<intersection_of": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;
   "<subject": $.LinkDesc<$.ObjectType, $.Cardinality.Many, {}, false, false,  false, false>;

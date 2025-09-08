@@ -1136,7 +1136,7 @@ function initDataObjColumn(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'file',
+				codeFieldElement: 'fileImage',
 				columnName: 'customColFile',
 				isDisplayable: true,
 				orderDisplay: 595,

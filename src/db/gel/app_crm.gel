@@ -1,7 +1,7 @@
 module app_crm {
   type CrmClient extending sys_core::SysObjAttrEnt {
     overloaded required codeAttrType: sys_core::SysCode {
-      default := sys_core::getCodeAttrType('at_crm_client');
+      default := sys_core::getCodeAttrType('at_app_crm_client');
     };
   }
 

@@ -648,7 +648,7 @@ function initMyAccount(init: InitDb) {
 			},
 			{
 				codeAccess: 'optional',
-				codeFieldElement: 'file',
+				codeFieldElement: 'fileImage',
 				columnName: 'avatar',
 				isDisplayable: true,
 				orderDisplay: 100,

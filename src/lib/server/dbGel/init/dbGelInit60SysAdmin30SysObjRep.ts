@@ -1000,7 +1000,6 @@ function initRep(init: InitDb) {
 function initRepEl(init: InitDb) {
 	init.addTrans('sysDataObj', {
 		actionGroup: 'doag_list',
-
 		codeCardinality: 'list',
 		exprFilter: '.id IN (SELECT sys_rep::SysRep FILTER .id = <tree,uuid,SysRep.id>).elements.id',
 		header: 'Elements',

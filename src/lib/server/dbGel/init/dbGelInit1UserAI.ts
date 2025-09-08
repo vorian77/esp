@@ -13,8 +13,8 @@ function initConfigNodes(init: InitDb) {
 	init.addTrans('updateSystemNodesConfig', {
 		name: 'sys_client_atlantic_impact',
 		nodesConfig: [
-			{ codeAttrType: 'at_cm_program', node: 'node_obj_cm_program_list' },
-			{ codeAttrType: 'at_cm_site', node: 'node_obj_cm_site_list' },
+			{ codeAttrType: 'at_app_cm_program', node: 'node_obj_cm_program_list' },
+			{ codeAttrType: 'at_app_cm_site', node: 'node_obj_cm_site_list' },
 			{ codeAttrType: 'at_sys_code', node: 'node_obj_admin_code_list_customer' }
 		]
 	})
