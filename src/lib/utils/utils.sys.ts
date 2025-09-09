@@ -304,14 +304,9 @@ export function isPlainObjectEmpty(obj: any) {
 export class MethodResult {
 	data: any
 	error?: MethodResultError
-	success = true
 	type = 'object'
 	constructor(parms: any = undefined) {
 		parms = valueOrDefault(parms, {})
-
-		if (Object.hasOwn(parms, 'success')) {
-			this.success = parms.success
-		}
 
 		if (Object.hasOwn(parms, 'data') && Object.keys(parms).length === 1) {
 			parms = parms.data
@@ -322,17 +317,14 @@ export class MethodResult {
 			this.data = parms
 		} else {
 			if (Object.hasOwn(parms, 'error')) {
-				this.success = false
 				this.error = new MethodResultError(parms.error)
 				delete parms.error
 			}
 
 			if (Object.hasOwn(parms, 'data') && Object.keys(parms).length === 1) {
-				// this.data = { ...parms.data }
 				this.data = parms.data
 			} else {
 				if (typeof parms === 'object' && parms !== null && !Array.isArray(parms)) {
-					// this.data = { ...parms }
 					this.data = parms
 				} else {
 					this.data = parms

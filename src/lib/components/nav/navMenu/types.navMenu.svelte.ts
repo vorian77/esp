@@ -224,7 +224,7 @@ export class NavMenuData {
 			// item - group - My Tasks
 			const itemGroupTasks = new NavMenuDataCompGroup(this, { header: 'My Tasks' })
 			result = this.sm.user.resources_tasks.getTasksMenuTasks(this.sm)
-			if (result.success) {
+			if (!result.error) {
 				let tasks: UserResourceTaskItem[] = getArray(result.data)
 				tasks.forEach((task) => {
 					itemGroupTasks.itemAdd({
@@ -240,7 +240,7 @@ export class NavMenuData {
 			// item - group - My Widgets
 			const itemGroupWidgets = new NavMenuDataCompGroup(this, { header: 'My Widgets' })
 			result = this.sm.user.resources_tasks.getTasksMenuWidgets(this.sm)
-			if (result.success) {
+			if (!result.error) {
 				let tasks: UserResourceTaskItem[] = getArray(result.data)
 				tasks.forEach((task) => {
 					itemGroupWidgets.itemAdd({
