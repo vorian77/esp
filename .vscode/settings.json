@@ -9,5 +9,6 @@
 	"svelte.language-server.debug": true,
 	"javascript.suggest.includeCompletionsForImportStatements": false,
 	"typescript.suggest.autoImports": false,
-	"javascript.suggest.autoImports": false
+	"javascript.suggest.autoImports": false,
+	"kiroAgent.configureMCP": "Disabled"
 }

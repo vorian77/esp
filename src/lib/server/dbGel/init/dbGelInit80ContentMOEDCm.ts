@@ -56,6 +56,13 @@ function initEligibility(init: InitDb) {
 
 			addNode({
 				codeEligibilityType: 'eligibilityManual',
+				description: 'Client has signed the Customer Agreement form.',
+				header: 'Customer Agreement',
+				parent: headerAcknowledge
+			})
+
+			addNode({
+				codeEligibilityType: 'eligibilityManual',
 				description: 'Client has signed the EEO & Grievance form.',
 				header: 'EEO & Grievance',
 				parent: headerAcknowledge
@@ -65,13 +72,6 @@ function initEligibility(init: InitDb) {
 				codeEligibilityType: 'eligibilityManual',
 				description: 'Client has signed the Sexual Harassment form.',
 				header: 'Sexual Harassment',
-				parent: headerAcknowledge
-			})
-
-			addNode({
-				codeEligibilityType: 'eligibilityManual',
-				description: 'Client has signed the Customer Agreement form.',
-				header: 'Customer Agreement',
 				parent: headerAcknowledge
 			})
 

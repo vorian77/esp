@@ -3,6 +3,7 @@ import {
 	CodeAction,
 	CodeActionClass,
 	CodeActionType,
+	getValueData,
 	MethodResult,
 	required,
 	strRequired
@@ -210,7 +211,10 @@ export default async function action(
 				}
 			})
 	}
-	if (authProcess.actions.length > 0) await authProcess.execute()
+	if (authProcess.actions.length > 0) {
+		let result: MethodResult = await authProcess.execute()
+		if (result.error) return result
+	}
 	return new MethodResult()
 }
 
@@ -228,19 +232,32 @@ async function authActionLogicCodeVerify(authProcess: AuthProcess, authAction: A
 
 	const sm = authProcess.getState()
 
-	const securityCodeUser = authProcess.parmGetRequired(AuthProcessParm.securityCodeUser)
-	if (securityCodeUser === '999999' && sm.isDevMode) new MethodResult(true)
+	let securityCodeUser = authProcess.parmGetRequired(AuthProcessParm.securityCodeUser)
+	securityCodeUser = getValueData(securityCodeUser)
+	if (securityCodeUser === '999999' && sm.isDevMode) new MethodResult()
 	if (securityCodeUser !== securityCodeSystem) {
 		alert('The security code you entered is not correct. Please try again.')
-		return new MethodResult(false)
+		return new MethodResult({
+			error: {
+				file: FILENAME,
+				function: 'authActionLogicCodeVerify',
+				msg: `Could not verify security code`
+			}
+		})
 	}
-	return new MethodResult(true)
+	return new MethodResult()
 }
 
 async function authActionLogicIsNew(authProcess: AuthProcess, authAction: AuthActionLogic) {
 	if (!authProcess.parmsHas(AuthProcessParm.isNew)) {
 		alert(authAction.msgFail)
-		return new MethodResult(false)
+		return new MethodResult({
+			error: {
+				file: FILENAME,
+				function: 'authActionLogicIsNew',
+				msg: `Could not verify authentication.`
+			}
+		})
 	}
 
 	const isNew = authProcess.parmGet(AuthProcessParm.isNew)
@@ -261,7 +278,13 @@ async function authActionLogicLogin(
 
 	if (!userId) {
 		alert(authAction.msgFail)
-		return new MethodResult({ success: false })
+		return new MethodResult({
+			error: {
+				file: FILENAME,
+				function: 'authActionLogicLogin',
+				msg: `Could not verify login.`
+			}
+		})
 	}
 
 	const sm = authProcess.getState()

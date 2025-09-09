@@ -50,7 +50,13 @@ export class AuthActionDB extends AuthAction {
 
 		if (result.error || !resultRecord) {
 			alert(this.msgFail)
-			return new MethodResult({ success: false })
+			return new MethodResult({
+				error: {
+					file: FILENAME,
+					function: 'AuthActionDB.execute',
+					msg: `Could not execute dbExpr`
+				}
+			})
 		}
 
 		authProcess.parmsUpdate({ ...resultRecord })
@@ -100,14 +106,16 @@ export class AuthProcess {
 	addAction(actionClass: any, parms: DataRecord) {
 		this.actions.push(new actionClass(parms))
 	}
-	async execute() {
+	async execute(): Promise<MethodResult> {
 		while (this.actions.length > 0) {
 			const action = this.actions.shift()
-			if (!action) return
+			if (!action) return new MethodResult()
 			let result: MethodResult = await action.execute(this)
-			if (!result.success) return
+			if (result.error) return result
 		}
+		return new MethodResult()
 	}
+
 	getState() {
 		if (this.sm) {
 			return this.sm
